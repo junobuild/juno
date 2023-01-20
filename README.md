@@ -6,4 +6,4 @@ No backend code needed, ship on web3 faster than ever before ⚡️🚀🤯
 
 ---
 
-🚧 Work in progress 🚧 
+🚧 Work in progress 🚧

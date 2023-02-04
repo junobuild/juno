@@ -12,9 +12,22 @@ export type AddTentativeDeviceResponse =
 				device_registration_timeout: Timestamp;
 			};
 	  };
+export interface ArchiveConfig {
+	polling_interval_ns: bigint;
+	entries_buffer_limit: bigint;
+	archive_integration: [] | [{ pull: null } | { push: null }];
+	module_hash: Uint8Array;
+	entries_fetch_limit: number;
+}
 export interface ArchiveInfo {
-	expected_wasm_hash: [] | [Uint8Array];
+	archive_config: [] | [ArchiveConfig];
 	archive_canister: [] | [Principal];
+}
+export interface BufferedArchiveEntry {
+	sequence_number: bigint;
+	entry: Uint8Array;
+	anchor_number: UserNumber;
+	timestamp: Timestamp;
 }
 export interface Challenge {
 	png_base64: string;
@@ -71,11 +84,13 @@ export interface IdentityAnchorInfo {
 	device_registration: [] | [DeviceRegistrationInfo];
 }
 export interface InternetIdentityInit {
-	archive_module_hash: [] | [Uint8Array];
+	upgrade_persistent_state: [] | [boolean];
 	assigned_user_number_range: [] | [[bigint, bigint]];
+	archive_config: [] | [ArchiveConfig];
 	canister_creation_cycles_cost: [] | [bigint];
 }
 export interface InternetIdentityStats {
+	storage_layout_version: number;
 	users_registered: bigint;
 	assigned_user_number_range: [bigint, bigint];
 	archive_info: ArchiveInfo;
@@ -116,12 +131,14 @@ export type VerifyTentativeDeviceResponse =
 	| { wrong_code: { retries_left: number } }
 	| { no_device_to_verify: null };
 export interface _SERVICE {
+	acknowledge_entries: ActorMethod<[bigint], undefined>;
 	add: ActorMethod<[UserNumber, DeviceData], undefined>;
 	add_tentative_device: ActorMethod<[UserNumber, DeviceData], AddTentativeDeviceResponse>;
 	create_challenge: ActorMethod<[], Challenge>;
 	deploy_archive: ActorMethod<[Uint8Array], DeployArchiveResult>;
 	enter_device_registration_mode: ActorMethod<[UserNumber], Timestamp>;
 	exit_device_registration_mode: ActorMethod<[UserNumber], undefined>;
+	fetch_entries: ActorMethod<[], Array<BufferedArchiveEntry>>;
 	get_anchor_info: ActorMethod<[UserNumber], IdentityAnchorInfo>;
 	get_delegation: ActorMethod<
 		[UserNumber, FrontendHostname, SessionKey, Timestamp],
@@ -137,6 +154,7 @@ export interface _SERVICE {
 	>;
 	register: ActorMethod<[DeviceData, ChallengeResult], RegisterResponse>;
 	remove: ActorMethod<[UserNumber, DeviceKey], undefined>;
+	replace: ActorMethod<[UserNumber, DeviceKey, DeviceData], undefined>;
 	stats: ActorMethod<[], InternetIdentityStats>;
 	update: ActorMethod<[UserNumber, DeviceKey, DeviceData], undefined>;
 	verify_tentative_device: ActorMethod<[UserNumber, string], VerifyTentativeDeviceResponse>;

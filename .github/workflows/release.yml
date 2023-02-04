@@ -4,10 +4,6 @@ on:
   release:
     types: [released]
 
-defaults:
-  run:
-    working-directory: ./admin
-
 jobs:
 
   #####################
@@ -31,7 +27,6 @@ jobs:
       - name: Build base Docker image
         uses: docker/build-push-action@v3
         with:
-          context: ./admin
           file: admin/Dockerfile
           cache-from: type=gha,scope=cached-stage
           cache-to: type=gha,scope=cached-stage,mode=max
@@ -65,11 +60,10 @@ jobs:
       - name: Build ${{ matrix.name }}
         uses: docker/build-push-action@v3
         with:
-          context: ./admin
           file: admin/Dockerfile
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
-          outputs: ./admin/out
+          outputs: ./out
           target: ${{ matrix.target }}
 
       - run: sha256sum out/${{ matrix.name }}
@@ -83,7 +77,7 @@ jobs:
           name: ${{ matrix.name }}
           # path is the name used as the file to upload and the name of the
           # downloaded file
-          path: ./admin/${{ matrix.name }}
+          path: ./${{ matrix.name }}
 
   metadata:
     runs-on: ubuntu-latest
@@ -102,7 +96,7 @@ jobs:
           name: metadata.json
           # path is the name used as the file to upload and the name of the
           # downloaded file
-          path: ./admin/metadata.json
+          path: ./metadata.json
 
   release:
     runs-on: ubuntu-latest
@@ -114,27 +108,22 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: console.wasm
-          path: ./admin
       - name: Download mission_control.wasm
         uses: actions/download-artifact@v3
         with:
           name: mission_control.wasm
-          path: ./admin
       - name: Download observatory.wasm
         uses: actions/download-artifact@v3
         with:
           name: observatory.wasm
-          path: ./admin
       - name: Download satellite.wasm
         uses: actions/download-artifact@v3
         with:
           name: satellite.wasm
-          path: ./admin
       - name: Download metadata.json
         uses: actions/download-artifact@v3
         with:
           name: metadata.json
-          path: ./admin
 
       - name: Prepare canisters
         run: bash ./docker/prepare
@@ -146,8 +135,8 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/')
         with:
           files: |
-            ./admin/console*.wasm
-            ./admin/mission_control*.wasm
-            ./admin/observatory*.wasm
-            ./admin/satellite*.wasm
-            ./admin/metadata.json
+            ./console*.wasm
+            ./mission_control*.wasm
+            ./observatory*.wasm
+            ./satellite*.wasm
+            ./metadata.json

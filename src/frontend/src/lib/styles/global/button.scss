@@ -1,0 +1,25 @@
+@use '../mixins/button';
+
+button {
+	@include button.primary;
+
+	&.square {
+		@include button.square;
+	}
+
+	&.menu {
+		@include button.menu;
+	}
+
+	&.icon {
+		@include button.icon;
+	}
+
+	&.text {
+		@include button.text;
+	}
+
+	&.article {
+		@include button.article;
+	}
+}

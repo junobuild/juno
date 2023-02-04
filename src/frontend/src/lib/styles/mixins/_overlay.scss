@@ -1,0 +1,83 @@
+@use './interaction';
+@use './shadow';
+@use './display';
+
+@mixin backdrop($color) {
+	@if $color == 'dark' {
+		background: rgba(0, 0, 0, 0.85);
+	} @else {
+		background: rgba(0, 0, 0, 0.15);
+	}
+}
+
+@mixin content {
+	padding: 0 1rem;
+	width: 100%;
+}
+
+@mixin popover($backdrop: light) {
+	position: fixed;
+	@include display.inset;
+
+	z-index: calc(var(--z-index) + 997);
+
+	.backdrop {
+		position: absolute;
+		@include display.inset;
+
+		@include backdrop($backdrop);
+
+		@include interaction.tappable;
+	}
+
+	.wrapper {
+		position: absolute;
+		top: calc(var(--popover-top) + 0.45rem);
+		left: var(--popover-left);
+		right: var(--popover-right);
+
+		cursor: initial;
+
+		&.center {
+			top: 50%;
+			left: 50%;
+			transform: translate(-50%, -50%);
+		}
+
+		--size: min(var(--popover-min-size, 240px), calc(100vw - 0.45rem));
+
+		min-width: var(--size);
+		max-width: var(--size);
+
+		@include shadow.strong-card;
+
+		width: fit-content;
+		height: auto;
+
+		overflow: hidden;
+
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+	}
+
+	.close {
+		align-self: flex-end;
+		margin: 0.45rem;
+	}
+}
+
+@mixin message {
+	position: absolute;
+	top: 35%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: var(--padding-2x);
+
+	text-align: center;
+}

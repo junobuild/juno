@@ -1,0 +1,33 @@
+@use '../mixins/text';
+@use '../mixins/shadow';
+
+.table-container {
+	@include shadow.strong-card;
+	overflow: hidden;
+	margin: 0 0 var(--padding-3x);
+}
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+	table-layout: fixed;
+}
+
+thead {
+	font-size: var(--font-size-small);
+	background: var(--color-card-contrast);
+	color: var(--color-card);
+	text-align: left;
+}
+
+th,
+.th {
+	padding: var(--padding-0_5x) var(--padding-2x);
+}
+
+td,
+.td {
+	padding: var(--padding) var(--padding-2x);
+	vertical-align: text-top;
+	@include text.truncate;
+}

@@ -1,0 +1,37 @@
+<script lang="ts">
+	import type { Principal } from '@dfinity/principal';
+	import type { RulesContext, RulesStore } from '$lib/types/rules.context';
+	import { writable } from 'svelte/store';
+	import { reloadContextRules } from '$lib/utils/rules.utils';
+	import { DbRulesType } from '$lib/constants/rules.constants';
+	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
+	import { getContext, setContext } from 'svelte';
+	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
+	import DbData from '$lib/components/db/DbData.svelte';
+	import DbRules from '$lib/components/db/DbRules.svelte';
+
+	export let satelliteId: Principal;
+
+	const store = writable<RulesStore>({
+		satelliteId,
+		rules: undefined,
+		rule: undefined
+	});
+
+	const reloadRules = async () => reloadContextRules({ satelliteId, type: DbRulesType, store });
+
+	$: satelliteId, (async () => reloadRules())();
+
+	setContext<RulesContext>(RULES_CONTEXT_KEY, {
+		store,
+		reload: async () => reloadRules()
+	});
+
+	const { store: tabsStore }: TabsContext = getContext<TabsContext>(TABS_CONTEXT_KEY);
+</script>
+
+{#if $tabsStore.tabId === $tabsStore.tabs[0].id}
+	<DbData />
+{:else if $tabsStore.tabId === $tabsStore.tabs[1].id}
+	<DbRules />
+{/if}

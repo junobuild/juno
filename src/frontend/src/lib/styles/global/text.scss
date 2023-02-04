@@ -1,0 +1,15 @@
+:root {
+	--text-color: #000000;
+	--text-color-rgb: 0, 0, 0;
+
+	--value-color: #606060;
+	--label-color: #c4c4c4;
+
+	&[theme='dark'] {
+		--text-color: #ebedf0;
+		--text-color-rgb: 235, 237, 240;
+
+		--value-color: #f5f6f7;
+		--label-color: #606770;
+	}
+}

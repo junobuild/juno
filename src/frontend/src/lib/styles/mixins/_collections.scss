@@ -1,0 +1,64 @@
+@use './fonts';
+@use './media';
+@use './text';
+@use './grid';
+@use './shadow';
+
+@mixin section {
+	@include grid.four-columns;
+	@include shadow.strong-card;
+}
+
+@mixin title-style {
+	background: var(--color-card-contrast);
+	color: var(--color-card);
+	padding: var(--padding) var(--padding-3x);
+	margin: 0;
+
+	@include fonts.small;
+	@include text.truncate;
+}
+
+@mixin title {
+	@include title-style;
+
+	display: none;
+
+	@include media.min-width(large) {
+		display: block;
+
+		grid-row-start: 2;
+		grid-row-end: 3;
+	}
+}
+
+@mixin action {
+	text-decoration: none;
+	width: calc(100% - var(--padding-6x));
+	justify-content: flex-start;
+
+	margin: var(--padding-2x) var(--padding-3x);
+	padding: var(--padding-0_25x) 0 0 var(--padding);
+
+	&:hover,
+	&:focus {
+		color: var(--color-primary-contrast);
+
+		span {
+			background: var(--color-primary);
+			color: var(--color-primary-contrast);
+		}
+	}
+
+	span {
+		@include media.min-width(large) {
+			max-width: calc(250px + var(--padding-2x));
+			@include text.truncate;
+		}
+	}
+}
+
+@mixin start {
+	gap: var(--padding-2x);
+	margin-left: var(--padding-2x);
+}

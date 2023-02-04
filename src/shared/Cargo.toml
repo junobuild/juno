@@ -1,0 +1,14 @@
+[package]
+name = "shared"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+candid = "0.8.3"
+ic-cdk = "0.6.8"
+ic-cdk-macros = "0.6.8"
+ic-ledger-types = "0.2.0"
+serde = "1.0.145"
+futures = "0.3.25"

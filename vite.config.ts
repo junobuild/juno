@@ -1,4 +1,3 @@
-import { NodeGlobalsPolyfillPlugin } from '@esbuild-plugins/node-globals-polyfill';
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
 import inject from '@rollup/plugin-inject';
 import { sveltekit } from '@sveltejs/kit/vite';
@@ -79,7 +78,15 @@ const config: UserConfig = {
 				global: 'globalThis'
 			},
 			// Enable esbuild polyfill plugins
-			plugins: [NodeGlobalsPolyfillPlugin(), NodeModulesPolyfillPlugin()]
+			plugins: [
+				NodeModulesPolyfillPlugin(),
+				{
+					name: 'fix-node-globals-polyfill',
+					setup(build) {
+						build.onResolve({ filter: /_virtual-process-polyfill_\.js/ }, ({ path }) => ({ path }));
+					}
+				}
+			]
 		}
 	}
 };
@@ -101,6 +108,11 @@ export default defineConfig(({ mode }: UserConfig): UserConfig => {
 				DFX_NETWORK: network
 			},
 			VITE_APP_VERSION: JSON.stringify(version)
+		},
+		server: {
+			watch: {
+				useFsEvents: false
+			}
 		}
 	};
 });

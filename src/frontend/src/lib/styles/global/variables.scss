@@ -1,0 +1,32 @@
+@use '../mixins/media';
+
+:root {
+	--z-index: 1;
+	--spinner-size: 30px;
+
+	--menu-width: calc(28 * var(--padding));
+
+	--header-height: calc(11 * var(--padding));
+	--footer-height: calc(11 * var(--padding));
+
+	@include media.min-width(xlarge) {
+		--header-height: calc(17 * var(--padding));
+		--footer-height: calc(17 * var(--padding));
+	}
+
+	--padding-0_25x: calc(var(--padding) / 4);
+	--padding-0_5x: calc(var(--padding) / 2);
+	--padding: 0.45rem;
+	--padding-1_5x: calc(var(--padding) * 1.5);
+	--padding-2x: calc(var(--padding) * 2);
+	--padding-3x: calc(var(--padding) * 3);
+	--padding-4x: calc(var(--padding) * 4);
+	--padding-6x: calc(var(--padding) * 6);
+	--padding-8x: calc(var(--padding) * 8);
+	--padding-10x: calc(var(--padding) * 10);
+
+	--animation-time: 0.15s;
+	--menu-animation-timing-function: cubic-bezier(0.55, 0.49, 0.44, 0.87);
+
+	--border-radius: 3px;
+}

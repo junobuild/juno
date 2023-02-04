@@ -1,18 +1,19 @@
-.DS_Store
-
-.idea/
+# Various IDEs and Editors
 .vscode/
+.idea/
+**/*~
+
+# Mac OSX temporary files
+.DS_Store
+**/.DS_Store
 
 node_modules
 /build
 /.svelte-kit
 /package
 !.env.example
-
 .dfx
 target
-out/
-
 internet_identity.wasm
 /internet_identity.did
 ledger.private.did
@@ -25,3 +26,4 @@ console.wasm
 mission_control.wasm
 observatory.wasm
 satellite.wasm
+out/

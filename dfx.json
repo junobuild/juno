@@ -8,6 +8,30 @@
 				"node_compatibility": true
 			}
 		},
+		"observatory": {
+			"candid": "src/observatory/observatory.did",
+			"package": "observatory",
+			"type": "rust",
+			"declarations": {
+				"node_compatibility": true
+			}
+		},
+		"mission_control": {
+			"candid": "src/mission_control/mission_control.did",
+			"package": "mission_control",
+			"type": "rust",
+			"declarations": {
+				"node_compatibility": true
+			}
+		},
+		"satellite": {
+			"candid": "src/satellite/satellite.did",
+			"package": "satellite",
+			"type": "rust",
+			"declarations": {
+				"node_compatibility": true
+			}
+		},
 		"frontend": {
 			"dependencies": ["console"],
 			"frontend": {
@@ -28,6 +52,33 @@
 				"candid": "internet_identity.did",
 				"id": {
 					"ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
+				}
+			},
+			"declarations": {
+				"node_compatibility": true
+			}
+		},
+		"ledger": {
+			"type": "custom",
+			"candid": "ledger.public.did",
+			"wasm": "ledger.wasm",
+			"remote": {
+				"candid": "ledger.public.did",
+				"id": {
+					"ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+				}
+			},
+			"declarations": {
+				"node_compatibility": true
+			}
+		},
+		"cmc": {
+			"type": "custom",
+			"candid": "candid/cmc.did",
+			"wasm": "cmc.wasm",
+			"remote": {
+				"id": {
+					"ic": "rkp4c-7iaaa-aaaaa-aaaca-cai"
 				}
 			},
 			"declarations": {

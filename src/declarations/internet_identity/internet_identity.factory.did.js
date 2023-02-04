@@ -1,15 +1,7 @@
 export const idlFactory = ({ IDL }) => {
-	const ArchiveConfig = IDL.Record({
-		polling_interval_ns: IDL.Nat64,
-		entries_buffer_limit: IDL.Nat64,
-		archive_integration: IDL.Opt(IDL.Variant({ pull: IDL.Null, push: IDL.Null })),
-		module_hash: IDL.Vec(IDL.Nat8),
-		entries_fetch_limit: IDL.Nat16
-	});
 	const InternetIdentityInit = IDL.Record({
-		upgrade_persistent_state: IDL.Opt(IDL.Bool),
+		archive_module_hash: IDL.Opt(IDL.Vec(IDL.Nat8)),
 		assigned_user_number_range: IDL.Opt(IDL.Tuple(IDL.Nat64, IDL.Nat64)),
-		archive_config: IDL.Opt(ArchiveConfig),
 		canister_creation_cycles_cost: IDL.Opt(IDL.Nat64)
 	});
 	const UserNumber = IDL.Nat64;
@@ -56,12 +48,6 @@ export const idlFactory = ({ IDL }) => {
 		creation_in_progress: IDL.Null,
 		success: IDL.Principal,
 		failed: IDL.Text
-	});
-	const BufferedArchiveEntry = IDL.Record({
-		sequence_number: IDL.Nat64,
-		entry: IDL.Vec(IDL.Nat8),
-		anchor_number: UserNumber,
-		timestamp: Timestamp
 	});
 	const DeviceRegistrationInfo = IDL.Record({
 		tentative_device: IDL.Opt(DeviceData),
@@ -121,11 +107,10 @@ export const idlFactory = ({ IDL }) => {
 		registered: IDL.Record({ user_number: UserNumber })
 	});
 	const ArchiveInfo = IDL.Record({
-		archive_config: IDL.Opt(ArchiveConfig),
+		expected_wasm_hash: IDL.Opt(IDL.Vec(IDL.Nat8)),
 		archive_canister: IDL.Opt(IDL.Principal)
 	});
 	const InternetIdentityStats = IDL.Record({
-		storage_layout_version: IDL.Nat8,
 		users_registered: IDL.Nat64,
 		assigned_user_number_range: IDL.Tuple(IDL.Nat64, IDL.Nat64),
 		archive_info: ArchiveInfo,
@@ -138,14 +123,12 @@ export const idlFactory = ({ IDL }) => {
 		no_device_to_verify: IDL.Null
 	});
 	return IDL.Service({
-		acknowledge_entries: IDL.Func([IDL.Nat64], [], []),
 		add: IDL.Func([UserNumber, DeviceData], [], []),
 		add_tentative_device: IDL.Func([UserNumber, DeviceData], [AddTentativeDeviceResponse], []),
 		create_challenge: IDL.Func([], [Challenge], []),
 		deploy_archive: IDL.Func([IDL.Vec(IDL.Nat8)], [DeployArchiveResult], []),
 		enter_device_registration_mode: IDL.Func([UserNumber], [Timestamp], []),
 		exit_device_registration_mode: IDL.Func([UserNumber], [], []),
-		fetch_entries: IDL.Func([], [IDL.Vec(BufferedArchiveEntry)], []),
 		get_anchor_info: IDL.Func([UserNumber], [IdentityAnchorInfo], []),
 		get_delegation: IDL.Func(
 			[UserNumber, FrontendHostname, SessionKey, Timestamp],
@@ -163,24 +146,15 @@ export const idlFactory = ({ IDL }) => {
 		),
 		register: IDL.Func([DeviceData, ChallengeResult], [RegisterResponse], []),
 		remove: IDL.Func([UserNumber, DeviceKey], [], []),
-		replace: IDL.Func([UserNumber, DeviceKey, DeviceData], [], []),
 		stats: IDL.Func([], [InternetIdentityStats], ['query']),
 		update: IDL.Func([UserNumber, DeviceKey, DeviceData], [], []),
 		verify_tentative_device: IDL.Func([UserNumber, IDL.Text], [VerifyTentativeDeviceResponse], [])
 	});
 };
 export const init = ({ IDL }) => {
-	const ArchiveConfig = IDL.Record({
-		polling_interval_ns: IDL.Nat64,
-		entries_buffer_limit: IDL.Nat64,
-		archive_integration: IDL.Opt(IDL.Variant({ pull: IDL.Null, push: IDL.Null })),
-		module_hash: IDL.Vec(IDL.Nat8),
-		entries_fetch_limit: IDL.Nat16
-	});
 	const InternetIdentityInit = IDL.Record({
-		upgrade_persistent_state: IDL.Opt(IDL.Bool),
+		archive_module_hash: IDL.Opt(IDL.Vec(IDL.Nat8)),
 		assigned_user_number_range: IDL.Opt(IDL.Tuple(IDL.Nat64, IDL.Nat64)),
-		archive_config: IDL.Opt(ArchiveConfig),
 		canister_creation_cycles_cost: IDL.Opt(IDL.Nat64)
 	});
 	return [IDL.Opt(InternetIdentityInit)];

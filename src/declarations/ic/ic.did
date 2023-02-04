@@ -1,0 +1,82 @@
+type canister_id = principal;
+type user_id = principal;
+type wasm_module = blob;
+
+type canister_settings = record {
+  controllers : opt vec principal;
+  compute_allocation : opt nat;
+  memory_allocation : opt nat;
+  freezing_threshold : opt nat;
+};
+
+type definite_canister_settings = record {
+  controllers : vec principal;
+  compute_allocation : nat;
+  memory_allocation : nat;
+  freezing_threshold : nat;
+};
+
+type http_header = record { name: text; value: text };
+
+type http_response = record {
+  status: nat;
+  headers: vec http_header;
+  body: blob;
+};
+
+type http_request_error = variant {
+  no_consensus;
+  timeout;
+  bad_tls;
+  invalid_url;
+  transform_error;
+  dns_error;
+  unreachable;
+  conn_timeout;
+};
+
+service ic : {
+  create_canister : (record {
+    settings : opt canister_settings
+  }) -> (record {canister_id : canister_id});
+  update_settings : (record {
+    canister_id : principal;
+    settings : canister_settings
+  }) -> ();
+  install_code : (record {
+    mode : variant {install; reinstall; upgrade};
+    canister_id : canister_id;
+    wasm_module : wasm_module;
+    arg : blob;
+  }) -> ();
+  uninstall_code : (record {canister_id : canister_id}) -> ();
+  start_canister : (record {canister_id : canister_id}) -> ();
+  stop_canister : (record {canister_id : canister_id}) -> ();
+  canister_status : (record {canister_id : canister_id}) -> (record {
+      status : variant { running; stopping; stopped };
+      settings: definite_canister_settings;
+      module_hash: opt blob;
+      memory_size: nat;
+      cycles: nat;
+  });
+  delete_canister : (record {canister_id : canister_id}) -> ();
+  deposit_cycles : (record {canister_id : canister_id}) -> ();
+  raw_rand : () -> (blob);
+  http_request : (record {
+    url : text;
+    method : variant { get };
+    headers: vec http_header;
+    body : opt blob;
+    transform : opt variant {
+      function: func (http_response) -> (http_response) query
+    };
+  }) -> (variant { Ok : http_response; Err: opt http_request_error });
+
+  // provisional interfaces for the pre-ledger world
+  provisional_create_canister_with_cycles : (record {
+    amount: opt nat;
+    settings : opt canister_settings
+  }) -> (record {canister_id : canister_id});
+  provisional_top_up_canister :
+    (record { canister_id: canister_id; amount: nat }) -> ();
+}

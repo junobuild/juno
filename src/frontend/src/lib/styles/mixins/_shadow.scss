@@ -1,0 +1,21 @@
+@mixin card {
+	@include shadow;
+
+	background: var(--color-card);
+	color: var(--color-card-contrast);
+}
+
+@mixin strong-card {
+	box-shadow: 9px 9px var(--color-card-contrast);
+	border: 3px solid var(--color-card-contrast);
+	border-radius: var(--border-radius);
+
+	background: var(--color-card);
+	color: var(--color-card-contrast);
+}
+
+@mixin shadow {
+	box-shadow: 4px 4px var(--color-card-contrast);
+	border: 2px solid var(--color-card-contrast);
+	border-radius: var(--border-radius);
+}

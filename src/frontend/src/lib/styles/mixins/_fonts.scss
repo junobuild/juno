@@ -1,0 +1,41 @@
+@mixin bold($bold) {
+	@if $bold {
+		font-weight: var(--font-weight-bold);
+	}
+}
+
+@mixin h1($bold: true) {
+	font-size: var(--font-size-h1);
+	line-height: var(--line-height-title);
+	@include bold($bold);
+}
+
+@mixin h2($bold: true) {
+	font-size: var(--font-size-h2);
+	line-height: var(--line-height-title);
+	@include bold($bold);
+}
+
+@mixin h3($bold: true) {
+	font-size: var(--font-size-h3);
+	line-height: var(--line-height-title);
+	@include bold($bold);
+}
+
+@mixin h4($bold: true) {
+	font-size: var(--font-size-h4);
+	line-height: var(--line-height-standard);
+	@include bold($bold);
+}
+
+@mixin h5($bold: true) {
+	font-size: var(--font-size-h5);
+	line-height: var(--line-height-standard);
+	@include bold($bold);
+}
+
+@mixin small($bold: false) {
+	font-size: var(--font-size-small);
+	line-height: var(--line-height-small);
+	@include bold($bold);
+}

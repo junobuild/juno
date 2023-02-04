@@ -1,0 +1,9 @@
+@use './shadow';
+
+@mixin warning {
+	text-align: center;
+	background: var(--color-warning);
+	color: var(--color-warning-contrast);
+	padding: var(--padding-2x);
+	@include shadow.shadow;
+}

@@ -1,0 +1,73 @@
+/* Font sizing source: https://type-scale.com/ */
+
+html {
+	font-size: 100%;
+} /*16px*/
+
+body {
+	font-family: 'JetBrains Mono', monospace;
+
+	text-rendering: optimizeLegibility;
+	-webkit-font-smoothing: antialiased;
+	font-weight: 400;
+	line-height: var(--line-height-standard);
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+	font-weight: 800;
+	line-height: var(--line-height-title);
+	margin: 0 0 var(--padding);
+}
+
+input,
+button,
+select,
+textarea {
+	font-family: inherit;
+	font-size: inherit;
+}
+
+:root {
+	--font-size-h1: 1.802rem;
+	--font-size-h2: 1.602rem;
+	--font-size-h3: 1.424rem;
+	--font-size-h4: 1.266rem;
+	--font-size-h5: 1.125rem;
+	--font-size-small: 0.889rem;
+	--font-size-very-small: 0.79rem;
+	--font-size-ultra-small: 0.6rem;
+
+	--line-height-title: 1.3;
+	--line-height-standard: 1.5;
+
+	--font-weight-bold: 800;
+}
+
+h1 {
+	font-size: var(--font-size-h1);
+}
+
+h2 {
+	font-size: var(--font-size-h2);
+}
+
+h3 {
+	font-size: var(--font-size-h3);
+}
+
+h4 {
+	font-size: var(--font-size-h4);
+}
+
+h5 {
+	font-size: var(--font-size-h5);
+}
+
+small,
+figcaption {
+	font-size: var(--font-size-small);
+}

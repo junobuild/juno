@@ -1,10 +1,193 @@
+mod constants;
+mod controllers;
+mod guards;
+mod mission_control;
+mod satellite;
+mod store;
+mod types;
+mod wasm;
+
+use crate::constants::SATELLITE_CREATION_FEE_ICP;
+use crate::guards::caller_is_controller;
+use crate::mission_control::init_user_mission_control;
+use crate::satellite::create_satellite as create_satellite_console;
+use crate::store::{
+    add_invitation_code as add_invitation_code_store, get_credits as get_credits_store,
+    get_mission_control, get_mission_control_release_version, get_satellite_release_version,
+    has_credits, list_mission_controls, load_mission_control_release, load_satellite_release,
+    reset_mission_control_release, reset_satellite_release,
+};
+use crate::types::interface::{ConsoleArgs, LoadRelease, ReleaseType, ReleasesVersion};
+use crate::types::state::{
+    InvitationCode, MissionControl, MissionControls, Releases, StableState, State,
+};
+use candid::Principal;
+use ic_cdk::api::call::arg_data;
+use ic_cdk::api::caller;
 use ic_cdk::export::candid::{candid_method, export_service};
-use ic_cdk_macros::{query};
+use ic_cdk::{id, storage, trap};
+use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use ic_ledger_types::Tokens;
+use shared::types::interface::{CreateSatelliteArgs, GetCreateSatelliteFeeArgs};
+use shared::version::pkg_version;
+use std::cell::RefCell;
+use std::collections::{HashMap, HashSet};
+
+thread_local! {
+    static STATE: RefCell<State> = RefCell::default();
+}
+
+#[init]
+fn init() {
+    let call_arg = arg_data::<(ConsoleArgs,)>().0;
+    let manager = call_arg.manager;
+
+    STATE.with(|state| {
+        *state.borrow_mut() = State {
+            stable: StableState {
+                mission_controls: HashMap::new(),
+                payments: HashMap::new(),
+                releases: Releases::default(),
+                invitation_codes: HashMap::new(),
+                controllers: HashSet::from([manager]),
+            },
+        };
+    });
+}
+
+#[pre_upgrade]
+fn pre_upgrade() {
+    STATE.with(|state| storage::stable_save((&state.borrow().stable,)).unwrap());
+}
+
+#[post_upgrade]
+fn post_upgrade() {
+    let (stable,): (StableState,) = storage::stable_restore().unwrap();
+
+    STATE.with(|state| *state.borrow_mut() = State { stable });
+}
+
+/// Mission control center and satellite releases and wasm
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn reset_release(release_type: ReleaseType) {
+    match release_type {
+        ReleaseType::Satellite => reset_satellite_release(),
+        ReleaseType::MissionControl => reset_mission_control_release(),
+    }
+}
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn load_release(release_type: ReleaseType, blob: Vec<u8>, version: String) -> LoadRelease {
+    let total: usize = match release_type {
+        ReleaseType::Satellite => {
+            load_satellite_release(&blob, &version);
+            STATE.with(|state| state.borrow().stable.releases.satellite.wasm.len())
+        }
+        ReleaseType::MissionControl => {
+            load_mission_control_release(&blob, &version);
+            STATE.with(|state| state.borrow().stable.releases.mission_control.wasm.len())
+        }
+    };
+
+    LoadRelease {
+        total,
+        chunks: blob.len(),
+    }
+}
 
 #[candid_method(query)]
 #[query]
-fn greet(name: String) -> String {
-    format!("Hello, {}!", name)
+fn get_releases_version() -> ReleasesVersion {
+    ReleasesVersion {
+        satellite: get_satellite_release_version(),
+        mission_control: get_mission_control_release_version(),
+    }
+}
+
+/// User mission control centers
+
+#[candid_method(query)]
+#[query]
+fn get_user_mission_control_center() -> Option<MissionControl> {
+    let caller = caller();
+    let result = get_mission_control(&caller);
+
+    match result {
+        Ok(mission_control) => mission_control,
+        Err(error) => trap(error),
+    }
+}
+
+#[candid_method(query)]
+#[query(guard = "caller_is_controller")]
+fn list_user_mission_control_centers() -> MissionControls {
+    list_mission_controls()
+}
+
+#[candid_method(update)]
+#[update]
+async fn init_user_mission_control_center(invitation_code: Option<String>) -> MissionControl {
+    let caller = caller();
+    let console = id();
+
+    init_user_mission_control(&console, &caller, &invitation_code)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+/// Satellites
+
+#[candid_method(update)]
+#[update]
+async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
+    let console = id();
+    let caller = caller();
+
+    create_satellite_console(console, caller, args)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+/// Economy
+
+#[candid_method(query)]
+#[query]
+async fn get_credits() -> Tokens {
+    let caller = caller();
+
+    get_credits_store(&caller).unwrap_or_else(|e| trap(e))
+}
+
+#[candid_method(query)]
+#[query]
+async fn get_create_satellite_fee(
+    GetCreateSatelliteFeeArgs { user }: GetCreateSatelliteFeeArgs,
+) -> Option<Tokens> {
+    let caller = caller();
+
+    match has_credits(&user, &caller) {
+        false => Some(SATELLITE_CREATION_FEE_ICP),
+        true => None,
+    }
+}
+
+/// Closed beta - invitation codes
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn add_invitation_code(code: InvitationCode) {
+    add_invitation_code_store(&code);
+}
+
+/// Mgmt
+
+#[candid_method(query)]
+#[query]
+fn version() -> String {
+    pkg_version()
 }
 
 // Generate did files

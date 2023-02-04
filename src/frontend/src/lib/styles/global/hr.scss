@@ -1,0 +1,21 @@
+hr {
+	height: var(--padding-6x);
+	margin: 0 auto;
+	overflow: visible;
+	position: relative;
+	display: block;
+	border: none;
+	outline: none;
+}
+
+hr:before {
+	content: '▪▪▪';
+	display: inline-block;
+	color: var(--color-card-contrast);
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	margin-left: 0.6em;
+	letter-spacing: 0.6em;
+}

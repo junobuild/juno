@@ -1,1 +1,31 @@
-service : { greet : (text) -> (text) query }
+type CreateSatelliteArgs = record { block_index : opt nat64; user : principal };
+type GetCreateSatelliteFeeArgs = record { user : principal };
+type LoadRelease = record { total : nat64; chunks : nat64 };
+type MissionControl = record {
+  updated_at : nat64;
+  credits : Tokens;
+  mission_control_id : opt principal;
+  owner : principal;
+  created_at : nat64;
+};
+type ReleaseType = variant { MissionControl; Satellite };
+type ReleasesVersion = record {
+  satellite : opt text;
+  mission_control : opt text;
+};
+type Tokens = record { e8s : nat64 };
+service : {
+  add_invitation_code : (text) -> ();
+  create_satellite : (CreateSatelliteArgs) -> (principal);
+  get_create_satellite_fee : (GetCreateSatelliteFeeArgs) -> (opt Tokens) query;
+  get_credits : () -> (Tokens) query;
+  get_releases_version : () -> (ReleasesVersion) query;
+  get_user_mission_control_center : () -> (opt MissionControl) query;
+  init_user_mission_control_center : (opt text) -> (MissionControl);
+  list_user_mission_control_centers : () -> (
+      vec record { principal; MissionControl },
+    ) query;
+  load_release : (ReleaseType, vec nat8, text) -> (LoadRelease);
+  reset_release : (ReleaseType) -> ();
+  version : () -> (text) query;
+}

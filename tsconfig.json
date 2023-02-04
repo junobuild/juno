@@ -10,10 +10,10 @@
 		"sourceMap": true,
 		"strict": true,
 		"paths": {
-			"$lib": ["src/frontend/src/lib"],
-			"$lib/*": ["src/frontend/src/lib/*"],
-			"$declarations": ["src/declarations"],
-			"$declarations/*": ["src/declarations/*"]
+			"$lib": ["./src/frontend/src/lib"],
+			"$lib/*": ["./src/frontend/src/lib/*"],
+			"$declarations": ["./src/declarations"],
+			"$declarations/*": ["./src/declarations/*"]
 		}
 	}
 	// Path aliases are handled by https://kit.svelte.dev/docs/configuration#alias

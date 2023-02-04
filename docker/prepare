@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+METADATA=./metadata.json
+
+    cat $METADATA
+
+function prepare_metadata() {
+    local canister=$1
+    local version=($(jq -r ".\"${canister}\"" $METADATA))
+
+    echo "Renaming $canister v$version"
+    mv -f "$canister.wasm" "$canister-v$version.wasm" 2>/dev/null; true
+}
+
+for canister in $(echo $CANISTERS | sed "s/,/ /g")
+do
+    prepare_metadata "$canister"
+done

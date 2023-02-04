@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+METADATA=./metadata.json
+if [[ ! -e $METADATA ]]; then
+    echo "{}" > $METADATA
+fi
+
+function build_metadata() {
+    local canister=$1
+
+    VERSION="$(cargo metadata --format-version 1  | jq -r '.packages[]  | select(.name=="'$canister'") | .version')"
+
+    echo "$canister v$VERSION"
+
+    jq --arg canister "$canister" --arg version "$VERSION" '. += {"\($canister)": $version}' "$METADATA" > tmp && mv tmp "$METADATA"
+}
+
+for canister in $(echo $CANISTERS | sed "s/,/ /g")
+do
+    build_metadata "$canister"
+done

@@ -1,0 +1,39 @@
+/* jetbrains-mono-regular - latin */
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 400;
+	src: local(''), url('/fonts/jetbrains-mono-v11-latin-regular.woff2') format('woff2'),
+		/* Chrome 26+, Opera 23+, Firefox 39+ */ url('/fonts/jetbrains-mono-v11-latin-regular.woff')
+			format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* jetbrains-mono-800 - latin */
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: normal;
+	font-weight: 800;
+	src: local(''), url('/fonts/jetbrains-mono-v11-latin-800.woff2') format('woff2'),
+		/* Chrome 26+, Opera 23+, Firefox 39+ */ url('/fonts/jetbrains-mono-v11-latin-800.woff')
+			format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* jetbrains-mono-italic - latin */
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: italic;
+	font-weight: 400;
+	src: local(''), url('/fonts/jetbrains-mono-v11-latin-italic.woff2') format('woff2'),
+		/* Chrome 26+, Opera 23+, Firefox 39+ */ url('/fonts/jetbrains-mono-v11-latin-italic.woff')
+			format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}
+
+/* jetbrains-mono-800italic - latin */
+@font-face {
+	font-family: 'JetBrains Mono';
+	font-style: italic;
+	font-weight: 800;
+	src: local(''), url('/fonts/jetbrains-mono-v11-latin-800italic.woff2') format('woff2'),
+		/* Chrome 26+, Opera 23+, Firefox 39+ */ url('/fonts/jetbrains-mono-v11-latin-800italic.woff')
+			format('woff'); /* Chrome 6+, Firefox 3.6+, IE 9+, Safari 5.1+ */
+}

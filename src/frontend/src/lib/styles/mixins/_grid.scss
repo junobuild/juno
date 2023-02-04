@@ -1,0 +1,10 @@
+@mixin twelve-columns {
+	display: grid;
+	grid-template-columns: repeat(12, 1fr);
+	grid-gap: var(--padding-4x);
+}
+
+@mixin four-columns {
+	display: grid;
+	grid-template-columns: repeat(4, 25%);
+}

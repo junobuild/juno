@@ -1,0 +1,9 @@
+@mixin width {
+	width: calc(100vw - 1.25rem);
+	max-width: 960px;
+}
+
+@mixin large {
+	width: calc(100vw - 1.25rem);
+	max-width: 1140px;
+}

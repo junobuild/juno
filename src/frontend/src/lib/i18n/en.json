@@ -1,1 +1,76 @@
-{}
+{
+	"core": {
+		"close": "Close",
+		"back": "Back",
+		"menu": "Open menu to access navigation options",
+		"copy": "Copy to clipboard",
+		"toggle": "Toggle",
+		"loading": "Loading...",
+		"status": "Status",
+		"sign_out": "Sign-out",
+		"sign_in": "Sign-in",
+		"light_off": "Light off",
+		"light_on": "Light on",
+		"submit": "Submit",
+		"home": "Home",
+		"help": "Help",
+		"controllers": "Controllers",
+		"rules": "Rules"
+	},
+	"canisters": {
+		"top_up": "Top-up",
+		"cycles": "{0} are used to pay for running your satellites - i.e. your smart contracts."
+	},
+	"sign_in": {
+		"title": "Launch your first satellite",
+		"overview_1": "A satellite is a Web3 container for your app.",
+		"overview_2": "It offers secure anonymous authentication, data storage, custom domain capabilities and more.",
+		"overview_3": "100% on blockchain with low carbon footprint.",
+		"internet_identity": "Continue with Internet Identity"
+	},
+	"satellites": {
+		"title": "Satellites",
+		"launch": "Launch a new satellite",
+		"open": "Open satellite",
+		"create": "Create a satellite",
+		"satellite": "Satellite"
+	},
+	"mission_control": {
+		"title": "Mission Control",
+		"id": "Mission control center ID",
+		"account_identifier": "Account identifier",
+		"balance": "Balance",
+		"credits": "Credits",
+		"dev_id": "Developer ID",
+		"transactions": "Transactions"
+	},
+	"overview": {
+		"title": "Overview"
+	},
+	"authentication": {
+		"title": "Authentication",
+		"users": "Users",
+		"methods": "Sign-in methods"
+	},
+	"datastore": {
+		"title": "Datastore",
+		"data": "Data"
+	},
+	"storage": {
+		"title": "Storage"
+	},
+	"hosting": {
+		"title": "Hosting"
+	},
+	"cli": {
+		"title": "Authorize CLI",
+		"sign_in": "Sign-in to add a new controller <strong>{0}</strong> to your mission control and/or satellite(s).",
+		"add": "Add a new controller <strong>{0}</strong> to your mission control and/or satellite(s)."
+	},
+	"errors": {
+		"no_mission_control": "Mission control center is not initialized.",
+		"cli_missing_params": "Missing URL parameters. Either the redirection URL or principal is not provided.",
+		"cli_missing_selection": "No mission control or satellite(s) selected.",
+		"cli_unexpected_error": "Unexpected error(s) while adding your controller."
+	}
+}

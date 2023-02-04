@@ -1,0 +1,49 @@
+@use './collections';
+@use './media';
+
+@mixin list {
+	.title,
+	.data {
+		border-right: 2px solid var(--color-card-contrast);
+	}
+
+	.title {
+		@include collections.title;
+	}
+
+	.data {
+		min-height: var(--padding-8x);
+
+		grid-column: span 4;
+
+		@include media.min-width(large) {
+			grid-column: inherit;
+		}
+	}
+
+	.action {
+		@include collections.action;
+	}
+
+	.empty {
+		margin: var(--padding-2x) var(--padding-3x);
+	}
+
+	.data-selected {
+		display: none;
+
+		@include media.min-width(large) {
+			display: block;
+		}
+	}
+
+	button.text {
+		&:hover,
+		&:focus {
+			span {
+				background: var(--color-tertiary);
+				color: var(--color-tertiary-contrast);
+			}
+		}
+	}
+}

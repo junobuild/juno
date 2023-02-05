@@ -12,10 +12,11 @@ use crate::guards::caller_is_controller;
 use crate::mission_control::init_user_mission_control;
 use crate::satellite::create_satellite as create_satellite_console;
 use crate::store::{
-    add_invitation_code as add_invitation_code_store, get_credits as get_credits_store,
-    get_mission_control, get_mission_control_release_version, get_satellite_release_version,
-    has_credits, list_mission_controls, load_mission_control_release, load_satellite_release,
-    reset_mission_control_release, reset_satellite_release,
+    add_controllers as add_controllers_store, add_invitation_code as add_invitation_code_store,
+    get_credits as get_credits_store, get_mission_control, get_mission_control_release_version,
+    get_satellite_release_version, has_credits, list_mission_controls,
+    load_mission_control_release, load_satellite_release, reset_mission_control_release,
+    reset_satellite_release,
 };
 use crate::types::interface::{ConsoleArgs, LoadRelease, ReleaseType, ReleasesVersion};
 use crate::types::state::{
@@ -28,7 +29,7 @@ use ic_cdk::export::candid::{candid_method, export_service};
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
-use shared::types::interface::{CreateSatelliteArgs, GetCreateSatelliteFeeArgs};
+use shared::types::interface::{ControllersArgs, CreateSatelliteArgs, GetCreateSatelliteFeeArgs};
 use shared::version::pkg_version;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
@@ -188,6 +189,14 @@ fn add_invitation_code(code: InvitationCode) {
 #[query]
 fn version() -> String {
     pkg_version()
+}
+
+/// Controllers
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn add_controllers(ControllersArgs { controllers }: ControllersArgs) {
+    add_controllers_store(&controllers);
 }
 
 // Generate did files

@@ -29,8 +29,11 @@ const decode = (rawKey) => {
 	return Ed25519KeyIdentity.fromSecretKey(secretKey);
 };
 
-export const initIdentity = () => {
-	const buffer = readFileSync('/Users/daviddalbusco/.config/dfx/identity/default/identity.pem');
+export const initIdentity = (mainnet) => {
+	const file = `/Users/daviddalbusco/.config/dfx/identity/${
+		mainnet ? 'juno' : 'default'
+	}/identity.pem`;
+	const buffer = readFileSync(file);
 	const key = buffer.toString('utf-8');
 
 	return decode(key);

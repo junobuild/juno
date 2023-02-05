@@ -2,7 +2,7 @@ import { AccountIdentifier } from '@dfinity/nns';
 import { initIdentity } from './identity.utils.mjs';
 
 export const accountIdentifier = () => {
-	const identity = initIdentity();
+	const identity = initIdentity(false);
 	return AccountIdentifier.fromPrincipal({
 		principal: identity.getPrincipal(),
 		subAccount: undefined

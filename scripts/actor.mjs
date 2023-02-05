@@ -21,9 +21,11 @@ const consolePrincipalLocal = () => {
 };
 
 export const consoleActorIC = async () => {
+	const identity = initIdentity(true);
+
 	const canisterId = consolePrincipalIC();
 
-	const agent = new HttpAgent({ fetch, host: 'https://ic0.app' });
+	const agent = new HttpAgent({ identity, fetch, host: 'https://ic0.app' });
 
 	return Actor.createActor(idlFactory, {
 		agent,
@@ -32,7 +34,7 @@ export const consoleActorIC = async () => {
 };
 
 export const localAgent = async () => {
-	const identity = initIdentity();
+	const identity = initIdentity(false);
 
 	const agent = new HttpAgent({ identity, fetch, host: 'http://127.0.0.1:8000/' });
 
@@ -44,7 +46,7 @@ export const localAgent = async () => {
 export const consoleActorLocal = async () => {
 	const canisterId = consolePrincipalLocal();
 
-	const agent = await localAgent();
+	const agent = await localAgent(false);
 
 	return Actor.createActor(idlFactory, {
 		agent,

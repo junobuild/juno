@@ -61,7 +61,7 @@ const createActor = async <T = Record<string, ActorMethod>>({
 	canisterId: string | Principal;
 	idlFactory: IDL.InterfaceFactory;
 	identity: Identity;
-	config?: Pick<ActorConfig, 'callTransform' | 'queryTransform'>;
+	config: Pick<ActorConfig, 'callTransform' | 'queryTransform'>;
 }): Promise<ActorSubclass<T>> => {
 	const agent = await getAgent({ identity });
 
@@ -69,6 +69,6 @@ const createActor = async <T = Record<string, ActorMethod>>({
 	return Actor.createActor(idlFactory, {
 		agent,
 		canisterId,
-		...(config && { config })
+		...config
 	});
 };

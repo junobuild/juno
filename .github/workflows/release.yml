@@ -26,7 +26,7 @@ jobs:
       - name: Build base Docker image
         uses: docker/build-push-action@v3
         with:
-          file: admin/Dockerfile
+          file: Dockerfile
           cache-from: type=gha,scope=cached-stage
           cache-to: type=gha,scope=cached-stage,mode=max
           outputs: type=cacheonly
@@ -56,7 +56,7 @@ jobs:
       - name: Build ${{ matrix.name }}
         uses: docker/build-push-action@v3
         with:
-          file: admin/Dockerfile
+          file: Dockerfile
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
           outputs: ./out

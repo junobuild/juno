@@ -51,7 +51,7 @@ then run command line
 Revert `dfx.json`, collect the ledger canister id and update its value in (if not `r7inp-6aaaa-aaaaa-aaabq-cai`):
 
 - [./scripts/ledger.utils.mjs](./scripts/ledger.utils.mjs)
-- [shared/src/env.rs](/admin/src/shared/src/env.rs)
+- [shared/src/env.rs](./src/shared/src/env.rs)
 
 double check that you received the balance
 
@@ -73,7 +73,7 @@ Next finally deploy Juno canisters:
 dfx deploy console
 ```
 
-Collect "console" canister id and update [shared/src/env.rs](/admin/src/shared/src/env.rs) (if not `rno2w-sqaaa-aaaaa-aaacq-cai`).
+Collect "console" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `rno2w-sqaaa-aaaaa-aaacq-cai`).
 
 Finally, install mission control center + satellite wasm and deploy frontend:
 

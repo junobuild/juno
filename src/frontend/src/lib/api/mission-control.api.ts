@@ -1,7 +1,5 @@
-import type { Transaction } from '$declarations/mission_control/mission_control.did';
 import { getMissionControl } from '$lib/services/mission-control.services';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
-import { isNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 
@@ -41,19 +39,6 @@ export const initMissionControl = async ({
 			reject(err);
 		}
 	});
-
-export const listTransactions = async ({
-	missionControlId
-}: {
-	missionControlId: Principal | undefined | null;
-}): Promise<Transaction[]> => {
-	if (isNullish(missionControlId)) {
-		return [];
-	}
-
-	const actor = await getMissionControlActor(missionControlId);
-	return actor.list_transactions();
-};
 
 export const addSatellitesController = async ({
 	missionControlId,

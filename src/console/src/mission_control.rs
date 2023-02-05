@@ -6,11 +6,9 @@ use crate::store::{
 use crate::types::state::MissionControl;
 use crate::wasm::mission_control_wasm_arg;
 use candid::Principal;
-use ic_cdk::{notify, print};
 use shared::constants::CREATE_MISSION_CONTROL_CYCLES;
-use shared::env::OBSERVATORY;
 use shared::ic::create_canister_install_code;
-use shared::types::interface::{MissionControlId, ObservatoryAddMissionControlArgs, UserId};
+use shared::types::interface::UserId;
 
 pub async fn init_user_mission_control(
     console: &Principal,
@@ -58,28 +56,9 @@ async fn create_mission_control(
         Ok(mission_control_id) => {
             let mission_control = add_mission_control(user, &mission_control_id);
 
-            notify_observatory(&mission_control_id, user);
-
             update_mission_control_controllers(&mission_control_id, user).await?;
 
             Ok(mission_control)
         }
     }
-}
-
-fn notify_observatory(mission_control_id: &MissionControlId, owner: &UserId) {
-    let observatory = Principal::from_text(OBSERVATORY).unwrap();
-
-    let args: ObservatoryAddMissionControlArgs = ObservatoryAddMissionControlArgs {
-        mission_control_id: *mission_control_id,
-        owner: *owner,
-    };
-
-    // We silence the error which is not optimal but adding the newly created mission control center to the observatory is not functionally speaking a must have
-    let () = notify(observatory, "add_mission_control", (args,)).unwrap_or_else(|_| {
-        print(format!(
-            "Mission control center ({}) cannot be added to the observatory.",
-            mission_control_id
-        ))
-    });
 }

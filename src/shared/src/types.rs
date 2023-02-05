@@ -1,6 +1,6 @@
 pub mod interface {
     use candid::{CandidType, Principal};
-    use ic_ledger_types::{AccountIdentifier, BlockIndex};
+    use ic_ledger_types::{BlockIndex};
     use serde::Deserialize;
     use std::collections::HashSet;
 
@@ -27,17 +27,6 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct SatelliteArgs {
         pub controllers: Vec<UserId>,
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct ListTransactionsArgs {
-        pub account_identifier: AccountIdentifier,
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct ObservatoryAddMissionControlArgs {
-        pub mission_control_id: MissionControlId,
-        pub owner: UserId,
     }
 
     #[derive(CandidType, Deserialize)]

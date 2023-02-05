@@ -1,27 +1,10 @@
-type Operation = variant {
-  Burn : record { from : vec nat8; amount : Tokens };
-  Mint : record { to : vec nat8; amount : Tokens };
-  Transfer : record {
-    to : vec nat8;
-    fee : Tokens;
-    from : vec nat8;
-    amount : Tokens;
-  };
-};
 type Satellite = record {
   updated_at : nat64;
   metadata : vec record { text; text };
   created_at : nat64;
   satellite_id : principal;
 };
-type Timestamp = record { timestamp_nanos : nat64 };
 type Tokens = record { e8s : nat64 };
-type Transaction = record {
-  block_index : nat64;
-  memo : nat64;
-  operation : opt Operation;
-  timestamp : Timestamp;
-};
 service : {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
@@ -29,7 +12,6 @@ service : {
   get_user : () -> (principal) query;
   list_mission_control_controllers : () -> (vec principal) query;
   list_satellites : () -> (vec record { principal; Satellite }) query;
-  list_transactions : () -> (vec Transaction) query;
   remove_mission_control_controllers : (vec principal) -> ();
   remove_satellites_controllers : (vec principal, vec principal) -> ();
   top_up : (principal, Tokens) -> ();

@@ -75,12 +75,6 @@ Next finally deploy Juno canisters:
 
 Collect "console" canister id and update [shared/src/env.rs](/admin/src/shared/src/env.rs) (if not `rno2w-sqaaa-aaaaa-aaacq-cai`).
 
-```
-dfx deploy observatory
-```
-
-Collect the deployed canister id and update its value in [shared/src/env.rs](/admin/src/shared/src/env.rs) (if not `renrk-eyaaa-aaaaa-aaada-cai`).
-
 Finally, install mission control center + satellite wasm and deploy frontend:
 
 ```

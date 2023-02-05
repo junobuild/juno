@@ -188,7 +188,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -647,7 +647,7 @@ checksum = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"
 
 [[package]]
 name = "mission_control"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -718,7 +718,7 @@ dependencies = [
 
 [[package]]
 name = "observatory"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -903,7 +903,7 @@ checksum = "5583e89e108996506031660fe09baa5011b9dd0341b89029313006d1fb508d70"
 
 [[package]]
 name = "satellite"
-version = "0.1.0"
+version = "0.0.1"
 dependencies = [
  "base64",
  "candid",

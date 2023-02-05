@@ -1,9 +1,15 @@
-pub static CONSOLE: &str = "rno2w-sqaaa-aaaaa-aaacq-cai";
+// Mainnet: cokmz-oiaaa-aaaal-aby6q-cai
+// Local: rno2w-sqaaa-aaaaa-aaacq-cai
+pub static CONSOLE: &str = "cokmz-oiaaa-aaaal-aby6q-cai";
 
-// On mainnet, use ic_ledger_types::MAINNET_LEDGER_CANISTER_ID;
-pub static LEDGER: &str = "r7inp-6aaaa-aaaaa-aaabq-cai";
+// Mainnet: ryjl3-tyaaa-aaaaa-aaaba-cai
+// Local: r7inp-6aaaa-aaaaa-aaabq-cai
+pub static LEDGER: &str = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 
-// On mainnet, use ic_ledger_types::MAINNET_CYCLES_MINTING_CANISTER_ID
+// Mainnet: rkp4c-7iaaa-aaaaa-aaaca-cai
+// Local: rkp4c-7iaaa-aaaaa-aaaca-cai
 pub static CMC: &str = "rkp4c-7iaaa-aaaaa-aaaca-cai";
 
-pub static OBSERVATORY: &str = "renrk-eyaaa-aaaaa-aaada-cai";
+// Mainnet: klbfr-lqaaa-aaaak-qbwsa-cai
+// Local: renrk-eyaaa-aaaaa-aaada-cai
+pub static OBSERVATORY: &str = "klbfr-lqaaa-aaaak-qbwsa-cai";

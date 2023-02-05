@@ -124,7 +124,7 @@
 	}
 
 	.content {
-		padding: var(--padding-2x) var(--padding);
+		padding: var(--padding-2x);
 
 		form {
 			margin: 0;

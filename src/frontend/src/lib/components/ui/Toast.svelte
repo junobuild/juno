@@ -16,7 +16,7 @@
 
 	$: ({ text, level, detail } = msg);
 
-	let timer: number | undefined;
+	let timer: NodeJS.Timeout | undefined;
 
 	onMount(() => {
 		const { duration } = msg;

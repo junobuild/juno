@@ -10,6 +10,7 @@
 	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { nonNullish } from '$lib/utils/utils';
 
 	const tabs: Tab[] = [
 		{
@@ -35,10 +36,12 @@
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/authentication">
 		<SatelliteGuard>
-			{#if $store.tabId === $store.tabs[0].id}
-				<Users satelliteId={$satelliteStore.satellite_id} />
-			{:else if $store.tabId === $store.tabs[1].id}
-				<SignInMethod />
+			{#if nonNullish($satelliteStore)}
+				{#if $store.tabId === $store.tabs[0].id}
+					<Users satelliteId={$satelliteStore.satellite_id} />
+				{:else if $store.tabId === $store.tabs[1].id}
+					<SignInMethod />
+				{/if}
 			{/if}
 		</SatelliteGuard>
 	</Tabs>

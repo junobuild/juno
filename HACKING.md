@@ -70,7 +70,7 @@ The generated canister ID should be `rkp4c-7iaaa-aaaaa-aaaca-cai`
 Next finally deploy Juno canisters:
 
 ```
-./scripts/console.sh
+dfx deploy console
 ```
 
 Collect "console" canister id and update [shared/src/env.rs](/admin/src/shared/src/env.rs) (if not `rno2w-sqaaa-aaaaa-aaacq-cai`).

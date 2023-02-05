@@ -19,12 +19,11 @@ use crate::store::{
     remove_controllers as remove_controllers_store, reset_mission_control_release,
     reset_satellite_release,
 };
-use crate::types::interface::{ConsoleArgs, LoadRelease, ReleaseType, ReleasesVersion};
+use crate::types::interface::{LoadRelease, ReleaseType, ReleasesVersion};
 use crate::types::state::{
     InvitationCode, MissionControl, MissionControls, Releases, StableState, State,
 };
 use candid::Principal;
-use ic_cdk::api::call::arg_data;
 use ic_cdk::api::caller;
 use ic_cdk::export::candid::{candid_method, export_service};
 use ic_cdk::{id, storage, trap};
@@ -40,8 +39,7 @@ thread_local! {
 
 #[init]
 fn init() {
-    let call_arg = arg_data::<(ConsoleArgs,)>().0;
-    let manager = call_arg.manager;
+    let manager = caller();
 
     STATE.with(|state| {
         *state.borrow_mut() = State {

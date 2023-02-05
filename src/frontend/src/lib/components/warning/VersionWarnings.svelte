@@ -32,8 +32,6 @@
 
 	let ctrlReady = false;
 	$: ctrlReady = nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease);
-
-	$: console.log(satVersion, satRelease, ctrlVersion, ctrlRelease);
 </script>
 
 {#if ctrlReady && ctrlVersion !== ctrlRelease}

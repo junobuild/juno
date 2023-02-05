@@ -17,11 +17,12 @@
 		{
 			id: Symbol('1'),
 			name: $i18n.mission_control.title
-		},
-		{
-			id: Symbol('2'),
-			name: $i18n.mission_control.transactions
 		}
+		// TODO: implement and add transactions tab when ICP index canisters makes it to mainnet
+		// {
+		// 	id: Symbol('2'),
+		// 	name: $i18n.mission_control.transactions
+		// }
 	];
 
 	const store = writable<TabsStore>({

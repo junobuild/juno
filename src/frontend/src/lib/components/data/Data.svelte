@@ -9,7 +9,7 @@
 	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 
 	// Rules
-	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	onMount(() => store.update((data) => ({ ...data, rule: undefined })));
 

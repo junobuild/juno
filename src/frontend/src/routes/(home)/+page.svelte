@@ -4,7 +4,6 @@
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout.store';
 	import SignIn from '$lib/components/core/SignIn.svelte';
-	import Illustration from '$lib/components/presentation/Illustration.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 </script>
 

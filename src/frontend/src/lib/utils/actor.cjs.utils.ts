@@ -22,8 +22,14 @@ export const getCMCActor = async (): Promise<CMCActor> => {
 
 const MANAGEMENT_CANISTER_ID = Principal.fromText('aaaaa-aa');
 
+/* eslint-disable */
+
 // Source nns-dapp - dart -> JS bridge
-const transform = (_methodName: string, args: unknown[], _callConfig: CallConfig) => {
+const transform = (
+	_methodName: string,
+	args: unknown[],
+	_callConfig: CallConfig
+): { effectiveCanisterId: Principal } => {
 	const first = args[0] as any;
 	let effectiveCanisterId = MANAGEMENT_CANISTER_ID;
 	if (first && typeof first === 'object' && first.canister_id) {
@@ -32,6 +38,8 @@ const transform = (_methodName: string, args: unknown[], _callConfig: CallConfig
 
 	return { effectiveCanisterId };
 };
+
+/* eslint-enable */
 
 export const getICActor = (identity: Identity): Promise<ICActor> =>
 	createActor<ICActor>({

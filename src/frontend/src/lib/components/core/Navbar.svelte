@@ -3,7 +3,6 @@
 	import { layoutTitle, layoutTitleIntersecting } from '$lib/stores/layout.store';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import User from '$lib/components/core/User.svelte';
-	import { back } from '$lib/utils/nav.utils';
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import Logo from '$lib/components/presentation/Logo.svelte';

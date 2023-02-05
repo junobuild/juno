@@ -10,7 +10,6 @@
 	import { type CyclesCallback, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import { onDestroy, onMount } from 'svelte';
 	import { formatNumber } from '$lib/utils/number.utils';
-	import { formatICP } from '$lib/utils/icp.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';

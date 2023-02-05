@@ -1,35 +1,13 @@
 <script lang="ts">
 	import { satellitesStore, satelliteStore } from '$lib/stores/satellite.store';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '$lib/utils/utils';
 	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { loadSatellites } from '$lib/services/satellites.services';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { i18n } from '$lib/stores/i18n.store';
 
 	let button: HTMLButtonElement | undefined;
 	let visible: boolean | undefined;
-
-	let loading = false;
-
-	const load = async () => {
-		if (isNullish($missionControlStore)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
-			});
-			return;
-		}
-
-		loading = true;
-
-		await loadSatellites({ missionControl: $missionControlStore });
-
-		loading = false;
-	};
 </script>
 
 {#if nonNullish($satelliteStore)}
@@ -53,10 +31,8 @@
 
 		<hr />
 
-		<div class="satellites" class:loading>
-			{#if loading}
-				<Spinner />
-			{:else if nonNullish($satellitesStore)}
+		<div class="satellites">
+			{#if nonNullish($satellitesStore)}
 				{#each $satellitesStore as satellite}
 					{@const satName = satelliteName(satellite)}
 
@@ -108,9 +84,5 @@
 	.satellites {
 		position: relative;
 		width: 100%;
-	}
-
-	.loading {
-		margin: 0 0 var(--padding-4x);
 	}
 </style>

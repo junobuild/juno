@@ -10,10 +10,9 @@ declare namespace App {
 
 declare const VITE_APP_VERSION: string;
 
+/* eslint-disable */
+
 declare namespace svelte.JSX {
-	// Svelte needs help to support typing of custom events.
-	// Source: https://github.com/sveltejs/language-tools/blob/master/docs/preprocessors/typescript.md#im-using-an-attributeevent-on-a-dom-element-and-it-throws-a-type-error
-	// We use `<any>` because we cannot import the types we use in the dapps that needs to be explicitely imported in the components - i.e. we cannot use .d.ts for these types.
 	interface HTMLAttributes<T> {
 		onjunoIntersecting?: (event: CustomEvent<any>) => void;
 		onjunoModal?: (event: CustomEvent<any>) => void;
@@ -21,3 +20,5 @@ declare namespace svelte.JSX {
 		onjunoSyncCanister?: (event: CustomEvent<any>) => void;
 	}
 }
+
+/* eslint-enable */

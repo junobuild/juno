@@ -26,6 +26,9 @@ interface I18nCore {
 interface I18nCanisters {
 	top_up: string;
 	cycles: string;
+	top_up_in_progress: string;
+	amount: string;
+	top_up_title: string;
 }
 
 interface I18nSign_in {
@@ -47,6 +50,7 @@ interface I18nSatellites {
 	start: string;
 	description: string;
 	name: string;
+	enter_name: string;
 	create_satellite_price: string;
 }
 

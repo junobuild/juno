@@ -12,6 +12,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import { setCustomDomain } from '$lib/api/satellites.api';
 	import { emit } from '$lib/utils/events.utils';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let detail: JunoModalSatelliteDetail;
 
@@ -83,7 +84,7 @@
 		<div class="msg">
 			<IconVerified />
 			<p>Your custom domain has been configured.</p>
-			<button on:click={close}>Close</button>
+			<button on:click={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'dns'}
 		<h2>Configure your DNS</h2>

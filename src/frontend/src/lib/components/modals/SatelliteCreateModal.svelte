@@ -14,6 +14,7 @@
 	import type { JunoModalCreateSatelliteDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import Value from '$lib/components/ui/Value.svelte';
 
 	export let detail: JunoModalCreateSatelliteDetail;
 
@@ -107,23 +108,28 @@
 					}
 				])}
 			</p>
+
+			<button on:click={close}>Close</button>
+		{:else}
+			<form on:submit|preventDefault={onSubmit}>
+				<Value>
+					<svelte:fragment slot="label">{$i18n.satellites.name}</svelte:fragment>
+					<input
+						bind:value={satelliteName}
+						type="text"
+						name="satellite_name"
+						placeholder={$i18n.satellites.enter_name}
+						required
+					/>
+				</Value>
+
+				<button
+					type="submit"
+					disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
+					>{$i18n.satellites.create}</button
+				>
+			</form>
 		{/if}
-
-		<form on:submit|preventDefault={onSubmit}>
-			<input
-				bind:value={satelliteName}
-				type="text"
-				name="satellite_name"
-				placeholder="Satellite name"
-				required
-			/>
-
-			<button
-				type="submit"
-				disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
-				>{$i18n.satellites.create}</button
-			>
-		</form>
 	{/if}
 </Modal>
 
@@ -137,5 +143,9 @@
 	form {
 		display: flex;
 		flex-direction: column;
+	}
+
+	button {
+		margin-top: var(--padding-2x);
 	}
 </style>

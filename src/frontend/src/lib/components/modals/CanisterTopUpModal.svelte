@@ -12,6 +12,8 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { i18n } from '$lib/stores/i18n.store';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let canisterId: Principal;
 
@@ -77,19 +79,45 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<slot name="outro" />
-			<button on:click={close}>Close</button>
+			<button on:click={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
-			<p>Top-up in progress...</p>
+			<p>{$i18n.canisters.top_up_in_progress}</p>
 		</SpinnerModal>
 	{:else}
 		<slot name="intro" />
 
-		<form on:submit|preventDefault={onSubmit}>
-			<Input name="icp" inputType="icp" required bind:value={icp} placeholder="ICP" />
+		<p>
+			{@html i18nFormat($i18n.canisters.cycles, [
+				{
+					placeholder: '{0}',
+					value:
+						'<a href="https://juno.build/docs/terminology#cycles" rel="external noopener norefferer">Cycles</a>'
+				}
+			])}
+		</p>
 
-			<p>{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles))} TCycles` : ''}</p>
+		<form on:submit|preventDefault={onSubmit}>
+			<div>
+				<Value>
+					<svelte:fragment slot="label">ICP</svelte:fragment>
+					<Input
+						name="icp"
+						inputType="icp"
+						required
+						bind:value={icp}
+						placeholder={$i18n.canisters.amount}
+					/>
+				</Value>
+			</div>
+
+			<div>
+				<Value>
+					<svelte:fragment slot="label">Cycles</svelte:fragment>
+					{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles))}` : '0'} TCycles
+				</Value>
+			</div>
 
 			<button type="submit" disabled={isNullish($missionControlStore) || !validIcp || !validCycles}
 				>{$i18n.canisters.top_up}</button
@@ -107,5 +135,15 @@
 
 	.msg {
 		@include overlay.message;
+	}
+
+	.input {
+		display: flex;
+		gap: var(--padding-2x);
+		align-items: center;
+	}
+
+	button {
+		margin-top: var(--padding-2x);
 	}
 </style>

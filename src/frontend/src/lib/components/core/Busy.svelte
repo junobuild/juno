@@ -3,16 +3,13 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy } from '$lib/stores/busy.store';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
-	import Version from '$lib/components/ui/Version.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-
-	let visible: boolean;
-	$: visible = $busy !== undefined;
+	import { nonNullish } from '$lib/utils/utils';
 
 	const close = () => busy.stop();
 </script>
 
-{#if visible}
+{#if nonNullish($busy)}
 	<div transition:fade>
 		{#if $busy.close}
 			<div class="backdrop" on:click={close} />
@@ -23,10 +20,6 @@
 				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} class="text close"
 					><IconClose /></button
 				>
-			{/if}
-
-			{#if $busy.log && !$busy.spinner}
-				<Version />
 			{/if}
 
 			{#if $busy.spinner}

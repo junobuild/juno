@@ -87,5 +87,18 @@
 		"satellite_name_missing": "A name for the satellite must be provided.",
 		"satellite_unexpected_error": "Unexpected error(s) while creating the satellite.",
 		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits."
+	},
+	"document": {
+		"owner": "Owner",
+		"created": "Created",
+		"updated": "Updated",
+		"data": "Data"
+	},
+	"asset": {
+		"owner": "Owner",
+		"token": "Token",
+		"headers": "Headers",
+		"created": "Created",
+		"updated": "Updated"
 	}
 }

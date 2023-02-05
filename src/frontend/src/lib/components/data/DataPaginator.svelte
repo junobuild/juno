@@ -4,6 +4,8 @@
 	import { PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
 	import { getContext } from 'svelte';
 
+	// @ts-ignore
+	// eslint-disable-line not type to not pass the generic
 	const { store, previousPage, nextPage, list } = getContext(PAGINATION_CONTEXT_KEY);
 
 	const prev = async () => {

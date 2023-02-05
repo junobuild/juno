@@ -6,13 +6,14 @@
 	import { onMount } from 'svelte';
 	import { listCustomDomains } from '$lib/api/satellites.api';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
 
 	export let satellite: Satellite;
 
 	let satelliteId: string;
 	$: satelliteId = satellite.satellite_id.toText();
 
-	let customDomains: [string, CustomDomain][] = [];
+	let customDomains: [string, CustomDomainType][] = [];
 
 	const list = async () => {
 		try {
@@ -43,14 +44,18 @@
 		<tbody>
 			<tr>
 				<td colspan="2"
-					><CustomDomain url={satelliteUrl(satelliteId)} alt="Default satellite domain" />
+					><CustomDomain url={satelliteUrl(satelliteId)} ariaLabel="Default satellite domain" />
 				</td>
 			</tr>
 
 			{#each customDomains as [customDomain, _]}
 				<tr>
 					<td colspan="2"
-						><CustomDomain type="custom" url={`https://${customDomain}`} alt="A custom domain" />
+						><CustomDomain
+							type="custom"
+							url={`https://${customDomain}`}
+							ariaLabel="A custom domain"
+						/>
 					</td>
 				</tr>
 			{/each}

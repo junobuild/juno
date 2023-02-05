@@ -119,7 +119,7 @@
 				name="maxLength"
 				required={false}
 				bind:value={maxSize}
-				on:blur={() => (maxSize = Math.trunc(maxSize))}
+				on:blur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
 			/>
 		{/if}
 

@@ -11,20 +11,20 @@
 	import { isNullish } from '$lib/utils/utils';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalCreateSatelliteDetail } from '$lib/types/modal';
+	import type { JunoModalCreateSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 
-	export let detail: JunoModalCreateSatelliteDetail;
+	export let detail: JunoModalDetail;
 
 	let fee = 0n;
 	let balance = 0n;
 	let credits = 0n;
 
-	$: fee = detail.fee;
-	$: balance = detail.missionControlBalance?.balance ?? 0n;
-	$: credits = detail.missionControlBalance?.credits ?? 0n;
+	$: fee = (detail as JunoModalCreateSatelliteDetail).fee;
+	$: balance = (detail as JunoModalCreateSatelliteDetail).missionControlBalance?.balance ?? 0n;
+	$: credits = (detail as JunoModalCreateSatelliteDetail).missionControlBalance?.credits ?? 0n;
 
 	let insufficientFunds = true;
 	$: insufficientFunds = balance + credits < fee;

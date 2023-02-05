@@ -15,7 +15,7 @@ export const toArray = async <T>(data: T): Promise<Array<number>> => {
 	return [...new Uint8Array(await blob.arrayBuffer())];
 };
 
-export const fromArray = async <T>(data: Array<number>): Promise<T> => {
+export const fromArray = async <T>(data: Array<number> | Uint8Array): Promise<T> => {
 	const blob: Blob = new Blob([new Uint8Array(data)], {
 		type: 'application/json; charset=utf-8'
 	});

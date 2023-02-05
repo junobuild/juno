@@ -137,12 +137,6 @@
 		@include overlay.message;
 	}
 
-	.input {
-		display: flex;
-		gap: var(--padding-2x);
-		align-items: center;
-	}
-
 	button {
 		margin-top: var(--padding-2x);
 	}

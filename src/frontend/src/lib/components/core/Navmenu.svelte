@@ -17,7 +17,7 @@
 	$: satelliteId = $satelliteIdStore ?? '';
 
 	const isSelected = ({ routeId, path }: { routeId: string | null; path: string }): boolean =>
-		routeId?.includes(path);
+		routeId?.includes(path) ?? false;
 </script>
 
 <Menu>

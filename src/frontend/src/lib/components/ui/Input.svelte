@@ -5,7 +5,7 @@
 	export let spellcheck: boolean | undefined = undefined;
 	export let step: number | 'any' | undefined = undefined;
 	export let disabled = false;
-	export let minLength: number | undefined = undefined;
+	export let minlength: number | undefined = undefined;
 	export let max: number | undefined = undefined;
 	export let value: string | number | undefined = undefined;
 	export let placeholder: string;
@@ -129,7 +129,7 @@
 	{step}
 	{disabled}
 	value={inputType === 'icp' ? icpValue : value}
-	{minLength}
+	{minlength}
 	{placeholder}
 	{max}
 	{autocomplete}

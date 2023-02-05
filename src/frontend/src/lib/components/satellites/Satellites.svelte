@@ -24,7 +24,7 @@
 {#if !loading}
 	<SatelliteNew />
 
-	{#each $satellitesStore as satellite}
+	{#each $satellitesStore ?? [] as satellite}
 		<SatelliteArticle {satellite} />
 	{/each}
 {:else}

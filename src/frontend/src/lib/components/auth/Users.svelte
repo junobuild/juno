@@ -70,7 +70,7 @@
 					</tr>
 				{/each}
 
-				{#if !empty && $paginationStore.pages > 0}
+				{#if !empty && ($paginationStore.pages ?? 0) > 0}
 					<tr><td colspan="4"><DataPaginator /></td></tr>
 				{/if}
 

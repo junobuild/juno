@@ -24,7 +24,6 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use satellites::store::get_satellites;
 use shared::types::interface::{Controllers, MissionControlArgs, UserId};
-use shared::version::pkg_version;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 
@@ -109,7 +108,7 @@ async fn top_up(canister_id: Principal, amount: Tokens) {
 #[candid_method(query)]
 #[query]
 fn version() -> String {
-    pkg_version()
+    env!("CARGO_PKG_VERSION").to_string()
 }
 
 #[candid_method(query)]

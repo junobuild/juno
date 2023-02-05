@@ -100,5 +100,9 @@
 		"headers": "Headers",
 		"created": "Created",
 		"updated": "Updated"
+	},
+	"admin": {
+		"mission_control_new_version": "A new version of your mission control is available! Upgrade it with the CLI.",
+		"satellite_new_version": "A new version of your satellite is available! Upgrade it with the CLI."
 	}
 }

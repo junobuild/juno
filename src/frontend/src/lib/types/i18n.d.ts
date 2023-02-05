@@ -118,6 +118,11 @@ interface I18nAsset {
 	updated: string;
 }
 
+interface I18nAdmin {
+	mission_control_new_version: string;
+	satellite_new_version: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -134,4 +139,5 @@ interface I18n {
 	errors: I18nErrors;
 	document: I18nDocument;
 	asset: I18nAsset;
+	admin: I18nAdmin;
 }

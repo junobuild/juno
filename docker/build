@@ -18,13 +18,12 @@ function usage() {
     cat << EOF
 
 Usage:
-  $0 [--only-dependencies] [--mission_control] [--satellite] [--observatory] [--console]
+  $0 [--only-dependencies] [--mission_control] [--satellite] [--console]
 
 Options:
   --only-dependencies          only build rust dependencies (no js build, no wasm optimization)
   --mission_control            build the mission_control canister (default)
   --satellite                  build the satellite canister
-  --observatory                build the observatory canister
   --console                    build the console canister
 EOF
 }
@@ -32,7 +31,7 @@ EOF
 function help() {
     cat << EOF
 
-Builds the Mission Control, Satellite, Observatory and Console canisters.
+Builds the Mission Control, Satellite and Console canisters.
 
 NOTE: This requires a working rust toolchain as well as ic-cdk-optimizer.
 EOF
@@ -61,10 +60,6 @@ do
             ;;
         --satellite)
             CANISTERS+=("satellite")
-            shift
-            ;;
-        --observatory)
-            CANISTERS+=("observatory")
             shift
             ;;
         --console)

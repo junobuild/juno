@@ -43,7 +43,6 @@ COPY Cargo.lock .
 COPY Cargo.toml .
 COPY src/console/Cargo.toml src/console/Cargo.toml
 COPY src/mission_control/Cargo.toml src/mission_control/Cargo.toml
-COPY src/observatory/Cargo.toml src/observatory/Cargo.toml
 COPY src/satellite/Cargo.toml src/satellite/Cargo.toml
 COPY src/shared/Cargo.toml src/shared/Cargo.toml
 ENV CARGO_TARGET_DIR=/cargo_target
@@ -51,8 +50,6 @@ RUN mkdir -p src/console/src \
     && touch src/console/src/lib.rs \
     && mkdir -p src/mission_control/src \
     && touch src/mission_control/src/lib.rs \
-    && mkdir -p src/observatory/src \
-    && touch src/observatory/src/lib.rs \
     && mkdir -p src/satellite/src \
     && touch src/satellite/src/lib.rs \
     && mkdir -p src/shared/src \
@@ -66,7 +63,6 @@ COPY . .
 
 RUN touch src/console/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
-RUN touch src/observatory/src/lib.rs
 RUN touch src/satellite/src/lib.rs
 RUN touch src/shared/src/lib.rs
 RUN npm ci
@@ -80,25 +76,11 @@ COPY . .
 
 RUN touch src/console/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
-RUN touch src/observatory/src/lib.rs
 RUN touch src/satellite/src/lib.rs
 RUN touch src/shared/src/lib.rs
 
 RUN ./docker/build --satellite
 RUN sha256sum /satellite.wasm
-
-FROM deps as build_observatory
-
-COPY . .
-
-RUN touch src/console/src/lib.rs
-RUN touch src/mission_control/src/lib.rs
-RUN touch src/observatory/src/lib.rs
-RUN touch src/satellite/src/lib.rs
-RUN touch src/shared/src/lib.rs
-
-RUN ./docker/build --observatory
-RUN sha256sum /observatory.wasm
 
 FROM deps as build_console
 
@@ -106,7 +88,6 @@ COPY . .
 
 RUN touch src/console/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
-RUN touch src/observatory/src/lib.rs
 RUN touch src/satellite/src/lib.rs
 RUN touch src/shared/src/lib.rs
 
@@ -118,9 +99,6 @@ COPY --from=build_mission_control /mission_control.wasm /
 
 FROM scratch AS scratch_satellite
 COPY --from=build_satellite /satellite.wasm /
-
-FROM scratch AS scratch_observatory
-COPY --from=build_observatory /observatory.wasm /
 
 FROM scratch AS scratch_console
 COPY --from=build_console /console.wasm /

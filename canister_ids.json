@@ -1,5 +1,11 @@
 {
 	"frontend": {
 		"ic": "xxt4w-7iaaa-aaaak-ad7rq-cai"
+	},
+	"console": {
+		"ic": "cokmz-oiaaa-aaaal-aby6q-cai"
+	},
+	"observatory": {
+		"ic": "klbfr-lqaaa-aaaak-qbwsa-cai"
 	}
 }

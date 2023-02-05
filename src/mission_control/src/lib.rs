@@ -2,7 +2,6 @@ mod controllers;
 mod guards;
 mod impls;
 mod mgmt;
-mod observatory;
 mod satellites;
 mod store;
 mod types;
@@ -15,7 +14,6 @@ use crate::controllers::satellite::{add_satellite_controllers, remove_satellite_
 use crate::controllers::store::get_controllers;
 use crate::guards::caller_is_user_or_controller;
 use crate::mgmt::canister::top_up_canister;
-use crate::observatory::transactions::list_transactions as list_transactions_call;
 use crate::satellites::satellite::create_satellite as create_satellite_console;
 use crate::store::get_user as get_user_store;
 use crate::types::state::{Satellite, SatelliteId, Satellites, StableState, State, User};
@@ -26,7 +24,6 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use satellites::store::get_satellites;
 use shared::types::interface::{Controllers, MissionControlArgs, UserId};
-use shared::types::ledger::Transactions;
 use shared::version::pkg_version;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
@@ -97,14 +94,6 @@ async fn remove_satellites_controllers(satellite_ids: Vec<SatelliteId>, controll
             .await
             .unwrap_or_else(|e| trap(&e));
     }
-}
-
-/// Transactions
-
-#[candid_method(query)]
-#[query(guard = "caller_is_user_or_controller")]
-async fn list_transactions() -> Transactions {
-    list_transactions_call().await.unwrap_or_else(|e| trap(&e))
 }
 
 /// Mgmt

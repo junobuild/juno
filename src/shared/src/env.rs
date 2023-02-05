@@ -9,7 +9,3 @@ pub static LEDGER: &str = "ryjl3-tyaaa-aaaaa-aaaba-cai";
 // Mainnet: rkp4c-7iaaa-aaaaa-aaaca-cai
 // Local: rkp4c-7iaaa-aaaaa-aaaca-cai
 pub static CMC: &str = "rkp4c-7iaaa-aaaaa-aaaca-cai";
-
-// Mainnet: klbfr-lqaaa-aaaak-qbwsa-cai
-// Local: renrk-eyaaa-aaaaa-aaada-cai
-pub static OBSERVATORY: &str = "klbfr-lqaaa-aaaak-qbwsa-cai";

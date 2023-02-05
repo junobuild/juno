@@ -7,20 +7,33 @@
 
 	let inProgress = false;
 
-	const signIn = async () => {
+	const signIn = async (): Promise<{ success: boolean }> => {
 		try {
-			// Close popover to prevent glitch on successful login
-			visible = false;
-
 			await authStore.signIn(invitationCode !== '' ? invitationCode : undefined);
+
+			return { success: true };
 		} catch (err: unknown) {
 			toasts.error({
 				text: `Something went wrong while sign-in.`,
 				detail: err
 			});
 
-			visible = true;
+			return { success: false };
 		}
+	};
+
+	const redeemSignIn = async () => {
+		// Close popover to prevent glitch on successful login
+		visible = false;
+
+		const { success } = await signIn();
+
+		if (success) {
+			return;
+		}
+
+		// In case logging was aborted or failed, reopen redeem popover since we hide it to avoid a glitch
+		visible = true;
 	};
 
 	let visible = false;
@@ -68,7 +81,7 @@
 
 		<p>Sign in using Internet Identity once you have your code.</p>
 
-		<form on:submit|preventDefault={signIn}>
+		<form on:submit|preventDefault={redeemSignIn}>
 			<input
 				bind:value={invitationCode}
 				aria-label="Invitation code"

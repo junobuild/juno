@@ -1,10 +1,10 @@
 #!/usr/bin/env node
 
 import { nanoid } from 'nanoid';
-import { consoleActorLocal } from './actor.mjs';
+import { consoleActorIC } from './actor.mjs';
 
 (async () => {
-	const actor = await consoleActorLocal();
+	const actor = await consoleActorIC();
 
 	const invitationCode = nanoid();
 

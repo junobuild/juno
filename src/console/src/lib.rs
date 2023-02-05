@@ -15,7 +15,8 @@ use crate::store::{
     add_controllers as add_controllers_store, add_invitation_code as add_invitation_code_store,
     get_credits as get_credits_store, get_mission_control, get_mission_control_release_version,
     get_satellite_release_version, has_credits, list_mission_controls,
-    load_mission_control_release, load_satellite_release, reset_mission_control_release,
+    load_mission_control_release, load_satellite_release,
+    remove_controllers as remove_controllers_store, reset_mission_control_release,
     reset_satellite_release,
 };
 use crate::types::interface::{ConsoleArgs, LoadRelease, ReleaseType, ReleasesVersion};
@@ -196,6 +197,12 @@ fn version() -> String {
 #[update(guard = "caller_is_controller")]
 fn add_controllers(ControllersArgs { controllers }: ControllersArgs) {
     add_controllers_store(&controllers);
+}
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn remove_controllers(ControllersArgs { controllers }: ControllersArgs) {
+    remove_controllers_store(&controllers);
 }
 
 // Generate did files

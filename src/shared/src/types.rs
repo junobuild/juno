@@ -1,6 +1,6 @@
 pub mod interface {
     use candid::{CandidType, Principal};
-    use ic_ledger_types::{BlockIndex};
+    use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
     use std::collections::HashSet;
 

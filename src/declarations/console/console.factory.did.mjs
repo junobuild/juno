@@ -39,6 +39,7 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		load_release: IDL.Func([ReleaseType, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
+		remove_controllers: IDL.Func([ControllersArgs], [], []),
 		reset_release: IDL.Func([ReleaseType], [], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

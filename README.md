@@ -1,6 +1,6 @@
 <div align="center" style="display:flex;flex-direction:column;">
   <a href="https://juno.build/">
-    <img src="https://github.com/buildwithjuno/juno/raw/main/static/icons/icon-256x256.png" width="140px" alt="Juno" role="presentation" />
+    <img src="https://github.com/buildwithjuno/juno/raw/main/src/frontend/static/icons/icon-256x256.png" width="140px" alt="Juno" role="presentation" />
   </a>
 
 <h3>Juno</h3>

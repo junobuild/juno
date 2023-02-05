@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
@@ -11,6 +11,22 @@
 	import { isNullish } from '$lib/utils/utils';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalCreateSatelliteDetail } from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
+
+	export let detail: JunoModalCreateSatelliteDetail;
+
+	let fee = 0n;
+	let balance = 0n;
+	let credits = 0n;
+
+	$: fee = detail.fee;
+	$: balance = detail.missionControlBalance?.balance ?? 0n;
+	$: credits = detail.missionControlBalance?.credits ?? 0n;
+
+	let insufficientFunds = true;
+	$: insufficientFunds = balance + credits < fee;
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
 	let satellite: Satellite | undefined = undefined;
@@ -18,7 +34,7 @@
 	const onSubmit = async () => {
 		if (isNullish(satelliteName)) {
 			toasts.error({
-				text: `A name for the satellite must be provided.`
+				text: $i18n.errors.satellite_name_missing
 			});
 			return;
 		}
@@ -37,7 +53,7 @@
 			steps = 'ready';
 		} catch (err) {
 			toasts.error({
-				text: `Error while creating the satellite.`,
+				text: $i18n.errors.satellite_unexpected_error,
 				detail: err
 			});
 
@@ -60,23 +76,38 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<IconSatellite />
-			<p>Your satellite is ready.</p>
-			<button on:click={navigate}>Continue</button>
+			<p>{$i18n.satellites.ready}</p>
+			<button on:click={navigate}>{$i18n.core.continue}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
-			<p>Initializing your new satellite...</p>
+			<p>{$i18n.satellites.initializing}</p>
 		</SpinnerModal>
 	{:else}
-		<h2>Let's create a new satellite</h2>
+		<h2>{$i18n.satellites.start}</h2>
 
 		<p>
-			A satellite is a web3 container. This smart contract contains a simplistic datastore, storage
-			and permission scheme. It can be use to develop and run your application on the web, 100% on
-			chain with a lost carbon cost.
+			{$i18n.satellites.description}
 		</p>
 
-		<p>Starting a new satellite needs 10 credits. Your current balance is ...</p>
+		{#if insufficientFunds}
+			<p>
+				{@html i18nFormat($i18n.satellites.create_satellite_price, [
+					{
+						placeholder: '{0}',
+						value: formatE8sICP(fee)
+					},
+					{
+						placeholder: '{1}',
+						value: formatE8sICP(balance)
+					},
+					{
+						placeholder: '{2}',
+						value: formatE8sICP(credits)
+					}
+				])}
+			</p>
+		{/if}
 
 		<form on:submit|preventDefault={onSubmit}>
 			<input
@@ -84,9 +115,12 @@
 				type="text"
 				name="satellite_name"
 				placeholder="Satellite name"
+				required
 			/>
 
-			<button type="submit" disabled={!$authSignedInStore || isNullish($missionControlStore)}
+			<button
+				type="submit"
+				disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
 				>{$i18n.satellites.create}</button
 			>
 		</form>
@@ -98,5 +132,10 @@
 
 	.msg {
 		@include overlay.message;
+	}
+
+	form {
+		display: flex;
+		flex-direction: column;
 	}
 </style>

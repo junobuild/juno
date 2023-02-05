@@ -13,7 +13,7 @@ const transfer = async () => {
 	return ledger.transfer({
 		amount: 5_500_010_000n,
 		to: AccountIdentifier.fromHex(
-			'8746f9929238255b5c0ce3a7ab6b7f117464001e272d9c6c88f5c7fb5b68f5db'
+			'f3a58ea11bc128ab8a455dd7bce0a29b0a20f400625d1a46871fbfe82efed38d'
 		)
 	});
 };

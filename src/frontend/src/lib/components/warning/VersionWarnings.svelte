@@ -5,6 +5,7 @@
 	import { loadVersion } from '$lib/services/console.services';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	const load = async () =>
 		await loadVersion({
@@ -31,16 +32,19 @@
 
 	let ctrlReady = false;
 	$: ctrlReady = nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease);
+
+	$: console.log(satVersion, satRelease, ctrlVersion, ctrlRelease);
 </script>
 
 {#if ctrlReady && ctrlVersion !== ctrlRelease}
 	<p>
-		<IconNewReleases /> A new version of your mission control is available! Upgrade it with the Cli.
+		<IconNewReleases />
+		{$i18n.admin.mission_control_new_version}
 	</p>
 {/if}
 
 {#if satReady && satVersion !== satRelease}
-	<p><IconNewReleases /> A new version of your satellite is available! Upgrade it with the Cli.</p>
+	<p><IconNewReleases /> {$i18n.admin.satellite_new_version}</p>
 {/if}
 
 <style lang="scss">

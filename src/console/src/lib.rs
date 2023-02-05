@@ -30,7 +30,6 @@ use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use shared::types::interface::{ControllersArgs, CreateSatelliteArgs, GetCreateSatelliteFeeArgs};
-use shared::version::pkg_version;
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
 
@@ -188,7 +187,7 @@ fn add_invitation_code(code: InvitationCode) {
 #[candid_method(query)]
 #[query]
 fn version() -> String {
-    pkg_version()
+    env!("CARGO_PKG_VERSION").to_string()
 }
 
 /// Controllers

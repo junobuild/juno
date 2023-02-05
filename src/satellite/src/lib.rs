@@ -48,7 +48,6 @@ use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use rules::constants::DEFAULT_DB_COLLECTIONS;
 use shared::types::interface::{Controllers, ControllersArgs, SatelliteArgs};
-use shared::version::pkg_version;
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use types::list::ListParams;
@@ -476,7 +475,7 @@ fn del_assets(collection: Option<CollectionKey>) {
 #[candid_method(query)]
 #[query]
 fn version() -> String {
-    pkg_version()
+    env!("CARGO_PKG_VERSION").to_string()
 }
 
 ///

@@ -8,21 +8,20 @@
 
 	let inProgress = false;
 
-	const dispatch = createEventDispatcher();
-
 	const signIn = async () => {
 		try {
-			await authStore.signIn(invitationCode !== '' ? invitationCode : undefined);
+			// Close popover to prevent glitch on successful login
+			visible = false;
 
-			dispatch('junoClose');
+			await authStore.signIn(invitationCode !== '' ? invitationCode : undefined);
 		} catch (err: unknown) {
 			toasts.error({
 				text: `Something went wrong while sign-in.`,
 				detail: err
 			});
-		}
 
-		visible = false;
+			visible = true;
+		}
 	};
 
 	let visible = false;

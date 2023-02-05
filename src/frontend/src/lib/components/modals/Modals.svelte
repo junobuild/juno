@@ -3,7 +3,6 @@
 	import SatelliteCreateModal from '$lib/components/modals/SatelliteCreateModal.svelte';
 	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
-	import SignInModal from '$lib/components/modals/SignInModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;

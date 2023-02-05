@@ -4,7 +4,6 @@
 	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { createEventDispatcher } from 'svelte';
 
 	let inProgress = false;
 

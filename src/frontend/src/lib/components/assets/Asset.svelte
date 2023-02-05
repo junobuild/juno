@@ -8,6 +8,8 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	const { store }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
@@ -32,32 +34,42 @@
 {#if nonNullish(asset)}
 	<article class="doc">
 		<div class="owner">
-			<label>Owner:</label>
-			<Identifier identifier={owner.toText()} />
+			<Value>
+				<svelte:fragment slot="label">{$i18n.asset.owner}</svelte:fragment>
+				<Identifier identifier={owner?.toText() ?? ''} />
+			</Value>
 		</div>
 
 		{#if nonNullish(token)}
 			<div class="data">
-				<label>Token:</label>
-				<span>{token}</span>
+				<Value>
+					<svelte:fragment slot="label">{$i18n.asset.token}</svelte:fragment>
+					{token}
+				</Value>
 			</div>
 		{/if}
 
 		<div class="headers">
-			<label>Headers:</label>
-			{#each headers as header}
-				<span>{header[0]}: {header[1]}</span>
-			{/each}
+			<Value>
+				<svelte:fragment slot="label">{$i18n.asset.headers}</svelte:fragment>
+				{#each headers as header}
+					<span>{header[0]}: {header[1]}</span>
+				{/each}
+			</Value>
 		</div>
 
 		<div class="date">
-			<label>Created:</label>
-			<span>{formatToDate(asset.created_at)}</span>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.asset.created}</svelte:fragment>
+				{formatToDate(asset.created_at)}
+			</Value>
 		</div>
 
 		<div class="date">
-			<label>Updated:</label>
-			<span>{formatToDate(asset.updated_at)}</span>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.asset.updated}</svelte:fragment>
+				{formatToDate(asset.updated_at)}
+			</Value>
 		</div>
 	</article>
 {/if}

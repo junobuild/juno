@@ -12,7 +12,9 @@ export interface JunoModalCreateSatelliteDetail {
 	};
 }
 
+export type JunoModalDetail = JunoModalSatelliteDetail | JunoModalCreateSatelliteDetail;
+
 export interface JunoModal {
 	type: 'create_satellite' | 'topup_satellite' | 'topup_mission_control' | 'add_custom_domain';
-	detail?: JunoModalSatelliteDetail;
+	detail?: JunoModalDetail;
 }

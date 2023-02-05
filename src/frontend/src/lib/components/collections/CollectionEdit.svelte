@@ -10,7 +10,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { fromNullable } from '$lib/utils/did.utils';
 	import Input from '$lib/components/ui/Input.svelte';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '$lib/utils/utils';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -119,7 +119,7 @@
 				name="maxLength"
 				required={false}
 				bind:value={maxSize}
-				on:blur={() => (maxSize = Math.trunc(maxSize))}
+				on:blur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
 			/>
 		{/if}
 

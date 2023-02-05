@@ -16,7 +16,7 @@ export const applyTheme = (theme: Theme) => {
 		return;
 	}
 
-	const { documentElement, head } = document;
+	const { documentElement } = document;
 
 	documentElement.setAttribute('theme', theme);
 

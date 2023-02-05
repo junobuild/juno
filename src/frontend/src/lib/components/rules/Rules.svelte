@@ -11,7 +11,7 @@
 
 	export let type: RulesType;
 
-	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	let editCollection = false;
 

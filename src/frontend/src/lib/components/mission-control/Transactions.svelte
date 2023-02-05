@@ -4,8 +4,10 @@
 	import { listTransactions } from '$lib/api/mission-control.api';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { Transaction } from '$declarations/mission_control/mission_control.did';
+	import { nonNullish } from '$lib/utils/utils';
 
-	let transactions = [];
+	let transactions: Transaction[] = [];
 
 	const loadTransactions = async () => {
 		try {
@@ -44,7 +46,11 @@
 							? 'Top-up satellite'
 							: 'Received'}</td
 					>
-					<td>{formatE8sICP(transaction.operation[0].Transfer.amount.e8s)} ICP</td>
+					<td>
+						{#if nonNullish(transaction.operation[0]) && 'Transfer' in transaction.operation[0]}
+							{formatE8sICP(transaction.operation[0].Transfer.amount.e8s)} ICP
+						{/if}
+					</td>
 				</tr>
 			{/each}
 		</tbody>

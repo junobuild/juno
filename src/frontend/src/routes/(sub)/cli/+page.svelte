@@ -156,7 +156,7 @@
 	});
 </script>
 
-<Tabs>
+<Tabs help="https://juno.build/docs/miscellaneous/cli">
 	<div class="card-container">
 		{#if redirect_uri && principal}
 			{#if $authSignedInStore}

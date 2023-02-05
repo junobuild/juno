@@ -9,3 +9,16 @@ declare namespace App {
 }
 
 declare const VITE_APP_VERSION: string;
+
+/* eslint-disable */
+
+declare namespace svelte.JSX {
+	interface HTMLAttributes<T> {
+		onjunoIntersecting?: (event: CustomEvent<any>) => void;
+		onjunoModal?: (event: CustomEvent<any>) => void;
+		onjunoSyncCustomDomains?: (event: CustomEvent<any>) => void;
+		onjunoSyncCanister?: (event: CustomEvent<any>) => void;
+	}
+}
+
+/* eslint-enable */

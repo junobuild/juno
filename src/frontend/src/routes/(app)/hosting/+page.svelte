@@ -14,6 +14,7 @@
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { nonNullish } from '$lib/utils/utils';
 
 	const tabs: Tab[] = [
 		{
@@ -36,8 +37,10 @@
 	<Tabs help="https://juno.build/docs/build/hosting">
 		<SatelliteGuard>
 			<MissionControlGuard>
-				{#if $store.tabId === $store.tabs[0].id}
-					<Hosting satellite={$satelliteStore} />
+				{#if nonNullish($satelliteStore)}
+					{#if $store.tabId === $store.tabs[0].id}
+						<Hosting satellite={$satelliteStore} />
+					{/if}
 				{/if}
 			</MissionControlGuard>
 		</SatelliteGuard>

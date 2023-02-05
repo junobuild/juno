@@ -40,6 +40,7 @@ export const loadSatellites = async ({
 		const actor = await getMissionControlActor(missionControl);
 		const satellites = await actor.list_satellites();
 
+		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		satellitesStore.set(satellites.map(([_, satellite]) => satellite));
 	} catch (err: unknown) {
 		toasts.error({

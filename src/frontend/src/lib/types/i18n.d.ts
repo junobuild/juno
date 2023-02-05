@@ -103,6 +103,21 @@ interface I18nErrors {
 	ledger_balance_credits: string;
 }
 
+interface I18nDocument {
+	owner: string;
+	created: string;
+	updated: string;
+	data: string;
+}
+
+interface I18nAsset {
+	owner: string;
+	token: string;
+	headers: string;
+	created: string;
+	updated: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -117,4 +132,6 @@ interface I18n {
 	hosting: I18nHosting;
 	cli: I18nCli;
 	errors: I18nErrors;
+	document: I18nDocument;
+	asset: I18nAsset;
 }

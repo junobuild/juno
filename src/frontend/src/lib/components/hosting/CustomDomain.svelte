@@ -2,7 +2,7 @@
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 
 	export let url: string;
-	export let alt = '';
+	export let ariaLabel = '';
 	export let type: 'default' | 'custom' = 'default';
 
 	let host = '';
@@ -10,7 +10,7 @@
 </script>
 
 <div>
-	<ExternalLink href={url} {alt}>{host}</ExternalLink>
+	<ExternalLink href={url} {ariaLabel}>{host}</ExternalLink>
 	<span>{type}</span>
 </div>
 

@@ -1,9 +1,15 @@
 <script lang="ts">
 	export let href: string;
-	export let alt = '';
+	export let ariaLabel = '';
 </script>
 
-<a {href} rel="external noopener noreferrer" target="_blank" {alt} title={alt}>
+<a
+	{href}
+	rel="external noopener noreferrer"
+	target="_blank"
+	aria-label={ariaLabel}
+	title={ariaLabel}
+>
 	<slot />
 </a>
 

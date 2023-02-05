@@ -17,7 +17,7 @@
 <div class="card-container">
 	<div class="title">
 		<h1>{satelliteName(satellite)}</h1>
-		<ExternalLink href={satelliteUrl(satelliteId)} alt={$i18n.satellites.open}>
+		<ExternalLink href={satelliteUrl(satelliteId)} ariaLabel={$i18n.satellites.open}>
 			<IconLaunch /></ExternalLink
 		>
 	</div>
@@ -49,13 +49,5 @@
 	p,
 	h1 {
 		@include text.truncate;
-	}
-
-	.link {
-		width: 68px;
-
-		:global(a) {
-			vertical-align: text-bottom;
-		}
 	}
 </style>

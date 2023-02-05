@@ -4,6 +4,8 @@
 	import { PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
 	import { getContext } from 'svelte';
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
 	const { store, previousPage, nextPage, list } = getContext(PAGINATION_CONTEXT_KEY);
 
 	const prev = async () => {

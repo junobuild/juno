@@ -9,6 +9,7 @@
 	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { nonNullish } from '$lib/utils/utils';
 
 	const tabs: Tab[] = [
 		{
@@ -34,7 +35,9 @@
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/datastore">
 		<SatelliteGuard>
-			<Db satelliteId={$satelliteStore.satellite_id} />
+			{#if nonNullish($satelliteStore)}
+				<Db satelliteId={$satelliteStore.satellite_id} />
+			{/if}
 		</SatelliteGuard>
 	</Tabs>
 </IdentityGuard>

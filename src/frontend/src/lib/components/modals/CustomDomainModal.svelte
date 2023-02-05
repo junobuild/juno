@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { JunoModalSatelliteDetail } from '$lib/types/modal';
+	import type { JunoModalDetail, JunoModalSatelliteDetail } from '$lib/types/modal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
@@ -14,10 +14,10 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let detail: JunoModalSatelliteDetail;
+	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
-	$: ({ satellite } = detail);
+	$: ({ satellite } = detail as JunoModalSatelliteDetail);
 
 	let steps: 'init' | 'dns' | 'in_progress' | 'ready' | 'error' = 'init';
 
@@ -99,7 +99,7 @@
 			<p class="title">Host</p>
 			<p class="title value">Value</p>
 
-			{#each dns.entries ?? [] as { type, host, value }}
+			{#each dns?.entries ?? [] as { type, host, value }}
 				<p class="td">{type}</p>
 				<p class="td">
 					{#if nonNullish(host)}

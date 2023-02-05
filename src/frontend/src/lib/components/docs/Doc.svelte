@@ -8,6 +8,8 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import Json from '$lib/components/ui/Json.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
@@ -29,25 +31,33 @@
 {#if nonNullish(doc)}
 	<article class="doc">
 		<div class="owner">
-			<label>Owner:</label>
-			{#if nonNullish(owner)}
-				<Identifier identifier={owner.toText()} />
-			{/if}
+			<Value>
+				<svelte:fragment slot="label">{$i18n.document.owner}</svelte:fragment>
+				{#if nonNullish(owner)}
+					<Identifier identifier={owner.toText()} />
+				{/if}
+			</Value>
 		</div>
 
 		<div class="date">
-			<label>Created:</label>
-			<span>{formatToDate(doc.created_at)}</span>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.document.created}</svelte:fragment>
+				{formatToDate(doc.created_at)}
+			</Value>
 		</div>
 
 		<div class="date">
-			<label>Updated:</label>
-			<span>{formatToDate(doc.updated_at)}</span>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.document.updated}</svelte:fragment>
+				{formatToDate(doc.updated_at)}
+			</Value>
 		</div>
 
 		<div class="data">
-			<label>Data:</label>
-			<div class="json"><Json json={obj} /></div>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.document.data}</svelte:fragment>
+				<div class="json"><Json json={obj} /></div>
+			</Value>
 		</div>
 	</article>
 {/if}

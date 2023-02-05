@@ -59,7 +59,6 @@ pub mod state {
 pub mod interface {
     use candid::CandidType;
     use serde::Deserialize;
-    use shared::types::interface::UserId;
 
     #[derive(CandidType, Deserialize)]
     pub enum ReleaseType {
@@ -77,11 +76,6 @@ pub mod interface {
     pub struct ReleasesVersion {
         pub satellite: Option<String>,
         pub mission_control: Option<String>,
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct ConsoleArgs {
-        pub manager: UserId,
     }
 }
 

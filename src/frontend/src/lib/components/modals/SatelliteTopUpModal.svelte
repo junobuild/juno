@@ -15,27 +15,14 @@
 
 <CanisterTopUpModal canisterId={satellite.satellite_id} on:junoClose>
 	<svelte:fragment slot="intro">
-		<h2>Top-up {satelliteName(satellite)}</h2>
-
-		<p>
-			{@html i18nFormat($i18n.canisters.cycles, [
+		<h2>
+			{@html i18nFormat($i18n.canisters.top_up_title, [
 				{
 					placeholder: '{0}',
-					value:
-						'<a href="https://internetcomputer.org/docs/current/concepts/tokens-cycles/" rel="external noopener norefferer">Cycles</a>'
+					value: satelliteName(satellite)
 				}
 			])}
-		</p>
-
-		<p>TODO: Link to help</p>
-
-		<p>
-			Unlike with web2 cloud providers, you do not get a monthly bill after the resources have been
-			consumed but, you have to make sure there is always enough cycles to cover the costs of
-			operations of your satellite.
-		</p>
-
-		<p>It is on our roadmap to make topping-up automatic when needed.</p>
+		</h2>
 	</svelte:fragment>
 
 	<svelte:fragment slot="outro">

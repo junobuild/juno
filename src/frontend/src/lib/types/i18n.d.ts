@@ -19,11 +19,16 @@ interface I18nCore {
 	help: string;
 	controllers: string;
 	rules: string;
+	continue: string;
+	not_logged_in: string;
 }
 
 interface I18nCanisters {
 	top_up: string;
 	cycles: string;
+	top_up_in_progress: string;
+	amount: string;
+	top_up_title: string;
 }
 
 interface I18nSign_in {
@@ -40,6 +45,13 @@ interface I18nSatellites {
 	open: string;
 	create: string;
 	satellite: string;
+	ready: string;
+	initializing: string;
+	start: string;
+	description: string;
+	name: string;
+	enter_name: string;
+	create_satellite_price: string;
 }
 
 interface I18nMission_control {
@@ -86,6 +98,9 @@ interface I18nErrors {
 	cli_missing_params: string;
 	cli_missing_selection: string;
 	cli_unexpected_error: string;
+	satellite_name_missing: string;
+	satellite_unexpected_error: string;
+	ledger_balance_credits: string;
 }
 
 interface I18n {

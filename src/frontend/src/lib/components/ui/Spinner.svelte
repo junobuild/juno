@@ -14,6 +14,12 @@
 		}
 	}
 
+    @include media.light-theme {
+      .spinner.inline {
+        border-color: black;
+      }
+    }
+
 	.spinner {
 		display: block;
 

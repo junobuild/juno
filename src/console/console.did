@@ -28,6 +28,7 @@ service : {
       vec record { principal; MissionControl },
     ) query;
   load_release : (ReleaseType, vec nat8, text) -> (LoadRelease);
+  remove_controllers : (ControllersArgs) -> ();
   reset_release : (ReleaseType) -> ();
   version : () -> (text) query;
 }

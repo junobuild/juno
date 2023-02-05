@@ -1,4 +1,7 @@
 export const idlFactory = ({ IDL }) => {
+	const ControllersArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal)
+	});
 	const CreateSatelliteArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
 		user: IDL.Principal
@@ -22,6 +25,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const LoadRelease = IDL.Record({ total: IDL.Nat64, chunks: IDL.Nat64 });
 	return IDL.Service({
+		add_controllers: IDL.Func([ControllersArgs], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
 		get_create_satellite_fee: IDL.Func([GetCreateSatelliteFeeArgs], [IDL.Opt(Tokens)], ['query']),

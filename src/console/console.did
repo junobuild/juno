@@ -1,3 +1,4 @@
+type ControllersArgs = record { controllers : vec principal };
 type CreateSatelliteArgs = record { block_index : opt nat64; user : principal };
 type GetCreateSatelliteFeeArgs = record { user : principal };
 type LoadRelease = record { total : nat64; chunks : nat64 };
@@ -15,6 +16,7 @@ type ReleasesVersion = record {
 };
 type Tokens = record { e8s : nat64 };
 service : {
+  add_controllers : (ControllersArgs) -> ();
   add_invitation_code : (text) -> ();
   create_satellite : (CreateSatelliteArgs) -> (principal);
   get_create_satellite_fee : (GetCreateSatelliteFeeArgs) -> (opt Tokens) query;

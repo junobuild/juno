@@ -1,6 +1,9 @@
 import type { ActorMethod } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
+export interface ControllersArgs {
+	controllers: Array<Principal>;
+}
 export interface CreateSatelliteArgs {
 	block_index: [] | [bigint];
 	user: Principal;
@@ -28,6 +31,7 @@ export interface Tokens {
 	e8s: bigint;
 }
 export interface _SERVICE {
+	add_controllers: ActorMethod<[ControllersArgs], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
 	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
 	get_create_satellite_fee: ActorMethod<[GetCreateSatelliteFeeArgs], [] | [Tokens]>;

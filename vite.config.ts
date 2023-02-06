@@ -2,7 +2,7 @@ import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfil
 import inject from '@rollup/plugin-inject';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { readFileSync } from 'fs';
-import { join, resolve } from 'path';
+import { dirname, join, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import type { UserConfig } from 'vite';
 import { defineConfig, loadEnv } from 'vite';
@@ -55,6 +55,31 @@ const config: UserConfig = {
 	build: {
 		target: 'es2020',
 		rollupOptions: {
+			output: {
+				manualChunks: (id) => {
+					const folder = dirname(id);
+
+					if (
+						['@sveltejs', 'svelte', '@dfinity/gix-components'].find((lib) =>
+							folder.includes(lib)
+						) === undefined &&
+						folder.includes('node_modules')
+					) {
+						return 'vendor';
+					}
+
+					if (
+						[
+							'frontend/src/lib/api',
+							'frontend/src/lib/services',
+							'frontend/src/lib/stores',
+							'frontend/src/lib/workers'
+						].find((module) => folder.includes(module)) !== undefined
+					) {
+						return 'dapp';
+					}
+				}
+			},
 			// Polyfill Buffer for production build
 			plugins: [
 				inject({

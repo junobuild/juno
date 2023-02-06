@@ -40,8 +40,8 @@
 
 	&:hover:not(:disabled),
 	&:focus:not(:disabled) {
-		background: var(--color-tertiary);
-		color: var(--color-tertiary-contrast);
+		background: rgba(var(--color-primary-rgb), 0.4);
+		color: var(--color-primary-contrast);
 	}
 }
 

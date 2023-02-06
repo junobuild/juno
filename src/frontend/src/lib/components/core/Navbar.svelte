@@ -9,9 +9,10 @@
 
 	export let start: 'logo' | 'back' | 'menu' = 'logo';
 	export let signIn = true;
+	export let headerOpaqueOnScroll = true;
 </script>
 
-<Header opaque={!$layoutTitleIntersecting}>
+<Header opaque={!$layoutTitleIntersecting && headerOpaqueOnScroll}>
 	<div class="start">
 		{#if start === 'menu'}
 			<ButtonMenu />

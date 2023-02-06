@@ -27,8 +27,6 @@
 
 		display: block;
 
-		z-index: calc(var(--z-index) + 1);
-
 		user-select: none;
 		pointer-events: none;
 		-webkit-user-drag: none;

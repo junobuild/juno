@@ -78,6 +78,14 @@ const config: UserConfig = {
 					) {
 						return 'dapp';
 					}
+
+					if (
+						['frontend/src/lib/components/ui', 'frontend/src/lib/components/icons'].find((module) =>
+							folder.includes(module)
+						) !== undefined
+					) {
+						return 'ui';
+					}
 				}
 			},
 			// Polyfill Buffer for production build

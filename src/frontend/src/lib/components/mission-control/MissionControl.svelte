@@ -12,6 +12,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { MissionControlBalance } from '$lib/services/balance.services';
 	import { getMissionControlBalance } from '$lib/services/balance.services';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
 
 	let missionControlBalance: MissionControlBalance | undefined = undefined;
 
@@ -51,7 +52,11 @@
 
 		<Value>
 			<svelte:fragment slot="label">{$i18n.mission_control.account_identifier}</svelte:fragment>
-			<p>{accountIdentifier?.toHex() ?? ''}</p>
+			<p>
+				{#if nonNullish(accountIdentifier)}
+					<Identifier identifier={accountIdentifier.toHex() ?? ''} />
+				{/if}
+			</p>
 		</Value>
 
 		<Value>

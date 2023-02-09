@@ -293,55 +293,67 @@ fn http_request(
 
     match result {
         Ok(asset) => {
-            let encodings = build_encodings(req_headers);
+            match asset {
+                Some(asset) => {
+                    let encodings = build_encodings(req_headers);
 
-            for encoding_type in encodings.iter() {
-                if let Some(encoding) = asset.encodings.get(encoding_type) {
-                    let headers = build_headers(&asset, encoding_type);
+                    for encoding_type in encodings.iter() {
+                        if let Some(encoding) = asset.encodings.get(encoding_type) {
+                            let headers = build_headers(&asset, encoding_type);
 
-                    let Asset {
-                        key,
-                        headers: _,
-                        encodings: _,
-                        created_at: _,
-                        updated_at: _,
-                    } = &asset;
+                            let Asset {
+                                key,
+                                headers: _,
+                                encodings: _,
+                                created_at: _,
+                                updated_at: _,
+                            } = &asset;
 
-                    match headers {
-                        Ok(headers) => {
-                            return HttpResponse {
-                                body: encoding.content_chunks[0].clone(),
-                                headers: headers.clone(),
-                                status_code: 200,
-                                streaming_strategy: streaming_strategy(
-                                    key,
-                                    encoding,
-                                    encoding_type,
-                                    &headers,
-                                ),
-                            }
-                        }
-                        Err(err) => {
-                            return HttpResponse {
-                                body: ["Permission denied. Invalid headers. ", err]
-                                    .join("")
-                                    .as_bytes()
-                                    .to_vec(),
-                                headers: Vec::new(),
-                                status_code: 405,
-                                streaming_strategy: None,
+                            match headers {
+                                Ok(headers) => {
+                                    return HttpResponse {
+                                        body: encoding.content_chunks[0].clone(),
+                                        headers: headers.clone(),
+                                        status_code: 200,
+                                        streaming_strategy: streaming_strategy(
+                                            key,
+                                            encoding,
+                                            encoding_type,
+                                            &headers,
+                                        ),
+                                    }
+                                }
+                                Err(err) => {
+                                    return HttpResponse {
+                                        body: ["Permission denied. Invalid headers. ", err]
+                                            .join("")
+                                            .as_bytes()
+                                            .to_vec(),
+                                        headers: Vec::new(),
+                                        status_code: 405,
+                                        streaming_strategy: None,
+                                    }
+                                }
                             }
                         }
                     }
+
+                    return HttpResponse {
+                        body: "No asset encoding found.".as_bytes().to_vec(),
+                        headers: Vec::new(),
+                        status_code: 500,
+                        streaming_strategy: None,
+                    };
+                },
+                None => {
+                    return HttpResponse {
+                        body: "No asset found.".as_bytes().to_vec(),
+                        headers: Vec::new(),
+                        status_code: 404,
+                        streaming_strategy: None,
+                    };
                 }
             }
-
-            return HttpResponse {
-                body: "No asset encoding found.".as_bytes().to_vec(),
-                headers: Vec::new(),
-                status_code: 500,
-                streaming_strategy: None,
-            };
         }
         Err(err) => HttpResponse {
             body: ["Permission denied. Cannot perform this operation. ", err]
@@ -370,16 +382,21 @@ fn http_request_streaming_callback(
     let result = get_public_asset(full_path, token);
 
     match result {
-        Err(err) => trap(&["Streamed asset not found: ", err].join("")),
+        Err(err) => trap(&["Permission denied. Cannot stream asset: ", err].join("")),
         Ok(asset) => {
-            let encoding = asset.encodings.get(&encoding_type);
+            match asset {
+                Some(asset) => {
+                    let encoding = asset.encodings.get(&encoding_type);
 
-            match encoding {
-                Some(encoding) => StreamingCallbackHttpResponse {
-                    token: create_token(&asset.key, index, encoding, &encoding_type, &headers),
-                    body: encoding.content_chunks[index].clone(),
+                    match encoding {
+                        Some(encoding) => StreamingCallbackHttpResponse {
+                            token: create_token(&asset.key, index, encoding, &encoding_type, &headers),
+                            body: encoding.content_chunks[index].clone(),
+                        },
+                        None => trap("Streamed asset encoding not found."),
+                    }
                 },
-                None => trap("Streamed asset encoding not found."),
+                None => trap("Streamed asset not found."),
             }
         }
     }

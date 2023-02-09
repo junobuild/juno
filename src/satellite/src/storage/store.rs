@@ -42,7 +42,10 @@ pub fn get_public_asset_for_url(url: String) -> Result<Option<Asset>, &'static s
     get_public_asset(full_path, token)
 }
 
-pub fn get_public_asset(full_path: String, token: Option<String>) -> Result<Option<Asset>, &'static str> {
+pub fn get_public_asset(
+    full_path: String,
+    token: Option<String>,
+) -> Result<Option<Asset>, &'static str> {
     STATE.with(|state| get_public_asset_impl(full_path, token, &state.borrow().stable.storage))
 }
 

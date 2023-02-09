@@ -38,7 +38,7 @@ export interface ControllersArgs {
 export interface CustomDomain {
 	updated_at: bigint;
 	created_at: bigint;
-	bn_id: string;
+	bn_id: [] | [string];
 }
 export interface DelDoc {
 	updated_at: [] | [bigint];
@@ -162,7 +162,7 @@ export interface _SERVICE {
 	list_rules: ActorMethod<[RulesType], Array<[string, Rule]>>;
 	remove_controllers: ActorMethod<[ControllersArgs], Array<Principal>>;
 	set_config: ActorMethod<[Config], undefined>;
-	set_custom_domain: ActorMethod<[string, string], undefined>;
+	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
 	upload_asset_chunk: ActorMethod<[Chunk], UploadChunk>;

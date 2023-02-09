@@ -14,6 +14,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import {configureCustomDomain} from "$lib/services/hosting.services";
 
 	export let detail: JunoModalDetail;
 
@@ -53,10 +54,9 @@
 		steps = 'in_progress';
 
 		try {
-			await setCustomDomain({
+			await configureCustomDomain({
 				satelliteId: satellite.satellite_id,
 				domainName: dns.hostname,
-				boundaryNodesId: '123'
 			});
 
 			steps = 'ready';

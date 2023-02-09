@@ -28,7 +28,7 @@ type ControllersArgs = record { controllers : vec principal };
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;
-  bn_id : text;
+  bn_id : opt text;
 };
 type DelDoc = record { updated_at : opt nat64 };
 type Doc = record {
@@ -131,7 +131,7 @@ service : {
   list_rules : (RulesType) -> (vec record { text; Rule }) query;
   remove_controllers : (ControllersArgs) -> (vec principal);
   set_config : (Config) -> ();
-  set_custom_domain : (text, text) -> ();
+  set_custom_domain : (text, opt text) -> ();
   set_doc : (text, text, SetDoc) -> (Doc);
   set_rule : (RulesType, text, SetRule) -> ();
   upload_asset_chunk : (Chunk) -> (UploadChunk);

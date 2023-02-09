@@ -89,7 +89,7 @@ export const idlFactory = ({ IDL }) => {
 	const CustomDomain = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
-		bn_id: IDL.Text
+		bn_id: IDL.Opt(IDL.Text)
 	});
 	const ListResults_1 = IDL.Record({
 		matches_length: IDL.Nat64,
@@ -153,7 +153,7 @@ export const idlFactory = ({ IDL }) => {
 		list_rules: IDL.Func([RulesType], [IDL.Vec(IDL.Tuple(IDL.Text, Rule))], ['query']),
 		remove_controllers: IDL.Func([ControllersArgs], [IDL.Vec(IDL.Principal)], []),
 		set_config: IDL.Func([Config], [], []),
-		set_custom_domain: IDL.Func([IDL.Text, IDL.Text], [], []),
+		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_doc: IDL.Func([IDL.Text, IDL.Text, SetDoc], [Doc], []),
 		set_rule: IDL.Func([RulesType, IDL.Text, SetRule], [], []),
 		upload_asset_chunk: IDL.Func([Chunk], [UploadChunk], []),

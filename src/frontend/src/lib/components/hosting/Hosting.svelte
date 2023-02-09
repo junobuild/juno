@@ -4,9 +4,10 @@
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import { onMount } from 'svelte';
-	import { listCustomDomains } from '$lib/api/satellites.api';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { listCustomDomains } from '$lib/services/hosting.services';
 
 	export let satellite: Satellite;
 
@@ -22,7 +23,7 @@
 			});
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Error while loading the custom domains of the satellite.`,
+				text: $i18n.errors.hosting_loading_errors,
 				detail: err
 			});
 		}
@@ -37,14 +38,14 @@
 	<table>
 		<thead>
 			<tr>
-				<th> Domain </th>
-				<th> Status</th>
+				<th> {$i18n.hosting.domain} </th>
+				<th> {$i18n.hosting.status}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
 				<td colspan="2"
-					><CustomDomain url={satelliteUrl(satelliteId)} ariaLabel="Default satellite domain" />
+					><CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
 				</td>
 			</tr>
 
@@ -54,7 +55,7 @@
 						><CustomDomain
 							type="custom"
 							url={`https://${customDomain}`}
-							ariaLabel="A custom domain"
+							ariaLabel={$i18n.hosting.custom_domain}
 						/>
 					</td>
 				</tr>

@@ -13,6 +13,8 @@
 	import { setCustomDomain } from '$lib/api/satellites.api';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { addCustomDomain } from '$lib/services/hosting.services';
 
 	export let detail: JunoModalDetail;
 
@@ -24,7 +26,7 @@
 	const onSubmitDomainName = () => {
 		if (isNullish(domainNameInput)) {
 			toasts.error({
-				text: `A domain name must be provided.`
+				text: $i18n.errors.hosting_missing_domain_name
 			});
 			return;
 		}
@@ -33,7 +35,7 @@
 			dns = toCustomDomainDns({ domainName: domainNameInput, canisterId: satellite.satellite_id });
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Please provide a valid URL.`
+				text: $i18n.errors.hosting_invalid_url
 			});
 			return;
 		}
@@ -44,7 +46,7 @@
 	const setupCustomDomain = async () => {
 		if (isNullish(dns)) {
 			toasts.error({
-				text: `A domain name configuration must be provided.`
+				text: $i18n.errors.hosting_missing_dns_configuration
 			});
 			return;
 		}
@@ -52,16 +54,15 @@
 		steps = 'in_progress';
 
 		try {
-			await setCustomDomain({
+			await addCustomDomain({
 				satelliteId: satellite.satellite_id,
-				domainName: dns.hostname,
-				boundaryNodesId: '123'
+				domainName: dns.hostname
 			});
 
 			steps = 'ready';
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Error while configuring the custom domain for the satellite.`,
+				text: $i18n.errors.hosting_configuration_issues,
 				detail: err
 			});
 
@@ -83,21 +84,25 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<IconVerified />
-			<p>Your custom domain has been configured.</p>
+			<p>{$i18n.hosting.success}</p>
 			<button on:click={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'dns'}
-		<h2>Configure your DNS</h2>
+		<h2>{$i18n.hosting.configure}</h2>
 
 		<p>
-			Add records below to your DNS provider to configure and verify you own {domainNameInput}. Do
-			not delete any records as long as you use the domain.
+			{@html i18nFormat($i18n.hosting.add_records, [
+				{
+					placeholder: '{0}',
+					value: domainNameInput
+				}
+			])}
 		</p>
 
 		<section>
-			<p class="title">Type</p>
-			<p class="title">Host</p>
-			<p class="title value">Value</p>
+			<p class="title">{$i18n.hosting.type}</p>
+			<p class="title">{$i18n.hosting.host}</p>
+			<p class="title value">{$i18n.hosting.value}</p>
 
 			{#each dns?.entries ?? [] as { type, host, value }}
 				<p class="td">{type}</p>
@@ -115,19 +120,18 @@
 		</section>
 
 		<div class="toolbar">
-			<button on:click={() => (steps = 'init')}>Back</button>
-			<button on:click={setupCustomDomain}>Ready</button>
+			<button on:click={() => (steps = 'init')}>{$i18n.core.back}</button>
+			<button on:click={setupCustomDomain}>{$i18n.core.ready}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
-			<p>Configuration in progress...</p>
+			<p>{$i18n.hosting.config_in_progress}</p>
 		</SpinnerModal>
 	{:else}
-		<h2>Add custom domain</h2>
+		<h2>{$i18n.hosting.add_custom_domain}</h2>
 
 		<p>
-			Enter the exact domain name you want people to see when they visit your satellite. It can be a
-			domain (yourdomain.com) or a subdomain (app.yourdomain.com).
+			{$i18n.hosting.description}
 		</p>
 
 		<form on:submit|preventDefault={onSubmitDomainName}>

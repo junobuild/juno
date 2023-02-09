@@ -17,7 +17,8 @@
 		"controllers": "Controllers",
 		"rules": "Rules",
 		"continue": "Continue",
-		"not_logged_in": "Developer not logged in."
+		"not_logged_in": "Developer not logged in.",
+		"ready": "Ready"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -72,7 +73,20 @@
 		"title": "Storage"
 	},
 	"hosting": {
-		"title": "Hosting"
+		"title": "Hosting",
+		"success": "Your custom domain has been configured.",
+		"configure": "Configure your DNS",
+		"add_records": "Add records below to your DNS provider to configure and verify you own {0}. Do not delete any records as long as you use the domain.",
+		"type": "Type",
+		"host": "Host",
+		"value": "Value",
+		"config_in_progress": "Configuration in progress...",
+		"add_custom_domain": "Add custom domain",
+		"description": "Enter the exact domain name you want people to see when they visit your satellite. It can be a domain (yourdomain.com) or a subdomain (app.yourdomain.com).",
+		"custom_domain": "Custom domain",
+		"default_domain": "Default satellite domain",
+		"domain": "Domain",
+		"status": "Status"
 	},
 	"cli": {
 		"title": "Authorize CLI",
@@ -86,7 +100,12 @@
 		"cli_unexpected_error": "Unexpected error(s) while adding your controller.",
 		"satellite_name_missing": "A name for the satellite must be provided.",
 		"satellite_unexpected_error": "Unexpected error(s) while creating the satellite.",
-		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits."
+		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits.",
+		"hosting_missing_domain_name": "A domain name must be provided.",
+		"hosting_invalid_url": "Please provide a valid URL.",
+		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",
+		"hosting_configuration_issues": "Error while configuring the custom domain for the satellite.",
+		"hosting_loading_errors": "Error while loading the custom domains of the satellite."
 	},
 	"document": {
 		"owner": "Owner",

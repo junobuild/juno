@@ -168,12 +168,12 @@ const syncCanister = async ({
 };
 
 const emitSavedCanisters = async ({ canisterIds }: { canisterIds: string[] }) => {
-	const canisters = (await getMany(canisterIds, customStore)).filter(
-		(canister: Canister | undefined) => canister !== undefined
-	).map((canister) => ({
-		...canister,
-		sync: 'syncing'
-	}));
+	const canisters = (await getMany(canisterIds, customStore))
+		.filter((canister: Canister | undefined) => canister !== undefined)
+		.map((canister) => ({
+			...canister,
+			sync: 'syncing'
+		}));
 
 	const canistersNeverSynced: Canister[] = canisterIds
 		.filter((id) => canisters.find(({ syncedId }) => id === syncedId) === undefined)

@@ -603,7 +603,7 @@ fn set_config_impl(config: &StorageConfig, state: &mut StorageStableState) {
 /// Domain
 ///
 
-pub fn set_domain(domain_name: &DomainName, bn_id: &str) {
+pub fn set_domain(domain_name: &DomainName, bn_id: &Option<String>) {
     STATE.with(|state| set_domain_impl(domain_name, bn_id, &mut state.borrow_mut()))
 }
 
@@ -617,7 +617,7 @@ fn delete_domain_impl(domain_name: &DomainName, state: &mut State) {
     update_custom_domains_asset(state);
 }
 
-fn set_domain_impl(domain_name: &DomainName, bn_id: &str, state: &mut State) {
+fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut State) {
     set_stable_domain_impl(domain_name, bn_id, state);
 
     update_custom_domains_asset(state);
@@ -641,7 +641,7 @@ fn update_custom_domains_asset(state: &mut State) {
     update_certified_asset(state, &asset, &state.stable.storage.config.clone());
 }
 
-fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &str, state: &mut State) {
+fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut State) {
     let domain = state.stable.storage.custom_domains.get(domain_name);
 
     let now = time();

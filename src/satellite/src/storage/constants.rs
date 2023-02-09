@@ -6,4 +6,4 @@ pub static ENCODING_CERTIFICATION_ORDER: &[&str] = &[
     "deflate",
     "br",
 ];
-pub static BN_WELL_KNOWN_CUSTOM_DOMAINS: &str = "/.well-known/custom-domains";
+pub static BN_WELL_KNOWN_CUSTOM_DOMAINS: &str = "/.well-known/ic-domains";

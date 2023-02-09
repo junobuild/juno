@@ -227,7 +227,7 @@ pub mod domain {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct CustomDomain {
-        pub bn_id: String,
+        pub bn_id: Option<String>,
         pub created_at: u64,
         pub updated_at: u64,
     }

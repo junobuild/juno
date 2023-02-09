@@ -250,7 +250,7 @@ fn list_custom_domains() -> CustomDomains {
 
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
-fn set_custom_domain(domain_name: DomainName, bn_id: String) {
+fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
     set_domain(&domain_name, &bn_id);
 }
 

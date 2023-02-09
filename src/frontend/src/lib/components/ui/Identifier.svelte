@@ -3,12 +3,14 @@
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 
 	export let identifier: string;
+	export let shorten = true;
+	export let nomargin = true;
 
 	let shortIdentifier: string;
-	$: shortIdentifier = shortenWithMiddleEllipsis(identifier);
+	$: shortIdentifier = shorten ? shortenWithMiddleEllipsis(identifier) : identifier;
 </script>
 
-<p>
+<p class:nomargin>
 	<span>{shortIdentifier}</span>
 	<Copy value={identifier} />
 </p>
@@ -22,6 +24,9 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding-2x);
+	}
+
+	.nomargin {
 		margin: 0;
 	}
 </style>

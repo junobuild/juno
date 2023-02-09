@@ -82,7 +82,11 @@
 		"value": "Value",
 		"config_in_progress": "Configuration in progress...",
 		"add_custom_domain": "Add custom domain",
-		"description": "Enter the exact domain name you want people to see when they visit your satellite. It can be a domain (yourdomain.com) or a subdomain (app.yourdomain.com)."
+		"description": "Enter the exact domain name you want people to see when they visit your satellite. It can be a domain (yourdomain.com) or a subdomain (app.yourdomain.com).",
+		"custom_domain": "Custom domain",
+		"default_domain": "Default satellite domain",
+		"domain": "Domain",
+		"status": "Status"
 	},
 	"cli": {
 		"title": "Authorize CLI",
@@ -100,7 +104,8 @@
 		"hosting_missing_domain_name": "A domain name must be provided.",
 		"hosting_invalid_url": "Please provide a valid URL.",
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",
-		"hosting_configuration_issues": "Error while configuring the custom domain for the satellite."
+		"hosting_configuration_issues": "Error while configuring the custom domain for the satellite.",
+		"hosting_loading_errors": "Error while loading the custom domains of the satellite."
 	},
 	"document": {
 		"owner": "Owner",

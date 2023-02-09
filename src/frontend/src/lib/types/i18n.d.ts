@@ -21,6 +21,7 @@ interface I18nCore {
 	rules: string;
 	continue: string;
 	not_logged_in: string;
+	ready: string;
 }
 
 interface I18nCanisters {
@@ -85,6 +86,15 @@ interface I18nStorage {
 
 interface I18nHosting {
 	title: string;
+	success: string;
+	configure: string;
+	add_records: string;
+	type: string;
+	host: string;
+	value: string;
+	config_in_progress: string;
+	add_custom_domain: string;
+	description: string;
 }
 
 interface I18nCli {
@@ -101,6 +111,10 @@ interface I18nErrors {
 	satellite_name_missing: string;
 	satellite_unexpected_error: string;
 	ledger_balance_credits: string;
+	hosting_missing_domain_name: string;
+	hosting_invalid_url: string;
+	hosting_missing_dns_configuration: string;
+	hosting_configuration_issues: string;
 }
 
 interface I18nDocument {

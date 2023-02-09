@@ -40,8 +40,8 @@
 
 	&:hover:not(:disabled),
 	&:focus:not(:disabled) {
-		background: rgba(var(--color-primary-rgb), 0.4);
-		color: var(--color-primary-contrast);
+		background: var(--color-primary-opaque);
+		color: var(--color-primary-opaque-contrast);
 	}
 }
 
@@ -68,8 +68,8 @@
 		text-decoration: none;
 
 		span {
-			background: rgba(var(--color-primary-rgb), 0.4);
-			color: var(--color-primary-contrast);
+			background: var(--color-primary-opaque);
+			color: var(--color-primary-opaque-contrast);
 		}
 	}
 }

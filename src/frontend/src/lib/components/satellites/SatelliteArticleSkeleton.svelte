@@ -12,5 +12,4 @@
 	<SkeletonText />
 	<SkeletonText />
 	<SkeletonText />
-	<SkeletonText />
 </Article>

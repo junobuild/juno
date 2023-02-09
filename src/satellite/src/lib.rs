@@ -264,9 +264,9 @@ fn del_custom_domain(domain_name: DomainName) {
 /// Storage
 ///
 
-//
-// Http
-//
+///
+/// Http
+///
 
 #[query]
 #[candid_method(query)]

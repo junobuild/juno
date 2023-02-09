@@ -21,11 +21,8 @@
 
 	button {
 		height: 100%;
+		min-height: 220px;
 		margin: 0;
-
-		&[disabled] {
-			@include shadow.shadow;
-		}
 	}
 
 	.summary {

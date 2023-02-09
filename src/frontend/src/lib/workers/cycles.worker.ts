@@ -8,7 +8,7 @@ import { initIdentity } from '$lib/utils/identity.utils';
 import type { Identity } from '@dfinity/agent';
 import { KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from '@dfinity/auth-client';
 import { DelegationChain, isDelegationValid } from '@dfinity/identity';
-import { createStore, getMany } from 'idb-keyval';
+import { createStore, getMany, set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -66,6 +66,10 @@ const stopCyclesTimer = async () => {
 	timer = undefined;
 };
 
+const customStore = createStore('juno-db', 'juno-cycles-store');
+
+let syncing = false;
+
 const syncCanisters = async ({
 	identity,
 	canisterIds
@@ -78,9 +82,20 @@ const syncCanisters = async ({
 		return;
 	}
 
-	const trillionRatio: bigint = await icpXdrConversionRate();
+	// We avoid to relaunch a sync while previous sync is not finished
+	if (syncing) {
+		return;
+	}
 
-	await syncNnsCanisters({ identity, canisterIds, trillionRatio });
+	await emitSavedCanisters({ canisterIds });
+
+	try {
+		const trillionRatio: bigint = await icpXdrConversionRate();
+
+		await syncNnsCanisters({ identity, canisterIds, trillionRatio });
+	} finally {
+		syncing = false;
+	}
 };
 
 const syncNnsCanisters = async ({
@@ -146,5 +161,28 @@ const syncCanister = async ({
 		}
 	};
 
+	// Save information in indexed-db as well to load previous values on navigation and refresh
+	await set(canisterId, canister, customStore);
+
 	emitCanister(canister);
+};
+
+const emitSavedCanisters = async ({ canisterIds }: { canisterIds: string[] }) => {
+	const canisters = (await getMany(canisterIds, customStore))
+		.filter((canister: Canister | undefined) => canister !== undefined)
+		.map((canister) => ({
+			...canister,
+			sync: 'syncing'
+		}));
+
+	const canistersNeverSynced: Canister[] = canisterIds
+		.filter((id) => canisters.find(({ syncedId }) => id === syncedId) === undefined)
+		.map((id) => ({
+			id,
+			sync: 'loading'
+		}));
+
+	await Promise.all(canistersNeverSynced.map(emitCanister));
+
+	await Promise.all(canisters.map(emitCanister));
 };

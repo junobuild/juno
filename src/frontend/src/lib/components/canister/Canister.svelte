@@ -13,6 +13,8 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';
+	import { isNullish } from '$lib/utils/utils';
+	import IconSync from '$lib/components/icons/IconSync.svelte';
 
 	export let canisterId: Principal;
 	export let display = true;
@@ -40,9 +42,9 @@
 	onDestroy(() => worker?.stopCyclesTimer());
 
 	let data: CanisterData | undefined;
-	let sync: CanisterSyncStatus = 'syncing';
+	let sync: CanisterSyncStatus | undefined = undefined;
 
-	$: ({ data, sync } = canister ?? { data: undefined, sync: 'syncing' });
+	$: ({ data, sync } = canister ?? { data: undefined, sync: undefined });
 
 	let status: CanisterStatus | undefined;
 	let memory_size: bigint;
@@ -60,9 +62,11 @@
 </script>
 
 {#if display}
-	{#if sync === 'synced'}
-		<p>
-			{formatTCycles(cycles)} T Cycles {#if warning}⚠️{/if}
+	{#if ['synced', 'syncing'].includes(sync)}
+		<p class="cycles">
+			<span
+				>{formatTCycles(cycles)} T Cycles {#if warning}⚠️{/if}</span
+			>{#if sync === 'syncing'}<IconSync />{/if}
 		</p>
 
 		<p class="status">{status ?? '???'}</p>
@@ -86,5 +90,10 @@
 
 		max-width: 300px;
 		color: var(--value-color);
+	}
+
+	.cycles {
+		display: inline-flex;
+		gap: var(--padding);
 	}
 </style>

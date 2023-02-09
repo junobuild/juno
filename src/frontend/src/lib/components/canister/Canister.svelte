@@ -14,6 +14,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';
 	import { isNullish } from '$lib/utils/utils';
+	import IconSync from '$lib/components/icons/IconSync.svelte';
 
 	export let canisterId: Principal;
 	export let display = true;
@@ -62,16 +63,14 @@
 
 {#if display}
 	{#if ['synced', 'syncing'].includes(sync)}
-		<p>
-			{formatTCycles(cycles)} T Cycles {#if warning}⚠️{/if}
+		<p class="cycles">
+			<span
+				>{formatTCycles(cycles)} T Cycles {#if warning}⚠️{/if}</span
+			>{#if sync === 'syncing'}<IconSync />{/if}
 		</p>
 
 		<p class="status">{status ?? '???'}</p>
 		<p>{formatNumber(Number(memory_size) / 1_000_000)} MB</p>
-
-		{#if sync === 'syncing'}
-			<p><SkeletonText /></p>
-		{/if}
 	{:else if sync === 'syncing'}
 		<p><SkeletonText /></p>
 		<p><SkeletonText /></p>
@@ -91,5 +90,10 @@
 
 		max-width: 300px;
 		color: var(--value-color);
+	}
+
+	.cycles {
+		display: inline-flex;
+		gap: var(--padding);
 	}
 </style>

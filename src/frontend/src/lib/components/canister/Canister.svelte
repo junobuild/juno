@@ -71,7 +71,7 @@
 
 		<p class="status">{status ?? '???'}</p>
 		<p>{formatNumber(Number(memory_size) / 1_000_000)} MB</p>
-	{:else if sync === 'syncing'}
+	{:else if sync === 'loading'}
 		<p><SkeletonText /></p>
 		<p><SkeletonText /></p>
 		<p><SkeletonText /></p>

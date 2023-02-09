@@ -1,5 +1,5 @@
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';
-export type CanisterSyncStatus = 'syncing' | 'synced' | 'error';
+export type CanisterSyncStatus = 'loading' | 'syncing' | 'synced' | 'error';
 
 export interface CanisterInfo {
 	cycles: bigint;

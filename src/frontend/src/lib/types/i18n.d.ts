@@ -3,141 +3,141 @@
  */
 
 interface I18nCore {
-	close: string;
-	back: string;
-	menu: string;
-	copy: string;
-	toggle: string;
-	loading: string;
-	status: string;
-	sign_out: string;
-	sign_in: string;
-	light_off: string;
-	light_on: string;
-	submit: string;
-	home: string;
-	help: string;
-	controllers: string;
-	rules: string;
-	continue: string;
-	not_logged_in: string;
+  close: string;
+  back: string;
+  menu: string;
+  copy: string;
+  toggle: string;
+  loading: string;
+  status: string;
+  sign_out: string;
+  sign_in: string;
+  light_off: string;
+  light_on: string;
+  submit: string;
+  home: string;
+  help: string;
+  controllers: string;
+  rules: string;
+  continue: string;
+  not_logged_in: string;
 }
 
 interface I18nCanisters {
-	top_up: string;
-	cycles: string;
-	top_up_in_progress: string;
-	amount: string;
-	top_up_title: string;
+  top_up: string;
+  cycles: string;
+  top_up_in_progress: string;
+  amount: string;
+  top_up_title: string;
 }
 
 interface I18nSign_in {
-	title: string;
-	overview_1: string;
-	overview_2: string;
-	overview_3: string;
-	internet_identity: string;
+  title: string;
+  overview_1: string;
+  overview_2: string;
+  overview_3: string;
+  internet_identity: string;
 }
 
 interface I18nSatellites {
-	title: string;
-	launch: string;
-	open: string;
-	create: string;
-	satellite: string;
-	ready: string;
-	initializing: string;
-	start: string;
-	description: string;
-	name: string;
-	enter_name: string;
-	create_satellite_price: string;
+  title: string;
+  launch: string;
+  open: string;
+  create: string;
+  satellite: string;
+  ready: string;
+  initializing: string;
+  start: string;
+  description: string;
+  name: string;
+  enter_name: string;
+  create_satellite_price: string;
 }
 
 interface I18nMission_control {
-	title: string;
-	id: string;
-	account_identifier: string;
-	balance: string;
-	credits: string;
-	dev_id: string;
-	transactions: string;
+  title: string;
+  id: string;
+  account_identifier: string;
+  balance: string;
+  credits: string;
+  dev_id: string;
+  transactions: string;
 }
 
 interface I18nOverview {
-	title: string;
+  title: string;
 }
 
 interface I18nAuthentication {
-	title: string;
-	users: string;
-	methods: string;
+  title: string;
+  users: string;
+  methods: string;
 }
 
 interface I18nDatastore {
-	title: string;
-	data: string;
+  title: string;
+  data: string;
 }
 
 interface I18nStorage {
-	title: string;
+  title: string;
 }
 
 interface I18nHosting {
-	title: string;
+  title: string;
 }
 
 interface I18nCli {
-	title: string;
-	sign_in: string;
-	add: string;
+  title: string;
+  sign_in: string;
+  add: string;
 }
 
 interface I18nErrors {
-	no_mission_control: string;
-	cli_missing_params: string;
-	cli_missing_selection: string;
-	cli_unexpected_error: string;
-	satellite_name_missing: string;
-	satellite_unexpected_error: string;
-	ledger_balance_credits: string;
+  no_mission_control: string;
+  cli_missing_params: string;
+  cli_missing_selection: string;
+  cli_unexpected_error: string;
+  satellite_name_missing: string;
+  satellite_unexpected_error: string;
+  ledger_balance_credits: string;
 }
 
 interface I18nDocument {
-	owner: string;
-	created: string;
-	updated: string;
-	data: string;
+  owner: string;
+  created: string;
+  updated: string;
+  data: string;
 }
 
 interface I18nAsset {
-	owner: string;
-	token: string;
-	headers: string;
-	created: string;
-	updated: string;
+  owner: string;
+  token: string;
+  headers: string;
+  created: string;
+  updated: string;
 }
 
 interface I18nAdmin {
-	mission_control_new_version: string;
-	satellite_new_version: string;
+  mission_control_new_version: string;
+  satellite_new_version: string;
 }
 
 interface I18n {
-	lang: Languages;
-	core: I18nCore;
-	canisters: I18nCanisters;
-	sign_in: I18nSign_in;
-	satellites: I18nSatellites;
-	mission_control: I18nMission_control;
-	overview: I18nOverview;
-	authentication: I18nAuthentication;
-	datastore: I18nDatastore;
-	storage: I18nStorage;
-	hosting: I18nHosting;
-	cli: I18nCli;
-	errors: I18nErrors;
-	document: I18nDocument;
-	asset: I18nAsset;
-	admin: I18nAdmin;
+  lang: Languages;
+  core: I18nCore;
+  canisters: I18nCanisters;
+  sign_in: I18nSign_in;
+  satellites: I18nSatellites;
+  mission_control: I18nMission_control;
+  overview: I18nOverview;
+  authentication: I18nAuthentication;
+  datastore: I18nDatastore;
+  storage: I18nStorage;
+  hosting: I18nHosting;
+  cli: I18nCli;
+  errors: I18nErrors;
+  document: I18nDocument;
+  asset: I18nAsset;
+  admin: I18nAdmin;
 }

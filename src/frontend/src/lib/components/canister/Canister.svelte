@@ -13,6 +13,7 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';
+	import { isNullish } from '$lib/utils/utils';
 
 	export let canisterId: Principal;
 	export let display = true;
@@ -40,9 +41,9 @@
 	onDestroy(() => worker?.stopCyclesTimer());
 
 	let data: CanisterData | undefined;
-	let sync: CanisterSyncStatus = 'syncing';
+	let sync: CanisterSyncStatus | undefined = undefined;
 
-	$: ({ data, sync } = canister ?? { data: undefined, sync: 'syncing' });
+	$: ({ data, sync } = canister ?? { data: undefined, sync: undefined });
 
 	let status: CanisterStatus | undefined;
 	let memory_size: bigint;
@@ -60,13 +61,17 @@
 </script>
 
 {#if display}
-	{#if sync === 'synced'}
+	{#if ['synced', 'syncing'].includes(sync)}
 		<p>
 			{formatTCycles(cycles)} T Cycles {#if warning}⚠️{/if}
 		</p>
 
 		<p class="status">{status ?? '???'}</p>
 		<p>{formatNumber(Number(memory_size) / 1_000_000)} MB</p>
+
+		{#if sync === 'syncing'}
+			<p><SkeletonText /></p>
+		{/if}
 	{:else if sync === 'syncing'}
 		<p><SkeletonText /></p>
 		<p><SkeletonText /></p>

@@ -32,7 +32,7 @@ use crate::STATE;
 /// Getter, list and delete
 ///
 
-pub fn get_public_asset_for_url(url: String) -> Result<Asset, &'static str> {
+pub fn get_public_asset_for_url(url: String) -> Result<Option<Asset>, &'static str> {
     if url.is_empty() {
         return Err("No url provided.");
     }
@@ -42,7 +42,10 @@ pub fn get_public_asset_for_url(url: String) -> Result<Asset, &'static str> {
     get_public_asset(full_path, token)
 }
 
-pub fn get_public_asset(full_path: String, token: Option<String>) -> Result<Asset, &'static str> {
+pub fn get_public_asset(
+    full_path: String,
+    token: Option<String>,
+) -> Result<Option<Asset>, &'static str> {
     STATE.with(|state| get_public_asset_impl(full_path, token, &state.borrow().stable.storage))
 }
 
@@ -90,13 +93,13 @@ fn get_public_asset_impl(
     full_path: String,
     token: Option<String>,
     state: &StorageStableState,
-) -> Result<Asset, &'static str> {
+) -> Result<Option<Asset>, &'static str> {
     let asset = state.assets.get(&full_path);
 
     match asset {
-        None => Err("No asset."),
+        None => Ok(None),
         Some(asset) => match &asset.key.token {
-            None => Ok(asset.clone()),
+            None => Ok(Some(asset.clone())),
             Some(asset_token) => get_token_protected_asset(asset, asset_token, token),
         },
     }
@@ -106,14 +109,14 @@ fn get_token_protected_asset(
     asset: &Asset,
     asset_token: &String,
     token: Option<String>,
-) -> Result<Asset, &'static str> {
+) -> Result<Option<Asset>, &'static str> {
     match token {
         None => Err("No token provided."),
         Some(token) => {
             print(format!("Token {}", token));
 
             if &token == asset_token {
-                return Ok(asset.clone());
+                return Ok(Some(asset.clone()));
             }
 
             Err("Invalid token.")

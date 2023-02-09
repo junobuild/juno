@@ -3,7 +3,9 @@ use serde_bytes::ByteBuf;
 
 use crate::storage::cert::build_asset_certificate_header;
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
-use crate::storage::types::http::{HeaderField, StreamingCallbackToken, StreamingStrategy};
+use crate::storage::types::http::{
+    HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
+};
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
 use crate::STATE;
@@ -126,4 +128,13 @@ pub fn build_encodings(headers: Vec<HeaderField>) -> Vec<String> {
     encodings.push(ASSET_ENCODING_NO_COMPRESSION.to_string());
 
     encodings
+}
+
+pub fn error_response(status_code: u16, body: String) -> HttpResponse {
+    HttpResponse {
+        body: body.as_bytes().to_vec(),
+        headers: Vec::new(),
+        status_code,
+        streaming_strategy: None,
+    }
 }

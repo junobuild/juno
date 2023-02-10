@@ -1,5 +1,5 @@
 use crate::storage::types::config::{StorageConfig, TrailingSlash};
-use crate::storage::types::url::Url as CustomUrl;
+use crate::storage::types::http_request::Url as CustomUrl;
 use crate::STATE;
 use url::{ParseError, Url};
 
@@ -11,10 +11,15 @@ pub fn parse_url(url: &String) -> Result<CustomUrl, &'static str> {
             let error = format!("Url {} cannot be parsed.", url.clone()).into_boxed_str();
             Err(Box::leak(error))
         }
-        Ok(parsed_url) => Ok(CustomUrl {
-            full_path: map_url(parsed_url.path()),
-            token: map_token(parsed_url),
-        }),
+        Ok(parsed_url) => {
+            let requested_path = parsed_url.path();
+
+            Ok(CustomUrl {
+                requested_path: requested_path.to_string(),
+                full_path: map_url(requested_path),
+                token: map_token(parsed_url),
+            })
+        }
     }
 }
 

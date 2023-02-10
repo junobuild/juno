@@ -35,6 +35,7 @@ use crate::storage::types::interface::{
 };
 use crate::storage::types::state::StorageStableState;
 use crate::storage::types::store::{Asset, Chunk};
+use crate::storage::types::http_request::PublicAsset;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
@@ -289,13 +290,16 @@ fn http_request(
     let result = get_public_asset_for_url(url);
 
     match result {
-        Ok(asset) => match asset {
+        Ok(PublicAsset {
+            asset,
+            url: custom_url,
+        }) => match asset {
             Some(asset) => {
                 let encodings = build_encodings(req_headers);
 
                 for encoding_type in encodings.iter() {
                     if let Some(encoding) = asset.encodings.get(encoding_type) {
-                        let headers = build_headers(&asset, encoding_type);
+                        let headers = build_headers(&custom_url, &asset, encoding_type);
 
                         let Asset {
                             key,

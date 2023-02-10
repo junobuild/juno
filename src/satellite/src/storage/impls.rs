@@ -81,6 +81,6 @@ impl From<&Vec<Vec<u8>>> for AssetEncoding {
 
 impl Default for TrailingSlash {
     fn default() -> Self {
-        TrailingSlash::Always
+        TrailingSlash::Never
     }
 }

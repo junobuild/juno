@@ -91,7 +91,10 @@ pub async fn create_satellite_with_payment(
     match block {
         None => Err([
             "No valid payment found to create satellite.",
-            &format!("Block index: {}", block_index.unwrap()),
+            &format!(" Mission control: {}", mission_control_account_identifier),
+            &format!(" Console: {}", console_account_identifier),
+            &format!(" Amount: {}", SATELLITE_CREATION_FEE_ICP),
+            &format!(" Block index: {}", block_index.unwrap()),
         ]
         .join("")
         .to_string()),

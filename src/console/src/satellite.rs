@@ -96,8 +96,7 @@ pub async fn create_satellite_with_payment(
             &format!(" Amount: {}", SATELLITE_CREATION_FEE_ICP),
             &format!(" Block index: {}", block_index.unwrap()),
         ]
-        .join("")
-        .to_string()),
+        .join("")),
         Some(_) => {
             if is_known_payment(&mission_control_payment_block_index) {
                 return Err("Payment has been or is being processed.".to_string());

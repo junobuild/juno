@@ -68,7 +68,7 @@ RUN touch src/shared/src/lib.rs
 RUN npm ci
 
 RUN ./docker/build
-RUN sha256sum /mission_control.wasm
+RUN sha256sum /mission_control.wasm.gz
 
 FROM deps as build_satellite
 
@@ -80,7 +80,7 @@ RUN touch src/satellite/src/lib.rs
 RUN touch src/shared/src/lib.rs
 
 RUN ./docker/build --satellite
-RUN sha256sum /satellite.wasm
+RUN sha256sum /satellite.wasm.gz
 
 FROM deps as build_console
 
@@ -92,13 +92,13 @@ RUN touch src/satellite/src/lib.rs
 RUN touch src/shared/src/lib.rs
 
 RUN ./docker/build --console
-RUN sha256sum /console.wasm
+RUN sha256sum /console.wasm.gz
 
 FROM scratch AS scratch_mission_control
-COPY --from=build_mission_control /mission_control.wasm /
+COPY --from=build_mission_control /mission_control.wasm.gz /
 
 FROM scratch AS scratch_satellite
-COPY --from=build_satellite /satellite.wasm /
+COPY --from=build_satellite /satellite.wasm.gz /
 
 FROM scratch AS scratch_console
-COPY --from=build_console /console.wasm /
+COPY --from=build_console /console.wasm.gz /

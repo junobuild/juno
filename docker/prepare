@@ -9,7 +9,7 @@ function prepare_metadata() {
     local version=($(jq -r ".\"${canister}\"" $METADATA))
 
     echo "Renaming $canister v$version"
-    mv -f "$canister.wasm" "$canister-v$version.wasm" 2>/dev/null; true
+    mv -f "$canister.wasm.gz" "$canister-v$version.wasm.gz" 2>/dev/null; true
 }
 
 for canister in $(echo $CANISTERS | sed "s/,/ /g")

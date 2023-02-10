@@ -10,9 +10,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 candid = "0.8.3"
-ic-cdk = "0.6.8"
+ic-cdk = "0.7.0"
 ic-cdk-macros = "0.6.8"
-ic-ledger-types = "0.2.0"
+ic-ledger-types = { git = "https://github.com/dfinity/cdk-rs", rev = "75e84bc9cf8df154e569f725698d3e73fc1feaef" }
 serde = "1.0.145"
 serde_cbor = "0.11.2"
 shared = { path = "../shared" }

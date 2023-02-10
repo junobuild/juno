@@ -72,6 +72,8 @@ pub async fn find_payment(
                 }
                 Operation::Mint { .. } => (),
                 Operation::Burn { .. } => (),
+                Operation::Approve { .. } => (),
+                Operation::TransferFrom { .. } => (),
             },
         }
 
@@ -123,6 +125,8 @@ pub async fn find_blocks_transfer(
                 }
                 Operation::Mint { .. } => (),
                 Operation::Burn { .. } => (),
+                Operation::Approve { .. } => (),
+                Operation::TransferFrom { .. } => (),
             },
         }
 

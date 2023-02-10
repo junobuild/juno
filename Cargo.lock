@@ -192,7 +192,7 @@ version = "0.0.1"
 dependencies = [
  "candid",
  "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk-macros 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "ic-ledger-types",
  "serde",
  "serde_cbor",
@@ -460,13 +460,11 @@ checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
 name = "ic-cdk"
-version = "0.6.10"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "c98b304a2657bad15bcb547625a018e13cf596676d834cfd93023395a6e2e03a"
+version = "0.7.0"
+source = "git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef#75e84bc9cf8df154e569f725698d3e73fc1feaef"
 dependencies = [
  "candid",
- "cfg-if",
- "ic-cdk-macros",
+ "ic-cdk-macros 0.6.8 (git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef)",
  "ic0",
  "serde",
  "serde_bytes",
@@ -477,6 +475,19 @@ name = "ic-cdk-macros"
 version = "0.6.8"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "cb423dab7c5bf19d4abccabd2ffe35e09b9dde611d478ea3afe0347b50fa727f"
+dependencies = [
+ "candid",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_tokenstream",
+ "syn",
+]
+
+[[package]]
+name = "ic-cdk-macros"
+version = "0.6.8"
+source = "git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef#75e84bc9cf8df154e569f725698d3e73fc1feaef"
 dependencies = [
  "candid",
  "proc-macro2",
@@ -499,9 +510,8 @@ dependencies = [
 
 [[package]]
 name = "ic-ledger-types"
-version = "0.2.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "260c26b9255755d5afd0ac42dc1734a54b248159c4cf54f8c6330fcc1b7ca191"
+version = "0.3.0"
+source = "git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef#75e84bc9cf8df154e569f725698d3e73fc1feaef"
 dependencies = [
  "candid",
  "crc32fast",
@@ -515,8 +525,7 @@ dependencies = [
 [[package]]
 name = "ic0"
 version = "0.18.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "978b91fc78de9d2eb0144db717839cde3b35470199ea51aca362cb6310e93dfd"
+source = "git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef#75e84bc9cf8df154e569f725698d3e73fc1feaef"
 
 [[package]]
 name = "idna"
@@ -651,7 +660,7 @@ version = "0.0.1"
 dependencies = [
  "candid",
  "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk-macros 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "ic-ledger-types",
  "lazy_static",
  "serde",
@@ -903,7 +912,7 @@ dependencies = [
  "base64",
  "candid",
  "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk-macros 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "ic-certified-map",
  "regex",
  "serde",
@@ -1001,7 +1010,7 @@ dependencies = [
  "candid",
  "futures",
  "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk-macros 0.6.8 (registry+https://github.com/rust-lang/crates.io-index)",
  "ic-ledger-types",
  "serde",
 ]

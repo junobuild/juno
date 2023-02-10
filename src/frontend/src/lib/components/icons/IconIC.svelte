@@ -4,11 +4,10 @@
 
 <svg
 	width="24px"
-	height="100%"
+	height="24px"
 	viewBox="0 0 364 172"
 	xmlns="http://www.w3.org/2000/svg"
 	xml:space="preserve"
-	style="fill-rule:evenodd;clip-rule:evenodd;stroke-linejoin:round;stroke-miterlimit:2;"
 >
 	{#if title !== undefined}
 		<title>{title}</title>
@@ -56,3 +55,9 @@
 		></defs
 	></svg
 >
+
+<style lang="scss">
+	svg {
+		vertical-align: middle;
+	}
+</style>

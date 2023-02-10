@@ -212,9 +212,17 @@ pub mod config {
 }
 
 pub mod url {
+    use crate::storage::types::store::Asset;
+
     pub struct Url {
+        pub requested_path: String,
         pub full_path: String,
         pub token: Option<String>,
+    }
+
+    pub struct PublicAsset {
+        pub url: Url,
+        pub asset: Option<Asset>,
     }
 }
 

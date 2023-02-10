@@ -21,7 +21,7 @@ use crate::storage::types::interface::{
 };
 use crate::storage::types::state::{Assets, FullPath, StorageRuntimeState, StorageStableState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
-use crate::storage::types::url::Url;
+use crate::storage::types::url::PublicAsset;
 use crate::storage::url::parse_url;
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};
@@ -31,14 +31,16 @@ use crate::STATE;
 /// Getter, list and delete
 ///
 
-pub fn get_public_asset_for_url(url: String) -> Result<Option<Asset>, &'static str> {
+pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str> {
     if url.is_empty() {
         return Err("No url provided.");
     }
 
-    let Url { full_path, token } = parse_url(&url)?;
+    let url = parse_url(&url)?;
 
-    get_public_asset(full_path, token)
+    let asset = get_public_asset(url.full_path.clone(), url.token.clone())?;
+
+    Ok(PublicAsset { url, asset })
 }
 
 pub fn get_public_asset(

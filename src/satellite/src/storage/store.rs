@@ -1,7 +1,6 @@
 use crate::list::utils::list_values;
 use candid::Principal;
 use ic_cdk::api::time;
-use ic_cdk::print;
 use shared::controllers::is_controller;
 use shared::types::interface::Controllers;
 use shared::utils::principal_not_equal;
@@ -113,8 +112,6 @@ fn get_token_protected_asset(
     match token {
         None => Err("No token provided."),
         Some(token) => {
-            print(format!("Token {}", token));
-
             if &token == asset_token {
                 return Ok(Some(asset.clone()));
             }

@@ -35,7 +35,7 @@ use crate::storage::types::interface::{
 };
 use crate::storage::types::state::StorageStableState;
 use crate::storage::types::store::{Asset, Chunk};
-use crate::storage::types::url::PublicAsset;
+use crate::storage::types::http_request::PublicAsset;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;

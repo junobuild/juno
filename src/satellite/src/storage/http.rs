@@ -8,7 +8,7 @@ use crate::storage::types::http::{
 };
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
-use crate::storage::types::url::Url;
+use crate::storage::types::http_request::Url;
 use crate::STATE;
 
 pub fn streaming_strategy(

@@ -1,5 +1,5 @@
 use crate::storage::types::config::{StorageConfig, TrailingSlash};
-use crate::storage::types::url::Url as CustomUrl;
+use crate::storage::types::http_request::Url as CustomUrl;
 use crate::STATE;
 use url::{ParseError, Url};
 

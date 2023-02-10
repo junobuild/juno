@@ -21,7 +21,7 @@ use crate::storage::types::interface::{
 };
 use crate::storage::types::state::{Assets, FullPath, StorageRuntimeState, StorageStableState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
-use crate::storage::types::url::PublicAsset;
+use crate::storage::types::http_request::PublicAsset;
 use crate::storage::url::parse_url;
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};

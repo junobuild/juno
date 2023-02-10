@@ -211,7 +211,7 @@ pub mod config {
     }
 }
 
-pub mod url {
+pub mod http_request {
     use crate::storage::types::store::Asset;
 
     pub struct Url {

@@ -6,6 +6,7 @@ mod rules;
 mod storage;
 mod types;
 mod utils;
+mod upgrade;
 
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
 use crate::db::types::interface::{DelDoc, SetDoc};
@@ -53,6 +54,7 @@ use shared::types::interface::{Controllers, ControllersArgs, SatelliteArgs};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap, HashSet};
 use types::list::ListParams;
+use crate::upgrade::types::upgrade::UpgradeStableState;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -121,7 +123,9 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (stable,): (StableState,) = stable_restore().unwrap();
+    let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
+
+    let stable = StableState::from(&upgrade_stable);
 
     let asset_hashes = AssetHashes::from(&stable.storage);
 

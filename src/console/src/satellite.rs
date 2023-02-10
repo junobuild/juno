@@ -89,7 +89,12 @@ pub async fn create_satellite_with_payment(
     .await;
 
     match block {
-        None => Err("No valid payment found to create satellite.".to_string()),
+        None => Err([
+            "No valid payment found to create satellite.",
+            &format!("Block index: {}", block_index.unwrap()),
+        ]
+        .join("")
+        .to_string()),
         Some(_) => {
             if is_known_payment(&mission_control_payment_block_index) {
                 return Err("Payment has been or is being processed.".to_string());

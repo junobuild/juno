@@ -679,7 +679,7 @@ checksum = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"
 
 [[package]]
 name = "mission_control"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -1029,7 +1029,7 @@ dependencies = [
 
 [[package]]
 name = "shared"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "candid",
  "futures",

@@ -53,6 +53,7 @@ use ic_cdk::export::candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use rules::constants::DEFAULT_DB_COLLECTIONS;
+use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::types::interface::{Controllers, ControllersArgs, SatelliteArgs};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap, HashSet};
@@ -219,6 +220,15 @@ fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
 fn add_controllers(ControllersArgs { controllers }: ControllersArgs) -> Controllers {
+    let current_controllers = get_controllers();
+
+    if current_controllers.len() >= MAX_NUMBER_OF_SATELLITE_CONTROLLERS {
+        trap(&format!(
+            "Maximum number of controllers ({}) is already reached.",
+            MAX_NUMBER_OF_SATELLITE_CONTROLLERS
+        ));
+    }
+
     add_controllers_store(&controllers);
     get_controllers()
 }

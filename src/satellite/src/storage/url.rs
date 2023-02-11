@@ -13,10 +13,12 @@ pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
         Ok(parsed_url) => {
             let requested_path = parsed_url.path();
 
+            // The requested path is /something.js or without file extension (/something or /something/)?
             let extension = Path::new(requested_path).extension();
 
             let token = map_token(parsed_url.clone());
 
+            // No alternative path if requested url target an exact file with extension
             match extension {
                 Some(_) => Ok(MapUrl {
                     token,
@@ -36,7 +38,6 @@ pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
     }
 }
 
-/// if an HTML is added to the assets, then according config we map it for the certified_assets
 pub fn alternative_paths(full_path: &String) -> Option<Vec<String>> {
     // e.g. search to split index.js or index.html or .well-known
     let extensions: Vec<&str> = full_path.split('.').collect();

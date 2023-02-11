@@ -38,6 +38,10 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
 
     let map_url = map_url(&url)?;
 
+    // ⚠️ Limitation: requesting an url without extension try to resolve first a corresponding asset
+    // e.g. /.well-known/hello -> try to find /.well-known/hello.html
+    // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
+
     for alternative_path in map_url.alternative_full_paths {
         let asset: Option<Asset> = get_public_asset(alternative_path, map_url.token.clone())?;
 

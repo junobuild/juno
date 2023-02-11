@@ -16,13 +16,13 @@ use crate::storage::constants::{
 use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
+use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
     AssetEncodingNoContent, AssetNoContent, CommitBatch, InitAssetKey,
 };
 use crate::storage::types::state::{Assets, FullPath, StorageRuntimeState, StorageStableState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
-use crate::storage::types::http_request::PublicAsset;
-use crate::storage::url::parse_url;
+use crate::storage::url::map_url;
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};
 use crate::STATE;
@@ -36,11 +36,32 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
         return Err("No url provided.");
     }
 
-    let url = parse_url(&url)?;
+    let map_url = map_url(&url)?;
 
-    let asset = get_public_asset(url.full_path.clone(), url.token.clone())?;
+    // ⚠️ Limitation: requesting an url without extension try to resolve first a corresponding asset
+    // e.g. /.well-known/hello -> try to find /.well-known/hello.html
+    // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
 
-    Ok(PublicAsset { url, asset })
+    for alternative_path in map_url.alternative_full_paths {
+        let asset: Option<Asset> = get_public_asset(alternative_path, map_url.token.clone())?;
+
+        // We return the first match
+        match asset {
+            None => (),
+            Some(_) => {
+                return Ok(PublicAsset {
+                    requested_path: url,
+                    asset,
+                });
+            }
+        }
+    }
+
+    let asset: Option<Asset> = get_public_asset(url.clone(), map_url.token)?;
+    Ok(PublicAsset {
+        requested_path: url,
+        asset,
+    })
 }
 
 pub fn get_public_asset(
@@ -209,7 +230,6 @@ fn secure_delete_asset_impl(
             &rule.write,
             &mut state.stable.storage.assets,
             &mut state.runtime,
-            &state.stable.storage.config,
         ),
     }
 }
@@ -221,7 +241,6 @@ fn delete_asset_impl(
     rule: &Permission,
     assets: &mut Assets,
     runtime: &mut RuntimeState,
-    config: &StorageConfig,
 ) -> Result<Option<Asset>, &'static str> {
     let asset = assets.get_mut(&full_path);
 
@@ -233,7 +252,7 @@ fn delete_asset_impl(
             }
 
             let deleted = assets.remove(&*full_path);
-            delete_certified_asset(runtime, &full_path, config);
+            delete_certified_asset(runtime, &full_path);
             Ok(deleted)
         }
     }
@@ -251,7 +270,7 @@ fn delete_assets_impl(collection: String, state: &mut State) {
 
     for full_path in full_paths {
         state.stable.storage.assets.remove(&full_path);
-        delete_certified_asset(&mut state.runtime, &full_path, &state.stable.storage.config);
+        delete_certified_asset(&mut state.runtime, &full_path);
     }
 }
 
@@ -412,7 +431,7 @@ fn commit_batch_impl(
             match asset {
                 Err(err) => Err(err),
                 Ok(asset) => {
-                    update_certified_asset(state, &asset, &state.stable.storage.config.clone());
+                    update_certified_asset(state, &asset);
                     Ok(())
                 }
             }
@@ -601,6 +620,10 @@ fn set_config_impl(config: &StorageConfig, state: &mut StorageStableState) {
     state.config = config.clone();
 }
 
+pub fn get_config() -> StorageConfig {
+    STATE.with(|state| state.borrow().stable.storage.config.clone())
+}
+
 ///
 /// Domain
 ///
@@ -640,7 +663,7 @@ fn update_custom_domains_asset(state: &mut State) {
         .assets
         .insert(full_path.clone(), asset.clone());
 
-    update_certified_asset(state, &asset, &state.stable.storage.config.clone());
+    update_certified_asset(state, &asset);
 }
 
 fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut State) {
@@ -682,17 +705,17 @@ pub fn get_custom_domains() -> CustomDomains {
 
 /// Certified assets
 
-fn update_certified_asset(state: &mut State, asset: &Asset, config: &StorageConfig) {
+fn update_certified_asset(state: &mut State, asset: &Asset) {
     // 1. Replace or insert the new asset in tree
-    state.runtime.storage.asset_hashes.insert(asset, config);
+    state.runtime.storage.asset_hashes.insert(asset);
 
     // 2. Update the root hash and the canister certified data
     update_certified_data(&state.runtime.storage.asset_hashes);
 }
 
-fn delete_certified_asset(runtime: &mut RuntimeState, full_path: &String, config: &StorageConfig) {
+fn delete_certified_asset(runtime: &mut RuntimeState, full_path: &String) {
     // 1. Remove the asset in tree
-    runtime.storage.asset_hashes.delete(full_path, config);
+    runtime.storage.asset_hashes.delete(full_path);
 
     // 2. Update the root hash and the canister certified data
     update_certified_data(&runtime.storage.asset_hashes);

@@ -1,14 +1,16 @@
 use ic_cdk::id;
 use serde_bytes::ByteBuf;
+use globset::Glob;
 
 use crate::storage::cert::build_asset_certificate_header;
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
+use crate::storage::store::get_config;
+use crate::storage::types::config::StorageConfig;
 use crate::storage::types::http::{
     HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
 };
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
-use crate::storage::types::http_request::Url;
 use crate::STATE;
 
 pub fn streaming_strategy(
@@ -51,11 +53,11 @@ pub fn create_token(
 }
 
 pub fn build_headers(
-    url: &Url,
+    requested_path: &str,
     asset: &Asset,
     encoding_type: &String,
 ) -> Result<Vec<HeaderField>, &'static str> {
-    let certified_header = build_certified_headers(url);
+    let certified_header = build_certified_headers(requested_path);
 
     match certified_header {
         Err(err) => Err(err),
@@ -78,20 +80,46 @@ pub fn build_headers(
                 ));
             }
 
-            Ok([headers, security_headers()].concat())
+            // Headers provided as configuration of the storage
+            let config_headers = build_config_headers(requested_path);
+
+            Ok([headers, config_headers, security_headers()].concat())
         }
     }
 }
 
-fn build_certified_headers(url: &Url) -> Result<HeaderField, &'static str> {
-    STATE.with(|state| build_certified_headers_impl(url, &state.borrow().runtime.storage))
+fn build_config_headers(requested_path: &str) -> Vec<HeaderField> {
+    let StorageConfig {
+        headers: config_headers,
+    } = get_config();
+
+    config_headers
+        .iter()
+        .filter(|(source, _)| {
+            let glob = Glob::new(source);
+
+            match glob {
+                Err(_) => false,
+                Ok(glob) => {
+                    let matcher = glob.compile_matcher();
+                    matcher.is_match(requested_path)
+                }
+            }
+        })
+        .flat_map(|(_, headers)| headers.clone())
+        .collect()
+}
+
+fn build_certified_headers(requested_path: &str) -> Result<HeaderField, &'static str> {
+    STATE
+        .with(|state| build_certified_headers_impl(requested_path, &state.borrow().runtime.storage))
 }
 
 fn build_certified_headers_impl(
-    url: &Url,
+    requested_path: &str,
     state: &StorageRuntimeState,
 ) -> Result<HeaderField, &'static str> {
-    build_asset_certificate_header(&state.asset_hashes, url.requested_path.clone())
+    build_asset_certificate_header(&state.asset_hashes, requested_path.to_owned())
 }
 
 // Source: NNS-dapp

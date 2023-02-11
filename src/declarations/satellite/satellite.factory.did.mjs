@@ -8,6 +8,10 @@ export const idlFactory = ({ IDL }) => {
 		chunk_ids: IDL.Vec(IDL.Nat)
 	});
 	const DelDoc = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
+	const StorageConfig = IDL.Record({
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))))
+	});
+	const Config = IDL.Record({ storage: StorageConfig });
 	const Doc = IDL.Record({
 		updated_at: IDL.Nat64,
 		owner: IDL.Principal,
@@ -110,12 +114,6 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		write: Permission
 	});
-	const TrailingSlash = IDL.Variant({
-		Never: IDL.Null,
-		Always: IDL.Null
-	});
-	const StorageConfig = IDL.Record({ trailing_slash: TrailingSlash });
-	const Config = IDL.Record({ storage: StorageConfig });
 	const SetDoc = IDL.Record({
 		updated_at: IDL.Opt(IDL.Nat64),
 		data: IDL.Vec(IDL.Nat8)
@@ -138,6 +136,7 @@ export const idlFactory = ({ IDL }) => {
 		del_assets: IDL.Func([IDL.Opt(IDL.Text)], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		del_doc: IDL.Func([IDL.Text, IDL.Text, DelDoc], [], []),
+		get_config: IDL.Func([], [Config], []),
 		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(

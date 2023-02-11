@@ -90,7 +90,9 @@ type SetRule = record {
   read : Permission;
   write : Permission;
 };
-type StorageConfig = record { trailing_slash : TrailingSlash };
+type StorageConfig = record {
+  headers : vec record { text; vec record { text; text } };
+};
 type StreamingCallbackHttpResponse = record {
   token : opt StreamingCallbackToken;
   body : vec nat8;
@@ -109,7 +111,6 @@ type StreamingStrategy = variant {
     callback : func () -> ();
   };
 };
-type TrailingSlash = variant { Never; Always };
 type UploadChunk = record { chunk_id : nat };
 service : {
   add_controllers : (ControllersArgs) -> (vec principal);
@@ -118,6 +119,7 @@ service : {
   del_assets : (opt text) -> ();
   del_custom_domain : (text) -> ();
   del_doc : (text, text, DelDoc) -> ();
+  get_config : () -> (Config);
   get_doc : (text, text) -> (opt Doc) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (

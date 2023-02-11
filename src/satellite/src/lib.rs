@@ -21,8 +21,9 @@ use crate::storage::http::{
 };
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
-    get_custom_domains, get_public_asset, get_public_asset_for_url,
-    list_assets as list_assets_store, set_domain,
+    get_config as get_storage_config, get_custom_domains, get_public_asset,
+    get_public_asset_for_url, list_assets as list_assets_store, set_config as set_storage_config,
+    set_domain,
 };
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::config::StorageConfig;
@@ -30,12 +31,12 @@ use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
+use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk,
 };
 use crate::storage::types::state::StorageStableState;
 use crate::storage::types::store::{Asset, Chunk};
-use crate::storage::types::http_request::PublicAsset;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
@@ -239,6 +240,13 @@ fn list_controllers() -> Controllers {
 #[update(guard = "caller_is_controller")]
 fn set_config(config: Config) {
     set_storage_config(&config.storage);
+}
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn get_config1() -> Config {
+    let storage = get_storage_config();
+    Config { storage }
 }
 
 ///

@@ -1,8 +1,11 @@
 use ic_cdk::id;
+use regex::Regex;
 use serde_bytes::ByteBuf;
 
 use crate::storage::cert::build_asset_certificate_header;
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
+use crate::storage::store::get_config;
+use crate::storage::types::config::StorageConfig;
 use crate::storage::types::http::{
     HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
 };
@@ -50,7 +53,7 @@ pub fn create_token(
 }
 
 pub fn build_headers(
-    requested_path: &String,
+    requested_path: &str,
     asset: &Asset,
     encoding_type: &String,
 ) -> Result<Vec<HeaderField>, &'static str> {
@@ -77,20 +80,39 @@ pub fn build_headers(
                 ));
             }
 
-            Ok([headers, security_headers()].concat())
+            // Headers provided as configuration of the storage
+            let config_headers = build_config_headers(requested_path);
+
+            Ok([headers, config_headers, security_headers()].concat())
         }
     }
 }
 
-fn build_certified_headers(requested_path: &String) -> Result<HeaderField, &'static str> {
-    STATE.with(|state| build_certified_headers_impl(requested_path, &state.borrow().runtime.storage))
+fn build_config_headers(requested_path: &str) -> Vec<HeaderField> {
+    let StorageConfig {
+        headers: config_headers,
+    } = get_config();
+
+    config_headers
+        .iter()
+        .filter(|(source, _)| {
+            let re = Regex::new(source).unwrap();
+            re.is_match(requested_path)
+        })
+        .flat_map(|(_, headers)| headers.clone())
+        .collect()
+}
+
+fn build_certified_headers(requested_path: &str) -> Result<HeaderField, &'static str> {
+    STATE
+        .with(|state| build_certified_headers_impl(requested_path, &state.borrow().runtime.storage))
 }
 
 fn build_certified_headers_impl(
-    requested_path: &String,
+    requested_path: &str,
     state: &StorageRuntimeState,
 ) -> Result<HeaderField, &'static str> {
-    build_asset_certificate_header(&state.asset_hashes, requested_path.clone())
+    build_asset_certificate_header(&state.asset_hashes, requested_path.to_owned())
 }
 
 // Source: NNS-dapp

@@ -16,12 +16,12 @@ use crate::storage::constants::{
 use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
+use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
     AssetEncodingNoContent, AssetNoContent, CommitBatch, InitAssetKey,
 };
 use crate::storage::types::state::{Assets, FullPath, StorageRuntimeState, StorageStableState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
-use crate::storage::types::http_request::{PublicAsset};
 use crate::storage::url::map_url;
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};
@@ -57,7 +57,7 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
         }
     }
 
-    let asset: Option<Asset> = get_public_asset(url.clone(), map_url.token.clone())?;
+    let asset: Option<Asset> = get_public_asset(url.clone(), map_url.token)?;
     Ok(PublicAsset {
         requested_path: url,
         asset,
@@ -618,6 +618,10 @@ pub fn set_config(config: &StorageConfig) {
 
 fn set_config_impl(config: &StorageConfig, state: &mut StorageStableState) {
     state.config = config.clone();
+}
+
+pub fn get_config() -> StorageConfig {
+    STATE.with(|state| state.borrow().stable.storage.config.clone())
 }
 
 ///

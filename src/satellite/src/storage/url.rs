@@ -1,5 +1,5 @@
+use crate::storage::types::http_request::MapUrl;
 use std::path::Path;
-use crate::storage::types::http_request::{MapUrl};
 use url::{ParseError, Url};
 
 pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
@@ -30,7 +30,7 @@ pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
 
                     Ok(MapUrl {
                         token,
-                        alternative_full_paths: alternative_urls
+                        alternative_full_paths: alternative_urls,
                     })
                 }
             }
@@ -53,7 +53,7 @@ pub fn alternative_paths(full_path: &String) -> Option<Vec<String>> {
         return Some(Vec::from(["/".to_string()]));
     }
 
-    aliased_by(&full_path)
+    aliased_by(full_path)
 }
 
 /// BEGIN: From DFINITY certified asset canister

@@ -197,17 +197,21 @@ pub mod http {
 }
 
 pub mod config {
+    use crate::storage::types::http::HeaderField;
     use candid::{CandidType, Deserialize};
+    use std::collections::HashMap;
+
+    pub type StorageConfigHeaders = HashMap<String, Vec<HeaderField>>;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct StorageConfig {
-        // TODO
+        pub headers: StorageConfigHeaders,
     }
 }
 
 pub mod http_request {
-    use candid::{CandidType, Deserialize};
     use crate::storage::types::store::Asset;
+    use candid::{CandidType, Deserialize};
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct MapUrl {

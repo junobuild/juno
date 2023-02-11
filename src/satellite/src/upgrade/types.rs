@@ -3,7 +3,8 @@
 ///
 /// v0.0.1 -> v0.0.3
 ///
-/// CustomDomain.bn_id from String to Option<String>
+/// - CustomDomain.bn_id from String to Option<String>
+/// - StorageConfig.trailing_slash deprecated
 ///
 pub mod upgrade {
     use crate::db::types::state::DbStableState;

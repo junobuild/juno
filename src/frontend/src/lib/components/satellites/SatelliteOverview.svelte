@@ -1,12 +1,9 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import IconLaunch from '$lib/components/icons/IconLaunch.svelte';
-	import { satelliteName, satelliteUrl } from '$lib/utils/satellite.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 	import SatelliteTopUp from '$lib/components/satellites/SatelliteTopUp.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 
 	export let satellite: Satellite;
@@ -16,12 +13,7 @@
 </script>
 
 <div class="card-container">
-	<div class="title">
-		<h1>{satelliteName(satellite)}</h1>
-		<ExternalLink href={satelliteUrl(satelliteId)} ariaLabel={$i18n.satellites.open}>
-			<IconLaunch /></ExternalLink
-		>
-	</div>
+	<h1>{satelliteName(satellite)}</h1>
 
 	<Value>
 		<svelte:fragment slot="label">ID</svelte:fragment>
@@ -39,12 +31,8 @@
 <style lang="scss">
 	@use '../../styles/mixins/text';
 
-	.title {
-		display: flex;
-		justify-content: space-between;
-		align-items: flex-start;
-		width: 100%;
-		margin: 0 0 var(--padding-1_5x);
+	h1 {
+		margin: 0 0 var(--padding-3x);
 	}
 
 	p,

@@ -5,6 +5,7 @@ mod list;
 mod rules;
 mod storage;
 mod types;
+mod upgrade;
 mod utils;
 
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
@@ -41,6 +42,7 @@ use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
 use crate::types::state::{RuntimeState, StableState, State};
+use crate::upgrade::types::upgrade::UpgradeStableState;
 use controllers::store::{
     add_controllers as add_controllers_store, get_controllers,
     remove_controllers as remove_controllers_store,
@@ -123,7 +125,9 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (stable,): (StableState,) = stable_restore().unwrap();
+    let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
+
+    let stable = StableState::from(&upgrade_stable);
 
     let asset_hashes = AssetHashes::from(&stable.storage);
 

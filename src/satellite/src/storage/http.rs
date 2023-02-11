@@ -1,6 +1,6 @@
+use globset::Glob;
 use ic_cdk::id;
 use serde_bytes::ByteBuf;
-use globset::Glob;
 
 use crate::storage::cert::build_asset_certificate_header;
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;

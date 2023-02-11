@@ -1,6 +1,6 @@
 use ic_cdk::id;
-use regex::Regex;
 use serde_bytes::ByteBuf;
+use globset::Glob;
 
 use crate::storage::cert::build_asset_certificate_header;
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
@@ -96,8 +96,15 @@ fn build_config_headers(requested_path: &str) -> Vec<HeaderField> {
     config_headers
         .iter()
         .filter(|(source, _)| {
-            let re = Regex::new(source).unwrap();
-            re.is_match(requested_path)
+            let glob = Glob::new(source);
+
+            match glob {
+                Err(_) => false,
+                Ok(glob) => {
+                    let matcher = glob.compile_matcher();
+                    matcher.is_match(requested_path)
+                }
+            }
         })
         .flat_map(|(_, headers)| headers.clone())
         .collect()

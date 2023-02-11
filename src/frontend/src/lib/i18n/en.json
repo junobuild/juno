@@ -18,7 +18,9 @@
 		"rules": "Rules",
 		"continue": "Continue",
 		"not_logged_in": "Developer not logged in.",
-		"ready": "Ready"
+		"ready": "Ready",
+		"yes": "Yes",
+		"no": "No"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -105,7 +107,10 @@
 		"hosting_invalid_url": "Please provide a valid URL.",
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",
 		"hosting_configuration_issues": "Error while configuring the custom domain for the satellite.",
-		"hosting_loading_errors": "Error while loading the custom domains of the satellite."
+		"hosting_loading_errors": "Error while loading the custom domains of the satellite.",
+		"controllers_listing": "Error while listing the controllers.",
+		"controllers_no_selection": "No controller to delete selected.",
+		"controllers_delete": "Unexpected error(s) while deleting the controller."
 	},
 	"document": {
 		"owner": "Owner",
@@ -123,5 +128,11 @@
 	"admin": {
 		"mission_control_new_version": "A new version of your mission control is available! Upgrade it with the CLI.",
 		"satellite_new_version": "A new version of your satellite is available! Upgrade it with the CLI."
+	},
+	"controllers": {
+		"title": "Controllers",
+		"delete": "Delete a controller",
+		"delete_question": "Delete selected controller?",
+		"controller_id": "ID: {0}"
 	}
 }

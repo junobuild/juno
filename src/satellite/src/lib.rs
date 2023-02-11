@@ -244,7 +244,7 @@ fn set_config(config: Config) {
 
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
-fn get_config1() -> Config {
+fn get_config() -> Config {
     let storage = get_storage_config();
     Config { storage }
 }

@@ -77,6 +77,26 @@ export const addMissionControlController = async ({
 	return actor.add_mission_control_controllers([Principal.fromText(controller)]);
 };
 
+export const removeMissionControlController = async ({
+	missionControlId,
+	controller
+}: {
+	missionControlId: Principal;
+	controller: Principal;
+}) => {
+	const actor = await getMissionControlActor(missionControlId);
+	return actor.remove_mission_control_controllers([controller]);
+};
+
+export const listMissionControlControllers = async ({
+	missionControlId
+}: {
+	missionControlId: Principal;
+}): Promise<Principal[]> => {
+	const actor = await getMissionControlActor(missionControlId);
+	return actor.list_mission_control_controllers();
+};
+
 export const topUp = async ({
 	missionControlId,
 	canisterId,

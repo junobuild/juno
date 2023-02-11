@@ -9,18 +9,24 @@
 	import { writable } from 'svelte/store';
 	import { setContext } from 'svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import Transactions from '$lib/components/mission-control/Transactions.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
+	import { nonNullish } from '$lib/utils/utils';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
 			name: $i18n.mission_control.title
+		},
+		{
+			id: Symbol('2'),
+			name: $i18n.controllers.title
 		}
 		// TODO: implement and add transactions tab when ICP index canisters makes it to mainnet
 		// {
-		// 	id: Symbol('2'),
+		// 	id: Symbol('3'),
 		// 	name: $i18n.mission_control.transactions
 		// }
 	];
@@ -37,10 +43,12 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/architecture">
-		{#if $store.tabId === $store.tabs[0].id}
-			<MissionControl />
-		{:else if $store.tabId === $store.tabs[1].id}
-			<Transactions />
+		{#if nonNullish($missionControlStore)}
+			{#if $store.tabId === $store.tabs[0].id}
+				<MissionControl />
+			{:else if $store.tabId === $store.tabs[1].id}
+				<MissionControlControllers missionControlId={$missionControlStore} />
+			{/if}
 		{/if}
 	</Tabs>
 </IdentityGuard>

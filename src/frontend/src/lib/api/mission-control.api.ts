@@ -53,6 +53,19 @@ export const addSatellitesController = async ({
 	return actor.add_satellites_controllers(satelliteIds, [Principal.fromText(controller)]);
 };
 
+export const removeSatellitesController = async ({
+	missionControlId,
+	satelliteIds,
+	controller
+}: {
+	missionControlId: Principal;
+	satelliteIds: Principal[];
+	controller: Principal;
+}) => {
+	const actor = await getMissionControlActor(missionControlId);
+	return actor.remove_satellites_controllers(satelliteIds, [controller]);
+};
+
 export const addMissionControlController = async ({
 	missionControlId,
 	controller

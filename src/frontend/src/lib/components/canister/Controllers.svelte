@@ -86,7 +86,7 @@
 	const close = () => {
 		selectedController = undefined;
 		visible = false;
-	}
+	};
 </script>
 
 <div class="table-container">
@@ -107,8 +107,7 @@
 							on:click|stopPropagation={() => {
 								selectedController = controller;
 								visible = true;
-							}}
-							><IconDelete /></button
+							}}><IconDelete /></button
 						>
 						<span>{controller.toText()}</span>
 					</td></tr
@@ -134,29 +133,22 @@
 				</p>
 			{/if}
 
-			<button
-					type="button"
-					on:click|stopPropagation={close}
-					disabled={$busy}
-			>
+			<button type="button" on:click|stopPropagation={close} disabled={$busy}>
 				{$i18n.core.no}
 			</button>
 
 			<button type="button" on:click|stopPropagation={deleteController} disabled={$busy}>
 				{$i18n.core.yes}
 			</button>
-			{:else}
-				<p>{$i18n.controllers.no_delete}</p>
+		{:else}
+			<p>{$i18n.controllers.no_delete}</p>
 
-				<p>{$i18n.controllers.more_delete}</p>
+			<p>{$i18n.controllers.more_delete}</p>
 
-				<button
-						type="button"
-						on:click|stopPropagation={close}
-				>
-					{$i18n.core.ok}
-				</button>
-			{/if}
+			<button type="button" on:click|stopPropagation={close}>
+				{$i18n.core.ok}
+			</button>
+		{/if}
 	</div>
 </Popover>
 

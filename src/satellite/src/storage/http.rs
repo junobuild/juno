@@ -8,7 +8,6 @@ use crate::storage::types::http::{
 };
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
-use crate::storage::types::http_request::Url;
 use crate::STATE;
 
 pub fn streaming_strategy(
@@ -51,11 +50,11 @@ pub fn create_token(
 }
 
 pub fn build_headers(
-    url: &Url,
+    requested_path: &String,
     asset: &Asset,
     encoding_type: &String,
 ) -> Result<Vec<HeaderField>, &'static str> {
-    let certified_header = build_certified_headers(url);
+    let certified_header = build_certified_headers(requested_path);
 
     match certified_header {
         Err(err) => Err(err),
@@ -83,15 +82,15 @@ pub fn build_headers(
     }
 }
 
-fn build_certified_headers(url: &Url) -> Result<HeaderField, &'static str> {
-    STATE.with(|state| build_certified_headers_impl(url, &state.borrow().runtime.storage))
+fn build_certified_headers(requested_path: &String) -> Result<HeaderField, &'static str> {
+    STATE.with(|state| build_certified_headers_impl(requested_path, &state.borrow().runtime.storage))
 }
 
 fn build_certified_headers_impl(
-    url: &Url,
+    requested_path: &String,
     state: &StorageRuntimeState,
 ) -> Result<HeaderField, &'static str> {
-    build_asset_certificate_header(&state.asset_hashes, url.requested_path.clone())
+    build_asset_certificate_header(&state.asset_hashes, requested_path.clone())
 }
 
 // Source: NNS-dapp

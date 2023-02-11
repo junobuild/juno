@@ -201,27 +201,23 @@ pub mod config {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct StorageConfig {
-        pub trailing_slash: TrailingSlash,
-    }
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub enum TrailingSlash {
-        Never,
-        Always,
+        // TODO
     }
 }
 
 pub mod http_request {
+    use candid::{CandidType, Deserialize};
     use crate::storage::types::store::Asset;
 
-    pub struct Url {
-        pub requested_path: String,
-        pub full_path: String,
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct MapUrl {
         pub token: Option<String>,
+        pub alternative_full_paths: Vec<String>,
     }
 
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct PublicAsset {
-        pub url: Url,
+        pub requested_path: String,
         pub asset: Option<Asset>,
     }
 }

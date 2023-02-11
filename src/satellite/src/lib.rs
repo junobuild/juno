@@ -22,7 +22,7 @@ use crate::storage::http::{
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
     get_custom_domains, get_public_asset, get_public_asset_for_url,
-    list_assets as list_assets_store, set_config as set_storage_config, set_domain,
+    list_assets as list_assets_store, set_domain,
 };
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::config::StorageConfig;
@@ -292,14 +292,14 @@ fn http_request(
     match result {
         Ok(PublicAsset {
             asset,
-            url: custom_url,
+            requested_path,
         }) => match asset {
             Some(asset) => {
                 let encodings = build_encodings(req_headers);
 
                 for encoding_type in encodings.iter() {
                     if let Some(encoding) = asset.encodings.get(encoding_type) {
-                        let headers = build_headers(&custom_url, &asset, encoding_type);
+                        let headers = build_headers(&requested_path, &asset, encoding_type);
 
                         let Asset {
                             key,

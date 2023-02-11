@@ -117,7 +117,7 @@ export interface SetRule {
 	write: Permission;
 }
 export interface StorageConfig {
-	trailing_slash: TrailingSlash;
+	headers: Array<[string, Array<[string, string]>]>;
 }
 export interface StreamingCallbackHttpResponse {
 	token: [] | [StreamingCallbackToken];
@@ -137,7 +137,6 @@ export type StreamingStrategy = {
 		callback: [Principal, string];
 	};
 };
-export type TrailingSlash = { Never: null } | { Always: null };
 export interface UploadChunk {
 	chunk_id: bigint;
 }
@@ -148,6 +147,7 @@ export interface _SERVICE {
 	del_assets: ActorMethod<[[] | [string]], undefined>;
 	del_custom_domain: ActorMethod<[string], undefined>;
 	del_doc: ActorMethod<[string, string, DelDoc], undefined>;
+	get_config: ActorMethod<[], Config>;
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<

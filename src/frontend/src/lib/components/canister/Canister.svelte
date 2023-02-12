@@ -13,7 +13,6 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';
-	import { isNullish } from '$lib/utils/utils';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 
 	export let canisterId: Principal;
@@ -30,6 +29,7 @@
 		| {
 				startCyclesTimer: (params: { canisterIds: string[]; callback: CyclesCallback }) => void;
 				stopCyclesTimer: () => void;
+				restartCyclesTimer: (canisterIds: string[]) => void;
 		  }
 		| undefined;
 
@@ -40,6 +40,14 @@
 			worker?.startCyclesTimer({ canisterIds: [canisterId.toText()], callback: syncCanister }))();
 
 	onDestroy(() => worker?.stopCyclesTimer());
+
+	const restartCycles = ({ detail: { canisterId: syncCanisterId } }) => {
+		if (syncCanisterId.toText() !== canisterId.toText()) {
+			return;
+		}
+
+		worker?.restartCyclesTimer([canisterId.toText()]);
+	};
 
 	let data: CanisterData | undefined;
 	let sync: CanisterSyncStatus | undefined = undefined;
@@ -60,6 +68,8 @@
 		warning: false
 	});
 </script>
+
+<svelte:window on:junoRestartCycles={restartCycles} />
 
 {#if display}
 	{#if ['synced', 'syncing'].includes(sync)}

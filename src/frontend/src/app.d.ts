@@ -18,6 +18,7 @@ declare namespace svelte.JSX {
 		onjunoModal?: (event: CustomEvent<any>) => void;
 		onjunoSyncCustomDomains?: (event: CustomEvent<any>) => void;
 		onjunoSyncCanister?: (event: CustomEvent<any>) => void;
+		onjunoRestartCycles?: (event: CustomEvent<any>) => void;
 	}
 }
 

@@ -14,6 +14,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let canisterId: Principal;
 
@@ -59,6 +60,8 @@
 				missionControlId: $missionControlStore,
 				e8s: BigInt(icp * Number(E8S_PER_ICP))
 			});
+
+			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 
 			steps = 'ready';
 		} catch (err: unknown) {

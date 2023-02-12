@@ -10,7 +10,6 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import IconVerified from '$lib/components/icons/IconVerified.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { setCustomDomain } from '$lib/api/satellites.api';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

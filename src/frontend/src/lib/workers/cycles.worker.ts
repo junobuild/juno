@@ -15,9 +15,13 @@ onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRe
 
 	switch (msg) {
 		case 'stopCyclesTimer':
-			await stopCyclesTimer();
+			stopCyclesTimer();
 			return;
 		case 'startCyclesTimer':
+			await startCyclesTimer({ data });
+			return;
+		case 'restartCyclesTimer':
+			stopCyclesTimer();
 			await startCyclesTimer({ data });
 			return;
 	}
@@ -57,7 +61,7 @@ const startCyclesTimer = async ({ data: { canisterIds } }: { data: PostMessageDa
 	timer = setInterval(sync, SYNC_CYCLES_TIMER_INTERVAL);
 };
 
-const stopCyclesTimer = async () => {
+const stopCyclesTimer = () => {
 	if (!timer) {
 		return;
 	}

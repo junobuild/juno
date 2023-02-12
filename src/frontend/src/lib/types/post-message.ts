@@ -11,6 +11,7 @@ export interface PostMessageDataResponse {
 export type PostMessageRequest =
 	| 'startCyclesTimer'
 	| 'stopCyclesTimer'
+	| 'restartCyclesTimer'
 	| 'startIdleTimer'
 	| 'stopIdleTimer';
 

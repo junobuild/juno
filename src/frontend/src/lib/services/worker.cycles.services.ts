@@ -37,6 +37,12 @@ export const initCyclesWorker = async () => {
 			cyclesWorker.postMessage({
 				msg: 'stopCyclesTimer'
 			});
+		},
+		restartCyclesTimer: (canisterIds: string[]) => {
+			cyclesWorker.postMessage({
+				msg: 'restartCyclesTimer',
+				data: { canisterIds }
+			});
 		}
 	};
 };

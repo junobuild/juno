@@ -56,6 +56,7 @@ interface I18nSatellites {
 	name: string;
 	enter_name: string;
 	create_satellite_price: string;
+	loading_satellites: string;
 }
 
 interface I18nMission_control {

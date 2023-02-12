@@ -14,6 +14,11 @@ export const satelliteStore: Readable<Satellite | undefined | null> = derived(
 			return undefined;
 		}
 
+		// Satellites not loaded yet
+		if (satellites === undefined) {
+			return undefined;
+		}
+
 		const satellite = (satellites ?? []).find(
 			({ satellite_id }) => satellite_id.toText() === data.satellite
 		);

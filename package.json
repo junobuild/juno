@@ -24,8 +24,9 @@
 		"hosting"
 	],
 	"scripts": {
-		"build:reproducible": "node scripts/build.reproducible.mjs",
-		"build:post-process": "npm run build:reproducible",
+		"build:compress": "./scripts/build.compress.sh",
+		"build:csp": "node scripts/build.csp.mjs",
+		"build:post-process": "npm run build:csp && npm run build:compress",
 		"topup": "dfx wallet send rno2w-sqaaa-aaaaa-aaacq-cai 20000000000000",
 		"dev": "npm run i18n && vite dev",
 		"build": "vite build && npm run build:post-process",

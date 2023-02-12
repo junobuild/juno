@@ -61,6 +61,7 @@ interface I18nSatellites {
 
 interface I18nMission_control {
 	title: string;
+	overview: string;
 	id: string;
 	account_identifier: string;
 	balance: string;

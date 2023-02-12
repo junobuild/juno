@@ -16,7 +16,7 @@
 	>
 {/if}
 
-<Popover bind:visible anchor={button} direction="rtl">
+<Popover bind:visible anchor={button}>
 	<div class="container">
 		<a
 			aria-label="To the satellites"
@@ -68,6 +68,8 @@
 		text-decoration: none;
 
 		display: none;
+
+		margin: var(--padding) 0;
 
 		@include media.min-width(xsmall) {
 			display: flex;

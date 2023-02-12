@@ -18,7 +18,7 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			name: $i18n.mission_control.title
+			name: $i18n.mission_control.overview
 		},
 		{
 			id: Symbol('2'),

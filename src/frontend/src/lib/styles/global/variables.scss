@@ -10,7 +10,6 @@
 	--footer-height: calc(11 * var(--padding));
 
 	@include media.min-width(xlarge) {
-		--header-height: calc(17 * var(--padding));
 		--footer-height: calc(17 * var(--padding));
 	}
 

@@ -103,6 +103,7 @@
 		"cli_unexpected_error": "Unexpected error(s) while adding your controller.",
 		"satellite_name_missing": "A name for the satellite must be provided.",
 		"satellite_unexpected_error": "Unexpected error(s) while creating the satellite.",
+		"satellite_no_found": "Satellite not found. Return to <a href=\"/\">start</a> to find your satellites.",
 		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits.",
 		"hosting_missing_domain_name": "A domain name must be provided.",
 		"hosting_invalid_url": "Please provide a valid URL.",

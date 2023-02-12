@@ -160,4 +160,9 @@
 			color: var(--color-primary-contrast);
 		}
 	}
+
+	&:active {
+		box-shadow: none;
+		transform: translateX(9px) translateY(9px);
+	}
 }

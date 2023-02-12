@@ -29,6 +29,9 @@
 	let insufficientFunds = true;
 	$: insufficientFunds = balance + credits < fee;
 
+	let notEnoughCredits = false;
+	$: notEnoughCredits = credits < fee;
+
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
 	let satellite: Satellite | undefined = undefined;
 
@@ -91,7 +94,7 @@
 			{$i18n.satellites.description}
 		</p>
 
-		{#if insufficientFunds}
+		{#if notEnoughCredits}
 			<p>
 				{@html i18nFormat($i18n.satellites.create_satellite_price, [
 					{
@@ -108,7 +111,9 @@
 					}
 				])}
 			</p>
+		{/if}
 
+		{#if insufficientFunds}
 			<button on:click={close}>Close</button>
 		{:else}
 			<form on:submit|preventDefault={onSubmit}>

@@ -22,18 +22,13 @@ const config = {
 	kit: {
 		adapter: adapter({
 			fallback: 'index.html',
-			precompress: true
+			precompress: false
 		}),
 		files: {
 			assets: filesPath('static'),
-			hooks: {
-				client: filesPath('src/hooks.client'),
-				server: filesPath('src/hooks.server')
-			},
 			lib: filesPath('src/lib'),
 			params: filesPath('src/params'),
 			routes: filesPath('src/routes'),
-			serviceWorker: filesPath('src/service-worker'),
 			appTemplate: filesPath('src/app.html'),
 			errorTemplate: filesPath('src/error.html')
 		}
@@ -43,7 +38,6 @@ const config = {
 	},
 	version: {
 		name: version
-	},
-	trailingSlash: 'always'
+	}
 };
 export default config;

@@ -54,6 +54,7 @@
 	},
 	"mission_control": {
 		"title": "Mission Control",
+		"overview": "Overview",
 		"id": "Mission control center ID",
 		"account_identifier": "Account identifier",
 		"balance": "Balance",

@@ -215,13 +215,13 @@ pub mod http_request {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct MapUrl {
+        pub path: String,
         pub token: Option<String>,
-        pub alternative_full_paths: Vec<String>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct PublicAsset {
-        pub requested_path: String,
+        pub url: String,
         pub asset: Option<Asset>,
     }
 }

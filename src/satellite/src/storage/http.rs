@@ -53,11 +53,11 @@ pub fn create_token(
 }
 
 pub fn build_headers(
-    requested_path: &str,
+    url: &str,
     asset: &Asset,
     encoding_type: &String,
 ) -> Result<Vec<HeaderField>, &'static str> {
-    let certified_header = build_certified_headers(requested_path);
+    let certified_header = build_certified_headers(url);
 
     match certified_header {
         Err(err) => Err(err),
@@ -81,7 +81,7 @@ pub fn build_headers(
             }
 
             // Headers provided as configuration of the storage
-            let config_headers = build_config_headers(requested_path);
+            let config_headers = build_config_headers(url);
 
             Ok([headers, config_headers, security_headers()].concat())
         }
@@ -110,16 +110,16 @@ fn build_config_headers(requested_path: &str) -> Vec<HeaderField> {
         .collect()
 }
 
-fn build_certified_headers(requested_path: &str) -> Result<HeaderField, &'static str> {
+fn build_certified_headers(url: &str) -> Result<HeaderField, &'static str> {
     STATE
-        .with(|state| build_certified_headers_impl(requested_path, &state.borrow().runtime.storage))
+        .with(|state| build_certified_headers_impl(url, &state.borrow().runtime.storage))
 }
 
 fn build_certified_headers_impl(
-    requested_path: &str,
+    url: &str,
     state: &StorageRuntimeState,
 ) -> Result<HeaderField, &'static str> {
-    build_asset_certificate_header(&state.asset_hashes, requested_path.to_owned())
+    build_asset_certificate_header(&state.asset_hashes, url.to_owned())
 }
 
 // Source: NNS-dapp

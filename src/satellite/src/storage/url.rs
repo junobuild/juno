@@ -11,29 +11,34 @@ pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
             Err(Box::leak(error))
         }
         Ok(parsed_url) => {
+            // Clean path without query params
             let requested_path = parsed_url.path();
-
-            // The requested path is /something.js or without file extension (/something or /something/)?
-            let extension = Path::new(requested_path).extension();
 
             let token = map_token(parsed_url.clone());
 
-            // No alternative path if requested url target an exact file with extension
-            match extension {
-                Some(_) => Ok(MapUrl {
-                    token,
-                    alternative_full_paths: Vec::new(),
-                }),
-                None => {
-                    // Url has no extension - e.g. is not something.js but /about or /about/
-                    let alternative_urls = aliases_of(&requested_path.to_string());
+            Ok(MapUrl {
+                path: requested_path.to_string(),
+                token,
+            })
+        }
+    }
+}
 
-                    Ok(MapUrl {
-                        token,
-                        alternative_full_paths: alternative_urls,
-                    })
-                }
-            }
+pub fn map_alternative_paths(
+    MapUrl {
+        path,
+        token: _,
+    }: &MapUrl,
+) -> Vec<String> {
+    // The requested path is /something.js or without file extension (/something or /something/)?
+    let extension = Path::new(path).extension();
+
+    // No alternative path if requested url target an exact file with extension
+    match extension {
+        Some(_) => Vec::new(),
+        None => {
+            // Url has no extension - e.g. is not something.js but /about or /about/
+            aliases_of(&path.to_string())
         }
     }
 }

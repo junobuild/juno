@@ -378,24 +378,21 @@ fn http_request_streaming_callback(
         encoding_type,
     }: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
-    let result = get_public_asset(full_path, token);
+    let asset = get_public_asset(full_path, token);
 
-    match result {
-        Err(err) => trap(&["Permission denied. Cannot stream asset: ", err].join("")),
-        Ok(asset) => match asset {
-            Some(asset) => {
-                let encoding = asset.encodings.get(&encoding_type);
+    match asset {
+        Some(asset) => {
+            let encoding = asset.encodings.get(&encoding_type);
 
-                match encoding {
-                    Some(encoding) => StreamingCallbackHttpResponse {
-                        token: create_token(&asset.key, index, encoding, &encoding_type, &headers),
-                        body: encoding.content_chunks[index].clone(),
-                    },
-                    None => trap("Streamed asset encoding not found."),
-                }
+            match encoding {
+                Some(encoding) => StreamingCallbackHttpResponse {
+                    token: create_token(&asset.key, index, encoding, &encoding_type, &headers),
+                    body: encoding.content_chunks[index].clone(),
+                },
+                None => trap("Streamed asset encoding not found."),
             }
-            None => trap("Streamed asset not found."),
-        },
+        }
+        None => trap("Streamed asset not found."),
     }
 }
 

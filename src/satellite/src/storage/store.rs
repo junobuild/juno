@@ -43,7 +43,7 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
 
     for alternative_path in map_url.alternative_full_paths {
-        let asset: Option<Asset> = get_public_asset(alternative_path, map_url.token.clone())?;
+        let asset: Option<Asset> = get_public_asset(alternative_path, map_url.token.clone());
 
         // We return the first match
         match asset {
@@ -57,17 +57,14 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
         }
     }
 
-    let asset: Option<Asset> = get_public_asset(url.clone(), map_url.token)?;
+    let asset: Option<Asset> = get_public_asset(url.clone(), map_url.token);
     Ok(PublicAsset {
         requested_path: url,
         asset,
     })
 }
 
-pub fn get_public_asset(
-    full_path: String,
-    token: Option<String>,
-) -> Result<Option<Asset>, &'static str> {
+pub fn get_public_asset(full_path: String, token: Option<String>) -> Option<Asset> {
     STATE.with(|state| get_public_asset_impl(full_path, token, &state.borrow().stable.storage))
 }
 
@@ -115,13 +112,13 @@ fn get_public_asset_impl(
     full_path: String,
     token: Option<String>,
     state: &StorageStableState,
-) -> Result<Option<Asset>, &'static str> {
+) -> Option<Asset> {
     let asset = state.assets.get(&full_path);
 
     match asset {
-        None => Ok(None),
+        None => None,
         Some(asset) => match &asset.key.token {
-            None => Ok(Some(asset.clone())),
+            None => Some(asset.clone()),
             Some(asset_token) => get_token_protected_asset(asset, asset_token, token),
         },
     }
@@ -131,15 +128,15 @@ fn get_token_protected_asset(
     asset: &Asset,
     asset_token: &String,
     token: Option<String>,
-) -> Result<Option<Asset>, &'static str> {
+) -> Option<Asset> {
     match token {
-        None => Err("No token provided."),
+        None => None,
         Some(token) => {
             if &token == asset_token {
-                return Ok(Some(asset.clone()));
+                return Some(asset.clone());
             }
 
-            Err("Invalid token.")
+            None
         }
     }
 }
@@ -234,6 +231,8 @@ fn secure_delete_asset_impl(
     }
 }
 
+const ERROR_ASSET_NOT_FOUND: &str = "No asset.";
+
 fn delete_asset_impl(
     caller: Principal,
     controllers: &Controllers,
@@ -245,10 +244,10 @@ fn delete_asset_impl(
     let asset = assets.get_mut(&full_path);
 
     match asset {
-        None => Err("No asset."),
+        None => Err(ERROR_ASSET_NOT_FOUND),
         Some(asset) => {
             if !assert_rule(rule, asset.key.owner, caller, controllers) {
-                return Err("Caller not allowed to delete asset.");
+                return Err(ERROR_ASSET_NOT_FOUND);
             }
 
             let deleted = assets.remove(&*full_path);
@@ -405,6 +404,8 @@ fn create_chunk_impl(
     }
 }
 
+const ERROR_CANNOT_COMMIT_BATCH: &str = "Cannot commit batch.";
+
 fn commit_batch_impl(
     caller: Principal,
     controllers: &Controllers,
@@ -415,10 +416,10 @@ fn commit_batch_impl(
     let batch = batches.get(&commit_batch.batch_id);
 
     match batch {
-        None => Err("No batch to commit."),
+        None => Err(ERROR_CANNOT_COMMIT_BATCH),
         Some(b) => {
             if principal_not_equal(caller, b.key.owner) {
-                return Err("Bach initializer does not match chunk committer.");
+                return Err(ERROR_CANNOT_COMMIT_BATCH);
             }
 
             if b.key.full_path == BN_WELL_KNOWN_CUSTOM_DOMAINS {
@@ -461,7 +462,7 @@ fn secure_commit_chunks(
                     None => (),
                     Some(current) => {
                         if !assert_rule(rule, current.key.owner, caller, controllers) {
-                            return Err("Caller not allowed to commit batch.");
+                            return Err(ERROR_CANNOT_COMMIT_BATCH);
                         }
                     }
                 }

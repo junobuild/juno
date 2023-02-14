@@ -4,6 +4,6 @@ Juno is released under the GNU Affero General Public License Version 3 (AGPLv3) 
 
 All artwork and icons - provided by [Didier Renaud](https://www.customfuture.com/) - are licensed under the Creative Commons License [CC BY-NC-SA](https://creativecommons.org/licenses/by-nc-sa/4.0/legalcode).
 
-The infrastructure of Juno - i.e. the canisters listed in [canister_ids.json](canister_ids.json) and other services must not be used unless special agreements have been concluded with Juno.
+The infrastructure of Juno - i.e. the canisters listed in [canister_ids.json](canister_ids.json) and other infrastructure must not be used unless special agreements have been concluded with Juno.
 
 Juno is developed by [David Dal Busco](mailto:david.dalbusco@outlook.com).

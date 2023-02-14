@@ -5,7 +5,7 @@
 ///
 pub mod upgrade {
     use crate::db::types::state::DbStableState;
-    use crate::storage::types::state::{StorageStableState};
+    use crate::storage::types::state::StorageStableState;
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::interface::Controllers;
@@ -16,5 +16,4 @@ pub mod upgrade {
         pub db: DbStableState,
         pub storage: StorageStableState,
     }
-
 }

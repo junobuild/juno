@@ -78,7 +78,7 @@ fn get_doc_impl(
                 None => Ok(None),
                 Some(value) => {
                     if !assert_rule(rule, value.owner, caller, controllers) {
-                        return Err("Caller not allowed to read.".to_string());
+                        return Ok(None);
                     }
 
                     Ok(Some(value.clone()))
@@ -349,6 +349,8 @@ fn delete_doc_impl(
     }
 }
 
+const ERROR_CANNOT_WRITE: &str = "Cannot write.";
+
 fn assert_write_permission(
     caller: Principal,
     controllers: &Controllers,
@@ -362,7 +364,7 @@ fn assert_write_permission(
             None => (),
             Some(current_doc) => {
                 if !assert_rule(rule, current_doc.owner, caller, controllers) {
-                    return Err("Caller not allowed to write.".to_string());
+                    return Err(ERROR_CANNOT_WRITE.to_string());
                 }
             }
         }

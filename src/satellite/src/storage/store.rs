@@ -36,10 +36,6 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
         return Err("No url provided.");
     }
 
-    // url: /hello/something?param=123
-    // path: /hello/something -> used to search for the asset
-    // requested url: /hello/something?param=123 -> used for certification
-
     let map_url = map_url(&url)?;
     let alternative_paths = map_alternative_paths(&map_url);
 
@@ -55,16 +51,16 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
             None => (),
             Some(_) => {
                 return Ok(PublicAsset {
-                    url,
+                    url: map_url.path,
                     asset,
                 });
             }
         }
     }
 
-    let asset: Option<Asset> = get_public_asset(map_url.path, map_url.token);
+    let asset: Option<Asset> = get_public_asset(map_url.path.clone(), map_url.token);
     Ok(PublicAsset {
-        url,
+        url: map_url.path,
         asset,
     })
 }

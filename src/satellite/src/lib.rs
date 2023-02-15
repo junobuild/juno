@@ -314,7 +314,7 @@ fn http_request(
     match result {
         Ok(PublicAsset {
             asset,
-               url: requested_url,
+            url: requested_url,
         }) => match asset {
             Some(asset) => {
                 let encodings = build_encodings(req_headers);

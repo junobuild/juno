@@ -16,14 +16,14 @@ pub fn update_certified_data(asset_hashes: &AssetHashes) {
 
 pub fn build_asset_certificate_header(
     asset_hashes: &AssetHashes,
-    full_path: String,
+    url: String,
 ) -> Result<HeaderField, &'static str> {
     let certificate = data_certificate();
 
     match certificate {
         None => Err("No certificate found."),
         Some(certificate) => {
-            build_asset_certificate_header_impl(&certificate, asset_hashes, &full_path)
+            build_asset_certificate_header_impl(&certificate, asset_hashes, &url)
         }
     }
 }
@@ -31,9 +31,9 @@ pub fn build_asset_certificate_header(
 fn build_asset_certificate_header_impl(
     certificate: &Vec<u8>,
     asset_hashes: &AssetHashes,
-    full_path: &String,
+    url: &String,
 ) -> Result<HeaderField, &'static str> {
-    let witness = asset_hashes.tree.witness(full_path.as_bytes());
+    let witness = asset_hashes.tree.witness(url.as_bytes());
     let tree = labeled(LABEL_ASSETS, witness);
 
     let mut serializer = Serializer::new(vec![]);

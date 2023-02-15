@@ -140,8 +140,8 @@ fn post_upgrade() {
                     chunks: HashMap::new(),
                     batches: HashMap::new(),
                     asset_hashes: asset_hashes.clone(),
-                }
-            }
+                },
+            },
         }
     });
 

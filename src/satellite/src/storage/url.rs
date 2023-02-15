@@ -24,12 +24,7 @@ pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
     }
 }
 
-pub fn map_alternative_paths(
-    MapUrl {
-        path,
-        token: _,
-    }: &MapUrl,
-) -> Vec<String> {
+pub fn map_alternative_paths(path: &String) -> Vec<String> {
     // The requested path is /something.js or without file extension (/something or /something/)?
     let extension = Path::new(path).extension();
 

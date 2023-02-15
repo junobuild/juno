@@ -16,13 +16,13 @@ use crate::storage::constants::{
 use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
-use crate::storage::types::http_request::PublicAsset;
+use crate::storage::types::http_request::{MapUrl, PublicAsset};
 use crate::storage::types::interface::{
     AssetEncodingNoContent, AssetNoContent, CommitBatch, InitAssetKey,
 };
 use crate::storage::types::state::{Assets, FullPath, StorageRuntimeState, StorageStableState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
-use crate::storage::url::map_url;
+use crate::storage::url::{map_alternative_paths, map_url};
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};
 use crate::STATE;
@@ -36,32 +36,33 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
         return Err("No url provided.");
     }
 
-    let map_url = map_url(&url)?;
+    // The certification considers, and should only, the path of the URL. If query parameters, these should be omitted in the certificate.
+    // Likewise the memory contains only assets indexed with their respective path.
+    // e.g.
+    // url: /hello/something?param=123
+    // path: /hello/something
+
+    let MapUrl { path, token } = map_url(&url)?;
+    let alternative_paths = map_alternative_paths(&path);
 
     // ⚠️ Limitation: requesting an url without extension try to resolve first a corresponding asset
     // e.g. /.well-known/hello -> try to find /.well-known/hello.html
     // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
 
-    for alternative_path in map_url.alternative_full_paths {
-        let asset: Option<Asset> = get_public_asset(alternative_path, map_url.token.clone());
+    for alternative_path in alternative_paths {
+        let asset: Option<Asset> = get_public_asset(alternative_path, token.clone());
 
         // We return the first match
         match asset {
             None => (),
             Some(_) => {
-                return Ok(PublicAsset {
-                    requested_path: url,
-                    asset,
-                });
+                return Ok(PublicAsset { url: path, asset });
             }
         }
     }
 
-    let asset: Option<Asset> = get_public_asset(url.clone(), map_url.token);
-    Ok(PublicAsset {
-        requested_path: url,
-        asset,
-    })
+    let asset: Option<Asset> = get_public_asset(path.clone(), token);
+    Ok(PublicAsset { url: path, asset })
 }
 
 pub fn get_public_asset(full_path: String, token: Option<String>) -> Option<Asset> {

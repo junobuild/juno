@@ -320,14 +320,14 @@ fn http_request(
     match result {
         Ok(PublicAsset {
             asset,
-            requested_path,
+            url: requested_url,
         }) => match asset {
             Some(asset) => {
                 let encodings = build_encodings(req_headers);
 
                 for encoding_type in encodings.iter() {
                     if let Some(encoding) = asset.encodings.get(encoding_type) {
-                        let headers = build_headers(&requested_path, &asset, encoding_type);
+                        let headers = build_headers(&requested_url, &asset, encoding_type);
 
                         let Asset {
                             key,

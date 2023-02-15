@@ -22,9 +22,7 @@ pub fn build_asset_certificate_header(
 
     match certificate {
         None => Err("No certificate found."),
-        Some(certificate) => {
-            build_asset_certificate_header_impl(&certificate, asset_hashes, &url)
-        }
+        Some(certificate) => build_asset_certificate_header_impl(&certificate, asset_hashes, &url),
     }
 }
 

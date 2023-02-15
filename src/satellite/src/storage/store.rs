@@ -42,7 +42,7 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     // url: /hello/something?param=123
     // path: /hello/something
 
-    let MapUrl {path, token} = map_url(&url)?;
+    let MapUrl { path, token } = map_url(&url)?;
     let alternative_paths = map_alternative_paths(&path);
 
     // ⚠️ Limitation: requesting an url without extension try to resolve first a corresponding asset
@@ -56,19 +56,13 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
         match asset {
             None => (),
             Some(_) => {
-                return Ok(PublicAsset {
-                    url: path,
-                    asset,
-                });
+                return Ok(PublicAsset { url: path, asset });
             }
         }
     }
 
     let asset: Option<Asset> = get_public_asset(path.clone(), token);
-    Ok(PublicAsset {
-        url: path,
-        asset,
-    })
+    Ok(PublicAsset { url: path, asset })
 }
 
 pub fn get_public_asset(full_path: String, token: Option<String>) -> Option<Asset> {

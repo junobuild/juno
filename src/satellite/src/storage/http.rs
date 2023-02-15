@@ -111,8 +111,7 @@ fn build_config_headers(requested_path: &str) -> Vec<HeaderField> {
 }
 
 fn build_certified_headers(url: &str) -> Result<HeaderField, &'static str> {
-    STATE
-        .with(|state| build_certified_headers_impl(url, &state.borrow().runtime.storage))
+    STATE.with(|state| build_certified_headers_impl(url, &state.borrow().runtime.storage))
 }
 
 fn build_certified_headers_impl(

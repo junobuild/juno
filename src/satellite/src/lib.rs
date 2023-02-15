@@ -36,7 +36,7 @@ use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk,
 };
-use crate::storage::types::state::StorageStableState;
+use crate::storage::types::state::{StorageRuntimeState, StorageStableState};
 use crate::storage::types::store::{Asset, Chunk};
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
@@ -135,7 +135,13 @@ fn post_upgrade() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             stable,
-            runtime: RuntimeState::default(),
+            runtime: RuntimeState {
+                storage: StorageRuntimeState {
+                    chunks: HashMap::new(),
+                    batches: HashMap::new(),
+                    asset_hashes: asset_hashes.clone(),
+                },
+            },
         }
     });
 

@@ -67,8 +67,6 @@ const registerDomain = async ({ domainName }: { domainName: string }): Promise<s
 
 	const result: { id: string } = await response.json();
 
-	console.log('BN POST result', result);
-
 	return result.id;
 };
 
@@ -93,8 +91,6 @@ export const getCustomDomainRegistration = async ({
 	}
 
 	const result: CustomDomainRegistration = await response.json();
-
-	console.log('BN GET result', result);
 
 	return result;
 };

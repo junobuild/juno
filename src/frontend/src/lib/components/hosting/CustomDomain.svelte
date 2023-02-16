@@ -4,6 +4,7 @@
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import { getCustomDomainRegistration } from '$lib/services/hosting.services';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let url: string;
 	export let ariaLabel = '';
@@ -33,6 +34,11 @@
 	};
 
 	$: customDomain, (async () => await loadRegistrationState())();
+
+	let displayState: string | undefined;
+	$: displayState = nonNullish(registrationState)
+		? $i18n.hosting[registrationState.toLowerCase()]
+		: undefined;
 </script>
 
 <td colspan={nonNullish(registrationState) ? 2 : undefined} class="domain">
@@ -40,8 +46,8 @@
 	<span>{type}</span>
 </td>
 
-{#if nonNullish(registrationState)}
-	<td>{registrationState}</td>
+{#if nonNullish(displayState)}
+	<td>{displayState}</td>
 {/if}
 
 <style lang="scss">

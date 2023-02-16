@@ -64,13 +64,7 @@
 <AddCustomDomain {satellite} />
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
-
 	.domain {
-		width: 80%;
-
-		@include media.min-width(large) {
-			width: 60%;
-		}
+		width: 60%;
 	}
 </style>

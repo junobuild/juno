@@ -91,7 +91,12 @@
 		"custom_domain": "Custom domain",
 		"default_domain": "Default satellite domain",
 		"domain": "Domain",
-		"status": "Status"
+		"status": "Status",
+		"pendingorder": "Pending order",
+		"pendingchallengeresponse": "Certificate ordered",
+		"pendingacmeapproval": "Challenge completed",
+		"available": "Available",
+		"failed": "Failed"
 	},
 	"cli": {
 		"title": "Authorize CLI",

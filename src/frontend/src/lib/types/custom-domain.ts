@@ -9,3 +9,18 @@ export interface CustomDomainDns {
 	subdomain?: string;
 	entries: [CustomDomainDnsEntry, ...CustomDomainDnsEntry[]];
 }
+
+// BN
+
+export type CustomDomainRegistrationState =
+	| 'PendingOrder'
+	| 'PendingChallengeResponse'
+	| 'PendingAcmeApproval'
+	| 'Available'
+	| 'Failed';
+
+export interface CustomDomainRegistration {
+	name: string;
+	canister: string;
+	state: 'Available';
+}

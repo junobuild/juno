@@ -38,26 +38,23 @@
 	<table>
 		<thead>
 			<tr>
-				<th> {$i18n.hosting.domain} </th>
+				<th class="domain"> {$i18n.hosting.domain} </th>
 				<th> {$i18n.hosting.status}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<td colspan="2"
-					><CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
-				</td>
+				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
 			</tr>
 
-			{#each customDomains as [customDomain, _]}
+			{#each customDomains as [customDomainUrl, customDomain]}
 				<tr>
-					<td colspan="2"
-						><CustomDomain
-							type="custom"
-							url={`https://${customDomain}`}
-							ariaLabel={$i18n.hosting.custom_domain}
-						/>
-					</td>
+					<CustomDomain
+						type="custom"
+						url={`https://${customDomainUrl}`}
+						{customDomain}
+						ariaLabel={$i18n.hosting.custom_domain}
+					/>
 				</tr>
 			{/each}
 		</tbody>
@@ -65,3 +62,15 @@
 </div>
 
 <AddCustomDomain {satellite} />
+
+<style lang="scss">
+	@use '../../styles/mixins/media';
+
+	.domain {
+		width: 80%;
+
+		@include media.min-width(large) {
+			width: 60%;
+		}
+	}
+</style>

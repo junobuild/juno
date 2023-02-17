@@ -13,7 +13,7 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 1] = [(
     },
 )];
 
-pub const DEFAULT_ASSETS_FOLDERS: [(&str, SetRule); 1] = [(
+pub const DEFAULT_ASSETS_COLLECTIONS: [(&str, SetRule); 1] = [(
     "#dapp",
     SetRule {
         read: Public,

@@ -1,13 +1,14 @@
 use crate::list::utils::list_values;
+use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
 use ic_cdk::api::time;
 use shared::controllers::is_controller;
-use shared::types::interface::Controllers;
+use shared::types::interface::{Controllers};
 use shared::utils::principal_not_equal;
 use std::borrow::BorrowMut;
 use std::collections::HashMap;
 
-use crate::rules::types::rules::Permission;
+use crate::rules::types::rules::{Permission, Rule};
 use crate::rules::utils::{assert_rule, is_known_user, public_rule};
 use crate::storage::cert::update_certified_data;
 use crate::storage::constants::{
@@ -23,6 +24,7 @@ use crate::storage::types::interface::{
 use crate::storage::types::state::{Assets, FullPath, StorageRuntimeState, StorageStableState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
 use crate::storage::url::{map_alternative_paths, map_url};
+use crate::types::core::CollectionKey;
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};
 use crate::STATE;
@@ -299,6 +301,9 @@ pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), 
     })
 }
 
+const UPLOAD_NOT_ALLOWED: &str = "Caller not allowed to upload data.";
+const COLLECTION_WRITE_RULE_MISSING: &str = "Collection write rule not configured.";
+
 fn secure_create_batch_impl(
     caller: Principal,
     init: InitAssetKey,
@@ -307,14 +312,21 @@ fn secure_create_batch_impl(
     let rules = state.stable.storage.rules.get(&init.collection);
 
     match rules {
-        None => Err("Collection write rule not configured."),
+        None => Err(COLLECTION_WRITE_RULE_MISSING),
         Some(rules) => {
             if !(public_rule(&rules.write)
                 || is_known_user(caller, &state.stable.db.db)
                 || is_controller(caller, &state.stable.controllers))
             {
-                return Err("Caller not allowed to upload data.");
+                return Err(UPLOAD_NOT_ALLOWED);
             }
+
+            assert_key(
+                caller,
+                &init.full_path,
+                &init.collection,
+                &state.stable.controllers,
+            )?;
 
             // Assert supported encoding type
             get_encoding_type(&init.encoding_type)?;
@@ -419,16 +431,6 @@ fn commit_batch_impl(
     match batch {
         None => Err(ERROR_CANNOT_COMMIT_BATCH),
         Some(b) => {
-            if principal_not_equal(caller, b.key.owner) {
-                return Err(ERROR_CANNOT_COMMIT_BATCH);
-            }
-
-            if b.key.full_path == BN_WELL_KNOWN_CUSTOM_DOMAINS {
-                let error = format!("{} is a reserved asset.", BN_WELL_KNOWN_CUSTOM_DOMAINS)
-                    .into_boxed_str();
-                return Err(Box::leak(error));
-            }
-
             let asset = secure_commit_chunks(caller, controllers, commit_batch, b, state);
             match asset {
                 Err(err) => Err(err),
@@ -441,6 +443,29 @@ fn commit_batch_impl(
     }
 }
 
+fn assert_key(
+    caller: Principal,
+    full_path: &FullPath,
+    collection: &CollectionKey,
+    controllers: &Controllers,
+) -> Result<(), &'static str> {
+    // /.well-known/ic-domains is automatically generated for custom domains
+    if full_path == BN_WELL_KNOWN_CUSTOM_DOMAINS {
+        let error =
+            format!("{} is a reserved asset.", BN_WELL_KNOWN_CUSTOM_DOMAINS).into_boxed_str();
+        return Err(Box::leak(error));
+    }
+
+    // Only controllers can write in collection #dapp
+    if collection.clone() == *DEFAULT_ASSETS_COLLECTIONS[0].0
+        && !is_controller(caller, controllers)
+    {
+        return Err(UPLOAD_NOT_ALLOWED);
+    }
+
+    Ok(())
+}
+
 fn secure_commit_chunks(
     caller: Principal,
     controllers: &Controllers,
@@ -448,30 +473,62 @@ fn secure_commit_chunks(
     batch: &Batch,
     state: &mut State,
 ) -> Result<Asset, &'static str> {
+    // The one that started the batch should be the one that commits it
+    if principal_not_equal(caller, batch.key.owner) {
+        return Err(ERROR_CANNOT_COMMIT_BATCH);
+    }
+
+    assert_key(
+        caller,
+        &batch.key.full_path,
+        &batch.key.collection,
+        controllers,
+    )?;
+
     let rules = state.stable.storage.rules.get(&batch.key.collection);
 
     match rules {
-        None => Err("Collection write rule not configured."),
+        None => Err(COLLECTION_WRITE_RULE_MISSING),
         Some(rules) => {
-            let rule = &rules.write;
+            let current = state.stable.storage.assets.get(&batch.key.full_path);
 
-            // For existing collection and document, check user editing is the caller
-            if !public_rule(rule) {
-                let current = state.stable.storage.assets.get(&batch.key.full_path);
-
-                match current {
-                    None => (),
-                    Some(current) => {
-                        if !assert_rule(rule, current.key.owner, caller, controllers) {
-                            return Err(ERROR_CANNOT_COMMIT_BATCH);
-                        }
-                    }
-                }
+            match current {
+                None => commit_chunks(commit_batch, batch, rules.max_size, state),
+                Some(current) => secure_commit_chunks_update(
+                    caller,
+                    controllers,
+                    commit_batch,
+                    batch,
+                    rules.clone(),
+                    current.clone(),
+                    state,
+                ),
             }
-
-            commit_chunks(commit_batch, batch, rules.max_size, state)
         }
     }
+}
+
+fn secure_commit_chunks_update(
+    caller: Principal,
+    controllers: &Controllers,
+    commit_batch: CommitBatch,
+    batch: &Batch,
+    rules: Rule,
+    current: Asset,
+    state: &mut State,
+) -> Result<Asset, &'static str> {
+    // The collection of the existing asset should be the same as the one we commit
+    if batch.key.collection != current.key.collection {
+        return Err("Provided collection does not match existing collection.");
+    }
+
+    let rule = &rules.write;
+
+    if !assert_rule(rule, current.key.owner, caller, controllers) {
+        return Err(ERROR_CANNOT_COMMIT_BATCH);
+    }
+
+    commit_chunks(commit_batch, batch, rules.max_size, state)
 }
 
 fn commit_chunks(

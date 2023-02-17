@@ -46,8 +46,11 @@
 {/if}
 
 {#if satReady && satVersion !== satRelease}
-	<p><IconNewReleases /> {$i18n.admin.satellite_new_version}</p>
-	<span class="help"><ExternalLink href={helpLink}>[Help]</ExternalLink></span>
+	<p>
+		<IconNewReleases />
+		{$i18n.admin.satellite_new_version}
+		<span class="help"><ExternalLink href={helpLink}>[Help]</ExternalLink></span>
+	</p>
 {/if}
 
 <style lang="scss">

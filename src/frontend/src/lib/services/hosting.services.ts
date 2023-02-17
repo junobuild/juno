@@ -40,15 +40,10 @@ export const listCustomDomains = async ({
 	satelliteId
 }: {
 	satelliteId: Principal;
-}): Promise<[string, CustomDomain][]> => {
-	const customDomains: [string, CustomDomain][] = await listCustomDomainsApi({
+}): Promise<[string, CustomDomain][]> =>
+	listCustomDomainsApi({
 		satelliteId
 	});
-
-	// TODO: GET ic0.app/registrations/REQUEST_ID
-
-	return customDomains;
-};
 
 const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;
 

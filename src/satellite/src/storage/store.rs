@@ -3,7 +3,7 @@ use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
 use ic_cdk::api::time;
 use shared::controllers::is_controller;
-use shared::types::interface::{Controllers};
+use shared::types::interface::Controllers;
 use shared::utils::principal_not_equal;
 use std::borrow::BorrowMut;
 use std::collections::HashMap;
@@ -456,11 +456,18 @@ fn assert_key(
         return Err(Box::leak(error));
     }
 
+    let dapp_collection = DEFAULT_ASSETS_COLLECTIONS[0].0;
+
     // Only controllers can write in collection #dapp
-    if collection.clone() == *DEFAULT_ASSETS_COLLECTIONS[0].0
-        && !is_controller(caller, controllers)
-    {
+    if collection.clone() == *dapp_collection && !is_controller(caller, controllers) {
         return Err(UPLOAD_NOT_ALLOWED);
+    }
+
+    // Asset uploaded by users should be prefixed with the collection. That way developers can organize assets to particular folders.
+    if collection.clone() != *dapp_collection
+        && !full_path.starts_with(&["/", collection, "/"].join(""))
+    {
+        return Err("Asset path must be prefixed with collection key.");
     }
 
     Ok(())

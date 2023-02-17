@@ -930,7 +930,7 @@ checksum = "5583e89e108996506031660fe09baa5011b9dd0341b89029313006d1fb508d70"
 
 [[package]]
 name = "satellite"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [
  "base64",
  "candid",

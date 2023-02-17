@@ -6,6 +6,7 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 
 	const load = async () =>
 		await loadVersion({
@@ -32,23 +33,32 @@
 
 	let ctrlReady = false;
 	$: ctrlReady = nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease);
+
+	const helpLink = 'https://juno.build/docs/miscellaneous/cli#upgrade';
 </script>
 
 {#if ctrlReady && ctrlVersion !== ctrlRelease}
 	<p>
 		<IconNewReleases />
 		{$i18n.admin.mission_control_new_version}
+		<span class="help"><ExternalLink href={helpLink}>[Help]</ExternalLink></span>
 	</p>
 {/if}
 
 {#if satReady && satVersion !== satRelease}
 	<p><IconNewReleases /> {$i18n.admin.satellite_new_version}</p>
+	<span class="help"><ExternalLink href={helpLink}>[Help]</ExternalLink></span>
 {/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/info';
+	@use '../../styles/mixins/fonts';
 
 	p {
 		@include info.warning;
+	}
+
+	.help {
+		@include fonts.small;
 	}
 </style>

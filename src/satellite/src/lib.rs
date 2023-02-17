@@ -12,7 +12,7 @@ use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_do
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{DbStableState, Doc};
 use crate::guards::caller_is_controller;
-use crate::rules::constants::DEFAULT_ASSETS_FOLDERS;
+use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use crate::rules::store::{get_rules_db, get_rules_storage, set_rule_db, set_rule_storage};
 use crate::rules::types::interface::SetRule;
 use crate::rules::types::rules::Rule;
@@ -91,7 +91,7 @@ fn init() {
 
     let storage: StorageStableState = StorageStableState {
         assets: HashMap::new(),
-        rules: HashMap::from(DEFAULT_ASSETS_FOLDERS.map(|(collection, rule)| {
+        rules: HashMap::from(DEFAULT_ASSETS_COLLECTIONS.map(|(collection, rule)| {
             (
                 collection.to_owned(),
                 Rule {
@@ -458,7 +458,7 @@ fn list_assets(
 
     let result = list_assets_store(
         caller,
-        collection.unwrap_or_else(|| DEFAULT_ASSETS_FOLDERS[0].0.to_string()),
+        collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()),
         &filter,
     );
 
@@ -484,7 +484,7 @@ fn del_asset(collection: CollectionKey, full_path: String) {
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
 fn del_assets(collection: Option<CollectionKey>) {
-    delete_assets(collection.unwrap_or_else(|| DEFAULT_ASSETS_FOLDERS[0].0.to_string()));
+    delete_assets(collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
 }
 
 /// Mgmt

@@ -4,7 +4,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { busy } from '$lib/stores/busy.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -132,11 +132,11 @@
 				</p>
 			{/if}
 
-			<button type="button" on:click|stopPropagation={close} disabled={$busy}>
+			<button type="button" on:click|stopPropagation={close} disabled={$isBusy}>
 				{$i18n.core.no}
 			</button>
 
-			<button type="button" on:click|stopPropagation={deleteController} disabled={$busy}>
+			<button type="button" on:click|stopPropagation={deleteController} disabled={$isBusy}>
 				{$i18n.core.yes}
 			</button>
 		{:else}

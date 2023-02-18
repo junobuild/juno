@@ -15,6 +15,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { emit } from '$lib/utils/events.utils';
+	import { wizardBusy } from '$lib/stores/busy.store';
 
 	export let canisterId: Principal;
 
@@ -52,6 +53,7 @@
 			return;
 		}
 
+		wizardBusy.start();
 		steps = 'in_progress';
 
 		try {
@@ -72,6 +74,8 @@
 
 			steps = 'error';
 		}
+
+		wizardBusy.stop();
 	};
 
 	const dispatch = createEventDispatcher();

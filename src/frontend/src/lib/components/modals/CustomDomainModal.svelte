@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { JunoModalDetail, JunoModalSatelliteDetail } from '$lib/types/modal';
+	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
@@ -9,18 +9,34 @@
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import IconVerified from '$lib/components/icons/IconVerified.svelte';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { addCustomDomain } from '$lib/services/hosting.services';
+	import { setCustomDomain } from '$lib/services/hosting.services';
 
 	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
-	$: ({ satellite } = detail as JunoModalSatelliteDetail);
+	$: ({ satellite } = detail as JunoModalCustomDomainDetail);
 
-	let steps: 'init' | 'dns' | 'in_progress' | 'ready' | 'error' = 'init';
+	let steps: 'init' | 'dns' | 'in_progress' | 'ready' = 'init';
+	let domainNameInput: string | undefined = undefined;
+	let dns: CustomDomainDns | undefined = undefined;
+
+	let edit = false;
+
+	onMount(() => {
+		domainNameInput = (detail as JunoModalCustomDomainDetail).editDomainName;
+
+		if (isNullish(domainNameInput)) {
+			return;
+		}
+
+		dns = toCustomDomainDns({ domainName: domainNameInput, canisterId: satellite.satellite_id });
+		steps = 'dns';
+		edit = true;
+	});
 
 	const onSubmitDomainName = () => {
 		if (isNullish(domainNameInput)) {
@@ -53,7 +69,7 @@
 		steps = 'in_progress';
 
 		try {
-			await addCustomDomain({
+			await setCustomDomain({
 				satelliteId: satellite.satellite_id,
 				domainName: dns.hostname
 			});
@@ -65,12 +81,9 @@
 				detail: err
 			});
 
-			steps = 'error';
+			steps = edit ? 'dns' : 'init';
 		}
 	};
-
-	let domainNameInput: string | undefined = undefined;
-	let dns: CustomDomainDns | undefined = undefined;
 
 	const dispatch = createEventDispatcher();
 	const close = () => {
@@ -121,8 +134,13 @@
 		<p class="notes">{@html $i18n.hosting.dns_notes}</p>
 
 		<div class="toolbar">
-			<button on:click={() => (steps = 'init')}>{$i18n.core.back}</button>
-			<button on:click={setupCustomDomain}>{$i18n.core.ready}</button>
+			{#if !edit}
+				<button on:click={() => (steps = 'init')}>{$i18n.core.back}</button>
+				<button on:click={setupCustomDomain}>{$i18n.core.ready}</button>
+			{:else}
+				<button on:click={() => dispatch('junoClose')}>{$i18n.core.close}</button>
+				<button on:click={setupCustomDomain}>{$i18n.core.submit}</button>
+			{/if}
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>

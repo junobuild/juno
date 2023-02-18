@@ -52,8 +52,9 @@
 					<CustomDomain
 						type="custom"
 						url={`https://${customDomainUrl}`}
-						{customDomain}
+						customDomain={[customDomainUrl, customDomain]}
 						ariaLabel={$i18n.hosting.custom_domain}
+						{satellite}
 					/>
 				</tr>
 			{/each}

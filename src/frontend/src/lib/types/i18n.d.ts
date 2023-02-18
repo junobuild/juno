@@ -95,6 +95,11 @@ interface I18nHosting {
 	configure: string;
 	add_records: string;
 	dns_notes: string;
+	delete_custom_domain: string;
+	before_continuing: string;
+	delete_are_you_sure: string;
+	delete: string;
+	edit: string;
 	type: string;
 	host: string;
 	value: string;
@@ -132,6 +137,8 @@ interface I18nErrors {
 	hosting_missing_dns_configuration: string;
 	hosting_configuration_issues: string;
 	hosting_loading_errors: string;
+	hosting_no_custom_domain: string;
+	hosting_delete_custom_domain: string;
 	controllers_listing: string;
 	controllers_no_selection: string;
 	controllers_delete: string;

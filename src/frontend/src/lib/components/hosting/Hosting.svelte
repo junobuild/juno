@@ -8,6 +8,7 @@
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listCustomDomains } from '$lib/services/hosting.services';
+	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 
 	export let satellite: Satellite;
 
@@ -38,17 +39,23 @@
 	<table>
 		<thead>
 			<tr>
+				<th class="tools" />
 				<th class="domain"> {$i18n.hosting.domain} </th>
 				<th> {$i18n.hosting.status}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
+				<td></td>
 				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
 			</tr>
 
 			{#each customDomains as [customDomainUrl, customDomain]}
 				<tr>
+					<td>
+						<CustomDomainActions {satellite} customDomain={[customDomainUrl, customDomain]} />
+					</td>
+
 					<CustomDomain
 						type="custom"
 						url={`https://${customDomainUrl}`}
@@ -64,6 +71,10 @@
 <AddCustomDomain {satellite} />
 
 <style lang="scss">
+	.tools {
+		width: 10%;
+	}
+
 	.domain {
 		width: 60%;
 	}

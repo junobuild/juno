@@ -83,6 +83,9 @@
 		"configure": "Configure your DNS",
 		"add_records": "Add records below to your DNS provider to configure and verify you own {0}. Do not delete any records as long as you use the domain.",
 		"dns_notes": "You might have to adjust above records for your domain provider. Find more information in the <a href=\"https://juno.build/docs/build/hosting#about-dns-records\" rel=\"external noopener noreferrer\" target=\"_blank\">documentation</a>.",
+		"delete_custom_domain": "Delete {0}",
+		"before_continuing": "Before continuing, the records must be removed from your DNS provider.",
+		"delete_are_you_sure": "Proceed with deletion?",
 		"type": "Type",
 		"host": "Host",
 		"value": "Value",
@@ -118,6 +121,8 @@
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",
 		"hosting_configuration_issues": "Error while configuring the custom domain for the satellite.",
 		"hosting_loading_errors": "Error while loading the custom domains of the satellite.",
+		"hosting_no_custom_domain": "No custom domain selected",
+		"hosting_delete_custom_domain": "Error while deleting the custom domain.",
 		"controllers_listing": "Error while listing the controllers.",
 		"controllers_no_selection": "No controller to delete selected.",
 		"controllers_delete": "Unexpected error(s) while deleting the controller."

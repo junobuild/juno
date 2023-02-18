@@ -110,6 +110,17 @@ export const setCustomDomain = async ({
 	await actor.set_custom_domain(domainName, toNullable(boundaryNodesId));
 };
 
+export const deleteCustomDomain = async ({
+	satelliteId,
+	domainName
+}: {
+	satelliteId: Principal;
+	domainName: string;
+}): Promise<void> => {
+	const actor = await getSatelliteActor(satelliteId);
+	await actor.del_custom_domain(domainName);
+};
+
 export const listCustomDomains = async ({
 	satelliteId
 }: {

@@ -1,5 +1,6 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import {
+	deleteCustomDomain as deleteCustomDomainApi,
 	listCustomDomains as listCustomDomainsApi,
 	setCustomDomain
 } from '$lib/api/satellites.api';
@@ -9,7 +10,7 @@ import { isNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
 
 /**
- * https://github.com/r-birkner/portal/blob/rjb/update-custom-domains-docs/docs/developer-docs/deploy/custom-domain.md
+ * https://internetcomputer.org/docs/current/developer-docs/production/custom-domain/
  */
 export const addCustomDomain = async ({
 	satelliteId,
@@ -33,6 +34,25 @@ export const addCustomDomain = async ({
 		satelliteId,
 		domainName,
 		boundaryNodesId
+	});
+};
+
+export const deleteCustomDomain = async ({
+	satelliteId,
+	customDomain,
+	domainName
+}: {
+	satelliteId: Principal;
+	customDomain: CustomDomain;
+	domainName: string;
+}) => {
+	// Delete domain name in BN
+	await deleteDomain({ ...customDomain });
+
+	// Remove custom domain from satellite
+	await deleteCustomDomainApi({
+		satelliteId,
+		domainName
 	});
 };
 
@@ -88,4 +108,23 @@ export const getCustomDomainRegistration = async ({
 	const result: CustomDomainRegistration = await response.json();
 
 	return result;
+};
+
+const deleteDomain = async ({ bn_id }: CustomDomain): Promise<void> => {
+	const id = fromNullable(bn_id);
+
+	if (isNullish(id) || id === '') {
+		throw new Error(`No existing BN id provided to delete custom domain.`);
+	}
+
+	const response = await fetch(`${BN_REGISTRATIONS_URL}/${id}`, {
+		method: 'DELETE',
+		headers: {
+			'Content-Type': 'application/json'
+		}
+	});
+
+	if (!response.ok) {
+		throw new Error(`Deleting custom domain in the boundary nodes failed.`);
+	}
 };

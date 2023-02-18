@@ -2,7 +2,6 @@
 	import { onMount } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { toasts } from '$lib/stores/toasts.store';
-	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { busy } from '$lib/stores/busy.store';
@@ -10,6 +9,7 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { authStore } from '$lib/stores/auth.store';
+	import ButtonDelete from '$lib/components/ui/ButtonDelete.svelte';
 
 	export let list: () => Promise<Principal[]>;
 	export let remove: (params: {
@@ -100,15 +100,13 @@
 			{#each controllers as controller (controller.toText())}
 				<tr
 					><td>
-						<button
-							class="icon"
-							aria-label={$i18n.controllers.delete}
-							type="button"
-							on:click|stopPropagation={() => {
+						<ButtonDelete
+							on:click={() => {
 								selectedController = controller;
 								visible = true;
-							}}><IconDelete /></button
-						>
+							}}
+						/>
+
 						<span>{controller.toText()}</span>
 					</td></tr
 				>
@@ -153,10 +151,6 @@
 </Popover>
 
 <style lang="scss">
-	button {
-		vertical-align: middle;
-	}
-
 	.content {
 		padding: var(--padding-2x);
 	}

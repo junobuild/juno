@@ -118,6 +118,8 @@
 			{/each}
 		</section>
 
+		<p class="notes">{@html $i18n.hosting.dns_notes}</p>
+
 		<div class="toolbar">
 			<button on:click={() => (steps = 'init')}>{$i18n.core.back}</button>
 			<button on:click={setupCustomDomain}>{$i18n.core.ready}</button>
@@ -184,5 +186,9 @@
 
 	.toolbar {
 		padding: var(--padding) 0 0 0;
+	}
+
+	.notes {
+		margin: var(--padding-4x) 0 var(--padding-2x);
 	}
 </style>

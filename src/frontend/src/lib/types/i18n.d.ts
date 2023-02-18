@@ -94,6 +94,7 @@ interface I18nHosting {
 	success: string;
 	configure: string;
 	add_records: string;
+	dns_notes: string;
 	type: string;
 	host: string;
 	value: string;

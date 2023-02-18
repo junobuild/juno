@@ -46,7 +46,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<td></td>
+				<td />
 				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
 			</tr>
 

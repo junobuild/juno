@@ -8,7 +8,7 @@
 >
 
 <style lang="scss">
-  button {
-    vertical-align: middle;
-  }
+	button {
+		vertical-align: middle;
+	}
 </style>

@@ -14,6 +14,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { setCustomDomain } from '$lib/services/hosting.services';
+	import { wizardBusy } from '$lib/stores/busy.store';
 
 	export let detail: JunoModalDetail;
 
@@ -66,6 +67,7 @@
 			return;
 		}
 
+		wizardBusy.start();
 		steps = 'in_progress';
 
 		try {
@@ -83,6 +85,8 @@
 
 			steps = edit ? 'dns' : 'init';
 		}
+
+		wizardBusy.stop();
 	};
 
 	const dispatch = createEventDispatcher();

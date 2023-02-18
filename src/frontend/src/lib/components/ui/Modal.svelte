@@ -4,12 +4,17 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { isBusy } from '$lib/stores/busy.store';
 
 	let visible = true;
 
 	const dispatch = createEventDispatcher();
 
 	const close = () => {
+		if ($isBusy) {
+			return;
+		}
+
 		visible = false;
 		dispatch('junoClose');
 	};
@@ -35,7 +40,8 @@
 		>
 			<div class="toolbar">
 				<h3 id="modalTitle"><slot name="title" /></h3>
-				<button on:click|stopPropagation={close} aria-label={$i18n.core.close}><IconClose /></button
+				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} disabled={$isBusy}
+					><IconClose /></button
 				>
 			</div>
 

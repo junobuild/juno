@@ -2,9 +2,9 @@
 	import ButtonDelete from '$lib/components/ui/ButtonDelete.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { busy } from '$lib/stores/busy.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish } from '$lib/utils/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -96,11 +96,11 @@
 		<p>{$i18n.hosting.delete_are_you_sure}</p>
 
 		<div class="toolbar">
-			<button type="button" on:click|stopPropagation={() => (visible = false)} disabled={$busy}>
+			<button type="button" on:click|stopPropagation={() => (visible = false)} disabled={$isBusy}>
 				{$i18n.core.no}
 			</button>
 
-			<button type="button" on:click|stopPropagation={deleteCustomDomain} disabled={$busy}>
+			<button type="button" on:click|stopPropagation={deleteCustomDomain} disabled={$isBusy}>
 				{$i18n.core.yes}
 			</button>
 		</div>

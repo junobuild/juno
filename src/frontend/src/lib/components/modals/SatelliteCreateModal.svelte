@@ -15,6 +15,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { wizardBusy } from '$lib/stores/busy.store';
 
 	export let detail: JunoModalDetail;
 
@@ -43,6 +44,7 @@
 			return;
 		}
 
+		wizardBusy.start();
 		steps = 'in_progress';
 
 		try {
@@ -63,6 +65,8 @@
 
 			steps = 'error';
 		}
+
+		wizardBusy.stop();
 	};
 
 	const dispatch = createEventDispatcher();

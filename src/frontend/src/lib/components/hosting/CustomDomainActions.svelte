@@ -73,7 +73,7 @@
 					type: 'add_custom_domain',
 					detail: { satellite, editDomainName: customDomain?.[0] }
 				}
-			})}><IconEdit /></button
+			})}><IconEdit size="20px" /></button
 	>
 </div>
 
@@ -92,18 +92,23 @@
 
 		<p>{$i18n.hosting.delete_are_you_sure}</p>
 
-		<button type="button" on:click|stopPropagation={() => (visible = false)} disabled={$busy}>
-			{$i18n.core.no}
-		</button>
+		<div class="toolbar">
+			<button type="button" on:click|stopPropagation={() => (visible = false)} disabled={$busy}>
+				{$i18n.core.no}
+			</button>
 
-		<button type="button" on:click|stopPropagation={deleteCustomDomain} disabled={$busy}>
-			{$i18n.core.yes}
-		</button>
+			<button type="button" on:click|stopPropagation={deleteCustomDomain} disabled={$busy}>
+				{$i18n.core.yes}
+			</button>
+		</div>
 	</div>
 </Popover>
 
 <style lang="scss">
 	.content {
+		display: flex;
+		flex-direction: column;
+
 		padding: var(--padding-2x);
 
 		h3,
@@ -116,5 +121,10 @@
 	.tools {
 		display: flex;
 		gap: var(--padding);
+	}
+
+	.toolbar {
+		display: flex;
+		gap: var(--padding-2x);
 	}
 </style>

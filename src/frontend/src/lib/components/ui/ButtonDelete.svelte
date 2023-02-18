@@ -5,7 +5,7 @@
 </script>
 
 <button class="icon" aria-label={ariaLabel} type="button" on:click|stopPropagation
-	><IconDelete /></button
+	><IconDelete size="20px" /></button
 >
 
 <style lang="scss">

@@ -30,8 +30,8 @@ export const toCustomDomainDns = ({
 			},
 			{
 				type: 'CNAME',
-				host: subdomain !== '' ? subdomain : undefined,
-				value: 'ic0.app'
+				host: subdomain !== '' ? subdomain : '@',
+				value: 'icp1.io'
 			},
 			{
 				type: 'CNAME',

@@ -9,7 +9,6 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
-	import { createEventDispatcher } from 'svelte';
 	import { emit } from '$lib/utils/events.utils';
 
 	export let satellite: Satellite;
@@ -27,8 +26,6 @@
 
 		visible = true;
 	};
-
-	const dispatch = createEventDispatcher();
 
 	const deleteCustomDomain = async () => {
 		if (isNullish(customDomain)) {

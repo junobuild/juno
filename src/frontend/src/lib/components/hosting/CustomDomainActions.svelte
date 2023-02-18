@@ -4,7 +4,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy } from '$lib/stores/busy.store';
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -14,6 +14,7 @@
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
+	export let displayState: string | undefined;
 
 	let visible = false;
 
@@ -62,19 +63,21 @@
 <div class="tools">
 	<ButtonDelete on:click={openDelete} ariaLabel={$i18n.hosting.delete} />
 
-	<button
-		class="icon"
-		aria-label={$i18n.hosting.edit}
-		type="button"
-		on:click={() =>
-			emit({
-				message: 'junoModal',
-				detail: {
-					type: 'add_custom_domain',
-					detail: { satellite, editDomainName: customDomain?.[0] }
-				}
-			})}><IconEdit size="20px" /></button
-	>
+	{#if displayState?.toLowerCase() !== 'available'}
+		<button
+			class="icon"
+			aria-label={$i18n.hosting.edit}
+			type="button"
+			on:click={() =>
+				emit({
+					message: 'junoModal',
+					detail: {
+						type: 'add_custom_domain',
+						detail: { satellite, editDomainName: customDomain?.[0] }
+					}
+				})}><IconEdit size="20px" /></button
+		>
+	{/if}
 </div>
 
 <Popover bind:visible center={true}>
@@ -120,7 +123,7 @@
 
 	.tools {
 		display: flex;
-		gap: var(--padding);
+		gap: var(--padding-0_5x);
 	}
 
 	.toolbar {

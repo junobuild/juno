@@ -13,14 +13,14 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { addCustomDomain } from '$lib/services/hosting.services';
+	import { setCustomDomain } from '$lib/services/hosting.services';
 
 	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
 	$: ({ satellite } = detail as JunoModalCustomDomainDetail);
 
-	let steps: 'init' | 'dns' | 'in_progress' | 'ready' | 'error' = 'init';
+	let steps: 'init' | 'dns' | 'in_progress' | 'ready' = 'init';
 	let domainNameInput: string | undefined = undefined;
 	let dns: CustomDomainDns | undefined = undefined;
 
@@ -69,7 +69,7 @@
 		steps = 'in_progress';
 
 		try {
-			await addCustomDomain({
+			await setCustomDomain({
 				satelliteId: satellite.satellite_id,
 				domainName: dns.hostname
 			});
@@ -81,7 +81,7 @@
 				detail: err
 			});
 
-			steps = 'error';
+			steps = edit ? 'dns' : 'init';
 		}
 	};
 

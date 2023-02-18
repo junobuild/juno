@@ -44,14 +44,14 @@
 		: undefined;
 </script>
 
-<td colspan={isNullish(displayState) ? 2 : undefined}>
+<td colspan={type === 'default' ? 2 : undefined}>
 	<div class="domain">
 		<ExternalLink href={url} {ariaLabel}>{host}</ExternalLink>
 		<span class="type">{type}</span>
 	</div>
 </td>
 
-{#if nonNullish(displayState)}
+{#if type === 'custom'}
 	<td class="state"
 		><span
 			>{#if nonNullish(displayState)}
@@ -60,7 +60,7 @@
 		>
 
 		{#if type === 'custom'}
-			<CustomDomainActions {satellite} {customDomain} />
+			<CustomDomainActions {satellite} {customDomain} {displayState} />
 		{/if}</td
 	>
 {/if}
@@ -93,5 +93,17 @@
 			flex-direction: row;
 			justify-content: space-between;
 		}
+
+		span {
+			padding: 0 var(--padding-1_5x);
+
+			@include media.min-width(medium) {
+				padding: 0;
+			}
+		}
+	}
+
+	td {
+		vertical-align: middle;
 	}
 </style>

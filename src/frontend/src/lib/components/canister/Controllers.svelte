@@ -101,6 +101,7 @@
 				<tr
 					><td>
 						<ButtonDelete
+							ariaLabel={$i18n.controllers.delete}
 							on:click={() => {
 								selectedController = controller;
 								visible = true;

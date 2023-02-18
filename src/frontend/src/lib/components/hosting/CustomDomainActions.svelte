@@ -10,6 +10,7 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
 	import { emit } from '$lib/utils/events.utils';
+	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
@@ -58,7 +59,23 @@
 	};
 </script>
 
-<ButtonDelete on:click={openDelete} />
+<div class="tools">
+	<ButtonDelete on:click={openDelete} ariaLabel={$i18n.hosting.delete} />
+
+	<button
+		class="icon"
+		aria-label={$i18n.hosting.edit}
+		type="button"
+		on:click={() =>
+			emit({
+				message: 'junoModal',
+				detail: {
+					type: 'add_custom_domain',
+					detail: { satellite, editDomainName: customDomain?.[0] }
+				}
+			})}><IconEdit /></button
+	>
+</div>
 
 <Popover bind:visible center={true}>
 	<div class="content">
@@ -94,5 +111,10 @@
 			white-space: initial;
 			word-break: break-word;
 		}
+	}
+
+	.tools {
+		display: flex;
+		gap: var(--padding);
 	}
 </style>

@@ -86,6 +86,8 @@
 		"delete_custom_domain": "Delete {0}",
 		"before_continuing": "Before continuing, the records must be removed from your DNS provider.",
 		"delete_are_you_sure": "Proceed with deletion?",
+		"delete": "Delete a custom domain",
+		"edit": "Edit a custom domain",
 		"type": "Type",
 		"host": "Host",
 		"value": "Value",

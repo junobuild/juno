@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
+
+	export let ariaLabel: string;
 </script>
 
-<button class="icon" aria-label={$i18n.controllers.delete} type="button" on:click|stopPropagation
+<button class="icon" aria-label={ariaLabel} type="button" on:click|stopPropagation
 	><IconDelete /></button
 >
 

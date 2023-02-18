@@ -52,7 +52,7 @@
 
 			{#each customDomains as [customDomainUrl, customDomain]}
 				<tr>
-					<td>
+					<td class="actions">
 						<CustomDomainActions {satellite} customDomain={[customDomainUrl, customDomain]} />
 					</td>
 
@@ -72,10 +72,14 @@
 
 <style lang="scss">
 	.tools {
-		width: 10%;
+		width: 12%;
 	}
 
 	.domain {
 		width: 60%;
+	}
+
+	.actions {
+		vertical-align: middle;
 	}
 </style>

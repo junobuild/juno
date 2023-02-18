@@ -98,6 +98,8 @@ interface I18nHosting {
 	delete_custom_domain: string;
 	before_continuing: string;
 	delete_are_you_sure: string;
+	delete: string;
+	edit: string;
 	type: string;
 	host: string;
 	value: string;

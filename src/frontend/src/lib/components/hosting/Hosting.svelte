@@ -38,6 +38,7 @@
 	<table>
 		<thead>
 			<tr>
+				<th class="tools" />
 				<th class="domain"> {$i18n.hosting.domain} </th>
 				<th> {$i18n.hosting.status}</th>
 			</tr>
@@ -65,6 +66,10 @@
 <AddCustomDomain {satellite} />
 
 <style lang="scss">
+	.tools {
+		width: 88px;
+	}
+
 	.domain {
 		width: 60%;
 	}

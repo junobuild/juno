@@ -50,7 +50,11 @@
 		</thead>
 		<tbody>
 			<tr>
-				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} toolsColumn={hasCustomDomains} />
+				<CustomDomain
+					url={satelliteUrl(satelliteId)}
+					ariaLabel={$i18n.hosting.default_domain}
+					toolsColumn={hasCustomDomains}
+				/>
 			</tr>
 
 			{#each customDomains as [customDomainUrl, customDomain]}

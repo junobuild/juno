@@ -1,7 +1,7 @@
 ///
 /// Upgrade structure:
 ///
-/// v0.0.4 -> v0.0.5 (no changes)
+/// v0.0.4 -> v0.0.5 (no type changes)
 ///
 pub mod upgrade {
     use crate::db::types::state::DbStableState;

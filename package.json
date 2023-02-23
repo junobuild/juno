@@ -1,9 +1,9 @@
 {
 	"name": "@junobuild/juno",
-	"version": "0.0.5",
+	"version": "0.0.6",
 	"private": true,
 	"author": "David Dal Busco <david@fluster.io>",
-	"license": "AGPL-3.0-or-later",
+	"license": "SEE LICENSE IN LICENSE.md",
 	"type": "module",
 	"repository": {
 		"type": "git",

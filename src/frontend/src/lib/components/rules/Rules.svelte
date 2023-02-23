@@ -8,6 +8,7 @@
 	import type { RulesType } from '$declarations/satellite/satellite.did';
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
 	import Collections from '$lib/components/collections/Collections.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let type: RulesType;
 
@@ -43,7 +44,7 @@
 		on:junoCollectionStart={startCollectionRule}
 	/>
 
-	<p class="title rules-title">Rules</p>
+	<p class="title rules-title">{$i18n.collections.details}</p>
 
 	<div class="rules">
 		{#if editCollection}

@@ -15,13 +15,13 @@
 		"home": "Home",
 		"help": "Help",
 		"controllers": "Controllers",
-		"rules": "Rules",
 		"continue": "Continue",
 		"not_logged_in": "Developer not logged in.",
 		"ready": "Ready",
 		"yes": "Yes",
 		"no": "No",
-		"ok": "Ok"
+		"ok": "Ok",
+		"cancel": "Cancel"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -153,5 +153,19 @@
 		"controller_id": "ID: {0}",
 		"no_delete": "Juno cannot operates without your current signed-in identity and your mission control set as controllers. Therefore these cannot be deleted in the console.",
 		"more_delete": "You can delete additional controllers e.g. those you add for use in non-interactive environments."
+	},
+	"collections": {
+		"title": "Collections",
+		"details": "Details",
+		"key": "Key:",
+		"key_placeholder": "A collection key",
+		"read_permission": "Read permission:",
+		"write_permission": "Write permission:",
+		"max_size": "Max size validation:",
+		"max_size_placeholder": "Max size in bytes",
+		"public": "Public",
+		"private": "Private",
+		"managed": "Managed",
+		"controllers": "controllers"
 	}
 }

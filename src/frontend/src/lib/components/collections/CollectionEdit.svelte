@@ -11,6 +11,7 @@
 	import { fromNullable } from '$lib/utils/did.utils';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { nonNullish } from '$lib/utils/utils';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -80,42 +81,38 @@
 <article>
 	<form on:submit|preventDefault={onSubmit}>
 		<label for="collection">
-			{#if mode === 'new'}
-				Add collection:
-			{:else}
-				Edit collection:
-			{/if}
+			{$i18n.collections.key}
 		</label>
 
 		<input
 			id="collection"
 			type="text"
-			placeholder="A collection key"
+			placeholder={$i18n.collections.key_placeholder}
 			name="collection"
 			bind:value={collection}
 		/>
 
-		<label for="read">Read permission:</label>
+		<label for="read">{$i18n.collections.read_permission}</label>
 		<select id="read" name="read" bind:value={read}>
-			<option value="Public">Public</option>
-			<option value="Private">Private</option>
-			<option value="Managed">Managed</option>
-			<option value="Controllers">Controllers</option>
+			<option value="Public">{$i18n.collections.public}</option>
+			<option value="Private">{$i18n.collections.private}</option>
+			<option value="Managed">{$i18n.collections.managed}</option>
+			<option value="Controllers">{$i18n.collections.controllers}</option>
 		</select>
 
-		<label for="write">Write permission:</label>
+		<label for="write">{$i18n.collections.write_permission}</label>
 		<select id="write" name="write" bind:value={write}>
-			<option value="Public">Public</option>
-			<option value="Private">Private</option>
-			<option value="Managed">Managed</option>
-			<option value="Controllers">Controllers</option>
+			<option value="Public">{$i18n.collections.public}</option>
+			<option value="Private">{$i18n.collections.private}</option>
+			<option value="Managed">{$i18n.collections.managed}</option>
+			<option value="Controllers">{$i18n.collections.controllers}</option>
 		</select>
 
 		{#if typeStorage}
-			<label>Max size validation:</label>
+			<label>{$i18n.collections.max_size}</label>
 			<Input
 				inputType="number"
-				placeholder="Max size in bytes"
+				placeholder={$i18n.collections.max_size_placeholder}
 				name="maxLength"
 				required={false}
 				bind:value={maxSize}
@@ -124,8 +121,10 @@
 		{/if}
 
 		<div class="toolbar">
-			<button type="button" on:click={() => dispatch('junoCollectionCancel')}>Cancel</button>
-			<button type="submit" class="primary">Submit</button>
+			<button type="button" on:click={() => dispatch('junoCollectionCancel')}
+				>{$i18n.core.cancel}</button
+			>
+			<button type="submit" class="primary">{$i18n.core.submit}</button>
 		</div>
 	</form>
 </article>

@@ -18,13 +18,13 @@ interface I18nCore {
 	home: string;
 	help: string;
 	controllers: string;
-	rules: string;
 	continue: string;
 	not_logged_in: string;
 	ready: string;
 	yes: string;
 	no: string;
 	ok: string;
+	cancel: string;
 }
 
 interface I18nCanisters {
@@ -173,6 +173,21 @@ interface I18nControllers {
 	more_delete: string;
 }
 
+interface I18nCollections {
+	title: string;
+	details: string;
+	key: string;
+	key_placeholder: string;
+	read_permission: string;
+	write_permission: string;
+	max_size: string;
+	max_size_placeholder: string;
+	public: string;
+	private: string;
+	managed: string;
+	controllers: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -191,4 +206,5 @@ interface I18n {
 	asset: I18nAsset;
 	admin: I18nAdmin;
 	controllers: I18nControllers;
+	collections: I18nCollections;
 }

@@ -12,7 +12,8 @@
 	export let ariaLabel = '';
 	export let type: 'default' | 'custom' = 'default';
 	export let customDomain: [string, CustomDomainType] | undefined = undefined;
-	export let satellite: Satellite;
+	export let satellite: Satellite | undefined = undefined;
+	export let toolsColumn = true;
 
 	let host = '';
 	$: ({ host } = new URL(url));
@@ -44,6 +45,14 @@
 		: undefined;
 </script>
 
+{#if toolsColumn}
+	<td>
+		{#if type === 'custom' && nonNullish(satellite)}
+			<CustomDomainActions {satellite} {customDomain} {displayState} />
+		{/if}
+	</td>
+{/if}
+
 <td colspan={type === 'default' ? 2 : undefined}>
 	<div class="domain">
 		<ExternalLink href={url} {ariaLabel}>{host}</ExternalLink>
@@ -57,11 +66,7 @@
 			>{#if nonNullish(displayState)}
 				{displayState}
 			{/if}</span
-		>
-
-		{#if type === 'custom'}
-			<CustomDomainActions {satellite} {customDomain} {displayState} />
-		{/if}</td
+		></td
 	>
 {/if}
 

@@ -18,7 +18,7 @@
 		},
 		{
 			id: Symbol('2'),
-			name: $i18n.core.rules
+			name: $i18n.collections.title
 		}
 	];
 

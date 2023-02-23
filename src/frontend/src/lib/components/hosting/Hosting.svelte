@@ -30,6 +30,9 @@
 	};
 
 	onMount(list);
+
+	let hasCustomDomains = false;
+	$: hasCustomDomains = customDomains.length > 0;
 </script>
 
 <svelte:window on:junoSyncCustomDomains={list} />
@@ -38,13 +41,20 @@
 	<table>
 		<thead>
 			<tr>
+				{#if hasCustomDomains}
+					<th class="tools" />
+				{/if}
 				<th class="domain"> {$i18n.hosting.domain} </th>
 				<th> {$i18n.hosting.status}</th>
 			</tr>
 		</thead>
 		<tbody>
 			<tr>
-				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
+				<CustomDomain
+					url={satelliteUrl(satelliteId)}
+					ariaLabel={$i18n.hosting.default_domain}
+					toolsColumn={hasCustomDomains}
+				/>
 			</tr>
 
 			{#each customDomains as [customDomainUrl, customDomain]}
@@ -65,7 +75,15 @@
 <AddCustomDomain {satellite} />
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
+	.tools {
+		width: 88px;
+	}
+
 	.domain {
-		width: 60%;
+		@include media.min-width(small) {
+			width: 60%;
+		}
 	}
 </style>

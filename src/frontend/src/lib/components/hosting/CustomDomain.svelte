@@ -18,17 +18,17 @@
 	let host = '';
 	$: ({ host } = new URL(url));
 
-	let registrationState: CustomDomainRegistrationState | undefined = undefined;
+	let registrationState: CustomDomainRegistrationState | null | undefined = undefined;
 
 	const loadRegistrationState = async () => {
 		if (isNullish(customDomain)) {
-			registrationState = undefined;
+			registrationState = null;
 			return;
 		}
 
 		try {
 			const registration = await getCustomDomainRegistration(customDomain[1]);
-			registrationState = registration?.state;
+			registrationState = nonNullish(registration) ? registration.state : null;
 		} catch (err: unknown) {
 			registrationState = 'Failed';
 
@@ -39,10 +39,13 @@
 
 	$: customDomain, (async () => await loadRegistrationState())();
 
-	let displayState: string | undefined;
-	$: displayState = nonNullish(registrationState)
-		? $i18n.hosting[registrationState.toLowerCase()]
-		: undefined;
+	let displayState: string | undefined | null;
+	$: displayState =
+		registrationState === undefined
+			? undefined
+			: registrationState === null
+			? null
+			: $i18n.hosting[registrationState.toLowerCase()];
 </script>
 
 {#if toolsColumn}

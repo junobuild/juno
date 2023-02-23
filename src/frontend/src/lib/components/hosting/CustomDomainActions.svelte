@@ -14,7 +14,7 @@
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
-	export let displayState: string | undefined;
+	export let displayState: string | null | undefined;
 
 	let visible = false;
 
@@ -63,7 +63,7 @@
 <div class="tools">
 	<ButtonDelete on:click={openDelete} ariaLabel={$i18n.hosting.delete} />
 
-	{#if displayState?.toLowerCase() !== 'available'}
+	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<button
 			class="icon"
 			aria-label={$i18n.hosting.edit}

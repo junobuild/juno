@@ -51,7 +51,6 @@
 			display: block;
 
 			height: 100%;
-			max-height: 620px;
 			overflow-y: auto;
 		}
 

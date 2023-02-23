@@ -13,6 +13,7 @@
 	export let type: 'default' | 'custom' = 'default';
 	export let customDomain: [string, CustomDomainType] | undefined = undefined;
 	export let satellite: Satellite | undefined = undefined;
+	export let toolsColumn = true;
 
 	let host = '';
 	$: ({ host } = new URL(url));
@@ -44,11 +45,13 @@
 		: undefined;
 </script>
 
-<td>
-	{#if type === 'custom' && nonNullish(satellite)}
-		<CustomDomainActions {satellite} {customDomain} {displayState} />
-	{/if}
-</td>
+{#if toolsColumn}
+	<td>
+		{#if type === 'custom' && nonNullish(satellite)}
+			<CustomDomainActions {satellite} {customDomain} {displayState} />
+		{/if}
+	</td>
+{/if}
 
 <td colspan={type === 'default' ? 2 : undefined}>
 	<div class="domain">

@@ -10,10 +10,10 @@ onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRe
 	const { msg, data } = dataMsg;
 
 	switch (msg) {
-		case 'startCustomDomainRegistrationTimer':
+		case 'stopCustomDomainRegistrationTimer':
 			stopTimer();
 			return;
-		case 'stopCustomDomainRegistrationTimer':
+		case 'startCustomDomainRegistrationTimer':
 			await startTimer({ data });
 			return;
 	}

@@ -61,7 +61,7 @@ const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: Cu
 		emit(registrationState);
 
 		// We sync until Available or Failed
-		if (registrationState === 'Available') {
+		if (registrationState === null || ['Available', 'Failed'].includes(registrationState)) {
 			stopTimer();
 		}
 	} catch (err: unknown) {

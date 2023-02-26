@@ -6,7 +6,6 @@
 	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
-	import { CustomDomain } from '$declarations/satellite/satellite.did';
 	import type { HostingCallback } from '$lib/services/worker.hosting.services';
 	import { onDestroy, onMount } from 'svelte';
 	import { PostMessageDataResponse } from '$lib/types/post-message';
@@ -27,7 +26,7 @@
 	let worker:
 		| {
 				startCustomDomainRegistrationTimer: (params: {
-					customDomain: CustomDomain;
+					customDomain: CustomDomainType;
 					callback: HostingCallback;
 				}) => void;
 				stopCustomDomainRegistrationTimer: () => void;

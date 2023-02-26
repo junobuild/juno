@@ -22,5 +22,5 @@ export type CustomDomainRegistrationState =
 export interface CustomDomainRegistration {
 	name: string;
 	canister: string;
-	state: 'Available';
+	state: CustomDomainRegistrationState;
 }

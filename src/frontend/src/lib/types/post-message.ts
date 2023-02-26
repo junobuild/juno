@@ -1,7 +1,9 @@
+import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import type { Canister } from './canister';
 
 export interface PostMessageDataRequest {
-	canisterIds: string[];
+	canisterIds?: string[];
+	customDomain?: CustomDomain;
 }
 
 export interface PostMessageDataResponse {
@@ -13,9 +15,14 @@ export type PostMessageRequest =
 	| 'stopCyclesTimer'
 	| 'restartCyclesTimer'
 	| 'startIdleTimer'
-	| 'stopIdleTimer';
+	| 'stopIdleTimer'
+	| 'startCustomDomainRegistrationTimer'
+	| 'stopCustomDomainRegistrationTimer';
 
-export type PostMessageResponse = 'syncCanister' | 'signOutIdleTimer';
+export type PostMessageResponse =
+	| 'syncCanister'
+	| 'signOutIdleTimer'
+	| 'customDomainRegistrationState';
 
 export interface PostMessage<T extends PostMessageDataRequest | PostMessageDataResponse> {
 	msg: PostMessageRequest | PostMessageResponse;

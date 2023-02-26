@@ -37,7 +37,12 @@
 		(registrationState = state);
 
 	const loadRegistrationState = async () => {
-		if (isNullish(customDomain) || isNullish(worker)) {
+		if (isNullish(worker)) {
+			registrationState = undefined;
+			return;
+		}
+
+		if (isNullish(customDomain)) {
 			registrationState = null;
 			worker?.stopCustomDomainRegistrationTimer();
 			return;

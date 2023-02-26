@@ -79,7 +79,8 @@ const registerDomain = async ({ domainName }: { domainName: string }): Promise<s
 	});
 
 	if (!response.ok) {
-		throw new Error(`Registering ${domainName} with the boundary nodes failed.`);
+		const text = await response.text();
+		throw new Error(`Registering ${domainName} with the boundary nodes failed. ${text}`);
 	}
 
 	const result: { id: string } = await response.json();
@@ -104,7 +105,8 @@ export const getCustomDomainRegistration = async ({
 	});
 
 	if (!response.ok) {
-		throw new Error(`Fetching custom domain state from the boundary nodes failed.`);
+		const text = await response.text();
+		throw new Error(`Fetching custom domain state from the boundary nodes failed. ${text}`);
 	}
 
 	const result: CustomDomainRegistration = await response.json();
@@ -127,6 +129,7 @@ const deleteDomain = async ({ bn_id }: CustomDomain): Promise<void> => {
 	});
 
 	if (!response.ok) {
-		throw new Error(`Deleting custom domain in the boundary nodes failed.`);
+		const text = await response.text();
+		throw new Error(`Deleting custom domain in the boundary nodes failed. ${text}`);
 	}
 };

@@ -53,7 +53,7 @@ const loadIdentity = async (): Promise<Identity | undefined> => {
 const startCyclesTimer = async ({ data: { canisterIds } }: { data: PostMessageDataRequest }) => {
 	const identity: Identity | undefined = await loadIdentity();
 
-	const sync = async () => await syncCanisters({ identity, canisterIds: canisterIds });
+	const sync = async () => await syncCanisters({ identity, canisterIds: canisterIds ?? [] });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -83,6 +83,11 @@ const syncCanisters = async ({
 }) => {
 	if (!identity) {
 		// We do nothing if no identity
+		return;
+	}
+
+	if (canisterIds.length === 0) {
+		// No canister to sync
 		return;
 	}
 

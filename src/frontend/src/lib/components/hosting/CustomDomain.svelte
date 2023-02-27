@@ -8,8 +8,9 @@
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
 	import type { HostingCallback } from '$lib/services/worker.hosting.services';
 	import { onDestroy, onMount } from 'svelte';
-	import { PostMessageDataResponse } from '$lib/types/post-message';
+	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { initHostingWorker } from '$lib/services/worker.hosting.services';
+	import IconSync from '$lib/components/icons/IconSync.svelte';
 
 	export let url: string;
 	export let ariaLabel = '';
@@ -88,6 +89,9 @@
 		><span
 			>{#if nonNullish(displayState)}
 				{displayState}
+				{#if ['PendingOrder', 'PendingChallengeResponse', 'PendingAcmeApproval'].includes(registrationState)}
+					<IconSync />
+				{/if}
 			{/if}</span
 		></td
 	>
@@ -123,10 +127,16 @@
 		}
 
 		span {
+			@include text.truncate;
+
 			padding: 0 var(--padding-1_5x);
 
 			@include media.min-width(medium) {
 				padding: 0;
+			}
+
+			:global(svg) {
+				vertical-align: middle;
 			}
 		}
 	}

@@ -1,5 +1,11 @@
-import { AUTH_MAX_TIME_TO_LIVE, localIdentityCanisterId } from '$lib/constants/constants';
+import {
+	AUTH_MAX_TIME_TO_LIVE,
+	AUTH_POPUP_HEIGHT,
+	AUTH_POPUP_WIDTH,
+	localIdentityCanisterId
+} from '$lib/constants/constants';
 import { createAuthClient } from '$lib/utils/auth.utils';
+import { popupCenter } from '$lib/utils/window.utils';
 import type { Identity } from '@dfinity/agent';
 import type { AuthClient } from '@dfinity/auth-client';
 import { derived, writable, type Readable } from 'svelte/store';
@@ -56,7 +62,8 @@ const initAuthStore = (): AuthStore => {
 					...(localIdentityCanisterId !== null &&
 						localIdentityCanisterId !== undefined && {
 							identityProvider: `http://${localIdentityCanisterId}.localhost:8000?#authorize`
-						})
+						}),
+					windowOpenerFeatures: popupCenter({ width: AUTH_POPUP_WIDTH, height: AUTH_POPUP_HEIGHT })
 				});
 			}),
 

@@ -58,7 +58,7 @@ type InitAssetKey = record {
 };
 type InitUploadResult = record { batch_id : nat };
 type ListParams = record {
-  order : opt OrderKeys;
+  order : opt Order;
   matcher : opt text;
   paginate : opt PaginateKeys;
 };
@@ -72,7 +72,8 @@ type ListResults_1 = record {
   length : nat64;
   items : vec record { text; Doc };
 };
-type OrderKeys = record { desc : bool };
+type Order = record { field : OrderField; desc : bool };
+type OrderField = variant { UpdatedAt; Keys; CreatedAt };
 type PaginateKeys = record { start_after : opt text; limit : opt nat64 };
 type Permission = variant { Controllers; Private; Public; Managed };
 type Rule = record {

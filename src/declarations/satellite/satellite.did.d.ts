@@ -72,7 +72,7 @@ export interface InitUploadResult {
 	batch_id: bigint;
 }
 export interface ListParams {
-	order: [] | [OrderKeys];
+	order: [] | [Order];
 	matcher: [] | [string];
 	paginate: [] | [PaginateKeys];
 }
@@ -86,9 +86,11 @@ export interface ListResults_1 {
 	length: bigint;
 	items: Array<[string, Doc]>;
 }
-export interface OrderKeys {
+export interface Order {
+	field: OrderField;
 	desc: boolean;
 }
+export type OrderField = { UpdatedAt: null } | { Keys: null } | { CreatedAt: null };
 export interface PaginateKeys {
 	start_after: [] | [string];
 	limit: [] | [bigint];

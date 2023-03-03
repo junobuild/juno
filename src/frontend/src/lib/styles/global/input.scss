@@ -20,7 +20,8 @@ select {
 	}
 }
 
-input[type='checkbox'], input[type='radio'] {
+input[type='checkbox'],
+input[type='radio'] {
 	accent-color: var(--color-secondary-contrast);
 	width: fit-content;
 }

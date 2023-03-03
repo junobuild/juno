@@ -50,6 +50,7 @@ pub mod list {
     use crate::types::core::Key;
     use candid::CandidType;
     use serde::Deserialize;
+    use std::cmp::Ordering;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct PaginateKeys {
@@ -57,16 +58,24 @@ pub mod list {
         pub limit: Option<usize>,
     }
 
+    #[derive(CandidType, Deserialize, Clone)]
+    pub enum OrderField {
+        Keys,
+        CreatedAt,
+        UpdatedAt,
+    }
+
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct OrderKeys {
+    pub struct Order {
         pub desc: bool,
+        pub field: OrderField,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ListParams {
         pub matcher: Option<String>,
         pub paginate: Option<PaginateKeys>,
-        pub order: Option<OrderKeys>,
+        pub order: Option<Order>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -74,5 +83,11 @@ pub mod list {
         pub items: Vec<(Key, T)>,
         pub length: usize,
         pub matches_length: usize,
+    }
+
+    pub trait Compare {
+        fn cmp_updated_at(&self, other: &Self) -> Ordering;
+
+        fn cmp_created_at(&self, other: &Self) -> Ordering;
     }
 }

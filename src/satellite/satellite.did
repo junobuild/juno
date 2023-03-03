@@ -57,10 +57,13 @@ type InitAssetKey = record {
   full_path : text;
 };
 type InitUploadResult = record { batch_id : nat };
+type ListOrder = record { field : ListOrderField; desc : bool };
+type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
+type ListPaginate = record { start_after : opt text; limit : opt nat64 };
 type ListParams = record {
-  order : opt OrderKeys;
+  order : opt ListOrder;
   matcher : opt text;
-  paginate : opt PaginateKeys;
+  paginate : opt ListPaginate;
 };
 type ListResults = record {
   matches_length : nat64;
@@ -72,8 +75,6 @@ type ListResults_1 = record {
   length : nat64;
   items : vec record { text; Doc };
 };
-type OrderKeys = record { desc : bool };
-type PaginateKeys = record { start_after : opt text; limit : opt nat64 };
 type Permission = variant { Controllers; Private; Public; Managed };
 type Rule = record {
   updated_at : nat64;

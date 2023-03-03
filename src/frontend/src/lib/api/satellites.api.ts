@@ -7,37 +7,38 @@ import type {
 	SetRule
 } from '$declarations/satellite/satellite.did';
 import type { PermissionText } from '$lib/constants/rules.constants';
+import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.utils';
 import { toNullable } from '$lib/utils/did.utils';
 import { permissionFromText } from '$lib/utils/rules.utils';
-import { listParams } from '$lib/utils/satellite.utils';
+import { toListParams } from '$lib/utils/satellite.utils';
 import { isNullish, nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
 
 export const listDocs = async ({
 	satelliteId,
 	collection,
-	startAfter
+	params
 }: {
 	satelliteId: Principal;
 	collection: string;
-	startAfter?: string;
+	params: ListParams;
 }): Promise<ListDocs> => {
 	const actor = await getSatelliteActor(satelliteId);
-	return actor.list_docs(collection, listParams({ startAfter }));
+	return actor.list_docs(collection, toListParams(params));
 };
 
 export const listAssets = async ({
 	satelliteId,
 	collection,
-	startAfter
+	params
 }: {
 	satelliteId: Principal;
 	collection: string;
-	startAfter?: string;
+	params: ListParams;
 }): Promise<ListAssets> => {
 	const actor = await getSatelliteActor(satelliteId);
-	return actor.list_assets(toNullable(collection), listParams({ startAfter }));
+	return actor.list_assets(toNullable(collection), toListParams(params));
 };
 
 export const listRules = async ({

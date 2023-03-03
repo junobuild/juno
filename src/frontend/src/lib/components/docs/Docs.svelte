@@ -10,6 +10,10 @@
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import DataOrder from '$lib/components/data/DataOrder.svelte';
+	import type { ListOrder } from '$lib/types/list';
+	import { DEFAULT_LIST_ORDER } from '$lib/constants/data.constants';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -23,7 +27,10 @@
 			const { items, matches_length } = await listDocs({
 				collection,
 				satelliteId: $store.satelliteId,
-				startAfter: $paginationStore.startAfter
+				params: {
+					startAfter: $paginationStore.startAfter,
+					order
+				}
 			});
 			setItems({ items, matches_length });
 		} catch (err: unknown) {
@@ -47,7 +54,10 @@
 	let collection: string | undefined;
 	$: collection = $store.rule?.[0];
 
+	let order: ListOrder = DEFAULT_LIST_ORDER;
+
 	$: collection,
+		order,
 		(async () => {
 			resetPage();
 			await list();
@@ -63,7 +73,11 @@
 	$: emptyCollection = $store.rules?.length === 0;
 </script>
 
-<p class="title">Documents</p>
+<div class="title">
+	<DataOrder on:junoOrder={({ detail: updateOrder }) => (order = updateOrder)}>
+		{$i18n.datastore.documents}
+	</DataOrder>
+</div>
 
 {#if !emptyCollection}
 	<div

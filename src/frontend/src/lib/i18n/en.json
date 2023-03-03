@@ -21,7 +21,8 @@
 		"yes": "Yes",
 		"no": "No",
 		"ok": "Ok",
-		"cancel": "Cancel"
+		"cancel": "Cancel",
+		"apply": "Apply"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -72,10 +73,12 @@
 	},
 	"datastore": {
 		"title": "Datastore",
-		"data": "Data"
+		"data": "Data",
+		"documents": "Documents"
 	},
 	"storage": {
-		"title": "Storage"
+		"title": "Storage",
+		"assets": "Assets"
 	},
 	"hosting": {
 		"title": "Hosting",
@@ -167,5 +170,15 @@
 		"private": "Private",
 		"managed": "Managed",
 		"controllers": "controllers"
+	},
+	"sort": {
+		"title": "Sort results",
+		"keys": "Keys",
+		"created_at": "Created at",
+		"updated_at": "Updated at",
+		"sort_by_field": "Sort by field:",
+		"sort_results": "Sort results:",
+		"ascending": "Ascending",
+		"descending": "Descending"
 	}
 }

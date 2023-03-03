@@ -25,8 +25,15 @@ pub mod state {
 }
 
 pub mod core {
+    use std::cmp::Ordering;
+
     pub type Key = String;
     pub type CollectionKey = String;
+
+    pub trait Compare {
+        fn cmp_updated_at(&self, other: &Self) -> Ordering;
+        fn cmp_created_at(&self, other: &Self) -> Ordering;
+    }
 }
 
 pub mod interface {
@@ -52,21 +59,29 @@ pub mod list {
     use serde::Deserialize;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct PaginateKeys {
+    pub struct ListPaginate {
         pub start_after: Option<Key>,
         pub limit: Option<usize>,
     }
 
+    #[derive(CandidType, Deserialize, Clone)]
+    pub enum ListOrderField {
+        Keys,
+        CreatedAt,
+        UpdatedAt,
+    }
+
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct OrderKeys {
+    pub struct ListOrder {
         pub desc: bool,
+        pub field: ListOrderField,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ListParams {
         pub matcher: Option<String>,
-        pub paginate: Option<PaginateKeys>,
-        pub order: Option<OrderKeys>,
+        pub paginate: Option<ListPaginate>,
+        pub order: Option<ListOrder>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]

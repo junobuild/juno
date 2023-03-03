@@ -1,7 +1,11 @@
+use crate::types::core::Compare;
 use crate::types::core::Key;
-use crate::types::list::{ListParams, ListResults, OrderKeys, PaginateKeys};
+use crate::types::list::{ListOrder, ListOrderField, ListPaginate, ListParams, ListResults};
 
-pub fn list_values<T: Clone>(matches: Vec<(Key, T)>, filters: &ListParams) -> ListResults<T> {
+pub fn list_values<T: Clone + Compare>(
+    matches: Vec<(Key, T)>,
+    filters: &ListParams,
+) -> ListResults<T> {
     let matches_length = matches.len();
 
     let ordered = order_values(matches, filters);
@@ -17,8 +21,8 @@ pub fn list_values<T: Clone>(matches: Vec<(Key, T)>, filters: &ListParams) -> Li
     }
 }
 
-fn order_values<T: Clone>(
-    mut matches: Vec<(Key, T)>,
+fn order_values<T: Clone + Compare>(
+    matches: Vec<(Key, T)>,
     ListParams {
         matcher: _,
         order,
@@ -27,19 +31,54 @@ fn order_values<T: Clone>(
 ) -> Vec<(Key, T)> {
     match order {
         None => matches,
-        Some(OrderKeys { desc }) => {
-            if *desc {
-                matches.sort_by(|(key_a, _), (key_b, _)| key_b.cmp(key_a));
-                return matches;
-            }
-
-            matches.sort_by(|(key_a, _), (key_b, _)| key_a.cmp(key_b));
-            matches
-        }
+        Some(ListOrder { desc, field }) => match field {
+            ListOrderField::Keys => order_values_with_keys(matches, desc),
+            ListOrderField::UpdatedAt => order_values_with_updated_at(matches, desc),
+            ListOrderField::CreatedAt => order_values_with_created_at(matches, desc),
+        },
     }
 }
 
-fn paginate_values<T: Clone>(
+fn order_values_with_updated_at<T: Clone + Compare>(
+    mut matches: Vec<(Key, T)>,
+    desc: &bool,
+) -> Vec<(Key, T)> {
+    if *desc {
+        matches.sort_by(|(_, value_a), (_, value_b)| value_b.cmp_updated_at(value_a));
+        return matches;
+    }
+
+    matches.sort_by(|(_, value_a), (_, value_b)| value_a.cmp_updated_at(value_b));
+    matches
+}
+
+fn order_values_with_created_at<T: Clone + Compare>(
+    mut matches: Vec<(Key, T)>,
+    desc: &bool,
+) -> Vec<(Key, T)> {
+    if *desc {
+        matches.sort_by(|(_, value_a), (_, value_b)| value_b.cmp_created_at(value_a));
+        return matches;
+    }
+
+    matches.sort_by(|(_, value_a), (_, value_b)| value_a.cmp_created_at(value_b));
+    matches
+}
+
+fn order_values_with_keys<T: Clone + Compare>(
+    mut matches: Vec<(Key, T)>,
+    desc: &bool,
+) -> Vec<(Key, T)> {
+    if *desc {
+        matches.sort_by(|(key_a, _), (key_b, _)| key_b.cmp(key_a));
+        return matches;
+    }
+
+    matches.sort_by(|(key_a, _), (key_b, _)| key_a.cmp(key_b));
+    matches
+}
+
+fn paginate_values<T: Clone + Compare>(
     matches: Vec<(Key, T)>,
     ListParams {
         matcher: _,
@@ -49,7 +88,7 @@ fn paginate_values<T: Clone>(
 ) -> Vec<(Key, T)> {
     match paginate {
         None => matches,
-        Some(PaginateKeys { start_after, limit }) => {
+        Some(ListPaginate { start_after, limit }) => {
             let max: usize = matches.len();
 
             if max == 0 {

@@ -1,11 +1,14 @@
 use ic_cdk::api::time;
 use sha2::{Digest, Sha256};
+use std::cmp::Ordering;
 
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::types::assets::AssetHashes;
+use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::StorageStableState;
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::storage::url::alternative_paths;
+use crate::types::core::Compare;
 
 impl From<&StorageStableState> for AssetHashes {
     fn from(state: &StorageStableState) -> Self {
@@ -79,5 +82,15 @@ impl From<&Vec<Vec<u8>>> for AssetEncoding {
             total_length,
             sha256,
         }
+    }
+}
+
+impl Compare for AssetNoContent {
+    fn cmp_updated_at(&self, other: &Self) -> Ordering {
+        self.updated_at.cmp(&other.updated_at)
+    }
+
+    fn cmp_created_at(&self, other: &Self) -> Ordering {
+        self.created_at.cmp(&other.created_at)
     }
 }

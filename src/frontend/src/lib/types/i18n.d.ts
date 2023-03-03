@@ -25,6 +25,7 @@ interface I18nCore {
   no: string;
   ok: string;
   cancel: string;
+  apply: string;
 }
 
 interface I18nCanisters {
@@ -83,10 +84,12 @@ interface I18nAuthentication {
 interface I18nDatastore {
   title: string;
   data: string;
+  documents: string;
 }
 
 interface I18nStorage {
   title: string;
+  assets: string;
 }
 
 interface I18nHosting {
@@ -188,6 +191,17 @@ interface I18nCollections {
   controllers: string;
 }
 
+interface I18nSort {
+  title: string;
+  keys: string;
+  created_at: string;
+  updated_at: string;
+  sort_by_field: string;
+  sort_results: string;
+  ascending: string;
+  descending: string;
+}
+
 interface I18n {
   lang: Languages;
   core: I18nCore;
@@ -207,4 +221,5 @@ interface I18n {
   admin: I18nAdmin;
   controllers: I18nControllers;
   collections: I18nCollections;
+  sort: I18nSort;
 }

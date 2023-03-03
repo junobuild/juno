@@ -1,0 +1,184 @@
+{
+	"core": {
+		"close": "关闭",
+		"back": "回退",
+		"menu": "打开菜单去访问导航栏选项",
+		"copy": "拷贝到剪切板",
+		"toggle": "切换",
+		"loading": "加载...",
+		"status": "状态",
+		"sign_out": "退出",
+		"sign_in": "登录",
+		"light_off": "夜间模式",
+		"light_on": "日间模式",
+		"submit": "提交",
+		"home": "主页",
+		"help": "帮助",
+		"controllers": "控制管理",
+		"continue": "继续",
+		"not_logged_in": "开发者没有登录",
+		"ready": "准备好",
+		"yes": "是",
+		"no": "否",
+		"ok": "可以",
+		"cancel": "取消",
+		"apply": "应用"
+	},
+	"canisters": {
+		"top_up": "充值",
+		"cycles": "{0} 用于支付只能合约运行消耗.",
+		"top_up_in_progress": "充值中...",
+		"amount": "ICP数量",
+		"top_up_title": "充值 {0}"
+	},
+	"sign_in": {
+		"title": "创建你的第一个satellite",
+		"overview_1": "satellite 是一个用于你的应用的web3容器.",
+		"overview_2": "它提供了匿名的认证，数据存储，定制域名等功能以及更多.",
+		"overview_3": "100% 低能耗运行在区块链上.",
+		"internet_identity": "继续使用Internet Identity"
+	},
+	"satellites": {
+		"title": "Satellites",
+		"launch": "启动一个新的satellite",
+		"open": "打开satellite",
+		"create": "创建 satellite",
+		"satellite": "Satellite",
+		"ready": "你的 satellite 可以使用.",
+		"initializing": "初始化你的新的 satellite...",
+		"start": "让我们来创建一个新的 satellite",
+		"description": "satellite是一个web3容器，它为开发者提供了简化数据管理，存储以及权限管理等系统解决方案，完全运行在低能耗的区块链上.",
+		"name": "Satellite 名字",
+		"enter_name": "输入你的 satellite 名字",
+		"create_satellite_price": "为了创建新的 satellite 需要 <strong>{0}</strong> ICP. 你当前 mission control 余额是 {1} ICP 而且你还剩 {2} 积分.",
+		"loading_satellites": "加载你的satellites"
+	},
+	"mission_control": {
+		"title": "Mission Control",
+		"overview": "概要",
+		"id": "Mission control 控制中心 ID",
+		"account_identifier": "账号",
+		"balance": "余额",
+		"credits": "积分",
+		"dev_id": "开发者 ID",
+		"transactions": "交易记录"
+	},
+	"overview": {
+		"title": "概要"
+	},
+	"authentication": {
+		"title": "认证",
+		"users": "用户",
+		"methods": "登录方法"
+	},
+	"datastore": {
+		"title": "数据池",
+		"data": "数据",
+		"documents": "文档"
+	},
+	"storage": {
+		"title": "存储",
+		"assets": "资料"
+	},
+	"hosting": {
+		"title": "网站托管",
+		"success": "你的定制域名配置好了.",
+		"configure": "设置你的DNS",
+		"add_records": "在你的DNS提供者服务创建记录并验证你的 {0}. 在使用这个域名期间不要删除记录.",
+		"dns_notes": "你可能需要在你的DNS提供者服务上调整以上记录,更多信息请参考 <a href=\"https://juno.build/docs/build/hosting#about-dns-records\" rel=\"external noopener noreferrer\" target=\"_blank\">文档</a>.",
+		"delete_custom_domain": "删除 {0}",
+		"before_continuing": "在继续操作之前，请务必从你的DNS提供者服务上删除记录.",
+		"delete_are_you_sure": "确认删除?",
+		"delete": "删除域名",
+		"edit": "编辑域名",
+		"type": "类型",
+		"host": "主机",
+		"value": "值",
+		"config_in_progress": "处理配置...",
+		"add_custom_domain": "增加域名",
+		"description": "输入准确的域名用于用户访问你的 satellite. 它可以是二级级域名(yourdomain.com)或者是子域名 (app.yourdomain.com).",
+		"custom_domain": "定制域名",
+		"default_domain": "默认satellite 域名",
+		"domain": "域名",
+		"status": "状态",
+		"pendingorder": "订单处理中...",
+		"pendingchallengeresponse": "认证订单",
+		"pendingacmeapproval": "检查完成",
+		"available": "有效",
+		"failed": "失败"
+	},
+	"cli": {
+		"title": "授权命令行",
+		"sign_in": "登录去增加一个控制者 <strong>{0}</strong> 到你的 mission control 和/或 satellite(s).",
+		"add": "增加一个新的控制者<strong>{0}</strong> 到你的 mission control 和/或 satellite(s)."
+	},
+	"errors": {
+		"no_mission_control": "Mission 控制中心没有初始化.",
+		"cli_missing_params": "URL参数缺失，重定向URL或者 principal没有提供.",
+		"cli_missing_selection": "没选择 mission control 或 satellite(s) .",
+		"cli_unexpected_error": "在增加你的控制者时出现不可预见的错误.",
+		"satellite_name_missing": "必须提供一个名字给 satellite.",
+		"satellite_unexpected_error": "创建 satellite时出现未知错误.",
+		"satellite_no_found": "Satellite没找到，返回 <a href=\"/\">开始</a>去找你的 satellites.",
+		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
+		"hosting_missing_domain_name": "必须提供一个域名.",
+		"hosting_invalid_url": "请提供一个有效的 URL.",
+		"hosting_missing_dns_configuration": "必须提供域名配置信息.",
+		"hosting_configuration_issues": "配置 satellite时出现错误.",
+		"hosting_loading_errors": "加载 satellite 出错.",
+		"hosting_no_custom_domain": "没选择域名",
+		"hosting_delete_custom_domain": "删除域名出错",
+		"controllers_listing": "显示控制者列表出错.",
+		"controllers_no_selection": "没有选择要删除的控制者.",
+		"controllers_delete": "删除控制者出现未知错我."
+	},
+	"document": {
+		"owner": "拥有者",
+		"created": "创建于",
+		"updated": "更新于",
+		"data": "数据"
+	},
+	"asset": {
+		"owner": "拥有者",
+		"token": "令牌",
+		"headers": "协议数据",
+		"created": "创建于",
+		"updated": "更新于"
+	},
+	"admin": {
+		"mission_control_new_version": "有一个新mission control版本可以使用! 请用命令行来升级.",
+		"satellite_new_version": "有一个新satellite版本可以使用!请用命令行来升级."
+	},
+	"controllers": {
+		"title": "控制者",
+		"delete": "删除控制者",
+		"delete_question": "删除选择的控制者?",
+		"controller_id": "ID: {0}",
+		"no_delete": "不能操作Juno 如果你没有登录并且设置你的Internet Identity 为 mission control 的控制者. 所以这些是不能被删除的",
+		"more_delete": "你可以删除其他的控制者，比如那些不需要跟环境有交互的."
+	},
+	"collections": {
+		"title": "文档集",
+		"details": "详细",
+		"key": "关键字:",
+		"key_placeholder": "文档集关键字",
+		"read_permission": "只读权限:",
+		"write_permission": "写入权限:",
+		"max_size": "大小上限控制:",
+		"max_size_placeholder": "以bytes为单位最大值",
+		"public": "公开",
+		"private": "私有",
+		"managed": "可管理的",
+		"controllers": "控制者"
+	},
+	"sort": {
+		"title": "排序结果",
+		"keys": "关键字",
+		"created_at": "创建日期",
+		"updated_at": "修改日期",
+		"sort_by_field": "按字段排序:",
+		"sort_results": "排序结果:",
+		"ascending": "升序",
+		"descending": "降序"
+	}
+}

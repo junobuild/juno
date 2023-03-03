@@ -61,7 +61,7 @@
 		min-height: calc(24 * var(--padding));
 		overflow-y: auto;
 		width: 100%;
-		padding: var(--padding);
+		padding: var(--padding-1_5x);
 	}
 
 	button.text {
@@ -86,5 +86,9 @@
 	.satellites {
 		position: relative;
 		width: 100%;
+	}
+
+	a.menu {
+		margin-bottom: var(--padding-0_5x);
 	}
 </style>

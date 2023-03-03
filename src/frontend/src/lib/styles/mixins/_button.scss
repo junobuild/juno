@@ -47,6 +47,7 @@
 
 @mixin menu {
 	width: 100%;
+	background: transparent;
 	box-shadow: none;
 	border: none;
 	margin: 0;
@@ -58,7 +59,6 @@
 		margin: 0.45rem 1.25rem 0.45rem 0;
 		width: 1.25rem;
 		height: 1.25rem;
-		background: var(--color-card);
 	}
 
 	&:hover:not(:disabled),
@@ -120,6 +120,8 @@
 
 	text-decoration: underline;
 	text-underline-offset: 0.025rem;
+
+	text-align: inherit;
 
 	&:hover,
 	&:focus {

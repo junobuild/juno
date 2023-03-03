@@ -24,6 +24,7 @@ export const listParams = ({ startAfter }: { startAfter?: string }): ListParams 
 		}
 	],
 	order: toNullable({
-		desc: false
+		desc: true,
+		field: { CreatedAt: null }
 	})
 });

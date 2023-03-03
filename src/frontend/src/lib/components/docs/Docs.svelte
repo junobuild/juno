@@ -10,6 +10,8 @@
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import DataOrder from '$lib/components/data/DataOrder.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -63,7 +65,11 @@
 	$: emptyCollection = $store.rules?.length === 0;
 </script>
 
-<p class="title">Documents</p>
+<div class="title">
+	<DataOrder>
+		{$i18n.datastore.documents}
+	</DataOrder>
+</div>
 
 {#if !emptyCollection}
 	<div

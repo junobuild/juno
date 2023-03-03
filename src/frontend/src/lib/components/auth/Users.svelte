@@ -24,7 +24,13 @@
 			const { items, matches_length } = await listDocs({
 				collection: '#user',
 				satelliteId,
-				startAfter: $paginationStore.startAfter
+				params: {
+					startAfter: $paginationStore.startAfter,
+					order: {
+						desc: true,
+						field: 'created_at'
+					}
+				}
 			});
 			setItems({ items, matches_length });
 		} catch (err: unknown) {

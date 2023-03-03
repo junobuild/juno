@@ -65,7 +65,7 @@
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<button
-			class="icon"
+			class="square"
 			aria-label={$i18n.hosting.edit}
 			type="button"
 			on:click={() =>
@@ -123,7 +123,7 @@
 
 	.tools {
 		display: flex;
-		gap: var(--padding-0_5x);
+		gap: var(--padding);
 	}
 
 	.toolbar {

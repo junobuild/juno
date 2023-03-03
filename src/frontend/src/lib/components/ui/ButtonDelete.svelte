@@ -4,7 +4,7 @@
 	export let ariaLabel: string;
 </script>
 
-<button class="icon" aria-label={ariaLabel} type="button" on:click|stopPropagation
+<button class="square" aria-label={ariaLabel} type="button" on:click|stopPropagation
 	><IconDelete size="20px" /></button
 >
 

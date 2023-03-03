@@ -20,13 +20,18 @@ select {
 	}
 }
 
-input[type='checkbox'] {
+input[type='checkbox'], input[type='radio'] {
 	accent-color: var(--color-secondary-contrast);
 	width: fit-content;
 }
 
-input:not([type='checkbox']) {
+input:not([type='checkbox']):not([type='radio']) {
 	-webkit-appearance: none;
+}
+
+input[type='radio'] {
+	box-shadow: none;
+	margin: var(--padding-1_5x) 0;
 }
 
 input[disabled] {

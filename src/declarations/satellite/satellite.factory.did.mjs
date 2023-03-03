@@ -56,20 +56,20 @@ export const idlFactory = ({ IDL }) => {
 		full_path: IDL.Text
 	});
 	const InitUploadResult = IDL.Record({ batch_id: IDL.Nat });
-	const OrderField = IDL.Variant({
+	const ListOrderField = IDL.Variant({
 		UpdatedAt: IDL.Null,
 		Keys: IDL.Null,
 		CreatedAt: IDL.Null
 	});
-	const Order = IDL.Record({ field: OrderField, desc: IDL.Bool });
-	const PaginateKeys = IDL.Record({
+	const ListOrder = IDL.Record({ field: ListOrderField, desc: IDL.Bool });
+	const ListPaginate = IDL.Record({
 		start_after: IDL.Opt(IDL.Text),
 		limit: IDL.Opt(IDL.Nat64)
 	});
 	const ListParams = IDL.Record({
-		order: IDL.Opt(Order),
+		order: IDL.Opt(ListOrder),
 		matcher: IDL.Opt(IDL.Text),
-		paginate: IDL.Opt(PaginateKeys)
+		paginate: IDL.Opt(ListPaginate)
 	});
 	const AssetKey = IDL.Record({
 		token: IDL.Opt(IDL.Text),

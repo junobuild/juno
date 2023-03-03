@@ -1,5 +1,5 @@
 use crate::db::types::state::Doc;
-use crate::types::list::Compare;
+use crate::types::core::Compare;
 use std::cmp::Ordering;
 
 impl Compare for Doc {

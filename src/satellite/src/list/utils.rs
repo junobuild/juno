@@ -1,5 +1,6 @@
+use crate::types::core::Compare;
 use crate::types::core::Key;
-use crate::types::list::{Compare, ListParams, ListResults, Order, OrderField, PaginateKeys};
+use crate::types::list::{ListOrder, ListOrderField, ListPaginate, ListParams, ListResults};
 
 pub fn list_values<T: Clone + Compare>(
     matches: Vec<(Key, T)>,
@@ -30,10 +31,10 @@ fn order_values<T: Clone + Compare>(
 ) -> Vec<(Key, T)> {
     match order {
         None => matches,
-        Some(Order { desc, field }) => match field {
-            OrderField::Keys => order_values_with_keys(matches, desc),
-            OrderField::UpdatedAt => order_values_with_updated_at(matches, desc),
-            OrderField::CreatedAt => order_values_with_created_at(matches, desc),
+        Some(ListOrder { desc, field }) => match field {
+            ListOrderField::Keys => order_values_with_keys(matches, desc),
+            ListOrderField::UpdatedAt => order_values_with_updated_at(matches, desc),
+            ListOrderField::CreatedAt => order_values_with_created_at(matches, desc),
         },
     }
 }
@@ -87,7 +88,7 @@ fn paginate_values<T: Clone + Compare>(
 ) -> Vec<(Key, T)> {
     match paginate {
         None => matches,
-        Some(PaginateKeys { start_after, limit }) => {
+        Some(ListPaginate { start_after, limit }) => {
             let max: usize = matches.len();
 
             if max == 0 {

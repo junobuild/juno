@@ -71,10 +71,19 @@ export interface InitAssetKey {
 export interface InitUploadResult {
 	batch_id: bigint;
 }
+export interface ListOrder {
+	field: ListOrderField;
+	desc: boolean;
+}
+export type ListOrderField = { UpdatedAt: null } | { Keys: null } | { CreatedAt: null };
+export interface ListPaginate {
+	start_after: [] | [string];
+	limit: [] | [bigint];
+}
 export interface ListParams {
-	order: [] | [Order];
+	order: [] | [ListOrder];
 	matcher: [] | [string];
-	paginate: [] | [PaginateKeys];
+	paginate: [] | [ListPaginate];
 }
 export interface ListResults {
 	matches_length: bigint;
@@ -85,15 +94,6 @@ export interface ListResults_1 {
 	matches_length: bigint;
 	length: bigint;
 	items: Array<[string, Doc]>;
-}
-export interface Order {
-	field: OrderField;
-	desc: boolean;
-}
-export type OrderField = { UpdatedAt: null } | { Keys: null } | { CreatedAt: null };
-export interface PaginateKeys {
-	start_after: [] | [string];
-	limit: [] | [bigint];
 }
 export type Permission =
 	| { Controllers: null }

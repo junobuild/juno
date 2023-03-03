@@ -1,7 +1,7 @@
-use crate::types::list::OrderField;
+use crate::types::list::ListOrderField;
 
-impl Default for OrderField {
+impl Default for ListOrderField {
     fn default() -> Self {
-        OrderField::Keys
+        ListOrderField::Keys
     }
 }

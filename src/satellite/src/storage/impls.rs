@@ -8,7 +8,7 @@ use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::StorageStableState;
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::storage::url::alternative_paths;
-use crate::types::list::Compare;
+use crate::types::core::Compare;
 
 impl From<&StorageStableState> for AssetHashes {
     fn from(state: &StorageStableState) -> Self {

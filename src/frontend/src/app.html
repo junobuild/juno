@@ -45,11 +45,12 @@
 		<meta name="robots" content="noindex" />
 
 		<!-- SCRIPT_LOADER -->
+		<!-- LINKS_PRELOADER -->
 
 		%sveltekit.head%
 
 		<!-- Init theme as fast as possible -->
-		<script>
+		<script theme-loader>
 			try {
 				const darkMode = window.matchMedia('(prefers-color-scheme: dark)').matches;
 

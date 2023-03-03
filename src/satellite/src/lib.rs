@@ -310,8 +310,6 @@ fn http_request(
         body: _,
     }: HttpRequest,
 ) -> HttpResponse {
-    // For etag support: https://dfinity.atlassian.net/browse/BOUN-446
-
     if method != "GET" {
         return error_response(405, "Method Not Allowed.".to_string());
     }
@@ -328,7 +326,8 @@ fn http_request(
 
                 for encoding_type in encodings.iter() {
                     if let Some(encoding) = asset.encodings.get(encoding_type) {
-                        let headers = build_headers(&requested_url, &asset, encoding_type);
+                        let headers =
+                            build_headers(&requested_url, &asset, encoding, encoding_type);
 
                         let Asset {
                             key,

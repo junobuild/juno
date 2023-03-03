@@ -1,4 +1,5 @@
 use globset::Glob;
+use hex::encode;
 use ic_cdk::id;
 use serde_bytes::ByteBuf;
 
@@ -55,6 +56,7 @@ pub fn create_token(
 pub fn build_headers(
     url: &str,
     asset: &Asset,
+    encoding: &AssetEncoding,
     encoding_type: &String,
 ) -> Result<Vec<HeaderField>, &'static str> {
     let certified_header = build_certified_headers(url);
@@ -68,6 +70,11 @@ pub fn build_headers(
             headers.push(HeaderField(
                 "accept-ranges".to_string(),
                 "bytes".to_string(),
+            ));
+
+            headers.push(HeaderField(
+                "etag".to_string(),
+                format!("\"{}\"", encode(encoding.sha256)),
             ));
 
             // Header for certification

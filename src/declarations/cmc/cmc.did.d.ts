@@ -14,9 +14,9 @@ export interface IcpXdrConversionRate {
 	timestamp_seconds: bigint;
 }
 export interface IcpXdrConversionRateResponse {
-	certificate: Uint8Array;
+	certificate: Uint8Array | number[];
 	data: IcpXdrConversionRate;
-	hash_tree: Uint8Array;
+	hash_tree: Uint8Array | number[];
 }
 export interface NotifyCreateCanisterArg {
 	controller: Principal;

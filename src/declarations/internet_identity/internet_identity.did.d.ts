@@ -16,7 +16,7 @@ export interface ArchiveConfig {
 	polling_interval_ns: bigint;
 	entries_buffer_limit: bigint;
 	archive_integration: [] | [{ pull: null } | { push: null }];
-	module_hash: Uint8Array;
+	module_hash: Uint8Array | number[];
 	entries_fetch_limit: number;
 }
 export interface ArchiveInfo {
@@ -25,7 +25,7 @@ export interface ArchiveInfo {
 }
 export interface BufferedArchiveEntry {
 	sequence_number: bigint;
-	entry: Uint8Array;
+	entry: Uint8Array | number[];
 	anchor_number: UserNumber;
 	timestamp: Timestamp;
 }
@@ -38,7 +38,7 @@ export interface ChallengeResult {
 	key: ChallengeKey;
 	chars: string;
 }
-export type CredentialId = Uint8Array;
+export type CredentialId = Uint8Array | number[];
 export interface Delegation {
 	pubkey: PublicKey;
 	targets: [] | [Array<Principal>];
@@ -70,11 +70,11 @@ export type HeaderField = [string, string];
 export interface HttpRequest {
 	url: string;
 	method: string;
-	body: Uint8Array;
+	body: Uint8Array | number[];
 	headers: Array<HeaderField>;
 }
 export interface HttpResponse {
-	body: Uint8Array;
+	body: Uint8Array | number[];
 	headers: Array<HeaderField>;
 	streaming_strategy: [] | [StreamingStrategy];
 	status_code: number;
@@ -101,7 +101,7 @@ export type KeyType =
 	| { seed_phrase: null }
 	| { cross_platform: null }
 	| { unknown: null };
-export type PublicKey = Uint8Array;
+export type PublicKey = Uint8Array | number[];
 export type Purpose = { authentication: null } | { recovery: null };
 export type RegisterResponse =
 	| { bad_challenge: null }
@@ -109,12 +109,12 @@ export type RegisterResponse =
 	| { registered: { user_number: UserNumber } };
 export type SessionKey = PublicKey;
 export interface SignedDelegation {
-	signature: Uint8Array;
+	signature: Uint8Array | number[];
 	delegation: Delegation;
 }
 export interface StreamingCallbackHttpResponse {
 	token: [] | [Token];
-	body: Uint8Array;
+	body: Uint8Array | number[];
 }
 export type StreamingStrategy = {
 	Callback: { token: Token; callback: [Principal, string] };
@@ -135,7 +135,7 @@ export interface _SERVICE {
 	add: ActorMethod<[UserNumber, DeviceData], undefined>;
 	add_tentative_device: ActorMethod<[UserNumber, DeviceData], AddTentativeDeviceResponse>;
 	create_challenge: ActorMethod<[], Challenge>;
-	deploy_archive: ActorMethod<[Uint8Array], DeployArchiveResult>;
+	deploy_archive: ActorMethod<[Uint8Array | number[]], DeployArchiveResult>;
 	enter_device_registration_mode: ActorMethod<[UserNumber], Timestamp>;
 	exit_device_registration_mode: ActorMethod<[UserNumber], undefined>;
 	fetch_entries: ActorMethod<[], Array<BufferedArchiveEntry>>;

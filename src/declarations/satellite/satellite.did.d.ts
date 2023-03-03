@@ -3,7 +3,7 @@ import type { Principal } from '@dfinity/principal';
 
 export interface AssetEncodingNoContent {
 	modified: bigint;
-	sha256: Uint8Array;
+	sha256: Uint8Array | number[];
 	total_length: bigint;
 }
 export interface AssetKey {
@@ -21,7 +21,7 @@ export interface AssetNoContent {
 	created_at: bigint;
 }
 export interface Chunk {
-	content: Uint8Array;
+	content: Uint8Array | number[];
 	batch_id: bigint;
 }
 export interface CommitBatch {
@@ -46,17 +46,17 @@ export interface DelDoc {
 export interface Doc {
 	updated_at: bigint;
 	owner: Principal;
-	data: Uint8Array;
+	data: Uint8Array | number[];
 	created_at: bigint;
 }
 export interface HttpRequest {
 	url: string;
 	method: string;
-	body: Uint8Array;
+	body: Uint8Array | number[];
 	headers: Array<[string, string]>;
 }
 export interface HttpResponse {
-	body: Uint8Array;
+	body: Uint8Array | number[];
 	headers: Array<[string, string]>;
 	streaming_strategy: [] | [StreamingStrategy];
 	status_code: number;
@@ -110,7 +110,7 @@ export interface Rule {
 export type RulesType = { Db: null } | { Storage: null };
 export interface SetDoc {
 	updated_at: [] | [bigint];
-	data: Uint8Array;
+	data: Uint8Array | number[];
 }
 export interface SetRule {
 	updated_at: [] | [bigint];
@@ -123,11 +123,11 @@ export interface StorageConfig {
 }
 export interface StreamingCallbackHttpResponse {
 	token: [] | [StreamingCallbackToken];
-	body: Uint8Array;
+	body: Uint8Array | number[];
 }
 export interface StreamingCallbackToken {
 	token: [] | [string];
-	sha256: [] | [Uint8Array];
+	sha256: [] | [Uint8Array | number[]];
 	headers: Array<[string, string]>;
 	index: bigint;
 	encoding_type: string;

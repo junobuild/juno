@@ -22,7 +22,8 @@
 		"no": "否",
 		"ok": "可以",
 		"cancel": "取消",
-		"apply": "应用"
+		"apply": "应用",
+		"language": "Language"
 	},
 	"canisters": {
 		"top_up": "充值",

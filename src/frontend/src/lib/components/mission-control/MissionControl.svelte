@@ -13,6 +13,7 @@
 	import type { MissionControlBalance } from '$lib/services/balance.services';
 	import { getMissionControlBalance } from '$lib/services/balance.services';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import AppLang from "$lib/components/core/AppLang.svelte";
 
 	let missionControlBalance: MissionControlBalance | undefined = undefined;
 
@@ -73,6 +74,8 @@
 			<svelte:fragment slot="label">{$i18n.mission_control.dev_id}</svelte:fragment>
 			<p>{$authStore.identity?.getPrincipal().toText() ?? ''}</p>
 		</Value>
+
+		<AppLang />
 	</div>
 
 	<MissionControlTopUp />

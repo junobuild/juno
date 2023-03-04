@@ -142,7 +142,7 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			name: $i18n.cli.title
+			labelKey: 'cli.title'
 		}
 	];
 

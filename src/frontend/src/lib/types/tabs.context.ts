@@ -2,7 +2,7 @@ import type { Writable } from 'svelte/store';
 
 export interface Tab {
 	id: symbol;
-	name: string;
+	labelKey: string;
 }
 
 export interface TabsStore {

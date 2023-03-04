@@ -15,9 +15,11 @@
 </script>
 
 <div class="tabs" use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
-	{#each $store.tabs as { name, id }}
+	{#each $store.tabs as { labelKey, id }}
+		{@const [group, key] = labelKey.split('.')}
+
 		<button class="text" on:click={() => selectTab(id)} class:selected={$store.tabId === id}
-			>{name}</button
+			>{$i18n[group][key]}</button
 		>
 	{/each}
 

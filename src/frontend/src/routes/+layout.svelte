@@ -9,6 +9,9 @@
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { isNullish } from '$lib/utils/utils';
+	import { i18n } from '$lib/stores/i18n.store';
+
+	const init = async () => await Promise.all([i18n.init(), syncAuthStore()]);
 
 	const syncAuthStore = async () => {
 		if (!browser) {
@@ -54,7 +57,7 @@
 
 <svelte:window on:storage={syncAuthStore} />
 
-{#await syncAuthStore()}
+{#await init()}
 	<Spinner />
 {:then _}
 	<slot />

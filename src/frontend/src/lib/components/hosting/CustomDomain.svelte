@@ -89,7 +89,7 @@
 		><span
 			>{#if nonNullish(displayState)}
 				{displayState}
-				{#if ['PendingOrder', 'PendingChallengeResponse', 'PendingAcmeApproval'].includes(registrationState)}
+				{#if ['PendingOrder', 'PendingChallengeResponse', 'PendingAcmeApproval'].includes(registrationState ?? '')}
 					<IconSync />
 				{/if}
 			{/if}</span

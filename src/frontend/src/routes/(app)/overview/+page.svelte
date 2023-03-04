@@ -15,17 +15,16 @@
 	import SatelliteControllers from '$lib/components/satellites/SatelliteControllers.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { nonNullish } from '$lib/utils/utils';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			name: $i18n.satellites.satellite
+			labelKey: 'satellites.satellite'
 		},
 		{
 			id: Symbol('2'),
-			name: $i18n.core.controllers
+			labelKey: 'core.controllers'
 		}
 	];
 

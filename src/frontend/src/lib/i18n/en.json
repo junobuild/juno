@@ -22,7 +22,8 @@
 		"no": "No",
 		"ok": "Ok",
 		"cancel": "Cancel",
-		"apply": "Apply"
+		"apply": "Apply",
+		"language": "Language"
 	},
 	"canisters": {
 		"top_up": "Top-up",

@@ -72,7 +72,7 @@
 <svelte:window on:junoRestartCycles={restartCycles} />
 
 {#if display}
-	{#if ['synced', 'syncing'].includes(sync)}
+	{#if ['synced', 'syncing'].includes(sync ?? '')}
 		<p class="cycles">
 			<span
 				>{formatTCycles(cycles)} T Cycles {#if warning}⚠️{/if}</span

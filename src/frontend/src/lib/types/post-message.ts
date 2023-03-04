@@ -1,6 +1,6 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
+import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { Canister } from './canister';
-import type {CustomDomainRegistrationState} from "$lib/types/custom-domain";
 
 export interface PostMessageDataRequest {
 	canisterIds?: string[];
@@ -9,7 +9,7 @@ export interface PostMessageDataRequest {
 
 export interface PostMessageDataResponse {
 	canister?: Canister;
-	registrationState?: CustomDomainRegistrationState | null
+	registrationState?: CustomDomainRegistrationState | null;
 }
 
 export type PostMessageRequest =

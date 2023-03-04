@@ -110,7 +110,7 @@
 			{@html i18nFormat($i18n.hosting.add_records, [
 				{
 					placeholder: '{0}',
-					value: domainNameInput
+					value: domainNameInput ?? ""
 				}
 			])}
 		</p>

@@ -13,13 +13,12 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
 	import { satelliteStore } from '$lib/stores/satellite.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { nonNullish } from '$lib/utils/utils';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			name: $i18n.hosting.title
+			labelKey: 'hosting.title'
 		}
 	];
 

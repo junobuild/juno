@@ -18,11 +18,11 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			name: $i18n.mission_control.overview
+			labelKey: 'mission_control.overview'
 		},
 		{
 			id: Symbol('2'),
-			name: $i18n.controllers.title
+			labelKey: 'controllers.title'
 		}
 		// TODO: implement and add transactions tab when ICP index canisters makes it to mainnet
 		// {

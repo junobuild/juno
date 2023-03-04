@@ -8,17 +8,16 @@
 	import { setContext } from 'svelte';
 	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { nonNullish } from '$lib/utils/utils';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			name: $i18n.datastore.data
+			labelKey: 'datastore.data'
 		},
 		{
 			id: Symbol('2'),
-			name: $i18n.collections.title
+			labelKey: 'collections.title'
 		}
 	];
 

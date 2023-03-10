@@ -7,7 +7,7 @@ impl Default for Rates {
         let now = time();
 
         let tokens: RateTokens = RateTokens {
-            tokens: 0,
+            tokens: 1,
             updated_at: now,
         };
 

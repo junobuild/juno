@@ -1,7 +1,7 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
-    InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl, MissionControls,
+    InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl, MissionControls, Rate,
     StableState, Wasm,
 };
 use crate::STATE;
@@ -12,6 +12,7 @@ use shared::controllers::{
 };
 use shared::types::interface::{MissionControlId, UserId};
 use shared::utils::principal_equal;
+use std::cmp::min;
 
 /// Mission control centers
 
@@ -462,4 +463,29 @@ pub fn remove_controllers(remove_controllers: &[UserId]) {
             &mut state.borrow_mut().stable.controllers,
         )
     })
+}
+
+/// Rates
+
+pub fn increment_satellites_rate() -> Result<(), String> {
+    STATE.with(|state| {
+        increment_satellites_rate_impl(&mut state.borrow_mut().stable.rates.satellites)
+    })
+}
+
+fn increment_satellites_rate_impl(rate: &mut Rate) -> Result<(), String> {
+    let new_tokens = (time() - rate.tokens.updated_at) / rate.config.time_per_token_ns;
+    if new_tokens > 0 {
+        // The number of tokens is capped otherwise tokens might accumulate
+        rate.tokens.tokens = min(rate.config.max_tokens, rate.tokens.tokens + new_tokens);
+        rate.tokens.updated_at += rate.config.time_per_token_ns * new_tokens;
+    }
+
+    // deduct a token for the current call
+    if rate.tokens.tokens > 0 {
+        rate.tokens.tokens -= 1;
+        Ok(())
+    } else {
+        Err("Rate limit reached, try again later.".to_string())
+    }
 }

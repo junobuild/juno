@@ -1,3 +1,4 @@
+use crate::store::increment_satellites_rate;
 use crate::STATE;
 use ic_cdk::caller;
 use shared::controllers::is_controller;
@@ -12,4 +13,8 @@ pub fn caller_is_controller() -> Result<(), String> {
     } else {
         Err("Caller is not a controller of the console.".to_string())
     }
+}
+
+pub fn satellites_rate_is_not_exceeded() -> Result<(), String> {
+    increment_satellites_rate()
 }

@@ -6,6 +6,7 @@ mod satellite;
 mod store;
 mod types;
 mod wasm;
+mod upgrade;
 
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::guards::caller_is_controller;
@@ -32,6 +33,8 @@ use ic_ledger_types::Tokens;
 use shared::types::interface::{ControllersArgs, CreateSatelliteArgs, GetCreateSatelliteFeeArgs};
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
+use ic_cdk::storage::stable_restore;
+use crate::upgrade::types::upgrade::UpgradeStableState;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -61,7 +64,9 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (stable,): (StableState,) = storage::stable_restore().unwrap();
+    let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
+
+    let stable = StableState::from(&upgrade_stable);
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
 }

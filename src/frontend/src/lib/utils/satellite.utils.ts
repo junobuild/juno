@@ -10,7 +10,7 @@ export const satelliteUrl = (satelliteId: string): string => {
 		return `http://${satelliteId}.localhost:8000`;
 	}
 
-	return `https://${satelliteId}.ic0.app`;
+	return `https://${satelliteId}.icp0.io`;
 };
 
 export const satelliteName = ({ metadata }: Satellite): string =>

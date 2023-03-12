@@ -14,6 +14,7 @@
 	import { getMissionControlBalance } from '$lib/services/balance.services';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import AppLang from '$lib/components/core/AppLang.svelte';
+	import { versionStore } from '$lib/stores/version.store';
 
 	let missionControlBalance: MissionControlBalance | undefined = undefined;
 
@@ -42,6 +43,11 @@
 		<Value>
 			<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
 			<p>{$missionControlStore?.toText() ?? ''}</p>
+		</Value>
+
+		<Value>
+			<svelte:fragment slot="label">Version</svelte:fragment>
+			<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
 		</Value>
 
 		{#if nonNullish($missionControlStore)}

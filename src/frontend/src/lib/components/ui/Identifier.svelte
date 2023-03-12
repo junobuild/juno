@@ -24,6 +24,7 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding-2x);
+		margin: 0 0 1rem;
 	}
 
 	.nomargin {

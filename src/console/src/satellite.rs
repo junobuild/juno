@@ -15,8 +15,8 @@ use shared::ic::create_canister_install_code;
 use shared::ledger::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
 };
-use shared::types::interface::{CreateSatelliteArgs, MissionControlId};
-use shared::types::state::UserId;
+use shared::types::interface::CreateSatelliteArgs;
+use shared::types::state::{MissionControlId, UserId};
 
 pub async fn create_satellite(
     console: Principal,

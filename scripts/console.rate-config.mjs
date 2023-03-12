@@ -7,7 +7,7 @@ const segment = (type) => (type === 'satellite' ? { Satellite: null } : { Missio
 const updateConfig = async ({ actor, type, config }) => {
 	console.log(`Updating rate config ${type} in console.`);
 
-	const result = await actor.update_rate_config(segment(type), config);
+	await actor.update_rate_config(segment(type), config);
 
 	console.log(`Config for ${type} updated.`);
 };

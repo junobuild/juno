@@ -1,4 +1,4 @@
-use crate::constants::SATELLITES_RATE_CONFIG;
+use crate::constants::DEFAULT_RATE_CONFIG;
 use crate::types::state::{Rate, RateTokens, Rates};
 use ic_cdk::api::time;
 
@@ -13,11 +13,11 @@ impl Default for Rates {
 
         Rates {
             satellites: Rate {
-                config: SATELLITES_RATE_CONFIG,
+                config: DEFAULT_RATE_CONFIG,
                 tokens: tokens.clone(),
             },
             mission_controls: Rate {
-                config: SATELLITES_RATE_CONFIG,
+                config: DEFAULT_RATE_CONFIG,
                 tokens,
             },
         }

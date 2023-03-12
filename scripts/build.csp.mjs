@@ -158,7 +158,7 @@ const updateCSP = (indexHtml) => {
 	const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
-        connect-src 'self' https://ic0.app;
+        connect-src 'self' https://ic0.app https://icp0.io;
         img-src 'self' data:;
         child-src 'self';
         manifest-src 'self';

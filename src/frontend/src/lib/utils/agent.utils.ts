@@ -12,7 +12,7 @@ export const getAgent = async (params: { identity: Identity }): Promise<HttpAgen
 };
 
 const getMainnetAgent = async ({ identity }: { identity: Identity }) => {
-	const host = 'https://ic0.app';
+	const host = 'https://icp0.io';
 	return new HttpAgent({ identity, ...(host && { host }) });
 };
 

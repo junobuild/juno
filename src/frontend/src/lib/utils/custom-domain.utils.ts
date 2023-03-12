@@ -3,7 +3,7 @@ import type { Principal } from '@dfinity/principal';
 
 /**
  * TXT: _canister-id(.subdomain) -> canisterId.to.Text()
- * CNAME: (subdomain) -> ic0.app
+ * CNAME: (subdomain) -> icp0.io
  * CNAME: _acme-challenge(.subdomain) -> _acme-challenge.hostname.icp2.io
  */
 export const toCustomDomainDns = ({

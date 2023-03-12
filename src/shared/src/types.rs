@@ -1,12 +1,18 @@
-pub mod interface {
-    use candid::{CandidType, Principal};
-    use ic_ledger_types::BlockIndex;
-    use serde::Deserialize;
+pub mod state {
+    use candid::Principal;
     use std::collections::HashSet;
 
     pub type UserId = Principal;
     pub type MissionControlId = Principal;
+
     pub type Controllers = HashSet<UserId>;
+}
+
+pub mod interface {
+    use crate::types::state::UserId;
+    use candid::CandidType;
+    use ic_ledger_types::BlockIndex;
+    use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateSatelliteArgs {

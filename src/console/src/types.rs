@@ -3,7 +3,8 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use serde::Deserialize;
-    use shared::types::interface::{Controllers, MissionControlId, UserId};
+    use shared::types::state::Controllers;
+    use shared::types::state::{MissionControlId, UserId};
     use std::collections::HashMap;
 
     pub type MissionControls = HashMap<UserId, MissionControl>;
@@ -83,7 +84,7 @@ pub mod ledger {
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
-    use shared::types::interface::MissionControlId;
+    use shared::types::state::MissionControlId;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Payment {

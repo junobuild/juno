@@ -2,7 +2,8 @@ use crate::STATE;
 use shared::controllers::{
     add_controllers as add_controllers_impl, remove_controllers as remove_controllers_impl,
 };
-use shared::types::interface::{Controllers, UserId};
+use shared::types::state::Controllers;
+use shared::types::state::UserId;
 
 /// Controllers
 

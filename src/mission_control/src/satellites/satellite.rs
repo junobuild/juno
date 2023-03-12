@@ -8,7 +8,8 @@ use ic_ledger_types::{BlockIndex, Tokens};
 use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use shared::env::CONSOLE;
 use shared::ledger::{transfer_payment, SUB_ACCOUNT};
-use shared::types::interface::{CreateSatelliteArgs, GetCreateSatelliteFeeArgs, UserId};
+use shared::types::interface::{CreateSatelliteArgs, GetCreateSatelliteFeeArgs};
+use shared::types::state::UserId;
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
     let console = Principal::from_text(CONSOLE).unwrap();

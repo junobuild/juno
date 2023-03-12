@@ -1,6 +1,6 @@
 use crate::types::state::User;
 use ic_cdk::api::time;
-use shared::types::interface::UserId;
+use shared::types::state::UserId;
 use std::collections::HashMap;
 
 impl From<&UserId> for User {

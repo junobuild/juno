@@ -11,7 +11,7 @@ use crate::STATE;
 use candid::Principal;
 use ic_cdk::api::time;
 use regex::Regex;
-use shared::types::interface::Controllers;
+use shared::types::state::Controllers;
 use std::collections::BTreeMap;
 
 pub fn init_collection(collection: String) {

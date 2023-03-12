@@ -5,8 +5,8 @@ mod mission_control;
 mod satellite;
 mod store;
 mod types;
-mod wasm;
 mod upgrade;
+mod wasm;
 
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::guards::caller_is_controller;
@@ -24,17 +24,17 @@ use crate::types::interface::{LoadRelease, ReleaseType, ReleasesVersion};
 use crate::types::state::{
     InvitationCode, MissionControl, MissionControls, Releases, StableState, State,
 };
+use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
 use ic_cdk::api::caller;
 use ic_cdk::export::candid::{candid_method, export_service};
+use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use shared::types::interface::{ControllersArgs, CreateSatelliteArgs, GetCreateSatelliteFeeArgs};
 use std::cell::RefCell;
 use std::collections::{HashMap, HashSet};
-use ic_cdk::storage::stable_restore;
-use crate::upgrade::types::upgrade::UpgradeStableState;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();

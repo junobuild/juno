@@ -3,7 +3,7 @@ pub mod state {
     use crate::storage::types::state::{StorageRuntimeState, StorageStableState};
     use candid::CandidType;
     use serde::Deserialize;
-    use shared::types::interface::Controllers;
+    use shared::types::state::Controllers;
 
     #[derive(Default, Clone)]
     pub struct State {

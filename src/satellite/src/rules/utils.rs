@@ -3,7 +3,7 @@ use crate::rules::constants::DEFAULT_DB_COLLECTIONS;
 use crate::rules::types::rules::Permission;
 use candid::Principal;
 use shared::controllers::is_controller;
-use shared::types::interface::Controllers;
+use shared::types::state::Controllers;
 use shared::utils::principal_equal;
 
 pub fn assert_rule(

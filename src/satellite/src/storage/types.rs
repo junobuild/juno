@@ -47,7 +47,7 @@ pub mod store {
     use candid::CandidType;
     use ic_certified_map::Hash;
     use serde::Deserialize;
-    use shared::types::interface::UserId;
+    use shared::types::state::UserId;
     use std::clone::Clone;
     use std::collections::HashMap;
 

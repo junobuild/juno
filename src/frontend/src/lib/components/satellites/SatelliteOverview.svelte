@@ -5,6 +5,7 @@
 	import SatelliteTopUp from '$lib/components/satellites/SatelliteTopUp.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { versionStore } from '$lib/stores/version.store';
 
 	export let satellite: Satellite;
 
@@ -18,6 +19,11 @@
 	<Value>
 		<svelte:fragment slot="label">ID</svelte:fragment>
 		<Identifier identifier={satelliteId} shorten={false} nomargin={false} />
+	</Value>
+
+	<Value>
+		<svelte:fragment slot="label">Version</svelte:fragment>
+		<p>v{$versionStore?.satellite?.current ?? '...'}</p>
 	</Value>
 
 	<Value>

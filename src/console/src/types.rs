@@ -86,7 +86,7 @@ pub mod interface {
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
-    pub enum ReleaseType {
+    pub enum Segment {
         Satellite,
         MissionControl,
     }

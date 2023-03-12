@@ -2,7 +2,7 @@ use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl, MissionControls, Rate,
-    StableState, Wasm,
+    RateConfig, StableState, Wasm,
 };
 use crate::STATE;
 use ic_cdk::api::time;
@@ -490,4 +490,21 @@ fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
     } else {
         Err("Rate limit reached, try again later.".to_string())
     }
+}
+
+pub fn update_satellites_rate_config(config: &RateConfig) {
+    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().stable.rates.satellites))
+}
+
+pub fn update_mission_controls_rate_config(config: &RateConfig) {
+    STATE.with(|state| {
+        update_rate_config(
+            config,
+            &mut state.borrow_mut().stable.rates.mission_controls,
+        )
+    })
+}
+
+fn update_rate_config(config: &RateConfig, rate: &mut Rate) {
+    rate.config = config.clone();
 }

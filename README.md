@@ -1,8 +1,9 @@
 <div align="center" style="display:flex;flex-direction:column;">
-  <a href="https://juno.build/" style="padding: 0 2rem; display: block;" target="_blank" rel="noopener noreferrer">
+  <a href="https://juno.build/">
     <img src="https://github.com/buildwithjuno/juno/raw/main/src/frontend/static/images/juno_logo.png" width="380px" alt="Juno" role="presentation"/>
   </a>
-
+    
+  <br/>
   <br/>
 
 [![GitHub release](https://img.shields.io/github/release/buildwithjuno/juno/all?logo=GitHub&style=flat-square)](https://github.com/buildwithjuno/juno/releases/latest)

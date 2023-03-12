@@ -2,27 +2,20 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import type { ListOrder, ListOrderField } from '$lib/types/list';
-	import { DEFAULT_LIST_ORDER } from '$lib/constants/data.constants';
-	import { createEventDispatcher } from 'svelte';
+	import type { ListOrderField } from '$lib/types/list';
+	import { listOrderStore } from '$lib/stores/data.store';
 
-	let order: ListOrder = DEFAULT_LIST_ORDER;
-
-	let desc = DEFAULT_LIST_ORDER.desc;
-	let field: ListOrderField = DEFAULT_LIST_ORDER.field;
+	let desc = $listOrderStore.desc;
+	let field: ListOrderField = $listOrderStore.field;
 
 	let button: HTMLButtonElement | undefined;
 	let visible: boolean | undefined;
 
-	const dispatch = createEventDispatcher();
-
 	const apply = () => {
-		order = {
+		listOrderStore.set({
 			desc,
 			field
-		};
-
-		dispatch('junoOrder', order);
+		});
 
 		visible = false;
 	};
@@ -35,8 +28,8 @@
 
 			// Avoid glitch
 			setTimeout(() => {
-				desc = order.desc;
-				field = order.field;
+				desc = $listOrderStore.desc;
+				field = $listOrderStore.field;
 			}, 250);
 		})();
 </script>

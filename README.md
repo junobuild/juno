@@ -8,7 +8,8 @@
   <br/>
 
 [![GitHub release](https://img.shields.io/github/release/buildwithjuno/juno/all?logo=GitHub&style=flat-square)](https://github.com/buildwithjuno/juno/releases/latest)
-[![Follow Juno on Twitter](https://img.shields.io/twitter/follow/junobuild.svg?label=follow+juno&logo=twitter&style=flat-square)](https://twitter.com/JunoBuild)
+[![Follow Juno on Twitter](https://img.shields.io/twitter/follow/junobuild?label=Follow%20Juno&style=social)](https://twitter.com/JunoBuild)
+[![Chat on Discord](https://img.shields.io/badge/chat-Discord-lightgrey?logo=Discord&style=flat-square)](https://discord.gg/wHZ57Z2RAG)
 
 </div>
 

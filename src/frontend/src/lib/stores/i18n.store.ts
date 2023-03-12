@@ -26,14 +26,14 @@ const loadLanguage = (lang: Languages): Promise<I18n> => {
 	}
 };
 
-const switchLanguage = async (lang: Languages) => setLocalStorageItem({ key: 'lang', value: lang });
+const switchLanguage = (lang: Languages) => setLocalStorageItem({ key: 'lang', value: lang });
 
 export interface InitI18nStore extends Readable<I18n> {
 	init: () => Promise<void>;
 	switchLang: (lang: Languages) => Promise<void>;
 }
 
-export const initI18n = (): InitI18nStore => {
+const initI18n = (): InitI18nStore => {
 	const { subscribe, set } = writable<I18n>({
 		lang: 'en',
 		...en
@@ -46,7 +46,7 @@ export const initI18n = (): InitI18nStore => {
 			const lang: Languages = getLocalStorageLang();
 
 			if (lang === 'en') {
-				await switchLanguage(lang);
+				switchLanguage(lang);
 
 				// No need to reload the store
 				return;
@@ -55,14 +55,14 @@ export const initI18n = (): InitI18nStore => {
 			const bundle: I18n = await loadLanguage(lang);
 			set(bundle);
 
-			await switchLanguage(lang);
+			switchLanguage(lang);
 		},
 
 		switchLang: async (lang: Languages) => {
 			const bundle: I18n = await loadLanguage(lang);
 			set(bundle);
 
-			await switchLanguage(lang);
+			switchLanguage(lang);
 		}
 	};
 };

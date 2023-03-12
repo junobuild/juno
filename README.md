@@ -1,6 +1,6 @@
 <div align="center" style="display:flex;flex-direction:column;">
-  <a href="https://juno.build/">
-    <img src="https://github.com/buildwithjuno/juno/raw/main/src/frontend/static/images/juno_logo.png" width="380px" alt="Juno" role="presentation" style="padding: 0 2rem;"/>
+  <a href="https://juno.build/" style="padding: 0 2rem; display: block;" target="_blank" rel="noopener noreferrer">
+    <img src="https://github.com/buildwithjuno/juno/raw/main/src/frontend/static/images/juno_logo.png" width="380px" alt="Juno" role="presentation"/>
   </a>
 
   <br/>

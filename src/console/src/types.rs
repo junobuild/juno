@@ -3,7 +3,7 @@ pub mod state {
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use serde::Deserialize;
-    use shared::types::interface::Controllers;
+    use shared::types::state::Controllers;
     use shared::types::state::{MissionControlId, UserId};
     use std::collections::HashMap;
 

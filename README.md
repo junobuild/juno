@@ -14,11 +14,13 @@
 
 ## Juno
 
-[Juno] is an open-source Blockchain solution that makes building Web3 applications more accessible for frontend devs ⚡️🚀🤯.
+[Juno] is an open-source Blockchain-as-a-Service platform that makes building decentralized apps faster and easier than ever before ⚡️🚀🤯.
 
 Unlike traditional Backend-as-a-Service (BaaS) platforms like Google Firebase or AWS Amplify, Juno runs entirely on the blockchain.
 
-It allows you to forget about all the backend aspects of development, letting focus on what matters: the product your users see.
+It allows you to outsource all the behind-the-scenes aspects of your web or mobile development, giving you the ability to focus on the frontend.
+
+The platform operates without controlling your data or work. With Juno, you truly own your creations.
 
 ### Links & Projects
 

@@ -58,8 +58,8 @@ pub mod state {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Rates {
-        pub satellites: Rate,
         pub mission_controls: Rate,
+        pub satellites: Rate,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]

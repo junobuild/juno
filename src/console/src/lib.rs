@@ -10,7 +10,7 @@ mod upgrade;
 mod wasm;
 
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
-use crate::guards::{caller_is_controller, satellites_rate_is_not_exceeded};
+use crate::guards::caller_is_controller;
 use crate::mission_control::init_user_mission_control;
 use crate::satellite::create_satellite as create_satellite_console;
 use crate::store::{
@@ -147,7 +147,7 @@ async fn init_user_mission_control_center(invitation_code: Option<String>) -> Mi
 /// Satellites
 
 #[candid_method(update)]
-#[update(guard = "satellites_rate_is_not_exceeded")]
+#[update]
 async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
     let console = id();
     let caller = caller();

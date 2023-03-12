@@ -468,12 +468,14 @@ pub fn remove_controllers(remove_controllers: &[UserId]) {
 /// Rates
 
 pub fn increment_satellites_rate() -> Result<(), String> {
-    STATE.with(|state| {
-        increment_satellites_rate_impl(&mut state.borrow_mut().stable.rates.satellites)
-    })
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().stable.rates.satellites))
 }
 
-fn increment_satellites_rate_impl(rate: &mut Rate) -> Result<(), String> {
+pub fn increment_mission_controls_rate() -> Result<(), String> {
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().stable.rates.mission_controls))
+}
+
+fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
     let new_tokens = (time() - rate.tokens.updated_at) / rate.config.time_per_token_ns;
     if new_tokens > 0 {
         // The number of tokens is capped otherwise tokens might accumulate

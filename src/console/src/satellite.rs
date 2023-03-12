@@ -1,8 +1,8 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::controllers::remove_console_controller_from_satellite;
 use crate::store::{
-    get_existing_mission_control, has_credits, insert_new_payment, is_known_payment,
-    update_payment_completed, update_payment_refunded, use_credits,
+    get_existing_mission_control, has_credits, increment_satellites_rate, insert_new_payment,
+    is_known_payment, update_payment_completed, update_payment_refunded, use_credits,
 };
 use crate::types::ledger::Payment;
 use crate::wasm::satellite_wasm_arg;
@@ -29,6 +29,9 @@ pub async fn create_satellite(
         None => Err("No mission control center found.".to_string()),
         Some(mission_control_id) => {
             if has_credits(&user, &mission_control_id) {
+                // Guard too many requests
+                increment_satellites_rate()?;
+
                 return create_satellite_with_credits(&console, &mission_control_id, &user).await;
             }
 
@@ -43,7 +46,7 @@ pub async fn create_satellite(
     }
 }
 
-pub async fn create_satellite_with_credits(
+async fn create_satellite_with_credits(
     console: &Principal,
     mission_control_id: &MissionControlId,
     user: &UserId,
@@ -65,7 +68,7 @@ pub async fn create_satellite_with_credits(
     }
 }
 
-pub async fn create_satellite_with_payment(
+async fn create_satellite_with_payment(
     console: &Principal,
     caller: &Principal,
     mission_control_id: &MissionControlId,

@@ -3,7 +3,7 @@ pub mod state {
     use crate::types::core::{CollectionKey, Key};
     use candid::CandidType;
     use serde::Deserialize;
-    use shared::types::interface::UserId;
+    use shared::types::state::UserId;
     use std::collections::{BTreeMap, HashMap};
 
     pub type Collection = BTreeMap<Key, Doc>;

@@ -1,7 +1,8 @@
 use crate::wasm::satellite_controllers;
 use candid::Principal;
 use shared::ic::update_canister_controllers;
-use shared::types::interface::{MissionControlId, UserId};
+use shared::types::interface::MissionControlId;
+use shared::types::state::UserId;
 
 /// Once mission control is created:
 /// 1. we remove the console from the controllers because the data are owned by the developers

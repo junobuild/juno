@@ -8,7 +8,7 @@ use crate::wasm::mission_control_wasm_arg;
 use candid::Principal;
 use shared::constants::CREATE_MISSION_CONTROL_CYCLES;
 use shared::ic::create_canister_install_code;
-use shared::types::interface::UserId;
+use shared::types::state::UserId;
 
 pub async fn init_user_mission_control(
     console: &Principal,

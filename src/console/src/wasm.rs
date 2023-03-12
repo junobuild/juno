@@ -1,7 +1,8 @@
 use crate::STATE;
 use candid::{Encode, Principal};
 use shared::types::ic::WasmArg;
-use shared::types::interface::{MissionControlArgs, MissionControlId, SatelliteArgs, UserId};
+use shared::types::interface::{MissionControlArgs, MissionControlId, SatelliteArgs};
+use shared::types::state::UserId;
 
 pub fn mission_control_wasm_arg(user: &UserId) -> WasmArg {
     let wasm: Vec<u8> =

@@ -10,7 +10,8 @@ use ic_ledger_types::{BlockIndex, Tokens};
 use shared::controllers::{
     add_controllers as add_controllers_impl, remove_controllers as remove_controllers_impl,
 };
-use shared::types::interface::{MissionControlId, UserId};
+use shared::types::interface::MissionControlId;
+use shared::types::state::UserId;
 use shared::utils::principal_equal;
 
 /// Mission control centers

@@ -1,4 +1,5 @@
-use crate::types::interface::{Controllers, UserId};
+use crate::types::interface::Controllers;
+use crate::types::state::UserId;
 use crate::utils::principal_equal;
 use candid::Principal;
 

@@ -3,7 +3,8 @@ use crate::store::get_user;
 use ic_cdk::id;
 use shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
 use shared::ic::update_canister_controllers;
-use shared::types::interface::{Controllers, UserId};
+use shared::types::interface::Controllers;
+use shared::types::state::UserId;
 
 pub async fn add_mission_control_controllers(controllers: &[UserId]) -> Result<(), String> {
     let current_controllers = get_controllers();

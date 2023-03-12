@@ -1,6 +1,7 @@
 pub mod state {
     use candid::{CandidType, Deserialize, Principal};
-    use shared::types::interface::{Controllers, UserId};
+    use shared::types::interface::Controllers;
+    use shared::types::state::UserId;
     use std::collections::HashMap;
 
     pub type SatelliteId = Principal;

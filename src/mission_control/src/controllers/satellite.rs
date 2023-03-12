@@ -2,7 +2,8 @@ use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use shared::ic::update_canister_controllers;
-use shared::types::interface::{ControllersArgs, UserId};
+use shared::types::interface::ControllersArgs;
+use shared::types::state::UserId;
 
 pub async fn add_satellite_controllers(
     satellite_id: &Principal,

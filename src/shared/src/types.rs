@@ -1,10 +1,16 @@
+pub mod state {
+    use candid::Principal;
+
+    pub type UserId = Principal;
+}
+
 pub mod interface {
+    use crate::types::state::UserId;
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
     use std::collections::HashSet;
 
-    pub type UserId = Principal;
     pub type MissionControlId = Principal;
     pub type Controllers = HashSet<UserId>;
 

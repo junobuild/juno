@@ -32,9 +32,11 @@ use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
+use shared::controllers::add_controllers as add_controllers_impl;
 use shared::types::interface::{ControllersArgs, CreateSatelliteArgs, GetCreateSatelliteFeeArgs};
+use shared::types::state::Controllers;
 use std::cell::RefCell;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -44,6 +46,9 @@ thread_local! {
 fn init() {
     let manager = caller();
 
+    let mut controllers: Controllers = Controllers::new();
+    add_controllers_impl(&[manager], &mut controllers);
+
     STATE.with(|state| {
         *state.borrow_mut() = State {
             stable: StableState {
@@ -51,7 +56,7 @@ fn init() {
                 payments: HashMap::new(),
                 releases: Releases::default(),
                 invitation_codes: HashMap::new(),
-                controllers: HashSet::from([manager]),
+                controllers,
             },
         };
     });

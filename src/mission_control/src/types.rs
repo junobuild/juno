@@ -6,6 +6,7 @@ pub mod state {
 
     pub type SatelliteId = Principal;
     pub type Satellites = HashMap<SatelliteId, Satellite>;
+    // TODO: replace and import shared type
     pub type Metadata = HashMap<String, String>;
 
     #[derive(Default, Clone)]

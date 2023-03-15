@@ -1,11 +1,24 @@
 pub mod state {
+    use candid::CandidType;
     use candid::Principal;
-    use std::collections::HashSet;
+    use serde::Deserialize;
+    use std::collections::HashMap;
 
     pub type UserId = Principal;
     pub type MissionControlId = Principal;
+    pub type ControllerId = Principal;
 
-    pub type Controllers = HashSet<UserId>;
+    pub type Metadata = HashMap<String, String>;
+
+    pub type Controllers = HashMap<UserId, Controller>;
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct Controller {
+        pub controller_id: ControllerId,
+        pub metadata: Metadata,
+        pub created_at: u64,
+        pub updated_at: u64,
+    }
 }
 
 pub mod interface {

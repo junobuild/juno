@@ -2,6 +2,7 @@ use crate::controllers::store::{add_controllers, get_controllers, remove_control
 use crate::store::get_user;
 use ic_cdk::id;
 use shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
+use shared::controllers::into_controller_ids;
 use shared::ic::update_canister_controllers;
 use shared::types::state::Controllers;
 use shared::types::state::UserId;
@@ -38,11 +39,13 @@ async fn update_controllers_settings(controllers: &Controllers) -> Result<(), St
     // So do the owner / user
     let user = get_user();
 
+    let controller_ids = into_controller_ids(controllers);
+
     let result = update_canister_controllers(
         mission_control_id,
         [
             Vec::from([mission_control_id, user]),
-            Vec::from_iter(controllers.clone()),
+            Vec::from_iter(controller_ids),
         ]
         .concat(),
     )

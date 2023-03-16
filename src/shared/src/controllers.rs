@@ -44,3 +44,11 @@ pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
         .iter()
         .any(|(&controller, _)| principal_equal(controller, caller))
 }
+
+pub fn into_controller_ids(controllers: &Controllers) -> Vec<ControllerId> {
+    controllers
+        .clone()
+        .into_iter()
+        .map(|(controller_id, _)| controller_id)
+        .collect::<Vec<ControllerId>>()
+}

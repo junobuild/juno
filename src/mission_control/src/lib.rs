@@ -5,6 +5,7 @@ mod mgmt;
 mod satellites;
 mod store;
 mod types;
+mod upgrade;
 
 use crate::controllers::mission_control::{
     add_mission_control_controllers as add_controllers_to_mission_control,
@@ -27,7 +28,7 @@ use shared::types::interface::MissionControlArgs;
 use shared::types::state::Controllers;
 use shared::types::state::UserId;
 use std::cell::RefCell;
-use std::collections::{HashMap, HashSet};
+use std::collections::HashMap;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -43,7 +44,7 @@ fn init() {
             stable: StableState {
                 user: User::from(&user),
                 satellites: HashMap::new(),
-                controllers: HashSet::new(),
+                controllers: HashMap::new(),
             },
         };
     });

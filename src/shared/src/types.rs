@@ -18,6 +18,7 @@ pub mod state {
         pub metadata: Metadata,
         pub created_at: u64,
         pub updated_at: u64,
+        pub expires_at: Option<u64>,
     }
 }
 

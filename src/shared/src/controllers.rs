@@ -27,6 +27,7 @@ pub fn add_controllers(new_controllers: &[UserId], controllers: &mut Controllers
             metadata: HashMap::new(),
             created_at,
             updated_at,
+            expires_at: None
         };
 
         controllers.insert(controller_id.clone(), controller);

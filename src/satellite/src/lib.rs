@@ -55,10 +55,11 @@ use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use rules::constants::DEFAULT_DB_COLLECTIONS;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
+use shared::controllers::add_controllers as add_controllers_impl;
 use shared::types::interface::{ControllersArgs, SatelliteArgs};
 use shared::types::state::Controllers;
 use std::cell::RefCell;
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap};
 use types::list::ListParams;
 
 thread_local! {
@@ -109,10 +110,13 @@ fn init() {
         custom_domains: HashMap::new(),
     };
 
+    let mut detailed_controllers: Controllers = Controllers::new();
+    add_controllers_impl(&controllers, &mut detailled_controllers);
+
     STATE.with(|state| {
         *state.borrow_mut() = State {
             stable: StableState {
-                controllers: HashSet::from_iter(controllers),
+                controllers: detailed_controllers,
                 db,
                 storage,
             },

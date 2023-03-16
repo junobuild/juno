@@ -1,6 +1,5 @@
 use crate::types::state::{Controller, ControllerId, Controllers, UserId};
 use crate::utils::principal_equal;
-use candid::Principal;
 use ic_cdk::api::time;
 use std::collections::HashMap;
 
@@ -27,7 +26,7 @@ pub fn add_controllers(new_controllers: &[UserId], controllers: &mut Controllers
             metadata: HashMap::new(),
             created_at,
             updated_at,
-            expires_at: None
+            expires_at: None,
         };
 
         controllers.insert(controller_id.clone(), controller);
@@ -40,7 +39,7 @@ pub fn remove_controllers(remove_controllers: &[UserId], controllers: &mut Contr
     }
 }
 
-pub fn is_controller(caller: Principal, controllers: &Controllers) -> bool {
+pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
     controllers
         .iter()
         .any(|(&controller, _)| principal_equal(controller, caller))

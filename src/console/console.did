@@ -15,7 +15,6 @@ type ReleasesVersion = record {
   mission_control : opt text;
 };
 type SetController = record {
-  updated_at : nat64;
   metadata : vec record { text; text };
   expires_at : opt nat64;
 };

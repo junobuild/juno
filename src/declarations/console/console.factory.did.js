@@ -25,7 +25,6 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const LoadRelease = IDL.Record({ total: IDL.Nat64, chunks: IDL.Nat64 });
 	const SetController = IDL.Record({
-		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		expires_at: IDL.Opt(IDL.Nat64)
 	});

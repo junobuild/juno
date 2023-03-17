@@ -14,7 +14,6 @@ export interface Satellite {
 	satellite_id: Principal;
 }
 export interface SetController {
-	updated_at: bigint;
 	metadata: Array<[string, string]>;
 	expires_at: [] | [bigint];
 }

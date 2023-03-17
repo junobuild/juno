@@ -9,7 +9,6 @@ pub fn init_controllers(new_controllers: &[UserId]) -> Controllers {
 
     let controller_data: SetController = SetController {
         metadata: HashMap::new(),
-        updated_at: time(),
         expires_at: None,
     };
 

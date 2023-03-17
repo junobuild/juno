@@ -91,7 +91,6 @@ type Rule = record {
 };
 type RulesType = variant { Db; Storage };
 type SetController = record {
-  updated_at : nat64;
   metadata : vec record { text; text };
   expires_at : opt nat64;
 };

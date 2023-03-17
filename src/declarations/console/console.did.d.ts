@@ -28,7 +28,6 @@ export interface ReleasesVersion {
 	mission_control: [] | [string];
 }
 export interface SetController {
-	updated_at: bigint;
 	metadata: Array<[string, string]>;
 	expires_at: [] | [bigint];
 }

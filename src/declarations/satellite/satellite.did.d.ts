@@ -115,7 +115,6 @@ export interface Rule {
 }
 export type RulesType = { Db: null } | { Storage: null };
 export interface SetController {
-	updated_at: bigint;
 	metadata: Array<[string, string]>;
 	expires_at: [] | [bigint];
 }

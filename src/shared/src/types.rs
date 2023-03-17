@@ -51,7 +51,6 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetController {
         pub metadata: Metadata,
-        pub updated_at: u64,
         pub expires_at: Option<u64>,
     }
 

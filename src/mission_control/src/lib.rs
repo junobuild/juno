@@ -23,7 +23,6 @@ use crate::store::get_user as get_user_store;
 use crate::types::state::{Satellite, SatelliteId, Satellites, StableState, State, User};
 use candid::{candid_method, export_service, Principal};
 use ic_cdk::api::call::arg_data;
-use ic_cdk::api::time;
 use ic_cdk::{storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
@@ -173,11 +172,8 @@ fn get_user() -> UserId {
 #[candid_method(update)]
 #[update(guard = "caller_is_user_or_controller")]
 async fn add_mission_control_controllers(controllers: Vec<UserId>) {
-    let now = time();
-
     let controller: SetController = SetController {
         metadata: HashMap::new(),
-        updated_at: now,
         expires_at: None,
     };
 

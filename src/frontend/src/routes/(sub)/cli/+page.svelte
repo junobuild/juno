@@ -5,7 +5,9 @@
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import {
 		addMissionControlController,
-		addSatellitesController
+		addSatellitesController,
+		setMissionControlController,
+		setSatellitesController
 	} from '$lib/api/mission-control.api';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import type { Principal } from '@dfinity/principal';
@@ -24,6 +26,7 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
+	import { versionStore } from '$lib/stores/version.store';
 
 	export let data: {
 		redirect_uri: string | null | undefined;
@@ -86,22 +89,36 @@
 
 		busy.start();
 
+		// TODO: to be removed in next version as only supported if < v0.0.3
+		const missionControlController =
+			$versionStore?.missionControl?.current === '0.0.3'
+				? setMissionControlController
+				: addMissionControlController;
+
+		// TODO: to be removed in next version as only supported if < v0.0.6
+		const satellitesController =
+			$versionStore?.satellite?.current === '0.0.7'
+				? setSatellitesController
+				: addSatellitesController;
+
 		try {
 			await Promise.all([
 				...(missionControl
 					? [
-							addMissionControlController({
+							missionControlController({
 								missionControlId: $missionControlStore,
-								controller: principal
+								controllerId: principal,
+								controllerName: ''
 							})
 					  ]
 					: []),
 				...(selectedSatellites.length > 0
 					? [
-							addSatellitesController({
+							satellitesController({
 								missionControlId: $missionControlStore,
-								controller: principal,
-								satelliteIds: selectedSatellites.map((s) => s[0])
+								controllerId: principal,
+								satelliteIds: selectedSatellites.map((s) => s[0]),
+								controllerName: ''
 							})
 					  ]
 					: [])

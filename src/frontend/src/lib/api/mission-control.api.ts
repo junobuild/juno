@@ -1,6 +1,7 @@
-import type { Controller } from '$declarations/mission_control/mission_control.did';
+import type { Controller, SetController } from '$declarations/mission_control/mission_control.did';
 import { getMissionControl } from '$lib/services/mission-control.services';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
+import { toNullable } from '$lib/utils/did.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 
@@ -41,20 +42,84 @@ export const initMissionControl = async ({
 		}
 	});
 
-/**
- * @deprecated use setSatellitesController
- */
-export const addSatellitesController = async ({
+export type SetControllerParams = {
+	controllerId: string;
+	controllerName: string;
+}
+
+const toSetController = (controllerName: string): SetController => ({
+	metadata: [['name', controllerName]],
+	expires_at: toNullable<bigint>(undefined)
+});
+
+export const setSatellitesController = async ({
+	missionControlId,
+	satelliteIds,
+	controllerId,
+	controllerName
+}: {
+	missionControlId: Principal;
+	satelliteIds: Principal[];
+} & SetControllerParams) => {
+	const actor = await getMissionControlActor(missionControlId);
+	return actor.set_satellites_controllers(
+		satelliteIds,
+		[Principal.fromText(controllerId)],
+		toSetController(controllerName)
+	);
+};
+
+export const deleteSatellitesController = async ({
 	missionControlId,
 	satelliteIds,
 	controller
 }: {
 	missionControlId: Principal;
 	satelliteIds: Principal[];
-	controller: string;
+	controller: Principal;
 }) => {
 	const actor = await getMissionControlActor(missionControlId);
-	return actor.add_satellites_controllers(satelliteIds, [Principal.fromText(controller)]);
+	return actor.del_satellites_controllers(satelliteIds, [controller]);
+};
+
+export const setMissionControlController = async ({
+	missionControlId,
+	controllerId,
+	controllerName
+}: {
+	missionControlId: Principal;
+} & SetControllerParams) => {
+	const actor = await getMissionControlActor(missionControlId);
+	return actor.set_mission_control_controllers(
+		[Principal.fromText(controllerId)],
+		toSetController(controllerName)
+	);
+};
+
+export const deleteMissionControlController = async ({
+	missionControlId,
+	controller
+}: {
+	missionControlId: Principal;
+	controller: Principal;
+}) => {
+	const actor = await getMissionControlActor(missionControlId);
+	return actor.del_mission_control_controllers([controller]);
+};
+
+/**
+ * @deprecated use setSatellitesController
+ */
+export const addSatellitesController = async ({
+	missionControlId,
+	satelliteIds,
+	controllerId
+}: {
+	missionControlId: Principal;
+	satelliteIds: Principal[];
+} & SetControllerParams) => {
+	const actor = await getMissionControlActor(missionControlId);
+	return actor.add_satellites_controllers(satelliteIds, [Principal.fromText(controllerId)]);
 };
 
 /**
@@ -78,13 +143,12 @@ export const removeSatellitesController = async ({
  */
 export const addMissionControlController = async ({
 	missionControlId,
-	controller
+	controllerId
 }: {
 	missionControlId: Principal;
-	controller: string;
-}) => {
+} & SetControllerParams) => {
 	const actor = await getMissionControlActor(missionControlId);
-	return actor.add_mission_control_controllers([Principal.fromText(controller)]);
+	return actor.add_mission_control_controllers([Principal.fromText(controllerId)]);
 };
 
 /**

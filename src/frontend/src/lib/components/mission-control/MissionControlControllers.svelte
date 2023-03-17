@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import {
-		listMissionControlControllers,
-		removeMissionControlController
+		deleteMissionControlController,
+		listMissionControlControllers
 	} from '$lib/api/mission-control.api';
 	import Controllers from '$lib/components/canister/Controllers.svelte';
 	import { authStore } from '$lib/stores/auth.store';
@@ -16,8 +16,8 @@
 	const list = (): Promise<[Principal, Controller][]> =>
 		listMissionControlControllers({ missionControlId });
 
-	const remove = (params: { missionControlId: Principal; controller: Principal }) =>
-		removeMissionControlController(params);
+	const remove = (params: { missionControlId: Principal; controller: Principal }): Promise<void> =>
+		deleteMissionControlController(params);
 
 	let extraControllers: [Principal, Controllers | undefined][] = [
 		[missionControlId, undefined],

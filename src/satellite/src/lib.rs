@@ -111,7 +111,7 @@ fn init() {
     };
 
     let mut detailed_controllers: Controllers = Controllers::new();
-    add_controllers_impl(&controllers, &mut detailled_controllers);
+    add_controllers_impl(&controllers, &mut detailed_controllers);
 
     STATE.with(|state| {
         *state.borrow_mut() = State {

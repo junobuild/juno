@@ -27,6 +27,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import type { ChangeEventHandler } from 'svelte/elements';
 
 	export let data: {
 		redirect_uri: string | null | undefined;
@@ -64,6 +65,15 @@
 
 	let selectedSatellites: [Principal, Satellite][] = [];
 	let missionControl = false;
+
+	let allSelected = false;
+
+	const toggleAll = () => {
+		allSelected = !allSelected;
+
+		missionControl = allSelected;
+		selectedSatellites = allSelected ? [...satellites] : [];
+	};
 
 	const onSubmit = async () => {
 		if (!redirect_uri || !principal) {
@@ -188,7 +198,7 @@
 
 				<form on:submit|preventDefault={onSubmit}>
 					<div class="checkbox">
-						<input type="checkbox" bind:value={missionControl} />
+						<input type="checkbox" bind:checked={missionControl} />
 						<span>{$i18n.mission_control.title} ({$missionControlStore?.toText() ?? ''})</span>
 					</div>
 
@@ -199,6 +209,11 @@
 							>
 						</div>
 					{/each}
+
+					<div class="checkbox all">
+						<input type="checkbox" on:change={toggleAll} />
+						<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
+					</div>
 
 					<button {disabled}>{$i18n.core.submit}</button>
 				</form>
@@ -234,5 +249,11 @@
 
 	button {
 		margin: var(--padding-2x) 0 0;
+	}
+
+	.all {
+		margin: var(--padding-0_5x) 0 var(--padding-2x);
+		align-items: center;
+		font-size: var(--font-size-small);
 	}
 </style>

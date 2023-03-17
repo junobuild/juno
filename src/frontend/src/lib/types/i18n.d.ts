@@ -125,6 +125,8 @@ interface I18nCli {
 	title: string;
 	sign_in: string;
 	add: string;
+	select_all: string;
+	unselect_all: string;
 }
 
 interface I18nErrors {

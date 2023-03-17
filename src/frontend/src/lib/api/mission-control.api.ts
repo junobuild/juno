@@ -45,7 +45,7 @@ export const initMissionControl = async ({
 export type SetControllerParams = {
 	controllerId: string;
 	controllerName: string;
-}
+};
 
 const toSetController = (controllerName: string): SetController => ({
 	metadata: [['name', controllerName]],

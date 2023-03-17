@@ -1,21 +1,25 @@
 use crate::STATE;
 use shared::controllers::{
-    add_controllers as add_controllers_impl, remove_controllers as remove_controllers_impl,
+    delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
-use shared::types::state::Controllers;
-use shared::types::state::UserId;
+use shared::types::interface::SetController;
+use shared::types::state::{ControllerId, Controllers};
 
 /// Controllers
 
-pub fn add_controllers(new_controllers: &[UserId]) {
+pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetController) {
     STATE.with(|state| {
-        add_controllers_impl(new_controllers, &mut state.borrow_mut().stable.controllers)
+        set_controllers_impl(
+            new_controllers,
+            &mut state.borrow_mut().stable.controllers,
+            controller,
+        )
     })
 }
 
-pub fn remove_controllers(remove_controllers: &[UserId]) {
+pub fn delete_controllers(remove_controllers: &[ControllerId]) {
     STATE.with(|state| {
-        remove_controllers_impl(
+        delete_controllers_impl(
             remove_controllers,
             &mut state.borrow_mut().stable.controllers,
         )

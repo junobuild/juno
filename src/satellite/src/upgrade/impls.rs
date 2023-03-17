@@ -1,8 +1,8 @@
 use crate::storage::types::state::StorageStableState;
 use crate::types::state::StableState;
 use crate::upgrade::types::upgrade::UpgradeStableState;
-use shared::controllers::add_controllers as add_controllers_impl;
-use shared::types::state::{ControllerId, Controllers};
+use shared::controllers::init_controllers;
+use shared::types::state::ControllerId;
 
 ///
 /// v0.0.5 -> v0.0.x
@@ -10,16 +10,14 @@ use shared::types::state::{ControllerId, Controllers};
 ///
 impl From<&UpgradeStableState> for StableState {
     fn from(state: &UpgradeStableState) -> Self {
-        let mut controllers: Controllers = Controllers::new();
         let controller_ids = state
             .controllers
             .clone()
             .into_iter()
             .collect::<Vec<ControllerId>>();
-        add_controllers_impl(&controller_ids, &mut controllers);
 
         StableState {
-            controllers,
+            controllers: init_controllers(&controller_ids),
             db: state.db.clone(),
             storage: StorageStableState {
                 assets: state.storage.assets.clone(),

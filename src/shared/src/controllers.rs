@@ -1,9 +1,28 @@
+use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, Controllers, UserId};
 use crate::utils::principal_equal;
 use ic_cdk::api::time;
 use std::collections::HashMap;
 
-pub fn add_controllers(new_controllers: &[UserId], controllers: &mut Controllers) {
+pub fn init_controllers(new_controllers: &[UserId]) -> Controllers {
+    let mut controllers: Controllers = Controllers::new();
+
+    let controller_data: SetController = SetController {
+        metadata: HashMap::new(),
+        updated_at: time(),
+        expires_at: None,
+    };
+
+    set_controllers(new_controllers, &mut controllers, &controller_data);
+
+    controllers
+}
+
+pub fn set_controllers(
+    new_controllers: &[UserId],
+    controllers: &mut Controllers,
+    controller_data: &SetController,
+) {
     for controller_id in new_controllers {
         let existing_controller = controllers.get(controller_id);
 
@@ -17,17 +36,17 @@ pub fn add_controllers(new_controllers: &[UserId], controllers: &mut Controllers
         let updated_at: u64 = now;
 
         let controller: Controller = Controller {
-            metadata: HashMap::new(),
+            metadata: controller_data.metadata.clone(),
             created_at,
             updated_at,
-            expires_at: None,
+            expires_at: controller_data.expires_at,
         };
 
         controllers.insert(*controller_id, controller);
     }
 }
 
-pub fn remove_controllers(remove_controllers: &[UserId], controllers: &mut Controllers) {
+pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Controllers) {
     for c in remove_controllers {
         controllers.remove(c);
     }

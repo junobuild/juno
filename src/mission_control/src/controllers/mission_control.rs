@@ -1,13 +1,16 @@
-use crate::controllers::store::{add_controllers, get_controllers, remove_controllers};
+use crate::controllers::store::{delete_controllers, get_controllers, set_controllers};
 use crate::store::get_user;
 use ic_cdk::id;
 use shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
 use shared::controllers::into_controller_ids;
 use shared::ic::update_canister_controllers;
-use shared::types::state::Controllers;
-use shared::types::state::UserId;
+use shared::types::interface::SetController;
+use shared::types::state::{ControllerId, Controllers};
 
-pub async fn add_mission_control_controllers(controllers: &[UserId]) -> Result<(), String> {
+pub async fn set_mission_control_controllers(
+    controllers: &[ControllerId],
+    controller: &SetController,
+) -> Result<(), String> {
     let current_controllers = get_controllers();
 
     if current_controllers.len() >= MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS {
@@ -17,15 +20,17 @@ pub async fn add_mission_control_controllers(controllers: &[UserId]) -> Result<(
         ));
     }
 
-    add_controllers(controllers);
+    set_controllers(controllers, controller);
 
     let updated_controllers = get_controllers();
 
     update_controllers_settings(&updated_controllers).await
 }
 
-pub async fn remove_mission_control_controllers(controllers: &[UserId]) -> Result<(), String> {
-    remove_controllers(controllers);
+pub async fn delete_mission_control_controllers(
+    controllers: &[ControllerId],
+) -> Result<(), String> {
+    delete_controllers(controllers);
 
     let updated_controllers = get_controllers();
 

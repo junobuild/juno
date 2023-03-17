@@ -22,7 +22,7 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::types::state::UserId;
+    use crate::types::state::{ControllerId, Metadata, UserId};
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
@@ -45,12 +45,25 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize)]
     pub struct SatelliteArgs {
-        pub controllers: Vec<UserId>,
+        pub controllers: Vec<ControllerId>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SetController {
+        pub metadata: Metadata,
+        pub updated_at: u64,
+        pub expires_at: Option<u64>,
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct ControllersArgs {
-        pub controllers: Vec<UserId>,
+    pub struct SetControllersArgs {
+        pub controllers: Vec<ControllerId>,
+        pub controller: SetController,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct DeleteControllersArgs {
+        pub controllers: Vec<ControllerId>,
     }
 }
 

@@ -4,8 +4,8 @@ use ic_cdk::api::time;
 use std::collections::HashMap;
 
 pub fn add_controllers(new_controllers: &[UserId], controllers: &mut Controllers) {
-    for c in new_controllers {
-        let existing_controller = controllers.get(c);
+    for controller_id in new_controllers {
+        let existing_controller = controllers.get(controller_id);
 
         let now = time();
 
@@ -14,22 +14,16 @@ pub fn add_controllers(new_controllers: &[UserId], controllers: &mut Controllers
             Some(existing_controller) => existing_controller.created_at,
         };
 
-        let controller_id: ControllerId = match existing_controller {
-            None => c.clone(),
-            Some(existing_controller) => existing_controller.controller_id,
-        };
-
         let updated_at: u64 = now;
 
         let controller: Controller = Controller {
-            controller_id,
             metadata: HashMap::new(),
             created_at,
             updated_at,
             expires_at: None,
         };
 
-        controllers.insert(controller_id.clone(), controller);
+        controllers.insert(*controller_id, controller);
     }
 }
 

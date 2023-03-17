@@ -10,11 +10,10 @@ pub mod state {
 
     pub type Metadata = HashMap<String, String>;
 
-    pub type Controllers = HashMap<UserId, Controller>;
+    pub type Controllers = HashMap<ControllerId, Controller>;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Controller {
-        pub controller_id: ControllerId,
         pub metadata: Metadata,
         pub created_at: u64,
         pub updated_at: u64,

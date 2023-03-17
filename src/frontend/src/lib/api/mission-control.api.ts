@@ -41,6 +41,9 @@ export const initMissionControl = async ({
 		}
 	});
 
+/**
+ * @deprecated use setSatellitesController
+ */
 export const addSatellitesController = async ({
 	missionControlId,
 	satelliteIds,
@@ -54,6 +57,9 @@ export const addSatellitesController = async ({
 	return actor.add_satellites_controllers(satelliteIds, [Principal.fromText(controller)]);
 };
 
+/**
+ * @deprecated use deleteSatellitesController
+ */
 export const removeSatellitesController = async ({
 	missionControlId,
 	satelliteIds,
@@ -67,6 +73,9 @@ export const removeSatellitesController = async ({
 	return actor.remove_satellites_controllers(satelliteIds, [controller]);
 };
 
+/**
+ * @deprecated use setMissionControlController
+ */
 export const addMissionControlController = async ({
 	missionControlId,
 	controller
@@ -78,6 +87,9 @@ export const addMissionControlController = async ({
 	return actor.add_mission_control_controllers([Principal.fromText(controller)]);
 };
 
+/**
+ * @deprecated use deleteMissionControlController
+ */
 export const removeMissionControlController = async ({
 	missionControlId,
 	controller

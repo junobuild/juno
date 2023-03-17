@@ -1,5 +1,14 @@
 import type { MissionControl, _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
+import type { SetControllerParams } from '$lib/api/mission-control.api';
+import {
+	addMissionControlController,
+	addSatellitesController,
+	missionControlVersion,
+	setMissionControlController,
+	setSatellitesController
+} from '$lib/api/mission-control.api';
+import { satelliteVersion } from '$lib/api/satellites.api';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { getConsoleActor, getMissionControlActor } from '../utils/actor.utils';
@@ -55,4 +64,81 @@ export const getMissionControl = async ({
 		missionControlId: missionControlId,
 		actor
 	};
+};
+
+// TODO: to be removed in next version as only supported if < v0.0.3
+export const setMissionControlControllerForVersion = async ({
+	missionControlId,
+	controllerId,
+	controllerName
+}: {
+	missionControlId: Principal;
+} & SetControllerParams) => {
+	const version = await missionControlVersion({ missionControlId });
+
+	const missionControlController =
+		version === '0.0.3' ? setMissionControlController : addMissionControlController;
+
+	await missionControlController({ missionControlId, controllerId, controllerName });
+};
+
+// TODO: to be removed in next version as only supported if < v0.0.7
+export const setSatellitesForVersion = async ({
+	missionControlId,
+	satelliteIds,
+	controllerId,
+	controllerName
+}: {
+	missionControlId: Principal;
+	satelliteIds: Principal[];
+} & SetControllerParams) => {
+	const mapVersions = async (
+		satelliteId: Principal
+	): Promise<{ satelliteId: Principal; version: string }> => {
+		const version = await satelliteVersion({ satelliteId });
+		return {
+			version,
+			satelliteId
+		};
+	};
+
+	const versions = await Promise.all(satelliteIds.map(mapVersions));
+
+	const { setSatelliteIds, addSatellitesIds } = versions.reduce(
+		(
+			{
+				setSatelliteIds,
+				addSatellitesIds
+			}: { setSatelliteIds: Principal[]; addSatellitesIds: Principal[] },
+			{ satelliteId, version }
+		) => {
+			if (version === '0.0.7') {
+				return {
+					setSatelliteIds: [...setSatelliteIds, satelliteId],
+					addSatellitesIds
+				};
+			}
+
+			return {
+				setSatelliteIds,
+				addSatellitesIds: [...addSatellitesIds, satelliteId]
+			};
+		},
+		{ setSatelliteIds: [], addSatellitesIds: [] }
+	);
+
+	await Promise.all([
+		setSatellitesController({
+			satelliteIds: setSatelliteIds,
+			missionControlId,
+			controllerId,
+			controllerName
+		}),
+		addSatellitesController({
+			satelliteIds: addSatellitesIds,
+			missionControlId,
+			controllerId,
+			controllerName
+		})
+	]);
 };

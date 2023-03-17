@@ -28,6 +28,10 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { ChangeEventHandler } from 'svelte/elements';
+	import {
+		setMissionControlControllerForVersion,
+		setSatellitesForVersion
+	} from '$lib/services/mission-control.services';
 
 	export let data: {
 		redirect_uri: string | null | undefined;
@@ -101,19 +105,11 @@
 
 		busy.start();
 
-		// TODO: to be removed in next version as only supported if < v0.0.3
-		const missionControlController = upToDate
-			? setMissionControlController
-			: addMissionControlController;
-
-		// TODO: to be removed in next version as only supported if < v0.0.6
-		const satellitesController = upToDate ? setSatellitesController : addSatellitesController;
-
 		try {
 			await Promise.all([
 				...(missionControl
 					? [
-							missionControlController({
+							setMissionControlControllerForVersion({
 								missionControlId: $missionControlStore,
 								controllerId: principal,
 								controllerName
@@ -122,7 +118,7 @@
 					: []),
 				...(selectedSatellites.length > 0
 					? [
-							satellitesController({
+							setSatellitesForVersion({
 								missionControlId: $missionControlStore,
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),
@@ -179,12 +175,6 @@
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
-
-	// TODO: to be removed in next version
-	let upToDate = false;
-	$: upToDate =
-		$versionStore?.missionControl?.current === '0.0.3' &&
-		$versionStore?.satellite?.current === '0.0.7';
 </script>
 
 <Tabs help="https://juno.build/docs/miscellaneous/cli">
@@ -223,19 +213,17 @@
 						</div>
 					</div>
 
-					{#if upToDate}
-						<label for="controllerName">
-							{$i18n.cli.name}
-						</label>
+					<label htmlFor="controllerName">
+						{$i18n.cli.name}
+					</label>
 
-						<input
-							id="controllerName"
-							type="text"
-							placeholder={$i18n.cli.name_placeholder}
-							name="collection"
-							bind:value={controllerName}
-						/>
-					{/if}
+					<input
+						id="controllerName"
+						type="text"
+						placeholder={$i18n.cli.name_placeholder}
+						name="collection"
+						bind:value={controllerName}
+					/>
 
 					<button {disabled}>{$i18n.core.submit}</button>
 				</form>

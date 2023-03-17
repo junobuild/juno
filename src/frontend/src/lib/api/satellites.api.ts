@@ -1,3 +1,4 @@
+import type { Controller } from '$declarations/mission_control/mission_control.did';
 import type {
 	CustomDomain,
 	ListResults as ListAssets,
@@ -84,7 +85,7 @@ export const listControllers = async ({
 	satelliteId
 }: {
 	satelliteId: Principal;
-}): Promise<Principal[]> => {
+}): Promise<[Principal, Controller][]> => {
 	const actor = await getSatelliteActor(satelliteId);
 	return actor.list_controllers();
 };

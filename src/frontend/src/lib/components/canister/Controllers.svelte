@@ -10,17 +10,18 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { authStore } from '$lib/stores/auth.store';
 	import ButtonDelete from '$lib/components/ui/ButtonDelete.svelte';
+	import type { Controller } from '$declarations/mission_control/mission_control.did';
 
-	export let list: () => Promise<Principal[]>;
+	export let list: () => Promise<[Principal, Controller][]>;
 	export let remove: (params: {
 		missionControlId: Principal;
 		controller: Principal;
 	}) => Promise<void>;
 
 	// The canister and user are controllers of the mission control but not added in its state per default
-	export let extraControllers: Principal[] = [];
+	export let extraControllers: [Principal, Controller | undefined][] = [];
 
-	let controllers: Principal[] = [];
+	let controllers: [Principal, Controller | undefined][] = [];
 
 	const load = async () => {
 		try {
@@ -97,18 +98,18 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each controllers as controller (controller.toText())}
+			{#each controllers as [controllerId, controller] (controllerId.toText())}
 				<tr
 					><td>
 						<ButtonDelete
 							ariaLabel={$i18n.controllers.delete}
 							on:click={() => {
-								selectedController = controller;
+								selectedController = controllerId;
 								visible = true;
 							}}
 						/>
 
-						<span>{controller.toText()}</span>
+						<span>{controllerId.toText()}</span>
 					</td></tr
 				>
 			{/each}

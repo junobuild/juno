@@ -1,3 +1,4 @@
+import type { Controller } from '$declarations/mission_control/mission_control.did';
 import { getMissionControl } from '$lib/services/mission-control.services';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
 import type { Identity } from '@dfinity/agent';
@@ -92,7 +93,7 @@ export const listMissionControlControllers = async ({
 	missionControlId
 }: {
 	missionControlId: Principal;
-}): Promise<Principal[]> => {
+}): Promise<[Principal, Controller][]> => {
 	const actor = await getMissionControlActor(missionControlId);
 	return actor.list_mission_control_controllers();
 };

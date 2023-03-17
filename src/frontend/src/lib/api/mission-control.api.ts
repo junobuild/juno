@@ -48,7 +48,7 @@ export type SetControllerParams = {
 };
 
 const toSetController = (controllerName: string): SetController => ({
-	metadata: [['name', controllerName]],
+	metadata: controllerName !== "" ? [['name', controllerName]] : [],
 	expires_at: toNullable<bigint>(undefined)
 });
 

@@ -75,6 +75,8 @@
 		selectedSatellites = allSelected ? [...satellites] : [];
 	};
 
+	let controllerName = "";
+
 	const onSubmit = async () => {
 		if (!redirect_uri || !principal) {
 			toasts.error({
@@ -118,7 +120,7 @@
 							missionControlController({
 								missionControlId: $missionControlStore,
 								controllerId: principal,
-								controllerName: ''
+								controllerName
 							})
 					  ]
 					: []),
@@ -128,7 +130,7 @@
 								missionControlId: $missionControlStore,
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),
-								controllerName: ''
+								controllerName
 							})
 					  ]
 					: [])
@@ -197,23 +199,39 @@
 				</p>
 
 				<form on:submit|preventDefault={onSubmit}>
-					<div class="checkbox">
-						<input type="checkbox" bind:checked={missionControl} />
-						<span>{$i18n.mission_control.title} ({$missionControlStore?.toText() ?? ''})</span>
-					</div>
+					<label>{$i18n.cli.objects}</label>
 
-					{#each satellites as satellite}
+					<div class="objects">
 						<div class="checkbox">
-							<input type="checkbox" bind:group={selectedSatellites} value={satellite} /><span
-								>{satelliteName(satellite[1])} ({satellite[0].toText()})</span
-							>
+							<input type="checkbox" bind:checked={missionControl} />
+							<span>{$i18n.mission_control.title} ({$missionControlStore?.toText() ?? ''})</span>
 						</div>
-					{/each}
 
-					<div class="checkbox all">
-						<input type="checkbox" on:change={toggleAll} />
-						<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
+						{#each satellites as satellite}
+							<div class="checkbox">
+								<input type="checkbox" bind:group={selectedSatellites} value={satellite} /><span
+							>{satelliteName(satellite[1])} ({satellite[0].toText()})</span
+							>
+							</div>
+						{/each}
+
+						<div class="checkbox all">
+							<input type="checkbox" on:change={toggleAll} />
+							<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
+						</div>
 					</div>
+
+					<label for="controllerName">
+						{$i18n.cli.name}
+					</label>
+
+					<input
+							id="controllerName"
+							type="text"
+							placeholder={$i18n.cli.name_placeholder}
+							name="collection"
+							bind:value={controllerName}
+					/>
 
 					<button {disabled}>{$i18n.core.submit}</button>
 				</form>
@@ -252,8 +270,12 @@
 	}
 
 	.all {
-		margin: var(--padding-0_5x) 0 var(--padding-2x);
+		margin: var(--padding) 0 var(--padding-2x);
 		align-items: center;
-		font-size: var(--font-size-small);
+		font-size: var(--font-size-very-small);
+	}
+
+	.objects {
+		margin: var(--padding) 0 0;
 	}
 </style>

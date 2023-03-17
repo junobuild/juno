@@ -5,8 +5,8 @@ textarea,
 select {
 	@include shadow.card;
 
-	margin: 0.45rem 0 1rem;
-	padding: 0.25rem 0.45rem;
+	margin: var(--padding) 0 var(--padding-2x);
+	padding: var(--padding-0_5x) var(--padding);
 
 	width: 100%;
 	max-width: 100%;

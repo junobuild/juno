@@ -113,7 +113,10 @@
 		"sign_in": "Sign-in to add a new controller <strong>{0}</strong> to your mission control and/or satellite(s).",
 		"add": "Add a new controller <strong>{0}</strong> to your mission control and/or satellite(s).",
 		"select_all": "Select all objects",
-		"unselect_all": "Unselect all objects"
+		"unselect_all": "Unselect all objects",
+		"name": "A name:",
+		"objects": "Objects:",
+		"name_placeholder": "An optional hint about the controller"
 	},
 	"errors": {
 		"no_mission_control": "Mission control center is not initialized.",

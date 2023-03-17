@@ -13,15 +13,15 @@ pub fn init_controllers(new_controllers: &[UserId]) -> Controllers {
         expires_at: None,
     };
 
-    set_controllers(new_controllers, &mut controllers, &controller_data);
+    set_controllers(new_controllers, &controller_data, &mut controllers);
 
     controllers
 }
 
 pub fn set_controllers(
     new_controllers: &[UserId],
-    controllers: &mut Controllers,
     controller_data: &SetController,
+    controllers: &mut Controllers,
 ) {
     for controller_id in new_controllers {
         let existing_controller = controllers.get(controller_id);

@@ -11,8 +11,8 @@ pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetControl
     STATE.with(|state| {
         set_controllers_impl(
             new_controllers,
-            &mut state.borrow_mut().stable.controllers,
             controller,
+            &mut state.borrow_mut().stable.controllers,
         )
     })
 }

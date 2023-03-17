@@ -24,13 +24,19 @@ type CommitBatch = record {
   chunk_ids : vec nat;
 };
 type Config = record { storage : StorageConfig };
-type ControllersArgs = record { controllers : vec principal };
+type Controller = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  expires_at : opt nat64;
+};
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;
   bn_id : opt text;
 };
 type DelDoc = record { updated_at : opt nat64 };
+type DeleteControllersArgs = record { controllers : vec principal };
 type Doc = record {
   updated_at : nat64;
   owner : principal;
@@ -84,6 +90,15 @@ type Rule = record {
   write : Permission;
 };
 type RulesType = variant { Db; Storage };
+type SetController = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  expires_at : opt nat64;
+};
+type SetControllersArgs = record {
+  controller : SetController;
+  controllers : vec principal;
+};
 type SetDoc = record { updated_at : opt nat64; data : vec nat8 };
 type SetRule = record {
   updated_at : opt nat64;
@@ -114,10 +129,12 @@ type StreamingStrategy = variant {
 };
 type UploadChunk = record { chunk_id : nat };
 service : {
-  add_controllers : (ControllersArgs) -> (vec principal);
   commit_asset_upload : (CommitBatch) -> ();
   del_asset : (text, text) -> ();
   del_assets : (opt text) -> ();
+  del_controllers : (DeleteControllersArgs) -> (
+      vec record { principal; Controller },
+    );
   del_custom_domain : (text) -> ();
   del_doc : (text, text, DelDoc) -> ();
   get_config : () -> (Config);
@@ -128,12 +145,14 @@ service : {
     ) query;
   init_asset_upload : (InitAssetKey) -> (InitUploadResult);
   list_assets : (opt text, ListParams) -> (ListResults) query;
-  list_controllers : () -> (vec principal) query;
+  list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_docs : (text, ListParams) -> (ListResults_1) query;
   list_rules : (RulesType) -> (vec record { text; Rule }) query;
-  remove_controllers : (ControllersArgs) -> (vec principal);
   set_config : (Config) -> ();
+  set_controllers : (SetControllersArgs) -> (
+      vec record { principal; Controller },
+    );
   set_custom_domain : (text, opt text) -> ();
   set_doc : (text, text, SetDoc) -> (Doc);
   set_rule : (RulesType, text, SetRule) -> ();

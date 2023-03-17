@@ -1,11 +1,17 @@
 export const idlFactory = ({ IDL }) => {
-	const ControllersArgs = IDL.Record({
-		controllers: IDL.Vec(IDL.Principal)
-	});
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		chunk_ids: IDL.Vec(IDL.Nat)
+	});
+	const DeleteControllersArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal)
+	});
+	const Controller = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const DelDoc = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
 	const StorageConfig = IDL.Record({
@@ -119,6 +125,15 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		write: Permission
 	});
+	const SetController = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		expires_at: IDL.Opt(IDL.Nat64)
+	});
+	const SetControllersArgs = IDL.Record({
+		controller: SetController,
+		controllers: IDL.Vec(IDL.Principal)
+	});
 	const SetDoc = IDL.Record({
 		updated_at: IDL.Opt(IDL.Nat64),
 		data: IDL.Vec(IDL.Nat8)
@@ -135,10 +150,14 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const UploadChunk = IDL.Record({ chunk_id: IDL.Nat });
 	return IDL.Service({
-		add_controllers: IDL.Func([ControllersArgs], [IDL.Vec(IDL.Principal)], []),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		del_asset: IDL.Func([IDL.Text, IDL.Text], [], []),
 		del_assets: IDL.Func([IDL.Opt(IDL.Text)], [], []),
+		del_controllers: IDL.Func(
+			[DeleteControllersArgs],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[]
+		),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		del_doc: IDL.Func([IDL.Text, IDL.Text, DelDoc], [], []),
 		get_config: IDL.Func([], [Config], []),
@@ -151,12 +170,16 @@ export const idlFactory = ({ IDL }) => {
 		),
 		init_asset_upload: IDL.Func([InitAssetKey], [InitUploadResult], []),
 		list_assets: IDL.Func([IDL.Opt(IDL.Text), ListParams], [ListResults], ['query']),
-		list_controllers: IDL.Func([], [IDL.Vec(IDL.Principal)], ['query']),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_docs: IDL.Func([IDL.Text, ListParams], [ListResults_1], ['query']),
 		list_rules: IDL.Func([RulesType], [IDL.Vec(IDL.Tuple(IDL.Text, Rule))], ['query']),
-		remove_controllers: IDL.Func([ControllersArgs], [IDL.Vec(IDL.Principal)], []),
 		set_config: IDL.Func([Config], [], []),
+		set_controllers: IDL.Func(
+			[SetControllersArgs],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[]
+		),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_doc: IDL.Func([IDL.Text, IDL.Text, SetDoc], [Doc], []),
 		set_rule: IDL.Func([RulesType, IDL.Text, SetRule], [], []),

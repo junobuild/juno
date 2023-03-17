@@ -1,12 +1,12 @@
 import type { ActorMethod } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
-export interface ControllersArgs {
-	controllers: Array<Principal>;
-}
 export interface CreateSatelliteArgs {
 	block_index: [] | [bigint];
 	user: Principal;
+}
+export interface DeleteControllersArgs {
+	controllers: Array<Principal>;
 }
 export interface GetCreateSatelliteFeeArgs {
 	user: Principal;
@@ -27,13 +27,22 @@ export interface ReleasesVersion {
 	satellite: [] | [string];
 	mission_control: [] | [string];
 }
+export interface SetController {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	expires_at: [] | [bigint];
+}
+export interface SetControllersArgs {
+	controller: SetController;
+	controllers: Array<Principal>;
+}
 export interface Tokens {
 	e8s: bigint;
 }
 export interface _SERVICE {
-	add_controllers: ActorMethod<[ControllersArgs], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
 	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
+	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_create_satellite_fee: ActorMethod<[GetCreateSatelliteFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
 	get_releases_version: ActorMethod<[], ReleasesVersion>;
@@ -41,7 +50,7 @@ export interface _SERVICE {
 	init_user_mission_control_center: ActorMethod<[[] | [string]], MissionControl>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	load_release: ActorMethod<[ReleaseType, Uint8Array | number[], string], LoadRelease>;
-	remove_controllers: ActorMethod<[ControllersArgs], undefined>;
 	reset_release: ActorMethod<[ReleaseType], undefined>;
+	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	version: ActorMethod<[], string>;
 }

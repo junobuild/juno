@@ -1,19 +1,40 @@
+type Controller = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  expires_at : opt nat64;
+};
 type Satellite = record {
   updated_at : nat64;
   metadata : vec record { text; text };
   created_at : nat64;
   satellite_id : principal;
 };
+type SetController = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  expires_at : opt nat64;
+};
 type Tokens = record { e8s : nat64 };
 service : {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
   create_satellite : (text) -> (Satellite);
+  del_mission_control_controllers : (vec principal) -> ();
+  del_satellites_controllers : (vec principal, vec principal) -> ();
   get_user : () -> (principal) query;
-  list_mission_control_controllers : () -> (vec principal) query;
+  list_mission_control_controllers : () -> (
+      vec record { principal; Controller },
+    ) query;
   list_satellites : () -> (vec record { principal; Satellite }) query;
   remove_mission_control_controllers : (vec principal) -> ();
   remove_satellites_controllers : (vec principal, vec principal) -> ();
+  set_mission_control_controllers : (vec principal, SetController) -> ();
+  set_satellites_controllers : (
+      vec principal,
+      vec principal,
+      SetController,
+    ) -> ();
   top_up : (principal, Tokens) -> ();
   version : () -> (text) query;
 }

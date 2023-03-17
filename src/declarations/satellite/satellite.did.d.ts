@@ -32,8 +32,11 @@ export interface CommitBatch {
 export interface Config {
 	storage: StorageConfig;
 }
-export interface ControllersArgs {
-	controllers: Array<Principal>;
+export interface Controller {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	created_at: bigint;
+	expires_at: [] | [bigint];
 }
 export interface CustomDomain {
 	updated_at: bigint;
@@ -42,6 +45,9 @@ export interface CustomDomain {
 }
 export interface DelDoc {
 	updated_at: [] | [bigint];
+}
+export interface DeleteControllersArgs {
+	controllers: Array<Principal>;
 }
 export interface Doc {
 	updated_at: bigint;
@@ -108,6 +114,15 @@ export interface Rule {
 	write: Permission;
 }
 export type RulesType = { Db: null } | { Storage: null };
+export interface SetController {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	expires_at: [] | [bigint];
+}
+export interface SetControllersArgs {
+	controller: SetController;
+	controllers: Array<Principal>;
+}
 export interface SetDoc {
 	updated_at: [] | [bigint];
 	data: Uint8Array | number[];
@@ -143,10 +158,10 @@ export interface UploadChunk {
 	chunk_id: bigint;
 }
 export interface _SERVICE {
-	add_controllers: ActorMethod<[ControllersArgs], Array<Principal>>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	del_asset: ActorMethod<[string, string], undefined>;
 	del_assets: ActorMethod<[[] | [string]], undefined>;
+	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_custom_domain: ActorMethod<[string], undefined>;
 	del_doc: ActorMethod<[string, string, DelDoc], undefined>;
 	get_config: ActorMethod<[], Config>;
@@ -158,12 +173,12 @@ export interface _SERVICE {
 	>;
 	init_asset_upload: ActorMethod<[InitAssetKey], InitUploadResult>;
 	list_assets: ActorMethod<[[] | [string], ListParams], ListResults>;
-	list_controllers: ActorMethod<[], Array<Principal>>;
+	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_docs: ActorMethod<[string, ListParams], ListResults_1>;
 	list_rules: ActorMethod<[RulesType], Array<[string, Rule]>>;
-	remove_controllers: ActorMethod<[ControllersArgs], Array<Principal>>;
 	set_config: ActorMethod<[Config], undefined>;
+	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;

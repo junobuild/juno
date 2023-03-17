@@ -75,7 +75,7 @@
 		selectedSatellites = allSelected ? [...satellites] : [];
 	};
 
-	let controllerName = "";
+	let controllerName = '';
 
 	const onSubmit = async () => {
 		if (!redirect_uri || !principal) {
@@ -102,16 +102,12 @@
 		busy.start();
 
 		// TODO: to be removed in next version as only supported if < v0.0.3
-		const missionControlController =
-			$versionStore?.missionControl?.current === '0.0.3'
-				? setMissionControlController
-				: addMissionControlController;
+		const missionControlController = upToDate
+			? setMissionControlController
+			: addMissionControlController;
 
 		// TODO: to be removed in next version as only supported if < v0.0.6
-		const satellitesController =
-			$versionStore?.satellite?.current === '0.0.7'
-				? setSatellitesController
-				: addSatellitesController;
+		const satellitesController = upToDate ? setSatellitesController : addSatellitesController;
 
 		try {
 			await Promise.all([
@@ -183,6 +179,12 @@
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
+
+	// TODO: to be removed in next version
+	let upToDate = false;
+	$: upToDate =
+		$versionStore?.missionControl?.current === '0.0.3' &&
+		$versionStore?.satellite?.current === '0.0.7';
 </script>
 
 <Tabs help="https://juno.build/docs/miscellaneous/cli">
@@ -210,8 +212,8 @@
 						{#each satellites as satellite}
 							<div class="checkbox">
 								<input type="checkbox" bind:group={selectedSatellites} value={satellite} /><span
-							>{satelliteName(satellite[1])} ({satellite[0].toText()})</span
-							>
+									>{satelliteName(satellite[1])} ({satellite[0].toText()})</span
+								>
 							</div>
 						{/each}
 
@@ -221,17 +223,19 @@
 						</div>
 					</div>
 
-					<label for="controllerName">
-						{$i18n.cli.name}
-					</label>
+					{#if upToDate}
+						<label for="controllerName">
+							{$i18n.cli.name}
+						</label>
 
-					<input
+						<input
 							id="controllerName"
 							type="text"
 							placeholder={$i18n.cli.name_placeholder}
 							name="collection"
 							bind:value={controllerName}
-					/>
+						/>
+					{/if}
 
 					<button {disabled}>{$i18n.core.submit}</button>
 				</form>

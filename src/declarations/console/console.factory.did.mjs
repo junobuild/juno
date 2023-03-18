@@ -1,10 +1,10 @@
 export const idlFactory = ({ IDL }) => {
-	const ControllersArgs = IDL.Record({
-		controllers: IDL.Vec(IDL.Principal)
-	});
 	const CreateSatelliteArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
 		user: IDL.Principal
+	});
+	const DeleteControllersArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal)
 	});
 	const GetCreateSatelliteFeeArgs = IDL.Record({ user: IDL.Principal });
 	const Tokens = IDL.Record({ e8s: IDL.Nat64 });
@@ -24,14 +24,22 @@ export const idlFactory = ({ IDL }) => {
 		Satellite: IDL.Null
 	});
 	const LoadRelease = IDL.Record({ total: IDL.Nat64, chunks: IDL.Nat64 });
+	const SetController = IDL.Record({
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		expires_at: IDL.Opt(IDL.Nat64)
+	});
+	const SetControllersArgs = IDL.Record({
+		controller: SetController,
+		controllers: IDL.Vec(IDL.Principal)
+	});
 	const RateConfig = IDL.Record({
 		max_tokens: IDL.Nat64,
 		time_per_token_ns: IDL.Nat64
 	});
 	return IDL.Service({
-		add_controllers: IDL.Func([ControllersArgs], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
+		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_create_satellite_fee: IDL.Func([GetCreateSatelliteFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_releases_version: IDL.Func([], [ReleasesVersion], ['query']),
@@ -43,8 +51,8 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		load_release: IDL.Func([Segment, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
-		remove_controllers: IDL.Func([ControllersArgs], [], []),
 		reset_release: IDL.Func([Segment], [], []),
+		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		update_rate_config: IDL.Func([Segment, RateConfig], [], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

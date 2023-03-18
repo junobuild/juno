@@ -1,15 +1,28 @@
 pub mod state {
+    use candid::CandidType;
     use candid::Principal;
-    use std::collections::HashSet;
+    use serde::Deserialize;
+    use std::collections::HashMap;
 
     pub type UserId = Principal;
     pub type MissionControlId = Principal;
+    pub type ControllerId = Principal;
 
-    pub type Controllers = HashSet<UserId>;
+    pub type Metadata = HashMap<String, String>;
+
+    pub type Controllers = HashMap<ControllerId, Controller>;
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct Controller {
+        pub metadata: Metadata,
+        pub created_at: u64,
+        pub updated_at: u64,
+        pub expires_at: Option<u64>,
+    }
 }
 
 pub mod interface {
-    use crate::types::state::UserId;
+    use crate::types::state::{ControllerId, Metadata, UserId};
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
@@ -32,12 +45,24 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize)]
     pub struct SatelliteArgs {
-        pub controllers: Vec<UserId>,
+        pub controllers: Vec<ControllerId>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SetController {
+        pub metadata: Metadata,
+        pub expires_at: Option<u64>,
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct ControllersArgs {
-        pub controllers: Vec<UserId>,
+    pub struct SetControllersArgs {
+        pub controllers: Vec<ControllerId>,
+        pub controller: SetController,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct DeleteControllersArgs {
+        pub controllers: Vec<ControllerId>,
     }
 }
 

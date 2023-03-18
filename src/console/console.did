@@ -1,5 +1,5 @@
-type ControllersArgs = record { controllers : vec principal };
 type CreateSatelliteArgs = record { block_index : opt nat64; user : principal };
+type DeleteControllersArgs = record { controllers : vec principal };
 type GetCreateSatelliteFeeArgs = record { user : principal };
 type LoadRelease = record { total : nat64; chunks : nat64 };
 type MissionControl = record {
@@ -15,11 +15,19 @@ type ReleasesVersion = record {
   mission_control : opt text;
 };
 type Segment = variant { MissionControl; Satellite };
+type SetController = record {
+  metadata : vec record { text; text };
+  expires_at : opt nat64;
+};
+type SetControllersArgs = record {
+  controller : SetController;
+  controllers : vec principal;
+};
 type Tokens = record { e8s : nat64 };
 service : {
-  add_controllers : (ControllersArgs) -> ();
   add_invitation_code : (text) -> ();
   create_satellite : (CreateSatelliteArgs) -> (principal);
+  del_controllers : (DeleteControllersArgs) -> ();
   get_create_satellite_fee : (GetCreateSatelliteFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_releases_version : () -> (ReleasesVersion) query;
@@ -29,8 +37,8 @@ service : {
       vec record { principal; MissionControl },
     ) query;
   load_release : (Segment, vec nat8, text) -> (LoadRelease);
-  remove_controllers : (ControllersArgs) -> ();
   reset_release : (Segment) -> ();
+  set_controllers : (SetControllersArgs) -> ();
   update_rate_config : (Segment, RateConfig) -> ();
   version : () -> (text) query;
 }

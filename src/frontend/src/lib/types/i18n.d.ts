@@ -125,6 +125,11 @@ interface I18nCli {
 	title: string;
 	sign_in: string;
 	add: string;
+	select_all: string;
+	unselect_all: string;
+	profile: string;
+	segments: string;
+	name_placeholder: string;
 }
 
 interface I18nErrors {
@@ -170,6 +175,7 @@ interface I18nAdmin {
 
 interface I18nControllers {
 	title: string;
+	profile: string;
 	delete: string;
 	delete_question: string;
 	controller_id: string;

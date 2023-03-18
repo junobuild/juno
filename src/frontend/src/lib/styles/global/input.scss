@@ -5,8 +5,8 @@ textarea,
 select {
 	@include shadow.card;
 
-	margin: 0.45rem 0 1rem;
-	padding: 0.25rem 0.45rem;
+	margin: var(--padding) 0 var(--padding-2x);
+	padding: var(--padding-0_5x) var(--padding);
 
 	width: 100%;
 	max-width: 100%;
@@ -16,7 +16,7 @@ select {
 	transition: box-shadow 0.15s ease-out;
 
 	&:focus {
-		box-shadow: 3px 3px var(--color-secondary);
+		box-shadow: 4px 4px var(--color-secondary);
 	}
 }
 
@@ -28,6 +28,10 @@ input[type='radio'] {
 
 input:not([type='checkbox']):not([type='radio']) {
 	-webkit-appearance: none;
+}
+
+input[type='checkbox'] {
+	box-shadow: 2px 2px var(--color-card-contrast);
 }
 
 input[type='radio'] {

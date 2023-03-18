@@ -45,8 +45,8 @@ use crate::types::list::ListResults;
 use crate::types::state::{RuntimeState, StableState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use controllers::store::{
-    add_controllers as add_controllers_store, get_controllers,
-    remove_controllers as remove_controllers_store,
+    delete_controllers as delete_controllers_store, get_controllers,
+    set_controllers as set_controllers_store,
 };
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, time, trap};
@@ -55,10 +55,11 @@ use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use rules::constants::DEFAULT_DB_COLLECTIONS;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
-use shared::types::interface::{ControllersArgs, SatelliteArgs};
+use shared::controllers::init_controllers;
+use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
 use shared::types::state::Controllers;
 use std::cell::RefCell;
-use std::collections::{BTreeMap, HashMap, HashSet};
+use std::collections::{BTreeMap, HashMap};
 use types::list::ListParams;
 
 thread_local! {
@@ -112,7 +113,7 @@ fn init() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             stable: StableState {
-                controllers: HashSet::from_iter(controllers),
+                controllers: init_controllers(&controllers),
                 db,
                 storage,
             },
@@ -227,7 +228,12 @@ fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
 
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
-fn add_controllers(ControllersArgs { controllers }: ControllersArgs) -> Controllers {
+fn set_controllers(
+    SetControllersArgs {
+        controllers,
+        controller,
+    }: SetControllersArgs,
+) -> Controllers {
     let current_controllers = get_controllers();
 
     if current_controllers.len() >= MAX_NUMBER_OF_SATELLITE_CONTROLLERS {
@@ -237,14 +243,14 @@ fn add_controllers(ControllersArgs { controllers }: ControllersArgs) -> Controll
         ));
     }
 
-    add_controllers_store(&controllers);
+    set_controllers_store(&controllers, &controller);
     get_controllers()
 }
 
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
-fn remove_controllers(ControllersArgs { controllers }: ControllersArgs) -> Controllers {
-    remove_controllers_store(&controllers);
+fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) -> Controllers {
+    delete_controllers_store(&controllers);
     get_controllers()
 }
 

@@ -1,6 +1,5 @@
 pub mod upgrade {
-    use crate::db::types::state::DbStableState;
-    use crate::storage::types::state::StorageStableState;
+    use crate::types::state::{Satellites, User};
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::UserId;
@@ -10,8 +9,8 @@ pub mod upgrade {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct UpgradeStableState {
+        pub user: User,
+        pub satellites: Satellites,
         pub controllers: UpgradeControllers,
-        pub db: DbStableState,
-        pub storage: StorageStableState,
     }
 }

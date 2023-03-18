@@ -3,10 +3,6 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { getMissionControlActor } from '$lib/utils/actor.utils';
 	import { bigintStringify } from '$lib/utils/number.utils';
-	import {
-		addMissionControlController,
-		addSatellitesController
-	} from '$lib/api/mission-control.api';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import type { Principal } from '@dfinity/principal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -24,6 +20,10 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
+	import {
+		setMissionControlControllerForVersion,
+		setSatellitesForVersion
+	} from '$lib/services/mission-control.services';
 
 	export let data: {
 		redirect_uri: string | null | undefined;
@@ -62,6 +62,17 @@
 	let selectedSatellites: [Principal, Satellite][] = [];
 	let missionControl = false;
 
+	let allSelected = false;
+
+	const toggleAll = () => {
+		allSelected = !allSelected;
+
+		missionControl = allSelected;
+		selectedSatellites = allSelected ? [...satellites] : [];
+	};
+
+	let profile = '';
+
 	const onSubmit = async () => {
 		if (!redirect_uri || !principal) {
 			toasts.error({
@@ -90,18 +101,20 @@
 			await Promise.all([
 				...(missionControl
 					? [
-							addMissionControlController({
+							setMissionControlControllerForVersion({
 								missionControlId: $missionControlStore,
-								controller: principal
+								controllerId: principal,
+								profile
 							})
 					  ]
 					: []),
 				...(selectedSatellites.length > 0
 					? [
-							addSatellitesController({
+							setSatellitesForVersion({
 								missionControlId: $missionControlStore,
-								controller: principal,
-								satelliteIds: selectedSatellites.map((s) => s[0])
+								controllerId: principal,
+								satelliteIds: selectedSatellites.map((s) => s[0]),
+								profile
 							})
 					  ]
 					: [])
@@ -119,7 +132,8 @@
 							)
 					  )}`
 					: undefined,
-				missionControl ? `mission_control=${$missionControlStore.toText()}` : undefined
+				missionControl ? `mission_control=${$missionControlStore.toText()}` : undefined,
+				profile !== '' ? `profile=${profile}` : undefined
 			].filter((param) => nonNullish(param));
 
 			// Redirect when everything is set.
@@ -170,18 +184,39 @@
 				</p>
 
 				<form on:submit|preventDefault={onSubmit}>
-					<div class="checkbox">
-						<input type="checkbox" bind:value={missionControl} />
-						<span>{$i18n.mission_control.title} ({$missionControlStore?.toText() ?? ''})</span>
+					<label>{$i18n.cli.segments}</label>
+
+					<div class="objects">
+						<div class="checkbox">
+							<input type="checkbox" bind:checked={missionControl} />
+							<span>{$i18n.mission_control.title} ({$missionControlStore?.toText() ?? ''})</span>
+						</div>
+
+						{#each satellites as satellite}
+							<div class="checkbox">
+								<input type="checkbox" bind:group={selectedSatellites} value={satellite} /><span
+									>{satelliteName(satellite[1])} ({satellite[0].toText()})</span
+								>
+							</div>
+						{/each}
+
+						<div class="checkbox all">
+							<input type="checkbox" on:change={toggleAll} />
+							<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
+						</div>
 					</div>
 
-					{#each satellites as satellite}
-						<div class="checkbox">
-							<input type="checkbox" bind:group={selectedSatellites} value={satellite} /><span
-								>{satelliteName(satellite[1])} ({satellite[0].toText()})</span
-							>
-						</div>
-					{/each}
+					<label htmlFor="profile">
+						{$i18n.cli.profile}
+					</label>
+
+					<input
+						id="profile"
+						type="text"
+						placeholder={$i18n.cli.name_placeholder}
+						name="profile"
+						bind:value={profile}
+					/>
 
 					<button {disabled}>{$i18n.core.submit}</button>
 				</form>
@@ -217,5 +252,19 @@
 
 	button {
 		margin: var(--padding-2x) 0 0;
+	}
+
+	.all {
+		margin: 0 0 var(--padding-2x);
+		align-items: center;
+		font-size: var(--font-size-very-small);
+
+		span {
+			padding: 0 0 var(--padding-0_5x);
+		}
+	}
+
+	.objects {
+		margin: var(--padding) 0 0;
 	}
 </style>

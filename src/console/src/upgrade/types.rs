@@ -7,7 +7,7 @@ pub mod upgrade {
     use crate::types::state::{InvitationCodes, MissionControls, Payments, Releases};
     use candid::CandidType;
     use serde::Deserialize;
-    use shared::types::interface::Controllers;
+    use shared::types::state::Controllers;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct UpgradeStableState {

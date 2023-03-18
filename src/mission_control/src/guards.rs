@@ -2,7 +2,7 @@ use crate::store::get_user;
 use crate::STATE;
 use ic_cdk::caller;
 use shared::controllers::is_controller;
-use shared::types::interface::Controllers;
+use shared::types::state::Controllers;
 use shared::utils::principal_equal;
 
 pub fn caller_is_user_or_controller() -> Result<(), String> {

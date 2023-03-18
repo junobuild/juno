@@ -11,7 +11,8 @@ This document explains how to run locally [Juno](https://juno.build).
 ## Run locally
 
 ```
-cd admin
+git clone https://github.com/buildwithjuno/juno
+cd juno
 npm ci
 dfx start --clean
 ```
@@ -89,7 +90,6 @@ dfx deploy frontend
 To run the console:
 
 ```
-cd admin
 npm run dev
 ```
 

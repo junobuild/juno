@@ -12,8 +12,7 @@
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
-	import type { ListOrder } from '$lib/types/list';
-	import { DEFAULT_LIST_ORDER } from '$lib/constants/data.constants';
+	import { listOrderStore } from '$lib/stores/data.store';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -29,7 +28,7 @@
 				satelliteId: $store.satelliteId,
 				params: {
 					startAfter: $paginationStore.startAfter,
-					order
+					order: $listOrderStore
 				}
 			});
 			setItems({ items, matches_length });
@@ -54,10 +53,8 @@
 	let collection: string | undefined;
 	$: collection = $store.rule?.[0];
 
-	let order: ListOrder = DEFAULT_LIST_ORDER;
-
 	$: collection,
-		order,
+		$listOrderStore,
 		(async () => {
 			resetPage();
 			await list();
@@ -74,7 +71,7 @@
 </script>
 
 <div class="title">
-	<DataOrder on:junoOrder={({ detail: updateOrder }) => (order = updateOrder)}>
+	<DataOrder>
 		{$i18n.datastore.documents}
 	</DataOrder>
 </div>

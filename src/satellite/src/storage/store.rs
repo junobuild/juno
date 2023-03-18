@@ -3,7 +3,7 @@ use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
 use ic_cdk::api::time;
 use shared::controllers::is_controller;
-use shared::types::interface::Controllers;
+use shared::types::state::Controllers;
 use shared::utils::principal_not_equal;
 use std::borrow::BorrowMut;
 use std::collections::HashMap;

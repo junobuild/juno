@@ -90,7 +90,6 @@ dfx deploy frontend
 To run the console:
 
 ```
-cd admin
 npm run dev
 ```
 

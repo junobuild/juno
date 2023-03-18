@@ -112,8 +112,8 @@
 		"title": "Authorize CLI",
 		"sign_in": "Sign-in to add a new controller <strong>{0}</strong> to your mission control and/or satellite(s).",
 		"add": "Add a new controller <strong>{0}</strong> to your mission control and/or satellite(s).",
-		"select_all": "Select all objects",
-		"unselect_all": "Unselect all objects",
+		"select_all": "Select all segments",
+		"unselect_all": "Unselect all segments",
 		"name": "A name:",
 		"segments": "Segments:",
 		"name_placeholder": "An optional hint about the controller"

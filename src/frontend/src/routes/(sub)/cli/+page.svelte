@@ -3,12 +3,6 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { getMissionControlActor } from '$lib/utils/actor.utils';
 	import { bigintStringify } from '$lib/utils/number.utils';
-	import {
-		addMissionControlController,
-		addSatellitesController,
-		setMissionControlController,
-		setSatellitesController
-	} from '$lib/api/mission-control.api';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import type { Principal } from '@dfinity/principal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -26,8 +20,6 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
-	import { versionStore } from '$lib/stores/version.store';
-	import type { ChangeEventHandler } from 'svelte/elements';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesForVersion
@@ -262,9 +254,13 @@
 	}
 
 	.all {
-		margin: var(--padding) 0 var(--padding-2x);
+		margin: 0 0 var(--padding-2x);
 		align-items: center;
 		font-size: var(--font-size-very-small);
+
+		span {
+			padding: 0 0 var(--padding-0_5x);
+		}
 	}
 
 	.objects {

@@ -77,6 +77,7 @@
 		"@dfinity/nns": "^0.14.0",
 		"@dfinity/principal": "^0.15.3",
 		"buffer": "^6.0.3",
-		"idb-keyval": "^6.2.0"
+		"idb-keyval": "^6.2.0",
+		"semver": "^7.3.8"
 	}
 }

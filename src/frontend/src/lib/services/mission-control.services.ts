@@ -11,6 +11,7 @@ import {
 import { satelliteVersion } from '$lib/api/satellites.api';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
+import { compare } from 'semver';
 import { getConsoleActor, getMissionControlActor } from '../utils/actor.utils';
 import { fromNullable, toNullable } from '../utils/did.utils';
 
@@ -77,7 +78,7 @@ export const setMissionControlControllerForVersion = async ({
 	const version = await missionControlVersion({ missionControlId });
 
 	const missionControlController =
-		version === '0.0.3' ? setMissionControlController : addMissionControlController;
+		compare(version, '0.0.3') >= 0 ? setMissionControlController : addMissionControlController;
 
 	await missionControlController({ missionControlId, controllerId, controllerName });
 };
@@ -112,7 +113,9 @@ export const setSatellitesForVersion = async ({
 			}: { setSatelliteIds: Principal[]; addSatellitesIds: Principal[] },
 			{ satelliteId, version }
 		) => {
-			if (version === '0.0.7') {
+			console.log(version, compare(version, '0.0.7'));
+
+			if (compare(version, '0.0.7') >= 0) {
 				return {
 					setSatelliteIds: [...setSatelliteIds, satelliteId],
 					addSatellitesIds
@@ -127,18 +130,28 @@ export const setSatellitesForVersion = async ({
 		{ setSatelliteIds: [], addSatellitesIds: [] }
 	);
 
+	console.log(setSatelliteIds, addSatellitesIds);
+
 	await Promise.all([
-		setSatellitesController({
-			satelliteIds: setSatelliteIds,
-			missionControlId,
-			controllerId,
-			controllerName
-		}),
-		addSatellitesController({
-			satelliteIds: addSatellitesIds,
-			missionControlId,
-			controllerId,
-			controllerName
-		})
+		...(setSatelliteIds.length > 0
+			? [
+					setSatellitesController({
+						satelliteIds: setSatelliteIds,
+						missionControlId,
+						controllerId,
+						controllerName
+					})
+			  ]
+			: []),
+		...(addSatellitesIds.length > 0
+			? [
+					addSatellitesController({
+						satelliteIds: addSatellitesIds,
+						missionControlId,
+						controllerId,
+						controllerName
+					})
+			  ]
+			: [])
 	]);
 };

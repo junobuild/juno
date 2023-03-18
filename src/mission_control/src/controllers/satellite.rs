@@ -1,9 +1,10 @@
 use crate::types::state::SatelliteId;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
+use shared::controllers::into_controller_ids;
 use shared::ic::update_canister_controllers;
 use shared::types::interface::{DeleteControllersArgs, SetController, SetControllersArgs};
-use shared::types::state::ControllerId;
+use shared::types::state::{ControllerId, Controllers};
 
 #[deprecated(since = "0.0.3", note = "please use `set_controllers` instead")]
 pub async fn add_satellite_controllers(
@@ -93,12 +94,11 @@ async fn set_controllers(
         controller: controller.clone(),
     };
 
-    let result: CallResult<(Vec<ControllerId>,)> =
-        call(*satellite_id, "set_controllers", (args,)).await;
+    let result: CallResult<(Controllers,)> = call(*satellite_id, "set_controllers", (args,)).await;
 
     match result {
         Err((_, message)) => Err(["Failed to set controllers to satellite.", &message].join(" - ")),
-        Ok((result,)) => Ok(result),
+        Ok((controllers,)) => Ok(into_controller_ids(&controllers)),
     }
 }
 
@@ -110,14 +110,13 @@ async fn delete_controllers(
         controllers: controllers.to_owned(),
     };
 
-    let result: CallResult<(Vec<ControllerId>,)> =
-        call(*satellite_id, "del_controllers", (args,)).await;
+    let result: CallResult<(Controllers,)> = call(*satellite_id, "del_controllers", (args,)).await;
 
     match result {
         Err((_, message)) => {
             Err(["Failed to delete controllers from satellite.", &message].join(" - "))
         }
-        Ok((result,)) => Ok(result),
+        Ok((controllers,)) => Ok(into_controller_ids(&controllers)),
     }
 }
 

@@ -9,11 +9,12 @@ type MissionControl = record {
   owner : principal;
   created_at : nat64;
 };
-type ReleaseType = variant { MissionControl; Satellite };
+type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type ReleasesVersion = record {
   satellite : opt text;
   mission_control : opt text;
 };
+type Segment = variant { MissionControl; Satellite };
 type Tokens = record { e8s : nat64 };
 service : {
   add_controllers : (ControllersArgs) -> ();
@@ -27,8 +28,9 @@ service : {
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;
-  load_release : (ReleaseType, vec nat8, text) -> (LoadRelease);
+  load_release : (Segment, vec nat8, text) -> (LoadRelease);
   remove_controllers : (ControllersArgs) -> ();
-  reset_release : (ReleaseType) -> ();
+  reset_release : (Segment) -> ();
+  update_rate_config : (Segment, RateConfig) -> ();
   version : () -> (text) query;
 }

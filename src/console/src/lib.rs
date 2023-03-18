@@ -1,6 +1,7 @@
 mod constants;
 mod controllers;
 mod guards;
+mod impls;
 mod mission_control;
 mod satellite;
 mod store;
@@ -18,11 +19,12 @@ use crate::store::{
     get_satellite_release_version, has_credits, list_mission_controls,
     load_mission_control_release, load_satellite_release,
     remove_controllers as remove_controllers_store, reset_mission_control_release,
-    reset_satellite_release,
+    reset_satellite_release, update_mission_controls_rate_config, update_satellites_rate_config,
 };
-use crate::types::interface::{LoadRelease, ReleaseType, ReleasesVersion};
+use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
-    InvitationCode, MissionControl, MissionControls, Releases, StableState, State,
+    InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases, StableState,
+    State,
 };
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
@@ -52,6 +54,7 @@ fn init() {
                 releases: Releases::default(),
                 invitation_codes: HashMap::new(),
                 controllers: HashSet::from([manager]),
+                rates: Rates::default(),
             },
         };
     });
@@ -75,22 +78,22 @@ fn post_upgrade() {
 
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
-fn reset_release(release_type: ReleaseType) {
-    match release_type {
-        ReleaseType::Satellite => reset_satellite_release(),
-        ReleaseType::MissionControl => reset_mission_control_release(),
+fn reset_release(segment: Segment) {
+    match segment {
+        Segment::Satellite => reset_satellite_release(),
+        Segment::MissionControl => reset_mission_control_release(),
     }
 }
 
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
-fn load_release(release_type: ReleaseType, blob: Vec<u8>, version: String) -> LoadRelease {
-    let total: usize = match release_type {
-        ReleaseType::Satellite => {
+fn load_release(segment: Segment, blob: Vec<u8>, version: String) -> LoadRelease {
+    let total: usize = match segment {
+        Segment::Satellite => {
             load_satellite_release(&blob, &version);
             STATE.with(|state| state.borrow().stable.releases.satellite.wasm.len())
         }
-        ReleaseType::MissionControl => {
+        Segment::MissionControl => {
             load_mission_control_release(&blob, &version);
             STATE.with(|state| state.borrow().stable.releases.mission_control.wasm.len())
         }
@@ -184,6 +187,17 @@ async fn get_create_satellite_fee(
 #[update(guard = "caller_is_controller")]
 fn add_invitation_code(code: InvitationCode) {
     add_invitation_code_store(&code);
+}
+
+/// Rates
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn update_rate_config(segment: Segment, config: RateConfig) {
+    match segment {
+        Segment::Satellite => update_satellites_rate_config(&config),
+        Segment::MissionControl => update_mission_controls_rate_config(&config),
+    }
 }
 
 /// Mgmt

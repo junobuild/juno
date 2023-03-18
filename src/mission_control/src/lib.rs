@@ -21,6 +21,7 @@ use crate::mgmt::canister::top_up_canister;
 use crate::satellites::satellite::create_satellite as create_satellite_console;
 use crate::store::get_user as get_user_store;
 use crate::types::state::{Satellite, SatelliteId, Satellites, StableState, State, User};
+use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::{candid_method, export_service, Principal};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::{storage, trap};
@@ -60,7 +61,9 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (stable,): (StableState,) = storage::stable_restore().unwrap();
+    let (upgrade_stable,): (UpgradeStableState,) = storage::stable_restore().unwrap();
+
+    let stable = StableState::from(&upgrade_stable);
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
 }

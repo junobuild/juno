@@ -1,6 +1,14 @@
 import type { ActorMethod } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
+export interface ActiveAnchorCounter {
+	counter: bigint;
+	start_timestamp: Timestamp;
+}
+export interface ActiveAnchorStatistics {
+	completed: CompletedActiveAnchorStats;
+	ongoing: OngoingActiveAnchorStats;
+}
 export type AddTentativeDeviceResponse =
 	| {
 			device_registration_mode_off: null;
@@ -12,10 +20,14 @@ export type AddTentativeDeviceResponse =
 				device_registration_timeout: Timestamp;
 			};
 	  };
+export interface AnchorCredentials {
+	recovery_phrases: Array<PublicKey>;
+	credentials: Array<WebAuthnCredential>;
+	recovery_credentials: Array<WebAuthnCredential>;
+}
 export interface ArchiveConfig {
 	polling_interval_ns: bigint;
 	entries_buffer_limit: bigint;
-	archive_integration: [] | [{ pull: null } | { push: null }];
 	module_hash: Uint8Array | number[];
 	entries_fetch_limit: number;
 }
@@ -38,6 +50,10 @@ export interface ChallengeResult {
 	key: ChallengeKey;
 	chars: string;
 }
+export interface CompletedActiveAnchorStats {
+	monthly_active_anchors: [] | [ActiveAnchorCounter];
+	daily_active_anchors: [] | [ActiveAnchorCounter];
+}
 export type CredentialId = Uint8Array | number[];
 export interface Delegation {
 	pubkey: PublicKey;
@@ -50,6 +66,7 @@ export type DeployArchiveResult =
 	| { failed: string };
 export interface DeviceData {
 	alias: string;
+	origin: [] | [string];
 	protection: DeviceProtection;
 	pubkey: DeviceKey;
 	key_type: KeyType;
@@ -61,6 +78,16 @@ export type DeviceProtection = { unprotected: null } | { protected: null };
 export interface DeviceRegistrationInfo {
 	tentative_device: [] | [DeviceData];
 	expiration: Timestamp;
+}
+export interface DeviceWithUsage {
+	alias: string;
+	last_usage: [] | [Timestamp];
+	origin: [] | [string];
+	protection: DeviceProtection;
+	pubkey: DeviceKey;
+	key_type: KeyType;
+	purpose: Purpose;
+	credential_id: [] | [CredentialId];
 }
 export type FrontendHostname = string;
 export type GetDelegationResponse =
@@ -76,18 +103,19 @@ export interface HttpRequest {
 export interface HttpResponse {
 	body: Uint8Array | number[];
 	headers: Array<HeaderField>;
+	upgrade: [] | [boolean];
 	streaming_strategy: [] | [StreamingStrategy];
 	status_code: number;
 }
 export interface IdentityAnchorInfo {
-	devices: Array<DeviceData>;
+	devices: Array<DeviceWithUsage>;
 	device_registration: [] | [DeviceRegistrationInfo];
 }
 export interface InternetIdentityInit {
-	upgrade_persistent_state: [] | [boolean];
 	assigned_user_number_range: [] | [[bigint, bigint]];
 	archive_config: [] | [ArchiveConfig];
 	canister_creation_cycles_cost: [] | [bigint];
+	register_rate_limit: [] | [RateLimitConfig];
 }
 export interface InternetIdentityStats {
 	storage_layout_version: number;
@@ -95,14 +123,23 @@ export interface InternetIdentityStats {
 	assigned_user_number_range: [bigint, bigint];
 	archive_info: ArchiveInfo;
 	canister_creation_cycles_cost: bigint;
+	active_anchor_stats: [] | [ActiveAnchorStatistics];
 }
 export type KeyType =
 	| { platform: null }
 	| { seed_phrase: null }
 	| { cross_platform: null }
 	| { unknown: null };
+export interface OngoingActiveAnchorStats {
+	monthly_active_anchors: Array<ActiveAnchorCounter>;
+	daily_active_anchors: ActiveAnchorCounter;
+}
 export type PublicKey = Uint8Array | number[];
 export type Purpose = { authentication: null } | { recovery: null };
+export interface RateLimitConfig {
+	max_tokens: bigint;
+	time_per_token_ns: bigint;
+}
 export type RegisterResponse =
 	| { bad_challenge: null }
 	| { canister_full: null }
@@ -130,6 +167,10 @@ export type VerifyTentativeDeviceResponse =
 	| { verified: null }
 	| { wrong_code: { retries_left: number } }
 	| { no_device_to_verify: null };
+export interface WebAuthnCredential {
+	pubkey: PublicKey;
+	credential_id: CredentialId;
+}
 export interface _SERVICE {
 	acknowledge_entries: ActorMethod<[bigint], undefined>;
 	add: ActorMethod<[UserNumber, DeviceData], undefined>;
@@ -139,6 +180,7 @@ export interface _SERVICE {
 	enter_device_registration_mode: ActorMethod<[UserNumber], Timestamp>;
 	exit_device_registration_mode: ActorMethod<[UserNumber], undefined>;
 	fetch_entries: ActorMethod<[], Array<BufferedArchiveEntry>>;
+	get_anchor_credentials: ActorMethod<[UserNumber], AnchorCredentials>;
 	get_anchor_info: ActorMethod<[UserNumber], IdentityAnchorInfo>;
 	get_delegation: ActorMethod<
 		[UserNumber, FrontendHostname, SessionKey, Timestamp],
@@ -146,6 +188,7 @@ export interface _SERVICE {
 	>;
 	get_principal: ActorMethod<[UserNumber, FrontendHostname], Principal>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
+	http_request_update: ActorMethod<[HttpRequest], HttpResponse>;
 	init_salt: ActorMethod<[], undefined>;
 	lookup: ActorMethod<[UserNumber], Array<DeviceData>>;
 	prepare_delegation: ActorMethod<

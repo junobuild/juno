@@ -19,7 +19,7 @@ export const idlFactory = ({ IDL }) => {
 		owner: IDL.Principal,
 		created_at: IDL.Nat64
 	});
-	const ReleaseType = IDL.Variant({
+	const Segment = IDL.Variant({
 		MissionControl: IDL.Null,
 		Satellite: IDL.Null
 	});
@@ -31,6 +31,10 @@ export const idlFactory = ({ IDL }) => {
 	const SetControllersArgs = IDL.Record({
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
+	});
+	const RateConfig = IDL.Record({
+		max_tokens: IDL.Nat64,
+		time_per_token_ns: IDL.Nat64
 	});
 	return IDL.Service({
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
@@ -46,9 +50,10 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],
 			['query']
 		),
-		load_release: IDL.Func([ReleaseType, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
-		reset_release: IDL.Func([ReleaseType], [], []),
+		load_release: IDL.Func([Segment, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
+		reset_release: IDL.Func([Segment], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
+		update_rate_config: IDL.Func([Segment, RateConfig], [], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

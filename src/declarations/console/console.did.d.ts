@@ -22,11 +22,15 @@ export interface MissionControl {
 	owner: Principal;
 	created_at: bigint;
 }
-export type ReleaseType = { MissionControl: null } | { Satellite: null };
+export interface RateConfig {
+	max_tokens: bigint;
+	time_per_token_ns: bigint;
+}
 export interface ReleasesVersion {
 	satellite: [] | [string];
 	mission_control: [] | [string];
 }
+export type Segment = { MissionControl: null } | { Satellite: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	expires_at: [] | [bigint];
@@ -48,8 +52,9 @@ export interface _SERVICE {
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
 	init_user_mission_control_center: ActorMethod<[[] | [string]], MissionControl>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
-	load_release: ActorMethod<[ReleaseType, Uint8Array | number[], string], LoadRelease>;
-	reset_release: ActorMethod<[ReleaseType], undefined>;
+	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
+	reset_release: ActorMethod<[Segment], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
+	update_rate_config: ActorMethod<[Segment, RateConfig], undefined>;
 	version: ActorMethod<[], string>;
 }

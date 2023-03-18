@@ -1,4 +1,4 @@
-use crate::types::state::StableState;
+use crate::types::state::{Rates, StableState};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use shared::controllers::init_controllers;
 use shared::types::state::ControllerId;
@@ -21,6 +21,7 @@ impl From<&UpgradeStableState> for StableState {
             releases: state.releases.clone(),
             invitation_codes: state.invitation_codes.clone(),
             controllers: init_controllers(&controller_ids),
+            rates: Rates::default(),
         }
     }
 }

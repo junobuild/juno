@@ -23,6 +23,7 @@ pub mod state {
         pub releases: Releases,
         pub invitation_codes: InvitationCodes,
         pub controllers: Controllers,
+        pub rates: Rates,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -55,6 +56,30 @@ pub mod state {
         pub redeemed: bool,
         pub user_id: Option<UserId>,
     }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct Rates {
+        pub mission_controls: Rate,
+        pub satellites: Rate,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct Rate {
+        pub tokens: RateTokens,
+        pub config: RateConfig,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct RateTokens {
+        pub tokens: u64,
+        pub updated_at: u64,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct RateConfig {
+        pub time_per_token_ns: u64,
+        pub max_tokens: u64,
+    }
 }
 
 pub mod interface {
@@ -62,7 +87,7 @@ pub mod interface {
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
-    pub enum ReleaseType {
+    pub enum Segment {
         Satellite,
         MissionControl,
     }

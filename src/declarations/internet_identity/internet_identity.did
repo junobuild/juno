@@ -23,6 +23,7 @@ type HttpResponse = record {
     status_code: nat16;
     headers: vec HeaderField;
     body: blob;
+    upgrade : opt bool;
     streaming_strategy: opt StreamingStrategy;
 };
 
@@ -72,6 +73,20 @@ type DeviceData = record {
     purpose: Purpose;
     key_type: KeyType;
     protection: DeviceProtection;
+    origin: opt text;
+};
+
+// The same as `DeviceData` but with the `last_usage` field.
+// This field cannot be written, hence the separate type.
+type DeviceWithUsage = record {
+    pubkey : DeviceKey;
+    alias : text;
+    credential_id : opt CredentialId;
+    purpose: Purpose;
+    key_type: KeyType;
+    protection: DeviceProtection;
+    origin: opt text;
+    last_usage: opt Timestamp;
 };
 
 type RegisterResponse = variant {
@@ -89,6 +104,7 @@ type AddTentativeDeviceResponse = variant {
     // The device was tentatively added.
     added_tentatively: record {
         verification_code: text;
+        // Expiration date, in nanos since the epoch
         device_registration_timeout: Timestamp;
     };
     // Device registration mode is off, either due to timeout or because it was never enabled.
@@ -138,6 +154,7 @@ type InternetIdentityStats = record {
     };
     archive_info: ArchiveInfo;
     canister_creation_cycles_cost: nat64;
+    active_anchor_stats: opt ActiveAnchorStatistics;
 };
 
 // Configuration parameters related to the archive.
@@ -148,28 +165,12 @@ type ArchiveConfig = record {
     module_hash : blob;
     // Buffered archive entries limit. If reached, II will stop accepting new anchor operations
     // until the buffered operations are acknowledged by the archive.
-    // Currently unused: in preparation of switching the archive integration to pull.
-    // Configured value will be discarded for storage_layout_version < 6.
     entries_buffer_limit: nat64;
     // The maximum number of entries to be transferred to the archive per call.
-    // Currently unused: in preparation of switching the archive integration to pull.
-    // Configured value will be discarded for storage_layout_version < 6.
     entries_fetch_limit: nat16;
     // Polling interval to fetch new entries from II (in nanoseconds).
     // Changes to this parameter will only take effect after an archive deployment.
-    // Currently unused: in preparation of switching the archive integration to pull.
-    // Configured value will be discarded for storage_layout_version < 6.
     polling_interval_ns: nat64;
-
-    // How the entries get transferred to the archive.
-    // This is opt, so that the config parameter can be removed after switching from push to pull.
-    // Configured value will be discarded for storage_layout_version < 6.
-    archive_integration: opt variant {
-        // II pushes the entries to the archive (legacy variant).
-        push;
-        // The archive pulls the entries from II.
-        pull;
-    }
 };
 
 // Information about the archive.
@@ -178,6 +179,41 @@ type ArchiveInfo = record {
     archive_canister : opt principal;
     // Configuration parameters related to the II archive.
     archive_config: opt ArchiveConfig;
+};
+
+// Rate limit configuration.
+// Currently only used for `register`.
+type RateLimitConfig = record {
+    // Time it takes (in ns) for a rate limiting token to be replenished.
+    time_per_token_ns : nat64;
+    // How many tokens are at most generated (to accommodate peaks).
+    max_tokens: nat64;
+};
+
+type ActiveAnchorStatistics = record {
+    // Stats for the last completed collection period for daily and monthly active anchors
+    completed: CompletedActiveAnchorStats;
+    // ongoing periods for daily and monthly active anchors
+    ongoing: OngoingActiveAnchorStats;
+};
+
+type CompletedActiveAnchorStats = record {
+    daily_active_anchors: opt ActiveAnchorCounter;
+    monthly_active_anchors: opt ActiveAnchorCounter;
+};
+
+type OngoingActiveAnchorStats = record {
+    // Ongoing active anchor counter for the current 24 h time bucket.
+    daily_active_anchors: ActiveAnchorCounter;
+    // Monthly active users are collected using 30-day sliding windows.
+    // This vec contains up to 30 30-day active windows each offset by one day.
+    // The vec is sorted, new collection windows are added at the end.
+    monthly_active_anchors: vec ActiveAnchorCounter;
+};
+
+type ActiveAnchorCounter = record {
+    start_timestamp: Timestamp;
+    counter: nat64;
 };
 
 // Init arguments of II which can be supplied on install and upgrade.
@@ -197,8 +233,8 @@ type InternetIdentityInit = record {
     // The canister creation cost on mainnet is currently 100'000'000'000 cycles. If this value is higher thant the
     // canister creation cost, the newly created canister will keep extra cycles.
     canister_creation_cycles_cost : opt nat64;
-    // Config flag to upgrade the persistent state. If set to opt true it will migrate the storage layout to version 6.
-    upgrade_persistent_state: opt bool;
+    // Rate limit for the `register` call.
+    register_rate_limit : opt RateLimitConfig;
 };
 
 type ChallengeKey = text;
@@ -208,14 +244,34 @@ type ChallengeResult = record {
     chars : text;
 };
 
+// Extra information about registration status for new devices
 type DeviceRegistrationInfo = record {
+    // If present, the user has tentatively added a new device. This
+    // new device needs to be verified (see relevant endpoint) before
+    // 'expiration'.
     tentative_device : opt DeviceData;
+    // The timestamp at which the anchor will turn off registration mode
+    // (and the tentative device will be forgotten, if any, and if not verified)
     expiration: Timestamp;
 };
 
+// Information about the anchor
 type IdentityAnchorInfo = record {
-    devices : vec DeviceData;
+    // All devices that can authenticate to this anchor
+    devices : vec DeviceWithUsage;
+    // Device registration status used when adding devices, see DeviceRegistrationInfo
     device_registration: opt DeviceRegistrationInfo;
+};
+
+type AnchorCredentials = record {
+    credentials : vec WebAuthnCredential;
+    recovery_credentials : vec WebAuthnCredential;
+    recovery_phrases: vec PublicKey;
+};
+
+type WebAuthnCredential = record {
+    credential_id : CredentialId;
+    pubkey: PublicKey;
 };
 
 type DeployArchiveResult = variant {
@@ -246,8 +302,10 @@ service : (opt InternetIdentityInit) -> {
     replace : (UserNumber, DeviceKey, DeviceData) -> ();
     remove : (UserNumber, DeviceKey) -> ();
     // Returns all devices of the user (authentication and recovery) but no information about device registrations.
-    // Note: Will be changed in the future to be more consistent with get_anchor_info.
+    // Note: Clears out the 'alias' fields on the devices. Use 'get_anchor_info' to obtain the full information.
+    // Deprecated: Use 'get_anchor_credentials' instead.
     lookup : (UserNumber) -> (vec DeviceData) query;
+    get_anchor_credentials : (UserNumber) -> (AnchorCredentials) query;
     get_anchor_info : (UserNumber) -> (IdentityAnchorInfo);
     get_principal : (UserNumber, FrontendHostname) -> (principal) query;
     stats : () -> (InternetIdentityStats) query;
@@ -261,6 +319,7 @@ service : (opt InternetIdentityInit) -> {
     get_delegation: (UserNumber, FrontendHostname, SessionKey, Timestamp) -> (GetDelegationResponse) query;
 
     http_request: (request: HttpRequest) -> (HttpResponse) query;
+    http_request_update: (request: HttpRequest) -> (HttpResponse);
 
     deploy_archive: (wasm: blob) -> (DeployArchiveResult);
     /// Returns a batch of entries _sorted by sequence number_ to be archived.

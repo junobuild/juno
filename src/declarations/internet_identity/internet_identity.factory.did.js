@@ -2,15 +2,18 @@ export const idlFactory = ({ IDL }) => {
 	const ArchiveConfig = IDL.Record({
 		polling_interval_ns: IDL.Nat64,
 		entries_buffer_limit: IDL.Nat64,
-		archive_integration: IDL.Opt(IDL.Variant({ pull: IDL.Null, push: IDL.Null })),
 		module_hash: IDL.Vec(IDL.Nat8),
 		entries_fetch_limit: IDL.Nat16
 	});
+	const RateLimitConfig = IDL.Record({
+		max_tokens: IDL.Nat64,
+		time_per_token_ns: IDL.Nat64
+	});
 	const InternetIdentityInit = IDL.Record({
-		upgrade_persistent_state: IDL.Opt(IDL.Bool),
 		assigned_user_number_range: IDL.Opt(IDL.Tuple(IDL.Nat64, IDL.Nat64)),
 		archive_config: IDL.Opt(ArchiveConfig),
-		canister_creation_cycles_cost: IDL.Opt(IDL.Nat64)
+		canister_creation_cycles_cost: IDL.Opt(IDL.Nat64),
+		register_rate_limit: IDL.Opt(RateLimitConfig)
 	});
 	const UserNumber = IDL.Nat64;
 	const DeviceProtection = IDL.Variant({
@@ -32,6 +35,7 @@ export const idlFactory = ({ IDL }) => {
 	const CredentialId = IDL.Vec(IDL.Nat8);
 	const DeviceData = IDL.Record({
 		alias: IDL.Text,
+		origin: IDL.Opt(IDL.Text),
 		protection: DeviceProtection,
 		pubkey: DeviceKey,
 		key_type: KeyType,
@@ -63,12 +67,31 @@ export const idlFactory = ({ IDL }) => {
 		anchor_number: UserNumber,
 		timestamp: Timestamp
 	});
+	const WebAuthnCredential = IDL.Record({
+		pubkey: PublicKey,
+		credential_id: CredentialId
+	});
+	const AnchorCredentials = IDL.Record({
+		recovery_phrases: IDL.Vec(PublicKey),
+		credentials: IDL.Vec(WebAuthnCredential),
+		recovery_credentials: IDL.Vec(WebAuthnCredential)
+	});
+	const DeviceWithUsage = IDL.Record({
+		alias: IDL.Text,
+		last_usage: IDL.Opt(Timestamp),
+		origin: IDL.Opt(IDL.Text),
+		protection: DeviceProtection,
+		pubkey: DeviceKey,
+		key_type: KeyType,
+		purpose: Purpose,
+		credential_id: IDL.Opt(CredentialId)
+	});
 	const DeviceRegistrationInfo = IDL.Record({
 		tentative_device: IDL.Opt(DeviceData),
 		expiration: Timestamp
 	});
 	const IdentityAnchorInfo = IDL.Record({
-		devices: IDL.Vec(DeviceData),
+		devices: IDL.Vec(DeviceWithUsage),
 		device_registration: IDL.Opt(DeviceRegistrationInfo)
 	});
 	const FrontendHostname = IDL.Text;
@@ -107,6 +130,7 @@ export const idlFactory = ({ IDL }) => {
 	const HttpResponse = IDL.Record({
 		body: IDL.Vec(IDL.Nat8),
 		headers: IDL.Vec(HeaderField),
+		upgrade: IDL.Opt(IDL.Bool),
 		streaming_strategy: IDL.Opt(StreamingStrategy),
 		status_code: IDL.Nat16
 	});
@@ -124,12 +148,29 @@ export const idlFactory = ({ IDL }) => {
 		archive_config: IDL.Opt(ArchiveConfig),
 		archive_canister: IDL.Opt(IDL.Principal)
 	});
+	const ActiveAnchorCounter = IDL.Record({
+		counter: IDL.Nat64,
+		start_timestamp: Timestamp
+	});
+	const CompletedActiveAnchorStats = IDL.Record({
+		monthly_active_anchors: IDL.Opt(ActiveAnchorCounter),
+		daily_active_anchors: IDL.Opt(ActiveAnchorCounter)
+	});
+	const OngoingActiveAnchorStats = IDL.Record({
+		monthly_active_anchors: IDL.Vec(ActiveAnchorCounter),
+		daily_active_anchors: ActiveAnchorCounter
+	});
+	const ActiveAnchorStatistics = IDL.Record({
+		completed: CompletedActiveAnchorStats,
+		ongoing: OngoingActiveAnchorStats
+	});
 	const InternetIdentityStats = IDL.Record({
 		storage_layout_version: IDL.Nat8,
 		users_registered: IDL.Nat64,
 		assigned_user_number_range: IDL.Tuple(IDL.Nat64, IDL.Nat64),
 		archive_info: ArchiveInfo,
-		canister_creation_cycles_cost: IDL.Nat64
+		canister_creation_cycles_cost: IDL.Nat64,
+		active_anchor_stats: IDL.Opt(ActiveAnchorStatistics)
 	});
 	const VerifyTentativeDeviceResponse = IDL.Variant({
 		device_registration_mode_off: IDL.Null,
@@ -146,6 +187,7 @@ export const idlFactory = ({ IDL }) => {
 		enter_device_registration_mode: IDL.Func([UserNumber], [Timestamp], []),
 		exit_device_registration_mode: IDL.Func([UserNumber], [], []),
 		fetch_entries: IDL.Func([], [IDL.Vec(BufferedArchiveEntry)], []),
+		get_anchor_credentials: IDL.Func([UserNumber], [AnchorCredentials], ['query']),
 		get_anchor_info: IDL.Func([UserNumber], [IdentityAnchorInfo], []),
 		get_delegation: IDL.Func(
 			[UserNumber, FrontendHostname, SessionKey, Timestamp],
@@ -154,6 +196,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		get_principal: IDL.Func([UserNumber, FrontendHostname], [IDL.Principal], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
+		http_request_update: IDL.Func([HttpRequest], [HttpResponse], []),
 		init_salt: IDL.Func([], [], []),
 		lookup: IDL.Func([UserNumber], [IDL.Vec(DeviceData)], ['query']),
 		prepare_delegation: IDL.Func(
@@ -173,15 +216,18 @@ export const init = ({ IDL }) => {
 	const ArchiveConfig = IDL.Record({
 		polling_interval_ns: IDL.Nat64,
 		entries_buffer_limit: IDL.Nat64,
-		archive_integration: IDL.Opt(IDL.Variant({ pull: IDL.Null, push: IDL.Null })),
 		module_hash: IDL.Vec(IDL.Nat8),
 		entries_fetch_limit: IDL.Nat16
 	});
+	const RateLimitConfig = IDL.Record({
+		max_tokens: IDL.Nat64,
+		time_per_token_ns: IDL.Nat64
+	});
 	const InternetIdentityInit = IDL.Record({
-		upgrade_persistent_state: IDL.Opt(IDL.Bool),
 		assigned_user_number_range: IDL.Opt(IDL.Tuple(IDL.Nat64, IDL.Nat64)),
 		archive_config: IDL.Opt(ArchiveConfig),
-		canister_creation_cycles_cost: IDL.Opt(IDL.Nat64)
+		canister_creation_cycles_cost: IDL.Opt(IDL.Nat64),
+		register_rate_limit: IDL.Opt(RateLimitConfig)
 	});
 	return [IDL.Opt(InternetIdentityInit)];
 };

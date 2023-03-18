@@ -10,6 +10,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { isNullish } from '$lib/utils/utils';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { signOut } from '$lib/services/auth.services';
 
 	const init = async () => await Promise.all([i18n.init(), syncAuthStore()]);
 
@@ -43,6 +44,9 @@
 				text: `Error initializing the user.`,
 				detail: err
 			});
+
+			// There was an error so, we sign the user out otherwise skeleton and other spinners will be displayed forever
+			await signOut();
 		}
 	};
 

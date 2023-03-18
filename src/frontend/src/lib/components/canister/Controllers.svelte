@@ -11,7 +11,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import ButtonDelete from '$lib/components/ui/ButtonDelete.svelte';
 	import type { Controller } from '$declarations/mission_control/mission_control.did';
-	import {metadataName} from "$lib/utils/metadata.utils";
+	import { metadataProfile } from '$lib/utils/metadata.utils';
 
 	export let list: () => Promise<[Principal, Controller][]>;
 	export let remove: (params: {
@@ -95,8 +95,8 @@
 	<table>
 		<thead>
 			<tr>
-				<th> {$i18n.controllers.title} </th>
-				<th> {$i18n.controllers.name} </th>
+				<th class="controller"> {$i18n.controllers.title} </th>
+				<th> {$i18n.controllers.profile} </th>
 			</tr>
 		</thead>
 		<tbody>
@@ -114,9 +114,8 @@
 						<span>{controllerId.toText()}</span>
 					</td>
 
-					<td>{metadataName(controller?.metadata ?? [])}</td>
-				</tr
-				>
+					<td>{metadataProfile(controller?.metadata ?? [])}</td>
+				</tr>
 			{/each}
 		</tbody>
 	</table>
@@ -158,7 +157,15 @@
 </Popover>
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
 	.content {
 		padding: var(--padding-2x);
+	}
+
+	.controller {
+		@include media.min-width(small) {
+			width: 60%;
+		}
 	}
 </style>

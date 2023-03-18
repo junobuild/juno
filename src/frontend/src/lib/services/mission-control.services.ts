@@ -71,7 +71,7 @@ export const getMissionControl = async ({
 export const setMissionControlControllerForVersion = async ({
 	missionControlId,
 	controllerId,
-	controllerName
+	profile
 }: {
 	missionControlId: Principal;
 } & SetControllerParams) => {
@@ -80,7 +80,7 @@ export const setMissionControlControllerForVersion = async ({
 	const missionControlController =
 		compare(version, '0.0.3') >= 0 ? setMissionControlController : addMissionControlController;
 
-	await missionControlController({ missionControlId, controllerId, controllerName });
+	await missionControlController({ missionControlId, controllerId, profile });
 };
 
 // TODO: to be removed in next version as only supported if < v0.0.7
@@ -88,7 +88,7 @@ export const setSatellitesForVersion = async ({
 	missionControlId,
 	satelliteIds,
 	controllerId,
-	controllerName
+	profile
 }: {
 	missionControlId: Principal;
 	satelliteIds: Principal[];
@@ -139,7 +139,7 @@ export const setSatellitesForVersion = async ({
 						satelliteIds: setSatelliteIds,
 						missionControlId,
 						controllerId,
-						controllerName
+						profile
 					})
 			  ]
 			: []),
@@ -149,7 +149,7 @@ export const setSatellitesForVersion = async ({
 						satelliteIds: addSatellitesIds,
 						missionControlId,
 						controllerId,
-						controllerName
+						profile
 					})
 			  ]
 			: [])

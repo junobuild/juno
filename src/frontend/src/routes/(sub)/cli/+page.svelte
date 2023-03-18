@@ -71,7 +71,7 @@
 		selectedSatellites = allSelected ? [...satellites] : [];
 	};
 
-	let controllerName = '';
+	let profile = '';
 
 	const onSubmit = async () => {
 		if (!redirect_uri || !principal) {
@@ -104,7 +104,7 @@
 							setMissionControlControllerForVersion({
 								missionControlId: $missionControlStore,
 								controllerId: principal,
-								controllerName
+								profile
 							})
 					  ]
 					: []),
@@ -114,7 +114,7 @@
 								missionControlId: $missionControlStore,
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),
-								controllerName
+								profile
 							})
 					  ]
 					: [])
@@ -132,7 +132,8 @@
 							)
 					  )}`
 					: undefined,
-				missionControl ? `mission_control=${$missionControlStore.toText()}` : undefined
+				missionControl ? `mission_control=${$missionControlStore.toText()}` : undefined,
+				profile !== '' ? `profile=${profile}` : undefined
 			].filter((param) => nonNullish(param));
 
 			// Redirect when everything is set.
@@ -205,16 +206,16 @@
 						</div>
 					</div>
 
-					<label htmlFor="controllerName">
-						{$i18n.cli.name}
+					<label htmlFor="profile">
+						{$i18n.cli.profile}
 					</label>
 
 					<input
-						id="controllerName"
+						id="profile"
 						type="text"
 						placeholder={$i18n.cli.name_placeholder}
-						name="collection"
-						bind:value={controllerName}
+						name="profile"
+						bind:value={profile}
 					/>
 
 					<button {disabled}>{$i18n.core.submit}</button>

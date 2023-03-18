@@ -2,6 +2,7 @@ import type { Controller, SetController } from '$declarations/mission_control/mi
 import { getMissionControl } from '$lib/services/mission-control.services';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
 import { toNullable } from '$lib/utils/did.utils';
+import { nonNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 
@@ -44,11 +45,11 @@ export const initMissionControl = async ({
 
 export type SetControllerParams = {
 	controllerId: string;
-	controllerName: string;
+	profile: string | null | undefined;
 };
 
-const toSetController = (controllerName: string): SetController => ({
-	metadata: controllerName !== '' ? [['name', controllerName]] : [],
+const toSetController = (profile: string | null | undefined): SetController => ({
+	metadata: nonNullish(profile) && profile !== '' ? [['profile', profile]] : [],
 	expires_at: toNullable<bigint>(undefined)
 });
 
@@ -56,7 +57,7 @@ export const setSatellitesController = async ({
 	missionControlId,
 	satelliteIds,
 	controllerId,
-	controllerName
+	profile
 }: {
 	missionControlId: Principal;
 	satelliteIds: Principal[];
@@ -65,7 +66,7 @@ export const setSatellitesController = async ({
 	return actor.set_satellites_controllers(
 		satelliteIds,
 		[Principal.fromText(controllerId)],
-		toSetController(controllerName)
+		toSetController(profile)
 	);
 };
 
@@ -85,14 +86,14 @@ export const deleteSatellitesController = async ({
 export const setMissionControlController = async ({
 	missionControlId,
 	controllerId,
-	controllerName
+	profile
 }: {
 	missionControlId: Principal;
 } & SetControllerParams) => {
 	const actor = await getMissionControlActor(missionControlId);
 	return actor.set_mission_control_controllers(
 		[Principal.fromText(controllerId)],
-		toSetController(controllerName)
+		toSetController(profile)
 	);
 };
 

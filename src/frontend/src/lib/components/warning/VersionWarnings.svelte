@@ -7,7 +7,7 @@
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import {compare} from "semver";
+	import { compare } from 'semver';
 
 	const load = async () =>
 		await loadVersion({
@@ -36,10 +36,12 @@
 	$: ctrlReady = nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease);
 
 	let satWarning = false;
-	$: satWarning = nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, ctrlRelease) < 0;
+	$: satWarning =
+		nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, ctrlRelease) < 0;
 
 	let ctrlWarning = false;
-	$: ctrlWarning = nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
+	$: ctrlWarning =
+		nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
 
 	const helpLink = 'https://juno.build/docs/miscellaneous/cli#upgrade';
 </script>

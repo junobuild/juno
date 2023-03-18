@@ -114,7 +114,7 @@
 		"add": "Add a new controller <strong>{0}</strong> to your mission control and/or satellite(s).",
 		"select_all": "Select all segments",
 		"unselect_all": "Unselect all segments",
-		"name": "A name:",
+		"name": "Name:",
 		"segments": "Segments:",
 		"name_placeholder": "An optional hint about the controller"
 	},

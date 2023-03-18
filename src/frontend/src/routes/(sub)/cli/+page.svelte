@@ -191,7 +191,7 @@
 				</p>
 
 				<form on:submit|preventDefault={onSubmit}>
-					<label>{$i18n.cli.objects}</label>
+					<label>{$i18n.cli.segments}</label>
 
 					<div class="objects">
 						<div class="checkbox">

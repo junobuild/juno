@@ -115,7 +115,7 @@
 		"select_all": "Select all objects",
 		"unselect_all": "Unselect all objects",
 		"name": "A name:",
-		"objects": "Objects:",
+		"segments": "Segments:",
 		"name_placeholder": "An optional hint about the controller"
 	},
 	"errors": {

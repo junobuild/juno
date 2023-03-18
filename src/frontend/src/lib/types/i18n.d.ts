@@ -128,7 +128,7 @@ interface I18nCli {
 	select_all: string;
 	unselect_all: string;
 	name: string;
-	objects: string;
+	segments: string;
 	name_placeholder: string;
 }
 

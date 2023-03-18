@@ -3,6 +3,7 @@ import type { ListParams as ListParamsApi } from '$declarations/satellite/satell
 import { localIdentityCanisterId, PAGINATION } from '$lib/constants/constants';
 import type { ListParams } from '$lib/types/list';
 import { toNullable } from '$lib/utils/did.utils';
+import { metadataName } from '$lib/utils/metadata.utils';
 import { nonNullish } from '$lib/utils/utils';
 
 export const satelliteUrl = (satelliteId: string): string => {
@@ -13,8 +14,7 @@ export const satelliteUrl = (satelliteId: string): string => {
 	return `https://${satelliteId}.icp0.io`;
 };
 
-export const satelliteName = ({ metadata }: Satellite): string =>
-	new Map(metadata).get('name') ?? '';
+export const satelliteName = ({ metadata }: Satellite): string => metadataName(metadata);
 
 export const toListParams = ({ startAfter, order }: ListParams): ListParamsApi => ({
 	matcher: [],

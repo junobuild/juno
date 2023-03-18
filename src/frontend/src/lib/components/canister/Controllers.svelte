@@ -11,6 +11,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import ButtonDelete from '$lib/components/ui/ButtonDelete.svelte';
 	import type { Controller } from '$declarations/mission_control/mission_control.did';
+	import {metadataName} from "$lib/utils/metadata.utils";
 
 	export let list: () => Promise<[Principal, Controller][]>;
 	export let remove: (params: {
@@ -95,6 +96,7 @@
 		<thead>
 			<tr>
 				<th> {$i18n.controllers.title} </th>
+				<th> {$i18n.controllers.name} </th>
 			</tr>
 		</thead>
 		<tbody>
@@ -110,7 +112,10 @@
 						/>
 
 						<span>{controllerId.toText()}</span>
-					</td></tr
+					</td>
+
+					<td>{metadataName(controller?.metadata ?? [])}</td>
+				</tr
 				>
 			{/each}
 		</tbody>

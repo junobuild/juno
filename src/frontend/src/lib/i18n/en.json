@@ -157,6 +157,7 @@
 	},
 	"controllers": {
 		"title": "Controllers",
+		"name": "Name",
 		"delete": "Delete a controller",
 		"delete_question": "Delete selected controller?",
 		"controller_id": "ID: {0}",

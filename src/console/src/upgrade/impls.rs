@@ -4,8 +4,8 @@ use shared::controllers::init_controllers;
 use shared::types::state::ControllerId;
 
 ///
-/// v0.0.1 -> v0.0.x
-/// Migrate controllers from an Hashset of Principal to a HashMap of Principal <> Struct.
+/// v0.0.1 -> v0.0.2:
+/// - migrate controllers from an Hashset of Principal to a HashMap of Principal <> Struct.
 ///
 impl From<&UpgradeStableState> for StableState {
     fn from(state: &UpgradeStableState) -> Self {

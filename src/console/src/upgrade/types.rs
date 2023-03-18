@@ -1,8 +1,3 @@
-///
-/// Upgrade structure:
-///
-/// v0.0.1 -> v0.0.2
-///
 pub mod upgrade {
     use crate::types::state::{InvitationCodes, MissionControls, Payments, Releases};
     use candid::CandidType;

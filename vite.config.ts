@@ -144,6 +144,7 @@ export default defineConfig(({ mode }: UserConfig): UserConfig => {
 		},
 		server: {
 			watch: {
+				usePolling: false,
 				useFsEvents: false
 			}
 		}

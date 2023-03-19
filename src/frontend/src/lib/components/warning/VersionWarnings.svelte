@@ -37,7 +37,7 @@
 
 	let satWarning = false;
 	$: satWarning =
-		nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, ctrlRelease) < 0;
+		nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0;
 
 	let ctrlWarning = false;
 	$: ctrlWarning =

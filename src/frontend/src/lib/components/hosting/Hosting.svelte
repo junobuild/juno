@@ -78,7 +78,7 @@
 	@use '../../styles/mixins/media';
 
 	.tools {
-		width: 88px;
+		width: 100px;
 	}
 
 	.domain {

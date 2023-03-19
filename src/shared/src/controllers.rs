@@ -73,7 +73,7 @@ pub fn assert_max_number_of_controllers(
     let current_controller_ids = into_controller_ids(current_controllers);
 
     let new_controller_ids = controllers_ids.iter().copied().filter(|id| {
-        current_controller_ids
+        !current_controller_ids
             .iter()
             .any(|current_id| current_id == id)
     });

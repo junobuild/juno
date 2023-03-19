@@ -13,7 +13,7 @@ pub async fn set_mission_control_controllers(
 ) -> Result<(), String> {
     assert_max_number_of_controllers(
         &get_controllers(),
-        &controllers,
+        controllers,
         MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS,
     )?;
 

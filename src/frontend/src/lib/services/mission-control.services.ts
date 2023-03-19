@@ -113,8 +113,6 @@ export const setSatellitesForVersion = async ({
 			}: { setSatelliteIds: Principal[]; addSatellitesIds: Principal[] },
 			{ satelliteId, version }
 		) => {
-			console.log(version, compare(version, '0.0.7'));
-
 			if (compare(version, '0.0.7') >= 0) {
 				return {
 					setSatelliteIds: [...setSatelliteIds, satelliteId],
@@ -129,8 +127,6 @@ export const setSatellitesForVersion = async ({
 		},
 		{ setSatelliteIds: [], addSatellitesIds: [] }
 	);
-
-	console.log(setSatelliteIds, addSatellitesIds);
 
 	await Promise.all([
 		...(setSatelliteIds.length > 0

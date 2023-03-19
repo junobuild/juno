@@ -1,16 +1,16 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish } from '$lib/utils/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
-	import { authStore } from '$lib/stores/auth.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import type { Controller } from '$declarations/satellite/satellite.did';
+	import Value from '$lib/components/ui/Value.svelte';
 
 	export let visible = false;
-	export let selectedController: Principal | undefined;
+	export let selectedController: [Principal, Controller] | undefined;
 	export let remove: (params: {
 		missionControlId: Principal;
 		controller: Principal;
@@ -37,7 +37,7 @@
 		try {
 			await remove({
 				missionControlId: $missionControlStore,
-				controller: selectedController
+				controller: selectedController[0]
 			});
 		} catch (err: unknown) {
 			toasts.error({
@@ -63,14 +63,10 @@
 	<div class="content">
 		<h3>{$i18n.controllers.delete_question}</h3>
 
-		<p>
-			{@html i18nFormat($i18n.controllers.controller_id, [
-				{
-					placeholder: '{0}',
-					value: selectedController?.toText() ?? ''
-				}
-			])}
-		</p>
+		<Value>
+			<svelte:fragment slot="label">{$i18n.controllers.controller_id}</svelte:fragment>
+			<p>{selectedController?.[0].toText() ?? ''}</p>
+		</Value>
 
 		<button type="button" on:click|stopPropagation={close} disabled={$isBusy}>
 			{$i18n.core.no}
@@ -85,5 +81,9 @@
 <style lang="scss">
 	.content {
 		padding: var(--padding-2x);
+	}
+
+	h3 {
+		margin-bottom: var(--padding-2x);
 	}
 </style>

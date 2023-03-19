@@ -116,7 +116,7 @@
 		"unselect_all": "Unselect all segments",
 		"profile": "Profile:",
 		"segments": "Segments:",
-		"name_placeholder": "An optional hint about the controller"
+		"profile_placeholder": "An optional hint about the controller"
 	},
 	"errors": {
 		"no_mission_control": "Mission control center is not initialized.",
@@ -159,8 +159,9 @@
 		"title": "Controllers",
 		"profile": "Profile",
 		"delete": "Delete a controller",
+		"info": "Information",
 		"delete_question": "Delete selected controller?",
-		"controller_id": "ID: {0}",
+		"controller_id": "ID",
 		"no_delete": "Juno cannot operate without your current signed-in identity and your mission control set as controllers. These settings cannot be edited through the console.",
 		"more_delete": "However, you can edit or delete additional controllers that you may have added for non-interactive environments."
 	},

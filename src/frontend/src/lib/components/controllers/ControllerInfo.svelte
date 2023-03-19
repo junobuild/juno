@@ -1,15 +1,10 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
 
 	export let visible = false;
-	export let selectedController: Principal | undefined;
 
-	const close = () => {
-		selectedController = undefined;
-		visible = false;
-	};
+	const close = () => (visible = false);
 </script>
 
 <Popover bind:visible center={true}>

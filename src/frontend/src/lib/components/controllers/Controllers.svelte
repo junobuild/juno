@@ -38,7 +38,7 @@
 
 	let visibleDelete = false;
 	let visibleInfo = false;
-	let selectedController: Principal | undefined;
+	let selectedController: [Principal, Controller] | undefined;
 
 	const canEdit = (controllerId: Principal): boolean =>
 		nonNullish($authStore.identity) &&
@@ -66,27 +66,15 @@
 								icon="delete"
 								ariaLabel={$i18n.controllers.delete}
 								on:click={() => {
-									selectedController = controllerId;
-									visibleDelete = true;
-								}}
-							/>
-
-							<ButtonTableAction
-								icon="edit"
-								ariaLabel={$i18n.controllers.delete}
-								on:click={() => {
-									selectedController = controllerId;
+									selectedController = [controllerId, controller];
 									visibleDelete = true;
 								}}
 							/>
 						{:else}
 							<ButtonTableAction
 								icon="info"
-								ariaLabel={$i18n.controllers.delete}
-								on:click={() => {
-									selectedController = controllerId;
-									visibleInfo = true;
-								}}
+								ariaLabel={$i18n.controllers.info}
+								on:click={() => (visibleInfo = true)}
 							/>
 						{/if}
 					</td><td>
@@ -102,13 +90,13 @@
 
 <ControllerDelete bind:selectedController bind:visible={visibleDelete} {load} {remove} />
 
-<ControllerInfo bind:selectedController bind:visible={visibleInfo} />
+<ControllerInfo bind:visible={visibleInfo} />
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
 	.tools {
-		width: 96px;
+		width: 48px;
 	}
 
 	.controller {

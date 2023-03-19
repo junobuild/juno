@@ -1,13 +1,11 @@
 pub mod state {
     use candid::{CandidType, Deserialize, Principal};
-    use shared::types::state::Controllers;
     use shared::types::state::UserId;
+    use shared::types::state::{Controllers, Metadata};
     use std::collections::HashMap;
 
     pub type SatelliteId = Principal;
     pub type Satellites = HashMap<SatelliteId, Satellite>;
-    // TODO: replace and import shared type
-    pub type Metadata = HashMap<String, String>;
 
     #[derive(Default, Clone)]
     pub struct State {

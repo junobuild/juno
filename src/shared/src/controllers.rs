@@ -64,3 +64,26 @@ pub fn into_controller_ids(controllers: &Controllers) -> Vec<ControllerId> {
         .map(|(controller_id, _)| controller_id)
         .collect::<Vec<ControllerId>>()
 }
+
+pub fn assert_max_number_of_controllers(
+    current_controllers: &Controllers,
+    controllers_ids: &[ControllerId],
+    max_controllers: usize,
+) -> Result<(), String> {
+    let current_controller_ids = into_controller_ids(current_controllers);
+
+    let new_controller_ids = controllers_ids.iter().copied().filter(|id| {
+        current_controller_ids
+            .iter()
+            .any(|current_id| current_id == id)
+    });
+
+    if current_controller_ids.len() + new_controller_ids.count() > max_controllers {
+        return Err(format!(
+            "Maximum number of controllers ({}) is already reached.",
+            max_controllers
+        ));
+    }
+
+    Ok(())
+}

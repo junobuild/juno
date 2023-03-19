@@ -53,14 +53,6 @@
 		busy.stop();
 	};
 
-	let canDelete = (): boolean =>
-		nonNullish(selectedController) &&
-		nonNullish($authStore.identity) &&
-		nonNullish($missionControlStore) &&
-		![$missionControlStore.toText(), $authStore.identity.getPrincipal().toText()].includes(
-			selectedController.toText()
-		);
-
 	const close = () => {
 		selectedController = undefined;
 		visible = false;
@@ -69,34 +61,24 @@
 
 <Popover bind:visible center={true}>
 	<div class="content">
-		{#if canDelete()}
-			<h3>{$i18n.controllers.delete_question}</h3>
+		<h3>{$i18n.controllers.delete_question}</h3>
 
-			<p>
-				{@html i18nFormat($i18n.controllers.controller_id, [
-					{
-						placeholder: '{0}',
-						value: selectedController?.toText() ?? ''
-					}
-				])}
-			</p>
+		<p>
+			{@html i18nFormat($i18n.controllers.controller_id, [
+				{
+					placeholder: '{0}',
+					value: selectedController?.toText() ?? ''
+				}
+			])}
+		</p>
 
-			<button type="button" on:click|stopPropagation={close} disabled={$isBusy}>
-				{$i18n.core.no}
-			</button>
+		<button type="button" on:click|stopPropagation={close} disabled={$isBusy}>
+			{$i18n.core.no}
+		</button>
 
-			<button type="button" on:click|stopPropagation={deleteController} disabled={$isBusy}>
-				{$i18n.core.yes}
-			</button>
-		{:else}
-			<p>{$i18n.controllers.no_delete}</p>
-
-			<p>{$i18n.controllers.more_delete}</p>
-
-			<button type="button" on:click|stopPropagation={close}>
-				{$i18n.core.ok}
-			</button>
-		{/if}
+		<button type="button" on:click|stopPropagation={deleteController} disabled={$isBusy}>
+			{$i18n.core.yes}
+		</button>
 	</div>
 </Popover>
 

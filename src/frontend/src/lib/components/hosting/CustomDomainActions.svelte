@@ -1,5 +1,5 @@
 <script lang="ts">
-	import ButtonDelete from '$lib/components/ui/ButtonDelete.svelte';
+	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
@@ -10,7 +10,6 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
 	import { emit } from '$lib/utils/events.utils';
-	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
@@ -61,13 +60,10 @@
 </script>
 
 <div class="tools">
-	<ButtonDelete on:click={openDelete} ariaLabel={$i18n.hosting.delete} />
+	<ButtonTableAction on:click={openDelete} ariaLabel={$i18n.hosting.delete} icon="delete" />
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
-		<button
-			class="square"
-			aria-label={$i18n.hosting.edit}
-			type="button"
+		<ButtonTableAction
 			on:click={() =>
 				emit({
 					message: 'junoModal',
@@ -75,8 +71,10 @@
 						type: 'add_custom_domain',
 						detail: { satellite, editDomainName: customDomain?.[0] }
 					}
-				})}><IconEdit size="20px" /></button
-		>
+				})}
+			ariaLabel={$i18n.hosting.edit}
+			icon="edit"
+		/>
 	{/if}
 </div>
 

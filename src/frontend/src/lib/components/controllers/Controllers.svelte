@@ -3,10 +3,14 @@
 	import type { Principal } from '@dfinity/principal';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import ButtonDelete from '$lib/components/ui/ButtonDelete.svelte';
+	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 	import ControllerDelete from '$lib/components/controllers/ControllerDelete.svelte';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { authStore } from '$lib/stores/auth.store';
+	import { nonNullish } from '$lib/utils/utils';
+	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
 
 	export let list: () => Promise<[Principal, Controller][]>;
 	export let remove: (params: {
@@ -32,8 +36,16 @@
 
 	onMount(async () => await load());
 
-	let visible = false;
+	let visibleDelete = false;
+	let visibleInfo = false;
 	let selectedController: Principal | undefined;
+
+	const canEdit = (controllerId: Principal): boolean =>
+		nonNullish($authStore.identity) &&
+		nonNullish($missionControlStore) &&
+		![$missionControlStore.toText(), $authStore.identity.getPrincipal().toText()].includes(
+			controllerId.toText()
+		);
 </script>
 
 <div class="table-container">
@@ -49,13 +61,34 @@
 			{#each controllers as [controllerId, controller] (controllerId.toText())}
 				<tr>
 					<td class="actions">
-						<ButtonDelete
-							ariaLabel={$i18n.controllers.delete}
-							on:click={() => {
-								selectedController = controllerId;
-								visible = true;
-							}}
-						/>
+						{#if canEdit(controllerId)}
+							<ButtonTableAction
+								icon="delete"
+								ariaLabel={$i18n.controllers.delete}
+								on:click={() => {
+									selectedController = controllerId;
+									visibleDelete = true;
+								}}
+							/>
+
+							<ButtonTableAction
+								icon="edit"
+								ariaLabel={$i18n.controllers.delete}
+								on:click={() => {
+									selectedController = controllerId;
+									visibleDelete = true;
+								}}
+							/>
+						{:else}
+							<ButtonTableAction
+								icon="info"
+								ariaLabel={$i18n.controllers.delete}
+								on:click={() => {
+									selectedController = controllerId;
+									visibleInfo = true;
+								}}
+							/>
+						{/if}
 					</td><td>
 						<span>{controllerId.toText()}</span>
 					</td>
@@ -67,16 +100,18 @@
 	</table>
 </div>
 
-<ControllerDelete bind:selectedController bind:visible {load} {remove} />
+<ControllerDelete bind:selectedController bind:visible={visibleDelete} {load} {remove} />
+
+<ControllerInfo bind:selectedController bind:visible={visibleInfo} />
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
 	.tools {
-		width: 88px;
+		width: 96px;
 	}
 
-	.controllers {
+	.controller {
 		@include media.min-width(small) {
 			width: 60%;
 		}

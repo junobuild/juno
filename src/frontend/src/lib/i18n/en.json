@@ -161,8 +161,8 @@
 		"delete": "Delete a controller",
 		"delete_question": "Delete selected controller?",
 		"controller_id": "ID: {0}",
-		"no_delete": "Juno cannot operates without your current signed-in identity and your mission control set as controllers. Therefore these cannot be deleted in the console.",
-		"more_delete": "You can delete additional controllers e.g. those you add for use in non-interactive environments."
+		"no_delete": "Juno cannot operate without your current signed-in identity and your mission control set as controllers. These settings cannot be edited through the console.",
+		"more_delete": "However, you can edit or delete additional controllers that you may have added for non-interactive environments."
 	},
 	"collections": {
 		"title": "Collections",

@@ -55,7 +55,7 @@ use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use rules::constants::DEFAULT_DB_COLLECTIONS;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
-use shared::controllers::init_controllers;
+use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
 use shared::types::state::Controllers;
 use std::cell::RefCell;
@@ -234,13 +234,14 @@ fn set_controllers(
         controller,
     }: SetControllersArgs,
 ) -> Controllers {
-    let current_controllers = get_controllers();
+    let max_controllers = assert_max_number_of_controllers(
+        &get_controllers(),
+        &controllers,
+        MAX_NUMBER_OF_SATELLITE_CONTROLLERS,
+    );
 
-    if current_controllers.len() >= MAX_NUMBER_OF_SATELLITE_CONTROLLERS {
-        trap(&format!(
-            "Maximum number of controllers ({}) is already reached.",
-            MAX_NUMBER_OF_SATELLITE_CONTROLLERS
-        ));
+    if let Err(err) = max_controllers {
+        trap(&err)
     }
 
     set_controllers_store(&controllers, &controller);

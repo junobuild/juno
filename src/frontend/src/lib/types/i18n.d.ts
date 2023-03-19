@@ -129,7 +129,7 @@ interface I18nCli {
 	unselect_all: string;
 	profile: string;
 	segments: string;
-	name_placeholder: string;
+	profile_placeholder: string;
 }
 
 interface I18nErrors {
@@ -177,6 +177,7 @@ interface I18nControllers {
 	title: string;
 	profile: string;
 	delete: string;
+	info: string;
 	delete_question: string;
 	controller_id: string;
 	no_delete: string;

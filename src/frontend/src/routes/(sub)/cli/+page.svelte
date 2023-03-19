@@ -213,7 +213,7 @@
 					<input
 						id="profile"
 						type="text"
-						placeholder={$i18n.cli.name_placeholder}
+						placeholder={$i18n.cli.profile_placeholder}
 						name="profile"
 						bind:value={profile}
 					/>

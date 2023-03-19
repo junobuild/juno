@@ -1,8 +1,8 @@
-import type { Controller, SetController } from '$declarations/mission_control/mission_control.did';
+import type { Controller } from '$declarations/mission_control/mission_control.did';
 import { getMissionControl } from '$lib/services/mission-control.services';
+import type { SetControllerParams } from '$lib/types/controlers';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
-import { toNullable } from '$lib/utils/did.utils';
-import { nonNullish } from '$lib/utils/utils';
+import { toSetController } from '$lib/utils/controllers.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 
@@ -42,16 +42,6 @@ export const initMissionControl = async ({
 			reject(err);
 		}
 	});
-
-export type SetControllerParams = {
-	controllerId: string;
-	profile: string | null | undefined;
-};
-
-const toSetController = (profile: string | null | undefined): SetController => ({
-	metadata: nonNullish(profile) && profile !== '' ? [['profile', profile]] : [],
-	expires_at: toNullable<bigint>(undefined)
-});
 
 export const setSatellitesController = async ({
 	missionControlId,

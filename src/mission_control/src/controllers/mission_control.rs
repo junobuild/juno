@@ -2,7 +2,7 @@ use crate::controllers::store::{delete_controllers, get_controllers, set_control
 use crate::store::get_user;
 use ic_cdk::id;
 use shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
-use shared::controllers::into_controller_ids;
+use shared::controllers::{assert_max_number_of_controllers, into_controller_ids};
 use shared::ic::update_canister_controllers;
 use shared::types::interface::SetController;
 use shared::types::state::{ControllerId, Controllers};
@@ -11,14 +11,11 @@ pub async fn set_mission_control_controllers(
     controllers: &[ControllerId],
     controller: &SetController,
 ) -> Result<(), String> {
-    let current_controllers = get_controllers();
-
-    if current_controllers.len() >= MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS {
-        return Err(format!(
-            "Maximum number of controllers ({}) is already reached.",
-            MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS
-        ));
-    }
+    assert_max_number_of_controllers(
+        &get_controllers(),
+        controllers,
+        MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS,
+    )?;
 
     set_controllers(controllers, controller);
 

@@ -4,7 +4,7 @@
 		deleteMissionControlController,
 		listMissionControlControllers
 	} from '$lib/api/mission-control.api';
-	import Controllers from '$lib/components/canister/Controllers.svelte';
+	import Controllers from '$lib/components/controllers/Controllers.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { nonNullish } from '$lib/utils/utils';
 	import type { Controller } from '$declarations/mission_control/mission_control.did';

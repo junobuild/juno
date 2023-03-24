@@ -1,12 +1,11 @@
 import { AccountIdentifier } from '@dfinity/nns';
 import { initIdentity } from './identity.utils.mjs';
 
-export const accountIdentifier = () => {
-	const identity = initIdentity(false);
+export const accountIdentifier = (mainnet, principal) => {
+	const identity = initIdentity(mainnet);
+
 	return AccountIdentifier.fromPrincipal({
-		principal: identity.getPrincipal(),
+		principal: principal ?? identity.getPrincipal(),
 		subAccount: undefined
 	});
 };
-
-export const ledgerCanisterId = 'r7inp-6aaaa-aaaaa-aaabq-cai';

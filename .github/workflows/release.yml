@@ -99,19 +99,24 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: console
-          - name: mission_control
-          - name: satellite.wasm
+          - name: console.did
+            target: console
+
+          - name: mission_control.did
+            target: mission_control
+
+          - name: satellite.did
+            target: satellite
 
     steps:
       - uses: actions/checkout@v3
 
-      - name: 'Copy Candid ${{ matrix.name }}'
+      - name: 'Copy ${{ matrix.name }}'
         run: bash ./docker/candid
         env:
-          CANISTER: ${{ matrix.name }}
+          CANISTER: ${{ matrix.target }}
 
-      - name: 'Upload Candid ${{ matrix.name }}'
+      - name: 'Upload ${{ matrix.name }}'
         uses: actions/upload-artifact@v3
         with:
           name: ${{ matrix.name }}

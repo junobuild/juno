@@ -21,16 +21,20 @@ const consolePrincipalLocal = () => {
 };
 
 export const consoleActorIC = async () => {
-	const identity = initIdentity(true);
-
 	const canisterId = consolePrincipalIC();
 
-	const agent = new HttpAgent({ identity, fetch, host: 'https://icp0.io' });
+	const agent = icAgent();
 
 	return Actor.createActor(idlFactory, {
 		agent,
 		canisterId
 	});
+};
+
+export const icAgent = () => {
+	const identity = initIdentity(true);
+
+	return new HttpAgent({ identity, fetch, host: 'https://icp0.io' });
 };
 
 export const localAgent = async () => {

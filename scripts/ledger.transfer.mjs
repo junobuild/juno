@@ -1,13 +1,13 @@
 import { AccountIdentifier, LedgerCanister } from '@dfinity/nns';
 import { localAgent } from './actor.mjs';
-import { ledgerCanisterId } from './ledger.utils.mjs';
+import { LEDGER_CANISTER_ID_LOCAL } from './env.mjs';
 
 const transfer = async () => {
 	const agent = await localAgent();
 
 	const ledger = LedgerCanister.create({
 		agent,
-		canisterId: ledgerCanisterId
+		canisterId: LEDGER_CANISTER_ID_LOCAL
 	});
 
 	return ledger.transfer({

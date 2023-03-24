@@ -94,9 +94,32 @@ jobs:
           # downloaded file
           path: ./metadata.json
 
+  candid:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - name: console
+          - name: mission_control
+          - name: satellite.wasm
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: 'Copy Candid ${{ matrix.name }}'
+        run: bash ./docker/candid
+        env:
+          CANISTER: ${{ matrix.name }}
+
+      - name: 'Upload Candid ${{ matrix.name }}'
+        uses: actions/upload-artifact@v3
+        with:
+          name: ${{ matrix.name }}
+          path: ./${{ matrix.name }}
+
   release:
     runs-on: ubuntu-latest
-    needs: ['docker-build', 'metadata']
+    needs: ['docker-build', 'metadata', 'candid']
     steps:
       - uses: actions/checkout@v3
 
@@ -112,6 +135,18 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: satellite.wasm.gz
+      - name: Download console.did
+        uses: actions/download-artifact@v3
+        with:
+          name: console.did
+      - name: Download mission_control.did
+        uses: actions/download-artifact@v3
+        with:
+          name: mission_control.did
+      - name: Download satellite.did
+        uses: actions/download-artifact@v3
+        with:
+          name: satellite.did
       - name: Download metadata.json
         uses: actions/download-artifact@v3
         with:
@@ -130,4 +165,7 @@ jobs:
             ./console*.wasm.gz
             ./mission_control*.wasm.gz
             ./satellite*.wasm.gz
+            ./console*.did
+            ./mission_control*.did
+            ./satellite*.did
             ./metadata.json

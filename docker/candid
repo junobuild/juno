@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+function copy_candid() {
+    local canister=$1
+
+    cp src/"$canister"/"$canister".did .
+}
+
+copy_candid "$CANISTER"

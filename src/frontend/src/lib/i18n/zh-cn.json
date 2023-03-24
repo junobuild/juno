@@ -111,7 +111,12 @@
 	"cli": {
 		"title": "授权命令行",
 		"sign_in": "登录去增加一个控制者 <strong>{0}</strong> 到你的 mission control 和/或 satellite(s).",
-		"add": "增加一个新的控制者<strong>{0}</strong> 到你的 mission control 和/或 satellite(s)."
+		"add": "增加一个新的控制者<strong>{0}</strong> 到你的 mission control 和/或 satellite(s).",
+		"select_all": "选择全部",
+		"unselect_all": "取消全部选择",
+		"profile": "简介:",
+		"segments": "区段:",
+		"profile_placeholder": "可选关于控制者提示"
 	},
 	"errors": {
 		"no_mission_control": "Mission 控制中心没有初始化.",
@@ -152,11 +157,12 @@
 	},
 	"controllers": {
 		"title": "控制者",
+		"profile": "简介",
 		"delete": "删除控制者",
 		"delete_question": "删除选择的控制者?",
-		"controller_id": "ID: {0}",
-		"no_delete": "不能操作Juno 如果你没有登录并且设置你的Internet Identity 为 mission control 的控制者. 所以这些是不能被删除的",
-		"more_delete": "你可以删除其他的控制者，比如那些不需要跟环境有交互的."
+		"controller_id": "ID",
+		"no_delete": "不能操作Juno 如果你没有登录并且设置你的Internet Identity 为 mission control 的控制者. 所以这些是不能被编辑的",
+		"more_delete": "你可以编辑或删除其他的控制者，比如那些不需要跟环境有交互的."
 	},
 	"collections": {
 		"title": "文档集",

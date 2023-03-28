@@ -1,16 +1,15 @@
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Collection, Db, Doc};
+use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::rules::types::rules::Permission;
 use crate::rules::utils::{assert_rule, public_rule};
-use crate::types::core::Key;
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::State;
 use crate::utils::assert_timestamp;
 use crate::STATE;
 use candid::Principal;
 use ic_cdk::api::time;
-use regex::Regex;
 use shared::types::state::Controllers;
 use std::collections::BTreeMap;
 
@@ -241,35 +240,6 @@ fn get_values(
     let matches = filter_values(caller, controllers, rule, col, filters);
 
     list_values(matches, filters)
-}
-
-fn filter_values(
-    caller: Principal,
-    controllers: &Controllers,
-    rule: &Permission,
-    col: &Collection,
-    ListParams {
-        matcher,
-        order: _,
-        paginate: _,
-    }: &ListParams,
-) -> Vec<(Key, Doc)> {
-    match matcher {
-        None => col
-            .iter()
-            .filter(|(_key, doc)| assert_rule(rule, doc.owner, caller, controllers))
-            .map(|(key, doc)| (key.clone(), doc.clone()))
-            .collect(),
-        Some(filter) => {
-            let re = Regex::new(filter).unwrap();
-            col.iter()
-                .filter(|(key, doc)| {
-                    re.is_match(key) && assert_rule(rule, doc.owner, caller, controllers)
-                })
-                .map(|(key, doc)| (key.clone(), doc.clone()))
-                .collect()
-        }
-    }
 }
 
 /// Delete

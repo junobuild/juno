@@ -57,6 +57,7 @@ pub mod list {
     use crate::types::core::Key;
     use candid::CandidType;
     use serde::Deserialize;
+    use shared::types::state::UserId;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ListPaginate {
@@ -82,6 +83,7 @@ pub mod list {
         pub matcher: Option<String>,
         pub paginate: Option<ListPaginate>,
         pub order: Option<ListOrder>,
+        pub owner: Option<UserId>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]

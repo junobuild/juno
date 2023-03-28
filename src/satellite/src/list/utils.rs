@@ -27,6 +27,7 @@ fn order_values<T: Clone + Compare>(
         matcher: _,
         order,
         paginate: _,
+        owner: _,
     }: &ListParams,
 ) -> Vec<(Key, T)> {
     match order {
@@ -84,6 +85,7 @@ fn paginate_values<T: Clone + Compare>(
         matcher: _,
         order: _,
         paginate,
+        owner: _,
     }: &ListParams,
 ) -> Vec<(Key, T)> {
     match paginate {

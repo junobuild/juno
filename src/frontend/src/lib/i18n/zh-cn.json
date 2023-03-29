@@ -195,7 +195,7 @@
 	"filter": {
 		"title": "Filter results",
 		"filter_keys": "Filter keys:",
-		"filter_owners": "Filter owners:",
+		"filter_owner": "Filter owners:",
 		"placeholder_keys": "Key matcher",
 		"placeholder_owners": "Owner ID"
 	},

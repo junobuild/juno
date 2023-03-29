@@ -216,7 +216,7 @@ interface I18nSort {
 interface I18nFilter {
 	title: string;
 	filter_keys: string;
-	filter_owners: string;
+	filter_owner: string;
 	placeholder_keys: string;
 	placeholder_owners: string;
 }

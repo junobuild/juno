@@ -7,6 +7,7 @@ export interface DataStore<T> {
 
 export interface DataContext<T> {
 	store: Writable<DataStore<T>>;
+	resetData: () => void;
 }
 
 export const DATA_CONTEXT_KEY = Symbol('data');

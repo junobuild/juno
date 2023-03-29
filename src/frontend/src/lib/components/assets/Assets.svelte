@@ -60,21 +60,22 @@
 	let collection: string | undefined;
 	$: collection = $store.rule?.[0];
 
-	$: collection,
-		$listParamsStore,
-		(async () => {
-			resetPage();
-			await list();
-		})();
-
 	let empty = false;
 	$: empty = $paginationStore.items?.length === 0 && collection !== undefined;
 
-	const { store: assetsStore }: DataContext<AssetNoContent> =
+	const { store: assetsStore, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
 
 	let emptyCollection = false;
 	$: emptyCollection = $store.rules?.length === 0;
+
+	$: collection,
+			$listParamsStore,
+			(async () => {
+				resetPage();
+				resetData();
+				await list();
+			})();
 </script>
 
 <div class="title">

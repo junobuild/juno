@@ -7,13 +7,18 @@
 	import Assets from '$lib/components/assets/Assets.svelte';
 	import Asset from '$lib/components/assets/Asset.svelte';
 
-	const assetsStore = writable<DataStore<AssetNoContent>>({
+	const initialAsset = {
 		data: undefined,
 		key: undefined
-	});
+	};
+
+	const assetsStore = writable<DataStore<AssetNoContent>>(initialAsset);
+
+	const resetData = () => assetsStore.set(initialAsset);
 
 	setContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY, {
-		store: assetsStore
+		store: assetsStore,
+		resetData
 	});
 
 	const closeAsset = () => assetsStore.set({ key: undefined, data: undefined });

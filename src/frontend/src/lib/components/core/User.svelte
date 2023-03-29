@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import { signOut } from '$lib/services/auth.services';
-	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
+	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
+	import { authSignedInStore } from '$lib/stores/auth.store';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
@@ -13,8 +13,6 @@
 
 	let button: HTMLButtonElement | undefined;
 	let visible: boolean | undefined;
-
-	const doSignIn = async () => await authStore.signIn(undefined);
 
 	const signOutClose = async () => {
 		visible = false;

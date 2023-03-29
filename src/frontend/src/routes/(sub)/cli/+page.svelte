@@ -24,6 +24,7 @@
 		setMissionControlControllerForVersion,
 		setSatellitesForVersion
 	} from '$lib/services/mission-control.services';
+	import { signIn } from '$lib/services/auth.services';
 
 	export let data: {
 		redirect_uri: string | null | undefined;
@@ -33,8 +34,6 @@
 	let redirect_uri: string | null | undefined;
 	let principal: string | null | undefined;
 	$: ({ redirect_uri, principal } = data);
-
-	const signIn = async () => await authStore.signIn(undefined);
 
 	let satellites: [Principal, Satellite][] = [];
 

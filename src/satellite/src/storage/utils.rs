@@ -6,6 +6,7 @@ use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::list::ListParams;
 use candid::Principal;
+use regex::Regex;
 use shared::types::state::{Controllers, UserId};
 
 pub fn filter_values(
@@ -50,19 +51,27 @@ pub fn filter_values(
 
     let all_keys = assets.values().map(map_key);
 
-    // TODO: matcher fullPath
+    let regex: Option<Regex> = matcher.as_ref().map(|filter| Regex::new(filter).unwrap());
 
     all_keys
         .into_iter()
         .filter(|(_, asset)| {
-            asset_collection(collection.clone(), &asset)
-                && filter_owner(owner.clone(), &asset)
+            filter_collection(collection.clone(), asset)
+                && filter_full_path(&regex, asset)
+                && filter_owner(*owner, asset)
                 && assert_rule(rule, asset.key.owner, caller, controllers)
         })
         .collect()
 }
 
-fn asset_collection(collection: CollectionKey, asset: &AssetNoContent) -> bool {
+fn filter_full_path(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
+    match regex {
+        None => true,
+        Some(re) => re.is_match(&asset.key.full_path),
+    }
+}
+
+fn filter_collection(collection: CollectionKey, asset: &AssetNoContent) -> bool {
     asset.key.collection == collection
 }
 

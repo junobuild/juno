@@ -1,12 +1,13 @@
-import type {ListFilter, ListOrder, ListParams} from '$lib/types/list';
+import type { ListFilter, ListOrder, ListParams } from '$lib/types/list';
 import { getLocalListParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';
+import { nonNullish } from '$lib/utils/utils';
 import type { Readable } from 'svelte/store';
-import { writable } from 'svelte/store';
+import { derived, writable } from 'svelte/store';
 
 const saveListParams = (state: ListParamsStoreData) =>
 	setLocalStorageItem({ key: 'list_params', value: JSON.stringify(state) });
 
-export type ListParamsStoreData = Pick<ListParams, "order" | "filter">;
+export type ListParamsStoreData = Pick<ListParams, 'order' | 'filter'>;
 
 export interface ListParamsStore extends Readable<ListParamsStoreData> {
 	setOrder: (order: ListOrder) => void;
@@ -48,3 +49,9 @@ const initListParamsStore = (): ListParamsStore => {
 };
 
 export const listParamsStore = initListParamsStore();
+
+export const listParamsFilteredStore: Readable<boolean> = derived(
+	listParamsStore,
+	({ filter: { matcher, owner } }) =>
+		(nonNullish(matcher) && matcher !== '') || (nonNullish(owner) && owner !== '')
+);

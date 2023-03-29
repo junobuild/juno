@@ -1,5 +1,5 @@
 import { browser } from '$app/environment';
-import { DEFAULT_LIST_ORDER, DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
+import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
 import type { ListParamsStoreData } from '$lib/stores/data.store';
 import { Theme } from '$lib/types/theme';
 import { nonNullish } from '$lib/utils/utils';

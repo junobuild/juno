@@ -13,7 +13,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import DataList from '$lib/components/data/DataList.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
-	import CollectionEmpty from "$lib/components/collections/CollectionEmpty.svelte";
+	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -29,7 +29,7 @@
 				satelliteId: $store.satelliteId,
 				params: {
 					startAfter: $paginationStore.startAfter,
-					...($listParamsStore)
+					...$listParamsStore
 				}
 			});
 			setItems({ items, matches_length });
@@ -95,7 +95,9 @@
 			{/if}
 
 			{#if empty}
-				<CollectionEmpty {collection} />
+				<CollectionEmpty {collection}>
+					<svelte:fragment slot="filter">{$i18n.document.no_match}</svelte:fragment>
+				</CollectionEmpty>
 			{/if}
 		{/if}
 	</div>

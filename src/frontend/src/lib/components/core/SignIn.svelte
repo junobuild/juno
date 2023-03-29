@@ -1,39 +1,18 @@
 <script lang="ts">
-	import { authStore } from '$lib/stores/auth.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { signIn } from '$lib/services/auth.services';
 
 	let inProgress = false;
-
-	const signIn = async (): Promise<{ success: boolean }> => {
-		try {
-			await authStore.signIn(invitationCode !== '' ? invitationCode : undefined);
-
-			return { success: true };
-		} catch (err: unknown) {
-			if (err === "UserInterrupt") {
-				// We do not display an error if user explicitly cancelled the process of sign-ion
-				return;
-			}
-
-			toasts.error({
-				text: `Something went wrong while sign-in.`,
-				detail: err
-			});
-
-			return { success: false };
-		}
-	};
 
 	const redeemSignIn = async () => {
 		// Close popover to prevent glitch on successful login
 		visible = false;
 
-		const { success } = await signIn();
+		const { success } = await signIn(invitationCode);
 
-		if (success) {
+		if (success === "ok") {
 			return;
 		}
 

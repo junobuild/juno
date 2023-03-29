@@ -158,6 +158,7 @@ interface I18nDocument {
   created: string;
   updated: string;
   data: string;
+  no_match: string;
 }
 
 interface I18nAsset {
@@ -166,6 +167,7 @@ interface I18nAsset {
   headers: string;
   created: string;
   updated: string;
+  no_match: string;
 }
 
 interface I18nAdmin {
@@ -197,6 +199,7 @@ interface I18nCollections {
   private: string;
   managed: string;
   controllers: string;
+  empty: string;
 }
 
 interface I18nSort {

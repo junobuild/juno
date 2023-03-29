@@ -142,14 +142,16 @@
 		"owner": "Owner",
 		"created": "Created",
 		"updated": "Updated",
-		"data": "Data"
+		"data": "Data",
+		"no_match": "No document matches your filters."
 	},
 	"asset": {
 		"owner": "Owner",
 		"token": "Token",
 		"headers": "Headers",
 		"created": "Created",
-		"updated": "Updated"
+		"updated": "Updated",
+		"no_match": "No asset matches your filters."
 	},
 	"admin": {
 		"mission_control_new_version": "A new version of your mission control is available! Upgrade it with the CLI.",
@@ -177,7 +179,8 @@
 		"public": "Public",
 		"private": "Private",
 		"managed": "Managed",
-		"controllers": "controllers"
+		"controllers": "controllers",
+		"empty": "Your collection <strong>{0}</strong> is empty."
 	},
 	"sort": {
 		"title": "Sort results",

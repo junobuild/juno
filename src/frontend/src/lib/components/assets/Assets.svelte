@@ -15,6 +15,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import DataList from '$lib/components/data/DataList.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
+	import CollectionEmpty from "$lib/components/collections/CollectionEmpty.svelte";
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -102,7 +103,7 @@
 			{/if}
 
 			{#if empty}
-				<p class="empty">Your collection <strong>{collection ?? ''}</strong> is empty.</p>
+				<CollectionEmpty {collection} />
 			{/if}
 		{/if}
 	</div>

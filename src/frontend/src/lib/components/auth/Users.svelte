@@ -29,7 +29,8 @@
 					order: {
 						desc: true,
 						field: 'created_at'
-					}
+					},
+					filter: {}
 				}
 			});
 			setItems({ items, matches_length });

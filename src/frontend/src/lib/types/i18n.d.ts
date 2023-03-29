@@ -210,6 +210,14 @@ interface I18nSort {
 	descending: string;
 }
 
+interface I18nFilter {
+	title: string;
+	filter_keys: string;
+	filter_owners: string;
+	placeholder_keys: string;
+	placeholder_owners: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -230,4 +238,5 @@ interface I18n {
 	controllers: I18nControllers;
 	collections: I18nCollections;
 	sort: I18nSort;
+	filter: I18nFilter;
 }

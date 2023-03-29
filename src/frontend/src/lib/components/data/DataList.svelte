@@ -1,12 +1,14 @@
 <script lang="ts">
-	import DataOrder from "$lib/components/data/DataOrder.svelte";
+	import DataOrder from '$lib/components/data/DataOrder.svelte';
+	import DataFilter from '$lib/components/data/DataFilter.svelte';
 </script>
 
 <div class="sort">
 	<span><slot /></span>
 
 	<div>
-		<DataOrder/>
+		<DataFilter />
+		<DataOrder />
 	</div>
 </div>
 
@@ -14,5 +16,10 @@
 	.sort {
 		display: flex;
 		justify-content: space-between;
+	}
+
+	div {
+		display: flex;
+		gap: var(--padding-1_5x);
 	}
 </style>

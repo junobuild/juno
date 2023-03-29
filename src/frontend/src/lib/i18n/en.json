@@ -188,5 +188,12 @@
 		"sort_results": "Sort results:",
 		"ascending": "Ascending",
 		"descending": "Descending"
+	},
+	"filter": {
+		"title": "Filter results",
+		"filter_keys": "Filter keys:",
+		"filter_owners": "Filter owners:",
+		"placeholder_keys": "Key matcher",
+		"placeholder_owners": "Owner ID"
 	}
 }

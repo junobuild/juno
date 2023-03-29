@@ -19,30 +19,27 @@ pub fn filter_values(
         owner,
     }: &ListParams,
 ) -> Vec<(Key, Doc)> {
-    match matcher {
-        None => col
-            .iter()
-            .filter(|(_key, doc)| {
-                filter_owner(owner, &doc.owner) && assert_rule(rule, doc.owner, caller, controllers)
-            })
-            .map(|(key, doc)| (key.clone(), doc.clone()))
-            .collect(),
-        Some(filter) => {
-            let re = Regex::new(filter).unwrap();
-            col.iter()
-                .filter(|(key, doc)| {
-                    re.is_match(key)
-                        && filter_owner(owner, &doc.owner)
-                        && assert_rule(rule, doc.owner, caller, controllers)
-                })
-                .map(|(key, doc)| (key.clone(), doc.clone()))
-                .collect()
-        }
+    let regex: Option<Regex> = matcher.as_ref().map(|filter| Regex::new(filter).unwrap());
+
+    col.iter()
+        .filter(|(key, doc)| {
+            filter_matcher(&regex, key)
+                && filter_owner(owner, &doc.owner)
+                && assert_rule(rule, doc.owner, caller, controllers)
+        })
+        .map(|(key, doc)| (key.clone(), doc.clone()))
+        .collect()
+}
+
+fn filter_matcher(regex: &Option<Regex>, key: &Key) -> bool {
+    match regex {
+        None => true,
+        Some(re) => re.is_match(key),
     }
 }
 
-fn filter_owner(filter_owner: &Option<UserId>, doc_owner: &UserId) -> bool {
-    match filter_owner {
+fn filter_owner(owner: &Option<UserId>, doc_owner: &UserId) -> bool {
+    match owner {
         None => true,
         Some(filter_owner) => filter_owner == doc_owner,
     }

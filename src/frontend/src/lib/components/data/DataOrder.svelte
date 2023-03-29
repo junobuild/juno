@@ -113,8 +113,4 @@
 	label span {
 		color: var(--value-color);
 	}
-
-	.sort {
-		padding: var(--padding) 0 0;
-	}
 </style>

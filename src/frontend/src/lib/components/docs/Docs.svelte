@@ -12,7 +12,7 @@
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import DataList from '$lib/components/data/DataList.svelte';
-	import { listOrderStore } from '$lib/stores/data.store';
+	import { listParamsStore } from '$lib/stores/data.store';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -28,7 +28,7 @@
 				satelliteId: $store.satelliteId,
 				params: {
 					startAfter: $paginationStore.startAfter,
-					order: $listOrderStore
+					...($listParamsStore)
 				}
 			});
 			setItems({ items, matches_length });
@@ -54,7 +54,7 @@
 	$: collection = $store.rule?.[0];
 
 	$: collection,
-		$listOrderStore,
+		$listParamsStore,
 		(async () => {
 			resetPage();
 			await list();

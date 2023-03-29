@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
-import { DEFAULT_LIST_ORDER } from '$lib/constants/data.constants';
-import type { ListOrder } from '$lib/types/list';
+import { DEFAULT_LIST_ORDER, DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
+import type { ListParamsStoreData } from '$lib/stores/data.store';
 import { Theme } from '$lib/types/theme';
 import { nonNullish } from '$lib/utils/utils';
 
@@ -24,17 +24,17 @@ export const getLocalStorageLang = (): Languages => {
 	}
 };
 
-export const getLocalListOrder = (): ListOrder => {
+export const getLocalListParams = (): ListParamsStoreData => {
 	try {
-		const { order }: Storage = browser
+		const { list_params }: Storage = browser
 			? localStorage
-			: ({ order: JSON.stringify(DEFAULT_LIST_ORDER) } as unknown as Storage);
+			: ({ list_params: JSON.stringify(DEFAULT_LIST_PARAMS) } as unknown as Storage);
 
-		return nonNullish(order) ? JSON.parse(order) : DEFAULT_LIST_ORDER;
+		return nonNullish(list_params) ? JSON.parse(list_params) : DEFAULT_LIST_PARAMS;
 	} catch (err: unknown) {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
-		return DEFAULT_LIST_ORDER;
+		return DEFAULT_LIST_PARAMS;
 	}
 };
 

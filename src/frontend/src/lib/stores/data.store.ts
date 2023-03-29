@@ -1,27 +1,50 @@
-import type { ListOrder } from '$lib/types/list';
-import { getLocalListOrder, setLocalStorageItem } from '$lib/utils/local-storage.utils';
+import type {ListFilter, ListOrder, ListParams} from '$lib/types/list';
+import { getLocalListParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';
 import type { Readable } from 'svelte/store';
 import { writable } from 'svelte/store';
 
-const saveListOrder = (order: ListOrder) =>
-	setLocalStorageItem({ key: 'order', value: JSON.stringify(order) });
+const saveListParams = (state: ListParamsStoreData) =>
+	setLocalStorageItem({ key: 'list_params', value: JSON.stringify(state) });
 
-export interface ListOrderStore extends Readable<ListOrder> {
-	set: (order: ListOrder) => void;
+export type ListParamsStoreData = Pick<ListParams, "order" | "filter">;
+
+export interface ListParamsStore extends Readable<ListParamsStoreData> {
+	setOrder: (order: ListOrder) => void;
+	setFilter: (filter: ListFilter) => void;
 }
 
-const initListOrderStore = (): ListOrderStore => {
-	const { subscribe, set } = writable<ListOrder>(getLocalListOrder());
+const initListParamsStore = (): ListParamsStore => {
+	const { subscribe, update } = writable<ListParamsStoreData>(getLocalListParams());
 
 	return {
 		subscribe,
 
-		set: (order: ListOrder) => {
-			set(order);
+		setOrder: (order: ListOrder) => {
+			update((state) => {
+				const updated_state = {
+					...state,
+					order
+				};
 
-			saveListOrder(order);
+				saveListParams(updated_state);
+
+				return updated_state;
+			});
+		},
+
+		setFilter: (filter: ListFilter) => {
+			update((state) => {
+				const updated_state = {
+					...state,
+					filter
+				};
+
+				saveListParams(updated_state);
+
+				return updated_state;
+			});
 		}
 	};
 };
 
-export const listOrderStore = initListOrderStore();
+export const listParamsStore = initListParamsStore();

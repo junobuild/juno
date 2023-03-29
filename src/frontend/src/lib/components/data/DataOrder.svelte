@@ -3,16 +3,16 @@
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import type { ListOrderField } from '$lib/types/list';
-	import { listOrderStore } from '$lib/stores/data.store';
+	import { listParamsStore } from '$lib/stores/data.store';
 
-	let desc = $listOrderStore.desc;
-	let field: ListOrderField = $listOrderStore.field;
+	let desc = $listParamsStore.order.desc;
+	let field: ListOrderField = $listParamsStore.order.field;
 
 	let button: HTMLButtonElement | undefined;
 	let visible: boolean | undefined;
 
 	const apply = () => {
-		listOrderStore.set({
+		listParamsStore.setOrder({
 			desc,
 			field
 		});
@@ -28,8 +28,8 @@
 
 			// Avoid glitch
 			setTimeout(() => {
-				desc = $listOrderStore.desc;
-				field = $listOrderStore.field;
+				desc = $listParamsStore.order.desc;
+				field = $listParamsStore.order.field;
 			}, 250);
 		})();
 </script>

@@ -11,7 +11,13 @@ export interface ListOrder {
 	field: ListOrderField;
 }
 
+export interface ListFilter {
+	matcher?: string;
+	owner?: string;
+}
+
 export interface ListParams {
 	startAfter?: string;
 	order: ListOrder;
+	filter: ListFilter;
 }

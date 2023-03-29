@@ -34,5 +34,6 @@ export const toListParams = ({ startAfter, order }: ListParams): ListParamsApi =
 					? { UpdatedAt: null }
 					: { Keys: null }
 		}
-	]
+	],
+	owner: []
 });

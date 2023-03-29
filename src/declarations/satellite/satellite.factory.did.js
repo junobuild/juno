@@ -1,3 +1,4 @@
+// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
@@ -74,6 +75,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const ListParams = IDL.Record({
 		order: IDL.Opt(ListOrder),
+		owner: IDL.Opt(IDL.Principal),
 		matcher: IDL.Opt(IDL.Text),
 		paginate: IDL.Opt(ListPaginate)
 	});
@@ -186,6 +188,7 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };
+// @ts-ignore
 export const init = ({ IDL }) => {
 	return [];
 };

@@ -68,6 +68,7 @@ type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
 type ListPaginate = record { start_after : opt text; limit : opt nat64 };
 type ListParams = record {
   order : opt ListOrder;
+  owner : opt principal;
   matcher : opt text;
   paginate : opt ListPaginate;
 };

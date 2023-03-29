@@ -74,6 +74,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const ListParams = IDL.Record({
 		order: IDL.Opt(ListOrder),
+		owner: IDL.Opt(IDL.Principal),
 		matcher: IDL.Opt(IDL.Text),
 		paginate: IDL.Opt(ListPaginate)
 	});

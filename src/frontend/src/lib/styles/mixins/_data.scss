@@ -25,10 +25,6 @@
 		@include collections.action;
 	}
 
-	.empty {
-		margin: var(--padding-2x) var(--padding-3x);
-	}
-
 	.data-selected {
 		display: none;
 

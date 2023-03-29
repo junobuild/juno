@@ -3,16 +3,16 @@
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import type { ListOrderField } from '$lib/types/list';
-	import { listOrderStore } from '$lib/stores/data.store';
+	import { listParamsStore } from '$lib/stores/data.store';
 
-	let desc = $listOrderStore.desc;
-	let field: ListOrderField = $listOrderStore.field;
+	let desc = $listParamsStore.order.desc;
+	let field: ListOrderField = $listParamsStore.order.field;
 
 	let button: HTMLButtonElement | undefined;
 	let visible: boolean | undefined;
 
 	const apply = () => {
-		listOrderStore.set({
+		listParamsStore.setOrder({
 			desc,
 			field
 		});
@@ -28,23 +28,19 @@
 
 			// Avoid glitch
 			setTimeout(() => {
-				desc = $listOrderStore.desc;
-				field = $listOrderStore.field;
+				desc = $listParamsStore.order.desc;
+				field = $listParamsStore.order.field;
 			}, 250);
 		})();
 </script>
 
-<div class="sort">
-	<span><slot /></span>
-
-	<button
-		class="icon"
-		aria-label={$i18n.sort.title}
-		type="button"
-		on:click={() => (visible = true)}
-		bind:this={button}><IconSort size="20px" /></button
-	>
-</div>
+<button
+	class="icon"
+	aria-label={$i18n.sort.title}
+	type="button"
+	on:click={() => (visible = true)}
+	bind:this={button}><IconSort size="20px" /></button
+>
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
@@ -77,18 +73,13 @@
 			<span>{$i18n.sort.descending}</span>
 		</label>
 
-		<button type="button" on:click|stopPropagation={apply}>
+		<button class="apply" type="button" on:click|stopPropagation={apply}>
 			{$i18n.core.apply}
 		</button>
 	</div>
 </Popover>
 
 <style lang="scss">
-	.sort {
-		display: flex;
-		justify-content: space-between;
-	}
-
 	button.icon {
 		padding: 0;
 	}
@@ -108,13 +99,17 @@
 	.category {
 		font-weight: var(--font-weight-bold);
 		margin: 0 0 var(--padding);
+
+		&.sort {
+			margin-top: var(--padding-1_5x);
+		}
 	}
 
 	label span {
 		color: var(--value-color);
 	}
 
-	.sort {
-		padding: var(--padding) 0 0;
+	.apply {
+		margin: var(--padding-1_5x) 0 var(--padding);
 	}
 </style>

@@ -11,8 +11,9 @@
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import DataOrder from '$lib/components/data/DataOrder.svelte';
-	import { listOrderStore } from '$lib/stores/data.store';
+	import DataList from '$lib/components/data/DataList.svelte';
+	import { listParamsStore } from '$lib/stores/data.store';
+	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -28,7 +29,8 @@
 				satelliteId: $store.satelliteId,
 				params: {
 					startAfter: $paginationStore.startAfter,
-					order: $listOrderStore
+					// prettier-ignore parenthesis required for Webstorm Svelte plugin
+					...$listParamsStore
 				}
 			});
 			setItems({ items, matches_length });
@@ -53,27 +55,28 @@
 	let collection: string | undefined;
 	$: collection = $store.rule?.[0];
 
-	$: collection,
-		$listOrderStore,
-		(async () => {
-			resetPage();
-			await list();
-		})();
-
 	let empty = false;
 	$: empty = $paginationStore.items?.length === 0 && collection !== undefined;
 
-	const { store: docsStore }: DataContext<DocType> =
+	const { store: docsStore, resetData }: DataContext<DocType> =
 		getContext<DataContext<DocType>>(DATA_CONTEXT_KEY);
 
 	let emptyCollection = false;
 	$: emptyCollection = $store.rules?.length === 0;
+
+	$: collection,
+		$listParamsStore,
+		(async () => {
+			resetPage();
+			resetData();
+			await list();
+		})();
 </script>
 
 <div class="title">
-	<DataOrder>
+	<DataList>
 		{$i18n.datastore.documents}
-	</DataOrder>
+	</DataList>
 </div>
 
 {#if !emptyCollection}
@@ -94,7 +97,9 @@
 			{/if}
 
 			{#if empty}
-				<p class="empty">Your collection <strong>{collection ?? ''}</strong> is empty.</p>
+				<CollectionEmpty {collection}>
+					<svelte:fragment slot="filter">{$i18n.document.no_match}</svelte:fragment>
+				</CollectionEmpty>
 			{/if}
 		{/if}
 	</div>

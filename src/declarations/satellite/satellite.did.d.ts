@@ -88,6 +88,7 @@ export interface ListPaginate {
 }
 export interface ListParams {
 	order: [] | [ListOrder];
+	owner: [] | [Principal];
 	matcher: [] | [string];
 	paginate: [] | [ListPaginate];
 }

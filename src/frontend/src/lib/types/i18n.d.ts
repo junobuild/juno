@@ -158,6 +158,7 @@ interface I18nDocument {
 	created: string;
 	updated: string;
 	data: string;
+	no_match: string;
 }
 
 interface I18nAsset {
@@ -166,6 +167,7 @@ interface I18nAsset {
 	headers: string;
 	created: string;
 	updated: string;
+	no_match: string;
 }
 
 interface I18nAdmin {
@@ -197,6 +199,7 @@ interface I18nCollections {
 	private: string;
 	managed: string;
 	controllers: string;
+	empty: string;
 }
 
 interface I18nSort {
@@ -208,6 +211,22 @@ interface I18nSort {
 	sort_results: string;
 	ascending: string;
 	descending: string;
+}
+
+interface I18nFilter {
+	title: string;
+	filter_keys: string;
+	filter_owner: string;
+	placeholder_keys: string;
+	placeholder_owners: string;
+}
+
+interface I18nUsers {
+	identifier: string;
+	providers: string;
+	created: string;
+	updated: string;
+	empty: string;
 }
 
 interface I18n {
@@ -230,4 +249,6 @@ interface I18n {
 	controllers: I18nControllers;
 	collections: I18nCollections;
 	sort: I18nSort;
+	filter: I18nFilter;
+	users: I18nUsers;
 }

@@ -18,12 +18,11 @@ use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
-use crate::storage::types::interface::{
-    AssetEncodingNoContent, AssetNoContent, CommitBatch, InitAssetKey,
-};
+use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey};
 use crate::storage::types::state::{Assets, FullPath, StorageRuntimeState, StorageStableState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
 use crate::storage::url::{map_alternative_paths, map_url};
+use crate::storage::utils::filter_values;
 use crate::types::core::CollectionKey;
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};
@@ -174,40 +173,14 @@ fn list_assets_impl(
     state: &StorageStableState,
     filters: &ListParams,
 ) -> ListResults<AssetNoContent> {
-    fn map_key(asset: &Asset) -> (FullPath, AssetNoContent) {
-        (
-            asset.key.full_path.clone(),
-            AssetNoContent {
-                key: asset.key.clone(),
-                headers: asset.headers.clone(),
-                encodings: asset
-                    .encodings
-                    .clone()
-                    .into_iter()
-                    .map(|(key, encoding)| {
-                        (
-                            key,
-                            AssetEncodingNoContent {
-                                modified: encoding.modified,
-                                total_length: encoding.total_length,
-                                sha256: encoding.sha256,
-                            },
-                        )
-                    })
-                    .collect(),
-                created_at: asset.created_at,
-                updated_at: asset.updated_at,
-            },
-        )
-    }
-
-    let all_keys = state.assets.values().map(map_key);
-
-    let matches: Vec<(FullPath, AssetNoContent)> = all_keys
-        .into_iter()
-        .filter(|(_, asset)| asset.key.collection == collection)
-        .filter(|(_, asset)| assert_rule(rule, asset.key.owner, caller, controllers))
-        .collect();
+    let matches: Vec<(FullPath, AssetNoContent)> = filter_values(
+        caller,
+        controllers,
+        rule,
+        collection,
+        filters,
+        &state.assets,
+    );
 
     list_values(matches, filters)
 }

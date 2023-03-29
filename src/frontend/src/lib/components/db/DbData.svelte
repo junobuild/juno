@@ -7,13 +7,18 @@
 	import type { Doc as DocDid } from '$declarations/satellite/satellite.did';
 	import Data from '$lib/components/data/Data.svelte';
 
-	const docsStore = writable<DataStore<DocDid>>({
+	const initialDoc = {
 		data: undefined,
 		key: undefined
-	});
+	};
+
+	const docsStore = writable<DataStore<DocDid>>(initialDoc);
+
+	const resetData = () => docsStore.set(initialDoc);
 
 	setContext<DataContext<DocDid>>(DATA_CONTEXT_KEY, {
-		store: docsStore
+		store: docsStore,
+		resetData
 	});
 
 	const closeDoc = () => docsStore.set({ key: undefined, data: undefined });

@@ -29,7 +29,8 @@
 				satelliteId: $store.satelliteId,
 				params: {
 					startAfter: $paginationStore.startAfter,
-					...$listParamsStore
+					// prettier-ignore parenthesis required for Webstorm Svelte plugin
+					...($listParamsStore)
 				}
 			});
 			setItems({ items, matches_length });

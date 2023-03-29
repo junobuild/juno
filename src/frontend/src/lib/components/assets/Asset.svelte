@@ -95,7 +95,7 @@
 		display: flex;
 		flex-direction: column;
 
-		padding: var(--padding-0_5x) var(--padding-2x);
+		padding: var(--padding-2x);
 	}
 
 	.owner {

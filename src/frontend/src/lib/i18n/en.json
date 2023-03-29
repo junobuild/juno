@@ -198,5 +198,12 @@
 		"filter_owners": "Filter owners:",
 		"placeholder_keys": "Key matcher",
 		"placeholder_owners": "Owner ID"
+	},
+	"users": {
+		"identifier": "Identifier",
+		"providers": "Providers",
+		"created": "Created",
+		"updated": "Updated",
+		"empty": "No registered users at the moment."
 	}
 }

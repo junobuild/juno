@@ -11,6 +11,7 @@
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
+	import {i18n} from "$lib/stores/i18n.store";
 
 	export let satelliteId: Principal;
 
@@ -59,10 +60,10 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="identifier"> Identifier </th>
-				<th class="providers"> <span>Providers</span> </th>
-				<th class="created"> Created </th>
-				<th class="updated"> Updated </th>
+				<th class="identifier"> {$i18n.users.identifier} </th>
+				<th class="providers"> {$i18n.users.providers} </th>
+				<th class="created"> {$i18n.users.created} </th>
+				<th class="updated"> {$i18n.users.updated} </th>
 			</tr>
 		</thead>
 
@@ -82,7 +83,7 @@
 				{/if}
 
 				{#if empty}
-					<tr><td colspan="4">No registered users at the moment.</td></tr>
+					<tr><td colspan="4">{$i18n.users.empty}</td></tr>
 				{/if}
 			{/if}
 		</tbody>

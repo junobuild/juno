@@ -1,4 +1,4 @@
-# robotstxt.org/
-
 User-agent: *
-Disallow: /
+Allow: /
+Sitemap: https://console.juno.build/sitemap.xml
+Host: https://console.juno.build

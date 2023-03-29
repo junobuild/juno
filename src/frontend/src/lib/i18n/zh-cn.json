@@ -142,14 +142,16 @@
 		"owner": "拥有者",
 		"created": "创建于",
 		"updated": "更新于",
-		"data": "数据"
+		"data": "数据",
+		"no_match": "No document matches your filters."
 	},
 	"asset": {
 		"owner": "拥有者",
 		"token": "令牌",
 		"headers": "协议数据",
 		"created": "创建于",
-		"updated": "更新于"
+		"updated": "更新于",
+		"no_match": "No asset matches your filters."
 	},
 	"admin": {
 		"mission_control_new_version": "有一个新mission control版本可以使用! 请用命令行来升级.",
@@ -159,6 +161,7 @@
 		"title": "控制者",
 		"profile": "简介",
 		"delete": "删除控制者",
+		"info": "Information",
 		"delete_question": "删除选择的控制者?",
 		"controller_id": "ID",
 		"no_delete": "不能操作Juno 如果你没有登录并且设置你的Internet Identity 为 mission control 的控制者. 所以这些是不能被编辑的",
@@ -176,7 +179,8 @@
 		"public": "公开",
 		"private": "私有",
 		"managed": "可管理的",
-		"controllers": "控制者"
+		"controllers": "控制者",
+		"empty": "Your collection <strong>{0}</strong> is empty."
 	},
 	"sort": {
 		"title": "排序结果",
@@ -187,5 +191,19 @@
 		"sort_results": "排序结果:",
 		"ascending": "升序",
 		"descending": "降序"
+	},
+	"filter": {
+		"title": "Filter results",
+		"filter_keys": "Filter keys:",
+		"filter_owners": "Filter owners:",
+		"placeholder_keys": "Key matcher",
+		"placeholder_owners": "Owner ID"
+	},
+	"users": {
+		"identifier": "Identifier",
+		"providers": "Providers",
+		"created": "创建于",
+		"updated": "更新于",
+		"empty": "No registered users at the moment."
 	}
 }

@@ -4,7 +4,8 @@ import { localIdentityCanisterId, PAGINATION } from '$lib/constants/constants';
 import type { ListParams } from '$lib/types/list';
 import { toNullable } from '$lib/utils/did.utils';
 import { metadataName } from '$lib/utils/metadata.utils';
-import { nonNullish } from '$lib/utils/utils';
+import { isNullish, nonNullish } from '$lib/utils/utils';
+import { Principal } from '@dfinity/principal';
 
 export const satelliteUrl = (satelliteId: string): string => {
 	if (nonNullish(localIdentityCanisterId)) {
@@ -16,8 +17,12 @@ export const satelliteUrl = (satelliteId: string): string => {
 
 export const satelliteName = ({ metadata }: Satellite): string => metadataName(metadata);
 
-export const toListParams = ({ startAfter, order }: ListParams): ListParamsApi => ({
-	matcher: [],
+export const toListParams = ({
+	startAfter,
+	order,
+	filter: { matcher, owner }
+}: ListParams): ListParamsApi => ({
+	matcher: toNullable(matcher === '' ? null : matcher),
 	paginate: [
 		{
 			start_after: toNullable(startAfter),
@@ -35,5 +40,5 @@ export const toListParams = ({ startAfter, order }: ListParams): ListParamsApi =
 					: { Keys: null }
 		}
 	],
-	owner: []
+	owner: toNullable(owner === '' || isNullish(owner) ? null : Principal.fromText(owner))
 });

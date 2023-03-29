@@ -13,6 +13,11 @@
 
 			return { success: true };
 		} catch (err: unknown) {
+			if (err === "UserInterrupt") {
+				// We do not display an error if user explicitly cancelled the process of sign-ion
+				return;
+			}
+
 			toasts.error({
 				text: `Something went wrong while sign-in.`,
 				detail: err

@@ -1,4 +1,5 @@
 import { authStore } from '$lib/stores/auth.store';
+import { busy } from '$lib/stores/busy.store';
 import { missionControlStore } from '$lib/stores/mission-control.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -11,6 +12,8 @@ const clearDataStores = () => {
 export const signIn = async (
 	invitationCode: string | undefined = undefined
 ): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
+	busy.start();
+
 	try {
 		await authStore.signIn(invitationCode !== '' ? invitationCode : undefined);
 
@@ -27,6 +30,8 @@ export const signIn = async (
 		});
 
 		return { success: 'error', err };
+	} finally {
+		busy.stop();
 	}
 };
 

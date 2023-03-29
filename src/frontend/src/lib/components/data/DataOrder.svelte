@@ -34,17 +34,13 @@
 		})();
 </script>
 
-<div class="sort">
-	<span><slot /></span>
-
-	<button
-		class="icon"
-		aria-label={$i18n.sort.title}
-		type="button"
-		on:click={() => (visible = true)}
-		bind:this={button}><IconSort size="20px" /></button
-	>
-</div>
+<button
+	class="icon"
+	aria-label={$i18n.sort.title}
+	type="button"
+	on:click={() => (visible = true)}
+	bind:this={button}><IconSort size="20px" /></button
+>
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
@@ -84,11 +80,6 @@
 </Popover>
 
 <style lang="scss">
-	.sort {
-		display: flex;
-		justify-content: space-between;
-	}
-
 	button.icon {
 		padding: 0;
 	}

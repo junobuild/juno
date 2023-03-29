@@ -13,7 +13,7 @@
 	import { DATA_CONTEXT_KEY } from '$lib/types/data.context';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import DataOrder from '$lib/components/data/DataOrder.svelte';
+	import DataList from '$lib/components/data/DataList.svelte';
 	import { listOrderStore } from '$lib/stores/data.store';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
@@ -76,9 +76,9 @@
 </script>
 
 <div class="title">
-	<DataOrder>
+	<DataList>
 		{$i18n.storage.assets}
-	</DataOrder>
+	</DataList>
 </div>
 
 {#if !emptyCollection}

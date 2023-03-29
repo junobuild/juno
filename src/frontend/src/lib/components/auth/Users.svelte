@@ -11,7 +11,7 @@
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
-	import {i18n} from "$lib/stores/i18n.store";
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let satelliteId: Principal;
 

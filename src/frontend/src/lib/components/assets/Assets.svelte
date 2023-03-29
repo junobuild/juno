@@ -32,7 +32,7 @@
 				params: {
 					startAfter: $paginationStore.startAfter,
 					// prettier-ignore parenthesis required for Webstorm Svelte plugin
-					...($listParamsStore)
+					...$listParamsStore
 				}
 			});
 			setItems({ items, matches_length });
@@ -70,12 +70,12 @@
 	$: emptyCollection = $store.rules?.length === 0;
 
 	$: collection,
-			$listParamsStore,
-			(async () => {
-				resetPage();
-				resetData();
-				await list();
-			})();
+		$listParamsStore,
+		(async () => {
+			resetPage();
+			resetData();
+			await list();
+		})();
 </script>
 
 <div class="title">

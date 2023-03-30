@@ -43,6 +43,10 @@
 		background: var(--color-primary-opaque);
 		color: var(--color-primary-opaque-contrast);
 	}
+
+	svg + span {
+		margin: 0 0 0 0.45rem;
+	}
 }
 
 @mixin menu {
@@ -56,7 +60,7 @@
 	font-size: inherit;
 
 	svg {
-		margin: 0.45rem 1.25rem 0.45rem 0;
+		margin: 0.45rem 0.45rem 0.45rem 0;
 		width: 1.25rem;
 		height: 1.25rem;
 	}

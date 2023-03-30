@@ -12,16 +12,16 @@
 </script>
 
 <p class="sign-in-now">
-	<slot />Sign-in now with
+	<slot />Sign-in now on
 	<button
 		class="text action"
 		on:click={async () => await doSignIn('internetcomputer.org')}
 		disabled={$isBusy}>internetcomputer.org</button
 	>
-	or
+	(or
 	<button class="text action" on:click={async () => await doSignIn('ic0.app')} disabled={$isBusy}
 		>ic0.app</button
-	>.
+	>).
 </p>
 
 <style lang="scss">

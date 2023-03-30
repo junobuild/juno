@@ -16,7 +16,8 @@
 		<tbody>
 			<tr>
 				<td
-					><ExternalLink href="https://identity.ic0.app/"><IconIC /> Internet Identity</ExternalLink
+					><ExternalLink href="https://identity.internetcomputer.org/"
+						><IconIC /> Internet Identity</ExternalLink
 					></td
 				>
 				<td><IconCheckbox /> Enabled</td>

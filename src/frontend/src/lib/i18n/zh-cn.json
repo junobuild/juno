@@ -23,7 +23,8 @@
 		"ok": "可以",
 		"cancel": "取消",
 		"apply": "应用",
-		"language": "Language"
+		"language": "Language",
+		"user_menu": "User menu"
 	},
 	"canisters": {
 		"top_up": "充值",

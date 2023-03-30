@@ -3,16 +3,19 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { signIn } from '$lib/services/auth.services';
-
-	let inProgress = false;
+	import { isBusy } from '$lib/stores/busy.store';
+	import AlreadyRegistered from '$lib/components/core/AlreadyRegistered.svelte';
 
 	const redeemSignIn = async () => {
 		// Close popover to prevent glitch on successful login
 		visible = false;
 
-		const { success } = await signIn(invitationCode);
+		const { success } = await signIn({
+			domain: 'internetcomputer.org',
+			invitationCode
+		});
 
-		if (success === "ok") {
+		if (success === 'ok') {
 			return;
 		}
 
@@ -34,16 +37,14 @@
 	</div>
 
 	<div class="sign-in">
-		<button on:click={() => (visible = true)} disabled={inProgress}
-			><IconSignIn />
+		<button on:click={() => (visible = true)} disabled={$isBusy}
+			><IconSignIn size="20px" />
 			<span>Redeem invitation code</span></button
 		>
 
-		<p class="sign-in-now">
-			Already registered?<button class="text" on:click={signIn} disabled={inProgress}
-				>Sign-in now</button
-			>
-		</p>
+		<div class="sign-in-now">
+			<AlreadyRegistered>Already registered?&nbsp;</AlreadyRegistered>
+		</div>
 	</div>
 </div>
 
@@ -75,8 +76,8 @@
 				required
 			/>
 
-			<button type="submit" disabled={inProgress}>
-				<IconSignIn /> Redeem by signing in
+			<button type="submit" disabled={$isBusy}>
+				<IconSignIn size="20px" /> <span>Redeem by signing in</span>
 			</button>
 		</form>
 	</div>
@@ -115,16 +116,17 @@
 		padding: var(--padding-4x) 0 0;
 	}
 
-	.sign-in-now {
-		font-size: var(--font-size-very-small);
-		padding: var(--padding) 0 0;
-	}
-
 	.content {
 		padding: var(--padding-2x);
 
 		form {
 			margin: 0;
 		}
+	}
+
+	.sign-in-now {
+		padding: var(--padding-2x) 0;
+		font-size: var(--font-size-very-small);
+		max-width: 280px;
 	}
 </style>

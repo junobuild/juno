@@ -1,28 +1,21 @@
-<!-- CC BY-NC-SA - Didier Renaud - https://www.customfuture.com/ -->
+<!-- source: https://fonts.google.com/icons?selected=Material%20Icons%20Round%3Alogout%3A -->
+<script lang="ts">
+	export let size = '24px';
+</script>
+
 <svg
-	width="30px"
-	height="20px"
-	viewBox="0 0 30 20"
 	xmlns="http://www.w3.org/2000/svg"
+	height={size}
+	width={size}
+	viewBox="0 0 24 24"
 	fill="currentColor"
+	><g><path d="M0,0h24v24H0V0z" fill="none" /></g><g
+		><g
+			><path
+				d="M5,5h6c0.55,0,1-0.45,1-1v0c0-0.55-0.45-1-1-1H5C3.9,3,3,3.9,3,5v14c0,1.1,0.9,2,2,2h6c0.55,0,1-0.45,1-1v0 c0-0.55-0.45-1-1-1H5V5z"
+			/><path
+				d="M20.65,11.65l-2.79-2.79C17.54,8.54,17,8.76,17,9.21V11h-7c-0.55,0-1,0.45-1,1v0c0,0.55,0.45,1,1,1h7v1.79 c0,0.45,0.54,0.67,0.85,0.35l2.79-2.79C20.84,12.16,20.84,11.84,20.65,11.65z"
+			/></g
+		></g
+	></svg
 >
-	<g id="b">
-		<g id="c">
-			<g>
-				<rect id="d" x="0" y="0" width="30" height="20" style="fill:none;" />
-				<g transform="matrix(1,0,0,1,7.72562,0)">
-					<path
-						d="M20.32,10L13.5,3.18L12.09,4.6L16.49,9L2,9L2,11L16.49,11L12.09,15.4L13.5,16.82L20.32,10Z"
-						style="fill-rule:nonzero;"
-					/>
-				</g>
-			</g>
-		</g>
-	</g>
-	<g id="e" transform="matrix(-1,0,0,1,30.965,0)">
-		<path
-			d="M25.95,20L14.95,20L14.965,18L23.95,18L23.95,2.02L14.965,2.02L14.932,0L25.95,0.02L25.95,20Z"
-			style="fill-rule:nonzero;"
-		/>
-	</g>
-</svg>

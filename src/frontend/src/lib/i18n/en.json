@@ -23,7 +23,8 @@
 		"ok": "Ok",
 		"cancel": "Cancel",
 		"apply": "Apply",
-		"language": "Language"
+		"language": "Language",
+		"user_menu": "User menu"
 	},
 	"canisters": {
 		"top_up": "Top-up",

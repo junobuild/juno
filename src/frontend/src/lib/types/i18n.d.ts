@@ -27,6 +27,7 @@ interface I18nCore {
 	cancel: string;
 	apply: string;
 	language: string;
+	user_menu: string;
 }
 
 interface I18nCanisters {

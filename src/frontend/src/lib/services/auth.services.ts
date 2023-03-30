@@ -1,4 +1,4 @@
-import { authStore } from '$lib/stores/auth.store';
+import { authStore, type AuthSignInParams } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { missionControlStore } from '$lib/stores/mission-control.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
@@ -10,12 +10,12 @@ const clearDataStores = () => {
 };
 
 export const signIn = async (
-	invitationCode: string | undefined = undefined
+	params: AuthSignInParams
 ): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
 	busy.start();
 
 	try {
-		await authStore.signIn(invitationCode !== '' ? invitationCode : undefined);
+		await authStore.signIn(params);
 
 		return { success: 'ok' };
 	} catch (err: unknown) {

@@ -5,6 +5,7 @@ import {
 	localIdentityCanisterId
 } from '$lib/constants/constants';
 import { createAuthClient } from '$lib/utils/auth.utils';
+import { nonNullish } from '$lib/utils/utils';
 import { popupCenter } from '$lib/utils/window.utils';
 import type { Identity } from '@dfinity/agent';
 import type { AuthClient } from '@dfinity/auth-client';
@@ -17,9 +18,14 @@ export interface AuthStoreData {
 
 let authClient: AuthClient | undefined | null;
 
+export interface AuthSignInParams {
+	domain?: 'internetcomputer.org' | 'ic0.app';
+	invitationCode?: string;
+}
+
 export interface AuthStore extends Readable<AuthStoreData> {
 	sync: () => Promise<void>;
-	signIn: (invitationCode: string | undefined) => Promise<void>;
+	signIn: (params: AuthSignInParams) => Promise<void>;
 	signOut: () => Promise<void>;
 }
 
@@ -42,10 +48,14 @@ const initAuthStore = (): AuthStore => {
 			});
 		},
 
-		signIn: (invitationCode: string | undefined) =>
+		signIn: ({ invitationCode, domain }: AuthSignInParams) =>
 			// eslint-disable-next-line no-async-promise-executor
 			new Promise<void>(async (resolve, reject) => {
 				authClient = authClient ?? (await createAuthClient());
+
+				const identityProvider = nonNullish(localIdentityCanisterId)
+					? `http://${localIdentityCanisterId}.localhost:8000`
+					: `https://identity.${domain ?? 'internetcomputer.org'}`;
 
 				await authClient?.login({
 					maxTimeToLive: AUTH_MAX_TIME_TO_LIVE,
@@ -59,10 +69,7 @@ const initAuthStore = (): AuthStore => {
 						resolve();
 					},
 					onError: reject,
-					...(localIdentityCanisterId !== null &&
-						localIdentityCanisterId !== undefined && {
-							identityProvider: `http://${localIdentityCanisterId}.localhost:8000?#authorize`
-						}),
+					identityProvider,
 					windowOpenerFeatures: popupCenter({ width: AUTH_POPUP_WIDTH, height: AUTH_POPUP_HEIGHT })
 				});
 			}),

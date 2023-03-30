@@ -8,6 +8,7 @@
 	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
+	import AlreadyRegistered from '$lib/components/core/AlreadyRegistered.svelte';
 
 	export let signIn = true;
 
@@ -23,32 +24,42 @@
 {#if $authSignedInStore}
 	<ButtonIcon on:click={() => (visible = true)} bind:button>
 		<IconUser slot="icon" />
-		User menu
+		{$i18n.core.user_menu}
 	</ButtonIcon>
 {:else if signIn}
-	<ButtonIcon on:click={doSignIn}>
+	<ButtonIcon on:click={() => (visible = true)} bind:button>
 		<IconSignIn slot="icon" />
-		Sign-in
+		{$i18n.core.sign_in}
 	</ButtonIcon>
 {/if}
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
-		<a
-			href="/mission-control"
-			class="menu"
-			role="menuitem"
-			aria-haspopup="menu"
-			rel="external noopener norefferer"
-		>
-			<IconMissionControl />
-			<span>{$i18n.mission_control.title}</span>
-		</a>
+		{#if $authSignedInStore}
+			<a
+				href="/mission-control"
+				class="menu"
+				role="menuitem"
+				aria-haspopup="menu"
+				rel="external noopener norefferer"
+			>
+				<IconMissionControl />
+				<span>{$i18n.mission_control.title}</span>
+			</a>
 
-		<button type="button" role="menuitem" aria-haspopup="menu" on:click={signOutClose} class="menu">
-			<IconSignOut />
-			<span>{$i18n.core.sign_out}</span>
-		</button>
+			<button
+				type="button"
+				role="menuitem"
+				aria-haspopup="menu"
+				on:click={signOutClose}
+				class="menu"
+			>
+				<IconSignOut />
+				<span>{$i18n.core.sign_out}</span>
+			</button>
+		{:else}
+			<AlreadyRegistered on:junoSignIn={() => (visible = false)} />
+		{/if}
 	</div>
 </Popover>
 

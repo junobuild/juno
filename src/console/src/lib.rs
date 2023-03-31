@@ -3,6 +3,7 @@ mod controllers;
 mod guards;
 mod impls;
 mod mission_control;
+mod observatory;
 mod satellite;
 mod store;
 mod types;
@@ -12,6 +13,7 @@ mod wasm;
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::guards::caller_is_controller;
 use crate::mission_control::init_user_mission_control;
+use crate::observatory::set_observatory_notifications;
 use crate::satellite::create_satellite as create_satellite_console;
 use crate::store::{
     add_invitation_code as add_invitation_code_store, delete_controllers,
@@ -36,7 +38,8 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use shared::controllers::init_controllers;
 use shared::types::interface::{
-    CreateSatelliteArgs, DeleteControllersArgs, GetCreateSatelliteFeeArgs, SetControllersArgs,
+    ConsoleNotificationsArgs, CreateSatelliteArgs, DeleteControllersArgs,
+    GetCreateSatelliteFeeArgs, SetControllersArgs,
 };
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -201,6 +204,18 @@ fn update_rate_config(segment: Segment, config: RateConfig) {
         Segment::Satellite => update_satellites_rate_config(&config),
         Segment::MissionControl => update_mission_controls_rate_config(&config),
     }
+}
+
+/// Notifications
+
+#[candid_method(update)]
+#[update]
+async fn set_notifications(ConsoleNotificationsArgs { config }: ConsoleNotificationsArgs) {
+    let caller = caller();
+
+    set_observatory_notifications(&caller, &config)
+        .await
+        .unwrap_or_else(|e| trap(&e));
 }
 
 /// Mgmt

@@ -2,35 +2,20 @@ use crate::types::state::{Notifications, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
 use shared::types::notifications::NotificationsConfig;
-use shared::types::state::{MissionControlId, UserId};
-use shared::utils::principal_not_equal;
+use shared::types::state::MissionControlId;
 
-pub fn set_notifications(
-    mission_control_id: &MissionControlId,
-    owner: &UserId,
-    config: &NotificationsConfig,
-) -> Result<Notifications, &'static str> {
+pub fn set_notifications(mission_control_id: &MissionControlId, config: &NotificationsConfig) {
     STATE.with(|state| {
-        set_notifications_impl(mission_control_id, owner, config, &mut state.borrow_mut().stable)
+        set_notifications_impl(mission_control_id, config, &mut state.borrow_mut().stable)
     })
 }
 
 fn set_notifications_impl(
     mission_control_id: &MissionControlId,
-    owner: &UserId,
     config: &NotificationsConfig,
     state: &mut StableState,
-) -> Result<Notifications, &'static str> {
+) {
     let current_notifications = state.notifications.get(mission_control_id);
-
-    match current_notifications {
-        None => (),
-        Some(current_notifications) => {
-            if principal_not_equal(current_notifications.owner, *owner) {
-                return Err("Owner does not match existing owner.");
-            }
-        }
-    }
 
     let now = time();
 
@@ -41,7 +26,6 @@ fn set_notifications_impl(
 
     let notifications = Notifications {
         mission_control_id: *mission_control_id,
-        owner: *owner,
         config: config.clone(),
         created_at,
         updated_at: now,
@@ -49,7 +33,5 @@ fn set_notifications_impl(
 
     state
         .notifications
-        .insert(*mission_control_id, notifications.clone());
-
-    Ok(notifications)
+        .insert(*mission_control_id, notifications);
 }

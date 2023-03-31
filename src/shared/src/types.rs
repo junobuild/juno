@@ -22,11 +22,11 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::types::notifications::NotificationsConfig;
     use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
-    use crate::types::notifications::NotificationsConfig;
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateSatelliteArgs {
@@ -67,9 +67,13 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
+    pub struct ConsoleNotificationsArgs {
+        pub config: NotificationsConfig,
+    }
+
+    #[derive(CandidType, Deserialize)]
     pub struct ObservatoryNotificationsArgs {
         pub mission_control_id: MissionControlId,
-        pub owner: UserId,
         pub config: NotificationsConfig,
     }
 }

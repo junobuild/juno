@@ -72,5 +72,6 @@
 
 	.help {
 		@include fonts.small;
+		vertical-align: text-bottom;
 	}
 </style>

@@ -109,6 +109,11 @@
 		:global(*) {
 			@include text.truncate;
 			display: inline-block;
+			vertical-align: middle;
+		}
+
+		:global(svg) {
+			margin-left: 0;
 		}
 	}
 

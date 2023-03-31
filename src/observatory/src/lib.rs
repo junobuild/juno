@@ -3,10 +3,11 @@ mod store;
 mod types;
 
 use crate::guards::caller_is_console;
-use crate::store::add_mission_control as add_mission_control_store;
+use crate::store::set_mission_control as set_mission_control_store;
 use crate::types::state::{StableState, State};
 use candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
+use ic_cdk::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use shared::types::interface::ObservatoryAddMissionControlArgs;
 use std::cell::RefCell;
@@ -43,13 +44,13 @@ fn post_upgrade() {
 
 #[candid_method(update)]
 #[update(guard = "caller_is_console")]
-pub fn add_mission_control(
+pub fn set_mission_control(
     ObservatoryAddMissionControlArgs {
         owner,
         mission_control_id,
     }: ObservatoryAddMissionControlArgs,
 ) {
-    add_mission_control_store(&mission_control_id, &owner);
+    set_mission_control_store(&mission_control_id, &owner).unwrap_or_else(|e| trap(e));
 }
 
 /// Mgmt

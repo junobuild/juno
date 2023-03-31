@@ -8,6 +8,14 @@
 				"node_compatibility": true
 			}
 		},
+		"observatory": {
+			"candid": "src/observatory/observatory.did",
+			"package": "observatory",
+			"type": "rust",
+			"declarations": {
+				"node_compatibility": true
+			}
+		},
 		"mission_control": {
 			"candid": "src/mission_control/mission_control.did",
 			"package": "mission_control",

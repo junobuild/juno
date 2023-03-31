@@ -22,7 +22,7 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::types::state::{ControllerId, Metadata, UserId};
+    use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
@@ -63,6 +63,12 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct DeleteControllersArgs {
         pub controllers: Vec<ControllerId>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct ObservatoryAddMissionControlArgs {
+        pub mission_control_id: MissionControlId,
+        pub owner: UserId,
     }
 }
 

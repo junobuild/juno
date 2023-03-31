@@ -205,6 +205,7 @@
 		"provider": "Provider",
 		"created": "Created",
 		"updated": "Updated",
-		"empty": "No registered users at the moment."
+		"empty": "No registered users at the moment.",
+		"enabled": "Enabled"
 	}
 }

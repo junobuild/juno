@@ -2,6 +2,7 @@
 	import IconIC from '$lib/components/icons/IconIC.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
+	import {i18n} from "$lib/stores/i18n.store";
 </script>
 
 <div class="table-container">
@@ -20,12 +21,12 @@
 						><IconIC /> Internet Identity</ExternalLink
 					></td
 				>
-				<td class="status">Enabled</td>
+				<td class="status">{$i18n.users.enabled}</td>
 			</tr>
 
 			<tr>
 				<td><ExternalLink href="https://nfid.one/"><IconNFID /></ExternalLink></td>
-				<td class="status">Enabled</td>
+				<td class="status">{$i18n.users.enabled}</td>
 			</tr>
 		</tbody>
 	</table>

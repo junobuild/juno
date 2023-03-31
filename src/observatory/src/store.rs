@@ -1,31 +1,32 @@
-use crate::types::state::{MissionControl, StableState};
+use crate::types::state::{Notifications, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
+use shared::types::notifications::NotificationsConfig;
 use shared::types::state::{MissionControlId, UserId};
 use shared::utils::principal_not_equal;
 
-/// Mission control centers
-
-pub fn set_mission_control(
+pub fn set_notifications(
     mission_control_id: &MissionControlId,
     owner: &UserId,
-) -> Result<MissionControl, &'static str> {
+    config: &NotificationsConfig,
+) -> Result<Notifications, &'static str> {
     STATE.with(|state| {
-        set_mission_control_impl(mission_control_id, owner, &mut state.borrow_mut().stable)
+        set_notifications_impl(mission_control_id, owner, config, &mut state.borrow_mut().stable)
     })
 }
 
-fn set_mission_control_impl(
+fn set_notifications_impl(
     mission_control_id: &MissionControlId,
     owner: &UserId,
+    config: &NotificationsConfig,
     state: &mut StableState,
-) -> Result<MissionControl, &'static str> {
-    let current_mission_control = state.mission_controls.get(mission_control_id);
+) -> Result<Notifications, &'static str> {
+    let current_notifications = state.notifications.get(mission_control_id);
 
-    match current_mission_control {
+    match current_notifications {
         None => (),
-        Some(current_mission_control) => {
-            if principal_not_equal(current_mission_control.owner, *owner) {
+        Some(current_notifications) => {
+            if principal_not_equal(current_notifications.owner, *owner) {
                 return Err("Owner does not match existing owner.");
             }
         }
@@ -33,21 +34,22 @@ fn set_mission_control_impl(
 
     let now = time();
 
-    let created_at: u64 = match current_mission_control {
+    let created_at: u64 = match current_notifications {
         None => now,
-        Some(current_mission_control) => current_mission_control.created_at,
+        Some(current_notifications) => current_notifications.created_at,
     };
 
-    let new_mission_control = MissionControl {
+    let notifications = Notifications {
         mission_control_id: *mission_control_id,
         owner: *owner,
+        config: config.clone(),
         created_at,
         updated_at: now,
     };
 
     state
-        .mission_controls
-        .insert(*mission_control_id, new_mission_control.clone());
+        .notifications
+        .insert(*mission_control_id, notifications.clone());
 
-    Ok(new_mission_control)
+    Ok(notifications)
 }

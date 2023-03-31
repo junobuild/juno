@@ -3,13 +3,13 @@ mod store;
 mod types;
 
 use crate::guards::caller_is_console;
-use crate::store::set_mission_control as set_mission_control_store;
+use crate::store::set_notifications as set_notifications_store;
 use crate::types::state::{StableState, State};
 use candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
-use shared::types::interface::ObservatoryAddMissionControlArgs;
+use shared::types::interface::ObservatoryNotificationsArgs;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -22,7 +22,7 @@ fn init() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             stable: StableState {
-                mission_controls: HashMap::new(),
+                notifications: HashMap::new(),
             },
         };
     });
@@ -44,13 +44,14 @@ fn post_upgrade() {
 
 #[candid_method(update)]
 #[update(guard = "caller_is_console")]
-pub fn set_mission_control(
-    ObservatoryAddMissionControlArgs {
+pub fn set_notifications(
+    ObservatoryNotificationsArgs {
         owner,
         mission_control_id,
-    }: ObservatoryAddMissionControlArgs,
+        config,
+    }: ObservatoryNotificationsArgs,
 ) {
-    set_mission_control_store(&mission_control_id, &owner).unwrap_or_else(|e| trap(e));
+    set_notifications_store(&mission_control_id, &owner, &config).unwrap_or_else(|e| trap(e));
 }
 
 /// Mgmt

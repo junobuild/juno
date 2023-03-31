@@ -26,6 +26,7 @@ pub mod interface {
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
+    use crate::types::notifications::NotificationsConfig;
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateSatelliteArgs {
@@ -66,9 +67,10 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct ObservatoryAddMissionControlArgs {
+    pub struct ObservatoryNotificationsArgs {
         pub mission_control_id: MissionControlId,
         pub owner: UserId,
+        pub config: NotificationsConfig,
     }
 }
 
@@ -124,5 +126,21 @@ pub mod cmc {
     pub struct TopUpCanisterArgs {
         pub block_index: BlockIndex,
         pub canister_id: Principal,
+    }
+}
+
+pub mod notifications {
+    use candid::CandidType;
+    use serde::Deserialize;
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct NotificationsConfig {
+        pub cycles: CyclesNotificationsConfig,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct CyclesNotificationsConfig {
+        pub enabled: bool,
+        pub threshold: u64,
     }
 }

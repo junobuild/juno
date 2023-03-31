@@ -14,16 +14,12 @@ pub async fn set_observatory_notifications(
     let result = get_mission_control(caller);
 
     match result {
-        Ok(result) => {
-            match result {
-                None => Err("Caller has no mission control.".to_string()),
-                Some(mission_control) => {
-                    match mission_control.mission_control_id {
-                        None => Err("Mission control ID is not (yet) set.".to_string()),
-                        Some(mission_control_id) => set_notifications(&mission_control_id, config).await,
-                    }
-                }
-            }
+        Ok(result) => match result {
+            None => Err("Caller has no mission control.".to_string()),
+            Some(mission_control) => match mission_control.mission_control_id {
+                None => Err("Mission control ID is not (yet) set.".to_string()),
+                Some(mission_control_id) => set_notifications(&mission_control_id, config).await,
+            },
         },
         Err(error) => Err(error.to_string()),
     }

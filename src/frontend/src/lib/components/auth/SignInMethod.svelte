@@ -1,7 +1,7 @@
 <script lang="ts">
-	import IconCheckbox from '$lib/components/icons/IconCheckbox.svelte';
 	import IconIC from '$lib/components/icons/IconIC.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
+	import IconNFID from '$lib/components/icons/IconNFID.svelte';
 </script>
 
 <div class="table-container">
@@ -9,19 +9,40 @@
 		<thead>
 			<tr>
 				<th>Provider</th>
-				<th>Status</th>
+				<th class="status">Status</th>
 			</tr>
 		</thead>
 
 		<tbody>
 			<tr>
 				<td
-					><ExternalLink href="https://identity.internetcomputer.org/"
+					><ExternalLink href="https://internetcomputer.org/internet-identity"
 						><IconIC /> Internet Identity</ExternalLink
 					></td
 				>
-				<td><IconCheckbox /> Enabled</td>
+				<td class="status">Enabled</td>
+			</tr>
+
+			<tr>
+				<td><ExternalLink href="https://nfid.one/"><IconNFID /></ExternalLink></td>
+				<td class="status">Enabled</td>
 			</tr>
 		</tbody>
 	</table>
 </div>
+
+<style lang="scss">
+	@use '../../styles/mixins/media';
+
+	.status {
+		display: none;
+
+		@include media.min-width(medium) {
+			display: table-cell;
+		}
+	}
+
+	tr:last-of-type td {
+		padding-bottom: var(--padding-1_5x);
+	}
+</style>

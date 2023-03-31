@@ -1,10 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { listDocs } from '$lib/api/satellites.api';
 	import { getContext, onMount, setContext } from 'svelte';
-	import { formatToDate } from '$lib/utils/date.utils';
-	import IconIC from '$lib/components/icons/IconIC.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
@@ -12,6 +8,8 @@
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { listUsers } from '$lib/services/users.services';
+	import User from '$lib/components/auth/User.svelte';
 
 	export let satelliteId: Principal;
 
@@ -22,19 +20,12 @@
 		}
 
 		try {
-			const { items, matches_length } = await listDocs({
-				collection: '#user',
+			const { users, matches_length } = await listUsers({
 				satelliteId,
-				params: {
-					startAfter: $paginationStore.startAfter,
-					order: {
-						desc: true,
-						field: 'created_at'
-					},
-					filter: {}
-				}
+				startAfter: $paginationStore.startAfter
 			});
-			setItems({ items, matches_length });
+
+			setItems({ items: users, matches_length });
 		} catch (err: unknown) {
 			toasts.error({
 				text: `Error while listing the documents.`,
@@ -69,13 +60,8 @@
 
 		<tbody>
 			{#if nonNullish($paginationStore.items)}
-				{#each $paginationStore.items as [_key, { created_at, updated_at, owner }]}
-					<tr>
-						<td><Identifier identifier={owner.toText()} /></td>
-						<td class="providers"><IconIC title="Internet Identity" /></td>
-						<td class="created">{formatToDate(created_at)}</td>
-						<td class="updated">{formatToDate(updated_at)}</td>
-					</tr>
+				{#each $paginationStore.items as [_key, user]}
+					<User {user} />
 				{/each}
 
 				{#if !empty && ($paginationStore.pages ?? 0) > 0}
@@ -109,7 +95,11 @@
 
 	@include media.min-width(medium) {
 		.identifier {
-			width: 280px;
+			width: 260px;
+		}
+
+		.providers {
+			width: 120px;
 		}
 
 		.providers,
@@ -119,6 +109,14 @@
 	}
 
 	@include media.min-width(large) {
+		.identifier {
+			width: 300px;
+		}
+
+		.providers {
+			width: inherit;
+		}
+
 		.updated {
 			display: table-cell;
 		}

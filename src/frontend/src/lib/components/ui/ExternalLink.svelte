@@ -1,4 +1,6 @@
 <script lang="ts">
+	import IconArrowOutward from '$lib/components/icons/IconArrowOutward.svelte';
+
 	export let href: string;
 	export let ariaLabel = '';
 </script>
@@ -10,20 +12,30 @@
 	aria-label={ariaLabel}
 	title={ariaLabel}
 >
-	<slot />
+	<span><slot /></span>
+
+	<IconArrowOutward />
 </a>
 
 <style lang="scss">
 	a {
 		display: inline-flex;
 		align-items: center;
-		gap: var(--padding-2x);
 
 		text-decoration: none;
 
+		vertical-align: middle;
+
 		:global(svg) {
 			margin-left: var(--padding);
-			vertical-align: bottom;
+			vertical-align: middle;
 		}
+	}
+
+	span {
+		display: inline-flex;
+		align-items: center;
+
+		gap: var(--padding);
 	}
 </style>

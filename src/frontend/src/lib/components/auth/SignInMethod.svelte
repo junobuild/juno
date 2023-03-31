@@ -2,7 +2,7 @@
 	import IconIC from '$lib/components/icons/IconIC.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
-	import {i18n} from "$lib/stores/i18n.store";
+	import { i18n } from '$lib/stores/i18n.store';
 </script>
 
 <div class="table-container">

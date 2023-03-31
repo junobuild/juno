@@ -80,7 +80,7 @@ Collect "console" canister id and update [shared/src/env.rs](./src/shared/src/en
 dfx deploy observatory
 ```
 
-Collect "observatory" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `rno2w-sqaaa-aaaaa-aaacq-cai`).
+Collect "observatory" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `renrk-eyaaa-aaaaa-aaada-cai`).
 
 ```
 dfx deploy console

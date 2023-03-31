@@ -1,6 +1,6 @@
 pub mod state {
     use candid::{CandidType, Deserialize};
-    use shared::types::interface::{MissionControlId, UserId};
+    use shared::types::state::{MissionControlId, UserId};
     use std::collections::HashMap;
 
     pub type MissionControls = HashMap<MissionControlId, MissionControl>;

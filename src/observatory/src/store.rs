@@ -1,7 +1,7 @@
-use crate::types::state::{MissionControl, MissionControls, StableState};
+use crate::types::state::{MissionControl, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
-use shared::types::interface::{MissionControlId, UserId};
+use shared::types::state::{MissionControlId, UserId};
 
 /// Mission control centers
 

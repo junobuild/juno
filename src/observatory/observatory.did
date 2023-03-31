@@ -1,0 +1,8 @@
+type ObservatoryAddMissionControlArgs = record {
+  mission_control_id : principal;
+  owner : principal;
+};
+service : {
+  add_mission_control : (ObservatoryAddMissionControlArgs) -> ();
+  version : () -> (text) query;
+}

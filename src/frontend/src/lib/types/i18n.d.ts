@@ -224,10 +224,11 @@ interface I18nFilter {
 
 interface I18nUsers {
 	identifier: string;
-	providers: string;
+	provider: string;
 	created: string;
 	updated: string;
 	empty: string;
+	enabled: string;
 }
 
 interface I18n {

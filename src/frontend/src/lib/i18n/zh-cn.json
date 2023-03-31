@@ -202,7 +202,7 @@
 	},
 	"users": {
 		"identifier": "Identifier",
-		"providers": "Providers",
+		"provider": "Provider",
 		"created": "创建于",
 		"updated": "更新于",
 		"empty": "No registered users at the moment."

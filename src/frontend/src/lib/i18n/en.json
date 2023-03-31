@@ -202,7 +202,7 @@
 	},
 	"users": {
 		"identifier": "Identifier",
-		"providers": "Providers",
+		"provider": "Provider",
 		"created": "Created",
 		"updated": "Updated",
 		"empty": "No registered users at the moment."

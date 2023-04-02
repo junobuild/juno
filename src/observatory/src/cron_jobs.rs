@@ -4,6 +4,12 @@ use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, spawn};
 use shared::types::interface::{SegmentsStatus, StatusesArgs};
 use shared::types::state::MissionControlId;
+use lazy_static::lazy_static;
+use std::sync::Mutex;
+
+lazy_static! {
+    static ref LOCK: Mutex<()> = Mutex::new(());
+}
 
 pub fn spawn_mission_controls_cron_jobs() {
     let cycles_cron_jobs: Vec<(MissionControlId, CronJobsConfig)> = get_cron_jobs()
@@ -17,9 +23,12 @@ pub fn spawn_mission_controls_cron_jobs() {
 }
 
 async fn collect_statuses(cron_jobs: CronJobsConfig) {
-    let result = statuses(&cron_jobs).await;
+    // Ensure this process only runs once at a time
+    if LOCK.try_lock().is_ok() {
+        let result = statuses(&cron_jobs).await;
 
-    set_statuses(&cron_jobs.mission_control_id, &result);
+        set_statuses(&cron_jobs.mission_control_id, &result);
+    }
 }
 
 async fn statuses(cron_jobs: &CronJobsConfig) -> Result<SegmentsStatus, String> {

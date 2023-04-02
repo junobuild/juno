@@ -18,14 +18,14 @@ use crate::controllers::satellite::{
 use crate::controllers::store::get_controllers;
 use crate::guards::{caller_can_read, caller_is_user_or_controller};
 use crate::mgmt::canister::top_up_canister;
-use crate::mgmt::status::collect_status;
+use crate::mgmt::status::{collect_statuses};
 use crate::satellites::satellite::create_satellite as create_satellite_console;
 use crate::store::{get_user as get_user_store, set_metadata as set_metadata_store};
 use crate::types::state::{Satellite, SatelliteId, Satellites, StableState, State, User};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::{candid_method, export_service, Principal};
 use ic_cdk::api::call::arg_data;
-use ic_cdk::{storage, trap};
+use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use satellites::store::get_satellites;
@@ -34,6 +34,8 @@ use shared::types::state::{ControllerId, Controllers};
 use shared::types::state::{Metadata, UserId};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use ic_cdk::api::management_canister::main::CanisterStatusResponse;
+use shared::ic::canister_status;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -235,8 +237,14 @@ fn list_mission_control_controllers() -> Controllers {
 
 #[candid_method(update)]
 #[update(guard = "caller_can_read")]
-async fn status() -> SegmentsStatus {
-    collect_status().await
+async fn status() -> CanisterStatusResponse {
+    canister_status(id()).await.unwrap_or_else(|e| trap(&e))
+}
+
+#[candid_method(update)]
+#[update(guard = "caller_can_read")]
+async fn statuses() -> SegmentsStatus {
+    collect_statuses().await
 }
 
 ///

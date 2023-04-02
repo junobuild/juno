@@ -8,7 +8,7 @@ use ic_cdk::call;
 use ic_cdk::id;
 use shared::types::interface::{SegmentStatus, SegmentsStatus};
 
-pub async fn collect_status() -> SegmentsStatus {
+pub async fn collect_statuses() -> SegmentsStatus {
     let mission_control = mission_control_status().await;
 
     // TODO: if threshold reached do not call satellites

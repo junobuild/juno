@@ -29,7 +29,9 @@ use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use satellites::store::get_satellites;
-use shared::types::interface::{MissionControlArgs, SegmentStatus, SegmentsStatus, SetController};
+use shared::types::interface::{
+    MissionControlArgs, SegmentStatus, SegmentsStatus, SetController, StatusesArgs,
+};
 use shared::types::state::{ControllerId, Controllers};
 use shared::types::state::{Metadata, UserId};
 use std::cell::RefCell;
@@ -243,8 +245,8 @@ async fn status() -> SegmentStatus {
 
 #[candid_method(update)]
 #[update(guard = "caller_can_read")]
-async fn statuses() -> SegmentsStatus {
-    collect_statuses(&id(), &version()).await
+async fn statuses(StatusesArgs { threshold }: StatusesArgs) -> SegmentsStatus {
+    collect_statuses(&id(), &version(), threshold).await
 }
 
 ///

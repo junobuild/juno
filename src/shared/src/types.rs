@@ -68,14 +68,14 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct ConsoleNotificationsArgs {
+    pub struct SetNotificationsArgs {
+        pub mission_control_id: MissionControlId,
         pub config: NotificationsConfig,
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct ObservatoryNotificationsArgs {
-        pub mission_control_id: MissionControlId,
-        pub config: NotificationsConfig,
+    pub struct StatusesArgs {
+        pub threshold: u64,
     }
 
     #[derive(CandidType, Deserialize)]
@@ -89,7 +89,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct SegmentsStatus {
         pub mission_control: Result<SegmentStatus, String>,
-        pub satellites: Vec<Result<SegmentStatus, String>>,
+        pub satellites: Option<Vec<Result<SegmentStatus, String>>>,
     }
 }
 

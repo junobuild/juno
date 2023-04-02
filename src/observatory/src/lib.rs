@@ -8,7 +8,7 @@ use crate::types::state::{StableState, State};
 use candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
-use shared::types::interface::ObservatoryNotificationsArgs;
+use shared::types::interface::SetNotificationsArgs;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -44,10 +44,10 @@ fn post_upgrade() {
 #[candid_method(update)]
 #[update(guard = "caller_is_console")]
 pub fn set_notifications(
-    ObservatoryNotificationsArgs {
+    SetNotificationsArgs {
         mission_control_id,
         config,
-    }: ObservatoryNotificationsArgs,
+    }: SetNotificationsArgs,
 ) {
     set_notifications_store(&mission_control_id, &config);
 }

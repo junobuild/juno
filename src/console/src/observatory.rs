@@ -3,7 +3,7 @@ use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use shared::env::OBSERVATORY;
-use shared::types::interface::ObservatoryNotificationsArgs;
+use shared::types::interface::SetNotificationsArgs;
 use shared::types::notifications::NotificationsConfig;
 use shared::types::state::MissionControlId;
 
@@ -31,7 +31,7 @@ pub async fn set_notifications(
 ) -> Result<(), String> {
     let console = Principal::from_text(OBSERVATORY).unwrap();
 
-    let args = ObservatoryNotificationsArgs {
+    let args = SetNotificationsArgs {
         mission_control_id: *mission_control_id,
         config: config.clone(),
     };

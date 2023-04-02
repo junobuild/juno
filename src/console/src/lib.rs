@@ -23,7 +23,7 @@ use crate::store::{
     reset_satellite_release, set_controllers as set_controllers_store,
     update_mission_controls_rate_config, update_satellites_rate_config,
 };
-use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
+use crate::types::interface::{LoadRelease, NotificationsArgs, ReleasesVersion, Segment};
 use crate::types::state::{
     InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases, StableState,
     State,
@@ -38,8 +38,7 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use shared::controllers::init_controllers;
 use shared::types::interface::{
-    ConsoleNotificationsArgs, CreateSatelliteArgs, DeleteControllersArgs,
-    GetCreateSatelliteFeeArgs, SetControllersArgs,
+    CreateSatelliteArgs, DeleteControllersArgs, GetCreateSatelliteFeeArgs, SetControllersArgs,
 };
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -210,7 +209,7 @@ fn update_rate_config(segment: Segment, config: RateConfig) {
 
 #[candid_method(update)]
 #[update]
-async fn set_notifications(ConsoleNotificationsArgs { config }: ConsoleNotificationsArgs) {
+async fn set_notifications(NotificationsArgs { config }: NotificationsArgs) {
     let caller = caller();
 
     set_observatory_notifications(&caller, &config)

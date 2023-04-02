@@ -85,7 +85,7 @@ pub mod state {
 pub mod interface {
     use candid::CandidType;
     use serde::Deserialize;
-    use shared::types::notifications::NotificationsConfig;
+    use shared::types::cronjob::CronJobs;
 
     #[derive(CandidType, Deserialize)]
     pub enum Segment {
@@ -106,8 +106,8 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct NotificationsArgs {
-        pub config: NotificationsConfig,
+    pub struct CronJobsArgs {
+        pub cron_jobs: CronJobs,
     }
 }
 

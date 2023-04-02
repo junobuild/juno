@@ -1,10 +1,10 @@
 pub mod state {
     use candid::{CandidType, Deserialize};
-    use shared::types::notifications::NotificationsConfig;
+    use shared::types::cronjob::CronJobs;
     use shared::types::state::{Controllers, MissionControlId};
     use std::collections::HashMap;
 
-    pub type MissionControlNotifications = HashMap<MissionControlId, Notifications>;
+    pub type MissionControlCronJobs = HashMap<MissionControlId, CronJobsConfig>;
 
     #[derive(Default, Clone)]
     pub struct State {
@@ -15,13 +15,13 @@ pub mod state {
     pub struct StableState {
         pub controllers: Controllers,
         pub readonly_controllers: Controllers,
-        pub notifications: MissionControlNotifications,
+        pub cron_jobs: MissionControlCronJobs,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct Notifications {
+    pub struct CronJobsConfig {
         pub mission_control_id: MissionControlId,
-        pub config: NotificationsConfig,
+        pub cron_jobs: CronJobs,
         pub created_at: u64,
         pub updated_at: u64,
     }

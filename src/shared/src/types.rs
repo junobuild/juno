@@ -22,7 +22,7 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::types::notifications::NotificationsConfig;
+    use crate::types::cronjob::CronJobs;
     use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
     use candid::{CandidType, Principal};
     use ic_cdk::api::management_canister::main::CanisterStatusResponse;
@@ -68,9 +68,9 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct SetNotificationsArgs {
+    pub struct SetCronJobsArgs {
         pub mission_control_id: MissionControlId,
-        pub config: NotificationsConfig,
+        pub cron_jobs: CronJobs,
     }
 
     #[derive(CandidType, Deserialize)]
@@ -148,17 +148,17 @@ pub mod cmc {
     }
 }
 
-pub mod notifications {
+pub mod cronjob {
     use candid::CandidType;
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct NotificationsConfig {
-        pub cycles: CyclesNotificationsConfig,
+    pub struct CronJobs {
+        pub cycles: CyclesCronJob,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct CyclesNotificationsConfig {
+    pub struct CyclesCronJob {
         pub enabled: bool,
         pub threshold: u64,
     }

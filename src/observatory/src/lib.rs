@@ -5,7 +5,7 @@ mod types;
 use crate::guards::{caller_can_read, caller_is_console, caller_is_controller};
 use crate::store::{
     delete_controllers, delete_readonly_controllers, set_controllers as set_controllers_store,
-    set_notifications as set_notifications_store,
+    set_cron_jobs as set_cron_jobs_store,
     set_readonly_controllers as set_readonly_controllers_store,
 };
 use crate::types::state::{StableState, State};
@@ -14,7 +14,7 @@ use ic_cdk::caller;
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use shared::controllers::init_controllers;
-use shared::types::interface::{DeleteControllersArgs, SetControllersArgs, SetNotificationsArgs};
+use shared::types::interface::{DeleteControllersArgs, SetControllersArgs, SetCronJobsArgs};
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -31,7 +31,7 @@ fn init() {
             stable: StableState {
                 controllers: init_controllers(&[manager]),
                 readonly_controllers: HashMap::new(),
-                notifications: HashMap::new(),
+                cron_jobs: HashMap::new(),
             },
         };
     });
@@ -89,13 +89,13 @@ fn del_readonly_controllers(DeleteControllersArgs { controllers }: DeleteControl
 
 #[candid_method(update)]
 #[update(guard = "caller_is_console")]
-pub fn set_notifications(
-    SetNotificationsArgs {
+pub fn set_cron_jobs(
+    SetCronJobsArgs {
         mission_control_id,
-        config,
-    }: SetNotificationsArgs,
+        cron_jobs,
+    }: SetCronJobsArgs,
 ) {
-    set_notifications_store(&mission_control_id, &config);
+    set_cron_jobs_store(&mission_control_id, &cron_jobs);
 }
 
 /// Mgmt

@@ -1,29 +1,33 @@
-use crate::types::state::{Notifications, StableState};
+use crate::types::state::{CronJobsConfig, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
 use shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
+use shared::types::cronjob::CronJobs;
 use shared::types::interface::SetController;
-use shared::types::notifications::NotificationsConfig;
 use shared::types::state::{ControllerId, MissionControlId};
 
 ///
 /// Notifications
 ///
 
-pub fn set_notifications(mission_control_id: &MissionControlId, config: &NotificationsConfig) {
+pub fn set_cron_jobs(mission_control_id: &MissionControlId, cron_jobs: &CronJobs) {
     STATE.with(|state| {
-        set_notifications_impl(mission_control_id, config, &mut state.borrow_mut().stable)
+        set_cron_jobs_impl(
+            mission_control_id,
+            cron_jobs,
+            &mut state.borrow_mut().stable,
+        )
     })
 }
 
-fn set_notifications_impl(
+fn set_cron_jobs_impl(
     mission_control_id: &MissionControlId,
-    config: &NotificationsConfig,
+    cron_jobs: &CronJobs,
     state: &mut StableState,
 ) {
-    let current_notifications = state.notifications.get(mission_control_id);
+    let current_notifications = state.cron_jobs.get(mission_control_id);
 
     let now = time();
 
@@ -32,16 +36,14 @@ fn set_notifications_impl(
         Some(current_notifications) => current_notifications.created_at,
     };
 
-    let notifications = Notifications {
+    let notifications = CronJobsConfig {
         mission_control_id: *mission_control_id,
-        config: config.clone(),
+        cron_jobs: cron_jobs.clone(),
         created_at,
         updated_at: now,
     };
 
-    state
-        .notifications
-        .insert(*mission_control_id, notifications);
+    state.cron_jobs.insert(*mission_control_id, notifications);
 }
 
 ///

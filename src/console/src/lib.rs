@@ -13,7 +13,7 @@ mod wasm;
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::guards::caller_is_controller;
 use crate::mission_control::init_user_mission_control;
-use crate::observatory::set_observatory_notifications;
+use crate::observatory::set_observatory_cron_jobs;
 use crate::satellite::create_satellite as create_satellite_console;
 use crate::store::{
     add_invitation_code as add_invitation_code_store, delete_controllers,
@@ -23,7 +23,7 @@ use crate::store::{
     reset_satellite_release, set_controllers as set_controllers_store,
     update_mission_controls_rate_config, update_satellites_rate_config,
 };
-use crate::types::interface::{LoadRelease, NotificationsArgs, ReleasesVersion, Segment};
+use crate::types::interface::{CronJobsArgs, LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
     InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases, StableState,
     State,
@@ -205,14 +205,14 @@ fn update_rate_config(segment: Segment, config: RateConfig) {
     }
 }
 
-/// Notifications
+/// CronJobs
 
 #[candid_method(update)]
 #[update]
-async fn set_notifications(NotificationsArgs { config }: NotificationsArgs) {
+async fn set_cron_jobs(CronJobsArgs { cron_jobs }: CronJobsArgs) {
     let caller = caller();
 
-    set_observatory_notifications(&caller, &config)
+    set_observatory_cron_jobs(&caller, &cron_jobs)
         .await
         .unwrap_or_else(|e| trap(&e));
 }

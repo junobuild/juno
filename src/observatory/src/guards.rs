@@ -27,20 +27,20 @@ pub fn caller_is_controller() -> Result<(), String> {
     }
 }
 
-pub fn caller_can_read() -> Result<(), String> {
+pub fn caller_can_execute_cron_jobs() -> Result<(), String> {
     let caller = caller();
 
-    if caller_is_console_impl(caller) || is_controller() || caller_is_readonly_controller() {
+    if caller_is_console_impl(caller) || is_controller() || caller_is_cron_jobs_controller() {
         Ok(())
     } else {
         Err("Caller is not allowed to read.".to_string())
     }
 }
 
-fn caller_is_readonly_controller() -> bool {
+fn caller_is_cron_jobs_controller() -> bool {
     let caller = caller();
     let controllers: Controllers =
-        STATE.with(|state| state.borrow().stable.readonly_controllers.clone());
+        STATE.with(|state| state.borrow().stable.cron_jobs_controllers.clone());
 
     is_controller_impl(caller, &controllers)
 }

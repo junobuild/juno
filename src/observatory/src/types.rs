@@ -14,7 +14,7 @@ pub mod state {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct StableState {
         pub controllers: Controllers,
-        pub readonly_controllers: Controllers,
+        pub cron_jobs_controllers: Controllers,
         pub cron_jobs: MissionControlCronJobs,
     }
 

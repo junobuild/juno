@@ -2,11 +2,11 @@ mod guards;
 mod store;
 mod types;
 
-use crate::guards::{caller_can_read, caller_is_console, caller_is_controller};
+use crate::guards::{caller_can_execute_cron_jobs, caller_is_console, caller_is_controller};
 use crate::store::{
-    delete_controllers, delete_readonly_controllers, set_controllers as set_controllers_store,
+    delete_controllers, delete_cron_jobs_controllers, set_controllers as set_controllers_store,
     set_cron_jobs as set_cron_jobs_store,
-    set_readonly_controllers as set_readonly_controllers_store,
+    set_cron_jobs_controllers as set_cron_jobs_controllers_store,
 };
 use crate::types::state::{StableState, State};
 use candid::{candid_method, export_service};
@@ -30,7 +30,7 @@ fn init() {
         *state.borrow_mut() = State {
             stable: StableState {
                 controllers: init_controllers(&[manager]),
-                readonly_controllers: HashMap::new(),
+                cron_jobs_controllers: HashMap::new(),
                 cron_jobs: HashMap::new(),
             },
         };
@@ -70,32 +70,38 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
 
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
-fn set_readonly_controllers(
+fn set_cron_jobs_controllers(
     SetControllersArgs {
         controllers,
         controller,
     }: SetControllersArgs,
 ) {
-    set_readonly_controllers_store(&controllers, &controller);
+    set_cron_jobs_controllers_store(&controllers, &controller);
 }
 
 #[candid_method(update)]
 #[update(guard = "caller_is_controller")]
-fn del_readonly_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
-    delete_readonly_controllers(&controllers);
+fn del_cron_jobs_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
+    delete_cron_jobs_controllers(&controllers);
 }
 
-/// Notifications
+/// CronJobs
 
 #[candid_method(update)]
 #[update(guard = "caller_is_console")]
-pub fn set_cron_jobs(
+fn set_cron_jobs(
     SetCronJobsArgs {
         mission_control_id,
         cron_jobs,
     }: SetCronJobsArgs,
 ) {
     set_cron_jobs_store(&mission_control_id, &cron_jobs);
+}
+
+#[candid_method(update)]
+#[update(guard = "caller_can_execute_cron_jobs")]
+fn spawn_cron_jobs() {
+
 }
 
 /// Mgmt

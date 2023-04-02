@@ -81,8 +81,9 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct SegmentStatus {
         pub id: Principal,
-        pub metadata: Metadata,
+        pub metadata: Option<Metadata>,
         pub status: CanisterStatusResponse,
+        pub version: String,
     }
 
     #[derive(CandidType, Deserialize)]

@@ -1,15 +1,19 @@
 use crate::satellites::store::get_satellites;
 use crate::store::get_metadata;
 use crate::types::state::{Satellite, SatelliteId};
+use candid::Principal;
 use futures::future::join_all;
 use ic_cdk::api::call::CallResult;
-use ic_cdk::api::management_canister::main::CanisterStatusResponse;
 use ic_cdk::call;
-use ic_cdk::id;
+use shared::ic::segment_status;
 use shared::types::interface::{SegmentStatus, SegmentsStatus};
+use shared::types::state::MissionControlId;
 
-pub async fn collect_statuses() -> SegmentsStatus {
-    let mission_control = mission_control_status().await;
+pub async fn collect_statuses(
+    mission_control_id: &MissionControlId,
+    version: &str,
+) -> SegmentsStatus {
+    let mission_control = mission_control_status(mission_control_id, version).await;
 
     // TODO: if threshold reached do not call satellites
 
@@ -21,16 +25,20 @@ pub async fn collect_statuses() -> SegmentsStatus {
     }
 }
 
-async fn mission_control_status() -> Result<SegmentStatus, String> {
-    let mission_control_id = id();
-    let status = status(mission_control_id).await;
+pub async fn mission_control_status(
+    mission_control_id: &MissionControlId,
+    version: &str,
+) -> Result<SegmentStatus, String> {
+    let result: Result<SegmentStatus, String> =
+        segment_status(*mission_control_id, version.to_owned()).await;
 
-    match status {
+    match result {
         Err(err) => Err(err),
-        Ok(status) => Ok(SegmentStatus {
-            id: mission_control_id,
-            status,
-            metadata: get_metadata(),
+        Ok(result) => Ok(SegmentStatus {
+            id: *mission_control_id,
+            metadata: Some(get_metadata()),
+            version: version.to_owned(),
+            status: result.status,
         }),
     }
 }
@@ -42,12 +50,18 @@ async fn satellites_status() -> Vec<Result<SegmentStatus, String>> {
         satellite_id: SatelliteId,
         satellite: Satellite,
     ) -> Result<SegmentStatus, String> {
-        let sat_status = status(satellite_id).await?;
+        let SegmentStatus {
+            id: _,
+            status,
+            version,
+            metadata: _,
+        } = status(satellite_id).await?;
 
         Ok(SegmentStatus {
             id: satellite_id,
-            metadata: satellite.metadata,
-            status: sat_status,
+            metadata: Some(satellite.metadata),
+            status,
+            version,
         })
     }
 
@@ -59,8 +73,8 @@ async fn satellites_status() -> Vec<Result<SegmentStatus, String>> {
     .await
 }
 
-async fn status(satellite_id: SatelliteId) -> Result<CanisterStatusResponse, String> {
-    let result: CallResult<(CanisterStatusResponse,)> = call(satellite_id, "status", ((),)).await;
+async fn status(canister_id: Principal) -> Result<SegmentStatus, String> {
+    let result: CallResult<(SegmentStatus,)> = call(canister_id, "status", ((),)).await;
 
     match result {
         Err((_, message)) => Err(message),

@@ -6,7 +6,7 @@ pub mod state {
     use std::collections::HashMap;
 
     pub type MissionControlCronJobs = HashMap<MissionControlId, CronJobsConfig>;
-    pub type Statuses = HashMap<MissionControlId, Result<SegmentsStatus, String>>;
+    pub type Statuses = HashMap<MissionControlId, MissionControlStatuses>;
 
     #[derive(Default, Clone)]
     pub struct State {
@@ -21,9 +21,16 @@ pub mod state {
         pub cron_jobs: MissionControlCronJobs,
     }
 
-    #[derive(Default, Clone)]
+    #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct RuntimeState {
         pub statuses: Statuses,
+    }
+
+    #[derive(Clone, CandidType, Deserialize)]
+    pub struct MissionControlStatuses {
+        pub statuses: Result<SegmentsStatus, String>,
+        pub created_at: u64,
+        pub updated_at: u64,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

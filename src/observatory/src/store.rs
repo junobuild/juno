@@ -1,4 +1,6 @@
-use crate::types::state::{CronJobsConfig, MissionControlCronJobs, RuntimeState, StableState};
+use crate::types::state::{
+    CronJobsConfig, MissionControlCronJobs, MissionControlStatuses, RuntimeState, StableState,
+};
 use crate::STATE;
 use ic_cdk::api::time;
 use shared::controllers::{
@@ -114,5 +116,14 @@ fn set_statuses_impl(
     statuses: &Result<SegmentsStatus, String>,
     state: &mut RuntimeState,
 ) {
-    state.statuses.insert(*mission_control_id, statuses.clone());
+    let now = time();
+
+    state.statuses.insert(
+        *mission_control_id,
+        MissionControlStatuses {
+            statuses: statuses.clone(),
+            updated_at: now,
+            created_at: now,
+        },
+    );
 }

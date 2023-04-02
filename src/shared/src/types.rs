@@ -84,6 +84,7 @@ pub mod interface {
         pub metadata: Option<Metadata>,
         pub status: CanisterStatusResponse,
         pub version: String,
+        pub status_at: u64,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

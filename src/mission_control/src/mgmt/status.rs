@@ -52,6 +52,7 @@ pub async fn mission_control_status(
             metadata: Some(get_metadata()),
             version: version.to_owned(),
             status: result.status,
+            status_at: result.status_at,
         }),
     }
 }
@@ -68,6 +69,7 @@ async fn satellites_status() -> Vec<Result<SegmentStatus, String>> {
             status,
             version,
             metadata: _,
+            status_at,
         } = status(satellite_id).await?;
 
         Ok(SegmentStatus {
@@ -75,6 +77,7 @@ async fn satellites_status() -> Vec<Result<SegmentStatus, String>> {
             metadata: Some(satellite.metadata),
             status,
             version,
+            status_at,
         })
     }
 

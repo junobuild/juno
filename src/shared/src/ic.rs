@@ -8,6 +8,7 @@ use ic_cdk::api::management_canister::main::{
     CanisterInstallMode, CanisterSettings, CreateCanisterArgument, InstallCodeArgument,
     UpdateSettingsArgument,
 };
+use ic_cdk::api::time;
 
 pub async fn create_canister_install_code(
     controllers: Vec<Principal>,
@@ -86,6 +87,7 @@ pub async fn segment_status(
             metadata: None,
             status,
             version,
+            status_at: time(),
         }),
         Err((_, message)) => Err(["Failed to get canister status: ".to_string(), message].join("")),
     }

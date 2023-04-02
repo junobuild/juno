@@ -12,7 +12,7 @@ use shared::types::state::MissionControlId;
 pub async fn collect_statuses(
     mission_control_id: &MissionControlId,
     version: &str,
-    threshold: u64,
+    cycles_threshold: u64,
 ) -> SegmentsStatus {
     let mission_control_check = mission_control_status(mission_control_id, version).await;
 
@@ -20,7 +20,7 @@ pub async fn collect_statuses(
     match mission_control_check {
         Err(_) => (),
         Ok(segment_status) => {
-            if segment_status.status.cycles < threshold {
+            if segment_status.status.cycles < cycles_threshold {
                 return SegmentsStatus {
                     mission_control: Ok(segment_status),
                     satellites: None,

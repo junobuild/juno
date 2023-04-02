@@ -245,8 +245,8 @@ async fn status() -> SegmentStatus {
 
 #[candid_method(update)]
 #[update(guard = "caller_can_read")]
-async fn statuses(StatusesArgs { threshold }: StatusesArgs) -> SegmentsStatus {
-    collect_statuses(&id(), &version(), threshold).await
+async fn statuses(StatusesArgs { cycles_threshold }: StatusesArgs) -> SegmentsStatus {
+    collect_statuses(&id(), &version(), cycles_threshold).await
 }
 
 ///

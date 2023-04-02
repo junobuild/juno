@@ -1,16 +1,20 @@
-use crate::types::state::{CronJobsConfig, StableState};
+use crate::types::state::{CronJobsConfig, MissionControlCronJobs, RuntimeState, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
 use shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use shared::types::cronjob::CronJobs;
-use shared::types::interface::SetController;
+use shared::types::interface::{SegmentsStatus, SetController};
 use shared::types::state::{ControllerId, MissionControlId};
 
 ///
-/// Notifications
+/// CronJobs
 ///
+
+pub fn get_cron_jobs() -> MissionControlCronJobs {
+    STATE.with(|state| state.borrow().stable.cron_jobs.clone())
+}
 
 pub fn set_cron_jobs(mission_control_id: &MissionControlId, cron_jobs: &CronJobs) {
     STATE.with(|state| {
@@ -86,4 +90,29 @@ pub fn delete_cron_jobs_controllers(remove_controllers: &[ControllerId]) {
             &mut state.borrow_mut().stable.cron_jobs_controllers,
         )
     })
+}
+
+///
+/// Statuses
+///
+
+pub fn set_statuses(
+    mission_control_id: &MissionControlId,
+    statuses: &Result<SegmentsStatus, String>,
+) {
+    STATE.with(|state| {
+        set_statuses_impl(
+            mission_control_id,
+            statuses,
+            &mut state.borrow_mut().runtime,
+        )
+    })
+}
+
+fn set_statuses_impl(
+    mission_control_id: &MissionControlId,
+    statuses: &Result<SegmentsStatus, String>,
+    state: &mut RuntimeState,
+) {
+    state.statuses.insert(*mission_control_id, statuses.clone());
 }

@@ -1,14 +1,16 @@
+mod cron_jobs;
 mod guards;
 mod store;
 mod types;
 
+use crate::cron_jobs::spawn_mission_controls_cron_jobs;
 use crate::guards::{caller_can_execute_cron_jobs, caller_is_console, caller_is_controller};
 use crate::store::{
     delete_controllers, delete_cron_jobs_controllers, set_controllers as set_controllers_store,
     set_cron_jobs as set_cron_jobs_store,
     set_cron_jobs_controllers as set_cron_jobs_controllers_store,
 };
-use crate::types::state::{StableState, State};
+use crate::types::state::{RuntimeState, StableState, State};
 use candid::{candid_method, export_service};
 use ic_cdk::caller;
 use ic_cdk::storage::{stable_restore, stable_save};
@@ -33,6 +35,7 @@ fn init() {
                 cron_jobs_controllers: HashMap::new(),
                 cron_jobs: HashMap::new(),
             },
+            runtime: RuntimeState::default(),
         };
     });
 }
@@ -46,7 +49,12 @@ fn pre_upgrade() {
 fn post_upgrade() {
     let (stable,): (StableState,) = stable_restore().unwrap();
 
-    STATE.with(|state| *state.borrow_mut() = State { stable });
+    STATE.with(|state| {
+        *state.borrow_mut() = State {
+            stable,
+            runtime: RuntimeState::default(),
+        }
+    });
 }
 
 /// Controllers
@@ -101,7 +109,7 @@ fn set_cron_jobs(
 #[candid_method(update)]
 #[update(guard = "caller_can_execute_cron_jobs")]
 fn spawn_cron_jobs() {
-
+    spawn_mission_controls_cron_jobs();
 }
 
 /// Mgmt

@@ -75,10 +75,10 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize)]
     pub struct StatusesArgs {
-        pub threshold: u64,
+        pub cycles_threshold: u64,
     }
 
-    #[derive(CandidType, Deserialize)]
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentStatus {
         pub id: Principal,
         pub metadata: Option<Metadata>,
@@ -86,7 +86,7 @@ pub mod interface {
         pub version: String,
     }
 
-    #[derive(CandidType, Deserialize)]
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentsStatus {
         pub mission_control: Result<SegmentStatus, String>,
         pub satellites: Option<Vec<Result<SegmentStatus, String>>>,
@@ -154,12 +154,12 @@ pub mod cronjob {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct CronJobs {
-        pub cycles: CyclesCronJob,
+        pub statuses: StatusesCronJob,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct CyclesCronJob {
+    pub struct StatusesCronJob {
         pub enabled: bool,
-        pub threshold: u64,
+        pub cycles_threshold: u64,
     }
 }

@@ -25,7 +25,7 @@ pub async fn set_observatory_cron_jobs(
     }
 }
 
-pub async fn set_cron_jobs(
+async fn set_cron_jobs(
     mission_control_id: &MissionControlId,
     config: &CronJobs,
 ) -> Result<(), String> {

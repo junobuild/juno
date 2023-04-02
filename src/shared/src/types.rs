@@ -24,7 +24,8 @@ pub mod state {
 pub mod interface {
     use crate::types::notifications::NotificationsConfig;
     use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
+    use ic_cdk::api::management_canister::main::CanisterStatusResponse;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
 
@@ -75,6 +76,19 @@ pub mod interface {
     pub struct ObservatoryNotificationsArgs {
         pub mission_control_id: MissionControlId,
         pub config: NotificationsConfig,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct SegmentStatus {
+        pub id: Principal,
+        pub metadata: Metadata,
+        pub status: CanisterStatusResponse,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct SegmentsStatus {
+        pub mission_control: Result<SegmentStatus, String>,
+        pub satellites: Vec<Result<SegmentStatus, String>>,
     }
 }
 

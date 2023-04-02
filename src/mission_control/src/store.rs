@@ -7,6 +7,10 @@ pub fn get_user() -> UserId {
     STATE.with(|state| state.borrow().stable.user.user).unwrap()
 }
 
+pub fn get_metadata() -> Metadata {
+    STATE.with(|state| state.borrow().stable.user.metadata.clone())
+}
+
 pub fn set_metadata(metadata: &Metadata) {
     STATE.with(|state| set_metadata_impl(metadata, &mut state.borrow_mut().stable))
 }

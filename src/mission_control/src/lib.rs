@@ -16,8 +16,9 @@ use crate::controllers::satellite::{
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
 };
 use crate::controllers::store::get_controllers;
-use crate::guards::caller_is_user_or_controller;
+use crate::guards::{caller_can_read, caller_is_user_or_controller};
 use crate::mgmt::canister::top_up_canister;
+use crate::mgmt::status::collect_status;
 use crate::satellites::satellite::create_satellite as create_satellite_console;
 use crate::store::{get_user as get_user_store, set_metadata as set_metadata_store};
 use crate::types::state::{Satellite, SatelliteId, Satellites, StableState, State, User};
@@ -28,7 +29,7 @@ use ic_cdk::{storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use satellites::store::get_satellites;
-use shared::types::interface::{MissionControlArgs, SetController};
+use shared::types::interface::{MissionControlArgs, SegmentsStatus, SetController};
 use shared::types::state::{ControllerId, Controllers};
 use shared::types::state::{Metadata, UserId};
 use std::cell::RefCell;
@@ -226,6 +227,16 @@ async fn del_mission_control_controllers(controllers: Vec<ControllerId>) {
 #[query(guard = "caller_is_user_or_controller")]
 fn list_mission_control_controllers() -> Controllers {
     get_controllers()
+}
+
+///
+/// Mgmt
+///
+
+#[candid_method(update)]
+#[update(guard = "caller_can_read")]
+async fn status() -> SegmentsStatus {
+    collect_status().await
 }
 
 ///

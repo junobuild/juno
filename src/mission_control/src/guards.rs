@@ -1,9 +1,7 @@
 use crate::store::get_user;
 use crate::STATE;
-use candid::Principal;
 use ic_cdk::caller;
-use shared::controllers::is_controller;
-use shared::env::{CONSOLE, OBSERVATORY};
+use shared::controllers::{caller_is_console, caller_is_observatory, is_controller};
 use shared::types::state::Controllers;
 use shared::utils::principal_equal;
 
@@ -16,7 +14,12 @@ pub fn caller_is_user_or_controller() -> Result<(), String> {
 }
 
 pub fn caller_can_read() -> Result<(), String> {
-    if caller_is_user() || caller_is_controller() || caller_is_console() || caller_is_observatory()
+    let caller = caller();
+
+    if caller_is_user()
+        || caller_is_controller()
+        || caller_is_console(caller)
+        || caller_is_observatory(caller)
     {
         Ok(())
     } else {
@@ -39,18 +42,4 @@ fn caller_is_controller() -> bool {
     let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
 
     is_controller(caller, &controllers)
-}
-
-fn caller_is_console() -> bool {
-    let caller = caller();
-    let console = Principal::from_text(CONSOLE).unwrap();
-
-    principal_equal(caller, console)
-}
-
-fn caller_is_observatory() -> bool {
-    let caller = caller();
-    let observatory = Principal::from_text(OBSERVATORY).unwrap();
-
-    principal_equal(caller, observatory)
 }

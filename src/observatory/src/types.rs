@@ -1,7 +1,7 @@
 pub mod state {
     use candid::{CandidType, Deserialize};
     use shared::types::notifications::NotificationsConfig;
-    use shared::types::state::MissionControlId;
+    use shared::types::state::{Controllers, MissionControlId};
     use std::collections::HashMap;
 
     pub type MissionControlNotifications = HashMap<MissionControlId, Notifications>;
@@ -13,6 +13,8 @@ pub mod state {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct StableState {
+        pub controllers: Controllers,
+        pub readonly_controllers: Controllers,
         pub notifications: MissionControlNotifications,
     }
 

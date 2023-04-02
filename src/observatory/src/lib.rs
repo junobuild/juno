@@ -2,13 +2,19 @@ mod guards;
 mod store;
 mod types;
 
-use crate::guards::caller_is_console;
-use crate::store::set_notifications as set_notifications_store;
+use crate::guards::{caller_can_read, caller_is_console, caller_is_controller};
+use crate::store::{
+    delete_controllers, delete_readonly_controllers, set_controllers as set_controllers_store,
+    set_notifications as set_notifications_store,
+    set_readonly_controllers as set_readonly_controllers_store,
+};
 use crate::types::state::{StableState, State};
 use candid::{candid_method, export_service};
+use ic_cdk::caller;
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
-use shared::types::interface::SetNotificationsArgs;
+use shared::controllers::init_controllers;
+use shared::types::interface::{DeleteControllersArgs, SetControllersArgs, SetNotificationsArgs};
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -18,9 +24,13 @@ thread_local! {
 
 #[init]
 fn init() {
+    let manager = caller();
+
     STATE.with(|state| {
         *state.borrow_mut() = State {
             stable: StableState {
+                controllers: init_controllers(&[manager]),
+                readonly_controllers: HashMap::new(),
                 notifications: HashMap::new(),
             },
         };
@@ -37,6 +47,42 @@ fn post_upgrade() {
     let (stable,): (StableState,) = stable_restore().unwrap();
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
+}
+
+/// Controllers
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn set_controllers(
+    SetControllersArgs {
+        controllers,
+        controller,
+    }: SetControllersArgs,
+) {
+    set_controllers_store(&controllers, &controller);
+}
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
+    delete_controllers(&controllers);
+}
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn set_readonly_controllers(
+    SetControllersArgs {
+        controllers,
+        controller,
+    }: SetControllersArgs,
+) {
+    set_readonly_controllers_store(&controllers, &controller);
+}
+
+#[candid_method(update)]
+#[update(guard = "caller_is_controller")]
+fn del_readonly_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
+    delete_readonly_controllers(&controllers);
 }
 
 /// Notifications

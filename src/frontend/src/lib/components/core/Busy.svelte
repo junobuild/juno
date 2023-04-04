@@ -4,28 +4,30 @@
 	import { busy } from '$lib/stores/busy.store';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '$lib/utils/utils';
 
-	const close = () => busy.stop();
+	const close = () => {
+		if (isNullish($busy) || !$busy.close) {
+			return;
+		}
+
+		busy.stop();
+	};
 </script>
 
 {#if nonNullish($busy)}
-	<div transition:fade>
-		{#if $busy.close}
-			<div class="backdrop" on:click={close} />
-		{/if}
-
+	<div transition:fade on:click={close} class:close={$busy.close}>
 		<div class="content">
-			{#if $busy.close}
-				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} class="text close"
-					><IconClose /></button
-				>
-			{/if}
-
 			{#if $busy.spinner}
 				<div class="spinner">
 					<Spinner />
 				</div>
+			{/if}
+
+			{#if $busy.close}
+				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} class="text close"
+					>{$i18n.core.close} <IconClose size="14px" /></button
+				>
 			{/if}
 		</div>
 	</div>
@@ -43,15 +45,10 @@
 		@include display.inset;
 
 		@include overlay.backdrop(dark);
-	}
 
-	.backdrop {
-		position: absolute;
-		@include display.inset;
-
-		background: transparent;
-
-		@include interaction.tappable;
+		&.close {
+			@include interaction.tappable;
+		}
 	}
 
 	.content {
@@ -81,6 +78,9 @@
 	}
 
 	.text {
-		color: var(--color-card);
+		font-size: var(--font-size-very-small);
+		text-decoration: none;
+		margin-top: var(--padding);
+		gap: var(--padding-0_5x);
 	}
 </style>

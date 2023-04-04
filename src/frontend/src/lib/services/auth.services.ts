@@ -12,7 +12,7 @@ const clearDataStores = () => {
 export const signIn = async (
 	params: AuthSignInParams
 ): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
-	busy.start();
+	busy.show();
 
 	try {
 		await authStore.signIn(params);

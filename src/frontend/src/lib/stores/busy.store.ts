@@ -6,7 +6,13 @@ export interface Busy {
 	close: boolean;
 }
 
-const initBusyStore = () => {
+export interface BusyStore extends Readable<Busy | undefined> {
+	start: () => void;
+	show: () => void;
+	stop: () => void;
+}
+
+const initBusyStore = (): BusyStore => {
 	const { subscribe, set } = writable<Busy | undefined>(undefined);
 
 	return {
@@ -17,7 +23,7 @@ const initBusyStore = () => {
 		},
 
 		show() {
-			set({ spinner: false, close: true });
+			set({ spinner: true, close: true });
 		},
 
 		stop() {
@@ -28,7 +34,12 @@ const initBusyStore = () => {
 
 export const busy = initBusyStore();
 
-const initWizardBusyStore = () => {
+export interface BusyWizardStore extends Readable<boolean> {
+	start: () => void;
+	stop: () => void;
+}
+
+const initWizardBusyStore = (): BusyWizardStore => {
 	const { subscribe, set } = writable<boolean>(false);
 
 	return {

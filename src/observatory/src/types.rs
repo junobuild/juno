@@ -5,7 +5,7 @@ pub mod state {
     use shared::types::state::{Controllers, MissionControlId};
     use std::collections::HashMap;
 
-    pub type MissionControlCronJobs = HashMap<MissionControlId, CronJobsConfig>;
+    pub type CronTabs = HashMap<MissionControlId, CronTab>;
     pub type Statuses = HashMap<MissionControlId, MissionControlStatuses>;
 
     #[derive(Default, Clone)]
@@ -16,9 +16,11 @@ pub mod state {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct StableState {
+        // Controllers of the observatory - i.e. of the canister (can start, stop the canister etc.)
         pub controllers: Controllers,
-        pub cron_jobs_controllers: Controllers,
-        pub cron_jobs: MissionControlCronJobs,
+        // Additional controllers which can start and collect results of the cron_jobs only
+        pub cron_controllers: Controllers,
+        pub cron_tabs: CronTabs,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -34,7 +36,7 @@ pub mod state {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct CronJobsConfig {
+    pub struct CronTab {
         pub mission_control_id: MissionControlId,
         pub cron_jobs: CronJobs,
         pub created_at: u64,

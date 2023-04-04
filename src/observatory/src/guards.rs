@@ -40,7 +40,7 @@ pub fn caller_can_execute_cron_jobs() -> Result<(), String> {
 fn caller_is_cron_jobs_controller() -> bool {
     let caller = caller();
     let controllers: Controllers =
-        STATE.with(|state| state.borrow().stable.cron_jobs_controllers.clone());
+        STATE.with(|state| state.borrow().stable.cron_controllers.clone());
 
     is_controller_impl(caller, &controllers)
 }

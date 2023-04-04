@@ -1,5 +1,5 @@
 use crate::store::{get_cron_jobs, set_statuses};
-use crate::types::state::CronJobsConfig;
+use crate::types::state::CronTab;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, spawn};
 use shared::types::interface::{SegmentsStatus, StatusesArgs};
@@ -12,7 +12,7 @@ lazy_static! {
 }
 
 pub fn spawn_mission_controls_cron_jobs() {
-    let cycles_cron_jobs: Vec<(MissionControlId, CronJobsConfig)> = get_cron_jobs()
+    let cycles_cron_jobs: Vec<(MissionControlId, CronTab)> = get_cron_jobs()
         .into_iter()
         .filter(|(_, config)| config.cron_jobs.statuses.enabled)
         .collect();
@@ -22,7 +22,7 @@ pub fn spawn_mission_controls_cron_jobs() {
     }
 }
 
-async fn collect_statuses(cron_jobs: CronJobsConfig) {
+async fn collect_statuses(cron_jobs: CronTab) {
     // Ensure this process only runs once at a time
     if LOCK.try_lock().is_ok() {
         let result = statuses(&cron_jobs).await;
@@ -31,7 +31,7 @@ async fn collect_statuses(cron_jobs: CronJobsConfig) {
     }
 }
 
-async fn statuses(cron_jobs: &CronJobsConfig) -> Result<SegmentsStatus, String> {
+async fn statuses(cron_jobs: &CronTab) -> Result<SegmentsStatus, String> {
     let args = StatusesArgs {
         cycles_threshold: cron_jobs.cron_jobs.statuses.cycles_threshold,
     };

@@ -1,5 +1,5 @@
 use crate::types::state::{
-    CronJobsConfig, MissionControlCronJobs, MissionControlStatuses, RuntimeState, StableState,
+    CronTab, CronTabs, MissionControlStatuses, RuntimeState, StableState,
 };
 use crate::STATE;
 use ic_cdk::api::time;
@@ -14,8 +14,8 @@ use shared::types::state::{ControllerId, MissionControlId};
 /// CronJobs
 ///
 
-pub fn get_cron_jobs() -> MissionControlCronJobs {
-    STATE.with(|state| state.borrow().stable.cron_jobs.clone())
+pub fn get_cron_jobs() -> CronTabs {
+    STATE.with(|state| state.borrow().stable.cron_tabs.clone())
 }
 
 pub fn set_cron_jobs(mission_control_id: &MissionControlId, cron_jobs: &CronJobs) {
@@ -33,7 +33,7 @@ fn set_cron_jobs_impl(
     cron_jobs: &CronJobs,
     state: &mut StableState,
 ) {
-    let current_notifications = state.cron_jobs.get(mission_control_id);
+    let current_notifications = state.cron_tabs.get(mission_control_id);
 
     let now = time();
 
@@ -42,14 +42,14 @@ fn set_cron_jobs_impl(
         Some(current_notifications) => current_notifications.created_at,
     };
 
-    let notifications = CronJobsConfig {
+    let notifications = CronTab {
         mission_control_id: *mission_control_id,
         cron_jobs: cron_jobs.clone(),
         created_at,
         updated_at: now,
     };
 
-    state.cron_jobs.insert(*mission_control_id, notifications);
+    state.cron_tabs.insert(*mission_control_id, notifications);
 }
 
 ///
@@ -75,21 +75,21 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
     })
 }
 
-pub fn set_cron_jobs_controllers(new_controllers: &[ControllerId], controller: &SetController) {
+pub fn set_cron_controllers(new_controllers: &[ControllerId], controller: &SetController) {
     STATE.with(|state| {
         set_controllers_impl(
             new_controllers,
             controller,
-            &mut state.borrow_mut().stable.cron_jobs_controllers,
+            &mut state.borrow_mut().stable.cron_controllers,
         )
     })
 }
 
-pub fn delete_cron_jobs_controllers(remove_controllers: &[ControllerId]) {
+pub fn delete_cron_controllers(remove_controllers: &[ControllerId]) {
     STATE.with(|state| {
         delete_controllers_impl(
             remove_controllers,
-            &mut state.borrow_mut().stable.cron_jobs_controllers,
+            &mut state.borrow_mut().stable.cron_controllers,
         )
     })
 }

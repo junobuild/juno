@@ -1,7 +1,7 @@
 pub mod state {
     use candid::{CandidType, Deserialize};
     use shared::types::cronjob::CronJobs;
-    use shared::types::interface::SegmentsStatus;
+    use shared::types::interface::SegmentsStatuses;
     use shared::types::state::{Controllers, MissionControlId};
     use std::collections::HashMap;
 
@@ -30,7 +30,7 @@ pub mod state {
 
     #[derive(Clone, CandidType, Deserialize)]
     pub struct MissionControlStatuses {
-        pub statuses: Result<SegmentsStatus, String>,
+        pub statuses: Result<SegmentsStatuses, String>,
         pub created_at: u64,
         pub updated_at: u64,
     }

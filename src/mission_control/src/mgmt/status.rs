@@ -3,21 +3,21 @@ use crate::store::get_metadata;
 use crate::types::state::{Satellite, SatelliteId};
 use futures::future::join_all;
 use shared::ic::segment_status;
-use shared::types::interface::{SegmentStatus, SegmentsStatus};
+use shared::types::interface::{SegmentStatus, SegmentsStatuses};
 use shared::types::state::MissionControlId;
 
 pub async fn collect_statuses(
     mission_control_id: &MissionControlId,
     cycles_threshold: u64,
-) -> SegmentsStatus {
+) -> SegmentsStatuses {
     let mission_control_check = mission_control_status(mission_control_id).await;
 
-    // If the mission control has reached threshold we avoid addition calls to the satellites
+    // If the mission control has reached threshold we avoid additional calls to the satellites
     match mission_control_check {
         Err(_) => (),
         Ok(segment_status) => {
             if segment_status.status.cycles < cycles_threshold {
-                return SegmentsStatus {
+                return SegmentsStatuses {
                     mission_control: Ok(segment_status),
                     satellites: None,
                 };
@@ -28,7 +28,7 @@ pub async fn collect_statuses(
     let satellites = satellites_status().await;
     let mission_control = mission_control_status(mission_control_id).await;
 
-    SegmentsStatus {
+    SegmentsStatuses {
         mission_control,
         satellites: Some(satellites),
     }
@@ -43,7 +43,7 @@ pub async fn mission_control_status(
         Err(err) => Err(err),
         Ok(result) => Ok(SegmentStatus {
             id: *mission_control_id,
-            metadata: Some(get_metadata()),
+            metadata: None,
             status: result.status,
             status_at: result.status_at,
         }),

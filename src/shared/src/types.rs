@@ -87,7 +87,7 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct SegmentsStatus {
+    pub struct SegmentsStatuses {
         pub mission_control: Result<SegmentStatus, String>,
         pub satellites: Option<Vec<Result<SegmentStatus, String>>>,
     }

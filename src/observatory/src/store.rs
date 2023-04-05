@@ -5,7 +5,7 @@ use shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use shared::types::cronjob::CronJobs;
-use shared::types::interface::{SegmentsStatus, SetController};
+use shared::types::interface::{SegmentsStatuses, SetController};
 use shared::types::state::{ControllerId, MissionControlId};
 
 ///
@@ -98,7 +98,7 @@ pub fn delete_cron_controllers(remove_controllers: &[ControllerId]) {
 
 pub fn set_statuses(
     mission_control_id: &MissionControlId,
-    statuses: &Result<SegmentsStatus, String>,
+    statuses: &Result<SegmentsStatuses, String>,
 ) {
     STATE.with(|state| {
         set_statuses_impl(
@@ -111,7 +111,7 @@ pub fn set_statuses(
 
 fn set_statuses_impl(
     mission_control_id: &MissionControlId,
-    statuses: &Result<SegmentsStatus, String>,
+    statuses: &Result<SegmentsStatuses, String>,
     state: &mut RuntimeState,
 ) {
     let now = time();

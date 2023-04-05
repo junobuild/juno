@@ -7,8 +7,7 @@ use crate::cron_jobs::spawn_mission_controls_cron_jobs;
 use crate::guards::{caller_can_execute_cron_jobs, caller_is_console, caller_is_controller};
 use crate::store::{
     delete_controllers, delete_cron_controllers, set_controllers as set_controllers_store,
-    set_cron_jobs as set_cron_jobs_store,
-    set_cron_controllers as set_cron_controllers_store,
+    set_cron_controllers as set_cron_controllers_store, set_cron_jobs as set_cron_jobs_store,
 };
 use crate::types::state::{RuntimeState, StableState, State};
 use candid::{candid_method, export_service};

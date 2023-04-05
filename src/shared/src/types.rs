@@ -83,7 +83,6 @@ pub mod interface {
         pub id: Principal,
         pub metadata: Option<Metadata>,
         pub status: CanisterStatusResponse,
-        pub version: String,
         pub status_at: u64,
     }
 

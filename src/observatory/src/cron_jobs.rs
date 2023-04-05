@@ -2,9 +2,9 @@ use crate::store::{get_cron_jobs, set_statuses};
 use crate::types::state::CronTab;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, spawn};
+use lazy_static::lazy_static;
 use shared::types::interface::{SegmentsStatus, StatusesArgs};
 use shared::types::state::MissionControlId;
-use lazy_static::lazy_static;
 use std::sync::Mutex;
 
 lazy_static! {
@@ -37,7 +37,7 @@ async fn statuses(cron_jobs: &CronTab) -> Result<SegmentsStatus, String> {
     };
 
     let result: CallResult<(SegmentsStatus,)> =
-        call(cron_jobs.mission_control_id, "statuses", (args,)).await;
+        call(cron_jobs.mission_control_id, "status", (args,)).await;
 
     match result {
         Err((_, message)) => Err(["Cannot get mission control statuses.", &message].join(" - ")),

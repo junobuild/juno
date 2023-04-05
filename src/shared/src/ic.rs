@@ -75,10 +75,7 @@ pub async fn update_canister_controllers(
     update_settings(arg).await
 }
 
-pub async fn segment_status(
-    canister_id: CanisterId,
-    version: String,
-) -> Result<SegmentStatus, String> {
+pub async fn segment_status(canister_id: CanisterId) -> Result<SegmentStatus, String> {
     let status = ic_canister_status(CanisterIdRecord { canister_id }).await;
 
     match status {
@@ -86,7 +83,6 @@ pub async fn segment_status(
             id: canister_id,
             metadata: None,
             status,
-            version,
             status_at: time(),
         }),
         Err((_, message)) => Err(["Failed to get canister status: ".to_string(), message].join("")),

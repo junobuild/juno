@@ -1,6 +1,4 @@
-use crate::types::state::{
-    CronTab, CronTabs, MissionControlStatuses, RuntimeState, StableState,
-};
+use crate::types::state::{CronTab, CronTabs, MissionControlStatuses, RuntimeState, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
 use shared::controllers::{

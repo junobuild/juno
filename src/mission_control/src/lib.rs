@@ -18,7 +18,7 @@ use crate::controllers::satellite::{
 use crate::controllers::store::get_controllers;
 use crate::guards::{caller_can_read, caller_is_user_or_controller};
 use crate::mgmt::canister::top_up_canister;
-use crate::mgmt::status::{collect_statuses, mission_control_status};
+use crate::mgmt::status::collect_statuses;
 use crate::satellites::satellite::create_satellite as create_satellite_console;
 use crate::store::{get_user as get_user_store, set_metadata as set_metadata_store};
 use crate::types::state::{Satellite, SatelliteId, Satellites, StableState, State, User};
@@ -29,9 +29,7 @@ use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use satellites::store::get_satellites;
-use shared::types::interface::{
-    MissionControlArgs, SegmentStatus, SegmentsStatus, SetController, StatusesArgs,
-};
+use shared::types::interface::{MissionControlArgs, SegmentsStatus, SetController, StatusesArgs};
 use shared::types::state::{ControllerId, Controllers};
 use shared::types::state::{Metadata, UserId};
 use std::cell::RefCell;
@@ -237,16 +235,8 @@ fn version() -> String {
 
 #[candid_method(update)]
 #[update(guard = "caller_can_read")]
-async fn status() -> SegmentStatus {
-    mission_control_status(&id(), &version())
-        .await
-        .unwrap_or_else(|e| trap(&e))
-}
-
-#[candid_method(update)]
-#[update(guard = "caller_can_read")]
-async fn statuses(StatusesArgs { cycles_threshold }: StatusesArgs) -> SegmentsStatus {
-    collect_statuses(&id(), &version(), cycles_threshold).await
+async fn status(StatusesArgs { cycles_threshold }: StatusesArgs) -> SegmentsStatus {
+    collect_statuses(&id(), cycles_threshold).await
 }
 
 ///

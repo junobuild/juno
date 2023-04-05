@@ -51,16 +51,12 @@ use controllers::store::{
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, time, trap};
 use ic_cdk::export::candid::{candid_method, export_service};
-use ic_cdk::id;
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use rules::constants::DEFAULT_DB_COLLECTIONS;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
-use shared::ic::segment_status;
-use shared::types::interface::{
-    DeleteControllersArgs, SatelliteArgs, SegmentStatus, SetControllersArgs,
-};
+use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
 use shared::types::state::Controllers;
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
@@ -505,14 +501,6 @@ fn del_assets(collection: Option<CollectionKey>) {
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
-}
-
-#[candid_method(update)]
-#[update(guard = "caller_is_controller")]
-async fn status() -> SegmentStatus {
-    segment_status(id(), version())
-        .await
-        .unwrap_or_else(|e| trap(&e))
 }
 
 ///

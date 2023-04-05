@@ -151,9 +151,11 @@ pub mod cmc {
 pub mod cronjob {
     use candid::CandidType;
     use serde::Deserialize;
+    use crate::types::state::Metadata;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct CronJobs {
+        pub metadata: Metadata,
         pub statuses: StatusesCronJob,
     }
 

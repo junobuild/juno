@@ -1,5 +1,6 @@
 mod cron_jobs;
 mod guards;
+mod impls;
 mod store;
 mod types;
 
@@ -9,7 +10,7 @@ use crate::store::{
     delete_controllers, delete_cron_controllers, set_controllers as set_controllers_store,
     set_cron_controllers as set_cron_controllers_store, set_cron_jobs as set_cron_jobs_store,
 };
-use crate::types::state::{RuntimeState, StableState, State};
+use crate::types::state::{Archive, StableState, State};
 use candid::{candid_method, export_service};
 use ic_cdk::caller;
 use ic_cdk::storage::{stable_restore, stable_save};
@@ -33,8 +34,10 @@ fn init() {
                 controllers: init_controllers(&[manager]),
                 cron_controllers: HashMap::new(),
                 cron_tabs: HashMap::new(),
+                archive: Archive {
+                    statuses: HashMap::new(),
+                },
             },
-            runtime: RuntimeState::default(),
         };
     });
 }
@@ -48,12 +51,7 @@ fn pre_upgrade() {
 fn post_upgrade() {
     let (stable,): (StableState,) = stable_restore().unwrap();
 
-    STATE.with(|state| {
-        *state.borrow_mut() = State {
-            stable,
-            runtime: RuntimeState::default(),
-        }
-    });
+    STATE.with(|state| *state.borrow_mut() = State { stable });
 }
 
 /// Controllers

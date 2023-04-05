@@ -1,4 +1,4 @@
-use crate::types::state::{CronTab, CronTabs, MissionControlStatuses, RuntimeState, StableState};
+use crate::types::state::{ArchiveStatuses, CronTab, CronTabs, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
 use shared::controllers::{
@@ -12,7 +12,7 @@ use shared::types::state::{ControllerId, MissionControlId};
 /// CronJobs
 ///
 
-pub fn get_cron_jobs() -> CronTabs {
+pub fn get_cron_tabs() -> CronTabs {
     STATE.with(|state| state.borrow().stable.cron_tabs.clone())
 }
 
@@ -41,7 +41,6 @@ fn set_cron_jobs_impl(
     };
 
     let notifications = CronTab {
-        mission_control_id: *mission_control_id,
         cron_jobs: cron_jobs.clone(),
         created_at,
         updated_at: now,
@@ -101,27 +100,31 @@ pub fn set_statuses(
     statuses: &Result<SegmentsStatuses, String>,
 ) {
     STATE.with(|state| {
-        set_statuses_impl(
-            mission_control_id,
-            statuses,
-            &mut state.borrow_mut().runtime,
-        )
+        set_statuses_impl(mission_control_id, statuses, &mut state.borrow_mut().stable)
     })
 }
 
 fn set_statuses_impl(
     mission_control_id: &MissionControlId,
     statuses: &Result<SegmentsStatuses, String>,
-    state: &mut RuntimeState,
+    state: &mut StableState,
 ) {
-    let now = time();
+    let archive = state.archive.statuses.get(mission_control_id);
 
-    state.statuses.insert(
-        *mission_control_id,
-        MissionControlStatuses {
-            statuses: statuses.clone(),
-            updated_at: now,
-            created_at: now,
-        },
-    );
+    match archive {
+        None => {
+            state.archive.statuses.insert(
+                *mission_control_id,
+                ArchiveStatuses::from([(time(), statuses.clone())]),
+            );
+        }
+        Some(archive) => {
+            let mut updated_archive = archive.clone();
+            updated_archive.insert(time(), statuses.clone());
+            state
+                .archive
+                .statuses
+                .insert(*mission_control_id, updated_archive);
+        }
+    }
 }

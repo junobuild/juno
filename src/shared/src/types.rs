@@ -149,17 +149,17 @@ pub mod cmc {
 }
 
 pub mod cronjob {
+    use crate::types::state::Metadata;
     use candid::CandidType;
     use serde::Deserialize;
-    use crate::types::state::Metadata;
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CronJobs {
         pub metadata: Metadata,
         pub statuses: StatusesCronJob,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct StatusesCronJob {
         pub enabled: bool,
         pub cycles_threshold: u64,

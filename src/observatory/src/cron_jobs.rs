@@ -1,4 +1,4 @@
-use crate::store::{get_cron_jobs, set_statuses};
+use crate::store::{get_cron_tabs, set_statuses};
 use crate::types::state::CronTab;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, spawn};
@@ -12,32 +12,35 @@ lazy_static! {
 }
 
 pub fn spawn_mission_controls_cron_jobs() {
-    let cycles_cron_jobs: Vec<(MissionControlId, CronTab)> = get_cron_jobs()
+    let cycles_cron_tabs: Vec<(MissionControlId, CronTab)> = get_cron_tabs()
         .into_iter()
         .filter(|(_, config)| config.cron_jobs.statuses.enabled)
         .collect();
 
-    for (_, cron_jobs) in cycles_cron_jobs {
-        spawn(collect_statuses(cron_jobs))
+    for (mission_control_id, cron_tab) in cycles_cron_tabs {
+        spawn(collect_statuses(mission_control_id, cron_tab))
     }
 }
 
-async fn collect_statuses(cron_jobs: CronTab) {
+async fn collect_statuses(mission_control_id: MissionControlId, cron_tab: CronTab) {
     // Ensure this process only runs once at a time
     if LOCK.try_lock().is_ok() {
-        let result = statuses(&cron_jobs).await;
+        let result = statuses(&mission_control_id, &cron_tab).await;
 
-        set_statuses(&cron_jobs.mission_control_id, &result);
+        set_statuses(&mission_control_id, &result);
     }
 }
 
-async fn statuses(cron_jobs: &CronTab) -> Result<SegmentsStatuses, String> {
+async fn statuses(
+    mission_control_id: &MissionControlId,
+    cron_tab: &CronTab,
+) -> Result<SegmentsStatuses, String> {
     let args = StatusesArgs {
-        cycles_threshold: cron_jobs.cron_jobs.statuses.cycles_threshold,
+        cycles_threshold: cron_tab.cron_jobs.statuses.cycles_threshold,
     };
 
     let result: CallResult<(SegmentsStatuses,)> =
-        call(cron_jobs.mission_control_id, "status", (args,)).await;
+        call(*mission_control_id, "status", (args,)).await;
 
     match result {
         Err((_, message)) => Err(["Cannot get mission control statuses.", &message].join(" - ")),

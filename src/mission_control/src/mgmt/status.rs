@@ -1,5 +1,4 @@
 use crate::satellites::store::get_satellites;
-use crate::store::get_metadata;
 use crate::types::state::{Satellite, SatelliteId};
 use futures::future::join_all;
 use shared::ic::segment_status;

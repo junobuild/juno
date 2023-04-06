@@ -14,7 +14,7 @@
 	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import MissionControlNotifications from "$lib/components/mission-control/MissionControlNotifications.svelte";
+	import MissionControlNotifications from '$lib/components/mission-control/MissionControlNotifications.svelte';
 
 	const tabs: Tab[] = [
 		{

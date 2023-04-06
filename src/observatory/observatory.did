@@ -11,6 +11,11 @@ type CronJobs = record {
   metadata : vec record { text; text };
   statuses : StatusesCronJob;
 };
+type CronTab = record {
+  cron_jobs : CronJobs;
+  updated_at : nat64;
+  created_at : nat64;
+};
 type DefiniteCanisterSettings = record {
   freezing_threshold : nat;
   controllers : vec principal;
@@ -43,17 +48,19 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
-type SetCronJobsArgs = record {
+type SetCronTab = record {
   cron_jobs : CronJobs;
+  updated_at : opt nat64;
   mission_control_id : principal;
 };
 type StatusesCronJob = record { enabled : bool; cycles_threshold : nat64 };
 service : {
   del_controllers : (DeleteControllersArgs) -> ();
   del_cron_controllers : (DeleteControllersArgs) -> ();
+  get_cron_tab : (principal) -> (opt CronTab);
   list_last_statuses : () -> (vec ListStatuses) query;
   set_controllers : (SetControllersArgs) -> ();
   set_cron_controllers : (SetControllersArgs) -> ();
-  set_cron_jobs : (SetCronJobsArgs) -> ();
+  set_cron_tab : (SetCronTab) -> ();
   version : () -> (text) query;
 }

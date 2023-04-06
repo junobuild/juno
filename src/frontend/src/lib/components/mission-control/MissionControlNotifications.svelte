@@ -1,5 +1,1 @@
-
-
-<div class="card-container">
-    Notifications
-</div>
+<div class="card-container">Notifications</div>

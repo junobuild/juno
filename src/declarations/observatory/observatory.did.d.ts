@@ -14,6 +14,11 @@ export interface CronJobs {
 	metadata: Array<[string, string]>;
 	statuses: StatusesCronJob;
 }
+export interface CronTab {
+	cron_jobs: CronJobs;
+	updated_at: bigint;
+	created_at: bigint;
+}
 export interface DefiniteCanisterSettings {
 	freezing_threshold: bigint;
 	controllers: Array<Principal>;
@@ -48,8 +53,9 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
-export interface SetCronJobsArgs {
+export interface SetCronTab {
 	cron_jobs: CronJobs;
+	updated_at: [] | [bigint];
 	mission_control_id: Principal;
 }
 export interface StatusesCronJob {
@@ -59,9 +65,10 @@ export interface StatusesCronJob {
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_cron_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
+	get_cron_tab: ActorMethod<[Principal], [] | [CronTab]>;
 	list_last_statuses: ActorMethod<[], Array<ListStatuses>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_cron_controllers: ActorMethod<[SetControllersArgs], undefined>;
-	set_cron_jobs: ActorMethod<[SetCronJobsArgs], undefined>;
+	set_cron_tab: ActorMethod<[SetCronTab], undefined>;
 	version: ActorMethod<[], string>;
 }

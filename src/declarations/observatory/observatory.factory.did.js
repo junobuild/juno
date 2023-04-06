@@ -2,6 +2,19 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
+	const StatusesCronJob = IDL.Record({
+		enabled: IDL.Bool,
+		cycles_threshold: IDL.Nat64
+	});
+	const CronJobs = IDL.Record({
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		statuses: StatusesCronJob
+	});
+	const CronTab = IDL.Record({
+		cron_jobs: CronJobs,
+		updated_at: IDL.Nat64,
+		created_at: IDL.Nat64
+	});
 	const CanisterStatusType = IDL.Variant({
 		stopped: IDL.Null,
 		stopping: IDL.Null,
@@ -46,25 +59,19 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const StatusesCronJob = IDL.Record({
-		enabled: IDL.Bool,
-		cycles_threshold: IDL.Nat64
-	});
-	const CronJobs = IDL.Record({
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		statuses: StatusesCronJob
-	});
-	const SetCronJobsArgs = IDL.Record({
+	const SetCronTab = IDL.Record({
 		cron_jobs: CronJobs,
+		updated_at: IDL.Opt(IDL.Nat64),
 		mission_control_id: IDL.Principal
 	});
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_cron_controllers: IDL.Func([DeleteControllersArgs], [], []),
+		get_cron_tab: IDL.Func([IDL.Principal], [IDL.Opt(CronTab)], []),
 		list_last_statuses: IDL.Func([], [IDL.Vec(ListStatuses)], ['query']),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_controllers: IDL.Func([SetControllersArgs], [], []),
-		set_cron_jobs: IDL.Func([SetCronJobsArgs], [], []),
+		set_cron_tab: IDL.Func([SetCronTab], [], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

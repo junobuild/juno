@@ -1,4 +1,8 @@
 export const idlFactory = ({ IDL }) => {
+	const AssertMissionControlCenterArgs = IDL.Record({
+		mission_control_id: IDL.Principal,
+		user: IDL.Principal
+	});
 	const CreateSatelliteArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
 		user: IDL.Principal
@@ -32,21 +36,13 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const StatusesCronJob = IDL.Record({
-		enabled: IDL.Bool,
-		cycles_threshold: IDL.Nat64
-	});
-	const CronJobs = IDL.Record({
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		statuses: StatusesCronJob
-	});
-	const CronJobsArgs = IDL.Record({ cron_jobs: CronJobs });
 	const RateConfig = IDL.Record({
 		max_tokens: IDL.Nat64,
 		time_per_token_ns: IDL.Nat64
 	});
 	return IDL.Service({
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
+		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
 		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_create_satellite_fee: IDL.Func([GetCreateSatelliteFeeArgs], [IDL.Opt(Tokens)], ['query']),
@@ -62,7 +58,6 @@ export const idlFactory = ({ IDL }) => {
 		load_release: IDL.Func([Segment, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
 		reset_release: IDL.Func([Segment], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
-		set_cron_jobs: IDL.Func([CronJobsArgs], [], []),
 		update_rate_config: IDL.Func([Segment, RateConfig], [], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

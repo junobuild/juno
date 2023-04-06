@@ -1,16 +1,19 @@
 mod constants;
 mod cron_jobs;
 mod guards;
+mod reports;
 mod store;
 mod types;
 
 use crate::constants::CRON_INTERVAL_NS;
 use crate::cron_jobs::cron_jobs;
 use crate::guards::{caller_can_execute_cron_jobs, caller_is_console, caller_is_controller};
+use crate::reports::last_statuses;
 use crate::store::{
     delete_controllers, delete_cron_controllers, set_controllers as set_controllers_store,
     set_cron_controllers as set_cron_controllers_store, set_cron_jobs as set_cron_jobs_store,
 };
+use crate::types::interface::ListStatuses;
 use crate::types::state::{Archive, StableState, State};
 use candid::{candid_method, export_service};
 use ic_cdk::caller;
@@ -106,6 +109,14 @@ fn set_cron_jobs(
     }: SetCronJobsArgs,
 ) {
     set_cron_jobs_store(&mission_control_id, &cron_jobs);
+}
+
+/// Reports
+
+#[candid_method(query)]
+#[query(guard = "caller_can_execute_cron_jobs")]
+fn list_last_statuses() -> Vec<ListStatuses> {
+    last_statuses()
 }
 
 /// Mgmt

@@ -38,3 +38,31 @@ pub mod state {
         pub statuses: Statuses,
     }
 }
+
+pub mod list {
+    use crate::types::state::ArchiveTime;
+    use candid::{CandidType, Deserialize};
+    use shared::types::interface::SegmentsStatuses;
+    use shared::types::state::MissionControlId;
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct ListLastStatuses {
+        pub mission_control_id: MissionControlId,
+        pub timestamp: ArchiveTime,
+        pub statuses: Result<SegmentsStatuses, String>,
+    }
+}
+
+pub mod interface {
+    use crate::types::state::ArchiveTime;
+    use candid::{CandidType, Deserialize};
+    use shared::types::interface::SegmentsStatuses;
+    use shared::types::state::Metadata;
+
+    #[derive(CandidType, Deserialize)]
+    pub struct ListStatuses {
+        pub metadata: Metadata,
+        pub timestamp: ArchiveTime,
+        pub statuses: Result<SegmentsStatuses, String>,
+    }
+}

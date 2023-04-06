@@ -1,3 +1,4 @@
+use crate::types::list::ListLastStatuses;
 use crate::types::state::{ArchiveStatuses, CronTab, CronTabs, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
@@ -14,6 +15,15 @@ use shared::types::state::{ControllerId, MissionControlId};
 
 pub fn get_cron_tabs() -> CronTabs {
     STATE.with(|state| state.borrow().stable.cron_tabs.clone())
+}
+
+pub fn get_cron_tab(mission_control_id: &MissionControlId) -> Option<CronTab> {
+    STATE.with(|state| get_cron_tab_impl(mission_control_id, &state.borrow_mut().stable.cron_tabs))
+}
+
+fn get_cron_tab_impl(mission_control_id: &MissionControlId, state: &CronTabs) -> Option<CronTab> {
+    let cron_tab = state.get(mission_control_id);
+    cron_tab.cloned()
 }
 
 pub fn set_cron_jobs(mission_control_id: &MissionControlId, cron_jobs: &CronJobs) {
@@ -127,4 +137,33 @@ fn set_statuses_impl(
                 .insert(*mission_control_id, updated_archive);
         }
     }
+}
+
+pub fn list_last_statuses() -> Vec<ListLastStatuses> {
+    STATE.with(|state| list_last_statuses_impl(&state.borrow_mut().stable))
+}
+
+fn list_last_statuses_impl(state: &StableState) -> Vec<ListLastStatuses> {
+    fn archive_statuses(
+        mission_control_id: &MissionControlId,
+        statuses: &ArchiveStatuses,
+    ) -> Option<ListLastStatuses> {
+        let last = statuses.iter().next_back();
+
+        last.map(|(timestamp, statuses)| ListLastStatuses {
+            mission_control_id: *mission_control_id,
+            timestamp: *timestamp,
+            statuses: statuses.clone(),
+        })
+    }
+
+    state
+        .archive
+        .statuses
+        .clone()
+        .into_iter()
+        .filter_map(|(mission_control_id, statuses)| {
+            archive_statuses(&mission_control_id, &statuses)
+        })
+        .collect()
 }

@@ -63,7 +63,9 @@ fn post_upgrade() {
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
 
-    set_timer_interval(Duration::from_nanos(CRON_INTERVAL_NS), cron_jobs);
+    set_timer_interval(Duration::from_nanos(CRON_INTERVAL_NS), || {
+        cron_jobs();
+    });
 }
 
 /// Controllers

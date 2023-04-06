@@ -2,6 +2,8 @@ import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
+import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/observatory.did';
+import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { authStore } from '$lib/stores/auth.store';
@@ -24,6 +26,23 @@ export const getConsoleActor = async (): Promise<ConsoleActor> => {
 	return createActor({
 		canisterId,
 		idlFactory: idlFactorConsole,
+		identity
+	});
+};
+
+export const getObservatoryActor = async (): Promise<ObservatoryActor> => {
+	const identity: Identity | undefined | null = get(authStore).identity;
+
+	if (!identity) {
+		throw new Error('No internet identity.');
+	}
+
+	// Canister IDs are automatically expanded to .env config - see vite.config.ts
+	const canisterId = import.meta.env.VITE_OBSERVATORY_CANISTER_ID;
+
+	return createActor({
+		canisterId,
+		idlFactory: idlFactorObservatory,
 		identity
 	});
 };

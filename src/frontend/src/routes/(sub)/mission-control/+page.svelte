@@ -10,7 +10,6 @@
 	import { setContext } from 'svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
@@ -54,7 +53,7 @@
 			{:else if $store.tabId === $store.tabs[1].id}
 				<MissionControlControllers missionControlId={$missionControlStore} />
 			{:else if $store.tabId === $store.tabs[2].id}
-				<MissionControlNotifications />
+				<MissionControlNotifications missionControlId={$missionControlStore} />
 			{/if}
 		{/if}
 	</Tabs>

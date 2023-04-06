@@ -11,14 +11,17 @@ lazy_static! {
     static ref LOCK: Mutex<()> = Mutex::new(());
 }
 
-pub fn spawn_cron_jobs() {
-    let statuses_cron_tabs: Vec<(MissionControlId, CronTab)> = get_cron_tabs()
-        .into_iter()
-        .filter(|(_, config)| config.cron_jobs.statuses.enabled)
-        .collect();
+pub fn cron_jobs() {
+    // Ensure this process only runs once at a time
+    if LOCK.try_lock().is_ok() {
+        let statuses_cron_tabs: Vec<(MissionControlId, CronTab)> = get_cron_tabs()
+            .into_iter()
+            .filter(|(_, config)| config.cron_jobs.statuses.enabled)
+            .collect();
 
-    for (mission_control_id, cron_tab) in statuses_cron_tabs {
-        spawn(collect_statuses(mission_control_id, cron_tab))
+        for (mission_control_id, cron_tab) in statuses_cron_tabs {
+            spawn(collect_statuses(mission_control_id, cron_tab))
+        }
     }
 }
 

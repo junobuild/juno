@@ -1,10 +1,12 @@
+mod constants;
 mod cron_jobs;
 mod guards;
 mod impls;
 mod store;
 mod types;
 
-use crate::cron_jobs::spawn_cron_jobs;
+use crate::constants::CRON_INTERVAL_NS;
+use crate::cron_jobs::{cron_jobs};
 use crate::guards::{caller_can_execute_cron_jobs, caller_is_console, caller_is_controller};
 use crate::store::{
     delete_controllers, delete_cron_controllers, set_controllers as set_controllers_store,
@@ -12,13 +14,15 @@ use crate::store::{
 };
 use crate::types::state::{Archive, StableState, State};
 use candid::{candid_method, export_service};
-use ic_cdk::caller;
 use ic_cdk::storage::{stable_restore, stable_save};
+use ic_cdk::{caller};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use ic_cdk_timers::set_timer_interval;
 use shared::controllers::init_controllers;
 use shared::types::interface::{DeleteControllersArgs, SetControllersArgs, SetCronJobsArgs};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::time::Duration;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -52,6 +56,11 @@ fn post_upgrade() {
     let (stable,): (StableState,) = stable_restore().unwrap();
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
+
+    set_timer_interval(
+        Duration::from_nanos(CRON_INTERVAL_NS),
+        cron_jobs,
+    );
 }
 
 /// Controllers
@@ -101,12 +110,6 @@ fn set_cron_jobs(
     }: SetCronJobsArgs,
 ) {
     set_cron_jobs_store(&mission_control_id, &cron_jobs);
-}
-
-#[candid_method(update)]
-#[update(guard = "caller_can_execute_cron_jobs")]
-fn run_jobs() {
-    spawn_cron_jobs();
 }
 
 /// Mgmt

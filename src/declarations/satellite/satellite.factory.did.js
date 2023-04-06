@@ -1,4 +1,3 @@
-// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const CommitBatch = IDL.Record({
 		batch_id: IDL.Nat,
@@ -188,7 +187,6 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };
-// @ts-ignore
 export const init = ({ IDL }) => {
 	return [];
 };

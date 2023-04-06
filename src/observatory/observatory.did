@@ -1,8 +1,59 @@
-type ObservatoryAddMissionControlArgs = record {
-  mission_control_id : principal;
-  owner : principal;
+type CanisterStatusResponse = record {
+  status : CanisterStatusType;
+  memory_size : nat;
+  cycles : nat;
+  settings : DefiniteCanisterSettings;
+  idle_cycles_burned_per_day : nat;
+  module_hash : opt vec nat8;
 };
+type CanisterStatusType = variant { stopped; stopping; running };
+type CronJobs = record {
+  metadata : vec record { text; text };
+  statuses : StatusesCronJob;
+};
+type DefiniteCanisterSettings = record {
+  freezing_threshold : nat;
+  controllers : vec principal;
+  memory_allocation : nat;
+  compute_allocation : nat;
+};
+type DeleteControllersArgs = record { controllers : vec principal };
+type ListStatuses = record {
+  metadata : vec record { text; text };
+  statuses : Result_1;
+  timestamp : nat64;
+};
+type Result = variant { Ok : SegmentStatus; Err : text };
+type Result_1 = variant { Ok : SegmentsStatuses; Err : text };
+type SegmentStatus = record {
+  id : principal;
+  status : CanisterStatusResponse;
+  metadata : opt vec record { text; text };
+  status_at : nat64;
+};
+type SegmentsStatuses = record {
+  satellites : opt vec Result;
+  mission_control : Result;
+};
+type SetController = record {
+  metadata : vec record { text; text };
+  expires_at : opt nat64;
+};
+type SetControllersArgs = record {
+  controller : SetController;
+  controllers : vec principal;
+};
+type SetCronJobsArgs = record {
+  cron_jobs : CronJobs;
+  mission_control_id : principal;
+};
+type StatusesCronJob = record { enabled : bool; cycles_threshold : nat64 };
 service : {
-  add_mission_control : (ObservatoryAddMissionControlArgs) -> ();
+  del_controllers : (DeleteControllersArgs) -> ();
+  del_cron_controllers : (DeleteControllersArgs) -> ();
+  list_last_statuses : () -> (vec ListStatuses) query;
+  set_controllers : (SetControllersArgs) -> ();
+  set_cron_controllers : (SetControllersArgs) -> ();
+  set_cron_jobs : (SetCronJobsArgs) -> ();
   version : () -> (text) query;
 }

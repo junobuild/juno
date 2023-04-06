@@ -5,6 +5,13 @@ export interface CreateSatelliteArgs {
 	block_index: [] | [bigint];
 	user: Principal;
 }
+export interface CronJobs {
+	metadata: Array<[string, string]>;
+	statuses: StatusesCronJob;
+}
+export interface CronJobsArgs {
+	cron_jobs: CronJobs;
+}
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
@@ -39,6 +46,10 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
+export interface StatusesCronJob {
+	enabled: boolean;
+	cycles_threshold: bigint;
+}
 export interface Tokens {
 	e8s: bigint;
 }
@@ -55,6 +66,7 @@ export interface _SERVICE {
 	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
 	reset_release: ActorMethod<[Segment], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
+	set_cron_jobs: ActorMethod<[CronJobsArgs], undefined>;
 	update_rate_config: ActorMethod<[Segment, RateConfig], undefined>;
 	version: ActorMethod<[], string>;
 }

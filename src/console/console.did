@@ -1,4 +1,9 @@
 type CreateSatelliteArgs = record { block_index : opt nat64; user : principal };
+type CronJobs = record {
+  metadata : vec record { text; text };
+  statuses : StatusesCronJob;
+};
+type CronJobsArgs = record { cron_jobs : CronJobs };
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetCreateSatelliteFeeArgs = record { user : principal };
 type LoadRelease = record { total : nat64; chunks : nat64 };
@@ -23,6 +28,7 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
+type StatusesCronJob = record { enabled : bool; cycles_threshold : nat64 };
 type Tokens = record { e8s : nat64 };
 service : {
   add_invitation_code : (text) -> ();
@@ -39,6 +45,7 @@ service : {
   load_release : (Segment, vec nat8, text) -> (LoadRelease);
   reset_release : (Segment) -> ();
   set_controllers : (SetControllersArgs) -> ();
+  set_cron_jobs : (CronJobsArgs) -> ();
   update_rate_config : (Segment, RateConfig) -> ();
   version : () -> (text) query;
 }

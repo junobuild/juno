@@ -44,7 +44,8 @@
 	.tabs {
 		display: flex;
 		align-items: center;
-		gap: var(--padding-2x);
+		flex-wrap: wrap;
+		gap: var(--padding);
 
 		margin: var(--padding) 0 var(--padding-1_5x);
 

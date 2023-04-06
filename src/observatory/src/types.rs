@@ -33,7 +33,7 @@ pub mod state {
         pub updated_at: u64,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct Archive {
         pub statuses: Statuses,
     }

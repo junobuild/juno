@@ -3,7 +3,6 @@ mod controllers;
 mod guards;
 mod impls;
 mod mission_control;
-mod observatory;
 mod satellite;
 mod store;
 mod types;
@@ -11,19 +10,11 @@ mod upgrade;
 mod wasm;
 
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
-use crate::guards::caller_is_controller;
+use crate::guards::{caller_is_controller, caller_is_observatory};
 use crate::mission_control::init_user_mission_control;
-use crate::observatory::set_observatory_cron_jobs;
 use crate::satellite::create_satellite as create_satellite_console;
-use crate::store::{
-    add_invitation_code as add_invitation_code_store, delete_controllers,
-    get_credits as get_credits_store, get_mission_control, get_mission_control_release_version,
-    get_satellite_release_version, has_credits, list_mission_controls,
-    load_mission_control_release, load_satellite_release, reset_mission_control_release,
-    reset_satellite_release, set_controllers as set_controllers_store,
-    update_mission_controls_rate_config, update_satellites_rate_config,
-};
-use crate::types::interface::{CronJobsArgs, LoadRelease, ReleasesVersion, Segment};
+use crate::store::{add_invitation_code as add_invitation_code_store, delete_controllers, get_credits as get_credits_store, get_existing_mission_control, get_mission_control, get_mission_control_release_version, get_satellite_release_version, has_credits, list_mission_controls, load_mission_control_release, load_satellite_release, reset_mission_control_release, reset_satellite_release, set_controllers as set_controllers_store, update_mission_controls_rate_config, update_satellites_rate_config};
+use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
     InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases, StableState,
     State,
@@ -42,6 +33,7 @@ use shared::types::interface::{
 };
 use std::cell::RefCell;
 use std::collections::HashMap;
+use shared::types::state::{MissionControlId, UserId};
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -134,6 +126,12 @@ fn get_user_mission_control_center() -> Option<MissionControl> {
 }
 
 #[candid_method(query)]
+#[query(guard = "caller_is_observatory")]
+fn assert_known_mission_control_center(user: UserId, mission_control: MissionControlId) {
+    get_existing_mission_control(&user, &mission_control).unwrap_or_else(|e| trap(e));
+}
+
+#[candid_method(query)]
 #[query(guard = "caller_is_controller")]
 fn list_user_mission_control_centers() -> MissionControls {
     list_mission_controls()
@@ -203,18 +201,6 @@ fn update_rate_config(segment: Segment, config: RateConfig) {
         Segment::Satellite => update_satellites_rate_config(&config),
         Segment::MissionControl => update_mission_controls_rate_config(&config),
     }
-}
-
-/// CronJobs
-
-#[candid_method(update)]
-#[update]
-async fn set_cron_jobs(CronJobsArgs { cron_jobs }: CronJobsArgs) {
-    let caller = caller();
-
-    set_observatory_cron_jobs(&caller, &cron_jobs)
-        .await
-        .unwrap_or_else(|e| trap(&e));
 }
 
 /// Mgmt

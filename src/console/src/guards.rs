@@ -1,5 +1,5 @@
-use candid::Principal;
 use crate::STATE;
+use candid::Principal;
 use ic_cdk::caller;
 use shared::controllers::is_controller;
 use shared::env::OBSERVATORY;

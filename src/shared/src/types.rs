@@ -74,6 +74,12 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
+    pub struct AssertMissionControlCenterArgs {
+        pub user: UserId,
+        pub mission_control_id: MissionControlId,
+    }
+
+    #[derive(CandidType, Deserialize)]
     pub struct StatusesArgs {
         pub cycles_threshold: u64,
     }

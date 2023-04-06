@@ -1,23 +1,9 @@
 use crate::STATE;
-use candid::Principal;
 use ic_cdk::caller;
 use shared::controllers::{
     caller_is_console as caller_is_console_impl, is_controller as is_controller_impl,
 };
-use shared::env::CONSOLE;
 use shared::types::state::Controllers;
-use shared::utils::principal_equal;
-
-pub fn caller_is_console() -> Result<(), String> {
-    let caller = caller();
-    let console = Principal::from_text(CONSOLE).unwrap();
-
-    if principal_equal(caller, console) {
-        Ok(())
-    } else {
-        Err("Caller is not the console.".to_string())
-    }
-}
 
 pub fn caller_is_controller() -> Result<(), String> {
     if is_controller() {

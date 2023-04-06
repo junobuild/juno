@@ -1,11 +1,12 @@
+use crate::types::interface::SetCronTab;
 use crate::types::list::ListLastStatuses;
 use crate::types::state::{ArchiveStatuses, CronTab, CronTabs, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
+use shared::assert::assert_timestamp;
 use shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
-use shared::types::cronjob::CronJobs;
 use shared::types::interface::{SegmentsStatuses, SetController};
 use shared::types::state::{ControllerId, MissionControlId};
 
@@ -26,37 +27,44 @@ fn get_cron_tab_impl(mission_control_id: &MissionControlId, state: &CronTabs) ->
     cron_tab.cloned()
 }
 
-pub fn set_cron_jobs(mission_control_id: &MissionControlId, cron_jobs: &CronJobs) {
-    STATE.with(|state| {
-        set_cron_jobs_impl(
-            mission_control_id,
-            cron_jobs,
-            &mut state.borrow_mut().stable,
-        )
-    })
+pub fn set_cron_tab(cron_tab: &SetCronTab) -> Result<(), String> {
+    STATE.with(|state| set_cron_tab_impl(cron_tab, &mut state.borrow_mut().stable))
 }
 
-fn set_cron_jobs_impl(
-    mission_control_id: &MissionControlId,
-    cron_jobs: &CronJobs,
-    state: &mut StableState,
-) {
-    let current_notifications = state.cron_tabs.get(mission_control_id);
+fn set_cron_tab_impl(cron_tab: &SetCronTab, state: &mut StableState) -> Result<(), String> {
+    let current_tab = state.cron_tabs.get(&cron_tab.mission_control_id);
+
+    // Validate timestamp
+    match current_tab {
+        None => (),
+        Some(current_tab) => match assert_timestamp(cron_tab.updated_at, current_tab.updated_at) {
+            Ok(_) => (),
+            Err(e) => {
+                return Err(e);
+            }
+        },
+    }
 
     let now = time();
 
-    let created_at: u64 = match current_notifications {
+    let created_at: u64 = match current_tab {
         None => now,
-        Some(current_notifications) => current_notifications.created_at,
+        Some(current_tab) => current_tab.created_at,
     };
 
-    let notifications = CronTab {
-        cron_jobs: cron_jobs.clone(),
+    let updated_at: u64 = now;
+
+    let new_cron_tab = CronTab {
+        cron_jobs: cron_tab.cron_jobs.clone(),
         created_at,
-        updated_at: now,
+        updated_at,
     };
 
-    state.cron_tabs.insert(*mission_control_id, notifications);
+    state
+        .cron_tabs
+        .insert(cron_tab.mission_control_id, new_cron_tab);
+
+    Ok(())
 }
 
 ///

@@ -22,7 +22,6 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::types::cronjob::CronJobs;
     use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
     use candid::{CandidType, Principal};
     use ic_cdk::api::management_canister::main::CanisterStatusResponse;
@@ -65,12 +64,6 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct DeleteControllersArgs {
         pub controllers: Vec<ControllerId>,
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct SetCronJobsArgs {
-        pub mission_control_id: MissionControlId,
-        pub cron_jobs: CronJobs,
     }
 
     #[derive(CandidType, Deserialize)]

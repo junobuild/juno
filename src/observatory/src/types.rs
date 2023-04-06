@@ -56,13 +56,21 @@ pub mod list {
 pub mod interface {
     use crate::types::state::ArchiveTime;
     use candid::{CandidType, Deserialize};
+    use shared::types::cronjob::CronJobs;
     use shared::types::interface::SegmentsStatuses;
-    use shared::types::state::Metadata;
+    use shared::types::state::{Metadata, MissionControlId};
 
     #[derive(CandidType, Deserialize)]
     pub struct ListStatuses {
         pub metadata: Metadata,
         pub timestamp: ArchiveTime,
         pub statuses: Result<SegmentsStatuses, String>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct SetCronTab {
+        pub mission_control_id: MissionControlId,
+        pub cron_jobs: CronJobs,
+        pub updated_at: Option<u64>,
     }
 }

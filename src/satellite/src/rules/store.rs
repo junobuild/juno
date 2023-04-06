@@ -3,9 +3,9 @@ use crate::rules::constants::SYS_COLLECTION_PREFIX;
 use crate::rules::types::interface::SetRule;
 use crate::rules::types::rules::{Rule, Rules};
 use crate::types::core::CollectionKey;
-use crate::utils::assert_timestamp;
 use crate::STATE;
 use ic_cdk::api::time;
+use shared::assert::assert_timestamp;
 
 /// Rules
 

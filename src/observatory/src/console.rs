@@ -3,7 +3,7 @@ use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, caller};
 use shared::env::CONSOLE;
 use shared::types::interface::AssertMissionControlCenterArgs;
-use shared::types::state::{MissionControlId};
+use shared::types::state::MissionControlId;
 
 pub async fn assert_known_mission_control(
     mission_control_id: &MissionControlId,

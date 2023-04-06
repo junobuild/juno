@@ -13,9 +13,9 @@ use crate::guards::{caller_can_execute_cron_jobs, caller_is_controller};
 use crate::reports::last_statuses;
 use crate::store::{
     delete_controllers, delete_cron_controllers, set_controllers as set_controllers_store,
-    set_cron_controllers as set_cron_controllers_store, set_cron_jobs as set_cron_jobs_store,
+    set_cron_controllers as set_cron_controllers_store, set_cron_tab as set_cron_tab_store,
 };
-use crate::types::interface::ListStatuses;
+use crate::types::interface::{ListStatuses, SetCronTab};
 use crate::types::state::{Archive, StableState, State};
 use candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
@@ -23,7 +23,7 @@ use ic_cdk::{caller, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_cdk_timers::set_timer_interval;
 use shared::controllers::init_controllers;
-use shared::types::interface::{DeleteControllersArgs, SetControllersArgs, SetCronJobsArgs};
+use shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::time::Duration;
@@ -104,18 +104,23 @@ fn del_cron_controllers(DeleteControllersArgs { controllers }: DeleteControllers
 
 #[candid_method(update)]
 #[update]
-async fn set_cron_jobs(
-    SetCronJobsArgs {
-        mission_control_id,
-        cron_jobs,
-    }: SetCronJobsArgs,
-) {
-    assert_known_mission_control(&mission_control_id)
+async fn set_cron_tab(cron_tab: SetCronTab) {
+    assert_known_mission_control(&cron_tab.mission_control_id)
         .await
         .unwrap_or_else(|e| trap(&e));
 
-    set_cron_jobs_store(&mission_control_id, &cron_jobs);
+    set_cron_tab_store(&cron_tab).unwrap_or_else(|e| trap(&e));
 }
+
+// #[candid_method(update)]
+// #[update]
+// async fn get_cron_jobs(mission_control_id: MissionControlId) {
+//     assert_known_mission_control(&mission_control_id)
+//         .await
+//         .unwrap_or_else(|e| trap(&e));
+//
+//     set_cron_jobs_store(&mission_control_id, &cron_jobs);
+// }
 
 /// Reports
 

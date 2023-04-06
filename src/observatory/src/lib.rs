@@ -4,7 +4,7 @@ mod impls;
 mod store;
 mod types;
 
-use crate::cron_jobs::spawn_mission_controls_cron_jobs;
+use crate::cron_jobs::spawn_cron_jobs;
 use crate::guards::{caller_can_execute_cron_jobs, caller_is_console, caller_is_controller};
 use crate::store::{
     delete_controllers, delete_cron_controllers, set_controllers as set_controllers_store,
@@ -105,8 +105,8 @@ fn set_cron_jobs(
 
 #[candid_method(update)]
 #[update(guard = "caller_can_execute_cron_jobs")]
-fn spawn_cron_jobs() {
-    spawn_mission_controls_cron_jobs();
+fn run_jobs() {
+    spawn_cron_jobs();
 }
 
 /// Mgmt

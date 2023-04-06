@@ -37,13 +37,14 @@
 		"format": "prettier --plugin-search-dir . --write .",
 		"prebuild": "npm run generate",
 		"generate": "cargo test && dfx generate && node scripts/update.types.mjs && npm run copy:mjs && npm run format",
-		"copy:mjs": "cp src/declarations/console/console.factory.did.js src/declarations/console/console.factory.did.mjs && cp src/declarations/satellite/satellite.factory.did.js src/declarations/satellite/satellite.factory.did.mjs",
+		"copy:mjs": "cp src/declarations/console/console.factory.did.js src/declarations/console/console.factory.did.mjs && cp src/declarations/satellite/satellite.factory.did.js src/declarations/satellite/satellite.factory.did.mjs && cp src/declarations/observatory/observatory.factory.did.js src/declarations/observatory/observatory.factory.did.mjs",
 		"install:wasm": "node scripts/console.install-wasm.mjs",
 		"invitation": "node scripts/console.invitation.mjs",
 		"ledger:account-id": "node ./scripts/ledger.account-id.mjs",
 		"ledger:balance": "node scripts/ledger.balance.mjs",
 		"ledger:transfer": "node scripts/ledger.transfer.mjs",
-		"i18n": "node --experimental-json-modules scripts/i18n.mjs"
+		"i18n": "node --experimental-json-modules scripts/i18n.mjs",
+		"observatory:statuses": "node scripts/observatory.statuses.mjs"
 	},
 	"devDependencies": {
 		"@dfinity/identity-secp256k1": "^0.15.3",

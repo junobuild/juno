@@ -57,9 +57,9 @@ fn get_existing_mission_control_impl(
     let existing_mission_control = state.mission_controls.get(user);
 
     match existing_mission_control {
-        None => Err("User does not have a mission control center"),
+        None => Err("User does not have a mission control center."),
         Some(existing_mission_control) => match existing_mission_control.mission_control_id {
-            None => Err("User mission control center does not yet exists"),
+            None => Err("User mission control center does not exist yet."),
             Some(existing_mission_control_id) => {
                 if principal_equal(existing_mission_control_id, *mission_control_id) {
                     return Ok(existing_mission_control.clone());

@@ -5,7 +5,7 @@ use shared::env::CONSOLE;
 use shared::types::interface::AssertMissionControlCenterArgs;
 use shared::types::state::MissionControlId;
 
-pub async fn assert_known_mission_control(
+pub async fn assert_mission_control_center(
     mission_control_id: &MissionControlId,
 ) -> Result<(), String> {
     let user = caller();

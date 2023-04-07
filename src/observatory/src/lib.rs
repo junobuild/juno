@@ -6,7 +6,7 @@ mod reports;
 mod store;
 mod types;
 
-use crate::console::assert_known_mission_control;
+use crate::console::assert_mission_control_center;
 use crate::constants::CRON_INTERVAL_NS;
 use crate::cron_jobs::cron_jobs;
 use crate::guards::{caller_can_execute_cron_jobs, caller_is_controller};
@@ -109,7 +109,7 @@ fn del_cron_controllers(DeleteControllersArgs { controllers }: DeleteControllers
 #[candid_method(update)]
 #[update]
 async fn set_cron_tab(cron_tab: SetCronTab) {
-    assert_known_mission_control(&cron_tab.mission_control_id)
+    assert_mission_control_center(&cron_tab.mission_control_id)
         .await
         .unwrap_or_else(|e| trap(&e));
 
@@ -119,7 +119,7 @@ async fn set_cron_tab(cron_tab: SetCronTab) {
 #[candid_method(update)]
 #[update]
 async fn get_cron_tab(mission_control_id: MissionControlId) -> Option<CronTab> {
-    assert_known_mission_control(&mission_control_id)
+    assert_mission_control_center(&mission_control_id)
         .await
         .unwrap_or_else(|e| trap(&e));
 

@@ -112,6 +112,7 @@ const config: UserConfig = {
 			},
 			// Enable esbuild polyfill plugins
 			plugins: [
+				// @ts-ignore
 				NodeModulesPolyfillPlugin(),
 				{
 					name: 'fix-node-globals-polyfill',
@@ -141,11 +142,6 @@ export default defineConfig(({ mode }: UserConfig): UserConfig => {
 				DFX_NETWORK: network
 			},
 			VITE_APP_VERSION: JSON.stringify(version)
-		},
-		server: {
-			watch: {
-				useFsEvents: false
-			}
 		}
 	};
 });

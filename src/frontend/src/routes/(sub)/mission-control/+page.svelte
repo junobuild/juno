@@ -13,7 +13,7 @@
 	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import MissionControlNotifications from '$lib/components/mission-control/MissionControlNotifications.svelte';
+	import MissionControlObservatory from '$lib/components/mission-control/MissionControlObservatory.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -26,7 +26,7 @@
 		},
 		{
 			id: Symbol('3'),
-			labelKey: 'notifications.title'
+			labelKey: 'observatory.title'
 		}
 		// TODO: implement and add transactions tab when ICP index canisters makes it to mainnet
 		// {
@@ -53,7 +53,7 @@
 			{:else if $store.tabId === $store.tabs[1].id}
 				<MissionControlControllers missionControlId={$missionControlStore} />
 			{:else if $store.tabId === $store.tabs[2].id}
-				<MissionControlNotifications missionControlId={$missionControlStore} />
+				<MissionControlObservatory missionControlId={$missionControlStore} />
 			{/if}
 		{/if}
 	</Tabs>

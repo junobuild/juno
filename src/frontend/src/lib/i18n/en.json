@@ -137,7 +137,9 @@
 		"hosting_delete_custom_domain": "Error while deleting the custom domain.",
 		"controllers_listing": "Error while listing the controllers.",
 		"controllers_no_selection": "No controller to delete selected.",
-		"controllers_delete": "Unexpected error(s) while deleting the controller."
+		"controllers_delete": "Unexpected error(s) while deleting the controller.",
+		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
+		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data."
 	},
 	"document": {
 		"owner": "Owner",
@@ -208,7 +210,8 @@
 		"empty": "No registered users at the moment.",
 		"enabled": "Enabled"
 	},
-	"notifications": {
-		"title": "Notifications"
+	"observatory": {
+		"title": "Observatory",
+		"loading": "Loading your settings"
 	}
 }

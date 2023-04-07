@@ -5,45 +5,39 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import Input from '$lib/components/ui/Input.svelte';
-	import {getCronTab, setCronTab} from '$lib/api/observatory.api';
+	import { getCronTab, setCronTab } from '$lib/api/observatory.api';
 	import type { Principal } from '@dfinity/principal';
-	import type {CronTab} from "$declarations/observatory/observatory.did";
-	import {fromNullable} from "$lib/utils/did.utils";
-	import {onMount} from "svelte";
+	import type { CronTab } from '$declarations/observatory/observatory.did';
+	import { fromNullable } from '$lib/utils/did.utils';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import SpinnerParagraph from "$lib/components/ui/SpinnerParagraph.svelte";
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import { metadataEmail } from '$lib/utils/metadata.utils';
 
 	export let missionControlId: Principal;
 
-	let threshold: number | undefined;
-	let email: string | undefined = undefined;
+	// Source: https://stackoverflow.com/a/46181/5404186
+	const validEmail = (email: string): boolean => {
+		return (
+			email.match(
+				/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+			) !== null
+		);
+	};
 
 	const onSubmit = async () => {
-		if (isNullish(email)) {
-			toasts.error({
-				text: $i18n.errors.satellite_name_missing
-			});
-			return;
-		}
-
-		if (isNullish(threshold)) {
-			toasts.error({
-				text: $i18n.errors.satellite_name_missing
-			});
-			return;
-		}
-
 		busy.start();
 
 		try {
 			await setCronTab({
 				missionControlId,
-				cronTab: undefined,
+				cronTab,
 				cron_jobs: {
-					metadata: [['email', email]],
+					metadata:
+						nonNullish(email) && email !== '' && validEmail(email) ? [['email', email]] : [],
 					statuses: {
 						enabled,
-						cycles_threshold: BigInt(threshold)
+						cycles_threshold: BigInt(threshold ?? 5)
 					}
 				}
 			});
@@ -61,12 +55,18 @@
 	let cronTab: CronTab | undefined;
 
 	let enabled = false;
+	let threshold: number | undefined;
+	let email: string | undefined = undefined;
 
 	const loadCrontab = async () => {
 		try {
-			cronTab = fromNullable(await getCronTab({missionControlId}));
+			cronTab = fromNullable(await getCronTab({ missionControlId }));
 
 			enabled = cronTab?.cron_jobs.statuses.enabled ?? false;
+			email = metadataEmail(cronTab?.cron_jobs.metadata ?? []);
+			threshold = nonNullish(cronTab?.cron_jobs.statuses.cycles_threshold)
+				? Number(cronTab?.cron_jobs.statuses.cycles_threshold)
+				: undefined;
 
 			loading = false;
 		} catch (err: unknown) {
@@ -75,9 +75,12 @@
 				detail: err
 			});
 		}
-	}
+	};
 
 	onMount(async () => await loadCrontab());
+
+	let invalidEmail = false;
+	$: invalidEmail = nonNullish(email) && email !== '' && !validEmail(email);
 </script>
 
 <div class="card-container">
@@ -85,44 +88,61 @@
 		<SpinnerParagraph>{$i18n.observatory.loading}</SpinnerParagraph>
 	{:else}
 		<form on:submit|preventDefault={onSubmit} in:fade>
-			<Value>
-				<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
-				<div class="checkbox">
-					<input type=checkbox bind:checked={enabled} />
-					<span>{enabled ? $i18n.observatory.enabled : $i18n.observatory.disabled}</span>
-				</div>
-			</Value>
+			<div>
+				<Value>
+					<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
+					<div class="checkbox">
+						<input type="checkbox" bind:checked={enabled} />
+						<span>{enabled ? $i18n.observatory.enabled : $i18n.observatory.disabled}</span>
+					</div>
+				</Value>
+			</div>
 
-			<Value>
-				<svelte:fragment slot="label">{$i18n.satellites.name}</svelte:fragment>
-				<input
+			<div>
+				<Value>
+					<svelte:fragment slot="label">{$i18n.observatory.email_notifications}</svelte:fragment>
+					<input
 						bind:value={email}
 						type="email"
 						name="email"
-						placeholder={$i18n.satellites.enter_name}
-						required
-				/>
-			</Value>
+						placeholder={$i18n.observatory.email_notifications_placeholder}
+					/>
+				</Value>
+			</div>
 
-			<Value>
-				<svelte:fragment slot="label">{$i18n.satellites.name}</svelte:fragment>
-				<Input
-						inputType="number"
-						placeholder={$i18n.collections.max_size_placeholder}
-						name="threshold"
-						required
-						bind:value={threshold}
-						on:blur={() => (threshold = nonNullish(threshold) ? Math.trunc(threshold) : undefined)}
-				/>
-			</Value>
+			<div>
+				<Value>
+					<svelte:fragment slot="label">{$i18n.observatory.cycles_threshold}</svelte:fragment>
+					<div class="input">
+						<Input
+							inputType="number"
+							placeholder={$i18n.observatory.cycles_threshold_placeholder}
+							name="threshold"
+							bind:value={threshold}
+							on:blur={() =>
+								(threshold = nonNullish(threshold) ? Math.trunc(threshold) : undefined)}
+						/>
+					</div>
+				</Value>
+			</div>
 
-			<button type="submit" disabled={$isBusy}>{$i18n.satellites.create}</button>
+			<button type="submit" disabled={$isBusy || invalidEmail}>{$i18n.satellites.create}</button>
 		</form>
 	{/if}
 </div>
 
 <style lang="scss">
-	input {
-		margin: 0 0 var(--padding-2_5x);
+	form {
+		display: flex;
+		flex-direction: column;
+		gap: var(--padding);
+	}
+
+	.checkbox {
+		margin: var(--padding-0_25x) 0 0;
+	}
+
+	button {
+		margin: var(--padding-2x) 0 0;
 	}
 </style>

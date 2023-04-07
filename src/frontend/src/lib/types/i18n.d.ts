@@ -239,6 +239,10 @@ interface I18nObservatory {
   monitoring: string;
   enabled: string;
   disabled: string;
+  email_notifications: string;
+  email_notifications_placeholder: string;
+  cycles_threshold: string;
+  cycles_threshold_placeholder: string;
 }
 
 interface I18n {

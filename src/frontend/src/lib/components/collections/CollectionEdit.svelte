@@ -141,7 +141,7 @@
 	}
 
 	label {
-		padding: var(--padding-2x) 0 var(--padding);
+		padding: var(--padding-2x) 0 0;
 	}
 
 	.toolbar {

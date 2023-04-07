@@ -215,6 +215,10 @@
 		"loading": "Loading your settings",
 		"monitoring": "Monitoring",
 		"enabled": "Enabled",
-		"disabled": "Disabled"
+		"disabled": "Disabled",
+		"email_notifications": "Email notifications",
+		"email_notifications_placeholder": "Enter an email to receive notifications",
+		"cycles_threshold": "Cycles threshold",
+		"cycles_threshold_placeholder": "A threshold to limit the notifications"
 	}
 }

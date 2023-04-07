@@ -236,6 +236,9 @@ interface I18nUsers {
 interface I18nObservatory {
   title: string;
   loading: string;
+  monitoring: string;
+  enabled: string;
+  disabled: string;
 }
 
 interface I18n {

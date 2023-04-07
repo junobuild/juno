@@ -60,9 +60,9 @@
 	font-size: inherit;
 
 	svg {
-		margin: 0.45rem 0.45rem 0.45rem 0;
-		width: 1.25rem;
-		height: 1.25rem;
+		margin: var(--padding) var(--padding) var(--padding) 0;
+		width: var(--padding-2_5x);
+		height: var(--padding-2_5x);
 	}
 
 	&:hover:not(:disabled),

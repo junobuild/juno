@@ -42,7 +42,7 @@
 				cron_jobs: {
 					metadata: [['email', email]],
 					statuses: {
-						enabled: true,
+						enabled,
 						cycles_threshold: BigInt(threshold)
 					}
 				}
@@ -60,9 +60,13 @@
 	let loading = true;
 	let cronTab: CronTab | undefined;
 
+	let enabled = false;
+
 	const loadCrontab = async () => {
 		try {
 			cronTab = fromNullable(await getCronTab({missionControlId}));
+
+			enabled = cronTab?.cron_jobs.statuses.enabled ?? false;
 
 			loading = false;
 		} catch (err: unknown) {
@@ -80,7 +84,15 @@
 	{#if loading}
 		<SpinnerParagraph>{$i18n.observatory.loading}</SpinnerParagraph>
 	{:else}
-		<form on:submit|preventDefault={onSubmit} transition:fade>
+		<form on:submit|preventDefault={onSubmit} in:fade>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
+				<div class="checkbox">
+					<input type=checkbox bind:checked={enabled} />
+					<span>{enabled ? $i18n.observatory.enabled : $i18n.observatory.disabled}</span>
+				</div>
+			</Value>
+
 			<Value>
 				<svelte:fragment slot="label">{$i18n.satellites.name}</svelte:fragment>
 				<input
@@ -108,3 +120,9 @@
 		</form>
 	{/if}
 </div>
+
+<style lang="scss">
+	input {
+		margin: 0 0 var(--padding-2_5x);
+	}
+</style>

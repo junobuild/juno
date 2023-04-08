@@ -1,6 +1,6 @@
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
-use ic_cdk::{call};
+use ic_cdk::call;
 use shared::env::CONSOLE;
 use shared::types::interface::AssertMissionControlCenterArgs;
 use shared::types::state::{MissionControlId, UserId};

@@ -1,10 +1,11 @@
+use crate::constants::CYCLES_MIN_THRESHOLD;
 use crate::store::{get_cron_tabs, set_statuses};
 use crate::types::state::CronTab;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, print, spawn};
 use lazy_static::lazy_static;
 use shared::types::interface::{SegmentsStatuses, StatusesArgs};
-use shared::types::state::{UserId};
+use shared::types::state::UserId;
 use std::sync::Mutex;
 
 lazy_static! {
@@ -44,12 +45,13 @@ async fn collect_statuses(user: UserId, cron_tab: CronTab) {
     }
 }
 
-async fn statuses(
-    cron_tab: &CronTab,
-) -> Result<SegmentsStatuses, String> {
-    let args = StatusesArgs {
-        cycles_threshold: cron_tab.cron_jobs.statuses.cycles_threshold,
+async fn statuses(cron_tab: &CronTab) -> Result<SegmentsStatuses, String> {
+    let cycles_threshold = match cron_tab.cron_jobs.statuses.cycles_threshold {
+        None => CYCLES_MIN_THRESHOLD,
+        Some(threshold) => threshold,
     };
+
+    let args = StatusesArgs { cycles_threshold };
 
     let result: CallResult<(SegmentsStatuses,)> =
         call(cron_tab.mission_control_id, "status", (args,)).await;

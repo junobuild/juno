@@ -44,7 +44,7 @@ pub mod list {
     use crate::types::state::ArchiveTime;
     use candid::{CandidType, Deserialize};
     use shared::types::interface::SegmentsStatuses;
-    use shared::types::state::{UserId};
+    use shared::types::state::UserId;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct ListLastStatuses {

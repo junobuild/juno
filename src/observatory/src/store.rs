@@ -31,7 +31,11 @@ pub fn set_cron_tab(user: &UserId, cron_tab: &SetCronTab) -> Result<(), String> 
     STATE.with(|state| set_cron_tab_impl(user, cron_tab, &mut state.borrow_mut().stable))
 }
 
-fn set_cron_tab_impl(user: &UserId, cron_tab: &SetCronTab, state: &mut StableState) -> Result<(), String> {
+fn set_cron_tab_impl(
+    user: &UserId,
+    cron_tab: &SetCronTab,
+    state: &mut StableState,
+) -> Result<(), String> {
     let current_tab = state.cron_tabs.get(user);
 
     // Validate timestamp
@@ -61,9 +65,7 @@ fn set_cron_tab_impl(user: &UserId, cron_tab: &SetCronTab, state: &mut StableSta
         updated_at,
     };
 
-    state
-        .cron_tabs
-        .insert(*user, new_cron_tab);
+    state.cron_tabs.insert(*user, new_cron_tab);
 
     Ok(())
 }
@@ -114,13 +116,8 @@ pub fn delete_cron_controllers(remove_controllers: &[ControllerId]) {
 /// Statuses
 ///
 
-pub fn set_statuses(
-    user: &UserId,
-    statuses: &Result<SegmentsStatuses, String>,
-) {
-    STATE.with(|state| {
-        set_statuses_impl(user, statuses, &mut state.borrow_mut().stable)
-    })
+pub fn set_statuses(user: &UserId, statuses: &Result<SegmentsStatuses, String>) {
+    STATE.with(|state| set_statuses_impl(user, statuses, &mut state.borrow_mut().stable))
 }
 
 fn set_statuses_impl(
@@ -132,18 +129,15 @@ fn set_statuses_impl(
 
     match archive {
         None => {
-            state.archive.statuses.insert(
-                *user,
-                ArchiveStatuses::from([(time(), statuses.clone())]),
-            );
+            state
+                .archive
+                .statuses
+                .insert(*user, ArchiveStatuses::from([(time(), statuses.clone())]));
         }
         Some(archive) => {
             let mut updated_archive = archive.clone();
             updated_archive.insert(time(), statuses.clone());
-            state
-                .archive
-                .statuses
-                .insert(*user, updated_archive);
+            state.archive.statuses.insert(*user, updated_archive);
         }
     }
 }
@@ -153,10 +147,7 @@ pub fn list_last_statuses() -> Vec<ListLastStatuses> {
 }
 
 fn list_last_statuses_impl(state: &StableState) -> Vec<ListLastStatuses> {
-    fn archive_statuses(
-        user: &UserId,
-        statuses: &ArchiveStatuses,
-    ) -> Option<ListLastStatuses> {
+    fn archive_statuses(user: &UserId, statuses: &ArchiveStatuses) -> Option<ListLastStatuses> {
         let last = statuses.iter().next_back();
 
         last.map(|(timestamp, statuses)| ListLastStatuses {
@@ -171,8 +162,6 @@ fn list_last_statuses_impl(state: &StableState) -> Vec<ListLastStatuses> {
         .statuses
         .clone()
         .into_iter()
-        .filter_map(|(user, statuses)| {
-            archive_statuses(&user, &statuses)
-        })
+        .filter_map(|(user, statuses)| archive_statuses(&user, &statuses))
         .collect()
 }

@@ -1,2 +1,4 @@
 // 1 minute
 pub const CRON_INTERVAL_NS: u64 = 60_000_000_000;
+
+pub const CYCLES_MIN_THRESHOLD: u64 = 500_000_000_000;

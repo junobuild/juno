@@ -63,7 +63,7 @@ fn set_cron_tab_impl(user: &UserId, cron_tab: &SetCronTab, state: &mut StableSta
 
     state
         .cron_tabs
-        .insert(cron_tab.mission_control_id, new_cron_tab);
+        .insert(*user, new_cron_tab);
 
     Ok(())
 }

@@ -60,7 +60,7 @@
 
 	const loadCrontab = async () => {
 		try {
-			cronTab = fromNullable(await getCronTab({ missionControlId }));
+			cronTab = fromNullable(await getCronTab());
 
 			enabled = cronTab?.cron_jobs.statuses.enabled ?? false;
 			email = metadataEmail(cronTab?.cron_jobs.metadata ?? []);
@@ -118,6 +118,7 @@
 							inputType="number"
 							placeholder={$i18n.observatory.cycles_threshold_placeholder}
 							name="threshold"
+							required={false}
 							bind:value={threshold}
 							on:blur={() =>
 								(threshold = nonNullish(threshold) ? Math.trunc(threshold) : undefined)}

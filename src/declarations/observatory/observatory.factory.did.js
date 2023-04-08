@@ -13,6 +13,7 @@ export const idlFactory = ({ IDL }) => {
 	const CronTab = IDL.Record({
 		cron_jobs: CronJobs,
 		updated_at: IDL.Nat64,
+		mission_control_id: IDL.Principal,
 		created_at: IDL.Nat64
 	});
 	const CanisterStatusType = IDL.Variant({
@@ -67,7 +68,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_cron_controllers: IDL.Func([DeleteControllersArgs], [], []),
-		get_cron_tab: IDL.Func([IDL.Principal], [IDL.Opt(CronTab)], []),
+		get_cron_tab: IDL.Func([], [IDL.Opt(CronTab)], ['query']),
 		list_last_statuses: IDL.Func([], [IDL.Vec(ListStatuses)], ['query']),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_controllers: IDL.Func([SetControllersArgs], [], []),

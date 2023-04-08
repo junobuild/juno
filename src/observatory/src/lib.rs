@@ -117,7 +117,7 @@ async fn set_cron_tab(cron_tab: SetCronTab) {
     set_cron_tab_store(&user, &cron_tab).unwrap_or_else(|e| trap(&e));
 }
 
-#[candid_method(update)]
+#[candid_method(query)]
 #[query]
 fn get_cron_tab() -> Option<CronTab> {
     let user = caller();

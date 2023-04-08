@@ -17,6 +17,7 @@ export interface CronJobs {
 export interface CronTab {
 	cron_jobs: CronJobs;
 	updated_at: bigint;
+	mission_control_id: Principal;
 	created_at: bigint;
 }
 export interface DefiniteCanisterSettings {
@@ -65,7 +66,7 @@ export interface StatusesCronJob {
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_cron_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
-	get_cron_tab: ActorMethod<[Principal], [] | [CronTab]>;
+	get_cron_tab: ActorMethod<[], [] | [CronTab]>;
 	list_last_statuses: ActorMethod<[], Array<ListStatuses>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_cron_controllers: ActorMethod<[SetControllersArgs], undefined>;

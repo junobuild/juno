@@ -10,9 +10,13 @@ export interface CanisterStatusResponse {
 	module_hash: [] | [Uint8Array | number[]];
 }
 export type CanisterStatusType = { stopped: null } | { stopping: null } | { running: null };
+export interface CronJobStatuses {
+	enabled: boolean;
+	cycles_threshold: [] | [bigint];
+}
 export interface CronJobs {
 	metadata: Array<[string, string]>;
-	statuses: StatusesCronJob;
+	statuses: CronJobStatuses;
 }
 export interface CronTab {
 	cron_jobs: CronJobs;
@@ -30,7 +34,7 @@ export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
 export interface ListStatuses {
-	metadata: Array<[string, string]>;
+	cron_jobs: CronJobs;
 	statuses: Result_1;
 	timestamp: bigint;
 }
@@ -58,10 +62,6 @@ export interface SetCronTab {
 	cron_jobs: CronJobs;
 	updated_at: [] | [bigint];
 	mission_control_id: Principal;
-}
-export interface StatusesCronJob {
-	enabled: boolean;
-	cycles_threshold: [] | [bigint];
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;

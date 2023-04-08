@@ -7,9 +7,10 @@ type CanisterStatusResponse = record {
   module_hash : opt vec nat8;
 };
 type CanisterStatusType = variant { stopped; stopping; running };
+type CronJobStatuses = record { enabled : bool; cycles_threshold : opt nat64 };
 type CronJobs = record {
   metadata : vec record { text; text };
-  statuses : StatusesCronJob;
+  statuses : CronJobStatuses;
 };
 type CronTab = record {
   cron_jobs : CronJobs;
@@ -25,7 +26,7 @@ type DefiniteCanisterSettings = record {
 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type ListStatuses = record {
-  metadata : vec record { text; text };
+  cron_jobs : CronJobs;
   statuses : Result_1;
   timestamp : nat64;
 };
@@ -54,7 +55,6 @@ type SetCronTab = record {
   updated_at : opt nat64;
   mission_control_id : principal;
 };
-type StatusesCronJob = record { enabled : bool; cycles_threshold : opt nat64 };
 service : {
   del_controllers : (DeleteControllersArgs) -> ();
   del_cron_controllers : (DeleteControllersArgs) -> ();

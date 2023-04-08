@@ -2,13 +2,13 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const StatusesCronJob = IDL.Record({
+	const CronJobStatuses = IDL.Record({
 		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)
 	});
 	const CronJobs = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		statuses: StatusesCronJob
+		statuses: CronJobStatuses
 	});
 	const CronTab = IDL.Record({
 		cron_jobs: CronJobs,
@@ -48,7 +48,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Result_1 = IDL.Variant({ Ok: SegmentsStatuses, Err: IDL.Text });
 	const ListStatuses = IDL.Record({
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		cron_jobs: CronJobs,
 		statuses: Result_1,
 		timestamp: IDL.Nat64
 	});

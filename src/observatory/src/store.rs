@@ -8,7 +8,7 @@ use shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use shared::types::interface::{SegmentsStatuses, SetController};
-use shared::types::state::{ControllerId, MissionControlId};
+use shared::types::state::{ControllerId, UserId};
 
 ///
 /// CronJobs
@@ -18,21 +18,21 @@ pub fn get_cron_tabs() -> CronTabs {
     STATE.with(|state| state.borrow().stable.cron_tabs.clone())
 }
 
-pub fn get_cron_tab(mission_control_id: &MissionControlId) -> Option<CronTab> {
-    STATE.with(|state| get_cron_tab_impl(mission_control_id, &state.borrow_mut().stable.cron_tabs))
+pub fn get_cron_tab(user: &UserId) -> Option<CronTab> {
+    STATE.with(|state| get_cron_tab_impl(user, &state.borrow_mut().stable.cron_tabs))
 }
 
-fn get_cron_tab_impl(mission_control_id: &MissionControlId, state: &CronTabs) -> Option<CronTab> {
-    let cron_tab = state.get(mission_control_id);
+fn get_cron_tab_impl(user: &UserId, state: &CronTabs) -> Option<CronTab> {
+    let cron_tab = state.get(user);
     cron_tab.cloned()
 }
 
-pub fn set_cron_tab(cron_tab: &SetCronTab) -> Result<(), String> {
-    STATE.with(|state| set_cron_tab_impl(cron_tab, &mut state.borrow_mut().stable))
+pub fn set_cron_tab(user: &UserId, cron_tab: &SetCronTab) -> Result<(), String> {
+    STATE.with(|state| set_cron_tab_impl(user, cron_tab, &mut state.borrow_mut().stable))
 }
 
-fn set_cron_tab_impl(cron_tab: &SetCronTab, state: &mut StableState) -> Result<(), String> {
-    let current_tab = state.cron_tabs.get(&cron_tab.mission_control_id);
+fn set_cron_tab_impl(user: &UserId, cron_tab: &SetCronTab, state: &mut StableState) -> Result<(), String> {
+    let current_tab = state.cron_tabs.get(user);
 
     // Validate timestamp
     match current_tab {
@@ -55,6 +55,7 @@ fn set_cron_tab_impl(cron_tab: &SetCronTab, state: &mut StableState) -> Result<(
     let updated_at: u64 = now;
 
     let new_cron_tab = CronTab {
+        mission_control_id: cron_tab.mission_control_id,
         cron_jobs: cron_tab.cron_jobs.clone(),
         created_at,
         updated_at,
@@ -114,25 +115,25 @@ pub fn delete_cron_controllers(remove_controllers: &[ControllerId]) {
 ///
 
 pub fn set_statuses(
-    mission_control_id: &MissionControlId,
+    user: &UserId,
     statuses: &Result<SegmentsStatuses, String>,
 ) {
     STATE.with(|state| {
-        set_statuses_impl(mission_control_id, statuses, &mut state.borrow_mut().stable)
+        set_statuses_impl(user, statuses, &mut state.borrow_mut().stable)
     })
 }
 
 fn set_statuses_impl(
-    mission_control_id: &MissionControlId,
+    user: &UserId,
     statuses: &Result<SegmentsStatuses, String>,
     state: &mut StableState,
 ) {
-    let archive = state.archive.statuses.get(mission_control_id);
+    let archive = state.archive.statuses.get(user);
 
     match archive {
         None => {
             state.archive.statuses.insert(
-                *mission_control_id,
+                *user,
                 ArchiveStatuses::from([(time(), statuses.clone())]),
             );
         }
@@ -142,7 +143,7 @@ fn set_statuses_impl(
             state
                 .archive
                 .statuses
-                .insert(*mission_control_id, updated_archive);
+                .insert(*user, updated_archive);
         }
     }
 }
@@ -153,13 +154,13 @@ pub fn list_last_statuses() -> Vec<ListLastStatuses> {
 
 fn list_last_statuses_impl(state: &StableState) -> Vec<ListLastStatuses> {
     fn archive_statuses(
-        mission_control_id: &MissionControlId,
+        user: &UserId,
         statuses: &ArchiveStatuses,
     ) -> Option<ListLastStatuses> {
         let last = statuses.iter().next_back();
 
         last.map(|(timestamp, statuses)| ListLastStatuses {
-            mission_control_id: *mission_control_id,
+            user: *user,
             timestamp: *timestamp,
             statuses: statuses.clone(),
         })
@@ -170,8 +171,8 @@ fn list_last_statuses_impl(state: &StableState) -> Vec<ListLastStatuses> {
         .statuses
         .clone()
         .into_iter()
-        .filter_map(|(mission_control_id, statuses)| {
-            archive_statuses(&mission_control_id, &statuses)
+        .filter_map(|(user, statuses)| {
+            archive_statuses(&user, &statuses)
         })
         .collect()
 }

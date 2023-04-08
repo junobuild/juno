@@ -35,7 +35,7 @@ fn get_mission_control_impl(
                 return Ok(Some(mission_control.clone()));
             }
 
-            Err("User does not have the permission for the satellite.")
+            Err("User does not have the permission for the mission control.")
         }
     }
 }

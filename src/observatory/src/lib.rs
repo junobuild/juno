@@ -25,7 +25,6 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_cdk_timers::set_timer_interval;
 use shared::controllers::init_controllers;
 use shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
-use shared::types::state::MissionControlId;
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::time::Duration;
@@ -104,26 +103,26 @@ fn del_cron_controllers(DeleteControllersArgs { controllers }: DeleteControllers
     delete_cron_controllers(&controllers);
 }
 
-/// CronJobs
+/// Crontabs
 
 #[candid_method(update)]
 #[update]
 async fn set_cron_tab(cron_tab: SetCronTab) {
-    assert_mission_control_center(&cron_tab.mission_control_id)
+    let user = caller();
+
+    assert_mission_control_center(&user, &cron_tab.mission_control_id)
         .await
         .unwrap_or_else(|e| trap(&e));
 
-    set_cron_tab_store(&cron_tab).unwrap_or_else(|e| trap(&e));
+    set_cron_tab_store(&user, &cron_tab).unwrap_or_else(|e| trap(&e));
 }
 
 #[candid_method(update)]
-#[update]
-async fn get_cron_tab(mission_control_id: MissionControlId) -> Option<CronTab> {
-    assert_mission_control_center(&mission_control_id)
-        .await
-        .unwrap_or_else(|e| trap(&e));
+#[query]
+fn get_cron_tab() -> Option<CronTab> {
+    let user = caller();
 
-    get_cron_tab_store(&mission_control_id)
+    get_cron_tab_store(&user)
 }
 
 /// Reports

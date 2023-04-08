@@ -6,7 +6,7 @@ pub fn last_statuses() -> Vec<ListStatuses> {
     let statuses = list_last_statuses();
 
     fn list_statuses(status: &ListLastStatuses) -> Option<ListStatuses> {
-        let cron_tab = get_cron_tab(&status.mission_control_id);
+        let cron_tab = get_cron_tab(&status.user);
 
         match cron_tab {
             None => None,

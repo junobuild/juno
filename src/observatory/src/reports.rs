@@ -16,7 +16,7 @@ pub fn last_statuses() -> Vec<ListStatuses> {
                 }
 
                 Some(ListStatuses {
-                    metadata: cron_tab.cron_jobs.metadata,
+                    cron_jobs: cron_tab.cron_jobs,
                     timestamp: status.timestamp,
                     statuses: status.statuses.clone(),
                 })

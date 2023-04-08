@@ -155,11 +155,11 @@ pub mod cronjob {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CronJobs {
         pub metadata: Metadata,
-        pub statuses: StatusesCronJob,
+        pub statuses: CronJobStatuses,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct StatusesCronJob {
+    pub struct CronJobStatuses {
         pub enabled: bool,
         pub cycles_threshold: Option<u64>,
     }

@@ -59,11 +59,11 @@ pub mod interface {
     use candid::{CandidType, Deserialize};
     use shared::types::cronjob::CronJobs;
     use shared::types::interface::SegmentsStatuses;
-    use shared::types::state::{Metadata, MissionControlId};
+    use shared::types::state::MissionControlId;
 
     #[derive(CandidType, Deserialize)]
     pub struct ListStatuses {
-        pub metadata: Metadata,
+        pub cron_jobs: CronJobs,
         pub timestamp: ArchiveTime,
         pub statuses: Result<SegmentsStatuses, String>,
     }

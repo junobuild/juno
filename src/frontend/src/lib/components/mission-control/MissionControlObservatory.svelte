@@ -8,7 +8,7 @@
 	import { getCronTab, setCronTab } from '$lib/api/observatory.api';
 	import type { Principal } from '@dfinity/principal';
 	import type { CronTab } from '$declarations/observatory/observatory.did';
-	import { fromNullable } from '$lib/utils/did.utils';
+	import {fromNullable, toNullable} from '$lib/utils/did.utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
@@ -37,7 +37,7 @@
 						nonNullish(email) && email !== '' && validEmail(email) ? [['email', email]] : [],
 					statuses: {
 						enabled,
-						cycles_threshold: BigInt(threshold ?? 5)
+						cycles_threshold: toNullable(isNullish(threshold) || threshold === 0 ? null : BigInt(threshold))
 					}
 				}
 			});

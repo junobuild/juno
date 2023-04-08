@@ -54,7 +54,7 @@ type SetCronTab = record {
   updated_at : opt nat64;
   mission_control_id : principal;
 };
-type StatusesCronJob = record { enabled : bool; cycles_threshold : nat64 };
+type StatusesCronJob = record { enabled : bool; cycles_threshold : opt nat64 };
 service : {
   del_controllers : (DeleteControllersArgs) -> ();
   del_cron_controllers : (DeleteControllersArgs) -> ();

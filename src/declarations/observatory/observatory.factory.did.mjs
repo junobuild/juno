@@ -4,7 +4,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const StatusesCronJob = IDL.Record({
 		enabled: IDL.Bool,
-		cycles_threshold: IDL.Nat64
+		cycles_threshold: IDL.Opt(IDL.Nat64)
 	});
 	const CronJobs = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),

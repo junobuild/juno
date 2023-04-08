@@ -61,7 +61,7 @@ export interface SetCronTab {
 }
 export interface StatusesCronJob {
 	enabled: boolean;
-	cycles_threshold: bigint;
+	cycles_threshold: [] | [bigint];
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;

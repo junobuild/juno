@@ -127,7 +127,7 @@
 				</Value>
 			</div>
 
-			<button type="submit" disabled={$isBusy || invalidEmail}>{$i18n.satellites.create}</button>
+			<button type="submit" disabled={$isBusy || invalidEmail}>{$i18n.core.submit}</button>
 		</form>
 	{/if}
 </div>

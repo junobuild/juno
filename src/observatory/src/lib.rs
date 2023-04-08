@@ -107,14 +107,14 @@ fn del_cron_controllers(DeleteControllersArgs { controllers }: DeleteControllers
 
 #[candid_method(update)]
 #[update]
-async fn set_cron_tab(cron_tab: SetCronTab) {
+async fn set_cron_tab(cron_tab: SetCronTab) -> CronTab {
     let user = caller();
 
     assert_mission_control_center(&user, &cron_tab.mission_control_id)
         .await
         .unwrap_or_else(|e| trap(&e));
 
-    set_cron_tab_store(&user, &cron_tab).unwrap_or_else(|e| trap(&e));
+    set_cron_tab_store(&user, &cron_tab).unwrap_or_else(|e| trap(&e))
 }
 
 #[candid_method(query)]

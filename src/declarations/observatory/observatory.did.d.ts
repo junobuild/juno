@@ -70,6 +70,6 @@ export interface _SERVICE {
 	list_last_statuses: ActorMethod<[], Array<ListStatuses>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_cron_controllers: ActorMethod<[SetControllersArgs], undefined>;
-	set_cron_tab: ActorMethod<[SetCronTab], undefined>;
+	set_cron_tab: ActorMethod<[SetCronTab], CronTab>;
 	version: ActorMethod<[], string>;
 }

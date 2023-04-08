@@ -8,7 +8,7 @@
 	import { getCronTab, setCronTab } from '$lib/api/observatory.api';
 	import type { Principal } from '@dfinity/principal';
 	import type { CronTab } from '$declarations/observatory/observatory.did';
-	import {fromNullable, toNullable} from '$lib/utils/did.utils';
+	import { fromNullable, toNullable } from '$lib/utils/did.utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
@@ -29,7 +29,7 @@
 		busy.start();
 
 		try {
-			await setCronTab({
+			cronTab = await setCronTab({
 				missionControlId,
 				cronTab,
 				cron_jobs: {
@@ -37,7 +37,9 @@
 						nonNullish(email) && email !== '' && validEmail(email) ? [['email', email]] : [],
 					statuses: {
 						enabled,
-						cycles_threshold: toNullable(isNullish(threshold) || threshold === 0 ? null : BigInt(threshold))
+						cycles_threshold: toNullable(
+							isNullish(threshold) || threshold === 0 ? null : BigInt(threshold)
+						)
 					}
 				}
 			});

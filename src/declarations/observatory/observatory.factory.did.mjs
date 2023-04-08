@@ -72,7 +72,7 @@ export const idlFactory = ({ IDL }) => {
 		list_last_statuses: IDL.Func([], [IDL.Vec(ListStatuses)], ['query']),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_controllers: IDL.Func([SetControllersArgs], [], []),
-		set_cron_tab: IDL.Func([SetCronTab], [], []),
+		set_cron_tab: IDL.Func([SetCronTab], [CronTab], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

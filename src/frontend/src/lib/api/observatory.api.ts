@@ -16,9 +16,9 @@ export const setCronTab = async ({
 	missionControlId: Principal;
 	cronTab: CronTab | undefined;
 	cron_jobs: CronJobs;
-}): Promise<void> => {
+}): Promise<CronTab> => {
 	const actor = await getObservatoryActor();
-	await actor.set_cron_tab({
+	return actor.set_cron_tab({
 		mission_control_id: missionControlId,
 		cron_jobs,
 		updated_at: toNullable(cronTab?.updated_at)

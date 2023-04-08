@@ -62,6 +62,6 @@ service : {
   list_last_statuses : () -> (vec ListStatuses) query;
   set_controllers : (SetControllersArgs) -> ();
   set_cron_controllers : (SetControllersArgs) -> ();
-  set_cron_tab : (SetCronTab) -> ();
+  set_cron_tab : (SetCronTab) -> (CronTab);
   version : () -> (text) query;
 }

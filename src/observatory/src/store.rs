@@ -27,7 +27,7 @@ fn get_cron_tab_impl(user: &UserId, state: &CronTabs) -> Option<CronTab> {
     cron_tab.cloned()
 }
 
-pub fn set_cron_tab(user: &UserId, cron_tab: &SetCronTab) -> Result<(), String> {
+pub fn set_cron_tab(user: &UserId, cron_tab: &SetCronTab) -> Result<CronTab, String> {
     STATE.with(|state| set_cron_tab_impl(user, cron_tab, &mut state.borrow_mut().stable))
 }
 
@@ -35,7 +35,7 @@ fn set_cron_tab_impl(
     user: &UserId,
     cron_tab: &SetCronTab,
     state: &mut StableState,
-) -> Result<(), String> {
+) -> Result<CronTab, String> {
     let current_tab = state.cron_tabs.get(user);
 
     // Validate timestamp
@@ -65,9 +65,9 @@ fn set_cron_tab_impl(
         updated_at,
     };
 
-    state.cron_tabs.insert(*user, new_cron_tab);
+    state.cron_tabs.insert(*user, new_cron_tab.clone());
 
-    Ok(())
+    Ok(new_cron_tab)
 }
 
 ///

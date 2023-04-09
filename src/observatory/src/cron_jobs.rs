@@ -48,7 +48,13 @@ async fn collect_statuses(user: UserId, cron_tab: CronTab) {
 async fn statuses(cron_tab: &CronTab) -> Result<SegmentsStatuses, String> {
     let cycles_threshold = match cron_tab.cron_jobs.statuses.cycles_threshold {
         None => CYCLES_MIN_THRESHOLD,
-        Some(threshold) => threshold,
+        Some(threshold) => {
+            if threshold < CYCLES_MIN_THRESHOLD {
+                CYCLES_MIN_THRESHOLD
+            } else {
+                threshold
+            }
+        },
     };
 
     let args = StatusesArgs { cycles_threshold };

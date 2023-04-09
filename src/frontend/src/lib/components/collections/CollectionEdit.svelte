@@ -113,7 +113,7 @@
 			<Input
 				inputType="number"
 				placeholder={$i18n.collections.max_size_placeholder}
-				name="maxLength"
+				name="maxSize"
 				required={false}
 				bind:value={maxSize}
 				on:blur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}

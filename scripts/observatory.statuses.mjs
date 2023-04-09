@@ -2,7 +2,7 @@
 
 import { observatoryActorLocal } from './actor.mjs';
 
-const filterSegmentStatus = ({segmentStatus, cron_jobs}) => {
+const filterSegmentStatus = ({ segmentStatus, cron_jobs }) => {
 	// If there was an error we want to inform
 	if ('Err' in segmentStatus) {
 		return true;
@@ -11,7 +11,7 @@ const filterSegmentStatus = ({segmentStatus, cron_jobs}) => {
 	const { Ok: status } = segmentStatus;
 
 	return status.status.cycles < cron_jobs.statuses.cycles_threshold;
-}
+};
 
 const filterStatuses = ({ statuses, cron_jobs }) => {
 	// If there was an error we want to inform
@@ -19,14 +19,18 @@ const filterStatuses = ({ statuses, cron_jobs }) => {
 		return true;
 	}
 
-	const { Ok: {mission_control, satellites} } = statuses;
+	const {
+		Ok: { mission_control, satellites }
+	} = statuses;
 
 	// Mission control needs to be reported
-	if (filterSegmentStatus({segmentStatus: mission_control, cron_jobs})) {
+	if (filterSegmentStatus({ segmentStatus: mission_control, cron_jobs })) {
 		return true;
 	}
 
-	const satellite = (satellites[0] ?? []).find((satellite) => filterSegmentStatus({segmentStatus: satellite, cron_jobs}));
+	const satellite = (satellites[0] ?? []).find((satellite) =>
+		filterSegmentStatus({ segmentStatus: satellite, cron_jobs })
+	);
 
 	return satellite !== undefined;
 };

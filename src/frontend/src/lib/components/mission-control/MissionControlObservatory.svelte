@@ -13,6 +13,7 @@
 	import { fade } from 'svelte/transition';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
+	import { CYCLES_WARNING, ONE_TRILLION } from '$lib/constants/constants';
 
 	export let missionControlId: Principal;
 
@@ -38,7 +39,7 @@
 					statuses: {
 						enabled,
 						cycles_threshold: toNullable(
-							isNullish(threshold) || threshold === 0 ? null : BigInt(threshold)
+							isNullish(threshold) || threshold === 0 ? null : BigInt(threshold * ONE_TRILLION)
 						)
 					}
 				}
@@ -67,7 +68,7 @@
 			enabled = cronTab?.cron_jobs.statuses.enabled ?? false;
 			email = metadataEmail(cronTab?.cron_jobs.metadata ?? []);
 			threshold = nonNullish(cronTab?.cron_jobs.statuses.cycles_threshold)
-				? Number(cronTab?.cron_jobs.statuses.cycles_threshold)
+				? Number(cronTab?.cron_jobs.statuses.cycles_threshold) / ONE_TRILLION
 				: undefined;
 
 			loading = false;
@@ -83,6 +84,9 @@
 
 	let invalidEmail = false;
 	$: invalidEmail = nonNullish(email) && email !== '' && !validEmail(email);
+
+	let invalidThreshold = false;
+	$: invalidThreshold = nonNullish(threshold) && threshold < Number(CYCLES_WARNING) / ONE_TRILLION;
 </script>
 
 <div class="card-container">
@@ -122,14 +126,14 @@
 							name="threshold"
 							required={false}
 							bind:value={threshold}
-							on:blur={() =>
-								(threshold = nonNullish(threshold) ? Math.trunc(threshold) : undefined)}
 						/>
 					</div>
 				</Value>
 			</div>
 
-			<button type="submit" disabled={$isBusy || invalidEmail}>{$i18n.core.submit}</button>
+			<button type="submit" disabled={$isBusy || invalidEmail || invalidThreshold}
+				>{$i18n.core.submit}</button
+			>
 		</form>
 	{/if}
 </div>

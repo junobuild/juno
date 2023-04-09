@@ -36,8 +36,10 @@ const filterStatuses = ({ statuses, cron_jobs }) => {
 };
 
 const collect = async () => {
+	const now = BigInt(Date.now() *  1e6);
+
 	const actor = await observatoryActorLocal();
-	const statuses = await actor.list_last_statuses();
+	const statuses = await actor.collect_statuses({collected_after: [now]});
 
 	console.log('Statuses:', statuses.filter(filterStatuses));
 };

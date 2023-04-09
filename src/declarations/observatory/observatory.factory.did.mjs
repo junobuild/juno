@@ -1,6 +1,6 @@
 export const idlFactory = ({ IDL }) => {
-	const DeleteControllersArgs = IDL.Record({
-		controllers: IDL.Vec(IDL.Principal)
+	const CollectStatusesArgs = IDL.Record({
+		collected_after: IDL.Opt(IDL.Nat64)
 	});
 	const CronJobStatuses = IDL.Record({
 		enabled: IDL.Bool,
@@ -9,12 +9,6 @@ export const idlFactory = ({ IDL }) => {
 	const CronJobs = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		statuses: CronJobStatuses
-	});
-	const CronTab = IDL.Record({
-		cron_jobs: CronJobs,
-		updated_at: IDL.Nat64,
-		mission_control_id: IDL.Principal,
-		created_at: IDL.Nat64
 	});
 	const CanisterStatusType = IDL.Variant({
 		stopped: IDL.Null,
@@ -47,10 +41,19 @@ export const idlFactory = ({ IDL }) => {
 		mission_control: Result
 	});
 	const Result_1 = IDL.Variant({ Ok: SegmentsStatuses, Err: IDL.Text });
-	const ListStatuses = IDL.Record({
+	const CollectStatuses = IDL.Record({
 		cron_jobs: CronJobs,
 		statuses: Result_1,
 		timestamp: IDL.Nat64
+	});
+	const DeleteControllersArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal)
+	});
+	const CronTab = IDL.Record({
+		cron_jobs: CronJobs,
+		updated_at: IDL.Nat64,
+		mission_control_id: IDL.Principal,
+		created_at: IDL.Nat64
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -66,10 +69,11 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Principal
 	});
 	return IDL.Service({
+		collect_statuses: IDL.Func([CollectStatusesArgs], [IDL.Vec(CollectStatuses)], ['query']),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_cron_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_cron_tab: IDL.Func([], [IDL.Opt(CronTab)], ['query']),
-		list_last_statuses: IDL.Func([], [IDL.Vec(ListStatuses)], ['query']),
+		list_statuses: IDL.Func([], [IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Nat64, Result_1)))], ['query']),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_tab: IDL.Func([SetCronTab], [CronTab], []),

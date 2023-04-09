@@ -1,11 +1,14 @@
 use crate::store::{get_cron_tab, list_last_statuses};
-use crate::types::interface::ListStatuses;
+use crate::types::interface::{CollectStatuses, CollectStatusesArgs};
 use crate::types::list::ListLastStatuses;
 
-pub fn last_statuses() -> Vec<ListStatuses> {
+pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
     let statuses = list_last_statuses();
 
-    fn list_statuses(status: &ListLastStatuses) -> Option<ListStatuses> {
+    fn list_statuses(
+        status: &ListLastStatuses,
+        CollectStatusesArgs { collected_after }: &CollectStatusesArgs,
+    ) -> Option<CollectStatuses> {
         let cron_tab = get_cron_tab(&status.user);
 
         match cron_tab {
@@ -15,17 +18,30 @@ pub fn last_statuses() -> Vec<ListStatuses> {
                     return None;
                 }
 
-                Some(ListStatuses {
-                    cron_jobs: cron_tab.cron_jobs,
-                    timestamp: status.timestamp,
-                    statuses: status.statuses.clone(),
-                })
+                match collected_after {
+                    None => Some(CollectStatuses {
+                        cron_jobs: cron_tab.cron_jobs,
+                        timestamp: status.timestamp,
+                        statuses: status.statuses.clone(),
+                    }),
+                    Some(collected_after) => {
+                        if status.timestamp < *collected_after {
+                            return None;
+                        }
+
+                        Some(CollectStatuses {
+                            cron_jobs: cron_tab.cron_jobs,
+                            timestamp: status.timestamp,
+                            statuses: status.statuses.clone(),
+                        })
+                    }
+                }
             }
         }
     }
 
     statuses
         .into_iter()
-        .filter_map(|status| list_statuses(&status))
+        .filter_map(|status| list_statuses(&status, args))
         .collect()
 }

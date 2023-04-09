@@ -10,14 +10,14 @@ use crate::console::assert_mission_control_center;
 use crate::constants::CRON_INTERVAL_NS;
 use crate::cron_jobs::cron_jobs;
 use crate::guards::{caller_can_execute_cron_jobs, caller_is_controller};
-use crate::reports::last_statuses;
+use crate::reports::collect_statuses as collect_statuses_report;
 use crate::store::{
     delete_controllers, delete_cron_controllers, get_cron_tab as get_cron_tab_store,
-    set_controllers as set_controllers_store, set_cron_controllers as set_cron_controllers_store,
-    set_cron_tab as set_cron_tab_store,
+    list_statuses as list_statuses_store, set_controllers as set_controllers_store,
+    set_cron_controllers as set_cron_controllers_store, set_cron_tab as set_cron_tab_store,
 };
-use crate::types::interface::{ListStatuses, SetCronTab};
-use crate::types::state::{Archive, CronTab, StableState, State};
+use crate::types::interface::{CollectStatuses, CollectStatusesArgs, SetCronTab};
+use crate::types::state::{Archive, ArchiveStatuses, CronTab, StableState, State};
 use candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk::{caller, trap};
@@ -121,7 +121,6 @@ async fn set_cron_tab(cron_tab: SetCronTab) -> CronTab {
 #[query]
 fn get_cron_tab() -> Option<CronTab> {
     let user = caller();
-
     get_cron_tab_store(&user)
 }
 
@@ -129,8 +128,15 @@ fn get_cron_tab() -> Option<CronTab> {
 
 #[candid_method(query)]
 #[query(guard = "caller_can_execute_cron_jobs")]
-fn list_last_statuses() -> Vec<ListStatuses> {
-    last_statuses()
+fn collect_statuses(args: CollectStatusesArgs) -> Vec<CollectStatuses> {
+    collect_statuses_report(&args)
+}
+
+#[candid_method(query)]
+#[query]
+fn list_statuses() -> Option<ArchiveStatuses> {
+    let user = caller();
+    list_statuses_store(&user)
 }
 
 /// Mgmt

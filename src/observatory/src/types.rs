@@ -61,8 +61,13 @@ pub mod interface {
     use shared::types::interface::SegmentsStatuses;
     use shared::types::state::MissionControlId;
 
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CollectStatusesArgs {
+        pub collected_after: Option<u64>,
+    }
+
     #[derive(CandidType, Deserialize)]
-    pub struct ListStatuses {
+    pub struct CollectStatuses {
         pub cron_jobs: CronJobs,
         pub timestamp: ArchiveTime,
         pub statuses: Result<SegmentsStatuses, String>,

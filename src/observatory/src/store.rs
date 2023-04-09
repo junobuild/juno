@@ -142,8 +142,16 @@ fn set_statuses_impl(
     }
 }
 
+pub fn list_statuses(user: &UserId) -> Option<ArchiveStatuses> {
+    STATE.with(|state| list_statuses_impl(user, &state.borrow().stable))
+}
+
+fn list_statuses_impl(user: &UserId, state: &StableState) -> Option<ArchiveStatuses> {
+    state.archive.statuses.get(user).cloned()
+}
+
 pub fn list_last_statuses() -> Vec<ListLastStatuses> {
-    STATE.with(|state| list_last_statuses_impl(&state.borrow_mut().stable))
+    STATE.with(|state| list_last_statuses_impl(&state.borrow().stable))
 }
 
 fn list_last_statuses_impl(state: &StableState) -> Vec<ListLastStatuses> {

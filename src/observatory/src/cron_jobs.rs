@@ -54,7 +54,7 @@ async fn statuses(cron_tab: &CronTab) -> Result<SegmentsStatuses, String> {
             } else {
                 threshold
             }
-        },
+        }
     };
 
     let args = StatusesArgs { cycles_threshold };

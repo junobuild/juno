@@ -21,6 +21,12 @@ const consolePrincipalLocal = () => {
 	return Principal.fromText(console.local);
 };
 
+const observatoryPrincipalIC = () => {
+	const buffer = readFileSync('./canister_ids.json');
+	const { observatory } = JSON.parse(buffer.toString('utf-8'));
+	return Principal.fromText(observatory.ic);
+};
+
 const observatoryPrincipalLocal = () => {
 	const buffer = readFileSync('./.dfx/local/canister_ids.json');
 	const { observatory } = JSON.parse(buffer.toString('utf-8'));
@@ -60,6 +66,17 @@ export const consoleActorLocal = async () => {
 	const agent = await localAgent(false);
 
 	return Actor.createActor(idlFactory, {
+		agent,
+		canisterId
+	});
+};
+
+export const observatoryActorIC = async () => {
+	const canisterId = observatoryPrincipalIC();
+
+	const agent = icAgent();
+
+	return Actor.createActor(observatoryIdlFactory, {
 		agent,
 		canisterId
 	});

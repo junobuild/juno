@@ -1,6 +1,5 @@
 import type { MissionControl, _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
-import type { SetControllerParams } from '$lib/api/mission-control.api';
 import {
 	addMissionControlController,
 	addSatellitesController,
@@ -9,6 +8,7 @@ import {
 	setSatellitesController
 } from '$lib/api/mission-control.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
+import type { SetControllerParams } from '$lib/types/controlers';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { compare } from 'semver';

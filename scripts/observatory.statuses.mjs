@@ -36,10 +36,10 @@ const filterStatuses = ({ statuses, cron_jobs }) => {
 };
 
 const collect = async () => {
-	const now = BigInt(Date.now() *  1e6);
+	const oneMin = 60_000_000_000n;
 
 	const actor = await observatoryActorLocal();
-	const statuses = await actor.collect_statuses({collected_after: [now]});
+	const statuses = await actor.collect_statuses({ time_delta: [oneMin] });
 
 	console.log('Statuses:', statuses.filter(filterStatuses));
 };

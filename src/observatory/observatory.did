@@ -12,7 +12,7 @@ type CollectStatuses = record {
   statuses : Result_1;
   timestamp : nat64;
 };
-type CollectStatusesArgs = record { collected_after : opt nat64 };
+type CollectStatusesArgs = record { time_delta : opt nat64 };
 type CronJobStatuses = record { enabled : bool; cycles_threshold : opt nat64 };
 type CronJobs = record {
   metadata : vec record { text; text };

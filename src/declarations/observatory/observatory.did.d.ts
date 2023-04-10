@@ -16,7 +16,7 @@ export interface CollectStatuses {
 	timestamp: bigint;
 }
 export interface CollectStatusesArgs {
-	collected_after: [] | [bigint];
+	time_delta: [] | [bigint];
 }
 export interface CronJobStatuses {
 	enabled: boolean;

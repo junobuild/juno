@@ -63,7 +63,7 @@ pub mod interface {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CollectStatusesArgs {
-        pub collected_after: Option<u64>,
+        pub time_delta: Option<u64>,
     }
 
     #[derive(CandidType, Deserialize)]

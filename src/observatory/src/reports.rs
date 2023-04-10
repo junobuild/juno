@@ -1,3 +1,4 @@
+use ic_cdk::api::time;
 use crate::store::{get_cron_tab, list_last_statuses};
 use crate::types::interface::{CollectStatuses, CollectStatusesArgs};
 use crate::types::list::ListLastStatuses;
@@ -7,7 +8,7 @@ pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
 
     fn list_statuses(
         status: &ListLastStatuses,
-        CollectStatusesArgs { collected_after }: &CollectStatusesArgs,
+        CollectStatusesArgs { time_delta }: &CollectStatusesArgs,
     ) -> Option<CollectStatuses> {
         let cron_tab = get_cron_tab(&status.user);
 
@@ -18,14 +19,16 @@ pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
                     return None;
                 }
 
-                match collected_after {
+                match time_delta {
                     None => Some(CollectStatuses {
                         cron_jobs: cron_tab.cron_jobs,
                         timestamp: status.timestamp,
                         statuses: status.statuses.clone(),
                     }),
-                    Some(collected_after) => {
-                        if status.timestamp < *collected_after {
+                    Some(time_delta) => {
+                        let now = time();
+
+                        if status.timestamp < now - *time_delta {
                             return None;
                         }
 

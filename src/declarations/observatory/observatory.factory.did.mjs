@@ -1,7 +1,5 @@
 export const idlFactory = ({ IDL }) => {
-	const CollectStatusesArgs = IDL.Record({
-		collected_after: IDL.Opt(IDL.Nat64)
-	});
+	const CollectStatusesArgs = IDL.Record({ time_delta: IDL.Opt(IDL.Nat64) });
 	const CronJobStatuses = IDL.Record({
 		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)

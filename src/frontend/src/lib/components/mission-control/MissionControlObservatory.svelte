@@ -37,14 +37,12 @@
 					metadata:
 						nonNullish(email) && email !== '' && validEmail(email) ? [['email', email]] : [],
 					statuses: {
-						default_config: {
-							enabled,
-							cycles_threshold: toNullable(
-									isNullish(threshold) || threshold === 0 ? null : BigInt(threshold * ONE_TRILLION)
-							)
-						},
-						mission_control_config: [],
-						satellites_config: []
+						enabled,
+						cycles_threshold: toNullable(
+								isNullish(threshold) || threshold === 0 ? null : BigInt(threshold * ONE_TRILLION)
+						),
+						mission_control_cycles_threshold: [],
+						satellites: []
 					}
 				}
 			});

@@ -21,8 +21,8 @@
 	<SatelliteTopUpModal on:junoClose={close} detail={modal.detail} />
 {/if}
 
-{#if modal?.type === 'topup_mission_control'}
-	<MissionControlTopUpModal on:junoClose={close} />
+{#if modal?.type === 'topup_mission_control' && nonNullish(modal.detail)}
+	<MissionControlTopUpModal on:junoClose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'add_custom_domain' && nonNullish(modal.detail)}

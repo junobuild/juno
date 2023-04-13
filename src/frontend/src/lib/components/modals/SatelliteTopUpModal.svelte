@@ -6,14 +6,18 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import type { JunoModalCreateSatelliteDetail } from '$lib/types/modal';
 
 	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
+	let balance = 0n;
+
 	$: ({ satellite } = detail as JunoModalTopUpSatelliteDetail);
+	$: balance = (detail as JunoModalCreateSatelliteDetail).missionControlBalance?.balance ?? 0n;
 </script>
 
-<CanisterTopUpModal canisterId={satellite.satellite_id} on:junoClose>
+<CanisterTopUpModal canisterId={satellite.satellite_id} {balance} on:junoClose>
 	<svelte:fragment slot="intro">
 		<h2>
 			{@html i18nFormat($i18n.canisters.top_up_title, [

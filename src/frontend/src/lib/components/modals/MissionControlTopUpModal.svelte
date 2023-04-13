@@ -4,10 +4,15 @@
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalDetail, JunoModalTopUpMissionControlDetail } from '$lib/types/modal';
+
+	export let detail: JunoModalDetail;
+
+	$: balance = (detail as JunoModalTopUpMissionControlDetail).missionControlBalance?.balance ?? 0n;
 </script>
 
 {#if nonNullish($missionControlStore)}
-	<CanisterTopUpModal canisterId={$missionControlStore} on:junoClose>
+	<CanisterTopUpModal canisterId={$missionControlStore} {balance} on:junoClose>
 		<svelte:fragment slot="intro">
 			<h2>
 				{@html i18nFormat($i18n.canisters.top_up_title, [

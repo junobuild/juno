@@ -7,7 +7,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { getMissionControlBalance } from '$lib/services/balance.services';
 
-	export let detail: JunoModalDetail;
+	export let type: 'topup_satellite' | 'topup_mission_control';
+	export let detail: JunoModalDetail | undefined = undefined;
 
 	const topUp = async () => {
 		busy.start();
@@ -23,9 +24,12 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				...detail,
-				missionControlBalance: {
-					...result
+				type,
+				detail: {
+					...(nonNullish(detail) && detail),
+					missionControlBalance: {
+						...result
+					}
 				}
 			}
 		});

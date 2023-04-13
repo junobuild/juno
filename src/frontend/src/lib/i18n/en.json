@@ -52,7 +52,7 @@
 		"description": "A satellite is a web3 container that offers a simplistic datastore, storage, and permission management system for your application. Develop and run your app on the web, completely on the blockchain with a low carbon footprint.",
 		"name": "Satellite name",
 		"enter_name": "Enter a name for your satellite",
-		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is  {1} ICP and you have {2} credits remaining.",
+		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
 		"loading_satellites": "Loading your satellites"
 	},
 	"mission_control": {
@@ -63,7 +63,8 @@
 		"balance": "Balance",
 		"credits": "Credits",
 		"dev_id": "Developer ID",
-		"transactions": "Transactions"
+		"transactions": "Transactions",
+		"your_balance": "Your current mission control balance is {0}."
 	},
 	"overview": {
 		"title": "Overview"

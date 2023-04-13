@@ -71,6 +71,7 @@ interface I18nMission_control {
 	credits: string;
 	dev_id: string;
 	transactions: string;
+	your_balance: string;
 }
 
 interface I18nOverview {

@@ -16,8 +16,10 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { wizardBusy } from '$lib/stores/busy.store';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	export let canisterId: Principal;
+	export let balance: bigint;
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
 
@@ -101,6 +103,15 @@
 					placeholder: '{0}',
 					value:
 						'<a href="https://juno.build/docs/terminology#cycles" rel="external noopener norefferer" target="_blank">Cycles</a>'
+				}
+			])}
+		</p>
+
+		<p>
+			{@html i18nFormat($i18n.mission_control.your_balance, [
+				{
+					placeholder: '{0}',
+					value: formatE8sICP(balance)
 				}
 			])}
 		</p>

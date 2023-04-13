@@ -1,6 +1,7 @@
-use crate::types::state::{Satellite, SatelliteId, Satellites, StableState};
+use crate::types::state::{Satellite, Satellites, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
+use shared::types::state::SatelliteId;
 use std::collections::HashMap;
 
 /// Satellites

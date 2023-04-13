@@ -1,10 +1,9 @@
 pub mod state {
-    use candid::{CandidType, Deserialize, Principal};
-    use shared::types::state::UserId;
+    use candid::{CandidType, Deserialize};
     use shared::types::state::{Controllers, Metadata};
+    use shared::types::state::{SatelliteId, UserId};
     use std::collections::HashMap;
 
-    pub type SatelliteId = Principal;
     pub type Satellites = HashMap<SatelliteId, Satellite>;
 
     #[derive(Default, Clone)]

@@ -7,6 +7,7 @@ pub mod state {
     pub type UserId = Principal;
     pub type MissionControlId = Principal;
     pub type ControllerId = Principal;
+    pub type SatelliteId = Principal;
 
     pub type Metadata = HashMap<String, String>;
 

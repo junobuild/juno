@@ -1,6 +1,6 @@
 use crate::satellites::store::add_satellite;
 use crate::store::get_user;
-use crate::types::state::{Satellite, SatelliteId};
+use crate::types::state::Satellite;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, print};
@@ -9,7 +9,7 @@ use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use shared::env::CONSOLE;
 use shared::ledger::{transfer_payment, SUB_ACCOUNT};
 use shared::types::interface::{CreateSatelliteArgs, GetCreateSatelliteFeeArgs};
-use shared::types::state::UserId;
+use shared::types::state::{SatelliteId, UserId};
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
     let console = Principal::from_text(CONSOLE).unwrap();

@@ -111,7 +111,7 @@
 			{@html i18nFormat($i18n.mission_control.your_balance, [
 				{
 					placeholder: '{0}',
-					value: formatE8sICP(balance)
+					value: `${formatE8sICP(balance)} ICP`
 				}
 			])}
 		</p>

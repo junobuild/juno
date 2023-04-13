@@ -3,9 +3,7 @@ use crate::satellites::store::get_satellites;
 use crate::types::state::{Satellite, SatelliteId};
 use futures::future::join_all;
 use shared::ic::segment_status;
-use shared::types::cronjob::{
-    CronJobStatuses, CronJobStatusesConfig, CronJobStatusesSatellitesConfig,
-};
+use shared::types::cronjob::{CronJobStatuses, CronJobStatusesSatellites};
 use shared::types::interface::{SegmentStatus, SegmentsStatuses};
 use shared::types::state::MissionControlId;
 
@@ -19,11 +17,7 @@ pub async fn collect_statuses(
     match mission_control_check {
         Err(_) => (),
         Ok(segment_status) => {
-            if !assert_threshold(
-                &config.default_config,
-                &config.mission_control_config,
-                &segment_status,
-            ) {
+            if !assert_threshold(config, &segment_status) {
                 return SegmentsStatuses {
                     mission_control: Ok(segment_status),
                     satellites: None,
@@ -32,7 +26,7 @@ pub async fn collect_statuses(
         }
     }
 
-    let satellites = satellites_status(&config.satellites_config).await;
+    let satellites = satellites_status(&config.satellites).await;
     let mission_control = mission_control_status(mission_control_id).await;
 
     SegmentsStatuses {
@@ -41,14 +35,10 @@ pub async fn collect_statuses(
     }
 }
 
-pub fn assert_threshold(
-    default_config: &CronJobStatusesConfig,
-    segment_config: &Option<CronJobStatusesConfig>,
-    segment_status: &SegmentStatus,
-) -> bool {
-    let config_threshold = match segment_config {
-        None => default_config.cycles_threshold,
-        Some(segment_config) => segment_config.cycles_threshold,
+pub fn assert_threshold(config: &CronJobStatuses, segment_status: &SegmentStatus) -> bool {
+    let config_threshold = match config.mission_control_cycles_threshold {
+        None => config.cycles_threshold,
+        Some(mission_control_cycles_threshold) => Some(mission_control_cycles_threshold),
     };
 
     let cycles_threshold = match config_threshold {
@@ -82,7 +72,7 @@ pub async fn mission_control_status(
 }
 
 async fn satellites_status(
-    satellites_config: &CronJobStatusesSatellitesConfig,
+    satellites_config: &CronJobStatusesSatellites,
 ) -> Vec<Result<SegmentStatus, String>> {
     let satellites = get_satellites();
 
@@ -107,7 +97,7 @@ async fn satellites_status(
 
     fn filter_enabled_satellite_status(
         satellite_id: &SatelliteId,
-        satellites_config: &CronJobStatusesSatellitesConfig,
+        satellites_config: &CronJobStatusesSatellites,
     ) -> bool {
         let config = satellites_config.get(satellite_id);
 

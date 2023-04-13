@@ -15,7 +15,7 @@ pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
         match cron_tab {
             None => None,
             Some(cron_tab) => {
-                if !cron_tab.cron_jobs.statuses.default_config.enabled {
+                if !cron_tab.cron_jobs.statuses.enabled {
                     return None;
                 }
 

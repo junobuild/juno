@@ -3,7 +3,6 @@ use crate::types::state::CronTab;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, spawn};
 use lazy_static::lazy_static;
-use shared::types::cronjob::CronJobStatusesConfig;
 use shared::types::interface::SegmentsStatuses;
 use shared::types::state::UserId;
 use std::sync::Mutex;
@@ -17,18 +16,7 @@ pub fn cron_jobs() {
     if LOCK.try_lock().is_ok() {
         let statuses_cron_tabs: Vec<(UserId, CronTab)> = get_cron_tabs()
             .into_iter()
-            .filter(|(_, config)| {
-                let mission_control_config: Option<CronJobStatusesConfig> =
-                    config.cron_jobs.statuses.mission_control_config.clone();
-
-                match mission_control_config {
-                    None => config.cron_jobs.statuses.default_config.enabled,
-                    Some(mission_control_config) => {
-                        config.cron_jobs.statuses.default_config.enabled
-                            && mission_control_config.enabled
-                    }
-                }
-            })
+            .filter(|(_, config)| config.cron_jobs.statuses.enabled)
             .collect();
 
         for (user, cron_tab) in statuses_cron_tabs {

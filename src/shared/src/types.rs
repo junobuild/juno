@@ -154,17 +154,18 @@ pub mod cronjob {
         pub statuses: CronJobStatuses,
     }
 
-    pub type CronJobStatusesSatellitesConfig = HashMap<Principal, CronJobStatusesConfig>;
+    pub type CronJobStatusesSatellites = HashMap<Principal, CronJobStatusesSatelliteConfig>;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CronJobStatuses {
-        pub default_config: CronJobStatusesConfig,
-        pub mission_control_config: Option<CronJobStatusesConfig>,
-        pub satellites_config: CronJobStatusesSatellitesConfig,
+        pub enabled: bool,
+        pub cycles_threshold: Option<u64>,
+        pub mission_control_cycles_threshold: Option<u64>,
+        pub satellites: CronJobStatusesSatellites,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct CronJobStatusesConfig {
+    pub struct CronJobStatusesSatelliteConfig {
         pub enabled: bool,
         pub cycles_threshold: Option<u64>,
     }

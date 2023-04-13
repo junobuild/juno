@@ -72,11 +72,6 @@ pub mod interface {
         pub mission_control_id: MissionControlId,
     }
 
-    #[derive(CandidType, Deserialize)]
-    pub struct StatusesArgs {
-        pub cycles_threshold: u64,
-    }
-
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentStatus {
         pub id: Principal,
@@ -149,8 +144,9 @@ pub mod cmc {
 
 pub mod cronjob {
     use crate::types::state::Metadata;
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
     use serde::Deserialize;
+    use std::collections::HashMap;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CronJobs {
@@ -158,8 +154,17 @@ pub mod cronjob {
         pub statuses: CronJobStatuses,
     }
 
+    pub type CronJobStatusesSatellitesConfig = HashMap<Principal, CronJobStatusesConfig>;
+
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CronJobStatuses {
+        pub default_config: CronJobStatusesConfig,
+        pub mission_control_config: Option<CronJobStatusesConfig>,
+        pub satellites_config: CronJobStatusesSatellitesConfig,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CronJobStatusesConfig {
         pub enabled: bool,
         pub cycles_threshold: Option<u64>,
     }

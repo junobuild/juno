@@ -1,7 +1,7 @@
-use ic_cdk::api::time;
 use crate::store::{get_cron_tab, list_last_statuses};
 use crate::types::interface::{CollectStatuses, CollectStatusesArgs};
 use crate::types::list::ListLastStatuses;
+use ic_cdk::api::time;
 
 pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
     let statuses = list_last_statuses();
@@ -15,7 +15,7 @@ pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
         match cron_tab {
             None => None,
             Some(cron_tab) => {
-                if !cron_tab.cron_jobs.statuses.enabled {
+                if !cron_tab.cron_jobs.statuses.default_config.enabled {
                     return None;
                 }
 

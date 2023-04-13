@@ -1,13 +1,17 @@
+use crate::mgmt::constants::CYCLES_MIN_THRESHOLD;
 use crate::satellites::store::get_satellites;
 use crate::types::state::{Satellite, SatelliteId};
 use futures::future::join_all;
 use shared::ic::segment_status;
+use shared::types::cronjob::{
+    CronJobStatuses, CronJobStatusesConfig, CronJobStatusesSatellitesConfig,
+};
 use shared::types::interface::{SegmentStatus, SegmentsStatuses};
 use shared::types::state::MissionControlId;
 
 pub async fn collect_statuses(
     mission_control_id: &MissionControlId,
-    cycles_threshold: u64,
+    config: &CronJobStatuses,
 ) -> SegmentsStatuses {
     let mission_control_check = mission_control_status(mission_control_id).await;
 
@@ -15,7 +19,11 @@ pub async fn collect_statuses(
     match mission_control_check {
         Err(_) => (),
         Ok(segment_status) => {
-            if segment_status.status.cycles < cycles_threshold {
+            if !assert_threshold(
+                &config.default_config,
+                &config.mission_control_config,
+                &segment_status,
+            ) {
                 return SegmentsStatuses {
                     mission_control: Ok(segment_status),
                     satellites: None,
@@ -24,13 +32,37 @@ pub async fn collect_statuses(
         }
     }
 
-    let satellites = satellites_status().await;
+    let satellites = satellites_status(&config.satellites_config).await;
     let mission_control = mission_control_status(mission_control_id).await;
 
     SegmentsStatuses {
         mission_control,
         satellites: Some(satellites),
     }
+}
+
+pub fn assert_threshold(
+    default_config: &CronJobStatusesConfig,
+    segment_config: &Option<CronJobStatusesConfig>,
+    segment_status: &SegmentStatus,
+) -> bool {
+    let config_threshold = match segment_config {
+        None => default_config.cycles_threshold,
+        Some(segment_config) => segment_config.cycles_threshold,
+    };
+
+    let cycles_threshold = match config_threshold {
+        None => CYCLES_MIN_THRESHOLD,
+        Some(threshold) => {
+            if threshold < CYCLES_MIN_THRESHOLD {
+                CYCLES_MIN_THRESHOLD
+            } else {
+                threshold
+            }
+        }
+    };
+
+    segment_status.status.cycles >= cycles_threshold
 }
 
 pub async fn mission_control_status(
@@ -49,7 +81,9 @@ pub async fn mission_control_status(
     }
 }
 
-async fn satellites_status() -> Vec<Result<SegmentStatus, String>> {
+async fn satellites_status(
+    satellites_config: &CronJobStatusesSatellitesConfig,
+) -> Vec<Result<SegmentStatus, String>> {
     let satellites = get_satellites();
 
     async fn satellite_status(
@@ -71,9 +105,24 @@ async fn satellites_status() -> Vec<Result<SegmentStatus, String>> {
         })
     }
 
+    fn filter_enabled_satellite_status(
+        satellite_id: &SatelliteId,
+        satellites_config: &CronJobStatusesSatellitesConfig,
+    ) -> bool {
+        let config = satellites_config.get(satellite_id);
+
+        match config {
+            None => true,
+            Some(config) => config.enabled,
+        }
+    }
+
     join_all(
         satellites
             .into_iter()
+            .filter(|(satellite_id, _)| {
+                filter_enabled_satellite_status(satellite_id, satellites_config)
+            })
             .map(|(satellite_id, satellite)| satellite_status(satellite_id, satellite)),
     )
     .await

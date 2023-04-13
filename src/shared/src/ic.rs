@@ -1,11 +1,14 @@
 use crate::types::ic::WasmArg;
+use crate::types::interface::SegmentStatus;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::{
-    create_canister_with_extra_cycles, install_code as ic_install_code, update_settings,
+    canister_status as ic_canister_status, create_canister_with_extra_cycles,
+    install_code as ic_install_code, update_settings, CanisterId, CanisterIdRecord,
     CanisterInstallMode, CanisterSettings, CreateCanisterArgument, InstallCodeArgument,
     UpdateSettingsArgument,
 };
+use ic_cdk::api::time;
 
 pub async fn create_canister_install_code(
     controllers: Vec<Principal>,
@@ -70,4 +73,18 @@ pub async fn update_canister_controllers(
     };
 
     update_settings(arg).await
+}
+
+pub async fn segment_status(canister_id: CanisterId) -> Result<SegmentStatus, String> {
+    let status = ic_canister_status(CanisterIdRecord { canister_id }).await;
+
+    match status {
+        Ok((status,)) => Ok(SegmentStatus {
+            id: canister_id,
+            metadata: None,
+            status,
+            status_at: time(),
+        }),
+        Err((_, message)) => Err(["Failed to get canister status: ".to_string(), message].join("")),
+    }
 }

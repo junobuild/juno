@@ -10,16 +10,17 @@ mod upgrade;
 mod wasm;
 
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
-use crate::guards::caller_is_controller;
+use crate::guards::{caller_is_controller, caller_is_observatory};
 use crate::mission_control::init_user_mission_control;
 use crate::satellite::create_satellite as create_satellite_console;
 use crate::store::{
     add_invitation_code as add_invitation_code_store, delete_controllers,
-    get_credits as get_credits_store, get_mission_control, get_mission_control_release_version,
-    get_satellite_release_version, has_credits, list_mission_controls,
-    load_mission_control_release, load_satellite_release, reset_mission_control_release,
-    reset_satellite_release, set_controllers as set_controllers_store,
-    update_mission_controls_rate_config, update_satellites_rate_config,
+    get_credits as get_credits_store, get_existing_mission_control, get_mission_control,
+    get_mission_control_release_version, get_satellite_release_version, has_credits,
+    list_mission_controls, load_mission_control_release, load_satellite_release,
+    reset_mission_control_release, reset_satellite_release,
+    set_controllers as set_controllers_store, update_mission_controls_rate_config,
+    update_satellites_rate_config,
 };
 use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
@@ -36,7 +37,8 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use shared::controllers::init_controllers;
 use shared::types::interface::{
-    CreateSatelliteArgs, DeleteControllersArgs, GetCreateSatelliteFeeArgs, SetControllersArgs,
+    AssertMissionControlCenterArgs, CreateSatelliteArgs, DeleteControllersArgs,
+    GetCreateSatelliteFeeArgs, SetControllersArgs,
 };
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -129,6 +131,17 @@ fn get_user_mission_control_center() -> Option<MissionControl> {
         Ok(mission_control) => mission_control,
         Err(error) => trap(error),
     }
+}
+
+#[candid_method(query)]
+#[query(guard = "caller_is_observatory")]
+fn assert_mission_control_center(
+    AssertMissionControlCenterArgs {
+        user,
+        mission_control_id,
+    }: AssertMissionControlCenterArgs,
+) {
+    get_existing_mission_control(&user, &mission_control_id).unwrap_or_else(|e| trap(e));
 }
 
 #[candid_method(query)]

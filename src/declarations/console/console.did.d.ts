@@ -1,6 +1,10 @@
 import type { ActorMethod } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
+export interface AssertMissionControlCenterArgs {
+	mission_control_id: Principal;
+	user: Principal;
+}
 export interface CreateSatelliteArgs {
 	block_index: [] | [bigint];
 	user: Principal;
@@ -44,6 +48,7 @@ export interface Tokens {
 }
 export interface _SERVICE {
 	add_invitation_code: ActorMethod<[string], undefined>;
+	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_create_satellite_fee: ActorMethod<[GetCreateSatelliteFeeArgs], [] | [Tokens]>;

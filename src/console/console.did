@@ -1,3 +1,7 @@
+type AssertMissionControlCenterArgs = record {
+  mission_control_id : principal;
+  user : principal;
+};
 type CreateSatelliteArgs = record { block_index : opt nat64; user : principal };
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetCreateSatelliteFeeArgs = record { user : principal };
@@ -26,6 +30,7 @@ type SetControllersArgs = record {
 type Tokens = record { e8s : nat64 };
 service : {
   add_invitation_code : (text) -> ();
+  assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
   create_satellite : (CreateSatelliteArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   get_create_satellite_fee : (GetCreateSatelliteFeeArgs) -> (opt Tokens) query;

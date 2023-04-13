@@ -18,13 +18,14 @@ function usage() {
     cat << EOF
 
 Usage:
-  $0 [--only-dependencies] [--mission_control] [--satellite] [--console]
+  $0 [--only-dependencies] [--mission_control] [--satellite] [--console] [--observatory]
 
 Options:
   --only-dependencies          only build rust dependencies (no js build, no wasm optimization)
   --mission_control            build the mission_control canister (default)
   --satellite                  build the satellite canister
   --console                    build the console canister
+  --observatory                build the observatory canister
 EOF
 }
 
@@ -66,6 +67,10 @@ do
             CANISTERS+=("console")
             shift
             ;;
+        --observatory)
+            CANISTERS+=("observatory")
+            shift
+            ;;
         *)
             echo "ERROR: unknown argument $1"
             usage
@@ -91,9 +96,6 @@ then
 fi
 
 # Builds a single canister
-# build_canister CANISTER EXTRA_BUILD_ARGS...
-# CANISTER: possible values: [mission_control, archive]
-# EXTRA_BUILD_ARGS: extra arguments supplied to cargo when building the canister
 function build_canister() {
     local canister=$1
     shift

@@ -22,8 +22,10 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::types::state::{ControllerId, Metadata, UserId};
-    use candid::CandidType;
+    use crate::types::cronjob::CronJobStatusesSatellites;
+    use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
+    use candid::{CandidType, Principal};
+    use ic_cdk::api::management_canister::main::CanisterStatusResponse;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
 
@@ -63,6 +65,33 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct DeleteControllersArgs {
         pub controllers: Vec<ControllerId>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct AssertMissionControlCenterArgs {
+        pub user: UserId,
+        pub mission_control_id: MissionControlId,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct StatusesArgs {
+        pub cycles_threshold: Option<u64>,
+        pub mission_control_cycles_threshold: Option<u64>,
+        pub satellites: CronJobStatusesSatellites,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SegmentStatus {
+        pub id: Principal,
+        pub metadata: Option<Metadata>,
+        pub status: CanisterStatusResponse,
+        pub status_at: u64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SegmentsStatuses {
+        pub mission_control: Result<SegmentStatus, String>,
+        pub satellites: Option<Vec<Result<SegmentStatus, String>>>,
     }
 }
 
@@ -118,5 +147,34 @@ pub mod cmc {
     pub struct TopUpCanisterArgs {
         pub block_index: BlockIndex,
         pub canister_id: Principal,
+    }
+}
+
+pub mod cronjob {
+    use crate::types::state::Metadata;
+    use candid::{CandidType, Principal};
+    use serde::Deserialize;
+    use std::collections::HashMap;
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CronJobs {
+        pub metadata: Metadata,
+        pub statuses: CronJobStatuses,
+    }
+
+    pub type CronJobStatusesSatellites = HashMap<Principal, CronJobStatusesSatelliteConfig>;
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CronJobStatuses {
+        pub enabled: bool,
+        pub cycles_threshold: Option<u64>,
+        pub mission_control_cycles_threshold: Option<u64>,
+        pub satellites: CronJobStatusesSatellites,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CronJobStatusesSatelliteConfig {
+        pub enabled: bool,
+        pub cycles_threshold: Option<u64>,
     }
 }

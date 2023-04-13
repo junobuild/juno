@@ -1,18 +1,53 @@
+type CanisterStatusResponse = record {
+  status : CanisterStatusType;
+  memory_size : nat;
+  cycles : nat;
+  settings : DefiniteCanisterSettings;
+  idle_cycles_burned_per_day : nat;
+  module_hash : opt vec nat8;
+};
+type CanisterStatusType = variant { stopped; stopping; running };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
   created_at : nat64;
   expires_at : opt nat64;
 };
+type CronJobStatusesSatelliteConfig = record {
+  enabled : bool;
+  cycles_threshold : opt nat64;
+};
+type DefiniteCanisterSettings = record {
+  freezing_threshold : nat;
+  controllers : vec principal;
+  memory_allocation : nat;
+  compute_allocation : nat;
+};
+type Result = variant { Ok : SegmentStatus; Err : text };
 type Satellite = record {
   updated_at : nat64;
   metadata : vec record { text; text };
   created_at : nat64;
   satellite_id : principal;
 };
+type SegmentStatus = record {
+  id : principal;
+  status : CanisterStatusResponse;
+  metadata : opt vec record { text; text };
+  status_at : nat64;
+};
+type SegmentsStatuses = record {
+  satellites : opt vec Result;
+  mission_control : Result;
+};
 type SetController = record {
   metadata : vec record { text; text };
   expires_at : opt nat64;
+};
+type StatusesArgs = record {
+  mission_control_cycles_threshold : opt nat64;
+  satellites : vec record { principal; CronJobStatusesSatelliteConfig };
+  cycles_threshold : opt nat64;
 };
 type Tokens = record { e8s : nat64 };
 service : {
@@ -28,12 +63,14 @@ service : {
   list_satellites : () -> (vec record { principal; Satellite }) query;
   remove_mission_control_controllers : (vec principal) -> ();
   remove_satellites_controllers : (vec principal, vec principal) -> ();
+  set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();
   set_satellites_controllers : (
       vec principal,
       vec principal,
       SetController,
     ) -> ();
+  status : (StatusesArgs) -> (SegmentsStatuses);
   top_up : (principal, Tokens) -> ();
   version : () -> (text) query;
 }

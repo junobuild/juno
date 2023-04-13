@@ -35,33 +35,33 @@ fn get_mission_control_impl(
                 return Ok(Some(mission_control.clone()));
             }
 
-            Err("User does not have the permission for the satellite.")
+            Err("User does not have the permission for the mission control.")
         }
     }
 }
 
 pub fn get_existing_mission_control(
     user: &UserId,
-    mission_control: &MissionControlId,
+    mission_control_id: &MissionControlId,
 ) -> Result<MissionControl, &'static str> {
     STATE.with(|state| {
-        get_existing_mission_control_impl(user, mission_control, &state.borrow().stable)
+        get_existing_mission_control_impl(user, mission_control_id, &state.borrow().stable)
     })
 }
 
 fn get_existing_mission_control_impl(
     user: &UserId,
-    mission_control: &MissionControlId,
+    mission_control_id: &MissionControlId,
     state: &StableState,
 ) -> Result<MissionControl, &'static str> {
     let existing_mission_control = state.mission_controls.get(user);
 
     match existing_mission_control {
-        None => Err("User does not have a mission control center"),
+        None => Err("User does not have a mission control center."),
         Some(existing_mission_control) => match existing_mission_control.mission_control_id {
-            None => Err("User mission control center does not yet exists"),
-            Some(mission_control_id) => {
-                if principal_equal(mission_control_id, *mission_control) {
+            None => Err("User mission control center does not exist yet."),
+            Some(existing_mission_control_id) => {
+                if principal_equal(existing_mission_control_id, *mission_control_id) {
                     return Ok(existing_mission_control.clone());
                 }
 

@@ -6,10 +6,10 @@ use crate::rules::types::rules::Permission;
 use crate::rules::utils::{assert_rule, public_rule};
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::State;
-use crate::utils::assert_timestamp;
 use crate::STATE;
 use candid::Principal;
 use ic_cdk::api::time;
+use shared::assert::assert_timestamp;
 use shared::types::state::Controllers;
 use std::collections::BTreeMap;
 

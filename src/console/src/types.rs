@@ -85,6 +85,7 @@ pub mod state {
 pub mod interface {
     use candid::CandidType;
     use serde::Deserialize;
+    use shared::types::cronjob::CronJobs;
 
     #[derive(CandidType, Deserialize)]
     pub enum Segment {
@@ -102,6 +103,11 @@ pub mod interface {
     pub struct ReleasesVersion {
         pub satellite: Option<String>,
         pub mission_control: Option<String>,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct CronJobsArgs {
+        pub cron_jobs: CronJobs,
     }
 }
 

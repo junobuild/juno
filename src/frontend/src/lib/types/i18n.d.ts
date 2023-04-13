@@ -152,6 +152,8 @@ interface I18nErrors {
 	controllers_listing: string;
 	controllers_no_selection: string;
 	controllers_delete: string;
+	observatory_get_unexpected_error: string;
+	observatory_set_unexpected_error: string;
 }
 
 interface I18nDocument {
@@ -231,6 +233,20 @@ interface I18nUsers {
 	enabled: string;
 }
 
+interface I18nObservatory {
+	title: string;
+	loading: string;
+	monitoring: string;
+	enabled: string;
+	disabled: string;
+	submit_enable: string;
+	submit_disable: string;
+	email_notifications: string;
+	email_notifications_placeholder: string;
+	cycles_threshold: string;
+	cycles_threshold_placeholder: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -253,4 +269,5 @@ interface I18n {
 	sort: I18nSort;
 	filter: I18nFilter;
 	users: I18nUsers;
+	observatory: I18nObservatory;
 }

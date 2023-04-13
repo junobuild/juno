@@ -1,6 +1,8 @@
+use crate::env::{CONSOLE, OBSERVATORY};
 use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, Controllers, UserId};
 use crate::utils::principal_equal;
+use candid::Principal;
 use ic_cdk::api::time;
 use std::collections::HashMap;
 
@@ -86,4 +88,16 @@ pub fn assert_max_number_of_controllers(
     }
 
     Ok(())
+}
+
+pub fn caller_is_console(caller: UserId) -> bool {
+    let console = Principal::from_text(CONSOLE).unwrap();
+
+    principal_equal(caller, console)
+}
+
+pub fn caller_is_observatory(caller: UserId) -> bool {
+    let observatory = Principal::from_text(OBSERVATORY).unwrap();
+
+    principal_equal(caller, observatory)
 }

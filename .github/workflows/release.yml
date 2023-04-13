@@ -41,6 +41,9 @@ jobs:
           - name: console.wasm.gz
             target: scratch_console
 
+          - name: observatory.wasm.gz
+            target: scratch_observatory
+
           - name: mission_control.wasm.gz
             target: scratch_mission_control
 
@@ -83,7 +86,7 @@ jobs:
       - name: Build metadata
         run: bash ./docker/metadata
         env:
-          CANISTERS: console,mission_control,satellite
+          CANISTERS: console,observatory,mission_control,satellite
 
       - name: Upload metadata
         uses: actions/upload-artifact@v3
@@ -101,6 +104,9 @@ jobs:
         include:
           - name: console.did
             target: console
+
+          - name: observatory.did
+            target: observatory
 
           - name: mission_control.did
             target: mission_control
@@ -132,6 +138,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: console.wasm.gz
+      - name: Download observatory.wasm.gz
+        uses: actions/download-artifact@v3
+        with:
+          name: observatory.wasm.gz
       - name: Download mission_control.wasm.gz
         uses: actions/download-artifact@v3
         with:
@@ -144,6 +154,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: console.did
+      - name: Download observatory.did
+        uses: actions/download-artifact@v3
+        with:
+          name: observatory.did
       - name: Download mission_control.did
         uses: actions/download-artifact@v3
         with:
@@ -160,7 +174,7 @@ jobs:
       - name: Prepare canisters
         run: bash ./docker/prepare
         env:
-          CANISTERS: console,mission_control,satellite
+          CANISTERS: console,observatory,mission_control,satellite
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -168,9 +182,11 @@ jobs:
         with:
           files: |
             ./console*.wasm.gz
+            ./observatory*.wasm.gz
             ./mission_control*.wasm.gz
             ./satellite*.wasm.gz
             ./console*.did
+            ./observatory*.did
             ./mission_control*.did
             ./satellite*.did
             ./metadata.json

@@ -10,10 +10,11 @@
 	import { setContext } from 'svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import MissionControlObservatory from '$lib/components/mission-control/MissionControlObservatory.svelte';
+	import { page } from '$app/stores';
 
 	const tabs: Tab[] = [
 		{
@@ -23,10 +24,14 @@
 		{
 			id: Symbol('2'),
 			labelKey: 'controllers.title'
+		},
+		{
+			id: Symbol('3'),
+			labelKey: 'observatory.title'
 		}
 		// TODO: implement and add transactions tab when ICP index canisters makes it to mainnet
 		// {
-		// 	id: Symbol('3'),
+		// 	id: Symbol('4'),
 		// 	name: $i18n.mission_control.transactions
 		// }
 	];
@@ -48,6 +53,8 @@
 				<MissionControl />
 			{:else if $store.tabId === $store.tabs[1].id}
 				<MissionControlControllers missionControlId={$missionControlStore} />
+			{:else if $store.tabId === $store.tabs[2].id}
+				<MissionControlObservatory missionControlId={$missionControlStore} />
 			{/if}
 		{/if}
 	</Tabs>

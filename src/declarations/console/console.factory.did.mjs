@@ -1,4 +1,8 @@
 export const idlFactory = ({ IDL }) => {
+	const AssertMissionControlCenterArgs = IDL.Record({
+		mission_control_id: IDL.Principal,
+		user: IDL.Principal
+	});
 	const CreateSatelliteArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
 		user: IDL.Principal
@@ -38,6 +42,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	return IDL.Service({
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
+		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
 		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_create_satellite_fee: IDL.Func([GetCreateSatelliteFeeArgs], [IDL.Opt(Tokens)], ['query']),

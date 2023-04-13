@@ -3,7 +3,8 @@ members = [
     "src/console",
     "src/mission_control",
     "src/satellite",
-    "src/shared"
+    "src/shared",
+    "src/observatory"
 ]
 [patch.crates-io]
 ic-ledger-types = { git = "https://github.com/dfinity/cdk-rs", rev = "75e84bc9cf8df154e569f725698d3e73fc1feaef" }

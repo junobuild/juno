@@ -4,7 +4,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import type { AccountIdentifier } from '@dfinity/nns';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
-	import { nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import MissionControlTopUp from '$lib/components/mission-control/MissionControlTopUp.svelte';
@@ -34,7 +34,20 @@
 		credits: 0n,
 		accountIdentifier: undefined
 	});
+
+	const reloadBalance = async ({ detail: { canisterId: syncCanisterId } }) => {
+		if (
+			isNullish($missionControlStore) ||
+			syncCanisterId.toText() !== $missionControlStore.toText()
+		) {
+			return;
+		}
+
+		await loadBalance($missionControlStore);
+	};
 </script>
+
+<svelte:window on:junoRestartCycles={reloadBalance} />
 
 {#if $authSignedInStore}
 	<Warnings />

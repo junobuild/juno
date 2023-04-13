@@ -28,8 +28,14 @@
 
 	let icp: number | undefined = undefined;
 
+	const networkFees = 2n * IC_TRANSACTION_FEE_ICP;
+
 	let validIcp = false;
-	$: validIcp = nonNullish(icp) && icp > 0;
+	$: validIcp =
+		nonNullish(icp) &&
+		icp > 0 &&
+		icp < Number(balance / E8S_PER_ICP) &&
+		icp > Number(networkFees / E8S_PER_ICP);
 
 	let cycles: number | undefined;
 	$: cycles =
@@ -38,7 +44,7 @@
 			: undefined;
 
 	let validCycles = false;
-	$: validCycles = nonNullish(cycles) && cycles > 2 * Number(IC_TRANSACTION_FEE_ICP);
+	$: validCycles = nonNullish(cycles);
 
 	const onSubmit = async () => {
 		if (isNullish($missionControlStore)) {
@@ -108,10 +114,14 @@
 		</p>
 
 		<p>
-			{@html i18nFormat($i18n.mission_control.your_balance, [
+			{@html i18nFormat($i18n.canisters.top_up_info, [
 				{
 					placeholder: '{0}',
-					value: `${formatE8sICP(balance)} ICP`
+					value: formatE8sICP(balance)
+				},
+				{
+					placeholder: '{1}',
+					value: formatE8sICP(networkFees)
 				}
 			])}
 		</p>
@@ -130,10 +140,10 @@
 				</Value>
 			</div>
 
-			<div>
+			<div class="cycles">
 				<Value>
-					<svelte:fragment slot="label">Cycles</svelte:fragment>
-					{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles))}` : '0'} TCycles
+					<svelte:fragment slot="label">{$i18n.canisters.additional_cycles}</svelte:fragment>
+					{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '0'} TCycles
 				</Value>
 			</div>
 
@@ -157,5 +167,9 @@
 
 	button {
 		margin-top: var(--padding-2x);
+	}
+
+	.cycles {
+		padding: var(--padding) 0 0;
 	}
 </style>

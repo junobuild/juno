@@ -16,6 +16,15 @@ export interface Controller {
 	created_at: bigint;
 	expires_at: [] | [bigint];
 }
+export interface CronJobStatuses {
+	mission_control_config: [] | [CronJobStatusesConfig];
+	default_config: CronJobStatusesConfig;
+	satellites_config: Array<[Principal, CronJobStatusesConfig]>;
+}
+export interface CronJobStatusesConfig {
+	enabled: boolean;
+	cycles_threshold: [] | [bigint];
+}
 export interface DefiniteCanisterSettings {
 	freezing_threshold: bigint;
 	controllers: Array<Principal>;
@@ -43,9 +52,6 @@ export interface SetController {
 	metadata: Array<[string, string]>;
 	expires_at: [] | [bigint];
 }
-export interface StatusesArgs {
-	cycles_threshold: bigint;
-}
 export interface Tokens {
 	e8s: bigint;
 }
@@ -66,7 +72,7 @@ export interface _SERVICE {
 		[Array<Principal>, Array<Principal>, SetController],
 		undefined
 	>;
-	status: ActorMethod<[StatusesArgs], SegmentsStatuses>;
+	status: ActorMethod<[CronJobStatuses], SegmentsStatuses>;
 	top_up: ActorMethod<[Principal, Tokens], undefined>;
 	version: ActorMethod<[], string>;
 }

@@ -1,8 +1,13 @@
 export const idlFactory = ({ IDL }) => {
 	const CollectStatusesArgs = IDL.Record({ time_delta: IDL.Opt(IDL.Nat64) });
-	const CronJobStatuses = IDL.Record({
+	const CronJobStatusesConfig = IDL.Record({
 		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)
+	});
+	const CronJobStatuses = IDL.Record({
+		mission_control_config: IDL.Opt(CronJobStatusesConfig),
+		default_config: CronJobStatusesConfig,
+		satellites_config: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesConfig))
 	});
 	const CronJobs = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),

@@ -13,6 +13,15 @@ type Controller = record {
   created_at : nat64;
   expires_at : opt nat64;
 };
+type CronJobStatuses = record {
+  mission_control_config : opt CronJobStatusesConfig;
+  default_config : CronJobStatusesConfig;
+  satellites_config : vec record { principal; CronJobStatusesConfig };
+};
+type CronJobStatusesConfig = record {
+  enabled : bool;
+  cycles_threshold : opt nat64;
+};
 type DefiniteCanisterSettings = record {
   freezing_threshold : nat;
   controllers : vec principal;
@@ -40,7 +49,6 @@ type SetController = record {
   metadata : vec record { text; text };
   expires_at : opt nat64;
 };
-type StatusesArgs = record { cycles_threshold : nat64 };
 type Tokens = record { e8s : nat64 };
 service : {
   add_mission_control_controllers : (vec principal) -> ();
@@ -62,7 +70,7 @@ service : {
       vec principal,
       SetController,
     ) -> ();
-  status : (StatusesArgs) -> (SegmentsStatuses);
+  status : (CronJobStatuses) -> (SegmentsStatuses);
   top_up : (principal, Tokens) -> ();
   version : () -> (text) query;
 }

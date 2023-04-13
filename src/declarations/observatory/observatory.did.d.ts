@@ -19,6 +19,11 @@ export interface CollectStatusesArgs {
 	time_delta: [] | [bigint];
 }
 export interface CronJobStatuses {
+	mission_control_config: [] | [CronJobStatusesConfig];
+	default_config: CronJobStatusesConfig;
+	satellites_config: Array<[Principal, CronJobStatusesConfig]>;
+}
+export interface CronJobStatusesConfig {
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
 }

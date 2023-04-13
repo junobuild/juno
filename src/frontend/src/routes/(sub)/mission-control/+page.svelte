@@ -16,6 +16,9 @@
 	import MissionControlObservatory from '$lib/components/mission-control/MissionControlObservatory.svelte';
 	import { page } from '$app/stores';
 
+	// TODO: remove feature flag
+	const observatory = $page.url.searchParams.get('observatory');
+
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
@@ -25,10 +28,14 @@
 			id: Symbol('2'),
 			labelKey: 'controllers.title'
 		},
-		{
-			id: Symbol('3'),
-			labelKey: 'observatory.title'
-		}
+		...(nonNullish(observatory)
+			? [
+					{
+						id: Symbol('3'),
+						labelKey: 'observatory.title'
+					}
+			  ]
+			: [])
 		// TODO: implement and add transactions tab when ICP index canisters makes it to mainnet
 		// {
 		// 	id: Symbol('4'),

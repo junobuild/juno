@@ -28,10 +28,12 @@
 	},
 	"canisters": {
 		"top_up": "Top-up",
-		"cycles": "{0} are a unit of payment for operating your smart contracts.",
+		"cycles": "{0} are the unit of payment for operating your smart contracts.",
 		"top_up_in_progress": "Top-up in progress...",
 		"amount": "Amount in ICP",
-		"top_up_title": "Top-up {0}"
+		"top_up_title": "Top-up {0}",
+		"additional_cycles": "Additional Cycles",
+		"top_up_info": "Currently, your mission control balance is {0} ICP, and network fees for topping up are {1} ICP."
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",
@@ -52,7 +54,7 @@
 		"description": "A satellite is a web3 container that offers a simplistic datastore, storage, and permission management system for your application. Develop and run your app on the web, completely on the blockchain with a low carbon footprint.",
 		"name": "Satellite name",
 		"enter_name": "Enter a name for your satellite",
-		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is  {1} ICP and you have {2} credits remaining.",
+		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
 		"loading_satellites": "Loading your satellites"
 	},
 	"mission_control": {

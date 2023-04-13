@@ -1,18 +1,10 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { emit } from '$lib/utils/events.utils';
+	import TopUp from '$lib/components/canister/TopUp.svelte';
 
 	export let satellite: Satellite;
+
+	let detail = { satellite };
 </script>
 
-<button
-	on:click={() =>
-		emit({ message: 'junoModal', detail: { type: 'topup_satellite', detail: { satellite } } })}
-	>Top-up</button
->
-
-<style lang="scss">
-	button {
-		margin: var(--padding-2x) 0 0;
-	}
-</style>
+<TopUp type="topup_satellite" {detail} />

@@ -16,8 +16,10 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { wizardBusy } from '$lib/stores/busy.store';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	export let canisterId: Principal;
+	export let balance: bigint;
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
 
@@ -26,8 +28,14 @@
 
 	let icp: number | undefined = undefined;
 
+	const networkFees = 2n * IC_TRANSACTION_FEE_ICP;
+
 	let validIcp = false;
-	$: validIcp = nonNullish(icp) && icp > 0;
+	$: validIcp =
+		nonNullish(icp) &&
+		icp > 0 &&
+		icp < Number(balance / E8S_PER_ICP) &&
+		icp > Number(networkFees / E8S_PER_ICP);
 
 	let cycles: number | undefined;
 	$: cycles =
@@ -36,7 +44,7 @@
 			: undefined;
 
 	let validCycles = false;
-	$: validCycles = nonNullish(cycles) && cycles > 2 * Number(IC_TRANSACTION_FEE_ICP);
+	$: validCycles = nonNullish(cycles);
 
 	const onSubmit = async () => {
 		if (isNullish($missionControlStore)) {
@@ -100,7 +108,20 @@
 				{
 					placeholder: '{0}',
 					value:
-						'<a href="https://juno.build/docs/terminology#cycles" rel="external noopener norefferer">Cycles</a>'
+						'<a href="https://juno.build/docs/terminology#cycles" rel="external noopener norefferer" target="_blank">Cycles</a>'
+				}
+			])}
+		</p>
+
+		<p>
+			{@html i18nFormat($i18n.canisters.top_up_info, [
+				{
+					placeholder: '{0}',
+					value: formatE8sICP(balance)
+				},
+				{
+					placeholder: '{1}',
+					value: formatE8sICP(networkFees)
 				}
 			])}
 		</p>
@@ -119,10 +140,10 @@
 				</Value>
 			</div>
 
-			<div>
+			<div class="cycles">
 				<Value>
-					<svelte:fragment slot="label">Cycles</svelte:fragment>
-					{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles))}` : '0'} TCycles
+					<svelte:fragment slot="label">{$i18n.canisters.additional_cycles}</svelte:fragment>
+					{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '0'} TCycles
 				</Value>
 			</div>
 
@@ -146,5 +167,9 @@
 
 	button {
 		margin-top: var(--padding-2x);
+	}
+
+	.cycles {
+		padding: var(--padding) 0 0;
 	}
 </style>

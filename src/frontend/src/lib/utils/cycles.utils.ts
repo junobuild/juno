@@ -22,4 +22,4 @@ export const icpToCycles = ({
 }: {
 	icp: number;
 	trillionRatio: bigint;
-}): number => icp * Number(trillionRatio);
+}): number => Math.trunc(icp * Number(trillionRatio));

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { JunoModalSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
+	import type { JunoModalTopUpSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -10,7 +10,7 @@
 	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
-	$: ({ satellite } = detail as JunoModalSatelliteDetail);
+	$: ({ satellite } = detail as JunoModalTopUpSatelliteDetail);
 </script>
 
 <CanisterTopUpModal canisterId={satellite.satellite_id} on:junoClose>

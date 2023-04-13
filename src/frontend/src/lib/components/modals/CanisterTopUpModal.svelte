@@ -100,7 +100,7 @@
 				{
 					placeholder: '{0}',
 					value:
-						'<a href="https://juno.build/docs/terminology#cycles" rel="external noopener norefferer">Cycles</a>'
+						'<a href="https://juno.build/docs/terminology#cycles" rel="external noopener norefferer" target="_blank">Cycles</a>'
 				}
 			])}
 		</p>

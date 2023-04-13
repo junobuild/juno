@@ -1,23 +1,30 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 
-export interface JunoModalSatelliteDetail {
-	satellite: Satellite;
-}
-
-export interface JunoModalCreateSatelliteDetail {
-	fee: bigint;
+export interface JunoModalBalance {
 	missionControlBalance?: {
 		balance: bigint;
 		credits: bigint;
 	};
 }
 
-export interface JunoModalCustomDomainDetail extends JunoModalSatelliteDetail {
+export interface JunoModalTopUpSatelliteDetail extends JunoModalBalance {
+	satellite: Satellite;
+}
+
+export interface JunoModalTopUpMissionControlDetail extends JunoModalBalance {}
+
+export interface JunoModalCreateSatelliteDetail extends JunoModalBalance {
+	fee: bigint;
+}
+
+export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
+	satellite: Satellite;
 }
 
 export type JunoModalDetail =
-	| JunoModalSatelliteDetail
+	| JunoModalTopUpSatelliteDetail
+	| JunoModalTopUpMissionControlDetail
 	| JunoModalCreateSatelliteDetail
 	| JunoModalCustomDomainDetail;
 

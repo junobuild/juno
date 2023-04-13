@@ -1,15 +1,7 @@
 <script lang="ts">
-	import { emit } from '$lib/utils/events.utils';
+	import TopUp from '$lib/components/canister/TopUp.svelte';
+
+	const detail = { type: 'topup_mission_control' };
 </script>
 
-<button
-	role="button"
-	on:click={() => emit({ message: 'junoModal', detail: { type: 'topup_mission_control' } })}
-	>Top-up</button
->
-
-<style lang="scss">
-	button {
-		margin: var(--padding-2x) 0 0;
-	}
-</style>
+<TopUp {detail} />

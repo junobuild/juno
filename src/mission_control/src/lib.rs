@@ -29,8 +29,7 @@ use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use satellites::store::get_satellites;
-use shared::types::cronjob::CronJobStatuses;
-use shared::types::interface::{MissionControlArgs, SegmentsStatuses, SetController};
+use shared::types::interface::{MissionControlArgs, SegmentsStatuses, SetController, StatusesArgs};
 use shared::types::state::{ControllerId, Controllers};
 use shared::types::state::{Metadata, UserId};
 use std::cell::RefCell;
@@ -236,7 +235,7 @@ fn version() -> String {
 
 #[candid_method(update)]
 #[update(guard = "caller_can_read")]
-async fn status(config: CronJobStatuses) -> SegmentsStatuses {
+async fn status(config: StatusesArgs) -> SegmentsStatuses {
     collect_statuses(&id(), &config).await
 }
 

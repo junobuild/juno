@@ -22,6 +22,7 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::types::cronjob::CronJobStatusesSatellites;
     use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
     use candid::{CandidType, Principal};
     use ic_cdk::api::management_canister::main::CanisterStatusResponse;
@@ -70,6 +71,13 @@ pub mod interface {
     pub struct AssertMissionControlCenterArgs {
         pub user: UserId,
         pub mission_control_id: MissionControlId,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct StatusesArgs {
+        pub cycles_threshold: Option<u64>,
+        pub mission_control_cycles_threshold: Option<u64>,
+        pub satellites: CronJobStatusesSatellites,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

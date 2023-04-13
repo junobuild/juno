@@ -3,7 +3,7 @@ use crate::types::state::CronTab;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, spawn};
 use lazy_static::lazy_static;
-use shared::types::interface::SegmentsStatuses;
+use shared::types::interface::{SegmentsStatuses, StatusesArgs};
 use shared::types::state::UserId;
 use std::sync::Mutex;
 
@@ -35,8 +35,17 @@ async fn collect_statuses(user: UserId, cron_tab: CronTab) {
 }
 
 async fn statuses(cron_tab: &CronTab) -> Result<SegmentsStatuses, String> {
+    let args = StatusesArgs {
+        cycles_threshold: cron_tab.cron_jobs.statuses.cycles_threshold,
+        mission_control_cycles_threshold: cron_tab
+            .cron_jobs
+            .statuses
+            .mission_control_cycles_threshold,
+        satellites: cron_tab.cron_jobs.statuses.satellites.clone(),
+    };
+
     let result: CallResult<(SegmentsStatuses,)> =
-        call(cron_tab.mission_control_id, "status", (cron_tab,)).await;
+        call(cron_tab.mission_control_id, "status", (args,)).await;
 
     match result {
         Err((_, message)) => Err(["Cannot get mission control statuses.", &message].join(" - ")),

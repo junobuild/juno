@@ -3,13 +3,13 @@ use crate::satellites::store::get_satellites;
 use crate::types::state::{Satellite, SatelliteId};
 use futures::future::join_all;
 use shared::ic::segment_status;
-use shared::types::cronjob::{CronJobStatuses, CronJobStatusesSatellites};
-use shared::types::interface::{SegmentStatus, SegmentsStatuses};
+use shared::types::cronjob::{CronJobStatusesSatellites};
+use shared::types::interface::{SegmentStatus, SegmentsStatuses, StatusesArgs};
 use shared::types::state::MissionControlId;
 
 pub async fn collect_statuses(
     mission_control_id: &MissionControlId,
-    config: &CronJobStatuses,
+    config: &StatusesArgs,
 ) -> SegmentsStatuses {
     let mission_control_check = mission_control_status(mission_control_id).await;
 
@@ -35,7 +35,7 @@ pub async fn collect_statuses(
     }
 }
 
-pub fn assert_threshold(config: &CronJobStatuses, segment_status: &SegmentStatus) -> bool {
+pub fn assert_threshold(config: &StatusesArgs, segment_status: &SegmentStatus) -> bool {
     let config_threshold = match config.mission_control_cycles_threshold {
         None => config.cycles_threshold,
         Some(mission_control_cycles_threshold) => Some(mission_control_cycles_threshold),

@@ -39,7 +39,7 @@
 					statuses: {
 						enabled,
 						cycles_threshold: toNullable(
-								isNullish(threshold) || threshold === 0 ? null : BigInt(threshold * ONE_TRILLION)
+							isNullish(threshold) || threshold === 0 ? null : BigInt(threshold * ONE_TRILLION)
 						),
 						mission_control_cycles_threshold: [],
 						satellites: []

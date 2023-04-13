@@ -19,10 +19,9 @@ export const idlFactory = ({ IDL }) => {
 		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)
 	});
-	const CronJobStatuses = IDL.Record({
+	const StatusesArgs = IDL.Record({
 		mission_control_cycles_threshold: IDL.Opt(IDL.Nat64),
 		satellites: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesSatelliteConfig)),
-		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)
 	});
 	const CanisterStatusType = IDL.Variant({
@@ -82,7 +81,7 @@ export const idlFactory = ({ IDL }) => {
 			[],
 			[]
 		),
-		status: IDL.Func([CronJobStatuses], [SegmentsStatuses], []),
+		status: IDL.Func([StatusesArgs], [SegmentsStatuses], []),
 		top_up: IDL.Func([IDL.Principal, Tokens], [], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

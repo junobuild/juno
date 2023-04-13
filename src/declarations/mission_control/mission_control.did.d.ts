@@ -16,12 +16,6 @@ export interface Controller {
 	created_at: bigint;
 	expires_at: [] | [bigint];
 }
-export interface CronJobStatuses {
-	mission_control_cycles_threshold: [] | [bigint];
-	satellites: Array<[Principal, CronJobStatusesSatelliteConfig]>;
-	enabled: boolean;
-	cycles_threshold: [] | [bigint];
-}
 export interface CronJobStatusesSatelliteConfig {
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
@@ -53,6 +47,11 @@ export interface SetController {
 	metadata: Array<[string, string]>;
 	expires_at: [] | [bigint];
 }
+export interface StatusesArgs {
+	mission_control_cycles_threshold: [] | [bigint];
+	satellites: Array<[Principal, CronJobStatusesSatelliteConfig]>;
+	cycles_threshold: [] | [bigint];
+}
 export interface Tokens {
 	e8s: bigint;
 }
@@ -73,7 +72,7 @@ export interface _SERVICE {
 		[Array<Principal>, Array<Principal>, SetController],
 		undefined
 	>;
-	status: ActorMethod<[CronJobStatuses], SegmentsStatuses>;
+	status: ActorMethod<[StatusesArgs], SegmentsStatuses>;
 	top_up: ActorMethod<[Principal, Tokens], undefined>;
 	version: ActorMethod<[], string>;
 }

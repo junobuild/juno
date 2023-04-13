@@ -89,6 +89,9 @@
 
 	let invalidThreshold = false;
 	$: invalidThreshold = nonNullish(threshold) && threshold < Number(CYCLES_WARNING) / ONE_TRILLION;
+
+	let dirty = false;
+	$: dirty = cronTab?.cron_jobs.statuses.enabled !== enabled;
 </script>
 
 <div class="card-container">
@@ -101,7 +104,8 @@
 					<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
 					<div class="checkbox">
 						<input type="checkbox" bind:checked={enabled} />
-						<span>{enabled ? $i18n.observatory.enabled : $i18n.observatory.disabled}</span>
+						<span>{dirty ? (enabled ? $i18n.observatory.submit_enable : $i18n.observatory.submit_disable) :
+								enabled ? $i18n.observatory.enabled : $i18n.observatory.disabled}</span>
 					</div>
 				</Value>
 			</div>

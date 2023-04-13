@@ -1,11 +1,11 @@
 use crate::mgmt::constants::CYCLES_MIN_THRESHOLD;
 use crate::satellites::store::get_satellites;
-use crate::types::state::{Satellite, SatelliteId};
+use crate::types::state::Satellite;
 use futures::future::join_all;
 use shared::ic::segment_status;
-use shared::types::cronjob::{CronJobStatusesSatellites};
+use shared::types::cronjob::CronJobStatusesSatellites;
 use shared::types::interface::{SegmentStatus, SegmentsStatuses, StatusesArgs};
-use shared::types::state::MissionControlId;
+use shared::types::state::{MissionControlId, SatelliteId};
 
 pub async fn collect_statuses(
     mission_control_id: &MissionControlId,

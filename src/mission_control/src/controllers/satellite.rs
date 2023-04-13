@@ -1,10 +1,9 @@
-use crate::types::state::SatelliteId;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use shared::controllers::into_controller_ids;
 use shared::ic::update_canister_controllers;
 use shared::types::interface::{DeleteControllersArgs, SetController, SetControllersArgs};
-use shared::types::state::{ControllerId, Controllers};
+use shared::types::state::{ControllerId, Controllers, SatelliteId};
 
 #[deprecated(since = "0.0.3", note = "please use `set_controllers` instead")]
 pub async fn add_satellite_controllers(

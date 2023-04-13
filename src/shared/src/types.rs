@@ -7,6 +7,7 @@ pub mod state {
     pub type UserId = Principal;
     pub type MissionControlId = Principal;
     pub type ControllerId = Principal;
+    pub type SatelliteId = Principal;
 
     pub type Metadata = HashMap<String, String>;
 
@@ -151,8 +152,8 @@ pub mod cmc {
 }
 
 pub mod cronjob {
-    use crate::types::state::Metadata;
-    use candid::{CandidType, Principal};
+    use crate::types::state::{Metadata, SatelliteId};
+    use candid::CandidType;
     use serde::Deserialize;
     use std::collections::HashMap;
 
@@ -162,7 +163,7 @@ pub mod cronjob {
         pub statuses: CronJobStatuses,
     }
 
-    pub type CronJobStatusesSatellites = HashMap<Principal, CronJobStatusesSatelliteConfig>;
+    pub type CronJobStatusesSatellites = HashMap<SatelliteId, CronJobStatusesSatelliteConfig>;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CronJobStatuses {

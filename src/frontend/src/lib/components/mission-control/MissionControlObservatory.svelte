@@ -67,7 +67,7 @@
 
 			enabled = cronTab?.cron_jobs.statuses.enabled ?? false;
 			email = metadataEmail(cronTab?.cron_jobs.metadata ?? []);
-			threshold = nonNullish(cronTab?.cron_jobs.statuses.cycles_threshold)
+			threshold = nonNullish(fromNullable(cronTab?.cron_jobs.statuses.cycles_threshold ?? []))
 				? Number(cronTab?.cron_jobs.statuses.cycles_threshold) / ONE_TRILLION
 				: undefined;
 

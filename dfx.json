@@ -25,7 +25,6 @@
 			}
 		},
 		"frontend": {
-			"dependencies": ["console"],
 			"frontend": {
 				"entrypoint": "build/index.html"
 			},

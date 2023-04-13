@@ -4,8 +4,8 @@ use crate::types::state::Satellite;
 use futures::future::join_all;
 use shared::ic::segment_status;
 use shared::types::cronjob::CronJobStatusesSatellites;
-use shared::types::interface::{SegmentStatus, SegmentsStatuses, StatusesArgs};
-use shared::types::state::{MissionControlId, SatelliteId};
+use shared::types::interface::StatusesArgs;
+use shared::types::state::{MissionControlId, SatelliteId, SegmentStatus, SegmentsStatuses};
 
 pub async fn collect_statuses(
     mission_control_id: &MissionControlId,

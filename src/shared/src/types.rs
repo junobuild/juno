@@ -1,6 +1,7 @@
 pub mod state {
     use candid::CandidType;
     use candid::Principal;
+    use ic_cdk::api::management_canister::main::CanisterStatusResponse;
     use serde::Deserialize;
     use std::collections::HashMap;
 
@@ -13,6 +14,8 @@ pub mod state {
 
     pub type Controllers = HashMap<ControllerId, Controller>;
 
+    pub type ArchiveTime = u64;
+
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Controller {
         pub metadata: Metadata,
@@ -20,13 +23,26 @@ pub mod state {
         pub updated_at: u64,
         pub expires_at: Option<u64>,
     }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SegmentStatus {
+        pub id: Principal,
+        pub metadata: Option<Metadata>,
+        pub status: CanisterStatusResponse,
+        pub status_at: u64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SegmentsStatuses {
+        pub mission_control: Result<SegmentStatus, String>,
+        pub satellites: Option<Vec<Result<SegmentStatus, String>>>,
+    }
 }
 
 pub mod interface {
     use crate::types::cronjob::CronJobStatusesSatellites;
     use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
-    use candid::{CandidType, Principal};
-    use ic_cdk::api::management_canister::main::CanisterStatusResponse;
+    use candid::CandidType;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
 
@@ -79,20 +95,6 @@ pub mod interface {
         pub cycles_threshold: Option<u64>,
         pub mission_control_cycles_threshold: Option<u64>,
         pub satellites: CronJobStatusesSatellites,
-    }
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct SegmentStatus {
-        pub id: Principal,
-        pub metadata: Option<Metadata>,
-        pub status: CanisterStatusResponse,
-        pub status_at: u64,
-    }
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct SegmentsStatuses {
-        pub mission_control: Result<SegmentStatus, String>,
-        pub satellites: Option<Vec<Result<SegmentStatus, String>>>,
     }
 }
 

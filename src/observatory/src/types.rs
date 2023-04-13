@@ -1,13 +1,13 @@
 pub mod state {
     use candid::{CandidType, Deserialize};
     use shared::types::cronjob::CronJobs;
-    use shared::types::interface::SegmentsStatuses;
-    use shared::types::state::{Controllers, MissionControlId, UserId};
+    use shared::types::state::{
+        ArchiveTime, Controllers, MissionControlId, SegmentsStatuses, UserId,
+    };
     use std::collections::{BTreeMap, HashMap};
 
     pub type CronTabs = HashMap<UserId, CronTab>;
 
-    pub type ArchiveTime = u64;
     pub type ArchiveStatuses = BTreeMap<ArchiveTime, Result<SegmentsStatuses, String>>;
     pub type Statuses = HashMap<UserId, ArchiveStatuses>;
 
@@ -41,10 +41,8 @@ pub mod state {
 }
 
 pub mod list {
-    use crate::types::state::ArchiveTime;
     use candid::{CandidType, Deserialize};
-    use shared::types::interface::SegmentsStatuses;
-    use shared::types::state::UserId;
+    use shared::types::state::{ArchiveTime, SegmentsStatuses, UserId};
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct ListLastStatuses {
@@ -55,11 +53,9 @@ pub mod list {
 }
 
 pub mod interface {
-    use crate::types::state::ArchiveTime;
     use candid::{CandidType, Deserialize};
     use shared::types::cronjob::CronJobs;
-    use shared::types::interface::SegmentsStatuses;
-    use shared::types::state::MissionControlId;
+    use shared::types::state::{ArchiveTime, MissionControlId, SegmentsStatuses};
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CollectStatusesArgs {

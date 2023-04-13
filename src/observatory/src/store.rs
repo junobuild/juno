@@ -7,8 +7,8 @@ use shared::assert::assert_timestamp;
 use shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
-use shared::types::interface::{SegmentsStatuses, SetController};
-use shared::types::state::{ControllerId, UserId};
+use shared::types::interface::SetController;
+use shared::types::state::{ControllerId, SegmentsStatuses, UserId};
 
 ///
 /// CronJobs

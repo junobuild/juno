@@ -3,8 +3,8 @@ use crate::types::state::CronTab;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, spawn};
 use lazy_static::lazy_static;
-use shared::types::interface::{SegmentsStatuses, StatusesArgs};
-use shared::types::state::UserId;
+use shared::types::interface::StatusesArgs;
+use shared::types::state::{SegmentsStatuses, UserId};
 use std::sync::Mutex;
 
 lazy_static! {

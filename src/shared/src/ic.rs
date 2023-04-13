@@ -1,5 +1,5 @@
 use crate::types::ic::WasmArg;
-use crate::types::interface::SegmentStatus;
+use crate::types::state::SegmentStatus;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::{

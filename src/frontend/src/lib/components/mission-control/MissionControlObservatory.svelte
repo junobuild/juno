@@ -104,8 +104,15 @@
 					<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
 					<div class="checkbox">
 						<input type="checkbox" bind:checked={enabled} />
-						<span>{dirty ? (enabled ? $i18n.observatory.submit_enable : $i18n.observatory.submit_disable) :
-								enabled ? $i18n.observatory.enabled : $i18n.observatory.disabled}</span>
+						<span
+							>{dirty
+								? enabled
+									? $i18n.observatory.submit_enable
+									: $i18n.observatory.submit_disable
+								: enabled
+								? $i18n.observatory.enabled
+								: $i18n.observatory.disabled}</span
+						>
 					</div>
 				</Value>
 			</div>

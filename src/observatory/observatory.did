@@ -13,7 +13,16 @@ type CollectStatuses = record {
   timestamp : nat64;
 };
 type CollectStatusesArgs = record { time_delta : opt nat64 };
-type CronJobStatuses = record { enabled : bool; cycles_threshold : opt nat64 };
+type CronJobStatuses = record {
+  mission_control_cycles_threshold : opt nat64;
+  satellites : vec record { principal; CronJobStatusesSatelliteConfig };
+  enabled : bool;
+  cycles_threshold : opt nat64;
+};
+type CronJobStatusesSatelliteConfig = record {
+  enabled : bool;
+  cycles_threshold : opt nat64;
+};
 type CronJobs = record {
   metadata : vec record { text; text };
   statuses : CronJobStatuses;

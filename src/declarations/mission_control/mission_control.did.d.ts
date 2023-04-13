@@ -16,6 +16,10 @@ export interface Controller {
 	created_at: bigint;
 	expires_at: [] | [bigint];
 }
+export interface CronJobStatusesSatelliteConfig {
+	enabled: boolean;
+	cycles_threshold: [] | [bigint];
+}
 export interface DefiniteCanisterSettings {
 	freezing_threshold: bigint;
 	controllers: Array<Principal>;
@@ -44,7 +48,9 @@ export interface SetController {
 	expires_at: [] | [bigint];
 }
 export interface StatusesArgs {
-	cycles_threshold: bigint;
+	mission_control_cycles_threshold: [] | [bigint];
+	satellites: Array<[Principal, CronJobStatusesSatelliteConfig]>;
+	cycles_threshold: [] | [bigint];
 }
 export interface Tokens {
 	e8s: bigint;

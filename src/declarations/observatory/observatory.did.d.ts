@@ -19,6 +19,12 @@ export interface CollectStatusesArgs {
 	time_delta: [] | [bigint];
 }
 export interface CronJobStatuses {
+	mission_control_cycles_threshold: [] | [bigint];
+	satellites: Array<[Principal, CronJobStatusesSatelliteConfig]>;
+	enabled: boolean;
+	cycles_threshold: [] | [bigint];
+}
+export interface CronJobStatusesSatelliteConfig {
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
 }

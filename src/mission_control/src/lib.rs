@@ -235,8 +235,8 @@ fn version() -> String {
 
 #[candid_method(update)]
 #[update(guard = "caller_can_read")]
-async fn status(StatusesArgs { cycles_threshold }: StatusesArgs) -> SegmentsStatuses {
-    collect_statuses(&id(), cycles_threshold).await
+async fn status(config: StatusesArgs) -> SegmentsStatuses {
+    collect_statuses(&id(), &config).await
 }
 
 ///

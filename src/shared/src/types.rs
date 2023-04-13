@@ -22,6 +22,7 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::types::cronjob::CronJobStatusesSatellites;
     use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
     use candid::{CandidType, Principal};
     use ic_cdk::api::management_canister::main::CanisterStatusResponse;
@@ -74,7 +75,9 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize)]
     pub struct StatusesArgs {
-        pub cycles_threshold: u64,
+        pub cycles_threshold: Option<u64>,
+        pub mission_control_cycles_threshold: Option<u64>,
+        pub satellites: CronJobStatusesSatellites,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -149,8 +152,9 @@ pub mod cmc {
 
 pub mod cronjob {
     use crate::types::state::Metadata;
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
     use serde::Deserialize;
+    use std::collections::HashMap;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CronJobs {
@@ -158,8 +162,18 @@ pub mod cronjob {
         pub statuses: CronJobStatuses,
     }
 
+    pub type CronJobStatusesSatellites = HashMap<Principal, CronJobStatusesSatelliteConfig>;
+
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CronJobStatuses {
+        pub enabled: bool,
+        pub cycles_threshold: Option<u64>,
+        pub mission_control_cycles_threshold: Option<u64>,
+        pub satellites: CronJobStatusesSatellites,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CronJobStatusesSatelliteConfig {
         pub enabled: bool,
         pub cycles_threshold: Option<u64>,
     }

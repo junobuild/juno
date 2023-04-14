@@ -42,7 +42,7 @@ fn set_mission_control_status_impl(status: &SegmentStatusResult, state: &mut Sta
         .archive
         .statuses
         .mission_control
-        .retain(|timestamp, _| *timestamp <= retain_timestamp);
+        .retain(|timestamp, _| *timestamp >= retain_timestamp);
 
     state
         .archive
@@ -90,7 +90,7 @@ fn set_satellite_status_impl(
 
             let mut updated_archive = archive.clone();
 
-            updated_archive.retain(|timestamp, _| *timestamp <= retain_timestamp);
+            updated_archive.retain(|timestamp, _| *timestamp >= retain_timestamp);
             updated_archive.insert(now, status.clone());
 
             state

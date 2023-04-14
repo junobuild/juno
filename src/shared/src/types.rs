@@ -32,10 +32,12 @@ pub mod state {
         pub status_at: u64,
     }
 
+    pub type SegmentStatusResult = Result<SegmentStatus, String>;
+
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentsStatuses {
-        pub mission_control: Result<SegmentStatus, String>,
-        pub satellites: Option<Vec<Result<SegmentStatus, String>>>,
+        pub mission_control: SegmentStatusResult,
+        pub satellites: Option<Vec<SegmentStatusResult>>,
     }
 }
 

@@ -1,5 +1,7 @@
 export const idlFactory = ({ IDL }) => {
-	const CollectStatusesArgs = IDL.Record({ time_delta: IDL.Opt(IDL.Nat64) });
+	const DeleteControllersArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal)
+	});
 	const CronJobStatusesSatelliteConfig = IDL.Record({
 		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)
@@ -14,6 +16,13 @@ export const idlFactory = ({ IDL }) => {
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		statuses: CronJobStatuses
 	});
+	const CronTab = IDL.Record({
+		cron_jobs: CronJobs,
+		updated_at: IDL.Nat64,
+		mission_control_id: IDL.Principal,
+		created_at: IDL.Nat64
+	});
+	const ListStatusesArgs = IDL.Record({ time_delta: IDL.Opt(IDL.Nat64) });
 	const CanisterStatusType = IDL.Variant({
 		stopped: IDL.Null,
 		stopping: IDL.Null,
@@ -45,19 +54,10 @@ export const idlFactory = ({ IDL }) => {
 		mission_control: Result
 	});
 	const Result_1 = IDL.Variant({ Ok: SegmentsStatuses, Err: IDL.Text });
-	const CollectStatuses = IDL.Record({
+	const ListStatuses = IDL.Record({
 		cron_jobs: CronJobs,
 		statuses: Result_1,
 		timestamp: IDL.Nat64
-	});
-	const DeleteControllersArgs = IDL.Record({
-		controllers: IDL.Vec(IDL.Principal)
-	});
-	const CronTab = IDL.Record({
-		cron_jobs: CronJobs,
-		updated_at: IDL.Nat64,
-		mission_control_id: IDL.Principal,
-		created_at: IDL.Nat64
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -73,10 +73,10 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Principal
 	});
 	return IDL.Service({
-		collect_statuses: IDL.Func([CollectStatusesArgs], [IDL.Vec(CollectStatuses)], ['query']),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_cron_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_cron_tab: IDL.Func([], [IDL.Opt(CronTab)], ['query']),
+		list_statuses: IDL.Func([ListStatusesArgs], [IDL.Vec(ListStatuses)], ['query']),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_tab: IDL.Func([SetCronTab], [CronTab], []),

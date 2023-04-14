@@ -16,7 +16,7 @@ use crate::store::{
     set_controllers as set_controllers_store, set_cron_controllers as set_cron_controllers_store,
     set_cron_tab as set_cron_tab_store,
 };
-use crate::types::interface::{CollectStatuses, CollectStatusesArgs, SetCronTab};
+use crate::types::interface::{ListStatuses, ListStatusesArgs, SetCronTab};
 use crate::types::state::{Archive, CronTab, StableState, State};
 use candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
@@ -128,7 +128,7 @@ fn get_cron_tab() -> Option<CronTab> {
 
 #[candid_method(query)]
 #[query(guard = "caller_can_execute_cron_jobs")]
-fn collect_statuses(args: CollectStatusesArgs) -> Vec<CollectStatuses> {
+fn list_statuses(args: ListStatusesArgs) -> Vec<ListStatuses> {
     collect_statuses_report(&args)
 }
 

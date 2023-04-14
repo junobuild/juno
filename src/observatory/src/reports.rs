@@ -1,16 +1,16 @@
 use crate::store::{get_cron_tab, list_statuses as list_statuses_store};
-use crate::types::interface::{CollectStatuses, CollectStatusesArgs};
+use crate::types::interface::{ListStatuses, ListStatusesArgs};
 use crate::types::state::ArchiveStatuses;
 use ic_cdk::api::time;
 use shared::types::state::UserId;
 
-pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
+pub fn collect_statuses(args: &ListStatusesArgs) -> Vec<ListStatuses> {
     let statuses = list_statuses_store();
 
     fn list_statuses(
         (user, status): &(UserId, ArchiveStatuses),
-        CollectStatusesArgs { time_delta }: &CollectStatusesArgs,
-    ) -> Option<CollectStatuses> {
+        ListStatusesArgs { time_delta }: &ListStatusesArgs,
+    ) -> Option<ListStatuses> {
         let cron_tab = get_cron_tab(user);
 
         match cron_tab {
@@ -21,7 +21,7 @@ pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
                 }
 
                 match time_delta {
-                    None => Some(CollectStatuses {
+                    None => Some(ListStatuses {
                         cron_jobs: cron_tab.cron_jobs,
                         timestamp: status.timestamp,
                         statuses: status.statuses.clone(),
@@ -33,7 +33,7 @@ pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
                             return None;
                         }
 
-                        Some(CollectStatuses {
+                        Some(ListStatuses {
                             cron_jobs: cron_tab.cron_jobs,
                             timestamp: status.timestamp,
                             statuses: status.statuses.clone(),

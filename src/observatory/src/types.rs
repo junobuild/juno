@@ -49,12 +49,12 @@ pub mod interface {
     use shared::types::state::{ArchiveTime, MissionControlId, SegmentsStatuses};
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct CollectStatusesArgs {
+    pub struct ListStatusesArgs {
         pub time_delta: Option<u64>,
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct CollectStatuses {
+    pub struct ListStatuses {
         pub cron_jobs: CronJobs,
         pub timestamp: ArchiveTime,
         pub statuses: Result<SegmentsStatuses, String>,

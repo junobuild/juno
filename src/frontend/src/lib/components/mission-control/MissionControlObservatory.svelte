@@ -91,7 +91,7 @@
 	$: invalidThreshold = nonNullish(threshold) && threshold < Number(CYCLES_WARNING) / ONE_TRILLION;
 
 	let dirty = false;
-	$: dirty = cronTab?.cron_jobs.statuses.enabled !== enabled;
+	$: dirty = nonNullish(cronTab) ? cronTab?.cron_jobs.statuses.enabled !== enabled : enabled;
 </script>
 
 <div class="card-container">

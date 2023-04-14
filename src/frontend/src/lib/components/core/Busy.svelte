@@ -26,7 +26,7 @@
 
 			{#if $busy.close}
 				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} class="text close"
-					>{$i18n.core.close} <IconClose size="14px" /></button
+					>{$i18n.core.cancel}</button
 				>
 			{/if}
 		</div>
@@ -37,6 +37,7 @@
 	@use '../../styles/mixins/interaction';
 	@use '../../styles/mixins/overlay';
 	@use '../../styles/mixins/display';
+	@use '../../styles/mixins/media';
 
 	div {
 		z-index: calc(var(--z-index) + 1000);
@@ -79,8 +80,12 @@
 
 	.text {
 		font-size: var(--font-size-very-small);
-		text-decoration: none;
-		margin-top: var(--padding);
-		gap: var(--padding-0_5x);
+		color: var(--label-color);
+	}
+
+	@include media.dark-theme {
+		.text {
+			color: var(--value-color);
+		}
 	}
 </style>

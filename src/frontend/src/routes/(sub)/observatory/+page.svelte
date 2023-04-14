@@ -1,5 +1,4 @@
 <script lang="ts">
-	import MissionControl from '$lib/components/mission-control/MissionControl.svelte';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -10,24 +9,15 @@
 	import { setContext } from 'svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import MissionControlObservatory from '$lib/components/mission-control/MissionControlObservatory.svelte';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'mission_control.overview'
-		},
-		{
-			id: Symbol('2'),
-			labelKey: 'controllers.title'
+			labelKey: 'observatory.overview'
 		}
-		// TODO: implement and add transactions tab when ICP index canisters makes it to mainnet
-		// {
-		// 	id: Symbol('4'),
-		// 	name: $i18n.mission_control.transactions
-		// }
 	];
 
 	const store = writable<TabsStore>({
@@ -43,11 +33,7 @@
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/architecture">
 		{#if nonNullish($missionControlStore)}
-			{#if $store.tabId === $store.tabs[0].id}
-				<MissionControl />
-			{:else if $store.tabId === $store.tabs[1].id}
-				<MissionControlControllers missionControlId={$missionControlStore} />
-			{/if}
+			<MissionControlObservatory missionControlId={$missionControlStore} />
 		{/if}
 	</Tabs>
 </IdentityGuard>

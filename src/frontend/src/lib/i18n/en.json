@@ -214,6 +214,7 @@
 	},
 	"observatory": {
 		"title": "Observatory",
+		"overview": "Overview",
 		"loading": "Loading your settings",
 		"monitoring": "Monitoring",
 		"enabled": "Enabled",

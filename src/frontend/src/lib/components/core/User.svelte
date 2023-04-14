@@ -9,6 +9,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import AlreadyRegistered from '$lib/components/core/AlreadyRegistered.svelte';
+	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 
 	export let signIn = true;
 
@@ -45,6 +46,17 @@
 			>
 				<IconMissionControl />
 				<span>{$i18n.mission_control.title}</span>
+			</a>
+
+			<a
+				href="/observatory"
+				class="menu"
+				role="menuitem"
+				aria-haspopup="menu"
+				rel="external noopener norefferer"
+			>
+				<IconTelescope />
+				<span>{$i18n.observatory.title}</span>
 			</a>
 
 			<button

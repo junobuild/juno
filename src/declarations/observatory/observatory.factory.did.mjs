@@ -77,7 +77,6 @@ export const idlFactory = ({ IDL }) => {
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_cron_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_cron_tab: IDL.Func([], [IDL.Opt(CronTab)], ['query']),
-		list_statuses: IDL.Func([], [IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Nat64, Result_1)))], ['query']),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_tab: IDL.Func([SetCronTab], [CronTab], []),

@@ -63,6 +63,8 @@ export interface _SERVICE {
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	get_user: ActorMethod<[], Principal>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
+	list_mission_control_statuses: ActorMethod<[], Array<[bigint, Result]>>;
+	list_satellite_statuses: ActorMethod<[Principal], [] | [Array<[bigint, Result]>]>;
 	list_satellites: ActorMethod<[], Array<[Principal, Satellite]>>;
 	remove_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	remove_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;

@@ -60,6 +60,10 @@ service : {
   list_mission_control_controllers : () -> (
       vec record { principal; Controller },
     ) query;
+  list_mission_control_statuses : () -> (vec record { nat64; Result }) query;
+  list_satellite_statuses : (principal) -> (
+      opt vec record { nat64; Result },
+    ) query;
   list_satellites : () -> (vec record { principal; Satellite }) query;
   remove_mission_control_controllers : (vec principal) -> ();
   remove_satellites_controllers : (vec principal, vec principal) -> ();

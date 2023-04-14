@@ -1,5 +1,5 @@
 use crate::types::ic::WasmArg;
-use crate::types::state::SegmentStatus;
+use crate::types::state::{SegmentStatus, SegmentStatusResult};
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::{
@@ -75,7 +75,7 @@ pub async fn update_canister_controllers(
     update_settings(arg).await
 }
 
-pub async fn segment_status(canister_id: CanisterId) -> Result<SegmentStatus, String> {
+pub async fn segment_status(canister_id: CanisterId) -> SegmentStatusResult {
     let status = ic_canister_status(CanisterIdRecord { canister_id }).await;
 
     match status {

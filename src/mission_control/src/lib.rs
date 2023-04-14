@@ -1,3 +1,4 @@
+mod constants;
 mod controllers;
 mod guards;
 mod impls;
@@ -20,8 +21,12 @@ use crate::guards::{caller_can_read, caller_is_user_or_controller};
 use crate::mgmt::canister::top_up_canister;
 use crate::mgmt::status::collect_statuses;
 use crate::satellites::satellite::create_satellite as create_satellite_console;
-use crate::store::{get_user as get_user_store, set_metadata as set_metadata_store};
-use crate::types::state::{Satellite, Satellites, StableState, State, User};
+use crate::store::{
+    get_user as get_user_store,
+    list_mission_control_statuses as list_mission_control_statuses_store,
+    list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
+};
+use crate::types::state::{Archive, Satellite, Satellites, StableState, State, Statuses, User};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::{candid_method, export_service, Principal};
 use ic_cdk::api::call::arg_data;
@@ -50,6 +55,7 @@ fn init() {
                 user: User::from(&user),
                 satellites: HashMap::new(),
                 controllers: HashMap::new(),
+                archive: Archive::new(),
             },
         };
     });
@@ -237,6 +243,18 @@ fn version() -> String {
 #[update(guard = "caller_can_read")]
 async fn status(config: StatusesArgs) -> SegmentsStatuses {
     collect_statuses(&id(), &config).await
+}
+
+#[candid_method(query)]
+#[query(guard = "caller_is_user_or_controller")]
+fn list_mission_control_statuses() -> Statuses {
+    list_mission_control_statuses_store()
+}
+
+#[candid_method(query)]
+#[query(guard = "caller_is_user_or_controller")]
+fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
+    list_satellite_statuses_store(&satellite_id)
 }
 
 ///

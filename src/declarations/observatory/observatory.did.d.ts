@@ -10,14 +10,6 @@ export interface CanisterStatusResponse {
 	module_hash: [] | [Uint8Array | number[]];
 }
 export type CanisterStatusType = { stopped: null } | { stopping: null } | { running: null };
-export interface CollectStatuses {
-	cron_jobs: CronJobs;
-	statuses: Result_1;
-	timestamp: bigint;
-}
-export interface CollectStatusesArgs {
-	time_delta: [] | [bigint];
-}
 export interface CronJobStatuses {
 	mission_control_cycles_threshold: [] | [bigint];
 	satellites: Array<[Principal, CronJobStatusesSatelliteConfig]>;
@@ -47,6 +39,14 @@ export interface DefiniteCanisterSettings {
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
+export interface ListStatuses {
+	cron_jobs: CronJobs;
+	statuses: Result_1;
+	timestamp: bigint;
+}
+export interface ListStatusesArgs {
+	time_delta: [] | [bigint];
+}
 export type Result = { Ok: SegmentStatus } | { Err: string };
 export type Result_1 = { Ok: SegmentsStatuses } | { Err: string };
 export interface SegmentStatus {
@@ -73,11 +73,10 @@ export interface SetCronTab {
 	mission_control_id: Principal;
 }
 export interface _SERVICE {
-	collect_statuses: ActorMethod<[CollectStatusesArgs], Array<CollectStatuses>>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_cron_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_cron_tab: ActorMethod<[], [] | [CronTab]>;
-	list_statuses: ActorMethod<[], [] | [Array<[bigint, Result_1]>]>;
+	list_statuses: ActorMethod<[ListStatusesArgs], Array<ListStatuses>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_cron_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_cron_tab: ActorMethod<[SetCronTab], CronTab>;

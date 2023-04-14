@@ -11,19 +11,6 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
-	const SetController = IDL.Record({
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		expires_at: IDL.Opt(IDL.Nat64)
-	});
-	const CronJobStatusesSatelliteConfig = IDL.Record({
-		enabled: IDL.Bool,
-		cycles_threshold: IDL.Opt(IDL.Nat64)
-	});
-	const StatusesArgs = IDL.Record({
-		mission_control_cycles_threshold: IDL.Opt(IDL.Nat64),
-		satellites: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesSatelliteConfig)),
-		cycles_threshold: IDL.Opt(IDL.Nat64)
-	});
 	const CanisterStatusType = IDL.Variant({
 		stopped: IDL.Null,
 		stopping: IDL.Null,
@@ -50,6 +37,19 @@ export const idlFactory = ({ IDL }) => {
 		status_at: IDL.Nat64
 	});
 	const Result = IDL.Variant({ Ok: SegmentStatus, Err: IDL.Text });
+	const SetController = IDL.Record({
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		expires_at: IDL.Opt(IDL.Nat64)
+	});
+	const CronJobStatusesSatelliteConfig = IDL.Record({
+		enabled: IDL.Bool,
+		cycles_threshold: IDL.Opt(IDL.Nat64)
+	});
+	const StatusesArgs = IDL.Record({
+		mission_control_cycles_threshold: IDL.Opt(IDL.Nat64),
+		satellites: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesSatelliteConfig)),
+		cycles_threshold: IDL.Opt(IDL.Nat64)
+	});
 	const SegmentsStatuses = IDL.Record({
 		satellites: IDL.Opt(IDL.Vec(Result)),
 		mission_control: Result
@@ -65,6 +65,12 @@ export const idlFactory = ({ IDL }) => {
 		list_mission_control_controllers: IDL.Func(
 			[],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			['query']
+		),
+		list_mission_control_statuses: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Result))], ['query']),
+		list_satellite_statuses: IDL.Func(
+			[IDL.Principal],
+			[IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Nat64, Result)))],
 			['query']
 		),
 		list_satellites: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Satellite))], ['query']),

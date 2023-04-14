@@ -1,5 +1,4 @@
 use crate::types::interface::SetCronTab;
-use crate::types::list::ListLastStatuses;
 use crate::types::state::{ArchiveStatuses, CronTab, CronTabs, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
@@ -125,51 +124,19 @@ fn set_statuses_impl(
     statuses: &Result<SegmentsStatuses, String>,
     state: &mut StableState,
 ) {
-    let archive = state.archive.statuses.get(user);
-
-    match archive {
-        None => {
-            state
-                .archive
-                .statuses
-                .insert(*user, ArchiveStatuses::from([(time(), statuses.clone())]));
-        }
-        Some(archive) => {
-            let mut updated_archive = archive.clone();
-            updated_archive.insert(time(), statuses.clone());
-            state.archive.statuses.insert(*user, updated_archive);
-        }
-    }
+    state.archive.statuses.insert(
+        *user,
+        ArchiveStatuses {
+            timestamp: time(),
+            statuses: statuses.clone(),
+        },
+    );
 }
 
-pub fn list_statuses(user: &UserId) -> Option<ArchiveStatuses> {
-    STATE.with(|state| list_statuses_impl(user, &state.borrow().stable))
-}
-
-fn list_statuses_impl(user: &UserId, state: &StableState) -> Option<ArchiveStatuses> {
-    state.archive.statuses.get(user).cloned()
-}
-
-pub fn list_last_statuses() -> Vec<ListLastStatuses> {
+pub fn list_statuses() -> Vec<(UserId, ArchiveStatuses)> {
     STATE.with(|state| list_last_statuses_impl(&state.borrow().stable))
 }
 
-fn list_last_statuses_impl(state: &StableState) -> Vec<ListLastStatuses> {
-    fn archive_statuses(user: &UserId, statuses: &ArchiveStatuses) -> Option<ListLastStatuses> {
-        let last = statuses.iter().next_back();
-
-        last.map(|(timestamp, statuses)| ListLastStatuses {
-            user: *user,
-            timestamp: *timestamp,
-            statuses: statuses.clone(),
-        })
-    }
-
-    state
-        .archive
-        .statuses
-        .clone()
-        .into_iter()
-        .filter_map(|(user, statuses)| archive_statuses(&user, &statuses))
-        .collect()
+fn list_last_statuses_impl(state: &StableState) -> Vec<(UserId, ArchiveStatuses)> {
+    state.archive.statuses.clone().into_iter().collect()
 }

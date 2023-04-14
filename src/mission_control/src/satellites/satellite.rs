@@ -3,7 +3,7 @@ use crate::store::get_user;
 use crate::types::state::Satellite;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
-use ic_cdk::{call, print};
+use ic_cdk::call;
 use ic_ledger_types::{BlockIndex, Tokens};
 use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use shared::env::CONSOLE;
@@ -25,12 +25,8 @@ pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
         Ok((fee,)) => {
             match fee {
                 // If no fee provided, the creation of the satellite is probably for free
-                None => {
-                    print("Create for free");
-                    create_and_save_satellite(&user, name, None).await
-                }
+                None => create_and_save_satellite(&user, name, None).await,
                 Some(fee) => {
-                    print(format!("Create with payment {}", fee.e8s()));
                     // If a free is set, transfer the requested fee to the console
                     let block_index = transfer_payment(
                         &console,

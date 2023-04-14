@@ -13,7 +13,7 @@ pub fn caller_is_user_or_controller() -> Result<(), String> {
     }
 }
 
-pub fn caller_can_read() -> Result<(), String> {
+pub fn caller_is_user_or_controller_or_juno() -> Result<(), String> {
     let caller = caller();
 
     if caller_is_user()

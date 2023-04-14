@@ -31,7 +31,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/architecture">
+	<Tabs help="https://juno.build/docs/miscellaneous/monitoring">
 		{#if nonNullish($missionControlStore)}
 			<MissionControlObservatory missionControlId={$missionControlStore} />
 		{/if}

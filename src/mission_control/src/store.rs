@@ -1,3 +1,4 @@
+use crate::constants::RETAIN_ARCHIVE_STATUSES_NS;
 use crate::types::state::{StableState, Statuses, User};
 use crate::STATE;
 use ic_cdk::api::time;
@@ -34,11 +35,20 @@ pub fn set_mission_control_status(status: &SegmentStatusResult) {
 }
 
 fn set_mission_control_status_impl(status: &SegmentStatusResult, state: &mut StableState) {
+    let now = time();
+    let retain_timestamp = now - RETAIN_ARCHIVE_STATUSES_NS;
+
     state
         .archive
         .statuses
         .mission_control
-        .insert(time(), status.clone());
+        .retain(|timestamp, _| *timestamp <= retain_timestamp);
+
+    state
+        .archive
+        .statuses
+        .mission_control
+        .insert(now, status.clone());
 }
 
 pub fn list_mission_control_statuses() -> Statuses {
@@ -75,8 +85,14 @@ fn set_satellite_status_impl(
                 .insert(*satellite_id, BTreeMap::from([(time(), status.clone())]));
         }
         Some(archive) => {
+            let now = time();
+            let retain_timestamp = now - RETAIN_ARCHIVE_STATUSES_NS;
+
             let mut updated_archive = archive.clone();
-            updated_archive.insert(time(), status.clone());
+
+            updated_archive.retain(|timestamp, _| *timestamp <= retain_timestamp);
+            updated_archive.insert(now, status.clone());
+
             state
                 .archive
                 .statuses

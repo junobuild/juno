@@ -31,7 +31,9 @@
 		"cycles": "{0} 用于支付只能合约运行消耗.",
 		"top_up_in_progress": "充值中...",
 		"amount": "ICP数量",
-		"top_up_title": "充值 {0}"
+		"top_up_title": "充值 {0}",
+		"additional_cycles": "Additional Cycles",
+		"top_up_info": "Currently, your mission control balance is {0} ICP, and network fees for topping up are {1} ICP."
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",
@@ -137,7 +139,9 @@
 		"hosting_delete_custom_domain": "删除域名出错",
 		"controllers_listing": "显示控制者列表出错.",
 		"controllers_no_selection": "没有选择要删除的控制者.",
-		"controllers_delete": "删除控制者出现未知错我."
+		"controllers_delete": "删除控制者出现未知错我.",
+		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
+		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -207,5 +211,19 @@
 		"updated": "更新于",
 		"empty": "No registered users at the moment.",
 		"enabled": "Enabled"
+	},
+	"observatory": {
+		"title": "Observatory",
+		"overview": "Overview",
+		"loading": "Loading your settings",
+		"monitoring": "Monitoring",
+		"enabled": "Enabled",
+		"disabled": "Disabled",
+		"submit_enable": "Submit to enable",
+		"submit_disable": "Submit to disable",
+		"email_notifications": "Email notifications",
+		"email_notifications_placeholder": "Enter an email to receive notifications",
+		"cycles_threshold": "TCycles threshold (min 0.5)",
+		"cycles_threshold_placeholder": "A threshold to limit the notifications"
 	}
 }

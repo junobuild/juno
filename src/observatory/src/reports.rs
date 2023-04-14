@@ -1,16 +1,17 @@
-use crate::store::{get_cron_tab, list_last_statuses};
+use crate::store::{get_cron_tab, list_statuses as list_statuses_store};
 use crate::types::interface::{CollectStatuses, CollectStatusesArgs};
-use crate::types::list::ListLastStatuses;
+use crate::types::state::ArchiveStatuses;
 use ic_cdk::api::time;
+use shared::types::state::UserId;
 
 pub fn collect_statuses(args: &CollectStatusesArgs) -> Vec<CollectStatuses> {
-    let statuses = list_last_statuses();
+    let statuses = list_statuses_store();
 
     fn list_statuses(
-        status: &ListLastStatuses,
+        (user, status): &(UserId, ArchiveStatuses),
         CollectStatusesArgs { time_delta }: &CollectStatusesArgs,
     ) -> Option<CollectStatuses> {
-        let cron_tab = get_cron_tab(&status.user);
+        let cron_tab = get_cron_tab(user);
 
         match cron_tab {
             None => None,

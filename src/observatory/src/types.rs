@@ -4,12 +4,9 @@ pub mod state {
     use shared::types::state::{
         ArchiveTime, Controllers, MissionControlId, SegmentsStatuses, UserId,
     };
-    use std::collections::{BTreeMap, HashMap};
+    use std::collections::HashMap;
 
     pub type CronTabs = HashMap<UserId, CronTab>;
-
-    pub type ArchiveStatuses = BTreeMap<ArchiveTime, Result<SegmentsStatuses, String>>;
-    pub type Statuses = HashMap<UserId, ArchiveStatuses>;
 
     #[derive(Default, Clone)]
     pub struct State {
@@ -36,17 +33,11 @@ pub mod state {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct Archive {
-        pub statuses: Statuses,
+        pub statuses: HashMap<UserId, ArchiveStatuses>,
     }
-}
-
-pub mod list {
-    use candid::{CandidType, Deserialize};
-    use shared::types::state::{ArchiveTime, SegmentsStatuses, UserId};
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct ListLastStatuses {
-        pub user: UserId,
+    pub struct ArchiveStatuses {
         pub timestamp: ArchiveTime,
         pub statuses: Result<SegmentsStatuses, String>,
     }

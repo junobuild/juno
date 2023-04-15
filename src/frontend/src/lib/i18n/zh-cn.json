@@ -24,7 +24,8 @@
 		"cancel": "取消",
 		"apply": "应用",
 		"language": "Language",
-		"user_menu": "User menu"
+		"user_menu": "User menu",
+		"version": "Version"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -52,10 +53,13 @@
 		"initializing": "初始化你的新的 satellite...",
 		"start": "让我们来创建一个新的 satellite",
 		"description": "satellite是一个web3容器，它为开发者提供了简化数据管理，存储以及权限管理等系统解决方案，完全运行在低能耗的区块链上.",
-		"name": "Satellite 名字",
+		"name": "名字",
+		"satellite_name": "Satellite 名字",
 		"enter_name": "输入你的 satellite 名字",
 		"create_satellite_price": "为了创建新的 satellite 需要 <strong>{0}</strong> ICP. 你当前 mission control 余额是 {1} ICP 而且你还剩 {2} 积分.",
-		"loading_satellites": "加载你的satellites"
+		"loading_satellites": "加载你的satellites",
+		"overview": "概要",
+		"id": "ID"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -66,9 +70,6 @@
 		"credits": "积分",
 		"dev_id": "开发者 ID",
 		"transactions": "交易记录"
-	},
-	"overview": {
-		"title": "概要"
 	},
 	"authentication": {
 		"title": "认证",

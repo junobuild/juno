@@ -59,7 +59,7 @@
 		</Value>
 
 		<Value>
-			<svelte:fragment slot="label">Version</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
 			<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
 		</Value>
 

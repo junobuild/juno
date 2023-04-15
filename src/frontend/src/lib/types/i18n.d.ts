@@ -28,6 +28,7 @@ interface I18nCore {
 	apply: string;
 	language: string;
 	user_menu: string;
+	version: string;
 }
 
 interface I18nCanisters {
@@ -59,9 +60,12 @@ interface I18nSatellites {
 	start: string;
 	description: string;
 	name: string;
+	satellite_name: string;
 	enter_name: string;
 	create_satellite_price: string;
 	loading_satellites: string;
+	overview: string;
+	id: string;
 }
 
 interface I18nMission_control {
@@ -73,10 +77,6 @@ interface I18nMission_control {
 	credits: string;
 	dev_id: string;
 	transactions: string;
-}
-
-interface I18nOverview {
-	title: string;
 }
 
 interface I18nAuthentication {
@@ -257,7 +257,6 @@ interface I18n {
 	sign_in: I18nSign_in;
 	satellites: I18nSatellites;
 	mission_control: I18nMission_control;
-	overview: I18nOverview;
 	authentication: I18nAuthentication;
 	datastore: I18nDatastore;
 	storage: I18nStorage;

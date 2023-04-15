@@ -122,7 +122,7 @@
 		{:else}
 			<form on:submit|preventDefault={onSubmit}>
 				<Value>
-					<svelte:fragment slot="label">{$i18n.satellites.name}</svelte:fragment>
+					<svelte:fragment slot="label">{$i18n.satellites.satellite_name}</svelte:fragment>
 					<input
 						bind:value={satelliteName}
 						type="text"

@@ -17,5 +17,5 @@
 
 	<slot />
 
-	<Footer slot="footer" themeToggle />
+	<Footer slot="footer" themeToggle social={false} />
 </Layout>

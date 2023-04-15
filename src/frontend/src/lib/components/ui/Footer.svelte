@@ -2,8 +2,10 @@
 	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
 	import IconTwitter from '$lib/components/icons/IconTwitter.svelte';
+	import IconDiscord from '$lib/components/ui/IconDiscord.svelte';
 
 	export let themeToggle = false;
+	export let social = true;
 </script>
 
 <footer>
@@ -12,21 +14,30 @@
 			<Theme />
 		{/if}
 
-		<div class="social">
-			<a
-				href="https://twitter.com/JunoBuild"
-				rel="external noopener noreferrer"
-				target="_blank"
-				aria-label="GitHub"><IconTwitter /></a
-			>
+		{#if social}
+			<div class="social">
+				<a
+					href="https://twitter.com/JunoBuild"
+					rel="external noopener noreferrer"
+					target="_blank"
+					aria-label="GitHub"><IconTwitter /></a
+				>
 
-			<a
-				href="https://github.com/buildwithjuno/juno"
-				rel="external noopener noreferrer"
-				target="_blank"
-				aria-label="GitHub"><IconGitHub /></a
-			>
-		</div>
+				<a
+					href="https://github.com/buildwithjuno/juno"
+					rel="external noopener noreferrer"
+					target="_blank"
+					aria-label="GitHub"><IconGitHub /></a
+				>
+
+				<a
+					href="https://discord.gg/wHZ57Z2RAG"
+					rel="external noopener noreferrer"
+					target="_blank"
+					aria-label="Discord"><IconDiscord /></a
+				>
+			</div>
+		{/if}
 	</div>
 </footer>
 

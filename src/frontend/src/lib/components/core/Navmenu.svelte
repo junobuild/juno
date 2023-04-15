@@ -25,7 +25,7 @@
 		<a
 			class="link"
 			href={`/satellite/?s=${satelliteId}`}
-			class:selected={isSelected({ routeId, path: 'overview' })}
+			class:selected={isSelected({ routeId, path: 'satellite' })}
 		>
 			<IconSatellite size="24px" />
 			<span>{$i18n.satellites.satellite}</span>

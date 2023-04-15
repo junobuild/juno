@@ -9,3 +9,17 @@ a.icon {
 	@include button.primary;
 	@include button.icon;
 }
+
+a.article {
+	@include button.article;
+
+	position: relative;
+	text-decoration: none;
+
+	&:hover:not(:disabled),
+	&:focus:not(:disabled) {
+		background: var(--color-primary-opaque);
+		color: var(--color-primary-opaque-contrast);
+		text-decoration: none;
+	}
+}

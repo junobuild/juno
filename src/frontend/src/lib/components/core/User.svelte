@@ -10,6 +10,7 @@
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import AlreadyRegistered from '$lib/components/core/AlreadyRegistered.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 
 	export let signIn = true;
 
@@ -57,6 +58,17 @@
 			>
 				<IconTelescope />
 				<span>{$i18n.observatory.title}</span>
+			</a>
+
+			<a
+				href="/settings"
+				class="menu"
+				role="menuitem"
+				aria-haspopup="menu"
+				rel="external noopener norefferer"
+			>
+				<IconRaygun />
+				<span>{$i18n.settings.title}</span>
 			</a>
 
 			<button

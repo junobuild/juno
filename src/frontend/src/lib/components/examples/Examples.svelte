@@ -4,6 +4,7 @@
 	import IconSvelte from '$lib/components/icons/IconSvelte.svelte';
 	import IconJavaScript from '$lib/components/icons/IconJavaScript.svelte';
 	import IconNodeJS from '$lib/components/icons/IconNodeJS.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 </script>
 
 <h4>Tutorials</h4>
@@ -11,9 +12,9 @@
 <section>
 	<Example href="https://juno.build/blog/build-a-web3-app-with-react-js">
 		<IconReact slot="icon" />
-		<svelte:fragment slot="title">Build A Web3 App With React JS</svelte:fragment>
+		<svelte:fragment slot="title">{$i18n.examples.tutorial_1_title}</svelte:fragment>
 
-		How to develop a decentralized application on blockchain with React and Juno.
+		{$i18n.examples.tutorial_1_description}
 	</Example>
 </section>
 
@@ -22,38 +23,37 @@
 <section>
 	<Example href="https://github.com/buildwithjuno/examples/tree/main/svelte/form">
 		<IconSvelte slot="icon" />
-		<svelte:fragment slot="title">Svelte example</svelte:fragment>
+		<svelte:fragment slot="title">{$i18n.examples.example_1_title}</svelte:fragment>
 
-		A sample app that uses Juno datastore and authentication.
+		{$i18n.examples.example_1_description}
 	</Example>
 
 	<Example href="https://github.com/buildwithjuno/examples/blob/main/react/diary">
 		<IconReact slot="icon" />
-		<svelte:fragment slot="title">React example</svelte:fragment>
+		<svelte:fragment slot="title">{$i18n.examples.example_2_title}</svelte:fragment>
 
-		An example application that uses Juno datastore, storage and authentication.
+		{$i18n.examples.example_2_description}
 	</Example>
 
 	<Example href="https://github.com/buildwithjuno/examples/tree/main/vanilla">
 		<IconJavaScript slot="icon" />
-		<svelte:fragment slot="title">Vanilla-js example</svelte:fragment>
+		<svelte:fragment slot="title">{$i18n.examples.example_3_title}</svelte:fragment>
 
-		A demonstration dapp in vanilla Javascript that showcases authentication, datastore and storage
-		usage.
+		{$i18n.examples.example_3_description}
 	</Example>
 
 	<Example href="https://github.com/buildwithjuno/examples/blob/main/node/basic">
 		<IconNodeJS slot="icon" />
-		<svelte:fragment slot="title">NodeJS basic example</svelte:fragment>
+		<svelte:fragment slot="title">{$i18n.examples.example_4_title}</svelte:fragment>
 
-		A simple script that performs a get.
+		{$i18n.examples.example_4_description}
 	</Example>
 
 	<Example href="https://github.com/buildwithjuno/examples/blob/main/node/admin">
 		<IconNodeJS slot="icon" />
-		<svelte:fragment slot="title">NodeJS admin example</svelte:fragment>
+		<svelte:fragment slot="title">{$i18n.examples.example_5_title}</svelte:fragment>
 
-		An admin script to set documents in the datastore.
+		{$i18n.examples.example_5_description}
 	</Example>
 </section>
 

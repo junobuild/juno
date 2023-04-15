@@ -9,7 +9,7 @@
 <IdentityGuard>
 	<div class="card-container">
 		<Value>
-			<svelte:fragment slot="label">{$i18n.mission_control.dev_id}</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.settings.dev_id}</svelte:fragment>
 			<p>{$authStore.identity?.getPrincipal().toText() ?? ''}</p>
 		</Value>
 

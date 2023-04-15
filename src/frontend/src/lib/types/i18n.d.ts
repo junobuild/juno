@@ -250,6 +250,10 @@ interface I18nObservatory {
 	cycles_threshold_placeholder: string;
 }
 
+interface I18nSettings {
+	title: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -272,4 +276,5 @@ interface I18n {
 	filter: I18nFilter;
 	users: I18nUsers;
 	observatory: I18nObservatory;
+	settings: I18nSettings;
 }

@@ -17,5 +17,5 @@
 
 	<slot />
 
-	<Footer slot="footer" themeToggle social={false} />
+	<Footer slot="footer" themeToggle social={!$authSignedInStore} />
 </Layout>

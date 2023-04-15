@@ -6,6 +6,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let satellite: Satellite;
 
@@ -14,20 +15,23 @@
 </script>
 
 <div class="card-container">
-	<h1>{satelliteName(satellite)}</h1>
+	<Value>
+		<svelte:fragment slot="label">{$i18n.satellites.name}</svelte:fragment>
+		<p>{satelliteName(satellite)}</p>
+	</Value>
 
 	<Value>
-		<svelte:fragment slot="label">ID</svelte:fragment>
+		<svelte:fragment slot="label">{$i18n.satellites.id}</svelte:fragment>
 		<Identifier identifier={satelliteId} shorten={false} nomargin={false} />
 	</Value>
 
 	<Value>
-		<svelte:fragment slot="label">Version</svelte:fragment>
+		<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
 		<p>v{$versionStore?.satellite?.current ?? '...'}</p>
 	</Value>
 
 	<Value>
-		<svelte:fragment slot="label">Status</svelte:fragment>
+		<svelte:fragment slot="label">{$i18n.core.status}</svelte:fragment>
 		<Canister canisterId={satellite.satellite_id} />
 	</Value>
 </div>

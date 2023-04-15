@@ -4,7 +4,7 @@ import type { Principal } from '@dfinity/principal';
 import type { LoadEvent } from '@sveltejs/kit';
 
 export const overviewLink = (satelliteId: Principal | undefined | null): string =>
-	`/overview/?s=${satelliteId?.toText() ?? ''}`;
+	`/satellite/?s=${satelliteId?.toText() ?? ''}`;
 
 export const navigateToSatellite = async (satelliteId: Principal | undefined | null) =>
 	await goto(overviewLink(satelliteId));

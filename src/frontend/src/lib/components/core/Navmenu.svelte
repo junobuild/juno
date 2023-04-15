@@ -24,11 +24,11 @@
 	<nav>
 		<a
 			class="link"
-			href={`/overview/?s=${satelliteId}`}
+			href={`/satellite/?s=${satelliteId}`}
 			class:selected={isSelected({ routeId, path: 'overview' })}
 		>
 			<IconSatellite size="24px" />
-			<span>{$i18n.overview.title}</span>
+			<span>{$i18n.satellites.satellite}</span>
 		</a>
 
 		<a

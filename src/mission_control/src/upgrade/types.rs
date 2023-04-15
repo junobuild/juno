@@ -1,5 +1,5 @@
 pub mod upgrade {
-    use crate::types::state::{Satellites, User};
+    use crate::types::state::{Archive, Satellites, User};
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::Controllers;
@@ -9,5 +9,6 @@ pub mod upgrade {
         pub user: User,
         pub satellites: Satellites,
         pub controllers: Controllers,
+        pub archive: Archive,
     }
 }

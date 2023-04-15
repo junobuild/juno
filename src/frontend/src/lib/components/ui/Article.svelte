@@ -17,8 +17,6 @@
 </button>
 
 <style lang="scss">
-	@use '../../styles/mixins/shadow';
-
 	button {
 		height: 100%;
 		min-height: 220px;

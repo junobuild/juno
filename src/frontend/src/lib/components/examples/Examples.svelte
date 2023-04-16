@@ -5,6 +5,7 @@
 	import IconJavaScript from '$lib/components/icons/IconJavaScript.svelte';
 	import IconNodeJS from '$lib/components/icons/IconNodeJS.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconAngular from '$lib/components/icons/IconAngular.svelte';
 </script>
 
 <h4>Tutorials</h4>
@@ -33,6 +34,13 @@
 		<svelte:fragment slot="title">{$i18n.examples.example_2_title}</svelte:fragment>
 
 		{$i18n.examples.example_2_description}
+	</Example>
+
+	<Example href="https://github.com/buildwithjuno/examples/blob/main/angular/diary">
+		<IconAngular slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.example_6_title}</svelte:fragment>
+
+		{$i18n.examples.example_6_description}
 	</Example>
 
 	<Example href="https://github.com/buildwithjuno/examples/tree/main/vanilla">

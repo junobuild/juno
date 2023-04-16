@@ -242,6 +242,8 @@
 		"example_4_title": "NodeJS basic example",
 		"example_4_description": "A simple script that performs a get.",
 		"example_5_title": "NodeJS admin example",
-		"example_5_description": "An admin script to set documents in the datastore."
+		"example_5_description": "An admin script to set documents in the datastore.",
+		"example_6_title": "Angular example",
+		"example_6_description": "A sample dapp that uses Juno datastore, storage and authentication."
 	}
 }

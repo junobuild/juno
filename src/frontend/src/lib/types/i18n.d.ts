@@ -267,6 +267,8 @@ interface I18nExamples {
 	example_4_description: string;
 	example_5_title: string;
 	example_5_description: string;
+	example_6_title: string;
+	example_6_description: string;
 }
 
 interface I18n {

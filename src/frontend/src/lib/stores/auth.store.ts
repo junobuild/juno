@@ -13,14 +13,12 @@ import { derived, writable, type Readable } from 'svelte/store';
 
 export interface AuthStoreData {
 	identity: Identity | undefined | null;
-	invitationCode: string | undefined | null;
 }
 
 let authClient: AuthClient | undefined | null;
 
 export interface AuthSignInParams {
 	domain?: 'internetcomputer.org' | 'ic0.app';
-	invitationCode?: string;
 }
 
 export interface AuthStore extends Readable<AuthStoreData> {
@@ -32,7 +30,6 @@ export interface AuthStore extends Readable<AuthStoreData> {
 const initAuthStore = (): AuthStore => {
 	const { subscribe, set, update } = writable<AuthStoreData>({
 		identity: undefined,
-		invitationCode: undefined
 	});
 
 	return {
@@ -44,11 +41,10 @@ const initAuthStore = (): AuthStore => {
 
 			set({
 				identity: isAuthenticated ? authClient.getIdentity() : null,
-				invitationCode: undefined
 			});
 		},
 
-		signIn: ({ invitationCode, domain }: AuthSignInParams) =>
+		signIn: ({ domain }: AuthSignInParams) =>
 			// eslint-disable-next-line no-async-promise-executor
 			new Promise<void>(async (resolve, reject) => {
 				authClient = authClient ?? (await createAuthClient());
@@ -63,7 +59,6 @@ const initAuthStore = (): AuthStore => {
 						update((state: AuthStoreData) => ({
 							...state,
 							identity: authClient?.getIdentity(),
-							invitationCode
 						}));
 
 						resolve();
@@ -85,7 +80,6 @@ const initAuthStore = (): AuthStore => {
 			update((state: AuthStoreData) => ({
 				...state,
 				identity: null,
-				invitationCode: null
 			}));
 		}
 	};

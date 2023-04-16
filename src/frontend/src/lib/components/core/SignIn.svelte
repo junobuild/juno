@@ -1,7 +1,6 @@
 <script lang="ts">
 	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import Popover from '$lib/components/ui/Popover.svelte';
 	import { signIn } from '$lib/services/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import AlreadyRegistered from '$lib/components/core/AlreadyRegistered.svelte';
@@ -12,7 +11,6 @@
 
 		const { success } = await signIn({
 			domain: 'internetcomputer.org',
-			invitationCode
 		});
 
 		if (success === 'ok') {
@@ -23,8 +21,8 @@
 		visible = true;
 	};
 
+	// TODO: remove popover
 	let visible = false;
-	let invitationCode = '';
 </script>
 
 <div class="container">
@@ -47,41 +45,6 @@
 		</div>
 	</div>
 </div>
-
-<Popover bind:visible center={true} backdrop="dark">
-	<div class="content">
-		<h3>Redeem code</h3>
-
-		<p>
-			Join Juno's <strong>closed beta</strong> with an invitation code or reach out to
-			<a
-				aria-label="Reach out David on Twitter"
-				href="https://twitter.com/daviddalbusco"
-				rel="external noopener noreferrer"
-				target="_blank"
-			>
-				David
-			</a> to request one.
-		</p>
-
-		<p>Sign in using Internet Identity once you have your code.</p>
-
-		<form on:submit|preventDefault={redeemSignIn}>
-			<input
-				bind:value={invitationCode}
-				aria-label="Invitation code"
-				name="invitation-code"
-				placeholder="Invitation code"
-				type="text"
-				required
-			/>
-
-			<button type="submit" disabled={$isBusy}>
-				<IconSignIn size="20px" /> <span>Redeem by signing in</span>
-			</button>
-		</form>
-	</div>
-</Popover>
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/media';

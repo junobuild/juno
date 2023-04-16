@@ -37,7 +37,7 @@ service : {
   get_credits : () -> (Tokens) query;
   get_releases_version : () -> (ReleasesVersion) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
-  init_user_mission_control_center : (opt text) -> (MissionControl);
+  init_user_mission_control_center : () -> (MissionControl);
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;

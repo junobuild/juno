@@ -55,7 +55,7 @@ export interface _SERVICE {
 	get_credits: ActorMethod<[], Tokens>;
 	get_releases_version: ActorMethod<[], ReleasesVersion>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
-	init_user_mission_control_center: ActorMethod<[[] | [string]], MissionControl>;
+	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
 	reset_release: ActorMethod<[Segment], undefined>;

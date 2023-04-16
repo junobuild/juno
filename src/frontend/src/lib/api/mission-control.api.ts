@@ -8,25 +8,22 @@ import { Principal } from '@dfinity/principal';
 
 export const initMissionControl = async ({
 	identity,
-	invitationCode,
 	onInitMissionControlSuccess
 }: {
 	identity: Identity;
-	invitationCode: string | undefined | null;
 	onInitMissionControlSuccess: (missionControlId: Principal) => Promise<void>;
 }) =>
 	// eslint-disable-next-line no-async-promise-executor
 	new Promise<void>(async (resolve, reject) => {
 		try {
 			const { actor, missionControlId } = await getMissionControl({
-				identity,
-				invitationCode
+				identity
 			});
 
 			if (!actor || !missionControlId) {
 				setTimeout(async () => {
 					try {
-						await initMissionControl({ identity, invitationCode, onInitMissionControlSuccess });
+						await initMissionControl({ identity, onInitMissionControlSuccess });
 						resolve();
 					} catch (err: unknown) {
 						reject(err);

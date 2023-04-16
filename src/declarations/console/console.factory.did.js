@@ -49,7 +49,7 @@ export const idlFactory = ({ IDL }) => {
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_releases_version: IDL.Func([], [ReleasesVersion], ['query']),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),
-		init_user_mission_control_center: IDL.Func([IDL.Opt(IDL.Text)], [MissionControl], []),
+		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
 		list_user_mission_control_centers: IDL.Func(
 			[],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],

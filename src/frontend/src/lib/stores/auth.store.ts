@@ -29,7 +29,7 @@ export interface AuthStore extends Readable<AuthStoreData> {
 
 const initAuthStore = (): AuthStore => {
 	const { subscribe, set, update } = writable<AuthStoreData>({
-		identity: undefined,
+		identity: undefined
 	});
 
 	return {
@@ -40,7 +40,7 @@ const initAuthStore = (): AuthStore => {
 			const isAuthenticated: boolean = await authClient.isAuthenticated();
 
 			set({
-				identity: isAuthenticated ? authClient.getIdentity() : null,
+				identity: isAuthenticated ? authClient.getIdentity() : null
 			});
 		},
 
@@ -58,7 +58,7 @@ const initAuthStore = (): AuthStore => {
 					onSuccess: () => {
 						update((state: AuthStoreData) => ({
 							...state,
-							identity: authClient?.getIdentity(),
+							identity: authClient?.getIdentity()
 						}));
 
 						resolve();
@@ -79,7 +79,7 @@ const initAuthStore = (): AuthStore => {
 
 			update((state: AuthStoreData) => ({
 				...state,
-				identity: null,
+				identity: null
 			}));
 		}
 	};

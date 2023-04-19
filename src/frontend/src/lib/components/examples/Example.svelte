@@ -4,7 +4,7 @@
 	export let href: string;
 </script>
 
-<a rel="external noopener noreferrer" target="_blank" class="article">
+<a rel="external noopener noreferrer" target="_blank" class="article" {href}>
 	<div class="summary">
 		<slot name="icon" />
 

@@ -12,24 +12,33 @@
 </script>
 
 <p class="sign-in-now">
-	<slot />Sign-in now on
+	Juno uses
 	<button
 		class="text action"
 		on:click={async () => await doSignIn('internetcomputer.org')}
 		disabled={$isBusy}>internetcomputer.org</button
-	>
-	(or
+	> by default.
+</p>
+
+<p>
+	You can also sign-in for now with deprecated method
 	<button class="text action" on:click={async () => await doSignIn('ic0.app')} disabled={$isBusy}
 		>ic0.app</button
-	>).
+	>.
 </p>
 
 <style lang="scss">
 	.sign-in-now {
-		margin: 0;
+		margin: var(--padding-12x) 0 0;
 	}
 
 	.action {
 		margin: 0;
+	}
+
+	p {
+		font-size: var(--font-size-ultra-small);
+		margin: 0;
+		padding: 0 0 var(--padding-0_25x);
 	}
 </style>

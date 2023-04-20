@@ -1,3 +1,4 @@
+// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const AccountIdentifier = IDL.Vec(IDL.Nat8);
 	const AccountBalanceArgs = IDL.Record({ account: AccountIdentifier });
@@ -93,6 +94,7 @@ export const idlFactory = ({ IDL }) => {
 		transfer_fee: IDL.Func([TransferFeeArg], [TransferFee], ['query'])
 	});
 };
+// @ts-ignore
 export const init = ({ IDL }) => {
 	return [];
 };

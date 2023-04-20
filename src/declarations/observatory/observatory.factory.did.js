@@ -1,3 +1,4 @@
+// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
@@ -83,6 +84,7 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };
+// @ts-ignore
 export const init = ({ IDL }) => {
 	return [];
 };

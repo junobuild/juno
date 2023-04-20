@@ -1,30 +1,9 @@
 <script lang="ts">
-	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import { signIn } from '$lib/services/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
-	import AlreadyRegistered from '$lib/components/core/AlreadyRegistered.svelte';
-
-	const redeemSignIn = async () => {
-		// Close popover to prevent glitch on successful login
-		visible = false;
-
-		const { success } = await signIn({
-			domain: 'internetcomputer.org',
-			invitationCode
-		});
-
-		if (success === 'ok') {
-			return;
-		}
-
-		// In case logging was aborted or failed, reopen redeem popover since we hide it to avoid a glitch
-		visible = true;
-	};
-
-	let visible = false;
-	let invitationCode = '';
+	import DeprecatedSignIn from '$lib/components/core/DeprecatedSignIn.svelte';
+	import IconICMonochrome from '$lib/components/icons/IconICMonochrome.svelte';
+	import { signIn } from '$lib/services/auth.services';
 </script>
 
 <div class="container">
@@ -37,51 +16,14 @@
 	</div>
 
 	<div class="sign-in">
-		<button on:click={() => (visible = true)} disabled={$isBusy}
-			><IconSignIn size="20px" />
-			<span>Redeem invitation code</span></button
+		<button on:click={signIn} disabled={$isBusy}
+			><IconICMonochrome size="20px" />
+			<span>{$i18n.sign_in.internet_identity}</span></button
 		>
 
-		<div class="sign-in-now">
-			<AlreadyRegistered>Already registered?&nbsp;</AlreadyRegistered>
-		</div>
+		<DeprecatedSignIn />
 	</div>
 </div>
-
-<Popover bind:visible center={true} backdrop="dark">
-	<div class="content">
-		<h3>Redeem code</h3>
-
-		<p>
-			Join Juno's <strong>closed beta</strong> with an invitation code or reach out to
-			<a
-				aria-label="Reach out David on Twitter"
-				href="https://twitter.com/daviddalbusco"
-				rel="external noopener noreferrer"
-				target="_blank"
-			>
-				David
-			</a> to request one.
-		</p>
-
-		<p>Sign in using Internet Identity once you have your code.</p>
-
-		<form on:submit|preventDefault={redeemSignIn}>
-			<input
-				bind:value={invitationCode}
-				aria-label="Invitation code"
-				name="invitation-code"
-				placeholder="Invitation code"
-				type="text"
-				required
-			/>
-
-			<button type="submit" disabled={$isBusy}>
-				<IconSignIn size="20px" /> <span>Redeem by signing in</span>
-			</button>
-		</form>
-	</div>
-</Popover>
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/media';
@@ -106,14 +48,14 @@
 
 	h1 {
 		color: var(--color-primary);
-		padding: 0 0 var(--padding-4x);
+		padding: 0 0 var(--padding-3x);
 
 		--bigger-title: 1.2;
 		font-size: calc(var(--font-size-h1) * var(--bigger-title));
 	}
 
 	.sign-in {
-		padding: var(--padding-4x) 0 0;
+		padding: var(--padding-1_5x) 0 0;
 	}
 
 	.content {
@@ -122,11 +64,5 @@
 		form {
 			margin: 0;
 		}
-	}
-
-	.sign-in-now {
-		padding: var(--padding-2x) 0;
-		font-size: var(--font-size-very-small);
-		max-width: 280px;
 	}
 </style>

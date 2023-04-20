@@ -13,7 +13,7 @@ import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { compare } from 'semver';
 import { getConsoleActor, getMissionControlActor } from '../utils/actor.utils';
-import { fromNullable, toNullable } from '../utils/did.utils';
+import { fromNullable } from '../utils/did.utils';
 
 export interface MissionControlActorDetails {
 	missionControlId: Principal | undefined;
@@ -21,29 +21,25 @@ export interface MissionControlActorDetails {
 }
 
 const initMissionControl = async ({
-	consoleActor,
-	invitationCode
+	consoleActor
 }: {
 	consoleActor: ConsoleActor;
-	invitationCode: string | undefined | null;
 }): Promise<MissionControl> => {
 	const existingMissionControl: MissionControl | undefined = fromNullable<MissionControl>(
 		await consoleActor.get_user_mission_control_center()
 	);
 
 	if (!existingMissionControl) {
-		return await consoleActor.init_user_mission_control_center(toNullable(invitationCode));
+		return await consoleActor.init_user_mission_control_center();
 	}
 
 	return existingMissionControl;
 };
 
 export const getMissionControl = async ({
-	identity,
-	invitationCode
+	identity
 }: {
 	identity: Identity | undefined;
-	invitationCode: string | undefined | null;
 }): Promise<MissionControlActorDetails> => {
 	if (!identity) {
 		throw new Error('Invalid identity.');
@@ -51,7 +47,7 @@ export const getMissionControl = async ({
 
 	const consoleActor = await getConsoleActor();
 
-	const mission_control = await initMissionControl({ consoleActor, invitationCode });
+	const mission_control = await initMissionControl({ consoleActor });
 
 	const missionControlId: Principal | undefined = fromNullable<Principal>(
 		mission_control.mission_control_id

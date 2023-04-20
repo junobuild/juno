@@ -24,7 +24,47 @@ const cleanTypes = async ({ dest = `./src/declarations` }) => {
 					''
 				);
 
-				await writeFile(indexPath, clean, 'utf-8');
+				const valid = clean.replace(/export const idlFactory = \({ IDL }\) => {/g, '');
+
+				await writeFile(indexPath, valid, 'utf-8');
+
+				resolve();
+			})
+	);
+
+	await Promise.all(promises);
+};
+
+/**
+ * We have to manipulate the factory otherwise the editor prompt for following TypeScript error:
+ *
+ * TS7031: Binding element 'IDL' implicitly has an 'any' type.
+ *
+ */
+const cleanFactory = async ({ dest = `./src/declarations` }) => {
+	const promises = readdirSync(dest).map(
+		(dir) =>
+			new Promise(async (resolve) => {
+				const factoryPath = join(dest, dir, `${dir}.did.js`);
+
+				if (!existsSync(factoryPath)) {
+					resolve();
+					return;
+				}
+
+				const content = await readFile(factoryPath, 'utf-8');
+				const cleanFactory = content.replace(
+					/export const idlFactory = \({ IDL }\) => {/g,
+					`// @ts-ignore
+export const idlFactory = ({ IDL }) => {`
+				);
+				const cleanInit = cleanFactory.replace(
+					/export const init = \({ IDL }\) => {/g,
+					`// @ts-ignore
+export const init = ({ IDL }) => {`
+				);
+
+				await writeFile(factoryPath, cleanInit, 'utf-8');
 
 				resolve();
 			})
@@ -57,6 +97,8 @@ const renameFactory = async ({ dest = `./src/declarations` }) => {
 (async () => {
 	try {
 		await cleanTypes({});
+
+		await cleanFactory({});
 
 		await renameFactory({});
 

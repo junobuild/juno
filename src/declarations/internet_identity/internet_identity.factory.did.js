@@ -1,3 +1,4 @@
+// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const ArchiveConfig = IDL.Record({
 		polling_interval_ns: IDL.Nat64,
@@ -212,6 +213,7 @@ export const idlFactory = ({ IDL }) => {
 		verify_tentative_device: IDL.Func([UserNumber, IDL.Text], [VerifyTentativeDeviceResponse], [])
 	});
 };
+// @ts-ignore
 export const init = ({ IDL }) => {
 	const ArchiveConfig = IDL.Record({
 		polling_interval_ns: IDL.Nat64,

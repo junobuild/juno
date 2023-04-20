@@ -8,7 +8,6 @@
 	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
-	import AlreadyRegistered from '$lib/components/core/AlreadyRegistered.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 
@@ -29,7 +28,7 @@
 		{$i18n.core.user_menu}
 	</ButtonIcon>
 {:else if signIn}
-	<ButtonIcon on:click={() => (visible = true)} bind:button>
+	<ButtonIcon on:click={doSignIn}>
 		<IconSignIn slot="icon" />
 		{$i18n.core.sign_in}
 	</ButtonIcon>
@@ -37,53 +36,43 @@
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
-		{#if $authSignedInStore}
-			<a
-				href="/mission-control"
-				class="menu"
-				role="menuitem"
-				aria-haspopup="menu"
-				rel="external noopener norefferer"
-			>
-				<IconMissionControl />
-				<span>{$i18n.mission_control.title}</span>
-			</a>
+		<a
+			href="/mission-control"
+			class="menu"
+			role="menuitem"
+			aria-haspopup="menu"
+			rel="external noopener norefferer"
+		>
+			<IconMissionControl />
+			<span>{$i18n.mission_control.title}</span>
+		</a>
 
-			<a
-				href="/observatory"
-				class="menu"
-				role="menuitem"
-				aria-haspopup="menu"
-				rel="external noopener norefferer"
-			>
-				<IconTelescope />
-				<span>{$i18n.observatory.title}</span>
-			</a>
+		<a
+			href="/observatory"
+			class="menu"
+			role="menuitem"
+			aria-haspopup="menu"
+			rel="external noopener norefferer"
+		>
+			<IconTelescope />
+			<span>{$i18n.observatory.title}</span>
+		</a>
 
-			<a
-				href="/settings"
-				class="menu"
-				role="menuitem"
-				aria-haspopup="menu"
-				rel="external noopener norefferer"
-			>
-				<IconRaygun />
-				<span>{$i18n.settings.title}</span>
-			</a>
+		<a
+			href="/settings"
+			class="menu"
+			role="menuitem"
+			aria-haspopup="menu"
+			rel="external noopener norefferer"
+		>
+			<IconRaygun />
+			<span>{$i18n.settings.title}</span>
+		</a>
 
-			<button
-				type="button"
-				role="menuitem"
-				aria-haspopup="menu"
-				on:click={signOutClose}
-				class="menu"
-			>
-				<IconSignOut />
-				<span>{$i18n.core.sign_out}</span>
-			</button>
-		{:else}
-			<AlreadyRegistered on:junoSignIn={() => (visible = false)} />
-		{/if}
+		<button type="button" role="menuitem" aria-haspopup="menu" on:click={signOutClose} class="menu">
+			<IconSignOut />
+			<span>{$i18n.core.sign_out}</span>
+		</button>
 	</div>
 </Popover>
 

@@ -1,3 +1,4 @@
+// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const BlockIndex = IDL.Nat64;
 	const CyclesCanisterInitPayload = IDL.Record({
@@ -53,6 +54,7 @@ export const idlFactory = ({ IDL }) => {
 		notify_top_up: IDL.Func([NotifyTopUpArg], [NotifyTopUpResult], [])
 	});
 };
+// @ts-ignore
 export const init = ({ IDL }) => {
 	const BlockIndex = IDL.Nat64;
 	const CyclesCanisterInitPayload = IDL.Record({

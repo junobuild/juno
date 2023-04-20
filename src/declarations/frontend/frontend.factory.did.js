@@ -1,3 +1,4 @@
+// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const ClearArguments = IDL.Record({});
 	const BatchId = IDL.Nat;
@@ -203,6 +204,7 @@ export const idlFactory = ({ IDL }) => {
 		validate_revoke_permission: IDL.Func([RevokePermission], [ValidationResult], [])
 	});
 };
+// @ts-ignore
 export const init = ({ IDL }) => {
 	return [];
 };

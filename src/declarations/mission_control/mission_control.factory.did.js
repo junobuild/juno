@@ -1,3 +1,4 @@
+// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const Satellite = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -92,6 +93,7 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };
+// @ts-ignore
 export const init = ({ IDL }) => {
 	return [];
 };

@@ -1,3 +1,4 @@
+// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const AssertMissionControlCenterArgs = IDL.Record({
 		mission_control_id: IDL.Principal,
@@ -62,6 +63,7 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };
+// @ts-ignore
 export const init = ({ IDL }) => {
 	return [];
 };

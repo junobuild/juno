@@ -17,6 +17,13 @@
 
 		{$i18n.examples.tutorial_1_description}
 	</Example>
+
+	<Example href="https://juno.build/blog/develop-an-angular-app-on-blockchain">
+		<IconAngular slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.tutorial_2_title}</svelte:fragment>
+
+		{$i18n.examples.tutorial_2_description}
+	</Example>
 </section>
 
 <h4>Example projects</h4>

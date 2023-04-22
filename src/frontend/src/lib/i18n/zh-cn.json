@@ -233,6 +233,8 @@
 	"examples": {
 		"tutorial_1_title": "Build A Web3 App With React JS",
 		"tutorial_1_description": "How to develop a decentralized application on blockchain with React and Juno.",
+		"tutorial_2_title": "Develop An Angular App On Blockchain",
+		"tutorial_2_description": "How to create a Web3 decentralized application using Angular and Juno.",
 		"example_1_title": "Svelte example",
 		"example_1_description": "A sample app that uses Juno datastore and authentication.",
 		"example_2_title": "React example",

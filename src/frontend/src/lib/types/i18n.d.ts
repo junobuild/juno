@@ -257,6 +257,8 @@ interface I18nSettings {
 interface I18nExamples {
 	tutorial_1_title: string;
 	tutorial_1_description: string;
+	tutorial_2_title: string;
+	tutorial_2_description: string;
 	example_1_title: string;
 	example_1_description: string;
 	example_2_title: string;

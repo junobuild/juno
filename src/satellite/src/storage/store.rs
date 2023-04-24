@@ -9,7 +9,7 @@ use std::borrow::BorrowMut;
 use std::collections::HashMap;
 
 use crate::rules::types::rules::{Permission, Rule};
-use crate::rules::utils::{assert_rule, is_known_user, public_rule};
+use crate::rules::utils::{assert_create_rule, assert_rule, is_known_user, public_rule};
 use crate::storage::cert::update_certified_data;
 use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
@@ -473,7 +473,13 @@ fn secure_commit_chunks(
             let current = state.stable.storage.assets.get(&batch.key.full_path);
 
             match current {
-                None => commit_chunks(commit_batch, batch, rules.max_size, state),
+                None => {
+                    if !assert_create_rule(&rules.write, caller, controllers) {
+                        return Err(ERROR_CANNOT_COMMIT_BATCH);
+                    }
+
+                    commit_chunks(commit_batch, batch, rules.max_size, state)
+                }
                 Some(current) => secure_commit_chunks_update(
                     caller,
                     controllers,

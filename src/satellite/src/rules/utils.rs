@@ -20,6 +20,17 @@ pub fn assert_rule(
     }
 }
 
+/// If a document or asset is about to be created for the first time, it can be initialized without further rules unless the collection is set as controller and the caller is not a controller.
+/// This can be useful e.g. when a collection read permission is set to public but only the administrator can add content.
+pub fn assert_create_rule(rule: &Permission, caller: Principal, controllers: &Controllers) -> bool {
+    match rule {
+        Permission::Public => true,
+        Permission::Private => true,
+        Permission::Managed => true,
+        Permission::Controllers => is_controller(caller, controllers),
+    }
+}
+
 pub fn public_rule(rule: &Permission) -> bool {
     matches!(rule, Permission::Public)
 }

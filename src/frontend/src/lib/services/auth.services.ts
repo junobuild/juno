@@ -20,7 +20,7 @@ export const signIn = async (
 		return { success: 'ok' };
 	} catch (err: unknown) {
 		if (err === 'UserInterrupt') {
-			// We do not display an error if user explicitly cancelled the process of sign-ion
+			// We do not display an error if user explicitly cancelled the process of sign-in
 			return { success: 'cancelled' };
 		}
 

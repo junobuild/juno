@@ -1,4 +1,4 @@
-export const formatToDate = (milliseconds: bigint): string => {
+export const formatToDate = (nanoseconds: bigint): string => {
 	const options: Intl.DateTimeFormatOptions = {
 		month: 'short',
 		day: 'numeric',
@@ -8,6 +8,6 @@ export const formatToDate = (milliseconds: bigint): string => {
 		hour12: false
 	};
 
-	const date = new Date(Number(milliseconds / 1_000_000n));
+	const date = new Date(Number(nanoseconds / 1_000_000n));
 	return date.toLocaleDateString('en', options);
 };

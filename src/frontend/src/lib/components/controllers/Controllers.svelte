@@ -55,6 +55,7 @@
 				<th class="tools" />
 				<th class="controller"> {$i18n.controllers.title} </th>
 				<th> {$i18n.controllers.profile} </th>
+				<th> {$i18n.controllers.scope} </th>
 			</tr>
 		</thead>
 		<tbody>
@@ -77,11 +78,21 @@
 								on:click={() => (visibleInfo = true)}
 							/>
 						{/if}
-					</td><td>
+					</td>
+
+					<td>
 						<span>{controllerId.toText()}</span>
 					</td>
 
 					<td>{metadataProfile(controller?.metadata ?? [])}</td>
+
+					<td
+						>{#if 'write' in controller?.scope}
+							{$i18n.controllers.write}
+						{:else}
+							{$i18n.controllers.admin}
+						{/if}</td
+					>
 				</tr>
 			{/each}
 		</tbody>

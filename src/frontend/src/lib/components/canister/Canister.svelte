@@ -41,7 +41,9 @@
 
 	onDestroy(() => worker?.stopCyclesTimer());
 
-	const restartCycles = ({ detail: { canisterId: syncCanisterId } }) => {
+	const restartCycles = ({
+		detail: { canisterId: syncCanisterId }
+	}: CustomEvent<{ canisterId: Principal }>) => {
 		if (syncCanisterId.toText() !== canisterId.toText()) {
 			return;
 		}

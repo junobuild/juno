@@ -1,3 +1,4 @@
+// @ts-ignore
 export const idlFactory = ({ IDL }) => {
 	const canister_id = IDL.Principal;
 	const definite_canister_settings = IDL.Record({
@@ -123,6 +124,8 @@ export const idlFactory = ({ IDL }) => {
 		)
 	});
 };
+
+// @ts-ignore
 export const init = ({ IDL }) => {
 	return [];
 };

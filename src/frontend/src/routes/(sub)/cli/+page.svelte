@@ -205,7 +205,7 @@
 						</div>
 					</div>
 
-					<label htmlFor="profile">
+					<label for="profile">
 						{$i18n.cli.profile}
 					</label>
 
@@ -229,7 +229,7 @@
 					])}
 				</p>
 
-				<button on:click={signIn}>{$i18n.core.sign_in}</button>
+				<button on:click={async () => signIn({})}>{$i18n.core.sign_in}</button>
 			{/if}
 		{:else}
 			<p>{$i18n.errors.cli_missing_params}</p>

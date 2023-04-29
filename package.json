@@ -29,7 +29,7 @@
 		"build:post-process": "npm run build:csp && npm run build:compress",
 		"topup": "dfx wallet send rno2w-sqaaa-aaaaa-aaacq-cai 20000000000000",
 		"dev": "npm run i18n && vite dev",
-		"build": "vite build && npm run build:post-process",
+		"build": "tsc --noEmit && vite build && npm run build:post-process",
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --no-tsconfig",
 		"check:watch": "svelte-kit sync && svelte-check --no-tsconfig --watch",

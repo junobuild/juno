@@ -3,13 +3,13 @@
 	import { getContext, onMount, setContext } from 'svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listUsers } from '$lib/services/users.services';
 	import User from '$lib/components/auth/User.svelte';
+	import type { User as UserType } from '$lib/types/user';
 
 	export let satelliteId: Principal;
 
@@ -34,12 +34,12 @@
 		}
 	};
 
-	setContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY, {
+	setContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY, {
 		...initPaginationContext(),
 		list
 	});
-	const { store: paginationStore, setItems }: PaginationContext<DocType> =
-		getContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY);
+	const { store: paginationStore, setItems }: PaginationContext<UserType> =
+		getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
 
 	onMount(async () => await list());
 

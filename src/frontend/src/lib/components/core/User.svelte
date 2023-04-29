@@ -28,7 +28,7 @@
 		{$i18n.core.user_menu}
 	</ButtonIcon>
 {:else if signIn}
-	<ButtonIcon on:click={doSignIn}>
+	<ButtonIcon on:click={async () => await doSignIn({})}>
 		<IconSignIn slot="icon" />
 		{$i18n.core.sign_in}
 	</ButtonIcon>

@@ -10,6 +10,7 @@ export interface CanisterStatusResponse {
 	module_hash: [] | [Uint8Array | number[]];
 }
 export type CanisterStatusType = { stopped: null } | { stopping: null } | { running: null };
+export type ControllerScope = { Write: null } | { Admin: null };
 export interface CronJobStatuses {
 	mission_control_cycles_threshold: [] | [bigint];
 	satellites: Array<[Principal, CronJobStatusesSatelliteConfig]>;
@@ -61,6 +62,7 @@ export interface SegmentsStatuses {
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
+	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
 export interface SetControllersArgs {

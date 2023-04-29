@@ -28,8 +28,10 @@ type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
   created_at : nat64;
+  scope : ControllerScope;
   expires_at : opt nat64;
 };
+type ControllerScope = variant { Write; Admin };
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;
@@ -93,6 +95,7 @@ type Rule = record {
 type RulesType = variant { Db; Storage };
 type SetController = record {
   metadata : vec record { text; text };
+  scope : ControllerScope;
   expires_at : opt nat64;
 };
 type SetControllersArgs = record {

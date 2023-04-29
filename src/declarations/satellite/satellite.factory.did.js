@@ -8,10 +8,15 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
+	const ControllerScope = IDL.Variant({
+		Write: IDL.Null,
+		Admin: IDL.Null
+	});
 	const Controller = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		created_at: IDL.Nat64,
+		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const DelDoc = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
@@ -129,6 +134,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const SetControllersArgs = IDL.Record({

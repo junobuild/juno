@@ -89,6 +89,8 @@ fn get_doc_impl(
 
 /// Insert
 
+const COLLECTION_WRITE_RULE_MISSING: &str = "Collection write rule not configured: ";
+
 pub fn insert_doc(
     caller: Principal,
     collection: String,
@@ -120,7 +122,7 @@ fn secure_insert_doc(
     let rules = state.stable.db.rules.get(&collection);
 
     match rules {
-        None => Err("Collection write rule not configured.".to_string()),
+        None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
         Some(rule) => insert_doc_impl(
             caller,
             controllers,
@@ -275,7 +277,7 @@ fn secure_delete_doc(
     let rules = state.stable.db.rules.get(&collection);
 
     match rules {
-        None => Err("Collection write rule not configured.".to_string()),
+        None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
         Some(rule) => delete_doc_impl(
             caller,
             controllers,

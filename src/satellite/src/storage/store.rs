@@ -74,7 +74,7 @@ pub fn delete_asset(
     caller: Principal,
     collection: String,
     full_path: String,
-) -> Result<Option<Asset>, &'static str> {
+) -> Result<Option<Asset>, String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
 
     STATE.with(|state| {
@@ -191,11 +191,11 @@ fn secure_delete_asset_impl(
     collection: String,
     full_path: String,
     state: &mut State,
-) -> Result<Option<Asset>, &'static str> {
+) -> Result<Option<Asset>, String> {
     let rules = state.stable.storage.rules.get(&collection);
 
     match rules {
-        None => Err("Collection write rule not configured."),
+        None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
         Some(rule) => delete_asset_impl(
             caller,
             controllers,
@@ -216,14 +216,14 @@ fn delete_asset_impl(
     rule: &Permission,
     assets: &mut Assets,
     runtime: &mut RuntimeState,
-) -> Result<Option<Asset>, &'static str> {
+) -> Result<Option<Asset>, String> {
     let asset = assets.get_mut(&full_path);
 
     match asset {
-        None => Err(ERROR_ASSET_NOT_FOUND),
+        None => Err(ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
             if !assert_rule(rule, asset.key.owner, caller, controllers) {
-                return Err(ERROR_ASSET_NOT_FOUND);
+                return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
             let deleted = assets.remove(&*full_path);
@@ -258,7 +258,7 @@ const BATCH_EXPIRY_NANOS: u64 = 300_000_000_000;
 static mut NEXT_BACK_ID: u128 = 0;
 static mut NEXT_CHUNK_ID: u128 = 0;
 
-pub fn create_batch(caller: Principal, init: InitAssetKey) -> Result<u128, &'static str> {
+pub fn create_batch(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
     STATE.with(|state| secure_create_batch_impl(caller, init, &mut state.borrow_mut()))
 }
 
@@ -266,7 +266,7 @@ pub fn create_chunk(caller: Principal, chunk: Chunk) -> Result<u128, &'static st
     STATE.with(|state| create_chunk_impl(caller, chunk, &mut state.borrow_mut().runtime.storage))
 }
 
-pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), &'static str> {
+pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
 
     STATE.with(|state| {
@@ -275,23 +275,23 @@ pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), 
 }
 
 const UPLOAD_NOT_ALLOWED: &str = "Caller not allowed to upload data.";
-const COLLECTION_WRITE_RULE_MISSING: &str = "Collection write rule not configured.";
+const COLLECTION_WRITE_RULE_MISSING: &str = "Collection write rule not configured: ";
 
 fn secure_create_batch_impl(
     caller: Principal,
     init: InitAssetKey,
     state: &mut State,
-) -> Result<u128, &'static str> {
+) -> Result<u128, String> {
     let rules = state.stable.storage.rules.get(&init.collection);
 
     match rules {
-        None => Err(COLLECTION_WRITE_RULE_MISSING),
+        None => Err([COLLECTION_WRITE_RULE_MISSING, &init.collection].join("")),
         Some(rules) => {
             if !(public_rule(&rules.write)
                 || is_known_user(caller, &state.stable.db.db)
                 || is_controller(caller, &state.stable.controllers))
             {
-                return Err(UPLOAD_NOT_ALLOWED);
+                return Err(UPLOAD_NOT_ALLOWED.to_string());
             }
 
             assert_key(
@@ -397,12 +397,12 @@ fn commit_batch_impl(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     state: &mut State,
-) -> Result<(), &'static str> {
+) -> Result<(), String> {
     let batches = state.runtime.storage.batches.clone();
     let batch = batches.get(&commit_batch.batch_id);
 
     match batch {
-        None => Err(ERROR_CANNOT_COMMIT_BATCH),
+        None => Err(ERROR_CANNOT_COMMIT_BATCH.to_string()),
         Some(b) => {
             let asset = secure_commit_chunks(caller, controllers, commit_batch, b, state);
             match asset {
@@ -452,10 +452,10 @@ fn secure_commit_chunks(
     commit_batch: CommitBatch,
     batch: &Batch,
     state: &mut State,
-) -> Result<Asset, &'static str> {
+) -> Result<Asset, String> {
     // The one that started the batch should be the one that commits it
     if principal_not_equal(caller, batch.key.owner) {
-        return Err(ERROR_CANNOT_COMMIT_BATCH);
+        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
     assert_key(
@@ -468,14 +468,14 @@ fn secure_commit_chunks(
     let rules = state.stable.storage.rules.get(&batch.key.collection);
 
     match rules {
-        None => Err(COLLECTION_WRITE_RULE_MISSING),
+        None => Err([COLLECTION_WRITE_RULE_MISSING, &batch.key.collection].join("")),
         Some(rules) => {
             let current = state.stable.storage.assets.get(&batch.key.full_path);
 
             match current {
                 None => {
                     if !assert_create_rule(&rules.write, caller, controllers) {
-                        return Err(ERROR_CANNOT_COMMIT_BATCH);
+                        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
                     }
 
                     commit_chunks(commit_batch, batch, rules.max_size, state)
@@ -502,16 +502,16 @@ fn secure_commit_chunks_update(
     rules: Rule,
     current: Asset,
     state: &mut State,
-) -> Result<Asset, &'static str> {
+) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
     if batch.key.collection != current.key.collection {
-        return Err("Provided collection does not match existing collection.");
+        return Err("Provided collection does not match existing collection.".to_string());
     }
 
     let rule = &rules.write;
 
     if !assert_rule(rule, current.key.owner, caller, controllers) {
-        return Err(ERROR_CANNOT_COMMIT_BATCH);
+        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
     commit_chunks(commit_batch, batch, rules.max_size, state)
@@ -526,12 +526,12 @@ fn commit_chunks(
     batch: &Batch,
     max_size: Option<u128>,
     state: &mut State,
-) -> Result<Asset, &'static str> {
+) -> Result<Asset, String> {
     let now = time();
 
     if now > batch.expires_at {
         clear_expired_batches(&mut state.runtime.storage);
-        return Err("Batch did not complete in time. Chunks cannot be committed.");
+        return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
     }
 
     let mut content_chunks: Vec<Vec<u8>> = vec![];
@@ -541,11 +541,11 @@ fn commit_chunks(
 
         match chunk {
             None => {
-                return Err("Chunk does not exist.");
+                return Err("Chunk does not exist.".to_string());
             }
             Some(c) => {
                 if batch_id != c.batch_id {
-                    return Err("Chunk not included in the provided batch.");
+                    return Err("Chunk not included in the provided batch.".to_string());
                 }
 
                 content_chunks.push(c.clone().content);
@@ -554,7 +554,7 @@ fn commit_chunks(
     }
 
     if content_chunks.is_empty() {
-        return Err("No chunk to commit.");
+        return Err("No chunk to commit.".to_string());
     }
 
     let key = batch.clone().key;
@@ -588,7 +588,7 @@ fn commit_chunks(
         Some(max_size) => {
             if encoding.total_length > max_size {
                 clear_batch(batch_id, chunk_ids, &mut state.runtime.storage);
-                return Err("Asset exceed max allowed size.");
+                return Err("Asset exceed max allowed size.".to_string());
             }
         }
     }

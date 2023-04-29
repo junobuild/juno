@@ -421,7 +421,7 @@ fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
 
     match result {
         Ok(batch_id) => InitUploadResult { batch_id },
-        Err(error) => trap(error),
+        Err(error) => trap(&error),
     }
 }
 
@@ -447,7 +447,7 @@ fn commit_asset_upload(commit: CommitBatch) {
 
     match result {
         Ok(_) => (),
-        Err(error) => trap(error),
+        Err(error) => trap(&error),
     }
 }
 
@@ -484,7 +484,7 @@ fn del_asset(collection: CollectionKey, full_path: String) {
 
     match result {
         Ok(_) => (),
-        Err(error) => trap(&["Asset cannot be deleted: ", error].join("")),
+        Err(error) => trap(&["Asset cannot be deleted: ", &error].join("")),
     }
 }
 

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
+	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '$lib/utils/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -10,7 +10,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 
 	export let visible = false;
-	export let selectedController: [Principal, Controller] | undefined;
+	export let selectedController: [Principal, Controller | undefined] | undefined;
 	export let remove: (params: {
 		missionControlId: Principal;
 		controller: Principal;

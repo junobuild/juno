@@ -6,6 +6,7 @@
 	import { onLayoutTitleIntersection } from '$lib/stores/layout.store';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { keyOf } from '$lib/utils/utils';
 
 	export let help: string;
 
@@ -17,10 +18,12 @@
 <div class="tabs" use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
 	{#each $store.tabs as { labelKey, id }}
 		{@const [group, key] = labelKey.split('.')}
+		{@const obj = keyOf({ obj: $i18n, key: group })}
+		{@const text = keyOf({ obj, key })}
 
 		<button class="text" on:click={() => selectTab(id)} class:selected={$store.tabId === id}
-			>{$i18n[group][key]}</button
-		>
+			>{text}
+		</button>
 	{/each}
 
 	<ExternalLink href={help}>{$i18n.core.help}</ExternalLink>

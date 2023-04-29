@@ -38,7 +38,7 @@
 
 	let visibleDelete = false;
 	let visibleInfo = false;
-	let selectedController: [Principal, Controller] | undefined;
+	let selectedController: [Principal, Controller | undefined] | undefined;
 
 	const canEdit = (controllerId: Principal): boolean =>
 		nonNullish($authStore.identity) &&

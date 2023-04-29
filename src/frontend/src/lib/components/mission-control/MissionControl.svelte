@@ -34,7 +34,9 @@
 		accountIdentifier: undefined
 	});
 
-	const reloadBalance = async ({ detail: { canisterId: syncCanisterId } }) => {
+	const reloadBalance = async ({
+		detail: { canisterId: syncCanisterId }
+	}: CustomEvent<{ canisterId: Principal }>) => {
 		if (
 			isNullish($missionControlStore) ||
 			syncCanisterId.toText() !== $missionControlStore.toText()

@@ -24,7 +24,7 @@ pub async fn init_user_mission_control(
                 increment_mission_controls_rate()?;
 
                 create_mission_control(caller, console).await
-            },
+            }
         },
     }
 }

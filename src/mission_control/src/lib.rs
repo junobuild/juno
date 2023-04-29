@@ -17,7 +17,7 @@ use crate::controllers::satellite::{
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
 };
 use crate::controllers::store::get_controllers;
-use crate::guards::{caller_is_user_or_controller_or_juno, caller_is_user_or_controller};
+use crate::guards::{caller_is_user_or_controller, caller_is_user_or_controller_or_juno};
 use crate::mgmt::canister::top_up_canister;
 use crate::mgmt::status::collect_statuses;
 use crate::satellites::satellite::create_satellite as create_satellite_console;

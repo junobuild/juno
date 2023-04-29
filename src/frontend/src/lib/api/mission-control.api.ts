@@ -44,7 +44,7 @@ export const setSatellitesController = async ({
 	missionControlId,
 	satelliteIds,
 	controllerId,
-	profile
+	...rest
 }: {
 	missionControlId: Principal;
 	satelliteIds: Principal[];
@@ -53,7 +53,7 @@ export const setSatellitesController = async ({
 	return actor.set_satellites_controllers(
 		satelliteIds,
 		[Principal.fromText(controllerId)],
-		toSetController(profile)
+		toSetController(rest)
 	);
 };
 
@@ -73,14 +73,14 @@ export const deleteSatellitesController = async ({
 export const setMissionControlController = async ({
 	missionControlId,
 	controllerId,
-	profile
+	...rest
 }: {
 	missionControlId: Principal;
 } & SetControllerParams) => {
 	const actor = await getMissionControlActor(missionControlId);
 	return actor.set_mission_control_controllers(
 		[Principal.fromText(controllerId)],
-		toSetController(profile)
+		toSetController(rest)
 	);
 };
 

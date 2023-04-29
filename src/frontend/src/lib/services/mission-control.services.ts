@@ -76,7 +76,7 @@ export const setMissionControlControllerForVersion = async ({
 	const missionControlController =
 		compare(version, '0.0.3') >= 0 ? setMissionControlController : addMissionControlController;
 
-	await missionControlController({ missionControlId, controllerId, profile });
+	await missionControlController({ missionControlId, controllerId, profile, scope: 'admin' });
 };
 
 // TODO: to be removed in next version as only supported if < v0.0.7
@@ -131,7 +131,8 @@ export const setSatellitesForVersion = async ({
 						satelliteIds: setSatelliteIds,
 						missionControlId,
 						controllerId,
-						profile
+						profile,
+						scope: 'admin'
 					})
 			  ]
 			: []),
@@ -141,7 +142,8 @@ export const setSatellitesForVersion = async ({
 						satelliteIds: addSatellitesIds,
 						missionControlId,
 						controllerId,
-						profile
+						profile,
+						scope: 'admin'
 					})
 			  ]
 			: [])

@@ -9,8 +9,8 @@ impl From<&UpgradeStableState> for StableState {
     fn from(state: &UpgradeStableState) -> Self {
         StableState {
             controllers: upgrade_controllers(state.controllers.clone()),
-            user: state.user.clone(),
-            satellites: state.satellites.clone(),
+            cron_controllers: state.cron_controllers.clone(),
+            cron_tabs: state.cron_tabs.clone(),
             archive: state.archive.clone(),
         }
     }

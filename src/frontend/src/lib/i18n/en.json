@@ -184,7 +184,7 @@
 		"public": "Public",
 		"private": "Private",
 		"managed": "Managed",
-		"controllers": "controllers",
+		"controllers": "Controllers",
 		"empty": "Your collection <strong>{0}</strong> is empty."
 	},
 	"sort": {

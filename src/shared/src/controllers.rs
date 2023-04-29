@@ -1,6 +1,6 @@
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::types::interface::SetController;
-use crate::types::state::{Controller, ControllerId, Controllers, UserId};
+use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
 use crate::utils::principal_equal;
 use candid::Principal;
 use ic_cdk::api::time;
@@ -12,6 +12,7 @@ pub fn init_controllers(new_controllers: &[UserId]) -> Controllers {
     let controller_data: SetController = SetController {
         metadata: HashMap::new(),
         expires_at: None,
+        scope: ControllerScope::Admin,
     };
 
     set_controllers(new_controllers, &controller_data, &mut controllers);
@@ -41,6 +42,7 @@ pub fn set_controllers(
             created_at,
             updated_at,
             expires_at: controller_data.expires_at,
+            scope: controller_data.scope.clone(),
         };
 
         controllers.insert(*controller_id, controller);

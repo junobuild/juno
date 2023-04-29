@@ -22,6 +22,13 @@ pub mod state {
         pub created_at: u64,
         pub updated_at: u64,
         pub expires_at: Option<u64>,
+        pub scope: ControllerScope,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub enum ControllerScope {
+        Write,
+        Admin,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -43,7 +50,7 @@ pub mod state {
 
 pub mod interface {
     use crate::types::cronjob::CronJobStatusesSatellites;
-    use crate::types::state::{ControllerId, Metadata, MissionControlId, UserId};
+    use crate::types::state::{ControllerId, ControllerScope, Metadata, MissionControlId, UserId};
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
@@ -73,6 +80,7 @@ pub mod interface {
     pub struct SetController {
         pub metadata: Metadata,
         pub expires_at: Option<u64>,
+        pub scope: ControllerScope,
     }
 
     #[derive(CandidType, Deserialize)]

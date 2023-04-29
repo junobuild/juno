@@ -35,7 +35,9 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use satellites::store::get_satellites;
 use shared::types::interface::{MissionControlArgs, SetController, StatusesArgs};
-use shared::types::state::{ControllerId, Controllers, SatelliteId, SegmentsStatuses};
+use shared::types::state::{
+    ControllerId, ControllerScope, Controllers, SatelliteId, SegmentsStatuses,
+};
 use shared::types::state::{Metadata, UserId};
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -185,6 +187,7 @@ async fn add_mission_control_controllers(controllers: Vec<UserId>) {
     let controller: SetController = SetController {
         metadata: HashMap::new(),
         expires_at: None,
+        scope: ControllerScope::Admin,
     };
 
     set_controllers_to_mission_control(&controllers, &controller)

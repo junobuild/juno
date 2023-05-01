@@ -1,7 +1,7 @@
 use crate::types::state::{Controller, ControllerScope, Controllers};
 use crate::types::upgrade::UpgradeControllers;
 
-pub fn upgrade_controllers(controllers: UpgradeControllers) -> Controllers {
+pub fn upgrade_controllers(controllers: UpgradeControllers, scope: ControllerScope) -> Controllers {
     let mut new_controllers: Controllers = Controllers::new();
 
     for (controller_id, controller) in controllers.iter() {
@@ -12,7 +12,7 @@ pub fn upgrade_controllers(controllers: UpgradeControllers) -> Controllers {
                 updated_at: controller.updated_at,
                 created_at: controller.created_at,
                 expires_at: controller.expires_at,
-                scope: ControllerScope::Admin,
+                scope: scope.clone(),
             },
         );
     }

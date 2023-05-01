@@ -54,6 +54,7 @@ const config: UserConfig = {
 	},
 	build: {
 		target: 'es2020',
+		sourcemap: true,
 		rollupOptions: {
 			output: {
 				manualChunks: (id) => {

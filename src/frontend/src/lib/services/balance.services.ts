@@ -3,8 +3,8 @@ import { getAccountIdentifier, getBalance } from '$lib/api/ledger.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { isNullish } from '$lib/utils/utils';
-import type { AccountIdentifier } from '@dfinity/nns';
 import type { Principal } from '@dfinity/principal';
+import type { AccountIdentifier } from '@junobuild/ledger';
 import { get } from 'svelte/store';
 
 export interface MissionControlBalance {
@@ -23,7 +23,7 @@ export const getMissionControlBalance = async (
 	try {
 		const accountIdentifier = getAccountIdentifier(missionControlId);
 
-		const queryBalance = async (): Promise<bigint> => (await getBalance(accountIdentifier)).toE8s();
+		const queryBalance = async (): Promise<bigint> => await getBalance(missionControlId);
 
 		const [balance, credits] = await Promise.all([queryBalance(), getCredits()]);
 

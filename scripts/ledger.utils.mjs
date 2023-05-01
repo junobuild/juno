@@ -1,4 +1,4 @@
-import { AccountIdentifier } from '@dfinity/nns';
+import { AccountIdentifier } from '@junobuild/ledger';
 import { initIdentity } from './identity.utils.mjs';
 
 export const accountIdentifier = (mainnet, principal) => {

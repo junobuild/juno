@@ -77,7 +77,7 @@
 		"@dfinity/identity": "^0.15.3",
 		"@dfinity/ledger": "^0.0.7",
 		"@dfinity/principal": "^0.15.3",
-		"@junobuild/ledger": "^0.0.1",
+		"@junobuild/ledger": "^0.0.2",
 		"buffer": "^6.0.3",
 		"idb-keyval": "^6.2.0",
 		"semver": "^7.3.8"

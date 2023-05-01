@@ -22,6 +22,13 @@ type SubAccount = blob;
 // Sequence number of a block produced by the ledger.
 type BlockIndex = nat64;
 
+type Transaction = record {
+    memo : Memo;
+    icrc1_memo: opt blob;
+    operation : opt Operation;
+    created_at_time : TimeStamp;
+};
+
 // An arbitrary number associated with a transaction.
 // The caller can set it in a `transfer` call as a correlation identifier.
 type Memo = nat64;
@@ -105,13 +112,23 @@ type Operation = variant {
         amount : Tokens;
         fee : Tokens;
     };
+    Approve : record {
+        from : AccountIdentifier;
+        spender : AccountIdentifier;
+        allowance_e8s : int;
+        fee : Tokens;
+        expires_at : opt TimeStamp;
+    };
+    TransferFrom : record {
+        from : AccountIdentifier;
+        to : AccountIdentifier;
+        spender : AccountIdentifier;
+        amount : Tokens;
+        fee : Tokens;
+    };
 };
 
-type Transaction = record {
-    memo : Memo;
-    operation : opt Operation;
-    created_at_time : TimeStamp;
-};
+ 
 
 type Block = record {
     parent_hash : opt blob;

@@ -18,7 +18,7 @@ dfx identity use default
 # LEDGER_ACC=$(dfx ledger account-id)
 LEDGER_ACC=1fac02b103220f2fe5ad314b98767db6ea7443cafc6a0a34c8adba4198a14d03
 
-dfx deploy ledger --argument '(record {minting_account = "'${MINT_ACC}'"; initial_values = vec { record { "'${LEDGER_ACC}'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})' --mode reinstall
+dfx deploy ledger --argument '(record {minting_account = "'${MINT_ACC}'"; initial_values = vec { record { "'${LEDGER_ACC}'"; record { e8s=100_000_000_000 } }; }; send_whitelist = vec {}})'
 
 # Rust example to transfer ICP
 # https://github.com/dfinity/examples/tree/master/rust/tokens_transfer

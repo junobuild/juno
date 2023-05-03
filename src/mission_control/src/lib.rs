@@ -17,7 +17,9 @@ use crate::controllers::satellite::{
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
 };
 use crate::controllers::store::get_controllers;
-use crate::guards::{caller_is_user_or_controller, caller_is_user_or_controller_or_juno};
+use crate::guards::{
+    caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
+};
 use crate::mgmt::canister::top_up_canister;
 use crate::mgmt::status::collect_statuses;
 use crate::satellites::satellite::create_satellite as create_satellite_console;
@@ -80,13 +82,13 @@ fn post_upgrade() {
 /// Satellites
 
 #[candid_method(query)]
-#[query(guard = "caller_is_user_or_controller")]
+#[query(guard = "caller_is_user_or_admin_controller")]
 fn list_satellites() -> Satellites {
     get_satellites()
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn create_satellite(name: String) -> Satellite {
     create_satellite_console(&name)
         .await
@@ -98,7 +100,7 @@ async fn create_satellite(name: String) -> Satellite {
     note = "please use `set_satellites_controllers` instead"
 )]
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn add_satellites_controllers(
     satellite_ids: Vec<SatelliteId>,
     controllers: Vec<ControllerId>,
@@ -115,7 +117,7 @@ async fn add_satellites_controllers(
     note = "please use `del_satellites_controllers` instead"
 )]
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn remove_satellites_controllers(
     satellite_ids: Vec<SatelliteId>,
     controllers: Vec<ControllerId>,
@@ -128,7 +130,7 @@ async fn remove_satellites_controllers(
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_satellites_controllers(
     satellite_ids: Vec<SatelliteId>,
     controller_ids: Vec<ControllerId>,
@@ -142,7 +144,7 @@ async fn set_satellites_controllers(
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn del_satellites_controllers(satellite_ids: Vec<SatelliteId>, controllers: Vec<UserId>) {
     for satellite_id in satellite_ids {
         delete_satellite_controllers(&satellite_id, &controllers)
@@ -154,7 +156,7 @@ async fn del_satellites_controllers(satellite_ids: Vec<SatelliteId>, controllers
 /// Mgmt
 ///
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn top_up(canister_id: Principal, amount: Tokens) {
     top_up_canister(&canister_id, &amount)
         .await
@@ -162,13 +164,13 @@ async fn top_up(canister_id: Principal, amount: Tokens) {
 }
 
 #[candid_method(query)]
-#[query(guard = "caller_is_user_or_controller")]
+#[query(guard = "caller_is_user_or_admin_controller")]
 fn get_user() -> UserId {
     get_user_store()
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 fn set_metadata(metadata: Metadata) {
     set_metadata_store(&metadata)
 }
@@ -182,7 +184,7 @@ fn set_metadata(metadata: Metadata) {
     note = "please use `set_mission_control_controllers` instead"
 )]
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn add_mission_control_controllers(controllers: Vec<UserId>) {
     let controller: SetController = SetController {
         metadata: HashMap::new(),
@@ -200,7 +202,7 @@ async fn add_mission_control_controllers(controllers: Vec<UserId>) {
     note = "please use `del_mission_control_controllers` instead"
 )]
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn remove_mission_control_controllers(controllers: Vec<ControllerId>) {
     delete_controllers_to_mission_control(&controllers)
         .await
@@ -208,7 +210,7 @@ async fn remove_mission_control_controllers(controllers: Vec<ControllerId>) {
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_mission_control_controllers(
     controllers: Vec<ControllerId>,
     controller: SetController,
@@ -219,7 +221,7 @@ async fn set_mission_control_controllers(
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 async fn del_mission_control_controllers(controllers: Vec<ControllerId>) {
     delete_controllers_to_mission_control(&controllers)
         .await
@@ -227,7 +229,7 @@ async fn del_mission_control_controllers(controllers: Vec<ControllerId>) {
 }
 
 #[candid_method(query)]
-#[query(guard = "caller_is_user_or_controller")]
+#[query(guard = "caller_is_user_or_admin_controller")]
 fn list_mission_control_controllers() -> Controllers {
     get_controllers()
 }
@@ -243,19 +245,19 @@ fn version() -> String {
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_user_or_controller_or_juno")]
+#[update(guard = "caller_is_user_or_admin_controller_or_juno")]
 async fn status(config: StatusesArgs) -> SegmentsStatuses {
     collect_statuses(&id(), &config).await
 }
 
 #[candid_method(query)]
-#[query(guard = "caller_is_user_or_controller")]
+#[query(guard = "caller_is_user_or_admin_controller")]
 fn list_mission_control_statuses() -> Statuses {
     list_mission_control_statuses_store()
 }
 
 #[candid_method(query)]
-#[query(guard = "caller_is_user_or_controller")]
+#[query(guard = "caller_is_user_or_admin_controller")]
 fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
     list_satellite_statuses_store(&satellite_id)
 }

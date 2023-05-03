@@ -76,11 +76,9 @@ export interface SetCronTab {
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
-	del_cron_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_cron_tab: ActorMethod<[], [] | [CronTab]>;
 	list_statuses: ActorMethod<[ListStatusesArgs], Array<ListStatuses>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
-	set_cron_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_cron_tab: ActorMethod<[SetCronTab], CronTab>;
 	version: ActorMethod<[], string>;
 }

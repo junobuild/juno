@@ -1,9 +1,9 @@
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
-use shared::controllers::into_controller_ids;
+use shared::controllers::{filter_admin_controllers, into_controller_ids};
 use shared::ic::update_canister_controllers;
 use shared::types::interface::{DeleteControllersArgs, SetController, SetControllersArgs};
-use shared::types::state::{ControllerId, Controllers, SatelliteId};
+use shared::types::state::{ControllerId, ControllerScope, Controllers, SatelliteId};
 
 #[deprecated(since = "0.0.3", note = "please use `set_controllers` instead")]
 pub async fn add_satellite_controllers(
@@ -30,18 +30,26 @@ pub async fn set_satellite_controllers(
     controllers: &[ControllerId],
     controller: &SetController,
 ) -> Result<(), String> {
-    let updated_controllers = set_controllers(satellite_id, controllers, controller).await?;
+    let satellite_admin_controllers =
+        set_controllers(satellite_id, controllers, controller).await?;
 
-    update_controllers_settings(satellite_id, &updated_controllers).await
+    // We can update the IC controllers only if we know the new controller is of such types and spare an update if not needed
+    match controller.scope {
+        ControllerScope::Write => Ok(()),
+        ControllerScope::Admin => {
+            update_controllers_settings(satellite_id, &satellite_admin_controllers).await
+        }
+    }
 }
 
 pub async fn delete_satellite_controllers(
     satellite_id: &SatelliteId,
     controllers: &[ControllerId],
 ) -> Result<(), String> {
-    let updated_controllers = delete_controllers(satellite_id, controllers).await?;
+    let satellite_admin_controllers = delete_controllers(satellite_id, controllers).await?;
 
-    update_controllers_settings(satellite_id, &updated_controllers).await
+    // For simplicity reason we update the list of controllers even if we removed only Write scoped controllers.
+    update_controllers_settings(satellite_id, &satellite_admin_controllers).await
 }
 
 #[deprecated(since = "0.0.3", note = "please use `set_controllers` instead")]
@@ -97,7 +105,7 @@ async fn set_controllers(
 
     match result {
         Err((_, message)) => Err(["Failed to set controllers to satellite.", &message].join(" - ")),
-        Ok((controllers,)) => Ok(into_controller_ids(&controllers)),
+        Ok((controllers,)) => Ok(into_controller_ids(&filter_admin_controllers(&controllers))),
     }
 }
 
@@ -115,7 +123,7 @@ async fn delete_controllers(
         Err((_, message)) => {
             Err(["Failed to delete controllers from satellite.", &message].join(" - "))
         }
-        Ok((controllers,)) => Ok(into_controller_ids(&controllers)),
+        Ok((controllers,)) => Ok(into_controller_ids(&filter_admin_controllers(&controllers))),
     }
 }
 

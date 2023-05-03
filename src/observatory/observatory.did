@@ -69,11 +69,9 @@ type SetCronTab = record {
 };
 service : {
   del_controllers : (DeleteControllersArgs) -> ();
-  del_cron_controllers : (DeleteControllersArgs) -> ();
   get_cron_tab : () -> (opt CronTab) query;
   list_statuses : (ListStatusesArgs) -> (vec ListStatuses) query;
   set_controllers : (SetControllersArgs) -> ();
-  set_cron_controllers : (SetControllersArgs) -> ();
   set_cron_tab : (SetCronTab) -> (CronTab);
   version : () -> (text) query;
 }

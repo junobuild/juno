@@ -58,7 +58,16 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
 pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
     controllers
         .iter()
-        .any(|(&controller, _)| principal_equal(controller, caller))
+        .any(|(&controller_id, _)| principal_equal(controller_id, caller))
+}
+
+pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
+    controllers
+        .iter()
+        .any(|(&controller_id, controller)| match controller.scope {
+            ControllerScope::Write => false,
+            ControllerScope::Admin => principal_equal(controller_id, caller),
+        })
 }
 
 pub fn into_controller_ids(controllers: &Controllers) -> Vec<ControllerId> {
@@ -102,4 +111,15 @@ pub fn caller_is_observatory(caller: UserId) -> bool {
     let observatory = Principal::from_text(OBSERVATORY).unwrap();
 
     principal_equal(caller, observatory)
+}
+
+pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
+    controllers
+        .clone()
+        .into_iter()
+        .filter(|(_, controller)| match controller.scope {
+            ControllerScope::Write => false,
+            ControllerScope::Admin => true,
+        })
+        .collect()
 }

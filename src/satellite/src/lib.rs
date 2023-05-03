@@ -8,10 +8,11 @@ mod storage;
 mod types;
 mod upgrade;
 
+use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{DbStableState, Doc};
-use crate::guards::caller_is_controller;
+use crate::guards::caller_is_admin_controller;
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use crate::rules::store::{get_rules_db, get_rules_storage, set_rule_db, set_rule_storage};
 use crate::rules::types::interface::SetRule;
@@ -56,7 +57,7 @@ use rules::constants::DEFAULT_DB_COLLECTIONS;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
-use shared::types::state::Controllers;
+use shared::types::state::{ControllerScope, Controllers};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
 use types::list::ListParams;
@@ -204,7 +205,7 @@ fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> 
 /// Rules
 
 #[candid_method(query)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_admin_controller")]
 fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
     match rules_type {
         RulesType::Db => get_rules_db(),
@@ -213,7 +214,7 @@ fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
     match rules_type {
         RulesType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
@@ -226,21 +227,26 @@ fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
 ///
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
     SetControllersArgs {
         controllers,
         controller,
     }: SetControllersArgs,
 ) -> Controllers {
-    let max_controllers = assert_max_number_of_controllers(
-        &get_controllers(),
-        &controllers,
-        MAX_NUMBER_OF_SATELLITE_CONTROLLERS,
-    );
+    match controller.scope {
+        ControllerScope::Write => {}
+        ControllerScope::Admin => {
+            let max_controllers = assert_max_number_of_controllers(
+                &get_admin_controllers(),
+                &controllers,
+                MAX_NUMBER_OF_SATELLITE_CONTROLLERS,
+            );
 
-    if let Err(err) = max_controllers {
-        trap(&err)
+            if let Err(err) = max_controllers {
+                trap(&err)
+            }
+        }
     }
 
     set_controllers_store(&controllers, &controller);
@@ -248,14 +254,14 @@ fn set_controllers(
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) -> Controllers {
     delete_controllers_store(&controllers);
     get_controllers()
 }
 
 #[candid_method(query)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_admin_controller")]
 fn list_controllers() -> Controllers {
     get_controllers()
 }
@@ -265,13 +271,13 @@ fn list_controllers() -> Controllers {
 ///
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn set_config(config: Config) {
     set_storage_config(&config.storage);
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn get_config() -> Config {
     let storage = get_storage_config();
     Config { storage }
@@ -282,19 +288,19 @@ fn get_config() -> Config {
 ///
 
 #[candid_method(query)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_admin_controller")]
 fn list_custom_domains() -> CustomDomains {
     get_custom_domains()
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
     set_domain(&domain_name, &bn_id);
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn del_custom_domain(domain_name: DomainName) {
     delete_domain(&domain_name);
 }
@@ -489,7 +495,7 @@ fn del_asset(collection: CollectionKey, full_path: String) {
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn del_assets(collection: Option<CollectionKey>) {
     delete_assets(collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
 }

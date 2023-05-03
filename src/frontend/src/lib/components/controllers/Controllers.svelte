@@ -86,12 +86,13 @@
 
 					<td>{metadataProfile(controller?.metadata ?? [])}</td>
 
-					<td
-						>{#if 'write' in controller?.scope}
-							{$i18n.controllers.write}
-						{:else}
-							{$i18n.controllers.admin}
-						{/if}</td
+					<td>
+						{#if nonNullish(controller)}
+							{#if 'write' in controller?.scope}
+								{$i18n.controllers.write}
+							{:else}
+								{$i18n.controllers.admin}
+							{/if}{/if}</td
 					>
 				</tr>
 			{/each}

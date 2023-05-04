@@ -1,6 +1,6 @@
 import type { Controller } from '$declarations/mission_control/mission_control.did';
 import { getMissionControl } from '$lib/services/mission-control.services';
-import type { SetControllerParams } from '$lib/types/controlers';
+import type { SetControllerParams } from '$lib/types/controllers';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
 import { toSetController } from '$lib/utils/controllers.utils';
 import type { Identity } from '@dfinity/agent';

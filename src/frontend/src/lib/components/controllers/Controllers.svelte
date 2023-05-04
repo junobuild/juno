@@ -11,6 +11,8 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { nonNullish } from '$lib/utils/utils';
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
+	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';
+	import Identifier from "$lib/components/ui/Identifier.svelte";
 
 	export let list: () => Promise<[Principal, Controller][]>;
 	export let remove: (params: {
@@ -81,7 +83,7 @@
 					</td>
 
 					<td>
-						<span>{controllerId.toText()}</span>
+						<Identifier identifier={controllerId.toText()} shorten={false} nomargin={false} />
 					</td>
 
 					<td>{metadataProfile(controller?.metadata ?? [])}</td>
@@ -99,6 +101,8 @@
 		</tbody>
 	</table>
 </div>
+
+<ControllerAdd />
 
 <ControllerDelete bind:selectedController bind:visible={visibleDelete} {load} {remove} />
 

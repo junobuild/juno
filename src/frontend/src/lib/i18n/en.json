@@ -170,10 +170,12 @@
 		"info": "Information",
 		"delete_question": "Delete selected controller?",
 		"controller_id": "ID",
+		"controller_id_placeholder": "Controller ID",
 		"no_delete": "Juno cannot operate without your current signed-in identity and your mission control set as controllers. These settings cannot be edited through the console.",
 		"more_delete": "However, you can edit or delete additional controllers that you may have added for non-interactive environments.",
 		"admin": "Administrator",
-		"write": "Read-write"
+		"write": "Read-write",
+		"add_a_controller": "Add a controller"
 	},
 	"collections": {
 		"title": "Collections",

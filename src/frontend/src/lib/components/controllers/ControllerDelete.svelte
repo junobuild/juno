@@ -59,7 +59,7 @@
 	};
 </script>
 
-<Popover bind:visible center={true}>
+<Popover bind:visible center={true} backdrop="dark">
 	<div class="content">
 		<h3>{$i18n.controllers.delete_question}</h3>
 

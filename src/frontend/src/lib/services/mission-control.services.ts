@@ -8,7 +8,7 @@ import {
 	setSatellitesController
 } from '$lib/api/mission-control.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
-import type { SetControllerParams } from '$lib/types/controlers';
+import type { SetControllerParams } from '$lib/types/controllers';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { compare } from 'semver';

@@ -16,8 +16,11 @@
 </p>
 
 <style lang="scss">
+	@use '../../styles/mixins/text';
+
 	span {
 		word-break: break-all;
+		@include text.truncate;
 	}
 
 	p {
@@ -25,6 +28,7 @@
 		align-items: center;
 		gap: var(--padding-2x);
 		margin: 0 0 1rem;
+		max-width: 100%;
 	}
 
 	.nomargin {

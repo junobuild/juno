@@ -1,5 +1,5 @@
 import type { SetController as SetControllerDid } from '$declarations/mission_control/mission_control.did';
-import type { SetControllerParams } from '$lib/types/controlers';
+import type { SetControllerParams } from '$lib/types/controllers';
 import { toNullable } from '$lib/utils/did.utils';
 import { nonNullish } from '$lib/utils/utils';
 

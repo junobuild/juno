@@ -187,10 +187,12 @@ interface I18nControllers {
   info: string;
   delete_question: string;
   controller_id: string;
+  controller_id_placeholder: string;
   no_delete: string;
   more_delete: string;
   admin: string;
   write: string;
+  add_a_controller: string;
 }
 
 interface I18nCollections {

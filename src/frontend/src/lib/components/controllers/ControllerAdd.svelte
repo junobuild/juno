@@ -7,19 +7,22 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import type {SetControllerScope} from "$lib/types/controllers";
+	import type { SetControllerScope } from '$lib/types/controllers';
+	import type { SetControllerParams } from '$lib/types/controllers';
 
-	export let remove: (params: {
-		missionControlId: Principal;
-		controller: Principal;
-	}) => Promise<void>;
+	export let add: (
+		params: {
+			missionControlId: Principal;
+		} & SetControllerParams
+	) => Promise<void>;
 	export let load: () => Promise<void>;
 
 	let visible = false;
 
-	const close = () => visible = false;
+	const close = () => (visible = false);
 
 	let controllerId = '';
+	let scope: SetControllerScope = "write";
 
 	const addController = async () => {
 		if (isNullish($missionControlStore)) {
@@ -32,7 +35,12 @@
 		busy.start();
 
 		try {
-			// TODO: add controller
+			await add({
+				missionControlId: $missionControlStore,
+				controllerId,
+				profile: undefined,
+				scope
+			});
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.controllers_delete,
@@ -46,8 +54,6 @@
 
 		busy.stop();
 	};
-
-	let scope: SetControllerScope;
 </script>
 
 <button on:click={() => (visible = true)}>{$i18n.controllers.add_a_controller}</button>
@@ -60,12 +66,12 @@
 			<Value>
 				<svelte:fragment slot="label">{$i18n.controllers.controller_id}</svelte:fragment>
 				<input
-						bind:value={controllerId}
-						aria-label={$i18n.controllers.controller_id_placeholder}
-						name="controller-id"
-						placeholder={$i18n.controllers.controller_id_placeholder}
-						type="text"
-						required
+					bind:value={controllerId}
+					aria-label={$i18n.controllers.controller_id_placeholder}
+					name="controller-id"
+					placeholder={$i18n.controllers.controller_id_placeholder}
+					type="text"
+					required
 				/>
 			</Value>
 		</div>

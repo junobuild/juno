@@ -12,13 +12,19 @@
 	import { nonNullish } from '$lib/utils/utils';
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
 	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';
-	import Identifier from "$lib/components/ui/Identifier.svelte";
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import type { SetControllerParams } from '$lib/types/controllers';
 
 	export let list: () => Promise<[Principal, Controller][]>;
 	export let remove: (params: {
 		missionControlId: Principal;
 		controller: Principal;
 	}) => Promise<void>;
+	export let add: (
+		params: {
+			missionControlId: Principal;
+		} & SetControllerParams
+	) => Promise<void>;
 
 	// The canister and user are controllers of the mission control but not added in its state per default
 	export let extraControllers: [Principal, Controller | undefined][] = [];
@@ -102,7 +108,7 @@
 	</table>
 </div>
 
-<ControllerAdd />
+<ControllerAdd {add} {load} />
 
 <ControllerDelete bind:selectedController bind:visible={visibleDelete} {load} {remove} />
 

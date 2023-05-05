@@ -25,8 +25,7 @@
 		"apply": "Apply",
 		"language": "Language",
 		"user_menu": "User menu",
-		"version": "Version",
-		"in_progress": "In progress..."
+		"version": "Version"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -143,6 +142,7 @@
 		"controllers_listing": "Error while listing the controllers.",
 		"controllers_no_selection": "No controller to delete selected.",
 		"controllers_delete": "Unexpected error(s) while deleting the controller.",
+		"controller_invalid": "Controller invalid or empty.",
 		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
 		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data."
 	},
@@ -179,8 +179,16 @@
 		"admin": "Administrator",
 		"write": "Read-write",
 		"add_a_controller": "Add a controller",
-		"controller_added": "Your controller has been added.",
-		"add_intro": "Grant administrative or read-write permissions to a controller of your choice."
+		"add_intro": "Grant administrative or read-write permissions to a controller.",
+		"generate": "Generate a new controller",
+		"manually": "Manually enter a controller",
+		"new_controller_id": "Controller ID",
+		"new_controller_secret": "Secret token",
+		"controller_added": "Controller Added",
+		"controller_added_text": "Your controller has been added.",
+		"controller_generated_text": "A controller has been generated. Please find below the details.",
+		"adding_controller": "Adding a controller...",
+		"generating_controller": "Generating a controller..."
 	},
 	"collections": {
 		"title": "Collections",

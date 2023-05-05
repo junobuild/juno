@@ -31,7 +31,6 @@ export interface JunoModalCreateControllerDetail {
 		} & SetControllerParams
 	) => Promise<void>;
 	load: () => Promise<void>;
-	action: 'add' | 'generate';
 }
 
 export type JunoModalDetail =

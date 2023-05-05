@@ -62,8 +62,8 @@
 			<tr>
 				<th class="tools" />
 				<th class="controller"> {$i18n.controllers.title} </th>
-				<th> {$i18n.controllers.profile} </th>
-				<th> {$i18n.controllers.scope} </th>
+				<th class="profile"> {$i18n.controllers.profile} </th>
+				<th class="scope"> {$i18n.controllers.scope} </th>
 			</tr>
 		</thead>
 		<tbody>
@@ -92,9 +92,9 @@
 						<Identifier identifier={controllerId.toText()} shorten={false} nomargin={false} />
 					</td>
 
-					<td>{metadataProfile(controller?.metadata ?? [])}</td>
+					<td class="profile">{metadataProfile(controller?.metadata ?? [])}</td>
 
-					<td>
+					<td class="scope">
 						{#if nonNullish(controller)}
 							{#if 'Write' in controller?.scope}
 								{$i18n.controllers.write}
@@ -124,6 +124,14 @@
 	.controller {
 		@include media.min-width(small) {
 			width: 60%;
+		}
+	}
+
+	.profile, .scope {
+		display: none;
+
+		@include media.min-width(small) {
+			display: table-cell;
 		}
 	}
 </style>

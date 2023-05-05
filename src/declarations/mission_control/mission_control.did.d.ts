@@ -14,8 +14,10 @@ export interface Controller {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
 	created_at: bigint;
+	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
+export type ControllerScope = { Write: null } | { Admin: null };
 export interface CronJobStatusesSatelliteConfig {
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
@@ -45,6 +47,7 @@ export interface SegmentsStatuses {
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
+	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
 export interface StatusesArgs {

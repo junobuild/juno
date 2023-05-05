@@ -60,8 +60,13 @@ export const idlFactory = ({ IDL }) => {
 		statuses: Result_1,
 		timestamp: IDL.Nat64
 	});
+	const ControllerScope = IDL.Variant({
+		Write: IDL.Null,
+		Admin: IDL.Null
+	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const SetControllersArgs = IDL.Record({
@@ -75,11 +80,9 @@ export const idlFactory = ({ IDL }) => {
 	});
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
-		del_cron_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_cron_tab: IDL.Func([], [IDL.Opt(CronTab)], ['query']),
 		list_statuses: IDL.Func([ListStatusesArgs], [IDL.Vec(ListStatuses)], ['query']),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
-		set_cron_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_tab: IDL.Func([SetCronTab], [CronTab], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

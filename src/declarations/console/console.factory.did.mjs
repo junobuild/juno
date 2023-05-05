@@ -29,8 +29,13 @@ export const idlFactory = ({ IDL }) => {
 		Satellite: IDL.Null
 	});
 	const LoadRelease = IDL.Record({ total: IDL.Nat64, chunks: IDL.Nat64 });
+	const ControllerScope = IDL.Variant({
+		Write: IDL.Null,
+		Admin: IDL.Null
+	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const SetControllersArgs = IDL.Record({

@@ -5,19 +5,20 @@ mod guards;
 mod reports;
 mod store;
 mod types;
+mod upgrade;
 
 use crate::console::assert_mission_control_center;
 use crate::constants::CRON_INTERVAL_NS;
 use crate::cron_jobs::cron_jobs;
-use crate::guards::{caller_can_execute_cron_jobs, caller_is_controller};
+use crate::guards::{caller_can_execute_cron_jobs, caller_is_admin_controller};
 use crate::reports::collect_statuses as collect_statuses_report;
 use crate::store::{
-    delete_controllers, delete_cron_controllers, get_cron_tab as get_cron_tab_store,
-    set_controllers as set_controllers_store, set_cron_controllers as set_cron_controllers_store,
-    set_cron_tab as set_cron_tab_store,
+    delete_controllers, get_cron_tab as get_cron_tab_store,
+    set_controllers as set_controllers_store, set_cron_tab as set_cron_tab_store,
 };
 use crate::types::interface::{ListStatuses, ListStatusesArgs, SetCronTab};
 use crate::types::state::{Archive, CronTab, StableState, State};
+use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk::{caller, trap};
@@ -41,7 +42,6 @@ fn init() {
         *state.borrow_mut() = State {
             stable: StableState {
                 controllers: init_controllers(&[manager]),
-                cron_controllers: HashMap::new(),
                 cron_tabs: HashMap::new(),
                 archive: Archive {
                     statuses: HashMap::new(),
@@ -58,7 +58,9 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (stable,): (StableState,) = stable_restore().unwrap();
+    let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
+
+    let stable = StableState::from(&upgrade_stable);
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
 
@@ -70,7 +72,7 @@ fn post_upgrade() {
 /// Controllers
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
     SetControllersArgs {
         controllers,
@@ -81,26 +83,9 @@ fn set_controllers(
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
     delete_controllers(&controllers);
-}
-
-#[candid_method(update)]
-#[update(guard = "caller_is_controller")]
-fn set_cron_controllers(
-    SetControllersArgs {
-        controllers,
-        controller,
-    }: SetControllersArgs,
-) {
-    set_cron_controllers_store(&controllers, &controller);
-}
-
-#[candid_method(update)]
-#[update(guard = "caller_is_controller")]
-fn del_cron_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
-    delete_cron_controllers(&controllers);
 }
 
 /// Crontabs

@@ -6,10 +6,15 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal
 	});
+	const ControllerScope = IDL.Variant({
+		Write: IDL.Null,
+		Admin: IDL.Null
+	});
 	const Controller = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		created_at: IDL.Nat64,
+		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const CanisterStatusType = IDL.Variant({
@@ -40,6 +45,7 @@ export const idlFactory = ({ IDL }) => {
 	const Result = IDL.Variant({ Ok: SegmentStatus, Err: IDL.Text });
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const CronJobStatusesSatelliteConfig = IDL.Record({

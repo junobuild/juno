@@ -5,6 +5,7 @@ export interface AssertMissionControlCenterArgs {
 	mission_control_id: Principal;
 	user: Principal;
 }
+export type ControllerScope = { Write: null } | { Admin: null };
 export interface CreateSatelliteArgs {
 	block_index: [] | [bigint];
 	user: Principal;
@@ -37,6 +38,7 @@ export interface ReleasesVersion {
 export type Segment = { MissionControl: null } | { Satellite: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
+	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
 export interface SetControllersArgs {

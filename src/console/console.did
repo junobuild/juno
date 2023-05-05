@@ -2,6 +2,7 @@ type AssertMissionControlCenterArgs = record {
   mission_control_id : principal;
   user : principal;
 };
+type ControllerScope = variant { Write; Admin };
 type CreateSatelliteArgs = record { block_index : opt nat64; user : principal };
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetCreateSatelliteFeeArgs = record { user : principal };
@@ -21,6 +22,7 @@ type ReleasesVersion = record {
 type Segment = variant { MissionControl; Satellite };
 type SetController = record {
   metadata : vec record { text; text };
+  scope : ControllerScope;
   expires_at : opt nat64;
 };
 type SetControllersArgs = record {

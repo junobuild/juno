@@ -1,6 +1,6 @@
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::types::interface::SetController;
-use crate::types::state::{Controller, ControllerId, Controllers, UserId};
+use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
 use crate::utils::principal_equal;
 use candid::Principal;
 use ic_cdk::api::time;
@@ -12,6 +12,7 @@ pub fn init_controllers(new_controllers: &[UserId]) -> Controllers {
     let controller_data: SetController = SetController {
         metadata: HashMap::new(),
         expires_at: None,
+        scope: ControllerScope::Admin,
     };
 
     set_controllers(new_controllers, &controller_data, &mut controllers);
@@ -41,6 +42,7 @@ pub fn set_controllers(
             created_at,
             updated_at,
             expires_at: controller_data.expires_at,
+            scope: controller_data.scope.clone(),
         };
 
         controllers.insert(*controller_id, controller);
@@ -56,7 +58,16 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
 pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
     controllers
         .iter()
-        .any(|(&controller, _)| principal_equal(controller, caller))
+        .any(|(&controller_id, _)| principal_equal(controller_id, caller))
+}
+
+pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
+    controllers
+        .iter()
+        .any(|(&controller_id, controller)| match controller.scope {
+            ControllerScope::Write => false,
+            ControllerScope::Admin => principal_equal(controller_id, caller),
+        })
 }
 
 pub fn into_controller_ids(controllers: &Controllers) -> Vec<ControllerId> {
@@ -100,4 +111,15 @@ pub fn caller_is_observatory(caller: UserId) -> bool {
     let observatory = Principal::from_text(OBSERVATORY).unwrap();
 
     principal_equal(caller, observatory)
+}
+
+pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
+    controllers
+        .clone()
+        .into_iter()
+        .filter(|(_, controller)| match controller.scope {
+            ControllerScope::Write => false,
+            ControllerScope::Admin => true,
+        })
+        .collect()
 }

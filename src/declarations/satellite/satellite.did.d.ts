@@ -36,8 +36,10 @@ export interface Controller {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
 	created_at: bigint;
+	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
+export type ControllerScope = { Write: null } | { Admin: null };
 export interface CustomDomain {
 	updated_at: bigint;
 	created_at: bigint;
@@ -117,6 +119,7 @@ export interface Rule {
 export type RulesType = { Db: null } | { Storage: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
+	scope: ControllerScope;
 	expires_at: [] | [bigint];
 }
 export interface SetControllersArgs {

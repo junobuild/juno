@@ -7,6 +7,7 @@ type CanisterStatusResponse = record {
   module_hash : opt vec nat8;
 };
 type CanisterStatusType = variant { stopped; stopping; running };
+type ControllerScope = variant { Write; Admin };
 type CronJobStatuses = record {
   mission_control_cycles_threshold : opt nat64;
   satellites : vec record { principal; CronJobStatusesSatelliteConfig };
@@ -54,6 +55,7 @@ type SegmentsStatuses = record {
 };
 type SetController = record {
   metadata : vec record { text; text };
+  scope : ControllerScope;
   expires_at : opt nat64;
 };
 type SetControllersArgs = record {
@@ -67,11 +69,9 @@ type SetCronTab = record {
 };
 service : {
   del_controllers : (DeleteControllersArgs) -> ();
-  del_cron_controllers : (DeleteControllersArgs) -> ();
   get_cron_tab : () -> (opt CronTab) query;
   list_statuses : (ListStatusesArgs) -> (vec ListStatuses) query;
   set_controllers : (SetControllersArgs) -> ();
-  set_cron_controllers : (SetControllersArgs) -> ();
   set_cron_tab : (SetCronTab) -> (CronTab);
   version : () -> (text) query;
 }

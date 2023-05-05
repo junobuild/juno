@@ -10,7 +10,7 @@ mod upgrade;
 mod wasm;
 
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
-use crate::guards::{caller_is_controller, caller_is_observatory};
+use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::mission_control::init_user_mission_control;
 use crate::satellite::create_satellite as create_satellite_console;
 use crate::store::{
@@ -82,7 +82,7 @@ fn post_upgrade() {
 /// Mission control center and satellite releases and wasm
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn reset_release(segment: Segment) {
     match segment {
         Segment::Satellite => reset_satellite_release(),
@@ -91,7 +91,7 @@ fn reset_release(segment: Segment) {
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn load_release(segment: Segment, blob: Vec<u8>, version: String) -> LoadRelease {
     let total: usize = match segment {
         Segment::Satellite => {
@@ -145,7 +145,7 @@ fn assert_mission_control_center(
 }
 
 #[candid_method(query)]
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_admin_controller")]
 fn list_user_mission_control_centers() -> MissionControls {
     list_mission_controls()
 }
@@ -200,7 +200,7 @@ async fn get_create_satellite_fee(
 /// Closed beta - invitation codes
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn add_invitation_code(code: InvitationCode) {
     add_invitation_code_store(&code);
 }
@@ -208,7 +208,7 @@ fn add_invitation_code(code: InvitationCode) {
 /// Rates
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn update_rate_config(segment: Segment, config: RateConfig) {
     match segment {
         Segment::Satellite => update_satellites_rate_config(&config),
@@ -227,7 +227,7 @@ fn version() -> String {
 /// Controllers
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
     SetControllersArgs {
         controllers,
@@ -238,7 +238,7 @@ fn set_controllers(
 }
 
 #[candid_method(update)]
-#[update(guard = "caller_is_controller")]
+#[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
     delete_controllers(&controllers);
 }

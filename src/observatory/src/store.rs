@@ -92,25 +92,6 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
     })
 }
 
-pub fn set_cron_controllers(new_controllers: &[ControllerId], controller: &SetController) {
-    STATE.with(|state| {
-        set_controllers_impl(
-            new_controllers,
-            controller,
-            &mut state.borrow_mut().stable.cron_controllers,
-        )
-    })
-}
-
-pub fn delete_cron_controllers(remove_controllers: &[ControllerId]) {
-    STATE.with(|state| {
-        delete_controllers_impl(
-            remove_controllers,
-            &mut state.borrow_mut().stable.cron_controllers,
-        )
-    })
-}
-
 ///
 /// Statuses
 ///

@@ -7,7 +7,7 @@
 	const close = () => (visible = false);
 </script>
 
-<Popover bind:visible center={true}>
+<Popover bind:visible center={true} backdrop="dark">
 	<div class="content">
 		<p>{$i18n.controllers.no_delete}</p>
 

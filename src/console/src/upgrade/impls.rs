@@ -1,5 +1,7 @@
 use crate::types::state::StableState;
 use crate::upgrade::types::upgrade::UpgradeStableState;
+use shared::types::state::ControllerScope;
+use shared::upgrade::upgrade_controllers;
 
 ///
 /// v0.0.3 -> v0.0.x:
@@ -11,7 +13,7 @@ impl From<&UpgradeStableState> for StableState {
             payments: state.payments.clone(),
             releases: state.releases.clone(),
             invitation_codes: state.invitation_codes.clone(),
-            controllers: state.controllers.clone(),
+            controllers: upgrade_controllers(state.controllers.clone(), ControllerScope::Admin),
             rates: state.rates.clone(),
         }
     }

@@ -15,10 +15,7 @@ pub mod state {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct StableState {
-        // Controllers of the observatory - i.e. of the canister (can start, stop the canister etc.)
         pub controllers: Controllers,
-        // Additional controllers which can start and collect results of the cron_jobs only
-        pub cron_controllers: Controllers,
         pub cron_tabs: CronTabs,
         pub archive: Archive,
     }

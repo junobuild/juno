@@ -6,4 +6,5 @@ pub mod ic;
 pub mod impls;
 pub mod ledger;
 pub mod types;
+pub mod upgrade;
 pub mod utils;

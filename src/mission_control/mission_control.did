@@ -11,8 +11,10 @@ type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
   created_at : nat64;
+  scope : ControllerScope;
   expires_at : opt nat64;
 };
+type ControllerScope = variant { Write; Admin };
 type CronJobStatusesSatelliteConfig = record {
   enabled : bool;
   cycles_threshold : opt nat64;
@@ -42,6 +44,7 @@ type SegmentsStatuses = record {
 };
 type SetController = record {
   metadata : vec record { text; text };
+  scope : ControllerScope;
   expires_at : opt nat64;
 };
 type StatusesArgs = record {

@@ -20,9 +20,8 @@
 		} & SetControllerParams
 	) => Promise<void>;
 	let load: () => Promise<void>;
-	let action: 'add' | 'generate';
 
-	$: ({ add, load, action } = detail as JunoModalCreateControllerDetail);
+	$: ({ add, load } = detail as JunoModalCreateControllerDetail);
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
 
@@ -63,6 +62,10 @@
 			steps = 'error';
 		}
 	};
+
+	let action: 'add' | 'generate' = 'generate';
+
+	$: action, (() => (controllerId = ''))();
 </script>
 
 <Modal on:junoClose>
@@ -75,7 +78,7 @@
 		<SpinnerModal>
 			<p>{$i18n.core.in_progress}</p>
 		</SpinnerModal>
-	{:else if action === 'generate'}{:else}
+	{:else}
 		<h2>{$i18n.controllers.add_a_controller}</h2>
 
 		<p>{$i18n.controllers.add_intro}</p>
@@ -84,18 +87,32 @@
 			<div>
 				<Value>
 					<svelte:fragment slot="label">{$i18n.controllers.controller_id}</svelte:fragment>
+
+					<div>
+						<label>
+							<input type="radio" bind:group={action} name="action" value="generate" />
+							<span>{$i18n.controllers.generate}</span>
+						</label>
+					</div>
+
+					<label>
+						<input type="radio" bind:group={action} name="action" value="add" />
+						<span>{$i18n.controllers.manually}</span>
+					</label>
+
 					<input
 						bind:value={controllerId}
 						aria-label={$i18n.controllers.controller_id_placeholder}
 						name="controller-id"
 						placeholder={$i18n.controllers.controller_id_placeholder}
 						type="text"
-						required
+						required={action === 'add'}
+						disabled={action === 'generate'}
 					/>
 				</Value>
 			</div>
 
-			<div>
+			<div class="scope">
 				<Value>
 					<svelte:fragment slot="label">{$i18n.controllers.scope}</svelte:fragment>
 					<select name="scope" bind:value={scope}>
@@ -105,7 +122,10 @@
 				</Value>
 			</div>
 
-			<button type="submit">
+			<button
+				type="submit"
+				disabled={action === 'add' && (isNullish(controllerId) || controllerId === '')}
+			>
 				{$i18n.core.submit}
 			</button>
 		</form>
@@ -125,5 +145,9 @@
 
 	.msg {
 		@include overlay.message;
+	}
+
+	.scope {
+		padding: var(--padding) 0 0;
 	}
 </style>

@@ -20,8 +20,7 @@
 				type: 'create_controller',
 				detail: {
 					add,
-					load,
-					action: 'add'
+					load
 				}
 			}
 		})}>{$i18n.controllers.add_a_controller}</button

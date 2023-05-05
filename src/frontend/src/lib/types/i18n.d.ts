@@ -198,6 +198,8 @@ interface I18nControllers {
 	add_a_controller: string;
 	controller_added: string;
 	add_intro: string;
+	generate: string;
+	manually: string;
 }
 
 interface I18nCollections {

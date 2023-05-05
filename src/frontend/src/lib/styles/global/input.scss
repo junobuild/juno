@@ -1,4 +1,5 @@
 @use '../mixins/shadow';
+@use '../mixins/disabled';
 
 input,
 textarea,
@@ -41,6 +42,11 @@ input[type='radio'] {
 
 input[disabled] {
 	cursor: text;
+	@include disabled.disabled;
+
+	&::placeholder {
+		color: rgb(0, 0, 0, 0.2);
+	}
 }
 
 textarea {

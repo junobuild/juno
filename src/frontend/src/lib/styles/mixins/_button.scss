@@ -2,6 +2,7 @@
 @use './text';
 @use './grid';
 @use './media';
+@use './disabled';
 
 @mixin primary {
 	outline: 0;
@@ -27,9 +28,7 @@
 	@include shadow.card;
 
 	&:disabled {
-		box-shadow: 3px 3px rgb(0, 0, 0, 0.4);
-		border: 2px solid rgb(0, 0, 0, 0.4);
-		color: rgb(0, 0, 0, 0.4);
+		@include disabled.disabled;
 		pointer-events: none;
 	}
 

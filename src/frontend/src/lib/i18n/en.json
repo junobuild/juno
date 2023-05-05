@@ -180,7 +180,9 @@
 		"write": "Read-write",
 		"add_a_controller": "Add a controller",
 		"controller_added": "Your controller has been added.",
-		"add_intro": "Grant administrative or read-write permissions to a controller of your choice."
+		"add_intro": "Grant administrative or read-write permissions to a controller.",
+		"generate": "Generate a new controller",
+		"manually": "Manually enter a controller"
 	},
 	"collections": {
 		"title": "Collections",

@@ -156,6 +156,7 @@ interface I18nErrors {
 	controllers_listing: string;
 	controllers_no_selection: string;
 	controllers_delete: string;
+	controller_invalid: string;
 	observatory_get_unexpected_error: string;
 	observatory_set_unexpected_error: string;
 }
@@ -200,6 +201,8 @@ interface I18nControllers {
 	add_intro: string;
 	generate: string;
 	manually: string;
+	new_controller_id: string;
+	new_controller_secret: string;
 }
 
 interface I18nCollections {

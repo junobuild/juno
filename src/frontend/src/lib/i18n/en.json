@@ -143,6 +143,7 @@
 		"controllers_listing": "Error while listing the controllers.",
 		"controllers_no_selection": "No controller to delete selected.",
 		"controllers_delete": "Unexpected error(s) while deleting the controller.",
+		"controller_invalid": "Controller invalid or empty.",
 		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
 		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data."
 	},
@@ -182,7 +183,9 @@
 		"controller_added": "Your controller has been added.",
 		"add_intro": "Grant administrative or read-write permissions to a controller.",
 		"generate": "Generate a new controller",
-		"manually": "Manually enter a controller"
+		"manually": "Manually enter a controller",
+		"new_controller_id": "Controller ID",
+		"new_controller_secret": "Secret token"
 	},
 	"collections": {
 		"title": "Collections",

@@ -34,7 +34,9 @@
 		"amount": "ICP数量",
 		"top_up_title": "充值 {0}",
 		"additional_cycles": "Additional Cycles",
-		"top_up_info": "Currently, your mission control balance is {0} ICP, and network fees for topping up are {1} ICP."
+		"top_up_info": "Currently, your mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
+		"top_up_mission_control_done": "Your mission control center has been topped-up.",
+		"top_up_satellite_done": "Your satellite has been topped-up."
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",
@@ -140,6 +142,7 @@
 		"controllers_listing": "显示控制者列表出错.",
 		"controllers_no_selection": "没有选择要删除的控制者.",
 		"controllers_delete": "删除控制者出现未知错我.",
+		"controller_invalid": "Controller invalid or empty.",
 		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
 		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data."
 	},
@@ -175,7 +178,17 @@
 		"more_delete": "你可以编辑或删除其他的控制者，比如那些不需要跟环境有交互的.",
 		"admin": "Administrator",
 		"write": "Read-write",
-		"add_a_controller": "Add a controller"
+		"add_a_controller": "Add a controller",
+		"add_intro": "Grant administrative or read-write permissions to a controller.",
+		"generate": "Generate a new controller",
+		"manually": "Manually enter a controller",
+		"new_controller_id": "Controller ID",
+		"new_controller_secret": "Secret token",
+		"controller_added": "Controller Added",
+		"controller_added_text": "Your controller has been added.",
+		"controller_generated_text": "A controller has been generated. Please find below the details.",
+		"adding_controller": "Adding a controller...",
+		"generating_controller": "Generating a controller..."
 	},
 	"collections": {
 		"title": "文档集",

@@ -98,9 +98,15 @@
 <Modal on:junoClose>
 	{#if steps === 'ready'}
 		<div class="msg">
-			<h2>{$i18n.controllers.add_a_controller}</h2>
+			<h2>{$i18n.controllers.controller_added}</h2>
 
-			<p>{$i18n.controllers.controller_added}</p>
+			<p>
+				{#if action === 'add'}
+					{$i18n.controllers.controller_added_text}
+				{:else}
+					{$i18n.controllers.controller_generated_text}
+				{/if}
+			</p>
 
 			<div class="summary">
 				<div>
@@ -126,7 +132,13 @@
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
-			<p>{$i18n.core.in_progress}</p>
+			<p>
+				{#if action === 'add'}
+					{$i18n.controllers.adding_controller}
+				{:else}
+					{$i18n.controllers.generating_controller}
+				{/if}
+			</p>
 		</SpinnerModal>
 	{:else}
 		<h2>{$i18n.controllers.add_a_controller}</h2>

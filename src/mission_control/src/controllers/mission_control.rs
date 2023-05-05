@@ -11,35 +11,21 @@ pub async fn set_mission_control_controllers(
     controllers: &[ControllerId],
     controller: &SetController,
 ) -> Result<(), String> {
-    // We can update the IC controllers only if we know the new controller is of such types and spare an update if not needed
     match controller.scope {
-        ControllerScope::Write => set_mission_control_write_controllers(controllers, controller),
+        ControllerScope::Write => {},
         ControllerScope::Admin => {
-            set_mission_control_admin_controllers(controllers, controller).await
+            assert_max_number_of_controllers(
+                &get_admin_controllers(),
+                controllers,
+                MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS,
+            )?;
         }
     }
-}
-
-fn set_mission_control_write_controllers(
-    controllers: &[ControllerId],
-    controller: &SetController,
-) -> Result<(), String> {
-    set_controllers(controllers, controller);
-    Ok(())
-}
-
-async fn set_mission_control_admin_controllers(
-    controllers: &[ControllerId],
-    controller: &SetController,
-) -> Result<(), String> {
-    assert_max_number_of_controllers(
-        &get_admin_controllers(),
-        controllers,
-        MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS,
-    )?;
 
     set_controllers(controllers, controller);
 
+    // We update the IC controllers because it is possible that an existing controller was updated.
+    // e.g. existing controller was Read-Write and becomes Administrator.
     let updated_controllers = get_admin_controllers();
     update_controllers_settings(&updated_controllers).await
 }

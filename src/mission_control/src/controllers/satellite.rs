@@ -33,13 +33,9 @@ pub async fn set_satellite_controllers(
     let satellite_admin_controllers =
         set_controllers(satellite_id, controllers, controller).await?;
 
-    // We can update the IC controllers only if we know the new controller is of such types and spare an update if not needed
-    match controller.scope {
-        ControllerScope::Write => Ok(()),
-        ControllerScope::Admin => {
-            update_controllers_settings(satellite_id, &satellite_admin_controllers).await
-        }
-    }
+    // We update the IC controllers because it is possible that an existing controller was updated.
+    // e.g. existing controller was Read-Write and becomes Administrator.
+    update_controllers_settings(satellite_id, &satellite_admin_controllers).await
 }
 
 pub async fn delete_satellite_controllers(

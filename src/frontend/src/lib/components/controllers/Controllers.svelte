@@ -96,7 +96,7 @@
 
 					<td>
 						{#if nonNullish(controller)}
-							{#if 'write' in controller?.scope}
+							{#if 'Write' in controller?.scope}
 								{$i18n.controllers.write}
 							{:else}
 								{$i18n.controllers.admin}

@@ -31,6 +31,6 @@
 
 	<svelte:fragment slot="outro">
 		<IconSatellite />
-		<p>Your satellite has been topped-up.</p>
+		<p>{$i18n.canisters.top_up_satellite_done}</p>
 	</svelte:fragment>
 </CanisterTopUpModal>

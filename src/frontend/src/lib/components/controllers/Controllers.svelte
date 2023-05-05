@@ -127,7 +127,8 @@
 		}
 	}
 
-	.profile, .scope {
+	.profile,
+	.scope {
 		display: none;
 
 		@include media.min-width(small) {

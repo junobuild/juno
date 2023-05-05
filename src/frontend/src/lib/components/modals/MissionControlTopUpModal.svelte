@@ -25,7 +25,7 @@
 		</svelte:fragment>
 
 		<svelte:fragment slot="outro">
-			<p>Your mission control center has been topped-up.</p>
+			<p>{$i18n.canisters.top_up_mission_control_done}</p>
 		</svelte:fragment>
 	</CanisterTopUpModal>
 {/if}

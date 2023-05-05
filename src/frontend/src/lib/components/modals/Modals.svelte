@@ -5,6 +5,7 @@
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
 	import { nonNullish } from '$lib/utils/utils';
+	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 
@@ -27,4 +28,8 @@
 
 {#if modal?.type === 'add_custom_domain' && nonNullish(modal.detail)}
 	<CustomDomainModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'create_controller' && nonNullish(modal.detail)}
+	<ControllerCreateModal on:junoClose={close} detail={modal.detail} />
 {/if}

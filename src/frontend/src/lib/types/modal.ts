@@ -1,4 +1,6 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { SetControllerParams } from '$lib/types/controllers';
+import type { Principal } from '@dfinity/principal';
 
 export interface JunoModalBalance {
 	missionControlBalance?: {
@@ -22,13 +24,29 @@ export interface JunoModalCustomDomainDetail {
 	satellite: Satellite;
 }
 
+export interface JunoModalCreateControllerDetail {
+	add: (
+		params: {
+			missionControlId: Principal;
+		} & SetControllerParams
+	) => Promise<void>;
+	load: () => Promise<void>;
+	action: 'add' | 'generate';
+}
+
 export type JunoModalDetail =
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
 	| JunoModalCreateSatelliteDetail
-	| JunoModalCustomDomainDetail;
+	| JunoModalCustomDomainDetail
+	| JunoModalCreateControllerDetail;
 
 export interface JunoModal {
-	type: 'create_satellite' | 'topup_satellite' | 'topup_mission_control' | 'add_custom_domain';
+	type:
+		| 'create_satellite'
+		| 'topup_satellite'
+		| 'topup_mission_control'
+		| 'add_custom_domain'
+		| 'create_controller';
 	detail?: JunoModalDetail;
 }

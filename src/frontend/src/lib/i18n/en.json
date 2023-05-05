@@ -25,7 +25,8 @@
 		"apply": "Apply",
 		"language": "Language",
 		"user_menu": "User menu",
-		"version": "Version"
+		"version": "Version",
+		"in_progress": "In progress..."
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -34,7 +35,9 @@
 		"amount": "Amount in ICP",
 		"top_up_title": "Top-up {0}",
 		"additional_cycles": "Additional Cycles",
-		"top_up_info": "Currently, your mission control balance is {0} ICP, and network fees for topping up are {1} ICP."
+		"top_up_info": "Currently, your mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
+		"top_up_mission_control_done": "Your mission control center has been topped-up.",
+		"top_up_satellite_done": "Your satellite has been topped-up."
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",
@@ -175,7 +178,9 @@
 		"more_delete": "However, you can edit or delete additional controllers that you may have added for non-interactive environments.",
 		"admin": "Administrator",
 		"write": "Read-write",
-		"add_a_controller": "Add a controller"
+		"add_a_controller": "Add a controller",
+		"controller_added": "Your controller has been added.",
+		"add_intro": "Grant administrative or read-write permissions to a controller of your choice."
 	},
 	"collections": {
 		"title": "Collections",

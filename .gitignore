@@ -15,6 +15,7 @@ node_modules
 .dfx
 target
 internet_identity.wasm
+internet_identity.wasm.gz
 /internet_identity.did
 ledger.private.did
 ledger.public.did

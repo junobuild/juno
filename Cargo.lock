@@ -206,7 +206,7 @@ version = "0.0.4"
 dependencies = [
  "candid",
  "ic-cdk",
- "ic-cdk-macros 0.6.10",
+ "ic-cdk-macros",
  "ic-ledger-types",
  "serde",
  "serde_cbor",
@@ -505,27 +505,15 @@ checksum = "7f24254aa9a54b5c858eaee2f5bccdb46aaf0e486a595ed5fd8f86ba55232a70"
 
 [[package]]
 name = "ic-cdk"
-version = "0.7.0"
-source = "git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef#75e84bc9cf8df154e569f725698d3e73fc1feaef"
+version = "0.7.4"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9beb0bf1dcd0639c313630e34aa547a2b19450ddf1969c176e13225ef3b29048"
 dependencies = [
  "candid",
- "ic-cdk-macros 0.6.8",
- "ic0 0.18.9 (git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef)",
+ "ic-cdk-macros",
+ "ic0",
  "serde",
  "serde_bytes",
-]
-
-[[package]]
-name = "ic-cdk-macros"
-version = "0.6.8"
-source = "git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef#75e84bc9cf8df154e569f725698d3e73fc1feaef"
-dependencies = [
- "candid",
- "proc-macro2",
- "quote",
- "serde",
- "serde_tokenstream",
- "syn 1.0.109",
 ]
 
 [[package]]
@@ -550,7 +538,7 @@ checksum = "c739e7c592cb66df4f15c6b6c4859b1195782f63923e2fb1b29553d9c0819bd4"
 dependencies = [
  "futures",
  "ic-cdk",
- "ic0 0.18.9 (registry+https://github.com/rust-lang/crates.io-index)",
+ "ic0",
  "serde",
  "serde_bytes",
  "slotmap",
@@ -569,8 +557,9 @@ dependencies = [
 
 [[package]]
 name = "ic-ledger-types"
-version = "0.3.0"
-source = "git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef#75e84bc9cf8df154e569f725698d3e73fc1feaef"
+version = "0.4.2"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "3d175cd78a7c9a83a7a7c06b2db8aee7caddf45b1fd5cf9590160ebedab01424"
 dependencies = [
  "candid",
  "crc32fast",
@@ -586,11 +575,6 @@ name = "ic0"
 version = "0.18.9"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "978b91fc78de9d2eb0144db717839cde3b35470199ea51aca362cb6310e93dfd"
-
-[[package]]
-name = "ic0"
-version = "0.18.9"
-source = "git+https://github.com/dfinity/cdk-rs?rev=75e84bc9cf8df154e569f725698d3e73fc1feaef#75e84bc9cf8df154e569f725698d3e73fc1feaef"
 
 [[package]]
 name = "idna"
@@ -754,7 +738,7 @@ dependencies = [
  "candid",
  "futures",
  "ic-cdk",
- "ic-cdk-macros 0.6.10",
+ "ic-cdk-macros",
  "ic-ledger-types",
  "serde",
  "shared",
@@ -824,7 +808,7 @@ version = "0.0.1"
 dependencies = [
  "candid",
  "ic-cdk",
- "ic-cdk-macros 0.6.10",
+ "ic-cdk-macros",
  "ic-cdk-timers",
  "lazy_static",
  "serde",
@@ -1025,7 +1009,7 @@ dependencies = [
  "globset",
  "hex",
  "ic-cdk",
- "ic-cdk-macros 0.6.10",
+ "ic-cdk-macros",
  "ic-certified-map",
  "regex",
  "serde",
@@ -1123,7 +1107,7 @@ dependencies = [
  "candid",
  "futures",
  "ic-cdk",
- "ic-cdk-macros 0.6.10",
+ "ic-cdk-macros",
  "ic-ledger-types",
  "serde",
 ]

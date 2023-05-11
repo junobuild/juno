@@ -25,7 +25,8 @@
 		"apply": "应用",
 		"language": "Language",
 		"user_menu": "User menu",
-		"version": "Version"
+		"version": "Version",
+		"delete": "Delete"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -142,7 +143,10 @@
 		"controllers_listing": "显示控制者列表出错.",
 		"controllers_no_selection": "没有选择要删除的控制者.",
 		"controllers_delete": "删除控制者出现未知错我.",
-		"controller_invalid": "Controller invalid or empty.",
+		"data_delete": "Unexpected error(s) while deleting.",
+		"key_invalid": "Key is invalid or empty.",,
+		"collection_invalid": "Collection is invalid or empty.",
+		"controller_invalid": "Controller is invalid or empty.",
 		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
 		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data."
 	},
@@ -151,7 +155,8 @@
 		"created": "创建于",
 		"updated": "更新于",
 		"data": "数据",
-		"no_match": "No document matches your filters."
+		"no_match": "No document matches your filters.",
+		"delete": "Delete document?"
 	},
 	"asset": {
 		"owner": "拥有者",
@@ -159,7 +164,8 @@
 		"headers": "协议数据",
 		"created": "创建于",
 		"updated": "更新于",
-		"no_match": "No asset matches your filters."
+		"no_match": "No asset matches your filters.",
+		"delete": "Delete asset?"
 	},
 	"admin": {
 		"mission_control_new_version": "有一个新mission control版本可以使用! 请用命令行来升级.",
@@ -193,11 +199,11 @@
 	"collections": {
 		"title": "文档集",
 		"details": "详细",
-		"key": "关键字:",
+		"key": "关键字",
 		"key_placeholder": "文档集关键字",
-		"read_permission": "只读权限:",
-		"write_permission": "写入权限:",
-		"max_size": "大小上限控制:",
+		"read_permission": "只读权限",
+		"write_permission": "写入权限",
+		"max_size": "大小上限控制",
 		"max_size_placeholder": "以bytes为单位最大值",
 		"public": "公开",
 		"private": "私有",

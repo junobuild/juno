@@ -32,6 +32,14 @@
 	}
 }
 
+@mixin toolbar {
+	display: flex;
+	justify-content: center;
+	gap: var(--padding-2x);
+	margin: var(--padding-0_5x) 0 var(--padding);
+	width: 100%;
+}
+
 @mixin action {
 	text-decoration: none;
 	width: calc(100% - var(--padding-6x));

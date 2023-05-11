@@ -145,6 +145,7 @@
 		"controllers_delete": "Unexpected error(s) while deleting the controller.",
 		"data_delete": "Unexpected error(s) while deleting.",
 		"key_invalid": "Key is invalid or empty.",
+		"full_path_invalid": "Key (full_path) is invalid or empty.",
 		"collection_invalid": "Collection is invalid or empty.",
 		"controller_invalid": "Controller is invalid or empty.",
 		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",

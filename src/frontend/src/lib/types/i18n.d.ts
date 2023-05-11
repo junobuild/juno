@@ -158,6 +158,7 @@ interface I18nErrors {
 	controllers_delete: string;
 	data_delete: string;
 	key_invalid: string;
+	full_path_invalid: string;
 	collection_invalid: string;
 	controller_invalid: string;
 	observatory_get_unexpected_error: string;

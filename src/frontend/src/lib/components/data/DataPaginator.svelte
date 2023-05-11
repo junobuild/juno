@@ -37,12 +37,10 @@
 {/if}
 
 <style lang="scss">
+	@use '../../styles/mixins/collections';
+
 	.pagination {
-		display: flex;
-		justify-content: center;
-		gap: var(--padding-2x);
-		margin: var(--padding-0_5x) 0 var(--padding);
-		width: 100%;
+		@include collections.toolbar;
 
 		button {
 			visibility: hidden;

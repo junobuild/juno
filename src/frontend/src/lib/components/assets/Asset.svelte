@@ -6,16 +6,20 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable } from '$lib/utils/did.utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import DataToolbar from '$lib/components/data/DataToolbar.svelte';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { deleteAsset, deleteDoc } from '$lib/api/satellites.api';
 
-	const { store }: DataContext<AssetNoContent> =
+	const { store, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
 
 	let key: string | undefined;
 	$: key = $store?.key;
+
 	let asset: AssetNoContent | undefined;
 	$: asset = $store?.data;
 
@@ -27,6 +31,26 @@
 
 	let headers: [string, string][];
 	$: headers = asset?.headers ?? [];
+
+	let full_path: string | undefined;
+	$: full_path = asset?.key.full_path;
+
+	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		if (isNullish(full_path) || full_path === '') {
+			toasts.error({
+				text: $i18n.errors.full_path_invalid
+			});
+			return;
+		}
+
+		await deleteAsset({
+			...params,
+			full_path
+		});
+
+		resetData();
+	};
 </script>
 
 <p class="title doc">{key ?? ''}</p>
@@ -71,6 +95,11 @@
 				{formatToDate(asset.updated_at)}
 			</Value>
 		</div>
+
+		<DataToolbar {deleteData}>
+			<svelte:fragment slot="del-title">{$i18n.asset.delete}</svelte:fragment>
+			<svelte:fragment slot="del-content">{key}</svelte:fragment>
+		</DataToolbar>
 	</article>
 {/if}
 
@@ -95,7 +124,7 @@
 		display: flex;
 		flex-direction: column;
 
-		padding: var(--padding-2x);
+		padding: var(--padding-2x) var(--padding-2x) 0;
 	}
 
 	.owner {

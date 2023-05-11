@@ -4,10 +4,10 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { busy, isBusy } from '$lib/stores/busy.store';
-	import Popover from '$lib/components/ui/Popover.svelte';
+	import { busy } from '$lib/stores/busy.store';
 	import type { Controller } from '$declarations/satellite/satellite.did';
 	import Value from '$lib/components/ui/Value.svelte';
+	import Confirmation from '$lib/components/core/Confirmation.svelte';
 
 	export let visible = false;
 	export let selectedController: [Principal, Controller | undefined] | undefined;
@@ -59,31 +59,11 @@
 	};
 </script>
 
-<Popover bind:visible center={true} backdrop="dark">
-	<div class="content">
-		<h3>{$i18n.controllers.delete_question}</h3>
+<Confirmation bind:visible on:junoYes={deleteController} on:junoNo={close}>
+	<svelte:fragment slot="title">{$i18n.controllers.delete_question}</svelte:fragment>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.controllers.controller_id}</svelte:fragment>
-			<p>{selectedController?.[0].toText() ?? ''}</p>
-		</Value>
-
-		<button type="button" on:click|stopPropagation={close} disabled={$isBusy}>
-			{$i18n.core.no}
-		</button>
-
-		<button type="button" on:click|stopPropagation={deleteController} disabled={$isBusy}>
-			{$i18n.core.yes}
-		</button>
-	</div>
-</Popover>
-
-<style lang="scss">
-	.content {
-		padding: var(--padding-2x);
-	}
-
-	h3 {
-		margin-bottom: var(--padding-2x);
-	}
-</style>
+	<Value>
+		<svelte:fragment slot="label">{$i18n.controllers.controller_id}</svelte:fragment>
+		<p>{selectedController?.[0].toText() ?? ''}</p>
+	</Value>
+</Confirmation>

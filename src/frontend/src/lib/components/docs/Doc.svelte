@@ -3,15 +3,18 @@
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
-	import { nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import { fromArray } from '$lib/utils/did.utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import Json from '$lib/components/ui/Json.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { deleteDoc } from '$lib/api/satellites.api';
+	import { toasts } from '$lib/stores/toasts.store';
+	import DataToolbar from '$lib/components/data/DataToolbar.svelte';
 
-	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
+	const { store, resetData }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
 	let key: string | undefined;
 	$: key = $store?.key;
@@ -24,6 +27,24 @@
 	let obj: unknown | undefined = undefined;
 	$: (async () =>
 		(obj = nonNullish(doc) && nonNullish(doc?.data) ? await fromArray(doc.data) : undefined))();
+
+	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		if (isNullish(key) || key === '') {
+			toasts.error({
+				text: $i18n.errors.key_invalid
+			});
+			return;
+		}
+
+		await deleteDoc({
+			...params,
+			key,
+			doc
+		});
+
+		resetData();
+	};
 </script>
 
 <p class="title doc">{key ?? ''}</p>
@@ -59,6 +80,11 @@
 				<div class="json"><Json json={obj} /></div>
 			</Value>
 		</div>
+
+		<DataToolbar {deleteData}>
+			<svelte:fragment slot="del-title">{$i18n.document.delete}</svelte:fragment>
+			<svelte:fragment slot="del-content">{key}</svelte:fragment>
+		</DataToolbar>
 	</article>
 {/if}
 
@@ -83,7 +109,7 @@
 		display: flex;
 		flex-direction: column;
 
-		padding: var(--padding-2x);
+		padding: var(--padding-2x) var(--padding-2x) 0;
 	}
 
 	.owner {

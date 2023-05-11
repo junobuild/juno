@@ -25,7 +25,8 @@
 		"apply": "Apply",
 		"language": "Language",
 		"user_menu": "User menu",
-		"version": "Version"
+		"version": "Version",
+		"delete": "Delete"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -142,7 +143,11 @@
 		"controllers_listing": "Error while listing the controllers.",
 		"controllers_no_selection": "No controller to delete selected.",
 		"controllers_delete": "Unexpected error(s) while deleting the controller.",
-		"controller_invalid": "Controller invalid or empty.",
+		"data_delete": "Unexpected error(s) while deleting.",
+		"key_invalid": "Key is invalid or empty.",
+		"full_path_invalid": "Key (full_path) is invalid or empty.",
+		"collection_invalid": "Collection is invalid or empty.",
+		"controller_invalid": "Controller is invalid or empty.",
 		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
 		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data."
 	},
@@ -151,7 +156,8 @@
 		"created": "Created",
 		"updated": "Updated",
 		"data": "Data",
-		"no_match": "No document matches your filters."
+		"no_match": "No document matches your filters.",
+		"delete": "Delete document?"
 	},
 	"asset": {
 		"owner": "Owner",
@@ -159,7 +165,8 @@
 		"headers": "Headers",
 		"created": "Created",
 		"updated": "Updated",
-		"no_match": "No asset matches your filters."
+		"no_match": "No asset matches your filters.",
+		"delete": "Delete asset?"
 	},
 	"admin": {
 		"mission_control_new_version": "A new version of your mission control is available! Upgrade it with the CLI.",
@@ -193,11 +200,11 @@
 	"collections": {
 		"title": "Collections",
 		"details": "Details",
-		"key": "Key:",
+		"key": "Key",
 		"key_placeholder": "A collection key",
-		"read_permission": "Read permission:",
-		"write_permission": "Write permission:",
-		"max_size": "Max size validation:",
+		"read_permission": "Read permission",
+		"write_permission": "Write permission",
+		"max_size": "Max size validation",
 		"max_size_placeholder": "Max size in bytes",
 		"public": "Public",
 		"private": "Private",

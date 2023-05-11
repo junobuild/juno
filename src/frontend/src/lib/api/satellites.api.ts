@@ -1,6 +1,7 @@
 import type { Controller } from '$declarations/mission_control/mission_control.did';
 import type {
 	CustomDomain,
+	Doc,
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
 	Rule,
@@ -130,4 +131,37 @@ export const listCustomDomains = async ({
 }): Promise<[string, CustomDomain][]> => {
 	const actor = await getSatelliteActor(satelliteId);
 	return actor.list_custom_domains();
+};
+
+export const deleteDoc = async ({
+	satelliteId,
+	collection,
+	key,
+	doc
+}: {
+	satelliteId: Principal;
+	collection: string;
+	key: string;
+	doc: Doc | undefined;
+}) => {
+	console.log(doc, key, satelliteId, collection);
+
+	const actor = await getSatelliteActor(satelliteId);
+	const { updated_at } = doc ?? { updated_at: undefined };
+	return actor.del_doc(collection, key, {
+		updated_at: toNullable(updated_at)
+	});
+};
+
+export const deleteAsset = async ({
+	satelliteId,
+	collection,
+	full_path
+}: {
+	satelliteId: Principal;
+	collection: string;
+	full_path: string;
+}) => {
+	const actor = await getSatelliteActor(satelliteId);
+	return actor.del_asset(collection, full_path);
 };

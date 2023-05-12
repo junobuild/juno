@@ -75,14 +75,18 @@ type ListParams = record {
   paginate : opt ListPaginate;
 };
 type ListResults = record {
+  matches_pages : opt nat64;
   matches_length : nat64;
-  length : nat64;
+  items_page : opt nat64;
   items : vec record { text; AssetNoContent };
+  items_length : nat64;
 };
 type ListResults_1 = record {
+  matches_pages : opt nat64;
   matches_length : nat64;
-  length : nat64;
+  items_page : opt nat64;
   items : vec record { text; Doc };
+  items_length : nat64;
 };
 type Permission = variant { Controllers; Private; Public; Managed };
 type Rule = record {

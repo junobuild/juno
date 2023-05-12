@@ -95,14 +95,18 @@ export interface ListParams {
 	paginate: [] | [ListPaginate];
 }
 export interface ListResults {
+	matches_pages: [] | [bigint];
 	matches_length: bigint;
-	length: bigint;
+	items_page: [] | [bigint];
 	items: Array<[string, AssetNoContent]>;
+	items_length: bigint;
 }
 export interface ListResults_1 {
+	matches_pages: [] | [bigint];
 	matches_length: bigint;
-	length: bigint;
+	items_page: [] | [bigint];
 	items: Array<[string, Doc]>;
+	items_length: bigint;
 }
 export type Permission =
 	| { Controllers: null }

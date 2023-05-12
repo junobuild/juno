@@ -8,16 +8,54 @@ pub fn list_values<T: Clone + Compare>(
 ) -> ListResults<T> {
     let matches_length = matches.len();
 
+    let start = start_at(&matches, filters);
+
     let ordered = order_values(matches, filters);
 
-    let paginated = paginate_values(ordered, filters);
+    let paginated = paginate_values(ordered, filters, &start);
 
     let length = paginated.len();
 
     ListResults {
         items: paginated,
-        length,
+        items_length: length,
         matches_length,
+        items_page: current_page(start, filters),
+        matches_pages: total_pages(matches_length, filters),
+    }
+}
+
+fn current_page(start_at: Option<usize>, filters: &ListParams) -> Option<usize> {
+    match start_at {
+        None => None,
+        Some(start_at) => {
+            match filters.clone().paginate {
+                None => None,
+                Some(paginate) => paginate.limit.map(|limit| start_at / limit),
+            }
+        }
+    }
+}
+
+fn total_pages(matches_length: usize, filters: &ListParams) -> Option<usize> {
+    match filters.clone().paginate {
+        None => None,
+        Some(paginate) => paginate.limit.map(|limit| matches_length / limit),
+    }
+}
+
+fn start_at<T: Clone + Compare>(matches: &[(Key, T)], filters: &ListParams) -> Option<usize> {
+    match filters.clone().paginate {
+        None => None,
+        Some(paginate) => {
+            match paginate.start_after {
+                None => Some(0),
+                Some(start_after) => {
+                    let index = matches.iter().position(|(key, _)| key.eq(&start_after));
+                    index.map(|index| index + 1)
+                }
+            }
+        }
     }
 }
 
@@ -87,10 +125,11 @@ fn paginate_values<T: Clone + Compare>(
         paginate,
         owner: _,
     }: &ListParams,
+    start_at: &Option<usize>,
 ) -> Vec<(Key, T)> {
     match paginate {
         None => matches,
-        Some(ListPaginate { start_after, limit }) => {
+        Some(ListPaginate { start_after: _, limit }) => {
             let max: usize = matches.len();
 
             if max == 0 {
@@ -108,17 +147,11 @@ fn paginate_values<T: Clone + Compare>(
                 }
             };
 
-            let start = match start_after {
-                None => 0,
-                Some(start_after) => {
-                    let index = matches.iter().position(|(key, _)| key.eq(start_after));
-                    match index {
-                        None => {
-                            return Vec::new();
-                        }
-                        Some(index) => index + 1,
-                    }
-                }
+            let start = match *start_at {
+                None => {
+                    return Vec::new();
+                },
+                Some(start_at) => start_at
             };
 
             if start > (max - 1) {

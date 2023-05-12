@@ -5,7 +5,6 @@ use crate::rules::utils::assert_rule;
 use crate::types::core::Key;
 use crate::types::list::ListParams;
 use candid::Principal;
-use ic_cdk::print;
 use regex::Regex;
 use shared::types::state::{Controllers, UserId};
 
@@ -42,11 +41,6 @@ fn filter_key_matcher(regex: &Option<Regex>, key: &Key) -> bool {
 }
 
 fn filter_description_matcher(regex: &Option<Regex>, description: &Option<String>) -> bool {
-    match description {
-        None => print("Description is none"),
-        Some(description) => print(format!("Description is {}", description)),
-    }
-
     match regex {
         None => true,
         Some(re) => match description {

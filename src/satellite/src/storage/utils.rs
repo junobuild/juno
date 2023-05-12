@@ -7,7 +7,6 @@ use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::list::ListParams;
 use candid::Principal;
-use ic_cdk::print;
 use regex::Regex;
 use shared::types::state::{Controllers, UserId};
 
@@ -75,11 +74,6 @@ fn filter_full_path(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
 }
 
 fn filter_description(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
-    match &asset.key.description {
-        None => print("Description is none"),
-        Some(description) => print(format!("Description is {}", description)),
-    }
-
     match regex {
         None => true,
         Some(re) => match &asset.key.description {

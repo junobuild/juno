@@ -1,6 +1,7 @@
 import type { Controller } from '$declarations/mission_control/mission_control.did';
 import type {
 	CustomDomain,
+	DelDoc as DelRule,
 	Doc,
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
@@ -80,6 +81,25 @@ export const setRule = async ({
 
 	const actor = await getSatelliteActor(satelliteId);
 	await actor.set_rule(type, collection, updateRule);
+};
+
+export const deleteRule = async ({
+	satelliteId,
+	collection,
+	type,
+	rule
+}: {
+	satelliteId: Principal;
+	collection: string;
+	type: RulesType;
+	rule: Rule;
+}) => {
+	const delRule: DelRule = {
+		updated_at: [rule.updated_at]
+	};
+
+	const actor = await getSatelliteActor(satelliteId);
+	await actor.del_rule(type, collection, delRule);
 };
 
 export const listControllers = async ({

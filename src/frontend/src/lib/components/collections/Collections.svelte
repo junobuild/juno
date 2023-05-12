@@ -67,7 +67,7 @@
 		@include collections.action;
 
 		&.offset {
-			margin: var(--padding-2x) 0 var(--padding-2x) var(--padding-6x);
+			margin: var(--padding-2x) 0 var(--padding-2x) var(--padding-7x);
 			box-sizing: border-box;
 		}
 	}

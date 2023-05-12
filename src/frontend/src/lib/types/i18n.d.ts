@@ -163,6 +163,10 @@ interface I18nErrors {
 	controller_invalid: string;
 	observatory_get_unexpected_error: string;
 	observatory_set_unexpected_error: string;
+	collection_added: string;
+	collection_updated: string;
+	collection_deleted: string;
+	rule_invalid: string;
 }
 
 interface I18nDocument {
@@ -229,6 +233,10 @@ interface I18nCollections {
 	managed: string;
 	controllers: string;
 	empty: string;
+	added: string;
+	updated: string;
+	deleted: string;
+	delete_question: string;
 }
 
 interface I18nSort {

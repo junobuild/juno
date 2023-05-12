@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PermissionText } from '$lib/constants/rules.constants';
-	import { setRule } from '$lib/api/satellites.api';
+	import { deleteRule, setRule } from '$lib/api/satellites.api';
 	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import { busy } from '$lib/stores/busy.store';
@@ -10,9 +10,11 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { fromNullable } from '$lib/utils/did.utils';
 	import Input from '$lib/components/ui/Input.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -49,14 +51,6 @@
 
 	const dispatch = createEventDispatcher();
 
-	const deleteCollection = async () => {
-		busy.start();
-
-		dispatch('junoCollectionSuccess');
-
-		busy.stop();
-	};
-
 	const onSubmit = async () => {
 		busy.start();
 
@@ -73,18 +67,36 @@
 
 			await reload();
 
-			toasts.success(`Rules ${rule !== undefined ? 'added' : 'updated'}.`);
+			toasts.success(
+				i18nFormat(isNullish(rule) ? $i18n.collections.added : $i18n.collections.updated, [
+					{
+						placeholder: '{0}',
+						value: collection
+					}
+				])
+			);
 
 			dispatch('junoCollectionSuccess');
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Error while ${rule !== undefined ? 'adding' : 'updating'} the rule.`,
+				text: i18nFormat(
+					isNullish(rule) ? $i18n.errors.collection_added : $i18n.errors.collection_updated,
+					[
+						{
+							placeholder: '{0}',
+							value: collection
+						}
+					]
+				),
 				detail: err
 			});
 		}
 
 		busy.stop();
 	};
+
+	let disabled = false;
+	$: disabled = isNullish(collection) || collection === '';
 </script>
 
 <article>
@@ -144,14 +156,14 @@
 
 		<div class="toolbar">
 			<button type="button" on:click={() => dispatch('junoCollectionCancel')}
-			>{$i18n.core.cancel}</button
+				>{$i18n.core.cancel}</button
 			>
 
 			{#if mode === 'edit'}
-				<button type="button" on:click={deleteCollection}>{$i18n.core.delete}</button>
+				<CollectionDelete {collection} {rule} {type} on:junoCollectionSuccess />
 			{/if}
 
-			<button type="submit" class="primary">{$i18n.core.submit}</button>
+			<button type="submit" class="primary" {disabled}>{$i18n.core.submit}</button>
 		</div>
 	</form>
 </article>

@@ -12,7 +12,7 @@ pub async fn set_mission_control_controllers(
     controller: &SetController,
 ) -> Result<(), String> {
     match controller.scope {
-        ControllerScope::Write => {},
+        ControllerScope::Write => {}
         ControllerScope::Admin => {
             assert_max_number_of_controllers(
                 &get_admin_controllers(),

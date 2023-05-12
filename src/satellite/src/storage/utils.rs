@@ -9,6 +9,33 @@ use candid::Principal;
 use regex::Regex;
 use shared::types::state::{Controllers, UserId};
 
+fn map_key(asset: &Asset) -> (FullPath, AssetNoContent) {
+    (
+        asset.key.full_path.clone(),
+        AssetNoContent {
+            key: asset.key.clone(),
+            headers: asset.headers.clone(),
+            encodings: asset
+                .encodings
+                .clone()
+                .into_iter()
+                .map(|(key, encoding)| {
+                    (
+                        key,
+                        AssetEncodingNoContent {
+                            modified: encoding.modified,
+                            total_length: encoding.total_length,
+                            sha256: encoding.sha256,
+                        },
+                    )
+                })
+                .collect(),
+            created_at: asset.created_at,
+            updated_at: asset.updated_at,
+        },
+    )
+}
+
 pub fn filter_values(
     caller: Principal,
     controllers: &Controllers,
@@ -22,33 +49,6 @@ pub fn filter_values(
     }: &ListParams,
     assets: &Assets,
 ) -> Vec<(FullPath, AssetNoContent)> {
-    fn map_key(asset: &Asset) -> (FullPath, AssetNoContent) {
-        (
-            asset.key.full_path.clone(),
-            AssetNoContent {
-                key: asset.key.clone(),
-                headers: asset.headers.clone(),
-                encodings: asset
-                    .encodings
-                    .clone()
-                    .into_iter()
-                    .map(|(key, encoding)| {
-                        (
-                            key,
-                            AssetEncodingNoContent {
-                                modified: encoding.modified,
-                                total_length: encoding.total_length,
-                                sha256: encoding.sha256,
-                            },
-                        )
-                    })
-                    .collect(),
-                created_at: asset.created_at,
-                updated_at: asset.updated_at,
-            },
-        )
-    }
-
     let all_keys = assets.values().map(map_key);
 
     let regex: Option<Regex> = matcher.as_ref().map(|filter| Regex::new(filter).unwrap());
@@ -80,4 +80,16 @@ fn filter_owner(filter_owner: Option<UserId>, asset: &AssetNoContent) -> bool {
         None => true,
         Some(filter_owner) => filter_owner == asset.key.owner,
     }
+}
+
+pub fn filter_collection_values(
+    collection: CollectionKey,
+    assets: &Assets,
+) -> Vec<(FullPath, AssetNoContent)> {
+    let all_keys = assets.values().map(map_key);
+
+    all_keys
+        .into_iter()
+        .filter(|(_, asset)| filter_collection(collection.clone(), asset))
+        .collect()
 }

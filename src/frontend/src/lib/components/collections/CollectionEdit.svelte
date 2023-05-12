@@ -49,6 +49,14 @@
 
 	const dispatch = createEventDispatcher();
 
+	const deleteCollection = async () => {
+		busy.start();
+
+		dispatch('junoCollectionSuccess');
+
+		busy.stop();
+	};
+
 	const onSubmit = async () => {
 		busy.start();
 
@@ -136,8 +144,13 @@
 
 		<div class="toolbar">
 			<button type="button" on:click={() => dispatch('junoCollectionCancel')}
-				>{$i18n.core.cancel}</button
+			>{$i18n.core.cancel}</button
 			>
+
+			{#if mode === 'edit'}
+				<button type="button" on:click={deleteCollection}>{$i18n.core.delete}</button>
+			{/if}
+
 			<button type="submit" class="primary">{$i18n.core.submit}</button>
 		</div>
 	</form>
@@ -162,6 +175,7 @@
 
 	.toolbar {
 		display: flex;
+		align-items: center;
 		margin: var(--padding-2x) 0 0;
 		gap: var(--padding-2x);
 	}

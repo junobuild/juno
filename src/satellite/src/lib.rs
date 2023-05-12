@@ -3,6 +3,7 @@ mod db;
 mod guards;
 mod impls;
 mod list;
+mod msg;
 mod rules;
 mod storage;
 mod types;
@@ -14,8 +15,10 @@ use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{DbStableState, Doc};
 use crate::guards::caller_is_admin_controller;
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
-use crate::rules::store::{get_rules_db, get_rules_storage, set_rule_db, set_rule_storage};
-use crate::rules::types::interface::SetRule;
+use crate::rules::store::{
+    del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
+};
+use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
 use crate::storage::cert::update_certified_data;
 use crate::storage::http::{
@@ -219,6 +222,15 @@ fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
     match rules_type {
         RulesType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
         RulesType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
+    }
+}
+
+#[candid_method(update)]
+#[update(guard = "caller_is_admin_controller")]
+fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
+    match rules_type {
+        RulesType::Db => del_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
+        RulesType::Storage => del_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }
 }
 

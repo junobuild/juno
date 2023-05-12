@@ -89,7 +89,9 @@ pub mod list {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ListResults<T> {
         pub items: Vec<(Key, T)>,
-        pub length: usize,
+        pub items_length: usize,
+        pub items_page: Option<usize>,
         pub matches_length: usize,
+        pub matches_pages: Option<usize>,
     }
 }

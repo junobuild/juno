@@ -105,9 +105,11 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64
 	});
 	const ListResults = IDL.Record({
+		matches_pages: IDL.Opt(IDL.Nat64),
 		matches_length: IDL.Nat64,
-		length: IDL.Nat64,
-		items: IDL.Vec(IDL.Tuple(IDL.Text, AssetNoContent))
+		items_page: IDL.Opt(IDL.Nat64),
+		items: IDL.Vec(IDL.Tuple(IDL.Text, AssetNoContent)),
+		items_length: IDL.Nat64
 	});
 	const CustomDomain = IDL.Record({
 		updated_at: IDL.Nat64,
@@ -115,9 +117,11 @@ export const idlFactory = ({ IDL }) => {
 		bn_id: IDL.Opt(IDL.Text)
 	});
 	const ListResults_1 = IDL.Record({
+		matches_pages: IDL.Opt(IDL.Nat64),
 		matches_length: IDL.Nat64,
-		length: IDL.Nat64,
-		items: IDL.Vec(IDL.Tuple(IDL.Text, Doc))
+		items_page: IDL.Opt(IDL.Nat64),
+		items: IDL.Vec(IDL.Tuple(IDL.Text, Doc)),
+		items_length: IDL.Nat64
 	});
 	const Permission = IDL.Variant({
 		Controllers: IDL.Null,

@@ -1,5 +1,6 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const MetadataMap = IDL.Rec();
 	const ArchiveConfig = IDL.Record({
 		polling_interval_ns: IDL.Nat64,
 		entries_buffer_limit: IDL.Nat64,
@@ -11,12 +12,25 @@ export const idlFactory = ({ IDL }) => {
 		time_per_token_ns: IDL.Nat64
 	});
 	const InternetIdentityInit = IDL.Record({
+		max_num_latest_delegation_origins: IDL.Opt(IDL.Nat64),
 		assigned_user_number_range: IDL.Opt(IDL.Tuple(IDL.Nat64, IDL.Nat64)),
 		archive_config: IDL.Opt(ArchiveConfig),
 		canister_creation_cycles_cost: IDL.Opt(IDL.Nat64),
 		register_rate_limit: IDL.Opt(RateLimitConfig)
 	});
 	const UserNumber = IDL.Nat64;
+	MetadataMap.fill(
+		IDL.Vec(
+			IDL.Tuple(
+				IDL.Text,
+				IDL.Variant({
+					map: MetadataMap,
+					string: IDL.Text,
+					bytes: IDL.Vec(IDL.Nat8)
+				})
+			)
+		)
+	);
 	const DeviceProtection = IDL.Variant({
 		unprotected: IDL.Null,
 		protected: IDL.Null
@@ -36,6 +50,7 @@ export const idlFactory = ({ IDL }) => {
 	const CredentialId = IDL.Vec(IDL.Nat8);
 	const DeviceData = IDL.Record({
 		alias: IDL.Text,
+		metadata: IDL.Opt(MetadataMap),
 		origin: IDL.Opt(IDL.Text),
 		protection: DeviceProtection,
 		pubkey: DeviceKey,
@@ -80,6 +95,7 @@ export const idlFactory = ({ IDL }) => {
 	const DeviceWithUsage = IDL.Record({
 		alias: IDL.Text,
 		last_usage: IDL.Opt(Timestamp),
+		metadata: IDL.Opt(MetadataMap),
 		origin: IDL.Opt(IDL.Text),
 		protection: DeviceProtection,
 		pubkey: DeviceKey,
@@ -145,6 +161,24 @@ export const idlFactory = ({ IDL }) => {
 		canister_full: IDL.Null,
 		registered: IDL.Record({ user_number: UserNumber })
 	});
+	const DomainActiveAnchorCounter = IDL.Record({
+		start_timestamp: Timestamp,
+		internetcomputer_org_counter: IDL.Nat64,
+		ic0_app_counter: IDL.Nat64,
+		both_ii_domains_counter: IDL.Nat64
+	});
+	const DomainCompletedActiveAnchorStats = IDL.Record({
+		monthly_active_anchors: IDL.Opt(DomainActiveAnchorCounter),
+		daily_active_anchors: IDL.Opt(DomainActiveAnchorCounter)
+	});
+	const DomainOngoingActiveAnchorStats = IDL.Record({
+		monthly_active_anchors: IDL.Vec(DomainActiveAnchorCounter),
+		daily_active_anchors: DomainActiveAnchorCounter
+	});
+	const DomainActiveAnchorStatistics = IDL.Record({
+		completed: DomainCompletedActiveAnchorStats,
+		ongoing: DomainOngoingActiveAnchorStats
+	});
 	const ArchiveInfo = IDL.Record({
 		archive_config: IDL.Opt(ArchiveConfig),
 		archive_canister: IDL.Opt(IDL.Principal)
@@ -168,7 +202,10 @@ export const idlFactory = ({ IDL }) => {
 	const InternetIdentityStats = IDL.Record({
 		storage_layout_version: IDL.Nat8,
 		users_registered: IDL.Nat64,
+		domain_active_anchor_stats: IDL.Opt(DomainActiveAnchorStatistics),
+		max_num_latest_delegation_origins: IDL.Nat64,
 		assigned_user_number_range: IDL.Tuple(IDL.Nat64, IDL.Nat64),
+		latest_delegation_origins: IDL.Vec(FrontendHostname),
 		archive_info: ArchiveInfo,
 		canister_creation_cycles_cost: IDL.Nat64,
 		active_anchor_stats: IDL.Opt(ActiveAnchorStatistics)
@@ -205,7 +242,11 @@ export const idlFactory = ({ IDL }) => {
 			[UserKey, Timestamp],
 			[]
 		),
-		register: IDL.Func([DeviceData, ChallengeResult], [RegisterResponse], []),
+		register: IDL.Func(
+			[DeviceData, ChallengeResult, IDL.Opt(IDL.Principal)],
+			[RegisterResponse],
+			[]
+		),
 		remove: IDL.Func([UserNumber, DeviceKey], [], []),
 		replace: IDL.Func([UserNumber, DeviceKey, DeviceData], [], []),
 		stats: IDL.Func([], [InternetIdentityStats], ['query']),
@@ -226,6 +267,7 @@ export const init = ({ IDL }) => {
 		time_per_token_ns: IDL.Nat64
 	});
 	const InternetIdentityInit = IDL.Record({
+		max_num_latest_delegation_origins: IDL.Opt(IDL.Nat64),
 		assigned_user_number_range: IDL.Opt(IDL.Tuple(IDL.Nat64, IDL.Nat64)),
 		archive_config: IDL.Opt(ArchiveConfig),
 		canister_creation_cycles_cost: IDL.Opt(IDL.Nat64),

@@ -66,6 +66,7 @@ export type DeployArchiveResult =
 	| { failed: string };
 export interface DeviceData {
 	alias: string;
+	metadata: [] | [MetadataMap];
 	origin: [] | [string];
 	protection: DeviceProtection;
 	pubkey: DeviceKey;
@@ -82,12 +83,31 @@ export interface DeviceRegistrationInfo {
 export interface DeviceWithUsage {
 	alias: string;
 	last_usage: [] | [Timestamp];
+	metadata: [] | [MetadataMap];
 	origin: [] | [string];
 	protection: DeviceProtection;
 	pubkey: DeviceKey;
 	key_type: KeyType;
 	purpose: Purpose;
 	credential_id: [] | [CredentialId];
+}
+export interface DomainActiveAnchorCounter {
+	start_timestamp: Timestamp;
+	internetcomputer_org_counter: bigint;
+	ic0_app_counter: bigint;
+	both_ii_domains_counter: bigint;
+}
+export interface DomainActiveAnchorStatistics {
+	completed: DomainCompletedActiveAnchorStats;
+	ongoing: DomainOngoingActiveAnchorStats;
+}
+export interface DomainCompletedActiveAnchorStats {
+	monthly_active_anchors: [] | [DomainActiveAnchorCounter];
+	daily_active_anchors: [] | [DomainActiveAnchorCounter];
+}
+export interface DomainOngoingActiveAnchorStats {
+	monthly_active_anchors: Array<DomainActiveAnchorCounter>;
+	daily_active_anchors: DomainActiveAnchorCounter;
 }
 export type FrontendHostname = string;
 export type GetDelegationResponse =
@@ -112,6 +132,7 @@ export interface IdentityAnchorInfo {
 	device_registration: [] | [DeviceRegistrationInfo];
 }
 export interface InternetIdentityInit {
+	max_num_latest_delegation_origins: [] | [bigint];
 	assigned_user_number_range: [] | [[bigint, bigint]];
 	archive_config: [] | [ArchiveConfig];
 	canister_creation_cycles_cost: [] | [bigint];
@@ -120,7 +141,10 @@ export interface InternetIdentityInit {
 export interface InternetIdentityStats {
 	storage_layout_version: number;
 	users_registered: bigint;
+	domain_active_anchor_stats: [] | [DomainActiveAnchorStatistics];
+	max_num_latest_delegation_origins: bigint;
 	assigned_user_number_range: [bigint, bigint];
+	latest_delegation_origins: Array<FrontendHostname>;
 	archive_info: ArchiveInfo;
 	canister_creation_cycles_cost: bigint;
 	active_anchor_stats: [] | [ActiveAnchorStatistics];
@@ -130,6 +154,9 @@ export type KeyType =
 	| { seed_phrase: null }
 	| { cross_platform: null }
 	| { unknown: null };
+export type MetadataMap = Array<
+	[string, { map: MetadataMap } | { string: string } | { bytes: Uint8Array | number[] }]
+>;
 export interface OngoingActiveAnchorStats {
 	monthly_active_anchors: Array<ActiveAnchorCounter>;
 	daily_active_anchors: ActiveAnchorCounter;
@@ -195,7 +222,7 @@ export interface _SERVICE {
 		[UserNumber, FrontendHostname, SessionKey, [] | [bigint]],
 		[UserKey, Timestamp]
 	>;
-	register: ActorMethod<[DeviceData, ChallengeResult], RegisterResponse>;
+	register: ActorMethod<[DeviceData, ChallengeResult, [] | [Principal]], RegisterResponse>;
 	remove: ActorMethod<[UserNumber, DeviceKey], undefined>;
 	replace: ActorMethod<[UserNumber, DeviceKey, DeviceData], undefined>;
 	stats: ActorMethod<[], InternetIdentityStats>;

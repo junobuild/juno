@@ -28,9 +28,7 @@ export const listDocs = async ({
 	params: ListParams;
 }): Promise<ListDocs> => {
 	const actor = await getSatelliteActor(satelliteId);
-	const result = await actor.list_docs(collection, toListParams(params));
-	console.log(result);
-	return result;
+	return actor.list_docs(collection, toListParams(params));
 };
 
 export const listAssets = async ({

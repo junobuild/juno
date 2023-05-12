@@ -55,29 +55,6 @@ fn delete_collection_impl(collection: String, db: &mut Db) -> Result<(), String>
     }
 }
 
-/**
-let col = db.get_mut(&collection);
-
-    match col {
-        None => Err("Collection has not been initialized.".to_string()),
-        Some(col) => {
-            let current_doc = col.get(&key);
-
-            match assert_write_permission(caller, controllers, current_doc, rule, value.updated_at)
-            {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
-                }
-            }
-
-            col.remove(&key);
-
-            Ok(())
-        }
-    }
-*/
-
 /// Get
 
 pub fn get_doc(caller: Principal, collection: String, key: String) -> Result<Option<Doc>, String> {

@@ -4,7 +4,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { Principal } from '@dfinity/principal';
+	import type { Principal } from '@dfinity/principal';
 	import type { SetControllerParams, SetControllerScope } from '$lib/types/controllers';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';

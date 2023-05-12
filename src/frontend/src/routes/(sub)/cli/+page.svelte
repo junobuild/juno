@@ -103,7 +103,8 @@
 							setMissionControlControllerForVersion({
 								missionControlId: $missionControlStore,
 								controllerId: principal,
-								profile
+								profile,
+								scope: 'admin'
 							})
 					  ]
 					: []),
@@ -113,7 +114,8 @@
 								missionControlId: $missionControlStore,
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),
-								profile
+								profile,
+								scope: 'admin'
 							})
 					  ]
 					: [])

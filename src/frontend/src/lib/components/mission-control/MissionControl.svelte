@@ -2,7 +2,6 @@
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import type { Principal } from '@dfinity/principal';
-	import type { AccountIdentifier } from '@dfinity/nns';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import Canister from '$lib/components/canister/Canister.svelte';
@@ -14,6 +13,7 @@
 	import { getMissionControlBalance } from '$lib/services/balance.services';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
+	import type { AccountIdentifier } from '@junobuild/ledger';
 
 	let missionControlBalance: MissionControlBalance | undefined = undefined;
 

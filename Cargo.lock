@@ -202,7 +202,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -733,7 +733,7 @@ checksum = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"
 
 [[package]]
 name = "mission_control"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "candid",
  "futures",
@@ -804,7 +804,7 @@ dependencies = [
 
 [[package]]
 name = "observatory"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -1002,7 +1002,7 @@ checksum = "4f3208ce4d8448b3f3e7d168a73f5e0c43a61e32930de3bceeccedb388b6bf06"
 
 [[package]]
 name = "satellite"
-version = "0.0.8"
+version = "0.0.9"
 dependencies = [
  "base64",
  "candid",
@@ -1102,7 +1102,7 @@ dependencies = [
 
 [[package]]
 name = "shared"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "candid",
  "futures",

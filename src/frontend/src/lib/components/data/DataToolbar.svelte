@@ -1,7 +1,8 @@
 <script lang="ts">
 	import DataDelete from '$lib/components/data/DataDelete.svelte';
+	import type { Principal } from '@dfinity/principal';
 
-	export let deleteData: (collection: string) => Promise<void>;
+	export let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
 </script>
 
 <div class="toolbar">

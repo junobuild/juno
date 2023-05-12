@@ -66,7 +66,7 @@
 	out:fade={{ delay: 100 }}
 >
 	<p title={text}>
-		{text} | {reorgDetail ? ` ${reorgDetail}` : ''}
+		{text}{reorgDetail ? ` | ${reorgDetail}` : ''}
 	</p>
 
 	<button class="text" on:click={close} aria-label={$i18n.core.close}><IconClose /></button>

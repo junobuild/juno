@@ -22,7 +22,15 @@ export const toListParams = ({
 	order,
 	filter: { matcher, owner }
 }: ListParams): ListParamsApi => ({
-	matcher: toNullable(matcher === '' ? null : matcher),
+	matcher:
+		isNullish(matcher) || matcher === ''
+			? []
+			: [
+					{
+						key: toNullable(matcher),
+						description: []
+					}
+			  ],
 	paginate: [
 		{
 			start_after: toNullable(startAfter),

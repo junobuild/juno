@@ -79,8 +79,14 @@ pub mod list {
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct ListMatcher {
+        pub key: Option<Key>,
+        pub description: Option<String>,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ListParams {
-        pub matcher: Option<String>,
+        pub matcher: Option<ListMatcher>,
         pub paginate: Option<ListPaginate>,
         pub order: Option<ListOrder>,
         pub owner: Option<UserId>,

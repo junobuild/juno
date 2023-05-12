@@ -29,6 +29,7 @@ export const idlFactory = ({ IDL }) => {
 		updated_at: IDL.Nat64,
 		owner: IDL.Principal,
 		data: IDL.Vec(IDL.Nat8),
+		description: IDL.Opt(IDL.Text),
 		created_at: IDL.Nat64
 	});
 	const HttpRequest = IDL.Record({
@@ -65,6 +66,7 @@ export const idlFactory = ({ IDL }) => {
 		token: IDL.Opt(IDL.Text),
 		collection: IDL.Text,
 		name: IDL.Text,
+		description: IDL.Opt(IDL.Text),
 		encoding_type: IDL.Opt(IDL.Text),
 		full_path: IDL.Text
 	});
@@ -75,6 +77,10 @@ export const idlFactory = ({ IDL }) => {
 		CreatedAt: IDL.Null
 	});
 	const ListOrder = IDL.Record({ field: ListOrderField, desc: IDL.Bool });
+	const ListMatcher = IDL.Record({
+		key: IDL.Opt(IDL.Text),
+		description: IDL.Opt(IDL.Text)
+	});
 	const ListPaginate = IDL.Record({
 		start_after: IDL.Opt(IDL.Text),
 		limit: IDL.Opt(IDL.Nat64)
@@ -82,7 +88,7 @@ export const idlFactory = ({ IDL }) => {
 	const ListParams = IDL.Record({
 		order: IDL.Opt(ListOrder),
 		owner: IDL.Opt(IDL.Principal),
-		matcher: IDL.Opt(IDL.Text),
+		matcher: IDL.Opt(ListMatcher),
 		paginate: IDL.Opt(ListPaginate)
 	});
 	const AssetKey = IDL.Record({
@@ -90,6 +96,7 @@ export const idlFactory = ({ IDL }) => {
 		collection: IDL.Text,
 		owner: IDL.Principal,
 		name: IDL.Text,
+		description: IDL.Opt(IDL.Text),
 		full_path: IDL.Text
 	});
 	const AssetEncodingNoContent = IDL.Record({
@@ -147,7 +154,8 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const SetDoc = IDL.Record({
 		updated_at: IDL.Opt(IDL.Nat64),
-		data: IDL.Vec(IDL.Nat8)
+		data: IDL.Vec(IDL.Nat8),
+		description: IDL.Opt(IDL.Text)
 	});
 	const SetRule = IDL.Record({
 		updated_at: IDL.Opt(IDL.Nat64),

@@ -1,3 +1,4 @@
+mod assert;
 mod controllers;
 mod db;
 mod guards;

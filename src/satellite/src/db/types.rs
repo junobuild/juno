@@ -21,6 +21,7 @@ pub mod state {
         pub data: Vec<u8>,
         pub created_at: u64,
         pub updated_at: u64,
+        pub description: Option<String>,
     }
 }
 
@@ -32,6 +33,7 @@ pub mod interface {
     pub struct SetDoc {
         pub updated_at: Option<u64>,
         pub data: Vec<u8>,
+        pub description: Option<String>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]

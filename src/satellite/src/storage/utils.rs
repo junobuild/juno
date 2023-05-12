@@ -1,3 +1,4 @@
+use crate::list::utils::matcher_regex;
 use crate::rules::types::rules::Permission;
 use crate::rules::utils::assert_rule;
 use crate::storage::types::interface::{AssetEncodingNoContent, AssetNoContent};
@@ -51,13 +52,14 @@ pub fn filter_values(
 ) -> Vec<(FullPath, AssetNoContent)> {
     let all_keys = assets.values().map(map_key);
 
-    let regex: Option<Regex> = matcher.as_ref().map(|filter| Regex::new(filter).unwrap());
+    let (regex_key, regex_description) = matcher_regex(matcher);
 
     all_keys
         .into_iter()
         .filter(|(_, asset)| {
             filter_collection(collection.clone(), asset)
-                && filter_full_path(&regex, asset)
+                && filter_full_path(&regex_key, asset)
+                && filter_description(&regex_description, asset)
                 && filter_owner(*owner, asset)
                 && assert_rule(rule, asset.key.owner, caller, controllers)
         })
@@ -68,6 +70,16 @@ fn filter_full_path(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
     match regex {
         None => true,
         Some(re) => re.is_match(&asset.key.full_path),
+    }
+}
+
+fn filter_description(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
+    match regex {
+        None => true,
+        Some(re) => match &asset.key.description {
+            None => false,
+            Some(description) => re.is_match(description),
+        },
     }
 }
 

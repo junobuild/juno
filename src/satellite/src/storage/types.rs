@@ -77,6 +77,8 @@ pub mod store {
         pub collection: CollectionKey,
         // For security check purpose
         pub owner: UserId,
+        // A description field which can be useful for search purpose
+        pub description: Option<String>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -112,6 +114,7 @@ pub mod interface {
         pub token: Option<String>,
         pub collection: CollectionKey,
         pub encoding_type: Option<String>,
+        pub description: Option<String>,
     }
 
     #[derive(CandidType)]

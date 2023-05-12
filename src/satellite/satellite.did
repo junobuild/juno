@@ -8,6 +8,7 @@ type AssetKey = record {
   collection : text;
   owner : principal;
   name : text;
+  description : opt text;
   full_path : text;
 };
 type AssetNoContent = record {
@@ -43,6 +44,7 @@ type Doc = record {
   updated_at : nat64;
   owner : principal;
   data : vec nat8;
+  description : opt text;
   created_at : nat64;
 };
 type HttpRequest = record {
@@ -61,17 +63,19 @@ type InitAssetKey = record {
   token : opt text;
   collection : text;
   name : text;
+  description : opt text;
   encoding_type : opt text;
   full_path : text;
 };
 type InitUploadResult = record { batch_id : nat };
+type ListMatcher = record { key : opt text; description : opt text };
 type ListOrder = record { field : ListOrderField; desc : bool };
 type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
 type ListPaginate = record { start_after : opt text; limit : opt nat64 };
 type ListParams = record {
   order : opt ListOrder;
   owner : opt principal;
-  matcher : opt text;
+  matcher : opt ListMatcher;
   paginate : opt ListPaginate;
 };
 type ListResults = record {
@@ -106,7 +110,11 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
-type SetDoc = record { updated_at : opt nat64; data : vec nat8 };
+type SetDoc = record {
+  updated_at : opt nat64;
+  data : vec nat8;
+  description : opt text;
+};
 type SetRule = record {
   updated_at : opt nat64;
   max_size : opt nat;

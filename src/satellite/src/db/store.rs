@@ -1,3 +1,4 @@
+use crate::assert::assert_description_length;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Collection, Db, Doc};
 use crate::db::utils::filter_values;
@@ -73,7 +74,7 @@ fn secure_get_doc(
     let rules = state.stable.db.rules.get(&collection);
 
     match rules {
-        None => Err(COLLECTION_READ_RULE_MISSING.to_string()),
+        None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
         Some(rule) => get_doc_impl(
             caller,
             controllers,
@@ -184,6 +185,8 @@ fn insert_doc_impl(
                 }
             }
 
+            assert_description_length(&value.description)?;
+
             let now = time();
 
             let created_at: u64 = match current_doc {
@@ -198,6 +201,7 @@ fn insert_doc_impl(
                 updated_at,
                 data: value.data,
                 owner: caller,
+                description: value.description,
             };
 
             col.insert(key, doc.clone());
@@ -229,7 +233,7 @@ fn secure_get_docs(
     let rules = state.stable.db.rules.get(&collection);
 
     match rules {
-        None => Err(COLLECTION_READ_RULE_MISSING.to_string()),
+        None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
         Some(rule) => get_docs_impl(
             caller,
             controllers,

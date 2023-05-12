@@ -176,6 +176,7 @@ interface I18nDocument {
 	data: string;
 	no_match: string;
 	delete: string;
+	description: string;
 }
 
 interface I18nAsset {
@@ -186,6 +187,7 @@ interface I18nAsset {
 	updated: string;
 	no_match: string;
 	delete: string;
+	description: string;
 }
 
 interface I18nAdmin {

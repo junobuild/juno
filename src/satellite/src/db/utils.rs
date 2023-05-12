@@ -1,4 +1,5 @@
 use crate::db::types::state::{Collection, Doc};
+use crate::list::utils::matcher_regex;
 use crate::rules::types::rules::Permission;
 use crate::rules::utils::assert_rule;
 use crate::types::core::Key;
@@ -19,11 +20,12 @@ pub fn filter_values(
         owner,
     }: &ListParams,
 ) -> Vec<(Key, Doc)> {
-    let regex: Option<Regex> = matcher.as_ref().map(|filter| Regex::new(filter).unwrap());
+    let (regex_key, regex_description) = matcher_regex(matcher);
 
     col.iter()
         .filter(|(key, doc)| {
-            filter_matcher(&regex, key)
+            filter_key_matcher(&regex_key, key)
+                && filter_description_matcher(&regex_description, &doc.description)
                 && filter_owner(owner, &doc.owner)
                 && assert_rule(rule, doc.owner, caller, controllers)
         })
@@ -31,10 +33,20 @@ pub fn filter_values(
         .collect()
 }
 
-fn filter_matcher(regex: &Option<Regex>, key: &Key) -> bool {
+fn filter_key_matcher(regex: &Option<Regex>, key: &Key) -> bool {
     match regex {
         None => true,
         Some(re) => re.is_match(key),
+    }
+}
+
+fn filter_description_matcher(regex: &Option<Regex>, description: &Option<String>) -> bool {
+    match regex {
+        None => true,
+        Some(re) => match description {
+            None => false,
+            Some(description) => re.is_match(description),
+        },
     }
 }
 

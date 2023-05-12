@@ -4,7 +4,7 @@
 	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
-	import { fromArray } from '$lib/utils/did.utils';
+	import { fromArray, fromNullable } from '$lib/utils/did.utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import Json from '$lib/components/ui/Json.svelte';
@@ -23,6 +23,9 @@
 
 	let owner: Principal | undefined;
 	$: owner = doc?.owner;
+
+	let description: string | undefined;
+	$: description = nonNullish(doc) ? fromNullable(doc.description) : undefined;
 
 	let obj: unknown | undefined = undefined;
 	$: (async () =>
@@ -60,6 +63,13 @@
 			</Value>
 		</div>
 
+		{#if nonNullish(description)}
+			<Value>
+				<svelte:fragment slot="label">{$i18n.document.description}</svelte:fragment>
+				<p class="description">{description}</p>
+			</Value>
+		{/if}
+
 		<div class="date">
 			<Value>
 				<svelte:fragment slot="label">{$i18n.document.created}</svelte:fragment>
@@ -91,6 +101,7 @@
 <style lang="scss">
 	@use '../../styles/mixins/collections';
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/text';
 
 	.title {
 		@include collections.title;
@@ -123,5 +134,9 @@
 
 	.json {
 		padding: var(--padding-2x) 0;
+	}
+
+	.description {
+		@include text.clamp(5);
 	}
 </style>

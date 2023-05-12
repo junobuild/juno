@@ -3,9 +3,6 @@ use crate::upgrade::types::upgrade::UpgradeStableState;
 use shared::types::state::ControllerScope;
 use shared::upgrade::upgrade_controllers;
 
-///
-/// v0.0.4 -> v0.0.x:
-///
 impl From<&UpgradeStableState> for StableState {
     fn from(state: &UpgradeStableState) -> Self {
         StableState {

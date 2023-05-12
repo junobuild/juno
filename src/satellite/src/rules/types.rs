@@ -40,4 +40,9 @@ pub mod interface {
         pub write: Permission,
         pub max_size: Option<u128>,
     }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct DelRule {
+        pub updated_at: Option<u64>,
+    }
 }

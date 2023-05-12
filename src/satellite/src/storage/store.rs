@@ -1,4 +1,9 @@
 use crate::list::utils::list_values;
+use crate::msg::{
+    COLLECTION_NOT_EMPTY, COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING,
+    COLLECTION_WRITE_RULE_MISSING, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH,
+    UPLOAD_NOT_ALLOWED,
+};
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
 use ic_cdk::api::time;
@@ -22,7 +27,7 @@ use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey
 use crate::storage::types::state::{Assets, FullPath, StorageRuntimeState, StorageStableState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
 use crate::storage::url::{map_alternative_paths, map_url};
-use crate::storage::utils::filter_values;
+use crate::storage::utils::{filter_collection_values, filter_values};
 use crate::types::core::CollectionKey;
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};
@@ -110,6 +115,12 @@ pub fn list_assets(
     })
 }
 
+pub fn assert_assets_collection_empty(collection: String) -> Result<(), String> {
+    STATE.with(|state| {
+        assert_assets_collection_empty_impl(collection, &state.borrow().stable.storage)
+    })
+}
+
 fn get_public_asset_impl(
     full_path: String,
     token: Option<String>,
@@ -143,6 +154,26 @@ fn get_token_protected_asset(
     }
 }
 
+fn assert_assets_collection_empty_impl(
+    collection: String,
+    state: &StorageStableState,
+) -> Result<(), String> {
+    let col = state.rules.get(&collection);
+
+    match col {
+        None => Err([COLLECTION_NOT_FOUND, &collection.clone()].join("")),
+        Some(_) => {
+            let values = filter_collection_values(collection.clone(), &state.assets);
+
+            if !values.is_empty() {
+                return Err([COLLECTION_NOT_EMPTY, &collection].join(""));
+            }
+
+            Ok(())
+        }
+    }
+}
+
 fn secure_list_assets_impl(
     caller: Principal,
     controllers: &Controllers,
@@ -153,7 +184,7 @@ fn secure_list_assets_impl(
     let rules = state.rules.get(&collection);
 
     match rules {
-        None => Err("Collection read rule not configured.".to_string()),
+        None => Err(COLLECTION_READ_RULE_MISSING.to_string()),
         Some(rule) => Ok(list_assets_impl(
             caller,
             controllers,
@@ -206,8 +237,6 @@ fn secure_delete_asset_impl(
         ),
     }
 }
-
-const ERROR_ASSET_NOT_FOUND: &str = "No asset.";
 
 fn delete_asset_impl(
     caller: Principal,
@@ -273,9 +302,6 @@ pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), 
         commit_batch_impl(caller, &controllers, commit_batch, &mut state.borrow_mut())
     })
 }
-
-const UPLOAD_NOT_ALLOWED: &str = "Caller not allowed to upload data.";
-const COLLECTION_WRITE_RULE_MISSING: &str = "Collection write rule not configured: ";
 
 fn secure_create_batch_impl(
     caller: Principal,
@@ -389,8 +415,6 @@ fn create_chunk_impl(
         }
     }
 }
-
-const ERROR_CANNOT_COMMIT_BATCH: &str = "Cannot commit batch.";
 
 fn commit_batch_impl(
     caller: Principal,

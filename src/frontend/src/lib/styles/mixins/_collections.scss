@@ -42,7 +42,7 @@
 
 @mixin action {
 	text-decoration: none;
-	width: calc(100% - var(--padding-6x));
+	width: calc(100% - var(--padding-8x));
 	justify-content: flex-start;
 
 	margin: var(--padding-2x) var(--padding-3x);

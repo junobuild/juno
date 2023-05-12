@@ -1,7 +1,8 @@
-use crate::db::store::init_collection;
+use crate::db::store::{delete_collection, init_collection};
 use crate::rules::constants::SYS_COLLECTION_PREFIX;
-use crate::rules::types::interface::SetRule;
+use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::{Rule, Rules};
+use crate::storage::store::assert_assets_collection_empty;
 use crate::types::core::CollectionKey;
 use crate::STATE;
 use ic_cdk::api::time;
@@ -50,6 +51,28 @@ pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), 
     })
 }
 
+pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
+    // We delete the empty collection first.
+    delete_collection(collection.clone())?;
+
+    STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().stable.db.rules))?;
+
+    Ok(())
+}
+
+pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
+    // Only unused rule can be removed
+    assert_assets_collection_empty(collection.clone())?;
+
+    STATE.with(|state| {
+        del_rule_impl(
+            collection,
+            rule,
+            &mut state.borrow_mut().stable.storage.rules,
+        )
+    })
+}
+
 fn set_rule_impl(
     collection: CollectionKey,
     user_rule: SetRule,
@@ -57,7 +80,7 @@ fn set_rule_impl(
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    match assert_write_permission(&collection, current_rule, &user_rule) {
+    match assert_write_permission(&collection, current_rule, &user_rule.updated_at) {
         Ok(_) => (),
         Err(e) => {
             return Err(e);
@@ -86,22 +109,39 @@ fn set_rule_impl(
     Ok(())
 }
 
+fn del_rule_impl(
+    collection: CollectionKey,
+    user_rule: DelRule,
+    rules: &mut Rules,
+) -> Result<(), String> {
+    let current_rule = rules.get(&collection);
+
+    match assert_write_permission(&collection, current_rule, &user_rule.updated_at) {
+        Ok(_) => (),
+        Err(e) => {
+            return Err(e);
+        }
+    }
+
+    rules.remove(&collection);
+
+    Ok(())
+}
+
 fn assert_write_permission(
     collection: &CollectionKey,
     current_rule: Option<&Rule>,
-    user_rule: &SetRule,
+    updated_at: &Option<u64>,
 ) -> Result<(), String> {
     // Validate timestamp
     match current_rule {
         None => (),
-        Some(current_rule) => {
-            match assert_timestamp(user_rule.updated_at, current_rule.updated_at) {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
-                }
+        Some(current_rule) => match assert_timestamp(*updated_at, current_rule.updated_at) {
+            Ok(_) => (),
+            Err(e) => {
+                return Err(e);
             }
-        }
+        },
     }
 
     if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) {

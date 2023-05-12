@@ -2,6 +2,10 @@ use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Collection, Db, Doc};
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
+use crate::msg::{
+    COLLECTION_NOT_EMPTY, COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING,
+    COLLECTION_WRITE_RULE_MISSING, ERROR_CANNOT_WRITE,
+};
 use crate::rules::types::rules::Permission;
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::list::{ListParams, ListResults};
@@ -13,8 +17,14 @@ use shared::assert::assert_timestamp;
 use shared::types::state::Controllers;
 use std::collections::BTreeMap;
 
+/// Collection
+
 pub fn init_collection(collection: String) {
     STATE.with(|state| init_collection_impl(collection, &mut state.borrow_mut().stable.db.db))
+}
+
+pub fn delete_collection(collection: String) -> Result<(), String> {
+    STATE.with(|state| delete_collection_impl(collection, &mut state.borrow_mut().stable.db.db))
 }
 
 fn init_collection_impl(collection: String, db: &mut Db) {
@@ -27,6 +37,46 @@ fn init_collection_impl(collection: String, db: &mut Db) {
         }
     }
 }
+
+fn delete_collection_impl(collection: String, db: &mut Db) -> Result<(), String> {
+    let col = db.get_mut(&collection);
+
+    match col {
+        None => Err([COLLECTION_NOT_FOUND, &collection].join("")),
+        Some(col) => {
+            if !col.is_empty() {
+                return Err([COLLECTION_NOT_EMPTY, &collection].join(""));
+            }
+
+            db.remove(&collection);
+
+            Ok(())
+        }
+    }
+}
+
+/**
+let col = db.get_mut(&collection);
+
+    match col {
+        None => Err("Collection has not been initialized.".to_string()),
+        Some(col) => {
+            let current_doc = col.get(&key);
+
+            match assert_write_permission(caller, controllers, current_doc, rule, value.updated_at)
+            {
+                Ok(_) => (),
+                Err(e) => {
+                    return Err(e);
+                }
+            }
+
+            col.remove(&key);
+
+            Ok(())
+        }
+    }
+*/
 
 /// Get
 
@@ -46,7 +96,7 @@ fn secure_get_doc(
     let rules = state.stable.db.rules.get(&collection);
 
     match rules {
-        None => Err("Collection read rule not configured.".to_string()),
+        None => Err(COLLECTION_READ_RULE_MISSING.to_string()),
         Some(rule) => get_doc_impl(
             caller,
             controllers,
@@ -69,7 +119,7 @@ fn get_doc_impl(
     let col = db.get(&collection);
 
     match col {
-        None => Err(["Collection not found: ", &*collection].join("")),
+        None => Err([COLLECTION_NOT_FOUND, &*collection].join("")),
         Some(col) => {
             let value = col.get(&key);
 
@@ -88,8 +138,6 @@ fn get_doc_impl(
 }
 
 /// Insert
-
-const COLLECTION_WRITE_RULE_MISSING: &str = "Collection write rule not configured: ";
 
 pub fn insert_doc(
     caller: Principal,
@@ -147,7 +195,7 @@ fn insert_doc_impl(
     let col = db.get_mut(&collection);
 
     match col {
-        None => Err("Collection has not been initialized.".to_string()),
+        None => Err([COLLECTION_NOT_FOUND, &collection].join("")),
         Some(col) => {
             let current_doc = col.get(&key);
 
@@ -204,7 +252,7 @@ fn secure_get_docs(
     let rules = state.stable.db.rules.get(&collection);
 
     match rules {
-        None => Err("Collection read rule not configured.".to_string()),
+        None => Err(COLLECTION_READ_RULE_MISSING.to_string()),
         Some(rule) => get_docs_impl(
             caller,
             controllers,
@@ -227,7 +275,7 @@ fn get_docs_impl(
     let col = db.get(&collection);
 
     match col {
-        None => Err(["Collection not found: ", &collection].join("")),
+        None => Err([COLLECTION_NOT_FOUND, &collection].join("")),
         Some(col) => Ok(get_values(caller, controllers, rule, col, filter)),
     }
 }
@@ -302,7 +350,7 @@ fn delete_doc_impl(
     let col = db.get_mut(&collection);
 
     match col {
-        None => Err("Collection has not been initialized.".to_string()),
+        None => Err([COLLECTION_NOT_FOUND, &collection].join("")),
         Some(col) => {
             let current_doc = col.get(&key);
 
@@ -320,8 +368,6 @@ fn delete_doc_impl(
         }
     }
 }
-
-const ERROR_CANNOT_WRITE: &str = "Cannot write.";
 
 fn assert_write_permission(
     caller: Principal,

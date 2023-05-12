@@ -149,7 +149,11 @@
 		"collection_invalid": "Collection is invalid or empty.",
 		"controller_invalid": "Controller is invalid or empty.",
 		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
-		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data."
+		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data.",
+		"collection_added": "Collection {0} cannot be added.",
+		"collection_updated": "Collection {0} cannot be updated.",
+		"collection_deleted": "Collection {0} cannot be deleted.",
+		"rule_invalid": "Rule should exist."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -210,7 +214,11 @@
 		"private": "私有",
 		"managed": "可管理的",
 		"controllers": "控制者",
-		"empty": "Your collection <strong>{0}</strong> is empty."
+		"empty": "Your collection <strong>{0}</strong> is empty.",
+		"added": "Collection {0} added.",
+		"updated": "Collection {0} updated.",
+		"deleted": "Collection {0} deleted.",
+		"delete_question": "Delete collection?"
 	},
 	"sort": {
 		"title": "排序结果",

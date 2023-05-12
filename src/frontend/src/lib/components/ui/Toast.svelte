@@ -5,6 +5,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { onDestroy, onMount } from 'svelte';
+	import { isNullish, last, nonNullish } from '$lib/utils/utils';
 
 	export let msg: ToastMsg;
 
@@ -31,6 +32,29 @@
 	});
 
 	onDestroy(() => clearTimeout(timer));
+
+	let reorgDetail: string | undefined;
+	$: detail,
+		(() => {
+			if (isNullish(detail)) {
+				reorgDetail = undefined;
+				return;
+			}
+
+			// Present the message we throw in the backend first
+			const trapKeywords = 'trapped explicitly:' as const;
+
+			if (!detail.includes(trapKeywords)) {
+				reorgDetail = detail;
+				return;
+			}
+
+			const splits = detail.split(trapKeywords);
+			const last = splits.splice(-1);
+			reorgDetail = `${last[0]?.trim() ?? ''}${
+				splits.length > 0 ? ` | Stacktrace: ${splits.join('').trim()}` : ''
+			}`;
+		})();
 </script>
 
 <div
@@ -42,7 +66,7 @@
 	out:fade={{ delay: 100 }}
 >
 	<p title={text}>
-		{text}{detail ? ` ${detail}` : ''}
+		{text}{reorgDetail ? ` | ${reorgDetail}` : ''}
 	</p>
 
 	<button class="text" on:click={close} aria-label={$i18n.core.close}><IconClose /></button>

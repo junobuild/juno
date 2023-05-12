@@ -1,3 +1,4 @@
+use crate::assert::assert_description_length;
 use crate::list::utils::list_values;
 use crate::msg::{
     COLLECTION_NOT_EMPTY, COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING,
@@ -184,7 +185,7 @@ fn secure_list_assets_impl(
     let rules = state.rules.get(&collection);
 
     match rules {
-        None => Err(COLLECTION_READ_RULE_MISSING.to_string()),
+        None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
         Some(rule) => Ok(list_assets_impl(
             caller,
             controllers,
@@ -327,6 +328,8 @@ fn secure_create_batch_impl(
                 &state.stable.controllers,
             )?;
 
+            assert_description_length(&init.description)?;
+
             // Assert supported encoding type
             get_encoding_type(&init.encoding_type)?;
 
@@ -347,6 +350,7 @@ fn create_batch_impl(
         collection,
         encoding_type,
         full_path,
+        description,
     }: InitAssetKey,
     state: &mut StorageRuntimeState,
 ) -> u128 {
@@ -363,6 +367,7 @@ fn create_batch_impl(
             owner: caller,
             token,
             name,
+            description,
         };
 
         state.batches.insert(

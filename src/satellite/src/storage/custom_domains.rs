@@ -14,6 +14,7 @@ pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<
         token: None,
         collection: "#dapp".to_string(),
         owner: id(),
+        description: None,
     };
 
     let mut asset: Asset = Asset {

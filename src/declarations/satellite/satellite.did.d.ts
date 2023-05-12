@@ -11,6 +11,7 @@ export interface AssetKey {
 	collection: string;
 	owner: Principal;
 	name: string;
+	description: [] | [string];
 	full_path: string;
 }
 export interface AssetNoContent {
@@ -55,6 +56,7 @@ export interface Doc {
 	updated_at: bigint;
 	owner: Principal;
 	data: Uint8Array | number[];
+	description: [] | [string];
 	created_at: bigint;
 }
 export interface HttpRequest {
@@ -73,11 +75,16 @@ export interface InitAssetKey {
 	token: [] | [string];
 	collection: string;
 	name: string;
+	description: [] | [string];
 	encoding_type: [] | [string];
 	full_path: string;
 }
 export interface InitUploadResult {
 	batch_id: bigint;
+}
+export interface ListMatcher {
+	key: [] | [string];
+	description: [] | [string];
 }
 export interface ListOrder {
 	field: ListOrderField;
@@ -91,7 +98,7 @@ export interface ListPaginate {
 export interface ListParams {
 	order: [] | [ListOrder];
 	owner: [] | [Principal];
-	matcher: [] | [string];
+	matcher: [] | [ListMatcher];
 	paginate: [] | [ListPaginate];
 }
 export interface ListResults {
@@ -133,6 +140,7 @@ export interface SetControllersArgs {
 export interface SetDoc {
 	updated_at: [] | [bigint];
 	data: Uint8Array | number[];
+	description: [] | [string];
 }
 export interface SetRule {
 	updated_at: [] | [bigint];

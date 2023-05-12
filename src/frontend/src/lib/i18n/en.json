@@ -161,7 +161,8 @@
 		"updated": "Updated",
 		"data": "Data",
 		"no_match": "No document matches your filters.",
-		"delete": "Delete document?"
+		"delete": "Delete document?",
+		"description": "Description"
 	},
 	"asset": {
 		"owner": "Owner",
@@ -170,7 +171,8 @@
 		"created": "Created",
 		"updated": "Updated",
 		"no_match": "No asset matches your filters.",
-		"delete": "Delete asset?"
+		"delete": "Delete asset?",
+		"description": "Description"
 	},
 	"admin": {
 		"mission_control_new_version": "A new version of your mission control is available! Upgrade it with the CLI.",

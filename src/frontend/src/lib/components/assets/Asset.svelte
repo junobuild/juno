@@ -27,13 +27,16 @@
 	$: owner = asset?.key.owner;
 
 	let token: string | undefined;
-	$: token = asset ? fromNullable(asset.key.token) : undefined;
+	$: token = nonNullish(asset) ? fromNullable(asset.key.token) : undefined;
 
 	let headers: [string, string][];
 	$: headers = asset?.headers ?? [];
 
 	let full_path: string | undefined;
 	$: full_path = asset?.key.full_path;
+
+	let description: string | undefined;
+	$: description = nonNullish(asset) ? fromNullable(asset.key.description) : undefined;
 
 	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
 	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
@@ -63,6 +66,13 @@
 				<Identifier identifier={owner?.toText() ?? ''} />
 			</Value>
 		</div>
+
+		{#if nonNullish(description)}
+			<Value>
+				<svelte:fragment slot="label">{$i18n.asset.description}</svelte:fragment>
+				<p class="description">{description}</p>
+			</Value>
+		{/if}
 
 		{#if nonNullish(token)}
 			<div class="data">

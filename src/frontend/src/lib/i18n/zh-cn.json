@@ -161,7 +161,8 @@
 		"updated": "更新于",
 		"data": "数据",
 		"no_match": "No document matches your filters.",
-		"delete": "Delete document?"
+		"delete": "Delete document?",
+		"description": "Description"
 	},
 	"asset": {
 		"owner": "拥有者",
@@ -170,7 +171,8 @@
 		"created": "创建于",
 		"updated": "更新于",
 		"no_match": "No asset matches your filters.",
-		"delete": "Delete asset?"
+		"delete": "Delete asset?",
+		"description": "Description"
 	},
 	"admin": {
 		"mission_control_new_version": "有一个新mission control版本可以使用! 请用命令行来升级.",

@@ -1,6 +1,9 @@
 use crate::types::core::Compare;
 use crate::types::core::Key;
-use crate::types::list::{ListOrder, ListOrderField, ListPaginate, ListParams, ListResults};
+use crate::types::list::{
+    ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults,
+};
+use regex::Regex;
 
 pub fn list_values<T: Clone + Compare>(
     matches: Vec<(Key, T)>,
@@ -28,12 +31,10 @@ pub fn list_values<T: Clone + Compare>(
 fn current_page(start_at: Option<usize>, filters: &ListParams) -> Option<usize> {
     match start_at {
         None => None,
-        Some(start_at) => {
-            match filters.clone().paginate {
-                None => None,
-                Some(paginate) => paginate.limit.map(|limit| start_at / limit),
-            }
-        }
+        Some(start_at) => match filters.clone().paginate {
+            None => None,
+            Some(paginate) => paginate.limit.map(|limit| start_at / limit),
+        },
     }
 }
 
@@ -47,15 +48,13 @@ fn total_pages(matches_length: usize, filters: &ListParams) -> Option<usize> {
 fn start_at<T: Clone + Compare>(matches: &[(Key, T)], filters: &ListParams) -> Option<usize> {
     match filters.clone().paginate {
         None => None,
-        Some(paginate) => {
-            match paginate.start_after {
-                None => Some(0),
-                Some(start_after) => {
-                    let index = matches.iter().position(|(key, _)| key.eq(&start_after));
-                    index.map(|index| index + 1)
-                }
+        Some(paginate) => match paginate.start_after {
+            None => Some(0),
+            Some(start_after) => {
+                let index = matches.iter().position(|(key, _)| key.eq(&start_after));
+                index.map(|index| index + 1)
             }
-        }
+        },
     }
 }
 
@@ -129,7 +128,10 @@ fn paginate_values<T: Clone + Compare>(
 ) -> Vec<(Key, T)> {
     match paginate {
         None => matches,
-        Some(ListPaginate { start_after: _, limit }) => {
+        Some(ListPaginate {
+            start_after: _,
+            limit,
+        }) => {
             let max: usize = matches.len();
 
             if max == 0 {
@@ -150,8 +152,8 @@ fn paginate_values<T: Clone + Compare>(
             let start = match *start_at {
                 None => {
                     return Vec::new();
-                },
-                Some(start_at) => start_at
+                }
+                Some(start_at) => start_at,
             };
 
             if start > (max - 1) {
@@ -165,4 +167,24 @@ fn paginate_values<T: Clone + Compare>(
             matches[start..=(start + length - 1)].to_vec()
         }
     }
+}
+
+pub fn matcher_regex(matcher: &Option<ListMatcher>) -> (Option<Regex>, Option<Regex>) {
+    let regex_key: Option<Regex> = match matcher {
+        None => None,
+        Some(matcher) => matcher
+            .key
+            .as_ref()
+            .map(|filter| Regex::new(filter).unwrap()),
+    };
+
+    let regex_description: Option<Regex> = match matcher {
+        None => None,
+        Some(matcher) => matcher
+            .description
+            .as_ref()
+            .map(|filter| Regex::new(filter).unwrap()),
+    };
+
+    (regex_key, regex_description)
 }

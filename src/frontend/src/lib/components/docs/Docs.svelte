@@ -14,6 +14,7 @@
 	import DataList from '$lib/components/data/DataList.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
+	import type {ListParams} from "$lib/types/list";
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -31,7 +32,7 @@
 					startAfter: $paginationStore.startAfter,
 					// prettier-ignore parenthesis required for Webstorm Svelte plugin
 					...$listParamsStore
-				}
+				} as ListParams
 			});
 			setItems({ items, matches_length });
 		} catch (err: unknown) {

@@ -2,12 +2,11 @@ pub mod upgrade {
     use crate::types::state::{Archive, CronTabs};
     use candid::CandidType;
     use serde::Deserialize;
-    use shared::types::upgrade::UpgradeControllers;
+    use shared::types::state::Controllers;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct UpgradeStableState {
-        pub controllers: UpgradeControllers,
-        pub cron_controllers: UpgradeControllers,
+        pub controllers: Controllers,
         pub cron_tabs: CronTabs,
         pub archive: Archive,
     }

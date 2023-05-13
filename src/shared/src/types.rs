@@ -191,20 +191,3 @@ pub mod cronjob {
         pub cycles_threshold: Option<u64>,
     }
 }
-
-pub mod upgrade {
-    use crate::types::state::{ControllerId, Metadata};
-    use candid::CandidType;
-    use serde::Deserialize;
-    use std::collections::HashMap;
-
-    pub type UpgradeControllers = HashMap<ControllerId, UpgradeController>;
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct UpgradeController {
-        pub metadata: Metadata,
-        pub created_at: u64,
-        pub updated_at: u64,
-        pub expires_at: Option<u64>,
-    }
-}

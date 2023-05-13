@@ -77,7 +77,7 @@ export const getMissionControlActor = async (
 	});
 };
 
-const createActor = async <T = Record<string, ActorMethod>>({
+export const createActor = async <T = Record<string, ActorMethod>>({
 	canisterId,
 	idlFactory,
 	identity

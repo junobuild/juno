@@ -34,8 +34,8 @@
 	$: validIcp =
 		nonNullish(icp) &&
 		icp > 0 &&
-		icp < Number(balance / E8S_PER_ICP) &&
-		icp > Number(networkFees / E8S_PER_ICP);
+		icp < Number(balance) / Number(E8S_PER_ICP) &&
+		icp > Number(networkFees) / Number(E8S_PER_ICP);
 
 	let cycles: number | undefined;
 	$: cycles =

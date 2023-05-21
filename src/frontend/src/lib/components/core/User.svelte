@@ -10,6 +10,7 @@
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
+	import AppLang from '$lib/components/core/AppLang.svelte';
 
 	export let signIn = true;
 
@@ -32,6 +33,8 @@
 		<IconSignIn slot="icon" />
 		{$i18n.core.sign_in}
 	</ButtonIcon>
+{:else}
+	<AppLang />
 {/if}
 
 <Popover bind:visible anchor={button} direction="rtl">

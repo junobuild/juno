@@ -13,6 +13,7 @@
 	<select bind:value={selected} on:change={async () => await i18n.switchLang(selected)}>
 		<option value="en"> English </option>
 		<option value="zh-cn"> 中国大陆 </option>
+		<option value="it"> Italiano </option>
 	</select>
 </Value>
 

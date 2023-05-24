@@ -6,6 +6,7 @@
 	import IconNodeJS from '$lib/components/icons/IconNodeJS.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconAngular from '$lib/components/icons/IconAngular.svelte';
+	import IconVue from '$lib/components/icons/IconVue.svelte';
 </script>
 
 <h4>Tutorials</h4>
@@ -23,6 +24,13 @@
 		<svelte:fragment slot="title">{$i18n.examples.tutorial_2_title}</svelte:fragment>
 
 		{$i18n.examples.tutorial_2_description}
+	</Resource>
+
+	<Resource href="https://juno.build/blog/build-a-web3-app-with-vuejs">
+		<IconVue slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.tutorial_3_title}</svelte:fragment>
+
+		{$i18n.examples.tutorial_3_description}
 	</Resource>
 </section>
 
@@ -48,6 +56,13 @@
 		<svelte:fragment slot="title">{$i18n.examples.example_6_title}</svelte:fragment>
 
 		{$i18n.examples.example_6_description}
+	</Resource>
+
+	<Resource href="https://github.com/buildwithjuno/examples/tree/main/vue/diary">
+		<IconVue slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.example_7_title}</svelte:fragment>
+
+		{$i18n.examples.example_7_description}
 	</Resource>
 
 	<Resource href="https://github.com/buildwithjuno/examples/tree/main/vanilla">

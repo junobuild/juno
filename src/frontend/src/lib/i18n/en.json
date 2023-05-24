@@ -274,6 +274,8 @@
 		"tutorial_1_description": "How to develop a decentralized application on blockchain with React and Juno.",
 		"tutorial_2_title": "Develop An Angular App On Blockchain",
 		"tutorial_2_description": "How to create a Web3 decentralized application using Angular and Juno.",
+		"tutorial_3_title": "Build a Web3 App with VueJS",
+		"tutorial_3_description": "Unleashing Vue and Juno for Web3 decentralized applications.",
 		"example_1_title": "Svelte example",
 		"example_1_description": "A sample app that uses Juno datastore and authentication.",
 		"example_2_title": "React example",
@@ -285,7 +287,9 @@
 		"example_5_title": "NodeJS admin example",
 		"example_5_description": "An admin script to set documents in the datastore.",
 		"example_6_title": "Angular example",
-		"example_6_description": "A sample dapp that uses Juno datastore, storage and authentication."
+		"example_6_description": "A sample dapp that uses Juno datastore, storage and authentication.",
+		"example_7_title": "Vue example",
+		"example_7_description": "Another iteration of the dapp example developed with Vue."
 	},
 	"resources": {
 		"product": "Product",

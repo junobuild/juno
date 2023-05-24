@@ -298,6 +298,8 @@ interface I18nExamples {
 	tutorial_1_description: string;
 	tutorial_2_title: string;
 	tutorial_2_description: string;
+	tutorial_3_title: string;
+	tutorial_3_description: string;
 	example_1_title: string;
 	example_1_description: string;
 	example_2_title: string;
@@ -310,6 +312,8 @@ interface I18nExamples {
 	example_5_description: string;
 	example_6_title: string;
 	example_6_description: string;
+	example_7_title: string;
+	example_7_description: string;
 }
 
 interface I18nResources {

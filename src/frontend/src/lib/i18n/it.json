@@ -75,24 +75,24 @@
 	},
 	"authentication": {
 		"title": "Autenticazione",
-		"short_description": "Ensure maximum security and privacy by using passwordless authentication to securely and anonymously identify users.",
+		"short_description": "Assicurati la massima sicurezza e privacy utilizzando un'autenticazione senza password che identifica gli utenti in modo sicuro e anonimo.",
 		"users": "Utenti",
 		"methods": "Metodi di login"
 	},
 	"datastore": {
 		"title": "Datastore",
-		"short_description": "A simple and convenient programming model for storing data on the blockchain.",
+		"short_description": "Un modello di programmazione semplice e conveniente per l'archiviazione dei dati su blockchain.",
 		"data": "Dati",
 		"documents": "Documenti"
 	},
 	"storage": {
 		"title": "Storage",
-		"short_description": "Easily store and serve user-generated content, such as files, photos, and videos, on Web3.",
+		"short_description": "Archivia e distribuisci facilmente contenuti generati dagli utenti, come file, foto e video, su Web3.",
 		"assets": "Assets"
 	},
 	"hosting": {
 		"title": "Hosting",
-		"short_description": "Maintain your brand identity with a custom domain for your decentralized application.",
+		"short_description": "Mantieni la tua brand identity con un dominio personalizzato per la tua applicazione decentralizzata.",
 		"success": "Il tuo dominio personalizzato è stato configurato.",
 		"configure": "Configura il tuo DNS",
 		"add_records": "Aggiungi un record sotto al tuo DNS provider per configurare e verificare il tuo {0}. Non cancellare nessun record fintanto che utilizzi il dominio.",
@@ -140,10 +140,10 @@
 		"hosting_missing_domain_name": "E' obbligatorio scegliere un nome a dominio",
 		"hosting_invalid_url": "Inserisci un URL valido.",
 		"hosting_missing_dns_configuration": "E' obbligatorio fornire una configurazione del nome a dominio",
-		"hosting_configuration_issues": "Error while configuring the custom domain for the satellite.",
-		"hosting_loading_errors": "Errore avvenuto nel caricamento dei domini personalizzati del satellite.",
+		"hosting_configuration_issues": "Errore avvenuto durante la configurazione del dominio personalizzato per il satellite.",
+		"hosting_loading_errors": "Errore avvenuto durante il caricamento dei domini personalizzati del satellite.",
 		"hosting_no_custom_domain": "Nessun dominio personalizzato selezionato.",
-		"hosting_delete_custom_domain": "Errore durante l'eliminazione del dominio personalizzato.",
+		"hosting_delete_custom_domain": "Errore avvenuto durante l'eliminazione del dominio personalizzato.",
 		"controllers_listing": "Errore avvenuto durante il listing dei controllers.",
 		"controllers_no_selection": "Nessun controller da eliminare selezionato.",
 		"controllers_delete": "Errore/i imprevisto/i durante l'eliminazione del controllore.",
@@ -274,11 +274,11 @@
 		"tutorial_1_description": "Come sviluppare una applicazione decentralizzata su blockchain con React e Juno.",
 		"tutorial_2_title": "Sviluppa un'app Angular su Blockchain",
 		"tutorial_2_description": "Come creare una applicazione Web3 decentralizzata utilizando Angular e Juno.",
-		"tutorial_3_title": "Build a Web3 App with VueJS",
-		"tutorial_3_description": "Unleashing Vue and Juno for Web3 decentralized applications.",
+		"tutorial_3_title": "Sviluppa una App Web3 con VueJS",
+		"tutorial_3_description": "Sprigiona la potenza di Vue e Juno per applicazioni decentralizzate nel Web3.",
 		"example_1_title": "Esempio Svelte",
 		"example_1_description": "Un'app d'esempio che utilizza Juno datastore e autenticazione",
-		"example_2_title": "Esempio Reactr",
+		"example_2_title": "Esempio React",
 		"example_2_description": "Un esempio di applicazione che utilizza Juno datastore, storage e autenticazione.",
 		"example_3_title": "Esempio Vanilla-js",
 		"example_3_description": "Una dapp dimostrativa in Vanilla Javascript che mostra l'utilizzo dell'autenticazione, datastore e storage.",
@@ -288,15 +288,15 @@
 		"example_5_description": "Uno script admin per settare documenti nel datastore",
 		"example_6_title": "Esempio Angular",
 		"example_6_description": "Una dapp esempio che utilizza Juno datastore, storage e autenticazione.",
-		"example_7_title": "Vue example",
-		"example_7_description": "Another iteration of the dapp example developed with Vue."
+		"example_7_title": "Esempio Vue",
+		"example_7_description": "Un'altra iterazione della dapp d'esempio, sviluppata con Vue."
 	},
 	"resources": {
-		"product": "Product",
-		"developers": "Developers",
-		"resources": "Resources",
-		"resources_description": "View a collection of sample code, applications, and microservices build with Juno",
-		"changelog": "Releases",
-		"changelog_description": "See the last updates and improvements."
+		"product": "Prodotto",
+		"developers": "Sviluppatori",
+		"resources": "Risorse",
+		"resources_description": "Vai alla collezione di esempi di codice, applicazioni, e microservices sviluppati con Juno",
+		"changelog": "Rilasci",
+		"changelog_description": "Vai agli ultimi aggiornamenti e migliorie."
 	}
 }

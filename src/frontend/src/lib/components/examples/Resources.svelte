@@ -55,7 +55,7 @@
 			<IconArrowDropDown size="16px" /></button
 		>
 
-		<AppLang selected={lang} />
+		<AppLang bind:selected={lang} />
 	</div>
 </div>
 

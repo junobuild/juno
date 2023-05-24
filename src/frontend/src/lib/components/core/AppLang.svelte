@@ -3,7 +3,6 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { onMount } from 'svelte';
 
-	export let element: HTMLSelectElement;
 	export let selected: Languages;
 
 	onMount(() => (selected = $i18n.lang));
@@ -13,7 +12,6 @@
 	<svelte:fragment slot="label">{$i18n.core.language}</svelte:fragment>
 	<select
 		bind:value={selected}
-		bind:this={element}
 		on:change={async () => await i18n.switchLang(selected)}
 	>
 		<option value="en"> English </option>

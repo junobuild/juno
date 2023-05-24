@@ -119,9 +119,7 @@
 	.actions {
 		display: flex;
 		align-items: center;
-		gap: var(--padding);
-
-		padding: 0 0 0 var(--padding-4x);
+		gap: var(--padding-2x);
 
 		button:not(.select-action) {
 			display: none;
@@ -152,6 +150,7 @@
 
 	button.text {
 		text-decoration: none;
+		margin: 0;
 	}
 
 	.content {

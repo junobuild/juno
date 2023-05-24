@@ -21,7 +21,9 @@
 		{:else if start === 'back'}
 			<ButtonBack />
 		{:else}
-			<Logo />
+			<div class="logo">
+				<Logo />
+			</div>
 		{/if}
 
 		{#if resources}
@@ -45,5 +47,9 @@
 		align-items: center;
 
 		gap: var(--padding);
+	}
+
+	.logo {
+		margin: 0 var(--padding-4x) 0 0;
 	}
 </style>

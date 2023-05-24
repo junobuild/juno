@@ -75,20 +75,24 @@
 	},
 	"authentication": {
 		"title": "Authentication",
+		"short_description": "Ensure maximum security and privacy by using passwordless authentication to securely and anonymously identify users.",
 		"users": "Users",
 		"methods": "Sign-in methods"
 	},
 	"datastore": {
 		"title": "Datastore",
+		"short_description": "A simple and convenient programming model for storing data on the blockchain.",
 		"data": "Data",
 		"documents": "Documents"
 	},
 	"storage": {
 		"title": "Storage",
+		"short_description": "Easily store and serve user-generated content, such as files, photos, and videos, on Web3.",
 		"assets": "Assets"
 	},
 	"hosting": {
 		"title": "Hosting",
+		"short_description": "Maintain your brand identity with a custom domain for your decentralized application.",
 		"success": "Your custom domain has been configured.",
 		"configure": "Configure your DNS",
 		"add_records": "Add records below to your DNS provider to configure and verify you own {0}. Do not delete any records as long as you use the domain.",
@@ -282,5 +286,13 @@
 		"example_5_description": "An admin script to set documents in the datastore.",
 		"example_6_title": "Angular example",
 		"example_6_description": "A sample dapp that uses Juno datastore, storage and authentication."
+	},
+	"resources": {
+		"product": "Product",
+		"developers": "Developers",
+		"resources": "Resources",
+		"resources_description": "View a collection of sample code, applications, and microservices build with Juno",
+		"changelog": "Releases",
+		"changelog_description": "See the last updates and improvements."
 	}
 }

@@ -83,23 +83,27 @@ interface I18nMission_control {
 
 interface I18nAuthentication {
 	title: string;
+	short_description: string;
 	users: string;
 	methods: string;
 }
 
 interface I18nDatastore {
 	title: string;
+	short_description: string;
 	data: string;
 	documents: string;
 }
 
 interface I18nStorage {
 	title: string;
+	short_description: string;
 	assets: string;
 }
 
 interface I18nHosting {
 	title: string;
+	short_description: string;
 	success: string;
 	configure: string;
 	add_records: string;
@@ -308,6 +312,15 @@ interface I18nExamples {
 	example_6_description: string;
 }
 
+interface I18nResources {
+	product: string;
+	developers: string;
+	resources: string;
+	resources_description: string;
+	changelog: string;
+	changelog_description: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -332,4 +345,5 @@ interface I18n {
 	observatory: I18nObservatory;
 	settings: I18nSettings;
 	examples: I18nExamples;
+	resources: I18nResources;
 }

@@ -75,20 +75,24 @@
 	},
 	"authentication": {
 		"title": "认证",
+		"short_description": "Ensure maximum security and privacy by using passwordless authentication to securely and anonymously identify users.",
 		"users": "用户",
 		"methods": "登录方法"
 	},
 	"datastore": {
 		"title": "数据池",
+		"short_description": "A simple and convenient programming model for storing data on the blockchain.",
 		"data": "数据",
 		"documents": "文档"
 	},
 	"storage": {
 		"title": "存储",
+		"short_description": "Easily store and serve user-generated content, such as files, photos, and videos, on Web3.",
 		"assets": "资料"
 	},
 	"hosting": {
 		"title": "网站托管",
+		"short_description": "Maintain your brand identity with a custom domain for your decentralized application.",
 		"success": "你的定制域名配置好了.",
 		"configure": "设置你的DNS",
 		"add_records": "在你的DNS提供者服务创建记录并验证你的 {0}. 在使用这个域名期间不要删除记录.",
@@ -282,5 +286,13 @@
 		"example_5_description": "An admin script to set documents in the datastore.",
 		"example_6_title": "Angular example",
 		"example_6_description": "A sample dapp that uses Juno datastore, storage and authentication."
+	},
+	"resources": {
+		"product": "Product",
+		"developers": "Developers",
+		"resources": "Resources",
+		"resources_description": "View a collection of sample code, applications, and microservices build with Juno",
+		"changelog": "Releases",
+		"changelog_description": "See the last updates and improvements."
 	}
 }

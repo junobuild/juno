@@ -41,7 +41,7 @@
 		}
 
 		const key = Ed25519KeyIdentity.generate();
-		identity = JSON.stringify(key.toJSON()).replace(/"/g, '\\"');
+		identity = btoa(JSON.stringify({token: key.toJSON()}));
 		controllerId = key.getPrincipal().toText();
 
 		return controllerId;

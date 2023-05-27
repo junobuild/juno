@@ -7,8 +7,8 @@ edition = "2021"
 
 [dependencies]
 candid = "0.8.3"
-ic-cdk = "0.7.4"
+ic-cdk = "0.8.0"
 ic-cdk-macros = "0.6.10"
-ic-ledger-types = "0.4.2"
+ic-ledger-types = "0.5.0"
 serde = "1.0.162"
 futures = "0.3.25"

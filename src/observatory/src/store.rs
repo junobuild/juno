@@ -1,10 +1,11 @@
+use crate::memory::{CONTROLLERS_STATE, STATE};
 use crate::types::interface::SetCronTab;
 use crate::types::state::{ArchiveStatuses, CronTab, CronTabs, StableState};
-use crate::STATE;
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
 use shared::controllers::{
-    delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
+    delete_stable_controllers as delete_controllers_impl,
+    set_stable_controllers as set_controllers_impl,
 };
 use shared::types::interface::SetController;
 use shared::types::state::{ControllerId, SegmentsStatuses, UserId};
@@ -74,22 +75,13 @@ fn set_cron_tab_impl(
 ///
 
 pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetController) {
-    STATE.with(|state| {
-        set_controllers_impl(
-            new_controllers,
-            controller,
-            &mut state.borrow_mut().stable.controllers,
-        )
-    })
+    CONTROLLERS_STATE
+        .with(|state| set_controllers_impl(new_controllers, controller, &mut state.borrow_mut()));
 }
 
 pub fn delete_controllers(remove_controllers: &[ControllerId]) {
-    STATE.with(|state| {
-        delete_controllers_impl(
-            remove_controllers,
-            &mut state.borrow_mut().stable.controllers,
-        )
-    })
+    CONTROLLERS_STATE
+        .with(|state| delete_controllers_impl(remove_controllers, &mut state.borrow_mut()))
 }
 
 ///

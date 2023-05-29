@@ -15,4 +15,5 @@ ic-cdk-macros = "0.6.10"
 serde = "1.0.162"
 lazy_static = "1.4.0"
 ic-cdk-timers = "0.2.0"
+ic-stable-structures = "0.5.3"
 shared = { path = "../shared" }

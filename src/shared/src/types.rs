@@ -1,18 +1,39 @@
+pub mod memory {
+    use candid::CandidType;
+    use candid::Principal;
+    use ic_stable_structures::memory_manager::VirtualMemory;
+    use ic_stable_structures::DefaultMemoryImpl;
+    use serde::Deserialize;
+
+    pub type Memory = VirtualMemory<DefaultMemoryImpl>;
+
+    #[derive(CandidType, Deserialize, Clone, PartialOrd, Ord, Eq, PartialEq)]
+    pub struct StablePrincipal(pub(crate) Principal);
+}
+
 pub mod state {
+    use crate::types::memory::{Memory, StablePrincipal};
     use candid::CandidType;
     use candid::Principal;
     use ic_cdk::api::management_canister::main::CanisterStatusResponse;
+    use ic_stable_structures::StableBTreeMap;
     use serde::Deserialize;
     use std::collections::HashMap;
 
     pub type UserId = Principal;
     pub type MissionControlId = Principal;
+
+    /// TODO: rename / migrate
     pub type ControllerId = Principal;
+    pub type StableControllerId = StablePrincipal;
+
     pub type SatelliteId = Principal;
 
     pub type Metadata = HashMap<String, String>;
 
+    /// TODO: rename / migrate
     pub type Controllers = HashMap<ControllerId, Controller>;
+    pub type StableControllers = StableBTreeMap<StableControllerId, Controller, Memory>;
 
     pub type ArchiveTime = u64;
 

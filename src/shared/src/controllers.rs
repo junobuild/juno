@@ -1,9 +1,13 @@
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::types::interface::SetController;
-use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
+use crate::types::state::{
+    Controller, ControllerId, ControllerScope, Controllers, StableControllerId, StableControllers,
+    UserId,
+};
 use crate::utils::principal_equal;
 use candid::Principal;
 use ic_cdk::api::time;
+use std::cell::RefMut;
 use std::collections::HashMap;
 
 pub fn init_controllers(new_controllers: &[UserId]) -> Controllers {
@@ -20,6 +24,39 @@ pub fn init_controllers(new_controllers: &[UserId]) -> Controllers {
     controllers
 }
 
+// TODO: to be renamed without stable
+pub fn set_stable_controllers(
+    new_controllers: &[UserId],
+    controller_data: &SetController,
+    controllers: &mut RefMut<StableControllers>,
+) {
+    for controller_id in new_controllers {
+        let key = &StableControllerId::from(controller_id);
+
+        let existing_controller = controllers.get(key);
+
+        let now = time();
+
+        let created_at: u64 = match existing_controller {
+            None => now,
+            Some(existing_controller) => existing_controller.created_at,
+        };
+
+        let updated_at: u64 = now;
+
+        let controller: Controller = Controller {
+            metadata: controller_data.metadata.clone(),
+            created_at,
+            updated_at,
+            expires_at: controller_data.expires_at,
+            scope: controller_data.scope.clone(),
+        };
+
+        controllers.insert(key.clone(), controller);
+    }
+}
+
+// TODO: to be removed
 pub fn set_controllers(
     new_controllers: &[UserId],
     controller_data: &SetController,
@@ -49,18 +86,54 @@ pub fn set_controllers(
     }
 }
 
+// TODO: to be renamed without stable
+pub fn delete_stable_controllers(
+    remove_controllers: &[UserId],
+    controllers: &mut RefMut<StableControllers>,
+) {
+    for c in remove_controllers {
+        controllers.remove(&StableControllerId::from(c));
+    }
+}
+
+// TODO: to be removed
 pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Controllers) {
     for c in remove_controllers {
         controllers.remove(c);
     }
 }
 
+// TODO: to be renamed without stable
+pub fn is_stable_controller(
+    caller: UserId,
+    controllers: &[(StableControllerId, Controller)],
+) -> bool {
+    controllers
+        .iter()
+        .any(|(controller_id, _)| principal_equal(controller_id.to_principal(), caller))
+}
+
+// TODO: to be removed
 pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
     controllers
         .iter()
-        .any(|(&controller_id, _)| principal_equal(controller_id, caller))
+        .any(|(controller_id, _)| principal_equal(*controller_id, caller))
 }
 
+// TODO: to be renamed without stable
+pub fn is_stable_admin_controller(
+    caller: UserId,
+    controllers: &[(StableControllerId, Controller)],
+) -> bool {
+    controllers
+        .iter()
+        .any(|(controller_id, controller)| match controller.scope {
+            ControllerScope::Write => false,
+            ControllerScope::Admin => principal_equal(controller_id.to_principal(), caller),
+        })
+}
+
+// TODO: to be removed
 pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
     controllers
         .iter()

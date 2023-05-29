@@ -2,6 +2,7 @@ mod console;
 mod constants;
 mod cron_jobs;
 mod guards;
+mod memory;
 mod reports;
 mod store;
 mod types;
@@ -11,6 +12,7 @@ use crate::console::assert_mission_control_center;
 use crate::constants::CRON_INTERVAL_NS;
 use crate::cron_jobs::cron_jobs;
 use crate::guards::{caller_can_execute_cron_jobs, caller_is_admin_controller};
+use crate::memory::STATE;
 use crate::reports::collect_statuses as collect_statuses_report;
 use crate::store::{
     delete_controllers, get_cron_tab as get_cron_tab_store,
@@ -26,13 +28,8 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_cdk_timers::set_timer_interval;
 use shared::controllers::init_controllers;
 use shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
-use std::cell::RefCell;
 use std::collections::HashMap;
 use std::time::Duration;
-
-thread_local! {
-    static STATE: RefCell<State> = RefCell::default();
-}
 
 #[init]
 fn init() {

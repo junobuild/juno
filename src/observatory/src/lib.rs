@@ -35,6 +35,8 @@ use std::time::Duration;
 fn init() {
     let manager = caller();
 
+    // TODO: init stable structure with controllers
+
     STATE.with(|state| {
         *state.borrow_mut() = State {
             stable: StableState {
@@ -46,11 +48,6 @@ fn init() {
             },
         };
     });
-}
-
-#[pre_upgrade]
-fn pre_upgrade() {
-    STATE.with(|state| stable_save((&state.borrow().stable,)).unwrap());
 }
 
 #[post_upgrade]

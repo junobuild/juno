@@ -6,7 +6,7 @@ pub mod upgrade {
     use shared::types::state::Controllers;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct UpgradeStableState {
+    pub struct UpgradeHeapState {
         pub controllers: Controllers,
         pub db: DbStableState,
         pub storage: StorageStableState,

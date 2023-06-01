@@ -7,12 +7,15 @@ pub mod state {
 
     #[derive(Default, Clone)]
     pub struct State {
-        pub stable: StableState,
+        // Indirect stable state: State that lives on the heap, but is saved into stable memory on upgrades.
+        pub heap: HeapState,
+
+        // Unstable state: State that resides only on the heap, that’s lost after an upgrade.
         pub runtime: RuntimeState,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct StableState {
+    pub struct HeapState {
         pub controllers: Controllers,
         pub db: DbStableState,
         pub storage: StorageStableState,

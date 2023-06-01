@@ -73,7 +73,7 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
 }
 
 pub fn get_public_asset(full_path: String, token: Option<String>) -> Option<Asset> {
-    STATE.with(|state| get_public_asset_impl(full_path, token, &state.borrow().stable.storage))
+    STATE.with(|state| get_public_asset_impl(full_path, token, &state.borrow().heap.storage))
 }
 
 pub fn delete_asset(
@@ -81,7 +81,7 @@ pub fn delete_asset(
     collection: String,
     full_path: String,
 ) -> Result<Option<Asset>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
+    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     STATE.with(|state| {
         secure_delete_asset_impl(
@@ -103,23 +103,22 @@ pub fn list_assets(
     collection: String,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
+    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     STATE.with(|state| {
         secure_list_assets_impl(
             caller,
             &controllers,
             collection,
-            &state.borrow().stable.storage,
+            &state.borrow().heap.storage,
             filters,
         )
     })
 }
 
 pub fn assert_assets_collection_empty(collection: String) -> Result<(), String> {
-    STATE.with(|state| {
-        assert_assets_collection_empty_impl(collection, &state.borrow().stable.storage)
-    })
+    STATE
+        .with(|state| assert_assets_collection_empty_impl(collection, &state.borrow().heap.storage))
 }
 
 fn get_public_asset_impl(
@@ -224,7 +223,7 @@ fn secure_delete_asset_impl(
     full_path: String,
     state: &mut State,
 ) -> Result<Option<Asset>, String> {
-    let rules = state.stable.storage.rules.get(&collection);
+    let rules = state.heap.storage.rules.get(&collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
@@ -233,7 +232,7 @@ fn secure_delete_asset_impl(
             controllers,
             full_path,
             &rule.write,
-            &mut state.stable.storage.assets,
+            &mut state.heap.storage.assets,
             &mut state.runtime,
         ),
     }
@@ -265,7 +264,7 @@ fn delete_asset_impl(
 
 fn delete_assets_impl(collection: String, state: &mut State) {
     let full_paths: Vec<String> = state
-        .stable
+        .heap
         .storage
         .assets
         .values()
@@ -274,7 +273,7 @@ fn delete_assets_impl(collection: String, state: &mut State) {
         .collect();
 
     for full_path in full_paths {
-        state.stable.storage.assets.remove(&full_path);
+        state.heap.storage.assets.remove(&full_path);
         delete_certified_asset(&mut state.runtime, &full_path);
     }
 }
@@ -297,7 +296,7 @@ pub fn create_chunk(caller: Principal, chunk: Chunk) -> Result<u128, &'static st
 }
 
 pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
+    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     STATE.with(|state| {
         commit_batch_impl(caller, &controllers, commit_batch, &mut state.borrow_mut())
@@ -309,14 +308,14 @@ fn secure_create_batch_impl(
     init: InitAssetKey,
     state: &mut State,
 ) -> Result<u128, String> {
-    let rules = state.stable.storage.rules.get(&init.collection);
+    let rules = state.heap.storage.rules.get(&init.collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &init.collection].join("")),
         Some(rules) => {
             if !(public_rule(&rules.write)
-                || is_known_user(caller, &state.stable.db.db)
-                || is_controller(caller, &state.stable.controllers))
+                || is_known_user(caller, &state.heap.db.db)
+                || is_controller(caller, &state.heap.controllers))
             {
                 return Err(UPLOAD_NOT_ALLOWED.to_string());
             }
@@ -325,7 +324,7 @@ fn secure_create_batch_impl(
                 caller,
                 &init.full_path,
                 &init.collection,
-                &state.stable.controllers,
+                &state.heap.controllers,
             )?;
 
             assert_description_length(&init.description)?;
@@ -494,12 +493,12 @@ fn secure_commit_chunks(
         controllers,
     )?;
 
-    let rules = state.stable.storage.rules.get(&batch.key.collection);
+    let rules = state.heap.storage.rules.get(&batch.key.collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &batch.key.collection].join("")),
         Some(rules) => {
-            let current = state.stable.storage.assets.get(&batch.key.full_path);
+            let current = state.heap.storage.assets.get(&batch.key.full_path);
 
             match current {
                 None => {
@@ -598,12 +597,7 @@ fn commit_chunks(
         updated_at: now,
     };
 
-    if let Some(existing_asset) = state
-        .stable
-        .storage
-        .assets
-        .get(&batch.clone().key.full_path)
-    {
+    if let Some(existing_asset) = state.heap.storage.assets.get(&batch.clone().key.full_path) {
         asset.encodings = existing_asset.encodings.clone();
         asset.created_at = existing_asset.created_at;
     }
@@ -625,7 +619,7 @@ fn commit_chunks(
     asset.encodings.insert(encoding_type, encoding);
 
     state
-        .stable
+        .heap
         .storage
         .assets
         .insert(batch.clone().key.full_path, asset.clone());
@@ -687,7 +681,7 @@ fn clear_batch(batch_id: u128, chunk_ids: Vec<u128>, state: &mut StorageRuntimeS
 ///
 
 pub fn set_config(config: &StorageConfig) {
-    STATE.with(|state| set_config_impl(config, &mut state.borrow_mut().stable.storage))
+    STATE.with(|state| set_config_impl(config, &mut state.borrow_mut().heap.storage))
 }
 
 fn set_config_impl(config: &StorageConfig, state: &mut StorageStableState) {
@@ -695,7 +689,7 @@ fn set_config_impl(config: &StorageConfig, state: &mut StorageStableState) {
 }
 
 pub fn get_config() -> StorageConfig {
-    STATE.with(|state| state.borrow().stable.storage.config.clone())
+    STATE.with(|state| state.borrow().heap.storage.config.clone())
 }
 
 ///
@@ -711,7 +705,7 @@ pub fn delete_domain(domain_name: &DomainName) {
 }
 
 fn delete_domain_impl(domain_name: &DomainName, state: &mut State) {
-    state.stable.storage.custom_domains.remove(domain_name);
+    state.heap.storage.custom_domains.remove(domain_name);
 
     update_custom_domains_asset(state);
 }
@@ -723,16 +717,16 @@ fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut
 }
 
 fn update_custom_domains_asset(state: &mut State) {
-    let custom_domains = get_custom_domains_as_content(&state.stable.storage.custom_domains);
+    let custom_domains = get_custom_domains_as_content(&state.heap.storage.custom_domains);
 
     let full_path = BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string();
 
-    let existing_asset = state.stable.storage.assets.get(&full_path);
+    let existing_asset = state.heap.storage.assets.get(&full_path);
 
     let asset = map_custom_domains_asset(&custom_domains, existing_asset);
 
     state
-        .stable
+        .heap
         .storage
         .assets
         .insert(full_path.clone(), asset.clone());
@@ -741,7 +735,7 @@ fn update_custom_domains_asset(state: &mut State) {
 }
 
 fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut State) {
-    let domain = state.stable.storage.custom_domains.get(domain_name);
+    let domain = state.heap.storage.custom_domains.get(domain_name);
 
     let now = time();
 
@@ -759,7 +753,7 @@ fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, stat
     };
 
     state
-        .stable
+        .heap
         .storage
         .custom_domains
         .insert(domain_name.clone(), custom_domain);
@@ -774,7 +768,7 @@ fn get_custom_domains_as_content(custom_domains: &CustomDomains) -> String {
 }
 
 pub fn get_custom_domains() -> CustomDomains {
-    STATE.with(|state| state.borrow().stable.storage.custom_domains.clone())
+    STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())
 }
 
 /// Certified assets

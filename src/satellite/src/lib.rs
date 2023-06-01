@@ -46,8 +46,8 @@ use crate::storage::types::store::{Asset, Chunk};
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
-use crate::types::state::{RuntimeState, StableState, State};
-use crate::upgrade::types::upgrade::UpgradeStableState;
+use crate::types::state::{HeapState, RuntimeState, State};
+use crate::upgrade::types::upgrade::UpgradeHeapState;
 use controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
     set_controllers as set_controllers_store,
@@ -116,7 +116,7 @@ fn init() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            stable: StableState {
+            heap: HeapState {
                 controllers: init_controllers(&controllers),
                 db,
                 storage,
@@ -128,20 +128,20 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| stable_save((&state.borrow().stable,)).unwrap());
+    STATE.with(|state| stable_save((&state.borrow().heap,)).unwrap());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
+    let (upgrade_heap,): (UpgradeHeapState,) = stable_restore().unwrap();
 
-    let stable = StableState::from(&upgrade_stable);
+    let heap = HeapState::from(&upgrade_heap);
 
-    let asset_hashes = AssetHashes::from(&stable.storage);
+    let asset_hashes = AssetHashes::from(&heap.storage);
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            stable,
+            heap,
             runtime: RuntimeState {
                 storage: StorageRuntimeState {
                     chunks: HashMap::new(),

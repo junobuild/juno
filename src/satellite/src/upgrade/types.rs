@@ -1,6 +1,6 @@
 pub mod upgrade {
-    use crate::db::types::state::DbStableState;
-    use crate::storage::types::state::StorageStableState;
+    use crate::db::types::state::DbHeapState;
+    use crate::storage::types::state::StorageHeapState;
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::Controllers;
@@ -8,7 +8,7 @@ pub mod upgrade {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct UpgradeHeapState {
         pub controllers: Controllers,
-        pub db: DbStableState,
-        pub storage: StorageStableState,
+        pub db: DbHeapState,
+        pub storage: StorageHeapState,
     }
 }

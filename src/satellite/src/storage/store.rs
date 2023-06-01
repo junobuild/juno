@@ -25,7 +25,7 @@ use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey};
-use crate::storage::types::state::{Assets, FullPath, StorageRuntimeState, StorageStableState};
+use crate::storage::types::state::{Assets, FullPath, StorageHeapState, StorageRuntimeState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
 use crate::storage::url::{map_alternative_paths, map_url};
 use crate::storage::utils::{filter_collection_values, filter_values};
@@ -124,7 +124,7 @@ pub fn assert_assets_collection_empty(collection: String) -> Result<(), String> 
 fn get_public_asset_impl(
     full_path: String,
     token: Option<String>,
-    state: &StorageStableState,
+    state: &StorageHeapState,
 ) -> Option<Asset> {
     let asset = state.assets.get(&full_path);
 
@@ -156,7 +156,7 @@ fn get_token_protected_asset(
 
 fn assert_assets_collection_empty_impl(
     collection: String,
-    state: &StorageStableState,
+    state: &StorageHeapState,
 ) -> Result<(), String> {
     let col = state.rules.get(&collection);
 
@@ -178,7 +178,7 @@ fn secure_list_assets_impl(
     caller: Principal,
     controllers: &Controllers,
     collection: String,
-    state: &StorageStableState,
+    state: &StorageHeapState,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
     let rules = state.rules.get(&collection);
@@ -201,7 +201,7 @@ fn list_assets_impl(
     controllers: &Controllers,
     collection: String,
     rule: &Permission,
-    state: &StorageStableState,
+    state: &StorageHeapState,
     filters: &ListParams,
 ) -> ListResults<AssetNoContent> {
     let matches: Vec<(FullPath, AssetNoContent)> = filter_values(
@@ -684,7 +684,7 @@ pub fn set_config(config: &StorageConfig) {
     STATE.with(|state| set_config_impl(config, &mut state.borrow_mut().heap.storage))
 }
 
-fn set_config_impl(config: &StorageConfig, state: &mut StorageStableState) {
+fn set_config_impl(config: &StorageConfig, state: &mut StorageHeapState) {
     state.config = config.clone();
 }
 

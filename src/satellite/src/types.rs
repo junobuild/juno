@@ -1,6 +1,6 @@
 pub mod state {
-    use crate::db::types::state::DbStableState;
-    use crate::storage::types::state::{StorageRuntimeState, StorageStableState};
+    use crate::db::types::state::DbHeapState;
+    use crate::storage::types::state::{StorageHeapState, StorageRuntimeState};
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::Controllers;
@@ -17,8 +17,8 @@ pub mod state {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct HeapState {
         pub controllers: Controllers,
-        pub db: DbStableState,
-        pub storage: StorageStableState,
+        pub db: DbHeapState,
+        pub storage: StorageHeapState,
     }
 
     #[derive(Default, Clone)]

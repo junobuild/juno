@@ -5,13 +5,13 @@ use std::cmp::Ordering;
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::interface::AssetNoContent;
-use crate::storage::types::state::StorageStableState;
+use crate::storage::types::state::StorageHeapState;
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::storage::url::alternative_paths;
 use crate::types::core::Compare;
 
-impl From<&StorageStableState> for AssetHashes {
-    fn from(state: &StorageStableState) -> Self {
+impl From<&StorageHeapState> for AssetHashes {
+    fn from(state: &StorageHeapState) -> Self {
         let mut asset_hashes = Self::default();
 
         for (_key, asset) in state.assets.iter() {

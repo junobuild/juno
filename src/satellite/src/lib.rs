@@ -13,7 +13,7 @@ mod upgrade;
 use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{DbStableState, Doc};
+use crate::db::types::state::{DbHeapState, Doc};
 use crate::guards::caller_is_admin_controller;
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use crate::rules::store::{
@@ -41,7 +41,7 @@ use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk,
 };
-use crate::storage::types::state::{StorageRuntimeState, StorageStableState};
+use crate::storage::types::state::{StorageHeapState, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Chunk};
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
@@ -77,7 +77,7 @@ fn init() {
 
     let now = time();
 
-    let db: DbStableState = DbStableState {
+    let db: DbHeapState = DbHeapState {
         db: HashMap::from(
             DEFAULT_DB_COLLECTIONS
                 .map(|(collection, _rules)| (collection.to_owned(), BTreeMap::new())),
@@ -96,7 +96,7 @@ fn init() {
         })),
     };
 
-    let storage: StorageStableState = StorageStableState {
+    let storage: StorageHeapState = StorageHeapState {
         assets: HashMap::new(),
         rules: HashMap::from(DEFAULT_ASSETS_COLLECTIONS.map(|(collection, rule)| {
             (

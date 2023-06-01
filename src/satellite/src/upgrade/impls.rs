@@ -1,4 +1,4 @@
-use crate::storage::types::state::StorageStableState;
+use crate::storage::types::state::StorageHeapState;
 use crate::types::state::HeapState;
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 
@@ -7,7 +7,7 @@ impl From<&UpgradeHeapState> for HeapState {
         HeapState {
             controllers: state.controllers.clone(),
             db: state.db.clone(),
-            storage: StorageStableState {
+            storage: StorageHeapState {
                 assets: state.storage.assets.clone(),
                 rules: state.storage.rules.clone(),
                 config: state.storage.config.clone(),

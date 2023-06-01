@@ -1,10 +1,10 @@
 use crate::db::store::{delete_collection, init_collection};
+use crate::memory::STATE;
 use crate::rules::constants::SYS_COLLECTION_PREFIX;
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::{Rule, Rules};
 use crate::storage::store::assert_assets_collection_empty;
 use crate::types::core::CollectionKey;
-use crate::STATE;
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
 

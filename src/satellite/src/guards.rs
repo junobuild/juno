@@ -1,4 +1,4 @@
-use crate::STATE;
+use crate::memory::STATE;
 use ic_cdk::caller;
 use shared::controllers::is_admin_controller;
 use shared::types::state::Controllers;

@@ -1,3 +1,4 @@
+use crate::memory::STATE;
 use globset::Glob;
 use hex::encode;
 use ic_cdk::id;
@@ -12,7 +13,6 @@ use crate::storage::types::http::{
 };
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
-use crate::STATE;
 
 pub fn streaming_strategy(
     key: &AssetKey,

@@ -1,5 +1,6 @@
 use crate::assert::assert_description_length;
 use crate::list::utils::list_values;
+use crate::memory::STATE;
 use crate::msg::{
     COLLECTION_NOT_EMPTY, COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING,
     COLLECTION_WRITE_RULE_MISSING, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH,
@@ -32,7 +33,6 @@ use crate::storage::utils::{filter_collection_values, filter_values};
 use crate::types::core::CollectionKey;
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};
-use crate::STATE;
 
 ///
 /// Getter, list and delete

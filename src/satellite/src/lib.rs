@@ -14,8 +14,9 @@ mod upgrade;
 use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Doc};
+use crate::db::types::state::Doc;
 use crate::guards::caller_is_admin_controller;
+use crate::memory::STATE;
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
@@ -41,7 +42,7 @@ use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk,
 };
-use crate::storage::types::state::{StorageRuntimeState};
+use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, Chunk};
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
@@ -61,13 +62,8 @@ use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
-use std::cell::RefCell;
-use std::collections::{HashMap};
+use std::collections::HashMap;
 use types::list::ListParams;
-
-thread_local! {
-    static STATE: RefCell<State> = RefCell::default();
-}
 
 #[init]
 fn init() {

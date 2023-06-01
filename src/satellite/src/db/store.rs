@@ -3,6 +3,7 @@ use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Collection, Db, Doc};
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
+use crate::memory::STATE;
 use crate::msg::{
     COLLECTION_NOT_EMPTY, COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING,
     COLLECTION_WRITE_RULE_MISSING, ERROR_CANNOT_WRITE,
@@ -11,7 +12,6 @@ use crate::rules::types::rules::Permission;
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::State;
-use crate::STATE;
 use candid::Principal;
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;

@@ -4,6 +4,7 @@ mod db;
 mod guards;
 mod impls;
 mod list;
+mod memory;
 mod msg;
 mod rules;
 mod storage;
@@ -13,7 +14,7 @@ mod upgrade;
 use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{DbHeapState, Doc};
+use crate::db::types::state::{Doc};
 use crate::guards::caller_is_admin_controller;
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use crate::rules::store::{
@@ -32,7 +33,6 @@ use crate::storage::store::{
     set_domain,
 };
 use crate::storage::types::assets::AssetHashes;
-use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
@@ -41,7 +41,7 @@ use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk,
 };
-use crate::storage::types::state::{StorageHeapState, StorageRuntimeState};
+use crate::storage::types::state::{StorageRuntimeState};
 use crate::storage::types::store::{Asset, Chunk};
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
@@ -53,17 +53,16 @@ use controllers::store::{
     set_controllers as set_controllers_store,
 };
 use ic_cdk::api::call::arg_data;
-use ic_cdk::api::{caller, time, trap};
+use ic_cdk::api::{caller, trap};
 use ic_cdk::export::candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
-use rules::constants::DEFAULT_DB_COLLECTIONS;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
 use std::cell::RefCell;
-use std::collections::{BTreeMap, HashMap};
+use std::collections::{HashMap};
 use types::list::ListParams;
 
 thread_local! {
@@ -75,52 +74,12 @@ fn init() {
     let call_arg = arg_data::<(Option<SatelliteArgs>,)>().0;
     let SatelliteArgs { controllers } = call_arg.unwrap();
 
-    let now = time();
-
-    let db: DbHeapState = DbHeapState {
-        db: HashMap::from(
-            DEFAULT_DB_COLLECTIONS
-                .map(|(collection, _rules)| (collection.to_owned(), BTreeMap::new())),
-        ),
-        rules: HashMap::from(DEFAULT_DB_COLLECTIONS.map(|(collection, rule)| {
-            (
-                collection.to_owned(),
-                Rule {
-                    read: rule.read,
-                    write: rule.write,
-                    max_size: rule.max_size,
-                    created_at: now,
-                    updated_at: now,
-                },
-            )
-        })),
-    };
-
-    let storage: StorageHeapState = StorageHeapState {
-        assets: HashMap::new(),
-        rules: HashMap::from(DEFAULT_ASSETS_COLLECTIONS.map(|(collection, rule)| {
-            (
-                collection.to_owned(),
-                Rule {
-                    read: rule.read,
-                    write: rule.write,
-                    max_size: rule.max_size,
-                    created_at: now,
-                    updated_at: now,
-                },
-            )
-        })),
-        config: StorageConfig::default(),
-        custom_domains: HashMap::new(),
-    };
+    let mut heap = HeapState::default();
+    heap.controllers = init_controllers(&controllers);
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            heap: HeapState {
-                controllers: init_controllers(&controllers),
-                db,
-                storage,
-            },
+            heap,
             runtime: RuntimeState::default(),
         };
     });

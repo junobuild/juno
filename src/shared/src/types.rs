@@ -2,7 +2,7 @@ pub mod state {
     use candid::CandidType;
     use candid::Principal;
     use ic_cdk::api::management_canister::main::CanisterStatusResponse;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
     pub type UserId = Principal;
@@ -16,7 +16,7 @@ pub mod state {
 
     pub type ArchiveTime = u64;
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Controller {
         pub metadata: Metadata,
         pub created_at: u64,
@@ -25,7 +25,7 @@ pub mod state {
         pub scope: ControllerScope,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum ControllerScope {
         Write,
         Admin,

@@ -5,7 +5,8 @@ pub mod state {
     use crate::storage::types::domain::CustomDomains;
     use crate::storage::types::store::{Asset, Batch, Chunk};
     use crate::types::core::Key;
-    use candid::{CandidType, Deserialize};
+    use candid::CandidType;
+    use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
     pub type FullPath = Key;
@@ -14,7 +15,7 @@ pub mod state {
     pub type Chunks = HashMap<u128, Chunk>;
     pub type Assets = HashMap<FullPath, Asset>;
 
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageHeapState {
         pub assets: Assets,
         pub rules: Rules,
@@ -46,7 +47,7 @@ pub mod store {
     use crate::types::core::CollectionKey;
     use candid::CandidType;
     use ic_certified_map::Hash;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
     use shared::types::state::UserId;
     use std::clone::Clone;
     use std::collections::HashMap;
@@ -57,7 +58,7 @@ pub mod store {
         pub content: Vec<u8>,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetEncoding {
         pub modified: u64,
         pub content_chunks: Vec<Vec<u8>>,
@@ -65,7 +66,7 @@ pub mod store {
         pub sha256: Hash,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetKey {
         // myimage.jpg
         pub name: String,
@@ -81,7 +82,7 @@ pub mod store {
         pub description: Option<String>,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Asset {
         pub key: AssetKey,
         pub headers: Vec<HeaderField>,
@@ -152,10 +153,11 @@ pub mod interface {
 }
 
 pub mod http {
-    use candid::{CandidType, Deserialize, Func};
+    use candid::{CandidType, Func};
+    use serde::{Deserialize, Serialize};
     use serde_bytes::ByteBuf;
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct HeaderField(pub String, pub String);
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -201,12 +203,13 @@ pub mod http {
 
 pub mod config {
     use crate::storage::types::http::HeaderField;
-    use candid::{CandidType, Deserialize};
+    use candid::CandidType;
+    use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
     pub type StorageConfigHeaders = HashMap<String, Vec<HeaderField>>;
 
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageConfig {
         pub headers: StorageConfigHeaders,
     }
@@ -230,13 +233,14 @@ pub mod http_request {
 }
 
 pub mod domain {
-    use candid::{CandidType, Deserialize};
+    use candid::CandidType;
+    use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
     pub type DomainName = String;
     pub type CustomDomains = HashMap<DomainName, CustomDomain>;
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CustomDomain {
         pub bn_id: Option<String>,
         pub created_at: u64,

@@ -2,20 +2,20 @@ pub mod state {
     use crate::rules::types::rules::Rules;
     use crate::types::core::{CollectionKey, Key};
     use candid::CandidType;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
     use shared::types::state::UserId;
     use std::collections::{BTreeMap, HashMap};
 
     pub type Collection = BTreeMap<Key, Doc>;
     pub type Db = HashMap<CollectionKey, Collection>;
 
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct DbHeapState {
         pub db: Db,
         pub rules: Rules,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Doc {
         pub owner: UserId,
         pub data: Vec<u8>,

@@ -1,12 +1,12 @@
 pub mod rules {
     use crate::types::core::CollectionKey;
     use candid::CandidType;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
     pub type Rules = HashMap<CollectionKey, Rule>;
 
-    #[derive(CandidType, Deserialize, Clone, Debug)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct Rule {
         pub read: Permission,
         pub write: Permission,
@@ -15,7 +15,7 @@ pub mod rules {
         pub updated_at: u64,
     }
 
-    #[derive(CandidType, Deserialize, Clone, Debug)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
     pub enum Permission {
         // No rules applied
         Public,

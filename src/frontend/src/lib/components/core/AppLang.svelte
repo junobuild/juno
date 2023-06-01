@@ -3,7 +3,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { onMount } from 'svelte';
 
-	let selected: Languages;
+	export let selected: Languages;
 
 	onMount(() => (selected = $i18n.lang));
 </script>
@@ -13,6 +13,7 @@
 	<select bind:value={selected} on:change={async () => await i18n.switchLang(selected)}>
 		<option value="en"> English </option>
 		<option value="zh-cn"> 中国大陆 </option>
+		<option value="it"> Italiano </option>
 	</select>
 </Value>
 

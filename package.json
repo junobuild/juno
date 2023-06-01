@@ -43,7 +43,7 @@
 		"ledger:account-id": "node ./scripts/ledger.account-id.mjs",
 		"ledger:balance": "node scripts/ledger.balance.mjs",
 		"ledger:transfer": "node scripts/ledger.transfer.mjs",
-		"i18n": "node --experimental-json-modules scripts/i18n.mjs",
+		"i18n": "node scripts/i18n.mjs && prettier --write ./src/frontend/src/lib/types/i18n.d.ts",
 		"observatory:statuses": "node scripts/observatory.statuses.mjs"
 	},
 	"devDependencies": {

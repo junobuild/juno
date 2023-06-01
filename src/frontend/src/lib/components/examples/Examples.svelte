@@ -1,75 +1,90 @@
 <script lang="ts">
-	import Example from '$lib/components/examples/Example.svelte';
+	import Resource from '$lib/components/examples/Resource.svelte';
 	import IconReact from '$lib/components/icons/IconReact.svelte';
 	import IconSvelte from '$lib/components/icons/IconSvelte.svelte';
 	import IconJavaScript from '$lib/components/icons/IconJavaScript.svelte';
 	import IconNodeJS from '$lib/components/icons/IconNodeJS.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconAngular from '$lib/components/icons/IconAngular.svelte';
+	import IconVue from '$lib/components/icons/IconVue.svelte';
 </script>
 
 <h4>Tutorials</h4>
 
 <section>
-	<Example href="https://juno.build/blog/build-a-web3-app-with-react-js">
+	<Resource href="https://juno.build/blog/build-a-web3-app-with-react-js">
 		<IconReact slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.tutorial_1_title}</svelte:fragment>
 
 		{$i18n.examples.tutorial_1_description}
-	</Example>
+	</Resource>
 
-	<Example href="https://juno.build/blog/develop-an-angular-app-on-blockchain">
+	<Resource href="https://juno.build/blog/develop-an-angular-app-on-blockchain">
 		<IconAngular slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.tutorial_2_title}</svelte:fragment>
 
 		{$i18n.examples.tutorial_2_description}
-	</Example>
+	</Resource>
+
+	<Resource href="https://juno.build/blog/build-a-web3-app-with-vuejs">
+		<IconVue slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.tutorial_3_title}</svelte:fragment>
+
+		{$i18n.examples.tutorial_3_description}
+	</Resource>
 </section>
 
 <h4>Example projects</h4>
 
 <section>
-	<Example href="https://github.com/buildwithjuno/examples/tree/main/svelte/form">
+	<Resource href="https://github.com/buildwithjuno/examples/tree/main/svelte/form">
 		<IconSvelte slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.example_1_title}</svelte:fragment>
 
 		{$i18n.examples.example_1_description}
-	</Example>
+	</Resource>
 
-	<Example href="https://github.com/buildwithjuno/examples/blob/main/react/diary">
+	<Resource href="https://github.com/buildwithjuno/examples/blob/main/react/diary">
 		<IconReact slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.example_2_title}</svelte:fragment>
 
 		{$i18n.examples.example_2_description}
-	</Example>
+	</Resource>
 
-	<Example href="https://github.com/buildwithjuno/examples/blob/main/angular/diary">
+	<Resource href="https://github.com/buildwithjuno/examples/blob/main/angular/diary">
 		<IconAngular slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.example_6_title}</svelte:fragment>
 
 		{$i18n.examples.example_6_description}
-	</Example>
+	</Resource>
 
-	<Example href="https://github.com/buildwithjuno/examples/tree/main/vanilla">
+	<Resource href="https://github.com/buildwithjuno/examples/tree/main/vue/diary">
+		<IconVue slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.example_7_title}</svelte:fragment>
+
+		{$i18n.examples.example_7_description}
+	</Resource>
+
+	<Resource href="https://github.com/buildwithjuno/examples/tree/main/vanilla">
 		<IconJavaScript slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.example_3_title}</svelte:fragment>
 
 		{$i18n.examples.example_3_description}
-	</Example>
+	</Resource>
 
-	<Example href="https://github.com/buildwithjuno/examples/blob/main/node/basic">
+	<Resource href="https://github.com/buildwithjuno/examples/blob/main/node/basic">
 		<IconNodeJS slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.example_4_title}</svelte:fragment>
 
 		{$i18n.examples.example_4_description}
-	</Example>
+	</Resource>
 
-	<Example href="https://github.com/buildwithjuno/examples/blob/main/node/admin">
+	<Resource href="https://github.com/buildwithjuno/examples/blob/main/node/admin">
 		<IconNodeJS slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.example_5_title}</svelte:fragment>
 
 		{$i18n.examples.example_5_description}
-	</Example>
+	</Resource>
 </section>
 
 <style lang="scss">

@@ -10,10 +10,17 @@ const zhCnI18n = async (): Promise<I18n> => {
 	};
 };
 
+const itI18n = async (): Promise<I18n> => {
+	return {
+		lang: 'it',
+		...(await import(`../i18n/it.json`))
+	};
+};
+
 const enI18n = (): I18n => {
 	return {
 		lang: 'en',
-		...(en as Partial<I18n>)
+		...en
 	} as I18n;
 };
 
@@ -21,6 +28,8 @@ const loadLanguage = (lang: Languages): Promise<I18n> => {
 	switch (lang) {
 		case 'zh-cn':
 			return zhCnI18n();
+		case 'it':
+			return itI18n();
 		default:
 			return Promise.resolve(enI18n());
 	}
@@ -28,12 +37,12 @@ const loadLanguage = (lang: Languages): Promise<I18n> => {
 
 const switchLanguage = (lang: Languages) => setLocalStorageItem({ key: 'lang', value: lang });
 
-export interface InitI18nStore extends Readable<I18n> {
+export interface I18nStore extends Readable<I18n> {
 	init: () => Promise<void>;
 	switchLang: (lang: Languages) => Promise<void>;
 }
 
-const initI18n = (): InitI18nStore => {
+const initI18n = (): I18nStore => {
 	const { subscribe, set } = writable<I18n>({
 		lang: 'en',
 		...en
@@ -47,8 +56,7 @@ const initI18n = (): InitI18nStore => {
 
 			if (lang === 'en') {
 				switchLanguage(lang);
-
-				// No need to reload the store
+				// No need to reload the store, English is already the default
 				return;
 			}
 

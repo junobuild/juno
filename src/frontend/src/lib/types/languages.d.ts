@@ -1,1 +1,1 @@
-type Languages = 'en' | 'zh-cn';
+type Languages = 'en' | 'zh-cn' | 'it';

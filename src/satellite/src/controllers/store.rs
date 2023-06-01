@@ -13,24 +13,21 @@ pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetControl
         set_controllers_impl(
             new_controllers,
             controller,
-            &mut state.borrow_mut().stable.controllers,
+            &mut state.borrow_mut().heap.controllers,
         )
     })
 }
 
 pub fn delete_controllers(remove_controllers: &[ControllerId]) {
     STATE.with(|state| {
-        delete_controllers_impl(
-            remove_controllers,
-            &mut state.borrow_mut().stable.controllers,
-        )
+        delete_controllers_impl(remove_controllers, &mut state.borrow_mut().heap.controllers)
     })
 }
 
 pub fn get_controllers() -> Controllers {
-    STATE.with(|state| state.borrow().stable.controllers.clone())
+    STATE.with(|state| state.borrow().heap.controllers.clone())
 }
 
 pub fn get_admin_controllers() -> Controllers {
-    STATE.with(|state| filter_admin_controllers(&state.borrow().stable.controllers))
+    STATE.with(|state| filter_admin_controllers(&state.borrow().heap.controllers))
 }

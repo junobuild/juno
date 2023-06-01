@@ -13,7 +13,12 @@
 <Illustration sticky={$authSignedInStore} />
 
 <Layout centered>
-	<Navbar slot="navbar" signIn={false} headerOpaqueOnScroll={false} />
+	<Navbar
+		slot="navbar"
+		signIn={false}
+		headerOpaqueOnScroll={false}
+		resources={!$authSignedInStore}
+	/>
 
 	<slot />
 

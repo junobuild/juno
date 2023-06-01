@@ -1,7 +1,6 @@
 #!/usr/bin/env node
 
-import { writeFileSync } from 'fs';
-import prettier from 'prettier';
+import { writeFileSync } from 'node:fs';
 
 /**
  * Generate the TypeScript interfaces from the english translation file.
@@ -28,9 +27,7 @@ const generateTypes = async () => {
 
 	const comment = `/**\n* Auto-generated definitions file ("npm run i18n")\n*/`;
 
-	const output = prettier.format(`${comment}${interfaces}${main}`, {
-		parser: 'babel'
-	});
+	const output = `${comment}${interfaces}${main}`;
 
 	writeFileSync('./src/frontend/src/lib/types/i18n.d.ts', output);
 };

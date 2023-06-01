@@ -75,20 +75,24 @@
 	},
 	"authentication": {
 		"title": "Authentication",
+		"short_description": "Ensure maximum security and privacy by using passwordless authentication to securely and anonymously identify users.",
 		"users": "Users",
 		"methods": "Sign-in methods"
 	},
 	"datastore": {
 		"title": "Datastore",
+		"short_description": "A simple and convenient programming model for storing data on the blockchain.",
 		"data": "Data",
 		"documents": "Documents"
 	},
 	"storage": {
 		"title": "Storage",
+		"short_description": "Easily store and serve user-generated content, such as files, photos, and videos, on Web3.",
 		"assets": "Assets"
 	},
 	"hosting": {
 		"title": "Hosting",
+		"short_description": "Maintain your brand identity with a custom domain for your decentralized application.",
 		"success": "Your custom domain has been configured.",
 		"configure": "Configure your DNS",
 		"add_records": "Add records below to your DNS provider to configure and verify you own {0}. Do not delete any records as long as you use the domain.",
@@ -270,6 +274,8 @@
 		"tutorial_1_description": "How to develop a decentralized application on blockchain with React and Juno.",
 		"tutorial_2_title": "Develop An Angular App On Blockchain",
 		"tutorial_2_description": "How to create a Web3 decentralized application using Angular and Juno.",
+		"tutorial_3_title": "Build a Web3 App with VueJS",
+		"tutorial_3_description": "Unleashing Vue and Juno for Web3 decentralized applications.",
 		"example_1_title": "Svelte example",
 		"example_1_description": "A sample app that uses Juno datastore and authentication.",
 		"example_2_title": "React example",
@@ -281,6 +287,16 @@
 		"example_5_title": "NodeJS admin example",
 		"example_5_description": "An admin script to set documents in the datastore.",
 		"example_6_title": "Angular example",
-		"example_6_description": "A sample dapp that uses Juno datastore, storage and authentication."
+		"example_6_description": "A sample dapp that uses Juno datastore, storage and authentication.",
+		"example_7_title": "Vue example",
+		"example_7_description": "Another iteration of the dapp example developed with Vue."
+	},
+	"resources": {
+		"product": "Product",
+		"developers": "Developers",
+		"resources": "Resources",
+		"resources_description": "View a collection of sample code, applications, and microservices build with Juno",
+		"changelog": "Releases",
+		"changelog_description": "See the last updates and improvements."
 	}
 }

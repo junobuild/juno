@@ -21,11 +21,11 @@ use std::collections::BTreeMap;
 /// Collection
 
 pub fn init_collection(collection: String) {
-    STATE.with(|state| init_collection_impl(collection, &mut state.borrow_mut().stable.db.db))
+    STATE.with(|state| init_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
 }
 
 pub fn delete_collection(collection: String) -> Result<(), String> {
-    STATE.with(|state| delete_collection_impl(collection, &mut state.borrow_mut().stable.db.db))
+    STATE.with(|state| delete_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
 }
 
 fn init_collection_impl(collection: String, db: &mut Db) {
@@ -59,7 +59,7 @@ fn delete_collection_impl(collection: String, db: &mut Db) -> Result<(), String>
 /// Get
 
 pub fn get_doc(caller: Principal, collection: String, key: String) -> Result<Option<Doc>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
+    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     STATE.with(|state| secure_get_doc(caller, &controllers, collection, key, &state.borrow()))
 }
@@ -71,7 +71,7 @@ fn secure_get_doc(
     key: String,
     state: &State,
 ) -> Result<Option<Doc>, String> {
-    let rules = state.stable.db.rules.get(&collection);
+    let rules = state.heap.db.rules.get(&collection);
 
     match rules {
         None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
@@ -81,7 +81,7 @@ fn secure_get_doc(
             collection,
             key,
             &rule.read,
-            &state.stable.db.db,
+            &state.heap.db.db,
         ),
     }
 }
@@ -123,7 +123,7 @@ pub fn insert_doc(
     key: String,
     value: SetDoc,
 ) -> Result<Doc, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
+    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     STATE.with(|state| {
         secure_insert_doc(
@@ -145,7 +145,7 @@ fn secure_insert_doc(
     value: SetDoc,
     state: &mut State,
 ) -> Result<Doc, String> {
-    let rules = state.stable.db.rules.get(&collection);
+    let rules = state.heap.db.rules.get(&collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
@@ -156,7 +156,7 @@ fn secure_insert_doc(
             key,
             value,
             &rule.write,
-            &mut state.stable.db.db,
+            &mut state.heap.db.db,
         ),
     }
 }
@@ -218,7 +218,7 @@ pub fn get_docs(
     collection: String,
     filter: &ListParams,
 ) -> Result<ListResults<Doc>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
+    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     STATE.with(|state| secure_get_docs(caller, &controllers, collection, filter, &state.borrow()))
 }
@@ -230,7 +230,7 @@ fn secure_get_docs(
     filter: &ListParams,
     state: &State,
 ) -> Result<ListResults<Doc>, String> {
-    let rules = state.stable.db.rules.get(&collection);
+    let rules = state.heap.db.rules.get(&collection);
 
     match rules {
         None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
@@ -240,7 +240,7 @@ fn secure_get_docs(
             collection,
             filter,
             &rule.read,
-            &state.stable.db.db,
+            &state.heap.db.db,
         ),
     }
 }
@@ -281,7 +281,7 @@ pub fn delete_doc(
     key: String,
     value: DelDoc,
 ) -> Result<(), String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
+    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     STATE.with(|state| {
         secure_delete_doc(
@@ -303,7 +303,7 @@ fn secure_delete_doc(
     value: DelDoc,
     state: &mut State,
 ) -> Result<(), String> {
-    let rules = state.stable.db.rules.get(&collection);
+    let rules = state.heap.db.rules.get(&collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
@@ -314,7 +314,7 @@ fn secure_delete_doc(
             key,
             value,
             &rule.write,
-            &mut state.stable.db.db,
+            &mut state.heap.db.db,
         ),
     }
 }

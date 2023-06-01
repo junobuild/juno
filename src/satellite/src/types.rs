@@ -1,21 +1,24 @@
 pub mod state {
-    use crate::db::types::state::DbStableState;
-    use crate::storage::types::state::{StorageRuntimeState, StorageStableState};
+    use crate::db::types::state::DbHeapState;
+    use crate::storage::types::state::{StorageHeapState, StorageRuntimeState};
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::Controllers;
 
     #[derive(Default, Clone)]
     pub struct State {
-        pub stable: StableState,
+        // Indirect stable state: State that lives on the heap, but is saved into stable memory on upgrades.
+        pub heap: HeapState,
+
+        // Unstable state: State that resides only on the heap, that’s lost after an upgrade.
         pub runtime: RuntimeState,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct StableState {
+    pub struct HeapState {
         pub controllers: Controllers,
-        pub db: DbStableState,
-        pub storage: StorageStableState,
+        pub db: DbHeapState,
+        pub storage: StorageHeapState,
     }
 
     #[derive(Default, Clone)]

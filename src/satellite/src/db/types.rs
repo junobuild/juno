@@ -10,7 +10,7 @@ pub mod state {
     pub type Db = HashMap<CollectionKey, Collection>;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct DbStableState {
+    pub struct DbHeapState {
         pub db: Db,
         pub rules: Rules,
     }

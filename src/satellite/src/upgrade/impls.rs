@@ -1,13 +1,13 @@
-use crate::storage::types::state::StorageStableState;
-use crate::types::state::StableState;
-use crate::upgrade::types::upgrade::UpgradeStableState;
+use crate::storage::types::state::StorageHeapState;
+use crate::types::state::HeapState;
+use crate::upgrade::types::upgrade::UpgradeHeapState;
 
-impl From<&UpgradeStableState> for StableState {
-    fn from(state: &UpgradeStableState) -> Self {
-        StableState {
+impl From<&UpgradeHeapState> for HeapState {
+    fn from(state: &UpgradeHeapState) -> Self {
+        HeapState {
             controllers: state.controllers.clone(),
             db: state.db.clone(),
-            storage: StorageStableState {
+            storage: StorageHeapState {
                 assets: state.storage.assets.clone(),
                 rules: state.storage.rules.clone(),
                 config: state.storage.config.clone(),

@@ -11,11 +11,11 @@ use shared::assert::assert_timestamp;
 /// Rules
 
 pub fn get_rules_db() -> Vec<(CollectionKey, Rule)> {
-    STATE.with(|state| get_rules(&state.borrow().stable.db.rules))
+    STATE.with(|state| get_rules(&state.borrow().heap.db.rules))
 }
 
 pub fn get_rules_storage() -> Vec<(CollectionKey, Rule)> {
-    STATE.with(|state| get_rules(&state.borrow().stable.storage.rules))
+    STATE.with(|state| get_rules(&state.borrow().heap.storage.rules))
 }
 
 fn get_rules(rules: &Rules) -> Vec<(CollectionKey, Rule)> {
@@ -31,7 +31,7 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
         set_rule_impl(
             collection.clone(),
             rule,
-            &mut state.borrow_mut().stable.db.rules,
+            &mut state.borrow_mut().heap.db.rules,
         )
     })?;
 
@@ -42,20 +42,14 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
 }
 
 pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), String> {
-    STATE.with(|state| {
-        set_rule_impl(
-            collection,
-            rule,
-            &mut state.borrow_mut().stable.storage.rules,
-        )
-    })
+    STATE.with(|state| set_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
 }
 
 pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
     // We delete the empty collection first.
     delete_collection(collection.clone())?;
 
-    STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().stable.db.rules))?;
+    STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().heap.db.rules))?;
 
     Ok(())
 }
@@ -64,13 +58,7 @@ pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), 
     // Only unused rule can be removed
     assert_assets_collection_empty(collection.clone())?;
 
-    STATE.with(|state| {
-        del_rule_impl(
-            collection,
-            rule,
-            &mut state.borrow_mut().stable.storage.rules,
-        )
-    })
+    STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
 }
 
 fn set_rule_impl(

@@ -15,7 +15,7 @@ pub mod state {
     pub type Assets = HashMap<FullPath, Asset>;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct StorageStableState {
+    pub struct StorageHeapState {
         pub assets: Assets,
         pub rules: Rules,
         pub config: StorageConfig,

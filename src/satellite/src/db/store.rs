@@ -1,6 +1,6 @@
 use crate::assert::assert_description_length;
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Collection, Db, Doc};
+use crate::db::types::state::{Collection, DbHeap, Doc};
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
@@ -28,7 +28,7 @@ pub fn delete_collection(collection: String) -> Result<(), String> {
     STATE.with(|state| delete_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
 }
 
-fn init_collection_impl(collection: String, db: &mut Db) {
+fn init_collection_impl(collection: String, db: &mut DbHeap) {
     let col = db.get(&collection);
 
     match col {
@@ -39,7 +39,7 @@ fn init_collection_impl(collection: String, db: &mut Db) {
     }
 }
 
-fn delete_collection_impl(collection: String, db: &mut Db) -> Result<(), String> {
+fn delete_collection_impl(collection: String, db: &mut DbHeap) -> Result<(), String> {
     let col = db.get_mut(&collection);
 
     match col {
@@ -92,7 +92,7 @@ fn get_doc_impl(
     collection: String,
     key: String,
     rule: &Permission,
-    db: &Db,
+    db: &DbHeap,
 ) -> Result<Option<Doc>, String> {
     let col = db.get(&collection);
 
@@ -168,7 +168,7 @@ fn insert_doc_impl(
     key: String,
     value: SetDoc,
     rule: &Permission,
-    db: &mut Db,
+    db: &mut DbHeap,
 ) -> Result<Doc, String> {
     let col = db.get_mut(&collection);
 
@@ -251,7 +251,7 @@ fn get_docs_impl(
     collection: String,
     filter: &ListParams,
     rule: &Permission,
-    db: &Db,
+    db: &DbHeap,
 ) -> Result<ListResults<Doc>, String> {
     let col = db.get(&collection);
 
@@ -326,7 +326,7 @@ fn delete_doc_impl(
     key: String,
     value: DelDoc,
     rule: &Permission,
-    db: &mut Db,
+    db: &mut DbHeap,
 ) -> Result<(), String> {
     let col = db.get_mut(&collection);
 

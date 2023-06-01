@@ -16,14 +16,14 @@ use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_do
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::guards::caller_is_admin_controller;
-use crate::memory::STATE;
+use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::storage::cert::update_certified_data;
+use crate::storage::cert::init_certified_data;
 use crate::storage::http::{
     build_encodings, build_headers, create_token, error_response, streaming_strategy,
 };
@@ -47,8 +47,10 @@ use crate::storage::types::store::{Asset, Chunk};
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
+use crate::types::memory::Memory;
 use crate::types::state::{HeapState, RuntimeState, State};
 use crate::upgrade::types::upgrade::UpgradeHeapState;
+use ciborium::{from_reader, into_writer};
 use controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
     set_controllers as set_controllers_store,
@@ -56,8 +58,10 @@ use controllers::store::{
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, trap};
 use ic_cdk::export::candid::{candid_method, export_service};
-use ic_cdk::storage::{stable_restore, stable_save};
+use ic_cdk::storage::stable_restore;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use ic_stable_structures::writer::Writer;
+use ic_stable_structures::Memory as _;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
@@ -70,11 +74,14 @@ fn init() {
     let call_arg = arg_data::<(Option<SatelliteArgs>,)>().0;
     let SatelliteArgs { controllers } = call_arg.unwrap();
 
-    let mut heap = HeapState::default();
-    heap.controllers = init_controllers(&controllers);
+    let heap = HeapState {
+        controllers: init_controllers(&controllers),
+        ..Default::default()
+    };
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
+            stable: init_stable_state(),
             heap,
             runtime: RuntimeState::default(),
         };
@@ -83,11 +90,23 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| stable_save((&state.borrow().heap,)).unwrap());
+    // Serialize the state using CBOR.
+    let mut state_bytes = vec![];
+    STATE
+        .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
+        .expect("Failed to encode the state of the satellite in pre_upgrade hook.");
+
+    // Write the length of the serialized bytes to memory, followed by the by the bytes themselves.
+    let len = state_bytes.len() as u32;
+    let mut memory = get_memory_upgrades();
+    let mut writer = Writer::new(&mut memory, 0);
+    writer.write(&len.to_le_bytes()).unwrap();
+    writer.write(&state_bytes).unwrap()
 }
 
 #[post_upgrade]
 fn post_upgrade() {
+    // TODO: To be removed after introduction of stable structure
     let (upgrade_heap,): (UpgradeHeapState,) = stable_restore().unwrap();
 
     let heap = HeapState::from(&upgrade_heap);
@@ -96,6 +115,7 @@ fn post_upgrade() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
+            stable: init_stable_state(),
             heap,
             runtime: RuntimeState {
                 storage: StorageRuntimeState {
@@ -107,7 +127,26 @@ fn post_upgrade() {
         }
     });
 
-    update_certified_data(&asset_hashes);
+    // TODO: Uncomment after introduction of stable memory
+    // let memory: Memory = get_memory_upgrades();
+    //
+    // // Read the length of the state bytes.
+    // let mut state_len_bytes = [0; 4];
+    // memory.read(0, &mut state_len_bytes);
+    // let state_len = u32::from_le_bytes(state_len_bytes) as usize;
+    //
+    // // Read the bytes
+    // let mut state_bytes = vec![0; state_len];
+    // memory.read(4, &mut state_bytes);
+    //
+    // // Deserialize and set the state.
+    // let state = from_reader(&*state_bytes)
+    //     .expect("Failed to decode the state of the satellite in post_upgrade hook.");
+    // STATE.with(|s| *s.borrow_mut() = state);
+
+    // TODO: runtime asset_hashes: asset_hashes.clone(),
+
+    init_certified_data();
 }
 
 ///

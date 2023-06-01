@@ -1,17 +1,27 @@
 pub mod state {
     use crate::rules::types::rules::Rules;
     use crate::types::core::{CollectionKey, Key};
+    use crate::types::memory::Memory;
     use candid::CandidType;
+    use ic_stable_structures::StableBTreeMap;
     use serde::{Deserialize, Serialize};
     use shared::types::state::UserId;
     use std::collections::{BTreeMap, HashMap};
 
     pub type Collection = BTreeMap<Key, Doc>;
-    pub type Db = HashMap<CollectionKey, Collection>;
+    pub type DbHeap = HashMap<CollectionKey, Collection>;
+
+    pub type DbStable = StableBTreeMap<StableKey, Doc, Memory>;
+
+    #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct StableKey {
+        pub collection: CollectionKey,
+        pub key: Key,
+    }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct DbHeapState {
-        pub db: Db,
+        pub db: DbHeap,
         pub rules: Rules,
     }
 

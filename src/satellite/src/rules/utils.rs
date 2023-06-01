@@ -1,4 +1,4 @@
-use crate::db::types::state::Db;
+use crate::db::types::state::DbHeap;
 use crate::rules::constants::DEFAULT_DB_COLLECTIONS;
 use crate::rules::types::rules::Permission;
 use candid::Principal;
@@ -35,7 +35,7 @@ pub fn public_rule(rule: &Permission) -> bool {
     matches!(rule, Permission::Public)
 }
 
-pub fn is_known_user(caller: Principal, db: &Db) -> bool {
+pub fn is_known_user(caller: Principal, db: &DbHeap) -> bool {
     // #user collection cannot be deleted
     db.get(DEFAULT_DB_COLLECTIONS[0].0)
         .unwrap()

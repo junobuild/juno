@@ -1,4 +1,3 @@
-use crate::memory::STATE;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::http::HeaderField;
 use base64::encode;
@@ -8,10 +7,6 @@ use serde::Serialize;
 use serde_cbor::ser::Serializer;
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
-
-pub fn init_certified_data() {
-    STATE.with(|state| update_certified_data(&AssetHashes::from(&state.borrow().heap.storage)))
-}
 
 pub fn update_certified_data(asset_hashes: &AssetHashes) {
     let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &asset_hashes.tree.root_hash());

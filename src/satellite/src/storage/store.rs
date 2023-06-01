@@ -22,6 +22,7 @@ use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
 };
 use crate::storage::custom_domains::map_custom_domains_asset;
+use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
@@ -787,4 +788,18 @@ fn delete_certified_asset(runtime: &mut RuntimeState, full_path: &String) {
 
     // 2. Update the root hash and the canister certified data
     update_certified_data(&runtime.storage.asset_hashes);
+}
+
+pub fn init_certified_assets() {
+    let asset_hashes = STATE.with(|state| AssetHashes::from(&state.borrow().heap.storage));
+
+    STATE.with(|state| init_certified_assets_impl(&asset_hashes, &mut state.borrow_mut().runtime.storage));
+}
+
+fn init_certified_assets_impl(asset_hashes: &AssetHashes, storage: &mut StorageRuntimeState) {
+    // 1. Init all asset in tree
+    storage.asset_hashes = asset_hashes.clone();
+
+    // 2. Update the root hash and the canister certified data
+    update_certified_data(&storage.asset_hashes);
 }

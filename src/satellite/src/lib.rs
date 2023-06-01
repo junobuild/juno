@@ -23,17 +23,10 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::storage::cert::init_certified_data;
 use crate::storage::http::{
     build_encodings, build_headers, create_token, error_response, streaming_strategy,
 };
-use crate::storage::store::{
-    commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
-    get_config as get_storage_config, get_custom_domains, get_public_asset,
-    get_public_asset_for_url, list_assets as list_assets_store, set_config as set_storage_config,
-    set_domain,
-};
-use crate::storage::types::assets::AssetHashes;
+use crate::storage::store::{commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain, get_config as get_storage_config, get_custom_domains, get_public_asset, get_public_asset_for_url, init_certified_assets, list_assets as list_assets_store, set_config as set_storage_config, set_domain};
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
@@ -42,7 +35,6 @@ use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk,
 };
-use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, Chunk};
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
@@ -61,12 +53,12 @@ use ic_cdk::export::candid::{candid_method, export_service};
 use ic_cdk::storage::stable_restore;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
+#[allow(unused)]
 use ic_stable_structures::Memory as _;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
-use std::collections::HashMap;
 use types::list::ListParams;
 
 #[init]
@@ -111,19 +103,11 @@ fn post_upgrade() {
 
     let heap = HeapState::from(&upgrade_heap);
 
-    let asset_hashes = AssetHashes::from(&heap.storage);
-
     STATE.with(|state| {
         *state.borrow_mut() = State {
             stable: init_stable_state(),
             heap,
-            runtime: RuntimeState {
-                storage: StorageRuntimeState {
-                    chunks: HashMap::new(),
-                    batches: HashMap::new(),
-                    asset_hashes: asset_hashes.clone(),
-                },
-            },
+            runtime: RuntimeState::default(),
         }
     });
 
@@ -144,9 +128,7 @@ fn post_upgrade() {
     //     .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     // STATE.with(|s| *s.borrow_mut() = state);
 
-    // TODO: runtime asset_hashes: asset_hashes.clone(),
-
-    init_certified_data();
+    init_certified_assets();
 }
 
 ///

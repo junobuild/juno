@@ -4,19 +4,20 @@ import type {
 	DelDoc as DelRule,
 	Doc,
 	ListResults as ListAssets,
-	ListResults_1 as ListDocs,
+	ListResults_1 as ListDocs, Memory,
 	Rule,
 	RulesType,
 	SetRule
 } from '$declarations/satellite/satellite.did';
-import type { PermissionText } from '$lib/constants/rules.constants';
+import type {MemoryText, PermissionText} from '$lib/constants/rules.constants';
 import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.utils';
 import { toNullable } from '$lib/utils/did.utils';
-import { permissionFromText } from '$lib/utils/rules.utils';
+import {memoryFromText, permissionFromText} from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
 import { isNullish, nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
+import {MemoryHeap} from "$lib/constants/rules.constants";
 
 export const listDocs = async ({
 	satelliteId,
@@ -61,6 +62,7 @@ export const setRule = async ({
 	read,
 	write,
 	type,
+	memory,
 	rule,
 	maxSize
 }: {
@@ -69,6 +71,7 @@ export const setRule = async ({
 	read: PermissionText;
 	write: PermissionText;
 	type: RulesType;
+	memory: MemoryText;
 	rule: Rule | undefined;
 	maxSize: number | undefined;
 }) => {
@@ -76,7 +79,8 @@ export const setRule = async ({
 		read: permissionFromText(read),
 		write: permissionFromText(write),
 		updated_at: isNullish(rule) ? [] : [rule.updated_at],
-		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined)
+		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
+		memory: isNullish(rule) ? [memoryFromText(memory)] : [rule.memory ?? MemoryHeap]
 	};
 
 	const actor = await getSatelliteActor(satelliteId);

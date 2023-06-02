@@ -224,7 +224,10 @@
 		"added": "La collezione {0} è stata aggiunta.",
 		"updated": "La collezione {0} è stata aggiornata.",
 		"deleted": "La collezione {0} è stata eliminata.",
-		"delete_question": "Vuoi eliminare la collezione?"
+		"delete_question": "Vuoi eliminare la collezione?",
+		"memory": "Memory",
+		"heap": "Heap",
+		"stable": "Stable"
 	},
 	"sort": {
 		"title": "Ordina i risultati",

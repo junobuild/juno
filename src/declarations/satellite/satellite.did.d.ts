@@ -49,6 +49,10 @@ export interface CustomDomain {
 export interface DelDoc {
 	updated_at: [] | [bigint];
 }
+export interface DelRule {
+	memory: [] | [Memory];
+	updated_at: [] | [bigint];
+}
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
@@ -115,12 +119,14 @@ export interface ListResults_1 {
 	items: Array<[string, Doc]>;
 	items_length: bigint;
 }
+export type Memory = { Heap: null } | { Stable: null };
 export type Permission =
 	| { Controllers: null }
 	| { Private: null }
 	| { Public: null }
 	| { Managed: null };
 export interface Rule {
+	memory: Memory;
 	updated_at: bigint;
 	max_size: [] | [bigint];
 	read: Permission;
@@ -143,6 +149,7 @@ export interface SetDoc {
 	description: [] | [string];
 }
 export interface SetRule {
+	memory: [] | [Memory];
 	updated_at: [] | [bigint];
 	max_size: [] | [bigint];
 	read: Permission;
@@ -179,7 +186,7 @@ export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_custom_domain: ActorMethod<[string], undefined>;
 	del_doc: ActorMethod<[string, string, DelDoc], undefined>;
-	del_rule: ActorMethod<[RulesType, string, DelDoc], undefined>;
+	del_rule: ActorMethod<[RulesType, string, DelRule], undefined>;
 	get_config: ActorMethod<[], Config>;
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;

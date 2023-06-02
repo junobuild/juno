@@ -39,6 +39,7 @@ type CustomDomain = record {
   bn_id : opt text;
 };
 type DelDoc = record { updated_at : opt nat64 };
+type DelRule = record { memory : opt Memory; updated_at : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type Doc = record {
   updated_at : nat64;
@@ -92,8 +93,10 @@ type ListResults_1 = record {
   items : vec record { text; Doc };
   items_length : nat64;
 };
+type Memory = variant { Heap; Stable };
 type Permission = variant { Controllers; Private; Public; Managed };
 type Rule = record {
+  memory : Memory;
   updated_at : nat64;
   max_size : opt nat;
   read : Permission;
@@ -116,6 +119,7 @@ type SetDoc = record {
   description : opt text;
 };
 type SetRule = record {
+  memory : opt Memory;
   updated_at : opt nat64;
   max_size : opt nat;
   read : Permission;
@@ -152,7 +156,7 @@ service : {
     );
   del_custom_domain : (text) -> ();
   del_doc : (text, text, DelDoc) -> ();
-  del_rule : (RulesType, text, DelDoc) -> ();
+  del_rule : (RulesType, text, DelRule) -> ();
   get_config : () -> (Config);
   get_doc : (text, text) -> (opt Doc) query;
   http_request : (HttpRequest) -> (HttpResponse) query;

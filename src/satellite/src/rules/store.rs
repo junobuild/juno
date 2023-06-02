@@ -2,7 +2,7 @@ use crate::db::store::{delete_collection, init_collection};
 use crate::memory::STATE;
 use crate::rules::constants::SYS_COLLECTION_PREFIX;
 use crate::rules::types::interface::{DelRule, SetRule};
-use crate::rules::types::rules::{Rule, Rules};
+use crate::rules::types::rules::{Memory, Rule, Rules};
 use crate::storage::store::assert_assets_collection_empty;
 use crate::types::core::CollectionKey;
 use ic_cdk::api::time;
@@ -89,6 +89,7 @@ fn set_rule_impl(
         updated_at,
         read: user_rule.read,
         write: user_rule.write,
+        memory: user_rule.memory.unwrap_or(Memory::Heap),
         max_size: user_rule.max_size,
     };
 

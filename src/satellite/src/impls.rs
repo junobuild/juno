@@ -1,7 +1,7 @@
 use crate::db::types::state::DbHeapState;
 use crate::memory::init_stable_state;
 use crate::rules::constants::{DEFAULT_ASSETS_COLLECTIONS, DEFAULT_DB_COLLECTIONS};
-use crate::rules::types::rules::Rule;
+use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::state::StorageHeapState;
 use crate::types::list::ListOrderField;
@@ -31,6 +31,7 @@ impl Default for State {
                     Rule {
                         read: rule.read,
                         write: rule.write,
+                        memory: Memory::Heap,
                         max_size: rule.max_size,
                         created_at: now,
                         updated_at: now,
@@ -47,6 +48,7 @@ impl Default for State {
                     Rule {
                         read: rule.read,
                         write: rule.write,
+                        memory: Memory::Heap,
                         max_size: rule.max_size,
                         created_at: now,
                         updated_at: now,

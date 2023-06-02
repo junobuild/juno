@@ -793,7 +793,9 @@ fn delete_certified_asset(runtime: &mut RuntimeState, full_path: &String) {
 pub fn init_certified_assets() {
     let asset_hashes = STATE.with(|state| AssetHashes::from(&state.borrow().heap.storage));
 
-    STATE.with(|state| init_certified_assets_impl(&asset_hashes, &mut state.borrow_mut().runtime.storage));
+    STATE.with(|state| {
+        init_certified_assets_impl(&asset_hashes, &mut state.borrow_mut().runtime.storage)
+    });
 }
 
 fn init_certified_assets_impl(asset_hashes: &AssetHashes, storage: &mut StorageRuntimeState) {

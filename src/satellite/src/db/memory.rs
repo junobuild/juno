@@ -49,12 +49,7 @@ fn get_doc_stable(
     key: &Key,
     db: &DbStable,
 ) -> Result<Option<Doc>, String> {
-    let stable_key = StableKey {
-        collection: collection.clone(),
-        key: key.clone(),
-    };
-
-    let value = db.get(&stable_key);
+    let value = db.get(&stable_key(collection, key));
 
     match value {
         None => Ok(None),
@@ -86,12 +81,7 @@ fn insert_doc_stable(
     doc: &Doc,
     db: &mut DbStable,
 ) -> Result<Doc, String> {
-    let stable_key = StableKey {
-        collection: collection.clone(),
-        key: key.clone(),
-    };
-
-    db.insert(stable_key, doc.clone());
+    db.insert(stable_key(collection, key), doc.clone());
 
     Ok(doc.clone())
 }
@@ -120,12 +110,7 @@ fn delete_doc_stable(
     key: &Key,
     db: &mut DbStable,
 ) -> Result<(), String> {
-    let stable_key = StableKey {
-        collection: collection.clone(),
-        key: key.clone(),
-    };
-
-    db.remove(&stable_key);
+    db.remove(&stable_key(collection, key));
 
     Ok(())
 }
@@ -140,5 +125,12 @@ fn delete_doc_heap(collection: &CollectionKey, key: &Key, db: &mut DbHeap) -> Re
 
             Ok(())
         }
+    }
+}
+
+fn stable_key(collection: &CollectionKey, key: &Key) -> StableKey {
+    StableKey {
+        collection: collection.clone(),
+        key: key.clone(),
     }
 }

@@ -1,5 +1,5 @@
 import type { Permission, RulesType } from '$declarations/satellite/satellite.did';
-import { listRules } from '$lib/api/satellites.api';
+import {listAssets, listRules} from '$lib/api/satellites.api';
 import {
 	PermissionControllers,
 	PermissionManaged,
@@ -11,6 +11,8 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { RulesStore } from '$lib/types/rules.context';
 import type { Principal } from '@dfinity/principal';
 import type { Writable } from 'svelte/store';
+import {compare} from "semver";
+import {listAssetsDeprecated, listRulesDeprecated} from "$lib/api/satellites.deprecated.api";
 
 export const permissionFromText = (text: PermissionText): Permission => {
 	switch (text) {
@@ -54,6 +56,15 @@ export const reloadContextRules = async ({
 		const rules = await listRules({ satelliteId, type });
 		store.set({ satelliteId, rules, rule: undefined });
 	} catch (err: unknown) {
+		// TODO: remove backward compatibility stuffs
+		try {
+			const rules = await listRulesDeprecated({ satelliteId, type });
+			store.set({ satelliteId, rules, rule: undefined });
+			return;
+		} catch (_: unknown) {
+			// Ignore error of the workaround
+		}
+
 		store.set({ satelliteId, rules: undefined, rule: undefined });
 
 		toasts.error({

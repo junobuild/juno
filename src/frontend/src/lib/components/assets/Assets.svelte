@@ -18,7 +18,7 @@
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 	import type { ListParams } from '$lib/types/list';
 	import { compare } from 'semver';
-	import { listAssetsDeprecated } from '$lib/api/satellites.deprected.api';
+	import { listAssetsDeprecated } from '$lib/api/satellites.deprecated.api';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 

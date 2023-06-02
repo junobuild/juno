@@ -1,4 +1,4 @@
-import type {Memory, Permission, RulesType} from '$declarations/satellite/satellite.did';
+import type { Memory, Permission, RulesType } from '$declarations/satellite/satellite.did';
 
 export const DbRulesType: RulesType = { Db: null };
 export const StorageRulesType: RulesType = { Storage: null };

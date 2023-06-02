@@ -1,5 +1,5 @@
 pub mod impls;
-pub mod memory;
+pub mod state;
 pub mod store;
 pub mod types;
 pub mod utils;

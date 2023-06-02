@@ -1,5 +1,5 @@
 use crate::assert::assert_description_length;
-use crate::db::memory::{
+use crate::db::state::{
     delete_collection as delete_memory_collection, delete_doc as delete_memory_doc,
     get_doc as get_memory_doc, init_collection as init_memory_collection,
     insert_doc as insert_memory_doc, is_collection_empty as is_memory_collection_empty,

@@ -35,7 +35,7 @@ pub fn delete_collection(collection: &CollectionKey, memory: &Memory) -> Result<
     }
 }
 
-/// Init
+// Init
 
 fn init_collection_heap(collection: &CollectionKey, db: &mut DbHeap) {
     let col = db.get(collection);
@@ -48,7 +48,7 @@ fn init_collection_heap(collection: &CollectionKey, db: &mut DbHeap) {
     }
 }
 
-/// Is empty
+// Is empty
 
 fn is_collection_empty_heap(collection: &CollectionKey, db: &DbHeap) -> Result<bool, String> {
     let col = db.get(collection);
@@ -70,7 +70,7 @@ fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Resu
     }
 }
 
-/// Delete
+// Delete
 
 fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result<(), String> {
     let col = db.get(collection);
@@ -94,6 +94,15 @@ pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Opt
         }
         Memory::Stable => {
             STATE.with(|state| get_doc_stable(collection, key, &state.borrow().stable.db))
+        }
+    }
+}
+
+pub fn get_docs(collection: &CollectionKey, rule: &Rule) -> Result<Vec<(Key, Doc)>, String> {
+    match rule.memory {
+        Memory::Heap => STATE.with(|state| get_docs_heap(collection, &state.borrow().heap.db.db)),
+        Memory::Stable => {
+            STATE.with(|state| get_docs_stable(collection, &state.borrow().stable.db))
         }
     }
 }
@@ -124,7 +133,7 @@ pub fn delete_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<
     }
 }
 
-/// Get
+// Get
 
 fn get_doc_stable(
     collection: &CollectionKey,
@@ -155,7 +164,34 @@ fn get_doc_heap(collection: &CollectionKey, key: &Key, db: &DbHeap) -> Result<Op
     }
 }
 
-/// Insert
+// List
+
+fn get_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<Vec<(Key, Doc)>, String> {
+    let items = db
+        .iter()
+        .filter(|(key, _)| key.collection == collection.clone())
+        .map(|(key, doc)| (key.key, doc))
+        .collect();
+    Ok(items)
+}
+
+fn get_docs_heap(collection: &CollectionKey, db: &DbHeap) -> Result<Vec<(Key, Doc)>, String> {
+    let col = db.get(collection);
+
+    match col {
+        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        Some(col) => {
+            let items = col
+                .iter()
+                .map(|(key, doc)| (key.clone(), doc.clone()))
+                .collect();
+
+            Ok(items)
+        }
+    }
+}
+
+// Insert
 
 fn insert_doc_stable(
     collection: &CollectionKey,
@@ -185,7 +221,7 @@ fn insert_doc_heap(
     }
 }
 
-/// Delete
+// Delete
 
 fn delete_doc_stable(
     collection: &CollectionKey,

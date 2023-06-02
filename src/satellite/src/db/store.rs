@@ -1,18 +1,15 @@
 use crate::assert::assert_description_length;
 use crate::db::state::{
     delete_collection as delete_state_collection, delete_doc as delete_state_doc,
-    get_doc as get_state_doc, init_collection as init_state_collection,
+    get_doc as get_state_doc, get_docs as get_state_docs, init_collection as init_state_collection,
     insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Collection, DbHeap, Doc};
+use crate::db::types::state::Doc;
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
-use crate::msg::{
-    COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING, COLLECTION_WRITE_RULE_MISSING,
-    ERROR_CANNOT_WRITE,
-};
+use crate::msg::{COLLECTION_READ_RULE_MISSING, COLLECTION_WRITE_RULE_MISSING, ERROR_CANNOT_WRITE};
 use crate::rules::types::rules::{Memory, Permission, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::core::{CollectionKey, Key};
@@ -193,14 +190,7 @@ fn secure_get_docs(
 
     match rules {
         None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
-        Some(rule) => get_docs_impl(
-            caller,
-            controllers,
-            collection,
-            filter,
-            &rule.read,
-            &state.heap.db.db,
-        ),
+        Some(rule) => get_docs_impl(caller, controllers, collection, filter, rule),
     }
 }
 
@@ -208,28 +198,16 @@ fn get_docs_impl(
     caller: Principal,
     controllers: &Controllers,
     collection: CollectionKey,
-    filter: &ListParams,
-    rule: &Permission,
-    db: &DbHeap,
-) -> Result<ListResults<Doc>, String> {
-    let col = db.get(&collection);
-
-    match col {
-        None => Err([COLLECTION_NOT_FOUND, &collection].join("")),
-        Some(col) => Ok(get_values(caller, controllers, rule, col, filter)),
-    }
-}
-
-fn get_values(
-    caller: Principal,
-    controllers: &Controllers,
-    rule: &Permission,
-    col: &Collection,
     filters: &ListParams,
-) -> ListResults<Doc> {
-    let matches = filter_values(caller, controllers, rule, col, filters);
+    rule: &Rule,
+) -> Result<ListResults<Doc>, String> {
+    let items = get_state_docs(&collection, rule)?;
 
-    list_values(matches, filters)
+    let matches = filter_values(caller, controllers, &rule.read, &items, filters);
+
+    let results = list_values(matches, filters);
+
+    Ok(results)
 }
 
 /// Delete

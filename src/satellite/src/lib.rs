@@ -99,6 +99,7 @@ fn pre_upgrade() {
 #[post_upgrade]
 fn post_upgrade() {
     // TODO: To be removed after introduction of stable structure
+    // TODO: Remove also UpgradeHeapState
     let (upgrade_heap,): (UpgradeHeapState,) = stable_restore().unwrap();
 
     let heap = HeapState::from(&upgrade_heap);

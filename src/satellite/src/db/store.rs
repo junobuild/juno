@@ -1,8 +1,8 @@
 use crate::assert::assert_description_length;
 use crate::db::state::{
-    delete_collection as delete_memory_collection, delete_doc as delete_memory_doc,
-    get_doc as get_memory_doc, init_collection as init_memory_collection,
-    insert_doc as insert_memory_doc, is_collection_empty as is_memory_collection_empty,
+    delete_collection as delete_state_collection, delete_doc as delete_state_doc,
+    get_doc as get_state_doc, init_collection as init_state_collection,
+    insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Collection, DbHeap, Doc};
@@ -26,14 +26,14 @@ use shared::types::state::Controllers;
 /// Collection
 
 pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
-    init_memory_collection(collection, memory);
+    init_state_collection(collection, memory);
 }
 
 pub fn delete_collection(collection: &CollectionKey, memory: &Memory) -> Result<(), String> {
-    let empty = is_memory_collection_empty(collection, memory)?;
+    let empty = is_state_collection_empty(collection, memory)?;
 
     if empty {
-        delete_memory_collection(collection, memory)?
+        delete_state_collection(collection, memory)?
     }
 
     Ok(())
@@ -73,7 +73,7 @@ fn get_doc_impl(
     key: Key,
     rule: &Rule,
 ) -> Result<Option<Doc>, String> {
-    let value = get_memory_doc(&collection, &key, rule)?;
+    let value = get_state_doc(&collection, &key, rule)?;
 
     match value {
         None => Ok(None),
@@ -133,7 +133,7 @@ fn insert_doc_impl(
     value: SetDoc,
     rule: &Rule,
 ) -> Result<Doc, String> {
-    let current_doc = get_memory_doc(&collection, &key, rule)?;
+    let current_doc = get_state_doc(&collection, &key, rule)?;
 
     match assert_write_permission(
         caller,
@@ -167,7 +167,7 @@ fn insert_doc_impl(
         description: value.description,
     };
 
-    insert_memory_doc(&collection, &key, &doc, rule)
+    insert_state_doc(&collection, &key, &doc, rule)
 }
 
 /// List
@@ -278,7 +278,7 @@ fn delete_doc_impl(
     value: DelDoc,
     rule: &Rule,
 ) -> Result<(), String> {
-    let current_doc = get_memory_doc(&collection, &key, rule)?;
+    let current_doc = get_state_doc(&collection, &key, rule)?;
 
     match assert_write_permission(
         caller,
@@ -293,7 +293,7 @@ fn delete_doc_impl(
         }
     }
 
-    delete_memory_doc(&key, &collection, rule)
+    delete_state_doc(&key, &collection, rule)
 }
 
 fn assert_write_permission(

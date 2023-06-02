@@ -13,6 +13,7 @@ use crate::msg::{
 };
 use crate::rules::types::rules::{Permission, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
+use crate::types::core::{CollectionKey, Key};
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::State;
 use candid::Principal;
@@ -23,15 +24,15 @@ use std::collections::BTreeMap;
 
 /// Collection
 
-pub fn init_collection(collection: String) {
+pub fn init_collection(collection: CollectionKey) {
     STATE.with(|state| init_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
 }
 
-pub fn delete_collection(collection: String) -> Result<(), String> {
+pub fn delete_collection(collection: CollectionKey) -> Result<(), String> {
     STATE.with(|state| delete_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
 }
 
-fn init_collection_impl(collection: String, db: &mut DbHeap) {
+fn init_collection_impl(collection: CollectionKey, db: &mut DbHeap) {
     let col = db.get(&collection);
 
     match col {
@@ -42,7 +43,7 @@ fn init_collection_impl(collection: String, db: &mut DbHeap) {
     }
 }
 
-fn delete_collection_impl(collection: String, db: &mut DbHeap) -> Result<(), String> {
+fn delete_collection_impl(collection: CollectionKey, db: &mut DbHeap) -> Result<(), String> {
     let col = db.get_mut(&collection);
 
     match col {
@@ -61,7 +62,11 @@ fn delete_collection_impl(collection: String, db: &mut DbHeap) -> Result<(), Str
 
 /// Get
 
-pub fn get_doc(caller: Principal, collection: String, key: String) -> Result<Option<Doc>, String> {
+pub fn get_doc(
+    caller: Principal,
+    collection: CollectionKey,
+    key: Key,
+) -> Result<Option<Doc>, String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     STATE.with(|state| secure_get_doc(caller, &controllers, collection, key, &state.borrow()))
@@ -70,8 +75,8 @@ pub fn get_doc(caller: Principal, collection: String, key: String) -> Result<Opt
 fn secure_get_doc(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
-    key: String,
+    collection: CollectionKey,
+    key: Key,
     state: &State,
 ) -> Result<Option<Doc>, String> {
     let rules = state.heap.db.rules.get(&collection);
@@ -85,8 +90,8 @@ fn secure_get_doc(
 fn get_doc_impl(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
-    key: String,
+    collection: CollectionKey,
+    key: Key,
     rule: &Rule,
 ) -> Result<Option<Doc>, String> {
     let value = get_memory_doc(&collection, &key, rule)?;
@@ -107,8 +112,8 @@ fn get_doc_impl(
 
 pub fn insert_doc(
     caller: Principal,
-    collection: String,
-    key: String,
+    collection: CollectionKey,
+    key: Key,
     value: SetDoc,
 ) -> Result<Doc, String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
@@ -128,8 +133,8 @@ pub fn insert_doc(
 fn secure_insert_doc(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
-    key: String,
+    collection: CollectionKey,
+    key: Key,
     value: SetDoc,
     state: &State,
 ) -> Result<Doc, String> {
@@ -144,8 +149,8 @@ fn secure_insert_doc(
 fn insert_doc_impl(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
-    key: String,
+    collection: CollectionKey,
+    key: Key,
     value: SetDoc,
     rule: &Rule,
 ) -> Result<Doc, String> {
@@ -190,7 +195,7 @@ fn insert_doc_impl(
 
 pub fn get_docs(
     caller: Principal,
-    collection: String,
+    collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<ListResults<Doc>, String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
@@ -201,7 +206,7 @@ pub fn get_docs(
 fn secure_get_docs(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
+    collection: CollectionKey,
     filter: &ListParams,
     state: &State,
 ) -> Result<ListResults<Doc>, String> {
@@ -223,7 +228,7 @@ fn secure_get_docs(
 fn get_docs_impl(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
+    collection: CollectionKey,
     filter: &ListParams,
     rule: &Permission,
     db: &DbHeap,
@@ -252,8 +257,8 @@ fn get_values(
 
 pub fn delete_doc(
     caller: Principal,
-    collection: String,
-    key: String,
+    collection: CollectionKey,
+    key: Key,
     value: DelDoc,
 ) -> Result<(), String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
@@ -273,8 +278,8 @@ pub fn delete_doc(
 fn secure_delete_doc(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
-    key: String,
+    collection: CollectionKey,
+    key: Key,
     value: DelDoc,
     state: &State,
 ) -> Result<(), String> {
@@ -289,8 +294,8 @@ fn secure_delete_doc(
 fn delete_doc_impl(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
-    key: String,
+    collection: CollectionKey,
+    key: Key,
     value: DelDoc,
     rule: &Rule,
 ) -> Result<(), String> {

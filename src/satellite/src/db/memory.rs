@@ -3,7 +3,31 @@ use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::{CollectionKey, Key};
-use crate::types::state::{HeapState, State};
+use std::collections::BTreeMap;
+
+/// Collections
+
+pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
+    match memory {
+        Memory::Heap => {
+            STATE.with(|state| init_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
+        }
+        Memory::Stable => (),
+    }
+}
+
+fn init_collection_impl(collection: &CollectionKey, db: &mut DbHeap) {
+    let col = db.get(collection);
+
+    match col {
+        Some(_) => {}
+        None => {
+            db.insert(collection.clone(), BTreeMap::new());
+        }
+    }
+}
+
+/// Documents
 
 pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Option<Doc>, String> {
     match rule.memory {

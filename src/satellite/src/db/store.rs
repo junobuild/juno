@@ -1,6 +1,7 @@
 use crate::assert::assert_description_length;
 use crate::db::memory::{
-    delete_doc as delete_memory_doc, get_doc as get_memory_doc, insert_doc as insert_memory_doc,
+    delete_doc as delete_memory_doc, get_doc as get_memory_doc,
+    init_collection as init_memory_collection, insert_doc as insert_memory_doc,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Collection, DbHeap, Doc};
@@ -11,7 +12,7 @@ use crate::msg::{
     COLLECTION_NOT_EMPTY, COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING,
     COLLECTION_WRITE_RULE_MISSING, ERROR_CANNOT_WRITE,
 };
-use crate::rules::types::rules::{Permission, Rule};
+use crate::rules::types::rules::{Memory, Permission, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::core::{CollectionKey, Key};
 use crate::types::list::{ListParams, ListResults};
@@ -20,27 +21,15 @@ use candid::Principal;
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
 use shared::types::state::Controllers;
-use std::collections::BTreeMap;
 
 /// Collection
 
-pub fn init_collection(collection: CollectionKey) {
-    STATE.with(|state| init_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
+pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
+    init_memory_collection(collection, memory);
 }
 
 pub fn delete_collection(collection: CollectionKey) -> Result<(), String> {
     STATE.with(|state| delete_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
-}
-
-fn init_collection_impl(collection: CollectionKey, db: &mut DbHeap) {
-    let col = db.get(&collection);
-
-    match col {
-        Some(_) => {}
-        None => {
-            db.insert(collection, BTreeMap::new());
-        }
-    }
 }
 
 fn delete_collection_impl(collection: CollectionKey, db: &mut DbHeap) -> Result<(), String> {

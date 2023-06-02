@@ -30,13 +30,13 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
     STATE.with(|state| {
         set_rule_impl(
             collection.clone(),
-            rule,
+            rule.clone(),
             &mut state.borrow_mut().heap.db.rules,
         )
     })?;
 
     // If the collection does not exist yet we initialize it
-    init_collection(collection);
+    init_collection(&collection, &rule.memory.unwrap_or(Memory::Heap));
 
     Ok(())
 }

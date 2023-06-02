@@ -21,11 +21,6 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const DelDoc = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
 	const RulesType = IDL.Variant({ Db: IDL.Null, Storage: IDL.Null });
-	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
-	const DelRule = IDL.Record({
-		memory: IDL.Opt(Memory),
-		updated_at: IDL.Opt(IDL.Nat64)
-	});
 	const StorageConfig = IDL.Record({
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))))
 	});
@@ -135,6 +130,7 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(IDL.Text, Doc)),
 		items_length: IDL.Nat64
 	});
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
 	const Permission = IDL.Variant({
 		Controllers: IDL.Null,
 		Private: IDL.Null,
@@ -186,7 +182,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		del_doc: IDL.Func([IDL.Text, IDL.Text, DelDoc], [], []),
-		del_rule: IDL.Func([RulesType, IDL.Text, DelRule], [], []),
+		del_rule: IDL.Func([RulesType, IDL.Text, DelDoc], [], []),
 		get_config: IDL.Func([], [Config], []),
 		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),

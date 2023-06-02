@@ -47,7 +47,7 @@ pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), 
 
 pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
     // We delete the empty collection first.
-    delete_collection(&collection, &rule.memory.clone().unwrap_or(Memory::Heap))?;
+    delete_collection(&collection)?;
 
     STATE.with(|state| {
         del_rule_impl(

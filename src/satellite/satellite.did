@@ -39,7 +39,6 @@ type CustomDomain = record {
   bn_id : opt text;
 };
 type DelDoc = record { updated_at : opt nat64 };
-type DelRule = record { memory : opt Memory; updated_at : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type Doc = record {
   updated_at : nat64;
@@ -156,7 +155,7 @@ service : {
     );
   del_custom_domain : (text) -> ();
   del_doc : (text, text, DelDoc) -> ();
-  del_rule : (RulesType, text, DelRule) -> ();
+  del_rule : (RulesType, text, DelDoc) -> ();
   get_config : () -> (Config);
   get_doc : (text, text) -> (opt Doc) query;
   http_request : (HttpRequest) -> (HttpResponse) query;

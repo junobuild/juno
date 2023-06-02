@@ -9,7 +9,7 @@ use crate::db::types::state::Doc;
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
-use crate::msg::{COLLECTION_READ_RULE_MISSING, COLLECTION_WRITE_RULE_MISSING, ERROR_CANNOT_WRITE};
+use crate::msg::{COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING, COLLECTION_WRITE_RULE_MISSING, ERROR_CANNOT_WRITE};
 use crate::rules::types::rules::{Memory, Permission, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::core::{CollectionKey, Key};
@@ -26,7 +26,20 @@ pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
     init_state_collection(collection, memory);
 }
 
-pub fn delete_collection(collection: &CollectionKey, memory: &Memory) -> Result<(), String> {
+pub fn delete_collection(collection: &CollectionKey) -> Result<(), String> {
+    STATE.with(|state| secure_delete_collection(collection, &state.borrow()))
+}
+
+fn secure_delete_collection(collection: &CollectionKey, state: &State) -> Result<(), String> {
+    let rules = state.heap.db.rules.get(collection);
+
+    match rules {
+        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        Some(rule) => delete_collection_impl(collection, &rule.memory),
+    }
+}
+
+fn delete_collection_impl(collection: &CollectionKey, memory: &Memory) -> Result<(), String> {
     let empty = is_state_collection_empty(collection, memory)?;
 
     if empty {

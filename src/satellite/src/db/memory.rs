@@ -10,13 +10,13 @@ use std::collections::BTreeMap;
 pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
     match memory {
         Memory::Heap => {
-            STATE.with(|state| init_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
+            STATE.with(|state| init_collection_heap(collection, &mut state.borrow_mut().heap.db.db))
         }
         Memory::Stable => (),
     }
 }
 
-fn init_collection_impl(collection: &CollectionKey, db: &mut DbHeap) {
+fn init_collection_heap(collection: &CollectionKey, db: &mut DbHeap) {
     let col = db.get(collection);
 
     match col {

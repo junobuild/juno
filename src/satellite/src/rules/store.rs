@@ -128,23 +128,21 @@ fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result
     // Validate memory type does not change
     match current_rule {
         None => (),
-        Some(current_rule) => {
-            match memory {
-                None => {
-                    return Err("The type of memory to use must be provided.".to_string());
-                },
-                Some(Memory::Heap) => {
-                    if !matches!(&current_rule.memory, Memory::Heap) {
-                        return Err("The type of memory cannot be modified to heap.".to_string());
-                    }
-                },
-                Some(Memory::Stable) => {
-                    if !matches!(&current_rule.memory, Memory::Stable) {
-                        return Err("The type of memory cannot be modified to stable.".to_string());
-                    }
+        Some(current_rule) => match memory {
+            None => {
+                return Err("The type of memory to use must be provided.".to_string());
+            }
+            Some(Memory::Heap) => {
+                if !matches!(&current_rule.memory, Memory::Heap) {
+                    return Err("The type of memory cannot be modified to heap.".to_string());
                 }
             }
-        }
+            Some(Memory::Stable) => {
+                if !matches!(&current_rule.memory, Memory::Stable) {
+                    return Err("The type of memory cannot be modified to stable.".to_string());
+                }
+            }
+        },
     }
 
     Ok(())

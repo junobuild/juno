@@ -1,4 +1,7 @@
 use crate::assert::assert_description_length;
+use crate::db::memory::{
+    delete_doc as delete_memory_doc, get_doc as get_memory_doc, insert_doc as insert_memory_doc,
+};
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Collection, DbHeap, Doc};
 use crate::db::utils::filter_values;
@@ -8,7 +11,7 @@ use crate::msg::{
     COLLECTION_NOT_EMPTY, COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING,
     COLLECTION_WRITE_RULE_MISSING, ERROR_CANNOT_WRITE,
 };
-use crate::rules::types::rules::Permission;
+use crate::rules::types::rules::{Permission, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::State;
@@ -75,14 +78,7 @@ fn secure_get_doc(
 
     match rules {
         None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
-        Some(rule) => get_doc_impl(
-            caller,
-            controllers,
-            collection,
-            key,
-            &rule.read,
-            &state.heap.db.db,
-        ),
+        Some(rule) => get_doc_impl(caller, controllers, collection, key, rule),
     }
 }
 
@@ -91,26 +87,18 @@ fn get_doc_impl(
     controllers: &Controllers,
     collection: String,
     key: String,
-    rule: &Permission,
-    db: &DbHeap,
+    rule: &Rule,
 ) -> Result<Option<Doc>, String> {
-    let col = db.get(&collection);
+    let value = get_memory_doc(&collection, &key, rule)?;
 
-    match col {
-        None => Err([COLLECTION_NOT_FOUND, &*collection].join("")),
-        Some(col) => {
-            let value = col.get(&key);
-
-            match value {
-                None => Ok(None),
-                Some(value) => {
-                    if !assert_rule(rule, value.owner, caller, controllers) {
-                        return Ok(None);
-                    }
-
-                    Ok(Some(value.clone()))
-                }
+    match value {
+        None => Ok(None),
+        Some(value) => {
+            if !assert_rule(&rule.read, value.owner, caller, controllers) {
+                return Ok(None);
             }
+
+            Ok(Some(value))
         }
     }
 }
@@ -132,7 +120,7 @@ pub fn insert_doc(
             collection,
             key,
             value,
-            &mut state.borrow_mut(),
+            &state.borrow(),
         )
     })
 }
@@ -143,21 +131,13 @@ fn secure_insert_doc(
     collection: String,
     key: String,
     value: SetDoc,
-    state: &mut State,
+    state: &State,
 ) -> Result<Doc, String> {
     let rules = state.heap.db.rules.get(&collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
-        Some(rule) => insert_doc_impl(
-            caller,
-            controllers,
-            collection,
-            key,
-            value,
-            &rule.write,
-            &mut state.heap.db.db,
-        ),
+        Some(rule) => insert_doc_impl(caller, controllers, collection, key, value, rule),
     }
 }
 
@@ -167,48 +147,43 @@ fn insert_doc_impl(
     collection: String,
     key: String,
     value: SetDoc,
-    rule: &Permission,
-    db: &mut DbHeap,
+    rule: &Rule,
 ) -> Result<Doc, String> {
-    let col = db.get_mut(&collection);
+    let current_doc = get_memory_doc(&collection, &key, rule)?;
 
-    match col {
-        None => Err([COLLECTION_NOT_FOUND, &collection].join("")),
-        Some(col) => {
-            let current_doc = col.get(&key);
-
-            match assert_write_permission(caller, controllers, current_doc, rule, value.updated_at)
-            {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
-                }
-            }
-
-            assert_description_length(&value.description)?;
-
-            let now = time();
-
-            let created_at: u64 = match current_doc {
-                None => now,
-                Some(current_doc) => current_doc.created_at,
-            };
-
-            let updated_at: u64 = now;
-
-            let doc: Doc = Doc {
-                created_at,
-                updated_at,
-                data: value.data,
-                owner: caller,
-                description: value.description,
-            };
-
-            col.insert(key, doc.clone());
-
-            Ok(doc)
+    match assert_write_permission(
+        caller,
+        controllers,
+        &current_doc,
+        &rule.write,
+        value.updated_at,
+    ) {
+        Ok(_) => (),
+        Err(e) => {
+            return Err(e);
         }
     }
+
+    assert_description_length(&value.description)?;
+
+    let now = time();
+
+    let created_at: u64 = match &current_doc {
+        None => now,
+        Some(current_doc) => current_doc.created_at,
+    };
+
+    let updated_at: u64 = now;
+
+    let doc: Doc = Doc {
+        created_at,
+        updated_at,
+        data: value.data,
+        owner: caller,
+        description: value.description,
+    };
+
+    insert_memory_doc(&collection, &key, &doc, rule)
 }
 
 /// List
@@ -290,7 +265,7 @@ pub fn delete_doc(
             collection,
             key,
             value,
-            &mut state.borrow_mut(),
+            &state.borrow(),
         )
     })
 }
@@ -301,21 +276,13 @@ fn secure_delete_doc(
     collection: String,
     key: String,
     value: DelDoc,
-    state: &mut State,
+    state: &State,
 ) -> Result<(), String> {
     let rules = state.heap.db.rules.get(&collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
-        Some(rule) => delete_doc_impl(
-            caller,
-            controllers,
-            collection,
-            key,
-            value,
-            &rule.write,
-            &mut state.heap.db.db,
-        ),
+        Some(rule) => delete_doc_impl(caller, controllers, collection, key, value, rule),
     }
 }
 
@@ -325,35 +292,30 @@ fn delete_doc_impl(
     collection: String,
     key: String,
     value: DelDoc,
-    rule: &Permission,
-    db: &mut DbHeap,
+    rule: &Rule,
 ) -> Result<(), String> {
-    let col = db.get_mut(&collection);
+    let current_doc = get_memory_doc(&collection, &key, rule)?;
 
-    match col {
-        None => Err([COLLECTION_NOT_FOUND, &collection].join("")),
-        Some(col) => {
-            let current_doc = col.get(&key);
-
-            match assert_write_permission(caller, controllers, current_doc, rule, value.updated_at)
-            {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
-                }
-            }
-
-            col.remove(&key);
-
-            Ok(())
+    match assert_write_permission(
+        caller,
+        controllers,
+        &current_doc,
+        &rule.write,
+        value.updated_at,
+    ) {
+        Ok(_) => (),
+        Err(e) => {
+            return Err(e);
         }
     }
+
+    delete_memory_doc(&key, &collection, rule)
 }
 
 fn assert_write_permission(
     caller: Principal,
     controllers: &Controllers,
-    current_doc: Option<&Doc>,
+    current_doc: &Option<Doc>,
     rule: &Permission,
     user_timestamp: Option<u64>,
 ) -> Result<(), String> {
@@ -374,7 +336,7 @@ fn assert_write_permission(
     }
 
     // Validate timestamp
-    match current_doc {
+    match current_doc.clone() {
         None => (),
         Some(current_doc) => match assert_timestamp(user_timestamp, current_doc.updated_at) {
             Ok(_) => (),

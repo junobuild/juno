@@ -75,6 +75,13 @@ fn set_rule_impl(
         }
     }
 
+    match assert_memory(current_rule, &user_rule.memory) {
+        Ok(_) => (),
+        Err(e) => {
+            return Err(e);
+        }
+    }
+
     let now = time();
 
     let created_at: u64 = match current_rule {
@@ -113,6 +120,32 @@ fn del_rule_impl(
     }
 
     rules.remove(&collection);
+
+    Ok(())
+}
+
+fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result<(), String> {
+    // Validate memory type does not change
+    match current_rule {
+        None => (),
+        Some(current_rule) => {
+            match memory {
+                None => {
+                    return Err("The type of memory to use must be provided.".to_string());
+                },
+                Some(Memory::Heap) => {
+                    if !matches!(&current_rule.memory, Memory::Heap) {
+                        return Err("The type of memory cannot be modified to heap.".to_string());
+                    }
+                },
+                Some(Memory::Stable) => {
+                    if !matches!(&current_rule.memory, Memory::Stable) {
+                        return Err("The type of memory cannot be modified to stable.".to_string());
+                    }
+                }
+            }
+        }
+    }
 
     Ok(())
 }

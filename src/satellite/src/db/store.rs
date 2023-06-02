@@ -9,8 +9,11 @@ use crate::db::types::state::Doc;
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
-use crate::msg::{COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING, COLLECTION_WRITE_RULE_MISSING, ERROR_CANNOT_WRITE};
-use crate::rules::types::rules::{Memory, Permission, Rule};
+use crate::msg::{
+    COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING, COLLECTION_WRITE_RULE_MISSING,
+    ERROR_CANNOT_WRITE,
+};
+use crate::rules::types::rules::{Memory, Permission, Rule, Rules};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::core::{CollectionKey, Key};
 use crate::types::list::{ListParams, ListResults};
@@ -27,11 +30,11 @@ pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
 }
 
 pub fn delete_collection(collection: &CollectionKey) -> Result<(), String> {
-    STATE.with(|state| secure_delete_collection(collection, &state.borrow()))
+    secure_delete_collection(collection)
 }
 
-fn secure_delete_collection(collection: &CollectionKey, state: &State) -> Result<(), String> {
-    let rules = state.heap.db.rules.get(collection);
+fn secure_delete_collection(collection: &CollectionKey) -> Result<(), String> {
+    let rules = get_rules(collection);
 
     match rules {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
@@ -58,7 +61,7 @@ pub fn get_doc(
 ) -> Result<Option<Doc>, String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
-    STATE.with(|state| secure_get_doc(caller, &controllers, collection, key, &state.borrow()))
+    secure_get_doc(caller, &controllers, collection, key)
 }
 
 fn secure_get_doc(
@@ -66,13 +69,12 @@ fn secure_get_doc(
     controllers: &Controllers,
     collection: CollectionKey,
     key: Key,
-    state: &State,
 ) -> Result<Option<Doc>, String> {
-    let rules = state.heap.db.rules.get(&collection);
+    let rules = get_rules(&collection);
 
     match rules {
         None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
-        Some(rule) => get_doc_impl(caller, controllers, collection, key, rule),
+        Some(rules) => get_doc_impl(caller, controllers, collection, key, &rules),
     }
 }
 
@@ -107,16 +109,7 @@ pub fn insert_doc(
 ) -> Result<Doc, String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
-    STATE.with(|state| {
-        secure_insert_doc(
-            caller,
-            &controllers,
-            collection,
-            key,
-            value,
-            &state.borrow(),
-        )
-    })
+    secure_insert_doc(caller, &controllers, collection, key, value)
 }
 
 fn secure_insert_doc(
@@ -125,13 +118,12 @@ fn secure_insert_doc(
     collection: CollectionKey,
     key: Key,
     value: SetDoc,
-    state: &State,
 ) -> Result<Doc, String> {
-    let rules = state.heap.db.rules.get(&collection);
+    let rules = get_rules(&collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
-        Some(rule) => insert_doc_impl(caller, controllers, collection, key, value, rule),
+        Some(rules) => insert_doc_impl(caller, controllers, collection, key, value, &rules),
     }
 }
 
@@ -189,7 +181,7 @@ pub fn get_docs(
 ) -> Result<ListResults<Doc>, String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
-    STATE.with(|state| secure_get_docs(caller, &controllers, collection, filter, &state.borrow()))
+    secure_get_docs(caller, &controllers, collection, filter)
 }
 
 fn secure_get_docs(
@@ -197,13 +189,12 @@ fn secure_get_docs(
     controllers: &Controllers,
     collection: CollectionKey,
     filter: &ListParams,
-    state: &State,
 ) -> Result<ListResults<Doc>, String> {
-    let rules = state.heap.db.rules.get(&collection);
+    let rules = get_rules(&collection);
 
     match rules {
         None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
-        Some(rule) => get_docs_impl(caller, controllers, collection, filter, rule),
+        Some(rules) => get_docs_impl(caller, controllers, collection, filter, &rules),
     }
 }
 
@@ -233,16 +224,7 @@ pub fn delete_doc(
 ) -> Result<(), String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
-    STATE.with(|state| {
-        secure_delete_doc(
-            caller,
-            &controllers,
-            collection,
-            key,
-            value,
-            &state.borrow(),
-        )
-    })
+    secure_delete_doc(caller, &controllers, collection, key, value)
 }
 
 fn secure_delete_doc(
@@ -251,13 +233,12 @@ fn secure_delete_doc(
     collection: CollectionKey,
     key: Key,
     value: DelDoc,
-    state: &State,
 ) -> Result<(), String> {
-    let rules = state.heap.db.rules.get(&collection);
+    let rules = get_rules(&collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
-        Some(rule) => delete_doc_impl(caller, controllers, collection, key, value, rule),
+        Some(rules) => delete_doc_impl(caller, controllers, collection, key, value, &rules),
     }
 }
 
@@ -322,4 +303,16 @@ fn assert_write_permission(
     }
 
     Ok(())
+}
+
+fn get_rules(collection: &CollectionKey) -> Option<Rule> {
+    STATE.with(|state| {
+        let state = &state.borrow().heap.db.rules.clone();
+        let rules = state.get(collection);
+
+        match rules {
+            None => None,
+            Some(rules) => Some(rules.clone()),
+        }
+    })
 }

@@ -1,14 +1,14 @@
 pub mod upgrade {
     use crate::db::types::state::DbHeap;
     use crate::rules::types::rules::Permission;
+    use crate::storage::types::config::StorageConfig;
+    use crate::storage::types::domain::CustomDomains;
+    use crate::storage::types::state::Assets;
     use crate::types::core::CollectionKey;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
     use shared::types::state::Controllers;
     use std::collections::HashMap;
-    use crate::storage::types::config::StorageConfig;
-    use crate::storage::types::domain::CustomDomains;
-    use crate::storage::types::state::Assets;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct UpgradeHeapState {

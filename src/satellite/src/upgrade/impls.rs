@@ -7,10 +7,26 @@ use std::collections::HashMap;
 
 impl From<&UpgradeHeapState> for HeapState {
     fn from(state: &UpgradeHeapState) -> Self {
-        let mut rules: Rules = HashMap::new();
+        let mut db_rules: Rules = HashMap::new();
 
         for (key, rule) in state.db.rules.iter() {
-            rules.insert(
+            db_rules.insert(
+                key.clone(),
+                Rule {
+                    read: rule.read.clone(),
+                    write: rule.write.clone(),
+                    memory: Memory::Heap,
+                    max_size: rule.max_size,
+                    created_at: rule.created_at,
+                    updated_at: rule.updated_at,
+                },
+            );
+        }
+
+        let mut storage_rules: Rules = HashMap::new();
+
+        for (key, rule) in state.storage.rules.iter() {
+            storage_rules.insert(
                 key.clone(),
                 Rule {
                     read: rule.read.clone(),
@@ -27,11 +43,11 @@ impl From<&UpgradeHeapState> for HeapState {
             controllers: state.controllers.clone(),
             db: DbHeapState {
                 db: state.db.db.clone(),
-                rules,
+                rules: db_rules,
             },
             storage: StorageHeapState {
                 assets: state.storage.assets.clone(),
-                rules: state.storage.rules.clone(),
+                rules: storage_rules,
                 config: state.storage.config.clone(),
                 custom_domains: state.storage.custom_domains.clone(),
             },

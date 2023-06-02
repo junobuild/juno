@@ -51,6 +51,7 @@ pub mod interface {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct DelRule {
+        pub memory: Option<Memory>,
         pub updated_at: Option<u64>,
     }
 }

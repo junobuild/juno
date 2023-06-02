@@ -1,5 +1,5 @@
 pub mod upgrade {
-    use crate::db::types::state::{DbHeap, DbHeapState};
+    use crate::db::types::state::DbHeap;
     use crate::rules::types::rules::Permission;
     use crate::storage::types::state::StorageHeapState;
     use crate::types::core::CollectionKey;

@@ -1,7 +1,8 @@
 use crate::assert::assert_description_length;
 use crate::db::memory::{
-    delete_doc as delete_memory_doc, get_doc as get_memory_doc,
-    init_collection as init_memory_collection, insert_doc as insert_memory_doc,
+    delete_collection as delete_memory_collection, delete_doc as delete_memory_doc,
+    get_doc as get_memory_doc, init_collection as init_memory_collection,
+    insert_doc as insert_memory_doc, is_collection_empty as is_memory_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Collection, DbHeap, Doc};
@@ -9,8 +10,8 @@ use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
 use crate::msg::{
-    COLLECTION_NOT_EMPTY, COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING,
-    COLLECTION_WRITE_RULE_MISSING, ERROR_CANNOT_WRITE,
+    COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING, COLLECTION_WRITE_RULE_MISSING,
+    ERROR_CANNOT_WRITE,
 };
 use crate::rules::types::rules::{Memory, Permission, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
@@ -28,25 +29,14 @@ pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
     init_memory_collection(collection, memory);
 }
 
-pub fn delete_collection(collection: CollectionKey) -> Result<(), String> {
-    STATE.with(|state| delete_collection_impl(collection, &mut state.borrow_mut().heap.db.db))
-}
+pub fn delete_collection(collection: &CollectionKey, memory: &Memory) -> Result<(), String> {
+    let empty = is_memory_collection_empty(collection, memory)?;
 
-fn delete_collection_impl(collection: CollectionKey, db: &mut DbHeap) -> Result<(), String> {
-    let col = db.get_mut(&collection);
-
-    match col {
-        None => Err([COLLECTION_NOT_FOUND, &collection].join("")),
-        Some(col) => {
-            if !col.is_empty() {
-                return Err([COLLECTION_NOT_EMPTY, &collection].join(""));
-            }
-
-            db.remove(&collection);
-
-            Ok(())
-        }
+    if empty {
+        delete_memory_collection(collection, memory)?
     }
+
+    Ok(())
 }
 
 /// Get

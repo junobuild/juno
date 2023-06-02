@@ -16,6 +16,27 @@ pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
     }
 }
 
+pub fn is_collection_empty(collection: &CollectionKey, memory: &Memory) -> Result<bool, String> {
+    match memory {
+        Memory::Heap => {
+            STATE.with(|state| is_collection_empty_heap(collection, &state.borrow().heap.db.db))
+        }
+        Memory::Stable => {
+            STATE.with(|state| is_collection_empty_stable(collection, &state.borrow().stable.db))
+        }
+    }
+}
+
+pub fn delete_collection(collection: &CollectionKey, memory: &Memory) -> Result<(), String> {
+    match memory {
+        Memory::Heap => STATE
+            .with(|state| delete_collection_heap(collection, &mut state.borrow_mut().heap.db.db)),
+        Memory::Stable => Ok(()),
+    }
+}
+
+/// Init
+
 fn init_collection_heap(collection: &CollectionKey, db: &mut DbHeap) {
     let col = db.get(collection);
 
@@ -23,6 +44,43 @@ fn init_collection_heap(collection: &CollectionKey, db: &mut DbHeap) {
         Some(_) => {}
         None => {
             db.insert(collection.clone(), BTreeMap::new());
+        }
+    }
+}
+
+/// Is empty
+
+fn is_collection_empty_heap(collection: &CollectionKey, db: &DbHeap) -> Result<bool, String> {
+    let col = db.get(collection);
+
+    match col {
+        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        Some(col) => Ok(col.is_empty()),
+    }
+}
+
+fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Result<bool, String> {
+    let first_match = db
+        .iter()
+        .find(|(key, _)| key.collection == collection.clone());
+
+    match first_match {
+        None => Ok(false),
+        Some(_) => Ok(true),
+    }
+}
+
+/// Delete
+
+fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result<(), String> {
+    let col = db.get(collection);
+
+    match col {
+        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        Some(_) => {
+            db.remove(collection);
+
+            Ok(())
         }
     }
 }

@@ -30,6 +30,13 @@
 
 		try {
 			const version = await satelliteVersion({ satelliteId: $store.satelliteId });
+
+			// TODO: remove at the same time as satellite version query
+			if (isNullish(collection)) {
+				setItems({ items: undefined, matches_length: undefined });
+				return;
+			}
+
 			const list = compare(version, '0.0.9') >= 0 ? listAssets : listAssetsDeprecated;
 
 			const { items, matches_length } = await list({

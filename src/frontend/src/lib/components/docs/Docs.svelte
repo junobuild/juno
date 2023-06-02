@@ -21,13 +21,15 @@
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	const list = async () => {
-		if (isNullish(collection)) {
-			setItems({ items: undefined, matches_length: undefined });
-			return;
-		}
-
 		try {
 			const version = await satelliteVersion({ satelliteId: $store.satelliteId });
+
+			// TODO: remove at the same time as satellite version query
+			if (isNullish(collection)) {
+				setItems({ items: undefined, matches_length: undefined });
+				return;
+			}
+
 			const list = compare(version, '0.0.9') >= 0 ? listDocs : listDocsDeprecated;
 
 			const { items, matches_length } = await list({

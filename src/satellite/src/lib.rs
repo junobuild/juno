@@ -26,11 +26,12 @@ use crate::rules::types::rules::Rule;
 use crate::storage::http::{
     build_encodings, build_headers, create_token, error_response, streaming_strategy,
 };
+use crate::storage::runtime::init_certified_assets;
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
     get_config as get_storage_config, get_custom_domains, get_public_asset,
-    get_public_asset_for_url, init_certified_assets, list_assets as list_assets_store,
-    set_config as set_storage_config, set_domain,
+    get_public_asset_for_url, list_assets as list_assets_store, set_config as set_storage_config,
+    set_domain,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http::{
@@ -466,7 +467,7 @@ fn list_assets(
 
     let result = list_assets_store(
         caller,
-        collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()),
+        &collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()),
         &filter,
     );
 
@@ -481,7 +482,7 @@ fn list_assets(
 fn del_asset(collection: CollectionKey, full_path: String) {
     let caller = caller();
 
-    let result = delete_asset(caller, collection, full_path);
+    let result = delete_asset(caller, &collection, full_path);
 
     match result {
         Ok(_) => (),
@@ -492,7 +493,13 @@ fn del_asset(collection: CollectionKey, full_path: String) {
 #[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_assets(collection: Option<CollectionKey>) {
-    delete_assets(collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
+    let result =
+        delete_assets(&collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
+
+    match result {
+        Ok(_) => (),
+        Err(error) => trap(&["Assets cannot be deleted: ", &error].join("")),
+    }
 }
 
 /// Mgmt

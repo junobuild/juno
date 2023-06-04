@@ -1,11 +1,14 @@
+use candid::{decode_one, encode_one};
 use ic_cdk::api::time;
+use ic_stable_structures::{BoundedStorable, Storable};
 use sha2::{Digest, Sha256};
+use std::borrow::Cow;
 use std::cmp::Ordering;
 
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::interface::AssetNoContent;
-use crate::storage::types::state::StorageHeapState;
+use crate::storage::types::state::{StableFullPath, StorageHeapState};
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::storage::url::alternative_paths;
 use crate::types::core::Compare;
@@ -93,4 +96,36 @@ impl Compare for AssetNoContent {
     fn cmp_created_at(&self, other: &Self) -> Ordering {
         self.created_at.cmp(&other.created_at)
     }
+}
+
+impl Storable for Asset {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        Cow::Owned(encode_one(self).unwrap())
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        decode_one(&bytes).unwrap()
+    }
+}
+
+impl BoundedStorable for Asset {
+    // TODO: auto max_size
+    const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
+    const IS_FIXED_SIZE: bool = false;
+}
+
+impl Storable for StableFullPath {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        Cow::Owned(encode_one(self).unwrap())
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        decode_one(&bytes).unwrap()
+    }
+}
+
+impl BoundedStorable for StableFullPath {
+    // TODO: auto max_size
+    const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
+    const IS_FIXED_SIZE: bool = false;
 }

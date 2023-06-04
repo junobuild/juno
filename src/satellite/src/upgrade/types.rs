@@ -3,7 +3,7 @@ pub mod upgrade {
     use crate::rules::types::rules::Permission;
     use crate::storage::types::config::StorageConfig;
     use crate::storage::types::domain::CustomDomains;
-    use crate::storage::types::state::Assets;
+    use crate::storage::types::state::AssetsHeap;
     use crate::types::core::CollectionKey;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
@@ -25,7 +25,7 @@ pub mod upgrade {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct UpgradeStorageHeapState {
-        pub assets: Assets,
+        pub assets: AssetsHeap,
         pub rules: UpgradeRules,
         pub config: StorageConfig,
         pub custom_domains: CustomDomains,

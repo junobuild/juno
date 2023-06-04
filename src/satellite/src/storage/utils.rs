@@ -2,7 +2,7 @@ use crate::list::utils::matcher_regex;
 use crate::rules::types::rules::Permission;
 use crate::rules::utils::assert_rule;
 use crate::storage::types::interface::{AssetEncodingNoContent, AssetNoContent};
-use crate::storage::types::state::{Assets, FullPath};
+use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::list::ListParams;
@@ -48,9 +48,9 @@ pub fn filter_values(
         paginate: _,
         owner,
     }: &ListParams,
-    assets: &Assets,
+    assets: &[Asset],
 ) -> Vec<(FullPath, AssetNoContent)> {
-    let all_keys = assets.values().map(map_key);
+    let all_keys = assets.iter().map(map_key);
 
     let (regex_key, regex_description) = matcher_regex(matcher);
 
@@ -96,9 +96,9 @@ fn filter_owner(filter_owner: Option<UserId>, asset: &AssetNoContent) -> bool {
 
 pub fn filter_collection_values(
     collection: CollectionKey,
-    assets: &Assets,
+    assets: &[Asset],
 ) -> Vec<(FullPath, AssetNoContent)> {
-    let all_keys = assets.values().map(map_key);
+    let all_keys = assets.iter().map(map_key);
 
     all_keys
         .into_iter()

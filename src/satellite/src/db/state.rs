@@ -252,3 +252,19 @@ fn stable_key(collection: &CollectionKey, key: &Key) -> StableKey {
         key: key.clone(),
     }
 }
+
+/// Rules
+
+pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
+    let rule = STATE.with(|state| {
+        let state = &state.borrow().heap.db.rules.clone();
+        let rules = state.get(collection);
+
+        rules.cloned()
+    });
+
+    match rule {
+        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        Some(rule) => Ok(rule),
+    }
+}

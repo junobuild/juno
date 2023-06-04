@@ -4,11 +4,28 @@ use crate::storage::types::state::{Batches, Chunks, FullPath, StorageRuntimeStat
 use crate::storage::types::store::{Batch, Chunk};
 use crate::types::state::RuntimeState;
 use ic_cdk::api::time;
+use crate::storage::types::assets::AssetHashes;
 
-/// Delete certified asset
+/// Certified assets
+
+pub fn init_certified_assets() {
+    let asset_hashes = STATE.with(|state| AssetHashes::from(&state.borrow().heap.storage));
+
+    STATE.with(|state| {
+        init_certified_assets_impl(&asset_hashes, &mut state.borrow_mut().runtime.storage)
+    });
+}
 
 pub fn delete_certified_asset(full_path: &FullPath) {
     STATE.with(|state| delete_certified_asset_impl(full_path, &mut state.borrow_mut().runtime));
+}
+
+fn init_certified_assets_impl(asset_hashes: &AssetHashes, storage: &mut StorageRuntimeState) {
+    // 1. Init all asset in tree
+    storage.asset_hashes = asset_hashes.clone();
+
+    // 2. Update the root hash and the canister certified data
+    update_certified_data(&storage.asset_hashes);
 }
 
 pub fn delete_certified_asset_impl(full_path: &FullPath, runtime: &mut RuntimeState) {

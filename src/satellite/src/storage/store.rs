@@ -703,19 +703,3 @@ fn update_certified_asset(state: &mut State, asset: &Asset) {
     // 2. Update the root hash and the canister certified data
     update_certified_data(&state.runtime.storage.asset_hashes);
 }
-
-pub fn init_certified_assets() {
-    let asset_hashes = STATE.with(|state| AssetHashes::from(&state.borrow().heap.storage));
-
-    STATE.with(|state| {
-        init_certified_assets_impl(&asset_hashes, &mut state.borrow_mut().runtime.storage)
-    });
-}
-
-fn init_certified_assets_impl(asset_hashes: &AssetHashes, storage: &mut StorageRuntimeState) {
-    // 1. Init all asset in tree
-    storage.asset_hashes = asset_hashes.clone();
-
-    // 2. Update the root hash and the canister certified data
-    update_certified_data(&storage.asset_hashes);
-}

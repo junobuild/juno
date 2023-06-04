@@ -9,7 +9,6 @@ use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
-use crate::memory::STATE;
 use crate::msg::ERROR_CANNOT_WRITE;
 use crate::rules::types::rules::{Memory, Permission, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
@@ -19,6 +18,7 @@ use candid::Principal;
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
 use shared::types::state::Controllers;
+use crate::controllers::store::get_controllers;
 
 /// Collection
 
@@ -52,7 +52,7 @@ pub fn get_doc(
     collection: CollectionKey,
     key: Key,
 ) -> Result<Option<Doc>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
 
     secure_get_doc(caller, &controllers, collection, key)
 }
@@ -96,7 +96,7 @@ pub fn insert_doc(
     key: Key,
     value: SetDoc,
 ) -> Result<Doc, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
 
     secure_insert_doc(caller, &controllers, collection, key, value)
 }
@@ -164,7 +164,7 @@ pub fn get_docs(
     collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<ListResults<Doc>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
 
     secure_get_docs(caller, &controllers, collection, filter)
 }
@@ -203,7 +203,7 @@ pub fn delete_doc(
     key: Key,
     value: DelDoc,
 ) -> Result<(), String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
 
     secure_delete_doc(caller, &controllers, collection, key, value)
 }

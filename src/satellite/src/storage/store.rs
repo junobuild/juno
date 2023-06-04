@@ -11,6 +11,7 @@ use shared::controllers::is_controller;
 use shared::types::state::Controllers;
 use shared::utils::principal_not_equal;
 use std::collections::HashMap;
+use crate::controllers::store::get_controllers;
 
 use crate::rules::types::rules::Rule;
 use crate::rules::utils::{assert_create_rule, assert_rule, is_known_user, public_rule};
@@ -85,7 +86,7 @@ pub fn delete_asset(
     collection: &CollectionKey,
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
 
     secure_delete_asset_impl(caller, &controllers, collection, full_path)
 }
@@ -99,7 +100,7 @@ pub fn list_assets(
     collection: &CollectionKey,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
 
     secure_list_assets_impl(caller, &controllers, collection, filters)
 }
@@ -245,7 +246,7 @@ static mut NEXT_BATCH_ID: u128 = 0;
 static mut NEXT_CHUNK_ID: u128 = 0;
 
 pub fn create_batch(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
     secure_create_batch_impl(caller, &controllers, init)
 }
 
@@ -254,7 +255,7 @@ pub fn create_chunk(caller: Principal, chunk: Chunk) -> Result<u128, &'static st
 }
 
 pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
     commit_batch_impl(caller, &controllers, commit_batch)
 }
 

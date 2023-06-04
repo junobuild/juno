@@ -596,6 +596,10 @@ pub fn delete_domain(domain_name: &DomainName) -> Result<(), String> {
     delete_domain_impl(domain_name)
 }
 
+pub fn get_custom_domains() -> CustomDomains {
+    get_state_domains()
+}
+
 fn delete_domain_impl(domain_name: &DomainName) -> Result<(), String> {
     delete_state_domain(domain_name);
 
@@ -655,10 +659,6 @@ fn get_custom_domains_as_content() -> String {
         .into_keys()
         .collect::<Vec<DomainName>>()
         .join("\n")
-}
-
-pub fn get_custom_domains() -> CustomDomains {
-    STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())
 }
 
 /// Certified assets

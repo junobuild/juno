@@ -92,8 +92,8 @@ pub fn delete_asset(
     secure_delete_asset_impl(caller, &controllers, collection, full_path)
 }
 
-pub fn delete_assets(collection: &CollectionKey) {
-    STATE.with(|state| delete_assets_impl(collection, &mut state.borrow_mut()))
+pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
+    delete_assets_impl(collection)
 }
 
 pub fn list_assets(
@@ -231,19 +231,25 @@ fn delete_asset_impl(
     }
 }
 
-fn delete_assets_impl(collection: &CollectionKey, state: &mut State) {
-    let full_paths: Vec<String> = state
-        .heap
-        .storage
-        .assets
-        .values()
-        .filter(|asset| asset.key.collection == collection.clone())
-        .map(|asset| asset.key.full_path.clone())
-        .collect();
+fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
+    let rules = get_state_rules(collection);
 
-    for full_path in full_paths {
-        state.heap.storage.assets.remove(&full_path);
-        delete_runtime_certified_asset(&full_path);
+    match rules {
+        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        Some(rules) => {
+            let full_paths: Vec<String> = get_state_assets(collection, &rules)
+                .iter()
+                .filter(|asset| asset.key.collection == collection.clone())
+                .map(|asset| asset.key.full_path.clone())
+                .collect();
+
+            for full_path in full_paths {
+                delete_state_asset(&full_path, &rules);
+                delete_runtime_certified_asset(&full_path);
+            }
+
+            Ok(())
+        }
     }
 }
 

@@ -493,7 +493,13 @@ fn del_asset(collection: CollectionKey, full_path: String) {
 #[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_assets(collection: Option<CollectionKey>) {
-    delete_assets(&collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
+    let result =
+        delete_assets(&collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
+
+    match result {
+        Ok(_) => (),
+        Err(error) => trap(&["Assets cannot be deleted: ", &error].join("")),
+    }
 }
 
 /// Mgmt

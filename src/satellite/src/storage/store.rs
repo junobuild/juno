@@ -22,15 +22,16 @@ use crate::storage::constants::{
 };
 use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::runtime::{
-    clear_expired_batches as clear_expired_runtime_batches,
+    clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks,
     delete_certified_asset as delete_runtime_certified_asset, get_batch as get_runtime_batch,
-    insert_batch as insert_runtime_batch, insert_chunk as insert_runtime_chunk,
+    get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
+    insert_chunk as insert_runtime_chunk,
 };
 use crate::storage::state::{
     delete_asset as delete_state_asset, get_asset as get_state_asset,
     get_assets as get_state_assets, get_public_asset as get_state_public_asset,
-    get_rules as get_state_rules,
+    get_rules as get_state_rules, insert_asset as insert_state_asset,
 };
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::config::StorageConfig;
@@ -390,7 +391,7 @@ fn commit_batch_impl(
     match batch {
         None => Err(ERROR_CANNOT_COMMIT_BATCH.to_string()),
         Some(b) => {
-            let asset = secure_commit_chunks(caller, controllers, commit_batch, &b, state);
+            let asset = secure_commit_chunks(caller, controllers, commit_batch, &b);
             match asset {
                 Err(err) => Err(err),
                 Ok(asset) => {
@@ -437,7 +438,6 @@ fn secure_commit_chunks(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
-    state: &mut State,
 ) -> Result<Asset, String> {
     // The one that started the batch should be the one that commits it
     if principal_not_equal(caller, batch.key.owner) {
@@ -456,7 +456,7 @@ fn secure_commit_chunks(
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &batch.key.collection].join("")),
         Some(rules) => {
-            let current = state.heap.storage.assets.get(&batch.key.full_path);
+            let current = get_state_asset(&batch.key.full_path, &rules);
 
             match current {
                 None => {
@@ -464,7 +464,7 @@ fn secure_commit_chunks(
                         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
                     }
 
-                    commit_chunks(commit_batch, batch, rules.max_size, state)
+                    commit_chunks(commit_batch, batch, rules.max_size, &rules)
                 }
                 Some(current) => secure_commit_chunks_update(
                     caller,
@@ -473,7 +473,6 @@ fn secure_commit_chunks(
                     batch,
                     rules,
                     current.clone(),
-                    state,
                 ),
             }
         }
@@ -487,7 +486,6 @@ fn secure_commit_chunks_update(
     batch: &Batch,
     rules: Rule,
     current: Asset,
-    state: &mut State,
 ) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
     if batch.key.collection != current.key.collection {
@@ -500,7 +498,7 @@ fn secure_commit_chunks_update(
         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
-    commit_chunks(commit_batch, batch, rules.max_size, state)
+    commit_chunks(commit_batch, batch, rules.max_size, &rules)
 }
 
 fn commit_chunks(
@@ -511,7 +509,7 @@ fn commit_chunks(
     }: CommitBatch,
     batch: &Batch,
     max_size: Option<u128>,
-    state: &mut State,
+    rules: &Rule,
 ) -> Result<Asset, String> {
     let now = time();
 
@@ -523,7 +521,7 @@ fn commit_chunks(
     let mut content_chunks: Vec<Vec<u8>> = vec![];
 
     for chunk_id in chunk_ids.iter() {
-        let chunk = state.runtime.storage.chunks.get(chunk_id);
+        let chunk = get_runtime_chunk(chunk_id);
 
         match chunk {
             None => {
@@ -555,7 +553,7 @@ fn commit_chunks(
         updated_at: now,
     };
 
-    if let Some(existing_asset) = state.heap.storage.assets.get(&batch.clone().key.full_path) {
+    if let Some(existing_asset) = get_state_asset(&batch.clone().key.full_path, rules) {
         asset.encodings = existing_asset.encodings.clone();
         asset.created_at = existing_asset.created_at;
     }
@@ -568,7 +566,7 @@ fn commit_chunks(
         None => (),
         Some(max_size) => {
             if encoding.total_length > max_size {
-                clear_batch(batch_id, chunk_ids, &mut state.runtime.storage);
+                clear_runtime_batch(&batch_id, &chunk_ids);
                 return Err("Asset exceed max allowed size.".to_string());
             }
         }
@@ -576,13 +574,9 @@ fn commit_chunks(
 
     asset.encodings.insert(encoding_type, encoding);
 
-    state
-        .heap
-        .storage
-        .assets
-        .insert(batch.clone().key.full_path, asset.clone());
+    insert_state_asset(&batch.clone().key.full_path, &asset, rules);
 
-    clear_batch(batch_id, chunk_ids, &mut state.runtime.storage);
+    clear_runtime_batch(&batch_id, &chunk_ids);
 
     Ok(asset)
 }
@@ -608,14 +602,6 @@ fn clear_expired_batches() {
 
     // Remove chunk without existing batches (those we just deleted above)
     clear_expired_runtime_chunks();
-}
-
-fn clear_batch(batch_id: u128, chunk_ids: Vec<u128>, state: &mut StorageRuntimeState) {
-    for chunk_id in chunk_ids.iter() {
-        state.chunks.remove(chunk_id);
-    }
-
-    state.batches.remove(&batch_id);
 }
 
 ///

@@ -28,6 +28,21 @@ pub fn get_asset(full_path: &FullPath, rule: &Rule) -> Option<Asset> {
     }
 }
 
+pub fn insert_asset(full_path: &FullPath, asset: &Asset, rule: &Rule) {
+    match rule.memory {
+        Memory::Heap => STATE.with(|state| {
+            insert_asset_heap(
+                full_path,
+                asset,
+                &mut state.borrow_mut().heap.storage.assets,
+            )
+        }),
+        Memory::Stable => STATE.with(|state| {
+            insert_asset_stable(full_path, asset, &mut state.borrow_mut().stable.assets)
+        }),
+    }
+}
+
 pub fn delete_asset(full_path: &FullPath, rule: &Rule) -> Option<Asset> {
     match rule.memory {
         Memory::Heap => STATE.with(|state| {
@@ -69,6 +84,16 @@ fn delete_asset_stable(full_path: &FullPath, assets: &mut AssetsStable) -> Optio
 fn delete_asset_heap(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<Asset> {
     let value = assets.get(full_path);
     value.cloned()
+}
+
+// Insert
+
+fn insert_asset_stable(full_path: &FullPath, asset: &Asset, assets: &mut AssetsStable) {
+    assets.insert(stable_full_path(full_path), asset.clone());
+}
+
+fn insert_asset_heap(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHeap) {
+    assets.insert(full_path.clone(), asset.clone());
 }
 
 // List

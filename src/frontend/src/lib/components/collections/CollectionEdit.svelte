@@ -5,7 +5,7 @@
 	import { createEventDispatcher, getContext } from 'svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { memoryToText, permissionToText } from '$lib/utils/rules.utils';
-	import { MemoryHeap, PermissionManaged } from '$lib/constants/rules.constants';
+	import { MemoryHeap, MemoryStable, PermissionManaged } from '$lib/constants/rules.constants';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { fromNullable } from '$lib/utils/did.utils';
@@ -41,7 +41,7 @@
 
 	let memory: MemoryText;
 	const initMemory = (text: MemoryText) => (memory = text);
-	$: initMemory(memoryToText(rule?.memory ?? MemoryHeap));
+	$: initMemory(memoryToText(rule?.memory ?? (typeStorage ? MemoryStable : MemoryHeap)));
 
 	let maxSize: number | undefined;
 	const initMaxLength = (size: [] | [bigint]) => {

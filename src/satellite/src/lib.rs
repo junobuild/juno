@@ -291,13 +291,13 @@ fn list_custom_domains() -> CustomDomains {
 #[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
-    set_domain(&domain_name, &bn_id);
+    set_domain(&domain_name, &bn_id).unwrap_or_else(|e| trap(&e));
 }
 
 #[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_custom_domain(domain_name: DomainName) {
-    delete_domain(&domain_name);
+    delete_domain(&domain_name).unwrap_or_else(|e| trap(&e));
 }
 
 ///
@@ -444,12 +444,7 @@ fn upload_asset_chunk(chunk: Chunk) -> UploadChunk {
 fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
-    let result = commit_batch(caller, commit);
-
-    match result {
-        Ok(_) => (),
-        Err(error) => trap(&error),
-    }
+    commit_batch(caller, commit).unwrap_or_else(|e| trap(&e));
 }
 
 //

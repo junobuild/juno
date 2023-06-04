@@ -28,9 +28,11 @@ use crate::storage::runtime::{
     update_certified_asset as update_runtime_certified_asset,
 };
 use crate::storage::state::{
-    delete_asset as delete_state_asset, get_asset as get_state_asset,
-    get_assets as get_state_assets, get_public_asset as get_state_public_asset,
-    get_rule as get_state_rule, insert_asset as insert_state_asset,
+    delete_asset as delete_state_asset, delete_domain as delete_state_domain,
+    get_asset as get_state_asset, get_assets as get_state_assets, get_domain as get_state_domain,
+    get_domains as get_state_domains, get_public_asset as get_state_public_asset,
+    get_rule as get_state_rule, get_rule, insert_asset as insert_state_asset,
+    insert_domain as insert_state_domain,
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
@@ -42,7 +44,6 @@ use crate::storage::url::{map_alternative_paths, map_url};
 use crate::storage::utils::{filter_collection_values, filter_values};
 use crate::types::core::CollectionKey;
 use crate::types::list::{ListParams, ListResults};
-use crate::types::state::State;
 
 ///
 /// Getter, list and delete
@@ -587,42 +588,47 @@ pub fn get_config() -> StorageConfig {
 /// Domain
 ///
 
-pub fn set_domain(domain_name: &DomainName, bn_id: &Option<String>) {
-    STATE.with(|state| set_domain_impl(domain_name, bn_id, &mut state.borrow_mut()))
+pub fn set_domain(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
+    set_domain_impl(domain_name, bn_id)
 }
 
-pub fn delete_domain(domain_name: &DomainName) {
-    STATE.with(|state| delete_domain_impl(domain_name, &mut state.borrow_mut()))
+pub fn delete_domain(domain_name: &DomainName) -> Result<(), String> {
+    delete_domain_impl(domain_name)
 }
 
-fn delete_domain_impl(domain_name: &DomainName, state: &mut State) {
-    state.heap.storage.custom_domains.remove(domain_name);
+fn delete_domain_impl(domain_name: &DomainName) -> Result<(), String> {
+    delete_state_domain(domain_name);
 
-    update_custom_domains_asset(state);
+    update_custom_domains_asset()
 }
 
-fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut State) {
-    set_stable_domain_impl(domain_name, bn_id, state);
+fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
+    set_stable_domain_impl(domain_name, bn_id);
 
-    update_custom_domains_asset(state);
+    update_custom_domains_asset()
 }
 
-fn update_custom_domains_asset(state: &mut State) {
-    let custom_domains = get_custom_domains_as_content(&state.heap.storage.custom_domains);
+fn update_custom_domains_asset() -> Result<(), String> {
+    let custom_domains = get_custom_domains_as_content();
 
     let full_path = BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string();
 
-    let existing_asset = state.heap.storage.assets.get(&full_path);
+    // #app collection rule
+    let rule = get_rule(&DEFAULT_ASSETS_COLLECTIONS[0].0.to_string())?;
+
+    let existing_asset = get_state_asset(&full_path, &rule);
 
     let asset = map_custom_domains_asset(&custom_domains, existing_asset);
 
-    state.heap.storage.assets.insert(full_path, asset.clone());
+    insert_state_asset(&full_path, &asset, &rule);
 
     update_runtime_certified_asset(&asset);
+
+    Ok(())
 }
 
-fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut State) {
-    let domain = state.heap.storage.custom_domains.get(domain_name);
+fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
+    let domain = get_state_domain(domain_name);
 
     let now = time();
 
@@ -639,16 +645,13 @@ fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, stat
         updated_at,
     };
 
-    state
-        .heap
-        .storage
-        .custom_domains
-        .insert(domain_name.clone(), custom_domain);
+    insert_state_domain(domain_name, &custom_domain);
 }
 
-fn get_custom_domains_as_content(custom_domains: &CustomDomains) -> String {
+fn get_custom_domains_as_content() -> String {
+    let custom_domains = get_state_domains();
+
     custom_domains
-        .clone()
         .into_keys()
         .collect::<Vec<DomainName>>()
         .join("\n")

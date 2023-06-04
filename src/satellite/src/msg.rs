@@ -1,8 +1,6 @@
 /// Rules
 pub const COLLECTION_NOT_FOUND: &str = "Collection not found: ";
 pub const COLLECTION_NOT_EMPTY: &str = "Collection not empty: ";
-pub const COLLECTION_WRITE_RULE_MISSING: &str = "Collection write rule not configured: ";
-pub const COLLECTION_READ_RULE_MISSING: &str = "Collection read rule not configured: ";
 
 /// Db
 pub const ERROR_CANNOT_WRITE: &str = "Cannot write.";

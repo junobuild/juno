@@ -3,6 +3,7 @@ use crate::db::state::{
     delete_collection as delete_state_collection, delete_doc as delete_state_doc,
     get_doc as get_state_doc, get_docs as get_state_docs, init_collection as init_state_collection,
     insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
+    get_rules as get_state_rules,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
@@ -33,7 +34,7 @@ pub fn delete_collection(collection: &CollectionKey) -> Result<(), String> {
 }
 
 fn secure_delete_collection(collection: &CollectionKey) -> Result<(), String> {
-    let rules = get_rules(collection);
+    let rules = get_state_rules(collection);
 
     match rules {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
@@ -69,7 +70,7 @@ fn secure_get_doc(
     collection: CollectionKey,
     key: Key,
 ) -> Result<Option<Doc>, String> {
-    let rules = get_rules(&collection);
+    let rules = get_state_rules(&collection);
 
     match rules {
         None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
@@ -118,7 +119,7 @@ fn secure_insert_doc(
     key: Key,
     value: SetDoc,
 ) -> Result<Doc, String> {
-    let rules = get_rules(&collection);
+    let rules = get_state_rules(&collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
@@ -189,7 +190,7 @@ fn secure_get_docs(
     collection: CollectionKey,
     filter: &ListParams,
 ) -> Result<ListResults<Doc>, String> {
-    let rules = get_rules(&collection);
+    let rules = get_state_rules(&collection);
 
     match rules {
         None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
@@ -233,7 +234,7 @@ fn secure_delete_doc(
     key: Key,
     value: DelDoc,
 ) -> Result<(), String> {
-    let rules = get_rules(&collection);
+    let rules = get_state_rules(&collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
@@ -302,12 +303,4 @@ fn assert_write_permission(
     }
 
     Ok(())
-}
-
-fn get_rules(collection: &CollectionKey) -> Option<Rule> {
-    STATE.with(|state| {
-        let state = &state.borrow().heap.db.rules.clone();
-        let rules = state.get(collection);
-        rules.cloned()
-    })
 }

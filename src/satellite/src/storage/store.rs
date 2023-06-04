@@ -26,6 +26,7 @@ use crate::storage::runtime::delete_certified_asset as delete_state_certified_as
 use crate::storage::state::{
     delete_asset as delete_state_asset, get_asset as get_state_asset,
     get_assets as get_state_assets, get_public_asset as get_state_public_asset,
+    get_rules as get_state_rules
 };
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::config::StorageConfig;
@@ -132,7 +133,7 @@ fn get_token_protected_asset(
 }
 
 pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), String> {
-    let rules = get_rules(collection);
+    let rules = get_state_rules(collection);
 
     match rules {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
@@ -156,7 +157,7 @@ fn secure_list_assets_impl(
     collection: &CollectionKey,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    let rules = get_rules(collection);
+    let rules = get_state_rules(collection);
 
     match rules {
         None => Err([COLLECTION_READ_RULE_MISSING, collection].join("")),
@@ -197,7 +198,7 @@ fn secure_delete_asset_impl(
     collection: &CollectionKey,
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
-    let rules = get_rules(collection);
+    let rules = get_state_rules(collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, collection].join("")),
@@ -277,7 +278,7 @@ fn secure_create_batch_impl(
     init: InitAssetKey,
     state: &mut State,
 ) -> Result<u128, String> {
-    let rules = get_rules(&init.collection);
+    let rules = get_state_rules(&init.collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &init.collection].join("")),
@@ -457,7 +458,7 @@ fn secure_commit_chunks(
         controllers,
     )?;
 
-    let rules = get_rules(&batch.key.collection);
+    let rules = get_state_rules(&batch.key.collection);
 
     match rules {
         None => Err([COLLECTION_WRITE_RULE_MISSING, &batch.key.collection].join("")),
@@ -757,13 +758,3 @@ fn init_certified_assets_impl(asset_hashes: &AssetHashes, storage: &mut StorageR
     update_certified_data(&storage.asset_hashes);
 }
 
-/// Rules utils
-
-fn get_rules(collection: &CollectionKey) -> Option<Rule> {
-    STATE.with(|state| {
-        let state = &state.borrow().heap.storage.rules.clone();
-        let rules = state.get(collection);
-
-        rules.cloned()
-    })
-}

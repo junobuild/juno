@@ -252,3 +252,13 @@ fn stable_key(collection: &CollectionKey, key: &Key) -> StableKey {
         key: key.clone(),
     }
 }
+
+/// Rules
+
+pub fn get_rules(collection: &CollectionKey) -> Option<Rule> {
+    STATE.with(|state| {
+        let state = &state.borrow().heap.db.rules.clone();
+        let rules = state.get(collection);
+        rules.cloned()
+    })
+}

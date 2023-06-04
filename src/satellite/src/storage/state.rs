@@ -94,3 +94,14 @@ fn stable_full_path(full_path: &FullPath) -> StableFullPath {
         full_path: full_path.clone(),
     }
 }
+
+/// Rules
+
+pub fn get_rules(collection: &CollectionKey) -> Option<Rule> {
+    STATE.with(|state| {
+        let state = &state.borrow().heap.storage.rules.clone();
+        let rules = state.get(collection);
+
+        rules.cloned()
+    })
+}

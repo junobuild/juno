@@ -1,4 +1,5 @@
 use crate::assert::assert_description_length;
+use crate::controllers::store::get_controllers;
 use crate::db::state::{
     delete_collection as delete_state_collection, delete_doc as delete_state_doc,
     get_doc as get_state_doc, get_docs as get_state_docs, get_rule as get_state_rule,
@@ -18,7 +19,6 @@ use candid::Principal;
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
 use shared::types::state::Controllers;
-use crate::controllers::store::get_controllers;
 
 /// Collection
 

@@ -1,4 +1,5 @@
 use crate::assert::assert_description_length;
+use crate::controllers::store::get_controllers;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
 use crate::msg::{
@@ -11,7 +12,6 @@ use shared::controllers::is_controller;
 use shared::types::state::Controllers;
 use shared::utils::principal_not_equal;
 use std::collections::HashMap;
-use crate::controllers::store::get_controllers;
 
 use crate::rules::types::rules::Rule;
 use crate::rules::utils::{assert_create_rule, assert_rule, is_known_user, public_rule};
@@ -23,8 +23,9 @@ use crate::storage::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks,
     delete_certified_asset as delete_runtime_certified_asset, get_batch as get_runtime_batch,
-    get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
-    insert_chunk as insert_runtime_chunk, update_certified_asset as update_runtime_certified_asset,
+    get_chunk as get_runtime_chunk, init_certified_assets as init_runtime_certified_assets,
+    insert_batch as insert_runtime_batch, insert_chunk as insert_runtime_chunk,
+    update_certified_asset as update_runtime_certified_asset,
 };
 use crate::storage::state::{
     delete_asset as delete_state_asset, get_asset as get_state_asset,
@@ -655,4 +656,10 @@ fn get_custom_domains_as_content(custom_domains: &CustomDomains) -> String {
 
 pub fn get_custom_domains() -> CustomDomains {
     STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())
+}
+
+/// Certified assets
+
+pub fn init_certified_assets() {
+    init_runtime_certified_assets();
 }

@@ -26,11 +26,12 @@ use crate::rules::types::rules::Rule;
 use crate::storage::http::{
     build_encodings, build_headers, create_token, error_response, streaming_strategy,
 };
+use crate::storage::runtime::init_certified_assets;
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
     get_config as get_storage_config, get_custom_domains, get_public_asset,
-    get_public_asset_for_url, list_assets as list_assets_store,
-    set_config as set_storage_config, set_domain,
+    get_public_asset_for_url, list_assets as list_assets_store, set_config as set_storage_config,
+    set_domain,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http::{
@@ -65,7 +66,6 @@ use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
 use types::list::ListParams;
-use crate::storage::runtime::init_certified_assets;
 
 #[init]
 fn init() {

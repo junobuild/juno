@@ -16,7 +16,6 @@ use std::collections::HashMap;
 
 use crate::rules::types::rules::Rule;
 use crate::rules::utils::{assert_create_rule, assert_rule, is_known_user, public_rule};
-use crate::storage::cert::update_certified_data;
 use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
 };
@@ -26,19 +25,18 @@ use crate::storage::runtime::{
     clear_expired_chunks as clear_expired_runtime_chunks,
     delete_certified_asset as delete_runtime_certified_asset, get_batch as get_runtime_batch,
     get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
-    insert_chunk as insert_runtime_chunk,
+    insert_chunk as insert_runtime_chunk, update_certified_asset as update_runtime_certified_asset,
 };
 use crate::storage::state::{
     delete_asset as delete_state_asset, get_asset as get_state_asset,
     get_assets as get_state_assets, get_public_asset as get_state_public_asset,
     get_rules as get_state_rules, insert_asset as insert_state_asset,
 };
-use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey};
-use crate::storage::types::state::{FullPath, StorageHeapState, StorageRuntimeState};
+use crate::storage::types::state::{FullPath, StorageHeapState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
 use crate::storage::url::{map_alternative_paths, map_url};
 use crate::storage::utils::{filter_collection_values, filter_values};
@@ -269,10 +267,7 @@ pub fn create_chunk(caller: Principal, chunk: Chunk) -> Result<u128, &'static st
 
 pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
-
-    STATE.with(|state| {
-        commit_batch_impl(caller, &controllers, commit_batch, &mut state.borrow_mut())
-    })
+    commit_batch_impl(caller, &controllers, commit_batch)
 }
 
 fn secure_create_batch_impl(
@@ -384,7 +379,6 @@ fn commit_batch_impl(
     caller: Principal,
     controllers: &Controllers,
     commit_batch: CommitBatch,
-    state: &mut State,
 ) -> Result<(), String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
@@ -395,7 +389,7 @@ fn commit_batch_impl(
             match asset {
                 Err(err) => Err(err),
                 Ok(asset) => {
-                    update_certified_asset(state, &asset);
+                    update_runtime_certified_asset(&asset);
                     Ok(())
                 }
             }
@@ -472,7 +466,7 @@ fn secure_commit_chunks(
                     commit_batch,
                     batch,
                     rules,
-                    current.clone(),
+                    current,
                 ),
             }
         }
@@ -654,7 +648,7 @@ fn update_custom_domains_asset(state: &mut State) {
 
     state.heap.storage.assets.insert(full_path, asset.clone());
 
-    update_certified_asset(state, &asset);
+    update_runtime_certified_asset(&asset);
 }
 
 fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut State) {
@@ -692,14 +686,4 @@ fn get_custom_domains_as_content(custom_domains: &CustomDomains) -> String {
 
 pub fn get_custom_domains() -> CustomDomains {
     STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())
-}
-
-/// Certified assets
-
-fn update_certified_asset(state: &mut State, asset: &Asset) {
-    // 1. Replace or insert the new asset in tree
-    state.runtime.storage.asset_hashes.insert(asset);
-
-    // 2. Update the root hash and the canister certified data
-    update_certified_data(&state.runtime.storage.asset_hashes);
 }

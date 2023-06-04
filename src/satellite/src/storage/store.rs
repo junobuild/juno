@@ -38,7 +38,7 @@ use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey};
-use crate::storage::types::state::{FullPath, StorageHeapState};
+use crate::storage::types::state::{FullPath};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
 use crate::storage::url::{map_alternative_paths, map_url};
 use crate::storage::utils::{filter_collection_values, filter_values};

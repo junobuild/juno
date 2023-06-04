@@ -464,7 +464,7 @@ fn secure_commit_chunks(
                         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
                     }
 
-                    commit_chunks(commit_batch, batch, rules.max_size, &rules)
+                    commit_chunks(commit_batch, batch, &rules)
                 }
                 Some(current) => secure_commit_chunks_update(
                     caller,
@@ -498,7 +498,7 @@ fn secure_commit_chunks_update(
         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
-    commit_chunks(commit_batch, batch, rules.max_size, &rules)
+    commit_chunks(commit_batch, batch, &rules)
 }
 
 fn commit_chunks(
@@ -508,7 +508,6 @@ fn commit_chunks(
         headers,
     }: CommitBatch,
     batch: &Batch,
-    max_size: Option<u128>,
     rules: &Rule,
 ) -> Result<Asset, String> {
     let now = time();
@@ -562,7 +561,7 @@ fn commit_chunks(
 
     let encoding = AssetEncoding::from(&content_chunks);
 
-    match max_size {
+    match rules.max_size {
         None => (),
         Some(max_size) => {
             if encoding.total_length > max_size {

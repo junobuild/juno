@@ -62,7 +62,7 @@ pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), Strin
 
 pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
     // Only unused rule can be removed
-    assert_assets_collection_empty(collection.clone())?;
+    assert_assets_collection_empty(&collection)?;
 
     STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
 }

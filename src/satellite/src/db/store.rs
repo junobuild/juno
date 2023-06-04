@@ -13,11 +13,10 @@ use crate::msg::{
     COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING, COLLECTION_WRITE_RULE_MISSING,
     ERROR_CANNOT_WRITE,
 };
-use crate::rules::types::rules::{Memory, Permission, Rule, Rules};
+use crate::rules::types::rules::{Memory, Permission, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::core::{CollectionKey, Key};
 use crate::types::list::{ListParams, ListResults};
-use crate::types::state::State;
 use candid::Principal;
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
@@ -309,10 +308,6 @@ fn get_rules(collection: &CollectionKey) -> Option<Rule> {
     STATE.with(|state| {
         let state = &state.borrow().heap.db.rules.clone();
         let rules = state.get(collection);
-
-        match rules {
-            None => None,
-            Some(rules) => Some(rules.clone()),
-        }
+        rules.cloned()
     })
 }

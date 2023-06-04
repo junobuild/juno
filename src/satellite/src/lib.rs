@@ -466,7 +466,7 @@ fn list_assets(
 
     let result = list_assets_store(
         caller,
-        collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()),
+        &collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()),
         &filter,
     );
 
@@ -481,7 +481,7 @@ fn list_assets(
 fn del_asset(collection: CollectionKey, full_path: String) {
     let caller = caller();
 
-    let result = delete_asset(caller, collection, full_path);
+    let result = delete_asset(caller, &collection, full_path);
 
     match result {
         Ok(_) => (),
@@ -492,7 +492,7 @@ fn del_asset(collection: CollectionKey, full_path: String) {
 #[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_assets(collection: Option<CollectionKey>) {
-    delete_assets(collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
+    delete_assets(&collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
 }
 
 /// Mgmt

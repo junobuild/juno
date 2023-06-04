@@ -5,7 +5,9 @@ pub mod state {
     use crate::storage::types::domain::CustomDomains;
     use crate::storage::types::store::{Asset, Batch, Chunk};
     use crate::types::core::Key;
+    use crate::types::memory::Memory;
     use candid::CandidType;
+    use ic_stable_structures::StableBTreeMap;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -13,11 +15,18 @@ pub mod state {
 
     pub type Batches = HashMap<u128, Batch>;
     pub type Chunks = HashMap<u128, Chunk>;
-    pub type Assets = HashMap<FullPath, Asset>;
+
+    pub type AssetsStable = StableBTreeMap<StableFullPath, Asset, Memory>;
+    pub type AssetsHeap = HashMap<FullPath, Asset>;
+
+    #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct StableFullPath {
+        pub full_path: FullPath,
+    }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageHeapState {
-        pub assets: Assets,
+        pub assets: AssetsHeap,
         pub rules: Rules,
         pub config: StorageConfig,
         pub custom_domains: CustomDomains,

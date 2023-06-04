@@ -7,6 +7,7 @@ use std::cell::RefCell;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
 const DB: MemoryId = MemoryId::new(1);
+const ASSETS: MemoryId = MemoryId::new(2);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -23,8 +24,13 @@ fn get_memory_db() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(DB))
 }
 
+fn get_memory_assets() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(ASSETS))
+}
+
 pub fn init_stable_state() -> StableState {
     StableState {
         db: StableBTreeMap::init(get_memory_db()),
+        assets: StableBTreeMap::init(get_memory_assets()),
     }
 }

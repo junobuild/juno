@@ -12,7 +12,6 @@ use ic_cdk::api::time;
 use shared::controllers::is_controller;
 use shared::types::state::Controllers;
 use shared::utils::principal_not_equal;
-use std::borrow::BorrowMut;
 use std::collections::HashMap;
 
 use crate::rules::types::rules::Rule;
@@ -22,11 +21,15 @@ use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
 };
 use crate::storage::custom_domains::map_custom_domains_asset;
-use crate::storage::runtime::delete_certified_asset as delete_state_certified_asset;
+use crate::storage::runtime::{
+    clear_expired_batches as clear_expired_runtime_batches,
+    clear_expired_chunks as clear_expired_runtime_chunks,
+    delete_certified_asset as delete_runtime_certified_asset, insert_batch as insert_runtime_batch,
+};
 use crate::storage::state::{
     delete_asset as delete_state_asset, get_asset as get_state_asset,
     get_assets as get_state_assets, get_public_asset as get_state_public_asset,
-    get_rules as get_state_rules
+    get_rules as get_state_rules,
 };
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::config::StorageConfig;
@@ -222,7 +225,7 @@ fn delete_asset_impl(
             }
 
             let deleted = delete_state_asset(&full_path, rule);
-            delete_state_certified_asset(&full_path);
+            delete_runtime_certified_asset(&full_path);
             Ok(deleted)
         }
     }
@@ -240,7 +243,7 @@ fn delete_assets_impl(collection: &CollectionKey, state: &mut State) {
 
     for full_path in full_paths {
         state.heap.storage.assets.remove(&full_path);
-        delete_state_certified_asset(&full_path);
+        delete_runtime_certified_asset(&full_path);
     }
 }
 
@@ -250,14 +253,12 @@ fn delete_assets_impl(collection: &CollectionKey, state: &mut State) {
 
 const BATCH_EXPIRY_NANOS: u64 = 300_000_000_000;
 
-static mut NEXT_BACK_ID: u128 = 0;
+static mut NEXT_BATCH_ID: u128 = 0;
 static mut NEXT_CHUNK_ID: u128 = 0;
 
 pub fn create_batch(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
     let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
-
-    STATE
-        .with(|state| secure_create_batch_impl(caller, &controllers, init, &mut state.borrow_mut()))
+    secure_create_batch_impl(caller, &controllers, init)
 }
 
 pub fn create_chunk(caller: Principal, chunk: Chunk) -> Result<u128, &'static str> {
@@ -276,7 +277,6 @@ fn secure_create_batch_impl(
     caller: Principal,
     controllers: &Controllers,
     init: InitAssetKey,
-    state: &mut State,
 ) -> Result<u128, String> {
     let rules = get_state_rules(&init.collection);
 
@@ -297,11 +297,7 @@ fn secure_create_batch_impl(
             // Assert supported encoding type
             get_encoding_type(&init.encoding_type)?;
 
-            Ok(create_batch_impl(
-                caller,
-                init,
-                state.runtime.storage.borrow_mut(),
-            ))
+            Ok(create_batch_impl(caller, init))
         }
     }
 }
@@ -316,14 +312,13 @@ fn create_batch_impl(
         full_path,
         description,
     }: InitAssetKey,
-    state: &mut StorageRuntimeState,
 ) -> u128 {
     let now = time();
 
     unsafe {
-        clear_expired_batches(state);
+        clear_expired_batches();
 
-        NEXT_BACK_ID += 1;
+        NEXT_BATCH_ID += 1;
 
         let key: AssetKey = AssetKey {
             full_path,
@@ -334,8 +329,8 @@ fn create_batch_impl(
             description,
         };
 
-        state.batches.insert(
-            NEXT_BACK_ID,
+        insert_runtime_batch(
+            &NEXT_BATCH_ID,
             Batch {
                 key,
                 expires_at: now + BATCH_EXPIRY_NANOS,
@@ -343,7 +338,7 @@ fn create_batch_impl(
             },
         );
 
-        NEXT_BACK_ID
+        NEXT_BATCH_ID
     }
 }
 
@@ -523,7 +518,7 @@ fn commit_chunks(
     let now = time();
 
     if now > batch.expires_at {
-        clear_expired_batches(&mut state.runtime.storage);
+        clear_expired_batches();
         return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
     }
 
@@ -609,28 +604,12 @@ fn get_encoding_type(encoding_type: &Option<String>) -> Result<String, &'static 
     Ok(provided_type)
 }
 
-fn clear_expired_batches(state: &mut StorageRuntimeState) {
-    let now = time();
-
+fn clear_expired_batches() {
     // Remove expired batches
-
-    let batches = state.batches.clone();
-
-    for (batch_id, batch) in batches.iter() {
-        if now > batch.expires_at {
-            state.batches.remove(batch_id);
-        }
-    }
+    clear_expired_runtime_batches();
 
     // Remove chunk without existing batches (those we just deleted above)
-
-    let chunks = state.chunks.clone();
-
-    for (chunk_id, chunk) in chunks.iter() {
-        if state.batches.get(&chunk.batch_id).is_none() {
-            state.chunks.remove(chunk_id);
-        }
-    }
+    clear_expired_runtime_chunks();
 }
 
 fn clear_batch(batch_id: u128, chunk_ids: Vec<u128>, state: &mut StorageRuntimeState) {
@@ -757,4 +736,3 @@ fn init_certified_assets_impl(asset_hashes: &AssetHashes, storage: &mut StorageR
     // 2. Update the root hash and the canister certified data
     update_certified_data(&storage.asset_hashes);
 }
-

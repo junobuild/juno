@@ -1,9 +1,9 @@
 use crate::assert::assert_description_length;
 use crate::db::state::{
     delete_collection as delete_state_collection, delete_doc as delete_state_doc,
-    get_doc as get_state_doc, get_docs as get_state_docs, init_collection as init_state_collection,
-    insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
-    get_rules as get_state_rules,
+    get_doc as get_state_doc, get_docs as get_state_docs, get_rules as get_state_rules,
+    init_collection as init_state_collection, insert_doc as insert_state_doc,
+    is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;

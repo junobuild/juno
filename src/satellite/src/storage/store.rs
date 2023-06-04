@@ -30,7 +30,7 @@ use crate::storage::runtime::{
 use crate::storage::state::{
     delete_asset as delete_state_asset, get_asset as get_state_asset,
     get_assets as get_state_assets, get_public_asset as get_state_public_asset,
-    get_rules as get_state_rules, insert_asset as insert_state_asset,
+    get_rule as get_state_rule, insert_asset as insert_state_asset,
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
@@ -136,22 +136,17 @@ fn get_token_protected_asset(
 }
 
 pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), String> {
-    let rules = get_state_rules(collection);
+    let rule = get_state_rule(collection)?;
 
-    match rules {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
-        Some(rules) => {
-            let assets = get_state_assets(collection, &rules);
+    let assets = get_state_assets(collection, &rule);
 
-            let values = filter_collection_values(collection.clone(), &assets);
+    let values = filter_collection_values(collection.clone(), &assets);
 
-            if !values.is_empty() {
-                return Err([COLLECTION_NOT_EMPTY, collection].join(""));
-            }
-
-            Ok(())
-        }
+    if !values.is_empty() {
+        return Err([COLLECTION_NOT_EMPTY, collection].join(""));
     }
+
+    Ok(())
 }
 
 fn secure_list_assets_impl(
@@ -160,18 +155,15 @@ fn secure_list_assets_impl(
     collection: &CollectionKey,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    let rules = get_state_rules(collection);
+    let rule = get_state_rule(collection)?;
 
-    match rules {
-        None => Err([COLLECTION_READ_RULE_MISSING, collection].join("")),
-        Some(rule) => Ok(list_assets_impl(
-            caller,
-            controllers,
-            collection,
-            &rule,
-            filters,
-        )),
-    }
+    Ok(list_assets_impl(
+        caller,
+        controllers,
+        collection,
+        &rule,
+        filters,
+    ))
 }
 
 fn list_assets_impl(
@@ -201,12 +193,9 @@ fn secure_delete_asset_impl(
     collection: &CollectionKey,
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
-    let rules = get_state_rules(collection);
+    let rule = get_state_rule(collection)?;
 
-    match rules {
-        None => Err([COLLECTION_WRITE_RULE_MISSING, collection].join("")),
-        Some(rule) => delete_asset_impl(caller, controllers, full_path, &rule),
-    }
+    delete_asset_impl(caller, controllers, full_path, &rule)
 }
 
 fn delete_asset_impl(
@@ -232,25 +221,20 @@ fn delete_asset_impl(
 }
 
 fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
-    let rules = get_state_rules(collection);
+    let rule = get_state_rule(collection)?;
 
-    match rules {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
-        Some(rules) => {
-            let full_paths: Vec<String> = get_state_assets(collection, &rules)
-                .iter()
-                .filter(|asset| asset.key.collection == collection.clone())
-                .map(|asset| asset.key.full_path.clone())
-                .collect();
+    let full_paths: Vec<String> = get_state_assets(collection, &rule)
+        .iter()
+        .filter(|asset| asset.key.collection == collection.clone())
+        .map(|asset| asset.key.full_path.clone())
+        .collect();
 
-            for full_path in full_paths {
-                delete_state_asset(&full_path, &rules);
-                delete_runtime_certified_asset(&full_path);
-            }
-
-            Ok(())
-        }
+    for full_path in full_paths {
+        delete_state_asset(&full_path, &rule);
+        delete_runtime_certified_asset(&full_path);
     }
+
+    Ok(())
 }
 
 ///
@@ -281,28 +265,20 @@ fn secure_create_batch_impl(
     controllers: &Controllers,
     init: InitAssetKey,
 ) -> Result<u128, String> {
-    let rules = get_state_rules(&init.collection);
+    let rule = get_state_rule(&init.collection)?;
 
-    match rules {
-        None => Err([COLLECTION_WRITE_RULE_MISSING, &init.collection].join("")),
-        Some(rules) => {
-            if !(public_rule(&rules.write)
-                || is_known_user(caller)
-                || is_controller(caller, controllers))
-            {
-                return Err(UPLOAD_NOT_ALLOWED.to_string());
-            }
-
-            assert_key(caller, &init.full_path, &init.collection, controllers)?;
-
-            assert_description_length(&init.description)?;
-
-            // Assert supported encoding type
-            get_encoding_type(&init.encoding_type)?;
-
-            Ok(create_batch_impl(caller, init))
-        }
+    if !(public_rule(&rule.write) || is_known_user(caller) || is_controller(caller, controllers)) {
+        return Err(UPLOAD_NOT_ALLOWED.to_string());
     }
+
+    assert_key(caller, &init.full_path, &init.collection, controllers)?;
+
+    assert_description_length(&init.description)?;
+
+    // Assert supported encoding type
+    get_encoding_type(&init.encoding_type)?;
+
+    Ok(create_batch_impl(caller, init))
 }
 
 fn create_batch_impl(
@@ -451,30 +427,20 @@ fn secure_commit_chunks(
         controllers,
     )?;
 
-    let rules = get_state_rules(&batch.key.collection);
+    let rule = get_state_rule(&batch.key.collection)?;
 
-    match rules {
-        None => Err([COLLECTION_WRITE_RULE_MISSING, &batch.key.collection].join("")),
-        Some(rules) => {
-            let current = get_state_asset(&batch.key.full_path, &rules);
+    let current = get_state_asset(&batch.key.full_path, &rule);
 
-            match current {
-                None => {
-                    if !assert_create_rule(&rules.write, caller, controllers) {
-                        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
-                    }
-
-                    commit_chunks(commit_batch, batch, &rules)
-                }
-                Some(current) => secure_commit_chunks_update(
-                    caller,
-                    controllers,
-                    commit_batch,
-                    batch,
-                    rules,
-                    current,
-                ),
+    match current {
+        None => {
+            if !assert_create_rule(&rule.write, caller, controllers) {
+                return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
             }
+
+            commit_chunks(commit_batch, batch, &rule)
+        }
+        Some(current) => {
+            secure_commit_chunks_update(caller, controllers, commit_batch, batch, rule, current)
         }
     }
 }
@@ -484,7 +450,7 @@ fn secure_commit_chunks_update(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
-    rules: Rule,
+    rule: Rule,
     current: Asset,
 ) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
@@ -492,13 +458,11 @@ fn secure_commit_chunks_update(
         return Err("Provided collection does not match existing collection.".to_string());
     }
 
-    let rule = &rules.write;
-
-    if !assert_rule(rule, current.key.owner, caller, controllers) {
+    if !assert_rule(&rule.write, current.key.owner, caller, controllers) {
         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
-    commit_chunks(commit_batch, batch, &rules)
+    commit_chunks(commit_batch, batch, &rule)
 }
 
 fn commit_chunks(
@@ -508,7 +472,7 @@ fn commit_chunks(
         headers,
     }: CommitBatch,
     batch: &Batch,
-    rules: &Rule,
+    rule: &Rule,
 ) -> Result<Asset, String> {
     let now = time();
 
@@ -552,7 +516,7 @@ fn commit_chunks(
         updated_at: now,
     };
 
-    if let Some(existing_asset) = get_state_asset(&batch.clone().key.full_path, rules) {
+    if let Some(existing_asset) = get_state_asset(&batch.clone().key.full_path, rule) {
         asset.encodings = existing_asset.encodings.clone();
         asset.created_at = existing_asset.created_at;
     }
@@ -561,7 +525,7 @@ fn commit_chunks(
 
     let encoding = AssetEncoding::from(&content_chunks);
 
-    match rules.max_size {
+    match rule.max_size {
         None => (),
         Some(max_size) => {
             if encoding.total_length > max_size {
@@ -573,7 +537,7 @@ fn commit_chunks(
 
     asset.encodings.insert(encoding_type, encoding);
 
-    insert_state_asset(&batch.clone().key.full_path, &asset, rules);
+    insert_state_asset(&batch.clone().key.full_path, &asset, rule);
 
     clear_runtime_batch(&batch_id, &chunk_ids);
 

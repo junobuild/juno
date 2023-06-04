@@ -1,4 +1,5 @@
 use crate::memory::STATE;
+use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::state::{AssetsHeap, AssetsStable, FullPath, StableFullPath};
 use crate::storage::types::store::Asset;
@@ -122,11 +123,16 @@ fn stable_full_path(full_path: &FullPath) -> StableFullPath {
 
 /// Rules
 
-pub fn get_rules(collection: &CollectionKey) -> Option<Rule> {
-    STATE.with(|state| {
+pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
+    let rule = STATE.with(|state| {
         let rules = &state.borrow().heap.storage.rules.clone();
         let rule = rules.get(collection);
 
         rule.cloned()
-    })
+    });
+
+    match rule {
+        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        Some(rule) => Ok(rule),
+    }
 }

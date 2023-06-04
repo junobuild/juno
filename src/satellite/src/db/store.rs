@@ -265,7 +265,7 @@ fn delete_doc_impl(
         }
     }
 
-    delete_state_doc(&key, &collection, rule)
+    delete_state_doc(&collection, &key, rule)
 }
 
 fn assert_write_permission(

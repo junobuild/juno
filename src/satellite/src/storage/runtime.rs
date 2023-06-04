@@ -1,7 +1,7 @@
 use crate::memory::STATE;
 use crate::storage::cert::update_certified_data;
-use crate::storage::types::state::{Batches, FullPath, StorageRuntimeState};
-use crate::storage::types::store::Batch;
+use crate::storage::types::state::{Batches, Chunks, FullPath, StorageRuntimeState};
+use crate::storage::types::store::{Batch, Chunk};
 use crate::types::state::RuntimeState;
 use ic_cdk::api::time;
 
@@ -20,6 +20,14 @@ pub fn delete_certified_asset_impl(full_path: &FullPath, runtime: &mut RuntimeSt
 }
 
 /// Batch
+
+pub fn get_batch(batch_id: &u128) -> Option<Batch> {
+    STATE.with(|state| {
+        let batches = state.borrow().runtime.storage.batches.clone();
+        let batch = batches.get(batch_id);
+        batch.cloned()
+    })
+}
 
 pub fn insert_batch(batch_id: &u128, batch: Batch) {
     STATE.with(|state| {
@@ -57,6 +65,16 @@ pub fn clear_expired_chunks() {
     STATE.with(|state| clear_expired_chunks_impl(&mut state.borrow_mut().runtime.storage));
 }
 
+pub fn insert_chunk(chunk_id: &u128, chunk: Chunk) {
+    STATE.with(|state| {
+        insert_chunk_impl(
+            chunk_id,
+            chunk,
+            &mut state.borrow_mut().runtime.storage.chunks,
+        )
+    })
+}
+
 fn clear_expired_chunks_impl(state: &mut StorageRuntimeState) {
     let cloned_chunks = state.chunks.clone();
 
@@ -65,4 +83,8 @@ fn clear_expired_chunks_impl(state: &mut StorageRuntimeState) {
             state.chunks.remove(chunk_id);
         }
     }
+}
+
+fn insert_chunk_impl(chunk_id: &u128, chunk: Chunk, chunks: &mut Chunks) {
+    chunks.insert(*chunk_id, chunk);
 }

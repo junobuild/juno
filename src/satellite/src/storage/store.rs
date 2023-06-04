@@ -24,7 +24,8 @@ use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::runtime::{
     clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks,
-    delete_certified_asset as delete_runtime_certified_asset, insert_batch as insert_runtime_batch,
+    delete_certified_asset as delete_runtime_certified_asset, get_batch as get_runtime_batch,
+    insert_batch as insert_runtime_batch, insert_chunk as insert_runtime_chunk,
 };
 use crate::storage::state::{
     delete_asset as delete_state_asset, get_asset as get_state_asset,
@@ -262,7 +263,7 @@ pub fn create_batch(caller: Principal, init: InitAssetKey) -> Result<u128, Strin
 }
 
 pub fn create_chunk(caller: Principal, chunk: Chunk) -> Result<u128, &'static str> {
-    STATE.with(|state| create_chunk_impl(caller, chunk, &mut state.borrow_mut().runtime.storage))
+    create_chunk_impl(caller, chunk)
 }
 
 pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
@@ -345,9 +346,8 @@ fn create_batch_impl(
 fn create_chunk_impl(
     caller: Principal,
     Chunk { batch_id, content }: Chunk,
-    state: &mut StorageRuntimeState,
 ) -> Result<u128, &'static str> {
-    let batch = state.batches.get(&batch_id);
+    let batch = get_runtime_batch(&batch_id);
 
     match batch {
         None => Err("Batch not found."),
@@ -358,21 +358,20 @@ fn create_chunk_impl(
 
             let now = time();
 
-            state.batches.insert(
-                batch_id,
+            // Update batch to extend expires_at
+            insert_runtime_batch(
+                &batch_id,
                 Batch {
                     key: b.key.clone(),
                     expires_at: now + BATCH_EXPIRY_NANOS,
-                    encoding_type: b.encoding_type.clone(),
+                    encoding_type: b.encoding_type,
                 },
             );
 
             unsafe {
                 NEXT_CHUNK_ID += 1;
 
-                state
-                    .chunks
-                    .insert(NEXT_CHUNK_ID, Chunk { batch_id, content });
+                insert_runtime_chunk(&NEXT_CHUNK_ID, Chunk { batch_id, content });
 
                 Ok(NEXT_CHUNK_ID)
             }
@@ -386,13 +385,12 @@ fn commit_batch_impl(
     commit_batch: CommitBatch,
     state: &mut State,
 ) -> Result<(), String> {
-    let batches = state.runtime.storage.batches.clone();
-    let batch = batches.get(&commit_batch.batch_id);
+    let batch = get_runtime_batch(&commit_batch.batch_id);
 
     match batch {
         None => Err(ERROR_CANNOT_COMMIT_BATCH.to_string()),
         Some(b) => {
-            let asset = secure_commit_chunks(caller, controllers, commit_batch, b, state);
+            let asset = secure_commit_chunks(caller, controllers, commit_batch, &b, state);
             match asset {
                 Err(err) => Err(err),
                 Ok(asset) => {

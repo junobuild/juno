@@ -1,8 +1,11 @@
 use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
+use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
-use crate::storage::types::state::{AssetsHeap, AssetsStable, FullPath, StableFullPath};
+use crate::storage::types::state::{
+    AssetsHeap, AssetsStable, FullPath, StableFullPath, StorageHeapState,
+};
 use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 
@@ -181,4 +184,20 @@ fn insert_domain_impl(
 
 fn delete_domain_impl(domain_name: &DomainName, custom_domains: &mut CustomDomains) {
     custom_domains.remove(domain_name);
+}
+
+///
+/// Config
+///
+
+pub fn get_config() -> StorageConfig {
+    STATE.with(|state| state.borrow().heap.storage.config.clone())
+}
+
+pub fn insert_config(config: &StorageConfig) {
+    STATE.with(|state| insert_config_impl(config, &mut state.borrow_mut().heap.storage))
+}
+
+fn insert_config_impl(config: &StorageConfig, state: &mut StorageHeapState) {
+    state.config = config.clone();
 }

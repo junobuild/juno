@@ -1,7 +1,6 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::list::utils::list_values;
-use crate::memory::STATE;
 use crate::msg::{
     COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
 };
@@ -29,9 +28,10 @@ use crate::storage::runtime::{
 };
 use crate::storage::state::{
     delete_asset as delete_state_asset, delete_domain as delete_state_domain,
-    get_asset as get_state_asset, get_assets as get_state_assets, get_domain as get_state_domain,
-    get_domains as get_state_domains, get_public_asset as get_state_public_asset,
-    get_rule as get_state_rule, get_rule, insert_asset as insert_state_asset,
+    get_asset as get_state_asset, get_assets as get_state_assets, get_config as get_state_config,
+    get_domain as get_state_domain, get_domains as get_state_domains,
+    get_public_asset as get_state_public_asset, get_rule as get_state_rule, get_rule,
+    insert_asset as insert_state_asset, insert_config as insert_state_config,
     insert_domain as insert_state_domain,
 };
 use crate::storage::types::config::StorageConfig;
@@ -573,15 +573,11 @@ fn clear_expired_batches() {
 ///
 
 pub fn set_config(config: &StorageConfig) {
-    STATE.with(|state| set_config_impl(config, &mut state.borrow_mut().heap.storage))
-}
-
-fn set_config_impl(config: &StorageConfig, state: &mut StorageHeapState) {
-    state.config = config.clone();
+    insert_state_config(config);
 }
 
 pub fn get_config() -> StorageConfig {
-    STATE.with(|state| state.borrow().heap.storage.config.clone())
+    get_state_config()
 }
 
 ///

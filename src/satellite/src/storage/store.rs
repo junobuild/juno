@@ -327,7 +327,7 @@ fn create_chunk_impl(
     UploadChunk {
         batch_id,
         content,
-        chunk_id,
+        order_id,
     }: UploadChunk,
 ) -> Result<u128, &'static str> {
     let batch = get_runtime_batch(&batch_id);
@@ -352,17 +352,11 @@ fn create_chunk_impl(
             );
 
             unsafe {
-                let id: u128 = match chunk_id {
-                    None => {
-                        NEXT_CHUNK_ID += 1;
-                        NEXT_CHUNK_ID
-                    }
-                    Some(chunk_id) => chunk_id,
-                };
+                NEXT_CHUNK_ID += 1;
 
-                insert_runtime_chunk(&id, Chunk { batch_id, content });
+                insert_runtime_chunk(&NEXT_CHUNK_ID, Chunk { batch_id, content, order_id: order_id.unwrap_or(NEXT_CHUNK_ID) });
 
-                Ok(id)
+                Ok(NEXT_CHUNK_ID)
             }
         }
     }
@@ -492,12 +486,10 @@ fn commit_chunks(
         return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
     }
 
-    let mut content_chunks: Vec<Vec<u8>> = vec![];
+    // Collect all chunks
+    let mut chunks: Vec<Chunk> = vec![];
 
-    let mut sorted_chunk_ids = chunk_ids.to_vec();
-    sorted_chunk_ids.sort();
-
-    for chunk_id in sorted_chunk_ids.iter() {
+    for chunk_id in chunk_ids.iter() {
         let chunk = get_runtime_chunk(chunk_id);
 
         match chunk {
@@ -509,9 +501,19 @@ fn commit_chunks(
                     return Err("Chunk not included in the provided batch.".to_string());
                 }
 
-                content_chunks.push(c.clone().content);
+                chunks.push(c);
             }
         }
+    }
+
+    // Sort with ordering
+    chunks.sort_by(|a, b| a.order_id.cmp(&b.order_id));
+
+    let mut content_chunks: Vec<Vec<u8>> = vec![];
+
+    // Collect content
+    for c in chunks.iter() {
+        content_chunks.push(c.content.clone());
     }
 
     if content_chunks.is_empty() {

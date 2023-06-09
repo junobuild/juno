@@ -171,7 +171,7 @@ export type StreamingStrategy = {
 export interface UploadChunk {
 	content: Uint8Array | number[];
 	batch_id: bigint;
-	chunk_id: [] | [bigint];
+	order_id: [] | [bigint];
 }
 export interface UploadChunkResult {
 	chunk_id: bigint;

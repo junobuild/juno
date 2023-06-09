@@ -147,7 +147,7 @@ type StreamingStrategy = variant {
 type UploadChunk = record {
   content : vec nat8;
   batch_id : nat;
-  chunk_id : opt nat;
+  order_id : opt nat;
 };
 type UploadChunkResult = record { chunk_id : nat };
 service : {

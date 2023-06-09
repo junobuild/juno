@@ -24,7 +24,7 @@ use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
-use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey};
+use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use crate::storage::types::state::{Assets, FullPath, StorageHeapState, StorageRuntimeState};
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
 use crate::storage::url::{map_alternative_paths, map_url};
@@ -291,7 +291,7 @@ pub fn create_batch(caller: Principal, init: InitAssetKey) -> Result<u128, Strin
     STATE.with(|state| secure_create_batch_impl(caller, init, &mut state.borrow_mut()))
 }
 
-pub fn create_chunk(caller: Principal, chunk: Chunk) -> Result<u128, &'static str> {
+pub fn create_chunk(caller: Principal, chunk: UploadChunk) -> Result<u128, &'static str> {
     STATE.with(|state| create_chunk_impl(caller, chunk, &mut state.borrow_mut().runtime.storage))
 }
 
@@ -384,7 +384,11 @@ fn create_batch_impl(
 
 fn create_chunk_impl(
     caller: Principal,
-    Chunk { batch_id, content }: Chunk,
+    UploadChunk {
+        batch_id,
+        content,
+        chunk_id,
+    }: UploadChunk,
     state: &mut StorageRuntimeState,
 ) -> Result<u128, &'static str> {
     let batch = state.batches.get(&batch_id);
@@ -408,13 +412,17 @@ fn create_chunk_impl(
             );
 
             unsafe {
-                NEXT_CHUNK_ID += 1;
+                let id: u128 = match chunk_id {
+                    None => {
+                        NEXT_CHUNK_ID += 1;
+                        NEXT_CHUNK_ID
+                    }
+                    Some(chunk_id) => chunk_id,
+                };
 
-                state
-                    .chunks
-                    .insert(NEXT_CHUNK_ID, Chunk { batch_id, content });
+                state.chunks.insert(id, Chunk { batch_id, content });
 
-                Ok(NEXT_CHUNK_ID)
+                Ok(id)
             }
         }
     }
@@ -564,7 +572,10 @@ fn commit_chunks(
 
     let mut content_chunks: Vec<Vec<u8>> = vec![];
 
-    for chunk_id in chunk_ids.iter() {
+    let mut sorted_chunk_ids = chunk_ids.to_vec();
+    sorted_chunk_ids.sort();
+
+    for chunk_id in sorted_chunk_ids.iter() {
         let chunk = state.runtime.storage.chunks.get(chunk_id);
 
         match chunk {

@@ -18,7 +18,6 @@ type AssetNoContent = record {
   headers : vec record { text; text };
   created_at : nat64;
 };
-type Chunk = record { content : vec nat8; batch_id : nat };
 type CommitBatch = record {
   batch_id : nat;
   headers : vec record { text; text };
@@ -142,7 +141,12 @@ type StreamingStrategy = variant {
     callback : func () -> ();
   };
 };
-type UploadChunk = record { chunk_id : nat };
+type UploadChunk = record {
+  content : vec nat8;
+  batch_id : nat;
+  chunk_id : opt nat;
+};
+type UploadChunkResult = record { chunk_id : nat };
 service : {
   commit_asset_upload : (CommitBatch) -> ();
   del_asset : (text, text) -> ();
@@ -172,6 +176,6 @@ service : {
   set_custom_domain : (text, opt text) -> ();
   set_doc : (text, text, SetDoc) -> (Doc);
   set_rule : (RulesType, text, SetRule) -> ();
-  upload_asset_chunk : (Chunk) -> (UploadChunk);
+  upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
 }

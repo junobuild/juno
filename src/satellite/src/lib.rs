@@ -39,10 +39,10 @@ use crate::storage::types::http::{
 };
 use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk,
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use crate::storage::types::state::{StorageHeapState, StorageRuntimeState};
-use crate::storage::types::store::{Asset, Chunk};
+use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
@@ -446,13 +446,13 @@ fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
 
 #[candid_method(update)]
 #[update]
-fn upload_asset_chunk(chunk: Chunk) -> UploadChunk {
+fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
 
     let result = create_chunk(caller, chunk);
 
     match result {
-        Ok(chunk_id) => UploadChunk { chunk_id },
+        Ok(chunk_id) => UploadChunkResult { chunk_id },
         Err(error) => trap(error),
     }
 }

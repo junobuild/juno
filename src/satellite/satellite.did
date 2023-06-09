@@ -150,7 +150,7 @@ type UploadChunkResult = record { chunk_id : nat };
 service : {
   commit_asset_upload : (CommitBatch) -> ();
   del_asset : (text, text) -> ();
-  del_assets : (opt text) -> ();
+  del_assets : (text) -> ();
   del_controllers : (DeleteControllersArgs) -> (
       vec record { principal; Controller },
     );
@@ -164,7 +164,7 @@ service : {
       StreamingCallbackHttpResponse,
     ) query;
   init_asset_upload : (InitAssetKey) -> (InitUploadResult);
-  list_assets : (opt text, ListParams) -> (ListResults) query;
+  list_assets : (text, ListParams) -> (ListResults) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_docs : (text, ListParams) -> (ListResults_1) query;

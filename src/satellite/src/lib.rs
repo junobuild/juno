@@ -477,14 +477,14 @@ fn commit_asset_upload(commit: CommitBatch) {
 #[candid_method(query)]
 #[query]
 fn list_assets(
-    collection: Option<CollectionKey>,
+    collection: CollectionKey,
     filter: ListParams,
 ) -> ListResults<AssetNoContent> {
     let caller = caller();
 
     let result = list_assets_store(
         caller,
-        collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()),
+        collection,
         &filter,
     );
 
@@ -509,8 +509,8 @@ fn del_asset(collection: CollectionKey, full_path: String) {
 
 #[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
-fn del_assets(collection: Option<CollectionKey>) {
-    delete_assets(collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
+fn del_assets(collection: CollectionKey) {
+    delete_assets(collection);
 }
 
 /// Mgmt

@@ -132,8 +132,15 @@ pub mod interface {
         pub batch_id: u128,
     }
 
-    #[derive(CandidType)]
+    #[derive(CandidType, Deserialize)]
     pub struct UploadChunk {
+        pub batch_id: u128,
+        pub content: Vec<u8>,
+        pub chunk_id: Option<u128>,
+    }
+
+    #[derive(CandidType)]
+    pub struct UploadChunkResult {
         pub chunk_id: u128,
     }
 

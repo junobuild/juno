@@ -37,7 +37,7 @@ use crate::storage::state::{
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
-use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey};
+use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
 use crate::storage::url::{map_alternative_paths, map_url};
@@ -252,7 +252,7 @@ pub fn create_batch(caller: Principal, init: InitAssetKey) -> Result<u128, Strin
     secure_create_batch_impl(caller, &controllers, init)
 }
 
-pub fn create_chunk(caller: Principal, chunk: Chunk) -> Result<u128, &'static str> {
+pub fn create_chunk(caller: Principal, chunk: UploadChunk) -> Result<u128, &'static str> {
     create_chunk_impl(caller, chunk)
 }
 
@@ -324,7 +324,11 @@ fn create_batch_impl(
 
 fn create_chunk_impl(
     caller: Principal,
-    Chunk { batch_id, content }: Chunk,
+    UploadChunk {
+        batch_id,
+        content,
+        chunk_id,
+    }: UploadChunk,
 ) -> Result<u128, &'static str> {
     let batch = get_runtime_batch(&batch_id);
 
@@ -348,11 +352,17 @@ fn create_chunk_impl(
             );
 
             unsafe {
-                NEXT_CHUNK_ID += 1;
+                let id: u128 = match chunk_id {
+                    None => {
+                        NEXT_CHUNK_ID += 1;
+                        NEXT_CHUNK_ID
+                    }
+                    Some(chunk_id) => chunk_id,
+                };
 
-                insert_runtime_chunk(&NEXT_CHUNK_ID, Chunk { batch_id, content });
+                insert_runtime_chunk(&id, Chunk { batch_id, content });
 
-                Ok(NEXT_CHUNK_ID)
+                Ok(id)
             }
         }
     }
@@ -484,7 +494,10 @@ fn commit_chunks(
 
     let mut content_chunks: Vec<Vec<u8>> = vec![];
 
-    for chunk_id in chunk_ids.iter() {
+    let mut sorted_chunk_ids = chunk_ids.to_vec();
+    sorted_chunk_ids.sort();
+
+    for chunk_id in sorted_chunk_ids.iter() {
         let chunk = get_runtime_chunk(chunk_id);
 
         match chunk {

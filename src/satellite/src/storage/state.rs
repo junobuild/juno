@@ -87,8 +87,7 @@ fn delete_asset_stable(full_path: &FullPath, assets: &mut AssetsStable) -> Optio
 }
 
 fn delete_asset_heap(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<Asset> {
-    let deleted = assets.remove(full_path);
-    deleted
+    assets.remove(full_path)
 }
 
 // Insert

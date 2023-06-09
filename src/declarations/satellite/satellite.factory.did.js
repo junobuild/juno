@@ -166,7 +166,7 @@ export const idlFactory = ({ IDL }) => {
 	const UploadChunk = IDL.Record({
 		content: IDL.Vec(IDL.Nat8),
 		batch_id: IDL.Nat,
-		chunk_id: IDL.Opt(IDL.Nat)
+		order_id: IDL.Opt(IDL.Nat)
 	});
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
 	return IDL.Service({

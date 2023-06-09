@@ -54,6 +54,7 @@ pub mod store {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Chunk {
         pub batch_id: u128,
+        pub order_id: u128,
         pub content: Vec<u8>,
     }
 
@@ -126,7 +127,7 @@ pub mod interface {
     pub struct UploadChunk {
         pub batch_id: u128,
         pub content: Vec<u8>,
-        pub chunk_id: Option<u128>,
+        pub order_id: Option<u128>,
     }
 
     #[derive(CandidType)]

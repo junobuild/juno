@@ -175,7 +175,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
 		del_asset: IDL.Func([IDL.Text, IDL.Text], [], []),
-		del_assets: IDL.Func([IDL.Opt(IDL.Text)], [], []),
+		del_assets: IDL.Func([IDL.Text], [], []),
 		del_controllers: IDL.Func(
 			[DeleteControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
@@ -193,7 +193,7 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		init_asset_upload: IDL.Func([InitAssetKey], [InitUploadResult], []),
-		list_assets: IDL.Func([IDL.Opt(IDL.Text), ListParams], [ListResults], ['query']),
+		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_docs: IDL.Func([IDL.Text, ListParams], [ListResults_1], ['query']),

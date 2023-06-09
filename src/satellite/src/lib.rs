@@ -17,7 +17,6 @@ use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::guards::caller_is_admin_controller;
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
-use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
 };
@@ -453,17 +452,10 @@ fn commit_asset_upload(commit: CommitBatch) {
 
 #[candid_method(query)]
 #[query]
-fn list_assets(
-    collection: Option<CollectionKey>,
-    filter: ListParams,
-) -> ListResults<AssetNoContent> {
+fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
     let caller = caller();
 
-    let result = list_assets_store(
-        caller,
-        &collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()),
-        &filter,
-    );
+    let result = list_assets_store(caller, &collection, &filter);
 
     match result {
         Ok(result) => result,
@@ -486,9 +478,8 @@ fn del_asset(collection: CollectionKey, full_path: String) {
 
 #[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
-fn del_assets(collection: Option<CollectionKey>) {
-    let result =
-        delete_assets(&collection.unwrap_or_else(|| DEFAULT_ASSETS_COLLECTIONS[0].0.to_string()));
+fn del_assets(collection: CollectionKey) {
+    let result = delete_assets(&collection);
 
     match result {
         Ok(_) => (),

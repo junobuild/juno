@@ -130,7 +130,7 @@ function build_canister() {
 
         ic-wasm \
             "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" \
-            -o "./$canister.wasm"
+            -o "./$canister.wasm" \
             shrink
 
         # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm

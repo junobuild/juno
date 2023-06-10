@@ -15,9 +15,7 @@
 		<div class="page">
 			<main class:centered>
 				<h1>
-					{#if nonNullish($layoutTitle)}
-						<span>{$layoutTitle}</span>
-					{/if}
+					<span class={`title ${nonNullish($layoutTitle) ? "visible" : ""}`}>{$layoutTitle ?? ""}</span>
 				</h1>
 
 				<slot />
@@ -76,6 +74,18 @@
 		&:before {
 			content: '';
 			display: inline-block;
+		}
+	}
+
+	.title {
+		visibility: hidden;
+		opacity: 0;
+
+		transition: opacity 0.15s ease-out;
+
+		&.visible {
+			visibility: visible;
+			opacity: 1;
 		}
 	}
 </style>

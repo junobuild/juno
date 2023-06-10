@@ -1,7 +1,6 @@
 <script lang="ts">
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
 	import { layoutTitle } from '$lib/stores/layout.store';
-	import { fade } from 'svelte/transition';
 	import { nonNullish } from '$lib/utils/utils';
 
 	export let centered = false;
@@ -17,7 +16,7 @@
 			<main class:centered>
 				<h1>
 					{#if nonNullish($layoutTitle)}
-						<span transition:fade>{$layoutTitle}</span>
+						<span>{$layoutTitle}</span>
 					{/if}
 				</h1>
 

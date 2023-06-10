@@ -1,5 +1,5 @@
 import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
-import { listDocs008 } from '$lib/api/satellites.deprected.api';
+import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { fromArray } from '$lib/utils/did.utils';

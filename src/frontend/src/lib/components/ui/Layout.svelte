@@ -46,7 +46,7 @@
 	}
 
 	.page {
-		height: 100vh;
+		height: 100%;
 		overflow-y: auto;
 
 		padding: var(--header-height) 0 0;

@@ -5,7 +5,6 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import MissionControlTopUp from '$lib/components/mission-control/MissionControlTopUp.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -51,8 +50,6 @@
 <svelte:window on:junoRestartCycles={reloadBalance} />
 
 {#if $authSignedInStore}
-	<Warnings />
-
 	<div class="card-container">
 		<Value>
 			<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>

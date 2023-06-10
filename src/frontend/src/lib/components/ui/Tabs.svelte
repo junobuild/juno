@@ -15,6 +15,8 @@
 	const selectTab = (tabId: symbol) => store.update((data) => ({ ...data, tabId }));
 </script>
 
+<slot name="info" />
+
 <div class="tabs" use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
 	{#each $store.tabs as { labelKey, id }}
 		{@const [group, key] = labelKey.split('.')}

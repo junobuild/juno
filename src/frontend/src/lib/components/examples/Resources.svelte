@@ -121,6 +121,8 @@
 		align-items: center;
 		gap: var(--padding-2x);
 
+		font-size: var(--font-size-small);
+
 		button:not(.select-action) {
 			display: none;
 		}

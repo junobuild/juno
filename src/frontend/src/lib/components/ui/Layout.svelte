@@ -1,6 +1,8 @@
 <script lang="ts">
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
 	import { layoutTitle } from '$lib/stores/layout.store';
+	import { fade } from 'svelte/transition';
+	import { nonNullish } from '$lib/utils/utils';
 
 	export let centered = false;
 </script>
@@ -13,7 +15,11 @@
 
 		<div class="page">
 			<main class:centered>
-				<h1>{$layoutTitle}</h1>
+				<h1>
+					{#if nonNullish($layoutTitle)}
+						<span transition:fade>{$layoutTitle}</span>
+					{/if}
+				</h1>
 
 				<slot />
 			</main>
@@ -25,6 +31,7 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/text';
 
 	.content {
 		position: relative;
@@ -65,7 +72,10 @@
 		line-height: var(--line-height-standard);
 		margin: 0 0 var(--padding-2x);
 
-		@include media.min-width(medium) {
+		@include text.truncate;
+
+		&:before {
+			content: '';
 			display: inline-block;
 		}
 	}

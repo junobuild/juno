@@ -18,7 +18,7 @@
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 	import type { ListParams } from '$lib/types/list';
 	import { compare } from 'semver';
-	import { listAssets008 } from '$lib/api/satellites.deprected.api';
+	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprected.api';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -37,7 +37,12 @@
 				return;
 			}
 
-			const list = compare(version, '0.0.9') >= 0 ? listAssets : listAssets008;
+			const list =
+				compare(version, '0.0.10') >= 0
+					? listAssets
+					: compare(version, '0.0.9') >= 0
+					? listAssets009
+					: listAssets008;
 
 			const { items, matches_length } = await list({
 				collection,

@@ -15,7 +15,9 @@
 		<div class="page">
 			<main class:centered>
 				<h1>
-					<span class={`title ${nonNullish($layoutTitle) ? "visible" : ""}`}>{$layoutTitle ?? ""}</span>
+					<span class={`title ${nonNullish($layoutTitle) ? 'visible' : ''}`}
+						>{$layoutTitle ?? ''}</span
+					>
 				</h1>
 
 				<slot />

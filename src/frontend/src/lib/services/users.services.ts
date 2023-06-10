@@ -1,5 +1,5 @@
 import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
-import { listDocsDeprecated } from '$lib/api/satellites.deprecated.api';
+import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { fromArray } from '$lib/utils/did.utils';
@@ -14,7 +14,7 @@ export const listUsers = async ({
 	matches_length: bigint;
 }> => {
 	const version = await satelliteVersion({ satelliteId });
-	const list = compare(version, '0.0.9') >= 0 ? listDocs : listDocsDeprecated;
+	const list = compare(version, '0.0.9') >= 0 ? listDocs : listDocs008;
 
 	const { items, matches_length } = await list({
 		collection: '#user',

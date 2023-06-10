@@ -13,6 +13,8 @@
 	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import Warnings from '$lib/components/warning/Warnings.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -42,6 +44,12 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/architecture">
+		<svelte:fragment slot="info">
+			{#if $authSignedInStore}
+				<Warnings />
+			{/if}
+		</svelte:fragment>
+
 		{#if nonNullish($missionControlStore)}
 			{#if $store.tabId === $store.tabs[0].id}
 				<MissionControl />

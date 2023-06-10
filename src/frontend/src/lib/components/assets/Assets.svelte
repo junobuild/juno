@@ -3,7 +3,7 @@
 	import { getContext, setContext } from 'svelte';
 	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
-	import { listAssets, listDocs, satelliteVersion } from '$lib/api/satellites.api';
+	import { listAssets, satelliteVersion } from '$lib/api/satellites.api';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import type { PaginationContext } from '$lib/types/pagination.context';
@@ -18,7 +18,7 @@
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 	import type { ListParams } from '$lib/types/list';
 	import { compare } from 'semver';
-	import { listAssetsDeprecated } from '$lib/api/satellites.deprecated.api';
+	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -37,7 +37,12 @@
 				return;
 			}
 
-			const list = compare(version, '0.0.9') >= 0 ? listAssets : listAssetsDeprecated;
+			const list =
+				compare(version, '0.0.10') >= 0
+					? listAssets
+					: compare(version, '0.0.9') >= 0
+					? listAssets009
+					: listAssets008;
 
 			const { items, matches_length } = await list({
 				collection,

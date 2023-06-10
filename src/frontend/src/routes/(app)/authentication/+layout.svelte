@@ -3,9 +3,10 @@
 	import { applyColor } from '$lib/utils/theme.utils';
 	import { Color } from '$lib/types/theme';
 	import { layoutTitle } from '$lib/stores/layout.store';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	onMount(() => {
-		layoutTitle.set('Authentication');
+		layoutTitle.set($i18n.authentication.title);
 		applyColor(Color.PAPAYA_WHIP);
 	});
 </script>

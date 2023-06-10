@@ -41,11 +41,15 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/add-juno-to-an-app/install-the-sdk-and-initialize-juno">
+		<svelte:fragment slot="info">
+			{#if nonNullish($satelliteStore)}
+				<Warnings satellite={$satelliteStore} />
+			{/if}
+		</svelte:fragment>
+
 		<SatelliteGuard>
 			<MissionControlGuard>
 				{#if nonNullish($satelliteStore)}
-					<Warnings satellite={$satelliteStore} />
-
 					{#if $store.tabId === $store.tabs[0].id}
 						<SatelliteOverview satellite={$satelliteStore} />
 

@@ -68,6 +68,7 @@
 
 	p {
 		@include info.warning;
+		margin: var(--padding-2x) 0 var(--padding-4x);
 	}
 
 	.help {

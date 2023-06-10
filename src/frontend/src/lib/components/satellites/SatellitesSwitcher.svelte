@@ -71,6 +71,8 @@
 
 		margin: var(--padding) 0;
 
+		font-size: var(--font-size-small);
+
 		@include media.min-width(xsmall) {
 			display: flex;
 			justify-content: center;

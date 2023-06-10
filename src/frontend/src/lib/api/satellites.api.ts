@@ -42,7 +42,7 @@ export const listAssets = async ({
 	params: ListParams;
 }): Promise<ListAssets> => {
 	const actor = await getSatelliteActor(satelliteId);
-	return actor.list_assets(toNullable(collection), toListParams(params));
+	return actor.list_assets(collection, toListParams(params));
 };
 
 export const listRules = async ({

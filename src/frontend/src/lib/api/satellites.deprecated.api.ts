@@ -1,4 +1,4 @@
-import type { ListParams as ListParamsApi } from '$declarations/deprecated/satellite-deprecated-no-scope.did';
+import type { ListParams as ListParamsApi } from '$declarations/deprecated/satellite-0-0-8.did';
 import type {
 	AssetNoContent,
 	Doc,
@@ -9,12 +9,13 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import { PAGINATION } from '$lib/constants/constants';
 import type { ListParams } from '$lib/types/list';
-import { getSatelliteActorDeprecated } from '$lib/utils/actor.deprecated.utils';
+import { getSatelliteActor008, getSatelliteActor009 } from '$lib/utils/actor.deprecated.utils';
 import { toNullable } from '$lib/utils/did.utils';
+import { toListParams } from '$lib/utils/satellite.utils';
 import { isNullish } from '$lib/utils/utils';
 import { Principal } from '@dfinity/principal';
 
-const toListParams = ({
+const toListParams008 = ({
 	startAfter,
 	order,
 	filter: { matcher, owner }
@@ -43,7 +44,7 @@ const toListParams = ({
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const listDocsDeprecated = async ({
+export const listDocs008 = async ({
 	satelliteId,
 	collection,
 	params
@@ -52,12 +53,12 @@ export const listDocsDeprecated = async ({
 	collection: string;
 	params: ListParams;
 }): Promise<ListDocs> => {
-	const actor = await getSatelliteActorDeprecated(satelliteId);
+	const actor = await getSatelliteActor008(satelliteId);
 	const {
 		items,
 		length: items_length,
 		matches_length
-	} = await actor.list_docs(collection, toListParams(params));
+	} = await actor.list_docs(collection, toListParams008(params));
 	return {
 		items: items as [string, Doc][],
 		items_length,
@@ -70,7 +71,7 @@ export const listDocsDeprecated = async ({
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const listAssetsDeprecated = async ({
+export const listAssets008 = async ({
 	satelliteId,
 	collection,
 	params
@@ -79,12 +80,12 @@ export const listAssetsDeprecated = async ({
 	collection: string;
 	params: ListParams;
 }): Promise<ListAssets> => {
-	const actor = await getSatelliteActorDeprecated(satelliteId);
+	const actor = await getSatelliteActor008(satelliteId);
 	const {
 		items,
 		length: items_length,
 		matches_length
-	} = await actor.list_assets(toNullable(collection), toListParams(params));
+	} = await actor.list_assets(toNullable(collection), toListParams008(params));
 	return {
 		items: items as [string, AssetNoContent][],
 		items_length,
@@ -97,6 +98,22 @@ export const listAssetsDeprecated = async ({
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
+export const listAssets009 = async ({
+	satelliteId,
+	collection,
+	params
+}: {
+	satelliteId: Principal;
+	collection: string;
+	params: ListParams;
+}): Promise<ListAssets> => {
+	const actor = await getSatelliteActor009(satelliteId);
+	return actor.list_assets(toNullable(collection), toListParams(params));
+};
+
+/**
+ * @deprecated TODO: to be remove - backwards compatibility
+ */
 export const listRulesDeprecated = async ({
 	satelliteId,
 	type
@@ -104,7 +121,7 @@ export const listRulesDeprecated = async ({
 	satelliteId: Principal;
 	type: RulesType;
 }): Promise<[string, Rule][]> => {
-	const actor = await getSatelliteActorDeprecated(satelliteId);
+	const actor = await getSatelliteActor008(satelliteId);
 	const rules = await actor.list_rules(type);
 	return rules.map(([key, rule]) => [
 		key,

@@ -3,7 +3,7 @@
 	import { getContext, setContext } from 'svelte';
 	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
-	import { listAssets, listDocs, satelliteVersion } from '$lib/api/satellites.api';
+	import { listAssets, satelliteVersion } from '$lib/api/satellites.api';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import type { PaginationContext } from '$lib/types/pagination.context';

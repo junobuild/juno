@@ -16,6 +16,8 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
+	import WhatNext from '$lib/components/onboarding/WhatNext.svelte';
+	import InstallSDK from '$lib/components/onboarding/InstallSDK.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -33,7 +35,7 @@
 	let notEnoughCredits = false;
 	$: notEnoughCredits = credits < fee;
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let steps: 'init' | 'in_progress' | 'ready' | 'sdk' | 'deploy' | 'error' = 'ready';
 	let satellite: Satellite | undefined = undefined;
 
 	const onSubmit = async () => {
@@ -82,11 +84,9 @@
 
 <Modal on:junoClose>
 	{#if steps === 'ready'}
-		<div class="msg">
-			<IconSatellite />
-			<p>{$i18n.satellites.ready}</p>
-			<button on:click={navigate}>{$i18n.core.continue}</button>
-		</div>
+		<WhatNext on:junoSkip={navigate} on:junoNext={({ detail }) => (steps = detail)} />
+	{:else if steps === 'sdk'}
+		<InstallSDK {satellite} />
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.satellites.initializing}</p>
@@ -145,8 +145,8 @@
 <style lang="scss">
 	@use '../../styles/mixins/overlay';
 
-	.msg {
-		@include overlay.message;
+	h2 {
+		@include overlay.title;
 	}
 
 	form {

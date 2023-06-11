@@ -26,7 +26,8 @@
 		"language": "Language",
 		"user_menu": "User menu",
 		"version": "Version",
-		"delete": "Delete"
+		"delete": "Delete",
+		"skip": "Skip"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -55,7 +56,7 @@
 		"ready": "Your satellite is ready.",
 		"initializing": "Initializing your new satellite...",
 		"start": "Let's create a new satellite",
-		"description": "A satellite is a web3 container that offers a simplistic datastore, storage, and permission management system for your application. Develop and run your app on the web, completely on the blockchain with a low carbon footprint.",
+		"description": "A satellite is a web3 container that offers a simplistic database, file storage, and permission management system for your application. Develop and run your app on the web, completely on the blockchain with a low carbon footprint.",
 		"name": "Name",
 		"satellite_name": "Satellite name",
 		"enter_name": "Enter a name for your satellite",
@@ -298,5 +299,12 @@
 		"resources_description": "View a collection of sample code, applications, and microservices build with Juno",
 		"changelog": "Releases",
 		"changelog_description": "See the last updates and improvements."
+	},
+	"on_boarding": {
+		"what": "What would you like to do next?",
+		"dapp": "Develop your dapp with dynamic data (database, file storage, etc.)",
+		"website": "Simply host your website",
+		"install": "Install the SDK and initialize Juno",
+		"connect": "To connect Juno to your app, you need to install and initialize the SDK."
 	}
 }

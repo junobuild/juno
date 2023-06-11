@@ -30,6 +30,7 @@ interface I18nCore {
 	user_menu: string;
 	version: string;
 	delete: string;
+	skip: string;
 }
 
 interface I18nCanisters {
@@ -325,6 +326,14 @@ interface I18nResources {
 	changelog_description: string;
 }
 
+interface I18nOn_boarding {
+	what: string;
+	dapp: string;
+	website: string;
+	install: string;
+	connect: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -350,4 +359,5 @@ interface I18n {
 	settings: I18nSettings;
 	examples: I18nExamples;
 	resources: I18nResources;
+	on_boarding: I18nOn_boarding;
 }

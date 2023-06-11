@@ -332,6 +332,8 @@ interface I18nOn_boarding {
 	website: string;
 	install: string;
 	connect: string;
+	npm: string;
+	init: string;
 }
 
 interface I18n {

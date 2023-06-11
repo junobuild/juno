@@ -21,15 +21,13 @@ await initJuno({
 <p>{$i18n.on_boarding.connect}</p>
 
 <p>
-	If you're already using <ExternalLink href="https://www.npmjs.com/">npm</ExternalLink>, you can
-	run the following command to install the latest SDK:
+	{@html $i18n.on_boarding.npm}
 </p>
 
 <Code code={`npm i @junobuild/core`} language="bash" />
 
 <p class="then">
-	Then, initialize Juno with your satellite ID and begin using the SDKs for any features you'd like
-	to use.
+	{$i18n.on_boarding.init}
 </p>
 
 <Code code={codeInit} />

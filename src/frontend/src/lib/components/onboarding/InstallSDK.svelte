@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { i18n } from '$lib/stores/i18n.store';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Code from '$lib/components/ui/Code.svelte';
 	import { createEventDispatcher } from 'svelte';
 

@@ -27,7 +27,8 @@
 		"user_menu": "User menu",
 		"version": "Version",
 		"delete": "Delete",
-		"skip": "Skip"
+		"skip": "Skip",
+		"done": "Done"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -307,6 +308,12 @@
 		"install": "Install the SDK and initialize Juno",
 		"connect": "To connect Juno to your app, you need to install and initialize the SDK.",
 		"npm": "If you're already using <a href=\"https://www.npmjs.com/\" rel=\"external noopener noreferrer\" target=\"_blank\">npm</a>, you can\n\trun the following command to install the latest SDK:",
-		"init": "Then, initialize Juno with your satellite ID and begin using the SDKs for any features you'd like to use."
+		"init": "Then, initialize Juno in your project with your satellite ID and begin using the SDKs for any features you'd like to use.",
+		"deploy": "Deploy your app",
+		"local": "The following steps will guide you through the process of deploying your app from your local machine.",
+		"cli": "To get started, begin by installing the Juno Command Line Interface (CLI).",
+		"login": "Once the installation is complete, you can log in to your satellite from the terminal.",
+		"run": "With the ability to interact with your satellite, you can now deploy it by running the following command from the root folder:",
+		"success": "The process should proceed smoothly, and upon completion, your project will be hosted on-chain at the address <a href=\"{0}\" rel=\"external noopener noreferrer\" target=\"_blank\">{1}</a>  🎉."
 	}
 }

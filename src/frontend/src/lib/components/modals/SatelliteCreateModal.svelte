@@ -3,7 +3,6 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 	import { createSatellite, loadSatellites } from '$lib/services/satellites.services';
@@ -18,6 +17,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import WhatNext from '$lib/components/onboarding/WhatNext.svelte';
 	import InstallSDK from '$lib/components/onboarding/InstallSDK.svelte';
+	import Deploy from "$lib/components/onboarding/Deploy.svelte";
 
 	export let detail: JunoModalDetail;
 
@@ -35,7 +35,7 @@
 	let notEnoughCredits = false;
 	$: notEnoughCredits = credits < fee;
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'sdk' | 'deploy' | 'error' = 'ready';
+	let steps: 'init' | 'in_progress' | 'ready' | 'sdk' | 'deploy' | 'error' = 'init';
 	let satellite: Satellite | undefined = undefined;
 
 	const onSubmit = async () => {
@@ -86,7 +86,9 @@
 	{#if steps === 'ready'}
 		<WhatNext on:junoSkip={navigate} on:junoNext={({ detail }) => (steps = detail)} />
 	{:else if steps === 'sdk'}
-		<InstallSDK {satellite} />
+		<InstallSDK {satellite} on:junoContinue={() => steps = "deploy"} />
+	{:else if steps === 'deploy'}
+		<Deploy {satellite} on:junoDone={navigate} />
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.satellites.initializing}</p>

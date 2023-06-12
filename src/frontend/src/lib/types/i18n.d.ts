@@ -31,6 +31,7 @@ interface I18nCore {
 	version: string;
 	delete: string;
 	skip: string;
+	done: string;
 }
 
 interface I18nCanisters {
@@ -334,6 +335,12 @@ interface I18nOn_boarding {
 	connect: string;
 	npm: string;
 	init: string;
+	deploy: string;
+	local: string;
+	cli: string;
+	login: string;
+	run: string;
+	success: string;
 }
 
 interface I18n {

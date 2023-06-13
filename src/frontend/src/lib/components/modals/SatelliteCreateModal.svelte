@@ -17,7 +17,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import WhatNext from '$lib/components/onboarding/WhatNext.svelte';
 	import InstallSDK from '$lib/components/onboarding/InstallSDK.svelte';
-	import Deploy from "$lib/components/onboarding/Deploy.svelte";
+	import Deploy from '$lib/components/onboarding/Deploy.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -86,7 +86,7 @@
 	{#if steps === 'ready'}
 		<WhatNext on:junoSkip={navigate} on:junoNext={({ detail }) => (steps = detail)} />
 	{:else if steps === 'sdk'}
-		<InstallSDK {satellite} on:junoContinue={() => steps = "deploy"} />
+		<InstallSDK {satellite} on:junoContinue={() => (steps = 'deploy')} />
 	{:else if steps === 'deploy'}
 		<Deploy {satellite} on:junoDone={navigate} />
 	{:else if steps === 'in_progress'}

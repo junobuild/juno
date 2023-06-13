@@ -332,7 +332,6 @@ interface I18nOn_boarding {
 	dapp: string;
 	website: string;
 	install: string;
-	connect: string;
 	npm: string;
 	init: string;
 	deploy: string;

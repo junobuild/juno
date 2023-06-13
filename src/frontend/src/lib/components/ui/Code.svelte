@@ -53,4 +53,8 @@
 		margin: 0;
 		white-space: pre-wrap;
 	}
+
+	.card-container {
+		min-height: var(--code-min-height);
+	}
 </style>

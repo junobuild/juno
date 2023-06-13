@@ -17,19 +17,17 @@ await initJuno({
 
 <h2>{$i18n.on_boarding.install}</h2>
 
-<p>{$i18n.on_boarding.connect}</p>
-
 <p>
 	{@html $i18n.on_boarding.npm}
 </p>
 
-<Code code={`npm i @junobuild/core`} language="bash" />
+<Code code={`npm i @junobuild/core`} language="bash" --code-min-height="24px" />
 
 <p class="then">
 	{$i18n.on_boarding.init}
 </p>
 
-<Code code={codeInit} />
+<Code code={codeInit} --code-min-height="120px" />
 
 <button on:click={() => dispatch('junoContinue')}>{$i18n.core.continue}</button>
 

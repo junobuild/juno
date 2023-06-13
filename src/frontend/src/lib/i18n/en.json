@@ -44,7 +44,7 @@
 	"sign_in": {
 		"title": "Launch your first satellite",
 		"overview_1": "A satellite is your Web3 app's all-in-one container.",
-		"overview_2": "It offers secure anonymous authentication, datastore, file storage, hosting and custom domain.",
+		"overview_2": "It provides secure anonymous authentication, datastore, file storage, hosting, and custom domain capabilities.",
 		"overview_3": "100% on blockchain with low carbon footprint.",
 		"internet_identity": "Continue with Internet Identity"
 	},

@@ -52,6 +52,10 @@
 
 		--bigger-title: 1.2;
 		font-size: calc(var(--font-size-h1) * var(--bigger-title));
+
+		@include media.min-width(large) {
+			margin-top: var(--padding-8x);
+		}
 	}
 
 	.sign-in {

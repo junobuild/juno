@@ -26,7 +26,9 @@
 		"language": "Language",
 		"user_menu": "User menu",
 		"version": "Version",
-		"delete": "Delete"
+		"delete": "Delete",
+		"skip": "Skip",
+		"done": "Done"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -298,5 +300,19 @@
 		"resources_description": "View a collection of sample code, applications, and microservices build with Juno",
 		"changelog": "Releases",
 		"changelog_description": "See the last updates and improvements."
+	},
+	"on_boarding": {
+		"what": "What would you like to do next?",
+		"dapp": "Develop your dapp with dynamic data (authentication, database, file storage, etc.)",
+		"website": "Simply host your static website",
+		"install": "Install the SDK and initialize Juno",
+		"npm": "If you're already using <a href=\"https://www.npmjs.com/\" rel=\"external noopener noreferrer\" target=\"_blank\">npm</a>, you can\n\trun the following command to install the latest SDK in your project:",
+		"init": "Then, initialize Juno with your satellite ID and begin utilizing any rich features.",
+		"deploy": "Deploy your app",
+		"local": "The following steps will guide you through the process of deploying your app from your local machine.",
+		"cli": "To get started, begin by installing the Juno Command Line Interface (CLI).",
+		"login": "Once the installation is complete, you can log in to your satellite from the terminal.",
+		"run": "With the ability to interact with your satellite, you can now deploy it by running the following command from the root folder:",
+		"success": "The process should proceed smoothly, and upon completion, your project will be hosted on-chain at the address <a href=\"{0}\" rel=\"external noopener noreferrer\" target=\"_blank\">{1}</a>  🎉."
 	}
 }

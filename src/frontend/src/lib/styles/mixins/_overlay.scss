@@ -81,3 +81,7 @@
 
 	text-align: center;
 }
+
+@mixin title {
+	margin: 0 0 var(--padding-3x);
+}

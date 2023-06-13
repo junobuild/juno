@@ -3,7 +3,6 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 	import { createSatellite, loadSatellites } from '$lib/services/satellites.services';
@@ -16,6 +15,9 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
+	import WhatNext from '$lib/components/onboarding/WhatNext.svelte';
+	import InstallSDK from '$lib/components/onboarding/InstallSDK.svelte';
+	import Deploy from '$lib/components/onboarding/Deploy.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -33,7 +35,7 @@
 	let notEnoughCredits = false;
 	$: notEnoughCredits = credits < fee;
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let steps: 'init' | 'in_progress' | 'ready' | 'sdk' | 'deploy' | 'error' = 'init';
 	let satellite: Satellite | undefined = undefined;
 
 	const onSubmit = async () => {
@@ -82,11 +84,11 @@
 
 <Modal on:junoClose>
 	{#if steps === 'ready'}
-		<div class="msg">
-			<IconSatellite />
-			<p>{$i18n.satellites.ready}</p>
-			<button on:click={navigate}>{$i18n.core.continue}</button>
-		</div>
+		<WhatNext on:junoSkip={navigate} on:junoNext={({ detail }) => (steps = detail)} />
+	{:else if steps === 'sdk'}
+		<InstallSDK {satellite} on:junoContinue={() => (steps = 'deploy')} />
+	{:else if steps === 'deploy'}
+		<Deploy {satellite} on:junoDone={navigate} />
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.satellites.initializing}</p>
@@ -145,8 +147,8 @@
 <style lang="scss">
 	@use '../../styles/mixins/overlay';
 
-	.msg {
-		@include overlay.message;
+	h2 {
+		@include overlay.title;
 	}
 
 	form {

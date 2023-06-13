@@ -4,9 +4,11 @@
 	import { nonNullish } from '$lib/utils/utils';
 	import { theme } from '$lib/stores/theme.store';
 	import { Theme } from '$lib/types/theme';
+	import Copy from '$lib/components/ui/Copy.svelte';
 
 	export let code: string;
 	export let language: string = 'javascript';
+	export let copy: 'center' | 'bottom' = 'center';
 
 	let highlight: undefined | typeof Highlight;
 	let languages: undefined | typeof Languages;
@@ -46,10 +48,27 @@
 				languages[language],
 				language
 			)}</pre>{/if}
+
+	<div class={`${copy} copy`}>
+		<Copy value={code} />
+	</div>
 </div>
 
 <style lang="scss">
 	.card-container {
+		position: relative;
 		min-height: var(--code-min-height);
+	}
+
+	.copy {
+		position: absolute;
+		right: var(--padding-2x);
+		bottom: 50%;
+		transform: translate(0, 45%);
+
+		&.bottom {
+			bottom: var(--padding);
+			transform: none;
+		}
 	}
 </style>

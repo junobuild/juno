@@ -27,7 +27,7 @@ await initJuno({
 	{$i18n.on_boarding.init}
 </p>
 
-<Code code={codeInit} --code-min-height="120px" />
+<Code code={codeInit} copy="bottom" --code-min-height="120px" />
 
 <button on:click={() => dispatch('junoContinue')}>{$i18n.core.continue}</button>
 

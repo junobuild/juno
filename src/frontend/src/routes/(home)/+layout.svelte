@@ -12,7 +12,7 @@
 
 <Illustration sticky={$authSignedInStore} />
 
-<Layout centered>
+<Layout centered title={false}>
 	<Navbar
 		slot="navbar"
 		signIn={false}

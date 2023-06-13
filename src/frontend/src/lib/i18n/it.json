@@ -26,7 +26,9 @@
 		"language": "Lingua",
 		"user_menu": "Menu utente",
 		"version": "Versione",
-		"delete": "Elimina"
+		"delete": "Elimina",
+		"skip": "Skip",
+		"done": "Done"
 	},
 	"canisters": {
 		"top_up": "Ricarica",
@@ -279,6 +281,8 @@
 		"tutorial_2_description": "Come creare una applicazione Web3 decentralizzata utilizando Angular e Juno.",
 		"tutorial_3_title": "Sviluppa una App Web3 con VueJS",
 		"tutorial_3_description": "Sprigiona la potenza di Vue e Juno per applicazioni decentralizzate nel Web3.",
+		"tutorial_4_title": "Deploy using GitHub Action",
+		"tutorial_4_description": "How can you deploy your satellite in a continuous environment?",
 		"example_1_title": "Esempio Svelte",
 		"example_1_description": "Un'app d'esempio che utilizza Juno datastore e autenticazione",
 		"example_2_title": "Esempio React",
@@ -301,5 +305,19 @@
 		"resources_description": "Vai alla collezione di esempi di codice, applicazioni, e microservices sviluppati con Juno",
 		"changelog": "Rilasci",
 		"changelog_description": "Vai agli ultimi aggiornamenti e migliorie."
+	},
+	"on_boarding": {
+		"what": "What would you like to do next?",
+		"dapp": "Develop your dapp with dynamic data (authentication, database, file storage, etc.)",
+		"website": "Simply host your static website",
+		"install": "Install the SDK and initialize Juno",
+		"npm": "If you're already using <a href=\"https://www.npmjs.com/\" rel=\"external noopener noreferrer\" target=\"_blank\">npm</a>, you can\n\trun the following command to install the latest SDK in your project:",
+		"init": "Then, initialize Juno with your satellite ID and begin utilizing any rich features.",
+		"deploy": "Deploy your app",
+		"local": "The following steps will guide you through the process of deploying your app from your local machine.",
+		"cli": "To get started, begin by installing the Juno Command Line Interface (CLI).",
+		"login": "Once the installation is complete, you can log in to your satellite from the terminal.",
+		"run": "With the ability to interact with your satellite, you can now deploy it by running the following command from the root folder:",
+		"success": "The process should proceed smoothly, and upon completion, your project will be hosted on-chain at the address <a href=\"{0}\" rel=\"external noopener noreferrer\" target=\"_blank\">{1}</a>  🎉."
 	}
 }

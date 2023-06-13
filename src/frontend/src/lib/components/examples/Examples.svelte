@@ -7,6 +7,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconAngular from '$lib/components/icons/IconAngular.svelte';
 	import IconVue from '$lib/components/icons/IconVue.svelte';
+	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
 </script>
 
 <h4>Tutorials</h4>
@@ -31,6 +32,15 @@
 		<svelte:fragment slot="title">{$i18n.examples.tutorial_3_title}</svelte:fragment>
 
 		{$i18n.examples.tutorial_3_description}
+	</Resource>
+
+	<Resource
+		href="https://juno.build/blog/deploy-to-the-internet-computer-using-github-action-with-juno"
+	>
+		<IconGitHub slot="icon" size="48px" />
+		<svelte:fragment slot="title">{$i18n.examples.tutorial_4_title}</svelte:fragment>
+
+		{$i18n.examples.tutorial_4_description}
 	</Resource>
 </section>
 

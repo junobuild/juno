@@ -1,8 +1,12 @@
 <!-- ionicons -->
+<script lang="ts">
+	export let size = '18px';
+</script>
+
 <svg
 	xmlns="http://www.w3.org/2000/svg"
-	width="18px"
-	height="18px"
+	width={size}
+	height={size}
 	viewBox="0 0 512 512"
 	fill="currentColor"
 	><path

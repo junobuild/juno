@@ -4,6 +4,7 @@
 	import { nonNullish } from '$lib/utils/utils';
 
 	export let centered = false;
+	export let title = true;
 </script>
 
 <SplitPane>
@@ -14,11 +15,13 @@
 
 		<div class="page">
 			<main class:centered>
-				<h1>
-					<span class={`title ${nonNullish($layoutTitle) ? 'visible' : ''}`}
-						>{$layoutTitle ?? ''}</span
-					>
-				</h1>
+				{#if title}
+					<h1>
+						<span class={`title ${nonNullish($layoutTitle) ? 'visible' : ''}`}
+							>{$layoutTitle ?? ''}</span
+						>
+					</h1>
+				{/if}
 
 				<slot />
 			</main>
@@ -43,7 +46,7 @@
 	}
 
 	.page {
-		height: 100vh;
+		height: 100%;
 		overflow-y: auto;
 
 		padding: var(--header-height) 0 0;

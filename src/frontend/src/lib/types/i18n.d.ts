@@ -30,6 +30,8 @@ interface I18nCore {
 	user_menu: string;
 	version: string;
 	delete: string;
+	skip: string;
+	done: string;
 }
 
 interface I18nCanisters {
@@ -303,6 +305,8 @@ interface I18nExamples {
 	tutorial_2_description: string;
 	tutorial_3_title: string;
 	tutorial_3_description: string;
+	tutorial_4_title: string;
+	tutorial_4_description: string;
 	example_1_title: string;
 	example_1_description: string;
 	example_2_title: string;
@@ -326,6 +330,21 @@ interface I18nResources {
 	resources_description: string;
 	changelog: string;
 	changelog_description: string;
+}
+
+interface I18nOn_boarding {
+	what: string;
+	dapp: string;
+	website: string;
+	install: string;
+	npm: string;
+	init: string;
+	deploy: string;
+	local: string;
+	cli: string;
+	login: string;
+	run: string;
+	success: string;
 }
 
 interface I18n {
@@ -353,4 +372,5 @@ interface I18n {
 	settings: I18nSettings;
 	examples: I18nExamples;
 	resources: I18nResources;
+	on_boarding: I18nOn_boarding;
 }

@@ -278,6 +278,8 @@
 		"tutorial_2_description": "Come creare una applicazione Web3 decentralizzata utilizando Angular e Juno.",
 		"tutorial_3_title": "Sviluppa una App Web3 con VueJS",
 		"tutorial_3_description": "Sprigiona la potenza di Vue e Juno per applicazioni decentralizzate nel Web3.",
+		"tutorial_4_title": "Deploy using GitHub Action",
+		"tutorial_4_description": "How can you deploy your satellite in a continuous environment?",
 		"example_1_title": "Esempio Svelte",
 		"example_1_description": "Un'app d'esempio che utilizza Juno datastore e autenticazione",
 		"example_2_title": "Esempio React",

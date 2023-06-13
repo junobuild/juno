@@ -123,6 +123,8 @@ pre,
 samp {
 	font-family: monospace, monospace;
 	font-size: 1em;
+	margin: 0;
+	white-space: pre-wrap;
 }
 textarea {
 	overflow: auto;

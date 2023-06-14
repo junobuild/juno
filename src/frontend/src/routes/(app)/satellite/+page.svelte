@@ -40,7 +40,11 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/add-juno-to-an-app/install-the-sdk-and-initialize-juno">
+	<Tabs
+		help={$store.tabId === $store.tabs[0].id
+			? 'https://juno.build/docs/add-juno-to-an-app/install-the-sdk-and-initialize-juno'
+			: 'https://juno.build/docs/miscellaneous/controllers'}
+	>
 		<svelte:fragment slot="info">
 			{#if nonNullish($satelliteStore)}
 				<Warnings satellite={$satelliteStore} />

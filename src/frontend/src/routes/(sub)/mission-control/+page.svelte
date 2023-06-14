@@ -43,7 +43,11 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/architecture">
+	<Tabs
+		help={$store.tabId === $store.tabs[0].id
+			? 'https://juno.build/docs/architecture'
+			: 'https://juno.build/docs/miscellaneous/controllers'}
+	>
 		<svelte:fragment slot="info">
 			{#if $authSignedInStore}
 				<Warnings />

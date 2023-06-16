@@ -13,7 +13,7 @@ export const SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL = 20000;
 export const AUTH_MAX_TIME_TO_LIVE = BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000);
 
 export const AUTH_POPUP_WIDTH = 576;
-export const AUTH_POPUP_HEIGHT = 576;
+export const AUTH_POPUP_HEIGHT = 625;
 
 export const E8S_PER_ICP = 100_000_000n;
 export const IC_TRANSACTION_FEE_ICP = 10_000n;

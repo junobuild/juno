@@ -21,13 +21,13 @@
 			document.head.appendChild(script);
 		});
 
+	const JUNO_CDN_URL = import.meta.env.VITE_JUNO_CDN_URL;
+
 	const injectPrism = (): Promise<void> =>
-		inject(`https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prismjs/1.29.0/prism.min.js`);
+		inject(`${JUNO_CDN_URL}/libs/prismjs/1.29.0/prism.min.js`);
 
 	const injectGrammar = (): Promise<void> =>
-		inject(
-			`https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prismjs/1.29.0/components/prism-${language}.min.js`
-		);
+		inject(`${JUNO_CDN_URL}/libs/prismjs/1.29.0/components/prism-${language}.min.js`);
 
 	onMount(async () => {
 		await injectPrism();
@@ -42,14 +42,11 @@
 <svelte:head>
 	{#if $theme === Theme.DARK}
 		<link
-			href="https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prism-themes/1.9.0/themes/prism-vsc-dark-plus.min.css"
+			href={`${JUNO_CDN_URL}/libs/prism-themes/1.9.0/themes/prism-vsc-dark-plus.min.css`}
 			rel="stylesheet"
 		/>
 	{:else}
-		<link
-			href="https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prism-themes/1.9.0/themes/prism-vs.min.css"
-			rel="stylesheet"
-		/>
+		<link href={`${JUNO_CDN_URL}/libs/prism-themes/1.9.0/themes/prism-vs.min.css`} rel="stylesheet" />
 	{/if}
 </svelte:head>
 

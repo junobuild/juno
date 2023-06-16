@@ -155,6 +155,8 @@ const updateCSP = (indexHtml) => {
 		indexHashes.push(`'sha256-${createHash('sha256').update(content).digest('base64')}'`);
 	}
 
+	const JUNO_CDN = 'https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io';
+
 	const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
@@ -162,10 +164,10 @@ const updateCSP = (indexHtml) => {
         img-src 'self' data:;
         child-src 'self';
         manifest-src 'self';
-        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(' ')};
+        script-src 'unsafe-eval' 'unsafe-inline' 'strict-dynamic' ${indexHashes.join(' ')} ${JUNO_CDN};
         base-uri 'self';
         form-action 'none';
-        style-src 'self' 'unsafe-inline';
+        style-src 'self' 'unsafe-inline' ${JUNO_CDN};
         font-src 'self';
         upgrade-insecure-requests;"
     />`;

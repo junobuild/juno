@@ -81,7 +81,6 @@
 		"@junobuild/ledger": "^0.0.2",
 		"buffer": "^6.0.3",
 		"idb-keyval": "^6.2.0",
-		"prismjs": "^1.29.0",
 		"semver": "^7.3.8"
 	}
 }

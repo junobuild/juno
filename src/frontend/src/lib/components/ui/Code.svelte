@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import type { highlight as Highlight, languages as Languages } from 'prismjs';
+	import type Prism from 'prismjs';
 	import { nonNullish } from '$lib/utils/utils';
 	import { theme } from '$lib/stores/theme.store';
 	import { Theme } from '$lib/types/theme';
@@ -10,21 +10,32 @@
 	export let language: string = 'javascript';
 	export let copy: 'center' | 'bottom' = 'center';
 
-	let highlight: undefined | typeof Highlight;
-	let languages: undefined | typeof Languages;
-	let grammarLoaded = false;
+	let parseCode: string | undefined;
+
+	const injectPrism = (): Promise<void> => new Promise((resolve) => {
+		const script: HTMLScriptElement = document.createElement('script');
+		script.src = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js`;
+		script.addEventListener('load', () => resolve(), { once: true });
+		script.addEventListener('error', () => resolve(), { once: true });
+		document.head.appendChild(script);
+	});
+
+	const injectGrammar = (): Promise<void> =>
+		new Promise((resolve) => {
+			const script: HTMLScriptElement = document.createElement('script');
+			script.src = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-${language}.min.js`;
+			script.addEventListener('load', () => resolve(), { once: true });
+			script.addEventListener('error', () => resolve(), { once: true });
+			document.head.appendChild(script);
+		});
 
 	onMount(async () => {
-		const { highlight: h, languages: l } = await import('prismjs');
-		highlight = h;
-		languages = l;
+		await injectPrism();
 
-		const script: HTMLScriptElement = document.createElement('script');
-		script.src = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-${language}.min.js`;
-		script.defer = true;
-		script.addEventListener('load', () => (grammarLoaded = true), { once: true });
-		script.addEventListener('error', () => (grammarLoaded = true), { once: true });
-		document.head.appendChild(script);
+		// Prism has to be loaded before loading the grammar
+		await injectGrammar();
+
+		parseCode = Prism.highlight(code, Prism.languages[language], language);
 	});
 </script>
 
@@ -43,11 +54,7 @@
 </svelte:head>
 
 <div class="card-container">
-	{#if nonNullish(highlight) && nonNullish(languages) && grammarLoaded}<pre>{@html highlight(
-				code,
-				languages[language],
-				language
-			)}</pre>{/if}
+	{#if nonNullish(parseCode)}<pre>{@html parseCode}</pre>{/if}
 
 	<div class={`${copy} copy`}>
 		<Copy value={code} />

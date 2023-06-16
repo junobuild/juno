@@ -12,22 +12,22 @@
 
 	let parseCode: string | undefined;
 
-	const injectPrism = (): Promise<void> => new Promise((resolve) => {
-		const script: HTMLScriptElement = document.createElement('script');
-		script.src = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js`;
-		script.addEventListener('load', () => resolve(), { once: true });
-		script.addEventListener('error', () => resolve(), { once: true });
-		document.head.appendChild(script);
-	});
-
-	const injectGrammar = (): Promise<void> =>
+	const inject = (src: string): Promise<void> =>
 		new Promise((resolve) => {
 			const script: HTMLScriptElement = document.createElement('script');
-			script.src = `https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-${language}.min.js`;
+			script.src = src;
 			script.addEventListener('load', () => resolve(), { once: true });
 			script.addEventListener('error', () => resolve(), { once: true });
 			document.head.appendChild(script);
 		});
+
+	const injectPrism = (): Promise<void> =>
+		inject(`https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js`);
+
+	const injectGrammar = (): Promise<void> =>
+		inject(
+			`https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-${language}.min.js`
+		);
 
 	onMount(async () => {
 		await injectPrism();

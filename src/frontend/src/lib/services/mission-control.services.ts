@@ -1,4 +1,4 @@
-import type { MissionControl, _SERVICE as ConsoleActor } from '$declarations/console/console.did';
+import type { _SERVICE as ConsoleActor, MissionControl } from '$declarations/console/console.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import {
 	addMissionControlController,

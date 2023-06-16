@@ -46,7 +46,10 @@
 			rel="stylesheet"
 		/>
 	{:else}
-		<link href={`${JUNO_CDN_URL}/libs/prism-themes/1.9.0/themes/prism-vs.min.css`} rel="stylesheet" />
+		<link
+			href={`${JUNO_CDN_URL}/libs/prism-themes/1.9.0/themes/prism-vs.min.css`}
+			rel="stylesheet"
+		/>
 	{/if}
 </svelte:head>
 

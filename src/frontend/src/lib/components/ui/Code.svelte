@@ -22,11 +22,11 @@
 		});
 
 	const injectPrism = (): Promise<void> =>
-		inject(`https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/prism.min.js`);
+		inject(`https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prismjs/1.29.0/prism.min.js`);
 
 	const injectGrammar = (): Promise<void> =>
 		inject(
-			`https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-${language}.min.js`
+			`https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prismjs/1.29.0/components/prism-${language}.min.js`
 		);
 
 	onMount(async () => {
@@ -42,12 +42,12 @@
 <svelte:head>
 	{#if $theme === Theme.DARK}
 		<link
-			href="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-vsc-dark-plus.min.css"
+			href="https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prism-themes/1.9.0/themes/prism-vsc-dark-plus.min.css"
 			rel="stylesheet"
 		/>
 	{:else}
 		<link
-			href="https://cdnjs.cloudflare.com/ajax/libs/prism-themes/1.9.0/prism-vs.min.css"
+			href="https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io/libs/prism-themes/1.9.0/themes/prism-vs.min.css"
 			rel="stylesheet"
 		/>
 	{/if}

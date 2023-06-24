@@ -11,9 +11,9 @@ pub fn list_values<T: Clone + Compare>(
 ) -> ListResults<T> {
     let matches_length = matches.len();
 
-    let start = start_at(&matches, filters);
-
     let ordered = order_values(matches, filters);
+
+    let start = start_at(&ordered, filters);
 
     let paginated = paginate_values(ordered, filters, &start);
 

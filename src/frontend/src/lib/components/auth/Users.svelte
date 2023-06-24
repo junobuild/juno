@@ -64,7 +64,7 @@
 					<User {user} />
 				{/each}
 
-				{#if !empty && ($paginationStore.pages ?? 0) > 0}
+				{#if !empty && ($paginationStore.pages ?? 0) > 1}
 					<tr><td colspan="4"><DataPaginator /></td></tr>
 				{/if}
 

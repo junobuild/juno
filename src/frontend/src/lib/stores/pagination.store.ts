@@ -47,7 +47,7 @@ export const initPaginationContext = <T>(): Omit<PaginationContext<T>, 'list'> =
 				...data,
 				items,
 				pages: nonNullish(matches_length)
-					? Math.ceil(Number(matches_length / PAGINATION))
+					? Math.ceil(Number(matches_length) / Number(PAGINATION))
 					: undefined
 			}));
 		}

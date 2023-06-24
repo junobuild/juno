@@ -29,7 +29,7 @@
 		>
 		<button
 			on:click={next}
-			class:visible={$store.pages > $store.selectedPage}
+			class:visible={$store.pages > $store.selectedPage + 1}
 			aria-label="Next page of data"
 			class="square"><IconNavigateNext /></button
 		>

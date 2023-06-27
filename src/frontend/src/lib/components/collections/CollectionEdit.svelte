@@ -181,10 +181,6 @@
 		gap: var(--padding);
 	}
 
-	label {
-		padding: var(--padding-2x) 0 0;
-	}
-
 	.toolbar {
 		display: flex;
 		align-items: center;

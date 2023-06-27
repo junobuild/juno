@@ -41,12 +41,7 @@
 <style lang="scss">
 	@use '../../styles/mixins/text';
 
-	h1 {
-		margin: 0 0 var(--padding-3x);
-	}
-
-	p,
-	h1 {
+	p {
 		@include text.truncate;
 	}
 </style>

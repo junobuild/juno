@@ -72,18 +72,3 @@
 		<p><slot /></p>
 	</Value>
 </Confirmation>
-
-<style lang="scss">
-	button.icon {
-		padding: 0;
-	}
-
-	.container {
-		display: flex;
-		flex-direction: column;
-
-		width: 100%;
-
-		padding: var(--padding) var(--padding-2x) var(--padding) var(--padding);
-	}
-</style>

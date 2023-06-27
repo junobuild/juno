@@ -61,12 +61,4 @@
 	.sign-in {
 		padding: var(--padding-1_5x) 0 0;
 	}
-
-	.content {
-		padding: var(--padding-2x);
-
-		form {
-			margin: 0;
-		}
-	}
 </style>

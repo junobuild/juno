@@ -4,6 +4,8 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import Value from '$lib/components/ui/Value.svelte';
 	import AppLang from '$lib/components/core/AppLang.svelte';
+
+	let lang: Languages;
 </script>
 
 <IdentityGuard>
@@ -13,6 +15,6 @@
 			<p>{$authStore.identity?.getPrincipal().toText() ?? ''}</p>
 		</Value>
 
-		<AppLang />
+		<AppLang bind:selected={lang} />
 	</div>
 </IdentityGuard>

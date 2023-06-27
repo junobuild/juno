@@ -27,21 +27,6 @@
 >
 
 <style lang="scss">
-	.content {
-		padding: var(--padding-2x);
-	}
-
-	h3 {
-		margin-bottom: var(--padding-2x);
-	}
-
-	form {
-		width: calc(100% - var(--padding));
-		display: flex;
-		flex-direction: column;
-		gap: var(--padding);
-	}
-
 	button {
 		margin: var(--padding) 0 0;
 	}

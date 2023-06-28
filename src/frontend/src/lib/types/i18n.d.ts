@@ -134,6 +134,8 @@ interface I18nHosting {
 
 interface I18nCli {
 	title: string;
+	new: string;
+	reuse: string;
 	sign_in: string;
 	add: string;
 	select_all: string;

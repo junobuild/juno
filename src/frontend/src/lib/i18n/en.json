@@ -121,12 +121,12 @@
 		"failed": "Failed"
 	},
 	"cli": {
-		"title": "Authorize CLI",
-		"sign_in": "Sign-in to add a new controller <strong>{0}</strong> to your mission control and/or satellite(s).",
-		"add": "Add a new controller <strong>{0}</strong> to your mission control and/or satellite(s).",
+		"title": "Juno CLI Authentication",
+		"sign_in": "Sign in to set up your terminal for interacting with your mission control and/or satellite(s).",
+		"add": "For which mission control and/or satellite(s) would you like to authenticate the new controller <strong>{0}</strong>?",
 		"select_all": "Select all segments",
 		"unselect_all": "Unselect all segments",
-		"profile": "Profile:",
+		"profile": "You can also provide an optional name to easily identify the controller.",
 		"segments": "Segments:",
 		"profile_placeholder": "An optional hint about the controller"
 	},

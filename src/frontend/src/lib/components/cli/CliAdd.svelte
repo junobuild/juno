@@ -138,8 +138,6 @@
 
 	let disabled = true;
 	$: disabled = selectedSatellites.length === 0 && !missionControl;
-
-	const dispatch = createEventDispatcher();
 </script>
 
 <p>
@@ -152,8 +150,6 @@
 </p>
 
 <form on:submit|preventDefault={onSubmit}>
-	<label>{$i18n.cli.segments}</label>
-
 	<div class="objects">
 		<div class="checkbox">
 			<input type="checkbox" bind:checked={missionControl} />
@@ -186,12 +182,12 @@
 		bind:value={profile}
 	/>
 
-	<button type="button" on:click={() => dispatch('junoBack')}>{$i18n.core.back}</button>
 	<button {disabled}>{$i18n.core.submit}</button>
 </form>
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/text';
+	@use '../../../lib/styles/mixins/shadow';
 
 	.checkbox {
 		display: flex;
@@ -207,9 +203,9 @@
 	}
 
 	.all {
-		margin: 0 0 var(--padding-2x);
+		margin: var(--padding) 0 0 ;
 		align-items: center;
-		font-size: var(--font-size-very-small);
+		font-size: var(--font-size-ultra-small);
 
 		span {
 			padding: 0 0 var(--padding-0_5x);
@@ -217,6 +213,9 @@
 	}
 
 	.objects {
-		margin: var(--padding) 0 0;
+		@include shadow.card;
+
+		margin: var(--padding-3x) 0;
+		padding: var(--padding);
 	}
 </style>

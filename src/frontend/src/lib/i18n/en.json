@@ -122,14 +122,11 @@
 	},
 	"cli": {
 		"title": "Juno CLI Authentication",
-		"introduction": "Your terminal needs to be authenticated to interact with your mission control and/or satellite(s). Would you like to set up a new controller or reuse an existing one?",
-		"new": "Add the new controller <strong>{0}</strong>",
-		"reuse": "Reuse an existing controller",
 		"sign_in": "Sign in to set up your terminal for interacting with your mission control and/or satellite(s).",
-		"add": "For which segments would you like to authenticate the new controller <strong>{0}</strong>?",
+		"add": "For which mission control and/or satellite(s) would you like to authenticate the new controller <strong>{0}</strong>?",
 		"select_all": "Select all segments",
 		"unselect_all": "Unselect all segments",
-		"profile": "Profile:",
+		"profile": "You can also provide an optional name to easily identify the controller.",
 		"segments": "Segments:",
 		"profile_placeholder": "An optional hint about the controller"
 	},

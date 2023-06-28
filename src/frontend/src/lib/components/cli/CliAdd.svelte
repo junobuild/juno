@@ -203,7 +203,7 @@
 	}
 
 	.all {
-		margin: var(--padding) 0 0 ;
+		margin: var(--padding) 0 0;
 		align-items: center;
 		font-size: var(--font-size-ultra-small);
 

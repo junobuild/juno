@@ -35,6 +35,7 @@
 		// Prism has to be loaded before loading the grammar
 		await injectGrammar();
 
+		// @ts-ignore
 		parseCode = Prism.highlight(code, Prism.languages[language], language);
 	});
 </script>

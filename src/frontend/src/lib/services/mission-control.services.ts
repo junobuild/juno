@@ -7,6 +7,7 @@ import {
 	setMissionControlController,
 	setSatellitesController
 } from '$lib/api/mission-control.api';
+import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Identity } from '@dfinity/agent';
@@ -74,7 +75,11 @@ export const setMissionControlControllerForVersion = async ({
 	const version = await missionControlVersion({ missionControlId });
 
 	const missionControlController =
-		compare(version, '0.0.3') >= 0 ? setMissionControlController : addMissionControlController;
+		compare(version, '0.0.3') >= 0
+			? compare(version, '0.0.5') >= 0
+				? setMissionControlController
+				: setMissionControlController004
+			: addMissionControlController;
 
 	await missionControlController({ missionControlId, controllerId, profile, scope: 'admin' });
 };

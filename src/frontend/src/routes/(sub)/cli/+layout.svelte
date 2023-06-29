@@ -8,7 +8,7 @@
 	onMount(() => layoutTitle.set(''));
 </script>
 
-<Layout>
+<Layout centered={true}>
 	<Navbar start="logo" slot="navbar" />
 
 	<slot />

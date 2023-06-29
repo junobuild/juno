@@ -49,12 +49,21 @@ export const setSatellitesController = async ({
 	missionControlId: Principal;
 	satelliteIds: Principal[];
 } & SetControllerParams) => {
-	const actor = await getMissionControlActor(missionControlId);
-	return actor.set_satellites_controllers(
-		satelliteIds,
-		[Principal.fromText(controllerId)],
-		toSetController(rest)
-	);
+	try {
+		const actor = await getMissionControlActor(missionControlId);
+		await actor.set_satellites_controllers(
+			satelliteIds,
+			[Principal.fromText(controllerId)],
+			toSetController(rest)
+		);
+	} catch (err: unknown) {
+		console.error(
+			'setSatellitesController:',
+			missionControlId.toText(),
+			satelliteIds.map((id) => id.toText()).join(',')
+		);
+		throw err;
+	}
 };
 
 export const deleteSatellitesController = async ({
@@ -77,11 +86,16 @@ export const setMissionControlController = async ({
 }: {
 	missionControlId: Principal;
 } & SetControllerParams) => {
-	const actor = await getMissionControlActor(missionControlId);
-	return actor.set_mission_control_controllers(
-		[Principal.fromText(controllerId)],
-		toSetController(rest)
-	);
+	try {
+		const actor = await getMissionControlActor(missionControlId);
+		await actor.set_mission_control_controllers(
+			[Principal.fromText(controllerId)],
+			toSetController(rest)
+		);
+	} catch (err: unknown) {
+		console.error('setMissionControlController:', missionControlId.toText());
+		throw err;
+	}
 };
 
 export const deleteMissionControlController = async ({
@@ -106,8 +120,17 @@ export const addSatellitesController = async ({
 	missionControlId: Principal;
 	satelliteIds: Principal[];
 } & SetControllerParams) => {
-	const actor = await getMissionControlActor(missionControlId);
-	return actor.add_satellites_controllers(satelliteIds, [Principal.fromText(controllerId)]);
+	try {
+		const actor = await getMissionControlActor(missionControlId);
+		await actor.add_satellites_controllers(satelliteIds, [Principal.fromText(controllerId)]);
+	} catch (err: unknown) {
+		console.error(
+			'addSatellitesController:',
+			missionControlId.toText(),
+			satelliteIds.map((id) => id.toText()).join(',')
+		);
+		throw err;
+	}
 };
 
 /**
@@ -135,8 +158,13 @@ export const addMissionControlController = async ({
 }: {
 	missionControlId: Principal;
 } & SetControllerParams) => {
-	const actor = await getMissionControlActor(missionControlId);
-	return actor.add_mission_control_controllers([Principal.fromText(controllerId)]);
+	try {
+		const actor = await getMissionControlActor(missionControlId);
+		await actor.add_mission_control_controllers([Principal.fromText(controllerId)]);
+	} catch (err: unknown) {
+		console.error('addMissionControlController:', missionControlId.toText());
+		throw err;
+	}
 };
 
 /**

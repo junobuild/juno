@@ -153,14 +153,16 @@
 	<div class="objects">
 		<div class="checkbox">
 			<input type="checkbox" bind:checked={missionControl} />
-			<span>{$i18n.mission_control.title} ({$missionControlStore?.toText() ?? ''})</span>
+			<span>{$i18n.mission_control.title}</span>
+			<span class="canister-id">({$missionControlStore?.toText() ?? ''})</span>
 		</div>
 
 		{#each satellites as satellite}
 			<div class="checkbox">
 				<input type="checkbox" bind:group={selectedSatellites} value={satellite} /><span
-					>{satelliteName(satellite[1])} ({satellite[0].toText()})</span
+					>{satelliteName(satellite[1])}</span
 				>
+				<span class="canister-id">({satellite[0].toText()})</span>
 			</div>
 		{/each}
 
@@ -191,6 +193,7 @@
 
 	.checkbox {
 		display: flex;
+		align-items: center;
 		gap: var(--padding-2x);
 	}
 
@@ -200,6 +203,10 @@
 
 	button {
 		margin: var(--padding-2x) 0 0;
+	}
+
+	.canister-id {
+		font-size: var(--font-size-ultra-small);
 	}
 
 	.all {

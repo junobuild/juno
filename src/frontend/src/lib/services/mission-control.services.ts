@@ -7,6 +7,7 @@ import {
 	setMissionControlController,
 	setSatellitesController
 } from '$lib/api/mission-control.api';
+import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Identity } from '@dfinity/agent';
@@ -14,7 +15,6 @@ import type { Principal } from '@dfinity/principal';
 import { compare } from 'semver';
 import { getConsoleActor, getMissionControlActor } from '../utils/actor.utils';
 import { fromNullable } from '../utils/did.utils';
-import {setMissionControlController004} from "$lib/api/mission-control.deprecated.api";
 
 export interface MissionControlActorDetails {
 	missionControlId: Principal | undefined;

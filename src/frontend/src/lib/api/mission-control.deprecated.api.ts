@@ -30,22 +30,3 @@ export const setMissionControlController004 = async ({
 	);
 };
 
-/**
- * @deprecated TODO: to be remove - backwards compatibility
- */
-export const setSatelliteController004 = async ({
-	missionControlId,
-	controllerId,
-	satelliteIds,
-	...rest
-}: {
-	missionControlId: Principal;
-	satelliteIds: Principal[];
-} & SetControllerParams) => {
-	const actor = await getMissionControlActor004(missionControlId);
-	return actor.set_satellites_controllers(
-		satelliteIds,
-		[Principal.fromText(controllerId)],
-		toSetController(rest)
-	);
-};

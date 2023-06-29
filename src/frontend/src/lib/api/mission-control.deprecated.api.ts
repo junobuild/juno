@@ -23,10 +23,14 @@ export const setMissionControlController004 = async ({
 }: {
 	missionControlId: Principal;
 } & SetControllerParams) => {
-	const actor = await getMissionControlActor004(missionControlId);
-	return actor.set_mission_control_controllers(
-		[Principal.fromText(controllerId)],
-		toSetController(rest)
-	);
+	try {
+		const actor = await getMissionControlActor004(missionControlId);
+		await actor.set_mission_control_controllers(
+			[Principal.fromText(controllerId)],
+			toSetController(rest)
+		);
+	} catch (err: unknown) {
+		console.error('setMissionControlController004:', missionControlId.toText());
+		throw err;
+	}
 };
-

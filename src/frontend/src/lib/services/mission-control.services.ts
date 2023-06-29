@@ -14,6 +14,7 @@ import type { Principal } from '@dfinity/principal';
 import { compare } from 'semver';
 import { getConsoleActor, getMissionControlActor } from '../utils/actor.utils';
 import { fromNullable } from '../utils/did.utils';
+import {setMissionControlController004} from "$lib/api/mission-control.deprecated.api";
 
 export interface MissionControlActorDetails {
 	missionControlId: Principal | undefined;
@@ -74,7 +75,11 @@ export const setMissionControlControllerForVersion = async ({
 	const version = await missionControlVersion({ missionControlId });
 
 	const missionControlController =
-		compare(version, '0.0.3') >= 0 ? setMissionControlController : addMissionControlController;
+		compare(version, '0.0.3') >= 0
+			? compare(version, '0.0.5') >= 0
+				? setMissionControlController
+				: setMissionControlController004
+			: addMissionControlController;
 
 	await missionControlController({ missionControlId, controllerId, profile, scope: 'admin' });
 };

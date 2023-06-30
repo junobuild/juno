@@ -161,10 +161,18 @@ pub fn has_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
 }
 
 pub fn use_credits(user: &UserId) -> Result<Tokens, &'static str> {
-    STATE.with(|state| use_credits_impl(user, &mut state.borrow_mut().stable))
+    STATE.with(|state| update_credits_impl(user, false, &mut state.borrow_mut().stable))
 }
 
-fn use_credits_impl(user: &UserId, state: &mut StableState) -> Result<Tokens, &'static str> {
+pub fn add_credits(user: &UserId) -> Result<Tokens, &'static str> {
+    STATE.with(|state| update_credits_impl(user, true, &mut state.borrow_mut().stable))
+}
+
+fn update_credits_impl(
+    user: &UserId,
+    increment: bool,
+    state: &mut StableState,
+) -> Result<Tokens, &'static str> {
     let existing_mission_control = state.mission_controls.get(user);
 
     match existing_mission_control {
@@ -172,8 +180,12 @@ fn use_credits_impl(user: &UserId, state: &mut StableState) -> Result<Tokens, &'
         Some(mission_control) => {
             let now = time();
 
-            let remaining_credits =
-                Tokens::from_e8s(mission_control.credits.e8s() - SATELLITE_CREATION_FEE_ICP.e8s());
+            let remaining_credits_e8s = match increment {
+                true => mission_control.credits.e8s() + SATELLITE_CREATION_FEE_ICP.e8s(),
+                false => mission_control.credits.e8s() - SATELLITE_CREATION_FEE_ICP.e8s(),
+            };
+
+            let remaining_credits = Tokens::from_e8s(remaining_credits_e8s);
 
             let update_mission_control = MissionControl {
                 mission_control_id: mission_control.mission_control_id,

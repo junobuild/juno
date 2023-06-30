@@ -476,17 +476,10 @@ fn commit_asset_upload(commit: CommitBatch) {
 
 #[candid_method(query)]
 #[query]
-fn list_assets(
-    collection: CollectionKey,
-    filter: ListParams,
-) -> ListResults<AssetNoContent> {
+fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
     let caller = caller();
 
-    let result = list_assets_store(
-        caller,
-        collection,
-        &filter,
-    );
+    let result = list_assets_store(caller, collection, &filter);
 
     match result {
         Ok(result) => result,

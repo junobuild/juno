@@ -414,9 +414,14 @@ fn create_chunk_impl(
             unsafe {
                 NEXT_CHUNK_ID += 1;
 
-                state
-                    .chunks
-                    .insert(NEXT_CHUNK_ID, Chunk { batch_id, content, order_id: order_id.unwrap_or(NEXT_CHUNK_ID) });
+                state.chunks.insert(
+                    NEXT_CHUNK_ID,
+                    Chunk {
+                        batch_id,
+                        content,
+                        order_id: order_id.unwrap_or(NEXT_CHUNK_ID),
+                    },
+                );
 
                 Ok(NEXT_CHUNK_ID)
             }

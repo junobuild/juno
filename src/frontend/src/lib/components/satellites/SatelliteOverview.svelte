@@ -7,10 +7,11 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	export let satellite: Satellite;
 
-	let satelliteId: string;
+	let satelliteId: SatelliteIdText;
 	$: satelliteId = satellite.satellite_id.toText();
 </script>
 
@@ -27,7 +28,7 @@
 
 	<Value>
 		<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-		<p>v{$versionStore?.satellite?.current ?? '...'}</p>
+		<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
 	</Value>
 
 	<Value>

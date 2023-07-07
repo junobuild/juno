@@ -152,7 +152,7 @@ const emitCanister = (canister: Canister) =>
 const syncCanister = async ({
 	canisterId,
 	trillionRatio,
-	canisterInfo: { cycles, status, memory_size }
+	canisterInfo: { cycles, status, memory_size, idle_cycles_burned_per_day }
 }: {
 	canisterId: string;
 	trillionRatio: bigint;
@@ -164,6 +164,7 @@ const syncCanister = async ({
 		data: {
 			status,
 			memory_size,
+			idle_cycles_burned_per_day,
 			cycles,
 			icp: cyclesToICP({ cycles, trillionRatio }),
 			warning: cycles < CYCLES_WARNING

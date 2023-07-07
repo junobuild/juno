@@ -44,6 +44,7 @@ interface I18nCanisters {
 	top_up_info: string;
 	top_up_mission_control_done: string;
 	top_up_satellite_done: string;
+	daily_consumption: string;
 }
 
 interface I18nSign_in {

@@ -39,7 +39,8 @@
 		"additional_cycles": "Additional Cycles",
 		"top_up_info": "Currently, your mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
 		"top_up_mission_control_done": "Your mission control center has been topped-up.",
-		"top_up_satellite_done": "Your satellite has been topped-up."
+		"top_up_satellite_done": "Your satellite has been topped-up.",
+		"daily_consumption": "Daily idle consumption"
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",

@@ -322,6 +322,8 @@ interface I18nExamples {
 	example_6_description: string;
 	example_7_title: string;
 	example_7_description: string;
+	example_8_title: string;
+	example_8_description: string;
 }
 
 interface I18nResources {

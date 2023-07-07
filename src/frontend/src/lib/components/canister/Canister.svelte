@@ -51,14 +51,15 @@
 		worker?.restartCyclesTimer([canisterId.toText()]);
 	};
 
-	let data: CanisterData | undefined;
-	let sync: CanisterSyncStatus | undefined = undefined;
+	export let data: CanisterData | undefined = undefined;
+	export let sync: CanisterSyncStatus | undefined = undefined;
 
 	$: ({ data, sync } = canister ?? { data: undefined, sync: undefined });
 
 	let status: CanisterStatus | undefined;
 	let memory_size: bigint;
 	let cycles: bigint;
+	let idle_cycles_burned_per_day: bigint | undefined;
 	let icp: number;
 	let warning: boolean;
 

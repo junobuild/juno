@@ -21,8 +21,9 @@ export const loadVersion = async ({
 
 	// We load the satellite version once per session
 	// We might load the mission control version twice per session if user go to that view first and then to overview
-	const version = get(versionStore);
-	if (nonNullish(version) && nonNullish(version.satellite)) {
+	const store = get(versionStore);
+	if (isNullish(satelliteId) || nonNullish(store.satellites[satelliteId.toText()])) {
+		console.log('NO RELOAD');
 		return;
 	}
 
@@ -35,17 +36,19 @@ export const loadVersion = async ({
 			releasesVersion()
 		]);
 
-		versionStore.set({
-			satellite: nonNullish(satVersion)
+		versionStore.setMissionControl({
+			release: fromNullable(releases.mission_control),
+			current: ctrlVersion
+		});
+
+		versionStore.setSatellite({
+			satelliteId: satelliteId.toText(),
+			version: nonNullish(satVersion)
 				? {
 						release: fromNullable(releases.satellite),
 						current: satVersion
 				  }
-				: undefined,
-			missionControl: {
-				release: fromNullable(releases.mission_control),
-				current: ctrlVersion
-			}
+				: undefined
 		});
 	} catch (err: unknown) {
 		toasts.error({

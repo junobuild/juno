@@ -44,6 +44,7 @@ interface I18nCanisters {
 	top_up_info: string;
 	top_up_mission_control_done: string;
 	top_up_satellite_done: string;
+	daily_consumption: string;
 }
 
 interface I18nSign_in {
@@ -81,6 +82,7 @@ interface I18nMission_control {
 	balance: string;
 	credits: string;
 	transactions: string;
+	transfer_icp_info: string;
 }
 
 interface I18nAuthentication {
@@ -194,6 +196,7 @@ interface I18nAsset {
 	no_match: string;
 	delete: string;
 	description: string;
+	full_path: string;
 }
 
 interface I18nAdmin {
@@ -245,6 +248,7 @@ interface I18nCollections {
 	updated: string;
 	deleted: string;
 	delete_question: string;
+	none: string;
 	memory: string;
 	heap: string;
 	stable: string;

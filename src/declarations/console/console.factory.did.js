@@ -1,5 +1,6 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const AddCreditsArgs = IDL.Record({ user: IDL.Principal });
 	const AssertMissionControlCenterArgs = IDL.Record({
 		mission_control_id: IDL.Principal,
 		user: IDL.Principal
@@ -11,7 +12,6 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const GetCreateSatelliteFeeArgs = IDL.Record({ user: IDL.Principal });
 	const Tokens = IDL.Record({ e8s: IDL.Nat64 });
 	const ReleasesVersion = IDL.Record({
 		satellite: IDL.Opt(IDL.Text),
@@ -47,11 +47,12 @@ export const idlFactory = ({ IDL }) => {
 		time_per_token_ns: IDL.Nat64
 	});
 	return IDL.Service({
+		add_credits: IDL.Func([AddCreditsArgs], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
 		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
-		get_create_satellite_fee: IDL.Func([GetCreateSatelliteFeeArgs], [IDL.Opt(Tokens)], ['query']),
+		get_create_satellite_fee: IDL.Func([AddCreditsArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_releases_version: IDL.Func([], [ReleasesVersion], ['query']),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),

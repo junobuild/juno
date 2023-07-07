@@ -34,8 +34,14 @@
 		  }
 		| undefined;
 
-	const syncState = ({ registrationState: state }: PostMessageDataResponse) =>
-		(registrationState = state);
+	const syncState = ({ registrationState: state }: PostMessageDataResponse) => {
+		registrationState = state;
+
+		// If the state is available we can optimistically stop polling
+		if (registrationState === 'Available') {
+			worker?.stopCustomDomainRegistrationTimer();
+		}
+	};
 
 	const loadRegistrationState = async () => {
 		if (isNullish(worker)) {

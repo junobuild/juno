@@ -1,6 +1,9 @@
 import type { ActorMethod } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
+export interface AddCreditsArgs {
+	user: Principal;
+}
 export interface AssertMissionControlCenterArgs {
 	mission_control_id: Principal;
 	user: Principal;
@@ -12,9 +15,6 @@ export interface CreateSatelliteArgs {
 }
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
-}
-export interface GetCreateSatelliteFeeArgs {
-	user: Principal;
 }
 export interface LoadRelease {
 	total: bigint;
@@ -49,11 +49,12 @@ export interface Tokens {
 	e8s: bigint;
 }
 export interface _SERVICE {
+	add_credits: ActorMethod<[AddCreditsArgs], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
-	get_create_satellite_fee: ActorMethod<[GetCreateSatelliteFeeArgs], [] | [Tokens]>;
+	get_create_satellite_fee: ActorMethod<[AddCreditsArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
 	get_releases_version: ActorMethod<[], ReleasesVersion>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;

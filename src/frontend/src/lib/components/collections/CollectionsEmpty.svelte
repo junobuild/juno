@@ -1,12 +1,13 @@
 <script lang="ts">
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { getContext } from 'svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 </script>
 
 {#if $store.rules?.length === 0}
-	<p>No collection defined. Start one in <button class="text" on:click>Rules</button> tab.</p>
+	<p>{$i18n.collections.none} <button class="text" on:click>{$i18n.collections.title}</button>.</p>
 {/if}
 
 <style lang="scss">

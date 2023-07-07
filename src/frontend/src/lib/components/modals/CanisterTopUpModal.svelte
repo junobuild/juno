@@ -17,6 +17,8 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 
 	export let canisterId: Principal;
 	export let balance: bigint;
@@ -104,13 +106,9 @@
 		<slot name="intro" />
 
 		<p>
-			{@html i18nFormat($i18n.canisters.cycles, [
-				{
-					placeholder: '{0}',
-					value:
-						'<a href="https://juno.build/docs/terminology#cycles" rel="external noopener norefferer" target="_blank">Cycles</a>'
-				}
-			])}
+			<ExternalLink underline href="https://juno.build/docs/terminology#cycles">Cycles</ExternalLink
+			>
+			{$i18n.canisters.cycles}
 		</p>
 
 		<p>
@@ -126,31 +124,37 @@
 			])}
 		</p>
 
-		<form on:submit|preventDefault={onSubmit}>
-			<div>
-				<Value>
-					<svelte:fragment slot="label">ICP</svelte:fragment>
-					<Input
-						name="icp"
-						inputType="icp"
-						required
-						bind:value={icp}
-						placeholder={$i18n.canisters.amount}
-					/>
-				</Value>
-			</div>
+		{#if balance <= networkFees}
+			<MissionControlICPInfo on:click={close} />
+		{:else}
+			<form on:submit|preventDefault={onSubmit}>
+				<div>
+					<Value>
+						<svelte:fragment slot="label">ICP</svelte:fragment>
+						<Input
+							name="icp"
+							inputType="icp"
+							required
+							bind:value={icp}
+							placeholder={$i18n.canisters.amount}
+						/>
+					</Value>
+				</div>
 
-			<div class="cycles">
-				<Value>
-					<svelte:fragment slot="label">{$i18n.canisters.additional_cycles}</svelte:fragment>
-					{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '0'} TCycles
-				</Value>
-			</div>
+				<div class="cycles">
+					<Value>
+						<svelte:fragment slot="label">{$i18n.canisters.additional_cycles}</svelte:fragment>
+						{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '0'} TCycles
+					</Value>
+				</div>
 
-			<button type="submit" disabled={isNullish($missionControlStore) || !validIcp || !validCycles}
-				>{$i18n.canisters.top_up}</button
-			>
-		</form>
+				<button
+					type="submit"
+					disabled={isNullish($missionControlStore) || !validIcp || !validCycles}
+					>{$i18n.canisters.top_up}</button
+				>
+			</form>
+		{/if}
 	{/if}
 </Modal>
 

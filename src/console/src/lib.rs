@@ -14,10 +14,10 @@ use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::mission_control::init_user_mission_control;
 use crate::satellite::create_satellite as create_satellite_console;
 use crate::store::{
-    add_invitation_code as add_invitation_code_store, delete_controllers,
-    get_credits as get_credits_store, get_existing_mission_control, get_mission_control,
-    get_mission_control_release_version, get_satellite_release_version, has_credits,
-    list_mission_controls, load_mission_control_release, load_satellite_release,
+    add_credits as add_credits_store, add_invitation_code as add_invitation_code_store,
+    delete_controllers, get_credits as get_credits_store, get_existing_mission_control,
+    get_mission_control, get_mission_control_release_version, get_satellite_release_version,
+    has_credits, list_mission_controls, load_mission_control_release, load_satellite_release,
     reset_mission_control_release, reset_satellite_release,
     set_controllers as set_controllers_store, update_mission_controls_rate_config,
     update_satellites_rate_config,
@@ -37,7 +37,7 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use shared::controllers::init_controllers;
 use shared::types::interface::{
-    AssertMissionControlCenterArgs, CreateSatelliteArgs, DeleteControllersArgs,
+    AddCreditsArgs, AssertMissionControlCenterArgs, CreateSatelliteArgs, DeleteControllersArgs,
     GetCreateSatelliteFeeArgs, SetControllersArgs,
 };
 use std::cell::RefCell;
@@ -178,15 +178,21 @@ async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
 
 #[candid_method(query)]
 #[query]
-async fn get_credits() -> Tokens {
+fn get_credits() -> Tokens {
     let caller = caller();
 
     get_credits_store(&caller).unwrap_or_else(|e| trap(e))
 }
 
+#[candid_method(update)]
+#[update(guard = "caller_is_admin_controller")]
+fn add_credits(AddCreditsArgs { user }: AddCreditsArgs) {
+    add_credits_store(&user).unwrap_or_else(|e| trap(e));
+}
+
 #[candid_method(query)]
 #[query]
-async fn get_create_satellite_fee(
+fn get_create_satellite_fee(
     GetCreateSatelliteFeeArgs { user }: GetCreateSatelliteFeeArgs,
 ) -> Option<Tokens> {
     let caller = caller();

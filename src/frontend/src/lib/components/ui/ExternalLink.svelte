@@ -3,6 +3,7 @@
 
 	export let href: string;
 	export let ariaLabel = '';
+	export let underline = false;
 </script>
 
 <a
@@ -11,31 +12,27 @@
 	target="_blank"
 	aria-label={ariaLabel}
 	title={ariaLabel}
+	class:underline
 >
-	<span><slot /></span>
+	<slot />
 
 	<IconArrowOutward />
 </a>
 
 <style lang="scss">
 	a {
-		display: inline-flex;
-		align-items: center;
+		display: inline-block;
 
-		text-decoration: none;
+		&:not(.underline) {
+			text-decoration: none;
 
-		vertical-align: middle;
+			&:hover {
+				text-decoration: none;
+			}
+		}
 
 		:global(svg) {
-			margin-left: var(--padding);
 			vertical-align: middle;
 		}
-	}
-
-	span {
-		display: inline-flex;
-		align-items: center;
-
-		gap: var(--padding);
 	}
 </style>

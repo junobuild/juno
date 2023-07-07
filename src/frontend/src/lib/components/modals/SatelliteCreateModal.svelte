@@ -18,6 +18,7 @@
 	import WhatNext from '$lib/components/onboarding/WhatNext.svelte';
 	import InstallSDK from '$lib/components/onboarding/InstallSDK.svelte';
 	import Deploy from '$lib/components/onboarding/Deploy.svelte';
+	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -120,7 +121,7 @@
 		{/if}
 
 		{#if insufficientFunds}
-			<button on:click={close}>Close</button>
+			<MissionControlICPInfo on:click={close} />
 		{:else}
 			<form on:submit|preventDefault={onSubmit}>
 				<Value>

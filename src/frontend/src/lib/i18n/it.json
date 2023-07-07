@@ -32,14 +32,15 @@
 	},
 	"canisters": {
 		"top_up": "Ricarica",
-		"cycles": "{0} sono le unità di pagamento per lavorare con i tuoi smart contract.",
+		"cycles": "sono le unità di pagamento per lavorare con i tuoi smart contract.",
 		"top_up_in_progress": "Ricarica in corso...",
 		"amount": "importo in ICP",
 		"top_up_title": "Ricarica {0}",
 		"additional_cycles": "Cycles aggiuntive",
 		"top_up_info": "Al momento, il tuo saldo mission control è di {0} ICP,e la commissione di rete per fare la ricarica è di {1} ICP.",
 		"top_up_mission_control_done": "Il tuo mission control center è stato ricaricato.",
-		"top_up_satellite_done": "Il tuo satellite è stato ricaricato."
+		"top_up_satellite_done": "Il tuo satellite è stato ricaricato.",
+		"daily_consumption": "Daily idle consumption"
 	},
 	"sign_in": {
 		"title": "Lancia il tuo primo satellite",
@@ -73,7 +74,8 @@
 		"account_identifier": "Account identifier",
 		"balance": "Saldo",
 		"credits": "Crediti",
-		"transactions": "Transazioni"
+		"transactions": "Transazioni",
+		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the"
 	},
 	"authentication": {
 		"title": "Autenticazione",
@@ -178,7 +180,8 @@
 		"updated": "Aggiornato",
 		"no_match": "Nessun asset corrisponde ai tuoi filtri",
 		"delete": "Vuoi cancellare l'asset?",
-		"description": "Descrizione"
+		"description": "Descrizione",
+		"full_path": "Full path"
 	},
 	"admin": {
 		"mission_control_new_version": "Una nuova versione del tuo mission control è disponibile! Aggiornalo con la CLI.",
@@ -227,6 +230,7 @@
 		"updated": "La collezione {0} è stata aggiornata.",
 		"deleted": "La collezione {0} è stata eliminata.",
 		"delete_question": "Vuoi eliminare la collezione?",
+		"none": "No collection is defined. You can start a new one in the tab",
 		"memory": "Memory",
 		"heap": "Heap",
 		"stable": "Stable"

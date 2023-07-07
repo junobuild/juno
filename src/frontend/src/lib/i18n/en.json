@@ -180,7 +180,8 @@
 		"updated": "Updated",
 		"no_match": "No asset matches your filters.",
 		"delete": "Delete asset?",
-		"description": "Description"
+		"description": "Description",
+		"full_path": "Full path"
 	},
 	"admin": {
 		"mission_control_new_version": "A new version of your mission control is available! Upgrade it with the CLI.",

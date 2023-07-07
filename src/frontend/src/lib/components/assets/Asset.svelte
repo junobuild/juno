@@ -12,10 +12,15 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import DataToolbar from '$lib/components/data/DataToolbar.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { deleteAsset, deleteDoc } from '$lib/api/satellites.api';
+	import { deleteAsset } from '$lib/api/satellites.api';
+	import { satelliteUrl } from '$lib/utils/satellite.utils';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 
 	const { store, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
+
+	const { store: rulesStore }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	let key: string | undefined;
 	$: key = $store?.key;
@@ -34,6 +39,13 @@
 
 	let full_path: string | undefined;
 	$: full_path = asset?.key.full_path;
+
+	let downloadUrl: string | undefined;
+	$: downloadUrl = nonNullish(full_path)
+		? `${satelliteUrl($rulesStore.satelliteId.toText())}${full_path}${
+				token !== undefined ? `?token=${token}` : ''
+		  }`
+		: undefined;
 
 	let description: string | undefined;
 	$: description = nonNullish(asset) ? fromNullable(asset.key.description) : undefined;
@@ -74,6 +86,13 @@
 			</Value>
 		{/if}
 
+		{#if nonNullish(full_path) && nonNullish(downloadUrl)}
+			<Value>
+				<svelte:fragment slot="label">{$i18n.asset.full_path}</svelte:fragment>
+				<p class="description"><ExternalLink href={downloadUrl}>{full_path}</ExternalLink></p>
+			</Value>
+		{/if}
+
 		{#if nonNullish(token)}
 			<div class="data">
 				<Value>
@@ -83,12 +102,14 @@
 			</div>
 		{/if}
 
-		<div class="headers">
+		<div class="headers-block">
 			<Value>
 				<svelte:fragment slot="label">{$i18n.asset.headers}</svelte:fragment>
-				{#each headers as header}
-					<span>{header[0]}: {header[1]}</span>
-				{/each}
+				<div class="headers">
+					{#each headers as header}
+						<span>{header[0]}: {header[1]}</span>
+					{/each}
+				</div>
 			</Value>
 		</div>
 
@@ -143,7 +164,7 @@
 
 	.data,
 	.date,
-	.headers {
+	.headers-block {
 		padding: 0 0 var(--padding-2x);
 	}
 
@@ -152,7 +173,7 @@
 		flex-direction: column;
 
 		span {
-			padding: var(--padding) 0 0 var(--padding-4x);
+			padding: var(--padding-0_5x) 0 0 0;
 		}
 	}
 </style>

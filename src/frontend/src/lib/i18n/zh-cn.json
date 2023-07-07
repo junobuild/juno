@@ -180,7 +180,8 @@
 		"updated": "更新于",
 		"no_match": "No asset matches your filters.",
 		"delete": "Delete asset?",
-		"description": "Description"
+		"description": "Description",
+		"full_path": "Full path"
 	},
 	"admin": {
 		"mission_control_new_version": "有一个新mission control版本可以使用! 请用命令行来升级.",

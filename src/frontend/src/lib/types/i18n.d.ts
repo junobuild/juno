@@ -196,6 +196,7 @@ interface I18nAsset {
 	no_match: string;
 	delete: string;
 	description: string;
+	full_path: string;
 }
 
 interface I18nAdmin {

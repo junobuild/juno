@@ -14,15 +14,14 @@
 	title={ariaLabel}
 	class:underline
 >
-	<span><slot /></span>
+	<slot />
 
 	<IconArrowOutward />
 </a>
 
 <style lang="scss">
 	a {
-		display: inline-flex;
-		align-items: center;
+		display: inline-block;
 
 		&:not(.underline) {
 			text-decoration: none;
@@ -33,15 +32,7 @@
 		}
 
 		:global(svg) {
-			margin-left: var(--padding-0_5x);
 			vertical-align: middle;
 		}
-	}
-
-	span {
-		display: inline-flex;
-		align-items: center;
-
-		gap: var(--padding);
 	}
 </style>

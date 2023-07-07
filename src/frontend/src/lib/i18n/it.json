@@ -32,7 +32,7 @@
 	},
 	"canisters": {
 		"top_up": "Ricarica",
-		"cycles": "{0} sono le unità di pagamento per lavorare con i tuoi smart contract.",
+		"cycles": "sono le unità di pagamento per lavorare con i tuoi smart contract.",
 		"top_up_in_progress": "Ricarica in corso...",
 		"amount": "importo in ICP",
 		"top_up_title": "Ricarica {0}",

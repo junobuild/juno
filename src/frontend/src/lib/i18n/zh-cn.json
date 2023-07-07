@@ -32,7 +32,7 @@
 	},
 	"canisters": {
 		"top_up": "充值",
-		"cycles": "{0} 用于支付只能合约运行消耗.",
+		"cycles": "用于支付只能合约运行消耗.",
 		"top_up_in_progress": "充值中...",
 		"amount": "ICP数量",
 		"top_up_title": "充值 {0}",

@@ -32,7 +32,7 @@
 	},
 	"canisters": {
 		"top_up": "Top-up",
-		"cycles": "{0} are the unit of payment for operating your smart contracts.",
+		"cycles": "are the unit of payment for operating your smart contracts.",
 		"top_up_in_progress": "Top-up in progress...",
 		"amount": "Amount in ICP",
 		"top_up_title": "Top-up {0}",

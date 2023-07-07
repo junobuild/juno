@@ -18,6 +18,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 
 	export let canisterId: Principal;
 	export let balance: bigint;
@@ -105,13 +106,9 @@
 		<slot name="intro" />
 
 		<p>
-			{@html i18nFormat($i18n.canisters.cycles, [
-				{
-					placeholder: '{0}',
-					value:
-						'<a href="https://juno.build/docs/terminology#cycles" rel="external noopener norefferer" target="_blank">Cycles</a>'
-				}
-			])}
+			<ExternalLink underline href="https://juno.build/docs/terminology#cycles">Cycles</ExternalLink
+			>
+			{$i18n.canisters.cycles}
 		</p>
 
 		<p>

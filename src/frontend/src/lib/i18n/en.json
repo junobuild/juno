@@ -37,7 +37,7 @@
 		"amount": "Amount in ICP",
 		"top_up_title": "Top-up {0}",
 		"additional_cycles": "Additional Cycles",
-		"top_up_info": "Currently, your mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
+		"top_up_info": "Your current mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
 		"top_up_mission_control_done": "Your mission control center has been topped-up.",
 		"top_up_satellite_done": "Your satellite has been topped-up.",
 		"daily_consumption": "Daily idle consumption"
@@ -58,7 +58,7 @@
 		"ready": "Your satellite is ready!",
 		"initializing": "Initializing your new satellite...",
 		"start": "Let's create a new satellite",
-		"description": "A satellite is a web3 container that offers a simplistic database, file storage, and permission management system for your application. Develop and run your app on the web, completely on the blockchain with a low carbon footprint.",
+		"description": "A satellite is a Web3 container that provides a simple database, file storage, hosting, and permission management system. Develop and run your app on the web, completely on the blockchain with a low carbon footprint.",
 		"name": "Name",
 		"satellite_name": "Satellite name",
 		"enter_name": "Enter a name for your satellite",
@@ -74,7 +74,8 @@
 		"account_identifier": "Account identifier",
 		"balance": "Balance",
 		"credits": "Credits",
-		"transactions": "Transactions"
+		"transactions": "Transactions",
+		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the"
 	},
 	"authentication": {
 		"title": "Authentication",

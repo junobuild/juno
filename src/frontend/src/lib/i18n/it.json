@@ -74,7 +74,8 @@
 		"account_identifier": "Account identifier",
 		"balance": "Saldo",
 		"credits": "Crediti",
-		"transactions": "Transazioni"
+		"transactions": "Transazioni",
+		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the"
 	},
 	"authentication": {
 		"title": "Autenticazione",

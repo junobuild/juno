@@ -39,7 +39,8 @@
 		"additional_cycles": "Cycles aggiuntive",
 		"top_up_info": "Al momento, il tuo saldo mission control è di {0} ICP,e la commissione di rete per fare la ricarica è di {1} ICP.",
 		"top_up_mission_control_done": "Il tuo mission control center è stato ricaricato.",
-		"top_up_satellite_done": "Il tuo satellite è stato ricaricato."
+		"top_up_satellite_done": "Il tuo satellite è stato ricaricato.",
+		"daily_consumption": "Daily idle consumption"
 	},
 	"sign_in": {
 		"title": "Lancia il tuo primo satellite",

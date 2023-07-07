@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import Canister from '$lib/components/canister/Canister.svelte';
+	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import SatelliteTopUp from '$lib/components/satellites/SatelliteTopUp.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -31,10 +31,7 @@
 		<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
 	</Value>
 
-	<Value>
-		<svelte:fragment slot="label">{$i18n.core.status}</svelte:fragment>
-		<Canister canisterId={satellite.satellite_id} />
-	</Value>
+	<CanisterOverview canisterId={satellite.satellite_id} />
 </div>
 
 <SatelliteTopUp {satellite} />

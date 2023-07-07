@@ -4,7 +4,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
-	import Canister from '$lib/components/canister/Canister.svelte';
+	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import MissionControlTopUp from '$lib/components/mission-control/MissionControlTopUp.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -62,10 +62,7 @@
 		</Value>
 
 		{#if nonNullish($missionControlStore)}
-			<Value>
-				<svelte:fragment slot="label">{$i18n.core.status}</svelte:fragment>
-				<Canister canisterId={$missionControlStore} />
-			</Value>
+			<CanisterOverview canisterId={$missionControlStore} />
 		{/if}
 
 		<Value>

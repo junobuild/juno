@@ -32,12 +32,12 @@
 	},
 	"canisters": {
 		"top_up": "充值",
-		"cycles": "{0} 用于支付只能合约运行消耗.",
+		"cycles": "用于支付只能合约运行消耗.",
 		"top_up_in_progress": "充值中...",
 		"amount": "ICP数量",
 		"top_up_title": "充值 {0}",
 		"additional_cycles": "Additional Cycles",
-		"top_up_info": "Currently, your mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
+		"top_up_info": "Your current mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
 		"top_up_mission_control_done": "Your mission control center has been topped-up.",
 		"top_up_satellite_done": "Your satellite has been topped-up.",
 		"daily_consumption": "Daily idle consumption"
@@ -74,7 +74,8 @@
 		"account_identifier": "账号",
 		"balance": "余额",
 		"credits": "积分",
-		"transactions": "交易记录"
+		"transactions": "交易记录",
+		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the"
 	},
 	"authentication": {
 		"title": "认证",

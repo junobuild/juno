@@ -82,6 +82,7 @@ interface I18nMission_control {
 	balance: string;
 	credits: string;
 	transactions: string;
+	transfer_icp_info: string;
 }
 
 interface I18nAuthentication {

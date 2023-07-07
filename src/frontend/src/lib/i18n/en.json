@@ -229,7 +229,8 @@
 		"added": "Collection {0} added.",
 		"updated": "Collection {0} updated.",
 		"deleted": "Collection {0} deleted.",
-		"delete_question": "Delete collection?"
+		"delete_question": "Delete collection?",
+		"none": "No collection is defined. You can start a new one in the tab"
 	},
 	"sort": {
 		"title": "Sort results",

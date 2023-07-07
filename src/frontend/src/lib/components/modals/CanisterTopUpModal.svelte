@@ -124,7 +124,7 @@
 			])}
 		</p>
 
-		{#if !validIcp}
+		{#if balance <= networkFees}
 			<MissionControlICPInfo on:click={close} />
 		{:else}
 			<form on:submit|preventDefault={onSubmit}>

@@ -32,3 +32,10 @@
 		<p><SkeletonText /></p>
 	{/if}
 </Value>
+
+<style lang="scss">
+	p {
+		max-width: 300px;
+		color: var(--value-color);
+	}
+</style>

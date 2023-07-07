@@ -229,7 +229,8 @@
 		"added": "La collezione {0} è stata aggiunta.",
 		"updated": "La collezione {0} è stata aggiornata.",
 		"deleted": "La collezione {0} è stata eliminata.",
-		"delete_question": "Vuoi eliminare la collezione?"
+		"delete_question": "Vuoi eliminare la collezione?",
+		"none": "No collection is defined. You can start a new one in the tab"
 	},
 	"sort": {
 		"title": "Ordina i risultati",

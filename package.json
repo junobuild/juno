@@ -41,6 +41,7 @@
 		"console:install:wasm": "node scripts/console.install-wasm.mjs",
 		"console:invitation": "node scripts/console.invitation.mjs",
 		"console:credits": "node scripts/console.credits.mjs",
+		"console:devs": "node scripts/console.devs.mjs",
 		"ledger:account-id": "node ./scripts/ledger.account-id.mjs",
 		"ledger:balance": "node scripts/ledger.balance.mjs",
 		"ledger:transfer": "node scripts/ledger.transfer.mjs",

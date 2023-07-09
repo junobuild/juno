@@ -4,5 +4,6 @@ members = [
     "src/mission_control",
     "src/satellite",
     "src/shared",
-    "src/observatory"
+    "src/observatory",
+    "src/telemetry"
 ]

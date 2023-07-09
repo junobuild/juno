@@ -1,0 +1,19 @@
+[package]
+name = "telemetry"
+version = "0.0.1"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+candid = "0.8.3"
+ic-cdk = "0.8.0"
+ic-cdk-macros = "0.6.10"
+serde = "1.0.162"
+lazy_static = "1.4.0"
+ic-stable-structures = "0.5.3"
+ciborium = "0.2.1"
+shared = { path = "../shared" }

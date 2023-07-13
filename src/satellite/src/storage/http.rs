@@ -98,6 +98,7 @@ pub fn build_headers(
 fn build_config_headers(requested_path: &str) -> Vec<HeaderField> {
     let StorageConfig {
         headers: config_headers,
+        rewrites: _,
     } = get_config();
 
     config_headers

@@ -213,10 +213,12 @@ pub mod config {
     use std::collections::HashMap;
 
     pub type StorageConfigHeaders = HashMap<String, Vec<HeaderField>>;
+    pub type StorageConfigRewrites = HashMap<String, String>;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct StorageConfig {
         pub headers: StorageConfigHeaders,
+        pub rewrites: StorageConfigRewrites,
     }
 }
 

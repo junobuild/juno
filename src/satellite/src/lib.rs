@@ -25,6 +25,7 @@ use crate::storage::cert::update_certified_data;
 use crate::storage::http::{
     build_encodings, build_headers, create_token, error_response, streaming_strategy,
 };
+use crate::storage::rewrites::init_rewrites;
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
     get_config as get_storage_config, get_custom_domains, get_public_asset,
@@ -32,7 +33,7 @@ use crate::storage::store::{
     set_domain,
 };
 use crate::storage::types::assets::AssetHashes;
-use crate::storage::types::config::StorageConfig;
+use crate::storage::types::config::{StorageConfig, StorageConfigHeaders};
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
@@ -110,7 +111,10 @@ fn init() {
                 },
             )
         })),
-        config: StorageConfig::default(),
+        config: StorageConfig {
+            headers: StorageConfigHeaders::default(),
+            rewrites: init_rewrites(),
+        },
         custom_domains: HashMap::new(),
     };
 

@@ -86,13 +86,13 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     match rewrite {
         None => (),
         Some(rewrite) => {
-            let redirected_asset = get_public_asset(rewrite, token);
+            let redirected_asset = get_public_asset(rewrite.clone(), token);
 
-            match asset {
+            match redirected_asset {
                 None => (),
                 Some(_) => {
                     return Ok(PublicAsset {
-                        url: path,
+                        url: rewrite,
                         asset: redirected_asset,
                     });
                 }

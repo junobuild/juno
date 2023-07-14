@@ -22,8 +22,7 @@ export const loadVersion = async ({
 	// We load the satellite version once per session
 	// We might load the mission control version twice per session if user go to that view first and then to overview
 	const store = get(versionStore);
-	if (isNullish(satelliteId) || nonNullish(store.satellites[satelliteId.toText()])) {
-		console.log('NO RELOAD');
+	if (nonNullish(satelliteId) && nonNullish(store.satellites[satelliteId.toText()])) {
 		return;
 	}
 
@@ -40,6 +39,10 @@ export const loadVersion = async ({
 			release: fromNullable(releases.mission_control),
 			current: ctrlVersion
 		});
+
+		if (isNullish(satelliteId)) {
+			return;
+		}
 
 		versionStore.setSatellite({
 			satelliteId: satelliteId.toText(),

@@ -18,6 +18,7 @@ use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
 };
 use crate::storage::custom_domains::map_custom_domains_asset;
+use crate::storage::rewrites::rewrite_url;
 use crate::storage::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks,
@@ -79,8 +80,41 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
         }
     }
 
-    let asset: Option<Asset> = get_public_asset(path.clone(), token);
-    Ok(PublicAsset { url: path, asset })
+    // We return the asset that matches the effective path
+    let asset: Option<Asset> = get_public_asset(path.clone(), token.clone());
+
+    match asset {
+        None => (),
+        Some(_) => {
+            return Ok(PublicAsset { url: path, asset });
+        }
+    }
+
+    // If we have found no asset, we try a rewrite rule
+    // This is for example useful for single-page app to redirect all urls to /index.html
+    let rewrite = rewrite_url(&path, &get_config());
+
+    match rewrite {
+        None => (),
+        Some(rewrite) => {
+            let redirected_asset = get_public_asset(rewrite.clone(), token);
+
+            match redirected_asset {
+                None => (),
+                Some(_) => {
+                    return Ok(PublicAsset {
+                        url: rewrite,
+                        asset: redirected_asset,
+                    });
+                }
+            }
+        }
+    }
+
+    Ok(PublicAsset {
+        url: path,
+        asset: None,
+    })
 }
 
 pub fn delete_asset(

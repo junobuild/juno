@@ -300,7 +300,9 @@
 		"example_6_title": "Angular",
 		"example_6_description": "Una dapp esempio che utilizza Juno datastore, storage e autenticazione.",
 		"example_7_title": "Vue",
-		"example_7_description": "Un'altra iterazione della dapp d'esempio, sviluppata con Vue."
+		"example_7_description": "Un'altra iterazione della dapp d'esempio, sviluppata con Vue.",
+		"example_8_title": "Next.JS",
+		"example_8_description": "Same as the React sample dapp but, built with Next."
 	},
 	"resources": {
 		"product": "Prodotto",

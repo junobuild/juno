@@ -8,6 +8,7 @@
 	import IconAngular from '$lib/components/icons/IconAngular.svelte';
 	import IconVue from '$lib/components/icons/IconVue.svelte';
 	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
+	import IconNextJS from '$lib/components/icons/IconNextJS.svelte';
 </script>
 
 <h4>Tutorials</h4>
@@ -80,6 +81,13 @@
 		<svelte:fragment slot="title">{$i18n.examples.example_3_title}</svelte:fragment>
 
 		{$i18n.examples.example_3_description}
+	</Resource>
+
+	<Resource href="https://github.com/buildwithjuno/examples/tree/main/next/diary">
+		<IconNextJS slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.example_8_title}</svelte:fragment>
+
+		{$i18n.examples.example_8_description}
 	</Resource>
 
 	<Resource href="https://github.com/buildwithjuno/examples/blob/main/node/basic">

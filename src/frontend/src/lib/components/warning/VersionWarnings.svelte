@@ -23,12 +23,14 @@
 	let ctrlVersion: string | undefined;
 	let ctrlRelease: string | undefined;
 
-	$: satVersion = nonNullish($satelliteStore?.satellite_id)
-		? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.current
-		: undefined;
-	$: satRelease = nonNullish($satelliteStore?.satellite_id)
-		? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.release
-		: undefined;
+	$: satVersion =
+		nonNullish($satelliteStore) && nonNullish($satelliteStore?.satellite_id)
+			? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.current
+			: undefined;
+	$: satRelease =
+		nonNullish($satelliteStore) && nonNullish($satelliteStore?.satellite_id)
+			? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.release
+			: undefined;
 
 	$: ctrlVersion = $versionStore?.missionControl?.current;
 	$: ctrlRelease = $versionStore?.missionControl?.release;

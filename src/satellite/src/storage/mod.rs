@@ -3,6 +3,7 @@ mod constants;
 mod custom_domains;
 pub mod http;
 pub mod impls;
+pub mod rewrites;
 mod runtime;
 mod state;
 pub mod store;

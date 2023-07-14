@@ -22,6 +22,7 @@ export const idlFactory = ({ IDL }) => {
 	const DelDoc = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
 	const RulesType = IDL.Variant({ Db: IDL.Null, Storage: IDL.Null });
 	const StorageConfig = IDL.Record({
+		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))))
 	});
 	const Config = IDL.Record({ storage: StorageConfig });

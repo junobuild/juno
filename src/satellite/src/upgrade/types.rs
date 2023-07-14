@@ -1,7 +1,7 @@
 pub mod upgrade {
     use crate::db::types::state::DbHeap;
     use crate::rules::types::rules::Permission;
-    use crate::storage::types::config::StorageConfig;
+    use crate::storage::types::config::{StorageConfigHeaders};
     use crate::storage::types::domain::CustomDomains;
     use crate::storage::types::state::AssetsHeap;
     use crate::types::core::CollectionKey;
@@ -27,7 +27,7 @@ pub mod upgrade {
     pub struct UpgradeStorageHeapState {
         pub assets: AssetsHeap,
         pub rules: UpgradeRules,
-        pub config: StorageConfig,
+        pub config: UpgradeStorageConfig,
         pub custom_domains: CustomDomains,
     }
 
@@ -40,5 +40,10 @@ pub mod upgrade {
         pub max_size: Option<u128>,
         pub created_at: u64,
         pub updated_at: u64,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct UpgradeStorageConfig {
+        pub headers: StorageConfigHeaders,
     }
 }

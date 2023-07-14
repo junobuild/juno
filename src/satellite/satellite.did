@@ -121,6 +121,7 @@ type SetRule = record {
   write : Permission;
 };
 type StorageConfig = record {
+  rewrites : vec record { text; text };
   headers : vec record { text; vec record { text; text } };
 };
 type StreamingCallbackHttpResponse = record {

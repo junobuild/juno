@@ -141,6 +141,7 @@
 		"satellite_name_missing": "必须提供一个名字给 satellite.",
 		"satellite_unexpected_error": "创建 satellite时出现未知错误.",
 		"satellite_no_found": "Satellite没找到，返回 <a href=\"/\">开始</a>去找你的 satellites.",
+		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite",
 		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
 		"hosting_missing_domain_name": "必须提供一个域名.",
 		"hosting_invalid_url": "请提供一个有效的 URL.",

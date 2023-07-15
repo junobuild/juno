@@ -141,6 +141,7 @@
 		"satellite_name_missing": "E' obbligatorio scegliere un nome per il satellite",
 		"satellite_unexpected_error": "Errore/i imprevisto/i durante la creazione del satellite",
 		"satellite_no_found": "Satellite non trovato.Torna all'<a href=\"/\">inizio</a> per trovare i tuoi satelliti.",
+		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite",
 		"ledger_balance_credits": "Errore/i imprevisto/i durante il caricamento del saldo del tuo mission control e dei crediti.",
 		"hosting_missing_domain_name": "E' obbligatorio scegliere un nome a dominio",
 		"hosting_invalid_url": "Inserisci un URL valido.",

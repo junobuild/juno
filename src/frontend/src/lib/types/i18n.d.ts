@@ -154,6 +154,7 @@ interface I18nErrors {
 	satellite_name_missing: string;
 	satellite_unexpected_error: string;
 	satellite_no_found: string;
+	satellite_name_update: string;
 	ledger_balance_credits: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;

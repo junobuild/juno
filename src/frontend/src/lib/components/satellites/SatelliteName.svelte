@@ -8,11 +8,9 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
-	import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
-	import { setSatelliteMetadata } from '$lib/api/mission-control.api';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { Principal } from '@dfinity/principal';
+	import { setSatelliteName } from '$lib/services/mission-control.services';
 
 	export let satellite: Satellite;
 
@@ -49,16 +47,11 @@
 		busy.start();
 
 		try {
-			const metadata = new Map(satellite.metadata);
-			metadata.set(METADATA_KEY_NAME, satName);
-
-			await setSatelliteMetadata({
+			await setSatelliteName({
 				missionControlId: $missionControlStore,
-				satelliteId: Principal.from(satelliteId),
-				metadata: Array.from(metadata)
+				satellite,
+				satelliteName: satName
 			});
-
-			// TODO: update store with satellite
 
 			visible = false;
 		} catch (err: unknown) {

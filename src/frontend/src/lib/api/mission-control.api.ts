@@ -1,4 +1,4 @@
-import type { Controller } from '$declarations/mission_control/mission_control.did';
+import type {Controller, Satellite} from '$declarations/mission_control/mission_control.did';
 import { getMissionControl } from '$lib/services/mission-control.services';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Metadata } from '$lib/types/metadata';
@@ -221,7 +221,7 @@ export const setSatelliteMetadata = async ({
 	missionControlId: Principal;
 	satelliteId: Principal;
 	metadata: Metadata;
-}) => {
+}): Promise<Satellite> => {
 	const actor = await getMissionControlActor(missionControlId);
-	await actor.set_satellite_metadata(satelliteId, metadata);
+	return actor.set_satellite_metadata(satelliteId, metadata);
 };

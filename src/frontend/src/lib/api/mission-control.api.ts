@@ -1,6 +1,7 @@
 import type { Controller } from '$declarations/mission_control/mission_control.did';
 import { getMissionControl } from '$lib/services/mission-control.services';
 import type { SetControllerParams } from '$lib/types/controllers';
+import type { Metadata } from '$lib/types/metadata';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
 import { toSetController } from '$lib/utils/controllers.utils';
 import type { Identity } from '@dfinity/agent';
@@ -76,7 +77,7 @@ export const deleteSatellitesController = async ({
 	controller: Principal;
 }) => {
 	const actor = await getMissionControlActor(missionControlId);
-	return actor.del_satellites_controllers(satelliteIds, [controller]);
+	await actor.del_satellites_controllers(satelliteIds, [controller]);
 };
 
 export const setMissionControlController = async ({
@@ -106,7 +107,7 @@ export const deleteMissionControlController = async ({
 	controller: Principal;
 }) => {
 	const actor = await getMissionControlActor(missionControlId);
-	return actor.del_mission_control_controllers([controller]);
+	await actor.del_mission_control_controllers([controller]);
 };
 
 /**
@@ -146,7 +147,7 @@ export const removeSatellitesController = async ({
 	controller: Principal;
 }) => {
 	const actor = await getMissionControlActor(missionControlId);
-	return actor.remove_satellites_controllers(satelliteIds, [controller]);
+	await actor.remove_satellites_controllers(satelliteIds, [controller]);
 };
 
 /**
@@ -178,7 +179,7 @@ export const removeMissionControlController = async ({
 	controller: Principal;
 }) => {
 	const actor = await getMissionControlActor(missionControlId);
-	return actor.remove_mission_control_controllers([controller]);
+	await actor.remove_mission_control_controllers([controller]);
 };
 
 export const listMissionControlControllers = async ({
@@ -200,7 +201,7 @@ export const topUp = async ({
 	e8s: bigint;
 }) => {
 	const actor = await getMissionControlActor(missionControlId);
-	return actor.top_up(canisterId, { e8s });
+	await actor.top_up(canisterId, { e8s });
 };
 
 export const missionControlVersion = async ({
@@ -210,4 +211,17 @@ export const missionControlVersion = async ({
 }): Promise<string> => {
 	const actor = await getMissionControlActor(missionControlId);
 	return actor.version();
+};
+
+export const setSatelliteMetadata = async ({
+	missionControlId,
+	satelliteId,
+	metadata
+}: {
+	missionControlId: Principal;
+	satelliteId: Principal;
+	metadata: Metadata;
+}) => {
+	const actor = await getMissionControlActor(missionControlId);
+	await actor.set_satellite_metadata(satelliteId, metadata);
 };

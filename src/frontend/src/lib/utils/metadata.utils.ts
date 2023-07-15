@@ -1,11 +1,18 @@
-export const metadataName = (metadata: [string, string][]): string =>
-	metadataKey({ metadata, key: 'name' });
+import {
+	METADATA_KEY_EMAIL,
+	METADATA_KEY_NAME,
+	METADATA_KEY_PROFILE
+} from '$lib/constants/metadata.constants';
+import type { Metadata } from '$lib/types/metadata';
 
-export const metadataProfile = (metadata: [string, string][]): string =>
-	metadataKey({ metadata, key: 'profile' });
+export const metadataName = (metadata: Metadata): string =>
+	metadataKey({ metadata, key: METADATA_KEY_NAME });
 
-export const metadataEmail = (metadata: [string, string][]): string =>
-	metadataKey({ metadata, key: 'email' });
+export const metadataProfile = (metadata: Metadata): string =>
+	metadataKey({ metadata, key: METADATA_KEY_PROFILE });
 
-const metadataKey = ({ metadata, key }: { metadata: [string, string][]; key: string }): string =>
+export const metadataEmail = (metadata: Metadata): string =>
+	metadataKey({ metadata, key: METADATA_KEY_EMAIL });
+
+const metadataKey = ({ metadata, key }: { metadata: Metadata; key: string }): string =>
 	new Map(metadata).get(key) ?? '';

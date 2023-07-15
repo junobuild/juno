@@ -8,23 +8,59 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
+	import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { setSatelliteMetadata } from '$lib/api/mission-control.api';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { Principal } from '@dfinity/principal';
 
 	export let satellite: Satellite;
 
 	let satelliteId: SatelliteIdText;
 	$: satelliteId = satellite.satellite_id.toText();
 
-	let canisterName = satelliteName(satellite);
+	let satName = satelliteName(satellite);
 
 	let visible: boolean | undefined;
+
+	let validConfirm = false;
 	let saving = false;
+
+	$: validConfirm = nonNullish(satName) && satName !== '';
 
 	const handleSubmit = async ($event: MouseEvent | TouchEvent) => {
 		$event.preventDefault();
 
+		if (!validConfirm) {
+			// Submit is disabled if not valid
+			toasts.error({
+				text: $i18n.errors.satellite_name_missing
+			});
+			return;
+		}
+
+		if (isNullish($missionControlStore)) {
+			toasts.error({
+				text: $i18n.errors.no_mission_control
+			});
+			return;
+		}
+
 		busy.start();
 
 		try {
+			const metadata = new Map(satellite.metadata);
+			metadata.set(METADATA_KEY_NAME, satName);
+
+			await setSatelliteMetadata({
+				missionControlId: $missionControlStore,
+				satelliteId: Principal.from(satelliteId),
+				metadata: Array.from(metadata)
+			});
+
+			// TODO: update store with satellite
+
+			visible = false;
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.satellite_name_update,
@@ -58,14 +94,16 @@
 
 		<input
 			id="canisterName"
-			bind:value={canisterName}
+			bind:value={satName}
 			type="text"
 			placeholder="A shortname for hint"
 			maxlength={64}
 			disabled={saving}
 		/>
 
-		<button type="submit" class="submit" disabled={saving}> {$i18n.core.submit} </button>
+		<button type="submit" class="submit" disabled={saving || !validConfirm}>
+			{$i18n.core.submit}
+		</button>
 	</form>
 </Popover>
 

@@ -62,6 +62,7 @@
 		"name": "名字",
 		"satellite_name": "Satellite 名字",
 		"enter_name": "输入你的 satellite 名字",
+		"edit_name": "Edit the name of your satellite",
 		"create_satellite_price": "为了创建新的 satellite 需要 <strong>{0}</strong> ICP. 你当前 mission control 余额是 {1} ICP 而且你还剩 {2} 积分.",
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",

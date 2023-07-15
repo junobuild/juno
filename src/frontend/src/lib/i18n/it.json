@@ -62,6 +62,7 @@
 		"name": "Nome",
 		"satellite_name": "Nome del satellite",
 		"enter_name": "Inserisci un nome per il tuo satellite",
+		"edit_name": "Edit the name of your satellite",
 		"create_satellite_price": "Avviare un nuovo satellite richiede <strong>{0}</strong> ICP. Il tuo attuale saldo mission control è di {1} ICP e hai {2} crediti rimanenti.",
 		"loading_satellites": "Caricando i tuoi satelliti",
 		"overview": "Panoramica",

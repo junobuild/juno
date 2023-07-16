@@ -73,6 +73,7 @@ export interface _SERVICE {
 	remove_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	set_metadata: ActorMethod<[Array<[string, string]>], undefined>;
 	set_mission_control_controllers: ActorMethod<[Array<Principal>, SetController], undefined>;
+	set_satellite_metadata: ActorMethod<[Principal, Array<[string, string]>], Satellite>;
 	set_satellites_controllers: ActorMethod<
 		[Array<Principal>, Array<Principal>, SetController],
 		undefined

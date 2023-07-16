@@ -8,6 +8,7 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 
 	export let satellite: Satellite;
 
@@ -16,14 +17,11 @@
 </script>
 
 <div class="card-container">
-	<Value>
-		<svelte:fragment slot="label">{$i18n.satellites.name}</svelte:fragment>
-		<p>{satelliteName(satellite)}</p>
-	</Value>
+	<SatelliteName {satellite} />
 
 	<Value>
 		<svelte:fragment slot="label">{$i18n.satellites.id}</svelte:fragment>
-		<Identifier identifier={satelliteId} shorten={false} nomargin={false} />
+		<Identifier identifier={satelliteId} shorten={false} small={false} />
 	</Value>
 
 	<Value>

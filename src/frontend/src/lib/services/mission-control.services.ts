@@ -1,18 +1,25 @@
 import type { _SERVICE as ConsoleActor, MissionControl } from '$declarations/console/console.did';
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
+import type {
+	_SERVICE as MissionControlActor,
+	Satellite
+} from '$declarations/mission_control/mission_control.did';
 import {
 	addMissionControlController,
 	addSatellitesController,
 	missionControlVersion,
 	setMissionControlController,
+	setSatelliteMetadata,
 	setSatellitesController
 } from '$lib/api/mission-control.api';
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
+import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import { satellitesStore } from '$lib/stores/satellite.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { compare } from 'semver';
+import { get } from 'svelte/store';
 import { getConsoleActor, getMissionControlActor } from '../utils/actor.utils';
 import { fromNullable } from '../utils/did.utils';
 
@@ -152,5 +159,32 @@ export const setSatellitesForVersion = async ({
 					})
 			  ]
 			: [])
+	]);
+};
+
+export const setSatelliteName = async ({
+	missionControlId,
+	satellite: { satellite_id: satelliteId, metadata },
+	satelliteName
+}: {
+	missionControlId: Principal;
+	satellite: Satellite;
+	satelliteName: string;
+}) => {
+	const updateData = new Map(metadata);
+	updateData.set(METADATA_KEY_NAME, satelliteName);
+
+	const updatedSatellite = await setSatelliteMetadata({
+		missionControlId,
+		satelliteId,
+		metadata: Array.from(updateData)
+	});
+
+	const satellites = get(satellitesStore);
+	satellitesStore.set([
+		...(satellites ?? []).filter(
+			({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
+		),
+		updatedSatellite
 	]);
 };

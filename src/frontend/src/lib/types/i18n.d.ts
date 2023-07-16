@@ -68,6 +68,7 @@ interface I18nSatellites {
 	name: string;
 	satellite_name: string;
 	enter_name: string;
+	edit_name: string;
 	create_satellite_price: string;
 	loading_satellites: string;
 	overview: string;
@@ -153,6 +154,8 @@ interface I18nErrors {
 	satellite_name_missing: string;
 	satellite_unexpected_error: string;
 	satellite_no_found: string;
+	satellite_name_update: string;
+	satellite_missing_name: string;
 	ledger_balance_credits: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;

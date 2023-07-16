@@ -89,7 +89,7 @@
 					</td>
 
 					<td>
-						<Identifier identifier={controllerId.toText()} shorten={false} nomargin={false} />
+						<Identifier identifier={controllerId.toText()} shorten={false} small={false} />
 					</td>
 
 					<td class="profile">{metadataProfile(controller?.metadata ?? [])}</td>

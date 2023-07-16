@@ -174,12 +174,17 @@ export const setSatelliteName = async ({
 	const updateData = new Map(metadata);
 	updateData.set(METADATA_KEY_NAME, satelliteName);
 
-	const updatedSatelitte = await setSatelliteMetadata({
+	const updatedSatellite = await setSatelliteMetadata({
 		missionControlId,
 		satelliteId,
 		metadata: Array.from(updateData)
 	});
 
 	const satellites = get(satellitesStore);
-	satellitesStore.set([...(satellites ?? []), updatedSatelitte]);
+	satellitesStore.set([
+		...(satellites ?? []).filter(
+			({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
+		),
+		updatedSatellite
+	]);
 };

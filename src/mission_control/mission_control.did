@@ -72,6 +72,9 @@ service : {
   remove_satellites_controllers : (vec principal, vec principal) -> ();
   set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();
+  set_satellite_metadata : (principal, vec record { text; text }) -> (
+      Satellite,
+    );
   set_satellites_controllers : (
       vec principal,
       vec principal,

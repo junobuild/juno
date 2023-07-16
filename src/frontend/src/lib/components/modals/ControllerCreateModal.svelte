@@ -112,7 +112,7 @@
 				<div>
 					<Value>
 						<svelte:fragment slot="label">{$i18n.controllers.new_controller_id}</svelte:fragment>
-						<Identifier identifier={controllerId} shorten={false} nomargin={false} />
+						<Identifier identifier={controllerId} shorten={false} small={false} />
 					</Value>
 				</div>
 

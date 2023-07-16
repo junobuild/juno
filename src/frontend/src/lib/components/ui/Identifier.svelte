@@ -4,13 +4,13 @@
 
 	export let identifier: string;
 	export let shorten = true;
-	export let nomargin = true;
+	export let small = true;
 
 	let shortIdentifier: string;
 	$: shortIdentifier = shorten ? shortenWithMiddleEllipsis(identifier) : identifier;
 </script>
 
-<p class:nomargin>
+<p class:small>
 	<span>{shortIdentifier}</span>
 	<Copy value={identifier} />
 </p>
@@ -27,11 +27,10 @@
 		display: inline-flex;
 		align-items: center;
 		gap: var(--padding-2x);
-		margin: 0 0 var(--padding);
 		max-width: 100%;
 	}
 
-	.nomargin {
-		margin: 0;
+	.small {
+		margin: 0 0 var(--padding);
 	}
 </style>

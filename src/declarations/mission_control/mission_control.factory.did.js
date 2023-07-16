@@ -89,6 +89,11 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_metadata: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		set_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal), SetController], [], []),
+		set_satellite_metadata: IDL.Func(
+			[IDL.Principal, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+			[Satellite],
+			[]
+		),
 		set_satellites_controllers: IDL.Func(
 			[IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal), SetController],
 			[],

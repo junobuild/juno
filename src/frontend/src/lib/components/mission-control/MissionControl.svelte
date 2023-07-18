@@ -55,7 +55,11 @@
 		<div>
 			<Value>
 				<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
-				<p>{$missionControlStore?.toText() ?? ''}</p>
+				<Identifier
+					identifier={$missionControlStore?.toText() ?? ''}
+					shorten={false}
+					small={false}
+				/>
 			</Value>
 
 			<Value>

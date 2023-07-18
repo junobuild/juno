@@ -1,4 +1,4 @@
-import type {Controller, Satellite} from '$declarations/mission_control/mission_control.did';
+import type { Controller, Satellite } from '$declarations/mission_control/mission_control.did';
 import { getMissionControl } from '$lib/services/mission-control.services';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Metadata } from '$lib/types/metadata';

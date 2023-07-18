@@ -105,8 +105,8 @@ npm run dev
 
 ## Top-up
 
-Top-up the console with some cycles:
+Top-up the local console with some cycles:
 
 ```
-npm run topup
+npm run console:topup
 ```

@@ -91,7 +91,7 @@ Finally, install mission control center + satellite wasm and deploy frontend:
 ```
 dfx deploy mission_control (it will fail because it needs a user as init param but we need to deploy it for dfx to be able to install the frontend)
 dfx deploy satellite (same same)
-npm run install:wasm
+npm run console:install:wasm
 dfx deploy frontend
 ```
 

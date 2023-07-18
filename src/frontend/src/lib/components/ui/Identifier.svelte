@@ -21,6 +21,8 @@
 	span {
 		word-break: break-all;
 		@include text.truncate;
+
+		margin: 0 0 var(--padding-0_5x);
 	}
 
 	p {

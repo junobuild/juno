@@ -49,12 +49,9 @@ then run command line
 ./scripts/ledger.sh
 ```
 
-Revert `dfx.json`, collect the ledger canister id and update its value in (if not `ryjl3-tyaaa-aaaaa-aaaba-cai`):
+The generated canister ID should be `ryjl3-tyaaa-aaaaa-aaaba-cai`.
 
-- [./scripts/ledger.utils.mjs](./scripts/ledger.utils.mjs)
-- [shared/src/env.rs](./src/shared/src/env.rs)
-
-double check that you received the balance
+Revert `dfx.json` and double check that you received the balance:
 
 ```
 npm run ledger:balance
@@ -72,17 +69,7 @@ Next finally deploy Juno canisters:
 
 ```
 dfx canister create console --specified-id cokmz-oiaaa-aaaal-aby6q-cai
-```
-
-Collect "console" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `cokmz-oiaaa-aaaal-aby6q-cai`).
-
-```
 dfx deploy observatory --specified-id klbfr-lqaaa-aaaak-qbwsa-cai
-```
-
-Collect "observatory" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `klbfr-lqaaa-aaaak-qbwsa-cai`).
-
-```
 dfx deploy console
 ```
 

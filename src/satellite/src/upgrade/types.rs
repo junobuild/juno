@@ -1,7 +1,7 @@
 pub mod upgrade {
     use crate::db::types::state::DbHeapState;
     use crate::rules::types::rules::Rules;
-    use crate::storage::types::config::StorageConfigHeaders;
+    use crate::storage::types::config::StorageConfig;
     use crate::storage::types::domain::CustomDomains;
     use crate::storage::types::state::Assets;
     use candid::CandidType;
@@ -19,12 +19,7 @@ pub mod upgrade {
     pub struct UpgradeStorageHeapState {
         pub assets: Assets,
         pub rules: Rules,
-        pub config: UpgradeStorageConfig,
+        pub config: StorageConfig,
         pub custom_domains: CustomDomains,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct UpgradeStorageConfig {
-        pub headers: StorageConfigHeaders,
     }
 }

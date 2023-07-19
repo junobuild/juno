@@ -49,40 +49,23 @@ then run command line
 ./scripts/ledger.sh
 ```
 
-Revert `dfx.json`, collect the ledger canister id and update its value in (if not `r7inp-6aaaa-aaaaa-aaabq-cai`):
-
-- [./scripts/ledger.utils.mjs](./scripts/ledger.utils.mjs)
-- [shared/src/env.rs](./src/shared/src/env.rs)
-
-double check that you received the balance
+Revert `dfx.json` and double check that you received the balance:
 
 ```
 npm run ledger:balance
 ```
 
-Next, important, the Cmc canister should be installed at this precise step because somehow its canister ID should reflect the one on mainnet
+Next, install the Cmc (note its canister ID should reflect the one on mainnet):
 
 ```
 ./scripts/cmc.sh
 ```
 
-The generated canister ID should be `rkp4c-7iaaa-aaaaa-aaaca-cai`
-
 Next finally deploy Juno canisters:
 
 ```
-dfx canister create console
-```
-
-Collect "console" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `rno2w-sqaaa-aaaaa-aaacq-cai`).
-
-```
-dfx deploy observatory
-```
-
-Collect "observatory" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `renrk-eyaaa-aaaaa-aaada-cai`).
-
-```
+dfx canister create console --specified-id cokmz-oiaaa-aaaal-aby6q-cai
+dfx deploy observatory --specified-id klbfr-lqaaa-aaaak-qbwsa-cai
 dfx deploy console
 ```
 

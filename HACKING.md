@@ -49,21 +49,17 @@ then run command line
 ./scripts/ledger.sh
 ```
 
-The generated canister ID should be `ryjl3-tyaaa-aaaaa-aaaba-cai`.
-
 Revert `dfx.json` and double check that you received the balance:
 
 ```
 npm run ledger:balance
 ```
 
-Next, important, the Cmc canister should be installed at this precise step because somehow its canister ID should reflect the one on mainnet
+Next, install the Cmc (note its canister ID should reflect the one on mainnet):
 
 ```
 ./scripts/cmc.sh
 ```
-
-The generated canister ID should be `rkp4c-7iaaa-aaaaa-aaaca-cai`
 
 Next finally deploy Juno canisters:
 

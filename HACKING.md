@@ -49,7 +49,7 @@ then run command line
 ./scripts/ledger.sh
 ```
 
-Revert `dfx.json`, collect the ledger canister id and update its value in (if not `r7inp-6aaaa-aaaaa-aaabq-cai`):
+Revert `dfx.json`, collect the ledger canister id and update its value in (if not `ryjl3-tyaaa-aaaaa-aaaba-cai`):
 
 - [./scripts/ledger.utils.mjs](./scripts/ledger.utils.mjs)
 - [shared/src/env.rs](./src/shared/src/env.rs)
@@ -71,16 +71,16 @@ The generated canister ID should be `rkp4c-7iaaa-aaaaa-aaaca-cai`
 Next finally deploy Juno canisters:
 
 ```
-dfx canister create console
+dfx canister create console --specified-id cokmz-oiaaa-aaaal-aby6q-cai
 ```
 
-Collect "console" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `rno2w-sqaaa-aaaaa-aaacq-cai`).
+Collect "console" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `cokmz-oiaaa-aaaal-aby6q-cai`).
 
 ```
-dfx deploy observatory
+dfx deploy observatory --specified-id klbfr-lqaaa-aaaak-qbwsa-cai
 ```
 
-Collect "observatory" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `renrk-eyaaa-aaaaa-aaada-cai`).
+Collect "observatory" canister id and update [shared/src/env.rs](./src/shared/src/env.rs) (if not `klbfr-lqaaa-aaaak-qbwsa-cai`).
 
 ```
 dfx deploy console

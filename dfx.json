@@ -94,7 +94,7 @@
 			"subnet_type": "system"
 		}
 	},
-	"dfx": "0.13.1",
+	"dfx": "0.14.3",
 	"networks": {
 		"local": {
 			"bind": "127.0.0.1:8000",

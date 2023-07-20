@@ -46,7 +46,6 @@ type Doc = record {
   description : opt text;
   created_at : nat64;
 };
-type Func = record { method : text; "principal" : principal };
 type HttpRequest = record {
   url : text;
   method : text;
@@ -138,7 +137,10 @@ type StreamingCallbackToken = record {
   full_path : text;
 };
 type StreamingStrategy = variant {
-  Callback : record { token : StreamingCallbackToken; callback : Func };
+  Callback : record {
+    token : StreamingCallbackToken;
+    callback : func () -> () query;
+  };
 };
 type UploadChunk = record {
   content : vec nat8;

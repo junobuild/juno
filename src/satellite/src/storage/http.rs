@@ -8,7 +8,7 @@ use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use crate::storage::store::get_config;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::http::{
-    Func, HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
+    CallbackFunc, HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
 };
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
@@ -24,10 +24,7 @@ pub fn streaming_strategy(
         create_token(key, 0, encoding, encoding_type, headers);
 
     streaming_token.map(|streaming_token| StreamingStrategy::Callback {
-        callback: Func {
-            method: "http_request_streaming_callback".to_string(),
-            principal: id(),
-        },
+        callback: CallbackFunc::new(id(), "http_request_streaming_callback".to_string()),
         token: streaming_token,
     })
 }

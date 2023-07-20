@@ -1,4 +1,3 @@
-use candid::Func;
 use globset::Glob;
 use hex::encode;
 use ic_cdk::id;
@@ -9,7 +8,7 @@ use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use crate::storage::store::get_config;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::http::{
-    HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
+    Func, HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
 };
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};

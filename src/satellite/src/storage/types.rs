@@ -160,7 +160,7 @@ pub mod interface {
 }
 
 pub mod http {
-    use candid::{CandidType, Deserialize, Func};
+    use candid::{CandidType, Deserialize, Principal};
     use serde_bytes::ByteBuf;
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -180,6 +180,12 @@ pub mod http {
         pub headers: Vec<HeaderField>,
         pub status_code: u16,
         pub streaming_strategy: Option<StreamingStrategy>,
+    }
+
+    #[derive(CandidType, Deserialize, PartialEq, Eq, Debug, Clone)]
+    pub struct Func {
+        pub principal: Principal,
+        pub method: String,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

@@ -1,19 +1,20 @@
 mod impls;
 mod memory;
-mod types;
 mod store;
+mod types;
 
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
+use crate::store::insert_page_view;
+use crate::types::interface::SetPageView;
 use crate::types::memory::Memory;
-use crate::types::state::{HeapState, StableKey, State};
-use ciborium::{from_reader, into_writer};
+use crate::types::state::{HeapState, PageView, StableKey, State};
 use candid::{candid_method, export_service};
-use ic_cdk::{caller, trap};
+use ciborium::{from_reader, into_writer};
+use ic_cdk::{trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
-use crate::types::interface::SetPageView;
 
 #[init]
 fn init() {
@@ -71,16 +72,13 @@ fn post_upgrade() {
 
 #[candid_method(update)]
 #[update]
-fn set_page_view(key: StableKey, page_view: SetPageView) {
-    let caller = caller();
+fn set_page_view(key: StableKey, page_view: SetPageView) -> PageView {
+    let result = insert_page_view(key, page_view);
 
-    // TODO:
-    // let result = insert_doc(caller, collection, key, doc);
-    //
-    // match result {
-    //     Ok(doc) => doc,
-    //     Err(error) => trap(&error),
-    // }
+    match result {
+        Ok(new_page_view) => new_page_view,
+        Err(error) => trap(&error),
+    }
 }
 
 ///

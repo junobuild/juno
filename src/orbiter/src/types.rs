@@ -70,7 +70,7 @@ pub mod memory {
 }
 
 pub mod interface {
-    use crate::types::state::{PageViewDevice};
+    use crate::types::state::PageViewDevice;
     use candid::CandidType;
     use serde::Deserialize;
 

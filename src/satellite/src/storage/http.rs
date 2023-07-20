@@ -1,3 +1,4 @@
+use candid::Func;
 use globset::Glob;
 use hex::encode;
 use ic_cdk::id;
@@ -24,7 +25,7 @@ pub fn streaming_strategy(
         create_token(key, 0, encoding, encoding_type, headers);
 
     streaming_token.map(|streaming_token| StreamingStrategy::Callback {
-        callback: candid::Func {
+        callback: Func {
             method: "http_request_streaming_callback".to_string(),
             principal: id(),
         },

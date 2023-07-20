@@ -53,7 +53,7 @@ type StatusesArgs = record {
   cycles_threshold : opt nat64;
 };
 type Tokens = record { e8s : nat64 };
-service : {
+service : () -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
   create_satellite : (text) -> (Satellite);

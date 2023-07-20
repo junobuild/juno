@@ -19,10 +19,9 @@ use crate::store::{
 use crate::types::interface::{ListStatuses, ListStatusesArgs, SetCronTab};
 use crate::types::state::{Archive, CronTab, StableState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
-use candid::{candid_method, export_service};
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk::{caller, trap};
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_cdk_timers::set_timer_interval;
 use shared::controllers::init_controllers;
 use shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
@@ -71,7 +70,6 @@ fn post_upgrade() {
 
 /// Controllers
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
     SetControllersArgs {
@@ -82,7 +80,6 @@ fn set_controllers(
     set_controllers_store(&controllers, &controller);
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
     delete_controllers(&controllers);
@@ -90,7 +87,6 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
 
 /// Crontabs
 
-#[candid_method(update)]
 #[update]
 async fn set_cron_tab(cron_tab: SetCronTab) -> CronTab {
     let user = caller();
@@ -102,7 +98,6 @@ async fn set_cron_tab(cron_tab: SetCronTab) -> CronTab {
     set_cron_tab_store(&user, &cron_tab).unwrap_or_else(|e| trap(&e))
 }
 
-#[candid_method(query)]
 #[query]
 fn get_cron_tab() -> Option<CronTab> {
     let user = caller();
@@ -111,7 +106,6 @@ fn get_cron_tab() -> Option<CronTab> {
 
 /// Reports
 
-#[candid_method(query)]
 #[query(guard = "caller_can_execute_cron_jobs")]
 fn list_statuses(args: ListStatusesArgs) -> Vec<ListStatuses> {
     collect_statuses_report(&args)
@@ -119,7 +113,6 @@ fn list_statuses(args: ListStatusesArgs) -> Vec<ListStatuses> {
 
 /// Mgmt
 
-#[candid_method(query)]
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
@@ -129,30 +122,4 @@ fn version() -> String {
 /// Generate did files
 ///
 
-#[query(name = "__get_candid_interface_tmp_hack")]
-fn export_candid() -> String {
-    export_service!();
-    __export_service()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn save_candid() {
-        use std::env;
-        use std::fs::write;
-        use std::path::PathBuf;
-
-        let dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-        let dir = dir
-            .parent()
-            .unwrap()
-            .parent()
-            .unwrap()
-            .join("src")
-            .join("observatory");
-        write(dir.join("observatory.did"), export_candid()).expect("Write failed.");
-    }
-}
+export_candid!();

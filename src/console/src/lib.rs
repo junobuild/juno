@@ -28,11 +28,11 @@ use crate::types::state::{
     State,
 };
 use crate::upgrade::types::upgrade::UpgradeStableState;
-use candid::{candid_method, export_service, Principal};
+use candid::Principal;
 use ic_cdk::api::caller;
 use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, storage, trap};
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use shared::controllers::init_controllers;
 use shared::types::interface::{
@@ -80,7 +80,6 @@ fn post_upgrade() {
 
 /// Mission control center and satellite releases and wasm
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn reset_release(segment: Segment) {
     match segment {
@@ -89,7 +88,6 @@ fn reset_release(segment: Segment) {
     }
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn load_release(segment: Segment, blob: Vec<u8>, version: String) -> LoadRelease {
     let total: usize = match segment {
@@ -109,7 +107,6 @@ fn load_release(segment: Segment, blob: Vec<u8>, version: String) -> LoadRelease
     }
 }
 
-#[candid_method(query)]
 #[query]
 fn get_releases_version() -> ReleasesVersion {
     ReleasesVersion {
@@ -120,7 +117,6 @@ fn get_releases_version() -> ReleasesVersion {
 
 /// User mission control centers
 
-#[candid_method(query)]
 #[query]
 fn get_user_mission_control_center() -> Option<MissionControl> {
     let caller = caller();
@@ -132,7 +128,6 @@ fn get_user_mission_control_center() -> Option<MissionControl> {
     }
 }
 
-#[candid_method(query)]
 #[query(guard = "caller_is_observatory")]
 fn assert_mission_control_center(
     AssertMissionControlCenterArgs {
@@ -143,13 +138,11 @@ fn assert_mission_control_center(
     get_existing_mission_control(&user, &mission_control_id).unwrap_or_else(|e| trap(e));
 }
 
-#[candid_method(query)]
 #[query(guard = "caller_is_admin_controller")]
 fn list_user_mission_control_centers() -> MissionControls {
     list_mission_controls()
 }
 
-#[candid_method(update)]
 #[update]
 async fn init_user_mission_control_center() -> MissionControl {
     let caller = caller();
@@ -162,7 +155,6 @@ async fn init_user_mission_control_center() -> MissionControl {
 
 /// Satellites
 
-#[candid_method(update)]
 #[update]
 async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
     let console = id();
@@ -175,7 +167,6 @@ async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
 
 /// Economy
 
-#[candid_method(query)]
 #[query]
 fn get_credits() -> Tokens {
     let caller = caller();
@@ -183,13 +174,11 @@ fn get_credits() -> Tokens {
     get_credits_store(&caller).unwrap_or_else(|e| trap(e))
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn add_credits(AddCreditsArgs { user }: AddCreditsArgs) {
     add_credits_store(&user).unwrap_or_else(|e| trap(e));
 }
 
-#[candid_method(query)]
 #[query]
 fn get_create_satellite_fee(
     GetCreateSatelliteFeeArgs { user }: GetCreateSatelliteFeeArgs,
@@ -204,7 +193,6 @@ fn get_create_satellite_fee(
 
 /// Closed beta - invitation codes
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn add_invitation_code(code: InvitationCode) {
     add_invitation_code_store(&code);
@@ -212,7 +200,6 @@ fn add_invitation_code(code: InvitationCode) {
 
 /// Rates
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn update_rate_config(segment: Segment, config: RateConfig) {
     match segment {
@@ -223,7 +210,6 @@ fn update_rate_config(segment: Segment, config: RateConfig) {
 
 /// Mgmt
 
-#[candid_method(query)]
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
@@ -231,7 +217,6 @@ fn version() -> String {
 
 /// Controllers
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
     SetControllersArgs {
@@ -242,38 +227,13 @@ fn set_controllers(
     set_controllers_store(&controllers, &controller);
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
     delete_controllers(&controllers);
 }
 
-// Generate did files
+///
+/// Generate did files
+///
 
-#[query(name = "__get_candid_interface_tmp_hack")]
-fn export_candid() -> String {
-    export_service!();
-    __export_service()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn save_candid() {
-        use std::env;
-        use std::fs::write;
-        use std::path::PathBuf;
-
-        let dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-        let dir = dir
-            .parent()
-            .unwrap()
-            .parent()
-            .unwrap()
-            .join("src")
-            .join("console");
-        write(dir.join("console.did"), export_candid()).expect("Write failed.");
-    }
-}
+export_candid!();

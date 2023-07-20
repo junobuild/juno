@@ -49,7 +49,6 @@ use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
 use crate::types::state::{HeapState, RuntimeState, State};
 use crate::upgrade::types::upgrade::UpgradeHeapState;
-use candid::{candid_method, export_service};
 use controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
     set_controllers as set_controllers_store,
@@ -57,7 +56,7 @@ use controllers::store::{
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, time, trap};
 use ic_cdk::storage::{stable_restore, stable_save};
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use rules::constants::DEFAULT_DB_COLLECTIONS;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
@@ -163,7 +162,6 @@ fn post_upgrade() {
 /// Db
 ///
 
-#[candid_method(update)]
 #[update]
 fn set_doc(collection: CollectionKey, key: String, doc: SetDoc) -> Doc {
     let caller = caller();
@@ -176,7 +174,6 @@ fn set_doc(collection: CollectionKey, key: String, doc: SetDoc) -> Doc {
     }
 }
 
-#[candid_method(query)]
 #[query]
 fn get_doc(collection: CollectionKey, key: String) -> Option<Doc> {
     let caller = caller();
@@ -189,7 +186,6 @@ fn get_doc(collection: CollectionKey, key: String) -> Option<Doc> {
     }
 }
 
-#[candid_method(update)]
 #[update]
 fn del_doc(collection: CollectionKey, key: String, doc: DelDoc) {
     let caller = caller();
@@ -197,7 +193,6 @@ fn del_doc(collection: CollectionKey, key: String, doc: DelDoc) {
     delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
 }
 
-#[candid_method(query)]
 #[query]
 fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
     let caller = caller();
@@ -212,7 +207,6 @@ fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> 
 
 /// Rules
 
-#[candid_method(query)]
 #[query(guard = "caller_is_admin_controller")]
 fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
     match rules_type {
@@ -221,7 +215,6 @@ fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
     }
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
     match rules_type {
@@ -230,7 +223,6 @@ fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
     }
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
     match rules_type {
@@ -243,7 +235,6 @@ fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
 /// Controllers
 ///
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
     SetControllersArgs {
@@ -270,14 +261,12 @@ fn set_controllers(
     get_controllers()
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) -> Controllers {
     delete_controllers_store(&controllers);
     get_controllers()
 }
 
-#[candid_method(query)]
 #[query(guard = "caller_is_admin_controller")]
 fn list_controllers() -> Controllers {
     get_controllers()
@@ -287,13 +276,11 @@ fn list_controllers() -> Controllers {
 /// Config
 ///
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn set_config(config: Config) {
     set_storage_config(&config.storage);
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn get_config() -> Config {
     let storage = get_storage_config();
@@ -304,19 +291,16 @@ fn get_config() -> Config {
 /// Custom domains
 ///
 
-#[candid_method(query)]
 #[query(guard = "caller_is_admin_controller")]
 fn list_custom_domains() -> CustomDomains {
     get_custom_domains()
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
     set_domain(&domain_name, &bn_id);
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_custom_domain(domain_name: DomainName) {
     delete_domain(&domain_name);
@@ -331,7 +315,6 @@ fn del_custom_domain(domain_name: DomainName) {
 ///
 
 #[query]
-#[candid_method(query)]
 fn http_request(
     HttpRequest {
         method,
@@ -403,7 +386,6 @@ fn http_request(
 }
 
 #[query]
-#[candid_method(query)]
 fn http_request_streaming_callback(
     StreamingCallbackToken {
         token,
@@ -436,7 +418,6 @@ fn http_request_streaming_callback(
 // Upload
 //
 
-#[candid_method(update)]
 #[update]
 fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
     let caller = caller();
@@ -448,7 +429,6 @@ fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
     }
 }
 
-#[candid_method(update)]
 #[update]
 fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
@@ -461,7 +441,6 @@ fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     }
 }
 
-#[candid_method(update)]
 #[update]
 fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
@@ -478,7 +457,6 @@ fn commit_asset_upload(commit: CommitBatch) {
 // List and delete
 //
 
-#[candid_method(query)]
 #[query]
 fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
     let caller = caller();
@@ -491,7 +469,6 @@ fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<Ass
     }
 }
 
-#[candid_method(update)]
 #[update]
 fn del_asset(collection: CollectionKey, full_path: String) {
     let caller = caller();
@@ -504,7 +481,6 @@ fn del_asset(collection: CollectionKey, full_path: String) {
     }
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_admin_controller")]
 fn del_assets(collection: CollectionKey) {
     delete_assets(collection);
@@ -512,7 +488,6 @@ fn del_assets(collection: CollectionKey) {
 
 /// Mgmt
 
-#[candid_method(query)]
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
@@ -522,30 +497,4 @@ fn version() -> String {
 /// Generate did files
 ///
 
-#[query(name = "__get_candid_interface_tmp_hack")]
-fn export_candid() -> String {
-    export_service!();
-    __export_service()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn save_candid() {
-        use std::env;
-        use std::fs::write;
-        use std::path::PathBuf;
-
-        let dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-        let dir = dir
-            .parent()
-            .unwrap()
-            .parent()
-            .unwrap()
-            .join("src")
-            .join("satellite");
-        write(dir.join("satellite.did"), export_candid()).expect("Write failed.");
-    }
-}
+export_candid!();

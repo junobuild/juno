@@ -36,6 +36,15 @@
 			},
 			"optimize": "cycles"
 		},
+		"telemetry": {
+			"candid": "src/telemetry/telemetry.did",
+			"package": "telemetry",
+			"type": "rust",
+			"declarations": {
+				"node_compatibility": true
+			},
+			"optimize": "cycles"
+		},
 		"frontend": {
 			"frontend": {
 				"entrypoint": "build/index.html"

@@ -37,7 +37,7 @@ pub mod state {
         pub updated_at: u64,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct PageViewDevice {
         inner_width: u16,
         inner_height: u16,

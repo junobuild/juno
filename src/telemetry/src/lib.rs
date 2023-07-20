@@ -7,7 +7,8 @@ use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::types::memory::Memory;
 use crate::types::state::{HeapState, StableKey, State};
 use ciborium::{from_reader, into_writer};
-use ic_cdk::export::candid::{candid_method, export_service};
+use candid::{candid_method, export_service};
+use ic_cdk::{caller, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
 use ic_stable_structures::Memory as _;
@@ -72,12 +73,13 @@ fn post_upgrade() {
 fn set_page_view(key: StableKey, page_view: SetPageView) {
     let caller = caller();
 
-    let result = insert_doc(caller, collection, key, doc);
-
-    match result {
-        Ok(doc) => doc,
-        Err(error) => trap(&error),
-    }
+    // TODO:
+    // let result = insert_doc(caller, collection, key, doc);
+    //
+    // match result {
+    //     Ok(doc) => doc,
+    //     Err(error) => trap(&error),
+    // }
 }
 
 ///

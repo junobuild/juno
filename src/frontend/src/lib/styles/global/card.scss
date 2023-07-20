@@ -1,7 +1,16 @@
 @use '../mixins/shadow';
+@use '../mixins/media';
 
 .card-container {
 	margin: 0 0 var(--padding-2x);
 	padding: var(--padding-2x);
 	@include shadow.strong-card;
+
+	&.columns-3 {
+		@include media.min-width(medium) {
+			display: grid;
+			grid-template-columns: repeat(2, auto) 1fr;
+			grid-column-gap: var(--padding-8x);
+		}
+	}
 }

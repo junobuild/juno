@@ -16,15 +16,31 @@ pub mod state {
         pub heap: HeapState,
     }
 
+    pub type Key = String;
+
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct StableKey {
         pub satellite_id: SatelliteId,
-        pub timestamp: u64,
+        pub key: Key,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct PageView {
-        // TODO: implement
+        pub title: String,
+        pub href: String,
+        pub referrer: Option<String>,
+        pub device: PageViewDevice,
+        pub user_agent: Option<String>,
+        pub time_zone: String,
+        pub collected_at: u64,
+        pub created_at: u64,
+        pub updated_at: u64,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct PageViewDevice {
+        inner_width: u16,
+        inner_height: u16,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -51,4 +67,22 @@ pub mod memory {
     use ic_stable_structures::DefaultMemoryImpl;
 
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
+}
+
+pub mod interface {
+    use crate::types::state::{PageViewDevice};
+    use candid::CandidType;
+    use serde::Deserialize;
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct SetPageView {
+        pub title: String,
+        pub href: String,
+        pub referrer: Option<String>,
+        pub device: PageViewDevice,
+        pub user_agent: Option<String>,
+        pub time_zone: String,
+        pub collected_at: u64,
+        pub updated_at: Option<u64>,
+    }
 }

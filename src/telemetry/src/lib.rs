@@ -1,15 +1,17 @@
 mod impls;
 mod memory;
 mod types;
+mod store;
 
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::types::memory::Memory;
-use crate::types::state::{HeapState, State};
+use crate::types::state::{HeapState, StableKey, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::export::candid::{candid_method, export_service};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
 use ic_stable_structures::Memory as _;
+use crate::types::interface::SetPageView;
 
 #[init]
 fn init() {
@@ -61,6 +63,21 @@ fn post_upgrade() {
     let state = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
+}
+
+/// Data
+
+#[candid_method(update)]
+#[update]
+fn set_page_view(key: StableKey, page_view: SetPageView) {
+    let caller = caller();
+
+    let result = insert_doc(caller, collection, key, doc);
+
+    match result {
+        Ok(doc) => doc,
+        Err(error) => trap(&error),
+    }
 }
 
 ///

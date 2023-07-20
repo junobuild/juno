@@ -36,9 +36,9 @@
 			},
 			"optimize": "cycles"
 		},
-		"telemetry": {
-			"candid": "src/telemetry/telemetry.did",
-			"package": "telemetry",
+		"orbiter": {
+			"candid": "src/orbiter/orbiter.did",
+			"package": "orbiter",
 			"type": "rust",
 			"declarations": {
 				"node_compatibility": true

@@ -11,6 +11,7 @@ use candid::{candid_method, export_service};
 use ic_cdk::{caller, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
+#[allow(unused)]
 use ic_stable_structures::Memory as _;
 use crate::types::interface::SetPageView;
 
@@ -109,7 +110,7 @@ mod tests {
             .parent()
             .unwrap()
             .join("src")
-            .join("telemetry");
-        write(dir.join("telemetry.did"), export_candid()).expect("Write failed.");
+            .join("orbiter");
+        write(dir.join("orbiter.did"), export_candid()).expect("Write failed.");
     }
 }

@@ -599,6 +599,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
 
 [[package]]
+name = "orbiter"
+version = "0.0.1"
+dependencies = [
+ "candid",
+ "ciborium",
+ "ic-cdk",
+ "ic-cdk-macros",
+ "ic-stable-structures",
+ "lazy_static",
+ "serde",
+ "shared",
+]
+
+[[package]]
 name = "paste"
 version = "1.0.14"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -849,20 +863,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "unicode-ident",
-]
-
-[[package]]
-name = "telemetry"
-version = "0.0.1"
-dependencies = [
- "candid",
- "ciborium",
- "ic-cdk",
- "ic-cdk-macros",
- "ic-stable-structures",
- "lazy_static",
- "serde",
- "shared",
 ]
 
 [[package]]

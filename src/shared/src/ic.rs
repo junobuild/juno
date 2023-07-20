@@ -1,12 +1,12 @@
+use crate::constants::CREATE_CANISTER_CYCLES;
 use crate::types::ic::WasmArg;
 use crate::types::state::{SegmentStatus, SegmentStatusResult};
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::{
-    canister_status as ic_canister_status, create_canister_with_extra_cycles,
-    install_code as ic_install_code, update_settings, CanisterId, CanisterIdRecord,
-    CanisterInstallMode, CanisterSettings, CreateCanisterArgument, InstallCodeArgument,
-    UpdateSettingsArgument,
+    canister_status as ic_canister_status, create_canister, install_code as ic_install_code,
+    update_settings, CanisterId, CanisterIdRecord, CanisterInstallMode, CanisterSettings,
+    CreateCanisterArgument, InstallCodeArgument, UpdateSettingsArgument,
 };
 use ic_cdk::api::time;
 
@@ -15,7 +15,7 @@ pub async fn create_canister_install_code(
     wasm_arg: &WasmArg,
     cycles: u128,
 ) -> Result<Principal, String> {
-    let record = create_canister_with_extra_cycles(
+    let record = create_canister(
         CreateCanisterArgument {
             settings: Some(CanisterSettings {
                 controllers: Some(controllers.clone()),
@@ -24,7 +24,7 @@ pub async fn create_canister_install_code(
                 freezing_threshold: None,
             }),
         },
-        cycles,
+        CREATE_CANISTER_CYCLES + cycles,
     )
     .await;
 

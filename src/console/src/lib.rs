@@ -28,9 +28,8 @@ use crate::types::state::{
     State,
 };
 use crate::upgrade::types::upgrade::UpgradeStableState;
-use candid::Principal;
+use candid::{candid_method, export_service, Principal};
 use ic_cdk::api::caller;
-use ic_cdk::export::candid::{candid_method, export_service};
 use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};

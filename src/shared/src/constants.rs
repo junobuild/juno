@@ -2,6 +2,11 @@ use ic_ledger_types::{Memo, Tokens};
 
 pub const IC_TRANSACTION_FEE_ICP: Tokens = Tokens::from_e8s(10_000);
 
+/// Creating a canister require cycles. These varies according to the subnet size (number of nodes).
+/// Check [Gas and cycles cost](https://internetcomputer.org/docs/current/developer-docs/gas-cost) for more details.
+pub const CREATE_CANISTER_CYCLES: u128 = 100_000_000_000u128;
+
+/// We create satellite and mission control with additional cycles than the above bare minimum.
 pub const CREATE_SATELLITE_CYCLES: u128 = 1_000_000_000_000;
 pub const CREATE_MISSION_CONTROL_CYCLES: u128 = 1_000_000_000_000;
 

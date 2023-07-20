@@ -1,1 +1,24 @@
-service : {}
+type PageView = record {
+  title : text;
+  updated_at : nat64;
+  referrer : opt text;
+  time_zone : text;
+  href : text;
+  created_at : nat64;
+  device : PageViewDevice;
+  user_agent : opt text;
+  collected_at : nat64;
+};
+type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
+type SetPageView = record {
+  title : text;
+  updated_at : opt nat64;
+  referrer : opt text;
+  time_zone : text;
+  href : text;
+  device : PageViewDevice;
+  user_agent : opt text;
+  collected_at : nat64;
+};
+type StableKey = record { key : text; satellite_id : principal };
+service : { set_page_view : (StableKey, SetPageView) -> (PageView) }

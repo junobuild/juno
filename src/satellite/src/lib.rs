@@ -53,7 +53,7 @@ use controllers::store::{
 };
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, trap};
-use ic_cdk::export::candid::{candid_method, export_service};
+use candid::{candid_method, export_service};
 use ic_cdk::storage::stable_restore;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;

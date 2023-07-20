@@ -19,4 +19,4 @@ dfx identity use default
 
 LEDGER_ID=$(dfx canister id ledger)
 
-dfx deploy cmc --argument '(record {minting_account_id = opt"'${MINT_ACC}'"; ledger_canister_id = principal"'${LEDGER_ID}'"; governance_canister_id = principal"'aaaaa-aa'"; last_purged_notification = opt 0;})'
+dfx deploy cmc --specified-id rkp4c-7iaaa-aaaaa-aaaca-cai --argument '(record {minting_account_id = opt"'${MINT_ACC}'"; ledger_canister_id = principal"'${LEDGER_ID}'"; governance_canister_id = principal"'aaaaa-aa'"; last_purged_notification = opt 0;})'

@@ -29,5 +29,12 @@ td,
 .td {
 	padding: var(--padding) var(--padding-2x);
 	vertical-align: text-top;
-	@include text.truncate;
+
+	&:not(.actions) {
+		@include text.truncate;
+	}
+
+	p {
+		margin: 0;
+	}
 }

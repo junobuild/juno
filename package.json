@@ -1,6 +1,6 @@
 {
 	"name": "@junobuild/juno",
-	"version": "0.0.14",
+	"version": "0.0.15",
 	"private": true,
 	"author": "David Dal Busco <david@fluster.io>",
 	"license": "SEE LICENSE IN LICENSE.md",
@@ -27,7 +27,6 @@
 		"build:compress": "./scripts/build.compress.sh",
 		"build:csp": "node scripts/build.csp.mjs",
 		"build:post-process": "npm run build:csp && npm run build:compress",
-		"topup": "dfx wallet send rno2w-sqaaa-aaaaa-aaacq-cai 20000000000000",
 		"dev": "npm run i18n && vite dev",
 		"build": "tsc --noEmit && vite build && npm run build:post-process",
 		"preview": "vite preview",
@@ -42,6 +41,7 @@
 		"console:invitation": "node scripts/console.invitation.mjs",
 		"console:credits": "node scripts/console.credits.mjs",
 		"console:devs": "node scripts/console.devs.mjs",
+		"console:topup": "dfx wallet send cokmz-oiaaa-aaaal-aby6q-cai 20000000000000",
 		"ledger:account-id": "node ./scripts/ledger.account-id.mjs",
 		"ledger:balance": "node scripts/ledger.balance.mjs",
 		"ledger:transfer": "node scripts/ledger.transfer.mjs",

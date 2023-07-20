@@ -13,6 +13,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { AccountIdentifier } from '@junobuild/ledger';
+	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 
 	let missionControlBalance: MissionControlBalance | undefined = undefined;
 
@@ -50,39 +51,54 @@
 <svelte:window on:junoRestartCycles={reloadBalance} />
 
 {#if $authSignedInStore}
-	<div class="card-container">
-		<Value>
-			<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
-			<p>{$missionControlStore?.toText() ?? ''}</p>
-		</Value>
+	<div class="card-container columns-3">
+		<div>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
+				<Identifier
+					identifier={$missionControlStore?.toText() ?? ''}
+					shorten={false}
+					small={false}
+				/>
+			</Value>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-			<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
-		</Value>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+				<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
+			</Value>
 
-		{#if nonNullish($missionControlStore)}
-			<CanisterOverview canisterId={$missionControlStore} />
-		{/if}
+			{#if nonNullish($missionControlStore)}
+				<CanisterOverview canisterId={$missionControlStore} />
+			{/if}
+		</div>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.mission_control.account_identifier}</svelte:fragment>
-			<p>
-				{#if nonNullish(accountIdentifier)}
-					<Identifier identifier={accountIdentifier.toHex() ?? ''} />
-				{/if}
-			</p>
-		</Value>
+		<div>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.mission_control.balance}</svelte:fragment>
+				<p>{formatE8sICP(balance)} ICP</p>
+			</Value>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.mission_control.balance}</svelte:fragment>
-			<p>{formatE8sICP(balance)} ICP</p>
-		</Value>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.mission_control.credits}</svelte:fragment>
+				<p>{formatE8sICP(credits)}</p>
+			</Value>
+		</div>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.mission_control.credits}</svelte:fragment>
-			<p>{formatE8sICP(credits)}</p>
-		</Value>
+		<div>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.mission_control.account_identifier}</svelte:fragment>
+				<p>
+					{#if nonNullish(accountIdentifier)}
+						<Identifier identifier={accountIdentifier.toHex() ?? ''} />
+
+						<QRCodeContainer
+							value={accountIdentifier.toHex()}
+							ariaLabel={$i18n.mission_control.account_identifier}
+						/>
+					{/if}
+				</p>
+			</Value>
+		</div>
 	</div>
 
 	<MissionControlTopUp />

@@ -13,7 +13,7 @@ function generate_did() {
   wasmtime "target/wasm32-unknown-unknown/release/$canister.wasm" > "$canister_root/$canister.did"
 }
 
-CANISTERS=console,observatory,mission_control,satellite
+CANISTERS=console,observatory,mission_control,satellite,orbiter
 
 for canister in $(echo $CANISTERS | sed "s/,/ /g")
 do

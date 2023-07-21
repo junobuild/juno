@@ -8,10 +8,9 @@ use crate::store::insert_page_view;
 use crate::types::interface::SetPageView;
 use crate::types::memory::Memory;
 use crate::types::state::{HeapState, PageView, StableKey, State};
-use candid::{candid_method, export_service};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::{trap};
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
@@ -70,7 +69,6 @@ fn post_upgrade() {
 
 /// Data
 
-#[candid_method(update)]
 #[update]
 fn set_page_view(key: StableKey, page_view: SetPageView) -> PageView {
     let result = insert_page_view(key, page_view);
@@ -81,34 +79,6 @@ fn set_page_view(key: StableKey, page_view: SetPageView) -> PageView {
     }
 }
 
-///
-/// Generate did files
-///
+// Generate did files
 
-#[query(name = "__get_candid_interface_tmp_hack")]
-fn export_candid() -> String {
-    export_service!();
-    __export_service()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn save_candid() {
-        use std::env;
-        use std::fs::write;
-        use std::path::PathBuf;
-
-        let dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-        let dir = dir
-            .parent()
-            .unwrap()
-            .parent()
-            .unwrap()
-            .join("src")
-            .join("orbiter");
-        write(dir.join("orbiter.did"), export_candid()).expect("Write failed.");
-    }
-}
+export_candid!();

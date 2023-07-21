@@ -17,11 +17,13 @@ pub mod state {
     }
 
     pub type Key = String;
+    pub type SessionId = String;
 
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct StableKey {
         pub satellite_id: SatelliteId,
         pub key: Key,
+        pub session_id: SessionId,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

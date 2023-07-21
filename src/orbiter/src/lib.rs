@@ -7,7 +7,7 @@ use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::store::insert_page_view;
 use crate::types::interface::SetPageView;
 use crate::types::memory::Memory;
-use crate::types::state::{HeapState, PageView, StableKey, State};
+use crate::types::state::{HeapState, PageView, AnalyticKey, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::{trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
@@ -70,7 +70,7 @@ fn post_upgrade() {
 /// Data
 
 #[update]
-fn set_page_view(key: StableKey, page_view: SetPageView) -> PageView {
+fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> PageView {
     let result = insert_page_view(key, page_view);
 
     match result {

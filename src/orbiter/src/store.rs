@@ -1,17 +1,17 @@
 use crate::memory::STATE;
 use crate::types::interface::SetPageView;
-use crate::types::state::{PageView, PageViewsStable, StableKey};
+use crate::types::state::{PageView, PageViewsStable, AnalyticKey};
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
 
-pub fn insert_page_view(key: StableKey, page_view: SetPageView) -> Result<PageView, String> {
+pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| {
         insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable.page_views)
     })
 }
 
 fn insert_page_view_impl(
-    key: StableKey,
+    key: AnalyticKey,
     page_view: SetPageView,
     db: &mut PageViewsStable,
 ) -> Result<PageView, String> {

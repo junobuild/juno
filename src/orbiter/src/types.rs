@@ -20,7 +20,7 @@ pub mod state {
     pub type SessionId = String;
 
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct StableKey {
+    pub struct AnalyticKey {
         pub satellite_id: SatelliteId,
         pub key: Key,
         pub session_id: SessionId,
@@ -50,8 +50,8 @@ pub mod state {
         // TODO: implement
     }
 
-    pub type PageViewsStable = StableBTreeMap<StableKey, PageView, Memory>;
-    pub type TrackEventsStable = StableBTreeMap<StableKey, TrackEvent, Memory>;
+    pub type PageViewsStable = StableBTreeMap<AnalyticKey, PageView, Memory>;
+    pub type TrackEventsStable = StableBTreeMap<AnalyticKey, TrackEvent, Memory>;
 
     pub struct StableState {
         pub page_views: PageViewsStable,

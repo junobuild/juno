@@ -1,5 +1,5 @@
 use crate::memory::init_stable_state;
-use crate::types::state::{HeapState, PageView, StableKey, State, TrackEvent};
+use crate::types::state::{HeapState, PageView, AnalyticKey, State, TrackEvent};
 use candid::{decode_one, encode_one};
 use ic_stable_structures::{BoundedStorable, Storable};
 use shared::types::state::Controllers;
@@ -48,7 +48,7 @@ impl BoundedStorable for TrackEvent {
     const IS_FIXED_SIZE: bool = false;
 }
 
-impl Storable for StableKey {
+impl Storable for AnalyticKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         Cow::Owned(encode_one(self).unwrap())
     }
@@ -58,7 +58,7 @@ impl Storable for StableKey {
     }
 }
 
-impl BoundedStorable for StableKey {
+impl BoundedStorable for AnalyticKey {
     // TODO: auto max_size
     const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
     const IS_FIXED_SIZE: bool = false;

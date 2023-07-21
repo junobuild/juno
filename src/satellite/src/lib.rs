@@ -493,8 +493,6 @@ fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
-///
-/// Generate did files
-///
+// Generate did files
 
 export_candid!();

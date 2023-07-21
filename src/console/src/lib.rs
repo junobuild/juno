@@ -232,8 +232,6 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
     delete_controllers(&controllers);
 }
 
-///
-/// Generate did files
-///
+// Generate did files
 
 export_candid!();

@@ -250,8 +250,6 @@ fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
     list_satellite_statuses_store(&satellite_id)
 }
 
-///
-/// Generate did files
-///
+// Generate did files
 
 export_candid!();

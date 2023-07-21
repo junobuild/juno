@@ -1,3 +1,13 @@
+type AnalyticKey = record {
+  key : text;
+  session_id : text;
+  satellite_id : principal;
+};
+type GetPageViews = record {
+  to : nat64;
+  from : nat64;
+  satellite_id : principal;
+};
 type PageView = record {
   title : text;
   updated_at : nat64;
@@ -20,8 +30,10 @@ type SetPageView = record {
   user_agent : opt text;
   collected_at : nat64;
 };
-type AnalyticKey = record { key : text; session_id: text; satellite_id : principal };
 service : () -> {
-    set_page_view : (AnalyticKey, SetPageView) -> (PageView);
-    set_page_views : (vec record { AnalyticKey; SetPageView }) -> ();
+  get_page_views : (GetPageViews) -> (
+      vec record { AnalyticKey; PageView },
+    ) query;
+  set_page_view : (AnalyticKey, SetPageView) -> (PageView);
+  set_page_views : (vec record { AnalyticKey; SetPageView }) -> ();
 }

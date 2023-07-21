@@ -1,5 +1,5 @@
 use crate::memory::init_stable_state;
-use crate::types::state::{HeapState, PageView, AnalyticKey, State, TrackEvent};
+use crate::types::state::{AnalyticKey, HeapState, PageView, State, TrackEvent};
 use candid::{decode_one, encode_one};
 use ic_stable_structures::{BoundedStorable, Storable};
 use shared::types::state::Controllers;

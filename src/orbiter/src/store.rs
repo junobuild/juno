@@ -1,8 +1,9 @@
 use crate::memory::STATE;
-use crate::types::interface::SetPageView;
-use crate::types::state::{PageView, PageViewsStable, AnalyticKey};
+use crate::types::interface::{GetPageViews, SetPageView};
+use crate::types::state::{AnalyticKey, PageView, PageViewsStable};
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
+use shared::utils::principal_equal;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| {
@@ -52,4 +53,23 @@ fn insert_page_view_impl(
     db.insert(key.clone(), new_page_view.clone());
 
     Ok(new_page_view.clone())
+}
+
+pub fn get_page_views(filter: GetPageViews) -> Vec<(AnalyticKey, PageView)> {
+    STATE.with(|state| get_page_views_impl(filter, &state.borrow_mut().stable.page_views))
+}
+fn get_page_views_impl(
+    GetPageViews {
+        from,
+        to,
+        satellite_id,
+    }: GetPageViews,
+    db: &PageViewsStable,
+) -> Vec<(AnalyticKey, PageView)> {
+    db.iter()
+        .filter(|(key, page_view)| {
+            principal_equal(key.satellite_id, satellite_id) && from >= page_view.collected_at
+                && to <= page_view.collected_at
+        })
+        .collect()
 }

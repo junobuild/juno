@@ -75,8 +75,9 @@ pub mod interface {
     use crate::types::state::PageViewDevice;
     use candid::CandidType;
     use serde::Deserialize;
+    use shared::types::state::SatelliteId;
 
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {
         pub title: String,
         pub href: String,
@@ -86,5 +87,12 @@ pub mod interface {
         pub time_zone: String,
         pub collected_at: u64,
         pub updated_at: Option<u64>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct GetPageViews {
+        pub satellite_id: SatelliteId,
+        pub from: u64,
+        pub to: u64,
     }
 }

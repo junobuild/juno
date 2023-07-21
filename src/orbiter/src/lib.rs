@@ -4,12 +4,12 @@ mod store;
 mod types;
 
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
-use crate::store::insert_page_view;
-use crate::types::interface::SetPageView;
+use crate::store::{get_page_views as get_page_views_store, insert_page_view};
+use crate::types::interface::{GetPageViews, SetPageView};
 use crate::types::memory::Memory;
-use crate::types::state::{HeapState, PageView, AnalyticKey, State};
+use crate::types::state::{AnalyticKey, HeapState, PageView, State};
 use ciborium::{from_reader, into_writer};
-use ic_cdk::{trap};
+use ic_cdk::trap;
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
@@ -84,6 +84,12 @@ fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) {
     for (key, page_view) in page_views {
         insert_page_view(key, page_view).unwrap_or_else(|e| trap(&e));
     }
+}
+
+// TODO: this should not be public
+#[query]
+fn get_page_views(filter: GetPageViews) -> Vec<(AnalyticKey, PageView)> {
+    get_page_views_store(filter)
 }
 
 // Generate did files

@@ -160,7 +160,7 @@ pub mod interface {
 }
 
 pub mod http {
-    use candid::{CandidType, Deserialize, Func};
+    use candid::{define_function, CandidType, Deserialize};
     use serde_bytes::ByteBuf;
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -182,11 +182,13 @@ pub mod http {
         pub streaming_strategy: Option<StreamingStrategy>,
     }
 
+    define_function!(pub CallbackFunc : () -> () query);
+
     #[derive(CandidType, Deserialize, Clone)]
     pub enum StreamingStrategy {
         Callback {
             token: StreamingCallbackToken,
-            callback: Func,
+            callback: CallbackFunc,
         },
     }
 

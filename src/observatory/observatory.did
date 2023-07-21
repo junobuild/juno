@@ -67,7 +67,7 @@ type SetCronTab = record {
   updated_at : opt nat64;
   mission_control_id : principal;
 };
-service : {
+service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
   get_cron_tab : () -> (opt CronTab) query;
   list_statuses : (ListStatusesArgs) -> (vec ListStatuses) query;

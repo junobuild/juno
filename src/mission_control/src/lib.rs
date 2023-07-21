@@ -30,10 +30,10 @@ use crate::store::{
 };
 use crate::types::state::{Archive, Satellite, Satellites, StableState, State, Statuses, User};
 use crate::upgrade::types::upgrade::UpgradeStableState;
-use candid::{candid_method, export_service, Principal};
+use candid::Principal;
 use ic_cdk::api::call::arg_data;
 use ic_cdk::{id, storage, trap};
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use satellites::store::{get_satellites, set_satellite_metadata as set_satellite_metadata_store};
 use shared::types::interface::{MissionControlArgs, SetController, StatusesArgs};
@@ -81,13 +81,11 @@ fn post_upgrade() {
 
 /// Satellites
 
-#[candid_method(query)]
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_satellites() -> Satellites {
     get_satellites()
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn create_satellite(name: String) -> Satellite {
     create_satellite_console(&name)
@@ -95,7 +93,6 @@ async fn create_satellite(name: String) -> Satellite {
         .unwrap_or_else(|e| trap(&e))
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_satellite_metadata(satellite_id: SatelliteId, metadata: Metadata) -> Satellite {
     set_satellite_metadata_store(&satellite_id, &metadata).unwrap_or_else(|e| trap(&e))
@@ -105,7 +102,6 @@ fn set_satellite_metadata(satellite_id: SatelliteId, metadata: Metadata) -> Sate
     since = "0.0.3",
     note = "please use `set_satellites_controllers` instead"
 )]
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn add_satellites_controllers(
     satellite_ids: Vec<SatelliteId>,
@@ -122,7 +118,6 @@ async fn add_satellites_controllers(
     since = "0.0.3",
     note = "please use `del_satellites_controllers` instead"
 )]
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn remove_satellites_controllers(
     satellite_ids: Vec<SatelliteId>,
@@ -135,7 +130,6 @@ async fn remove_satellites_controllers(
     }
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_satellites_controllers(
     satellite_ids: Vec<SatelliteId>,
@@ -149,7 +143,6 @@ async fn set_satellites_controllers(
     }
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn del_satellites_controllers(satellite_ids: Vec<SatelliteId>, controllers: Vec<UserId>) {
     for satellite_id in satellite_ids {
@@ -161,7 +154,7 @@ async fn del_satellites_controllers(satellite_ids: Vec<SatelliteId>, controllers
 
 /// Mgmt
 ///
-#[candid_method(update)]
+
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn top_up(canister_id: Principal, amount: Tokens) {
     top_up_canister(&canister_id, &amount)
@@ -169,13 +162,11 @@ async fn top_up(canister_id: Principal, amount: Tokens) {
         .unwrap_or_else(|e| trap(&e));
 }
 
-#[candid_method(query)]
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_user() -> UserId {
     get_user_store()
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_metadata(metadata: Metadata) {
     set_metadata_store(&metadata)
@@ -189,7 +180,6 @@ fn set_metadata(metadata: Metadata) {
     since = "0.0.3",
     note = "please use `set_mission_control_controllers` instead"
 )]
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn add_mission_control_controllers(controllers: Vec<UserId>) {
     let controller: SetController = SetController {
@@ -207,7 +197,6 @@ async fn add_mission_control_controllers(controllers: Vec<UserId>) {
     since = "0.0.3",
     note = "please use `del_mission_control_controllers` instead"
 )]
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn remove_mission_control_controllers(controllers: Vec<ControllerId>) {
     delete_controllers_to_mission_control(&controllers)
@@ -215,7 +204,6 @@ async fn remove_mission_control_controllers(controllers: Vec<ControllerId>) {
         .unwrap_or_else(|e| trap(&e));
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_mission_control_controllers(
     controllers: Vec<ControllerId>,
@@ -226,7 +214,6 @@ async fn set_mission_control_controllers(
         .unwrap_or_else(|e| trap(&e));
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn del_mission_control_controllers(controllers: Vec<ControllerId>) {
     delete_controllers_to_mission_control(&controllers)
@@ -234,7 +221,6 @@ async fn del_mission_control_controllers(controllers: Vec<ControllerId>) {
         .unwrap_or_else(|e| trap(&e));
 }
 
-#[candid_method(query)]
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_mission_control_controllers() -> Controllers {
     get_controllers()
@@ -244,58 +230,26 @@ fn list_mission_control_controllers() -> Controllers {
 /// Mgmt
 ///
 
-#[candid_method(query)]
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
-#[candid_method(update)]
 #[update(guard = "caller_is_user_or_admin_controller_or_juno")]
 async fn status(config: StatusesArgs) -> SegmentsStatuses {
     collect_statuses(&id(), &config).await
 }
 
-#[candid_method(query)]
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_mission_control_statuses() -> Statuses {
     list_mission_control_statuses_store()
 }
 
-#[candid_method(query)]
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
     list_satellite_statuses_store(&satellite_id)
 }
 
-///
-/// Generate did files
-///
+// Generate did files
 
-#[query(name = "__get_candid_interface_tmp_hack")]
-fn export_candid() -> String {
-    export_service!();
-    __export_service()
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn save_candid() {
-        use std::env;
-        use std::fs::write;
-        use std::path::PathBuf;
-
-        let dir = PathBuf::from(env::var("CARGO_MANIFEST_DIR").unwrap());
-        let dir = dir
-            .parent()
-            .unwrap()
-            .parent()
-            .unwrap()
-            .join("src")
-            .join("mission_control");
-        write(dir.join("mission_control.did"), export_candid()).expect("Write failed.");
-    }
-}
+export_candid!();

@@ -21,4 +21,6 @@ type SetPageView = record {
   collected_at : nat64;
 };
 type StableKey = record { key : text; satellite_id : principal };
-service : { set_page_view : (StableKey, SetPageView) -> (PageView) }
+service : () -> {
+    set_page_view : (StableKey, SetPageView) -> (PageView)
+}

@@ -79,6 +79,13 @@ fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> PageView {
     }
 }
 
+#[update]
+fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) {
+    for (key, page_view) in page_views {
+        insert_page_view(key, page_view).unwrap_or_else(|e| trap(&e));
+    }
+}
+
 // Generate did files
 
 export_candid!();

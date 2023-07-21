@@ -1,7 +1,8 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
-	const StableKey = IDL.Record({
+	const AnalyticKey = IDL.Record({
 		key: IDL.Text,
+		session_id: IDL.Text,
 		satellite_id: IDL.Principal
 	});
 	const PageViewDevice = IDL.Record({
@@ -30,7 +31,8 @@ export const idlFactory = ({ IDL }) => {
 		collected_at: IDL.Nat64
 	});
 	return IDL.Service({
-		set_page_view: IDL.Func([StableKey, SetPageView], [PageView], [])
+		set_page_view: IDL.Func([AnalyticKey, SetPageView], [PageView], []),
+		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [], [])
 	});
 };
 // @ts-ignore

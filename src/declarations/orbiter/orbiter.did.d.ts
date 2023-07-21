@@ -1,6 +1,11 @@
 import type { ActorMethod } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
+export interface AnalyticKey {
+	key: string;
+	session_id: string;
+	satellite_id: Principal;
+}
 export interface PageView {
 	title: string;
 	updated_at: bigint;
@@ -26,10 +31,7 @@ export interface SetPageView {
 	user_agent: [] | [string];
 	collected_at: bigint;
 }
-export interface StableKey {
-	key: string;
-	satellite_id: Principal;
-}
 export interface _SERVICE {
-	set_page_view: ActorMethod<[StableKey, SetPageView], PageView>;
+	set_page_view: ActorMethod<[AnalyticKey, SetPageView], PageView>;
+	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], undefined>;
 }

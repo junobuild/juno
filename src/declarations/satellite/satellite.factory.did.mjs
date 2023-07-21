@@ -50,7 +50,7 @@ export const idlFactory = ({ IDL }) => {
 	const StreamingStrategy = IDL.Variant({
 		Callback: IDL.Record({
 			token: StreamingCallbackToken,
-			callback: IDL.Func([], [], [])
+			callback: IDL.Func([], [], ['query'])
 		})
 	});
 	const HttpResponse = IDL.Record({

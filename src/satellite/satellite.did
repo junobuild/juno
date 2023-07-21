@@ -142,7 +142,7 @@ type StreamingCallbackToken = record {
 type StreamingStrategy = variant {
   Callback : record {
     token : StreamingCallbackToken;
-    callback : func () -> ();
+    callback : func () -> () query;
   };
 };
 type UploadChunk = record {
@@ -151,7 +151,7 @@ type UploadChunk = record {
   order_id : opt nat;
 };
 type UploadChunkResult = record { chunk_id : nat };
-service : {
+service : () -> {
   commit_asset_upload : (CommitBatch) -> ();
   del_asset : (text, text) -> ();
   del_assets : (text) -> ();

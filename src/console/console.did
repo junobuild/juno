@@ -30,7 +30,7 @@ type SetControllersArgs = record {
   controllers : vec principal;
 };
 type Tokens = record { e8s : nat64 };
-service : {
+service : () -> {
   add_credits : (AddCreditsArgs) -> ();
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;

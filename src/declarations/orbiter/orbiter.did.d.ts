@@ -6,6 +6,11 @@ export interface AnalyticKey {
 	session_id: string;
 	satellite_id: Principal;
 }
+export interface GetPageViews {
+	to: bigint;
+	from: bigint;
+	satellite_id: Principal;
+}
 export interface PageView {
 	title: string;
 	updated_at: bigint;
@@ -32,6 +37,7 @@ export interface SetPageView {
 	collected_at: bigint;
 }
 export interface _SERVICE {
+	get_page_views: ActorMethod<[GetPageViews], Array<[AnalyticKey, PageView]>>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], PageView>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], undefined>;
 }

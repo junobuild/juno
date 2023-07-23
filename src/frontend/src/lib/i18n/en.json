@@ -95,6 +95,11 @@
 		"short_description": "Easily store and serve user-generated content, such as files, photos, and videos, on Web3.",
 		"assets": "Assets"
 	},
+	"analytics": {
+		"title": "Analytics",
+		"metrics": "Metrics",
+		"loading": "Loading data"
+	},
 	"hosting": {
 		"title": "Hosting",
 		"short_description": "Maintain your brand identity with a custom domain for your decentralized application.",
@@ -164,7 +169,8 @@
 		"collection_added": "Collection {0} cannot be added.",
 		"collection_updated": "Collection {0} cannot be updated.",
 		"collection_deleted": "Collection {0} cannot be deleted.",
-		"rule_invalid": "Rule should exist."
+		"rule_invalid": "Rule should exist.",
+		"analytics_load_error": "Error while loading the analytics data"
 	},
 	"document": {
 		"owner": "Owner",

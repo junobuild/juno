@@ -106,6 +106,12 @@ interface I18nStorage {
 	assets: string;
 }
 
+interface I18nAnalytics {
+	title: string;
+	metrics: string;
+	loading: string;
+}
+
 interface I18nHosting {
 	title: string;
 	short_description: string;
@@ -178,6 +184,7 @@ interface I18nErrors {
 	collection_updated: string;
 	collection_deleted: string;
 	rule_invalid: string;
+	analytics_load_error: string;
 }
 
 interface I18nDocument {
@@ -363,6 +370,7 @@ interface I18n {
 	authentication: I18nAuthentication;
 	datastore: I18nDatastore;
 	storage: I18nStorage;
+	analytics: I18nAnalytics;
 	hosting: I18nHosting;
 	cli: I18nCli;
 	errors: I18nErrors;

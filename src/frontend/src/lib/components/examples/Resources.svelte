@@ -44,7 +44,7 @@
 		<button class="text action select-action"
 			><span>
 				{#if lang === 'zh-cn'}
-					中国大陆
+					简体中文
 				{:else if lang === 'it'}
 					Italiano
 				{:else}

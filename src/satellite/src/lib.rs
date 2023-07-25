@@ -11,6 +11,7 @@ mod storage;
 mod types;
 mod upgrade;
 
+use std::mem;
 use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
 use crate::db::types::interface::{DelDoc, SetDoc};
@@ -116,16 +117,20 @@ fn post_upgrade() {
     });
 
     // TODO: Uncomment after introduction of stable memory
+    // The memory offset is 4 bytes because that's the length we used in pre_upgrade to store the length of the memory data for the upgrade.
+    // https://github.com/dfinity/stable-structures/issues/104
+    // const OFFSET: usize = mem::size_of::<u32>();
+    //
     // let memory: Memory = get_memory_upgrades();
     //
     // // Read the length of the state bytes.
-    // let mut state_len_bytes = [0; 4];
+    // let mut state_len_bytes = [0; OFFSET];
     // memory.read(0, &mut state_len_bytes);
     // let state_len = u32::from_le_bytes(state_len_bytes) as usize;
     //
     // // Read the bytes
     // let mut state_bytes = vec![0; state_len];
-    // memory.read(4, &mut state_bytes);
+    // memory.read(u64::try_from(OFFSET).unwrap(), &mut state_bytes);
     //
     // // Deserialize and set the state.
     // let state = from_reader(&*state_bytes)

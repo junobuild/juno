@@ -14,6 +14,7 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
+use std::mem;
 
 #[init]
 fn init() {
@@ -52,14 +53,18 @@ fn pre_upgrade() {
 fn post_upgrade() {
     let memory: Memory = get_memory_upgrades();
 
+    // The memory offset is 4 bytes because that's the length we used in pre_upgrade to store the length of the memory data for the upgrade.
+    // https://github.com/dfinity/stable-structures/issues/104
+    const OFFSET: usize = mem::size_of::<u32>();
+
     // Read the length of the state bytes.
-    let mut state_len_bytes = [0; 4];
+    let mut state_len_bytes = [0; OFFSET];
     memory.read(0, &mut state_len_bytes);
     let state_len = u32::from_le_bytes(state_len_bytes) as usize;
 
     // Read the bytes
     let mut state_bytes = vec![0; state_len];
-    memory.read(4, &mut state_bytes);
+    memory.read(u64::try_from(OFFSET).unwrap(), &mut state_bytes);
 
     // Deserialize and set the state.
     let state = from_reader(&*state_bytes)

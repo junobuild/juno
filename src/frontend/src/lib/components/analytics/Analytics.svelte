@@ -45,6 +45,18 @@
 		{}
 	);
 
+	let sessionsUniqueViews: Record<string, Set<string>> = {};
+	$: sessionsUniqueViews = data.reduce(
+		(acc, [{ session_id }, { href }]) => ({
+			...acc,
+			[session_id]: (acc[session_id] ?? new Set()).add(href)
+		}),
+		{}
+	);
+
+	let uniquePageViews = 0;
+	$: uniquePageViews = Object.entries(sessionsViews).reduce((acc, value) => acc + value.length, 0);
+
 	let bounceRate = 0;
 	$: bounceRate = Object.entries(sessionsViews).filter(([key, value]) => value === 1).length;
 </script>
@@ -60,6 +72,11 @@
 
 		<Value>
 			<svelte:fragment slot="label">Unique page views</svelte:fragment>
+			<p>{uniquePageViews}</p>
+		</Value>
+
+		<Value>
+			<svelte:fragment slot="label">Total page views</svelte:fragment>
 			<p>{data.length}</p>
 		</Value>
 

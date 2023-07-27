@@ -1,0 +1,71 @@
+<script lang="ts">
+	import { LayerCake, Svg } from 'layercake';
+	import AxisX from '$lib/components/charts/AxisX.svelte';
+	import AxisY from '$lib/components/charts/AxisY.svelte';
+	import Line from '$lib/components/charts/Line.svelte';
+	import Area from '$lib/components/charts/Area.svelte';
+	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
+	import { formatToDay, fromBigIntNanoSeconds } from '$lib/utils/date.utils';
+
+	export let data: [AnalyticKey, PageView][];
+
+	const xKey = 'myX';
+	const yKey = 'myY';
+
+	let totalPageViews: Record<string, number>;
+	$: totalPageViews = data.reduce((acc, [_, { collected_at }]) => {
+		const date = fromBigIntNanoSeconds(collected_at);
+
+		// Start of the day
+		const key = new Date(date.getTime() - (date.getTime() % 86400000)).getTime();
+
+		return {
+			...acc,
+			[key]: (acc[key] ?? 0) + 1
+		};
+	}, {});
+
+	let chartsData: {
+		[xKey]: string;
+		[yKey]: number;
+	}[];
+	$: chartsData = Object.entries(totalPageViews).map(([key, value]) => ({
+		[xKey]: key,
+		[yKey]: value
+	}));
+
+	let ticks: number[];
+	$: ticks = Object.values(chartsData).map(({ [xKey]: a }) => a);
+</script>
+
+<div class="chart-container">
+	<LayerCake
+		padding={{ top: 32, right: 16, bottom: 32, left: 16 }}
+		x={xKey}
+		y={yKey}
+		yNice={4}
+		yDomain={[0, null]}
+		data={chartsData}
+	>
+		<Svg>
+			<AxisX formatTick={(d) => formatToDay(new Date(parseInt(d)))} {ticks} />
+			<AxisY ticks={4} />
+			<Line />
+			<Area />
+		</Svg>
+	</LayerCake>
+</div>
+
+<style>
+	/*
+      The wrapper div needs to have an explicit width and height in CSS.
+      It can also be a flexbox child or CSS grid element.
+      The point being it needs dimensions since the <LayerCake> element will
+      expand to fill it.
+    */
+	.chart-container {
+		width: 75%;
+		height: 250px;
+		margin: 0 auto;
+	}
+</style>

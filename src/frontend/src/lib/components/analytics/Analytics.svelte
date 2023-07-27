@@ -7,6 +7,7 @@
 	import { onMount } from 'svelte';
 	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
 	import Value from '$lib/components/ui/Value.svelte';
+	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
 
 	export let satelliteId: Principal;
 
@@ -90,4 +91,6 @@
 			<p>{bounceRate}</p>
 		</Value>
 	{/if}
+
+	<AnalyticsChart {data} />
 </div>

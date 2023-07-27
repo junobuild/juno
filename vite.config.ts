@@ -1,4 +1,5 @@
 import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfill';
+import dsv from '@rollup/plugin-dsv';
 import inject from '@rollup/plugin-inject';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { readFileSync } from 'fs';
@@ -46,7 +47,7 @@ const readCanisterIds = ({ prefix }: { prefix?: string }): Record<string, string
 };
 
 const config: UserConfig = {
-	plugins: [sveltekit()],
+	plugins: [sveltekit(), dsv()],
 	resolve: {
 		alias: {
 			$declarations: resolve('./src/declarations')

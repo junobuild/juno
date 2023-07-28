@@ -29,10 +29,12 @@
 		[xKey]: string;
 		[yKey]: number;
 	}[];
-	$: chartsData = Object.entries(totalPageViews).map(([key, value]) => ({
-		[xKey]: key,
-		[yKey]: value
-	}));
+	$: chartsData = Object.entries(totalPageViews)
+		.map(([key, value]) => ({
+			[xKey]: key,
+			[yKey]: value
+		}))
+		.sort(({ [xKey]: aKey }, { [xKey]: bKey }) => aKey - bKey);
 
 	let ticks: number[];
 	$: ticks = Object.values(chartsData).map(({ [xKey]: a }) => a);

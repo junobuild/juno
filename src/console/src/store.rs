@@ -401,6 +401,54 @@ fn load_mission_control_release_impl(blob: &[u8], version: &str, state: &mut Sta
     };
 }
 
+/// Orbiter
+
+pub fn reset_orbiter_release() {
+    STATE.with(|state| reset_orbiter_release_impl(&mut state.borrow_mut().stable))
+}
+
+fn reset_orbiter_release_impl(state: &mut StableState) {
+    state.releases.orbiter = Wasm {
+        wasm: Vec::new(),
+        version: None,
+    };
+}
+
+
+pub fn get_orbiter_release_version() -> Option<String> {
+    STATE.with(|state| {
+        state
+            .borrow()
+            .stable
+            .releases
+            .orbiter
+            .version
+            .clone()
+    })
+}
+
+pub fn load_orbiter_release(blob: &[u8], version: &str) {
+    STATE.with(|state| {
+        load_orbiter_release_impl(blob, version, &mut state.borrow_mut().stable)
+    })
+}
+
+fn load_orbiter_release_impl(blob: &[u8], version: &str, state: &mut StableState) {
+    let wasm = state
+        .releases
+        .orbiter
+        .wasm
+        .iter()
+        .copied()
+        .chain(blob.iter().copied())
+        .collect();
+
+    state.releases.orbiter = Wasm {
+        wasm,
+        version: Some(version.to_owned()),
+    };
+}
+
 /// Invitation codes
 
 pub fn add_invitation_code(code: &InvitationCode) {
@@ -519,6 +567,15 @@ pub fn update_mission_controls_rate_config(config: &RateConfig) {
         update_rate_config(
             config,
             &mut state.borrow_mut().stable.rates.mission_controls,
+        )
+    })
+}
+
+pub fn update_orbiters_rate_config(config: &RateConfig) {
+    STATE.with(|state| {
+        update_rate_config(
+            config,
+            &mut state.borrow_mut().stable.rates.orbiters,
         )
     })
 }

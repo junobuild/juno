@@ -17,9 +17,10 @@ type MissionControl = record {
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type ReleasesVersion = record {
   satellite : opt text;
+  orbiter : opt text;
   mission_control : opt text;
 };
-type Segment = variant { MissionControl; Satellite };
+type Segment = variant { Orbiter; MissionControl; Satellite };
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;

@@ -33,9 +33,10 @@ export interface RateConfig {
 }
 export interface ReleasesVersion {
 	satellite: [] | [string];
+	orbiter: [] | [string];
 	mission_control: [] | [string];
 }
-export type Segment = { MissionControl: null } | { Satellite: null };
+export type Segment = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;

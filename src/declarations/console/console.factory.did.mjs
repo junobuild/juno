@@ -15,6 +15,7 @@ export const idlFactory = ({ IDL }) => {
 	const Tokens = IDL.Record({ e8s: IDL.Nat64 });
 	const ReleasesVersion = IDL.Record({
 		satellite: IDL.Opt(IDL.Text),
+		orbiter: IDL.Opt(IDL.Text),
 		mission_control: IDL.Opt(IDL.Text)
 	});
 	const MissionControl = IDL.Record({
@@ -25,6 +26,7 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64
 	});
 	const Segment = IDL.Variant({
+		Orbiter: IDL.Null,
 		MissionControl: IDL.Null,
 		Satellite: IDL.Null
 	});

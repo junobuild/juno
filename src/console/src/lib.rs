@@ -1,18 +1,17 @@
 mod constants;
 mod controllers;
+mod factory;
 mod guards;
 mod impls;
-mod mission_control;
-mod satellite;
 mod store;
 mod types;
 mod upgrade;
 mod wasm;
 
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
+use crate::factory::mission_control::init_user_mission_control;
+use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
-use crate::mission_control::init_user_mission_control;
-use crate::satellite::create_satellite as create_satellite_console;
 use crate::store::{
     add_credits as add_credits_store, add_invitation_code as add_invitation_code_store,
     delete_controllers, get_credits as get_credits_store, get_existing_mission_control,

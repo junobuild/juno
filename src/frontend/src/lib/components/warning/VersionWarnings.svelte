@@ -8,6 +8,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { compare } from 'semver';
+	import { emit } from '$lib/utils/events.utils';
 
 	const load = async () =>
 		await loadVersion({
@@ -41,30 +42,48 @@
 	let ctrlReady = false;
 	$: ctrlReady = nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease);
 
-	let satWarning = false;
-	$: satWarning =
-		nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0;
+	let satWarning = true;
+	// $: satWarning =
+	// 		nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0;
 
 	let ctrlWarning = false;
 	$: ctrlWarning =
 		nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
 
 	const helpLink = 'https://juno.build/docs/miscellaneous/cli#upgrade';
+
+	const upgradeSatellite = () =>
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'upgrade_satellite',
+				detail: {
+					satellite: $satelliteStore!
+				}
+			}
+		});
+
+	const upgradeMissionControl = () =>
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'upgrade_mission_control'
+			}
+		});
 </script>
 
 {#if ctrlReady && ctrlWarning}
 	<p>
 		<IconNewReleases />
-		{$i18n.admin.mission_control_new_version}
-		<span class="help"><ExternalLink href={helpLink}>[Help]</ExternalLink></span>
+		{@html $i18n.admin.mission_control_new_version}
 	</p>
 {/if}
 
 {#if satReady && satWarning}
 	<p>
 		<IconNewReleases />
-		{$i18n.admin.satellite_new_version}
-		<span class="help"><ExternalLink href={helpLink}>[Help]</ExternalLink></span>
+		{@html $i18n.admin.satellite_new_version}
+		<button class="primary" on:click={upgradeSatellite}>Upgrade</button>
 	</p>
 {/if}
 

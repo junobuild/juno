@@ -6,6 +6,8 @@
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
+	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
+	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 
@@ -32,4 +34,12 @@
 
 {#if modal?.type === 'create_controller' && nonNullish(modal.detail)}
 	<ControllerCreateModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'upgrade_satellite' && nonNullish(modal.detail)}
+	<SatelliteUpgradeModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'upgrade_mission_control' && nonNullish(modal.detail)}
+	<MissionControlUpgradeModal on:junoClose={close} />
 {/if}

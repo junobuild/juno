@@ -414,23 +414,12 @@ fn reset_orbiter_release_impl(state: &mut StableState) {
     };
 }
 
-
 pub fn get_orbiter_release_version() -> Option<String> {
-    STATE.with(|state| {
-        state
-            .borrow()
-            .stable
-            .releases
-            .orbiter
-            .version
-            .clone()
-    })
+    STATE.with(|state| state.borrow().stable.releases.orbiter.version.clone())
 }
 
 pub fn load_orbiter_release(blob: &[u8], version: &str) {
-    STATE.with(|state| {
-        load_orbiter_release_impl(blob, version, &mut state.borrow_mut().stable)
-    })
+    STATE.with(|state| load_orbiter_release_impl(blob, version, &mut state.borrow_mut().stable))
 }
 
 fn load_orbiter_release_impl(blob: &[u8], version: &str, state: &mut StableState) {
@@ -572,12 +561,7 @@ pub fn update_mission_controls_rate_config(config: &RateConfig) {
 }
 
 pub fn update_orbiters_rate_config(config: &RateConfig) {
-    STATE.with(|state| {
-        update_rate_config(
-            config,
-            &mut state.borrow_mut().stable.rates.orbiters,
-        )
-    })
+    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().stable.rates.orbiters))
 }
 
 fn update_rate_config(config: &RateConfig, rate: &mut Rate) {

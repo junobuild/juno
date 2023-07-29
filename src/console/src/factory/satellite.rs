@@ -17,6 +17,7 @@ use shared::ledger::{
 };
 use shared::types::interface::CreateSatelliteArgs;
 use shared::types::state::{MissionControlId, UserId};
+use std::future::Future;
 
 pub async fn create_satellite(
     console: Principal,
@@ -33,7 +34,13 @@ pub async fn create_satellite(
                 // Guard too many requests
                 increment_satellites_rate()?;
 
-                return create_satellite_with_credits(&console, &mission_control_id, &user).await;
+                return create_satellite_with_credits(
+                    create_satellite_wasm,
+                    &console,
+                    &mission_control_id,
+                    &user,
+                )
+                .await;
             }
 
             create_satellite_with_payment(
@@ -47,13 +54,18 @@ pub async fn create_satellite(
     }
 }
 
-async fn create_satellite_with_credits(
+async fn create_satellite_with_credits<F, Fut>(
+    create: F,
     console: &Principal,
     mission_control_id: &MissionControlId,
     user: &UserId,
-) -> Result<Principal, String> {
+) -> Result<Principal, String>
+where
+    F: FnOnce(&Principal, &MissionControlId, &UserId) -> Fut,
+    Fut: Future<Output = Result<Principal, String>>,
+{
     // Create the satellite
-    let create_canister_result = create_satellite_wasm(console, mission_control_id, user).await;
+    let create_canister_result = create(console, mission_control_id, user).await;
 
     match create_canister_result {
         Err(_) => Err("Satellite creation with credits failed.".to_string()),

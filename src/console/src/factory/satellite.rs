@@ -44,6 +44,7 @@ pub async fn create_satellite(
             }
 
             create_satellite_with_payment(
+                create_satellite_wasm,
                 console,
                 caller,
                 mission_control_id,
@@ -81,12 +82,17 @@ where
     }
 }
 
-async fn create_satellite_with_payment(
+async fn create_satellite_with_payment<F, Fut>(
+    create: F,
     console: Principal,
     caller: Principal,
     mission_control_id: MissionControlId,
     CreateSatelliteArgs { user, block_index }: CreateSatelliteArgs,
-) -> Result<Principal, String> {
+) -> Result<Principal, String>
+where
+    F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
+    Fut: Future<Output = Result<Principal, String>>,
+{
     let mission_control_account_identifier = principal_to_account_identifier(&caller, &SUB_ACCOUNT);
     let console_account_identifier = principal_to_account_identifier(&console, &SUB_ACCOUNT);
 
@@ -122,8 +128,7 @@ async fn create_satellite_with_payment(
             insert_new_payment(&user, &mission_control_payment_block_index)?;
 
             // Create the satellite
-            let create_canister_result =
-                create_satellite_wasm(console, mission_control_id, user).await;
+            let create_canister_result = create(console, mission_control_id, user).await;
 
             match create_canister_result {
                 Err(error) => {

@@ -36,17 +36,17 @@ pub async fn create_satellite(
 
                 return create_satellite_with_credits(
                     create_satellite_wasm,
-                    &console,
-                    &mission_control_id,
-                    &user,
+                    console,
+                    mission_control_id,
+                    user,
                 )
                 .await;
             }
 
             create_satellite_with_payment(
-                &console,
-                &caller,
-                &mission_control_id,
+                console,
+                caller,
+                mission_control_id,
                 CreateSatelliteArgs { user, block_index },
             )
             .await
@@ -56,12 +56,12 @@ pub async fn create_satellite(
 
 async fn create_satellite_with_credits<F, Fut>(
     create: F,
-    console: &Principal,
-    mission_control_id: &MissionControlId,
-    user: &UserId,
+    console: Principal,
+    mission_control_id: MissionControlId,
+    user: UserId,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(&Principal, &MissionControlId, &UserId) -> Fut,
+    F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     // Create the satellite
@@ -71,7 +71,7 @@ where
         Err(_) => Err("Satellite creation with credits failed.".to_string()),
         Ok(satellite_id) => {
             // Satellite is created we can use the credits
-            let credits = use_credits(user);
+            let credits = use_credits(&user);
 
             match credits {
                 Err(e) => Err(e.to_string()),
@@ -82,13 +82,13 @@ where
 }
 
 async fn create_satellite_with_payment(
-    console: &Principal,
-    caller: &Principal,
-    mission_control_id: &MissionControlId,
+    console: Principal,
+    caller: Principal,
+    mission_control_id: MissionControlId,
     CreateSatelliteArgs { user, block_index }: CreateSatelliteArgs,
 ) -> Result<Principal, String> {
-    let mission_control_account_identifier = principal_to_account_identifier(caller, &SUB_ACCOUNT);
-    let console_account_identifier = principal_to_account_identifier(console, &SUB_ACCOUNT);
+    let mission_control_account_identifier = principal_to_account_identifier(&caller, &SUB_ACCOUNT);
+    let console_account_identifier = principal_to_account_identifier(&console, &SUB_ACCOUNT);
 
     if block_index.is_none() {
         return Err("No block index provided to verify payment.".to_string());
@@ -123,12 +123,12 @@ async fn create_satellite_with_payment(
 
             // Create the satellite
             let create_canister_result =
-                create_satellite_wasm(console, mission_control_id, &user).await;
+                create_satellite_wasm(console, mission_control_id, user).await;
 
             match create_canister_result {
                 Err(error) => {
                     refund_satellite_creation(
-                        mission_control_id,
+                        &mission_control_id,
                         &mission_control_payment_block_index,
                     )
                     .await?;
@@ -151,13 +151,13 @@ async fn create_satellite_with_payment(
 }
 
 async fn create_satellite_wasm(
-    console: &Principal,
-    mission_control_id: &MissionControlId,
-    user: &UserId,
+    console: Principal,
+    mission_control_id: MissionControlId,
+    user: UserId,
 ) -> Result<Principal, String> {
-    let wasm_arg = satellite_wasm_arg(user, mission_control_id);
+    let wasm_arg = satellite_wasm_arg(&user, &mission_control_id);
     let result = create_canister_install_code(
-        Vec::from([*console, *mission_control_id, *user]),
+        Vec::from([console, mission_control_id, user]),
         &wasm_arg,
         CREATE_SATELLITE_CYCLES,
     )
@@ -166,7 +166,7 @@ async fn create_satellite_wasm(
     match result {
         Err(error) => Err(error),
         Ok(satellite_id) => {
-            remove_console_controller_from_satellite(&satellite_id, user, mission_control_id)
+            remove_console_controller_from_satellite(&satellite_id, &user, &mission_control_id)
                 .await?;
             Ok(satellite_id)
         }

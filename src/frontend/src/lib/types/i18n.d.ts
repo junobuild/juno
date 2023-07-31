@@ -180,6 +180,7 @@ interface I18nErrors {
 	collection_updated: string;
 	collection_deleted: string;
 	rule_invalid: string;
+	upgrade_load_versions: string;
 }
 
 interface I18nDocument {

@@ -166,7 +166,8 @@
 		"collection_added": "Collection {0} cannot be added.",
 		"collection_updated": "Collection {0} cannot be updated.",
 		"collection_deleted": "Collection {0} cannot be deleted.",
-		"rule_invalid": "Rule should exist."
+		"rule_invalid": "Rule should exist.",
+		"upgrade_load_versions": "Error while fetching the available versions"
 	},
 	"document": {
 		"owner": "Owner",

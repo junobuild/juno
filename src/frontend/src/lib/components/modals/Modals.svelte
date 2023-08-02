@@ -41,5 +41,5 @@
 {/if}
 
 {#if modal?.type === 'upgrade_mission_control' && nonNullish(modal.detail)}
-	<MissionControlUpgradeModal on:junoClose={close} />
+	<MissionControlUpgradeModal on:junoClose={close} detail={modal.detail} />
 {/if}

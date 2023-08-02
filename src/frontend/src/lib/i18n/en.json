@@ -38,6 +38,8 @@
 		"amount": "Amount in ICP",
 		"top_up_title": "Top-up {0}",
 		"upgrade_title": "Upgrade {0}",
+		"upgrade_description": "To which version should your {0} be upgraded?",
+		"upgrade_note": "Upgrades should be executed one after the other, starting with the lower version number and moving upward.",
 		"additional_cycles": "Additional Cycles",
 		"top_up_info": "Your current mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
 		"top_up_mission_control_done": "Your mission control center has been topped-up.",

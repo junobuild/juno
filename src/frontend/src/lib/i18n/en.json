@@ -35,6 +35,7 @@
 		"cycles": "are the unit of payment for operating your smart contracts.",
 		"top_up_in_progress": "Top-up in progress...",
 		"upgrade_in_progress": "Upgrade in progress...",
+		"download_in_progress": "Download in progress...",
 		"amount": "Amount in ICP",
 		"top_up_title": "Top-up {0}",
 		"upgrade_title": "Upgrade {0}",
@@ -169,7 +170,13 @@
 		"collection_updated": "Collection {0} cannot be updated.",
 		"collection_deleted": "Collection {0} cannot be deleted.",
 		"rule_invalid": "Rule should exist.",
-		"upgrade_load_versions": "Error while fetching the available versions"
+		"upgrade_load_versions": "Error while fetching the available versions.",
+		"upgrade_download_error": "Error while downloading the asset.",
+		"upgrade_no_version": "Please select a version for the upgrade.",
+		"upgrade_no_asset_for_version": "No asset has been released for the selected version. Reach out Juno❗",
+		"upgrade_no_asset_for_version_extract": "No version can be extracted from the asset. Reach out Juno❗",
+		"upgrade_requires_iterative_version": "There may have been breaking changes between your {0} v{1} and selected version {2}. Please upgrade iteratively.",
+		"top_up_error": "Error while topping up the segment."
 	},
 	"document": {
 		"owner": "Owner",

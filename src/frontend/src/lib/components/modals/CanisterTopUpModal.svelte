@@ -78,7 +78,7 @@
 			steps = 'ready';
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Error while topping up the satellite.`,
+				text: $i18n.errors.top_up_error,
 				detail: err
 			});
 

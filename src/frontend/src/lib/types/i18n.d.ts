@@ -39,6 +39,7 @@ interface I18nCanisters {
 	cycles: string;
 	top_up_in_progress: string;
 	upgrade_in_progress: string;
+	download_in_progress: string;
 	amount: string;
 	top_up_title: string;
 	upgrade_title: string;
@@ -183,6 +184,12 @@ interface I18nErrors {
 	collection_deleted: string;
 	rule_invalid: string;
 	upgrade_load_versions: string;
+	upgrade_download_error: string;
+	upgrade_no_version: string;
+	upgrade_no_asset_for_version: string;
+	upgrade_no_asset_for_version_extract: string;
+	upgrade_requires_iterative_version: string;
+	top_up_error: string;
 }
 
 interface I18nDocument {

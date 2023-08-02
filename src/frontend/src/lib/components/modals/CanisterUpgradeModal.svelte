@@ -1,27 +1,21 @@
 <script lang="ts">
-	import {createEventDispatcher, onMount} from 'svelte';
+	import { createEventDispatcher } from 'svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import type { GitHubRelease, NewerReleasesAssetKey, PromptReleases } from '@junobuild/admin';
-	import { mapPromptReleases } from '@junobuild/admin';
-	import {last} from "$lib/utils/utils";
+	import type { GitHubRelease, NewerReleasesAssetKey } from '@junobuild/admin';
+	import SelectUpgradeVersion from "$lib/components/upgrade/SelectUpgradeVersion.svelte";
 
+	export let currentVersion: string;
 	export let newerReleases: GitHubRelease[];
 	export let assetKey: NewerReleasesAssetKey;
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let steps: 'init' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' = 'init';
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	let promptReleases: PromptReleases[] = [];
-	let selectedVersion: string | undefined = undefined;
 
-	onMount(() => {
-		promptReleases = mapPromptReleases({ githubReleases: newerReleases, assetKey });
-		selectedVersion = last(promptReleases)?.title;
-	});
 </script>
 
 <Modal on:junoClose>
@@ -30,27 +24,17 @@
 			<slot name="outro" />
 			<button on:click={close}>{$i18n.core.close}</button>
 		</div>
+	{:else if steps === 'download'}
+		<SpinnerModal>
+			<p>{$i18n.canisters.download_in_progress}</p>
+		</SpinnerModal>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.canisters.upgrade_in_progress}</p>
 		</SpinnerModal>
 	{:else}
-		<slot name="intro" />
-
-		<div class="container">
-			{#each promptReleases as prompt, i}
-				<label>
-					<input type="radio" bind:group={selectedVersion} name="selectedVersion" value={prompt.title} />
-					<span>{prompt.title}</span>
-				</label>
-			{/each}
-		</div>
+		<SelectUpgradeVersion {newerReleases} {assetKey} {currentVersion} on:junoNext={({ detail }) => (steps = detail)}>
+			<slot name="intro" slot="intro" />
+		</SelectUpgradeVersion>
 	{/if}
 </Modal>
-
-<style lang="scss">
-	.container {
-		display: flex;
-		flex-direction: column;
-	}
-</style>

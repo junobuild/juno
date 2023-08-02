@@ -16,7 +16,7 @@
 	$: ({ satellite, currentVersion, newerReleases } = detail as JunoModalUpgradeSatelliteDetail);
 </script>
 
-<CanisterUpgradeModal on:junoClose {newerReleases} assetKey="satellite">
+<CanisterUpgradeModal on:junoClose {newerReleases} {currentVersion} assetKey="satellite">
 	<svelte:fragment slot="intro">
 		<h2>
 			{@html i18nFormat($i18n.canisters.upgrade_title, [

@@ -1,4 +1,4 @@
-import {downloadRelease, getReleasesMetadata} from '$lib/rest/upgrade.rest';
+import {downloadRelease, getReleasesMetadata} from '$lib/rest/cdn.rest';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { digestMessage, sha256ToBase64String } from '$lib/utils/crypto.utils';

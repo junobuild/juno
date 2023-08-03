@@ -21,7 +21,7 @@
 			missionControl: {
 				missionControlId: $missionControlStore!.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
-				...(import.meta.env.DEV && {env: "dev"})
+				...(import.meta.env.DEV && { env: 'dev' })
 			},
 			wasm_module
 		});

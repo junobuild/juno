@@ -6,7 +6,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
-	import {emit} from "$lib/utils/events.utils";
+	import { emit } from '$lib/utils/events.utils';
 
 	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
 	export let segment: 'satellite' | 'mission_control';

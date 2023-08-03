@@ -111,24 +111,33 @@
 {/if}
 
 {#if satReady && satWarning}
-	<p>
-		<IconNewReleases />
-		{@html $i18n.admin.satellite_new_version}
+	<div>
+		<p>
+			<IconNewReleases />
+			{@html $i18n.admin.satellite_new_version}
+		</p>
 		<button class="primary" on:click={upgradeSatellite}>Upgrade</button>
-	</p>
+	</div>
 {/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/info';
 	@use '../../styles/mixins/fonts';
 
-	p {
+	div {
 		@include info.warning;
-		margin: var(--padding-2x) 0 var(--padding-4x);
+	}
+
+	p {
+		margin: 0 0 var(--padding);
 	}
 
 	.help {
 		@include fonts.small;
 		vertical-align: text-bottom;
+	}
+
+	button {
+		margin: var(--padding-1_5x) 0 var(--padding-0_5x);
 	}
 </style>

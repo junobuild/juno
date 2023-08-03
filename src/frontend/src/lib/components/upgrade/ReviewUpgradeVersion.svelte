@@ -4,9 +4,10 @@
 	import { isNullish } from '$lib/utils/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import {toasts} from "$lib/stores/toasts.store";
-	import {wizardBusy} from "$lib/stores/busy.store";
+	import { toasts } from '$lib/stores/toasts.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
 
+	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
 	export let segment: 'satellite' | 'mission_control';
 	export let wasm: Wasm | undefined;
 
@@ -28,7 +29,9 @@
 		dispatch('junoNext', 'in_progress');
 
 		try {
-			// TODO:
+			const wasm_module = new Uint8Array(await wasm.wasm.arrayBuffer());
+
+			await upgrade({ wasm_module });
 
 			dispatch('junoNext', 'ready');
 		} catch (err: unknown) {
@@ -41,7 +44,7 @@
 		}
 
 		wizardBusy.stop();
-	}
+	};
 </script>
 
 <h2>{$i18n.canisters.review_upgrade}</h2>
@@ -68,7 +71,7 @@
 		</p>
 
 		<div class="toolbar">
-			<button type="button" on:click={() => dispatch("junoClose")}>{$i18n.core.cancel}</button>
+			<button type="button" on:click={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
 			<button type="submit">{$i18n.core.submit}</button>
 		</div>
 	</form>

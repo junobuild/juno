@@ -5,6 +5,10 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { upgradeSatellite } from '@junobuild/admin';
+	import { compare } from 'semver';
+	import { authStore } from '$lib/stores/auth.store';
+	import { AnonymousIdentity } from '@dfinity/agent';
 
 	export let detail: JunoModalDetail;
 
@@ -13,9 +17,28 @@
 	let newerReleases: string[];
 
 	$: ({ satellite, currentVersion, newerReleases } = detail as JunoModalUpgradeSatelliteDetail);
+
+	const upgradeSatelliteWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
+		upgradeSatellite({
+			satellite: {
+				satelliteId: satellite.satellite_id.toText(),
+				identity: $authStore.identity ?? new AnonymousIdentity(),
+				...(import.meta.env.DEV && { env: 'dev' })
+			},
+			wasm_module,
+			// TODO: option to be removed
+			deprecated: compare(currentVersion, '0.0.7') < 0,
+			deprecatedNoScope: compare(currentVersion, '0.0.9') < 0
+		});
 </script>
 
-<CanisterUpgradeModal on:junoClose {newerReleases} {currentVersion} segment="satellite">
+<CanisterUpgradeModal
+	on:junoClose
+	{newerReleases}
+	{currentVersion}
+	upgrade={upgradeSatelliteWasm}
+	segment="satellite"
+>
 	<svelte:fragment slot="intro">
 		<h2>
 			{@html i18nFormat($i18n.canisters.upgrade_title, [

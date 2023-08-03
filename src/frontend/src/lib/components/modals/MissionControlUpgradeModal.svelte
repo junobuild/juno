@@ -5,6 +5,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import type { JunoModalDetail, JunoModalUpgradeMissionControlDetail } from '$lib/types/modal';
+	import { upgradeMissionControl } from '@junobuild/admin';
+	import { authStore } from '$lib/stores/auth.store';
+	import { AnonymousIdentity } from '@dfinity/agent';
 
 	export let detail: JunoModalDetail;
 
@@ -12,10 +15,26 @@
 	let currentVersion: string;
 
 	$: ({ newerReleases, currentVersion } = detail as JunoModalUpgradeMissionControlDetail);
+
+	const upgradeMissionControlWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
+		upgradeMissionControl({
+			missionControl: {
+				missionControlId: $missionControlStore!.toText(),
+				identity: $authStore.identity ?? new AnonymousIdentity(),
+				...(import.meta.env.DEV && {env: "dev"})
+			},
+			wasm_module
+		});
 </script>
 
 {#if nonNullish($missionControlStore)}
-	<CanisterUpgradeModal on:junoClose {newerReleases} {currentVersion} segment="mission_control">
+	<CanisterUpgradeModal
+		on:junoClose
+		{newerReleases}
+		{currentVersion}
+		upgrade={upgradeMissionControlWasm}
+		segment="mission_control"
+	>
 		<svelte:fragment slot="intro">
 			<h2>
 				{@html i18nFormat($i18n.canisters.upgrade_title, [

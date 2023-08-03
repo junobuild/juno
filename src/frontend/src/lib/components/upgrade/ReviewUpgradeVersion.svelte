@@ -4,7 +4,8 @@
 	import { isNullish } from '$lib/utils/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import {toasts} from "$lib/stores/toasts.store";
+	import {wizardBusy} from "$lib/stores/busy.store";
 
 	export let segment: 'satellite' | 'mission_control';
 	export let wasm: Wasm | undefined;
@@ -12,7 +13,34 @@
 	const dispatch = createEventDispatcher();
 
 	const onSubmit = async () => {
+		if (isNullish(wasm)) {
+			toasts.error({
+				text: $i18n.errors.upgrade_no_wasm
+			});
 
+			dispatch('junoNext', 'error');
+
+			return;
+		}
+
+		wizardBusy.start();
+
+		dispatch('junoNext', 'in_progress');
+
+		try {
+			// TODO:
+
+			dispatch('junoNext', 'ready');
+		} catch (err: unknown) {
+			toasts.error({
+				text: $i18n.errors.upgrade_error,
+				detail: err
+			});
+
+			dispatch('junoNext', 'error');
+		}
+
+		wizardBusy.stop();
 	}
 </script>
 

@@ -23,6 +23,9 @@
 			toasts.error({
 				text: $i18n.errors.upgrade_download_error
 			});
+
+			dispatch('junoNext', { steps: 'error' });
+
 			return;
 		}
 
@@ -45,10 +48,14 @@
 					}
 				])
 			});
+
+			dispatch('junoNext', { steps: 'error' });
+
 			return;
 		}
 
 		wizardBusy.start();
+
 		dispatch('junoNext', { steps: 'download' });
 
 		try {

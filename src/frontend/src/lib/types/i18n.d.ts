@@ -187,6 +187,7 @@ interface I18nErrors {
 	rule_invalid: string;
 	upgrade_load_versions: string;
 	upgrade_download_error: string;
+	upgrade_error: string;
 	upgrade_no_version: string;
 	upgrade_no_wasm: string;
 	upgrade_requires_iterative_version: string;

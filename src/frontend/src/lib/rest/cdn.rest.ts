@@ -25,11 +25,10 @@ export const downloadRelease = async ({
 }: {
 	segment: 'satellite' | 'mission_control';
 	version: string;
-}): Promise<string> => {
+}): Promise<Blob> => {
 	const JUNO_CDN_URL = import.meta.env.VITE_JUNO_CDN_URL;
 
-	const htmlTemplate: Response = await fetch(
-		`${JUNO_CDN_URL}/releases/${segment}-v${version}.wasm.gz`
-	);
-	return htmlTemplate.text();
+	const response: Response = await fetch(`${JUNO_CDN_URL}/releases/${segment}-v${version}.wasm.gz`);
+
+	return await response.blob();
 };

@@ -10,10 +10,12 @@ import { get } from 'svelte/store';
 
 export const loadVersion = async ({
 	satelliteId,
-	missionControlId
+	missionControlId,
+	skipReload
 }: {
 	satelliteId: Principal | undefined;
 	missionControlId: Principal | undefined | null;
+	skipReload: boolean;
 }) => {
 	if (isNullish(missionControlId)) {
 		return;
@@ -22,7 +24,7 @@ export const loadVersion = async ({
 	// We load the satellite version once per session
 	// We might load the mission control version twice per session if user go to that view first and then to overview
 	const store = get(versionStore);
-	if (nonNullish(satelliteId) && nonNullish(store.satellites[satelliteId.toText()])) {
+	if (nonNullish(satelliteId) && nonNullish(store.satellites[satelliteId.toText()]) && skipReload) {
 		return;
 	}
 

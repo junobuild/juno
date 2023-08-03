@@ -6,6 +6,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
+	import {emit} from "$lib/utils/events.utils";
 
 	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
 	export let segment: 'satellite' | 'mission_control';
@@ -32,6 +33,8 @@
 			const wasm_module = new Uint8Array(await wasm.wasm.arrayBuffer());
 
 			await upgrade({ wasm_module });
+
+			emit({ message: 'junoReloadVersions' });
 
 			dispatch('junoNext', 'ready');
 		} catch (err: unknown) {

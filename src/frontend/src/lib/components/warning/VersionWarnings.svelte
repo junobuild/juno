@@ -12,13 +12,14 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { newerReleases } from '$lib/services/upgrade.services';
 
-	const load = async () =>
-			await loadVersion({
-				satelliteId: $satelliteStore?.satellite_id,
-				missionControlId: $missionControlStore
-			});
+	const load = async (skipReload: boolean) =>
+		await loadVersion({
+			satelliteId: $satelliteStore?.satellite_id,
+			missionControlId: $missionControlStore,
+			skipReload
+		});
 
-	$: $missionControlStore, $satelliteStore, (async () => await load())();
+	$: $missionControlStore, $satelliteStore, (async () => await load(true))();
 
 	let satVersion: string | undefined;
 	let satRelease: string | undefined;
@@ -27,13 +28,13 @@
 	let ctrlRelease: string | undefined;
 
 	$: satVersion =
-			nonNullish($satelliteStore) && nonNullish($satelliteStore?.satellite_id)
-					? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.current
-					: undefined;
+		nonNullish($satelliteStore) && nonNullish($satelliteStore?.satellite_id)
+			? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.current
+			: undefined;
 	$: satRelease =
-			nonNullish($satelliteStore) && nonNullish($satelliteStore?.satellite_id)
-					? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.release
-					: undefined;
+		nonNullish($satelliteStore) && nonNullish($satelliteStore?.satellite_id)
+			? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.release
+			: undefined;
 
 	$: ctrlVersion = $versionStore?.missionControl?.current;
 	$: ctrlRelease = $versionStore?.missionControl?.release;
@@ -46,19 +47,19 @@
 
 	let satWarning = false;
 	$: satWarning =
-			nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0;
+		nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0;
 
 	let ctrlWarning = false;
 	$: ctrlWarning =
-			nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
+		nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
 
 	const helpLink = 'https://juno.build/docs/miscellaneous/cli#upgrade';
 
 	const openModal = async ({
-								 currentVersion,
-								 type,
-								 satellite
-							 }: {
+		currentVersion,
+		type,
+		satellite
+	}: {
 		currentVersion: string;
 		type: 'upgrade_satellite' | 'upgrade_mission_control';
 		satellite?: Satellite;
@@ -90,18 +91,20 @@
 	};
 
 	const upgradeSatellite = async () =>
-			await openModal({
-				type: 'upgrade_satellite',
-				satellite: $satelliteStore!,
-				currentVersion: satVersion!
-			});
+		await openModal({
+			type: 'upgrade_satellite',
+			satellite: $satelliteStore!,
+			currentVersion: satVersion!
+		});
 
 	const upgradeMissionControl = async () =>
-			await openModal({
-				type: 'upgrade_mission_control',
-				currentVersion: ctrlVersion!
-			});
+		await openModal({
+			type: 'upgrade_mission_control',
+			currentVersion: ctrlVersion!
+		});
 </script>
+
+<svelte:window on:junoReloadVersions={async () => await load(false)} />
 
 {#if ctrlReady && ctrlWarning}
 	<p>

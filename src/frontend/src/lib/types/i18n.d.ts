@@ -53,6 +53,7 @@ interface I18nCanisters {
 	review_upgrade: string;
 	confirm_upgrade: string;
 	upgrade_done: string;
+	upgrade: string;
 }
 
 interface I18nSign_in {

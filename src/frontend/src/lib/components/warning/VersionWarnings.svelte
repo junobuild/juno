@@ -107,10 +107,14 @@
 <svelte:window on:junoReloadVersions={async () => await load(false)} />
 
 {#if ctrlReady && ctrlWarning}
-	<p>
-		<IconNewReleases />
-		{@html $i18n.admin.mission_control_new_version}
-	</p>
+	<div>
+		<p>
+			<IconNewReleases />
+			{@html $i18n.admin.mission_control_new_version}
+		</p>
+
+		<button class="primary" on:click={upgradeMissionControl}>{$i18n.canisters.upgrade}</button>
+	</div>
 {/if}
 
 {#if satReady && satWarning}
@@ -119,7 +123,7 @@
 			<IconNewReleases />
 			{@html $i18n.admin.satellite_new_version}
 		</p>
-		<button class="primary" on:click={upgradeSatellite}>Upgrade</button>
+		<button class="primary" on:click={upgradeSatellite}>{$i18n.canisters.upgrade}</button>
 	</div>
 {/if}
 

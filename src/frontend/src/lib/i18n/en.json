@@ -48,7 +48,8 @@
 		"daily_consumption": "Daily idle consumption",
 		"review_upgrade": "Review upgrade",
 		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
-		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>."
+		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
+		"upgrade": "Upgrade"
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",

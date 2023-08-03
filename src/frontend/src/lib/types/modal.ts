@@ -1,7 +1,6 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Principal } from '@dfinity/principal';
-import type { GitHubRelease } from '@junobuild/admin';
 
 export interface JunoModalBalance {
 	missionControlBalance?: {
@@ -20,7 +19,7 @@ export interface JunoModalTopUpMissionControlDetail extends JunoModalBalance {}
 
 export interface JunoModalUpgradeDetail {
 	currentVersion: string;
-	newerReleases: GitHubRelease[];
+	newerReleases: string[];
 }
 
 export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail & JunoModalSatelliteDetail;

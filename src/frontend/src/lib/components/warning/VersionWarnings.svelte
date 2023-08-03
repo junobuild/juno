@@ -9,10 +9,8 @@
 	import { compare } from 'semver';
 	import { emit } from '$lib/utils/events.utils';
 	import { busy } from '$lib/stores/busy.store';
-	import { newerReleases } from '@junobuild/admin';
-	import { toasts } from '$lib/stores/toasts.store';
-	import type { NewerReleasesParams } from '@junobuild/admin';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { newerReleases } from '$lib/services/upgrade.services';
 
 	const load = async () =>
 		await loadVersion({
@@ -64,7 +62,8 @@
 		currentVersion,
 		type,
 		satellite
-	}: Pick<NewerReleasesParams, 'currentVersion'> & {
+	}: {
+		currentVersion: string;
 		type: 'upgrade_satellite' | 'upgrade_mission_control';
 		satellite?: Satellite;
 	}) => {
@@ -72,16 +71,12 @@
 
 		const { result, error } = await newerReleases({
 			currentVersion,
-			assetKey: type === 'upgrade_mission_control' ? 'mission_control' : 'satellite'
+			segments: type === 'upgrade_mission_control' ? 'mission_controls' : 'satellites'
 		});
 
 		busy.stop();
 
 		if (nonNullish(error) || isNullish(result)) {
-			toasts.error({
-				text: $i18n.errors.upgrade_load_versions,
-				detail: error
-			});
 			return;
 		}
 

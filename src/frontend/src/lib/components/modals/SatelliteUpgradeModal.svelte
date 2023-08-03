@@ -5,18 +5,17 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import type { GitHubRelease } from '@junobuild/admin';
 
 	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
 	let currentVersion: string;
-	let newerReleases: GitHubRelease[];
+	let newerReleases: string[];
 
 	$: ({ satellite, currentVersion, newerReleases } = detail as JunoModalUpgradeSatelliteDetail);
 </script>
 
-<CanisterUpgradeModal on:junoClose {newerReleases} {currentVersion} assetKey="satellite">
+<CanisterUpgradeModal on:junoClose {newerReleases} {currentVersion} segment="satellite">
 	<svelte:fragment slot="intro">
 		<h2>
 			{@html i18nFormat($i18n.canisters.upgrade_title, [

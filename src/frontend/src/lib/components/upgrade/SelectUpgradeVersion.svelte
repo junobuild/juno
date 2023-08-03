@@ -2,30 +2,21 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import {
 		checkUpgradeVersion,
-		type GitHubRelease,
-		mapPromptReleases,
-		type NewerReleasesAssetKey,
-		type PromptReleases
 	} from '@junobuild/admin';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { isNullish, last } from '$lib/utils/utils';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { coerce } from 'semver';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { downloadWasm } from '$lib/services/upgrade.services';
 
 	export let currentVersion: string;
-	export let newerReleases: GitHubRelease[];
-	export let assetKey: NewerReleasesAssetKey;
+	export let newerReleases: string[];
+	export let segment: 'satellite' | 'mission_control';
 
-	let promptReleases: PromptReleases[] = [];
 	let selectedVersion: string | undefined = undefined;
 
-	onMount(() => {
-		promptReleases = mapPromptReleases({ githubReleases: newerReleases, assetKey });
-		selectedVersion = last(promptReleases)?.title;
-	});
+	onMount(() => selectedVersion = last(newerReleases));
 
 	const dispatch = createEventDispatcher();
 
@@ -37,26 +28,6 @@
 			return;
 		}
 
-		const release = promptReleases.find(({ title }) => title === selectedVersion);
-
-		if (isNullish(release)) {
-			toasts.error({
-				text: $i18n.errors.upgrade_no_asset_for_version
-			});
-			return;
-		}
-
-		const { value: asset } = release;
-
-		const userVersion = coerce(asset.name)?.format();
-
-		if (isNullish(userVersion)) {
-			toasts.error({
-				text: $i18n.errors.upgrade_no_asset_for_version_extract
-			});
-			return;
-		}
-
 		const { canUpgrade } = checkUpgradeVersion({ currentVersion, selectedVersion });
 
 		if (!canUpgrade) {
@@ -64,7 +35,7 @@
 				text: i18nFormat($i18n.errors.upgrade_requires_iterative_version, [
 					{
 						placeholder: '{0}',
-						value: assetKey.replace('_', ' ')
+						value: segment.replace('_', ' ')
 					},
 					{
 						placeholder: '{1}',
@@ -83,7 +54,7 @@
 		dispatch('junoNext', 'download');
 
 		try {
-			await downloadWasm(asset);
+			await downloadWasm({ segment, version: selectedVersion });
 
 			dispatch('junoNext', 'review');
 		} catch (err: unknown) {
@@ -103,15 +74,10 @@
 
 <form on:submit|preventDefault={onSelect}>
 	<div class="container">
-		{#each promptReleases as prompt, i}
+		{#each newerReleases as release, i}
 			<label>
-				<input
-					type="radio"
-					bind:group={selectedVersion}
-					name="selectedVersion"
-					value={prompt.title}
-				/>
-				<span>{prompt.title}</span>
+				<input type="radio" bind:group={selectedVersion} name="selectedVersion" value={release} />
+				<span>{release}</span>
 			</label>
 		{/each}
 	</div>

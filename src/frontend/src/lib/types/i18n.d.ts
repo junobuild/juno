@@ -186,8 +186,6 @@ interface I18nErrors {
 	upgrade_load_versions: string;
 	upgrade_download_error: string;
 	upgrade_no_version: string;
-	upgrade_no_asset_for_version: string;
-	upgrade_no_asset_for_version_extract: string;
 	upgrade_requires_iterative_version: string;
 	top_up_error: string;
 }

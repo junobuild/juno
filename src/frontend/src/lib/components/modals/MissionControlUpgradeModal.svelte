@@ -5,18 +5,17 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import type { JunoModalDetail, JunoModalUpgradeMissionControlDetail } from '$lib/types/modal';
-	import type { GitHubRelease } from '@junobuild/admin';
 
 	export let detail: JunoModalDetail;
 
-	let newerReleases: GitHubRelease[];
+	let newerReleases: string[];
 	let currentVersion: string;
 
 	$: ({ newerReleases, currentVersion } = detail as JunoModalUpgradeMissionControlDetail);
 </script>
 
 {#if nonNullish($missionControlStore)}
-	<CanisterUpgradeModal on:junoClose {newerReleases} {currentVersion} assetKey="mission_control">
+	<CanisterUpgradeModal on:junoClose {newerReleases} {currentVersion} segment="mission_control">
 		<svelte:fragment slot="intro">
 			<h2>
 				{@html i18nFormat($i18n.canisters.upgrade_title, [

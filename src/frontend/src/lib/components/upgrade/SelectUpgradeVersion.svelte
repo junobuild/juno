@@ -13,6 +13,7 @@
 	import { coerce } from 'semver';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { wizardBusy } from '$lib/stores/busy.store';
+	import { downloadWasm } from '$lib/services/upgrade.services';
 
 	export let currentVersion: string;
 	export let newerReleases: GitHubRelease[];
@@ -82,6 +83,8 @@
 		dispatch('junoNext', 'download');
 
 		try {
+			await downloadWasm(asset);
+
 			dispatch('junoNext', 'review');
 		} catch (err: unknown) {
 			toasts.error({
@@ -117,9 +120,9 @@
 </form>
 
 <style lang="scss">
-  .container {
-    display: flex;
-    flex-direction: column;
-    padding: 0 0 var(--padding-2x);
-  }
+	.container {
+		display: flex;
+		flex-direction: column;
+		padding: 0 0 var(--padding-2x);
+	}
 </style>

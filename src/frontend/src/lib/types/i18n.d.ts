@@ -50,6 +50,8 @@ interface I18nCanisters {
 	top_up_mission_control_done: string;
 	top_up_satellite_done: string;
 	daily_consumption: string;
+	review_upgrade: string;
+	confirm_upgrade: string;
 }
 
 interface I18nSign_in {
@@ -186,6 +188,7 @@ interface I18nErrors {
 	upgrade_load_versions: string;
 	upgrade_download_error: string;
 	upgrade_no_version: string;
+	upgrade_no_wasm: string;
 	upgrade_requires_iterative_version: string;
 	top_up_error: string;
 }

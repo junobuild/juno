@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
-	import {
-		checkUpgradeVersion,
-	} from '@junobuild/admin';
+	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import { isNullish, last } from '$lib/utils/utils';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -16,7 +14,7 @@
 
 	let selectedVersion: string | undefined = undefined;
 
-	onMount(() => selectedVersion = last(newerReleases));
+	onMount(() => (selectedVersion = last(newerReleases)));
 
 	const dispatch = createEventDispatcher();
 
@@ -51,19 +49,19 @@
 		}
 
 		wizardBusy.start();
-		dispatch('junoNext', 'download');
+		dispatch('junoNext', { steps: 'download' });
 
 		try {
-			await downloadWasm({ segment, version: selectedVersion });
+			const wasm = await downloadWasm({ segment, version: selectedVersion });
 
-			dispatch('junoNext', 'review');
+			dispatch('junoNext', { steps: 'review', wasm });
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.upgrade_download_error,
 				detail: err
 			});
 
-			dispatch('junoNext', 'error');
+			dispatch('junoNext', { steps: 'error' });
 		}
 
 		wizardBusy.stop();

@@ -164,8 +164,6 @@ export const deleteDoc = async ({
 	key: string;
 	doc: Doc | undefined;
 }) => {
-	console.log(doc, key, satelliteId, collection);
-
 	const actor = await getSatelliteActor(satelliteId);
 	const { updated_at } = doc ?? { updated_at: undefined };
 	return actor.del_doc(collection, key, {

@@ -1,6 +1,7 @@
 import { downloadRelease, getReleasesMetadata } from '$lib/rest/cdn.rest';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { Wasm } from '$lib/types/upgrade';
 import { sha256 } from '$lib/utils/crypto.utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
@@ -33,7 +34,7 @@ export const newerReleases = async ({
 export const downloadWasm = async (params: {
 	segment: 'satellite' | 'mission_control';
 	version: string;
-}): Promise<{ hash: string; wasm: Blob }> => {
+}): Promise<Wasm> => {
 	// The Blob is the wasm file, not the .wasm.gz because the browser automatically decompress the file
 	const wasm = await downloadRelease(params);
 	const hash = await sha256(wasm);

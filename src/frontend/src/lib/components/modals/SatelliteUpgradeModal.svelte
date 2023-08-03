@@ -39,25 +39,12 @@
 	upgrade={upgradeSatelliteWasm}
 	segment="satellite"
 >
-	<svelte:fragment slot="intro">
-		<h2>
-			{@html i18nFormat($i18n.canisters.upgrade_title, [
-				{
-					placeholder: '{0}',
-					value: satelliteName(satellite)
-				}
-			])}
-		</h2>
-
-		<p>{$i18n.canisters.upgrade_note}</p>
-
-		<p>
-			{@html i18nFormat($i18n.canisters.upgrade_description, [
-				{
-					placeholder: '{0}',
-					value: 'satellite'
-				}
-			])}
-		</p>
-	</svelte:fragment>
+	<h2 slot="intro">
+		{@html i18nFormat($i18n.canisters.upgrade_title, [
+			{
+				placeholder: '{0}',
+				value: satelliteName(satellite)
+			}
+		])}
+	</h2>
 </CanisterUpgradeModal>

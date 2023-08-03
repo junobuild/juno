@@ -35,26 +35,13 @@
 		upgrade={upgradeMissionControlWasm}
 		segment="mission_control"
 	>
-		<svelte:fragment slot="intro">
-			<h2>
-				{@html i18nFormat($i18n.canisters.upgrade_title, [
-					{
-						placeholder: '{0}',
-						value: 'mission control center'
-					}
-				])}
-			</h2>
-
-			<p>{$i18n.canisters.upgrade_note}</p>
-
-			<p>
-				{@html i18nFormat($i18n.canisters.upgrade_description, [
-					{
-						placeholder: '{0}',
-						value: 'mission control center'
-					}
-				])}
-			</p>
-		</svelte:fragment>
+		<h2 slot="intro">
+			{@html i18nFormat($i18n.canisters.upgrade_title, [
+				{
+					placeholder: '{0}',
+					value: 'mission control center'
+				}
+			])}
+		</h2>
 	</CanisterUpgradeModal>
 {/if}

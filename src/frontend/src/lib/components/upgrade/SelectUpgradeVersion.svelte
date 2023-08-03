@@ -78,16 +78,39 @@
 <slot name="intro" />
 
 <form on:submit|preventDefault={onSelect}>
-	<div class="container">
-		{#each newerReleases as release, i}
-			<label>
-				<input type="radio" bind:group={selectedVersion} name="selectedVersion" value={release} />
-				<span>{release}</span>
-			</label>
-		{/each}
-	</div>
+	{#if newerReleases.length > 1}
+		<p>
+			{@html i18nFormat($i18n.canisters.upgrade_note, [
+				{
+					placeholder: '{0}',
+					value: `${newerReleases.length}`
+				},
+				{
+					placeholder: '{1}',
+					value: segment.replace('_', ' ')
+				},
+				{
+					placeholder: '{2}',
+					value: segment.replace('_', ' ')
+				}
+			])}
+		</p>
+	{/if}
 
-	<button type="submit" disabled={newerReleases.length === 0}>{$i18n.core.continue}</button>
+	<p>
+		{@html i18nFormat($i18n.canisters.upgrade_description, [
+			{
+				placeholder: '{0}',
+				value: segment.replace('_', ' ')
+			},
+			{
+				placeholder: '{1}',
+				value: selectedVersion ?? ''
+			}
+		])}
+	</p>
+
+	<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
 </form>
 
 <style lang="scss">

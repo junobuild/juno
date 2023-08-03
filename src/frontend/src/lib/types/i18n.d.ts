@@ -52,6 +52,7 @@ interface I18nCanisters {
 	daily_consumption: string;
 	review_upgrade: string;
 	confirm_upgrade: string;
+	upgrade_done: string;
 }
 
 interface I18nSign_in {

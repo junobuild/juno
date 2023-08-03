@@ -41,6 +41,7 @@ export const downloadWasm = async (params: {
 
 	return {
 		wasm,
-		hash
+		hash,
+		version: params.version
 	};
 };

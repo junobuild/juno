@@ -6,6 +6,7 @@
 	import SelectUpgradeVersion from '$lib/components/upgrade/SelectUpgradeVersion.svelte';
 	import type { Wasm } from '$lib/types/upgrade';
 	import ReviewUpgradeVersion from '$lib/components/upgrade/ReviewUpgradeVersion.svelte';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let currentVersion: string;
 	export let newerReleases: string[];
@@ -33,7 +34,18 @@
 <Modal on:junoClose>
 	{#if steps === 'ready'}
 		<div class="msg">
-			<slot name="outro" />
+			<p>
+				{@html i18nFormat($i18n.canisters.upgrade_done, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					},
+					{
+						placeholder: '{1}',
+						value: `v${wasm?.version ?? ''}`
+					}
+				])}
+			</p>
 			<button on:click={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'download'}
@@ -58,3 +70,11 @@
 		</SelectUpgradeVersion>
 	{/if}
 </Modal>
+
+<style lang="scss">
+	@use '../../styles/mixins/overlay';
+
+	.msg {
+		@include overlay.message;
+	}
+</style>

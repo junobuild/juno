@@ -9,11 +9,22 @@ export interface JunoModalBalance {
 	};
 }
 
-export interface JunoModalTopUpSatelliteDetail extends JunoModalBalance {
+export interface JunoModalSatelliteDetail {
 	satellite: Satellite;
 }
 
+export type JunoModalTopUpSatelliteDetail = JunoModalBalance & JunoModalSatelliteDetail;
+
 export interface JunoModalTopUpMissionControlDetail extends JunoModalBalance {}
+
+export interface JunoModalUpgradeDetail {
+	currentVersion: string;
+	newerReleases: string[];
+}
+
+export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail & JunoModalSatelliteDetail;
+
+export interface JunoModalUpgradeMissionControlDetail extends JunoModalUpgradeDetail {}
 
 export interface JunoModalCreateSatelliteDetail extends JunoModalBalance {
 	fee: bigint;
@@ -46,6 +57,8 @@ export interface JunoModal {
 		| 'topup_satellite'
 		| 'topup_mission_control'
 		| 'add_custom_domain'
-		| 'create_controller';
+		| 'create_controller'
+		| 'upgrade_satellite'
+		| 'upgrade_mission_control';
 	detail?: JunoModalDetail;
 }

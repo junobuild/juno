@@ -7,6 +7,6 @@
 
 <style lang="scss">
 	svg {
-		vertical-align: bottom;
+		vertical-align: middle;
 	}
 </style>

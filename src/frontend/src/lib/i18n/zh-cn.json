@@ -34,13 +34,23 @@
 		"top_up": "充值",
 		"cycles": "用于支付只能合约运行消耗.",
 		"top_up_in_progress": "充值中...",
+		"upgrade_in_progress": "Upgrade in progress...",
+		"download_in_progress": "Download in progress...",
 		"amount": "ICP数量",
 		"top_up_title": "充值 {0}",
+		"upgrade_title": "Upgrade {0}",
+		"upgrade_description": "Your {0} will be upgraded to version <strong>v{1}</strong>.",
+		"more_upgrade": "After this upgrade, there will be {0} more upgrades available.",
+		"upgrade_note": "There is a total of {0} upgrades available for your {1}. Upgrades should be executed one after the other, starting with the lower version number and moving upward. This process will guide you by upgrading to the next compatible version. Repeat the process until your {2} is up-to-date.",
 		"additional_cycles": "额外 Cycles",
 		"top_up_info": "你当前的 mission control 余额是 {0} ICP,以及用于充值网络费用是 {1} ICP.",
 		"top_up_mission_control_done": "充值你的 mission control center 完成.",
 		"top_up_satellite_done": "充值你的 satellite 完成.",
-		"daily_consumption": "每日空闲的消耗"
+		"daily_consumption": "每日空闲的消耗",
+		"review_upgrade": "Review upgrade",
+		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
+		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
+		"upgrade": "Upgrade"
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",
@@ -164,7 +174,14 @@
 		"collection_added": "无法增加文档集 {0} .",
 		"collection_updated": "无法修改文档集 {0} .",
 		"collection_deleted": "无法删除文档集 {0} .",
-		"rule_invalid": "Rule should exist."
+		"rule_invalid": "Rule should exist.",
+		"upgrade_load_versions": "Error while fetching the available versions.",
+		"upgrade_download_error": "Error while downloading the wasm.",
+		"upgrade_error": "Error while upgrading. Reach out Juno if the problem persists!",
+		"upgrade_no_version": "Please select a version for the upgrade.",
+		"upgrade_no_wasm": "No wasm provided. Please try again.",
+		"upgrade_requires_iterative_version": "There may have been breaking changes between your {0} v{1} and selected version {2}. Please upgrade iteratively.",
+		"top_up_error": "Error while topping up the segment."
 	},
 	"document": {
 		"owner": "拥有者",

@@ -1,21 +1,25 @@
 <script lang="ts">
 	import { versionStore } from '$lib/stores/version.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import { loadVersion } from '$lib/services/console.services';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { compare } from 'semver';
+	import { emit } from '$lib/utils/events.utils';
+	import { busy } from '$lib/stores/busy.store';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { newerReleases } from '$lib/services/upgrade.services';
 
-	const load = async () =>
+	const load = async (skipReload: boolean) =>
 		await loadVersion({
 			satelliteId: $satelliteStore?.satellite_id,
-			missionControlId: $missionControlStore
+			missionControlId: $missionControlStore,
+			skipReload
 		});
 
-	$: $missionControlStore, $satelliteStore, (async () => await load())();
+	$: $missionControlStore, $satelliteStore, (async () => await load(true))();
 
 	let satVersion: string | undefined;
 	let satRelease: string | undefined;
@@ -50,35 +54,95 @@
 		nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
 
 	const helpLink = 'https://juno.build/docs/miscellaneous/cli#upgrade';
+
+	const openModal = async ({
+		currentVersion,
+		type,
+		satellite
+	}: {
+		currentVersion: string;
+		type: 'upgrade_satellite' | 'upgrade_mission_control';
+		satellite?: Satellite;
+	}) => {
+		busy.start();
+
+		const { result, error } = await newerReleases({
+			currentVersion,
+			segments: type === 'upgrade_mission_control' ? 'mission_controls' : 'satellites'
+		});
+
+		busy.stop();
+
+		if (nonNullish(error) || isNullish(result)) {
+			return;
+		}
+
+		emit({
+			message: 'junoModal',
+			detail: {
+				type,
+				detail: {
+					...(nonNullish(satellite) && { satellite }),
+					currentVersion,
+					newerReleases: result
+				}
+			}
+		});
+	};
+
+	const upgradeSatellite = async () =>
+		await openModal({
+			type: 'upgrade_satellite',
+			satellite: $satelliteStore!,
+			currentVersion: satVersion!
+		});
+
+	const upgradeMissionControl = async () =>
+		await openModal({
+			type: 'upgrade_mission_control',
+			currentVersion: ctrlVersion!
+		});
 </script>
 
+<svelte:window on:junoReloadVersions={async () => await load(false)} />
+
 {#if ctrlReady && ctrlWarning}
-	<p>
-		<IconNewReleases />
-		{$i18n.admin.mission_control_new_version}
-		<span class="help"><ExternalLink href={helpLink}>[Help]</ExternalLink></span>
-	</p>
+	<div>
+		<p>
+			<IconNewReleases />
+			{@html $i18n.admin.mission_control_new_version}
+		</p>
+
+		<button class="primary" on:click={upgradeMissionControl}>{$i18n.canisters.upgrade}</button>
+	</div>
 {/if}
 
 {#if satReady && satWarning}
-	<p>
-		<IconNewReleases />
-		{$i18n.admin.satellite_new_version}
-		<span class="help"><ExternalLink href={helpLink}>[Help]</ExternalLink></span>
-	</p>
+	<div>
+		<p>
+			<IconNewReleases />
+			{@html $i18n.admin.satellite_new_version}
+		</p>
+		<button class="primary" on:click={upgradeSatellite}>{$i18n.canisters.upgrade}</button>
+	</div>
 {/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/info';
-	@use '../../styles/mixins/fonts';
 
-	p {
+	div {
 		@include info.warning;
-		margin: var(--padding-2x) 0 var(--padding-4x);
+
+		button {
+			@include info.warning-button;
+		}
 	}
 
-	.help {
-		@include fonts.small;
-		vertical-align: text-bottom;
+	p {
+		margin: 0 0 var(--padding);
+	}
+
+	button {
+		margin: var(--padding-1_5x) 0 var(--padding-0_5x);
 	}
 </style>

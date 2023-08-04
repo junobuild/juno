@@ -34,13 +34,23 @@
 		"top_up": "Ricarica",
 		"cycles": "sono le unità di pagamento per lavorare con i tuoi smart contract.",
 		"top_up_in_progress": "Ricarica in corso...",
+		"upgrade_in_progress": "Upgrade in progress...",
+		"download_in_progress": "Download in progress...",
 		"amount": "importo in ICP",
 		"top_up_title": "Ricarica {0}",
+		"upgrade_title": "Upgrade {0}",
+		"upgrade_description": "Your {0} will be upgraded to version <strong>v{1}</strong>.",
+		"more_upgrade": "After this upgrade, there will be {0} more upgrades available.",
+		"upgrade_note": "There is a total of {0} upgrades available for your {1}. Upgrades should be executed one after the other, starting with the lower version number and moving upward. This process will guide you by upgrading to the next compatible version. Repeat the process until your {2} is up-to-date.",
 		"additional_cycles": "Cycles aggiuntive",
 		"top_up_info": "Al momento, il tuo saldo mission control è di {0} ICP,e la commissione di rete per fare la ricarica è di {1} ICP.",
 		"top_up_mission_control_done": "Il tuo mission control center è stato ricaricato.",
 		"top_up_satellite_done": "Il tuo satellite è stato ricaricato.",
-		"daily_consumption": "Daily idle consumption"
+		"daily_consumption": "Daily idle consumption",
+		"review_upgrade": "Review upgrade",
+		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
+		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
+		"upgrade": "Upgrade"
 	},
 	"sign_in": {
 		"title": "Lancia il tuo primo satellite",
@@ -164,7 +174,14 @@
 		"collection_added": "La collection {0} non può essere aggiunta.",
 		"collection_updated": "La collection {0} non può essere modificata.",
 		"collection_deleted": "La collection {0} non può essere eliminata.",
-		"rule_invalid": "La regola dovrebbe esistere."
+		"rule_invalid": "La regola dovrebbe esistere.",
+		"upgrade_load_versions": "Error while fetching the available versions.",
+		"upgrade_download_error": "Error while downloading the wasm.",
+		"upgrade_error": "Error while upgrading. Reach out Juno if the problem persists!",
+		"upgrade_no_version": "Please select a version for the upgrade.",
+		"upgrade_no_wasm": "No wasm provided. Please try again.",
+		"upgrade_requires_iterative_version": "There may have been breaking changes between your {0} v{1} and selected version {2}. Please upgrade iteratively.",
+		"top_up_error": "Error while topping up the segment."
 	},
 	"document": {
 		"owner": "Proprietario",

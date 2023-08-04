@@ -1,6 +1,6 @@
 {
 	"name": "@junobuild/juno",
-	"version": "0.0.15",
+	"version": "0.0.16",
 	"private": true,
 	"author": "David Dal Busco <david@fluster.io>",
 	"license": "SEE LICENSE IN LICENSE.md",
@@ -75,14 +75,16 @@
 		"vite": "^4.3.9"
 	},
 	"dependencies": {
-		"@dfinity/agent": "^0.15.6",
-		"@dfinity/auth-client": "^0.15.6",
-		"@dfinity/identity": "^0.15.6",
-		"@dfinity/ledger": "^0.0.10",
-		"@dfinity/principal": "^0.15.6",
-		"@junobuild/ledger": "^0.0.6",
+		"@dfinity/agent": "^0.18.1",
+		"@dfinity/auth-client": "^0.18.1",
+		"@dfinity/identity": "^0.18.1",
+		"@dfinity/ledger": "next",
+		"@dfinity/principal": "^0.18.1",
+		"@dfinity/utils": "next",
+		"@junobuild/admin": "^0.0.23",
+		"@junobuild/ledger": "^0.0.10",
 		"buffer": "^6.0.3",
 		"idb-keyval": "^6.2.1",
-		"semver": "^7.5.3"
+		"semver": "^7.5.4"
 	}
 }

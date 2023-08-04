@@ -34,13 +34,23 @@
 		"top_up": "Top-up",
 		"cycles": "are the unit of payment for operating your smart contracts.",
 		"top_up_in_progress": "Top-up in progress...",
+		"upgrade_in_progress": "Upgrade in progress...",
+		"download_in_progress": "Download in progress...",
 		"amount": "Amount in ICP",
 		"top_up_title": "Top-up {0}",
+		"upgrade_title": "Upgrade {0}",
+		"upgrade_description": "Your {0} will be upgraded to version <strong>v{1}</strong>.",
+		"more_upgrade": "After this upgrade, there will be {0} more upgrades available.",
+		"upgrade_note": "There is a total of {0} upgrades available for your {1}. Upgrades should be executed one after the other, starting with the lower version number and moving upward. This process will guide you by upgrading to the next compatible version. Repeat the process until your {2} is up-to-date.",
 		"additional_cycles": "Additional Cycles",
 		"top_up_info": "Your current mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
 		"top_up_mission_control_done": "Your mission control center has been topped-up.",
 		"top_up_satellite_done": "Your satellite has been topped-up.",
-		"daily_consumption": "Daily idle consumption"
+		"daily_consumption": "Daily idle consumption",
+		"review_upgrade": "Review upgrade",
+		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
+		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
+		"upgrade": "Upgrade"
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",
@@ -164,7 +174,14 @@
 		"collection_added": "Collection {0} cannot be added.",
 		"collection_updated": "Collection {0} cannot be updated.",
 		"collection_deleted": "Collection {0} cannot be deleted.",
-		"rule_invalid": "Rule should exist."
+		"rule_invalid": "Rule should exist.",
+		"upgrade_load_versions": "Error while fetching the available versions.",
+		"upgrade_download_error": "Error while downloading the wasm.",
+		"upgrade_error": "Error while upgrading. Reach out Juno if the problem persists!",
+		"upgrade_no_version": "Please select a version for the upgrade.",
+		"upgrade_no_wasm": "No wasm provided. Please try again.",
+		"upgrade_requires_iterative_version": "There may have been breaking changes between your {0} v{1} and selected version {2}. Please upgrade iteratively.",
+		"top_up_error": "Error while topping up the segment."
 	},
 	"document": {
 		"owner": "Owner",
@@ -187,8 +204,8 @@
 		"full_path": "Full path"
 	},
 	"admin": {
-		"mission_control_new_version": "A new version of your mission control is available! Upgrade it with the CLI.",
-		"satellite_new_version": "A new version of your satellite is available! Upgrade it with the CLI."
+		"mission_control_new_version": "A new version of your mission control is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",
+		"satellite_new_version": "A new version of your satellite is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>."
 	},
 	"controllers": {
 		"title": "Controllers",

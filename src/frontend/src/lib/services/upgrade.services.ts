@@ -35,7 +35,6 @@ export const downloadWasm = async (params: {
 	segment: 'satellite' | 'mission_control';
 	version: string;
 }): Promise<Wasm> => {
-	// The Blob is the wasm file, not the .wasm.gz because the browser automatically decompress the file
 	const wasm = await downloadRelease(params);
 	const hash = await sha256(wasm);
 

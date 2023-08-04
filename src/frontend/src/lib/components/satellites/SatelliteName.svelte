@@ -26,9 +26,7 @@
 
 	$: validConfirm = nonNullish(satName) && satName !== '';
 
-	const handleSubmit = async ($event: MouseEvent | TouchEvent) => {
-		$event.preventDefault();
-
+	const handleSubmit = async () => {
 		if (!validConfirm) {
 			// Submit is disabled if not valid
 			toasts.error({
@@ -82,7 +80,7 @@
 </Value>
 
 <Popover bind:visible center backdrop="dark">
-	<form class="container" on:submit={async ($event) => await handleSubmit($event)}>
+	<form class="container" on:submit|preventDefault={handleSubmit}>
 		<label for="canisterName">{$i18n.satellites.satellite_name}:</label>
 
 		<input

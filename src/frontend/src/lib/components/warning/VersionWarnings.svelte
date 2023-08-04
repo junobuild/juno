@@ -129,19 +129,17 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/info';
-	@use '../../styles/mixins/fonts';
 
 	div {
 		@include info.warning;
+
+		button {
+			@include info.warning-button;
+		}
 	}
 
 	p {
 		margin: 0 0 var(--padding);
-	}
-
-	.help {
-		@include fonts.small;
-		vertical-align: text-bottom;
 	}
 
 	button {

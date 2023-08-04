@@ -112,11 +112,3 @@
 
 	<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
 </form>
-
-<style lang="scss">
-	.container {
-		display: flex;
-		flex-direction: column;
-		padding: 0 0 var(--padding-2x);
-	}
-</style>

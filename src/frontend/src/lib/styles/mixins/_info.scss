@@ -6,4 +6,9 @@
 	padding: var(--padding-2x);
 	margin: 0 0 var(--padding-4x);
 	@include shadow.shadow;
+
+	button {
+		--color-card: #ffffff;
+		--color-card-contrast: #000000;
+	}
 }

@@ -11,6 +11,7 @@ mod wasm;
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::satellite::create_satellite as create_satellite_console;
+use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::store::{
     add_credits as add_credits_store, add_invitation_code as add_invitation_code_store,
@@ -36,7 +37,7 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_ledger_types::Tokens;
 use shared::controllers::init_controllers;
 use shared::types::interface::{
-    AddCreditsArgs, AssertMissionControlCenterArgs, CreateSatelliteArgs, DeleteControllersArgs,
+    AddCreditsArgs, AssertMissionControlCenterArgs, CreateSegmentArgs, DeleteControllersArgs,
     GetCreateSatelliteFeeArgs, SetControllersArgs,
 };
 use std::cell::RefCell;
@@ -162,11 +163,23 @@ async fn init_user_mission_control_center() -> MissionControl {
 /// Satellites
 
 #[update]
-async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
+async fn create_satellite(args: CreateSegmentArgs) -> Principal {
     let console = id();
     let caller = caller();
 
     create_satellite_console(console, caller, args)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+/// Orbiters
+
+#[update]
+async fn create_orbiter(args: CreateSegmentArgs) -> Principal {
+    let console = id();
+    let caller = caller();
+
+    create_orbiter_console(console, caller, args)
         .await
         .unwrap_or_else(|e| trap(&e))
 }

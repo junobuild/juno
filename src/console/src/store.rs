@@ -530,6 +530,10 @@ pub fn increment_mission_controls_rate() -> Result<(), String> {
     STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().stable.rates.mission_controls))
 }
 
+pub fn increment_orbiters_rate() -> Result<(), String> {
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().stable.rates.orbiters))
+}
+
 fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
     let new_tokens = (time() - rate.tokens.updated_at) / rate.config.time_per_token_ns;
     if new_tokens > 0 {

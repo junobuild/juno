@@ -37,7 +37,7 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_ledger_types::Tokens;
 use shared::controllers::init_controllers;
 use shared::types::interface::{
-    AddCreditsArgs, AssertMissionControlCenterArgs, CreateSegmentArgs, DeleteControllersArgs,
+    AddCreditsArgs, AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateSatelliteFeeArgs, SetControllersArgs,
 };
 use std::cell::RefCell;
@@ -163,7 +163,7 @@ async fn init_user_mission_control_center() -> MissionControl {
 /// Satellites
 
 #[update]
-async fn create_satellite(args: CreateSegmentArgs) -> Principal {
+async fn create_satellite(args: CreateCanisterArgs) -> Principal {
     let console = id();
     let caller = caller();
 
@@ -175,7 +175,7 @@ async fn create_satellite(args: CreateSegmentArgs) -> Principal {
 /// Orbiters
 
 #[update]
-async fn create_orbiter(args: CreateSegmentArgs) -> Principal {
+async fn create_orbiter(args: CreateCanisterArgs) -> Principal {
     let console = id();
     let caller = caller();
 

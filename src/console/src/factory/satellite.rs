@@ -5,13 +5,13 @@ use crate::wasm::satellite_wasm_arg;
 use candid::Principal;
 use shared::constants::CREATE_SATELLITE_CYCLES;
 use shared::ic::create_canister_install_code;
-use shared::types::interface::CreateSegmentArgs;
+use shared::types::interface::CreateCanisterArgs;
 use shared::types::state::{MissionControlId, UserId};
 
 pub async fn create_satellite(
     console: Principal,
     caller: Principal,
-    CreateSegmentArgs { user, block_index }: CreateSegmentArgs,
+    CreateCanisterArgs { user, block_index }: CreateCanisterArgs,
 ) -> Result<Principal, String> {
     // User should have a mission control center
     let mission_control = get_existing_mission_control(&user, &caller)?;
@@ -37,7 +37,7 @@ pub async fn create_satellite(
                 console,
                 caller,
                 mission_control_id,
-                CreateSegmentArgs { user, block_index },
+                CreateCanisterArgs { user, block_index },
             )
             .await
         }

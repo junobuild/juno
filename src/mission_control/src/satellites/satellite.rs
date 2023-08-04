@@ -8,7 +8,7 @@ use ic_ledger_types::{BlockIndex, Tokens};
 use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use shared::env::CONSOLE;
 use shared::ledger::{transfer_payment, SUB_ACCOUNT};
-use shared::types::interface::{CreateSegmentArgs, GetCreateSatelliteFeeArgs};
+use shared::types::interface::{CreateCanisterArgs, GetCreateSatelliteFeeArgs};
 use shared::types::state::{SatelliteId, UserId};
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
@@ -53,7 +53,7 @@ async fn create_and_save_satellite(
 ) -> Result<Satellite, String> {
     let console = Principal::from_text(CONSOLE).unwrap();
 
-    let args = CreateSegmentArgs {
+    let args = CreateCanisterArgs {
         user: *user,
         block_index,
     };

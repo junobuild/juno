@@ -10,7 +10,7 @@ use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
 use shared::ledger::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
 };
-use shared::types::interface::CreateSegmentArgs;
+use shared::types::interface::CreateCanisterArgs;
 use shared::types::state::{MissionControlId, UserId};
 use std::future::Future;
 
@@ -46,7 +46,7 @@ pub async fn create_canister_with_payment<F, Fut>(
     console: Principal,
     caller: Principal,
     mission_control_id: MissionControlId,
-    CreateSegmentArgs { user, block_index }: CreateSegmentArgs,
+    CreateCanisterArgs { user, block_index }: CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
     F: FnOnce(Principal, MissionControlId, UserId) -> Fut,

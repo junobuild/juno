@@ -56,7 +56,7 @@ pub mod interface {
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
-    pub struct CreateSegmentArgs {
+    pub struct CreateCanisterArgs {
         pub user: UserId,
         pub block_index: Option<BlockIndex>,
     }

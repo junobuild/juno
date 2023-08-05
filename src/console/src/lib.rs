@@ -10,8 +10,8 @@ mod wasm;
 
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::factory::mission_control::init_user_mission_control;
-use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
+use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::store::{
     add_credits as add_credits_store, add_invitation_code as add_invitation_code_store,

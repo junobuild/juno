@@ -1,7 +1,7 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::store::{
-    insert_new_payment, is_known_payment, update_payment_completed, update_payment_refunded,
-    use_credits,
+    get_existing_mission_control, has_credits, insert_new_payment, is_known_payment,
+    update_payment_completed, update_payment_refunded, use_credits,
 };
 use crate::types::ledger::Payment;
 use candid::Principal;
@@ -14,7 +14,44 @@ use shared::types::interface::CreateCanisterArgs;
 use shared::types::state::{MissionControlId, UserId};
 use std::future::Future;
 
-pub async fn create_canister_with_credits<F, Fut>(
+pub async fn create_canister<F, Fut>(
+    create: F,
+    increment_rate: &dyn Fn() -> Result<(), String>,
+    console: Principal,
+    caller: Principal,
+    CreateCanisterArgs { user, block_index }: CreateCanisterArgs,
+) -> Result<Principal, String>
+where
+    F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
+    Fut: Future<Output = Result<Principal, String>>,
+{
+    // User should have a mission control center
+    let mission_control = get_existing_mission_control(&user, &caller)?;
+
+    match mission_control.mission_control_id {
+        None => Err("No mission control center found.".to_string()),
+        Some(mission_control_id) => {
+            if has_credits(&user, &mission_control_id) {
+                // Guard too many requests
+                increment_rate()?;
+
+                return create_canister_with_credits(create, console, mission_control_id, user)
+                    .await;
+            }
+
+            create_canister_with_payment(
+                create,
+                console,
+                caller,
+                mission_control_id,
+                CreateCanisterArgs { user, block_index },
+            )
+            .await
+        }
+    }
+}
+
+async fn create_canister_with_credits<F, Fut>(
     create: F,
     console: Principal,
     mission_control_id: MissionControlId,
@@ -28,7 +65,7 @@ where
     let create_canister_result = create(console, mission_control_id, user).await;
 
     match create_canister_result {
-        Err(_) => Err("Satellite creation with credits failed.".to_string()),
+        Err(_) => Err("Segment creation with credits failed.".to_string()),
         Ok(satellite_id) => {
             // Satellite is created we can use the credits
             let credits = use_credits(&user);
@@ -41,7 +78,7 @@ where
     }
 }
 
-pub async fn create_canister_with_payment<F, Fut>(
+async fn create_canister_with_payment<F, Fut>(
     create: F,
     console: Principal,
     caller: Principal,
@@ -86,7 +123,7 @@ where
             // We acknowledge the new payment
             insert_new_payment(&user, &mission_control_payment_block_index)?;
 
-            // Create the satellite
+            // Create the canister (satellite or orbiter)
             let create_canister_result = create(console, mission_control_id, user).await;
 
             match create_canister_result {

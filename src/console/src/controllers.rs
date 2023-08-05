@@ -1,4 +1,4 @@
-use crate::wasm::satellite_controllers;
+use crate::wasm::user_mission_control_controllers;
 use candid::Principal;
 use shared::ic::update_canister_controllers;
 use shared::types::state::MissionControlId;
@@ -22,18 +22,16 @@ pub async fn update_mission_control_controllers(
 
 // Satellite is ready - canister has been created and code has been installed once - we can remove the console of the list of the controllers of the satellite.
 // Note: we install the code the first time with the console as a controller to avoid to have to populate the satellite wasm in each mission control center.
-pub async fn remove_console_controller_from_satellite(
-    satellite_id: &Principal,
+pub async fn remove_console_controller(
+    canister_id: &Principal,
     mission_control_id: &MissionControlId,
     user: &UserId,
 ) -> Result<(), String> {
-    let controllers = satellite_controllers(user, mission_control_id);
-    let result = update_canister_controllers(*satellite_id, controllers.to_owned()).await;
+    let controllers = user_mission_control_controllers(user, mission_control_id);
+    let result = update_canister_controllers(*canister_id, controllers.to_owned()).await;
 
     match result {
-        Err(_) => {
-            Err("Failed to remove console from the controllers of the satellite.".to_string())
-        }
+        Err(_) => Err("Failed to remove console from the controllers of the segment.".to_string()),
         Ok(_) => Ok(()),
     }
 }

@@ -93,7 +93,7 @@ pub mod interface {
     pub enum Segment {
         Satellite,
         MissionControl,
-        Orbiter
+        Orbiter,
     }
 
     #[derive(CandidType)]

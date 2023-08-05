@@ -1,4 +1,4 @@
-use crate::controllers::remove_console_controller_from_satellite;
+use crate::controllers::remove_console_controller;
 use crate::factory::canister::create_canister;
 use crate::store::increment_satellites_rate;
 use crate::wasm::satellite_wasm_arg;
@@ -19,7 +19,8 @@ pub async fn create_satellite(
         console,
         caller,
         args,
-    ).await
+    )
+    .await
 }
 
 async fn create_satellite_wasm(
@@ -38,8 +39,7 @@ async fn create_satellite_wasm(
     match result {
         Err(error) => Err(error),
         Ok(satellite_id) => {
-            remove_console_controller_from_satellite(&satellite_id, &user, &mission_control_id)
-                .await?;
+            remove_console_controller(&satellite_id, &user, &mission_control_id).await?;
             Ok(satellite_id)
         }
     }

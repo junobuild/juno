@@ -5,17 +5,10 @@ use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::rewrites::init_rewrites;
 use crate::storage::types::config::{StorageConfig, StorageConfigHeaders};
 use crate::storage::types::state::StorageHeapState;
-use crate::types::list::ListOrderField;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ic_cdk::api::time;
 use shared::types::state::Controllers;
 use std::collections::{BTreeMap, HashMap};
-
-impl Default for ListOrderField {
-    fn default() -> Self {
-        ListOrderField::Keys
-    }
-}
 
 impl Default for State {
     fn default() -> Self {

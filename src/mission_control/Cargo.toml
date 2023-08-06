@@ -9,10 +9,10 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-candid = "0.9.1"
+candid = "0.9.3"
 ic-cdk = "0.10.0"
-ic-cdk-macros = "0.7.0"
+ic-cdk-macros = "0.7.1"
 ic-ledger-types = "0.7.0"
-serde = "1.0.162"
+serde = "1.0.182"
 futures = "0.3.28"
 shared = { path = "../shared" }

@@ -28,23 +28,20 @@ use crate::store::{
     list_mission_control_statuses as list_mission_control_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
-use crate::types::state::{
-    Archive, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
-};
+use crate::types::state::{Archive, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
 use ic_cdk::api::call::arg_data;
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
-use satellites::store::{get_satellites, set_satellite_metadata as set_satellite_metadata_store};
+use satellites::store::{get_satellites, set_satellite_metadata as set_satellite_metadata_store, set_orbiter_metadata as set_orbiter_metadata_store};
 use shared::types::interface::{MissionControlArgs, SetController, StatusesArgs};
-use shared::types::state::{
-    ControllerId, ControllerScope, Controllers, SatelliteId, SegmentsStatuses,
-};
+use shared::types::state::{ControllerId, ControllerScope, Controllers, SatelliteId, SegmentsStatuses, OrbiterId};
 use shared::types::state::{Metadata, UserId};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use crate::satellites::store::get_orbiters;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -155,8 +152,19 @@ async fn del_satellites_controllers(satellite_ids: Vec<SatelliteId>, controllers
     }
 }
 
+/// Orbiters
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn list_orbiters() -> Orbiters {
+    get_orbiters()
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+fn set_orbiter_metadata(orbiter_id: OrbiterId, metadata: Metadata) -> Orbiter {
+    set_orbiter_metadata_store(&orbiter_id, &metadata).unwrap_or_else(|e| trap(&e))
+}
+
 /// Mgmt
-///
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn top_up(canister_id: Principal, amount: Tokens) {

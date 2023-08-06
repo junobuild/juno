@@ -2,7 +2,7 @@ use crate::store::get_user;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
-use ic_ledger_types::{BlockIndex, Memo, Tokens};
+use ic_ledger_types::{BlockIndex, Tokens};
 use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use shared::env::CONSOLE;
 use shared::ledger::{transfer_payment, SUB_ACCOUNT};

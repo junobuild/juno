@@ -1,5 +1,5 @@
 use crate::types::core::Segment;
-use crate::types::state::{Orbiter, Orbiters, Satellite, Satellites, StableState};
+use crate::types::state::{Orbiter, Orbiters, Satellite, Satellites};
 use crate::STATE;
 use shared::types::state::{Metadata, OrbiterId, SatelliteId};
 use std::collections::HashMap;

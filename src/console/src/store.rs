@@ -152,11 +152,11 @@ fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'stat
 }
 
 pub fn has_create_satellite_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
-    has_credits(&user, &mission_control, &SATELLITE_CREATION_FEE_ICP)
+    has_credits(user, mission_control, &SATELLITE_CREATION_FEE_ICP)
 }
 
 pub fn has_create_orbiter_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
-    has_credits(&user, &mission_control, &ORBITER_CREATION_FEE_ICP)
+    has_credits(user, mission_control, &ORBITER_CREATION_FEE_ICP)
 }
 
 fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Tokens) -> bool {

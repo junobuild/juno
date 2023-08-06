@@ -1,4 +1,4 @@
-use crate::constants::SATELLITE_CREATION_FEE_ICP;
+use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl, MissionControls, Rate,
@@ -151,12 +151,20 @@ fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'stat
     }
 }
 
-pub fn has_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
+pub fn has_create_satellite_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
+    has_credits(&user, &mission_control, &SATELLITE_CREATION_FEE_ICP)
+}
+
+pub fn has_create_orbiter_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
+    has_credits(&user, &mission_control, &ORBITER_CREATION_FEE_ICP)
+}
+
+fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Tokens) -> bool {
     let mission_control = get_existing_mission_control(user, mission_control);
 
     match mission_control {
         Err(_) => false,
-        Ok(mission_control) => mission_control.credits.e8s() >= SATELLITE_CREATION_FEE_ICP.e8s(),
+        Ok(mission_control) => mission_control.credits.e8s() >= fee.e8s(),
     }
 }
 

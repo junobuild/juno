@@ -1,7 +1,7 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::store::{
-    get_existing_mission_control, has_credits, insert_new_payment, is_known_payment,
-    update_payment_completed, update_payment_refunded, use_credits,
+    get_existing_mission_control, insert_new_payment, is_known_payment, update_payment_completed,
+    update_payment_refunded, use_credits,
 };
 use crate::types::ledger::Payment;
 use candid::Principal;
@@ -17,6 +17,7 @@ use std::future::Future;
 pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
+    has_credits: &dyn Fn(&UserId, &MissionControlId) -> bool,
     console: Principal,
     caller: Principal,
     CreateCanisterArgs { user, block_index }: CreateCanisterArgs,

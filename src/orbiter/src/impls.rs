@@ -28,7 +28,7 @@ impl Storable for PageView {
 
 impl BoundedStorable for PageView {
     // TODO: auto max_size
-    const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
+    const MAX_SIZE: u32 = 100_000; // 0.1 MB
     const IS_FIXED_SIZE: bool = false;
 }
 
@@ -44,7 +44,7 @@ impl Storable for TrackEvent {
 
 impl BoundedStorable for TrackEvent {
     // TODO: auto max_size
-    const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
+    const MAX_SIZE: u32 = 100_000; // 0.1 MB
     const IS_FIXED_SIZE: bool = false;
 }
 
@@ -60,6 +60,6 @@ impl Storable for AnalyticKey {
 
 impl BoundedStorable for AnalyticKey {
     // TODO: auto max_size
-    const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
+    const MAX_SIZE: u32 = 100_000; // 0.1 MB
     const IS_FIXED_SIZE: bool = false;
 }

@@ -1,5 +1,5 @@
 use crate::mgmt::constants::CYCLES_MIN_THRESHOLD;
-use crate::satellites::store::get_satellites;
+use crate::segments::store::get_satellites;
 use crate::store::{set_mission_control_status, set_satellite_status};
 use crate::types::state::Satellite;
 use futures::future::join_all;

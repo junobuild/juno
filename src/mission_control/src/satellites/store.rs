@@ -1,7 +1,7 @@
+use crate::types::core::Segment;
 use crate::types::state::{Orbiter, Orbiters, Satellite, Satellites, StableState};
 use crate::STATE;
-use ic_cdk::api::time;
-use shared::types::state::{Metadata, SatelliteId};
+use shared::types::state::{Metadata, OrbiterId, SatelliteId};
 use std::collections::HashMap;
 use std::hash::Hash;
 
@@ -13,7 +13,7 @@ pub fn get_satellites() -> Satellites {
 
 pub fn add_satellite(satellite_id: &SatelliteId, name: &str) -> Satellite {
     STATE.with(|state| {
-        add_segment(
+        add_segment_impl(
             satellite_id,
             &Satellite::from(satellite_id, name),
             &mut state.borrow_mut().stable.satellites,
@@ -25,35 +25,13 @@ pub fn set_satellite_metadata(
     satellite_id: &SatelliteId,
     metadata: &Metadata,
 ) -> Result<Satellite, String> {
-    STATE.with(|state| set_metadata_impl(satellite_id, metadata, &mut state.borrow_mut().stable))
-}
-
-fn set_metadata_impl(
-    satellite_id: &SatelliteId,
-    metadata: &Metadata,
-    state: &mut StableState,
-) -> Result<Satellite, String> {
-    let satellite = state.satellites.get(satellite_id);
-
-    match satellite {
-        None => Err("No satellite found.".to_string()),
-        Some(satellite) => {
-            let now = time();
-
-            let update_satellite = Satellite {
-                satellite_id: satellite.satellite_id,
-                metadata: metadata.clone(),
-                created_at: satellite.created_at,
-                updated_at: now,
-            };
-
-            state
-                .satellites
-                .insert(*satellite_id, update_satellite.clone());
-
-            Ok(update_satellite)
-        }
-    }
+    STATE.with(|state| {
+        set_metadata_impl(
+            satellite_id,
+            metadata,
+            &mut state.borrow_mut().stable.satellites,
+        )
+    })
 }
 
 /// Orbiters
@@ -64,7 +42,7 @@ pub fn get_orbiters() -> Orbiters {
 
 pub fn add_orbiter(orbiter_id: &SatelliteId, name: &str) -> Orbiter {
     STATE.with(|state| {
-        add_segment(
+        add_segment_impl(
             orbiter_id,
             &Orbiter::from(orbiter_id, name),
             &mut state.borrow_mut().stable.orbiters,
@@ -72,10 +50,46 @@ pub fn add_orbiter(orbiter_id: &SatelliteId, name: &str) -> Orbiter {
     })
 }
 
+pub fn set_orbiter_metadata(
+    orbiter_id: &OrbiterId,
+    metadata: &Metadata,
+) -> Result<Orbiter, String> {
+    STATE.with(|state| {
+        set_metadata_impl(
+            orbiter_id,
+            metadata,
+            &mut state.borrow_mut().stable.orbiters,
+        )
+    })
+}
+
 /// Segments
 
-fn add_segment<K: Eq + Hash + Copy, T: Clone>(id: &K, value: &T, state: &mut HashMap<K, T>) -> T {
+fn add_segment_impl<K: Eq + Hash + Copy, T: Clone>(
+    id: &K,
+    value: &T,
+    state: &mut HashMap<K, T>,
+) -> T {
     state.insert(*id, value.clone());
 
     value.clone()
+}
+
+fn set_metadata_impl<K: Eq + Hash + Copy, T: Clone + Segment<K>>(
+    id: &K,
+    metadata: &Metadata,
+    state: &mut HashMap<K, T>,
+) -> Result<T, String> {
+    let segment = state.get(id);
+
+    match segment {
+        None => Err("No segment found.".to_string()),
+        Some(segment) => {
+            let update_segment = segment.set_metadata(metadata);
+
+            state.insert(*id, update_segment.clone());
+
+            Ok(update_segment)
+        }
+    }
 }

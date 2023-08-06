@@ -60,3 +60,11 @@ pub mod state {
         pub satellites: HashMap<SatelliteId, Statuses>,
     }
 }
+
+pub mod core {
+    use shared::types::state::Metadata;
+
+    pub trait Segment<K> {
+        fn set_metadata(&self, metadata: &Metadata) -> Self;
+    }
+}

@@ -73,8 +73,7 @@ pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
 pub fn into_controller_ids(controllers: &Controllers) -> Vec<ControllerId> {
     controllers
         .clone()
-        .into_iter()
-        .map(|(controller_id, _)| controller_id)
+        .into_keys()
         .collect::<Vec<ControllerId>>()
 }
 

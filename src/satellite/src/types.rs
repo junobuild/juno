@@ -68,8 +68,9 @@ pub mod list {
         pub limit: Option<usize>,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Deserialize, Clone)]
     pub enum ListOrderField {
+        #[default]
         Keys,
         CreatedAt,
         UpdatedAt,

@@ -16,7 +16,7 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<Strin
     } = config;
 
     let rewrite = rewrites.iter().find(|(source, _)| {
-        let glob = Glob::new(source.clone());
+        let glob = Glob::new(source);
 
         match glob {
             Err(_) => false,
@@ -27,8 +27,5 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<Strin
         }
     });
 
-    match rewrite {
-        None => None,
-        Some((_, destination)) => Some(destination.clone()),
-    }
+    rewrite.map(|(_, destination)| destination.clone())
 }

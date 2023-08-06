@@ -28,7 +28,9 @@ use crate::store::{
     list_mission_control_statuses as list_mission_control_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
-use crate::types::state::{Archive, Satellite, Satellites, StableState, State, Statuses, User};
+use crate::types::state::{
+    Archive, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
+};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
 use ic_cdk::api::call::arg_data;
@@ -60,6 +62,7 @@ fn init() {
                 satellites: HashMap::new(),
                 controllers: HashMap::new(),
                 archive: Archive::new(),
+                orbiters: Orbiters::new(),
             },
         };
     });

@@ -1,10 +1,13 @@
 pub mod state {
     use candid::{CandidType, Deserialize};
-    use shared::types::state::{ArchiveTime, Controllers, Metadata, SegmentStatusResult};
+    use shared::types::state::{
+        ArchiveTime, Controllers, Metadata, OrbiterId, SegmentStatusResult,
+    };
     use shared::types::state::{SatelliteId, UserId};
     use std::collections::{BTreeMap, HashMap};
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
+    pub type Orbiters = HashMap<OrbiterId, Orbiter>;
 
     pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
@@ -19,6 +22,7 @@ pub mod state {
         pub satellites: Satellites,
         pub controllers: Controllers,
         pub archive: Archive,
+        pub orbiters: Orbiters,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -32,6 +36,14 @@ pub mod state {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Satellite {
         pub satellite_id: SatelliteId,
+        pub metadata: Metadata,
+        pub created_at: u64,
+        pub updated_at: u64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct Orbiter {
+        pub orbiter_id: OrbiterId,
         pub metadata: Metadata,
         pub created_at: u64,
         pub updated_at: u64,

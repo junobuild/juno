@@ -46,11 +46,12 @@ pub mod state {
     pub struct SegmentsStatuses {
         pub mission_control: SegmentStatusResult,
         pub satellites: Option<Vec<SegmentStatusResult>>,
+        pub orbiters: Option<Vec<SegmentStatusResult>>,
     }
 }
 
 pub mod interface {
-    use crate::types::cronjob::CronJobStatusesSatellites;
+    use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{ControllerId, ControllerScope, Metadata, MissionControlId, UserId};
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
@@ -110,7 +111,8 @@ pub mod interface {
     pub struct StatusesArgs {
         pub cycles_threshold: Option<u64>,
         pub mission_control_cycles_threshold: Option<u64>,
-        pub satellites: CronJobStatusesSatellites,
+        pub satellites: CronJobStatusesSegments,
+        pub orbiters: CronJobStatusesSegments,
     }
 }
 
@@ -170,8 +172,8 @@ pub mod cmc {
 }
 
 pub mod cronjob {
-    use crate::types::state::{Metadata, SatelliteId};
-    use candid::CandidType;
+    use crate::types::state::Metadata;
+    use candid::{CandidType, Principal};
     use serde::Deserialize;
     use std::collections::HashMap;
 
@@ -181,18 +183,19 @@ pub mod cronjob {
         pub statuses: CronJobStatuses,
     }
 
-    pub type CronJobStatusesSatellites = HashMap<SatelliteId, CronJobStatusesSatelliteConfig>;
+    pub type CronJobStatusesSegments = HashMap<Principal, CronJobStatusesConfig>;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CronJobStatuses {
         pub enabled: bool,
         pub cycles_threshold: Option<u64>,
         pub mission_control_cycles_threshold: Option<u64>,
-        pub satellites: CronJobStatusesSatellites,
+        pub satellites: CronJobStatusesSegments,
+        pub orbiters: CronJobStatusesSegments,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct CronJobStatusesSatelliteConfig {
+    pub struct CronJobStatusesConfig {
         pub enabled: bool,
         pub cycles_threshold: Option<u64>,
     }

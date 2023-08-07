@@ -23,6 +23,7 @@ impl Archive {
             statuses: ArchiveStatuses {
                 mission_control: BTreeMap::new(),
                 satellites: HashMap::new(),
+                orbiters: HashMap::new(),
             },
         }
     }

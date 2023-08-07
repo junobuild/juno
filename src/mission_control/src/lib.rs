@@ -28,6 +28,7 @@ use crate::segments::store::get_orbiters;
 use crate::store::{
     get_user as get_user_store,
     list_mission_control_statuses as list_mission_control_statuses_store,
+    list_orbiter_statuses as list_orbiter_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
 use crate::types::state::{
@@ -261,6 +262,10 @@ fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
+///
+/// Observatory
+///
+
 #[update(guard = "caller_is_user_or_admin_controller_or_juno")]
 async fn status(config: StatusesArgs) -> SegmentsStatuses {
     collect_statuses(&id(), &config).await
@@ -274,6 +279,11 @@ fn list_mission_control_statuses() -> Statuses {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
     list_satellite_statuses_store(&satellite_id)
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
+    list_orbiter_statuses_store(&orbiter_id)
 }
 
 // Generate did files

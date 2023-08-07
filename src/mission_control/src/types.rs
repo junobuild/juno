@@ -1,5 +1,5 @@
 pub mod state {
-    use candid::{CandidType, Deserialize};
+    use candid::{CandidType, Deserialize, Principal};
     use shared::types::state::{
         ArchiveTime, Controllers, Metadata, OrbiterId, SegmentStatusResult,
     };
@@ -54,10 +54,13 @@ pub mod state {
         pub statuses: ArchiveStatuses,
     }
 
+    pub type ArchiveStatusesSegments = HashMap<Principal, Statuses>;
+
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ArchiveStatuses {
         pub mission_control: Statuses,
-        pub satellites: HashMap<SatelliteId, Statuses>,
+        pub satellites: ArchiveStatusesSegments,
+        pub orbiters: ArchiveStatusesSegments,
     }
 }
 

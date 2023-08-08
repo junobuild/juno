@@ -38,13 +38,23 @@ interface I18nCanisters {
 	top_up: string;
 	cycles: string;
 	top_up_in_progress: string;
+	upgrade_in_progress: string;
+	download_in_progress: string;
 	amount: string;
 	top_up_title: string;
+	upgrade_title: string;
+	upgrade_description: string;
+	more_upgrade: string;
+	upgrade_note: string;
 	additional_cycles: string;
 	top_up_info: string;
 	top_up_mission_control_done: string;
 	top_up_satellite_done: string;
 	daily_consumption: string;
+	review_upgrade: string;
+	confirm_upgrade: string;
+	upgrade_done: string;
+	upgrade: string;
 }
 
 interface I18nSign_in {
@@ -184,6 +194,13 @@ interface I18nErrors {
 	collection_updated: string;
 	collection_deleted: string;
 	rule_invalid: string;
+	upgrade_load_versions: string;
+	upgrade_download_error: string;
+	upgrade_error: string;
+	upgrade_no_version: string;
+	upgrade_no_wasm: string;
+	upgrade_requires_iterative_version: string;
+	top_up_error: string;
 	analytics_load_error: string;
 }
 

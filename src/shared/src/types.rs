@@ -79,7 +79,7 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct SatelliteArgs {
+    pub struct SegmentArgs {
         pub controllers: Vec<ControllerId>,
     }
 

@@ -1,28 +1,40 @@
+mod controllers;
+mod guards;
 mod impls;
 mod memory;
 mod store;
 mod types;
 
+use crate::controllers::store::{
+    delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
+    set_controllers as set_controllers_store,
+};
+use crate::guards::caller_is_admin_controller;
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::store::{get_page_views as get_page_views_store, insert_page_view};
 use crate::types::interface::{GetPageViews, SetPageView};
 use crate::types::memory::Memory;
 use crate::types::state::{AnalyticKey, HeapState, PageView, State};
 use ciborium::{from_reader, into_writer};
+use ic_cdk::api::call::arg_data;
 use ic_cdk::trap;
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
+use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
+use shared::controllers::{assert_max_number_of_controllers, init_controllers};
+use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
+use shared::types::state::{ControllerScope, Controllers};
 use std::mem;
 
 #[init]
 fn init() {
-    // TODO: save mission control ID
+    let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
+    let SegmentArgs { controllers } = call_arg.unwrap();
 
     let heap = HeapState {
-        // controllers: init_controllers(&controllers),
-        ..HeapState::default()
+        controllers: init_controllers(&controllers),
     };
 
     STATE.with(|state| {
@@ -91,10 +103,50 @@ fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) {
     }
 }
 
-// TODO: this should not be public
-#[query]
+#[query(guard = "caller_is_admin_controller")]
 fn get_page_views(filter: GetPageViews) -> Vec<(AnalyticKey, PageView)> {
     get_page_views_store(filter)
+}
+
+///
+/// Controllers
+///
+
+#[update(guard = "caller_is_admin_controller")]
+fn set_controllers(
+    SetControllersArgs {
+        controllers,
+        controller,
+    }: SetControllersArgs,
+) -> Controllers {
+    match controller.scope {
+        ControllerScope::Write => {}
+        ControllerScope::Admin => {
+            let max_controllers = assert_max_number_of_controllers(
+                &get_admin_controllers(),
+                &controllers,
+                MAX_NUMBER_OF_SATELLITE_CONTROLLERS,
+            );
+
+            if let Err(err) = max_controllers {
+                trap(&err)
+            }
+        }
+    }
+
+    set_controllers_store(&controllers, &controller);
+    get_controllers()
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) -> Controllers {
+    delete_controllers_store(&controllers);
+    get_controllers()
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn list_controllers() -> Controllers {
+    get_controllers()
 }
 
 // Generate did files

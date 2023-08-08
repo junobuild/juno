@@ -54,6 +54,7 @@ export type JunoModalDetail =
 export interface JunoModal {
 	type:
 		| 'create_satellite'
+		| 'create_orbiter'
 		| 'topup_satellite'
 		| 'topup_mission_control'
 		| 'add_custom_domain'

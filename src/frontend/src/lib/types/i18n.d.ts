@@ -118,8 +118,10 @@ interface I18nStorage {
 
 interface I18nAnalytics {
 	title: string;
-	metrics: string;
+	dashboard: string;
 	loading: string;
+	empty: string;
+	get_started: string;
 }
 
 interface I18nHosting {

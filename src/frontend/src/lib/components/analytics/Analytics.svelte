@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
 	import { i18n } from '$lib/stores/i18n.store';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -13,6 +12,7 @@
 	import { isNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satellitesStore } from '$lib/stores/satellite.store';
+	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
 
 	let loading = true;
 
@@ -82,7 +82,7 @@
 	{#if loading}
 		<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
 	{:else if isNullish($orbiterStore)}
-		Empty
+		<AnalyticsNew />
 	{:else}
 		<Value>
 			<svelte:fragment slot="label">Number of Sessions</svelte:fragment>

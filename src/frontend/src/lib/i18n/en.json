@@ -107,8 +107,10 @@
 	},
 	"analytics": {
 		"title": "Analytics",
-		"metrics": "Metrics",
-		"loading": "Loading data"
+		"dashboard": "Dashboard",
+		"loading": "Loading data",
+		"empty": "Get analytics to measure and analyse how users engage with your apps.",
+		"get_started": "Get started"
 	},
 	"hosting": {
 		"title": "Hosting",

@@ -1,4 +1,4 @@
-import { getSatelliteFee } from '$lib/api/console.api';
+import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { getMissionControlBalance } from '$lib/services/balance.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -8,13 +8,27 @@ import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
 
-export const getCreateSatelliteFeeBalance = async ({
+export type GetFeeBalance = { result?: JunoModalCreateSatelliteDetail; error?: unknown };
+
+export const getCreateSatelliteFeeBalance = async (params: {
+	identity: Identity | undefined | null;
+	missionControlId: Principal | undefined | null;
+}): Promise<GetFeeBalance> => getCreateFeeBalance({ ...params, getFee: getSatelliteFee });
+
+export const getCreateOrbiterFeeBalance = async (params: {
+	identity: Identity | undefined | null;
+	missionControlId: Principal | undefined | null;
+}): Promise<GetFeeBalance> => getCreateFeeBalance({ ...params, getFee: getOrbiterFee });
+
+const getCreateFeeBalance = async ({
 	identity,
-	missionControlId
+	missionControlId,
+	getFee
 }: {
 	identity: Identity | undefined | null;
 	missionControlId: Principal | undefined | null;
-}): Promise<{ result?: JunoModalCreateSatelliteDetail; error?: unknown }> => {
+	getFee: (user: Principal) => Promise<bigint>;
+}): Promise<GetFeeBalance> => {
 	const labels = get(i18n);
 
 	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
@@ -22,7 +36,7 @@ export const getCreateSatelliteFeeBalance = async ({
 		return { error: 'No identity provided' };
 	}
 
-	const fee = await getSatelliteFee(identity.getPrincipal());
+	const fee = await getFee(identity.getPrincipal());
 
 	if (fee === 0n) {
 		return {

@@ -11,7 +11,7 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'analytics.metrics'
+			labelKey: 'analytics.dashboard'
 		}
 	];
 

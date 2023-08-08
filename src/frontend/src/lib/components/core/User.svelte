@@ -59,6 +59,17 @@
 		</a>
 
 		<a
+			href="/analytics"
+			class="menu"
+			role="menuitem"
+			aria-haspopup="menu"
+			rel="external noopener norefferer"
+		>
+			<IconTelescope />
+			<span>{$i18n.analytics.title}</span>
+		</a>
+
+		<a
 			href="/settings"
 			class="menu"
 			role="menuitem"

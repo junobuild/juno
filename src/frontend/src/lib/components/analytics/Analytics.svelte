@@ -12,8 +12,7 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { isNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-
-	export let satelliteId: Principal;
+	import { satellitesStore } from '$lib/stores/satellite.store';
 
 	let loading = true;
 
@@ -25,9 +24,15 @@
 			return;
 		}
 
+		// TODO all satellites
+		if (isNullish($satellitesStore)) {
+			loading = false;
+			return;
+		}
+
 		try {
 			data = await getPageViews({
-				satelliteId,
+				satelliteId: $satellitesStore[0].satellite_id,
 				orbiterId: $orbiterStore.orbiter_id
 			});
 
@@ -76,7 +81,7 @@
 <div class="card-container">
 	{#if loading}
 		<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
-		{:else if isNullish($orbiterStore)}
+	{:else if isNullish($orbiterStore)}
 		Empty
 	{:else}
 		<Value>

@@ -1,11 +1,11 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import { i18n } from '$lib/stores/i18n.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
 import { assertNonNullish, isNullish, nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
-import {i18n} from "$lib/stores/i18n.store";
 
 export const createSatellite = async ({
 	missionControl,

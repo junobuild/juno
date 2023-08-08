@@ -3,13 +3,14 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const CronJobStatusesSatelliteConfig = IDL.Record({
+	const CronJobStatusesConfig = IDL.Record({
 		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)
 	});
 	const CronJobStatuses = IDL.Record({
 		mission_control_cycles_threshold: IDL.Opt(IDL.Nat64),
-		satellites: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesSatelliteConfig)),
+		orbiters: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesConfig)),
+		satellites: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesConfig)),
 		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)
 	});
@@ -51,6 +52,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Result = IDL.Variant({ Ok: SegmentStatus, Err: IDL.Text });
 	const SegmentsStatuses = IDL.Record({
+		orbiters: IDL.Opt(IDL.Vec(Result)),
 		satellites: IDL.Opt(IDL.Vec(Result)),
 		mission_control: Result
 	});

@@ -5,7 +5,7 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Principal,
 		user: IDL.Principal
 	});
-	const CreateSatelliteArgs = IDL.Record({
+	const CreateCanisterArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
 		user: IDL.Principal
 	});
@@ -52,8 +52,10 @@ export const idlFactory = ({ IDL }) => {
 		add_credits: IDL.Func([AddCreditsArgs], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
-		create_satellite: IDL.Func([CreateSatelliteArgs], [IDL.Principal], []),
+		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
+		create_satellite: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
+		get_create_orbiter_fee: IDL.Func([AddCreditsArgs], [IDL.Opt(Tokens)], ['query']),
 		get_create_satellite_fee: IDL.Func([AddCreditsArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_releases_version: IDL.Func([], [ReleasesVersion], ['query']),

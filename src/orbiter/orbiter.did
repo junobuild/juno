@@ -3,6 +3,15 @@ type AnalyticKey = record {
   session_id : text;
   satellite_id : principal;
 };
+type Controller = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  scope : ControllerScope;
+  expires_at : opt nat64;
+};
+type ControllerScope = variant { Write; Admin };
+type DeleteControllersArgs = record { controllers : vec principal };
 type GetPageViews = record {
   to : nat64;
   from : nat64;
@@ -20,6 +29,15 @@ type PageView = record {
   collected_at : nat64;
 };
 type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
+type SetController = record {
+  metadata : vec record { text; text };
+  scope : ControllerScope;
+  expires_at : opt nat64;
+};
+type SetControllersArgs = record {
+  controller : SetController;
+  controllers : vec principal;
+};
 type SetPageView = record {
   title : text;
   updated_at : opt nat64;
@@ -31,9 +49,16 @@ type SetPageView = record {
   collected_at : nat64;
 };
 service : () -> {
+  del_controllers : (DeleteControllersArgs) -> (
+      vec record { principal; Controller },
+    );
   get_page_views : (GetPageViews) -> (
       vec record { AnalyticKey; PageView },
     ) query;
+  list_controllers : () -> (vec record { principal; Controller }) query;
+  set_controllers : (SetControllersArgs) -> (
+      vec record { principal; Controller },
+    );
   set_page_view : (AnalyticKey, SetPageView) -> (PageView);
   set_page_views : (vec record { AnalyticKey; SetPageView }) -> ();
 }

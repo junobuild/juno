@@ -4,7 +4,7 @@ type AssertMissionControlCenterArgs = record {
   user : principal;
 };
 type ControllerScope = variant { Write; Admin };
-type CreateSatelliteArgs = record { block_index : opt nat64; user : principal };
+type CreateCanisterArgs = record { block_index : opt nat64; user : principal };
 type DeleteControllersArgs = record { controllers : vec principal };
 type LoadRelease = record { total : nat64; chunks : nat64 };
 type MissionControl = record {
@@ -35,8 +35,10 @@ service : () -> {
   add_credits : (AddCreditsArgs) -> ();
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
-  create_satellite : (CreateSatelliteArgs) -> (principal);
+  create_orbiter : (CreateCanisterArgs) -> (principal);
+  create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
+  get_create_orbiter_fee : (AddCreditsArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (AddCreditsArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_releases_version : () -> (ReleasesVersion) query;

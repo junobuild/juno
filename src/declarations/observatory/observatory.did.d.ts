@@ -13,11 +13,12 @@ export type CanisterStatusType = { stopped: null } | { stopping: null } | { runn
 export type ControllerScope = { Write: null } | { Admin: null };
 export interface CronJobStatuses {
 	mission_control_cycles_threshold: [] | [bigint];
-	satellites: Array<[Principal, CronJobStatusesSatelliteConfig]>;
+	orbiters: Array<[Principal, CronJobStatusesConfig]>;
+	satellites: Array<[Principal, CronJobStatusesConfig]>;
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
 }
-export interface CronJobStatusesSatelliteConfig {
+export interface CronJobStatusesConfig {
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
 }
@@ -57,6 +58,7 @@ export interface SegmentStatus {
 	status_at: bigint;
 }
 export interface SegmentsStatuses {
+	orbiters: [] | [Array<Result>];
 	satellites: [] | [Array<Result>];
 	mission_control: Result;
 }

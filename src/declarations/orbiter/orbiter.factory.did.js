@@ -1,5 +1,19 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const DeleteControllersArgs = IDL.Record({
+		controllers: IDL.Vec(IDL.Principal)
+	});
+	const ControllerScope = IDL.Variant({
+		Write: IDL.Null,
+		Admin: IDL.Null
+	});
+	const Controller = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		scope: ControllerScope,
+		expires_at: IDL.Opt(IDL.Nat64)
+	});
 	const GetPageViews = IDL.Record({
 		to: IDL.Nat64,
 		from: IDL.Nat64,
@@ -25,6 +39,15 @@ export const idlFactory = ({ IDL }) => {
 		user_agent: IDL.Opt(IDL.Text),
 		collected_at: IDL.Nat64
 	});
+	const SetController = IDL.Record({
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		scope: ControllerScope,
+		expires_at: IDL.Opt(IDL.Nat64)
+	});
+	const SetControllersArgs = IDL.Record({
+		controller: SetController,
+		controllers: IDL.Vec(IDL.Principal)
+	});
 	const SetPageView = IDL.Record({
 		title: IDL.Text,
 		updated_at: IDL.Opt(IDL.Nat64),
@@ -36,10 +59,21 @@ export const idlFactory = ({ IDL }) => {
 		collected_at: IDL.Nat64
 	});
 	return IDL.Service({
+		del_controllers: IDL.Func(
+			[DeleteControllersArgs],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[]
+		),
 		get_page_views: IDL.Func(
 			[GetPageViews],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],
 			['query']
+		),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
+		set_controllers: IDL.Func(
+			[SetControllersArgs],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
+			[]
 		),
 		set_page_view: IDL.Func([AnalyticKey, SetPageView], [PageView], []),
 		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [], [])

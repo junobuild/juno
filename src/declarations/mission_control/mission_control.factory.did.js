@@ -1,5 +1,11 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const Orbiter = IDL.Record({
+		updated_at: IDL.Nat64,
+		orbiter_id: IDL.Principal,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64
+	});
 	const Satellite = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -48,16 +54,18 @@ export const idlFactory = ({ IDL }) => {
 		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
-	const CronJobStatusesSatelliteConfig = IDL.Record({
+	const CronJobStatusesConfig = IDL.Record({
 		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)
 	});
 	const StatusesArgs = IDL.Record({
 		mission_control_cycles_threshold: IDL.Opt(IDL.Nat64),
-		satellites: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesSatelliteConfig)),
+		orbiters: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesConfig)),
+		satellites: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesConfig)),
 		cycles_threshold: IDL.Opt(IDL.Nat64)
 	});
 	const SegmentsStatuses = IDL.Record({
+		orbiters: IDL.Opt(IDL.Vec(Result)),
 		satellites: IDL.Opt(IDL.Vec(Result)),
 		mission_control: Result
 	});
@@ -65,6 +73,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		add_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		add_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
+		create_orbiter: IDL.Func([IDL.Text], [Orbiter], []),
 		create_satellite: IDL.Func([IDL.Text], [Satellite], []),
 		del_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		del_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
@@ -75,6 +84,12 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		list_mission_control_statuses: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Result))], ['query']),
+		list_orbiter_statuses: IDL.Func(
+			[IDL.Principal],
+			[IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Nat64, Result)))],
+			['query']
+		),
+		list_orbiters: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Orbiter))], ['query']),
 		list_satellite_statuses: IDL.Func(
 			[IDL.Principal],
 			[IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Nat64, Result)))],
@@ -89,6 +104,11 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_metadata: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		set_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal), SetController], [], []),
+		set_orbiter_metadata: IDL.Func(
+			[IDL.Principal, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+			[Orbiter],
+			[]
+		),
 		set_satellite_metadata: IDL.Func(
 			[IDL.Principal, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
 			[Satellite],

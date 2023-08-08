@@ -202,6 +202,8 @@ interface I18nErrors {
 	upgrade_requires_iterative_version: string;
 	top_up_error: string;
 	analytics_load_error: string;
+	satellites_loading: string;
+	orbiters_loading: string;
 }
 
 interface I18nDocument {

@@ -9,6 +9,7 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import Analytics from '$lib/components/analytics/Analytics.svelte';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -30,9 +31,11 @@
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/datastore">
 		<SatelliteGuard>
-			{#if nonNullish($satelliteStore)}
-				<Analytics satelliteId={$satelliteStore.satellite_id} />
-			{/if}
+			<MissionControlGuard>
+				{#if nonNullish($satelliteStore)}
+					<Analytics satelliteId={$satelliteStore.satellite_id} />
+				{/if}
+			</MissionControlGuard>
 		</SatelliteGuard>
 	</Tabs>
 </IdentityGuard>

@@ -8,6 +8,10 @@
 	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
 	import Value from '$lib/components/ui/Value.svelte';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { isNullish } from '$lib/utils/utils';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
 
 	export let satelliteId: Principal;
 
@@ -15,12 +19,16 @@
 
 	let data: [AnalyticKey, PageView][] = [];
 
-	const load = async () => {
+	const loadPageViews = async () => {
+		if (isNullish($orbiterStore)) {
+			loading = false;
+			return;
+		}
+
 		try {
 			data = await getPageViews({
 				satelliteId,
-				// TODO: orbiter id from mission control or console?
-				orbiterId: Principal.fromText('aovwi-4maaa-aaaaa-qaagq-cai')
+				orbiterId: $orbiterStore.orbiter_id
 			});
 
 			loading = false;
@@ -32,7 +40,10 @@
 		}
 	};
 
-	onMount(load);
+	onMount(async () => {
+		await loadOrbiters({ missionControl: $missionControlStore });
+		await loadPageViews();
+	});
 
 	let uniqueSessions: number = 0;
 	$: uniqueSessions = [...new Set(data.map(([key, _]) => key.session_id))].length;
@@ -65,6 +76,8 @@
 <div class="card-container">
 	{#if loading}
 		<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
+		{:else if isNullish($orbiterStore)}
+		Empty
 	{:else}
 		<Value>
 			<svelte:fragment slot="label">Number of Sessions</svelte:fragment>
@@ -90,7 +103,7 @@
 			<svelte:fragment slot="label">Bounce rate</svelte:fragment>
 			<p>{bounceRate}</p>
 		</Value>
-	{/if}
 
-	<AnalyticsChart {data} />
+		<AnalyticsChart {data} />
+	{/if}
 </div>

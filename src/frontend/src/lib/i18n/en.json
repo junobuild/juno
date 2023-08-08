@@ -187,7 +187,9 @@
 		"upgrade_no_wasm": "No wasm provided. Please try again.",
 		"upgrade_requires_iterative_version": "There may have been breaking changes between your {0} v{1} and selected version {2}. Please upgrade iteratively.",
 		"top_up_error": "Error while topping up the segment.",
-		"analytics_load_error": "Error while loading the analytics data"
+		"analytics_load_error": "Error while loading the analytics data",
+		"satellites_loading": "Error while loading the list of satellites.",
+		"orbiters_loading": "Error while loading the list of orbiters."
 	},
 	"document": {
 		"owner": "Owner",

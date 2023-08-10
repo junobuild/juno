@@ -1,8 +1,22 @@
-import type { ReleasesVersion } from '$declarations/console/console.did';
+import type { MissionControl, ReleasesVersion } from '$declarations/console/console.did';
 import { getConsoleActor } from '$lib/utils/actor.utils';
 import { fromNullable } from '$lib/utils/did.utils';
 import { isNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
+
+export const initMissionControl = async (): Promise<MissionControl> => {
+	const actor = await getConsoleActor();
+
+	const existingMissionControl: MissionControl | undefined = fromNullable<MissionControl>(
+		await actor.get_user_mission_control_center()
+	);
+
+	if (!existingMissionControl) {
+		return await actor.init_user_mission_control_center();
+	}
+
+	return existingMissionControl;
+};
 
 export const getCredits = async (): Promise<bigint> => {
 	const actor = await getConsoleActor();

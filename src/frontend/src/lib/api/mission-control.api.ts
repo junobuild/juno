@@ -1,45 +1,9 @@
 import type { Controller, Satellite } from '$declarations/mission_control/mission_control.did';
-import { getMissionControl } from '$lib/services/mission-control.services';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Metadata } from '$lib/types/metadata';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
 import { toSetController } from '$lib/utils/controllers.utils';
-import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-
-export const initMissionControl = async ({
-	identity,
-	onInitMissionControlSuccess
-}: {
-	identity: Identity;
-	onInitMissionControlSuccess: (missionControlId: Principal) => Promise<void>;
-}) =>
-	// eslint-disable-next-line no-async-promise-executor
-	new Promise<void>(async (resolve, reject) => {
-		try {
-			const { actor, missionControlId } = await getMissionControl({
-				identity
-			});
-
-			if (!actor || !missionControlId) {
-				setTimeout(async () => {
-					try {
-						await initMissionControl({ identity, onInitMissionControlSuccess });
-						resolve();
-					} catch (err: unknown) {
-						reject(err);
-					}
-				}, 2000);
-				return;
-			}
-
-			await onInitMissionControlSuccess(missionControlId);
-
-			resolve();
-		} catch (err: unknown) {
-			reject(err);
-		}
-	});
 
 export const setSatellitesController = async ({
 	missionControlId,

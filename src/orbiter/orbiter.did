@@ -13,8 +13,8 @@ type Controller = record {
 type ControllerScope = variant { Write; Admin };
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetPageViews = record {
-  to : nat64;
-  from : nat64;
+  to : opt nat64;
+  from : opt nat64;
   satellite_id : opt principal;
 };
 type PageView = record {

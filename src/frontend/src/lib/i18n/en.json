@@ -28,7 +28,9 @@
 		"version": "Version",
 		"delete": "Delete",
 		"skip": "Skip",
-		"done": "Done"
+		"done": "Done",
+		"from": "From",
+		"to": "To"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -118,6 +120,7 @@
 		"create": "Create analytics",
 		"ready": "Your analytics are ready!",
 		"satellites": "Satellite(s)",
+		"all_satellites": "All satellites",
 		"number_of_sessions": "Number of Sessions",
 		"unique_page_views": "Unique page views",
 		"total_page_views": "Total page views",

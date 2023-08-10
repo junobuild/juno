@@ -63,7 +63,17 @@ fn get_page_views_impl(
                 Some(satellite_id) => principal_equal(key.satellite_id, satellite_id),
             };
 
-            valid_key && page_view.collected_at >= from && page_view.collected_at <= to
+            let valid_from = match from {
+                None => true,
+                Some(from) => page_view.collected_at >= from
+            };
+
+            let valid_to = match to {
+                None => true,
+                Some(to) => page_view.collected_at <= to
+            };
+
+            valid_key && valid_from && valid_to
         })
         .collect()
 }

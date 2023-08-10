@@ -15,8 +15,8 @@ export const idlFactory = ({ IDL }) => {
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const GetPageViews = IDL.Record({
-		to: IDL.Nat64,
-		from: IDL.Nat64,
+		to: IDL.Opt(IDL.Nat64),
+		from: IDL.Opt(IDL.Nat64),
 		satellite_id: IDL.Opt(IDL.Principal)
 	});
 	const AnalyticKey = IDL.Record({

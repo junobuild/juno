@@ -13,11 +13,15 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
-	import SatellitesPicker from '$lib/components/satellites/SatellitesPicker.svelte';
+	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
+	import type { PageViewsPeriod } from '$lib/types/ortbiter';
+	import { debounce } from '$lib/utils/debounce.utils';
 
 	let loading = true;
 
 	let data: [AnalyticKey, PageView][] = [];
+
+	let period: PageViewsPeriod = {};
 
 	const loadPageViews = async () => {
 		if (isNullish($orbiterStore)) {
@@ -28,7 +32,8 @@
 		try {
 			data = await getPageViews({
 				satelliteId: $satelliteStore?.satellite_id,
-				orbiterId: $orbiterStore.orbiter_id
+				orbiterId: $orbiterStore.orbiter_id,
+				...period
 			});
 
 			loading = false;
@@ -40,10 +45,11 @@
 		}
 	};
 
-	onMount(async () => {
-		await loadOrbiters({ missionControl: $missionControlStore });
-		await loadPageViews();
-	});
+	onMount(async () => await loadOrbiters({ missionControl: $missionControlStore }));
+
+	const debouncePageViews = debounce(loadPageViews);
+
+	$: $orbiterStore, $satelliteStore, period, debouncePageViews();
 
 	let uniqueSessions: number = 0;
 	$: uniqueSessions = [...new Set(data.map(([key, _]) => key.session_id))].length;
@@ -71,6 +77,8 @@
 
 	let bounceRate = 0;
 	$: bounceRate = Object.entries(sessionsViews).filter(([key, value]) => value === 1).length;
+
+	const selectPeriod = ({ detail }: CustomEvent<PageViewsPeriod>) => (period = detail);
 </script>
 
 <div class="card-container">
@@ -79,10 +87,7 @@
 	{:else if isNullish($orbiterStore)}
 		<AnalyticsNew />
 	{:else}
-		<Value>
-			<svelte:fragment slot="label">{$i18n.analytics.satellites}</svelte:fragment>
-			<p><SatellitesPicker /></p>
-		</Value>
+		<AnalyticsFilter on:junoPeriod={selectPeriod} />
 
 		<Value>
 			<svelte:fragment slot="label">{$i18n.analytics.number_of_sessions}</svelte:fragment>

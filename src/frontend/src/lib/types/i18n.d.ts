@@ -32,6 +32,8 @@ interface I18nCore {
 	delete: string;
 	skip: string;
 	done: string;
+	from: string;
+	to: string;
 }
 
 interface I18nCanisters {
@@ -129,6 +131,7 @@ interface I18nAnalytics {
 	create: string;
 	ready: string;
 	satellites: string;
+	all_satellites: string;
 	number_of_sessions: string;
 	unique_page_views: string;
 	total_page_views: string;

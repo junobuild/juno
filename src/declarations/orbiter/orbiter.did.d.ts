@@ -18,8 +18,8 @@ export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
 export interface GetPageViews {
-	to: bigint;
-	from: bigint;
+	to: [] | [bigint];
+	from: [] | [bigint];
 	satellite_id: [] | [Principal];
 }
 export interface PageView {

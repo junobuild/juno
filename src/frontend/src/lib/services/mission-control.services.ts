@@ -1,8 +1,4 @@
-import type { _SERVICE as ConsoleActor, MissionControl } from '$declarations/console/console.did';
-import type {
-	_SERVICE as MissionControlActor,
-	Satellite
-} from '$declarations/mission_control/mission_control.did';
+import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import {
 	addMissionControlController,
 	addSatellitesController,
@@ -16,60 +12,9 @@ import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import type { SetControllerParams } from '$lib/types/controllers';
-import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
-import { getConsoleActor, getMissionControlActor } from '../utils/actor.utils';
-import { fromNullable } from '../utils/did.utils';
-
-export interface MissionControlActorDetails {
-	missionControlId: Principal | undefined;
-	actor: MissionControlActor | undefined;
-}
-
-const initMissionControl = async ({
-	consoleActor
-}: {
-	consoleActor: ConsoleActor;
-}): Promise<MissionControl> => {
-	const existingMissionControl: MissionControl | undefined = fromNullable<MissionControl>(
-		await consoleActor.get_user_mission_control_center()
-	);
-
-	if (!existingMissionControl) {
-		return await consoleActor.init_user_mission_control_center();
-	}
-
-	return existingMissionControl;
-};
-
-export const getMissionControl = async ({
-	identity
-}: {
-	identity: Identity | undefined;
-}): Promise<MissionControlActorDetails> => {
-	if (!identity) {
-		throw new Error('Invalid identity.');
-	}
-
-	const consoleActor = await getConsoleActor();
-
-	const mission_control = await initMissionControl({ consoleActor });
-
-	const missionControlId: Principal | undefined = fromNullable<Principal>(
-		mission_control.mission_control_id
-	);
-
-	const actor: MissionControlActor | undefined = missionControlId
-		? await getMissionControlActor(missionControlId)
-		: undefined;
-
-	return {
-		missionControlId: missionControlId,
-		actor
-	};
-};
 
 // TODO: to be removed in next version as only supported if < v0.0.3
 export const setMissionControlControllerForVersion = async ({

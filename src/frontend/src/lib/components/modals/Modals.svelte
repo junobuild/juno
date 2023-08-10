@@ -8,7 +8,7 @@
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
-	import OrbiterCreateModal from "$lib/components/modals/OrbiterCreateModal.svelte";
+	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 

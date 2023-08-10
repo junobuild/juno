@@ -122,6 +122,10 @@ interface I18nAnalytics {
 	loading: string;
 	empty: string;
 	get_started: string;
+	start: string;
+	description: string;
+	initializing: string;
+	create_orbiter_price: string;
 }
 
 interface I18nHosting {

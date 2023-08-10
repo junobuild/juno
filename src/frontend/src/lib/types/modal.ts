@@ -26,7 +26,7 @@ export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail & JunoModal
 
 export interface JunoModalUpgradeMissionControlDetail extends JunoModalUpgradeDetail {}
 
-export interface JunoModalCreateSatelliteDetail extends JunoModalBalance {
+export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
 	fee: bigint;
 }
 
@@ -47,7 +47,7 @@ export interface JunoModalCreateControllerDetail {
 export type JunoModalDetail =
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
-	| JunoModalCreateSatelliteDetail
+	| JunoModalCreateSegmentDetail
 	| JunoModalCustomDomainDetail
 	| JunoModalCreateControllerDetail;
 

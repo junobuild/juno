@@ -10,7 +10,7 @@
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
-	import IconChartBar from "$lib/components/icons/IconChartBar.svelte";
+	import IconChartBar from '$lib/components/icons/IconChartBar.svelte';
 
 	export let signIn = true;
 

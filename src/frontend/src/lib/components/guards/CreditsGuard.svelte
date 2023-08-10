@@ -1,13 +1,20 @@
 <script lang="ts">
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { createEventDispatcher } from 'svelte';
+	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 
-	export let balance: bigint;
-	export let credits: bigint;
-	export let fee: bigint;
+	export let detail: JunoModalDetail;
+	export let priceLabel: string;
+
+	let fee = 0n;
+	let balance = 0n;
+	let credits = 0n;
+
+	$: fee = (detail as JunoModalCreateSegmentDetail).fee;
+	$: balance = (detail as JunoModalCreateSegmentDetail).missionControlBalance?.balance ?? 0n;
+	$: credits = (detail as JunoModalCreateSegmentDetail).missionControlBalance?.credits ?? 0n;
 
 	export let insufficientFunds = true;
 	$: insufficientFunds = balance + credits < fee;
@@ -20,7 +27,7 @@
 
 {#if notEnoughCredits}
 	<p>
-		{@html i18nFormat($i18n.satellites.create_satellite_price, [
+		{@html i18nFormat(priceLabel, [
 			{
 				placeholder: '{0}',
 				value: formatE8sICP(fee)

@@ -10,7 +10,7 @@
 	import { isNullish } from '$lib/utils/utils';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalCreateSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
+	import type { JunoModalDetail } from '$lib/types/modal';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import WhatNext from '$lib/components/onboarding/WhatNext.svelte';
@@ -19,14 +19,6 @@
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 
 	export let detail: JunoModalDetail;
-
-	let fee = 0n;
-	let balance = 0n;
-	let credits = 0n;
-
-	$: fee = (detail as JunoModalCreateSatelliteDetail).fee;
-	$: balance = (detail as JunoModalCreateSatelliteDetail).missionControlBalance?.balance ?? 0n;
-	$: credits = (detail as JunoModalCreateSatelliteDetail).missionControlBalance?.credits ?? 0n;
 
 	let insufficientFunds = true;
 
@@ -95,23 +87,28 @@
 			{$i18n.satellites.description}
 		</p>
 
-		<CreditsGuard on:junoClose bind:insufficientFunds {fee} {balance} {credits}>
+		<CreditsGuard
+			on:junoClose
+			bind:insufficientFunds
+			{detail}
+			priceLabel={$i18n.satellites.create_satellite_price}
+		>
 			<form on:submit|preventDefault={onSubmit}>
 				<Value>
 					<svelte:fragment slot="label">{$i18n.satellites.satellite_name}</svelte:fragment>
 					<input
-							bind:value={satelliteName}
-							type="text"
-							name="satellite_name"
-							placeholder={$i18n.satellites.enter_name}
-							required
+						bind:value={satelliteName}
+						type="text"
+						name="satellite_name"
+						placeholder={$i18n.satellites.enter_name}
+						required
 					/>
 				</Value>
 
 				<button
-						type="submit"
-						disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
-				>{$i18n.satellites.create}</button
+					type="submit"
+					disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
+					>{$i18n.satellites.create}</button
 				>
 			</form>
 		</CreditsGuard>

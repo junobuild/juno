@@ -169,7 +169,7 @@ fn list_orbiters() -> Orbiters {
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
-async fn create_orbiter(name: String) -> Orbiter {
+async fn create_orbiter(name: Option<String>) -> Orbiter {
     create_orbiter_console(&name)
         .await
         .unwrap_or_else(|e| trap(&e))

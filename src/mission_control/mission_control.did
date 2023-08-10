@@ -64,7 +64,7 @@ type Tokens = record { e8s : nat64 };
 service : () -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
-  create_orbiter : (text) -> (Orbiter);
+  create_orbiter : (opt text) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
   del_mission_control_controllers : (vec principal) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();

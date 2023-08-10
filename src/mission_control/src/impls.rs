@@ -29,13 +29,20 @@ impl Archive {
     }
 }
 
+fn init_metadata(name: &Option<String>) -> Metadata {
+    match name {
+        Some(name) => HashMap::from([("name".to_string(), name.to_owned())]),
+        None => HashMap::new(),
+    }
+}
+
 impl Satellite {
-    pub fn from(satellite_id: &SatelliteId, name: &str) -> Self {
+    pub fn from(satellite_id: &SatelliteId, name: &Option<String>) -> Self {
         let now = time();
 
         Satellite {
             satellite_id: *satellite_id,
-            metadata: HashMap::from([("name".to_string(), name.to_owned())]),
+            metadata: init_metadata(name),
             created_at: now,
             updated_at: now,
         }
@@ -43,12 +50,12 @@ impl Satellite {
 }
 
 impl Orbiter {
-    pub fn from(orbiter_id: &OrbiterId, name: &str) -> Self {
+    pub fn from(orbiter_id: &OrbiterId, name: &Option<String>) -> Self {
         let now = time();
 
         Orbiter {
             orbiter_id: *orbiter_id,
-            metadata: HashMap::from([("name".to_string(), name.to_owned())]),
+            metadata: init_metadata(name),
             created_at: now,
             updated_at: now,
         }

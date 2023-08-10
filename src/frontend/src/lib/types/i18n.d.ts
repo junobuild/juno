@@ -118,8 +118,16 @@ interface I18nStorage {
 
 interface I18nAnalytics {
 	title: string;
-	metrics: string;
+	dashboard: string;
 	loading: string;
+	empty: string;
+	get_started: string;
+	start: string;
+	description: string;
+	initializing: string;
+	create_orbiter_price: string;
+	create: string;
+	ready: string;
 }
 
 interface I18nHosting {

@@ -69,7 +69,7 @@ export interface Tokens {
 export interface _SERVICE {
 	add_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	add_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
-	create_orbiter: ActorMethod<[string], Orbiter>;
+	create_orbiter: ActorMethod<[[] | [string]], Orbiter>;
 	create_satellite: ActorMethod<[string], Satellite>;
 	del_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;

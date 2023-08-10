@@ -1,20 +1,17 @@
 <script lang="ts">
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { writable } from 'svelte/store';
 	import type { Tab, TabsContext, TabsStore } from '$lib/types/tabs.context';
 	import { setContext } from 'svelte';
 	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import { nonNullish } from '$lib/utils/utils';
 	import Analytics from '$lib/components/analytics/Analytics.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'analytics.metrics'
+			labelKey: 'analytics.dashboard'
 		}
 	];
 
@@ -30,12 +27,8 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/datastore">
-		<SatelliteGuard>
-			<MissionControlGuard>
-				{#if nonNullish($satelliteStore)}
-					<Analytics satelliteId={$satelliteStore.satellite_id} />
-				{/if}
-			</MissionControlGuard>
-		</SatelliteGuard>
+		<MissionControlGuard>
+			<Analytics />
+		</MissionControlGuard>
 	</Tabs>
 </IdentityGuard>

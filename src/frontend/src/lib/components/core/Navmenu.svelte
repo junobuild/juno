@@ -60,15 +60,6 @@
 
 		<a
 			class="link"
-			href={`/analytics/?s=${satelliteId}`}
-			class:selected={isSelected({ routeId, path: 'analytics' })}
-		>
-			<IconStorage size="24px" />
-			<span>{$i18n.analytics.title}</span>
-		</a>
-
-		<a
-			class="link"
 			href={`/hosting/?s=${satelliteId}`}
 			class:selected={isSelected({ routeId, path: 'hosting' })}
 		>

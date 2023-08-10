@@ -73,7 +73,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		add_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		add_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
-		create_orbiter: IDL.Func([IDL.Text], [Orbiter], []),
+		create_orbiter: IDL.Func([IDL.Opt(IDL.Text)], [Orbiter], []),
 		create_satellite: IDL.Func([IDL.Text], [Satellite], []),
 		del_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		del_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),

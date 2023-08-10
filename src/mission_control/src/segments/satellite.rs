@@ -10,12 +10,12 @@ use shared::types::interface::CreateCanisterArgs;
 use shared::types::state::{SatelliteId, UserId};
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
-    create_canister("get_create_satellite_fee", create_and_save_satellite, name).await
+    create_canister("get_create_satellite_fee", create_and_save_satellite, &Some(name.to_string().clone())).await
 }
 
 async fn create_and_save_satellite(
     user: UserId,
-    name: String,
+    name: Option<String>,
     block_index: Option<BlockIndex>,
 ) -> Result<Satellite, String> {
     let console = Principal::from_text(CONSOLE).unwrap();
@@ -26,6 +26,6 @@ async fn create_and_save_satellite(
 
     match result {
         Err((_, message)) => Err(["Create satellite failed.", &message].join(" - ")),
-        Ok((satellite,)) => Ok(add_satellite(&satellite, name.as_str())),
+        Ok((satellite,)) => Ok(add_satellite(&satellite, &name)),
     }
 }

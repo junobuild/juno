@@ -126,6 +126,8 @@ interface I18nAnalytics {
 	description: string;
 	initializing: string;
 	create_orbiter_price: string;
+	create: string;
+	ready: string;
 }
 
 interface I18nHosting {

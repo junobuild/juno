@@ -11,7 +11,7 @@ pub fn get_satellites() -> Satellites {
     STATE.with(|state| state.borrow().stable.satellites.clone())
 }
 
-pub fn add_satellite(satellite_id: &SatelliteId, name: &str) -> Satellite {
+pub fn add_satellite(satellite_id: &SatelliteId, name: &Option<String>) -> Satellite {
     STATE.with(|state| {
         add_segment_impl(
             satellite_id,
@@ -40,7 +40,7 @@ pub fn get_orbiters() -> Orbiters {
     STATE.with(|state| state.borrow().stable.orbiters.clone())
 }
 
-pub fn add_orbiter(orbiter_id: &SatelliteId, name: &str) -> Orbiter {
+pub fn add_orbiter(orbiter_id: &SatelliteId, name: &Option<String>) -> Orbiter {
     STATE.with(|state| {
         add_segment_impl(
             orbiter_id,

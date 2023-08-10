@@ -13,10 +13,10 @@ use std::future::Future;
 pub async fn create_canister<F, Fut, T>(
     fee_method: &str,
     create_and_save: F,
-    name: &str,
+    name: &Option<String>,
 ) -> Result<T, String>
 where
-    F: FnOnce(UserId, String, Option<BlockIndex>) -> Fut,
+    F: FnOnce(UserId, Option<String>, Option<BlockIndex>) -> Fut,
     Fut: Future<Output = Result<T, String>>,
 {
     let console = Principal::from_text(CONSOLE).unwrap();
@@ -31,7 +31,7 @@ where
         Ok((fee,)) => {
             match fee {
                 // If no fee provided, the creation of the satellite is probably for free
-                None => create_and_save(user, name.to_string(), None).await,
+                None => create_and_save(user, name.clone(), None).await,
                 Some(fee) => {
                     // If a free is set, transfer the requested fee to the console
                     let block_index = transfer_payment(
@@ -45,7 +45,7 @@ where
                     .map_err(|e| format!("failed to call ledger: {:?}", e))?
                     .map_err(|e| format!("ledger transfer error {:?}", e))?;
 
-                    create_and_save(user, name.to_string(), Some(block_index)).await
+                    create_and_save(user, name.clone(), Some(block_index)).await
                 }
             }
         }

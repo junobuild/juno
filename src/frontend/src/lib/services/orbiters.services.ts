@@ -3,6 +3,7 @@ import { i18n } from '$lib/stores/i18n.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
+import { toNullable } from '$lib/utils/did.utils';
 import { assertNonNullish, isNullish, nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
@@ -12,12 +13,12 @@ export const createOrbiter = async ({
 	orbiterName
 }: {
 	missionControl: Principal | undefined | null;
-	orbiterName: string;
+	orbiterName?: string;
 }): Promise<Orbiter | undefined> => {
 	assertNonNullish(missionControl);
 
 	const actor = await getMissionControlActor(missionControl);
-	return actor.create_orbiter(orbiterName);
+	return actor.create_orbiter(toNullable(orbiterName));
 };
 
 export const loadOrbiters = async ({

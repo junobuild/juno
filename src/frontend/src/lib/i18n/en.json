@@ -112,9 +112,11 @@
 		"empty": "Get analytics to measure and analyse how users engage with your apps.",
 		"get_started": "Get started",
 		"start": "Getting started",
-		"description": "Juno provides simple, lightweight, and open-source web analytics that don't use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your website visitors.",
+		"description": "Juno provides simple, lightweight, and open-source web analytics that do not use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your website visitors.",
 		"initializing": "Initializing analytics...",
-		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining."
+		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
+		"create": "Create analytics",
+		"ready": "Your analytics are ready!"
 	},
 	"hosting": {
 		"title": "Hosting",

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
 	import { browser } from '$app/environment';
-	import { initMissionControl } from '$lib/api/mission-control.api';
+	import { initMissionControl } from '$lib/services/console.services';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { onMount } from 'svelte';
 	import { initAuthWorker } from '$lib/services/worker.auth.services';

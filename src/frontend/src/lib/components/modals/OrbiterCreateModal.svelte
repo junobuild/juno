@@ -100,18 +100,18 @@
 				<Value>
 					<svelte:fragment slot="label">{$i18n.satellites.satellite_name}</svelte:fragment>
 					<input
-							bind:value={satelliteName}
-							type="text"
-							name="satellite_name"
-							placeholder={$i18n.satellites.enter_name}
-							required
+						bind:value={satelliteName}
+						type="text"
+						name="satellite_name"
+						placeholder={$i18n.satellites.enter_name}
+						required
 					/>
 				</Value>
 
 				<button
-						type="submit"
-						disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
-				>{$i18n.satellites.create}</button
+					type="submit"
+					disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
+					>{$i18n.satellites.create}</button
 				>
 			</form>
 		</CreditsGuard>

@@ -128,6 +128,12 @@ interface I18nAnalytics {
 	create_orbiter_price: string;
 	create: string;
 	ready: string;
+	satellites: string;
+	number_of_sessions: string;
+	unique_page_views: string;
+	total_page_views: string;
+	average_page_views_per_session: string;
+	bounce_rate: string;
 }
 
 interface I18nHosting {

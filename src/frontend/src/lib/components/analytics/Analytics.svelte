@@ -80,35 +80,39 @@
 		<AnalyticsNew />
 	{:else}
 		<Value>
-			<svelte:fragment slot="label">Satellite(s)</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.analytics.satellites}</svelte:fragment>
 			<p><SatellitesPicker /></p>
 		</Value>
 
 		<Value>
-			<svelte:fragment slot="label">Number of Sessions</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.analytics.number_of_sessions}</svelte:fragment>
 			<p>{uniqueSessions}</p>
 		</Value>
 
 		<Value>
-			<svelte:fragment slot="label">Unique page views</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.analytics.unique_page_views}</svelte:fragment>
 			<p>{uniquePageViews}</p>
 		</Value>
 
 		<Value>
-			<svelte:fragment slot="label">Total page views</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
 			<p>{data.length}</p>
 		</Value>
 
 		<Value>
-			<svelte:fragment slot="label">Average page views per session</svelte:fragment>
+			<svelte:fragment slot="label"
+				>{$i18n.analytics.average_page_views_per_session}</svelte:fragment
+			>
 			<p>{uniqueSessions > 0 ? uniqueSessions / data.length : 0}</p>
 		</Value>
 
 		<Value>
-			<svelte:fragment slot="label">Bounce rate</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.analytics.bounce_rate}</svelte:fragment>
 			<p>{bounceRate}</p>
 		</Value>
 
-		<AnalyticsChart {data} />
+		{#if data.length > 0}
+			<AnalyticsChart {data} />
+		{/if}
 	{/if}
 </div>

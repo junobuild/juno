@@ -116,7 +116,13 @@
 		"initializing": "Initializing analytics...",
 		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
 		"create": "Create analytics",
-		"ready": "Your analytics are ready!"
+		"ready": "Your analytics are ready!",
+		"satellites": "Satellite(s)",
+		"number_of_sessions": "Number of Sessions",
+		"unique_page_views": "Unique page views",
+		"total_page_views": "Total page views",
+		"average_page_views_per_session": "Average page views per session",
+		"bounce_rate": "Bounce rate"
 	},
 	"hosting": {
 		"title": "Hosting",

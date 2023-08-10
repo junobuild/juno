@@ -11,8 +11,9 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { isNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import { satellitesStore } from '$lib/stores/satellite.store';
+	import { satelliteStore } from '$lib/stores/satellite.store';
 	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
+	import SatellitesPicker from '$lib/components/satellites/SatellitesPicker.svelte';
 
 	let loading = true;
 
@@ -24,15 +25,9 @@
 			return;
 		}
 
-		// TODO all satellites
-		if (isNullish($satellitesStore)) {
-			loading = false;
-			return;
-		}
-
 		try {
 			data = await getPageViews({
-				satelliteId: $satellitesStore[0].satellite_id,
+				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: $orbiterStore.orbiter_id
 			});
 
@@ -85,6 +80,11 @@
 		<AnalyticsNew />
 	{:else}
 		<Value>
+			<svelte:fragment slot="label">Satellite(s)</svelte:fragment>
+			<p><SatellitesPicker /></p>
+		</Value>
+
+		<Value>
 			<svelte:fragment slot="label">Number of Sessions</svelte:fragment>
 			<p>{uniqueSessions}</p>
 		</Value>
@@ -101,7 +101,7 @@
 
 		<Value>
 			<svelte:fragment slot="label">Average page views per session</svelte:fragment>
-			<p>{uniqueSessions / data.length}</p>
+			<p>{uniqueSessions > 0 ? uniqueSessions / data.length : 0}</p>
 		</Value>
 
 		<Value>

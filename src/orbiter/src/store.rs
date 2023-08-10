@@ -58,9 +58,12 @@ fn get_page_views_impl(
 ) -> Vec<(AnalyticKey, PageView)> {
     db.iter()
         .filter(|(key, page_view)| {
-            principal_equal(key.satellite_id, satellite_id)
-                && page_view.collected_at >= from
-                && page_view.collected_at <= to
+            let valid_key = match satellite_id {
+                None => true,
+                Some(satellite_id) => principal_equal(key.satellite_id, satellite_id),
+            };
+
+            valid_key && page_view.collected_at >= from && page_view.collected_at <= to
         })
         .collect()
 }

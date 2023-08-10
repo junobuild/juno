@@ -10,7 +10,12 @@ use shared::types::interface::CreateCanisterArgs;
 use shared::types::state::{SatelliteId, UserId};
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
-    create_canister("get_create_satellite_fee", create_and_save_satellite, &Some(name.to_string().clone())).await
+    create_canister(
+        "get_create_satellite_fee",
+        create_and_save_satellite,
+        &Some(name.to_string().clone()),
+    )
+    .await
 }
 
 async fn create_and_save_satellite(

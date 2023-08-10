@@ -91,7 +91,7 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct GetPageViews {
-        pub satellite_id: SatelliteId,
+        pub satellite_id: Option<SatelliteId>,
         pub from: u64,
         pub to: u64,
     }

@@ -17,7 +17,7 @@ export const idlFactory = ({ IDL }) => {
 	const GetPageViews = IDL.Record({
 		to: IDL.Nat64,
 		from: IDL.Nat64,
-		satellite_id: IDL.Principal
+		satellite_id: IDL.Opt(IDL.Principal)
 	});
 	const AnalyticKey = IDL.Record({
 		key: IDL.Text,

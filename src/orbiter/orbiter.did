@@ -15,7 +15,7 @@ type DeleteControllersArgs = record { controllers : vec principal };
 type GetPageViews = record {
   to : nat64;
   from : nat64;
-  satellite_id : principal;
+  satellite_id : opt principal;
 };
 type PageView = record {
   title : text;

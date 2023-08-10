@@ -20,7 +20,7 @@ export interface DeleteControllersArgs {
 export interface GetPageViews {
 	to: bigint;
 	from: bigint;
-	satellite_id: Principal;
+	satellite_id: [] | [Principal];
 }
 export interface PageView {
 	title: string;

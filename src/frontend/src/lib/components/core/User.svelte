@@ -11,6 +11,8 @@
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 	import IconChartBar from '$lib/components/icons/IconChartBar.svelte';
+	import { analyticsLink } from '$lib/utils/nav.utils';
+	import { satelliteStore } from '$lib/stores/satellite.store';
 
 	export let signIn = true;
 
@@ -60,7 +62,7 @@
 		</a>
 
 		<a
-			href="/analytics"
+			href={analyticsLink($satelliteStore?.satellite_id)}
 			class="menu"
 			role="menuitem"
 			aria-haspopup="menu"

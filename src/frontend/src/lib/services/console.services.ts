@@ -1,12 +1,69 @@
-import { releasesVersion } from '$lib/api/console.api';
+import { initMissionControl as initMissionControlApi, releasesVersion } from '$lib/api/console.api';
 import { missionControlVersion } from '$lib/api/mission-control.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
 import { fromNullable } from '$lib/utils/did.utils';
 import { isNullish, nonNullish } from '$lib/utils/utils';
+import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
+
+export const initMissionControl = async ({
+	identity,
+	onInitMissionControlSuccess
+}: {
+	identity: Identity;
+	onInitMissionControlSuccess: (missionControlId: Principal) => Promise<void>;
+}) =>
+	// eslint-disable-next-line no-async-promise-executor
+	new Promise<void>(async (resolve, reject) => {
+		try {
+			const { missionControlId } = await getMissionControl({
+				identity
+			});
+
+			if (isNullish(missionControlId)) {
+				setTimeout(async () => {
+					try {
+						await initMissionControl({ identity, onInitMissionControlSuccess });
+						resolve();
+					} catch (err: unknown) {
+						reject(err);
+					}
+				}, 2000);
+				return;
+			}
+
+			await onInitMissionControlSuccess(missionControlId);
+
+			resolve();
+		} catch (err: unknown) {
+			reject(err);
+		}
+	});
+
+const getMissionControl = async ({
+	identity
+}: {
+	identity: Identity | undefined;
+}): Promise<{
+	missionControlId: Principal | undefined;
+}> => {
+	if (!identity) {
+		throw new Error('Invalid identity.');
+	}
+
+	const mission_control = await initMissionControlApi();
+
+	const missionControlId: Principal | undefined = fromNullable<Principal>(
+		mission_control.mission_control_id
+	);
+
+	return {
+		missionControlId
+	};
+};
 
 export const loadVersion = async ({
 	satelliteId,

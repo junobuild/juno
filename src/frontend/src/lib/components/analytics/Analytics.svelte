@@ -3,12 +3,9 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { getPageViews } from '$lib/api/orbiter.api';
-	import { onMount } from 'svelte';
 	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
 	import Value from '$lib/components/ui/Value.svelte';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { isNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
@@ -44,8 +41,6 @@
 			});
 		}
 	};
-
-	onMount(async () => await loadOrbiters({ missionControl: $missionControlStore }));
 
 	const debouncePageViews = debounce(loadPageViews);
 

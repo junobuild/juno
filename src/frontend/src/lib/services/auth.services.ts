@@ -4,11 +4,13 @@ import { missionControlStore } from '$lib/stores/mission-control.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import {orbitersStore} from "$lib/stores/orbiter.store";
+import { versionStore } from '$lib/stores/version.store';
 
 const clearDataStores = () => {
 	satellitesStore.set(null);
 	missionControlStore.set(null);
 	orbitersStore.set(null);
+	versionStore.reset();
 };
 
 export const signIn = async (

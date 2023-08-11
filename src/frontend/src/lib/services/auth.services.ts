@@ -3,10 +3,12 @@ import { busy } from '$lib/stores/busy.store';
 import { missionControlStore } from '$lib/stores/mission-control.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
+import {orbitersStore} from "$lib/stores/orbiter.store";
 
 const clearDataStores = () => {
 	satellitesStore.set(null);
 	missionControlStore.set(null);
+	orbitersStore.set(null);
 };
 
 export const signIn = async (

@@ -18,13 +18,16 @@ export interface VersionStore extends Readable<ReleasesVersion> {
 		satelliteId: SatelliteIdText;
 		version: ReleaseVersion | undefined;
 	}) => void;
+	reset: () => void;
 }
 
 const initVersionStore = (): VersionStore => {
-	const { subscribe, update } = writable<ReleasesVersion>({
+	const INITIAL = {
 		satellites: {},
 		missionControl: undefined
-	});
+	} as const;
+
+	const { subscribe, update, set } = writable<ReleasesVersion>(INITIAL);
 
 	return {
 		subscribe,
@@ -44,7 +47,9 @@ const initVersionStore = (): VersionStore => {
 					[satelliteId]: version
 				}
 			}));
-		}
+		},
+
+		reset: () => set(INITIAL)
 	};
 };
 

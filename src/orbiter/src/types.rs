@@ -1,10 +1,11 @@
 pub mod state {
     use crate::memory::init_stable_state;
     use crate::types::memory::Memory;
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
     use ic_stable_structures::StableBTreeMap;
     use serde::{Deserialize, Serialize};
     use shared::types::state::{Controllers, SatelliteId};
+    use std::collections::HashMap;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -61,6 +62,17 @@ pub mod state {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct HeapState {
         pub controllers: Controllers,
+        pub origins: OriginConfigs,
+    }
+
+    pub type OriginConfigs = HashMap<SatelliteId, OriginConfig>;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct OriginConfig {
+        pub key: Principal,
+        pub filter: String,
+        pub created_at: u64,
+        pub updated_at: u64,
     }
 }
 
@@ -73,7 +85,7 @@ pub mod memory {
 
 pub mod interface {
     use crate::types::state::PageViewDevice;
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
     use serde::Deserialize;
     use shared::types::state::SatelliteId;
 
@@ -94,5 +106,17 @@ pub mod interface {
         pub satellite_id: Option<SatelliteId>,
         pub from: Option<u64>,
         pub to: Option<u64>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SetOriginConfig {
+        pub key: Principal,
+        pub filter: String,
+        pub updated_at: Option<u64>,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct DelOriginConfig {
+        pub updated_at: Option<u64>,
     }
 }

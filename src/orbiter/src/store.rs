@@ -65,12 +65,12 @@ fn get_page_views_impl(
 
             let valid_from = match from {
                 None => true,
-                Some(from) => page_view.collected_at >= from
+                Some(from) => page_view.collected_at >= from,
             };
 
             let valid_to = match to {
                 None => true,
-                Some(to) => page_view.collected_at <= to
+                Some(to) => page_view.collected_at <= to,
             };
 
             valid_key && valid_from && valid_to

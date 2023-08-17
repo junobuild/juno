@@ -1,3 +1,4 @@
+mod config;
 mod controllers;
 mod guards;
 mod impls;
@@ -5,6 +6,10 @@ mod memory;
 mod store;
 mod types;
 
+use crate::config::store::{
+    del_origin_config as del_origin_config_store, get_origin_configs as get_origin_configs_store,
+    set_origin_config as set_origin_config_store,
+};
 use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
     set_controllers as set_controllers_store,
@@ -12,9 +17,9 @@ use crate::controllers::store::{
 use crate::guards::caller_is_admin_controller;
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::store::{get_page_views as get_page_views_store, insert_page_view};
-use crate::types::interface::{GetPageViews, SetPageView};
+use crate::types::interface::{DelOriginConfig, GetPageViews, SetOriginConfig, SetPageView};
 use crate::types::memory::Memory;
-use crate::types::state::{AnalyticKey, HeapState, PageView, State};
+use crate::types::state::{AnalyticKey, HeapState, OriginConfig, OriginConfigs, PageView, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::trap;
@@ -25,7 +30,7 @@ use ic_stable_structures::Memory as _;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
-use shared::types::state::{ControllerScope, Controllers};
+use shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use std::mem;
 
 #[init]
@@ -35,6 +40,7 @@ fn init() {
 
     let heap = HeapState {
         controllers: init_controllers(&controllers),
+        ..HeapState::default()
     };
 
     STATE.with(|state| {
@@ -147,6 +153,25 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
 #[query(guard = "caller_is_admin_controller")]
 fn list_controllers() -> Controllers {
     get_controllers()
+}
+
+///
+/// Origins
+///
+
+#[update(guard = "caller_is_admin_controller")]
+fn set_origin_config(satellite_id: SatelliteId, config: SetOriginConfig) -> OriginConfig {
+    set_origin_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn del_origin_config(satellite_id: SatelliteId, config: DelOriginConfig) {
+    del_origin_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e))
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn list_origin_configs() -> OriginConfigs {
+    get_origin_configs_store()
 }
 
 // Generate did files

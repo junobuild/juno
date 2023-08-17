@@ -12,6 +12,7 @@
 	import OriginConfigDelete from '$lib/components/analytics/OriginConfigDelete.svelte';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
 
 	export let orbiterId: Principal;
 
@@ -59,6 +60,7 @@
 			<tr>
 				<th class="tools" />
 				<th class="origin"> {$i18n.satellites.satellite} </th>
+				<th class="origin"> {$i18n.satellites.id} </th>
 				<th class="origin"> {$i18n.origins.filter} </th>
 			</tr>
 		</thead>
@@ -79,6 +81,10 @@
 
 					<td>
 						{satelliteName}
+					</td>
+
+					<td>
+						<Identifier identifier={satelliteId.toText()} shorten={false} small={false} />
 					</td>
 
 					<td>{config.filter}</td>

@@ -15,6 +15,7 @@
 		"home": "Home",
 		"help": "Help",
 		"controllers": "Controllers",
+		"settings": "Settings",
 		"continue": "Continue",
 		"not_logged_in": "Developer not logged in.",
 		"ready": "Ready",
@@ -206,7 +207,9 @@
 		"top_up_error": "Error while topping up the segment.",
 		"analytics_load_error": "Error while loading the analytics data",
 		"satellites_loading": "Error while loading the list of satellites.",
-		"orbiters_loading": "Error while loading the list of orbiters."
+		"orbiters_loading": "Error while loading the list of orbiters.",
+		"origin_filter_missing": "A filter must be provided.",
+		"origin_filter_unexpected": "Unexpected error(s) while trying to edit your filter."
 	},
 	"document": {
 		"owner": "Owner",
@@ -367,5 +370,12 @@
 		"login": "Once the installation is complete, you can log in to your satellite from the terminal.",
 		"run": "With the ability to interact with your satellite, you can now deploy it by running the following command from the root folder:",
 		"success": "The process should proceed smoothly, and upon completion, your project will be hosted on-chain at the address <a href=\"{0}\" rel=\"external noopener noreferrer\" target=\"_blank\">{1}</a>  🎉."
+	},
+	"origins": {
+		"title": "Filters",
+		"empty": "No origins are filtered yet.",
+		"filter": "Filter",
+		"edit_filter": "Add an origin or regex",
+		"add_a_filter": "Add a filter"
 	}
 }

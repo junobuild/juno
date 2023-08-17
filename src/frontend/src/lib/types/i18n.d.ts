@@ -18,6 +18,7 @@ interface I18nCore {
 	home: string;
 	help: string;
 	controllers: string;
+	settings: string;
 	continue: string;
 	not_logged_in: string;
 	ready: string;
@@ -221,6 +222,8 @@ interface I18nErrors {
 	analytics_load_error: string;
 	satellites_loading: string;
 	orbiters_loading: string;
+	origin_filter_missing: string;
+	origin_filter_unexpected: string;
 }
 
 interface I18nDocument {
@@ -396,6 +399,14 @@ interface I18nOn_boarding {
 	success: string;
 }
 
+interface I18nOrigins {
+	title: string;
+	empty: string;
+	filter: string;
+	edit_filter: string;
+	add_a_filter: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -423,4 +434,5 @@ interface I18n {
 	examples: I18nExamples;
 	resources: I18nResources;
 	on_boarding: I18nOn_boarding;
+	origins: I18nOrigins;
 }

@@ -25,6 +25,4 @@
 	};
 </script>
 
-<p>{$i18n.analytics.empty}</p>
-
 <button on:click={createOrbiter}>{$i18n.analytics.get_started}</button>

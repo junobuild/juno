@@ -76,43 +76,49 @@
 	const selectPeriod = ({ detail }: CustomEvent<PageViewsPeriod>) => (period = detail);
 </script>
 
-<div class="card-container">
-	{#if loading}
-		<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
-	{:else if isNullish($orbiterStore)}
-		<AnalyticsNew />
-	{:else}
-		<AnalyticsFilter on:junoPeriod={selectPeriod} />
+{#if loading}
+	<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
+{:else}
+	<div class="card-container">
+		{#if isNullish($orbiterStore)}
+			<p>{$i18n.analytics.empty}</p>
+		{:else}
+			<AnalyticsFilter on:junoPeriod={selectPeriod} />
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.analytics.number_of_sessions}</svelte:fragment>
-			<p>{uniqueSessions}</p>
-		</Value>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.analytics.number_of_sessions}</svelte:fragment>
+				<p>{uniqueSessions}</p>
+			</Value>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.analytics.unique_page_views}</svelte:fragment>
-			<p>{uniquePageViews}</p>
-		</Value>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.analytics.unique_page_views}</svelte:fragment>
+				<p>{uniquePageViews}</p>
+			</Value>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
-			<p>{data.length}</p>
-		</Value>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
+				<p>{data.length}</p>
+			</Value>
 
-		<Value>
-			<svelte:fragment slot="label"
-				>{$i18n.analytics.average_page_views_per_session}</svelte:fragment
-			>
-			<p>{uniqueSessions > 0 ? uniqueSessions / data.length : 0}</p>
-		</Value>
+			<Value>
+				<svelte:fragment slot="label"
+					>{$i18n.analytics.average_page_views_per_session}</svelte:fragment
+				>
+				<p>{uniqueSessions > 0 ? uniqueSessions / data.length : 0}</p>
+			</Value>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.analytics.bounce_rate}</svelte:fragment>
-			<p>{bounceRate}</p>
-		</Value>
+			<Value>
+				<svelte:fragment slot="label">{$i18n.analytics.bounce_rate}</svelte:fragment>
+				<p>{bounceRate}</p>
+			</Value>
 
-		{#if data.length > 0}
-			<AnalyticsChart {data} />
+			{#if data.length > 0}
+				<AnalyticsChart {data} />
+			{/if}
 		{/if}
+	</div>
+
+	{#if isNullish($orbiterStore)}
+		<AnalyticsNew />
 	{/if}
-</div>
+{/if}

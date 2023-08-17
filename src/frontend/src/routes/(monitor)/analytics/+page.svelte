@@ -10,7 +10,7 @@
 	import AnalyticsControllers from '$lib/components/analytics/AnalyticsControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import AnalyticsOriginFilters from '$lib/components/analytics/AnalyticsOriginFilters.svelte';
+	import OriginConfigs from '$lib/components/analytics/OriginConfigs.svelte';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -51,7 +51,7 @@
 			{#if $store.tabId === $store.tabs[0].id}
 				<Analytics />
 			{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
-				<AnalyticsOriginFilters orbiterId={$orbiterStore.orbiter_id} />
+				<OriginConfigs orbiterId={$orbiterStore.orbiter_id} />
 
 				<AnalyticsControllers orbiterId={$orbiterStore.orbiter_id} />
 			{/if}

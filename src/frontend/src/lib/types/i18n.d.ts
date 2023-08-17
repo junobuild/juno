@@ -224,6 +224,7 @@ interface I18nErrors {
 	orbiters_loading: string;
 	origin_filter_missing: string;
 	origin_filter_unexpected: string;
+	origins_listing: string;
 }
 
 interface I18nDocument {
@@ -405,6 +406,7 @@ interface I18nOrigins {
 	filter: string;
 	edit_filter: string;
 	add_a_filter: string;
+	delete: string;
 }
 
 interface I18n {

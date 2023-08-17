@@ -112,10 +112,10 @@
 		"title": "Analytics",
 		"dashboard": "Dashboard",
 		"loading": "Loading data",
-		"empty": "Get analytics to measure and analyse how users engage with your apps.",
+		"empty": "Juno provides simple, lightweight, and open-source web analytics that do not use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your website visitors.",
 		"get_started": "Get started",
 		"start": "Getting started",
-		"description": "Juno provides simple, lightweight, and open-source web analytics that do not use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your website visitors.",
+		"description": "Get analytics to measure and analyse how users engage with your apps.",
 		"initializing": "Initializing analytics...",
 		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
 		"create": "Create analytics",
@@ -209,7 +209,8 @@
 		"satellites_loading": "Error while loading the list of satellites.",
 		"orbiters_loading": "Error while loading the list of orbiters.",
 		"origin_filter_missing": "A filter must be provided.",
-		"origin_filter_unexpected": "Unexpected error(s) while trying to edit your filter."
+		"origin_filter_unexpected": "Unexpected error(s) while trying to edit your filter.",
+		"origins_listing": "Error while listing the filters."
 	},
 	"document": {
 		"owner": "Owner",
@@ -372,10 +373,10 @@
 		"success": "The process should proceed smoothly, and upon completion, your project will be hosted on-chain at the address <a href=\"{0}\" rel=\"external noopener noreferrer\" target=\"_blank\">{1}</a>  🎉."
 	},
 	"origins": {
-		"title": "Filters",
 		"empty": "No origins are filtered yet.",
 		"filter": "Filter",
 		"edit_filter": "Add an origin or regex",
-		"add_a_filter": "Add a filter"
+		"add_a_filter": "Add a filter",
+		"delete": "Delete filter?"
 	}
 }

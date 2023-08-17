@@ -1,4 +1,9 @@
-import type { AnalyticKey, Controller, PageView } from '$declarations/orbiter/orbiter.did';
+import type {
+	AnalyticKey,
+	Controller,
+	OriginConfig,
+	PageView
+} from '$declarations/orbiter/orbiter.did';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { PageViewsPeriod } from '$lib/types/ortbiter';
 import { getOrbiterActor } from '$lib/utils/actor.utils';
@@ -62,4 +67,13 @@ export const setOrbiterController = async ({
 		console.error('setOrbiterController:', orbiterId.toText());
 		throw err;
 	}
+};
+
+export const listOriginConfigs = async ({
+	orbiterId
+}: {
+	orbiterId: Principal;
+}): Promise<[Principal, OriginConfig][]> => {
+	const actor = await getOrbiterActor(orbiterId);
+	return actor.list_origin_configs();
 };

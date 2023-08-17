@@ -1,15 +1,11 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '$lib/utils/utils';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { busy } from '$lib/stores/busy.store';
-	import { setSatelliteName } from '$lib/services/mission-control.services';
 	import type { Principal } from '@dfinity/principal';
 	import { registerProxy } from '$lib/rest/proxy.rest';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import { emit } from '$lib/utils/events.utils';
 
 	export let orbiterId: Principal;
 

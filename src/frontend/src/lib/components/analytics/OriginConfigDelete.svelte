@@ -13,6 +13,7 @@
 
 	export let orbiterId: Principal;
 	export let satelliteId: Principal;
+	export let satelliteName: string;
 	export let config: OriginConfig;
 
 	let visible = false;
@@ -56,8 +57,23 @@
 <Confirmation bind:visible on:junoYes={deleteController} on:junoNo={close}>
 	<svelte:fragment slot="title">{$i18n.origins.delete}</svelte:fragment>
 
-	<Value>
-		<svelte:fragment slot="label">{$i18n.satellites.satellite}</svelte:fragment>
-		<p>TODO</p>
-	</Value>
+	<div>
+		<Value>
+			<svelte:fragment slot="label">{$i18n.satellites.satellite}</svelte:fragment>
+			<p>{satelliteName}</p>
+		</Value>
+	</div>
+
+	<div>
+		<Value>
+			<svelte:fragment slot="label">{$i18n.origins.filter}</svelte:fragment>
+			<p>{config.filter}</p>
+		</Value>
+	</div>
 </Confirmation>
+
+<style lang="scss">
+	div {
+		margin: 0 0 var(--padding-1_5x);
+	}
+</style>

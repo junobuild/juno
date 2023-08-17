@@ -7,10 +7,11 @@
 	import { listOriginConfigs } from '$lib/api/orbiter.api';
 	import type { OriginConfig } from '$declarations/orbiter/orbiter.did';
 	import { nonNullish } from '$lib/utils/utils';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { satellitesStore } from '$lib/stores/satellite.store';
 	import OriginConfigDelete from '$lib/components/analytics/OriginConfigDelete.svelte';
+	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	export let orbiterId: Principal;
 
@@ -41,6 +42,15 @@
 				([origin_satellite_id, _]) => origin_satellite_id.toText() === satellite_id.toText()
 			) === undefined
 	);
+
+	let satelliteNames: Record<SatelliteIdText, string> = {};
+	$: satelliteNames = ($satellitesStore ?? []).reduce(
+		(acc, satellite) => ({
+			...acc,
+			[satellite.satellite_id.toText()]: satelliteName(satellite)
+		}),
+		{}
+	);
 </script>
 
 <div class="table-container">
@@ -54,13 +64,15 @@
 		</thead>
 		<tbody>
 			{#each origins ?? [] as [satelliteId, config] (satelliteId.toText())}
+				{@const satelliteName = satelliteNames[satelliteId.toText()] ?? ''}
+
 				<tr>
 					<td class="actions">
-						<OriginConfigDelete {orbiterId} {satelliteId} {config} on:junoReload={load} />
+						<OriginConfigDelete {orbiterId} {satelliteId} {config} {satelliteName} on:junoReload={load} />
 					</td>
 
 					<td>
-						<Identifier identifier={satelliteId.toText()} shorten={false} small={false} />
+						{satelliteName}
 					</td>
 
 					<td>{config.filter}</td>

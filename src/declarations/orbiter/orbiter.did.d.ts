@@ -14,6 +14,9 @@ export interface Controller {
 	expires_at: [] | [bigint];
 }
 export type ControllerScope = { Write: null } | { Admin: null };
+export interface DelOriginConfig {
+	updated_at: [] | [bigint];
+}
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
@@ -21,6 +24,12 @@ export interface GetPageViews {
 	to: [] | [bigint];
 	from: [] | [bigint];
 	satellite_id: [] | [Principal];
+}
+export interface OriginConfig {
+	key: Principal;
+	updated_at: bigint;
+	created_at: bigint;
+	filter: string;
 }
 export interface PageView {
 	title: string;
@@ -46,6 +55,11 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
+export interface SetOriginConfig {
+	key: Principal;
+	updated_at: [] | [bigint];
+	filter: string;
+}
 export interface SetPageView {
 	title: string;
 	updated_at: [] | [bigint];
@@ -58,9 +72,12 @@ export interface SetPageView {
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
+	del_origin_config: ActorMethod<[Principal, DelOriginConfig], undefined>;
 	get_page_views: ActorMethod<[GetPageViews], Array<[AnalyticKey, PageView]>>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
+	list_origin_configs: ActorMethod<[], Array<[Principal, OriginConfig]>>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
+	set_origin_config: ActorMethod<[Principal, SetOriginConfig], OriginConfig>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], PageView>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], undefined>;
 }

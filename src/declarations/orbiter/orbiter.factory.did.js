@@ -14,6 +14,7 @@ export const idlFactory = ({ IDL }) => {
 		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
+	const DelOriginConfig = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
 	const GetPageViews = IDL.Record({
 		to: IDL.Opt(IDL.Nat64),
 		from: IDL.Opt(IDL.Nat64),
@@ -39,6 +40,12 @@ export const idlFactory = ({ IDL }) => {
 		user_agent: IDL.Opt(IDL.Text),
 		collected_at: IDL.Nat64
 	});
+	const OriginConfig = IDL.Record({
+		key: IDL.Principal,
+		updated_at: IDL.Nat64,
+		created_at: IDL.Nat64,
+		filter: IDL.Text
+	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		scope: ControllerScope,
@@ -47,6 +54,11 @@ export const idlFactory = ({ IDL }) => {
 	const SetControllersArgs = IDL.Record({
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
+	});
+	const SetOriginConfig = IDL.Record({
+		key: IDL.Principal,
+		updated_at: IDL.Opt(IDL.Nat64),
+		filter: IDL.Text
 	});
 	const SetPageView = IDL.Record({
 		title: IDL.Text,
@@ -64,17 +76,20 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
 			[]
 		),
+		del_origin_config: IDL.Func([IDL.Principal, DelOriginConfig], [], []),
 		get_page_views: IDL.Func(
 			[GetPageViews],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],
 			['query']
 		),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
+		list_origin_configs: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, OriginConfig))], ['query']),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
 			[]
 		),
+		set_origin_config: IDL.Func([IDL.Principal, SetOriginConfig], [OriginConfig], []),
 		set_page_view: IDL.Func([AnalyticKey, SetPageView], [PageView], []),
 		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [], [])
 	});

@@ -11,11 +11,18 @@ type Controller = record {
   expires_at : opt nat64;
 };
 type ControllerScope = variant { Write; Admin };
+type DelOriginConfig = record { updated_at : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetPageViews = record {
   to : opt nat64;
   from : opt nat64;
   satellite_id : opt principal;
+};
+type OriginConfig = record {
+  key : principal;
+  updated_at : nat64;
+  created_at : nat64;
+  filter : text;
 };
 type PageView = record {
   title : text;
@@ -38,6 +45,11 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
+type SetOriginConfig = record {
+  key : principal;
+  updated_at : opt nat64;
+  filter : text;
+};
 type SetPageView = record {
   title : text;
   updated_at : opt nat64;
@@ -52,13 +64,16 @@ service : () -> {
   del_controllers : (DeleteControllersArgs) -> (
       vec record { principal; Controller },
     );
+  del_origin_config : (principal, DelOriginConfig) -> ();
   get_page_views : (GetPageViews) -> (
       vec record { AnalyticKey; PageView },
     ) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
+  list_origin_configs : () -> (vec record { principal; OriginConfig }) query;
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
     );
+  set_origin_config : (principal, SetOriginConfig) -> (OriginConfig);
   set_page_view : (AnalyticKey, SetPageView) -> (PageView);
   set_page_views : (vec record { AnalyticKey; SetPageView }) -> ();
 }

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
-    import type {Principal} from "@dfinity/principal";
-    import AnalyticsOriginAdd from "$lib/components/analytics/AnalyticsOriginAdd.svelte";
+	import type { Principal } from '@dfinity/principal';
+	import AnalyticsOriginAdd from '$lib/components/analytics/AnalyticsOriginAdd.svelte';
 
-    export let orbiterId: Principal;
+	export let orbiterId: Principal;
 </script>
 
 <div class="table-container">
@@ -14,15 +14,14 @@
 				<th class="origin"> {$i18n.origins.title} </th>
 			</tr>
 		</thead>
-        <tbody>
-        <tr>
-            <td class="actions">
-            </td>
-            <td>
-                {$i18n.origins.empty}
-            </td>
-        </tr>
-        </tbody>
+		<tbody>
+			<tr>
+				<td class="actions" />
+				<td>
+					{$i18n.origins.empty}
+				</td>
+			</tr>
+		</tbody>
 	</table>
 </div>
 

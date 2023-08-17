@@ -10,7 +10,7 @@
 	import AnalyticsControllers from '$lib/components/analytics/AnalyticsControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import AnalyticsOriginFilters from "$lib/components/analytics/AnalyticsOriginFilters.svelte";
+	import AnalyticsOriginFilters from '$lib/components/analytics/AnalyticsOriginFilters.svelte';
 
 	const tabDashboard = {
 		id: Symbol('1'),

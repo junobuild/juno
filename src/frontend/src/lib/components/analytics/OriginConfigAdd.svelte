@@ -11,9 +11,10 @@
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { setOriginConfig } from '$lib/api/orbiter.api';
-	import {createEventDispatcher} from "svelte";
+	import { createEventDispatcher } from 'svelte';
 
 	export let orbiterId: Principal;
+	export let satellites: Satellite[] | undefined;
 
 	let visible: boolean | undefined;
 
@@ -67,7 +68,9 @@
 	let satelliteIdText: SatelliteIdText;
 
 	let satellite: Satellite | undefined;
-	$: satellite = ($satellitesStore ?? []).find(({satellite_id}) => satellite_id.toText() === satelliteIdText);
+	$: satellite = ($satellitesStore ?? []).find(
+		({ satellite_id }) => satellite_id.toText() === satelliteIdText
+	);
 
 	$: validConfirm = nonNullish(filter) && filter !== '' && nonNullish(satellite);
 </script>
@@ -79,7 +82,7 @@
 		<label for="satellite">{$i18n.satellites.satellite}:</label>
 
 		<select id="satellite" name="satellite" bind:value={satelliteIdText}>
-			{#each $satellitesStore ?? [] as satellite}
+			{#each satellites as satellite}
 				{@const satName = satelliteName(satellite)}
 
 				<option value={satellite.satellite_id.toText()}>{satName}</option>
@@ -107,10 +110,6 @@
 	@use '../../styles/mixins/dialog';
 
 	@include dialog.edit;
-
-	button {
-		margin: var(--padding) 0 var(--padding-8x);
-	}
 
 	.origin {
 		padding: var(--padding-1_5x) 0 0;

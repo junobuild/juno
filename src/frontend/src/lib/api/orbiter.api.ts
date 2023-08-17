@@ -1,6 +1,7 @@
 import type {
 	AnalyticKey,
 	Controller,
+	DelOriginConfig,
 	OriginConfig,
 	PageView,
 	SetOriginConfig
@@ -90,4 +91,17 @@ export const setOriginConfig = async ({
 }): Promise<OriginConfig> => {
 	const actor = await getOrbiterActor(orbiterId);
 	return actor.set_origin_config(satelliteId, config);
+};
+
+export const deleteOriginConfig = async ({
+	satelliteId,
+	orbiterId,
+	config
+}: {
+	orbiterId: Principal;
+	satelliteId: Principal;
+	config: DelOriginConfig;
+}): Promise<void> => {
+	const actor = await getOrbiterActor(orbiterId);
+	return actor.del_origin_config(satelliteId, config);
 };

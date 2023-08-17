@@ -30,4 +30,12 @@
 	} & SetControllerParams): Promise<void> => setOrbiterController({ ...rest, orbiterId });
 </script>
 
-<Controllers {list} {remove} {add} />
+<div>
+	<Controllers {list} {remove} {add} />
+</div>
+
+<style lang="scss">
+	div {
+		margin: var(--padding-8x) 0 0;
+	}
+</style>

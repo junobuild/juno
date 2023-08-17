@@ -3,12 +3,14 @@
 	import type { Principal } from '@dfinity/principal';
 	import OriginConfigAdd from '$lib/components/analytics/OriginConfigAdd.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { onMount, setContext } from 'svelte';
+	import { onMount } from 'svelte';
 	import { listOriginConfigs } from '$lib/api/orbiter.api';
 	import type { OriginConfig } from '$declarations/orbiter/orbiter.did';
 	import { nonNullish } from '$lib/utils/utils';
-	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { satellitesStore } from '$lib/stores/satellite.store';
+	import OriginConfigDelete from '$lib/components/analytics/OriginConfigDelete.svelte';
 
 	export let orbiterId: Principal;
 
@@ -32,8 +34,13 @@
 	let empty: boolean | undefined = undefined;
 	$: empty = nonNullish(origins) && origins.length === 0;
 
-	let visibleDelete = false;
-	let selectedFilter: [Principal, OriginConfig] | undefined;
+	let satellites: Satellite[] = [];
+	$: satellites = ($satellitesStore ?? []).filter(
+		({ satellite_id }) =>
+			(origins ?? []).find(
+				([origin_satellite_id, _]) => origin_satellite_id.toText() === satellite_id.toText()
+			) === undefined
+	);
 </script>
 
 <div class="table-container">
@@ -49,14 +56,7 @@
 			{#each origins ?? [] as [satelliteId, config] (satelliteId.toText())}
 				<tr>
 					<td class="actions">
-						<ButtonTableAction
-							icon="delete"
-							ariaLabel={$i18n.origins.delete}
-							on:click={() => {
-								selectedFilter = [satelliteId, config];
-								visibleDelete = true;
-							}}
-						/>
+						<OriginConfigDelete {orbiterId} {satelliteId} {config} on:junoReload={load} />
 					</td>
 
 					<td>
@@ -79,7 +79,9 @@
 	</table>
 </div>
 
-<OriginConfigAdd {orbiterId} on:junoReload={load} />
+{#if satellites.length > 0}
+	<OriginConfigAdd {orbiterId} {satellites} on:junoReload={load} />
+{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

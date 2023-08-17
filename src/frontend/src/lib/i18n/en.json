@@ -210,7 +210,8 @@
 		"orbiters_loading": "Error while loading the list of orbiters.",
 		"origin_filter_missing": "A satellite and filter must be provided.",
 		"origin_filter_unexpected": "Unexpected error(s) while trying to edit your filter.",
-		"origins_listing": "Error while listing the filters."
+		"origins_listing": "Error while listing the filters.",
+		"origin_delete": "Unexpected error(s) while deleting the filter."
 	},
 	"document": {
 		"owner": "Owner",

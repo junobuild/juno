@@ -225,6 +225,7 @@ interface I18nErrors {
 	origin_filter_missing: string;
 	origin_filter_unexpected: string;
 	origins_listing: string;
+	origin_delete: string;
 }
 
 interface I18nDocument {

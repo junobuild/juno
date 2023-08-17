@@ -1,13 +1,13 @@
 const PROXY_REGISTRATIONS_URL = import.meta.env.VITE_PROXY_REGISTRATIONS_URL;
 const FUNCTION_PLACEHOLDER = '{function}';
 
-export const registerProxy = async (params: {
+export const configProxy = async (params: {
 	orbiterId: string;
 	satelliteId: string;
 	filter: string;
 }): Promise<string> => {
 	const response = await fetch(
-		`${PROXY_REGISTRATIONS_URL.replace(FUNCTION_PLACEHOLDER, 'register')}`,
+		`${PROXY_REGISTRATIONS_URL.replace(FUNCTION_PLACEHOLDER, 'config')}`,
 		{
 			method: 'POST',
 			headers: {

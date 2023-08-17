@@ -5,7 +5,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { Principal } from '@dfinity/principal';
-	import { registerProxy } from '$lib/rest/proxy.rest';
+	import { configProxy } from '$lib/rest/proxy.rest';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satellitesStore } from '$lib/stores/satellite.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -36,7 +36,7 @@
 		busy.start();
 
 		try {
-			const key = await registerProxy({
+			const key = await configProxy({
 				orbiterId: orbiterId.toText(),
 				satelliteId: satellite!.satellite_id.toText(),
 				filter

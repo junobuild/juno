@@ -74,7 +74,7 @@
 	}
 
 	button.primary {
-		justify-content: flex-start;
+		justify-content: space-between;
 		width: 100%;
 	}
 

@@ -6,6 +6,10 @@
 	import { busy } from '$lib/stores/busy.store';
 	import type { Principal } from '@dfinity/principal';
 	import { registerProxy } from '$lib/rest/proxy.rest';
+	import type {SatelliteIdText} from "$lib/types/satellite";
+	import {satellitesStore} from "$lib/stores/satellite.store";
+	import {satelliteName} from "$lib/utils/satellite.utils";
+	import type {Satellite} from "$declarations/mission_control/mission_control.did";
 
 	export let orbiterId: Principal;
 
@@ -15,8 +19,6 @@
 
 	let validConfirm = false;
 	let saving = false;
-
-	$: validConfirm = nonNullish(origin) && origin !== '';
 
 	const handleSubmit = async () => {
 		if (!validConfirm) {
@@ -45,13 +47,30 @@
 
 		busy.stop();
 	};
+
+	let satelliteIdText: SatelliteIdText;
+
+	let satellite: Satellite | undefined;
+	$: satellite = ($satellitesStore ?? [])[satelliteIdText];
+
+	$: validConfirm = nonNullish(origin) && origin !== '' && nonNullish(satellite);
 </script>
 
 <button on:click={() => (visible = true)}>{$i18n.origins.add_a_filter}</button>
 
 <Popover bind:visible center backdrop="dark">
 	<form class="container" on:submit|preventDefault={handleSubmit}>
-		<label for="origin">{$i18n.origins.filter}:</label>
+		<label for="satellite">{$i18n.satellites.satellite}:</label>
+
+		<select id="satellite" name="satellite" bind:value={satelliteIdText}>
+			{#each ($satellitesStore ?? []) as satellite}
+				{@const satName = satelliteName(satellite)}
+
+				<option value={satellite.satellite_id.toText()}>{satName}</option>
+			{/each}
+		</select>
+
+		<label class="origin" for="origin">{$i18n.origins.filter}:</label>
 
 		<input
 			id="origin"
@@ -75,5 +94,9 @@
 
 	button {
 		margin: var(--padding) 0 var(--padding-8x);
+	}
+
+	.origin {
+		padding: var(--padding-1_5x) 0 0;
 	}
 </style>

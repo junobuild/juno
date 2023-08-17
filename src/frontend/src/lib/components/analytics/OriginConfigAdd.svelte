@@ -3,22 +3,22 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { busy } from '$lib/stores/busy.store';
-	import type { Principal } from '@dfinity/principal';
+	import { busy, isBusy } from '$lib/stores/busy.store';
+	import { Principal } from '@dfinity/principal';
 	import { registerProxy } from '$lib/rest/proxy.rest';
-	import type {SatelliteIdText} from "$lib/types/satellite";
-	import {satellitesStore} from "$lib/stores/satellite.store";
-	import {satelliteName} from "$lib/utils/satellite.utils";
-	import type {Satellite} from "$declarations/mission_control/mission_control.did";
+	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { satellitesStore } from '$lib/stores/satellite.store';
+	import { satelliteName } from '$lib/utils/satellite.utils';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { setOriginConfig } from '$lib/api/orbiter.api';
 
 	export let orbiterId: Principal;
 
 	let visible: boolean | undefined;
 
-	let origin = '';
+	let filter = '';
 
 	let validConfirm = false;
-	let saving = false;
 
 	const handleSubmit = async () => {
 		if (!validConfirm) {
@@ -32,9 +32,20 @@
 		busy.start();
 
 		try {
-			await registerProxy({
+			const key = await registerProxy({
 				orbiterId: orbiterId.toText(),
-				origins: ['juno.build']
+				satelliteId: satellite!.satellite_id.toText(),
+				filter
+			});
+
+			await setOriginConfig({
+				orbiterId,
+				satelliteId: satellite!.satellite_id,
+				config: {
+					key: Principal.fromText(key),
+					filter,
+					updated_at: []
+				}
 			});
 
 			visible = false;
@@ -51,9 +62,9 @@
 	let satelliteIdText: SatelliteIdText;
 
 	let satellite: Satellite | undefined;
-	$: satellite = ($satellitesStore ?? [])[satelliteIdText];
+	$: satellite = ($satellitesStore ?? []).find(({satellite_id}) => satellite_id.toText() === satelliteIdText);
 
-	$: validConfirm = nonNullish(origin) && origin !== '' && nonNullish(satellite);
+	$: validConfirm = nonNullish(filter) && filter !== '' && nonNullish(satellite);
 </script>
 
 <button on:click={() => (visible = true)}>{$i18n.origins.add_a_filter}</button>
@@ -63,25 +74,25 @@
 		<label for="satellite">{$i18n.satellites.satellite}:</label>
 
 		<select id="satellite" name="satellite" bind:value={satelliteIdText}>
-			{#each ($satellitesStore ?? []) as satellite}
+			{#each $satellitesStore ?? [] as satellite}
 				{@const satName = satelliteName(satellite)}
 
 				<option value={satellite.satellite_id.toText()}>{satName}</option>
 			{/each}
 		</select>
 
-		<label class="origin" for="origin">{$i18n.origins.filter}:</label>
+		<label class="origin" for="filter">{$i18n.origins.filter}:</label>
 
 		<input
-			id="origin"
-			bind:value={origin}
+			id="filter"
+			bind:value={filter}
 			type="text"
 			placeholder={$i18n.origins.edit_filter}
 			maxlength={64}
-			disabled={saving}
+			disabled={$isBusy}
 		/>
 
-		<button type="submit" class="submit" disabled={saving || !validConfirm}>
+		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
 			{$i18n.core.submit}
 		</button>
 	</form>

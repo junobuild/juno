@@ -2,7 +2,8 @@ import type {
 	AnalyticKey,
 	Controller,
 	OriginConfig,
-	PageView
+	PageView,
+	SetOriginConfig
 } from '$declarations/orbiter/orbiter.did';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { PageViewsPeriod } from '$lib/types/ortbiter';
@@ -76,4 +77,17 @@ export const listOriginConfigs = async ({
 }): Promise<[Principal, OriginConfig][]> => {
 	const actor = await getOrbiterActor(orbiterId);
 	return actor.list_origin_configs();
+};
+
+export const setOriginConfig = async ({
+	satelliteId,
+	orbiterId,
+	config
+}: {
+	orbiterId: Principal;
+	satelliteId: Principal;
+	config: SetOriginConfig;
+}): Promise<OriginConfig> => {
+	const actor = await getOrbiterActor(orbiterId);
+	return actor.set_origin_config(satelliteId, config);
 };

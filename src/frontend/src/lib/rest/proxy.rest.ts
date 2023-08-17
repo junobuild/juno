@@ -3,7 +3,8 @@ const FUNCTION_PLACEHOLDER = '{function}';
 
 export const registerProxy = async (params: {
 	orbiterId: string;
-	origins?: string[];
+	satelliteId: string;
+	filter: string;
 }): Promise<string> => {
 	const response = await fetch(
 		`${PROXY_REGISTRATIONS_URL.replace(FUNCTION_PLACEHOLDER, 'register')}`,

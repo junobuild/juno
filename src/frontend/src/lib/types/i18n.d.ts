@@ -401,7 +401,6 @@ interface I18nOn_boarding {
 }
 
 interface I18nOrigins {
-	title: string;
 	empty: string;
 	filter: string;
 	edit_filter: string;

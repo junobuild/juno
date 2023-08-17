@@ -22,7 +22,7 @@ export const configProxy = async (params: {
 		throw new Error(`Registering proxy failed. ${text}`);
 	}
 
-	const result: { principal: string } = await response.json();
+	const result: { token: string } = await response.json();
 
-	return result.principal;
+	return result.token;
 };

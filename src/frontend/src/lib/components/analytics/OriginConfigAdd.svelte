@@ -11,6 +11,7 @@
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { setOriginConfig } from '$lib/api/orbiter.api';
+	import {createEventDispatcher} from "svelte";
 
 	export let orbiterId: Principal;
 
@@ -19,6 +20,8 @@
 	let filter = '';
 
 	let validConfirm = false;
+
+	const dispatch = createEventDispatcher();
 
 	const handleSubmit = async () => {
 		if (!validConfirm) {
@@ -47,6 +50,8 @@
 					updated_at: []
 				}
 			});
+
+			dispatch('junoReload');
 
 			visible = false;
 		} catch (err: unknown) {

@@ -6,30 +6,19 @@
 	import { onMount, setContext } from 'svelte';
 	import { listOriginConfigs } from '$lib/api/orbiter.api';
 	import type { OriginConfig } from '$declarations/orbiter/orbiter.did';
-	import { writable } from 'svelte/store';
-	import {
-		ORIGINS_CONTEXT_KEY,
-		type OriginsContext,
-		type OriginsStoreData
-	} from '$lib/types/origins.context';
 	import { nonNullish } from '$lib/utils/utils';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 
 	export let orbiterId: Principal;
 
-	const store = writable<OriginsStoreData>(undefined);
-
-	setContext<OriginsContext>(ORIGINS_CONTEXT_KEY, {
-		store
-	});
+	let origins: [Principal, OriginConfig][] | undefined;
 
 	const list = (): Promise<[Principal, OriginConfig][]> => listOriginConfigs({ orbiterId });
 
 	const load = async () => {
 		try {
-			const origins = await list();
-			store.set(origins);
+			origins = await list();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.origins_listing,
@@ -41,7 +30,7 @@
 	onMount(async () => await load());
 
 	let empty: boolean | undefined = undefined;
-	$: empty = nonNullish($store) && $store.length === 0;
+	$: empty = nonNullish(origins) && origins.length === 0;
 
 	let visibleDelete = false;
 	let selectedFilter: [Principal, OriginConfig] | undefined;
@@ -57,7 +46,7 @@
 			</tr>
 		</thead>
 		<tbody>
-			{#each $store ?? [] as [satelliteId, config] (satelliteId.toText())}
+			{#each origins ?? [] as [satelliteId, config] (satelliteId.toText())}
 				<tr>
 					<td class="actions">
 						<ButtonTableAction
@@ -90,7 +79,7 @@
 	</table>
 </div>
 
-<OriginConfigAdd {orbiterId} />
+<OriginConfigAdd {orbiterId} on:junoReload={load} />
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

@@ -11,6 +11,10 @@
 	import { nonNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import OriginConfigs from '$lib/components/analytics/OriginConfigs.svelte';
+	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { loadOrbiterVersion } from '$lib/services/console.services';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -24,6 +28,10 @@
 			? [
 					{
 						id: Symbol('2'),
+						labelKey: 'analytics.overview'
+					},
+					{
+						id: Symbol('3'),
 						labelKey: 'core.settings'
 					}
 			  ]
@@ -43,6 +51,13 @@
 		tabId: tabs[0].id,
 		tabs
 	});
+
+	// Load data
+
+	$: $missionControlStore,
+		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+
+	$: $orbiterStore, (async () => await loadOrbiterVersion({ orbiter: $orbiterStore }))();
 </script>
 
 <IdentityGuard>
@@ -51,6 +66,8 @@
 			{#if $store.tabId === $store.tabs[0].id}
 				<Analytics />
 			{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
+				<Orbiter orbiter={$orbiterStore} />
+			{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
 				<OriginConfigs orbiterId={$orbiterStore.orbiter_id} />
 
 				<AnalyticsControllers orbiterId={$orbiterStore.orbiter_id} />

@@ -80,4 +80,5 @@ export interface _SERVICE {
 	set_origin_config: ActorMethod<[Principal, SetOriginConfig], OriginConfig>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], PageView>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], undefined>;
+	version: ActorMethod<[], string>;
 }

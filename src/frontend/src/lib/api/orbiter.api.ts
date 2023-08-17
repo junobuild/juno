@@ -105,3 +105,8 @@ export const deleteOriginConfig = async ({
 	const actor = await getOrbiterActor(orbiterId);
 	return actor.del_origin_config(satelliteId, config);
 };
+
+export const orbiterVersion = async ({ orbiterId }: { orbiterId: Principal }): Promise<string> => {
+	const actor = await getOrbiterActor(orbiterId);
+	return actor.version();
+};

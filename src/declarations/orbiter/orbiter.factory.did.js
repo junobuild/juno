@@ -91,7 +91,8 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_origin_config: IDL.Func([IDL.Principal, SetOriginConfig], [OriginConfig], []),
 		set_page_view: IDL.Func([AnalyticKey, SetPageView], [PageView], []),
-		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [], [])
+		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [], []),
+		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };
 // @ts-ignore

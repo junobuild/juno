@@ -174,6 +174,13 @@ fn list_origin_configs() -> OriginConfigs {
     get_origin_configs_store()
 }
 
+/// Mgmt
+
+#[query]
+fn version() -> String {
+    env!("CARGO_PKG_VERSION").to_string()
+}
+
 // Generate did files
 
 export_candid!();

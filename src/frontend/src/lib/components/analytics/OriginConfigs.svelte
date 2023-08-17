@@ -68,7 +68,13 @@
 
 				<tr>
 					<td class="actions">
-						<OriginConfigDelete {orbiterId} {satelliteId} {config} {satelliteName} on:junoReload={load} />
+						<OriginConfigDelete
+							{orbiterId}
+							{satelliteId}
+							{config}
+							{satelliteName}
+							on:junoReload={load}
+						/>
 					</td>
 
 					<td>

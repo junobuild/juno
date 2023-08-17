@@ -76,4 +76,5 @@ service : () -> {
   set_origin_config : (principal, SetOriginConfig) -> (OriginConfig);
   set_page_view : (AnalyticKey, SetPageView) -> (PageView);
   set_page_views : (vec record { AnalyticKey; SetPageView }) -> ();
+  version : () -> (text) query;
 }

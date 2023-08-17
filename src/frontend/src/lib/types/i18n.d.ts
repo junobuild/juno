@@ -138,6 +138,8 @@ interface I18nAnalytics {
 	total_page_views: string;
 	average_page_views_per_session: string;
 	bounce_rate: string;
+	overview: string;
+	id: string;
 }
 
 interface I18nHosting {

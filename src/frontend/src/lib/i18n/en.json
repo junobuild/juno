@@ -126,7 +126,9 @@
 		"unique_page_views": "Unique page views",
 		"total_page_views": "Total page views",
 		"average_page_views_per_session": "Average page views per session",
-		"bounce_rate": "Bounce rate"
+		"bounce_rate": "Bounce rate",
+		"overview": "Overview",
+		"id": "ID"
 	},
 	"hosting": {
 		"title": "Hosting",

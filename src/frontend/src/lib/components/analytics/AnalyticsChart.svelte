@@ -58,16 +58,13 @@
 	</LayerCake>
 </div>
 
-<style>
-	/*
-      The wrapper div needs to have an explicit width and height in CSS.
-      It can also be a flexbox child or CSS grid element.
-      The point being it needs dimensions since the <LayerCake> element will
-      expand to fill it.
-    */
+<style lang="scss">
 	.chart-container {
-		width: 75%;
-		height: 250px;
+		width: 100%;
+		height: 300px;
+		fill: var(--value-color);
+		border: 3px solid var(--color-card-contrast);
+		padding: var(--padding-2x);
 		margin: 0 auto;
 	}
 </style>

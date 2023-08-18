@@ -13,6 +13,7 @@
 	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
 	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 	import { debounce } from '$lib/utils/debounce.utils';
+	import {formatNumber} from "$lib/utils/number.utils";
 
 	let loading = true;
 
@@ -96,20 +97,20 @@
 			</Value>
 
 			<Value>
-				<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
-				<p>{data.length}</p>
-			</Value>
-
-			<Value>
 				<svelte:fragment slot="label"
-					>{$i18n.analytics.average_page_views_per_session}</svelte:fragment
+				>{$i18n.analytics.average_page_views_per_session}</svelte:fragment
 				>
-				<p>{uniqueSessions > 0 ? uniqueSessions / data.length : 0}</p>
+				<p>{formatNumber(uniqueSessions > 0 ? uniqueSessions / data.length : 0)}</p>
 			</Value>
 
 			<Value>
 				<svelte:fragment slot="label">{$i18n.analytics.bounce_rate}</svelte:fragment>
 				<p>{bounceRate}</p>
+			</Value>
+
+			<Value>
+				<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
+				<p>{data.length}</p>
 			</Value>
 
 			{#if data.length > 0}

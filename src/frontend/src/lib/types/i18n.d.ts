@@ -140,6 +140,8 @@ interface I18nAnalytics {
 	bounce_rate: string;
 	overview: string;
 	id: string;
+	tracked_events: string;
+	count: string;
 }
 
 interface I18nHosting {

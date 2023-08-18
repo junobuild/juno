@@ -4,7 +4,8 @@ import type {
 	DelOriginConfig,
 	OriginConfig,
 	PageView,
-	SetOriginConfig
+	SetOriginConfig,
+	TrackEvent
 } from '$declarations/orbiter/orbiter.did';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { PageViewsPeriod } from '$lib/types/ortbiter';
@@ -26,6 +27,23 @@ export const getPageViews = async ({
 } & PageViewsPeriod): Promise<[AnalyticKey, PageView][]> => {
 	const actor = await getOrbiterActor(orbiterId);
 	return actor.get_page_views({
+		satellite_id: toNullable(satelliteId),
+		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
+		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
+	});
+};
+
+export const getTrackEvents = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to
+}: {
+	satelliteId?: Principal;
+	orbiterId: Principal;
+} & PageViewsPeriod): Promise<[AnalyticKey, TrackEvent][]> => {
+	const actor = await getOrbiterActor(orbiterId);
+	return actor.get_track_events({
 		satellite_id: toNullable(satelliteId),
 		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
 		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []

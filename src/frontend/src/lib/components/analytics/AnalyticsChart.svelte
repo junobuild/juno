@@ -59,12 +59,16 @@
 </div>
 
 <style lang="scss">
+	@use '../../styles/mixins/shadow';
+
 	.chart-container {
 		width: 100%;
 		height: 300px;
 		fill: var(--value-color);
-		border: 3px solid var(--color-card-contrast);
+
+		margin: var(--padding-6x) 0;
 		padding: var(--padding-2x);
-		margin: 0 auto;
+
+		@include shadow.strong-card;
 	}
 </style>

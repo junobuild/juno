@@ -67,7 +67,7 @@
 		fill: var(--value-color);
 
 		margin: 0 0 var(--padding-4x);
-		padding: var(--padding-2x);
+		padding: var(--padding-2x) var(--padding-6x);
 
 		@include shadow.strong-card;
 	}

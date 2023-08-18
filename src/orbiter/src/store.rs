@@ -78,7 +78,7 @@ fn insert_track_event_impl(
 
     let new_track_event: TrackEvent = TrackEvent {
         name: track_event.name,
-        data: track_event.data,
+        metadata: track_event.metadata,
         collected_at: track_event.collected_at,
         created_at,
         updated_at: now,

@@ -4,7 +4,7 @@ pub mod state {
     use candid::{CandidType, Principal};
     use ic_stable_structures::StableBTreeMap;
     use serde::{Deserialize, Serialize};
-    use shared::types::state::{Controllers, SatelliteId};
+    use shared::types::state::{Controllers, Metadata, SatelliteId};
     use std::collections::HashMap;
 
     #[derive(Serialize, Deserialize)]
@@ -65,7 +65,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct TrackEvent {
         pub name: String,
-        pub data: Vec<u8>,
+        pub metadata: Option<Metadata>,
         pub collected_at: u64,
         pub created_at: u64,
         pub updated_at: u64,
@@ -91,7 +91,7 @@ pub mod interface {
     use crate::types::state::PageViewDevice;
     use candid::{CandidType, Principal};
     use serde::Deserialize;
-    use shared::types::state::SatelliteId;
+    use shared::types::state::{Metadata, SatelliteId};
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {
@@ -108,7 +108,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetTrackEvent {
         pub name: String,
-        pub data: Vec<u8>,
+        pub metadata: Option<Metadata>,
         pub collected_at: u64,
         pub updated_at: Option<u64>,
     }

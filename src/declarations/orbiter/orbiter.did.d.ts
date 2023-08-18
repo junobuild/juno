@@ -75,13 +75,13 @@ export interface SetPageView {
 }
 export interface SetTrackEvent {
 	updated_at: [] | [bigint];
-	data: Uint8Array | number[];
+	metadata: [] | [Array<[string, string]>];
 	name: string;
 	collected_at: bigint;
 }
 export interface TrackEvent {
 	updated_at: bigint;
-	data: Uint8Array | number[];
+	metadata: [] | [Array<[string, string]>];
 	name: string;
 	created_at: bigint;
 	collected_at: bigint;

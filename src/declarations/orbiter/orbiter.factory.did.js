@@ -42,7 +42,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const TrackEvent = IDL.Record({
 		updated_at: IDL.Nat64,
-		data: IDL.Vec(IDL.Nat8),
+		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
 		name: IDL.Text,
 		created_at: IDL.Nat64,
 		collected_at: IDL.Nat64
@@ -81,7 +81,7 @@ export const idlFactory = ({ IDL }) => {
 	const Result_1 = IDL.Variant({ Ok: IDL.Null, Err: IDL.Text });
 	const SetTrackEvent = IDL.Record({
 		updated_at: IDL.Opt(IDL.Nat64),
-		data: IDL.Vec(IDL.Nat8),
+		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
 		name: IDL.Text,
 		collected_at: IDL.Nat64
 	});

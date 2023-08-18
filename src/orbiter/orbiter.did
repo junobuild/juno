@@ -65,13 +65,13 @@ type SetPageView = record {
 };
 type SetTrackEvent = record {
   updated_at : opt nat64;
-  data : vec nat8;
+  metadata : opt vec record { text; text };
   name : text;
   collected_at : nat64;
 };
 type TrackEvent = record {
   updated_at : nat64;
-  data : vec nat8;
+  metadata : opt vec record { text; text };
   name : text;
   created_at : nat64;
   collected_at : nat64;

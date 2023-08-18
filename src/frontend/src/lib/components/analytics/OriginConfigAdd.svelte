@@ -82,7 +82,7 @@
 		<label for="satellite">{$i18n.satellites.satellite}:</label>
 
 		<select id="satellite" name="satellite" bind:value={satelliteIdText}>
-			{#each satellites as satellite}
+			{#each satellites ?? [] as satellite}
 				{@const satName = satelliteName(satellite)}
 
 				<option value={satellite.satellite_id.toText()}>{satName}</option>

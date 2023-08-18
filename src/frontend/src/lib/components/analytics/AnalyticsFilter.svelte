@@ -68,8 +68,4 @@
 			grid-column: 1 / 2;
 		}
 	}
-
-	input {
-		min-height: var(--padding-6x);
-	}
 </style>

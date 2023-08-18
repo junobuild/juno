@@ -20,6 +20,22 @@ pub mod state {
     pub type Key = String;
     pub type SessionId = String;
 
+    pub type PageViewsStable = StableBTreeMap<AnalyticKey, PageView, Memory>;
+    pub type TrackEventsStable = StableBTreeMap<AnalyticKey, TrackEvent, Memory>;
+
+    pub struct StableState {
+        pub page_views: PageViewsStable,
+        pub track_events: TrackEventsStable,
+    }
+
+    pub type OriginConfigs = HashMap<SatelliteId, OriginConfig>;
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct HeapState {
+        pub controllers: Controllers,
+        pub origins: OriginConfigs,
+    }
+
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticKey {
         pub satellite_id: SatelliteId,
@@ -48,24 +64,12 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct TrackEvent {
-        // TODO: implement
+        pub name: String,
+        pub data: Vec<u8>,
+        pub collected_at: u64,
+        pub created_at: u64,
+        pub updated_at: u64,
     }
-
-    pub type PageViewsStable = StableBTreeMap<AnalyticKey, PageView, Memory>;
-    pub type TrackEventsStable = StableBTreeMap<AnalyticKey, TrackEvent, Memory>;
-
-    pub struct StableState {
-        pub page_views: PageViewsStable,
-        pub track_events: TrackEventsStable,
-    }
-
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct HeapState {
-        pub controllers: Controllers,
-        pub origins: OriginConfigs,
-    }
-
-    pub type OriginConfigs = HashMap<SatelliteId, OriginConfig>;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OriginConfig {
@@ -102,7 +106,15 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct GetPageViews {
+    pub struct SetTrackEvent {
+        pub name: String,
+        pub data: Vec<u8>,
+        pub collected_at: u64,
+        pub updated_at: Option<u64>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct GetAnalytics {
         pub satellite_id: Option<SatelliteId>,
         pub from: Option<u64>,
         pub to: Option<u64>,

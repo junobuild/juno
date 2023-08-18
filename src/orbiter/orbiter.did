@@ -13,7 +13,7 @@ type Controller = record {
 type ControllerScope = variant { Write; Admin };
 type DelOriginConfig = record { updated_at : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
-type GetPageViews = record {
+type GetAnalytics = record {
   to : opt nat64;
   from : opt nat64;
   satellite_id : opt principal;
@@ -38,6 +38,7 @@ type PageView = record {
 type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
 type Result = variant { Ok : PageView; Err : text };
 type Result_1 = variant { Ok; Err : text };
+type Result_2 = variant { Ok : TrackEvent; Err : text };
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -62,13 +63,29 @@ type SetPageView = record {
   user_agent : opt text;
   collected_at : nat64;
 };
+type SetTrackEvent = record {
+  updated_at : opt nat64;
+  data : vec nat8;
+  name : text;
+  collected_at : nat64;
+};
+type TrackEvent = record {
+  updated_at : nat64;
+  data : vec nat8;
+  name : text;
+  created_at : nat64;
+  collected_at : nat64;
+};
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> (
       vec record { principal; Controller },
     );
   del_origin_config : (principal, DelOriginConfig) -> ();
-  get_page_views : (GetPageViews) -> (
+  get_page_views : (GetAnalytics) -> (
       vec record { AnalyticKey; PageView },
+    ) query;
+  get_track_events : (GetAnalytics) -> (
+      vec record { AnalyticKey; TrackEvent },
     ) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_origin_configs : () -> (vec record { principal; OriginConfig }) query;
@@ -78,5 +95,7 @@ service : () -> {
   set_origin_config : (principal, SetOriginConfig) -> (OriginConfig);
   set_page_view : (AnalyticKey, SetPageView) -> (Result);
   set_page_views : (vec record { AnalyticKey; SetPageView }) -> (Result_1);
+  set_track_event : (AnalyticKey, SetTrackEvent) -> (Result_2);
+  set_track_events : (vec record { AnalyticKey; SetTrackEvent }) -> (Result_1);
   version : () -> (text) query;
 }

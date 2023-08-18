@@ -15,7 +15,7 @@ export const idlFactory = ({ IDL }) => {
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const DelOriginConfig = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
-	const GetPageViews = IDL.Record({
+	const GetAnalytics = IDL.Record({
 		to: IDL.Opt(IDL.Nat64),
 		from: IDL.Opt(IDL.Nat64),
 		satellite_id: IDL.Opt(IDL.Principal)
@@ -38,6 +38,13 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		device: PageViewDevice,
 		user_agent: IDL.Opt(IDL.Text),
+		collected_at: IDL.Nat64
+	});
+	const TrackEvent = IDL.Record({
+		updated_at: IDL.Nat64,
+		data: IDL.Vec(IDL.Nat8),
+		name: IDL.Text,
+		created_at: IDL.Nat64,
 		collected_at: IDL.Nat64
 	});
 	const OriginConfig = IDL.Record({
@@ -72,6 +79,13 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Result = IDL.Variant({ Ok: PageView, Err: IDL.Text });
 	const Result_1 = IDL.Variant({ Ok: IDL.Null, Err: IDL.Text });
+	const SetTrackEvent = IDL.Record({
+		updated_at: IDL.Opt(IDL.Nat64),
+		data: IDL.Vec(IDL.Nat8),
+		name: IDL.Text,
+		collected_at: IDL.Nat64
+	});
+	const Result_2 = IDL.Variant({ Ok: TrackEvent, Err: IDL.Text });
 	return IDL.Service({
 		del_controllers: IDL.Func(
 			[DeleteControllersArgs],
@@ -80,8 +94,13 @@ export const idlFactory = ({ IDL }) => {
 		),
 		del_origin_config: IDL.Func([IDL.Principal, DelOriginConfig], [], []),
 		get_page_views: IDL.Func(
-			[GetPageViews],
+			[GetAnalytics],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],
+			['query']
+		),
+		get_track_events: IDL.Func(
+			[GetAnalytics],
+			[IDL.Vec(IDL.Tuple(AnalyticKey, TrackEvent))],
 			['query']
 		),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
@@ -94,6 +113,8 @@ export const idlFactory = ({ IDL }) => {
 		set_origin_config: IDL.Func([IDL.Principal, SetOriginConfig], [OriginConfig], []),
 		set_page_view: IDL.Func([AnalyticKey, SetPageView], [Result], []),
 		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [Result_1], []),
+		set_track_event: IDL.Func([AnalyticKey, SetTrackEvent], [Result_2], []),
+		set_track_events: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetTrackEvent))], [Result_1], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

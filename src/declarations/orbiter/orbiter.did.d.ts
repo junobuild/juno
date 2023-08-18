@@ -20,7 +20,7 @@ export interface DelOriginConfig {
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
-export interface GetPageViews {
+export interface GetAnalytics {
 	to: [] | [bigint];
 	from: [] | [bigint];
 	satellite_id: [] | [Principal];
@@ -48,6 +48,7 @@ export interface PageViewDevice {
 }
 export type Result = { Ok: PageView } | { Err: string };
 export type Result_1 = { Ok: null } | { Err: string };
+export type Result_2 = { Ok: TrackEvent } | { Err: string };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -72,15 +73,31 @@ export interface SetPageView {
 	user_agent: [] | [string];
 	collected_at: bigint;
 }
+export interface SetTrackEvent {
+	updated_at: [] | [bigint];
+	data: Uint8Array | number[];
+	name: string;
+	collected_at: bigint;
+}
+export interface TrackEvent {
+	updated_at: bigint;
+	data: Uint8Array | number[];
+	name: string;
+	created_at: bigint;
+	collected_at: bigint;
+}
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_origin_config: ActorMethod<[Principal, DelOriginConfig], undefined>;
-	get_page_views: ActorMethod<[GetPageViews], Array<[AnalyticKey, PageView]>>;
+	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
+	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_origin_configs: ActorMethod<[], Array<[Principal, OriginConfig]>>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_origin_config: ActorMethod<[Principal, SetOriginConfig], OriginConfig>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;
+	set_track_event: ActorMethod<[AnalyticKey, SetTrackEvent], Result_2>;
+	set_track_events: ActorMethod<[Array<[AnalyticKey, SetTrackEvent]>], Result_1>;
 	version: ActorMethod<[], string>;
 }

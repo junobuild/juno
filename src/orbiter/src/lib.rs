@@ -19,10 +19,17 @@ use crate::controllers::store::{
 };
 use crate::guards::caller_is_admin_controller;
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
-use crate::store::{get_page_views as get_page_views_store, insert_page_view};
-use crate::types::interface::{DelOriginConfig, GetPageViews, SetOriginConfig, SetPageView};
+use crate::store::{
+    get_page_views as get_page_views_store, get_track_events as get_track_events_store,
+    insert_page_view, insert_track_event,
+};
+use crate::types::interface::{
+    DelOriginConfig, GetAnalytics, SetOriginConfig, SetPageView, SetTrackEvent,
+};
 use crate::types::memory::Memory;
-use crate::types::state::{AnalyticKey, HeapState, OriginConfig, OriginConfigs, PageView, State};
+use crate::types::state::{
+    AnalyticKey, HeapState, OriginConfig, OriginConfigs, PageView, State, TrackEvent,
+};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::trap;
@@ -119,8 +126,36 @@ fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) -> Result<(), Str
 }
 
 #[query(guard = "caller_is_admin_controller")]
-fn get_page_views(filter: GetPageViews) -> Vec<(AnalyticKey, PageView)> {
-    get_page_views_store(filter)
+fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
+    get_page_views_store(&filter)
+}
+
+#[update]
+fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
+    assert_caller_is_authorized(&key.satellite_id)?;
+
+    let result = insert_track_event(key, track_event);
+
+    match result {
+        Ok(new_track_event) => Ok(new_track_event),
+        Err(error) => trap(&error),
+    }
+}
+
+#[update]
+fn set_track_events(track_events: Vec<(AnalyticKey, SetTrackEvent)>) -> Result<(), String> {
+    for (key, track_event) in track_events {
+        assert_caller_is_authorized(&key.satellite_id)?;
+
+        insert_track_event(key, track_event).unwrap_or_else(|e| trap(&e));
+    }
+
+    Ok(())
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn get_track_events(filter: GetAnalytics) -> Vec<(AnalyticKey, TrackEvent)> {
+    get_track_events_store(&filter)
 }
 
 ///

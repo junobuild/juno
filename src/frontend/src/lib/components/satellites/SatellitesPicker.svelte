@@ -1,23 +1,21 @@
 <script lang="ts">
-	import { satellitesStore } from '$lib/stores/satellite.store';
+	import { satelliteIdStore, satellitesStore } from '$lib/stores/satellite.store';
 	import { navigateToAnalytics } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import { Principal } from '@dfinity/principal';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { nonNullish } from '$lib/utils/utils';
+	import { onMount } from 'svelte';
 
-	let button: HTMLButtonElement | undefined;
-	let visible: boolean | undefined;
-
-	const navigate = async () => {
+	const navigate = async () =>
 		await navigateToAnalytics(
 			nonNullish(satelliteIdText) ? Principal.fromText(satelliteIdText) : undefined
 		);
-		visible = false;
-	};
 
 	let satelliteIdText: SatelliteIdText | undefined;
+
+	onMount(() => (satelliteIdText = $satelliteIdStore));
 </script>
 
 <select id="satellite" name="satellite" bind:value={satelliteIdText} on:change={navigate}>

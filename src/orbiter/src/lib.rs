@@ -1,4 +1,6 @@
+mod assert;
 mod config;
+mod constants;
 mod controllers;
 mod guards;
 mod impls;
@@ -6,6 +8,7 @@ mod memory;
 mod store;
 mod types;
 
+use crate::assert::assert_caller_is_authorized;
 use crate::config::store::{
     del_origin_config as del_origin_config_store, get_origin_configs as get_origin_configs_store,
     set_origin_config as set_origin_config_store,
@@ -93,20 +96,26 @@ fn post_upgrade() {
 /// Data
 
 #[update]
-fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> PageView {
+fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
+    assert_caller_is_authorized(&key.satellite_id)?;
+
     let result = insert_page_view(key, page_view);
 
     match result {
-        Ok(new_page_view) => new_page_view,
+        Ok(new_page_view) => Ok(new_page_view),
         Err(error) => trap(&error),
     }
 }
 
 #[update]
-fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) {
+fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) -> Result<(), String> {
     for (key, page_view) in page_views {
+        assert_caller_is_authorized(&key.satellite_id)?;
+
         insert_page_view(key, page_view).unwrap_or_else(|e| trap(&e));
     }
+
+    Ok(())
 }
 
 #[query(guard = "caller_is_admin_controller")]

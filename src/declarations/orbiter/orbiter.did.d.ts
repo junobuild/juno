@@ -46,6 +46,8 @@ export interface PageViewDevice {
 	inner_height: number;
 	inner_width: number;
 }
+export type Result = { Ok: PageView } | { Err: string };
+export type Result_1 = { Ok: null } | { Err: string };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -78,7 +80,7 @@ export interface _SERVICE {
 	list_origin_configs: ActorMethod<[], Array<[Principal, OriginConfig]>>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_origin_config: ActorMethod<[Principal, SetOriginConfig], OriginConfig>;
-	set_page_view: ActorMethod<[AnalyticKey, SetPageView], PageView>;
-	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], undefined>;
+	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
+	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;
 	version: ActorMethod<[], string>;
 }

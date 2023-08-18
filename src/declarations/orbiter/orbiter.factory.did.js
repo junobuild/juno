@@ -70,6 +70,8 @@ export const idlFactory = ({ IDL }) => {
 		user_agent: IDL.Opt(IDL.Text),
 		collected_at: IDL.Nat64
 	});
+	const Result = IDL.Variant({ Ok: PageView, Err: IDL.Text });
+	const Result_1 = IDL.Variant({ Ok: IDL.Null, Err: IDL.Text });
 	return IDL.Service({
 		del_controllers: IDL.Func(
 			[DeleteControllersArgs],
@@ -90,8 +92,8 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		set_origin_config: IDL.Func([IDL.Principal, SetOriginConfig], [OriginConfig], []),
-		set_page_view: IDL.Func([AnalyticKey, SetPageView], [PageView], []),
-		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [], []),
+		set_page_view: IDL.Func([AnalyticKey, SetPageView], [Result], []),
+		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [Result_1], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

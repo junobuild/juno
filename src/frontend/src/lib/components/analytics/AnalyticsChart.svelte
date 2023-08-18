@@ -66,7 +66,7 @@
 		height: 300px;
 		fill: var(--value-color);
 
-		margin: var(--padding-6x) 0;
+		margin: var(--padding) 0 var(--padding-4x);
 		padding: var(--padding-2x);
 
 		@include shadow.strong-card;

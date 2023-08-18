@@ -94,6 +94,10 @@
 	{:else}
 		<AnalyticsFilter on:junoPeriod={selectPeriod} />
 
+		{#if pageViews.length > 0}
+			<AnalyticsChart data={pageViews} />
+		{/if}
+
 		<div class="card-container">
 			<Value>
 				<svelte:fragment slot="label">{$i18n.analytics.number_of_sessions}</svelte:fragment>
@@ -122,10 +126,6 @@
 				<p>{pageViews.length}</p>
 			</Value>
 		</div>
-
-		{#if pageViews.length > 0}
-			<AnalyticsChart data={pageViews} />
-		{/if}
 
 		{#if trackEvents.length > 0}
 			<AnalyticsEvents {trackEvents} />

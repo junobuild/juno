@@ -51,7 +51,7 @@
 		display: grid;
 		grid-template-columns: repeat(2, calc((100% - var(--padding-1_5x)) / 2));
 
-		gap: var(--padding-1_5x);
+		column-gap: var(--padding-1_5x);
 		padding: var(--padding-2x) 0;
 
 		@include media.min-width(large) {

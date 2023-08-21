@@ -100,6 +100,9 @@ const config: UserConfig = {
 	server: {
 		proxy: {
 			'/api': 'http://localhost:8000'
+		},
+		watch: {
+			ignored: ['**/.dfx/**', '**/.github/**']
 		}
 	},
 	// Node polyfill agent-js. Thanks solution shared by chovyfu on the Discord channel.

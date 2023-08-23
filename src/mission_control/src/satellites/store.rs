@@ -18,6 +18,38 @@ pub fn add_satellite(satellite_id: &SatelliteId, name: &str) -> Satellite {
     STATE.with(|state| add_satellite_impl(satellite_id, name, &mut state.borrow_mut().stable))
 }
 
+pub fn attach_satellite(satellite_id: &SatelliteId, metadata: &Metadata) -> Result<Satellite, String> {
+    STATE.with(|state| attach_satellite_impl(satellite_id, metadata, &mut state.borrow_mut().stable))
+}
+
+fn attach_satellite_impl(
+    satellite_id: &SatelliteId,
+    metadata: &Metadata,
+    state: &mut StableState,
+) -> Result<Satellite, String> {
+    let satellite = state.satellites.get(satellite_id);
+
+    match satellite {
+        Some(_) => Err("Satellite already exists.".to_string()),
+        None => {
+            let now = time();
+
+            let new_satellite = Satellite {
+                satellite_id: *satellite_id,
+                metadata: metadata.clone(),
+                created_at: now,
+                updated_at: now,
+            };
+
+            state
+                .satellites
+                .insert(*satellite_id, new_satellite.clone());
+
+            Ok(new_satellite)
+        },
+    }
+}
+
 fn add_satellite_impl(
     satellite_id: &SatelliteId,
     name: &str,

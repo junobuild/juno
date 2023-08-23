@@ -35,7 +35,7 @@ use ic_cdk::api::call::arg_data;
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
-use satellites::store::{get_satellites, set_satellite_metadata as set_satellite_metadata_store};
+use satellites::store::{get_satellites, set_satellite_metadata as set_satellite_metadata_store, attach_satellite as attach_satellite_store};
 use shared::types::interface::{MissionControlArgs, SetController, StatusesArgs};
 use shared::types::state::{
     ControllerId, ControllerScope, Controllers, SatelliteId, SegmentsStatuses,
@@ -91,6 +91,11 @@ async fn create_satellite(name: String) -> Satellite {
     create_satellite_console(&name)
         .await
         .unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+fn attach_satellite(satellite_id: SatelliteId, metadata: Metadata) -> Satellite {
+    attach_satellite_store(&satellite_id, &metadata).unwrap_or_else(|e| trap(&e))
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]

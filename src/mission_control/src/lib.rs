@@ -12,6 +12,7 @@ use crate::controllers::mission_control::{
     delete_mission_control_controllers as delete_controllers_to_mission_control,
     set_mission_control_controllers as set_controllers_to_mission_control,
 };
+use crate::controllers::orbiter::{delete_orbiter_controllers, set_orbiter_controllers};
 use crate::controllers::satellite::{
     add_satellite_controllers as add_satellite_controllers_impl, delete_satellite_controllers,
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
@@ -178,6 +179,28 @@ async fn create_orbiter(name: Option<String>) -> Orbiter {
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_orbiter_metadata(orbiter_id: OrbiterId, metadata: Metadata) -> Orbiter {
     set_orbiter_metadata_store(&orbiter_id, &metadata).unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn set_orbiters_controllers(
+    orbiter_ids: Vec<OrbiterId>,
+    controller_ids: Vec<ControllerId>,
+    controller: SetController,
+) {
+    for orbiter_id in orbiter_ids {
+        set_orbiter_controllers(&orbiter_id, &controller_ids, &controller)
+            .await
+            .unwrap_or_else(|e| trap(&e));
+    }
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn del_orbiters_controllers(orbiter_ids: Vec<OrbiterId>, controllers: Vec<UserId>) {
+    for orbiter_id in orbiter_ids {
+        delete_orbiter_controllers(&orbiter_id, &controllers)
+            .await
+            .unwrap_or_else(|e| trap(&e));
+    }
 }
 
 /// Mgmt

@@ -4,7 +4,7 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import type { Principal } from '@dfinity/principal';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import { getMissionControlActor } from '$lib/utils/actor.utils';
@@ -15,35 +15,43 @@
 		setSatellitesForVersion
 	} from '$lib/services/mission-control.services';
 	import { bigintStringify } from '$lib/utils/number.utils';
-	import { createEventDispatcher } from 'svelte';
+	import { orbiterName } from '$lib/utils/orbiter.utils';
+	import { setOrbitersController } from '$lib/api/mission-control.api';
 
 	export let principal: string;
 	export let redirect_uri: string;
 
 	let satellites: [Principal, Satellite][] = [];
+	let orbiters: [Principal, Orbiter][] = [];
 
-	const loadSatellites = async () => {
+	const loadSegments = async () => {
 		if (!$authSignedInStore) {
 			satellites = [];
+			orbiters = [];
 			return;
 		}
 
 		if (isNullish($missionControlStore)) {
 			satellites = [];
+			orbiters = [];
 			return;
 		}
 
 		try {
 			const actor = await getMissionControlActor($missionControlStore);
-			satellites = await actor.list_satellites();
+			const [sats, orbs] = await Promise.all([actor.list_satellites(), actor.list_orbiters()]);
+
+			satellites = sats;
+			orbiters = orbs;
 		} catch (err: unknown) {
 			console.error(err);
 		}
 	};
 
-	$: $authSignedInStore, $missionControlStore, (async () => await loadSatellites())();
+	$: $authSignedInStore, $missionControlStore, (async () => await loadSegments())();
 
 	let selectedSatellites: [Principal, Satellite][] = [];
+	let selectedOrbiters: [Principal, Orbiter][] = [];
 	let missionControl = false;
 
 	let allSelected = false;
@@ -53,6 +61,7 @@
 
 		missionControl = allSelected;
 		selectedSatellites = allSelected ? [...satellites] : [];
+		selectedOrbiters = allSelected ? [...orbiters] : [];
 	};
 
 	let profile = '';
@@ -103,6 +112,17 @@
 								scope: 'admin'
 							})
 					  ]
+					: []),
+				...(selectedOrbiters.length > 0
+					? [
+							setOrbitersController({
+								missionControlId: $missionControlStore,
+								controllerId: principal,
+								orbiterIds: selectedOrbiters.map((s) => s[0]),
+								profile,
+								scope: 'admin'
+							})
+					  ]
 					: [])
 			]);
 
@@ -113,6 +133,17 @@
 								selectedSatellites.map(([p, n]) => ({
 									p: p.toText(),
 									n: satelliteName(n)
+								})),
+								bigintStringify
+							)
+					  )}`
+					: undefined,
+				selectedOrbiters.length > 0
+					? `orbiters=${encodeURIComponent(
+							JSON.stringify(
+								selectedOrbiters.map(([p, n]) => ({
+									p: p.toText(),
+									n: orbiterName(n)
 								})),
 								bigintStringify
 							)
@@ -166,6 +197,17 @@
 			</div>
 		{/each}
 
+		{#each orbiters as orbiter}
+			{@const orbName = orbiterName(orbiter[1])}
+
+			<div class="checkbox">
+				<input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /><span
+					>{!orbName ? 'Analytics' : orbName}</span
+				>
+				<span class="canister-id">({orbiter[0].toText()})</span>
+			</div>
+		{/each}
+
 		<div class="checkbox all">
 			<input type="checkbox" on:change={toggleAll} />
 			<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
@@ -181,6 +223,7 @@
 		type="text"
 		placeholder={$i18n.cli.profile_placeholder}
 		name="profile"
+		class="profile"
 		bind:value={profile}
 	/>
 
@@ -189,7 +232,7 @@
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/text';
-	@use '../../../lib/styles/mixins/shadow';
+	@use '../../../lib/styles/mixins/media';
 
 	.checkbox {
 		display: flex;
@@ -202,7 +245,8 @@
 	}
 
 	button {
-		margin: var(--padding-2x) 0 0;
+		margin: var(--padding-2_5x) 0 0;
+		display: block;
 	}
 
 	.canister-id {
@@ -220,9 +264,13 @@
 	}
 
 	.objects {
-		@include shadow.card;
-
-		margin: var(--padding-3x) 0;
+		margin: var(--padding-2x) 0;
 		padding: var(--padding);
+	}
+
+	.profile {
+		@include media.min-width(large) {
+			max-width: 50%;
+		}
 	}
 </style>

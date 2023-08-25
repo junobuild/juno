@@ -3,31 +3,28 @@
 	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
 	import type { SetControllerParams } from '$lib/types/controllers';
-	import {
-		deleteOrbiterController,
-		listOrbiterControllers,
-		setOrbiterController
-	} from '$lib/api/orbiter.api';
+	import { listOrbiterControllers } from '$lib/api/orbiter.api';
+	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
 
 	export let orbiterId: Principal;
 
-	let controllers: Principal[] = [];
-
 	const list = (): Promise<[Principal, Controller][]> => listOrbiterControllers({ orbiterId });
 
-	const remove = ({
-		controller
-	}: {
-		missionControlId: Principal;
-		controller: Principal;
-	}): Promise<void> => deleteOrbiterController({ controller, orbiterId });
+	const remove = (params: { missionControlId: Principal; controller: Principal }): Promise<void> =>
+		deleteOrbitersController({
+			...params,
+			orbiterIds: [orbiterId]
+		});
 
-	const add = ({
-		missionControlId,
-		...rest
-	}: {
-		missionControlId: Principal;
-	} & SetControllerParams): Promise<void> => setOrbiterController({ ...rest, orbiterId });
+	const add = (
+		params: {
+			missionControlId: Principal;
+		} & SetControllerParams
+	): Promise<void> =>
+		setOrbitersController({
+			...params,
+			orbiterIds: [orbiterId]
+		});
 </script>
 
 <div>

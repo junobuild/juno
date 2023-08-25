@@ -163,10 +163,10 @@
 	"cli": {
 		"title": "Juno CLI Authentication",
 		"sign_in": "Sign in to set up your terminal for interacting with your mission control and/or satellite(s).",
-		"add": "For which mission control and/or satellite(s) would you like to authenticate the new controller <strong>{0}</strong>?",
+		"add": "Select the segment(s) to be controlled by your terminal using the controller <strong>{0}</strong>:",
 		"select_all": "Select all segments",
 		"unselect_all": "Unselect all segments",
-		"profile": "You can also provide an optional name to easily identify the controller.",
+		"profile": "You can also provide an optional profile's name to easily identify the controller.",
 		"segments": "Segments:",
 		"profile_placeholder": "An optional hint about the controller"
 	},

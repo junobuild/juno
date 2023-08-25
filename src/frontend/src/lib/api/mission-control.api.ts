@@ -189,3 +189,42 @@ export const setSatelliteMetadata = async ({
 	const actor = await getMissionControlActor(missionControlId);
 	return actor.set_satellite_metadata(satelliteId, metadata);
 };
+
+export const setOrbitersController = async ({
+	missionControlId,
+	orbiterIds,
+	controllerId,
+	...rest
+}: {
+	missionControlId: Principal;
+	orbiterIds: Principal[];
+} & SetControllerParams) => {
+	try {
+		const actor = await getMissionControlActor(missionControlId);
+		await actor.set_orbiters_controllers(
+			orbiterIds,
+			[Principal.fromText(controllerId)],
+			toSetController(rest)
+		);
+	} catch (err: unknown) {
+		console.error(
+			'setOrbitersController:',
+			missionControlId.toText(),
+			orbiterIds.map((id) => id.toText()).join(',')
+		);
+		throw err;
+	}
+};
+
+export const deleteOrbitersController = async ({
+	missionControlId,
+	orbiterIds,
+	controller
+}: {
+	missionControlId: Principal;
+	orbiterIds: Principal[];
+	controller: Principal;
+}) => {
+	const actor = await getMissionControlActor(missionControlId);
+	await actor.del_orbiters_controllers(orbiterIds, [controller]);
+};

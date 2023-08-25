@@ -67,6 +67,7 @@ service : () -> {
   create_orbiter : (opt text) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
   del_mission_control_controllers : (vec principal) -> ();
+  del_orbiters_controllers : (vec principal, vec principal) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
   get_user : () -> (principal) query;
   list_mission_control_controllers : () -> (
@@ -86,6 +87,11 @@ service : () -> {
   set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();
   set_orbiter_metadata : (principal, vec record { text; text }) -> (Orbiter);
+  set_orbiters_controllers : (
+      vec principal,
+      vec principal,
+      SetController,
+    ) -> ();
   set_satellite_metadata : (principal, vec record { text; text }) -> (
       Satellite,
     );

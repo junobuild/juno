@@ -72,6 +72,7 @@ export interface _SERVICE {
 	create_orbiter: ActorMethod<[[] | [string]], Orbiter>;
 	create_satellite: ActorMethod<[string], Satellite>;
 	del_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
+	del_orbiters_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	get_user: ActorMethod<[], Principal>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
@@ -85,6 +86,10 @@ export interface _SERVICE {
 	set_metadata: ActorMethod<[Array<[string, string]>], undefined>;
 	set_mission_control_controllers: ActorMethod<[Array<Principal>, SetController], undefined>;
 	set_orbiter_metadata: ActorMethod<[Principal, Array<[string, string]>], Orbiter>;
+	set_orbiters_controllers: ActorMethod<
+		[Array<Principal>, Array<Principal>, SetController],
+		undefined
+	>;
 	set_satellite_metadata: ActorMethod<[Principal, Array<[string, string]>], Satellite>;
 	set_satellites_controllers: ActorMethod<
 		[Array<Principal>, Array<Principal>, SetController],

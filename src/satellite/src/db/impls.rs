@@ -1,9 +1,10 @@
 use crate::db::types::state::{Doc, StableKey};
 use crate::types::core::Compare;
 use candid::{decode_one, encode_one};
-use ic_stable_structures::{BoundedStorable, Storable};
+use ic_stable_structures::{Storable};
 use std::borrow::Cow;
 use std::cmp::Ordering;
+use ic_stable_structures::storable::Bound;
 
 impl Compare for Doc {
     fn cmp_updated_at(&self, other: &Self) -> Ordering {
@@ -23,12 +24,8 @@ impl Storable for Doc {
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         decode_one(&bytes).unwrap()
     }
-}
 
-impl BoundedStorable for Doc {
-    // TODO: auto max_size
-    const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
-    const IS_FIXED_SIZE: bool = false;
+    const BOUND: Bound = Bound::Unbounded;
 }
 
 impl Storable for StableKey {
@@ -39,10 +36,6 @@ impl Storable for StableKey {
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         decode_one(&bytes).unwrap()
     }
-}
 
-impl BoundedStorable for StableKey {
-    // TODO: auto max_size
-    const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
-    const IS_FIXED_SIZE: bool = false;
+    const BOUND: Bound = Bound::Unbounded;
 }

@@ -1,9 +1,10 @@
 use candid::{decode_one, encode_one};
 use ic_cdk::api::time;
-use ic_stable_structures::{BoundedStorable, Storable};
+use ic_stable_structures::{Storable};
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
+use ic_stable_structures::storable::Bound;
 
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::types::assets::AssetHashes;
@@ -106,12 +107,8 @@ impl Storable for Asset {
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         decode_one(&bytes).unwrap()
     }
-}
 
-impl BoundedStorable for Asset {
-    // TODO: auto max_size
-    const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
-    const IS_FIXED_SIZE: bool = false;
+    const BOUND: Bound = Bound::Unbounded;
 }
 
 impl Storable for StableFullPath {
@@ -122,10 +119,6 @@ impl Storable for StableFullPath {
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         decode_one(&bytes).unwrap()
     }
-}
 
-impl BoundedStorable for StableFullPath {
-    // TODO: auto max_size
-    const MAX_SIZE: u32 = 10 * 1024 * 1024; // 10 MB
-    const IS_FIXED_SIZE: bool = false;
+    const BOUND: Bound = Bound::Unbounded;
 }

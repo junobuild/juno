@@ -72,7 +72,7 @@ fn init() {
 
     let heap = HeapState {
         controllers: init_controllers(&controllers),
-        ..Default::default()
+        ..HeapState::default()
     };
 
     STATE.with(|state| {

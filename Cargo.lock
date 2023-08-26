@@ -457,9 +457,11 @@ dependencies = [
 
 [[package]]
 name = "ic-stable-structures"
-version = "0.5.4"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b4e026318236de13568edafd85534ad29910908bf08cdcf177d4403fd4a5f6c4"
+version = "0.5.6"
+source = "git+https://github.com/lwshang/stable-structures.git?branch=lwshang/update_cdk#e1b7a93a08484dcf7ba7c66600f5c6b0b84f63cc"
+dependencies = [
+ "ic0",
+]
 
 [[package]]
 name = "ic0"

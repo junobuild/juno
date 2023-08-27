@@ -1,4 +1,4 @@
-use crate::constants::ERROR_UNAUTHORIZED_CALL;
+use crate::msg::ERROR_UNAUTHORIZED_CALL;
 use crate::memory::STATE;
 use crate::types::state::OriginConfig;
 use ic_cdk::caller;

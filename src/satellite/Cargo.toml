@@ -23,5 +23,5 @@ url = "2.4.0"
 globset = "0.4.13"
 shared = { path = "../shared" }
 hex = "0.4.3"
-ic-stable-structures = { git = "https://github.com/dfinity/stable-structures.git", branch = "ielashi/btree_v2"}
+ic-stable-structures = { git = "https://github.com/peterpeterparker/stable-structures.git", branch = "fix/btree_v2_init"}
 ciborium = "0.2.1"

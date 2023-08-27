@@ -25,7 +25,7 @@ pub mod state {
         pub assets: AssetsStable,
     }
 
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct HeapState {
         pub controllers: Controllers,
         pub db: DbHeapState,

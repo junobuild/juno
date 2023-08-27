@@ -12,6 +12,16 @@ use std::collections::{BTreeMap, HashMap};
 
 impl Default for State {
     fn default() -> Self {
+        Self {
+            stable: init_stable_state(),
+            heap: HeapState::default(),
+            runtime: RuntimeState::default(),
+        }
+    }
+}
+
+impl Default for HeapState {
+    fn default() -> Self {
         let now = time();
 
         let db: DbHeapState = DbHeapState {
@@ -57,13 +67,9 @@ impl Default for State {
         };
 
         Self {
-            stable: init_stable_state(),
-            heap: HeapState {
-                controllers: Controllers::default(),
-                db,
-                storage,
-            },
-            runtime: RuntimeState::default(),
+            controllers: Controllers::default(),
+            db,
+            storage,
         }
     }
 }

@@ -1,0 +1,1 @@
+pub const TRACK_EVENT_METADATA_MAX_LENGTH: u32 = 10;

@@ -14,6 +14,6 @@ ic-cdk = "0.10.0"
 ic-cdk-macros = "0.7.1"
 serde = "1.0.182"
 lazy_static = "1.4.0"
-ic-stable-structures = { git = "https://github.com/lwshang/stable-structures.git", branch = "lwshang/update_cdk"}
+ic-stable-structures = "0.5.6"
 ciborium = "0.2.1"
 shared = { path = "../shared" }

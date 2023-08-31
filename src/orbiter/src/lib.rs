@@ -1,10 +1,12 @@
 mod assert;
 mod config;
-mod msg;
+mod constants;
 mod controllers;
 mod guards;
 mod impls;
 mod memory;
+mod msg;
+mod serializers;
 mod store;
 mod types;
 

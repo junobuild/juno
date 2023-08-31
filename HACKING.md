@@ -20,7 +20,7 @@ dfx start --clean
 First, deploy II:
 
 ```
-dfx deploy internet_identity
+dfx deploy internet_identity --specified-id rrkah-fqaaa-aaaaa-aaaaq-cai
 ```
 
 Collect "internet_identity" canister ID and update [client/src/main.ts](client/src/main.ts) (if not `rrkah-fqaaa-aaaaa-aaaaq-cai`).

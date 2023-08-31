@@ -168,7 +168,7 @@
 	};
 
 	let disabled = true;
-	$: disabled = selectedSatellites.length === 0 && !missionControl;
+	$: disabled = selectedSatellites.length === 0 && !missionControl && selectedOrbiters.length === 0;
 </script>
 
 <p>

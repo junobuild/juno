@@ -1,7 +1,4 @@
-use crate::constants::{
-    METADATA_MAX_ELEMENTS, SERIALIZED_KEY_LENGTH, SERIALIZED_METADATA_LENGTH,
-    SERIALIZED_PRINCIPAL_LENGTH, SERIALIZED_STRING_LENGTH,
-};
+use crate::constants::{METADATA_MAX_ELEMENTS, SERIALIZED_KEY_LENGTH, SERIALIZED_LONG_STRING_LENGTH, SERIALIZED_METADATA_LENGTH, SERIALIZED_PRINCIPAL_LENGTH, SERIALIZED_STRING_LENGTH};
 use candid::Principal;
 use shared::types::state::Metadata;
 
@@ -48,6 +45,21 @@ pub fn string_to_bytes(s: &String) -> [u8; SERIALIZED_STRING_LENGTH] {
 pub fn bytes_to_string(bytes: &[u8; SERIALIZED_STRING_LENGTH]) -> String {
     String::from_utf8(bytes[1..1 + bytes[0] as usize].to_vec())
         .expect("Failed to convert bytes to string")
+}
+
+/// Long String 4096 max length
+
+pub fn long_string_to_bytes(s: &String) -> [u8; SERIALIZED_LONG_STRING_LENGTH] {
+    let mut bytes: [u8; SERIALIZED_LONG_STRING_LENGTH] = [0; SERIALIZED_LONG_STRING_LENGTH];
+    let p_bytes: &[u8] = s.as_bytes();
+    bytes[0] = p_bytes.len() as u8;
+    bytes[1..p_bytes.len() + 1].copy_from_slice(p_bytes);
+    bytes
+}
+
+pub fn bytes_to_long_string(bytes: &[u8; SERIALIZED_LONG_STRING_LENGTH]) -> String {
+    String::from_utf8(bytes[1..1 + bytes[0] as usize].to_vec())
+        .expect("Failed to convert bytes to long string")
 }
 
 /// Metadata

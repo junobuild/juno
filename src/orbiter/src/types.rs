@@ -58,8 +58,8 @@ pub mod state {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct PageViewDevice {
-        inner_width: u16,
-        inner_height: u16,
+        pub inner_width: u16,
+        pub inner_height: u16,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

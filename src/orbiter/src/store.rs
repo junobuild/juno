@@ -1,4 +1,6 @@
-use crate::assert::{assert_analytic_key_length, assert_track_event_length};
+use crate::assert::{
+    assert_analytic_key_length, assert_page_view_length, assert_track_event_length,
+};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, PageView, PageViewsStable, TrackEvent, TrackEventsStable};
@@ -17,6 +19,7 @@ fn insert_page_view_impl(
     db: &mut PageViewsStable,
 ) -> Result<PageView, String> {
     assert_analytic_key_length(&key)?;
+    assert_page_view_length(&page_view)?;
 
     let current_page_view = db.get(&key);
 

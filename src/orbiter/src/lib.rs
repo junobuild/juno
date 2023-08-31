@@ -6,9 +6,9 @@ mod guards;
 mod impls;
 mod memory;
 mod msg;
+mod serializers;
 mod store;
 mod types;
-mod serializers;
 
 use crate::assert::assert_caller_is_authorized;
 use crate::config::store::{

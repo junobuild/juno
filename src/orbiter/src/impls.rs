@@ -1,14 +1,15 @@
 use crate::constants::{
-    METADATA_MAX_ELEMENTS, SERIALIZED_KEY_LENGTH, SERIALIZED_METADATA_LENGTH,
-    SERIALIZED_PRINCIPAL_LENGTH, SERIALIZED_STRING_LENGTH,
+    METADATA_MAX_ELEMENTS, SERIALIZED_KEY_LENGTH, SERIALIZED_LONG_STRING_LENGTH,
+    SERIALIZED_METADATA_LENGTH, SERIALIZED_PRINCIPAL_LENGTH, SERIALIZED_STRING_LENGTH,
 };
 use crate::memory::init_stable_state;
-use crate::types::state::{AnalyticKey, HeapState, OriginConfigs, PageView, State, TrackEvent};
 use crate::serializers::{
-    bytes_to_key, bytes_to_metadata, bytes_to_principal, bytes_to_string, key_to_bytes,
-    metadata_to_bytes, principal_to_bytes, string_to_bytes,
+    bytes_to_key, bytes_to_long_string, bytes_to_metadata, bytes_to_principal, bytes_to_string,
+    key_to_bytes, long_string_to_bytes, metadata_to_bytes, principal_to_bytes, string_to_bytes,
 };
-use candid::{decode_one, encode_one};
+use crate::types::state::{
+    AnalyticKey, HeapState, OriginConfigs, PageView, PageViewDevice, State, TrackEvent,
+};
 use ic_stable_structures::{BoundedStorable, Storable};
 use shared::types::state::Controllers;
 use std::borrow::Cow;
@@ -26,19 +27,143 @@ impl Default for State {
     }
 }
 
+const TIMESTAMPS_LENGTH: usize = size_of::<u64>() * 3;
+
+// Size of PageView:
+// - title (String)
+// - href (Long string)
+// - referrer (Option<Long string>)
+// - device (2 * u16)
+// - user_agent (Option<String>)
+// - time_zone (String)
+// - collected_at + created_at + updated_at (3 * u64)
+const PAGE_VIEW_MAX_SIZE: usize = (SERIALIZED_STRING_LENGTH * 3)
+    + (SERIALIZED_LONG_STRING_LENGTH * 2)
+    + TIMESTAMPS_LENGTH
+    + (size_of::<u16>() * 2);
+
 impl Storable for PageView {
     fn to_bytes(&self) -> Cow<[u8]> {
-        Cow::Owned(encode_one(self).unwrap())
+        let mut buf = Vec::with_capacity(PAGE_VIEW_MAX_SIZE);
+
+        buf.extend(string_to_bytes(&self.title));
+        buf.extend(long_string_to_bytes(&self.href));
+        buf.extend(long_string_to_bytes(
+            &self.referrer.clone().unwrap_or("".to_string()),
+        ));
+        buf.extend(self.device.inner_width.to_be_bytes());
+        buf.extend(self.device.inner_height.to_be_bytes());
+        buf.extend(string_to_bytes(
+            &self.user_agent.clone().unwrap_or("".to_string()),
+        ));
+        buf.extend(string_to_bytes(&self.time_zone));
+        buf.extend(self.collected_at.to_be_bytes());
+        buf.extend(self.created_at.to_be_bytes());
+        buf.extend(self.updated_at.to_be_bytes());
+
+        Cow::Owned(buf)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        decode_one(&bytes).unwrap()
+        let mut index = 0;
+
+        let title = bytes_to_string(
+            TryFrom::try_from(&bytes[0..SERIALIZED_STRING_LENGTH])
+                .expect("Failed to deserialize title"),
+        );
+
+        index += SERIALIZED_STRING_LENGTH;
+
+        let href = bytes_to_long_string(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_LONG_STRING_LENGTH])
+                .expect("Failed to deserialize href"),
+        );
+
+        index += SERIALIZED_LONG_STRING_LENGTH;
+
+        let referrer = bytes_to_long_string(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_LONG_STRING_LENGTH])
+                .expect("Failed to deserialize referrer"),
+        );
+
+        let referrer_opt = match referrer.is_empty() {
+            true => None,
+            false => Some(referrer),
+        };
+
+        index += SERIALIZED_LONG_STRING_LENGTH;
+
+        let inner_width = u16::from_be_bytes(
+            TryFrom::try_from(&bytes[index..index + size_of::<u16>()])
+                .expect("Failed to deserialize inner_width"),
+        );
+
+        index += size_of::<u16>();
+
+        let inner_height = u16::from_be_bytes(
+            TryFrom::try_from(&bytes[index..index + size_of::<u16>()])
+                .expect("Failed to deserialize inner_height"),
+        );
+
+        index += size_of::<u16>();
+
+        let user_agent = bytes_to_string(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_STRING_LENGTH])
+                .expect("Failed to deserialize user_agent"),
+        );
+
+        let user_agent_opt = match user_agent.is_empty() {
+            true => None,
+            false => Some(user_agent),
+        };
+
+        index += SERIALIZED_STRING_LENGTH;
+
+        let time_zone = bytes_to_string(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_STRING_LENGTH])
+                .expect("Failed to deserialize time_zone"),
+        );
+
+        index += SERIALIZED_STRING_LENGTH;
+
+        let collected_at = u64::from_be_bytes(
+            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+                .expect("Failed to deserialize collected_at"),
+        );
+
+        index += size_of::<u64>();
+
+        let created_at = u64::from_be_bytes(
+            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+                .expect("Failed to deserialize created_at"),
+        );
+
+        index += size_of::<u64>();
+
+        let updated_at = u64::from_be_bytes(
+            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+                .expect("Failed to deserialize updated_at"),
+        );
+
+        PageView {
+            title,
+            href,
+            referrer: referrer_opt,
+            device: PageViewDevice {
+                inner_width,
+                inner_height,
+            },
+            user_agent: user_agent_opt,
+            time_zone,
+            collected_at,
+            created_at,
+            updated_at,
+        }
     }
 }
 
 impl BoundedStorable for PageView {
-    // const MAX_SIZE: u32 = size_of::<PageView>() as u32;
-    const MAX_SIZE: u32 = 100_000;
+    const MAX_SIZE: u32 = PAGE_VIEW_MAX_SIZE as u32;
     const IS_FIXED_SIZE: bool = false;
 }
 
@@ -47,7 +172,7 @@ impl BoundedStorable for PageView {
 // - collected_at + created_at + updated_at (3 * u64)
 // - metadata (2 * String) limited to TRACK_EVENT_METADATA_MAX_LENGTH entries
 const TRACK_EVENT_MAX_SIZE: usize = SERIALIZED_STRING_LENGTH
-    + (size_of::<u64>() * 3)
+    + TIMESTAMPS_LENGTH
     + (SERIALIZED_STRING_LENGTH * 2 * METADATA_MAX_ELEMENTS);
 
 impl Storable for TrackEvent {
@@ -64,27 +189,47 @@ impl Storable for TrackEvent {
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        TrackEvent {
-            name: bytes_to_string(
-                TryFrom::try_from(&bytes[0..SERIALIZED_STRING_LENGTH])
-                    .expect("Failed to deserialize name"),
-            ),
-            metadata: bytes_to_metadata(
-                TryFrom::try_from(
-                    &bytes[SERIALIZED_STRING_LENGTH
-                        ..SERIALIZED_STRING_LENGTH + SERIALIZED_METADATA_LENGTH],
-                )
+        let mut index = 0;
+
+        let name = bytes_to_string(
+            TryFrom::try_from(&bytes[0..SERIALIZED_STRING_LENGTH])
                 .expect("Failed to deserialize name"),
-            ),
-            collected_at: u64::from_be_bytes(
-                TryFrom::try_from(&bytes[8..16]).expect("Failed to deserialize collected_at"),
-            ),
-            created_at: u64::from_be_bytes(
-                TryFrom::try_from(&bytes[8..16]).expect("Failed to deserialize created_at"),
-            ),
-            updated_at: u64::from_be_bytes(
-                TryFrom::try_from(&bytes[8..16]).expect("Failed to deserialize updated_at"),
-            ),
+        );
+
+        index += SERIALIZED_STRING_LENGTH;
+
+        let metadata = bytes_to_metadata(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_METADATA_LENGTH])
+                .expect("Failed to deserialize name"),
+        );
+
+        index += SERIALIZED_METADATA_LENGTH;
+
+        let collected_at = u64::from_be_bytes(
+            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+                .expect("Failed to deserialize collected_at"),
+        );
+
+        index += size_of::<u64>();
+
+        let created_at = u64::from_be_bytes(
+            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+                .expect("Failed to deserialize created_at"),
+        );
+
+        index += size_of::<u64>();
+
+        let updated_at = u64::from_be_bytes(
+            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+                .expect("Failed to deserialize updated_at"),
+        );
+
+        TrackEvent {
+            name,
+            metadata,
+            collected_at,
+            created_at,
+            updated_at,
         }
     }
 }

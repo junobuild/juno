@@ -1,8 +1,8 @@
-use crate::constants::TRACK_EVENT_METADATA_MAX_LENGTH;
+use crate::constants::{KEY_MAX_LENGTH, TRACK_EVENT_METADATA_MAX_LENGTH};
 use crate::memory::STATE;
 use crate::msg::ERROR_UNAUTHORIZED_CALL;
 use crate::types::interface::SetTrackEvent;
-use crate::types::state::OriginConfig;
+use crate::types::state::{AnalyticKey, OriginConfig};
 use ic_cdk::caller;
 use shared::types::state::SatelliteId;
 use shared::utils::principal_equal;
@@ -27,6 +27,24 @@ pub fn assert_caller_is_authorized(satellite_id: &SatelliteId) -> Result<(), Str
             }
         }
     }
+}
+
+pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
+    if key.key.len() > usize::try_from(KEY_MAX_LENGTH).unwrap() {
+        return Err(format!(
+            "An analytic key must not be longer than {}.",
+            KEY_MAX_LENGTH
+        ));
+    }
+
+    if key.session_id.len() > usize::try_from(KEY_MAX_LENGTH).unwrap() {
+        return Err(format!(
+            "An analytic session ID must not be longer than {}.",
+            KEY_MAX_LENGTH
+        ));
+    }
+
+    Ok(())
 }
 
 pub fn assert_task_event_metadata_length(track_event: &SetTrackEvent) -> Result<(), String> {

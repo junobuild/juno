@@ -1,4 +1,4 @@
-use crate::assert::assert_task_event_metadata_length;
+use crate::assert::{assert_analytic_key_length, assert_task_event_metadata_length};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, PageView, PageViewsStable, TrackEvent, TrackEventsStable};
@@ -16,6 +16,8 @@ fn insert_page_view_impl(
     page_view: SetPageView,
     db: &mut PageViewsStable,
 ) -> Result<PageView, String> {
+    assert_analytic_key_length(&key)?;
+
     let current_page_view = db.get(&key);
 
     // There is no timestamp assertion in the case of the Orbiter analytics.
@@ -64,6 +66,7 @@ fn insert_track_event_impl(
     track_event: SetTrackEvent,
     db: &mut TrackEventsStable,
 ) -> Result<TrackEvent, String> {
+    assert_analytic_key_length(&key)?;
     assert_task_event_metadata_length(&track_event)?;
 
     let current_track_event = db.get(&key);

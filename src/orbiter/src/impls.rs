@@ -4,7 +4,7 @@ use crate::constants::{
 };
 use crate::memory::init_stable_state;
 use crate::types::state::{AnalyticKey, HeapState, OriginConfigs, PageView, State, TrackEvent};
-use crate::utils::{
+use crate::serializers::{
     bytes_to_key, bytes_to_metadata, bytes_to_principal, bytes_to_string, key_to_bytes,
     metadata_to_bytes, principal_to_bytes, string_to_bytes,
 };

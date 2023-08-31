@@ -2,8 +2,10 @@
   @component
   Generates an SVG x-axis. This component is also configured to detect if your x-scale is an ordinal scale. If so, it will place the markers in the middle of the bandwidth.
  -->
-<script>
+<script lang="ts">
 	import { getContext } from 'svelte';
+
+	// @ts-ignore
 	const { width, height, xScale, yRange } = getContext('LayerCake');
 
 	/** @type {Boolean} [gridlines=true] - Extend lines from the ticks into the chart space */
@@ -19,10 +21,10 @@
 	export let snapTicks = false;
 
 	/** @type {Function} [formatTick=d => d] - A function that passes the current tick value and expects a nicely formatted value in return. */
-	export let formatTick = (d) => d;
+	export let formatTick = (d: number) => d;
 
 	/** @type {Number|Array|Function} [ticks] - If this is a number, it passes that along to the [d3Scale.ticks](https://github.com/d3/d3-scale) function. If this is an array, hardcodes the ticks to those values. If it's a function, passes along the default tick values and expects an array of tick values in return. If nothing, it uses the default ticks supplied by the D3 function. */
-	export let ticks = undefined;
+	export let ticks: number | ((ticks: number) => void) | undefined | number[] = undefined;
 
 	/** @type {Number} [xTick=0] - How far over to position the text marker. */
 	export let xTick = 0;
@@ -40,7 +42,7 @@
 		? ticks($xScale.ticks())
 		: $xScale.ticks(ticks);
 
-	function textAnchor(i) {
+	function textAnchor(i: number) {
 		if (snapTicks === true) {
 			if (i === 0) {
 				return 'start';

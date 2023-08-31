@@ -2,7 +2,7 @@
   @component
   Generates an SVG area shape using the `area` function from [d3-shape](https://github.com/d3/d3-shape).
  -->
-<script>
+<script lang="ts">
 	import { getContext } from 'svelte';
 
 	const { data, xGet, yGet, xScale, yScale, extents } = getContext('LayerCake');

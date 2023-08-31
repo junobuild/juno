@@ -11,7 +11,7 @@
 			...acc,
 			[name]: (acc[name] ?? 0) + 1
 		}),
-		{}
+		{} as Record<string, number>
 	);
 </script>
 

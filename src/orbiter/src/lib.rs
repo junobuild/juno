@@ -8,6 +8,7 @@ mod memory;
 mod msg;
 mod store;
 mod types;
+mod utils;
 
 use crate::assert::assert_caller_is_authorized;
 use crate::config::store::{

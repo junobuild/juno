@@ -1,4 +1,4 @@
-use crate::assert::{assert_analytic_key_length, assert_task_event_metadata_length};
+use crate::assert::{assert_analytic_key_length, assert_track_event_length};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, PageView, PageViewsStable, TrackEvent, TrackEventsStable};
@@ -67,7 +67,7 @@ fn insert_track_event_impl(
     db: &mut TrackEventsStable,
 ) -> Result<TrackEvent, String> {
     assert_analytic_key_length(&key)?;
-    assert_task_event_metadata_length(&track_event)?;
+    assert_track_event_length(&track_event)?;
 
     let current_track_event = db.get(&key);
 

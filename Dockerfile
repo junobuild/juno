@@ -43,6 +43,7 @@ COPY Cargo.lock .
 COPY Cargo.toml .
 COPY src/console/Cargo.toml src/console/Cargo.toml
 COPY src/observatory/Cargo.toml src/observatory/Cargo.toml
+COPY src/orbiter/Cargo.toml src/orbiter/Cargo.toml
 COPY src/mission_control/Cargo.toml src/mission_control/Cargo.toml
 COPY src/satellite/Cargo.toml src/satellite/Cargo.toml
 COPY src/shared/Cargo.toml src/shared/Cargo.toml
@@ -51,6 +52,8 @@ RUN mkdir -p src/console/src \
     && touch src/console/src/lib.rs \
     && mkdir -p src/observatory/src \
     && touch src/observatory/src/lib.rs \
+    && mkdir -p src/orbiter/src \
+    && touch src/orbiter/src/lib.rs \
     && mkdir -p src/mission_control/src \
     && touch src/mission_control/src/lib.rs \
     && mkdir -p src/satellite/src \
@@ -66,6 +69,7 @@ COPY . .
 
 RUN touch src/console/src/lib.rs
 RUN touch src/observatory/src/lib.rs
+RUN touch src/orbiter/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
 RUN touch src/satellite/src/lib.rs
 RUN touch src/shared/src/lib.rs
@@ -80,6 +84,7 @@ COPY . .
 
 RUN touch src/console/src/lib.rs
 RUN touch src/observatory/src/lib.rs
+RUN touch src/orbiter/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
 RUN touch src/satellite/src/lib.rs
 RUN touch src/shared/src/lib.rs
@@ -93,6 +98,7 @@ COPY . .
 
 RUN touch src/console/src/lib.rs
 RUN touch src/observatory/src/lib.rs
+RUN touch src/orbiter/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
 RUN touch src/satellite/src/lib.rs
 RUN touch src/shared/src/lib.rs
@@ -106,12 +112,27 @@ COPY . .
 
 RUN touch src/console/src/lib.rs
 RUN touch src/observatory/src/lib.rs
+RUN touch src/orbiter/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
 RUN touch src/satellite/src/lib.rs
 RUN touch src/shared/src/lib.rs
 
 RUN ./docker/build --observatory
 RUN sha256sum /observatory.wasm.gz
+
+FROM deps as build_orbiter
+
+COPY . .
+
+RUN touch src/console/src/lib.rs
+RUN touch src/observatory/src/lib.rs
+RUN touch src/orbiter/src/lib.rs
+RUN touch src/mission_control/src/lib.rs
+RUN touch src/satellite/src/lib.rs
+RUN touch src/shared/src/lib.rs
+
+RUN ./docker/build --orbiter
+RUN sha256sum /orbiter.wasm.gz
 
 FROM scratch AS scratch_mission_control
 COPY --from=build_mission_control /mission_control.wasm.gz /
@@ -124,3 +145,6 @@ COPY --from=build_console /console.wasm.gz /
 
 FROM scratch AS scratch_observatory
 COPY --from=build_observatory /observatory.wasm.gz /
+
+FROM scratch AS scratch_orbiter
+COPY --from=build_orbiter /orbiter.wasm.gz /

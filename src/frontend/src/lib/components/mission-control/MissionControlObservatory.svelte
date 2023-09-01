@@ -42,7 +42,8 @@
 							isNullish(threshold) || threshold === 0 ? null : BigInt(threshold * ONE_TRILLION)
 						),
 						mission_control_cycles_threshold: [],
-						satellites: []
+						satellites: [],
+						orbiters: []
 					}
 				}
 			});

@@ -4,9 +4,9 @@ version = 3
 
 [[package]]
 name = "aho-corasick"
-version = "1.0.4"
+version = "1.0.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6748e8def348ed4d14996fa801f4122cd763fff530258cdc03f64b25f89d3a5a"
+checksum = "0c378d78423fdad8089616f827526ee33c19f2fddbd5de1629152c9593ba4783"
 dependencies = [
  "memchr",
 ]
@@ -69,9 +69,9 @@ dependencies = [
 
 [[package]]
 name = "bstr"
-version = "1.6.0"
+version = "1.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "6798148dccfbff0fae41c7574d2fa8f1ef3492fba0face179de5d8d447d67b05"
+checksum = "4c2f7349907b712260e64b0afe2f84692af14a454be26187d9df565c7f69266a"
 dependencies = [
  "memchr",
  "serde",
@@ -85,9 +85,9 @@ checksum = "14c189c53d098945499cdfa7ecc63567cf3886b3332b312a5b4585d8d3a6a610"
 
 [[package]]
 name = "candid"
-version = "0.9.3"
+version = "0.9.5"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "a31e5ab22cdcd093b93b02bdff4ba18ffee324b05e669b25cdd93fdb8402d207"
+checksum = "762aa04e3a889d47a1773b74ee3b13438a9bc895954fff79ebf7f308c3744a6c"
 dependencies = [
  "anyhow",
  "binread",
@@ -458,7 +458,8 @@ dependencies = [
 [[package]]
 name = "ic-stable-structures"
 version = "0.5.6"
-source = "git+https://github.com/peterpeterparker/stable-structures.git?branch=fix/btree_v2_init#eb6c2a31c05aa1ad9d93a105ca8cadc925ee95a9"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "95dce29e3ceb0e6da3e78b305d95365530f2efd2146ca18590c0ef3aa6038568"
 
 [[package]]
 name = "ic0"
@@ -512,9 +513,9 @@ checksum = "b5e6163cb8c49088c2c36f57875e58ccd8c87c7427f7fbd50ea6710b2f3f2e8f"
 
 [[package]]
 name = "memchr"
-version = "2.5.0"
+version = "2.6.2"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "2dffe52ecf27772e601905b7522cb4ef790d2cc203488bbd0e2fe85fcb74566d"
+checksum = "5486aed0026218e61b8a01d5fbd5a0a134649abb71a0e53b7bc088529dced86e"
 
 [[package]]
 name = "mission_control"
@@ -599,6 +600,20 @@ name = "once_cell"
 version = "1.18.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd8b5dd2ae5ed71462c540258bedcb51965123ad7e7ccf4b9a8cafaa4a63576d"
+
+[[package]]
+name = "orbiter"
+version = "0.0.1"
+dependencies = [
+ "candid",
+ "ciborium",
+ "ic-cdk",
+ "ic-cdk-macros",
+ "ic-stable-structures",
+ "lazy_static",
+ "serde",
+ "shared",
+]
 
 [[package]]
 name = "paste"
@@ -713,13 +728,11 @@ version = "0.0.11"
 dependencies = [
  "base64",
  "candid",
- "ciborium",
  "globset",
  "hex",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-certified-map",
- "ic-stable-structures",
  "regex",
  "serde",
  "serde_bytes",
@@ -963,9 +976,9 @@ checksum = "c0edd1e5b14653f783770bce4a4dabb4a5108a5370a5f5d8cfe8710c361f6c8b"
 
 [[package]]
 name = "url"
-version = "2.4.0"
+version = "2.4.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "50bff7831e19200a85b17131d085c25d7811bc4e186efdaf54bbd132994a88cb"
+checksum = "143b538f18257fac9cad154828a57c6bf5157e1aa604d4816b5995bf6de87ae5"
 dependencies = [
  "form_urlencoded",
  "idna",

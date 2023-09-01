@@ -10,6 +10,7 @@ export interface ReleaseVersion {
 export interface ReleasesVersion {
 	satellites: Record<SatelliteIdText, ReleaseVersion | undefined>;
 	missionControl: ReleaseVersion | undefined;
+	orbiter: ReleaseVersion | undefined;
 }
 
 export interface VersionStore extends Readable<ReleasesVersion> {
@@ -18,13 +19,15 @@ export interface VersionStore extends Readable<ReleasesVersion> {
 		satelliteId: SatelliteIdText;
 		version: ReleaseVersion | undefined;
 	}) => void;
+	setOrbiter: (version: ReleaseVersion) => void;
 	reset: () => void;
 }
 
 const initVersionStore = (): VersionStore => {
 	const INITIAL = {
 		satellites: {},
-		missionControl: undefined
+		missionControl: undefined,
+		orbiter: undefined
 	} as const;
 
 	const { subscribe, update, set } = writable<ReleasesVersion>(INITIAL);
@@ -46,6 +49,13 @@ const initVersionStore = (): VersionStore => {
 					...state.satellites,
 					[satelliteId]: version
 				}
+			}));
+		},
+
+		setOrbiter(version: ReleaseVersion) {
+			update((state) => ({
+				...state,
+				orbiter: version
 			}));
 		},
 

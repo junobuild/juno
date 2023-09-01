@@ -15,7 +15,7 @@ type Controller = record {
   expires_at : opt nat64;
 };
 type ControllerScope = variant { Write; Admin };
-type CronJobStatusesSatelliteConfig = record {
+type CronJobStatusesConfig = record {
   enabled : bool;
   cycles_threshold : opt nat64;
 };
@@ -24,6 +24,12 @@ type DefiniteCanisterSettings = record {
   controllers : vec principal;
   memory_allocation : nat;
   compute_allocation : nat;
+};
+type Orbiter = record {
+  updated_at : nat64;
+  orbiter_id : principal;
+  metadata : vec record { text; text };
+  created_at : nat64;
 };
 type Result = variant { Ok : SegmentStatus; Err : text };
 type Satellite = record {
@@ -39,6 +45,7 @@ type SegmentStatus = record {
   status_at : nat64;
 };
 type SegmentsStatuses = record {
+  orbiters : opt vec Result;
   satellites : opt vec Result;
   mission_control : Result;
 };
@@ -49,21 +56,28 @@ type SetController = record {
 };
 type StatusesArgs = record {
   mission_control_cycles_threshold : opt nat64;
-  satellites : vec record { principal; CronJobStatusesSatelliteConfig };
+  orbiters : vec record { principal; CronJobStatusesConfig };
+  satellites : vec record { principal; CronJobStatusesConfig };
   cycles_threshold : opt nat64;
 };
 type Tokens = record { e8s : nat64 };
 service : () -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
+  create_orbiter : (opt text) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
   del_mission_control_controllers : (vec principal) -> ();
+  del_orbiters_controllers : (vec principal, vec principal) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
   get_user : () -> (principal) query;
   list_mission_control_controllers : () -> (
       vec record { principal; Controller },
     ) query;
   list_mission_control_statuses : () -> (vec record { nat64; Result }) query;
+  list_orbiter_statuses : (principal) -> (
+      opt vec record { nat64; Result },
+    ) query;
+  list_orbiters : () -> (vec record { principal; Orbiter }) query;
   list_satellite_statuses : (principal) -> (
       opt vec record { nat64; Result },
     ) query;
@@ -72,6 +86,12 @@ service : () -> {
   remove_satellites_controllers : (vec principal, vec principal) -> ();
   set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();
+  set_orbiter_metadata : (principal, vec record { text; text }) -> (Orbiter);
+  set_orbiters_controllers : (
+      vec principal,
+      vec principal,
+      SetController,
+    ) -> ();
   set_satellite_metadata : (principal, vec record { text; text }) -> (
       Satellite,
     );

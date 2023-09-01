@@ -18,6 +18,7 @@ interface I18nCore {
 	home: string;
 	help: string;
 	controllers: string;
+	settings: string;
 	continue: string;
 	not_logged_in: string;
 	ready: string;
@@ -32,6 +33,8 @@ interface I18nCore {
 	delete: string;
 	skip: string;
 	done: string;
+	from: string;
+	to: string;
 }
 
 interface I18nCanisters {
@@ -116,6 +119,31 @@ interface I18nStorage {
 	assets: string;
 }
 
+interface I18nAnalytics {
+	title: string;
+	dashboard: string;
+	loading: string;
+	empty: string;
+	get_started: string;
+	start: string;
+	description: string;
+	initializing: string;
+	create_orbiter_price: string;
+	create: string;
+	ready: string;
+	satellites: string;
+	all_satellites: string;
+	number_of_sessions: string;
+	unique_page_views: string;
+	total_page_views: string;
+	average_page_views_per_session: string;
+	bounce_rate: string;
+	overview: string;
+	id: string;
+	tracked_events: string;
+	count: string;
+}
+
 interface I18nHosting {
 	title: string;
 	short_description: string;
@@ -195,6 +223,13 @@ interface I18nErrors {
 	upgrade_no_wasm: string;
 	upgrade_requires_iterative_version: string;
 	top_up_error: string;
+	analytics_load_error: string;
+	satellites_loading: string;
+	orbiters_loading: string;
+	origin_filter_missing: string;
+	origin_filter_unexpected: string;
+	origins_listing: string;
+	origin_delete: string;
 }
 
 interface I18nDocument {
@@ -373,6 +408,14 @@ interface I18nOn_boarding {
 	success: string;
 }
 
+interface I18nOrigins {
+	empty: string;
+	filter: string;
+	edit_filter: string;
+	add_a_filter: string;
+	delete: string;
+}
+
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -383,6 +426,7 @@ interface I18n {
 	authentication: I18nAuthentication;
 	datastore: I18nDatastore;
 	storage: I18nStorage;
+	analytics: I18nAnalytics;
 	hosting: I18nHosting;
 	cli: I18nCli;
 	errors: I18nErrors;
@@ -399,4 +443,5 @@ interface I18n {
 	examples: I18nExamples;
 	resources: I18nResources;
 	on_boarding: I18nOn_boarding;
+	origins: I18nOrigins;
 }

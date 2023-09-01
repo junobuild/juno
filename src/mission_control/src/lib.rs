@@ -3,7 +3,7 @@ mod controllers;
 mod guards;
 mod impls;
 mod mgmt;
-mod satellites;
+mod segments;
 mod store;
 mod types;
 mod upgrade;
@@ -12,6 +12,7 @@ use crate::controllers::mission_control::{
     delete_mission_control_controllers as delete_controllers_to_mission_control,
     set_mission_control_controllers as set_controllers_to_mission_control,
 };
+use crate::controllers::orbiter::{delete_orbiter_controllers, set_orbiter_controllers};
 use crate::controllers::satellite::{
     add_satellite_controllers as add_satellite_controllers_impl, delete_satellite_controllers,
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
@@ -22,23 +23,31 @@ use crate::guards::{
 };
 use crate::mgmt::canister::top_up_canister;
 use crate::mgmt::status::collect_statuses;
-use crate::satellites::satellite::create_satellite as create_satellite_console;
+use crate::segments::orbiter::create_orbiter as create_orbiter_console;
+use crate::segments::satellite::create_satellite as create_satellite_console;
+use crate::segments::store::get_orbiters;
 use crate::store::{
     get_user as get_user_store,
     list_mission_control_statuses as list_mission_control_statuses_store,
+    list_orbiter_statuses as list_orbiter_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
-use crate::types::state::{Archive, Satellite, Satellites, StableState, State, Statuses, User};
+use crate::types::state::{
+    Archive, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
+};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
 use ic_cdk::api::call::arg_data;
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
-use satellites::store::{get_satellites, set_satellite_metadata as set_satellite_metadata_store};
+use segments::store::{
+    get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
+    set_satellite_metadata as set_satellite_metadata_store,
+};
 use shared::types::interface::{MissionControlArgs, SetController, StatusesArgs};
 use shared::types::state::{
-    ControllerId, ControllerScope, Controllers, SatelliteId, SegmentsStatuses,
+    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
 };
 use shared::types::state::{Metadata, UserId};
 use std::cell::RefCell;
@@ -60,6 +69,7 @@ fn init() {
                 satellites: HashMap::new(),
                 controllers: HashMap::new(),
                 archive: Archive::new(),
+                orbiters: Orbiters::new(),
             },
         };
     });
@@ -152,8 +162,48 @@ async fn del_satellites_controllers(satellite_ids: Vec<SatelliteId>, controllers
     }
 }
 
+/// Orbiters
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn list_orbiters() -> Orbiters {
+    get_orbiters()
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn create_orbiter(name: Option<String>) -> Orbiter {
+    create_orbiter_console(&name)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+fn set_orbiter_metadata(orbiter_id: OrbiterId, metadata: Metadata) -> Orbiter {
+    set_orbiter_metadata_store(&orbiter_id, &metadata).unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn set_orbiters_controllers(
+    orbiter_ids: Vec<OrbiterId>,
+    controller_ids: Vec<ControllerId>,
+    controller: SetController,
+) {
+    for orbiter_id in orbiter_ids {
+        set_orbiter_controllers(&orbiter_id, &controller_ids, &controller)
+            .await
+            .unwrap_or_else(|e| trap(&e));
+    }
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn del_orbiters_controllers(orbiter_ids: Vec<OrbiterId>, controllers: Vec<UserId>) {
+    for orbiter_id in orbiter_ids {
+        delete_orbiter_controllers(&orbiter_id, &controllers)
+            .await
+            .unwrap_or_else(|e| trap(&e));
+    }
+}
+
 /// Mgmt
-///
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn top_up(canister_id: Principal, amount: Tokens) {
@@ -235,6 +285,10 @@ fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
+///
+/// Observatory
+///
+
 #[update(guard = "caller_is_user_or_admin_controller_or_juno")]
 async fn status(config: StatusesArgs) -> SegmentsStatuses {
     collect_statuses(&id(), &config).await
@@ -248,6 +302,11 @@ fn list_mission_control_statuses() -> Statuses {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
     list_satellite_statuses_store(&satellite_id)
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
+    list_orbiter_statuses_store(&orbiter_id)
 }
 
 // Generate did files

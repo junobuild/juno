@@ -1,4 +1,4 @@
-use crate::types::state::StableState;
+use crate::types::state::{Orbiters, StableState};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 
 impl From<&UpgradeStableState> for StableState {
@@ -8,6 +8,7 @@ impl From<&UpgradeStableState> for StableState {
             user: state.user.clone(),
             satellites: state.satellites.clone(),
             archive: state.archive.clone(),
+            orbiters: Orbiters::new(),
         }
     }
 }

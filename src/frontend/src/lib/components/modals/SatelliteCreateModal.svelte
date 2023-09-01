@@ -10,31 +10,17 @@
 	import { isNullish } from '$lib/utils/utils';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalCreateSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import type { JunoModalDetail } from '$lib/types/modal';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import WhatNext from '$lib/components/onboarding/WhatNext.svelte';
 	import InstallSDK from '$lib/components/onboarding/InstallSDK.svelte';
 	import Deploy from '$lib/components/onboarding/Deploy.svelte';
-	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
+	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 
 	export let detail: JunoModalDetail;
 
-	let fee = 0n;
-	let balance = 0n;
-	let credits = 0n;
-
-	$: fee = (detail as JunoModalCreateSatelliteDetail).fee;
-	$: balance = (detail as JunoModalCreateSatelliteDetail).missionControlBalance?.balance ?? 0n;
-	$: credits = (detail as JunoModalCreateSatelliteDetail).missionControlBalance?.credits ?? 0n;
-
 	let insufficientFunds = true;
-	$: insufficientFunds = balance + credits < fee;
-
-	let notEnoughCredits = false;
-	$: notEnoughCredits = credits < fee;
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'sdk' | 'deploy' | 'error' = 'init';
 	let satellite: Satellite | undefined = undefined;
@@ -101,28 +87,12 @@
 			{$i18n.satellites.description}
 		</p>
 
-		{#if notEnoughCredits}
-			<p>
-				{@html i18nFormat($i18n.satellites.create_satellite_price, [
-					{
-						placeholder: '{0}',
-						value: formatE8sICP(fee)
-					},
-					{
-						placeholder: '{1}',
-						value: formatE8sICP(balance)
-					},
-					{
-						placeholder: '{2}',
-						value: formatE8sICP(credits)
-					}
-				])}
-			</p>
-		{/if}
-
-		{#if insufficientFunds}
-			<MissionControlICPInfo on:click={close} />
-		{:else}
+		<CreditsGuard
+			on:junoClose
+			bind:insufficientFunds
+			{detail}
+			priceLabel={$i18n.satellites.create_satellite_price}
+		>
 			<form on:submit|preventDefault={onSubmit}>
 				<Value>
 					<svelte:fragment slot="label">{$i18n.satellites.satellite_name}</svelte:fragment>
@@ -141,7 +111,7 @@
 					>{$i18n.satellites.create}</button
 				>
 			</form>
-		{/if}
+		</CreditsGuard>
 	{/if}
 </Modal>
 

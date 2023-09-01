@@ -10,6 +10,9 @@
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
+	import IconChartBar from '$lib/components/icons/IconChartBar.svelte';
+	import { analyticsLink } from '$lib/utils/nav.utils';
+	import { satelliteStore } from '$lib/stores/satellite.store';
 
 	export let signIn = true;
 
@@ -56,6 +59,17 @@
 		>
 			<IconTelescope />
 			<span>{$i18n.observatory.title}</span>
+		</a>
+
+		<a
+			href={analyticsLink($satelliteStore?.satellite_id)}
+			class="menu"
+			role="menuitem"
+			aria-haspopup="menu"
+			rel="external noopener norefferer"
+		>
+			<IconChartBar />
+			<span>{$i18n.analytics.title}</span>
 		</a>
 
 		<a

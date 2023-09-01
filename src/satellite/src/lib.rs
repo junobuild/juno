@@ -61,14 +61,14 @@ use ic_stable_structures::writer::Writer;
 use ic_stable_structures::Memory as _;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
-use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
+use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
 use types::list::ListParams;
 
 #[init]
 fn init() {
-    let call_arg = arg_data::<(Option<SatelliteArgs>,)>().0;
-    let SatelliteArgs { controllers } = call_arg.unwrap();
+    let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
+    let SegmentArgs { controllers } = call_arg.unwrap();
 
     let heap = HeapState {
         controllers: init_controllers(&controllers),

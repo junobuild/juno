@@ -3,7 +3,16 @@
 import { consoleActorLocal } from './actor.mjs';
 import { loadWasm, readVersion } from './code.utils.mjs';
 
-const didType = (type) => (type === 'satellite' ? { Satellite: null } : { MissionControl: null });
+const didType = (type) => {
+	switch (type) {
+		case 'satellite':
+			return { Satellite: null };
+		case 'orbiter':
+			return { Orbiter: null };
+		default:
+			return { MissionControl: null };
+	}
+};
 
 const resetRelease = ({ actor, type }) => actor.reset_release(didType(type));
 
@@ -43,6 +52,7 @@ const install = async ({ actor, type }) => {
 
 	await Promise.all([
 		install({ actor, type: 'mission_control' }),
-		install({ actor, type: 'satellite' })
+		install({ actor, type: 'satellite' }),
+		install({ actor, type: 'orbiter' })
 	]);
 })();

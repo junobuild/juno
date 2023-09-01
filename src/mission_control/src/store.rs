@@ -1,8 +1,9 @@
 use crate::constants::RETAIN_ARCHIVE_STATUSES_NS;
-use crate::types::state::{StableState, Statuses, User};
+use crate::types::state::{ArchiveStatusesSegments, StableState, Statuses, User};
 use crate::STATE;
+use candid::Principal;
 use ic_cdk::api::time;
-use shared::types::state::{Metadata, SatelliteId, SegmentStatusResult, UserId};
+use shared::types::state::{Metadata, OrbiterId, SatelliteId, SegmentStatusResult, UserId};
 use std::collections::BTreeMap;
 
 pub fn get_user() -> UserId {
@@ -65,24 +66,34 @@ pub fn list_mission_control_statuses() -> Statuses {
 
 pub fn set_satellite_status(satellite_id: &SatelliteId, status: &SegmentStatusResult) {
     STATE.with(|state| {
-        set_satellite_status_impl(satellite_id, status, &mut state.borrow_mut().stable)
+        set_segment_status_impl(
+            satellite_id,
+            status,
+            &mut state.borrow_mut().stable.archive.statuses.satellites,
+        )
     })
 }
 
-fn set_satellite_status_impl(
-    satellite_id: &SatelliteId,
+pub fn set_orbiter_status(orbiter_id: &OrbiterId, status: &SegmentStatusResult) {
+    STATE.with(|state| {
+        set_segment_status_impl(
+            orbiter_id,
+            status,
+            &mut state.borrow_mut().stable.archive.statuses.orbiters,
+        )
+    })
+}
+
+fn set_segment_status_impl(
+    id: &Principal,
     status: &SegmentStatusResult,
-    state: &mut StableState,
+    state: &mut ArchiveStatusesSegments,
 ) {
-    let archive = state.archive.statuses.satellites.get(satellite_id);
+    let archive = state.get(id);
 
     match archive {
         None => {
-            state
-                .archive
-                .statuses
-                .satellites
-                .insert(*satellite_id, BTreeMap::from([(time(), status.clone())]));
+            state.insert(*id, BTreeMap::from([(time(), status.clone())]));
         }
         Some(archive) => {
             let now = time();
@@ -93,22 +104,26 @@ fn set_satellite_status_impl(
             updated_archive.retain(|timestamp, _| *timestamp >= retain_timestamp);
             updated_archive.insert(now, status.clone());
 
-            state
-                .archive
-                .statuses
-                .satellites
-                .insert(*satellite_id, updated_archive);
+            state.insert(*id, updated_archive);
         }
     }
 }
 
 pub fn list_satellite_statuses(satellite_id: &SatelliteId) -> Option<Statuses> {
-    STATE.with(|state| list_satellite_statuses_impl(satellite_id, &state.borrow().stable))
+    STATE.with(|state| {
+        list_segment_statuses_impl(
+            satellite_id,
+            &state.borrow().stable.archive.statuses.satellites,
+        )
+    })
 }
 
-fn list_satellite_statuses_impl(
-    satellite_id: &SatelliteId,
-    state: &StableState,
-) -> Option<Statuses> {
-    state.archive.statuses.satellites.get(satellite_id).cloned()
+pub fn list_orbiter_statuses(orbiter_id: &OrbiterId) -> Option<Statuses> {
+    STATE.with(|state| {
+        list_segment_statuses_impl(orbiter_id, &state.borrow().stable.archive.statuses.orbiters)
+    })
+}
+
+fn list_segment_statuses_impl(id: &Principal, state: &ArchiveStatusesSegments) -> Option<Statuses> {
+    state.get(id).cloned()
 }

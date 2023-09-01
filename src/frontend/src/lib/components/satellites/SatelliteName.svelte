@@ -87,7 +87,7 @@
 			id="canisterName"
 			bind:value={satName}
 			type="text"
-			placeholder="A shortname for hint"
+			placeholder={$i18n.satellites.edit_name}
 			maxlength={64}
 			disabled={saving}
 		/>
@@ -99,28 +99,7 @@
 </Popover>
 
 <style lang="scss">
-	p {
-		display: inline-flex;
-		align-items: center;
-		gap: var(--padding-2x);
-		max-width: 100%;
-	}
+	@use '../../styles/mixins/dialog';
 
-	.container {
-		display: flex;
-		flex-direction: column;
-		width: 100%;
-		padding: var(--padding) var(--padding-2x) var(--padding) var(--padding);
-		margin: 0;
-	}
-
-	label {
-		display: block;
-		margin: 0;
-		font-weight: var(--font-weight-bold);
-	}
-
-	.submit {
-		margin: var(--padding-1_5x) 0 var(--padding);
-	}
+	@include dialog.edit;
 </style>

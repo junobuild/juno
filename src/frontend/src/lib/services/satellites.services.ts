@@ -1,4 +1,5 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import { i18n } from '$lib/stores/i18n.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { getMissionControlActor } from '$lib/utils/actor.utils';
@@ -43,8 +44,10 @@ export const loadSatellites = async ({
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		satellitesStore.set(satellites.map(([_, satellite]) => satellite));
 	} catch (err: unknown) {
+		const labels = get(i18n);
+
 		toasts.error({
-			text: `Error while listing the satellites.`,
+			text: labels.errors.satellites_loading,
 			detail: err
 		});
 	}

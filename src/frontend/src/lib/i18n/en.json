@@ -15,6 +15,7 @@
 		"home": "Home",
 		"help": "Help",
 		"controllers": "Controllers",
+		"settings": "Settings",
 		"continue": "Continue",
 		"not_logged_in": "Developer not logged in.",
 		"ready": "Ready",
@@ -28,7 +29,9 @@
 		"version": "Version",
 		"delete": "Delete",
 		"skip": "Skip",
-		"done": "Done"
+		"done": "Done",
+		"from": "From",
+		"to": "To"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -105,6 +108,30 @@
 		"short_description": "Easily store and serve user-generated content, such as files, photos, and videos, on Web3.",
 		"assets": "Assets"
 	},
+	"analytics": {
+		"title": "Analytics",
+		"dashboard": "Dashboard",
+		"loading": "Loading data",
+		"empty": "Juno provides simple, lightweight, and open-source web analytics that do not use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your website visitors.",
+		"get_started": "Get started",
+		"start": "Getting started",
+		"description": "Get analytics to measure and analyse how users engage with your apps.",
+		"initializing": "Initializing analytics...",
+		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
+		"create": "Create analytics",
+		"ready": "Your analytics are ready!",
+		"satellites": "Satellite(s)",
+		"all_satellites": "All satellites",
+		"number_of_sessions": "Number of Sessions",
+		"unique_page_views": "Unique page views",
+		"total_page_views": "Total page views",
+		"average_page_views_per_session": "Average page views per session",
+		"bounce_rate": "Bounce rate",
+		"overview": "Overview",
+		"id": "ID",
+		"tracked_events": "Tracked events",
+		"count": "Count"
+	},
 	"hosting": {
 		"title": "Hosting",
 		"short_description": "Maintain your brand identity with a custom domain for your decentralized application.",
@@ -136,10 +163,10 @@
 	"cli": {
 		"title": "Juno CLI Authentication",
 		"sign_in": "Sign in to set up your terminal for interacting with your mission control and/or satellite(s).",
-		"add": "For which mission control and/or satellite(s) would you like to authenticate the new controller <strong>{0}</strong>?",
+		"add": "Select the segment(s) to be controlled by your terminal using the controller <strong>{0}</strong>:",
 		"select_all": "Select all segments",
 		"unselect_all": "Unselect all segments",
-		"profile": "You can also provide an optional name to easily identify the controller.",
+		"profile": "You can also provide an optional profile's name to easily identify the controller.",
 		"segments": "Segments:",
 		"profile_placeholder": "An optional hint about the controller"
 	},
@@ -181,7 +208,14 @@
 		"upgrade_no_version": "Please select a version for the upgrade.",
 		"upgrade_no_wasm": "No wasm provided. Please try again.",
 		"upgrade_requires_iterative_version": "There may have been breaking changes between your {0} v{1} and selected version {2}. Please upgrade iteratively.",
-		"top_up_error": "Error while topping up the segment."
+		"top_up_error": "Error while topping up the segment.",
+		"analytics_load_error": "Error while loading the analytics data",
+		"satellites_loading": "Error while loading the list of satellites.",
+		"orbiters_loading": "Error while loading the list of orbiters.",
+		"origin_filter_missing": "A satellite and filter must be provided.",
+		"origin_filter_unexpected": "Unexpected error(s) while trying to edit your filter.",
+		"origins_listing": "Error while listing the filters.",
+		"origin_delete": "Unexpected error(s) while deleting the filter."
 	},
 	"document": {
 		"owner": "Owner",
@@ -345,5 +379,12 @@
 		"login": "Once the installation is complete, you can log in to your satellite from the terminal.",
 		"run": "With the ability to interact with your satellite, you can now deploy it by running the following command from the root folder:",
 		"success": "The process should proceed smoothly, and upon completion, your project will be hosted on-chain at the address <a href=\"{0}\" rel=\"external noopener noreferrer\" target=\"_blank\">{1}</a>  🎉."
+	},
+	"origins": {
+		"empty": "No origins are filtered yet.",
+		"filter": "Filter",
+		"edit_filter": "Add an origin or regex",
+		"add_a_filter": "Add a filter",
+		"delete": "Delete filter?"
 	}
 }

@@ -157,10 +157,12 @@ const updateCSP = (indexHtml) => {
 
 	const JUNO_CDN = 'https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io';
 
+	const PROXY_CONFIG = 'https://config-llaqvdlz6a-ew.a.run.app';
+
 	const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
-        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io ${JUNO_CDN};
+        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io ${JUNO_CDN} ${PROXY_CONFIG};
         img-src 'self' data:;
         child-src 'self';
         manifest-src 'self';

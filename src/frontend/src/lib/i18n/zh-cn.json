@@ -15,6 +15,7 @@
 		"home": "主页",
 		"help": "帮助",
 		"controllers": "控制管理",
+		"settings": "Settings",
 		"continue": "继续",
 		"not_logged_in": "开发者没有登录",
 		"ready": "准备好",
@@ -28,7 +29,9 @@
 		"version": "版本",
 		"delete": "删除",
 		"skip": "跳过",
-		"done": "完成"
+		"done": "完成",
+		"from": "From",
+		"to": "To"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -104,6 +107,30 @@
 		"title": "存储",
 		"short_description": "简单方便地存储并服务用户贡献的内容在WEB3上，比如文件，图片，视频等.",
 		"assets": "资料"
+	},
+	"analytics": {
+		"title": "Analytics",
+		"dashboard": "Dashboard",
+		"loading": "Loading data",
+		"empty": "Juno provides simple, lightweight, and open-source web analytics that do not use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your website visitors.",
+		"get_started": "Get started",
+		"start": "Getting started",
+		"description": "Get analytics to measure and analyse how users engage with your apps.",
+		"initializing": "Initializing analytics...",
+		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
+		"create": "Create analytics",
+		"ready": "Your analytics are ready!",
+		"satellites": "Satellite(s)",
+		"all_satellites": "All satellites",
+		"number_of_sessions": "Number of Sessions",
+		"unique_page_views": "Unique page views",
+		"total_page_views": "Total page views",
+		"average_page_views_per_session": "Average page views per session",
+		"bounce_rate": "Bounce rate",
+		"overview": "Overview",
+		"id": "ID",
+		"tracked_events": "Tracked events",
+		"count": "Count"
 	},
 	"hosting": {
 		"title": "网站托管",
@@ -181,7 +208,14 @@
 		"upgrade_no_version": "Please select a version for the upgrade.",
 		"upgrade_no_wasm": "No wasm provided. Please try again.",
 		"upgrade_requires_iterative_version": "There may have been breaking changes between your {0} v{1} and selected version {2}. Please upgrade iteratively.",
-		"top_up_error": "Error while topping up the segment."
+		"top_up_error": "Error while topping up the segment.",
+		"analytics_load_error": "Error while loading the analytics data",
+		"satellites_loading": "Error while loading the list of satellites.",
+		"orbiters_loading": "Error while loading the list of orbiters.",
+		"origin_filter_missing": "A satellite and filter must be provided.",
+		"origin_filter_unexpected": "Unexpected error(s) while trying to edit your filter.",
+		"origins_listing": "Error while listing the filters.",
+		"origin_delete": "Unexpected error(s) while deleting the filter."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -342,5 +376,12 @@
 		"login": "完成安装后，你可以用终端来登录你的 satellite .",
 		"run": "现在你可以用一下根目录下的命令来跟你的satellite交互:",
 		"success": "安装过程应该很顺利，一旦完成，你将看到你的项目部署在区块链上，地址为 <a href=\"{0}\" rel=\"external noopener noreferrer\" target=\"_blank\">{1}</a>  🎉."
+	},
+	"origins": {
+		"empty": "No origins are filtered yet.",
+		"filter": "Filter",
+		"edit_filter": "Add an origin or regex",
+		"add_a_filter": "Add a filter",
+		"delete": "Delete filter?"
 	}
 }

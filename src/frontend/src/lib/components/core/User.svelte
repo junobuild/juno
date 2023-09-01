@@ -61,16 +61,16 @@
 			<span>{$i18n.observatory.title}</span>
 		</a>
 
-		<a
-			href={analyticsLink($satelliteStore?.satellite_id)}
-			class="menu"
-			role="menuitem"
-			aria-haspopup="menu"
-			rel="external noopener norefferer"
-		>
-			<IconChartBar />
-			<span>{$i18n.analytics.title}</span>
-		</a>
+		<!--		<a-->
+		<!--			href={analyticsLink($satelliteStore?.satellite_id)}-->
+		<!--			class="menu"-->
+		<!--			role="menuitem"-->
+		<!--			aria-haspopup="menu"-->
+		<!--			rel="external noopener norefferer"-->
+		<!--		>-->
+		<!--			<IconChartBar />-->
+		<!--			<span>{$i18n.analytics.title}</span>-->
+		<!--		</a>-->
 
 		<a
 			href="/settings"

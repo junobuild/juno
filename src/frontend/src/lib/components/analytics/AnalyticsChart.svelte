@@ -23,7 +23,7 @@
 			...acc,
 			[key]: (acc[key] ?? 0) + 1
 		};
-	}, {});
+	}, {} as Record<string, number>);
 
 	let chartsData: {
 		[xKey]: string;
@@ -34,9 +34,9 @@
 			[xKey]: key,
 			[yKey]: value
 		}))
-		.sort(({ [xKey]: aKey }, { [xKey]: bKey }) => aKey - bKey);
+		.sort(({ [yKey]: aKey }, { [yKey]: bKey }) => aKey - bKey);
 
-	let ticks: number[];
+	let ticks: string[];
 	$: ticks = Object.values(chartsData).map(({ [xKey]: a }) => a);
 </script>
 

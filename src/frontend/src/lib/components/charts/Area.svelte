@@ -5,6 +5,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 
+	// @ts-ignore
 	const { data, xGet, yGet, xScale, yScale, extents } = getContext('LayerCake');
 
 	/**  @type {String} [fill='#ab00d610'] The shape's fill color. This is technically optional because it comes with a default value but you'll likely want to replace it with your own color. */
@@ -13,12 +14,12 @@
 	$: path =
 		'M' +
 		$data
-			.map((d) => {
+			.map((d: number) => {
 				return $xGet(d) + ',' + $yGet(d);
 			})
 			.join('L');
 
-	let area;
+	let area: string;
 
 	$: {
 		const yRange = $yScale.range();

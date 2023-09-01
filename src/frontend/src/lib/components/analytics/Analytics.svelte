@@ -63,7 +63,7 @@
 			...acc,
 			[session_id]: (acc[session_id] ?? 0) + 1
 		}),
-		{}
+		{} as Record<string, number>
 	);
 
 	let sessionsUniqueViews: Record<string, Set<string>> = {};
@@ -72,7 +72,7 @@
 			...acc,
 			[session_id]: (acc[session_id] ?? new Set()).add(href)
 		}),
-		{}
+		{} as Record<string, Set<string>>
 	);
 
 	let uniquePageViews = 0;

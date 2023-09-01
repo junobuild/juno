@@ -183,9 +183,11 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const IdentityInfo = IDL.Record({
 		authn_methods: IDL.Vec(AuthnMethodData),
-		authn_data_registration: IDL.Opt(AuthnMethodRegistrationInfo)
+		metadata: MetadataMap,
+		authn_method_registration: IDL.Opt(AuthnMethodRegistrationInfo)
 	});
 	const IdentityInfoResponse = IDL.Variant({ ok: IdentityInfo });
+	const IdentityMetadataReplaceResponse = IDL.Variant({ ok: IDL.Null });
 	const UserKey = PublicKey;
 	const ChallengeResult = IDL.Record({
 		key: ChallengeKey,
@@ -276,6 +278,11 @@ export const idlFactory = ({ IDL }) => {
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_update: IDL.Func([HttpRequest], [HttpResponse], []),
 		identity_info: IDL.Func([IdentityNumber], [IDL.Opt(IdentityInfoResponse)], []),
+		identity_metadata_replace: IDL.Func(
+			[IdentityNumber, MetadataMap],
+			[IDL.Opt(IdentityMetadataReplaceResponse)],
+			[]
+		),
 		init_salt: IDL.Func([], [], []),
 		lookup: IDL.Func([UserNumber], [IDL.Vec(DeviceData)], ['query']),
 		prepare_delegation: IDL.Func(

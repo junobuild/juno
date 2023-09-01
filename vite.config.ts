@@ -60,7 +60,7 @@ const config: UserConfig = {
 					const folder = dirname(id);
 
 					if (
-						['@sveltejs', 'svelte', '@dfinity/gix-components'].find((lib) =>
+						['@sveltejs', 'svelte', 'layercake', '@dfinity/gix-components'].find((lib) =>
 							folder.includes(lib)
 						) === undefined &&
 						folder.includes('node_modules')
@@ -72,7 +72,9 @@ const config: UserConfig = {
 						[
 							'frontend/src/lib/api',
 							'frontend/src/lib/services',
+							'frontend/src/lib/rest',
 							'frontend/src/lib/stores',
+							'frontend/src/lib/utils',
 							'frontend/src/lib/workers'
 						].find((module) => folder.includes(module)) !== undefined
 					) {

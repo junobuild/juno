@@ -8,17 +8,20 @@ mod types;
 mod upgrade;
 mod wasm;
 
-use crate::constants::SATELLITE_CREATION_FEE_ICP;
+use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::factory::mission_control::init_user_mission_control;
+use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::store::{
     add_credits as add_credits_store, add_invitation_code as add_invitation_code_store,
     delete_controllers, get_credits as get_credits_store, get_existing_mission_control,
-    get_mission_control, get_mission_control_release_version, get_satellite_release_version,
-    has_credits, list_mission_controls, load_mission_control_release, load_satellite_release,
-    reset_mission_control_release, reset_satellite_release,
-    set_controllers as set_controllers_store, update_mission_controls_rate_config,
+    get_mission_control, get_mission_control_release_version, get_orbiter_release_version,
+    get_satellite_release_version, has_create_orbiter_credits, has_create_satellite_credits,
+    list_mission_controls, load_mission_control_release, load_orbiter_release,
+    load_satellite_release, reset_mission_control_release, reset_orbiter_release,
+    reset_satellite_release, set_controllers as set_controllers_store,
+    update_mission_controls_rate_config, update_orbiters_rate_config,
     update_satellites_rate_config,
 };
 use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
@@ -35,8 +38,8 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_ledger_types::Tokens;
 use shared::controllers::init_controllers;
 use shared::types::interface::{
-    AddCreditsArgs, AssertMissionControlCenterArgs, CreateSatelliteArgs, DeleteControllersArgs,
-    GetCreateSatelliteFeeArgs, SetControllersArgs,
+    AddCreditsArgs, AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
+    GetCreateCanisterFeeArgs, SetControllersArgs,
 };
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -84,6 +87,7 @@ fn reset_release(segment: Segment) {
     match segment {
         Segment::Satellite => reset_satellite_release(),
         Segment::MissionControl => reset_mission_control_release(),
+        Segment::Orbiter => reset_orbiter_release(),
     }
 }
 
@@ -98,6 +102,10 @@ fn load_release(segment: Segment, blob: Vec<u8>, version: String) -> LoadRelease
             load_mission_control_release(&blob, &version);
             STATE.with(|state| state.borrow().stable.releases.mission_control.wasm.len())
         }
+        Segment::Orbiter => {
+            load_orbiter_release(&blob, &version);
+            STATE.with(|state| state.borrow().stable.releases.orbiter.wasm.len())
+        }
     };
 
     LoadRelease {
@@ -111,6 +119,7 @@ fn get_releases_version() -> ReleasesVersion {
     ReleasesVersion {
         satellite: get_satellite_release_version(),
         mission_control: get_mission_control_release_version(),
+        orbiter: get_orbiter_release_version(),
     }
 }
 
@@ -155,11 +164,23 @@ async fn init_user_mission_control_center() -> MissionControl {
 /// Satellites
 
 #[update]
-async fn create_satellite(args: CreateSatelliteArgs) -> Principal {
+async fn create_satellite(args: CreateCanisterArgs) -> Principal {
     let console = id();
     let caller = caller();
 
     create_satellite_console(console, caller, args)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+/// Orbiters
+
+#[update]
+async fn create_orbiter(args: CreateCanisterArgs) -> Principal {
+    let console = id();
+    let caller = caller();
+
+    create_orbiter_console(console, caller, args)
         .await
         .unwrap_or_else(|e| trap(&e))
 }
@@ -180,12 +201,24 @@ fn add_credits(AddCreditsArgs { user }: AddCreditsArgs) {
 
 #[query]
 fn get_create_satellite_fee(
-    GetCreateSatelliteFeeArgs { user }: GetCreateSatelliteFeeArgs,
+    GetCreateCanisterFeeArgs { user }: GetCreateCanisterFeeArgs,
 ) -> Option<Tokens> {
     let caller = caller();
 
-    match has_credits(&user, &caller) {
+    match has_create_satellite_credits(&user, &caller) {
         false => Some(SATELLITE_CREATION_FEE_ICP),
+        true => None,
+    }
+}
+
+#[query]
+fn get_create_orbiter_fee(
+    GetCreateCanisterFeeArgs { user }: GetCreateCanisterFeeArgs,
+) -> Option<Tokens> {
+    let caller = caller();
+
+    match has_create_orbiter_credits(&user, &caller) {
+        false => Some(ORBITER_CREATION_FEE_ICP),
         true => None,
     }
 }
@@ -204,6 +237,7 @@ fn update_rate_config(segment: Segment, config: RateConfig) {
     match segment {
         Segment::Satellite => update_satellites_rate_config(&config),
         Segment::MissionControl => update_mission_controls_rate_config(&config),
+        Segment::Orbiter => update_orbiters_rate_config(&config),
     }
 }
 

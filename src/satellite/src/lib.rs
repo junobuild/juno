@@ -59,7 +59,7 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use rules::constants::DEFAULT_DB_COLLECTIONS;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
-use shared::types::interface::{DeleteControllersArgs, SatelliteArgs, SetControllersArgs};
+use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
 use std::cell::RefCell;
 use std::collections::{BTreeMap, HashMap};
@@ -71,8 +71,8 @@ thread_local! {
 
 #[init]
 fn init() {
-    let call_arg = arg_data::<(Option<SatelliteArgs>,)>().0;
-    let SatelliteArgs { controllers } = call_arg.unwrap();
+    let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
+    let SegmentArgs { controllers } = call_arg.unwrap();
 
     let now = time();
 

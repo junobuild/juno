@@ -1,4 +1,4 @@
-use crate::constants::SATELLITE_CREATION_FEE_ICP;
+use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl, MissionControls, Rate,
@@ -151,12 +151,20 @@ fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'stat
     }
 }
 
-pub fn has_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
+pub fn has_create_satellite_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
+    has_credits(user, mission_control, &SATELLITE_CREATION_FEE_ICP)
+}
+
+pub fn has_create_orbiter_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
+    has_credits(user, mission_control, &ORBITER_CREATION_FEE_ICP)
+}
+
+fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Tokens) -> bool {
     let mission_control = get_existing_mission_control(user, mission_control);
 
     match mission_control {
         Err(_) => false,
-        Ok(mission_control) => mission_control.credits.e8s() >= SATELLITE_CREATION_FEE_ICP.e8s(),
+        Ok(mission_control) => mission_control.credits.e8s() >= fee.e8s(),
     }
 }
 
@@ -401,6 +409,43 @@ fn load_mission_control_release_impl(blob: &[u8], version: &str, state: &mut Sta
     };
 }
 
+/// Orbiter
+
+pub fn reset_orbiter_release() {
+    STATE.with(|state| reset_orbiter_release_impl(&mut state.borrow_mut().stable))
+}
+
+fn reset_orbiter_release_impl(state: &mut StableState) {
+    state.releases.orbiter = Wasm {
+        wasm: Vec::new(),
+        version: None,
+    };
+}
+
+pub fn get_orbiter_release_version() -> Option<String> {
+    STATE.with(|state| state.borrow().stable.releases.orbiter.version.clone())
+}
+
+pub fn load_orbiter_release(blob: &[u8], version: &str) {
+    STATE.with(|state| load_orbiter_release_impl(blob, version, &mut state.borrow_mut().stable))
+}
+
+fn load_orbiter_release_impl(blob: &[u8], version: &str, state: &mut StableState) {
+    let wasm = state
+        .releases
+        .orbiter
+        .wasm
+        .iter()
+        .copied()
+        .chain(blob.iter().copied())
+        .collect();
+
+    state.releases.orbiter = Wasm {
+        wasm,
+        version: Some(version.to_owned()),
+    };
+}
+
 /// Invitation codes
 
 pub fn add_invitation_code(code: &InvitationCode) {
@@ -493,6 +538,10 @@ pub fn increment_mission_controls_rate() -> Result<(), String> {
     STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().stable.rates.mission_controls))
 }
 
+pub fn increment_orbiters_rate() -> Result<(), String> {
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().stable.rates.orbiters))
+}
+
 fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
     let new_tokens = (time() - rate.tokens.updated_at) / rate.config.time_per_token_ns;
     if new_tokens > 0 {
@@ -521,6 +570,10 @@ pub fn update_mission_controls_rate_config(config: &RateConfig) {
             &mut state.borrow_mut().stable.rates.mission_controls,
         )
     })
+}
+
+pub fn update_orbiters_rate_config(config: &RateConfig) {
+    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().stable.rates.orbiters))
 }
 
 fn update_rate_config(config: &RateConfig, rate: &mut Rate) {

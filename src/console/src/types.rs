@@ -39,6 +39,7 @@ pub mod state {
     pub struct Releases {
         pub mission_control: Wasm,
         pub satellite: Wasm,
+        pub orbiter: Wasm,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -61,6 +62,7 @@ pub mod state {
     pub struct Rates {
         pub mission_controls: Rate,
         pub satellites: Rate,
+        pub orbiters: Rate,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -91,6 +93,7 @@ pub mod interface {
     pub enum Segment {
         Satellite,
         MissionControl,
+        Orbiter,
     }
 
     #[derive(CandidType)]
@@ -103,6 +106,7 @@ pub mod interface {
     pub struct ReleasesVersion {
         pub satellite: Option<String>,
         pub mission_control: Option<String>,
+        pub orbiter: Option<String>,
     }
 
     #[derive(CandidType, Deserialize)]

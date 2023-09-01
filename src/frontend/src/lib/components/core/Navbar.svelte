@@ -11,6 +11,7 @@
 	export let start: 'logo' | 'back' | 'menu' = 'logo';
 	export let signIn = true;
 	export let resources = false;
+	export let switcher = true;
 	export let headerOpaqueOnScroll = true;
 </script>
 
@@ -30,7 +31,9 @@
 			<Resources />
 		{/if}
 
-		<SatellitesSwitcher />
+		{#if switcher}
+			<SatellitesSwitcher />
+		{/if}
 	</div>
 
 	<div class="end">

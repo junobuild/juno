@@ -20,7 +20,7 @@ dfx start --clean
 First, deploy II:
 
 ```
-dfx deploy internet_identity
+dfx deploy internet_identity --specified-id rrkah-fqaaa-aaaaa-aaaaq-cai
 ```
 
 Collect "internet_identity" canister ID and update [client/src/main.ts](client/src/main.ts) (if not `rrkah-fqaaa-aaaaa-aaaaq-cai`).
@@ -74,6 +74,7 @@ Finally, install mission control center + satellite wasm and deploy frontend:
 ```
 dfx deploy mission_control (it will fail because it needs a user as init param but we need to deploy it for dfx to be able to install the frontend)
 dfx deploy satellite (same same)
+dfx deploy orbiter (same same)
 npm run console:install:wasm
 dfx deploy frontend
 ```

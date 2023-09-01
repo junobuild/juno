@@ -10,11 +10,12 @@ type CanisterStatusType = variant { stopped; stopping; running };
 type ControllerScope = variant { Write; Admin };
 type CronJobStatuses = record {
   mission_control_cycles_threshold : opt nat64;
-  satellites : vec record { principal; CronJobStatusesSatelliteConfig };
+  orbiters : vec record { principal; CronJobStatusesConfig };
+  satellites : vec record { principal; CronJobStatusesConfig };
   enabled : bool;
   cycles_threshold : opt nat64;
 };
-type CronJobStatusesSatelliteConfig = record {
+type CronJobStatusesConfig = record {
   enabled : bool;
   cycles_threshold : opt nat64;
 };
@@ -50,6 +51,7 @@ type SegmentStatus = record {
   status_at : nat64;
 };
 type SegmentsStatuses = record {
+  orbiters : opt vec Result;
   satellites : opt vec Result;
   mission_control : Result;
 };

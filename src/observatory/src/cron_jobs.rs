@@ -42,6 +42,7 @@ async fn statuses(cron_tab: &CronTab) -> Result<SegmentsStatuses, String> {
             .statuses
             .mission_control_cycles_threshold,
         satellites: cron_tab.cron_jobs.statuses.satellites.clone(),
+        orbiters: cron_tab.cron_jobs.statuses.orbiters.clone(),
     };
 
     let result: CallResult<(SegmentsStatuses,)> =

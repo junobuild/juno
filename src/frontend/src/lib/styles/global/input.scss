@@ -52,3 +52,13 @@ input[disabled] {
 textarea {
 	resize: none;
 }
+
+:root {
+	&[theme='dark'] {
+		input,
+		textarea,
+		select {
+			color-scheme: dark;
+		}
+	}
+}

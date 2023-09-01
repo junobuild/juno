@@ -18,6 +18,10 @@ impl Default for Rates {
             },
             mission_controls: Rate {
                 config: DEFAULT_RATE_CONFIG,
+                tokens: tokens.clone(),
+            },
+            orbiters: Rate {
+                config: DEFAULT_RATE_CONFIG,
                 tokens,
             },
         }

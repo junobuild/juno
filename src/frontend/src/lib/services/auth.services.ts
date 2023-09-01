@@ -1,6 +1,7 @@
 import { authStore, type AuthSignInParams } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { missionControlStore } from '$lib/stores/mission-control.store';
+import { orbitersStore } from '$lib/stores/orbiter.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
@@ -8,6 +9,7 @@ import { versionStore } from '$lib/stores/version.store';
 const clearDataStores = () => {
 	satellitesStore.set(null);
 	missionControlStore.set(null);
+	orbitersStore.set(null);
 	versionStore.reset();
 };
 

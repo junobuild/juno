@@ -9,7 +9,7 @@ export interface AssertMissionControlCenterArgs {
 	user: Principal;
 }
 export type ControllerScope = { Write: null } | { Admin: null };
-export interface CreateSatelliteArgs {
+export interface CreateCanisterArgs {
 	block_index: [] | [bigint];
 	user: Principal;
 }
@@ -33,9 +33,10 @@ export interface RateConfig {
 }
 export interface ReleasesVersion {
 	satellite: [] | [string];
+	orbiter: [] | [string];
 	mission_control: [] | [string];
 }
-export type Segment = { MissionControl: null } | { Satellite: null };
+export type Segment = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -52,8 +53,10 @@ export interface _SERVICE {
 	add_credits: ActorMethod<[AddCreditsArgs], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
-	create_satellite: ActorMethod<[CreateSatelliteArgs], Principal>;
+	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
+	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
+	get_create_orbiter_fee: ActorMethod<[AddCreditsArgs], [] | [Tokens]>;
 	get_create_satellite_fee: ActorMethod<[AddCreditsArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
 	get_releases_version: ActorMethod<[], ReleasesVersion>;

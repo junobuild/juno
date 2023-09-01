@@ -1,5 +1,7 @@
+import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import { initMissionControl as initMissionControlApi, releasesVersion } from '$lib/api/console.api';
 import { missionControlVersion } from '$lib/api/mission-control.api';
+import { orbiterVersion } from '$lib/api/orbiter.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
@@ -118,4 +120,26 @@ export const loadVersion = async ({
 			detail: err
 		});
 	}
+};
+
+export const loadOrbiterVersion = async ({ orbiter }: { orbiter: Orbiter | null | undefined }) => {
+	if (isNullish(orbiter)) {
+		return;
+	}
+
+	// We load the orbiter version once per session
+	const store = get(versionStore);
+	if (nonNullish(store.orbiter)) {
+		return;
+	}
+
+	const [orbVersion, releases] = await Promise.all([
+		orbiterVersion({ orbiterId: orbiter.orbiter_id }),
+		releasesVersion()
+	]);
+
+	versionStore.setOrbiter({
+		release: fromNullable(releases.orbiter),
+		current: orbVersion
+	});
 };

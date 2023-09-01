@@ -176,7 +176,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -519,7 +519,7 @@ checksum = "5486aed0026218e61b8a01d5fbd5a0a134649abb71a0e53b7bc088529dced86e"
 
 [[package]]
 name = "mission_control"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "candid",
  "futures",
@@ -584,7 +584,7 @@ dependencies = [
 
 [[package]]
 name = "observatory"
-version = "0.0.2"
+version = "0.0.3"
 dependencies = [
  "candid",
  "ic-cdk",

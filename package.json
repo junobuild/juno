@@ -49,7 +49,7 @@
 		"observatory:statuses": "node scripts/observatory.statuses.mjs"
 	},
 	"devDependencies": {
-		"@dfinity/identity-secp256k1": "^0.15.6",
+		"@dfinity/identity-secp256k1": "^0.19.2",
 		"@esbuild-plugins/node-modules-polyfill": "^0.2.2",
 		"@rollup/plugin-inject": "^5.0.3",
 		"@sveltejs/adapter-static": "^2.0.2",
@@ -75,14 +75,14 @@
 		"vite": "^4.3.9"
 	},
 	"dependencies": {
-		"@dfinity/agent": "^0.18.1",
-		"@dfinity/auth-client": "^0.18.1",
-		"@dfinity/identity": "^0.18.1",
+		"@dfinity/agent": "^0.19.2",
+		"@dfinity/auth-client": "^0.19.2",
+		"@dfinity/identity": "^0.19.2",
 		"@dfinity/ledger": "next",
-		"@dfinity/principal": "^0.18.1",
+		"@dfinity/principal": "^0.19.2",
 		"@dfinity/utils": "next",
-		"@junobuild/admin": "^0.0.23",
-		"@junobuild/ledger": "^0.0.10",
+		"@junobuild/admin": "^0.0.24",
+		"@junobuild/ledger": "^0.0.11",
 		"buffer": "^6.0.3",
 		"idb-keyval": "^6.2.1",
 		"layercake": "^7.6.1",

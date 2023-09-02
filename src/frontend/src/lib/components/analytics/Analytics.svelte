@@ -76,10 +76,13 @@
 	);
 
 	let uniquePageViews = 0;
-	$: uniquePageViews = Object.entries(sessionsViews).reduce((acc, value) => acc + value.length, 0);
+	$: uniquePageViews = Object.entries(sessionsUniqueViews).reduce(
+		(acc, value) => acc + value[1].size,
+		0
+	);
 
 	let bounceRate = 0;
-	$: bounceRate = Object.entries(sessionsViews).filter(([key, value]) => value === 1).length;
+	$: bounceRate = Object.entries(sessionsViews).filter(([_key, value]) => value === 1).length;
 
 	const selectPeriod = ({ detail }: CustomEvent<PageViewsPeriod>) => (period = detail);
 </script>

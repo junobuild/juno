@@ -18,7 +18,7 @@ fn insert_page_view_impl(
     page_view: SetPageView,
     db: &mut PageViewsStable,
 ) -> Result<PageView, String> {
-    assert_bot(&page_view)?;
+    assert_bot(&page_view.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_page_view_length(&page_view)?;
 
@@ -70,6 +70,7 @@ fn insert_track_event_impl(
     track_event: SetTrackEvent,
     db: &mut TrackEventsStable,
 ) -> Result<TrackEvent, String> {
+    assert_bot(&track_event.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_track_event_length(&track_event)?;
 

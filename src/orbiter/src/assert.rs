@@ -138,8 +138,8 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
     Ok(())
 }
 
-pub fn assert_bot(page_view: &SetPageView) -> Result<(), String> {
-    match page_view.user_agent.clone() {
+pub fn assert_bot(user_agent: &Option<String>) -> Result<(), String> {
+    match user_agent.clone() {
         None => {}
         Some(user_agent) => {
             let bots = Bots::default();

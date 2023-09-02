@@ -83,6 +83,7 @@ export const idlFactory = ({ IDL }) => {
 		updated_at: IDL.Opt(IDL.Nat64),
 		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
 		name: IDL.Text,
+		user_agent: IDL.Opt(IDL.Text),
 		collected_at: IDL.Nat64
 	});
 	const Result_2 = IDL.Variant({ Ok: TrackEvent, Err: IDL.Text });

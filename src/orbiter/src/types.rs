@@ -99,8 +99,8 @@ pub mod interface {
         pub href: String,
         pub referrer: Option<String>,
         pub device: PageViewDevice,
-        pub user_agent: Option<String>,
         pub time_zone: String,
+        pub user_agent: Option<String>,
         pub collected_at: u64,
         pub updated_at: Option<u64>,
     }
@@ -109,6 +109,7 @@ pub mod interface {
     pub struct SetTrackEvent {
         pub name: String,
         pub metadata: Option<Metadata>,
+        pub user_agent: Option<String>,
         pub collected_at: u64,
         pub updated_at: Option<u64>,
     }

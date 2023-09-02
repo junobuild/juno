@@ -77,6 +77,7 @@ export interface SetTrackEvent {
 	updated_at: [] | [bigint];
 	metadata: [] | [Array<[string, string]>];
 	name: string;
+	user_agent: [] | [string];
 	collected_at: bigint;
 }
 export interface TrackEvent {

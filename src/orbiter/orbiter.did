@@ -67,6 +67,7 @@ type SetTrackEvent = record {
   updated_at : opt nat64;
   metadata : opt vec record { text; text };
   name : text;
+  user_agent : opt text;
   collected_at : nat64;
 };
 type TrackEvent = record {

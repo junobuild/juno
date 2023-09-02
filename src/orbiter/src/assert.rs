@@ -2,10 +2,11 @@ use crate::constants::{
     KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, STRING_MAX_LENGTH,
 };
 use crate::memory::STATE;
-use crate::msg::ERROR_UNAUTHORIZED_CALL;
+use crate::msg::{ERROR_BOT_CALL, ERROR_UNAUTHORIZED_CALL};
 use crate::types::interface::{SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, OriginConfig};
 use ic_cdk::caller;
+use isbot::Bots;
 use shared::types::state::SatelliteId;
 use shared::utils::principal_equal;
 
@@ -132,6 +133,21 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
             "Page event time_zone {} is longer than {}.",
             page_view.time_zone, STRING_MAX_LENGTH
         ));
+    }
+
+    Ok(())
+}
+
+pub fn assert_bot(page_view: &SetPageView) -> Result<(), String> {
+    match page_view.user_agent.clone() {
+        None => {}
+        Some(user_agent) => {
+            let bots = Bots::default();
+
+            if bots.is_bot(&user_agent) {
+                return Err(ERROR_BOT_CALL.to_string());
+            }
+        }
     }
 
     Ok(())

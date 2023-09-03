@@ -114,6 +114,11 @@
 			</Value>
 
 			<Value>
+				<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
+				<p>{pageViews.length}</p>
+			</Value>
+
+			<Value>
 				<svelte:fragment slot="label"
 					>{$i18n.analytics.average_page_views_per_session}</svelte:fragment
 				>
@@ -123,11 +128,6 @@
 			<Value>
 				<svelte:fragment slot="label">{$i18n.analytics.bounce_rate}</svelte:fragment>
 				<p>{bounceRate}</p>
-			</Value>
-
-			<Value>
-				<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
-				<p>{pageViews.length}</p>
 			</Value>
 		</div>
 

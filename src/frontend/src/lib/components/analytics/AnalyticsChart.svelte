@@ -34,7 +34,7 @@
 			[xKey]: key,
 			[yKey]: value
 		}))
-		.sort(({ [yKey]: aKey }, { [yKey]: bKey }) => bKey - aKey);
+		.sort(({ [xKey]: aKey }, { [xKey]: bKey }) => parseInt(aKey) - parseInt(bKey));
 
 	let ticks: string[];
 	$: ticks = Object.values(chartsData).map(({ [xKey]: a }) => a);

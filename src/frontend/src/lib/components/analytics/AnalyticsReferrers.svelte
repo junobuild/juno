@@ -27,7 +27,9 @@
 		}, {} as Record<string, number>);
 
 	let entries: [string, number][] = [];
-	$: entries = Object.entries(referrers).slice(0, 10);
+	$: entries = Object.entries(referrers)
+		.slice(0, 10)
+		.sort(([_a, countA], [_b, countB]) => countB - countA);
 </script>
 
 {#if entries.length > 0}
@@ -41,7 +43,7 @@
 			</thead>
 
 			<tbody>
-				{#each Object.entries(referrers) as [referrer, count]}
+				{#each entries as [referrer, count]}
 					<tr>
 						<td>{referrer}</td>
 						<td>{count}</td>

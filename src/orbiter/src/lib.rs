@@ -108,12 +108,7 @@ fn post_upgrade() {
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     assert_caller_is_authorized(&key.satellite_id)?;
 
-    let result = insert_page_view(key, page_view);
-
-    match result {
-        Ok(new_page_view) => Ok(new_page_view),
-        Err(error) => trap(&error),
-    }
+    insert_page_view(key, page_view)
 }
 
 #[update]
@@ -121,7 +116,7 @@ fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) -> Result<(), Str
     for (key, page_view) in page_views {
         assert_caller_is_authorized(&key.satellite_id)?;
 
-        insert_page_view(key, page_view).unwrap_or_else(|e| trap(&e));
+        insert_page_view(key, page_view)?;
     }
 
     Ok(())
@@ -136,12 +131,7 @@ fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
     assert_caller_is_authorized(&key.satellite_id)?;
 
-    let result = insert_track_event(key, track_event);
-
-    match result {
-        Ok(new_track_event) => Ok(new_track_event),
-        Err(error) => trap(&error),
-    }
+    insert_track_event(key, track_event)
 }
 
 #[update]
@@ -149,7 +139,7 @@ fn set_track_events(track_events: Vec<(AnalyticKey, SetTrackEvent)>) -> Result<(
     for (key, track_event) in track_events {
         assert_caller_is_authorized(&key.satellite_id)?;
 
-        insert_track_event(key, track_event).unwrap_or_else(|e| trap(&e));
+        insert_track_event(key, track_event)?;
     }
 
     Ok(())

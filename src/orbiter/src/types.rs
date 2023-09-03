@@ -1,7 +1,7 @@
 pub mod state {
     use crate::memory::init_stable_state;
     use crate::types::memory::Memory;
-    use candid::{CandidType};
+    use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use serde::{Deserialize, Serialize};
     use shared::types::state::{Controllers, Metadata, SatelliteId};
@@ -88,7 +88,7 @@ pub mod memory {
 
 pub mod interface {
     use crate::types::state::PageViewDevice;
-    use candid::{CandidType};
+    use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::{Metadata, SatelliteId};
 

@@ -92,7 +92,9 @@ service : () -> {
     );
   set_page_view : (AnalyticKey, SetPageView) -> (Result);
   set_page_views : (vec record { AnalyticKey; SetPageView }) -> (Result_1);
-  set_satellite_configs : (vec record { principal; SetSatelliteConfig }) -> ();
+  set_satellite_configs : (vec record { principal; SetSatelliteConfig }) -> (
+      vec record { principal; SatelliteConfig },
+    );
   set_track_event : (AnalyticKey, SetTrackEvent) -> (Result_2);
   set_track_events : (vec record { AnalyticKey; SetTrackEvent }) -> (Result_1);
   version : () -> (text) query;

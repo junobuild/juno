@@ -13,7 +13,7 @@
 	import IconChartBar from '$lib/components/icons/IconChartBar.svelte';
 	import { analyticsLink } from '$lib/utils/nav.utils';
 	import { satelliteStore } from '$lib/stores/satellite.store';
-	import {PROD} from "$lib/constants/constants";
+	import { PROD } from '$lib/constants/constants';
 
 	export let signIn = true;
 
@@ -64,16 +64,16 @@
 
 		{#if !PROD}
 			<a
-					href={analyticsLink($satelliteStore?.satellite_id)}
-					class="menu"
-					role="menuitem"
-					aria-haspopup="menu"
-					rel="external noopener norefferer"
+				href={analyticsLink($satelliteStore?.satellite_id)}
+				class="menu"
+				role="menuitem"
+				aria-haspopup="menu"
+				rel="external noopener norefferer"
 			>
 				<IconChartBar />
 				<span>{$i18n.analytics.title}</span>
 			</a>
-			{/if}
+		{/if}
 
 		<a
 			href="/settings"

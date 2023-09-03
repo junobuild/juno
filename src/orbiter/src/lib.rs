@@ -30,9 +30,7 @@ use crate::types::interface::{
     DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig, SetTrackEvent,
 };
 use crate::types::memory::Memory;
-use crate::types::state::{
-    AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent,
-};
+use crate::types::state::{AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent};
 use crate::upgrade::types::upgrade::UpgradeState;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
@@ -204,10 +202,16 @@ fn list_controllers() -> Controllers {
 ///
 
 #[update(guard = "caller_is_admin_controller")]
-fn set_satellite_configs(configs: Vec<(SatelliteId, SetSatelliteConfig)>) {
+fn set_satellite_configs(configs: Vec<(SatelliteId, SetSatelliteConfig)>) -> SatelliteConfigs {
+    let mut results: SatelliteConfigs = SatelliteConfigs::new();
+
     for (satellite_id, config) in configs {
-        set_satellite_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e));
+        let result =
+            set_satellite_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e));
+        results.insert(satellite_id, result);
     }
+
+    results
 }
 
 #[update(guard = "caller_is_admin_controller")]

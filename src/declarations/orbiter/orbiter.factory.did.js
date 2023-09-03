@@ -117,7 +117,7 @@ export const idlFactory = ({ IDL }) => {
 		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [Result_1], []),
 		set_satellite_configs: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Principal, SetSatelliteConfig))],
-			[],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, SatelliteConfig))],
 			[]
 		),
 		set_track_event: IDL.Func([AnalyticKey, SetTrackEvent], [Result_2], []),

@@ -10,7 +10,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import type { SatelliteConfig } from '$declarations/orbiter/orbiter.did';
 	import OrbiterConfigSave from '$lib/components/analytics/OrbiterConfigSave.svelte';
-	import type {OrbiterSatelliteConfigEntry} from "$lib/types/ortbiter";
+	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 
 	export let orbiterId: Principal;
 
@@ -22,21 +22,7 @@
 	const load = async () => {
 		try {
 			const configs = await list();
-
-			configuration = ($satellitesStore ?? []).reduce((acc, satellite) => {
-				const config: SatelliteConfig | undefined = (configs ?? []).find(
-						([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText()
-				);
-
-				return {
-					...acc,
-					[satellite.satellite_id.toText()]: {
-						name: satelliteName(satellite),
-						enabled: config?.[1].enabled ?? true,
-						config: config?.[1]
-					}
-				};
-			}, {});
+			loadConfig(configs);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.orbiter_configuration_listing,
@@ -45,7 +31,29 @@
 		}
 	};
 
+	const loadConfig = (configs: [Principal, SatelliteConfig][]) => {
+		configuration = ($satellitesStore ?? []).reduce((acc, satellite) => {
+			const config: [Principal, SatelliteConfig] | undefined = (configs ?? []).find(
+				([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText()
+			);
+
+			return {
+				...acc,
+				[satellite.satellite_id.toText()]: {
+					name: satelliteName(satellite),
+					enabled: config?.[1].enabled ?? true,
+					config: config?.[1]
+				}
+			};
+		}, {});
+	};
+
 	onMount(async () => await load());
+
+	// [Principal, SatelliteConfig]
+	const onUpdate = ({ detail }: CustomEvent<[Principal, SatelliteConfig][]>) => {
+		loadConfig(detail);
+	};
 </script>
 
 <div class="table-container">
@@ -64,10 +72,7 @@
 
 				<tr>
 					<td class="actions">
-						<input
-							type="checkbox"
-							bind:checked={conf[1].enabled}
-						/>
+						<input type="checkbox" bind:checked={conf[1].enabled} />
 					</td>
 
 					<td>
@@ -84,7 +89,7 @@
 </div>
 
 {#if ($satellitesStore ?? []).length > 0}
-	<OrbiterConfigSave {orbiterId} config={configuration} />
+	<OrbiterConfigSave {orbiterId} config={configuration} on:junoConfigUpdate={onUpdate} />
 {/if}
 
 <style lang="scss">

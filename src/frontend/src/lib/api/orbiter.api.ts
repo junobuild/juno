@@ -71,7 +71,7 @@ export const setOrbiterSatelliteConfigs = async ({
 }: {
 	orbiterId: Principal;
 	config: [Principal, SetSatelliteConfig][];
-}): Promise<void> => {
+}): Promise<[Principal, SatelliteConfig][]> => {
 	const actor = await getOrbiterActor(orbiterId);
 	return actor.set_satellite_configs(config);
 };

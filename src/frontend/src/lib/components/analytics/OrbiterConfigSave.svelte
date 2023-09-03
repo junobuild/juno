@@ -7,12 +7,15 @@
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { nonNullish } from '$lib/utils/utils';
+	import { createEventDispatcher } from 'svelte';
 
 	export let orbiterId: Principal;
 	export let config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 
 	let validConfirm = false;
 	$: validConfirm = Object.keys(config).length > 0;
+
+	const dispatch = createEventDispatcher();
 
 	const handleSubmit = async () => {
 		if (!validConfirm) {
@@ -26,7 +29,7 @@
 		busy.start();
 
 		try {
-			await setOrbiterSatelliteConfigs({
+			const results = await setOrbiterSatelliteConfigs({
 				orbiterId,
 				config: Object.entries(config).map(([satelliteId, value]) => [
 					Principal.fromText(satelliteId),
@@ -36,6 +39,8 @@
 					}
 				])
 			});
+
+			dispatch('junoConfigUpdate', results);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.orbiter_configuration_unexpected,

@@ -95,7 +95,10 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;
-	set_satellite_configs: ActorMethod<[Array<[Principal, SetSatelliteConfig]>], undefined>;
+	set_satellite_configs: ActorMethod<
+		[Array<[Principal, SetSatelliteConfig]>],
+		Array<[Principal, SatelliteConfig]>
+	>;
 	set_track_event: ActorMethod<[AnalyticKey, SetTrackEvent], Result_2>;
 	set_track_events: ActorMethod<[Array<[AnalyticKey, SetTrackEvent]>], Result_1>;
 	version: ActorMethod<[], string>;

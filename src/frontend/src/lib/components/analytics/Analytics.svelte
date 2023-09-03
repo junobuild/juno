@@ -15,6 +15,7 @@
 	import { debounce } from '$lib/utils/debounce.utils';
 	import { formatNumber } from '$lib/utils/number.utils';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
+	import AnalyticsReferrer from '$lib/components/analytics/AnalyticsReferrer.svelte';
 
 	let loading = true;
 
@@ -129,6 +130,10 @@
 				<p>{pageViews.length}</p>
 			</Value>
 		</div>
+
+		{#if pageViews.length > 0}
+			<AnalyticsReferrer {pageViews} />
+		{/if}
 
 		{#if trackEvents.length > 0}
 			<AnalyticsEvents {trackEvents} />

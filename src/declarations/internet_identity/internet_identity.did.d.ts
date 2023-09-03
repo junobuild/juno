@@ -1,14 +1,6 @@
 import type { ActorMethod } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
-export interface ActiveAnchorCounter {
-	counter: bigint;
-	start_timestamp: Timestamp;
-}
-export interface ActiveAnchorStatistics {
-	completed: CompletedActiveAnchorStats;
-	ongoing: OngoingActiveAnchorStats;
-}
 export type AddTentativeDeviceResponse =
 	| {
 			device_registration_mode_off: null;
@@ -49,6 +41,7 @@ export interface AuthnMethodRegistrationInfo {
 	expiration: Timestamp;
 	authn_method: [] | [AuthnMethodData];
 }
+export type AuthnMethodRemoveResponse = { ok: null };
 export interface BufferedArchiveEntry {
 	sequence_number: bigint;
 	entry: Uint8Array | number[];
@@ -63,10 +56,6 @@ export type ChallengeKey = string;
 export interface ChallengeResult {
 	key: ChallengeKey;
 	chars: string;
-}
-export interface CompletedActiveAnchorStats {
-	monthly_active_anchors: [] | [ActiveAnchorCounter];
-	daily_active_anchors: [] | [ActiveAnchorCounter];
 }
 export type CredentialId = Uint8Array | number[];
 export interface Delegation {
@@ -104,24 +93,6 @@ export interface DeviceWithUsage {
 	key_type: KeyType;
 	purpose: Purpose;
 	credential_id: [] | [CredentialId];
-}
-export interface DomainActiveAnchorCounter {
-	start_timestamp: Timestamp;
-	internetcomputer_org_counter: bigint;
-	ic0_app_counter: bigint;
-	both_ii_domains_counter: bigint;
-}
-export interface DomainActiveAnchorStatistics {
-	completed: DomainCompletedActiveAnchorStats;
-	ongoing: DomainOngoingActiveAnchorStats;
-}
-export interface DomainCompletedActiveAnchorStats {
-	monthly_active_anchors: [] | [DomainActiveAnchorCounter];
-	daily_active_anchors: [] | [DomainActiveAnchorCounter];
-}
-export interface DomainOngoingActiveAnchorStats {
-	monthly_active_anchors: Array<DomainActiveAnchorCounter>;
-	daily_active_anchors: DomainActiveAnchorCounter;
 }
 export type FrontendHostname = string;
 export type GetDelegationResponse =
@@ -164,26 +135,21 @@ export interface InternetIdentityInit {
 export interface InternetIdentityStats {
 	storage_layout_version: number;
 	users_registered: bigint;
-	domain_active_anchor_stats: [] | [DomainActiveAnchorStatistics];
 	max_num_latest_delegation_origins: bigint;
 	assigned_user_number_range: [bigint, bigint];
 	latest_delegation_origins: Array<FrontendHostname>;
 	archive_info: ArchiveInfo;
 	canister_creation_cycles_cost: bigint;
-	active_anchor_stats: [] | [ActiveAnchorStatistics];
 }
 export type KeyType =
 	| { platform: null }
 	| { seed_phrase: null }
 	| { cross_platform: null }
-	| { unknown: null };
+	| { unknown: null }
+	| { browser_storage_key: null };
 export type MetadataMap = Array<
 	[string, { map: MetadataMap } | { string: string } | { bytes: Uint8Array | number[] }]
 >;
-export interface OngoingActiveAnchorStats {
-	monthly_active_anchors: Array<ActiveAnchorCounter>;
-	daily_active_anchors: ActiveAnchorCounter;
-}
 export type PublicKey = Uint8Array | number[];
 export interface PublicKeyAuthn {
 	pubkey: PublicKey;
@@ -233,6 +199,7 @@ export interface _SERVICE {
 	add: ActorMethod<[UserNumber, DeviceData], undefined>;
 	add_tentative_device: ActorMethod<[UserNumber, DeviceData], AddTentativeDeviceResponse>;
 	authn_method_add: ActorMethod<[IdentityNumber, AuthnMethodData], [] | [AuthnMethodAddResponse]>;
+	authn_method_remove: ActorMethod<[IdentityNumber, PublicKey], [] | [AuthnMethodRemoveResponse]>;
 	create_challenge: ActorMethod<[], Challenge>;
 	deploy_archive: ActorMethod<[Uint8Array | number[]], DeployArchiveResult>;
 	enter_device_registration_mode: ActorMethod<[UserNumber], Timestamp>;

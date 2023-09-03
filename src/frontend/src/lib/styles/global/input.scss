@@ -40,6 +40,10 @@ input[type='radio'] {
 	margin: var(--padding-1_5x) 0;
 }
 
+input[type='date'] {
+	height: var(--padding-4x);
+}
+
 input[disabled] {
 	cursor: text;
 	@include disabled.disabled;

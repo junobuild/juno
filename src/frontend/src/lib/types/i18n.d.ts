@@ -142,6 +142,7 @@ interface I18nAnalytics {
 	id: string;
 	tracked_events: string;
 	count: string;
+	referrers: string;
 }
 
 interface I18nHosting {

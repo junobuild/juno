@@ -130,7 +130,8 @@
 		"overview": "Overview",
 		"id": "ID",
 		"tracked_events": "Tracked events",
-		"count": "Count"
+		"count": "Count",
+		"referrers": "Top 10 referrers"
 	},
 	"hosting": {
 		"title": "Hosting",

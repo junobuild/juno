@@ -14,7 +14,7 @@ export const idlFactory = ({ IDL }) => {
 		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
-	const DelOriginConfig = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
+	const DelSatelliteConfig = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
 	const GetAnalytics = IDL.Record({
 		to: IDL.Opt(IDL.Nat64),
 		from: IDL.Opt(IDL.Nat64),
@@ -47,11 +47,10 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		collected_at: IDL.Nat64
 	});
-	const OriginConfig = IDL.Record({
-		key: IDL.Principal,
+	const SatelliteConfig = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
-		filter: IDL.Text
+		enabled: IDL.Bool
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -61,11 +60,6 @@ export const idlFactory = ({ IDL }) => {
 	const SetControllersArgs = IDL.Record({
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
-	});
-	const SetOriginConfig = IDL.Record({
-		key: IDL.Principal,
-		updated_at: IDL.Opt(IDL.Nat64),
-		filter: IDL.Text
 	});
 	const SetPageView = IDL.Record({
 		title: IDL.Text,
@@ -79,6 +73,10 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Result = IDL.Variant({ Ok: PageView, Err: IDL.Text });
 	const Result_1 = IDL.Variant({ Ok: IDL.Null, Err: IDL.Text });
+	const SetSatelliteConfig = IDL.Record({
+		updated_at: IDL.Opt(IDL.Nat64),
+		enabled: IDL.Bool
+	});
 	const SetTrackEvent = IDL.Record({
 		updated_at: IDL.Opt(IDL.Nat64),
 		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
@@ -93,7 +91,7 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
 			[]
 		),
-		del_origin_config: IDL.Func([IDL.Principal, DelOriginConfig], [], []),
+		del_satellite_config: IDL.Func([IDL.Principal, DelSatelliteConfig], [], []),
 		get_page_views: IDL.Func(
 			[GetAnalytics],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],
@@ -105,15 +103,23 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
-		list_origin_configs: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, OriginConfig))], ['query']),
+		list_satellite_configs: IDL.Func(
+			[],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, SatelliteConfig))],
+			['query']
+		),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
 			[]
 		),
-		set_origin_config: IDL.Func([IDL.Principal, SetOriginConfig], [OriginConfig], []),
 		set_page_view: IDL.Func([AnalyticKey, SetPageView], [Result], []),
 		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [Result_1], []),
+		set_satellite_configs: IDL.Func(
+			[IDL.Vec(IDL.Tuple(IDL.Principal, SetSatelliteConfig))],
+			[],
+			[]
+		),
 		set_track_event: IDL.Func([AnalyticKey, SetTrackEvent], [Result_2], []),
 		set_track_events: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetTrackEvent))], [Result_1], []),
 		version: IDL.Func([], [IDL.Text], ['query'])

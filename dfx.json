@@ -84,6 +84,19 @@
 				"node_compatibility": true
 			}
 		},
+		"index": {
+			"type": "custom",
+			"candid": "index.did",
+			"wasm": "index.wasm",
+			"remote": {
+				"id": {
+					"ic": "r7inp-6aaaa-aaaaa-aaabq-cai"
+				}
+			},
+			"declarations": {
+				"node_compatibility": true
+			}
+		},
 		"cmc": {
 			"type": "custom",
 			"candid": "candid/cmc.did",

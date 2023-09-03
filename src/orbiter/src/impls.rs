@@ -8,7 +8,7 @@ use crate::serializers::{
     key_to_bytes, long_string_to_bytes, metadata_to_bytes, principal_to_bytes, string_to_bytes,
 };
 use crate::types::state::{
-    AnalyticKey, HeapState, OriginConfigs, PageView, PageViewDevice, State, TrackEvent,
+    AnalyticKey, HeapState, PageView, PageViewDevice, SatelliteConfigs, State, TrackEvent,
 };
 use ic_stable_structures::{BoundedStorable, Storable};
 use shared::types::state::Controllers;
@@ -21,7 +21,7 @@ impl Default for State {
             stable: init_stable_state(),
             heap: HeapState {
                 controllers: Controllers::default(),
-                origins: OriginConfigs::default(),
+                config: SatelliteConfigs::default(),
             },
         }
     }

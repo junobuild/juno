@@ -1,10 +1,9 @@
 import type {
 	AnalyticKey,
 	Controller,
-	DelOriginConfig,
-	OriginConfig,
 	PageView,
-	SetOriginConfig,
+	SatelliteConfig,
+	SetSatelliteConfig,
 	TrackEvent
 } from '$declarations/orbiter/orbiter.did';
 import type { PageViewsPeriod } from '$lib/types/ortbiter';
@@ -57,39 +56,24 @@ export const listOrbiterControllers = async ({
 	return actor.list_controllers();
 };
 
-export const listOriginConfigs = async ({
+export const listOrbiterSatelliteConfigs = async ({
 	orbiterId
 }: {
 	orbiterId: Principal;
-}): Promise<[Principal, OriginConfig][]> => {
+}): Promise<[Principal, SatelliteConfig][]> => {
 	const actor = await getOrbiterActor(orbiterId);
-	return actor.list_origin_configs();
+	return actor.list_satellite_configs();
 };
 
-export const setOriginConfig = async ({
-	satelliteId,
+export const setOrbiterSatelliteConfigs = async ({
 	orbiterId,
 	config
 }: {
 	orbiterId: Principal;
-	satelliteId: Principal;
-	config: SetOriginConfig;
-}): Promise<OriginConfig> => {
+	config: [Principal, SetSatelliteConfig][];
+}): Promise<[Principal, SatelliteConfig][]> => {
 	const actor = await getOrbiterActor(orbiterId);
-	return actor.set_origin_config(satelliteId, config);
-};
-
-export const deleteOriginConfig = async ({
-	satelliteId,
-	orbiterId,
-	config
-}: {
-	orbiterId: Principal;
-	satelliteId: Principal;
-	config: DelOriginConfig;
-}): Promise<void> => {
-	const actor = await getOrbiterActor(orbiterId);
-	return actor.del_origin_config(satelliteId, config);
+	return actor.set_satellite_configs(config);
 };
 
 export const orbiterVersion = async ({ orbiterId }: { orbiterId: Principal }): Promise<string> => {

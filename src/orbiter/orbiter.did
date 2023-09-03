@@ -11,18 +11,12 @@ type Controller = record {
   expires_at : opt nat64;
 };
 type ControllerScope = variant { Write; Admin };
-type DelOriginConfig = record { updated_at : opt nat64 };
+type DelSatelliteConfig = record { updated_at : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetAnalytics = record {
   to : opt nat64;
   from : opt nat64;
   satellite_id : opt principal;
-};
-type OriginConfig = record {
-  key : principal;
-  updated_at : nat64;
-  created_at : nat64;
-  filter : text;
 };
 type PageView = record {
   title : text;
@@ -39,6 +33,11 @@ type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
 type Result = variant { Ok : PageView; Err : text };
 type Result_1 = variant { Ok; Err : text };
 type Result_2 = variant { Ok : TrackEvent; Err : text };
+type SatelliteConfig = record {
+  updated_at : nat64;
+  created_at : nat64;
+  enabled : bool;
+};
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -47,11 +46,6 @@ type SetController = record {
 type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
-};
-type SetOriginConfig = record {
-  key : principal;
-  updated_at : opt nat64;
-  filter : text;
 };
 type SetPageView = record {
   title : text;
@@ -63,6 +57,7 @@ type SetPageView = record {
   user_agent : opt text;
   collected_at : nat64;
 };
+type SetSatelliteConfig = record { updated_at : opt nat64; enabled : bool };
 type SetTrackEvent = record {
   updated_at : opt nat64;
   metadata : opt vec record { text; text };
@@ -81,7 +76,7 @@ service : () -> {
   del_controllers : (DeleteControllersArgs) -> (
       vec record { principal; Controller },
     );
-  del_origin_config : (principal, DelOriginConfig) -> ();
+  del_satellite_config : (principal, DelSatelliteConfig) -> ();
   get_page_views : (GetAnalytics) -> (
       vec record { AnalyticKey; PageView },
     ) query;
@@ -89,13 +84,17 @@ service : () -> {
       vec record { AnalyticKey; TrackEvent },
     ) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
-  list_origin_configs : () -> (vec record { principal; OriginConfig }) query;
+  list_satellite_configs : () -> (
+      vec record { principal; SatelliteConfig },
+    ) query;
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
     );
-  set_origin_config : (principal, SetOriginConfig) -> (OriginConfig);
   set_page_view : (AnalyticKey, SetPageView) -> (Result);
   set_page_views : (vec record { AnalyticKey; SetPageView }) -> (Result_1);
+  set_satellite_configs : (vec record { principal; SetSatelliteConfig }) -> (
+      vec record { principal; SatelliteConfig },
+    );
   set_track_event : (AnalyticKey, SetTrackEvent) -> (Result_2);
   set_track_events : (vec record { AnalyticKey; SetTrackEvent }) -> (Result_1);
   version : () -> (text) query;

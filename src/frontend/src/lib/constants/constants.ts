@@ -1,5 +1,7 @@
 export const APP_VERSION = VITE_APP_VERSION;
 
+export const PROD = import.meta.env.PROD;
+
 export const localIdentityCanisterId: string | null | undefined = import.meta.env
 	.VITE_INTERNET_IDENTITY_CANISTER_ID as string | null | undefined;
 

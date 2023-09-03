@@ -10,7 +10,7 @@
 	import AnalyticsControllers from '$lib/components/analytics/AnalyticsControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import OriginConfigs from '$lib/components/analytics/OriginConfigs.svelte';
+	import OrbiterConfig from '$lib/components/analytics/OrbiterConfig.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
@@ -68,7 +68,7 @@
 			{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
 				<Orbiter orbiter={$orbiterStore} />
 			{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
-				<OriginConfigs orbiterId={$orbiterStore.orbiter_id} />
+				<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
 
 				<AnalyticsControllers orbiterId={$orbiterStore.orbiter_id} />
 			{/if}

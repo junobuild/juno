@@ -213,10 +213,9 @@
 		"analytics_load_error": "Error while loading the analytics data",
 		"satellites_loading": "Error while loading the list of satellites.",
 		"orbiters_loading": "Error while loading the list of orbiters.",
-		"origin_filter_missing": "A satellite and filter must be provided.",
-		"origin_filter_unexpected": "Unexpected error(s) while trying to edit your filter.",
-		"origins_listing": "Error while listing the filters.",
-		"origin_delete": "Unexpected error(s) while deleting the filter."
+		"orbiter_configuration_missing": "Satellites and configuration must be provided.",
+		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
+		"orbiter_configuration_listing": "Error while fetching the configuration."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -377,12 +376,5 @@
 		"login": "完成安装后，你可以用终端来登录你的 satellite .",
 		"run": "现在你可以用一下根目录下的命令来跟你的satellite交互:",
 		"success": "安装过程应该很顺利，一旦完成，你将看到你的项目部署在区块链上，地址为 <a href=\"{0}\" rel=\"external noopener noreferrer\" target=\"_blank\">{1}</a>  🎉."
-	},
-	"origins": {
-		"empty": "No origins are filtered yet.",
-		"filter": "Filter",
-		"edit_filter": "Add an origin or regex",
-		"add_a_filter": "Add a filter",
-		"delete": "Delete filter?"
 	}
 }

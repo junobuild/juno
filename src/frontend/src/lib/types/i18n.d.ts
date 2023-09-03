@@ -227,10 +227,9 @@ interface I18nErrors {
 	analytics_load_error: string;
 	satellites_loading: string;
 	orbiters_loading: string;
-	origin_filter_missing: string;
-	origin_filter_unexpected: string;
-	origins_listing: string;
-	origin_delete: string;
+	orbiter_configuration_missing: string;
+	orbiter_configuration_unexpected: string;
+	orbiter_configuration_listing: string;
 }
 
 interface I18nDocument {
@@ -406,14 +405,6 @@ interface I18nOn_boarding {
 	success: string;
 }
 
-interface I18nOrigins {
-	empty: string;
-	filter: string;
-	edit_filter: string;
-	add_a_filter: string;
-	delete: string;
-}
-
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -441,5 +432,4 @@ interface I18n {
 	examples: I18nExamples;
 	resources: I18nResources;
 	on_boarding: I18nOn_boarding;
-	origins: I18nOrigins;
 }

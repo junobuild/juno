@@ -131,7 +131,8 @@
 		"id": "ID",
 		"tracked_events": "Tracked events",
 		"count": "Count",
-		"referrers": "Top 10 referrers"
+		"referrers": "Top 10 referrers",
+		"enabled": "Enabled"
 	},
 	"hosting": {
 		"title": "Hosting",

@@ -60,7 +60,7 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="tools" />
+				<th class="tools"> {$i18n.analytics.enabled} </th>
 				<th class="origin"> {$i18n.satellites.satellite} </th>
 				<th class="origin"> {$i18n.satellites.id} </th>
 			</tr>
@@ -93,9 +93,7 @@
 {/if}
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
-
 	.tools {
-		width: 48px;
+		width: 88px;
 	}
 </style>

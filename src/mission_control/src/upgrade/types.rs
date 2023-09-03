@@ -1,5 +1,5 @@
 pub mod upgrade {
-    use crate::types::state::{Archive, ArchiveStatusesSegments, Satellites, Statuses, User};
+    use crate::types::state::{ArchiveStatusesSegments, Satellites, Statuses, User};
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::Controllers;

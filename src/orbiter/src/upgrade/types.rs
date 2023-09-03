@@ -1,9 +1,10 @@
 pub mod upgrade {
     use crate::memory::init_stable_state;
-    use crate::types::state::{OriginConfigs, StableState};
-    use candid::CandidType;
+    use crate::types::state::StableState;
+    use candid::{CandidType, Principal};
     use serde::{Deserialize, Serialize};
-    use shared::types::state::Controllers;
+    use shared::types::state::{Controllers, SatelliteId};
+    use std::collections::HashMap;
 
     #[derive(Serialize, Deserialize)]
     pub struct UpgradeState {
@@ -18,6 +19,16 @@ pub mod upgrade {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct UpgradeHeapState {
         pub controllers: Controllers,
-        pub origins: OriginConfigs,
+        pub origins: UpgradeOriginConfigs,
+    }
+
+    pub type UpgradeOriginConfigs = HashMap<SatelliteId, UpgradeOriginConfig>;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct UpgradeOriginConfig {
+        pub key: Principal,
+        pub filter: String,
+        pub created_at: u64,
+        pub updated_at: u64,
     }
 }

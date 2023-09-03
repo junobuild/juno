@@ -11,10 +11,10 @@ mod store;
 mod types;
 mod upgrade;
 
-use crate::assert::assert_caller_is_authorized;
+use crate::assert::assert_enabled;
 use crate::config::store::{
-    del_origin_config as del_origin_config_store, get_origin_configs as get_origin_configs_store,
-    set_origin_config as set_origin_config_store,
+    del_satellite_config as del_satellite_config_store, get_satellite_configs,
+    set_satellite_config as set_satellite_config_store,
 };
 use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
@@ -27,11 +27,11 @@ use crate::store::{
     insert_page_view, insert_track_event,
 };
 use crate::types::interface::{
-    DelOriginConfig, GetAnalytics, SetOriginConfig, SetPageView, SetTrackEvent,
+    DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig, SetTrackEvent,
 };
 use crate::types::memory::Memory;
 use crate::types::state::{
-    AnalyticKey, HeapState, OriginConfig, OriginConfigs, PageView, State, TrackEvent,
+    AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent,
 };
 use crate::upgrade::types::upgrade::UpgradeState;
 use ciborium::{from_reader, into_writer};
@@ -114,7 +114,7 @@ fn post_upgrade() {
 
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
-    assert_caller_is_authorized(&key.satellite_id)?;
+    assert_enabled(&key.satellite_id)?;
 
     insert_page_view(key, page_view)
 }
@@ -122,7 +122,7 @@ fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, S
 #[update]
 fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) -> Result<(), String> {
     for (key, page_view) in page_views {
-        assert_caller_is_authorized(&key.satellite_id)?;
+        assert_enabled(&key.satellite_id)?;
 
         insert_page_view(key, page_view)?;
     }
@@ -137,7 +137,7 @@ fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
 
 #[update]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
-    assert_caller_is_authorized(&key.satellite_id)?;
+    assert_enabled(&key.satellite_id)?;
 
     insert_track_event(key, track_event)
 }
@@ -145,7 +145,7 @@ fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<Track
 #[update]
 fn set_track_events(track_events: Vec<(AnalyticKey, SetTrackEvent)>) -> Result<(), String> {
     for (key, track_event) in track_events {
-        assert_caller_is_authorized(&key.satellite_id)?;
+        assert_enabled(&key.satellite_id)?;
 
         insert_track_event(key, track_event)?;
     }
@@ -204,18 +204,20 @@ fn list_controllers() -> Controllers {
 ///
 
 #[update(guard = "caller_is_admin_controller")]
-fn set_origin_config(satellite_id: SatelliteId, config: SetOriginConfig) -> OriginConfig {
-    set_origin_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e))
+fn set_satellite_configs(configs: Vec<(SatelliteId, SetSatelliteConfig)>) {
+    for (satellite_id, config) in configs {
+        set_satellite_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e));
+    }
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn del_origin_config(satellite_id: SatelliteId, config: DelOriginConfig) {
-    del_origin_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e))
+fn del_satellite_config(satellite_id: SatelliteId, config: DelSatelliteConfig) {
+    del_satellite_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e))
 }
 
 #[query(guard = "caller_is_admin_controller")]
-fn list_origin_configs() -> OriginConfigs {
-    get_origin_configs_store()
+fn list_satellite_configs() -> SatelliteConfigs {
+    get_satellite_configs()
 }
 
 /// Mgmt

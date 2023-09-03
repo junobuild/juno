@@ -2,34 +2,31 @@ use crate::constants::{
     KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, STRING_MAX_LENGTH,
 };
 use crate::memory::STATE;
-use crate::msg::{ERROR_BOT_CALL, ERROR_UNAUTHORIZED_CALL};
+use crate::msg::{ERROR_BOT_CALL, ERROR_NOT_ENABLED_CALL};
 use crate::types::interface::{SetPageView, SetTrackEvent};
-use crate::types::state::{AnalyticKey, OriginConfig};
-use ic_cdk::caller;
+use crate::types::state::{AnalyticKey, SatelliteConfig};
 use isbot::Bots;
 use shared::types::state::SatelliteId;
-use shared::utils::principal_equal;
 
-pub fn assert_caller_is_authorized(satellite_id: &SatelliteId) -> Result<(), String> {
-    let caller = caller();
-
-    let config: Option<OriginConfig> = STATE.with(|state| {
+pub fn assert_enabled(satellite_id: &SatelliteId) -> Result<(), String> {
+    let config: Option<SatelliteConfig> = STATE.with(|state| {
         let binding = state.borrow();
-        let config = binding.heap.origins.get(satellite_id);
+        let config = binding.heap.config.get(satellite_id);
 
         config.cloned()
     });
 
+    // Per default analytics is enabled
     match config {
-        None => Ok(()),
+        None => {}
         Some(config) => {
-            if principal_equal(caller, config.key) {
-                Ok(())
-            } else {
-                Err(ERROR_UNAUTHORIZED_CALL.to_string())
+            if !config.enabled {
+                return Err(ERROR_NOT_ENABLED_CALL.to_string());
             }
         }
     }
+
+    Ok(())
 }
 
 pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {

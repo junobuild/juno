@@ -9,7 +9,7 @@ pub fn assert_timestamp(user_timestamp: Option<u64>, current_timestamp: u64) -> 
             if current_timestamp != user_timestamp {
                 return Err(format!(
                     "{} ({} - {})",
-                    ERROR_TIMESTAMP_OUTDATED_OR_FUTURE.to_string(),
+                    ERROR_TIMESTAMP_OUTDATED_OR_FUTURE,
                     current_timestamp,
                     user_timestamp
                 ));

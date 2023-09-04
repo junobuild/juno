@@ -41,7 +41,7 @@ export interface PageViewDevice {
 	inner_width: number;
 }
 export type Result = { Ok: PageView } | { Err: string };
-export type Result_1 = { Ok: null } | { Err: Array<string> };
+export type Result_1 = { Ok: null } | { Err: Array<[AnalyticKey, string]> };
 export type Result_2 = { Ok: TrackEvent } | { Err: string };
 export interface SatelliteConfig {
 	updated_at: bigint;

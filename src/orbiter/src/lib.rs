@@ -118,7 +118,9 @@ fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, S
 }
 
 #[update]
-fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) -> Result<(), Vec<String>> {
+fn set_page_views(
+    page_views: Vec<(AnalyticKey, SetPageView)>,
+) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, page_view: SetPageView) -> Result<(), String> {
         assert_enabled(&key.satellite_id)?;
         insert_page_view(key, page_view)?;
@@ -126,14 +128,14 @@ fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) -> Result<(), Vec
         Ok(())
     }
 
-    let mut errors: Vec<String> = Vec::new();
+    let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
 
     for (key, page_view) in page_views {
-        let result = insert(key, page_view);
+        let result = insert(key.clone(), page_view);
 
         match result {
             Ok(_) => {}
-            Err(err) => errors.push(err),
+            Err(err) => errors.push((key, err)),
         }
     }
 
@@ -157,7 +159,9 @@ fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<Track
 }
 
 #[update]
-fn set_track_events(track_events: Vec<(AnalyticKey, SetTrackEvent)>) -> Result<(), Vec<String>> {
+fn set_track_events(
+    track_events: Vec<(AnalyticKey, SetTrackEvent)>,
+) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, track_event: SetTrackEvent) -> Result<(), String> {
         assert_enabled(&key.satellite_id)?;
         insert_track_event(key, track_event)?;
@@ -165,14 +169,14 @@ fn set_track_events(track_events: Vec<(AnalyticKey, SetTrackEvent)>) -> Result<(
         Ok(())
     }
 
-    let mut errors: Vec<String> = Vec::new();
+    let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
 
     for (key, track_event) in track_events {
-        let result = insert(key, track_event);
+        let result = insert(key.clone(), track_event);
 
         match result {
             Ok(_) => {}
-            Err(err) => errors.push(err),
+            Err(err) => errors.push((key, err)),
         }
     }
 

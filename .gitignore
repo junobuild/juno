@@ -21,6 +21,9 @@ ledger.private.did
 ledger.public.did
 ledger.wasm
 ledger.wasm.gz
+index.wasm
+index.wasm.gz
+index.did
 cmc.wasm
 cmc.wasm.gz
 console.wasm

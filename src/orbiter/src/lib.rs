@@ -118,11 +118,27 @@ fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, S
 }
 
 #[update]
-fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) -> Result<(), String> {
-    for (key, page_view) in page_views {
+fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) -> Result<(), Vec<String>> {
+    fn insert(key: AnalyticKey, page_view: SetPageView) -> Result<(), String> {
         assert_enabled(&key.satellite_id)?;
-
         insert_page_view(key, page_view)?;
+
+        Ok(())
+    }
+
+    let mut errors: Vec<String> = Vec::new();
+
+    for (key, page_view) in page_views {
+        let result = insert(key, page_view);
+
+        match result {
+            Ok(_) => {}
+            Err(err) => errors.push(err),
+        }
+    }
+
+    if !errors.is_empty() {
+        return Err(errors);
     }
 
     Ok(())
@@ -141,11 +157,27 @@ fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<Track
 }
 
 #[update]
-fn set_track_events(track_events: Vec<(AnalyticKey, SetTrackEvent)>) -> Result<(), String> {
-    for (key, track_event) in track_events {
+fn set_track_events(track_events: Vec<(AnalyticKey, SetTrackEvent)>) -> Result<(), Vec<String>> {
+    fn insert(key: AnalyticKey, track_event: SetTrackEvent) -> Result<(), String> {
         assert_enabled(&key.satellite_id)?;
-
         insert_track_event(key, track_event)?;
+
+        Ok(())
+    }
+
+    let mut errors: Vec<String> = Vec::new();
+
+    for (key, track_event) in track_events {
+        let result = insert(key, track_event);
+
+        match result {
+            Ok(_) => {}
+            Err(err) => errors.push(err),
+        }
+    }
+
+    if !errors.is_empty() {
+        return Err(errors);
     }
 
     Ok(())

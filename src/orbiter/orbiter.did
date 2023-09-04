@@ -31,7 +31,7 @@ type PageView = record {
 };
 type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
 type Result = variant { Ok : PageView; Err : text };
-type Result_1 = variant { Ok; Err : text };
+type Result_1 = variant { Ok; Err : vec record { AnalyticKey; text } };
 type Result_2 = variant { Ok : TrackEvent; Err : text };
 type SatelliteConfig = record {
   updated_at : nat64;

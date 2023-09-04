@@ -72,7 +72,10 @@ export const idlFactory = ({ IDL }) => {
 		collected_at: IDL.Nat64
 	});
 	const Result = IDL.Variant({ Ok: PageView, Err: IDL.Text });
-	const Result_1 = IDL.Variant({ Ok: IDL.Null, Err: IDL.Text });
+	const Result_1 = IDL.Variant({
+		Ok: IDL.Null,
+		Err: IDL.Vec(IDL.Tuple(AnalyticKey, IDL.Text))
+	});
 	const SetSatelliteConfig = IDL.Record({
 		updated_at: IDL.Opt(IDL.Nat64),
 		enabled: IDL.Bool

@@ -5,6 +5,7 @@ use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, PageView, PageViewsStable, TrackEvent, TrackEventsStable};
 use ic_cdk::api::time;
+use shared::assert::assert_timestamp;
 use shared::utils::principal_equal;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
@@ -24,9 +25,18 @@ fn insert_page_view_impl(
 
     let current_page_view = db.get(&key);
 
-    // There is no timestamp assertion in the case of the Orbiter analytics.
-    // It's possible that the user refreshes the browser quickly, and as a result, the JS worker may send the same page again.
-    // To improve performance, we want to avoid forcing the worker to fetch entities again in such cases.
+    // Validate timestamp
+    match current_page_view.clone() {
+        None => (),
+        Some(current_page_view) => {
+            match assert_timestamp(page_view.updated_at, current_page_view.updated_at) {
+                Ok(_) => (),
+                Err(e) => {
+                    return Err(e);
+                }
+            }
+        }
+    }
 
     let now = time();
 
@@ -75,6 +85,19 @@ fn insert_track_event_impl(
     assert_track_event_length(&track_event)?;
 
     let current_track_event = db.get(&key);
+
+    // Validate timestamp
+    match current_track_event.clone() {
+        None => (),
+        Some(current_track_event) => {
+            match assert_timestamp(track_event.updated_at, current_track_event.updated_at) {
+                Ok(_) => (),
+                Err(e) => {
+                    return Err(e);
+                }
+            }
+        }
+    }
 
     // There is no timestamp assertion in the case of the Orbiter analytics.
     // It's possible that the user refreshes the browser quickly, and as a result, the JS worker may send the same page again.

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 	import SatelliteTopUp from '$lib/components/satellites/SatelliteTopUp.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

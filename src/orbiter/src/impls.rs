@@ -1,11 +1,13 @@
 use crate::constants::{
     METADATA_MAX_ELEMENTS, SERIALIZED_KEY_LENGTH, SERIALIZED_LONG_STRING_LENGTH,
-    SERIALIZED_METADATA_LENGTH, SERIALIZED_PRINCIPAL_LENGTH, SERIALIZED_STRING_LENGTH,
+    SERIALIZED_METADATA_LENGTH, SERIALIZED_PRINCIPAL_LENGTH, SERIALIZED_SHORT_STRING_LENGTH,
+    SERIALIZED_STRING_LENGTH,
 };
 use crate::memory::init_stable_state;
 use crate::serializers::{
-    bytes_to_key, bytes_to_long_string, bytes_to_metadata, bytes_to_principal, bytes_to_string,
-    key_to_bytes, long_string_to_bytes, metadata_to_bytes, principal_to_bytes, string_to_bytes,
+    bytes_to_key, bytes_to_long_string, bytes_to_metadata, bytes_to_principal,
+    bytes_to_short_string, bytes_to_string, key_to_bytes, long_string_to_bytes, metadata_to_bytes,
+    principal_to_bytes, short_string_to_bytes, string_to_bytes,
 };
 use crate::types::state::{
     AnalyticKey, HeapState, PageView, PageViewDevice, SatelliteConfigs, State, TrackEvent,
@@ -35,9 +37,10 @@ const TIMESTAMPS_LENGTH: usize = size_of::<u64>() * 3;
 // - referrer (Option<Long string>)
 // - device (2 * u16)
 // - user_agent (Option<String>)
-// - time_zone (String)
+// - time_zone (short String)
 // - collected_at + created_at + updated_at (3 * u64)
-const PAGE_VIEW_MAX_SIZE: usize = (SERIALIZED_STRING_LENGTH * 3)
+const PAGE_VIEW_MAX_SIZE: usize = (SERIALIZED_STRING_LENGTH * 2)
+    + SERIALIZED_SHORT_STRING_LENGTH
     + (SERIALIZED_LONG_STRING_LENGTH * 2)
     + TIMESTAMPS_LENGTH
     + (size_of::<u16>() * 2);
@@ -56,7 +59,7 @@ impl Storable for PageView {
         buf.extend(string_to_bytes(
             &self.user_agent.clone().unwrap_or("".to_string()),
         ));
-        buf.extend(string_to_bytes(&self.time_zone));
+        buf.extend(short_string_to_bytes(&self.time_zone));
         buf.extend(self.collected_at.to_be_bytes());
         buf.extend(self.created_at.to_be_bytes());
         buf.extend(self.updated_at.to_be_bytes());
@@ -119,12 +122,12 @@ impl Storable for PageView {
 
         index += SERIALIZED_STRING_LENGTH;
 
-        let time_zone = bytes_to_string(
-            TryFrom::try_from(&bytes[index..index + SERIALIZED_STRING_LENGTH])
+        let time_zone = bytes_to_short_string(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_SHORT_STRING_LENGTH])
                 .expect("Failed to deserialize time_zone"),
         );
 
-        index += SERIALIZED_STRING_LENGTH;
+        index += SERIALIZED_SHORT_STRING_LENGTH;
 
         let collected_at = u64::from_be_bytes(
             TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
@@ -171,15 +174,15 @@ impl BoundedStorable for PageView {
 // - name (String)
 // - collected_at + created_at + updated_at (3 * u64)
 // - metadata (2 * String) limited to TRACK_EVENT_METADATA_MAX_LENGTH entries
-const TRACK_EVENT_MAX_SIZE: usize = SERIALIZED_STRING_LENGTH
+const TRACK_EVENT_MAX_SIZE: usize = SERIALIZED_SHORT_STRING_LENGTH
     + TIMESTAMPS_LENGTH
-    + (SERIALIZED_STRING_LENGTH * 2 * METADATA_MAX_ELEMENTS);
+    + (SERIALIZED_SHORT_STRING_LENGTH * 2 * METADATA_MAX_ELEMENTS);
 
 impl Storable for TrackEvent {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = Vec::with_capacity(TRACK_EVENT_MAX_SIZE);
 
-        buf.extend(string_to_bytes(&self.name));
+        buf.extend(short_string_to_bytes(&self.name));
         buf.extend(metadata_to_bytes(&self.metadata));
         buf.extend(self.collected_at.to_be_bytes());
         buf.extend(self.created_at.to_be_bytes());
@@ -191,12 +194,12 @@ impl Storable for TrackEvent {
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
         let mut index = 0;
 
-        let name = bytes_to_string(
-            TryFrom::try_from(&bytes[0..SERIALIZED_STRING_LENGTH])
+        let name = bytes_to_short_string(
+            TryFrom::try_from(&bytes[0..SERIALIZED_SHORT_STRING_LENGTH])
                 .expect("Failed to deserialize name"),
         );
 
-        index += SERIALIZED_STRING_LENGTH;
+        index += SERIALIZED_SHORT_STRING_LENGTH;
 
         let metadata = bytes_to_metadata(
             TryFrom::try_from(&bytes[index..index + SERIALIZED_METADATA_LENGTH])

@@ -3,7 +3,7 @@ use crate::constants::{
     STRING_MAX_LENGTH,
 };
 use crate::memory::STATE;
-use crate::msg::{ERROR_BOT_CALL, ERROR_NOT_ENABLED_CALL};
+use crate::msg::{ERROR_BOT_CALL, ERROR_FEATURE_NOT_ENABLED};
 use crate::types::interface::{SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, SatelliteConfig};
 use isbot::Bots;
@@ -17,17 +17,17 @@ pub fn assert_enabled(satellite_id: &SatelliteId) -> Result<(), String> {
         config.cloned()
     });
 
-    // Per default analytics is enabled
+    // Enabling the analytics for a satellite is an opt-in feature
     match config {
         None => {}
         Some(config) => {
-            if !config.enabled {
-                return Err(ERROR_NOT_ENABLED_CALL.to_string());
+            if config.enabled {
+                return Ok(());
             }
         }
     }
 
-    Ok(())
+    Err(ERROR_FEATURE_NOT_ENABLED.to_string())
 }
 
 pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {

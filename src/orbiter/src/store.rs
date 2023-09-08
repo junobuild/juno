@@ -3,8 +3,12 @@ use crate::assert::{
 };
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
-use crate::types::state::{AnalyticKey, PageView, PageViewsStable, TrackEvent, TrackEventsStable};
+use crate::types::state::{
+    AnalyticKey, PageView, PageViewsStable, PageViewsStableDay, TrackEvent, TrackEventsStable,
+};
+use crate::utils::day;
 use ic_cdk::api::time;
+use ic_cdk::print;
 use shared::assert::assert_timestamp;
 use shared::utils::principal_equal;
 
@@ -17,13 +21,22 @@ pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<Page
 fn insert_page_view_impl(
     key: AnalyticKey,
     page_view: SetPageView,
-    db: &mut PageViewsStable,
+    state: &mut PageViewsStable,
 ) -> Result<PageView, String> {
     assert_bot(&page_view.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_page_view_length(&page_view)?;
 
-    let current_page_view = db.get(&key);
+    let d = day(&page_view.collected_at);
+    insert_page_view_day_impl(key, page_view, &mut state[d])
+}
+
+fn insert_page_view_day_impl(
+    key: AnalyticKey,
+    page_view: SetPageView,
+    state: &mut PageViewsStableDay,
+) -> Result<PageView, String> {
+    let current_page_view = state.get(&key);
 
     // Validate timestamp
     match current_page_view.clone() {
@@ -57,7 +70,7 @@ fn insert_page_view_impl(
         updated_at: now,
     };
 
-    db.insert(key.clone(), new_page_view.clone());
+    state.insert(key.clone(), new_page_view.clone());
 
     Ok(new_page_view.clone())
 }
@@ -132,7 +145,11 @@ fn get_page_views_impl(
     db: &PageViewsStable,
 ) -> Vec<(AnalyticKey, PageView)> {
     db.iter()
-        .filter(|(key, page_view)| filter_analytics(filter, key, page_view.collected_at))
+        .enumerate()
+        .filter(|(index, state)| filter_analytics_new(filter, index, state))
+        .flat_map(|(_, state)| {
+            state.iter().filter(|(key, page_view)| filter_analytics(filter, key, page_view.collected_at))
+        })
         .collect()
 }
 
@@ -147,6 +164,39 @@ fn get_track_events_impl(
     db.iter()
         .filter(|(key, track_event)| filter_analytics(filter, key, track_event.collected_at))
         .collect()
+}
+
+fn filter_analytics_new(
+    GetAnalytics {
+        from,
+        to,
+        satellite_id: _,
+    }: &GetAnalytics,
+    index: &usize,
+    state: &PageViewsStableDay,
+) -> bool {
+    // TODO: parameters
+    let from_day = match from {
+        None => 1,
+        Some(from) => day(from),
+    };
+
+    let to_day = match to {
+        None => state.len() as usize,
+        Some(to) => day(to),
+    };
+
+    let day = index + 1;
+
+    // TODO: David please...
+    // Values: 365 1 0 (only 1 is correct)
+    print(format!("{} {} {}", day, from_day, to_day));
+
+    if from_day < to_day {
+        return day >= from_day && day <= to_day;
+    }
+
+    day >= from_day || day <= to_day
 }
 
 fn filter_analytics(

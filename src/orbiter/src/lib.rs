@@ -10,6 +10,7 @@ mod serializers;
 mod store;
 mod types;
 mod upgrade;
+mod utils;
 
 use crate::assert::assert_enabled;
 use crate::config::store::{

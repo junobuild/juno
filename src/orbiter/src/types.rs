@@ -20,7 +20,9 @@ pub mod state {
     pub type Key = String;
     pub type SessionId = String;
 
-    pub type PageViewsStable = StableBTreeMap<AnalyticKey, PageView, Memory>;
+    pub type PageViewsStableDay = StableBTreeMap<AnalyticKey, PageView, Memory>;
+    pub type PageViewsStable = Vec<PageViewsStableDay>;
+
     pub type TrackEventsStable = StableBTreeMap<AnalyticKey, TrackEvent, Memory>;
 
     pub struct StableState {

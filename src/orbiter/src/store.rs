@@ -11,6 +11,7 @@ use ic_cdk::api::time;
 use ic_cdk::print;
 use shared::assert::assert_timestamp;
 use shared::utils::principal_equal;
+use crate::constants::YEAR_DAYS;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| {
@@ -28,6 +29,9 @@ fn insert_page_view_impl(
     assert_page_view_length(&page_view)?;
 
     let d = day(&page_view.collected_at);
+
+    print(format!("Insert day {}", d));
+
     insert_page_view_day_impl(key, page_view, &mut state[d])
 }
 
@@ -144,6 +148,9 @@ fn get_page_views_impl(
     filter: &GetAnalytics,
     db: &PageViewsStable,
 ) -> Vec<(AnalyticKey, PageView)> {
+
+    print(format!("Db length {}", db.len()));
+
     db.iter()
         .enumerate()
         .filter(|(index, state)| filter_analytics_new(filter, index, state))
@@ -182,14 +189,12 @@ fn filter_analytics_new(
     };
 
     let to_day = match to {
-        None => state.len() as usize,
+        None => YEAR_DAYS,
         Some(to) => day(to),
     };
 
     let day = index + 1;
 
-    // TODO: David please...
-    // Values: 365 1 0 (only 1 is correct)
     print(format!("{} {} {}", day, from_day, to_day));
 
     if from_day < to_day {

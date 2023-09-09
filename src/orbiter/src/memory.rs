@@ -4,13 +4,11 @@ use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
 use ic_stable_structures::DefaultMemoryImpl;
 use ic_stable_structures::StableBTreeMap;
 use std::cell::RefCell;
-
-// https://doc.servo.org/chrono/naive/struct.NaiveDate.html#method.ordinal
-const DAYS: usize = 366;
+use crate::constants::YEAR_DAYS;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
 const PAGE_VIEWS_INDEX: u8 = 1;
-const TRACK_EVENTS: MemoryId = MemoryId::new(2);
+const TRACK_EVENTS: MemoryId = MemoryId::new(YEAR_DAYS as u8 + 1);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -33,7 +31,7 @@ fn get_memory_track_events() -> Memory {
 
 pub fn init_stable_state() -> StableState {
     StableState {
-        page_views: [0; DAYS - 1]
+        page_views: [0; YEAR_DAYS]
             .iter()
             .map(|i| StableBTreeMap::init(get_memory_page_views(i)))
             .collect(),

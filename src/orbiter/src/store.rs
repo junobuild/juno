@@ -4,7 +4,8 @@ use crate::assert::{
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::state::{
-    AnalyticKey, PageView, PageViewsStable, PageViewsStableDay, TrackEvent, TrackEventsStable,
+    AnalyticKey, PageView, PageViewsStable, PageViewsStableMonth, TrackEvent, TrackEventsStable,
+    TrackEventsStableMonth,
 };
 use crate::utils::month;
 use ic_cdk::api::time;
@@ -27,17 +28,17 @@ fn insert_page_view_impl(
     assert_analytic_key_length(&key)?;
     assert_page_view_length(&page_view)?;
 
-    let d = month(&page_view.collected_at);
+    let collected_month = month(&page_view.collected_at);
 
-    print(format!("Insert day {}", d));
+    print(format!("Insert month page view {}", collected_month));
 
-    insert_page_view_day_impl(key, page_view, &mut state[d])
+    insert_page_view_month_impl(key, page_view, &mut state[collected_month])
 }
 
-fn insert_page_view_day_impl(
+fn insert_page_view_month_impl(
     key: AnalyticKey,
     page_view: SetPageView,
-    state: &mut PageViewsStableDay,
+    state: &mut PageViewsStableMonth,
 ) -> Result<PageView, String> {
     let current_page_view = state.get(&key);
 
@@ -94,13 +95,25 @@ pub fn insert_track_event(
 fn insert_track_event_impl(
     key: AnalyticKey,
     track_event: SetTrackEvent,
-    db: &mut TrackEventsStable,
+    state: &mut TrackEventsStable,
 ) -> Result<TrackEvent, String> {
     assert_bot(&track_event.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_track_event_length(&track_event)?;
 
-    let current_track_event = db.get(&key);
+    let collected_month = month(&track_event.collected_at);
+
+    print(format!("Insert month track event {}", collected_month));
+
+    insert_track_event_month_impl(key, track_event, &mut state[collected_month])
+}
+
+fn insert_track_event_month_impl(
+    key: AnalyticKey,
+    track_event: SetTrackEvent,
+    state: &mut TrackEventsStableMonth,
+) -> Result<TrackEvent, String> {
+    let current_track_event = state.get(&key);
 
     // Validate timestamp
     match current_track_event.clone() {
@@ -134,7 +147,7 @@ fn insert_track_event_impl(
         updated_at: now,
     };
 
-    db.insert(key.clone(), new_track_event.clone());
+    state.insert(key.clone(), new_track_event.clone());
 
     Ok(new_track_event.clone())
 }
@@ -151,8 +164,8 @@ fn get_page_views_impl(
         .iter()
         .enumerate()
         .filter(|(index, _)| filter_memory(filter, index))
-        .flat_map(|(_, state)| {
-            state
+        .flat_map(|(_, state_month)| {
+            state_month
                 .iter()
                 .filter(|(key, page_view)| filter_analytics(filter, key, page_view.collected_at))
         })
@@ -165,10 +178,17 @@ pub fn get_track_events(filter: &GetAnalytics) -> Vec<(AnalyticKey, TrackEvent)>
 
 fn get_track_events_impl(
     filter: &GetAnalytics,
-    db: &TrackEventsStable,
+    state: &TrackEventsStable,
 ) -> Vec<(AnalyticKey, TrackEvent)> {
-    db.iter()
-        .filter(|(key, track_event)| filter_analytics(filter, key, track_event.collected_at))
+    state
+        .iter()
+        .enumerate()
+        .filter(|(index, _)| filter_memory(filter, index))
+        .flat_map(|(_, state_month)| {
+            state_month.iter().filter(|(key, track_event)| {
+                filter_analytics(filter, key, track_event.collected_at)
+            })
+        })
         .collect()
 }
 

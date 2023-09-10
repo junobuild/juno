@@ -1,4 +1,3 @@
-use ic_cdk::print;
 use time::{Duration, OffsetDateTime};
 
 pub fn month(timestamp: &u64) -> usize {
@@ -9,8 +8,6 @@ pub fn month(timestamp: &u64) -> usize {
         + Duration::nanoseconds(nanos_remainder as i64);
 
     let month = date.month();
-
-    print(format!("Hello the month is: {:?} ", month));
 
     month as usize
 }

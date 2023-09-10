@@ -8,7 +8,7 @@ use std::cell::RefCell;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
 const PAGE_VIEWS_INDEX: u8 = 1;
-const TRACK_EVENTS: MemoryId = MemoryId::new(MONTHS as u8 + 1);
+const TRACK_EVENTS_INDEX: u8 = MONTHS + PAGE_VIEWS_INDEX;
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -25,8 +25,8 @@ fn get_memory_page_views(i: &u8) -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(PAGE_VIEWS_INDEX + i)))
 }
 
-fn get_memory_track_events() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(TRACK_EVENTS))
+fn get_memory_track_events(i: &u8) -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(TRACK_EVENTS_INDEX + i)))
 }
 
 pub fn init_stable_state() -> StableState {
@@ -35,6 +35,9 @@ pub fn init_stable_state() -> StableState {
             .iter()
             .map(|i| StableBTreeMap::init(get_memory_page_views(i)))
             .collect(),
-        track_events: StableBTreeMap::init(get_memory_track_events()),
+        track_events: [0; MONTHS as usize]
+            .iter()
+            .map(|i| StableBTreeMap::init(get_memory_track_events(i)))
+            .collect(),
     }
 }

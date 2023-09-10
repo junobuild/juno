@@ -33,11 +33,13 @@ pub fn init_stable_state() -> StableState {
     StableState {
         page_views: [0; MONTHS as usize]
             .iter()
-            .map(|i| StableBTreeMap::init(get_memory_page_views(i)))
+            .enumerate()
+            .map(|(i, _)| StableBTreeMap::init(get_memory_page_views(&u8::try_from(i).unwrap())))
             .collect(),
         track_events: [0; MONTHS as usize]
             .iter()
-            .map(|i| StableBTreeMap::init(get_memory_track_events(i)))
+            .enumerate()
+            .map(|(i, _)| StableBTreeMap::init(get_memory_track_events(&u8::try_from(i).unwrap())))
             .collect(),
     }
 }

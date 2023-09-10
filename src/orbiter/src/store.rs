@@ -9,7 +9,6 @@ use crate::types::state::{
 };
 use crate::utils::month;
 use ic_cdk::api::time;
-use ic_cdk::print;
 use shared::assert::assert_timestamp;
 use shared::utils::principal_equal;
 
@@ -29,10 +28,7 @@ fn insert_page_view_impl(
     assert_page_view_length(&page_view)?;
 
     let collected_month = month(&page_view.collected_at);
-
-    print(format!("Insert month page view {}", collected_month));
-
-    insert_page_view_month_impl(key, page_view, &mut state[collected_month])
+    insert_page_view_month_impl(key, page_view, &mut state[collected_month - 1])
 }
 
 fn insert_page_view_month_impl(
@@ -102,10 +98,7 @@ fn insert_track_event_impl(
     assert_track_event_length(&track_event)?;
 
     let collected_month = month(&track_event.collected_at);
-
-    print(format!("Insert month track event {}", collected_month));
-
-    insert_track_event_month_impl(key, track_event, &mut state[collected_month])
+    insert_track_event_month_impl(key, track_event, &mut state[collected_month - 1])
 }
 
 fn insert_track_event_month_impl(

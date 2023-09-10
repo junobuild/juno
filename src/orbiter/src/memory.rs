@@ -1,14 +1,14 @@
+use crate::constants::MONTHS;
 use crate::types::memory::Memory;
 use crate::types::state::{StableState, State};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
 use ic_stable_structures::DefaultMemoryImpl;
 use ic_stable_structures::StableBTreeMap;
 use std::cell::RefCell;
-use crate::constants::YEAR_DAYS;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
 const PAGE_VIEWS_INDEX: u8 = 1;
-const TRACK_EVENTS: MemoryId = MemoryId::new(YEAR_DAYS as u8 + 1);
+const TRACK_EVENTS: MemoryId = MemoryId::new(MONTHS as u8 + 1);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -31,7 +31,7 @@ fn get_memory_track_events() -> Memory {
 
 pub fn init_stable_state() -> StableState {
     StableState {
-        page_views: [0; YEAR_DAYS]
+        page_views: [0; MONTHS as usize]
             .iter()
             .map(|i| StableBTreeMap::init(get_memory_page_views(i)))
             .collect(),

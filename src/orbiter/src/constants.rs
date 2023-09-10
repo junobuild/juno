@@ -12,4 +12,4 @@ pub const SERIALIZED_KEY_LENGTH: usize = KEY_MAX_LENGTH + 1;
 pub const SERIALIZED_METADATA_LENGTH: usize =
     METADATA_MAX_ELEMENTS * (SERIALIZED_SHORT_STRING_LENGTH * 2);
 
-pub const YEAR_DAYS: usize = 366;
+pub const MONTHS: u8 = 12;

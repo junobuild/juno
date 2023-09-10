@@ -6,12 +6,11 @@ use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::state::{
     AnalyticKey, PageView, PageViewsStable, PageViewsStableDay, TrackEvent, TrackEventsStable,
 };
-use crate::utils::day;
+use crate::utils::month;
 use ic_cdk::api::time;
 use ic_cdk::print;
 use shared::assert::assert_timestamp;
 use shared::utils::principal_equal;
-use crate::constants::YEAR_DAYS;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| {
@@ -28,7 +27,7 @@ fn insert_page_view_impl(
     assert_analytic_key_length(&key)?;
     assert_page_view_length(&page_view)?;
 
-    let d = day(&page_view.collected_at);
+    let d = month(&page_view.collected_at);
 
     print(format!("Insert day {}", d));
 
@@ -146,16 +145,16 @@ pub fn get_page_views(filter: &GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
 
 fn get_page_views_impl(
     filter: &GetAnalytics,
-    db: &PageViewsStable,
+    state: &PageViewsStable,
 ) -> Vec<(AnalyticKey, PageView)> {
-
-    print(format!("Db length {}", db.len()));
-
-    db.iter()
+    state
+        .iter()
         .enumerate()
-        .filter(|(index, state)| filter_analytics_new(filter, index, state))
+        .filter(|(index, _)| filter_memory(filter, index))
         .flat_map(|(_, state)| {
-            state.iter().filter(|(key, page_view)| filter_analytics(filter, key, page_view.collected_at))
+            state
+                .iter()
+                .filter(|(key, page_view)| filter_analytics(filter, key, page_view.collected_at))
         })
         .collect()
 }
@@ -173,35 +172,30 @@ fn get_track_events_impl(
         .collect()
 }
 
-fn filter_analytics_new(
+fn filter_memory(
     GetAnalytics {
         from,
         to,
         satellite_id: _,
     }: &GetAnalytics,
     index: &usize,
-    state: &PageViewsStableDay,
 ) -> bool {
-    // TODO: parameters
-    let from_day = match from {
-        None => 1,
-        Some(from) => day(from),
-    };
+    let memory_month = index + 1;
 
-    let to_day = match to {
-        None => YEAR_DAYS,
-        Some(to) => day(to),
-    };
+    match from {
+        None => match to {
+            None => true,
+            Some(to) => memory_month <= month(to),
+        },
+        Some(from) => {
+            let from_month = month(from);
 
-    let day = index + 1;
-
-    print(format!("{} {} {}", day, from_day, to_day));
-
-    if from_day < to_day {
-        return day >= from_day && day <= to_day;
+            match to {
+                None => memory_month >= from_month,
+                Some(to) => memory_month >= from_month && memory_month <= month(to),
+            }
+        }
     }
-
-    day >= from_day || day <= to_day
 }
 
 fn filter_analytics(

@@ -41,7 +41,7 @@
 				...acc,
 				[satellite.satellite_id.toText()]: {
 					name: satelliteName(satellite),
-					enabled: config?.[1].enabled ?? true,
+					enabled: config?.[1].enabled ?? false,
 					config: config?.[1]
 				}
 			};

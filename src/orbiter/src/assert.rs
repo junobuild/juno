@@ -1,8 +1,9 @@
 use crate::constants::{
-    KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, STRING_MAX_LENGTH,
+    KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, SHORT_STRING_MAX_LENGTH,
+    STRING_MAX_LENGTH,
 };
 use crate::memory::STATE;
-use crate::msg::{ERROR_BOT_CALL, ERROR_NOT_ENABLED_CALL};
+use crate::msg::{ERROR_BOT_CALL, ERROR_FEATURE_NOT_ENABLED};
 use crate::types::interface::{SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, SatelliteConfig};
 use isbot::Bots;
@@ -16,17 +17,17 @@ pub fn assert_enabled(satellite_id: &SatelliteId) -> Result<(), String> {
         config.cloned()
     });
 
-    // Per default analytics is enabled
+    // Enabling the analytics for a satellite is an opt-in feature
     match config {
         None => {}
         Some(config) => {
-            if !config.enabled {
-                return Err(ERROR_NOT_ENABLED_CALL.to_string());
+            if config.enabled {
+                return Ok(());
             }
         }
     }
 
-    Ok(())
+    Err(ERROR_FEATURE_NOT_ENABLED.to_string())
 }
 
 pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
@@ -48,10 +49,10 @@ pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
 }
 
 pub fn assert_track_event_length(track_event: &SetTrackEvent) -> Result<(), String> {
-    if track_event.name.len() > STRING_MAX_LENGTH {
+    if track_event.name.len() > SHORT_STRING_MAX_LENGTH {
         return Err(format!(
             "Track event name {} is longer than {}.",
-            track_event.name, STRING_MAX_LENGTH
+            track_event.name, SHORT_STRING_MAX_LENGTH
         ));
     }
 
@@ -66,17 +67,17 @@ pub fn assert_track_event_length(track_event: &SetTrackEvent) -> Result<(), Stri
             }
 
             for (key, value) in metadata.iter() {
-                if key.len() > STRING_MAX_LENGTH {
+                if key.len() > SHORT_STRING_MAX_LENGTH {
                     return Err(format!(
                         "Track event metadata key {} is longer than {}.",
-                        key, STRING_MAX_LENGTH
+                        key, SHORT_STRING_MAX_LENGTH
                     ));
                 }
 
-                if value.len() > STRING_MAX_LENGTH {
+                if value.len() > SHORT_STRING_MAX_LENGTH {
                     return Err(format!(
                         "Track event metadata value {} is longer than {}.",
-                        value, STRING_MAX_LENGTH
+                        value, SHORT_STRING_MAX_LENGTH
                     ));
                 }
             }
@@ -125,10 +126,10 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
         }
     }
 
-    if page_view.time_zone.len() > STRING_MAX_LENGTH {
+    if page_view.time_zone.len() > SHORT_STRING_MAX_LENGTH {
         return Err(format!(
             "Page event time_zone {} is longer than {}.",
-            page_view.time_zone, STRING_MAX_LENGTH
+            page_view.time_zone, SHORT_STRING_MAX_LENGTH
         ));
     }
 

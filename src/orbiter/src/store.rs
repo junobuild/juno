@@ -6,7 +6,7 @@ use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, PageView, PageViewsStable, TrackEvent, TrackEventsStable};
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
-use shared::utils::principal_equal;
+use std::ops::RangeBounds;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| {
@@ -52,7 +52,6 @@ fn insert_page_view_impl(
         device: page_view.device,
         user_agent: page_view.user_agent,
         time_zone: page_view.time_zone,
-        collected_at: page_view.collected_at,
         created_at,
         updated_at: now,
     };
@@ -113,7 +112,6 @@ fn insert_track_event_impl(
     let new_track_event: TrackEvent = TrackEvent {
         name: track_event.name,
         metadata: track_event.metadata,
-        collected_at: track_event.collected_at,
         created_at,
         updated_at: now,
     };
@@ -129,11 +127,9 @@ pub fn get_page_views(filter: &GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
 
 fn get_page_views_impl(
     filter: &GetAnalytics,
-    db: &PageViewsStable,
+    state: &PageViewsStable,
 ) -> Vec<(AnalyticKey, PageView)> {
-    db.iter()
-        .filter(|(key, page_view)| filter_analytics(filter, key, page_view.collected_at))
-        .collect()
+    state.range(filter_analytics(filter)).collect()
 }
 
 pub fn get_track_events(filter: &GetAnalytics) -> Vec<(AnalyticKey, TrackEvent)> {
@@ -142,11 +138,9 @@ pub fn get_track_events(filter: &GetAnalytics) -> Vec<(AnalyticKey, TrackEvent)>
 
 fn get_track_events_impl(
     filter: &GetAnalytics,
-    db: &TrackEventsStable,
+    state: &TrackEventsStable,
 ) -> Vec<(AnalyticKey, TrackEvent)> {
-    db.iter()
-        .filter(|(key, track_event)| filter_analytics(filter, key, track_event.collected_at))
-        .collect()
+    state.range(filter_analytics(filter)).collect()
 }
 
 fn filter_analytics(
@@ -155,23 +149,20 @@ fn filter_analytics(
         to,
         satellite_id,
     }: &GetAnalytics,
-    key: &AnalyticKey,
-    collected_at: u64,
-) -> bool {
-    let valid_key = match satellite_id {
-        None => true,
-        Some(satellite_id) => principal_equal(key.satellite_id, *satellite_id),
+) -> impl RangeBounds<AnalyticKey> {
+    let start_key = AnalyticKey {
+        collected_at: from.unwrap_or(0),
+        satellite_id: satellite_id.clone(),
+        key: "".to_string(),
+        session_id: "".to_string(),
     };
 
-    let valid_from = match from {
-        None => true,
-        Some(from) => collected_at >= *from,
+    let end_key = AnalyticKey {
+        collected_at: to.unwrap_or(0),
+        satellite_id: satellite_id.clone(),
+        key: "".to_string(),
+        session_id: "".to_string(),
     };
 
-    let valid_to = match to {
-        None => true,
-        Some(to) => collected_at <= *to,
-    };
-
-    valid_key && valid_from && valid_to
+    start_key..end_key
 }

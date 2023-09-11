@@ -38,7 +38,8 @@ pub mod state {
 
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticKey {
-        pub satellite_id: SatelliteId,
+        pub collected_at: u64,
+        pub satellite_id: Option<SatelliteId>,
         pub key: Key,
         pub session_id: SessionId,
     }
@@ -51,7 +52,6 @@ pub mod state {
         pub device: PageViewDevice,
         pub user_agent: Option<String>,
         pub time_zone: String,
-        pub collected_at: u64,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -66,7 +66,6 @@ pub mod state {
     pub struct TrackEvent {
         pub name: String,
         pub metadata: Option<Metadata>,
-        pub collected_at: u64,
         pub created_at: u64,
         pub updated_at: u64,
     }

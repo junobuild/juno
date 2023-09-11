@@ -9,16 +9,28 @@ use shared::types::state::Metadata;
 /// Principal
 
 // Source: https://forum.dfinity.org/t/convert-principal-to-vec-29-bytes-length/22468/3
-pub fn principal_to_bytes(p: &Principal) -> [u8; SERIALIZED_PRINCIPAL_LENGTH] {
+pub fn principal_to_bytes(p: &Option<Principal>) -> [u8; SERIALIZED_PRINCIPAL_LENGTH] {
     let mut bytes: [u8; SERIALIZED_PRINCIPAL_LENGTH] = [0; SERIALIZED_PRINCIPAL_LENGTH];
-    let p_bytes: &[u8] = p.as_slice();
-    bytes[0] = p_bytes.len() as u8;
+    let p_bytes: &[u8] = match p {
+        None => &[0; (SERIALIZED_PRINCIPAL_LENGTH - 1)],
+        Some(p) => p.as_slice(),
+    };
+    bytes[0] = match p {
+        None => 0,
+        Some(_) => p_bytes.len() as u8,
+    };
     bytes[1..p_bytes.len() + 1].copy_from_slice(p_bytes);
     bytes
 }
 
-pub fn bytes_to_principal(bytes: &[u8; SERIALIZED_PRINCIPAL_LENGTH]) -> Principal {
-    Principal::from_slice(&bytes[1..1 + bytes[0] as usize])
+pub fn bytes_to_principal(bytes: &[u8; SERIALIZED_PRINCIPAL_LENGTH]) -> Option<Principal> {
+    let length = bytes[0] as usize;
+
+    if length == 0 {
+        return None;
+    }
+
+    Some(Principal::from_slice(&bytes[1..1 + length]))
 }
 
 /// String 36 max length

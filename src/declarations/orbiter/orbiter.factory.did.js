@@ -67,8 +67,7 @@ export const idlFactory = ({ IDL }) => {
 		time_zone: IDL.Text,
 		href: IDL.Text,
 		device: PageViewDevice,
-		user_agent: IDL.Opt(IDL.Text),
-		collected_at: IDL.Nat64
+		user_agent: IDL.Opt(IDL.Text)
 	});
 	const Result = IDL.Variant({ Ok: PageView, Err: IDL.Text });
 	const Result_1 = IDL.Variant({
@@ -83,8 +82,7 @@ export const idlFactory = ({ IDL }) => {
 		updated_at: IDL.Opt(IDL.Nat64),
 		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
 		name: IDL.Text,
-		user_agent: IDL.Opt(IDL.Text),
-		collected_at: IDL.Nat64
+		user_agent: IDL.Opt(IDL.Text)
 	});
 	const Result_2 = IDL.Variant({ Ok: TrackEvent, Err: IDL.Text });
 	return IDL.Service({

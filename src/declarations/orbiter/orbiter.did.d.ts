@@ -65,7 +65,6 @@ export interface SetPageView {
 	href: string;
 	device: PageViewDevice;
 	user_agent: [] | [string];
-	collected_at: bigint;
 }
 export interface SetSatelliteConfig {
 	updated_at: [] | [bigint];
@@ -76,7 +75,6 @@ export interface SetTrackEvent {
 	metadata: [] | [Array<[string, string]>];
 	name: string;
 	user_agent: [] | [string];
-	collected_at: bigint;
 }
 export interface TrackEvent {
 	updated_at: bigint;

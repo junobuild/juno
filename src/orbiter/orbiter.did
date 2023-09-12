@@ -1,7 +1,8 @@
 type AnalyticKey = record {
   key : text;
   session_id : text;
-  satellite_id : principal;
+  satellite_id : opt principal;
+  collected_at : nat64;
 };
 type Controller = record {
   updated_at : nat64;
@@ -27,7 +28,6 @@ type PageView = record {
   created_at : nat64;
   device : PageViewDevice;
   user_agent : opt text;
-  collected_at : nat64;
 };
 type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
 type Result = variant { Ok : PageView; Err : text };
@@ -70,7 +70,6 @@ type TrackEvent = record {
   metadata : opt vec record { text; text };
   name : text;
   created_at : nat64;
-  collected_at : nat64;
 };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> (

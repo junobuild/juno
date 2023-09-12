@@ -151,14 +151,14 @@ fn filter_analytics(
     }: &GetAnalytics,
 ) -> impl RangeBounds<AnalyticKey> {
     let start_key = AnalyticKey {
-        collected_at: from.unwrap_or(0),
+        collected_at: from.unwrap_or(u64::MIN),
         satellite_id: satellite_id.clone(),
         key: "".to_string(),
         session_id: "".to_string(),
     };
 
     let end_key = AnalyticKey {
-        collected_at: to.unwrap_or(0),
+        collected_at: to.unwrap_or(u64::MAX),
         satellite_id: satellite_id.clone(),
         key: "".to_string(),
         session_id: "".to_string(),

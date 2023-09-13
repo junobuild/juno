@@ -14,7 +14,7 @@ use crate::types::state::{
     State, TrackEvent,
 };
 use ic_stable_structures::{BoundedStorable, Storable};
-use shared::types::state::Controllers;
+use shared::types::state::{Controllers, SatelliteId};
 use std::borrow::Cow;
 use std::mem::size_of;
 
@@ -362,4 +362,16 @@ impl Storable for AnalyticSatelliteKey {
 impl BoundedStorable for AnalyticSatelliteKey {
     const MAX_SIZE: u32 = ANALYTIC_KEY_MAX_SIZE as u32;
     const IS_FIXED_SIZE: bool = false;
+}
+
+/// Key conversion
+
+impl AnalyticSatelliteKey {
+    pub fn from_key(key: &AnalyticKey, satellite_id: &SatelliteId) -> Self {
+        AnalyticSatelliteKey {
+            satellite_id: satellite_id.clone(),
+            collected_at: key.collected_at,
+            key: key.key.clone(),
+        }
+    }
 }

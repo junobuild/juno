@@ -5,28 +5,29 @@ use crate::assert::{
 use crate::constants::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
-use crate::types::state::{AnalyticKey, PageView, PageViewsStable, TrackEvent, TrackEventsStable};
+use crate::types::state::{
+    AnalyticKey, AnalyticSatelliteKey, PageView, PageViewsStable, StableState, TrackEvent,
+    TrackEventsStable,
+};
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
 use std::ops::RangeBounds;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
-    STATE.with(|state| {
-        insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable.page_views)
-    })
+    STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))
 }
 
 fn insert_page_view_impl(
     key: AnalyticKey,
     page_view: SetPageView,
-    db: &mut PageViewsStable,
+    state: &mut StableState,
 ) -> Result<PageView, String> {
     assert_bot(&page_view.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_page_view_length(&page_view)?;
     assert_session_id_length(&page_view.session_id)?;
 
-    let current_page_view = db.get(&key);
+    let current_page_view = state.page_views.get(&key);
 
     // Validate timestamp
     match current_page_view.clone() {
@@ -82,7 +83,12 @@ fn insert_page_view_impl(
         updated_at: now,
     };
 
-    db.insert(key.clone(), new_page_view.clone());
+    state.page_views.insert(key.clone(), new_page_view.clone());
+
+    state.satellites_page_views.insert(
+        AnalyticSatelliteKey::from_key(&key, &page_view.satellite_id),
+        key.clone(),
+    );
 
     Ok(new_page_view.clone())
 }
@@ -91,26 +97,20 @@ pub fn insert_track_event(
     key: AnalyticKey,
     track_event: SetTrackEvent,
 ) -> Result<TrackEvent, String> {
-    STATE.with(|state| {
-        insert_track_event_impl(
-            key,
-            track_event,
-            &mut state.borrow_mut().stable.track_events,
-        )
-    })
+    STATE.with(|state| insert_track_event_impl(key, track_event, &mut state.borrow_mut().stable))
 }
 
 fn insert_track_event_impl(
     key: AnalyticKey,
     track_event: SetTrackEvent,
-    db: &mut TrackEventsStable,
+    state: &mut StableState,
 ) -> Result<TrackEvent, String> {
     assert_bot(&track_event.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_track_event_length(&track_event)?;
     assert_session_id_length(&track_event.session_id)?;
 
-    let current_track_event = db.get(&key);
+    let current_track_event = state.track_events.get(&key);
 
     // Validate timestamp
     match current_track_event.clone() {
@@ -166,7 +166,14 @@ fn insert_track_event_impl(
         updated_at: now,
     };
 
-    db.insert(key.clone(), new_track_event.clone());
+    state
+        .track_events
+        .insert(key.clone(), new_track_event.clone());
+
+    state.satellites_track_events.insert(
+        AnalyticSatelliteKey::from_key(&key, &track_event.satellite_id),
+        key.clone(),
+    );
 
     Ok(new_track_event.clone())
 }

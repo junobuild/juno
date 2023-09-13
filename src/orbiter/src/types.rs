@@ -23,16 +23,15 @@ pub mod state {
     pub type PageViewsStable = StableBTreeMap<AnalyticKey, PageView, Memory>;
     pub type TrackEventsStable = StableBTreeMap<AnalyticKey, TrackEvent, Memory>;
 
-    pub type PageViewsSatellitesStable = StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
-    pub type TrackEventsSatellitesStable =
+    pub type SatellitesPageViewsStable = StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
+    pub type SatellitesTrackEventsStable =
         StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
 
     pub struct StableState {
         pub page_views: PageViewsStable,
         pub track_events: TrackEventsStable,
-
-        pub satellites_page_views: PageViewsSatellitesStable,
-        pub satellites_track_events: TrackEventsSatellitesStable,
+        pub satellites_page_views: SatellitesPageViewsStable,
+        pub satellites_track_events: SatellitesTrackEventsStable,
     }
 
     pub type SatelliteConfigs = HashMap<SatelliteId, SatelliteConfig>;

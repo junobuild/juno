@@ -8,6 +8,7 @@ use crate::types::interface::{SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, SatelliteConfig};
 use isbot::Bots;
 use shared::types::state::SatelliteId;
+use shared::utils::principal_not_equal;
 
 pub fn assert_enabled(satellite_id: &SatelliteId) -> Result<(), String> {
     let config: Option<SatelliteConfig> = STATE.with(|state| {
@@ -161,8 +162,23 @@ pub fn assert_session_id(
 ) -> Result<(), String> {
     if user_session_id != current_session_id {
         return Err(format!(
-            "Session ID do not match ({} - {})",
+            "Session IDs do not match ({} - {})",
             current_session_id, user_session_id
+        ));
+    }
+
+    Ok(())
+}
+
+pub fn assert_satellite_id(
+    user_satellite_id: SatelliteId,
+    current_satellite_id: SatelliteId,
+) -> Result<(), String> {
+    if principal_not_equal(user_satellite_id, current_satellite_id) {
+        return Err(format!(
+            "Satellite IDs do not match ({} - {})",
+            user_satellite_id.to_text(),
+            current_satellite_id.to_text()
         ));
     }
 

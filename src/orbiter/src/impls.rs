@@ -10,7 +10,8 @@ use crate::serializers::{
     principal_to_bytes, short_string_to_bytes, string_to_bytes,
 };
 use crate::types::state::{
-    AnalyticKey, HeapState, PageView, PageViewDevice, SatelliteConfigs, State, TrackEvent,
+    AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, PageViewDevice, SatelliteConfigs,
+    State, TrackEvent,
 };
 use ic_stable_structures::{BoundedStorable, Storable};
 use shared::types::state::Controllers;
@@ -41,11 +42,13 @@ const TIMESTAMPS_LENGTH: usize = TIMESTAMP_LENGTH * 2;
 // - device (2 * u16)
 // - user_agent (Option<String>)
 // - time_zone (short String)
+// - Principal to bytes (30 because a principal is max 29 bytes and one byte to save effective length)
 // - session_id (SERIALIZED_KEY_LENGTH)
 // - created_at + updated_at (2 * u64)
 const PAGE_VIEW_MAX_SIZE: usize = (SERIALIZED_STRING_LENGTH * 2)
     + SERIALIZED_SHORT_STRING_LENGTH
     + (SERIALIZED_LONG_STRING_LENGTH * 2)
+    + SERIALIZED_PRINCIPAL_LENGTH
     + SERIALIZED_KEY_LENGTH
     + TIMESTAMPS_LENGTH
     + (size_of::<u16>() * 2);
@@ -65,6 +68,7 @@ impl Storable for PageView {
             &self.user_agent.clone().unwrap_or("".to_string()),
         ));
         buf.extend(short_string_to_bytes(&self.time_zone));
+        buf.extend(principal_to_bytes(&self.satellite_id));
         buf.extend(key_to_bytes(&self.session_id));
         buf.extend(self.created_at.to_be_bytes());
         buf.extend(self.updated_at.to_be_bytes());
@@ -134,6 +138,13 @@ impl Storable for PageView {
 
         index += SERIALIZED_SHORT_STRING_LENGTH;
 
+        let satellite_id = bytes_to_principal(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_PRINCIPAL_LENGTH])
+                .expect("Failed to deserialize satellite_id"),
+        );
+
+        index += SERIALIZED_PRINCIPAL_LENGTH;
+
         let session_id = bytes_to_key(
             TryFrom::try_from(&bytes[index..index + SERIALIZED_KEY_LENGTH])
                 .expect("Failed to deserialize session_id"),
@@ -142,14 +153,14 @@ impl Storable for PageView {
         index += SERIALIZED_KEY_LENGTH;
 
         let created_at = u64::from_be_bytes(
-            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+            TryFrom::try_from(&bytes[index..index + TIMESTAMP_LENGTH])
                 .expect("Failed to deserialize created_at"),
         );
 
-        index += size_of::<u64>();
+        index += TIMESTAMP_LENGTH;
 
         let updated_at = u64::from_be_bytes(
-            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+            TryFrom::try_from(&bytes[index..index + TIMESTAMP_LENGTH])
                 .expect("Failed to deserialize updated_at"),
         );
 
@@ -163,6 +174,7 @@ impl Storable for PageView {
             },
             user_agent: user_agent_opt,
             time_zone,
+            satellite_id,
             session_id,
             created_at,
             updated_at,
@@ -177,11 +189,13 @@ impl BoundedStorable for PageView {
 
 // Size of TrackEvent:
 // - name (String)
+// - metadata (2 * String) limited to TRACK_EVENT_METADATA_MAX_LENGTH entries
+// - Principal to bytes (30 because a principal is max 29 bytes and one byte to save effective length)
 // - session_id (SERIALIZED_KEY_LENGTH)
 // - created_at + updated_at (2 * u64)
-// - metadata (2 * String) limited to TRACK_EVENT_METADATA_MAX_LENGTH entries
 const TRACK_EVENT_MAX_SIZE: usize = SERIALIZED_SHORT_STRING_LENGTH
     + SERIALIZED_KEY_LENGTH
+    + SERIALIZED_PRINCIPAL_LENGTH
     + TIMESTAMPS_LENGTH
     + (SERIALIZED_SHORT_STRING_LENGTH * 2 * METADATA_MAX_ELEMENTS);
 
@@ -191,6 +205,7 @@ impl Storable for TrackEvent {
 
         buf.extend(short_string_to_bytes(&self.name));
         buf.extend(metadata_to_bytes(&self.metadata));
+        buf.extend(principal_to_bytes(&self.satellite_id));
         buf.extend(key_to_bytes(&self.session_id));
         buf.extend(self.created_at.to_be_bytes());
         buf.extend(self.updated_at.to_be_bytes());
@@ -215,6 +230,13 @@ impl Storable for TrackEvent {
 
         index += SERIALIZED_METADATA_LENGTH;
 
+        let satellite_id = bytes_to_principal(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_PRINCIPAL_LENGTH])
+                .expect("Failed to deserialize satellite_id"),
+        );
+
+        index += SERIALIZED_PRINCIPAL_LENGTH;
+
         let session_id = bytes_to_key(
             TryFrom::try_from(&bytes[index..index + SERIALIZED_KEY_LENGTH])
                 .expect("Failed to deserialize session_id"),
@@ -223,20 +245,21 @@ impl Storable for TrackEvent {
         index += SERIALIZED_KEY_LENGTH;
 
         let created_at = u64::from_be_bytes(
-            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+            TryFrom::try_from(&bytes[index..index + TIMESTAMP_LENGTH])
                 .expect("Failed to deserialize created_at"),
         );
 
-        index += size_of::<u64>();
+        index += TIMESTAMP_LENGTH;
 
         let updated_at = u64::from_be_bytes(
-            TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
+            TryFrom::try_from(&bytes[index..index + TIMESTAMP_LENGTH])
                 .expect("Failed to deserialize updated_at"),
         );
 
         TrackEvent {
             name,
             metadata,
+            satellite_id,
             session_id,
             created_at,
             updated_at,
@@ -251,17 +274,14 @@ impl BoundedStorable for TrackEvent {
 
 // Size of AnalyticKey:
 // - collected_at
-// - Principal to bytes (30 because a principal is max 29 bytes and one byte to save effective length)
 // - key (String max length KEY_MAX_LENGTH)
-const ANALYTIC_KEY_MAX_SIZE: usize =
-    TIMESTAMP_LENGTH + SERIALIZED_KEY_LENGTH + SERIALIZED_PRINCIPAL_LENGTH;
+const ANALYTIC_KEY_MAX_SIZE: usize = TIMESTAMP_LENGTH + SERIALIZED_KEY_LENGTH;
 
 impl Storable for AnalyticKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         let mut buf = Vec::with_capacity(ANALYTIC_KEY_MAX_SIZE);
 
         buf.extend(self.collected_at.to_be_bytes());
-        buf.extend(principal_to_bytes(&self.satellite_id));
         buf.extend(key_to_bytes(&self.key));
 
         Cow::Owned(buf)
@@ -271,11 +291,46 @@ impl Storable for AnalyticKey {
         let mut index = 0;
 
         let collected_at = u64::from_be_bytes(
-            TryFrom::try_from(&bytes[0..size_of::<u64>()])
+            TryFrom::try_from(&bytes[0..TIMESTAMP_LENGTH])
                 .expect("Failed to deserialize collected_at"),
         );
 
-        index += size_of::<u64>();
+        index += TIMESTAMP_LENGTH;
+
+        let key = bytes_to_key(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_KEY_LENGTH])
+                .expect("Failed to deserialize key"),
+        );
+
+        AnalyticKey { collected_at, key }
+    }
+}
+
+impl BoundedStorable for AnalyticKey {
+    const MAX_SIZE: u32 = ANALYTIC_KEY_MAX_SIZE as u32;
+    const IS_FIXED_SIZE: bool = false;
+}
+
+// Size of AnalyticSatelliteKey:
+// - Principal to bytes (30 because a principal is max 29 bytes and one byte to save effective length)
+// - collected_at
+// - key (String max length KEY_MAX_LENGTH)
+const ANALYTIC_SATELLITE_KEY_MAX_SIZE: usize =
+    SERIALIZED_PRINCIPAL_LENGTH + TIMESTAMP_LENGTH + SERIALIZED_KEY_LENGTH;
+
+impl Storable for AnalyticSatelliteKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        let mut buf = Vec::with_capacity(ANALYTIC_SATELLITE_KEY_MAX_SIZE);
+
+        buf.extend(principal_to_bytes(&self.satellite_id));
+        buf.extend(self.collected_at.to_be_bytes());
+        buf.extend(key_to_bytes(&self.key));
+
+        Cow::Owned(buf)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        let mut index = 0;
 
         let satellite_id = bytes_to_principal(
             TryFrom::try_from(&bytes[index..index + SERIALIZED_PRINCIPAL_LENGTH])
@@ -284,20 +339,27 @@ impl Storable for AnalyticKey {
 
         index += SERIALIZED_PRINCIPAL_LENGTH;
 
+        let collected_at = u64::from_be_bytes(
+            TryFrom::try_from(&bytes[0..TIMESTAMP_LENGTH])
+                .expect("Failed to deserialize collected_at"),
+        );
+
+        index += TIMESTAMP_LENGTH;
+
         let key = bytes_to_key(
             TryFrom::try_from(&bytes[index..index + SERIALIZED_KEY_LENGTH])
                 .expect("Failed to deserialize key"),
         );
 
-        AnalyticKey {
-            collected_at,
+        AnalyticSatelliteKey {
             satellite_id,
+            collected_at,
             key,
         }
     }
 }
 
-impl BoundedStorable for AnalyticKey {
+impl BoundedStorable for AnalyticSatelliteKey {
     const MAX_SIZE: u32 = ANALYTIC_KEY_MAX_SIZE as u32;
     const IS_FIXED_SIZE: bool = false;
 }

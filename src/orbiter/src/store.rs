@@ -1,6 +1,6 @@
 use crate::assert::{
-    assert_analytic_key_length, assert_bot, assert_page_view_length, assert_session_id,
-    assert_session_id_length, assert_track_event_length,
+    assert_analytic_key_length, assert_bot, assert_page_view_length, assert_satellite_id,
+    assert_session_id, assert_session_id_length, assert_track_event_length,
 };
 use crate::constants::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use crate::memory::STATE;
@@ -49,6 +49,14 @@ fn insert_page_view_impl(
         }
     }
 
+    // Validate satellite id
+    match current_page_view.clone() {
+        None => (),
+        Some(current_page_view) => {
+            assert_satellite_id(page_view.satellite_id, current_page_view.satellite_id)?;
+        }
+    }
+
     let now = time();
 
     let created_at: u64 = match current_page_view.clone() {
@@ -68,6 +76,7 @@ fn insert_page_view_impl(
         device: page_view.device,
         user_agent: page_view.user_agent,
         time_zone: page_view.time_zone,
+        satellite_id: page_view.satellite_id,
         session_id,
         created_at,
         updated_at: now,
@@ -124,6 +133,14 @@ fn insert_track_event_impl(
         }
     }
 
+    // Validate satellite id
+    match current_track_event.clone() {
+        None => (),
+        Some(current_track_event) => {
+            assert_satellite_id(track_event.satellite_id, current_track_event.satellite_id)?;
+        }
+    }
+
     // There is no timestamp assertion in the case of the Orbiter analytics.
     // It's possible that the user refreshes the browser quickly, and as a result, the JS worker may send the same page again.
     // To improve performance, we want to avoid forcing the worker to fetch entities again in such cases.
@@ -143,8 +160,9 @@ fn insert_track_event_impl(
     let new_track_event: TrackEvent = TrackEvent {
         name: track_event.name,
         metadata: track_event.metadata,
-        created_at,
+        satellite_id: track_event.satellite_id,
         session_id,
+        created_at,
         updated_at: now,
     };
 
@@ -179,18 +197,16 @@ fn filter_analytics(
     GetAnalytics {
         from,
         to,
-        satellite_id,
+        satellite_id: _,
     }: &GetAnalytics,
 ) -> impl RangeBounds<AnalyticKey> {
     let start_key = AnalyticKey {
         collected_at: from.unwrap_or(u64::MIN),
-        satellite_id: satellite_id.unwrap_or(PRINCIPAL_MIN),
         key: "".to_string(),
     };
 
     let end_key = AnalyticKey {
         collected_at: to.unwrap_or(u64::MAX),
-        satellite_id: satellite_id.unwrap_or(PRINCIPAL_MAX),
         key: "".to_string(),
     };
 

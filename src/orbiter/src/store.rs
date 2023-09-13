@@ -1,5 +1,6 @@
 use crate::assert::{
-    assert_analytic_key_length, assert_bot, assert_page_view_length, assert_track_event_length,
+    assert_analytic_key_length, assert_bot, assert_page_view_length, assert_session_id,
+    assert_session_id_length, assert_track_event_length,
 };
 use crate::constants::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use crate::memory::STATE;
@@ -23,6 +24,7 @@ fn insert_page_view_impl(
     assert_bot(&page_view.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_page_view_length(&page_view)?;
+    assert_session_id_length(&page_view.session_id)?;
 
     let current_page_view = db.get(&key);
 
@@ -39,11 +41,24 @@ fn insert_page_view_impl(
         }
     }
 
+    // Validate session id
+    match current_page_view.clone() {
+        None => (),
+        Some(current_page_view) => {
+            assert_session_id(&page_view.session_id, &current_page_view.session_id)?;
+        }
+    }
+
     let now = time();
 
-    let created_at: u64 = match current_page_view {
+    let created_at: u64 = match current_page_view.clone() {
         None => now,
         Some(current_page_view) => current_page_view.created_at,
+    };
+
+    let session_id: String = match current_page_view.clone() {
+        None => page_view.session_id.clone(),
+        Some(current_page_view) => current_page_view.session_id,
     };
 
     let new_page_view: PageView = PageView {
@@ -53,6 +68,7 @@ fn insert_page_view_impl(
         device: page_view.device,
         user_agent: page_view.user_agent,
         time_zone: page_view.time_zone,
+        session_id,
         created_at,
         updated_at: now,
     };
@@ -83,6 +99,7 @@ fn insert_track_event_impl(
     assert_bot(&track_event.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_track_event_length(&track_event)?;
+    assert_session_id_length(&track_event.session_id)?;
 
     let current_track_event = db.get(&key);
 
@@ -99,21 +116,35 @@ fn insert_track_event_impl(
         }
     }
 
+    // Validate session id
+    match current_track_event.clone() {
+        None => (),
+        Some(current_track_event) => {
+            assert_session_id(&track_event.session_id, &current_track_event.session_id)?;
+        }
+    }
+
     // There is no timestamp assertion in the case of the Orbiter analytics.
     // It's possible that the user refreshes the browser quickly, and as a result, the JS worker may send the same page again.
     // To improve performance, we want to avoid forcing the worker to fetch entities again in such cases.
 
     let now = time();
 
-    let created_at: u64 = match current_track_event {
+    let created_at: u64 = match current_track_event.clone() {
         None => now,
         Some(current_track_event) => current_track_event.created_at,
+    };
+
+    let session_id: String = match current_track_event.clone() {
+        None => track_event.session_id.clone(),
+        Some(current_track_event) => current_track_event.session_id,
     };
 
     let new_track_event: TrackEvent = TrackEvent {
         name: track_event.name,
         metadata: track_event.metadata,
         created_at,
+        session_id,
         updated_at: now,
     };
 
@@ -155,14 +186,12 @@ fn filter_analytics(
         collected_at: from.unwrap_or(u64::MIN),
         satellite_id: satellite_id.unwrap_or(PRINCIPAL_MIN),
         key: "".to_string(),
-        session_id: "".to_string(),
     };
 
     let end_key = AnalyticKey {
         collected_at: to.unwrap_or(u64::MAX),
         satellite_id: satellite_id.unwrap_or(PRINCIPAL_MAX),
         key: "".to_string(),
-        session_id: "".to_string(),
     };
 
     start_key..end_key

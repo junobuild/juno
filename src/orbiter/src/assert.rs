@@ -38,13 +38,6 @@ pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
         ));
     }
 
-    if key.session_id.len() > KEY_MAX_LENGTH {
-        return Err(format!(
-            "An analytic session ID must not be longer than {}.",
-            KEY_MAX_LENGTH
-        ));
-    }
-
     Ok(())
 }
 
@@ -146,6 +139,31 @@ pub fn assert_bot(user_agent: &Option<String>) -> Result<(), String> {
                 return Err(ERROR_BOT_CALL.to_string());
             }
         }
+    }
+
+    Ok(())
+}
+
+pub fn assert_session_id_length(session_id: &String) -> Result<(), String> {
+    if session_id.len() > KEY_MAX_LENGTH {
+        return Err(format!(
+            "An analytic session ID must not be longer than {}.",
+            KEY_MAX_LENGTH
+        ));
+    }
+
+    Ok(())
+}
+
+pub fn assert_session_id(
+    user_session_id: &String,
+    current_session_id: &String,
+) -> Result<(), String> {
+    if user_session_id != current_session_id {
+        return Err(format!(
+            "Session ID do not match ({} - {})",
+            current_session_id, user_session_id
+        ));
     }
 
     Ok(())

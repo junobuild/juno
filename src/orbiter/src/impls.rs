@@ -41,10 +41,12 @@ const TIMESTAMPS_LENGTH: usize = TIMESTAMP_LENGTH * 2;
 // - device (2 * u16)
 // - user_agent (Option<String>)
 // - time_zone (short String)
-// - collected_at + created_at + updated_at (3 * u64)
+// - session_id (SERIALIZED_KEY_LENGTH)
+// - created_at + updated_at (2 * u64)
 const PAGE_VIEW_MAX_SIZE: usize = (SERIALIZED_STRING_LENGTH * 2)
     + SERIALIZED_SHORT_STRING_LENGTH
     + (SERIALIZED_LONG_STRING_LENGTH * 2)
+    + SERIALIZED_KEY_LENGTH
     + TIMESTAMPS_LENGTH
     + (size_of::<u16>() * 2);
 
@@ -63,6 +65,7 @@ impl Storable for PageView {
             &self.user_agent.clone().unwrap_or("".to_string()),
         ));
         buf.extend(short_string_to_bytes(&self.time_zone));
+        buf.extend(key_to_bytes(&self.session_id));
         buf.extend(self.created_at.to_be_bytes());
         buf.extend(self.updated_at.to_be_bytes());
 
@@ -131,6 +134,13 @@ impl Storable for PageView {
 
         index += SERIALIZED_SHORT_STRING_LENGTH;
 
+        let session_id = bytes_to_key(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_KEY_LENGTH])
+                .expect("Failed to deserialize session_id"),
+        );
+
+        index += SERIALIZED_KEY_LENGTH;
+
         let created_at = u64::from_be_bytes(
             TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
                 .expect("Failed to deserialize created_at"),
@@ -153,6 +163,7 @@ impl Storable for PageView {
             },
             user_agent: user_agent_opt,
             time_zone,
+            session_id,
             created_at,
             updated_at,
         }
@@ -166,9 +177,11 @@ impl BoundedStorable for PageView {
 
 // Size of TrackEvent:
 // - name (String)
-// - collected_at + created_at + updated_at (3 * u64)
+// - session_id (SERIALIZED_KEY_LENGTH)
+// - created_at + updated_at (2 * u64)
 // - metadata (2 * String) limited to TRACK_EVENT_METADATA_MAX_LENGTH entries
 const TRACK_EVENT_MAX_SIZE: usize = SERIALIZED_SHORT_STRING_LENGTH
+    + SERIALIZED_KEY_LENGTH
     + TIMESTAMPS_LENGTH
     + (SERIALIZED_SHORT_STRING_LENGTH * 2 * METADATA_MAX_ELEMENTS);
 
@@ -178,6 +191,7 @@ impl Storable for TrackEvent {
 
         buf.extend(short_string_to_bytes(&self.name));
         buf.extend(metadata_to_bytes(&self.metadata));
+        buf.extend(key_to_bytes(&self.session_id));
         buf.extend(self.created_at.to_be_bytes());
         buf.extend(self.updated_at.to_be_bytes());
 
@@ -201,6 +215,13 @@ impl Storable for TrackEvent {
 
         index += SERIALIZED_METADATA_LENGTH;
 
+        let session_id = bytes_to_key(
+            TryFrom::try_from(&bytes[index..index + SERIALIZED_KEY_LENGTH])
+                .expect("Failed to deserialize session_id"),
+        );
+
+        index += SERIALIZED_KEY_LENGTH;
+
         let created_at = u64::from_be_bytes(
             TryFrom::try_from(&bytes[index..index + size_of::<u64>()])
                 .expect("Failed to deserialize created_at"),
@@ -216,6 +237,7 @@ impl Storable for TrackEvent {
         TrackEvent {
             name,
             metadata,
+            session_id,
             created_at,
             updated_at,
         }
@@ -230,9 +252,9 @@ impl BoundedStorable for TrackEvent {
 // Size of AnalyticKey:
 // - collected_at
 // - Principal to bytes (30 because a principal is max 29 bytes and one byte to save effective length)
-// - key + session_id (2 * String max length KEY_MAX_LENGTH)
+// - key (String max length KEY_MAX_LENGTH)
 const ANALYTIC_KEY_MAX_SIZE: usize =
-    TIMESTAMP_LENGTH + (SERIALIZED_KEY_LENGTH * 2) + SERIALIZED_PRINCIPAL_LENGTH;
+    TIMESTAMP_LENGTH + SERIALIZED_KEY_LENGTH + SERIALIZED_PRINCIPAL_LENGTH;
 
 impl Storable for AnalyticKey {
     fn to_bytes(&self) -> Cow<[u8]> {
@@ -241,7 +263,6 @@ impl Storable for AnalyticKey {
         buf.extend(self.collected_at.to_be_bytes());
         buf.extend(principal_to_bytes(&self.satellite_id));
         buf.extend(key_to_bytes(&self.key));
-        buf.extend(key_to_bytes(&self.session_id));
 
         Cow::Owned(buf)
     }
@@ -268,18 +289,10 @@ impl Storable for AnalyticKey {
                 .expect("Failed to deserialize key"),
         );
 
-        index += SERIALIZED_KEY_LENGTH;
-
-        let session_id = bytes_to_key(
-            TryFrom::try_from(&bytes[index..index + SERIALIZED_KEY_LENGTH])
-                .expect("Failed to deserialize session_id"),
-        );
-
         AnalyticKey {
             collected_at,
             satellite_id,
             key,
-            session_id,
         }
     }
 }

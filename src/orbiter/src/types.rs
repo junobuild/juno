@@ -41,7 +41,6 @@ pub mod state {
         pub collected_at: u64,
         pub satellite_id: SatelliteId,
         pub key: Key,
-        pub session_id: SessionId,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -52,6 +51,7 @@ pub mod state {
         pub device: PageViewDevice,
         pub user_agent: Option<String>,
         pub time_zone: String,
+        pub session_id: SessionId,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -66,6 +66,7 @@ pub mod state {
     pub struct TrackEvent {
         pub name: String,
         pub metadata: Option<Metadata>,
+        pub session_id: SessionId,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -86,7 +87,7 @@ pub mod memory {
 }
 
 pub mod interface {
-    use crate::types::state::PageViewDevice;
+    use crate::types::state::{PageViewDevice, SessionId};
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::{Metadata, SatelliteId};
@@ -99,6 +100,7 @@ pub mod interface {
         pub device: PageViewDevice,
         pub time_zone: String,
         pub user_agent: Option<String>,
+        pub session_id: SessionId,
         pub updated_at: Option<u64>,
     }
 
@@ -107,6 +109,7 @@ pub mod interface {
         pub name: String,
         pub metadata: Option<Metadata>,
         pub user_agent: Option<String>,
+        pub session_id: SessionId,
         pub updated_at: Option<u64>,
     }
 

@@ -9,30 +9,25 @@ use crate::types::state::{AnalyticKey, SatelliteConfig};
 use isbot::Bots;
 use shared::types::state::SatelliteId;
 
-pub fn assert_enabled(satellite_id: &Option<SatelliteId>) -> Result<(), String> {
-    match satellite_id {
-        None => Err("Satellite ID not provided.".to_string()),
-        Some(satellite_id) => {
-            let config: Option<SatelliteConfig> = STATE.with(|state| {
-                let binding = state.borrow();
-                let config = binding.heap.config.get(satellite_id);
+pub fn assert_enabled(satellite_id: &SatelliteId) -> Result<(), String> {
+    let config: Option<SatelliteConfig> = STATE.with(|state| {
+        let binding = state.borrow();
+        let config = binding.heap.config.get(satellite_id);
 
-                config.cloned()
-            });
+        config.cloned()
+    });
 
-            // Enabling the analytics for a satellite is an opt-in feature
-            match config {
-                None => {}
-                Some(config) => {
-                    if config.enabled {
-                        return Ok(());
-                    }
-                }
+    // Enabling the analytics for a satellite is an opt-in feature
+    match config {
+        None => {}
+        Some(config) => {
+            if config.enabled {
+                return Ok(());
             }
-
-            Err(ERROR_FEATURE_NOT_ENABLED.to_string())
         }
     }
+
+    Err(ERROR_FEATURE_NOT_ENABLED.to_string())
 }
 
 pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {

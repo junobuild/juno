@@ -1,6 +1,7 @@
 use crate::assert::{
     assert_analytic_key_length, assert_bot, assert_page_view_length, assert_track_event_length,
 };
+use crate::constants::{PRINCIPAL_MAX, PRINCIPAL_MIN};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, PageView, PageViewsStable, TrackEvent, TrackEventsStable};
@@ -152,14 +153,14 @@ fn filter_analytics(
 ) -> impl RangeBounds<AnalyticKey> {
     let start_key = AnalyticKey {
         collected_at: from.unwrap_or(u64::MIN),
-        satellite_id: satellite_id.clone(),
+        satellite_id: satellite_id.unwrap_or(PRINCIPAL_MIN),
         key: "".to_string(),
         session_id: "".to_string(),
     };
 
     let end_key = AnalyticKey {
         collected_at: to.unwrap_or(u64::MAX),
-        satellite_id: satellite_id.clone(),
+        satellite_id: satellite_id.unwrap_or(PRINCIPAL_MAX),
         key: "".to_string(),
         session_id: "".to_string(),
     };

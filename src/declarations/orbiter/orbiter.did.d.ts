@@ -4,7 +4,7 @@ import type { Principal } from '@dfinity/principal';
 export interface AnalyticKey {
 	key: string;
 	session_id: string;
-	satellite_id: [] | [Principal];
+	satellite_id: Principal;
 	collected_at: bigint;
 }
 export interface Controller {

@@ -39,7 +39,7 @@ pub mod state {
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticKey {
         pub collected_at: u64,
-        pub satellite_id: Option<SatelliteId>,
+        pub satellite_id: SatelliteId,
         pub key: Key,
         pub session_id: SessionId,
     }

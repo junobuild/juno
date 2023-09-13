@@ -23,7 +23,7 @@ export const idlFactory = ({ IDL }) => {
 	const AnalyticKey = IDL.Record({
 		key: IDL.Text,
 		session_id: IDL.Text,
-		satellite_id: IDL.Opt(IDL.Principal),
+		satellite_id: IDL.Principal,
 		collected_at: IDL.Nat64
 	});
 	const PageViewDevice = IDL.Record({

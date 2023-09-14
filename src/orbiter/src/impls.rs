@@ -369,7 +369,7 @@ impl BoundedStorable for AnalyticSatelliteKey {
 impl AnalyticSatelliteKey {
     pub fn from_key(key: &AnalyticKey, satellite_id: &SatelliteId) -> Self {
         AnalyticSatelliteKey {
-            satellite_id: satellite_id.clone(),
+            satellite_id: *satellite_id,
             collected_at: key.collected_at,
             key: key.key.clone(),
         }

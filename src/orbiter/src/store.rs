@@ -2,16 +2,12 @@ use crate::assert::{
     assert_analytic_key_length, assert_bot, assert_page_view_length, assert_satellite_id,
     assert_session_id, assert_session_id_length, assert_track_event_length,
 };
-use crate::constants::{PRINCIPAL_MAX, PRINCIPAL_MIN};
+use crate::filters::{filter_analytics, filter_satellites_analytics};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
-use crate::types::state::{
-    AnalyticKey, AnalyticSatelliteKey, PageView, PageViewsStable, StableState, TrackEvent,
-    TrackEventsStable,
-};
+use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
-use std::ops::RangeBounds;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))
@@ -179,43 +175,50 @@ fn insert_track_event_impl(
 }
 
 pub fn get_page_views(filter: &GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
-    STATE.with(|state| get_page_views_impl(filter, &state.borrow_mut().stable.page_views))
+    STATE.with(|state| get_page_views_impl(filter, &state.borrow_mut().stable))
 }
 
-fn get_page_views_impl(
-    filter: &GetAnalytics,
-    state: &PageViewsStable,
-) -> Vec<(AnalyticKey, PageView)> {
-    state.range(filter_analytics(filter)).collect()
+fn get_page_views_impl(filter: &GetAnalytics, state: &StableState) -> Vec<(AnalyticKey, PageView)> {
+    match filter.satellite_id {
+        None => state.page_views.range(filter_analytics(filter)).collect(),
+        Some(_) => {
+            let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
+                .satellites_page_views
+                .range(filter_satellites_analytics(filter))
+                .collect();
+            satellites_keys
+                .iter()
+                .filter_map(|(_, key)| {
+                    let page_view = state.page_views.get(key);
+                    page_view.map(|page_view| (key.clone(), page_view))
+                })
+                .collect()
+        }
+    }
 }
 
 pub fn get_track_events(filter: &GetAnalytics) -> Vec<(AnalyticKey, TrackEvent)> {
-    STATE.with(|state| get_track_events_impl(filter, &state.borrow_mut().stable.track_events))
+    STATE.with(|state| get_track_events_impl(filter, &state.borrow_mut().stable))
 }
 
 fn get_track_events_impl(
     filter: &GetAnalytics,
-    state: &TrackEventsStable,
+    state: &StableState,
 ) -> Vec<(AnalyticKey, TrackEvent)> {
-    state.range(filter_analytics(filter)).collect()
-}
-
-fn filter_analytics(
-    GetAnalytics {
-        from,
-        to,
-        satellite_id: _,
-    }: &GetAnalytics,
-) -> impl RangeBounds<AnalyticKey> {
-    let start_key = AnalyticKey {
-        collected_at: from.unwrap_or(u64::MIN),
-        key: "".to_string(),
-    };
-
-    let end_key = AnalyticKey {
-        collected_at: to.unwrap_or(u64::MAX),
-        key: "".to_string(),
-    };
-
-    start_key..end_key
+    match filter.satellite_id {
+        None => state.track_events.range(filter_analytics(filter)).collect(),
+        Some(_) => {
+            let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
+                .satellites_track_events
+                .range(filter_satellites_analytics(filter))
+                .collect();
+            satellites_keys
+                .iter()
+                .filter_map(|(_, key)| {
+                    let track_event = state.track_events.get(key);
+                    track_event.map(|track_event| (key.clone(), track_event))
+                })
+                .collect()
+        }
+    }
 }

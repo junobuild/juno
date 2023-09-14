@@ -13,7 +13,7 @@
 	const yKey = 'myY';
 
 	let totalPageViews: Record<string, number>;
-	$: totalPageViews = data.reduce((acc, [_, { collected_at }]) => {
+	$: totalPageViews = data.reduce((acc, [{ collected_at }, _]) => {
 		const date = fromBigIntNanoSeconds(collected_at);
 
 		// Start of the day

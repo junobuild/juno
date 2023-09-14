@@ -23,9 +23,15 @@ pub mod state {
     pub type PageViewsStable = StableBTreeMap<AnalyticKey, PageView, Memory>;
     pub type TrackEventsStable = StableBTreeMap<AnalyticKey, TrackEvent, Memory>;
 
+    pub type SatellitesPageViewsStable = StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
+    pub type SatellitesTrackEventsStable =
+        StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
+
     pub struct StableState {
         pub page_views: PageViewsStable,
         pub track_events: TrackEventsStable,
+        pub satellites_page_views: SatellitesPageViewsStable,
+        pub satellites_track_events: SatellitesTrackEventsStable,
     }
 
     pub type SatelliteConfigs = HashMap<SatelliteId, SatelliteConfig>;
@@ -38,9 +44,15 @@ pub mod state {
 
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticKey {
-        pub satellite_id: SatelliteId,
+        pub collected_at: u64,
         pub key: Key,
-        pub session_id: SessionId,
+    }
+
+    #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct AnalyticSatelliteKey {
+        pub satellite_id: SatelliteId,
+        pub collected_at: u64,
+        pub key: Key,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -51,7 +63,8 @@ pub mod state {
         pub device: PageViewDevice,
         pub user_agent: Option<String>,
         pub time_zone: String,
-        pub collected_at: u64,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -66,7 +79,8 @@ pub mod state {
     pub struct TrackEvent {
         pub name: String,
         pub metadata: Option<Metadata>,
-        pub collected_at: u64,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -87,7 +101,7 @@ pub mod memory {
 }
 
 pub mod interface {
-    use crate::types::state::PageViewDevice;
+    use crate::types::state::{PageViewDevice, SessionId};
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::{Metadata, SatelliteId};
@@ -100,7 +114,8 @@ pub mod interface {
         pub device: PageViewDevice,
         pub time_zone: String,
         pub user_agent: Option<String>,
-        pub collected_at: u64,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub updated_at: Option<u64>,
     }
 
@@ -109,7 +124,8 @@ pub mod interface {
         pub name: String,
         pub metadata: Option<Metadata>,
         pub user_agent: Option<String>,
-        pub collected_at: u64,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub updated_at: Option<u64>,
     }
 

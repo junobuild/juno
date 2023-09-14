@@ -360,7 +360,7 @@ impl Storable for AnalyticSatelliteKey {
 }
 
 impl BoundedStorable for AnalyticSatelliteKey {
-    const MAX_SIZE: u32 = ANALYTIC_KEY_MAX_SIZE as u32;
+    const MAX_SIZE: u32 = ANALYTIC_SATELLITE_KEY_MAX_SIZE as u32;
     const IS_FIXED_SIZE: bool = false;
 }
 

@@ -1,5 +1,3 @@
-use candid::Principal;
-
 pub const LONG_STRING_MAX_LENGTH: usize = 4096; // 1024 * 4
 pub const STRING_MAX_LENGTH: usize = 1024;
 pub const SHORT_STRING_MAX_LENGTH: usize = 256;
@@ -13,6 +11,3 @@ pub const SERIALIZED_SHORT_STRING_LENGTH: usize = SHORT_STRING_MAX_LENGTH + 1;
 pub const SERIALIZED_KEY_LENGTH: usize = KEY_MAX_LENGTH + 1;
 pub const SERIALIZED_METADATA_LENGTH: usize =
     METADATA_MAX_ELEMENTS * (SERIALIZED_SHORT_STRING_LENGTH * 2);
-
-pub const PRINCIPAL_MIN: Principal = Principal::from_slice(&[]);
-pub const PRINCIPAL_MAX: Principal = Principal::from_slice(&[255; 29]);

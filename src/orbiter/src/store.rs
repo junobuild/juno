@@ -179,10 +179,10 @@ pub fn get_page_views(filter: &GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
 fn get_page_views_impl(filter: &GetAnalytics, state: &StableState) -> Vec<(AnalyticKey, PageView)> {
     match filter.satellite_id {
         None => state.page_views.range(filter_analytics(filter)).collect(),
-        Some(_) => {
+        Some(satellite_id) => {
             let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
                 .satellites_page_views
-                .range(filter_satellites_analytics(filter))
+                .range(filter_satellites_analytics(filter, satellite_id))
                 .collect();
             satellites_keys
                 .iter()
@@ -205,10 +205,10 @@ fn get_track_events_impl(
 ) -> Vec<(AnalyticKey, TrackEvent)> {
     match filter.satellite_id {
         None => state.track_events.range(filter_analytics(filter)).collect(),
-        Some(_) => {
+        Some(satellite_id) => {
             let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
                 .satellites_track_events
-                .range(filter_satellites_analytics(filter))
+                .range(filter_satellites_analytics(filter, satellite_id))
                 .collect();
             satellites_keys
                 .iter()

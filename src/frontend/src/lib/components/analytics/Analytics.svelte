@@ -56,11 +56,11 @@
 	$: $orbiterStore, $satelliteStore, period, debouncePageViews();
 
 	let uniqueSessions: number = 0;
-	$: uniqueSessions = [...new Set(pageViews.map(([key, _]) => key.session_id))].length;
+	$: uniqueSessions = [...new Set(pageViews.map(([_, { session_id }]) => session_id))].length;
 
 	let sessionsViews: Record<string, number> = {};
 	$: sessionsViews = pageViews.reduce(
-		(acc, [{ session_id }, _]) => ({
+		(acc, [_, { session_id }]) => ({
 			...acc,
 			[session_id]: (acc[session_id] ?? 0) + 1
 		}),
@@ -69,7 +69,7 @@
 
 	let sessionsUniqueViews: Record<string, Set<string>> = {};
 	$: sessionsUniqueViews = pageViews.reduce(
-		(acc, [{ session_id }, { href }]) => ({
+		(acc, [_, { href, session_id }]) => ({
 			...acc,
 			[session_id]: (acc[session_id] ?? new Set()).add(href)
 		}),

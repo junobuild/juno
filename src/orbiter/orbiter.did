@@ -1,9 +1,4 @@
-type AnalyticKey = record {
-  key : text;
-  session_id : text;
-  satellite_id : opt principal;
-  collected_at : nat64;
-};
+type AnalyticKey = record { key : text; collected_at : nat64 };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -24,8 +19,10 @@ type PageView = record {
   updated_at : nat64;
   referrer : opt text;
   time_zone : text;
+  session_id : text;
   href : text;
   created_at : nat64;
+  satellite_id : principal;
   device : PageViewDevice;
   user_agent : opt text;
 };
@@ -52,22 +49,28 @@ type SetPageView = record {
   updated_at : opt nat64;
   referrer : opt text;
   time_zone : text;
+  session_id : text;
   href : text;
+  satellite_id : principal;
   device : PageViewDevice;
   user_agent : opt text;
 };
 type SetSatelliteConfig = record { updated_at : opt nat64; enabled : bool };
 type SetTrackEvent = record {
   updated_at : opt nat64;
+  session_id : text;
   metadata : opt vec record { text; text };
   name : text;
+  satellite_id : principal;
   user_agent : opt text;
 };
 type TrackEvent = record {
   updated_at : nat64;
+  session_id : text;
   metadata : opt vec record { text; text };
   name : text;
   created_at : nat64;
+  satellite_id : principal;
 };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> (

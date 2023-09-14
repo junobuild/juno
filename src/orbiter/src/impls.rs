@@ -333,14 +333,14 @@ impl Storable for AnalyticSatelliteKey {
         let mut index = 0;
 
         let satellite_id = bytes_to_principal(
-            TryFrom::try_from(&bytes[index..index + SERIALIZED_PRINCIPAL_LENGTH])
+            TryFrom::try_from(&bytes[0..SERIALIZED_PRINCIPAL_LENGTH])
                 .expect("Failed to deserialize satellite_id"),
         );
 
         index += SERIALIZED_PRINCIPAL_LENGTH;
 
         let collected_at = u64::from_be_bytes(
-            TryFrom::try_from(&bytes[0..TIMESTAMP_LENGTH])
+            TryFrom::try_from(&bytes[index..index + TIMESTAMP_LENGTH])
                 .expect("Failed to deserialize collected_at"),
         );
 

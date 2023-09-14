@@ -43,6 +43,8 @@ pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
 }
 
 pub fn assert_track_event_length(track_event: &SetTrackEvent) -> Result<(), String> {
+    assert_session_id_length(&track_event.session_id)?;
+
     if track_event.name.len() > SHORT_STRING_MAX_LENGTH {
         return Err(format!(
             "Track event name {} is longer than {}.",
@@ -82,6 +84,8 @@ pub fn assert_track_event_length(track_event: &SetTrackEvent) -> Result<(), Stri
 }
 
 pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
+    assert_session_id_length(&page_view.session_id)?;
+
     if page_view.title.len() > STRING_MAX_LENGTH {
         return Err(format!(
             "Page event title {} is longer than {}.",
@@ -130,6 +134,17 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
     Ok(())
 }
 
+fn assert_session_id_length(session_id: &String) -> Result<(), String> {
+    if session_id.len() > KEY_MAX_LENGTH {
+        return Err(format!(
+            "An analytic session ID must not be longer than {}.",
+            KEY_MAX_LENGTH
+        ));
+    }
+
+    Ok(())
+}
+
 pub fn assert_bot(user_agent: &Option<String>) -> Result<(), String> {
     match user_agent.clone() {
         None => {}
@@ -140,17 +155,6 @@ pub fn assert_bot(user_agent: &Option<String>) -> Result<(), String> {
                 return Err(ERROR_BOT_CALL.to_string());
             }
         }
-    }
-
-    Ok(())
-}
-
-pub fn assert_session_id_length(session_id: &String) -> Result<(), String> {
-    if session_id.len() > KEY_MAX_LENGTH {
-        return Err(format!(
-            "An analytic session ID must not be longer than {}.",
-            KEY_MAX_LENGTH
-        ));
     }
 
     Ok(())

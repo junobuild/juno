@@ -1,6 +1,6 @@
 use crate::assert::{
     assert_analytic_key_length, assert_bot, assert_page_view_length, assert_satellite_id,
-    assert_session_id, assert_session_id_length, assert_track_event_length,
+    assert_session_id, assert_track_event_length,
 };
 use crate::filters::{filter_analytics, filter_satellites_analytics};
 use crate::memory::STATE;
@@ -21,7 +21,6 @@ fn insert_page_view_impl(
     assert_bot(&page_view.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_page_view_length(&page_view)?;
-    assert_session_id_length(&page_view.session_id)?;
 
     let current_page_view = state.page_views.get(&key);
 
@@ -104,7 +103,6 @@ fn insert_track_event_impl(
     assert_bot(&track_event.user_agent)?;
     assert_analytic_key_length(&key)?;
     assert_track_event_length(&track_event)?;
-    assert_session_id_length(&track_event.session_id)?;
 
     let current_track_event = state.track_events.get(&key);
 

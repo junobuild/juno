@@ -25,7 +25,7 @@
 		visible = true;
 	};
 
-	let select: HTMLSelectElement;
+	// eslint-disable-next-line no-undef
 	let lang: Languages;
 
 	let innerWidth = 0;

@@ -5,6 +5,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import AppLang from '$lib/components/core/AppLang.svelte';
 
+	// eslint-disable-next-line no-undef
 	let lang: Languages;
 </script>
 

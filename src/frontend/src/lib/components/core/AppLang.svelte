@@ -3,6 +3,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { onMount } from 'svelte';
 
+	// eslint-disable-next-line no-undef
 	export let selected: Languages;
 
 	onMount(() => (selected = $i18n.lang));

@@ -3,18 +3,12 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { navigateToSatellite } from '$lib/utils/nav.utils';
-	import { createSatellite, loadSatellites } from '$lib/services/satellites.services';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { isNullish } from '$lib/utils/utils';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import { wizardBusy } from '$lib/stores/busy.store';
-	import WhatNext from '$lib/components/onboarding/WhatNext.svelte';
-	import InstallSDK from '$lib/components/onboarding/InstallSDK.svelte';
-	import Deploy from '$lib/components/onboarding/Deploy.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import { createOrbiter, loadOrbiters } from '$lib/services/orbiters.services';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';

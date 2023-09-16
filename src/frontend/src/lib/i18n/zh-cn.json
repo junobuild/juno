@@ -89,7 +89,8 @@
 		"balance": "余额",
 		"credits": "积分",
 		"transactions": "交易记录",
-		"transfer_icp_info": "查询更多关于信息关于转出 ICP 到你的 mission control"
+		"transfer_icp_info": "查询更多关于信息关于转出 ICP 到你的 mission control",
+		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier"
 	},
 	"authentication": {
 		"title": "认证",

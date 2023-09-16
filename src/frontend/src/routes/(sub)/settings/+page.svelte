@@ -4,8 +4,8 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import Value from '$lib/components/ui/Value.svelte';
 	import AppLang from '$lib/components/core/AppLang.svelte';
+	import type {Languages} from "$lib/types/languages";
 
-	// eslint-disable-next-line no-undef
 	let lang: Languages;
 </script>
 

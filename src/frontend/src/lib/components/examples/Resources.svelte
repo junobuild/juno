@@ -10,6 +10,7 @@
 	import AppLang from '$lib/components/core/AppLang.svelte';
 	import IconBook from '$lib/components/icons/IconBook.svelte';
 	import IconScience from '$lib/components/icons/IconScience.svelte';
+	import type {Languages} from "$lib/types/languages";
 
 	let anchor: HTMLDivElement | undefined;
 	let visible = false;
@@ -25,7 +26,6 @@
 		visible = true;
 	};
 
-	// eslint-disable-next-line no-undef
 	let lang: Languages;
 
 	let innerWidth = 0;

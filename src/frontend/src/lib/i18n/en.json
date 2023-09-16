@@ -89,7 +89,8 @@
 		"balance": "Balance",
 		"credits": "Credits",
 		"transactions": "Transactions",
-		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the"
+		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the",
+		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier"
 	},
 	"authentication": {
 		"title": "Authentication",

@@ -4,6 +4,7 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { createEventDispatcher } from 'svelte';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
+	import type { AccountIdentifier } from '@junobuild/ledger';
 
 	export let detail: JunoModalDetail;
 	export let priceLabel: string;
@@ -11,10 +12,13 @@
 	let fee = 0n;
 	let balance = 0n;
 	let credits = 0n;
+	let accountIdentifier: AccountIdentifier | undefined;
 
 	$: fee = (detail as JunoModalCreateSegmentDetail).fee;
 	$: balance = (detail as JunoModalCreateSegmentDetail).missionControlBalance?.balance ?? 0n;
 	$: credits = (detail as JunoModalCreateSegmentDetail).missionControlBalance?.credits ?? 0n;
+	$: accountIdentifier = (detail as JunoModalCreateSegmentDetail).missionControlBalance
+		?.accountIdentifier;
 
 	export let insufficientFunds = true;
 	$: insufficientFunds = balance + credits < fee;
@@ -45,7 +49,7 @@
 {/if}
 
 {#if insufficientFunds}
-	<MissionControlICPInfo on:click={() => dispatch('junoClose')} />
+	<MissionControlICPInfo {accountIdentifier} on:click={() => dispatch('junoClose')} />
 {:else}
 	<slot />
 {/if}

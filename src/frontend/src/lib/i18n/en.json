@@ -133,7 +133,8 @@
 		"tracked_events": "Tracked events",
 		"count": "Count",
 		"referrers": "Top 10 referrers",
-		"enabled": "Enabled"
+		"enabled": "Enabled",
+		"orbiter": "Orbiter"
 	},
 	"hosting": {
 		"title": "Hosting",

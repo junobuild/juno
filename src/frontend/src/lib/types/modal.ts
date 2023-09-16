@@ -42,6 +42,10 @@ export interface JunoModalCreateControllerDetail {
 		} & SetControllerParams
 	) => Promise<void>;
 	load: () => Promise<void>;
+	segment: {
+		label: string;
+		id: Principal;
+	};
 }
 
 export type JunoModalDetail =

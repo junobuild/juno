@@ -145,6 +145,7 @@ interface I18nAnalytics {
 	count: string;
 	referrers: string;
 	enabled: string;
+	orbiter: string;
 }
 
 interface I18nHosting {

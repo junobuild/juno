@@ -92,11 +92,13 @@
 						<Identifier identifier={controllerId.toText()} shorten={false} small={false} />
 					</td>
 
-					<td class="profile">{metadataProfile(controller?.metadata ?? [])}</td>
+					<td class="profile"
+						>{metadataProfile(nonNullish(controller) ? controller.metadata : [])}</td
+					>
 
 					<td class="scope">
 						{#if nonNullish(controller)}
-							{#if 'Write' in controller?.scope}
+							{#if nonNullish(controller) && 'Write' in controller.scope}
 								{$i18n.controllers.write}
 							{:else}
 								{$i18n.controllers.admin}

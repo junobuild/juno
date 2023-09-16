@@ -7,7 +7,7 @@
 	import Copy from '$lib/components/ui/Copy.svelte';
 
 	export let code: string;
-	export let language: string = 'javascript';
+	export let language = 'javascript';
 	export let copy: 'center' | 'bottom' = 'center';
 
 	let parseCode: string | undefined;
@@ -35,7 +35,8 @@
 		// Prism has to be loaded before loading the grammar
 		await injectGrammar();
 
-		// @ts-ignore
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore to string
 		parseCode = Prism.highlight(code, Prism.languages[language], language);
 	});
 </script>

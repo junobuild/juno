@@ -117,7 +117,6 @@ const config: UserConfig = {
 			},
 			// Enable esbuild polyfill plugins
 			plugins: [
-				// @ts-ignore
 				NodeModulesPolyfillPlugin(),
 				{
 					name: 'fix-node-globals-polyfill',

@@ -2,7 +2,6 @@
 	import { fade } from 'svelte/transition';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy } from '$lib/stores/busy.store';
-	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 

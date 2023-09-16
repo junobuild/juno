@@ -13,8 +13,6 @@
 
 	export let missionControlId: Principal;
 
-	let controllers: Principal[] = [];
-
 	const list = (): Promise<[Principal, Controller][]> =>
 		listMissionControlControllers({ missionControlId });
 

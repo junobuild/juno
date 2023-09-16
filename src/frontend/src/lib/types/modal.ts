@@ -1,12 +1,10 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { MissionControlBalance } from '$lib/types/balance.types';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Principal } from '@dfinity/principal';
 
 export interface JunoModalBalance {
-	missionControlBalance?: {
-		balance: bigint;
-		credits: bigint;
-	};
+	missionControlBalance?: MissionControlBalance;
 }
 
 export interface JunoModalSatelliteDetail {

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { AnalyticKey, TrackEvent } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
 
 	export let trackEvents: [AnalyticKey, TrackEvent][] = [];
 

@@ -6,8 +6,7 @@ import { nonNullish } from '$lib/utils/utils';
 import { Principal } from '@dfinity/principal';
 
 const toSetController = ({
-	profile,
-	scope
+	profile
 }: Omit<SetControllerParams, 'controllerId'>): SetControllerDid => ({
 	metadata: nonNullish(profile) && profile !== '' ? [['profile', profile]] : [],
 	expires_at: toNullable<bigint>(undefined)

@@ -55,7 +55,7 @@
 
 	$: $orbiterStore, $satelliteStore, period, debouncePageViews();
 
-	let uniqueSessions: number = 0;
+	let uniqueSessions = 0;
 	$: uniqueSessions = [...new Set(pageViews.map(([_, { session_id }]) => session_id))].length;
 
 	let sessionsViews: Record<string, number> = {};

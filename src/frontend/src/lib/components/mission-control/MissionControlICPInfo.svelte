@@ -9,10 +9,10 @@
 	export let accountIdentifier: AccountIdentifier | undefined;
 </script>
 
-{#if nonNullish($missionControlStore)}
+{#if nonNullish($missionControlStore) && nonNullish(accountIdentifier)}
 	<p>
 		{$i18n.mission_control.transfer_to_account_identifier}
-		<Identifier identifier={''} />.
+		<strong><Identifier identifier={accountIdentifier.toHex()} /></strong>.
 	</p>
 {/if}
 

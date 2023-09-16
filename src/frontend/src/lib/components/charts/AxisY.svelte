@@ -5,6 +5,7 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	const { padding, xRange, yScale } = getContext('LayerCake');
 

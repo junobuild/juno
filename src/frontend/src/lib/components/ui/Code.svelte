@@ -35,6 +35,7 @@
 		// Prism has to be loaded before loading the grammar
 		await injectGrammar();
 
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore to string
 		parseCode = Prism.highlight(code, Prism.languages[language], language);
 	});

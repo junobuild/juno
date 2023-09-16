@@ -12,8 +12,6 @@
 
 	export let satellite: Satellite;
 
-	let controllers: Principal[] = [];
-
 	const list = (): Promise<[Principal, Controller][]> =>
 		listControllers({ satelliteId: satellite.satellite_id });
 

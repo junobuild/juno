@@ -4,7 +4,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import Value from '$lib/components/ui/Value.svelte';
 	import AppLang from '$lib/components/core/AppLang.svelte';
-	import type {Languages} from "$lib/types/languages";
+	import type { Languages } from '$lib/types/languages';
 
 	let lang: Languages;
 </script>

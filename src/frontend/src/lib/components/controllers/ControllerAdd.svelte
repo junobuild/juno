@@ -10,6 +10,10 @@
 		} & SetControllerParams
 	) => Promise<void>;
 	export let load: () => Promise<void>;
+	export let segment: {
+		label: string;
+		id: Principal;
+	};
 </script>
 
 <button
@@ -20,7 +24,8 @@
 				type: 'create_controller',
 				detail: {
 					add,
-					load
+					load,
+					segment
 				}
 			}
 		})}>{$i18n.controllers.add_a_controller}</button

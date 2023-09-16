@@ -9,6 +9,7 @@
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
 	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import type { SetControllerParams } from '$lib/types/controllers';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let satellite: Satellite;
 
@@ -32,4 +33,9 @@
 		});
 </script>
 
-<Controllers {list} {remove} {add} />
+<Controllers
+	{list}
+	{remove}
+	{add}
+	segment={{ label: $i18n.satellites.satellite, id: satellite.satellite_id }}
+/>

@@ -25,6 +25,10 @@
 			missionControlId: Principal;
 		} & SetControllerParams
 	) => Promise<void>;
+	export let segment: {
+		label: string;
+		id: Principal;
+	};
 
 	// The canister and user are controllers of the mission control but not added in its state per default
 	export let extraControllers: [Principal, Controller | undefined][] = [];
@@ -110,7 +114,7 @@
 	</table>
 </div>
 
-<ControllerAdd {add} {load} />
+<ControllerAdd {add} {load} {segment} />
 
 <ControllerDelete bind:selectedController bind:visible={visibleDelete} {load} {remove} />
 

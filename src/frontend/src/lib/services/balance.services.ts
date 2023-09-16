@@ -2,16 +2,10 @@ import { getCredits } from '$lib/api/console.api';
 import { getAccountIdentifier, getBalance } from '$lib/api/ledger.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { MissionControlBalance } from '$lib/types/balance.types';
 import { isNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
-import type { AccountIdentifier } from '@junobuild/ledger';
 import { get } from 'svelte/store';
-
-export interface MissionControlBalance {
-	balance: bigint;
-	credits: bigint;
-	accountIdentifier: AccountIdentifier;
-}
 
 export const getMissionControlBalance = async (
 	missionControlId: Principal | undefined | null

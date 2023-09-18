@@ -8,12 +8,12 @@
 	import MissionControlTopUp from '$lib/components/mission-control/MissionControlTopUp.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { MissionControlBalance } from '$lib/services/balance.services';
 	import { getMissionControlBalance } from '$lib/services/balance.services';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { AccountIdentifier } from '@junobuild/ledger';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
+	import type { MissionControlBalance } from '$lib/types/balance.types';
 
 	let missionControlBalance: MissionControlBalance | undefined = undefined;
 

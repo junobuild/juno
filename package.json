@@ -82,7 +82,7 @@
 		"@dfinity/principal": "^0.19.2",
 		"@dfinity/utils": "next",
 		"@junobuild/admin": "^0.0.29",
-		"@junobuild/ledger": "file:../juno-js/packages/ledger",
+		"@junobuild/ledger": "^0.0.18",
 		"buffer": "^6.0.3",
 		"idb-keyval": "^6.2.1",
 		"layercake": "^7.6.1",

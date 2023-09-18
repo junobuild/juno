@@ -2,6 +2,7 @@ mod assert;
 mod config;
 mod constants;
 mod controllers;
+mod filters;
 mod guards;
 mod impls;
 mod memory;
@@ -112,7 +113,7 @@ fn post_upgrade() {
 
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
-    assert_enabled(&key.satellite_id)?;
+    assert_enabled(&page_view.satellite_id)?;
 
     insert_page_view(key, page_view)
 }
@@ -122,7 +123,7 @@ fn set_page_views(
     page_views: Vec<(AnalyticKey, SetPageView)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, page_view: SetPageView) -> Result<(), String> {
-        assert_enabled(&key.satellite_id)?;
+        assert_enabled(&page_view.satellite_id)?;
         insert_page_view(key, page_view)?;
 
         Ok(())
@@ -153,7 +154,7 @@ fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
 
 #[update]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
-    assert_enabled(&key.satellite_id)?;
+    assert_enabled(&track_event.satellite_id)?;
 
     insert_track_event(key, track_event)
 }
@@ -163,7 +164,7 @@ fn set_track_events(
     track_events: Vec<(AnalyticKey, SetTrackEvent)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, track_event: SetTrackEvent) -> Result<(), String> {
-        assert_enabled(&key.satellite_id)?;
+        assert_enabled(&track_event.satellite_id)?;
         insert_track_event(key, track_event)?;
 
         Ok(())

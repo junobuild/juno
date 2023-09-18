@@ -8,6 +8,7 @@ use crate::types::interface::{SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, SatelliteConfig};
 use isbot::Bots;
 use shared::types::state::SatelliteId;
+use shared::utils::principal_not_equal;
 
 pub fn assert_enabled(satellite_id: &SatelliteId) -> Result<(), String> {
     let config: Option<SatelliteConfig> = STATE.with(|state| {
@@ -38,17 +39,12 @@ pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
         ));
     }
 
-    if key.session_id.len() > KEY_MAX_LENGTH {
-        return Err(format!(
-            "An analytic session ID must not be longer than {}.",
-            KEY_MAX_LENGTH
-        ));
-    }
-
     Ok(())
 }
 
 pub fn assert_track_event_length(track_event: &SetTrackEvent) -> Result<(), String> {
+    assert_session_id_length(&track_event.session_id)?;
+
     if track_event.name.len() > SHORT_STRING_MAX_LENGTH {
         return Err(format!(
             "Track event name {} is longer than {}.",
@@ -88,6 +84,8 @@ pub fn assert_track_event_length(track_event: &SetTrackEvent) -> Result<(), Stri
 }
 
 pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
+    assert_session_id_length(&page_view.session_id)?;
+
     if page_view.title.len() > STRING_MAX_LENGTH {
         return Err(format!(
             "Page event title {} is longer than {}.",
@@ -136,6 +134,17 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
     Ok(())
 }
 
+fn assert_session_id_length(session_id: &String) -> Result<(), String> {
+    if session_id.len() > KEY_MAX_LENGTH {
+        return Err(format!(
+            "An analytic session ID must not be longer than {}.",
+            KEY_MAX_LENGTH
+        ));
+    }
+
+    Ok(())
+}
+
 pub fn assert_bot(user_agent: &Option<String>) -> Result<(), String> {
     match user_agent.clone() {
         None => {}
@@ -146,6 +155,35 @@ pub fn assert_bot(user_agent: &Option<String>) -> Result<(), String> {
                 return Err(ERROR_BOT_CALL.to_string());
             }
         }
+    }
+
+    Ok(())
+}
+
+pub fn assert_session_id(
+    user_session_id: &String,
+    current_session_id: &String,
+) -> Result<(), String> {
+    if user_session_id != current_session_id {
+        return Err(format!(
+            "Session IDs do not match ({} - {})",
+            current_session_id, user_session_id
+        ));
+    }
+
+    Ok(())
+}
+
+pub fn assert_satellite_id(
+    user_satellite_id: SatelliteId,
+    current_satellite_id: SatelliteId,
+) -> Result<(), String> {
+    if principal_not_equal(user_satellite_id, current_satellite_id) {
+        return Err(format!(
+            "Satellite IDs do not match ({} - {})",
+            user_satellite_id.to_text(),
+            current_satellite_id.to_text()
+        ));
     }
 
     Ok(())

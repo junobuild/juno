@@ -10,10 +10,9 @@
 	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
 	import type { SetControllerParams } from '$lib/types/controllers';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let missionControlId: Principal;
-
-	let controllers: Principal[] = [];
 
 	const list = (): Promise<[Principal, Controller][]> =>
 		listMissionControlControllers({ missionControlId });
@@ -35,4 +34,10 @@
 	];
 </script>
 
-<Controllers {list} {remove} {add} {extraControllers} />
+<Controllers
+	{list}
+	{remove}
+	{add}
+	{extraControllers}
+	segment={{ label: $i18n.mission_control.title, id: missionControlId }}
+/>

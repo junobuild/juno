@@ -23,8 +23,12 @@
 		} & SetControllerParams
 	) => Promise<void>;
 	let load: () => Promise<void>;
+	let segment: {
+		label: string;
+		id: Principal;
+	};
 
-	$: ({ add, load } = detail as JunoModalCreateControllerDetail);
+	$: ({ add, load, segment } = detail as JunoModalCreateControllerDetail);
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
 
@@ -109,6 +113,13 @@
 			</p>
 
 			<div class="summary">
+				<div>
+					<Value>
+						<svelte:fragment slot="label">{segment.label}</svelte:fragment>
+						<Identifier identifier={segment.id.toText()} shorten={false} small={false} />
+					</Value>
+				</div>
+
 				<div>
 					<Value>
 						<svelte:fragment slot="label">{$i18n.controllers.new_controller_id}</svelte:fragment>

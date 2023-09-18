@@ -5,6 +5,7 @@
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import { listOrbiterControllers } from '$lib/api/orbiter.api';
 	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let orbiterId: Principal;
 
@@ -28,7 +29,7 @@
 </script>
 
 <div>
-	<Controllers {list} {remove} {add} />
+	<Controllers {list} {remove} {add} segment={{ label: $i18n.analytics.orbiter, id: orbiterId }} />
 </div>
 
 <style lang="scss">

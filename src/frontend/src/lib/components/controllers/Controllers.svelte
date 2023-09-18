@@ -25,6 +25,10 @@
 			missionControlId: Principal;
 		} & SetControllerParams
 	) => Promise<void>;
+	export let segment: {
+		label: string;
+		id: Principal;
+	};
 
 	// The canister and user are controllers of the mission control but not added in its state per default
 	export let extraControllers: [Principal, Controller | undefined][] = [];
@@ -92,11 +96,13 @@
 						<Identifier identifier={controllerId.toText()} shorten={false} small={false} />
 					</td>
 
-					<td class="profile">{metadataProfile(controller?.metadata ?? [])}</td>
+					<td class="profile"
+						>{metadataProfile(nonNullish(controller) ? controller.metadata : [])}</td
+					>
 
 					<td class="scope">
 						{#if nonNullish(controller)}
-							{#if 'Write' in controller?.scope}
+							{#if nonNullish(controller) && 'Write' in controller.scope}
 								{$i18n.controllers.write}
 							{:else}
 								{$i18n.controllers.admin}
@@ -108,7 +114,7 @@
 	</table>
 </div>
 
-<ControllerAdd {add} {load} />
+<ControllerAdd {add} {load} {segment} />
 
 <ControllerDelete bind:selectedController bind:visible={visibleDelete} {load} {remove} />
 

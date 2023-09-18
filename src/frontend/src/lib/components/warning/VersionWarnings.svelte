@@ -53,8 +53,6 @@
 	$: ctrlWarning =
 		nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
 
-	const helpLink = 'https://juno.build/docs/miscellaneous/cli#upgrade';
-
 	const openModal = async ({
 		currentVersion,
 		type,

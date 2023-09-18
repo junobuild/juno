@@ -97,6 +97,7 @@ interface I18nMission_control {
 	credits: string;
 	transactions: string;
 	transfer_icp_info: string;
+	transfer_to_account_identifier: string;
 }
 
 interface I18nAuthentication {
@@ -144,6 +145,7 @@ interface I18nAnalytics {
 	count: string;
 	referrers: string;
 	enabled: string;
+	orbiter: string;
 }
 
 interface I18nHosting {

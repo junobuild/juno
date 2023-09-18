@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { PermissionText } from '$lib/constants/rules.constants';
-	import { deleteRule, setRule } from '$lib/api/satellites.api';
+	import { setRule } from '$lib/api/satellites.api';
 	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import { busy } from '$lib/stores/busy.store';

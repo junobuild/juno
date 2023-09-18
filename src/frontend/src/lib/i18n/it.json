@@ -89,7 +89,8 @@
 		"balance": "Saldo",
 		"credits": "Crediti",
 		"transactions": "Transazioni",
-		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the"
+		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the",
+		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier"
 	},
 	"authentication": {
 		"title": "Autenticazione",
@@ -132,7 +133,8 @@
 		"tracked_events": "Tracked events",
 		"count": "Count",
 		"referrers": "Top 10 referrers",
-		"enabled": "Enabled"
+		"enabled": "Enabled",
+		"orbiter": "Orbiter"
 	},
 	"hosting": {
 		"title": "Hosting",

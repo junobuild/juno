@@ -4,7 +4,6 @@
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import { loadVersion } from '$lib/services/console.services';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { compare } from 'semver';
 	import { emit } from '$lib/utils/events.utils';
@@ -12,14 +11,16 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { newerReleases } from '$lib/services/upgrade.services';
 
+	export let satellite: Satellite | undefined = undefined;
+
 	const load = async (skipReload: boolean) =>
 		await loadVersion({
-			satelliteId: $satelliteStore?.satellite_id,
+			satelliteId: satellite?.satellite_id,
 			missionControlId: $missionControlStore,
 			skipReload
 		});
 
-	$: $missionControlStore, $satelliteStore, (async () => await load(true))();
+	$: $missionControlStore, satellite, (async () => await load(true))();
 
 	let satVersion: string | undefined;
 	let satRelease: string | undefined;
@@ -28,12 +29,12 @@
 	let ctrlRelease: string | undefined;
 
 	$: satVersion =
-		nonNullish($satelliteStore) && nonNullish($satelliteStore?.satellite_id)
-			? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.current
+		nonNullish(satellite) && nonNullish(satellite?.satellite_id)
+			? $versionStore?.satellites[satellite?.satellite_id.toText()]?.current
 			: undefined;
 	$: satRelease =
-		nonNullish($satelliteStore) && nonNullish($satelliteStore?.satellite_id)
-			? $versionStore?.satellites[$satelliteStore?.satellite_id.toText()]?.release
+		nonNullish(satellite) && nonNullish(satellite?.satellite_id)
+			? $versionStore?.satellites[satellite?.satellite_id.toText()]?.release
 			: undefined;
 
 	$: ctrlVersion = $versionStore?.missionControl?.current;
@@ -91,7 +92,7 @@
 	const upgradeSatellite = async () =>
 		await openModal({
 			type: 'upgrade_satellite',
-			satellite: $satelliteStore!,
+			satellite: satellite!,
 			currentVersion: satVersion!
 		});
 

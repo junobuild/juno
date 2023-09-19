@@ -9,6 +9,7 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
+	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 
@@ -47,4 +48,8 @@
 
 {#if modal?.type === 'upgrade_mission_control' && nonNullish(modal.detail)}
 	<MissionControlUpgradeModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'upgrade_orbiter' && nonNullish(modal.detail)}
+	<OrbiterUpgradeModal on:junoClose={close} detail={modal.detail} />
 {/if}

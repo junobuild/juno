@@ -241,8 +241,9 @@
 		"full_path": "Full path"
 	},
 	"admin": {
-		"mission_control_new_version": "Una nuova versione del tuo mission control è disponibile! Aggiornalo con la CLI.",
-		"satellite_new_version": "Una nuova versione del tuo satellite è disponibile! Aggiornalo con la CLI."
+		"mission_control_new_version": "A new version of your mission control is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",
+		"satellite_new_version": "A new version of your satellite is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",
+		"orbiter_new_version": "A new version of your orbiter is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>."
 	},
 	"controllers": {
 		"title": "Controllori",

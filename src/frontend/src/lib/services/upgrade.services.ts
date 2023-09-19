@@ -11,7 +11,7 @@ export const newerReleases = async ({
 	segments
 }: {
 	currentVersion: string;
-	segments: 'mission_controls' | 'satellites';
+	segments: 'mission_controls' | 'satellites' | 'orbiters';
 }): Promise<{ result: string[] | undefined; error?: unknown }> => {
 	try {
 		const metadata = await getReleasesMetadata();
@@ -32,7 +32,7 @@ export const newerReleases = async ({
 };
 
 export const downloadWasm = async (params: {
-	segment: 'satellite' | 'mission_control';
+	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
 }): Promise<Wasm> => {
 	const wasm = await downloadRelease(params);

@@ -28,6 +28,9 @@
 	let ctrlVersion: string | undefined;
 	let ctrlRelease: string | undefined;
 
+	let orbVersion: string | undefined;
+	let orbRelease: string | undefined;
+
 	$: satVersion =
 		nonNullish(satellite) && nonNullish(satellite?.satellite_id)
 			? $versionStore?.satellites[satellite?.satellite_id.toText()]?.current
@@ -40,11 +43,17 @@
 	$: ctrlVersion = $versionStore?.missionControl?.current;
 	$: ctrlRelease = $versionStore?.missionControl?.release;
 
+	$: orbVersion = $versionStore?.orbiter?.current;
+	$: orbRelease = $versionStore?.orbiter?.release;
+
 	let satReady = false;
 	$: satReady = nonNullish($versionStore) && nonNullish(satVersion) && nonNullish(satRelease);
 
 	let ctrlReady = false;
 	$: ctrlReady = nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease);
+
+	let orbReady = false;
+	$: orbReady = nonNullish($versionStore) && nonNullish(orbVersion) && nonNullish(orbRelease);
 
 	let satWarning = false;
 	$: satWarning =
@@ -54,20 +63,29 @@
 	$: ctrlWarning =
 		nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
 
+	let orbWarning = false;
+	$: orbWarning =
+		nonNullish(orbVersion) && nonNullish(orbRelease) && compare(orbVersion, orbRelease) < 0;
+
 	const openModal = async ({
 		currentVersion,
 		type,
 		satellite
 	}: {
 		currentVersion: string;
-		type: 'upgrade_satellite' | 'upgrade_mission_control';
+		type: 'upgrade_satellite' | 'upgrade_mission_control' | 'upgrade_orbiter';
 		satellite?: Satellite;
 	}) => {
 		busy.start();
 
 		const { result, error } = await newerReleases({
 			currentVersion,
-			segments: type === 'upgrade_mission_control' ? 'mission_controls' : 'satellites'
+			segments:
+				type === 'upgrade_mission_control'
+					? 'mission_controls'
+					: type === 'upgrade_orbiter'
+					? 'orbiters'
+					: 'satellites'
 		});
 
 		busy.stop();
@@ -101,6 +119,12 @@
 			type: 'upgrade_mission_control',
 			currentVersion: ctrlVersion!
 		});
+
+	const upgradeOrbiter = async () =>
+		await openModal({
+			type: 'upgrade_orbiter',
+			currentVersion: orbVersion!
+		});
 </script>
 
 <svelte:window on:junoReloadVersions={async () => await load(false)} />
@@ -113,6 +137,17 @@
 		</p>
 
 		<button class="primary" on:click={upgradeMissionControl}>{$i18n.canisters.upgrade}</button>
+	</div>
+{/if}
+
+{#if orbReady && orbWarning}
+	<div>
+		<p>
+			<IconNewReleases />
+			{@html $i18n.admin.orbiter_new_version}
+		</p>
+
+		<button class="primary" on:click={upgradeOrbiter}>{$i18n.canisters.upgrade}</button>
 	</div>
 {/if}
 

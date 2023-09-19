@@ -26,3 +26,9 @@
 </script>
 
 <button on:click={createOrbiter}>{$i18n.analytics.get_started}</button>
+
+<style lang="scss">
+	button {
+		margin: var(--padding-2x) 0 0;
+	}
+</style>

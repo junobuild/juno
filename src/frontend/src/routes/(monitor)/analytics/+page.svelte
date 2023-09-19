@@ -61,7 +61,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/build/datastore">
+	<Tabs help="https://juno.build/docs/build/analytics">
 		<MissionControlGuard>
 			{#if $store.tabId === $store.tabs[0].id}
 				<Analytics />

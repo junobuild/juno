@@ -260,6 +260,7 @@ interface I18nAsset {
 interface I18nAdmin {
 	mission_control_new_version: string;
 	satellite_new_version: string;
+	orbiter_new_version: string;
 }
 
 interface I18nControllers {

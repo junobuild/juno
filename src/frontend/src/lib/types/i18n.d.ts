@@ -98,6 +98,7 @@ interface I18nMission_control {
 	transactions: string;
 	transfer_icp_info: string;
 	transfer_to_account_identifier: string;
+	wallet: string;
 }
 
 interface I18nAuthentication {

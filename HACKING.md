@@ -25,31 +25,13 @@ dfx deploy internet_identity --specified-id rrkah-fqaaa-aaaaa-aaaaq-cai
 
 Collect "internet_identity" canister ID and update [client/src/main.ts](client/src/main.ts) (if not `rrkah-fqaaa-aaaaa-aaaaq-cai`).
 
-Next, deploy the "old" ledger.
-
-Run `npm run ledger:account-id` to get the account identifier for the principal use in NodeJS script.
-
-Then, to install the `ledger` do the two following things:
-
-1. Update the account identifier you just got in the installation script [./script/ledger.sh](./script/ledger.sh)
-
-2. update the entry in `dfx.json` with the private did file
-
-```
-"ledger": {
-  "type": "custom",
-  "wasm": "ledger.wasm",
-  "candid": "ledger.private.did"
-}
-```
-
-then run command line
+Next, deploy the ICP ledger. Run command line:
 
 ```
 ./scripts/ledger.sh
 ```
 
-Revert `dfx.json` and double check that you received the balance:
+Double check that you received the balance:
 
 ```
 npm run ledger:balance

@@ -72,10 +72,9 @@
 		},
 		"ledger": {
 			"type": "custom",
-			"candid": "ledger.public.did",
+			"candid": "ledger.did",
 			"wasm": "ledger.wasm",
 			"remote": {
-				"candid": "ledger.public.did",
 				"id": {
 					"ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
 				}

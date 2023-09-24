@@ -241,8 +241,9 @@
 		"full_path": "完整路徑"
 	},
 	"admin": {
-		"mission_control_new_version": "有一个新mission control版本可以使用! 请用命令行来升级.",
-		"satellite_new_version": "有一个新satellite版本可以使用!请用命令行来升级."
+		"mission_control_new_version": "A new version of your mission control is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",
+		"satellite_new_version": "A new version of your satellite is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",
+		"orbiter_new_version": "A new version of your orbiter is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>."
 	},
 	"controllers": {
 		"title": "控制者",

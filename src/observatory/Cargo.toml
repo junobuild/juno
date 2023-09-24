@@ -10,9 +10,9 @@ crate-type = ["cdylib"]
 
 [dependencies]
 candid = "0.9.3"
-ic-cdk = "0.10.0"
-ic-cdk-macros = "0.7.1"
+ic-cdk = "0.11.0"
+ic-cdk-macros = "0.8.0"
 serde = "1.0.182"
 lazy_static = "1.4.0"
-ic-cdk-timers = "0.4.0"
+ic-cdk-timers = "0.5.0"
 shared = { path = "../shared" }

@@ -1,6 +1,6 @@
 {
 	"name": "@junobuild/juno",
-	"version": "0.0.17",
+	"version": "0.0.18",
 	"private": true,
 	"author": "David Dal Busco <david@fluster.io>",
 	"license": "SEE LICENSE IN LICENSE.md",
@@ -81,7 +81,7 @@
 		"@dfinity/ledger": "next",
 		"@dfinity/principal": "^0.19.2",
 		"@dfinity/utils": "next",
-		"@junobuild/admin": "^0.0.29",
+		"@junobuild/admin": "^0.0.32",
 		"@junobuild/ledger": "^0.0.18",
 		"buffer": "^6.0.3",
 		"idb-keyval": "^6.2.1",

@@ -15,6 +15,8 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadOrbiterVersion } from '$lib/services/console.services';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import Warnings from '$lib/components/warning/Warnings.svelte';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -61,7 +63,13 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/build/datastore">
+	<Tabs help="https://juno.build/docs/build/analytics">
+		<svelte:fragment slot="info">
+			{#if $authSignedInStore}
+				<Warnings />
+			{/if}
+		</svelte:fragment>
+
 		<MissionControlGuard>
 			{#if $store.tabId === $store.tabs[0].id}
 				<Analytics />

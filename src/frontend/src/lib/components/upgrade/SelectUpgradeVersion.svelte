@@ -10,7 +10,7 @@
 
 	export let currentVersion: string;
 	export let newerReleases: string[];
-	export let segment: 'satellite' | 'mission_control';
+	export let segment: 'satellite' | 'mission_control' | 'orbiter';
 
 	let selectedVersion: string | undefined = undefined;
 

@@ -23,9 +23,6 @@ export interface JunoModalUpgradeDetail {
 
 export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail & JunoModalSatelliteDetail;
 
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface JunoModalUpgradeMissionControlDetail extends JunoModalUpgradeDetail {}
-
 export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
 	fee: bigint;
 }
@@ -64,6 +61,7 @@ export interface JunoModal {
 		| 'add_custom_domain'
 		| 'create_controller'
 		| 'upgrade_satellite'
-		| 'upgrade_mission_control';
+		| 'upgrade_mission_control'
+		| 'upgrade_orbiter';
 	detail?: JunoModalDetail;
 }

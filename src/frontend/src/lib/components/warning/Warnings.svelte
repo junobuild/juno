@@ -9,7 +9,7 @@
 	export let satellite: Satellite | undefined = undefined;
 </script>
 
-<VersionWarning />
+<VersionWarning {satellite} />
 
 {#if nonNullish($missionControlStore)}
 	<MissionControlCyclesWarning missionControlId={$missionControlStore} />

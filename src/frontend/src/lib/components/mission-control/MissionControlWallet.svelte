@@ -11,6 +11,10 @@
 	import type { AccountIdentifier } from '@junobuild/ledger';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 	import type { MissionControlBalance } from '$lib/types/balance.types';
+	import type { LedgerCallback } from '$lib/services/worker.ledger.services';
+	import { onDestroy, onMount } from 'svelte';
+	import { initLedgerWorker } from '$lib/services/worker.ledger.services';
+	import type { PostMessageDataResponse } from '$lib/types/post-message';
 
 	let missionControlBalance: MissionControlBalance | undefined = undefined;
 
@@ -43,6 +47,38 @@
 
 		await loadBalance($missionControlStore);
 	};
+
+	/**
+	 * Web Worker
+	 */
+
+	let worker:
+		| {
+				start: (params: { missionControlId: Principal; callback: LedgerCallback }) => void;
+				stop: () => void;
+		  }
+		| undefined;
+
+	onMount(async () => (worker = await initLedgerWorker()));
+	onDestroy(() => worker?.stop());
+
+	const syncState = (data: PostMessageDataResponse) => {
+		console.log(data);
+	};
+
+	$: worker,
+		$missionControlStore,
+		(async () => {
+			if (isNullish($missionControlStore)) {
+				worker?.stop();
+				return;
+			}
+
+			worker?.start({
+				missionControlId: $missionControlStore,
+				callback: syncState
+			});
+		})();
 </script>
 
 <svelte:window on:junoRestartCycles={reloadBalance} />
@@ -60,22 +96,21 @@
 				<p>{formatE8sICP(credits)}</p>
 			</Value>
 
-            <Value>
-                <svelte:fragment slot="label">{$i18n.mission_control.account_identifier}</svelte:fragment>
-                <p>
-                    {#if nonNullish(accountIdentifier)}
-                        <Identifier identifier={accountIdentifier.toHex() ?? ''} />
+			<Value>
+				<svelte:fragment slot="label">{$i18n.mission_control.account_identifier}</svelte:fragment>
+				<p>
+					{#if nonNullish(accountIdentifier)}
+						<Identifier identifier={accountIdentifier.toHex() ?? ''} />
 
-                        <QRCodeContainer
-                                value={accountIdentifier.toHex()}
-                                ariaLabel={$i18n.mission_control.account_identifier}
-                        />
-                    {/if}
-                </p>
-            </Value>
+						<QRCodeContainer
+							value={accountIdentifier.toHex()}
+							ariaLabel={$i18n.mission_control.account_identifier}
+						/>
+					{/if}
+				</p>
+			</Value>
 		</div>
 
-		<div>
-		</div>
+		<div />
 	</div>
 {/if}

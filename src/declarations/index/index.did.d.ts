@@ -1,6 +1,10 @@
 import type { ActorMethod } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
+export interface Account {
+	owner: Principal;
+	subaccount: [] | [Uint8Array | number[]];
+}
 export interface GetAccountIdentifierTransactionsArgs {
 	max_results: bigint;
 	start: [] | [bigint];
@@ -13,6 +17,16 @@ export interface GetAccountIdentifierTransactionsResponse {
 	balance: bigint;
 	transactions: Array<TransactionWithId>;
 	oldest_tx_id: [] | [bigint];
+}
+export type GetAccountIdentifierTransactionsResult =
+	| {
+			Ok: GetAccountIdentifierTransactionsResponse;
+	  }
+	| { Err: GetAccountIdentifierTransactionsError };
+export interface GetAccountTransactionsArgs {
+	max_results: bigint;
+	start: [] | [bigint];
+	account: Account;
 }
 export interface GetBlocksRequest {
 	start: bigint;
@@ -65,9 +79,6 @@ export type Operation =
 				spender: string;
 			};
 	  };
-export type Result =
-	| { Ok: GetAccountIdentifierTransactionsResponse }
-	| { Err: GetAccountIdentifierTransactionsError };
 export interface Status {
 	num_blocks_synced: bigint;
 }
@@ -89,9 +100,17 @@ export interface TransactionWithId {
 }
 export interface _SERVICE {
 	get_account_identifier_balance: ActorMethod<[string], bigint>;
-	get_account_identifier_transactions: ActorMethod<[GetAccountIdentifierTransactionsArgs], Result>;
+	get_account_identifier_transactions: ActorMethod<
+		[GetAccountIdentifierTransactionsArgs],
+		GetAccountIdentifierTransactionsResult
+	>;
+	get_account_transactions: ActorMethod<
+		[GetAccountTransactionsArgs],
+		GetAccountIdentifierTransactionsResult
+	>;
 	get_blocks: ActorMethod<[GetBlocksRequest], GetBlocksResponse>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
+	icrc1_balance_of: ActorMethod<[Account], bigint>;
 	ledger_id: ActorMethod<[], Principal>;
 	status: ActorMethod<[], Status>;
 }

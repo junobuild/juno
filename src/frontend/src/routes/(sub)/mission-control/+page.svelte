@@ -15,7 +15,7 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import MissionControlWallet from "$lib/components/mission-control/MissionControlWallet.svelte";
+	import MissionControlWallet from '$lib/components/mission-control/MissionControlWallet.svelte';
 
 	const tabs: Tab[] = [
 		{

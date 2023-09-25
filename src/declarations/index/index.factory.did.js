@@ -50,9 +50,18 @@ export const idlFactory = ({ IDL }) => {
 	const GetAccountIdentifierTransactionsError = IDL.Record({
 		message: IDL.Text
 	});
-	const Result = IDL.Variant({
+	const GetAccountIdentifierTransactionsResult = IDL.Variant({
 		Ok: GetAccountIdentifierTransactionsResponse,
 		Err: GetAccountIdentifierTransactionsError
+	});
+	const Account = IDL.Record({
+		owner: IDL.Principal,
+		subaccount: IDL.Opt(IDL.Vec(IDL.Nat8))
+	});
+	const GetAccountTransactionsArgs = IDL.Record({
+		max_results: IDL.Nat,
+		start: IDL.Opt(IDL.Nat),
+		account: Account
 	});
 	const GetBlocksRequest = IDL.Record({
 		start: IDL.Nat,
@@ -78,11 +87,17 @@ export const idlFactory = ({ IDL }) => {
 		get_account_identifier_balance: IDL.Func([IDL.Text], [IDL.Nat64], ['query']),
 		get_account_identifier_transactions: IDL.Func(
 			[GetAccountIdentifierTransactionsArgs],
-			[Result],
+			[GetAccountIdentifierTransactionsResult],
+			['query']
+		),
+		get_account_transactions: IDL.Func(
+			[GetAccountTransactionsArgs],
+			[GetAccountIdentifierTransactionsResult],
 			['query']
 		),
 		get_blocks: IDL.Func([GetBlocksRequest], [GetBlocksResponse], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
+		icrc1_balance_of: IDL.Func([Account], [IDL.Nat64], ['query']),
 		ledger_id: IDL.Func([], [IDL.Principal], ['query']),
 		status: IDL.Func([], [Status], ['query'])
 	});

@@ -5,6 +5,7 @@ import type { Canister } from './canister';
 export interface PostMessageDataRequest {
 	canisterIds?: string[];
 	customDomain?: CustomDomain;
+	missionControlId?: string;
 }
 
 export interface PostMessageDataResponse {
@@ -19,7 +20,9 @@ export type PostMessageRequest =
 	| 'startIdleTimer'
 	| 'stopIdleTimer'
 	| 'startCustomDomainRegistrationTimer'
-	| 'stopCustomDomainRegistrationTimer';
+	| 'stopCustomDomainRegistrationTimer'
+	| 'stopLedgerTransactionsTimer'
+	| 'startLedgerTransactionsTimer';
 
 export type PostMessageResponse =
 	| 'syncCanister'

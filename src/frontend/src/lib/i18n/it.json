@@ -90,7 +90,8 @@
 		"credits": "Crediti",
 		"transactions": "Transazioni",
 		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the",
-		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier"
+		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier",
+		"wallet": "Wallet"
 	},
 	"authentication": {
 		"title": "Autenticazione",

@@ -1,5 +1,5 @@
 import type { CronJobs, CronTab } from '$declarations/observatory/observatory.did';
-import { getObservatoryActor } from '$lib/utils/actor.utils';
+import { getObservatoryActor } from '$lib/utils/actor.juno.utils';
 import { toNullable } from '$lib/utils/did.utils';
 import type { Principal } from '@dfinity/principal';
 

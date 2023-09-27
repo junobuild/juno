@@ -11,7 +11,7 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import type { PermissionText } from '$lib/constants/rules.constants';
 import type { ListParams } from '$lib/types/list';
-import { getSatelliteActor } from '$lib/utils/actor.utils';
+import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
 import { toNullable } from '$lib/utils/did.utils';
 import { permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';

@@ -1,5 +1,5 @@
 import type { _SERVICE as CMCActor } from '$declarations/cmc/cmc.did';
-import { getCMCActor } from '$lib/utils/actor.cjs.utils';
+import { getCMCActor } from '$lib/utils/actor.ic.utils';
 
 const NUMBER_XDR_PER_ONE_ICP = 10_000;
 

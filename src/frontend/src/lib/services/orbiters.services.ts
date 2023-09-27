@@ -2,7 +2,7 @@ import type { Orbiter } from '$declarations/mission_control/mission_control.did'
 import { i18n } from '$lib/stores/i18n.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
-import { getMissionControlActor } from '$lib/utils/actor.utils';
+import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 import { toNullable } from '$lib/utils/did.utils';
 import { assertNonNullish, isNullish, nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';

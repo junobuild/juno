@@ -59,35 +59,23 @@ const config: UserConfig = {
 				manualChunks: (id) => {
 					const folder = dirname(id);
 
+					const lazy = ['@junobuild/ledger', '@dfinity/ledger', '@junobuild/admin'];
+
 					if (
-						['@sveltejs', 'svelte', 'layercake', '@dfinity/gix-components'].find((lib) =>
-							folder.includes(lib)
-						) === undefined &&
+						['@sveltejs', 'svelte', ...lazy].find((lib) => folder.includes(lib)) === undefined &&
 						folder.includes('node_modules')
 					) {
 						return 'vendor';
 					}
 
 					if (
-						[
-							'frontend/src/lib/api',
-							'frontend/src/lib/services',
-							'frontend/src/lib/rest',
-							'frontend/src/lib/stores',
-							'frontend/src/lib/utils',
-							'frontend/src/lib/workers'
-						].find((module) => folder.includes(module)) !== undefined
+						lazy.find((lib) => folder.includes(lib)) !== undefined &&
+						folder.includes('node_modules')
 					) {
-						return 'dapp';
+						return 'lazy';
 					}
 
-					if (
-						['frontend/src/lib/components/ui', 'frontend/src/lib/components/icons'].find((module) =>
-							folder.includes(module)
-						) !== undefined
-					) {
-						return 'ui';
-					}
+					return 'index';
 				}
 			},
 			// Polyfill Buffer for production build

@@ -1,7 +1,9 @@
 import { getTransactions } from '$lib/api/ledger.api';
 import { SYNC_LEDGER_TRANSACTIONS_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import { loadIdentity } from '$lib/utils/agent.utils';
 import { isNullish } from '$lib/utils/utils';
+import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
@@ -34,7 +36,14 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 		return;
 	}
 
-	const sync = async () => await syncTransactions({ missionControlId });
+	const identity = await loadIdentity();
+
+	if (isNullish(identity)) {
+		// We do nothing if no identity
+		return;
+	}
+
+	const sync = async () => await syncTransactions({ missionControlId, identity });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -44,7 +53,13 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 
 let syncing = false;
 
-const syncTransactions = async ({ missionControlId }: { missionControlId: string }) => {
+const syncTransactions = async ({
+	missionControlId,
+	identity
+}: {
+	missionControlId: string;
+	identity: Identity;
+}) => {
 	// We avoid to relaunch a sync while previous sync is not finished
 	if (syncing) {
 		return;
@@ -53,7 +68,12 @@ const syncTransactions = async ({ missionControlId }: { missionControlId: string
 	syncing = true;
 
 	try {
-		const results = await getTransactions({ owner: Principal.fromText(missionControlId) });
+		const results = await getTransactions({
+			identity,
+			owner: Principal.fromText(missionControlId)
+		});
+
+		// TODO: postMessage
 		console.log(results);
 	} catch (err: unknown) {
 		console.error(err);

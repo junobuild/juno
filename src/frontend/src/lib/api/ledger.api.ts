@@ -1,19 +1,21 @@
 import { localIdentityCanisterId } from '$lib/constants/constants';
-import { authStore } from '$lib/stores/auth.store';
-import { nonNullish } from '$lib/utils/utils';
+import { isNullish, nonNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import type { GetAccountIdentifierTransactionsResponse } from '@junobuild/ledger';
 import { AccountIdentifier, balance, transactions } from '@junobuild/ledger';
-import { get } from 'svelte/store';
 
 export const getAccountIdentifier = (principal: Principal): AccountIdentifier =>
 	AccountIdentifier.fromPrincipal({ principal, subAccount: undefined });
 
-export const getBalance = (owner: Principal): Promise<bigint> => {
-	const identity: Identity | undefined | null = get(authStore).identity;
-
-	if (!identity) {
+export const getBalance = ({
+	owner,
+	identity
+}: {
+	owner: Principal;
+	identity: Identity | undefined | null;
+}): Promise<bigint> => {
+	if (isNullish(identity)) {
 		throw new Error('No internet identity.');
 	}
 
@@ -27,13 +29,13 @@ export const getBalance = (owner: Principal): Promise<bigint> => {
 };
 
 export const getTransactions = ({
-	owner
+	owner,
+	identity
 }: {
 	owner: Principal;
+	identity: Identity | undefined | null;
 }): Promise<GetAccountIdentifierTransactionsResponse> => {
-	const identity: Identity | undefined | null = get(authStore).identity;
-
-	if (!identity) {
+	if (isNullish(identity)) {
 		throw new Error('No internet identity.');
 	}
 

@@ -2,9 +2,10 @@ import { getTransactions } from '$lib/api/ledger.api';
 import { SYNC_LEDGER_TRANSACTIONS_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { loadIdentity } from '$lib/utils/agent.utils';
-import { isNullish } from '$lib/utils/utils';
+import { isNullish, last } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
+import type { TransactionWithId, Transaction } from '@junobuild/ledger';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -53,6 +54,10 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 
 let syncing = false;
 
+let transactions: Record<string, Transaction> = {};
+let start: bigint | undefined = undefined;
+let maxResults = 2n;
+
 const syncTransactions = async ({
 	missionControlId,
 	identity
@@ -68,13 +73,41 @@ const syncTransactions = async ({
 	syncing = true;
 
 	try {
-		const results = await getTransactions({
+		const { transactions: fetchedTransactions, ...rest } = await getTransactions({
 			identity,
-			owner: Principal.fromText(missionControlId)
+			owner: Principal.fromText(missionControlId),
+			start,
+			maxResults
 		});
 
+		const newTransactions = fetchedTransactions.filter(
+			({ id }) => id !== transactions?.[id]
+		);
+
+		console.log(newTransactions)
+
+		if (newTransactions.length === 0) {
+			// No new transactions
+			return;
+		}
+
+		start = last(newTransactions.sort(({ id: idA, id: idB }) => (idA > idB ? -1 : 1)))?.id;
+
+		// start = isNullish(oldest) ? undefined : oldest - maxResults;
+
+		console.log(start, newTransactions);
+
+		transactions = {
+			...transactions,
+			...newTransactions.reduce((acc, {id, transaction}) => ({
+				...acc,
+				[id]: transaction
+			}), {})
+		};
+
+		console.log('store', transactions);
+
 		// TODO: postMessage
-		console.log(results);
 	} catch (err: unknown) {
 		console.error(err);
 		stopTimer();

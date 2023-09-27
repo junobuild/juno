@@ -30,10 +30,14 @@ export const getBalance = ({
 
 export const getTransactions = ({
 	owner,
-	identity
+	identity,
+	start,
+	maxResults = 100n
 }: {
 	owner: Principal;
 	identity: Identity | undefined | null;
+	start?: bigint;
+	maxResults?: bigint;
 }): Promise<GetAccountIdentifierTransactionsResponse> => {
 	if (isNullish(identity)) {
 		throw new Error('No internet identity.');
@@ -45,8 +49,8 @@ export const getTransactions = ({
 			identity
 		},
 		args: {
-			start: undefined,
-			max_results: 100n,
+			start,
+			max_results: maxResults,
 			account_identifier: getAccountIdentifier(owner).toHex()
 		}
 	});

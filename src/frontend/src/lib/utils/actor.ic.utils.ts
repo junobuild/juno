@@ -2,10 +2,10 @@ import type { _SERVICE as CMCActor } from '$declarations/cmc/cmc.did';
 import { idlFactory as idlFactorCMC } from '$declarations/cmc/cmc.factory.did';
 import type { _SERVICE as ICActor } from '$declarations/ic/ic.did';
 import { idlFactory as idlFactorIC } from '$declarations/ic/ic.factory.did';
-import { getAgent } from '$lib/utils/agent.cjs.utils';
-import type { ActorConfig, ActorMethod, ActorSubclass, CallConfig } from '@dfinity/agent';
-import { Actor, AnonymousIdentity, type Identity } from '@dfinity/agent/lib/cjs/index';
-import type { IDL } from '@dfinity/candid';
+import { createActor } from '$lib/utils/actor.utils';
+import { getAgent } from '$lib/utils/agent.utils';
+import type { CallConfig } from '@dfinity/agent';
+import { Actor, AnonymousIdentity, type Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 
 export const getCMCActor = async (): Promise<CMCActor> => {
@@ -51,24 +51,3 @@ export const getICActor = (identity: Identity): Promise<ICActor> =>
 		idlFactory: idlFactorIC,
 		identity
 	});
-
-const createActor = async <T = Record<string, ActorMethod>>({
-	canisterId,
-	idlFactory,
-	identity,
-	config
-}: {
-	canisterId: string | Principal;
-	idlFactory: IDL.InterfaceFactory;
-	identity: Identity;
-	config: Pick<ActorConfig, 'callTransform' | 'queryTransform'>;
-}): Promise<ActorSubclass<T>> => {
-	const agent = await getAgent({ identity });
-
-	// Creates an actor with using the candid interface and the HttpAgent
-	return Actor.createActor(idlFactory, {
-		agent,
-		canisterId,
-		...config
-	});
-};

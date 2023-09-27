@@ -7,7 +7,7 @@ import type {
 	TrackEvent
 } from '$declarations/orbiter/orbiter.did';
 import type { PageViewsPeriod } from '$lib/types/ortbiter';
-import { getOrbiterActor } from '$lib/utils/actor.utils';
+import { getOrbiterActor } from '$lib/utils/actor.juno.utils';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { toNullable } from '$lib/utils/did.utils';
 import { nonNullish } from '$lib/utils/utils';

@@ -1,6 +1,6 @@
 import type { _SERVICE as ICActor } from '$declarations/ic/ic.did';
 import type { CanisterInfo, CanisterStatus } from '$lib/types/canister';
-import { getICActor } from '$lib/utils/actor.cjs.utils';
+import { getICActor } from '$lib/utils/actor.ic.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 

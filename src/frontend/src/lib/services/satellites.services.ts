@@ -2,7 +2,7 @@ import type { Satellite } from '$declarations/mission_control/mission_control.di
 import { i18n } from '$lib/stores/i18n.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
-import { getMissionControlActor } from '$lib/utils/actor.utils';
+import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 import { assertNonNullish, isNullish, nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';

@@ -1,7 +1,7 @@
 import type { Controller, Satellite } from '$declarations/mission_control/mission_control.did';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Metadata } from '$lib/types/metadata';
-import { getMissionControlActor } from '$lib/utils/actor.utils';
+import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 import { toSetController } from '$lib/utils/controllers.utils';
 import { Principal } from '@dfinity/principal';
 

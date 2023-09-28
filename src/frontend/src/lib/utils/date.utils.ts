@@ -12,6 +12,21 @@ export const formatToDate = (nanoseconds: bigint): string => {
 	return date.toLocaleDateString('en', options);
 };
 
+export const formatToDateNumeric = (nanoseconds: bigint): string => {
+	const options: Intl.DateTimeFormatOptions = {
+		year: 'numeric',
+		month: 'numeric',
+		day: 'numeric',
+		hour: 'numeric',
+		minute: 'numeric',
+		second: 'numeric',
+		hour12: false
+	};
+
+	const date = new Date(Number(nanoseconds / 1_000_000n));
+	return date.toLocaleDateString('en', options);
+};
+
 export const formatToDay = (date: Date): string => {
 	const options: Intl.DateTimeFormatOptions = {
 		month: 'short',

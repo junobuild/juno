@@ -1,4 +1,5 @@
-import { formatToDate } from '$lib/utils/date.utils';
+import { formatToDateNumeric } from '$lib/utils/date.utils';
+import { saveToCSVFile } from '$lib/utils/save.utils';
 import { nonNullish } from '$lib/utils/utils';
 import {
 	transactionAmount,
@@ -42,7 +43,7 @@ export const exportTransactions = async ({
 
 		return [
 			`${id}`,
-			nonNullish(timestamp) ? formatToDate(timestamp) : '',
+			nonNullish(timestamp) ? formatToDateNumeric(timestamp).replace(',', '') : '',
 			from,
 			to,
 			memo,
@@ -52,5 +53,12 @@ export const exportTransactions = async ({
 
 	const csv = transactionsCsv.map((transaction) => transaction.join(',')).join('\n');
 
+	const date = new Date().toJSON().split('.')[0].replace(/:/g, '-');
 
+	await saveToCSVFile({
+		blob: new Blob([csv], {
+			type: 'text/csv'
+		}),
+		filename: `Juno_transactions_${date}.csv`
+	});
 };

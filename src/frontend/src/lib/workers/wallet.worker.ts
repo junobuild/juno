@@ -6,7 +6,7 @@ import { isNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { jsonReplacer } from '@dfinity/utils';
-import type { Transaction } from '@junobuild/ledger';
+import type { Transaction, TransactionWithId } from '@junobuild/ledger';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -81,7 +81,7 @@ const syncWallet = async ({
 		});
 
 		const newTransactions = fetchedTransactions.filter(
-			({ id }: Transaction) => !Object.keys(transactions).includes(`${id}`)
+			({ id }: TransactionWithId) => !Object.keys(transactions).includes(`${id}`)
 		);
 
 		if (newTransactions.length === 0) {
@@ -93,7 +93,7 @@ const syncWallet = async ({
 		transactions = {
 			...transactions,
 			...newTransactions.reduce(
-				(acc: Record<string, Transaction>, { id, transaction }: Transaction) => ({
+				(acc: Record<string, Transaction>, { id, transaction }: TransactionWithId) => ({
 					...acc,
 					[`${id}`]: transaction
 				}),

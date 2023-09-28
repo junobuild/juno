@@ -24,8 +24,7 @@ export type PostMessageRequest =
 	| 'startCustomDomainRegistrationTimer'
 	| 'stopCustomDomainRegistrationTimer'
 	| 'stopWalletTimer'
-	| 'startWalletTimer'
-	| 'reloadWallet';
+	| 'startWalletTimer';
 
 export type PostMessageResponse =
 	| 'syncCanister'

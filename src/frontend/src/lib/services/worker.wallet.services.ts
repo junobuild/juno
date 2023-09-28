@@ -6,7 +6,6 @@ export type WalletCallback = (data: PostMessageDataResponse) => void;
 export interface WalletWorker {
 	start: (params: { missionControlId: Principal; callback: WalletCallback }) => void;
 	stop: () => void;
-	reload: () => void;
 }
 
 export const initWalletWorker = async (): Promise<WalletWorker> => {
@@ -43,11 +42,6 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 		stop: () => {
 			worker.postMessage({
 				msg: 'stopWalletTimer'
-			});
-		},
-		reload: () => {
-			worker.postMessage({
-				msg: 'reloadWallet'
 			});
 		}
 	};

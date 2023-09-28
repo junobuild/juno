@@ -17,7 +17,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { TransactionWithId } from '@junobuild/ledger';
 	import MissionControlTransactions from '$lib/components/mission-control/MissionControlTransactions.svelte';
-	import {jsonReviver} from "@dfinity/utils";
+	import { jsonReviver } from '@dfinity/utils';
 
 	export let missionControlId: Principal;
 
@@ -81,8 +81,6 @@
 	onDestroy(() => worker?.stop());
 </script>
 
-<svelte:window on:junoRestartCycles={() => worker?.reload()} />
-
 {#if $authSignedInStore}
 	<div class="card-container columns-3">
 		<div>
@@ -107,8 +105,8 @@
 		<div>
 			{#if nonNullish(accountIdentifier)}
 				<QRCodeContainer
-						value={accountIdentifier.toHex()}
-						ariaLabel={$i18n.mission_control.account_identifier}
+					value={accountIdentifier.toHex()}
+					ariaLabel={$i18n.mission_control.account_identifier}
 				/>
 			{/if}
 		</div>

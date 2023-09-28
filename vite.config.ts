@@ -62,7 +62,8 @@ const config: UserConfig = {
 					const lazy = ['@junobuild/ledger', '@junobuild/admin'];
 
 					if (
-						['@sveltejs', 'svelte', ...lazy].find((lib) => folder.includes(lib)) === undefined &&
+						['@sveltejs', 'svelte', 'layercake', ...lazy].find((lib) => folder.includes(lib)) ===
+							undefined &&
 						folder.includes('node_modules')
 					) {
 						return 'vendor';

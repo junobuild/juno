@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { createHash } from 'crypto';
-import { readFileSync, writeFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { findHtmlFiles } from './build.utils.mjs';
 
 const buildCsp = (htmlFile) => {

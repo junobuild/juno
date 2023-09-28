@@ -55,7 +55,6 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 let syncing = false;
 
 let transactions: Record<string, Transaction> = {};
-let start: bigint | undefined = undefined;
 let maxResults = 2n;
 
 const syncTransactions = async ({
@@ -76,32 +75,34 @@ const syncTransactions = async ({
 		const { transactions: fetchedTransactions, ...rest } = await getTransactions({
 			identity,
 			owner: Principal.fromText(missionControlId),
-			start,
+			// We query tip to discover the new transactions
+			start: undefined,
 			maxResults
 		});
 
 		const newTransactions = fetchedTransactions.filter(
-			({ id }) => id !== transactions?.[id]
+			({ id }) => !Object.keys(transactions).includes(`${id}`)
 		);
 
-		console.log(newTransactions)
+		console.log('fetchedTransactions', fetchedTransactions);
 
 		if (newTransactions.length === 0) {
 			// No new transactions
+			syncing = false;
 			return;
 		}
 
-		start = last(newTransactions.sort(({ id: idA, id: idB }) => (idA > idB ? -1 : 1)))?.id;
+		// start = last(newTransactions.sort(({ id: idA, id: idB }) => (idA > idB ? -1 : 1)))?.id;
 
 		// start = isNullish(oldest) ? undefined : oldest - maxResults;
 
-		console.log(start, newTransactions);
+		// console.log(start, newTransactions);
 
 		transactions = {
 			...transactions,
 			...newTransactions.reduce((acc, {id, transaction}) => ({
 				...acc,
-				[id]: transaction
+				[`${id}`]: transaction
 			}), {})
 		};
 

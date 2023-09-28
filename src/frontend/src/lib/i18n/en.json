@@ -84,14 +84,27 @@
 	"mission_control": {
 		"title": "Mission Control",
 		"overview": "Overview",
-		"id": "ID",
+		"id": "ID"
+	},
+	"wallet": {
+		"title": "Wallet",
 		"account_identifier": "Account identifier",
 		"balance": "Balance",
 		"credits": "Credits",
-		"transactions": "Transactions",
 		"transfer_icp_info": "Find more information about transferring funds to your mission control in the",
 		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier",
-		"wallet": "Wallet"
+		"tx_id": "ID",
+		"tx_timestamp": "Timestamp",
+		"tx_from": "From",
+		"tx_to": "To",
+		"tx_memo": "Memo",
+		"tx_amount": "Amount",
+		"memo_create": "Segment created",
+		"memo_refund_satellite": "Satellite refund",
+		"memo_refund_orbiter": "Orbiter refund",
+		"memo_refund_top_up": "Top-up segment",
+		"memo_received": "Received",
+		"memo_sent": "Sent"
 	},
 	"authentication": {
 		"title": "Authentication",

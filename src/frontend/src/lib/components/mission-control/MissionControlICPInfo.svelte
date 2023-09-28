@@ -11,13 +11,13 @@
 
 {#if nonNullish($missionControlStore) && nonNullish(accountIdentifier)}
 	<p>
-		{$i18n.mission_control.transfer_to_account_identifier}
+		{$i18n.wallet.transfer_to_account_identifier}
 		<strong><Identifier identifier={accountIdentifier.toHex()} /></strong>.
 	</p>
 {/if}
 
 <p>
-	{$i18n.mission_control.transfer_icp_info}
+	{$i18n.wallet.transfer_icp_info}
 	<ExternalLink underline href="https://juno.build/docs/pricing#sending-icp-to-your-mission-control"
 		>documentation</ExternalLink
 	>.

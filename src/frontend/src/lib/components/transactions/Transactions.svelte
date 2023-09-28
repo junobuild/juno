@@ -2,7 +2,10 @@
 	import type { TransactionWithId } from '@junobuild/ledger';
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { Principal } from '@dfinity/principal';
 
+	export let missionControlId: Principal;
 	export let transactions: TransactionWithId[];
 	export let disableInfiniteScroll = false;
 </script>
@@ -12,18 +15,18 @@
 		<table>
 			<thead>
 				<tr>
-					<th class="id"> ID </th>
-					<th class="age"> Timestamp </th>
-					<th class="from"> From </th>
-					<th class="to"> To </th>
-					<th class="memo"> Memo </th>
-					<th class="amount"> Amount </th>
+					<th class="id"> {$i18n.wallet.tx_id} </th>
+					<th class="timestamp"> {$i18n.wallet.tx_timestamp} </th>
+					<th class="from"> {$i18n.wallet.tx_from} </th>
+					<th class="to"> {$i18n.wallet.tx_to} </th>
+					<th class="memo"> {$i18n.wallet.tx_memo} </th>
+					<th class="amount"> {$i18n.wallet.tx_amount} </th>
 				</tr>
 			</thead>
 
 			<tbody>
 				{#each transactions as transactionWithId (transactionWithId.id)}
-					<Transaction {transactionWithId} />
+					<Transaction {transactionWithId} {missionControlId} />
 				{/each}
 			</tbody>
 		</table>
@@ -42,7 +45,7 @@
 	}
 
 	.id,
-	.age,
+	.timestamp,
 	.memo {
 		display: none;
 

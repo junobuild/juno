@@ -84,14 +84,27 @@
 	"mission_control": {
 		"title": "Mission Control",
 		"overview": "Panoramica",
-		"id": "ID",
+		"id": "ID"
+	},
+	"wallet": {
+		"title": "Wallet",
 		"account_identifier": "Account identifier",
 		"balance": "Saldo",
 		"credits": "Crediti",
-		"transactions": "Transazioni",
 		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the",
 		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier",
-		"wallet": "Wallet"
+		"tx_id": "ID",
+		"tx_timestamp": "Timestamp",
+		"tx_from": "From",
+		"tx_to": "To",
+		"tx_memo": "Memo",
+		"tx_amount": "Amount",
+		"memo_create": "Segment created",
+		"memo_refund_satellite": "Satellite refund",
+		"memo_refund_orbiter": "Orbiter refund",
+		"memo_refund_top_up": "Top-up segment",
+		"memo_received": "Received",
+		"memo_sent": "Sent"
 	},
 	"authentication": {
 		"title": "Autenticazione",
@@ -186,6 +199,7 @@
 		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite.",
 		"satellite_missing_name": "A name must be provided.",
 		"ledger_balance_credits": "Errore/i imprevisto/i durante il caricamento del saldo del tuo mission control e dei crediti.",
+		"load_credits": "Cannot load your current credits status.",
 		"hosting_missing_domain_name": "E' obbligatorio scegliere un nome a dominio",
 		"hosting_invalid_url": "Inserisci un URL valido.",
 		"hosting_missing_dns_configuration": "E' obbligatorio fornire una configurazione del nome a dominio",
@@ -219,7 +233,8 @@
 		"orbiters_loading": "Error while loading the list of orbiters.",
 		"orbiter_configuration_missing": "Satellites and configuration must be provided.",
 		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
-		"orbiter_configuration_listing": "Error while fetching the configuration."
+		"orbiter_configuration_listing": "Error while fetching the configuration.",
+		"transactions_next": "Error while fetching the next transactions."
 	},
 	"document": {
 		"owner": "Proprietario",

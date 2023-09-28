@@ -130,19 +130,19 @@
 	<div class="card-container columns-3">
 		<div>
 			<Value>
-				<svelte:fragment slot="label">{$i18n.mission_control.account_identifier}</svelte:fragment>
+				<svelte:fragment slot="label">{$i18n.wallet.account_identifier}</svelte:fragment>
 				<p>
 					<Identifier identifier={accountIdentifier?.toHex() ?? ''} />
 				</p>
 			</Value>
 
 			<Value>
-				<svelte:fragment slot="label">{$i18n.mission_control.balance}</svelte:fragment>
+				<svelte:fragment slot="label">{$i18n.wallet.balance}</svelte:fragment>
 				<p>{formatE8sICP(balance)} ICP</p>
 			</Value>
 
 			<Value>
-				<svelte:fragment slot="label">{$i18n.mission_control.credits}</svelte:fragment>
+				<svelte:fragment slot="label">{$i18n.wallet.credits}</svelte:fragment>
 				<p>{formatE8sICP(credits)}</p>
 			</Value>
 		</div>
@@ -151,11 +151,16 @@
 			{#if nonNullish(accountIdentifier)}
 				<QRCodeContainer
 					value={accountIdentifier.toHex()}
-					ariaLabel={$i18n.mission_control.account_identifier}
+					ariaLabel={$i18n.wallet.account_identifier}
 				/>
 			{/if}
 		</div>
 	</div>
 
-	<Transactions {transactions} {disableInfiniteScroll} on:junoIntersect={onIntersect} />
+	<Transactions
+		{transactions}
+		{disableInfiniteScroll}
+		{missionControlId}
+		on:junoIntersect={onIntersect}
+	/>
 {/if}

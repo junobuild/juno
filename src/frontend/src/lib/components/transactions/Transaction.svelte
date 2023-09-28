@@ -12,7 +12,10 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { Principal } from '@dfinity/principal';
 
+	export let missionControlId: Principal;
 	export let transactionWithId: TransactionWithId;
 
 	let id: bigint;
@@ -32,7 +35,7 @@
 
 <tr in:fade>
 	<td class="id">{`${id}`}</td>
-	<td class="age">
+	<td class="timestamp">
 		{#if nonNullish(timestamp)}
 			{formatToDate(timestamp)}
 		{/if}
@@ -45,14 +48,16 @@
 	</td>
 	<td class="memo"
 		>{transaction.memo === MEMO_CANISTER_CREATE
-			? 'Create satellite'
+			? $i18n.wallet.memo_create
 			: transaction.memo === MEMO_SATELLITE_CREATE_REFUND
-			? 'Create satellite refund'
+			? $i18n.wallet.memo_refund_satellite
 			: transaction.memo === MEMO_ORBITER_CREATE_REFUND
-			? 'Create orbiter refund'
+			? $i18n.wallet.memo_refund_orbiter
 			: transaction.memo === MEMO_CANISTER_TOP_UP
-			? 'Top-up'
-			: 'Received'}</td
+			? $i18n.wallet.memo_refund_top_up
+			: from === missionControlId.toText()
+			? $i18n.wallet.memo_sent
+			: $i18n.wallet.memo_received}</td
 	>
 	<td class="amount">
 		{#if 'Transfer' in transaction.operation}
@@ -65,7 +70,7 @@
 	@use '../../styles/mixins/media';
 
 	.id,
-	.age,
+	.timestamp,
 	.memo {
 		display: none;
 

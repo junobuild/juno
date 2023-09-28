@@ -84,14 +84,27 @@
 	"mission_control": {
 		"title": "Mission Control",
 		"overview": "概要",
-		"id": "ID",
+		"id": "ID"
+	},
+	"wallet": {
+		"title": "Wallet",
 		"account_identifier": "账号",
 		"balance": "余额",
 		"credits": "积分",
-		"transactions": "交易记录",
 		"transfer_icp_info": "查询更多关于信息关于转出 ICP 到你的 mission control",
 		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier",
-		"wallet": "Wallet"
+		"tx_id": "ID",
+		"tx_timestamp": "Timestamp",
+		"tx_from": "From",
+		"tx_to": "To",
+		"tx_memo": "Memo",
+		"tx_amount": "Amount",
+		"memo_create": "Segment created",
+		"memo_refund_satellite": "Satellite refund",
+		"memo_refund_orbiter": "Orbiter refund",
+		"memo_refund_top_up": "Top-up segment",
+		"memo_received": "Received",
+		"memo_sent": "Sent"
 	},
 	"authentication": {
 		"title": "认证",
@@ -186,6 +199,7 @@
 		"satellite_name_update": "试图修改你的 satellite 名字出现异常.",
 		"satellite_missing_name": "必须提供一个名字.",
 		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
+		"load_credits": "Cannot load your current credits status.",
 		"hosting_missing_domain_name": "必须提供一个域名.",
 		"hosting_invalid_url": "请提供一个有效的 URL.",
 		"hosting_missing_dns_configuration": "必须提供域名配置信息.",
@@ -219,7 +233,8 @@
 		"orbiters_loading": "加载 orbiter 列表时出错.",
 		"orbiter_configuration_missing": "请提供 Satellites 和配置.",
 		"orbiter_configuration_unexpected": "编辑配置时出现意外错误.",
-		"orbiter_configuration_listing": "获取配置时出错."
+		"orbiter_configuration_listing": "获取配置时出错.",
+		"transactions_next": "Error while fetching the next transactions."
 	},
 	"document": {
 		"owner": "拥有者",

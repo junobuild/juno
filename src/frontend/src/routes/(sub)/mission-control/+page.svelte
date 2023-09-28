@@ -24,17 +24,12 @@
 		},
 		{
 			id: Symbol('2'),
-			labelKey: 'mission_control.wallet'
+			labelKey: 'wallet.title'
 		},
 		{
 			id: Symbol('3'),
 			labelKey: 'controllers.title'
 		}
-		// TODO: implement and add transactions tab when ICP index canisters makes it to mainnet
-		// {
-		// 	id: Symbol('4'),
-		// 	name: $i18n.mission_control.transactions
-		// }
 	];
 
 	const store = writable<TabsStore>({

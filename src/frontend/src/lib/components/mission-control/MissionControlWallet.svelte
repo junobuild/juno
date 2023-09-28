@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import type { Principal } from '@dfinity/principal';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, last, nonNullish } from '$lib/utils/utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -12,12 +11,13 @@
 	import { onDestroy, onMount } from 'svelte';
 	import { initWalletWorker } from '$lib/services/worker.wallet.services';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
-	import { getAccountIdentifier } from '$lib/api/ledger.api';
+	import { getAccountIdentifier, getTransactions } from '$lib/api/ledger.api';
 	import { getCredits } from '$lib/api/console.api';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { TransactionWithId } from '@junobuild/ledger';
-	import MissionControlTransactions from '$lib/components/mission-control/MissionControlTransactions.svelte';
+	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import { jsonReviver } from '@dfinity/utils';
+	import { PAGINATION } from '$lib/constants/constants';
 
 	export let missionControlId: Principal;
 
@@ -60,18 +60,61 @@
 	const initWorker = async () => (worker = await initWalletWorker());
 
 	$: worker,
-		$missionControlStore,
+		missionControlId,
 		(async () => {
-			if (isNullish($missionControlStore)) {
+			if (isNullish(missionControlId)) {
 				worker?.stop();
 				return;
 			}
 
 			worker?.start({
-				missionControlId: $missionControlStore,
+				missionControlId,
 				callback: syncState
 			});
 		})();
+
+	/**
+	 * Scroll
+	 */
+
+	let disableInfiniteScroll = false;
+
+	const onIntersect = async () => {
+		console.log('here');
+
+		if (!$authSignedInStore) {
+			// It would be unexpected
+			return;
+		}
+
+		const lastId = last(transactions)?.id;
+
+		if (isNullish(lastId)) {
+			// No transactions, we do nothing here and wait for the worker to post the first transactions
+			return;
+		}
+
+		try {
+			const { transactions: nextTransactions } = await getTransactions({
+				owner: missionControlId,
+				identity: $authStore.identity,
+				maxResults: PAGINATION,
+				start: lastId
+			});
+
+			if (nextTransactions.length === 0) {
+				disableInfiniteScroll = true;
+				return;
+			}
+
+			transactions = [...transactions, ...nextTransactions];
+		} catch (err: unknown) {
+			toasts.error({
+				text: $i18n.errors.transactions_next,
+				detail: err
+			});
+		}
+	};
 
 	/**
 	 * Lifecycle
@@ -112,5 +155,5 @@
 		</div>
 	</div>
 
-	<MissionControlTransactions {transactions} />
+	<Transactions {transactions} {disableInfiniteScroll} on:junoIntersect={onIntersect} />
 {/if}

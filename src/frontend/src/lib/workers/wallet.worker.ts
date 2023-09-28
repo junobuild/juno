@@ -1,5 +1,5 @@
 import { getTransactions } from '$lib/api/ledger.api';
-import { SYNC_LEDGER_TRANSACTIONS_TIMER_INTERVAL } from '$lib/constants/constants';
+import { PAGINATION, SYNC_LEDGER_TRANSACTIONS_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { loadIdentity } from '$lib/utils/agent.utils';
 import { isNullish } from '$lib/utils/utils';
@@ -56,7 +56,6 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 let syncing = false;
 
 let transactions: Record<string, Transaction> = {};
-let maxResults = 2n;
 
 const syncWallet = async ({
 	missionControlId,
@@ -78,7 +77,7 @@ const syncWallet = async ({
 			owner: Principal.fromText(missionControlId),
 			// We query tip to discover the new transactions
 			start: undefined,
-			maxResults
+			maxResults: PAGINATION
 		});
 
 		const newTransactions = fetchedTransactions.filter(

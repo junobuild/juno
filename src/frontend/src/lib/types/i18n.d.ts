@@ -235,6 +235,7 @@ interface I18nErrors {
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
+	transactions_next: string;
 }
 
 interface I18nDocument {

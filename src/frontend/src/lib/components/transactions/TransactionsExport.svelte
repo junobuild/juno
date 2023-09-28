@@ -5,6 +5,7 @@
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { exportTransactions as exportTransactionsServices } from '$lib/services/wallet.services';
 
 	export let missionControlId: Principal;
 	export let transactions: TransactionWithId[];
@@ -17,6 +18,7 @@
 		busy.start();
 
 		try {
+			await exportTransactionsServices({ transactions, missionControlId });
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.transactions_export,

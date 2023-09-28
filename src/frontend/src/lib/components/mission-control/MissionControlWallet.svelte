@@ -22,7 +22,7 @@
 	export let missionControlId: Principal;
 
 	const accountIdentifier = getAccountIdentifier(missionControlId);
-	let credits = 0n;
+	let credits: bigint | undefined;
 
 	/**
 	 * Credits
@@ -45,7 +45,7 @@
 
 	let worker: WalletWorker | undefined;
 
-	let balance = 0n;
+	let balance: bigint | undefined = undefined;
 	let transactions: TransactionWithId[] = [];
 
 	const syncState = (data: PostMessageDataResponse) => {
@@ -138,12 +138,16 @@
 
 			<Value>
 				<svelte:fragment slot="label">{$i18n.wallet.balance}</svelte:fragment>
-				<p>{formatE8sICP(balance)} ICP</p>
+				<p>
+					{#if nonNullish(balance)}{formatE8sICP(balance)} ICP{/if}
+				</p>
 			</Value>
 
 			<Value>
 				<svelte:fragment slot="label">{$i18n.wallet.credits}</svelte:fragment>
-				<p>{formatE8sICP(credits)}</p>
+				<p>
+					{#if nonNullish(credits)}{formatE8sICP(credits)}{/if}
+				</p>
 			</Value>
 		</div>
 
@@ -164,3 +168,9 @@
 		on:junoIntersect={onIntersect}
 	/>
 {/if}
+
+<style lang="scss">
+	p {
+		min-height: 24px;
+	}
+</style>

@@ -17,6 +17,7 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import Examples from '$lib/components/examples/Examples.svelte';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
 		{
@@ -30,7 +31,7 @@
 	];
 
 	const store = writable<TabsStore>({
-		tabId: tabs[0].id,
+		tabId: initTabId(tabs),
 		tabs
 	});
 

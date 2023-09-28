@@ -1,5 +1,5 @@
 import { getTransactions } from '$lib/api/ledger.api';
-import { PAGINATION, SYNC_LEDGER_TRANSACTIONS_TIMER_INTERVAL } from '$lib/constants/constants';
+import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { loadIdentity } from '$lib/utils/agent.utils';
 import { isNullish } from '$lib/utils/utils';
@@ -50,7 +50,7 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
 
-	timer = setInterval(sync, SYNC_LEDGER_TRANSACTIONS_TIMER_INTERVAL);
+	timer = setInterval(sync, SYNC_WALLET_TIMER_INTERVAL);
 };
 
 let syncing = false;

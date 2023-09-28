@@ -63,7 +63,7 @@
 			{#if $store.tabId === $store.tabs[0].id}
 				<MissionControl />
 			{:else if $store.tabId === $store.tabs[1].id}
-				<MissionControlWallet />
+				<MissionControlWallet missionControlId={$missionControlStore} />
 			{:else if $store.tabId === $store.tabs[2].id}
 				<MissionControlControllers missionControlId={$missionControlStore} />
 			{/if}

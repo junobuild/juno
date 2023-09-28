@@ -1,6 +1,6 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-import type { PostMessageTransactions } from '$lib/types/transaction';
+import type { Wallet } from '$lib/types/transaction';
 import type { Canister } from './canister';
 
 export interface PostMessageDataRequest {
@@ -12,7 +12,7 @@ export interface PostMessageDataRequest {
 export interface PostMessageDataResponse {
 	canister?: Canister;
 	registrationState?: CustomDomainRegistrationState | null;
-	transactions?: PostMessageTransactions;
+	wallet?: Wallet;
 }
 
 export type PostMessageRequest =
@@ -24,7 +24,8 @@ export type PostMessageRequest =
 	| 'startCustomDomainRegistrationTimer'
 	| 'stopCustomDomainRegistrationTimer'
 	| 'stopWalletTimer'
-	| 'startWalletTimer';
+	| 'startWalletTimer'
+	| 'reloadWallet';
 
 export type PostMessageResponse =
 	| 'syncCanister'

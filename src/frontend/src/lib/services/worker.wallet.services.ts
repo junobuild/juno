@@ -3,7 +3,13 @@ import type { Principal } from '@dfinity/principal';
 
 export type WalletCallback = (data: PostMessageDataResponse) => void;
 
-export const initWalletWorker = async () => {
+export interface WalletWorker {
+	start: (params: { missionControlId: Principal; callback: WalletCallback }) => void;
+	stop: () => void;
+	reload: () => void;
+}
+
+export const initWalletWorker = async (): Promise<WalletWorker> => {
 	const WalletWorker = await import('$lib/workers/wallet.worker?worker');
 	const worker: Worker = new WalletWorker.default();
 
@@ -37,6 +43,11 @@ export const initWalletWorker = async () => {
 		stop: () => {
 			worker.postMessage({
 				msg: 'stopWalletTimer'
+			});
+		},
+		reload: () => {
+			worker.postMessage({
+				msg: 'reloadWallet'
 			});
 		}
 	};

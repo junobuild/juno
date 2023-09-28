@@ -111,11 +111,13 @@ const syncWallet = async ({
 		postMessage({
 			msg: 'syncWallet',
 			data: {
-				...rest,
-				transactions: JSON.stringify(
-					Object.entries(transactions).map(([id, transaction]) => ({ id, transaction })),
-					jsonReplacer
-				)
+				wallet: {
+					...rest,
+					transactions: JSON.stringify(
+						Object.entries(transactions).map(([id, transaction]) => ({ id, transaction })),
+						jsonReplacer
+					)
+				}
 			}
 		});
 	} catch (err: unknown) {

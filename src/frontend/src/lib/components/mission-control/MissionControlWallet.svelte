@@ -6,65 +6,53 @@
 	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { getMissionControlBalance } from '$lib/services/balance.services';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import type { AccountIdentifier } from '@junobuild/ledger';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
-	import type { MissionControlBalance } from '$lib/types/balance.types';
-	import type { WalletCallback } from '$lib/services/worker.wallet.services';
+	import type { WalletWorker } from '$lib/services/worker.wallet.services';
 	import { onDestroy, onMount } from 'svelte';
 	import { initWalletWorker } from '$lib/services/worker.wallet.services';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
+	import { getAccountIdentifier } from '$lib/api/ledger.api';
+	import { getCredits } from '$lib/api/console.api';
+	import { toasts } from '$lib/stores/toasts.store';
 
-	let missionControlBalance: MissionControlBalance | undefined = undefined;
+	export let missionControlId: Principal;
 
-	const loadBalance = async (missionControlId: Principal | undefined | null) => {
-		const { result } = await getMissionControlBalance(missionControlId);
-		missionControlBalance = result;
-	};
-
-	$: $missionControlStore, loadBalance($missionControlStore);
-
-	let accountIdentifier: AccountIdentifier | undefined;
-	let balance = 0n;
+	const accountIdentifier = getAccountIdentifier(missionControlId);
 	let credits = 0n;
 
-	$: ({ balance, credits, accountIdentifier } = missionControlBalance ?? {
-		balance: 0n,
-		credits: 0n,
-		accountIdentifier: undefined
-	});
+	/**
+	 * Credits
+	 */
 
-	const reloadBalance = async ({
-		detail: { canisterId: syncCanisterId }
-	}: CustomEvent<{ canisterId: Principal }>) => {
-		if (
-			isNullish($missionControlStore) ||
-			syncCanisterId.toText() !== $missionControlStore.toText()
-		) {
-			return;
+	const loadCredits = async () => {
+		try {
+			credits = await getCredits();
+		} catch (err: unknown) {
+			toasts.error({
+				text: $i18n.errors.load_credits,
+				detail: err
+			});
 		}
-
-		await loadBalance($missionControlStore);
 	};
 
 	/**
 	 * Web Worker
 	 */
 
-	let worker:
-		| {
-				start: (params: { missionControlId: Principal; callback: WalletCallback }) => void;
-				stop: () => void;
-		  }
-		| undefined;
+	let worker: WalletWorker | undefined;
 
-	onMount(async () => (worker = await initWalletWorker()));
-	onDestroy(() => worker?.stop());
+	let balance = 0n;
 
 	const syncState = (data: PostMessageDataResponse) => {
-		console.log('SYNC', data);
+		if (isNullish(data.wallet)) {
+			return;
+		}
+
+		balance = data.wallet.balance;
 	};
+
+	const initWorker = async () => (worker = await initWalletWorker());
 
 	$: worker,
 		$missionControlStore,
@@ -79,9 +67,16 @@
 				callback: syncState
 			});
 		})();
+
+	/**
+	 * Lifecycle
+	 */
+
+	onMount(async () => await Promise.all([initWorker(), loadCredits()]));
+	onDestroy(() => worker?.stop());
 </script>
 
-<svelte:window on:junoRestartCycles={reloadBalance} />
+<svelte:window on:junoRestartCycles={() => worker?.reload()} />
 
 {#if $authSignedInStore}
 	<div class="card-container columns-3">

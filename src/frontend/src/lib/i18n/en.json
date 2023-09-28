@@ -186,6 +186,7 @@
 		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite.",
 		"satellite_missing_name": "A name must be provided.",
 		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits.",
+		"load_credits": "Cannot load your current credits status.",
 		"hosting_missing_domain_name": "A domain name must be provided.",
 		"hosting_invalid_url": "Please provide a valid URL.",
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",

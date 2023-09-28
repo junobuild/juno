@@ -37,7 +37,7 @@
 	@use '../../styles/mixins/media';
 
 	.table-container {
-		margin: var(--padding-6x) 0;
+		margin: var(--padding-6x) 0 var(--padding-4x);
 	}
 
 	.id {

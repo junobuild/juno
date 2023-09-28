@@ -31,7 +31,8 @@
 		"skip": "Skip",
 		"done": "Done",
 		"from": "From",
-		"to": "To"
+		"to": "To",
+		"export": "Export"
 	},
 	"canisters": {
 		"top_up": "Ricarica",
@@ -104,7 +105,9 @@
 		"memo_refund_orbiter": "Orbiter refund",
 		"memo_refund_top_up": "Top-up segment",
 		"memo_received": "Received",
-		"memo_sent": "Sent"
+		"memo_sent": "Sent",
+		"export_title": "Export to CSV",
+		"export_info": "This process exports the displayed transactions to a CSV file. Shall we proceed?"
 	},
 	"authentication": {
 		"title": "Autenticazione",
@@ -234,7 +237,8 @@
 		"orbiter_configuration_missing": "Satellites and configuration must be provided.",
 		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
 		"orbiter_configuration_listing": "Error while fetching the configuration.",
-		"transactions_next": "Error while fetching the next transactions."
+		"transactions_next": "Error while fetching the next transactions.",
+		"transactions_export": "Unexpected error(s) while exporting the transactions."
 	},
 	"document": {
 		"owner": "Proprietario",

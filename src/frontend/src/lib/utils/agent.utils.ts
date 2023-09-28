@@ -1,5 +1,6 @@
 import { localIdentityCanisterId } from '$lib/constants/constants';
 import { HttpAgent, type Identity } from '@dfinity/agent';
+import { AuthClient } from '@dfinity/auth-client';
 
 export const getAgent = async (params: { identity: Identity }): Promise<HttpAgent> => {
 	const local = localIdentityCanisterId !== undefined && localIdentityCanisterId !== null;
@@ -25,4 +26,15 @@ const getLocalAgent = async ({ identity }: { identity: Identity }) => {
 	await agent.fetchRootKey();
 
 	return agent;
+};
+
+export const loadIdentity = async (): Promise<Identity | undefined> => {
+	const authClient = await AuthClient.create({
+		idleOptions: {
+			disableIdle: true,
+			disableDefaultIdleCallback: true
+		}
+	});
+
+	return authClient.getIdentity();
 };

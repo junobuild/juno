@@ -59,7 +59,7 @@ const config: UserConfig = {
 				manualChunks: (id) => {
 					const folder = dirname(id);
 
-					const lazy = ['@junobuild/ledger', '@dfinity/ledger', '@junobuild/admin'];
+					const lazy = ['@junobuild/ledger', '@junobuild/admin'];
 
 					if (
 						['@sveltejs', 'svelte', ...lazy].find((lib) => folder.includes(lib)) === undefined &&

@@ -1,30 +1,57 @@
-import { authStore } from '$lib/stores/auth.store';
-import { getAgent } from '$lib/utils/agent.utils';
+import { localIdentityCanisterId } from '$lib/constants/constants';
+import { isNullish, nonNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
-import { IcrcLedgerCanister } from '@dfinity/ledger';
 import type { Principal } from '@dfinity/principal';
-import { AccountIdentifier } from '@junobuild/ledger';
-import { get } from 'svelte/store';
+import type { GetAccountIdentifierTransactionsResponse } from '@junobuild/ledger';
+import { AccountIdentifier, balance, transactions } from '@junobuild/ledger';
 
 export const getAccountIdentifier = (principal: Principal): AccountIdentifier =>
 	AccountIdentifier.fromPrincipal({ principal, subAccount: undefined });
 
-export const getBalance = async (owner: Principal): Promise<bigint> => {
-	const identity: Identity | undefined | null = get(authStore).identity;
-
-	if (!identity) {
+export const getBalance = ({
+	owner,
+	identity
+}: {
+	owner: Principal;
+	identity: Identity | undefined | null;
+}): Promise<bigint> => {
+	if (isNullish(identity)) {
 		throw new Error('No internet identity.');
 	}
 
-	const agent = await getAgent({ identity });
-
-	const { balance } = IcrcLedgerCanister.create({
-		agent,
-		canisterId: import.meta.env.VITE_LEDGER_CANISTER_ID
-	});
-
 	return balance({
-		owner,
-		certified: false
+		index: {
+			...(nonNullish(localIdentityCanisterId) && { env: 'dev' }),
+			identity
+		},
+		accountIdentifier: getAccountIdentifier(owner).toHex()
+	});
+};
+
+export const getTransactions = ({
+	owner,
+	identity,
+	start,
+	maxResults = 100n
+}: {
+	owner: Principal;
+	identity: Identity | undefined | null;
+	start?: bigint;
+	maxResults?: bigint;
+}): Promise<GetAccountIdentifierTransactionsResponse> => {
+	if (isNullish(identity)) {
+		throw new Error('No internet identity.');
+	}
+
+	return transactions({
+		index: {
+			...(nonNullish(localIdentityCanisterId) && { env: 'dev' }),
+			identity
+		},
+		args: {
+			start,
+			max_results: maxResults,
+			account_identifier: getAccountIdentifier(owner).toHex()
+		}
 	});
 };

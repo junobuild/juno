@@ -72,12 +72,24 @@
 		},
 		"ledger": {
 			"type": "custom",
-			"candid": "ledger.public.did",
+			"candid": "ledger.did",
 			"wasm": "ledger.wasm",
 			"remote": {
-				"candid": "ledger.public.did",
 				"id": {
 					"ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
+				}
+			},
+			"declarations": {
+				"node_compatibility": true
+			}
+		},
+		"index": {
+			"type": "custom",
+			"candid": "index.did",
+			"wasm": "index.wasm",
+			"remote": {
+				"id": {
+					"ic": "qhbym-qaaaa-aaaaa-aaafq-cai"
 				}
 			},
 			"declarations": {

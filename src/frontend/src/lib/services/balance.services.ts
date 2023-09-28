@@ -1,5 +1,6 @@
 import { getCredits } from '$lib/api/console.api';
 import { getAccountIdentifier, getBalance } from '$lib/api/ledger.api';
+import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { MissionControlBalance } from '$lib/types/balance.types';
@@ -17,7 +18,10 @@ export const getMissionControlBalance = async (
 	try {
 		const accountIdentifier = getAccountIdentifier(missionControlId);
 
-		const queryBalance = async (): Promise<bigint> => await getBalance(missionControlId);
+		const identity = get(authStore).identity;
+
+		const queryBalance = async (): Promise<bigint> =>
+			await getBalance({ owner: missionControlId, identity });
 
 		const [balance, credits] = await Promise.all([queryBalance(), getCredits()]);
 

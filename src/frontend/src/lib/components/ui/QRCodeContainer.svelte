@@ -12,7 +12,7 @@
 <style lang="scss">
 	.qrcode {
 		width: calc(var(--padding) * 30);
-		margin: var(--padding) 0;
+		margin: 0;
 		padding: var(--padding-2x);
 		background: white;
 		border: 3px solid var(--color-card-contrast);

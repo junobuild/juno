@@ -17,6 +17,7 @@ target
 internet_identity.wasm
 internet_identity.wasm.gz
 /internet_identity.did
+ledger.did
 ledger.private.did
 ledger.public.did
 ledger.wasm

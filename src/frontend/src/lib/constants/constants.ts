@@ -9,6 +9,7 @@ export const localIdentityCanisterId: string | null | undefined = import.meta.en
 export const AUTH_TIMER_INTERVAL = 1000;
 export const SYNC_CYCLES_TIMER_INTERVAL = 60000;
 export const SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL = 10000;
+export const SYNC_LEDGER_TRANSACTIONS_TIMER_INTERVAL = 10000;
 
 // How long the delegation identity should remain valid?
 // e.g. BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000) = 7 days in nanoseconds

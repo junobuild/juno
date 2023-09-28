@@ -92,12 +92,27 @@ interface I18nMission_control {
 	title: string;
 	overview: string;
 	id: string;
+}
+
+interface I18nWallet {
+	title: string;
 	account_identifier: string;
 	balance: string;
 	credits: string;
-	transactions: string;
 	transfer_icp_info: string;
 	transfer_to_account_identifier: string;
+	tx_id: string;
+	tx_timestamp: string;
+	tx_from: string;
+	tx_to: string;
+	tx_memo: string;
+	tx_amount: string;
+	memo_create: string;
+	memo_refund_satellite: string;
+	memo_refund_orbiter: string;
+	memo_refund_top_up: string;
+	memo_received: string;
+	memo_sent: string;
 }
 
 interface I18nAuthentication {
@@ -199,6 +214,7 @@ interface I18nErrors {
 	satellite_name_update: string;
 	satellite_missing_name: string;
 	ledger_balance_credits: string;
+	load_credits: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;
@@ -233,6 +249,7 @@ interface I18nErrors {
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
+	transactions_next: string;
 }
 
 interface I18nDocument {
@@ -416,6 +433,7 @@ interface I18n {
 	sign_in: I18nSign_in;
 	satellites: I18nSatellites;
 	mission_control: I18nMission_control;
+	wallet: I18nWallet;
 	authentication: I18nAuthentication;
 	datastore: I18nDatastore;
 	storage: I18nStorage;

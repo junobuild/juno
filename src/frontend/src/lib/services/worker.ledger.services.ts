@@ -13,7 +13,7 @@ export const initLedgerWorker = async () => {
 		const { msg } = data;
 
 		switch (msg) {
-			case 'customDomainRegistrationState':
+			case 'syncTransactions':
 				ledgerCallback?.(data.data);
 				return;
 		}

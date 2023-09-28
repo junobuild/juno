@@ -2,10 +2,11 @@ import { getTransactions } from '$lib/api/ledger.api';
 import { SYNC_LEDGER_TRANSACTIONS_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { loadIdentity } from '$lib/utils/agent.utils';
-import { isNullish, last } from '$lib/utils/utils';
+import { isNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import type { TransactionWithId, Transaction } from '@junobuild/ledger';
+import { jsonReplacer } from '@dfinity/utils';
+import type { Transaction } from '@junobuild/ledger';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -64,6 +65,8 @@ const syncTransactions = async ({
 	missionControlId: string;
 	identity: Identity;
 }) => {
+	console.log('here');
+
 	// We avoid to relaunch a sync while previous sync is not finished
 	if (syncing) {
 		return;
@@ -81,7 +84,7 @@ const syncTransactions = async ({
 		});
 
 		const newTransactions = fetchedTransactions.filter(
-			({ id }) => !Object.keys(transactions).includes(`${id}`)
+			({ id }: Transaction) => !Object.keys(transactions).includes(`${id}`)
 		);
 
 		console.log('fetchedTransactions', fetchedTransactions);
@@ -92,23 +95,29 @@ const syncTransactions = async ({
 			return;
 		}
 
-		// start = last(newTransactions.sort(({ id: idA, id: idB }) => (idA > idB ? -1 : 1)))?.id;
-
-		// start = isNullish(oldest) ? undefined : oldest - maxResults;
-
-		// console.log(start, newTransactions);
-
 		transactions = {
 			...transactions,
-			...newTransactions.reduce((acc, {id, transaction}) => ({
-				...acc,
-				[`${id}`]: transaction
-			}), {})
+			...newTransactions.reduce(
+				(acc: Record<string, Transaction>, { id, transaction }: Transaction) => ({
+					...acc,
+					[`${id}`]: transaction
+				}),
+				{}
+			)
 		};
 
 		console.log('store', transactions);
 
-		// TODO: postMessage
+		postMessage({
+			msg: 'syncTransactions',
+			data: {
+				...rest,
+				transactions: JSON.stringify(
+					Object.entries(transactions).map(([id, transaction]) => ({ id, transaction })),
+					jsonReplacer
+				)
+			}
+		});
 	} catch (err: unknown) {
 		console.error(err);
 		stopTimer();

@@ -1,5 +1,6 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+import type { PostMessageTransactions } from '$lib/types/transaction';
 import type { Canister } from './canister';
 
 export interface PostMessageDataRequest {
@@ -11,6 +12,7 @@ export interface PostMessageDataRequest {
 export interface PostMessageDataResponse {
 	canister?: Canister;
 	registrationState?: CustomDomainRegistrationState | null;
+	transactions?: PostMessageTransactions;
 }
 
 export type PostMessageRequest =
@@ -27,7 +29,8 @@ export type PostMessageRequest =
 export type PostMessageResponse =
 	| 'syncCanister'
 	| 'signOutIdleTimer'
-	| 'customDomainRegistrationState';
+	| 'customDomainRegistrationState'
+	| 'syncTransactions';
 
 export interface PostMessage<T extends PostMessageDataRequest | PostMessageDataResponse> {
 	msg: PostMessageRequest | PostMessageResponse;

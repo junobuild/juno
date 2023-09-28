@@ -63,7 +63,7 @@
 	onDestroy(() => worker?.stop());
 
 	const syncState = (data: PostMessageDataResponse) => {
-		console.log(data);
+		console.log('SYNC', data);
 	};
 
 	$: worker,

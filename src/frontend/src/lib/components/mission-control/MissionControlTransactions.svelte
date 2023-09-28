@@ -8,12 +8,10 @@
 		MEMO_ORBITER_CREATE_REFUND,
 		MEMO_SATELLITE_CREATE_REFUND
 	} from '$lib/constants/wallet.constants';
-	import Copy from '$lib/components/ui/Copy.svelte';
-	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { nonNullish } from '$lib/utils/utils';
 	import { fromNullable } from '$lib/utils/did.utils';
-	import Identifier from "$lib/components/ui/Identifier.svelte";
+	import Identifier from '$lib/components/ui/Identifier.svelte';
 
 	export let transactions: TransactionWithId[];
 

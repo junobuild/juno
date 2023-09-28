@@ -35,6 +35,7 @@ interface I18nCore {
 	done: string;
 	from: string;
 	to: string;
+	export: string;
 }
 
 interface I18nCanisters {
@@ -113,6 +114,8 @@ interface I18nWallet {
 	memo_refund_top_up: string;
 	memo_received: string;
 	memo_sent: string;
+	export_title: string;
+	export_info: string;
 }
 
 interface I18nAuthentication {
@@ -250,6 +253,7 @@ interface I18nErrors {
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
 	transactions_next: string;
+	transactions_export: string;
 }
 
 interface I18nDocument {

@@ -18,6 +18,7 @@
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import { jsonReviver } from '@dfinity/utils';
 	import { PAGINATION } from '$lib/constants/constants';
+	import TransactionsExport from "$lib/components/transactions/TransactionsExport.svelte";
 
 	export let missionControlId: Principal;
 
@@ -167,6 +168,8 @@
 		{missionControlId}
 		on:junoIntersect={onIntersect}
 	/>
+
+	<TransactionsExport {transactions} {missionControlId} />
 {/if}
 
 <style lang="scss">

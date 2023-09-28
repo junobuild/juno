@@ -31,7 +31,8 @@
 		"skip": "跳过",
 		"done": "完成",
 		"from": "从",
-		"to": "到"
+		"to": "到",
+		"export": "Export"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -104,7 +105,9 @@
 		"memo_refund_orbiter": "Orbiter refund",
 		"memo_refund_top_up": "Top-up segment",
 		"memo_received": "Received",
-		"memo_sent": "Sent"
+		"memo_sent": "Sent",
+		"export_title": "Export to CSV",
+		"export_info": "This process exports the displayed transactions to a CSV file. Shall we proceed?"
 	},
 	"authentication": {
 		"title": "认证",
@@ -234,7 +237,8 @@
 		"orbiter_configuration_missing": "请提供 Satellites 和配置.",
 		"orbiter_configuration_unexpected": "编辑配置时出现意外错误.",
 		"orbiter_configuration_listing": "获取配置时出错.",
-		"transactions_next": "Error while fetching the next transactions."
+		"transactions_next": "Error while fetching the next transactions.",
+		"transactions_export": "Unexpected error(s) while exporting the transactions."
 	},
 	"document": {
 		"owner": "拥有者",

@@ -32,7 +32,9 @@
 	};
 </script>
 
-<button type="button" on:click={() => (visible = true)}>{$i18n.core.export}</button>
+{#if transactions.length > 0}
+	<button type="button" on:click={() => (visible = true)}>{$i18n.core.export}</button>
+{/if}
 
 <Confirmation bind:visible on:junoYes={exportTransactions} on:junoNo={close}>
 	<svelte:fragment slot="title">{$i18n.wallet.export_title}</svelte:fragment>

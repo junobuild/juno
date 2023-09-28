@@ -10,28 +10,30 @@
 	export let disableInfiniteScroll = false;
 </script>
 
-<InfiniteScroll on:junoIntersect disabled={disableInfiniteScroll}>
-	<div class="table-container">
-		<table>
-			<thead>
-				<tr>
-					<th class="id"> {$i18n.wallet.tx_id} </th>
-					<th class="timestamp"> {$i18n.wallet.tx_timestamp} </th>
-					<th class="from"> {$i18n.wallet.tx_from} </th>
-					<th class="to"> {$i18n.wallet.tx_to} </th>
-					<th class="memo"> {$i18n.wallet.tx_memo} </th>
-					<th class="amount"> {$i18n.wallet.tx_amount} </th>
-				</tr>
-			</thead>
+{#if transactions.length > 0}
+	<InfiniteScroll on:junoIntersect disabled={disableInfiniteScroll}>
+		<div class="table-container">
+			<table>
+				<thead>
+					<tr>
+						<th class="id"> {$i18n.wallet.tx_id} </th>
+						<th class="timestamp"> {$i18n.wallet.tx_timestamp} </th>
+						<th class="from"> {$i18n.wallet.tx_from} </th>
+						<th class="to"> {$i18n.wallet.tx_to} </th>
+						<th class="memo"> {$i18n.wallet.tx_memo} </th>
+						<th class="amount"> {$i18n.wallet.tx_amount} </th>
+					</tr>
+				</thead>
 
-			<tbody>
-				{#each transactions as transactionWithId (transactionWithId.id)}
-					<Transaction {transactionWithId} {missionControlId} />
-				{/each}
-			</tbody>
-		</table>
-	</div>
-</InfiniteScroll>
+				<tbody>
+					{#each transactions as transactionWithId (transactionWithId.id)}
+						<Transaction {transactionWithId} {missionControlId} />
+					{/each}
+				</tbody>
+			</table>
+		</div>
+	</InfiniteScroll>
+{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

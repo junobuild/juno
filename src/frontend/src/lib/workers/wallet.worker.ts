@@ -65,8 +65,6 @@ const syncWallet = async ({
 	missionControlId: string;
 	identity: Identity;
 }) => {
-	console.log('here');
-
 	// We avoid to relaunch a sync while previous sync is not finished
 	if (syncing) {
 		return;
@@ -87,8 +85,6 @@ const syncWallet = async ({
 			({ id }: Transaction) => !Object.keys(transactions).includes(`${id}`)
 		);
 
-		console.log('fetchedTransactions', fetchedTransactions);
-
 		if (newTransactions.length === 0) {
 			// No new transactions
 			syncing = false;
@@ -106,15 +102,13 @@ const syncWallet = async ({
 			)
 		};
 
-		console.log('store', transactions);
-
 		postMessage({
 			msg: 'syncWallet',
 			data: {
 				wallet: {
 					...rest,
-					transactions: JSON.stringify(
-						Object.entries(transactions).map(([id, transaction]) => ({ id, transaction })),
+					newTransactions: JSON.stringify(
+						Object.entries(newTransactions).map(([id, transaction]) => transaction),
 						jsonReplacer
 					)
 				}

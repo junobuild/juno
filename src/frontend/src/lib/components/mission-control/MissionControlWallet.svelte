@@ -15,6 +15,9 @@
 	import { getAccountIdentifier } from '$lib/api/ledger.api';
 	import { getCredits } from '$lib/api/console.api';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { TransactionWithId } from '@junobuild/ledger';
+	import MissionControlTransactions from '$lib/components/mission-control/MissionControlTransactions.svelte';
+	import {jsonReviver} from "@dfinity/utils";
 
 	export let missionControlId: Principal;
 
@@ -43,6 +46,7 @@
 	let worker: WalletWorker | undefined;
 
 	let balance = 0n;
+	let transactions: TransactionWithId[] = [];
 
 	const syncState = (data: PostMessageDataResponse) => {
 		if (isNullish(data.wallet)) {
@@ -50,6 +54,7 @@
 		}
 
 		balance = data.wallet.balance;
+		transactions = [...JSON.parse(data.wallet.newTransactions, jsonReviver), ...transactions];
 	};
 
 	const initWorker = async () => (worker = await initWalletWorker());
@@ -82,6 +87,13 @@
 	<div class="card-container columns-3">
 		<div>
 			<Value>
+				<svelte:fragment slot="label">{$i18n.mission_control.account_identifier}</svelte:fragment>
+				<p>
+					<Identifier identifier={accountIdentifier?.toHex() ?? ''} />
+				</p>
+			</Value>
+
+			<Value>
 				<svelte:fragment slot="label">{$i18n.mission_control.balance}</svelte:fragment>
 				<p>{formatE8sICP(balance)} ICP</p>
 			</Value>
@@ -90,22 +102,17 @@
 				<svelte:fragment slot="label">{$i18n.mission_control.credits}</svelte:fragment>
 				<p>{formatE8sICP(credits)}</p>
 			</Value>
-
-			<Value>
-				<svelte:fragment slot="label">{$i18n.mission_control.account_identifier}</svelte:fragment>
-				<p>
-					{#if nonNullish(accountIdentifier)}
-						<Identifier identifier={accountIdentifier.toHex() ?? ''} />
-
-						<QRCodeContainer
-							value={accountIdentifier.toHex()}
-							ariaLabel={$i18n.mission_control.account_identifier}
-						/>
-					{/if}
-				</p>
-			</Value>
 		</div>
 
-		<div />
+		<div>
+			{#if nonNullish(accountIdentifier)}
+				<QRCodeContainer
+						value={accountIdentifier.toHex()}
+						ariaLabel={$i18n.mission_control.account_identifier}
+				/>
+			{/if}
+		</div>
 	</div>
+
+	<MissionControlTransactions {transactions} />
 {/if}

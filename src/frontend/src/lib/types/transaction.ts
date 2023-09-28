@@ -5,4 +5,4 @@ export type JsonTransactionsText = string;
 export type Wallet = Omit<
 	GetAccountIdentifierTransactionsResponse,
 	'transactions'
-> & { transactions: JsonTransactionsText };
+> & { newTransactions: JsonTransactionsText };

@@ -8,15 +8,25 @@
 		MEMO_ORBITER_CREATE_REFUND,
 		MEMO_SATELLITE_CREATE_REFUND
 	} from '$lib/constants/wallet.constants';
+	import Copy from '$lib/components/ui/Copy.svelte';
+	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
+	import { formatToDate } from '$lib/utils/date.utils';
+	import { nonNullish } from '$lib/utils/utils';
+	import { fromNullable } from '$lib/utils/did.utils';
 
 	export let transactions: TransactionWithId[];
+
+	$: console.log(transactions);
 </script>
 
 <div class="table-container">
 	<table>
 		<thead>
 			<tr>
-				<th class="block_index"> ID </th>
+				<th class="id"> ID </th>
+				<th class="age"> Timestamp </th>
+				<th class="from"> From </th>
+				<th class="to"> To </th>
 				<th class="memo"> Memo </th>
 				<th class="amount"> Amount </th>
 			</tr>
@@ -24,8 +34,24 @@
 
 		<tbody>
 			{#each transactions as { id, transaction }}
+				{@const from =
+					'Transfer' in transaction.operation ? transaction.operation.Transfer.from : ''}
+				{@const to = 'Transfer' in transaction.operation ? transaction.operation.Transfer.to : ''}
+				{@const timestamp = fromNullable(transaction.created_at_time)?.timestamp_nanos}
+
 				<tr in:fade>
 					<td>{`${id}`}</td>
+					<td>
+						{#if nonNullish(timestamp)}
+							{formatToDate(timestamp)}
+						{/if}
+					</td>
+					<td>
+						<p>{shortenWithMiddleEllipsis(from)} <Copy value={from} /></p>
+					</td>
+					<td>
+						<p>{shortenWithMiddleEllipsis(to)} <Copy value={to} /></p>
+					</td>
 					<td
 						>{transaction.memo === MEMO_CANISTER_CREATE
 							? 'Create satellite'
@@ -51,5 +77,9 @@
 <style lang="scss">
 	.table-container {
 		margin: var(--padding-6x) 0;
+	}
+
+	.id {
+		width: 88px;
 	}
 </style>

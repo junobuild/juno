@@ -17,6 +17,7 @@
 	import { loadOrbiterVersion } from '$lib/services/console.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -41,7 +42,7 @@
 	];
 
 	const store = writable<TabsStore>({
-		tabId: tabs[0].id,
+		tabId: initTabId(tabs),
 		tabs
 	});
 

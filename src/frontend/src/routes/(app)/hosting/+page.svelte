@@ -14,6 +14,7 @@
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { nonNullish } from '$lib/utils/utils';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
 		{
@@ -23,7 +24,7 @@
 	];
 
 	const store = writable<TabsStore>({
-		tabId: tabs[0].id,
+		tabId: initTabId(tabs),
 		tabs
 	});
 

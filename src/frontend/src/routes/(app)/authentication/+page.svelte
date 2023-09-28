@@ -10,6 +10,7 @@
 	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import { nonNullish } from '$lib/utils/utils';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
 		{
@@ -23,7 +24,7 @@
 	];
 
 	const store = writable<TabsStore>({
-		tabId: tabs[0].id,
+		tabId: initTabId(tabs),
 		tabs
 	});
 

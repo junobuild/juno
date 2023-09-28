@@ -16,6 +16,9 @@
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import MissionControlWallet from '$lib/components/mission-control/MissionControlWallet.svelte';
+	import { tabStore } from '$lib/derived/tabs.derived';
+	import { groupLabel } from '$lib/utils/i18n.utils';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
 		{
@@ -33,7 +36,7 @@
 	];
 
 	const store = writable<TabsStore>({
-		tabId: tabs[0].id,
+		tabId: initTabId(tabs),
 		tabs
 	});
 

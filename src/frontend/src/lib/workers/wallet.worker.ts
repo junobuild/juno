@@ -12,10 +12,10 @@ onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRe
 	const { msg, data } = dataMsg;
 
 	switch (msg) {
-		case 'stopLedgerTransactionsTimer':
+		case 'stopWalletTimer':
 			stopTimer();
 			return;
-		case 'startLedgerTransactionsTimer':
+		case 'startWalletTimer':
 			await startTimer({ data });
 			return;
 	}
@@ -45,7 +45,7 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 		return;
 	}
 
-	const sync = async () => await syncTransactions({ missionControlId, identity });
+	const sync = async () => await syncWallet({ missionControlId, identity });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -58,7 +58,7 @@ let syncing = false;
 let transactions: Record<string, Transaction> = {};
 let maxResults = 2n;
 
-const syncTransactions = async ({
+const syncWallet = async ({
 	missionControlId,
 	identity
 }: {
@@ -109,7 +109,7 @@ const syncTransactions = async ({
 		console.log('store', transactions);
 
 		postMessage({
-			msg: 'syncTransactions',
+			msg: 'syncWallet',
 			data: {
 				...rest,
 				transactions: JSON.stringify(

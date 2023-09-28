@@ -11,9 +11,9 @@
 	import type { AccountIdentifier } from '@junobuild/ledger';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 	import type { MissionControlBalance } from '$lib/types/balance.types';
-	import type { LedgerCallback } from '$lib/services/worker.ledger.services';
+	import type { WalletCallback } from '$lib/services/worker.wallet.services';
 	import { onDestroy, onMount } from 'svelte';
-	import { initLedgerWorker } from '$lib/services/worker.ledger.services';
+	import { initWalletWorker } from '$lib/services/worker.wallet.services';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 
 	let missionControlBalance: MissionControlBalance | undefined = undefined;
@@ -54,12 +54,12 @@
 
 	let worker:
 		| {
-				start: (params: { missionControlId: Principal; callback: LedgerCallback }) => void;
+				start: (params: { missionControlId: Principal; callback: WalletCallback }) => void;
 				stop: () => void;
 		  }
 		| undefined;
 
-	onMount(async () => (worker = await initLedgerWorker()));
+	onMount(async () => (worker = await initWalletWorker()));
 	onDestroy(() => worker?.stop());
 
 	const syncState = (data: PostMessageDataResponse) => {

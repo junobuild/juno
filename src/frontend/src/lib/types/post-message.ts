@@ -23,14 +23,14 @@ export type PostMessageRequest =
 	| 'stopIdleTimer'
 	| 'startCustomDomainRegistrationTimer'
 	| 'stopCustomDomainRegistrationTimer'
-	| 'stopLedgerTransactionsTimer'
-	| 'startLedgerTransactionsTimer';
+	| 'stopWalletTimer'
+	| 'startWalletTimer';
 
 export type PostMessageResponse =
 	| 'syncCanister'
 	| 'signOutIdleTimer'
 	| 'customDomainRegistrationState'
-	| 'syncTransactions';
+	| 'syncWallet';
 
 export interface PostMessage<T extends PostMessageDataRequest | PostMessageDataResponse> {
 	msg: PostMessageRequest | PostMessageResponse;

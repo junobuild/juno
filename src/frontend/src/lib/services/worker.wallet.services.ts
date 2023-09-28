@@ -1,20 +1,20 @@
 import type { PostMessage, PostMessageDataResponse } from '$lib/types/post-message';
 import type { Principal } from '@dfinity/principal';
 
-export type LedgerCallback = (data: PostMessageDataResponse) => void;
+export type WalletCallback = (data: PostMessageDataResponse) => void;
 
-export const initLedgerWorker = async () => {
-	const LedgerWorker = await import('$lib/workers/ledger.worker?worker');
-	const worker: Worker = new LedgerWorker.default();
+export const initWalletWorker = async () => {
+	const WalletWorker = await import('$lib/workers/wallet.worker?worker');
+	const worker: Worker = new WalletWorker.default();
 
-	let ledgerCallback: LedgerCallback | undefined;
+	let walletCallback: WalletCallback | undefined;
 
 	worker.onmessage = async ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
 		const { msg } = data;
 
 		switch (msg) {
-			case 'syncTransactions':
-				ledgerCallback?.(data.data);
+			case 'syncWallet':
+				walletCallback?.(data.data);
 				return;
 		}
 	};
@@ -25,18 +25,18 @@ export const initLedgerWorker = async () => {
 			missionControlId
 		}: {
 			missionControlId: Principal;
-			callback: LedgerCallback;
+			callback: WalletCallback;
 		}) => {
-			ledgerCallback = callback;
+			walletCallback = callback;
 
 			worker.postMessage({
-				msg: 'startLedgerTransactionsTimer',
+				msg: 'startWalletTimer',
 				data: { missionControlId: missionControlId.toText() }
 			});
 		},
 		stop: () => {
 			worker.postMessage({
-				msg: 'stopLedgerTransactionsTimer'
+				msg: 'stopWalletTimer'
 			});
 		}
 	};

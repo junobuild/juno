@@ -113,6 +113,8 @@
 				text: $i18n.errors.transactions_next,
 				detail: err
 			});
+
+			disableInfiniteScroll = true;
 		}
 	};
 

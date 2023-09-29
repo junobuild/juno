@@ -80,12 +80,12 @@
 		"create_satellite_price": "为了创建新的 satellite 需要 <strong>{0}</strong> ICP. 你当前 mission control 余额是 {1} ICP 而且你还剩 {2} 积分.",
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",
-		"id": "ID"
+		"id": "Satellite ID"
 	},
 	"mission_control": {
 		"title": "Mission Control",
 		"overview": "概要",
-		"id": "ID"
+		"id": "Mission Control ID"
 	},
 	"wallet": {
 		"title": "Wallet",
@@ -146,7 +146,7 @@
 		"average_page_views_per_session": "平均每个会话页面浏览量",
 		"bounce_rate": "跳出率",
 		"overview": "概要",
-		"id": "ID",
+		"id": "Orbiter ID",
 		"tracked_events": "跟踪事件",
 		"count": "数量",
 		"referrers": "前十个引用",

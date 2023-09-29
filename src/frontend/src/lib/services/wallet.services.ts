@@ -1,5 +1,5 @@
 import { formatToDateNumeric } from '$lib/utils/date.utils';
-import { saveToCSVFile } from '$lib/utils/save.utils';
+import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToCSVFile } from '$lib/utils/save.utils';
 import { nonNullish } from '$lib/utils/utils';
 import {
 	transactionAmount,
@@ -53,12 +53,11 @@ export const exportTransactions = async ({
 
 	const csv = transactionsCsv.map((transaction) => transaction.join(',')).join('\n');
 
-	const date = new Date().toJSON().split('.')[0].replace(/:/g, '-');
-
 	await saveToCSVFile({
 		blob: new Blob([csv], {
 			type: 'text/csv'
 		}),
-		filename: `Juno_transactions_${date}.csv`
+		type: CSV_PICKER_OPTIONS,
+		filename: `Juno_Mission_Control_Transactions_${filenameTimestamp()}.csv`
 	});
 };

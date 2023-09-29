@@ -12,14 +12,14 @@ declare const VITE_APP_VERSION: string;
 
 /* eslint-disable */
 
-declare namespace svelte.JSX {
+declare namespace svelteHTML {
 	interface HTMLAttributes<T> {
-		onjunoIntersecting?: (event: CustomEvent<any>) => void;
-		onjunoModal?: (event: CustomEvent<any>) => void;
-		onjunoSyncCustomDomains?: (event: CustomEvent<any>) => void;
-		onjunoSyncCanister?: (event: CustomEvent<any>) => void;
-		onjunoRestartCycles?: (event: CustomEvent<any>) => void;
-		onjunoReloadVersions?: (event: CustomEvent<any>) => void;
+		'on:junoIntersecting'?: (event: CustomEvent<any>) => void;
+		'on:junoModal'?: (event: CustomEvent<any>) => void;
+		'on:junoSyncCustomDomains'?: (event: CustomEvent<any>) => void;
+		'on:junoSyncCanister'?: (event: CustomEvent<any>) => void;
+		'on:junoRestartCycles'?: (event: CustomEvent<any>) => void;
+		'on:junoReloadVersions'?: (event: CustomEvent<any>) => void;
 	}
 }
 

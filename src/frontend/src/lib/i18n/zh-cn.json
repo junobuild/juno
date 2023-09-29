@@ -151,7 +151,8 @@
 		"count": "数量",
 		"referrers": "前十个引用",
 		"enabled": "已启用",
-		"orbiter": "Orbiter"
+		"orbiter": "Orbiter",
+		"configure": "Configure"
 	},
 	"hosting": {
 		"title": "网站托管",

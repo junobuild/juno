@@ -151,7 +151,8 @@
 		"count": "Count",
 		"referrers": "Top 10 referrers",
 		"enabled": "Enabled",
-		"orbiter": "Orbiter"
+		"orbiter": "Orbiter",
+		"configure": "Configure"
 	},
 	"hosting": {
 		"title": "Hosting",

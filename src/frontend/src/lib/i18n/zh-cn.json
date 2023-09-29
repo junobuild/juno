@@ -179,7 +179,8 @@
 		"pendingchallengeresponse": "认证订单",
 		"pendingacmeapproval": "检查完成",
 		"available": "有效",
-		"failed": "失败"
+		"failed": "失败",
+		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes"
 	},
 	"cli": {
 		"title": "授权命令行",

@@ -59,6 +59,13 @@ interface I18nCanisters {
 	confirm_upgrade: string;
 	upgrade_done: string;
 	upgrade: string;
+	stop: string;
+	stop_title: string;
+	stop_info: string;
+	stop_explanation: string;
+	start: string;
+	start_tile: string;
+	start_info: string;
 }
 
 interface I18nSign_in {

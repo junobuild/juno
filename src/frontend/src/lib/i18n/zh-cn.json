@@ -54,7 +54,14 @@
 		"review_upgrade": "升级校验",
 		"confirm_upgrade": "你的 {0} 代码将会通过 wasm <strong>{1}</strong> 升级. 确认要执行升级吗?",
 		"upgrade_done": "你的 {0} 已经成功的升级到版本 <strong>{1}</strong>.",
-		"upgrade": "升级"
+		"upgrade": "升级",
+		"stop": "Stop",
+		"stop_title": "Stop satellite",
+		"stop_info": "Do you want to stop your satellite?",
+		"stop_explanation": "Please note that it will continue to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"start": "Start",
+		"start_tile": "Restart satellite",
+		"start_info": "Do you want to resume your satellite?"
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",

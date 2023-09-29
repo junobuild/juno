@@ -54,7 +54,14 @@
 		"review_upgrade": "Review upgrade",
 		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
 		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
-		"upgrade": "Upgrade"
+		"upgrade": "Upgrade",
+		"stop": "Stop",
+		"stop_title": "Stop satellite",
+		"stop_info": "Do you want to stop your satellite?",
+		"stop_explanation": "Please note that it will continue to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"start": "Start",
+		"start_tile": "Restart satellite",
+		"start_info": "Do you want to resume your satellite?"
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",

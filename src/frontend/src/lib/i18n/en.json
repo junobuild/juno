@@ -80,12 +80,12 @@
 		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",
-		"id": "ID"
+		"id": "Satellite ID"
 	},
 	"mission_control": {
 		"title": "Mission Control",
 		"overview": "Overview",
-		"id": "ID"
+		"id": "Mission Control ID"
 	},
 	"wallet": {
 		"title": "Wallet",
@@ -146,7 +146,7 @@
 		"average_page_views_per_session": "Average page views per session",
 		"bounce_rate": "Bounce rate",
 		"overview": "Overview",
-		"id": "ID",
+		"id": "Orbiter ID",
 		"tracked_events": "Tracked events",
 		"count": "Count",
 		"referrers": "Top 10 referrers",

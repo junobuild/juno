@@ -71,14 +71,36 @@
 	}
 
 	h1 {
+		letter-spacing: -0.05rem;
 		line-height: var(--line-height-standard);
-		margin: 0 0 var(--padding-2x);
+
+		padding: 0 var(--padding-2x) 0 0;
+		margin: 0 0 var(--padding-3x);
+
+		display: inline-block;
 
 		@include text.truncate;
+
+		position: relative;
+		overflow: visible;
 
 		&:before {
 			content: '';
 			display: inline-block;
+		}
+
+		&:after {
+			content: '';
+
+			background: linear-gradient(135deg, var(--color-primary) 30%, var(--color-tertiary));
+			border-radius: var(--border-radius);
+
+			height: 9px;
+			width: 100%;
+
+			position: absolute;
+			bottom: -3px;
+			left: 0;
 		}
 	}
 

@@ -10,4 +10,4 @@
 
 <TopUp type="topup_satellite" {detail} />
 
-<CanisterStopStart />
+<CanisterStopStart {satellite} />

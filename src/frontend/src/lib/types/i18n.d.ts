@@ -216,6 +216,7 @@ interface I18nCli {
 }
 
 interface I18nErrors {
+	no_identity: string;
 	no_mission_control: string;
 	cli_missing_params: string;
 	cli_missing_selection: string;
@@ -225,6 +226,8 @@ interface I18nErrors {
 	satellite_no_found: string;
 	satellite_name_update: string;
 	satellite_missing_name: string;
+	satellite_stop: string;
+	satellite_start: string;
 	ledger_balance_credits: string;
 	load_credits: string;
 	hosting_missing_domain_name: string;

@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
+    import type {Satellite} from "$declarations/mission_control/mission_control.did";
+
+    export let satellite: Satellite;
 
     let visible = false;
 

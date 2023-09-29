@@ -81,10 +81,10 @@
 	let disableInfiniteScroll = false;
 
 	const onIntersect = async () => {
-		console.log('here');
-
 		if (!$authSignedInStore) {
-			// It would be unexpected
+			toasts.error({
+				text: $i18n.errors.no_identity,
+			});
 			return;
 		}
 

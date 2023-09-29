@@ -179,7 +179,8 @@
 		"pendingchallengeresponse": "Certificato ordinato",
 		"pendingacmeapproval": "Sfida completata",
 		"available": "Disponibile",
-		"failed": "Fallito"
+		"failed": "Fallito",
+		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes"
 	},
 	"cli": {
 		"title": "Autorizza CLI",

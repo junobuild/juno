@@ -164,6 +164,7 @@ interface I18nAnalytics {
 	referrers: string;
 	enabled: string;
 	orbiter: string;
+	configure: string;
 }
 
 interface I18nHosting {

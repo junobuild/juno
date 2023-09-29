@@ -339,7 +339,7 @@
 		"enabled": "Enabled"
 	},
 	"observatory": {
-		"title": "Observatory",
+		"title": "Monitoring",
 		"overview": "Overview",
 		"loading": "Loading your settings",
 		"monitoring": "Monitoring",

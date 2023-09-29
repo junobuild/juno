@@ -32,7 +32,9 @@
 		"done": "完成",
 		"from": "从",
 		"to": "到",
-		"export": "Export"
+		"export": "Export",
+		"start": "Start",
+		"stop": "Stop"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -54,14 +56,7 @@
 		"review_upgrade": "升级校验",
 		"confirm_upgrade": "你的 {0} 代码将会通过 wasm <strong>{1}</strong> 升级. 确认要执行升级吗?",
 		"upgrade_done": "你的 {0} 已经成功的升级到版本 <strong>{1}</strong>.",
-		"upgrade": "升级",
-		"stop": "Stop",
-		"stop_title": "Stop satellite",
-		"stop_info": "Do you want to stop your satellite?",
-		"stop_explanation": "Please note that it will continue to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
-		"start": "Start",
-		"start_tile": "Restart satellite",
-		"start_info": "Do you want to resume your satellite?"
+		"upgrade": "升级"
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",
@@ -87,7 +82,12 @@
 		"create_satellite_price": "为了创建新的 satellite 需要 <strong>{0}</strong> ICP. 你当前 mission control 余额是 {1} ICP 而且你还剩 {2} 积分.",
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",
-		"id": "Satellite ID"
+		"id": "Satellite ID",
+		"stop_title": "Stop satellite",
+		"stop_info": "Do you want to stop your satellite?",
+		"stop_explanation": "Please note that it will continue to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"start_tile": "Restart satellite",
+		"start_info": "Do you want to resume your satellite?"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -201,6 +201,7 @@
 		"profile_placeholder": "可选关于控制者提示"
 	},
 	"errors": {
+		"no_identity": "Unexpected error. No identity provided.",
 		"no_mission_control": "Mission 控制中心没有初始化.",
 		"cli_missing_params": "URL参数缺失，重定向URL或者 principal没有提供.",
 		"cli_missing_selection": "没选择 mission control 或 satellite(s) .",
@@ -210,6 +211,8 @@
 		"satellite_no_found": "Satellite没找到，返回 <a href=\"/\">开始</a>去找你的 satellites.",
 		"satellite_name_update": "试图修改你的 satellite 名字出现异常.",
 		"satellite_missing_name": "必须提供一个名字.",
+		"satellite_stop": "Unexpected error(s) while trying to stop the satellite",
+		"satellite_start": "Unexpected error(s) while trying to start the satellite",
 		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
 		"load_credits": "Cannot load your current credits status.",
 		"hosting_missing_domain_name": "必须提供一个域名.",

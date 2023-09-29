@@ -36,6 +36,8 @@ interface I18nCore {
 	from: string;
 	to: string;
 	export: string;
+	start: string;
+	stop: string;
 }
 
 interface I18nCanisters {
@@ -59,13 +61,6 @@ interface I18nCanisters {
 	confirm_upgrade: string;
 	upgrade_done: string;
 	upgrade: string;
-	stop: string;
-	stop_title: string;
-	stop_info: string;
-	stop_explanation: string;
-	start: string;
-	start_tile: string;
-	start_info: string;
 }
 
 interface I18nSign_in {
@@ -94,6 +89,11 @@ interface I18nSatellites {
 	loading_satellites: string;
 	overview: string;
 	id: string;
+	stop_title: string;
+	stop_info: string;
+	stop_explanation: string;
+	start_tile: string;
+	start_info: string;
 }
 
 interface I18nMission_control {

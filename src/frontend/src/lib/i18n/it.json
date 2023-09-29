@@ -32,7 +32,9 @@
 		"done": "Done",
 		"from": "From",
 		"to": "To",
-		"export": "Export"
+		"export": "Export",
+		"start": "Start",
+		"stop": "Stop"
 	},
 	"canisters": {
 		"top_up": "Ricarica",
@@ -54,14 +56,7 @@
 		"review_upgrade": "Review upgrade",
 		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
 		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
-		"upgrade": "Upgrade",
-		"stop": "Stop",
-		"stop_title": "Stop satellite",
-		"stop_info": "Do you want to stop your satellite?",
-		"stop_explanation": "Please note that it will continue to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
-		"start": "Start",
-		"start_tile": "Restart satellite",
-		"start_info": "Do you want to resume your satellite?"
+		"upgrade": "Upgrade"
 	},
 	"sign_in": {
 		"title": "Lancia il tuo primo satellite",
@@ -87,7 +82,12 @@
 		"create_satellite_price": "Avviare un nuovo satellite richiede <strong>{0}</strong> ICP. Il tuo attuale saldo mission control è di {1} ICP e hai {2} crediti rimanenti.",
 		"loading_satellites": "Caricando i tuoi satelliti",
 		"overview": "Panoramica",
-		"id": "Satellite ID"
+		"id": "Satellite ID",
+		"stop_title": "Stop satellite",
+		"stop_info": "Do you want to stop your satellite?",
+		"stop_explanation": "Please note that it will continue to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"start_tile": "Restart satellite",
+		"start_info": "Do you want to resume your satellite?"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -201,6 +201,7 @@
 		"profile_placeholder": "Un suggerimento opzionale sul controller"
 	},
 	"errors": {
+		"no_identity": "Unexpected error. No identity provided.",
 		"no_mission_control": "Mission control center non è inizializzato",
 		"cli_missing_params": "Parametri URL mancanti. Oppure l'URL di reindirizzamento, o il principal non sono stati forniti.",
 		"cli_missing_selection": "Nessun mission control o satellite/i selezionato.",
@@ -210,6 +211,8 @@
 		"satellite_no_found": "Satellite non trovato.Torna all'<a href=\"/\">inizio</a> per trovare i tuoi satelliti.",
 		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite.",
 		"satellite_missing_name": "A name must be provided.",
+		"satellite_stop": "Unexpected error(s) while trying to stop the satellite",
+		"satellite_start": "Unexpected error(s) while trying to start the satellite",
 		"ledger_balance_credits": "Errore/i imprevisto/i durante il caricamento del saldo del tuo mission control e dei crediti.",
 		"load_credits": "Cannot load your current credits status.",
 		"hosting_missing_domain_name": "E' obbligatorio scegliere un nome a dominio",

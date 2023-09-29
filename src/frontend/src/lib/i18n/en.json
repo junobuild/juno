@@ -32,7 +32,9 @@
 		"done": "Done",
 		"from": "From",
 		"to": "To",
-		"export": "Export"
+		"export": "Export",
+		"start": "Start",
+		"stop": "Stop"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -54,14 +56,7 @@
 		"review_upgrade": "Review upgrade",
 		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
 		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
-		"upgrade": "Upgrade",
-		"stop": "Stop",
-		"stop_title": "Stop satellite",
-		"stop_info": "Do you want to stop your satellite?",
-		"stop_explanation": "Please note that it will continue to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
-		"start": "Start",
-		"start_tile": "Restart satellite",
-		"start_info": "Do you want to resume your satellite?"
+		"upgrade": "Upgrade"
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",
@@ -87,7 +82,12 @@
 		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",
-		"id": "Satellite ID"
+		"id": "Satellite ID",
+		"stop_title": "Stop satellite",
+		"stop_info": "Do you want to stop your satellite?",
+		"stop_explanation": "Please note that it will continue to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"start_tile": "Restart satellite",
+		"start_info": "Do you want to resume your satellite?"
 	},
 	"mission_control": {
 		"title": "Mission Control",

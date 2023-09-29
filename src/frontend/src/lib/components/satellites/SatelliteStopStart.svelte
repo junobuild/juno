@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Canister, CanisterStatus } from '$lib/types/canister';
-	import CanisterStart from '$lib/components/canister/CanisterStart.svelte';
-	import CanisterStop from '$lib/components/canister/CanisterStop.svelte';
+	import type { Canister, CanisterStatus, CanisterSyncStatus } from '$lib/types/canister';
+	import CanisterStart from '$lib/components/satellites/SatelliteStart.svelte';
+	import CanisterStop from '$lib/components/satellites/SatelliteStop.svelte';
 	import { fade } from 'svelte/transition';
-	import type {Satellite} from "$declarations/mission_control/mission_control.did";
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 
 	export let satellite: Satellite;
 
@@ -13,19 +13,21 @@
 		}
 
 		canister = syncCanister;
-	}
+	};
 
 	let canister: Canister | undefined = undefined;
 	let status: CanisterStatus | undefined = undefined;
+	let sync: CanisterSyncStatus | undefined = undefined;
 
 	$: status = canister?.data?.status;
+	$: sync = canister?.sync;
 </script>
 
 <svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
 
-{#if status === 'stopped'}
+{#if status === 'stopped' && sync === 'synced'}
 	<div in:fade><CanisterStart {satellite} /></div>
-{:else if status === 'running'}
+{:else if status === 'running' && sync === 'synced'}
 	<div in:fade><CanisterStop {satellite} /></div>
 {/if}
 

@@ -32,7 +32,9 @@
 		"done": "Done",
 		"from": "From",
 		"to": "To",
-		"export": "Export"
+		"export": "Export",
+		"start": "Start",
+		"stop": "Stop"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -80,7 +82,15 @@
 		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",
-		"id": "Satellite ID"
+		"id": "Satellite ID",
+		"stop_title": "Stop satellite",
+		"stop_info": "Do you want to stop your satellite?",
+		"stop_explanation": "Please note that a stopped satellite continues to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"stop_error": "Additionally, be aware that stopping the satellite may result in error messages being displayed in the console.",
+		"stop_success": "Satellite stopped.",
+		"start_tile": "Restart satellite",
+		"start_info": "Do you want to resume your satellite?",
+		"start_success": "Satellite resumed."
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -194,6 +204,7 @@
 		"profile_placeholder": "An optional hint about the controller"
 	},
 	"errors": {
+		"no_identity": "Unexpected error. No identity provided.",
 		"no_mission_control": "Mission control center is not initialized.",
 		"cli_missing_params": "Missing URL parameters. Either the redirection URL or principal is not provided.",
 		"cli_missing_selection": "No mission control or satellite(s) selected.",
@@ -203,6 +214,8 @@
 		"satellite_no_found": "Satellite not found. Return to <a href=\"/\">start</a> to find your satellites.",
 		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite.",
 		"satellite_missing_name": "A name must be provided.",
+		"satellite_stop": "Unexpected error(s) while trying to stop the satellite",
+		"satellite_start": "Unexpected error(s) while trying to start the satellite",
 		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits.",
 		"load_credits": "Cannot load your current credits status.",
 		"hosting_missing_domain_name": "A domain name must be provided.",

@@ -36,6 +36,8 @@ interface I18nCore {
 	from: string;
 	to: string;
 	export: string;
+	start: string;
+	stop: string;
 }
 
 interface I18nCanisters {
@@ -87,6 +89,14 @@ interface I18nSatellites {
 	loading_satellites: string;
 	overview: string;
 	id: string;
+	stop_title: string;
+	stop_info: string;
+	stop_explanation: string;
+	stop_error: string;
+	stop_success: string;
+	start_tile: string;
+	start_info: string;
+	start_success: string;
 }
 
 interface I18nMission_control {
@@ -209,6 +219,7 @@ interface I18nCli {
 }
 
 interface I18nErrors {
+	no_identity: string;
 	no_mission_control: string;
 	cli_missing_params: string;
 	cli_missing_selection: string;
@@ -218,6 +229,8 @@ interface I18nErrors {
 	satellite_no_found: string;
 	satellite_name_update: string;
 	satellite_missing_name: string;
+	satellite_stop: string;
+	satellite_start: string;
 	ledger_balance_credits: string;
 	load_credits: string;
 	hosting_missing_domain_name: string;

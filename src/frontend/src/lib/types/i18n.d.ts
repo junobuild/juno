@@ -193,6 +193,7 @@ interface I18nHosting {
 	pendingacmeapproval: string;
 	available: string;
 	failed: string;
+	skip_delete_domain: string;
 }
 
 interface I18nCli {

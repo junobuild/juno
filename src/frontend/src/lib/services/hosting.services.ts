@@ -40,13 +40,15 @@ export const setCustomDomain = async ({
 export const deleteCustomDomain = async ({
 	satelliteId,
 	customDomain,
-	domainName
+	domainName,
+	deleteCustomDomain
 }: {
 	satelliteId: Principal;
 	customDomain: CustomDomain;
 	domainName: string;
+	deleteCustomDomain: boolean;
 }) => {
-	if (nonNullish(fromNullable(customDomain.bn_id))) {
+	if (deleteCustomDomain && nonNullish(fromNullable(customDomain.bn_id))) {
 		// Delete domain name in BN
 		await deleteDomain(customDomain);
 	}

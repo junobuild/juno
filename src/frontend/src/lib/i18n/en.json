@@ -179,7 +179,8 @@
 		"pendingchallengeresponse": "Certificate ordered",
 		"pendingacmeapproval": "Challenge completed",
 		"available": "Available",
-		"failed": "Failed"
+		"failed": "Failed",
+		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes"
 	},
 	"cli": {
 		"title": "Juno CLI Authentication",

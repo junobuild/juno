@@ -28,6 +28,9 @@
 		visible = true;
 	};
 
+	let advancedOptions = false;
+	let skipDeleteDomain = false;
+
 	const deleteCustomDomain = async () => {
 		if (isNullish(customDomain)) {
 			toasts.error({
@@ -42,7 +45,8 @@
 			await deleteCustomDomainService({
 				satelliteId: satellite.satellite_id,
 				domainName: customDomain[0],
-				customDomain: customDomain[1]
+				customDomain: customDomain[1],
+				deleteCustomDomain: !skipDeleteDomain
 			});
 
 			emit({ message: 'junoSyncCustomDomains' });
@@ -53,6 +57,8 @@
 				text: $i18n.errors.hosting_delete_custom_domain,
 				detail: err
 			});
+
+			advancedOptions = true;
 		}
 
 		busy.stop();
@@ -102,6 +108,14 @@
 				{$i18n.core.yes}
 			</button>
 		</div>
+
+		{#if advancedOptions}
+			<hr/>
+			<div class="checkbox">
+				<input type="checkbox" on:change={() => (skipDeleteDomain = !skipDeleteDomain)} />
+				<span>{$i18n.hosting.skip_delete_domain}</span>
+			</div>
+		{/if}
 	</div>
 </Popover>
 
@@ -127,5 +141,17 @@
 	.toolbar {
 		display: flex;
 		gap: var(--padding-2x);
+	}
+
+	p {
+		padding: 0 0 var(--padding-2x);
+	}
+
+	.checkbox {
+		padding: var(--padding-2x) 0 0;
+
+		span {
+			white-space: pre-wrap;
+		}
 	}
 </style>

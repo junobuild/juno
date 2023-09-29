@@ -1,29 +1,65 @@
-const CSV_PICKER_OPTIONS: FilePickerAcceptType = {
+export const CSV_PICKER_OPTIONS: FilePickerAcceptType = {
 	description: 'CSV file',
 	accept: {
 		'text/csv': ['.csv']
 	}
 };
 
-export const saveToCSVFile = ({ blob, filename }: { blob: Blob; filename: string }) => {
-	if ('showSaveFilePicker' in window) {
-		return exportNativeFileSystem({ blob, filename });
+export const JSON_PICKER_OPTIONS: FilePickerAcceptType = {
+	description: 'JSON file',
+	accept: {
+		'application/json': ['.json']
 	}
-
-	return download({ blob, filename });
 };
 
-const exportNativeFileSystem = async ({ blob, filename }: { blob: Blob; filename: string }) => {
-	const fileHandle: FileSystemFileHandle = await getNewFileHandle({
-		filename,
-		types: [CSV_PICKER_OPTIONS]
-	});
+export const filenameTimestamp = (): string => new Date().toJSON().split('.')[0].replace(/:/g, '-');
 
-	if (fileHandle === undefined || fileHandle === null) {
-		throw new Error('Cannot access filesystem');
+export const saveToCSVFile = ({
+	type,
+	...rest
+}: {
+	blob: Blob;
+	filename: string;
+	type: FilePickerAcceptType;
+}) => {
+	if ('showSaveFilePicker' in window) {
+		return exportNativeFileSystem({ ...rest, type });
 	}
 
-	await writeFile({ fileHandle, blob });
+	return download(rest);
+};
+
+const exportNativeFileSystem = async ({
+	blob,
+	filename,
+	type
+}: {
+	blob: Blob;
+	filename: string;
+	type: FilePickerAcceptType;
+}) => {
+	try {
+		const fileHandle: FileSystemFileHandle = await getNewFileHandle({
+			filename,
+			types: [type]
+		});
+
+		if (fileHandle === undefined || fileHandle === null) {
+			throw new Error('Cannot access filesystem');
+		}
+
+		await writeFile({ fileHandle, blob });
+	} catch (err: unknown) {
+		if (
+			typeof err === 'object' &&
+			(err as { message: string })?.message?.includes('The user aborted a request')
+		) {
+			// We do not display an error if user just clicked "Cancel".
+			return;
+		}
+
+		throw err;
+	}
 };
 
 const getNewFileHandle = ({

@@ -5,20 +5,20 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { canisterStop } from '$lib/api/ic.api';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-    import {authSignedInStore, authStore} from "$lib/stores/auth.store";
-	import {emit} from "$lib/utils/events.utils";
+	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let satellite: Satellite;
 
 	let visible = false;
 
 	const stop = async () => {
-        if (!$authSignedInStore) {
-            toasts.error({
-                text: $i18n.errors.no_identity,
-            });
-            return;
-        }
+		if (!$authSignedInStore) {
+			toasts.error({
+				text: $i18n.errors.no_identity
+			});
+			return;
+		}
 
 		busy.start();
 
@@ -28,6 +28,8 @@
 			emit({ message: 'junoRestartCycles', detail: { canisterId: satellite.satellite_id } });
 
 			close();
+
+			toasts.success($i18n.satellites.stop_success);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.satellite_stop,
@@ -46,7 +48,9 @@
 <Confirmation bind:visible on:junoYes={stop} on:junoNo={close}>
 	<svelte:fragment slot="title">{$i18n.satellites.stop_title}</svelte:fragment>
 
-	<p>{$i18n.satellites.stop_info}</p>
-
 	<p>{$i18n.satellites.stop_explanation}</p>
+
+	<p>{$i18n.satellites.stop_error}</p>
+
+	<p>{$i18n.satellites.stop_info}</p>
 </Confirmation>

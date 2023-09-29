@@ -92,8 +92,11 @@ interface I18nSatellites {
 	stop_title: string;
 	stop_info: string;
 	stop_explanation: string;
+	stop_error: string;
+	stop_success: string;
 	start_tile: string;
 	start_info: string;
+	start_success: string;
 }
 
 interface I18nMission_control {

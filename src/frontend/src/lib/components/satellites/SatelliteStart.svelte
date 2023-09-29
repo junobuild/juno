@@ -29,6 +29,8 @@
 			emit({ message: 'junoReloadVersions' });
 
 			close();
+
+			toasts.success($i18n.satellites.start_success);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.satellite_start,

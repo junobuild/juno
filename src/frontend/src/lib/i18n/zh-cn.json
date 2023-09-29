@@ -85,9 +85,12 @@
 		"id": "Satellite ID",
 		"stop_title": "Stop satellite",
 		"stop_info": "Do you want to stop your satellite?",
-		"stop_explanation": "Please note that it will continue to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"stop_explanation": "Please note that a stopped satellite continues to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"stop_error": "Additionally, be aware that stopping the satellite may result in error messages being displayed in the console.",
+		"stop_success": "Satellite stopped.",
 		"start_tile": "Restart satellite",
-		"start_info": "Do you want to resume your satellite?"
+		"start_info": "Do you want to resume your satellite?",
+		"start_success": "Satellite resumed."
 	},
 	"mission_control": {
 		"title": "Mission Control",

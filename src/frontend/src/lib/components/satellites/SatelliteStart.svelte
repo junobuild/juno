@@ -26,6 +26,7 @@
 			await canisterStart({ canisterId: satellite.satellite_id, identity: $authStore.identity! });
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId: satellite.satellite_id } });
+			emit({ message: 'junoReloadVersions' });
 
 			close();
 		} catch (err: unknown) {

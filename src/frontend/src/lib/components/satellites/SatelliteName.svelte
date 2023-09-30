@@ -3,7 +3,6 @@
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type { SatelliteIdText } from '$lib/types/satellite';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -13,9 +12,6 @@
 	import { setSatelliteName } from '$lib/services/mission-control.services';
 
 	export let satellite: Satellite;
-
-	let satelliteId: SatelliteIdText;
-	$: satelliteId = satellite.satellite_id.toText();
 
 	let satName = satelliteName(satellite);
 

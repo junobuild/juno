@@ -11,21 +11,19 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import { createOrbiter, loadOrbiters } from '$lib/services/orbiters.services';
-	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 
 	export let detail: JunoModalDetail;
 
 	let insufficientFunds = true;
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
-	let orbiter: Orbiter | undefined = undefined;
 
 	const onSubmit = async () => {
 		wizardBusy.start();
 		steps = 'in_progress';
 
 		try {
-			orbiter = await createOrbiter({
+			await createOrbiter({
 				missionControl: $missionControlStore
 			});
 

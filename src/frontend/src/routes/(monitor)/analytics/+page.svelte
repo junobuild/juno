@@ -18,7 +18,6 @@
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import {tabStore} from "$lib/derived/tabs.derived";
 
 	const tabDashboard = {
 		id: Symbol('1'),

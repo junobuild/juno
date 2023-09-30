@@ -107,7 +107,7 @@ const syncWallet = async ({
 				wallet: {
 					...rest,
 					newTransactions: JSON.stringify(
-						Object.entries(newTransactions).map(([id, transaction]) => transaction),
+						Object.entries(newTransactions).map(([_id, transaction]) => transaction),
 						jsonReplacer
 					)
 				}

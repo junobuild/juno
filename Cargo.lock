@@ -826,6 +826,7 @@ name = "shared"
 version = "0.0.6"
 dependencies = [
  "candid",
+ "ciborium",
  "futures",
  "ic-cdk",
  "ic-cdk-macros",

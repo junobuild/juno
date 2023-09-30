@@ -19,7 +19,7 @@ pub mod state {
     pub type AssetsStable = StableBTreeMap<StableFullPath, Asset, Memory>;
     pub type AssetsHeap = HashMap<FullPath, Asset>;
 
-    #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct StableFullPath {
         pub full_path: FullPath,
     }

@@ -1,10 +1,10 @@
-use candid::{decode_one, encode_one};
 use ic_cdk::api::time;
 use ic_stable_structures::{Storable};
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
 use ic_stable_structures::storable::Bound;
+use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::types::assets::AssetHashes;
@@ -101,11 +101,11 @@ impl Compare for AssetNoContent {
 
 impl Storable for Asset {
     fn to_bytes(&self) -> Cow<[u8]> {
-        Cow::Owned(encode_one(self).unwrap())
+        serialize_to_bytes(self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        decode_one(&bytes).unwrap()
+        deserialize_from_bytes(bytes)
     }
 
     const BOUND: Bound = Bound::Unbounded;
@@ -113,11 +113,11 @@ impl Storable for Asset {
 
 impl Storable for StableFullPath {
     fn to_bytes(&self) -> Cow<[u8]> {
-        Cow::Owned(encode_one(self).unwrap())
+        serialize_to_bytes(self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        decode_one(&bytes).unwrap()
+        deserialize_from_bytes(bytes)
     }
 
     const BOUND: Bound = Bound::Unbounded;

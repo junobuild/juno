@@ -30,7 +30,7 @@ fn get_memory_assets() -> Memory {
 
 pub fn init_stable_state() -> StableState {
     StableState {
-        db: StableBTreeMap::init_v2(get_memory_db()),
-        assets: StableBTreeMap::init_v2(get_memory_assets()),
+        db: StableBTreeMap::init(get_memory_db()),
+        assets: StableBTreeMap::init(get_memory_assets()),
     }
 }

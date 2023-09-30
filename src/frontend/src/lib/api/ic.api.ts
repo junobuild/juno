@@ -1,6 +1,6 @@
 import type { _SERVICE as ICActor } from '$declarations/ic/ic.did';
 import type { CanisterInfo, CanisterStatus } from '$lib/types/canister';
-import { getICActor } from '$lib/utils/actor.cjs.utils';
+import { getICActor } from '$lib/utils/actor.ic.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 
@@ -27,4 +27,26 @@ export const canisterStatus = async ({
 	});
 
 	return { cycles, status: toStatus(status), memory_size, canisterId, idle_cycles_burned_per_day };
+};
+
+export const canisterStart = async ({
+	canisterId,
+	identity
+}: {
+	canisterId: Principal;
+	identity: Identity;
+}): Promise<void> => {
+	const actor: ICActor = await getICActor(identity);
+	return actor.start_canister({ canister_id: canisterId });
+};
+
+export const canisterStop = async ({
+	canisterId,
+	identity
+}: {
+	canisterId: Principal;
+	identity: Identity;
+}): Promise<void> => {
+	const actor: ICActor = await getICActor(identity);
+	return actor.stop_canister({ canister_id: canisterId });
 };

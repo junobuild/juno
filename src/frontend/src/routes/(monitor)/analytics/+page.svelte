@@ -10,11 +10,14 @@
 	import AnalyticsControllers from '$lib/components/analytics/AnalyticsControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import OriginConfigs from '$lib/components/analytics/OriginConfigs.svelte';
+	import OrbiterConfig from '$lib/components/analytics/OrbiterConfig.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadOrbiterVersion } from '$lib/services/console.services';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -39,7 +42,7 @@
 	];
 
 	const store = writable<TabsStore>({
-		tabId: tabs[0].id,
+		tabId: initTabId(tabs),
 		tabs
 	});
 
@@ -48,7 +51,7 @@
 	});
 
 	$: store.set({
-		tabId: tabs[0].id,
+		tabId: initTabId(tabs),
 		tabs
 	});
 
@@ -61,14 +64,20 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/build/datastore">
+	<Tabs help="https://juno.build/docs/build/analytics">
+		<svelte:fragment slot="info">
+			{#if $authSignedInStore}
+				<Warnings />
+			{/if}
+		</svelte:fragment>
+
 		<MissionControlGuard>
 			{#if $store.tabId === $store.tabs[0].id}
 				<Analytics />
 			{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
 				<Orbiter orbiter={$orbiterStore} />
 			{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
-				<OriginConfigs orbiterId={$orbiterStore.orbiter_id} />
+				<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
 
 				<AnalyticsControllers orbiterId={$orbiterStore.orbiter_id} />
 			{/if}

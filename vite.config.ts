@@ -60,32 +60,14 @@ const config: UserConfig = {
 					const folder = dirname(id);
 
 					if (
-						['@sveltejs', 'svelte', '@dfinity/gix-components'].find((lib) =>
-							folder.includes(lib)
-						) === undefined &&
+						['@sveltejs', 'svelte', 'layercake'].find((lib) => folder.includes(lib)) ===
+							undefined &&
 						folder.includes('node_modules')
 					) {
 						return 'vendor';
 					}
 
-					if (
-						[
-							'frontend/src/lib/api',
-							'frontend/src/lib/services',
-							'frontend/src/lib/stores',
-							'frontend/src/lib/workers'
-						].find((module) => folder.includes(module)) !== undefined
-					) {
-						return 'dapp';
-					}
-
-					if (
-						['frontend/src/lib/components/ui', 'frontend/src/lib/components/icons'].find((module) =>
-							folder.includes(module)
-						) !== undefined
-					) {
-						return 'ui';
-					}
+					return 'index';
 				}
 			},
 			// Polyfill Buffer for production build
@@ -115,7 +97,6 @@ const config: UserConfig = {
 			},
 			// Enable esbuild polyfill plugins
 			plugins: [
-				// @ts-ignore
 				NodeModulesPolyfillPlugin(),
 				{
 					name: 'fix-node-globals-polyfill',
@@ -125,6 +106,9 @@ const config: UserConfig = {
 				}
 			]
 		}
+	},
+	worker: {
+		format: 'es'
 	}
 };
 

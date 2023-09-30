@@ -15,6 +15,8 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import MissionControlWallet from '$lib/components/mission-control/MissionControlWallet.svelte';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
 		{
@@ -23,17 +25,16 @@
 		},
 		{
 			id: Symbol('2'),
+			labelKey: 'wallet.title'
+		},
+		{
+			id: Symbol('3'),
 			labelKey: 'controllers.title'
 		}
-		// TODO: implement and add transactions tab when ICP index canisters makes it to mainnet
-		// {
-		// 	id: Symbol('4'),
-		// 	name: $i18n.mission_control.transactions
-		// }
 	];
 
 	const store = writable<TabsStore>({
-		tabId: tabs[0].id,
+		tabId: initTabId(tabs),
 		tabs
 	});
 
@@ -58,6 +59,8 @@
 			{#if $store.tabId === $store.tabs[0].id}
 				<MissionControl />
 			{:else if $store.tabId === $store.tabs[1].id}
+				<MissionControlWallet missionControlId={$missionControlStore} />
+			{:else if $store.tabId === $store.tabs[2].id}
 				<MissionControlControllers missionControlId={$missionControlStore} />
 			{/if}
 		{/if}

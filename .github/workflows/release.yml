@@ -50,6 +50,9 @@ jobs:
           - name: satellite.wasm.gz
             target: scratch_satellite
 
+          - name: orbiter.wasm.gz
+            target: scratch_orbiter
+
     steps:
       - uses: actions/checkout@v3
 
@@ -86,7 +89,7 @@ jobs:
       - name: Build metadata
         run: bash ./docker/metadata
         env:
-          CANISTERS: console,observatory,mission_control,satellite
+          CANISTERS: console,observatory,mission_control,satellite,orbiter
 
       - name: Upload metadata
         uses: actions/upload-artifact@v3
@@ -113,6 +116,9 @@ jobs:
 
           - name: satellite.did
             target: satellite
+
+          - name: orbiter.did
+            target: orbiter
 
     steps:
       - uses: actions/checkout@v3
@@ -150,6 +156,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: satellite.wasm.gz
+      - name: Download orbiter.wasm.gz
+        uses: actions/download-artifact@v3
+        with:
+          name: orbiter.wasm.gz
       - name: Download console.did
         uses: actions/download-artifact@v3
         with:
@@ -166,6 +176,10 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: satellite.did
+      - name: Download orbiter.did
+        uses: actions/download-artifact@v3
+        with:
+          name: orbiter.did
       - name: Download metadata.json
         uses: actions/download-artifact@v3
         with:
@@ -174,7 +188,7 @@ jobs:
       - name: Prepare canisters
         run: bash ./docker/prepare
         env:
-          CANISTERS: console,observatory,mission_control,satellite
+          CANISTERS: console,observatory,mission_control,satellite,orbiter
 
       - name: Release
         uses: softprops/action-gh-release@v1
@@ -183,10 +197,12 @@ jobs:
           files: |
             ./console*.wasm.gz
             ./observatory*.wasm.gz
+            ./orbiter*.wasm.gz
             ./mission_control*.wasm.gz
             ./satellite*.wasm.gz
             ./console*.did
             ./observatory*.did
             ./mission_control*.did
             ./satellite*.did
+            ./orbiter*.did
             ./metadata.json

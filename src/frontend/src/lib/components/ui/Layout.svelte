@@ -5,6 +5,7 @@
 
 	export let centered = false;
 	export let title = true;
+	export let titleColored = false;
 </script>
 
 <SplitPane>
@@ -16,7 +17,7 @@
 		<div class="page">
 			<main class:centered>
 				{#if title}
-					<h1>
+					<h1 class:color={titleColored}>
 						<span class={`title ${nonNullish($layoutTitle) ? 'visible' : ''}`}
 							>{$layoutTitle ?? ''}</span
 						>
@@ -71,14 +72,40 @@
 	}
 
 	h1 {
+		letter-spacing: -0.03rem;
 		line-height: var(--line-height-standard);
-		margin: 0 0 var(--padding-2x);
+
+		padding: 0 var(--padding-2x) 0 0;
+		margin: 0 0 var(--padding-3x);
+
+		display: inline-block;
 
 		@include text.truncate;
+
+		position: relative;
+		overflow: visible;
 
 		&:before {
 			content: '';
 			display: inline-block;
+		}
+
+		&:after {
+			content: '';
+
+			background: var(--text-color);
+			border-radius: var(--border-radius);
+
+			height: 5px;
+			width: 100%;
+
+			position: absolute;
+			bottom: -3px;
+			left: 0;
+		}
+
+		&.color:after {
+			background: var(--color-primary);
 		}
 	}
 

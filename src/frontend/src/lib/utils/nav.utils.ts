@@ -33,6 +33,7 @@ const goBack = async (defaultRoute = '/') => {
 };
 
 export type RouteSatellite = { satellite: string | null | undefined };
+export type RouteTab = { tab: string | null | undefined };
 
 export const loadRouteSatellite = ($event: LoadEvent): RouteSatellite => {
 	if (!browser) {
@@ -46,6 +47,23 @@ export const loadRouteSatellite = ($event: LoadEvent): RouteSatellite => {
 	} = $event;
 
 	return {
-		satellite: searchParams?.get('s')
+		satellite: searchParams?.get('s'),
+		...loadRouteTab($event)
+	};
+};
+
+export const loadRouteTab = ($event: LoadEvent): RouteTab => {
+	if (!browser) {
+		return {
+			tab: undefined
+		};
+	}
+
+	const {
+		url: { searchParams }
+	} = $event;
+
+	return {
+		tab: searchParams?.get('tab')
 	};
 };

@@ -15,6 +15,7 @@
 		"home": "Home",
 		"help": "Aiuto",
 		"controllers": "Controllori",
+		"settings": "Settings",
 		"continue": "Continua",
 		"not_logged_in": "Sviluppatore non loggato.",
 		"ready": "Pronti",
@@ -28,7 +29,12 @@
 		"version": "Versione",
 		"delete": "Elimina",
 		"skip": "Skip",
-		"done": "Done"
+		"done": "Done",
+		"from": "From",
+		"to": "To",
+		"export": "Export",
+		"start": "Start",
+		"stop": "Stop"
 	},
 	"canisters": {
 		"top_up": "Ricarica",
@@ -76,17 +82,42 @@
 		"create_satellite_price": "Avviare un nuovo satellite richiede <strong>{0}</strong> ICP. Il tuo attuale saldo mission control è di {1} ICP e hai {2} crediti rimanenti.",
 		"loading_satellites": "Caricando i tuoi satelliti",
 		"overview": "Panoramica",
-		"id": "ID"
+		"id": "Satellite ID",
+		"stop_title": "Stop satellite",
+		"stop_info": "Do you want to stop your satellite?",
+		"stop_explanation": "Please note that a stopped satellite continues to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"stop_error": "Additionally, be aware that stopping the satellite may result in error messages being displayed in the console.",
+		"stop_success": "Satellite stopped.",
+		"start_tile": "Restart satellite",
+		"start_info": "Do you want to resume your satellite?",
+		"start_success": "Satellite resumed."
 	},
 	"mission_control": {
 		"title": "Mission Control",
 		"overview": "Panoramica",
-		"id": "ID",
+		"id": "Mission Control ID"
+	},
+	"wallet": {
+		"title": "Wallet",
 		"account_identifier": "Account identifier",
 		"balance": "Saldo",
 		"credits": "Crediti",
-		"transactions": "Transazioni",
-		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the"
+		"transfer_icp_info": "Find more information about transferring ICP to your mission control in the",
+		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier",
+		"tx_id": "ID",
+		"tx_timestamp": "Timestamp",
+		"tx_from": "From",
+		"tx_to": "To",
+		"tx_memo": "Memo",
+		"tx_amount": "Amount",
+		"memo_create": "Segment created",
+		"memo_refund_satellite": "Satellite refund",
+		"memo_refund_orbiter": "Orbiter refund",
+		"memo_refund_top_up": "Top-up segment",
+		"memo_received": "Received",
+		"memo_sent": "Sent",
+		"export_title": "Export to CSV",
+		"export_info": "This process exports the displayed transactions to a CSV file. Shall we proceed?"
 	},
 	"authentication": {
 		"title": "Autenticazione",
@@ -104,6 +135,34 @@
 		"title": "Storage",
 		"short_description": "Archivia e distribuisci facilmente contenuti generati dagli utenti, come file, foto e video, su Web3.",
 		"assets": "Assets"
+	},
+	"analytics": {
+		"title": "Analytics",
+		"dashboard": "Dashboard",
+		"loading": "Loading data",
+		"empty": "Juno provides simple, performant, and open-source web analytics that do not use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your your dapps and website visitors.",
+		"get_started": "Get started",
+		"start": "Getting started",
+		"description": "Get analytics to measure and analyse how users engage with your apps.",
+		"initializing": "Initializing analytics...",
+		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
+		"create": "Create analytics",
+		"ready": "Your analytics are ready!",
+		"satellites": "Satellite(s)",
+		"all_satellites": "All satellites",
+		"number_of_sessions": "Number of Sessions",
+		"unique_page_views": "Unique page views",
+		"total_page_views": "Total page views",
+		"average_page_views_per_session": "Average page views per session",
+		"bounce_rate": "Bounce rate",
+		"overview": "Overview",
+		"id": "Orbiter ID",
+		"tracked_events": "Tracked events",
+		"count": "Count",
+		"referrers": "Top 10 referrers",
+		"enabled": "Enabled",
+		"orbiter": "Orbiter",
+		"configure": "Configure"
 	},
 	"hosting": {
 		"title": "Hosting",
@@ -131,7 +190,8 @@
 		"pendingchallengeresponse": "Certificato ordinato",
 		"pendingacmeapproval": "Sfida completata",
 		"available": "Disponibile",
-		"failed": "Fallito"
+		"failed": "Fallito",
+		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes"
 	},
 	"cli": {
 		"title": "Autorizza CLI",
@@ -144,6 +204,7 @@
 		"profile_placeholder": "Un suggerimento opzionale sul controller"
 	},
 	"errors": {
+		"no_identity": "Unexpected error. No identity provided.",
 		"no_mission_control": "Mission control center non è inizializzato",
 		"cli_missing_params": "Parametri URL mancanti. Oppure l'URL di reindirizzamento, o il principal non sono stati forniti.",
 		"cli_missing_selection": "Nessun mission control o satellite/i selezionato.",
@@ -153,7 +214,10 @@
 		"satellite_no_found": "Satellite non trovato.Torna all'<a href=\"/\">inizio</a> per trovare i tuoi satelliti.",
 		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite.",
 		"satellite_missing_name": "A name must be provided.",
+		"satellite_stop": "Unexpected error(s) while trying to stop the satellite",
+		"satellite_start": "Unexpected error(s) while trying to start the satellite",
 		"ledger_balance_credits": "Errore/i imprevisto/i durante il caricamento del saldo del tuo mission control e dei crediti.",
+		"load_credits": "Cannot load your current credits status.",
 		"hosting_missing_domain_name": "E' obbligatorio scegliere un nome a dominio",
 		"hosting_invalid_url": "Inserisci un URL valido.",
 		"hosting_missing_dns_configuration": "E' obbligatorio fornire una configurazione del nome a dominio",
@@ -181,7 +245,16 @@
 		"upgrade_no_version": "Please select a version for the upgrade.",
 		"upgrade_no_wasm": "No wasm provided. Please try again.",
 		"upgrade_requires_iterative_version": "There may have been breaking changes between your {0} v{1} and selected version {2}. Please upgrade iteratively.",
-		"top_up_error": "Error while topping up the segment."
+		"top_up_error": "Error while topping up the segment.",
+		"analytics_load_error": "Error while loading the analytics data",
+		"analytics_tracked_events_export": "Unexpected error(s) while exporting the tracked events.",
+		"satellites_loading": "Error while loading the list of satellites.",
+		"orbiters_loading": "Error while loading the list of orbiters.",
+		"orbiter_configuration_missing": "Satellites and configuration must be provided.",
+		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
+		"orbiter_configuration_listing": "Error while fetching the configuration.",
+		"transactions_next": "Error while fetching the next transactions.",
+		"transactions_export": "Unexpected error(s) while exporting the transactions."
 	},
 	"document": {
 		"owner": "Proprietario",
@@ -204,8 +277,9 @@
 		"full_path": "Full path"
 	},
 	"admin": {
-		"mission_control_new_version": "Una nuova versione del tuo mission control è disponibile! Aggiornalo con la CLI.",
-		"satellite_new_version": "Una nuova versione del tuo satellite è disponibile! Aggiornalo con la CLI."
+		"mission_control_new_version": "A new version of your mission control is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",
+		"satellite_new_version": "A new version of your satellite is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",
+		"orbiter_new_version": "A new version of your orbiter is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>."
 	},
 	"controllers": {
 		"title": "Controllori",

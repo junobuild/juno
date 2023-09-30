@@ -4,7 +4,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
-	import type { JunoModalDetail, JunoModalUpgradeMissionControlDetail } from '$lib/types/modal';
+	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
 	import { upgradeMissionControl } from '@junobuild/admin';
 	import { authStore } from '$lib/stores/auth.store';
 	import { AnonymousIdentity } from '@dfinity/agent';
@@ -14,7 +14,7 @@
 	let newerReleases: string[];
 	let currentVersion: string;
 
-	$: ({ newerReleases, currentVersion } = detail as JunoModalUpgradeMissionControlDetail);
+	$: ({ newerReleases, currentVersion } = detail as JunoModalUpgradeDetail);
 
 	const upgradeMissionControlWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
 		upgradeMissionControl({

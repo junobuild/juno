@@ -23,7 +23,7 @@ export const downloadRelease = async ({
 	segment,
 	version
 }: {
-	segment: 'satellite' | 'mission_control';
+	segment: 'satellite' | 'mission_control' | 'orbiter';
 	version: string;
 }): Promise<Blob> => {
 	const JUNO_CDN_URL = import.meta.env.VITE_JUNO_CDN_URL;

@@ -35,6 +35,9 @@ interface I18nCore {
 	done: string;
 	from: string;
 	to: string;
+	export: string;
+	start: string;
+	stop: string;
 }
 
 interface I18nCanisters {
@@ -86,17 +89,43 @@ interface I18nSatellites {
 	loading_satellites: string;
 	overview: string;
 	id: string;
+	stop_title: string;
+	stop_info: string;
+	stop_explanation: string;
+	stop_error: string;
+	stop_success: string;
+	start_tile: string;
+	start_info: string;
+	start_success: string;
 }
 
 interface I18nMission_control {
 	title: string;
 	overview: string;
 	id: string;
+}
+
+interface I18nWallet {
+	title: string;
 	account_identifier: string;
 	balance: string;
 	credits: string;
-	transactions: string;
 	transfer_icp_info: string;
+	transfer_to_account_identifier: string;
+	tx_id: string;
+	tx_timestamp: string;
+	tx_from: string;
+	tx_to: string;
+	tx_memo: string;
+	tx_amount: string;
+	memo_create: string;
+	memo_refund_satellite: string;
+	memo_refund_orbiter: string;
+	memo_refund_top_up: string;
+	memo_received: string;
+	memo_sent: string;
+	export_title: string;
+	export_info: string;
 }
 
 interface I18nAuthentication {
@@ -142,6 +171,10 @@ interface I18nAnalytics {
 	id: string;
 	tracked_events: string;
 	count: string;
+	referrers: string;
+	enabled: string;
+	orbiter: string;
+	configure: string;
 }
 
 interface I18nHosting {
@@ -171,6 +204,7 @@ interface I18nHosting {
 	pendingacmeapproval: string;
 	available: string;
 	failed: string;
+	skip_delete_domain: string;
 }
 
 interface I18nCli {
@@ -185,6 +219,7 @@ interface I18nCli {
 }
 
 interface I18nErrors {
+	no_identity: string;
 	no_mission_control: string;
 	cli_missing_params: string;
 	cli_missing_selection: string;
@@ -194,7 +229,10 @@ interface I18nErrors {
 	satellite_no_found: string;
 	satellite_name_update: string;
 	satellite_missing_name: string;
+	satellite_stop: string;
+	satellite_start: string;
 	ledger_balance_credits: string;
+	load_credits: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;
@@ -224,12 +262,14 @@ interface I18nErrors {
 	upgrade_requires_iterative_version: string;
 	top_up_error: string;
 	analytics_load_error: string;
+	analytics_tracked_events_export: string;
 	satellites_loading: string;
 	orbiters_loading: string;
-	origin_filter_missing: string;
-	origin_filter_unexpected: string;
-	origins_listing: string;
-	origin_delete: string;
+	orbiter_configuration_missing: string;
+	orbiter_configuration_unexpected: string;
+	orbiter_configuration_listing: string;
+	transactions_next: string;
+	transactions_export: string;
 }
 
 interface I18nDocument {
@@ -257,6 +297,7 @@ interface I18nAsset {
 interface I18nAdmin {
 	mission_control_new_version: string;
 	satellite_new_version: string;
+	orbiter_new_version: string;
 }
 
 interface I18nControllers {
@@ -304,9 +345,6 @@ interface I18nCollections {
 	deleted: string;
 	delete_question: string;
 	none: string;
-	memory: string;
-	heap: string;
-	stable: string;
 }
 
 interface I18nSort {
@@ -408,14 +446,6 @@ interface I18nOn_boarding {
 	success: string;
 }
 
-interface I18nOrigins {
-	empty: string;
-	filter: string;
-	edit_filter: string;
-	add_a_filter: string;
-	delete: string;
-}
-
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -423,6 +453,7 @@ interface I18n {
 	sign_in: I18nSign_in;
 	satellites: I18nSatellites;
 	mission_control: I18nMission_control;
+	wallet: I18nWallet;
 	authentication: I18nAuthentication;
 	datastore: I18nDatastore;
 	storage: I18nStorage;
@@ -443,5 +474,4 @@ interface I18n {
 	examples: I18nExamples;
 	resources: I18nResources;
 	on_boarding: I18nOn_boarding;
-	origins: I18nOrigins;
 }

@@ -3,8 +3,7 @@ import type { Principal } from '@dfinity/principal';
 
 export interface AnalyticKey {
 	key: string;
-	session_id: string;
-	satellite_id: Principal;
+	collected_at: bigint;
 }
 export interface Controller {
 	updated_at: bigint;
@@ -14,7 +13,7 @@ export interface Controller {
 	expires_at: [] | [bigint];
 }
 export type ControllerScope = { Write: null } | { Admin: null };
-export interface DelOriginConfig {
+export interface DelSatelliteConfig {
 	updated_at: [] | [bigint];
 }
 export interface DeleteControllersArgs {
@@ -25,30 +24,30 @@ export interface GetAnalytics {
 	from: [] | [bigint];
 	satellite_id: [] | [Principal];
 }
-export interface OriginConfig {
-	key: Principal;
-	updated_at: bigint;
-	created_at: bigint;
-	filter: string;
-}
 export interface PageView {
 	title: string;
 	updated_at: bigint;
 	referrer: [] | [string];
 	time_zone: string;
+	session_id: string;
 	href: string;
 	created_at: bigint;
+	satellite_id: Principal;
 	device: PageViewDevice;
 	user_agent: [] | [string];
-	collected_at: bigint;
 }
 export interface PageViewDevice {
 	inner_height: number;
 	inner_width: number;
 }
 export type Result = { Ok: PageView } | { Err: string };
-export type Result_1 = { Ok: null } | { Err: string };
+export type Result_1 = { Ok: null } | { Err: Array<[AnalyticKey, string]> };
 export type Result_2 = { Ok: TrackEvent } | { Err: string };
+export interface SatelliteConfig {
+	updated_at: bigint;
+	created_at: bigint;
+	enabled: boolean;
+}
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -58,45 +57,51 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
-export interface SetOriginConfig {
-	key: Principal;
-	updated_at: [] | [bigint];
-	filter: string;
-}
 export interface SetPageView {
 	title: string;
 	updated_at: [] | [bigint];
 	referrer: [] | [string];
 	time_zone: string;
+	session_id: string;
 	href: string;
+	satellite_id: Principal;
 	device: PageViewDevice;
 	user_agent: [] | [string];
-	collected_at: bigint;
+}
+export interface SetSatelliteConfig {
+	updated_at: [] | [bigint];
+	enabled: boolean;
 }
 export interface SetTrackEvent {
 	updated_at: [] | [bigint];
+	session_id: string;
 	metadata: [] | [Array<[string, string]>];
 	name: string;
-	collected_at: bigint;
+	satellite_id: Principal;
+	user_agent: [] | [string];
 }
 export interface TrackEvent {
 	updated_at: bigint;
+	session_id: string;
 	metadata: [] | [Array<[string, string]>];
 	name: string;
 	created_at: bigint;
-	collected_at: bigint;
+	satellite_id: Principal;
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
-	del_origin_config: ActorMethod<[Principal, DelOriginConfig], undefined>;
+	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;
 	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
-	list_origin_configs: ActorMethod<[], Array<[Principal, OriginConfig]>>;
+	list_satellite_configs: ActorMethod<[], Array<[Principal, SatelliteConfig]>>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
-	set_origin_config: ActorMethod<[Principal, SetOriginConfig], OriginConfig>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;
+	set_satellite_configs: ActorMethod<
+		[Array<[Principal, SetSatelliteConfig]>],
+		Array<[Principal, SatelliteConfig]>
+	>;
 	set_track_event: ActorMethod<[AnalyticKey, SetTrackEvent], Result_2>;
 	set_track_events: ActorMethod<[Array<[AnalyticKey, SetTrackEvent]>], Result_1>;
 	version: ActorMethod<[], string>;

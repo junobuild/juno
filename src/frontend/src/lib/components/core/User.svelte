@@ -51,7 +51,7 @@
 		</a>
 
 		<a
-			href="/observatory"
+			href="/monitoring"
 			class="menu"
 			role="menuitem"
 			aria-haspopup="menu"

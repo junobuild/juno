@@ -13,7 +13,7 @@
 	const yKey = 'myY';
 
 	let totalPageViews: Record<string, number>;
-	$: totalPageViews = data.reduce((acc, [_, { collected_at }]) => {
+	$: totalPageViews = data.reduce((acc, [{ collected_at }, _]) => {
 		const date = fromBigIntNanoSeconds(collected_at);
 
 		// Start of the day
@@ -34,7 +34,7 @@
 			[xKey]: key,
 			[yKey]: value
 		}))
-		.sort(({ [yKey]: aKey }, { [yKey]: bKey }) => aKey - bKey);
+		.sort(({ [xKey]: aKey }, { [xKey]: bKey }) => parseInt(aKey) - parseInt(bKey));
 
 	let ticks: string[];
 	$: ticks = Object.values(chartsData).map(({ [xKey]: a }) => a);

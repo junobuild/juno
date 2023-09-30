@@ -15,6 +15,8 @@
 	import { debounce } from '$lib/utils/debounce.utils';
 	import { formatNumber } from '$lib/utils/number.utils';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
+	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
+	import AnalyticsEventsExport from "$lib/components/analytics/AnalyticsEventsExport.svelte";
 
 	let loading = true;
 
@@ -54,12 +56,12 @@
 
 	$: $orbiterStore, $satelliteStore, period, debouncePageViews();
 
-	let uniqueSessions: number = 0;
-	$: uniqueSessions = [...new Set(pageViews.map(([key, _]) => key.session_id))].length;
+	let uniqueSessions = 0;
+	$: uniqueSessions = [...new Set(pageViews.map(([_, { session_id }]) => session_id))].length;
 
 	let sessionsViews: Record<string, number> = {};
 	$: sessionsViews = pageViews.reduce(
-		(acc, [{ session_id }, _]) => ({
+		(acc, [_, { session_id }]) => ({
 			...acc,
 			[session_id]: (acc[session_id] ?? 0) + 1
 		}),
@@ -68,7 +70,7 @@
 
 	let sessionsUniqueViews: Record<string, Set<string>> = {};
 	$: sessionsUniqueViews = pageViews.reduce(
-		(acc, [{ session_id }, { href }]) => ({
+		(acc, [_, { href, session_id }]) => ({
 			...acc,
 			[session_id]: (acc[session_id] ?? new Set()).add(href)
 		}),
@@ -76,10 +78,13 @@
 	);
 
 	let uniquePageViews = 0;
-	$: uniquePageViews = Object.entries(sessionsViews).reduce((acc, value) => acc + value.length, 0);
+	$: uniquePageViews = Object.entries(sessionsUniqueViews).reduce(
+		(acc, value) => acc + value[1].size,
+		0
+	);
 
 	let bounceRate = 0;
-	$: bounceRate = Object.entries(sessionsViews).filter(([key, value]) => value === 1).length;
+	$: bounceRate = Object.entries(sessionsViews).filter(([_key, value]) => value === 1).length;
 
 	const selectPeriod = ({ detail }: CustomEvent<PageViewsPeriod>) => (period = detail);
 </script>
@@ -110,6 +115,11 @@
 			</Value>
 
 			<Value>
+				<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
+				<p>{pageViews.length}</p>
+			</Value>
+
+			<Value>
 				<svelte:fragment slot="label"
 					>{$i18n.analytics.average_page_views_per_session}</svelte:fragment
 				>
@@ -120,15 +130,18 @@
 				<svelte:fragment slot="label">{$i18n.analytics.bounce_rate}</svelte:fragment>
 				<p>{bounceRate}</p>
 			</Value>
-
-			<Value>
-				<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
-				<p>{pageViews.length}</p>
-			</Value>
 		</div>
 
+		{#if pageViews.length > 0}
+			<AnalyticsReferrers {pageViews} />
+		{/if}
+
 		{#if trackEvents.length > 0}
+			<hr/>
+
 			<AnalyticsEvents {trackEvents} />
+
+			<AnalyticsEventsExport {trackEvents} />
 		{/if}
 	{/if}
 

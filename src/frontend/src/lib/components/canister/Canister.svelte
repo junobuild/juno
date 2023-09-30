@@ -59,11 +59,9 @@
 	let status: CanisterStatus | undefined;
 	let memory_size: bigint;
 	let cycles: bigint;
-	let idle_cycles_burned_per_day: bigint | undefined;
-	let icp: number;
 	let warning: boolean;
 
-	$: ({ status, memory_size, cycles, icp, warning } = data ?? {
+	$: ({ status, memory_size, cycles, warning } = data ?? {
 		status: undefined,
 		memory_size: BigInt(0),
 		cycles: BigInt(0),

@@ -3,11 +3,10 @@ import { canisterStatus } from '$lib/api/ic.api';
 import { CYCLES_WARNING, SYNC_CYCLES_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { Canister, CanisterInfo } from '$lib/types/canister';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
+import { loadIdentity } from '$lib/utils/agent.utils';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
-import { initIdentity } from '$lib/utils/identity.utils';
+import { isNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
-import { KEY_STORAGE_DELEGATION, KEY_STORAGE_KEY } from '@dfinity/auth-client';
-import { DelegationChain, isDelegationValid } from '@dfinity/identity';
 import { createStore, getMany, set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
@@ -29,29 +28,13 @@ onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRe
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
-const loadIdentity = async (): Promise<Identity | undefined> => {
-	const customStore = createStore('auth-client-db', 'ic-keyval');
-
-	const [identityKey, delegationChain] = await getMany(
-		[KEY_STORAGE_KEY, KEY_STORAGE_DELEGATION],
-		customStore
-	);
-
-	// No identity key or delegation key for the worker to fetch the cycles
-	if (!identityKey || !delegationChain) {
-		return undefined;
-	}
-
-	// If delegation is invalid, it will be catch by the idle timer
-	if (!isDelegationValid(DelegationChain.fromJSON(delegationChain))) {
-		return undefined;
-	}
-
-	return initIdentity({ identityKey, delegationChain });
-};
-
 const startCyclesTimer = async ({ data: { canisterIds } }: { data: PostMessageDataRequest }) => {
-	const identity: Identity | undefined = await loadIdentity();
+	const identity = await loadIdentity();
+
+	if (isNullish(identity)) {
+		// We do nothing if no identity
+		return;
+	}
 
 	const sync = async () => await syncCanisters({ identity, canisterIds: canisterIds ?? [] });
 
@@ -78,14 +61,9 @@ const syncCanisters = async ({
 	identity,
 	canisterIds
 }: {
-	identity: Identity | undefined;
+	identity: Identity;
 	canisterIds: string[];
 }) => {
-	if (!identity) {
-		// We do nothing if no identity
-		return;
-	}
-
 	if (canisterIds.length === 0) {
 		// No canister to sync
 		return;

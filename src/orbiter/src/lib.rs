@@ -2,6 +2,7 @@ mod assert;
 mod config;
 mod constants;
 mod controllers;
+mod filters;
 mod guards;
 mod impls;
 mod memory;
@@ -9,11 +10,12 @@ mod msg;
 mod serializers;
 mod store;
 mod types;
+mod upgrade;
 
-use crate::assert::assert_caller_is_authorized;
+use crate::assert::assert_enabled;
 use crate::config::store::{
-    del_origin_config as del_origin_config_store, get_origin_configs as get_origin_configs_store,
-    set_origin_config as set_origin_config_store,
+    del_satellite_config as del_satellite_config_store, get_satellite_configs,
+    set_satellite_config as set_satellite_config_store,
 };
 use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
@@ -26,12 +28,11 @@ use crate::store::{
     insert_page_view, insert_track_event,
 };
 use crate::types::interface::{
-    DelOriginConfig, GetAnalytics, SetOriginConfig, SetPageView, SetTrackEvent,
+    DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig, SetTrackEvent,
 };
 use crate::types::memory::Memory;
-use crate::types::state::{
-    AnalyticKey, HeapState, OriginConfig, OriginConfigs, PageView, State, TrackEvent,
-};
+use crate::types::state::{AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent};
+use crate::upgrade::types::upgrade::UpgradeState;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::trap;
@@ -97,31 +98,50 @@ fn post_upgrade() {
     memory.read(u64::try_from(OFFSET).unwrap(), &mut state_bytes);
 
     // Deserialize and set the state.
-    let state = from_reader(&*state_bytes)
+    let upgrade_state: UpgradeState = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
-    STATE.with(|s| *s.borrow_mut() = state);
+
+    STATE.with(|s| {
+        *s.borrow_mut() = State {
+            stable: upgrade_state.stable,
+            heap: HeapState::from(&upgrade_state.heap),
+        }
+    });
 }
 
 /// Data
 
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
-    assert_caller_is_authorized(&key.satellite_id)?;
+    assert_enabled(&page_view.satellite_id)?;
 
-    let result = insert_page_view(key, page_view);
-
-    match result {
-        Ok(new_page_view) => Ok(new_page_view),
-        Err(error) => trap(&error),
-    }
+    insert_page_view(key, page_view)
 }
 
 #[update]
-fn set_page_views(page_views: Vec<(AnalyticKey, SetPageView)>) -> Result<(), String> {
-    for (key, page_view) in page_views {
-        assert_caller_is_authorized(&key.satellite_id)?;
+fn set_page_views(
+    page_views: Vec<(AnalyticKey, SetPageView)>,
+) -> Result<(), Vec<(AnalyticKey, String)>> {
+    fn insert(key: AnalyticKey, page_view: SetPageView) -> Result<(), String> {
+        assert_enabled(&page_view.satellite_id)?;
+        insert_page_view(key, page_view)?;
 
-        insert_page_view(key, page_view).unwrap_or_else(|e| trap(&e));
+        Ok(())
+    }
+
+    let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
+
+    for (key, page_view) in page_views {
+        let result = insert(key.clone(), page_view);
+
+        match result {
+            Ok(_) => {}
+            Err(err) => errors.push((key, err)),
+        }
+    }
+
+    if !errors.is_empty() {
+        return Err(errors);
     }
 
     Ok(())
@@ -134,22 +154,35 @@ fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
 
 #[update]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
-    assert_caller_is_authorized(&key.satellite_id)?;
+    assert_enabled(&track_event.satellite_id)?;
 
-    let result = insert_track_event(key, track_event);
-
-    match result {
-        Ok(new_track_event) => Ok(new_track_event),
-        Err(error) => trap(&error),
-    }
+    insert_track_event(key, track_event)
 }
 
 #[update]
-fn set_track_events(track_events: Vec<(AnalyticKey, SetTrackEvent)>) -> Result<(), String> {
-    for (key, track_event) in track_events {
-        assert_caller_is_authorized(&key.satellite_id)?;
+fn set_track_events(
+    track_events: Vec<(AnalyticKey, SetTrackEvent)>,
+) -> Result<(), Vec<(AnalyticKey, String)>> {
+    fn insert(key: AnalyticKey, track_event: SetTrackEvent) -> Result<(), String> {
+        assert_enabled(&track_event.satellite_id)?;
+        insert_track_event(key, track_event)?;
 
-        insert_track_event(key, track_event).unwrap_or_else(|e| trap(&e));
+        Ok(())
+    }
+
+    let mut errors: Vec<(AnalyticKey, String)> = Vec::new();
+
+    for (key, track_event) in track_events {
+        let result = insert(key.clone(), track_event);
+
+        match result {
+            Ok(_) => {}
+            Err(err) => errors.push((key, err)),
+        }
+    }
+
+    if !errors.is_empty() {
+        return Err(errors);
     }
 
     Ok(())
@@ -206,18 +239,26 @@ fn list_controllers() -> Controllers {
 ///
 
 #[update(guard = "caller_is_admin_controller")]
-fn set_origin_config(satellite_id: SatelliteId, config: SetOriginConfig) -> OriginConfig {
-    set_origin_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e))
+fn set_satellite_configs(configs: Vec<(SatelliteId, SetSatelliteConfig)>) -> SatelliteConfigs {
+    let mut results: SatelliteConfigs = SatelliteConfigs::new();
+
+    for (satellite_id, config) in configs {
+        let result =
+            set_satellite_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e));
+        results.insert(satellite_id, result);
+    }
+
+    results
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn del_origin_config(satellite_id: SatelliteId, config: DelOriginConfig) {
-    del_origin_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e))
+fn del_satellite_config(satellite_id: SatelliteId, config: DelSatelliteConfig) {
+    del_satellite_config_store(&satellite_id, &config).unwrap_or_else(|e| trap(&e))
 }
 
 #[query(guard = "caller_is_admin_controller")]
-fn list_origin_configs() -> OriginConfigs {
-    get_origin_configs_store()
+fn list_satellite_configs() -> SatelliteConfigs {
+    get_satellite_configs()
 }
 
 /// Mgmt

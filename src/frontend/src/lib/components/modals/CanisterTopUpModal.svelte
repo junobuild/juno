@@ -19,9 +19,11 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
+	import type { AccountIdentifier } from '@junobuild/ledger';
 
 	export let canisterId: Principal;
 	export let balance: bigint;
+	export let accountIdentifier: AccountIdentifier | undefined;
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
 
@@ -125,7 +127,7 @@
 		</p>
 
 		{#if balance <= networkFees}
-			<MissionControlICPInfo on:click={close} />
+			<MissionControlICPInfo {accountIdentifier} on:click={close} />
 		{:else}
 			<form on:submit|preventDefault={onSubmit}>
 				<div>

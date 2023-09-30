@@ -1,37 +1,37 @@
 use crate::memory::STATE;
-use crate::types::interface::{DelOriginConfig, SetOriginConfig};
-use crate::types::state::{OriginConfig, OriginConfigs};
+use crate::types::interface::{DelSatelliteConfig, SetSatelliteConfig};
+use crate::types::state::{SatelliteConfig, SatelliteConfigs};
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
 use shared::types::state::SatelliteId;
 
-pub fn set_origin_config(
+pub fn set_satellite_config(
     satellite_id: &SatelliteId,
-    config: &SetOriginConfig,
-) -> Result<OriginConfig, String> {
+    config: &SetSatelliteConfig,
+) -> Result<SatelliteConfig, String> {
     STATE.with(|state| {
-        set_origin_config_impl(satellite_id, config, &mut state.borrow_mut().heap.origins)
+        set_satellite_config_impl(satellite_id, config, &mut state.borrow_mut().heap.config)
     })
 }
 
-pub fn del_origin_config(
+pub fn del_satellite_config(
     satellite_id: &SatelliteId,
-    config: &DelOriginConfig,
+    config: &DelSatelliteConfig,
 ) -> Result<(), String> {
     STATE.with(|state| {
-        del_origin_config_impl(satellite_id, config, &mut state.borrow_mut().heap.origins)
+        del_satellite_config_impl(satellite_id, config, &mut state.borrow_mut().heap.config)
     })
 }
 
-pub fn get_origin_configs() -> OriginConfigs {
-    STATE.with(|state| state.borrow().heap.origins.clone())
+pub fn get_satellite_configs() -> SatelliteConfigs {
+    STATE.with(|state| state.borrow().heap.config.clone())
 }
 
-fn set_origin_config_impl(
+fn set_satellite_config_impl(
     satellite_id: &SatelliteId,
-    config: &SetOriginConfig,
-    state: &mut OriginConfigs,
-) -> Result<OriginConfig, String> {
+    config: &SetSatelliteConfig,
+    state: &mut SatelliteConfigs,
+) -> Result<SatelliteConfig, String> {
     let current_config = state.get(satellite_id);
 
     // Validate timestamp
@@ -56,9 +56,8 @@ fn set_origin_config_impl(
 
     let updated_at: u64 = now;
 
-    let new_config = OriginConfig {
-        key: config.key,
-        filter: config.filter.clone(),
+    let new_config = SatelliteConfig {
+        enabled: config.enabled,
         created_at,
         updated_at,
     };
@@ -68,10 +67,10 @@ fn set_origin_config_impl(
     Ok(new_config)
 }
 
-fn del_origin_config_impl(
+fn del_satellite_config_impl(
     satellite_id: &SatelliteId,
-    config: &DelOriginConfig,
-    state: &mut OriginConfigs,
+    config: &DelSatelliteConfig,
+    state: &mut SatelliteConfigs,
 ) -> Result<(), String> {
     let current_config = state.get(satellite_id);
 

@@ -9,7 +9,7 @@
 	import { emit } from '$lib/utils/events.utils';
 
 	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
-	export let segment: 'satellite' | 'mission_control';
+	export let segment: 'satellite' | 'mission_control' | 'orbiter';
 	export let wasm: Wasm | undefined;
 
 	const dispatch = createEventDispatcher();

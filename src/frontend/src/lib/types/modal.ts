@@ -1,12 +1,10 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { MissionControlBalance } from '$lib/types/balance.types';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Principal } from '@dfinity/principal';
 
 export interface JunoModalBalance {
-	missionControlBalance?: {
-		balance: bigint;
-		credits: bigint;
-	};
+	missionControlBalance?: MissionControlBalance;
 }
 
 export interface JunoModalSatelliteDetail {
@@ -15,6 +13,7 @@ export interface JunoModalSatelliteDetail {
 
 export type JunoModalTopUpSatelliteDetail = JunoModalBalance & JunoModalSatelliteDetail;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface JunoModalTopUpMissionControlDetail extends JunoModalBalance {}
 
 export interface JunoModalUpgradeDetail {
@@ -23,8 +22,6 @@ export interface JunoModalUpgradeDetail {
 }
 
 export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail & JunoModalSatelliteDetail;
-
-export interface JunoModalUpgradeMissionControlDetail extends JunoModalUpgradeDetail {}
 
 export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
 	fee: bigint;
@@ -42,6 +39,10 @@ export interface JunoModalCreateControllerDetail {
 		} & SetControllerParams
 	) => Promise<void>;
 	load: () => Promise<void>;
+	segment: {
+		label: string;
+		id: Principal;
+	};
 }
 
 export type JunoModalDetail =
@@ -60,6 +61,7 @@ export interface JunoModal {
 		| 'add_custom_domain'
 		| 'create_controller'
 		| 'upgrade_satellite'
-		| 'upgrade_mission_control';
+		| 'upgrade_mission_control'
+		| 'upgrade_orbiter';
 	detail?: JunoModalDetail;
 }

@@ -1,8 +1,8 @@
 #!/usr/bin/env node
 
-import { createHash } from 'crypto';
-import { readFileSync, writeFileSync } from 'fs';
-import { dirname, join } from 'path';
+import { createHash } from 'node:crypto';
+import { readFileSync, writeFileSync } from 'node:fs';
+import { dirname, join } from 'node:path';
 import { findHtmlFiles } from './build.utils.mjs';
 
 const buildCsp = (htmlFile) => {
@@ -157,10 +157,12 @@ const updateCSP = (indexHtml) => {
 
 	const JUNO_CDN = 'https://fmkjf-bqaaa-aaaal-acpza-cai.raw.icp0.io';
 
+	const PROXY_CONFIG = 'https://config-llaqvdlz6a-ew.a.run.app';
+
 	const csp = `<meta
         http-equiv="Content-Security-Policy"
         content="default-src 'none';
-        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io ${JUNO_CDN};
+        connect-src 'self' https://ic0.app https://icp0.io https://icp-api.io ${JUNO_CDN} ${PROXY_CONFIG};
         img-src 'self' data:;
         child-src 'self';
         manifest-src 'self';

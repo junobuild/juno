@@ -10,7 +10,7 @@
 
 	export let currentVersion: string;
 	export let newerReleases: string[];
-	export let segment: 'satellite' | 'mission_control';
+	export let segment: 'satellite' | 'mission_control' | 'orbiter';
 	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
 
 	let steps: 'init' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' = 'init';

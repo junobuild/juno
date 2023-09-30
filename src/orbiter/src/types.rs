@@ -1,7 +1,7 @@
 pub mod state {
     use crate::memory::init_stable_state;
     use crate::types::memory::Memory;
-    use candid::{CandidType, Principal};
+    use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use serde::{Deserialize, Serialize};
     use shared::types::state::{Controllers, Metadata, SatelliteId};
@@ -23,24 +23,36 @@ pub mod state {
     pub type PageViewsStable = StableBTreeMap<AnalyticKey, PageView, Memory>;
     pub type TrackEventsStable = StableBTreeMap<AnalyticKey, TrackEvent, Memory>;
 
+    pub type SatellitesPageViewsStable = StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
+    pub type SatellitesTrackEventsStable =
+        StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
+
     pub struct StableState {
         pub page_views: PageViewsStable,
         pub track_events: TrackEventsStable,
+        pub satellites_page_views: SatellitesPageViewsStable,
+        pub satellites_track_events: SatellitesTrackEventsStable,
     }
 
-    pub type OriginConfigs = HashMap<SatelliteId, OriginConfig>;
+    pub type SatelliteConfigs = HashMap<SatelliteId, SatelliteConfig>;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct HeapState {
         pub controllers: Controllers,
-        pub origins: OriginConfigs,
+        pub config: SatelliteConfigs,
     }
 
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticKey {
-        pub satellite_id: SatelliteId,
+        pub collected_at: u64,
         pub key: Key,
-        pub session_id: SessionId,
+    }
+
+    #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct AnalyticSatelliteKey {
+        pub satellite_id: SatelliteId,
+        pub collected_at: u64,
+        pub key: Key,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -51,7 +63,8 @@ pub mod state {
         pub device: PageViewDevice,
         pub user_agent: Option<String>,
         pub time_zone: String,
-        pub collected_at: u64,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -66,15 +79,15 @@ pub mod state {
     pub struct TrackEvent {
         pub name: String,
         pub metadata: Option<Metadata>,
-        pub collected_at: u64,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub created_at: u64,
         pub updated_at: u64,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct OriginConfig {
-        pub key: Principal,
-        pub filter: String,
+    pub struct SatelliteConfig {
+        pub enabled: bool,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -88,8 +101,8 @@ pub mod memory {
 }
 
 pub mod interface {
-    use crate::types::state::PageViewDevice;
-    use candid::{CandidType, Principal};
+    use crate::types::state::{PageViewDevice, SessionId};
+    use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::{Metadata, SatelliteId};
 
@@ -99,9 +112,10 @@ pub mod interface {
         pub href: String,
         pub referrer: Option<String>,
         pub device: PageViewDevice,
-        pub user_agent: Option<String>,
         pub time_zone: String,
-        pub collected_at: u64,
+        pub user_agent: Option<String>,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub updated_at: Option<u64>,
     }
 
@@ -109,7 +123,9 @@ pub mod interface {
     pub struct SetTrackEvent {
         pub name: String,
         pub metadata: Option<Metadata>,
-        pub collected_at: u64,
+        pub user_agent: Option<String>,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub updated_at: Option<u64>,
     }
 
@@ -121,14 +137,13 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct SetOriginConfig {
-        pub key: Principal,
-        pub filter: String,
+    pub struct SetSatelliteConfig {
+        pub enabled: bool,
         pub updated_at: Option<u64>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct DelOriginConfig {
+    pub struct DelSatelliteConfig {
         pub updated_at: Option<u64>,
     }
 }

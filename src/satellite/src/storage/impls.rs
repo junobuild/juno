@@ -8,7 +8,7 @@ use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::StorageHeapState;
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::storage::url::alternative_paths;
-use crate::types::core::Compare;
+use crate::types::core::{Blob, Compare};
 
 impl From<&StorageHeapState> for AssetHashes {
     fn from(state: &StorageHeapState) -> Self {
@@ -62,8 +62,8 @@ impl AssetHashes {
     }
 }
 
-impl From<&Vec<Vec<u8>>> for AssetEncoding {
-    fn from(content_chunks: &Vec<Vec<u8>>) -> Self {
+impl From<&Vec<Blob>> for AssetEncoding {
+    fn from(content_chunks: &Vec<Blob>) -> Self {
         let mut total_length: u128 = 0;
         let mut hasher = Sha256::new();
 

@@ -30,7 +30,7 @@ use crate::storage::types::state::{Assets, FullPath, StorageHeapState, StorageRu
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
 use crate::storage::url::{map_alternative_paths, map_url};
 use crate::storage::utils::{filter_collection_values, filter_values};
-use crate::types::core::CollectionKey;
+use crate::types::core::{Blob, CollectionKey};
 use crate::types::list::{ListParams, ListResults};
 use crate::types::state::{RuntimeState, State};
 use crate::STATE;
@@ -628,7 +628,7 @@ fn commit_chunks(
     // Sort with ordering
     chunks.sort_by(|a, b| a.order_id.cmp(&b.order_id));
 
-    let mut content_chunks: Vec<Vec<u8>> = vec![];
+    let mut content_chunks: Vec<Blob> = vec![];
 
     // Collect content
     for c in chunks.iter() {

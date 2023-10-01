@@ -43,7 +43,7 @@ pub mod assets {
 pub mod store {
     use crate::storage::types::http::HeaderField;
     use crate::storage::types::state::FullPath;
-    use crate::types::core::CollectionKey;
+    use crate::types::core::{Blob, CollectionKey};
     use candid::CandidType;
     use ic_certified_map::Hash;
     use serde::Deserialize;
@@ -55,13 +55,13 @@ pub mod store {
     pub struct Chunk {
         pub batch_id: u128,
         pub order_id: u128,
-        pub content: Vec<u8>,
+        pub content: Blob,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AssetEncoding {
         pub modified: u64,
-        pub content_chunks: Vec<Vec<u8>>,
+        pub content_chunks: Vec<Blob>,
         pub total_length: u128,
         pub sha256: Hash,
     }
@@ -106,7 +106,7 @@ pub mod interface {
     use crate::storage::types::http::HeaderField;
     use crate::storage::types::state::FullPath;
     use crate::storage::types::store::AssetKey;
-    use crate::types::core::CollectionKey;
+    use crate::types::core::{Blob, CollectionKey};
 
     #[derive(CandidType, Deserialize)]
     pub struct InitAssetKey {
@@ -126,7 +126,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct UploadChunk {
         pub batch_id: u128,
-        pub content: Vec<u8>,
+        pub content: Blob,
         pub order_id: Option<u128>,
     }
 
@@ -162,6 +162,7 @@ pub mod interface {
 pub mod http {
     use candid::{define_function, CandidType, Deserialize};
     use serde_bytes::ByteBuf;
+    use crate::types::core::Blob;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct HeaderField(pub String, pub String);
@@ -171,12 +172,12 @@ pub mod http {
         pub url: String,
         pub method: String,
         pub headers: Vec<HeaderField>,
-        pub body: Vec<u8>,
+        pub body: Blob,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct HttpResponse {
-        pub body: Vec<u8>,
+        pub body: Blob,
         pub headers: Vec<HeaderField>,
         pub status_code: u16,
         pub streaming_strategy: Option<StreamingStrategy>,
@@ -204,7 +205,7 @@ pub mod http {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct StreamingCallbackHttpResponse {
-        pub body: Vec<u8>,
+        pub body: Blob,
         pub token: Option<StreamingCallbackToken>,
     }
 }

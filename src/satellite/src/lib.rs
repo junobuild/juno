@@ -27,7 +27,7 @@ use crate::storage::http::{
 };
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
-    get_config as get_storage_config, get_custom_domains, get_public_asset,
+    get_config as get_storage_config, get_content_chunks, get_custom_domains, get_public_asset,
     get_public_asset_for_url, init_certified_assets, list_assets as list_assets_store,
     set_config as set_storage_config, set_domain,
 };
@@ -297,7 +297,6 @@ fn del_custom_domain(domain_name: DomainName) {
 ///
 
 #[query]
-
 fn http_request(
     HttpRequest {
         method,
@@ -317,7 +316,7 @@ fn http_request(
             asset,
             url: requested_url,
         }) => match asset {
-            Some(asset) => {
+            Some((asset, memory)) => {
                 let encodings = build_encodings(req_headers);
 
                 for encoding_type in encodings.iter() {
@@ -335,16 +334,26 @@ fn http_request(
 
                         match headers {
                             Ok(headers) => {
-                                return HttpResponse {
-                                    body: encoding.content_chunks[0].clone(),
-                                    headers: headers.clone(),
-                                    status_code: 200,
-                                    streaming_strategy: streaming_strategy(
-                                        key,
-                                        encoding,
-                                        encoding_type,
-                                        &headers,
-                                    ),
+                                let body = get_content_chunks(encoding, 0, &memory);
+
+                                match body {
+                                    Some(body) => {
+                                        return HttpResponse {
+                                            body: body.clone(),
+                                            headers: headers.clone(),
+                                            status_code: 200,
+                                            streaming_strategy: streaming_strategy(
+                                                key,
+                                                encoding,
+                                                encoding_type,
+                                                &headers,
+                                                &memory,
+                                            ),
+                                        }
+                                    }
+                                    None => {
+                                        error_response(500, "No chunks found.".to_string());
+                                    }
                                 }
                             }
                             Err(err) => {
@@ -369,7 +378,6 @@ fn http_request(
 }
 
 #[query]
-
 fn http_request_streaming_callback(
     StreamingCallbackToken {
         token,
@@ -378,19 +386,34 @@ fn http_request_streaming_callback(
         sha256: _,
         full_path,
         encoding_type,
+        memory,
     }: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
     let asset = get_public_asset(full_path, token);
 
     match asset {
-        Some(asset) => {
+        Some((asset, memory)) => {
             let encoding = asset.encodings.get(&encoding_type);
 
             match encoding {
-                Some(encoding) => StreamingCallbackHttpResponse {
-                    token: create_token(&asset.key, index, encoding, &encoding_type, &headers),
-                    body: encoding.content_chunks[index].clone(),
-                },
+                Some(encoding) => {
+                    let body = get_content_chunks(encoding, index, &memory);
+
+                    match body {
+                        Some(body) => StreamingCallbackHttpResponse {
+                            token: create_token(
+                                &asset.key,
+                                index,
+                                encoding,
+                                &encoding_type,
+                                &headers,
+                                &memory,
+                            ),
+                            body: body.clone(),
+                        },
+                        None => trap("Streamed chunks not found."),
+                    }
+                }
                 None => trap("Streamed asset encoding not found."),
             }
         }

@@ -12,7 +12,7 @@ use shared::types::state::Controllers;
 use shared::utils::principal_not_equal;
 use std::collections::HashMap;
 
-use crate::rules::types::rules::Rule;
+use crate::rules::types::rules::{Memory, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, is_known_user, public_rule};
 use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
@@ -30,10 +30,11 @@ use crate::storage::runtime::{
 use crate::storage::state::{
     delete_asset as delete_state_asset, delete_domain as delete_state_domain,
     get_asset as get_state_asset, get_assets as get_state_assets, get_config as get_state_config,
-    get_domain as get_state_domain, get_domains as get_state_domains,
-    get_public_asset as get_state_public_asset, get_rule as get_state_rule, get_rule,
-    insert_asset as insert_state_asset, insert_asset_encoding as insert_state_asset_encoding,
-    insert_config as insert_state_config, insert_domain as insert_state_domain,
+    get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
+    get_domains as get_state_domains, get_public_asset as get_state_public_asset,
+    get_rule as get_state_rule, get_rule, insert_asset as insert_state_asset,
+    insert_asset_encoding as insert_state_asset_encoding, insert_config as insert_state_config,
+    insert_domain as insert_state_domain,
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
@@ -69,7 +70,7 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
 
     for alternative_path in alternative_paths {
-        let asset: Option<Asset> = get_public_asset(alternative_path, token.clone());
+        let asset: Option<(Asset, Memory)> = get_public_asset(alternative_path, token.clone());
 
         // We return the first match
         match asset {
@@ -81,7 +82,7 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     }
 
     // We return the asset that matches the effective path
-    let asset: Option<Asset> = get_public_asset(path.clone(), token.clone());
+    let asset: Option<(Asset, Memory)> = get_public_asset(path.clone(), token.clone());
 
     match asset {
         None => (),
@@ -117,6 +118,14 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     })
 }
 
+pub fn get_content_chunks(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+    memory: &Memory,
+) -> Option<Blob> {
+    get_state_content_chunks(encoding, chunk_index, memory)
+}
+
 pub fn delete_asset(
     caller: Principal,
     collection: &CollectionKey,
@@ -141,14 +150,17 @@ pub fn list_assets(
     secure_list_assets_impl(caller, &controllers, collection, filters)
 }
 
-pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<Asset> {
-    let asset = get_state_public_asset(&full_path);
+pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
+    let (asset, memory) = get_state_public_asset(&full_path);
 
     match asset {
         None => None,
         Some(asset) => match &asset.key.token {
-            None => Some(asset.clone()),
-            Some(asset_token) => get_token_protected_asset(&asset, asset_token, token),
+            None => Some((asset.clone(), memory)),
+            Some(asset_token) => {
+                let protected_asset = get_token_protected_asset(&asset, asset_token, token);
+                protected_asset.map(|protected_asset| (protected_asset, memory))
+            }
         },
     }
 }

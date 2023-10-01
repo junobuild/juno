@@ -8,19 +8,25 @@ use crate::storage::types::state::{
     StableFullPath, StorageHeapState,
 };
 use crate::storage::types::store::{Asset, AssetEncoding};
-use crate::types::core::CollectionKey;
-use shared::serializers::serialize_to_bytes;
+use crate::types::core::{Blob, CollectionKey};
+use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use std::borrow::Cow;
 
 /// Assets
 
-pub fn get_public_asset(full_path: &FullPath) -> Option<Asset> {
-    // We cannot know on the web which memory has to be used. That's why we try first to get the asset from heap for performance reason.
+pub fn get_public_asset(full_path: &FullPath) -> (Option<Asset>, Memory) {
+    // We cannot know on the web which memory has been used. That's why we try first to get the asset from heap for performance reason.
     let heap_asset =
         STATE.with(|state| get_asset_heap(full_path, &state.borrow().heap.storage.assets));
 
     match heap_asset {
-        Some(heap_asset) => Some(heap_asset),
-        None => STATE.with(|state| get_asset_stable(full_path, &state.borrow().stable.assets)),
+        Some(heap_asset) => (Some(heap_asset), Memory::Heap),
+        None => STATE.with(|state| {
+            (
+                get_asset_stable(full_path, &state.borrow().stable.assets),
+                Memory::Stable,
+            )
+        }),
     }
 }
 
@@ -32,6 +38,19 @@ pub fn get_asset(full_path: &FullPath, rule: &Rule) -> Option<Asset> {
         Memory::Stable => {
             STATE.with(|state| get_asset_stable(full_path, &state.borrow().stable.assets))
         }
+    }
+}
+
+pub fn get_content_chunks(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+    memory: &Memory,
+) -> Option<Blob> {
+    match memory {
+        Memory::Heap => Some(encoding.content_chunks[chunk_index].clone()),
+        Memory::Stable => STATE.with(|state| {
+            get_content_chunks_stable(encoding, chunk_index, &state.borrow().stable.content_chunks)
+        }),
     }
 }
 
@@ -100,6 +119,16 @@ pub fn get_assets(collection: &CollectionKey, rule: &Rule) -> Vec<Asset> {
 
 fn get_asset_stable(full_path: &FullPath, assets: &AssetsStable) -> Option<Asset> {
     assets.get(&stable_full_path(full_path))
+}
+
+fn get_content_chunks_stable(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+    content_chunks: &ContentChunksStable,
+) -> Option<Blob> {
+    let key: StableEncodingChunkKey =
+        deserialize_from_bytes(Cow::Owned(encoding.content_chunks[chunk_index].clone()));
+    content_chunks.get(&key)
 }
 
 fn get_asset_heap(full_path: &FullPath, assets: &AssetsHeap) -> Option<Asset> {
@@ -181,12 +210,12 @@ fn stable_full_path(full_path: &FullPath) -> StableFullPath {
 
 fn stable_encoding_chunk_key(
     full_path: &FullPath,
-    encoding_type: &String,
+    encoding_type: &str,
     chunk_index: usize,
 ) -> StableEncodingChunkKey {
     StableEncodingChunkKey {
         full_path: full_path.clone(),
-        encoding_type: encoding_type.clone(),
+        encoding_type: encoding_type.to_owned(),
         chunk_index,
     }
 }

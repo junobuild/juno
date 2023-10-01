@@ -184,6 +184,7 @@ pub mod interface {
 }
 
 pub mod http {
+    use crate::rules::types::rules::Memory;
     use crate::storage::types::store::EncodingType;
     use crate::types::core::Blob;
     use candid::{define_function, CandidType};
@@ -227,6 +228,7 @@ pub mod http {
         pub sha256: Option<ByteBuf>,
         pub index: usize,
         pub encoding_type: EncodingType,
+        pub memory: Memory,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -253,6 +255,7 @@ pub mod config {
 }
 
 pub mod http_request {
+    use crate::rules::types::rules::Memory;
     use crate::storage::types::store::Asset;
     use candid::{CandidType, Deserialize};
 
@@ -265,7 +268,7 @@ pub mod http_request {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct PublicAsset {
         pub url: String,
-        pub asset: Option<Asset>,
+        pub asset: Option<(Asset, Memory)>,
     }
 }
 

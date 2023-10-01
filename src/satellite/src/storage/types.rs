@@ -82,11 +82,13 @@ pub mod store {
         pub description: Option<String>,
     }
 
+    pub type EncodingType = String;
+
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Asset {
         pub key: AssetKey,
         pub headers: Vec<HeaderField>,
-        pub encodings: HashMap<String, AssetEncoding>,
+        pub encodings: HashMap<EncodingType, AssetEncoding>,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -95,7 +97,7 @@ pub mod store {
     pub struct Batch {
         pub key: AssetKey,
         pub expires_at: u64,
-        pub encoding_type: Option<String>,
+        pub encoding_type: Option<EncodingType>,
     }
 }
 
@@ -105,7 +107,7 @@ pub mod interface {
 
     use crate::storage::types::http::HeaderField;
     use crate::storage::types::state::FullPath;
-    use crate::storage::types::store::AssetKey;
+    use crate::storage::types::store::{AssetKey, EncodingType};
     use crate::types::core::{Blob, CollectionKey};
 
     #[derive(CandidType, Deserialize)]
@@ -114,7 +116,7 @@ pub mod interface {
         pub full_path: FullPath,
         pub token: Option<String>,
         pub collection: CollectionKey,
-        pub encoding_type: Option<String>,
+        pub encoding_type: Option<EncodingType>,
         pub description: Option<String>,
     }
 
@@ -162,6 +164,7 @@ pub mod interface {
 pub mod http {
     use candid::{define_function, CandidType, Deserialize};
     use serde_bytes::ByteBuf;
+    use crate::storage::types::store::EncodingType;
     use crate::types::core::Blob;
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -200,7 +203,7 @@ pub mod http {
         pub headers: Vec<HeaderField>,
         pub sha256: Option<ByteBuf>,
         pub index: usize,
-        pub encoding_type: String,
+        pub encoding_type: EncodingType,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

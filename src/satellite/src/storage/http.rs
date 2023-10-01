@@ -11,7 +11,7 @@ use crate::storage::types::http::{
     CallbackFunc, HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
 };
 use crate::storage::types::state::StorageRuntimeState;
-use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
+use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, EncodingType};
 use crate::STATE;
 
 pub fn streaming_strategy(
@@ -54,7 +54,7 @@ pub fn build_headers(
     url: &str,
     asset: &Asset,
     encoding: &AssetEncoding,
-    encoding_type: &String,
+    encoding_type: &EncodingType,
 ) -> Result<Vec<HeaderField>, &'static str> {
     let certified_header = build_certified_headers(url);
 

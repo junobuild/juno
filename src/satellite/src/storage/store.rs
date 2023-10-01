@@ -32,8 +32,8 @@ use crate::storage::state::{
     get_asset as get_state_asset, get_assets as get_state_assets, get_config as get_state_config,
     get_domain as get_state_domain, get_domains as get_state_domains,
     get_public_asset as get_state_public_asset, get_rule as get_state_rule, get_rule,
-    insert_asset as insert_state_asset, insert_config as insert_state_config,
-    insert_domain as insert_state_domain,
+    insert_asset as insert_state_asset, insert_asset_encoding as insert_state_asset_encoding,
+    insert_config as insert_state_config, insert_domain as insert_state_domain,
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
@@ -592,7 +592,13 @@ fn commit_chunks(
         }
     }
 
-    asset.encodings.insert(encoding_type, encoding);
+    insert_state_asset_encoding(
+        &batch.clone().key.full_path,
+        &encoding_type,
+        &encoding,
+        &mut asset,
+        rule,
+    );
 
     insert_state_asset(&batch.clone().key.full_path, &asset, rule);
 

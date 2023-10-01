@@ -1,7 +1,9 @@
 pub mod state {
     use crate::db::types::state::{DbHeapState, DbStable};
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{AssetsStable, StorageHeapState, StorageRuntimeState};
+    use crate::storage::types::state::{
+        AssetsStable, ContentChunksStable, StorageHeapState, StorageRuntimeState,
+    };
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
     use shared::types::state::Controllers;
@@ -23,6 +25,7 @@ pub mod state {
     pub struct StableState {
         pub db: DbStable,
         pub assets: AssetsStable,
+        pub content_chunks: ContentChunksStable,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

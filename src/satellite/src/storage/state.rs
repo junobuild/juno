@@ -4,21 +4,29 @@ use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::state::{
-    AssetsHeap, AssetsStable, FullPath, StableFullPath, StorageHeapState,
+    AssetsHeap, AssetsStable, ContentChunksStable, FullPath, StableEncodingChunkKey,
+    StableFullPath, StorageHeapState,
 };
-use crate::storage::types::store::Asset;
-use crate::types::core::CollectionKey;
+use crate::storage::types::store::{Asset, AssetEncoding};
+use crate::types::core::{Blob, CollectionKey};
+use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use std::borrow::Cow;
 
 /// Assets
 
-pub fn get_public_asset(full_path: &FullPath) -> Option<Asset> {
-    // We cannot know on the web which memory has to be used. That's why we try first to get the asset from heap for performance reason.
+pub fn get_public_asset(full_path: &FullPath) -> (Option<Asset>, Memory) {
+    // We cannot know on the web which memory has been used. That's why we try first to get the asset from heap for performance reason.
     let heap_asset =
         STATE.with(|state| get_asset_heap(full_path, &state.borrow().heap.storage.assets));
 
     match heap_asset {
-        Some(heap_asset) => Some(heap_asset),
-        None => STATE.with(|state| get_asset_stable(full_path, &state.borrow().stable.assets)),
+        Some(heap_asset) => (Some(heap_asset), Memory::Heap),
+        None => STATE.with(|state| {
+            (
+                get_asset_stable(full_path, &state.borrow().stable.assets),
+                Memory::Stable,
+            )
+        }),
     }
 }
 
@@ -30,6 +38,44 @@ pub fn get_asset(full_path: &FullPath, rule: &Rule) -> Option<Asset> {
         Memory::Stable => {
             STATE.with(|state| get_asset_stable(full_path, &state.borrow().stable.assets))
         }
+    }
+}
+
+pub fn get_content_chunks(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+    memory: &Memory,
+) -> Option<Blob> {
+    match memory {
+        Memory::Heap => Some(encoding.content_chunks[chunk_index].clone()),
+        Memory::Stable => STATE.with(|state| {
+            get_content_chunks_stable(encoding, chunk_index, &state.borrow().stable.content_chunks)
+        }),
+    }
+}
+
+pub fn insert_asset_encoding(
+    full_path: &FullPath,
+    encoding_type: &String,
+    encoding: &AssetEncoding,
+    asset: &mut Asset,
+    rule: &Rule,
+) {
+    match rule.memory {
+        Memory::Heap => {
+            asset
+                .encodings
+                .insert(encoding_type.clone(), encoding.clone());
+        }
+        Memory::Stable => STATE.with(|state| {
+            insert_asset_encoding_stable(
+                full_path,
+                encoding_type,
+                encoding,
+                asset,
+                &mut state.borrow_mut().stable.content_chunks,
+            )
+        }),
     }
 }
 
@@ -75,6 +121,16 @@ fn get_asset_stable(full_path: &FullPath, assets: &AssetsStable) -> Option<Asset
     assets.get(&stable_full_path(full_path))
 }
 
+fn get_content_chunks_stable(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+    content_chunks: &ContentChunksStable,
+) -> Option<Blob> {
+    let key: StableEncodingChunkKey =
+        deserialize_from_bytes(Cow::Owned(encoding.content_chunks[chunk_index].clone()));
+    content_chunks.get(&key)
+}
+
 fn get_asset_heap(full_path: &FullPath, assets: &AssetsHeap) -> Option<Asset> {
     let value = assets.get(full_path);
     value.cloned()
@@ -94,6 +150,34 @@ fn delete_asset_heap(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<As
 
 fn insert_asset_stable(full_path: &FullPath, asset: &Asset, assets: &mut AssetsStable) {
     assets.insert(stable_full_path(full_path), asset.clone());
+}
+
+fn insert_asset_encoding_stable(
+    full_path: &FullPath,
+    encoding_type: &String,
+    encoding: &AssetEncoding,
+    asset: &mut Asset,
+    chunks: &mut ContentChunksStable,
+) {
+    let mut content_chunks = Vec::new();
+
+    // Insert each chunk into the StableBTreeMap
+    for (i, chunk) in encoding.content_chunks.iter().enumerate() {
+        let key = stable_encoding_chunk_key(full_path, encoding_type, i);
+
+        chunks.insert(key.clone(), chunk.clone());
+
+        content_chunks.push(serialize_to_bytes(&key).into_owned());
+    }
+
+    // Insert the encoding by replacing the chunks with their referenced keys serialized
+    asset.encodings.insert(
+        encoding_type.clone(),
+        AssetEncoding {
+            content_chunks,
+            ..encoding.clone()
+        },
+    );
 }
 
 fn insert_asset_heap(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHeap) {
@@ -121,6 +205,18 @@ fn get_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> Vec<Asset
 fn stable_full_path(full_path: &FullPath) -> StableFullPath {
     StableFullPath {
         full_path: full_path.clone(),
+    }
+}
+
+fn stable_encoding_chunk_key(
+    full_path: &FullPath,
+    encoding_type: &str,
+    chunk_index: usize,
+) -> StableEncodingChunkKey {
+    StableEncodingChunkKey {
+        full_path: full_path.clone(),
+        encoding_type: encoding_type.to_owned(),
+        chunk_index,
     }
 }
 

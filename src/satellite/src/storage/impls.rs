@@ -9,7 +9,7 @@ use std::cmp::Ordering;
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::interface::AssetNoContent;
-use crate::storage::types::state::{StableFullPath, StorageHeapState};
+use crate::storage::types::state::{StableEncodingChunkKey, StableFullPath, StorageHeapState};
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::storage::url::alternative_paths;
 use crate::types::core::{Blob, Compare};
@@ -112,6 +112,18 @@ impl Storable for Asset {
 }
 
 impl Storable for StableFullPath {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for StableEncodingChunkKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }

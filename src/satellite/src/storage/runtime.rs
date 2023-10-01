@@ -8,6 +8,7 @@ use ic_cdk::api::time;
 
 /// Certified assets
 
+// TODO: init with stable assets as well
 pub fn init_certified_assets() {
     let asset_hashes = STATE.with(|state| AssetHashes::from(&state.borrow().heap.storage));
 

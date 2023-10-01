@@ -53,7 +53,7 @@ pub mod assets {
 pub mod store {
     use crate::storage::types::http::HeaderField;
     use crate::storage::types::state::FullPath;
-    use crate::types::core::CollectionKey;
+    use crate::types::core::{Blob, CollectionKey};
     use candid::CandidType;
     use ic_certified_map::Hash;
     use serde::{Deserialize, Serialize};
@@ -65,13 +65,13 @@ pub mod store {
     pub struct Chunk {
         pub batch_id: u128,
         pub order_id: u128,
-        pub content: Vec<u8>,
+        pub content: Blob,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetEncoding {
         pub modified: u64,
-        pub content_chunks: Vec<Vec<u8>>,
+        pub content_chunks: Vec<Blob>,
         pub total_length: u128,
         pub sha256: Hash,
     }
@@ -92,11 +92,13 @@ pub mod store {
         pub description: Option<String>,
     }
 
+    pub type EncodingType = String;
+
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Asset {
         pub key: AssetKey,
         pub headers: Vec<HeaderField>,
-        pub encodings: HashMap<String, AssetEncoding>,
+        pub encodings: HashMap<EncodingType, AssetEncoding>,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -105,7 +107,7 @@ pub mod store {
     pub struct Batch {
         pub key: AssetKey,
         pub expires_at: u64,
-        pub encoding_type: Option<String>,
+        pub encoding_type: Option<EncodingType>,
     }
 }
 
@@ -115,8 +117,8 @@ pub mod interface {
 
     use crate::storage::types::http::HeaderField;
     use crate::storage::types::state::FullPath;
-    use crate::storage::types::store::AssetKey;
-    use crate::types::core::CollectionKey;
+    use crate::storage::types::store::{AssetKey, EncodingType};
+    use crate::types::core::{Blob, CollectionKey};
 
     #[derive(CandidType, Deserialize)]
     pub struct InitAssetKey {
@@ -124,7 +126,7 @@ pub mod interface {
         pub full_path: FullPath,
         pub token: Option<String>,
         pub collection: CollectionKey,
-        pub encoding_type: Option<String>,
+        pub encoding_type: Option<EncodingType>,
         pub description: Option<String>,
     }
 
@@ -136,7 +138,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct UploadChunk {
         pub batch_id: u128,
-        pub content: Vec<u8>,
+        pub content: Blob,
         pub order_id: Option<u128>,
     }
 
@@ -170,6 +172,8 @@ pub mod interface {
 }
 
 pub mod http {
+    use crate::storage::types::store::EncodingType;
+    use crate::types::core::Blob;
     use candid::{define_function, CandidType};
     use serde::{Deserialize, Serialize};
     use serde_bytes::ByteBuf;
@@ -182,12 +186,12 @@ pub mod http {
         pub url: String,
         pub method: String,
         pub headers: Vec<HeaderField>,
-        pub body: Vec<u8>,
+        pub body: Blob,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct HttpResponse {
-        pub body: Vec<u8>,
+        pub body: Blob,
         pub headers: Vec<HeaderField>,
         pub status_code: u16,
         pub streaming_strategy: Option<StreamingStrategy>,
@@ -210,12 +214,12 @@ pub mod http {
         pub headers: Vec<HeaderField>,
         pub sha256: Option<ByteBuf>,
         pub index: usize,
-        pub encoding_type: String,
+        pub encoding_type: EncodingType,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct StreamingCallbackHttpResponse {
-        pub body: Vec<u8>,
+        pub body: Blob,
         pub token: Option<StreamingCallbackToken>,
     }
 }

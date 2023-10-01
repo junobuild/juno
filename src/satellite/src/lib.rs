@@ -11,7 +11,6 @@ mod storage;
 mod types;
 mod upgrade;
 
-use std::mem;
 use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
 use crate::db::types::interface::{DelDoc, SetDoc};
@@ -63,6 +62,7 @@ use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
+use std::mem;
 use types::list::ListParams;
 
 #[init]
@@ -144,7 +144,6 @@ fn post_upgrade() {
 /// Db
 ///
 
-
 #[update]
 fn set_doc(collection: CollectionKey, key: String, doc: SetDoc) -> Doc {
     let caller = caller();
@@ -156,7 +155,6 @@ fn set_doc(collection: CollectionKey, key: String, doc: SetDoc) -> Doc {
         Err(error) => trap(&error),
     }
 }
-
 
 #[query]
 fn get_doc(collection: CollectionKey, key: String) -> Option<Doc> {
@@ -170,14 +168,12 @@ fn get_doc(collection: CollectionKey, key: String) -> Option<Doc> {
     }
 }
 
-
 #[update]
 fn del_doc(collection: CollectionKey, key: String, doc: DelDoc) {
     let caller = caller();
 
     delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
 }
-
 
 #[query]
 fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
@@ -193,7 +189,6 @@ fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> 
 
 /// Rules
 
-
 #[query(guard = "caller_is_admin_controller")]
 fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
     match rules_type {
@@ -202,7 +197,6 @@ fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
     }
 }
 
-
 #[update(guard = "caller_is_admin_controller")]
 fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
     match rules_type {
@@ -210,7 +204,6 @@ fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
         RulesType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }
 }
-
 
 #[update(guard = "caller_is_admin_controller")]
 fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
@@ -223,7 +216,6 @@ fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
 ///
 /// Controllers
 ///
-
 
 #[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
@@ -251,13 +243,11 @@ fn set_controllers(
     get_controllers()
 }
 
-
 #[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) -> Controllers {
     delete_controllers_store(&controllers);
     get_controllers()
 }
-
 
 #[query(guard = "caller_is_admin_controller")]
 fn list_controllers() -> Controllers {
@@ -268,12 +258,10 @@ fn list_controllers() -> Controllers {
 /// Config
 ///
 
-
 #[update(guard = "caller_is_admin_controller")]
 fn set_config(config: Config) {
     set_storage_config(&config.storage);
 }
-
 
 #[update(guard = "caller_is_admin_controller")]
 fn get_config() -> Config {
@@ -285,18 +273,15 @@ fn get_config() -> Config {
 /// Custom domains
 ///
 
-
 #[query(guard = "caller_is_admin_controller")]
 fn list_custom_domains() -> CustomDomains {
     get_custom_domains()
 }
 
-
 #[update(guard = "caller_is_admin_controller")]
 fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
     set_domain(&domain_name, &bn_id).unwrap_or_else(|e| trap(&e));
 }
-
 
 #[update(guard = "caller_is_admin_controller")]
 fn del_custom_domain(domain_name: DomainName) {
@@ -417,7 +402,6 @@ fn http_request_streaming_callback(
 // Upload
 //
 
-
 #[update]
 fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
     let caller = caller();
@@ -428,7 +412,6 @@ fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
         Err(error) => trap(&error),
     }
 }
-
 
 #[update]
 fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
@@ -442,7 +425,6 @@ fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     }
 }
 
-
 #[update]
 fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
@@ -453,7 +435,6 @@ fn commit_asset_upload(commit: CommitBatch) {
 //
 // List and delete
 //
-
 
 #[query]
 fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
@@ -467,7 +448,6 @@ fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<Ass
     }
 }
 
-
 #[update]
 fn del_asset(collection: CollectionKey, full_path: String) {
     let caller = caller();
@@ -480,7 +460,6 @@ fn del_asset(collection: CollectionKey, full_path: String) {
     }
 }
 
-
 #[update(guard = "caller_is_admin_controller")]
 fn del_assets(collection: CollectionKey) {
     let result = delete_assets(&collection);
@@ -492,7 +471,6 @@ fn del_assets(collection: CollectionKey) {
 }
 
 /// Mgmt
-
 
 #[query]
 fn version() -> String {

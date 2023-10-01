@@ -40,10 +40,10 @@ use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use crate::storage::types::state::FullPath;
-use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk};
+use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk, EncodingType};
 use crate::storage::url::{map_alternative_paths, map_url};
 use crate::storage::utils::{filter_collection_values, filter_values};
-use crate::types::core::CollectionKey;
+use crate::types::core::{Blob, CollectionKey};
 use crate::types::list::{ListParams, ListResults};
 
 ///
@@ -550,7 +550,7 @@ fn commit_chunks(
     // Sort with ordering
     chunks.sort_by(|a, b| a.order_id.cmp(&b.order_id));
 
-    let mut content_chunks: Vec<Vec<u8>> = vec![];
+    let mut content_chunks: Vec<Blob> = vec![];
 
     // Collect content
     for c in chunks.iter() {
@@ -601,10 +601,11 @@ fn commit_chunks(
     Ok(asset)
 }
 
-fn get_encoding_type(encoding_type: &Option<String>) -> Result<String, &'static str> {
+fn get_encoding_type(encoding_type: &Option<EncodingType>) -> Result<EncodingType, &'static str> {
     let provided_type = encoding_type
         .clone()
         .unwrap_or_else(|| ASSET_ENCODING_NO_COMPRESSION.to_string());
+
     let matching_type = Vec::from(ENCODING_CERTIFICATION_ORDER)
         .iter()
         .any(|&e| *e == provided_type);

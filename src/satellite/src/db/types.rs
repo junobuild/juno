@@ -1,6 +1,6 @@
 pub mod state {
     use crate::rules::types::rules::Rules;
-    use crate::types::core::{CollectionKey, Key};
+    use crate::types::core::{Blob, CollectionKey, Key};
     use crate::types::memory::Memory;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
@@ -28,7 +28,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Doc {
         pub owner: UserId,
-        pub data: Vec<u8>,
+        pub data: Blob,
         pub created_at: u64,
         pub updated_at: u64,
         pub description: Option<String>,
@@ -36,13 +36,14 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::types::core::Blob;
     use candid::CandidType;
     use serde::Deserialize;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct SetDoc {
         pub updated_at: Option<u64>,
-        pub data: Vec<u8>,
+        pub data: Blob,
         pub description: Option<String>,
     }
 

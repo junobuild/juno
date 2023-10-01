@@ -1,10 +1,10 @@
 use crate::db::types::state::{Doc, StableKey};
 use crate::types::core::Compare;
-use ic_stable_structures::{Storable};
+use ic_stable_structures::storable::Bound;
+use ic_stable_structures::Storable;
+use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use std::borrow::Cow;
 use std::cmp::Ordering;
-use ic_stable_structures::storable::Bound;
-use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 
 impl Compare for Doc {
     fn cmp_updated_at(&self, other: &Self) -> Ordering {

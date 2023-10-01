@@ -1,10 +1,10 @@
 use ic_cdk::api::time;
-use ic_stable_structures::{Storable};
+use ic_stable_structures::storable::Bound;
+use ic_stable_structures::Storable;
 use sha2::{Digest, Sha256};
+use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use std::borrow::Cow;
 use std::cmp::Ordering;
-use ic_stable_structures::storable::Bound;
-use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::types::assets::AssetHashes;
@@ -12,7 +12,7 @@ use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::{StableFullPath, StorageHeapState};
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::storage::url::alternative_paths;
-use crate::types::core::Compare;
+use crate::types::core::{Blob, Compare};
 
 impl From<&StorageHeapState> for AssetHashes {
     fn from(state: &StorageHeapState) -> Self {
@@ -66,8 +66,8 @@ impl AssetHashes {
     }
 }
 
-impl From<&Vec<Vec<u8>>> for AssetEncoding {
-    fn from(content_chunks: &Vec<Vec<u8>>) -> Self {
+impl From<&Vec<Blob>> for AssetEncoding {
+    fn from(content_chunks: &Vec<Blob>) -> Self {
         let mut total_length: u128 = 0;
         let mut hasher = Sha256::new();
 

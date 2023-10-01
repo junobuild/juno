@@ -1,6 +1,6 @@
-use std::borrow::Cow;
 use ciborium::{from_reader, into_writer};
 use serde::{Deserialize, Serialize};
+use std::borrow::Cow;
 
 pub fn serialize_to_bytes<T: Serialize>(value: &T) -> Cow<[u8]> {
     let mut bytes = vec![];
@@ -11,4 +11,3 @@ pub fn serialize_to_bytes<T: Serialize>(value: &T) -> Cow<[u8]> {
 pub fn deserialize_from_bytes<T: for<'a> Deserialize<'a>>(bytes: Cow<'_, [u8]>) -> T {
     from_reader(&*bytes).expect("Failed to deserialize from bytes")
 }
-

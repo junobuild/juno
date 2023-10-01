@@ -44,6 +44,8 @@ pub mod core {
     pub type Key = String;
     pub type CollectionKey = String;
 
+    pub type Blob = Vec<u8>;
+
     pub trait Compare {
         fn cmp_updated_at(&self, other: &Self) -> Ordering;
         fn cmp_created_at(&self, other: &Self) -> Ordering;

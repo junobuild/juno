@@ -162,10 +162,10 @@ pub mod interface {
 }
 
 pub mod http {
-    use candid::{define_function, CandidType, Deserialize};
-    use serde_bytes::ByteBuf;
     use crate::storage::types::store::EncodingType;
     use crate::types::core::Blob;
+    use candid::{define_function, CandidType, Deserialize};
+    use serde_bytes::ByteBuf;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct HeaderField(pub String, pub String);

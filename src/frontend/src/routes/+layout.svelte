@@ -24,6 +24,8 @@
 		} catch (err: unknown) {
 			console.error(err);
 		}
+
+		displayAndCleanLogoutMsg();
 	};
 
 	const initUser = async ({ identity }: AuthStoreData) => {
@@ -38,8 +40,6 @@
 				onInitMissionControlSuccess: async (missionControlId) =>
 					missionControlStore.set(missionControlId)
 			});
-
-			displayAndCleanLogoutMsg();
 		} catch (err: unknown) {
 			toasts.error({
 				text: `Error initializing the user.`,

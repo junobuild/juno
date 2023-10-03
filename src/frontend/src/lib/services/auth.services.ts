@@ -1,9 +1,9 @@
 import { authStore, type AuthSignInParams } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type {ToastLevel, ToastMsg} from '$lib/types/toast';
-import {replaceHistory} from "$lib/utils/route.utils";
-import {isNullish} from "$lib/utils/utils";
+import type { ToastLevel, ToastMsg } from '$lib/types/toast';
+import { replaceHistory } from '$lib/utils/route.utils';
+import { isNullish } from '$lib/utils/utils';
 
 export const signIn = async (
 	params: AuthSignInParams

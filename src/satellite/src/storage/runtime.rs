@@ -9,7 +9,7 @@ use ic_cdk::api::time;
 /// Certified assets
 
 pub fn init_certified_assets() {
-    fn init_asset_asset_hashes(state: &State) -> AssetHashes {
+    fn init_asset_hashes(state: &State) -> AssetHashes {
         let mut asset_hashes = AssetHashes::default();
 
         for (_key, asset) in state.heap.storage.assets.iter() {
@@ -23,7 +23,7 @@ pub fn init_certified_assets() {
         asset_hashes
     }
 
-    let asset_hashes = STATE.with(|state| init_asset_asset_hashes(&state.borrow()));
+    let asset_hashes = STATE.with(|state| init_asset_hashes(&state.borrow()));
 
     STATE.with(|state| {
         init_certified_assets_impl(&asset_hashes, &mut state.borrow_mut().runtime.storage)

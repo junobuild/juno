@@ -9,22 +9,10 @@ use std::cmp::Ordering;
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::interface::AssetNoContent;
-use crate::storage::types::state::{StableEncodingChunkKey, StableFullPath, StorageHeapState};
+use crate::storage::types::state::{StableEncodingChunkKey, StableFullPath};
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::storage::url::alternative_paths;
 use crate::types::core::{Blob, Compare};
-
-impl From<&StorageHeapState> for AssetHashes {
-    fn from(state: &StorageHeapState) -> Self {
-        let mut asset_hashes = Self::default();
-
-        for (_key, asset) in state.assets.iter() {
-            asset_hashes.insert(asset);
-        }
-
-        asset_hashes
-    }
-}
 
 impl AssetHashes {
     pub(crate) fn insert(&mut self, asset: &Asset) {

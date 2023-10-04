@@ -3,14 +3,27 @@ use crate::storage::cert::update_certified_data;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::state::{Batches, Chunks, FullPath, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Batch, Chunk};
-use crate::types::state::RuntimeState;
+use crate::types::state::{RuntimeState, State};
 use ic_cdk::api::time;
 
 /// Certified assets
 
-// TODO: init with stable assets as well
 pub fn init_certified_assets() {
-    let asset_hashes = STATE.with(|state| AssetHashes::from(&state.borrow().heap.storage));
+    fn init_asset_asset_hashes(state: &State) -> AssetHashes {
+        let mut asset_hashes = AssetHashes::default();
+
+        for (_key, asset) in state.heap.storage.assets.iter() {
+            asset_hashes.insert(asset);
+        }
+
+        for (_key, asset) in state.stable.assets.iter() {
+            asset_hashes.insert(&asset);
+        }
+
+        asset_hashes
+    }
+
+    let asset_hashes = STATE.with(|state| init_asset_asset_hashes(&state.borrow()));
 
     STATE.with(|state| {
         init_certified_assets_impl(&asset_hashes, &mut state.borrow_mut().runtime.storage)

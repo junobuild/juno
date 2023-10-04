@@ -1,8 +1,8 @@
 import { getTransactions } from '$lib/api/ledger.api';
 import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
-import { loadIdentity } from '$lib/utils/agent.utils';
 import { isNullish } from '$lib/utils/utils';
+import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { jsonReplacer } from '@dfinity/utils';

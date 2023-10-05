@@ -172,12 +172,7 @@ fn get_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<Vec<(Key
         key: "".to_string(),
     };
 
-    let end_key = StableKey {
-        collection: collection.clone(),
-        key: "".to_string(),
-    };
-
-    let items: Vec<(StableKey, Doc)> = db.range(start_key..end_key).collect();
+    let items: Vec<(StableKey, Doc)> = db.range(start_key..).collect();
 
     Ok(items
         .iter()

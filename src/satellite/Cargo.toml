@@ -22,6 +22,6 @@ base64 = "0.13.1"
 url = "2.4.0"
 globset = "0.4.13"
 hex = "0.4.3"
-ic-stable-structures = "0.6.0-beta.1"
+ic-stable-structures = "0.6.0-beta.2"
 ciborium = "0.2.1"
 shared = { path = "../shared" }

@@ -4,7 +4,7 @@ pub mod state {
     use crate::storage::types::config::StorageConfig;
     use crate::storage::types::domain::CustomDomains;
     use crate::storage::types::store::{Asset, Batch, Chunk, EncodingType};
-    use crate::types::core::{Blob, Key};
+    use crate::types::core::{Blob, CollectionKey, Key};
     use crate::types::memory::Memory;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
@@ -16,13 +16,14 @@ pub mod state {
     pub type Batches = HashMap<u128, Batch>;
     pub type Chunks = HashMap<u128, Chunk>;
 
-    pub type AssetsStable = StableBTreeMap<StableFullPath, Asset, Memory>;
+    pub type AssetsStable = StableBTreeMap<StableKey, Asset, Memory>;
     pub type ContentChunksStable = StableBTreeMap<StableEncodingChunkKey, Blob, Memory>;
 
     pub type AssetsHeap = HashMap<FullPath, Asset>;
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct StableFullPath {
+    pub struct StableKey {
+        pub collection: CollectionKey,
         pub full_path: FullPath,
     }
 

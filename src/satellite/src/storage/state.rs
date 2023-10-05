@@ -4,8 +4,8 @@ use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::state::{
-    AssetsHeap, AssetsStable, ContentChunksStable, FullPath, StableEncodingChunkKey,
-    StableFullPath, StorageHeapState,
+    AssetsHeap, AssetsStable, ContentChunksStable, FullPath, StableEncodingChunkKey, StableKey,
+    StorageHeapState,
 };
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::types::core::{Blob, CollectionKey};
@@ -21,23 +21,46 @@ pub fn get_public_asset(full_path: &FullPath) -> (Option<Asset>, Memory) {
 
     match heap_asset {
         Some(heap_asset) => (Some(heap_asset), Memory::Heap),
-        None => STATE.with(|state| {
-            (
-                get_asset_stable(full_path, &state.borrow().stable.assets),
-                Memory::Stable,
-            )
-        }),
+        None => {
+            STATE.with(|state| get_public_asset_stable(full_path, &state.borrow().stable.assets))
+        }
     }
 }
 
-pub fn get_asset(full_path: &FullPath, rule: &Rule) -> Option<Asset> {
+pub fn get_public_asset_stable(
+    full_path: &FullPath,
+    assets: &AssetsStable,
+) -> (Option<Asset>, Memory) {
+    // full_path examples:
+    // /index.html
+    // /images/hello.png
+    let parts: Vec<&str> = full_path.split('/').collect();
+
+    // The satellite does not use stable memory for the #app collection, so we can assume that a requested stable asset is one uploaded by a user or developer.
+    // Therefore, it should be prefixed with the collection (/collection/something)
+
+    if parts.len() <= 2 {
+        return (None, Memory::Stable);
+    }
+
+    // full_path always starts with / (we ensure this when we map the url). Split will result in a first element equals to "".
+    // /images/index.png => ["", "images", "index.png"]
+    match parts.get(1) {
+        None => (None, Memory::Stable),
+        Some(collection) => (
+            get_asset_stable(&collection.to_string(), full_path, assets),
+            Memory::Stable,
+        ),
+    }
+}
+
+pub fn get_asset(collection: &CollectionKey, full_path: &FullPath, rule: &Rule) -> Option<Asset> {
     match rule.memory {
         Memory::Heap => {
             STATE.with(|state| get_asset_heap(full_path, &state.borrow().heap.storage.assets))
         }
-        Memory::Stable => {
-            STATE.with(|state| get_asset_stable(full_path, &state.borrow().stable.assets))
-        }
+        Memory::Stable => STATE
+            .with(|state| get_asset_stable(collection, full_path, &state.borrow().stable.assets)),
     }
 }
 
@@ -56,7 +79,7 @@ pub fn get_content_chunks(
 
 pub fn insert_asset_encoding(
     full_path: &FullPath,
-    encoding_type: &String,
+    encoding_type: &str,
     encoding: &AssetEncoding,
     asset: &mut Asset,
     rule: &Rule,
@@ -65,7 +88,7 @@ pub fn insert_asset_encoding(
         Memory::Heap => {
             asset
                 .encodings
-                .insert(encoding_type.clone(), encoding.clone());
+                .insert(encoding_type.to_owned(), encoding.clone());
         }
         Memory::Stable => STATE.with(|state| {
             insert_asset_encoding_stable(
@@ -79,7 +102,7 @@ pub fn insert_asset_encoding(
     }
 }
 
-pub fn insert_asset(full_path: &FullPath, asset: &Asset, rule: &Rule) {
+pub fn insert_asset(collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule) {
     match rule.memory {
         Memory::Heap => STATE.with(|state| {
             insert_asset_heap(
@@ -89,18 +112,28 @@ pub fn insert_asset(full_path: &FullPath, asset: &Asset, rule: &Rule) {
             )
         }),
         Memory::Stable => STATE.with(|state| {
-            insert_asset_stable(full_path, asset, &mut state.borrow_mut().stable.assets)
+            insert_asset_stable(
+                collection,
+                full_path,
+                asset,
+                &mut state.borrow_mut().stable.assets,
+            )
         }),
     }
 }
 
-pub fn delete_asset(full_path: &FullPath, rule: &Rule) -> Option<Asset> {
+pub fn delete_asset(
+    collection: &CollectionKey,
+    full_path: &FullPath,
+    rule: &Rule,
+) -> Option<Asset> {
     match rule.memory {
         Memory::Heap => STATE.with(|state| {
             delete_asset_heap(full_path, &mut state.borrow_mut().heap.storage.assets)
         }),
-        Memory::Stable => STATE
-            .with(|state| delete_asset_stable(full_path, &mut state.borrow_mut().stable.assets)),
+        Memory::Stable => STATE.with(|state| {
+            delete_asset_stable(collection, full_path, &mut state.borrow_mut().stable.assets)
+        }),
     }
 }
 
@@ -117,8 +150,12 @@ pub fn get_assets(collection: &CollectionKey, rule: &Rule) -> Vec<Asset> {
 
 // Get
 
-fn get_asset_stable(full_path: &FullPath, assets: &AssetsStable) -> Option<Asset> {
-    assets.get(&stable_full_path(full_path))
+fn get_asset_stable(
+    collection: &CollectionKey,
+    full_path: &FullPath,
+    assets: &AssetsStable,
+) -> Option<Asset> {
+    assets.get(&stable_full_path(collection, full_path))
 }
 
 fn get_content_chunks_stable(
@@ -138,8 +175,12 @@ fn get_asset_heap(full_path: &FullPath, assets: &AssetsHeap) -> Option<Asset> {
 
 // Delete
 
-fn delete_asset_stable(full_path: &FullPath, assets: &mut AssetsStable) -> Option<Asset> {
-    assets.remove(&stable_full_path(full_path))
+fn delete_asset_stable(
+    collection: &CollectionKey,
+    full_path: &FullPath,
+    assets: &mut AssetsStable,
+) -> Option<Asset> {
+    assets.remove(&stable_full_path(collection, full_path))
 }
 
 fn delete_asset_heap(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<Asset> {
@@ -148,13 +189,18 @@ fn delete_asset_heap(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<As
 
 // Insert
 
-fn insert_asset_stable(full_path: &FullPath, asset: &Asset, assets: &mut AssetsStable) {
-    assets.insert(stable_full_path(full_path), asset.clone());
+fn insert_asset_stable(
+    collection: &CollectionKey,
+    full_path: &FullPath,
+    asset: &Asset,
+    assets: &mut AssetsStable,
+) {
+    assets.insert(stable_full_path(collection, full_path), asset.clone());
 }
 
 fn insert_asset_encoding_stable(
     full_path: &FullPath,
-    encoding_type: &String,
+    encoding_type: &str,
     encoding: &AssetEncoding,
     asset: &mut Asset,
     chunks: &mut ContentChunksStable,
@@ -172,7 +218,7 @@ fn insert_asset_encoding_stable(
 
     // Insert the encoding by replacing the chunks with their referenced keys serialized
     asset.encodings.insert(
-        encoding_type.clone(),
+        encoding_type.to_owned(),
         AssetEncoding {
             content_chunks,
             ..encoding.clone()
@@ -202,8 +248,9 @@ fn get_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> Vec<Asset
         .collect()
 }
 
-fn stable_full_path(full_path: &FullPath) -> StableFullPath {
-    StableFullPath {
+fn stable_full_path(collection: &CollectionKey, full_path: &FullPath) -> StableKey {
+    StableKey {
+        collection: collection.clone(),
         full_path: full_path.clone(),
     }
 }

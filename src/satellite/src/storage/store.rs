@@ -242,16 +242,17 @@ fn secure_delete_asset_impl(
 ) -> Result<Option<Asset>, String> {
     let rule = get_state_rule(collection)?;
 
-    delete_asset_impl(caller, controllers, full_path, &rule)
+    delete_asset_impl(caller, controllers, full_path, collection, &rule)
 }
 
 fn delete_asset_impl(
     caller: Principal,
     controllers: &Controllers,
     full_path: FullPath,
+    collection: &CollectionKey,
     rule: &Rule,
 ) -> Result<Option<Asset>, String> {
-    let asset = get_state_asset(&full_path, rule);
+    let asset = get_state_asset(collection, &full_path, rule);
 
     match asset {
         None => Err(ERROR_ASSET_NOT_FOUND.to_string()),
@@ -260,7 +261,7 @@ fn delete_asset_impl(
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
-            let deleted = delete_state_asset(&full_path, rule);
+            let deleted = delete_state_asset(collection, &full_path, rule);
             delete_runtime_certified_asset(&full_path);
             Ok(deleted)
         }
@@ -277,7 +278,7 @@ fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
         .collect();
 
     for full_path in full_paths {
-        delete_state_asset(&full_path, &rule);
+        delete_state_asset(&full_path, collection, &rule);
         delete_runtime_certified_asset(&full_path);
     }
 
@@ -487,7 +488,7 @@ fn secure_commit_chunks(
 
     let rule = get_state_rule(&batch.key.collection)?;
 
-    let current = get_state_asset(&batch.key.full_path, &rule);
+    let current = get_state_asset(&batch.key.collection, &batch.key.full_path, &rule);
 
     match current {
         None => {
@@ -585,7 +586,11 @@ fn commit_chunks(
         updated_at: now,
     };
 
-    if let Some(existing_asset) = get_state_asset(&batch.clone().key.full_path, rule) {
+    if let Some(existing_asset) = get_state_asset(
+        &batch.clone().key.collection,
+        &batch.clone().key.full_path,
+        rule,
+    ) {
         asset.encodings = existing_asset.encodings.clone();
         asset.created_at = existing_asset.created_at;
     }
@@ -612,7 +617,12 @@ fn commit_chunks(
         rule,
     );
 
-    insert_state_asset(&batch.clone().key.full_path, &asset, rule);
+    insert_state_asset(
+        &batch.clone().key.collection,
+        &batch.clone().key.full_path,
+        &asset,
+        rule,
+    );
 
     clear_runtime_batch(&batch_id, &chunk_ids);
 
@@ -688,14 +698,16 @@ fn update_custom_domains_asset() -> Result<(), String> {
 
     let full_path = BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string();
 
-    // #app collection rule
-    let rule = get_rule(&DEFAULT_ASSETS_COLLECTIONS[0].0.to_string())?;
+    let collection = DEFAULT_ASSETS_COLLECTIONS[0].0.to_string();
 
-    let existing_asset = get_state_asset(&full_path, &rule);
+    // #app collection rule
+    let rule = get_rule(&collection)?;
+
+    let existing_asset = get_state_asset(&collection, &full_path, &rule);
 
     let asset = map_custom_domains_asset(&custom_domains, existing_asset);
 
-    insert_state_asset(&full_path, &asset, &rule);
+    insert_state_asset(&collection, &full_path, &asset, &rule);
 
     update_runtime_certified_asset(&asset);
 

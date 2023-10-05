@@ -233,10 +233,16 @@ fn insert_asset_heap(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHea
 // List
 
 fn get_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> Vec<Asset> {
-    assets
+    let start_key = StableKey {
+        collection: collection.clone(),
+        full_path: "".to_string(),
+    };
+
+    let items: Vec<(StableKey, Asset)> = assets.range(start_key..).collect();
+
+    items
         .iter()
-        .filter(|(_, asset)| asset.key.collection == collection.clone())
-        .map(|(_, asset)| asset)
+        .map(|(_, asset)| asset.clone())
         .collect()
 }
 

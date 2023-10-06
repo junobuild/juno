@@ -11,6 +11,7 @@ pub mod rules {
         pub read: Permission,
         pub write: Permission,
         pub memory: Memory,
+        #[serde(default)]
         pub mutable: bool,
         pub max_size: Option<u128>,
         pub created_at: u64,

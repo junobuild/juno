@@ -9,7 +9,6 @@ mod msg;
 mod rules;
 mod storage;
 mod types;
-mod upgrade;
 
 use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};

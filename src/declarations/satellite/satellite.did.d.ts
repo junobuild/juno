@@ -156,6 +156,7 @@ export interface StreamingCallbackHttpResponse {
 	body: Uint8Array | number[];
 }
 export interface StreamingCallbackToken {
+	memory: Memory;
 	token: [] | [string];
 	sha256: [] | [Uint8Array | number[]];
 	headers: Array<[string, string]>;

@@ -39,7 +39,9 @@ export const idlFactory = ({ IDL }) => {
 		body: IDL.Vec(IDL.Nat8),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))
 	});
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
 	const StreamingCallbackToken = IDL.Record({
+		memory: Memory,
 		token: IDL.Opt(IDL.Text),
 		sha256: IDL.Opt(IDL.Vec(IDL.Nat8)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -131,7 +133,6 @@ export const idlFactory = ({ IDL }) => {
 		items: IDL.Vec(IDL.Tuple(IDL.Text, Doc)),
 		items_length: IDL.Nat64
 	});
-	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
 	const Permission = IDL.Variant({
 		Controllers: IDL.Null,
 		Private: IDL.Null,

@@ -6,7 +6,7 @@ use crate::rules::types::rules::{Memory, Rule, Rules};
 use crate::storage::store::assert_assets_collection_empty;
 use crate::types::core::CollectionKey;
 use ic_cdk::api::time;
-use shared::assert::assert_timestamp;
+use crate::rules::assert::{assert_memory, assert_mutable, assert_write_permission};
 
 /// Rules
 
@@ -83,19 +83,9 @@ fn set_rule_impl(
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    match assert_write_permission(&collection, current_rule, &user_rule.updated_at) {
-        Ok(_) => (),
-        Err(e) => {
-            return Err(e);
-        }
-    }
-
-    match assert_memory(current_rule, &user_rule.memory) {
-        Ok(_) => (),
-        Err(e) => {
-            return Err(e);
-        }
-    }
+    assert_write_permission(&collection, current_rule, &user_rule.updated_at)?;
+    assert_memory(current_rule, &user_rule.memory)?;
+    assert_mutable(current_rule, &user_rule.mutable)?;
 
     let now = time();
 
@@ -112,6 +102,7 @@ fn set_rule_impl(
         read: user_rule.read,
         write: user_rule.write,
         memory: user_rule.memory.unwrap_or(default_memory),
+        mutable: user_rule.mutable.unwrap_or(true),
         max_size: user_rule.max_size,
     };
 
@@ -127,64 +118,9 @@ fn del_rule_impl(
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    match assert_write_permission(&collection, current_rule, &user_rule.updated_at) {
-        Ok(_) => (),
-        Err(e) => {
-            return Err(e);
-        }
-    }
+    assert_write_permission(&collection, current_rule, &user_rule.updated_at)?;
 
     rules.remove(&collection);
-
-    Ok(())
-}
-
-fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result<(), String> {
-    // Validate memory type does not change
-    match current_rule {
-        None => (),
-        Some(current_rule) => match memory {
-            None => {
-                return Err("The type of memory to use must be provided.".to_string());
-            }
-            Some(Memory::Heap) => {
-                if !matches!(&current_rule.memory, Memory::Heap) {
-                    return Err("The type of memory cannot be modified to heap.".to_string());
-                }
-            }
-            Some(Memory::Stable) => {
-                if !matches!(&current_rule.memory, Memory::Stable) {
-                    return Err("The type of memory cannot be modified to stable.".to_string());
-                }
-            }
-        },
-    }
-
-    Ok(())
-}
-
-fn assert_write_permission(
-    collection: &CollectionKey,
-    current_rule: Option<&Rule>,
-    updated_at: &Option<u64>,
-) -> Result<(), String> {
-    // Validate timestamp
-    match current_rule {
-        None => (),
-        Some(current_rule) => match assert_timestamp(*updated_at, current_rule.updated_at) {
-            Ok(_) => (),
-            Err(e) => {
-                return Err(e);
-            }
-        },
-    }
-
-    if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) {
-        return Err(format!(
-            "Collection starts with {}, a reserved prefix",
-            SYS_COLLECTION_PREFIX
-        ));
-    }
 
     Ok(())
 }

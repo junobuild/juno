@@ -11,6 +11,7 @@ pub mod rules {
         pub read: Permission,
         pub write: Permission,
         pub memory: Memory,
+        pub mutable: bool,
         pub max_size: Option<u128>,
         pub created_at: u64,
         pub updated_at: u64,
@@ -46,6 +47,7 @@ pub mod interface {
         pub read: Permission,
         pub write: Permission,
         pub memory: Option<Memory>,
+        pub mutable: Option<bool>,
         pub max_size: Option<u128>,
     }
 

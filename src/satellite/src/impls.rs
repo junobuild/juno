@@ -35,7 +35,8 @@ impl Default for HeapState {
                     Rule {
                         read: rule.read,
                         write: rule.write,
-                        memory: Memory::Heap,
+                        memory: rule.memory.unwrap_or(Memory::Heap),
+                        mutable: rule.mutable.unwrap_or(false),
                         max_size: rule.max_size,
                         created_at: now,
                         updated_at: now,
@@ -52,7 +53,8 @@ impl Default for HeapState {
                     Rule {
                         read: rule.read,
                         write: rule.write,
-                        memory: Memory::Heap,
+                        memory: rule.memory.unwrap_or(Memory::Heap),
+                        mutable: rule.mutable.unwrap_or(false),
                         max_size: rule.max_size,
                         created_at: now,
                         updated_at: now,

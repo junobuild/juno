@@ -53,6 +53,10 @@ input[disabled] {
 	}
 }
 
+select[disabled] {
+	@include disabled.disabled;
+}
+
 textarea {
 	resize: none;
 }

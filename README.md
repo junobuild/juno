@@ -1,12 +1,12 @@
 <div align="center" style="display:flex;flex-direction:column;">
   <a href="https://juno.build/">
-    <img src="https://github.com/buildwithjuno/juno/raw/main/src/frontend/static/images/juno_logo.png" width="380px" alt="Juno" role="presentation"/>
+    <img src="https://github.com/junobuild/juno/raw/main/src/frontend/static/images/juno_logo.png" width="380px" alt="Juno" role="presentation"/>
   </a>
     
   <br/>
   <br/>
 
-[![GitHub release](https://img.shields.io/github/release/buildwithjuno/juno/all?logo=GitHub&style=flat-square)](https://github.com/buildwithjuno/juno/releases/latest)
+[![GitHub release](https://img.shields.io/github/release/buildwithjuno/juno/all?logo=GitHub&style=flat-square)](https://github.com/junobuild/juno/releases/latest)
 [![Follow Juno on Twitter](https://img.shields.io/twitter/follow/junobuild?label=Follow%20Juno&style=social)](https://twitter.com/JunoBuild)
 [![Chat on Discord](https://img.shields.io/badge/chat-Discord-lightgrey?logo=Discord&style=flat-square)](https://discord.gg/wHZ57Z2RAG)
 

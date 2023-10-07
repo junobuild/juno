@@ -1,7 +1,8 @@
-use shared::assert::assert_timestamp;
 use crate::rules::constants::SYS_COLLECTION_PREFIX;
+use crate::rules::types::interface::SetRule;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::CollectionKey;
+use shared::assert::assert_timestamp;
 
 pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result<(), String> {
     // Validate memory type does not change
@@ -27,21 +28,39 @@ pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Re
     Ok(())
 }
 
-
-pub fn assert_mutable(current_rule: Option<&Rule>, mutable: &Option<bool>) -> Result<(), String> {
+pub fn assert_mutable_permissions(
+    current_rule: Option<&Rule>,
+    user_rule: &SetRule,
+) -> Result<(), String> {
     // Validate mutability does not change
     match current_rule {
         None => (),
-        Some(current_rule) => match mutable {
+        Some(current_rule) => match user_rule.mutable_permissions {
             None => {
-                return Err("The mutability must be provided.".to_string());
+                return Err("The immutable permissions information must be provided.".to_string());
             }
-            Some(mutable) => {
-                if &current_rule.mutable != mutable && !current_rule.mutable {
-                    return Err("An immutable rule cannot be modified.".to_string());
+            Some(mutable_permissions) => {
+                if current_rule.mutable_permissions != mutable_permissions
+                    && !current_rule.mutable_permissions
+                {
+                    return Err("The immutable permissions cannot be made mutable.".to_string());
                 }
             }
         },
+    }
+
+    // Validate permissions do not change
+    match current_rule {
+        None => (),
+        Some(current_rule) => {
+            if current_rule.write != user_rule.write && !current_rule.mutable_permissions {
+                return Err("The write permission is immutable.".to_string());
+            }
+
+            if current_rule.read != user_rule.read && !current_rule.mutable_permissions {
+                return Err("The read permission is immutable.".to_string());
+            }
+        }
     }
 
     Ok(())

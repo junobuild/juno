@@ -1,5 +1,5 @@
 @mixin disabled {
-	box-shadow: 3px 3px rgb(0, 0, 0, 0.2);
-	border: 2px solid rgb(0, 0, 0, 0.2);
-	color: rgb(0, 0, 0, 0.3);
+	box-shadow: 3px 3px rgb(var(--color-card-contrast-rgb), 0.3);
+	border: 2px solid rgb(var(--color-card-contrast-rgb), 0.3);
+	color: rgb(var(--text-color-rgb), 0.4);
 }

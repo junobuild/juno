@@ -64,7 +64,8 @@ export const setRule = async ({
 	type,
 	memory,
 	rule,
-	maxSize
+	maxSize,
+	mutablePermissions
 }: {
 	satelliteId: Principal;
 	collection: string;
@@ -74,13 +75,15 @@ export const setRule = async ({
 	memory: MemoryText;
 	rule: Rule | undefined;
 	maxSize: number | undefined;
+	mutablePermissions: boolean;
 }) => {
 	const updateRule: SetRule = {
 		read: permissionFromText(read),
 		write: permissionFromText(write),
 		updated_at: isNullish(rule) ? [] : [rule.updated_at],
 		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
-		memory: isNullish(rule) ? [memoryFromText(memory)] : [rule.memory ?? MemoryHeap]
+		memory: isNullish(rule) ? [memoryFromText(memory)] : [rule.memory ?? MemoryHeap],
+		mutable_permissions: toNullable(mutablePermissions)
 	};
 
 	const actor = await getSatelliteActor(satelliteId);

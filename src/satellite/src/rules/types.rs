@@ -10,9 +10,9 @@ pub mod rules {
     pub struct Rule {
         pub read: Permission,
         pub write: Permission,
-        pub memory: Memory,
         #[serde(default)]
-        pub mutable: bool,
+        pub mutable_permissions: bool,
+        pub memory: Memory,
         pub max_size: Option<u128>,
         pub created_at: u64,
         pub updated_at: u64,
@@ -24,7 +24,7 @@ pub mod rules {
         Stable,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]
     pub enum Permission {
         // No rules applied
         Public,
@@ -47,8 +47,8 @@ pub mod interface {
         pub updated_at: Option<u64>,
         pub read: Permission,
         pub write: Permission,
+        pub mutable_permissions: Option<bool>,
         pub memory: Option<Memory>,
-        pub mutable: Option<bool>,
         pub max_size: Option<u128>,
     }
 

@@ -11,7 +11,7 @@ This document explains how to run locally [Juno](https://juno.build).
 ## Run locally
 
 ```
-git clone https://github.com/buildwithjuno/juno
+git clone https://github.com/junobuild/juno
 cd juno
 npm ci
 dfx start --clean

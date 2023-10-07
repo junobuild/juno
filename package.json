@@ -7,10 +7,10 @@
 	"type": "module",
 	"repository": {
 		"type": "git",
-		"url": "https://github.com/buildwithjuno/juno"
+		"url": "https://github.com/junobuild/juno"
 	},
 	"bugs": {
-		"url": "https://github.com/buildwithjuno/juno/issues"
+		"url": "https://github.com/junobuild/juno/issues"
 	},
 	"description": "An Open Source Blockchain-as-a-Service",
 	"keywords": [

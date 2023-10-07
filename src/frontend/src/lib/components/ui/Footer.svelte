@@ -24,7 +24,7 @@
 				>
 
 				<a
-					href="https://github.com/buildwithjuno/juno"
+					href="https://github.com/junobuild/juno"
 					rel="external noopener noreferrer"
 					target="_blank"
 					aria-label="GitHub"><IconGitHub /></a

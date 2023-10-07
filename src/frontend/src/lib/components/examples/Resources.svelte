@@ -68,14 +68,14 @@
 >
 	<div class="content">
 		{#if category === 'developers'}
-			<Resource href="https://github.com/buildwithjuno/examples">
+			<Resource href="https://github.com/junobuild/examples">
 				<IconBook slot="icon" />
 				<svelte:fragment slot="title">{$i18n.resources.resources}</svelte:fragment>
 
 				{$i18n.resources.resources_description}
 			</Resource>
 
-			<Resource href="https://github.com/buildwithjuno/juno/releases">
+			<Resource href="https://github.com/junobuild/juno/releases">
 				<IconScience slot="icon" />
 				<svelte:fragment slot="title">{$i18n.resources.changelog}</svelte:fragment>
 

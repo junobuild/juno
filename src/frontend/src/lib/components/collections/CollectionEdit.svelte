@@ -132,7 +132,7 @@
 		<div>
 			<Value ref="read">
 				<svelte:fragment slot="label">{$i18n.collections.read_permission}</svelte:fragment>
-				<select id="read" name="read" bind:value={read} disabled={immutable}>
+				<select id="read" name="read" bind:value={read} disabled={currentImmutable}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
@@ -144,7 +144,7 @@
 		<div>
 			<Value ref="write">
 				<svelte:fragment slot="label">{$i18n.collections.write_permission}</svelte:fragment>
-				<select id="write" name="write" bind:value={write} disabled={immutable}>
+				<select id="write" name="write" bind:value={write} disabled={currentImmutable}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>

@@ -340,6 +340,7 @@ interface I18nCollections {
 	managed: string;
 	controllers: string;
 	empty: string;
+	empty_private: string;
 	added: string;
 	updated: string;
 	deleted: string;

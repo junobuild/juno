@@ -320,6 +320,7 @@
 		"managed": "Gestito",
 		"controllers": "Controllori",
 		"empty": "La tua collezione <strong>{0}</strong> è vuota.",
+		"empty_private": "Your collection <strong>{0}</strong> read permission is set to private.",
 		"added": "La collezione {0} è stata aggiunta.",
 		"updated": "La collezione {0} è stata aggiornata.",
 		"deleted": "La collezione {0} è stata eliminata.",

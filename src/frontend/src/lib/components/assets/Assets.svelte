@@ -79,7 +79,7 @@
 	$: collection = $store.rule?.[0];
 
 	let empty = false;
-	$: empty = $paginationStore.items?.length === 0 && collection !== undefined;
+	$: empty = $paginationStore.items?.length === 0 && nonNullish(collection);
 
 	const { store: assetsStore, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
@@ -123,7 +123,7 @@
 			{/if}
 
 			{#if empty}
-				<CollectionEmpty {collection}>
+				<CollectionEmpty {collection} rule={$store.rule?.[1]}>
 					<svelte:fragment slot="filter">{$i18n.asset.no_match}</svelte:fragment>
 				</CollectionEmpty>
 			{/if}

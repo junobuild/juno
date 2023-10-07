@@ -60,14 +60,8 @@ fn is_collection_empty_heap(collection: &CollectionKey, db: &DbHeap) -> Result<b
 }
 
 fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Result<bool, String> {
-    let first_match = db
-        .iter()
-        .find(|(key, _)| key.collection == collection.clone());
-
-    match first_match {
-        None => Ok(false),
-        Some(_) => Ok(true),
-    }
+    let items = get_docs_stable(collection, db)?;
+    Ok(items.is_empty())
 }
 
 // Delete

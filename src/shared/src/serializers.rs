@@ -11,3 +11,8 @@ pub fn serialize_to_bytes<T: Serialize>(value: &T) -> Cow<[u8]> {
 pub fn deserialize_from_bytes<T: for<'a> Deserialize<'a>>(bytes: Cow<'_, [u8]>) -> T {
     from_reader(&*bytes).expect("Failed to deserialize from bytes")
 }
+
+// https://github.com/serde-rs/serde/issues/1030#issuecomment-522278006
+pub fn deserialize_default_as_true() -> bool {
+    true
+}

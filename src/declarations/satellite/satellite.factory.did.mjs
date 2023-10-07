@@ -145,7 +145,7 @@ export const idlFactory = ({ IDL }) => {
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
 		created_at: IDL.Nat64,
-		mutable: IDL.Bool,
+		mutable_permissions: IDL.Bool,
 		write: Permission
 	});
 	const SetController = IDL.Record({
@@ -167,7 +167,7 @@ export const idlFactory = ({ IDL }) => {
 		updated_at: IDL.Opt(IDL.Nat64),
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
-		mutable: IDL.Opt(IDL.Bool),
+		mutable_permissions: IDL.Opt(IDL.Bool),
 		write: Permission
 	});
 	const UploadChunk = IDL.Record({

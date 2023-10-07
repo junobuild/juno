@@ -240,10 +240,7 @@ fn get_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> Vec<A
 
     let items: Vec<(StableKey, Asset)> = assets.range(start_key..).collect();
 
-    items
-        .iter()
-        .map(|(_, asset)| asset.clone())
-        .collect()
+    items.iter().map(|(_, asset)| asset.clone()).collect()
 }
 
 fn get_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> Vec<Asset> {

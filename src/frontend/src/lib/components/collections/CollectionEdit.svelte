@@ -44,7 +44,7 @@
 	$: initMemory(memoryToText(rule?.memory ?? (typeStorage ? MemoryStable : MemoryHeap)));
 
 	let immutable: boolean;
-	const initMutable = (initialRule: Rule | undefined) => (immutable = !(initialRule?.mutable ?? true));
+	const initMutable = (initialRule: Rule | undefined) => (immutable = !(initialRule?.mutable_permissions ?? true));
 	$: initMutable($store.rule?.[1] ?? undefined);
 
 	let maxSize: number | undefined;
@@ -72,7 +72,7 @@
 				type,
 				rule,
 				maxSize,
-				mutable: !immutable
+				mutablePermissions: !immutable
 			});
 
 			toasts.success(

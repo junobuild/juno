@@ -386,7 +386,7 @@ fn http_request_streaming_callback(
         sha256: _,
         full_path,
         encoding_type,
-        memory,
+        memory: _,
     }: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
     let asset = get_public_asset(full_path, token);

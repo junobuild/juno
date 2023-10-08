@@ -10,7 +10,7 @@ use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
-use crate::msg::ERROR_CANNOT_WRITE;
+use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
 use crate::rules::types::rules::{Memory, Permission, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::core::{CollectionKey, Key};
@@ -38,9 +38,11 @@ fn secure_delete_collection(collection: &CollectionKey) -> Result<(), String> {
 fn delete_collection_impl(collection: &CollectionKey, memory: &Memory) -> Result<(), String> {
     let empty = is_state_collection_empty(collection, memory)?;
 
-    if empty {
-        delete_state_collection(collection, memory)?
+    if !empty {
+        return Err([COLLECTION_NOT_EMPTY, collection].join(""));
     }
+
+    delete_state_collection(collection, memory)?;
 
     Ok(())
 }

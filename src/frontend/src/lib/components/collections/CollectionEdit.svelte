@@ -43,8 +43,12 @@
 	const initMemory = (text: MemoryText) => (memory = text);
 	$: initMemory(memoryToText(rule?.memory ?? (typeStorage ? MemoryStable : MemoryHeap)));
 
+	let currentImmutable: boolean;
 	let immutable: boolean;
-	const initMutable = (initialRule: Rule | undefined) => (immutable = !(initialRule?.mutable_permissions ?? true));
+	const initMutable = (initialRule: Rule | undefined) => {
+		currentImmutable = !(initialRule?.mutable_permissions ?? true);
+		immutable = currentImmutable;
+	};
 	$: initMutable($store.rule?.[1] ?? undefined);
 
 	let maxSize: number | undefined;
@@ -76,12 +80,12 @@
 			});
 
 			toasts.success(
-					i18nFormat(isNullish(rule) ? $i18n.collections.added : $i18n.collections.updated, [
-						{
-							placeholder: '{0}',
-							value: collection
-						}
-					])
+				i18nFormat(isNullish(rule) ? $i18n.collections.added : $i18n.collections.updated, [
+					{
+						placeholder: '{0}',
+						value: collection
+					}
+				])
 			);
 
 			await reload();
@@ -128,7 +132,7 @@
 		<div>
 			<Value ref="read">
 				<svelte:fragment slot="label">{$i18n.collections.read_permission}</svelte:fragment>
-				<select id="read" name="read" bind:value={read} disabled={immutable}>
+				<select id="read" name="read" bind:value={read} disabled={currentImmutable}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
@@ -140,7 +144,7 @@
 		<div>
 			<Value ref="write">
 				<svelte:fragment slot="label">{$i18n.collections.write_permission}</svelte:fragment>
-				<select id="write" name="write" bind:value={write} disabled={immutable}>
+				<select id="write" name="write" bind:value={write} disabled={currentImmutable}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
@@ -175,10 +179,19 @@
 			</div>
 		{/if}
 
-		<div class="checkbox">
-			<input type="checkbox" value={immutable} on:change={() => (immutable = !immutable)} />
-			<span>{$i18n.collections.immutable}</span>
-		</div>
+		{#if !currentImmutable}
+			<div class="checkbox">
+				<label>
+					<input
+						type="checkbox"
+						checked={immutable}
+						disabled={currentImmutable}
+						on:change={() => (immutable = !immutable)}
+					/>
+					<span>{$i18n.collections.immutable}</span>
+				</label>
+			</div>
+		{/if}
 
 		<div class="toolbar">
 			<button type="button" on:click={() => dispatch('junoCollectionCancel')}

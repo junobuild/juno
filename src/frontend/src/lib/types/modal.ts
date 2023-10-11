@@ -16,6 +16,9 @@ export type JunoModalTopUpSatelliteDetail = JunoModalBalance & JunoModalSatellit
 // eslint-disable-next-line @typescript-eslint/no-empty-interface
 export interface JunoModalTopUpMissionControlDetail extends JunoModalBalance {}
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface JunoModalTopUpOrbiterDetail extends JunoModalBalance {}
+
 export interface JunoModalUpgradeDetail {
 	currentVersion: string;
 	newerReleases: string[];
@@ -58,6 +61,7 @@ export interface JunoModal {
 		| 'create_orbiter'
 		| 'topup_satellite'
 		| 'topup_mission_control'
+		| 'topup_orbiter'
 		| 'add_custom_domain'
 		| 'create_controller'
 		| 'upgrade_satellite'

@@ -52,6 +52,7 @@
 		"top_up_info": "Al momento, il tuo saldo mission control è di {0} ICP,e la commissione di rete per fare la ricarica è di {1} ICP.",
 		"top_up_mission_control_done": "Il tuo mission control center è stato ricaricato.",
 		"top_up_satellite_done": "Il tuo satellite è stato ricaricato.",
+		"top_up_orbiter_done": "Your orbiter has been topped-up.",
 		"daily_consumption": "Daily idle consumption",
 		"review_upgrade": "Review upgrade",
 		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",

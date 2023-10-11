@@ -24,4 +24,6 @@ globset = "0.4.13"
 hex = "0.4.3"
 ic-stable-structures = "0.6.0-beta.2"
 ciborium = "0.2.1"
+ic-response-verification = "1.2.0"
+ic-representation-independent-hash = "1.2.0"
 shared = { path = "../shared" }

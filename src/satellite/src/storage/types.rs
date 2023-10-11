@@ -51,12 +51,15 @@ pub mod state {
 }
 
 pub mod assets {
+    use crate::storage::tree::NestedTree;
+    use crate::types::core::Blob;
     use ic_certified_map::{Hash, RbTree};
     use std::clone::Clone;
 
     #[derive(Default, Clone)]
     pub struct AssetHashes {
-        pub tree: RbTree<String, Hash>,
+        pub tree_v1: RbTree<String, Hash>,
+        pub tree_v2: NestedTree<Blob, Blob>,
     }
 }
 
@@ -201,6 +204,7 @@ pub mod http {
         pub method: String,
         pub headers: Vec<HeaderField>,
         pub body: Blob,
+        pub certificate_version: Option<u16>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

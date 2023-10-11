@@ -1,37 +1,60 @@
+use crate::storage::constants::{
+    EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION_HEADER, IC_CERTIFICATE_HEADER,
+    LABEL_HTTP_EXPR,
+};
+use crate::storage::tree_utils::response_headers_expression;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::http::HeaderField;
+use crate::types::core::Blob;
 use base64::encode;
 use ic_cdk::api::{data_certificate, set_certified_data};
-use ic_certified_map::{labeled, labeled_hash, AsHashTree};
 use serde::Serialize;
 use serde_cbor::ser::Serializer;
 
-const LABEL_ASSETS: &[u8] = b"http_assets";
-
 pub fn update_certified_data(asset_hashes: &AssetHashes) {
-    let prefixed_root_hash = &labeled_hash(LABEL_ASSETS, &asset_hashes.tree.root_hash());
+    let prefixed_root_hash = &asset_hashes.root_hash();
     set_certified_data(&prefixed_root_hash[..]);
 }
 
 pub fn build_asset_certificate_header(
     asset_hashes: &AssetHashes,
     url: String,
+    certificate_version: &Option<u16>,
 ) -> Result<HeaderField, &'static str> {
     let certificate = data_certificate();
 
     match certificate {
         None => Err("No certificate found."),
-        Some(certificate) => build_asset_certificate_header_impl(&certificate, asset_hashes, &url),
+        Some(certificate) => match certificate_version {
+            None | Some(1) => {
+                build_asset_certificate_header_v1_impl(&certificate, asset_hashes, &url)
+            }
+            Some(2) => build_asset_certificate_header_v2_impl(&certificate, asset_hashes, &url),
+            _ => Err("Unsupported certificate version to certify headers."),
+        },
     }
 }
 
-fn build_asset_certificate_header_impl(
-    certificate: &Vec<u8>,
+pub fn build_certified_expression(
+    asset_headers: &[HeaderField],
+    certificate_version: &Option<u16>,
+) -> Result<Option<HeaderField>, &'static str> {
+    match certificate_version {
+        None | Some(1) => Ok(None),
+        Some(2) => Ok(Some(HeaderField(
+            IC_CERTIFICATE_EXPRESSION_HEADER.to_string(),
+            response_headers_expression(asset_headers),
+        ))),
+        _ => Err("Unsupported certificate version to certify expression."),
+    }
+}
+
+fn build_asset_certificate_header_v1_impl(
+    certificate: &Blob,
     asset_hashes: &AssetHashes,
-    url: &String,
+    url: &str,
 ) -> Result<HeaderField, &'static str> {
-    let witness = asset_hashes.tree.witness(url.as_bytes());
-    let tree = labeled(LABEL_ASSETS, witness);
+    let tree = asset_hashes.witness_v1(url);
 
     let mut serializer = Serializer::new(vec![]);
     serializer.self_describe().unwrap();
@@ -40,12 +63,53 @@ fn build_asset_certificate_header_impl(
     match result {
         Err(_err) => Err("Failed to serialize a hash tree."),
         Ok(_serialize) => Ok(HeaderField(
-            "IC-Certificate".to_string(),
+            IC_CERTIFICATE_HEADER.to_string(),
             format!(
                 "certificate=:{}:, tree=:{}:",
                 encode(certificate),
                 encode(serializer.into_inner())
             ),
         )),
+    }
+}
+
+fn build_asset_certificate_header_v2_impl(
+    certificate: &Blob,
+    asset_hashes: &AssetHashes,
+    url: &str,
+) -> Result<HeaderField, &'static str> {
+    assert!(url.starts_with('/'));
+
+    let mut path: Vec<String> = url.split('/').map(str::to_string).collect();
+    // replace the first empty split segment (due to absolute path) with "http_expr"
+    *path.get_mut(0).unwrap() = LABEL_HTTP_EXPR.to_string();
+    path.push(EXACT_MATCH_TERMINATOR.to_string());
+
+    let tree = asset_hashes.witness_v2(url);
+
+    let mut serializer = Serializer::new(vec![]);
+    serializer.self_describe().unwrap();
+    let result = tree.serialize(&mut serializer);
+
+    match result {
+        Err(_err) => Err("Failed to serialize a hash tree."),
+        Ok(_serialize) => {
+            let mut expr_path_serializer = Serializer::new(vec![]);
+            expr_path_serializer.self_describe().unwrap();
+            let result_path = path.serialize(&mut expr_path_serializer);
+
+            match result_path {
+                Err(_err) => Err("Failed to serialize path."),
+                Ok(_serialize) => Ok(HeaderField(
+                    IC_CERTIFICATE_HEADER.to_string(),
+                    format!(
+                        "certificate=:{}:, tree=:{}:, expr_path=:{}:, version=2",
+                        encode(certificate),
+                        encode(serializer.into_inner()),
+                        encode(expr_path_serializer.into_inner())
+                    ),
+                )),
+            }
+        }
     }
 }

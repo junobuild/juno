@@ -1,5 +1,5 @@
 use crate::storage::types::interface::AssetNoContent;
-use crate::storage::types::state::{FullPath, StableEncodingChunkKey, StableKey};
+use crate::storage::types::state::{StableEncodingChunkKey, StableKey};
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::types::core::{Blob, Compare};
 use ic_cdk::api::time;

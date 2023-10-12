@@ -4,7 +4,7 @@ use crate::storage::certification::constants::{
 use crate::storage::certification::tree_utils::nested_tree_key;
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
-use crate::storage::headers::build_asset_headers;
+use crate::storage::http::headers::build_asset_headers;
 use crate::storage::types::http::HeaderField;
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;

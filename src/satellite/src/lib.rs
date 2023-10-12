@@ -22,7 +22,7 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::storage::http::{
+use crate::storage::http::http::{
     build_encodings, build_headers, create_token, error_response, streaming_strategy,
 };
 use crate::storage::store::{

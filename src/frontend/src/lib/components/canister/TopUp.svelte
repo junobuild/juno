@@ -7,7 +7,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { getMissionControlBalance } from '$lib/services/balance.services';
 
-	export let type: 'topup_satellite' | 'topup_mission_control';
+	export let type: 'topup_satellite' | 'topup_mission_control' | 'topup_orbiter';
 	export let detail: JunoModalDetail | undefined = undefined;
 
 	const topUp = async () => {

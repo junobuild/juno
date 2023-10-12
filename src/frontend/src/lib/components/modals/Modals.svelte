@@ -10,6 +10,7 @@
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
+	import OrbiterTopUpModal from "$lib/components/modals/OrbiterTopUpModal.svelte";
 
 	let modal: JunoModal | undefined = undefined;
 
@@ -32,6 +33,10 @@
 
 {#if modal?.type === 'topup_mission_control' && nonNullish(modal.detail)}
 	<MissionControlTopUpModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'topup_orbiter' && nonNullish(modal.detail)}
+	<OrbiterTopUpModal on:junoClose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'add_custom_domain' && nonNullish(modal.detail)}

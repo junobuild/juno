@@ -1,3 +1,6 @@
+use crate::storage::certification::constants::{
+    EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2,
+};
 use ic_cdk::api::time;
 use ic_certified_map::{fork, fork_hash, labeled, labeled_hash, AsHashTree, Hash, HashTree};
 use ic_stable_structures::storable::Bound;
@@ -7,11 +10,9 @@ use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use std::borrow::Cow;
 use std::cmp::Ordering;
 
-use crate::storage::constants::{
-    ENCODING_CERTIFICATION_ORDER, EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2,
-};
+use crate::storage::certification::tree_utils::nested_tree_key;
+use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::headers::build_asset_headers;
-use crate::storage::tree_utils::nested_tree_key;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::http::HeaderField;
 use crate::storage::types::interface::AssetNoContent;

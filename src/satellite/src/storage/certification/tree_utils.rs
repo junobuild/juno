@@ -1,4 +1,4 @@
-use crate::storage::constants::{
+use crate::storage::certification::constants::{
     EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER,
     IC_STATUS_CODE_PSEUDO_HEADER,
 };

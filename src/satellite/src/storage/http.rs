@@ -1,6 +1,8 @@
 use crate::memory::STATE;
 use crate::rules::types::rules::Memory;
-use crate::storage::cert::{build_asset_certificate_header, build_certified_expression};
+use crate::storage::certification::certification::{
+    build_asset_certificate_header, build_certified_expression,
+};
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use crate::storage::headers::build_asset_headers;
 use crate::storage::types::http::{

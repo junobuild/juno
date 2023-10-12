@@ -1,4 +1,4 @@
-mod cert;
+mod certification;
 mod constants;
 mod custom_domains;
 mod headers;
@@ -8,8 +8,6 @@ pub mod rewrites;
 mod runtime;
 mod state;
 pub mod store;
-mod tree;
-mod tree_utils;
 pub mod types;
 mod url;
 mod utils;

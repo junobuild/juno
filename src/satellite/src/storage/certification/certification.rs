@@ -1,8 +1,8 @@
-use crate::storage::constants::{
+use crate::storage::certification::constants::{
     EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION_HEADER, IC_CERTIFICATE_HEADER,
     LABEL_HTTP_EXPR,
 };
-use crate::storage::tree_utils::response_headers_expression;
+use crate::storage::certification::tree_utils::response_headers_expression;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::http::HeaderField;
 use crate::types::core::Blob;

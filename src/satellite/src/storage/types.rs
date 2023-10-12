@@ -51,7 +51,7 @@ pub mod state {
 }
 
 pub mod assets {
-    use crate::storage::tree::NestedTree;
+    use crate::storage::certification::tree::NestedTree;
     use crate::types::core::Blob;
     use ic_certified_map::{Hash, RbTree};
     use std::clone::Clone;

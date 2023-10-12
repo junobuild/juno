@@ -1,5 +1,5 @@
 use crate::memory::STATE;
-use crate::storage::cert::update_certified_data;
+use crate::storage::certification::certification::update_certified_data;
 use crate::storage::types::assets::AssetHashes;
 use crate::storage::types::state::{Batches, Chunks, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Batch, Chunk};

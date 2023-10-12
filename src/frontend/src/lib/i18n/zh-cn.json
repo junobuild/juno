@@ -52,6 +52,7 @@
 		"top_up_info": "你当前的 mission control 余额是 {0} ICP,以及用于充值网络费用是 {1} ICP.",
 		"top_up_mission_control_done": "充值你的 mission control center 完成.",
 		"top_up_satellite_done": "充值你的 satellite 完成.",
+		"top_up_orbiter_done": "Your orbiter has been topped-up.",
 		"daily_consumption": "每日空闲的消耗",
 		"review_upgrade": "升级校验",
 		"confirm_upgrade": "你的 {0} 代码将会通过 wasm <strong>{1}</strong> 升级. 确认要执行升级吗?",

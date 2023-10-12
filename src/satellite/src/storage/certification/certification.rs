@@ -3,7 +3,7 @@ use crate::storage::certification::constants::{
     LABEL_HTTP_EXPR,
 };
 use crate::storage::certification::tree_utils::response_headers_expression;
-use crate::storage::types::assets::AssetHashes;
+use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::types::http::HeaderField;
 use crate::types::core::Blob;
 use base64::encode;
@@ -11,13 +11,13 @@ use ic_cdk::api::{data_certificate, set_certified_data};
 use serde::Serialize;
 use serde_cbor::ser::Serializer;
 
-pub fn update_certified_data(asset_hashes: &AssetHashes) {
+pub fn update_certified_data(asset_hashes: &CertifiedAssetHashes) {
     let prefixed_root_hash = &asset_hashes.root_hash();
     set_certified_data(&prefixed_root_hash[..]);
 }
 
 pub fn build_asset_certificate_header(
-    asset_hashes: &AssetHashes,
+    asset_hashes: &CertifiedAssetHashes,
     url: String,
     certificate_version: &Option<u16>,
 ) -> Result<HeaderField, &'static str> {
@@ -51,7 +51,7 @@ pub fn build_certified_expression(
 
 fn build_asset_certificate_header_v1_impl(
     certificate: &Blob,
-    asset_hashes: &AssetHashes,
+    asset_hashes: &CertifiedAssetHashes,
     url: &str,
 ) -> Result<HeaderField, &'static str> {
     let tree = asset_hashes.witness_v1(url);
@@ -75,7 +75,7 @@ fn build_asset_certificate_header_v1_impl(
 
 fn build_asset_certificate_header_v2_impl(
     certificate: &Blob,
-    asset_hashes: &AssetHashes,
+    asset_hashes: &CertifiedAssetHashes,
     url: &str,
 ) -> Result<HeaderField, &'static str> {
     assert!(url.starts_with('/'));

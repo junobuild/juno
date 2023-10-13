@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { PermissionText } from '$lib/constants/rules.constants';
+	import type { MemoryText, PermissionText } from '$lib/constants/rules.constants';
 	import { setRule } from '$lib/api/satellites.api';
 	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import { busy } from '$lib/stores/busy.store';
-	import { permissionToText } from '$lib/utils/rules.utils';
-	import { PermissionManaged } from '$lib/constants/rules.constants';
+	import { memoryToText, permissionToText } from '$lib/utils/rules.utils';
+	import { MemoryHeap, MemoryStable, PermissionManaged } from '$lib/constants/rules.constants';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { fromNullable } from '$lib/utils/did.utils';
@@ -39,6 +39,10 @@
 	const initWrite = (text: PermissionText) => (write = text);
 	$: initWrite(permissionToText(rule?.write ?? PermissionManaged));
 
+	let memory: MemoryText;
+	const initMemory = (text: MemoryText) => (memory = text);
+	$: initMemory(memoryToText(rule?.memory ?? (typeStorage ? MemoryStable : MemoryHeap)));
+
 	let maxSize: number | undefined;
 	const initMaxLength = (size: [] | [bigint]) => {
 		const tmp = fromNullable(size);
@@ -60,6 +64,7 @@
 				collection,
 				read,
 				write,
+				memory,
 				type,
 				rule,
 				maxSize
@@ -134,6 +139,16 @@
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
 					<option value="Controllers">{$i18n.collections.controllers}</option>
+				</select>
+			</Value>
+		</div>
+
+		<div>
+			<Value ref="memory">
+				<svelte:fragment slot="label">{$i18n.collections.memory}</svelte:fragment>
+				<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
+					<option value="Heap">{$i18n.collections.heap}</option>
+					<option value="Stable">{$i18n.collections.stable}</option>
 				</select>
 			</Value>
 		</div>

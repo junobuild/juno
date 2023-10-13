@@ -325,7 +325,10 @@
 		"updated": "Collection {0} updated.",
 		"deleted": "Collection {0} deleted.",
 		"delete_question": "Delete collection?",
-		"none": "No collection is defined. You can start a new one in the tab"
+		"none": "No collection is defined. You can start a new one in the tab",
+		"memory": "Memory",
+		"heap": "Heap",
+		"stable": "Stable"
 	},
 	"sort": {
 		"title": "Sort results",

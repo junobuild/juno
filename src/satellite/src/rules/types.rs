@@ -1,21 +1,28 @@
 pub mod rules {
     use crate::types::core::CollectionKey;
     use candid::CandidType;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
     pub type Rules = HashMap<CollectionKey, Rule>;
 
-    #[derive(CandidType, Deserialize, Clone, Debug)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
     pub struct Rule {
         pub read: Permission,
         pub write: Permission,
+        pub memory: Memory,
         pub max_size: Option<u128>,
         pub created_at: u64,
         pub updated_at: u64,
     }
 
-    #[derive(CandidType, Deserialize, Clone, Debug)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+    pub enum Memory {
+        Heap,
+        Stable,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
     pub enum Permission {
         // No rules applied
         Public,
@@ -29,7 +36,7 @@ pub mod rules {
 }
 
 pub mod interface {
-    use crate::rules::types::rules::Permission;
+    use crate::rules::types::rules::{Memory, Permission};
     use candid::CandidType;
     use serde::Deserialize;
 
@@ -38,6 +45,7 @@ pub mod interface {
         pub updated_at: Option<u64>,
         pub read: Permission,
         pub write: Permission,
+        pub memory: Option<Memory>,
         pub max_size: Option<u128>,
     }
 

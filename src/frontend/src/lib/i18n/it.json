@@ -325,7 +325,10 @@
 		"updated": "La collezione {0} è stata aggiornata.",
 		"deleted": "La collezione {0} è stata eliminata.",
 		"delete_question": "Vuoi eliminare la collezione?",
-		"none": "No collection is defined. You can start a new one in the tab"
+		"none": "No collection is defined. You can start a new one in the tab",
+		"memory": "Memory",
+		"heap": "Heap",
+		"stable": "Stable"
 	},
 	"sort": {
 		"title": "Ordina i risultati",

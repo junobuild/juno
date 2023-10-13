@@ -325,7 +325,10 @@
 		"updated": "文档集 {0} 已更改.",
 		"deleted": "文档集 {0} 已删除.",
 		"delete_question": "删除 文档集?",
-		"none": "没有定义 文档集， 你可以在标签处创建一个新的"
+		"none": "没有定义 文档集， 你可以在标签处创建一个新的",
+		"memory": "Memory",
+		"heap": "Heap",
+		"stable": "Stable"
 	},
 	"sort": {
 		"title": "排序结果",

@@ -1,12 +1,10 @@
+use crate::storage::types::assets::AssetHashes;
+use crate::storage::types::http::HeaderField;
 use base64::encode;
 use ic_cdk::api::{data_certificate, set_certified_data};
 use ic_certified_map::{labeled, labeled_hash, AsHashTree};
 use serde::Serialize;
 use serde_cbor::ser::Serializer;
-
-use crate::storage::types::assets::AssetHashes;
-use crate::storage::types::http::HeaderField;
-use crate::types::core::Blob;
 
 const LABEL_ASSETS: &[u8] = b"http_assets";
 
@@ -28,7 +26,7 @@ pub fn build_asset_certificate_header(
 }
 
 fn build_asset_certificate_header_impl(
-    certificate: &Blob,
+    certificate: &Vec<u8>,
     asset_hashes: &AssetHashes,
     url: &String,
 ) -> Result<HeaderField, &'static str> {

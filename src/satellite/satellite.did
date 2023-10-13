@@ -91,8 +91,10 @@ type ListResults_1 = record {
   items : vec record { text; Doc };
   items_length : nat64;
 };
+type Memory = variant { Heap; Stable };
 type Permission = variant { Controllers; Private; Public; Managed };
 type Rule = record {
+  memory : Memory;
   updated_at : nat64;
   max_size : opt nat;
   read : Permission;
@@ -115,6 +117,7 @@ type SetDoc = record {
   description : opt text;
 };
 type SetRule = record {
+  memory : opt Memory;
   updated_at : opt nat64;
   max_size : opt nat;
   read : Permission;
@@ -129,6 +132,7 @@ type StreamingCallbackHttpResponse = record {
   body : vec nat8;
 };
 type StreamingCallbackToken = record {
+  memory : Memory;
   token : opt text;
   sha256 : opt vec nat8;
   headers : vec record { text; text };

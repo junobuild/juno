@@ -1,4 +1,5 @@
 use crate::storage::types::http_request::MapUrl;
+use crate::storage::types::state::FullPath;
 use std::path::Path;
 use url::{ParseError, Url};
 
@@ -38,7 +39,7 @@ pub fn map_alternative_paths(path: &String) -> Vec<String> {
     }
 }
 
-pub fn alternative_paths(full_path: &String) -> Option<Vec<String>> {
+pub fn alternative_paths(full_path: &FullPath) -> Option<Vec<String>> {
     // e.g. search to split index.js or index.html or .well-known
     let extensions: Vec<&str> = full_path.split('.').collect();
 

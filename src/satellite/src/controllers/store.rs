@@ -1,4 +1,4 @@
-use crate::STATE;
+use crate::memory::STATE;
 use shared::controllers::{
     delete_controllers as delete_controllers_impl, filter_admin_controllers,
     set_controllers as set_controllers_impl,

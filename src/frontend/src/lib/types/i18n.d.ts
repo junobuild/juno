@@ -346,6 +346,9 @@ interface I18nCollections {
 	deleted: string;
 	delete_question: string;
 	none: string;
+	memory: string;
+	heap: string;
+	stable: string;
 }
 
 interface I18nSort {

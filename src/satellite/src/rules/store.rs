@@ -1,10 +1,10 @@
 use crate::db::store::{delete_collection, init_collection};
+use crate::memory::STATE;
 use crate::rules::constants::SYS_COLLECTION_PREFIX;
 use crate::rules::types::interface::{DelRule, SetRule};
-use crate::rules::types::rules::{Rule, Rules};
+use crate::rules::types::rules::{Memory, Rule, Rules};
 use crate::storage::store::assert_assets_collection_empty;
 use crate::types::core::CollectionKey;
-use crate::STATE;
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
 
@@ -30,33 +30,47 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
     STATE.with(|state| {
         set_rule_impl(
             collection.clone(),
-            rule,
+            rule.clone(),
+            Memory::Heap,
             &mut state.borrow_mut().heap.db.rules,
         )
     })?;
 
     // If the collection does not exist yet we initialize it
-    init_collection(collection);
+    init_collection(&collection, &rule.memory.unwrap_or(Memory::Heap));
 
     Ok(())
 }
 
 pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), String> {
-    STATE.with(|state| set_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
+    STATE.with(|state| {
+        set_rule_impl(
+            collection,
+            rule,
+            Memory::Stable,
+            &mut state.borrow_mut().heap.storage.rules,
+        )
+    })
 }
 
 pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
     // We delete the empty collection first.
-    delete_collection(collection.clone())?;
+    delete_collection(&collection)?;
 
-    STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().heap.db.rules))?;
+    STATE.with(|state| {
+        del_rule_impl(
+            collection.clone(),
+            rule,
+            &mut state.borrow_mut().heap.db.rules,
+        )
+    })?;
 
     Ok(())
 }
 
 pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
     // Only unused rule can be removed
-    assert_assets_collection_empty(collection.clone())?;
+    assert_assets_collection_empty(&collection)?;
 
     STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
 }
@@ -64,11 +78,19 @@ pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), 
 fn set_rule_impl(
     collection: CollectionKey,
     user_rule: SetRule,
+    default_memory: Memory,
     rules: &mut Rules,
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
     match assert_write_permission(&collection, current_rule, &user_rule.updated_at) {
+        Ok(_) => (),
+        Err(e) => {
+            return Err(e);
+        }
+    }
+
+    match assert_memory(current_rule, &user_rule.memory) {
         Ok(_) => (),
         Err(e) => {
             return Err(e);
@@ -89,6 +111,7 @@ fn set_rule_impl(
         updated_at,
         read: user_rule.read,
         write: user_rule.write,
+        memory: user_rule.memory.unwrap_or(default_memory),
         max_size: user_rule.max_size,
     };
 
@@ -112,6 +135,30 @@ fn del_rule_impl(
     }
 
     rules.remove(&collection);
+
+    Ok(())
+}
+
+fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result<(), String> {
+    // Validate memory type does not change
+    match current_rule {
+        None => (),
+        Some(current_rule) => match memory {
+            None => {
+                return Err("The type of memory to use must be provided.".to_string());
+            }
+            Some(Memory::Heap) => {
+                if !matches!(&current_rule.memory, Memory::Heap) {
+                    return Err("The type of memory cannot be modified to heap.".to_string());
+                }
+            }
+            Some(Memory::Stable) => {
+                if !matches!(&current_rule.memory, Memory::Stable) {
+                    return Err("The type of memory cannot be modified to stable.".to_string());
+                }
+            }
+        },
+    }
 
     Ok(())
 }

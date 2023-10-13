@@ -321,6 +321,7 @@
 		"managed": "可管理的",
 		"controllers": "控制者",
 		"empty": "你的文档集 <strong>{0}</strong> is empty.",
+		"empty_private": "Your collection <strong>{0}</strong> read permission is set to private.",
 		"added": "文档集 {0} 已曾加.",
 		"updated": "文档集 {0} 已更改.",
 		"deleted": "文档集 {0} 已删除.",

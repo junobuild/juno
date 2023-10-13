@@ -1,6 +1,6 @@
 pub mod state {
     use crate::rules::types::rules::Rules;
-    use crate::storage::types::assets::AssetHashes;
+    use crate::storage::certification::types::certified::CertifiedAssetHashes;
     use crate::storage::types::config::StorageConfig;
     use crate::storage::types::domain::CustomDomains;
     use crate::storage::types::store::{Asset, Batch, Chunk, EncodingType};
@@ -46,17 +46,7 @@ pub mod state {
     pub struct StorageRuntimeState {
         pub chunks: Chunks,
         pub batches: Batches,
-        pub asset_hashes: AssetHashes,
-    }
-}
-
-pub mod assets {
-    use ic_certified_map::{Hash, RbTree};
-    use std::clone::Clone;
-
-    #[derive(Default, Clone)]
-    pub struct AssetHashes {
-        pub tree: RbTree<String, Hash>,
+        pub asset_hashes: CertifiedAssetHashes,
     }
 }
 
@@ -201,6 +191,7 @@ pub mod http {
         pub method: String,
         pub headers: Vec<HeaderField>,
         pub body: Blob,
+        pub certificate_version: Option<u16>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

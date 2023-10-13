@@ -262,7 +262,7 @@ fn delete_asset_impl(
             }
 
             let deleted = delete_state_asset(collection, &full_path, rule);
-            delete_runtime_certified_asset(&full_path);
+            delete_runtime_certified_asset(&asset);
             Ok(deleted)
         }
     }
@@ -271,15 +271,21 @@ fn delete_asset_impl(
 fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let full_paths: Vec<String> = get_state_assets(collection, &rule)
+    let full_paths: Vec<FullPath> = get_state_assets(collection, &rule)
         .iter()
         .filter(|asset| asset.key.collection == collection.clone())
         .map(|asset| asset.key.full_path.clone())
         .collect();
 
     for full_path in full_paths {
-        delete_state_asset(&full_path, collection, &rule);
-        delete_runtime_certified_asset(&full_path);
+        let deleted_asset = delete_state_asset(&full_path, collection, &rule);
+
+        match deleted_asset {
+            None => {}
+            Some(deleted_asset) => {
+                delete_runtime_certified_asset(&deleted_asset);
+            }
+        }
     }
 
     Ok(())

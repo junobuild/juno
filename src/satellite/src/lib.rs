@@ -22,7 +22,7 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::storage::http::{
+use crate::storage::http::http::{
     build_encodings, build_headers, create_token, error_response, streaming_strategy,
 };
 use crate::storage::store::{
@@ -303,6 +303,7 @@ fn http_request(
         url,
         headers: req_headers,
         body: _,
+        certificate_version,
     }: HttpRequest,
 ) -> HttpResponse {
     if method != "GET" {
@@ -321,8 +322,13 @@ fn http_request(
 
                 for encoding_type in encodings.iter() {
                     if let Some(encoding) = asset.encodings.get(encoding_type) {
-                        let headers =
-                            build_headers(&requested_url, &asset, encoding, encoding_type);
+                        let headers = build_headers(
+                            &requested_url,
+                            &asset,
+                            encoding,
+                            encoding_type,
+                            &certificate_version,
+                        );
 
                         let Asset {
                             key,

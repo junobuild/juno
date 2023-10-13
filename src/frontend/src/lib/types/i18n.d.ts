@@ -349,6 +349,7 @@ interface I18nCollections {
 	memory: string;
 	heap: string;
 	stable: string;
+	immutable: string;
 }
 
 interface I18nSort {

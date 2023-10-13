@@ -328,7 +328,8 @@
 		"none": "No collection is defined. You can start a new one in the tab",
 		"memory": "Memory",
 		"heap": "Heap",
-		"stable": "Stable"
+		"stable": "Stable",
+		"immutable": "Make permissions immutable"
 	},
 	"sort": {
 		"title": "Ordina i risultati",

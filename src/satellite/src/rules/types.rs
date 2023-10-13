@@ -2,6 +2,7 @@ pub mod rules {
     use crate::types::core::CollectionKey;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
+    use shared::serializers::deserialize_default_as_true;
     use std::collections::HashMap;
 
     pub type Rules = HashMap<CollectionKey, Rule>;
@@ -10,6 +11,7 @@ pub mod rules {
     pub struct Rule {
         pub read: Permission,
         pub write: Permission,
+        #[serde(default = "deserialize_default_as_true")]
         pub mutable_permissions: bool,
         pub memory: Memory,
         pub max_size: Option<u128>,

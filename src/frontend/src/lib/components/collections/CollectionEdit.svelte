@@ -43,6 +43,14 @@
 	const initMemory = (text: MemoryText) => (memory = text);
 	$: initMemory(memoryToText(rule?.memory ?? (typeStorage ? MemoryStable : MemoryHeap)));
 
+	let currentImmutable: boolean;
+	let immutable: boolean;
+	const initMutable = (initialRule: Rule | undefined) => {
+		currentImmutable = !(initialRule?.mutable_permissions ?? true);
+		immutable = currentImmutable;
+	};
+	$: initMutable($store.rule?.[1] ?? undefined);
+
 	let maxSize: number | undefined;
 	const initMaxLength = (size: [] | [bigint]) => {
 		const tmp = fromNullable(size);
@@ -67,10 +75,9 @@
 				memory,
 				type,
 				rule,
-				maxSize
+				maxSize,
+				mutablePermissions: !immutable
 			});
-
-			await reload();
 
 			toasts.success(
 				i18nFormat(isNullish(rule) ? $i18n.collections.added : $i18n.collections.updated, [
@@ -80,6 +87,8 @@
 					}
 				])
 			);
+
+			await reload();
 
 			dispatch('junoCollectionSuccess');
 		} catch (err: unknown) {
@@ -115,6 +124,7 @@
 					placeholder={$i18n.collections.key_placeholder}
 					name="collection"
 					bind:value={collection}
+					disabled={mode === 'edit'}
 				/>
 			</Value>
 		</div>
@@ -122,7 +132,7 @@
 		<div>
 			<Value ref="read">
 				<svelte:fragment slot="label">{$i18n.collections.read_permission}</svelte:fragment>
-				<select id="read" name="read" bind:value={read}>
+				<select id="read" name="read" bind:value={read} disabled={currentImmutable}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
@@ -134,7 +144,7 @@
 		<div>
 			<Value ref="write">
 				<svelte:fragment slot="label">{$i18n.collections.write_permission}</svelte:fragment>
-				<select id="write" name="write" bind:value={write}>
+				<select id="write" name="write" bind:value={write} disabled={currentImmutable}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
 					<option value="Managed">{$i18n.collections.managed}</option>
@@ -166,6 +176,20 @@
 						on:blur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
 					/>
 				</Value>
+			</div>
+		{/if}
+
+		{#if !currentImmutable}
+			<div class="checkbox">
+				<label>
+					<input
+						type="checkbox"
+						checked={immutable}
+						disabled={currentImmutable}
+						on:change={() => (immutable = !immutable)}
+					/>
+					<span>{$i18n.collections.immutable}</span>
+				</label>
 			</div>
 		{/if}
 
@@ -201,5 +225,9 @@
 		align-items: center;
 		margin: var(--padding-2x) 0 0;
 		gap: var(--padding-2x);
+	}
+
+	.checkbox {
+		margin: var(--padding-0_5x) 0 0;
 	}
 </style>

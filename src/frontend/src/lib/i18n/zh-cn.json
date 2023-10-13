@@ -328,7 +328,8 @@
 		"none": "没有定义 文档集， 你可以在标签处创建一个新的",
 		"memory": "Memory",
 		"heap": "Heap",
-		"stable": "Stable"
+		"stable": "Stable",
+		"immutable": "Make permissions immutable"
 	},
 	"sort": {
 		"title": "排序结果",

@@ -3,7 +3,9 @@ import type {
 	AssetNoContent,
 	Doc,
 	ListResults as ListAssets,
-	ListResults_1 as ListDocs
+	ListResults_1 as ListDocs,
+	Rule,
+	RulesType
 } from '$declarations/satellite/satellite.did';
 import { PAGINATION } from '$lib/constants/constants';
 import type { ListParams } from '$lib/types/list';
@@ -107,4 +109,25 @@ export const listAssets009 = async ({
 }): Promise<ListAssets> => {
 	const actor = await getSatelliteActor009(satelliteId);
 	return actor.list_assets(toNullable(collection), toListParams(params));
+};
+
+/**
+ * @deprecated TODO: to be remove - backwards compatibility
+ */
+export const listRulesDeprecated = async ({
+	satelliteId,
+	type
+}: {
+	satelliteId: Principal;
+	type: RulesType;
+}): Promise<[string, Rule][]> => {
+	const actor = await getSatelliteActor008(satelliteId);
+	const rules = await actor.list_rules(type);
+	return rules.map(([key, rule]) => [
+		key,
+		{
+			...rule,
+			memory: { Heap: null }
+		} as Rule
+	]);
 };

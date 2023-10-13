@@ -56,6 +56,7 @@ interface I18nCanisters {
 	top_up_info: string;
 	top_up_mission_control_done: string;
 	top_up_satellite_done: string;
+	top_up_orbiter_done: string;
 	daily_consumption: string;
 	review_upgrade: string;
 	confirm_upgrade: string;
@@ -346,6 +347,10 @@ interface I18nCollections {
 	deleted: string;
 	delete_question: string;
 	none: string;
+	memory: string;
+	heap: string;
+	stable: string;
+	immutable: string;
 }
 
 interface I18nSort {

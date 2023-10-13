@@ -1,4 +1,4 @@
-use crate::db::types::state::{Collection, Doc};
+use crate::db::types::state::Doc;
 use crate::list::utils::matcher_regex;
 use crate::rules::types::rules::Permission;
 use crate::rules::utils::assert_rule;
@@ -12,7 +12,7 @@ pub fn filter_values(
     caller: Principal,
     controllers: &Controllers,
     rule: &Permission,
-    col: &Collection,
+    col: &[(Key, Doc)],
     ListParams {
         matcher,
         order: _,

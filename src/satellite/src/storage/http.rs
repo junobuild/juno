@@ -1,3 +1,5 @@
+use crate::memory::STATE;
+use crate::rules::types::rules::Memory;
 use globset::Glob;
 use hex::encode;
 use ic_cdk::id;
@@ -12,16 +14,16 @@ use crate::storage::types::http::{
 };
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, EncodingType};
-use crate::STATE;
 
 pub fn streaming_strategy(
     key: &AssetKey,
     encoding: &AssetEncoding,
     encoding_type: &str,
     headers: &[HeaderField],
+    memory: &Memory,
 ) -> Option<StreamingStrategy> {
     let streaming_token: Option<StreamingCallbackToken> =
-        create_token(key, 0, encoding, encoding_type, headers);
+        create_token(key, 0, encoding, encoding_type, headers, memory);
 
     streaming_token.map(|streaming_token| StreamingStrategy::Callback {
         callback: CallbackFunc::new(id(), "http_request_streaming_callback".to_string()),
@@ -35,6 +37,7 @@ pub fn create_token(
     encoding: &AssetEncoding,
     encoding_type: &str,
     headers: &[HeaderField],
+    memory: &Memory,
 ) -> Option<StreamingCallbackToken> {
     if chunk_index + 1 >= encoding.content_chunks.len() {
         return None;
@@ -47,6 +50,7 @@ pub fn create_token(
         index: chunk_index + 1,
         sha256: Some(ByteBuf::from(encoding.sha256)),
         encoding_type: encoding_type.to_owned(),
+        memory: memory.clone(),
     })
 }
 

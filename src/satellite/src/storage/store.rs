@@ -1,9 +1,8 @@
 use crate::assert::assert_description_length;
+use crate::controllers::store::get_controllers;
 use crate::list::utils::list_values;
 use crate::msg::{
-    COLLECTION_NOT_EMPTY, COLLECTION_NOT_FOUND, COLLECTION_READ_RULE_MISSING,
-    COLLECTION_WRITE_RULE_MISSING, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH,
-    UPLOAD_NOT_ALLOWED,
+    COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
 };
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
@@ -11,29 +10,42 @@ use ic_cdk::api::time;
 use shared::controllers::is_controller;
 use shared::types::state::Controllers;
 use shared::utils::principal_not_equal;
-use std::borrow::BorrowMut;
 use std::collections::HashMap;
 
-use crate::rules::types::rules::{Permission, Rule};
+use crate::rules::types::rules::{Memory, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, is_known_user, public_rule};
-use crate::storage::cert::update_certified_data;
 use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
 };
 use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::rewrites::rewrite_url;
+use crate::storage::runtime::{
+    clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
+    clear_expired_chunks as clear_expired_runtime_chunks,
+    delete_certified_asset as delete_runtime_certified_asset, get_batch as get_runtime_batch,
+    get_chunk as get_runtime_chunk, init_certified_assets as init_runtime_certified_assets,
+    insert_batch as insert_runtime_batch, insert_chunk as insert_runtime_chunk,
+    update_certified_asset as update_runtime_certified_asset,
+};
+use crate::storage::state::{
+    delete_asset as delete_state_asset, delete_domain as delete_state_domain,
+    get_asset as get_state_asset, get_assets as get_state_assets, get_config as get_state_config,
+    get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
+    get_domains as get_state_domains, get_public_asset as get_state_public_asset,
+    get_rule as get_state_rule, get_rule, insert_asset as insert_state_asset,
+    insert_asset_encoding as insert_state_asset_encoding, insert_config as insert_state_config,
+    insert_domain as insert_state_domain,
+};
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
-use crate::storage::types::state::{Assets, FullPath, StorageHeapState, StorageRuntimeState};
+use crate::storage::types::state::FullPath;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk, EncodingType};
 use crate::storage::url::{map_alternative_paths, map_url};
 use crate::storage::utils::{filter_collection_values, filter_values};
 use crate::types::core::{Blob, CollectionKey};
 use crate::types::list::{ListParams, ListResults};
-use crate::types::state::{RuntimeState, State};
-use crate::STATE;
 
 ///
 /// Getter, list and delete
@@ -58,7 +70,7 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
 
     for alternative_path in alternative_paths {
-        let asset: Option<Asset> = get_public_asset(alternative_path, token.clone());
+        let asset: Option<(Asset, Memory)> = get_public_asset(alternative_path, token.clone());
 
         // We return the first match
         match asset {
@@ -70,7 +82,7 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     }
 
     // We return the asset that matches the effective path
-    let asset: Option<Asset> = get_public_asset(path.clone(), token.clone());
+    let asset: Option<(Asset, Memory)> = get_public_asset(path.clone(), token.clone());
 
     match asset {
         None => (),
@@ -106,67 +118,49 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     })
 }
 
-pub fn get_public_asset(full_path: String, token: Option<String>) -> Option<Asset> {
-    STATE.with(|state| get_public_asset_impl(full_path, token, &state.borrow().heap.storage))
+pub fn get_content_chunks(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+    memory: &Memory,
+) -> Option<Blob> {
+    get_state_content_chunks(encoding, chunk_index, memory)
 }
 
 pub fn delete_asset(
     caller: Principal,
-    collection: String,
-    full_path: String,
+    collection: &CollectionKey,
+    full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
 
-    STATE.with(|state| {
-        secure_delete_asset_impl(
-            caller,
-            &controllers,
-            collection,
-            full_path,
-            &mut state.borrow_mut(),
-        )
-    })
+    secure_delete_asset_impl(caller, &controllers, collection, full_path)
 }
 
-pub fn delete_assets(collection: String) {
-    STATE.with(|state| delete_assets_impl(collection, &mut state.borrow_mut()))
+pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
+    delete_assets_impl(collection)
 }
 
 pub fn list_assets(
     caller: Principal,
-    collection: String,
+    collection: &CollectionKey,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers: Controllers = get_controllers();
 
-    STATE.with(|state| {
-        secure_list_assets_impl(
-            caller,
-            &controllers,
-            collection,
-            &state.borrow().heap.storage,
-            filters,
-        )
-    })
+    secure_list_assets_impl(caller, &controllers, collection, filters)
 }
 
-pub fn assert_assets_collection_empty(collection: String) -> Result<(), String> {
-    STATE
-        .with(|state| assert_assets_collection_empty_impl(collection, &state.borrow().heap.storage))
-}
-
-fn get_public_asset_impl(
-    full_path: String,
-    token: Option<String>,
-    state: &StorageHeapState,
-) -> Option<Asset> {
-    let asset = state.assets.get(&full_path);
+pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
+    let (asset, memory) = get_state_public_asset(&full_path);
 
     match asset {
         None => None,
         Some(asset) => match &asset.key.token {
-            None => Some(asset.clone()),
-            Some(asset_token) => get_token_protected_asset(asset, asset_token, token),
+            None => Some((asset.clone(), memory)),
+            Some(asset_token) => {
+                let protected_asset = get_token_protected_asset(&asset, asset_token, token);
+                protected_asset.map(|protected_asset| (protected_asset, memory))
+            }
         },
     }
 }
@@ -188,63 +182,53 @@ fn get_token_protected_asset(
     }
 }
 
-fn assert_assets_collection_empty_impl(
-    collection: String,
-    state: &StorageHeapState,
-) -> Result<(), String> {
-    let col = state.rules.get(&collection);
+pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), String> {
+    let rule = get_state_rule(collection)?;
 
-    match col {
-        None => Err([COLLECTION_NOT_FOUND, &collection.clone()].join("")),
-        Some(_) => {
-            let values = filter_collection_values(collection.clone(), &state.assets);
+    let assets = get_state_assets(collection, &rule);
 
-            if !values.is_empty() {
-                return Err([COLLECTION_NOT_EMPTY, &collection].join(""));
-            }
+    let values = filter_collection_values(collection.clone(), &assets);
 
-            Ok(())
-        }
+    if !values.is_empty() {
+        return Err([COLLECTION_NOT_EMPTY, collection].join(""));
     }
+
+    Ok(())
 }
 
 fn secure_list_assets_impl(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
-    state: &StorageHeapState,
+    collection: &CollectionKey,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    let rules = state.rules.get(&collection);
+    let rule = get_state_rule(collection)?;
 
-    match rules {
-        None => Err([COLLECTION_READ_RULE_MISSING, &collection].join("")),
-        Some(rule) => Ok(list_assets_impl(
-            caller,
-            controllers,
-            collection,
-            &rule.read,
-            state,
-            filters,
-        )),
-    }
+    Ok(list_assets_impl(
+        caller,
+        controllers,
+        collection,
+        &rule,
+        filters,
+    ))
 }
 
 fn list_assets_impl(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
-    rule: &Permission,
-    state: &StorageHeapState,
+    collection: &CollectionKey,
+    rule: &Rule,
     filters: &ListParams,
 ) -> ListResults<AssetNoContent> {
+    let assets = get_state_assets(collection, rule);
+
     let matches: Vec<(FullPath, AssetNoContent)> = filter_values(
         caller,
         controllers,
-        rule,
-        collection,
+        &rule.read,
+        collection.clone(),
         filters,
-        &state.assets,
+        &assets,
     );
 
     list_values(matches, filters)
@@ -253,63 +237,52 @@ fn list_assets_impl(
 fn secure_delete_asset_impl(
     caller: Principal,
     controllers: &Controllers,
-    collection: String,
-    full_path: String,
-    state: &mut State,
+    collection: &CollectionKey,
+    full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
-    let rules = state.heap.storage.rules.get(&collection);
+    let rule = get_state_rule(collection)?;
 
-    match rules {
-        None => Err([COLLECTION_WRITE_RULE_MISSING, &collection].join("")),
-        Some(rule) => delete_asset_impl(
-            caller,
-            controllers,
-            full_path,
-            &rule.write,
-            &mut state.heap.storage.assets,
-            &mut state.runtime,
-        ),
-    }
+    delete_asset_impl(caller, controllers, full_path, collection, &rule)
 }
 
 fn delete_asset_impl(
     caller: Principal,
     controllers: &Controllers,
-    full_path: String,
-    rule: &Permission,
-    assets: &mut Assets,
-    runtime: &mut RuntimeState,
+    full_path: FullPath,
+    collection: &CollectionKey,
+    rule: &Rule,
 ) -> Result<Option<Asset>, String> {
-    let asset = assets.get_mut(&full_path);
+    let asset = get_state_asset(collection, &full_path, rule);
 
     match asset {
         None => Err(ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
-            if !assert_rule(rule, asset.key.owner, caller, controllers) {
+            if !assert_rule(&rule.write, asset.key.owner, caller, controllers) {
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
-            let deleted = assets.remove(&*full_path);
-            delete_certified_asset(runtime, &full_path);
+            let deleted = delete_state_asset(collection, &full_path, rule);
+            delete_runtime_certified_asset(&full_path);
             Ok(deleted)
         }
     }
 }
 
-fn delete_assets_impl(collection: String, state: &mut State) {
-    let full_paths: Vec<String> = state
-        .heap
-        .storage
-        .assets
-        .values()
-        .filter(|asset| asset.key.collection == collection)
+fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
+    let rule = get_state_rule(collection)?;
+
+    let full_paths: Vec<String> = get_state_assets(collection, &rule)
+        .iter()
+        .filter(|asset| asset.key.collection == collection.clone())
         .map(|asset| asset.key.full_path.clone())
         .collect();
 
     for full_path in full_paths {
-        state.heap.storage.assets.remove(&full_path);
-        delete_certified_asset(&mut state.runtime, &full_path);
+        delete_state_asset(&full_path, collection, &rule);
+        delete_runtime_certified_asset(&full_path);
     }
+
+    Ok(())
 }
 
 ///
@@ -318,61 +291,42 @@ fn delete_assets_impl(collection: String, state: &mut State) {
 
 const BATCH_EXPIRY_NANOS: u64 = 300_000_000_000;
 
-static mut NEXT_BACK_ID: u128 = 0;
+static mut NEXT_BATCH_ID: u128 = 0;
 static mut NEXT_CHUNK_ID: u128 = 0;
 
 pub fn create_batch(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
-    STATE.with(|state| secure_create_batch_impl(caller, init, &mut state.borrow_mut()))
+    let controllers: Controllers = get_controllers();
+    secure_create_batch_impl(caller, &controllers, init)
 }
 
 pub fn create_chunk(caller: Principal, chunk: UploadChunk) -> Result<u128, &'static str> {
-    STATE.with(|state| create_chunk_impl(caller, chunk, &mut state.borrow_mut().runtime.storage))
+    create_chunk_impl(caller, chunk)
 }
 
 pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
-
-    STATE.with(|state| {
-        commit_batch_impl(caller, &controllers, commit_batch, &mut state.borrow_mut())
-    })
+    let controllers: Controllers = get_controllers();
+    commit_batch_impl(caller, &controllers, commit_batch)
 }
 
 fn secure_create_batch_impl(
     caller: Principal,
+    controllers: &Controllers,
     init: InitAssetKey,
-    state: &mut State,
 ) -> Result<u128, String> {
-    let rules = state.heap.storage.rules.get(&init.collection);
+    let rule = get_state_rule(&init.collection)?;
 
-    match rules {
-        None => Err([COLLECTION_WRITE_RULE_MISSING, &init.collection].join("")),
-        Some(rules) => {
-            if !(public_rule(&rules.write)
-                || is_known_user(caller, &state.heap.db.db)
-                || is_controller(caller, &state.heap.controllers))
-            {
-                return Err(UPLOAD_NOT_ALLOWED.to_string());
-            }
-
-            assert_key(
-                caller,
-                &init.full_path,
-                &init.collection,
-                &state.heap.controllers,
-            )?;
-
-            assert_description_length(&init.description)?;
-
-            // Assert supported encoding type
-            get_encoding_type(&init.encoding_type)?;
-
-            Ok(create_batch_impl(
-                caller,
-                init,
-                state.runtime.storage.borrow_mut(),
-            ))
-        }
+    if !(public_rule(&rule.write) || is_known_user(caller) || is_controller(caller, controllers)) {
+        return Err(UPLOAD_NOT_ALLOWED.to_string());
     }
+
+    assert_key(caller, &init.full_path, &init.collection, controllers)?;
+
+    assert_description_length(&init.description)?;
+
+    // Assert supported encoding type
+    get_encoding_type(&init.encoding_type)?;
+
+    Ok(create_batch_impl(caller, init))
 }
 
 fn create_batch_impl(
@@ -385,14 +339,13 @@ fn create_batch_impl(
         full_path,
         description,
     }: InitAssetKey,
-    state: &mut StorageRuntimeState,
 ) -> u128 {
     let now = time();
 
     unsafe {
-        clear_expired_batches(state);
+        clear_expired_batches();
 
-        NEXT_BACK_ID += 1;
+        NEXT_BATCH_ID += 1;
 
         let key: AssetKey = AssetKey {
             full_path,
@@ -403,8 +356,8 @@ fn create_batch_impl(
             description,
         };
 
-        state.batches.insert(
-            NEXT_BACK_ID,
+        insert_runtime_batch(
+            &NEXT_BATCH_ID,
             Batch {
                 key,
                 expires_at: now + BATCH_EXPIRY_NANOS,
@@ -412,7 +365,7 @@ fn create_batch_impl(
             },
         );
 
-        NEXT_BACK_ID
+        NEXT_BATCH_ID
     }
 }
 
@@ -423,9 +376,8 @@ fn create_chunk_impl(
         content,
         order_id,
     }: UploadChunk,
-    state: &mut StorageRuntimeState,
 ) -> Result<u128, &'static str> {
-    let batch = state.batches.get(&batch_id);
+    let batch = get_runtime_batch(&batch_id);
 
     match batch {
         None => Err("Batch not found."),
@@ -436,20 +388,21 @@ fn create_chunk_impl(
 
             let now = time();
 
-            state.batches.insert(
-                batch_id,
+            // Update batch to extend expires_at
+            insert_runtime_batch(
+                &batch_id,
                 Batch {
                     key: b.key.clone(),
                     expires_at: now + BATCH_EXPIRY_NANOS,
-                    encoding_type: b.encoding_type.clone(),
+                    encoding_type: b.encoding_type,
                 },
             );
 
             unsafe {
                 NEXT_CHUNK_ID += 1;
 
-                state.chunks.insert(
-                    NEXT_CHUNK_ID,
+                insert_runtime_chunk(
+                    &NEXT_CHUNK_ID,
                     Chunk {
                         batch_id,
                         content,
@@ -467,19 +420,17 @@ fn commit_batch_impl(
     caller: Principal,
     controllers: &Controllers,
     commit_batch: CommitBatch,
-    state: &mut State,
 ) -> Result<(), String> {
-    let batches = state.runtime.storage.batches.clone();
-    let batch = batches.get(&commit_batch.batch_id);
+    let batch = get_runtime_batch(&commit_batch.batch_id);
 
     match batch {
         None => Err(ERROR_CANNOT_COMMIT_BATCH.to_string()),
         Some(b) => {
-            let asset = secure_commit_chunks(caller, controllers, commit_batch, b, state);
+            let asset = secure_commit_chunks(caller, controllers, commit_batch, &b);
             match asset {
                 Err(err) => Err(err),
                 Ok(asset) => {
-                    update_certified_asset(state, &asset);
+                    update_runtime_certified_asset(&asset);
                     Ok(())
                 }
             }
@@ -522,7 +473,6 @@ fn secure_commit_chunks(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
-    state: &mut State,
 ) -> Result<Asset, String> {
     // The one that started the batch should be the one that commits it
     if principal_not_equal(caller, batch.key.owner) {
@@ -536,31 +486,20 @@ fn secure_commit_chunks(
         controllers,
     )?;
 
-    let rules = state.heap.storage.rules.get(&batch.key.collection);
+    let rule = get_state_rule(&batch.key.collection)?;
 
-    match rules {
-        None => Err([COLLECTION_WRITE_RULE_MISSING, &batch.key.collection].join("")),
-        Some(rules) => {
-            let current = state.heap.storage.assets.get(&batch.key.full_path);
+    let current = get_state_asset(&batch.key.collection, &batch.key.full_path, &rule);
 
-            match current {
-                None => {
-                    if !assert_create_rule(&rules.write, caller, controllers) {
-                        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
-                    }
-
-                    commit_chunks(commit_batch, batch, rules.max_size, state)
-                }
-                Some(current) => secure_commit_chunks_update(
-                    caller,
-                    controllers,
-                    commit_batch,
-                    batch,
-                    rules.clone(),
-                    current.clone(),
-                    state,
-                ),
+    match current {
+        None => {
+            if !assert_create_rule(&rule.write, caller, controllers) {
+                return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
             }
+
+            commit_chunks(commit_batch, batch, &rule)
+        }
+        Some(current) => {
+            secure_commit_chunks_update(caller, controllers, commit_batch, batch, rule, current)
         }
     }
 }
@@ -570,22 +509,19 @@ fn secure_commit_chunks_update(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
-    rules: Rule,
+    rule: Rule,
     current: Asset,
-    state: &mut State,
 ) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
     if batch.key.collection != current.key.collection {
         return Err("Provided collection does not match existing collection.".to_string());
     }
 
-    let rule = &rules.write;
-
-    if !assert_rule(rule, current.key.owner, caller, controllers) {
+    if !assert_rule(&rule.write, current.key.owner, caller, controllers) {
         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
-    commit_chunks(commit_batch, batch, rules.max_size, state)
+    commit_chunks(commit_batch, batch, &rule)
 }
 
 fn commit_chunks(
@@ -595,21 +531,20 @@ fn commit_chunks(
         headers,
     }: CommitBatch,
     batch: &Batch,
-    max_size: Option<u128>,
-    state: &mut State,
+    rule: &Rule,
 ) -> Result<Asset, String> {
     let now = time();
 
     if now > batch.expires_at {
-        clear_expired_batches(&mut state.runtime.storage);
+        clear_expired_batches();
         return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
     }
 
     // Collect all chunks
-    let mut chunks: Vec<&Chunk> = vec![];
+    let mut chunks: Vec<Chunk> = vec![];
 
     for chunk_id in chunk_ids.iter() {
-        let chunk = state.runtime.storage.chunks.get(chunk_id);
+        let chunk = get_runtime_chunk(chunk_id);
 
         match chunk {
             None => {
@@ -651,7 +586,11 @@ fn commit_chunks(
         updated_at: now,
     };
 
-    if let Some(existing_asset) = state.heap.storage.assets.get(&batch.clone().key.full_path) {
+    if let Some(existing_asset) = get_state_asset(
+        &batch.clone().key.collection,
+        &batch.clone().key.full_path,
+        rule,
+    ) {
         asset.encodings = existing_asset.encodings.clone();
         asset.created_at = existing_asset.created_at;
     }
@@ -660,25 +599,32 @@ fn commit_chunks(
 
     let encoding = AssetEncoding::from(&content_chunks);
 
-    match max_size {
+    match rule.max_size {
         None => (),
         Some(max_size) => {
             if encoding.total_length > max_size {
-                clear_batch(batch_id, chunk_ids, &mut state.runtime.storage);
+                clear_runtime_batch(&batch_id, &chunk_ids);
                 return Err("Asset exceed max allowed size.".to_string());
             }
         }
     }
 
-    asset.encodings.insert(encoding_type, encoding);
+    insert_state_asset_encoding(
+        &batch.clone().key.full_path,
+        &encoding_type,
+        &encoding,
+        &mut asset,
+        rule,
+    );
 
-    state
-        .heap
-        .storage
-        .assets
-        .insert(batch.clone().key.full_path, asset.clone());
+    insert_state_asset(
+        &batch.clone().key.collection,
+        &batch.clone().key.full_path,
+        &asset,
+        rule,
+    );
 
-    clear_batch(batch_id, chunk_ids, &mut state.runtime.storage);
+    clear_runtime_batch(&batch_id, &chunk_ids);
 
     Ok(asset)
 }
@@ -699,36 +645,12 @@ fn get_encoding_type(encoding_type: &Option<EncodingType>) -> Result<EncodingTyp
     Ok(provided_type)
 }
 
-fn clear_expired_batches(state: &mut StorageRuntimeState) {
-    let now = time();
-
+fn clear_expired_batches() {
     // Remove expired batches
-
-    let batches = state.batches.clone();
-
-    for (batch_id, batch) in batches.iter() {
-        if now > batch.expires_at {
-            state.batches.remove(batch_id);
-        }
-    }
+    clear_expired_runtime_batches();
 
     // Remove chunk without existing batches (those we just deleted above)
-
-    let chunks = state.chunks.clone();
-
-    for (chunk_id, chunk) in chunks.iter() {
-        if state.batches.get(&chunk.batch_id).is_none() {
-            state.chunks.remove(chunk_id);
-        }
-    }
-}
-
-fn clear_batch(batch_id: u128, chunk_ids: Vec<u128>, state: &mut StorageRuntimeState) {
-    for chunk_id in chunk_ids.iter() {
-        state.chunks.remove(chunk_id);
-    }
-
-    state.batches.remove(&batch_id);
+    clear_expired_runtime_chunks();
 }
 
 ///
@@ -736,61 +658,64 @@ fn clear_batch(batch_id: u128, chunk_ids: Vec<u128>, state: &mut StorageRuntimeS
 ///
 
 pub fn set_config(config: &StorageConfig) {
-    STATE.with(|state| set_config_impl(config, &mut state.borrow_mut().heap.storage))
-}
-
-fn set_config_impl(config: &StorageConfig, state: &mut StorageHeapState) {
-    state.config = config.clone();
+    insert_state_config(config);
 }
 
 pub fn get_config() -> StorageConfig {
-    STATE.with(|state| state.borrow().heap.storage.config.clone())
+    get_state_config()
 }
 
 ///
 /// Domain
 ///
 
-pub fn set_domain(domain_name: &DomainName, bn_id: &Option<String>) {
-    STATE.with(|state| set_domain_impl(domain_name, bn_id, &mut state.borrow_mut()))
+pub fn set_domain(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
+    set_domain_impl(domain_name, bn_id)
 }
 
-pub fn delete_domain(domain_name: &DomainName) {
-    STATE.with(|state| delete_domain_impl(domain_name, &mut state.borrow_mut()))
+pub fn delete_domain(domain_name: &DomainName) -> Result<(), String> {
+    delete_domain_impl(domain_name)
 }
 
-fn delete_domain_impl(domain_name: &DomainName, state: &mut State) {
-    state.heap.storage.custom_domains.remove(domain_name);
-
-    update_custom_domains_asset(state);
+pub fn get_custom_domains() -> CustomDomains {
+    get_state_domains()
 }
 
-fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut State) {
-    set_stable_domain_impl(domain_name, bn_id, state);
+fn delete_domain_impl(domain_name: &DomainName) -> Result<(), String> {
+    delete_state_domain(domain_name);
 
-    update_custom_domains_asset(state);
+    update_custom_domains_asset()
 }
 
-fn update_custom_domains_asset(state: &mut State) {
-    let custom_domains = get_custom_domains_as_content(&state.heap.storage.custom_domains);
+fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
+    set_stable_domain_impl(domain_name, bn_id);
+
+    update_custom_domains_asset()
+}
+
+fn update_custom_domains_asset() -> Result<(), String> {
+    let custom_domains = get_custom_domains_as_content();
 
     let full_path = BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string();
 
-    let existing_asset = state.heap.storage.assets.get(&full_path);
+    let collection = DEFAULT_ASSETS_COLLECTIONS[0].0.to_string();
+
+    // #app collection rule
+    let rule = get_rule(&collection)?;
+
+    let existing_asset = get_state_asset(&collection, &full_path, &rule);
 
     let asset = map_custom_domains_asset(&custom_domains, existing_asset);
 
-    state
-        .heap
-        .storage
-        .assets
-        .insert(full_path.clone(), asset.clone());
+    insert_state_asset(&collection, &full_path, &asset, &rule);
 
-    update_certified_asset(state, &asset);
+    update_runtime_certified_asset(&asset);
+
+    Ok(())
 }
 
-fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, state: &mut State) {
-    let domain = state.heap.storage.custom_domains.get(domain_name);
+fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
+    let domain = get_state_domain(domain_name);
 
     let now = time();
 
@@ -807,39 +732,20 @@ fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>, stat
         updated_at,
     };
 
-    state
-        .heap
-        .storage
-        .custom_domains
-        .insert(domain_name.clone(), custom_domain);
+    insert_state_domain(domain_name, &custom_domain);
 }
 
-fn get_custom_domains_as_content(custom_domains: &CustomDomains) -> String {
+fn get_custom_domains_as_content() -> String {
+    let custom_domains = get_state_domains();
+
     custom_domains
-        .clone()
         .into_keys()
         .collect::<Vec<DomainName>>()
         .join("\n")
 }
 
-pub fn get_custom_domains() -> CustomDomains {
-    STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())
-}
-
 /// Certified assets
 
-fn update_certified_asset(state: &mut State, asset: &Asset) {
-    // 1. Replace or insert the new asset in tree
-    state.runtime.storage.asset_hashes.insert(asset);
-
-    // 2. Update the root hash and the canister certified data
-    update_certified_data(&state.runtime.storage.asset_hashes);
-}
-
-fn delete_certified_asset(runtime: &mut RuntimeState, full_path: &String) {
-    // 1. Remove the asset in tree
-    runtime.storage.asset_hashes.delete(full_path);
-
-    // 2. Update the root hash and the canister certified data
-    update_certified_data(&runtime.storage.asset_hashes);
+pub fn init_certified_assets() {
+    init_runtime_certified_assets();
 }

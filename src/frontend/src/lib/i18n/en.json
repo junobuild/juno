@@ -52,6 +52,7 @@
 		"top_up_info": "Your current mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
 		"top_up_mission_control_done": "Your mission control center has been topped-up.",
 		"top_up_satellite_done": "Your satellite has been topped-up.",
+		"top_up_orbiter_done": "Your orbiter has been topped-up.",
 		"daily_consumption": "Daily idle consumption",
 		"review_upgrade": "Review upgrade",
 		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
@@ -325,7 +326,11 @@
 		"updated": "Collection {0} updated.",
 		"deleted": "Collection {0} deleted.",
 		"delete_question": "Delete collection?",
-		"none": "No collection is defined. You can start a new one in the tab"
+		"none": "No collection is defined. You can start a new one in the tab",
+		"memory": "Memory",
+		"heap": "Heap",
+		"stable": "Stable",
+		"immutable": "Make permissions immutable"
 	},
 	"sort": {
 		"title": "Sort results",

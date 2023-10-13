@@ -1,10 +1,14 @@
-import type { Permission, RulesType } from '$declarations/satellite/satellite.did';
+import type { Memory, Permission, RulesType } from '$declarations/satellite/satellite.did';
 import { listRules } from '$lib/api/satellites.api';
+import { listRulesDeprecated } from '$lib/api/satellites.deprecated.api';
 import {
+	MemoryHeap,
+	MemoryStable,
 	PermissionControllers,
 	PermissionManaged,
 	PermissionPrivate,
 	PermissionPublic,
+	type MemoryText,
 	type PermissionText
 } from '$lib/constants/rules.constants';
 import { toasts } from '$lib/stores/toasts.store';
@@ -41,6 +45,23 @@ export const permissionToText = (permission: Permission): PermissionText => {
 	return 'Controllers';
 };
 
+export const memoryFromText = (text: MemoryText): Memory => {
+	switch (text) {
+		case 'Stable':
+			return MemoryStable;
+		default:
+			return MemoryHeap;
+	}
+};
+
+export const memoryToText = (memory: Memory): MemoryText => {
+	if ('Stable' in memory) {
+		return 'Stable';
+	}
+
+	return 'Heap';
+};
+
 export const reloadContextRules = async ({
 	satelliteId,
 	type,
@@ -54,6 +75,15 @@ export const reloadContextRules = async ({
 		const rules = await listRules({ satelliteId, type });
 		store.set({ satelliteId, rules, rule: undefined });
 	} catch (err: unknown) {
+		// TODO: remove backward compatibility stuffs
+		try {
+			const rules = await listRulesDeprecated({ satelliteId, type });
+			store.set({ satelliteId, rules, rule: undefined });
+			return;
+		} catch (_: unknown) {
+			// Ignore error of the workaround
+		}
+
 		store.set({ satelliteId, rules: undefined, rule: undefined });
 
 		toasts.error({

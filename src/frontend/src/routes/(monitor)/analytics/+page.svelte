@@ -10,7 +10,7 @@
 	import AnalyticsControllers from '$lib/components/analytics/AnalyticsControllers.svelte';
 	import { nonNullish } from '$lib/utils/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import OrbiterConfig from '$lib/components/analytics/OrbiterConfig.svelte';
+	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadOrbiters } from '$lib/services/orbiters.services';

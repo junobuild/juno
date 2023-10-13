@@ -9,11 +9,12 @@ import type {
 	RulesType,
 	SetRule
 } from '$declarations/satellite/satellite.did';
-import type { PermissionText } from '$lib/constants/rules.constants';
+import type { MemoryText, PermissionText } from '$lib/constants/rules.constants';
+import { MemoryHeap } from '$lib/constants/rules.constants';
 import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
 import { toNullable } from '$lib/utils/did.utils';
-import { permissionFromText } from '$lib/utils/rules.utils';
+import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
 import { isNullish, nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
@@ -61,22 +62,28 @@ export const setRule = async ({
 	read,
 	write,
 	type,
+	memory,
 	rule,
-	maxSize
+	maxSize,
+	mutablePermissions
 }: {
 	satelliteId: Principal;
 	collection: string;
 	read: PermissionText;
 	write: PermissionText;
 	type: RulesType;
+	memory: MemoryText;
 	rule: Rule | undefined;
 	maxSize: number | undefined;
+	mutablePermissions: boolean;
 }) => {
 	const updateRule: SetRule = {
 		read: permissionFromText(read),
 		write: permissionFromText(write),
 		updated_at: isNullish(rule) ? [] : [rule.updated_at],
-		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined)
+		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
+		memory: isNullish(rule) ? [memoryFromText(memory)] : [rule.memory ?? MemoryHeap],
+		mutable_permissions: toNullable(mutablePermissions)
 	};
 
 	const actor = await getSatelliteActor(satelliteId);

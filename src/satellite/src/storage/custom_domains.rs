@@ -5,7 +5,7 @@ use ic_cdk::api::time;
 use ic_cdk::id;
 use std::collections::HashMap;
 
-pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<&Asset>) -> Asset {
+pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<Asset>) -> Asset {
     let now = time();
 
     let key = AssetKey {

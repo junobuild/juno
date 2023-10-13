@@ -1,12 +1,12 @@
 use crate::db::store::{delete_collection, init_collection};
+use crate::memory::STATE;
+use crate::rules::assert::{assert_memory, assert_mutable_permissions, assert_write_permission};
 use crate::rules::constants::SYS_COLLECTION_PREFIX;
 use crate::rules::types::interface::{DelRule, SetRule};
-use crate::rules::types::rules::{Rule, Rules};
+use crate::rules::types::rules::{Memory, Rule, Rules};
 use crate::storage::store::assert_assets_collection_empty;
 use crate::types::core::CollectionKey;
-use crate::STATE;
 use ic_cdk::api::time;
-use shared::assert::assert_timestamp;
 
 /// Rules
 
@@ -30,33 +30,47 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
     STATE.with(|state| {
         set_rule_impl(
             collection.clone(),
-            rule,
+            rule.clone(),
+            Memory::Heap,
             &mut state.borrow_mut().heap.db.rules,
         )
     })?;
 
     // If the collection does not exist yet we initialize it
-    init_collection(collection);
+    init_collection(&collection, &rule.memory.unwrap_or(Memory::Heap));
 
     Ok(())
 }
 
 pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), String> {
-    STATE.with(|state| set_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
+    STATE.with(|state| {
+        set_rule_impl(
+            collection,
+            rule,
+            Memory::Stable,
+            &mut state.borrow_mut().heap.storage.rules,
+        )
+    })
 }
 
 pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
     // We delete the empty collection first.
-    delete_collection(collection.clone())?;
+    delete_collection(&collection)?;
 
-    STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().heap.db.rules))?;
+    STATE.with(|state| {
+        del_rule_impl(
+            collection.clone(),
+            rule,
+            &mut state.borrow_mut().heap.db.rules,
+        )
+    })?;
 
     Ok(())
 }
 
 pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
     // Only unused rule can be removed
-    assert_assets_collection_empty(collection.clone())?;
+    assert_assets_collection_empty(&collection)?;
 
     STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
 }
@@ -64,16 +78,14 @@ pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), 
 fn set_rule_impl(
     collection: CollectionKey,
     user_rule: SetRule,
+    default_memory: Memory,
     rules: &mut Rules,
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    match assert_write_permission(&collection, current_rule, &user_rule.updated_at) {
-        Ok(_) => (),
-        Err(e) => {
-            return Err(e);
-        }
-    }
+    assert_write_permission(&collection, current_rule, &user_rule.updated_at)?;
+    assert_memory(current_rule, &user_rule.memory)?;
+    assert_mutable_permissions(current_rule, &user_rule)?;
 
     let now = time();
 
@@ -89,6 +101,8 @@ fn set_rule_impl(
         updated_at,
         read: user_rule.read,
         write: user_rule.write,
+        memory: user_rule.memory.unwrap_or(default_memory),
+        mutable_permissions: user_rule.mutable_permissions.unwrap_or(true),
         max_size: user_rule.max_size,
     };
 
@@ -104,40 +118,9 @@ fn del_rule_impl(
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    match assert_write_permission(&collection, current_rule, &user_rule.updated_at) {
-        Ok(_) => (),
-        Err(e) => {
-            return Err(e);
-        }
-    }
+    assert_write_permission(&collection, current_rule, &user_rule.updated_at)?;
 
     rules.remove(&collection);
-
-    Ok(())
-}
-
-fn assert_write_permission(
-    collection: &CollectionKey,
-    current_rule: Option<&Rule>,
-    updated_at: &Option<u64>,
-) -> Result<(), String> {
-    // Validate timestamp
-    match current_rule {
-        None => (),
-        Some(current_rule) => match assert_timestamp(*updated_at, current_rule.updated_at) {
-            Ok(_) => (),
-            Err(e) => {
-                return Err(e);
-            }
-        },
-    }
-
-    if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) {
-        return Err(format!(
-            "Collection starts with {}, a reserved prefix",
-            SYS_COLLECTION_PREFIX
-        ));
-    }
 
     Ok(())
 }

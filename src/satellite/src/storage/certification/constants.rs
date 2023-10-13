@@ -6,4 +6,4 @@ pub const EXACT_MATCH_TERMINATOR: &str = "<$>";
 pub const IC_CERTIFICATE_HEADER: &str = "IC-Certificate";
 pub const IC_CERTIFICATE_EXPRESSION_HEADER: &str = "IC-CertificateExpression";
 pub const IC_STATUS_CODE_PSEUDO_HEADER: &str = ":ic-cert-status";
-pub const IC_CERTIFICATE_EXPRESSION: &str = r#"default_certification(ValidationArgs{certification:Certification{no_request_certification: Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[{headers}]}}}})"#;
+pub const IC_CERTIFICATE_EXPRESSION: &str = r#"default_certification(ValidationArgs{certification:Certification{no_request_certification:Empty{},response_certification:ResponseCertification{certified_response_headers:ResponseHeaderList{headers:[{headers}]}}}})"#;

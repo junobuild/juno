@@ -15,7 +15,7 @@
 		"home": "主页",
 		"help": "帮助",
 		"controllers": "控制管理",
-		"settings": "Settings",
+		"settings": "设置",
 		"continue": "继续",
 		"not_logged_in": "开发者没有登录",
 		"ready": "准备好",
@@ -32,9 +32,9 @@
 		"done": "完成",
 		"from": "从",
 		"to": "到",
-		"export": "Export",
-		"start": "Start",
-		"stop": "Stop"
+		"export": "导出",
+		"start": "启动",
+		"stop": "停止"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -84,14 +84,14 @@
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",
 		"id": "Satellite ID",
-		"stop_title": "Stop satellite",
-		"stop_info": "Do you want to stop your satellite?",
-		"stop_explanation": "Please note that a stopped satellite continues to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
-		"stop_error": "Additionally, be aware that stopping the satellite may result in error messages being displayed in the console.",
-		"stop_success": "Satellite stopped.",
-		"start_tile": "Restart satellite",
-		"start_info": "Do you want to resume your satellite?",
-		"start_success": "Satellite resumed."
+		"stop_title": "停止 satellite",
+		"stop_info": "确认要停止你的 satellite?",
+		"stop_explanation": "请注意，停止的satellite仍然会消耗cycles用于内存的使用，包括其他必要的响应知道cycle归零，之后它将会被删除",
+		"stop_error": "此外，停止的satellate可能导致控制台显示错误",
+		"stop_success": "Satellite 已停止.",
+		"start_tile": "重启 satellite",
+		"start_info": "你想恢复你的 satellite?",
+		"start_success": "Satellite 已恢复."
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -99,26 +99,26 @@
 		"id": "Mission Control ID"
 	},
 	"wallet": {
-		"title": "Wallet",
+		"title": "钱包",
 		"account_identifier": "账号",
 		"balance": "余额",
 		"credits": "积分",
 		"transfer_icp_info": "查询更多关于信息关于转出 ICP 到你的 mission control",
 		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier",
 		"tx_id": "ID",
-		"tx_timestamp": "Timestamp",
-		"tx_from": "From",
-		"tx_to": "To",
-		"tx_memo": "Memo",
-		"tx_amount": "Amount",
-		"memo_create": "Segment created",
-		"memo_refund_satellite": "Satellite refund",
-		"memo_refund_orbiter": "Orbiter refund",
-		"memo_refund_top_up": "Top-up segment",
-		"memo_received": "Received",
-		"memo_sent": "Sent",
-		"export_title": "Export to CSV",
-		"export_info": "This process exports the displayed transactions to a CSV file. Shall we proceed?"
+		"tx_timestamp": "时间戳",
+		"tx_from": "从",
+		"tx_to": "到",
+		"tx_memo": "备注",
+		"tx_amount": "金额",
+		"memo_create": "Segment 以创建",
+		"memo_refund_satellite": "Satellite 返还",
+		"memo_refund_orbiter": "Orbiter 返还",
+		"memo_refund_top_up": "充值 segment",
+		"memo_received": "已收到",
+		"memo_sent": "已发送",
+		"export_title": "导出为 CSV",
+		"export_info": "这个过程将导出显示的事务为 CSV 文件. 确认处理?"
 	},
 	"authentication": {
 		"title": "认证",
@@ -163,7 +163,7 @@
 		"referrers": "前十个引用",
 		"enabled": "已启用",
 		"orbiter": "Orbiter",
-		"configure": "Configure"
+		"configure": "配置"
 	},
 	"hosting": {
 		"title": "网站托管",
@@ -192,7 +192,7 @@
 		"pendingacmeapproval": "检查完成",
 		"available": "有效",
 		"failed": "失败",
-		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes"
+		"skip_delete_domain": "跳过在Boundary节点删除定制域名"
 	},
 	"cli": {
 		"title": "授权命令行",
@@ -205,7 +205,7 @@
 		"profile_placeholder": "可选关于控制者提示"
 	},
 	"errors": {
-		"no_identity": "Unexpected error. No identity provided.",
+		"no_identity": "异常错误，没有提供 identity ",
 		"no_mission_control": "Mission 控制中心没有初始化.",
 		"cli_missing_params": "URL参数缺失，重定向URL或者 principal没有提供.",
 		"cli_missing_selection": "没选择 mission control 或 satellite(s) .",
@@ -215,10 +215,10 @@
 		"satellite_no_found": "Satellite没找到，返回 <a href=\"/\">开始</a>去找你的 satellites.",
 		"satellite_name_update": "试图修改你的 satellite 名字出现异常.",
 		"satellite_missing_name": "必须提供一个名字.",
-		"satellite_stop": "Unexpected error(s) while trying to stop the satellite",
-		"satellite_start": "Unexpected error(s) while trying to start the satellite",
+		"satellite_stop": "停止 satellite 中遇到异常错误",
+		"satellite_start": "启动 satellite 过程中遇到异常错误",
 		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
-		"load_credits": "Cannot load your current credits status.",
+		"load_credits": "无法加载你当前credit状态.",
 		"hosting_missing_domain_name": "必须提供一个域名.",
 		"hosting_invalid_url": "请提供一个有效的 URL.",
 		"hosting_missing_dns_configuration": "必须提供域名配置信息.",
@@ -248,14 +248,14 @@
 		"upgrade_requires_iterative_version": "在你的版本 {0} v{1} 和 选择的版本  {2} 之间可能有不兼容的更改，请依次迭代升级",
 		"top_up_error": "充值segment时出错.",
 		"analytics_load_error": "记载统计数据时出错",
-		"analytics_tracked_events_export": "Unexpected error(s) while exporting the tracked events.",
+		"analytics_tracked_events_export": "导出追踪事件日志时出错",
 		"satellites_loading": "加载 satellite 列表时出错.",
 		"orbiters_loading": "加载 orbiter 列表时出错.",
 		"orbiter_configuration_missing": "请提供 Satellites 和配置.",
 		"orbiter_configuration_unexpected": "编辑配置时出现意外错误.",
 		"orbiter_configuration_listing": "获取配置时出错.",
-		"transactions_next": "Error while fetching the next transactions.",
-		"transactions_export": "Unexpected error(s) while exporting the transactions."
+		"transactions_next": "获取下一部分事务时出错.",
+		"transactions_export": "导出事务时出现异常错误."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -278,14 +278,14 @@
 		"full_path": "完整路徑"
 	},
 	"admin": {
-		"mission_control_new_version": "A new version of your mission control is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",
-		"satellite_new_version": "A new version of your satellite is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",
-		"orbiter_new_version": "A new version of your orbiter is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>."
+		"mission_control_new_version": "你的mission control 有个新版本发布，你可以通过交互方式升级，或者 <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">命令行</a>.",
+		"satellite_new_version": "你的 sellate 有个新版本发布，你可以通过交互方式升级，或者 <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">命令行</a>.",
+		"orbiter_new_version": "你的 orbiter 有个新版本发布，你可以通过交互方式升级，或者 <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">命令行</a>."
 	},
 	"controllers": {
 		"title": "控制者",
 		"profile": "简介",
-		"scope": "Scope",
+		"scope": "范围",
 		"delete": "删除控制者",
 		"info": "Information",
 		"delete_question": "删除选择的控制者?",
@@ -327,10 +327,10 @@
 		"deleted": "文档集 {0} 已删除.",
 		"delete_question": "删除 文档集?",
 		"none": "没有定义 文档集， 你可以在标签处创建一个新的",
-		"memory": "Memory",
-		"heap": "Heap",
-		"stable": "Stable",
-		"immutable": "Make permissions immutable"
+		"memory": "内存",
+		"heap": "堆栈",
+		"stable": "稳定",
+		"immutable": "将权限改为只读"
 	},
 	"sort": {
 		"title": "排序结果",

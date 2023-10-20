@@ -1,6 +1,6 @@
 use crate::storage::certification::constants::{
-    EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER,
-    IC_STATUS_CODE_PSEUDO_HEADER,
+    IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER, IC_STATUS_CODE_PSEUDO_HEADER,
+    LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR,
 };
 use crate::storage::types::http::HeaderField;
 use crate::storage::types::state::FullPath;
@@ -13,10 +13,21 @@ pub fn nested_tree_key(
     full_path: &FullPath,
     headers: &[HeaderField],
     body_hash: Hash,
+    terminator: &str,
 ) -> Vec<Blob> {
-    assert!(full_path.starts_with('/'));
+    let mut segments = nested_tree_path(full_path, terminator);
 
     let expr_hash: Hash = Sha256::digest(response_headers_expression(headers)).into();
+    segments.push(Vec::from(expr_hash.as_slice()));
+
+    segments.push(vec![]);
+    segments.push(Vec::from(response_hash(headers, 200, &body_hash)));
+
+    segments
+}
+
+pub fn nested_tree_path(full_path: &str, terminator: &str) -> Vec<Blob> {
+    assert!(full_path.starts_with('/'));
 
     let mut segments: Vec<Blob> = full_path
         .split('/')
@@ -24,12 +35,17 @@ pub fn nested_tree_key(
         .map(Vec::from)
         .collect();
     segments.remove(0); // remove leading empty string due to absolute path
-    segments.push(EXACT_MATCH_TERMINATOR.as_bytes().to_vec());
-    segments.push(Vec::from(expr_hash.as_slice()));
-    segments.push(vec![]);
-    segments.push(Vec::from(response_hash(headers, 200, &body_hash)));
+    segments.push(terminator.as_bytes().to_vec());
 
     segments
+}
+
+pub fn not_found_tree_key() -> Vec<String> {
+    Vec::from([
+        LABEL_HTTP_EXPR.to_string(),
+        "".to_string(), // root slash
+        WILDCARD_MATCH_TERMINATOR.to_string(),
+    ])
 }
 
 fn response_hash(headers: &[HeaderField], status_code: u16, body_hash: &Hash) -> Hash {

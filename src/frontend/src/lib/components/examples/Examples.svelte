@@ -9,50 +9,90 @@
 	import IconVue from '$lib/components/icons/IconVue.svelte';
 	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
 	import IconNextJS from '$lib/components/icons/IconNextJS.svelte';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 </script>
 
-<h4>Tutorials</h4>
+<h4>{$i18n.examples.tutorials}</h4>
 
 <section>
-	<Resource href="https://juno.build/blog/build-a-web3-app-with-react-js">
+	<Resource href="https://juno.build/docs/guides/nextjs">
+		<IconNextJS slot="icon" />
+		<svelte:fragment slot="title">Next.js</svelte:fragment>
+
+		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
+			{
+				placeholder: '{0}',
+				value: 'Next.js'
+			}
+		])}
+	</Resource>
+
+	<Resource href="https://juno.build/docs/guides/react">
 		<IconReact slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.tutorial_1_title}</svelte:fragment>
+		<svelte:fragment slot="title">React</svelte:fragment>
 
-		{$i18n.examples.tutorial_1_description}
+		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
+			{
+				placeholder: '{0}',
+				value: 'React'
+			}
+		])}
 	</Resource>
 
-	<Resource href="https://juno.build/blog/develop-an-angular-app-on-blockchain">
-		<IconAngular slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.tutorial_2_title}</svelte:fragment>
+	<Resource href="https://juno.build/docs/guides/sveltekit">
+		<IconSvelte slot="icon" />
+		<svelte:fragment slot="title">SvelteKit</svelte:fragment>
 
-		{$i18n.examples.tutorial_2_description}
+		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
+			{
+				placeholder: '{0}',
+				value: 'SvelteKit'
+			}
+		])}
 	</Resource>
 
-	<Resource href="https://juno.build/blog/build-a-web3-app-with-vuejs">
+	<Resource href="https://juno.build/docs/guides/vue">
 		<IconVue slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.tutorial_3_title}</svelte:fragment>
+		<svelte:fragment slot="title">Vue</svelte:fragment>
 
-		{$i18n.examples.tutorial_3_description}
+		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
+			{
+				placeholder: '{0}',
+				value: 'Vue'
+			}
+		])}
+	</Resource>
+
+	<Resource href="https://juno.build/docs/guides/angular">
+		<IconAngular slot="icon" />
+		<svelte:fragment slot="title">Angular</svelte:fragment>
+
+		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
+			{
+				placeholder: '{0}',
+				value: 'Angular'
+			}
+		])}
 	</Resource>
 
 	<Resource
-		href="https://juno.build/blog/deploy-to-the-internet-computer-using-github-action-with-juno"
+		href="https://juno.build/docs/miscellaneous/github_actions"
 	>
 		<IconGitHub slot="icon" size="48px" />
-		<svelte:fragment slot="title">{$i18n.examples.tutorial_4_title}</svelte:fragment>
+		<svelte:fragment slot="title">GitHub</svelte:fragment>
 
-		{$i18n.examples.tutorial_4_description}
+		{$i18n.examples.tutorial_github_description}
 	</Resource>
 </section>
 
-<h4>Example projects</h4>
+<h4>{$i18n.examples.examples}</h4>
 
 <section>
-	<Resource href="https://github.com/junobuild/examples/tree/main/svelte/form">
-		<IconSvelte slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_1_title}</svelte:fragment>
+	<Resource href="https://github.com/junobuild/examples/tree/main/next/diary">
+		<IconNextJS slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.example_8_title}</svelte:fragment>
 
-		{$i18n.examples.example_1_description}
+		{$i18n.examples.example_8_description}
 	</Resource>
 
 	<Resource href="https://github.com/junobuild/examples/blob/main/react/diary">
@@ -62,11 +102,11 @@
 		{$i18n.examples.example_2_description}
 	</Resource>
 
-	<Resource href="https://github.com/junobuild/examples/blob/main/angular/diary">
-		<IconAngular slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_6_title}</svelte:fragment>
+	<Resource href="https://github.com/junobuild/examples/tree/main/svelte/form">
+		<IconSvelte slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.example_1_title}</svelte:fragment>
 
-		{$i18n.examples.example_6_description}
+		{$i18n.examples.example_1_description}
 	</Resource>
 
 	<Resource href="https://github.com/junobuild/examples/tree/main/vue/diary">
@@ -76,18 +116,18 @@
 		{$i18n.examples.example_7_description}
 	</Resource>
 
+	<Resource href="https://github.com/junobuild/examples/blob/main/angular/diary">
+		<IconAngular slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.example_6_title}</svelte:fragment>
+
+		{$i18n.examples.example_6_description}
+	</Resource>
+
 	<Resource href="https://github.com/junobuild/examples/tree/main/vanilla">
 		<IconJavaScript slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.example_3_title}</svelte:fragment>
 
 		{$i18n.examples.example_3_description}
-	</Resource>
-
-	<Resource href="https://github.com/junobuild/examples/tree/main/next/diary">
-		<IconNextJS slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_8_title}</svelte:fragment>
-
-		{$i18n.examples.example_8_description}
 	</Resource>
 
 	<Resource href="https://github.com/junobuild/examples/blob/main/node/basic">

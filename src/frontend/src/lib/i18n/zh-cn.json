@@ -376,14 +376,10 @@
 		"dev_id": "开发者 ID"
 	},
 	"examples": {
-		"tutorial_1_title": "用 React JS 构建web3应用",
-		"tutorial_1_description": "如何用 React and Juno 在区块链上开发去中心化应用.",
-		"tutorial_2_title": "在区块链上开发 Angular 应用",
-		"tutorial_2_description": "如何用 Angular and Juno 开发web3去中心化应用.",
-		"tutorial_3_title": "用 VueJS 构建Web3应用",
-		"tutorial_3_description": "利用 Vue and Juno 构建 Web3 去中心化应用.",
-		"tutorial_4_title": "用GitHub Action 部署",
-		"tutorial_4_description": "如何在一个持续开发环境部署你的 satellite ?",
+		"tutorials": "Tutorials",
+		"examples": "Examples",
+		"tutorial_framework_description": "Use Juno with {0}.",
+		"tutorial_github_description": "Deploy using GitHub Actions.",
 		"example_1_title": "Svelte",
 		"example_1_description": "一个用 Juno datastore and authentication 简单应用.",
 		"example_2_title": "React",

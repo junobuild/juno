@@ -58,9 +58,10 @@ pub fn build_headers(
     encoding: &AssetEncoding,
     encoding_type: &EncodingType,
     certificate_version: &Option<u16>,
+    rewrite: &Option<String>,
 ) -> Result<Vec<HeaderField>, &'static str> {
     let asset_headers = build_asset_headers(asset, encoding, encoding_type);
-    let certified_header = build_certified_headers(url, certificate_version)?;
+    let certified_header = build_certified_headers(url, certificate_version, rewrite)?;
     let certified_expression = build_certified_expression(&asset_headers, certificate_version)?;
 
     match certified_expression {
@@ -74,18 +75,30 @@ pub fn build_headers(
 fn build_certified_headers(
     url: &str,
     certificate_version: &Option<u16>,
+    rewrite: &Option<String>,
 ) -> Result<HeaderField, &'static str> {
     STATE.with(|state| {
-        build_certified_headers_impl(url, certificate_version, &state.borrow().runtime.storage)
+        build_certified_headers_impl(
+            url,
+            certificate_version,
+            rewrite,
+            &state.borrow().runtime.storage,
+        )
     })
 }
 
 fn build_certified_headers_impl(
     url: &str,
     certificate_version: &Option<u16>,
+    rewrite: &Option<String>,
     state: &StorageRuntimeState,
 ) -> Result<HeaderField, &'static str> {
-    build_asset_certificate_header(&state.asset_hashes, url.to_owned(), certificate_version)
+    build_asset_certificate_header(
+        &state.asset_hashes,
+        url.to_owned(),
+        certificate_version,
+        rewrite,
+    )
 }
 
 pub fn build_encodings(headers: Vec<HeaderField>) -> Vec<String> {

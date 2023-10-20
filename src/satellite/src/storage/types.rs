@@ -261,6 +261,7 @@ pub mod http_request {
     pub struct PublicAsset {
         pub url: String,
         pub asset: Option<(Asset, Memory)>,
+        pub rewrite: Option<String>,
     }
 }
 

@@ -1,7 +1,11 @@
 use crate::storage::certification::constants::{
-    EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2,
+    EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2, LABEL_HTTP_EXPR,
+    WILDCARD_MATCH_TERMINATOR,
 };
-use crate::storage::certification::tree_utils::nested_tree_key;
+use crate::storage::certification::tree::merge_hash_trees;
+use crate::storage::certification::tree_utils::{
+    nested_tree_key, nested_tree_path, not_found_tree_key,
+};
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::http::headers::build_asset_headers;
@@ -9,7 +13,6 @@ use crate::storage::types::http::HeaderField;
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::alternative_paths;
-use crate::types::core::Blob;
 use ic_certified_map::{fork, fork_hash, labeled, labeled_hash, AsHashTree, Hash, HashTree};
 
 impl CertifiedAssetHashes {
@@ -33,16 +36,60 @@ impl CertifiedAssetHashes {
     pub fn witness_v2(&self, absolute_path: &str) -> HashTree {
         assert!(absolute_path.starts_with('/'));
 
-        let mut path: Vec<String> = absolute_path.split('/').map(str::to_string).collect();
-        path.remove(0); // remove leading empty string due to absolute path
-        path.push(EXACT_MATCH_TERMINATOR.to_string());
-        let path_bytes: Vec<Blob> = path.iter().map(String::as_bytes).map(Vec::from).collect();
-        let witness = self.tree_v2.witness(&path_bytes);
+        let segments = nested_tree_path(absolute_path, EXACT_MATCH_TERMINATOR);
+        let witness = self.tree_v2.witness(&segments);
 
         fork(
             HashTree::Pruned(labeled_hash(LABEL_ASSETS_V1, &self.tree_v1.root_hash())),
             labeled(LABEL_ASSETS_V2, witness),
         )
+    }
+
+    pub fn witness_rewrite_v2(&self, absolute_path: &str, _rewrite: &str) -> HashTree {
+        assert!(absolute_path.starts_with('/'));
+
+        // Witness incorrect url: e.g. /1234
+        let segments = nested_tree_path(absolute_path, EXACT_MATCH_TERMINATOR);
+        let witness = self.tree_v2.witness(&segments);
+
+        // Witness: http_expr space <*>
+        let not_found_segments = nested_tree_path("/", WILDCARD_MATCH_TERMINATOR);
+        let not_found_witness = self.tree_v2.witness(&not_found_segments);
+
+        let mut combined_proof = merge_hash_trees(witness, not_found_witness.clone());
+
+        let mut partial_path = segments.clone();
+        while partial_path.pop().is_some() && !partial_path.is_empty() {
+            // Push <*>
+            partial_path.push(WILDCARD_MATCH_TERMINATOR.as_bytes().to_vec());
+
+            let proof = self.tree_v2.witness(&partial_path);
+
+            combined_proof = merge_hash_trees(combined_proof, proof);
+
+            partial_path.pop(); // remove <*>
+        }
+
+        fork(
+            HashTree::Pruned(labeled_hash(LABEL_ASSETS_V1, &self.tree_v1.root_hash())),
+            labeled(LABEL_ASSETS_V2, combined_proof),
+        )
+    }
+
+    pub fn expr_path_v2(&self, absolute_path: &str, rewrite: &Option<String>) -> Vec<String> {
+        assert!(absolute_path.starts_with('/'));
+
+        // "/" => ["", ""]
+        // "/hello/index.html" => ["", "hello", "index.html"]
+        let mut path: Vec<String> = absolute_path.split('/').map(str::to_string).collect();
+        // replace the first empty split segment (due to absolute path) with "http_expr"
+        *path.get_mut(0).unwrap() = LABEL_HTTP_EXPR.to_string();
+        path.push(EXACT_MATCH_TERMINATOR.to_string());
+
+        match rewrite {
+            None => path,
+            Some(_) => not_found_tree_key(),
+        }
     }
 
     pub(crate) fn insert(&mut self, asset: &Asset) {
@@ -77,9 +124,14 @@ impl CertifiedAssetHashes {
         }
     }
 
+    // TODO: const STATUS_CODES_TO_CERTIFY: [u16; 2] = [200, 304];
+    // TODO: delete rewrite
+
     fn insert_v2(&mut self, full_path: &FullPath, headers: &[HeaderField], sha256: Hash) {
-        self.tree_v2
-            .insert(&nested_tree_key(full_path, headers, sha256), vec![]);
+        self.tree_v2.insert(
+            &nested_tree_key(full_path, headers, sha256, EXACT_MATCH_TERMINATOR),
+            vec![],
+        );
 
         let alt_paths = alternative_paths(full_path);
 
@@ -87,9 +139,29 @@ impl CertifiedAssetHashes {
             None => (),
             Some(alt_paths) => {
                 for alt_path in alt_paths {
-                    self.tree_v2
-                        .insert(&nested_tree_key(&alt_path, headers, sha256), vec![]);
+                    self.tree_v2.insert(
+                        &nested_tree_key(&alt_path, headers, sha256, EXACT_MATCH_TERMINATOR),
+                        vec![],
+                    );
                 }
+            }
+        }
+    }
+
+    pub(crate) fn insert_rewrite_v2(&mut self, full_path: &FullPath, asset: &Asset) {
+        for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
+            if let Some(encoding) = asset.encodings.get(*encoding_type) {
+                self.tree_v2.insert(
+                    &nested_tree_key(
+                        full_path,
+                        &build_asset_headers(asset, encoding, &encoding_type.to_string()),
+                        encoding.sha256,
+                        WILDCARD_MATCH_TERMINATOR,
+                    ),
+                    vec![],
+                );
+
+                return;
             }
         }
     }
@@ -127,8 +199,12 @@ impl CertifiedAssetHashes {
     }
 
     fn delete_v2(&mut self, full_path: &FullPath, headers: &[HeaderField], sha256: Hash) {
-        self.tree_v2
-            .delete(&nested_tree_key(full_path, headers, sha256));
+        self.tree_v2.delete(&nested_tree_key(
+            &full_path,
+            headers,
+            sha256,
+            EXACT_MATCH_TERMINATOR,
+        ));
 
         let alt_paths = alternative_paths(full_path);
 
@@ -136,8 +212,12 @@ impl CertifiedAssetHashes {
             None => (),
             Some(alt_paths) => {
                 for alt_path in alt_paths {
-                    self.tree_v2
-                        .delete(&nested_tree_key(&alt_path, headers, sha256));
+                    self.tree_v2.delete(&nested_tree_key(
+                        &alt_path,
+                        headers,
+                        sha256,
+                        EXACT_MATCH_TERMINATOR,
+                    ));
                 }
             }
         }

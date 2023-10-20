@@ -1,6 +1,5 @@
 use crate::storage::certification::constants::{
-    EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION_HEADER, IC_CERTIFICATE_HEADER,
-    LABEL_HTTP_EXPR,
+    IC_CERTIFICATE_EXPRESSION_HEADER, IC_CERTIFICATE_HEADER,
 };
 use crate::storage::certification::tree_utils::response_headers_expression;
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
@@ -20,6 +19,7 @@ pub fn build_asset_certificate_header(
     asset_hashes: &CertifiedAssetHashes,
     url: String,
     certificate_version: &Option<u16>,
+    rewrite: &Option<String>,
 ) -> Result<HeaderField, &'static str> {
     let certificate = data_certificate();
 
@@ -29,7 +29,9 @@ pub fn build_asset_certificate_header(
             None | Some(1) => {
                 build_asset_certificate_header_v1_impl(&certificate, asset_hashes, &url)
             }
-            Some(2) => build_asset_certificate_header_v2_impl(&certificate, asset_hashes, &url),
+            Some(2) => {
+                build_asset_certificate_header_v2_impl(&certificate, asset_hashes, &url, rewrite)
+            }
             _ => Err("Unsupported certificate version to certify headers."),
         },
     }
@@ -77,15 +79,14 @@ fn build_asset_certificate_header_v2_impl(
     certificate: &Blob,
     asset_hashes: &CertifiedAssetHashes,
     url: &str,
+    rewrite: &Option<String>,
 ) -> Result<HeaderField, &'static str> {
     assert!(url.starts_with('/'));
 
-    let mut path: Vec<String> = url.split('/').map(str::to_string).collect();
-    // replace the first empty split segment (due to absolute path) with "http_expr"
-    *path.get_mut(0).unwrap() = LABEL_HTTP_EXPR.to_string();
-    path.push(EXACT_MATCH_TERMINATOR.to_string());
-
-    let tree = asset_hashes.witness_v2(url);
+    let tree = match rewrite {
+        None => asset_hashes.witness_v2(url),
+        Some(rewrite) => asset_hashes.witness_rewrite_v2(url, rewrite),
+    };
 
     let mut serializer = Serializer::new(vec![]);
     serializer.self_describe().unwrap();
@@ -96,6 +97,8 @@ fn build_asset_certificate_header_v2_impl(
         Ok(_serialize) => {
             let mut expr_path_serializer = Serializer::new(vec![]);
             expr_path_serializer.self_describe().unwrap();
+
+            let path = asset_hashes.expr_path_v2(url, rewrite);
             let result_path = path.serialize(&mut expr_path_serializer);
 
             match result_path {

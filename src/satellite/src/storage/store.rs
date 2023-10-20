@@ -51,7 +51,10 @@ use crate::types::list::{ListParams, ListResults};
 /// Getter, list and delete
 ///
 
-pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str> {
+pub fn get_public_asset_for_url(
+    url: String,
+    include_rewrite: bool,
+) -> Result<PublicAsset, &'static str> {
     if url.is_empty() {
         return Err("No url provided.");
     }
@@ -76,7 +79,11 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
         match asset {
             None => (),
             Some(_) => {
-                return Ok(PublicAsset { url: path, asset });
+                return Ok(PublicAsset {
+                    url: path,
+                    asset,
+                    rewrite: None,
+                });
             }
         }
     }
@@ -87,26 +94,33 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     match asset {
         None => (),
         Some(_) => {
-            return Ok(PublicAsset { url: path, asset });
+            return Ok(PublicAsset {
+                url: path,
+                asset,
+                rewrite: None,
+            });
         }
     }
 
-    // If we have found no asset, we try a rewrite rule
-    // This is for example useful for single-page app to redirect all urls to /index.html
-    let rewrite = rewrite_url(&path, &get_config());
+    if include_rewrite {
+        // If we have found no asset, we try a rewrite rule
+        // This is for example useful for single-page app to redirect all urls to /index.html
+        let rewrite = rewrite_url(&path, &get_config());
 
-    match rewrite {
-        None => (),
-        Some(rewrite) => {
-            let redirected_asset = get_public_asset(rewrite.clone(), token);
+        match rewrite {
+            None => (),
+            Some(rewrite) => {
+                let redirected_asset = get_public_asset(rewrite.clone(), token);
 
-            match redirected_asset {
-                None => (),
-                Some(_) => {
-                    return Ok(PublicAsset {
-                        url: rewrite,
-                        asset: redirected_asset,
-                    });
+                match redirected_asset {
+                    None => (),
+                    Some(_) => {
+                        return Ok(PublicAsset {
+                            url: path,
+                            asset: redirected_asset,
+                            rewrite: Some(rewrite),
+                        });
+                    }
                 }
             }
         }
@@ -115,6 +129,7 @@ pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str
     Ok(PublicAsset {
         url: path,
         asset: None,
+        rewrite: None,
     })
 }
 

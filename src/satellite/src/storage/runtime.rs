@@ -1,8 +1,10 @@
 use crate::memory::STATE;
 use crate::storage::certification::certification::update_certified_data;
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
+use crate::storage::store::get_public_asset_for_url;
 use crate::storage::types::state::{Batches, Chunks, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Batch, Chunk};
+use crate::storage::url::separator;
 use crate::types::state::{RuntimeState, State};
 use ic_cdk::api::time;
 
@@ -18,6 +20,22 @@ pub fn init_certified_assets() {
 
         for (_key, asset) in state.stable.assets.iter() {
             asset_hashes.insert(&asset);
+        }
+
+        for (source, destination) in state.heap.storage.config.rewrites.clone() {
+            // TODO: only stars at the end of the source are supported - not in the middle or so. To be implemented in insert store
+            // hello** -> ok
+            // he**llo -> not ok
+            let src_path = [separator(&source), &source]
+                .join("")
+                .replace("**", "")
+                .replace("*", "");
+
+            if let Ok(public_asset) = get_public_asset_for_url(destination, false) {
+                if let Some((asset, _)) = public_asset.asset {
+                    asset_hashes.insert_rewrite_v2(&src_path, &asset);
+                }
+            }
         }
 
         asset_hashes

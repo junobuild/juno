@@ -73,7 +73,12 @@ fn aliases_of(key: &String) -> Vec<String> {
 // Determines possible original keys in case the supplied key is being aliaseded to.
 // Sort-of a reverse operation of `alias_of`
 fn aliased_by(key: &String) -> Option<Vec<String>> {
-    if key.ends_with("/index.html") {
+    if key == "/index.html" {
+        Some(vec![
+            key[..(key.len() - 5)].into(),
+            key[..(key.len() - 10)].into(),
+        ])
+    } else if key.ends_with("/index.html") {
         Some(vec![
             key[..(key.len() - 5)].into(),
             key[..(key.len() - 10)].into(),
@@ -95,7 +100,7 @@ pub fn build_url(url: &String) -> Result<Url, ParseError> {
 }
 
 /// Ensure path always will begin with a /
-fn separator(url: &str) -> &str {
+pub fn separator(url: &str) -> &str {
     if url.starts_with('/') {
         ""
     } else {

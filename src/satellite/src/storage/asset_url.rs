@@ -1,4 +1,3 @@
-use ic_cdk::print;
 use crate::rules::types::rules::Memory;
 use crate::storage::rewrites::rewrite_url;
 use crate::storage::state::get_config;
@@ -6,6 +5,7 @@ use crate::storage::store::get_public_asset;
 use crate::storage::types::http_request::{MapUrl, PublicAsset};
 use crate::storage::types::store::Asset;
 use crate::storage::url::{map_alternative_paths, map_url};
+use ic_cdk::print;
 
 pub fn get_public_asset_for_url(
     url: String,
@@ -97,7 +97,8 @@ pub fn get_public_asset_for_url(
 
                 // Rewrite is maybe configured as an absolute path
                 // e.g. write /demo/* to /sample.html
-                let rewrite_absolute_asset: Option<(Asset, Memory)> = get_public_asset(rewrite.clone(), token.clone());
+                let rewrite_absolute_asset: Option<(Asset, Memory)> =
+                    get_public_asset(rewrite.clone(), token.clone());
 
                 match rewrite_absolute_asset {
                     None => (),

@@ -1,9 +1,10 @@
 use crate::storage::certification::constants::{
-    EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2,
-    WILDCARD_MATCH_TERMINATOR,
+    EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2, WILDCARD_MATCH_TERMINATOR,
 };
 use crate::storage::certification::tree::merge_hash_trees;
-use crate::storage::certification::tree_utils::{nested_tree_expr_path, nested_tree_key, nested_tree_path};
+use crate::storage::certification::tree_utils::{
+    nested_tree_expr_path, nested_tree_key, nested_tree_path,
+};
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::http::headers::build_asset_headers;

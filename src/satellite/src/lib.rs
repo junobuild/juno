@@ -345,6 +345,11 @@ fn http_request(
                             Ok(headers) => {
                                 let body = get_content_chunks(encoding, 0, &memory);
 
+                                // TODO: support for HTTP response 304
+                                // On hold til DFINITY foundation implements:
+                                // "Add etag support to icx-proxy" - https://dfinity.atlassian.net/browse/BOUN-446
+                                // See const STATUS_CODES_TO_CERTIFY: [u16; 2] = [200, 304]; in sdk certified asset canister for implementation reference
+
                                 match body {
                                     Some(body) => {
                                         return HttpResponse {

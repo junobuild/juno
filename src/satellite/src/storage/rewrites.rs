@@ -1,5 +1,6 @@
 use crate::storage::constants::REWRITE_TO_ROOT_INDEX_HTML;
 use globset::Glob;
+use std::cmp::Ordering;
 use std::collections::HashMap;
 
 use crate::storage::types::config::{StorageConfig, StorageConfigRewrites};
@@ -15,17 +16,39 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<Strin
         rewrites,
     } = config;
 
-    let rewrite = rewrites.iter().find(|(source, _)| {
-        let glob = Glob::new(source);
+    let mut matches: Vec<(String, String)> = rewrites
+        .iter()
+        .filter(|(source, _)| {
+            let glob = Glob::new(source);
 
-        match glob {
-            Err(_) => false,
-            Ok(glob) => {
-                let matcher = glob.compile_matcher();
-                matcher.is_match(requested_path)
+            match glob {
+                Err(_) => false,
+                Ok(glob) => {
+                    let matcher = glob.compile_matcher();
+                    matcher.is_match(requested_path)
+                }
             }
+        })
+        .map(|(source, destination)| (source.clone(), destination.clone()))
+        .collect();
+
+    matches.sort_by(|(a, _), (b, _)| {
+        let a_parts: Vec<&str> = a.split('/').collect();
+        let b_parts: Vec<&str> = b.split('/').collect();
+
+        // Compare the lengths first (in reverse order for longer length first - i.e. the rewrite with the more sub-paths first)
+        let length_cmp = b_parts.len().cmp(&a_parts.len());
+
+        if length_cmp == Ordering::Equal {
+            // If lengths are equal, sort alphabetically
+            a.cmp(b)
+        } else {
+            length_cmp
         }
     });
 
-    rewrite.map(|(_, destination)| destination.clone())
+    match matches.first() {
+        None => None,
+        Some((_, destination)) => Some(destination.clone()),
+    }
 }

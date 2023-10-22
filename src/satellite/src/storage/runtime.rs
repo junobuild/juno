@@ -28,7 +28,6 @@ pub fn init_certified_assets() {
             // he**llo -> not ok
             let src_path = [separator(&source), &source]
                 .join("")
-                .replace("**", "")
                 .replace("*", "");
 
             if let Ok(public_asset) = get_public_asset_for_url(destination, false) {

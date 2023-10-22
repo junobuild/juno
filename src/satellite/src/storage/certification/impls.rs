@@ -45,7 +45,7 @@ impl CertifiedAssetHashes {
         )
     }
 
-    pub fn witness_rewrite_v2(&self, absolute_path: &str, _rewrite: &str) -> HashTree {
+    pub fn witness_rewrite_v2(&self, absolute_path: &str, rewrite: &str) -> HashTree {
         assert!(absolute_path.starts_with('/'));
 
         // Witness incorrect url: e.g. /1234
@@ -53,7 +53,7 @@ impl CertifiedAssetHashes {
         let witness = self.tree_v2.witness(&segments);
 
         // Witness: http_expr space <*>
-        let not_found_segments = nested_tree_path("/", WILDCARD_MATCH_TERMINATOR);
+        let not_found_segments = nested_tree_path(rewrite, WILDCARD_MATCH_TERMINATOR);
         let not_found_witness = self.tree_v2.witness(&not_found_segments);
 
         let mut combined_proof = merge_hash_trees(witness, not_found_witness.clone());

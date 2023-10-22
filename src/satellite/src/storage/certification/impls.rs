@@ -1,11 +1,9 @@
 use crate::storage::certification::constants::{
-    EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2, LABEL_HTTP_EXPR,
+    EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2,
     WILDCARD_MATCH_TERMINATOR,
 };
 use crate::storage::certification::tree::merge_hash_trees;
-use crate::storage::certification::tree_utils::{
-    nested_tree_key, nested_tree_path,
-};
+use crate::storage::certification::tree_utils::{nested_tree_expr_path, nested_tree_key, nested_tree_path};
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
 use crate::storage::http::headers::build_asset_headers;
@@ -77,25 +75,9 @@ impl CertifiedAssetHashes {
     }
 
     pub fn expr_path_v2(&self, absolute_path: &str, rewrite: &Option<String>) -> Vec<String> {
-        assert!(absolute_path.starts_with('/'));
-
-        // "/" => ["", ""]
-        // "/index.html" => ["", "index.html"]
-        // "/hello/index.html" => ["", "hello", "index.html"]
-        let mut path: Vec<String> = absolute_path.split('/').map(str::to_string).collect();
-        // replace the first empty split segment (due to absolute path) with "http_expr"
-        *path.get_mut(0).unwrap() = LABEL_HTTP_EXPR.to_string();
-        path.push(EXACT_MATCH_TERMINATOR.to_string());
-
         match rewrite {
-            None => path,
-            Some(rewrite) => {
-                let mut rewrite_path: Vec<String> = rewrite.split('/').map(str::to_string).collect();
-                *rewrite_path.get_mut(0).unwrap() = LABEL_HTTP_EXPR.to_string();
-                rewrite_path.push(WILDCARD_MATCH_TERMINATOR.to_string());
-
-                rewrite_path
-            },
+            None => nested_tree_expr_path(absolute_path, EXACT_MATCH_TERMINATOR),
+            Some(rewrite) => nested_tree_expr_path(rewrite, WILDCARD_MATCH_TERMINATOR),
         }
     }
 

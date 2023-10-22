@@ -1,6 +1,6 @@
 use crate::storage::certification::constants::{
     IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER, IC_STATUS_CODE_PSEUDO_HEADER,
-    LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR,
+    LABEL_HTTP_EXPR,
 };
 use crate::storage::types::http::HeaderField;
 use crate::storage::types::state::FullPath;
@@ -38,6 +38,19 @@ pub fn nested_tree_path(full_path: &str, terminator: &str) -> Vec<Blob> {
     segments.push(terminator.as_bytes().to_vec());
 
     segments
+}
+
+pub fn nested_tree_expr_path(absolute_path: &str, terminator: &str) -> Vec<String> {
+    assert!(absolute_path.starts_with('/'));
+
+    // "/" => ["", ""]
+    // "/index.html" => ["", "index.html"]
+    // "/hello/index.html" => ["", "hello", "index.html"]
+    let mut path: Vec<String> = absolute_path.split('/').map(str::to_string).collect();
+    // replace the first empty split segment (due to absolute path) with "http_expr"
+    *path.get_mut(0).unwrap() = LABEL_HTTP_EXPR.to_string();
+    path.push(terminator.to_string());
+    path
 }
 
 fn response_hash(headers: &[HeaderField], status_code: u16, body_hash: &Hash) -> Hash {

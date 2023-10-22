@@ -52,7 +52,7 @@ pub fn get_public_asset_for_url(
                 url: path.clone(),
                 asset: Some(alternative_asset),
                 rewrite: None,
-            });;
+            });
         }
     }
 

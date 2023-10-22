@@ -115,7 +115,6 @@ impl CertifiedAssetHashes {
     }
 
     // TODO: const STATUS_CODES_TO_CERTIFY: [u16; 2] = [200, 304];
-    // TODO: delete rewrite
 
     fn insert_v2(&mut self, full_path: &FullPath, headers: &[HeaderField], sha256: Hash) {
         self.tree_v2.insert(

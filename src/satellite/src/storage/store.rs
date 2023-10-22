@@ -590,6 +590,8 @@ fn clear_expired_batches() {
 
 pub fn set_config(config: &StorageConfig) {
     insert_state_config(config);
+
+    init_certified_assets();
 }
 
 pub fn get_config() -> StorageConfig {

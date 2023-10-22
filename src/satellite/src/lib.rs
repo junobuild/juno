@@ -311,13 +311,14 @@ fn http_request(
         return error_response(405, "Method Not Allowed.".to_string());
     }
 
-    let result = get_public_asset_for_url(url, true);
+    let result = get_public_asset_for_url(url, true, true);
 
     match result {
         Ok(PublicAsset {
             asset,
             url: requested_url,
-            rewrite,
+            destination,
+            status_code,
         }) => match asset {
             Some((asset, memory)) => {
                 let encodings = build_encodings(req_headers);
@@ -330,7 +331,7 @@ fn http_request(
                             encoding,
                             encoding_type,
                             &certificate_version,
-                            &rewrite,
+                            &destination,
                         );
 
                         let Asset {
@@ -355,7 +356,7 @@ fn http_request(
                                         return HttpResponse {
                                             body: body.clone(),
                                             headers: headers.clone(),
-                                            status_code: 200,
+                                            status_code,
                                             streaming_strategy: streaming_strategy(
                                                 key,
                                                 encoding,

@@ -64,6 +64,7 @@ impl Default for HeapState {
             config: StorageConfig {
                 headers: StorageConfigHeaders::default(),
                 rewrites: init_rewrites(),
+                redirects: HashMap::new(),
             },
             custom_domains: HashMap::new(),
         };

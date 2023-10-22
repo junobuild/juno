@@ -1,9 +1,8 @@
 use crate::storage::constants::REWRITE_TO_ROOT_INDEX_HTML;
+use crate::storage::types::config::{StorageConfig, StorageConfigRedirect, StorageConfigRewrites};
 use globset::Glob;
 use std::cmp::Ordering;
 use std::collections::HashMap;
-
-use crate::storage::types::config::{StorageConfig, StorageConfigRewrites};
 
 pub fn init_rewrites() -> StorageConfigRewrites {
     let (source, destination) = REWRITE_TO_ROOT_INDEX_HTML;
@@ -14,9 +13,34 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<Strin
     let StorageConfig {
         headers: _,
         rewrites,
+        redirects: _,
     } = config;
 
-    let mut matches: Vec<(String, String)> = rewrites
+    let matches = matching_urls(requested_path, &rewrites);
+
+    match matches.first() {
+        None => None,
+        Some((_, destination)) => Some(destination.clone()),
+    }
+}
+
+pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<StorageConfigRedirect> {
+    let StorageConfig {
+        headers: _,
+        rewrites: _,
+        redirects,
+    } = config;
+
+    let matches = matching_urls(requested_path, &redirects);
+
+    match matches.first() {
+        None => None,
+        Some((_, destination)) => Some(destination.clone()),
+    }
+}
+
+fn matching_urls<T: Clone>(requested_path: &str, config: &HashMap<String, T>) -> Vec<(String, T)> {
+    let mut matches: Vec<(String, T)> = config
         .iter()
         .filter(|(source, _)| {
             let glob = Glob::new(source);
@@ -47,8 +71,5 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<Strin
         }
     });
 
-    match matches.first() {
-        None => None,
-        Some((_, destination)) => Some(destination.clone()),
-    }
+    matches
 }

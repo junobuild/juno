@@ -238,11 +238,19 @@ pub mod config {
 
     pub type StorageConfigHeaders = HashMap<String, Vec<HeaderField>>;
     pub type StorageConfigRewrites = HashMap<String, String>;
+    pub type StorageConfigRedirects = HashMap<String, StorageConfigRedirect>;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageConfig {
         pub headers: StorageConfigHeaders,
         pub rewrites: StorageConfigRewrites,
+        pub redirects: StorageConfigRedirects,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct StorageConfigRedirect {
+        pub destination: String,
+        pub status_code: u16,
     }
 }
 
@@ -261,7 +269,8 @@ pub mod http_request {
     pub struct PublicAsset {
         pub url: String,
         pub asset: Option<(Asset, Memory)>,
-        pub rewrite: Option<String>,
+        pub destination: Option<String>,
+        pub status_code: u16,
     }
 }
 

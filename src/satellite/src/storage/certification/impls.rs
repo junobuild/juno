@@ -4,7 +4,7 @@ use crate::storage::certification::constants::{
 };
 use crate::storage::certification::tree::merge_hash_trees;
 use crate::storage::certification::tree_utils::{
-    nested_tree_key, nested_tree_path, not_found_tree_key,
+    nested_tree_key, nested_tree_path,
 };
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::constants::ENCODING_CERTIFICATION_ORDER;
@@ -80,6 +80,7 @@ impl CertifiedAssetHashes {
         assert!(absolute_path.starts_with('/'));
 
         // "/" => ["", ""]
+        // "/index.html" => ["", "index.html"]
         // "/hello/index.html" => ["", "hello", "index.html"]
         let mut path: Vec<String> = absolute_path.split('/').map(str::to_string).collect();
         // replace the first empty split segment (due to absolute path) with "http_expr"
@@ -88,7 +89,13 @@ impl CertifiedAssetHashes {
 
         match rewrite {
             None => path,
-            Some(_) => not_found_tree_key(),
+            Some(rewrite) => {
+                let mut rewrite_path: Vec<String> = rewrite.split('/').map(str::to_string).collect();
+                *rewrite_path.get_mut(0).unwrap() = LABEL_HTTP_EXPR.to_string();
+                rewrite_path.push(WILDCARD_MATCH_TERMINATOR.to_string());
+
+                rewrite_path
+            },
         }
     }
 

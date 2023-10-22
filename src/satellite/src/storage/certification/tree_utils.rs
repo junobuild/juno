@@ -40,14 +40,6 @@ pub fn nested_tree_path(full_path: &str, terminator: &str) -> Vec<Blob> {
     segments
 }
 
-pub fn not_found_tree_key() -> Vec<String> {
-    Vec::from([
-        LABEL_HTTP_EXPR.to_string(),
-        "".to_string(), // root slash
-        WILDCARD_MATCH_TERMINATOR.to_string(),
-    ])
-}
-
 fn response_hash(headers: &[HeaderField], status_code: u16, body_hash: &Hash) -> Hash {
     // certification v2 spec:
     // Response hash is the hash of the concatenation of

@@ -28,7 +28,7 @@ use crate::storage::http::http::{
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
     get_config as get_storage_config, get_content_chunks, get_custom_domains, get_public_asset,
-    get_public_asset_for_url, init_certified_assets, list_assets as list_assets_store,
+    init_certified_assets, list_assets as list_assets_store,
     set_config as set_storage_config, set_domain,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
@@ -64,6 +64,7 @@ use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetController
 use shared::types::state::{ControllerScope, Controllers};
 use std::mem;
 use types::list::ListParams;
+use crate::storage::asset_url::get_public_asset_for_url;
 
 #[init]
 fn init() {

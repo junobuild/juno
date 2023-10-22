@@ -1,12 +1,12 @@
 use crate::memory::STATE;
 use crate::storage::certification::certification::update_certified_data;
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
-use crate::storage::store::get_public_asset_for_url;
 use crate::storage::types::state::{Batches, Chunks, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Batch, Chunk};
 use crate::storage::url::separator;
 use crate::types::state::{RuntimeState, State};
 use ic_cdk::api::time;
+use crate::storage::asset_url::get_public_asset_for_url;
 
 /// Certified assets
 

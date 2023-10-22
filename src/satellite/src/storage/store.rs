@@ -18,7 +18,6 @@ use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
 };
 use crate::storage::custom_domains::map_custom_domains_asset;
-use crate::storage::rewrites::rewrite_url;
 use crate::storage::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks,
@@ -38,11 +37,9 @@ use crate::storage::state::{
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
-use crate::storage::types::http_request::{MapUrl, PublicAsset};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk, EncodingType};
-use crate::storage::url::{map_alternative_paths, map_url};
 use crate::storage::utils::{filter_collection_values, filter_values};
 use crate::types::core::{Blob, CollectionKey};
 use crate::types::list::{ListParams, ListResults};
@@ -50,88 +47,6 @@ use crate::types::list::{ListParams, ListResults};
 ///
 /// Getter, list and delete
 ///
-
-pub fn get_public_asset_for_url(
-    url: String,
-    include_rewrite: bool,
-) -> Result<PublicAsset, &'static str> {
-    if url.is_empty() {
-        return Err("No url provided.");
-    }
-
-    // The certification considers, and should only, the path of the URL. If query parameters, these should be omitted in the certificate.
-    // Likewise the memory contains only assets indexed with their respective path.
-    // e.g.
-    // url: /hello/something?param=123
-    // path: /hello/something
-
-    let MapUrl { path, token } = map_url(&url)?;
-    let alternative_paths = map_alternative_paths(&path);
-
-    // ⚠️ Limitation: requesting an url without extension try to resolve first a corresponding asset
-    // e.g. /.well-known/hello -> try to find /.well-known/hello.html
-    // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
-
-    for alternative_path in alternative_paths {
-        let asset: Option<(Asset, Memory)> = get_public_asset(alternative_path, token.clone());
-
-        // We return the first match
-        match asset {
-            None => (),
-            Some(_) => {
-                return Ok(PublicAsset {
-                    url: path,
-                    asset,
-                    rewrite: None,
-                });
-            }
-        }
-    }
-
-    // We return the asset that matches the effective path
-    let asset: Option<(Asset, Memory)> = get_public_asset(path.clone(), token.clone());
-
-    match asset {
-        None => (),
-        Some(_) => {
-            return Ok(PublicAsset {
-                url: path,
-                asset,
-                rewrite: None,
-            });
-        }
-    }
-
-    if include_rewrite {
-        // If we have found no asset, we try a rewrite rule
-        // This is for example useful for single-page app to redirect all urls to /index.html
-        let rewrite = rewrite_url(&path, &get_config());
-
-        match rewrite {
-            None => (),
-            Some(rewrite) => {
-                let redirected_asset = get_public_asset(rewrite.clone(), token);
-
-                match redirected_asset {
-                    None => (),
-                    Some(_) => {
-                        return Ok(PublicAsset {
-                            url: path,
-                            asset: redirected_asset,
-                            rewrite: Some(rewrite),
-                        });
-                    }
-                }
-            }
-        }
-    }
-
-    Ok(PublicAsset {
-        url: path,
-        asset: None,
-        rewrite: None,
-    })
-}
 
 pub fn get_content_chunks(
     encoding: &AssetEncoding,

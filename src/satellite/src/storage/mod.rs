@@ -10,3 +10,4 @@ pub mod store;
 pub mod types;
 mod url;
 mod utils;
+pub mod asset_url;

@@ -362,14 +362,9 @@ fn commit_batch_impl(
     match batch {
         None => Err(ERROR_CANNOT_COMMIT_BATCH.to_string()),
         Some(b) => {
-            let asset = secure_commit_chunks(caller, controllers, commit_batch, &b);
-            match asset {
-                Err(err) => Err(err),
-                Ok(asset) => {
-                    update_runtime_certified_asset(&asset);
-                    Ok(())
-                }
-            }
+            let asset = secure_commit_chunks(caller, controllers, commit_batch, &b)?;
+            update_runtime_certified_asset(&asset);
+            Ok(())
         }
     }
 }

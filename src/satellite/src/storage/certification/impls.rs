@@ -91,6 +91,7 @@ impl CertifiedAssetHashes {
                 self.insert_v2(
                     &full_path,
                     &build_asset_headers(asset, encoding, &encoding_type.to_string()),
+                    RESPONSE_STATUS_CODE_200,
                     encoding.sha256,
                 );
 
@@ -114,14 +115,14 @@ impl CertifiedAssetHashes {
         }
     }
 
-    fn insert_v2(&mut self, full_path: &FullPath, headers: &[HeaderField], sha256: Hash) {
+    fn insert_v2(&mut self, full_path: &FullPath, headers: &[HeaderField], status_code: u16, sha256: Hash) {
         self.tree_v2.insert(
             &nested_tree_key(
                 full_path,
                 headers,
                 sha256,
                 EXACT_MATCH_TERMINATOR,
-                RESPONSE_STATUS_CODE_200,
+                status_code,
             ),
             vec![],
         );
@@ -147,12 +148,22 @@ impl CertifiedAssetHashes {
         }
     }
 
-    pub(crate) fn insert_rewrite_redirect_v2(
-        &mut self,
-        full_path: &FullPath,
-        status_code: u16,
-        asset: &Asset,
-    ) {
+    pub(crate) fn insert_redirect_v2(&mut self, full_path: &FullPath, status_code: u16, asset: &Asset) {
+        for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
+            if let Some(encoding) = asset.encodings.get(*encoding_type) {
+                self.insert_v2(
+                    &full_path,
+                    &build_asset_headers(asset, encoding, &encoding_type.to_string()),
+                    status_code,
+                    encoding.sha256,
+                );
+
+                return;
+            }
+        }
+    }
+
+    pub(crate) fn insert_rewrite_v2(&mut self, full_path: &FullPath, asset: &Asset) {
         for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
             if let Some(encoding) = asset.encodings.get(*encoding_type) {
                 self.tree_v2.insert(
@@ -161,7 +172,7 @@ impl CertifiedAssetHashes {
                         &build_asset_headers(asset, encoding, &encoding_type.to_string()),
                         encoding.sha256,
                         WILDCARD_MATCH_TERMINATOR,
-                        status_code,
+                        RESPONSE_STATUS_CODE_200,
                     ),
                     vec![],
                 );

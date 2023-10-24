@@ -31,28 +31,15 @@ pub fn init_certified_assets() {
 
             if let Ok(public_asset) = get_public_asset_for_url(destination, false, false) {
                 if let Some((asset, _)) = public_asset.asset {
-                    asset_hashes.insert_rewrite_redirect_v2(
-                        &src_path,
-                        RESPONSE_STATUS_CODE_200,
-                        &asset,
-                    );
+                    asset_hashes.insert_rewrite_v2(&src_path, &asset);
                 }
             }
         }
 
         for (source, redirect) in state.heap.storage.config.redirects.clone() {
-            // TODO: only stars at the end of the source are supported - not in the middle or so. To be implemented in insert store
-            // hello** -> ok
-            // he**llo -> not ok
-            let src_path = [separator(&source), &source].join("").replace("*", "");
-
             if let Ok(public_asset) = get_public_asset_for_url(redirect.destination, false, false) {
                 if let Some((asset, _)) = public_asset.asset {
-                    asset_hashes.insert_rewrite_redirect_v2(
-                        &src_path,
-                        redirect.status_code,
-                        &asset,
-                    );
+                    asset_hashes.insert_redirect_v2(&source, redirect.status_code, &asset);
                 }
             }
         }

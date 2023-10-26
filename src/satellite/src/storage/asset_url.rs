@@ -104,7 +104,7 @@ fn get_alternative_asset(path: &String, token: &Option<String>) -> Option<(Asset
     None
 }
 
-pub fn get_public_asset_for_url_rewrite(
+fn get_public_asset_for_url_rewrite(
     path: &FullPath,
     token: &Option<String>,
 ) -> Option<PublicAsset> {
@@ -153,7 +153,7 @@ pub fn get_public_asset_for_url_rewrite(
     None
 }
 
-pub fn get_public_asset_for_url_redirect(
+fn get_public_asset_for_url_redirect(
     path: &FullPath,
     token: &Option<String>,
 ) -> Option<PublicAsset> {

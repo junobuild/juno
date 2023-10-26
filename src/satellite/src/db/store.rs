@@ -35,7 +35,7 @@ fn secure_delete_collection(collection: &CollectionKey) -> Result<(), String> {
     delete_collection_impl(collection, &rule.memory)
 }
 
-fn delete_collection_impl(collection: &CollectionKey, memory: &Memory) -> Result<(), String> {
+fn delete_collection_impl(collection: &CollectionKey, memory: &Option<Memory>) -> Result<(), String> {
     let empty = is_state_collection_empty(collection, memory)?;
 
     if !empty {

@@ -13,12 +13,12 @@ pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Re
                 return Err("The type of memory must be provided.".to_string());
             }
             Some(Memory::Heap) => {
-                if !matches!(&current_rule.memory, Memory::Heap) {
+                if !matches!(&current_rule.memory.clone().unwrap_or(Memory::default()), Memory::Heap) {
                     return Err("The type of memory cannot be modified to heap.".to_string());
                 }
             }
             Some(Memory::Stable) => {
-                if !matches!(&current_rule.memory, Memory::Stable) {
+                if !matches!(&current_rule.memory.clone().unwrap_or(Memory::default()), Memory::Stable) {
                     return Err("The type of memory cannot be modified to stable.".to_string());
                 }
             }

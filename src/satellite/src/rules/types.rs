@@ -13,14 +13,15 @@ pub mod rules {
         pub write: Permission,
         #[serde(default = "deserialize_default_as_true")]
         pub mutable_permissions: bool,
-        pub memory: Memory,
+        pub memory: Option<Memory>,
         pub max_size: Option<u128>,
         pub created_at: u64,
         pub updated_at: u64,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+    #[derive(CandidType, Serialize, Deserialize, Default, Clone, Debug)]
     pub enum Memory {
+        #[default]
         Heap,
         Stable,
     }

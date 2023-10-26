@@ -60,40 +60,35 @@ pub fn build_headers(
     encoding: &AssetEncoding,
     encoding_type: &EncodingType,
 ) -> Result<Vec<HeaderField>, &'static str> {
-    let certified_header = build_certified_headers(url);
+    let certified_header = build_certified_headers(url)?;
 
-    match certified_header {
-        Err(err) => Err(err),
-        Ok(certified_header) => {
-            let mut headers = asset.headers.clone();
+    let mut headers = asset.headers.clone();
 
-            // The Accept-Ranges HTTP response header is a marker used by the server to advertise its support for partial requests from the client for file downloads.
-            headers.push(HeaderField(
-                "accept-ranges".to_string(),
-                "bytes".to_string(),
-            ));
+    // The Accept-Ranges HTTP response header is a marker used by the server to advertise its support for partial requests from the client for file downloads.
+    headers.push(HeaderField(
+        "accept-ranges".to_string(),
+        "bytes".to_string(),
+    ));
 
-            headers.push(HeaderField(
-                "etag".to_string(),
-                format!("\"{}\"", encode(encoding.sha256)),
-            ));
+    headers.push(HeaderField(
+        "etag".to_string(),
+        format!("\"{}\"", encode(encoding.sha256)),
+    ));
 
-            // Header for certification
-            headers.push(certified_header);
+    // Header for certification
+    headers.push(certified_header);
 
-            if encoding_type.clone() != *ASSET_ENCODING_NO_COMPRESSION {
-                headers.push(HeaderField(
-                    "Content-Encoding".to_string(),
-                    encoding_type.to_string(),
-                ));
-            }
-
-            // Headers provided as configuration of the storage
-            let config_headers = build_config_headers(url);
-
-            Ok([headers, config_headers, security_headers()].concat())
-        }
+    if encoding_type.clone() != *ASSET_ENCODING_NO_COMPRESSION {
+        headers.push(HeaderField(
+            "Content-Encoding".to_string(),
+            encoding_type.to_string(),
+        ));
     }
+
+    // Headers provided as configuration of the storage
+    let config_headers = build_config_headers(url);
+
+    Ok([headers, config_headers, security_headers()].concat())
 }
 
 fn build_config_headers(requested_path: &str) -> Vec<HeaderField> {

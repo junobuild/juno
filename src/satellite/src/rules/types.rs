@@ -12,7 +12,7 @@ pub mod rules {
         pub read: Permission,
         pub write: Permission,
         #[serde(default = "deserialize_default_as_true")]
-        pub mutable_permissions: bool,
+        pub mutable_permissions: Option<bool>,
         pub memory: Option<Memory>,
         pub max_size: Option<u128>,
         pub created_at: u64,

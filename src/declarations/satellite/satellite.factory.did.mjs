@@ -140,12 +140,12 @@ export const idlFactory = ({ IDL }) => {
 		Managed: IDL.Null
 	});
 	const Rule = IDL.Record({
-		memory: Memory,
+		memory: IDL.Opt(Memory),
 		updated_at: IDL.Nat64,
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
 		created_at: IDL.Nat64,
-		mutable_permissions: IDL.Bool,
+		mutable_permissions: IDL.Opt(IDL.Bool),
 		write: Permission
 	});
 	const SetController = IDL.Record({

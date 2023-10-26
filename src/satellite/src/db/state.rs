@@ -16,8 +16,11 @@ pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
     }
 }
 
-pub fn is_collection_empty(collection: &CollectionKey, memory: &Memory) -> Result<bool, String> {
-    match memory {
+pub fn is_collection_empty(
+    collection: &CollectionKey,
+    memory: &Option<Memory>,
+) -> Result<bool, String> {
+    match memory.clone().unwrap_or(Memory::default()) {
         Memory::Heap => {
             STATE.with(|state| is_collection_empty_heap(collection, &state.borrow().heap.db.db))
         }
@@ -27,8 +30,11 @@ pub fn is_collection_empty(collection: &CollectionKey, memory: &Memory) -> Resul
     }
 }
 
-pub fn delete_collection(collection: &CollectionKey, memory: &Memory) -> Result<(), String> {
-    match memory {
+pub fn delete_collection(
+    collection: &CollectionKey,
+    memory: &Option<Memory>,
+) -> Result<(), String> {
+    match memory.clone().unwrap_or(Memory::default()) {
         Memory::Heap => STATE
             .with(|state| delete_collection_heap(collection, &mut state.borrow_mut().heap.db.db)),
         Memory::Stable => Ok(()),
@@ -82,7 +88,7 @@ fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result
 /// Documents
 
 pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Option<Doc>, String> {
-    match rule.memory {
+    match rule.memory.clone().unwrap_or(Memory::default()) {
         Memory::Heap => {
             STATE.with(|state| get_doc_heap(collection, key, &state.borrow().heap.db.db))
         }
@@ -93,7 +99,7 @@ pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Opt
 }
 
 pub fn get_docs(collection: &CollectionKey, rule: &Rule) -> Result<Vec<(Key, Doc)>, String> {
-    match rule.memory {
+    match rule.memory.clone().unwrap_or(Memory::default()) {
         Memory::Heap => STATE.with(|state| get_docs_heap(collection, &state.borrow().heap.db.db)),
         Memory::Stable => {
             STATE.with(|state| get_docs_stable(collection, &state.borrow().stable.db))
@@ -107,7 +113,7 @@ pub fn insert_doc(
     doc: &Doc,
     rule: &Rule,
 ) -> Result<Doc, String> {
-    match rule.memory {
+    match rule.memory.clone().unwrap_or(Memory::default()) {
         Memory::Heap => STATE.with(|state| {
             insert_doc_heap(collection, key, doc, &mut state.borrow_mut().heap.db.db)
         }),
@@ -118,7 +124,7 @@ pub fn insert_doc(
 }
 
 pub fn delete_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<(), String> {
-    match rule.memory {
+    match rule.memory.clone().unwrap_or(Memory::default()) {
         Memory::Heap => {
             STATE.with(|state| delete_doc_heap(collection, key, &mut state.borrow_mut().heap.db.db))
         }

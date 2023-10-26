@@ -13,12 +13,18 @@ pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Re
                 return Err("The type of memory must be provided.".to_string());
             }
             Some(Memory::Heap) => {
-                if !matches!(&current_rule.memory, Memory::Heap) {
+                if !matches!(
+                    &current_rule.memory.clone().unwrap_or(Memory::default()),
+                    Memory::Heap
+                ) {
                     return Err("The type of memory cannot be modified to heap.".to_string());
                 }
             }
             Some(Memory::Stable) => {
-                if !matches!(&current_rule.memory, Memory::Stable) {
+                if !matches!(
+                    &current_rule.memory.clone().unwrap_or(Memory::default()),
+                    Memory::Stable
+                ) {
                     return Err("The type of memory cannot be modified to stable.".to_string());
                 }
             }
@@ -40,9 +46,9 @@ pub fn assert_mutable_permissions(
                 return Err("The immutable permissions information must be provided.".to_string());
             }
             Some(mutable_permissions) => {
-                if current_rule.mutable_permissions != mutable_permissions
-                    && !current_rule.mutable_permissions
-                {
+                let current_permissions = current_rule.mutable_permissions.unwrap_or(true);
+
+                if current_permissions != mutable_permissions && !current_permissions {
                     return Err("The immutable permissions cannot be made mutable.".to_string());
                 }
             }
@@ -53,11 +59,15 @@ pub fn assert_mutable_permissions(
     match current_rule {
         None => (),
         Some(current_rule) => {
-            if current_rule.write != user_rule.write && !current_rule.mutable_permissions {
+            if current_rule.write != user_rule.write
+                && !current_rule.mutable_permissions.unwrap_or(true)
+            {
                 return Err("The write permission is immutable.".to_string());
             }
 
-            if current_rule.read != user_rule.read && !current_rule.mutable_permissions {
+            if current_rule.read != user_rule.read
+                && !current_rule.mutable_permissions.unwrap_or(true)
+            {
                 return Err("The read permission is immutable.".to_string());
             }
         }

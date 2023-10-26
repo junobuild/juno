@@ -13,7 +13,7 @@ import type { MemoryText, PermissionText } from '$lib/constants/rules.constants'
 import { MemoryHeap } from '$lib/constants/rules.constants';
 import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
-import { toNullable } from '$lib/utils/did.utils';
+import { fromNullable, toNullable } from '$lib/utils/did.utils';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
 import { isNullish, nonNullish } from '$lib/utils/utils';
@@ -82,7 +82,7 @@ export const setRule = async ({
 		write: permissionFromText(write),
 		updated_at: isNullish(rule) ? [] : [rule.updated_at],
 		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
-		memory: isNullish(rule) ? [memoryFromText(memory)] : [rule.memory ?? MemoryHeap],
+		memory: isNullish(rule) ? [memoryFromText(memory)] : [fromNullable(rule.memory) ?? MemoryHeap],
 		mutable_permissions: toNullable(mutablePermissions)
 	};
 

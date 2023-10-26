@@ -101,8 +101,8 @@ fn set_rule_impl(
         updated_at,
         read: user_rule.read,
         write: user_rule.write,
-        memory: user_rule.memory.unwrap_or(default_memory),
-        mutable_permissions: user_rule.mutable_permissions.unwrap_or(true),
+        memory: Some(user_rule.memory.unwrap_or(default_memory)),
+        mutable_permissions: Some(user_rule.mutable_permissions.unwrap_or(true)),
         max_size: user_rule.max_size,
     };
 

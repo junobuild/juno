@@ -88,7 +88,7 @@ fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result
 /// Documents
 
 pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Option<Doc>, String> {
-    match rule.memory.clone().unwrap_or(Memory::default()) {
+    match rule.mem() {
         Memory::Heap => {
             STATE.with(|state| get_doc_heap(collection, key, &state.borrow().heap.db.db))
         }
@@ -99,7 +99,7 @@ pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Opt
 }
 
 pub fn get_docs(collection: &CollectionKey, rule: &Rule) -> Result<Vec<(Key, Doc)>, String> {
-    match rule.memory.clone().unwrap_or(Memory::default()) {
+    match rule.mem() {
         Memory::Heap => STATE.with(|state| get_docs_heap(collection, &state.borrow().heap.db.db)),
         Memory::Stable => {
             STATE.with(|state| get_docs_stable(collection, &state.borrow().stable.db))
@@ -113,7 +113,7 @@ pub fn insert_doc(
     doc: &Doc,
     rule: &Rule,
 ) -> Result<Doc, String> {
-    match rule.memory.clone().unwrap_or(Memory::default()) {
+    match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             insert_doc_heap(collection, key, doc, &mut state.borrow_mut().heap.db.db)
         }),
@@ -124,7 +124,7 @@ pub fn insert_doc(
 }
 
 pub fn delete_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<(), String> {
-    match rule.memory.clone().unwrap_or(Memory::default()) {
+    match rule.mem() {
         Memory::Heap => {
             STATE.with(|state| delete_doc_heap(collection, key, &mut state.borrow_mut().heap.db.db))
         }

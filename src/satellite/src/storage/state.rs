@@ -55,7 +55,7 @@ pub fn get_public_asset_stable(
 }
 
 pub fn get_asset(collection: &CollectionKey, full_path: &FullPath, rule: &Rule) -> Option<Asset> {
-    match rule.memory.clone().unwrap_or(Memory::default()) {
+    match rule.mem() {
         Memory::Heap => {
             STATE.with(|state| get_asset_heap(full_path, &state.borrow().heap.storage.assets))
         }
@@ -84,7 +84,7 @@ pub fn insert_asset_encoding(
     asset: &mut Asset,
     rule: &Rule,
 ) {
-    match rule.memory.clone().unwrap_or(Memory::default()) {
+    match rule.mem() {
         Memory::Heap => {
             asset
                 .encodings
@@ -103,7 +103,7 @@ pub fn insert_asset_encoding(
 }
 
 pub fn insert_asset(collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule) {
-    match rule.memory.clone().unwrap_or(Memory::default()) {
+    match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             insert_asset_heap(
                 full_path,
@@ -127,7 +127,7 @@ pub fn delete_asset(
     full_path: &FullPath,
     rule: &Rule,
 ) -> Option<Asset> {
-    match rule.memory.clone().unwrap_or(Memory::default()) {
+    match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             delete_asset_heap(full_path, &mut state.borrow_mut().heap.storage.assets)
         }),
@@ -138,7 +138,7 @@ pub fn delete_asset(
 }
 
 pub fn get_assets(collection: &CollectionKey, rule: &Rule) -> Vec<Asset> {
-    match rule.memory.clone().unwrap_or(Memory::default()) {
+    match rule.mem() {
         Memory::Heap => {
             STATE.with(|state| get_assets_heap(collection, &state.borrow().heap.storage.assets))
         }

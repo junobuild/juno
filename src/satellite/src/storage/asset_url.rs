@@ -112,7 +112,7 @@ fn get_public_asset_for_url_rewrite(
         Some(rewrite) => {
             // Search for rewrite configured as an alternative path
             // e.g. rewrite /demo/* to /sample
-            let rewrite_asset = get_alternative_asset(&rewrite, &token);
+            let rewrite_asset = get_alternative_asset(&rewrite, token);
 
             match rewrite_asset {
                 None => (),

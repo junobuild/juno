@@ -34,13 +34,13 @@ pub fn build_asset_headers(
     headers
 }
 
-pub fn build_redirect_headers(location: &String) -> Vec<HeaderField> {
+pub fn build_redirect_headers(location: &str) -> Vec<HeaderField> {
     let mut headers = Vec::new();
 
     // Headers for security
     headers.extend(security_headers());
 
-    headers.push(HeaderField("Location".to_string(), location.clone()));
+    headers.push(HeaderField("Location".to_string(), location.to_string()));
 
     headers
 }

@@ -26,7 +26,7 @@ use crate::storage::constants::{
     RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_405,
     RESPONSE_STATUS_CODE_500,
 };
-use crate::storage::http::http::{
+use crate::storage::http::utils::{
     build_encodings, build_headers, build_redirect_headers_http, create_token, error_response,
     streaming_strategy,
 };
@@ -409,12 +409,12 @@ fn http_request(
                     )
                     .unwrap();
 
-                    return HttpResponse {
+                    HttpResponse {
                         body: Vec::new().clone(),
                         headers: headers.clone(),
                         status_code: redirect.status_code,
                         streaming_strategy: None,
-                    };
+                    }
                 }
             },
         },

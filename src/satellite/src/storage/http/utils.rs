@@ -1,6 +1,6 @@
 use crate::memory::STATE;
 use crate::rules::types::rules::Memory;
-use crate::storage::certification::certification::{
+use crate::storage::certification::cert::{
     build_asset_certificate_header, build_certified_expression,
 };
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
@@ -70,7 +70,7 @@ pub fn build_redirect_headers_http(
     location: &str,
     certificate_version: &Option<u16>,
 ) -> Result<Vec<HeaderField>, &'static str> {
-    let asset_headers = build_redirect_headers(&location.to_string());
+    let asset_headers = build_redirect_headers(location);
 
     extend_headers_with_certification(asset_headers, url, certificate_version, &None)
 }

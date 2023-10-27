@@ -159,7 +159,7 @@ impl CertifiedAssetHashes {
         &mut self,
         full_path: &FullPath,
         status_code: u16,
-        location: &String,
+        location: &str,
     ) {
         let headers = &build_redirect_headers(location);
 
@@ -250,7 +250,7 @@ impl CertifiedAssetHashes {
 
     fn delete_v2(&mut self, full_path: &FullPath, headers: &[HeaderField], sha256: Hash) {
         self.tree_v2.delete(&nested_tree_key(
-            &full_path,
+            full_path,
             headers,
             sha256,
             EXACT_MATCH_TERMINATOR,

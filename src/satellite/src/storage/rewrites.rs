@@ -16,12 +16,9 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<Strin
         redirects: _,
     } = config;
 
-    let matches = matching_urls(requested_path, &rewrites);
+    let matches = matching_urls(requested_path, rewrites);
 
-    match matches.first() {
-        None => None,
-        Some((_, destination)) => Some(destination.clone()),
-    }
+    matches.first().map(|(_, destination)| destination.clone())
 }
 
 pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<StorageConfigRedirect> {
@@ -31,12 +28,9 @@ pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<Stor
         redirects,
     } = config;
 
-    let matches = matching_urls(requested_path, &redirects);
+    let matches = matching_urls(requested_path, redirects);
 
-    match matches.first() {
-        None => None,
-        Some((_, destination)) => Some(destination.clone()),
-    }
+    matches.first().map(|(_, destination)| destination.clone())
 }
 
 fn matching_urls<T: Clone>(requested_path: &str, config: &HashMap<String, T>) -> Vec<(String, T)> {

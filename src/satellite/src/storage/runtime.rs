@@ -29,7 +29,7 @@ pub fn init_certified_assets() {
             // he**llo -> not ok
             let src_path = [separator(&source), &source].join("").replace("*", "");
 
-            if let Ok(public_asset) = get_public_asset_for_url(destination, false, false) {
+            if let Ok(public_asset) = get_public_asset_for_url(destination, false) {
                 if let Some((asset, _)) = public_asset.asset {
                     asset_hashes.insert_rewrite_v2(&src_path, &asset);
                 }
@@ -37,7 +37,7 @@ pub fn init_certified_assets() {
         }
 
         for (source, redirect) in state.heap.storage.config.redirects.clone() {
-            if let Ok(public_asset) = get_public_asset_for_url(redirect.destination, false, false) {
+            if let Ok(public_asset) = get_public_asset_for_url(redirect.destination, false) {
                 if let Some((asset, _)) = public_asset.asset {
                     asset_hashes.insert_redirect_v2(&source, redirect.status_code, &asset);
                 }

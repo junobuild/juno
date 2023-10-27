@@ -306,7 +306,7 @@ fn http_request(
         return error_response(405, "Method Not Allowed.".to_string());
     }
 
-    let result = get_public_asset_for_url(url, true, true);
+    let result = get_public_asset_for_url(url, true);
 
     match result {
         Ok(PublicAsset {

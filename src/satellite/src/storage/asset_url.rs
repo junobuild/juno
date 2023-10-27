@@ -10,8 +10,7 @@ use crate::storage::url::{map_alternative_paths, map_url};
 
 pub fn get_public_asset_for_url(
     url: String,
-    include_rewrite: bool,
-    include_redirect: bool,
+    include_alternative_paths: bool,
 ) -> Result<PublicAsset, &'static str> {
     if url.is_empty() {
         return Err("No url provided.");
@@ -56,24 +55,24 @@ pub fn get_public_asset_for_url(
         }
     }
 
-    if include_rewrite {
-        let rewrite_asset = get_public_asset_for_url_rewrite(&path, &token);
-
-        match rewrite_asset {
-            None => (),
-            Some(rewrite_asset) => {
-                return Ok(rewrite_asset);
-            }
-        }
-    }
-
-    if include_redirect {
+    if include_alternative_paths {
+        // Search for potential redirect
         let redirect_asset = get_public_asset_for_url_redirect(&path, &token);
 
         match redirect_asset {
             None => (),
             Some(redirect_asset) => {
                 return Ok(redirect_asset);
+            }
+        }
+
+        // Search for potential rewrite
+        let rewrite_asset = get_public_asset_for_url_rewrite(&path, &token);
+
+        match rewrite_asset {
+            None => (),
+            Some(rewrite_asset) => {
+                return Ok(rewrite_asset);
             }
         }
     }

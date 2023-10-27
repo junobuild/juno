@@ -9,7 +9,6 @@ mod msg;
 mod rules;
 mod storage;
 mod types;
-mod upgrade;
 
 use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
@@ -46,7 +45,6 @@ use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
 use crate::types::memory::Memory;
 use crate::types::state::{HeapState, RuntimeState, State};
-use crate::upgrade::types::upgrade::UpgradeHeapState;
 use ciborium::{from_reader, into_writer};
 use controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
@@ -104,10 +102,7 @@ fn pre_upgrade() {
 #[post_upgrade]
 fn post_upgrade() {
     // TODO: To be removed after introduction of stable structure
-    // TODO: Remove also UpgradeHeapState
-    let (upgrade_heap,): (UpgradeHeapState,) = stable_restore().unwrap();
-
-    let heap = HeapState::from(&upgrade_heap);
+    let (heap,): (HeapState,) = stable_restore().unwrap();
 
     STATE.with(|state| {
         *state.borrow_mut() = State {

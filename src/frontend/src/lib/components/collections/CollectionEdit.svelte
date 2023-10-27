@@ -41,12 +41,14 @@
 
 	let memory: MemoryText;
 	const initMemory = (text: MemoryText) => (memory = text);
-	$: initMemory(memoryToText(rule?.memory ?? (typeStorage ? MemoryStable : MemoryHeap)));
+	$: initMemory(
+		memoryToText(fromNullable(rule?.memory ?? []) ?? (typeStorage ? MemoryStable : MemoryHeap))
+	);
 
 	let currentImmutable: boolean;
 	let immutable: boolean;
 	const initMutable = (initialRule: Rule | undefined) => {
-		currentImmutable = !(initialRule?.mutable_permissions ?? true);
+		currentImmutable = !(fromNullable(initialRule?.mutable_permissions ?? []) ?? true);
 		immutable = currentImmutable;
 	};
 	$: initMutable($store.rule?.[1] ?? undefined);

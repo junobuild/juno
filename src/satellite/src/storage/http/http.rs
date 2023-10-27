@@ -4,7 +4,7 @@ use crate::storage::certification::certification::{
     build_asset_certificate_header, build_certified_expression,
 };
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
-use crate::storage::http::headers::build_asset_headers;
+use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
 use crate::storage::types::http::{
     CallbackFunc, HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
 };
@@ -58,9 +58,29 @@ pub fn build_headers(
     encoding: &AssetEncoding,
     encoding_type: &EncodingType,
     certificate_version: &Option<u16>,
-    destination: &Option<String>,
+    rewrite_destination: &Option<String>,
 ) -> Result<Vec<HeaderField>, &'static str> {
     let asset_headers = build_asset_headers(asset, encoding, encoding_type);
+
+    extend_headers_with_certification(asset_headers, url, certificate_version, rewrite_destination)
+}
+
+pub fn build_redirect_headers_http(
+    url: &str,
+    location: &str,
+    certificate_version: &Option<u16>,
+) -> Result<Vec<HeaderField>, &'static str> {
+    let asset_headers = build_redirect_headers(&location.to_string());
+
+    extend_headers_with_certification(asset_headers, url, certificate_version, &None)
+}
+
+fn extend_headers_with_certification(
+    asset_headers: Vec<HeaderField>,
+    url: &str,
+    certificate_version: &Option<u16>,
+    destination: &Option<String>,
+) -> Result<Vec<HeaderField>, &'static str> {
     let certified_header = build_certified_headers(url, certificate_version, destination)?;
     let certified_expression = build_certified_expression(&asset_headers, certificate_version)?;
 

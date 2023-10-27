@@ -1,6 +1,6 @@
 pub mod asset_url;
 mod certification;
-mod constants;
+pub mod constants;
 mod custom_domains;
 pub mod http;
 pub mod impls;

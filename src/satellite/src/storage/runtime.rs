@@ -2,7 +2,6 @@ use crate::memory::STATE;
 use crate::storage::asset_url::get_public_asset_for_url;
 use crate::storage::certification::certification::update_certified_data;
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
-use crate::storage::constants::RESPONSE_STATUS_CODE_200;
 use crate::storage::types::state::{Batches, Chunks, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Batch, Chunk};
 use crate::storage::url::separator;
@@ -37,11 +36,7 @@ pub fn init_certified_assets() {
         }
 
         for (source, redirect) in state.heap.storage.config.redirects.clone() {
-            if let Ok(public_asset) = get_public_asset_for_url(redirect.destination, false) {
-                if let Some((asset, _)) = public_asset.asset {
-                    asset_hashes.insert_redirect_v2(&source, redirect.status_code, &asset);
-                }
-            }
+            asset_hashes.insert_redirect_v2(&source, redirect.status_code, &redirect.location);
         }
 
         asset_hashes

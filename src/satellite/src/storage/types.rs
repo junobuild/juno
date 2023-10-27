@@ -249,13 +249,14 @@ pub mod config {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageConfigRedirect {
-        pub destination: String,
+        pub location: String,
         pub status_code: u16,
     }
 }
 
 pub mod http_request {
     use crate::rules::types::rules::Memory;
+    use crate::storage::types::config::StorageConfigRedirect;
     use crate::storage::types::store::Asset;
     use candid::{CandidType, Deserialize};
 
@@ -269,8 +270,14 @@ pub mod http_request {
     pub struct PublicAsset {
         pub url: String,
         pub asset: Option<(Asset, Memory)>,
-        pub destination: Option<String>,
-        pub status_code: u16,
+        pub routing: Routing,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub enum Routing {
+        Default,
+        Rewrite(String),
+        Redirect(StorageConfigRedirect),
     }
 }
 

@@ -7,12 +7,13 @@ use crate::storage::certification::tree_utils::{
 };
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::constants::{ENCODING_CERTIFICATION_ORDER, RESPONSE_STATUS_CODE_200};
-use crate::storage::http::headers::build_asset_headers;
+use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
 use crate::storage::types::http::HeaderField;
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::alternative_paths;
 use ic_certified_map::{fork, fork_hash, labeled, labeled_hash, AsHashTree, Hash, HashTree};
+use sha2::{Digest, Sha256};
 
 impl CertifiedAssetHashes {
     /// Returns the root_hash of the asset certification tree.
@@ -115,7 +116,13 @@ impl CertifiedAssetHashes {
         }
     }
 
-    fn insert_v2(&mut self, full_path: &FullPath, headers: &[HeaderField], status_code: u16, sha256: Hash) {
+    fn insert_v2(
+        &mut self,
+        full_path: &FullPath,
+        headers: &[HeaderField],
+        status_code: u16,
+        sha256: Hash,
+    ) {
         self.tree_v2.insert(
             &nested_tree_key(
                 full_path,
@@ -148,17 +155,44 @@ impl CertifiedAssetHashes {
         }
     }
 
-    pub(crate) fn insert_redirect_v2(&mut self, full_path: &FullPath, status_code: u16, asset: &Asset) {
-        for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
-            if let Some(encoding) = asset.encodings.get(*encoding_type) {
-                self.insert_v2(
-                    &full_path,
-                    &build_asset_headers(asset, encoding, &encoding_type.to_string()),
-                    status_code,
-                    encoding.sha256,
-                );
+    pub(crate) fn insert_redirect_v2(
+        &mut self,
+        full_path: &FullPath,
+        status_code: u16,
+        location: &String,
+    ) {
+        let headers = &build_redirect_headers(location);
 
-                return;
+        let sha256 = Sha256::digest(Vec::new().clone()).into();
+
+        self.tree_v2.insert(
+            &nested_tree_key(
+                full_path,
+                headers,
+                sha256,
+                EXACT_MATCH_TERMINATOR,
+                status_code,
+            ),
+            vec![],
+        );
+
+        let alt_paths = alternative_paths(full_path);
+
+        match alt_paths {
+            None => (),
+            Some(alt_paths) => {
+                for alt_path in alt_paths {
+                    self.tree_v2.insert(
+                        &nested_tree_key(
+                            &alt_path,
+                            headers,
+                            sha256,
+                            EXACT_MATCH_TERMINATOR,
+                            RESPONSE_STATUS_CODE_200,
+                        ),
+                        vec![],
+                    );
+                }
             }
         }
     }

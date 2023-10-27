@@ -1,16 +1,15 @@
 use crate::rules::types::rules::Memory;
-use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404};
 use crate::storage::rewrites::{redirect_url, rewrite_url};
 use crate::storage::state::get_config;
 use crate::storage::store::get_public_asset;
-use crate::storage::types::http_request::{MapUrl, PublicAsset};
+use crate::storage::types::http_request::{MapUrl, PublicAsset, Routing};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::{map_alternative_paths, map_url};
 
 pub fn get_public_asset_for_url(
     url: String,
-    include_alternative_paths: bool,
+    include_alternative_routing: bool,
 ) -> Result<PublicAsset, &'static str> {
     if url.is_empty() {
         return Err("No url provided.");
@@ -34,8 +33,7 @@ pub fn get_public_asset_for_url(
             return Ok(PublicAsset {
                 url: path.clone(),
                 asset: Some(alternative_asset),
-                destination: None,
-                status_code: RESPONSE_STATUS_CODE_200,
+                routing: Routing::Default,
             });
         }
     }
@@ -49,15 +47,14 @@ pub fn get_public_asset_for_url(
             return Ok(PublicAsset {
                 url: path,
                 asset,
-                destination: None,
-                status_code: RESPONSE_STATUS_CODE_200,
+                routing: Routing::Default,
             });
         }
     }
 
-    if include_alternative_paths {
+    if include_alternative_routing {
         // Search for potential redirect
-        let redirect_asset = get_public_asset_for_url_redirect(&path, &token);
+        let redirect_asset = get_public_asset_for_url_redirect(&path);
 
         match redirect_asset {
             None => (),
@@ -80,8 +77,7 @@ pub fn get_public_asset_for_url(
     Ok(PublicAsset {
         url: path,
         asset: None,
-        destination: None,
-        status_code: RESPONSE_STATUS_CODE_404,
+        routing: Routing::Default,
     })
 }
 
@@ -124,8 +120,7 @@ fn get_public_asset_for_url_rewrite(
                     return Some(PublicAsset {
                         url: path.clone(),
                         asset: rewrite_asset,
-                        destination: Some(rewrite),
-                        status_code: RESPONSE_STATUS_CODE_200,
+                        routing: Routing::Rewrite(rewrite),
                     });
                 }
             }
@@ -141,8 +136,7 @@ fn get_public_asset_for_url_rewrite(
                     return Some(PublicAsset {
                         url: path.clone(),
                         asset: rewrite_absolute_asset,
-                        destination: Some(rewrite),
-                        status_code: RESPONSE_STATUS_CODE_200,
+                        routing: Routing::Rewrite(rewrite),
                     });
                 }
             }
@@ -152,45 +146,17 @@ fn get_public_asset_for_url_rewrite(
     None
 }
 
-fn get_public_asset_for_url_redirect(
-    path: &FullPath,
-    token: &Option<String>,
-) -> Option<PublicAsset> {
+fn get_public_asset_for_url_redirect(path: &FullPath) -> Option<PublicAsset> {
     let redirect = redirect_url(path, &get_config());
 
     match redirect {
         None => (),
         Some(redirect) => {
-            let redirect_asset = get_alternative_asset(&redirect.destination, &token);
-
-            match redirect_asset {
-                None => (),
-                Some(_) => {
-                    return Some(PublicAsset {
-                        url: path.clone(),
-                        asset: redirect_asset,
-                        destination: Some(redirect.destination),
-                        status_code: redirect.status_code,
-                    });
-                }
-            }
-
-            // Rewrite is maybe configured as an absolute path
-            // e.g. write /demo/* to /sample.html
-            let rewrite_absolute_asset: Option<(Asset, Memory)> =
-                get_public_asset(redirect.destination.clone(), token.clone());
-
-            match rewrite_absolute_asset {
-                None => (),
-                Some(_) => {
-                    return Some(PublicAsset {
-                        url: path.clone(),
-                        asset: rewrite_absolute_asset,
-                        destination: Some(redirect.destination),
-                        status_code: redirect.status_code,
-                    });
-                }
-            }
+            return Some(PublicAsset {
+                url: path.clone(),
+                asset: None,
+                routing: Routing::Redirect(redirect),
+            });
         }
     }
 

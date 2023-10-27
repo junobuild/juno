@@ -34,6 +34,17 @@ pub fn build_asset_headers(
     headers
 }
 
+pub fn build_redirect_headers(location: &String) -> Vec<HeaderField> {
+    let mut headers = Vec::new();
+
+    // Headers for security
+    headers.extend(security_headers());
+
+    headers.push(HeaderField("Location".to_string(), location.clone()));
+
+    headers
+}
+
 // Source: NNS-dapp
 /// List of recommended security headers as per https://owasp.org/www-satellite-secure-headers/
 /// These headers enable browser security features (like limit access to platform apis and set

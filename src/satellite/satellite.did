@@ -94,12 +94,12 @@ type ListResults_1 = record {
 type Memory = variant { Heap; Stable };
 type Permission = variant { Controllers; Private; Public; Managed };
 type Rule = record {
-  memory : Memory;
+  memory : opt Memory;
   updated_at : nat64;
   max_size : opt nat;
   read : Permission;
   created_at : nat64;
-  mutable_permissions : bool;
+  mutable_permissions : opt bool;
   write : Permission;
 };
 type RulesType = variant { Db; Storage };

@@ -127,7 +127,7 @@ export const listRulesDeprecated = async ({
 		key,
 		{
 			...rule,
-			memory: { Heap: null }
+			memory: [{ Heap: null }]
 		} as Rule
 	]);
 };

@@ -83,7 +83,7 @@ impl CertifiedAssetHashes {
         }
     }
 
-    pub(crate) fn insert(&mut self, asset: &Asset) {
+    pub fn insert(&mut self, asset: &Asset) {
         let full_path = asset.key.full_path.clone();
 
         for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
@@ -155,49 +155,25 @@ impl CertifiedAssetHashes {
         }
     }
 
-    pub(crate) fn insert_redirect_v2(
+    pub fn insert_redirect_v2(
         &mut self,
         full_path: &FullPath,
         status_code: u16,
         location: &str,
     ) {
-        let headers = &build_redirect_headers(location);
+        let headers = build_redirect_headers(location);
 
         let sha256 = Sha256::digest(Vec::new().clone()).into();
 
-        self.tree_v2.insert(
-            &nested_tree_key(
-                full_path,
-                headers,
-                sha256,
-                EXACT_MATCH_TERMINATOR,
-                status_code,
-            ),
-            vec![],
+        self.insert_v2(
+            &full_path,
+            &headers,
+            status_code,
+            sha256,
         );
-
-        let alt_paths = alternative_paths(full_path);
-
-        match alt_paths {
-            None => (),
-            Some(alt_paths) => {
-                for alt_path in alt_paths {
-                    self.tree_v2.insert(
-                        &nested_tree_key(
-                            &alt_path,
-                            headers,
-                            sha256,
-                            EXACT_MATCH_TERMINATOR,
-                            status_code,
-                        ),
-                        vec![],
-                    );
-                }
-            }
-        }
     }
 
-    pub(crate) fn insert_rewrite_v2(&mut self, full_path: &FullPath, asset: &Asset) {
+    pub fn insert_rewrite_v2(&mut self, full_path: &FullPath, asset: &Asset) {
         for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
             if let Some(encoding) = asset.encodings.get(*encoding_type) {
                 self.tree_v2.insert(
@@ -216,7 +192,7 @@ impl CertifiedAssetHashes {
         }
     }
 
-    pub(crate) fn delete(&mut self, asset: &Asset) {
+    pub fn delete(&mut self, asset: &Asset) {
         let full_path = asset.key.full_path.clone();
 
         for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {

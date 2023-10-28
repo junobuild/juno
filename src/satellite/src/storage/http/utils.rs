@@ -65,7 +65,7 @@ pub fn build_headers(
     extend_headers_with_certification(asset_headers, url, certificate_version, rewrite_destination)
 }
 
-pub fn build_redirect_headers_http(
+pub fn build_redirect_headers_response(
     url: &str,
     location: &str,
     certificate_version: &Option<u16>,

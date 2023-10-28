@@ -4,7 +4,7 @@ use crate::storage::constants::{
     RESPONSE_STATUS_CODE_500,
 };
 use crate::storage::http::utils::{
-    build_encodings, build_headers, build_redirect_headers_http, streaming_strategy,
+    build_encodings, build_headers, build_redirect_headers_response, streaming_strategy,
 };
 use crate::storage::types::http::{HeaderField, HttpResponse};
 use crate::storage::types::store::Asset;
@@ -99,7 +99,7 @@ pub fn build_redirect_response(
     redirect: &StorageConfigRedirect,
 ) -> HttpResponse {
     let headers =
-        build_redirect_headers_http(&requested_url, &redirect.location, &certificate_version)
+        build_redirect_headers_response(&requested_url, &redirect.location, &certificate_version)
             .unwrap();
 
     HttpResponse {

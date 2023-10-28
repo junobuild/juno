@@ -14,6 +14,7 @@ pub fn nested_tree_key(
     headers: &[HeaderField],
     body_hash: Hash,
     terminator: &str,
+    status_code: u16,
 ) -> Vec<Blob> {
     let mut segments = nested_tree_path(full_path, terminator);
 
@@ -21,7 +22,7 @@ pub fn nested_tree_key(
     segments.push(Vec::from(expr_hash.as_slice()));
 
     segments.push(vec![]);
-    segments.push(Vec::from(response_hash(headers, 200, &body_hash)));
+    segments.push(Vec::from(response_hash(headers, status_code, &body_hash)));
 
     segments
 }

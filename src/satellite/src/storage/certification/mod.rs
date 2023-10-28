@@ -1,4 +1,4 @@
-pub mod certification;
+pub mod cert;
 mod constants;
 mod impls;
 mod tree;

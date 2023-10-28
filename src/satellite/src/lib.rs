@@ -22,8 +22,13 @@ use crate::rules::store::{
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
 use crate::storage::asset_url::get_public_asset_for_url;
-use crate::storage::http::http::{
-    build_encodings, build_headers, create_token, error_response, streaming_strategy,
+use crate::storage::constants::{
+    RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_405,
+    RESPONSE_STATUS_CODE_500,
+};
+use crate::storage::http::utils::{
+    build_encodings, build_headers, build_redirect_headers_http, create_token, error_response,
+    streaming_strategy,
 };
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
@@ -35,7 +40,7 @@ use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
-use crate::storage::types::http_request::PublicAsset;
+use crate::storage::types::http_request::{PublicAsset, Routing};
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
@@ -303,7 +308,7 @@ fn http_request(
     }: HttpRequest,
 ) -> HttpResponse {
     if method != "GET" {
-        return error_response(405, "Method Not Allowed.".to_string());
+        return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
     }
 
     let result = get_public_asset_for_url(url, true);
@@ -312,10 +317,17 @@ fn http_request(
         Ok(PublicAsset {
             asset,
             url: requested_url,
-            rewrite,
+            routing,
         }) => match asset {
             Some((asset, memory)) => {
                 let encodings = build_encodings(req_headers);
+
+                // TODO: refactor routing to include memory and asset within variant
+                let rewrite_destination = match routing {
+                    Routing::Default => None,
+                    Routing::Rewrite(rewrite) => Some(rewrite),
+                    Routing::Redirect(_) => None, // Should not happen
+                };
 
                 for encoding_type in encodings.iter() {
                     if let Some(encoding) = asset.encodings.get(encoding_type) {
@@ -325,7 +337,7 @@ fn http_request(
                             encoding,
                             encoding_type,
                             &certificate_version,
-                            &rewrite,
+                            &rewrite_destination,
                         );
 
                         let Asset {
@@ -350,7 +362,7 @@ fn http_request(
                                         return HttpResponse {
                                             body: body.clone(),
                                             headers: headers.clone(),
-                                            status_code: 200,
+                                            status_code: RESPONSE_STATUS_CODE_200,
                                             streaming_strategy: streaming_strategy(
                                                 key,
                                                 encoding,
@@ -361,13 +373,16 @@ fn http_request(
                                         }
                                     }
                                     None => {
-                                        error_response(500, "No chunks found.".to_string());
+                                        error_response(
+                                            RESPONSE_STATUS_CODE_500,
+                                            "No chunks found.".to_string(),
+                                        );
                                     }
                                 }
                             }
                             Err(err) => {
                                 return error_response(
-                                    405,
+                                    RESPONSE_STATUS_CODE_405,
                                     ["Permission denied. Invalid headers. ", err].join(""),
                                 );
                             }
@@ -375,12 +390,37 @@ fn http_request(
                     }
                 }
 
-                error_response(500, "No asset encoding found.".to_string())
+                error_response(
+                    RESPONSE_STATUS_CODE_500,
+                    "No asset encoding found.".to_string(),
+                )
             }
-            None => error_response(404, "No asset found.".to_string()),
+            None => match routing {
+                Routing::Default => {
+                    error_response(RESPONSE_STATUS_CODE_404, "No asset found.".to_string())
+                }
+                Routing::Rewrite(_) => {
+                    error_response(RESPONSE_STATUS_CODE_404, "No asset found.".to_string())
+                }
+                Routing::Redirect(redirect) => {
+                    let headers = build_redirect_headers_http(
+                        &requested_url,
+                        &redirect.location,
+                        &certificate_version,
+                    )
+                    .unwrap();
+
+                    HttpResponse {
+                        body: Vec::new().clone(),
+                        headers: headers.clone(),
+                        status_code: redirect.status_code,
+                        streaming_strategy: None,
+                    }
+                }
+            },
         },
         Err(err) => error_response(
-            405,
+            RESPONSE_STATUS_CODE_405,
             ["Permission denied. Cannot perform this operation. ", err].join(""),
         ),
     }

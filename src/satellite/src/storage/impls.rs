@@ -1,3 +1,4 @@
+use crate::storage::types::config::{StorageConfig, StorageConfigRedirects};
 use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::{StableEncodingChunkKey, StableKey};
 use crate::storage::types::store::{Asset, AssetEncoding};
@@ -30,6 +31,14 @@ impl From<&Vec<Blob>> for AssetEncoding {
             total_length,
             sha256,
         }
+    }
+}
+
+impl StorageConfig {
+    pub fn unwrap_redirects(&self) -> StorageConfigRedirects {
+        self.redirects
+            .clone()
+            .unwrap_or(StorageConfigRedirects::default())
     }
 }
 

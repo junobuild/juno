@@ -267,17 +267,29 @@ pub mod http_request {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct PublicAsset {
-        pub url: String,
-        pub asset: Option<(Asset, Memory)>,
-        pub routing: Routing,
+    pub enum Routing {
+        Default(RoutingDefault),
+        Rewrite(RoutingRewrite),
+        Redirect(RoutingRedirect),
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub enum Routing {
-        Default,
-        Rewrite(String),
-        Redirect(StorageConfigRedirect),
+    pub struct RoutingDefault {
+        pub url: String,
+        pub asset: Option<(Asset, Memory)>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct RoutingRewrite {
+        pub url: String,
+        pub asset: Option<(Asset, Memory)>,
+        pub destination: String,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct RoutingRedirect {
+        pub url: String,
+        pub redirect: StorageConfigRedirect,
     }
 }
 

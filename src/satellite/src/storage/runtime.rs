@@ -1,7 +1,8 @@
 use crate::memory::STATE;
-use crate::storage::asset_url::get_public_asset_for_url;
 use crate::storage::certification::cert::update_certified_data;
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
+use crate::storage::routing::get_routing;
+use crate::storage::types::http_request::{Routing, RoutingDefault};
 use crate::storage::types::state::{Batches, Chunks, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Batch, Chunk};
 use crate::storage::url::separator;
@@ -28,9 +29,15 @@ pub fn init_certified_assets() {
             // he**llo -> not ok
             let src_path = [separator(&source), &source].join("").replace('*', "");
 
-            if let Ok(public_asset) = get_public_asset_for_url(destination, false) {
-                if let Some((asset, _)) = public_asset.asset {
-                    asset_hashes.insert_rewrite_v2(&src_path, &asset);
+            if let Ok(routing) = get_routing(destination, false) {
+                match routing {
+                    Routing::Default(RoutingDefault { url: _, asset }) => {
+                        if let Some((asset, _)) = asset {
+                            asset_hashes.insert_rewrite_v2(&src_path, &asset);
+                        }
+                    }
+                    Routing::Rewrite(_) => (),
+                    Routing::Redirect(_) => (),
                 }
             }
         }

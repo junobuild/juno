@@ -21,15 +21,10 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::storage::asset_url::get_public_asset_for_url;
-use crate::storage::constants::{
-    RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_405,
-    RESPONSE_STATUS_CODE_500,
-};
-use crate::storage::http::utils::{
-    build_encodings, build_headers, build_redirect_headers_http, create_token, error_response,
-    streaming_strategy,
-};
+use crate::storage::constants::RESPONSE_STATUS_CODE_405;
+use crate::storage::http::response::{build_asset_response, build_redirect_response};
+use crate::storage::http::utils::{create_token, error_response};
+use crate::storage::routing::get_routing;
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
     get_config as get_storage_config, get_content_chunks, get_custom_domains, get_public_asset,
@@ -40,11 +35,12 @@ use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
-use crate::storage::types::http_request::{PublicAsset, Routing};
+use crate::storage::types::http_request::{
+    Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
+};
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
-use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
@@ -311,113 +307,27 @@ fn http_request(
         return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
     }
 
-    let result = get_public_asset_for_url(url, true);
+    let result = get_routing(url, true);
 
     match result {
-        Ok(PublicAsset {
-            asset,
-            url: requested_url,
-            routing,
-        }) => match asset {
-            Some((asset, memory)) => {
-                let encodings = build_encodings(req_headers);
-
-                // TODO: refactor routing to include memory and asset within variant
-                let rewrite_destination = match routing {
-                    Routing::Default => None,
-                    Routing::Rewrite(rewrite) => Some(rewrite),
-                    Routing::Redirect(_) => None, // Should not happen
-                };
-
-                for encoding_type in encodings.iter() {
-                    if let Some(encoding) = asset.encodings.get(encoding_type) {
-                        let headers = build_headers(
-                            &requested_url,
-                            &asset,
-                            encoding,
-                            encoding_type,
-                            &certificate_version,
-                            &rewrite_destination,
-                        );
-
-                        let Asset {
-                            key,
-                            headers: _,
-                            encodings: _,
-                            created_at: _,
-                            updated_at: _,
-                        } = &asset;
-
-                        match headers {
-                            Ok(headers) => {
-                                let body = get_content_chunks(encoding, 0, &memory);
-
-                                // TODO: support for HTTP response 304
-                                // On hold til DFINITY foundation implements:
-                                // "Add etag support to icx-proxy" - https://dfinity.atlassian.net/browse/BOUN-446
-                                // See const STATUS_CODES_TO_CERTIFY: [u16; 2] = [200, 304]; in sdk certified asset canister for implementation reference
-
-                                match body {
-                                    Some(body) => {
-                                        return HttpResponse {
-                                            body: body.clone(),
-                                            headers: headers.clone(),
-                                            status_code: RESPONSE_STATUS_CODE_200,
-                                            streaming_strategy: streaming_strategy(
-                                                key,
-                                                encoding,
-                                                encoding_type,
-                                                &headers,
-                                                &memory,
-                                            ),
-                                        }
-                                    }
-                                    None => {
-                                        error_response(
-                                            RESPONSE_STATUS_CODE_500,
-                                            "No chunks found.".to_string(),
-                                        );
-                                    }
-                                }
-                            }
-                            Err(err) => {
-                                return error_response(
-                                    RESPONSE_STATUS_CODE_405,
-                                    ["Permission denied. Invalid headers. ", err].join(""),
-                                );
-                            }
-                        }
-                    }
-                }
-
-                error_response(
-                    RESPONSE_STATUS_CODE_500,
-                    "No asset encoding found.".to_string(),
-                )
+        Ok(routing) => match routing {
+            Routing::Default(RoutingDefault { url, asset }) => {
+                build_asset_response(url, req_headers, certificate_version, asset, None)
             }
-            None => match routing {
-                Routing::Default => {
-                    error_response(RESPONSE_STATUS_CODE_404, "No asset found.".to_string())
-                }
-                Routing::Rewrite(_) => {
-                    error_response(RESPONSE_STATUS_CODE_404, "No asset found.".to_string())
-                }
-                Routing::Redirect(redirect) => {
-                    let headers = build_redirect_headers_http(
-                        &requested_url,
-                        &redirect.location,
-                        &certificate_version,
-                    )
-                    .unwrap();
-
-                    HttpResponse {
-                        body: Vec::new().clone(),
-                        headers: headers.clone(),
-                        status_code: redirect.status_code,
-                        streaming_strategy: None,
-                    }
-                }
-            },
+            Routing::Rewrite(RoutingRewrite {
+                url,
+                asset,
+                destination,
+            }) => build_asset_response(
+                url,
+                req_headers,
+                certificate_version,
+                asset,
+                Some(destination),
+            ),
+            Routing::Redirect(RoutingRedirect { url, redirect }) => {
+                build_redirect_response(url, certificate_version, &redirect)
+            }
         },
         Err(err) => error_response(
             RESPONSE_STATUS_CODE_405,

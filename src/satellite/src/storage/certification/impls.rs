@@ -160,7 +160,7 @@ impl CertifiedAssetHashes {
 
         let sha256 = Sha256::digest(Vec::new().clone()).into();
 
-        self.insert_v2(&full_path, &headers, status_code, sha256);
+        self.insert_v2(full_path, &headers, status_code, sha256);
     }
 
     pub fn insert_rewrite_v2(&mut self, full_path: &FullPath, asset: &Asset) {

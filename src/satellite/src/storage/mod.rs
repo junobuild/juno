@@ -1,10 +1,10 @@
-pub mod asset_url;
 mod certification;
 pub mod constants;
 mod custom_domains;
 pub mod http;
 pub mod impls;
 pub mod rewrites;
+pub mod routing;
 mod runtime;
 mod state;
 pub mod store;

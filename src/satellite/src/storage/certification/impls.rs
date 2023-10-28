@@ -188,7 +188,7 @@ impl CertifiedAssetHashes {
                             headers,
                             sha256,
                             EXACT_MATCH_TERMINATOR,
-                            RESPONSE_STATUS_CODE_200,
+                            status_code,
                         ),
                         vec![],
                     );

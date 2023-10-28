@@ -22,13 +22,9 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<Strin
 }
 
 pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<StorageConfigRedirect> {
-    let StorageConfig {
-        headers: _,
-        rewrites: _,
-        redirects,
-    } = config;
+    let redirects = config.unwrap_redirects();
 
-    let matches = matching_urls(requested_path, redirects);
+    let matches = matching_urls(requested_path, &redirects);
 
     matches.first().map(|(_, destination)| destination.clone())
 }

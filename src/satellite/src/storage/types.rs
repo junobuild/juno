@@ -244,7 +244,7 @@ pub mod config {
     pub struct StorageConfig {
         pub headers: StorageConfigHeaders,
         pub rewrites: StorageConfigRewrites,
-        pub redirects: StorageConfigRedirects,
+        pub redirects: Option<StorageConfigRedirects>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

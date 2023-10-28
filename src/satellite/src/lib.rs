@@ -22,8 +22,10 @@ use crate::rules::store::{
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
 use crate::storage::constants::RESPONSE_STATUS_CODE_405;
-use crate::storage::http::response::{build_asset_response, build_redirect_response};
-use crate::storage::http::utils::{create_token, error_response};
+use crate::storage::http::response::{
+    build_asset_response, build_redirect_response, error_response,
+};
+use crate::storage::http::utils::create_token;
 use crate::storage::routing::get_routing;
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,

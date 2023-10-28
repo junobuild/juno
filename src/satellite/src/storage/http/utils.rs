@@ -6,7 +6,7 @@ use crate::storage::certification::cert::{
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
 use crate::storage::types::http::{
-    CallbackFunc, HeaderField, HttpResponse, StreamingCallbackToken, StreamingStrategy,
+    CallbackFunc, HeaderField, StreamingCallbackToken, StreamingStrategy,
 };
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, EncodingType};
@@ -133,13 +133,4 @@ pub fn build_encodings(headers: Vec<HeaderField>) -> Vec<String> {
     encodings.push(ASSET_ENCODING_NO_COMPRESSION.to_string());
 
     encodings
-}
-
-pub fn error_response(status_code: u16, body: String) -> HttpResponse {
-    HttpResponse {
-        body: body.as_bytes().to_vec(),
-        headers: Vec::new(),
-        status_code,
-        streaming_strategy: None,
-    }
 }

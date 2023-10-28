@@ -4,7 +4,7 @@ use crate::storage::constants::{
     RESPONSE_STATUS_CODE_500,
 };
 use crate::storage::http::utils::{
-    build_encodings, build_headers, build_redirect_headers_http, error_response, streaming_strategy,
+    build_encodings, build_headers, build_redirect_headers_http, streaming_strategy,
 };
 use crate::storage::types::http::{HeaderField, HttpResponse};
 use crate::storage::types::store::Asset;
@@ -106,6 +106,15 @@ pub fn build_redirect_response(
         body: Vec::new().clone(),
         headers: headers.clone(),
         status_code: redirect.status_code,
+        streaming_strategy: None,
+    }
+}
+
+pub fn error_response(status_code: u16, body: String) -> HttpResponse {
+    HttpResponse {
+        body: body.as_bytes().to_vec(),
+        headers: Vec::new(),
+        status_code,
         streaming_strategy: None,
     }
 }

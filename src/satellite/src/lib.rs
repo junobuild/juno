@@ -322,6 +322,7 @@ fn http_request(
             Some((asset, memory)) => {
                 let encodings = build_encodings(req_headers);
 
+                // TODO: refactor routing to include memory and asset within variant
                 let rewrite_destination = match routing {
                     Routing::Default => None,
                     Routing::Rewrite(rewrite) => Some(rewrite),

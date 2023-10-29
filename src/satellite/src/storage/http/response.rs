@@ -1,6 +1,6 @@
 use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
-    RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_405,
+    RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_406,
     RESPONSE_STATUS_CODE_500,
 };
 use crate::storage::http::utils::{
@@ -76,7 +76,7 @@ pub fn build_asset_response(
                         }
                         Err(err) => {
                             return error_response(
-                                RESPONSE_STATUS_CODE_405,
+                                RESPONSE_STATUS_CODE_406,
                                 ["Permission denied. Invalid headers. ", err].join(""),
                             );
                         }

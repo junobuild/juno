@@ -12,4 +12,5 @@ pub static REWRITE_TO_ROOT_INDEX_HTML: (&str, &str) = ("**", "/index.html");
 pub static RESPONSE_STATUS_CODE_200: u16 = 200;
 pub static RESPONSE_STATUS_CODE_404: u16 = 404;
 pub static RESPONSE_STATUS_CODE_405: u16 = 405;
+pub static RESPONSE_STATUS_CODE_406: u16 = 406;
 pub static RESPONSE_STATUS_CODE_500: u16 = 500;

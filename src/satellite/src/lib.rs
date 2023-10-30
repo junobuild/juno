@@ -284,10 +284,6 @@ fn del_custom_domain(domain_name: DomainName) {
 }
 
 ///
-/// Storage
-///
-
-///
 /// Http
 ///
 
@@ -417,7 +413,7 @@ fn http_request_streaming_callback(
 }
 
 //
-// Upload
+// Storage
 //
 
 #[update]
@@ -449,10 +445,6 @@ fn commit_asset_upload(commit: CommitBatch) {
 
     commit_batch(caller, commit).unwrap_or_else(|e| trap(&e));
 }
-
-//
-// List and delete
-//
 
 #[query]
 fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {

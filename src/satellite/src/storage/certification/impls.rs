@@ -2,9 +2,7 @@ use crate::storage::certification::constants::{
     EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2, WILDCARD_MATCH_TERMINATOR,
 };
 use crate::storage::certification::tree::merge_hash_trees;
-use crate::storage::certification::tree_utils::{
-    nested_tree_expr_path, nested_tree_key, nested_tree_path,
-};
+use crate::storage::certification::tree_utils::{fallback_paths, nested_tree_expr_path, nested_tree_key, nested_tree_path};
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::constants::{ENCODING_CERTIFICATION_ORDER, RESPONSE_STATUS_CODE_200};
 use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
@@ -50,25 +48,19 @@ impl CertifiedAssetHashes {
 
         // Witness incorrect url: e.g. /1234
         let segments = nested_tree_path(absolute_path, EXACT_MATCH_TERMINATOR);
-        let witness = self.tree_v2.witness(&segments);
+        let absence_proof = self.tree_v2.witness(&segments);
 
-        // Witness: http_expr space <*>
+        // Possible fallback paths
         let not_found_segments = nested_tree_path(rewrite, WILDCARD_MATCH_TERMINATOR);
-        let not_found_witness = self.tree_v2.witness(&not_found_segments);
+        let fallback_paths = fallback_paths(not_found_segments);
 
-        let mut combined_proof = merge_hash_trees(witness, not_found_witness.clone());
-
-        let mut partial_path = segments.clone();
-        while partial_path.pop().is_some() && !partial_path.is_empty() {
-            // Push <*>
-            partial_path.push(WILDCARD_MATCH_TERMINATOR.as_bytes().to_vec());
-
-            let proof = self.tree_v2.witness(&partial_path);
-
-            combined_proof = merge_hash_trees(combined_proof, proof);
-
-            partial_path.pop(); // remove <*>
-        }
+        // Witness fallback paths with the absence of proof to validate it can be rewritten
+        let combined_proof = fallback_paths
+            .into_iter()
+            .fold(absence_proof, |accumulator, path| {
+                let new_proof = self.tree_v2.witness(&[path]);
+                merge_hash_trees(accumulator, new_proof)
+            });
 
         fork(
             HashTree::Pruned(labeled_hash(LABEL_ASSETS_V1, &self.tree_v1.root_hash())),

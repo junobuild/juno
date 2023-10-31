@@ -1,7 +1,4 @@
-use crate::storage::certification::constants::{
-    IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER, IC_STATUS_CODE_PSEUDO_HEADER,
-    LABEL_HTTP_EXPR,
-};
+use crate::storage::certification::constants::{EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER, IC_STATUS_CODE_PSEUDO_HEADER, LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR};
 use crate::storage::types::http::HeaderField;
 use crate::storage::types::state::FullPath;
 use crate::types::core::Blob;
@@ -39,6 +36,24 @@ pub fn nested_tree_path(full_path: &str, terminator: &str) -> Vec<Blob> {
     segments.push(terminator.as_bytes().to_vec());
 
     segments
+}
+
+pub fn fallback_paths(mut paths: Vec<Blob>) -> Vec<Blob> {
+    let mut fallback_paths = Vec::new();
+
+    // starting at 1 because "http_expr" is always the starting element
+    for i in 1..paths.len() {
+        let mut without_trailing_slash: Vec<Blob> = paths.as_slice()[0..i].to_vec();
+        let mut with_trailing_slash = without_trailing_slash.clone();
+        without_trailing_slash.push(EXACT_MATCH_TERMINATOR.as_bytes().to_vec());
+        with_trailing_slash.push("".as_bytes().to_vec());
+        with_trailing_slash.push(WILDCARD_MATCH_TERMINATOR.as_bytes().to_vec());
+
+        fallback_paths.extend(without_trailing_slash);
+        fallback_paths.extend(with_trailing_slash);
+    }
+
+    fallback_paths
 }
 
 pub fn nested_tree_expr_path(absolute_path: &str, terminator: &str) -> Vec<String> {

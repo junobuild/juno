@@ -2,7 +2,9 @@ use crate::storage::certification::constants::{
     EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2, WILDCARD_MATCH_TERMINATOR,
 };
 use crate::storage::certification::tree::merge_hash_trees;
-use crate::storage::certification::tree_utils::{fallback_paths, nested_tree_expr_path, nested_tree_key, nested_tree_path};
+use crate::storage::certification::tree_utils::{
+    fallback_paths, nested_tree_expr_path, nested_tree_key, nested_tree_path,
+};
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::constants::{ENCODING_CERTIFICATION_ORDER, RESPONSE_STATUS_CODE_200};
 use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
@@ -68,10 +70,16 @@ impl CertifiedAssetHashes {
         )
     }
 
-    pub fn expr_path_v2(&self, absolute_path: &str, rewrite: &Option<String>) -> Vec<String> {
-        match rewrite {
+    pub fn expr_path_v2(
+        &self,
+        absolute_path: &str,
+        rewrite_source: &Option<String>,
+    ) -> Vec<String> {
+        match rewrite_source {
             None => nested_tree_expr_path(absolute_path, EXACT_MATCH_TERMINATOR),
-            Some(rewrite) => nested_tree_expr_path(rewrite, WILDCARD_MATCH_TERMINATOR),
+            Some(rewrite_source) => {
+                nested_tree_expr_path(rewrite_source, WILDCARD_MATCH_TERMINATOR)
+            }
         }
     }
 

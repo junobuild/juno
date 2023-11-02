@@ -27,7 +27,9 @@ pub fn init_certified_assets() {
             // TODO: only stars at the end of the source are supported - not in the middle or so. To be implemented in insert store
             // hello** -> ok
             // he**llo -> not ok
-            let src_path = [separator(&source), &source].join("").replace('*', "");
+            let src_path = [separator(source.as_str()), &source]
+                .join("")
+                .replace('*', "");
 
             if let Ok(routing) = get_routing(destination, false) {
                 match routing {

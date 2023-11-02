@@ -283,7 +283,7 @@ pub mod http_request {
     pub struct RoutingRewrite {
         pub url: String,
         pub asset: Option<(Asset, Memory)>,
-        pub destination: String,
+        pub source: String,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

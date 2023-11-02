@@ -103,9 +103,11 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
     match rewrite {
         None => (),
         Some(rewrite) => {
+            let (source, destination) = rewrite;
+
             // Search for rewrite configured as an alternative path
             // e.g. rewrite /demo/* to /sample
-            let rewrite_asset = get_alternative_asset(&rewrite, token);
+            let rewrite_asset = get_alternative_asset(&destination, token);
 
             match rewrite_asset {
                 None => (),
@@ -113,7 +115,7 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
                     return Some(Routing::Rewrite(RoutingRewrite {
                         url: path.clone(),
                         asset: rewrite_asset,
-                        destination: rewrite,
+                        source,
                     }));
                 }
             }
@@ -121,7 +123,7 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
             // Rewrite is maybe configured as an absolute path
             // e.g. write /demo/* to /sample.html
             let rewrite_absolute_asset: Option<(Asset, Memory)> =
-                get_public_asset(rewrite.clone(), token.clone());
+                get_public_asset(destination.clone(), token.clone());
 
             match rewrite_absolute_asset {
                 None => (),
@@ -129,7 +131,7 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
                     return Some(Routing::Rewrite(RoutingRewrite {
                         url: path.clone(),
                         asset: rewrite_absolute_asset,
-                        destination: rewrite,
+                        source,
                     }));
                 }
             }

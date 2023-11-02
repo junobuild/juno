@@ -1,4 +1,7 @@
-use crate::storage::certification::constants::{EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER, IC_STATUS_CODE_PSEUDO_HEADER, LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR};
+use crate::storage::certification::constants::{
+    EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER,
+    IC_STATUS_CODE_PSEUDO_HEADER, LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR,
+};
 use crate::storage::types::http::HeaderField;
 use crate::storage::types::state::FullPath;
 use crate::types::core::Blob;
@@ -38,7 +41,7 @@ pub fn nested_tree_path(full_path: &str, terminator: &str) -> Vec<Blob> {
     segments
 }
 
-pub fn fallback_paths(mut paths: Vec<Blob>) -> Vec<Blob> {
+pub fn fallback_paths(paths: Vec<Blob>) -> Vec<Blob> {
     let mut fallback_paths = Vec::new();
 
     // starting at 1 because "http_expr" is always the starting element

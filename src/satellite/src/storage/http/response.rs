@@ -17,7 +17,7 @@ pub fn build_asset_response(
     requested_headers: Vec<HeaderField>,
     certificate_version: Option<u16>,
     asset: Option<(Asset, Memory)>,
-    rewrite_destination: Option<String>,
+    rewrite_source: Option<String>,
 ) -> HttpResponse {
     match asset {
         Some((asset, memory)) => {
@@ -31,7 +31,7 @@ pub fn build_asset_response(
                         encoding,
                         encoding_type,
                         &certificate_version,
-                        &rewrite_destination,
+                        &rewrite_source,
                     );
 
                     let Asset {

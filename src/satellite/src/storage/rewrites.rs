@@ -1,5 +1,6 @@
 use crate::storage::constants::REWRITE_TO_ROOT_INDEX_HTML;
 use crate::storage::types::config::{StorageConfig, StorageConfigRedirect, StorageConfigRewrites};
+use crate::storage::url::separator;
 use globset::Glob;
 use std::cmp::Ordering;
 use std::collections::HashMap;
@@ -9,7 +10,7 @@ pub fn init_rewrites() -> StorageConfigRewrites {
     HashMap::from([(source.to_string(), destination.to_string())])
 }
 
-pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<String> {
+pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<(String, String)> {
     let StorageConfig {
         headers: _,
         rewrites,
@@ -18,7 +19,13 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<Strin
 
     let matches = matching_urls(requested_path, rewrites);
 
-    matches.first().map(|(_, destination)| destination.clone())
+    matches.first().map(|(source, destination)| {
+        let src_path = [separator(source.as_str()), source]
+            .join("")
+            .replace('*', "");
+
+        (src_path.clone(), destination.clone())
+    })
 }
 
 pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<StorageConfigRedirect> {

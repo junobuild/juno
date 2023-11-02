@@ -312,17 +312,9 @@ fn http_request(
             Routing::Default(RoutingDefault { url, asset }) => {
                 build_asset_response(url, req_headers, certificate_version, asset, None)
             }
-            Routing::Rewrite(RoutingRewrite {
-                url,
-                asset,
-                destination,
-            }) => build_asset_response(
-                url,
-                req_headers,
-                certificate_version,
-                asset,
-                Some(destination),
-            ),
+            Routing::Rewrite(RoutingRewrite { url, asset, source }) => {
+                build_asset_response(url, req_headers, certificate_version, asset, Some(source))
+            }
             Routing::Redirect(RoutingRedirect { url, redirect }) => {
                 build_redirect_response(url, certificate_version, &redirect)
             }

@@ -19,7 +19,7 @@ pub fn build_asset_certificate_header(
     asset_hashes: &CertifiedAssetHashes,
     url: String,
     certificate_version: &Option<u16>,
-    destination: &Option<String>,
+    rewrite_source: &Option<String>,
 ) -> Result<HeaderField, &'static str> {
     let certificate = data_certificate();
 
@@ -33,7 +33,7 @@ pub fn build_asset_certificate_header(
                 &certificate,
                 asset_hashes,
                 &url,
-                destination,
+                rewrite_source,
             ),
             _ => Err("Unsupported certificate version to certify headers."),
         },
@@ -82,11 +82,11 @@ fn build_asset_certificate_header_v2_impl(
     certificate: &Blob,
     asset_hashes: &CertifiedAssetHashes,
     url: &str,
-    destination: &Option<String>,
+    rewrite_source: &Option<String>,
 ) -> Result<HeaderField, &'static str> {
     assert!(url.starts_with('/'));
 
-    let tree = match destination {
+    let tree = match rewrite_source {
         None => asset_hashes.witness_v2(url),
         Some(destination) => asset_hashes.witness_rewrite_v2(url, destination),
     };
@@ -101,7 +101,7 @@ fn build_asset_certificate_header_v2_impl(
             let mut expr_path_serializer = Serializer::new(vec![]);
             expr_path_serializer.self_describe().unwrap();
 
-            let path = asset_hashes.expr_path_v2(url, destination);
+            let path = asset_hashes.expr_path_v2(url, rewrite_source);
             let result_path = path.serialize(&mut expr_path_serializer);
 
             match result_path {

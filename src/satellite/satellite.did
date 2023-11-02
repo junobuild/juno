@@ -51,6 +51,7 @@ type HttpRequest = record {
   method : text;
   body : vec nat8;
   headers : vec record { text; text };
+  certificate_version : opt nat16;
 };
 type HttpResponse = record {
   body : vec nat8;
@@ -128,7 +129,9 @@ type SetRule = record {
 type StorageConfig = record {
   rewrites : vec record { text; text };
   headers : vec record { text; vec record { text; text } };
+  redirects : opt vec record { text; StorageConfigRedirect };
 };
+type StorageConfigRedirect = record { status_code : nat16; location : text };
 type StreamingCallbackHttpResponse = record {
   token : opt StreamingCallbackToken;
   body : vec nat8;

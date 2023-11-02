@@ -20,12 +20,14 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<(Stri
     let matches = matching_urls(requested_path, rewrites);
 
     matches.first().map(|(source, destination)| {
-        let src_path = [separator(source.as_str()), source]
-            .join("")
-            .replace('*', "");
-
-        (src_path.clone(), destination.clone())
+        (rewrite_source_to_path(source).clone(), destination.clone())
     })
+}
+
+pub fn rewrite_source_to_path(source: &String) -> String {
+    [separator(source.as_str()), source]
+        .join("")
+        .replace('*', "")
 }
 
 pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<StorageConfigRedirect> {

@@ -5,9 +5,9 @@ use crate::storage::routing::get_routing;
 use crate::storage::types::http_request::{Routing, RoutingDefault};
 use crate::storage::types::state::{Batches, Chunks, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Batch, Chunk};
-use crate::storage::url::separator;
 use crate::types::state::{RuntimeState, State};
 use ic_cdk::api::time;
+use crate::storage::rewrites::rewrite_source_to_path;
 
 /// Certified assets
 
@@ -24,16 +24,11 @@ pub fn init_certified_assets() {
         }
 
         for (source, destination) in state.heap.storage.config.rewrites.clone() {
-            // TODO: only stars at the end of the source are supported - not in the middle or so. To be implemented in insert store
-            // hello** -> ok
-            // he**llo -> not ok
-            let src_path = [separator(source.as_str()), &source]
-                .join("")
-                .replace('*', "");
-
             if let Ok(routing) = get_routing(destination, false) {
                 match routing {
                     Routing::Default(RoutingDefault { url: _, asset }) => {
+                        let src_path = rewrite_source_to_path(&source);
+
                         if let Some((asset, _)) = asset {
                             asset_hashes.insert_rewrite_v2(&src_path, &asset);
                         }

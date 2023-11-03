@@ -175,7 +175,7 @@ pub mod interface {
 }
 
 pub mod config {
-    use crate::storage::http::types::HeaderField;
+    use crate::storage::http::types::{HeaderField, StatusCode};
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
@@ -194,12 +194,13 @@ pub mod config {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageConfigRedirect {
         pub location: String,
-        pub status_code: u16,
+        pub status_code: StatusCode,
     }
 }
 
 pub mod http_request {
     use crate::rules::types::rules::Memory;
+    use crate::storage::http::types::StatusCode;
     use crate::storage::types::config::StorageConfigRedirect;
     use crate::storage::types::store::Asset;
     use candid::{CandidType, Deserialize};
@@ -228,7 +229,7 @@ pub mod http_request {
         pub url: String,
         pub asset: Option<(Asset, Memory)>,
         pub source: String,
-        pub status_code: u16,
+        pub status_code: StatusCode,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

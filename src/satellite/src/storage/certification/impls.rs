@@ -11,7 +11,7 @@ use crate::storage::constants::{
     ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH,
 };
 use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
-use crate::storage::http::types::HeaderField;
+use crate::storage::http::types::{HeaderField, StatusCode};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::alternative_paths;
@@ -123,7 +123,7 @@ impl CertifiedAssetHashes {
         &mut self,
         full_path: &FullPath,
         headers: &[HeaderField],
-        status_code: u16,
+        status_code: StatusCode,
         sha256: Hash,
     ) {
         self.tree_v2.insert(
@@ -194,7 +194,12 @@ impl CertifiedAssetHashes {
         }
     }
 
-    pub fn insert_redirect_v2(&mut self, full_path: &FullPath, status_code: u16, location: &str) {
+    pub fn insert_redirect_v2(
+        &mut self,
+        full_path: &FullPath,
+        status_code: StatusCode,
+        location: &str,
+    ) {
         let headers = build_redirect_headers(location);
 
         let sha256 = Sha256::digest(Vec::new().clone()).into();
@@ -222,7 +227,7 @@ impl CertifiedAssetHashes {
         full_path: &FullPath,
         headers: &[HeaderField],
         sha256: Hash,
-        status_code: u16,
+        status_code: StatusCode,
     ) {
         self.tree_v2.insert(
             &nested_tree_key(

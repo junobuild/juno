@@ -2,7 +2,7 @@ use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
     RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_406, RESPONSE_STATUS_CODE_500,
 };
-use crate::storage::http::types::{HeaderField, HttpResponse};
+use crate::storage::http::types::{HeaderField, HttpResponse, StatusCode};
 use crate::storage::http::utils::{
     build_encodings, build_headers, build_redirect_headers_response, streaming_strategy,
 };
@@ -17,7 +17,7 @@ pub fn build_asset_response(
     certificate_version: Option<u16>,
     asset: Option<(Asset, Memory)>,
     rewrite_source: Option<String>,
-    status_code: u16,
+    status_code: StatusCode,
 ) -> HttpResponse {
     match asset {
         Some((asset, memory)) => {
@@ -110,7 +110,7 @@ pub fn build_redirect_response(
     }
 }
 
-pub fn error_response(status_code: u16, body: String) -> HttpResponse {
+pub fn error_response(status_code: StatusCode, body: String) -> HttpResponse {
     HttpResponse {
         body: body.as_bytes().to_vec(),
         headers: Vec::new(),

@@ -2,7 +2,7 @@ use crate::storage::certification::constants::{
     EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER,
     IC_STATUS_CODE_PSEUDO_HEADER, LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR,
 };
-use crate::storage::http::types::HeaderField;
+use crate::storage::http::types::{HeaderField, StatusCode};
 use crate::storage::types::state::FullPath;
 use crate::types::core::Blob;
 use ic_certified_map::Hash;
@@ -14,7 +14,7 @@ pub fn nested_tree_key(
     headers: &[HeaderField],
     body_hash: Hash,
     terminator: &str,
-    status_code: u16,
+    status_code: StatusCode,
 ) -> Vec<Blob> {
     let mut segments = nested_tree_path(full_path, terminator);
 
@@ -72,7 +72,7 @@ pub fn nested_tree_expr_path(absolute_path: &str, terminator: &str) -> Vec<Strin
     path
 }
 
-fn response_hash(headers: &[HeaderField], status_code: u16, body_hash: &Hash) -> Hash {
+fn response_hash(headers: &[HeaderField], status_code: StatusCode, body_hash: &Hash) -> Hash {
     // certification v2 spec:
     // Response hash is the hash of the concatenation of
     //   - representation-independent hash of headers

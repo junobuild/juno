@@ -8,6 +8,8 @@ use serde_bytes::ByteBuf;
 #[derive(CandidType, Serialize, Deserialize, Clone)]
 pub struct HeaderField(pub String, pub String);
 
+pub type StatusCode = u16;
+
 #[derive(CandidType, Deserialize, Clone)]
 pub struct HttpRequest {
     pub url: String,
@@ -21,7 +23,7 @@ pub struct HttpRequest {
 pub struct HttpResponse {
     pub body: Blob,
     pub headers: Vec<HeaderField>,
-    pub status_code: u16,
+    pub status_code: StatusCode,
     pub streaming_strategy: Option<StreamingStrategy>,
 }
 

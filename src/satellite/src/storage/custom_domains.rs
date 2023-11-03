@@ -1,5 +1,5 @@
 use crate::storage::constants::{ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS};
-use crate::storage::types::http::HeaderField;
+use crate::storage::http::types::HeaderField;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
 use ic_cdk::api::time;
 use ic_cdk::id;

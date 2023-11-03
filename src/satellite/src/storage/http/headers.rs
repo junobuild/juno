@@ -1,5 +1,5 @@
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
-use crate::storage::types::http::HeaderField;
+use crate::storage::http::types::HeaderField;
 use crate::storage::types::store::{Asset, AssetEncoding, EncodingType};
 use hex::encode;
 

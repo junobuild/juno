@@ -34,9 +34,6 @@ use crate::storage::store::{
     set_domain,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
-use crate::storage::types::http::{
-    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
-};
 use crate::storage::types::http_request::{
     Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
 };
@@ -65,6 +62,9 @@ use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
 use std::mem;
+use storage::http::types::{
+    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+};
 use types::list::ListParams;
 
 #[init]

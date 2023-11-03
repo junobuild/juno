@@ -2,7 +2,7 @@ use crate::storage::certification::constants::{
     EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER,
     IC_STATUS_CODE_PSEUDO_HEADER, LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR,
 };
-use crate::storage::types::http::HeaderField;
+use crate::storage::http::types::HeaderField;
 use crate::storage::types::state::FullPath;
 use crate::types::core::Blob;
 use ic_certified_map::Hash;

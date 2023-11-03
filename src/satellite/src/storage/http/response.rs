@@ -2,10 +2,10 @@ use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
     RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_406, RESPONSE_STATUS_CODE_500,
 };
+use crate::storage::http::types::{HeaderField, HttpResponse};
 use crate::storage::http::utils::{
     build_encodings, build_headers, build_redirect_headers_response, streaming_strategy,
 };
-use crate::storage::types::http::{HeaderField, HttpResponse};
 use crate::storage::types::store::Asset;
 
 use crate::storage::store::get_content_chunks;

@@ -5,7 +5,7 @@ use crate::storage::certification::cert::{
 };
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
-use crate::storage::types::http::{
+use crate::storage::http::types::{
     CallbackFunc, HeaderField, StreamingCallbackToken, StreamingStrategy,
 };
 use crate::storage::types::state::StorageRuntimeState;

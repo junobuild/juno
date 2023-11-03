@@ -1,5 +1,6 @@
 use crate::rules::types::rules::Memory;
-use crate::storage::rewrites::{redirect_url, rewrite_url};
+use crate::storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH};
+use crate::storage::rewrites::{is_html_route, is_root_path, redirect_url, rewrite_url};
 use crate::storage::state::get_config;
 use crate::storage::store::get_public_asset;
 use crate::storage::types::http_request::{
@@ -69,6 +70,16 @@ pub fn get_routing(
                 return Ok(rewrite);
             }
         }
+
+        // Search for potential default rewrite for HTML pages
+        let root_rewrite = get_routing_root_rewrite(&path);
+
+        match root_rewrite {
+            None => (),
+            Some(root_rewrite) => {
+                return Ok(root_rewrite);
+            }
+        }
     }
 
     Ok(Routing::Default(RoutingDefault {
@@ -134,6 +145,41 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
                         source,
                     }));
                 }
+            }
+        }
+    }
+
+    None
+}
+
+fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
+    if is_html_route(path) && !is_root_path(path) {
+        // Search for potential /404.html to rewrite to
+        let asset_404: Option<(Asset, Memory)> = get_public_asset(ROOT_404_HTML.to_string(), None);
+
+        match asset_404 {
+            None => (),
+            Some(_) => {
+                return Some(Routing::Rewrite(RoutingRewrite {
+                    url: path.clone(),
+                    asset: asset_404,
+                    source: ROOT_PATH.to_string(),
+                }));
+            }
+        }
+
+        // Search for potential /index.html to rewrite to
+        let asset_index: Option<(Asset, Memory)> =
+            get_public_asset(ROOT_INDEX_HTML.to_string(), None);
+
+        match asset_index {
+            None => (),
+            Some(_) => {
+                return Some(Routing::Rewrite(RoutingRewrite {
+                    url: path.clone(),
+                    asset: asset_index,
+                    source: ROOT_PATH.to_string(),
+                }));
             }
         }
     }

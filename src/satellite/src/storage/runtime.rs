@@ -1,13 +1,13 @@
 use crate::memory::STATE;
 use crate::storage::certification::cert::update_certified_data;
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
+use crate::storage::rewrites::rewrite_source_to_path;
 use crate::storage::routing::get_routing;
 use crate::storage::types::http_request::{Routing, RoutingDefault};
 use crate::storage::types::state::{Batches, Chunks, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Batch, Chunk};
 use crate::types::state::{RuntimeState, State};
 use ic_cdk::api::time;
-use crate::storage::rewrites::rewrite_source_to_path;
 
 /// Certified assets
 

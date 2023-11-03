@@ -1,14 +1,10 @@
-use crate::storage::constants::REWRITE_TO_ROOT_INDEX_HTML;
-use crate::storage::types::config::{StorageConfig, StorageConfigRedirect, StorageConfigRewrites};
+use crate::storage::constants::ROOT_PATHS;
+use crate::storage::types::config::{StorageConfig, StorageConfigRedirect};
 use crate::storage::url::separator;
 use globset::Glob;
+use regex::Regex;
 use std::cmp::Ordering;
 use std::collections::HashMap;
-
-pub fn init_rewrites() -> StorageConfigRewrites {
-    let (source, destination) = REWRITE_TO_ROOT_INDEX_HTML;
-    HashMap::from([(source.to_string(), destination.to_string())])
-}
 
 pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<(String, String)> {
     let StorageConfig {
@@ -19,15 +15,24 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<(Stri
 
     let matches = matching_urls(requested_path, rewrites);
 
-    matches.first().map(|(source, destination)| {
-        (rewrite_source_to_path(source).clone(), destination.clone())
-    })
+    matches
+        .first()
+        .map(|(source, destination)| (rewrite_source_to_path(source).clone(), destination.clone()))
 }
 
 pub fn rewrite_source_to_path(source: &String) -> String {
     [separator(source.as_str()), source]
         .join("")
         .replace('*', "")
+}
+
+pub fn is_html_route(path: &str) -> bool {
+    let re = Regex::new(r"^(?:/|(/[^/.]*(\.(html|htm))?(/[^/.]*)?)*)$").unwrap();
+    re.is_match(path)
+}
+
+pub fn is_root_path(path: &str) -> bool {
+    ROOT_PATHS.contains(&path)
 }
 
 pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<StorageConfigRedirect> {

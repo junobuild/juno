@@ -1,7 +1,6 @@
 use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
-    RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_406,
-    RESPONSE_STATUS_CODE_500,
+    RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_406, RESPONSE_STATUS_CODE_500,
 };
 use crate::storage::http::utils::{
     build_encodings, build_headers, build_redirect_headers_response, streaming_strategy,
@@ -18,6 +17,7 @@ pub fn build_asset_response(
     certificate_version: Option<u16>,
     asset: Option<(Asset, Memory)>,
     rewrite_source: Option<String>,
+    status_code: u16,
 ) -> HttpResponse {
     match asset {
         Some((asset, memory)) => {
@@ -56,7 +56,7 @@ pub fn build_asset_response(
                                     return HttpResponse {
                                         body: body.clone(),
                                         headers: headers.clone(),
-                                        status_code: RESPONSE_STATUS_CODE_200,
+                                        status_code,
                                         streaming_strategy: streaming_strategy(
                                             key,
                                             encoding,

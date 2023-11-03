@@ -6,7 +6,10 @@ use crate::storage::certification::tree_utils::{
     fallback_paths, nested_tree_expr_path, nested_tree_key, nested_tree_path,
 };
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
-use crate::storage::constants::{ENCODING_CERTIFICATION_ORDER, RESPONSE_STATUS_CODE_200};
+use crate::storage::constants::{
+    ENCODING_CERTIFICATION_ORDER, RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404,
+    ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH,
+};
 use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
 use crate::storage::types::http::HeaderField;
 use crate::storage::types::state::FullPath;
@@ -153,6 +156,42 @@ impl CertifiedAssetHashes {
                 }
             }
         }
+
+        // Rewrite ** to /
+        if *full_path == *ROOT_INDEX_HTML {
+            let has_404 = self
+                .tree_v2
+                .contains_path(&nested_tree_path(ROOT_404_HTML, WILDCARD_MATCH_TERMINATOR));
+
+            if !has_404 {
+                self.insert_rewrite_into_tree_v2(
+                    &ROOT_PATH.to_string(),
+                    headers,
+                    sha256,
+                    RESPONSE_STATUS_CODE_200,
+                );
+            }
+        }
+
+        // Rewrite ** to /404
+        if *full_path == *ROOT_404_HTML {
+            let index_tree_path = nested_tree_path(ROOT_INDEX_HTML, WILDCARD_MATCH_TERMINATOR);
+
+            let has_index = self.tree_v2.contains_path(&index_tree_path);
+
+            if has_index {
+                // Delete existing rewrite to root with /index.html in the tree to enter the new rewrite to /404.html
+                self.delete_from_tree_v2(&ROOT_PATH.to_string(), WILDCARD_MATCH_TERMINATOR);
+            }
+
+            // TODO: RESPONSE_STATUS_CODE_404 service worker does not support 404 yet
+            self.insert_rewrite_into_tree_v2(
+                &ROOT_PATH.to_string(),
+                headers,
+                sha256,
+                RESPONSE_STATUS_CODE_404,
+            );
+        }
     }
 
     pub fn insert_redirect_v2(&mut self, full_path: &FullPath, status_code: u16, location: &str) {
@@ -166,15 +205,11 @@ impl CertifiedAssetHashes {
     pub fn insert_rewrite_v2(&mut self, full_path: &FullPath, asset: &Asset) {
         for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
             if let Some(encoding) = asset.encodings.get(*encoding_type) {
-                self.tree_v2.insert(
-                    &nested_tree_key(
-                        full_path,
-                        &build_asset_headers(asset, encoding, &encoding_type.to_string()),
-                        encoding.sha256,
-                        WILDCARD_MATCH_TERMINATOR,
-                        RESPONSE_STATUS_CODE_200,
-                    ),
-                    vec![],
+                self.insert_rewrite_into_tree_v2(
+                    full_path,
+                    &build_asset_headers(asset, encoding, &encoding_type.to_string()),
+                    encoding.sha256,
+                    RESPONSE_STATUS_CODE_200,
                 );
 
                 return;
@@ -182,21 +217,30 @@ impl CertifiedAssetHashes {
         }
     }
 
+    fn insert_rewrite_into_tree_v2(
+        &mut self,
+        full_path: &FullPath,
+        headers: &[HeaderField],
+        sha256: Hash,
+        status_code: u16,
+    ) {
+        self.tree_v2.insert(
+            &nested_tree_key(
+                full_path,
+                headers,
+                sha256,
+                WILDCARD_MATCH_TERMINATOR,
+                status_code,
+            ),
+            vec![],
+        );
+    }
+
     pub fn delete(&mut self, asset: &Asset) {
         let full_path = asset.key.full_path.clone();
 
-        for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
-            if let Some(encoding) = asset.encodings.get(*encoding_type) {
-                self.delete_v1(&full_path);
-                self.delete_v2(
-                    &full_path,
-                    &build_asset_headers(asset, encoding, &encoding_type.to_string()),
-                    encoding.sha256,
-                );
-
-                return;
-            }
-        }
+        self.delete_v1(&full_path);
+        self.delete_v2(&full_path);
     }
 
     fn delete_v1(&mut self, full_path: &String) {
@@ -214,14 +258,8 @@ impl CertifiedAssetHashes {
         }
     }
 
-    fn delete_v2(&mut self, full_path: &FullPath, headers: &[HeaderField], sha256: Hash) {
-        self.tree_v2.delete(&nested_tree_key(
-            full_path,
-            headers,
-            sha256,
-            EXACT_MATCH_TERMINATOR,
-            RESPONSE_STATUS_CODE_200,
-        ));
+    fn delete_v2(&mut self, full_path: &FullPath) {
+        self.delete_from_tree_v2(full_path, EXACT_MATCH_TERMINATOR);
 
         let alt_paths = alternative_paths(full_path);
 
@@ -229,15 +267,30 @@ impl CertifiedAssetHashes {
             None => (),
             Some(alt_paths) => {
                 for alt_path in alt_paths {
-                    self.tree_v2.delete(&nested_tree_key(
-                        &alt_path,
-                        headers,
-                        sha256,
-                        EXACT_MATCH_TERMINATOR,
-                        RESPONSE_STATUS_CODE_200,
-                    ));
+                    self.delete_from_tree_v2(&alt_path, EXACT_MATCH_TERMINATOR);
                 }
             }
         }
+
+        // Delete rewrite ** to /404
+        if *full_path == *ROOT_404_HTML {
+            self.delete_from_tree_v2(&ROOT_PATH.to_string(), WILDCARD_MATCH_TERMINATOR);
+        }
+
+        // Delete rewrite ** to /
+        if *full_path == *ROOT_INDEX_HTML {
+            let has_404 = self
+                .tree_v2
+                .contains_path(&nested_tree_path(ROOT_404_HTML, WILDCARD_MATCH_TERMINATOR));
+
+            if !has_404 {
+                self.delete_from_tree_v2(&ROOT_PATH.to_string(), WILDCARD_MATCH_TERMINATOR);
+            }
+        }
+    }
+
+    fn delete_from_tree_v2(&mut self, full_path: &FullPath, terminator: &str) {
+        self.tree_v2
+            .delete(&nested_tree_path(full_path, terminator));
     }
 }

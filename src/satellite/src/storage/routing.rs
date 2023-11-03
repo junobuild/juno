@@ -1,5 +1,7 @@
 use crate::rules::types::rules::Memory;
-use crate::storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH};
+use crate::storage::constants::{
+    RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH,
+};
 use crate::storage::rewrites::{is_html_route, is_root_path, redirect_url, rewrite_url};
 use crate::storage::state::get_config;
 use crate::storage::store::get_public_asset;
@@ -127,6 +129,7 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
                         url: path.clone(),
                         asset: rewrite_asset,
                         source,
+                        status_code: RESPONSE_STATUS_CODE_200,
                     }));
                 }
             }
@@ -143,6 +146,7 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
                         url: path.clone(),
                         asset: rewrite_absolute_asset,
                         source,
+                        status_code: RESPONSE_STATUS_CODE_200,
                     }));
                 }
             }
@@ -157,6 +161,7 @@ fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
         // Search for potential /404.html to rewrite to
         let asset_404: Option<(Asset, Memory)> = get_public_asset(ROOT_404_HTML.to_string(), None);
 
+        // TODO: RESPONSE_STATUS_CODE_404 service worker does not support 404 yet
         match asset_404 {
             None => (),
             Some(_) => {
@@ -164,6 +169,7 @@ fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
                     url: path.clone(),
                     asset: asset_404,
                     source: ROOT_PATH.to_string(),
+                    status_code: RESPONSE_STATUS_CODE_200,
                 }));
             }
         }
@@ -179,6 +185,7 @@ fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
                     url: path.clone(),
                     asset: asset_index,
                     source: ROOT_PATH.to_string(),
+                    status_code: RESPONSE_STATUS_CODE_200,
                 }));
             }
         }

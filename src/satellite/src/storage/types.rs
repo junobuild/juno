@@ -284,6 +284,7 @@ pub mod http_request {
         pub url: String,
         pub asset: Option<(Asset, Memory)>,
         pub source: String,
+        pub status_code: u16,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

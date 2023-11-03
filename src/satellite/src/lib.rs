@@ -21,7 +21,7 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::storage::constants::RESPONSE_STATUS_CODE_405;
+use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
 use crate::storage::http::response::{
     build_asset_response, build_redirect_response, error_response,
 };
@@ -309,12 +309,27 @@ fn http_request(
 
     match result {
         Ok(routing) => match routing {
-            Routing::Default(RoutingDefault { url, asset }) => {
-                build_asset_response(url, req_headers, certificate_version, asset, None)
-            }
-            Routing::Rewrite(RoutingRewrite { url, asset, source }) => {
-                build_asset_response(url, req_headers, certificate_version, asset, Some(source))
-            }
+            Routing::Default(RoutingDefault { url, asset }) => build_asset_response(
+                url,
+                req_headers,
+                certificate_version,
+                asset,
+                None,
+                RESPONSE_STATUS_CODE_200,
+            ),
+            Routing::Rewrite(RoutingRewrite {
+                url,
+                asset,
+                source,
+                status_code,
+            }) => build_asset_response(
+                url,
+                req_headers,
+                certificate_version,
+                asset,
+                Some(source),
+                status_code,
+            ),
             Routing::Redirect(RoutingRedirect { url, redirect }) => {
                 build_redirect_response(url, certificate_version, &redirect)
             }

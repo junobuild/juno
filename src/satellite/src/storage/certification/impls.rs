@@ -275,8 +275,6 @@ impl CertifiedAssetHashes {
         // Delete rewrite ** to /404
         if *full_path == *ROOT_404_HTML {
             self.delete_from_tree_v2(&ROOT_PATH.to_string(), WILDCARD_MATCH_TERMINATOR);
-
-            // TODO: reinject rewrite to /index.html
         }
 
         // Delete rewrite ** to /

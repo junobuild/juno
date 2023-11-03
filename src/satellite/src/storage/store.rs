@@ -16,6 +16,7 @@ use crate::rules::types::rules::{Memory, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, is_known_user, public_rule};
 use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
+    ROOT_404_HTML, ROOT_INDEX_HTML,
 };
 use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::runtime::{
@@ -193,6 +194,16 @@ fn delete_asset_impl(
 
             let deleted = delete_state_asset(collection, &full_path, rule);
             delete_runtime_certified_asset(&asset);
+
+            // We just removed the rewrite for /404.html in the certification tree therefore if /index.html exists, we want to reintroduce it as rewrite
+            if *full_path == *ROOT_404_HTML {
+                if let Some(index_asset) =
+                    get_state_asset(collection, &ROOT_INDEX_HTML.to_string(), rule)
+                {
+                    update_runtime_certified_asset(&index_asset);
+                }
+            }
+
             Ok(deleted)
         }
     }

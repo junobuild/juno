@@ -281,7 +281,9 @@
 		"field_value_true": "True",
 		"field_value_false": "False",
 		"btn_add_field": "Aggiungi campo",
-		"btn_add_document": "Aggiungi documento"
+		"btn_add_document": "Aggiungi documento",
+		"title_add_new_document": "Aggiungi nuovo documento",
+		"title_edit_document": "Modifica documento"
 	},
 	"asset": {
 		"owner": "Proprietario",

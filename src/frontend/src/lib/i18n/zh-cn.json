@@ -281,7 +281,9 @@
 		"field_value_true": "True",
 		"field_value_false": "False",
 		"btn_add_field": "添加字段",
-		"btn_add_document": "添加文档"
+		"btn_add_document": "添加文档",
+		"title_add_new_document": "添加新文档",
+		"title_edit_document": "编辑文档"		
 	},
 	"asset": {
 		"owner": "拥有者",

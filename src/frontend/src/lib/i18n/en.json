@@ -281,7 +281,9 @@
 		"field_value_true": "True",
 		"field_value_false": "False",
 		"btn_add_field": "Add Field",
-		"btn_add_document": "Add Document"
+		"btn_add_document": "Add Document",
+		"title_add_new_document": "Add New Document",
+		"title_edit_document": "Edit Document"
 	},
 	"asset": {
 		"owner": "Owner",

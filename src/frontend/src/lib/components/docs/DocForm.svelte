@@ -106,7 +106,7 @@
 
 </script>
 
-<p class="title doc-form">{isActive ? "Create New Document" : ""}</p>
+<p class="title doc-form">{isActive ? $i18n.document.title_add_new_document : ""}</p>
 
 {#if isActive}
 <article class="doc-form">

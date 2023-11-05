@@ -298,6 +298,8 @@ interface I18nDocument {
 	field_value_false: string;
 	btn_add_field: string;
 	btn_add_document: string;
+	title_add_new_document: string;
+	title_edit_document: string;
 }
 
 interface I18nAsset {

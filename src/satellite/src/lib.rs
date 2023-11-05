@@ -51,7 +51,6 @@ use controllers::store::{
 };
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, trap};
-use ic_cdk::storage::stable_restore;
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
@@ -100,37 +99,25 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    // TODO: To be removed after introduction of stable structure
-    let (heap,): (HeapState,) = stable_restore().unwrap();
-
-    STATE.with(|state| {
-        *state.borrow_mut() = State {
-            stable: init_stable_state(),
-            heap,
-            runtime: RuntimeState::default(),
-        }
-    });
-
-    // TODO: Uncomment after introduction of stable memory
     // The memory offset is 4 bytes because that's the length we used in pre_upgrade to store the length of the memory data for the upgrade.
     // https://github.com/dfinity/stable-structures/issues/104
-    // const OFFSET: usize = mem::size_of::<u32>();
-    //
-    // let memory: Memory = get_memory_upgrades();
-    //
-    // // Read the length of the state bytes.
-    // let mut state_len_bytes = [0; OFFSET];
-    // memory.read(0, &mut state_len_bytes);
-    // let state_len = u32::from_le_bytes(state_len_bytes) as usize;
-    //
-    // // Read the bytes
-    // let mut state_bytes = vec![0; state_len];
-    // memory.read(u64::try_from(OFFSET).unwrap(), &mut state_bytes);
-    //
-    // // Deserialize and set the state.
-    // let state = from_reader(&*state_bytes)
-    //     .expect("Failed to decode the state of the satellite in post_upgrade hook.");
-    // STATE.with(|s| *s.borrow_mut() = state);
+    const OFFSET: usize = mem::size_of::<u32>();
+
+    let memory: Memory = get_memory_upgrades();
+
+    // Read the length of the state bytes.
+    let mut state_len_bytes = [0; OFFSET];
+    memory.read(0, &mut state_len_bytes);
+    let state_len = u32::from_le_bytes(state_len_bytes) as usize;
+
+    // Read the bytes
+    let mut state_bytes = vec![0; state_len];
+    memory.read(u64::try_from(OFFSET).unwrap(), &mut state_bytes);
+
+    // Deserialize and set the state.
+    let state = from_reader(&*state_bytes)
+        .expect("Failed to decode the state of the satellite in post_upgrade hook.");
+    STATE.with(|s| *s.borrow_mut() = state);
 
     init_certified_assets();
 }

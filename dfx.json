@@ -34,7 +34,8 @@
 			"declarations": {
 				"node_compatibility": true
 			},
-			"optimize": "cycles"
+			"optimize": "cycles",
+			"metadata": [{ "name": "supported_certificate_versions", "content": "1,2" }]
 		},
 		"orbiter": {
 			"candid": "src/orbiter/orbiter.did",

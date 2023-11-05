@@ -65,6 +65,7 @@ use storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
 use types::list::ListParams;
+use crate::storage::types::config::StorageConfigRewrites;
 
 #[init]
 fn init() {
@@ -122,6 +123,13 @@ fn post_upgrade() {
     let state = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
+
+    // TODO: to be removed.
+    // Post upgrade hook to reset the rewrites after upgrading to certification v2 because the fallback to /index.html is handled differently now.
+    STATE.with(|s| {
+        let state = &mut s.borrow_mut();
+        state.heap.storage.config.rewrites = StorageConfigRewrites::default();
+    });
 
     init_certified_assets();
 }

@@ -266,7 +266,22 @@
 		"delete": "Vuoi eliminare il documento?",
 		"description": "Descrizione",
 		"document_submission_success": "Il documento è stato inviato con successo!",
-		"document_submission_failed": "Invio del documento non riuscito!"
+		"document_submission_failed": "Invio del documento non riuscito!",
+		"field_doc_id_label": "Doc ID",
+		"field_doc_id_btn_auto_id": "Auto ID",
+		"field_doc_id_placeholder": "ID documento",
+		"field_name_label": "Field",
+		"field_name_placeholder": "Nome del campo",
+		"field_type_label": "Type",
+		"field_value_label": "Value",
+		"field_value_placeholder": "Valore del campo",
+		"field_type_boolean": "Boolean",
+		"field_type_string": "String",
+		"field_type_number": "Number",
+		"field_value_true": "True",
+		"field_value_false": "False",
+		"btn_add_field": "Aggiungi campo",
+		"btn_add_document": "Aggiungi documento"
 	},
 	"asset": {
 		"owner": "Proprietario",

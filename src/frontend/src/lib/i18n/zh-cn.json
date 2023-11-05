@@ -266,7 +266,22 @@
 		"delete": "删除文档?",
 		"description": "描述",
 		"document_submission_success": "文件已成功提交！",
-		"document_submission_failed": "文件提交失败！"
+		"document_submission_failed": "文件提交失败！",
+		"field_doc_id_label": "Doc ID",
+		"field_doc_id_btn_auto_id": "Auto ID",
+		"field_doc_id_placeholder": "文件编号",
+		"field_name_label": "Field",
+		"field_name_placeholder": "字段名称",
+		"field_type_label": "Type",
+		"field_value_label": "Value",
+		"field_value_placeholder": "字段值",
+		"field_type_boolean": "Boolean",
+		"field_type_string": "String",
+		"field_type_number": "Number",
+		"field_value_true": "True",
+		"field_value_false": "False",
+		"btn_add_field": "添加字段",
+		"btn_add_document": "添加文档"
 	},
 	"asset": {
 		"owner": "拥有者",

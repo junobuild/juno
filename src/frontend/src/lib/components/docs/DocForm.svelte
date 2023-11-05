@@ -13,9 +13,15 @@
 	import { isNullish } from '$lib/utils/utils';
   import { i18n } from '$lib/stores/i18n.store';
 	import { toArray, toNullable } from '$lib/utils/did.utils';
+	import { DATA_CONTEXT_KEY, DataStoreStateEnum, type DataContext } from '$lib/types/data.context';
+	import type Doc from './Doc.svelte';
 
   const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+  const { store: docsStore }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
+
+  let state: DataStoreStateEnum | undefined
+  $: state = $docsStore.state
   let collection: string | undefined;
 	$: collection = $store.rule?.[0];
 
@@ -73,7 +79,7 @@
         key: docId,
         doc: {
           data: docArray,
-          description: toNullable(),
+          description: toNullable('test description'),
           updated_at: toNullable(BigInt(new Date().getUTCMilliseconds())),
         },
       })
@@ -95,15 +101,19 @@
     }
   }
 
+  let isActive = false
+  $: isActive = state === DataStoreStateEnum.CREATE || state === DataStoreStateEnum.EDIT
+
 </script>
 
-<p class="title doc">Create New Document</p>
+<p class="title doc-form">{isActive ? "Create New Document" : ""}</p>
 
-<article>
+{#if isActive}
+<article class="doc-form">
   <form on:submit|preventDefault={onSubmit}>
     <div>
       <div>
-        <label>Doc ID</label>
+        <label>{$i18n.document.field_doc_id_label}</label>
         <div class="form-doc-id">
           <input
             id="doc-id"
@@ -116,47 +126,47 @@
             class="primary"
             on:click|preventDefault={() => docId = generateUniqueDocID()}
             >
-              Auto ID
+              {$i18n.document.field_doc_id_btn_auto_id}
           </button>
         </div>
       </div>
       {#each fields as field, i (i)}
         <div class="form-field">
           <div class="form-field-item">
-            <label>Field</label>
+            <label>{$i18n.document.field_name_label}</label>
             <input
               id="field_name"
               type="text"
-              placeholder="Field name"
+              placeholder={$i18n.document.field_name_placeholder}
               name="field_name"
               bind:value={field.name}
             />
           </div>
           <div class="form-field-item">
-            <label>Type</label>
+            <label>{$i18n.document.field_type_label}</label>
             <select id="field_type" name="field_type" bind:value={field.fieldType}>
-              <option value={DocFieldTypeEnum.boolean}>Boolean</option>
-              <option value={DocFieldTypeEnum.string}>String</option>
-              <option value={DocFieldTypeEnum.number}>Number</option>
+              <option value={DocFieldTypeEnum.boolean}>{$i18n.document.field_type_boolean}</option>
+              <option value={DocFieldTypeEnum.string}>{$i18n.document.field_type_string}</option>
+              <option value={DocFieldTypeEnum.number}>{$i18n.document.field_type_number}</option>
             </select>
           </div>
           <div class="form-field-item">
             <div>
-              <label>Value</label>
+              <label>{$i18n.document.field_value_label}</label>
               <div class="value-input-wrapper">
                 {#if field.fieldType === DocFieldTypeEnum.number || field.fieldType === DocFieldTypeEnum.string}
                   <input
                     id="value"
                     type={field.fieldType === DocFieldTypeEnum.string ? "text" : "number"}
-                    placeholder="Field value"
+                    placeholder={$i18n.document.field_value_label}
                     name="field_value"
                   />
                 {/if}
 
                 {#if field.fieldType === DocFieldTypeEnum.boolean} 
                   <select id="field_value" name="field_value" placeholder="Field value" bind:value={field.value}>
-                    <option value={true}>True</option>
-                    <option value={false}>False</option>
+                    <option value={true}>{$i18n.document.field_value_true}</option>
+                    <option value={false}>{$i18n.document.field_value_false}</option>
                   </select>
                 {/if}
 
@@ -179,7 +189,7 @@
         on:click|preventDefault={onAddFieldButtonPressed}
       >
         <IconNew size="16px" />
-        <span>Add Field</span>
+        <span>{$i18n.document.btn_add_field}</span>
       </button>
     </div>
 
@@ -188,29 +198,30 @@
     </div>
   </form>
 </article>
+{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/collections';
 	@use '../../styles/mixins/media';
 
-  article {
-		padding: var(--padding-3x);
-		height: 100%;
-    grid-column-start: 3;
-    grid-column-end: 5;
-	}
-
 	.title {
 		@include collections.title;
 	}
 
-	.doc {
+	.doc-form {
 		grid-column: span 4;
 
 		@include media.min-width(large) {
 			grid-column-start: 3;
 			grid-column-end: 5;
 		}
+	}
+
+   article {
+		display: flex;
+		flex-direction: column;
+
+		padding: var(--padding-2x) var(--padding-2x) 0;
 	}
 
   .form-field {
@@ -251,11 +262,11 @@
 
     input {
       display: flex;
-      flex: 0.8;
+      flex: 0.9;
     }
 
     button {
-      flex: 0.2;
+      flex: 0.1;
     }
   }
 </style>

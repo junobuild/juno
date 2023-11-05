@@ -189,7 +189,7 @@ impl CertifiedAssetHashes {
                 &ROOT_PATH.to_string(),
                 headers,
                 sha256,
-                RESPONSE_STATUS_CODE_404,
+                RESPONSE_STATUS_CODE_200,
             );
         }
     }

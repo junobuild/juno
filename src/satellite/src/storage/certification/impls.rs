@@ -55,9 +55,8 @@ impl CertifiedAssetHashes {
         let segments = nested_tree_path(absolute_path, EXACT_MATCH_TERMINATOR);
         let absence_proof = self.tree_v2.witness(&segments);
 
-        // Possible fallback paths
-        let not_found_segments = nested_tree_path(rewrite, WILDCARD_MATCH_TERMINATOR);
-        let fallback_paths = fallback_paths(not_found_segments);
+        // Fallback
+        let fallback_paths = fallback_paths(segments.clone());
 
         // Witness fallback paths with the absence of proof to validate it can be rewritten
         let combined_proof = fallback_paths

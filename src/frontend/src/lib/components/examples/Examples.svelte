@@ -10,6 +10,7 @@
 	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
 	import IconNextJS from '$lib/components/icons/IconNextJS.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import IconAstro from '$lib/components/icons/IconAstro.svelte';
 </script>
 
 <h4>{$i18n.examples.tutorials}</h4>
@@ -75,9 +76,19 @@
 		])}
 	</Resource>
 
-	<Resource
-		href="https://juno.build/docs/miscellaneous/github_actions"
-	>
+	<Resource href="https://juno.build/docs/guides/astro">
+		<IconAstro slot="icon" />
+		<svelte:fragment slot="title">Astro</svelte:fragment>
+
+		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
+			{
+				placeholder: '{0}',
+				value: 'Astro'
+			}
+		])}
+	</Resource>
+
+	<Resource href="https://juno.build/docs/miscellaneous/github_actions">
 		<IconGitHub slot="icon" size="48px" />
 		<svelte:fragment slot="title">GitHub</svelte:fragment>
 

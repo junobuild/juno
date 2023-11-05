@@ -219,7 +219,7 @@ fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
         .collect();
 
     for full_path in full_paths {
-        let deleted_asset = delete_state_asset(&full_path, collection, &rule);
+        let deleted_asset = delete_state_asset(collection, &full_path, &rule);
 
         match deleted_asset {
             None => {}

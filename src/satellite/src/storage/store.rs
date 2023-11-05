@@ -278,7 +278,7 @@ fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
         .collect();
 
     for full_path in full_paths {
-        delete_state_asset( collection, &full_path, &rule);
+        delete_state_asset(collection, &full_path, &rule);
         delete_runtime_certified_asset(&full_path);
     }
 

@@ -17,6 +17,7 @@
 	import type { ListParams } from '$lib/types/list';
 	import { compare } from 'semver';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
+	import IconNew from '$lib/components/icons/IconNew.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -93,6 +94,10 @@
 		class:data-selected={nonNullish($docsStore.data)}
 		class:data-nullish={isNullish($paginationStore.items)}
 	>
+		<button class="text action start" on:click={() => {}}
+			><IconNew size="16px" /> <span>Add document</span></button
+		>
+
 		{#if nonNullish($paginationStore.items)}
 			{#each $paginationStore.items as [key, doc]}
 				<button class="text action" on:click={() => docsStore.set({ key, data: doc })}

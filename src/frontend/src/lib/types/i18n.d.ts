@@ -281,6 +281,8 @@ interface I18nDocument {
 	no_match: string;
 	delete: string;
 	description: string;
+	document_submission_success: string;
+	document_submission_failed: string;
 }
 
 interface I18nAsset {

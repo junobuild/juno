@@ -255,7 +255,7 @@
 		"orbiter_configuration_unexpected": "编辑配置时出现意外错误.",
 		"orbiter_configuration_listing": "获取配置时出错.",
 		"transactions_next": "获取下一部分事务时出错.",
-		"transactions_export": "导出事务时出现异常错误."
+		"transactions_export": "导出事务时出现异常错误."		
 	},
 	"document": {
 		"owner": "拥有者",
@@ -264,7 +264,9 @@
 		"data": "数据",
 		"no_match": "找不到满足条件的文档.",
 		"delete": "删除文档?",
-		"description": "描述"
+		"description": "描述",
+		"document_submission_success": "文件已成功提交！",
+		"document_submission_failed": "文件提交失败！"
 	},
 	"asset": {
 		"owner": "拥有者",

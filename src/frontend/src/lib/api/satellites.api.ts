@@ -7,6 +7,7 @@ import type {
 	ListResults_1 as ListDocs,
 	Rule,
 	RulesType,
+	SetDoc,
 	SetRule
 } from '$declarations/satellite/satellite.did';
 import type { MemoryText, PermissionText } from '$lib/constants/rules.constants';
@@ -31,6 +32,21 @@ export const listDocs = async ({
 	const actor = await getSatelliteActor(satelliteId);
 	return actor.list_docs(collection, toListParams(params));
 };
+
+export const setDoc = async ({
+	satelliteId,
+	collection,
+	key,
+	doc
+}: {
+	satelliteId: Principal;
+	collection: string;
+	key: string;
+	doc: SetDoc;
+}): Promise<Doc> => {
+	const actor = await getSatelliteActor(satelliteId);
+	return actor.set_doc(collection, key, doc)
+}
 
 export const listAssets = async ({
 	satelliteId,

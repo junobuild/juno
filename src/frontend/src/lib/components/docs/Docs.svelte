@@ -95,9 +95,10 @@
 		class:data-nullish={isNullish($paginationStore.items)}
 	>		
 		{#if nonNullish($paginationStore.items)}
-			<button class="text action start" on:click={() => docsStore.set({key: undefined, data: undefined, state: DataStoreStateEnum.CREATE})}
+			
+			<!-- <button class="text action start" on:click={() => docsStore.set({key: undefined, data: undefined, state: DataStoreStateEnum.CREATE})}
 				><IconNew size="16px" /> <span>{$i18n.document.btn_add_document}</span></button
-			>
+			> -->
 			{#each $paginationStore.items as [key, doc]}
 				<button class="text action" on:click={() => docsStore.set({ key, data: doc, state: DataStoreStateEnum.VIEW })}
 					><span>{key}</span></button

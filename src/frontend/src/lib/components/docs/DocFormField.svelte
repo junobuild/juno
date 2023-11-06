@@ -3,6 +3,7 @@
 	import { DocFieldTypeEnum } from '$lib/types/doc-form';
 	import IconDelete from '../icons/IconDelete.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 
 	export let name = '';
 	export let fieldType: DocFieldTypeEnum = DocFieldTypeEnum.STRING;
@@ -14,40 +15,43 @@
 
 <div class="form-field">
 	<div class="form-field-item">
-		<label for="field_name">{$i18n.document.field_name_label}</label>
-		<input
-			id="field_name"
-			type="text"
-			placeholder={$i18n.document.field_name_placeholder}
-			name="field_name"
-			bind:value={name}
-		/>
+		<Value ref="field-name">
+			<svelte:fragment slot="label">{$i18n.document.field_name_label}</svelte:fragment>
+			<input
+				id="field-name"
+				name="field-name"
+				type="text"
+				placeholder={$i18n.document.field_name_placeholder}
+				bind:value={name}
+			/>
+		</Value>
 	</div>
 
 	<div class="form-field-item">
-		<label for="field_type">{$i18n.document.field_type_label}</label>
-		<select id="field_type" name="field_type" bind:value={fieldType}>
-			<option value={DocFieldTypeEnum.BOOLEAN}>{$i18n.document.field_type_boolean}</option>
-			<option value={DocFieldTypeEnum.STRING}>{$i18n.document.field_type_string}</option>
-			<option value={DocFieldTypeEnum.NUMBER}>{$i18n.document.field_type_number}</option>
-		</select>
+		<Value ref="field-type">
+			<svelte:fragment slot="label">{$i18n.document.field_type_label}</svelte:fragment>
+			<select id="field-type" name="field-type" bind:value={fieldType}>
+				<option value={DocFieldTypeEnum.BOOLEAN}>{$i18n.document.field_type_boolean}</option>
+				<option value={DocFieldTypeEnum.STRING}>{$i18n.document.field_type_string}</option>
+				<option value={DocFieldTypeEnum.NUMBER}>{$i18n.document.field_type_number}</option>
+			</select>
+		</Value>
 	</div>
 
 	<div class="form-field-item">
-		<div>
-			<label for="value">{$i18n.document.field_value_label}</label>
+		<Value>
+			<svelte:fragment slot="label">{$i18n.document.field_value_label}</svelte:fragment>
+
 			<div class="value-input-wrapper">
 				{#if fieldType === DocFieldTypeEnum.NUMBER || fieldType === DocFieldTypeEnum.STRING}
 					<input
-						id="value"
 						type={fieldType === DocFieldTypeEnum.STRING ? 'text' : 'number'}
 						placeholder={$i18n.document.field_value_label}
-						name="field_value"
 					/>
 				{/if}
 
 				{#if fieldType === DocFieldTypeEnum.BOOLEAN}
-					<select id="field_value" name="field_value" bind:value>
+					<select bind:value>
 						<option value={true}>{$i18n.document.field_value_true}</option>
 						<option value={false}>{$i18n.document.field_value_false}</option>
 					</select>
@@ -59,7 +63,7 @@
 					</button>
 				{/if}
 			</div>
-		</div>
+		</Value>
 	</div>
 </div>
 

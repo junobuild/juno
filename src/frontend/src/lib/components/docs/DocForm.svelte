@@ -17,6 +17,7 @@
 	import type Doc from './Doc.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import { fade } from 'svelte/transition';
+	import Value from '$lib/components/ui/Value.svelte';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 	const { store: docsStore }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
@@ -101,43 +102,41 @@
 {#if isActive}
 	<article class="doc-form" in:fade>
 		<form on:submit|preventDefault={onSubmit}>
-			<div>
-				<div>
-					<label for="doc-id">{$i18n.document.field_doc_id_label}</label>
-					<div class="form-doc-id">
-						<input
-							id="doc-id"
-							type="text"
-							placeholder={$i18n.document.field_doc_id_placeholder}
-							name="doc_id"
-							bind:value={key}
-						/>
-						<button
-							class="text action start"
-							type="button"
-							on:click={() => (key = nanoid())}
-							aria-label={$i18n.document.field_doc_id_btn_auto_id}
-						>
-							<IconAutoRenew />
-						</button>
-					</div>
-				</div>
-
-				{#each fields as field, i (i)}
-					<DocFormField
-						bind:name={field.name}
-						bind:fieldType={field.fieldType}
-						bind:value={field.value}
-						deleteButton={fields.length > 1}
-						on:junoDelete={() => onDeleteFieldPressed(i)}
+			<Value ref="doc-id">
+				<svelte:fragment slot="label">{$i18n.document.field_doc_id_label}</svelte:fragment>
+				<div class="form-doc-id">
+					<input
+						id="doc-id"
+						type="text"
+						placeholder={$i18n.document.field_doc_id_placeholder}
+						name="doc_id"
+						bind:value={key}
 					/>
-				{/each}
+					<button
+						class="text action start"
+						type="button"
+						on:click={() => (key = nanoid())}
+						aria-label={$i18n.document.field_doc_id_btn_auto_id}
+					>
+						<IconAutoRenew />
+					</button>
+				</div>
+			</Value>
 
-				<button class="text action start" type="button" on:click={onAddFieldButtonPressed}>
-					<IconNew size="16px" />
-					<span>{$i18n.document.btn_add_field}</span>
-				</button>
-			</div>
+			{#each fields as field, i (i)}
+				<DocFormField
+					bind:name={field.name}
+					bind:fieldType={field.fieldType}
+					bind:value={field.value}
+					deleteButton={fields.length > 1}
+					on:junoDelete={() => onDeleteFieldPressed(i)}
+				/>
+			{/each}
+
+			<button class="text action start" type="button" on:click={onAddFieldButtonPressed}>
+				<IconNew size="16px" />
+				<span>{$i18n.document.btn_add_field}</span>
+			</button>
 
 			<div class="button-wrapper">
 				<button type="submit" class="primary" disabled={!isFormValid}>{$i18n.core.submit}</button>

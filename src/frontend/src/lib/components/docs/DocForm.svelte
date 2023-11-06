@@ -91,7 +91,7 @@
   }
 
   let isActive = false
-  $: isActive = action === DataStoreAction.CREATE || action === DataStoreAction.EDIT
+  $: isActive = ["create", "edit"].includes(action)
 
 </script>
 

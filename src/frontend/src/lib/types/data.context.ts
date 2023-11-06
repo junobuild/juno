@@ -1,10 +1,6 @@
 import type { Writable } from 'svelte/store';
 
-export enum DataStoreAction {
-	CREATE,
-	EDIT,
-	VIEW
-}
+export type DataStoreAction = "create" | "view" | "edit";
 
 export interface DataStore<T> {
 	key: string | undefined;

@@ -96,7 +96,7 @@
 	>		
 		{#if nonNullish($paginationStore.items)}			
 			{#each $paginationStore.items as [key, doc]}
-				<button class="text action" on:click={() => docsStore.set({ key, data: doc, action: DataStoreAction.VIEW })}
+				<button class="text action" on:click={() => docsStore.set({ key, data: doc, action: "view" })}
 					><span>{key}</span></button
 				>
 			{/each}

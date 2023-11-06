@@ -52,7 +52,7 @@
 	};
 </script>
 
-{#if nonNullish(doc) && action === DataStoreAction.VIEW}
+{#if nonNullish(doc) && action === "view"}
 	<p class="title doc">{key ?? ''}</p>
 
 	<article class="doc">

@@ -5,7 +5,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import OrbiterTopUp from "$lib/components/orbiter/OrbiterTopUp.svelte";
+	import OrbiterTopUp from '$lib/components/orbiter/OrbiterTopUp.svelte';
 
 	export let orbiter: Orbiter;
 </script>

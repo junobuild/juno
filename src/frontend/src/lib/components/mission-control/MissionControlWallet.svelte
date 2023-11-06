@@ -18,7 +18,7 @@
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import { jsonReviver } from '@dfinity/utils';
 	import { PAGINATION } from '$lib/constants/constants';
-	import TransactionsExport from "$lib/components/transactions/TransactionsExport.svelte";
+	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
 
 	export let missionControlId: Principal;
 
@@ -83,7 +83,7 @@
 	const onIntersect = async () => {
 		if (!$authSignedInStore) {
 			toasts.error({
-				text: $i18n.errors.no_identity,
+				text: $i18n.errors.no_identity
 			});
 			return;
 		}

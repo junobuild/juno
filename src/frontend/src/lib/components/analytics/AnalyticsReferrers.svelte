@@ -9,22 +9,25 @@
 	let referrers: Record<string, number> = {};
 	$: referrers = pageViews
 		.filter(([_, { referrer }]) => nonNullish(fromNullable(referrer)))
-		.reduce((acc, [_, { referrer }]) => {
-			const ref = fromNullable(referrer) as string;
+		.reduce(
+			(acc, [_, { referrer }]) => {
+				const ref = fromNullable(referrer) as string;
 
-			let host: string;
-			try {
-				const url = new URL(ref);
-				host = url.host;
-			} catch (err: unknown) {
-				host = ref;
-			}
+				let host: string;
+				try {
+					const url = new URL(ref);
+					host = url.host;
+				} catch (err: unknown) {
+					host = ref;
+				}
 
-			return {
-				...acc,
-				[host]: (acc[host] ?? 0) + 1
-			};
-		}, {} as Record<string, number>);
+				return {
+					...acc,
+					[host]: (acc[host] ?? 0) + 1
+				};
+			},
+			{} as Record<string, number>
+		);
 
 	let entries: [string, number][] = [];
 	$: entries = Object.entries(referrers)

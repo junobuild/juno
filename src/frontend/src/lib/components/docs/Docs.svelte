@@ -93,10 +93,12 @@
 		class="data"
 		class:data-selected={nonNullish($docsStore.action)}
 		class:data-nullish={isNullish($paginationStore.items)}
-	>		
-		{#if nonNullish($paginationStore.items)}			
+	>
+		{#if nonNullish($paginationStore.items)}
 			{#each $paginationStore.items as [key, doc]}
-				<button class="text action" on:click={() => docsStore.set({ key, data: doc, action: "view" })}
+				<button
+					class="text action"
+					on:click={() => docsStore.set({ key, data: doc, action: 'view' })}
 					><span>{key}</span></button
 				>
 			{/each}

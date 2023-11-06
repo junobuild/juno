@@ -4,12 +4,9 @@
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		JunoModalDetail,
-		JunoModalTopUpOrbiterDetail
-	} from '$lib/types/modal';
+	import type { JunoModalDetail, JunoModalTopUpOrbiterDetail } from '$lib/types/modal';
 	import type { AccountIdentifier } from '@junobuild/ledger';
-	import {orbiterStore} from "$lib/stores/orbiter.store";
+	import { orbiterStore } from '$lib/stores/orbiter.store';
 
 	export let detail: JunoModalDetail;
 
@@ -22,7 +19,12 @@
 </script>
 
 {#if nonNullish($orbiterStore)}
-	<CanisterTopUpModal canisterId={$orbiterStore.orbiter_id} {balance} {accountIdentifier} on:junoClose>
+	<CanisterTopUpModal
+		canisterId={$orbiterStore.orbiter_id}
+		{balance}
+		{accountIdentifier}
+		on:junoClose
+	>
 		<svelte:fragment slot="intro">
 			<h2>
 				{@html i18nFormat($i18n.canisters.top_up_title, [

@@ -175,18 +175,8 @@
 
 	.form-doc-id {
 		display: flex;
-		flex-direction: row;
 		align-items: center;
 		gap: var(--padding-2x);
 		margin-bottom: var(--padding-2x);
-
-		input {
-			display: flex;
-			flex: 0.9;
-		}
-
-		button {
-			flex: 0.1;
-		}
 	}
 </style>

@@ -1,5 +1,9 @@
 <script lang="ts">
-	import { DATA_CONTEXT_KEY, DataStoreAction, type DataContext } from '$lib/types/data.context';
+	import {
+		DATA_CONTEXT_KEY,
+		type DataStoreAction,
+		type DataContext
+	} from '$lib/types/data.context';
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';

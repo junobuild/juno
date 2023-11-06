@@ -8,7 +8,7 @@
 	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
-	import { DATA_CONTEXT_KEY, DataStoreAction, type DataContext } from '$lib/types/data.context';
+	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import DataList from '$lib/components/data/DataList.svelte';
@@ -17,7 +17,6 @@
 	import type { ListParams } from '$lib/types/list';
 	import { compare } from 'semver';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
-	import IconNew from '$lib/components/icons/IconNew.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -91,7 +90,7 @@
 {#if !emptyCollection}
 	<div
 		class="data"
-		class:data-selected={nonNullish($docsStore.action)}
+		class:data-selected={nonNullish($docsStore?.action)}
 		class:data-nullish={isNullish($paginationStore.items)}
 	>
 		{#if nonNullish($paginationStore.items)}

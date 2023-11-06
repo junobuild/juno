@@ -3,12 +3,12 @@ import type { Writable } from 'svelte/store';
 export enum DataStoreStateEnum {
 	CREATE,
 	EDIT,
-	VIEW,
+	VIEW
 }
 export interface DataStore<T> {
 	key: string | undefined;
 	data: T | undefined;
-	state?: DataStoreStateEnum; 
+	state?: DataStoreStateEnum;
 }
 
 export interface DataContext<T> {

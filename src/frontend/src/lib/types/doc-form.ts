@@ -1,11 +1,11 @@
 export enum DocFieldTypeEnum {
-  boolean = 'boolean',
-  string = 'string',
-  number = 'number',
+	boolean = 'boolean',
+	string = 'string',
+	number = 'number'
 }
 
 export interface DocField {
-  name: string;
-  fieldType: DocFieldTypeEnum;
-  value: string | boolean | number;
+	name: string;
+	fieldType: DocFieldTypeEnum;
+	value: string | boolean | number;
 }

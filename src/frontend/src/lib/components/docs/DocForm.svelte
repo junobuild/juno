@@ -4,15 +4,13 @@
 	import { DocFieldTypeEnum, type DocField } from '$lib/types/doc-form';
 	import IconDelete from '../icons/IconDelete.svelte';
   import { busy } from '$lib/stores/busy.store';
-	import { setDoc } from '$lib/api/satellites.api';
   import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import type { Principal } from '@dfinity/principal';
 	import { createEventDispatcher, getContext } from 'svelte';
-	import { generateUniqueDocID } from '$lib/utils/doc.utils';
 	import { isNullish } from '$lib/utils/utils';
   import { i18n } from '$lib/stores/i18n.store';
-	import { toArray, toNullable } from '$lib/utils/did.utils';
+	import { nanoid } from 'nanoid';
 	import { DATA_CONTEXT_KEY, DataStoreStateEnum, type DataContext } from '$lib/types/data.context';
 	import type Doc from './Doc.svelte';
 
@@ -28,7 +26,7 @@
 	let satelliteId: Principal;
 	$: satelliteId = $store.satelliteId;
 
-  let docId: string = '';
+  let key: string = '';
   let fields: DocField[] = [
     {
       name: '',
@@ -55,7 +53,7 @@
   }
 
   let isFormValid = false
-  $: isFormValid = !!docId && !!fields.find((field) => !!field.name && !isNullish(field.value) && field.value !== '')
+  $: isFormValid = !!key && !!fields.find((field) => !!field.name && !isNullish(field.value) && field.value !== '')
 
   const dispatch = createEventDispatcher();
 
@@ -66,23 +64,10 @@
     busy.start();
 
     try {
-      const doc: Record<string, string | number | boolean> = {}
-      fields.forEach((field) => {
-        doc[field.name] = field.value
-      })
-      
-      const docArray = await toArray(doc)
-
-      await setDoc({
-        satelliteId,
-        collection: collection as string,
-        key: docId,
-        doc: {
-          data: docArray,
-          description: toNullable('test description'),
-          updated_at: toNullable(BigInt(new Date().getUTCMilliseconds())),
-        },
-      })
+      /**
+       * TODO:
+       * - add setDoc logic
+      */
 
       toasts.success(
 				$i18n.document.document_submission_success
@@ -120,11 +105,11 @@
             type="text"
             placeholder="Document ID"
             name="doc_id"
-            bind:value={docId}
+            bind:value={key}
           />
           <button
             class="primary"
-            on:click|preventDefault={() => docId = generateUniqueDocID()}
+            on:click|preventDefault={() => key = nanoid()}
             >
               {$i18n.document.field_doc_id_btn_auto_id}
           </button>

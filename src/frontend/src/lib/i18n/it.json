@@ -255,7 +255,7 @@
 		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
 		"orbiter_configuration_listing": "Error while fetching the configuration.",
 		"transactions_next": "Error while fetching the next transactions.",
-		"transactions_export": "Unexpected error(s) while exporting the transactions."		
+		"transactions_export": "Unexpected error(s) while exporting the transactions."
 	},
 	"document": {
 		"owner": "Proprietario",

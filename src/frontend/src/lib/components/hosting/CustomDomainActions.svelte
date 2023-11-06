@@ -110,7 +110,7 @@
 		</div>
 
 		{#if advancedOptions}
-			<hr/>
+			<hr />
 			<div class="checkbox">
 				<input type="checkbox" on:change={() => (skipDeleteDomain = !skipDeleteDomain)} />
 				<span>{$i18n.hosting.skip_delete_domain}</span>

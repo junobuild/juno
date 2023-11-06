@@ -10,7 +10,7 @@
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
-	import OrbiterTopUpModal from "$lib/components/modals/OrbiterTopUpModal.svelte";
+	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 

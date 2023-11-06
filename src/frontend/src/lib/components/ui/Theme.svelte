@@ -3,7 +3,7 @@
 	import { Theme } from '$lib/types/theme';
 	import IconLightOff from '$lib/components/icons/IconLightOff.svelte';
 	import IconLightOn from '$lib/components/icons/IconLightOn.svelte';
-	import type {ComponentType} from 'svelte';
+	import type { ComponentType } from 'svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	let dark: boolean;

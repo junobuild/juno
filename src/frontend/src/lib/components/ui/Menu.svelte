@@ -67,7 +67,8 @@
 			margin-left: 0;
 		}
 
-		transition: margin-left var(--animation-time) var(--menu-animation-timing-function),
+		transition:
+			margin-left var(--animation-time) var(--menu-animation-timing-function),
 			width var(--animation-time) var(--menu-animation-timing-function);
 
 		// On xlarge screen the header is not sticky but within the content that's why we align the inner menu start

@@ -20,8 +20,8 @@
 	$: key = $store?.key;
 	let doc: Doc | undefined;
 	$: doc = $store?.data;
-	let action: DataStoreAction | undefined
-	$: action = $store?.action
+	let action: DataStoreAction | undefined;
+	$: action = $store?.action;
 
 	let owner: Principal | undefined;
 	$: owner = doc?.owner;
@@ -52,7 +52,7 @@
 	};
 </script>
 
-{#if nonNullish(doc) && action === "view"}
+{#if nonNullish(doc) && action === 'view'}
 	<p class="title doc">{key ?? ''}</p>
 
 	<article class="doc">

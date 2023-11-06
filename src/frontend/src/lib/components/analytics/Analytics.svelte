@@ -16,7 +16,7 @@
 	import { formatNumber } from '$lib/utils/number.utils';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
 	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
-	import AnalyticsEventsExport from "$lib/components/analytics/AnalyticsEventsExport.svelte";
+	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
 
 	let loading = true;
 
@@ -137,7 +137,7 @@
 		{/if}
 
 		{#if trackEvents.length > 0}
-			<hr/>
+			<hr />
 
 			<AnalyticsEvents {trackEvents} />
 

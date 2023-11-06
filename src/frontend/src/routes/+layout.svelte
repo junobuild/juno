@@ -10,7 +10,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { isNullish } from '$lib/utils/utils';
 	import { i18n } from '$lib/stores/i18n.store';
-	import {displayAndCleanLogoutMsg, signOut} from '$lib/services/auth.services';
+	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
 
 	const init = async () => await Promise.all([i18n.init(), syncAuthStore()]);
 

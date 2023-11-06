@@ -107,7 +107,7 @@
 		class="data"
 		class:data-selected={nonNullish($assetsStore.data)}
 		class:data-nullish={isNullish($paginationStore.items)}
-	>		
+	>
 		{#if nonNullish($paginationStore.items)}
 			{#each $paginationStore.items as item}
 				{@const asset = item[1]}

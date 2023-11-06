@@ -113,7 +113,9 @@
 				{@const asset = item[1]}
 				{@const key = asset.key.full_path}
 
-				<button class="text action" on:click={() => assetsStore.set({ key, data: asset, action: "view" })}
+				<button
+					class="text action"
+					on:click={() => assetsStore.set({ key, data: asset, action: 'view' })}
 					><span>{key}</span></button
 				>
 			{/each}

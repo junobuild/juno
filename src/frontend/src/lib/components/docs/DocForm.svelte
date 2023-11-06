@@ -10,14 +10,18 @@
 	import { isNullish } from '$lib/utils/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { nanoid } from 'nanoid';
-	import { DATA_CONTEXT_KEY, DataStoreAction, type DataContext } from '$lib/types/data.context';
+	import {
+		DATA_CONTEXT_KEY,
+		type DataStoreAction,
+		type DataContext
+	} from '$lib/types/data.context';
 	import type Doc from './Doc.svelte';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 	const { store: docsStore }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
 	let action: DataStoreAction | undefined;
-	$: action = $docsStore.action;
+	$: action = $docsStore?.action;
 	let collection: string | undefined;
 	$: collection = $store.rule?.[0];
 
@@ -95,7 +99,7 @@
 	};
 
 	let isActive = false;
-	$: isActive = ['create', 'edit'].includes(action);
+	$: isActive = action === 'create' || action === 'edit';
 </script>
 
 <p class="title doc-form">{isActive ? $i18n.document.title_add_new_document : ''}</p>

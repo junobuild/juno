@@ -9,7 +9,7 @@
 </script>
 
 <CollectionsNav on:junoCollectionEdit on:junoCollectionClose>
-	{#if nonNullish($store.key)}
+	{#if nonNullish($store) && nonNullish($store.key)}
 		<NavSeparator visible={true} />
 
 		<span>{$store.key}</span>

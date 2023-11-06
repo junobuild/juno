@@ -266,7 +266,9 @@
 		"delete": "Delete document?",
 		"description": "Description",
 		"document_submission_success": "Document has been successfully submitted!",
-		"document_submission_failed": "Document submission failed!",
+		"document_submission_failed": "Document submission failed!"
+	},
+	"document_form": {
 		"field_doc_id_label": "Doc ID",
 		"field_doc_id_btn_auto_id": "Auto ID",
 		"field_doc_id_placeholder": "Document ID",

@@ -283,6 +283,9 @@ interface I18nDocument {
 	description: string;
 	document_submission_success: string;
 	document_submission_failed: string;
+}
+
+interface I18nDocument_form {
 	field_doc_id_label: string;
 	field_doc_id_btn_auto_id: string;
 	field_doc_id_placeholder: string;
@@ -483,6 +486,7 @@ interface I18n {
 	cli: I18nCli;
 	errors: I18nErrors;
 	document: I18nDocument;
+	document_form: I18nDocument_form;
 	asset: I18nAsset;
 	admin: I18nAdmin;
 	controllers: I18nControllers;

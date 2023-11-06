@@ -11,15 +11,15 @@
 	import { isNullish } from '$lib/utils/utils';
   import { i18n } from '$lib/stores/i18n.store';
 	import { nanoid } from 'nanoid';
-	import { DATA_CONTEXT_KEY, DataStoreStateEnum, type DataContext } from '$lib/types/data.context';
+	import { DATA_CONTEXT_KEY, DataStoreAction, type DataContext } from '$lib/types/data.context';
 	import type Doc from './Doc.svelte';
 
   const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
   const { store: docsStore }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
 
-  let state: DataStoreStateEnum | undefined
-  $: state = $docsStore.state
+  let action: DataStoreAction | undefined
+  $: action = $docsStore.action
   let collection: string | undefined;
 	$: collection = $store.rule?.[0];
 
@@ -91,7 +91,7 @@
   }
 
   let isActive = false
-  $: isActive = state === DataStoreStateEnum.CREATE || state === DataStoreStateEnum.EDIT
+  $: isActive = action === DataStoreAction.CREATE || action === DataStoreAction.EDIT
 
 </script>
 

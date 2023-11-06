@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { DATA_CONTEXT_KEY, DataStoreStateEnum, type DataContext } from '$lib/types/data.context';
+	import { DATA_CONTEXT_KEY, DataStoreAction, type DataContext } from '$lib/types/data.context';
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
@@ -20,8 +20,8 @@
 	$: key = $store?.key;
 	let doc: Doc | undefined;
 	$: doc = $store?.data;
-	let state: DataStoreStateEnum | undefined
-	$: state = $store?.state
+	let action: DataStoreAction | undefined
+	$: action = $store?.action
 
 	let owner: Principal | undefined;
 	$: owner = doc?.owner;
@@ -52,7 +52,7 @@
 	};
 </script>
 
-{#if nonNullish(doc) && state === DataStoreStateEnum.VIEW}
+{#if nonNullish(doc) && action === DataStoreAction.VIEW}
 	<p class="title doc">{key ?? ''}</p>
 
 	<article class="doc">

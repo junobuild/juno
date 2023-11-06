@@ -22,7 +22,7 @@
 		resetData
 	});
 
-	const closeDoc = () => docsStore.set({ key: undefined, data: undefined, state: undefined });
+	const closeDoc = () => docsStore.set({ key: undefined, data: undefined, action: undefined });
 </script>
 
 <Data on:junoCloseData={() => closeDoc()}>

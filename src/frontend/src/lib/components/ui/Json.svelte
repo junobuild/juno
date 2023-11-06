@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isHash, stringifyJson, isPrincipal } from '$lib/utils/json.utils';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	export let json: unknown | undefined = undefined;
 	export let defaultExpandedLevel = Infinity;
@@ -74,6 +75,7 @@
 			role="button"
 			aria-label={$i18n.core.toggle}
 			tabindex="0"
+			on:keypress={($event) => handleKeyPress({ $event, callback: toggle })}
 			on:click|stopPropagation={toggle}
 			>{keyLabel}
 			<span class="bracket">{openBracket} ... {closeBracket}</span>
@@ -90,6 +92,7 @@
 			role="button"
 			aria-label={$i18n.core.toggle}
 			tabindex="0"
+			on:keypress={($event) => handleKeyPress({ $event, callback: toggle })}
 			on:click|stopPropagation={toggle}
 			>{keyLabel}<span class="bracket open">{openBracket}</span></span
 		>

@@ -4,6 +4,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	const close = () => {
 		if (isNullish($busy) || !$busy.close) {
@@ -15,7 +16,15 @@
 </script>
 
 {#if nonNullish($busy)}
-	<div transition:fade on:click={close} class:close={$busy.close}>
+	<div
+		role="button"
+		tabindex="-1"
+		aria-label={$i18n.core.close}
+		transition:fade
+		on:click={close}
+		class:close={$busy.close}
+		on:keypress={($event) => handleKeyPress({ $event, callback: close })}
+	>
 		<div class="content">
 			{#if $busy.spinner}
 				<div class="spinner">

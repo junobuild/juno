@@ -12,7 +12,7 @@
 
 <div class="form-field">
 	<div class="form-field-item">
-		<label>{$i18n.document.field_name_label}</label>
+		<label for="field_name">{$i18n.document.field_name_label}</label>
 		<input
 			id="field_name"
 			type="text"
@@ -22,7 +22,7 @@
 		/>
 	</div>
 	<div class="form-field-item">
-		<label>{$i18n.document.field_type_label}</label>
+		<label for="field_type">{$i18n.document.field_type_label}</label>
 		<select id="field_type" name="field_type" bind:value={fieldType}>
 			<option value={DocFieldTypeEnum.BOOLEAN}>{$i18n.document.field_type_boolean}</option>
 			<option value={DocFieldTypeEnum.STRING}>{$i18n.document.field_type_string}</option>
@@ -31,7 +31,7 @@
 	</div>
 	<div class="form-field-item">
 		<div>
-			<label>{$i18n.document.field_value_label}</label>
+			<label for="value">{$i18n.document.field_value_label}</label>
 			<div class="value-input-wrapper">
 				{#if fieldType === DocFieldTypeEnum.NUMBER || fieldType === DocFieldTypeEnum.STRING}
 					<input

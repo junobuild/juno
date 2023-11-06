@@ -5,7 +5,6 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import type { Principal } from '@dfinity/principal';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import { isNullish } from '$lib/utils/utils';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -22,11 +21,9 @@
 
 	let action: DataStoreAction | undefined;
 	$: action = $docsStore?.action;
+
 	let collection: string | undefined;
 	$: collection = $store.rule?.[0];
-
-	let satelliteId: Principal;
-	$: satelliteId = $store.satelliteId;
 
 	let key: string | undefined;
 	$: key = $docsStore?.key;
@@ -109,7 +106,7 @@
 		<form on:submit|preventDefault={onSubmit}>
 			<div>
 				<div>
-					<label>{$i18n.document.field_doc_id_label}</label>
+					<label for="doc-id">{$i18n.document.field_doc_id_label}</label>
 					<div class="form-doc-id">
 						<input
 							id="doc-id"

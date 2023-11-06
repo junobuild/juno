@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { layoutMenuOpen } from '$lib/stores/layout.store';
 	import Logo from '$lib/components/presentation/Logo.svelte';
+	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+
+	const close = () => layoutMenuOpen.set(false);
 </script>
 
 <div role="menu">
@@ -8,7 +11,10 @@
 		class="inner"
 		data-tid="menu-inner"
 		class:open={$layoutMenuOpen}
-		on:click={() => layoutMenuOpen.set(false)}
+		on:keypress={($event) => handleKeyPress({ $event, callback: close })}
+		on:click={close}
+		role="button"
+		tabindex="-1"
 	>
 		<div class="logo">
 			<Logo color="white" />

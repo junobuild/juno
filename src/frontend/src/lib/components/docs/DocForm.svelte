@@ -26,7 +26,9 @@
 	let satelliteId: Principal;
 	$: satelliteId = $store.satelliteId;
 
-  let key: string = '';
+  let key: string | undefined;
+  $: key = $docsStore?.key;
+
   let fields: DocField[] = [
     {
       name: '',
@@ -53,7 +55,9 @@
   }
 
   let isFormValid = false
-  $: isFormValid = !!key && !!fields.find((field) => !!field.name && !isNullish(field.value) && field.value !== '')
+  $: isFormValid = !isNullish(key) && !isNullish(
+    fields.find((field) => !isNullish(field.name) && field.name !== '' && !isNullish(field.value) && field.value !== '')
+  )
 
   const dispatch = createEventDispatcher();
 

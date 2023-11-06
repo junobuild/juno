@@ -3,7 +3,12 @@
 	export let size = '24px';
 </script>
 
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 61.09 61.09" height={size} width={size}
+<svg
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="0 0 61.09 61.09"
+	height={size}
+	width={size}
+	fill="currentColor"
 	><g
 		><path
 			class="icon-new"

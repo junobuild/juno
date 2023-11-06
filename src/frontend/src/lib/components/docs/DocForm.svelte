@@ -93,7 +93,7 @@
 
 <p class="title doc-form">
 	{#if isActive}
-		{$i18n.document.title_add_new_document}
+		{$i18n.document_form.title_add_new_document}
 	{:else}
 		&ZeroWidthSpace;
 	{/if}
@@ -103,12 +103,12 @@
 	<article class="doc-form" in:fade>
 		<form on:submit|preventDefault={onSubmit}>
 			<Value ref="doc-id">
-				<svelte:fragment slot="label">{$i18n.document.field_doc_id_label}</svelte:fragment>
+				<svelte:fragment slot="label">{$i18n.document_form.field_doc_id_label}</svelte:fragment>
 				<div class="form-doc-id">
 					<input
 						id="doc-id"
 						type="text"
-						placeholder={$i18n.document.field_doc_id_placeholder}
+						placeholder={$i18n.document_form.field_doc_id_placeholder}
 						name="doc_id"
 						bind:value={key}
 					/>
@@ -116,7 +116,7 @@
 						class="text action start"
 						type="button"
 						on:click={() => (key = nanoid())}
-						aria-label={$i18n.document.field_doc_id_btn_auto_id}
+						aria-label={$i18n.document_form.field_doc_id_btn_auto_id}
 					>
 						<IconAutoRenew />
 					</button>
@@ -135,7 +135,7 @@
 
 			<button class="text action start" type="button" on:click={onAddFieldButtonPressed}>
 				<IconNew size="16px" />
-				<span>{$i18n.document.btn_add_field}</span>
+				<span>{$i18n.document_form.btn_add_field}</span>
 			</button>
 
 			<div class="button-wrapper">

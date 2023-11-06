@@ -266,7 +266,9 @@
 		"delete": "Vuoi eliminare il documento?",
 		"description": "Descrizione",
 		"document_submission_success": "Il documento è stato inviato con successo!",
-		"document_submission_failed": "Invio del documento non riuscito!",
+		"document_submission_failed": "Invio del documento non riuscito!"
+	},
+	"document_form": {
 		"field_doc_id_label": "Doc ID",
 		"field_doc_id_btn_auto_id": "Auto ID",
 		"field_doc_id_placeholder": "ID documento",

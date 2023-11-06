@@ -16,12 +16,12 @@
 <div class="form-field">
 	<div class="form-field-item">
 		<Value ref="field-name">
-			<svelte:fragment slot="label">{$i18n.document.field_name_label}</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.document_form.field_name_label}</svelte:fragment>
 			<input
 				id="field-name"
 				name="field-name"
 				type="text"
-				placeholder={$i18n.document.field_name_placeholder}
+				placeholder={$i18n.document_form.field_name_placeholder}
 				bind:value={name}
 			/>
 		</Value>
@@ -29,31 +29,31 @@
 
 	<div class="form-field-item">
 		<Value ref="field-type">
-			<svelte:fragment slot="label">{$i18n.document.field_type_label}</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.document_form.field_type_label}</svelte:fragment>
 			<select id="field-type" name="field-type" bind:value={fieldType}>
-				<option value={DocFieldTypeEnum.BOOLEAN}>{$i18n.document.field_type_boolean}</option>
-				<option value={DocFieldTypeEnum.STRING}>{$i18n.document.field_type_string}</option>
-				<option value={DocFieldTypeEnum.NUMBER}>{$i18n.document.field_type_number}</option>
+				<option value={DocFieldTypeEnum.BOOLEAN}>{$i18n.document_form.field_type_boolean}</option>
+				<option value={DocFieldTypeEnum.STRING}>{$i18n.document_form.field_type_string}</option>
+				<option value={DocFieldTypeEnum.NUMBER}>{$i18n.document_form.field_type_number}</option>
 			</select>
 		</Value>
 	</div>
 
 	<div class="form-field-item">
 		<Value>
-			<svelte:fragment slot="label">{$i18n.document.field_value_label}</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.document_form.field_value_label}</svelte:fragment>
 
 			<div class="value-input-wrapper">
 				{#if fieldType === DocFieldTypeEnum.NUMBER || fieldType === DocFieldTypeEnum.STRING}
 					<input
 						type={fieldType === DocFieldTypeEnum.STRING ? 'text' : 'number'}
-						placeholder={$i18n.document.field_value_label}
+						placeholder={$i18n.document_form.field_value_label}
 					/>
 				{/if}
 
 				{#if fieldType === DocFieldTypeEnum.BOOLEAN}
 					<select bind:value>
-						<option value={true}>{$i18n.document.field_value_true}</option>
-						<option value={false}>{$i18n.document.field_value_false}</option>
+						<option value={true}>{$i18n.document_form.field_value_true}</option>
+						<option value={false}>{$i18n.document_form.field_value_false}</option>
 					</select>
 				{/if}
 

@@ -266,7 +266,9 @@
 		"delete": "删除文档?",
 		"description": "描述",
 		"document_submission_success": "文件已成功提交！",
-		"document_submission_failed": "文件提交失败！",
+		"document_submission_failed": "文件提交失败！"
+	},
+	"document_form": {
 		"field_doc_id_label": "Doc ID",
 		"field_doc_id_btn_auto_id": "Auto ID",
 		"field_doc_id_placeholder": "文件编号",

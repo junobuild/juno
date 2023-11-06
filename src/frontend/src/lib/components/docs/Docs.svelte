@@ -94,8 +94,7 @@
 		class:data-selected={nonNullish($docsStore.state)}
 		class:data-nullish={isNullish($paginationStore.items)}
 	>		
-		{#if nonNullish($paginationStore.items)}
-			
+		{#if nonNullish($paginationStore.items)}			
 			<!-- <button class="text action start" on:click={() => docsStore.set({key: undefined, data: undefined, state: DataStoreStateEnum.CREATE})}
 				><IconNew size="16px" /> <span>{$i18n.document.btn_add_document}</span></button
 			> -->

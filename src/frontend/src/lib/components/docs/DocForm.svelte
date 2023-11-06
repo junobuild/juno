@@ -2,7 +2,7 @@
 <script lang="ts">
   import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { DocFieldTypeEnum, type DocField } from '$lib/types/doc-form';
-	import IconDelete from '../icons/IconDelete.svelte';
+	import DocFormField from './DocFormField.svelte';
   import { busy } from '$lib/stores/busy.store';
   import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
@@ -112,70 +112,28 @@
             bind:value={key}
           />
           <button
+            type="button"
             class="primary"
-            on:click|preventDefault={() => key = nanoid()}
+            on:click={() => key = nanoid()}
             >
               {$i18n.document.field_doc_id_btn_auto_id}
           </button>
         </div>
       </div>
       {#each fields as field, i (i)}
-        <div class="form-field">
-          <div class="form-field-item">
-            <label>{$i18n.document.field_name_label}</label>
-            <input
-              id="field_name"
-              type="text"
-              placeholder={$i18n.document.field_name_placeholder}
-              name="field_name"
-              bind:value={field.name}
-            />
-          </div>
-          <div class="form-field-item">
-            <label>{$i18n.document.field_type_label}</label>
-            <select id="field_type" name="field_type" bind:value={field.fieldType}>
-              <option value={DocFieldTypeEnum.BOOLEAN}>{$i18n.document.field_type_boolean}</option>
-              <option value={DocFieldTypeEnum.STRING}>{$i18n.document.field_type_string}</option>
-              <option value={DocFieldTypeEnum.NUMBER}>{$i18n.document.field_type_number}</option>
-            </select>
-          </div>
-          <div class="form-field-item">
-            <div>
-              <label>{$i18n.document.field_value_label}</label>
-              <div class="value-input-wrapper">
-                {#if field.fieldType === DocFieldTypeEnum.NUMBER || field.fieldType === DocFieldTypeEnum.STRING}
-                  <input
-                    id="value"
-                    type={field.fieldType === DocFieldTypeEnum.STRING ? "text" : "number"}
-                    placeholder={$i18n.document.field_value_label}
-                    name="field_value"
-                  />
-                {/if}
-
-                {#if field.fieldType === DocFieldTypeEnum.BOOLEAN} 
-                  <select id="field_value" name="field_value" placeholder="Field value" bind:value={field.value}>
-                    <option value={true}>{$i18n.document.field_value_true}</option>
-                    <option value={false}>{$i18n.document.field_value_false}</option>
-                  </select>
-                {/if}
-
-                {#if fields.length > 1}
-                  <button
-                    class="text action start"
-                    on:click|preventDefault={() => onDeleteFieldPressed(i)}
-                    >
-                      <IconDelete size="24px" />
-                  </button>
-                {/if}
-              </div>  
-            </div>            
-          </div>
-        </div>
+        <DocFormField
+          bind:name={field.name}
+          bind:fieldType={field.fieldType}
+          bind:value={field.value}
+          isShowDeleteButton={fields.length > 1}
+          onDeleteFieldPressed={() => onDeleteFieldPressed(i)}
+        />
       {/each}
 
       <button
         class="text action start"
-        on:click|preventDefault={onAddFieldButtonPressed}
+        type="button"
+        on:click={onAddFieldButtonPressed}
       >
         <IconNew size="16px" />
         <span>{$i18n.document.btn_add_field}</span>
@@ -213,33 +171,8 @@
 		padding: var(--padding-2x) var(--padding-2x) 0;
 	}
 
-  .form-field {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    gap: 16px;
-    margin-bottom: var(--padding-2x);
-  }
-
-  .form-field-item {
-    display: flex;
-    flex: 1;
-    flex-direction: column;
-  }
-
   .button-wrapper {
     margin-top: var(--padding-2x);
-  }
-
-  .value-input-wrapper {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .checkbox {
-    min-width: 5em;
   }
 
   .form-doc-id {

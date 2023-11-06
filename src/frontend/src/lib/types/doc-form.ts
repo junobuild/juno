@@ -1,7 +1,7 @@
 export enum DocFieldTypeEnum {
-	boolean = 'boolean',
-	string = 'string',
-	number = 'number'
+	BOOLEAN = 'boolean',
+	STRING = 'string',
+	NUMBER = 'number'
 }
 
 export interface DocField {

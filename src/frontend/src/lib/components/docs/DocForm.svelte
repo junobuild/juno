@@ -30,8 +30,8 @@
   let fields: DocField[] = [
     {
       name: '',
-      fieldType: DocFieldTypeEnum.boolean,
-      value: false,
+      fieldType: DocFieldTypeEnum.STRING,
+      value: '',
     }
   ]
 
@@ -40,8 +40,8 @@
       ...fields,
       {
         name: '',
-        fieldType: DocFieldTypeEnum.boolean,
-        value: false,
+        fieldType: DocFieldTypeEnum.STRING,
+        value: '',
       }
     ]
   }
@@ -130,25 +130,25 @@
           <div class="form-field-item">
             <label>{$i18n.document.field_type_label}</label>
             <select id="field_type" name="field_type" bind:value={field.fieldType}>
-              <option value={DocFieldTypeEnum.boolean}>{$i18n.document.field_type_boolean}</option>
-              <option value={DocFieldTypeEnum.string}>{$i18n.document.field_type_string}</option>
-              <option value={DocFieldTypeEnum.number}>{$i18n.document.field_type_number}</option>
+              <option value={DocFieldTypeEnum.BOOLEAN}>{$i18n.document.field_type_boolean}</option>
+              <option value={DocFieldTypeEnum.STRING}>{$i18n.document.field_type_string}</option>
+              <option value={DocFieldTypeEnum.NUMBER}>{$i18n.document.field_type_number}</option>
             </select>
           </div>
           <div class="form-field-item">
             <div>
               <label>{$i18n.document.field_value_label}</label>
               <div class="value-input-wrapper">
-                {#if field.fieldType === DocFieldTypeEnum.number || field.fieldType === DocFieldTypeEnum.string}
+                {#if field.fieldType === DocFieldTypeEnum.NUMBER || field.fieldType === DocFieldTypeEnum.STRING}
                   <input
                     id="value"
-                    type={field.fieldType === DocFieldTypeEnum.string ? "text" : "number"}
+                    type={field.fieldType === DocFieldTypeEnum.STRING ? "text" : "number"}
                     placeholder={$i18n.document.field_value_label}
                     name="field_value"
                   />
                 {/if}
 
-                {#if field.fieldType === DocFieldTypeEnum.boolean} 
+                {#if field.fieldType === DocFieldTypeEnum.BOOLEAN} 
                   <select id="field_value" name="field_value" placeholder="Field value" bind:value={field.value}>
                     <option value={true}>{$i18n.document.field_value_true}</option>
                     <option value={false}>{$i18n.document.field_value_false}</option>

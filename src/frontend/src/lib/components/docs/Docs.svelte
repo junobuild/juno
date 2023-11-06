@@ -80,6 +80,8 @@
 			resetData();
 			await list();
 		})();
+
+	const ADD_DOCUMENT_FEATURE = import.meta.env.VITE_ADD_DOCUMENT === 'true';
 </script>
 
 <div class="title">
@@ -101,11 +103,13 @@
 				</CollectionEmpty>
 			{/if}
 
-			<button
-				class="text action start"
-				on:click={() => docsStore.set({ key: undefined, data: undefined, action: 'create' })}
-				><IconNew size="16px" /> <span>{$i18n.document.btn_add_document}</span></button
-			>
+			{#if ADD_DOCUMENT_FEATURE}
+				<button
+					class="text action start"
+					on:click={() => docsStore.set({ key: undefined, data: undefined, action: 'create' })}
+					><IconNew size="16px" /> <span>{$i18n.document.btn_add_document}</span></button
+				>
+			{/if}
 
 			{#each $paginationStore.items as [key, doc]}
 				<button

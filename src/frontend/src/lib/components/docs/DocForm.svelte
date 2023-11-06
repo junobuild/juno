@@ -6,7 +6,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { createEventDispatcher, getContext } from 'svelte';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '$lib/utils/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { nanoid } from 'nanoid';
 	import {
@@ -15,6 +15,9 @@
 		type DataContext
 	} from '$lib/types/data.context';
 	import type Doc from './Doc.svelte';
+	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
+	import { fade } from 'svelte/transition';
+	import Value from '$lib/components/ui/Value.svelte';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 	const { store: docsStore }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
@@ -28,29 +31,22 @@
 	let key: string | undefined;
 	$: key = $docsStore?.key;
 
-	let fields: DocField[] = [
-		{
-			name: '',
-			fieldType: DocFieldTypeEnum.STRING,
-			value: ''
-		}
-	];
-
-	const onAddFieldButtonPressed = () => {
-		fields = [
-			...fields,
-			{
-				name: '',
-				fieldType: DocFieldTypeEnum.STRING,
-				value: ''
-			}
-		];
+	const EMPTY_FIELD: DocField = {
+		name: '',
+		fieldType: DocFieldTypeEnum.STRING,
+		value: ''
 	};
 
+	let fields: DocField[] = [EMPTY_FIELD];
+
+	const onAddFieldButtonPressed = () => (fields = [...fields, EMPTY_FIELD]);
+
 	const onDeleteFieldPressed = (index: number) => {
-		if (fields.length > 1) {
-			fields = fields.filter((_, i) => i !== index);
+		if (fields.length <= 1) {
+			return;
 		}
+
+		fields = fields.filter((_, i) => i !== index);
 	};
 
 	let isFormValid = false;
@@ -58,11 +54,7 @@
 		!isNullish(key) &&
 		!isNullish(
 			fields.find(
-				(field) =>
-					!isNullish(field.name) &&
-					field.name !== '' &&
-					!isNullish(field.value) &&
-					field.value !== ''
+				({ name, value }) => nonNullish(name) && name !== '' && nonNullish(value) && value !== ''
 			)
 		);
 
@@ -99,45 +91,55 @@
 	$: isActive = action === 'create' || action === 'edit';
 </script>
 
-<p class="title doc-form">{isActive ? $i18n.document.title_add_new_document : ''}</p>
+<p class="title doc-form">
+	{#if isActive}
+		{$i18n.document.title_add_new_document}
+	{:else}
+		&ZeroWidthSpace;
+	{/if}
+</p>
 
 {#if isActive}
-	<article class="doc-form">
+	<article class="doc-form" in:fade>
 		<form on:submit|preventDefault={onSubmit}>
-			<div>
-				<div>
-					<label for="doc-id">{$i18n.document.field_doc_id_label}</label>
-					<div class="form-doc-id">
-						<input
-							id="doc-id"
-							type="text"
-							placeholder="Document ID"
-							name="doc_id"
-							bind:value={key}
-						/>
-						<button type="button" class="primary" on:click={() => (key = nanoid())}>
-							{$i18n.document.field_doc_id_btn_auto_id}
-						</button>
-					</div>
-				</div>
-				{#each fields as field, i (i)}
-					<DocFormField
-						bind:name={field.name}
-						bind:fieldType={field.fieldType}
-						bind:value={field.value}
-						isShowDeleteButton={fields.length > 1}
-						onDeleteFieldPressed={() => onDeleteFieldPressed(i)}
+			<Value ref="doc-id">
+				<svelte:fragment slot="label">{$i18n.document.field_doc_id_label}</svelte:fragment>
+				<div class="form-doc-id">
+					<input
+						id="doc-id"
+						type="text"
+						placeholder={$i18n.document.field_doc_id_placeholder}
+						name="doc_id"
+						bind:value={key}
 					/>
-				{/each}
+					<button
+						class="text action start"
+						type="button"
+						on:click={() => (key = nanoid())}
+						aria-label={$i18n.document.field_doc_id_btn_auto_id}
+					>
+						<IconAutoRenew />
+					</button>
+				</div>
+			</Value>
 
-				<button class="text action start" type="button" on:click={onAddFieldButtonPressed}>
-					<IconNew size="16px" />
-					<span>{$i18n.document.btn_add_field}</span>
-				</button>
-			</div>
+			{#each fields as field, i (i)}
+				<DocFormField
+					bind:name={field.name}
+					bind:fieldType={field.fieldType}
+					bind:value={field.value}
+					deleteButton={fields.length > 1}
+					on:junoDelete={() => onDeleteFieldPressed(i)}
+				/>
+			{/each}
+
+			<button class="text action start" type="button" on:click={onAddFieldButtonPressed}>
+				<IconNew size="16px" />
+				<span>{$i18n.document.btn_add_field}</span>
+			</button>
 
 			<div class="button-wrapper">
-				<button type="submit" class="primary" disabled={!isFormValid}>Submit</button>
+				<button type="submit" class="primary" disabled={!isFormValid}>{$i18n.core.submit}</button>
 			</div>
 		</form>
 	</article>
@@ -173,18 +175,8 @@
 
 	.form-doc-id {
 		display: flex;
-		flex-direction: row;
 		align-items: center;
 		gap: var(--padding-2x);
 		margin-bottom: var(--padding-2x);
-
-		input {
-			display: flex;
-			flex: 0.9;
-		}
-
-		button {
-			flex: 0.1;
-		}
 	}
 </style>

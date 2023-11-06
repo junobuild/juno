@@ -17,6 +17,7 @@
 	import type { ListParams } from '$lib/types/list';
 	import { compare } from 'semver';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
+	import IconNew from '$lib/components/icons/IconNew.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -79,6 +80,8 @@
 			resetData();
 			await list();
 		})();
+
+	const ADD_DOCUMENT_FEATURE = import.meta.env.VITE_ADD_DOCUMENT === 'true';
 </script>
 
 <div class="title">
@@ -94,6 +97,20 @@
 		class:data-nullish={isNullish($paginationStore.items)}
 	>
 		{#if nonNullish($paginationStore.items)}
+			{#if empty}
+				<CollectionEmpty {collection} rule={$store.rule?.[1]}>
+					<svelte:fragment slot="filter">{$i18n.document.no_match}</svelte:fragment>
+				</CollectionEmpty>
+			{/if}
+
+			{#if ADD_DOCUMENT_FEATURE}
+				<button
+					class="text action start"
+					on:click={() => docsStore.set({ key: undefined, data: undefined, action: 'create' })}
+					><IconNew size="16px" /> <span>{$i18n.document.btn_add_document}</span></button
+				>
+			{/if}
+
 			{#each $paginationStore.items as [key, doc]}
 				<button
 					class="text action"
@@ -104,12 +121,6 @@
 
 			{#if !empty}
 				<DataPaginator />
-			{/if}
-
-			{#if empty}
-				<CollectionEmpty {collection} rule={$store.rule?.[1]}>
-					<svelte:fragment slot="filter">{$i18n.document.no_match}</svelte:fragment>
-				</CollectionEmpty>
 			{/if}
 		{/if}
 	</div>

@@ -269,9 +269,9 @@
 		"document_submission_failed": "Document submission failed!"
 	},
 	"document_form": {
-		"field_doc_id_label": "Doc ID",
-		"field_doc_id_btn_auto_id": "Auto ID",
-		"field_doc_id_placeholder": "Document ID",
+		"field_doc_key_label": "Key",
+		"field_doc_key_btn_auto_key": "Auto key",
+		"field_doc_key_placeholder": "Key",
 		"field_name_label": "Field",
 		"field_name_placeholder": "Field name",
 		"field_type_label": "Type",
@@ -282,10 +282,10 @@
 		"field_type_number": "Number",
 		"field_value_true": "True",
 		"field_value_false": "False",
-		"btn_add_field": "Add Field",
-		"btn_add_document": "Add Document",
-		"title_add_new_document": "Add New Document",
-		"title_edit_document": "Edit Document"
+		"btn_add_field": "Add field",
+		"btn_add_document": "Add document",
+		"title_add_new_document": "Add new document",
+		"title_edit_document": "Edit document"
 	},
 	"asset": {
 		"owner": "Owner",

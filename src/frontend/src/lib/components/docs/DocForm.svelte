@@ -103,12 +103,12 @@
 	<article class="doc-form" in:fade>
 		<form on:submit|preventDefault={onSubmit}>
 			<Value ref="doc-id">
-				<svelte:fragment slot="label">{$i18n.document_form.field_doc_id_label}</svelte:fragment>
+				<svelte:fragment slot="label">{$i18n.document_form.field_doc_key_label}</svelte:fragment>
 				<div class="form-doc-id">
 					<input
 						id="doc-id"
 						type="text"
-						placeholder={$i18n.document_form.field_doc_id_placeholder}
+						placeholder={$i18n.document_form.field_doc_key_placeholder}
 						name="doc_id"
 						bind:value={key}
 					/>
@@ -116,7 +116,7 @@
 						class="text action start"
 						type="button"
 						on:click={() => (key = nanoid())}
-						aria-label={$i18n.document_form.field_doc_id_btn_auto_id}
+						aria-label={$i18n.document_form.field_doc_key_btn_auto_key}
 					>
 						<IconAutoRenew />
 					</button>

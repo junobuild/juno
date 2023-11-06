@@ -8,7 +8,7 @@
 	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
-	import { DATA_CONTEXT_KEY, DataStoreStateEnum, type DataContext } from '$lib/types/data.context';
+	import { DATA_CONTEXT_KEY, DataStoreAction, type DataContext } from '$lib/types/data.context';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import DataList from '$lib/components/data/DataList.svelte';
@@ -91,15 +91,12 @@
 {#if !emptyCollection}
 	<div
 		class="data"
-		class:data-selected={nonNullish($docsStore.state)}
+		class:data-selected={nonNullish($docsStore.action)}
 		class:data-nullish={isNullish($paginationStore.items)}
 	>		
 		{#if nonNullish($paginationStore.items)}			
-			<!-- <button class="text action start" on:click={() => docsStore.set({key: undefined, data: undefined, state: DataStoreStateEnum.CREATE})}
-				><IconNew size="16px" /> <span>{$i18n.document.btn_add_document}</span></button
-			> -->
 			{#each $paginationStore.items as [key, doc]}
-				<button class="text action" on:click={() => docsStore.set({ key, data: doc, state: DataStoreStateEnum.VIEW })}
+				<button class="text action" on:click={() => docsStore.set({ key, data: doc, action: "view" })}
 					><span>{key}</span></button
 				>
 			{/each}

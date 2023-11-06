@@ -286,9 +286,9 @@ interface I18nDocument {
 }
 
 interface I18nDocument_form {
-	field_doc_id_label: string;
-	field_doc_id_btn_auto_id: string;
-	field_doc_id_placeholder: string;
+	field_doc_key_label: string;
+	field_doc_key_btn_auto_key: string;
+	field_doc_key_placeholder: string;
 	field_name_label: string;
 	field_name_placeholder: string;
 	field_type_label: string;

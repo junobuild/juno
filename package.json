@@ -87,6 +87,7 @@
 		"buffer": "^6.0.3",
 		"idb-keyval": "^6.2.1",
 		"layercake": "^8.0.2",
+		"nanoid": "^5.0.2",
 		"semver": "^7.5.4"
 	}
 }

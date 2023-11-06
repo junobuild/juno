@@ -281,6 +281,25 @@ interface I18nDocument {
 	no_match: string;
 	delete: string;
 	description: string;
+	document_submission_success: string;
+	document_submission_failed: string;
+	field_doc_id_label: string;
+	field_doc_id_btn_auto_id: string;
+	field_doc_id_placeholder: string;
+	field_name_label: string;
+	field_name_placeholder: string;
+	field_type_label: string;
+	field_value_label: string;
+	field_value_placeholder: string;
+	field_type_boolean: string;
+	field_type_string: string;
+	field_type_number: string;
+	field_value_true: string;
+	field_value_false: string;
+	btn_add_field: string;
+	btn_add_document: string;
+	title_add_new_document: string;
+	title_edit_document: string;
 }
 
 interface I18nAsset {

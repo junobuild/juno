@@ -6,6 +6,7 @@
 	import { writable } from 'svelte/store';
 	import type { Doc as DocDid } from '$declarations/satellite/satellite.did';
 	import Data from '$lib/components/data/Data.svelte';
+	import DocForm from '../docs/DocForm.svelte';
 
 	const initialDoc = {
 		data: undefined,
@@ -21,11 +22,11 @@
 		resetData
 	});
 
-	const closeDoc = () => docsStore.set({ key: undefined, data: undefined });
+	const closeDoc = () => docsStore.set({ key: undefined, data: undefined, state: undefined });
 </script>
 
 <Data on:junoCloseData={() => closeDoc()}>
 	<Docs />
-
 	<Doc />
+	<DocForm />
 </Data>

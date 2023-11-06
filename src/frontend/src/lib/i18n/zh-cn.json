@@ -271,7 +271,7 @@
 	"document_form": {
 		"field_doc_key_label": "Key",
 		"field_doc_key_btn_auto_key": "Auto key",
-		"field_doc_key_placeholder": "Key",
+		"field_doc_key_placeholder": "Enter or generate a key",
 		"field_name_label": "Field",
 		"field_name_placeholder": "字段名称",
 		"field_type_label": "Type",

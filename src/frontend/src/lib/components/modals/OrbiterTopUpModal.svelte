@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { nonNullish } from '$lib/utils/utils';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

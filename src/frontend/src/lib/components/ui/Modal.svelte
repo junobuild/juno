@@ -5,6 +5,7 @@
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { isBusy } from '$lib/stores/busy.store';
+	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	let visible = true;
 
@@ -32,7 +33,13 @@
 		aria-describedby="modalContent"
 		on:introend
 	>
-		<div class="backdrop" on:click|stopPropagation={close} />
+		<div
+			class="backdrop"
+			on:click|stopPropagation={close}
+			on:keypress={($event) => handleKeyPress({ $event, callback: close })}
+			role="button"
+			tabindex="-1"
+		/>
 		<div
 			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
 			class="wrapper"

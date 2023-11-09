@@ -49,14 +49,14 @@ impl CertifiedAssetHashes {
         )
     }
 
-    pub fn witness_rewrite_v2(&self, absolute_path: &str, rewrite: &str) -> HashTree {
+    pub fn witness_rewrite_v2(&self, absolute_path: &str) -> HashTree {
         assert!(absolute_path.starts_with('/'));
 
         // Witness incorrect url: e.g. /1234
         let segments = nested_tree_path(absolute_path, EXACT_MATCH_TERMINATOR);
         let absence_proof = self.tree_v2.witness(&segments);
 
-        // Fallback
+        // Fallback to search for non conflicting rewrites starting the search from root
         let fallback_paths = fallback_paths(segments.clone());
 
         // Witness fallback paths with the absence of proof to validate it can be rewritten

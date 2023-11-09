@@ -42,10 +42,7 @@ pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<Stor
     matches.first().map(|(_, redirect)| redirect.clone())
 }
 
-fn matching_urls<T: Clone>(
-    requested_path: &str,
-    config: &HashMap<String, T>,
-) -> Vec<(String, T)> {
+fn matching_urls<T: Clone>(requested_path: &str, config: &HashMap<String, T>) -> Vec<(String, T)> {
     let mut matches: Vec<(String, T)> = matching_urls_utils(requested_path, config);
 
     matches.sort_by(|(a, _), (b, _)| {

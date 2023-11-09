@@ -88,7 +88,7 @@ fn build_asset_certificate_header_v2_impl(
 
     let tree = match rewrite_source {
         None => asset_hashes.witness_v2(url),
-        Some(destination) => asset_hashes.witness_rewrite_v2(url, destination),
+        Some(_) => asset_hashes.witness_rewrite_v2(url),
     };
 
     let mut serializer = Serializer::new(vec![]);

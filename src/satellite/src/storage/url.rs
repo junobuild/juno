@@ -1,5 +1,7 @@
 use crate::storage::types::http_request::MapUrl;
 use crate::storage::types::state::FullPath;
+use globset::Glob;
+use std::collections::HashMap;
 use std::path::Path;
 use url::{ParseError, Url};
 
@@ -73,7 +75,12 @@ fn aliases_of(key: &String) -> Vec<String> {
 // Determines possible original keys in case the supplied key is being aliaseded to.
 // Sort-of a reverse operation of `alias_of`
 fn aliased_by(key: &String) -> Option<Vec<String>> {
-    if key.ends_with("/index.html") {
+    if key == "/index.html" {
+        Some(vec![
+            key[..(key.len() - 5)].into(),
+            key[..(key.len() - 10)].into(),
+        ])
+    } else if key.ends_with("/index.html") {
         Some(vec![
             key[..(key.len() - 5)].into(),
             key[..(key.len() - 10)].into(),
@@ -95,7 +102,7 @@ pub fn build_url(url: &String) -> Result<Url, ParseError> {
 }
 
 /// Ensure path always will begin with a /
-fn separator(url: &str) -> &str {
+pub fn separator(url: &str) -> &str {
     if url.starts_with('/') {
         ""
     } else {
@@ -117,4 +124,25 @@ fn map_token(parsed_url: Url) -> Option<String> {
     }
 
     None
+}
+
+pub fn matching_urls<T: Clone>(
+    requested_path: &str,
+    config: &HashMap<String, T>,
+) -> Vec<(String, T)> {
+    config
+        .iter()
+        .filter(|(source, _)| {
+            let glob = Glob::new(source);
+
+            match glob {
+                Err(_) => false,
+                Ok(glob) => {
+                    let matcher = glob.compile_matcher();
+                    matcher.is_match(requested_path)
+                }
+            }
+        })
+        .map(|(source, destination)| (source.clone(), destination.clone()))
+        .collect()
 }

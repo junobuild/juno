@@ -60,6 +60,7 @@ export interface HttpRequest {
 	method: string;
 	body: Uint8Array | number[];
 	headers: Array<[string, string]>;
+	certificate_version: [] | [number];
 }
 export interface HttpResponse {
 	body: Uint8Array | number[];
@@ -152,6 +153,11 @@ export interface SetRule {
 export interface StorageConfig {
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
+	redirects: [] | [Array<[string, StorageConfigRedirect]>];
+}
+export interface StorageConfigRedirect {
+	status_code: number;
+	location: string;
 }
 export interface StreamingCallbackHttpResponse {
 	token: [] | [StreamingCallbackToken];

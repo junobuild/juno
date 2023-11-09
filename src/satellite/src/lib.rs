@@ -21,24 +21,26 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::storage::http::{
-    build_encodings, build_headers, create_token, error_response, streaming_strategy,
+use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
+use crate::storage::http::response::{
+    build_asset_response, build_redirect_response, error_response,
 };
+use crate::storage::http::utils::create_token;
+use crate::storage::routing::get_routing;
 use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
     get_config as get_storage_config, get_content_chunks, get_custom_domains, get_public_asset,
-    get_public_asset_for_url, init_certified_assets, list_assets as list_assets_store,
-    set_config as set_storage_config, set_domain,
+    init_certified_assets, list_assets as list_assets_store, set_config as set_storage_config,
+    set_domain,
 };
+use crate::storage::types::config::StorageConfigRewrites;
 use crate::storage::types::domain::{CustomDomains, DomainName};
-use crate::storage::types::http::{
-    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+use crate::storage::types::http_request::{
+    Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
 };
-use crate::storage::types::http_request::PublicAsset;
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
-use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
@@ -60,6 +62,9 @@ use shared::controllers::{assert_max_number_of_controllers, init_controllers};
 use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
 use std::mem;
+use storage::http::types::{
+    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+};
 use types::list::ListParams;
 
 #[init]
@@ -118,6 +123,13 @@ fn post_upgrade() {
     let state = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
+
+    // TODO: to be removed.
+    // Post upgrade hook to reset the rewrites after upgrading to certification v2 because the fallback to /index.html is handled differently now.
+    STATE.with(|s| {
+        let state = &mut s.borrow_mut();
+        state.heap.storage.config.rewrites = StorageConfigRewrites::default();
+    });
 
     init_certified_assets();
 }
@@ -281,75 +293,44 @@ fn http_request(
         url,
         headers: req_headers,
         body: _,
+        certificate_version,
     }: HttpRequest,
 ) -> HttpResponse {
     if method != "GET" {
-        return error_response(405, "Method Not Allowed.".to_string());
+        return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
     }
 
-    let result = get_public_asset_for_url(url);
+    let result = get_routing(url, true);
 
     match result {
-        Ok(PublicAsset {
-            asset,
-            url: requested_url,
-        }) => match asset {
-            Some((asset, memory)) => {
-                let encodings = build_encodings(req_headers);
-
-                for encoding_type in encodings.iter() {
-                    if let Some(encoding) = asset.encodings.get(encoding_type) {
-                        let headers =
-                            build_headers(&requested_url, &asset, encoding, encoding_type);
-
-                        let Asset {
-                            key,
-                            headers: _,
-                            encodings: _,
-                            created_at: _,
-                            updated_at: _,
-                        } = &asset;
-
-                        match headers {
-                            Ok(headers) => {
-                                let body = get_content_chunks(encoding, 0, &memory);
-
-                                match body {
-                                    Some(body) => {
-                                        return HttpResponse {
-                                            body: body.clone(),
-                                            headers: headers.clone(),
-                                            status_code: 200,
-                                            streaming_strategy: streaming_strategy(
-                                                key,
-                                                encoding,
-                                                encoding_type,
-                                                &headers,
-                                                &memory,
-                                            ),
-                                        }
-                                    }
-                                    None => {
-                                        error_response(500, "No chunks found.".to_string());
-                                    }
-                                }
-                            }
-                            Err(err) => {
-                                return error_response(
-                                    405,
-                                    ["Permission denied. Invalid headers. ", err].join(""),
-                                );
-                            }
-                        }
-                    }
-                }
-
-                error_response(500, "No asset encoding found.".to_string())
+        Ok(routing) => match routing {
+            Routing::Default(RoutingDefault { url, asset }) => build_asset_response(
+                url,
+                req_headers,
+                certificate_version,
+                asset,
+                None,
+                RESPONSE_STATUS_CODE_200,
+            ),
+            Routing::Rewrite(RoutingRewrite {
+                url,
+                asset,
+                source,
+                status_code,
+            }) => build_asset_response(
+                url,
+                req_headers,
+                certificate_version,
+                asset,
+                Some(source),
+                status_code,
+            ),
+            Routing::Redirect(RoutingRedirect { url, redirect }) => {
+                build_redirect_response(url, certificate_version, &redirect)
             }
-            None => error_response(404, "No asset found.".to_string()),
         },
         Err(err) => error_response(
-            405,
+            RESPONSE_STATUS_CODE_405,
             ["Permission denied. Cannot perform this operation. ", err].join(""),
         ),
     }

@@ -1,6 +1,6 @@
 pub mod state {
     use crate::rules::types::rules::Rules;
-    use crate::storage::types::assets::AssetHashes;
+    use crate::storage::certification::types::certified::CertifiedAssetHashes;
     use crate::storage::types::config::StorageConfig;
     use crate::storage::types::domain::CustomDomains;
     use crate::storage::types::store::{Asset, Batch, Chunk, EncodingType};
@@ -46,22 +46,12 @@ pub mod state {
     pub struct StorageRuntimeState {
         pub chunks: Chunks,
         pub batches: Batches,
-        pub asset_hashes: AssetHashes,
-    }
-}
-
-pub mod assets {
-    use ic_certified_map::{Hash, RbTree};
-    use std::clone::Clone;
-
-    #[derive(Default, Clone)]
-    pub struct AssetHashes {
-        pub tree: RbTree<String, Hash>,
+        pub asset_hashes: CertifiedAssetHashes,
     }
 }
 
 pub mod store {
-    use crate::storage::types::http::HeaderField;
+    use crate::storage::http::types::HeaderField;
     use crate::storage::types::state::FullPath;
     use crate::types::core::{Blob, CollectionKey};
     use candid::CandidType;
@@ -128,7 +118,7 @@ pub mod interface {
     use candid::{CandidType, Deserialize};
     use ic_certified_map::Hash;
 
-    use crate::storage::types::http::HeaderField;
+    use crate::storage::http::types::HeaderField;
     use crate::storage::types::state::FullPath;
     use crate::storage::types::store::{AssetKey, EncodingType};
     use crate::types::core::{Blob, CollectionKey};
@@ -184,79 +174,34 @@ pub mod interface {
     }
 }
 
-pub mod http {
-    use crate::rules::types::rules::Memory;
-    use crate::storage::types::store::EncodingType;
-    use crate::types::core::Blob;
-    use candid::{define_function, CandidType};
-    use serde::{Deserialize, Serialize};
-    use serde_bytes::ByteBuf;
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct HeaderField(pub String, pub String);
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct HttpRequest {
-        pub url: String,
-        pub method: String,
-        pub headers: Vec<HeaderField>,
-        pub body: Blob,
-    }
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct HttpResponse {
-        pub body: Blob,
-        pub headers: Vec<HeaderField>,
-        pub status_code: u16,
-        pub streaming_strategy: Option<StreamingStrategy>,
-    }
-
-    define_function!(pub CallbackFunc : () -> () query);
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub enum StreamingStrategy {
-        Callback {
-            token: StreamingCallbackToken,
-            callback: CallbackFunc,
-        },
-    }
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct StreamingCallbackToken {
-        pub full_path: String,
-        pub token: Option<String>,
-        pub headers: Vec<HeaderField>,
-        pub sha256: Option<ByteBuf>,
-        pub index: usize,
-        pub encoding_type: EncodingType,
-        pub memory: Memory,
-    }
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct StreamingCallbackHttpResponse {
-        pub body: Blob,
-        pub token: Option<StreamingCallbackToken>,
-    }
-}
-
 pub mod config {
-    use crate::storage::types::http::HeaderField;
+    use crate::storage::http::types::{HeaderField, StatusCode};
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
     pub type StorageConfigHeaders = HashMap<String, Vec<HeaderField>>;
     pub type StorageConfigRewrites = HashMap<String, String>;
+    pub type StorageConfigRedirects = HashMap<String, StorageConfigRedirect>;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageConfig {
         pub headers: StorageConfigHeaders,
         pub rewrites: StorageConfigRewrites,
+        pub redirects: Option<StorageConfigRedirects>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct StorageConfigRedirect {
+        pub location: String,
+        pub status_code: StatusCode,
     }
 }
 
 pub mod http_request {
     use crate::rules::types::rules::Memory;
+    use crate::storage::http::types::StatusCode;
+    use crate::storage::types::config::StorageConfigRedirect;
     use crate::storage::types::store::Asset;
     use candid::{CandidType, Deserialize};
 
@@ -267,9 +212,30 @@ pub mod http_request {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct PublicAsset {
+    pub enum Routing {
+        Default(RoutingDefault),
+        Rewrite(RoutingRewrite),
+        Redirect(RoutingRedirect),
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct RoutingDefault {
         pub url: String,
         pub asset: Option<(Asset, Memory)>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct RoutingRewrite {
+        pub url: String,
+        pub asset: Option<(Asset, Memory)>,
+        pub source: String,
+        pub status_code: StatusCode,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct RoutingRedirect {
+        pub url: String,
+        pub redirect: StorageConfigRedirect,
     }
 }
 

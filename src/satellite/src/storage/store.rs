@@ -16,9 +16,9 @@ use crate::rules::types::rules::{Memory, Rule};
 use crate::rules::utils::{assert_create_rule, assert_rule, is_known_user, public_rule};
 use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
+    ROOT_404_HTML, ROOT_INDEX_HTML,
 };
 use crate::storage::custom_domains::map_custom_domains_asset;
-use crate::storage::rewrites::rewrite_url;
 use crate::storage::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks,
@@ -38,11 +38,9 @@ use crate::storage::state::{
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
-use crate::storage::types::http_request::{MapUrl, PublicAsset};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk, EncodingType};
-use crate::storage::url::{map_alternative_paths, map_url};
 use crate::storage::utils::{filter_collection_values, filter_values};
 use crate::types::core::{Blob, CollectionKey};
 use crate::types::list::{ListParams, ListResults};
@@ -50,73 +48,6 @@ use crate::types::list::{ListParams, ListResults};
 ///
 /// Getter, list and delete
 ///
-
-pub fn get_public_asset_for_url(url: String) -> Result<PublicAsset, &'static str> {
-    if url.is_empty() {
-        return Err("No url provided.");
-    }
-
-    // The certification considers, and should only, the path of the URL. If query parameters, these should be omitted in the certificate.
-    // Likewise the memory contains only assets indexed with their respective path.
-    // e.g.
-    // url: /hello/something?param=123
-    // path: /hello/something
-
-    let MapUrl { path, token } = map_url(&url)?;
-    let alternative_paths = map_alternative_paths(&path);
-
-    // ⚠️ Limitation: requesting an url without extension try to resolve first a corresponding asset
-    // e.g. /.well-known/hello -> try to find /.well-known/hello.html
-    // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
-
-    for alternative_path in alternative_paths {
-        let asset: Option<(Asset, Memory)> = get_public_asset(alternative_path, token.clone());
-
-        // We return the first match
-        match asset {
-            None => (),
-            Some(_) => {
-                return Ok(PublicAsset { url: path, asset });
-            }
-        }
-    }
-
-    // We return the asset that matches the effective path
-    let asset: Option<(Asset, Memory)> = get_public_asset(path.clone(), token.clone());
-
-    match asset {
-        None => (),
-        Some(_) => {
-            return Ok(PublicAsset { url: path, asset });
-        }
-    }
-
-    // If we have found no asset, we try a rewrite rule
-    // This is for example useful for single-page app to redirect all urls to /index.html
-    let rewrite = rewrite_url(&path, &get_config());
-
-    match rewrite {
-        None => (),
-        Some(rewrite) => {
-            let redirected_asset = get_public_asset(rewrite.clone(), token);
-
-            match redirected_asset {
-                None => (),
-                Some(_) => {
-                    return Ok(PublicAsset {
-                        url: rewrite,
-                        asset: redirected_asset,
-                    });
-                }
-            }
-        }
-    }
-
-    Ok(PublicAsset {
-        url: path,
-        asset: None,
-    })
-}
 
 pub fn get_content_chunks(
     encoding: &AssetEncoding,
@@ -132,8 +63,9 @@ pub fn delete_asset(
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
     let controllers: Controllers = get_controllers();
+    let config = get_config();
 
-    secure_delete_asset_impl(caller, &controllers, collection, full_path)
+    secure_delete_asset_impl(caller, &controllers, collection, full_path, &config)
 }
 
 pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
@@ -239,10 +171,11 @@ fn secure_delete_asset_impl(
     controllers: &Controllers,
     collection: &CollectionKey,
     full_path: FullPath,
+    config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
     let rule = get_state_rule(collection)?;
 
-    delete_asset_impl(caller, controllers, full_path, collection, &rule)
+    delete_asset_impl(caller, controllers, full_path, collection, &rule, config)
 }
 
 fn delete_asset_impl(
@@ -251,6 +184,7 @@ fn delete_asset_impl(
     full_path: FullPath,
     collection: &CollectionKey,
     rule: &Rule,
+    config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
     let asset = get_state_asset(collection, &full_path, rule);
 
@@ -262,7 +196,17 @@ fn delete_asset_impl(
             }
 
             let deleted = delete_state_asset(collection, &full_path, rule);
-            delete_runtime_certified_asset(&full_path);
+            delete_runtime_certified_asset(&asset);
+
+            // We just removed the rewrite for /404.html in the certification tree therefore if /index.html exists, we want to reintroduce it as rewrite
+            if *full_path == *ROOT_404_HTML {
+                if let Some(index_asset) =
+                    get_state_asset(collection, &ROOT_INDEX_HTML.to_string(), rule)
+                {
+                    update_runtime_certified_asset(&index_asset, config);
+                }
+            }
+
             Ok(deleted)
         }
     }
@@ -271,15 +215,21 @@ fn delete_asset_impl(
 fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let full_paths: Vec<String> = get_state_assets(collection, &rule)
+    let full_paths: Vec<FullPath> = get_state_assets(collection, &rule)
         .iter()
         .filter(|asset| asset.key.collection == collection.clone())
         .map(|asset| asset.key.full_path.clone())
         .collect();
 
     for full_path in full_paths {
-        delete_state_asset(collection, &full_path, &rule);
-        delete_runtime_certified_asset(&full_path);
+        let deleted_asset = delete_state_asset(collection, &full_path, &rule);
+
+        match deleted_asset {
+            None => {}
+            Some(deleted_asset) => {
+                delete_runtime_certified_asset(&deleted_asset);
+            }
+        }
     }
 
     Ok(())
@@ -305,7 +255,9 @@ pub fn create_chunk(caller: Principal, chunk: UploadChunk) -> Result<u128, &'sta
 
 pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
     let controllers: Controllers = get_controllers();
-    commit_batch_impl(caller, &controllers, commit_batch)
+    let config = get_config();
+
+    commit_batch_impl(caller, &controllers, commit_batch, &config)
 }
 
 fn secure_create_batch_impl(
@@ -420,6 +372,7 @@ fn commit_batch_impl(
     caller: Principal,
     controllers: &Controllers,
     commit_batch: CommitBatch,
+    config: &StorageConfig,
 ) -> Result<(), String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
@@ -427,7 +380,7 @@ fn commit_batch_impl(
         None => Err(ERROR_CANNOT_COMMIT_BATCH.to_string()),
         Some(b) => {
             let asset = secure_commit_chunks(caller, controllers, commit_batch, &b)?;
-            update_runtime_certified_asset(&asset);
+            update_runtime_certified_asset(&asset, config);
             Ok(())
         }
     }
@@ -654,6 +607,8 @@ fn clear_expired_batches() {
 
 pub fn set_config(config: &StorageConfig) {
     insert_state_config(config);
+
+    init_certified_assets();
 }
 
 pub fn get_config() -> StorageConfig {
@@ -704,7 +659,9 @@ fn update_custom_domains_asset() -> Result<(), String> {
 
     insert_state_asset(&collection, &full_path, &asset, &rule);
 
-    update_runtime_certified_asset(&asset);
+    let config = get_config();
+
+    update_runtime_certified_asset(&asset, &config);
 
     Ok(())
 }

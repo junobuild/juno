@@ -21,9 +21,14 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const DelDoc = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
 	const RulesType = IDL.Variant({ Db: IDL.Null, Storage: IDL.Null });
+	const StorageConfigRedirect = IDL.Record({
+		status_code: IDL.Nat16,
+		location: IDL.Text
+	});
 	const StorageConfig = IDL.Record({
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))))
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)))),
+		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
 	});
 	const Config = IDL.Record({ storage: StorageConfig });
 	const Doc = IDL.Record({
@@ -37,7 +42,8 @@ export const idlFactory = ({ IDL }) => {
 		url: IDL.Text,
 		method: IDL.Text,
 		body: IDL.Vec(IDL.Nat8),
-		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		certificate_version: IDL.Opt(IDL.Nat16)
 	});
 	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
 	const StreamingCallbackToken = IDL.Record({

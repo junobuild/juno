@@ -1,5 +1,7 @@
 use crate::storage::types::http_request::MapUrl;
 use crate::storage::types::state::FullPath;
+use globset::Glob;
+use std::collections::HashMap;
 use std::path::Path;
 use url::{ParseError, Url};
 
@@ -122,4 +124,25 @@ fn map_token(parsed_url: Url) -> Option<String> {
     }
 
     None
+}
+
+pub fn matching_urls<T: Clone>(
+    requested_path: &str,
+    config: &HashMap<String, T>,
+) -> Vec<(String, T)> {
+    config
+        .iter()
+        .filter(|(source, _)| {
+            let glob = Glob::new(source);
+
+            match glob {
+                Err(_) => false,
+                Ok(glob) => {
+                    let matcher = glob.compile_matcher();
+                    matcher.is_match(requested_path)
+                }
+            }
+        })
+        .map(|(source, destination)| (source.clone(), destination.clone()))
+        .collect()
 }

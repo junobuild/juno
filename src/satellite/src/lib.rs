@@ -33,6 +33,7 @@ use crate::storage::store::{
     init_certified_assets, list_assets as list_assets_store, set_config as set_storage_config,
     set_domain,
 };
+use crate::storage::types::config::StorageConfigRewrites;
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http_request::{
     Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
@@ -65,7 +66,6 @@ use storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
 use types::list::ListParams;
-use crate::storage::types::config::StorageConfigRewrites;
 
 #[init]
 fn init() {

@@ -32,8 +32,8 @@
 		"preview": "vite preview",
 		"check": "svelte-kit sync && svelte-check --no-tsconfig",
 		"check:watch": "svelte-kit sync && svelte-check --no-tsconfig --watch",
-		"lint": "prettier --check . && eslint .",
-		"format": "prettier --write .",
+		"lint": "prettier --check './**/*.{ts,js,mjs,json,scss,css,svelte,html,md}' && eslint .",
+		"format": "prettier --write './**/*.{ts,js,mjs,json,scss,css,svelte,html,md}'",
 		"prebuild": "npm run generate",
 		"generate": "scripts/did.sh && dfx generate && node scripts/update.types.mjs && npm run copy:mjs && npm run format",
 		"copy:mjs": "cp src/declarations/console/console.factory.did.js src/declarations/console/console.factory.did.mjs && cp src/declarations/satellite/satellite.factory.did.js src/declarations/satellite/satellite.factory.did.mjs && cp src/declarations/observatory/observatory.factory.did.js src/declarations/observatory/observatory.factory.did.mjs",
@@ -87,6 +87,7 @@
 		"buffer": "^6.0.3",
 		"idb-keyval": "^6.2.1",
 		"layercake": "^8.0.2",
+		"nanoid": "^5.0.2",
 		"semver": "^7.5.4"
 	}
 }

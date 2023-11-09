@@ -13,17 +13,20 @@
 	const yKey = 'myY';
 
 	let totalPageViews: Record<string, number>;
-	$: totalPageViews = data.reduce((acc, [{ collected_at }, _]) => {
-		const date = fromBigIntNanoSeconds(collected_at);
+	$: totalPageViews = data.reduce(
+		(acc, [{ collected_at }, _]) => {
+			const date = fromBigIntNanoSeconds(collected_at);
 
-		// Start of the day
-		const key = new Date(date.getTime() - (date.getTime() % 86400000)).getTime();
+			// Start of the day
+			const key = new Date(date.getTime() - (date.getTime() % 86400000)).getTime();
 
-		return {
-			...acc,
-			[key]: (acc[key] ?? 0) + 1
-		};
-	}, {} as Record<string, number>);
+			return {
+				...acc,
+				[key]: (acc[key] ?? 0) + 1
+			};
+		},
+		{} as Record<string, number>
+	);
 
 	let chartsData: {
 		[xKey]: string;

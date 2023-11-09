@@ -281,6 +281,28 @@ interface I18nDocument {
 	no_match: string;
 	delete: string;
 	description: string;
+	document_submission_success: string;
+	document_submission_failed: string;
+}
+
+interface I18nDocument_form {
+	field_doc_key_label: string;
+	field_doc_key_btn_auto_key: string;
+	field_doc_key_placeholder: string;
+	field_name_label: string;
+	field_name_placeholder: string;
+	field_type_label: string;
+	field_value_label: string;
+	field_value_placeholder: string;
+	field_type_boolean: string;
+	field_type_string: string;
+	field_type_number: string;
+	field_value_true: string;
+	field_value_false: string;
+	btn_add_field: string;
+	btn_add_document: string;
+	title_add_new_document: string;
+	title_edit_document: string;
 }
 
 interface I18nAsset {
@@ -464,6 +486,7 @@ interface I18n {
 	cli: I18nCli;
 	errors: I18nErrors;
 	document: I18nDocument;
+	document_form: I18nDocument_form;
 	asset: I18nAsset;
 	admin: I18nAdmin;
 	controllers: I18nControllers;

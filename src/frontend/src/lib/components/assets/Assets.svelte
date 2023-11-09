@@ -105,7 +105,7 @@
 {#if !emptyCollection}
 	<div
 		class="data"
-		class:data-selected={nonNullish($assetsStore.data)}
+		class:data-selected={nonNullish($assetsStore?.data)}
 		class:data-nullish={isNullish($paginationStore.items)}
 	>
 		{#if nonNullish($paginationStore.items)}
@@ -113,7 +113,9 @@
 				{@const asset = item[1]}
 				{@const key = asset.key.full_path}
 
-				<button class="text action" on:click={() => assetsStore.set({ key, data: asset })}
+				<button
+					class="text action"
+					on:click={() => assetsStore.set({ key, data: asset, action: 'view' })}
 					><span>{key}</span></button
 				>
 			{/each}

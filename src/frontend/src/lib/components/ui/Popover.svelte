@@ -3,6 +3,7 @@
 	import { quintOut } from 'svelte/easing';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	export let anchor: HTMLElement | undefined = undefined;
 	export let visible = false;
@@ -41,10 +42,15 @@
 				? `--popover-right: ${innerWidth - right}px;`
 				: `--popover-left: ${left}px;`
 		}`}
-		on:click|stopPropagation
 		on:introend
 	>
-		<div class="backdrop" on:click|stopPropagation={() => (visible = false)} />
+		<div
+			class="backdrop"
+			on:click|stopPropagation={close}
+			on:keypress={($event) => handleKeyPress({ $event, callback: close })}
+			role="button"
+			tabindex="-1"
+		/>
 		<div
 			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
 			class="wrapper"

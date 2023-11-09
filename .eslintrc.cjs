@@ -36,6 +36,7 @@ module.exports = {
 				caughtErrorsIgnorePattern: '^_'
 			}
 		],
-		'no-underscore-dangle': 'off'
+		'no-underscore-dangle': 'off',
+		'svelte/no-at-html-tags': 'off'
 	}
 };

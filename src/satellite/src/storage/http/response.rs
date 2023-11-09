@@ -4,7 +4,7 @@ use crate::storage::constants::{
 };
 use crate::storage::http::types::{HeaderField, HttpResponse, StatusCode};
 use crate::storage::http::utils::{
-    build_encodings, build_headers, build_redirect_headers_response, streaming_strategy,
+    build_encodings, build_response_headers, build_response_redirect_headers, streaming_strategy,
 };
 use crate::storage::types::store::Asset;
 
@@ -25,7 +25,7 @@ pub fn build_asset_response(
 
             for encoding_type in encodings.iter() {
                 if let Some(encoding) = asset.encodings.get(encoding_type) {
-                    let headers = build_headers(
+                    let headers = build_response_headers(
                         &requested_url,
                         &asset,
                         encoding,
@@ -99,7 +99,7 @@ pub fn build_redirect_response(
     redirect: &StorageConfigRedirect,
 ) -> HttpResponse {
     let headers =
-        build_redirect_headers_response(&requested_url, &redirect.location, &certificate_version)
+        build_response_redirect_headers(&requested_url, &redirect.location, &certificate_version)
             .unwrap();
 
     HttpResponse {

@@ -5,7 +5,7 @@ use crate::storage::types::store::{Asset, AssetEncoding, EncodingType};
 use crate::storage::url::matching_urls;
 use hex::encode;
 
-pub fn build_asset_headers(
+pub fn build_headers(
     asset: &Asset,
     encoding: &AssetEncoding,
     encoding_type: &EncodingType,
@@ -72,7 +72,8 @@ pub fn build_config_headers(
         ..
     }: &StorageConfig,
 ) -> Vec<HeaderField> {
-    matching_urls(requested_path, config_headers).iter()
+    matching_urls(requested_path, config_headers)
+        .iter()
         .flat_map(|(_, headers)| headers.clone())
         .collect()
 }

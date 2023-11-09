@@ -10,7 +10,7 @@ use crate::storage::constants::{
     ENCODING_CERTIFICATION_ORDER, RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404,
     ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH,
 };
-use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
+use crate::storage::http::headers::{build_headers, build_redirect_headers};
 use crate::storage::http::types::{HeaderField, StatusCode};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
@@ -93,7 +93,7 @@ impl CertifiedAssetHashes {
                 self.insert_v1(&full_path, encoding.sha256);
                 self.insert_v2(
                     &full_path,
-                    &build_asset_headers(asset, encoding, &encoding_type.to_string()),
+                    &build_headers(asset, encoding, &encoding_type.to_string()),
                     RESPONSE_STATUS_CODE_200,
                     encoding.sha256,
                 );
@@ -211,7 +211,7 @@ impl CertifiedAssetHashes {
             if let Some(encoding) = asset.encodings.get(*encoding_type) {
                 self.insert_rewrite_into_tree_v2(
                     full_path,
-                    &build_asset_headers(asset, encoding, &encoding_type.to_string()),
+                    &build_headers(asset, encoding, &encoding_type.to_string()),
                     encoding.sha256,
                     RESPONSE_STATUS_CODE_200,
                 );

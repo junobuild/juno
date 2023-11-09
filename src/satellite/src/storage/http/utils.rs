@@ -4,7 +4,7 @@ use crate::storage::certification::cert::{
     build_asset_certificate_header, build_certified_expression,
 };
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
-use crate::storage::http::headers::{build_asset_headers, build_redirect_headers};
+use crate::storage::http::headers::{build_headers, build_redirect_headers};
 use crate::storage::http::types::{
     CallbackFunc, HeaderField, StreamingCallbackToken, StreamingStrategy,
 };
@@ -52,7 +52,7 @@ pub fn create_token(
     })
 }
 
-pub fn build_headers(
+pub fn build_response_headers(
     url: &str,
     asset: &Asset,
     encoding: &AssetEncoding,
@@ -60,12 +60,12 @@ pub fn build_headers(
     certificate_version: &Option<u16>,
     rewrite_source: &Option<String>,
 ) -> Result<Vec<HeaderField>, &'static str> {
-    let asset_headers = build_asset_headers(asset, encoding, encoding_type);
+    let asset_headers = build_headers(asset, encoding, encoding_type);
 
     extend_headers_with_certification(asset_headers, url, certificate_version, rewrite_source)
 }
 
-pub fn build_redirect_headers_response(
+pub fn build_response_redirect_headers(
     url: &str,
     location: &str,
     certificate_version: &Option<u16>,

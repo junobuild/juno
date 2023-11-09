@@ -8,6 +8,7 @@ use crate::storage::http::headers::{build_headers, build_redirect_headers};
 use crate::storage::http::types::{
     CallbackFunc, HeaderField, StreamingCallbackToken, StreamingStrategy,
 };
+use crate::storage::state::get_config;
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, EncodingType};
 use ic_cdk::id;
@@ -60,7 +61,9 @@ pub fn build_response_headers(
     certificate_version: &Option<u16>,
     rewrite_source: &Option<String>,
 ) -> Result<Vec<HeaderField>, &'static str> {
-    let asset_headers = build_headers(asset, encoding, encoding_type);
+    let config = get_config();
+
+    let asset_headers = build_headers(asset, encoding, encoding_type, &config);
 
     extend_headers_with_certification(asset_headers, url, certificate_version, rewrite_source)
 }

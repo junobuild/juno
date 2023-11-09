@@ -63,8 +63,9 @@ pub fn delete_asset(
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
     let controllers: Controllers = get_controllers();
+    let config = get_config();
 
-    secure_delete_asset_impl(caller, &controllers, collection, full_path)
+    secure_delete_asset_impl(caller, &controllers, collection, full_path, &config)
 }
 
 pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
@@ -170,10 +171,11 @@ fn secure_delete_asset_impl(
     controllers: &Controllers,
     collection: &CollectionKey,
     full_path: FullPath,
+    config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
     let rule = get_state_rule(collection)?;
 
-    delete_asset_impl(caller, controllers, full_path, collection, &rule)
+    delete_asset_impl(caller, controllers, full_path, collection, &rule, config)
 }
 
 fn delete_asset_impl(
@@ -182,6 +184,7 @@ fn delete_asset_impl(
     full_path: FullPath,
     collection: &CollectionKey,
     rule: &Rule,
+    config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
     let asset = get_state_asset(collection, &full_path, rule);
 
@@ -200,7 +203,7 @@ fn delete_asset_impl(
                 if let Some(index_asset) =
                     get_state_asset(collection, &ROOT_INDEX_HTML.to_string(), rule)
                 {
-                    update_runtime_certified_asset(&index_asset);
+                    update_runtime_certified_asset(&index_asset, config);
                 }
             }
 
@@ -252,7 +255,9 @@ pub fn create_chunk(caller: Principal, chunk: UploadChunk) -> Result<u128, &'sta
 
 pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
     let controllers: Controllers = get_controllers();
-    commit_batch_impl(caller, &controllers, commit_batch)
+    let config = get_config();
+
+    commit_batch_impl(caller, &controllers, commit_batch, &config)
 }
 
 fn secure_create_batch_impl(
@@ -367,6 +372,7 @@ fn commit_batch_impl(
     caller: Principal,
     controllers: &Controllers,
     commit_batch: CommitBatch,
+    config: &StorageConfig,
 ) -> Result<(), String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
@@ -374,7 +380,7 @@ fn commit_batch_impl(
         None => Err(ERROR_CANNOT_COMMIT_BATCH.to_string()),
         Some(b) => {
             let asset = secure_commit_chunks(caller, controllers, commit_batch, &b)?;
-            update_runtime_certified_asset(&asset);
+            update_runtime_certified_asset(&asset, config);
             Ok(())
         }
     }
@@ -653,7 +659,9 @@ fn update_custom_domains_asset() -> Result<(), String> {
 
     insert_state_asset(&collection, &full_path, &asset, &rule);
 
-    update_runtime_certified_asset(&asset);
+    let config = get_config();
+
+    update_runtime_certified_asset(&asset, &config);
 
     Ok(())
 }

@@ -12,6 +12,7 @@ use crate::storage::constants::{
 };
 use crate::storage::http::headers::{build_headers, build_redirect_headers};
 use crate::storage::http::types::{HeaderField, StatusCode};
+use crate::storage::types::config::StorageConfig;
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::alternative_paths;
@@ -85,7 +86,7 @@ impl CertifiedAssetHashes {
         }
     }
 
-    pub fn insert(&mut self, asset: &Asset) {
+    pub fn insert(&mut self, asset: &Asset, config: &StorageConfig) {
         let full_path = asset.key.full_path.clone();
 
         for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
@@ -93,7 +94,7 @@ impl CertifiedAssetHashes {
                 self.insert_v1(&full_path, encoding.sha256);
                 self.insert_v2(
                     &full_path,
-                    &build_headers(asset, encoding, &encoding_type.to_string()),
+                    &build_headers(asset, encoding, &encoding_type.to_string(), config),
                     RESPONSE_STATUS_CODE_200,
                     encoding.sha256,
                 );
@@ -206,12 +207,17 @@ impl CertifiedAssetHashes {
         self.insert_v2(full_path, &headers, status_code, sha256);
     }
 
-    pub fn insert_rewrite_v2(&mut self, full_path: &FullPath, asset: &Asset) {
+    pub fn insert_rewrite_v2(
+        &mut self,
+        full_path: &FullPath,
+        asset: &Asset,
+        config: &StorageConfig,
+    ) {
         for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
             if let Some(encoding) = asset.encodings.get(*encoding_type) {
                 self.insert_rewrite_into_tree_v2(
                     full_path,
-                    &build_headers(asset, encoding, &encoding_type.to_string()),
+                    &build_headers(asset, encoding, &encoding_type.to_string(), config),
                     encoding.sha256,
                     RESPONSE_STATUS_CODE_200,
                 );

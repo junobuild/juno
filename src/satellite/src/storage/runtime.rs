@@ -3,6 +3,7 @@ use crate::storage::certification::cert::update_certified_data;
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::rewrites::rewrite_source_to_path;
 use crate::storage::routing::get_routing;
+use crate::storage::types::config::StorageConfig;
 use crate::storage::types::http_request::{Routing, RoutingDefault};
 use crate::storage::types::state::{Batches, Chunks, StorageRuntimeState};
 use crate::storage::types::store::{Asset, Batch, Chunk};
@@ -15,12 +16,14 @@ pub fn init_certified_assets() {
     fn init_asset_hashes(state: &State) -> CertifiedAssetHashes {
         let mut asset_hashes = CertifiedAssetHashes::default();
 
+        let config = &state.heap.storage.config;
+
         for (_key, asset) in state.heap.storage.assets.iter() {
-            asset_hashes.insert(asset);
+            asset_hashes.insert(asset, config);
         }
 
         for (_key, asset) in state.stable.assets.iter() {
-            asset_hashes.insert(&asset);
+            asset_hashes.insert(&asset, config);
         }
 
         for (source, destination) in state.heap.storage.config.rewrites.clone() {
@@ -30,7 +33,7 @@ pub fn init_certified_assets() {
                         let src_path = rewrite_source_to_path(&source);
 
                         if let Some((asset, _)) = asset {
-                            asset_hashes.insert_rewrite_v2(&src_path, &asset);
+                            asset_hashes.insert_rewrite_v2(&src_path, &asset, config);
                         }
                     }
                     Routing::Rewrite(_) => (),
@@ -53,8 +56,8 @@ pub fn init_certified_assets() {
     });
 }
 
-pub fn update_certified_asset(asset: &Asset) {
-    STATE.with(|state| update_certified_asset_impl(asset, &mut state.borrow_mut().runtime));
+pub fn update_certified_asset(asset: &Asset, config: &StorageConfig) {
+    STATE.with(|state| update_certified_asset_impl(asset, config, &mut state.borrow_mut().runtime));
 }
 
 pub fn delete_certified_asset(asset: &Asset) {
@@ -72,9 +75,9 @@ fn init_certified_assets_impl(
     update_certified_data(&storage.asset_hashes);
 }
 
-fn update_certified_asset_impl(asset: &Asset, runtime: &mut RuntimeState) {
+fn update_certified_asset_impl(asset: &Asset, config: &StorageConfig, runtime: &mut RuntimeState) {
     // 1. Replace or insert the new asset in tree
-    runtime.storage.asset_hashes.insert(asset);
+    runtime.storage.asset_hashes.insert(asset, config);
 
     // 2. Update the root hash and the canister certified data
     update_certified_data(&runtime.storage.asset_hashes);

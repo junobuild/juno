@@ -9,6 +9,7 @@ pub fn build_headers(
     asset: &Asset,
     encoding: &AssetEncoding,
     encoding_type: &EncodingType,
+    config: &StorageConfig,
 ) -> Vec<HeaderField> {
     let mut headers = asset.headers.clone();
 
@@ -32,6 +33,10 @@ pub fn build_headers(
             encoding_type.to_string(),
         ));
     }
+
+    // Headers build from the configuration
+    let config_headers = build_config_headers(&asset.key.full_path, config);
+    headers.extend(config_headers);
 
     headers
 }

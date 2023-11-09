@@ -1,6 +1,6 @@
 use crate::storage::constants::ROOT_PATHS;
 use crate::storage::types::config::{StorageConfig, StorageConfigRedirect};
-use crate::storage::url::{matching_urls, separator};
+use crate::storage::url::{matching_urls as matching_urls_utils, separator};
 use regex::Regex;
 use std::cmp::Ordering;
 use std::collections::HashMap;
@@ -12,7 +12,7 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<(Stri
         redirects: _,
     } = config;
 
-    let matches = matching_rewrite_urls(requested_path, rewrites);
+    let matches = matching_urls(requested_path, rewrites);
 
     matches
         .first()
@@ -37,16 +37,16 @@ pub fn is_root_path(path: &str) -> bool {
 pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<StorageConfigRedirect> {
     let redirects = config.unwrap_redirects();
 
-    let matches = matching_rewrite_urls(requested_path, &redirects);
+    let matches = matching_urls(requested_path, &redirects);
 
     matches.first().map(|(_, destination)| destination.clone())
 }
 
-fn matching_rewrite_urls<T: Clone>(
+fn matching_urls<T: Clone>(
     requested_path: &str,
     config: &HashMap<String, T>,
 ) -> Vec<(String, T)> {
-    let mut matches: Vec<(String, T)> = matching_urls(requested_path, config);
+    let mut matches: Vec<(String, T)> = matching_urls_utils(requested_path, config);
 
     matches.sort_by(|(a, _), (b, _)| {
         let a_parts: Vec<&str> = a.split('/').collect();

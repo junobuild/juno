@@ -1,6 +1,8 @@
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use crate::storage::http::types::HeaderField;
+use crate::storage::types::config::StorageConfig;
 use crate::storage::types::store::{Asset, AssetEncoding, EncodingType};
+use crate::storage::url::matching_urls;
 use hex::encode;
 
 pub fn build_asset_headers(
@@ -61,4 +63,16 @@ fn security_headers() -> Vec<HeaderField> {
         // same-origin is still ok from a security perspective
         HeaderField("Referrer-Policy".to_string(), "same-origin".to_string()),
     ]
+}
+
+pub fn build_config_headers(
+    requested_path: &str,
+    StorageConfig {
+        headers: config_headers,
+        ..
+    }: &StorageConfig,
+) -> Vec<HeaderField> {
+    matching_urls(requested_path, config_headers).iter()
+        .flat_map(|(_, headers)| headers.clone())
+        .collect()
 }

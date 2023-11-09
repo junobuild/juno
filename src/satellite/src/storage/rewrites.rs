@@ -39,7 +39,7 @@ pub fn redirect_url(requested_path: &str, config: &StorageConfig) -> Option<Stor
 
     let matches = matching_urls(requested_path, &redirects);
 
-    matches.first().map(|(_, destination)| destination.clone())
+    matches.first().map(|(_, redirect)| redirect.clone())
 }
 
 fn matching_urls<T: Clone>(

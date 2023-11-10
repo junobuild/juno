@@ -89,7 +89,7 @@ impl CertifiedAssetHashes {
     pub fn insert(&mut self, asset: &Asset, config: &StorageConfig) {
         let full_path = asset.key.full_path.clone();
 
-        for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
+        for encoding_type in ENCODING_CERTIFICATION_ORDER.iter().rev() {
             if let Some(encoding) = asset.encodings.get(*encoding_type) {
                 self.insert_v1(&full_path, encoding.sha256);
                 self.insert_v2(
@@ -213,7 +213,7 @@ impl CertifiedAssetHashes {
         asset: &Asset,
         config: &StorageConfig,
     ) {
-        for encoding_type in ENCODING_CERTIFICATION_ORDER.iter() {
+        for encoding_type in ENCODING_CERTIFICATION_ORDER.iter().rev() {
             if let Some(encoding) = asset.encodings.get(*encoding_type) {
                 self.insert_rewrite_into_tree_v2(
                     full_path,

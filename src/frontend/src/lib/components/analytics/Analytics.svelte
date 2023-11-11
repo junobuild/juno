@@ -12,7 +12,7 @@
 	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
 	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
 	import type { PageViewsPeriod } from '$lib/types/ortbiter';
-	import { debounce } from '$lib/utils/debounce.utils';
+	import { debounce } from '@dfinity/utils';
 	import { formatNumber } from '$lib/utils/number.utils';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
 	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';

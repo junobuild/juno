@@ -7,7 +7,7 @@
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { nonNullish } from '@dfinity/utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { debounce } from '$lib/utils/debounce.utils';
+	import { debounce } from '@dfinity/utils';
 
 	onMount(() => applyColor(Color.LAVENDER_BLUE));
 

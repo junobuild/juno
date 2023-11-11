@@ -421,6 +421,7 @@ interface I18nObservatory {
 interface I18nSettings {
 	title: string;
 	dev_id: string;
+	session_expires_in: string;
 }
 
 interface I18nExamples {

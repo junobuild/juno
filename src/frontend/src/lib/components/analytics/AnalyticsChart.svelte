@@ -5,20 +5,23 @@
 	import Line from '$lib/components/charts/Line.svelte';
 	import Area from '$lib/components/charts/Area.svelte';
 	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
-	import { formatToDay, fromBigIntNanoSeconds } from '$lib/utils/date.utils';
+	import {
+		formatToDay,
+		fromBigIntNanoSeconds,
+		getDatesInRange,
+		startOfDay
+	} from '$lib/utils/date.utils';
+	import { last } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 
 	export let data: [AnalyticKey, PageView][];
-
-	const xKey = 'myX';
-	const yKey = 'myY';
 
 	let totalPageViews: Record<string, number>;
 	$: totalPageViews = data.reduce(
 		(acc, [{ collected_at }, _]) => {
 			const date = fromBigIntNanoSeconds(collected_at);
 
-			// Start of the day
-			const key = new Date(date.getTime() - (date.getTime() % 86400000)).getTime();
+			const key = startOfDay(date);
 
 			return {
 				...acc,
@@ -28,16 +31,68 @@
 		{} as Record<string, number>
 	);
 
-	let chartsData: {
+	const xKey = 'myX';
+	const yKey = 'myY';
+
+	type ChartsData = {
 		[xKey]: string;
 		[yKey]: number;
-	}[];
-	$: chartsData = Object.entries(totalPageViews)
+	};
+
+	let chartsPageViews: ChartsData[];
+	$: chartsPageViews = Object.entries(totalPageViews)
 		.map(([key, value]) => ({
 			[xKey]: key,
 			[yKey]: value
 		}))
 		.sort(({ [xKey]: aKey }, { [xKey]: bKey }) => parseInt(aKey) - parseInt(bKey));
+
+	const populateChartsData = (chartsPageViews: ChartsData[]): ChartsData[] => {
+		if (chartsPageViews.length < 1) {
+			return chartsPageViews;
+		}
+
+		const firstPageView = chartsPageViews[0];
+		const startDate = new Date(parseInt(firstPageView[xKey]));
+
+		const datePlusOneDay = () => {
+			const nextDate = new Date(startDate);
+			nextDate.setDate(nextDate.getDate() + 1);
+
+			return [
+				...chartsPageViews,
+				{
+					[xKey]: `${nextDate.getTime()}`,
+					[yKey]: 0
+				}
+			];
+		};
+
+		if (chartsPageViews.length === 1) {
+			return datePlusOneDay();
+		}
+
+		const lastPageView = last(chartsPageViews);
+
+		if (isNullish(lastPageView)) {
+			return datePlusOneDay();
+		}
+
+		const endDate = new Date(parseInt(lastPageView[xKey]));
+
+		const allDates = getDatesInRange({
+			startDate,
+			endDate
+		});
+
+		return allDates.map((date) => ({
+			[xKey]: `${date.getTime()}`,
+			[yKey]: totalPageViews[date.getTime()] ?? 0
+		}));
+	};
+
+	let chartsData: ChartsData[];
+	$: chartsData = populateChartsData(chartsPageViews);
 
 	let ticks: string[];
 	$: ticks = Object.values(chartsData).map(({ [xKey]: a }) => a);

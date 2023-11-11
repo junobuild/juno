@@ -41,6 +41,28 @@ export const toBigIntNanoSeconds = (date: Date): bigint => BigInt(date.getTime()
 export const fromBigIntNanoSeconds = (nanoseconds: bigint): Date =>
 	new Date(Number(nanoseconds / 1_000_000n));
 
+export const startOfDay = (date: Date): number =>
+	new Date(date.getTime() - (date.getTime() % 86400000)).getTime();
+
+export const getDatesInRange = ({
+	startDate,
+	endDate
+}: {
+	startDate: Date;
+	endDate: Date;
+}): Date[] => {
+	const date = new Date(startDate.getTime());
+
+	const dates: Date[] = [];
+
+	while (date <= endDate) {
+		dates.push(new Date(date));
+		date.setDate(date.getDate() + 1);
+	}
+
+	return dates;
+};
+
 const SECONDS_IN_MINUTE = 60;
 const MINUTES_IN_HOUR = 60;
 const HOURS_IN_DAY = 24;

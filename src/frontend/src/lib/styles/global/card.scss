@@ -10,7 +10,7 @@
 		@include media.min-width(medium) {
 			display: grid;
 			grid-template-columns: repeat(2, auto) 1fr;
-			grid-column-gap: var(--padding-8x);
+			grid-column-gap: var(--padding-12x);
 		}
 	}
 }

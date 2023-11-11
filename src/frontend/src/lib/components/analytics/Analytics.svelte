@@ -4,7 +4,6 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
 	import type { AnalyticKey, PageView, TrackEvent } from '$declarations/orbiter/orbiter.did';
-	import Value from '$lib/components/ui/Value.svelte';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
 	import { isNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
@@ -13,7 +12,6 @@
 	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
 	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 	import { debounce } from '@dfinity/utils';
-	import { formatNumber } from '$lib/utils/number.utils';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
 	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
 	import AnalyticsPageViews from '$lib/components/analytics/AnalyticsPageViews.svelte';

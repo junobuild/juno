@@ -177,6 +177,10 @@ interface I18nAnalytics {
 	enabled: string;
 	orbiter: string;
 	configure: string;
+	devices: string;
+	mobile: string;
+	desktop: string;
+	others: string;
 }
 
 interface I18nHosting {

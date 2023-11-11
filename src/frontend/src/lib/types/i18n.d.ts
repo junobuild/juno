@@ -173,6 +173,7 @@ interface I18nAnalytics {
 	tracked_events: string;
 	count: string;
 	referrers: string;
+	pages: string;
 	enabled: string;
 	orbiter: string;
 	configure: string;

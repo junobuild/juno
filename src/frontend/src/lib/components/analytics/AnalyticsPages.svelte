@@ -1,35 +1,27 @@
 <script lang="ts">
 	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { nonNullish } from '$lib/utils/utils';
-	import { fromNullable } from '$lib/utils/did.utils';
 
 	export let pageViews: [AnalyticKey, PageView][] = [];
 
 	let referrers: Record<string, number> = {};
-	$: referrers = pageViews
-		.filter(
-			([_, { referrer }]) => nonNullish(fromNullable(referrer)) && fromNullable(referrer) !== ''
-		)
-		.reduce(
-			(acc, [_, { referrer }]) => {
-				const ref = fromNullable(referrer) as string;
+	$: referrers = pageViews.reduce(
+		(acc, [_, { href }]) => {
+			let pages: string;
+			try {
+				const { pathname } = new URL(href);
+				pages = pathname;
+			} catch (err: unknown) {
+				pages = href;
+			}
 
-				let host: string;
-				try {
-					const url = new URL(ref);
-					host = url.host;
-				} catch (err: unknown) {
-					host = ref;
-				}
-
-				return {
-					...acc,
-					[host]: (acc[host] ?? 0) + 1
-				};
-			},
-			{} as Record<string, number>
-		);
+			return {
+				...acc,
+				[pages]: (acc[pages] ?? 0) + 1
+			};
+		},
+		{} as Record<string, number>
+	);
 
 	let entries: [string, number][] = [];
 	$: entries = Object.entries(referrers)
@@ -42,7 +34,7 @@
 		<table>
 			<thead>
 				<tr>
-					<th> {$i18n.analytics.referrers} </th>
+					<th> {$i18n.analytics.pages} </th>
 					<th> {$i18n.analytics.count} </th>
 				</tr>
 			</thead>

@@ -6,7 +6,11 @@ import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { jsonReplacer } from '@dfinity/utils';
-import type { Transaction, TransactionWithId } from '@junobuild/ledger';
+import type {
+	GetAccountIdentifierTransactionsResponse,
+	Transaction,
+	TransactionWithId
+} from '@junobuild/ledger';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -56,6 +60,7 @@ const startTimer = async ({ data: { missionControlId } }: { data: PostMessageDat
 let syncing = false;
 
 let transactions: Record<string, Transaction> = {};
+let initialized = false;
 
 const syncWallet = async ({
 	missionControlId,
@@ -87,6 +92,14 @@ const syncWallet = async ({
 		if (newTransactions.length === 0) {
 			// No new transactions
 			syncing = false;
+
+			// We execute postMessage at least once because developer may have no transaction at all so, we want to display the balance zero
+			if (!initialized) {
+				postMessageWallet({ transactions: newTransactions, ...rest });
+
+				initialized = true;
+			}
+
 			return;
 		}
 
@@ -101,18 +114,7 @@ const syncWallet = async ({
 			)
 		};
 
-		postMessage({
-			msg: 'syncWallet',
-			data: {
-				wallet: {
-					...rest,
-					newTransactions: JSON.stringify(
-						Object.entries(newTransactions).map(([_id, transaction]) => transaction),
-						jsonReplacer
-					)
-				}
-			}
-		});
+		postMessageWallet({ transactions: newTransactions, ...rest });
 	} catch (err: unknown) {
 		console.error(err);
 		stopTimer();
@@ -120,3 +122,20 @@ const syncWallet = async ({
 
 	syncing = false;
 };
+
+const postMessageWallet = ({
+	transactions: newTransactions,
+	...rest
+}: GetAccountIdentifierTransactionsResponse) =>
+	postMessage({
+		msg: 'syncWallet',
+		data: {
+			wallet: {
+				...rest,
+				newTransactions: JSON.stringify(
+					Object.entries(newTransactions).map(([_id, transaction]) => transaction),
+					jsonReplacer
+				)
+			}
+		}
+	});

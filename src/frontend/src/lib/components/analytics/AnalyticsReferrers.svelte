@@ -8,7 +8,9 @@
 
 	let referrers: Record<string, number> = {};
 	$: referrers = pageViews
-		.filter(([_, { referrer }]) => nonNullish(fromNullable(referrer)))
+		.filter(
+			([_, { referrer }]) => nonNullish(fromNullable(referrer)) && fromNullable(referrer) !== ''
+		)
 		.reduce(
 			(acc, [_, { referrer }]) => {
 				const ref = fromNullable(referrer) as string;

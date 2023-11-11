@@ -91,3 +91,5 @@ export const authSignedInStore: Readable<boolean> = derived(
 	authStore,
 	({ identity }) => identity !== null && identity !== undefined
 );
+
+export const authRemainingTimeStore = writable<number | undefined>(undefined);

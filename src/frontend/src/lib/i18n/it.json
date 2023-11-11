@@ -394,7 +394,8 @@
 	},
 	"settings": {
 		"title": "Impostazioni",
-		"dev_id": "ID Sviluppatore"
+		"dev_id": "ID Sviluppatore",
+		"session_expires_in": "Your session expires in"
 	},
 	"examples": {
 		"tutorials": "Tutorials",

@@ -394,7 +394,8 @@
 	},
 	"settings": {
 		"title": "设置",
-		"dev_id": "开发者 ID"
+		"dev_id": "开发者 ID",
+		"session_expires_in": "Your session expires in"
 	},
 	"examples": {
 		"tutorials": "Tutorials",

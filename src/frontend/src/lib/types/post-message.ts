@@ -29,8 +29,13 @@ export type PostMessageRequest =
 export type PostMessageResponse =
 	| 'syncCanister'
 	| 'signOutIdleTimer'
+	| 'delegationRemainingTime'
 	| 'customDomainRegistrationState'
 	| 'syncWallet';
+
+export interface PostMessageDataResponseAuth extends PostMessageDataResponse {
+	authRemainingTime: number;
+}
 
 export interface PostMessage<T extends PostMessageDataRequest | PostMessageDataResponse> {
 	msg: PostMessageRequest | PostMessageResponse;

@@ -5,14 +5,10 @@
 	import Line from '$lib/components/charts/Line.svelte';
 	import Area from '$lib/components/charts/Area.svelte';
 	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
-	import {
-		formatToDay,
-		fromBigIntNanoSeconds,
-		getDatesInRange,
-		startOfDay
-	} from '$lib/utils/date.utils';
+	import { formatToDay, fromBigIntNanoSeconds } from '$lib/utils/date.utils';
 	import { last } from '$lib/utils/utils';
 	import { isNullish } from '@dfinity/utils';
+	import { eachDayOfInterval, startOfDay } from 'date-fns';
 
 	export let data: [AnalyticKey, PageView][];
 
@@ -21,7 +17,7 @@
 		(acc, [{ collected_at }, _]) => {
 			const date = fromBigIntNanoSeconds(collected_at);
 
-			const key = startOfDay(date);
+			const key = startOfDay(date).getTime();
 
 			return {
 				...acc,
@@ -80,13 +76,13 @@
 
 		const endDate = new Date(parseInt(lastPageView[xKey]));
 
-		const allDates = getDatesInRange({
-			startDate,
-			endDate
+		const allDates = eachDayOfInterval({
+			start: startDate,
+			end: endDate
 		});
 
 		return allDates.map((date) => ({
-			[xKey]: `${date.getTime()}`,
+			[xKey]: `${startOfDay(date).getTime()}`,
 			[yKey]: totalPageViews[date.getTime()] ?? 0
 		}));
 	};

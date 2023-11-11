@@ -35,7 +35,7 @@
 			<thead>
 				<tr>
 					<th> {$i18n.analytics.pages} </th>
-					<th> {$i18n.analytics.count} </th>
+					<th class="count"> {$i18n.analytics.count} </th>
 				</tr>
 			</thead>
 
@@ -50,3 +50,9 @@
 		</table>
 	</div>
 {/if}
+
+<style lang="scss">
+	.count {
+		width: 20%;
+	}
+</style>

@@ -8,6 +8,8 @@
 </script>
 
 {#if pageViews.length > 0}
+	<hr />
+
 	<div class="container">
 		<AnalyticsReferrers {pageViews} />
 

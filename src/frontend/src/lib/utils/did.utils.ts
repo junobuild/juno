@@ -1,4 +1,4 @@
-import { nonNullish } from '$lib/utils/utils';
+import { nonNullish } from '@dfinity/utils';
 
 export const toNullable = <T>(value?: T | null): [] | [T] => {
 	return nonNullish(value) ? [value] : [];

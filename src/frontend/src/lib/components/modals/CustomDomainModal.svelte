@@ -2,7 +2,7 @@
 	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import Copy from '$lib/components/ui/Copy.svelte';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';

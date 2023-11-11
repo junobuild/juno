@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import MissionControlTopUp from '$lib/components/mission-control/MissionControlTopUp.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

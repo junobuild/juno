@@ -3,7 +3,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { busy } from '$lib/stores/busy.store';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { deleteRule } from '$lib/api/satellites.api';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

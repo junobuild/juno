@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { toasts } from '$lib/stores/toasts.store';

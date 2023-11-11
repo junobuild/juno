@@ -7,7 +7,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { getContext } from 'svelte';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 	import type { Principal } from '@dfinity/principal';
 	import { listParamsStore } from '$lib/stores/data.store';
 

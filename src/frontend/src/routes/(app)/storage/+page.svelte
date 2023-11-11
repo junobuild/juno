@@ -8,7 +8,7 @@
 	import { setContext } from 'svelte';
 	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [

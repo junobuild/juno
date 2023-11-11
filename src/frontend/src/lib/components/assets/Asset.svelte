@@ -6,7 +6,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable } from '$lib/utils/did.utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

@@ -10,7 +10,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { fromNullable } from '$lib/utils/did.utils';
 	import Input from '$lib/components/ui/Input.svelte';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

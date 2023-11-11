@@ -9,7 +9,7 @@
 	import { setContext } from 'svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import MissionControlObservatory from '$lib/components/mission-control/MissionControlObservatory.svelte';
 

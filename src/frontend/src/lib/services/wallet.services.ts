@@ -1,6 +1,5 @@
 import { formatToDateNumeric } from '$lib/utils/date.utils';
 import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToCSVFile } from '$lib/utils/save.utils';
-import { nonNullish } from '$lib/utils/utils';
 import {
 	transactionAmount,
 	transactionFrom,
@@ -9,6 +8,7 @@ import {
 	transactionTo
 } from '$lib/utils/wallet.utils';
 import type { Principal } from '@dfinity/principal';
+import { nonNullish } from '@dfinity/utils';
 import type { TransactionWithId } from '@junobuild/ledger';
 
 type TransactionId = string;

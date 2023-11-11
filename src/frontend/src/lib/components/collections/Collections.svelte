@@ -3,7 +3,7 @@
 	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 
 	export let start = false;
 

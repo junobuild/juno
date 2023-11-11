@@ -3,9 +3,9 @@ import { getMissionControlBalance } from '$lib/services/balance.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { JunoModalCreateSegmentDetail } from '$lib/types/modal';
-import { isNullish, nonNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export type GetFeeBalance = { result?: JunoModalCreateSegmentDetail; error?: unknown };

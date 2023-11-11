@@ -2,7 +2,8 @@
 	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import type { Principal } from '@dfinity/principal';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
-	import { isNullish, last, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { last } from '$lib/utils/utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

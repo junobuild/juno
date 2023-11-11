@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { fromNullable } from '$lib/utils/did.utils';
 
 	export let pageViews: [AnalyticKey, PageView][] = [];

@@ -6,7 +6,7 @@
 	import type { AnalyticKey, PageView, TrackEvent } from '$declarations/orbiter/orbiter.did';
 	import Value from '$lib/components/ui/Value.svelte';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';

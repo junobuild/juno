@@ -5,10 +5,10 @@ import {
 	localIdentityCanisterId
 } from '$lib/constants/constants';
 import { createAuthClient } from '$lib/utils/auth.utils';
-import { nonNullish } from '$lib/utils/utils';
 import { popupCenter } from '$lib/utils/window.utils';
 import type { Identity } from '@dfinity/agent';
 import type { AuthClient } from '@dfinity/auth-client';
+import { nonNullish } from '@dfinity/utils';
 import { derived, writable, type Readable } from 'svelte/store';
 
 export interface AuthStoreData {

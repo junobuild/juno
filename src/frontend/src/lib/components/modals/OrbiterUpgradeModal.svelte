@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';

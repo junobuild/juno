@@ -1,7 +1,7 @@
 import { localIdentityCanisterId } from '$lib/constants/constants';
-import { isNullish, nonNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import type { GetAccountIdentifierTransactionsResponse } from '@junobuild/ledger';
 import { AccountIdentifier, balance, transactions } from '@junobuild/ledger';
 

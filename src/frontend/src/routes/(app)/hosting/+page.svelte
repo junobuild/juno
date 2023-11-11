@@ -13,7 +13,7 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
 	import { satelliteStore } from '$lib/stores/satellite.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';

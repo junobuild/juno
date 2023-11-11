@@ -4,7 +4,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';

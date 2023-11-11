@@ -6,9 +6,9 @@ import { satelliteVersion } from '$lib/api/satellites.api';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
 import { fromNullable } from '$lib/utils/did.utils';
-import { isNullish, nonNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const initMissionControl = async ({

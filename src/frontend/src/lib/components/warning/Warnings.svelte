@@ -3,7 +3,7 @@
 	import MissionControlCyclesWarning from '$lib/components/mission-control/MissionControlCyclesWarning.svelte';
 	import VersionWarning from '$lib/components/warning/VersionWarnings.svelte';
 	import CanisterCyclesWarning from '$lib/components/canister/CanisterCyclesWarning.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 
 	export let satellite: Satellite | undefined = undefined;

@@ -7,7 +7,7 @@
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fromArray, fromNullable } from '$lib/utils/did.utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';

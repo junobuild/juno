@@ -4,7 +4,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listUsers } from '$lib/services/users.services';

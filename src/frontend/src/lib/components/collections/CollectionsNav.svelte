@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IconHome from '$lib/components/icons/IconHome.svelte';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';

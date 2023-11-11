@@ -3,7 +3,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy } from '$lib/stores/busy.store';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	const close = () => {

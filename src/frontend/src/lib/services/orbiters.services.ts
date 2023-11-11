@@ -4,8 +4,8 @@ import { orbitersStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 import { toNullable } from '$lib/utils/did.utils';
-import { assertNonNullish, isNullish, nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
+import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const createOrbiter = async ({

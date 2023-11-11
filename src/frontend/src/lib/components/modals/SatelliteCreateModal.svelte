@@ -7,7 +7,7 @@
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 	import { createSatellite, loadSatellites } from '$lib/services/satellites.services';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';

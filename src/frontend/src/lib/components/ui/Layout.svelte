@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
 	import { layoutTitle } from '$lib/stores/layout.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 
 	export let centered = false;
 	export let title = true;

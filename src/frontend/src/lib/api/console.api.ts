@@ -1,8 +1,8 @@
 import type { MissionControl, ReleasesVersion } from '$declarations/console/console.did';
 import { getConsoleActor } from '$lib/utils/actor.juno.utils';
 import { fromNullable } from '$lib/utils/did.utils';
-import { isNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
+import { isNullish } from '@dfinity/utils';
 
 export const initMissionControl = async (): Promise<MissionControl> => {
 	const actor = await getConsoleActor();

@@ -6,7 +6,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';

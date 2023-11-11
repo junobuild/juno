@@ -12,8 +12,8 @@ import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor008, getSatelliteActor009 } from '$lib/utils/actor.deprecated.utils';
 import { toNullable } from '$lib/utils/did.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
-import { isNullish } from '$lib/utils/utils';
 import { Principal } from '@dfinity/principal';
+import { isNullish } from '@dfinity/utils';
 
 const toListParams008 = ({
 	startAfter,

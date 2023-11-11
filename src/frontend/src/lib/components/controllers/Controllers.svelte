@@ -9,7 +9,7 @@
 	import ControllerDelete from '$lib/components/controllers/ControllerDelete.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
 	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

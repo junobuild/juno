@@ -3,7 +3,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import SatellitesPicker from '$lib/components/satellites/SatellitesPicker.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 
 	let from = '';

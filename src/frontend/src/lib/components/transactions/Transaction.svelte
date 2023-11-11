@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { TransactionWithId, Transaction } from '@junobuild/ledger';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

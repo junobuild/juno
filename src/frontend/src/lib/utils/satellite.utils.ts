@@ -4,8 +4,8 @@ import { localIdentityCanisterId, PAGINATION } from '$lib/constants/constants';
 import type { ListParams } from '$lib/types/list';
 import { toNullable } from '$lib/utils/did.utils';
 import { metadataName } from '$lib/utils/metadata.utils';
-import { isNullish, nonNullish } from '$lib/utils/utils';
 import { Principal } from '@dfinity/principal';
+import { isNullish, nonNullish } from '@dfinity/utils';
 
 export const satelliteUrl = (satelliteId: string): string => {
 	if (nonNullish(localIdentityCanisterId)) {

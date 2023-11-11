@@ -4,7 +4,7 @@
 	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';

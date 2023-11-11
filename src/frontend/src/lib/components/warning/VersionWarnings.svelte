@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { versionStore } from '$lib/stores/version.store';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import { loadVersion } from '$lib/services/console.services';
 	import { missionControlStore } from '$lib/stores/mission-control.store';

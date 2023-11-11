@@ -5,7 +5,7 @@
 	import { Principal } from '@dfinity/principal';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 
 	const navigate = async () =>

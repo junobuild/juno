@@ -4,7 +4,7 @@ import { getCustomDomainRegistration } from '$lib/rest/bn.rest';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { fromNullable } from '$lib/utils/did.utils';
-import { nonNullish } from '$lib/utils/utils';
+import { nonNullish } from '@dfinity/utils';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;

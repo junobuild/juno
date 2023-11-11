@@ -19,6 +19,7 @@
 	import { jsonReviver } from '@dfinity/utils';
 	import { PAGINATION } from '$lib/constants/constants';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
+	import { fade } from 'svelte/transition';
 
 	export let missionControlId: Principal;
 
@@ -140,14 +141,14 @@
 			<Value>
 				<svelte:fragment slot="label">{$i18n.wallet.balance}</svelte:fragment>
 				<p>
-					{#if nonNullish(balance)}{formatE8sICP(balance)} ICP{/if}
+					{#if nonNullish(balance)}<span in:fade>{formatE8sICP(balance)} ICP</span>{/if}
 				</p>
 			</Value>
 
 			<Value>
 				<svelte:fragment slot="label">{$i18n.wallet.credits}</svelte:fragment>
 				<p>
-					{#if nonNullish(credits)}{formatE8sICP(credits)}{/if}
+					{#if nonNullish(credits)}<span in:fade>{formatE8sICP(credits)}</span>{/if}
 				</p>
 			</Value>
 		</div>

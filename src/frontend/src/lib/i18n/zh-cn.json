@@ -164,7 +164,11 @@
 		"pages": "Top 10 pages",
 		"enabled": "已启用",
 		"orbiter": "Orbiter",
-		"configure": "配置"
+		"configure": "配置",
+		"devices": "Devices",
+		"mobile": "Mobile",
+		"desktop": "Desktop",
+		"others": "Others"
 	},
 	"hosting": {
 		"title": "网站托管",

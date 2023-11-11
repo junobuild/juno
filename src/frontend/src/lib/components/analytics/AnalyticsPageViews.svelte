@@ -2,6 +2,7 @@
 	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
 	import AnalyticsPages from '$lib/components/analytics/AnalyticsPages.svelte';
 	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
+	import AnalyticsDevices from '$lib/components/analytics/AnalyticsDevices.svelte';
 
 	export let pageViews: [AnalyticKey, PageView][] = [];
 </script>
@@ -11,6 +12,8 @@
 		<AnalyticsReferrers {pageViews} />
 
 		<AnalyticsPages {pageViews} />
+
+		<AnalyticsDevices {pageViews} />
 	</div>
 {/if}
 

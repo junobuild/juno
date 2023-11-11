@@ -4,7 +4,6 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
 	import type { AnalyticKey, PageView, TrackEvent } from '$declarations/orbiter/orbiter.did';
-	import Value from '$lib/components/ui/Value.svelte';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
 	import { isNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
@@ -13,10 +12,10 @@
 	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
 	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 	import { debounce } from '@dfinity/utils';
-	import { formatNumber } from '$lib/utils/number.utils';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
 	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
 	import AnalyticsPageViews from '$lib/components/analytics/AnalyticsPageViews.svelte';
+	import AnalyticsMetrics from '$lib/components/analytics/AnalyticsMetrics.svelte';
 
 	let loading = true;
 
@@ -56,36 +55,6 @@
 
 	$: $orbiterStore, $satelliteStore, period, debouncePageViews();
 
-	let uniqueSessions = 0;
-	$: uniqueSessions = [...new Set(pageViews.map(([_, { session_id }]) => session_id))].length;
-
-	let sessionsViews: Record<string, number> = {};
-	$: sessionsViews = pageViews.reduce(
-		(acc, [_, { session_id }]) => ({
-			...acc,
-			[session_id]: (acc[session_id] ?? 0) + 1
-		}),
-		{} as Record<string, number>
-	);
-
-	let sessionsUniqueViews: Record<string, Set<string>> = {};
-	$: sessionsUniqueViews = pageViews.reduce(
-		(acc, [_, { href, session_id }]) => ({
-			...acc,
-			[session_id]: (acc[session_id] ?? new Set()).add(href)
-		}),
-		{} as Record<string, Set<string>>
-	);
-
-	let uniquePageViews = 0;
-	$: uniquePageViews = Object.entries(sessionsUniqueViews).reduce(
-		(acc, value) => acc + value[1].size,
-		0
-	);
-
-	let bounceRate = 0;
-	$: bounceRate = Object.entries(sessionsViews).filter(([_key, value]) => value === 1).length;
-
 	const selectPeriod = ({ detail }: CustomEvent<PageViewsPeriod>) => (period = detail);
 </script>
 
@@ -103,34 +72,7 @@
 			<AnalyticsChart data={pageViews} />
 		{/if}
 
-		<div class="card-container">
-			<Value>
-				<svelte:fragment slot="label">{$i18n.analytics.number_of_sessions}</svelte:fragment>
-				<p>{uniqueSessions}</p>
-			</Value>
-
-			<Value>
-				<svelte:fragment slot="label">{$i18n.analytics.unique_page_views}</svelte:fragment>
-				<p>{uniquePageViews}</p>
-			</Value>
-
-			<Value>
-				<svelte:fragment slot="label">{$i18n.analytics.total_page_views}</svelte:fragment>
-				<p>{pageViews.length}</p>
-			</Value>
-
-			<Value>
-				<svelte:fragment slot="label"
-					>{$i18n.analytics.average_page_views_per_session}</svelte:fragment
-				>
-				<p>{formatNumber(uniqueSessions > 0 ? uniqueSessions / pageViews.length : 0)}</p>
-			</Value>
-
-			<Value>
-				<svelte:fragment slot="label">{$i18n.analytics.bounce_rate}</svelte:fragment>
-				<p>{bounceRate}</p>
-			</Value>
-		</div>
+		<AnalyticsMetrics {pageViews} />
 
 		<AnalyticsPageViews {pageViews} />
 

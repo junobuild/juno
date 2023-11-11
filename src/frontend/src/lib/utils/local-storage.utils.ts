@@ -6,6 +6,11 @@ import { Theme } from '$lib/types/theme';
 import { nonNullish } from '$lib/utils/utils';
 
 export const setLocalStorageItem = ({ key, value }: { key: string; value: string }) => {
+	// Pre-rendering guard
+	if (!browser) {
+		return;
+	}
+
 	try {
 		localStorage.setItem(key, value);
 	} catch (err: unknown) {

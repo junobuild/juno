@@ -89,6 +89,8 @@
 
 	let isActive = false;
 	$: isActive = action === 'create' || action === 'edit';
+
+	const generateKey = () => (key = nanoid());
 </script>
 
 <p class="title doc-form">
@@ -115,7 +117,7 @@
 					<button
 						class="text action start"
 						type="button"
-						on:click={() => (key = nanoid())}
+						on:click={generateKey}
 						aria-label={$i18n.document_form.field_doc_key_btn_auto_key}
 					>
 						<IconAutoRenew />

@@ -85,6 +85,7 @@
 		"@junobuild/admin": "^0.0.36",
 		"@junobuild/ledger": "^0.0.24",
 		"buffer": "^6.0.3",
+		"date-fns": "^2.30.0",
 		"idb-keyval": "^6.2.1",
 		"layercake": "^8.0.2",
 		"nanoid": "^5.0.3",

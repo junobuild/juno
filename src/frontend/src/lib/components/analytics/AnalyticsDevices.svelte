@@ -61,15 +61,15 @@
 		<tbody>
 			<tr>
 				<td>{$i18n.analytics.mobile}</td>
-				<td>{total > 0 ? (devices.mobile * 100) / total : 0}<small>%</small></td>
+				<td>{total > 0 ? ((devices.mobile * 100) / total).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 			<tr>
 				<td>{$i18n.analytics.desktop}</td>
-				<td>{total > 0 ? (devices.desktop * 100) / total : 0}<small>%</small></td>
+				<td>{total > 0 ? ((devices.desktop * 100) / total).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 			<tr>
 				<td>{$i18n.analytics.others}</td>
-				<td>{total > 0 ? (devices.others * 100) / total : 0}<small>%</small></td>
+				<td>{total > 0 ? ((devices.others * 100) / total).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 		</tbody>
 	</table>

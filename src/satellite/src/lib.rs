@@ -124,7 +124,7 @@ fn post_upgrade() {
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
 
-    // TODO: to be removed.
+    // TODO: to be removed. Issue #294.
     // Post upgrade hook to reset the rewrites after upgrading to certification v2 because the fallback to /index.html is handled differently now.
     STATE.with(|s| {
         let state = &mut s.borrow_mut();

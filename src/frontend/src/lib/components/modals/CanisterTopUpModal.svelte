@@ -2,7 +2,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { topUp } from '$lib/api/mission-control.api';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
 	import { createEventDispatcher, onMount } from 'svelte';

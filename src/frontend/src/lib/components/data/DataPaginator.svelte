@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import IconNavigateNext from '$lib/components/icons/IconNavigateNext.svelte';
 	import { PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
 	import { getContext } from 'svelte';

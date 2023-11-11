@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import type Prism from 'prismjs';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { theme } from '$lib/stores/theme.store';
 	import { Theme } from '$lib/types/theme';
 	import Copy from '$lib/components/ui/Copy.svelte';

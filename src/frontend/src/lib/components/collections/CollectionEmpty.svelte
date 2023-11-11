@@ -3,7 +3,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listParamsFilteredStore } from '$lib/stores/data.store';
 	import type { Rule } from '$declarations/satellite/satellite.did';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 
 	export let rule: Rule | undefined;
 	export let collection: string | undefined;

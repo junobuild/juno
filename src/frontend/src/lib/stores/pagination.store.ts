@@ -1,6 +1,7 @@
 import { PAGINATION } from '$lib/constants/constants';
 import type { PaginationContext, PaginationStore } from '$lib/types/pagination.context';
-import { last, nonNullish } from '$lib/utils/utils';
+import { last } from '$lib/utils/utils';
+import { nonNullish } from '@dfinity/utils';
 import { writable } from 'svelte/store';
 
 export const initPaginationContext = <T>(): Omit<PaginationContext<T>, 'list'> => {

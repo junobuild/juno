@@ -2,7 +2,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { isNullish, last } from '$lib/utils/utils';
+	import { last } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { wizardBusy } from '$lib/stores/busy.store';

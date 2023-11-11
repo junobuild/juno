@@ -8,7 +8,7 @@
 	import Analytics from '$lib/components/analytics/Analytics.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import AnalyticsControllers from '$lib/components/analytics/AnalyticsControllers.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';

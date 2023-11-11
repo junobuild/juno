@@ -6,7 +6,7 @@
 	import { Principal } from '@dfinity/principal';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 
 	export let orbiterId: Principal;

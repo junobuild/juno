@@ -3,7 +3,7 @@
 	 * Source gix-components: https://gix.design
 	 */
 	import { afterUpdate, createEventDispatcher, onMount } from 'svelte';
-	import { debounce } from '$lib/utils/debounce.utils';
+	import { debounce } from '@dfinity/utils';
 	import type { QrCreateClass } from '$lib/types/qr-creator';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 

@@ -1,7 +1,7 @@
 import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
 import type { ListFilter, ListOrder, ListParams } from '$lib/types/list';
 import { getLocalListParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';
-import { nonNullish } from '$lib/utils/utils';
+import { nonNullish } from '@dfinity/utils';
 import type { Readable } from 'svelte/store';
 import { derived, writable } from 'svelte/store';
 

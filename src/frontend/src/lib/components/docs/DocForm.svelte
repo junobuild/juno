@@ -6,7 +6,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { createEventDispatcher, getContext } from 'svelte';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { nanoid } from 'nanoid';
 	import {

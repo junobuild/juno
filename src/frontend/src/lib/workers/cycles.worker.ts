@@ -4,9 +4,9 @@ import { CYCLES_WARNING, SYNC_CYCLES_TIMER_INTERVAL } from '$lib/constants/const
 import type { Canister, CanisterInfo } from '$lib/types/canister';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
-import { isNullish } from '$lib/utils/utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
+import { isNullish } from '@dfinity/utils';
 import { createStore, getMany, set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {

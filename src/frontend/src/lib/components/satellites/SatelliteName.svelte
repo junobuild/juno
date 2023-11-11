@@ -7,7 +7,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { setSatelliteName } from '$lib/services/mission-control.services';
 

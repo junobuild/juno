@@ -1,6 +1,6 @@
 <script lang="ts">
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import NavSeparator from '$lib/components/ui/NavSeparator.svelte';
 	import { getContext } from 'svelte';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';

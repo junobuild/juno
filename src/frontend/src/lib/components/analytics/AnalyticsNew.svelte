@@ -4,7 +4,7 @@
 	import { getCreateOrbiterFeeBalance } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	const createOrbiter = async () => {

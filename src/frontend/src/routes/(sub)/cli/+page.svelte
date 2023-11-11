@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { signIn } from '$lib/services/auth.services';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';

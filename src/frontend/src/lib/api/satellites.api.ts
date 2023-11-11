@@ -16,8 +16,8 @@ import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
 import { fromNullable, toNullable } from '$lib/utils/did.utils';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
-import { isNullish, nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
+import { isNullish, nonNullish } from '@dfinity/utils';
 
 export const listDocs = async ({
 	satelliteId,

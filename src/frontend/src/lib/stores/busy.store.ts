@@ -1,4 +1,4 @@
-import { nonNullish } from '$lib/utils/utils';
+import { nonNullish } from '@dfinity/utils';
 import { derived, writable, type Readable } from 'svelte/store';
 
 export interface Busy {

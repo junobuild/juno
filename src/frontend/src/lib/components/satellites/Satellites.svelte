@@ -4,7 +4,7 @@
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { satellitesStore } from '$lib/stores/satellite.store';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import SatelliteArticleSkeleton from '$lib/components/satellites/SatelliteArticleSkeleton.svelte';
 
 	$: $missionControlStore,

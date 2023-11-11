@@ -3,7 +3,7 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import { busy } from '$lib/stores/busy.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { getMissionControlBalance } from '$lib/services/balance.services';
 

@@ -1,6 +1,6 @@
 import { createAuthClient } from '$lib/utils/auth.utils';
-import { isNullish } from '$lib/utils/utils';
 import type { Identity } from '@dfinity/agent';
+import { isNullish } from '@dfinity/utils';
 
 export const loadIdentity = async (): Promise<Identity | null> => {
 	const authClient = await createAuthClient();

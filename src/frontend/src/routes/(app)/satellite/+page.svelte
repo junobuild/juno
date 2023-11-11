@@ -15,7 +15,7 @@
 	import SatelliteControllers from '$lib/components/satellites/SatelliteControllers.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import Examples from '$lib/components/examples/Examples.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
 

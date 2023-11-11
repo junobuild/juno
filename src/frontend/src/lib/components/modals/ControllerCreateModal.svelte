@@ -6,7 +6,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import type { SetControllerParams, SetControllerScope } from '$lib/types/controllers';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import Value from '$lib/components/ui/Value.svelte';

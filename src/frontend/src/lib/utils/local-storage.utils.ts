@@ -3,7 +3,7 @@ import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
 import type { ListParamsStoreData } from '$lib/stores/data.store';
 import type { Languages } from '$lib/types/languages';
 import { Theme } from '$lib/types/theme';
-import { nonNullish } from '$lib/utils/utils';
+import { nonNullish } from '@dfinity/utils';
 
 export const setLocalStorageItem = ({ key, value }: { key: string; value: string }) => {
 	// Pre-rendering guard

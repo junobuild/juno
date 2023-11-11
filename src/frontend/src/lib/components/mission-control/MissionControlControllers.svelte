@@ -6,7 +6,7 @@
 		setMissionControlController
 	} from '$lib/api/mission-control.api';
 	import { authStore } from '$lib/stores/auth.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
 	import type { SetControllerParams } from '$lib/types/controllers';

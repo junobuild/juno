@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
@@ -8,7 +8,7 @@
 	import { getCronTab, setCronTab } from '$lib/api/observatory.api';
 	import type { Principal } from '@dfinity/principal';
 	import type { CronTab } from '$declarations/observatory/observatory.did';
-	import { fromNullable, toNullable } from '$lib/utils/did.utils';
+	import { fromNullable, toNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';

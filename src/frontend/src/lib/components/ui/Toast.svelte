@@ -5,7 +5,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { onDestroy, onMount } from 'svelte';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 
 	export let msg: ToastMsg;
 

@@ -1,7 +1,6 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import type { CustomDomainRegistration } from '$lib/types/custom-domain';
-import { fromNullable } from '$lib/utils/did.utils';
-import { isNullish } from '$lib/utils/utils';
+import { fromNullable, isNullish } from '@dfinity/utils';
 
 const BN_REGISTRATIONS_URL = import.meta.env.VITE_BN_REGISTRATIONS_URL;
 

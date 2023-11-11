@@ -1,7 +1,7 @@
 import { browser } from '$app/environment';
 import { goto } from '$app/navigation';
-import { nonNullish } from '$lib/utils/utils';
 import type { Principal } from '@dfinity/principal';
+import { nonNullish } from '@dfinity/utils';
 import type { LoadEvent } from '@sveltejs/kit';
 
 export const overviewLink = (satelliteId: Principal | undefined | null): string =>

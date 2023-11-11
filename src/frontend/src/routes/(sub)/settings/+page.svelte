@@ -6,7 +6,7 @@
 	import AppLang from '$lib/components/core/AppLang.svelte';
 	import type { Languages } from '$lib/types/languages';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { fade } from 'svelte/transition';
 

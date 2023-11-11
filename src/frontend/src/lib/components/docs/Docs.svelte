@@ -2,7 +2,7 @@
 	import type { RulesContext } from '$lib/types/rules.context';
 	import { getContext, setContext } from 'svelte';
 	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { Doc as DocType } from '$declarations/satellite/satellite.did';

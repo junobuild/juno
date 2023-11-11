@@ -1,9 +1,8 @@
 import type { SetController as SetControllerDid } from '$declarations/deprecated/mission_control-0-0-4.did';
 import type { SetControllerParams } from '$lib/types/controllers';
 import { getMissionControlActor004 } from '$lib/utils/actor.deprecated.utils';
-import { toNullable } from '$lib/utils/did.utils';
-import { nonNullish } from '$lib/utils/utils';
 import { Principal } from '@dfinity/principal';
+import { nonNullish, toNullable } from '@dfinity/utils';
 
 const toSetController = ({
 	profile

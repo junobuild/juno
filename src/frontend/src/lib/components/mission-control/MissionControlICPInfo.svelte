@@ -1,7 +1,7 @@
 <script lang="ts">
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import type { AccountIdentifier } from '@junobuild/ledger';

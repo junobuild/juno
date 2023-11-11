@@ -1,6 +1,6 @@
 import { page } from '$app/stores';
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import { isNullish } from '$lib/utils/utils';
+import { isNullish } from '@dfinity/utils';
 import { derived, writable, type Readable } from 'svelte/store';
 
 export const satellitesStore = writable<Satellite[] | undefined | null>(undefined);

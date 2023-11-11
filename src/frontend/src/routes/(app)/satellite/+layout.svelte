@@ -5,9 +5,9 @@
 	import { layoutTitle } from '$lib/stores/layout.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { debounce } from '$lib/utils/debounce.utils';
+	import { debounce } from '@dfinity/utils';
 
 	onMount(() => applyColor(Color.LAVENDER_BLUE));
 

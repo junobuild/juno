@@ -4,9 +4,9 @@
 	import { DATA_CONTEXT_KEY } from '$lib/types/data.context';
 	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable } from '$lib/utils/did.utils';
+	import { fromNullable } from '@dfinity/utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { isNullish, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

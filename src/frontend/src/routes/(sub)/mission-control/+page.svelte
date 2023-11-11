@@ -11,7 +11,7 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Warnings from '$lib/components/warning/Warnings.svelte';

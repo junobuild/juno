@@ -8,7 +8,7 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish } from '$lib/utils/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
 

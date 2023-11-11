@@ -3,7 +3,7 @@ import { busy } from '$lib/stores/busy.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { ToastLevel, ToastMsg } from '$lib/types/toast';
 import { replaceHistory } from '$lib/utils/route.utils';
-import { isNullish } from '$lib/utils/utils';
+import { isNullish } from '@dfinity/utils';
 
 export const signIn = async (
 	params: AuthSignInParams

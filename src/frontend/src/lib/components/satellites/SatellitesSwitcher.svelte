@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { satellitesStore, satelliteStore } from '$lib/stores/satellite.store';
-	import { nonNullish } from '$lib/utils/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { overviewLink } from '$lib/utils/nav.utils';

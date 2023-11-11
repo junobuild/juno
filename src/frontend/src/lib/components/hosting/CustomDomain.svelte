@@ -1,7 +1,8 @@
 <script lang="ts">
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import { isNullish, keyOf, nonNullish } from '$lib/utils/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { keyOf } from '$lib/utils/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';

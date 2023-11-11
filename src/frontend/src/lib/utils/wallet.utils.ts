@@ -5,9 +5,9 @@ import {
 	MEMO_SATELLITE_CREATE_REFUND
 } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/i18n.store';
-import { fromNullable } from '$lib/utils/did.utils';
 import { formatE8sICP } from '$lib/utils/icp.utils';
 import type { Principal } from '@dfinity/principal';
+import { fromNullable } from '@dfinity/utils';
 import type { Transaction } from '@junobuild/ledger';
 import { get } from 'svelte/store';
 

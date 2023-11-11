@@ -2,10 +2,9 @@ import type { Satellite } from '$declarations/mission_control/mission_control.di
 import type { ListParams as ListParamsApi } from '$declarations/satellite/satellite.did';
 import { localIdentityCanisterId, PAGINATION } from '$lib/constants/constants';
 import type { ListParams } from '$lib/types/list';
-import { toNullable } from '$lib/utils/did.utils';
 import { metadataName } from '$lib/utils/metadata.utils';
 import { Principal } from '@dfinity/principal';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
 
 export const satelliteUrl = (satelliteId: string): string => {
 	if (nonNullish(localIdentityCanisterId)) {

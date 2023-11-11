@@ -8,7 +8,7 @@
 	import { getCronTab, setCronTab } from '$lib/api/observatory.api';
 	import type { Principal } from '@dfinity/principal';
 	import type { CronTab } from '$declarations/observatory/observatory.did';
-	import { fromNullable, toNullable } from '$lib/utils/did.utils';
+	import { fromNullable, toNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';

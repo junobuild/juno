@@ -5,9 +5,8 @@ import {
 	setCustomDomain as setCustomDomainApi
 } from '$lib/api/satellites.api';
 import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
-import { fromNullable } from '$lib/utils/did.utils';
 import type { Principal } from '@dfinity/principal';
-import { nonNullish } from '@dfinity/utils';
+import { fromNullable, nonNullish } from '@dfinity/utils';
 
 /**
  * https://internetcomputer.org/docs/current/developer-docs/production/custom-domain/

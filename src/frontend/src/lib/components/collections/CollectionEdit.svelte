@@ -8,7 +8,7 @@
 	import { MemoryHeap, MemoryStable, PermissionManaged } from '$lib/constants/rules.constants';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { fromNullable } from '$lib/utils/did.utils';
+	import { fromNullable } from '@dfinity/utils';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';

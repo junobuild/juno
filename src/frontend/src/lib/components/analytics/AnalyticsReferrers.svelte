@@ -2,7 +2,7 @@
 	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { nonNullish } from '@dfinity/utils';
-	import { fromNullable } from '$lib/utils/did.utils';
+	import { fromNullable } from '@dfinity/utils';
 
 	export let pageViews: [AnalyticKey, PageView][] = [];
 

@@ -13,7 +13,7 @@ import type { MemoryText, PermissionText } from '$lib/constants/rules.constants'
 import { MemoryHeap } from '$lib/constants/rules.constants';
 import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
-import { fromNullable, toNullable } from '$lib/utils/did.utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
 import type { Principal } from '@dfinity/principal';

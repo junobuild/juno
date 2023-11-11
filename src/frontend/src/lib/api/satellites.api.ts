@@ -13,11 +13,10 @@ import type { MemoryText, PermissionText } from '$lib/constants/rules.constants'
 import { MemoryHeap } from '$lib/constants/rules.constants';
 import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
-import { fromNullable, toNullable } from '@dfinity/utils';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
 import type { Principal } from '@dfinity/principal';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 
 export const listDocs = async ({
 	satelliteId,

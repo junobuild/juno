@@ -164,7 +164,11 @@
 		"pages": "Top 10 pages",
 		"enabled": "Enabled",
 		"orbiter": "Orbiter",
-		"configure": "Configure"
+		"configure": "Configure",
+		"devices": "Devices",
+		"mobile": "Mobile",
+		"desktop": "Desktop",
+		"others": "Others"
 	},
 	"hosting": {
 		"title": "Hosting",

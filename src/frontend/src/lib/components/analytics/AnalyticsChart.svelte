@@ -41,6 +41,12 @@
 
 	let ticks: string[];
 	$: ticks = Object.values(chartsData).map(({ [xKey]: a }) => a);
+
+	const formatTick = (d: string): string => {
+		const date = new Date(parseInt(d));
+		const time = date.getDate();
+		return time % 2 != 0 ? formatToDay(date) : '';
+	};
 </script>
 
 <div class="chart-container">
@@ -53,7 +59,7 @@
 		data={chartsData}
 	>
 		<Svg>
-			<AxisX formatTick={(d) => formatToDay(new Date(parseInt(d)))} {ticks} />
+			<AxisX {formatTick} {ticks} />
 			<AxisY ticks={4} />
 			<Line />
 			<Area />

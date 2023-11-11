@@ -30,8 +30,7 @@ export const formatToDateNumeric = (nanoseconds: bigint): string => {
 export const formatToDay = (date: Date): string => {
 	const options: Intl.DateTimeFormatOptions = {
 		month: 'short',
-		day: 'numeric',
-		year: 'numeric'
+		day: 'numeric'
 	};
 
 	return date.toLocaleDateString('en', options);

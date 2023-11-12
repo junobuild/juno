@@ -12,7 +12,7 @@ use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
 use crate::rules::assert_stores::{assert_create_permission, assert_permission, public_permission};
-use crate::rules::types::rules::{Memory, Permission, Rule};
+use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::{CollectionKey, Key};
 use crate::types::list::{ListParams, ListResults};
 use candid::Principal;
@@ -84,7 +84,13 @@ fn get_doc_impl(
     match value {
         None => Ok(None),
         Some(value) => {
-            if !assert_permission(&rule.read, value.owner, caller, controllers) {
+            if !assert_permission(
+                &rule.read,
+                &rule.allow_anonymous,
+                value.owner,
+                caller,
+                controllers,
+            ) {
                 return Ok(None);
             }
 
@@ -127,13 +133,7 @@ fn insert_doc_impl(
 ) -> Result<Doc, String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
-    match assert_write_permission(
-        caller,
-        controllers,
-        &current_doc,
-        &rule.write,
-        value.updated_at,
-    ) {
+    match assert_write_permission(caller, controllers, &current_doc, rule, value.updated_at) {
         Ok(_) => (),
         Err(e) => {
             return Err(e);
@@ -193,7 +193,7 @@ fn get_docs_impl(
 ) -> Result<ListResults<Doc>, String> {
     let items = get_state_docs(&collection, rule)?;
 
-    let matches = filter_values(caller, controllers, &rule.read, &items, filters);
+    let matches = filter_values(caller, controllers, rule, &items, filters);
 
     let results = list_values(matches, filters);
 
@@ -234,13 +234,7 @@ fn delete_doc_impl(
 ) -> Result<(), String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
-    match assert_write_permission(
-        caller,
-        controllers,
-        &current_doc,
-        &rule.write,
-        value.updated_at,
-    ) {
+    match assert_write_permission(caller, controllers, &current_doc, rule, value.updated_at) {
         Ok(_) => (),
         Err(e) => {
             return Err(e);
@@ -254,19 +248,28 @@ fn assert_write_permission(
     caller: Principal,
     controllers: &Controllers,
     current_doc: &Option<Doc>,
-    rule: &Permission,
+    rule: &Rule,
     user_timestamp: Option<u64>,
 ) -> Result<(), String> {
+    let permission = &rule.write;
+    let allow_anonymous = &rule.allow_anonymous;
+
     // For existing collection and document, check user editing is the caller
-    if !public_permission(rule) {
+    if !public_permission(permission) {
         match current_doc {
             None => {
-                if !assert_create_permission(rule, caller, controllers) {
+                if !assert_create_permission(permission, allow_anonymous, caller, controllers) {
                     return Err(ERROR_CANNOT_WRITE.to_string());
                 }
             }
             Some(current_doc) => {
-                if !assert_permission(rule, current_doc.owner, caller, controllers) {
+                if !assert_permission(
+                    permission,
+                    allow_anonymous,
+                    current_doc.owner,
+                    caller,
+                    controllers,
+                ) {
                     return Err(ERROR_CANNOT_WRITE.to_string());
                 }
             }

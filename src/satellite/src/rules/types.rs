@@ -13,6 +13,8 @@ pub mod rules {
         pub write: Permission,
         #[serde(default = "deserialize_default_as_true")]
         pub mutable_permissions: Option<bool>,
+        #[serde(default = "deserialize_default_as_true")]
+        pub allow_anonymous: Option<bool>,
         pub memory: Option<Memory>,
         pub max_size: Option<u128>,
         pub created_at: u64,
@@ -50,6 +52,7 @@ pub mod interface {
         pub read: Permission,
         pub write: Permission,
         pub mutable_permissions: Option<bool>,
+        pub allow_anonymous: Option<bool>,
         pub memory: Option<Memory>,
         pub max_size: Option<u128>,
     }

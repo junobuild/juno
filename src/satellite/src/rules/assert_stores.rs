@@ -4,14 +4,19 @@ use crate::rules::types::rules::Permission;
 use candid::Principal;
 use shared::controllers::is_controller;
 use shared::types::state::Controllers;
-use shared::utils::principal_equal;
+use shared::utils::{principal_equal, principal_not_anonymous};
 
 pub fn assert_permission(
     permission: &Permission,
+    allow_anonymous: &Option<bool>,
     owner: Principal,
     caller: Principal,
     controllers: &Controllers,
 ) -> bool {
+    if !assert_anonymous(allow_anonymous, caller) {
+        return false;
+    }
+
     match permission {
         Permission::Public => true,
         Permission::Private => principal_equal(owner, caller),
@@ -24,15 +29,24 @@ pub fn assert_permission(
 /// This can be useful e.g. when a collection read permission is set to public but only the administrator can add content.
 pub fn assert_create_permission(
     permission: &Permission,
+    allow_anonymous: &Option<bool>,
     caller: Principal,
     controllers: &Controllers,
 ) -> bool {
+    if !assert_anonymous(allow_anonymous, caller) {
+        return false;
+    }
+
     match permission {
         Permission::Public => true,
         Permission::Private => true,
         Permission::Managed => true,
         Permission::Controllers => is_controller(caller, controllers),
     }
+}
+
+fn assert_anonymous(allow_anonymous: &Option<bool>, caller: Principal) -> bool {
+    allow_anonymous.unwrap_or(true) || principal_not_anonymous(caller)
 }
 
 pub fn public_permission(permission: &Permission) -> bool {

@@ -98,6 +98,7 @@ type Rule = record {
   memory : opt Memory;
   updated_at : nat64;
   max_size : opt nat;
+  allow_anonymous : opt bool;
   read : Permission;
   created_at : nat64;
   mutable_permissions : opt bool;
@@ -122,6 +123,7 @@ type SetRule = record {
   memory : opt Memory;
   updated_at : opt nat64;
   max_size : opt nat;
+  allow_anonymous : opt bool;
   read : Permission;
   mutable_permissions : opt bool;
   write : Permission;

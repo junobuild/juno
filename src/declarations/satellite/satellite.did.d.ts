@@ -122,6 +122,7 @@ export interface Rule {
 	memory: [] | [Memory];
 	updated_at: bigint;
 	max_size: [] | [bigint];
+	allow_anonymous: [] | [boolean];
 	read: Permission;
 	created_at: bigint;
 	mutable_permissions: [] | [boolean];
@@ -146,6 +147,7 @@ export interface SetRule {
 	memory: [] | [Memory];
 	updated_at: [] | [bigint];
 	max_size: [] | [bigint];
+	allow_anonymous: [] | [boolean];
 	read: Permission;
 	mutable_permissions: [] | [boolean];
 	write: Permission;

@@ -1,6 +1,6 @@
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
-use crate::rules::types::rules::{Rule};
+use crate::rules::types::rules::Rule;
 use crate::storage::types::interface::{AssetEncodingNoContent, AssetNoContent};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;

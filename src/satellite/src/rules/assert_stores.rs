@@ -46,7 +46,7 @@ pub fn assert_create_permission(
 }
 
 fn assert_anonymous(allow_anonymous: &Option<bool>, caller: Principal) -> bool {
-    allow_anonymous.unwrap_or(true) || principal_not_anonymous(caller)
+    allow_anonymous.unwrap_or(false) || principal_not_anonymous(caller)
 }
 
 pub fn public_permission(permission: &Permission) -> bool {

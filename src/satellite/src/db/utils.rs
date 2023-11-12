@@ -1,7 +1,7 @@
 use crate::db::types::state::Doc;
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
-use crate::rules::types::rules::{Rule};
+use crate::rules::types::rules::Rule;
 use crate::types::core::Key;
 use crate::types::list::ListParams;
 use candid::Principal;

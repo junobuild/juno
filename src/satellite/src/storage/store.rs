@@ -12,8 +12,10 @@ use shared::types::state::Controllers;
 use shared::utils::principal_not_equal;
 use std::collections::HashMap;
 
+use crate::rules::assert_stores::{
+    assert_create_permission, assert_permission, is_known_user, public_permission,
+};
 use crate::rules::types::rules::{Memory, Rule};
-use crate::rules::utils::{assert_create_rule, assert_rule, is_known_user, public_rule};
 use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
     ROOT_404_HTML, ROOT_INDEX_HTML,
@@ -191,7 +193,7 @@ fn delete_asset_impl(
     match asset {
         None => Err(ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
-            if !assert_rule(&rule.write, asset.key.owner, caller, controllers) {
+            if !assert_permission(&rule.write, asset.key.owner, caller, controllers) {
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
@@ -267,7 +269,10 @@ fn secure_create_batch_impl(
 ) -> Result<u128, String> {
     let rule = get_state_rule(&init.collection)?;
 
-    if !(public_rule(&rule.write) || is_known_user(caller) || is_controller(caller, controllers)) {
+    if !(public_permission(&rule.write)
+        || is_known_user(caller)
+        || is_controller(caller, controllers))
+    {
         return Err(UPLOAD_NOT_ALLOWED.to_string());
     }
 
@@ -440,7 +445,7 @@ fn secure_commit_chunks(
 
     match current {
         None => {
-            if !assert_create_rule(&rule.write, caller, controllers) {
+            if !assert_create_permission(&rule.write, caller, controllers) {
                 return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
             }
 
@@ -465,7 +470,7 @@ fn secure_commit_chunks_update(
         return Err("Provided collection does not match existing collection.".to_string());
     }
 
-    if !assert_rule(&rule.write, current.key.owner, caller, controllers) {
+    if !assert_permission(&rule.write, current.key.owner, caller, controllers) {
         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 

@@ -356,7 +356,8 @@
 		"memory": "内存",
 		"heap": "堆栈",
 		"stable": "稳定",
-		"immutable": "将权限改为只读"
+		"immutable": "将权限改为只读",
+		"allow_anonymous": "Allow anonymous calls"
 	},
 	"sort": {
 		"title": "排序结果",

@@ -378,6 +378,7 @@ interface I18nCollections {
 	heap: string;
 	stable: string;
 	immutable: string;
+	allow_anonymous: string;
 }
 
 interface I18nSort {

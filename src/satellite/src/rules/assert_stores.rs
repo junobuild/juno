@@ -6,13 +6,13 @@ use shared::controllers::is_controller;
 use shared::types::state::Controllers;
 use shared::utils::principal_equal;
 
-pub fn assert_rule(
-    rule: &Permission,
+pub fn assert_permission(
+    permission: &Permission,
     owner: Principal,
     caller: Principal,
     controllers: &Controllers,
 ) -> bool {
-    match rule {
+    match permission {
         Permission::Public => true,
         Permission::Private => principal_equal(owner, caller),
         Permission::Managed => principal_equal(owner, caller) || is_controller(caller, controllers),
@@ -22,8 +22,12 @@ pub fn assert_rule(
 
 /// If a document or asset is about to be created for the first time, it can be initialized without further rules unless the collection is set as controller and the caller is not a controller.
 /// This can be useful e.g. when a collection read permission is set to public but only the administrator can add content.
-pub fn assert_create_rule(rule: &Permission, caller: Principal, controllers: &Controllers) -> bool {
-    match rule {
+pub fn assert_create_permission(
+    permission: &Permission,
+    caller: Principal,
+    controllers: &Controllers,
+) -> bool {
+    match permission {
         Permission::Public => true,
         Permission::Private => true,
         Permission::Managed => true,
@@ -31,8 +35,8 @@ pub fn assert_create_rule(rule: &Permission, caller: Principal, controllers: &Co
     }
 }
 
-pub fn public_rule(rule: &Permission) -> bool {
-    matches!(rule, Permission::Public)
+pub fn public_permission(permission: &Permission) -> bool {
+    matches!(permission, Permission::Public)
 }
 
 pub fn is_known_user(caller: Principal) -> bool {

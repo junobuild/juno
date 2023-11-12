@@ -1,6 +1,8 @@
 use crate::db::store::{delete_collection, init_collection};
 use crate::memory::STATE;
-use crate::rules::assert::{assert_memory, assert_mutable_permissions, assert_write_permission};
+use crate::rules::assert_rules::{
+    assert_memory, assert_mutable_permissions, assert_write_permission,
+};
 use crate::rules::constants::SYS_COLLECTION_PREFIX;
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::{Memory, Rule, Rules};

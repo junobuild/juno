@@ -11,8 +11,8 @@ use crate::db::types::state::Doc;
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
+use crate::rules::assert_stores::{assert_create_permission, assert_permission, public_permission};
 use crate::rules::types::rules::{Memory, Permission, Rule};
-use crate::rules::utils::{assert_create_rule, assert_rule, public_rule};
 use crate::types::core::{CollectionKey, Key};
 use crate::types::list::{ListParams, ListResults};
 use candid::Principal;
@@ -84,7 +84,7 @@ fn get_doc_impl(
     match value {
         None => Ok(None),
         Some(value) => {
-            if !assert_rule(&rule.read, value.owner, caller, controllers) {
+            if !assert_permission(&rule.read, value.owner, caller, controllers) {
                 return Ok(None);
             }
 
@@ -258,15 +258,15 @@ fn assert_write_permission(
     user_timestamp: Option<u64>,
 ) -> Result<(), String> {
     // For existing collection and document, check user editing is the caller
-    if !public_rule(rule) {
+    if !public_permission(rule) {
         match current_doc {
             None => {
-                if !assert_create_rule(rule, caller, controllers) {
+                if !assert_create_permission(rule, caller, controllers) {
                     return Err(ERROR_CANNOT_WRITE.to_string());
                 }
             }
             Some(current_doc) => {
-                if !assert_rule(rule, current_doc.owner, caller, controllers) {
+                if !assert_permission(rule, current_doc.owner, caller, controllers) {
                     return Err(ERROR_CANNOT_WRITE.to_string());
                 }
             }

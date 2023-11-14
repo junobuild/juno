@@ -58,7 +58,9 @@ use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
-use shared::controllers::{assert_max_number_of_controllers, init_controllers};
+use shared::controllers::{
+    assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
+};
 use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use shared::types::state::{ControllerScope, Controllers};
 use std::mem;
@@ -232,6 +234,8 @@ fn set_controllers(
             }
         }
     }
+
+    assert_no_anonymous_controller(&controllers).unwrap_or_else(|e| trap(&e));
 
     set_controllers_store(&controllers, &controller);
     get_controllers()

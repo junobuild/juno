@@ -2,7 +2,9 @@ use crate::controllers::store::{delete_controllers, get_admin_controllers, set_c
 use crate::store::get_user;
 use ic_cdk::id;
 use shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
-use shared::controllers::{assert_max_number_of_controllers, into_controller_ids};
+use shared::controllers::{
+    assert_max_number_of_controllers, assert_no_anonymous_controller, into_controller_ids,
+};
 use shared::ic::update_canister_controllers;
 use shared::types::interface::SetController;
 use shared::types::state::{ControllerId, ControllerScope, Controllers};
@@ -21,6 +23,8 @@ pub async fn set_mission_control_controllers(
             )?;
         }
     }
+
+    assert_no_anonymous_controller(controllers)?;
 
     set_controllers(controllers, controller);
 

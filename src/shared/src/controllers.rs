@@ -1,7 +1,7 @@
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
-use crate::utils::{principal_equal, principal_not_anonymous};
+use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
 use ic_cdk::api::time;
 use std::collections::HashMap;
@@ -100,6 +100,17 @@ pub fn assert_max_number_of_controllers(
     }
 
     Ok(())
+}
+
+pub fn assert_no_anonymous_controller(controllers_ids: &[ControllerId]) -> Result<(), String> {
+    let has_anonymous = controllers_ids
+        .iter()
+        .any(|controller_id| principal_anonymous(controller_id.clone()));
+
+    match has_anonymous {
+        true => Err("Anonymous controller not allowed.".to_string()),
+        false => Ok(()),
+    }
 }
 
 pub fn caller_is_console(caller: UserId) -> bool {

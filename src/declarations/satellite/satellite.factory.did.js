@@ -149,7 +149,6 @@ export const idlFactory = ({ IDL }) => {
 		memory: IDL.Opt(Memory),
 		updated_at: IDL.Nat64,
 		max_size: IDL.Opt(IDL.Nat),
-		allow_anonymous: IDL.Opt(IDL.Bool),
 		read: Permission,
 		created_at: IDL.Nat64,
 		mutable_permissions: IDL.Opt(IDL.Bool),
@@ -173,7 +172,6 @@ export const idlFactory = ({ IDL }) => {
 		memory: IDL.Opt(Memory),
 		updated_at: IDL.Opt(IDL.Nat64),
 		max_size: IDL.Opt(IDL.Nat),
-		allow_anonymous: IDL.Opt(IDL.Bool),
 		read: Permission,
 		mutable_permissions: IDL.Opt(IDL.Bool),
 		write: Permission

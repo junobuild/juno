@@ -61,13 +61,7 @@ pub fn filter_values(
                 && filter_full_path(&regex_key, asset)
                 && filter_description(&regex_description, asset)
                 && filter_owner(*owner, asset)
-                && assert_permission(
-                    &rule.read,
-                    &rule.allow_anonymous,
-                    asset.key.owner,
-                    caller,
-                    controllers,
-                )
+                && assert_permission(&rule.read, asset.key.owner, caller, controllers)
         })
         .collect()
 }

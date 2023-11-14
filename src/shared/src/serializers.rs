@@ -16,7 +16,3 @@ pub fn deserialize_from_bytes<T: for<'a> Deserialize<'a>>(bytes: Cow<'_, [u8]>) 
 pub fn deserialize_default_as_true() -> Option<bool> {
     Some(true)
 }
-
-pub fn deserialize_default_as_false() -> Option<bool> {
-    Some(false)
-}

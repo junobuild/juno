@@ -356,8 +356,7 @@
 		"memory": "Memory",
 		"heap": "Heap",
 		"stable": "Stable",
-		"immutable": "Make permissions immutable",
-		"allow_anonymous": "Allow anonymous calls"
+		"immutable": "Make permissions immutable"
 	},
 	"sort": {
 		"title": "Ordina i risultati",

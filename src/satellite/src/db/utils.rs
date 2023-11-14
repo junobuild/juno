@@ -27,13 +27,7 @@ pub fn filter_values(
             filter_key_matcher(&regex_key, key)
                 && filter_description_matcher(&regex_description, &doc.description)
                 && filter_owner(owner, &doc.owner)
-                && assert_permission(
-                    &rule.read,
-                    &rule.allow_anonymous,
-                    doc.owner,
-                    caller,
-                    controllers,
-                )
+                && assert_permission(&rule.read, doc.owner, caller, controllers)
         })
         .map(|(key, doc)| (key.clone(), doc.clone()))
         .collect()

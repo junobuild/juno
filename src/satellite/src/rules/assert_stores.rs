@@ -8,15 +8,10 @@ use shared::utils::{principal_equal, principal_not_anonymous};
 
 pub fn assert_permission(
     permission: &Permission,
-    allow_anonymous: &Option<bool>,
     owner: Principal,
     caller: Principal,
     controllers: &Controllers,
 ) -> bool {
-    if !assert_anonymous(allow_anonymous, caller) {
-        return false;
-    }
-
     match permission {
         Permission::Public => true,
         Permission::Private => principal_equal(owner, caller),
@@ -29,14 +24,9 @@ pub fn assert_permission(
 /// This can be useful e.g. when a collection read permission is set to public but only the administrator can add content.
 pub fn assert_create_permission(
     permission: &Permission,
-    allow_anonymous: &Option<bool>,
     caller: Principal,
     controllers: &Controllers,
 ) -> bool {
-    if !assert_anonymous(allow_anonymous, caller) {
-        return false;
-    }
-
     match permission {
         Permission::Public => true,
         Permission::Private => true,

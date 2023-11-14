@@ -53,14 +53,6 @@
 	};
 	$: initMutable($store.rule?.[1] ?? undefined);
 
-	let currentAllowAnonymous: boolean;
-	let allowAnonymous: boolean;
-	const initAllowAnonymous = (initialRule: Rule | undefined) => {
-		currentAllowAnonymous = fromNullable(initialRule?.allow_anonymous ?? []) ?? false;
-		allowAnonymous = currentAllowAnonymous;
-	};
-	$: initAllowAnonymous($store.rule?.[1] ?? undefined);
-
 	let maxSize: number | undefined;
 	const initMaxLength = (size: [] | [bigint]) => {
 		const tmp = fromNullable(size);
@@ -86,8 +78,7 @@
 				type,
 				rule,
 				maxSize,
-				mutablePermissions: !immutable,
-				allowAnonymous
+				mutablePermissions: !immutable
 			});
 
 			toasts.success(
@@ -189,17 +180,6 @@
 				</Value>
 			</div>
 		{/if}
-
-		<div class="checkbox">
-			<label>
-				<input
-					type="checkbox"
-					checked={allowAnonymous}
-					on:change={() => (allowAnonymous = !allowAnonymous)}
-				/>
-				<span>{$i18n.collections.allow_anonymous}</span>
-			</label>
-		</div>
 
 		{#if !currentImmutable}
 			<div class="checkbox">

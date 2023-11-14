@@ -193,13 +193,7 @@ fn delete_asset_impl(
     match asset {
         None => Err(ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
-            if !assert_permission(
-                &rule.write,
-                &rule.allow_anonymous,
-                asset.key.owner,
-                caller,
-                controllers,
-            ) {
+            if !assert_permission(&rule.write, asset.key.owner, caller, controllers) {
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
@@ -451,7 +445,7 @@ fn secure_commit_chunks(
 
     match current {
         None => {
-            if !assert_create_permission(&rule.write, &rule.allow_anonymous, caller, controllers) {
+            if !assert_create_permission(&rule.write, caller, controllers) {
                 return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
             }
 
@@ -476,13 +470,7 @@ fn secure_commit_chunks_update(
         return Err("Provided collection does not match existing collection.".to_string());
     }
 
-    if !assert_permission(
-        &rule.write,
-        &rule.allow_anonymous,
-        current.key.owner,
-        caller,
-        controllers,
-    ) {
+    if !assert_permission(&rule.write, current.key.owner, caller, controllers) {
         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 

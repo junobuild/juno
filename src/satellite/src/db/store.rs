@@ -84,13 +84,7 @@ fn get_doc_impl(
     match value {
         None => Ok(None),
         Some(value) => {
-            if !assert_permission(
-                &rule.read,
-                &rule.allow_anonymous,
-                value.owner,
-                caller,
-                controllers,
-            ) {
+            if !assert_permission(&rule.read, value.owner, caller, controllers) {
                 return Ok(None);
             }
 
@@ -252,24 +246,17 @@ fn assert_write_permission(
     user_timestamp: Option<u64>,
 ) -> Result<(), String> {
     let permission = &rule.write;
-    let allow_anonymous = &rule.allow_anonymous;
 
     // For existing collection and document, check user editing is the caller
     if !public_permission(permission) {
         match current_doc {
             None => {
-                if !assert_create_permission(permission, allow_anonymous, caller, controllers) {
+                if !assert_create_permission(permission, caller, controllers) {
                     return Err(ERROR_CANNOT_WRITE.to_string());
                 }
             }
             Some(current_doc) => {
-                if !assert_permission(
-                    permission,
-                    allow_anonymous,
-                    current_doc.owner,
-                    caller,
-                    controllers,
-                ) {
+                if !assert_permission(permission, current_doc.owner, caller, controllers) {
                     return Err(ERROR_CANNOT_WRITE.to_string());
                 }
             }

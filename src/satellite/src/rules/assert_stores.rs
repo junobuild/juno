@@ -4,7 +4,7 @@ use crate::rules::types::rules::Permission;
 use candid::Principal;
 use shared::controllers::is_controller;
 use shared::types::state::Controllers;
-use shared::utils::principal_equal;
+use shared::utils::{principal_equal, principal_not_anonymous};
 
 pub fn assert_permission(
     permission: &Permission,
@@ -14,9 +14,11 @@ pub fn assert_permission(
 ) -> bool {
     match permission {
         Permission::Public => true,
-        Permission::Private => principal_equal(owner, caller),
-        Permission::Managed => principal_equal(owner, caller) || is_controller(caller, controllers),
-        Permission::Controllers => is_controller(caller, controllers),
+        Permission::Private => assert_caller(caller, owner),
+        Permission::Managed => {
+            assert_caller(caller, owner) || assert_controller(caller, controllers)
+        }
+        Permission::Controllers => assert_controller(caller, controllers),
     }
 }
 
@@ -29,10 +31,22 @@ pub fn assert_create_permission(
 ) -> bool {
     match permission {
         Permission::Public => true,
-        Permission::Private => true,
-        Permission::Managed => true,
-        Permission::Controllers => is_controller(caller, controllers),
+        Permission::Private => assert_not_anonymous(caller),
+        Permission::Managed => assert_not_anonymous(caller),
+        Permission::Controllers => assert_controller(caller, controllers),
     }
+}
+
+fn assert_caller(caller: Principal, owner: Principal) -> bool {
+    assert_not_anonymous(caller) && principal_equal(owner, caller)
+}
+
+fn assert_controller(caller: Principal, controllers: &Controllers) -> bool {
+    assert_not_anonymous(caller) && is_controller(caller, controllers)
+}
+
+fn assert_not_anonymous(caller: Principal) -> bool {
+    principal_not_anonymous(caller)
 }
 
 pub fn public_permission(permission: &Permission) -> bool {

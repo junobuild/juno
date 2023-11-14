@@ -17,5 +17,6 @@
 <style lang="scss">
 	svg {
 		min-width: 14px;
+		margin: var(--padding-0_25x) 0 0;
 	}
 </style>

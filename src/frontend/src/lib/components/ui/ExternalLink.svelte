@@ -21,7 +21,9 @@
 
 <style lang="scss">
 	a {
-		display: inline-block;
+		display: inline-flex;
+		align-items: center;
+		gap: var(--padding-0_5x);
 
 		&:not(.underline) {
 			text-decoration: none;

@@ -18,7 +18,7 @@
 			<tr>
 				<td
 					><ExternalLink href="https://internetcomputer.org/internet-identity"
-						><IconIC /> Internet Identity</ExternalLink
+						><span class="icon"><IconIC /></span> Internet Identity</ExternalLink
 					></td
 				>
 				<td class="status">{$i18n.users.enabled}</td>
@@ -40,10 +40,15 @@
 
 		@include media.min-width(medium) {
 			display: table-cell;
+			vertical-align: middle;
 		}
 	}
 
 	tr:last-of-type td {
 		padding-bottom: var(--padding-1_5x);
+	}
+
+	.icon {
+		margin: 0 var(--padding-0_5x) 0 0;
 	}
 </style>

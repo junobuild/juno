@@ -28,7 +28,7 @@ th,
 td,
 .td {
 	padding: var(--padding) var(--padding-2x);
-	vertical-align: text-top;
+	vertical-align: middle;
 
 	&:not(.actions) {
 		@include text.truncate;

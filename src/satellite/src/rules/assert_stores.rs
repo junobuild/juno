@@ -36,7 +36,7 @@ pub fn assert_create_permission(
 }
 
 fn assert_caller(owner: Principal, caller: Principal) -> bool {
-    principal_equal(owner, caller) || assert_not_anonymous(caller)
+    principal_equal(owner, caller) && assert_not_anonymous(caller)
 }
 
 fn assert_not_anonymous(caller: Principal) -> bool {

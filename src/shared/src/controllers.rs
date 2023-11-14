@@ -1,7 +1,7 @@
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
-use crate::utils::principal_equal;
+use crate::utils::{principal_equal, principal_not_anonymous};
 use candid::Principal;
 use ic_cdk::api::time;
 use std::collections::HashMap;
@@ -56,18 +56,20 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
 }
 
 pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
-    controllers
-        .iter()
-        .any(|(&controller_id, _)| principal_equal(controller_id, caller))
+    principal_not_anonymous(caller)
+        && controllers
+            .iter()
+            .any(|(&controller_id, _)| principal_equal(controller_id, caller))
 }
 
 pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
-    controllers
-        .iter()
-        .any(|(&controller_id, controller)| match controller.scope {
-            ControllerScope::Write => false,
-            ControllerScope::Admin => principal_equal(controller_id, caller),
-        })
+    principal_not_anonymous(caller)
+        && controllers
+            .iter()
+            .any(|(&controller_id, controller)| match controller.scope {
+                ControllerScope::Write => false,
+                ControllerScope::Admin => principal_equal(controller_id, caller),
+            })
 }
 
 pub fn into_controller_ids(controllers: &Controllers) -> Vec<ControllerId> {

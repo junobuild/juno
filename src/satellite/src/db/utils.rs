@@ -1,7 +1,7 @@
 use crate::db::types::state::Doc;
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
-use crate::rules::types::rules::Rule;
+use crate::rules::types::rules::Permission;
 use crate::types::core::Key;
 use crate::types::list::ListParams;
 use candid::Principal;
@@ -11,7 +11,7 @@ use shared::types::state::{Controllers, UserId};
 pub fn filter_values(
     caller: Principal,
     controllers: &Controllers,
-    rule: &Rule,
+    rule: &Permission,
     col: &[(Key, Doc)],
     ListParams {
         matcher,
@@ -27,7 +27,7 @@ pub fn filter_values(
             filter_key_matcher(&regex_key, key)
                 && filter_description_matcher(&regex_description, &doc.description)
                 && filter_owner(owner, &doc.owner)
-                && assert_permission(&rule.read, doc.owner, caller, controllers)
+                && assert_permission(rule, doc.owner, caller, controllers)
         })
         .map(|(key, doc)| (key.clone(), doc.clone()))
         .collect()

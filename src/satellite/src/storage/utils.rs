@@ -1,6 +1,6 @@
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
-use crate::rules::types::rules::Rule;
+use crate::rules::types::rules::Permission;
 use crate::storage::types::interface::{AssetEncodingNoContent, AssetNoContent};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
@@ -40,7 +40,7 @@ fn map_key(asset: &Asset) -> (FullPath, AssetNoContent) {
 pub fn filter_values(
     caller: Principal,
     controllers: &Controllers,
-    rule: &Rule,
+    rule: &Permission,
     collection: CollectionKey,
     ListParams {
         matcher,
@@ -61,7 +61,7 @@ pub fn filter_values(
                 && filter_full_path(&regex_key, asset)
                 && filter_description(&regex_description, asset)
                 && filter_owner(*owner, asset)
-                && assert_permission(&rule.read, asset.key.owner, caller, controllers)
+                && assert_permission(rule, asset.key.owner, caller, controllers)
         })
         .collect()
 }

@@ -159,7 +159,7 @@ fn list_assets_impl(
     let matches: Vec<(FullPath, AssetNoContent)> = filter_values(
         caller,
         controllers,
-        rule,
+        &rule.read,
         collection.clone(),
         filters,
         &assets,

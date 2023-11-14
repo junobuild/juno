@@ -30,8 +30,10 @@ pub fn assert_create_permission(
     match permission {
         Permission::Public => true,
         Permission::Private => assert_not_anonymous(caller),
-        Permission::Managed => assert_not_anonymous(caller) || is_controller(caller, controllers),
-        Permission::Controllers => is_controller(caller, controllers),
+        Permission::Managed => assert_not_anonymous(caller),
+        Permission::Controllers => {
+            assert_not_anonymous(caller) && is_controller(caller, controllers)
+        }
     }
 }
 

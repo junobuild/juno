@@ -14,8 +14,8 @@ pub fn assert_permission(
 ) -> bool {
     match permission {
         Permission::Public => true,
-        Permission::Private => principal_equal(owner, caller),
-        Permission::Managed => principal_equal(owner, caller) || is_controller(caller, controllers),
+        Permission::Private => assert_caller(owner, caller),
+        Permission::Managed => assert_caller(owner, caller) || is_controller(caller, controllers),
         Permission::Controllers => is_controller(caller, controllers),
     }
 }
@@ -29,14 +29,18 @@ pub fn assert_create_permission(
 ) -> bool {
     match permission {
         Permission::Public => true,
-        Permission::Private => true,
-        Permission::Managed => true,
+        Permission::Private => assert_not_anonymous(caller),
+        Permission::Managed => assert_not_anonymous(caller) || is_controller(caller, controllers),
         Permission::Controllers => is_controller(caller, controllers),
     }
 }
 
-fn assert_anonymous(allow_anonymous: &Option<bool>, caller: Principal) -> bool {
-    allow_anonymous.unwrap_or(false) || principal_not_anonymous(caller)
+fn assert_caller(owner: Principal, caller: Principal) -> bool {
+    principal_equal(owner, caller) || assert_not_anonymous(caller)
+}
+
+fn assert_not_anonymous(caller: Principal) -> bool {
+    principal_not_anonymous(caller)
 }
 
 pub fn public_permission(permission: &Permission) -> bool {

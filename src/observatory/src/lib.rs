@@ -15,9 +15,10 @@ use crate::reports::collect_statuses as collect_statuses_report;
 use crate::store::{
     delete_controllers, get_cron_tab as get_cron_tab_store,
     set_controllers as set_controllers_store, set_cron_tab as set_cron_tab_store,
+    get_statuses as get_statuses_store
 };
 use crate::types::interface::{ListStatuses, ListStatusesArgs, SetCronTab};
-use crate::types::state::{Archive, CronTab, StableState, State};
+use crate::types::state::{Archive, ArchiveStatuses, CronTab, StableState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk::{caller, trap};
@@ -102,6 +103,14 @@ async fn set_cron_tab(cron_tab: SetCronTab) -> CronTab {
 fn get_cron_tab() -> Option<CronTab> {
     let user = caller();
     get_cron_tab_store(&user)
+}
+
+/// Statuses
+
+#[query]
+fn get_statuses() -> Option<ArchiveStatuses> {
+    let user = caller();
+    get_statuses_store(&user)
 }
 
 /// Reports

@@ -1,3 +1,4 @@
+type ArchiveStatuses = record { statuses : Result_1; timestamp : nat64 };
 type CanisterStatusResponse = record {
   status : CanisterStatusType;
   memory_size : nat;
@@ -72,6 +73,7 @@ type SetCronTab = record {
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
   get_cron_tab : () -> (opt CronTab) query;
+  get_statuses : () -> (opt ArchiveStatuses) query;
   list_statuses : (ListStatusesArgs) -> (vec ListStatuses) query;
   set_controllers : (SetControllersArgs) -> ();
   set_cron_tab : (SetCronTab) -> (CronTab);

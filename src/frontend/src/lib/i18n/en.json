@@ -385,8 +385,7 @@
 	},
 	"observatory": {
 		"title": "Monitoring",
-		"overview": "Overview",
-		"loading": "Loading your settings",
+		"dashboard": "Dashboard",
 		"monitoring": "Monitoring",
 		"enabled": "Enabled",
 		"disabled": "Disabled",
@@ -395,7 +394,9 @@
 		"email_notifications": "Email notifications",
 		"email_notifications_placeholder": "Enter an email to receive notifications",
 		"cycles_threshold": "TCycles threshold (min 0.5)",
-		"cycles_threshold_placeholder": "A threshold to limit the notifications"
+		"cycles_threshold_placeholder": "A threshold to limit the notifications",
+		"last_data_collection": "Last data collection",
+		"disabled_go_settings": "The monitoring feature appears to be disabled. You can enable it by going to the"
 	},
 	"settings": {
 		"title": "Settings",

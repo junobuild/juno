@@ -24,7 +24,6 @@ export const idlFactory = ({ IDL }) => {
 		mission_control_id: IDL.Principal,
 		created_at: IDL.Nat64
 	});
-	const ListStatusesArgs = IDL.Record({ time_delta: IDL.Opt(IDL.Nat64) });
 	const CanisterStatusType = IDL.Variant({
 		stopped: IDL.Null,
 		stopping: IDL.Null,
@@ -57,6 +56,11 @@ export const idlFactory = ({ IDL }) => {
 		mission_control: Result
 	});
 	const Result_1 = IDL.Variant({ Ok: SegmentsStatuses, Err: IDL.Text });
+	const ArchiveStatuses = IDL.Record({
+		statuses: Result_1,
+		timestamp: IDL.Nat64
+	});
+	const ListStatusesArgs = IDL.Record({ time_delta: IDL.Opt(IDL.Nat64) });
 	const ListStatuses = IDL.Record({
 		cron_jobs: CronJobs,
 		statuses: Result_1,
@@ -83,6 +87,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_cron_tab: IDL.Func([], [IDL.Opt(CronTab)], ['query']),
+		get_statuses: IDL.Func([], [IDL.Opt(ArchiveStatuses)], ['query']),
 		list_statuses: IDL.Func([ListStatusesArgs], [IDL.Vec(ListStatuses)], ['query']),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_cron_tab: IDL.Func([SetCronTab], [CronTab], []),

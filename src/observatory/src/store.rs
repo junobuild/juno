@@ -121,3 +121,12 @@ pub fn list_statuses() -> Vec<(UserId, ArchiveStatuses)> {
 fn list_last_statuses_impl(state: &StableState) -> Vec<(UserId, ArchiveStatuses)> {
     state.archive.statuses.clone().into_iter().collect()
 }
+
+pub fn get_statuses(user: &UserId) -> Option<ArchiveStatuses> {
+    STATE.with(|state| get_statuses_impl(user, &state.borrow_mut().stable))
+}
+
+fn get_statuses_impl(user: &UserId, state: &StableState) -> Option<ArchiveStatuses> {
+    let statuses = state.archive.statuses.get(user);
+    statuses.cloned()
+}

@@ -92,6 +92,6 @@
 
 <style lang="scss">
 	.container {
-		padding: var(--padding);
+		padding: var(--padding) var(--padding-2x);
 	}
 </style>

@@ -34,7 +34,8 @@
 		"to": "To",
 		"export": "Export",
 		"start": "Start",
-		"stop": "Stop"
+		"stop": "Stop",
+		"save": "Save"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -389,8 +390,6 @@
 		"monitoring": "Monitoring",
 		"enabled": "Enabled",
 		"disabled": "Disabled",
-		"submit_enable": "Submit to enable",
-		"submit_disable": "Submit to disable",
 		"email_notifications": "Email notifications",
 		"email_notifications_placeholder": "Enter an email to receive notifications",
 		"cycles_threshold": "TCycles threshold (min 0.5)",

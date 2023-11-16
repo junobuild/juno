@@ -48,6 +48,8 @@
 					}
 				}
 			});
+
+			setInitValues();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.observatory_set_unexpected_error,
@@ -65,6 +67,10 @@
 	let threshold: number | undefined;
 	let email: string | undefined = undefined;
 
+	let initialEnabled = false;
+	let initialThreshold: number | undefined;
+	let initialEmail: string | undefined = undefined;
+
 	const loadCrontab = async () => {
 		try {
 			cronTab = fromNullable(await getCronTab());
@@ -75,6 +81,8 @@
 				? Number(cronTab?.cron_jobs.statuses.cycles_threshold) / ONE_TRILLION
 				: undefined;
 
+			setInitValues();
+
 			loading = false;
 		} catch (err: unknown) {
 			toasts.error({
@@ -82,6 +90,12 @@
 				detail: err
 			});
 		}
+	};
+
+	const setInitValues = () => {
+		initialEnabled = enabled;
+		initialEmail = email;
+		initialThreshold = threshold;
 	};
 
 	onMount(async () => await loadCrontab());
@@ -93,33 +107,33 @@
 	$: invalidThreshold = nonNullish(threshold) && threshold < Number(CYCLES_WARNING) / ONE_TRILLION;
 
 	let dirty = false;
-	$: dirty = nonNullish(cronTab) ? cronTab?.cron_jobs.statuses.enabled !== enabled : enabled;
+	$: dirty = enabled !== initialEnabled || email !== initialEmail || threshold !== initialThreshold;
 </script>
 
-<div class="card-container">
-	{#if loading}
-		<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
-	{:else}
-		<form on:submit|preventDefault={onSubmit} in:fade>
+{#if loading}
+	<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
+{:else}
+	<form on:submit|preventDefault={onSubmit} in:fade>
+		<div class="card-container">
 			<div>
 				<Value>
 					<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
-					<div class="checkbox">
-						<input type="checkbox" bind:checked={enabled} />
-						<span
-							>{dirty
-								? enabled
-									? $i18n.observatory.submit_enable
-									: $i18n.observatory.submit_disable
-								: enabled
-								? $i18n.observatory.enabled
-								: $i18n.observatory.disabled}</span
-						>
+
+					<div class="radio">
+						<label>
+							<input type="radio" bind:group={enabled} name="field" value={false} />
+							<span>{$i18n.observatory.disabled}</span>
+						</label>
+
+						<label>
+							<input type="radio" bind:group={enabled} name="field" value={true} />
+							<span>{$i18n.observatory.enabled}</span>
+						</label>
 					</div>
 				</Value>
 			</div>
 
-			<div>
+			<div class="email">
 				<Value>
 					<svelte:fragment slot="label">{$i18n.observatory.email_notifications}</svelte:fragment>
 					<input
@@ -145,13 +159,17 @@
 					</div>
 				</Value>
 			</div>
+		</div>
 
-			<button type="submit" disabled={$isBusy || invalidEmail || invalidThreshold}
-				>{$i18n.core.submit}</button
-			>
-		</form>
-	{/if}
-</div>
+		{#if dirty}
+			<div in:fade>
+				<button type="submit" disabled={$isBusy || invalidEmail || invalidThreshold}
+					>{$i18n.core.save}</button
+				>
+			</div>
+		{/if}
+	</form>
+{/if}
 
 <style lang="scss">
 	form {
@@ -160,11 +178,18 @@
 		gap: var(--padding);
 	}
 
-	.checkbox {
-		margin: var(--padding-0_25x) 0 0;
-	}
-
 	button {
 		margin: var(--padding-2x) 0 0;
+	}
+
+	.radio {
+		display: flex;
+		flex-direction: column;
+
+		padding: 0 0 var(--padding);
+	}
+
+	.email {
+		padding: 0 0 var(--padding);
 	}
 </style>

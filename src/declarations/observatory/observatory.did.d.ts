@@ -1,6 +1,10 @@
 import type { ActorMethod } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 
+export interface ArchiveStatuses {
+	statuses: Result_1;
+	timestamp: bigint;
+}
 export interface CanisterStatusResponse {
 	status: CanisterStatusType;
 	memory_size: bigint;
@@ -79,6 +83,7 @@ export interface SetCronTab {
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	get_cron_tab: ActorMethod<[], [] | [CronTab]>;
+	get_statuses: ActorMethod<[], [] | [ArchiveStatuses]>;
 	list_statuses: ActorMethod<[ListStatusesArgs], Array<ListStatuses>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_cron_tab: ActorMethod<[SetCronTab], CronTab>;

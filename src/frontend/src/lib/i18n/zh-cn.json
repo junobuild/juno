@@ -385,8 +385,7 @@
 	},
 	"observatory": {
 		"title": "Observatory",
-		"overview": "开要",
-		"loading": "加载设置",
+		"dashboard": "Dashboard",
 		"monitoring": "监控",
 		"enabled": "已启用",
 		"disabled": "已禁用",
@@ -395,7 +394,14 @@
 		"email_notifications": "邮件提醒",
 		"email_notifications_placeholder": "输入用于接受提醒的邮箱",
 		"cycles_threshold": "TCycles 阈值 (最小 0.5)",
-		"cycles_threshold_placeholder": "阈值设置提醒"
+		"cycles_threshold_placeholder": "阈值设置提醒",
+		"last_data_collection": "Last data collection",
+		"disabled_go_settings": "The monitoring feature appears to be disabled. You can enable it by going to the",
+		"no_data_collected": "No data has been collected yet. The job runs every hour.",
+		"id": "ID",
+		"segment": "Segment",
+		"cycles_collected": "T Cycles collected",
+		"error_collecting_data": "There was an error collecting the data."
 	},
 	"settings": {
 		"title": "设置",

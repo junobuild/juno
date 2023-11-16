@@ -1,11 +1,16 @@
-import type { CronJobs, CronTab } from '$declarations/observatory/observatory.did';
+import type { ArchiveStatuses, CronJobs, CronTab } from '$declarations/observatory/observatory.did';
 import { getObservatoryActor } from '$lib/utils/actor.juno.utils';
 import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 
 export const getCronTab = async (): Promise<[] | [CronTab]> => {
-	const actor = await getObservatoryActor();
-	return actor.get_cron_tab();
+	const { get_cron_tab } = await getObservatoryActor();
+	return get_cron_tab();
+};
+
+export const getStatuses = async (): Promise<[] | [ArchiveStatuses]> => {
+	const { get_statuses } = await getObservatoryActor();
+	return get_statuses();
 };
 
 export const setCronTab = async ({

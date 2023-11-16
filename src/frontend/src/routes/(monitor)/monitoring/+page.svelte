@@ -11,29 +11,42 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import MissionControlObservatory from '$lib/components/mission-control/MissionControlObservatory.svelte';
+	import ObservatorySettings from '$lib/components/observatory/ObservatorySettings.svelte';
+	import ObservatoryDashboard from '$lib/components/observatory/ObservatoryDashboard.svelte';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'observatory.overview'
+			labelKey: 'observatory.dashboard'
+		},
+		{
+			id: Symbol('2'),
+			labelKey: 'core.settings'
 		}
 	];
 
 	const store = writable<TabsStore>({
-		tabId: tabs[0].id,
+		tabId: initTabId(tabs),
 		tabs
 	});
 
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
+
+	$: store.set({
+		tabId: initTabId(tabs),
+		tabs
+	});
 </script>
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/miscellaneous/monitoring">
-		{#if nonNullish($missionControlStore)}
-			<MissionControlObservatory missionControlId={$missionControlStore} />
+		{#if $store.tabId === $store.tabs[0].id}
+			<ObservatoryDashboard />
+		{:else if $store.tabId === $store.tabs[1].id && nonNullish($missionControlStore)}
+			<ObservatorySettings missionControlId={$missionControlStore} />
 		{/if}
 	</Tabs>
 </IdentityGuard>

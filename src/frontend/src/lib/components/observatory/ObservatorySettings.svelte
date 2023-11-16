@@ -98,7 +98,7 @@
 
 <div class="card-container">
 	{#if loading}
-		<SpinnerParagraph>{$i18n.observatory.loading}</SpinnerParagraph>
+		<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
 	{:else}
 		<form on:submit|preventDefault={onSubmit} in:fade>
 			<div>

@@ -410,8 +410,7 @@ interface I18nUsers {
 
 interface I18nObservatory {
 	title: string;
-	overview: string;
-	loading: string;
+	dashboard: string;
 	monitoring: string;
 	enabled: string;
 	disabled: string;
@@ -421,6 +420,13 @@ interface I18nObservatory {
 	email_notifications_placeholder: string;
 	cycles_threshold: string;
 	cycles_threshold_placeholder: string;
+	last_data_collection: string;
+	disabled_go_settings: string;
+	no_data_collected: string;
+	id: string;
+	segment: string;
+	cycles_collected: string;
+	error_collecting_data: string;
 }
 
 interface I18nSettings {

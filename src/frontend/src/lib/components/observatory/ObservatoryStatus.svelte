@@ -19,7 +19,14 @@
 			{segment}
 		</td>
 		<td>
-			{data.id.toText()}
+			{#if segment === 'Mission control'}
+				<a href="/mission-control">{data.id.toText()}</a>
+			{:else if segment === 'Satellite'}
+				{@const satelliteId = data.id.toText()}
+				<a href={`/satellite/?s=${satelliteId}`}>{satelliteId}</a>
+			{:else}
+				<a href="/analytics">{data.id.toText()}</a>
+			{/if}
 		</td>
 		<td>
 			{formatTCycles(data.status.cycles)}

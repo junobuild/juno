@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Status, Statuses } from '$lib/types/observatory';
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import ObservatoryError from '$lib/components/observatory/ObservatoryError.svelte';
 	import ObservatoryStatus from '$lib/components/observatory/ObservatoryStatus.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let statuses: Statuses | undefined;
+	export let statuses: Statuses;
 
 	let orbiters: Status[];
 	$: orbiters =
@@ -16,9 +16,7 @@
 		nonNullish(statuses) && 'Ok' in statuses ? fromNullable(statuses.Ok.satellites) ?? [] : [];
 </script>
 
-{#if isNullish(statuses)}
-	<div class="card-container">{$i18n.observatory.no_data_collected}</div>
-{:else if 'Err' in statuses}
+{#if 'Err' in statuses}
 	<div class="card-container">
 		<ObservatoryError err={statuses.Err} />
 	</div>

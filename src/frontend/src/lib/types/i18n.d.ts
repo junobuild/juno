@@ -420,8 +420,8 @@ interface I18nObservatory {
 	cycles_threshold: string;
 	cycles_threshold_placeholder: string;
 	last_data_collection: string;
-	disabled_go_settings: string;
-	no_data_collected: string;
+	no_data_or_disabled_go_settings: string;
+	go_to_settings: string;
 	id: string;
 	segment: string;
 	cycles_collected: string;

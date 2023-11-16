@@ -43,10 +43,16 @@
 {:else if isNullish(timestamp) || isNullish(statuses)}
 	<div class="card-container" in:fade>
 		<p>
-			{$i18n.observatory.disabled_go_settings}
-			<button on:click={() => store.update((state) => ({ ...state, tabId: state.tabs[1].id }))}
+			{$i18n.observatory.no_data_or_disabled_go_settings}
+		</p>
+
+		<p>
+			{$i18n.observatory.go_to_settings}
+			<button
+				class="text"
+				on:click={() => store.update((state) => ({ ...state, tabId: state.tabs[1].id }))}
 				>{$i18n.core.settings}</button
-			>
+			>.
 		</p>
 	</div>
 {:else}
@@ -61,3 +67,9 @@
 		<ObservatoryData {statuses} />
 	</div>
 {/if}
+
+<style lang="scss">
+	.text {
+		margin: 0;
+	}
+</style>

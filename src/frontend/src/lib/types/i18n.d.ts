@@ -38,6 +38,7 @@ interface I18nCore {
 	export: string;
 	start: string;
 	stop: string;
+	save: string;
 }
 
 interface I18nCanisters {
@@ -414,8 +415,6 @@ interface I18nObservatory {
 	monitoring: string;
 	enabled: string;
 	disabled: string;
-	submit_enable: string;
-	submit_disable: string;
 	email_notifications: string;
 	email_notifications_placeholder: string;
 	cycles_threshold: string;

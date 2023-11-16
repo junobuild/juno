@@ -34,7 +34,8 @@
 		"to": "到",
 		"export": "导出",
 		"start": "启动",
-		"stop": "停止"
+		"stop": "停止",
+		"save": "Save"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -389,8 +390,6 @@
 		"monitoring": "监控",
 		"enabled": "已启用",
 		"disabled": "已禁用",
-		"submit_enable": "启用",
-		"submit_disable": "禁用",
 		"email_notifications": "邮件提醒",
 		"email_notifications_placeholder": "输入用于接受提醒的邮箱",
 		"cycles_threshold": "TCycles 阈值 (最小 0.5)",

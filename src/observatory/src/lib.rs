@@ -5,7 +5,6 @@ mod guards;
 mod reports;
 mod store;
 mod types;
-mod upgrade;
 
 use crate::console::assert_mission_control_center;
 use crate::constants::CRON_INTERVAL_NS;
@@ -19,7 +18,6 @@ use crate::store::{
 };
 use crate::types::interface::{ListStatuses, ListStatusesArgs, SetCronTab};
 use crate::types::state::{Archive, ArchiveStatuses, CronTab, StableState, State};
-use crate::upgrade::types::upgrade::UpgradeStableState;
 use ic_cdk::storage::{stable_restore, stable_save};
 use ic_cdk::{caller, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
@@ -58,9 +56,7 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
-
-    let stable = StableState::from(&upgrade_stable);
+    let (stable,): (StableState,) = stable_restore().unwrap();
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
 

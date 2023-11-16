@@ -396,7 +396,12 @@
 		"cycles_threshold": "Soglia TCycles (min 0.5)",
 		"cycles_threshold_placeholder": "Una soglia per limitare le notifiche",
 		"last_data_collection": "Last data collection",
-		"disabled_go_settings": "The monitoring feature appears to be disabled. You can enable it by going to the"
+		"disabled_go_settings": "The monitoring feature appears to be disabled. You can enable it by going to the",
+		"no_data_collected": "No data has been collected yet. The job runs every hour.",
+		"id": "ID",
+		"segment": "Segment",
+		"cycles_collected": "T Cycles collected",
+		"error_collecting_data": "There was an error collecting the data."
 	},
 	"settings": {
 		"title": "Impostazioni",

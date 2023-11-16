@@ -422,6 +422,11 @@ interface I18nObservatory {
 	cycles_threshold_placeholder: string;
 	last_data_collection: string;
 	disabled_go_settings: string;
+	no_data_collected: string;
+	id: string;
+	segment: string;
+	cycles_collected: string;
+	error_collecting_data: string;
 }
 
 interface I18nSettings {

@@ -105,7 +105,7 @@ pub fn assert_max_number_of_controllers(
 pub fn assert_no_anonymous_controller(controllers_ids: &[ControllerId]) -> Result<(), String> {
     let has_anonymous = controllers_ids
         .iter()
-        .any(|controller_id| principal_anonymous(controller_id.clone()));
+        .any(|controller_id| principal_anonymous(*controller_id));
 
     match has_anonymous {
         true => Err("Anonymous controller not allowed.".to_string()),

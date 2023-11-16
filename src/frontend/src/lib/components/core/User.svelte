@@ -51,17 +51,6 @@
 		</a>
 
 		<a
-			href="/monitoring"
-			class="menu"
-			role="menuitem"
-			aria-haspopup="menu"
-			rel="external noopener norefferer"
-		>
-			<IconTelescope />
-			<span>{$i18n.observatory.title}</span>
-		</a>
-
-		<a
 			href={analyticsLink($satelliteStore?.satellite_id)}
 			class="menu"
 			role="menuitem"
@@ -70,6 +59,17 @@
 		>
 			<IconChartBar />
 			<span>{$i18n.analytics.title}</span>
+		</a>
+
+		<a
+			href="/monitoring"
+			class="menu"
+			role="menuitem"
+			aria-haspopup="menu"
+			rel="external noopener norefferer"
+		>
+			<IconTelescope />
+			<span>{$i18n.observatory.title}</span>
 		</a>
 
 		<a

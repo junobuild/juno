@@ -55,7 +55,6 @@
 		"@rollup/plugin-inject": "^5.0.5",
 		"@sveltejs/adapter-static": "^2.0.3",
 		"@sveltejs/kit": "^1.27.4",
-		"@types/prismjs": "^1.26.3",
 		"@types/wicg-file-system-access": "^2023.10.3",
 		"@typescript-eslint/eslint-plugin": "^6.10.0",
 		"@typescript-eslint/parser": "^6.10.0",

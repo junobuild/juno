@@ -61,7 +61,7 @@
 
 <Value>
 	<svelte:fragment slot="label">{$i18n.satellites.name}</svelte:fragment>
-	<p>
+	<p class="name">
 		<span>{satelliteName(satellite)}</span>
 
 		<button
@@ -96,6 +96,15 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/dialog';
+	@use '../../styles/mixins/text';
 
 	@include dialog.edit;
+
+	.name {
+		max-width: 70%;
+
+		span {
+			@include text.truncate;
+		}
+	}
 </style>

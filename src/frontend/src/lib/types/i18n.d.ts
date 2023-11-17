@@ -107,6 +107,7 @@ interface I18nSatellites {
 	start_tile: string;
 	start_info: string;
 	start_success: string;
+	delete_success: string;
 }
 
 interface I18nMission_control {
@@ -246,6 +247,7 @@ interface I18nErrors {
 	satellite_missing_name: string;
 	satellite_stop: string;
 	satellite_start: string;
+	satellite_delete: string;
 	ledger_balance_credits: string;
 	load_credits: string;
 	hosting_missing_domain_name: string;

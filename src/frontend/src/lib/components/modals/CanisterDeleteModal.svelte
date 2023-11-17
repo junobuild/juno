@@ -89,12 +89,12 @@
 
 			close();
 
-			toasts.success($i18n.satellites.stop_success);
+			toasts.success($i18n.satellites.delete_success);
 		} catch (err: unknown) {
 			steps = 'error';
 
 			toasts.error({
-				text: $i18n.errors.satellite_stop,
+				text: $i18n.errors.satellite_delete,
 				detail: err
 			});
 		}

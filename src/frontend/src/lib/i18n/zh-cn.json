@@ -100,7 +100,8 @@
 		"stop_success": "Satellite 已停止.",
 		"start_tile": "重启 satellite",
 		"start_info": "你想恢复你的 satellite?",
-		"start_success": "Satellite 已恢复."
+		"start_success": "Satellite 已恢复.",
+		"delete_success": "Satellite deleted."
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -231,6 +232,7 @@
 		"satellite_missing_name": "必须提供一个名字.",
 		"satellite_stop": "停止 satellite 中遇到异常错误",
 		"satellite_start": "启动 satellite 过程中遇到异常错误",
+		"satellite_delete": "Unexpected error(s) while trying to delete the satellite",
 		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
 		"load_credits": "无法加载你当前credit状态.",
 		"hosting_missing_domain_name": "必须提供一个域名.",

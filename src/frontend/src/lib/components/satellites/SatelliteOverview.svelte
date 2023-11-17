@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import SatelliteTopUp from '$lib/components/satellites/SatelliteTopUp.svelte';
+	import SatelliteActions from '$lib/components/satellites/SatelliteActions.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
@@ -29,9 +29,9 @@
 	</Value>
 
 	<CanisterOverview canisterId={satellite.satellite_id} />
-</div>
 
-<SatelliteTopUp {satellite} />
+	<SatelliteActions {satellite} />
+</div>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';

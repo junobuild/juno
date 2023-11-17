@@ -55,7 +55,7 @@ pub mod store {
     use crate::storage::types::state::FullPath;
     use crate::types::core::{Blob, CollectionKey};
     use candid::CandidType;
-    use ic_certified_map::Hash;
+    use ic_certification::Hash;
     use serde::{Deserialize, Serialize};
     use shared::types::state::UserId;
     use std::clone::Clone;
@@ -116,7 +116,7 @@ pub mod store {
 
 pub mod interface {
     use candid::{CandidType, Deserialize};
-    use ic_certified_map::Hash;
+    use ic_certification::Hash;
 
     use crate::storage::http::types::HeaderField;
     use crate::storage::types::state::FullPath;

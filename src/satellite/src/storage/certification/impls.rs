@@ -1,7 +1,6 @@
 use crate::storage::certification::constants::{
     EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2, WILDCARD_MATCH_TERMINATOR,
 };
-use crate::storage::certification::tree::merge_hash_trees;
 use crate::storage::certification::tree_utils::{
     fallback_paths, nested_tree_expr_path, nested_tree_key, nested_tree_path,
 };
@@ -16,7 +15,7 @@ use crate::storage::types::config::StorageConfig;
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::alternative_paths;
-use ic_certified_map::{fork, fork_hash, labeled, labeled_hash, AsHashTree, Hash, HashTree};
+use ic_certification::{fork, fork_hash, labeled, labeled_hash, merge_hash_trees, AsHashTree, Hash, HashTree, pruned};
 use sha2::{Digest, Sha256};
 
 impl CertifiedAssetHashes {
@@ -33,7 +32,7 @@ impl CertifiedAssetHashes {
         let witness = self.tree_v1.witness(path.as_bytes());
         fork(
             labeled(LABEL_ASSETS_V1, witness),
-            HashTree::Pruned(labeled_hash(LABEL_ASSETS_V2, &self.tree_v2.root_hash())),
+            pruned(labeled_hash(LABEL_ASSETS_V2, &self.tree_v2.root_hash())),
         )
     }
 
@@ -44,7 +43,7 @@ impl CertifiedAssetHashes {
         let witness = self.tree_v2.witness(&segments);
 
         fork(
-            HashTree::Pruned(labeled_hash(LABEL_ASSETS_V1, &self.tree_v1.root_hash())),
+            pruned(labeled_hash(LABEL_ASSETS_V1, &self.tree_v1.root_hash())),
             labeled(LABEL_ASSETS_V2, witness),
         )
     }
@@ -68,7 +67,7 @@ impl CertifiedAssetHashes {
             });
 
         fork(
-            HashTree::Pruned(labeled_hash(LABEL_ASSETS_V1, &self.tree_v1.root_hash())),
+            pruned(labeled_hash(LABEL_ASSETS_V1, &self.tree_v1.root_hash())),
             labeled(LABEL_ASSETS_V2, combined_proof),
         )
     }

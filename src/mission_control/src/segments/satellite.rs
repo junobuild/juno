@@ -1,5 +1,7 @@
-use crate::segments::canister::create_canister;
-use crate::segments::store::add_satellite;
+use crate::segments::canister::{create_canister, delete_canister};
+use crate::segments::store::{
+    add_satellite, delete_satellite as delete_satellite_store, get_satellite,
+};
 use crate::types::state::Satellite;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
@@ -16,6 +18,24 @@ pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
         &Some(name.to_string().clone()),
     )
     .await
+}
+
+pub async fn delete_satellite(
+    satellite_id: &SatelliteId,
+    cycles_to_retain: u128,
+) -> Result<(), String> {
+    let satellite = get_satellite(satellite_id);
+
+    match satellite {
+        None => Err("Satellite not found or not owned by this mission control.".to_string()),
+        Some(_) => {
+            delete_canister(satellite_id, cycles_to_retain).await?;
+
+            delete_satellite_store(satellite_id);
+
+            Ok(())
+        }
+    }
 }
 
 async fn create_and_save_satellite(

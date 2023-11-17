@@ -1,14 +1,16 @@
 use crate::constants::CREATE_CANISTER_CYCLES;
 use crate::types::ic::WasmArg;
+use crate::types::interface::DepositCyclesArgs;
 use crate::types::state::{SegmentStatus, SegmentStatusResult};
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::{
-    canister_status as ic_canister_status, create_canister, install_code as ic_install_code,
+    canister_status as ic_canister_status, create_canister, delete_canister,
+    deposit_cycles as ic_deposit_cycles, install_code as ic_install_code, stop_canister,
     update_settings, CanisterId, CanisterIdRecord, CanisterInstallMode, CanisterSettings,
     CreateCanisterArgument, InstallCodeArgument, UpdateSettingsArgument,
 };
-use ic_cdk::api::time;
+use ic_cdk::api::{canister_balance128, time};
 
 pub async fn create_canister_install_code(
     controllers: Vec<Principal>,
@@ -86,5 +88,54 @@ pub async fn segment_status(canister_id: CanisterId) -> SegmentStatusResult {
             status_at: time(),
         }),
         Err((_, message)) => Err(["Failed to get canister status: ".to_string(), message].join("")),
+    }
+}
+
+pub async fn deposit_cycles(
+    DepositCyclesArgs {
+        destination_id,
+        cycles_to_retain,
+    }: DepositCyclesArgs,
+) -> Result<(), String> {
+    let balance = canister_balance128();
+
+    if balance < cycles_to_retain {
+        return Err(format!(
+            "Balance ({}) is lower than the amount of cycles {} to retain.",
+            balance, cycles_to_retain
+        ));
+    }
+
+    let cycles = balance - cycles_to_retain;
+
+    let result = ic_deposit_cycles(
+        CanisterIdRecord {
+            canister_id: destination_id,
+        },
+        cycles,
+    )
+    .await;
+
+    match result {
+        Err((_, message)) => Err(["Deposit cycles failed.", &message].join(" - ")),
+        Ok(_) => Ok(()),
+    }
+}
+
+pub async fn stop_segment(canister_id: CanisterId) -> Result<(), String> {
+    let result = stop_canister(CanisterIdRecord { canister_id }).await;
+
+    match result {
+        Err((_, message)) => Err(["Cannot stop segment.", &message].join(" - ")),
+        Ok(_) => Ok(()),
+    }
+}
+
+pub async fn delete_segment(canister_id: CanisterId) -> Result<(), String> {
+    let result = delete_canister(CanisterIdRecord { canister_id }).await;
+
+    match result {
+        Err((_, message)) => Err(["Cannot delete segment.", &message].join(" - ")),
+        Ok(_) => Ok(()),
     }
 }

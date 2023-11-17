@@ -48,6 +48,10 @@ export interface DelDoc {
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
+export interface DepositCyclesArgs {
+	cycles_to_retain: bigint;
+	destination_id: Principal;
+}
 export interface Doc {
 	updated_at: bigint;
 	owner: Principal;
@@ -194,6 +198,7 @@ export interface _SERVICE {
 	del_custom_domain: ActorMethod<[string], undefined>;
 	del_doc: ActorMethod<[string, string, DelDoc], undefined>;
 	del_rule: ActorMethod<[RulesType, string, DelDoc], undefined>;
+	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_config: ActorMethod<[], Config>;
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;

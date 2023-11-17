@@ -61,7 +61,10 @@ use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{
     assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
 };
-use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
+use shared::ic::deposit_cycles as deposit_cycles_shared;
+use shared::types::interface::{
+    DeleteControllersArgs, DepositCyclesArgs, SegmentArgs, SetControllersArgs,
+};
 use shared::types::state::{ControllerScope, Controllers};
 use std::mem;
 use storage::http::types::{
@@ -453,6 +456,13 @@ fn del_assets(collection: CollectionKey) {
 }
 
 /// Mgmt
+
+#[update(guard = "caller_is_admin_controller")]
+async fn deposit_cycles(args: DepositCyclesArgs) {
+    deposit_cycles_shared(args)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
 
 #[query]
 fn version() -> String {

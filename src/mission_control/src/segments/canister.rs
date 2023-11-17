@@ -1,12 +1,13 @@
 use crate::store::get_user;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
-use ic_cdk::call;
+use ic_cdk::{call, id};
 use ic_ledger_types::{BlockIndex, Tokens};
 use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_CREATE};
 use shared::env::CONSOLE;
+use shared::ic::{delete_segment, stop_segment};
 use shared::ledger::{transfer_payment, SUB_ACCOUNT};
-use shared::types::interface::GetCreateCanisterFeeArgs;
+use shared::types::interface::{DepositCyclesArgs, GetCreateCanisterFeeArgs};
 use shared::types::state::UserId;
 use std::future::Future;
 
@@ -49,5 +50,27 @@ where
                 }
             }
         }
+    }
+}
+
+pub async fn delete_canister(segment_id: &Principal, cycles_to_retain: u128) -> Result<(), String> {
+    deposit_cycles(segment_id, cycles_to_retain).await?;
+
+    stop_segment(*segment_id).await?;
+
+    delete_segment(*segment_id).await
+}
+
+async fn deposit_cycles(segment_id: &Principal, cycles_to_retain: u128) -> Result<(), String> {
+    let args = DepositCyclesArgs {
+        destination_id: id(),
+        cycles_to_retain,
+    };
+
+    let result: CallResult<((),)> = call(*segment_id, "deposit_cycles", (args,)).await;
+
+    match result {
+        Err((_, message)) => Err(["Deposit cycles failed.", &message].join(" - ")),
+        Ok(_) => Ok(()),
     }
 }

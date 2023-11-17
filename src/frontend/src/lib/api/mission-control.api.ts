@@ -228,3 +228,29 @@ export const deleteOrbitersController = async ({
 	const actor = await getMissionControlActor(missionControlId);
 	await actor.del_orbiters_controllers(orbiterIds, [controller]);
 };
+
+export const deleteSatellite = async ({
+	missionControlId,
+	satelliteId,
+	cycles_to_retain
+}: {
+	missionControlId: Principal;
+	satelliteId: Principal;
+	cycles_to_retain: bigint;
+}) => {
+	const { del_satellite } = await getMissionControlActor(missionControlId);
+	await del_satellite(satelliteId, cycles_to_retain);
+};
+
+export const deleteOrbiter = async ({
+	missionControlId,
+	orbiterId,
+	cycles_to_retain
+}: {
+	missionControlId: Principal;
+	orbiterId: Principal;
+	cycles_to_retain: bigint;
+}) => {
+	const { del_orbiter } = await getMissionControlActor(missionControlId);
+	await del_orbiter(orbiterId, cycles_to_retain);
+};

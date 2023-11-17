@@ -35,6 +35,12 @@ export interface JunoModalCustomDomainDetail {
 	satellite: Satellite;
 }
 
+export interface JunoModalDelete {
+	cycles: bigint;
+}
+
+export type JunoModalDeleteSatelliteDetail = JunoModalDelete & JunoModalSatelliteDetail;
+
 export interface JunoModalCreateControllerDetail {
 	add: (
 		params: {
@@ -53,12 +59,15 @@ export type JunoModalDetail =
 	| JunoModalTopUpMissionControlDetail
 	| JunoModalCreateSegmentDetail
 	| JunoModalCustomDomainDetail
-	| JunoModalCreateControllerDetail;
+	| JunoModalCreateControllerDetail
+	| JunoModalDeleteSatelliteDetail;
 
 export interface JunoModal {
 	type:
 		| 'create_satellite'
 		| 'create_orbiter'
+		| 'delete_satellite'
+		| 'delete_orbiter'
 		| 'topup_satellite'
 		| 'topup_mission_control'
 		| 'topup_orbiter'

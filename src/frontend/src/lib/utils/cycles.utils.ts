@@ -1,6 +1,5 @@
+import { ONE_TRILLION } from '$lib/constants/constants';
 import { formatNumber } from './number.utils';
-
-const ONE_TRILLION = 1_000_000_000_000;
 
 export const formatTCycles = (cycles: bigint): string =>
 	formatNumber(Number(cycles) / Number(ONE_TRILLION), {

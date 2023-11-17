@@ -39,6 +39,10 @@ type CustomDomain = record {
 };
 type DelDoc = record { updated_at : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
+type DepositCyclesArgs = record {
+  cycles_to_retain : nat;
+  destination_id : principal;
+};
 type Doc = record {
   updated_at : nat64;
   owner : principal;
@@ -167,6 +171,7 @@ service : () -> {
   del_custom_domain : (text) -> ();
   del_doc : (text, text, DelDoc) -> ();
   del_rule : (RulesType, text, DelDoc) -> ();
+  deposit_cycles : (DepositCyclesArgs) -> ();
   get_config : () -> (Config);
   get_doc : (text, text) -> (opt Doc) query;
   http_request : (HttpRequest) -> (HttpResponse) query;

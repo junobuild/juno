@@ -67,7 +67,9 @@ service : () -> {
   create_orbiter : (opt text) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
   del_mission_control_controllers : (vec principal) -> ();
+  del_orbiter : (principal, nat) -> ();
   del_orbiters_controllers : (vec principal, vec principal) -> ();
+  del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
   get_user : () -> (principal) query;
   list_mission_control_controllers : () -> (

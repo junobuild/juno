@@ -41,6 +41,7 @@
 		"top_up": "Top-up",
 		"cycles": "are the unit of payment for operating your smart contracts.",
 		"top_up_in_progress": "Top-up in progress...",
+		"delete_in_progress": "Deletion in progress...",
 		"upgrade_in_progress": "Upgrade in progress...",
 		"download_in_progress": "Download in progress...",
 		"amount": "Amount in ICP",
@@ -58,7 +59,14 @@
 		"review_upgrade": "Review upgrade",
 		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
 		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
-		"upgrade": "Upgrade"
+		"upgrade": "Upgrade",
+		"delete_title": "Delete {0}",
+		"delete_explanation": "Cycles are necessary to delete a {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 1 T Cycles on your {1} for this purpose.",
+		"delete_customization": "You have the flexibility to modify this value if needed. Your current {0} balance is {1} T Cycles. Any remaining cycles will be transferred to your mission control. ",
+		"cycles_to_retain": "T Cycles to retain",
+		"cycles_to_transfer": "{0} T Cycles will be transferred to your mission control.",
+		"delete_info": "Do you want to delete your {0}? This action is irreversible.",
+		"invalid_cycles_to_retain": "Invalid amount of cycles to retain"
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",

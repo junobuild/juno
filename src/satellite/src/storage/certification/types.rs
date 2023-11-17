@@ -1,7 +1,6 @@
 pub mod certified {
-    use crate::storage::certification::tree::NestedTree;
     use crate::types::core::Blob;
-    use ic_certification::{Hash, RbTree};
+    use ic_certification::{Hash, NestedTree, RbTree};
     use std::clone::Clone;
 
     #[derive(Default, Clone)]

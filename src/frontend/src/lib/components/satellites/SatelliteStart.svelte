@@ -7,12 +7,18 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { canisterStart } from '$lib/api/ic.api';
 	import { emit } from '$lib/utils/events.utils';
+	import IconStart from '$lib/components/icons/IconStart.svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	export let satellite: Satellite;
 
 	let visible = false;
 
+	const dispatch = createEventDispatcher();
+
 	const start = async () => {
+		dispatch('junoStart');
+
 		if (!$authSignedInStore) {
 			toasts.error({
 				text: $i18n.errors.no_identity
@@ -44,7 +50,7 @@
 	const close = () => (visible = false);
 </script>
 
-<button on:click={() => (visible = true)}>{$i18n.core.start}</button>
+<button on:click={() => (visible = true)} class="menu"><IconStart /> {$i18n.core.start}</button>
 
 <Confirmation bind:visible on:junoYes={start} on:junoNo={close}>
 	<svelte:fragment slot="title">{$i18n.satellites.start_tile}</svelte:fragment>

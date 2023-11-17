@@ -6,11 +6,17 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { getMissionControlBalance } from '$lib/services/balance.services';
+	import IconPublish from '$lib/components/icons/IconPublish.svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	export let type: 'topup_satellite' | 'topup_mission_control' | 'topup_orbiter';
 	export let detail: JunoModalDetail | undefined = undefined;
 
+	const dispatch = createEventDispatcher();
+
 	const topUp = async () => {
+		dispatch('junoTopUp');
+
 		busy.start();
 
 		const { result, error } = await getMissionControlBalance($missionControlStore);
@@ -36,10 +42,4 @@
 	};
 </script>
 
-<button on:click={topUp}>{$i18n.canisters.top_up}</button>
-
-<style lang="scss">
-	button {
-		margin: var(--padding-2x) 0 0;
-	}
-</style>
+<button on:click={topUp} class="menu"><IconPublish /> {$i18n.canisters.top_up}</button>

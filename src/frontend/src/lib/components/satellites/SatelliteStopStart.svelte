@@ -6,24 +6,14 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 
 	export let satellite: Satellite;
+	export let canister: Canister | undefined = undefined;
 
-	const onSyncCanister = (syncCanister: Canister) => {
-		if (syncCanister.id !== satellite.satellite_id.toText()) {
-			return;
-		}
-
-		canister = syncCanister;
-	};
-
-	let canister: Canister | undefined = undefined;
 	let status: CanisterStatus | undefined = undefined;
 	let sync: CanisterSyncStatus | undefined = undefined;
 
 	$: status = canister?.data?.status;
 	$: sync = canister?.sync;
 </script>
-
-<svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
 
 {#if status === 'stopped' && sync === 'synced'}
 	<div in:fade><SatelliteStart {satellite} /></div>

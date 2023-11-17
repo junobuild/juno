@@ -7,12 +7,18 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import { emit } from '$lib/utils/events.utils';
+	import IconStop from '$lib/components/icons/IconStop.svelte';
+	import { createEventDispatcher } from 'svelte';
 
 	export let satellite: Satellite;
 
 	let visible = false;
 
+	const dispatch = createEventDispatcher();
+
 	const stop = async () => {
+		dispatch('junoStop');
+
 		if (!$authSignedInStore) {
 			toasts.error({
 				text: $i18n.errors.no_identity
@@ -43,7 +49,7 @@
 	const close = () => (visible = false);
 </script>
 
-<button on:click={() => (visible = true)}>{$i18n.core.stop}</button>
+<button on:click={() => (visible = true)} class="menu"><IconStop /> {$i18n.core.stop}</button>
 
 <Confirmation bind:visible on:junoYes={stop} on:junoNo={close}>
 	<svelte:fragment slot="title">{$i18n.satellites.stop_title}</svelte:fragment>

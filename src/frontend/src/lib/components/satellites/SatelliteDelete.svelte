@@ -2,22 +2,20 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { Canister } from '$lib/types/canister';
-	import { isNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { emit } from '$lib/utils/events.utils';
+	import IconDelete from '$lib/components/icons/IconDelete.svelte';
+	import { fade } from 'svelte/transition';
+	import { createEventDispatcher } from 'svelte';
 
 	export let satellite: Satellite;
+	export let canister: Canister | undefined = undefined;
 
-	let canister: Canister | undefined = undefined;
+	const dispatch = createEventDispatcher();
 
-	const onSyncCanister = (syncCanister: Canister) => {
-		if (syncCanister.id !== satellite.satellite_id.toText()) {
-			return;
-		}
+	const onDelete = () => {
+		dispatch('junoDelete');
 
-		canister = syncCanister;
-	};
-
-	const onDelete = () =>
 		emit({
 			message: 'junoModal',
 			detail: {
@@ -28,8 +26,15 @@
 				}
 			}
 		});
+	};
+
+	let enabled = false;
+	$: enabled =
+		nonNullish(canister) && nonNullish(canister.data) && canister.data.status === 'running';
 </script>
 
-<svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
-
-<button on:click={onDelete} disabled={isNullish(canister)}>{$i18n.core.delete}</button>
+{#if enabled}
+	<div in:fade>
+		<button class="menu" on:click={onDelete}><IconDelete /> {$i18n.core.delete}</button>
+	</div>
+{/if}

@@ -100,7 +100,8 @@
 		"stop_success": "Satellite stopped.",
 		"start_tile": "Restart satellite",
 		"start_info": "Do you want to resume your satellite?",
-		"start_success": "Satellite resumed."
+		"start_success": "Satellite resumed.",
+		"delete_success": "Satellite deleted."
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -231,6 +232,7 @@
 		"satellite_missing_name": "A name must be provided.",
 		"satellite_stop": "Unexpected error(s) while trying to stop the satellite",
 		"satellite_start": "Unexpected error(s) while trying to start the satellite",
+		"satellite_delete": "Unexpected error(s) while trying to delete the satellite",
 		"ledger_balance_credits": "Errore/i imprevisto/i durante il caricamento del saldo del tuo mission control e dei crediti.",
 		"load_credits": "Cannot load your current credits status.",
 		"hosting_missing_domain_name": "E' obbligatorio scegliere un nome a dominio",

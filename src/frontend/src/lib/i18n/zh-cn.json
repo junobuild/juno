@@ -41,6 +41,7 @@
 		"top_up": "充值",
 		"cycles": "用于支付只能合约运行消耗.",
 		"top_up_in_progress": "充值中...",
+		"delete_in_progress": "Deletion in progress...",
 		"upgrade_in_progress": "升级中...",
 		"download_in_progress": "下载中...",
 		"amount": "ICP数量",
@@ -58,7 +59,14 @@
 		"review_upgrade": "升级校验",
 		"confirm_upgrade": "你的 {0} 代码将会通过 wasm <strong>{1}</strong> 升级. 确认要执行升级吗?",
 		"upgrade_done": "你的 {0} 已经成功的升级到版本 <strong>{1}</strong>.",
-		"upgrade": "升级"
+		"upgrade": "升级",
+		"delete_title": "Delete {0}",
+		"delete_explanation": "Cycles are necessary to delete a {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 1 T Cycles on your {1} for this purpose.",
+		"delete_customization": "You have the flexibility to modify this value if needed. Your current {0} balance is {1} T Cycles. Any remaining cycles will be transferred to your mission control. ",
+		"cycles_to_retain": "T Cycles to retain",
+		"cycles_to_transfer": "{0} T Cycles will be transferred to your mission control.",
+		"delete_info": "Do you want to delete your {0}? This action is irreversible.",
+		"invalid_cycles_to_retain": "Invalid amount of cycles to retain"
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",

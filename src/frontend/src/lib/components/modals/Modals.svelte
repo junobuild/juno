@@ -11,6 +11,7 @@
 	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
 	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
+	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 
@@ -57,4 +58,8 @@
 
 {#if modal?.type === 'upgrade_orbiter' && nonNullish(modal.detail)}
 	<OrbiterUpgradeModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'delete_satellite' && nonNullish(modal.detail)}
+	<SatelliteDeleteModal on:junoClose={close} detail={modal.detail} />
 {/if}

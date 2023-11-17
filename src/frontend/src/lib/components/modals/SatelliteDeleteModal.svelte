@@ -4,10 +4,6 @@
 	import { deleteSatellite } from '$lib/api/mission-control.api';
 	import type { Principal } from '@dfinity/principal';
 	import CanisterDeleteModal from '$lib/components/modals/CanisterDeleteModal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	export let detail: JunoModalDetail;
 

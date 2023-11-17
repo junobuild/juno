@@ -3,13 +3,13 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import { busy, isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import Value from '$lib/components/ui/Value.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { goto } from '$app/navigation';

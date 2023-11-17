@@ -2,7 +2,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { Canister } from '$lib/types/canister';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { emit } from '$lib/utils/events.utils';
 
 	export let satellite: Satellite;

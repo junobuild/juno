@@ -91,7 +91,7 @@
 </Popover>
 
 <style lang="scss">
-	.container {
-		padding: var(--padding) var(--padding-2x);
-	}
+	@use '../../styles/mixins/overlay';
+
+	@include overlay.popover-container;
 </style>

@@ -5,16 +5,18 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import OrbiterTopUp from '$lib/components/orbiter/OrbiterTopUp.svelte';
+	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
 
 	export let orbiter: Orbiter;
 </script>
 
 <div class="card-container">
-	<Value>
-		<svelte:fragment slot="label">{$i18n.analytics.id}</svelte:fragment>
-		<Identifier identifier={orbiter.orbiter_id.toText()} shorten={false} small={false} />
-	</Value>
+	<div class="id">
+		<Value>
+			<svelte:fragment slot="label">{$i18n.analytics.id}</svelte:fragment>
+			<Identifier identifier={orbiter.orbiter_id.toText()} shorten={false} small={false} />
+		</Value>
+	</div>
 
 	<Value>
 		<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
@@ -22,6 +24,12 @@
 	</Value>
 
 	<CanisterOverview canisterId={orbiter.orbiter_id} />
+
+	<OrbiterActions />
 </div>
 
-<OrbiterTopUp />
+<style lang="scss">
+	.id {
+		max-width: 80%;
+	}
+</style>

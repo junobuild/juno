@@ -3,7 +3,7 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { nonNullish } from '@dfinity/utils';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import MissionControlTopUp from '$lib/components/mission-control/MissionControlTopUp.svelte';
+	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -12,10 +12,16 @@
 
 {#if $authSignedInStore}
 	<div class="card-container">
-		<Value>
-			<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
-			<Identifier identifier={$missionControlStore?.toText() ?? ''} shorten={false} small={false} />
-		</Value>
+		<div class="id">
+			<Value>
+				<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
+				<Identifier
+					identifier={$missionControlStore?.toText() ?? ''}
+					shorten={false}
+					small={false}
+				/>
+			</Value>
+		</div>
 
 		<Value>
 			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
@@ -25,7 +31,13 @@
 		{#if nonNullish($missionControlStore)}
 			<CanisterOverview canisterId={$missionControlStore} />
 		{/if}
-	</div>
 
-	<MissionControlTopUp />
+		<MissionControlActions />
+	</div>
 {/if}
+
+<style lang="scss">
+	.id {
+		max-width: 80%;
+	}
+</style>

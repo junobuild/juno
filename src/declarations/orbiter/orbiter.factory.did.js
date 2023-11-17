@@ -15,6 +15,10 @@ export const idlFactory = ({ IDL }) => {
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
 	const DelSatelliteConfig = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
+	const DepositCyclesArgs = IDL.Record({
+		cycles_to_retain: IDL.Nat,
+		destination_id: IDL.Principal
+	});
 	const GetAnalytics = IDL.Record({
 		to: IDL.Opt(IDL.Nat64),
 		from: IDL.Opt(IDL.Nat64),
@@ -98,6 +102,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		del_satellite_config: IDL.Func([IDL.Principal, DelSatelliteConfig], [], []),
+		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_page_views: IDL.Func(
 			[GetAnalytics],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],

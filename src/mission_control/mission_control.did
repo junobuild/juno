@@ -69,6 +69,8 @@ service : () -> {
   del_mission_control_controllers : (vec principal) -> ();
   del_orbiters_controllers : (vec principal, vec principal) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
+  delete_orbiter : (principal, nat) -> ();
+  delete_satellite : (principal, nat) -> ();
   get_user : () -> (principal) query;
   list_mission_control_controllers : () -> (
       vec record { principal; Controller },

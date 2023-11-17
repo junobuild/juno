@@ -19,6 +19,10 @@ export interface DelSatelliteConfig {
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
+export interface DepositCyclesArgs {
+	cycles_to_retain: bigint;
+	destination_id: Principal;
+}
 export interface GetAnalytics {
 	to: [] | [bigint];
 	from: [] | [bigint];
@@ -91,6 +95,7 @@ export interface TrackEvent {
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;
+	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;

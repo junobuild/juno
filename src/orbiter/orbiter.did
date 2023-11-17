@@ -9,6 +9,10 @@ type Controller = record {
 type ControllerScope = variant { Write; Admin };
 type DelSatelliteConfig = record { updated_at : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
+type DepositCyclesArgs = record {
+  cycles_to_retain : nat;
+  destination_id : principal;
+};
 type GetAnalytics = record {
   to : opt nat64;
   from : opt nat64;
@@ -77,6 +81,7 @@ service : () -> {
       vec record { principal; Controller },
     );
   del_satellite_config : (principal, DelSatelliteConfig) -> ();
+  deposit_cycles : (DepositCyclesArgs) -> ();
   get_page_views : (GetAnalytics) -> (
       vec record { AnalyticKey; PageView },
     ) query;

@@ -18,7 +18,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
-	export let segment: 'mission_control' | 'orbiter';
+	export let segment: 'satellite' | 'orbiter';
 	export let currentCycles: bigint;
 	export let deleteFn: (params: {
 		missionControlId: Principal;

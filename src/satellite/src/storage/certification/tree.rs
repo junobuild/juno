@@ -1,7 +1,7 @@
 #![allow(dead_code)] // we don't need all the features provided here
 
 /// Source: https://github.com/dfinity/sdk/blob/master/src/canisters/frontend/ic-certified-assets/src/asset_certification/tree.rs
-use ic_certified_map::{AsHashTree, HashTree, RbTree};
+use ic_certification::{AsHashTree, HashTree, RbTree};
 
 pub trait NestedTreeKeyRequirements: Clone + AsRef<[u8]> + 'static {}
 pub trait NestedTreeValueRequirements: AsHashTree + 'static {}
@@ -21,7 +21,7 @@ impl<K: NestedTreeKeyRequirements, V: NestedTreeValueRequirements> Default for N
 }
 
 impl<K: NestedTreeKeyRequirements, V: NestedTreeValueRequirements> AsHashTree for NestedTree<K, V> {
-    fn root_hash(&self) -> ic_certified_map::Hash {
+    fn root_hash(&self) -> ic_certification::Hash {
         match self {
             NestedTree::Leaf(a) => a.root_hash(),
             NestedTree::Nested(tree) => tree.root_hash(),
@@ -133,7 +133,7 @@ impl<K: NestedTreeKeyRequirements, V: NestedTreeValueRequirements> NestedTree<K,
 }
 
 pub fn merge_hash_trees<'a>(lhs: HashTree<'a>, rhs: HashTree<'a>) -> HashTree<'a> {
-    use HashTree::{Empty, Fork, Labeled, Leaf, Pruned};
+    use ic_certification::HashTree::{Empty, Fork, Labeled, Leaf, Pruned};
 
     match (lhs, rhs) {
         (Pruned(l), Pruned(r)) => {

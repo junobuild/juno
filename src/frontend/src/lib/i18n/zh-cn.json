@@ -446,19 +446,5 @@
 		"resources_description": "查看利用Juno开发的代码，应用，为服务等例子",
 		"changelog": "发布",
 		"changelog_description": "看最近的更新和优化."
-	},
-	"on_boarding": {
-		"what": "下一个你希望实现的是什么?",
-		"dapp": "用动态数据（认证，数据库，文件存储等等）开发你的应用",
-		"website": "简单部署你的静态网站",
-		"install": "安装基础开发套件以及初始化 Juno",
-		"npm": "如果你已经使用 <a href=\"https://www.npmjs.com/\" rel=\"external noopener noreferrer\" target=\"_blank\">npm</a>, 你能按照命令来安装最近的开发包:",
-		"init": "接着初始化Juno 用你的  satellite ID 并开始使用一系列丰富的特性.",
-		"deploy": "部署你的应用",
-		"local": "下面的步骤会引导你来部署本地应用.",
-		"cli": "作为开始，首先需要安装Juno 命令行(CLI).",
-		"login": "完成安装后，你可以用终端来登录你的 satellite .",
-		"run": "现在你可以用一下根目录下的命令来跟你的satellite交互:",
-		"success": "安装过程应该很顺利，一旦完成，你将看到你的项目部署在区块链上，地址为 <a href=\"{0}\" rel=\"external noopener noreferrer\" target=\"_blank\">{1}</a>  🎉."
 	}
 }

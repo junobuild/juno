@@ -476,21 +476,6 @@ interface I18nResources {
 	changelog_description: string;
 }
 
-interface I18nOn_boarding {
-	what: string;
-	dapp: string;
-	website: string;
-	install: string;
-	npm: string;
-	init: string;
-	deploy: string;
-	local: string;
-	cli: string;
-	login: string;
-	run: string;
-	success: string;
-}
-
 interface I18n {
 	lang: Languages;
 	core: I18nCore;
@@ -519,5 +504,4 @@ interface I18n {
 	settings: I18nSettings;
 	examples: I18nExamples;
 	resources: I18nResources;
-	on_boarding: I18nOn_boarding;
 }

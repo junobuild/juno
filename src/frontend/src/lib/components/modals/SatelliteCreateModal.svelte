@@ -13,16 +13,14 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
-	import WhatNext from '$lib/components/onboarding/WhatNext.svelte';
-	import InstallSDK from '$lib/components/onboarding/InstallSDK.svelte';
-	import Deploy from '$lib/components/onboarding/Deploy.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 
 	export let detail: JunoModalDetail;
 
 	let insufficientFunds = true;
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'sdk' | 'deploy' | 'error' = 'init';
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
 	let satellite: Satellite | undefined = undefined;
 
 	const onSubmit = async () => {
@@ -71,11 +69,11 @@
 
 <Modal on:junoClose>
 	{#if steps === 'ready'}
-		<WhatNext on:junoSkip={navigate} on:junoNext={({ detail }) => (steps = detail)} />
-	{:else if steps === 'sdk'}
-		<InstallSDK {satellite} on:junoContinue={() => (steps = 'deploy')} />
-	{:else if steps === 'deploy'}
-		<Deploy {satellite} on:junoDone={navigate} />
+		<div class="msg">
+			<IconSatellite />
+			<p>{$i18n.satellites.ready}</p>
+			<button on:click={navigate}>{$i18n.core.continue}</button>
+		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.satellites.initializing}</p>
@@ -120,6 +118,14 @@
 
 	h2 {
 		@include overlay.title;
+	}
+
+	.msg {
+		@include overlay.message;
+
+		p {
+			margin: 0;
+		}
 	}
 
 	form {

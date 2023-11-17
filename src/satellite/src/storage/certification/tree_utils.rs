@@ -5,7 +5,7 @@ use crate::storage::certification::constants::{
 use crate::storage::http::types::{HeaderField, StatusCode};
 use crate::storage::types::state::FullPath;
 use crate::types::core::Blob;
-use ic_certified_map::Hash;
+use ic_certification::Hash;
 use ic_representation_independent_hash::{representation_independent_hash, Value};
 use sha2::{Digest, Sha256};
 

@@ -85,3 +85,12 @@
 @mixin title {
 	margin: 0 0 var(--padding-3x);
 }
+
+@mixin popover-container {
+	.container {
+		display: flex;
+		flex-direction: column;
+
+		padding: var(--padding) var(--padding-2x);
+	}
+}

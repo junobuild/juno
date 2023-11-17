@@ -23,12 +23,8 @@ use crate::guards::{
 };
 use crate::mgmt::canister::top_up_canister;
 use crate::mgmt::status::collect_statuses;
-use crate::segments::orbiter::{
-    create_orbiter as create_orbiter_console, delete_orbiter as delete_orbiter_segment,
-};
-use crate::segments::satellite::{
-    create_satellite as create_satellite_console, delete_satellite as delete_satellite_segment,
-};
+use crate::segments::orbiter::{create_orbiter as create_orbiter_console, delete_orbiter};
+use crate::segments::satellite::{create_satellite as create_satellite_console, delete_satellite};
 use crate::segments::store::get_orbiters;
 use crate::store::{
     get_user as get_user_store,
@@ -167,8 +163,8 @@ async fn del_satellites_controllers(satellite_ids: Vec<SatelliteId>, controllers
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
-async fn delete_satellite(satellite_id: SatelliteId, cycles_to_retain: u128) {
-    delete_satellite_segment(&satellite_id, cycles_to_retain)
+async fn del_satellite(satellite_id: SatelliteId, cycles_to_retain: u128) {
+    delete_satellite(&satellite_id, cycles_to_retain)
         .await
         .unwrap_or_else(|e| trap(&e));
 }
@@ -215,8 +211,8 @@ async fn del_orbiters_controllers(orbiter_ids: Vec<OrbiterId>, controllers: Vec<
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
-async fn delete_orbiter(orbiter_id: OrbiterId, cycles_to_retain: u128) {
-    delete_orbiter_segment(&orbiter_id, cycles_to_retain)
+async fn del_orbiter(orbiter_id: OrbiterId, cycles_to_retain: u128) {
+    delete_orbiter(&orbiter_id, cycles_to_retain)
         .await
         .unwrap_or_else(|e| trap(&e));
 }

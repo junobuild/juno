@@ -1,5 +1,6 @@
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
+use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::call;
 use ic_ledger_types::{Subaccount, Tokens};
 use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP};
@@ -7,7 +8,7 @@ use shared::env::CMC;
 use shared::ledger::transfer_payment;
 use shared::types::cmc::{Cycles, NotifyError, TopUpCanisterArgs};
 
-pub async fn top_up_canister(canister_id: &Principal, amount: &Tokens) -> Result<(), String> {
+pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Result<(), String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
     let send_amount = Tokens::from_e8s(amount.e8s() - (2 * IC_TRANSACTION_FEE_ICP.e8s()));
 

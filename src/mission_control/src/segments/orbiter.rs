@@ -1,5 +1,5 @@
-use crate::segments::canister::create_canister;
-use crate::segments::store::add_orbiter;
+use crate::segments::canister::{create_canister, delete_canister};
+use crate::segments::store::{add_orbiter, delete_orbiter as delete_orbiter_store, get_orbiter};
 use crate::types::state::Orbiter;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
@@ -11,6 +11,21 @@ use shared::types::state::{OrbiterId, UserId};
 
 pub async fn create_orbiter(name: &Option<String>) -> Result<Orbiter, String> {
     create_canister("get_create_orbiter_fee", create_and_save_orbiter, name).await
+}
+
+pub async fn delete_orbiter(orbiter_id: &OrbiterId, cycles_to_retain: u128) -> Result<(), String> {
+    let orbiter = get_orbiter(orbiter_id);
+
+    match orbiter {
+        None => Err("Orbiter not found or not owned by this mission control.".to_string()),
+        Some(_) => {
+            delete_canister(orbiter_id, cycles_to_retain).await?;
+
+            delete_orbiter_store(orbiter_id);
+
+            Ok(())
+        }
+    }
 }
 
 async fn create_and_save_orbiter(

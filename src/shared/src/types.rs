@@ -53,7 +53,7 @@ pub mod state {
 pub mod interface {
     use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{ControllerId, ControllerScope, Metadata, MissionControlId, UserId};
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
 
@@ -113,6 +113,12 @@ pub mod interface {
         pub mission_control_cycles_threshold: Option<u64>,
         pub satellites: CronJobStatusesSegments,
         pub orbiters: CronJobStatusesSegments,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct DepositCyclesArgs {
+        pub destination_id: Principal,
+        pub cycles_to_retain: u128,
     }
 }
 

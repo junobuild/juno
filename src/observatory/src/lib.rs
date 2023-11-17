@@ -12,9 +12,8 @@ use crate::cron_jobs::cron_jobs;
 use crate::guards::{caller_can_execute_cron_jobs, caller_is_admin_controller};
 use crate::reports::collect_statuses as collect_statuses_report;
 use crate::store::{
-    delete_controllers, get_cron_tab as get_cron_tab_store,
+    delete_controllers, get_cron_tab as get_cron_tab_store, get_statuses as get_statuses_store,
     set_controllers as set_controllers_store, set_cron_tab as set_cron_tab_store,
-    get_statuses as get_statuses_store
 };
 use crate::types::interface::{ListStatuses, ListStatusesArgs, SetCronTab};
 use crate::types::state::{Archive, ArchiveStatuses, CronTab, StableState, State};

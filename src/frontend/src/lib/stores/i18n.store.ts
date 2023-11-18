@@ -11,13 +11,6 @@ const zhCnI18n = async (): Promise<I18n> => {
 	};
 };
 
-const itI18n = async (): Promise<I18n> => {
-	return {
-		lang: 'it',
-		...(await import(`../i18n/it.json`))
-	};
-};
-
 const enI18n = (): I18n => {
 	return {
 		lang: 'en',
@@ -29,8 +22,6 @@ const loadLanguage = (lang: Languages): Promise<I18n> => {
 	switch (lang) {
 		case 'zh-cn':
 			return zhCnI18n();
-		case 'it':
-			return itI18n();
 		default:
 			return Promise.resolve(enI18n());
 	}

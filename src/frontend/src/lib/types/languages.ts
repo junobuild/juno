@@ -1,1 +1,1 @@
-export type Languages = 'en' | 'zh-cn' | 'it';
+export type Languages = 'en' | 'zh-cn';

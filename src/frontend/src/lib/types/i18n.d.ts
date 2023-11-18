@@ -71,6 +71,14 @@ interface I18nCanisters {
 	cycles_to_transfer: string;
 	delete_info: string;
 	invalid_cycles_to_retain: string;
+	stop_title: string;
+	stop_info: string;
+	stop_explanation: string;
+	stop_error: string;
+	stop_success: string;
+	start_tile: string;
+	start_info: string;
+	start_success: string;
 }
 
 interface I18nSign_in {
@@ -99,14 +107,6 @@ interface I18nSatellites {
 	loading_satellites: string;
 	overview: string;
 	id: string;
-	stop_title: string;
-	stop_info: string;
-	stop_explanation: string;
-	stop_error: string;
-	stop_success: string;
-	start_tile: string;
-	start_info: string;
-	start_success: string;
 	delete_success: string;
 }
 
@@ -245,9 +245,9 @@ interface I18nErrors {
 	satellite_no_found: string;
 	satellite_name_update: string;
 	satellite_missing_name: string;
-	satellite_stop: string;
-	satellite_start: string;
-	satellite_delete: string;
+	canister_stop: string;
+	canister_start: string;
+	canister_delete: string;
 	ledger_balance_credits: string;
 	load_credits: string;
 	hosting_missing_domain_name: string;

@@ -4,13 +4,17 @@
 	import { busy } from '$lib/stores/busy.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { canisterStop } from '$lib/api/ic.api';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import { emit } from '$lib/utils/events.utils';
 	import IconStop from '$lib/components/icons/IconStop.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import type { Canister } from '$lib/types/canister';
+	import { Principal } from '@dfinity/principal';
+	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
+	import Text from '$lib/components/ui/Text.svelte';
 
-	export let satellite: Satellite;
+	export let canister: Canister;
+	export let segment: 'satellite' | 'orbiter';
 
 	let visible = false;
 
@@ -29,16 +33,27 @@
 		busy.start();
 
 		try {
-			await canisterStop({ canisterId: satellite.satellite_id, identity: $authStore.identity! });
+			const canisterId = Principal.fromText(canister.id);
 
-			emit({ message: 'junoRestartCycles', detail: { canisterId: satellite.satellite_id } });
+			await canisterStop({ canisterId, identity: $authStore.identity! });
+
+			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 
 			close();
 
-			toasts.success($i18n.satellites.stop_success);
+			toasts.success(
+				i18nCapitalize(
+					i18nFormat($i18n.canisters.stop_success, [
+						{
+							placeholder: '{0}',
+							value: segment
+						}
+					])
+				)
+			);
 		} catch (err: unknown) {
 			toasts.error({
-				text: $i18n.errors.satellite_stop,
+				text: $i18n.errors.canister_stop,
 				detail: err
 			});
 		}
@@ -52,11 +67,12 @@
 <button on:click={() => (visible = true)} class="menu"><IconStop /> {$i18n.core.stop}</button>
 
 <Confirmation bind:visible on:junoYes={stop} on:junoNo={close}>
-	<svelte:fragment slot="title">{$i18n.satellites.stop_title}</svelte:fragment>
+	<svelte:fragment slot="title"><Text key="canisters.stop_title" value={segment} /></svelte:fragment
+	>
 
-	<p>{$i18n.satellites.stop_explanation}</p>
+	<p><Text key="canisters.stop_explanation" value={segment} /></p>
 
-	<p>{$i18n.satellites.stop_error}</p>
+	<p><Text key="canisters.stop_error" value={segment} /></p>
 
-	<p>{$i18n.satellites.stop_info}</p>
+	<p><Text key="canisters.stop_info" value={segment} /></p>
 </Confirmation>

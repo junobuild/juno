@@ -25,7 +25,7 @@
 
 	<CanisterOverview canisterId={orbiter.orbiter_id} />
 
-	<OrbiterActions />
+	<OrbiterActions {orbiter} />
 </div>
 
 <style lang="scss">

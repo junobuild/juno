@@ -45,8 +45,6 @@
 			><span>
 				{#if lang === 'zh-cn'}
 					简体中文
-				{:else if lang === 'it'}
-					Italiano
 				{:else}
 					English
 				{/if}</span

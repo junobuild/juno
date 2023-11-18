@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
-	import SatelliteStopStart from '$lib/components/satellites/SatelliteStopStart.svelte';
+	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import SatelliteDelete from '$lib/components/satellites/SatelliteDelete.svelte';
 	import type { Canister } from '$lib/types/canister';
 	import Actions from '$lib/components/core/Actions.svelte';
@@ -36,7 +36,7 @@
 		on:junoDelete={close}
 	/>
 
-	<SatelliteStopStart {satellite} {canister} />
+	<CanisterStopStart {canister} segment="satellite" />
 
 	<SatelliteDelete {satellite} {canister} />
 </Actions>

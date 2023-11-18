@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -9,8 +8,13 @@
 	import { emit } from '$lib/utils/events.utils';
 	import IconStart from '$lib/components/icons/IconStart.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import type { Canister } from '$lib/types/canister';
+	import { Principal } from '@dfinity/principal';
+	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
+	import Text from '$lib/components/ui/Text.svelte';
 
-	export let satellite: Satellite;
+	export let canister: Canister;
+	export let segment: 'satellite' | 'orbiter';
 
 	let visible = false;
 
@@ -29,17 +33,28 @@
 		busy.start();
 
 		try {
-			await canisterStart({ canisterId: satellite.satellite_id, identity: $authStore.identity! });
+			const canisterId = Principal.fromText(canister.id);
 
-			emit({ message: 'junoRestartCycles', detail: { canisterId: satellite.satellite_id } });
+			await canisterStart({ canisterId, identity: $authStore.identity! });
+
+			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 			emit({ message: 'junoReloadVersions' });
 
 			close();
 
-			toasts.success($i18n.satellites.start_success);
+			toasts.success(
+				i18nCapitalize(
+					i18nFormat($i18n.canisters.start_success, [
+						{
+							placeholder: '{0}',
+							value: segment
+						}
+					])
+				)
+			);
 		} catch (err: unknown) {
 			toasts.error({
-				text: $i18n.errors.satellite_start,
+				text: $i18n.errors.canister_start,
 				detail: err
 			});
 		}
@@ -53,7 +68,9 @@
 <button on:click={() => (visible = true)} class="menu"><IconStart /> {$i18n.core.start}</button>
 
 <Confirmation bind:visible on:junoYes={start} on:junoNo={close}>
-	<svelte:fragment slot="title">{$i18n.satellites.start_tile}</svelte:fragment>
+	<svelte:fragment slot="title">
+		<Text key="canisters.start_tile" value={segment} /></svelte:fragment
+	>
 
-	<p>{$i18n.satellites.start_info}</p>
+	<p><Text key="canisters.start_info" value={segment} /></p>
 </Confirmation>

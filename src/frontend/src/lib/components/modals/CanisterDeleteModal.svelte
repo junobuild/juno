@@ -94,7 +94,7 @@
 			steps = 'error';
 
 			toasts.error({
-				text: $i18n.errors.satellite_delete,
+				text: $i18n.errors.canister_delete,
 				detail: err
 			});
 		}

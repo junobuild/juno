@@ -14,9 +14,16 @@ export const i18nFormat = (
 	return text;
 };
 
-export const groupLabel = (labelKey: string): string | undefined => {
+export const i18nText = ({ i18n, labelKey }: { i18n: I18n; labelKey: string }): string => {
 	const [group, key] = labelKey.split('.');
-	const labels = get(i18n);
-	const obj = keyOf({ obj: labels, key: group });
+	const obj = keyOf({ obj: i18n, key: group });
 	return keyOf({ obj, key });
 };
+
+export const i18nCapitalize = (text: string): string => {
+	const [firstLetter, ...rest] = text;
+	return `${firstLetter.toUpperCase()}${rest.join('')}`;
+};
+
+export const groupLabel = (labelKey: string): string | undefined =>
+	i18nText({ i18n: get(i18n), labelKey });

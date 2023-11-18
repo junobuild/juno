@@ -161,6 +161,7 @@ interface I18nStorage {
 
 interface I18nAnalytics {
 	title: string;
+	short_description: string;
 	dashboard: string;
 	loading: string;
 	empty: string;

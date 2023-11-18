@@ -149,6 +149,7 @@
 	},
 	"analytics": {
 		"title": "Analytics",
+		"short_description": "A performant, and privacy friendly web3 analytics solution.",
 		"dashboard": "Dashboard",
 		"loading": "Loading data",
 		"empty": "Juno provides simple, performant, and open-source web analytics that do not use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your dapps and website visitors.",

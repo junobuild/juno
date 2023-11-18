@@ -149,6 +149,7 @@
 	},
 	"analytics": {
 		"title": "统计",
+		"short_description": "A performant, and privacy friendly web3 analytics solution.",
 		"dashboard": "仪表盘",
 		"loading": "加载数据",
 		"empty": "Juno 提供简单，轻便，开源的网络统计功能，不需要使用 cookies. 它会通过智能合约统计匿名数据并尊重您的网站用户隐私.",

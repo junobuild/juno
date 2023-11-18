@@ -1,11 +1,10 @@
 <script lang="ts">
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import type { Canister } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 	import { createEventDispatcher } from 'svelte';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 
-	export let satellite: Satellite;
 	export let canister: Canister | undefined = undefined;
 
 	const dispatch = createEventDispatcher();
@@ -16,9 +15,8 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'delete_satellite',
+				type: 'delete_orbiter',
 				detail: {
-					satellite,
 					cycles: canister?.data?.cycles ?? 0n
 				}
 			}

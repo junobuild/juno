@@ -15,10 +15,10 @@
 	import { goto } from '$app/navigation';
 	import type { Principal } from '@dfinity/principal';
 	import { ONE_TRILLION } from '$lib/constants/constants';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
-	export let segment: 'satellite' | 'orbiter';
+	export let segment: 'satellite' | 'analytics';
 	export let currentCycles: bigint;
 	export let deleteFn: (params: {
 		missionControlId: Principal;
@@ -89,7 +89,16 @@
 
 			close();
 
-			toasts.success($i18n.satellites.delete_success);
+			toasts.success(
+				i18nCapitalize(
+					i18nFormat($i18n.canisters.delete_success, [
+						{
+							placeholder: '{0}',
+							value: segment
+						}
+					])
+				)
+			);
 		} catch (err: unknown) {
 			steps = 'error';
 

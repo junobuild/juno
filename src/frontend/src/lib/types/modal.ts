@@ -41,6 +41,9 @@ export interface JunoModalDelete {
 
 export type JunoModalDeleteSatelliteDetail = JunoModalDelete & JunoModalSatelliteDetail;
 
+// eslint-disable-next-line @typescript-eslint/no-empty-interface
+export interface JunoModalDeleteOrbiterDetail extends JunoModalDelete {}
+
 export interface JunoModalCreateControllerDetail {
 	add: (
 		params: {

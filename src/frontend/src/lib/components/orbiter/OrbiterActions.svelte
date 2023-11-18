@@ -4,6 +4,7 @@
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import type { Canister } from '$lib/types/canister';
+	import OrbiterDelete from '$lib/components/orbiter/OrbiterDelete.svelte';
 
 	export let orbiter: Orbiter;
 
@@ -27,4 +28,6 @@
 	<TopUp type="topup_orbiter" on:junoTopUp={close} />
 
 	<CanisterStopStart {canister} segment="orbiter" on:junoStop={close} on:junoStart={close} />
+
+	<OrbiterDelete {canister} on:junoDelete={close} />
 </Actions>

@@ -418,7 +418,7 @@
 		"session_expires_in": "Your session expires in"
 	},
 	"examples": {
-		"tutorials": "Tutorials",
+		"tutorials": "Guides",
 		"examples": "Examples",
 		"tutorial_framework_description": "Use Juno with {0}.",
 		"tutorial_github_description": "Deploy using GitHub Actions.",

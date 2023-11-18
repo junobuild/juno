@@ -7,5 +7,5 @@
 </script>
 
 <Actions bind:visible>
-	<TopUp type="topup_orbiter" />
+	<TopUp type="topup_orbiter" on:junoTopUp={close} />
 </Actions>

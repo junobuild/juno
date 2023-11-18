@@ -27,16 +27,9 @@
 <svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
 
 <Actions bind:visible>
-	<TopUp
-		type="topup_satellite"
-		{detail}
-		on:junoTopUp={close}
-		on:junoStop={close}
-		on:junoStart={close}
-		on:junoDelete={close}
-	/>
+	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
 
-	<CanisterStopStart {canister} segment="satellite" />
+	<CanisterStopStart {canister} segment="satellite" on:junoStop={close} on:junoStart={close} />
 
-	<SatelliteDelete {satellite} {canister} />
+	<SatelliteDelete {satellite} {canister} on:junoDelete={close} />
 </Actions>

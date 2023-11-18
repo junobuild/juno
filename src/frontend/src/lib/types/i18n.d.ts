@@ -79,6 +79,7 @@ interface I18nCanisters {
 	start_tile: string;
 	start_info: string;
 	start_success: string;
+	delete_success: string;
 }
 
 interface I18nSign_in {
@@ -107,7 +108,6 @@ interface I18nSatellites {
 	loading_satellites: string;
 	overview: string;
 	id: string;
-	delete_success: string;
 }
 
 interface I18nMission_control {

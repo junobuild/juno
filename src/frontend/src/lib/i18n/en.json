@@ -61,7 +61,7 @@
 		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
 		"upgrade": "Upgrade",
 		"delete_title": "Delete {0}",
-		"delete_explanation": "Cycles are necessary to delete a {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 1 T Cycles on your {1} for this purpose.",
+		"delete_explanation": "Cycles are necessary to delete the {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 1 T Cycles on your {1} for this purpose.",
 		"delete_customization": "You have the flexibility to modify this value if needed. Your current {0} balance is {1} T Cycles. Any remaining cycles will be transferred to your mission control. ",
 		"cycles_to_retain": "T Cycles to retain",
 		"cycles_to_transfer": "{0} T Cycles will be transferred to your mission control.",
@@ -74,7 +74,8 @@
 		"stop_success": "{0} stopped.",
 		"start_tile": "Restart {0}",
 		"start_info": "Do you want to resume your {0}?",
-		"start_success": "{0} resumed."
+		"start_success": "{0} resumed.",
+		"delete_success": "{0} deleted."
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",
@@ -100,8 +101,7 @@
 		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",
-		"id": "Satellite ID",
-		"delete_success": "Satellite deleted."
+		"id": "Satellite ID"
 	},
 	"mission_control": {
 		"title": "Mission Control",

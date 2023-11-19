@@ -12,6 +12,10 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal
 	});
+	const DepositCyclesArgs = IDL.Record({
+		cycles_to_retain: IDL.Nat,
+		destination_id: IDL.Principal
+	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
 		Admin: IDL.Null
@@ -80,6 +84,7 @@ export const idlFactory = ({ IDL }) => {
 		del_orbiters_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
 		del_satellite: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
+		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_user: IDL.Func([], [IDL.Principal], ['query']),
 		list_mission_control_controllers: IDL.Func(
 			[],

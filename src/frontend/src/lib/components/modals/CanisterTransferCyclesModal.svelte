@@ -23,7 +23,7 @@
 	export let currentCycles: bigint;
 	export let transferFn: (params: {
 		missionControlId: Principal;
-		cycles_to_retain: bigint;
+		cycles: bigint;
 		destinationId: Principal;
 	}) => Promise<void>;
 
@@ -84,7 +84,7 @@
 		try {
 			await transferFn({
 				missionControlId: $missionControlStore,
-				cycles_to_retain: cycles,
+				cycles,
 				destinationId: Principal.fromText(destinationId)
 			});
 

@@ -14,12 +14,12 @@
 
 	let transferFn: (params: {
 		missionControlId: Principal;
-		cycles_to_retain: bigint;
+		cycles: bigint;
 		destinationId: Principal;
 	}) => Promise<void>;
 	$: transferFn = async (params: {
 		missionControlId: Principal;
-		cycles_to_retain: bigint;
+		cycles: bigint;
 		destinationId: Principal;
 	}) =>
 		depositCycles({

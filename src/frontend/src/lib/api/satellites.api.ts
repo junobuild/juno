@@ -214,16 +214,16 @@ export const deleteAssets = async ({
 
 export const depositCycles = async ({
 	satelliteId,
-	cycles_to_retain,
+	cycles,
 	destinationId: destination_id
 }: {
 	satelliteId: Principal;
-	cycles_to_retain: bigint;
+	cycles: bigint;
 	destinationId: Principal;
 }) => {
 	const { deposit_cycles } = await getSatelliteActor(satelliteId);
 	return deposit_cycles({
-		cycles_to_retain,
+		cycles,
 		destination_id
 	});
 };

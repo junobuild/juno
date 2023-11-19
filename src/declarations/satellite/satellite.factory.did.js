@@ -197,6 +197,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		del_doc: IDL.Func([IDL.Text, IDL.Text, DelDoc], [], []),
+		del_docs: IDL.Func([IDL.Text], [], []),
 		del_rule: IDL.Func([RulesType, IDL.Text, DelDoc], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_config: IDL.Func([], [Config], []),

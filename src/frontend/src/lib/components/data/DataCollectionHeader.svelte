@@ -5,6 +5,7 @@
 	import { getContext } from 'svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import DataActions from '$lib/components/data/DataActions.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -19,7 +20,9 @@
 		<div transition:fade>
 			<DataFilter />
 			<DataOrder />
-			<!--			<DataActions>TODO</DataActions>-->
+			<DataActions>
+				<slot name="actions" />
+			</DataActions>
 		</div>
 	{/if}
 </div>

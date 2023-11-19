@@ -36,7 +36,8 @@
 		"start": "Start",
 		"stop": "Stop",
 		"save": "Save",
-		"more": "More options"
+		"more": "More options",
+		"are_you_sure": "Are you sure? This action is irreversible"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -282,6 +283,7 @@
 		"data": "Data",
 		"no_match": "No document matches your filters.",
 		"delete": "Delete document?",
+		"delete_all": "Delete all documents?",
 		"description": "Description",
 		"document_submission_success": "Document has been successfully submitted!",
 		"document_submission_failed": "Document submission failed!"
@@ -313,6 +315,7 @@
 		"updated": "Updated",
 		"no_match": "No asset matches your filters.",
 		"delete": "Delete asset?",
+		"delete_all": "Delete all assets?",
 		"description": "Description",
 		"full_path": "Full path"
 	},

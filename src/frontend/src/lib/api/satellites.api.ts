@@ -189,3 +189,25 @@ export const deleteAsset = async ({
 	const actor = await getSatelliteActor(satelliteId);
 	return actor.del_asset(collection, full_path);
 };
+
+export const deleteDocs = async ({
+	satelliteId,
+	collection
+}: {
+	satelliteId: Principal;
+	collection: string;
+}) => {
+	const { del_docs } = await getSatelliteActor(satelliteId);
+	return del_docs(collection);
+};
+
+export const deleteAssets = async ({
+	satelliteId,
+	collection
+}: {
+	satelliteId: Principal;
+	collection: string;
+}) => {
+	const { del_assets } = await getSatelliteActor(satelliteId);
+	return del_assets(collection);
+};

@@ -11,7 +11,7 @@ mod storage;
 mod types;
 
 use crate::controllers::store::get_admin_controllers;
-use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc};
+use crate::db::store::{delete_doc, get_doc as get_doc_store, get_docs, insert_doc, delete_docs};
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::guards::caller_is_admin_controller;
@@ -31,7 +31,7 @@ use crate::storage::store::{
     commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
     get_config as get_storage_config, get_content_chunks, get_custom_domains, get_public_asset,
     init_certified_assets, list_assets as list_assets_store, set_config as set_storage_config,
-    set_domain,
+    set_domain
 };
 use crate::storage::types::config::StorageConfigRewrites;
 use crate::storage::types::domain::{CustomDomains, DomainName};
@@ -183,6 +183,16 @@ fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> 
     match result {
         Ok(value) => value,
         Err(error) => trap(&error),
+    }
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn del_docs(collection: CollectionKey) {
+    let result = delete_docs(&collection);
+
+    match result {
+        Ok(_) => (),
+        Err(error) => trap(&["Documents cannot be deleted: ", &error].join("")),
     }
 }
 

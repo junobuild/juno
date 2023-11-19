@@ -21,7 +21,7 @@
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import type { Principal } from '@dfinity/principal';
 	import { deleteDoc } from '$lib/api/satellites.api';
-	import DataDelete from '$lib/components/data/DataDelete.svelte';
+	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 	const { store: docsStore, resetData }: DataContext<Doc> =
@@ -131,10 +131,10 @@
 			{key ?? ''}
 
 			<svelte:fragment slot="actions">
-				<DataDelete {deleteData}>
+				<DataKeyDelete {deleteData}>
 					<svelte:fragment slot="title">{$i18n.document.delete}</svelte:fragment>
 					{key}
-				</DataDelete>
+				</DataKeyDelete>
 			</svelte:fragment>
 		</DataHeader>
 	{/if}

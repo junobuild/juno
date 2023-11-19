@@ -40,6 +40,7 @@ interface I18nCore {
 	stop: string;
 	save: string;
 	more: string;
+	are_you_sure: string;
 }
 
 interface I18nCanisters {
@@ -298,6 +299,7 @@ interface I18nDocument {
 	data: string;
 	no_match: string;
 	delete: string;
+	delete_all: string;
 	description: string;
 	document_submission_success: string;
 	document_submission_failed: string;
@@ -331,6 +333,7 @@ interface I18nAsset {
 	updated: string;
 	no_match: string;
 	delete: string;
+	delete_all: string;
 	description: string;
 	full_path: string;
 }

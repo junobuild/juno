@@ -22,7 +22,7 @@ export const idlFactory = ({ IDL }) => {
 	const DelDoc = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
 	const RulesType = IDL.Variant({ Db: IDL.Null, Storage: IDL.Null });
 	const DepositCyclesArgs = IDL.Record({
-		cycles_to_retain: IDL.Nat,
+		cycles: IDL.Nat,
 		destination_id: IDL.Principal
 	});
 	const StorageConfigRedirect = IDL.Record({

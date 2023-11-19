@@ -13,13 +13,13 @@ pub async fn create_orbiter(name: &Option<String>) -> Result<Orbiter, String> {
     create_canister("get_create_orbiter_fee", create_and_save_orbiter, name).await
 }
 
-pub async fn delete_orbiter(orbiter_id: &OrbiterId, cycles_to_retain: u128) -> Result<(), String> {
+pub async fn delete_orbiter(orbiter_id: &OrbiterId, cycles_to_deposit: u128) -> Result<(), String> {
     let orbiter = get_orbiter(orbiter_id);
 
     match orbiter {
         None => Err("Orbiter not found or not owned by this mission control.".to_string()),
         Some(_) => {
-            delete_canister(orbiter_id, cycles_to_retain).await?;
+            delete_canister(orbiter_id, cycles_to_deposit).await?;
 
             delete_orbiter_store(orbiter_id);
 

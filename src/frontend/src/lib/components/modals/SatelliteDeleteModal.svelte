@@ -12,11 +12,8 @@
 
 	$: ({ satellite, cycles: currentCycles } = detail as JunoModalDeleteSatelliteDetail);
 
-	let deleteFn: (params: {
-		missionControlId: Principal;
-		cycles_to_retain: bigint;
-	}) => Promise<void>;
-	$: deleteFn = async (params: { missionControlId: Principal; cycles_to_retain: bigint }) =>
+	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
+	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
 		deleteSatellite({
 			...params,
 			satelliteId: satellite.satellite_id

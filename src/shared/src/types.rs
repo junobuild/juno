@@ -118,7 +118,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct DepositCyclesArgs {
         pub destination_id: Principal,
-        pub cycles_to_retain: u128,
+        pub cycles: u128,
     }
 }
 

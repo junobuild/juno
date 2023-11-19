@@ -15,7 +15,9 @@ use crate::storage::types::config::StorageConfig;
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::alternative_paths;
-use ic_certification::{fork, fork_hash, labeled, labeled_hash, merge_hash_trees, AsHashTree, Hash, HashTree, pruned};
+use ic_certification::{
+    fork, fork_hash, labeled, labeled_hash, merge_hash_trees, pruned, AsHashTree, Hash, HashTree,
+};
 use sha2::{Digest, Sha256};
 
 impl CertifiedAssetHashes {

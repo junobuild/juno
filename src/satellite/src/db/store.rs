@@ -294,7 +294,8 @@ pub fn delete_docs(collection: &CollectionKey) -> Result<(), String> {
 fn delete_docs_impl(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let keys: Vec<Key> = get_state_docs(collection, &rule)?.iter()
+    let keys: Vec<Key> = get_state_docs(collection, &rule)?
+        .iter()
         .map(|(key, _)| key.clone())
         .collect();
 

@@ -35,7 +35,8 @@
 		"export": "导出",
 		"start": "启动",
 		"stop": "停止",
-		"save": "Save"
+		"save": "Save",
+		"more": "More options"
 	},
 	"canisters": {
 		"top_up": "充值",

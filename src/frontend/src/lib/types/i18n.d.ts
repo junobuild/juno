@@ -39,6 +39,7 @@ interface I18nCore {
 	start: string;
 	stop: string;
 	save: string;
+	more: string;
 }
 
 interface I18nCanisters {

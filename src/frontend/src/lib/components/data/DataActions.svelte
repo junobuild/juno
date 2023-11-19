@@ -9,10 +9,11 @@
 </script>
 
 <button
-	class="square"
-	bind:this={button}
+	class="icon"
+	aria-label={$i18n.core.more}
+	type="button"
 	on:click={() => (visible = true)}
-	aria-label={$i18n.core.more}><IconMore /></button
+	bind:this={button}><IconMore size="20px" /></button
 >
 
 <Popover bind:visible anchor={button} direction="rtl">
@@ -26,9 +27,7 @@
 
 	@include overlay.popover-container;
 
-	button {
-		position: absolute;
-		top: var(--padding-2x);
-		right: var(--padding-2x);
+	button.icon {
+		padding: 0;
 	}
 </style>

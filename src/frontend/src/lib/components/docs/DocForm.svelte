@@ -14,13 +14,18 @@
 		type DataStoreAction,
 		type DataContext
 	} from '$lib/types/data.context';
-	import type Doc from './Doc.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
+	import DataHeader from '$lib/components/data/DataHeader.svelte';
+	import type { Doc } from '$declarations/satellite/satellite.did';
+	import type { Principal } from '@dfinity/principal';
+	import { deleteDoc } from '$lib/api/satellites.api';
+	import DataDelete from '$lib/components/data/DataDelete.svelte';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
-	const { store: docsStore }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
+	const { store: docsStore, resetData }: DataContext<Doc> =
+		getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
 	let action: DataStoreAction | undefined;
 	$: action = $docsStore?.action;
@@ -91,15 +96,49 @@
 	$: isActive = action === 'create' || action === 'edit';
 
 	const generateKey = () => (key = nanoid());
+
+	/**
+	 * Delete data
+	 */
+
+	let doc: Doc | undefined;
+	$: doc = $docsStore?.data;
+
+	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		if (isNullish(key) || key === '') {
+			toasts.error({
+				text: $i18n.errors.key_invalid
+			});
+			return;
+		}
+
+		await deleteDoc({
+			...params,
+			key,
+			doc
+		});
+
+		resetData();
+	};
 </script>
 
-<p class="title doc-form">
+<div class="title doc-form">
 	{#if isActive}
 		{$i18n.document_form.title_add_new_document}
 	{:else}
-		&ZeroWidthSpace;
+		<DataHeader>
+			{key ?? ''}
+
+			<svelte:fragment slot="actions">
+				<DataDelete {deleteData}>
+					<svelte:fragment slot="title">{$i18n.document.delete}</svelte:fragment>
+					{key}
+				</DataDelete>
+			</svelte:fragment>
+		</DataHeader>
 	{/if}
-</p>
+</div>
 
 {#if isActive}
 	<article class="doc-form" in:fade>

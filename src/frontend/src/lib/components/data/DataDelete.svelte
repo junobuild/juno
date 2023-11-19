@@ -15,7 +15,6 @@
 
 	export let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
 
-	let button: HTMLButtonElement | undefined;
 	let visible: boolean | undefined;
 
 	const close = () => (visible = false);
@@ -56,12 +55,8 @@
 	};
 </script>
 
-<button
-	class="square"
-	aria-label={$i18n.core.delete}
-	type="button"
-	on:click={() => (visible = true)}
-	bind:this={button}><IconDelete size="20px" /></button
+<button class="menu" type="button" on:click={() => (visible = true)}
+	><IconDelete size="20px" /> {$i18n.core.delete}</button
 >
 
 <Confirmation bind:visible on:junoYes={deleteSelectedData} on:junoNo={close}>
@@ -72,3 +67,11 @@
 		<p><slot /></p>
 	</Value>
 </Confirmation>
+
+<style lang="scss">
+	@use '../../styles/mixins/text';
+
+	p {
+		@include text.truncate;
+	}
+</style>

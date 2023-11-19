@@ -3,7 +3,7 @@
 	import { getContext, setContext } from 'svelte';
 	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { listAssets, satelliteVersion } from '$lib/api/satellites.api';
+	import { deleteAssets, listAssets, satelliteVersion } from '$lib/api/satellites.api';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import type { PaginationContext } from '$lib/types/pagination.context';
@@ -19,6 +19,8 @@
 	import type { ListParams } from '$lib/types/list';
 	import { compare } from 'semver';
 	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
+	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
+	import type { Principal } from '@dfinity/principal';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -94,11 +96,29 @@
 			resetData();
 			await list();
 		})();
+
+	/**
+	 * Delete data
+	 */
+
+	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		await deleteAssets(params);
+
+		resetData();
+	};
 </script>
 
 <div class="title">
 	<DataCollectionHeader>
 		{$i18n.storage.assets}
+
+		<svelte:fragment slot="actions">
+			<DataCollectionDelete {deleteData}>
+				<svelte:fragment slot="title">{$i18n.asset.delete_all}</svelte:fragment>
+				{$i18n.core.are_you_sure}
+			</DataCollectionDelete>
+		</svelte:fragment>
 	</DataCollectionHeader>
 </div>
 

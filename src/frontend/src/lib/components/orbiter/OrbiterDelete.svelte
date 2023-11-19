@@ -2,7 +2,7 @@
 	import type { Canister } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 	import { createEventDispatcher } from 'svelte';
-	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
+	import CanisterDelete from '$lib/components/canister/CanisterActions.svelte';
 
 	export let canister: Canister | undefined = undefined;
 

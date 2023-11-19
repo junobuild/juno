@@ -2,9 +2,10 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
-	import SatelliteDelete from '$lib/components/satellites/SatelliteDelete.svelte';
 	import type { Canister } from '$lib/types/canister';
 	import Actions from '$lib/components/core/Actions.svelte';
+	import { emit } from '$lib/utils/events.utils';
+	import CanisterActions from '$lib/components/canister/CanisterActions.svelte';
 
 	export let satellite: Satellite;
 
@@ -22,6 +23,21 @@
 
 	let visible: boolean | undefined;
 	const close = () => (visible = false);
+
+	const onCanisterAction = (type: 'delete_satellite' | 'transfer_cycles_satellite') => {
+		close();
+
+		emit({
+			message: 'junoModal',
+			detail: {
+				type,
+				detail: {
+					satellite,
+					cycles: canister?.data?.cycles ?? 0n
+				}
+			}
+		});
+	};
 </script>
 
 <svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
@@ -31,5 +47,9 @@
 
 	<CanisterStopStart {canister} segment="satellite" on:junoStop={close} on:junoStart={close} />
 
-	<SatelliteDelete {satellite} {canister} on:junoDelete={close} />
+	<CanisterActions
+		{canister}
+		on:junoDelete={() => onCanisterAction('delete_satellite')}
+		on:junoTransferCycles={() => onCanisterAction('transfer_cycles_satellite')}
+	/>
 </Actions>

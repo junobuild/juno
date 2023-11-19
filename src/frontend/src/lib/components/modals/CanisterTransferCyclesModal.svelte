@@ -1,0 +1,205 @@
+<script lang="ts">
+	import { i18n } from '$lib/stores/i18n.store';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import { createEventDispatcher } from 'svelte';
+	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import Value from '$lib/components/ui/Value.svelte';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { isNullish } from '@dfinity/utils';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { Principal } from '@dfinity/principal';
+	import { ONE_TRILLION } from '$lib/constants/constants';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { emit } from '$lib/utils/events.utils';
+	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
+
+	export let canisterId: Principal;
+	export let segment: 'satellite' | 'analytics' | 'mission_control';
+	export let currentCycles: bigint;
+	export let transferFn: (params: {
+		missionControlId: Principal;
+		cycles_to_retain: bigint;
+		destinationId: Principal;
+	}) => Promise<void>;
+
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+
+	const dispatch = createEventDispatcher();
+	const close = () => dispatch('junoClose');
+
+	let tCycles: string;
+
+	let cycles: bigint;
+	$: (() => {
+		cycles = BigInt(parseFloat(tCycles ?? 0) * ONE_TRILLION);
+	})();
+
+	let depositCycles: bigint;
+	$: depositCycles = currentCycles - cycles > 0 ? currentCycles - cycles : 0n;
+
+	let destinationId: string | undefined;
+
+	let validConfirm = false;
+	$: validConfirm = cycles > 0 && cycles <= currentCycles;
+
+	const onSubmit = async () => {
+		if (!$authSignedInStore) {
+			toasts.error({
+				text: $i18n.errors.no_identity
+			});
+			return;
+		}
+
+		if (isNullish($missionControlStore)) {
+			toasts.error({
+				text: $i18n.errors.no_mission_control
+			});
+			return;
+		}
+
+		if (cycles > currentCycles) {
+			toasts.error({
+				text: $i18n.canisters.invalid_cycles_to_retain
+			});
+			return;
+		}
+
+		if (isNullish(destinationId)) {
+			// TODO
+			toasts.error({
+				text: $i18n.canisters.invalid_cycles_to_retain
+			});
+			return;
+		}
+
+		steps = 'in_progress';
+
+		wizardBusy.start();
+
+		try {
+			await transferFn({
+				missionControlId: $missionControlStore,
+				cycles_to_retain: cycles,
+				destinationId: Principal.fromText(destinationId)
+			});
+
+			emit({ message: 'junoRestartCycles', detail: { canisterId } });
+
+			steps = 'ready';
+		} catch (err: unknown) {
+			steps = 'error';
+
+			// TODO
+			toasts.error({
+				text: $i18n.errors.canister_delete,
+				detail: err
+			});
+		}
+
+		wizardBusy.stop();
+	};
+</script>
+
+<Modal on:junoClose>
+	{#if steps === 'ready'}
+		<div class="msg">
+			<slot name="outro" />
+			<button on:click={close}>{$i18n.core.close}</button>
+		</div>
+	{:else if steps === 'in_progress'}
+		<SpinnerModal>
+			<p>{$i18n.canisters.delete_in_progress}</p>
+		</SpinnerModal>
+	{:else}
+		<form on:submit|preventDefault={onSubmit}>
+			<h2>
+				{@html i18nFormat($i18n.canisters.delete_title, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					}
+				])}
+			</h2>
+
+			<p>
+				{@html i18nFormat($i18n.canisters.delete_explanation, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					},
+					{
+						placeholder: '{1}',
+						value: segment.replace('_', ' ')
+					}
+				])}
+			</p>
+
+			<p>
+				{@html i18nFormat($i18n.canisters.delete_customization, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					},
+					{
+						placeholder: '{1}',
+						value: formatTCycles(currentCycles)
+					}
+				])}
+			</p>
+
+			<Value>
+				<svelte:fragment slot="label">{$i18n.canisters.cycles_to_retain}</svelte:fragment>
+
+				<CanistersPicker excludeSegmentId={canisterId} bind:segmentIdText={destinationId} />
+			</Value>
+
+			<Value ref="cycles">
+				<svelte:fragment slot="label">{$i18n.canisters.cycles_to_retain}</svelte:fragment>
+
+				<Input
+					name="cycles"
+					inputType="icp"
+					required
+					bind:value={tCycles}
+					placeholder={$i18n.canisters.amount}
+				/>
+			</Value>
+
+			<p>
+				<small
+					>{@html i18nFormat($i18n.canisters.cycles_to_transfer, [
+						{
+							placeholder: '{0}',
+							value: formatTCycles(depositCycles)
+						}
+					])}</small
+				>
+			</p>
+
+			<p class="warning">
+				<IconWarning />
+				{@html i18nFormat($i18n.canisters.delete_info, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					}
+				])}
+			</p>
+
+			<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
+				{$i18n.core.delete}
+			</button>
+		</form>
+	{/if}
+</Modal>
+
+<style lang="scss">
+	.warning {
+		padding: var(--padding) 0 0;
+	}
+</style>

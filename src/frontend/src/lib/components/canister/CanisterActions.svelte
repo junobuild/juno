@@ -12,6 +12,7 @@
 	const dispatch = createEventDispatcher();
 
 	const onDelete = () => dispatch('junoDelete');
+	const onTransferCycles = () => dispatch('junoTransferCycles');
 
 	let enabled = false;
 	$: enabled =
@@ -21,5 +22,7 @@
 {#if enabled && DEV_FEATURES}
 	<div in:fade>
 		<button class="menu" on:click={onDelete}><IconDelete /> {$i18n.core.delete}</button>
+
+		<button class="menu" on:click={onTransferCycles}><IconDelete /> {$i18n.core.delete}</button>
 	</div>
 {/if}

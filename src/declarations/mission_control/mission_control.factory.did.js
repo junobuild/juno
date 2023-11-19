@@ -13,7 +13,7 @@ export const idlFactory = ({ IDL }) => {
 		satellite_id: IDL.Principal
 	});
 	const DepositCyclesArgs = IDL.Record({
-		cycles_to_retain: IDL.Nat,
+		cycles: IDL.Nat,
 		destination_id: IDL.Principal
 	});
 	const ControllerScope = IDL.Variant({

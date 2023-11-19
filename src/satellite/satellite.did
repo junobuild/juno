@@ -39,10 +39,7 @@ type CustomDomain = record {
 };
 type DelDoc = record { updated_at : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
-type DepositCyclesArgs = record {
-  cycles_to_retain : nat;
-  destination_id : principal;
-};
+type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
 type Doc = record {
   updated_at : nat64;
   owner : principal;

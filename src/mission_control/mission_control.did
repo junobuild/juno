@@ -25,10 +25,7 @@ type DefiniteCanisterSettings = record {
   memory_allocation : nat;
   compute_allocation : nat;
 };
-type DepositCyclesArgs = record {
-  cycles_to_retain : nat;
-  destination_id : principal;
-};
+type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
 type Orbiter = record {
   updated_at : nat64;
   orbiter_id : principal;

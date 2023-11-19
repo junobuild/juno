@@ -16,7 +16,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const DelSatelliteConfig = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
 	const DepositCyclesArgs = IDL.Record({
-		cycles_to_retain: IDL.Nat,
+		cycles: IDL.Nat,
 		destination_id: IDL.Principal
 	});
 	const GetAnalytics = IDL.Record({

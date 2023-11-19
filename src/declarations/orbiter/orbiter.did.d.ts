@@ -20,7 +20,7 @@ export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
 export interface DepositCyclesArgs {
-	cycles_to_retain: bigint;
+	cycles: bigint;
 	destination_id: Principal;
 }
 export interface GetAnalytics {

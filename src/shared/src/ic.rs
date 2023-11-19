@@ -94,19 +94,17 @@ pub async fn segment_status(canister_id: CanisterId) -> SegmentStatusResult {
 pub async fn deposit_cycles(
     DepositCyclesArgs {
         destination_id,
-        cycles_to_retain,
+        cycles,
     }: DepositCyclesArgs,
 ) -> Result<(), String> {
     let balance = canister_balance128();
 
-    if balance < cycles_to_retain {
+    if balance < cycles {
         return Err(format!(
-            "Balance ({}) is lower than the amount of cycles {} to retain.",
-            balance, cycles_to_retain
+            "Balance ({}) is lower than the amount of cycles {} to deposit.",
+            balance, cycles
         ));
     }
-
-    let cycles = balance - cycles_to_retain;
 
     let result = ic_deposit_cycles(
         CanisterIdRecord {

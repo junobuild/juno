@@ -53,18 +53,18 @@ where
     }
 }
 
-pub async fn delete_canister(segment_id: &Principal, cycles_to_retain: u128) -> Result<(), String> {
-    deposit_cycles(segment_id, cycles_to_retain).await?;
+pub async fn delete_canister(segment_id: &Principal, cycles: u128) -> Result<(), String> {
+    deposit_cycles(segment_id, cycles).await?;
 
     stop_segment(*segment_id).await?;
 
     delete_segment(*segment_id).await
 }
 
-async fn deposit_cycles(segment_id: &Principal, cycles_to_retain: u128) -> Result<(), String> {
+async fn deposit_cycles(segment_id: &Principal, cycles: u128) -> Result<(), String> {
     let args = DepositCyclesArgs {
         destination_id: id(),
-        cycles_to_retain,
+        cycles,
     };
 
     let result: CallResult<((),)> = call(*segment_id, "deposit_cycles", (args,)).await;

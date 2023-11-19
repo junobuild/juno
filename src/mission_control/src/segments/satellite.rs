@@ -22,14 +22,14 @@ pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
 
 pub async fn delete_satellite(
     satellite_id: &SatelliteId,
-    cycles_to_retain: u128,
+    cycles_to_deposit: u128,
 ) -> Result<(), String> {
     let satellite = get_satellite(satellite_id);
 
     match satellite {
         None => Err("Satellite not found or not owned by this mission control.".to_string()),
         Some(_) => {
-            delete_canister(satellite_id, cycles_to_retain).await?;
+            delete_canister(satellite_id, cycles_to_deposit).await?;
 
             delete_satellite_store(satellite_id);
 

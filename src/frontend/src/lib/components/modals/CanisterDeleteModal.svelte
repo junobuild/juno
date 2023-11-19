@@ -22,7 +22,7 @@
 	export let currentCycles: bigint;
 	export let deleteFn: (params: {
 		missionControlId: Principal;
-		cycles_to_retain: bigint;
+		cyclesToDeposit: bigint;
 	}) => Promise<void>;
 
 	let steps: 'init' | 'in_progress' | 'error' = 'init';
@@ -42,8 +42,8 @@
 		cycles = BigInt(tCycles * ONE_TRILLION);
 	})();
 
-	let depositCycles: bigint;
-	$: depositCycles = currentCycles - cycles > 0 ? currentCycles - cycles : 0n;
+	let cyclesToDeposit: bigint;
+	$: cyclesToDeposit = currentCycles - cycles > 0 ? currentCycles - cycles : 0n;
 
 	let validConfirm = false;
 	$: validConfirm = cycles > 0 && cycles <= currentCycles;
@@ -63,7 +63,7 @@
 			return;
 		}
 
-		if (cycles > currentCycles) {
+		if (cyclesToDeposit > currentCycles || cyclesToDeposit === 0n) {
 			toasts.error({
 				text: $i18n.canisters.invalid_cycles_to_retain
 			});
@@ -77,7 +77,7 @@
 		try {
 			await deleteFn({
 				missionControlId: $missionControlStore,
-				cycles_to_retain: cycles
+				cyclesToDeposit
 			});
 
 			await loadSatellites({
@@ -171,7 +171,7 @@
 					>{@html i18nFormat($i18n.canisters.cycles_to_transfer, [
 						{
 							placeholder: '{0}',
-							value: formatTCycles(depositCycles)
+							value: formatTCycles(cyclesToDeposit)
 						}
 					])}</small
 				>

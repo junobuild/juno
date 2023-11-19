@@ -11,6 +11,7 @@ use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::types::core::{Blob, CollectionKey};
 use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use std::borrow::Cow;
+use crate::types::state::StableState;
 
 /// Assets
 
@@ -132,6 +133,7 @@ pub fn delete_asset(
             delete_asset_heap(full_path, &mut state.borrow_mut().heap.storage.assets)
         }),
         Memory::Stable => STATE.with(|state| {
+            delete_content_chunks_stable(collection, full_path, &mut state.borrow_mut().stable);
             delete_asset_stable(collection, full_path, &mut state.borrow_mut().stable.assets)
         }),
     }
@@ -181,6 +183,21 @@ fn delete_asset_stable(
     assets: &mut AssetsStable,
 ) -> Option<Asset> {
     assets.remove(&stable_full_path(collection, full_path))
+}
+
+fn delete_content_chunks_stable(
+    collection: &CollectionKey,
+    full_path: &FullPath,
+    state: &mut StableState,
+) {
+    if let Some(asset) = get_asset_stable(collection, full_path, &state.assets) {
+        for (_, encoding) in asset.encodings.iter() {
+            for chunk in encoding.content_chunks.iter() {
+                let key: StableEncodingChunkKey = deserialize_from_bytes(Cow::Owned(chunk.clone()));
+                state.content_chunks.remove(&key);
+            }
+        }
+    }
 }
 
 fn delete_asset_heap(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<Asset> {

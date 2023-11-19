@@ -81,7 +81,7 @@
 			await list();
 		})();
 
-	const ADD_DOCUMENT_FEATURE = import.meta.env.VITE_ADD_DOCUMENT === 'true';
+	const ADD_DOCUMENT_FEATURE = import.meta.env.VITE_DEV_FEATURES === 'true';
 </script>
 
 <div class="title">

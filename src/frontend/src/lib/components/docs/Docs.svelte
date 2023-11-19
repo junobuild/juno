@@ -11,7 +11,7 @@
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import DataList from '$lib/components/data/DataList.svelte';
+	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 	import type { ListParams } from '$lib/types/list';
@@ -85,9 +85,9 @@
 </script>
 
 <div class="title">
-	<DataList>
+	<DataCollectionHeader>
 		{$i18n.datastore.documents}
-	</DataList>
+	</DataCollectionHeader>
 </div>
 
 {#if !emptyCollection}

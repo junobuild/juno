@@ -35,7 +35,8 @@
 		"export": "Export",
 		"start": "Start",
 		"stop": "Stop",
-		"save": "Save"
+		"save": "Save",
+		"more": "More options"
 	},
 	"canisters": {
 		"top_up": "Top-up",

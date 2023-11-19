@@ -30,6 +30,7 @@
 <style lang="scss">
 	.content {
 		padding: var(--padding-2x);
+		max-width: 100%;
 	}
 
 	h3 {

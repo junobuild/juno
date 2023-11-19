@@ -10,12 +10,13 @@
 	import { formatToDate } from '$lib/utils/date.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import DataToolbar from '$lib/components/data/DataToolbar.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { deleteAsset } from '$lib/api/satellites.api';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
+	import DataHeader from '$lib/components/data/DataHeader.svelte';
+	import DataDelete from '$lib/components/data/DataDelete.svelte';
 
 	const { store, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
@@ -68,7 +69,18 @@
 	};
 </script>
 
-<p class="title doc">{key ?? ''}</p>
+<div class="title doc">
+	<DataHeader>
+		{key ?? ''}
+
+		<svelte:fragment slot="actions">
+			<DataDelete {deleteData}>
+				<svelte:fragment slot="title">{$i18n.asset.delete}</svelte:fragment>
+				{key}
+			</DataDelete>
+		</svelte:fragment>
+	</DataHeader>
+</div>
 
 {#if nonNullish(asset)}
 	<article class="doc">
@@ -126,11 +138,6 @@
 				{formatToDate(asset.updated_at)}
 			</Value>
 		</div>
-
-		<DataToolbar {deleteData}>
-			<svelte:fragment slot="del-title">{$i18n.asset.delete}</svelte:fragment>
-			<svelte:fragment slot="del-content">{key}</svelte:fragment>
-		</DataToolbar>
 	</article>
 {/if}
 

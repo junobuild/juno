@@ -3,7 +3,7 @@
 	import { getContext, setContext } from 'svelte';
 	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
+	import { deleteDocs, listDocs, satelliteVersion } from '$lib/api/satellites.api';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
@@ -18,6 +18,8 @@
 	import { compare } from 'semver';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
+	import type { Principal } from '@dfinity/principal';
+	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -82,11 +84,29 @@
 		})();
 
 	const ADD_DOCUMENT_FEATURE = import.meta.env.VITE_DEV_FEATURES === 'true';
+
+	/**
+	 * Delete data
+	 */
+
+	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
+		await deleteDocs(params);
+
+		resetData();
+	};
 </script>
 
 <div class="title">
 	<DataCollectionHeader>
 		{$i18n.datastore.documents}
+
+		<svelte:fragment slot="actions">
+			<DataCollectionDelete {deleteData}>
+				<svelte:fragment slot="title">{$i18n.document.delete_all}</svelte:fragment>
+				{$i18n.core.are_you_sure}
+			</DataCollectionDelete>
+		</svelte:fragment>
 	</DataCollectionHeader>
 </div>
 

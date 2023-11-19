@@ -36,7 +36,8 @@
 		"start": "启动",
 		"stop": "停止",
 		"save": "Save",
-		"more": "More options"
+		"more": "More options",
+		"are_you_sure": "Are you sure? This action is irreversible"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -282,6 +283,7 @@
 		"data": "数据",
 		"no_match": "找不到满足条件的文档.",
 		"delete": "删除文档?",
+		"delete_all": "Delete all documents?",
 		"description": "描述",
 		"document_submission_success": "文件已成功提交！",
 		"document_submission_failed": "文件提交失败！"
@@ -313,6 +315,7 @@
 		"updated": "更新于",
 		"no_match": "找不到满足条件的资料.",
 		"delete": "删除资料?",
+		"delete_all": "Delete all assets?",
 		"description": "描述",
 		"full_path": "完整路徑"
 	},

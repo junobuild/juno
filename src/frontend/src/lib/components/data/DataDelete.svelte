@@ -62,16 +62,5 @@
 <Confirmation bind:visible on:junoYes={deleteSelectedData} on:junoNo={close}>
 	<slot name="title" slot="title" />
 
-	<Value>
-		<svelte:fragment slot="label">{$i18n.collections.key}</svelte:fragment>
-		<p><slot /></p>
-	</Value>
+	<slot />
 </Confirmation>
-
-<style lang="scss">
-	@use '../../styles/mixins/text';
-
-	p {
-		@include text.truncate;
-	}
-</style>

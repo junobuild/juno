@@ -286,3 +286,21 @@ fn assert_write_permission(
 
     Ok(())
 }
+
+pub fn delete_docs(collection: &CollectionKey) -> Result<(), String> {
+    delete_docs_impl(collection)
+}
+
+fn delete_docs_impl(collection: &CollectionKey) -> Result<(), String> {
+    let rule = get_state_rule(collection)?;
+
+    let keys: Vec<Key> = get_state_docs(collection, &rule)?.iter()
+        .map(|(key, _)| key.clone())
+        .collect();
+
+    for key in keys {
+        delete_state_doc(collection, &key, &rule)?;
+    }
+
+    Ok(())
+}

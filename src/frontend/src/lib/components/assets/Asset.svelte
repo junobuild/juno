@@ -16,7 +16,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
-	import DataDelete from '$lib/components/data/DataDelete.svelte';
+	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
 
 	const { store, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
@@ -74,10 +74,10 @@
 		{key ?? ''}
 
 		<svelte:fragment slot="actions">
-			<DataDelete {deleteData}>
+			<DataKeyDelete {deleteData}>
 				<svelte:fragment slot="title">{$i18n.asset.delete}</svelte:fragment>
 				{key}
-			</DataDelete>
+			</DataKeyDelete>
 		</svelte:fragment>
 	</DataHeader>
 </div>

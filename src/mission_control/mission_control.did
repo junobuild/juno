@@ -25,6 +25,10 @@ type DefiniteCanisterSettings = record {
   memory_allocation : nat;
   compute_allocation : nat;
 };
+type DepositCyclesArgs = record {
+  cycles_to_retain : nat;
+  destination_id : principal;
+};
 type Orbiter = record {
   updated_at : nat64;
   orbiter_id : principal;
@@ -71,6 +75,7 @@ service : () -> {
   del_orbiters_controllers : (vec principal, vec principal) -> ();
   del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
+  deposit_cycles : (DepositCyclesArgs) -> ();
   get_user : () -> (principal) query;
   list_mission_control_controllers : () -> (
       vec record { principal; Controller },

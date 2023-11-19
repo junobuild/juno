@@ -28,6 +28,10 @@ export interface DefiniteCanisterSettings {
 	memory_allocation: bigint;
 	compute_allocation: bigint;
 }
+export interface DepositCyclesArgs {
+	cycles_to_retain: bigint;
+	destination_id: Principal;
+}
 export interface Orbiter {
 	updated_at: bigint;
 	orbiter_id: Principal;
@@ -76,6 +80,7 @@ export interface _SERVICE {
 	del_orbiters_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	del_satellite: ActorMethod<[Principal, bigint], undefined>;
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
+	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_user: ActorMethod<[], Principal>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_mission_control_statuses: ActorMethod<[], Array<[bigint, Result]>>;

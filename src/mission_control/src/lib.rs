@@ -45,7 +45,10 @@ use segments::store::{
     get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
     set_satellite_metadata as set_satellite_metadata_store,
 };
-use shared::types::interface::{MissionControlArgs, SetController, StatusesArgs};
+use shared::ic::deposit_cycles as deposit_cycles_shared;
+use shared::types::interface::{
+    DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
+};
 use shared::types::state::{
     ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
 };
@@ -293,6 +296,13 @@ fn list_mission_control_controllers() -> Controllers {
 ///
 /// Mgmt
 ///
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn deposit_cycles(args: DepositCyclesArgs) {
+    deposit_cycles_shared(args)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
 
 #[query]
 fn version() -> String {

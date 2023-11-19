@@ -5,6 +5,7 @@
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 	import { fade } from 'svelte/transition';
 	import { createEventDispatcher } from 'svelte';
+	import {DEV_FEATURES} from "$lib/constants/constants";
 
 	export let canister: Canister | undefined = undefined;
 
@@ -17,7 +18,7 @@
 		nonNullish(canister) && nonNullish(canister.data) && canister.data.status === 'running';
 </script>
 
-{#if enabled}
+{#if enabled && DEV_FEATURES}
 	<div in:fade>
 		<button class="menu" on:click={onDelete}><IconDelete /> {$i18n.core.delete}</button>
 	</div>

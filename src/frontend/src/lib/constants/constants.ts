@@ -25,3 +25,5 @@ export const CYCLES_WARNING = 500_000_000_000n;
 export const ONE_TRILLION = 1_000_000_000_000;
 
 export const PAGINATION = 10n;
+
+export const DEV_FEATURES = import.meta.env.VITE_DEV_FEATURES === 'true';

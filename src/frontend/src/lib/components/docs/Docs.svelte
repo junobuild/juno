@@ -20,6 +20,7 @@
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
+	import { DEV_FEATURES } from '$lib/constants/constants';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -83,8 +84,6 @@
 			await list();
 		})();
 
-	const ADD_DOCUMENT_FEATURE = import.meta.env.VITE_DEV_FEATURES === 'true';
-
 	/**
 	 * Delete data
 	 */
@@ -102,10 +101,12 @@
 		{$i18n.datastore.documents}
 
 		<svelte:fragment slot="actions">
-			<DataCollectionDelete {deleteData}>
-				<svelte:fragment slot="title">{$i18n.document.delete_all}</svelte:fragment>
-				{$i18n.core.are_you_sure}
-			</DataCollectionDelete>
+			{#if DEV_FEATURES}
+				<DataCollectionDelete {deleteData}>
+					<svelte:fragment slot="title">{$i18n.document.delete_all}</svelte:fragment>
+					{$i18n.core.are_you_sure}
+				</DataCollectionDelete>
+			{/if}
 		</svelte:fragment>
 	</DataCollectionHeader>
 </div>
@@ -123,7 +124,7 @@
 				</CollectionEmpty>
 			{/if}
 
-			{#if ADD_DOCUMENT_FEATURE}
+			{#if DEV_FEATURES}
 				<button
 					class="text action start"
 					on:click={() => docsStore.set({ key: undefined, data: undefined, action: 'create' })}

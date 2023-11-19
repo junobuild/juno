@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -10,6 +9,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import type { Principal } from '@dfinity/principal';
 	import { listParamsStore } from '$lib/stores/data.store';
+	import { emit } from '$lib/utils/events.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -50,6 +50,8 @@
 		}
 
 		close();
+
+		emit({ message: 'junoDelete' });
 
 		busy.stop();
 	};

@@ -8,6 +8,8 @@
 	let button: HTMLButtonElement | undefined;
 </script>
 
+<svelte:window on:junoDelete={() => (visible = false)} />
+
 <button
 	class="icon"
 	aria-label={$i18n.core.more}

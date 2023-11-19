@@ -9,6 +9,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 
+	// eslint-disable-next-line no-undef
 	const { store }: DataContext<T> = getContext<DataContext<T>>(DATA_CONTEXT_KEY);
 
 	let action: DataStoreAction | undefined;

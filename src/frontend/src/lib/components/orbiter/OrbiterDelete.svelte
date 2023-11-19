@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import type { Canister } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 	import { createEventDispatcher } from 'svelte';

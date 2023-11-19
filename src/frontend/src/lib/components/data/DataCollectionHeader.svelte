@@ -1,7 +1,6 @@
 <script lang="ts">
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import DataFilter from '$lib/components/data/DataFilter.svelte';
-	import DataActions from '$lib/components/data/DataActions.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { getContext } from 'svelte';
 	import { nonNullish } from '@dfinity/utils';

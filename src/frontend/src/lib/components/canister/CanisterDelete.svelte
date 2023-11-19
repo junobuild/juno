@@ -5,7 +5,7 @@
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 	import { fade } from 'svelte/transition';
 	import { createEventDispatcher } from 'svelte';
-	import {DEV_FEATURES} from "$lib/constants/constants";
+	import { DEV_FEATURES } from '$lib/constants/constants';
 
 	export let canister: Canister | undefined = undefined;
 

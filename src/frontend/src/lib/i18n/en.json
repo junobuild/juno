@@ -77,7 +77,8 @@
 		"start_tile": "Restart {0}",
 		"start_info": "Do you want to resume your {0}?",
 		"start_success": "{0} resumed.",
-		"delete_success": "{0} deleted."
+		"delete_success": "{0} deleted.",
+		"transfer_cycles": "Transfer cycles"
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",

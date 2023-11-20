@@ -5,7 +5,8 @@
 	import type { Canister } from '$lib/types/canister';
 	import Actions from '$lib/components/core/Actions.svelte';
 	import { emit } from '$lib/utils/events.utils';
-	import CanisterActions from '$lib/components/canister/CanisterActions.svelte';
+	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
+	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 
 	export let satellite: Satellite;
 
@@ -45,11 +46,9 @@
 <Actions bind:visible>
 	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
 
+	<CanisterTransferCycles {canister} on:click={() => onCanisterAction('transfer_cycles_satellite')} />
+
 	<CanisterStopStart {canister} segment="satellite" on:junoStop={close} on:junoStart={close} />
 
-	<CanisterActions
-		{canister}
-		on:junoDelete={() => onCanisterAction('delete_satellite')}
-		on:junoTransferCycles={() => onCanisterAction('transfer_cycles_satellite')}
-	/>
+	<CanisterDelete {canister} on:click={() => onCanisterAction('delete_satellite')} />
 </Actions>

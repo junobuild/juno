@@ -82,6 +82,7 @@ interface I18nCanisters {
 	start_info: string;
 	start_success: string;
 	delete_success: string;
+	transfer_cycles: string;
 }
 
 interface I18nSign_in {

@@ -77,7 +77,8 @@
 		"start_tile": "重启 {0}",
 		"start_info": "你想恢复你的 {0}?",
 		"start_success": "{0} 已恢复.",
-		"delete_success": "{0} 已删除."
+		"delete_success": "{0} 已删除.",
+		"transfer_cycles": "Transfer cycles"
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",

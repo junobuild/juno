@@ -35,14 +35,11 @@ export interface JunoModalCustomDomainDetail {
 	satellite: Satellite;
 }
 
-export interface JunoModalDelete {
+export interface JunoModalCycles {
 	cycles: bigint;
 }
 
-export type JunoModalDeleteSatelliteDetail = JunoModalDelete & JunoModalSatelliteDetail;
-
-// eslint-disable-next-line @typescript-eslint/no-empty-interface
-export interface JunoModalDeleteOrbiterDetail extends JunoModalDelete {}
+export type JunoModalCyclesSatelliteDetail = JunoModalCycles & JunoModalSatelliteDetail;
 
 export interface JunoModalCreateControllerDetail {
 	add: (
@@ -63,7 +60,7 @@ export type JunoModalDetail =
 	| JunoModalCreateSegmentDetail
 	| JunoModalCustomDomainDetail
 	| JunoModalCreateControllerDetail
-	| JunoModalDeleteSatelliteDetail;
+	| JunoModalCyclesSatelliteDetail;
 
 export interface JunoModal {
 	type:
@@ -71,6 +68,9 @@ export interface JunoModal {
 		| 'create_orbiter'
 		| 'delete_satellite'
 		| 'delete_orbiter'
+		| 'transfer_cycles_satellite'
+		| 'transfer_cycles_mission_control'
+		| 'transfer_cycles_orbiter'
 		| 'topup_satellite'
 		| 'topup_mission_control'
 		| 'topup_orbiter'

@@ -13,6 +13,9 @@
 	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
 	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
 	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
+	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
+	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
+	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 
@@ -67,4 +70,16 @@
 
 {#if modal?.type === 'delete_orbiter' && nonNullish(modal.detail)}
 	<OrbiterDeleteModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'transfer_cycles_satellite' && nonNullish(modal.detail)}
+	<SatelliteTransferCyclesModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'transfer_cycles_orbiter' && nonNullish(modal.detail)}
+	<OrbiterTransferCyclesModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'transfer_cycles_mission_control' && nonNullish(modal.detail)}
+	<MissionControlTransferCyclesModal on:junoClose={close} detail={modal.detail} />
 {/if}

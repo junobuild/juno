@@ -79,3 +79,19 @@ export const orbiterVersion = async ({ orbiterId }: { orbiterId: Principal }): P
 	const actor = await getOrbiterActor(orbiterId);
 	return actor.version();
 };
+
+export const depositCycles = async ({
+	orbiterId,
+	cycles,
+	destinationId: destination_id
+}: {
+	orbiterId: Principal;
+	cycles: bigint;
+	destinationId: Principal;
+}) => {
+	const { deposit_cycles } = await getOrbiterActor(orbiterId);
+	return deposit_cycles({
+		cycles,
+		destination_id
+	});
+};

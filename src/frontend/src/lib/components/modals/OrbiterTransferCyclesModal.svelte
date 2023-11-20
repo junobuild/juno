@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
-	import { deleteOrbiter } from '$lib/api/mission-control.api';
 	import type { Principal } from '@dfinity/principal';
-	import CanisterDeleteModal from '$lib/components/modals/CanisterDeleteModal.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
+	import { depositCycles } from '$lib/api/orbiter.api';
 
 	export let detail: JunoModalDetail;
 
@@ -12,14 +12,20 @@
 
 	$: ({ cycles: currentCycles } = detail as JunoModalCycles);
 
-	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
-	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
-		deleteOrbiter({
+	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
+	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
+		depositCycles({
 			...params,
 			orbiterId: $orbiterStore!.orbiter_id
 		});
 </script>
 
 {#if nonNullish($orbiterStore)}
-	<CanisterDeleteModal {deleteFn} {currentCycles} on:junoClose segment="analytics" />
+	<CanisterTransferCyclesModal
+		{transferFn}
+		{currentCycles}
+		canisterId={$orbiterStore.orbiter_id}
+		on:junoClose
+		segment="analytics"
+	/>
 {/if}

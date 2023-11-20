@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { JunoModalCyclesSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { deleteSatellite } from '$lib/api/mission-control.api';
 	import type { Principal } from '@dfinity/principal';
-	import CanisterDeleteModal from '$lib/components/modals/CanisterDeleteModal.svelte';
+	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
+	import { depositCycles } from '$lib/api/satellites.api';
 
 	export let detail: JunoModalDetail;
 
@@ -12,12 +12,18 @@
 
 	$: ({ satellite, cycles: currentCycles } = detail as JunoModalCyclesSatelliteDetail);
 
-	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
-	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
-		deleteSatellite({
+	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
+	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
+		depositCycles({
 			...params,
 			satelliteId: satellite.satellite_id
 		});
 </script>
 
-<CanisterDeleteModal {deleteFn} {currentCycles} on:junoClose segment="satellite" />
+<CanisterTransferCyclesModal
+	{transferFn}
+	{currentCycles}
+	canisterId={satellite.satellite_id}
+	on:junoClose
+	segment="satellite"
+/>

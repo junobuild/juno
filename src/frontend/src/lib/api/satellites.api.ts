@@ -211,3 +211,19 @@ export const deleteAssets = async ({
 	const { del_assets } = await getSatelliteActor(satelliteId);
 	return del_assets(collection);
 };
+
+export const depositCycles = async ({
+	satelliteId,
+	cycles,
+	destinationId: destination_id
+}: {
+	satelliteId: Principal;
+	cycles: bigint;
+	destinationId: Principal;
+}) => {
+	const { deposit_cycles } = await getSatelliteActor(satelliteId);
+	return deposit_cycles({
+		cycles,
+		destination_id
+	});
+};

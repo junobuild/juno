@@ -46,7 +46,10 @@
 <Actions bind:visible>
 	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
 
-	<CanisterTransferCycles {canister} on:click={() => onCanisterAction('transfer_cycles_satellite')} />
+	<CanisterTransferCycles
+		{canister}
+		on:click={() => onCanisterAction('transfer_cycles_satellite')}
+	/>
 
 	<CanisterStopStart {canister} segment="satellite" on:junoStop={close} on:junoStart={close} />
 

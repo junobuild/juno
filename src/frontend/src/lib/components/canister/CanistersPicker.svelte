@@ -7,8 +7,8 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import {onMount} from "svelte";
-	import {loadOrbiters} from "$lib/services/orbiters.services";
+	import { onMount } from 'svelte';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
 
 	export let excludeSegmentId: Principal;
 	export let segmentIdText: string | undefined = undefined;
@@ -21,7 +21,7 @@
 		({ satellite_id }) => satellite_id.toText() !== excludeSegmentIdText
 	);
 
-	onMount(async () => await loadOrbiters({ missionControl: $missionControlStore, reload: true }))
+	onMount(async () => await loadOrbiters({ missionControl: $missionControlStore, reload: true }));
 </script>
 
 <select id="segment" name="segment" bind:value={segmentIdText}>

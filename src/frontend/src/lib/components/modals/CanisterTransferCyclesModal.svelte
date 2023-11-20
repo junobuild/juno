@@ -5,12 +5,10 @@
 	import { createEventDispatcher } from 'svelte';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import Value from '$lib/components/ui/Value.svelte';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { Principal } from '@dfinity/principal';
 	import { ONE_TRILLION } from '$lib/constants/constants';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -21,11 +19,7 @@
 	export let canisterId: Principal;
 	export let segment: 'satellite' | 'analytics' | 'mission_control';
 	export let currentCycles: bigint;
-	export let transferFn: (params: {
-		missionControlId: Principal;
-		cycles: bigint;
-		destinationId: Principal;
-	}) => Promise<void>;
+	export let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
 
@@ -56,13 +50,6 @@
 			return;
 		}
 
-		if (isNullish($missionControlStore)) {
-			toasts.error({
-				text: $i18n.errors.no_mission_control
-			});
-			return;
-		}
-
 		if (cycles > currentCycles) {
 			toasts.error({
 				text: $i18n.errors.invalid_cycles_to_transfer
@@ -83,7 +70,6 @@
 
 		try {
 			await transferFn({
-				missionControlId: $missionControlStore,
 				cycles,
 				destinationId: Principal.fromText(destinationId)
 			});

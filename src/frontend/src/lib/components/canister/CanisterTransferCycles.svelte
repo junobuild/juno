@@ -2,7 +2,7 @@
 	import CanisterAction from '$lib/components/canister/CanisterAction.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconMoveUp from '$lib/components/icons/IconMoveUp.svelte';
-	import type {Canister} from "$lib/types/canister";
+	import type { Canister } from '$lib/types/canister';
 
 	export let canister: Canister | undefined = undefined;
 </script>

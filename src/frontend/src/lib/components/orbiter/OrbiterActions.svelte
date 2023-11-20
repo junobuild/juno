@@ -4,9 +4,9 @@
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import type { Canister } from '$lib/types/canister';
-	import {emit} from "$lib/utils/events.utils";
-	import CanisterDelete from "$lib/components/canister/CanisterDelete.svelte";
-	import CanisterTransferCycles from "$lib/components/canister/CanisterTransferCycles.svelte";
+	import { emit } from '$lib/utils/events.utils';
+	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
+	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 
 	export let orbiter: Orbiter;
 
@@ -29,7 +29,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'delete_orbiter',
+				type,
 				detail: {
 					cycles: canister?.data?.cycles ?? 0n
 				}

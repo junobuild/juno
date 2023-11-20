@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
+	import type { JunoModalCyclesSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { deleteSatellite } from '$lib/api/mission-control.api';
 	import type { Principal } from '@dfinity/principal';
@@ -10,7 +10,7 @@
 	let satellite: Satellite;
 	let currentCycles: bigint;
 
-	$: ({ satellite, cycles: currentCycles } = detail as JunoModalDeleteSatelliteDetail);
+	$: ({ satellite, cycles: currentCycles } = detail as JunoModalCyclesSatelliteDetail);
 
 	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
 	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>

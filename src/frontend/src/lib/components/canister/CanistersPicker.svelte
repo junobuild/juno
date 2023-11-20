@@ -9,6 +9,7 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { onMount } from 'svelte';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { loadSatellites } from '$lib/services/satellites.services';
 
 	export let excludeSegmentId: Principal;
 	export let segmentIdText: string | undefined = undefined;
@@ -21,7 +22,13 @@
 		({ satellite_id }) => satellite_id.toText() !== excludeSegmentIdText
 	);
 
-	onMount(async () => await loadOrbiters({ missionControl: $missionControlStore, reload: true }));
+	onMount(
+		async () =>
+			await Promise.all([
+				loadOrbiters({ missionControl: $missionControlStore }),
+				loadSatellites({ missionControl: $missionControlStore })
+			])
+	);
 </script>
 
 <select id="segment" name="segment" bind:value={segmentIdText}>

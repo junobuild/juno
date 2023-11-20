@@ -45,7 +45,8 @@
 		"top_up_in_progress": "充值中...",
 		"delete_in_progress": "正在删除...",
 		"upgrade_in_progress": "升级中...",
-		"download_in_progress": "下载中...",
+		"download_in_progress": "下载中...",,
+		"transfer_cycles_in_progress": "Transferring cycles in progress...",
 		"amount": "ICP数量",
 		"amount_cycles": "Amount in T Cycles",
 		"top_up_title": "充值 {0}",
@@ -69,7 +70,6 @@
 		"cycles_to_retain": "T Cycles 保留 ",
 		"cycles_to_transfer": "{0} T Cycles 会被转移到您的 mission control.",
 		"delete_info": "你确定要删除你的 {0}? 这个操作是不可逆的.",
-		"invalid_cycles_to_retain": "无效的可保留 cycles 数量",
 		"stop_title": "停止 {0}",
 		"stop_info": "确认要停止你的 {0}?",
 		"stop_explanation": "请注意，停止的{0}仍然会消耗cycles用于内存的使用，包括其他必要的响应知道cycle归零，之后它将会被删除",
@@ -84,7 +84,8 @@
 		"select_destination": "Select the destination",
 		"destination": "Destination for the transfer",
 		"your_balance": "Your current {0} balance is {1} T Cycles.",
-		"cycles_will_remain": "{0} T Cycles will remain on your {1}."
+		"cycles_will_remain": "{0} T Cycles will remain on your {1}.",
+		"transfer_cycles_done": "Cycles transferred!"
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",
@@ -281,7 +282,10 @@
 		"orbiter_configuration_unexpected": "编辑配置时出现意外错误.",
 		"orbiter_configuration_listing": "获取配置时出错.",
 		"transactions_next": "获取下一部分事务时出错.",
-		"transactions_export": "导出事务时出现异常错误."
+		"transactions_export": "导出事务时出现异常错误.",
+		"invalid_cycles_to_transfer": "Invalid amount of cycles to transfer.",
+		"invalid_cycles_destination": "Invalid destination to transfer the cycles.",
+		"transfer_cycles": "Unexpected error(s) while transferring the cycles."
 	},
 	"document": {
 		"owner": "拥有者",

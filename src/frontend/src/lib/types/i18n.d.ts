@@ -50,6 +50,7 @@ interface I18nCanisters {
 	delete_in_progress: string;
 	upgrade_in_progress: string;
 	download_in_progress: string;
+	transfer_cycles_in_progress: string;
 	amount: string;
 	amount_cycles: string;
 	top_up_title: string;
@@ -73,7 +74,6 @@ interface I18nCanisters {
 	cycles_to_retain: string;
 	cycles_to_transfer: string;
 	delete_info: string;
-	invalid_cycles_to_retain: string;
 	stop_title: string;
 	stop_info: string;
 	stop_explanation: string;
@@ -89,6 +89,7 @@ interface I18nCanisters {
 	destination: string;
 	your_balance: string;
 	cycles_will_remain: string;
+	transfer_cycles_done: string;
 }
 
 interface I18nSign_in {
@@ -297,6 +298,9 @@ interface I18nErrors {
 	orbiter_configuration_listing: string;
 	transactions_next: string;
 	transactions_export: string;
+	invalid_cycles_to_transfer: string;
+	invalid_cycles_destination: string;
+	transfer_cycles: string;
 }
 
 interface I18nDocument {

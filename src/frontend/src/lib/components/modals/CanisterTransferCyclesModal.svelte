@@ -64,15 +64,14 @@
 
 		if (cycles > currentCycles) {
 			toasts.error({
-				text: $i18n.canisters.invalid_cycles_to_retain
+				text: $i18n.errors.invalid_cycles_to_transfer
 			});
 			return;
 		}
 
-		if (isNullish(destinationId)) {
-			// TODO
+		if (isNullish(destinationId) || destinationId === "") {
 			toasts.error({
-				text: $i18n.canisters.invalid_cycles_to_retain
+				text: $i18n.errors.invalid_cycles_destination
 			});
 			return;
 		}
@@ -94,9 +93,8 @@
 		} catch (err: unknown) {
 			steps = 'error';
 
-			// TODO
 			toasts.error({
-				text: $i18n.errors.canister_delete,
+				text: $i18n.errors.transfer_cycles,
 				detail: err
 			});
 		}
@@ -108,12 +106,12 @@
 <Modal on:junoClose>
 	{#if steps === 'ready'}
 		<div class="msg">
-			<slot name="outro" />
+			<p>{$i18n.canisters.transfer_cycles_done}</p>
 			<button on:click={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
-			<p>{$i18n.canisters.delete_in_progress}</p>
+			<p>{$i18n.canisters.transfer_cycles_in_progress}</p>
 		</SpinnerModal>
 	{:else}
 		<form on:submit|preventDefault={onSubmit}>

@@ -65,7 +65,7 @@
 
 		if (cyclesToDeposit > currentCycles || cyclesToDeposit === 0n) {
 			toasts.error({
-				text: $i18n.canisters.invalid_cycles_to_retain
+				text: $i18n.errors.invalid_cycles_to_transfer
 			});
 			return;
 		}

@@ -47,6 +47,7 @@
 		"upgrade_in_progress": "升级中...",
 		"download_in_progress": "下载中...",
 		"amount": "ICP数量",
+		"amount_cycles": "Amount in T Cycles",
 		"top_up_title": "充值 {0}",
 		"upgrade_title": "升级 {0}",
 		"upgrade_description": "你的 {0} 将会升级到版本 <strong>v{1}</strong>.",
@@ -78,7 +79,12 @@
 		"start_info": "你想恢复你的 {0}?",
 		"start_success": "{0} 已恢复.",
 		"delete_success": "{0} 已删除.",
-		"transfer_cycles": "Transfer cycles"
+		"transfer_cycles": "Transfer cycles",
+		"transfer_cycles_description": "You can manage your cycles by moving them between your satellite, mission control, and analytics, ensuring your resources are where you need them most",
+		"select_destination": "Select the destination",
+		"destination": "Destination for the transfer",
+		"your_balance": "Your current {0} balance is {1} T Cycles.",
+		"cycles_will_remain": "{0} T Cycles will remain on your {1}."
 	},
 	"sign_in": {
 		"title": "创建你的第一个satellite",

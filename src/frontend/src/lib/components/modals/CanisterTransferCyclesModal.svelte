@@ -9,7 +9,7 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish } from '@dfinity/utils';
+	import {isNullish, nonNullish} from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { Principal } from '@dfinity/principal';
 	import { ONE_TRILLION } from '$lib/constants/constants';
@@ -39,13 +39,13 @@
 		cycles = BigInt(parseFloat(tCycles ?? 0) * ONE_TRILLION);
 	})();
 
-	let depositCycles: bigint;
-	$: depositCycles = currentCycles - cycles > 0 ? currentCycles - cycles : 0n;
-
 	let destinationId: string | undefined;
 
 	let validConfirm = false;
-	$: validConfirm = cycles > 0 && cycles <= currentCycles;
+	$: validConfirm = cycles > 0 && cycles <= currentCycles && nonNullish(destinationId) && destinationId !== "";
+
+	let remainingCycles: bigint;
+	$: remainingCycles = currentCycles - cycles > 0 ? currentCycles - cycles : 0n;
 
 	const onSubmit = async () => {
 		if (!$authSignedInStore) {
@@ -118,29 +118,15 @@
 	{:else}
 		<form on:submit|preventDefault={onSubmit}>
 			<h2>
-				{@html i18nFormat($i18n.canisters.delete_title, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					}
-				])}
+				{$i18n.canisters.transfer_cycles}
 			</h2>
 
 			<p>
-				{@html i18nFormat($i18n.canisters.delete_explanation, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					},
-					{
-						placeholder: '{1}',
-						value: segment.replace('_', ' ')
-					}
-				])}
+				{$i18n.canisters.transfer_cycles_description}
 			</p>
 
 			<p>
-				{@html i18nFormat($i18n.canisters.delete_customization, [
+				{@html i18nFormat($i18n.canisters.your_balance, [
 					{
 						placeholder: '{0}',
 						value: segment.replace('_', ' ')
@@ -153,53 +139,47 @@
 			</p>
 
 			<Value>
-				<svelte:fragment slot="label">{$i18n.canisters.cycles_to_retain}</svelte:fragment>
+				<svelte:fragment slot="label">{$i18n.canisters.destination}</svelte:fragment>
 
 				<CanistersPicker excludeSegmentId={canisterId} bind:segmentIdText={destinationId} />
 			</Value>
 
 			<Value ref="cycles">
-				<svelte:fragment slot="label">{$i18n.canisters.cycles_to_retain}</svelte:fragment>
+				<svelte:fragment slot="label">T Cycles</svelte:fragment>
 
 				<Input
 					name="cycles"
 					inputType="icp"
 					required
 					bind:value={tCycles}
-					placeholder={$i18n.canisters.amount}
+					placeholder={$i18n.canisters.amount_cycles}
 				/>
 			</Value>
 
 			<p>
 				<small
-					>{@html i18nFormat($i18n.canisters.cycles_to_transfer, [
-						{
-							placeholder: '{0}',
-							value: formatTCycles(depositCycles)
-						}
-					])}</small
+				>{@html i18nFormat($i18n.canisters.cycles_will_remain, [
+					{
+						placeholder: '{0}',
+						value: formatTCycles(remainingCycles)
+					},
+					{
+						placeholder: '{1}',
+						value: segment.replace('_', ' ')
+					}
+				])}</small
 				>
 			</p>
 
-			<p class="warning">
-				<IconWarning />
-				{@html i18nFormat($i18n.canisters.delete_info, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					}
-				])}
-			</p>
-
 			<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
-				{$i18n.core.delete}
+				{$i18n.core.submit}
 			</button>
 		</form>
 	{/if}
 </Modal>
 
 <style lang="scss">
-	.warning {
-		padding: var(--padding) 0 0;
+	button {
+		margin: var(--padding-2x) 0 0;
 	}
 </style>

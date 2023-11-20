@@ -51,6 +51,7 @@ interface I18nCanisters {
 	upgrade_in_progress: string;
 	download_in_progress: string;
 	amount: string;
+	amount_cycles: string;
 	top_up_title: string;
 	upgrade_title: string;
 	upgrade_description: string;
@@ -83,6 +84,11 @@ interface I18nCanisters {
 	start_success: string;
 	delete_success: string;
 	transfer_cycles: string;
+	transfer_cycles_description: string;
+	select_destination: string;
+	destination: string;
+	your_balance: string;
+	cycles_will_remain: string;
 }
 
 interface I18nSign_in {

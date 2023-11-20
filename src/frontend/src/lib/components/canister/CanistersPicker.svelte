@@ -7,6 +7,8 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import {onMount} from "svelte";
+	import {loadOrbiters} from "$lib/services/orbiters.services";
 
 	export let excludeSegmentId: Principal;
 	export let segmentIdText: string | undefined = undefined;
@@ -18,11 +20,13 @@
 	$: satellites = ($satellitesStore ?? []).filter(
 		({ satellite_id }) => satellite_id.toText() !== excludeSegmentIdText
 	);
+
+	onMount(async () => await loadOrbiters({ missionControl: $missionControlStore, reload: true }))
 </script>
 
 <select id="segment" name="segment" bind:value={segmentIdText}>
 	{#if isNullish(segmentIdText)}
-		<option value={undefined}>{$i18n.analytics.all_satellites}</option>
+		<option value={undefined}>{$i18n.canisters.select_destination}</option>
 	{/if}
 
 	{#if nonNullish($missionControlStore) && $missionControlStore.toText() !== excludeSegmentIdText}
@@ -39,3 +43,9 @@
 		<option value={satellite.satellite_id.toText()}>{satName}</option>
 	{/each}
 </select>
+
+<style lang="scss">
+	select {
+		margin: 0 0 var(--padding-4x);
+	}
+</style>

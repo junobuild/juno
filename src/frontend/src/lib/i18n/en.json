@@ -47,6 +47,7 @@
 		"upgrade_in_progress": "Upgrade in progress...",
 		"download_in_progress": "Download in progress...",
 		"amount": "Amount in ICP",
+		"amount_cycles": "Amount in T Cycles",
 		"top_up_title": "Top-up {0}",
 		"upgrade_title": "Upgrade {0}",
 		"upgrade_description": "Your {0} will be upgraded to version <strong>v{1}</strong>.",
@@ -78,7 +79,12 @@
 		"start_info": "Do you want to resume your {0}?",
 		"start_success": "{0} resumed.",
 		"delete_success": "{0} deleted.",
-		"transfer_cycles": "Transfer cycles"
+		"transfer_cycles": "Transfer cycles",
+		"transfer_cycles_description": "You can manage your cycles by moving them between your satellite, mission control, and analytics, ensuring your resources are where you need them most",
+		"select_destination": "Select the destination",
+		"destination": "Destination for the transfer",
+		"your_balance": "Your current {0} balance is {1} T Cycles.",
+		"cycles_will_remain": "{0} T Cycles will remain on your {1}."
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",

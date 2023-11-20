@@ -256,3 +256,19 @@ export const deleteOrbiter = async ({
 	const { del_orbiter } = await getMissionControlActor(missionControlId);
 	await del_orbiter(orbiterId, cyclesToDeposit);
 };
+
+export const depositCycles = async ({
+	missionControlId,
+	cycles,
+	destinationId: destination_id
+}: {
+	missionControlId: Principal;
+	cycles: bigint;
+	destinationId: Principal;
+}) => {
+	const { deposit_cycles } = await getMissionControlActor(missionControlId);
+	return deposit_cycles({
+		cycles,
+		destination_id
+	});
+};

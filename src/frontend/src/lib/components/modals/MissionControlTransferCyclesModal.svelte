@@ -2,9 +2,9 @@
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
-	import { depositCycles } from '$lib/api/orbiter.api';
+	import { depositCycles } from '$lib/api/mission-control.api';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
 
 	export let detail: JunoModalDetail;
 
@@ -16,16 +16,16 @@
 	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
 		depositCycles({
 			...params,
-			orbiterId: $orbiterStore!.orbiter_id
+			missionControlId: $missionControlStore!
 		});
 </script>
 
-{#if nonNullish($orbiterStore)}
+{#if nonNullish($missionControlStore)}
 	<CanisterTransferCyclesModal
 		{transferFn}
 		{currentCycles}
-		canisterId={$orbiterStore.orbiter_id}
+		canisterId={$missionControlStore}
 		on:junoClose
-		segment="analytics"
+		segment="mission_control"
 	/>
 {/if}

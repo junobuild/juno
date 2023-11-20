@@ -30,9 +30,9 @@
 
 		{#if nonNullish($missionControlStore)}
 			<CanisterOverview canisterId={$missionControlStore} />
-		{/if}
 
-		<MissionControlActions />
+			<MissionControlActions missionControlId={$missionControlStore} />
+		{/if}
 	</div>
 {/if}
 

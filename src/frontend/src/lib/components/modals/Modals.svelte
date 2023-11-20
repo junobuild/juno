@@ -15,7 +15,7 @@
 	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
 	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
-	import MissionControlTransferCyclesModal from "$lib/components/modals/MissionControlTransferCyclesModal.svelte";
+	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 

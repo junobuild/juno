@@ -9,7 +9,7 @@
 	import Input from '$lib/components/ui/Input.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import {isNullish, nonNullish} from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { Principal } from '@dfinity/principal';
 	import { ONE_TRILLION } from '$lib/constants/constants';
@@ -42,7 +42,8 @@
 	let destinationId: string | undefined;
 
 	let validConfirm = false;
-	$: validConfirm = cycles > 0 && cycles <= currentCycles && nonNullish(destinationId) && destinationId !== "";
+	$: validConfirm =
+		cycles > 0 && cycles <= currentCycles && nonNullish(destinationId) && destinationId !== '';
 
 	let remainingCycles: bigint;
 	$: remainingCycles = currentCycles - cycles > 0 ? currentCycles - cycles : 0n;
@@ -69,7 +70,7 @@
 			return;
 		}
 
-		if (isNullish(destinationId) || destinationId === "") {
+		if (isNullish(destinationId) || destinationId === '') {
 			toasts.error({
 				text: $i18n.errors.invalid_cycles_destination
 			});
@@ -156,16 +157,16 @@
 
 			<p>
 				<small
-				>{@html i18nFormat($i18n.canisters.cycles_will_remain, [
-					{
-						placeholder: '{0}',
-						value: formatTCycles(remainingCycles)
-					},
-					{
-						placeholder: '{1}',
-						value: segment.replace('_', ' ')
-					}
-				])}</small
+					>{@html i18nFormat($i18n.canisters.cycles_will_remain, [
+						{
+							placeholder: '{0}',
+							value: formatTCycles(remainingCycles)
+						},
+						{
+							placeholder: '{1}',
+							value: segment.replace('_', ' ')
+						}
+					])}</small
 				>
 			</p>
 
@@ -177,7 +178,17 @@
 </Modal>
 
 <style lang="scss">
+	@use '../../styles/mixins/overlay';
+
 	button {
 		margin: var(--padding-2x) 0 0;
+	}
+
+	.msg {
+		@include overlay.message;
+
+		p {
+			margin: 0;
+		}
 	}
 </style>

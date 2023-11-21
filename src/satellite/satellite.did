@@ -168,6 +168,7 @@ service : () -> {
   del_custom_domain : (text) -> ();
   del_doc : (text, text, DelDoc) -> ();
   del_docs : (text) -> ();
+  del_many_docs : (vec record { text; text; DelDoc }) -> ();
   del_rule : (RulesType, text, DelDoc) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
   get_config : () -> (Config);
@@ -188,6 +189,9 @@ service : () -> {
     );
   set_custom_domain : (text, opt text) -> ();
   set_doc : (text, text, SetDoc) -> (Doc);
+  set_many_docs : (vec record { text; text; SetDoc }) -> (
+      vec record { text; Doc },
+    );
   set_rule : (RulesType, text, SetRule) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;

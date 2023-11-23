@@ -185,12 +185,11 @@ impl CertifiedAssetHashes {
                 self.delete_from_tree_v2(&ROOT_PATH.to_string(), WILDCARD_MATCH_TERMINATOR);
             }
 
-            // TODO: RESPONSE_STATUS_CODE_404 service worker does not support 404 yet
             self.insert_rewrite_into_tree_v2(
                 &ROOT_PATH.to_string(),
                 headers,
                 sha256,
-                RESPONSE_STATUS_CODE_200,
+                RESPONSE_STATUS_CODE_404,
             );
         }
     }

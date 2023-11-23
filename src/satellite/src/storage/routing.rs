@@ -161,7 +161,6 @@ fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
         // Search for potential /404.html to rewrite to
         let asset_404: Option<(Asset, Memory)> = get_public_asset(ROOT_404_HTML.to_string(), None);
 
-        // TODO: RESPONSE_STATUS_CODE_404 service worker does not support 404 yet
         match asset_404 {
             None => (),
             Some(_) => {
@@ -169,7 +168,7 @@ fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
                     url: path.clone(),
                     asset: asset_404,
                     source: ROOT_PATH.to_string(),
-                    status_code: RESPONSE_STATUS_CODE_200,
+                    status_code: RESPONSE_STATUS_CODE_404,
                 }));
             }
         }

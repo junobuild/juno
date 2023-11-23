@@ -473,6 +473,13 @@ fn del_asset(collection: CollectionKey, full_path: String) {
     }
 }
 
+#[update]
+fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
+    for (collection, full_path) in assets {
+        del_asset(collection, full_path);
+    }
+}
+
 #[update(guard = "caller_is_admin_controller")]
 fn del_assets(collection: CollectionKey) {
     let result = delete_assets(&collection);

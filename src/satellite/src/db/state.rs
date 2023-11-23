@@ -172,7 +172,17 @@ fn get_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<Vec<(Key
         key: "".to_string(),
     };
 
-    let items: Vec<(StableKey, Doc)> = db.range(start_key..).collect();
+    // Source: https://github.com/frederikrothenberger
+    // 0u8 shall be use until char::MIN get standardized
+    let mut end_collection: String = collection.clone();
+    end_collection.push(char::from(0u8));
+
+    let end_key = StableKey {
+        collection: end_collection.clone(),
+        key: "".to_string(),
+    };
+
+    let items: Vec<(StableKey, Doc)> = db.range(start_key..end_key).collect();
 
     Ok(items
         .iter()

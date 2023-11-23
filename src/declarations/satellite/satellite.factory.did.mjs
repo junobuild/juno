@@ -198,6 +198,8 @@ export const idlFactory = ({ IDL }) => {
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		del_doc: IDL.Func([IDL.Text, IDL.Text, DelDoc], [], []),
 		del_docs: IDL.Func([IDL.Text], [], []),
+		del_many_assets: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
+		del_many_docs: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, DelDoc))], [], []),
 		del_rule: IDL.Func([RulesType, IDL.Text, DelDoc], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_config: IDL.Func([], [Config], []),
@@ -222,6 +224,11 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_doc: IDL.Func([IDL.Text, IDL.Text, SetDoc], [Doc], []),
+		set_many_docs: IDL.Func(
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, SetDoc))],
+			[IDL.Vec(IDL.Tuple(IDL.Text, Doc))],
+			[]
+		),
 		set_rule: IDL.Func([RulesType, IDL.Text, SetRule], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query'])

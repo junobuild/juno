@@ -41,7 +41,7 @@ use crate::storage::types::http_request::{
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
-use crate::types::core::CollectionKey;
+use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
 use crate::types::memory::Memory;
@@ -144,7 +144,7 @@ fn post_upgrade() {
 ///
 
 #[update]
-fn set_doc(collection: CollectionKey, key: String, doc: SetDoc) -> Doc {
+fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let caller = caller();
 
     let result = insert_doc(caller, collection, key, doc);
@@ -156,7 +156,7 @@ fn set_doc(collection: CollectionKey, key: String, doc: SetDoc) -> Doc {
 }
 
 #[query]
-fn get_doc(collection: CollectionKey, key: String) -> Option<Doc> {
+fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
     let caller = caller();
 
     let result = get_doc_store(caller, collection, key);
@@ -168,7 +168,7 @@ fn get_doc(collection: CollectionKey, key: String) -> Option<Doc> {
 }
 
 #[update]
-fn del_doc(collection: CollectionKey, key: String, doc: DelDoc) {
+fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let caller = caller();
 
     delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
@@ -183,6 +183,24 @@ fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> 
     match result {
         Ok(value) => value,
         Err(error) => trap(&error),
+    }
+}
+
+#[update]
+fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
+    let mut results: Vec<(Key, Doc)> = Vec::new();
+
+    for (collection, key, doc) in docs {
+        results.push((key.clone(), set_doc(collection, key, doc)));
+    }
+
+    results
+}
+
+#[update]
+fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
+    for (collection, key, doc) in docs {
+        del_doc(collection, key, doc);
     }
 }
 
@@ -452,6 +470,13 @@ fn del_asset(collection: CollectionKey, full_path: String) {
     match result {
         Ok(_) => (),
         Err(error) => trap(&["Asset cannot be deleted: ", &error].join("")),
+    }
+}
+
+#[update]
+fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
+    for (collection, full_path) in assets {
+        del_asset(collection, full_path);
     }
 }
 

@@ -198,6 +198,8 @@ export interface _SERVICE {
 	del_custom_domain: ActorMethod<[string], undefined>;
 	del_doc: ActorMethod<[string, string, DelDoc], undefined>;
 	del_docs: ActorMethod<[string], undefined>;
+	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
+	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
 	del_rule: ActorMethod<[RulesType, string, DelDoc], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_config: ActorMethod<[], Config>;
@@ -217,6 +219,7 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
+	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;

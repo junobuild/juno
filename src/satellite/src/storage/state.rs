@@ -1,3 +1,4 @@
+use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
@@ -255,7 +256,12 @@ fn get_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> Vec<A
         full_path: "".to_string(),
     };
 
-    let items: Vec<(StableKey, Asset)> = assets.range(start_key..).collect();
+    let end_key = StableKey {
+        collection: range_collection_end(collection).clone(),
+        full_path: "".to_string(),
+    };
+
+    let items: Vec<(StableKey, Asset)> = assets.range(start_key..end_key).collect();
 
     items.iter().map(|(_, asset)| asset.clone()).collect()
 }

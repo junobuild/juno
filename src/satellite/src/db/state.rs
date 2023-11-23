@@ -1,4 +1,5 @@
 use crate::db::types::state::{DbHeap, DbStable, Doc, StableKey};
+use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
@@ -172,13 +173,8 @@ fn get_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<Vec<(Key
         key: "".to_string(),
     };
 
-    // Source: https://github.com/frederikrothenberger
-    // 0u8 shall be use until char::MIN get standardized
-    let mut end_collection: String = collection.clone();
-    end_collection.push(char::from(0u8));
-
     let end_key = StableKey {
-        collection: end_collection.clone(),
+        collection: range_collection_end(collection).clone(),
         key: "".to_string(),
     };
 

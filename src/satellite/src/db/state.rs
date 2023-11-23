@@ -1,4 +1,5 @@
 use crate::db::types::state::{DbHeap, DbStable, Doc, StableKey};
+use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
@@ -172,7 +173,12 @@ fn get_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<Vec<(Key
         key: "".to_string(),
     };
 
-    let items: Vec<(StableKey, Doc)> = db.range(start_key..).collect();
+    let end_key = StableKey {
+        collection: range_collection_end(collection).clone(),
+        key: "".to_string(),
+    };
+
+    let items: Vec<(StableKey, Doc)> = db.range(start_key..end_key).collect();
 
     Ok(items
         .iter()

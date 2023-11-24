@@ -6,6 +6,7 @@ export interface CanisterStatusResponse {
 	memory_size: bigint;
 	cycles: bigint;
 	settings: DefiniteCanisterSettings;
+	query_stats: QueryStats;
 	idle_cycles_burned_per_day: bigint;
 	module_hash: [] | [Uint8Array | number[]];
 }
@@ -37,6 +38,12 @@ export interface Orbiter {
 	orbiter_id: Principal;
 	metadata: Array<[string, string]>;
 	created_at: bigint;
+}
+export interface QueryStats {
+	response_payload_bytes_total: bigint;
+	num_instructions_total: bigint;
+	num_calls_total: bigint;
+	request_payload_bytes_total: bigint;
 }
 export type Result = { Ok: SegmentStatus } | { Err: string };
 export interface Satellite {

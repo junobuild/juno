@@ -101,12 +101,10 @@
 		{$i18n.datastore.documents}
 
 		<svelte:fragment slot="actions">
-			{#if DEV_FEATURES}
-				<DataCollectionDelete {deleteData}>
-					<svelte:fragment slot="title">{$i18n.document.delete_all}</svelte:fragment>
-					{$i18n.core.are_you_sure}
-				</DataCollectionDelete>
-			{/if}
+			<DataCollectionDelete {deleteData}>
+				<svelte:fragment slot="title">{$i18n.document.delete_all}</svelte:fragment>
+				{$i18n.core.are_you_sure}
+			</DataCollectionDelete>
 		</svelte:fragment>
 	</DataCollectionHeader>
 </div>

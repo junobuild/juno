@@ -184,11 +184,19 @@ pub mod config {
     pub type StorageConfigRewrites = HashMap<String, String>;
     pub type StorageConfigRedirects = HashMap<String, StorageConfigRedirect>;
 
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum StorageConfigIFrame {
+        Deny,
+        SameOrigin,
+        AllowAny,
+    }
+
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageConfig {
         pub headers: StorageConfigHeaders,
         pub rewrites: StorageConfigRewrites,
         pub redirects: Option<StorageConfigRedirects>,
+        pub iframe: Option<StorageConfigIFrame>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -201,7 +209,7 @@ pub mod config {
 pub mod http_request {
     use crate::rules::types::rules::Memory;
     use crate::storage::http::types::StatusCode;
-    use crate::storage::types::config::StorageConfigRedirect;
+    use crate::storage::types::config::{StorageConfigIFrame, StorageConfigRedirect};
     use crate::storage::types::store::Asset;
     use candid::{CandidType, Deserialize};
 
@@ -236,6 +244,7 @@ pub mod http_request {
     pub struct RoutingRedirect {
         pub url: String,
         pub redirect: StorageConfigRedirect,
+        pub iframe: StorageConfigIFrame,
     }
 }
 

@@ -9,7 +9,7 @@ use crate::storage::http::utils::{
 use crate::storage::types::store::Asset;
 
 use crate::storage::store::get_content_chunks;
-use crate::storage::types::config::StorageConfigRedirect;
+use crate::storage::types::config::{StorageConfigIFrame, StorageConfigRedirect};
 
 pub fn build_asset_response(
     requested_url: String,
@@ -97,10 +97,15 @@ pub fn build_redirect_response(
     requested_url: String,
     certificate_version: Option<u16>,
     redirect: &StorageConfigRedirect,
+    iframe: &StorageConfigIFrame,
 ) -> HttpResponse {
-    let headers =
-        build_response_redirect_headers(&requested_url, &redirect.location, &certificate_version)
-            .unwrap();
+    let headers = build_response_redirect_headers(
+        &requested_url,
+        &redirect.location,
+        iframe,
+        &certificate_version,
+    )
+    .unwrap();
 
     HttpResponse {
         body: Vec::new().clone(),

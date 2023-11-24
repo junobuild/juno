@@ -25,11 +25,17 @@ export const idlFactory = ({ IDL }) => {
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
 	});
+	const StorageConfigIFrame = IDL.Variant({
+		Deny: IDL.Null,
+		AllowAny: IDL.Null,
+		SameOrigin: IDL.Null
+	});
 	const StorageConfigRedirect = IDL.Record({
 		status_code: IDL.Nat16,
 		location: IDL.Text
 	});
 	const StorageConfig = IDL.Record({
+		iframe: IDL.Opt(StorageConfigIFrame),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)))),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))

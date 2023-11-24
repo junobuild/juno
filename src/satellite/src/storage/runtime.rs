@@ -43,7 +43,12 @@ pub fn init_certified_assets() {
         }
 
         for (source, redirect) in state.heap.storage.config.unwrap_redirects() {
-            asset_hashes.insert_redirect_v2(&source, redirect.status_code, &redirect.location);
+            asset_hashes.insert_redirect_v2(
+                &source,
+                redirect.status_code,
+                &redirect.location,
+                &config.unwrap_iframe(),
+            );
         }
 
         asset_hashes

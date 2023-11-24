@@ -11,7 +11,7 @@ use crate::storage::constants::{
 };
 use crate::storage::http::headers::{build_headers, build_redirect_headers};
 use crate::storage::http::types::{HeaderField, StatusCode};
-use crate::storage::types::config::StorageConfig;
+use crate::storage::types::config::{StorageConfig, StorageConfigIFrame};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::alternative_paths;
@@ -199,8 +199,9 @@ impl CertifiedAssetHashes {
         full_path: &FullPath,
         status_code: StatusCode,
         location: &str,
+        iframe: &StorageConfigIFrame,
     ) {
-        let headers = build_redirect_headers(location);
+        let headers = build_redirect_headers(location, iframe);
 
         let sha256 = Sha256::digest(Vec::new().clone()).into();
 

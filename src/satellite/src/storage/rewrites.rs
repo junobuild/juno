@@ -6,11 +6,7 @@ use std::cmp::Ordering;
 use std::collections::HashMap;
 
 pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<(String, String)> {
-    let StorageConfig {
-        headers: _,
-        rewrites,
-        redirects: _,
-    } = config;
+    let StorageConfig { rewrites, .. } = config;
 
     let matches = matching_urls(requested_path, rewrites);
 

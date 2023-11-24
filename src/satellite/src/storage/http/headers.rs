@@ -1,6 +1,6 @@
 use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use crate::storage::http::types::HeaderField;
-use crate::storage::types::config::StorageConfig;
+use crate::storage::types::config::{StorageConfig, StorageConfigIFrame};
 use crate::storage::types::store::{Asset, AssetEncoding, EncodingType};
 use crate::storage::url::matching_urls;
 use hex::encode;
@@ -27,6 +27,11 @@ pub fn build_headers(
     // Headers for security
     headers.extend(security_headers());
 
+    // iFrame with default to DENY for security reason
+    if let Some(iframe_header) = iframe_headers(&config.unwrap_iframe()) {
+        headers.push(iframe_header);
+    }
+
     if encoding_type.clone() != *ASSET_ENCODING_NO_COMPRESSION {
         headers.push(HeaderField(
             "Content-Encoding".to_string(),
@@ -41,11 +46,16 @@ pub fn build_headers(
     headers
 }
 
-pub fn build_redirect_headers(location: &str) -> Vec<HeaderField> {
+pub fn build_redirect_headers(location: &str, iframe: &StorageConfigIFrame) -> Vec<HeaderField> {
     let mut headers = Vec::new();
 
     // Headers for security
     headers.extend(security_headers());
+
+    // iFrame with default to none
+    if let Some(iframe_header) = iframe_headers(iframe) {
+        headers.push(iframe_header);
+    }
 
     headers.push(HeaderField("Location".to_string(), location.to_string()));
 
@@ -58,7 +68,6 @@ pub fn build_redirect_headers(location: &str) -> Vec<HeaderField> {
 /// iFrame policies, etc.).
 fn security_headers() -> Vec<HeaderField> {
     vec![
-        HeaderField("X-Frame-Options".to_string(), "DENY".to_string()),
         HeaderField("X-Content-Type-Options".to_string(), "nosniff".to_string()),
         HeaderField(
             "Strict-Transport-Security".to_string(),
@@ -68,6 +77,20 @@ fn security_headers() -> Vec<HeaderField> {
         // same-origin is still ok from a security perspective
         HeaderField("Referrer-Policy".to_string(), "same-origin".to_string()),
     ]
+}
+
+fn iframe_headers(iframe: &StorageConfigIFrame) -> Option<HeaderField> {
+    match iframe {
+        StorageConfigIFrame::Deny => Some(HeaderField(
+            "X-Frame-Options".to_string(),
+            "DENY".to_string(),
+        )),
+        StorageConfigIFrame::SameOrigin => Some(HeaderField(
+            "X-Frame-Options".to_string(),
+            "SAMEORIGIN".to_string(),
+        )),
+        StorageConfigIFrame::AllowAny => None,
+    }
 }
 
 pub fn build_config_headers(

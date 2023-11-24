@@ -194,7 +194,8 @@ fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
 }
 
 fn get_routing_redirect(path: &FullPath) -> Option<Routing> {
-    let redirect = redirect_url(path, &get_config());
+    let config = get_config();
+    let redirect = redirect_url(path, &config);
 
     match redirect {
         None => (),
@@ -202,6 +203,7 @@ fn get_routing_redirect(path: &FullPath) -> Option<Routing> {
             return Some(Routing::Redirect(RoutingRedirect {
                 url: path.clone(),
                 redirect,
+                iframe: config.unwrap_iframe(),
             }));
         }
     }

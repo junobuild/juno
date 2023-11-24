@@ -1,4 +1,4 @@
-use crate::storage::types::config::{StorageConfig, StorageConfigRedirects};
+use crate::storage::types::config::{StorageConfig, StorageConfigIFrame, StorageConfigRedirects};
 use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::{StableEncodingChunkKey, StableKey};
 use crate::storage::types::store::{Asset, AssetEncoding};
@@ -39,6 +39,10 @@ impl StorageConfig {
         self.redirects
             .clone()
             .unwrap_or(StorageConfigRedirects::default())
+    }
+
+    pub fn unwrap_iframe(&self) -> StorageConfigIFrame {
+        self.iframe.clone().unwrap_or(StorageConfigIFrame::Deny)
     }
 }
 

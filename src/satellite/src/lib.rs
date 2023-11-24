@@ -360,9 +360,11 @@ fn http_request(
                 Some(source),
                 status_code,
             ),
-            Routing::Redirect(RoutingRedirect { url, redirect }) => {
-                build_redirect_response(url, certificate_version, &redirect)
-            }
+            Routing::Redirect(RoutingRedirect {
+                url,
+                redirect,
+                iframe,
+            }) => build_redirect_response(url, certificate_version, &redirect, &iframe),
         },
         Err(err) => error_response(
             RESPONSE_STATUS_CODE_405,

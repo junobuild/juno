@@ -1,12 +1,3 @@
-type CanisterStatusResponse = record {
-  status : CanisterStatusType;
-  memory_size : nat;
-  cycles : nat;
-  settings : DefiniteCanisterSettings;
-  query_stats : QueryStats;
-  idle_cycles_burned_per_day : nat;
-  module_hash : opt vec nat8;
-};
 type CanisterStatusType = variant { stopped; stopping; running };
 type Controller = record {
   updated_at : nat64;
@@ -33,12 +24,6 @@ type Orbiter = record {
   metadata : vec record { text; text };
   created_at : nat64;
 };
-type QueryStats = record {
-  response_payload_bytes_total : nat;
-  num_instructions_total : nat;
-  num_calls_total : nat;
-  request_payload_bytes_total : nat;
-};
 type Result = variant { Ok : SegmentStatus; Err : text };
 type Satellite = record {
   updated_at : nat64;
@@ -46,9 +31,17 @@ type Satellite = record {
   created_at : nat64;
   satellite_id : principal;
 };
+type SegmentCanisterStatus = record {
+  status : CanisterStatusType;
+  memory_size : nat;
+  cycles : nat;
+  settings : DefiniteCanisterSettings;
+  idle_cycles_burned_per_day : nat;
+  module_hash : opt vec nat8;
+};
 type SegmentStatus = record {
   id : principal;
-  status : CanisterStatusResponse;
+  status : SegmentCanisterStatus;
   metadata : opt vec record { text; text };
   status_at : nat64;
 };

@@ -5,15 +5,6 @@ export interface ArchiveStatuses {
 	statuses: Result_1;
 	timestamp: bigint;
 }
-export interface CanisterStatusResponse {
-	status: CanisterStatusType;
-	memory_size: bigint;
-	cycles: bigint;
-	settings: DefiniteCanisterSettings;
-	query_stats: QueryStats;
-	idle_cycles_burned_per_day: bigint;
-	module_hash: [] | [Uint8Array | number[]];
-}
 export type CanisterStatusType = { stopped: null } | { stopping: null } | { running: null };
 export type ControllerScope = { Write: null } | { Admin: null };
 export interface CronJobStatuses {
@@ -54,17 +45,19 @@ export interface ListStatuses {
 export interface ListStatusesArgs {
 	time_delta: [] | [bigint];
 }
-export interface QueryStats {
-	response_payload_bytes_total: bigint;
-	num_instructions_total: bigint;
-	num_calls_total: bigint;
-	request_payload_bytes_total: bigint;
-}
 export type Result = { Ok: SegmentStatus } | { Err: string };
 export type Result_1 = { Ok: SegmentsStatuses } | { Err: string };
+export interface SegmentCanisterStatus {
+	status: CanisterStatusType;
+	memory_size: bigint;
+	cycles: bigint;
+	settings: DefiniteCanisterSettings;
+	idle_cycles_burned_per_day: bigint;
+	module_hash: [] | [Uint8Array | number[]];
+}
 export interface SegmentStatus {
 	id: Principal;
-	status: CanisterStatusResponse;
+	status: SegmentCanisterStatus;
 	metadata: [] | [Array<[string, string]>];
 	status_at: bigint;
 }

@@ -1,13 +1,4 @@
 type ArchiveStatuses = record { statuses : Result_1; timestamp : nat64 };
-type CanisterStatusResponse = record {
-  status : CanisterStatusType;
-  memory_size : nat;
-  cycles : nat;
-  settings : DefiniteCanisterSettings;
-  query_stats : QueryStats;
-  idle_cycles_burned_per_day : nat;
-  module_hash : opt vec nat8;
-};
 type CanisterStatusType = variant { stopped; stopping; running };
 type ControllerScope = variant { Write; Admin };
 type CronJobStatuses = record {
@@ -44,17 +35,19 @@ type ListStatuses = record {
   timestamp : nat64;
 };
 type ListStatusesArgs = record { time_delta : opt nat64 };
-type QueryStats = record {
-  response_payload_bytes_total : nat;
-  num_instructions_total : nat;
-  num_calls_total : nat;
-  request_payload_bytes_total : nat;
-};
 type Result = variant { Ok : SegmentStatus; Err : text };
 type Result_1 = variant { Ok : SegmentsStatuses; Err : text };
+type SegmentCanisterStatus = record {
+  status : CanisterStatusType;
+  memory_size : nat;
+  cycles : nat;
+  settings : DefiniteCanisterSettings;
+  idle_cycles_burned_per_day : nat;
+  module_hash : opt vec nat8;
+};
 type SegmentStatus = record {
   id : principal;
-  status : CanisterStatusResponse;
+  status : SegmentCanisterStatus;
   metadata : opt vec record { text; text };
   status_at : nat64;
 };

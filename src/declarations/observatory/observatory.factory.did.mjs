@@ -35,24 +35,17 @@ export const idlFactory = ({ IDL }) => {
 		memory_allocation: IDL.Nat,
 		compute_allocation: IDL.Nat
 	});
-	const QueryStats = IDL.Record({
-		response_payload_bytes_total: IDL.Nat,
-		num_instructions_total: IDL.Nat,
-		num_calls_total: IDL.Nat,
-		request_payload_bytes_total: IDL.Nat
-	});
-	const CanisterStatusResponse = IDL.Record({
+	const SegmentCanisterStatus = IDL.Record({
 		status: CanisterStatusType,
 		memory_size: IDL.Nat,
 		cycles: IDL.Nat,
 		settings: DefiniteCanisterSettings,
-		query_stats: QueryStats,
 		idle_cycles_burned_per_day: IDL.Nat,
 		module_hash: IDL.Opt(IDL.Vec(IDL.Nat8))
 	});
 	const SegmentStatus = IDL.Record({
 		id: IDL.Principal,
-		status: CanisterStatusResponse,
+		status: SegmentCanisterStatus,
 		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
 		status_at: IDL.Nat64
 	});

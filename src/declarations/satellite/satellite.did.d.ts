@@ -155,10 +155,12 @@ export interface SetRule {
 	write: Permission;
 }
 export interface StorageConfig {
+	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
 }
+export type StorageConfigIFrame = { Deny: null } | { AllowAny: null } | { SameOrigin: null };
 export interface StorageConfigRedirect {
 	status_code: number;
 	location: string;

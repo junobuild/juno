@@ -58,6 +58,13 @@ pub mod state {
         pub satellites: Option<Vec<SegmentStatusResult>>,
         pub orbiters: Option<Vec<SegmentStatusResult>>,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct OrbiterSatelliteConfig {
+        pub enabled: bool,
+        pub created_at: u64,
+        pub updated_at: u64,
+    }
 }
 
 pub mod interface {

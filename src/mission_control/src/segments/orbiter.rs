@@ -3,12 +3,12 @@ use crate::segments::store::{add_orbiter, delete_orbiter as delete_orbiter_store
 use crate::types::state::Orbiter;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
-use ic_cdk::{call, id};
+use ic_cdk::call;
 use ic_ledger_types::BlockIndex;
-use shared::controllers::is_controller;
 use shared::env::CONSOLE;
 use shared::types::interface::CreateCanisterArgs;
-use shared::types::state::{Controllers, OrbiterId, UserId};
+use shared::types::state::{OrbiterId, OrbiterSatelliteConfig, SatelliteId, UserId};
+use std::collections::HashMap;
 
 pub async fn create_orbiter(name: &Option<String>) -> Result<Orbiter, String> {
     create_canister("get_create_orbiter_fee", create_and_save_orbiter, name).await
@@ -23,7 +23,7 @@ pub async fn attach_orbiter(
     match orbiter {
         Some(_) => Err("Orbiter already added to mission control.".to_string()),
         None => {
-            assert_controller(orbiter_id).await?;
+            assert_orbiter(orbiter_id).await?;
 
             let orbiter = add_orbiter(orbiter_id, name);
 
@@ -64,19 +64,19 @@ async fn create_and_save_orbiter(
     }
 }
 
-async fn assert_controller(orbiter_id: &OrbiterId) -> Result<(), String> {
-    let result: CallResult<(Controllers,)> =
-        call(orbiter_id.clone(), "list_controllers", ((),)).await;
+async fn assert_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
+    // We query list_satellite_configs that way we assert:
+    // 1. This mission control is a controller of the Orbiter
+    // 2. The targeted canister exposes the particular function which probably means it's an Orbiter
+    //
+    // Note: We could have use list_controllers() but the Satellite also exposes that function.
+    type SatelliteConfigs = HashMap<SatelliteId, OrbiterSatelliteConfig>;
+
+    let result: CallResult<(SatelliteConfigs,)> =
+        call(orbiter_id.clone(), "list_satellite_configs", ((),)).await;
 
     match result {
-        Err((_, message)) => Err(["Add orbiter failed.", &message].join(" - ")),
-        Ok((controllers,)) => {
-            let mission_control_id = id();
-
-            match is_controller(mission_control_id, &controllers) {
-                false => Err("Mission control is not a controller of the orbiter".to_string()),
-                true => Ok(()),
-            }
-        }
+        Err((_, message)) => Err(["Set orbiter failed.", &message].join(" - ")),
+        Ok((_,)) => Ok(()),
     }
 }

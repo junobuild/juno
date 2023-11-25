@@ -73,7 +73,7 @@ async fn assert_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
     type SatelliteConfigs = HashMap<SatelliteId, OrbiterSatelliteConfig>;
 
     let result: CallResult<(SatelliteConfigs,)> =
-        call(orbiter_id.clone(), "list_satellite_configs", ((),)).await;
+        call(*orbiter_id, "list_satellite_configs", ((),)).await;
 
     match result {
         Err((_, message)) => Err(["Set orbiter failed.", &message].join(" - ")),

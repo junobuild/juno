@@ -35,7 +35,6 @@ use crate::store::{
 use crate::types::state::{
     Archive, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
 };
-use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
 use ic_cdk::api::call::arg_data;
 use ic_cdk::{id, storage, trap};
@@ -85,9 +84,7 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (upgrade_stable,): (UpgradeStableState,) = storage::stable_restore().unwrap();
-
-    let stable = StableState::from(&upgrade_stable);
+    let (stable,): (StableState,) = storage::stable_restore().unwrap();
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
 }

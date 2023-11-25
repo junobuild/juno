@@ -37,7 +37,8 @@
 		"stop": "Stop",
 		"save": "Save",
 		"more": "More options",
-		"are_you_sure": "Are you sure? This action is irreversible"
+		"are_you_sure": "Are you sure? This action is irreversible",
+		"attach": "Attach"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -189,7 +190,9 @@
 		"devices": "Devices",
 		"mobile": "Mobile",
 		"desktop": "Desktop",
-		"others": "Others"
+		"others": "Others",
+		"attach": "Attach existing Analytics",
+		"attach_id": "Enter Orbiter ID"
 	},
 	"hosting": {
 		"title": "Hosting",
@@ -281,6 +284,8 @@
 		"orbiter_configuration_missing": "Satellites and configuration must be provided.",
 		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
 		"orbiter_configuration_listing": "Error while fetching the configuration.",
+		"orbiter_id_missing": "A valid Orbiter ID must be provided.",
+		"orbiter_attach": "Unexpected error(s) while trying to attach the orbiter to your mission control.",
 		"transactions_next": "Error while fetching the next transactions.",
 		"transactions_export": "Unexpected error(s) while exporting the transactions.",
 		"invalid_cycles_to_transfer": "Invalid amount of cycles to transfer.",

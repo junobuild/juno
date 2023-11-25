@@ -112,6 +112,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_metadata: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		set_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal), SetController], [], []),
+		set_orbiter: IDL.Func([IDL.Principal, IDL.Opt(IDL.Text)], [Orbiter], []),
 		set_orbiter_metadata: IDL.Func(
 			[IDL.Principal, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
 			[Orbiter],

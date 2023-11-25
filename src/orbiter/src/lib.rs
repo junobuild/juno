@@ -10,7 +10,6 @@ mod msg;
 mod serializers;
 mod store;
 mod types;
-mod upgrade;
 
 use crate::assert::assert_enabled;
 use crate::config::store::{
@@ -32,7 +31,6 @@ use crate::types::interface::{
 };
 use crate::types::memory::Memory;
 use crate::types::state::{AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent};
-use crate::upgrade::types::upgrade::UpgradeState;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::trap;
@@ -103,15 +101,10 @@ fn post_upgrade() {
     memory.read(u64::try_from(OFFSET).unwrap(), &mut state_bytes);
 
     // Deserialize and set the state.
-    let upgrade_state: UpgradeState = from_reader(&*state_bytes)
+    let state: State = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
 
-    STATE.with(|s| {
-        *s.borrow_mut() = State {
-            stable: upgrade_state.stable,
-            heap: HeapState::from(&upgrade_state.heap),
-        }
-    });
+    STATE.with(|s| *s.borrow_mut() = state);
 }
 
 /// Data

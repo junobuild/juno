@@ -6,7 +6,6 @@ mod mgmt;
 mod segments;
 mod store;
 mod types;
-mod upgrade;
 
 use crate::controllers::mission_control::{
     delete_mission_control_controllers as delete_controllers_to_mission_control,

@@ -16,6 +16,7 @@
 	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
 	import AnalyticsPageViews from '$lib/components/analytics/AnalyticsPageViews.svelte';
 	import AnalyticsMetrics from '$lib/components/analytics/AnalyticsMetrics.svelte';
+	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 
 	let loading = true;
 
@@ -62,9 +63,7 @@
 	<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
 {:else}
 	{#if isNullish($orbiterStore)}
-		<div class="card-container">
-			<p>{$i18n.analytics.empty}</p>
-		</div>
+		<NoAnalytics />
 	{:else}
 		<AnalyticsFilter on:junoPeriod={selectPeriod} />
 

@@ -22,7 +22,9 @@ use crate::guards::{
 };
 use crate::mgmt::canister::top_up_canister;
 use crate::mgmt::status::collect_statuses;
-use crate::segments::orbiter::{create_orbiter as create_orbiter_console, delete_orbiter};
+use crate::segments::orbiter::{
+    attach_orbiter, create_orbiter as create_orbiter_console, delete_orbiter,
+};
 use crate::segments::satellite::{create_satellite as create_satellite_console, delete_satellite};
 use crate::segments::store::get_orbiters;
 use crate::store::{
@@ -178,6 +180,13 @@ fn list_orbiters() -> Orbiters {
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn create_orbiter(name: Option<String>) -> Orbiter {
     create_orbiter_console(&name)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn set_orbiter(orbiter_id: OrbiterId, name: Option<String>) -> Orbiter {
+    attach_orbiter(&orbiter_id, &name)
         .await
         .unwrap_or_else(|e| trap(&e))
 }

@@ -90,6 +90,7 @@ service : () -> {
   remove_satellites_controllers : (vec principal, vec principal) -> ();
   set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();
+  set_orbiter : (principal, opt text) -> (Orbiter);
   set_orbiter_metadata : (principal, vec record { text; text }) -> (Orbiter);
   set_orbiters_controllers : (
       vec principal,

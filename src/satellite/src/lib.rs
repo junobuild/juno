@@ -33,7 +33,6 @@ use crate::storage::store::{
     init_certified_assets, list_assets as list_assets_store, set_config as set_storage_config,
     set_domain,
 };
-use crate::storage::types::config::StorageConfigRewrites;
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http_request::{
     Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
@@ -128,13 +127,6 @@ fn post_upgrade() {
     let state = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
-
-    // TODO: to be removed. Issue #294.
-    // Post upgrade hook to reset the rewrites after upgrading to certification v2 because the fallback to /index.html is handled differently now.
-    STATE.with(|s| {
-        let state = &mut s.borrow_mut();
-        state.heap.storage.config.rewrites = StorageConfigRewrites::default();
-    });
 
     init_certified_assets();
 }

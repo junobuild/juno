@@ -16,7 +16,7 @@
 	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
 	import AnalyticsPageViews from '$lib/components/analytics/AnalyticsPageViews.svelte';
 	import AnalyticsMetrics from '$lib/components/analytics/AnalyticsMetrics.svelte';
-	import NoAnalytics from "$lib/components/analytics/NoAnalytics.svelte";
+	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 
 	let loading = true;
 

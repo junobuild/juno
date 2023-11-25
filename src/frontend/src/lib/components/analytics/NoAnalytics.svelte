@@ -10,7 +10,7 @@
 </div>
 
 <style lang="scss">
-    p {
-      width: calc(100% - var(--padding-6x));
-    }
+	p {
+		width: calc(100% - var(--padding-6x));
+	}
 </style>

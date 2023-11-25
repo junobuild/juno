@@ -8,7 +8,7 @@
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { attachOrbiter } from '$lib/services/mission-control.services';
-	import {createEventDispatcher} from "svelte";
+	import { createEventDispatcher } from 'svelte';
 
 	let visible: boolean | undefined;
 
@@ -54,7 +54,7 @@
 
 			visible = false;
 
-			dispatch("junoAttach");
+			dispatch('junoAttach');
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.satellite_name_update,
@@ -68,7 +68,7 @@
 	const dispatch = createEventDispatcher();
 </script>
 
-<button on:click={() => visible = true} class="menu"
+<button on:click={() => (visible = true)} class="menu"
 	><IconInsertLink /> {$i18n.core.attach}</button
 >
 

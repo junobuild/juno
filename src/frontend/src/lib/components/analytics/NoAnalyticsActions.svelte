@@ -6,5 +6,5 @@
 </script>
 
 <Actions bind:visible>
-	<NoAnalyticsAttach on:junoAttach={() => visible = false} />
+	<NoAnalyticsAttach on:junoAttach={() => (visible = false)} />
 </Actions>

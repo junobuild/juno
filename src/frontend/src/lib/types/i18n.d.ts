@@ -41,6 +41,7 @@ interface I18nCore {
 	save: string;
 	more: string;
 	are_you_sure: string;
+	attach: string;
 }
 
 interface I18nCanisters {
@@ -202,6 +203,8 @@ interface I18nAnalytics {
 	mobile: string;
 	desktop: string;
 	others: string;
+	attach: string;
+	attach_id: string;
 }
 
 interface I18nHosting {
@@ -296,6 +299,8 @@ interface I18nErrors {
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
+	orbiter_id_missing: string;
+	orbiter_attach: string;
 	transactions_next: string;
 	transactions_export: string;
 	invalid_cycles_to_transfer: string;

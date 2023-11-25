@@ -37,7 +37,8 @@
 		"stop": "停止",
 		"save": "Save",
 		"more": "More options",
-		"are_you_sure": "Are you sure? This action is irreversible"
+		"are_you_sure": "Are you sure? This action is irreversible",
+		"attach": "Attach"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -189,7 +190,9 @@
 		"devices": "设备",
 		"mobile": "移动端",
 		"desktop": "桌面",
-		"others": "其他"
+		"others": "其他",
+		"attach": "Attach existing Analytics",
+		"attach_id": "Enter Orbiter ID"
 	},
 	"hosting": {
 		"title": "网站托管",
@@ -281,6 +284,8 @@
 		"orbiter_configuration_missing": "请提供 Satellites 和配置.",
 		"orbiter_configuration_unexpected": "编辑配置时出现意外错误.",
 		"orbiter_configuration_listing": "获取配置时出错.",
+		"orbiter_id_missing": "A valid Orbiter ID must be provided.",
+		"orbiter_attach": "Unexpected error(s) while trying to attach the orbiter to your mission control.",
 		"transactions_next": "获取下一部分事务时出错.",
 		"transactions_export": "导出事务时出现异常错误.",
 		"invalid_cycles_to_transfer": "Invalid amount of cycles to transfer.",

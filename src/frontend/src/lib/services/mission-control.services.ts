@@ -4,12 +4,14 @@ import {
 	addSatellitesController,
 	missionControlVersion,
 	setMissionControlController,
+	setOrbiter,
 	setSatelliteMetadata,
 	setSatellitesController
 } from '$lib/api/mission-control.api';
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import { orbitersStore } from '$lib/stores/orbiter.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Principal } from '@dfinity/principal';
@@ -132,4 +134,13 @@ export const setSatelliteName = async ({
 		),
 		updatedSatellite
 	]);
+};
+
+export const attachOrbiter = async (params: {
+	missionControlId: Principal;
+	orbiterId: Principal;
+}) => {
+	const orbiter = await setOrbiter(params);
+
+	orbitersStore.set([orbiter]);
 };

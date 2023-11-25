@@ -4,7 +4,7 @@ pub mod state {
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use serde::{Deserialize, Serialize};
-    use shared::types::state::{Controllers, Metadata, SatelliteId};
+    use shared::types::state::{Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId};
     use std::collections::HashMap;
 
     #[derive(Serialize, Deserialize)]
@@ -34,6 +34,7 @@ pub mod state {
         pub satellites_track_events: SatellitesTrackEventsStable,
     }
 
+    pub type SatelliteConfig = OrbiterSatelliteConfig;
     pub type SatelliteConfigs = HashMap<SatelliteId, SatelliteConfig>;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -81,13 +82,6 @@ pub mod state {
         pub metadata: Option<Metadata>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
-        pub created_at: u64,
-        pub updated_at: u64,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SatelliteConfig {
-        pub enabled: bool,
         pub created_at: u64,
         pub updated_at: u64,
     }

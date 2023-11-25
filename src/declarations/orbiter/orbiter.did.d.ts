@@ -28,6 +28,11 @@ export interface GetAnalytics {
 	from: [] | [bigint];
 	satellite_id: [] | [Principal];
 }
+export interface OrbiterSatelliteConfig {
+	updated_at: bigint;
+	created_at: bigint;
+	enabled: boolean;
+}
 export interface PageView {
 	title: string;
 	updated_at: bigint;
@@ -47,11 +52,6 @@ export interface PageViewDevice {
 export type Result = { Ok: PageView } | { Err: string };
 export type Result_1 = { Ok: null } | { Err: Array<[AnalyticKey, string]> };
 export type Result_2 = { Ok: TrackEvent } | { Err: string };
-export interface SatelliteConfig {
-	updated_at: bigint;
-	created_at: bigint;
-	enabled: boolean;
-}
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -99,13 +99,13 @@ export interface _SERVICE {
 	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
-	list_satellite_configs: ActorMethod<[], Array<[Principal, SatelliteConfig]>>;
+	list_satellite_configs: ActorMethod<[], Array<[Principal, OrbiterSatelliteConfig]>>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;
 	set_satellite_configs: ActorMethod<
 		[Array<[Principal, SetSatelliteConfig]>],
-		Array<[Principal, SatelliteConfig]>
+		Array<[Principal, OrbiterSatelliteConfig]>
 	>;
 	set_track_event: ActorMethod<[AnalyticKey, SetTrackEvent], Result_2>;
 	set_track_events: ActorMethod<[Array<[AnalyticKey, SetTrackEvent]>], Result_1>;

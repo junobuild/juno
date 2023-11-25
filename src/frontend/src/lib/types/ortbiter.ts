@@ -1,4 +1,4 @@
-import type { SatelliteConfig } from '$declarations/orbiter/orbiter.did';
+import type { OrbiterSatelliteConfig as SatelliteConfig } from '$declarations/orbiter/orbiter.did';
 
 export interface PageViewsPeriod {
 	from?: Date;

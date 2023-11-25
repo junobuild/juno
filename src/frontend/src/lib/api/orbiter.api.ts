@@ -2,7 +2,7 @@ import type {
 	AnalyticKey,
 	Controller,
 	PageView,
-	SatelliteConfig,
+	OrbiterSatelliteConfig as SatelliteConfig,
 	SetSatelliteConfig,
 	TrackEvent
 } from '$declarations/orbiter/orbiter.did';

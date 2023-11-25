@@ -52,7 +52,7 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal
 	});
-	const SatelliteConfig = IDL.Record({
+	const OrbiterSatelliteConfig = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
 		enabled: IDL.Bool
@@ -116,7 +116,7 @@ export const idlFactory = ({ IDL }) => {
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_satellite_configs: IDL.Func(
 			[],
-			[IDL.Vec(IDL.Tuple(IDL.Principal, SatelliteConfig))],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, OrbiterSatelliteConfig))],
 			['query']
 		),
 		set_controllers: IDL.Func(
@@ -128,7 +128,7 @@ export const idlFactory = ({ IDL }) => {
 		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [Result_1], []),
 		set_satellite_configs: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Principal, SetSatelliteConfig))],
-			[IDL.Vec(IDL.Tuple(IDL.Principal, SatelliteConfig))],
+			[IDL.Vec(IDL.Tuple(IDL.Principal, OrbiterSatelliteConfig))],
 			[]
 		),
 		set_track_event: IDL.Func([AnalyticKey, SetTrackEvent], [Result_2], []),

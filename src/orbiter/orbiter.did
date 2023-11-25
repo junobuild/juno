@@ -15,6 +15,11 @@ type GetAnalytics = record {
   from : opt nat64;
   satellite_id : opt principal;
 };
+type OrbiterSatelliteConfig = record {
+  updated_at : nat64;
+  created_at : nat64;
+  enabled : bool;
+};
 type PageView = record {
   title : text;
   updated_at : nat64;
@@ -31,11 +36,6 @@ type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
 type Result = variant { Ok : PageView; Err : text };
 type Result_1 = variant { Ok; Err : vec record { AnalyticKey; text } };
 type Result_2 = variant { Ok : TrackEvent; Err : text };
-type SatelliteConfig = record {
-  updated_at : nat64;
-  created_at : nat64;
-  enabled : bool;
-};
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -87,7 +87,7 @@ service : () -> {
     ) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_satellite_configs : () -> (
-      vec record { principal; SatelliteConfig },
+      vec record { principal; OrbiterSatelliteConfig },
     ) query;
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
@@ -95,7 +95,7 @@ service : () -> {
   set_page_view : (AnalyticKey, SetPageView) -> (Result);
   set_page_views : (vec record { AnalyticKey; SetPageView }) -> (Result_1);
   set_satellite_configs : (vec record { principal; SetSatelliteConfig }) -> (
-      vec record { principal; SatelliteConfig },
+      vec record { principal; OrbiterSatelliteConfig },
     );
   set_track_event : (AnalyticKey, SetTrackEvent) -> (Result_2);
   set_track_events : (vec record { AnalyticKey; SetTrackEvent }) -> (Result_1);

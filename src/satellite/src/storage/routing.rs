@@ -2,7 +2,7 @@ use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
     RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH,
 };
-use crate::storage::rewrites::{is_html_route, is_root_path, redirect_url, rewrite_url};
+use crate::storage::rewrites::{is_root_path, redirect_url, rewrite_url};
 use crate::storage::state::get_config;
 use crate::storage::store::get_public_asset;
 use crate::storage::types::http_request::{
@@ -157,7 +157,7 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
 }
 
 fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
-    if is_html_route(path) && !is_root_path(path) {
+    if !is_root_path(path) {
         // Search for potential /404.html to rewrite to
         let asset_404: Option<(Asset, Memory)> = get_public_asset(ROOT_404_HTML.to_string(), None);
 

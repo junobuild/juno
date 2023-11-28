@@ -21,11 +21,6 @@ pub fn rewrite_source_to_path(source: &String) -> String {
         .replace('*', "")
 }
 
-pub fn is_html_route(path: &str) -> bool {
-    let re = Regex::new(r"^(?:/|(/[^/.]*(\.(html|htm))?(/[^/.]*)?)*)$").unwrap();
-    re.is_match(path)
-}
-
 pub fn is_root_path(path: &str) -> bool {
     ROOT_PATHS.contains(&path)
 }

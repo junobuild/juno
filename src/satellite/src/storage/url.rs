@@ -2,7 +2,6 @@ use crate::storage::types::http_request::MapUrl;
 use crate::storage::types::state::FullPath;
 use globset::Glob;
 use std::collections::HashMap;
-use std::path::Path;
 use url::{ParseError, Url};
 
 pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
@@ -28,17 +27,7 @@ pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
 }
 
 pub fn map_alternative_paths(path: &String) -> Vec<String> {
-    // The requested path is /something.js or without file extension (/something or /something/)?
-    let extension = Path::new(path).extension();
-
-    // No alternative path if requested url target an exact file with extension
-    match extension {
-        Some(_) => Vec::new(),
-        None => {
-            // Url has no extension - e.g. is not something.js but /about or /about/
-            aliases_of(&path.to_string())
-        }
-    }
+    aliases_of(&path.to_string())
 }
 
 pub fn alternative_paths(full_path: &FullPath) -> Option<Vec<String>> {

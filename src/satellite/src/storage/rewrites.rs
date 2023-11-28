@@ -1,7 +1,6 @@
 use crate::storage::constants::ROOT_PATHS;
 use crate::storage::types::config::{StorageConfig, StorageConfigRedirect};
 use crate::storage::url::{matching_urls as matching_urls_utils, separator};
-use regex::Regex;
 use std::cmp::Ordering;
 use std::collections::HashMap;
 
@@ -19,11 +18,6 @@ pub fn rewrite_source_to_path(source: &String) -> String {
     [separator(source.as_str()), source]
         .join("")
         .replace('*', "")
-}
-
-pub fn is_html_route(path: &str) -> bool {
-    let re = Regex::new(r"^(?:/|(/[^/.]*(\.(html|htm))?(/[^/.]*)?)*)$").unwrap();
-    re.is_match(path)
 }
 
 pub fn is_root_path(path: &str) -> bool {

@@ -31,9 +31,9 @@
 		}
 	};
 
-	const loadConfig = (configs: [Principal, SatelliteConfig][]) => {
+	const loadConfig = (configs: [Principal, OrbiterSatelliteConfig][]) => {
 		configuration = ($satellitesStore ?? []).reduce((acc, satellite) => {
-			const config: [Principal, SatelliteConfig] | undefined = (configs ?? []).find(
+			const config: [Principal, OrbiterSatelliteConfig] | undefined = (configs ?? []).find(
 				([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText()
 			);
 
@@ -51,7 +51,7 @@
 	onMount(async () => await load());
 
 	// [Principal, SatelliteConfig]
-	const onUpdate = ({ detail }: CustomEvent<[Principal, SatelliteConfig][]>) => {
+	const onUpdate = ({ detail }: CustomEvent<[Principal, OrbiterSatelliteConfig][]>) => {
 		loadConfig(detail);
 	};
 </script>

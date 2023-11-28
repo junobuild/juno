@@ -8,7 +8,7 @@
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import type { SatelliteConfig } from '$declarations/orbiter/orbiter.did';
+	import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
 	import OrbiterConfigSave from '$lib/components/orbiter/OrbiterConfigSave.svelte';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 
@@ -16,7 +16,7 @@
 
 	let configuration: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = {};
 
-	const list = (): Promise<[Principal, SatelliteConfig][]> =>
+	const list = (): Promise<[Principal, OrbiterSatelliteConfig][]> =>
 		listOrbiterSatelliteConfigs({ orbiterId });
 
 	const load = async () => {

@@ -28,6 +28,16 @@ pub fn get_routing(
 
     let MapUrl { path, token } = map_url(&url)?;
 
+    // We return the asset that matches the effective path
+    let asset: Option<(Asset, Memory)> = get_public_asset(path.clone(), token.clone());
+
+    match asset {
+        None => (),
+        Some(_) => {
+            return Ok(Routing::Default(RoutingDefault { url: path, asset }));
+        }
+    }
+
     // ⚠️ Limitation: requesting an url without extension try to resolve first a corresponding asset
     // e.g. /.well-known/hello -> try to find /.well-known/hello.html
     // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
@@ -39,16 +49,6 @@ pub fn get_routing(
                 url: path.clone(),
                 asset: Some(alternative_asset),
             }));
-        }
-    }
-
-    // We return the asset that matches the effective path
-    let asset: Option<(Asset, Memory)> = get_public_asset(path.clone(), token.clone());
-
-    match asset {
-        None => (),
-        Some(_) => {
-            return Ok(Routing::Default(RoutingDefault { url: path, asset }));
         }
     }
 

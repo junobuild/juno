@@ -210,6 +210,11 @@ export const idlFactory = ({ IDL }) => {
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_config: IDL.Func([], [Config], []),
 		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
+		get_many_docs: IDL.Func(
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Opt(Doc)))],
+			['query']
+		),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],

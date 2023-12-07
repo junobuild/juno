@@ -178,6 +178,16 @@ fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> 
     }
 }
 
+#[query]
+fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)> {
+    docs.iter()
+        .map(|(collection, key)| {
+            let doc = get_doc(collection.clone(), key.clone());
+            (key.clone(), doc.clone())
+        })
+        .collect()
+}
+
 #[update]
 fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
     let mut results: Vec<(Key, Doc)> = Vec::new();

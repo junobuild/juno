@@ -164,6 +164,7 @@ export const idlFactory = ({ IDL }) => {
 		mutable_permissions: IDL.Opt(IDL.Bool),
 		write: Permission
 	});
+	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		scope: ControllerScope,
@@ -227,6 +228,7 @@ export const idlFactory = ({ IDL }) => {
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_docs: IDL.Func([IDL.Text, ListParams], [ListResults_1], ['query']),
 		list_rules: IDL.Func([RulesType], [IDL.Vec(IDL.Tuple(IDL.Text, Rule))], ['query']),
+		memory_size: IDL.Func([], [MemorySize], ['query']),
 		set_config: IDL.Func([Config], [], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],

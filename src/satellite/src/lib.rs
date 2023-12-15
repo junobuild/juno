@@ -51,7 +51,7 @@ use controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
     set_controllers as set_controllers_store,
 };
-use core::arch::wasm32::memory_size;
+use core::arch::wasm32::memory_size as wasm_memory_size;
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::stable::{stable_size, WASM_PAGE_SIZE_IN_BYTES};
 use ic_cdk::api::{caller, trap};
@@ -512,9 +512,9 @@ fn version() -> String {
 }
 
 #[query(guard = "caller_is_admin_controller")]
-fn memory() -> MemorySize {
+fn memory_size() -> MemorySize {
     MemorySize {
-        heap: memory_size(0) * WASM_PAGE_SIZE_IN_BYTES,
+        heap: wasm_memory_size(0) * WASM_PAGE_SIZE_IN_BYTES,
         stable: stable_size() as usize * WASM_PAGE_SIZE_IN_BYTES,
     }
 }

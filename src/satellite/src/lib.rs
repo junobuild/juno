@@ -38,7 +38,7 @@ use crate::storage::types::http_request::{
     Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
 };
 use crate::storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult, Memory as MemoryInterface
 };
 use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
@@ -50,7 +50,9 @@ use controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
     set_controllers as set_controllers_store,
 };
+use core::arch::wasm32::memory_size;
 use ic_cdk::api::call::arg_data;
+use ic_cdk::api::stable::{stable_size, WASM_PAGE_SIZE_IN_BYTES};
 use ic_cdk::api::{caller, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
@@ -506,6 +508,14 @@ async fn deposit_cycles(args: DepositCyclesArgs) {
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn memory() -> MemoryInterface {
+    MemoryInterface {
+        heap: memory_size(0) * WASM_PAGE_SIZE_IN_BYTES,
+        stable: stable_size() as usize * WASM_PAGE_SIZE_IN_BYTES,
+    }
 }
 
 // Generate did files

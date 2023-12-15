@@ -172,6 +172,14 @@ pub mod interface {
         pub total_length: u128,
         pub sha256: Hash,
     }
+
+    pub type Bytes = usize;
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct Memory {
+        pub heap: Bytes,
+        pub stable: Bytes,
+    }
 }
 
 pub mod config {

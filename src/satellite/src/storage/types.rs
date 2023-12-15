@@ -176,7 +176,7 @@ pub mod interface {
     pub type Bytes = usize;
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct Memory {
+    pub struct MemorySize {
         pub heap: Bytes,
         pub stable: Bytes,
     }

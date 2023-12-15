@@ -38,7 +38,8 @@ use crate::storage::types::http_request::{
     Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
 };
 use crate::storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult, Memory as MemoryInterface
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, MemorySize, UploadChunk,
+    UploadChunkResult,
 };
 use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
@@ -511,8 +512,8 @@ fn version() -> String {
 }
 
 #[query(guard = "caller_is_admin_controller")]
-fn memory() -> MemoryInterface {
-    MemoryInterface {
+fn memory() -> MemorySize {
+    MemorySize {
         heap: memory_size(0) * WASM_PAGE_SIZE_IN_BYTES,
         stable: stable_size() as usize * WASM_PAGE_SIZE_IN_BYTES,
     }

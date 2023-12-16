@@ -28,6 +28,10 @@ export interface GetAnalytics {
 	from: [] | [bigint];
 	satellite_id: [] | [Principal];
 }
+export interface MemorySize {
+	stable: bigint;
+	heap: bigint;
+}
 export interface OrbiterSatelliteConfig {
 	updated_at: bigint;
 	created_at: bigint;
@@ -100,6 +104,7 @@ export interface _SERVICE {
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_satellite_configs: ActorMethod<[], Array<[Principal, OrbiterSatelliteConfig]>>;
+	memory_size: ActorMethod<[], MemorySize>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;

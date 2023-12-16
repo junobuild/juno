@@ -38,13 +38,14 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
+use shared::canister::memory_size as canister_memory_size;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{
     assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
 };
 use shared::ic::deposit_cycles as deposit_cycles_shared;
 use shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, SegmentArgs, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SegmentArgs, SetControllersArgs,
 };
 use shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use std::mem;
@@ -273,6 +274,11 @@ async fn deposit_cycles(args: DepositCyclesArgs) {
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn memory_size() -> MemorySize {
+    canister_memory_size()
 }
 
 // Generate did files

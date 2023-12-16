@@ -48,29 +48,41 @@ export const getObservatoryActor = async (): Promise<ObservatoryActor> => {
 	});
 };
 
-export const getSatelliteActor = async (canisterId: Principal): Promise<SatelliteActor> => {
-	const identity: Identity | undefined | null = get(authStore).identity;
+export const getSatelliteActor = async ({
+	satelliteId,
+	identity: identityParam
+}: {
+	satelliteId: Principal;
+	identity?: Identity;
+}): Promise<SatelliteActor> => {
+	const identity = identityParam ?? get(authStore).identity;
 
 	if (!identity) {
 		throw new Error('No internet identity.');
 	}
 
 	return createActor({
-		canisterId,
+		canisterId: satelliteId,
 		idlFactory: idlFactorSatellite,
 		identity
 	});
 };
 
-export const getOrbiterActor = async (canisterId: Principal): Promise<OrbiterActor> => {
-	const identity: Identity | undefined | null = get(authStore).identity;
+export const getOrbiterActor = async ({
+	orbiterId,
+	identity: identityParam
+}: {
+	orbiterId: Principal;
+	identity?: Identity;
+}): Promise<OrbiterActor> => {
+	const identity = identityParam ?? get(authStore).identity;
 
 	if (!identity) {
 		throw new Error('No internet identity.');
 	}
 
 	return createActor({
-		canisterId,
+		canisterId: orbiterId,
 		idlFactory: idlFactorOrbiter,
 		identity
 	});

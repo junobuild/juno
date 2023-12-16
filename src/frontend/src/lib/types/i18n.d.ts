@@ -91,6 +91,10 @@ interface I18nCanisters {
 	your_balance: string;
 	cycles_will_remain: string;
 	transfer_cycles_done: string;
+	memory: string;
+	in_total: string;
+	on_heap: string;
+	on_stable: string;
 }
 
 interface I18nSign_in {

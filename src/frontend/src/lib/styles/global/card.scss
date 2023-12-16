@@ -14,5 +14,11 @@
 			grid-template-columns: repeat(2, auto) 1fr;
 			grid-column-gap: var(--padding-12x);
 		}
+
+		&.fit-column-1 {
+			@include media.min-width(large) {
+				grid-template-columns: minmax(380px, 100px) auto 1fr;
+			}
+		}
 	}
 }

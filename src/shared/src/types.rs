@@ -137,6 +137,14 @@ pub mod interface {
         pub destination_id: Principal,
         pub cycles: u128,
     }
+
+    pub type Bytes = usize;
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct MemorySize {
+        pub heap: Bytes,
+        pub stable: Bytes,
+    }
 }
 
 pub mod ledger {

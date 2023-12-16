@@ -14,7 +14,7 @@ use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{delete_doc, delete_docs, get_doc as get_doc_store, get_docs, insert_doc};
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
-use crate::guards::caller_is_admin_controller;
+use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
@@ -56,13 +56,14 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
+use shared::canister::memory_size as canister_memory_size;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{
     assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
 };
 use shared::ic::deposit_cycles as deposit_cycles_shared;
 use shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, SegmentArgs, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SegmentArgs, SetControllersArgs,
 };
 use shared::types::state::{ControllerScope, Controllers};
 use std::mem;
@@ -506,6 +507,11 @@ async fn deposit_cycles(args: DepositCyclesArgs) {
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
+}
+
+#[query(guard = "caller_is_controller")]
+fn memory_size() -> MemorySize {
+    canister_memory_size()
 }
 
 // Generate did files

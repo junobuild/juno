@@ -22,7 +22,7 @@
 		<IconSatellite />
 	</svelte:fragment>
 
-	<Canister canisterId={satellite_id} />
+	<Canister canisterId={satellite_id} segment="satellite" />
 </Article>
 
 <style lang="scss">

@@ -15,6 +15,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let canisterId: Principal;
 	export let segment: Segment;
@@ -82,14 +83,18 @@
 
 {#if display}
 	{#if ['synced', 'syncing'].includes(sync ?? '')}
+		<p class="status">{status ?? '???'}</p>
 		<p class="cycles">
 			<span
-				>{formatTCycles(cycles)} T Cycles {#if warning}⚠️{/if}</span
+				>{formatTCycles(cycles)}
+				<small
+					>T Cycles {#if warning}⚠️{/if}</small
+				></span
 			>{#if sync === 'syncing'}<IconSync />{/if}
 		</p>
-
-		<p class="status">{status ?? '???'}</p>
-		<p>{formatNumber(Number(memory_size) / 1_000_000)} MB</p>
+		<p>
+			{formatNumber(Number(memory_size) / 1_000_000)} MB <small>{$i18n.canisters.in_total}</small>
+		</p>
 	{:else if sync === 'loading'}
 		<p><SkeletonText /></p>
 		<p><SkeletonText /></p>

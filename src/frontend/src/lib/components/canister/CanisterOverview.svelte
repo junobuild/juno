@@ -35,7 +35,7 @@
 		<svelte:fragment slot="label">{$i18n.canisters.daily_consumption}</svelte:fragment>
 		{#if ['synced', 'syncing'].includes(sync ?? '')}
 			<p>
-				{formatTCycles(idle_cycles_burned_per_day ?? 0n)} T Cycles
+				{formatTCycles(idle_cycles_burned_per_day ?? 0n)} <small>T Cycles</small>
 			</p>
 		{:else if sync === 'loading'}
 			<p><SkeletonText /></p>
@@ -45,10 +45,15 @@
 
 {#if ['satellite', 'orbiter'].includes(segment)}
 	<Value>
-		<svelte:fragment slot="label">{$i18n.satellites.memory}</svelte:fragment>
+		<svelte:fragment slot="label">{$i18n.canisters.memory}</svelte:fragment>
 		{#if nonNullish(memory)}
-			<p>Heap {formatNumber(Number(memory.heap) / 1_000_000)} MB</p>
-			<p>Stable {formatNumber(Number(memory.stable) / 1_000_000)} MB</p>
+			<p>
+				{formatNumber(Number(memory.heap) / 1_000_000)} MB <small>{$i18n.canisters.on_heap}</small>
+			</p>
+			<p>
+				{formatNumber(Number(memory.stable) / 1_000_000)} MB
+				<small>{$i18n.canisters.on_stable}</small>
+			</p>
 		{:else if isNullish(sync) || ['loading', 'syncing'].includes(sync ?? '')}
 			<p><SkeletonText /></p>
 			<p><SkeletonText /></p>

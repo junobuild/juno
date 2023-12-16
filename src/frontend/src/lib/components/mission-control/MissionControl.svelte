@@ -11,25 +11,29 @@
 </script>
 
 {#if $authSignedInStore}
-	<div class="card-container">
-		<div class="id">
+	<div class="card-container columns-3 fit-column-1">
+		<div>
+			<div class="id">
+				<Value>
+					<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
+					<Identifier
+						identifier={$missionControlStore?.toText() ?? ''}
+						shorten={false}
+						small={false}
+					/>
+				</Value>
+			</div>
+
 			<Value>
-				<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
-				<Identifier
-					identifier={$missionControlStore?.toText() ?? ''}
-					shorten={false}
-					small={false}
-				/>
+				<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+				<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
 			</Value>
 		</div>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-			<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
-		</Value>
-
 		{#if nonNullish($missionControlStore)}
-			<CanisterOverview canisterId={$missionControlStore} segment="mission_control" />
+			<div>
+				<CanisterOverview canisterId={$missionControlStore} segment="mission_control" />
+			</div>
 
 			<MissionControlActions missionControlId={$missionControlStore} />
 		{/if}

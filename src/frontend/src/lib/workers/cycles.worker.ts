@@ -1,12 +1,14 @@
+import type { MemorySize } from '$declarations/satellite/satellite.did';
 import { icpXdrConversionRate } from '$lib/api/cmc.api';
 import { canisterStatus } from '$lib/api/ic.api';
+import { memorySize } from '$lib/api/satellites.api';
 import { CYCLES_WARNING, SYNC_CYCLES_TIMER_INTERVAL } from '$lib/constants/constants';
-import type { Canister, CanisterInfo } from '$lib/types/canister';
+import type { Canister, CanisterInfo, CanisterSegment } from '$lib/types/canister';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
-import { isNullish } from '@dfinity/utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import { createStore, getMany, set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
@@ -28,7 +30,7 @@ onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRe
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
-const startCyclesTimer = async ({ data: { canisterIds } }: { data: PostMessageDataRequest }) => {
+const startCyclesTimer = async ({ data: { segments } }: { data: PostMessageDataRequest }) => {
 	const identity = await loadIdentity();
 
 	if (isNullish(identity)) {
@@ -36,7 +38,7 @@ const startCyclesTimer = async ({ data: { canisterIds } }: { data: PostMessageDa
 		return;
 	}
 
-	const sync = async () => await syncCanisters({ identity, canisterIds: canisterIds ?? [] });
+	const sync = async () => await syncCanisters({ identity, segments: segments ?? [] });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
@@ -59,12 +61,12 @@ let syncing = false;
 
 const syncCanisters = async ({
 	identity,
-	canisterIds
+	segments
 }: {
 	identity: Identity;
-	canisterIds: string[];
+	segments: CanisterSegment[];
 }) => {
-	if (canisterIds.length === 0) {
+	if (segments.length === 0) {
 		// No canister to sync
 		return;
 	}
@@ -74,12 +76,12 @@ const syncCanisters = async ({
 		return;
 	}
 
-	await emitSavedCanisters({ canisterIds });
+	await emitSavedCanisters({ canisterIds: segments.map(({ canisterId }) => canisterId) });
 
 	try {
 		const trillionRatio: bigint = await icpXdrConversionRate();
 
-		await syncNnsCanisters({ identity, canisterIds, trillionRatio });
+		await syncNnsCanisters({ identity, segments, trillionRatio });
 	} finally {
 		syncing = false;
 	}
@@ -87,22 +89,38 @@ const syncCanisters = async ({
 
 const syncNnsCanisters = async ({
 	identity,
-	canisterIds,
+	segments,
 	trillionRatio
 }: {
 	identity: Identity;
-	canisterIds: string[];
+	segments: CanisterSegment[];
 	trillionRatio: bigint;
 }) => {
 	await Promise.allSettled(
-		canisterIds.map(async (canisterId: string) => {
+		segments.map(async ({ canisterId, segment }) => {
 			try {
-				const canisterInfo: CanisterInfo = await canisterStatus({ canisterId, identity });
+				const [canisterResult, memorySizeResult] = await Promise.allSettled([
+					canisterStatus({ canisterId, identity }),
+					...(segment === 'satellite' ? [memorySize({ satelliteId: canisterId, identity })] : [])
+				]);
+
+				if (canisterResult.status === 'rejected') {
+					throw canisterResult.reason;
+				}
+
+				const { value: canisterInfo } = canisterResult;
+
+				// We silence those error because we managed the canister status.
+				// Satellites and orbiters which were not migrated for example will throw an error because the end point won't be exposed.
+				if (memorySizeResult?.status === 'rejected') {
+					console.error(`Error fetching memory size information: `, memorySizeResult.reason);
+				}
 
 				await syncCanister({
 					canisterInfo,
 					trillionRatio,
-					canisterId: canisterInfo.canisterId
+					canisterId: canisterInfo.canisterId,
+					memory: memorySizeResult?.status === 'fulfilled' ? memorySizeResult.value : undefined
 				});
 			} catch (err: unknown) {
 				console.error(err);
@@ -130,22 +148,27 @@ const emitCanister = (canister: Canister) =>
 const syncCanister = async ({
 	canisterId,
 	trillionRatio,
-	canisterInfo: { cycles, status, memory_size, idle_cycles_burned_per_day }
+	canisterInfo: { cycles, status, memory_size, idle_cycles_burned_per_day },
+	memory
 }: {
 	canisterId: string;
 	trillionRatio: bigint;
 	canisterInfo: CanisterInfo;
+	memory: MemorySize | undefined;
 }) => {
 	const canister: Canister = {
 		id: canisterId,
 		sync: 'synced',
 		data: {
-			status,
-			memory_size,
-			idle_cycles_burned_per_day,
-			cycles,
 			icp: cyclesToICP({ cycles, trillionRatio }),
-			warning: cycles < CYCLES_WARNING
+			warning: cycles < CYCLES_WARNING,
+			canister: {
+				status,
+				memory_size,
+				idle_cycles_burned_per_day,
+				cycles
+			},
+			...(nonNullish(memory) && { memory })
 		}
 	};
 

@@ -6,7 +6,7 @@
 	export let missionControlId: Principal;
 </script>
 
-<Canister canisterId={missionControlId} display={false} />
+<Canister canisterId={missionControlId} segment="mission_control" display={false} />
 
 <CanisterCyclesWarning canisterId={missionControlId}>
 	Your mission control center is running low on cycles.

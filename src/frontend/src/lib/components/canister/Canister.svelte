@@ -4,10 +4,11 @@
 		Canister,
 		CanisterData,
 		CanisterStatus,
-		CanisterSyncStatus
+		CanisterSyncStatus,
+		Segment
 	} from '$lib/types/canister';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
-	import { type CyclesCallback, initCyclesWorker } from '$lib/services/worker.cycles.services';
+	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import { onDestroy, onMount } from 'svelte';
 	import { formatNumber } from '$lib/utils/number.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
@@ -16,6 +17,7 @@
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 
 	export let canisterId: Principal;
+	export let segment: Segment;
 	export let display = true;
 
 	let canister: Canister | undefined = undefined;
@@ -25,19 +27,21 @@
 		emit({ message: 'junoSyncCanister', detail: { canister } });
 	};
 
-	let worker:
-		| {
-				startCyclesTimer: (params: { canisterIds: string[]; callback: CyclesCallback }) => void;
-				stopCyclesTimer: () => void;
-				restartCyclesTimer: (canisterIds: string[]) => void;
-		  }
-		| undefined;
+	let worker: CyclesWorker | undefined;
 
 	onMount(async () => (worker = await initCyclesWorker()));
 	$: worker,
 		canisterId,
 		(() =>
-			worker?.startCyclesTimer({ canisterIds: [canisterId.toText()], callback: syncCanister }))();
+			worker?.startCyclesTimer({
+				segments: [
+					{
+						canisterId: canisterId.toText(),
+						segment
+					}
+				],
+				callback: syncCanister
+			}))();
 
 	onDestroy(() => worker?.stopCyclesTimer());
 
@@ -61,7 +65,11 @@
 	let cycles: bigint;
 	let warning: boolean;
 
-	$: ({ status, memory_size, cycles, warning } = data ?? {
+	$: ({ warning } = data ?? {
+		warning: false
+	});
+
+	$: ({ status, memory_size, cycles } = data?.canister ?? {
 		status: undefined,
 		memory_size: BigInt(0),
 		cycles: BigInt(0),

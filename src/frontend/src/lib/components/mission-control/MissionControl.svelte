@@ -29,7 +29,7 @@
 		</Value>
 
 		{#if nonNullish($missionControlStore)}
-			<CanisterOverview canisterId={$missionControlStore} />
+			<CanisterOverview canisterId={$missionControlStore} segment="mission_control" />
 
 			<MissionControlActions missionControlId={$missionControlStore} />
 		{/if}

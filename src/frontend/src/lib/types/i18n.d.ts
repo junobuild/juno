@@ -119,6 +119,7 @@ interface I18nSatellites {
 	loading_satellites: string;
 	overview: string;
 	id: string;
+	memory: string;
 }
 
 interface I18nMission_control {

@@ -1,8 +1,15 @@
+import type { CanisterSegment } from '$lib/types/canister';
 import type { PostMessage, PostMessageDataResponse } from '$lib/types/post-message';
 
 export type CyclesCallback = (data: PostMessageDataResponse) => void;
 
-export const initCyclesWorker = async () => {
+export interface CyclesWorker {
+	startCyclesTimer: (params: { segments: CanisterSegment[]; callback: CyclesCallback }) => void;
+	stopCyclesTimer: () => void;
+	restartCyclesTimer: (canisterIds: string[]) => void;
+}
+
+export const initCyclesWorker = async (): Promise<CyclesWorker> => {
 	const CyclesWorker = await import('$lib/workers/cycles.worker?worker');
 	const cyclesWorker: Worker = new CyclesWorker.default();
 
@@ -21,16 +28,16 @@ export const initCyclesWorker = async () => {
 	return {
 		startCyclesTimer: ({
 			callback,
-			canisterIds
+			segments
 		}: {
-			canisterIds: string[];
+			segments: CanisterSegment[];
 			callback: CyclesCallback;
 		}) => {
 			cyclesCallback = callback;
 
 			cyclesWorker.postMessage({
 				msg: 'startCyclesTimer',
-				data: { canisterIds }
+				data: { segments }
 			});
 		},
 		stopCyclesTimer: () => {

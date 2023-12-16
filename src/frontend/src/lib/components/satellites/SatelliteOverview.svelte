@@ -28,7 +28,7 @@
 		<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
 	</Value>
 
-	<CanisterOverview canisterId={satellite.satellite_id} />
+	<CanisterOverview canisterId={satellite.satellite_id} segment="satellite" />
 
 	<SatelliteActions {satellite} />
 </div>

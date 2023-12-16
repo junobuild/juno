@@ -5,6 +5,7 @@ import type {
 	Doc,
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
+	MemorySize,
 	Rule,
 	RulesType,
 	SetRule
@@ -15,7 +16,8 @@ import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
-import type { Principal } from '@dfinity/principal';
+import type { Identity } from '@dfinity/agent';
+import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 
 export const listDocs = async ({
@@ -27,7 +29,7 @@ export const listDocs = async ({
 	collection: string;
 	params: ListParams;
 }): Promise<ListDocs> => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	return actor.list_docs(collection, toListParams(params));
 };
 
@@ -40,7 +42,7 @@ export const listAssets = async ({
 	collection: string;
 	params: ListParams;
 }): Promise<ListAssets> => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	return actor.list_assets(collection, toListParams(params));
 };
 
@@ -51,7 +53,7 @@ export const listRules = async ({
 	satelliteId: Principal;
 	type: RulesType;
 }): Promise<[string, Rule][]> => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	return actor.list_rules(type);
 };
 
@@ -85,7 +87,7 @@ export const setRule = async ({
 		mutable_permissions: toNullable(mutablePermissions)
 	};
 
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	await actor.set_rule(type, collection, updateRule);
 };
 
@@ -104,7 +106,7 @@ export const deleteRule = async ({
 		updated_at: [rule.updated_at]
 	};
 
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	await actor.del_rule(type, collection, delRule);
 };
 
@@ -113,7 +115,7 @@ export const listControllers = async ({
 }: {
 	satelliteId: Principal;
 }): Promise<[Principal, Controller][]> => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	return actor.list_controllers();
 };
 
@@ -122,7 +124,7 @@ export const satelliteVersion = async ({
 }: {
 	satelliteId: Principal;
 }): Promise<string> => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	return actor.version();
 };
 
@@ -135,7 +137,7 @@ export const setCustomDomain = async ({
 	domainName: string;
 	boundaryNodesId: string | undefined;
 }): Promise<void> => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	await actor.set_custom_domain(domainName, toNullable(boundaryNodesId));
 };
 
@@ -146,7 +148,7 @@ export const deleteCustomDomain = async ({
 	satelliteId: Principal;
 	domainName: string;
 }): Promise<void> => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	await actor.del_custom_domain(domainName);
 };
 
@@ -155,7 +157,7 @@ export const listCustomDomains = async ({
 }: {
 	satelliteId: Principal;
 }): Promise<[string, CustomDomain][]> => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	return actor.list_custom_domains();
 };
 
@@ -170,7 +172,7 @@ export const deleteDoc = async ({
 	key: string;
 	doc: Doc | undefined;
 }) => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	const { updated_at } = doc ?? { updated_at: undefined };
 	return actor.del_doc(collection, key, {
 		updated_at: toNullable(updated_at)
@@ -186,7 +188,7 @@ export const deleteAsset = async ({
 	collection: string;
 	full_path: string;
 }) => {
-	const actor = await getSatelliteActor(satelliteId);
+	const actor = await getSatelliteActor({ satelliteId });
 	return actor.del_asset(collection, full_path);
 };
 
@@ -197,7 +199,7 @@ export const deleteDocs = async ({
 	satelliteId: Principal;
 	collection: string;
 }) => {
-	const { del_docs } = await getSatelliteActor(satelliteId);
+	const { del_docs } = await getSatelliteActor({ satelliteId });
 	return del_docs(collection);
 };
 
@@ -208,7 +210,7 @@ export const deleteAssets = async ({
 	satelliteId: Principal;
 	collection: string;
 }) => {
-	const { del_assets } = await getSatelliteActor(satelliteId);
+	const { del_assets } = await getSatelliteActor({ satelliteId });
 	return del_assets(collection);
 };
 
@@ -221,9 +223,23 @@ export const depositCycles = async ({
 	cycles: bigint;
 	destinationId: Principal;
 }) => {
-	const { deposit_cycles } = await getSatelliteActor(satelliteId);
+	const { deposit_cycles } = await getSatelliteActor({ satelliteId });
 	return deposit_cycles({
 		cycles,
 		destination_id
 	});
+};
+
+export const memorySize = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: string;
+	identity: Identity;
+}): Promise<MemorySize> => {
+	const { memory_size } = await getSatelliteActor({
+		satelliteId: Principal.fromText(satelliteId),
+		identity
+	});
+	return memory_size();
 };

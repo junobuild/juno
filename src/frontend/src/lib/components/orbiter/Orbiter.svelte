@@ -23,7 +23,7 @@
 		<p>v{$versionStore?.orbiter?.current ?? '...'}</p>
 	</Value>
 
-	<CanisterOverview canisterId={orbiter.orbiter_id} />
+	<CanisterOverview canisterId={orbiter.orbiter_id} segment="orbiter" />
 
 	<OrbiterActions {orbiter} />
 </div>

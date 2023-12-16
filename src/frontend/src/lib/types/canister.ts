@@ -1,5 +1,14 @@
+import type { MemorySize } from '$declarations/satellite/satellite.did';
+
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';
 export type CanisterSyncStatus = 'loading' | 'syncing' | 'synced' | 'error';
+
+export type Segment = 'satellite' | 'mission_control' | 'orbiter';
+
+export interface CanisterSegment {
+	canisterId: string;
+	segment: Segment;
+}
 
 export interface CanisterInfo {
 	cycles: bigint;
@@ -9,12 +18,11 @@ export interface CanisterInfo {
 	canisterId: string;
 }
 
-export type CanisterData = Pick<
-	CanisterInfo,
-	'memory_size' | 'cycles' | 'status' | 'idle_cycles_burned_per_day'
-> & {
+export type CanisterData = {
 	icp: number;
 	warning: boolean;
+	canister: Pick<CanisterInfo, 'memory_size' | 'cycles' | 'status' | 'idle_cycles_burned_per_day'>;
+	memory?: MemorySize;
 };
 
 export interface Canister {

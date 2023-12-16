@@ -34,7 +34,7 @@
 				type,
 				detail: {
 					satellite,
-					cycles: canister?.data?.cycles ?? 0n
+					cycles: canister?.data?.canister?.cycles ?? 0n
 				}
 			}
 		});

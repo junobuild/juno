@@ -8,6 +8,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import { debounce } from '@dfinity/utils';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
 
 	onMount(() => applyColor(Color.LAVENDER_BLUE));
 
@@ -20,6 +22,9 @@
 	);
 
 	$: $satelliteStore, debounceSetTitle();
+
+	$: $missionControlStore,
+		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
 </script>
 
 <slot />

@@ -3,11 +3,11 @@
 	import CanisterCyclesWarning from '$lib/components/canister/CanisterCyclesWarning.svelte';
 	import type { Principal } from '@dfinity/principal';
 
-	export let missionControlId: Principal;
+	export let canisterId: Principal;
 </script>
 
-<Canister canisterId={missionControlId} segment="mission_control" display={false} />
+<Canister {canisterId} segment="mission_control" display={false} />
 
-<CanisterCyclesWarning canisterId={missionControlId}>
-	Your mission control center is running low on cycles.
+<CanisterCyclesWarning {canisterId}>
+	<slot />
 </CanisterCyclesWarning>

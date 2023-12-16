@@ -95,6 +95,9 @@ interface I18nCanisters {
 	in_total: string;
 	on_heap: string;
 	on_stable: string;
+	warning_mission_control_low_cycles: string;
+	warning_satellite_low_cycles: string;
+	warning_orbiter_low_cycles: string;
 }
 
 interface I18nSign_in {

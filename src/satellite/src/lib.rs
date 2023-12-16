@@ -38,8 +38,7 @@ use crate::storage::types::http_request::{
     Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
 };
 use crate::storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, MemorySize, UploadChunk,
-    UploadChunkResult,
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
@@ -51,21 +50,20 @@ use controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
     set_controllers as set_controllers_store,
 };
-use core::arch::wasm32::memory_size as wasm_memory_size;
 use ic_cdk::api::call::arg_data;
-use ic_cdk::api::stable::{stable_size, WASM_PAGE_SIZE_IN_BYTES};
 use ic_cdk::api::{caller, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
+use shared::canister::memory_size as canister_memory_size;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{
     assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
 };
 use shared::ic::deposit_cycles as deposit_cycles_shared;
 use shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, SegmentArgs, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SegmentArgs, SetControllersArgs,
 };
 use shared::types::state::{ControllerScope, Controllers};
 use std::mem;
@@ -513,10 +511,7 @@ fn version() -> String {
 
 #[query(guard = "caller_is_controller")]
 fn memory_size() -> MemorySize {
-    MemorySize {
-        heap: wasm_memory_size(0) * WASM_PAGE_SIZE_IN_BYTES,
-        stable: stable_size() as usize * WASM_PAGE_SIZE_IN_BYTES,
-    }
+    canister_memory_size()
 }
 
 // Generate did files

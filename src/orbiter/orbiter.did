@@ -15,6 +15,7 @@ type GetAnalytics = record {
   from : opt nat64;
   satellite_id : opt principal;
 };
+type MemorySize = record { stable : nat64; heap : nat64 };
 type OrbiterSatelliteConfig = record {
   updated_at : nat64;
   created_at : nat64;
@@ -89,6 +90,7 @@ service : () -> {
   list_satellite_configs : () -> (
       vec record { principal; OrbiterSatelliteConfig },
     ) query;
+  memory_size : () -> (MemorySize) query;
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
     );

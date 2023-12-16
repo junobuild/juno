@@ -1,7 +1,8 @@
 import type { MemorySize } from '$declarations/satellite/satellite.did';
 import { icpXdrConversionRate } from '$lib/api/cmc.api';
 import { canisterStatus } from '$lib/api/ic.api';
-import { memorySize } from '$lib/api/satellites.api';
+import { memorySize as memorySizeOrbiter } from '$lib/api/orbiter.api';
+import { memorySize as memorySizeSatellite } from '$lib/api/satellites.api';
 import { CYCLES_WARNING, SYNC_CYCLES_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { Canister, CanisterInfo, CanisterSegment } from '$lib/types/canister';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
@@ -101,7 +102,11 @@ const syncNnsCanisters = async ({
 			try {
 				const [canisterResult, memorySizeResult] = await Promise.allSettled([
 					canisterStatus({ canisterId, identity }),
-					...(segment === 'satellite' ? [memorySize({ satelliteId: canisterId, identity })] : [])
+					...(segment === 'satellite'
+						? [memorySizeSatellite({ satelliteId: canisterId, identity })]
+						: segment === 'orbiter'
+						? [memorySizeOrbiter({ orbiterId: canisterId, identity })]
+						: [])
 				]);
 
 				if (canisterResult.status === 'rejected') {

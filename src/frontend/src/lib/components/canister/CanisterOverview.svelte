@@ -43,7 +43,7 @@
 	</Value>
 </div>
 
-{#if segment === 'satellite'}
+{#if ['satellite', 'orbiter'].includes(segment)}
 	<Value>
 		<svelte:fragment slot="label">{$i18n.satellites.memory}</svelte:fragment>
 		{#if nonNullish(memory)}

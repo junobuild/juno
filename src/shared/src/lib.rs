@@ -1,4 +1,5 @@
 pub mod assert;
+pub mod canister;
 pub mod constants;
 pub mod controllers;
 pub mod env;

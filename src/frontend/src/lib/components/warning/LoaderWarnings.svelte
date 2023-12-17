@@ -1,6 +1,6 @@
 <script lang="ts">
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import CanisterCyclesWarning from '$lib/components/canister/CanisterCyclesWarning.svelte';
+	import CanisterWarnings from '$lib/components/canister/CanisterWarnings.svelte';
 	import type { Principal } from '@dfinity/principal';
 
 	export let canisterId: Principal;
@@ -8,6 +8,7 @@
 
 <Canister {canisterId} segment="mission_control" display={false} />
 
-<CanisterCyclesWarning {canisterId}>
-	<slot />
-</CanisterCyclesWarning>
+<CanisterWarnings {canisterId}>
+	<slot name="cycles" slot="cycles" />
+	<slot name="heap" slot="heap" />
+</CanisterWarnings>

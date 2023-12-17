@@ -3,7 +3,11 @@ import { icpXdrConversionRate } from '$lib/api/cmc.api';
 import { canisterStatus } from '$lib/api/ic.api';
 import { memorySize as memorySizeOrbiter } from '$lib/api/orbiter.api';
 import { memorySize as memorySizeSatellite } from '$lib/api/satellites.api';
-import { CYCLES_WARNING, SYNC_CYCLES_TIMER_INTERVAL } from '$lib/constants/constants';
+import {
+	CYCLES_WARNING,
+	MEMORY_HEAP_WARNING,
+	SYNC_CYCLES_TIMER_INTERVAL
+} from '$lib/constants/constants';
 import type { Canister, CanisterInfo, CanisterSegment } from '$lib/types/canister';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
@@ -166,7 +170,10 @@ const syncCanister = async ({
 		sync: 'synced',
 		data: {
 			icp: cyclesToICP({ cycles, trillionRatio }),
-			warning: cycles < CYCLES_WARNING,
+			warning: {
+				cycles: cycles < CYCLES_WARNING,
+				heap: (memory?.heap ?? 0n) >= MEMORY_HEAP_WARNING
+			},
 			canister: {
 				status,
 				memory_size,

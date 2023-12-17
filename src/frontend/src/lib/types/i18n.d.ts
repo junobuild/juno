@@ -98,6 +98,8 @@ interface I18nCanisters {
 	warning_mission_control_low_cycles: string;
 	warning_satellite_low_cycles: string;
 	warning_orbiter_low_cycles: string;
+	warning_satellite_heap_memory: string;
+	warning_orbiter_heap_memory: string;
 }
 
 interface I18nSign_in {

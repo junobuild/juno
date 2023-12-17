@@ -11,7 +11,7 @@ import type {
 	SetRule
 } from '$declarations/satellite/satellite.did';
 import type { MemoryText, PermissionText } from '$lib/constants/rules.constants';
-import { MemoryHeap } from '$lib/constants/rules.constants';
+import { MemoryStable } from '$lib/constants/rules.constants';
 import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
@@ -83,7 +83,9 @@ export const setRule = async ({
 		write: permissionFromText(write),
 		updated_at: isNullish(rule) ? [] : [rule.updated_at],
 		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
-		memory: isNullish(rule) ? [memoryFromText(memory)] : [fromNullable(rule.memory) ?? MemoryHeap],
+		memory: isNullish(rule)
+			? [memoryFromText(memory)]
+			: [fromNullable(rule.memory) ?? MemoryStable],
 		mutable_permissions: toNullable(mutablePermissions)
 	};
 

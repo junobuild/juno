@@ -33,26 +33,18 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
         set_rule_impl(
             collection.clone(),
             rule.clone(),
-            Memory::Heap,
             &mut state.borrow_mut().heap.db.rules,
         )
     })?;
 
     // If the collection does not exist yet we initialize it
-    init_collection(&collection, &rule.memory.unwrap_or(Memory::Heap));
+    init_collection(&collection, &rule.memory.unwrap_or(Memory::Stable));
 
     Ok(())
 }
 
 pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), String> {
-    STATE.with(|state| {
-        set_rule_impl(
-            collection,
-            rule,
-            Memory::Stable,
-            &mut state.borrow_mut().heap.storage.rules,
-        )
-    })
+    STATE.with(|state| set_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
 }
 
 pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
@@ -80,7 +72,6 @@ pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), 
 fn set_rule_impl(
     collection: CollectionKey,
     user_rule: SetRule,
-    default_memory: Memory,
     rules: &mut Rules,
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
@@ -103,7 +94,7 @@ fn set_rule_impl(
         updated_at,
         read: user_rule.read,
         write: user_rule.write,
-        memory: Some(user_rule.memory.unwrap_or(default_memory)),
+        memory: Some(user_rule.memory.unwrap_or(Memory::Stable)),
         mutable_permissions: Some(user_rule.mutable_permissions.unwrap_or(true)),
         max_size: user_rule.max_size,
     };

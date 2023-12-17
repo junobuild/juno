@@ -21,8 +21,8 @@ pub mod rules {
 
     #[derive(CandidType, Serialize, Deserialize, Default, Clone, Debug)]
     pub enum Memory {
-        #[default]
         Heap,
+        #[default]
         Stable,
     }
 

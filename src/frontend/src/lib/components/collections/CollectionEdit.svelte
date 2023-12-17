@@ -43,10 +43,7 @@
 	const initMemory = (text: MemoryText) => (memory = text);
 	$: initMemory(
 		// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
-		memoryToText(
-			fromNullable(rule?.memory ?? []) ??
-				(typeStorage && mode === 'new' ? MemoryStable : MemoryHeap)
-		)
+		memoryToText(fromNullable(rule?.memory ?? []) ?? (mode === 'new' ? MemoryStable : MemoryHeap))
 	);
 
 	let currentImmutable: boolean;

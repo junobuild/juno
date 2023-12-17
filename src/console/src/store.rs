@@ -1,4 +1,4 @@
-use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
+use crate::constants::{INITIAL_CREDITS};
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl, MissionControls, Rate,
@@ -89,7 +89,7 @@ fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
     let mission_control = MissionControl {
         mission_control_id: None,
         owner: *user,
-        credits: SATELLITE_CREATION_FEE_ICP,
+        credits: INITIAL_CREDITS,
         created_at: now,
         updated_at: now,
     };
@@ -152,11 +152,11 @@ fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'stat
 }
 
 pub fn has_create_satellite_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
-    has_credits(user, mission_control, &SATELLITE_CREATION_FEE_ICP)
+    has_credits(user, mission_control, &get_satellite_fee())
 }
 
 pub fn has_create_orbiter_credits(user: &UserId, mission_control: &MissionControlId) -> bool {
-    has_credits(user, mission_control, &ORBITER_CREATION_FEE_ICP)
+    has_credits(user, mission_control, &get_orbiter_fee())
 }
 
 fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Tokens) -> bool {
@@ -168,17 +168,18 @@ fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Tokens) 
     }
 }
 
-pub fn use_credits(user: &UserId) -> Result<Tokens, &'static str> {
-    STATE.with(|state| update_credits_impl(user, false, &mut state.borrow_mut().stable))
+pub fn use_credits(user: &UserId, fee: &Tokens) -> Result<Tokens, &'static str> {
+    STATE.with(|state| update_credits_impl(user, false, fee, &mut state.borrow_mut().stable))
 }
 
-pub fn add_credits(user: &UserId) -> Result<Tokens, &'static str> {
-    STATE.with(|state| update_credits_impl(user, true, &mut state.borrow_mut().stable))
+pub fn add_credits(user: &UserId, credits: &Tokens) -> Result<Tokens, &'static str> {
+    STATE.with(|state| update_credits_impl(user, true, credits, &mut state.borrow_mut().stable))
 }
 
 fn update_credits_impl(
     user: &UserId,
     increment: bool,
+    credits: &Tokens,
     state: &mut StableState,
 ) -> Result<Tokens, &'static str> {
     let existing_mission_control = state.mission_controls.get(user);
@@ -189,8 +190,8 @@ fn update_credits_impl(
             let now = time();
 
             let remaining_credits_e8s = match increment {
-                true => mission_control.credits.e8s() + SATELLITE_CREATION_FEE_ICP.e8s(),
-                false => mission_control.credits.e8s() - SATELLITE_CREATION_FEE_ICP.e8s(),
+                true => mission_control.credits.e8s() + credits.e8s(),
+                false => mission_control.credits.e8s() - credits.e8s(),
             };
 
             let remaining_credits = Tokens::from_e8s(remaining_credits_e8s);
@@ -578,4 +579,12 @@ pub fn update_orbiters_rate_config(config: &RateConfig) {
 
 fn update_rate_config(config: &RateConfig, rate: &mut Rate) {
     rate.config = config.clone();
+}
+
+pub fn get_satellite_fee() -> Tokens {
+    STATE.with(|state| state.borrow_mut().stable.fees.satellite)
+}
+
+pub fn get_orbiter_fee() -> Tokens {
+    STATE.with(|state| state.borrow_mut().stable.fees.orbiter)
 }

@@ -5,7 +5,7 @@ use crate::store::{
 };
 use crate::types::ledger::Payment;
 use candid::Principal;
-use ic_ledger_types::BlockIndex;
+use ic_ledger_types::{BlockIndex, Tokens};
 use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
 use shared::ledger::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
@@ -18,6 +18,7 @@ pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
     has_credits: &dyn Fn(&UserId, &MissionControlId) -> bool,
+    get_fee: &dyn Fn() -> Tokens,
     console: Principal,
     caller: Principal,
     CreateCanisterArgs { user, block_index }: CreateCanisterArgs,
@@ -29,6 +30,8 @@ where
     // User should have a mission control center
     let mission_control = get_existing_mission_control(&user, &caller)?;
 
+    let fee = get_fee();
+
     match mission_control.mission_control_id {
         None => Err("No mission control center found.".to_string()),
         Some(mission_control_id) => {
@@ -36,8 +39,14 @@ where
                 // Guard too many requests
                 increment_rate()?;
 
-                return create_canister_with_credits(create, console, mission_control_id, user)
-                    .await;
+                return create_canister_with_credits(
+                    create,
+                    console,
+                    mission_control_id,
+                    user,
+                    fee,
+                )
+                .await;
             }
 
             create_canister_with_payment(
@@ -46,6 +55,7 @@ where
                 caller,
                 mission_control_id,
                 CreateCanisterArgs { user, block_index },
+                fee,
             )
             .await
         }
@@ -57,6 +67,7 @@ async fn create_canister_with_credits<F, Fut>(
     console: Principal,
     mission_control_id: MissionControlId,
     user: UserId,
+    fee: Tokens,
 ) -> Result<Principal, String>
 where
     F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
@@ -69,7 +80,7 @@ where
         Err(_) => Err("Segment creation with credits failed.".to_string()),
         Ok(satellite_id) => {
             // Satellite is created we can use the credits
-            let credits = use_credits(&user);
+            let credits = use_credits(&user, &fee);
 
             match credits {
                 Err(e) => Err(e.to_string()),
@@ -85,6 +96,7 @@ async fn create_canister_with_payment<F, Fut>(
     caller: Principal,
     mission_control_id: MissionControlId,
     CreateCanisterArgs { user, block_index }: CreateCanisterArgs,
+    fee: Tokens,
 ) -> Result<Principal, String>
 where
     F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
@@ -102,7 +114,7 @@ where
     let block = find_payment(
         mission_control_account_identifier,
         console_account_identifier,
-        SATELLITE_CREATION_FEE_ICP,
+        fee,
         mission_control_payment_block_index,
     )
     .await;

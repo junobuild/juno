@@ -1,5 +1,5 @@
-use crate::constants::DEFAULT_RATE_CONFIG;
-use crate::types::state::{Rate, RateTokens, Rates};
+use crate::constants::{DEFAULT_RATE_CONFIG, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
+use crate::types::state::{Fees, Rate, RateTokens, Rates};
 use ic_cdk::api::time;
 
 impl Default for Rates {
@@ -24,6 +24,15 @@ impl Default for Rates {
                 config: DEFAULT_RATE_CONFIG,
                 tokens,
             },
+        }
+    }
+}
+
+impl Default for Fees {
+    fn default() -> Self {
+        Fees {
+            satellite: SATELLITE_CREATION_FEE_ICP,
+            orbiter: ORBITER_CREATION_FEE_ICP,
         }
     }
 }

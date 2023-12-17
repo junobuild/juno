@@ -8,7 +8,6 @@ mod types;
 mod upgrade;
 mod wasm;
 
-use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
@@ -16,18 +15,18 @@ use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::store::{
     add_credits as add_credits_store, add_invitation_code as add_invitation_code_store,
     delete_controllers, get_credits as get_credits_store, get_existing_mission_control,
-    get_mission_control, get_mission_control_release_version, get_orbiter_release_version,
-    get_satellite_release_version, has_create_orbiter_credits, has_create_satellite_credits,
-    list_mission_controls, load_mission_control_release, load_orbiter_release,
-    load_satellite_release, reset_mission_control_release, reset_orbiter_release,
-    reset_satellite_release, set_controllers as set_controllers_store,
-    update_mission_controls_rate_config, update_orbiters_rate_config,
-    update_satellites_rate_config,
+    get_mission_control, get_mission_control_release_version, get_orbiter_fee,
+    get_orbiter_release_version, get_satellite_fee, get_satellite_release_version,
+    has_create_orbiter_credits, has_create_satellite_credits, list_mission_controls,
+    load_mission_control_release, load_orbiter_release, load_satellite_release,
+    reset_mission_control_release, reset_orbiter_release, reset_satellite_release,
+    set_controllers as set_controllers_store, update_mission_controls_rate_config,
+    update_orbiters_rate_config, update_satellites_rate_config,
 };
 use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
-    InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases, StableState,
-    State,
+    Fees, InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases,
+    StableState, State,
 };
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
@@ -61,6 +60,7 @@ fn init() {
                 invitation_codes: HashMap::new(),
                 controllers: init_controllers(&[manager]),
                 rates: Rates::default(),
+                fees: Fees::default(),
             },
         };
     });
@@ -195,8 +195,8 @@ fn get_credits() -> Tokens {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn add_credits(AddCreditsArgs { user }: AddCreditsArgs) {
-    add_credits_store(&user).unwrap_or_else(|e| trap(e));
+fn add_credits(AddCreditsArgs { user, credits }: AddCreditsArgs) {
+    add_credits_store(&user, &credits).unwrap_or_else(|e| trap(e));
 }
 
 #[query]
@@ -206,7 +206,7 @@ fn get_create_satellite_fee(
     let caller = caller();
 
     match has_create_satellite_credits(&user, &caller) {
-        false => Some(SATELLITE_CREATION_FEE_ICP),
+        false => Some(get_satellite_fee()),
         true => None,
     }
 }
@@ -218,7 +218,7 @@ fn get_create_orbiter_fee(
     let caller = caller();
 
     match has_create_orbiter_credits(&user, &caller) {
-        false => Some(ORBITER_CREATION_FEE_ICP),
+        false => Some(get_orbiter_fee()),
         true => None,
     }
 }

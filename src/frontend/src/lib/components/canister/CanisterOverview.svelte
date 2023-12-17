@@ -9,6 +9,7 @@
 	import type { MemorySize } from '$declarations/satellite/satellite.did';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { formatNumber } from '$lib/utils/number.utils';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 
 	export let canisterId: Principal;
 	export let segment: Segment;
@@ -21,6 +22,9 @@
 
 	let memory: MemorySize | undefined;
 	$: memory = data?.memory;
+
+	let warning: boolean;
+	$: warning = data?.warning?.heap === true ?? false;
 </script>
 
 <div class="status">
@@ -48,7 +52,11 @@
 		<svelte:fragment slot="label">{$i18n.canisters.memory}</svelte:fragment>
 		{#if nonNullish(memory)}
 			<p>
-				{formatNumber(Number(memory.heap) / 1_000_000)} MB <small>{$i18n.canisters.on_heap}</small>
+				{formatNumber(Number(memory.heap) / 1_000_000)} MB
+				<small
+					>{$i18n.canisters.on_heap}
+					{#if warning}<IconWarning />{/if}</small
+				>
 			</p>
 			<p>
 				{formatNumber(Number(memory.stable) / 1_000_000)} MB

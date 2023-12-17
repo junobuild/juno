@@ -16,6 +16,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 
 	export let canisterId: Principal;
 	export let segment: Segment;
@@ -64,11 +65,9 @@
 	let status: CanisterStatus | undefined;
 	let memory_size: bigint;
 	let cycles: bigint;
-	let warning: boolean;
 
-	$: ({ warning } = data ?? {
-		warning: false
-	});
+	let warning: boolean;
+	$: warning = data?.warning?.cycles === true ?? false;
 
 	$: ({ status, memory_size, cycles } = data?.canister ?? {
 		status: undefined,
@@ -88,7 +87,7 @@
 			<span
 				>{formatTCycles(cycles)}
 				<small
-					>T Cycles {#if warning}⚠️{/if}</small
+					>T Cycles {#if warning}<IconWarning />{/if}</small
 				></span
 			>{#if sync === 'syncing'}<IconSync />{/if}
 		</p>

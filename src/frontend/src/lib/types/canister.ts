@@ -18,9 +18,14 @@ export interface CanisterInfo {
 	canisterId: string;
 }
 
+export interface CanisterWarning {
+	cycles: boolean;
+	heap: boolean;
+}
+
 export type CanisterData = {
 	icp: number;
-	warning: boolean;
+	warning: CanisterWarning;
 	canister: Pick<CanisterInfo, 'memory_size' | 'cycles' | 'status' | 'idle_cycles_burned_per_day'>;
 	memory?: MemorySize;
 };

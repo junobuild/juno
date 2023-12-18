@@ -19,8 +19,8 @@ use crate::store::{
     get_orbiter_release_version, get_satellite_fee, get_satellite_release_version, has_credits,
     list_mission_controls, load_mission_control_release, load_orbiter_release,
     load_satellite_release, reset_mission_control_release, reset_orbiter_release,
-    reset_satellite_release, set_controllers as set_controllers_store,
-    update_mission_controls_rate_config, update_orbiters_rate_config,
+    reset_satellite_release, set_controllers as set_controllers_store, set_create_orbiter_fee,
+    set_create_satellite_fee, update_mission_controls_rate_config, update_orbiters_rate_config,
     update_satellites_rate_config,
 };
 use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
@@ -37,9 +37,10 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_ledger_types::Tokens;
 use shared::controllers::init_controllers;
 use shared::types::interface::{
-    AddCreditsArgs, AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
+    AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
+use shared::types::state::UserId;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -195,7 +196,7 @@ fn get_credits() -> Tokens {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn add_credits(AddCreditsArgs { user, credits }: AddCreditsArgs) {
+fn add_credits(user: UserId, credits: Tokens) {
     add_credits_store(&user, &credits).unwrap_or_else(|e| trap(e));
 }
 
@@ -224,6 +225,15 @@ fn get_create_orbiter_fee(
     match has_credits(&user, &caller, &fee) {
         false => Some(fee),
         true => None,
+    }
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn set_create_fee(segment: Segment, fee: Tokens) {
+    match segment {
+        Segment::Satellite => set_create_satellite_fee(&fee),
+        Segment::MissionControl => trap("Fee for mission control not supported."),
+        Segment::Orbiter => set_create_orbiter_fee(&fee),
     }
 }
 

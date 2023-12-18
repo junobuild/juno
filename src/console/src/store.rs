@@ -1,8 +1,8 @@
 use crate::constants::INITIAL_CREDITS;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
-    InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl, MissionControls, Rate,
-    RateConfig, StableState, Wasm,
+    Fees, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl, MissionControls,
+    Rate, RateConfig, StableState, Wasm,
 };
 use crate::STATE;
 use ic_cdk::api::time;
@@ -573,10 +573,28 @@ fn update_rate_config(config: &RateConfig, rate: &mut Rate) {
     rate.config = config.clone();
 }
 
+/// Fees
+
 pub fn get_satellite_fee() -> Tokens {
-    STATE.with(|state| state.borrow_mut().stable.fees.satellite)
+    STATE.with(|state| state.borrow().stable.fees.satellite)
 }
 
 pub fn get_orbiter_fee() -> Tokens {
-    STATE.with(|state| state.borrow_mut().stable.fees.orbiter)
+    STATE.with(|state| state.borrow().stable.fees.orbiter)
+}
+
+pub fn set_create_satellite_fee(fee: &Tokens) {
+    STATE.with(|state| set_satellite_fee(fee, &mut state.borrow_mut().stable.fees))
+}
+
+pub fn set_create_orbiter_fee(fee: &Tokens) {
+    STATE.with(|state| set_orbiter_fee(fee, &mut state.borrow_mut().stable.fees))
+}
+
+fn set_satellite_fee(fee: &Tokens, state: &mut Fees) {
+    state.satellite = fee.clone();
+}
+
+fn set_orbiter_fee(fee: &Tokens, state: &mut Fees) {
+    state.orbiter = fee.clone();
 }

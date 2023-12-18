@@ -71,19 +71,13 @@ pub mod interface {
     use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{ControllerId, ControllerScope, Metadata, MissionControlId, UserId};
     use candid::{CandidType, Principal};
-    use ic_ledger_types::{BlockIndex, Tokens};
+    use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateCanisterArgs {
         pub user: UserId,
         pub block_index: Option<BlockIndex>,
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct AddCreditsArgs {
-        pub user: UserId,
-        pub credits: Tokens,
     }
 
     #[derive(CandidType, Deserialize)]

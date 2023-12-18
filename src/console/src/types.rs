@@ -85,9 +85,15 @@ pub mod state {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
+    pub struct Fee {
+        pub fee: Tokens,
+        pub updated_at: u64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct Fees {
-        pub satellite: Tokens,
-        pub orbiter: Tokens,
+        pub satellite: Fee,
+        pub orbiter: Fee,
     }
 }
 

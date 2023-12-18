@@ -50,7 +50,7 @@ service : () -> {
   load_release : (Segment, vec nat8, text) -> (LoadRelease);
   reset_release : (Segment) -> ();
   set_controllers : (SetControllersArgs) -> ();
-  set_create_fee : (Segment, Tokens) -> ();
+  set_fee : (Segment, Tokens) -> ();
   update_rate_config : (Segment, RateConfig) -> ();
   version : () -> (text) query;
 }

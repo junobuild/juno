@@ -66,7 +66,7 @@ export interface _SERVICE {
 	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
 	reset_release: ActorMethod<[Segment], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
-	set_create_fee: ActorMethod<[Segment, Tokens], undefined>;
+	set_fee: ActorMethod<[Segment, Tokens], undefined>;
 	update_rate_config: ActorMethod<[Segment, RateConfig], undefined>;
 	version: ActorMethod<[], string>;
 }

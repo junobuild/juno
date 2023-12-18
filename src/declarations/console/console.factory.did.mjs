@@ -69,7 +69,7 @@ export const idlFactory = ({ IDL }) => {
 		load_release: IDL.Func([Segment, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
 		reset_release: IDL.Func([Segment], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
-		set_create_fee: IDL.Func([Segment, Tokens], [], []),
+		set_fee: IDL.Func([Segment, Tokens], [], []),
 		update_rate_config: IDL.Func([Segment, RateConfig], [], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

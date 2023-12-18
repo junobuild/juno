@@ -229,7 +229,7 @@ fn get_create_orbiter_fee(
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn set_create_fee(segment: Segment, fee: Tokens) {
+fn set_fee(segment: Segment, fee: Tokens) {
     match segment {
         Segment::Satellite => set_create_satellite_fee(&fee),
         Segment::MissionControl => trap("Fee for mission control not supported."),

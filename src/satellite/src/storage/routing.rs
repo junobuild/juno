@@ -1,3 +1,4 @@
+use ic_cdk::print;
 use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
     RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH,
@@ -20,6 +21,8 @@ pub fn get_routing(
         return Err("No url provided.");
     }
 
+    print(format!("Route requested {}", url));
+
     // The certification considers, and should only, the path of the URL. If query parameters, these should be omitted in the certificate.
     // Likewise the memory contains only assets indexed with their respective path.
     // e.g.
@@ -27,6 +30,8 @@ pub fn get_routing(
     // path: /hello/something
 
     let MapUrl { path, token } = map_url(&url)?;
+
+    print(format!("Route path {}", path));
 
     // We return the asset that matches the effective path
     let asset: Option<(Asset, Memory)> = get_public_asset(path.clone(), token.clone());

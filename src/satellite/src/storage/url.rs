@@ -2,28 +2,21 @@ use crate::storage::types::http_request::MapUrl;
 use crate::storage::types::state::FullPath;
 use globset::Glob;
 use std::collections::HashMap;
-use url::{ParseError, Url};
+use url::{Url};
+use urlencoding::decode;
 
 pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
-    let parsed_url = build_url(url);
+    let parsed_url = build_url(url)?;
 
-    match parsed_url {
-        Err(_) => {
-            let error = format!("Url {} cannot be parsed.", url.clone()).into_boxed_str();
-            Err(Box::leak(error))
-        }
-        Ok(parsed_url) => {
-            // Clean path without query params
-            let requested_path = parsed_url.path();
+    // Clean path without query params
+    let requested_path = decode_path(&parsed_url)?;
 
-            let token = map_token(parsed_url.clone());
+    let token = map_token(parsed_url.clone());
 
-            Ok(MapUrl {
-                path: requested_path.to_string(),
-                token,
-            })
-        }
-    }
+    Ok(MapUrl {
+        path: requested_path,
+        token,
+    })
 }
 
 pub fn map_alternative_paths(path: &String) -> Vec<String> {
@@ -84,10 +77,32 @@ fn aliased_by(key: &String) -> Option<Vec<String>> {
 
 /// END
 
-pub fn build_url(url: &String) -> Result<Url, ParseError> {
+pub fn build_url(url: &String) -> Result<Url, &'static str> {
     let separator = separator(url);
 
-    Url::parse(&["http://localhost", separator, url].join(""))
+    let parsed_url = Url::parse(&["http://localhost", separator, url].join(""));
+
+    match parsed_url {
+        Err(_) => {
+            let error = format!("Url {} cannot be parsed.", url.clone()).into_boxed_str();
+            Err(Box::leak(error))
+        },
+        Ok(url) => Ok(url)
+    }
+}
+
+pub fn decode_path(parsed_url: &Url) -> Result<String, &'static str> {
+    let path = parsed_url.path();
+
+    let decoded_path = decode(path);
+
+    match decoded_path {
+        Err(_) => {
+            let error = format!("Path {} cannot be decoded.", path.clone()).into_boxed_str();
+            Err(Box::leak(error))
+        },
+        Ok(decoded_path) => Ok(decoded_path.to_string())
+    }
 }
 
 /// Ensure path always will begin with a /

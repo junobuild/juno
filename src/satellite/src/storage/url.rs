@@ -2,8 +2,8 @@ use crate::storage::types::http_request::MapUrl;
 use crate::storage::types::state::FullPath;
 use globset::Glob;
 use std::collections::HashMap;
-use url::{Url};
-use urlencoding::{decode};
+use url::Url;
+use urlencoding::decode;
 
 pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
     let parsed_url = build_url(url)?;
@@ -86,10 +86,12 @@ fn build_url(url: &String) -> Result<Url, &'static str> {
         Err(_) => {
             let error = format!("Url {} cannot be parsed.", url.clone()).into_boxed_str();
             Err(Box::leak(error))
-        },
-        Ok(url) => Ok(url)
+        }
+        Ok(url) => Ok(url),
     }
 }
+
+/// Currently encoded URL are not supported, only non encoded path because the certification except a tree containing only non encoded paths.
 
 fn decode_path(parsed_url: &Url) -> Result<String, &'static str> {
     let path = parsed_url.path();
@@ -100,8 +102,8 @@ fn decode_path(parsed_url: &Url) -> Result<String, &'static str> {
         Err(_) => {
             let error = format!("Path {} cannot be decoded.", path.clone()).into_boxed_str();
             Err(Box::leak(error))
-        },
-        Ok(decoded_path) => Ok(decoded_path.to_string())
+        }
+        Ok(decoded_path) => Ok(decoded_path.to_string()),
     }
 }
 

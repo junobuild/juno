@@ -26,8 +26,6 @@ pub fn get_routing(
     // url: /hello/something?param=123
     // path: /hello/something
 
-    // It is also worth to note that currently encoded URL are not supported, only non encoded path because the certification except a tree containing only non encoded paths.
-
     let MapUrl { path, token } = map_url(&url)?;
 
     // We return the asset that matches the effective path

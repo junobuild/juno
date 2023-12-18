@@ -3,7 +3,7 @@ use crate::storage::types::state::FullPath;
 use globset::Glob;
 use std::collections::HashMap;
 use url::{Url};
-use urlencoding::decode;
+use urlencoding::{decode};
 
 pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
     let parsed_url = build_url(url)?;
@@ -77,7 +77,7 @@ fn aliased_by(key: &String) -> Option<Vec<String>> {
 
 /// END
 
-pub fn build_url(url: &String) -> Result<Url, &'static str> {
+fn build_url(url: &String) -> Result<Url, &'static str> {
     let separator = separator(url);
 
     let parsed_url = Url::parse(&["http://localhost", separator, url].join(""));
@@ -91,7 +91,7 @@ pub fn build_url(url: &String) -> Result<Url, &'static str> {
     }
 }
 
-pub fn decode_path(parsed_url: &Url) -> Result<String, &'static str> {
+fn decode_path(parsed_url: &Url) -> Result<String, &'static str> {
     let path = parsed_url.path();
 
     let decoded_path = decode(path);

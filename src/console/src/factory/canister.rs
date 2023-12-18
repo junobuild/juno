@@ -17,7 +17,7 @@ use std::future::Future;
 pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    has_credits: &dyn Fn(&UserId, &MissionControlId) -> bool,
+    has_credits: &dyn Fn(&UserId, &MissionControlId, &Tokens) -> bool,
     get_fee: &dyn Fn() -> Tokens,
     console: Principal,
     caller: Principal,
@@ -30,12 +30,12 @@ where
     // User should have a mission control center
     let mission_control = get_existing_mission_control(&user, &caller)?;
 
-    let fee = get_fee();
-
     match mission_control.mission_control_id {
         None => Err("No mission control center found.".to_string()),
         Some(mission_control_id) => {
-            if has_credits(&user, &mission_control_id) {
+            let fee = get_fee();
+
+            if has_credits(&user, &mission_control_id, &fee) {
                 // Guard too many requests
                 increment_rate()?;
 

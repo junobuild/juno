@@ -16,7 +16,6 @@ pub async fn create_orbiter(
     create_canister(
         create_orbiter_wasm,
         &increment_orbiters_rate,
-        &has_create_orbiter_credits,
         &get_orbiter_fee,
         console,
         caller,

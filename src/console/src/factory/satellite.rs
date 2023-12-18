@@ -16,7 +16,6 @@ pub async fn create_satellite(
     create_canister(
         create_satellite_wasm,
         &increment_satellites_rate,
-        &has_create_satellite_credits,
         &get_satellite_fee,
         console,
         caller,

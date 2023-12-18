@@ -46,7 +46,8 @@
 		"ledger:balance": "node scripts/ledger.balance.mjs",
 		"ledger:transfer": "node scripts/ledger.transfer.mjs",
 		"i18n": "node scripts/i18n.mjs && prettier --write ./src/frontend/src/lib/types/i18n.d.ts",
-		"observatory:statuses": "node scripts/observatory.statuses.mjs"
+		"observatory:statuses": "node scripts/observatory.statuses.mjs",
+		"clippy": "cargo clippy --target=wasm32-unknown-unknown"
 	},
 	"devDependencies": {
 		"@dfinity/identity-secp256k1": "^0.19.3",

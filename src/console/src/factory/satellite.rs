@@ -1,6 +1,6 @@
 use crate::controllers::remove_console_controller;
 use crate::factory::canister::create_canister;
-use crate::store::{has_create_satellite_credits, increment_satellites_rate};
+use crate::store::{get_satellite_fee, increment_satellites_rate};
 use crate::wasm::satellite_wasm_arg;
 use candid::Principal;
 use shared::constants::CREATE_SATELLITE_CYCLES;
@@ -16,7 +16,7 @@ pub async fn create_satellite(
     create_canister(
         create_satellite_wasm,
         &increment_satellites_rate,
-        &has_create_satellite_credits,
+        &get_satellite_fee,
         console,
         caller,
         args,

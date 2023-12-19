@@ -24,6 +24,7 @@ pub mod state {
         pub invitation_codes: InvitationCodes,
         pub controllers: Controllers,
         pub rates: Rates,
+        pub fees: Fees,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -81,6 +82,18 @@ pub mod state {
     pub struct RateConfig {
         pub time_per_token_ns: u64,
         pub max_tokens: u64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct Fee {
+        pub fee: Tokens,
+        pub updated_at: u64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct Fees {
+        pub satellite: Fee,
+        pub orbiter: Fee,
     }
 }
 

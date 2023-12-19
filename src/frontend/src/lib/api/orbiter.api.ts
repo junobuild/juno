@@ -6,11 +6,9 @@ import type {
 	SetSatelliteConfig,
 	TrackEvent
 } from '$declarations/orbiter/orbiter.did';
-import type { MemorySize } from '$declarations/satellite/satellite.did';
 import type { PageViewsPeriod } from '$lib/types/ortbiter';
 import { getOrbiterActor } from '$lib/utils/actor.juno.utils';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
-import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
 
@@ -96,18 +94,4 @@ export const depositCycles = async ({
 		cycles,
 		destination_id
 	});
-};
-
-export const memorySize = async ({
-	orbiterId,
-	identity
-}: {
-	orbiterId: string;
-	identity: Identity;
-}): Promise<MemorySize> => {
-	const { memory_size } = await getOrbiterActor({
-		orbiterId: Principal.fromText(orbiterId),
-		identity
-	});
-	return memory_size();
 };

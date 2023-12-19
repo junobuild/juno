@@ -5,7 +5,6 @@ import type {
 	Doc,
 	ListResults as ListAssets,
 	ListResults_1 as ListDocs,
-	MemorySize,
 	Rule,
 	RulesType,
 	SetRule
@@ -16,7 +15,6 @@ import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
-import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 
@@ -228,18 +226,4 @@ export const depositCycles = async ({
 		cycles,
 		destination_id
 	});
-};
-
-export const memorySize = async ({
-	satelliteId,
-	identity
-}: {
-	satelliteId: string;
-	identity: Identity;
-}): Promise<MemorySize> => {
-	const { memory_size } = await getSatelliteActor({
-		satelliteId: Principal.fromText(satelliteId),
-		identity
-	});
-	return memory_size();
 };

@@ -87,7 +87,7 @@
 		"@junobuild/ledger": "^0.0.25-next-2023-12-19",
 		"@junobuild/utils": "^0.0.16-next-2023-12-19",
 		"buffer": "^6.0.3",
-		"date-fns": "^3.0.0",
+		"date-fns": "^2.30.0",
 		"idb-keyval": "^6.2.1",
 		"layercake": "^8.0.2",
 		"nanoid": "^5.0.4",

@@ -1,4 +1,3 @@
-use crate::constants::INITIAL_CREDITS;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     Fee, Fees, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl,
@@ -86,10 +85,12 @@ pub fn init_empty_mission_control(user: &UserId) {
 fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
     let now = time();
 
+    let credits = state.fees.satellite.fee;
+
     let mission_control = MissionControl {
         mission_control_id: None,
         owner: *user,
-        credits: INITIAL_CREDITS,
+        credits,
         created_at: now,
         updated_at: now,
     };
@@ -593,14 +594,14 @@ pub fn set_create_orbiter_fee(fee: &Tokens) {
 
 fn set_satellite_fee(fee: &Tokens, state: &mut Fees) {
     state.satellite = Fee {
-        fee: fee.clone(),
+        fee: *fee,
         updated_at: time(),
     };
 }
 
 fn set_orbiter_fee(fee: &Tokens, state: &mut Fees) {
     state.orbiter = Fee {
-        fee: fee.clone(),
+        fee: *fee,
         updated_at: time(),
     };
 }

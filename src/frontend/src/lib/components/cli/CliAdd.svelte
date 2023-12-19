@@ -103,7 +103,7 @@
 								profile,
 								scope: 'admin'
 							})
-					  ]
+						]
 					: []),
 				...(selectedSatellites.length > 0
 					? [
@@ -114,7 +114,7 @@
 								profile,
 								scope: 'admin'
 							})
-					  ]
+						]
 					: []),
 				...(selectedOrbiters.length > 0
 					? [
@@ -126,7 +126,7 @@
 								scope: 'admin',
 								identity: $authStore.identity
 							})
-					  ]
+						]
 					: [])
 			]);
 
@@ -140,7 +140,7 @@
 								})),
 								bigintStringify
 							)
-					  )}`
+						)}`
 					: undefined,
 				selectedOrbiters.length > 0
 					? `orbiters=${encodeURIComponent(
@@ -151,7 +151,7 @@
 								})),
 								bigintStringify
 							)
-					  )}`
+						)}`
 					: undefined,
 				missionControl ? `mission_control=${$missionControlStore.toText()}` : undefined,
 				profile !== '' ? `profile=${profile}` : undefined

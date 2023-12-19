@@ -100,8 +100,8 @@
 		return chartsPageViews.length <= 31 && time % 2 != 0
 			? formatToDay(date)
 			: time % 5 === 0
-			? formatToDay(date)
-			: '';
+				? formatToDay(date)
+				: '';
 	};
 </script>
 

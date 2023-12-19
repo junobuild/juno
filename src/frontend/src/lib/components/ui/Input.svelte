@@ -54,8 +54,8 @@
 			lastValidICPValue === undefined
 				? undefined
 				: typeof lastValidICPValue === 'number'
-				? lastValidICPValue.toFixed(8)
-				: +lastValidICPValue;
+					? lastValidICPValue.toFixed(8)
+					: +lastValidICPValue;
 		icpValue = fixUndefinedValue(lastValidICPValue);
 
 		// force dom update (because no active triggers)

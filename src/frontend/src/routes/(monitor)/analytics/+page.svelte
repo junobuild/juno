@@ -37,7 +37,7 @@
 						id: Symbol('3'),
 						labelKey: 'core.settings'
 					}
-			  ]
+				]
 			: [])
 	];
 

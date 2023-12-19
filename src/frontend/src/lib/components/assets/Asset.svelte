@@ -46,7 +46,7 @@
 	$: downloadUrl = nonNullish(full_path)
 		? `${satelliteUrl($rulesStore.satelliteId.toText())}${full_path}${
 				token !== undefined ? `?token=${token}` : ''
-		  }`
+			}`
 		: undefined;
 
 	let description: string | undefined;

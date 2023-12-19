@@ -105,7 +105,7 @@ export const setSatellitesForVersion = async ({
 						scope: 'admin',
 						identity
 					})
-			  ]
+				]
 			: []),
 		...(addSatellitesIds.length > 0
 			? [
@@ -117,7 +117,7 @@ export const setSatellitesForVersion = async ({
 						scope: 'admin',
 						identity
 					})
-			  ]
+				]
 			: [])
 	]);
 };

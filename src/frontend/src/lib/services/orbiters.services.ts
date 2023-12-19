@@ -1,4 +1,5 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -16,7 +17,9 @@ export const createOrbiter = async ({
 }): Promise<Orbiter | undefined> => {
 	assertNonNullish(missionControl);
 
-	const actor = await getMissionControlActor(missionControl);
+	const identity = get(authStore).identity;
+
+	const actor = await getMissionControlActor({ missionControlId: missionControl, identity });
 	return actor.create_orbiter(toNullable(orbiterName));
 };
 
@@ -38,7 +41,9 @@ export const loadOrbiters = async ({
 	}
 
 	try {
-		const actor = await getMissionControlActor(missionControl);
+		const identity = get(authStore).identity;
+
+		const actor = await getMissionControlActor({ missionControlId: missionControl, identity });
 		const orbiters = await actor.list_orbiters();
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars

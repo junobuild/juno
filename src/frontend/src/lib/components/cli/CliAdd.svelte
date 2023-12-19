@@ -5,7 +5,7 @@
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import type { Principal } from '@dfinity/principal';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
-	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -38,7 +38,10 @@
 		}
 
 		try {
-			const actor = await getMissionControlActor($missionControlStore);
+			const actor = await getMissionControlActor({
+				missionControlId: $missionControlStore,
+				identity: $authStore.identity
+			});
 			const [sats, orbs] = await Promise.all([actor.list_satellites(), actor.list_orbiters()]);
 
 			satellites = sats;
@@ -120,7 +123,8 @@
 								controllerId: principal,
 								orbiterIds: selectedOrbiters.map((s) => s[0]),
 								profile,
-								scope: 'admin'
+								scope: 'admin',
+								identity: $authStore.identity
 							})
 					  ]
 					: [])

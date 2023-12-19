@@ -8,6 +8,7 @@
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let orbiterId: Principal;
 	export let config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
@@ -37,7 +38,8 @@
 						enabled: value.enabled,
 						updated_at: nonNullish(value.config) ? [value.config.updated_at] : []
 					}
-				])
+				]),
+				identity: $authStore.identity
 			});
 
 			dispatch('junoConfigUpdate', results);

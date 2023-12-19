@@ -4,6 +4,7 @@
 	import { deleteSatellite } from '$lib/api/mission-control.api';
 	import type { Principal } from '@dfinity/principal';
 	import CanisterDeleteModal from '$lib/components/modals/CanisterDeleteModal.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let detail: JunoModalDetail;
 
@@ -16,7 +17,8 @@
 	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
 		deleteSatellite({
 			...params,
-			satelliteId: satellite.satellite_id
+			satelliteId: satellite.satellite_id,
+			identity: $authStore.identity
 		});
 </script>
 

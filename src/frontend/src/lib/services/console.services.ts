@@ -3,6 +3,7 @@ import { initMissionControl as initMissionControlApi, releasesVersion } from '$l
 import { missionControlVersion } from '$lib/api/mission-control.api';
 import { orbiterVersion } from '$lib/api/orbiter.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
+import { authStore } from '$lib/stores/auth.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore } from '$lib/stores/version.store';
 import type { Identity } from '@dfinity/agent';
@@ -51,11 +52,11 @@ const getMissionControl = async ({
 }): Promise<{
 	missionControlId: Principal | undefined;
 }> => {
-	if (!identity) {
+	if (isNullish(identity)) {
 		throw new Error('Invalid identity.');
 	}
 
-	const mission_control = await initMissionControlApi();
+	const mission_control = await initMissionControlApi(identity);
 
 	const missionControlId: Principal | undefined = fromNullable<Principal>(
 		mission_control.mission_control_id
@@ -89,10 +90,12 @@ export const loadVersion = async ({
 	try {
 		const empty = (): Promise<undefined> => Promise.resolve(undefined);
 
+		const identity = get(authStore).identity;
+
 		const [satVersion, ctrlVersion, releases] = await Promise.all([
-			nonNullish(satelliteId) ? satelliteVersion({ satelliteId }) : empty(),
-			missionControlVersion({ missionControlId }),
-			releasesVersion()
+			nonNullish(satelliteId) ? satelliteVersion({ satelliteId, identity }) : empty(),
+			missionControlVersion({ missionControlId, identity }),
+			releasesVersion(identity)
 		]);
 
 		versionStore.setMissionControl({
@@ -132,9 +135,11 @@ export const loadOrbiterVersion = async ({ orbiter }: { orbiter: Orbiter | null 
 		return;
 	}
 
+	const identity = get(authStore).identity;
+
 	const [orbVersion, releases] = await Promise.all([
-		orbiterVersion({ orbiterId: orbiter.orbiter_id }),
-		releasesVersion()
+		orbiterVersion({ orbiterId: orbiter.orbiter_id, identity }),
+		releasesVersion(identity)
 	]);
 
 	versionStore.setOrbiter({

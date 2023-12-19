@@ -17,6 +17,7 @@
 	import AnalyticsPageViews from '$lib/components/analytics/AnalyticsPageViews.svelte';
 	import AnalyticsMetrics from '$lib/components/analytics/AnalyticsMetrics.svelte';
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 
 	let loading = true;
 
@@ -38,7 +39,10 @@
 				...period
 			};
 
-			const [views, events] = await Promise.all([getPageViews(params), getTrackEvents(params)]);
+			const [views, events] = await Promise.all([
+				getPageViews({ ...params, identity: $authStore.identity }),
+				getTrackEvents({ ...params, identity: $authStore.identity })
+			]);
 
 			pageViews = views as [AnalyticKey, PageView][];
 			trackEvents = events as [AnalyticKey, TrackEvent][];

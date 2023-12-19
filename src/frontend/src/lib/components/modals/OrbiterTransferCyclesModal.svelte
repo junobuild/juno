@@ -5,6 +5,7 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { depositCycles } from '$lib/api/orbiter.api';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let detail: JunoModalDetail;
 
@@ -16,7 +17,8 @@
 	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
 		depositCycles({
 			...params,
-			orbiterId: $orbiterStore!.orbiter_id
+			orbiterId: $orbiterStore!.orbiter_id,
+			identity: $authStore.identity
 		});
 </script>
 

@@ -6,6 +6,7 @@ import type {
 	SetSatelliteConfig,
 	TrackEvent
 } from '$declarations/orbiter/orbiter.did';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsPeriod } from '$lib/types/ortbiter';
 import { getOrbiterActor } from '$lib/utils/actor.juno.utils';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
@@ -16,12 +17,14 @@ export const getPageViews = async ({
 	satelliteId,
 	orbiterId,
 	from,
-	to
+	to,
+	identity
 }: {
 	satelliteId?: Principal;
 	orbiterId: Principal;
+	identity: OptionIdentity;
 } & PageViewsPeriod): Promise<[AnalyticKey, PageView][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.get_page_views({
 		satellite_id: toNullable(satelliteId),
 		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
@@ -33,12 +36,14 @@ export const getTrackEvents = async ({
 	satelliteId,
 	orbiterId,
 	from,
-	to
+	to,
+	identity
 }: {
 	satelliteId?: Principal;
 	orbiterId: Principal;
+	identity: OptionIdentity;
 } & PageViewsPeriod): Promise<[AnalyticKey, TrackEvent][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.get_track_events({
 		satellite_id: toNullable(satelliteId),
 		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
@@ -47,49 +52,63 @@ export const getTrackEvents = async ({
 };
 
 export const listOrbiterControllers = async ({
-	orbiterId
+	orbiterId,
+	identity
 }: {
 	orbiterId: Principal;
+	identity: OptionIdentity;
 }): Promise<[Principal, Controller][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.list_controllers();
 };
 
 export const listOrbiterSatelliteConfigs = async ({
-	orbiterId
+	orbiterId,
+	identity
 }: {
 	orbiterId: Principal;
+	identity: OptionIdentity;
 }): Promise<[Principal, SatelliteConfig][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.list_satellite_configs();
 };
 
 export const setOrbiterSatelliteConfigs = async ({
 	orbiterId,
-	config
+	config,
+	identity
 }: {
 	orbiterId: Principal;
 	config: [Principal, SetSatelliteConfig][];
+	identity: OptionIdentity;
 }): Promise<[Principal, SatelliteConfig][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.set_satellite_configs(config);
 };
 
-export const orbiterVersion = async ({ orbiterId }: { orbiterId: Principal }): Promise<string> => {
-	const actor = await getOrbiterActor({ orbiterId });
+export const orbiterVersion = async ({
+	orbiterId,
+	identity
+}: {
+	orbiterId: Principal;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.version();
 };
 
 export const depositCycles = async ({
 	orbiterId,
 	cycles,
-	destinationId: destination_id
+	destinationId: destination_id,
+	identity
 }: {
 	orbiterId: Principal;
 	cycles: bigint;
 	destinationId: Principal;
+	identity: OptionIdentity;
 }) => {
-	const { deposit_cycles } = await getOrbiterActor({ orbiterId });
+	const { deposit_cycles } = await getOrbiterActor({ orbiterId, identity });
 	return deposit_cycles({
 		cycles,
 		destination_id

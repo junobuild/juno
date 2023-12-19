@@ -5,6 +5,7 @@
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { depositCycles } from '$lib/api/mission-control.api';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let detail: JunoModalDetail;
 
@@ -16,7 +17,8 @@
 	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
 		depositCycles({
 			...params,
-			missionControlId: $missionControlStore!
+			missionControlId: $missionControlStore!,
+			identity: $authStore.identity
 		});
 </script>
 

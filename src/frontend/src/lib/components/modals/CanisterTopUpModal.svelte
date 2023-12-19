@@ -20,6 +20,7 @@
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import type { AccountIdentifier } from '@junobuild/ledger';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let canisterId: Principal;
 	export let balance: bigint;
@@ -72,7 +73,8 @@
 			await topUp({
 				canisterId,
 				missionControlId: $missionControlStore,
-				e8s: BigInt(icp * Number(E8S_PER_ICP))
+				e8s: BigInt(icp * Number(E8S_PER_ICP)),
+				identity: $authStore.identity
 			});
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });

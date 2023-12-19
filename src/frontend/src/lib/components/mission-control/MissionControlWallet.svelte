@@ -33,7 +33,7 @@
 
 	const loadCredits = async () => {
 		try {
-			credits = await getCredits();
+			credits = await getCredits($authStore.identity);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.load_credits,

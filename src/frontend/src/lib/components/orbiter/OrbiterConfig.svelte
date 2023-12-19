@@ -11,13 +11,14 @@
 	import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
 	import OrbiterConfigSave from '$lib/components/orbiter/OrbiterConfigSave.svelte';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let orbiterId: Principal;
 
 	let configuration: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = {};
 
 	const list = (): Promise<[Principal, OrbiterSatelliteConfig][]> =>
-		listOrbiterSatelliteConfigs({ orbiterId });
+		listOrbiterSatelliteConfigs({ orbiterId, identity: $authStore.identity });
 
 	const load = async () => {
 		try {

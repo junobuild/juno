@@ -1,5 +1,5 @@
 import type { MemorySize } from '$declarations/satellite/satellite.did';
-import { getSatelliteActor } from '$lib/utils/actor.worker.utils';
+import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 

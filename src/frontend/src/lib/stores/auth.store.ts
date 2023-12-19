@@ -4,15 +4,15 @@ import {
 	AUTH_POPUP_WIDTH,
 	localIdentityCanisterId
 } from '$lib/constants/constants';
+import type { OptionIdentity } from '$lib/types/itentity';
 import { createAuthClient } from '$lib/utils/auth.utils';
 import { popupCenter } from '$lib/utils/window.utils';
-import type { Identity } from '@dfinity/agent';
 import type { AuthClient } from '@dfinity/auth-client';
 import { nonNullish } from '@dfinity/utils';
 import { derived, writable, type Readable } from 'svelte/store';
 
 export interface AuthStoreData {
-	identity: Identity | undefined | null;
+	identity: OptionIdentity;
 }
 
 let authClient: AuthClient | undefined | null;

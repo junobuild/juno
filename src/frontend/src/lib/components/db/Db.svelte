@@ -9,6 +9,7 @@
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
 	import DbData from '$lib/components/db/DbData.svelte';
 	import DbRules from '$lib/components/db/DbRules.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let satelliteId: Principal;
 
@@ -18,7 +19,8 @@
 		rule: undefined
 	});
 
-	const reloadRules = async () => reloadContextRules({ satelliteId, type: DbRulesType, store });
+	const reloadRules = async () =>
+		reloadContextRules({ satelliteId, type: DbRulesType, store, identity: $authStore.identity });
 
 	$: satelliteId, (async () => reloadRules())();
 

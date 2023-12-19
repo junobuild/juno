@@ -12,7 +12,7 @@ const addCredits = async () => {
 
 	const actor = await consoleActorLocal();
 
-	await actor.add_credits(Principal.fromText(user), 50_000_000n);
+	await actor.add_credits(Principal.fromText(user), { e8s: 50_000_000n });
 
 	console.log('Credits added.');
 };

@@ -15,6 +15,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -82,7 +83,8 @@
 				type,
 				rule,
 				maxSize,
-				mutablePermissions: !immutable
+				mutablePermissions: !immutable,
+				identity: $authStore.identity
 			});
 
 			toasts.success(

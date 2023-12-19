@@ -21,12 +21,16 @@
 	import type { Principal } from '@dfinity/principal';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
 	import { DEV_FEATURES } from '$lib/constants/constants';
+	import { authStore } from '$lib/stores/auth.store';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
 	const list = async () => {
 		try {
-			const version = await satelliteVersion({ satelliteId: $store.satelliteId });
+			const version = await satelliteVersion({
+				satelliteId: $store.satelliteId,
+				identity: $authStore.identity
+			});
 
 			// TODO: remove at the same time as satellite version query
 			if (isNullish(collection)) {
@@ -43,7 +47,8 @@
 					startAfter: $paginationStore.startAfter,
 					// prettier-ignore parenthesis required for Webstorm Svelte plugin
 					...$listParamsStore
-				} as ListParams
+				} as ListParams,
+				identity: $authStore.identity
 			});
 			setItems({ items, matches_length });
 		} catch (err: unknown) {
@@ -90,7 +95,7 @@
 
 	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
 	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
-		await deleteDocs(params);
+		await deleteDocs({ ...params, identity: $authStore.identity });
 
 		resetData();
 	};

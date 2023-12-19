@@ -21,6 +21,7 @@
 	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
 	import type { Principal } from '@dfinity/principal';
+	import { authStore } from '$lib/stores/auth.store';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -31,7 +32,10 @@
 		}
 
 		try {
-			const version = await satelliteVersion({ satelliteId: $store.satelliteId });
+			const version = await satelliteVersion({
+				satelliteId: $store.satelliteId,
+				identity: $authStore.identity
+			});
 
 			// TODO: remove at the same time as satellite version query
 			if (isNullish(collection)) {
@@ -43,8 +47,8 @@
 				compare(version, '0.0.10') >= 0
 					? listAssets
 					: compare(version, '0.0.9') >= 0
-					? listAssets009
-					: listAssets008;
+						? listAssets009
+						: listAssets008;
 
 			const { items, matches_length } = await list({
 				collection,
@@ -53,7 +57,8 @@
 					startAfter: $paginationStore.startAfter,
 					// prettier-ignore parenthesis required for Webstorm Svelte plugin
 					...$listParamsStore
-				} as ListParams
+				} as ListParams,
+				identity: $authStore.identity
 			});
 			setItems({ items, matches_length });
 		} catch (err: unknown) {
@@ -103,7 +108,7 @@
 
 	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
 	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
-		await deleteAssets(params);
+		await deleteAssets({ ...params, identity: $authStore.identity });
 
 		resetData();
 	};

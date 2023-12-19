@@ -11,6 +11,7 @@
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
 	import type { Statuses } from '$lib/types/observatory';
 	import ObservatoryData from '$lib/components/observatory/ObservatoryData.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 
 	let loading = true;
 
@@ -19,7 +20,7 @@
 
 	const loadStatuses = async () => {
 		try {
-			const results = fromNullable(await getStatuses());
+			const results = fromNullable(await getStatuses($authStore.identity));
 
 			timestamp = results?.timestamp;
 			statuses = results?.statuses;

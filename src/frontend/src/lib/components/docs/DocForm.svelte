@@ -22,6 +22,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { deleteDoc } from '$lib/api/satellites.api';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 	const { store: docsStore, resetData }: DataContext<Doc> =
@@ -116,7 +117,8 @@
 		await deleteDoc({
 			...params,
 			key,
-			doc
+			doc,
+			identity: $authStore.identity
 		});
 
 		resetData();

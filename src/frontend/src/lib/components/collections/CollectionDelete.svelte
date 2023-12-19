@@ -10,6 +10,7 @@
 	import { createEventDispatcher, getContext } from 'svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let collection: string;
 	export let rule: Rule | undefined;
@@ -38,7 +39,8 @@
 				satelliteId: $store.satelliteId,
 				collection,
 				type,
-				rule
+				rule,
+				identity: $authStore.identity
 			});
 
 			await reload();

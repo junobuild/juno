@@ -84,8 +84,8 @@
 				type === 'upgrade_mission_control'
 					? 'mission_controls'
 					: type === 'upgrade_orbiter'
-					? 'orbiters'
-					: 'satellites'
+						? 'orbiters'
+						: 'satellites'
 		});
 
 		busy.stop();

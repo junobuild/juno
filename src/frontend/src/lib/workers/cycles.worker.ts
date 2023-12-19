@@ -1,8 +1,8 @@
 import type { MemorySize } from '$declarations/satellite/satellite.did';
 import { icpXdrConversionRate } from '$lib/api/cmc.api';
 import { canisterStatus } from '$lib/api/ic.api';
-import { memorySize as memorySizeOrbiter } from '$lib/api/orbiter.api';
-import { memorySize as memorySizeSatellite } from '$lib/api/satellites.api';
+import { memorySize as memorySizeOrbiter } from '$lib/api/orbiter.worker.api';
+import { memorySize as memorySizeSatellite } from '$lib/api/satellites.worker.api';
 import {
 	CYCLES_WARNING,
 	MEMORY_HEAP_WARNING,
@@ -109,8 +109,8 @@ const syncNnsCanisters = async ({
 					...(segment === 'satellite'
 						? [memorySizeSatellite({ satelliteId: canisterId, identity })]
 						: segment === 'orbiter'
-						? [memorySizeOrbiter({ orbiterId: canisterId, identity })]
-						: [])
+							? [memorySizeOrbiter({ orbiterId: canisterId, identity })]
+							: [])
 				]);
 
 				if (canisterResult.status === 'rejected') {

@@ -5,6 +5,7 @@
 	import CanisterDeleteModal from '$lib/components/modals/CanisterDeleteModal.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let detail: JunoModalDetail;
 
@@ -16,7 +17,8 @@
 	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
 		deleteOrbiter({
 			...params,
-			orbiterId: $orbiterStore!.orbiter_id
+			orbiterId: $orbiterStore!.orbiter_id,
+			identity: $authStore.identity
 		});
 </script>
 

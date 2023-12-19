@@ -47,8 +47,8 @@
 				compare(version, '0.0.10') >= 0
 					? listAssets
 					: compare(version, '0.0.9') >= 0
-					? listAssets009
-					: listAssets008;
+						? listAssets009
+						: listAssets008;
 
 			const { items, matches_length } = await list({
 				collection,

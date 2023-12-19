@@ -109,8 +109,8 @@ const syncNnsCanisters = async ({
 					...(segment === 'satellite'
 						? [memorySizeSatellite({ satelliteId: canisterId, identity })]
 						: segment === 'orbiter'
-						? [memorySizeOrbiter({ orbiterId: canisterId, identity })]
-						: [])
+							? [memorySizeOrbiter({ orbiterId: canisterId, identity })]
+							: [])
 				]);
 
 				if (canisterResult.status === 'rejected') {

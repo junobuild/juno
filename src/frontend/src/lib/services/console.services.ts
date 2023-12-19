@@ -113,7 +113,7 @@ export const loadVersion = async ({
 				? {
 						release: fromNullable(releases.satellite),
 						current: satVersion
-				  }
+					}
 				: undefined
 		});
 	} catch (err: unknown) {

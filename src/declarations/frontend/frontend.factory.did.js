@@ -1,5 +1,18 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const SetPermissions = IDL.Record({
+		prepare: IDL.Vec(IDL.Principal),
+		commit: IDL.Vec(IDL.Principal),
+		manage_permissions: IDL.Vec(IDL.Principal)
+	});
+	const UpgradeArgs = IDL.Record({
+		set_permissions: IDL.Opt(SetPermissions)
+	});
+	const InitArgs = IDL.Record({});
+	const AssetCanisterArgs = IDL.Variant({
+		Upgrade: UpgradeArgs,
+		Init: InitArgs
+	});
 	const ClearArguments = IDL.Record({});
 	const BatchId = IDL.Nat;
 	const Key = IDL.Text;
@@ -204,8 +217,8 @@ export const idlFactory = ({ IDL }) => {
 			],
 			['query']
 		),
-		list_authorized: IDL.Func([], [IDL.Vec(IDL.Principal)], ['query']),
-		list_permitted: IDL.Func([ListPermitted], [IDL.Vec(IDL.Principal)], ['query']),
+		list_authorized: IDL.Func([], [IDL.Vec(IDL.Principal)], []),
+		list_permitted: IDL.Func([ListPermitted], [IDL.Vec(IDL.Principal)], []),
 		propose_commit_batch: IDL.Func([CommitBatchArguments], [], []),
 		revoke_permission: IDL.Func([RevokePermission], [], []),
 		set_asset_content: IDL.Func([SetAssetContentArguments], [], []),
@@ -238,5 +251,18 @@ export const idlFactory = ({ IDL }) => {
 };
 // @ts-ignore
 export const init = ({ IDL }) => {
-	return [];
+	const SetPermissions = IDL.Record({
+		prepare: IDL.Vec(IDL.Principal),
+		commit: IDL.Vec(IDL.Principal),
+		manage_permissions: IDL.Vec(IDL.Principal)
+	});
+	const UpgradeArgs = IDL.Record({
+		set_permissions: IDL.Opt(SetPermissions)
+	});
+	const InitArgs = IDL.Record({});
+	const AssetCanisterArgs = IDL.Variant({
+		Upgrade: UpgradeArgs,
+		Init: InitArgs
+	});
+	return [IDL.Opt(AssetCanisterArgs)];
 };

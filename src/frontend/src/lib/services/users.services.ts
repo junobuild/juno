@@ -14,13 +14,14 @@ export const listUsers = async ({
 }: Pick<ListParams, 'startAfter'> & { satelliteId: Principal }): Promise<{
 	users: [string, User][];
 	matches_length: bigint;
+	items_length: bigint;
 }> => {
 	const identity = get(authStore).identity;
 
 	const version = await satelliteVersion({ satelliteId, identity });
 	const list = compare(version, '0.0.9') >= 0 ? listDocs : listDocs008;
 
-	const { items, matches_length } = await list({
+	const { items, matches_length, items_length } = await list({
 		collection: '#user',
 		satelliteId,
 		params: {
@@ -50,6 +51,7 @@ export const listUsers = async ({
 
 	return {
 		users,
-		matches_length
+		matches_length,
+		items_length
 	};
 };

@@ -27,7 +27,7 @@
 
 	const list = async () => {
 		if (isNullish(collection)) {
-			setItems({ items: undefined, matches_length: undefined });
+			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 			return;
 		}
 
@@ -39,7 +39,7 @@
 
 			// TODO: remove at the same time as satellite version query
 			if (isNullish(collection)) {
-				setItems({ items: undefined, matches_length: undefined });
+				setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 				return;
 			}
 
@@ -50,7 +50,7 @@
 						? listAssets009
 						: listAssets008;
 
-			const { items, matches_length } = await list({
+			const { items, matches_length, items_length } = await list({
 				collection,
 				satelliteId: $store.satelliteId,
 				params: {
@@ -60,7 +60,7 @@
 				} as ListParams,
 				identity: $authStore.identity
 			});
-			setItems({ items, matches_length });
+			setItems({ items, matches_length, items_length });
 		} catch (err: unknown) {
 			toasts.error({
 				text: `Error while listing the assets.`,

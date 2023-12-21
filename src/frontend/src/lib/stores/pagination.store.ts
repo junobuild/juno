@@ -39,17 +39,21 @@ export const initPaginationContext = <T>(): Omit<PaginationContext<T>, 'list'> =
 
 		setItems: ({
 			items,
-			matches_length
+			matches_length,
+			items_length
 		}: {
 			items: [string, T][] | undefined;
 			matches_length: bigint | undefined;
+			items_length: bigint | undefined;
 		}) => {
 			store.update((data) => ({
 				...data,
 				items,
 				pages: nonNullish(matches_length)
 					? Math.ceil(Number(matches_length) / Number(PAGINATION))
-					: undefined
+					: undefined,
+				itemsLength: nonNullish(items_length) ? Number(items_length) : undefined,
+				matchesLength: nonNullish(matches_length) ? Number(matches_length) : undefined
 			}));
 		}
 	};

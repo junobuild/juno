@@ -157,6 +157,8 @@ pub mod interface {
         pub chunk_ids: Vec<u128>,
     }
 
+    pub type FullPathAssetNoContent = (FullPath, AssetNoContent);
+
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AssetNoContent {
         pub key: AssetKey,

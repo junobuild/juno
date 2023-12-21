@@ -1,8 +1,9 @@
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
 use crate::rules::types::rules::Permission;
-use crate::storage::types::interface::{AssetEncodingNoContent, AssetNoContent};
-use crate::storage::types::state::FullPath;
+use crate::storage::types::interface::{
+    AssetEncodingNoContent, AssetNoContent, FullPathAssetNoContent,
+};
 use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::list::ListParams;
@@ -10,7 +11,7 @@ use candid::Principal;
 use regex::Regex;
 use shared::types::state::{Controllers, UserId};
 
-fn map_key(asset: &Asset) -> (FullPath, AssetNoContent) {
+pub fn map_asset_no_content(asset: &Asset) -> FullPathAssetNoContent {
     (
         asset.key.full_path.clone(),
         AssetNoContent {
@@ -48,14 +49,12 @@ pub fn filter_values(
         paginate: _,
         owner,
     }: &ListParams,
-    assets: &[Asset],
-) -> Vec<(FullPath, AssetNoContent)> {
-    let all_keys = assets.iter().map(map_key);
-
+    assets: &[FullPathAssetNoContent],
+) -> Vec<FullPathAssetNoContent> {
     let (regex_key, regex_description) = matcher_regex(matcher);
 
-    all_keys
-        .into_iter()
+    assets
+        .iter()
         .filter(|(_, asset)| {
             filter_collection(collection.clone(), asset)
                 && filter_full_path(&regex_key, asset)
@@ -63,6 +62,7 @@ pub fn filter_values(
                 && filter_owner(*owner, asset)
                 && assert_permission(rule, asset.key.owner, caller, controllers)
         })
+        .map(|(key, asset)| (key.clone(), asset.clone()))
         .collect()
 }
 
@@ -96,12 +96,11 @@ fn filter_owner(filter_owner: Option<UserId>, asset: &AssetNoContent) -> bool {
 
 pub fn filter_collection_values(
     collection: CollectionKey,
-    assets: &[Asset],
-) -> Vec<(FullPath, AssetNoContent)> {
-    let all_keys = assets.iter().map(map_key);
-
-    all_keys
-        .into_iter()
+    assets: &[FullPathAssetNoContent],
+) -> Vec<FullPathAssetNoContent> {
+    assets
+        .iter()
         .filter(|(_, asset)| filter_collection(collection.clone(), asset))
+        .map(|(key, asset)| (key.clone(), asset.clone()))
         .collect()
 }

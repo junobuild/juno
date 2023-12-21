@@ -4,11 +4,13 @@ use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
+use crate::storage::types::interface::FullPathAssetNoContent;
 use crate::storage::types::state::{
     AssetsHeap, AssetsStable, ContentChunksStable, FullPath, StableEncodingChunkKey, StableKey,
     StorageHeapState,
 };
 use crate::storage::types::store::{Asset, AssetEncoding};
+use crate::storage::utils::map_asset_no_content;
 use crate::types::core::{Blob, CollectionKey};
 use crate::types::state::StableState;
 use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
@@ -140,7 +142,7 @@ pub fn delete_asset(
     }
 }
 
-pub fn get_assets(collection: &CollectionKey, rule: &Rule) -> Vec<Asset> {
+pub fn get_assets(collection: &CollectionKey, rule: &Rule) -> Vec<FullPathAssetNoContent> {
     match rule.mem() {
         Memory::Heap => {
             STATE.with(|state| get_assets_heap(collection, &state.borrow().heap.storage.assets))
@@ -250,7 +252,10 @@ fn insert_asset_heap(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHea
 
 // List
 
-fn get_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> Vec<Asset> {
+fn get_assets_stable(
+    collection: &CollectionKey,
+    assets: &AssetsStable,
+) -> Vec<FullPathAssetNoContent> {
     let start_key = StableKey {
         collection: collection.clone(),
         full_path: "".to_string(),
@@ -263,14 +268,17 @@ fn get_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> Vec<A
 
     let items: Vec<(StableKey, Asset)> = assets.range(start_key..end_key).collect();
 
-    items.iter().map(|(_, asset)| asset.clone()).collect()
+    items
+        .iter()
+        .map(|(_, asset)| map_asset_no_content(asset))
+        .collect()
 }
 
-fn get_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> Vec<Asset> {
+fn get_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> Vec<FullPathAssetNoContent> {
     assets
         .iter()
         .filter(|(_, asset)| asset.key.collection == collection.clone())
-        .map(|(_, asset)| asset.clone())
+        .map(|(_, asset)| map_asset_no_content(asset))
         .collect()
 }
 

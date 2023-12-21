@@ -40,7 +40,9 @@ use crate::storage::state::{
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
-use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
+use crate::storage::types::interface::{
+    AssetNoContent, CommitBatch, FullPathAssetNoContent, InitAssetKey, UploadChunk,
+};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk, EncodingType};
 use crate::storage::utils::{filter_collection_values, filter_values};
@@ -156,7 +158,7 @@ fn list_assets_impl(
 ) -> ListResults<AssetNoContent> {
     let assets = get_state_assets(collection, rule);
 
-    let matches: Vec<(FullPath, AssetNoContent)> = filter_values(
+    let matches: Vec<FullPathAssetNoContent> = filter_values(
         caller,
         controllers,
         &rule.read,
@@ -217,13 +219,9 @@ fn delete_asset_impl(
 fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let full_paths: Vec<FullPath> = get_state_assets(collection, &rule)
-        .iter()
-        .filter(|asset| asset.key.collection == collection.clone())
-        .map(|asset| asset.key.full_path.clone())
-        .collect();
+    let assets: Vec<FullPathAssetNoContent> = get_state_assets(collection, &rule);
 
-    for full_path in full_paths {
+    for (full_path, _) in assets {
         let deleted_asset = delete_state_asset(collection, &full_path, &rule);
 
         match deleted_asset {

@@ -3,8 +3,7 @@
 	import { getContext } from 'svelte';
 	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { deleteDocs, listDocs, satelliteVersion } from '$lib/api/satellites.api';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { deleteDocs } from '$lib/api/satellites.api';
 	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
@@ -13,18 +12,16 @@
 	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
-	import type { ListParams } from '$lib/types/list';
-	import { compare } from 'semver';
-	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
 	import { DEV_FEATURES } from '$lib/constants/constants';
 	import { authStore } from '$lib/stores/auth.store';
 
-	export let collection: string | undefined;
-
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+
+	let collection: string | undefined;
+	$: collection = $store.rule?.[0];
 
 	const {
 		store: paginationStore,

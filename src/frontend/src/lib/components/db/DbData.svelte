@@ -78,7 +78,7 @@
 </script>
 
 <Data on:junoCloseData={resetData}>
-	<Docs {collection} />
+	<Docs />
 	<Doc />
 	<DocForm />
 

@@ -305,6 +305,22 @@ fn delete_assets_impl(
     Ok(())
 }
 
+pub fn count_assets(collection: &CollectionKey) -> Result<usize, String> {
+    let rule = get_state_rule(collection)?;
+
+    match rule.mem() {
+        Memory::Heap => STATE.with(|state| {
+            let state_ref = state.borrow();
+            let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
+            Ok(assets.len())
+        }),
+        Memory::Stable => STATE.with(|state| {
+            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
+            Ok(stable.len())
+        }),
+    }
+}
+
 ///
 /// Upload batch and chunks
 ///

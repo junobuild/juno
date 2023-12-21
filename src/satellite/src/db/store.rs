@@ -326,3 +326,19 @@ fn delete_docs_impl(
 
     Ok(())
 }
+
+pub fn count_docs(collection: &CollectionKey) -> Result<usize, String> {
+    let rule = get_state_rule(&collection)?;
+
+    match rule.mem() {
+        Memory::Heap => STATE.with(|state| {
+            let state_ref = state.borrow();
+            let docs = get_docs_heap(collection, &state_ref.heap.db.db)?;
+            Ok(docs.len())
+        }),
+        Memory::Stable => STATE.with(|state| {
+            let stable = get_docs_stable(collection, &state.borrow().stable.db)?;
+            Ok(stable.len())
+        }),
+    }
+}

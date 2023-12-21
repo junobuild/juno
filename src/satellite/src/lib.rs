@@ -11,7 +11,10 @@ mod storage;
 mod types;
 
 use crate::controllers::store::get_admin_controllers;
-use crate::db::store::{delete_doc, delete_docs, get_doc as get_doc_store, get_docs, insert_doc};
+use crate::db::store::{
+    count_docs as count_docs_store, delete_doc, delete_docs, get_doc as get_doc_store, get_docs,
+    insert_doc,
+};
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
@@ -28,10 +31,10 @@ use crate::storage::http::response::{
 use crate::storage::http::utils::create_token;
 use crate::storage::routing::get_routing;
 use crate::storage::store::{
-    commit_batch, create_batch, create_chunk, delete_asset, delete_assets, delete_domain,
-    get_config as get_storage_config, get_content_chunks, get_custom_domains, get_public_asset,
-    init_certified_assets, list_assets as list_assets_store, set_config as set_storage_config,
-    set_domain,
+    commit_batch, count_assets as count_assets_store, create_batch, create_chunk, delete_asset,
+    delete_assets, delete_domain, get_config as get_storage_config, get_content_chunks,
+    get_custom_domains, get_public_asset, init_certified_assets, list_assets as list_assets_store,
+    set_config as set_storage_config, set_domain,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http_request::{
@@ -214,6 +217,16 @@ fn del_docs(collection: CollectionKey) {
     match result {
         Ok(_) => (),
         Err(error) => trap(&["Documents cannot be deleted: ", &error].join("")),
+    }
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn count_docs(collection: CollectionKey) -> usize {
+    let result = count_docs_store(&collection);
+
+    match result {
+        Ok(value) => value,
+        Err(error) => trap(&error),
     }
 }
 
@@ -492,6 +505,16 @@ fn del_assets(collection: CollectionKey) {
     match result {
         Ok(_) => (),
         Err(error) => trap(&["Assets cannot be deleted: ", &error].join("")),
+    }
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn count_assets(collection: CollectionKey) -> usize {
+    let result = count_assets_store(&collection);
+
+    match result {
+        Ok(value) => value,
+        Err(error) => trap(&error),
     }
 }
 

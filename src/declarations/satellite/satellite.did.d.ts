@@ -198,6 +198,8 @@ export interface UploadChunkResult {
 }
 export interface _SERVICE {
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	count_assets: ActorMethod<[string], bigint>;
+	count_docs: ActorMethod<[string], bigint>;
 	del_asset: ActorMethod<[string, string], undefined>;
 	del_assets: ActorMethod<[string], undefined>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;

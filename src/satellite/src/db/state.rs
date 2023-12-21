@@ -158,10 +158,10 @@ fn get_doc_heap(collection: &CollectionKey, key: &Key, db: &DbHeap) -> Result<Op
 
 // List
 
-pub fn get_docs_stable<'a>(
+pub fn get_docs_stable(
     collection: &CollectionKey,
-    db: &'a DbStable,
-) -> Result<Vec<(&'a Key, &'a Doc)>, String> {
+    db: &DbStable,
+) -> Result<Vec<(StableKey, Doc)>, String> {
     let start_key = StableKey {
         collection: collection.clone(),
         key: "".to_string(),
@@ -172,9 +172,9 @@ pub fn get_docs_stable<'a>(
         key: "".to_string(),
     };
 
-    let items: Vec<(StableKey, Doc)> = db.range(start_key..end_key).collect();
+    let items = db.range(start_key..end_key).collect();
 
-    Ok(items.iter().map(|(key, doc)| (&key.key, doc)).collect())
+    Ok(items)
 }
 
 pub fn get_docs_heap<'a>(

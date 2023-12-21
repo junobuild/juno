@@ -142,20 +142,6 @@ pub fn delete_asset(
     }
 }
 
-pub fn get_assets<'a>(
-    collection: &CollectionKey,
-    rule: &Rule,
-) -> Vec<&'a (&'a FullPath, &'a AssetNoContent)> {
-    match rule.mem() {
-        Memory::Heap => {
-            STATE.with(|state| get_assets_heap(collection, &state.borrow().heap.storage.assets))
-        }
-        Memory::Stable => {
-            STATE.with(|state| get_assets_stable(collection, &state.borrow().stable.assets))
-        }
-    }
-}
-
 // Get
 
 fn get_asset_stable(
@@ -255,7 +241,7 @@ fn insert_asset_heap(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHea
 
 // List
 
-fn get_assets_stable<'a>(
+pub fn get_assets_stable<'a>(
     collection: &CollectionKey,
     assets: &AssetsStable,
 ) -> Vec<&'a (&'a FullPath, &'a AssetNoContent)> {
@@ -277,9 +263,9 @@ fn get_assets_stable<'a>(
         .collect()
 }
 
-fn get_assets_heap<'a>(
+pub fn get_assets_heap<'a>(
     collection: &CollectionKey,
-    assets: &AssetsHeap,
+    assets: &'a AssetsHeap,
 ) -> Vec<&'a (&'a FullPath, &'a AssetNoContent)> {
     assets
         .iter()

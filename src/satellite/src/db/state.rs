@@ -99,18 +99,6 @@ pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Opt
     }
 }
 
-pub fn get_docs<'a>(
-    collection: &CollectionKey,
-    rule: &Rule,
-) -> Result<Vec<(&'a Key, &'a Doc)>, String> {
-    match rule.mem() {
-        Memory::Heap => STATE.with(|state| get_docs_heap(collection, &state.borrow().heap.db.db)),
-        Memory::Stable => {
-            STATE.with(|state| get_docs_stable(collection, &state.borrow().stable.db))
-        }
-    }
-}
-
 pub fn insert_doc(
     collection: &CollectionKey,
     key: &Key,
@@ -170,7 +158,7 @@ fn get_doc_heap(collection: &CollectionKey, key: &Key, db: &DbHeap) -> Result<Op
 
 // List
 
-fn get_docs_stable<'a>(
+pub fn get_docs_stable<'a>(
     collection: &CollectionKey,
     db: &'a DbStable,
 ) -> Result<Vec<(&'a Key, &'a Doc)>, String> {
@@ -189,7 +177,7 @@ fn get_docs_stable<'a>(
     Ok(items.iter().map(|(key, doc)| (&key.key, doc)).collect())
 }
 
-fn get_docs_heap<'a>(
+pub fn get_docs_heap<'a>(
     collection: &CollectionKey,
     db: &'a DbHeap,
 ) -> Result<Vec<(&'a Key, &'a Doc)>, String> {

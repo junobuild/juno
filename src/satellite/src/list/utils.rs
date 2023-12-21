@@ -80,7 +80,7 @@ fn order_values<'a, T: Clone + Compare>(
 }
 
 fn order_values_with_updated_at<'a, T: Clone + Compare>(
-    mut matches: &'a [(&'a Key, &'a T)],
+    matches: &'a [(&'a Key, &'a T)],
     desc: &bool,
 ) -> Vec<(&'a Key, &'a T)> {
     let mut sorted_matches = matches.to_vec();
@@ -90,12 +90,12 @@ fn order_values_with_updated_at<'a, T: Clone + Compare>(
         return sorted_matches;
     }
 
-    matches.sort_by(|(_, value_a), (_, value_b)| value_a.cmp_updated_at(value_b));
+    sorted_matches.sort_by(|(_, value_a), (_, value_b)| value_a.cmp_updated_at(value_b));
     sorted_matches
 }
 
 fn order_values_with_created_at<'a, T: Clone + Compare>(
-    mut matches: &'a [(&'a Key, &'a T)],
+    matches: &'a [(&'a Key, &'a T)],
     desc: &bool,
 ) -> Vec<(&'a Key, &'a T)> {
     let mut sorted_matches = matches.to_vec();
@@ -110,7 +110,7 @@ fn order_values_with_created_at<'a, T: Clone + Compare>(
 }
 
 fn order_values_with_keys<'a, T: Clone + Compare>(
-    mut matches: &'a [(&'a Key, &'a T)],
+    matches: &'a [(&'a Key, &'a T)],
     desc: &bool,
 ) -> Vec<(&'a Key, &'a T)> {
     let mut sorted_matches = matches.to_vec();

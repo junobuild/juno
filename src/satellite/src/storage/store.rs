@@ -1,6 +1,7 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::list::utils::list_values;
+use crate::memory::STATE;
 use crate::msg::{
     COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
 };
@@ -31,12 +32,12 @@ use crate::storage::runtime::{
 };
 use crate::storage::state::{
     delete_asset as delete_state_asset, delete_domain as delete_state_domain,
-    get_asset as get_state_asset, get_assets as get_state_assets, get_config as get_state_config,
-    get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
-    get_domains as get_state_domains, get_public_asset as get_state_public_asset,
-    get_rule as get_state_rule, get_rule, insert_asset as insert_state_asset,
-    insert_asset_encoding as insert_state_asset_encoding, insert_config as insert_state_config,
-    insert_domain as insert_state_domain,
+    get_asset as get_state_asset, get_assets_heap, get_assets_stable,
+    get_config as get_state_config, get_content_chunks as get_state_content_chunks,
+    get_domain as get_state_domain, get_domains as get_state_domains,
+    get_public_asset as get_state_public_asset, get_rule as get_state_rule, get_rule,
+    insert_asset as insert_state_asset, insert_asset_encoding as insert_state_asset_encoding,
+    insert_config as insert_state_config, insert_domain as insert_state_domain,
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
@@ -71,7 +72,20 @@ pub fn delete_asset(
 }
 
 pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
-    delete_assets_impl(collection)
+    let rule = get_state_rule(collection)?;
+
+    match rule.mem() {
+        Memory::Heap => STATE.with(|state| {
+            let binding = state.borrow();
+            let assets = get_assets_heap(collection, &binding.heap.storage.assets);
+            delete_assets_impl(&assets, &collection, &rule)
+        }),
+        Memory::Stable => STATE.with(|state| {
+            let binding = state.borrow();
+            let assets = get_assets_stable(collection, &binding.stable.assets);
+            delete_assets_impl(&assets, &collection, &rule)
+        }),
+    }
 }
 
 pub fn list_assets(
@@ -119,8 +133,24 @@ fn get_token_protected_asset(
 pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let assets = get_state_assets(collection, &rule);
+    match rule.mem() {
+        Memory::Heap => STATE.with(|state| {
+            let binding = state.borrow();
+            let assets = get_assets_heap(collection, &binding.heap.storage.assets);
+            assert_assets_collection_empty_impl(&assets, &collection)
+        }),
+        Memory::Stable => STATE.with(|state| {
+            let binding = state.borrow();
+            let assets = get_assets_stable(collection, &binding.stable.assets);
+            assert_assets_collection_empty_impl(&assets, &collection)
+        }),
+    }
+}
 
+fn assert_assets_collection_empty_impl(
+    assets: &Vec<&(&FullPath, &AssetNoContent)>,
+    collection: &CollectionKey,
+) -> Result<(), String> {
     let values = filter_collection_values(collection.clone(), &assets);
 
     if !values.is_empty() {
@@ -138,24 +168,42 @@ fn secure_list_assets_impl(
 ) -> Result<ListResults<AssetNoContent>, String> {
     let rule = get_state_rule(collection)?;
 
-    Ok(list_assets_impl(
-        caller,
-        controllers,
-        collection,
-        &rule,
-        filters,
-    ))
+    match rule.mem() {
+        Memory::Heap => STATE.with(|state| {
+            let binding = state.borrow();
+            let assets = get_assets_heap(collection, &binding.heap.storage.assets);
+            Ok(list_assets_impl(
+                &assets,
+                caller,
+                controllers,
+                collection,
+                &rule,
+                filters,
+            ))
+        }),
+        Memory::Stable => STATE.with(|state| {
+            let binding = state.borrow();
+            let assets = get_assets_stable(collection, &binding.stable.assets);
+            Ok(list_assets_impl(
+                &assets,
+                caller,
+                controllers,
+                collection,
+                &rule,
+                filters,
+            ))
+        }),
+    }
 }
 
 fn list_assets_impl(
+    assets: &Vec<&(&FullPath, &AssetNoContent)>,
     caller: Principal,
     controllers: &Controllers,
     collection: &CollectionKey,
     rule: &Rule,
     filters: &ListParams,
 ) -> ListResults<AssetNoContent> {
-    let assets = get_state_assets(collection, rule);
-
     let matches = filter_values(
         caller,
         controllers,
@@ -214,11 +262,11 @@ fn delete_asset_impl(
     }
 }
 
-fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
-    let rule = get_state_rule(collection)?;
-
-    let assets = get_state_assets(collection, &rule);
-
+fn delete_assets_impl(
+    assets: &Vec<&(&FullPath, &AssetNoContent)>,
+    collection: &CollectionKey,
+    rule: &Rule,
+) -> Result<(), String> {
     for (full_path, _) in assets {
         let deleted_asset = delete_state_asset(collection, full_path, &rule);
 

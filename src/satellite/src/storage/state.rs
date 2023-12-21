@@ -277,8 +277,13 @@ fn get_assets_stable(
 fn get_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> Vec<FullPathAssetNoContent> {
     assets
         .iter()
-        .filter(|(_, asset)| asset.key.collection == collection.clone())
-        .map(|(_, asset)| map_asset_no_content(asset))
+        .filter_map(|(_, asset)| {
+            if asset.key.collection == collection.clone() {
+                Some(map_asset_no_content(asset))
+            } else {
+                None
+            }
+        })
         .collect()
 }
 

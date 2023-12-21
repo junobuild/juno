@@ -302,27 +302,26 @@ fn assert_write_permission(
 pub fn delete_docs(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    match rule.mem() {
+    let keys = match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            let binding = state.borrow();
-            let docs = get_docs_heap(collection, &binding.heap.db.db)?;
-            delete_docs_impl(&docs, collection, &rule)
+            get_docs_heap(collection, &state.borrow().heap.db.db)
+                .map(|docs| docs.into_iter().map(|(key, _)| key.clone()).collect())
         }),
         Memory::Stable => STATE.with(|state| {
-            let binding = state.borrow();
-            let stable = get_docs_stable(collection, &binding.stable.db)?;
-            let docs: Vec<(&Key, &Doc)> = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
-            delete_docs_impl(&docs, collection, &rule)
+            get_docs_stable(collection, &state.borrow().stable.db)
+                .map(|docs| docs.iter().map(|(key, _)| key.key.clone()).collect())
         }),
-    }
+    }?;
+
+    delete_docs_impl(&keys, collection, &rule)
 }
 
-fn delete_docs_impl<'a>(
-    docs: &[(&'a Key, &'a Doc)],
+fn delete_docs_impl(
+    keys: &Vec<Key>,
     collection: &CollectionKey,
     rule: &Rule,
 ) -> Result<(), String> {
-    for (key, _) in docs {
+    for key in keys {
         delete_state_doc(collection, key, rule)?;
     }
 

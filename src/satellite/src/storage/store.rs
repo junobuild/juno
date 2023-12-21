@@ -74,22 +74,23 @@ pub fn delete_asset(
 pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    match rule.mem() {
+    let full_paths = match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            let binding = state.borrow();
-            let assets = get_assets_heap(collection, &binding.heap.storage.assets);
-            delete_assets_impl(&assets, collection, &rule)
+            get_assets_heap(collection, &state.borrow().heap.storage.assets)
+                .iter()
+                .map(|(_, asset)| asset.key.full_path.clone())
+                .collect()
         }),
         Memory::Stable => STATE.with(|state| {
-            let binding = state.borrow();
-            let stable = get_assets_stable(collection, &binding.stable.assets);
-            let assets: Vec<(&FullPath, &Asset)> = stable
+            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
+            stable
                 .iter()
-                .map(|(_, asset)| (&asset.key.full_path, asset))
-                .collect();
-            delete_assets_impl(&assets, collection, &rule)
+                .map(|(_, asset)| asset.key.full_path.clone())
+                .collect()
         }),
-    }
+    };
+
+    delete_assets_impl(&full_paths, collection, &rule)
 }
 
 pub fn list_assets(
@@ -287,11 +288,11 @@ fn delete_asset_impl(
 }
 
 fn delete_assets_impl(
-    assets: &Vec<(&FullPath, &Asset)>,
+    full_paths: &Vec<FullPath>,
     collection: &CollectionKey,
     rule: &Rule,
 ) -> Result<(), String> {
-    for (full_path, _) in assets {
+    for full_path in full_paths {
         let deleted_asset = delete_state_asset(collection, full_path, rule);
 
         match deleted_asset {

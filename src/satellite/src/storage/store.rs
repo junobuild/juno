@@ -76,7 +76,8 @@ pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
 
     let full_paths = match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            get_assets_heap(collection, &state.borrow().heap.storage.assets)
+            let state_ref = state.borrow();
+            get_assets_heap(collection, &state_ref.heap.storage.assets)
                 .iter()
                 .map(|(_, asset)| asset.key.full_path.clone())
                 .collect()
@@ -140,13 +141,12 @@ pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), 
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            let binding = state.borrow();
-            let assets = get_assets_heap(collection, &binding.heap.storage.assets);
+            let state_ref = state.borrow();
+            let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
             assert_assets_collection_empty_impl(&assets, collection)
         }),
         Memory::Stable => STATE.with(|state| {
-            let binding = state.borrow();
-            let stable = get_assets_stable(collection, &binding.stable.assets);
+            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
             let assets: Vec<(&FullPath, &Asset)> = stable
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
@@ -179,8 +179,8 @@ fn secure_list_assets_impl(
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            let binding = state.borrow();
-            let assets = get_assets_heap(collection, &binding.heap.storage.assets);
+            let state_ref = state.borrow();
+            let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
             Ok(list_assets_impl(
                 &assets,
                 caller,
@@ -191,8 +191,7 @@ fn secure_list_assets_impl(
             ))
         }),
         Memory::Stable => STATE.with(|state| {
-            let binding = state.borrow();
-            let stable = get_assets_stable(collection, &binding.stable.assets);
+            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
             let assets: Vec<(&FullPath, &Asset)> = stable
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))

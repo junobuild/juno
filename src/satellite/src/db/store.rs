@@ -185,13 +185,12 @@ fn secure_get_docs(
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            let binding = state.borrow();
-            let docs = get_docs_heap(&collection, &binding.heap.db.db)?;
+            let state_ref = state.borrow();
+            let docs = get_docs_heap(&collection, &state_ref.heap.db.db)?;
             get_docs_impl(&docs, caller, controllers, filter, &rule)
         }),
         Memory::Stable => STATE.with(|state| {
-            let binding = state.borrow();
-            let stable = get_docs_stable(&collection, &binding.stable.db)?;
+            let stable = get_docs_stable(&collection, &state.borrow().stable.db)?;
             let docs: Vec<(&Key, &Doc)> = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
             get_docs_impl(&docs, caller, controllers, filter, &rule)
         }),

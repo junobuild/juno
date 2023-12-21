@@ -195,6 +195,8 @@ export const idlFactory = ({ IDL }) => {
 	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
 	return IDL.Service({
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
+		count_assets: IDL.Func([IDL.Text], [IDL.Nat64], ['query']),
+		count_docs: IDL.Func([IDL.Text], [IDL.Nat64], ['query']),
 		del_asset: IDL.Func([IDL.Text, IDL.Text], [], []),
 		del_assets: IDL.Func([IDL.Text], [], []),
 		del_controllers: IDL.Func(

@@ -53,7 +53,7 @@ fn start_at<T: Clone + Compare>(matches: &[(&Key, &T)], filters: &ListParams) ->
             Some(start_after) => {
                 let index = matches
                     .iter()
-                    .position(|(key, _)| key.clone().eq(&start_after));
+                    .position(|(key, _)| (*key).clone().eq(&start_after));
                 index.map(|index| index + 1)
             }
         },

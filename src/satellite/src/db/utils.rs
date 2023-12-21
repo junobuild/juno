@@ -29,7 +29,7 @@ pub fn filter_values<'a>(
                 && filter_owner(owner, &doc.owner)
                 && assert_permission(rule, doc.owner, caller, controllers)
             {
-                Some((key.clone(), doc.clone()))
+                Some((*key, *doc))
             } else {
                 None
             }

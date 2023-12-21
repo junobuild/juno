@@ -61,7 +61,7 @@ pub fn filter_values<'a>(
                 && filter_owner(*owner, asset)
                 && assert_permission(rule, asset.key.owner, caller, controllers)
             {
-                Some((key.clone(), asset.clone()))
+                Some((*key, *asset))
             } else {
                 None
             }

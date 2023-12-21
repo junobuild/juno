@@ -81,11 +81,6 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct AddCreditsArgs {
-        pub user: UserId,
-    }
-
-    #[derive(CandidType, Deserialize)]
     pub struct GetCreateCanisterFeeArgs {
         pub user: UserId,
     }

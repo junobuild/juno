@@ -78,7 +78,7 @@ pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
         Memory::Heap => STATE.with(|state| {
             let binding = state.borrow();
             let assets = get_assets_heap(collection, &binding.heap.storage.assets);
-            delete_assets_impl(&assets, &collection, &rule)
+            delete_assets_impl(&assets, collection, &rule)
         }),
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
@@ -87,7 +87,7 @@ pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
-            delete_assets_impl(&assets, &collection, &rule)
+            delete_assets_impl(&assets, collection, &rule)
         }),
     }
 }
@@ -141,7 +141,7 @@ pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), 
         Memory::Heap => STATE.with(|state| {
             let binding = state.borrow();
             let assets = get_assets_heap(collection, &binding.heap.storage.assets);
-            assert_assets_collection_empty_impl(&assets, &collection)
+            assert_assets_collection_empty_impl(&assets, collection)
         }),
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
@@ -150,7 +150,7 @@ pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), 
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
-            assert_assets_collection_empty_impl(&assets, &collection)
+            assert_assets_collection_empty_impl(&assets, collection)
         }),
     }
 }
@@ -159,7 +159,7 @@ fn assert_assets_collection_empty_impl(
     assets: &Vec<(&FullPath, &Asset)>,
     collection: &CollectionKey,
 ) -> Result<(), String> {
-    let values = filter_collection_values(collection.clone(), &assets);
+    let values = filter_collection_values(collection.clone(), assets);
 
     if !values.is_empty() {
         return Err([COLLECTION_NOT_EMPTY, collection].join(""));
@@ -222,7 +222,7 @@ fn list_assets_impl(
         &rule.read,
         collection.clone(),
         filters,
-        &assets,
+        assets,
     );
 
     let values = list_values(&matches, filters);
@@ -292,7 +292,7 @@ fn delete_assets_impl(
     rule: &Rule,
 ) -> Result<(), String> {
     for (full_path, _) in assets {
-        let deleted_asset = delete_state_asset(collection, full_path, &rule);
+        let deleted_asset = delete_state_asset(collection, full_path, rule);
 
         match deleted_asset {
             None => {}

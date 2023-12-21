@@ -205,7 +205,7 @@ fn get_docs_impl<'a>(
     filters: &ListParams,
     rule: &Rule,
 ) -> Result<ListResults<Doc>, String> {
-    let matches = filter_values(caller, controllers, &rule.read, &docs, filters);
+    let matches = filter_values(caller, controllers, &rule.read, docs, filters);
 
     let results = list_values(&matches, filters);
 
@@ -323,7 +323,7 @@ fn delete_docs_impl<'a>(
     rule: &Rule,
 ) -> Result<(), String> {
     for (key, _) in docs {
-        delete_state_doc(collection, key, &rule)?;
+        delete_state_doc(collection, key, rule)?;
     }
 
     Ok(())

@@ -4,13 +4,11 @@ use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
-use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::{
     AssetsHeap, AssetsStable, ContentChunksStable, FullPath, StableEncodingChunkKey, StableKey,
     StorageHeapState,
 };
 use crate::storage::types::store::{Asset, AssetEncoding};
-use crate::storage::utils::map_asset_no_content;
 use crate::types::core::{Blob, CollectionKey};
 use crate::types::state::StableState;
 use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
@@ -261,12 +259,12 @@ pub fn get_assets_stable(
 pub fn get_assets_heap<'a>(
     collection: &CollectionKey,
     assets: &'a AssetsHeap,
-) -> Vec<&'a (&'a FullPath, &'a AssetNoContent)> {
+) -> Vec<(&'a FullPath, &'a Asset)> {
     assets
         .iter()
         .filter_map(|(_, asset)| {
-            if asset.key.collection == collection.clone() {
-                Some(map_asset_no_content(asset))
+            if &asset.key.collection == collection {
+                Some((&asset.key.full_path, asset))
             } else {
                 None
             }

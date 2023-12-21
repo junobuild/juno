@@ -10,10 +10,10 @@ use candid::Principal;
 use regex::Regex;
 use shared::types::state::{Controllers, UserId};
 
-pub fn map_asset_no_content<'a>(asset: &'a Asset) -> &'a (&'a FullPath, &'a AssetNoContent) {
-    &(
-        &asset.key.full_path,
-        &AssetNoContent {
+pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
+    (
+        asset.key.full_path.clone(),
+        AssetNoContent {
             key: asset.key.clone(),
             headers: asset.headers.clone(),
             encodings: asset
@@ -48,8 +48,8 @@ pub fn filter_values<'a>(
         paginate: _,
         owner,
     }: &'a ListParams,
-    assets: &'a [&'a (&'a FullPath, &'a AssetNoContent)],
-) -> Vec<(&'a FullPath, &'a AssetNoContent)> {
+    assets: &'a [(&'a FullPath, &'a Asset)],
+) -> Vec<(&'a FullPath, &'a Asset)> {
     let (regex_key, regex_description) = matcher_regex(matcher);
 
     assets
@@ -69,14 +69,14 @@ pub fn filter_values<'a>(
         .collect()
 }
 
-fn filter_full_path(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
+fn filter_full_path(regex: &Option<Regex>, asset: &Asset) -> bool {
     match regex {
         None => true,
         Some(re) => re.is_match(&asset.key.full_path),
     }
 }
 
-fn filter_description(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
+fn filter_description(regex: &Option<Regex>, asset: &Asset) -> bool {
     match regex {
         None => true,
         Some(re) => match &asset.key.description {
@@ -86,11 +86,11 @@ fn filter_description(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
     }
 }
 
-fn filter_collection(collection: CollectionKey, asset: &AssetNoContent) -> bool {
+fn filter_collection(collection: CollectionKey, asset: &Asset) -> bool {
     asset.key.collection == collection
 }
 
-fn filter_owner(filter_owner: Option<UserId>, asset: &AssetNoContent) -> bool {
+fn filter_owner(filter_owner: Option<UserId>, asset: &Asset) -> bool {
     match filter_owner {
         None => true,
         Some(filter_owner) => filter_owner == asset.key.owner,
@@ -99,8 +99,8 @@ fn filter_owner(filter_owner: Option<UserId>, asset: &AssetNoContent) -> bool {
 
 pub fn filter_collection_values<'a>(
     collection: CollectionKey,
-    assets: &'a [&'a (&'a FullPath, &'a AssetNoContent)],
-) -> Vec<(&'a FullPath, &'a AssetNoContent)> {
+    assets: &'a [(&'a FullPath, &'a Asset)],
+) -> Vec<(&'a FullPath, &'a Asset)> {
     assets
         .iter()
         .filter_map(|(key, asset)| {

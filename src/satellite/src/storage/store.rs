@@ -85,7 +85,7 @@ pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
             let stable = get_assets_stable(collection, &binding.stable.assets);
             let assets = stable
                 .iter()
-                .map(|(_, asset)| map_asset_no_content(asset))
+                .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
             delete_assets_impl(&assets, &collection, &rule)
         }),
@@ -148,7 +148,7 @@ pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), 
             let stable = get_assets_stable(collection, &binding.stable.assets);
             let assets = stable
                 .iter()
-                .map(|(_, asset)| map_asset_no_content(asset))
+                .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
             assert_assets_collection_empty_impl(&assets, &collection)
         }),
@@ -156,7 +156,7 @@ pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), 
 }
 
 fn assert_assets_collection_empty_impl(
-    assets: &Vec<&(&FullPath, &AssetNoContent)>,
+    assets: &Vec<(&FullPath, &Asset)>,
     collection: &CollectionKey,
 ) -> Result<(), String> {
     let values = filter_collection_values(collection.clone(), &assets);
@@ -194,7 +194,7 @@ fn secure_list_assets_impl(
             let stable = get_assets_stable(collection, &binding.stable.assets);
             let assets = stable
                 .iter()
-                .map(|(_, asset)| map_asset_no_content(asset))
+                .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
             Ok(list_assets_impl(
                 &assets,
@@ -209,7 +209,7 @@ fn secure_list_assets_impl(
 }
 
 fn list_assets_impl(
-    assets: &Vec<&(&FullPath, &AssetNoContent)>,
+    assets: &Vec<(&FullPath, &Asset)>,
     caller: Principal,
     controllers: &Controllers,
     collection: &CollectionKey,
@@ -225,7 +225,19 @@ fn list_assets_impl(
         &assets,
     );
 
-    list_values(&matches, filters)
+    let values = list_values(&matches, filters);
+
+    ListResults::<AssetNoContent> {
+        items: values
+            .items
+            .into_iter()
+            .map(|(_, asset)| map_asset_no_content(&asset))
+            .collect(),
+        items_length: values.items_length,
+        items_page: values.items_page,
+        matches_length: values.matches_length,
+        matches_pages: values.matches_pages,
+    }
 }
 
 fn secure_delete_asset_impl(
@@ -275,7 +287,7 @@ fn delete_asset_impl(
 }
 
 fn delete_assets_impl(
-    assets: &Vec<&(&FullPath, &AssetNoContent)>,
+    assets: &Vec<(&FullPath, &Asset)>,
     collection: &CollectionKey,
     rule: &Rule,
 ) -> Result<(), String> {

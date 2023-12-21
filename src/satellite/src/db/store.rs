@@ -195,7 +195,7 @@ fn get_docs_impl(
 
     let matches = filter_values(caller, controllers, &rule.read, &items, filters);
 
-    let results = list_values(matches, filters);
+    let results = list_values(&matches, filters);
 
     Ok(results)
 }
@@ -294,13 +294,10 @@ pub fn delete_docs(collection: &CollectionKey) -> Result<(), String> {
 fn delete_docs_impl(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let keys: Vec<Key> = get_state_docs(collection, &rule)?
-        .iter()
-        .map(|(key, _)| key.clone())
-        .collect();
+    let docs = get_state_docs(collection, &rule)?;
 
-    for key in keys {
-        delete_state_doc(collection, &key, &rule)?;
+    for (key, _) in docs {
+        delete_state_doc(collection, key, &rule)?;
     }
 
     Ok(())

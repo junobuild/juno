@@ -4,7 +4,7 @@ use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
-use crate::storage::types::interface::FullPathAssetNoContent;
+use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::{
     AssetsHeap, AssetsStable, ContentChunksStable, FullPath, StableEncodingChunkKey, StableKey,
     StorageHeapState,
@@ -142,7 +142,10 @@ pub fn delete_asset(
     }
 }
 
-pub fn get_assets(collection: &CollectionKey, rule: &Rule) -> Vec<FullPathAssetNoContent> {
+pub fn get_assets<'a>(
+    collection: &CollectionKey,
+    rule: &Rule,
+) -> Vec<&'a (&'a FullPath, &'a AssetNoContent)> {
     match rule.mem() {
         Memory::Heap => {
             STATE.with(|state| get_assets_heap(collection, &state.borrow().heap.storage.assets))
@@ -252,10 +255,10 @@ fn insert_asset_heap(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHea
 
 // List
 
-fn get_assets_stable(
+fn get_assets_stable<'a>(
     collection: &CollectionKey,
     assets: &AssetsStable,
-) -> Vec<FullPathAssetNoContent> {
+) -> Vec<&'a (&'a FullPath, &'a AssetNoContent)> {
     let start_key = StableKey {
         collection: collection.clone(),
         full_path: "".to_string(),
@@ -274,7 +277,10 @@ fn get_assets_stable(
         .collect()
 }
 
-fn get_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> Vec<FullPathAssetNoContent> {
+fn get_assets_heap<'a>(
+    collection: &CollectionKey,
+    assets: &AssetsHeap,
+) -> Vec<&'a (&'a FullPath, &'a AssetNoContent)> {
     assets
         .iter()
         .filter_map(|(_, asset)| {

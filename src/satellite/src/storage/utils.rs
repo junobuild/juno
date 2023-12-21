@@ -1,9 +1,8 @@
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
 use crate::rules::types::rules::Permission;
-use crate::storage::types::interface::{
-    AssetEncodingNoContent, AssetNoContent, FullPathAssetNoContent,
-};
+use crate::storage::types::interface::{AssetEncodingNoContent, AssetNoContent};
+use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::list::ListParams;
@@ -11,10 +10,10 @@ use candid::Principal;
 use regex::Regex;
 use shared::types::state::{Controllers, UserId};
 
-pub fn map_asset_no_content(asset: &Asset) -> FullPathAssetNoContent {
-    (
-        asset.key.full_path.clone(),
-        AssetNoContent {
+pub fn map_asset_no_content<'a>(asset: &'a Asset) -> &'a (&'a FullPath, &'a AssetNoContent) {
+    &(
+        &asset.key.full_path,
+        &AssetNoContent {
             key: asset.key.clone(),
             headers: asset.headers.clone(),
             encodings: asset
@@ -38,19 +37,19 @@ pub fn map_asset_no_content(asset: &Asset) -> FullPathAssetNoContent {
     )
 }
 
-pub fn filter_values(
+pub fn filter_values<'a>(
     caller: Principal,
-    controllers: &Controllers,
-    rule: &Permission,
+    controllers: &'a Controllers,
+    rule: &'a Permission,
     collection: CollectionKey,
     ListParams {
         matcher,
         order: _,
         paginate: _,
         owner,
-    }: &ListParams,
-    assets: &[FullPathAssetNoContent],
-) -> Vec<FullPathAssetNoContent> {
+    }: &'a ListParams,
+    assets: &'a [&'a (&'a FullPath, &'a AssetNoContent)],
+) -> Vec<(&'a FullPath, &'a AssetNoContent)> {
     let (regex_key, regex_description) = matcher_regex(matcher);
 
     assets
@@ -98,15 +97,15 @@ fn filter_owner(filter_owner: Option<UserId>, asset: &AssetNoContent) -> bool {
     }
 }
 
-pub fn filter_collection_values(
+pub fn filter_collection_values<'a>(
     collection: CollectionKey,
-    assets: &[FullPathAssetNoContent],
-) -> Vec<FullPathAssetNoContent> {
+    assets: &'a [&'a (&'a FullPath, &'a AssetNoContent)],
+) -> Vec<(&'a FullPath, &'a AssetNoContent)> {
     assets
         .iter()
         .filter_map(|(key, asset)| {
             if filter_collection(collection.clone(), asset) {
-                Some((key.clone(), asset.clone()))
+                Some((*key, *asset))
             } else {
                 None
             }

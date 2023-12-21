@@ -83,7 +83,7 @@ pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
             let stable = get_assets_stable(collection, &binding.stable.assets);
-            let assets = stable
+            let assets: Vec<(&FullPath, &Asset)> = stable
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
@@ -146,7 +146,7 @@ pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), 
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
             let stable = get_assets_stable(collection, &binding.stable.assets);
-            let assets = stable
+            let assets: Vec<(&FullPath, &Asset)> = stable
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
@@ -156,7 +156,7 @@ pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), 
 }
 
 fn assert_assets_collection_empty_impl(
-    assets: &Vec<(&FullPath, &Asset)>,
+    assets: &[(&FullPath, &Asset)],
     collection: &CollectionKey,
 ) -> Result<(), String> {
     let values = filter_collection_values(collection.clone(), assets);
@@ -192,7 +192,7 @@ fn secure_list_assets_impl(
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
             let stable = get_assets_stable(collection, &binding.stable.assets);
-            let assets = stable
+            let assets: Vec<(&FullPath, &Asset)> = stable
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
@@ -209,7 +209,7 @@ fn secure_list_assets_impl(
 }
 
 fn list_assets_impl(
-    assets: &Vec<(&FullPath, &Asset)>,
+    assets: &[(&FullPath, &Asset)],
     caller: Principal,
     controllers: &Controllers,
     collection: &CollectionKey,

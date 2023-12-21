@@ -192,14 +192,14 @@ fn secure_get_docs(
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
             let stable = get_docs_stable(&collection, &binding.stable.db)?;
-            let docs = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
+            let docs: Vec<(&Key, &Doc)> = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
             get_docs_impl(&docs, caller, controllers, filter, &rule)
         }),
     }
 }
 
 fn get_docs_impl<'a>(
-    docs: &Vec<(&'a Key, &'a Doc)>,
+    docs: &[(&'a Key, &'a Doc)],
     caller: Principal,
     controllers: &Controllers,
     filters: &ListParams,
@@ -311,14 +311,14 @@ pub fn delete_docs(collection: &CollectionKey) -> Result<(), String> {
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
             let stable = get_docs_stable(collection, &binding.stable.db)?;
-            let docs = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
+            let docs: Vec<(&Key, &Doc)> = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
             delete_docs_impl(&docs, collection, &rule)
         }),
     }
 }
 
 fn delete_docs_impl<'a>(
-    docs: &Vec<(&'a Key, &'a Doc)>,
+    docs: &[(&'a Key, &'a Doc)],
     collection: &CollectionKey,
     rule: &Rule,
 ) -> Result<(), String> {

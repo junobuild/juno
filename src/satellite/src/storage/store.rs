@@ -1,6 +1,7 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::list::utils::list_values;
+use crate::memory::STATE;
 use crate::msg::{
     COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
 };
@@ -31,19 +32,19 @@ use crate::storage::runtime::{
 };
 use crate::storage::state::{
     delete_asset as delete_state_asset, delete_domain as delete_state_domain,
-    get_asset as get_state_asset, get_assets as get_state_assets, get_config as get_state_config,
-    get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
-    get_domains as get_state_domains, get_public_asset as get_state_public_asset,
-    get_rule as get_state_rule, get_rule, insert_asset as insert_state_asset,
-    insert_asset_encoding as insert_state_asset_encoding, insert_config as insert_state_config,
-    insert_domain as insert_state_domain,
+    get_asset as get_state_asset, get_assets_heap, get_assets_stable,
+    get_config as get_state_config, get_content_chunks as get_state_content_chunks,
+    get_domain as get_state_domain, get_domains as get_state_domains,
+    get_public_asset as get_state_public_asset, get_rule as get_state_rule, get_rule,
+    insert_asset as insert_state_asset, insert_asset_encoding as insert_state_asset_encoding,
+    insert_config as insert_state_config, insert_domain as insert_state_domain,
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk, EncodingType};
-use crate::storage::utils::{filter_collection_values, filter_values};
+use crate::storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
 use crate::types::core::{Blob, CollectionKey};
 use crate::types::list::{ListParams, ListResults};
 
@@ -71,7 +72,26 @@ pub fn delete_asset(
 }
 
 pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
-    delete_assets_impl(collection)
+    let rule = get_state_rule(collection)?;
+
+    let full_paths = match rule.mem() {
+        Memory::Heap => STATE.with(|state| {
+            let state_ref = state.borrow();
+            get_assets_heap(collection, &state_ref.heap.storage.assets)
+                .iter()
+                .map(|(_, asset)| asset.key.full_path.clone())
+                .collect()
+        }),
+        Memory::Stable => STATE.with(|state| {
+            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
+            stable
+                .iter()
+                .map(|(_, asset)| asset.key.full_path.clone())
+                .collect()
+        }),
+    };
+
+    delete_assets_impl(&full_paths, collection, &rule)
 }
 
 pub fn list_assets(
@@ -119,9 +139,28 @@ fn get_token_protected_asset(
 pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let assets = get_state_assets(collection, &rule);
+    match rule.mem() {
+        Memory::Heap => STATE.with(|state| {
+            let state_ref = state.borrow();
+            let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
+            assert_assets_collection_empty_impl(&assets, collection)
+        }),
+        Memory::Stable => STATE.with(|state| {
+            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
+            let assets: Vec<(&FullPath, &Asset)> = stable
+                .iter()
+                .map(|(_, asset)| (&asset.key.full_path, asset))
+                .collect();
+            assert_assets_collection_empty_impl(&assets, collection)
+        }),
+    }
+}
 
-    let values = filter_collection_values(collection.clone(), &assets);
+fn assert_assets_collection_empty_impl(
+    assets: &[(&FullPath, &Asset)],
+    collection: &CollectionKey,
+) -> Result<(), String> {
+    let values = filter_collection_values(collection.clone(), assets);
 
     if !values.is_empty() {
         return Err([COLLECTION_NOT_EMPTY, collection].join(""));
@@ -138,34 +177,67 @@ fn secure_list_assets_impl(
 ) -> Result<ListResults<AssetNoContent>, String> {
     let rule = get_state_rule(collection)?;
 
-    Ok(list_assets_impl(
-        caller,
-        controllers,
-        collection,
-        &rule,
-        filters,
-    ))
+    match rule.mem() {
+        Memory::Heap => STATE.with(|state| {
+            let state_ref = state.borrow();
+            let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
+            Ok(list_assets_impl(
+                &assets,
+                caller,
+                controllers,
+                collection,
+                &rule,
+                filters,
+            ))
+        }),
+        Memory::Stable => STATE.with(|state| {
+            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
+            let assets: Vec<(&FullPath, &Asset)> = stable
+                .iter()
+                .map(|(_, asset)| (&asset.key.full_path, asset))
+                .collect();
+            Ok(list_assets_impl(
+                &assets,
+                caller,
+                controllers,
+                collection,
+                &rule,
+                filters,
+            ))
+        }),
+    }
 }
 
 fn list_assets_impl(
+    assets: &[(&FullPath, &Asset)],
     caller: Principal,
     controllers: &Controllers,
     collection: &CollectionKey,
     rule: &Rule,
     filters: &ListParams,
 ) -> ListResults<AssetNoContent> {
-    let assets = get_state_assets(collection, rule);
-
-    let matches: Vec<(FullPath, AssetNoContent)> = filter_values(
+    let matches = filter_values(
         caller,
         controllers,
         &rule.read,
         collection.clone(),
         filters,
-        &assets,
+        assets,
     );
 
-    list_values(matches, filters)
+    let values = list_values(&matches, filters);
+
+    ListResults::<AssetNoContent> {
+        items: values
+            .items
+            .into_iter()
+            .map(|(_, asset)| map_asset_no_content(&asset))
+            .collect(),
+        items_length: values.items_length,
+        items_page: values.items_page,
+        matches_length: values.matches_length,
+        matches_pages: values.matches_pages,
+    }
 }
 
 fn secure_delete_asset_impl(
@@ -214,17 +286,13 @@ fn delete_asset_impl(
     }
 }
 
-fn delete_assets_impl(collection: &CollectionKey) -> Result<(), String> {
-    let rule = get_state_rule(collection)?;
-
-    let full_paths: Vec<FullPath> = get_state_assets(collection, &rule)
-        .iter()
-        .filter(|asset| asset.key.collection == collection.clone())
-        .map(|asset| asset.key.full_path.clone())
-        .collect();
-
+fn delete_assets_impl(
+    full_paths: &Vec<FullPath>,
+    collection: &CollectionKey,
+    rule: &Rule,
+) -> Result<(), String> {
     for full_path in full_paths {
-        let deleted_asset = delete_state_asset(collection, &full_path, &rule);
+        let deleted_asset = delete_state_asset(collection, full_path, rule);
 
         match deleted_asset {
             None => {}

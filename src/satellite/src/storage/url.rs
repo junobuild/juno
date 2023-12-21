@@ -120,8 +120,13 @@ pub fn separator(url: &str) -> &str {
 fn map_token(parsed_url: Url) -> Option<String> {
     let tokens: Vec<String> = parsed_url
         .query_pairs()
-        .filter(|(name, _)| name == "token")
-        .map(|(_, value)| value.into_owned())
+        .filter_map(|(name, value)| {
+            if name == "token" {
+                Some(value.into_owned())
+            } else {
+                None
+            }
+        })
         .collect();
 
     if !tokens.is_empty() {

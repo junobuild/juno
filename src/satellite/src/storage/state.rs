@@ -140,17 +140,6 @@ pub fn delete_asset(
     }
 }
 
-pub fn get_assets(collection: &CollectionKey, rule: &Rule) -> Vec<Asset> {
-    match rule.mem() {
-        Memory::Heap => {
-            STATE.with(|state| get_assets_heap(collection, &state.borrow().heap.storage.assets))
-        }
-        Memory::Stable => {
-            STATE.with(|state| get_assets_stable(collection, &state.borrow().stable.assets))
-        }
-    }
-}
-
 // Get
 
 fn get_asset_stable(
@@ -250,7 +239,10 @@ fn insert_asset_heap(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHea
 
 // List
 
-fn get_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> Vec<Asset> {
+pub fn get_assets_stable(
+    collection: &CollectionKey,
+    assets: &AssetsStable,
+) -> Vec<(StableKey, Asset)> {
     let start_key = StableKey {
         collection: collection.clone(),
         full_path: "".to_string(),
@@ -261,16 +253,22 @@ fn get_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> Vec<A
         full_path: "".to_string(),
     };
 
-    let items: Vec<(StableKey, Asset)> = assets.range(start_key..end_key).collect();
-
-    items.iter().map(|(_, asset)| asset.clone()).collect()
+    assets.range(start_key..end_key).collect()
 }
 
-fn get_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> Vec<Asset> {
+pub fn get_assets_heap<'a>(
+    collection: &CollectionKey,
+    assets: &'a AssetsHeap,
+) -> Vec<(&'a FullPath, &'a Asset)> {
     assets
         .iter()
-        .filter(|(_, asset)| asset.key.collection == collection.clone())
-        .map(|(_, asset)| asset.clone())
+        .filter_map(|(_, asset)| {
+            if &asset.key.collection == collection {
+                Some((&asset.key.full_path, asset))
+            } else {
+                None
+            }
+        })
         .collect()
 }
 

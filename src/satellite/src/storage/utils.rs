@@ -55,14 +55,18 @@ pub fn filter_values(
 
     assets
         .iter()
-        .filter(|(_, asset)| {
-            filter_collection(collection.clone(), asset)
+        .filter_map(|(key, asset)| {
+            if filter_collection(collection.clone(), asset)
                 && filter_full_path(&regex_key, asset)
                 && filter_description(&regex_description, asset)
                 && filter_owner(*owner, asset)
                 && assert_permission(rule, asset.key.owner, caller, controllers)
+            {
+                Some((key.clone(), asset.clone()))
+            } else {
+                None
+            }
         })
-        .map(|(key, asset)| (key.clone(), asset.clone()))
         .collect()
 }
 
@@ -100,7 +104,12 @@ pub fn filter_collection_values(
 ) -> Vec<FullPathAssetNoContent> {
     assets
         .iter()
-        .filter(|(_, asset)| filter_collection(collection.clone(), asset))
-        .map(|(key, asset)| (key.clone(), asset.clone()))
+        .filter_map(|(key, asset)| {
+            if filter_collection(collection.clone(), asset) {
+                Some((key.clone(), asset.clone()))
+            } else {
+                None
+            }
+        })
         .collect()
 }

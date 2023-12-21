@@ -23,13 +23,17 @@ pub fn filter_values(
     let (regex_key, regex_description) = matcher_regex(matcher);
 
     col.iter()
-        .filter(|(key, doc)| {
-            filter_key_matcher(&regex_key, key)
+        .filter_map(|(key, doc)| {
+            if filter_key_matcher(&regex_key, key)
                 && filter_description_matcher(&regex_description, &doc.description)
                 && filter_owner(owner, &doc.owner)
                 && assert_permission(rule, doc.owner, caller, controllers)
+            {
+                Some((key.clone(), doc.clone()))
+            } else {
+                None
+            }
         })
-        .map(|(key, doc)| (key.clone(), doc.clone()))
         .collect()
 }
 

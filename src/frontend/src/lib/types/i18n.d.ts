@@ -244,6 +244,7 @@ interface I18nHosting {
 	available: string;
 	failed: string;
 	skip_delete_domain: string;
+	files_deployed: string;
 }
 
 interface I18nCli {
@@ -278,6 +279,7 @@ interface I18nErrors {
 	hosting_missing_dns_configuration: string;
 	hosting_configuration_issues: string;
 	hosting_loading_errors: string;
+	hosting_count_assets: string;
 	hosting_no_custom_domain: string;
 	hosting_delete_custom_domain: string;
 	controllers_listing: string;

@@ -10,22 +10,23 @@
 	import { listUsers } from '$lib/services/users.services';
 	import User from '$lib/components/auth/User.svelte';
 	import type { User as UserType } from '$lib/types/user';
+	import DataCount from '$lib/components/data/DataCount.svelte';
 
 	export let satelliteId: Principal;
 
 	const list = async () => {
 		if (isNullish(satelliteId)) {
-			setItems({ items: undefined, matches_length: undefined });
+			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
 			return;
 		}
 
 		try {
-			const { users, matches_length } = await listUsers({
+			const { users, matches_length, items_length } = await listUsers({
 				satelliteId,
 				startAfter: $paginationStore.startAfter
 			});
 
-			setItems({ items: users, matches_length });
+			setItems({ items: users, matches_length, items_length });
 		} catch (err: unknown) {
 			toasts.error({
 				text: `Error while listing the documents.`,
@@ -75,6 +76,8 @@
 		</tbody>
 	</table>
 </div>
+
+<DataCount />
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

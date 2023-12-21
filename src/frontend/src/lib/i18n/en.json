@@ -230,7 +230,8 @@
 		"pendingacmeapproval": "Challenge completed",
 		"available": "Available",
 		"failed": "Failed",
-		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes"
+		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes",
+		"files_deployed": "files deployed"
 	},
 	"cli": {
 		"title": "Juno CLI Authentication",
@@ -263,6 +264,7 @@
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",
 		"hosting_configuration_issues": "Error while configuring the custom domain for the satellite.",
 		"hosting_loading_errors": "Error while loading the custom domains of the satellite.",
+		"hosting_count_assets": "Error while retrieving the count of deployed files for your dapp.",
 		"hosting_no_custom_domain": "No custom domain selected",
 		"hosting_delete_custom_domain": "Error while deleting the custom domain.",
 		"controllers_listing": "Error while listing the controllers.",

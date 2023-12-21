@@ -6,6 +6,8 @@ export interface PaginationStore<T> {
 	pages?: number;
 	previousStartAfter?: string;
 	startAfter?: string;
+	itemsLength?: number;
+	matchesLength?: number;
 }
 
 export interface PaginationContext<T> {
@@ -16,6 +18,7 @@ export interface PaginationContext<T> {
 	setItems: (params: {
 		items: [string, T][] | undefined;
 		matches_length: bigint | undefined;
+		items_length: bigint | undefined;
 	}) => void;
 	list: () => Promise<void>;
 }

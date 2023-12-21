@@ -46,10 +46,18 @@
 	<CollectionsEmpty on:click={() => selectTab()} />
 </section>
 
+<div class="count">
+	<slot name="count" />
+</div>
+
 <style lang="scss">
 	@use '../../styles/mixins/collections';
 
 	section {
 		@include collections.section;
+	}
+
+	.count {
+		margin: var(--padding-2x) 0 0;
 	}
 </style>

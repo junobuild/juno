@@ -258,3 +258,16 @@ export const depositCycles = async ({
 		destination_id
 	});
 };
+
+export const countAssets = async ({
+	satelliteId,
+	collection,
+	identity
+}: {
+	satelliteId: Principal;
+	collection: string;
+	identity: OptionIdentity;
+}): Promise<bigint> => {
+	const { count_assets } = await getSatelliteActor({ satelliteId, identity });
+	return count_assets(collection);
+};

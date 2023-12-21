@@ -25,65 +25,16 @@
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	const list = async () => {
-		if (isNullish(collection)) {
-			setItems({ items: undefined, matches_length: undefined });
-			return;
-		}
-
-		try {
-			const version = await satelliteVersion({
-				satelliteId: $store.satelliteId,
-				identity: $authStore.identity
-			});
-
-			// TODO: remove at the same time as satellite version query
-			if (isNullish(collection)) {
-				setItems({ items: undefined, matches_length: undefined });
-				return;
-			}
-
-			const list =
-				compare(version, '0.0.10') >= 0
-					? listAssets
-					: compare(version, '0.0.9') >= 0
-						? listAssets009
-						: listAssets008;
-
-			const { items, matches_length } = await list({
-				collection,
-				satelliteId: $store.satelliteId,
-				params: {
-					startAfter: $paginationStore.startAfter,
-					// prettier-ignore parenthesis required for Webstorm Svelte plugin
-					...$listParamsStore
-				} as ListParams,
-				identity: $authStore.identity
-			});
-			setItems({ items, matches_length });
-		} catch (err: unknown) {
-			toasts.error({
-				text: `Error while listing the assets.`,
-				detail: err
-			});
-		}
-	};
-
-	setContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY, {
-		...initPaginationContext(),
-		list
-	});
+	let collection: string | undefined;
+	$: collection = $store.rule?.[0];
 
 	const {
 		store: paginationStore,
 		resetPage,
-		setItems
+		list
 	}: PaginationContext<AssetNoContent> = getContext<PaginationContext<AssetNoContent>>(
 		PAGINATION_CONTEXT_KEY
 	);
-
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
 
 	let empty = false;
 	$: empty = $paginationStore.items?.length === 0 && nonNullish(collection);

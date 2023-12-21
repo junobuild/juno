@@ -44,7 +44,7 @@ use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk, EncodingType};
-use crate::storage::utils::{filter_collection_values, filter_values};
+use crate::storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
 use crate::types::core::{Blob, CollectionKey};
 use crate::types::list::{ListParams, ListResults};
 
@@ -82,7 +82,11 @@ pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
         }),
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
-            let assets = get_assets_stable(collection, &binding.stable.assets);
+            let stable = get_assets_stable(collection, &binding.stable.assets);
+            let assets = stable
+                .iter()
+                .map(|(_, asset)| map_asset_no_content(asset))
+                .collect();
             delete_assets_impl(&assets, &collection, &rule)
         }),
     }
@@ -141,7 +145,11 @@ pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), 
         }),
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
-            let assets = get_assets_stable(collection, &binding.stable.assets);
+            let stable = get_assets_stable(collection, &binding.stable.assets);
+            let assets = stable
+                .iter()
+                .map(|(_, asset)| map_asset_no_content(asset))
+                .collect();
             assert_assets_collection_empty_impl(&assets, &collection)
         }),
     }
@@ -183,7 +191,11 @@ fn secure_list_assets_impl(
         }),
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
-            let assets = get_assets_stable(collection, &binding.stable.assets);
+            let stable = get_assets_stable(collection, &binding.stable.assets);
+            let assets = stable
+                .iter()
+                .map(|(_, asset)| map_asset_no_content(asset))
+                .collect();
             Ok(list_assets_impl(
                 &assets,
                 caller,

@@ -67,8 +67,8 @@ fn is_collection_empty_heap(collection: &CollectionKey, db: &DbHeap) -> Result<b
 }
 
 fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Result<bool, String> {
-    let items = get_docs_stable(collection, db)?;
-    Ok(items.is_empty())
+    let stable = get_docs_stable(collection, db)?;
+    Ok(stable.is_empty())
 }
 
 // Delete

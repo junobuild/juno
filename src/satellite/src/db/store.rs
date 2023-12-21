@@ -191,8 +191,8 @@ fn secure_get_docs(
         }),
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
-            let items = get_docs_stable(&collection, &binding.stable.db)?;
-            let docs = items.iter().map(|(key, doc)| (&key.key, doc)).collect();
+            let stable = get_docs_stable(&collection, &binding.stable.db)?;
+            let docs = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
             get_docs_impl(&docs, caller, controllers, filter, &rule)
         }),
     }
@@ -310,8 +310,8 @@ pub fn delete_docs(collection: &CollectionKey) -> Result<(), String> {
         }),
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
-            let items = get_docs_stable(collection, &binding.stable.db)?;
-            let docs = items.iter().map(|(key, doc)| (&key.key, doc)).collect();
+            let stable = get_docs_stable(collection, &binding.stable.db)?;
+            let docs = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
             delete_docs_impl(&docs, collection, &rule)
         }),
     }

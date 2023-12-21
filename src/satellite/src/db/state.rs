@@ -67,8 +67,8 @@ fn is_collection_empty_heap(collection: &CollectionKey, db: &DbHeap) -> Result<b
 }
 
 fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Result<bool, String> {
-    let items = get_docs_stable(collection, db)?;
-    Ok(items.is_empty())
+    let stable = get_docs_stable(collection, db)?;
+    Ok(stable.is_empty())
 }
 
 // Delete
@@ -95,15 +95,6 @@ pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Opt
         }
         Memory::Stable => {
             STATE.with(|state| get_doc_stable(collection, key, &state.borrow().stable.db))
-        }
-    }
-}
-
-pub fn get_docs(collection: &CollectionKey, rule: &Rule) -> Result<Vec<(Key, Doc)>, String> {
-    match rule.mem() {
-        Memory::Heap => STATE.with(|state| get_docs_heap(collection, &state.borrow().heap.db.db)),
-        Memory::Stable => {
-            STATE.with(|state| get_docs_stable(collection, &state.borrow().stable.db))
         }
     }
 }
@@ -167,7 +158,10 @@ fn get_doc_heap(collection: &CollectionKey, key: &Key, db: &DbHeap) -> Result<Op
 
 // List
 
-fn get_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<Vec<(Key, Doc)>, String> {
+pub fn get_docs_stable(
+    collection: &CollectionKey,
+    db: &DbStable,
+) -> Result<Vec<(StableKey, Doc)>, String> {
     let start_key = StableKey {
         collection: collection.clone(),
         key: "".to_string(),
@@ -178,25 +172,21 @@ fn get_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<Vec<(Key
         key: "".to_string(),
     };
 
-    let items: Vec<(StableKey, Doc)> = db.range(start_key..end_key).collect();
+    let items = db.range(start_key..end_key).collect();
 
-    Ok(items
-        .iter()
-        .map(|(key, doc)| (key.key.clone(), doc.clone()))
-        .collect())
+    Ok(items)
 }
 
-fn get_docs_heap(collection: &CollectionKey, db: &DbHeap) -> Result<Vec<(Key, Doc)>, String> {
+pub fn get_docs_heap<'a>(
+    collection: &CollectionKey,
+    db: &'a DbHeap,
+) -> Result<Vec<(&'a Key, &'a Doc)>, String> {
     let col = db.get(collection);
 
     match col {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(col) => {
-            let items = col
-                .iter()
-                .map(|(key, doc)| (key.clone(), doc.clone()))
-                .collect();
-
+            let items = col.iter().collect();
             Ok(items)
         }
     }

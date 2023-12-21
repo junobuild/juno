@@ -8,18 +8,18 @@ use candid::Principal;
 use regex::Regex;
 use shared::types::state::{Controllers, UserId};
 
-pub fn filter_values(
+pub fn filter_values<'a>(
     caller: Principal,
-    controllers: &Controllers,
-    rule: &Permission,
-    col: &[(Key, Doc)],
+    controllers: &'a Controllers,
+    rule: &'a Permission,
+    col: &'a [(&'a Key, &'a Doc)],
     ListParams {
         matcher,
         order: _,
         paginate: _,
         owner,
-    }: &ListParams,
-) -> Vec<(Key, Doc)> {
+    }: &'a ListParams,
+) -> Vec<(&'a Key, &'a Doc)> {
     let (regex_key, regex_description) = matcher_regex(matcher);
 
     col.iter()
@@ -29,7 +29,7 @@ pub fn filter_values(
                 && filter_owner(owner, &doc.owner)
                 && assert_permission(rule, doc.owner, caller, controllers)
             {
-                Some((key.clone(), doc.clone()))
+                Some((*key, *doc))
             } else {
                 None
             }

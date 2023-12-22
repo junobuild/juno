@@ -1,3 +1,7 @@
+import type { CustomDomain } from '$declarations/satellite/satellite.did';
+
+export type CustomDomains = [string, CustomDomain][];
+
 export interface CustomDomainDnsEntry {
 	type: 'TXT' | 'CNAME';
 	host?: string;

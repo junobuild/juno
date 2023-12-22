@@ -72,6 +72,7 @@ interface I18nCanisters {
 	delete_title: string;
 	delete_explanation: string;
 	delete_customization: string;
+	delete_custom_domain: string;
 	cycles_to_retain: string;
 	cycles_to_transfer: string;
 	delete_info: string;

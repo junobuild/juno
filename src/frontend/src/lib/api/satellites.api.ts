@@ -1,6 +1,5 @@
 import type { Controller } from '$declarations/mission_control/mission_control.did';
 import type {
-	CustomDomain,
 	DelDoc as DelRule,
 	Doc,
 	ListResults as ListAssets,
@@ -11,6 +10,7 @@ import type {
 } from '$declarations/satellite/satellite.did';
 import type { MemoryText, PermissionText } from '$lib/constants/rules.constants';
 import { MemoryHeap } from '$lib/constants/rules.constants';
+import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
@@ -175,7 +175,7 @@ export const listCustomDomains = async ({
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<[string, CustomDomain][]> => {
+}): Promise<CustomDomains> => {
 	const actor = await getSatelliteActor({ satelliteId, identity });
 	return actor.list_custom_domains();
 };

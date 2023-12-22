@@ -4,7 +4,6 @@
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import { onMount } from 'svelte';
-	import { toasts } from '$lib/stores/toasts.store';
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listCustomDomains } from '$lib/services/hosting.services';
@@ -19,16 +18,11 @@
 	let customDomains: [string, CustomDomainType][] = [];
 
 	const list = async () => {
-		try {
-			customDomains = await listCustomDomains({
-				satelliteId: satellite.satellite_id
-			});
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.hosting_loading_errors,
-				detail: err
-			});
-		}
+		const { customDomains: domains } = await listCustomDomains({
+			satelliteId: satellite.satellite_id
+		});
+
+		customDomains = domains ?? [];
 	};
 
 	onMount(list);

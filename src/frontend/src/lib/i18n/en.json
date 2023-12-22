@@ -236,13 +236,15 @@
 	},
 	"cli": {
 		"title": "Juno CLI Authentication",
-		"sign_in": "Sign in to set up your terminal for interacting with your mission control and/or satellite(s).",
-		"add": "Select the segment(s) to be controlled by your terminal using the controller <strong>{0}</strong>:",
+		"sign_in": "Sign in to set up your terminal for interacting with your mission control, satellite(s) and analytics.",
+		"controller": "Your terminal is authenticated as the controller <strong>{0}</strong>.",
+		"add": "The following segments will be controlled by your terminal:",
 		"select_all": "Select all segments",
 		"unselect_all": "Unselect all segments",
-		"profile": "You can also provide an optional profile's name to easily identify the controller.",
+		"profile": "You can also provide an optional profile name to easily identify the controller.",
 		"segments": "Segments:",
-		"profile_placeholder": "An optional hint about the controller"
+		"profile_placeholder": "A hint for additional context",
+		"authorize": "Authorize"
 	},
 	"errors": {
 		"no_identity": "Unexpected error. No identity provided.",

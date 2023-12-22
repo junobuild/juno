@@ -236,13 +236,15 @@
 	},
 	"cli": {
 		"title": "授权命令行",
-		"sign_in": "登录去增加一个控制者 <strong>{0}</strong> 到你的 mission control 和/或 satellite(s).",
-		"add": "增加一个新的控制者<strong>{0}</strong> 到你的 mission control 和/或 satellite(s).",
+		"sign_in": "Sign in to set up your terminal for interacting with your mission control, satellite(s) and analytics.",
+		"controller": "Your terminal is authenticated as the controller <strong>{0}</strong>:",
+		"add": "The following segments will be controlled by your terminal:",
 		"select_all": "选择全部",
 		"unselect_all": "取消全部选择",
 		"profile": "简介:",
 		"segments": "区段:",
-		"profile_placeholder": "可选关于控制者提示"
+		"profile_placeholder": "A hint for additional context",
+		"authorize": "Authorize"
 	},
 	"errors": {
 		"no_identity": "异常错误，没有提供 identity ",

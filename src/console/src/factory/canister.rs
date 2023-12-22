@@ -38,14 +38,8 @@ where
                 // Guard too many requests
                 increment_rate()?;
 
-                return create_canister_with_credits(
-                    create,
-                    console,
-                    mission_control_id,
-                    user,
-                    fee,
-                )
-                .await;
+                return create_canister_with_credits(create, console, mission_control_id, user)
+                    .await;
             }
 
             create_canister_with_payment(
@@ -66,7 +60,6 @@ async fn create_canister_with_credits<F, Fut>(
     console: Principal,
     mission_control_id: MissionControlId,
     user: UserId,
-    fee: Tokens,
 ) -> Result<Principal, String>
 where
     F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
@@ -79,7 +72,7 @@ where
         Err(_) => Err("Segment creation with credits failed.".to_string()),
         Ok(satellite_id) => {
             // Satellite is created we can use the credits
-            let credits = use_credits(&user, &fee);
+            let credits = use_credits(&user);
 
             match credits {
                 Err(e) => Err(e.to_string()),

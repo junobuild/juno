@@ -1,3 +1,4 @@
+use crate::constants::E8S_PER_ICP;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     Fee, Fees, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl,
@@ -90,7 +91,7 @@ fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
     let mission_control = MissionControl {
         mission_control_id: None,
         owner: *user,
-        credits,
+        credits: E8S_PER_ICP,
         created_at: now,
         updated_at: now,
     };
@@ -152,17 +153,32 @@ fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'stat
     }
 }
 
+/// Originally credits were equals to the fees. 0.5 ICP for a satellite covered by 0.5 credits.
+/// However, given that fees can now be dynamically set, the credits had to be indexed.
+/// That is why now one credit covers the creation fee regardless the ICP price.
+///
+/// For example:
+/// - satellite fee is 2 ICP, 1 credit covers it
+/// - satellite fee is 9 ICP, 1 credit covers it
+/// - satellite fee is 2 ICP, 0.1 credits does no cover it
+///
+/// More like a percent. 1 credit equals 1 creation.
+
 pub fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Tokens) -> bool {
     let mission_control = get_existing_mission_control(user, mission_control);
 
     match mission_control {
         Err(_) => false,
-        Ok(mission_control) => mission_control.credits.e8s() >= fee.e8s(),
+        Ok(mission_control) => {
+            mission_control.credits.e8s() * fee.e8s() >= fee.e8s() * E8S_PER_ICP.e8s()
+        }
     }
 }
 
-pub fn use_credits(user: &UserId, fee: &Tokens) -> Result<Tokens, &'static str> {
-    STATE.with(|state| update_credits_impl(user, false, fee, &mut state.borrow_mut().stable))
+pub fn use_credits(user: &UserId) -> Result<Tokens, &'static str> {
+    STATE.with(|state| {
+        update_credits_impl(user, false, &E8S_PER_ICP, &mut state.borrow_mut().stable)
+    })
 }
 
 pub fn add_credits(user: &UserId, credits: &Tokens) -> Result<Tokens, &'static str> {
@@ -184,7 +200,10 @@ fn update_credits_impl(
 
             let remaining_credits_e8s = match increment {
                 true => mission_control.credits.e8s() + credits.e8s(),
-                false => mission_control.credits.e8s() - credits.e8s(),
+                false => match mission_control.credits.e8s() > credits.e8s() {
+                    true => mission_control.credits.e8s() - credits.e8s(),
+                    false => 0,
+                },
             };
 
             let remaining_credits = Tokens::from_e8s(remaining_credits_e8s);

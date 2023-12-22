@@ -119,7 +119,7 @@
 		"satellite_name": "Satellite 名字",
 		"enter_name": "输入你的 satellite 名字",
 		"edit_name": "编辑你的 satellite 名字",
-		"create_satellite_price": "为了创建新的 satellite 需要 <strong>{0}</strong> ICP. 你当前 mission control 余额是 {1} ICP 而且你还剩 {2} 积分.",
+		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP.",
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",
 		"id": "Satellite ID"
@@ -178,7 +178,7 @@
 		"start": "从这开始",
 		"description": "通过统计来衡量并分析用户如何来与您的应用交互.",
 		"initializing": "初始化统计...",
-		"create_orbiter_price": "开始统计功能需要 <strong>{0}</strong> ICP. 您的当前 mission control 余额是 {1} ICP 以及你还有 {2} 信用值",
+		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP.",
 		"create": "创建统计",
 		"ready": "你的统计功能可以使用!",
 		"satellites": "Satellite(s)",

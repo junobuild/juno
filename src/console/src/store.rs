@@ -86,8 +86,6 @@ pub fn init_empty_mission_control(user: &UserId) {
 fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
     let now = time();
 
-    let credits = state.fees.satellite.fee;
-
     let mission_control = MissionControl {
         mission_control_id: None,
         owner: *user,

@@ -22,7 +22,7 @@ export const E8S_PER_ICP = 100_000_000n;
 export const IC_TRANSACTION_FEE_ICP = 10_000n;
 
 export const CYCLES_WARNING = 500_000_000_000n;
-export const MEMORY_HEAP_WARNING = 900_000_000n; // 900mb
+export const MEMORY_HEAP_WARNING = 9_00_000n; // 900mb
 
 export const ONE_TRILLION = 1_000_000_000_000;
 

@@ -26,7 +26,11 @@
 	</div>
 
 	<div>
-		<CanisterOverview canisterId={orbiter.orbiter_id} segment="orbiter" />
+		<CanisterOverview
+			canisterId={orbiter.orbiter_id}
+			segment="orbiter"
+			heapWarningLabel={$i18n.canisters.warning_orbiter_heap_memory}
+		/>
 	</div>
 
 	<OrbiterActions {orbiter} />

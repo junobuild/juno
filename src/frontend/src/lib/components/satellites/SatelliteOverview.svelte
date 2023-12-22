@@ -31,7 +31,11 @@
 	</div>
 
 	<div>
-		<CanisterOverview canisterId={satellite.satellite_id} segment="satellite" />
+		<CanisterOverview
+			canisterId={satellite.satellite_id}
+			segment="satellite"
+			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
+		/>
 	</div>
 
 	<SatelliteActions {satellite} />

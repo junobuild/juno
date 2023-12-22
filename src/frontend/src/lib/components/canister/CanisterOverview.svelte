@@ -13,6 +13,7 @@
 
 	export let canisterId: Principal;
 	export let segment: Segment;
+	export let heapWarningLabel: string | undefined = undefined;
 
 	let data: CanisterData | undefined;
 	let sync: CanisterSyncStatus | undefined;
@@ -55,7 +56,8 @@
 				{formatNumber(Number(memory.heap) / 1_000_000)} MB
 				<small
 					>{$i18n.canisters.on_heap}
-					{#if warning}<IconWarning />{/if}</small
+					{#if warning}<span class="warning" title={heapWarningLabel}><IconWarning /></span
+						>{/if}</small
 				>
 			</p>
 			<p>
@@ -73,6 +75,8 @@
 {/if}
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
 	p {
 		&:not(:last-of-type) {
 			margin: 0 0 var(--padding-0_25x);
@@ -88,5 +92,15 @@
 
 	.consumption {
 		min-height: calc(48px + var(--padding-2_5x));
+	}
+
+	.warning {
+		color: #f37010;
+	}
+
+	@include media.dark-theme {
+		.warning {
+			color: var(--color-warning);
+		}
 	}
 </style>

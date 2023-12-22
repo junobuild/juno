@@ -66,7 +66,7 @@
 		"upgrade_done": "你的 {0} 已经成功的升级到版本 <strong>{1}</strong>.",
 		"upgrade": "升级",
 		"delete_title": "删除 {0}",
-		"delete_explanation": "删除 {0} 需要一定的 Cycles,但 Internet Computer 并没有设定具体的数量针对这个操作，所以为此操作推荐保留至少一个T的Cycles 在 {1}.",
+		"delete_explanation": "Cycles are necessary to delete the {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 0.5 T Cycles on your {1} for this purpose.",
 		"delete_customization": "你可以根据需要修改这个值. 您当前的 {0} 余额是 {1} T Cycles. 任何剩余的 cycles 会被转移到您的 mission control. ",
 		"cycles_to_retain": "T Cycles 保留 ",
 		"cycles_to_transfer": "{0} T Cycles 会被转移到您的 mission control.",

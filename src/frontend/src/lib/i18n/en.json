@@ -66,7 +66,7 @@
 		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
 		"upgrade": "Upgrade",
 		"delete_title": "Delete {0}",
-		"delete_explanation": "Cycles are necessary to delete the {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 1 T Cycles on your {1} for this purpose.",
+		"delete_explanation": "Cycles are necessary to delete the {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 0.5 T Cycles on your {1} for this purpose.",
 		"delete_customization": "You have the flexibility to modify this value if needed. Your current {0} balance is {1} T Cycles. Any remaining cycles will be transferred to your mission control. ",
 		"cycles_to_retain": "T Cycles to retain",
 		"cycles_to_transfer": "{0} T Cycles will be transferred to your mission control.",

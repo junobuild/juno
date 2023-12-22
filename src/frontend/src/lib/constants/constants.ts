@@ -26,6 +26,8 @@ export const MEMORY_HEAP_WARNING = 900_000_000n; // 900mb
 
 export const ONE_TRILLION = 1_000_000_000_000;
 
+export const DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION = 0.5;
+
 export const PAGINATION = 10n;
 
 export const DEV_FEATURES = import.meta.env.VITE_DEV_FEATURES === 'true';

@@ -14,7 +14,7 @@
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { goto } from '$app/navigation';
 	import type { Principal } from '@dfinity/principal';
-	import { ONE_TRILLION } from '$lib/constants/constants';
+	import {ONE_TRILLION, DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION} from '$lib/constants/constants';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
@@ -30,8 +30,7 @@
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	// 1T cycles per default
-	let tCycles = 1;
+	let tCycles = DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION;
 
 	let cycles: bigint;
 	$: (() => {

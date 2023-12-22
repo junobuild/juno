@@ -124,14 +124,20 @@ export const loadVersion = async ({
 	}
 };
 
-export const loadOrbiterVersion = async ({ orbiter }: { orbiter: Orbiter | null | undefined }) => {
+export const loadOrbiterVersion = async ({
+	orbiter,
+	reload
+}: {
+	orbiter: Orbiter | null | undefined;
+	reload: boolean;
+}) => {
 	if (isNullish(orbiter)) {
 		return;
 	}
 
 	// We load the orbiter version once per session
 	const store = get(versionStore);
-	if (nonNullish(store.orbiter)) {
+	if (nonNullish(store.orbiter) && !reload) {
 		return;
 	}
 

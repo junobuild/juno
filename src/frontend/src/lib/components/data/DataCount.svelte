@@ -21,4 +21,8 @@
 		text-align: right;
 		padding: 0 var(--padding) 0 0;
 	}
+
+	small {
+		font-size: var(--font-size-very-small);
+	}
 </style>

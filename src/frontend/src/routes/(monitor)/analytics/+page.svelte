@@ -60,8 +60,14 @@
 	$: $missionControlStore,
 		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
 
-	$: $orbiterStore, (async () => await loadOrbiterVersion({ orbiter: $orbiterStore }))();
+	$: $orbiterStore,
+		(async () => await loadOrbiterVersion({ orbiter: $orbiterStore, reload: false }))();
 </script>
+
+<svelte:window
+	on:junoReloadVersions={async () =>
+		await loadOrbiterVersion({ orbiter: $orbiterStore, reload: true })}
+/>
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/analytics">

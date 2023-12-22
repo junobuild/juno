@@ -16,8 +16,6 @@
 </script>
 
 {#if nonNullish(redirect_uri) && nonNullish(principal)}
-	<h1>{$i18n.cli.title}</h1>
-
 	{#if $authSignedInStore}
 		<CliAdd {principal} {redirect_uri} />
 	{:else}

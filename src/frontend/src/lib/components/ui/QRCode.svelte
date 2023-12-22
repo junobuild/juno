@@ -6,13 +6,21 @@
 	import { debounce } from '@dfinity/utils';
 	import type { QrCreateClass } from '$lib/types/qr-creator';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { theme } from '$lib/stores/theme.store';
+	import { Theme } from '$lib/types/theme';
 
 	export let ariaLabel: string | undefined = undefined;
 	export let value: string;
 
+	let dark: boolean;
+	$: dark = $theme === Theme.DARK;
+
 	// Valid CSS colors
-	export let fillColor = 'black';
-	export let backgroundColor = 'white';
+	let fillColor: string;
+	$: fillColor = dark ? 'white' : '#242526';
+
+	let backgroundColor: string;
+	$: backgroundColor = dark ? '#242526' : 'white';
 
 	// The edge radius of each module. Must be between 0 and 0.5.
 	export let radius = 0;
@@ -97,7 +105,7 @@
 	};
 
 	let canvas: HTMLCanvasElement | undefined;
-	$: QrCreator, value, canvas, (() => renderCanvas())();
+	$: QrCreator, value, canvas, dark, (() => renderCanvas())();
 
 	let showLogo: boolean;
 	$: showLogo = nonNullish($$slots.logo);

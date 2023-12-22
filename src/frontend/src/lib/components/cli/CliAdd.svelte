@@ -46,6 +46,8 @@
 
 			satellites = sats;
 			orbiters = orbs;
+
+			toggleAll();
 		} catch (err: unknown) {
 			console.error(err);
 		}
@@ -176,12 +178,16 @@
 </script>
 
 <p>
-	{@html i18nFormat($i18n.cli.add, [
+	{@html i18nFormat($i18n.cli.controller, [
 		{
 			placeholder: '{0}',
 			value: principal
 		}
 	])}
+</p>
+
+<p class="add">
+	{$i18n.cli.add}
 </p>
 
 <form on:submit|preventDefault={onSubmit}>
@@ -213,7 +219,7 @@
 		{/each}
 
 		<div class="checkbox all">
-			<input type="checkbox" on:change={toggleAll} />
+			<input type="checkbox" on:change={toggleAll} checked={allSelected} />
 			<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
 		</div>
 	</div>
@@ -231,7 +237,7 @@
 		bind:value={profile}
 	/>
 
-	<button {disabled}>{$i18n.core.submit}</button>
+	<button {disabled}>{$i18n.cli.authorize}</button>
 </form>
 
 <style lang="scss">
@@ -268,7 +274,7 @@
 	}
 
 	.objects {
-		margin: var(--padding-2x) 0;
+		margin: var(--padding) 0 var(--padding-2x);
 		padding: var(--padding);
 	}
 
@@ -276,5 +282,10 @@
 		@include media.min-width(large) {
 			max-width: 50%;
 		}
+	}
+
+	.add {
+		padding: var(--padding-2x) 0 0;
+		margin: 0;
 	}
 </style>

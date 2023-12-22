@@ -251,12 +251,14 @@ interface I18nHosting {
 interface I18nCli {
 	title: string;
 	sign_in: string;
+	controller: string;
 	add: string;
 	select_all: string;
 	unselect_all: string;
 	profile: string;
 	segments: string;
 	profile_placeholder: string;
+	authorize: string;
 }
 
 interface I18nErrors {

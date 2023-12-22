@@ -1,14 +1,12 @@
 <script lang="ts">
 	import type { RulesContext } from '$lib/types/rules.context';
-	import { getContext, setContext } from 'svelte';
+	import { getContext } from 'svelte';
 	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { deleteAssets, listAssets, satelliteVersion } from '$lib/api/satellites.api';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { deleteAssets } from '$lib/api/satellites.api';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import type { PaginationContext } from '$lib/types/pagination.context';
 	import { PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
-	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import type { DataContext } from '$lib/types/data.context';
 	import { DATA_CONTEXT_KEY } from '$lib/types/data.context';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
@@ -16,9 +14,6 @@
 	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
-	import type { ListParams } from '$lib/types/list';
-	import { compare } from 'semver';
-	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { authStore } from '$lib/stores/auth.store';

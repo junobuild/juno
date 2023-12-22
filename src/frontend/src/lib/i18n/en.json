@@ -68,6 +68,7 @@
 		"delete_title": "Delete {0}",
 		"delete_explanation": "Cycles are necessary to delete the {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 0.5 T Cycles on your {1} for this purpose.",
 		"delete_customization": "You have the flexibility to modify this value if needed. Your current {0} balance is {1} T Cycles. Any remaining cycles will be transferred to your mission control. ",
+		"delete_custom_domain": "To delete a satellite, you should first remove its custom domain. This ensures that no leftovers are retained in the boundary nodes configuration, in case you intend to reuse the domain name in the future.",
 		"cycles_to_retain": "T Cycles to retain",
 		"cycles_to_transfer": "{0} T Cycles will be transferred to your mission control.",
 		"delete_info": "Do you want to delete your {0}? This action is irreversible.",

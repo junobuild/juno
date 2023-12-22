@@ -68,6 +68,7 @@
 		"delete_title": "删除 {0}",
 		"delete_explanation": "Cycles are necessary to delete the {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 0.5 T Cycles on your {1} for this purpose.",
 		"delete_customization": "你可以根据需要修改这个值. 您当前的 {0} 余额是 {1} T Cycles. 任何剩余的 cycles 会被转移到您的 mission control. ",
+		"delete_custom_domain": "To delete a satellite, you should first remove its custom domain. This ensures that no leftovers are retained in the boundary nodes configuration, in case you intend to reuse the domain name in the future.",
 		"cycles_to_retain": "T Cycles 保留 ",
 		"cycles_to_transfer": "{0} T Cycles 会被转移到您的 mission control.",
 		"delete_info": "你确定要删除你的 {0}? 这个操作是不可逆的.",

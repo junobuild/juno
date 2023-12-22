@@ -6,6 +6,9 @@ import {
 } from '$lib/api/satellites.api';
 import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
 import { authStore } from '$lib/stores/auth.store';
+import { i18n } from '$lib/stores/i18n.store';
+import { toasts } from '$lib/stores/toasts.store';
+import type { CustomDomains } from '$lib/types/custom-domain';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
@@ -72,11 +75,24 @@ export const listCustomDomains = async ({
 	satelliteId
 }: {
 	satelliteId: Principal;
-}): Promise<[string, CustomDomain][]> => {
-	const identity = get(authStore).identity;
+}): Promise<{ success: boolean; customDomains?: CustomDomains }> => {
+	try {
+		const identity = get(authStore).identity;
 
-	return listCustomDomainsApi({
-		satelliteId,
-		identity
-	});
+		const customDomains = await listCustomDomainsApi({
+			satelliteId,
+			identity
+		});
+
+		return { success: true, customDomains };
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: labels.errors.hosting_loading_errors,
+			detail: err
+		});
+
+		return { success: false };
+	}
 };

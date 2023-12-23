@@ -48,8 +48,6 @@ export interface BufferedArchiveEntry {
 	anchor_number: UserNumber;
 	timestamp: Timestamp;
 }
-export type CaptchaCreateResponse = { ok: Challenge };
-export type CaptchaResult = ChallengeResult;
 export interface Challenge {
 	png_base64: string;
 	challenge_key: ChallengeKey;
@@ -100,7 +98,6 @@ export type FrontendHostname = string;
 export type GetDelegationResponse =
 	| { no_such_delegation: null }
 	| { signed_delegation: SignedDelegation };
-export type GetIdAliasError = { NoSuchCredentials: string } | { AuthenticationFailed: string };
 export interface GetIdAliasRequest {
 	rp_id_alias_jwt: string;
 	issuer: FrontendHostname;
@@ -108,6 +105,10 @@ export interface GetIdAliasRequest {
 	relying_party: FrontendHostname;
 	identity_number: IdentityNumber;
 }
+export type GetIdAliasResponse =
+	| { ok: IdAliasCredentials }
+	| { authentication_failed: string }
+	| { no_such_credentials: string };
 export type HeaderField = [string, string];
 export interface HttpRequest {
 	url: string;
@@ -139,11 +140,6 @@ export interface IdentityInfo {
 export type IdentityInfoResponse = { ok: IdentityInfo };
 export type IdentityMetadataReplaceResponse = { ok: null };
 export type IdentityNumber = bigint;
-export type IdentityRegisterResponse =
-	| { ok: IdentityNumber }
-	| { invalid_metadata: string }
-	| { bad_captcha: null }
-	| { canister_full: null };
 export interface InternetIdentityInit {
 	max_num_latest_delegation_origins: [] | [bigint];
 	assigned_user_number_range: [] | [[bigint, bigint]];
@@ -170,12 +166,12 @@ export type KeyType =
 export type MetadataMap = Array<
 	[string, { map: MetadataMap } | { string: string } | { bytes: Uint8Array | number[] }]
 >;
-export type PrepareIdAliasError = { AuthenticationFailed: string };
 export interface PrepareIdAliasRequest {
 	issuer: FrontendHostname;
 	relying_party: FrontendHostname;
 	identity_number: IdentityNumber;
 }
+export type PrepareIdAliasResponse = { ok: PreparedIdAlias } | { authentication_failed: string };
 export interface PreparedIdAlias {
 	rp_id_alias_jwt: string;
 	issuer_id_alias_jwt: string;
@@ -236,7 +232,6 @@ export interface _SERVICE {
 	add_tentative_device: ActorMethod<[UserNumber, DeviceData], AddTentativeDeviceResponse>;
 	authn_method_add: ActorMethod<[IdentityNumber, AuthnMethodData], [] | [AuthnMethodAddResponse]>;
 	authn_method_remove: ActorMethod<[IdentityNumber, PublicKey], [] | [AuthnMethodRemoveResponse]>;
-	captcha_create: ActorMethod<[], [] | [CaptchaCreateResponse]>;
 	create_challenge: ActorMethod<[], Challenge>;
 	deploy_archive: ActorMethod<[Uint8Array | number[]], DeployArchiveResult>;
 	enter_device_registration_mode: ActorMethod<[UserNumber], Timestamp>;
@@ -248,10 +243,7 @@ export interface _SERVICE {
 		[UserNumber, FrontendHostname, SessionKey, Timestamp],
 		GetDelegationResponse
 	>;
-	get_id_alias: ActorMethod<
-		[GetIdAliasRequest],
-		{ Ok: IdAliasCredentials } | { Err: GetIdAliasError }
-	>;
+	get_id_alias: ActorMethod<[GetIdAliasRequest], [] | [GetIdAliasResponse]>;
 	get_principal: ActorMethod<[UserNumber, FrontendHostname], Principal>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_update: ActorMethod<[HttpRequest], HttpResponse>;
@@ -260,20 +252,13 @@ export interface _SERVICE {
 		[IdentityNumber, MetadataMap],
 		[] | [IdentityMetadataReplaceResponse]
 	>;
-	identity_register: ActorMethod<
-		[AuthnMethodData, CaptchaResult, [] | [Principal]],
-		[] | [IdentityRegisterResponse]
-	>;
 	init_salt: ActorMethod<[], undefined>;
 	lookup: ActorMethod<[UserNumber], Array<DeviceData>>;
 	prepare_delegation: ActorMethod<
 		[UserNumber, FrontendHostname, SessionKey, [] | [bigint]],
 		[UserKey, Timestamp]
 	>;
-	prepare_id_alias: ActorMethod<
-		[PrepareIdAliasRequest],
-		{ Ok: PreparedIdAlias } | { Err: PrepareIdAliasError }
-	>;
+	prepare_id_alias: ActorMethod<[PrepareIdAliasRequest], [] | [PrepareIdAliasResponse]>;
 	register: ActorMethod<[DeviceData, ChallengeResult, [] | [Principal]], RegisterResponse>;
 	remove: ActorMethod<[UserNumber, DeviceKey], undefined>;
 	replace: ActorMethod<[UserNumber, DeviceKey, DeviceData], undefined>;

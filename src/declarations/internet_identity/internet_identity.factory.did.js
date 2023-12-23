@@ -100,7 +100,6 @@ export const idlFactory = ({ IDL }) => {
 		png_base64: IDL.Text,
 		challenge_key: ChallengeKey
 	});
-	const CaptchaCreateResponse = IDL.Variant({ ok: Challenge });
 	const DeployArchiveResult = IDL.Variant({
 		creation_in_progress: IDL.Null,
 		success: IDL.Principal,
@@ -171,9 +170,10 @@ export const idlFactory = ({ IDL }) => {
 		rp_id_alias_credential: SignedIdAlias,
 		issuer_id_alias_credential: SignedIdAlias
 	});
-	const GetIdAliasError = IDL.Variant({
-		NoSuchCredentials: IDL.Text,
-		AuthenticationFailed: IDL.Text
+	const GetIdAliasResponse = IDL.Variant({
+		ok: IdAliasCredentials,
+		authentication_failed: IDL.Text,
+		no_such_credentials: IDL.Text
 	});
 	const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
 	const HttpRequest = IDL.Record({
@@ -212,17 +212,6 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const IdentityInfoResponse = IDL.Variant({ ok: IdentityInfo });
 	const IdentityMetadataReplaceResponse = IDL.Variant({ ok: IDL.Null });
-	const ChallengeResult = IDL.Record({
-		key: ChallengeKey,
-		chars: IDL.Text
-	});
-	const CaptchaResult = ChallengeResult;
-	const IdentityRegisterResponse = IDL.Variant({
-		ok: IdentityNumber,
-		invalid_metadata: IDL.Text,
-		bad_captcha: IDL.Null,
-		canister_full: IDL.Null
-	});
 	const UserKey = PublicKey;
 	const PrepareIdAliasRequest = IDL.Record({
 		issuer: FrontendHostname,
@@ -234,8 +223,13 @@ export const idlFactory = ({ IDL }) => {
 		issuer_id_alias_jwt: IDL.Text,
 		canister_sig_pk_der: PublicKey
 	});
-	const PrepareIdAliasError = IDL.Variant({
-		AuthenticationFailed: IDL.Text
+	const PrepareIdAliasResponse = IDL.Variant({
+		ok: PreparedIdAlias,
+		authentication_failed: IDL.Text
+	});
+	const ChallengeResult = IDL.Record({
+		key: ChallengeKey,
+		chars: IDL.Text
 	});
 	const RegisterResponse = IDL.Variant({
 		bad_challenge: IDL.Null,
@@ -275,7 +269,6 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Opt(AuthnMethodRemoveResponse)],
 			[]
 		),
-		captcha_create: IDL.Func([], [IDL.Opt(CaptchaCreateResponse)], []),
 		create_challenge: IDL.Func([], [Challenge], []),
 		deploy_archive: IDL.Func([IDL.Vec(IDL.Nat8)], [DeployArchiveResult], []),
 		enter_device_registration_mode: IDL.Func([UserNumber], [Timestamp], []),
@@ -288,11 +281,7 @@ export const idlFactory = ({ IDL }) => {
 			[GetDelegationResponse],
 			['query']
 		),
-		get_id_alias: IDL.Func(
-			[GetIdAliasRequest],
-			[IDL.Variant({ Ok: IdAliasCredentials, Err: GetIdAliasError })],
-			['query']
-		),
+		get_id_alias: IDL.Func([GetIdAliasRequest], [IDL.Opt(GetIdAliasResponse)], ['query']),
 		get_principal: IDL.Func([UserNumber, FrontendHostname], [IDL.Principal], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_update: IDL.Func([HttpRequest], [HttpResponse], []),
@@ -302,11 +291,6 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Opt(IdentityMetadataReplaceResponse)],
 			[]
 		),
-		identity_register: IDL.Func(
-			[AuthnMethodData, CaptchaResult, IDL.Opt(IDL.Principal)],
-			[IDL.Opt(IdentityRegisterResponse)],
-			[]
-		),
 		init_salt: IDL.Func([], [], []),
 		lookup: IDL.Func([UserNumber], [IDL.Vec(DeviceData)], ['query']),
 		prepare_delegation: IDL.Func(
@@ -314,11 +298,7 @@ export const idlFactory = ({ IDL }) => {
 			[UserKey, Timestamp],
 			[]
 		),
-		prepare_id_alias: IDL.Func(
-			[PrepareIdAliasRequest],
-			[IDL.Variant({ Ok: PreparedIdAlias, Err: PrepareIdAliasError })],
-			[]
-		),
+		prepare_id_alias: IDL.Func([PrepareIdAliasRequest], [IDL.Opt(PrepareIdAliasResponse)], []),
 		register: IDL.Func(
 			[DeviceData, ChallengeResult, IDL.Opt(IDL.Principal)],
 			[RegisterResponse],

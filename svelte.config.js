@@ -31,6 +31,9 @@ const config = {
 			routes: filesPath('src/routes'),
 			appTemplate: filesPath('src/app.html'),
 			errorTemplate: filesPath('src/error.html')
+		},
+		alias: {
+			"$declarations": "./src/declarations",
 		}
 	},
 	serviceWorker: {

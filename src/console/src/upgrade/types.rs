@@ -1,5 +1,5 @@
 pub mod upgrade {
-    use crate::types::state::{InvitationCodes, MissionControls, Payments, Rates, Releases};
+    use crate::types::state::{Fees, InvitationCodes, MissionControls, Payments, Rates, Releases};
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::Controllers;
@@ -12,5 +12,6 @@ pub mod upgrade {
         pub invitation_codes: InvitationCodes,
         pub controllers: Controllers,
         pub rates: Rates,
+        pub fees: Fees,
     }
 }

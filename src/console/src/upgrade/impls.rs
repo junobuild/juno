@@ -10,7 +10,7 @@ impl From<&UpgradeStableState> for StableState {
             invitation_codes: state.invitation_codes.clone(),
             controllers: state.controllers.clone(),
             rates: state.rates.clone(),
-            fees: Fees::default(),
+            fees: state.fees.clone(),
         }
     }
 }

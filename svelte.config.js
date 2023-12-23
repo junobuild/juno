@@ -33,7 +33,7 @@ const config = {
 			errorTemplate: filesPath('src/error.html')
 		},
 		alias: {
-			"$declarations": "./src/declarations",
+			$declarations: './src/declarations'
 		}
 	},
 	serviceWorker: {

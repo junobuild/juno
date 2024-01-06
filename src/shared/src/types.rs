@@ -228,7 +228,7 @@ pub mod cronjob {
 }
 
 pub mod utils {
-    use candid::{CandidType};
+    use candid::CandidType;
     use serde::Deserialize;
 
     #[derive(Default, CandidType, Deserialize, Clone, PartialEq, Eq, Hash)]

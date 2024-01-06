@@ -776,6 +776,7 @@ dependencies = [
  "lazy_static",
  "serde",
  "shared",
+ "url",
 ]
 
 [[package]]

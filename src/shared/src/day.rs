@@ -1,12 +1,13 @@
-use time::{Duration, format_description, OffsetDateTime};
 use crate::types::utils::CalendarDate;
+use time::{format_description, Duration, OffsetDateTime};
 
 fn to_date(timestamp: &u64) -> OffsetDateTime {
     let nanoseconds = *timestamp as i64;
     let seconds = nanoseconds / 1_000_000_000;
     let nanos_remainder = nanoseconds % 1_000_000_000;
 
-    OffsetDateTime::from_unix_timestamp(seconds).unwrap() + Duration::nanoseconds(nanos_remainder as i64)
+    OffsetDateTime::from_unix_timestamp(seconds).unwrap()
+        + Duration::nanoseconds(nanos_remainder as i64)
 }
 
 pub fn day_of_the_year(timestamp: &u64) -> usize {

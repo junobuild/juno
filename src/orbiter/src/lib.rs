@@ -1,3 +1,4 @@
+mod analytics;
 mod assert;
 mod config;
 mod constants;
@@ -10,8 +11,8 @@ mod msg;
 mod serializers;
 mod store;
 mod types;
-mod analytics;
 
+use crate::analytics::page_views_analytics;
 use crate::assert::assert_enabled;
 use crate::config::store::{
     del_satellite_config as del_satellite_config_store, get_satellite_configs,
@@ -27,7 +28,10 @@ use crate::store::{
     get_page_views as get_page_views_store, get_track_events as get_track_events_store,
     insert_page_view, insert_track_event,
 };
-use crate::types::interface::{AnalyticsPageViews, DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig, SetTrackEvent};
+use crate::types::interface::{
+    AnalyticsPageViews, DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig,
+    SetTrackEvent,
+};
 use crate::types::memory::Memory;
 use crate::types::state::{AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent};
 use ciborium::{from_reader, into_writer};
@@ -48,7 +52,6 @@ use shared::types::interface::{
 };
 use shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use std::mem;
-use crate::analytics::page_views_analytics;
 
 #[init]
 fn init() {

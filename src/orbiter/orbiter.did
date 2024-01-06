@@ -1,4 +1,13 @@
 type AnalyticKey = record { key : text; collected_at : nat64 };
+type AnalyticsPageViews = record {
+  bounce_rate : float64;
+  average_page_views_per_session : float64;
+  daily_total_page_views : vec record { CalendarDate; nat32 };
+  total_page_views : nat32;
+  unique_page_views : nat64;
+  unique_sessions : nat64;
+};
+type CalendarDate = record { day : nat8; month : nat8; year : int32 };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -80,6 +89,7 @@ service : () -> {
     );
   del_satellite_config : (principal, DelSatelliteConfig) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
+  get_analytics_page_views : (GetAnalytics) -> (AnalyticsPageViews) query;
   get_page_views : (GetAnalytics) -> (
       vec record { AnalyticKey; PageView },
     ) query;

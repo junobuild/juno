@@ -1,5 +1,6 @@
 import type {
 	AnalyticKey,
+	AnalyticsPageViews,
 	Controller,
 	PageView,
 	OrbiterSatelliteConfig as SatelliteConfig,
@@ -26,6 +27,25 @@ export const getPageViews = async ({
 } & PageViewsPeriod): Promise<[AnalyticKey, PageView][]> => {
 	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.get_page_views({
+		satellite_id: toNullable(satelliteId),
+		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
+		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
+	});
+};
+
+export const getAnalyticsPageViews = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: {
+	satelliteId?: Principal;
+	orbiterId: Principal;
+	identity: OptionIdentity;
+} & PageViewsPeriod): Promise<AnalyticsPageViews> => {
+	const { get_analytics_page_views } = await getOrbiterActor({ orbiterId, identity });
+	return get_analytics_page_views({
 		satellite_id: toNullable(satelliteId),
 		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
 		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []

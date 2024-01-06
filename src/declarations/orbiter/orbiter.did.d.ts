@@ -5,6 +5,19 @@ export interface AnalyticKey {
 	key: string;
 	collected_at: bigint;
 }
+export interface AnalyticsPageViews {
+	bounce_rate: number;
+	average_page_views_per_session: number;
+	daily_total_page_views: Array<[CalendarDate, number]>;
+	total_page_views: number;
+	unique_page_views: bigint;
+	unique_sessions: bigint;
+}
+export interface CalendarDate {
+	day: number;
+	month: number;
+	year: number;
+}
 export interface Controller {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
@@ -100,6 +113,7 @@ export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
+	get_analytics_page_views: ActorMethod<[GetAnalytics], AnalyticsPageViews>;
 	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;

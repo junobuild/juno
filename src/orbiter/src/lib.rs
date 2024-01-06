@@ -10,6 +10,7 @@ mod msg;
 mod serializers;
 mod store;
 mod types;
+mod analytics;
 
 use crate::assert::assert_enabled;
 use crate::config::store::{
@@ -26,9 +27,7 @@ use crate::store::{
     get_page_views as get_page_views_store, get_track_events as get_track_events_store,
     insert_page_view, insert_track_event,
 };
-use crate::types::interface::{
-    DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig, SetTrackEvent,
-};
+use crate::types::interface::{AnalyticsPageViews, DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig, SetTrackEvent};
 use crate::types::memory::Memory;
 use crate::types::state::{AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent};
 use ciborium::{from_reader, into_writer};
@@ -49,6 +48,7 @@ use shared::types::interface::{
 };
 use shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use std::mem;
+use crate::analytics::page_views_analytics;
 
 #[init]
 fn init() {
@@ -149,6 +149,12 @@ fn set_page_views(
 #[query(guard = "caller_is_admin_controller")]
 fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
     get_page_views_store(&filter)
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn get_analytics_page_views(filter: GetAnalytics) -> AnalyticsPageViews {
+    let page_views = get_page_views_store(&filter);
+    page_views_analytics(&page_views)
 }
 
 #[update]

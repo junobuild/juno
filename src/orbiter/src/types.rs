@@ -95,10 +95,12 @@ pub mod memory {
 }
 
 pub mod interface {
+    use std::collections::HashMap;
     use crate::types::state::{PageViewDevice, SessionId};
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::{Metadata, SatelliteId};
+    use shared::types::utils::CalendarDate;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {
@@ -139,5 +141,15 @@ pub mod interface {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct DelSatelliteConfig {
         pub updated_at: Option<u64>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsPageViews {
+        pub daily_total_page_views: HashMap<CalendarDate, u32>,
+        pub unique_sessions: usize,
+        pub unique_page_views: usize,
+        pub total_page_views: u32,
+        pub average_page_views_per_session: f64,
+        pub bounce_rate: f64,
     }
 }

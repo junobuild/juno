@@ -2,15 +2,19 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
-	import type { AnalyticKey, PageView, TrackEvent } from '$declarations/orbiter/orbiter.did';
+	import { getTrackEvents } from '$lib/api/orbiter.api';
+	import type { AnalyticKey, TrackEvent } from '$declarations/orbiter/orbiter.did';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
 	import { isNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
 	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
-	import type { PageViewsPeriod } from '$lib/types/ortbiter';
+	import type {
+		AnalyticsPageViews as AnalyticsPageViewsType,
+		PageViewsParams,
+		PageViewsPeriod
+	} from '$lib/types/ortbiter';
 	import { debounce } from '@dfinity/utils';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
 	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
@@ -18,10 +22,12 @@
 	import AnalyticsMetrics from '$lib/components/analytics/AnalyticsMetrics.svelte';
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import { authStore } from '$lib/stores/auth.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
 
 	let loading = true;
 
-	let pageViews: [AnalyticKey, PageView][] = [];
+	let pageViews: AnalyticsPageViewsType | undefined = undefined;
 	let trackEvents: [AnalyticKey, TrackEvent][] = [];
 
 	let period: PageViewsPeriod = {};
@@ -32,19 +38,24 @@
 			return;
 		}
 
+		if (isNullish($versionStore.orbiter) || isNullish($versionStore.orbiter?.current)) {
+			return;
+		}
+
 		try {
-			const params = {
+			const params: PageViewsParams = {
 				satelliteId: $satelliteStore?.satellite_id,
 				orbiterId: $orbiterStore.orbiter_id,
+				identity: $authStore.identity,
 				...period
 			};
 
 			const [views, events] = await Promise.all([
-				getPageViews({ ...params, identity: $authStore.identity }),
-				getTrackEvents({ ...params, identity: $authStore.identity })
+				getAnalyticsPageViews({ params, orbiterVersion: $versionStore.orbiter.current }),
+				getTrackEvents(params)
 			]);
 
-			pageViews = views as [AnalyticKey, PageView][];
+			pageViews = views;
 			trackEvents = events as [AnalyticKey, TrackEvent][];
 
 			loading = false;
@@ -58,7 +69,7 @@
 
 	const debouncePageViews = debounce(loadAnalytics);
 
-	$: $orbiterStore, $satelliteStore, period, debouncePageViews();
+	$: $orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
 
 	const selectPeriod = ({ detail }: CustomEvent<PageViewsPeriod>) => (period = detail);
 </script>
@@ -66,12 +77,12 @@
 {#if loading}
 	<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
 {:else}
-	{#if isNullish($orbiterStore)}
+	{#if isNullish($orbiterStore) || isNullish(pageViews)}
 		<NoAnalytics />
 	{:else}
 		<AnalyticsFilter on:junoPeriod={selectPeriod} />
 
-		{#if pageViews.length > 0}
+		{#if pageViews.metrics.daily_total_page_views.length > 0}
 			<AnalyticsChart data={pageViews} />
 		{/if}
 

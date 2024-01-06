@@ -1,11 +1,19 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+import {
+	getAnalyticsDevicesPageViews,
+	getAnalyticsMetricsPageViews,
+	getAnalyticsTop10PageViews
+} from '$lib/api/orbiter.api';
+import { getDeprecatedAnalyticsPageViews } from '$lib/services/orbiters.deprecated.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/ortbiter';
 import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { compare } from 'semver';
 import { get } from 'svelte/store';
 
 export const createOrbiter = async ({
@@ -56,4 +64,45 @@ export const loadOrbiters = async ({
 			detail: err
 		});
 	}
+};
+
+export const getAnalyticsPageViews = async ({
+	orbiterVersion,
+	params
+}: {
+	params: PageViewsParams;
+	orbiterVersion: string;
+}): Promise<AnalyticsPageViews> => {
+	if (compare(orbiterVersion, '0.0.5') >= 0) {
+		const [metrics, top10, devices] = await Promise.all([
+			getAnalyticsMetricsPageViews(params),
+			getAnalyticsTop10PageViews(params),
+			getAnalyticsDevicesPageViews(params)
+		]);
+
+		const { daily_total_page_views, ...rest } = metrics;
+
+		return {
+			metrics: {
+				...rest,
+				daily_total_page_views: daily_total_page_views.reduce(
+					(acc, [{ day, year, month }, value]) => {
+						const date = new Date(year, month - 1, day);
+						const key = date.getTime();
+
+						return {
+							...acc,
+							[key]: value
+						};
+					},
+					{}
+				)
+			},
+			top10,
+			devices
+		};
+	}
+
+	// TODO: support for deprecated version of the Orbiter where the analytics are calculated in the frontend. To be removed.
+	return getDeprecatedAnalyticsPageViews(params);
 };

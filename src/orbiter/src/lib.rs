@@ -1,3 +1,4 @@
+mod analytics;
 mod assert;
 mod config;
 mod constants;
@@ -11,6 +12,11 @@ mod serializers;
 mod store;
 mod types;
 
+use crate::analytics::{
+    analytics_page_views_devices,
+    analytics_page_views_metrics,
+    analytics_page_views_top_10,
+};
 use crate::assert::assert_enabled;
 use crate::config::store::{
     del_satellite_config as del_satellite_config_store, get_satellite_configs,
@@ -27,6 +33,7 @@ use crate::store::{
     insert_page_view, insert_track_event,
 };
 use crate::types::interface::{
+    AnalyticsDevicesPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
     DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig, SetTrackEvent,
 };
 use crate::types::memory::Memory;
@@ -149,6 +156,24 @@ fn set_page_views(
 #[query(guard = "caller_is_controller")]
 fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
     get_page_views_store(&filter)
+}
+
+#[query(guard = "caller_is_controller")]
+fn get_page_views_metrics(filter: GetAnalytics) -> AnalyticsMetricsPageViews {
+    let page_views = get_page_views_store(&filter);
+    analytics_page_views_metrics(&page_views)
+}
+
+#[query(guard = "caller_is_controller")]
+fn get_page_views_top_10(filter: GetAnalytics) -> AnalyticsTop10PageViews {
+    let page_views = get_page_views_store(&filter);
+    analytics_page_views_top_10(&page_views)
+}
+
+#[query(guard = "caller_is_controller")]
+fn get_page_views_devices(filter: GetAnalytics) -> AnalyticsDevicesPageViews {
+    let page_views = get_page_views_store(&filter);
+    analytics_page_views_devices(&page_views)
 }
 
 #[update]

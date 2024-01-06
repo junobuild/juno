@@ -4,28 +4,23 @@
 	import AxisY from '$lib/components/charts/AxisY.svelte';
 	import Line from '$lib/components/charts/Line.svelte';
 	import Area from '$lib/components/charts/Area.svelte';
-	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
-	import { formatToDay, fromBigIntNanoSeconds } from '$lib/utils/date.utils';
+	import { formatToDay } from '$lib/utils/date.utils';
 	import { last } from '$lib/utils/utils';
 	import { isNullish } from '@dfinity/utils';
 	import { eachDayOfInterval, startOfDay } from 'date-fns';
+	import type {
+		AnalyticsMetrics,
+		AnalyticsPageViews,
+		DateStartOfTheDay
+	} from '$lib/types/ortbiter';
 
-	export let data: [AnalyticKey, PageView][];
+	export let data: AnalyticsPageViews;
 
-	let totalPageViews: Record<string, number>;
-	$: totalPageViews = data.reduce(
-		(acc, [{ collected_at }, _]) => {
-			const date = fromBigIntNanoSeconds(collected_at);
+	let metrics: AnalyticsMetrics;
+	$: ({ metrics } = data);
 
-			const key = startOfDay(date).getTime();
-
-			return {
-				...acc,
-				[key]: (acc[key] ?? 0) + 1
-			};
-		},
-		{} as Record<string, number>
-	);
+	let daily_total_page_views: Record<DateStartOfTheDay, number>;
+	$: ({ daily_total_page_views } = metrics);
 
 	const xKey = 'myX';
 	const yKey = 'myY';
@@ -36,7 +31,7 @@
 	};
 
 	let chartsPageViews: ChartsData[];
-	$: chartsPageViews = Object.entries(totalPageViews)
+	$: chartsPageViews = Object.entries(daily_total_page_views)
 		.map(([key, value]) => ({
 			[xKey]: key,
 			[yKey]: value
@@ -83,7 +78,7 @@
 
 		return allDates.map((date) => ({
 			[xKey]: `${startOfDay(date).getTime()}`,
-			[yKey]: totalPageViews[date.getTime()] ?? 0
+			[yKey]: daily_total_page_views[date.getTime()] ?? 0
 		}));
 	};
 

@@ -226,3 +226,15 @@ pub mod cronjob {
         pub cycles_threshold: Option<u64>,
     }
 }
+
+pub mod utils {
+    use candid::CandidType;
+    use serde::Deserialize;
+
+    #[derive(Default, CandidType, Deserialize, Clone, PartialEq, Eq, Hash)]
+    pub struct CalendarDate {
+        pub year: i32,
+        pub month: u8,
+        pub day: u8,
+    }
+}

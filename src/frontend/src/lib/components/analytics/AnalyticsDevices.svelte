@@ -1,52 +1,17 @@
 <script lang="ts">
-	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
-	import { fromNullable, isNullish } from '@dfinity/utils';
-	import { isAndroid, isAndroidTablet, isIPhone } from '$lib/utils/device.utils';
+	import type { AnalyticsDevicesPageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
 
-	export let pageViews: [AnalyticKey, PageView][] = [];
+	export let pageViews: AnalyticsPageViews;
 
-	let total: number;
-	$: total = pageViews.length;
+	let devices: AnalyticsDevicesPageViews;
+	$: ({ devices } = pageViews);
 
-	type Devices = {
-		mobile: number;
-		desktop: number;
-		others: number;
-	};
-
-	let devices: Devices;
-	$: devices = pageViews.reduce(
-		(acc, [_, { user_agent }]) => {
-			const userAgent = fromNullable(user_agent);
-
-			if (isNullish(userAgent)) {
-				return {
-					...acc,
-					other: acc.others + 1
-				};
-			}
-
-			const mobile = isIPhone(userAgent) || (isAndroid(userAgent) && !isAndroidTablet(userAgent));
-
-			if (mobile) {
-				return {
-					...acc,
-					mobile: acc.mobile + 1
-				};
-			}
-
-			return {
-				...acc,
-				desktop: acc.desktop + 1
-			};
-		},
-		{
-			mobile: 0,
-			desktop: 0,
-			others: 0
-		}
-	);
+	let desktop: number;
+	let others: number;
+	let mobile: number;
+	$: ({ desktop, mobile, others } = devices);
 </script>
 
 <div class="table-container">
@@ -61,15 +26,15 @@
 		<tbody>
 			<tr>
 				<td>{$i18n.analytics.mobile}</td>
-				<td>{total > 0 ? ((devices.mobile * 100) / total).toFixed(2) : 0}<small>%</small></td>
+				<td>{mobile > 0 ? (mobile * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 			<tr>
 				<td>{$i18n.analytics.desktop}</td>
-				<td>{total > 0 ? ((devices.desktop * 100) / total).toFixed(2) : 0}<small>%</small></td>
+				<td>{desktop > 0 ? (desktop * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 			<tr>
 				<td>{$i18n.analytics.others}</td>
-				<td>{total > 0 ? ((devices.others * 100) / total).toFixed(2) : 0}<small>%</small></td>
+				<td>{others > 0 ? (others * 100).toFixed(2) : 0}<small>%</small></td>
 			</tr>
 		</tbody>
 	</table>

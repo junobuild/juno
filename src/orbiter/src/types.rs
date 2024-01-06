@@ -99,6 +99,8 @@ pub mod interface {
     use candid::CandidType;
     use serde::Deserialize;
     use shared::types::state::{Metadata, SatelliteId};
+    use shared::types::utils::CalendarDate;
+    use std::collections::HashMap;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {
@@ -139,5 +141,28 @@ pub mod interface {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct DelSatelliteConfig {
         pub updated_at: Option<u64>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsMetricsPageViews {
+        pub daily_total_page_views: HashMap<CalendarDate, u32>,
+        pub unique_sessions: usize,
+        pub unique_page_views: usize,
+        pub total_page_views: u32,
+        pub average_page_views_per_session: f64,
+        pub bounce_rate: f64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsTop10PageViews {
+        pub referrers: Vec<(String, u32)>,
+        pub pages: Vec<(String, u32)>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsDevicesPageViews {
+        pub mobile: f64,
+        pub desktop: f64,
+        pub others: f64,
     }
 }

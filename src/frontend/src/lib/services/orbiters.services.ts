@@ -1,10 +1,15 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
 import {
 	getAnalyticsDevicesPageViews,
 	getAnalyticsMetricsPageViews,
-	getAnalyticsTop10PageViews
+	getAnalyticsTop10PageViews,
+	getTrackEventsAnalytics
 } from '$lib/api/orbiter.api';
-import { getDeprecatedAnalyticsPageViews } from '$lib/services/orbiters.deprecated.services';
+import {
+	getDeprecatedAnalyticsPageViews,
+	getDeprecatedAnalyticsTrackEvents
+} from '$lib/services/orbiters.deprecated.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
@@ -105,4 +110,19 @@ export const getAnalyticsPageViews = async ({
 
 	// TODO: support for deprecated version of the Orbiter where the analytics are calculated in the frontend. To be removed.
 	return getDeprecatedAnalyticsPageViews(params);
+};
+
+export const getAnalyticsTrackEvents = async ({
+	orbiterVersion,
+	params
+}: {
+	params: PageViewsParams;
+	orbiterVersion: string;
+}): Promise<AnalyticsTrackEvents> => {
+	if (compare(orbiterVersion, '0.0.5') >= 0) {
+		return getTrackEventsAnalytics(params);
+	}
+
+	// TODO: support for deprecated version of the Orbiter where the analytics are calculated in the frontend. To be removed.
+	return getDeprecatedAnalyticsTrackEvents(params);
 };

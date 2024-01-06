@@ -3,6 +3,7 @@ import type {
 	AnalyticsDevicesPageViews,
 	AnalyticsMetricsPageViews,
 	AnalyticsTop10PageViews,
+	AnalyticsTrackEvents,
 	Controller,
 	GetAnalytics,
 	PageView,
@@ -25,7 +26,7 @@ export const getPageViews = async ({
 	identity
 }: PageViewsParams): Promise<[AnalyticKey, PageView][]> => {
 	const { get_page_views } = await getOrbiterActor({ orbiterId, identity });
-	return getAnalyticsPageViews({
+	return getAnalytics({
 		satelliteId,
 		from,
 		to,
@@ -40,12 +41,12 @@ export const getAnalyticsMetricsPageViews = async ({
 	to,
 	identity
 }: PageViewsParams): Promise<AnalyticsMetricsPageViews> => {
-	const { get_page_views_metrics } = await getOrbiterActor({ orbiterId, identity });
-	return getAnalyticsPageViews({
+	const { get_page_views_analytics_metrics } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
 		satelliteId,
 		from,
 		to,
-		fn: get_page_views_metrics
+		fn: get_page_views_analytics_metrics
 	});
 };
 
@@ -56,12 +57,12 @@ export const getAnalyticsTop10PageViews = async ({
 	to,
 	identity
 }: PageViewsParams): Promise<AnalyticsTop10PageViews> => {
-	const { get_page_views_top_10 } = await getOrbiterActor({ orbiterId, identity });
-	return getAnalyticsPageViews({
+	const { get_page_views_analytics_top_10 } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
 		satelliteId,
 		from,
 		to,
-		fn: get_page_views_top_10
+		fn: get_page_views_analytics_top_10
 	});
 };
 
@@ -72,16 +73,16 @@ export const getAnalyticsDevicesPageViews = async ({
 	to,
 	identity
 }: PageViewsParams): Promise<AnalyticsDevicesPageViews> => {
-	const { get_page_views_devices } = await getOrbiterActor({ orbiterId, identity });
-	return getAnalyticsPageViews({
+	const { get_page_views_analytics_devices } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
 		satelliteId,
 		from,
 		to,
-		fn: get_page_views_devices
+		fn: get_page_views_analytics_devices
 	});
 };
 
-const getAnalyticsPageViews = async <T>({
+const getAnalytics = async <T>({
 	satelliteId,
 	from,
 	to,
@@ -103,11 +104,28 @@ export const getTrackEvents = async ({
 	to,
 	identity
 }: PageViewsParams): Promise<[AnalyticKey, TrackEvent][]> => {
-	const actor = await getOrbiterActor({ orbiterId, identity });
-	return actor.get_track_events({
-		satellite_id: toNullable(satelliteId),
-		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
-		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
+	const { get_track_events } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_track_events
+	});
+};
+
+export const getTrackEventsAnalytics = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: PageViewsParams): Promise<AnalyticsTrackEvents> => {
+	const { get_track_events_analytics } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_track_events_analytics
 	});
 };
 

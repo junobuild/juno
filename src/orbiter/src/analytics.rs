@@ -1,7 +1,5 @@
-use crate::types::interface::{
-    AnalyticsDevicesPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
-};
-use crate::types::state::{AnalyticKey, PageView};
+use crate::types::interface::{AnalyticsDevicesPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents};
+use crate::types::state::{AnalyticKey, PageView, TrackEvent};
 use regex::Regex;
 use shared::day::calendar_date;
 use shared::types::utils::CalendarDate;
@@ -138,6 +136,21 @@ pub fn analytics_page_views_devices(
         } else {
             0.0
         },
+    }
+}
+
+pub fn analytics_track_events(
+    track_events: &Vec<(AnalyticKey, TrackEvent)>,
+) -> AnalyticsTrackEvents {
+    let mut total_track_events: HashMap<String, u32> = HashMap::new();
+
+    for (_, TrackEvent{ name, ..}) in track_events {
+        let count = total_track_events.entry(name.clone()).or_insert(0);
+        *count += 1;
+    }
+
+    AnalyticsTrackEvents {
+        total: total_track_events
     }
 }
 

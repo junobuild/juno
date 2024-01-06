@@ -27,7 +27,7 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
     ) in page_views
     {
         analytics_metrics(
-            &collected_at,
+            collected_at,
             session_id,
             href,
             &mut daily_total_page_views,
@@ -80,8 +80,8 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
 
 fn analytics_metrics(
     collected_at: &u64,
-    session_id: &String,
-    href: &String,
+    session_id: &str,
+    href: &str,
     daily_total_page_views: &mut HashMap<CalendarDate, u32>,
     unique_sessions: &mut HashSet<String>,
     sessions_views: &mut HashMap<String, u32>,
@@ -92,12 +92,12 @@ fn analytics_metrics(
     let count = daily_total_page_views.entry(key).or_insert(0);
     *count += 1;
 
-    unique_sessions.insert(session_id.clone());
-    *sessions_views.entry(session_id.clone()).or_insert(0) += 1;
+    unique_sessions.insert(session_id.to_owned());
+    *sessions_views.entry(session_id.to_owned()).or_insert(0) += 1;
     sessions_unique_views
-        .entry(session_id.clone())
+        .entry(session_id.to_owned())
         .or_default()
-        .insert(href.clone());
+        .insert(href.to_owned());
 }
 
 fn analytics_referrers(referrer: &Option<String>, referrers: &mut HashMap<String, u32>) {

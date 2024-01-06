@@ -74,6 +74,9 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal
 	});
+	const AnalyticsTrackEvents = IDL.Record({
+		total: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
+	});
 	const OrbiterSatelliteConfig = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
@@ -131,14 +134,23 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],
 			['query']
 		),
-		get_page_views_devices: IDL.Func([GetAnalytics], [AnalyticsDevicesPageViews], ['query']),
-		get_page_views_metrics: IDL.Func([GetAnalytics], [AnalyticsMetricsPageViews], ['query']),
-		get_page_views_top_10: IDL.Func([GetAnalytics], [AnalyticsTop10PageViews], ['query']),
+		get_page_views_analytics_devices: IDL.Func(
+			[GetAnalytics],
+			[AnalyticsDevicesPageViews],
+			['query']
+		),
+		get_page_views_analytics_metrics: IDL.Func(
+			[GetAnalytics],
+			[AnalyticsMetricsPageViews],
+			['query']
+		),
+		get_page_views_analytics_top_10: IDL.Func([GetAnalytics], [AnalyticsTop10PageViews], ['query']),
 		get_track_events: IDL.Func(
 			[GetAnalytics],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, TrackEvent))],
 			['query']
 		),
+		get_track_events_analytics: IDL.Func([GetAnalytics], [AnalyticsTrackEvents], ['query']),
 		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		list_satellite_configs: IDL.Func(
 			[],

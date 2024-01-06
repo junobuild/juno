@@ -22,6 +22,9 @@ export interface AnalyticsTop10PageViews {
 	referrers: Array<[string, number]>;
 	pages: Array<[string, number]>;
 }
+export interface AnalyticsTrackEvents {
+	total: Array<[string, number]>;
+}
 export interface CalendarDate {
 	day: number;
 	month: number;
@@ -123,10 +126,11 @@ export interface _SERVICE {
 	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
-	get_page_views_devices: ActorMethod<[GetAnalytics], AnalyticsDevicesPageViews>;
-	get_page_views_metrics: ActorMethod<[GetAnalytics], AnalyticsMetricsPageViews>;
-	get_page_views_top_10: ActorMethod<[GetAnalytics], AnalyticsTop10PageViews>;
+	get_page_views_analytics_devices: ActorMethod<[GetAnalytics], AnalyticsDevicesPageViews>;
+	get_page_views_analytics_metrics: ActorMethod<[GetAnalytics], AnalyticsMetricsPageViews>;
+	get_page_views_analytics_top_10: ActorMethod<[GetAnalytics], AnalyticsTop10PageViews>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
+	get_track_events_analytics: ActorMethod<[GetAnalytics], AnalyticsTrackEvents>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_satellite_configs: ActorMethod<[], Array<[Principal, OrbiterSatelliteConfig]>>;
 	memory_size: ActorMethod<[], MemorySize>;

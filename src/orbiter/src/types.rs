@@ -165,4 +165,9 @@ pub mod interface {
         pub desktop: f64,
         pub others: f64,
     }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsTrackEvents {
+        pub total: HashMap<String, u32>,
+    }
 }

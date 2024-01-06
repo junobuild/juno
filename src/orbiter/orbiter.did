@@ -16,6 +16,7 @@ type AnalyticsTop10PageViews = record {
   referrers : vec record { text; nat32 };
   pages : vec record { text; nat32 };
 };
+type AnalyticsTrackEvents = record { total : vec record { text; nat32 } };
 type CalendarDate = record { day : nat8; month : nat8; year : int32 };
 type Controller = record {
   updated_at : nat64;
@@ -101,12 +102,19 @@ service : () -> {
   get_page_views : (GetAnalytics) -> (
       vec record { AnalyticKey; PageView },
     ) query;
-  get_page_views_devices : (GetAnalytics) -> (AnalyticsDevicesPageViews) query;
-  get_page_views_metrics : (GetAnalytics) -> (AnalyticsMetricsPageViews) query;
-  get_page_views_top_10 : (GetAnalytics) -> (AnalyticsTop10PageViews) query;
+  get_page_views_analytics_devices : (GetAnalytics) -> (
+      AnalyticsDevicesPageViews,
+    ) query;
+  get_page_views_analytics_metrics : (GetAnalytics) -> (
+      AnalyticsMetricsPageViews,
+    ) query;
+  get_page_views_analytics_top_10 : (GetAnalytics) -> (
+      AnalyticsTop10PageViews,
+    ) query;
   get_track_events : (GetAnalytics) -> (
       vec record { AnalyticKey; TrackEvent },
     ) query;
+  get_track_events_analytics : (GetAnalytics) -> (AnalyticsTrackEvents) query;
   list_controllers : () -> (vec record { principal; Controller }) query;
   list_satellite_configs : () -> (
       vec record { principal; OrbiterSatelliteConfig },

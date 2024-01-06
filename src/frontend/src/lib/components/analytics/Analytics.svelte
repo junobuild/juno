@@ -2,10 +2,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { getTrackEvents } from '$lib/api/orbiter.api';
-	import type { AnalyticKey, TrackEvent } from '$declarations/orbiter/orbiter.did';
+	import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
@@ -23,12 +22,12 @@
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import { getAnalyticsPageViews } from '$lib/services/orbiters.services';
+	import { getAnalyticsPageViews, getAnalyticsTrackEvents } from '$lib/services/orbiters.services';
 
 	let loading = true;
 
 	let pageViews: AnalyticsPageViewsType | undefined = undefined;
-	let trackEvents: [AnalyticKey, TrackEvent][] = [];
+	let trackEvents: AnalyticsTrackEvents | undefined = undefined;
 
 	let period: PageViewsPeriod = {};
 
@@ -52,11 +51,11 @@
 
 			const [views, events] = await Promise.all([
 				getAnalyticsPageViews({ params, orbiterVersion: $versionStore.orbiter.current }),
-				getTrackEvents(params)
+				getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current })
 			]);
 
 			pageViews = views;
-			trackEvents = events as [AnalyticKey, TrackEvent][];
+			trackEvents = events;
 
 			loading = false;
 		} catch (err: unknown) {
@@ -90,12 +89,12 @@
 
 		<AnalyticsPageViews {pageViews} />
 
-		{#if trackEvents.length > 0}
+		{#if nonNullish(trackEvents) && trackEvents.total.length > 0}
 			<hr />
 
 			<AnalyticsEvents {trackEvents} />
 
-			<AnalyticsEventsExport {trackEvents} />
+			<AnalyticsEventsExport orbiter={$orbiterStore} {period} />
 		{/if}
 	{/if}
 

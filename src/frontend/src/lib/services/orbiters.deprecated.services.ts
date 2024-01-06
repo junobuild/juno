@@ -2,9 +2,10 @@ import type {
 	AnalyticKey,
 	AnalyticsDevicesPageViews,
 	AnalyticsTop10PageViews,
+	AnalyticsTrackEvents,
 	PageView
 } from '$declarations/orbiter/orbiter.did';
-import { getPageViews } from '$lib/api/orbiter.api';
+import { getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
 import type {
 	AnalyticsMetrics,
 	AnalyticsPageViews,
@@ -26,6 +27,24 @@ export const getDeprecatedAnalyticsPageViews = async (
 		metrics: getDeprecatedAnalyticsMetricsPageViews(pageViews),
 		top10: getDeprecatedAnalyticsTop10PageViews(pageViews),
 		devices: getDeprecatedAnalyticsDevicesPageViews(pageViews)
+	};
+};
+
+export const getDeprecatedAnalyticsTrackEvents = async (
+	params: PageViewsParams
+): Promise<AnalyticsTrackEvents> => {
+	const trackEvents = await getTrackEvents(params);
+
+	const trackEventsSum = trackEvents.reduce(
+		(acc, [_, { name }]) => ({
+			...acc,
+			[name]: (acc[name] ?? 0) + 1
+		}),
+		{} as Record<string, number>
+	);
+
+	return {
+		total: Object.entries(trackEventsSum)
 	};
 };
 

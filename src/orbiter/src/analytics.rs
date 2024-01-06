@@ -14,6 +14,7 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
     let mut referrers: HashMap<String, u32> = HashMap::new();
     let mut pages: HashMap<String, u32> = HashMap::new();
 
+    // We compile data in a single loop for performance reason
     for (
         AnalyticKey {
             collected_at,

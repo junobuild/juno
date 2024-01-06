@@ -8,7 +8,7 @@
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-    import {getTrackEvents} from "$lib/api/orbiter.api";
+	import { getTrackEvents } from '$lib/api/orbiter.api';
 
 	export let period: PageViewsPeriod = {};
 	export let orbiter: Orbiter;
@@ -24,7 +24,7 @@
 				...period
 			};
 
-            const trackEvents = await getTrackEvents(params);
+			const trackEvents = await getTrackEvents(params);
 
 			const json = JSON.stringify(trackEvents, jsonReplacer);
 

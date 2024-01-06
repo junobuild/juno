@@ -2,10 +2,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-	import {getTrackEvents, getTrackEventsAnalytics} from '$lib/api/orbiter.api';
-	import type {AnalyticKey, AnalyticsTrackEvents, TrackEvent} from '$declarations/orbiter/orbiter.did';
+	import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
-	import {isNullish, nonNullish} from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
@@ -23,7 +22,7 @@
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import {getAnalyticsPageViews, getAnalyticsTrackEvents} from '$lib/services/orbiters.services';
+	import { getAnalyticsPageViews, getAnalyticsTrackEvents } from '$lib/services/orbiters.services';
 
 	let loading = true;
 

@@ -6,6 +6,11 @@ export interface AnalyticKey {
 	collected_at: bigint;
 }
 export interface AnalyticsPageViews {
+	metrics: AnalyticsPageViewsMetrics;
+	top_referrers: Array<[string, number]>;
+	top_pages: Array<[string, number]>;
+}
+export interface AnalyticsPageViewsMetrics {
 	bounce_rate: number;
 	average_page_views_per_session: number;
 	daily_total_page_views: Array<[CalendarDate, number]>;

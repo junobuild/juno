@@ -12,6 +12,7 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
     let mut sessions_unique_views: HashMap<String, HashSet<String>> = HashMap::new();
 
     let mut referrers: HashMap<String, u32> = HashMap::new();
+    let mut pages: HashMap<String, u32> = HashMap::new();
 
     for (
         AnalyticKey {
@@ -37,6 +38,8 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
         );
 
         analytics_referrers(referrer, &mut referrers);
+
+        analytics_pages(href, &mut pages);
     }
 
     // Metrics
@@ -60,10 +63,15 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
         0.0
     };
 
-    // Top 10 referrers
-    let mut entries: Vec<(String, u32)> = referrers.into_iter().collect();
-    entries.sort_by(|a, b| b.1.cmp(&a.1));
-    let top_referrers = entries.into_iter().take(10).collect::<Vec<(String, u32)>>();
+    fn top_10(data: HashMap<String, u32>) -> Vec<(String, u32)> {
+        let mut entries: Vec<(String, u32)> = data.into_iter().collect();
+        entries.sort_by(|a, b| b.1.cmp(&a.1));
+        entries.into_iter().take(10).collect()
+    }
+
+    let top_referrers = top_10(referrers);
+    let top_pages = top_10(pages);
+
 
     AnalyticsPageViews {
         metrics: AnalyticsPageViewsMetrics {
@@ -75,6 +83,7 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
             bounce_rate,
         },
         top_referrers,
+        top_pages,
     }
 }
 
@@ -112,4 +121,12 @@ fn analytics_referrers(referrer: &Option<String>, referrers: &mut HashMap<String
             *referrers.entry(host.to_string()).or_insert(0) += 1;
         }
     }
+}
+
+fn analytics_pages(href: &str, pages: &mut HashMap<String, u32>) {
+    let page = match Url::parse(href) {
+        Ok(parsed_url) => parsed_url.path().to_string(),
+        Err(_) => href.to_string(),
+    };
+    *pages.entry(page).or_insert(0) += 1;
 }

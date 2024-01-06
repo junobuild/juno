@@ -48,7 +48,7 @@ export const consoleActorIC = async () => {
 export const icAgent = () => {
 	const identity = initIdentity(true);
 
-	console.log("IC identity:", identity.getPrincipal().toText());
+	console.log('IC identity:', identity.getPrincipal().toText());
 
 	return new HttpAgent({ identity, fetch, host: 'https://icp0.io' });
 };
@@ -56,7 +56,7 @@ export const icAgent = () => {
 export const localAgent = async () => {
 	const identity = initIdentity(false);
 
-	console.log("Local identity:", identity.getPrincipal().toText());
+	console.log('Local identity:', identity.getPrincipal().toText());
 
 	const agent = new HttpAgent({ identity, fetch, host: 'http://127.0.0.1:8000/' });
 
@@ -97,7 +97,6 @@ export const observatoryActorLocal = async () => {
 		canisterId
 	});
 };
-
 
 export const orbiterActorIC = async (canisterId) => {
 	const agent = icAgent();

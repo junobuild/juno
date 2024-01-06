@@ -1,5 +1,10 @@
 type AnalyticKey = record { key : text; collected_at : nat64 };
 type AnalyticsPageViews = record {
+  metrics : AnalyticsPageViewsMetrics;
+  top_referrers : vec record { text; nat32 };
+  top_pages : vec record { text; nat32 };
+};
+type AnalyticsPageViewsMetrics = record {
   bounce_rate : float64;
   average_page_views_per_session : float64;
   daily_total_page_views : vec record { CalendarDate; nat32 };

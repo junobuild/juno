@@ -157,5 +157,6 @@ pub mod interface {
     pub struct AnalyticsPageViews {
         pub metrics: AnalyticsPageViewsMetrics,
         pub top_referrers: Vec<(String, u32)>,
+        pub top_pages: Vec<(String, u32)>,
     }
 }

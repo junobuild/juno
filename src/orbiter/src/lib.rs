@@ -20,7 +20,7 @@ use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
     set_controllers as set_controllers_store,
 };
-use crate::guards::caller_is_admin_controller;
+use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::store::{
     get_page_views as get_page_views_store, get_track_events as get_track_events_store,
@@ -146,7 +146,7 @@ fn set_page_views(
     Ok(())
 }
 
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_controller")]
 fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
     get_page_views_store(&filter)
 }
@@ -187,7 +187,7 @@ fn set_track_events(
     Ok(())
 }
 
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_controller")]
 fn get_track_events(filter: GetAnalytics) -> Vec<(AnalyticKey, TrackEvent)> {
     get_track_events_store(&filter)
 }

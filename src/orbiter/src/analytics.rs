@@ -14,6 +14,12 @@ struct Devices {
     others: u32,
 }
 
+struct DevicesRegex {
+    mobile: Regex,
+    android: Regex,
+    iphone: Regex,
+}
+
 pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> AnalyticsPageViews {
     let mut daily_total_page_views: HashMap<CalendarDate, u32> = HashMap::new();
     let mut unique_sessions = HashSet::new();
@@ -27,6 +33,12 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
         mobile: 0,
         desktop: 0,
         others: 0,
+    };
+
+    let devices_regex: DevicesRegex = DevicesRegex {
+        mobile: Regex::new(r"mobile").unwrap(),
+        android: Regex::new(r"android|sink").unwrap(),
+        iphone: Regex::new(r"iPhone|iPod").unwrap(),
     };
 
     // We compile data in a single loop for performance reason
@@ -58,7 +70,7 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
 
         analytics_pages(href, &mut pages);
 
-        analytics_devices(user_agent, &mut total_devices);
+        analytics_devices(user_agent, &devices_regex, &mut total_devices);
     }
 
     // Metrics
@@ -173,15 +185,11 @@ fn analytics_pages(href: &str, pages: &mut HashMap<String, u32>) {
     *pages.entry(page).or_insert(0) += 1;
 }
 
-fn analytics_devices(user_agent: &Option<String>, devices: &mut Devices) {
-    let iphone_regex = Regex::new(r"iPhone|iPod").unwrap();
-    let android_regex = Regex::new(r"android|sink").unwrap();
-    let mobile_regex = Regex::new(r"mobile").unwrap();
-
+fn analytics_devices(user_agent: &Option<String>, devices_regex: &DevicesRegex, devices: &mut Devices) {
     match user_agent {
         Some(ua)
-            if iphone_regex.is_match(ua)
-                || (android_regex.is_match(ua) && !mobile_regex.is_match(ua)) =>
+            if devices_regex.iphone.is_match(ua)
+                || (devices_regex.android.is_match(ua) && !devices_regex.mobile.is_match(ua)) =>
         {
             devices.mobile += 1;
         }

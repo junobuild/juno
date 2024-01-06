@@ -210,7 +210,7 @@ fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     }
 }
 
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_controller")]
 fn del_docs(collection: CollectionKey) {
     let result = delete_docs(&collection);
 
@@ -220,7 +220,7 @@ fn del_docs(collection: CollectionKey) {
     }
 }
 
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_controller")]
 fn count_docs(collection: CollectionKey) -> usize {
     let result = count_docs_store(&collection);
 
@@ -498,7 +498,7 @@ fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
     }
 }
 
-#[update(guard = "caller_is_admin_controller")]
+#[update(guard = "caller_is_controller")]
 fn del_assets(collection: CollectionKey) {
     let result = delete_assets(&collection);
 
@@ -508,7 +508,7 @@ fn del_assets(collection: CollectionKey) {
     }
 }
 
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_controller")]
 fn count_assets(collection: CollectionKey) -> usize {
     let result = count_assets_store(&collection);
 
@@ -532,7 +532,7 @@ fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
-#[query(guard = "caller_is_controller")]
+#[query(guard = "caller_is_admin_controller")]
 fn memory_size() -> MemorySize {
     canister_memory_size()
 }

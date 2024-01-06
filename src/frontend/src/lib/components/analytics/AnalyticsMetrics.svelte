@@ -33,8 +33,16 @@
 		0
 	);
 
+	let singlePageViewSessions = 0;
+	$: singlePageViewSessions = Object.entries(sessionsViews).filter(
+		([_key, value]) => value === 1
+	).length;
+
+	let totalSessions = 0;
+	$: totalSessions = Object.entries(sessionsViews).length;
+
 	let bounceRate = 0;
-	$: bounceRate = Object.entries(sessionsViews).filter(([_key, value]) => value === 1).length;
+	$: bounceRate = totalSessions > 0 ? singlePageViewSessions / totalSessions : 0;
 </script>
 
 <div class="card-container">
@@ -55,11 +63,11 @@
 
 	<Value>
 		<svelte:fragment slot="label">{$i18n.analytics.average_page_views_per_session}</svelte:fragment>
-		<p>{formatNumber(uniqueSessions > 0 ? uniqueSessions / pageViews.length : 0)}</p>
+		<p>{formatNumber(uniqueSessions > 0 ? pageViews.length / uniqueSessions : 0)}</p>
 	</Value>
 
 	<Value>
 		<svelte:fragment slot="label">{$i18n.analytics.bounce_rate}</svelte:fragment>
-		<p>{bounceRate}</p>
+		<p>{formatNumber(bounceRate * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small></p>
 	</Value>
 </div>

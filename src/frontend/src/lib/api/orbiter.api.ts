@@ -40,12 +40,12 @@ export const getAnalyticsMetricsPageViews = async ({
 	to,
 	identity
 }: PageViewsParams): Promise<AnalyticsMetricsPageViews> => {
-	const { analytics_metrics_page_views } = await getOrbiterActor({ orbiterId, identity });
+	const { get_page_views_metrics } = await getOrbiterActor({ orbiterId, identity });
 	return getAnalyticsPageViews({
 		satelliteId,
 		from,
 		to,
-		fn: analytics_metrics_page_views
+		fn: get_page_views_metrics
 	});
 };
 
@@ -56,12 +56,12 @@ export const getAnalyticsTop10PageViews = async ({
 	to,
 	identity
 }: PageViewsParams): Promise<AnalyticsTop10PageViews> => {
-	const { analytics_top_10_page_views } = await getOrbiterActor({ orbiterId, identity });
+	const { get_page_views_top_10 } = await getOrbiterActor({ orbiterId, identity });
 	return getAnalyticsPageViews({
 		satelliteId,
 		from,
 		to,
-		fn: analytics_top_10_page_views
+		fn: get_page_views_top_10
 	});
 };
 
@@ -72,12 +72,12 @@ export const getAnalyticsDevicesPageViews = async ({
 	to,
 	identity
 }: PageViewsParams): Promise<AnalyticsDevicesPageViews> => {
-	const { analytics_devices_page_views } = await getOrbiterActor({ orbiterId, identity });
+	const { get_page_views_devices } = await getOrbiterActor({ orbiterId, identity });
 	return getAnalyticsPageViews({
 		satelliteId,
 		from,
 		to,
-		fn: analytics_devices_page_views
+		fn: get_page_views_devices
 	});
 };
 

@@ -2,7 +2,6 @@ use crate::types::interface::{
     AnalyticsDevicesPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
 };
 use crate::types::state::{AnalyticKey, PageView};
-use ic_cdk::api::instruction_counter;
 use regex::Regex;
 use shared::day::calendar_date;
 use shared::types::utils::CalendarDate;
@@ -21,7 +20,7 @@ struct DevicesRegex {
     iphone: Regex,
 }
 
-pub fn analytics_metrics_page_views(
+pub fn analytics_page_views_metrics(
     page_views: &Vec<(AnalyticKey, PageView)>,
 ) -> AnalyticsMetricsPageViews {
     let mut daily_total_page_views: HashMap<CalendarDate, u32> = HashMap::new();
@@ -76,11 +75,10 @@ pub fn analytics_metrics_page_views(
         total_page_views,
         average_page_views_per_session,
         bounce_rate,
-        instructions: instruction_counter(),
     }
 }
 
-pub fn analytics_top_10_page_views(
+pub fn analytics_page_views_top_10(
     page_views: &Vec<(AnalyticKey, PageView)>,
 ) -> AnalyticsTop10PageViews {
     let mut referrers: HashMap<String, u32> = HashMap::new();
@@ -100,11 +98,10 @@ pub fn analytics_top_10_page_views(
     AnalyticsTop10PageViews {
         referrers: top_10(referrers),
         pages: top_10(pages),
-        instructions: instruction_counter(),
     }
 }
 
-pub fn analytics_devices_page_views(
+pub fn analytics_page_views_devices(
     page_views: &Vec<(AnalyticKey, PageView)>,
 ) -> AnalyticsDevicesPageViews {
     let mut total_devices = Devices {
@@ -141,7 +138,6 @@ pub fn analytics_devices_page_views(
         } else {
             0.0
         },
-        instructions: instruction_counter(),
     }
 }
 

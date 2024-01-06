@@ -83,8 +83,7 @@ const getDeprecatedAnalyticsMetricsPageViews = (
 		total_page_views: pageViews.length,
 		daily_total_page_views: totalPageViews,
 		average_page_views_per_session: uniqueSessions > 0 ? pageViews.length / uniqueSessions : 0,
-		bounce_rate: bounceRate,
-		instructions: 0n
+		bounce_rate: bounceRate
 	};
 };
 
@@ -143,8 +142,7 @@ const getDeprecatedAnalyticsTop10PageViews = (
 
 	return {
 		referrers: referrersEntries,
-		pages: pagesEntries,
-		instructions: 0n
+		pages: pagesEntries
 	};
 };
 
@@ -181,15 +179,13 @@ const getDeprecatedAnalyticsDevicesPageViews = (
 		{
 			mobile: 0,
 			desktop: 0,
-			others: 0,
-			instructions: 0n
+			others: 0
 		}
 	);
 
 	return {
 		mobile: total > 0 ? mobile / total : 0,
 		desktop: total > 0 ? desktop / total : 0,
-		others: total > 0 ? others / total : 0,
-		instructions: 0n
+		others: total > 0 ? others / total : 0
 	};
 };

@@ -13,9 +13,9 @@ mod store;
 mod types;
 
 use crate::analytics::{
-    analytics_devices_page_views as compute_analytics_devices_page_views,
-    analytics_metrics_page_views as compute_analytics_metrics_page_views,
-    analytics_top_10_page_views as compute_analytics_top_10_page_views,
+    analytics_page_views_devices,
+    analytics_page_views_metrics,
+    analytics_page_views_top_10,
 };
 use crate::assert::assert_enabled;
 use crate::config::store::{
@@ -159,21 +159,21 @@ fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
 }
 
 #[query(guard = "caller_is_controller")]
-fn analytics_metrics_page_views(filter: GetAnalytics) -> AnalyticsMetricsPageViews {
+fn get_page_views_metrics(filter: GetAnalytics) -> AnalyticsMetricsPageViews {
     let page_views = get_page_views_store(&filter);
-    compute_analytics_metrics_page_views(&page_views)
+    analytics_page_views_metrics(&page_views)
 }
 
 #[query(guard = "caller_is_controller")]
-fn analytics_top_10_page_views(filter: GetAnalytics) -> AnalyticsTop10PageViews {
+fn get_page_views_top_10(filter: GetAnalytics) -> AnalyticsTop10PageViews {
     let page_views = get_page_views_store(&filter);
-    compute_analytics_top_10_page_views(&page_views)
+    analytics_page_views_top_10(&page_views)
 }
 
 #[query(guard = "caller_is_controller")]
-fn analytics_devices_page_views(filter: GetAnalytics) -> AnalyticsDevicesPageViews {
+fn get_page_views_devices(filter: GetAnalytics) -> AnalyticsDevicesPageViews {
     let page_views = get_page_views_store(&filter);
-    compute_analytics_devices_page_views(&page_views)
+    analytics_page_views_devices(&page_views)
 }
 
 #[update]

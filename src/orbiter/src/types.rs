@@ -151,14 +151,12 @@ pub mod interface {
         pub total_page_views: u32,
         pub average_page_views_per_session: f64,
         pub bounce_rate: f64,
-        pub instructions: u64,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsTop10PageViews {
         pub referrers: Vec<(String, u32)>,
         pub pages: Vec<(String, u32)>,
-        pub instructions: u64,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -166,6 +164,5 @@ pub mod interface {
         pub mobile: f64,
         pub desktop: f64,
         pub others: f64,
-        pub instructions: u64,
     }
 }

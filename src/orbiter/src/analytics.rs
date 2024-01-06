@@ -9,7 +9,7 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
     let mut daily_total_page_views: HashMap<CalendarDate, u32> = HashMap::new();
     let mut unique_sessions = HashSet::new();
     let mut sessions_views = HashMap::new();
-    let mut sessions_unique_views: HashMap<String, HashSet<&String>> = HashMap::new();
+    let mut sessions_unique_views: HashMap<String, HashSet<String>> = HashMap::new();
 
     let mut referrers: HashMap<String, u32> = HashMap::new();
 
@@ -26,27 +26,17 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
         },
     ) in page_views
     {
-        // Metrics
-        let key = calendar_date(collected_at);
+        analytics_metrics(
+            &collected_at,
+            session_id,
+            href,
+            &mut daily_total_page_views,
+            &mut unique_sessions,
+            &mut sessions_views,
+            &mut sessions_unique_views,
+        );
 
-        let count = daily_total_page_views.entry(key).or_insert(0);
-        *count += 1;
-
-        unique_sessions.insert(session_id.clone());
-        *sessions_views.entry(session_id.clone()).or_insert(0) += 1;
-        sessions_unique_views
-            .entry(session_id.clone())
-            .or_default()
-            .insert(&href);
-
-        // Top 10 referrers
-        let referrer = referrer.as_ref().unwrap();
-        let host = match Url::parse(referrer) {
-            Ok(parsed_url) => parsed_url.host_str().unwrap_or(referrer).to_string(),
-            Err(_) => referrer.to_string(),
-        };
-
-        *referrers.entry(host.to_string()).or_insert(0) += 1;
+        analytics_referrers(referrer, &mut referrers);
     }
 
     // Metrics
@@ -85,5 +75,41 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
             bounce_rate,
         },
         top_referrers,
+    }
+}
+
+fn analytics_metrics(
+    collected_at: &u64,
+    session_id: &String,
+    href: &String,
+    daily_total_page_views: &mut HashMap<CalendarDate, u32>,
+    unique_sessions: &mut HashSet<String>,
+    sessions_views: &mut HashMap<String, u32>,
+    sessions_unique_views: &mut HashMap<String, HashSet<String>>,
+) {
+    let key = calendar_date(collected_at);
+
+    let count = daily_total_page_views.entry(key).or_insert(0);
+    *count += 1;
+
+    unique_sessions.insert(session_id.clone());
+    *sessions_views.entry(session_id.clone()).or_insert(0) += 1;
+    sessions_unique_views
+        .entry(session_id.clone())
+        .or_default()
+        .insert(href.clone());
+}
+
+fn analytics_referrers(referrer: &Option<String>, referrers: &mut HashMap<String, u32>) {
+    match referrer {
+        None => (),
+        Some(referrer) => {
+            let host = match Url::parse(referrer) {
+                Ok(parsed_url) => parsed_url.host_str().unwrap_or(referrer).to_string(),
+                Err(_) => referrer.to_string(),
+            };
+
+            *referrers.entry(host.to_string()).or_insert(0) += 1;
+        }
     }
 }

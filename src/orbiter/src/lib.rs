@@ -151,7 +151,7 @@ fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
     get_page_views_store(&filter)
 }
 
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_controller")]
 fn get_analytics_page_views(filter: GetAnalytics) -> AnalyticsPageViews {
     let page_views = get_page_views_store(&filter);
     page_views_analytics(&page_views)

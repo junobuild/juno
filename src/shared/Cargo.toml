@@ -13,4 +13,4 @@ ic-ledger-types = "0.8.0"
 serde = "1.0.190"
 futures = "0.3.28"
 ciborium = "0.2.1"
-time = { version = "0.3.31", features = ["formatting"]}
+time = "0.3.31"

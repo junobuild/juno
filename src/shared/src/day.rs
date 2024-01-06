@@ -1,5 +1,5 @@
 use crate::types::utils::CalendarDate;
-use time::{format_description, Duration, OffsetDateTime};
+use time::{Duration, OffsetDateTime};
 
 fn to_date(timestamp: &u64) -> OffsetDateTime {
     let nanoseconds = *timestamp as i64;

@@ -1,22 +1,23 @@
 type AnalyticKey = record { key : text; collected_at : nat64 };
-type AnalyticsPageViews = record {
-  metrics : AnalyticsPageViewsMetrics;
-  top_referrers : vec record { text; nat32 };
-  top_pages : vec record { text; nat32 };
-  devices : AnalyticsPageViewsDevices;
-};
-type AnalyticsPageViewsDevices = record {
+type AnalyticsDevicesPageViews = record {
   desktop : float64;
+  instructions : nat64;
   others : float64;
   mobile : float64;
 };
-type AnalyticsPageViewsMetrics = record {
+type AnalyticsMetricsPageViews = record {
   bounce_rate : float64;
   average_page_views_per_session : float64;
+  instructions : nat64;
   daily_total_page_views : vec record { CalendarDate; nat32 };
   total_page_views : nat32;
   unique_page_views : nat64;
   unique_sessions : nat64;
+};
+type AnalyticsTop10PageViews = record {
+  referrers : vec record { text; nat32 };
+  instructions : nat64;
+  pages : vec record { text; nat32 };
 };
 type CalendarDate = record { day : nat8; month : nat8; year : int32 };
 type Controller = record {
@@ -95,12 +96,20 @@ type TrackEvent = record {
   satellite_id : principal;
 };
 service : () -> {
+  analytics_devices_page_views : (GetAnalytics) -> (
+      AnalyticsDevicesPageViews,
+    ) query;
+  analytics_metrics_page_views : (GetAnalytics) -> (
+      AnalyticsMetricsPageViews,
+    ) query;
+  analytics_top_10_page_views : (GetAnalytics) -> (
+      AnalyticsTop10PageViews,
+    ) query;
   del_controllers : (DeleteControllersArgs) -> (
       vec record { principal; Controller },
     );
   del_satellite_config : (principal, DelSatelliteConfig) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
-  get_analytics_page_views : (GetAnalytics) -> (AnalyticsPageViews) query;
   get_page_views : (GetAnalytics) -> (
       vec record { AnalyticKey; PageView },
     ) query;

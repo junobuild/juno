@@ -2,7 +2,13 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { getAnalyticsPageViews, getPageViews, getTrackEvents } from '$lib/api/orbiter.api';
+	import {
+		getAnalyticsDevicesPageViews,
+		getAnalyticsMetricsPageViews,
+		getAnalyticsTop10PageViews,
+		getPageViews,
+		getTrackEvents
+	} from '$lib/api/orbiter.api';
 	import type { AnalyticKey, PageView, TrackEvent } from '$declarations/orbiter/orbiter.did';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
 	import { isNullish } from '@dfinity/utils';
@@ -48,7 +54,11 @@
 			trackEvents = events as [AnalyticKey, TrackEvent][];
 
 			// TODO
-			const analytics = await getAnalyticsPageViews({ ...params, identity: $authStore.identity });
+			const analytics = await Promise.all([
+				getAnalyticsMetricsPageViews({ ...params, identity: $authStore.identity }),
+				getAnalyticsTop10PageViews({ ...params, identity: $authStore.identity }),
+				getAnalyticsDevicesPageViews({ ...params, identity: $authStore.identity })
+			]);
 			console.log(analytics);
 
 			loading = false;

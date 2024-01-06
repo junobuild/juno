@@ -5,24 +5,25 @@ export interface AnalyticKey {
 	key: string;
 	collected_at: bigint;
 }
-export interface AnalyticsPageViews {
-	metrics: AnalyticsPageViewsMetrics;
-	top_referrers: Array<[string, number]>;
-	top_pages: Array<[string, number]>;
-	devices: AnalyticsPageViewsDevices;
-}
-export interface AnalyticsPageViewsDevices {
+export interface AnalyticsDevicesPageViews {
 	desktop: number;
+	instructions: bigint;
 	others: number;
 	mobile: number;
 }
-export interface AnalyticsPageViewsMetrics {
+export interface AnalyticsMetricsPageViews {
 	bounce_rate: number;
 	average_page_views_per_session: number;
+	instructions: bigint;
 	daily_total_page_views: Array<[CalendarDate, number]>;
 	total_page_views: number;
 	unique_page_views: bigint;
 	unique_sessions: bigint;
+}
+export interface AnalyticsTop10PageViews {
+	referrers: Array<[string, number]>;
+	instructions: bigint;
+	pages: Array<[string, number]>;
 }
 export interface CalendarDate {
 	day: number;
@@ -121,10 +122,12 @@ export interface TrackEvent {
 	satellite_id: Principal;
 }
 export interface _SERVICE {
+	analytics_devices_page_views: ActorMethod<[GetAnalytics], AnalyticsDevicesPageViews>;
+	analytics_metrics_page_views: ActorMethod<[GetAnalytics], AnalyticsMetricsPageViews>;
+	analytics_top_10_page_views: ActorMethod<[GetAnalytics], AnalyticsTop10PageViews>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
-	get_analytics_page_views: ActorMethod<[GetAnalytics], AnalyticsPageViews>;
 	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;

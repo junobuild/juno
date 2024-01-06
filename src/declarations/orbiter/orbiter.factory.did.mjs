@@ -1,5 +1,35 @@
 // @ts-ignore
 export const idlFactory = ({ IDL }) => {
+	const GetAnalytics = IDL.Record({
+		to: IDL.Opt(IDL.Nat64),
+		from: IDL.Opt(IDL.Nat64),
+		satellite_id: IDL.Opt(IDL.Principal)
+	});
+	const AnalyticsDevicesPageViews = IDL.Record({
+		desktop: IDL.Float64,
+		instructions: IDL.Nat64,
+		others: IDL.Float64,
+		mobile: IDL.Float64
+	});
+	const CalendarDate = IDL.Record({
+		day: IDL.Nat8,
+		month: IDL.Nat8,
+		year: IDL.Int32
+	});
+	const AnalyticsMetricsPageViews = IDL.Record({
+		bounce_rate: IDL.Float64,
+		average_page_views_per_session: IDL.Float64,
+		instructions: IDL.Nat64,
+		daily_total_page_views: IDL.Vec(IDL.Tuple(CalendarDate, IDL.Nat32)),
+		total_page_views: IDL.Nat32,
+		unique_page_views: IDL.Nat64,
+		unique_sessions: IDL.Nat64
+	});
+	const AnalyticsTop10PageViews = IDL.Record({
+		referrers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
+		instructions: IDL.Nat64,
+		pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
+	});
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
@@ -18,35 +48,6 @@ export const idlFactory = ({ IDL }) => {
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
-	});
-	const GetAnalytics = IDL.Record({
-		to: IDL.Opt(IDL.Nat64),
-		from: IDL.Opt(IDL.Nat64),
-		satellite_id: IDL.Opt(IDL.Principal)
-	});
-	const CalendarDate = IDL.Record({
-		day: IDL.Nat8,
-		month: IDL.Nat8,
-		year: IDL.Int32
-	});
-	const AnalyticsPageViewsMetrics = IDL.Record({
-		bounce_rate: IDL.Float64,
-		average_page_views_per_session: IDL.Float64,
-		daily_total_page_views: IDL.Vec(IDL.Tuple(CalendarDate, IDL.Nat32)),
-		total_page_views: IDL.Nat32,
-		unique_page_views: IDL.Nat64,
-		unique_sessions: IDL.Nat64
-	});
-	const AnalyticsPageViewsDevices = IDL.Record({
-		desktop: IDL.Float64,
-		others: IDL.Float64,
-		mobile: IDL.Float64
-	});
-	const AnalyticsPageViews = IDL.Record({
-		metrics: AnalyticsPageViewsMetrics,
-		top_referrers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
-		top_pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
-		devices: AnalyticsPageViewsDevices
 	});
 	const AnalyticKey = IDL.Record({
 		key: IDL.Text,
@@ -121,6 +122,9 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Result_2 = IDL.Variant({ Ok: TrackEvent, Err: IDL.Text });
 	return IDL.Service({
+		analytics_devices_page_views: IDL.Func([GetAnalytics], [AnalyticsDevicesPageViews], ['query']),
+		analytics_metrics_page_views: IDL.Func([GetAnalytics], [AnalyticsMetricsPageViews], ['query']),
+		analytics_top_10_page_views: IDL.Func([GetAnalytics], [AnalyticsTop10PageViews], ['query']),
 		del_controllers: IDL.Func(
 			[DeleteControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
@@ -128,7 +132,6 @@ export const idlFactory = ({ IDL }) => {
 		),
 		del_satellite_config: IDL.Func([IDL.Principal, DelSatelliteConfig], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
-		get_analytics_page_views: IDL.Func([GetAnalytics], [AnalyticsPageViews], ['query']),
 		get_page_views: IDL.Func(
 			[GetAnalytics],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],

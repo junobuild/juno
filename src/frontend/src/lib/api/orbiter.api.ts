@@ -1,7 +1,10 @@
 import type {
 	AnalyticKey,
-	AnalyticsPageViews,
+	AnalyticsDevicesPageViews,
+	AnalyticsMetricsPageViews,
+	AnalyticsTop10PageViews,
 	Controller,
+	GetAnalytics,
 	PageView,
 	OrbiterSatelliteConfig as SatelliteConfig,
 	SetSatelliteConfig,
@@ -33,7 +36,7 @@ export const getPageViews = async ({
 	});
 };
 
-export const getAnalyticsPageViews = async ({
+export const getAnalyticsMetricsPageViews = async ({
 	satelliteId,
 	orbiterId,
 	from,
@@ -43,14 +46,70 @@ export const getAnalyticsPageViews = async ({
 	satelliteId?: Principal;
 	orbiterId: Principal;
 	identity: OptionIdentity;
-} & PageViewsPeriod): Promise<AnalyticsPageViews> => {
-	const { get_analytics_page_views } = await getOrbiterActor({ orbiterId, identity });
-	return get_analytics_page_views({
+} & PageViewsPeriod): Promise<AnalyticsMetricsPageViews> => {
+	const { analytics_metrics_page_views } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalyticsPageViews({
+		satelliteId,
+		from,
+		to,
+		fn: analytics_metrics_page_views
+	});
+};
+
+export const getAnalyticsTop10PageViews = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: {
+	satelliteId?: Principal;
+	orbiterId: Principal;
+	identity: OptionIdentity;
+} & PageViewsPeriod): Promise<AnalyticsTop10PageViews> => {
+	const { analytics_top_10_page_views } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalyticsPageViews({
+		satelliteId,
+		from,
+		to,
+		fn: analytics_top_10_page_views
+	});
+};
+
+export const getAnalyticsDevicesPageViews = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: {
+	satelliteId?: Principal;
+	orbiterId: Principal;
+	identity: OptionIdentity;
+} & PageViewsPeriod): Promise<AnalyticsDevicesPageViews> => {
+	const { analytics_devices_page_views } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalyticsPageViews({
+		satelliteId,
+		from,
+		to,
+		fn: analytics_devices_page_views
+	});
+};
+
+const getAnalyticsPageViews = async <T>({
+	satelliteId,
+	from,
+	to,
+	fn
+}: {
+	satelliteId?: Principal;
+	fn: (params: GetAnalytics) => Promise<T>;
+} & PageViewsPeriod): Promise<T> =>
+	fn({
 		satellite_id: toNullable(satelliteId),
 		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
 		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
 	});
-};
 
 export const getTrackEvents = async ({
 	satelliteId,

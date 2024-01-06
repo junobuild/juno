@@ -1,9 +1,18 @@
-use crate::types::interface::{AnalyticsPageViews, AnalyticsPageViewsMetrics};
+use crate::types::interface::{
+    AnalyticsPageViews, AnalyticsPageViewsDevices, AnalyticsPageViewsMetrics,
+};
 use crate::types::state::{AnalyticKey, PageView};
+use regex::Regex;
 use shared::day::calendar_date;
 use shared::types::utils::CalendarDate;
 use std::collections::{HashMap, HashSet};
 use url::Url;
+
+struct Devices {
+    mobile: u32,
+    desktop: u32,
+    others: u32,
+}
 
 pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> AnalyticsPageViews {
     let mut daily_total_page_views: HashMap<CalendarDate, u32> = HashMap::new();
@@ -13,6 +22,12 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
 
     let mut referrers: HashMap<String, u32> = HashMap::new();
     let mut pages: HashMap<String, u32> = HashMap::new();
+
+    let mut total_devices = Devices {
+        mobile: 0,
+        desktop: 0,
+        others: 0,
+    };
 
     // We compile data in a single loop for performance reason
     for (
@@ -24,6 +39,7 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
             session_id,
             href,
             referrer,
+            user_agent,
             ..
         },
     ) in page_views
@@ -41,6 +57,8 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
         analytics_referrers(referrer, &mut referrers);
 
         analytics_pages(href, &mut pages);
+
+        analytics_devices(user_agent, &mut total_devices);
     }
 
     // Metrics
@@ -64,6 +82,8 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
         0.0
     };
 
+    // Top 10 referrers and pages
+
     fn top_10(data: HashMap<String, u32>) -> Vec<(String, u32)> {
         let mut entries: Vec<(String, u32)> = data.into_iter().collect();
         entries.sort_by(|a, b| b.1.cmp(&a.1));
@@ -73,6 +93,26 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
     let top_referrers = top_10(referrers);
     let top_pages = top_10(pages);
 
+    // Devices
+    let total = page_views.len();
+
+    let devices: AnalyticsPageViewsDevices = AnalyticsPageViewsDevices {
+        desktop: if total > 0 {
+            total_devices.desktop as f64 / total as f64
+        } else {
+            0.0
+        },
+        mobile: if total > 0 {
+            total_devices.mobile as f64 / total as f64
+        } else {
+            0.0
+        },
+        others: if total > 0 {
+            total_devices.others as f64 / total as f64
+        } else {
+            0.0
+        },
+    };
 
     AnalyticsPageViews {
         metrics: AnalyticsPageViewsMetrics {
@@ -85,6 +125,7 @@ pub fn page_views_analytics(page_views: &Vec<(AnalyticKey, PageView)>) -> Analyt
         },
         top_referrers,
         top_pages,
+        devices,
     }
 }
 
@@ -130,4 +171,25 @@ fn analytics_pages(href: &str, pages: &mut HashMap<String, u32>) {
         Err(_) => href.to_string(),
     };
     *pages.entry(page).or_insert(0) += 1;
+}
+
+fn analytics_devices(user_agent: &Option<String>, devices: &mut Devices) {
+    let iphone_regex = Regex::new(r"iPhone|iPod").unwrap();
+    let android_regex = Regex::new(r"android|sink").unwrap();
+    let mobile_regex = Regex::new(r"mobile").unwrap();
+
+    match user_agent {
+        Some(ua)
+            if iphone_regex.is_match(ua)
+                || (android_regex.is_match(ua) && !mobile_regex.is_match(ua)) =>
+        {
+            devices.mobile += 1;
+        }
+        Some(_) => {
+            devices.desktop += 1;
+        }
+        None => {
+            devices.others += 1;
+        }
+    }
 }

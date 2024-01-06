@@ -37,10 +37,16 @@ export const idlFactory = ({ IDL }) => {
 		unique_page_views: IDL.Nat64,
 		unique_sessions: IDL.Nat64
 	});
+	const AnalyticsPageViewsDevices = IDL.Record({
+		desktop: IDL.Float64,
+		others: IDL.Float64,
+		mobile: IDL.Float64
+	});
 	const AnalyticsPageViews = IDL.Record({
 		metrics: AnalyticsPageViewsMetrics,
 		top_referrers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
-		top_pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
+		top_pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
+		devices: AnalyticsPageViewsDevices
 	});
 	const AnalyticKey = IDL.Record({
 		key: IDL.Text,

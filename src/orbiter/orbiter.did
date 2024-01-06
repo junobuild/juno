@@ -3,6 +3,12 @@ type AnalyticsPageViews = record {
   metrics : AnalyticsPageViewsMetrics;
   top_referrers : vec record { text; nat32 };
   top_pages : vec record { text; nat32 };
+  devices : AnalyticsPageViewsDevices;
+};
+type AnalyticsPageViewsDevices = record {
+  desktop : float64;
+  others : float64;
+  mobile : float64;
 };
 type AnalyticsPageViewsMetrics = record {
   bounce_rate : float64;

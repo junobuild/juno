@@ -9,6 +9,12 @@ export interface AnalyticsPageViews {
 	metrics: AnalyticsPageViewsMetrics;
 	top_referrers: Array<[string, number]>;
 	top_pages: Array<[string, number]>;
+	devices: AnalyticsPageViewsDevices;
+}
+export interface AnalyticsPageViewsDevices {
+	desktop: number;
+	others: number;
+	mobile: number;
 }
 export interface AnalyticsPageViewsMetrics {
 	bounce_rate: number;

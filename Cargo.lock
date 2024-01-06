@@ -774,6 +774,7 @@ dependencies = [
  "ic-stable-structures 0.5.6",
  "isbot",
  "lazy_static",
+ "regex",
  "serde",
  "shared",
  "url",

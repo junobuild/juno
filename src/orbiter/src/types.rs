@@ -154,9 +154,17 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsPageViewsDevices {
+        pub mobile: f64,
+        pub desktop: f64,
+        pub others: f64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsPageViews {
         pub metrics: AnalyticsPageViewsMetrics,
         pub top_referrers: Vec<(String, u32)>,
         pub top_pages: Vec<(String, u32)>,
+        pub devices: AnalyticsPageViewsDevices,
     }
 }

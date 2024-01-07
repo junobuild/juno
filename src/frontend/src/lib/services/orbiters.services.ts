@@ -85,8 +85,6 @@ export const getAnalyticsPageViews = async ({
 			getAnalyticsClientsPageViews(params)
 		]);
 
-		console.log('here', clients);
-
 		const { daily_total_page_views, ...rest } = metrics;
 
 		return {

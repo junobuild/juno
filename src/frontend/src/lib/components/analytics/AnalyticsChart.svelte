@@ -13,6 +13,7 @@
 		AnalyticsPageViews,
 		DateStartOfTheDay
 	} from '$lib/types/ortbiter';
+	import { fade } from 'svelte/transition';
 
 	export let data: AnalyticsPageViews;
 
@@ -21,6 +22,9 @@
 
 	let daily_total_page_views: Record<DateStartOfTheDay, number>;
 	$: ({ daily_total_page_views } = metrics);
+
+	let dailyTotalArray: [string, number][];
+	$: dailyTotalArray = Object.entries(daily_total_page_views);
 
 	const xKey = 'myX';
 	const yKey = 'myY';
@@ -31,7 +35,7 @@
 	};
 
 	let chartsPageViews: ChartsData[];
-	$: chartsPageViews = Object.entries(daily_total_page_views)
+	$: chartsPageViews = dailyTotalArray
 		.map(([key, value]) => ({
 			[xKey]: key,
 			[yKey]: value
@@ -100,23 +104,25 @@
 	};
 </script>
 
-<div class="chart-container">
-	<LayerCake
-		padding={{ top: 32, right: 16, bottom: 32, left: 16 }}
-		x={xKey}
-		y={yKey}
-		yNice={4}
-		yDomain={[0, null]}
-		data={chartsData}
-	>
-		<Svg>
-			<AxisX {formatTick} {ticks} />
-			<AxisY ticks={4} />
-			<Line />
-			<Area />
-		</Svg>
-	</LayerCake>
-</div>
+{#if dailyTotalArray.length > 0}
+	<div class="chart-container" in:fade>
+		<LayerCake
+			padding={{ top: 32, right: 16, bottom: 32, left: 16 }}
+			x={xKey}
+			y={yKey}
+			yNice={4}
+			yDomain={[0, null]}
+			data={chartsData}
+		>
+			<Svg>
+				<AxisX {formatTick} {ticks} />
+				<AxisY ticks={4} />
+				<Line />
+				<Area />
+			</Svg>
+		</LayerCake>
+	</div>
+{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/shadow';

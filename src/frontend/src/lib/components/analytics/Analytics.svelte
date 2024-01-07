@@ -81,9 +81,7 @@
 	{:else}
 		<AnalyticsFilter on:junoPeriod={selectPeriod} />
 
-		{#if pageViews.metrics.daily_total_page_views.length > 0}
-			<AnalyticsChart data={pageViews} />
-		{/if}
+		<AnalyticsChart data={pageViews} />
 
 		<AnalyticsMetrics {pageViews} />
 

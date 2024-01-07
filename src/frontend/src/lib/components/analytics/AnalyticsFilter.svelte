@@ -10,8 +10,6 @@
 	let from = format(addMonths(new Date(), -1), 'yyyy-MM-dd');
 	let to = '';
 
-	$: console.log(from);
-
 	const dispatch = createEventDispatcher();
 
 	const onChange = () =>

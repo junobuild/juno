@@ -1,12 +1,15 @@
 <script lang="ts">
 	import type { AnalyticsDevicesPageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews, AnalyticsPageViewsClients } from '$lib/types/ortbiter';
 
 	export let pageViews: AnalyticsPageViews;
 
+	let clients: AnalyticsPageViewsClients;
+	$: ({ clients } = pageViews);
+
 	let devices: AnalyticsDevicesPageViews;
-	$: ({ devices } = pageViews);
+	$: ({ devices } = clients);
 
 	let desktop: number;
 	let others: number;

@@ -201,6 +201,7 @@
 		"mobile": "移动端",
 		"desktop": "桌面",
 		"others": "其他",
+		"browsers": "Browsers",
 		"attach": "附加已有的 Analytics",
 		"attach_id": "输入 Orbiter ID"
 	},

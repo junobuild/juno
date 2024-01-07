@@ -1,6 +1,6 @@
 import type {
 	AnalyticKey,
-	AnalyticsDevicesPageViews,
+	AnalyticsClientsPageViews,
 	AnalyticsMetricsPageViews,
 	AnalyticsTop10PageViews,
 	AnalyticsTrackEvents,
@@ -66,19 +66,19 @@ export const getAnalyticsTop10PageViews = async ({
 	});
 };
 
-export const getAnalyticsDevicesPageViews = async ({
+export const getAnalyticsClientsPageViews = async ({
 	satelliteId,
 	orbiterId,
 	from,
 	to,
 	identity
-}: PageViewsParams): Promise<AnalyticsDevicesPageViews> => {
-	const { get_page_views_analytics_devices } = await getOrbiterActor({ orbiterId, identity });
+}: PageViewsParams): Promise<AnalyticsClientsPageViews> => {
+	const { get_page_views_analytics_clients } = await getOrbiterActor({ orbiterId, identity });
 	return getAnalytics({
 		satelliteId,
 		from,
 		to,
-		fn: get_page_views_analytics_devices
+		fn: get_page_views_analytics_clients
 	});
 };
 

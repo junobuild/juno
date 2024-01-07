@@ -1,6 +1,6 @@
 use crate::types::interface::{
-    AnalyticsDevicesPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
-    AnalyticsTrackEvents,
+    AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
+    AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents,
 };
 use crate::types::state::{AnalyticKey, PageView, TrackEvent};
 use regex::Regex;
@@ -15,10 +15,25 @@ struct Devices {
     others: u32,
 }
 
+struct Browsers {
+    chrome: u32,
+    opera: u32,
+    firefox: u32,
+    safari: u32,
+    others: u32,
+}
+
 struct DevicesRegex {
     mobile: Regex,
     android: Regex,
     iphone: Regex,
+}
+
+struct BrowsersRegex {
+    chrome: Regex,
+    opera: Regex,
+    firefox: Regex,
+    safari: Regex,
 }
 
 pub fn analytics_page_views_metrics(
@@ -102,28 +117,44 @@ pub fn analytics_page_views_top_10(
     }
 }
 
-pub fn analytics_page_views_devices(
+pub fn analytics_page_views_clients(
     page_views: &Vec<(AnalyticKey, PageView)>,
-) -> AnalyticsDevicesPageViews {
+) -> AnalyticsClientsPageViews {
     let mut total_devices = Devices {
         mobile: 0,
         desktop: 0,
         others: 0,
     };
 
+    let mut total_browsers = Browsers {
+        chrome: 0,
+        opera: 0,
+        firefox: 0,
+        safari: 0,
+        others: 0,
+    };
+
     let devices_regex: DevicesRegex = DevicesRegex {
-        mobile: Regex::new(r"mobile").unwrap(),
-        android: Regex::new(r"android|sink").unwrap(),
-        iphone: Regex::new(r"iPhone|iPod").unwrap(),
+        mobile: Regex::new(r"(?i)mobile").unwrap(),
+        android: Regex::new(r"(?i)android|sink").unwrap(),
+        iphone: Regex::new(r"(?i)iPhone|iPod").unwrap(),
+    };
+
+    let browsers_regex: BrowsersRegex = BrowsersRegex {
+        chrome: Regex::new(r"(?i)chrome|chromium|crios").unwrap(),
+        opera: Regex::new(r"(?i)opera|opr").unwrap(),
+        firefox: Regex::new(r"(?i)firefox|fxios").unwrap(),
+        safari: Regex::new(r"(?i)safari").unwrap(),
     };
 
     for (_, PageView { user_agent, .. }) in page_views {
         analytics_devices(user_agent, &devices_regex, &mut total_devices);
+        analytics_browsers(user_agent, &browsers_regex, &mut total_browsers);
     }
 
     let total = page_views.len();
 
-    AnalyticsDevicesPageViews {
+    let devices = AnalyticsDevicesPageViews {
         desktop: if total > 0 {
             total_devices.desktop as f64 / total as f64
         } else {
@@ -139,7 +170,37 @@ pub fn analytics_page_views_devices(
         } else {
             0.0
         },
-    }
+    };
+
+    let browsers = AnalyticsBrowsersPageViews {
+        chrome: if total > 0 {
+            total_browsers.chrome as f64 / total as f64
+        } else {
+            0.0
+        },
+        opera: if total > 0 {
+            total_browsers.opera as f64 / total as f64
+        } else {
+            0.0
+        },
+        firefox: if total > 0 {
+            total_browsers.firefox as f64 / total as f64
+        } else {
+            0.0
+        },
+        safari: if total > 0 {
+            total_browsers.safari as f64 / total as f64
+        } else {
+            0.0
+        },
+        others: if total > 0 {
+            total_devices.others as f64 / total as f64
+        } else {
+            0.0
+        },
+    };
+
+    AnalyticsClientsPageViews { devices, browsers }
 }
 
 pub fn analytics_track_events(
@@ -206,18 +267,37 @@ fn analytics_devices(
     devices_regex: &DevicesRegex,
     devices: &mut Devices,
 ) {
-    match user_agent {
-        Some(ua)
-            if devices_regex.iphone.is_match(ua)
-                || (devices_regex.android.is_match(ua) && !devices_regex.mobile.is_match(ua)) =>
+    if let Some(ua) = user_agent {
+        if devices_regex.iphone.is_match(ua)
+            || (devices_regex.android.is_match(ua) && !devices_regex.mobile.is_match(ua))
         {
             devices.mobile += 1;
-        }
-        Some(_) => {
+        } else {
             devices.desktop += 1;
         }
-        None => {
-            devices.others += 1;
+    } else {
+        devices.others += 1;
+    }
+}
+
+fn analytics_browsers(
+    user_agent: &Option<String>,
+    browsers_regex: &BrowsersRegex,
+    browsers: &mut Browsers,
+) {
+    if let Some(ua) = user_agent {
+        if browsers_regex.chrome.is_match(ua) {
+            browsers.chrome += 1;
+        } else if browsers_regex.opera.is_match(ua) {
+            browsers.opera += 1;
+        } else if browsers_regex.firefox.is_match(ua) {
+            browsers.firefox += 1;
+        } else if browsers_regex.safari.is_match(ua) {
+            browsers.safari += 1;
+        } else {
+            browsers.others += 1;
         }
+    } else {
+        browsers.others += 1;
     }
 }

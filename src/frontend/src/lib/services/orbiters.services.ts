@@ -1,7 +1,7 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
 import {
-	getAnalyticsDevicesPageViews,
+	getAnalyticsClientsPageViews,
 	getAnalyticsMetricsPageViews,
 	getAnalyticsTop10PageViews,
 	getTrackEventsAnalytics
@@ -78,12 +78,14 @@ export const getAnalyticsPageViews = async ({
 	params: PageViewsParams;
 	orbiterVersion: string;
 }): Promise<AnalyticsPageViews> => {
-	if (compare(orbiterVersion, '0.0.5') >= 0) {
-		const [metrics, top10, devices] = await Promise.all([
+	if (compare(orbiterVersion, '0.0.4') >= 0) {
+		const [metrics, top10, clients] = await Promise.all([
 			getAnalyticsMetricsPageViews(params),
 			getAnalyticsTop10PageViews(params),
-			getAnalyticsDevicesPageViews(params)
+			getAnalyticsClientsPageViews(params)
 		]);
+
+		console.log('here', clients);
 
 		const { daily_total_page_views, ...rest } = metrics;
 
@@ -104,7 +106,7 @@ export const getAnalyticsPageViews = async ({
 				)
 			},
 			top10,
-			devices
+			clients
 		};
 	}
 

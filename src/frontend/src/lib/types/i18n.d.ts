@@ -213,6 +213,7 @@ interface I18nAnalytics {
 	mobile: string;
 	desktop: string;
 	others: string;
+	browsers: string;
 	attach: string;
 	attach_id: string;
 }

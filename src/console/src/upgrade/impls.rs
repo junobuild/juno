@@ -1,4 +1,4 @@
-use crate::types::state::{Fees, StableState};
+use crate::types::state::{StableState};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 
 impl From<&UpgradeStableState> for StableState {

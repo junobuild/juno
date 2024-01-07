@@ -765,7 +765,7 @@ checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
 
 [[package]]
 name = "orbiter"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "candid",
  "ciborium",
@@ -981,7 +981,7 @@ dependencies = [
 
 [[package]]
 name = "shared"
-version = "0.0.10"
+version = "0.0.11"
 dependencies = [
  "candid",
  "ciborium",

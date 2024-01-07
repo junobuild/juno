@@ -5,7 +5,7 @@
 	export let trackEvents: AnalyticsTrackEvents;
 
 	let total: Array<[string, number]>;
-	$: ({total} = trackEvents);
+	$: ({ total } = trackEvents);
 </script>
 
 <div class="table-container">

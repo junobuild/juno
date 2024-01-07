@@ -5,9 +5,12 @@
 	import { createEventDispatcher } from 'svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import type { PageViewsPeriod } from '$lib/types/ortbiter';
+	import { addMonths, format } from 'date-fns';
 
-	let from = '';
+	let from = format(addMonths(new Date(), -1), 'yyyy-MM-dd');
 	let to = '';
+
+	$: console.log(from);
 
 	const dispatch = createEventDispatcher();
 

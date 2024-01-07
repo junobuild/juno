@@ -3,6 +3,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 
 	export let trackEvents: AnalyticsTrackEvents;
+
+	let total: Array<[string, number]>;
+	$: ({total} = trackEvents);
 </script>
 
 <div class="table-container">
@@ -15,7 +18,7 @@
 		</thead>
 
 		<tbody>
-			{#each Object.entries(trackEvents) as [name, count]}
+			{#each total as [name, count]}
 				<tr>
 					<td>{name}</td>
 					<td>{count}</td>

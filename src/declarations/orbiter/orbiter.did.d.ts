@@ -5,6 +5,17 @@ export interface AnalyticKey {
 	key: string;
 	collected_at: bigint;
 }
+export interface AnalyticsBrowsersPageViews {
+	safari: number;
+	opera: number;
+	others: number;
+	firefox: number;
+	chrome: number;
+}
+export interface AnalyticsClientsPageViews {
+	browsers: AnalyticsBrowsersPageViews;
+	devices: AnalyticsDevicesPageViews;
+}
 export interface AnalyticsDevicesPageViews {
 	desktop: number;
 	others: number;
@@ -126,7 +137,7 @@ export interface _SERVICE {
 	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
-	get_page_views_analytics_devices: ActorMethod<[GetAnalytics], AnalyticsDevicesPageViews>;
+	get_page_views_analytics_clients: ActorMethod<[GetAnalytics], AnalyticsClientsPageViews>;
 	get_page_views_analytics_metrics: ActorMethod<[GetAnalytics], AnalyticsMetricsPageViews>;
 	get_page_views_analytics_top_10: ActorMethod<[GetAnalytics], AnalyticsTop10PageViews>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;

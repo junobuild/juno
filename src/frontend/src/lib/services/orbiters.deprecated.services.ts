@@ -26,7 +26,9 @@ export const getDeprecatedAnalyticsPageViews = async (
 	return {
 		metrics: getDeprecatedAnalyticsMetricsPageViews(pageViews),
 		top10: getDeprecatedAnalyticsTop10PageViews(pageViews),
-		devices: getDeprecatedAnalyticsDevicesPageViews(pageViews)
+		clients: {
+			devices: getDeprecatedAnalyticsDevicesPageViews(pageViews)
+		}
 	};
 };
 

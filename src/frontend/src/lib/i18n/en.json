@@ -201,6 +201,7 @@
 		"mobile": "Mobile",
 		"desktop": "Desktop",
 		"others": "Others",
+		"browsers": "Browsers",
 		"attach": "Attach existing Analytics",
 		"attach_id": "Enter Orbiter ID"
 	},

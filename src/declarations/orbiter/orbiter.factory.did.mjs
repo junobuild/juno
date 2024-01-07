@@ -44,10 +44,21 @@ export const idlFactory = ({ IDL }) => {
 		device: PageViewDevice,
 		user_agent: IDL.Opt(IDL.Text)
 	});
+	const AnalyticsBrowsersPageViews = IDL.Record({
+		safari: IDL.Float64,
+		opera: IDL.Float64,
+		others: IDL.Float64,
+		firefox: IDL.Float64,
+		chrome: IDL.Float64
+	});
 	const AnalyticsDevicesPageViews = IDL.Record({
 		desktop: IDL.Float64,
 		others: IDL.Float64,
 		mobile: IDL.Float64
+	});
+	const AnalyticsClientsPageViews = IDL.Record({
+		browsers: AnalyticsBrowsersPageViews,
+		devices: AnalyticsDevicesPageViews
 	});
 	const CalendarDate = IDL.Record({
 		day: IDL.Nat8,
@@ -134,9 +145,9 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],
 			['query']
 		),
-		get_page_views_analytics_devices: IDL.Func(
+		get_page_views_analytics_clients: IDL.Func(
 			[GetAnalytics],
-			[AnalyticsDevicesPageViews],
+			[AnalyticsClientsPageViews],
 			['query']
 		),
 		get_page_views_analytics_metrics: IDL.Func(

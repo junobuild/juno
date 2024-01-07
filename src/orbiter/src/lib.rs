@@ -13,7 +13,7 @@ mod store;
 mod types;
 
 use crate::analytics::{
-    analytics_page_views_devices, analytics_page_views_metrics, analytics_page_views_top_10,
+    analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
     analytics_track_events,
 };
 use crate::assert::assert_enabled;
@@ -32,7 +32,7 @@ use crate::store::{
     insert_page_view, insert_track_event,
 };
 use crate::types::interface::{
-    AnalyticsDevicesPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
+    AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
     AnalyticsTrackEvents, DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig,
     SetTrackEvent,
 };
@@ -171,9 +171,9 @@ fn get_page_views_analytics_top_10(filter: GetAnalytics) -> AnalyticsTop10PageVi
 }
 
 #[query(guard = "caller_is_controller")]
-fn get_page_views_analytics_devices(filter: GetAnalytics) -> AnalyticsDevicesPageViews {
+fn get_page_views_analytics_clients(filter: GetAnalytics) -> AnalyticsClientsPageViews {
     let page_views = get_page_views_store(&filter);
-    analytics_page_views_devices(&page_views)
+    analytics_page_views_clients(&page_views)
 }
 
 #[update]

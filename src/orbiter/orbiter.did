@@ -1,4 +1,15 @@
 type AnalyticKey = record { key : text; collected_at : nat64 };
+type AnalyticsBrowsersPageViews = record {
+  safari : float64;
+  opera : float64;
+  others : float64;
+  firefox : float64;
+  chrome : float64;
+};
+type AnalyticsClientsPageViews = record {
+  browsers : AnalyticsBrowsersPageViews;
+  devices : AnalyticsDevicesPageViews;
+};
 type AnalyticsDevicesPageViews = record {
   desktop : float64;
   others : float64;
@@ -102,8 +113,8 @@ service : () -> {
   get_page_views : (GetAnalytics) -> (
       vec record { AnalyticKey; PageView },
     ) query;
-  get_page_views_analytics_devices : (GetAnalytics) -> (
-      AnalyticsDevicesPageViews,
+  get_page_views_analytics_clients : (GetAnalytics) -> (
+      AnalyticsClientsPageViews,
     ) query;
   get_page_views_analytics_metrics : (GetAnalytics) -> (
       AnalyticsMetricsPageViews,

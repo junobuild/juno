@@ -167,6 +167,21 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsBrowsersPageViews {
+        pub chrome: f64,
+        pub opera: f64,
+        pub firefox: f64,
+        pub safari: f64,
+        pub others: f64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsClientsPageViews {
+        pub devices: AnalyticsDevicesPageViews,
+        pub browsers: AnalyticsBrowsersPageViews,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsTrackEvents {
         pub total: HashMap<String, u32>,
     }

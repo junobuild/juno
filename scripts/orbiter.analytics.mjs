@@ -8,7 +8,7 @@ const analytics = async () => {
 	const {
 		get_page_views_analytics_metrics,
 		get_page_views_analytics_top_10,
-		get_page_views_analytics_devices,
+		get_page_views_analytics_clients,
 		get_track_events_analytics
 	} = await orbiterActorIC(orbiterId);
 
@@ -21,7 +21,7 @@ const analytics = async () => {
 	const [metrics, top10, devices, trackEvents] = await Promise.all([
 		get_page_views_analytics_metrics(params),
 		get_page_views_analytics_top_10(params),
-		get_page_views_analytics_devices(params),
+		get_page_views_analytics_clients(params),
 		get_track_events_analytics(params)
 	]);
 

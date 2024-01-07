@@ -1,4 +1,5 @@
 import type {
+	AnalyticsBrowsersPageViews,
 	AnalyticsDevicesPageViews,
 	AnalyticsMetricsPageViews,
 	AnalyticsTop10PageViews,
@@ -24,10 +25,15 @@ export type AnalyticsMetrics = Omit<AnalyticsMetricsPageViews, 'daily_total_page
 	daily_total_page_views: Record<DateStartOfTheDay, number>;
 };
 
+export interface AnalyticsPageViewsClients {
+	devices: AnalyticsDevicesPageViews;
+	browsers?: AnalyticsBrowsersPageViews;
+}
+
 export interface AnalyticsPageViews {
 	metrics: AnalyticsMetrics;
 	top10: AnalyticsTop10PageViews;
-	devices: AnalyticsDevicesPageViews;
+	clients: AnalyticsPageViewsClients;
 }
 
 export interface OrbiterSatelliteConfigEntry {

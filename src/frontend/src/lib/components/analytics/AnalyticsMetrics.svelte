@@ -33,6 +33,8 @@
 
 	<Value>
 		<svelte:fragment slot="label">{$i18n.analytics.bounce_rate}</svelte:fragment>
-		<p>{formatNumber(metrics.bounce_rate, { minFraction: 0, maxFraction: 0 })}<small>%</small></p>
+		<p>
+			{formatNumber(metrics.bounce_rate * 100, { minFraction: 0, maxFraction: 0 })}<small>%</small>
+		</p>
 	</Value>
 </div>

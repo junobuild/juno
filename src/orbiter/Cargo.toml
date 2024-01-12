@@ -9,10 +9,10 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-candid = "0.9.11"
-ic-cdk = "0.11.4"
-ic-cdk-macros = "0.8.1"
-serde = "1.0.190"
+candid.workspace = true
+ic-cdk.workspace = true
+ic-cdk-macros.workspace = true
+serde.workspace = true
 lazy_static = "1.4.0"
 ic-stable-structures = "0.5.6"
 ciborium = "0.2.1"

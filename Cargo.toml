@@ -7,3 +7,11 @@ members = [
     "src/observatory",
     "src/orbiter"
 ]
+
+[workspace.dependencies]
+candid = "0.9.11"
+ic-cdk = "0.11.4"
+ic-cdk-macros = "0.8.1"
+ic-ledger-types = "0.8.0"
+serde = "1.0.190"
+serde_cbor = "0.11.2"

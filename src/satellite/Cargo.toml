@@ -9,12 +9,12 @@ edition = "2021"
 crate-type = ["cdylib"]
 
 [dependencies]
-candid = "0.9.11"
-ic-cdk = "0.11.4"
-ic-cdk-macros = "0.8.1"
-serde = "1.0.190"
+candid.workspace = true
+ic-cdk.workspace = true
+ic-cdk-macros.workspace = true
+serde.workspace = true
 serde_bytes = "0.11.12"
-serde_cbor = "0.11.2"
+serde_cbor.workspace = true
 regex = "1.9.3"
 ic-certification = "1.3.0"
 sha2 = "0.10.7"

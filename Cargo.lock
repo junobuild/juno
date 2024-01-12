@@ -633,6 +633,7 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-response-verification",
  "ic-stable-structures 0.6.0",
+ "lazy_static",
  "regex",
  "serde",
  "serde_bytes",

@@ -619,6 +619,31 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
+name = "junobuild-satellite"
+version = "0.1.0"
+dependencies = [
+ "base64 0.13.1",
+ "candid",
+ "ciborium",
+ "globset",
+ "hex",
+ "ic-cdk",
+ "ic-cdk-macros",
+ "ic-certification",
+ "ic-representation-independent-hash",
+ "ic-response-verification",
+ "ic-stable-structures 0.6.0",
+ "regex",
+ "serde",
+ "serde_bytes",
+ "serde_cbor",
+ "sha2",
+ "shared",
+ "url",
+ "urlencoding",
+]
+
+[[package]]
 name = "lazy_static"
 version = "1.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -897,25 +922,11 @@ checksum = "7ffc183a10b4478d04cbbbfc96d0873219d962dd5accaff2ffbd4ceb7df837f4"
 name = "satellite"
 version = "0.0.14"
 dependencies = [
- "base64 0.13.1",
  "candid",
- "ciborium",
- "globset",
- "hex",
  "ic-cdk",
  "ic-cdk-macros",
- "ic-certification",
- "ic-representation-independent-hash",
- "ic-response-verification",
- "ic-stable-structures 0.6.0",
- "regex",
- "serde",
- "serde_bytes",
- "serde_cbor",
- "sha2",
+ "junobuild-satellite",
  "shared",
- "url",
- "urlencoding",
 ]
 
 [[package]]

@@ -129,8 +129,8 @@ pub mod memory {
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
 }
 
-pub mod trigger {
-    pub trait DocTrigger: Send {
+pub mod hooks {
+    pub trait DocHooks: Send {
         fn on_set_doc(&self);
     }
 }

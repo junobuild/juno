@@ -8,7 +8,7 @@ mod memory;
 mod msg;
 mod rules;
 mod storage;
-pub mod triggers;
+pub mod hooks;
 pub mod types;
 
 use crate::controllers::store::get_admin_controllers;
@@ -75,7 +75,7 @@ use storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
 use types::list::ListParams;
-use crate::triggers::{invoke_trigger};
+use crate::hooks::{invoke_hook};
 
 pub fn init_satellite() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
@@ -147,7 +147,7 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
 
     match result {
         Ok(doc) => {
-            invoke_trigger();
+            invoke_hook();
 
             doc
         },

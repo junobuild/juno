@@ -1,29 +1,20 @@
-use crate::db::types::state::Doc;
-use ic_cdk::print;
+use crate::types::hooks::DocHooks;
+use lazy_static::lazy_static;
+use std::sync::Mutex;
 
-extern "Rust" {
-    fn juno_on_set_doc(doc: Doc);
-    fn juno_on_delete_doc(doc: Option<Doc>);
+lazy_static! {
+    static ref HOOKS: Mutex<Option<Box<dyn DocHooks>>> = Mutex::new(None);
 }
 
-pub fn invoke_on_set_doc(doc: Doc) {
-    print("About to invoke set");
-
-    #[cfg(not(feature = "disable_on_set_doc"))]
-    {
-        unsafe {
-            juno_on_set_doc(doc);
-        }
-    }
+pub fn register_hooks(hooks: Box<dyn DocHooks>) {
+    let mut heap_hooks = HOOKS.lock().unwrap();
+    *heap_hooks = Some(hooks);
 }
 
-pub fn invoke_on_delete_doc(doc: Option<Doc>) {
-    print("About to invoke delete");
+pub fn invoke_hook() {
+    let hook = HOOKS.lock().unwrap();
 
-    #[cfg(not(feature = "disable_on_delete_doc"))]
-    {
-        unsafe {
-            juno_on_delete_doc(doc);
-        }
+    if let Some(ref hook) = *hook {
+        hook.on_set_doc();
     }
 }

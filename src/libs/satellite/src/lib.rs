@@ -2,13 +2,14 @@ mod assert;
 mod controllers;
 mod db;
 mod guards;
+pub mod hooks;
 mod impls;
 mod list;
 mod memory;
 mod msg;
 mod rules;
 mod storage;
-mod types;
+pub mod types;
 
 use crate::controllers::store::get_admin_controllers;
 use crate::db::store::{
@@ -18,6 +19,7 @@ use crate::db::store::{
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
+use crate::hooks::invoke_hook;
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
@@ -55,7 +57,7 @@ use controllers::store::{
 };
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, trap};
-use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use ic_cdk_macros::{pre_upgrade, query, update};
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
@@ -75,8 +77,7 @@ use storage::http::types::{
 };
 use types::list::ListParams;
 
-#[init]
-pub fn init() {
+pub fn init_satellite() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
     let SegmentArgs { controllers } = call_arg.unwrap();
 
@@ -110,8 +111,7 @@ pub fn pre_upgrade() {
     writer.write(&state_bytes).unwrap()
 }
 
-#[post_upgrade]
-pub fn post_upgrade() {
+pub fn post_upgrade_satellite() {
     // The memory offset is 4 bytes because that's the length we used in pre_upgrade to store the length of the memory data for the upgrade.
     // https://github.com/dfinity/stable-structures/issues/104
     const OFFSET: usize = mem::size_of::<u32>();
@@ -146,7 +146,11 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let result = insert_doc(caller, collection, key, doc);
 
     match result {
-        Ok(doc) => doc,
+        Ok(doc) => {
+            invoke_hook();
+
+            doc
+        }
         Err(error) => trap(&error),
     }
 }
@@ -289,7 +293,9 @@ pub fn set_controllers(
 }
 
 #[update(guard = "caller_is_admin_controller")]
-pub fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) -> Controllers {
+pub fn del_controllers(
+    DeleteControllersArgs { controllers }: DeleteControllersArgs,
+) -> Controllers {
     delete_controllers_store(&controllers);
     get_controllers()
 }
@@ -544,10 +550,10 @@ macro_rules! include_satellite {
             commit_asset_upload, count_assets, count_docs, del_asset, del_assets, del_controllers,
             del_custom_domain, del_doc, del_docs, del_many_assets, del_many_docs, del_rule,
             deposit_cycles, get_config, get_doc, get_many_docs, http_request,
-            http_request_streaming_callback, init, init_asset_upload, list_assets,
-            list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
-            post_upgrade, pre_upgrade, set_config, set_controllers, set_custom_domain, set_doc,
-            set_many_docs, set_rule, upload_asset_chunk, version,
+            http_request_streaming_callback, init_asset_upload, list_assets, list_controllers,
+            list_custom_domains, list_docs, list_rules, memory_size, pre_upgrade, set_config,
+            set_controllers, set_custom_domain, set_doc, set_many_docs, set_rule,
+            upload_asset_chunk, version,
         };
     };
 }

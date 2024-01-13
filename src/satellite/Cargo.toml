@@ -13,4 +13,5 @@ candid.workspace = true
 ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
 junobuild-satellite = { path = "../libs/satellite" }
+junobuild-macros = { path = "../libs/macros" }
 shared = { path = "../shared" }

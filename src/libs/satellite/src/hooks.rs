@@ -1,9 +1,9 @@
-use std::sync::Mutex;
-use lazy_static::lazy_static;
 use crate::types::hooks::DocHooks;
+use lazy_static::lazy_static;
+use std::sync::Mutex;
 
 lazy_static! {
-    static ref HOOKS: Mutex<Option<Box<dyn DocHooks >>> = Mutex::new(None);
+    static ref HOOKS: Mutex<Option<Box<dyn DocHooks>>> = Mutex::new(None);
 }
 
 pub fn register_hooks(hooks: Box<dyn DocHooks>) {

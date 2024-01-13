@@ -32,6 +32,10 @@ pub fn init_satellite(_attr: TokenStream, item: TokenStream) -> TokenStream {
             let hooks = #func_name();
             junobuild_satellite::register_hooks(hooks);
         }
+
+        junobuild_satellite::include_satellite!();
+
+        ic_cdk_macros::export_candid!();
     };
 
     result.into()

@@ -1,12 +1,12 @@
-use crate::types::hooks::DocHooks;
+use crate::types::hooks::SatelliteHooks;
 use lazy_static::lazy_static;
 use std::sync::Mutex;
 
 lazy_static! {
-    static ref HOOKS: Mutex<Option<Box<dyn DocHooks>>> = Mutex::new(None);
+    static ref HOOKS: Mutex<Option<Box<dyn SatelliteHooks>>> = Mutex::new(None);
 }
 
-pub fn register_hooks(hooks: Box<dyn DocHooks>) {
+pub fn register_hooks(hooks: Box<dyn SatelliteHooks>) {
     let mut heap_hooks = HOOKS.lock().unwrap();
     *heap_hooks = Some(hooks);
 }

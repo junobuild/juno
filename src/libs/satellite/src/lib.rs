@@ -2,7 +2,7 @@ mod assert;
 mod controllers;
 mod db;
 mod guards;
-pub mod hooks;
+mod hooks;
 mod impls;
 mod list;
 mod memory;
@@ -19,7 +19,7 @@ use crate::db::store::{
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::hooks::invoke_hook;
+use crate::hooks::{invoke_hook, register_hooks as register_hooks_heap};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
@@ -46,6 +46,7 @@ use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use crate::types::core::{CollectionKey, Key};
+use crate::types::hooks::SatelliteHooks;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
 use crate::types::memory::Memory;
@@ -77,7 +78,7 @@ use storage::http::types::{
 };
 use types::list::ListParams;
 
-pub fn init_satellite() {
+pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
     let SegmentArgs { controllers } = call_arg.unwrap();
 
@@ -111,7 +112,7 @@ pub fn pre_upgrade() {
     writer.write(&state_bytes).unwrap()
 }
 
-pub fn post_upgrade_satellite() {
+pub fn post_upgrade() {
     // The memory offset is 4 bytes because that's the length we used in pre_upgrade to store the length of the memory data for the upgrade.
     // https://github.com/dfinity/stable-structures/issues/104
     const OFFSET: usize = mem::size_of::<u32>();
@@ -133,6 +134,10 @@ pub fn post_upgrade_satellite() {
     STATE.with(|s| *s.borrow_mut() = state);
 
     init_certified_assets();
+}
+
+pub fn register_hooks(hooks: Box<dyn SatelliteHooks>) {
+    register_hooks_heap(hooks);
 }
 
 ///

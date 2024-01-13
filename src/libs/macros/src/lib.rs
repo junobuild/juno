@@ -18,23 +18,19 @@ pub fn init_satellite(_attr: TokenStream, item: TokenStream) -> TokenStream {
 
         #[ic_cdk::init]
         fn #init_name() {
-            junobuild_satellite::init_satellite();
+            junobuild_satellite::init();
             #register_name();
-
-            print("Init");
         }
 
         #[ic_cdk::post_upgrade]
         fn #post_upgrade_name() {
-            junobuild_satellite::post_upgrade_satellite();
+            junobuild_satellite::post_upgrade();
             #register_name();
-
-            print("Post upgrade");
         }
 
         fn #register_name() {
             let hooks = #func_name();
-            junobuild_satellite::hooks::register_hooks(hooks);
+            junobuild_satellite::register_hooks(hooks);
         }
     };
 

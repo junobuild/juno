@@ -130,7 +130,7 @@ pub mod memory {
 }
 
 pub mod hooks {
-    pub trait DocHooks: Send {
+    pub trait SatelliteHooks: Send {
         fn on_set_doc(&self);
     }
 }

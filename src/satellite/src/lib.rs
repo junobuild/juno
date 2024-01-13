@@ -2,20 +2,20 @@ use ic_cdk::print;
 use ic_cdk_macros::export_candid;
 use junobuild_macros::init_satellite;
 use junobuild_satellite::include_satellite;
-use junobuild_satellite::types::hooks::DocHooks;
+use junobuild_satellite::types::hooks::SatelliteHooks;
 
-struct MyDocHooks;
+struct MyHooks;
 
-impl DocHooks for MyDocHooks {
+impl SatelliteHooks for MyHooks {
     fn on_set_doc(&self) {
         print("On set doc called!");
     }
 }
 
 #[init_satellite]
-fn init() -> Box<dyn DocHooks> {
+fn init() -> Box<dyn SatelliteHooks> {
     print("Crate register");
-    Box::new(MyDocHooks)
+    Box::new(MyHooks)
 }
 
 include_satellite!();

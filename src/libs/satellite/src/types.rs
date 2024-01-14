@@ -130,7 +130,9 @@ pub mod memory {
 }
 
 pub mod hooks {
-    pub trait DocHooks: Send {
-        fn on_set_doc(&self);
+    use crate::db::types::state::Doc;
+
+    pub trait SatelliteHooks: Send {
+        fn on_set_doc(&self, doc: Doc);
     }
 }

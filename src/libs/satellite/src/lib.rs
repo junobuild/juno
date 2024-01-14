@@ -1,6 +1,6 @@
 mod assert;
 mod controllers;
-mod db;
+pub mod db;
 mod guards;
 mod hooks;
 mod impls;
@@ -152,7 +152,7 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
 
     match result {
         Ok(doc) => {
-            invoke_hook();
+            invoke_hook(doc.clone());
 
             doc
         }

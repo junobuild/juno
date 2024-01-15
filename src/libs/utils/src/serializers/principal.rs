@@ -1,9 +1,9 @@
 use crate::serializers::types::json::Principal;
+use candid::Principal as CandidPrincipal;
 use serde::de::{self, MapAccess, Visitor};
 use serde::ser::SerializeStruct;
 use serde::{Deserialize, Deserializer, Serialize, Serializer};
 use std::fmt;
-use candid::{Principal as CandidPrincipal};
 
 impl Serialize for Principal {
     fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

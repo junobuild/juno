@@ -128,11 +128,3 @@ pub mod memory {
 
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
 }
-
-pub mod hooks {
-    use crate::db::types::state::Doc;
-
-    pub trait SatelliteHooks: Send {
-        fn on_set_doc(&self, doc: Doc);
-    }
-}

@@ -7,6 +7,7 @@ members = [
     "src/observatory",
     "src/orbiter"
 ]
+resolver = "2"
 
 [workspace.dependencies]
 candid = "0.9.11"

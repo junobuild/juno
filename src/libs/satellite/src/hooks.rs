@@ -12,10 +12,18 @@ pub fn register_hooks(hooks: Box<dyn SatelliteHooks>) {
     *heap_hooks = Some(hooks);
 }
 
-pub fn invoke_hook(doc: Doc) {
+pub fn invoke_on_set_doc(doc: Doc) {
     let hook = HOOKS.lock().unwrap();
 
     if let Some(ref hook) = *hook {
         hook.on_set_doc(doc);
+    }
+}
+
+pub fn invoke_on_delete_doc(doc: Option<Doc>) {
+    let hook = HOOKS.lock().unwrap();
+
+    if let Some(ref hook) = *hook {
+        hook.on_delete_doc(doc);
     }
 }

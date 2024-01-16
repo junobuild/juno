@@ -19,7 +19,7 @@ use crate::db::store::{
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::hooks::{invoke_hook, register_hooks as register_hooks_heap};
+use crate::hooks::{invoke_on_delete_doc, invoke_on_set_doc, register_hooks as register_hooks_heap};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
@@ -152,7 +152,7 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
 
     match result {
         Ok(doc) => {
-            invoke_hook(doc.clone());
+            invoke_on_set_doc(doc.clone());
 
             doc
         }
@@ -176,7 +176,9 @@ pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let caller = caller();
 
-    delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
+    let delete_doc = delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
+
+    invoke_on_delete_doc(delete_doc);
 }
 
 #[query]

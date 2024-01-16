@@ -115,7 +115,7 @@ pub fn insert_doc(
     }
 }
 
-pub fn delete_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<(), String> {
+pub fn delete_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Option<Doc>, String> {
     match rule.mem() {
         Memory::Heap => {
             STATE.with(|state| delete_doc_heap(collection, key, &mut state.borrow_mut().heap.db.db))
@@ -228,21 +228,21 @@ fn delete_doc_stable(
     collection: &CollectionKey,
     key: &Key,
     db: &mut DbStable,
-) -> Result<(), String> {
-    db.remove(&stable_key(collection, key));
+) -> Result<Option<Doc>, String> {
+    let deleted_doc = db.remove(&stable_key(collection, key));
 
-    Ok(())
+    Ok(deleted_doc)
 }
 
-fn delete_doc_heap(collection: &CollectionKey, key: &Key, db: &mut DbHeap) -> Result<(), String> {
+fn delete_doc_heap(collection: &CollectionKey, key: &Key, db: &mut DbHeap) -> Result<Option<Doc>, String> {
     let col = db.get_mut(collection);
 
     match col {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(col) => {
-            col.remove(key);
+            let deleted_doc = col.remove(key);
 
-            Ok(())
+            Ok(deleted_doc)
         }
     }
 }

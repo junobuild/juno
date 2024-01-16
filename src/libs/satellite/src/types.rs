@@ -133,6 +133,12 @@ pub mod hooks {
     use crate::db::types::state::Doc;
 
     pub trait SatelliteHooks: Send {
-        fn on_set_doc(&self, doc: Doc);
+        fn on_set_doc(&self, _doc: Doc) {
+            // Do nothing by default
+        }
+
+        fn on_delete_doc(&self, _doc: Option<Doc>) {
+            // Do nothing by default
+        }
     }
 }

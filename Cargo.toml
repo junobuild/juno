@@ -8,6 +8,7 @@ members = [
     "src/orbiter",
     "src/libs/satellite"
 ]
+resolver = "2"
 
 [workspace.dependencies]
 candid = "0.9.11"

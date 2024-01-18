@@ -9,15 +9,21 @@ extern "Rust" {
 pub fn invoke_on_set_doc(doc: Doc) {
     print("About to invoke set");
 
-    unsafe {
-        juno_on_set_doc(doc);
+    #[cfg(not(feature = "disable_on_set_doc"))]
+    {
+        unsafe {
+            juno_on_set_doc(doc);
+        }
     }
 }
 
 pub fn invoke_on_delete_doc(doc: Option<Doc>) {
     print("About to invoke delete");
 
-    unsafe {
-        juno_on_delete_doc(doc);
+    #[cfg(not(feature = "disable_on_delete_doc"))]
+    {
+        unsafe {
+            juno_on_delete_doc(doc);
+        }
     }
 }

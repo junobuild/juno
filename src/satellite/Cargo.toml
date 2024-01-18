@@ -14,7 +14,7 @@ ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
 serde.workspace = true
 serde_json = "1.0.111"
-junobuild-satellite = { path = "../libs/satellite" }
+junobuild-satellite = { path = "../libs/satellite", features = ["disable_on_delete_doc"] }
 junobuild-macros = { path = "../libs/macros" }
 junobuild-utils = { path = "../libs/utils" }
 shared = { path = "../shared" }

@@ -16,7 +16,7 @@ struct Person {
 }
 
 #[on_set_doc]
-fn on_set_doc(doc: Doc) {
+async fn on_set_doc(doc: Doc) {
     print("On set doc called with the function set as extern Rust.");
 
     match from_slice::<Person>(&doc.data) {

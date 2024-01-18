@@ -3,6 +3,10 @@ name = "junobuild-satellite"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+disable_on_set_doc = []
+disable_on_delete_doc = []
+
 [dependencies]
 candid.workspace = true
 ic-cdk.workspace = true
@@ -23,4 +27,3 @@ ciborium = "0.2.1"
 ic-response-verification = "1.2.0"
 ic-representation-independent-hash = "1.2.0"
 shared = { path = "../../shared" }
-lazy_static = "1.4.0"

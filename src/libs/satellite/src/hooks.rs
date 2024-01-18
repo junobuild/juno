@@ -1,29 +1,29 @@
 use crate::db::types::state::Doc;
-use crate::types::hooks::SatelliteHooks;
-use lazy_static::lazy_static;
-use std::sync::Mutex;
+use ic_cdk::print;
 
-lazy_static! {
-    static ref HOOKS: Mutex<Option<Box<dyn SatelliteHooks>>> = Mutex::new(None);
-}
-
-pub fn register_hooks(hooks: Box<dyn SatelliteHooks>) {
-    let mut heap_hooks = HOOKS.lock().unwrap();
-    *heap_hooks = Some(hooks);
+extern "Rust" {
+    fn juno_on_set_doc(doc: Doc);
+    fn juno_on_delete_doc(doc: Option<Doc>);
 }
 
 pub fn invoke_on_set_doc(doc: Doc) {
-    let hook = HOOKS.lock().unwrap();
+    print("About to invoke set");
 
-    if let Some(ref hook) = *hook {
-        hook.on_set_doc(doc);
+    #[cfg(not(feature = "disable_on_set_doc"))]
+    {
+        unsafe {
+            juno_on_set_doc(doc);
+        }
     }
 }
 
 pub fn invoke_on_delete_doc(doc: Option<Doc>) {
-    let hook = HOOKS.lock().unwrap();
+    print("About to invoke delete");
 
-    if let Some(ref hook) = *hook {
-        hook.on_delete_doc(doc);
+    #[cfg(not(feature = "disable_on_delete_doc"))]
+    {
+        unsafe {
+            juno_on_delete_doc(doc);
+        }
     }
 }

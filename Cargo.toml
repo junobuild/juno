@@ -10,6 +10,7 @@ members = [
     "src/libs/macros",
     "src/libs/utils"
 ]
+resolver = "2"
 
 [workspace.dependencies]
 candid = "0.9.11"

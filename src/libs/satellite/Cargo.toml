@@ -27,4 +27,3 @@ ciborium = "0.2.1"
 ic-response-verification = "1.2.0"
 ic-representation-independent-hash = "1.2.0"
 shared = { path = "../../shared" }
-lazy_static = "1.4.0"

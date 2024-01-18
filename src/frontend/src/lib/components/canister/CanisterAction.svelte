@@ -7,7 +7,10 @@
 
 	let enabled = false;
 	$: enabled =
-		nonNullish(canister) && nonNullish(canister.data) && canister.data.status === 'running';
+		nonNullish(canister) &&
+		nonNullish(canister.data) &&
+		nonNullish(canister.data.canister) &&
+		canister.data.canister.status === 'running';
 </script>
 
 {#if enabled}

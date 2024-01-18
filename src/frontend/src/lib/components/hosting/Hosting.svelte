@@ -4,29 +4,25 @@
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import { onMount } from 'svelte';
-	import { toasts } from '$lib/stores/toasts.store';
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listCustomDomains } from '$lib/services/hosting.services';
+	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
+	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	export let satellite: Satellite;
 
-	let satelliteId: string;
+	let satelliteId: SatelliteIdText;
 	$: satelliteId = satellite.satellite_id.toText();
 
 	let customDomains: [string, CustomDomainType][] = [];
 
 	const list = async () => {
-		try {
-			customDomains = await listCustomDomains({
-				satelliteId: satellite.satellite_id
-			});
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.hosting_loading_errors,
-				detail: err
-			});
-		}
+		const { customDomains: domains } = await listCustomDomains({
+			satelliteId: satellite.satellite_id
+		});
+
+		customDomains = domains ?? [];
 	};
 
 	onMount(list);
@@ -72,7 +68,11 @@
 	</table>
 </div>
 
-<AddCustomDomain {satellite} />
+<div class="footer">
+	<AddCustomDomain {satellite} />
+
+	<HostingCount {satellite} />
+</div>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
@@ -84,6 +84,18 @@
 	.domain {
 		@include media.min-width(small) {
 			width: 60%;
+		}
+	}
+
+	.footer {
+		display: flex;
+		flex-direction: column-reverse;
+		gap: var(--padding);
+
+		@include media.min-width(small) {
+			display: flex;
+			flex-direction: row;
+			justify-content: space-between;
 		}
 	}
 </style>

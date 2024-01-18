@@ -81,11 +81,6 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct AddCreditsArgs {
-        pub user: UserId,
-    }
-
-    #[derive(CandidType, Deserialize)]
     pub struct GetCreateCanisterFeeArgs {
         pub user: UserId,
     }
@@ -136,6 +131,14 @@ pub mod interface {
     pub struct DepositCyclesArgs {
         pub destination_id: Principal,
         pub cycles: u128,
+    }
+
+    pub type Bytes = usize;
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct MemorySize {
+        pub heap: Bytes,
+        pub stable: Bytes,
     }
 }
 
@@ -221,5 +224,17 @@ pub mod cronjob {
     pub struct CronJobStatusesConfig {
         pub enabled: bool,
         pub cycles_threshold: Option<u64>,
+    }
+}
+
+pub mod utils {
+    use candid::CandidType;
+    use serde::Deserialize;
+
+    #[derive(Default, CandidType, Deserialize, Clone, PartialEq, Eq, Hash)]
+    pub struct CalendarDate {
+        pub year: i32,
+        pub month: u8,
+        pub day: u8,
     }
 }

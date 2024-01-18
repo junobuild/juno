@@ -154,6 +154,27 @@ export const idlFactory = ({ IDL }) => {
 		no_such_delegation: IDL.Null,
 		signed_delegation: SignedDelegation
 	});
+	const GetIdAliasRequest = IDL.Record({
+		rp_id_alias_jwt: IDL.Text,
+		issuer: FrontendHostname,
+		issuer_id_alias_jwt: IDL.Text,
+		relying_party: FrontendHostname,
+		identity_number: IdentityNumber
+	});
+	const SignedIdAlias = IDL.Record({
+		credential_jws: IDL.Text,
+		id_alias: IDL.Principal,
+		id_dapp: IDL.Principal
+	});
+	const IdAliasCredentials = IDL.Record({
+		rp_id_alias_credential: SignedIdAlias,
+		issuer_id_alias_credential: SignedIdAlias
+	});
+	const GetIdAliasResponse = IDL.Variant({
+		ok: IdAliasCredentials,
+		authentication_failed: IDL.Text,
+		no_such_credentials: IDL.Text
+	});
 	const HeaderField = IDL.Tuple(IDL.Text, IDL.Text);
 	const HttpRequest = IDL.Record({
 		url: IDL.Text,
@@ -192,6 +213,20 @@ export const idlFactory = ({ IDL }) => {
 	const IdentityInfoResponse = IDL.Variant({ ok: IdentityInfo });
 	const IdentityMetadataReplaceResponse = IDL.Variant({ ok: IDL.Null });
 	const UserKey = PublicKey;
+	const PrepareIdAliasRequest = IDL.Record({
+		issuer: FrontendHostname,
+		relying_party: FrontendHostname,
+		identity_number: IdentityNumber
+	});
+	const PreparedIdAlias = IDL.Record({
+		rp_id_alias_jwt: IDL.Text,
+		issuer_id_alias_jwt: IDL.Text,
+		canister_sig_pk_der: PublicKey
+	});
+	const PrepareIdAliasResponse = IDL.Variant({
+		ok: PreparedIdAlias,
+		authentication_failed: IDL.Text
+	});
 	const ChallengeResult = IDL.Record({
 		key: ChallengeKey,
 		chars: IDL.Text
@@ -246,6 +281,7 @@ export const idlFactory = ({ IDL }) => {
 			[GetDelegationResponse],
 			['query']
 		),
+		get_id_alias: IDL.Func([GetIdAliasRequest], [IDL.Opt(GetIdAliasResponse)], ['query']),
 		get_principal: IDL.Func([UserNumber, FrontendHostname], [IDL.Principal], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_update: IDL.Func([HttpRequest], [HttpResponse], []),
@@ -262,6 +298,7 @@ export const idlFactory = ({ IDL }) => {
 			[UserKey, Timestamp],
 			[]
 		),
+		prepare_id_alias: IDL.Func([PrepareIdAliasRequest], [IDL.Opt(PrepareIdAliasResponse)], []),
 		register: IDL.Func(
 			[DeviceData, ChallengeResult, IDL.Opt(IDL.Principal)],
 			[RegisterResponse],

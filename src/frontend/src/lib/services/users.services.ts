@@ -1,10 +1,12 @@
 import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
 import { listDocs008 } from '$lib/api/satellites.deprecated.api';
+import { authStore } from '$lib/stores/auth.store';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
 import { fromArray } from '$lib/utils/did.utils';
 import type { Principal } from '@dfinity/principal';
 import { compare } from 'semver';
+import { get } from 'svelte/store';
 
 export const listUsers = async ({
 	startAfter,
@@ -12,11 +14,14 @@ export const listUsers = async ({
 }: Pick<ListParams, 'startAfter'> & { satelliteId: Principal }): Promise<{
 	users: [string, User][];
 	matches_length: bigint;
+	items_length: bigint;
 }> => {
-	const version = await satelliteVersion({ satelliteId });
+	const identity = get(authStore).identity;
+
+	const version = await satelliteVersion({ satelliteId, identity });
 	const list = compare(version, '0.0.9') >= 0 ? listDocs : listDocs008;
 
-	const { items, matches_length } = await list({
+	const { items, matches_length, items_length } = await list({
 		collection: '#user',
 		satelliteId,
 		params: {
@@ -26,7 +31,8 @@ export const listUsers = async ({
 				field: 'created_at'
 			},
 			filter: {}
-		}
+		},
+		identity
 	});
 
 	const users: [string, User][] = [];
@@ -45,6 +51,7 @@ export const listUsers = async ({
 
 	return {
 		users,
-		matches_length
+		matches_length,
+		items_length
 	};
 };

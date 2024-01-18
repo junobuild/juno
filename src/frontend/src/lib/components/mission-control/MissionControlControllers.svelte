@@ -15,16 +15,16 @@
 	export let missionControlId: Principal;
 
 	const list = (): Promise<[Principal, Controller][]> =>
-		listMissionControlControllers({ missionControlId });
+		listMissionControlControllers({ missionControlId, identity: $authStore.identity });
 
 	const remove = (params: { missionControlId: Principal; controller: Principal }): Promise<void> =>
-		deleteMissionControlController(params);
+		deleteMissionControlController({ ...params, identity: $authStore.identity });
 
 	const add = (
 		params: {
 			missionControlId: Principal;
 		} & SetControllerParams
-	): Promise<void> => setMissionControlController(params);
+	): Promise<void> => setMissionControlController({ ...params, identity: $authStore.identity });
 
 	let extraControllers: [Principal, Controller | undefined][] = [
 		[missionControlId, undefined],

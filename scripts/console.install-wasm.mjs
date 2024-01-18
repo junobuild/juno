@@ -2,19 +2,9 @@
 
 import { consoleActorLocal } from './actor.mjs';
 import { loadWasm, readVersion } from './code.utils.mjs';
+import { segmentType } from './console.utils.mjs';
 
-const didType = (type) => {
-	switch (type) {
-		case 'satellite':
-			return { Satellite: null };
-		case 'orbiter':
-			return { Orbiter: null };
-		default:
-			return { MissionControl: null };
-	}
-};
-
-const resetRelease = ({ actor, type }) => actor.reset_release(didType(type));
+const resetRelease = ({ actor, type }) => actor.reset_release(segmentType(type));
 
 const installRelease = async ({ actor, type, wasmModule, version }) => {
 	console.log(`Installing ${type} wasm code v${version} in console.`);
@@ -22,7 +12,7 @@ const installRelease = async ({ actor, type, wasmModule, version }) => {
 	const chunkSize = 700000;
 
 	const upload = async (chunks) => {
-		const result = await actor.load_release(didType(type), chunks, version);
+		const result = await actor.load_release(segmentType(type), chunks, version);
 		console.log(`Chunks ${type}:`, result);
 	};
 

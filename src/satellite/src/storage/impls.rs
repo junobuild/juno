@@ -68,6 +68,16 @@ impl Storable for Asset {
     const BOUND: Bound = Bound::Unbounded;
 }
 
+impl Compare for Asset {
+    fn cmp_updated_at(&self, other: &Self) -> Ordering {
+        self.updated_at.cmp(&other.updated_at)
+    }
+
+    fn cmp_created_at(&self, other: &Self) -> Ordering {
+        self.created_at.cmp(&other.created_at)
+    }
+}
+
 impl Storable for StableKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)

@@ -10,7 +10,7 @@ use candid::Principal;
 use regex::Regex;
 use shared::types::state::{Controllers, UserId};
 
-fn map_key(asset: &Asset) -> (FullPath, AssetNoContent) {
+pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (
         asset.key.full_path.clone(),
         AssetNoContent {
@@ -37,43 +37,46 @@ fn map_key(asset: &Asset) -> (FullPath, AssetNoContent) {
     )
 }
 
-pub fn filter_values(
+pub fn filter_values<'a>(
     caller: Principal,
-    controllers: &Controllers,
-    rule: &Permission,
+    controllers: &'a Controllers,
+    rule: &'a Permission,
     collection: CollectionKey,
     ListParams {
         matcher,
         order: _,
         paginate: _,
         owner,
-    }: &ListParams,
-    assets: &[Asset],
-) -> Vec<(FullPath, AssetNoContent)> {
-    let all_keys = assets.iter().map(map_key);
-
+    }: &'a ListParams,
+    assets: &'a [(&'a FullPath, &'a Asset)],
+) -> Vec<(&'a FullPath, &'a Asset)> {
     let (regex_key, regex_description) = matcher_regex(matcher);
 
-    all_keys
-        .into_iter()
-        .filter(|(_, asset)| {
-            filter_collection(collection.clone(), asset)
+    assets
+        .iter()
+        .filter_map(|(key, asset)| {
+            if filter_collection(collection.clone(), asset)
                 && filter_full_path(&regex_key, asset)
                 && filter_description(&regex_description, asset)
                 && filter_owner(*owner, asset)
                 && assert_permission(rule, asset.key.owner, caller, controllers)
+            {
+                Some((*key, *asset))
+            } else {
+                None
+            }
         })
         .collect()
 }
 
-fn filter_full_path(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
+fn filter_full_path(regex: &Option<Regex>, asset: &Asset) -> bool {
     match regex {
         None => true,
         Some(re) => re.is_match(&asset.key.full_path),
     }
 }
 
-fn filter_description(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
+fn filter_description(regex: &Option<Regex>, asset: &Asset) -> bool {
     match regex {
         None => true,
         Some(re) => match &asset.key.description {
@@ -83,25 +86,29 @@ fn filter_description(regex: &Option<Regex>, asset: &AssetNoContent) -> bool {
     }
 }
 
-fn filter_collection(collection: CollectionKey, asset: &AssetNoContent) -> bool {
+fn filter_collection(collection: CollectionKey, asset: &Asset) -> bool {
     asset.key.collection == collection
 }
 
-fn filter_owner(filter_owner: Option<UserId>, asset: &AssetNoContent) -> bool {
+fn filter_owner(filter_owner: Option<UserId>, asset: &Asset) -> bool {
     match filter_owner {
         None => true,
         Some(filter_owner) => filter_owner == asset.key.owner,
     }
 }
 
-pub fn filter_collection_values(
+pub fn filter_collection_values<'a>(
     collection: CollectionKey,
-    assets: &[Asset],
-) -> Vec<(FullPath, AssetNoContent)> {
-    let all_keys = assets.iter().map(map_key);
-
-    all_keys
-        .into_iter()
-        .filter(|(_, asset)| filter_collection(collection.clone(), asset))
+    assets: &'a [(&'a FullPath, &'a Asset)],
+) -> Vec<(&'a FullPath, &'a Asset)> {
+    assets
+        .iter()
+        .filter_map(|(key, asset)| {
+            if filter_collection(collection.clone(), asset) {
+                Some((*key, *asset))
+            } else {
+                None
+            }
+        })
         .collect()
 }

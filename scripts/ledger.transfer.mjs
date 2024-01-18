@@ -1,4 +1,4 @@
-import { IcrcLedgerCanister } from '@dfinity/ledger';
+import { IcrcLedgerCanister } from '@dfinity/ledger-icrc';
 import { Principal } from '@dfinity/principal';
 import { localAgent } from './actor.mjs';
 import { LEDGER_CANISTER_ID_LOCAL } from './env.mjs';

@@ -66,8 +66,9 @@
 		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
 		"upgrade": "Upgrade",
 		"delete_title": "Delete {0}",
-		"delete_explanation": "Cycles are necessary to delete the {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 1 T Cycles on your {1} for this purpose.",
+		"delete_explanation": "Cycles are necessary to delete the {0}, but the Internet Computer doesn't specify the exact amount required for this operation. Therefore, we recommend retaining 0.5 T Cycles on your {1} for this purpose.",
 		"delete_customization": "You have the flexibility to modify this value if needed. Your current {0} balance is {1} T Cycles. Any remaining cycles will be transferred to your mission control. ",
+		"delete_custom_domain": "To delete a satellite, you should first remove its custom domain. This ensures that no leftovers are retained in the boundary nodes configuration, in case you intend to reuse the domain name in the future.",
 		"cycles_to_retain": "T Cycles to retain",
 		"cycles_to_transfer": "{0} T Cycles will be transferred to your mission control.",
 		"delete_info": "Do you want to delete your {0}? This action is irreversible.",
@@ -86,7 +87,16 @@
 		"destination": "Destination for the transfer",
 		"your_balance": "Your current {0} balance is {1} T Cycles.",
 		"cycles_will_remain": "{0} T Cycles will remain on your {1}.",
-		"transfer_cycles_done": "Cycles transferred!"
+		"transfer_cycles_done": "Cycles transferred!",
+		"memory": "Memory",
+		"in_total": "in total",
+		"on_heap": "on heap",
+		"on_stable": "on stable",
+		"warning_mission_control_low_cycles": "Your mission control center is running low on cycles.",
+		"warning_satellite_low_cycles": "Your satellite is running low on cycles.",
+		"warning_orbiter_low_cycles": "Your orbiter is running low on cycles.",
+		"warning_satellite_heap_memory": "Your satellite heap memory is approaching 1 GB.",
+		"warning_orbiter_heap_memory": "Your orbiter heap memory is approaching 1 GB."
 	},
 	"sign_in": {
 		"title": "Launch your first satellite",
@@ -109,7 +119,7 @@
 		"satellite_name": "Satellite name",
 		"enter_name": "Enter a name for your satellite",
 		"edit_name": "Edit the name of your satellite",
-		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
+		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",
 		"id": "Satellite ID"
@@ -168,7 +178,7 @@
 		"start": "Getting started",
 		"description": "Get analytics to measure and analyse how users engage with your apps.",
 		"initializing": "Initializing analytics...",
-		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP and you have {2} credits remaining.",
+		"create_orbiter_price": "Starting with the analytics requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP.",
 		"create": "Create analytics",
 		"ready": "Your analytics are ready!",
 		"satellites": "Satellite(s)",
@@ -191,6 +201,7 @@
 		"mobile": "Mobile",
 		"desktop": "Desktop",
 		"others": "Others",
+		"browsers": "Browsers",
 		"attach": "Attach existing Analytics",
 		"attach_id": "Enter Orbiter ID"
 	},
@@ -221,17 +232,20 @@
 		"pendingacmeapproval": "Challenge completed",
 		"available": "Available",
 		"failed": "Failed",
-		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes"
+		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes",
+		"files_deployed": "files deployed"
 	},
 	"cli": {
 		"title": "Juno CLI Authentication",
-		"sign_in": "Sign in to set up your terminal for interacting with your mission control and/or satellite(s).",
-		"add": "Select the segment(s) to be controlled by your terminal using the controller <strong>{0}</strong>:",
+		"sign_in": "Sign in to set up your terminal for interacting with your mission control, satellite(s) and analytics.",
+		"controller": "Your terminal is authenticated as the controller <strong>{0}</strong>.",
+		"add": "The following segments will be controlled by your terminal:",
 		"select_all": "Select all segments",
 		"unselect_all": "Unselect all segments",
-		"profile": "You can also provide an optional profile's name to easily identify the controller.",
+		"profile": "You can also provide an optional profile name to easily identify the controller.",
 		"segments": "Segments:",
-		"profile_placeholder": "An optional hint about the controller"
+		"profile_placeholder": "A hint for additional context",
+		"authorize": "Authorize"
 	},
 	"errors": {
 		"no_identity": "Unexpected error. No identity provided.",
@@ -254,6 +268,7 @@
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",
 		"hosting_configuration_issues": "Error while configuring the custom domain for the satellite.",
 		"hosting_loading_errors": "Error while loading the custom domains of the satellite.",
+		"hosting_count_assets": "Error while retrieving the count of deployed files for your dapp.",
 		"hosting_no_custom_domain": "No custom domain selected",
 		"hosting_delete_custom_domain": "Error while deleting the custom domain.",
 		"controllers_listing": "Error while listing the controllers.",

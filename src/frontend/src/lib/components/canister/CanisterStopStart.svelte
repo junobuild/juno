@@ -11,7 +11,7 @@
 	let status: CanisterStatus | undefined = undefined;
 	let sync: CanisterSyncStatus | undefined = undefined;
 
-	$: status = canister?.data?.status;
+	$: status = canister?.data?.canister.status;
 	$: sync = canister?.sync;
 </script>
 

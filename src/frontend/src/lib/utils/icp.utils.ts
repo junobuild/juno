@@ -9,3 +9,9 @@ export const formatICP = (icp: number): string =>
 
 export const formatE8sICP = (balance: bigint): string =>
 	formatICP(Number(balance) / Number(E8S_PER_ICP));
+
+export const formatE8sCredits = (balance: bigint): string =>
+	formatNumber(Number(balance) / Number(E8S_PER_ICP), {
+		minFraction: 2,
+		maxFraction: 2
+	});

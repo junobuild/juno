@@ -10,16 +10,18 @@
 	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let satellite: Satellite;
 
 	const list = (): Promise<[Principal, Controller][]> =>
-		listControllers({ satelliteId: satellite.satellite_id });
+		listControllers({ satelliteId: satellite.satellite_id, identity: $authStore.identity });
 
 	const remove = (params: { missionControlId: Principal; controller: Principal }): Promise<void> =>
 		deleteSatellitesController({
 			...params,
-			satelliteIds: [satellite.satellite_id]
+			satelliteIds: [satellite.satellite_id],
+			identity: $authStore.identity
 		});
 
 	const add = (
@@ -29,7 +31,8 @@
 	): Promise<void> =>
 		setSatellitesController({
 			...params,
-			satelliteIds: [satellite.satellite_id]
+			satelliteIds: [satellite.satellite_id],
+			identity: $authStore.identity
 		});
 </script>
 

@@ -33,8 +33,8 @@ const toListParams008 = ({
 				order.field === 'created_at'
 					? { CreatedAt: null }
 					: order.field === 'updated_at'
-					? { UpdatedAt: null }
-					: { Keys: null }
+						? { UpdatedAt: null }
+						: { Keys: null }
 		}
 	],
 	owner: toNullable(owner === '' || isNullish(owner) ? null : Principal.fromText(owner))

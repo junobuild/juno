@@ -117,6 +117,10 @@ export interface ListResults_1 {
 	items_length: bigint;
 }
 export type Memory = { Heap: null } | { Stable: null };
+export interface MemorySize {
+	stable: bigint;
+	heap: bigint;
+}
 export type Permission =
 	| { Controllers: null }
 	| { Private: null }
@@ -194,6 +198,8 @@ export interface UploadChunkResult {
 }
 export interface _SERVICE {
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	count_assets: ActorMethod<[string], bigint>;
+	count_docs: ActorMethod<[string], bigint>;
 	del_asset: ActorMethod<[string, string], undefined>;
 	del_assets: ActorMethod<[string], undefined>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
@@ -218,6 +224,7 @@ export interface _SERVICE {
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_docs: ActorMethod<[string, ListParams], ListResults_1>;
 	list_rules: ActorMethod<[RulesType], Array<[string, Rule]>>;
+	memory_size: ActorMethod<[], MemorySize>;
 	set_config: ActorMethod<[Config], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;

@@ -4,6 +4,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { depositCycles } from '$lib/api/satellites.api';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let detail: JunoModalDetail;
 
@@ -16,7 +17,8 @@
 	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
 		depositCycles({
 			...params,
-			satelliteId: satellite.satellite_id
+			satelliteId: satellite.satellite_id,
+			identity: $authStore.identity
 		});
 </script>
 

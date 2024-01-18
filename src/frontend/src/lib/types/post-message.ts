@@ -1,10 +1,10 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { Wallet } from '$lib/types/transaction';
-import type { Canister } from './canister';
+import type { Canister, CanisterSegment } from './canister';
 
 export interface PostMessageDataRequest {
-	canisterIds?: string[];
+	segments?: CanisterSegment[];
 	customDomain?: CustomDomain;
 	missionControlId?: string;
 }

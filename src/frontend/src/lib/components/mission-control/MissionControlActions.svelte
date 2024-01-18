@@ -29,7 +29,7 @@
 			detail: {
 				type: 'transfer_cycles_mission_control',
 				detail: {
-					cycles: canister?.data?.cycles ?? 0n
+					cycles: canister?.data?.canister?.cycles ?? 0n
 				}
 			}
 		});

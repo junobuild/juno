@@ -1,3 +1,4 @@
+mod analytics;
 mod assert;
 mod config;
 mod constants;
@@ -11,6 +12,10 @@ mod serializers;
 mod store;
 mod types;
 
+use crate::analytics::{
+    analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
+    analytics_track_events,
+};
 use crate::assert::assert_enabled;
 use crate::config::store::{
     del_satellite_config as del_satellite_config_store, get_satellite_configs,
@@ -20,14 +25,16 @@ use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_admin_controllers, get_controllers,
     set_controllers as set_controllers_store,
 };
-use crate::guards::caller_is_admin_controller;
+use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::store::{
     get_page_views as get_page_views_store, get_track_events as get_track_events_store,
     insert_page_view, insert_track_event,
 };
 use crate::types::interface::{
-    DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig, SetTrackEvent,
+    AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
+    AnalyticsTrackEvents, DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig,
+    SetTrackEvent,
 };
 use crate::types::memory::Memory;
 use crate::types::state::{AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent};
@@ -38,13 +45,14 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
+use shared::canister::memory_size as canister_memory_size;
 use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use shared::controllers::{
     assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
 };
 use shared::ic::deposit_cycles as deposit_cycles_shared;
 use shared::types::interface::{
-    DeleteControllersArgs, DepositCyclesArgs, SegmentArgs, SetControllersArgs,
+    DeleteControllersArgs, DepositCyclesArgs, MemorySize, SegmentArgs, SetControllersArgs,
 };
 use shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use std::mem;
@@ -145,9 +153,27 @@ fn set_page_views(
     Ok(())
 }
 
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_controller")]
 fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
     get_page_views_store(&filter)
+}
+
+#[query(guard = "caller_is_controller")]
+fn get_page_views_analytics_metrics(filter: GetAnalytics) -> AnalyticsMetricsPageViews {
+    let page_views = get_page_views_store(&filter);
+    analytics_page_views_metrics(&page_views)
+}
+
+#[query(guard = "caller_is_controller")]
+fn get_page_views_analytics_top_10(filter: GetAnalytics) -> AnalyticsTop10PageViews {
+    let page_views = get_page_views_store(&filter);
+    analytics_page_views_top_10(&page_views)
+}
+
+#[query(guard = "caller_is_controller")]
+fn get_page_views_analytics_clients(filter: GetAnalytics) -> AnalyticsClientsPageViews {
+    let page_views = get_page_views_store(&filter);
+    analytics_page_views_clients(&page_views)
 }
 
 #[update]
@@ -186,9 +212,15 @@ fn set_track_events(
     Ok(())
 }
 
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_controller")]
 fn get_track_events(filter: GetAnalytics) -> Vec<(AnalyticKey, TrackEvent)> {
     get_track_events_store(&filter)
+}
+
+#[query(guard = "caller_is_controller")]
+fn get_track_events_analytics(filter: GetAnalytics) -> AnalyticsTrackEvents {
+    let track_events = get_track_events_store(&filter);
+    analytics_track_events(&track_events)
 }
 
 ///
@@ -273,6 +305,11 @@ async fn deposit_cycles(args: DepositCyclesArgs) {
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
+}
+
+#[query(guard = "caller_is_admin_controller")]
+fn memory_size() -> MemorySize {
+    canister_memory_size()
 }
 
 // Generate did files

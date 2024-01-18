@@ -72,6 +72,7 @@ interface I18nCanisters {
 	delete_title: string;
 	delete_explanation: string;
 	delete_customization: string;
+	delete_custom_domain: string;
 	cycles_to_retain: string;
 	cycles_to_transfer: string;
 	delete_info: string;
@@ -91,6 +92,15 @@ interface I18nCanisters {
 	your_balance: string;
 	cycles_will_remain: string;
 	transfer_cycles_done: string;
+	memory: string;
+	in_total: string;
+	on_heap: string;
+	on_stable: string;
+	warning_mission_control_low_cycles: string;
+	warning_satellite_low_cycles: string;
+	warning_orbiter_low_cycles: string;
+	warning_satellite_heap_memory: string;
+	warning_orbiter_heap_memory: string;
 }
 
 interface I18nSign_in {
@@ -203,6 +213,7 @@ interface I18nAnalytics {
 	mobile: string;
 	desktop: string;
 	others: string;
+	browsers: string;
 	attach: string;
 	attach_id: string;
 }
@@ -235,17 +246,20 @@ interface I18nHosting {
 	available: string;
 	failed: string;
 	skip_delete_domain: string;
+	files_deployed: string;
 }
 
 interface I18nCli {
 	title: string;
 	sign_in: string;
+	controller: string;
 	add: string;
 	select_all: string;
 	unselect_all: string;
 	profile: string;
 	segments: string;
 	profile_placeholder: string;
+	authorize: string;
 }
 
 interface I18nErrors {
@@ -269,6 +283,7 @@ interface I18nErrors {
 	hosting_missing_dns_configuration: string;
 	hosting_configuration_issues: string;
 	hosting_loading_errors: string;
+	hosting_count_assets: string;
 	hosting_no_custom_domain: string;
 	hosting_delete_custom_domain: string;
 	controllers_listing: string;

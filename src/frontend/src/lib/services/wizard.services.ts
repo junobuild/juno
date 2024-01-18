@@ -2,6 +2,7 @@ import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { getMissionControlBalance } from '$lib/services/balance.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { JunoModalCreateSegmentDetail } from '$lib/types/modal';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
@@ -27,7 +28,7 @@ const getCreateFeeBalance = async ({
 }: {
 	identity: Identity | undefined | null;
 	missionControlId: Principal | undefined | null;
-	getFee: (user: Principal) => Promise<bigint>;
+	getFee: (params: { user: Principal; identity: OptionIdentity }) => Promise<bigint>;
 }): Promise<GetFeeBalance> => {
 	const labels = get(i18n);
 
@@ -36,7 +37,7 @@ const getCreateFeeBalance = async ({
 		return { error: 'No identity provided' };
 	}
 
-	const fee = await getFee(identity.getPrincipal());
+	const fee = await getFee({ user: identity.getPrincipal(), identity });
 
 	if (fee === 0n) {
 		return {

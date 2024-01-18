@@ -12,6 +12,7 @@ import {
 	type PermissionText
 } from '$lib/constants/rules.constants';
 import { toasts } from '$lib/stores/toasts.store';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { RulesStore } from '$lib/types/rules.context';
 import type { Principal } from '@dfinity/principal';
 import type { Writable } from 'svelte/store';
@@ -65,14 +66,16 @@ export const memoryToText = (memory: Memory): MemoryText => {
 export const reloadContextRules = async ({
 	satelliteId,
 	type,
-	store
+	store,
+	identity
 }: {
 	satelliteId: Principal;
 	store: Writable<RulesStore>;
 	type: RulesType;
+	identity: OptionIdentity;
 }) => {
 	try {
-		const rules = await listRules({ satelliteId, type });
+		const rules = await listRules({ satelliteId, type, identity });
 		store.set({ satelliteId, rules, rule: undefined });
 	} catch (err: unknown) {
 		// TODO: remove backward compatibility stuffs

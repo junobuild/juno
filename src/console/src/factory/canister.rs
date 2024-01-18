@@ -1,11 +1,11 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
 use crate::store::{
-    get_existing_mission_control, insert_new_payment, is_known_payment, update_payment_completed,
-    update_payment_refunded, use_credits,
+    get_existing_mission_control, has_credits, insert_new_payment, is_known_payment,
+    update_payment_completed, update_payment_refunded, use_credits,
 };
 use crate::types::ledger::Payment;
 use candid::Principal;
-use ic_ledger_types::BlockIndex;
+use ic_ledger_types::{BlockIndex, Tokens};
 use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
 use shared::ledger::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
@@ -17,7 +17,7 @@ use std::future::Future;
 pub async fn create_canister<F, Fut>(
     create: F,
     increment_rate: &dyn Fn() -> Result<(), String>,
-    has_credits: &dyn Fn(&UserId, &MissionControlId) -> bool,
+    get_fee: &dyn Fn() -> Tokens,
     console: Principal,
     caller: Principal,
     CreateCanisterArgs { user, block_index }: CreateCanisterArgs,
@@ -32,7 +32,9 @@ where
     match mission_control.mission_control_id {
         None => Err("No mission control center found.".to_string()),
         Some(mission_control_id) => {
-            if has_credits(&user, &mission_control_id) {
+            let fee = get_fee();
+
+            if has_credits(&user, &mission_control_id, &fee) {
                 // Guard too many requests
                 increment_rate()?;
 
@@ -46,6 +48,7 @@ where
                 caller,
                 mission_control_id,
                 CreateCanisterArgs { user, block_index },
+                fee,
             )
             .await
         }
@@ -85,6 +88,7 @@ async fn create_canister_with_payment<F, Fut>(
     caller: Principal,
     mission_control_id: MissionControlId,
     CreateCanisterArgs { user, block_index }: CreateCanisterArgs,
+    fee: Tokens,
 ) -> Result<Principal, String>
 where
     F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
@@ -102,7 +106,7 @@ where
     let block = find_payment(
         mission_control_account_identifier,
         console_account_identifier,
-        SATELLITE_CREATION_FEE_ICP,
+        fee,
         mission_control_payment_block_index,
     )
     .await;

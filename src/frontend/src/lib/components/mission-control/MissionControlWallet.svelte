@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import type { Principal } from '@dfinity/principal';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { formatE8sCredits, formatE8sICP } from '$lib/utils/icp.utils';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { last } from '$lib/utils/utils';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -33,7 +33,7 @@
 
 	const loadCredits = async () => {
 		try {
-			credits = await getCredits();
+			credits = await getCredits($authStore.identity);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.load_credits,
@@ -149,7 +149,7 @@
 			<Value>
 				<svelte:fragment slot="label">{$i18n.wallet.credits}</svelte:fragment>
 				<p>
-					{#if nonNullish(credits)}<span in:fade>{formatE8sICP(credits)}</span>{/if}
+					{#if nonNullish(credits)}<span in:fade>{formatE8sCredits(credits)}</span>{/if}
 				</p>
 			</Value>
 		</div>

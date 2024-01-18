@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
 	import { createEventDispatcher } from 'svelte';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -14,7 +13,7 @@
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { goto } from '$app/navigation';
 	import type { Principal } from '@dfinity/principal';
-	import { ONE_TRILLION } from '$lib/constants/constants';
+	import { ONE_TRILLION, DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION } from '$lib/constants/constants';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
@@ -30,8 +29,7 @@
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	// 1T cycles per default
-	let tCycles = 1;
+	let tCycles = DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION;
 
 	let cycles: bigint;
 	$: (() => {
@@ -112,87 +110,85 @@
 	};
 </script>
 
-<Modal on:junoClose>
-	{#if steps === 'in_progress'}
-		<SpinnerModal>
-			<p>{$i18n.canisters.delete_in_progress}</p>
-		</SpinnerModal>
-	{:else}
-		<form on:submit|preventDefault={onSubmit}>
-			<h2>
-				{@html i18nFormat($i18n.canisters.delete_title, [
+{#if steps === 'in_progress'}
+	<SpinnerModal>
+		<p>{$i18n.canisters.delete_in_progress}</p>
+	</SpinnerModal>
+{:else}
+	<form on:submit|preventDefault={onSubmit}>
+		<h2>
+			{@html i18nFormat($i18n.canisters.delete_title, [
+				{
+					placeholder: '{0}',
+					value: segment.replace('_', ' ')
+				}
+			])}
+		</h2>
+
+		<p>
+			{@html i18nFormat($i18n.canisters.delete_explanation, [
+				{
+					placeholder: '{0}',
+					value: segment.replace('_', ' ')
+				},
+				{
+					placeholder: '{1}',
+					value: segment.replace('_', ' ')
+				}
+			])}
+		</p>
+
+		<p>
+			{@html i18nFormat($i18n.canisters.delete_customization, [
+				{
+					placeholder: '{0}',
+					value: segment.replace('_', ' ')
+				},
+				{
+					placeholder: '{1}',
+					value: formatTCycles(currentCycles)
+				}
+			])}
+		</p>
+
+		<Value ref="cycles">
+			<svelte:fragment slot="label">{$i18n.canisters.cycles_to_retain}</svelte:fragment>
+
+			<Input
+				name="cycles"
+				inputType="icp"
+				required
+				bind:value={tCycles}
+				placeholder={$i18n.canisters.amount}
+			/>
+		</Value>
+
+		<p>
+			<small
+				>{@html i18nFormat($i18n.canisters.cycles_to_transfer, [
 					{
 						placeholder: '{0}',
-						value: segment.replace('_', ' ')
+						value: formatTCycles(cyclesToDeposit)
 					}
-				])}
-			</h2>
+				])}</small
+			>
+		</p>
 
-			<p>
-				{@html i18nFormat($i18n.canisters.delete_explanation, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					},
-					{
-						placeholder: '{1}',
-						value: segment.replace('_', ' ')
-					}
-				])}
-			</p>
+		<p class="warning">
+			<IconWarning />
+			{@html i18nFormat($i18n.canisters.delete_info, [
+				{
+					placeholder: '{0}',
+					value: segment.replace('_', ' ')
+				}
+			])}
+		</p>
 
-			<p>
-				{@html i18nFormat($i18n.canisters.delete_customization, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					},
-					{
-						placeholder: '{1}',
-						value: formatTCycles(currentCycles)
-					}
-				])}
-			</p>
-
-			<Value ref="cycles">
-				<svelte:fragment slot="label">{$i18n.canisters.cycles_to_retain}</svelte:fragment>
-
-				<Input
-					name="cycles"
-					inputType="icp"
-					required
-					bind:value={tCycles}
-					placeholder={$i18n.canisters.amount}
-				/>
-			</Value>
-
-			<p>
-				<small
-					>{@html i18nFormat($i18n.canisters.cycles_to_transfer, [
-						{
-							placeholder: '{0}',
-							value: formatTCycles(cyclesToDeposit)
-						}
-					])}</small
-				>
-			</p>
-
-			<p class="warning">
-				<IconWarning />
-				{@html i18nFormat($i18n.canisters.delete_info, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					}
-				])}
-			</p>
-
-			<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
-				{$i18n.core.delete}
-			</button>
-		</form>
-	{/if}
-</Modal>
+		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
+			{$i18n.core.delete}
+		</button>
+	</form>
+{/if}
 
 <style lang="scss">
 	.warning {

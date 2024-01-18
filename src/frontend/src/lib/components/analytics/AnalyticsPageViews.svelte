@@ -1,13 +1,14 @@
 <script lang="ts">
-	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
 	import AnalyticsPages from '$lib/components/analytics/AnalyticsPages.svelte';
 	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
 	import AnalyticsDevices from '$lib/components/analytics/AnalyticsDevices.svelte';
+	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
+	import AnalyticsBrowsers from '$lib/components/analytics/AnalyticsBrowsers.svelte';
 
-	export let pageViews: [AnalyticKey, PageView][] = [];
+	export let pageViews: AnalyticsPageViews;
 </script>
 
-{#if pageViews.length > 0}
+{#if pageViews.metrics.total_page_views > 0}
 	<hr />
 
 	<div class="container">
@@ -16,6 +17,8 @@
 		<AnalyticsPages {pageViews} />
 
 		<AnalyticsDevices {pageViews} />
+
+		<AnalyticsBrowsers {pageViews} />
 	</div>
 {/if}
 

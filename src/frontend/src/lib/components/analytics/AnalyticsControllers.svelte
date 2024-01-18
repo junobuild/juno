@@ -6,15 +6,18 @@
 	import { listOrbiterControllers } from '$lib/api/orbiter.api';
 	import { deleteOrbitersController, setOrbitersController } from '$lib/api/mission-control.api';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let orbiterId: Principal;
 
-	const list = (): Promise<[Principal, Controller][]> => listOrbiterControllers({ orbiterId });
+	const list = (): Promise<[Principal, Controller][]> =>
+		listOrbiterControllers({ orbiterId, identity: $authStore.identity });
 
 	const remove = (params: { missionControlId: Principal; controller: Principal }): Promise<void> =>
 		deleteOrbitersController({
 			...params,
-			orbiterIds: [orbiterId]
+			orbiterIds: [orbiterId],
+			identity: $authStore.identity
 		});
 
 	const add = (
@@ -24,7 +27,8 @@
 	): Promise<void> =>
 		setOrbitersController({
 			...params,
-			orbiterIds: [orbiterId]
+			orbiterIds: [orbiterId],
+			identity: $authStore.identity
 		});
 </script>
 

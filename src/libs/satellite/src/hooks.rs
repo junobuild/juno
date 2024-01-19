@@ -1,14 +1,14 @@
 use crate::db::types::state::Doc;
-use ic_cdk::print;
+use crate::types::core::Key;
 
 extern "Rust" {
     fn juno_on_set_doc(doc: Doc);
+    fn juno_on_set_many_docs(docs: Vec<(Key, Doc)>);
     fn juno_on_delete_doc(doc: Option<Doc>);
 }
 
+#[allow(dead_code, unused_variables)]
 pub fn invoke_on_set_doc(doc: Doc) {
-    print("About to invoke set");
-
     #[cfg(not(feature = "disable_on_set_doc"))]
     {
         unsafe {
@@ -17,9 +17,18 @@ pub fn invoke_on_set_doc(doc: Doc) {
     }
 }
 
-pub fn invoke_on_delete_doc(doc: Option<Doc>) {
-    print("About to invoke delete");
+#[allow(dead_code, unused_variables)]
+pub fn invoke_on_set_many_docs(docs: Vec<(Key, Doc)>) {
+    #[cfg(not(feature = "disable_on_set_many_docs"))]
+    {
+        unsafe {
+            juno_on_set_many_docs(docs);
+        }
+    }
+}
 
+#[allow(dead_code, unused_variables)]
+pub fn invoke_on_delete_doc(doc: Option<Doc>) {
     #[cfg(not(feature = "disable_on_delete_doc"))]
     {
         unsafe {

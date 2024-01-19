@@ -19,7 +19,7 @@ use crate::db::store::{
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::hooks::{invoke_on_delete_doc, invoke_on_set_doc};
+use crate::hooks::{invoke_on_delete_doc, invoke_on_set_doc, invoke_on_set_many_docs};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
@@ -207,6 +207,8 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
     for (collection, key, doc) in docs {
         results.push((key.clone(), set_doc(collection, key, doc)));
     }
+
+    invoke_on_set_many_docs(results.clone());
 
     results
 }

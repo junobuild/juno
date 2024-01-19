@@ -5,6 +5,7 @@ edition = "2021"
 
 [features]
 disable_on_set_doc = []
+disable_on_set_many_docs = []
 disable_on_delete_doc = []
 
 [dependencies]

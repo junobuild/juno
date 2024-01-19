@@ -12,6 +12,11 @@ pub fn on_set_doc(attr: TokenStream, item: TokenStream) -> TokenStream {
 }
 
 #[proc_macro_attribute]
+pub fn on_set_many_docs(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnSetManyDocs, attr, item)
+}
+
+#[proc_macro_attribute]
 pub fn on_delete_doc(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::OnDeleteDoc, attr, item)
 }

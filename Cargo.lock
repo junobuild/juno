@@ -739,6 +739,7 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 name = "junobuild-macros"
 version = "0.0.1"
 dependencies = [
+ "proc-macro2",
  "quote",
  "syn 2.0.48",
 ]

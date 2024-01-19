@@ -3,6 +3,10 @@ name = "junobuild-satellite"
 version = "0.1.0"
 edition = "2021"
 
+[features]
+disable_on_set_doc = []
+disable_on_delete_doc = []
+
 [dependencies]
 candid.workspace = true
 ic-cdk.workspace = true

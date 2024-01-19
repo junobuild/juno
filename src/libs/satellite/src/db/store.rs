@@ -218,7 +218,7 @@ pub fn delete_doc(
     collection: CollectionKey,
     key: Key,
     value: DelDoc,
-) -> Result<(), String> {
+) -> Result<Option<Doc>, String> {
     let controllers: Controllers = get_controllers();
 
     secure_delete_doc(caller, &controllers, collection, key, value)
@@ -230,7 +230,7 @@ fn secure_delete_doc(
     collection: CollectionKey,
     key: Key,
     value: DelDoc,
-) -> Result<(), String> {
+) -> Result<Option<Doc>, String> {
     let rule = get_state_rule(&collection)?;
     delete_doc_impl(caller, controllers, collection, key, value, &rule)
 }
@@ -242,7 +242,7 @@ fn delete_doc_impl(
     key: Key,
     value: DelDoc,
     rule: &Rule,
-) -> Result<(), String> {
+) -> Result<Option<Doc>, String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
     match assert_write_permission(

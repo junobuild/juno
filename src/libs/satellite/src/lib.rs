@@ -40,7 +40,9 @@ use types::list::ListParams;
 pub use crate::db::types::state::Doc;
 use crate::db::types::state::DocContext;
 pub use crate::types::core::{Blob, CollectionKey};
-pub use crate::types::hooks::HookContext;
+pub use crate::types::hooks::{
+    HookContext, OnDeleteDocContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
+};
 
 ///
 /// Init and Upgrade

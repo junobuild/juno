@@ -1,14 +1,17 @@
 #![allow(dead_code)]
 
 use crate::db::types::state::{Doc, DocContext};
+use crate::types::hooks::{
+    OnDeleteDocContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
+};
 use crate::HookContext;
 use shared::types::state::UserId;
 
 extern "Rust" {
-    fn juno_on_set_doc(context: HookContext<DocContext<Doc>>);
-    fn juno_on_set_many_docs(context: HookContext<Vec<DocContext<Doc>>>);
-    fn juno_on_delete_doc(context: HookContext<DocContext<Option<Doc>>>);
-    fn juno_on_delete_many_docs(context: HookContext<Vec<DocContext<Option<Doc>>>>);
+    fn juno_on_set_doc(context: OnSetDocContext);
+    fn juno_on_set_many_docs(context: OnSetManyDocsContext);
+    fn juno_on_delete_doc(context: OnDeleteDocContext);
+    fn juno_on_delete_many_docs(context: OnDeleteManyDocsContext);
 }
 
 #[allow(unused_variables)]

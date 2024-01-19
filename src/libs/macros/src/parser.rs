@@ -9,6 +9,7 @@ pub enum Hook {
     OnSetDoc,
     OnSetManyDocs,
     OnDeleteDoc,
+    OnDeleteManyDocs,
 }
 
 const DOC_PARAM: &str = "param";
@@ -18,6 +19,7 @@ fn map_hook_name(hook: Hook) -> String {
         Hook::OnSetDoc => "juno_on_set_doc".to_string(),
         Hook::OnSetManyDocs => "juno_on_set_many_docs".to_string(),
         Hook::OnDeleteDoc => "juno_on_delete_doc".to_string(),
+        Hook::OnDeleteManyDocs => "juno_on_delete_many_docs".to_string(),
     }
 }
 
@@ -26,6 +28,7 @@ fn map_hook_type(hook: Hook) -> String {
         Hook::OnSetDoc => "Doc".to_string(),
         Hook::OnSetManyDocs => "Vec<(Key, Doc)>".to_string(),
         Hook::OnDeleteDoc => "Option<Doc>".to_string(),
+        Hook::OnDeleteManyDocs => "Vec<(Key, Option<Doc>)>".to_string(),
     }
 }
 

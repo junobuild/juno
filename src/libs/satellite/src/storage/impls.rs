@@ -36,9 +36,7 @@ impl From<&Vec<Blob>> for AssetEncoding {
 
 impl StorageConfig {
     pub fn unwrap_redirects(&self) -> StorageConfigRedirects {
-        self.redirects
-            .clone()
-            .unwrap_or_default()
+        self.redirects.clone().unwrap_or_default()
     }
 
     pub fn unwrap_iframe(&self) -> StorageConfigIFrame {

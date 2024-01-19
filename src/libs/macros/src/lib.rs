@@ -1,35 +1,17 @@
 extern crate proc_macro;
 
+mod error;
+mod parser;
+
+use parser::{hook_macro, Hook};
 use proc_macro::TokenStream;
-use quote::quote;
-use syn::{parse, ItemFn};
 
 #[proc_macro_attribute]
-pub fn on_set_doc(_attr: TokenStream, item: TokenStream) -> TokenStream {
-    let ast = parse::<ItemFn>(item).expect("Expected a function to register the hooks");
+pub fn on_set_doc(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnSetDoc, attr, item)
+}
 
-    let signature = &ast.sig;
-
-    let func_name = &signature.ident;
-
-    let is_async = signature.asyncness.is_some();
-
-    let function_call = if is_async {
-        quote! { #func_name(doc).await }
-    } else {
-        quote! { #func_name(doc) }
-    };
-
-    let result = quote! {
-        #ast
-
-        #[no_mangle]
-        pub extern "Rust" fn juno_on_set_doc(doc: Doc) {
-            ic_cdk::spawn(async {
-                #function_call
-            });
-        }
-    };
-
-    result.into()
+#[proc_macro_attribute]
+pub fn on_delete_doc(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnDeleteDoc, attr, item)
 }

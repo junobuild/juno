@@ -9,6 +9,9 @@ use crate::db::store::{
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;
+use crate::hooks::{
+    invoke_on_delete_doc, invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs,
+};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
@@ -124,7 +127,11 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let result = insert_doc(caller, collection, key, doc);
 
     match result {
-        Ok(doc) => doc,
+        Ok(doc) => {
+            invoke_on_set_doc(doc.clone());
+
+            doc
+        }
         Err(error) => trap(&error),
     }
 }
@@ -143,7 +150,9 @@ pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let caller = caller();
 
-    delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
+    let deleted_doc = delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
+
+    invoke_on_delete_doc(deleted_doc);
 }
 
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
@@ -173,13 +182,22 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
         results.push((key.clone(), set_doc(collection, key, doc)));
     }
 
+    invoke_on_set_many_docs(results.clone());
+
     results
 }
 
 pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
+    let caller = caller();
+
+    let mut results: Vec<(Key, Option<Doc>)> = Vec::new();
+
     for (collection, key, doc) in docs {
-        del_doc(collection, key, doc);
+        let deleted_doc = delete_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        results.push((key, deleted_doc));
     }
+
+    invoke_on_delete_many_docs(results.clone());
 }
 
 pub fn del_docs(collection: CollectionKey) {

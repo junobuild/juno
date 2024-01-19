@@ -1,3 +1,5 @@
+#![allow(dead_code)]
+
 use crate::db::types::state::Doc;
 use crate::types::core::Key;
 
@@ -7,7 +9,7 @@ extern "Rust" {
     fn juno_on_delete_doc(doc: Option<Doc>);
 }
 
-#[allow(dead_code, unused_variables)]
+#[allow(unused_variables)]
 pub fn invoke_on_set_doc(doc: Doc) {
     #[cfg(not(feature = "disable_on_set_doc"))]
     {

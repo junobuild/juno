@@ -176,10 +176,13 @@ pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)>
 }
 
 pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
+    let caller = caller();
+
     let mut results: Vec<(Key, Doc)> = Vec::new();
 
     for (collection, key, doc) in docs {
-        results.push((key.clone(), set_doc(collection, key, doc)));
+        let result = insert_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        results.push((key, result));
     }
 
     invoke_on_set_many_docs(results.clone());
@@ -193,7 +196,8 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     let mut results: Vec<(Key, Option<Doc>)> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let deleted_doc = delete_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        let deleted_doc =
+            delete_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
         results.push((key, deleted_doc));
     }
 

@@ -58,7 +58,7 @@
 					: +lastValidICPValue;
 		icpValue = fixUndefinedValue(lastValidICPValue);
 
-		// force dom update (because no active hooks)
+		// force dom update (because no active triggers)
 		inputElement.value = icpValue;
 
 		// restore cursor position

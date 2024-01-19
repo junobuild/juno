@@ -8,7 +8,7 @@ use crate::db::store::{
     insert_doc,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::Doc;
+use crate::db::types::state::{Doc, DocContext};
 use crate::hooks::{
     invoke_on_delete_doc, invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs,
 };
@@ -128,9 +128,9 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
 
     match result {
         Ok(doc) => {
-            invoke_on_set_doc(doc.clone());
+            invoke_on_set_doc(&caller, &doc);
 
-            doc
+            doc.doc
         }
         Err(error) => trap(&error),
     }
@@ -152,7 +152,7 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
 
     let deleted_doc = delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
 
-    invoke_on_delete_doc(deleted_doc);
+    invoke_on_delete_doc(&caller, &deleted_doc);
 }
 
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
@@ -175,17 +175,17 @@ pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)>
         .collect()
 }
 
-pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
+pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<DocContext<Doc>> {
     let caller = caller();
 
-    let mut results: Vec<(Key, Doc)> = Vec::new();
+    let mut results: Vec<DocContext<Doc>> = Vec::new();
 
     for (collection, key, doc) in docs {
         let result = insert_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
-        results.push((key, result));
+        results.push(result);
     }
 
-    invoke_on_set_many_docs(results.clone());
+    invoke_on_set_many_docs(&caller, &results);
 
     results
 }
@@ -193,15 +193,15 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
 pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     let caller = caller();
 
-    let mut results: Vec<(Key, Option<Doc>)> = Vec::new();
+    let mut results: Vec<DocContext<Option<Doc>>> = Vec::new();
 
     for (collection, key, doc) in docs {
         let deleted_doc =
             delete_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
-        results.push((key, deleted_doc));
+        results.push(deleted_doc);
     }
 
-    invoke_on_delete_many_docs(results.clone());
+    invoke_on_delete_many_docs(&caller, &results);
 }
 
 pub fn del_docs(collection: CollectionKey) {

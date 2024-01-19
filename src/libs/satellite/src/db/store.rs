@@ -7,7 +7,7 @@ use crate::db::state::{
     is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::Doc;
+use crate::db::types::state::{Doc, DocContext};
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
@@ -101,10 +101,16 @@ pub fn insert_doc(
     collection: CollectionKey,
     key: Key,
     value: SetDoc,
-) -> Result<Doc, String> {
+) -> Result<DocContext<Doc>, String> {
     let controllers: Controllers = get_controllers();
 
-    secure_insert_doc(caller, &controllers, collection, key, value)
+    let doc = secure_insert_doc(caller, &controllers, collection.clone(), key.clone(), value)?;
+
+    Ok(DocContext {
+        key,
+        collection,
+        doc,
+    })
 }
 
 fn secure_insert_doc(
@@ -218,10 +224,16 @@ pub fn delete_doc(
     collection: CollectionKey,
     key: Key,
     value: DelDoc,
-) -> Result<Option<Doc>, String> {
+) -> Result<DocContext<Option<Doc>>, String> {
     let controllers: Controllers = get_controllers();
 
-    secure_delete_doc(caller, &controllers, collection, key, value)
+    let doc = secure_delete_doc(caller, &controllers, collection.clone(), key.clone(), value)?;
+
+    Ok(DocContext {
+        key,
+        collection,
+        doc,
+    })
 }
 
 fn secure_delete_doc(

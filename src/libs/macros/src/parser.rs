@@ -12,7 +12,7 @@ pub enum Hook {
     OnDeleteManyDocs,
 }
 
-const DOC_PARAM: &str = "param";
+const CONTEXT_PARAM: &str = "context";
 
 fn map_hook_name(hook: Hook) -> String {
     match hook {
@@ -25,10 +25,10 @@ fn map_hook_name(hook: Hook) -> String {
 
 fn map_hook_type(hook: Hook) -> String {
     match hook {
-        Hook::OnSetDoc => "Doc".to_string(),
-        Hook::OnSetManyDocs => "Vec<(Key, Doc)>".to_string(),
-        Hook::OnDeleteDoc => "Option<Doc>".to_string(),
-        Hook::OnDeleteManyDocs => "Vec<(Key, Option<Doc>)>".to_string(),
+        Hook::OnSetDoc => "OnSetDocContext".to_string(),
+        Hook::OnSetManyDocs => "OnSetManyDocsContext".to_string(),
+        Hook::OnDeleteDoc => "OnDeleteDocContext".to_string(),
+        Hook::OnDeleteManyDocs => "OnDeleteManyDocsContext".to_string(),
     }
 }
 
@@ -45,7 +45,7 @@ fn parse_hook(hook: Hook, _attr: TokenStream, item: TokenStream) -> Result<Token
 
     let hook_fn =
         proc_macro2::Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
-    let hook_param = proc_macro2::Ident::new(DOC_PARAM, proc_macro2::Span::call_site());
+    let hook_param = proc_macro2::Ident::new(CONTEXT_PARAM, proc_macro2::Span::call_site());
     let hook_param_type =
         proc_macro2::Ident::new(&map_hook_type(hook), proc_macro2::Span::call_site());
 

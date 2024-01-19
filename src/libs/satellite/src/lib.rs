@@ -20,7 +20,7 @@ use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
-use crate::types::core::{CollectionKey, Key};
+use crate::types::core::Key;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
 use ic_cdk::api::trap;
@@ -38,7 +38,11 @@ use types::list::ListParams;
 /// Re-export types
 ///
 pub use crate::db::types::state::Doc;
-pub use crate::types::core::Blob;
+use crate::db::types::state::DocContext;
+pub use crate::types::core::{Blob, CollectionKey};
+pub use crate::types::hooks::{
+    HookContext, OnDeleteDocContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
+};
 
 ///
 /// Init and Upgrade
@@ -89,7 +93,7 @@ pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)>
 }
 
 #[update]
-pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
+pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<DocContext<Doc>> {
     satellite::set_many_docs(docs)
 }
 

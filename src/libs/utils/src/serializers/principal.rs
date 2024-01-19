@@ -48,7 +48,7 @@ impl<'de> Visitor<'de> for PrincipalVisitor {
             }
         }
         let value_str = value.ok_or_else(|| de::Error::missing_field("__principal__"))?;
-        let principal = CandidPrincipal::from_text(&value_str)
+        let principal = CandidPrincipal::from_text(value_str)
             .map_err(|_| de::Error::custom("Invalid format for __principal__"))?;
         Ok(Principal { value: principal })
     }

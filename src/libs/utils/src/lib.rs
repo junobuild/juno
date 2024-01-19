@@ -3,7 +3,7 @@ pub mod serializers;
 use serde::{Deserialize, Serialize};
 use serde_json::{from_slice, to_vec, Result};
 
-pub fn decode_doc_data<T: for<'a> Deserialize<'a>>(data: &Vec<u8>) -> Result<T> {
+pub fn decode_doc_data<T: for<'a> Deserialize<'a>>(data: &[u8]) -> Result<T> {
     from_slice::<T>(data)
 }
 

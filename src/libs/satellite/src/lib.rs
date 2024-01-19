@@ -10,7 +10,7 @@ mod msg;
 mod rules;
 mod satellite;
 mod storage;
-pub mod types;
+mod types;
 
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::Doc;

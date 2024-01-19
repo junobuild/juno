@@ -179,6 +179,11 @@ export const idlFactory = ({ IDL }) => {
 		data: IDL.Vec(IDL.Nat8),
 		description: IDL.Opt(IDL.Text)
 	});
+	const DocContext = IDL.Record({
+		doc: Doc,
+		key: IDL.Text,
+		collection: IDL.Text
+	});
 	const SetRule = IDL.Record({
 		memory: IDL.Opt(Memory),
 		updated_at: IDL.Opt(IDL.Nat64),
@@ -241,7 +246,7 @@ export const idlFactory = ({ IDL }) => {
 		set_doc: IDL.Func([IDL.Text, IDL.Text, SetDoc], [Doc], []),
 		set_many_docs: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, SetDoc))],
-			[IDL.Vec(IDL.Tuple(IDL.Text, Doc))],
+			[IDL.Vec(DocContext)],
 			[]
 		),
 		set_rule: IDL.Func([RulesType, IDL.Text, SetRule], [], []),

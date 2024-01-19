@@ -6,6 +6,8 @@ use junobuild_utils::decode_doc_data;
 use junobuild_utils::serializers::types::{BigInt, Principal};
 use serde::{Deserialize, Serialize};
 
+// TODO: remove hooks, only used for test purpose while blockchainless feature is under development
+
 #[derive(Serialize, Deserialize)]
 struct Person {
     yolo: bool,

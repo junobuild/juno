@@ -1,7 +1,9 @@
 use crate::constants::CREATE_CANISTER_CYCLES;
 use crate::types::ic::WasmArg;
 use crate::types::interface::DepositCyclesArgs;
-use crate::types::state::{SegmentCanisterStatus, SegmentStatus, SegmentStatusResult};
+use crate::types::state::{
+    SegmentCanisterSettings, SegmentCanisterStatus, SegmentStatus, SegmentStatusResult,
+};
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::{
@@ -83,19 +85,28 @@ pub async fn segment_status(canister_id: CanisterId) -> SegmentStatusResult {
     let status = ic_canister_status(CanisterIdRecord { canister_id }).await;
 
     match status {
-        Ok((canister_status,)) => Ok(SegmentStatus {
-            id: canister_id,
-            metadata: None,
-            status: SegmentCanisterStatus {
-                status: canister_status.status,
-                settings: canister_status.settings,
-                module_hash: canister_status.module_hash,
-                memory_size: canister_status.memory_size,
-                cycles: canister_status.cycles,
-                idle_cycles_burned_per_day: canister_status.idle_cycles_burned_per_day,
-            },
-            status_at: time(),
-        }),
+        Ok((canister_status,)) => {
+            let settings: SegmentCanisterSettings = SegmentCanisterSettings {
+                controllers: canister_status.settings.controllers,
+                compute_allocation: canister_status.settings.compute_allocation,
+                memory_allocation: canister_status.settings.memory_allocation,
+                freezing_threshold: canister_status.settings.freezing_threshold,
+            };
+
+            Ok(SegmentStatus {
+                id: canister_id,
+                metadata: None,
+                status: SegmentCanisterStatus {
+                    status: canister_status.status,
+                    settings,
+                    module_hash: canister_status.module_hash,
+                    memory_size: canister_status.memory_size,
+                    cycles: canister_status.cycles,
+                    idle_cycles_burned_per_day: canister_status.idle_cycles_burned_per_day,
+                },
+                status_at: time(),
+            })
+        }
         Err((_, message)) => Err(["Failed to get canister status: ".to_string(), message].join("")),
     }
 }

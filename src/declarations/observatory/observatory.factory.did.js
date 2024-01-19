@@ -29,7 +29,7 @@ export const idlFactory = ({ IDL }) => {
 		stopping: IDL.Null,
 		running: IDL.Null
 	});
-	const DefiniteCanisterSettings = IDL.Record({
+	const SegmentCanisterSettings = IDL.Record({
 		freezing_threshold: IDL.Nat,
 		controllers: IDL.Vec(IDL.Principal),
 		memory_allocation: IDL.Nat,
@@ -39,7 +39,7 @@ export const idlFactory = ({ IDL }) => {
 		status: CanisterStatusType,
 		memory_size: IDL.Nat,
 		cycles: IDL.Nat,
-		settings: DefiniteCanisterSettings,
+		settings: SegmentCanisterSettings,
 		idle_cycles_burned_per_day: IDL.Nat,
 		module_hash: IDL.Opt(IDL.Vec(IDL.Nat8))
 	});

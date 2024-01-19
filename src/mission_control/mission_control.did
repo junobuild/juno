@@ -11,12 +11,6 @@ type CronJobStatusesConfig = record {
   enabled : bool;
   cycles_threshold : opt nat64;
 };
-type DefiniteCanisterSettings = record {
-  freezing_threshold : nat;
-  controllers : vec principal;
-  memory_allocation : nat;
-  compute_allocation : nat;
-};
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
 type Orbiter = record {
   updated_at : nat64;
@@ -31,11 +25,17 @@ type Satellite = record {
   created_at : nat64;
   satellite_id : principal;
 };
+type SegmentCanisterSettings = record {
+  freezing_threshold : nat;
+  controllers : vec principal;
+  memory_allocation : nat;
+  compute_allocation : nat;
+};
 type SegmentCanisterStatus = record {
   status : CanisterStatusType;
   memory_size : nat;
   cycles : nat;
-  settings : DefiniteCanisterSettings;
+  settings : SegmentCanisterSettings;
   idle_cycles_burned_per_day : nat;
   module_hash : opt vec nat8;
 };

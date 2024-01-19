@@ -273,8 +273,6 @@ macro_rules! include_satellite {
             set_many_docs, set_rule, upload_asset_chunk, version,
         };
 
-        use ic_cdk::export_candid;
-
-        export_candid!();
+        ic_cdk::export_candid!();
     };
 }

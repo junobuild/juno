@@ -7,6 +7,7 @@ edition = "2021"
 disable_on_set_doc = []
 disable_on_set_many_docs = []
 disable_on_delete_doc = []
+disable_on_delete_many_docs = []
 
 [dependencies]
 candid.workspace = true

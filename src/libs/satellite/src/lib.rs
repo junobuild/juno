@@ -37,9 +37,8 @@ use types::list::ListParams;
 ///
 /// Re-export types
 ///
-
-pub use crate::db::types::state::{Doc};
-pub use crate::types::core::{Blob};
+pub use crate::db::types::state::Doc;
+pub use crate::types::core::Blob;
 
 ///
 /// Init and Upgrade

@@ -7,6 +7,7 @@ extern "Rust" {
     fn juno_on_set_doc(doc: Doc);
     fn juno_on_set_many_docs(docs: Vec<(Key, Doc)>);
     fn juno_on_delete_doc(doc: Option<Doc>);
+    fn juno_on_delete_many_docs(docs: Vec<(Key, Option<Doc>)>);
 }
 
 #[allow(unused_variables)]
@@ -35,6 +36,16 @@ pub fn invoke_on_delete_doc(doc: Option<Doc>) {
     {
         unsafe {
             juno_on_delete_doc(doc);
+        }
+    }
+}
+
+#[allow(dead_code, unused_variables)]
+pub fn invoke_on_delete_many_docs(docs: Vec<(Key, Option<Doc>)>) {
+    #[cfg(not(feature = "disable_on_delete_many_docs"))]
+    {
+        unsafe {
+            juno_on_delete_many_docs(docs);
         }
     }
 }

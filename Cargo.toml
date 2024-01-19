@@ -5,7 +5,8 @@ members = [
     "src/satellite",
     "src/shared",
     "src/observatory",
-    "src/orbiter"
+    "src/orbiter",
+    "src/libs/satellite"
 ]
 resolver = "2"
 

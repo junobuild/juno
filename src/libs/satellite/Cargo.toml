@@ -26,4 +26,4 @@ ic-stable-structures = "0.6.0"
 ciborium = "0.2.1"
 ic-response-verification = "2.3.0"
 ic-representation-independent-hash = "2.3.0"
-shared = { path = "../../shared" }
+shared = { path = "../shared" }

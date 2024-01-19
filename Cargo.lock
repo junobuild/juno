@@ -619,14 +619,6 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
-name = "junobuild-macros"
-version = "0.0.1"
-dependencies = [
- "quote",
- "syn 2.0.48",
-]
-
-[[package]]
 name = "junobuild-satellite"
 version = "0.1.0"
 dependencies = [
@@ -649,14 +641,6 @@ dependencies = [
  "shared",
  "url",
  "urlencoding",
-]
-
-[[package]]
-name = "junobuild-utils"
-version = "0.0.1"
-dependencies = [
- "candid",
- "serde",
 ]
 
 [[package]]
@@ -935,23 +919,13 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "7ffc183a10b4478d04cbbbfc96d0873219d962dd5accaff2ffbd4ceb7df837f4"
 
 [[package]]
-name = "ryu"
-version = "1.0.16"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
-
-[[package]]
 name = "satellite"
 version = "0.0.14"
 dependencies = [
  "candid",
  "ic-cdk",
  "ic-cdk-macros",
- "junobuild-macros",
  "junobuild-satellite",
- "junobuild-utils",
- "serde",
- "serde_json",
  "shared",
 ]
 
@@ -992,17 +966,6 @@ dependencies = [
  "proc-macro2",
  "quote",
  "syn 2.0.48",
-]
-
-[[package]]
-name = "serde_json"
-version = "1.0.111"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "176e46fa42316f18edd598015a5166857fc835ec732f5215eac6b7bdbf0a84f4"
-dependencies = [
- "itoa",
- "ryu",
- "serde",
 ]
 
 [[package]]

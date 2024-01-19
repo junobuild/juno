@@ -328,7 +328,7 @@ fn delete_docs_impl(
 }
 
 pub fn count_docs(collection: &CollectionKey) -> Result<usize, String> {
-    let rule = get_state_rule(&collection)?;
+    let rule = get_state_rule(collection)?;
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {

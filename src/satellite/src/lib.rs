@@ -1,6 +1,6 @@
 use ic_cdk::{print, trap};
 use junobuild_macros::on_set_doc;
-use junobuild_satellite::db::types::state::Doc;
+use junobuild_satellite::{Doc};
 use junobuild_satellite::include_satellite;
 use junobuild_utils::decode_doc_data;
 use junobuild_utils::serializers::types::{BigInt, Principal};

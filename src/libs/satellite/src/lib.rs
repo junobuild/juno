@@ -1,6 +1,6 @@
 mod assert;
 mod controllers;
-pub mod db;
+mod db;
 mod guards;
 mod hooks;
 mod impls;
@@ -13,7 +13,6 @@ mod storage;
 mod types;
 
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::Doc;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
@@ -34,6 +33,17 @@ use storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
 use types::list::ListParams;
+
+///
+/// Re-export types
+///
+
+pub use crate::db::types::state::{Doc};
+pub use crate::types::core::{Blob};
+
+///
+/// Init and Upgrade
+///
 
 #[init]
 pub fn init() {

@@ -1,7 +1,7 @@
 pub mod state {
     use candid::Principal;
     use candid::{CandidType, Nat};
-    use ic_cdk::api::management_canister::main::{CanisterStatusType, DefiniteCanisterSettings};
+    use ic_cdk::api::management_canister::main::CanisterStatusType;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -35,11 +35,20 @@ pub mod state {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentCanisterStatus {
         pub status: CanisterStatusType,
-        pub settings: DefiniteCanisterSettings,
+        pub settings: SegmentCanisterSettings,
         pub module_hash: Option<Vec<u8>>,
         pub memory_size: Nat,
         pub cycles: Nat,
         pub idle_cycles_burned_per_day: Nat,
+    }
+
+    // Prevent breaking changes in DefiniteCanisterSettings which we do not use
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SegmentCanisterSettings {
+        pub controllers: Vec<Principal>,
+        pub compute_allocation: Nat,
+        pub memory_allocation: Nat,
+        pub freezing_threshold: Nat,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

@@ -24,6 +24,7 @@ pub async fn create_canister_install_code(
                 compute_allocation: None,
                 memory_allocation: None,
                 freezing_threshold: None,
+                reserved_cycles_limit: None,
             }),
         },
         CREATE_CANISTER_CYCLES + cycles,
@@ -71,6 +72,7 @@ pub async fn update_canister_controllers(
             compute_allocation: None,
             memory_allocation: None,
             freezing_threshold: None,
+            reserved_cycles_limit: None,
         },
     };
 

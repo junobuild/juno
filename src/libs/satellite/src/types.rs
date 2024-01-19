@@ -128,3 +128,14 @@ pub mod memory {
 
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
 }
+
+pub mod hooks {
+    use candid::{CandidType, Deserialize};
+    use shared::types::state::UserId;
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct HookContext<T> {
+        pub caller: UserId,
+        pub data: T,
+    }
+}

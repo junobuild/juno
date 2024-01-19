@@ -33,6 +33,13 @@ pub mod state {
         pub updated_at: u64,
         pub description: Option<String>,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DocContext<T> {
+        pub collection: CollectionKey,
+        pub key: Key,
+        pub doc: T,
+    }
 }
 
 pub mod interface {

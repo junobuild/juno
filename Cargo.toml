@@ -3,10 +3,10 @@ members = [
     "src/console",
     "src/mission_control",
     "src/satellite",
-    "src/shared",
     "src/observatory",
     "src/orbiter",
-    "src/libs/satellite"
+    "src/libs/satellite",
+    "src/libs/shared",
 ]
 resolver = "2"
 

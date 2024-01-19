@@ -15,4 +15,4 @@ ic-cdk-macros.workspace = true
 ic-ledger-types.workspace = true
 serde.workspace = true
 futures = "0.3.28"
-shared = { path = "../shared" }
+shared = { path = "../libs/shared" }

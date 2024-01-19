@@ -1,11 +1,9 @@
-pub struct BigInt {
-    pub value: u64,
+use candid::Principal as CandidPrincipal;
+
+pub struct Principal {
+    pub value: CandidPrincipal,
 }
 
-pub mod json {
-    use candid::Principal as CandidPrincipal;
-
-    pub struct Principal {
-        pub value: CandidPrincipal,
-    }
+pub struct BigInt {
+    pub value: u64,
 }

@@ -1,4 +1,4 @@
-use crate::serializers::types::json::Principal;
+use crate::serializers::types::Principal;
 use candid::Principal as CandidPrincipal;
 use serde::de::{self, MapAccess, Visitor};
 use serde::ser::SerializeStruct;

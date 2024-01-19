@@ -1,11 +1,10 @@
-use ic_cdk::print;
+use ic_cdk::{print, trap};
 use junobuild_macros::on_set_doc;
 use junobuild_satellite::db::types::state::Doc;
 use junobuild_satellite::include_satellite;
-use junobuild_utils::serializers::types::json::Principal;
-use junobuild_utils::serializers::types::BigInt;
+use junobuild_utils::decode_doc_data;
+use junobuild_utils::serializers::types::{BigInt, Principal};
 use serde::{Deserialize, Serialize};
-use serde_json::{from_slice, from_str, Value};
 
 #[derive(Serialize, Deserialize)]
 struct Person {
@@ -17,51 +16,14 @@ struct Person {
 
 #[on_set_doc]
 async fn on_set_doc(doc: Doc) {
-    print("On set doc called with the function set as extern Rust.");
+    let data: Person = decode_doc_data(&doc.data).unwrap_or_else(|e| trap(&format!("{}", e)));
 
-    match from_slice::<Person>(&doc.data) {
-        Ok(data) => print(format!(
-            "Str -> JSON OK {} {}",
-            data.value,
-            data.user.value.to_text()
-        )),
-        Err(err) => print(format!("Error str -> JSON {}", err)),
-    }
-
-    match from_slice::<Value>(&doc.data) {
-        Ok(data) => {
-            let d = data.get("__bigint__");
-
-            match d {
-                Some(d) => print(format!("Str -> JSON OK bigint {}", d)),
-                None => print("No JSON bigint"),
-            }
-        }
-        Err(err) => print(format!("Error str -> JSON {}", err)),
-    }
-
-    if let Ok(v) = from_slice::<Value>(&doc.data) {
-        print(format!("ça marche {}", v["user"]));
-    }
-
-    // Some JSON input data as a &str. Maybe this comes from the user.
-    let data = r#"
-        {
-            "name": "John Doe",
-            "age": 43,
-            "phones": [
-                "+44 1234567",
-                "+44 2345678"
-            ]
-        }"#;
-
-    // Parse the string of data into serde_json::Value.
-    if let Ok(v) = from_str::<Value>(data) {
-        print(format!(
-            "Please call {} at the number {}",
-            v["name"], v["phones"][0]
-        ));
-    }
+    print(format!(
+        "[on_set_doc] Data: {} {} {}",
+        data.hello,
+        data.value,
+        data.user.value.to_text()
+    ));
 }
 
 include_satellite!();

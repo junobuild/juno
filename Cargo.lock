@@ -793,6 +793,7 @@ version = "0.0.1"
 dependencies = [
  "candid",
  "serde",
+ "serde_json",
 ]
 
 [[package]]
@@ -1098,7 +1099,6 @@ dependencies = [
  "junobuild-satellite",
  "junobuild-utils",
  "serde",
- "serde_json",
  "shared",
 ]
 

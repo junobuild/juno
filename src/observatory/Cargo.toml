@@ -14,5 +14,5 @@ ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
 serde.workspace = true
 lazy_static = "1.4.0"
-ic-cdk-timers = "0.5.0"
+ic-cdk-timers = "0.6.0"
 shared = { path = "../shared" }

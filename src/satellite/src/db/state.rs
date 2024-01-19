@@ -21,7 +21,7 @@ pub fn is_collection_empty(
     collection: &CollectionKey,
     memory: &Option<Memory>,
 ) -> Result<bool, String> {
-    match memory.clone().unwrap_or(Memory::default()) {
+    match memory.clone().unwrap_or_default() {
         Memory::Heap => {
             STATE.with(|state| is_collection_empty_heap(collection, &state.borrow().heap.db.db))
         }
@@ -35,7 +35,7 @@ pub fn delete_collection(
     collection: &CollectionKey,
     memory: &Option<Memory>,
 ) -> Result<(), String> {
-    match memory.clone().unwrap_or(Memory::default()) {
+    match memory.clone().unwrap_or_default() {
         Memory::Heap => STATE
             .with(|state| delete_collection_heap(collection, &mut state.borrow_mut().heap.db.db)),
         Memory::Stable => Ok(()),

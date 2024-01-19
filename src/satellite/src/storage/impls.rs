@@ -38,7 +38,7 @@ impl StorageConfig {
     pub fn unwrap_redirects(&self) -> StorageConfigRedirects {
         self.redirects
             .clone()
-            .unwrap_or(StorageConfigRedirects::default())
+            .unwrap_or_default()
     }
 
     pub fn unwrap_iframe(&self) -> StorageConfigIFrame {

@@ -10,3 +10,8 @@ proc-macro = true
 quote = "1.0.35"
 syn = { version = "2.0.48", features = ["full"] }
 proc-macro2 = "1.0.76"
+
+[dev-dependencies]
+candid.workspace = true
+ic-cdk.workspace = true
+trybuild = "1.0.89"

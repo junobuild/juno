@@ -5,7 +5,9 @@ use crate::types::hooks::{
     OnDeleteDocContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
 };
 use crate::HookContext;
+use ic_cdk_timers::set_timer;
 use shared::types::state::UserId;
+use std::time::Duration;
 
 extern "Rust" {
     fn juno_on_set_doc(context: OnSetDocContext);
@@ -24,7 +26,9 @@ pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<Doc>) {
         };
 
         unsafe {
-            juno_on_set_doc(context);
+            set_timer(Duration::from_nanos(0), || {
+                juno_on_set_doc(context);
+            });
         }
     }
 }
@@ -39,7 +43,9 @@ pub fn invoke_on_set_many_docs(caller: &UserId, docs: &Vec<DocContext<Doc>>) {
         };
 
         unsafe {
-            juno_on_set_many_docs(context);
+            set_timer(Duration::from_nanos(0), || {
+                juno_on_set_many_docs(context);
+            });
         }
     }
 }
@@ -54,7 +60,9 @@ pub fn invoke_on_delete_doc(caller: &UserId, doc: &DocContext<Option<Doc>>) {
         };
 
         unsafe {
-            juno_on_delete_doc(context);
+            set_timer(Duration::from_nanos(0), || {
+                juno_on_delete_doc(context);
+            });
         }
     }
 }
@@ -70,7 +78,9 @@ pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &Vec<DocContext<Option<
             };
 
         unsafe {
-            juno_on_delete_many_docs(context);
+            set_timer(Duration::from_nanos(0), || {
+                juno_on_delete_many_docs(context);
+            });
         }
     }
 }

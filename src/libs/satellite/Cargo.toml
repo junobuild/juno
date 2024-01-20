@@ -13,6 +13,7 @@ disable_on_delete_many_docs = []
 candid.workspace = true
 ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
+ic-cdk-timers.workspace = true
 serde.workspace = true
 serde_bytes = "0.11.12"
 serde_cbor.workspace = true

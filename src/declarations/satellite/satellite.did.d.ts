@@ -139,6 +139,7 @@ export interface Rule {
 	created_at: bigint;
 	mutable_permissions: [] | [boolean];
 	write: Permission;
+	invoke_hooks: [] | [boolean];
 }
 export type RulesType = { Db: null } | { Storage: null };
 export interface SetController {
@@ -162,6 +163,7 @@ export interface SetRule {
 	read: Permission;
 	mutable_permissions: [] | [boolean];
 	write: Permission;
+	invoke_hooks: [] | [boolean];
 }
 export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];

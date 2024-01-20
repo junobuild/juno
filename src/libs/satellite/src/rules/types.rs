@@ -2,7 +2,7 @@ pub mod rules {
     use crate::types::core::CollectionKey;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
-    use shared::serializers::deserialize_default_as_true;
+    use shared::serializers::{deserialize_default_as_true, deserialize_default_as_false};
     use std::collections::HashMap;
 
     pub type Rules = HashMap<CollectionKey, Rule>;
@@ -11,9 +11,11 @@ pub mod rules {
     pub struct Rule {
         pub read: Permission,
         pub write: Permission,
+        pub memory: Option<Memory>,
         #[serde(default = "deserialize_default_as_true")]
         pub mutable_permissions: Option<bool>,
-        pub memory: Option<Memory>,
+        #[serde(default = "deserialize_default_as_false")]
+        pub invoke_hooks: Option<bool>,
         pub max_size: Option<u128>,
         pub created_at: u64,
         pub updated_at: u64,
@@ -49,8 +51,9 @@ pub mod interface {
         pub updated_at: Option<u64>,
         pub read: Permission,
         pub write: Permission,
-        pub mutable_permissions: Option<bool>,
         pub memory: Option<Memory>,
+        pub mutable_permissions: Option<bool>,
+        pub invoke_hooks: Option<bool>,
         pub max_size: Option<u128>,
     }
 

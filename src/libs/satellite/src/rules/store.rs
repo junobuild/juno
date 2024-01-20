@@ -105,6 +105,7 @@ fn set_rule_impl(
         write: user_rule.write,
         memory: Some(user_rule.memory.unwrap_or(default_memory)),
         mutable_permissions: Some(user_rule.mutable_permissions.unwrap_or(true)),
+        invoke_hooks: Some(user_rule.mutable_permissions.unwrap_or(false)),
         max_size: user_rule.max_size,
     };
 

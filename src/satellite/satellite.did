@@ -105,6 +105,7 @@ type Rule = record {
   created_at : nat64;
   mutable_permissions : opt bool;
   write : Permission;
+  invoke_hooks : opt bool;
 };
 type RulesType = variant { Db; Storage };
 type SetController = record {
@@ -128,6 +129,7 @@ type SetRule = record {
   read : Permission;
   mutable_permissions : opt bool;
   write : Permission;
+  invoke_hooks : opt bool;
 };
 type StorageConfig = record {
   iframe : opt StorageConfigIFrame;

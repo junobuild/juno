@@ -1,4 +1,4 @@
-use ic_cdk::{print, trap};
+use ic_cdk::print;
 use junobuild_macros::{on_delete_doc, on_set_doc};
 use junobuild_satellite::{
     include_satellite, set_doc_store, OnDeleteDocContext, OnSetDocContext, SetDoc,
@@ -18,9 +18,8 @@ struct Person {
 }
 
 #[on_set_doc]
-async fn on_set_doc(context: OnSetDocContext) {
-    let mut data: Person =
-        decode_doc_data(&context.data.doc.data).unwrap_or_else(|e| trap(&format!("{}", e)));
+async fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
+    let mut data: Person = decode_doc_data(&context.data.doc.data)?;
 
     print(format!("[on_set_doc] Caller: {}", context.caller.to_text()));
 
@@ -41,7 +40,7 @@ async fn on_set_doc(context: OnSetDocContext) {
         value: data.value.value + 1,
     };
 
-    let encode_data = encode_doc_data(&data).unwrap_or_else(|e| trap(&format!("{}", e)));
+    let encode_data = encode_doc_data(&data)?;
 
     let doc: SetDoc = SetDoc {
         data: encode_data,
@@ -54,8 +53,9 @@ async fn on_set_doc(context: OnSetDocContext) {
         context.data.collection,
         context.data.key,
         doc,
-    )
-    .unwrap_or_else(|e| trap(&format!("{}", e)));
+    )?;
+
+    Ok(())
 }
 
 #[on_delete_doc]

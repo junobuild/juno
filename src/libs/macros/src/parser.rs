@@ -2,7 +2,7 @@ use crate::error::MacroError;
 use proc_macro::TokenStream;
 use quote::quote;
 use std::string::ToString;
-use syn::{parse, ItemFn};
+use syn::{parse, ItemFn, ReturnType, Type};
 
 #[derive(Clone)]
 pub enum Hook {
@@ -49,6 +49,29 @@ fn parse_hook(hook: Hook, _attr: TokenStream, item: TokenStream) -> Result<Token
     let hook_param_type =
         proc_macro2::Ident::new(&map_hook_type(hook), proc_macro2::Span::call_site());
 
+    let return_length = match &signature.output {
+        ReturnType::Default => 0,
+        ReturnType::Type(_, ty) => match ty.as_ref() {
+            Type::Tuple(tuple) => tuple.elems.len(),
+            _ => 1,
+        },
+    };
+
+    let hook_return = if return_length == 1 {
+        quote! {
+            match result {
+                Ok(_) => {}
+                Err(e) => {
+                    let error = format!("{}", e);
+                    ic_cdk::print(&error);
+                    ic_cdk::trap(&error);
+                }
+            }
+        }
+    } else {
+        quote! {}
+    };
+
     let function_call = if is_async {
         quote! { #func_name(#hook_param).await }
     } else {
@@ -61,7 +84,8 @@ fn parse_hook(hook: Hook, _attr: TokenStream, item: TokenStream) -> Result<Token
         #[no_mangle]
         pub extern "Rust" fn #hook_fn(#hook_param: #hook_param_type) {
             ic_cdk::spawn(async {
-                #function_call
+                let result = #function_call;
+                #hook_return
             });
         }
     };

@@ -2,7 +2,7 @@ pub mod rules {
     use crate::types::core::CollectionKey;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
-    use shared::serializers::{deserialize_default_as_true, deserialize_default_as_false};
+    use shared::serializers::{deserialize_default_as_false, deserialize_default_as_true};
     use std::collections::HashMap;
 
     pub type Rules = HashMap<CollectionKey, Rule>;

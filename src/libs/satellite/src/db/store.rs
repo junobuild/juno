@@ -2,7 +2,7 @@ use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::db::state::{
     delete_collection as delete_state_collection, delete_doc as delete_state_doc,
-    get_doc as get_state_doc, get_docs_heap, get_docs_stable, get_rule as get_state_rule,
+    get_doc as get_state_doc, get_docs_heap, get_docs_stable, get_rule as get_state_rule, get_rule,
     init_collection as init_state_collection, insert_doc as insert_state_doc,
     is_collection_empty as is_state_collection_empty,
 };
@@ -29,6 +29,10 @@ pub fn init_collection_store(collection: &CollectionKey, memory: &Memory) {
 
 pub fn delete_collection_store(collection: &CollectionKey) -> Result<(), String> {
     secure_delete_collection(collection)
+}
+
+pub fn get_rule_store(collection: &CollectionKey) -> Result<Rule, String> {
+    get_rule(collection)
 }
 
 fn secure_delete_collection(collection: &CollectionKey) -> Result<(), String> {

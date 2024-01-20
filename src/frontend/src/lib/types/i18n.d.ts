@@ -425,6 +425,9 @@ interface I18nCollections {
 	heap: string;
 	stable: string;
 	immutable: string;
+	invoke_hooks: string;
+	enabled: string;
+	disabled: string;
 }
 
 interface I18nSort {

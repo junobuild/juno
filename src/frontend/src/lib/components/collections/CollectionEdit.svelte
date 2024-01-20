@@ -50,6 +50,12 @@
 		)
 	);
 
+	let hooks: boolean;
+	const initHooks = (initialRule: Rule | undefined) => {
+		hooks = (fromNullable(initialRule?.invoke_hooks ?? []) ?? false);
+	};
+	$: initHooks($store.rule?.[1] ?? undefined);
+
 	let currentImmutable: boolean;
 	let immutable: boolean;
 	const initMutable = (initialRule: Rule | undefined) => {
@@ -84,6 +90,7 @@
 				rule,
 				maxSize,
 				mutablePermissions: !immutable,
+				invokeHooks: hooks,
 				identity: $authStore.identity
 			});
 
@@ -167,6 +174,16 @@
 				<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
 					<option value="Heap">{$i18n.collections.heap}</option>
 					<option value="Stable">{$i18n.collections.stable}</option>
+				</select>
+			</Value>
+		</div>
+
+		<div>
+			<Value ref="memory">
+				<svelte:fragment slot="label">{$i18n.collections.invoke_hooks}</svelte:fragment>
+				<select id="memory" name="write" bind:value={hooks}>
+					<option value={true}>{$i18n.collections.enabled}</option>
+					<option value={false}>{$i18n.collections.disabled}</option>
 				</select>
 			</Value>
 		</div>

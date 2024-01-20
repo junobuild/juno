@@ -403,7 +403,10 @@
 		"memory": "内存",
 		"heap": "堆栈",
 		"stable": "稳定",
-		"immutable": "将权限改为只读"
+		"immutable": "将权限改为只读",
+		"invoke_hooks": "Hooks",
+		"enabled": "Enabled",
+		"disabled": "Disabled"
 	},
 	"sort": {
 		"title": "排序结果",

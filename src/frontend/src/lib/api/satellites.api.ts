@@ -72,6 +72,7 @@ export const setRule = async ({
 	rule,
 	maxSize,
 	mutablePermissions,
+	invokeHooks,
 	identity
 }: {
 	satelliteId: Principal;
@@ -83,6 +84,7 @@ export const setRule = async ({
 	rule: Rule | undefined;
 	maxSize: number | undefined;
 	mutablePermissions: boolean;
+	invokeHooks: boolean;
 	identity: OptionIdentity;
 }) => {
 	const updateRule: SetRule = {
@@ -91,7 +93,8 @@ export const setRule = async ({
 		updated_at: isNullish(rule) ? [] : [rule.updated_at],
 		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
 		memory: isNullish(rule) ? [memoryFromText(memory)] : [fromNullable(rule.memory) ?? MemoryHeap],
-		mutable_permissions: toNullable(mutablePermissions)
+		mutable_permissions: toNullable(mutablePermissions),
+		invoke_hooks: toNullable(invokeHooks)
 	};
 
 	const actor = await getSatelliteActor({ satelliteId, identity });

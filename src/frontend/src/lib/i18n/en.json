@@ -403,7 +403,10 @@
 		"memory": "Memory",
 		"heap": "Heap",
 		"stable": "Stable",
-		"immutable": "Make permissions immutable"
+		"immutable": "Make permissions immutable",
+		"invoke_hooks": "Hooks",
+		"enabled": "Enabled",
+		"disabled": "Disabled"
 	},
 	"sort": {
 		"title": "Sort results",

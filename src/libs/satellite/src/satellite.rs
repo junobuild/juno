@@ -50,7 +50,6 @@ use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, trap};
-use ic_cdk::print;
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
@@ -131,8 +130,6 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     match result {
         Ok(doc) => {
             invoke_on_set_doc(&caller, &doc);
-
-            print("After invoke");
 
             doc.doc
         }

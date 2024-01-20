@@ -6,7 +6,7 @@ use crate::rules::assert_rules::{
 use crate::rules::constants::SYS_COLLECTION_PREFIX;
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::{Memory, Rule, Rules};
-use crate::storage::store::assert_assets_collection_empty;
+use crate::storage::store::assert_assets_collection_empty_store;
 use crate::types::core::CollectionKey;
 use ic_cdk::api::time;
 
@@ -72,7 +72,7 @@ pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), Strin
 
 pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
     // Only unused rule can be removed
-    assert_assets_collection_empty(&collection)?;
+    assert_assets_collection_empty_store(&collection)?;
 
     STATE.with(|state| del_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
 }

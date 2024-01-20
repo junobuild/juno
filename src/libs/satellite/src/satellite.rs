@@ -4,8 +4,8 @@ use crate::controllers::store::{
     set_controllers as set_controllers_store,
 };
 use crate::db::store::{
-    count_docs as count_docs_store, delete_doc, delete_docs, get_doc as get_doc_store, get_docs,
-    insert_doc,
+    count_docs_store, delete_doc_store, delete_docs_store, get_doc_store, list_docs_store,
+    set_doc_store,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext};
@@ -124,7 +124,7 @@ pub fn post_upgrade() {
 pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let caller = caller();
 
-    let result = insert_doc(caller, collection, key, doc);
+    let result = set_doc_store(caller, collection, key, doc);
 
     match result {
         Ok(doc) => {
@@ -150,7 +150,7 @@ pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let caller = caller();
 
-    let deleted_doc = delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
+    let deleted_doc = delete_doc_store(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
 
     invoke_on_delete_doc(&caller, &deleted_doc);
 }
@@ -158,7 +158,7 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
     let caller = caller();
 
-    let result = get_docs(caller, collection, &filter);
+    let result = list_docs_store(caller, collection, &filter);
 
     match result {
         Ok(value) => value,
@@ -181,7 +181,8 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<DocContext<
     let mut results: Vec<DocContext<Doc>> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let result = insert_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        let result =
+            set_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
         results.push(result);
     }
 
@@ -197,7 +198,7 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
 
     for (collection, key, doc) in docs {
         let deleted_doc =
-            delete_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+            delete_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
         results.push(deleted_doc);
     }
 
@@ -205,7 +206,7 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
 }
 
 pub fn del_docs(collection: CollectionKey) {
-    let result = delete_docs(&collection);
+    let result = delete_docs_store(&collection);
 
     match result {
         Ok(_) => (),

@@ -1,4 +1,4 @@
-use crate::db::store::{delete_collection, init_collection};
+use crate::db::store::{delete_collection_store, init_collection_store};
 use crate::memory::STATE;
 use crate::rules::assert_rules::{
     assert_memory, assert_mutable_permissions, assert_write_permission,
@@ -39,7 +39,7 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
     })?;
 
     // If the collection does not exist yet we initialize it
-    init_collection(&collection, &rule.memory.unwrap_or(Memory::Heap));
+    init_collection_store(&collection, &rule.memory.unwrap_or(Memory::Heap));
 
     Ok(())
 }
@@ -57,7 +57,7 @@ pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), 
 
 pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
     // We delete the empty collection first.
-    delete_collection(&collection)?;
+    delete_collection_store(&collection)?;
 
     STATE.with(|state| {
         del_rule_impl(

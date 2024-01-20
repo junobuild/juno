@@ -19,15 +19,15 @@ use crate::types::list::{ListParams, ListResults};
 use candid::Principal;
 use ic_cdk::api::time;
 use shared::assert::assert_timestamp;
-use shared::types::state::Controllers;
+use shared::types::state::{Controllers, UserId};
 
 /// Collection
 
-pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
+pub fn init_collection_store(collection: &CollectionKey, memory: &Memory) {
     init_state_collection(collection, memory);
 }
 
-pub fn delete_collection(collection: &CollectionKey) -> Result<(), String> {
+pub fn delete_collection_store(collection: &CollectionKey) -> Result<(), String> {
     secure_delete_collection(collection)
 }
 
@@ -53,8 +53,8 @@ fn delete_collection_impl(
 
 /// Get
 
-pub fn get_doc(
-    caller: Principal,
+pub fn get_doc_store(
+    caller: UserId,
     collection: CollectionKey,
     key: Key,
 ) -> Result<Option<Doc>, String> {
@@ -96,8 +96,8 @@ fn get_doc_impl(
 
 /// Insert
 
-pub fn insert_doc(
-    caller: Principal,
+pub fn set_doc_store(
+    caller: UserId,
     collection: CollectionKey,
     key: Key,
     value: SetDoc,
@@ -171,7 +171,7 @@ fn insert_doc_impl(
 
 /// List
 
-pub fn get_docs(
+pub fn list_docs_store(
     caller: Principal,
     collection: CollectionKey,
     filter: &ListParams,
@@ -219,8 +219,8 @@ fn get_docs_impl<'a>(
 
 /// Delete
 
-pub fn delete_doc(
-    caller: Principal,
+pub fn delete_doc_store(
+    caller: UserId,
     collection: CollectionKey,
     key: Key,
     value: DelDoc,
@@ -310,7 +310,7 @@ fn assert_write_permission(
     Ok(())
 }
 
-pub fn delete_docs(collection: &CollectionKey) -> Result<(), String> {
+pub fn delete_docs_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
     let keys = match rule.mem() {
@@ -339,7 +339,7 @@ fn delete_docs_impl(
     Ok(())
 }
 
-pub fn count_docs(collection: &CollectionKey) -> Result<usize, String> {
+pub fn count_docs_store(collection: &CollectionKey) -> Result<usize, String> {
     let rule = get_state_rule(collection)?;
 
     match rule.mem() {

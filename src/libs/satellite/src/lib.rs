@@ -33,11 +33,13 @@ use storage::http::types::{
 };
 use types::list::ListParams;
 
-pub use crate::db::store::insert_doc as set_doc_store;
-pub use crate::db::types::interface::{DelDoc, SetDoc};
 ///
 /// Re-export types
 ///
+pub use crate::db::store::{
+    count_docs_store, delete_doc_store, delete_docs_store, get_doc_store, set_doc_store,
+};
+pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
 use crate::db::types::state::DocContext;
 pub use crate::types::core::{Blob, CollectionKey};

@@ -8,7 +8,7 @@ use crate::storage::http::utils::{
 };
 use crate::storage::types::store::Asset;
 
-use crate::storage::store::get_content_chunks;
+use crate::storage::store::get_content_chunks_store;
 use crate::storage::types::config::{StorageConfigIFrame, StorageConfigRedirect};
 
 pub fn build_asset_response(
@@ -44,7 +44,7 @@ pub fn build_asset_response(
 
                     match headers {
                         Ok(headers) => {
-                            let body = get_content_chunks(encoding, 0, &memory);
+                            let body = get_content_chunks_store(encoding, 0, &memory);
 
                             // TODO: support for HTTP response 304
                             // On hold til DFINITY foundation implements:

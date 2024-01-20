@@ -52,7 +52,7 @@ use crate::types::list::{ListParams, ListResults};
 /// Getter, list and delete
 ///
 
-pub fn get_content_chunks(
+pub fn get_content_chunks_store(
     encoding: &AssetEncoding,
     chunk_index: usize,
     memory: &Memory,
@@ -60,18 +60,18 @@ pub fn get_content_chunks(
     get_state_content_chunks(encoding, chunk_index, memory)
 }
 
-pub fn delete_asset(
+pub fn delete_asset_store(
     caller: Principal,
     collection: &CollectionKey,
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
     let controllers: Controllers = get_controllers();
-    let config = get_config();
+    let config = get_config_store();
 
     secure_delete_asset_impl(caller, &controllers, collection, full_path, &config)
 }
 
-pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
+pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
     let full_paths = match rule.mem() {
@@ -94,7 +94,7 @@ pub fn delete_assets(collection: &CollectionKey) -> Result<(), String> {
     delete_assets_impl(&full_paths, collection, &rule)
 }
 
-pub fn list_assets(
+pub fn list_assets_store(
     caller: Principal,
     collection: &CollectionKey,
     filters: &ListParams,
@@ -104,7 +104,10 @@ pub fn list_assets(
     secure_list_assets_impl(caller, &controllers, collection, filters)
 }
 
-pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
+pub fn get_public_asset_store(
+    full_path: FullPath,
+    token: Option<String>,
+) -> Option<(Asset, Memory)> {
     let (asset, memory) = get_state_public_asset(&full_path);
 
     match asset {
@@ -136,7 +139,7 @@ fn get_token_protected_asset(
     }
 }
 
-pub fn assert_assets_collection_empty(collection: &CollectionKey) -> Result<(), String> {
+pub fn assert_assets_collection_empty_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
     match rule.mem() {
@@ -305,7 +308,7 @@ fn delete_assets_impl(
     Ok(())
 }
 
-pub fn count_assets(collection: &CollectionKey) -> Result<usize, String> {
+pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
     let rule = get_state_rule(collection)?;
 
     match rule.mem() {
@@ -330,18 +333,18 @@ const BATCH_EXPIRY_NANOS: u64 = 300_000_000_000;
 static mut NEXT_BATCH_ID: u128 = 0;
 static mut NEXT_CHUNK_ID: u128 = 0;
 
-pub fn create_batch(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
+pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
     let controllers: Controllers = get_controllers();
     secure_create_batch_impl(caller, &controllers, init)
 }
 
-pub fn create_chunk(caller: Principal, chunk: UploadChunk) -> Result<u128, &'static str> {
+pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<u128, &'static str> {
     create_chunk_impl(caller, chunk)
 }
 
-pub fn commit_batch(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
+pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
     let controllers: Controllers = get_controllers();
-    let config = get_config();
+    let config = get_config_store();
 
     commit_batch_impl(caller, &controllers, commit_batch, &config)
 }
@@ -694,13 +697,13 @@ fn clear_expired_batches() {
 /// Config
 ///
 
-pub fn set_config(config: &StorageConfig) {
+pub fn set_config_store(config: &StorageConfig) {
     insert_state_config(config);
 
-    init_certified_assets();
+    init_certified_assets_store();
 }
 
-pub fn get_config() -> StorageConfig {
+pub fn get_config_store() -> StorageConfig {
     get_state_config()
 }
 
@@ -708,15 +711,15 @@ pub fn get_config() -> StorageConfig {
 /// Domain
 ///
 
-pub fn set_domain(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
+pub fn set_domain_store(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
     set_domain_impl(domain_name, bn_id)
 }
 
-pub fn delete_domain(domain_name: &DomainName) -> Result<(), String> {
+pub fn delete_domain_store(domain_name: &DomainName) -> Result<(), String> {
     delete_domain_impl(domain_name)
 }
 
-pub fn get_custom_domains() -> CustomDomains {
+pub fn get_custom_domains_store() -> CustomDomains {
     get_state_domains()
 }
 
@@ -748,7 +751,7 @@ fn update_custom_domains_asset() -> Result<(), String> {
 
     insert_state_asset(&collection, &full_path, &asset, &rule);
 
-    let config = get_config();
+    let config = get_config_store();
 
     update_runtime_certified_asset(&asset, &config);
 
@@ -787,6 +790,6 @@ fn get_custom_domains_as_content() -> String {
 
 /// Certified assets
 
-pub fn init_certified_assets() {
+pub fn init_certified_assets_store() {
     init_runtime_certified_assets();
 }

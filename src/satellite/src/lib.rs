@@ -1,8 +1,10 @@
 use ic_cdk::{print, trap};
 use junobuild_macros::{on_delete_doc, on_set_doc};
-use junobuild_satellite::{include_satellite, OnDeleteDocContext, OnSetDocContext};
-use junobuild_utils::decode_doc_data;
+use junobuild_satellite::{
+    include_satellite, set_doc_store, OnDeleteDocContext, OnSetDocContext, SetDoc,
+};
 use junobuild_utils::serializers::types::{BigInt, Principal};
+use junobuild_utils::{decode_doc_data, encode_doc_data};
 use serde::{Deserialize, Serialize};
 
 // TODO: remove hooks, only used for test purpose while blockchainless feature is under development
@@ -17,7 +19,7 @@ struct Person {
 
 #[on_set_doc]
 async fn on_set_doc(context: OnSetDocContext) {
-    let data: Person =
+    let mut data: Person =
         decode_doc_data(&context.data.doc.data).unwrap_or_else(|e| trap(&format!("{}", e)));
 
     print(format!("[on_set_doc] Caller: {}", context.caller.to_text()));
@@ -33,6 +35,27 @@ async fn on_set_doc(context: OnSetDocContext) {
         data.value,
         data.user.value.to_text()
     ));
+
+    data.hello = format!("{} checked", data.hello);
+    data.value = BigInt {
+        value: data.value.value + 1,
+    };
+
+    let encode_data = encode_doc_data(&data).unwrap_or_else(|e| trap(&format!("{}", e)));
+
+    let doc: SetDoc = SetDoc {
+        data: encode_data,
+        description: context.data.doc.description,
+        updated_at: Some(context.data.doc.updated_at),
+    };
+
+    set_doc_store(
+        context.caller,
+        context.data.collection,
+        context.data.key,
+        doc,
+    )
+    .unwrap_or_else(|e| trap(&format!("{}", e)));
 }
 
 #[on_delete_doc]

@@ -4,8 +4,8 @@ use crate::controllers::store::{
     set_controllers as set_controllers_store,
 };
 use crate::db::store::{
-    count_docs as count_docs_store, delete_doc, delete_docs, get_doc as get_doc_store, get_docs,
-    insert_doc,
+    count_docs_store, delete_doc_store, delete_docs_store, get_doc_store, list_docs_store,
+    set_doc_store,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext};
@@ -28,10 +28,11 @@ use crate::storage::http::types::{
 use crate::storage::http::utils::create_token;
 use crate::storage::routing::get_routing;
 use crate::storage::store::{
-    commit_batch, count_assets as count_assets_store, create_batch, create_chunk, delete_asset,
-    delete_assets, delete_domain, get_config as get_storage_config, get_content_chunks,
-    get_custom_domains, get_public_asset, init_certified_assets, list_assets as list_assets_store,
-    set_config as set_storage_config, set_domain,
+    commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
+    delete_asset_store, delete_assets_store, delete_domain_store,
+    get_config_store as get_storage_config, get_content_chunks_store, get_custom_domains_store,
+    get_public_asset_store, init_certified_assets_store, list_assets_store,
+    set_config_store as set_storage_config, set_domain_store,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http_request::{
@@ -114,7 +115,7 @@ pub fn post_upgrade() {
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
 
-    init_certified_assets();
+    init_certified_assets_store();
 }
 
 ///
@@ -124,7 +125,7 @@ pub fn post_upgrade() {
 pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let caller = caller();
 
-    let result = insert_doc(caller, collection, key, doc);
+    let result = set_doc_store(caller, collection, key, doc);
 
     match result {
         Ok(doc) => {
@@ -150,7 +151,7 @@ pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     let caller = caller();
 
-    let deleted_doc = delete_doc(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
+    let deleted_doc = delete_doc_store(caller, collection, key, doc).unwrap_or_else(|e| trap(&e));
 
     invoke_on_delete_doc(&caller, &deleted_doc);
 }
@@ -158,7 +159,7 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
     let caller = caller();
 
-    let result = get_docs(caller, collection, &filter);
+    let result = list_docs_store(caller, collection, &filter);
 
     match result {
         Ok(value) => value,
@@ -181,7 +182,8 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<DocContext<
     let mut results: Vec<DocContext<Doc>> = Vec::new();
 
     for (collection, key, doc) in docs {
-        let result = insert_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+        let result =
+            set_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
         results.push(result);
     }
 
@@ -197,7 +199,7 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
 
     for (collection, key, doc) in docs {
         let deleted_doc =
-            delete_doc(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
+            delete_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
         results.push(deleted_doc);
     }
 
@@ -205,7 +207,7 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
 }
 
 pub fn del_docs(collection: CollectionKey) {
-    let result = delete_docs(&collection);
+    let result = delete_docs_store(&collection);
 
     match result {
         Ok(_) => (),
@@ -305,15 +307,15 @@ pub fn get_config() -> Config {
 ///
 
 pub fn list_custom_domains() -> CustomDomains {
-    get_custom_domains()
+    get_custom_domains_store()
 }
 
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
-    set_domain(&domain_name, &bn_id).unwrap_or_else(|e| trap(&e));
+    set_domain_store(&domain_name, &bn_id).unwrap_or_else(|e| trap(&e));
 }
 
 pub fn del_custom_domain(domain_name: DomainName) {
-    delete_domain(&domain_name).unwrap_or_else(|e| trap(&e));
+    delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
 }
 
 ///
@@ -382,7 +384,7 @@ pub fn http_request_streaming_callback(
         memory: _,
     }: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
-    let asset = get_public_asset(full_path, token);
+    let asset = get_public_asset_store(full_path, token);
 
     match asset {
         Some((asset, memory)) => {
@@ -390,7 +392,7 @@ pub fn http_request_streaming_callback(
 
             match encoding {
                 Some(encoding) => {
-                    let body = get_content_chunks(encoding, index, &memory);
+                    let body = get_content_chunks_store(encoding, index, &memory);
 
                     match body {
                         Some(body) => StreamingCallbackHttpResponse {
@@ -420,7 +422,7 @@ pub fn http_request_streaming_callback(
 
 pub fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
     let caller = caller();
-    let result = create_batch(caller, init);
+    let result = create_batch_store(caller, init);
 
     match result {
         Ok(batch_id) => InitUploadResult { batch_id },
@@ -431,7 +433,7 @@ pub fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
 pub fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
 
-    let result = create_chunk(caller, chunk);
+    let result = create_chunk_store(caller, chunk);
 
     match result {
         Ok(chunk_id) => UploadChunkResult { chunk_id },
@@ -442,7 +444,7 @@ pub fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 pub fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
-    commit_batch(caller, commit).unwrap_or_else(|e| trap(&e));
+    commit_batch_store(caller, commit).unwrap_or_else(|e| trap(&e));
 }
 
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
@@ -459,7 +461,7 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
 pub fn del_asset(collection: CollectionKey, full_path: String) {
     let caller = caller();
 
-    let result = delete_asset(caller, &collection, full_path);
+    let result = delete_asset_store(caller, &collection, full_path);
 
     match result {
         Ok(_) => (),
@@ -474,7 +476,7 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
 }
 
 pub fn del_assets(collection: CollectionKey) {
-    let result = delete_assets(&collection);
+    let result = delete_assets_store(&collection);
 
     match result {
         Ok(_) => (),

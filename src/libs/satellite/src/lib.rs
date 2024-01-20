@@ -12,7 +12,6 @@ mod satellite;
 mod storage;
 mod types;
 
-use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
@@ -34,6 +33,8 @@ use storage::http::types::{
 };
 use types::list::ListParams;
 
+pub use crate::db::store::insert_doc as set_doc_store;
+pub use crate::db::types::interface::{DelDoc, SetDoc};
 ///
 /// Re-export types
 ///

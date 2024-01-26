@@ -16,7 +16,7 @@ extern "Rust" {
     fn juno_on_delete_many_docs(context: OnDeleteManyDocsContext);
 
     fn juno_on_set_doc_collections() -> Option<Vec<String>>;
-    fn juno_set_many_docs_collections() -> Option<Vec<String>>;
+    fn juno_on_set_many_docs_collections() -> Option<Vec<String>>;
     fn juno_on_delete_doc_collections() -> Option<Vec<String>>;
     fn juno_on_delete_many_docs_collections() -> Option<Vec<String>>;
 }
@@ -47,16 +47,9 @@ pub fn invoke_on_set_many_docs(caller: &UserId, docs: &Vec<DocContext<Doc>>) {
     #[cfg(not(feature = "disable_on_set_many_docs"))]
     {
         unsafe {
-            let collections = juno_set_many_docs_collections();
+            let collections = juno_on_set_many_docs_collections();
 
-            let filtered_docs: Vec<DocContext<Doc>> = docs
-                .into_iter()
-                .filter(|d| {
-                    collections
-                        .as_ref()
-                        .map_or(false, |cols| cols.contains(&d.collection.to_string()))
-                })
-                .collect();
+            let filtered_docs = filter_docs(&collections, docs);
 
             if filtered_docs.len() > 0 {
                 let context: HookContext<Vec<DocContext<Doc>>> =
@@ -122,7 +115,7 @@ fn should_invoke_hook<T>(
     collections: Option<Vec<String>>,
     context: &HookContext<DocContext<T>>,
 ) -> bool {
-    collections.map_or(false, |c| c.contains(&context.data.collection))
+    collections.map_or(true, |c| c.contains(&context.data.collection))
 }
 
 fn filter_docs<T: Clone>(

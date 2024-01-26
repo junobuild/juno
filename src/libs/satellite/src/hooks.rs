@@ -1,15 +1,14 @@
 #![allow(dead_code)]
 
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
-use crate::types::hooks::{
-    OnDeleteDocContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
-};
+use crate::types::hooks::{OnDeleteDocContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext};
 use crate::HookContext;
 #[allow(unused)]
 use ic_cdk_timers::set_timer;
 use shared::types::state::UserId;
 #[allow(unused)]
 use std::time::Duration;
+use crate::storage::types::store::Asset;
 
 extern "Rust" {
     fn juno_on_set_doc(context: OnSetDocContext);
@@ -21,6 +20,10 @@ extern "Rust" {
     fn juno_on_set_many_docs_collections() -> Option<Vec<String>>;
     fn juno_on_delete_doc_collections() -> Option<Vec<String>>;
     fn juno_on_delete_many_docs_collections() -> Option<Vec<String>>;
+
+    fn juno_on_upload_asset(context: OnUploadAssetContext);
+
+    fn juno_on_upload_asset_collections() -> Option<Vec<String>>;
 }
 
 #[allow(unused_variables)]
@@ -35,7 +38,7 @@ pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<DocUpsert>) {
         unsafe {
             let collections = juno_on_set_doc_collections();
 
-            if should_invoke_hook(collections, &context) {
+            if should_invoke_doc_hook(collections, &context) {
                 set_timer(Duration::from_nanos(0), || {
                     juno_on_set_doc(context);
                 });
@@ -79,7 +82,7 @@ pub fn invoke_on_delete_doc(caller: &UserId, doc: &DocContext<Option<Doc>>) {
         unsafe {
             let collections = juno_on_delete_doc_collections();
 
-            if should_invoke_hook(collections, &context) {
+            if should_invoke_doc_hook(collections, &context) {
                 set_timer(Duration::from_nanos(0), || {
                     juno_on_delete_doc(context);
                 });
@@ -111,7 +114,28 @@ pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &[DocContext<Option<Doc
     }
 }
 
-fn should_invoke_hook<T>(
+#[allow(unused_variables)]
+pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
+    #[cfg(not(feature = "disable_on_upload_asset"))]
+    {
+        let context: OnUploadAssetContext = OnUploadAssetContext {
+            caller: caller.clone(),
+            data: asset.clone(),
+        };
+
+        unsafe {
+            let collections = juno_on_upload_asset_collections();
+
+            if should_invoke_asset_hook(collections, &context) {
+                set_timer(Duration::from_nanos(0), || {
+                    juno_on_upload_asset(context);
+                });
+            }
+        }
+    }
+}
+
+fn should_invoke_doc_hook<T>(
     collections: Option<Vec<String>>,
     context: &HookContext<DocContext<T>>,
 ) -> bool {
@@ -130,4 +154,12 @@ fn filter_docs<T: Clone>(
         })
         .cloned() // Clone each matching DocContext
         .collect()
+}
+
+
+fn should_invoke_asset_hook(
+    collections: Option<Vec<String>>,
+    context: &HookContext<Asset>,
+) -> bool {
+    collections.map_or(true, |c| c.contains(&context.data.key.collection))
 }

@@ -9,9 +9,7 @@ use crate::db::store::{
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
-use crate::hooks::{
-    invoke_on_delete_doc, invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs,
-};
+use crate::hooks::{invoke_on_delete_doc, invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
@@ -453,7 +451,9 @@ pub fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 pub fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
-    commit_batch_store(caller, commit).unwrap_or_else(|e| trap(&e));
+    let asset = commit_batch_store(caller, commit).unwrap_or_else(|e| trap(&e));
+
+    invoke_upload_asset(&caller, &asset);
 }
 
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {

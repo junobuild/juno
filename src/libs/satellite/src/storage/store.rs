@@ -342,7 +342,7 @@ pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<u128,
     create_chunk_impl(caller, chunk)
 }
 
-pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
+pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<Asset, String> {
     let controllers: Controllers = get_controllers();
     let config = get_config_store();
 
@@ -465,7 +465,7 @@ fn commit_batch_impl(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     config: &StorageConfig,
-) -> Result<(), String> {
+) -> Result<Asset, String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
     match batch {
@@ -473,7 +473,7 @@ fn commit_batch_impl(
         Some(b) => {
             let asset = secure_commit_chunks(caller, controllers, commit_batch, &b)?;
             update_runtime_certified_asset(&asset, config);
-            Ok(())
+            Ok(asset)
         }
     }
 }

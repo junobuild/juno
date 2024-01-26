@@ -18,6 +18,7 @@ pub enum Hook {
     OnSetManyDocs,
     OnDeleteDoc,
     OnDeleteManyDocs,
+    OnUploadAsset,
 }
 
 const CONTEXT_PARAM: &str = "context";
@@ -28,6 +29,7 @@ fn map_hook_name(hook: Hook) -> String {
         Hook::OnSetManyDocs => "juno_on_set_many_docs".to_string(),
         Hook::OnDeleteDoc => "juno_on_delete_doc".to_string(),
         Hook::OnDeleteManyDocs => "juno_on_delete_many_docs".to_string(),
+        Hook::OnUploadAsset => "juno_on_upload_asset".to_string(),
     }
 }
 
@@ -37,6 +39,7 @@ fn map_hook_collections(hook: Hook) -> String {
         Hook::OnSetManyDocs => "juno_on_set_many_docs_collections".to_string(),
         Hook::OnDeleteDoc => "juno_on_delete_doc_collections".to_string(),
         Hook::OnDeleteManyDocs => "juno_on_delete_many_docs_collections".to_string(),
+        Hook::OnUploadAsset => "juno_on_upload_asset_collections".to_string(),
     }
 }
 
@@ -46,6 +49,7 @@ fn map_hook_type(hook: Hook) -> String {
         Hook::OnSetManyDocs => "OnSetManyDocsContext".to_string(),
         Hook::OnDeleteDoc => "OnDeleteDocContext".to_string(),
         Hook::OnDeleteManyDocs => "OnDeleteManyDocsContext".to_string(),
+        Hook::OnUploadAsset => "OnUploadAssetContext".to_string(),
     }
 }
 

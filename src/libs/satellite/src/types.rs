@@ -134,6 +134,7 @@ pub mod hooks {
     use crate::Doc;
     use candid::{CandidType, Deserialize};
     use shared::types::state::UserId;
+    use crate::storage::types::store::Asset;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct HookContext<T> {
@@ -145,4 +146,6 @@ pub mod hooks {
     pub type OnSetManyDocsContext = HookContext<Vec<DocContext<DocUpsert>>>;
     pub type OnDeleteDocContext = HookContext<DocContext<Option<Doc>>>;
     pub type OnDeleteManyDocsContext = HookContext<Vec<DocContext<Option<Doc>>>>;
+
+    pub type OnUploadAssetContext = HookContext<Asset>;
 }

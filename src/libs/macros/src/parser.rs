@@ -3,6 +3,13 @@ use proc_macro::TokenStream;
 use quote::quote;
 use std::string::ToString;
 use syn::{parse, ItemFn, ReturnType, Type};
+use serde::Deserialize;
+use serde_tokenstream::from_tokenstream;
+
+#[derive(Default, Deserialize)]
+struct HookAttributes {
+    collections: Option<Vec<String>>,
+}
 
 #[derive(Clone)]
 pub enum Hook {
@@ -36,7 +43,10 @@ pub fn hook_macro(hook: Hook, attr: TokenStream, item: TokenStream) -> TokenStre
     parse_hook(hook, attr, item).map_or_else(|e| e.to_error(), Into::into)
 }
 
-fn parse_hook(hook: Hook, _attr: TokenStream, item: TokenStream) -> Result<TokenStream, String> {
+fn parse_hook(hook: Hook, attr: TokenStream, item: TokenStream) -> Result<TokenStream, String> {
+    let converted_attr: proc_macro2::TokenStream = attr.into();
+    let attrs = from_tokenstream::<HookAttributes>(&converted_attr).map_err(|_| "Expected valid arguments to register the hooks")?;
+
     let ast = parse::<ItemFn>(item).map_err(|_| "Expected a function to register the hooks")?;
 
     let signature = &ast.sig;

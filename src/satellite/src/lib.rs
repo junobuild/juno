@@ -17,7 +17,7 @@ struct Person {
     user: Principal,
 }
 
-#[on_set_doc]
+#[on_set_doc(collections = ["demo"])]
 async fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
     let mut data: Person = decode_doc_data(&context.data.doc.data)?;
 

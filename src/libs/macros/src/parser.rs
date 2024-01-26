@@ -1,10 +1,10 @@
 use crate::error::MacroError;
 use proc_macro::TokenStream;
 use quote::quote;
-use std::string::ToString;
-use syn::{parse, ItemFn, ReturnType, Type};
 use serde::Deserialize;
 use serde_tokenstream::from_tokenstream;
+use std::string::ToString;
+use syn::{parse, ItemFn, ReturnType, Type};
 
 #[derive(Default, Deserialize)]
 struct HookAttributes {
@@ -30,12 +30,12 @@ fn map_hook_name(hook: Hook) -> String {
     }
 }
 
-fn map_hook_guard_name(hook: Hook) -> String {
+fn map_hook_collections(hook: Hook) -> String {
     match hook {
-        Hook::OnSetDoc => "juno_should_invoke_on_set_doc".to_string(),
-        Hook::OnSetManyDocs => "juno_should_invoke_on_set_many_docs".to_string(),
-        Hook::OnDeleteDoc => "juno_should_invoke_on_delete_doc".to_string(),
-        Hook::OnDeleteManyDocs => "juno_should_invoke_on_delete_many_docs".to_string(),
+        Hook::OnSetDoc => "juno_on_set_doc_collections".to_string(),
+        Hook::OnSetManyDocs => "juno_on_set_many_docs_collections".to_string(),
+        Hook::OnDeleteDoc => "juno_on_delete_doc_collections".to_string(),
+        Hook::OnDeleteManyDocs => "juno_on_delete_many_docs_collections".to_string(),
     }
 }
 
@@ -54,7 +54,8 @@ pub fn hook_macro(hook: Hook, attr: TokenStream, item: TokenStream) -> TokenStre
 
 fn parse_hook(hook: Hook, attr: TokenStream, item: TokenStream) -> Result<TokenStream, String> {
     let converted_attr: proc_macro2::TokenStream = attr.into();
-    let attrs = from_tokenstream::<HookAttributes>(&converted_attr).map_err(|_| "Expected valid arguments to register the hooks")?;
+    let attrs = from_tokenstream::<HookAttributes>(&converted_attr)
+        .map_err(|_| "Expected valid arguments to register the hooks")?;
 
     let ast = parse::<ItemFn>(item).map_err(|_| "Expected a function to register the hooks")?;
 
@@ -64,8 +65,10 @@ fn parse_hook(hook: Hook, attr: TokenStream, item: TokenStream) -> Result<TokenS
 
     let hook_fn =
         proc_macro2::Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
-    let hook_guard_fn =
-        proc_macro2::Ident::new(&map_hook_guard_name(hook.clone()), proc_macro2::Span::call_site());
+    let hook_collections_fn = proc_macro2::Ident::new(
+        &map_hook_collections(hook.clone()),
+        proc_macro2::Span::call_site(),
+    );
     let hook_param = proc_macro2::Ident::new(CONTEXT_PARAM, proc_macro2::Span::call_site());
     let hook_param_type =
         proc_macro2::Ident::new(&map_hook_type(hook), proc_macro2::Span::call_site());
@@ -101,22 +104,17 @@ fn parse_hook(hook: Hook, attr: TokenStream, item: TokenStream) -> Result<TokenS
 
     let collections_tokens = if let Some(collections) = attrs.collections {
         let tokens = collections.iter().map(|col| quote! { #col.to_string() });
-        quote! { vec![#(#tokens,)*] }
+        quote! { Some(vec![#(#tokens,)*]) }
     } else {
-        quote! { Vec::new() }
+        quote! { None }
     };
 
     let result = quote! {
         #ast
 
         #[no_mangle]
-        pub extern "Rust" fn #hook_guard_fn(#hook_param: &#hook_param_type) -> bool {
-            let collection_list = #collections_tokens;
-            if !collection_list.is_empty() {
-                collection_list.contains(&#hook_param.data.collection.to_string())
-            } else {
-                true
-            }
+        pub extern "Rust" fn #hook_collections_fn() -> Option<Vec<String>> {
+            #collections_tokens
         }
 
         #[no_mangle]

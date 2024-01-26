@@ -101,14 +101,7 @@ pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &Vec<DocContext<Option<
         unsafe {
             let collections = juno_on_delete_many_docs_collections();
 
-            let filtered_docs: Vec<DocContext<Option<Doc>>> = docs
-                .into_iter()
-                .filter(|d| {
-                    collections
-                        .as_ref()
-                        .map_or(false, |cols| cols.contains(&d.collection.to_string()))
-                })
-                .collect();
+            let filtered_docs = filter_docs(&collections, docs);
 
             if filtered_docs.len() > 0 {
                 let context: HookContext<Vec<DocContext<Option<Doc>>>> =
@@ -130,4 +123,19 @@ fn should_invoke_hook<T>(
     context: &HookContext<DocContext<T>>,
 ) -> bool {
     collections.map_or(false, |c| c.contains(&context.data.collection))
+}
+
+fn filter_docs<T: Clone>(
+    collections: &Option<Vec<String>>,
+    docs: &Vec<DocContext<T>>,
+) -> Vec<DocContext<T>> {
+    docs
+        .iter()
+        .filter(|d| {
+            collections
+                .as_ref()
+                .map_or(false, |cols| cols.contains(&d.collection.to_string()))
+        })
+        .cloned() // Clone each matching DocContext
+        .collect()
 }

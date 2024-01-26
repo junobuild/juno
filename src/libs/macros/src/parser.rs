@@ -55,7 +55,7 @@ pub fn hook_macro(hook: Hook, attr: TokenStream, item: TokenStream) -> TokenStre
 fn parse_hook(hook: Hook, attr: TokenStream, item: TokenStream) -> Result<TokenStream, String> {
     let converted_attr: proc_macro2::TokenStream = attr.into();
     let attrs = from_tokenstream::<HookAttributes>(&converted_attr)
-        .map_err(|_| "Expected valid arguments to register the hooks")?;
+        .map_err(|_| "Expected valid attributes to register the hooks")?;
 
     let ast = parse::<ItemFn>(item).map_err(|_| "Expected a function to register the hooks")?;
 

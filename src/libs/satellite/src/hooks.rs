@@ -127,7 +127,7 @@ fn filter_docs<T: Clone>(
         .filter(|d| {
             collections
                 .as_ref()
-                .map_or(false, |cols| cols.contains(&d.collection.to_string()))
+                .map_or(true, |cols| cols.contains(&d.collection.to_string()))
         })
         .cloned() // Clone each matching DocContext
         .collect()

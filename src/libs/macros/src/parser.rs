@@ -11,6 +11,7 @@ struct HookAttributes {
     collections: Option<Vec<String>>,
 }
 
+#[allow(clippy::enum_variant_names)]
 #[derive(Clone)]
 pub enum Hook {
     OnSetDoc,

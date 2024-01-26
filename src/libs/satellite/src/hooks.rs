@@ -45,7 +45,7 @@ pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<DocUpsert>) {
 }
 
 #[allow(dead_code, unused_variables)]
-pub fn invoke_on_set_many_docs(caller: &UserId, docs: &Vec<DocContext<DocUpsert>>) {
+pub fn invoke_on_set_many_docs(caller: &UserId, docs: &[DocContext<DocUpsert>]) {
     #[cfg(not(feature = "disable_on_set_many_docs"))]
     {
         unsafe {
@@ -89,7 +89,7 @@ pub fn invoke_on_delete_doc(caller: &UserId, doc: &DocContext<Option<Doc>>) {
 }
 
 #[allow(dead_code, unused_variables)]
-pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &Vec<DocContext<Option<Doc>>>) {
+pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &[DocContext<Option<Doc>>]) {
     #[cfg(not(feature = "disable_on_delete_many_docs"))]
     {
         unsafe {
@@ -120,7 +120,7 @@ fn should_invoke_hook<T>(
 
 fn filter_docs<T: Clone>(
     collections: &Option<Vec<String>>,
-    docs: &Vec<DocContext<T>>,
+    docs: &[DocContext<T>],
 ) -> Vec<DocContext<T>> {
     docs.iter()
         .filter(|d| {

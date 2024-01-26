@@ -19,7 +19,7 @@ struct Person {
 
 #[on_set_doc(collections = ["demo"])]
 async fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
-    let mut data: Person = decode_doc_data(&context.data.doc.data)?;
+    let mut data: Person = decode_doc_data(&context.data.after.data)?;
 
     print(format!("[on_set_doc] Caller: {}", context.caller.to_text()));
 
@@ -44,8 +44,8 @@ async fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
 
     let doc: SetDoc = SetDoc {
         data: encode_data,
-        description: context.data.doc.description,
-        updated_at: Some(context.data.doc.updated_at),
+        description: context.data.after.description,
+        updated_at: Some(context.data.after.updated_at),
     };
 
     set_doc_store(

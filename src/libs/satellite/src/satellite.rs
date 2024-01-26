@@ -8,7 +8,7 @@ use crate::db::store::{
     set_doc_store,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Doc, DocContext};
+use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::hooks::{
     invoke_on_delete_doc, invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs,
 };
@@ -131,7 +131,7 @@ pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
         Ok(doc) => {
             invoke_on_set_doc(&caller, &doc);
 
-            doc.doc
+            doc.data.after
         }
         Err(error) => trap(&error),
     }
@@ -179,15 +179,24 @@ pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)>
 pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<DocContext<Doc>> {
     let caller = caller();
 
+    let mut hook_payload: Vec<DocContext<DocUpsert>> = Vec::new();
     let mut results: Vec<DocContext<Doc>> = Vec::new();
 
     for (collection, key, doc) in docs {
         let result =
             set_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
-        results.push(result);
+
+        // The caller knows the "before" values therefore to reduce the size of the answer we filter those information.
+        results.push(DocContext {
+            key: result.key.clone(),
+            collection: result.collection.clone(),
+            data: result.data.after.clone(),
+        });
+
+        hook_payload.push(result);
     }
 
-    invoke_on_set_many_docs(&caller, &results);
+    invoke_on_set_many_docs(&caller, &hook_payload);
 
     results
 }

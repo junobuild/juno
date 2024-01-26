@@ -14,6 +14,11 @@ extern "Rust" {
     fn juno_on_set_many_docs(context: OnSetManyDocsContext);
     fn juno_on_delete_doc(context: OnDeleteDocContext);
     fn juno_on_delete_many_docs(context: OnDeleteManyDocsContext);
+
+    fn juno_should_invoke_on_set_doc(context: &OnSetDocContext) -> bool;
+    fn juno_should_invoke_set_many_docs(context: &OnSetManyDocsContext) -> bool;
+    fn juno_should_invoke_on_delete_doc(context: &OnDeleteDocContext) -> bool;
+    fn juno_should_invoke_on_delete_many_docs(context: &OnDeleteManyDocsContext) -> bool;
 }
 
 #[allow(unused_variables)]
@@ -26,9 +31,11 @@ pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<Doc>) {
         };
 
         unsafe {
-            set_timer(Duration::from_nanos(0), || {
-                juno_on_set_doc(context);
-            });
+            if juno_should_invoke_on_set_doc(&context) {
+                set_timer(Duration::from_nanos(0), || {
+                    juno_on_set_doc(context);
+                });
+            }
         }
     }
 }
@@ -43,9 +50,11 @@ pub fn invoke_on_set_many_docs(caller: &UserId, docs: &Vec<DocContext<Doc>>) {
         };
 
         unsafe {
-            set_timer(Duration::from_nanos(0), || {
-                juno_on_set_many_docs(context);
-            });
+            if juno_should_invoke_on_set_doc(&context) {
+                set_timer(Duration::from_nanos(0), || {
+                    juno_on_set_many_docs(context);
+                });
+            }
         }
     }
 }
@@ -60,9 +69,11 @@ pub fn invoke_on_delete_doc(caller: &UserId, doc: &DocContext<Option<Doc>>) {
         };
 
         unsafe {
-            set_timer(Duration::from_nanos(0), || {
-                juno_on_delete_doc(context);
-            });
+            if juno_should_invoke_on_delete_doc(&context) {
+                set_timer(Duration::from_nanos(0), || {
+                    juno_on_delete_doc(context);
+                });
+            }
         }
     }
 }

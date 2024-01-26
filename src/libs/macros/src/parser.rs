@@ -30,6 +30,15 @@ fn map_hook_name(hook: Hook) -> String {
     }
 }
 
+fn map_hook_guard_name(hook: Hook) -> String {
+    match hook {
+        Hook::OnSetDoc => "juno_should_invoke_on_set_doc".to_string(),
+        Hook::OnSetManyDocs => "juno_should_invoke_on_set_many_docs".to_string(),
+        Hook::OnDeleteDoc => "juno_should_invoke_on_delete_doc".to_string(),
+        Hook::OnDeleteManyDocs => "juno_should_invoke_on_delete_many_docs".to_string(),
+    }
+}
+
 fn map_hook_type(hook: Hook) -> String {
     match hook {
         Hook::OnSetDoc => "OnSetDocContext".to_string(),
@@ -55,6 +64,8 @@ fn parse_hook(hook: Hook, attr: TokenStream, item: TokenStream) -> Result<TokenS
 
     let hook_fn =
         proc_macro2::Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
+    let hook_guard_fn =
+        proc_macro2::Ident::new(&map_hook_guard_name(hook.clone()), proc_macro2::Span::call_site());
     let hook_param = proc_macro2::Ident::new(CONTEXT_PARAM, proc_macro2::Span::call_site());
     let hook_param_type =
         proc_macro2::Ident::new(&map_hook_type(hook), proc_macro2::Span::call_site());
@@ -88,8 +99,25 @@ fn parse_hook(hook: Hook, attr: TokenStream, item: TokenStream) -> Result<TokenS
         quote! { #func_name(#hook_param) }
     };
 
+    let collections_tokens = if let Some(collections) = attrs.collections {
+        let tokens = collections.iter().map(|col| quote! { #col.to_string() });
+        quote! { vec![#(#tokens,)*] }
+    } else {
+        quote! { Vec::new() }
+    };
+
     let result = quote! {
         #ast
+
+        #[no_mangle]
+        pub extern "Rust" fn #hook_guard_fn(#hook_param: &#hook_param_type) -> bool {
+            let collection_list = #collections_tokens;
+            if !collection_list.is_empty() {
+                collection_list.contains(&#hook_param.data.collection.to_string())
+            } else {
+                true
+            }
+        }
 
         #[no_mangle]
         pub extern "Rust" fn #hook_fn(#hook_param: #hook_param_type) {

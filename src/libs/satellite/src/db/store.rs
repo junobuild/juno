@@ -7,7 +7,7 @@ use crate::db::state::{
     is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Doc, DocContext};
+use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
@@ -101,15 +101,15 @@ pub fn set_doc_store(
     collection: CollectionKey,
     key: Key,
     value: SetDoc,
-) -> Result<DocContext<Doc>, String> {
+) -> Result<DocContext<DocUpsert>, String> {
     let controllers: Controllers = get_controllers();
 
-    let doc = secure_insert_doc(caller, &controllers, collection.clone(), key.clone(), value)?;
+    let data = secure_insert_doc(caller, &controllers, collection.clone(), key.clone(), value)?;
 
     Ok(DocContext {
         key,
         collection,
-        doc,
+        data,
     })
 }
 
@@ -119,7 +119,7 @@ fn secure_insert_doc(
     collection: CollectionKey,
     key: Key,
     value: SetDoc,
-) -> Result<Doc, String> {
+) -> Result<DocUpsert, String> {
     let rule = get_state_rule(&collection)?;
     insert_doc_impl(caller, controllers, collection, key, value, &rule)
 }
@@ -131,7 +131,7 @@ fn insert_doc_impl(
     key: Key,
     value: SetDoc,
     rule: &Rule,
-) -> Result<Doc, String> {
+) -> Result<DocUpsert, String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
     match assert_write_permission(
@@ -166,7 +166,12 @@ fn insert_doc_impl(
         description: value.description,
     };
 
-    insert_state_doc(&collection, &key, &doc, rule)
+    let after = insert_state_doc(&collection, &key, &doc, rule)?;
+
+    Ok(DocUpsert {
+        before: current_doc,
+        after,
+    })
 }
 
 /// List
@@ -232,7 +237,7 @@ pub fn delete_doc_store(
     Ok(DocContext {
         key,
         collection,
-        doc,
+        data: doc,
     })
 }
 

@@ -1,6 +1,6 @@
 #![allow(dead_code)]
 
-use crate::db::types::state::{Doc, DocContext};
+use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::types::hooks::{
     OnDeleteDocContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
 };
@@ -22,10 +22,10 @@ extern "Rust" {
 }
 
 #[allow(unused_variables)]
-pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<Doc>) {
+pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<DocUpsert>) {
     #[cfg(not(feature = "disable_on_set_doc"))]
     {
-        let context: HookContext<DocContext<Doc>> = HookContext::<DocContext<Doc>> {
+        let context: HookContext<DocContext<DocUpsert>> = HookContext::<DocContext<DocUpsert>> {
             caller: caller.clone(),
             data: doc.clone(),
         };
@@ -43,7 +43,7 @@ pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<Doc>) {
 }
 
 #[allow(dead_code, unused_variables)]
-pub fn invoke_on_set_many_docs(caller: &UserId, docs: &Vec<DocContext<Doc>>) {
+pub fn invoke_on_set_many_docs(caller: &UserId, docs: &Vec<DocContext<DocUpsert>>) {
     #[cfg(not(feature = "disable_on_set_many_docs"))]
     {
         unsafe {
@@ -52,8 +52,8 @@ pub fn invoke_on_set_many_docs(caller: &UserId, docs: &Vec<DocContext<Doc>>) {
             let filtered_docs = filter_docs(&collections, docs);
 
             if filtered_docs.len() > 0 {
-                let context: HookContext<Vec<DocContext<Doc>>> =
-                    HookContext::<Vec<DocContext<Doc>>> {
+                let context: HookContext<Vec<DocContext<DocUpsert>>> =
+                    HookContext::<Vec<DocContext<DocUpsert>>> {
                         caller: caller.clone(),
                         data: filtered_docs.clone(),
                     };
@@ -122,8 +122,7 @@ fn filter_docs<T: Clone>(
     collections: &Option<Vec<String>>,
     docs: &Vec<DocContext<T>>,
 ) -> Vec<DocContext<T>> {
-    docs
-        .iter()
+    docs.iter()
         .filter(|d| {
             collections
                 .as_ref()

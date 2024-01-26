@@ -38,7 +38,13 @@ pub mod state {
     pub struct DocContext<T> {
         pub collection: CollectionKey,
         pub key: Key,
-        pub doc: T,
+        pub data: T,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DocUpsert {
+        pub before: Option<Doc>,
+        pub after: Doc,
     }
 }
 

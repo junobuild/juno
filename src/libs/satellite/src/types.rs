@@ -130,7 +130,7 @@ pub mod memory {
 }
 
 pub mod hooks {
-    use crate::db::types::state::DocContext;
+    use crate::db::types::state::{DocContext, DocUpsert};
     use crate::Doc;
     use candid::{CandidType, Deserialize};
     use shared::types::state::UserId;
@@ -141,8 +141,8 @@ pub mod hooks {
         pub data: T,
     }
 
-    pub type OnSetDocContext = HookContext<DocContext<Doc>>;
-    pub type OnSetManyDocsContext = HookContext<Vec<DocContext<Doc>>>;
+    pub type OnSetDocContext = HookContext<DocContext<DocUpsert>>;
+    pub type OnSetManyDocsContext = HookContext<Vec<DocContext<DocUpsert>>>;
     pub type OnDeleteDocContext = HookContext<DocContext<Option<Doc>>>;
     pub type OnDeleteManyDocsContext = HookContext<Vec<DocContext<Option<Doc>>>>;
 }

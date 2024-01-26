@@ -5,8 +5,10 @@ use crate::types::hooks::{
     OnDeleteDocContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
 };
 use crate::HookContext;
+#[allow(unused)]
 use ic_cdk_timers::set_timer;
 use shared::types::state::UserId;
+#[allow(unused)]
 use std::time::Duration;
 
 extern "Rust" {

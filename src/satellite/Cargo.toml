@@ -13,8 +13,5 @@ candid.workspace = true
 ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
 serde.workspace = true
-junobuild-satellite = { path = "../libs/satellite", features = ["disable_on_set_many_docs", "disable_on_delete_many_docs"] }
-junobuild-macros = { path = "../libs/macros" }
-junobuild-utils = { path = "../libs/utils" }
-shared = { path = "../libs/shared" }
+junobuild-satellite = { path = "../libs/satellite", features = ["disable_on_set_doc", "disable_on_set_many_docs", "disable_on_delete_doc", "disable_on_delete_many_docs"] }
 

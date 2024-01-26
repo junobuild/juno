@@ -27,7 +27,7 @@ extern "Rust" {
 pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<DocUpsert>) {
     #[cfg(not(feature = "disable_on_set_doc"))]
     {
-        let context: HookContext<DocContext<DocUpsert>> = HookContext::<DocContext<DocUpsert>> {
+        let context: OnSetDocContext = OnSetDocContext {
             caller: caller.clone(),
             data: doc.clone(),
         };
@@ -54,11 +54,10 @@ pub fn invoke_on_set_many_docs(caller: &UserId, docs: &Vec<DocContext<DocUpsert>
             let filtered_docs = filter_docs(&collections, docs);
 
             if filtered_docs.len() > 0 {
-                let context: HookContext<Vec<DocContext<DocUpsert>>> =
-                    HookContext::<Vec<DocContext<DocUpsert>>> {
-                        caller: caller.clone(),
-                        data: filtered_docs.clone(),
-                    };
+                let context: OnSetManyDocsContext = OnSetManyDocsContext {
+                    caller: caller.clone(),
+                    data: filtered_docs.clone(),
+                };
 
                 set_timer(Duration::from_nanos(0), || {
                     juno_on_set_many_docs(context);
@@ -72,7 +71,7 @@ pub fn invoke_on_set_many_docs(caller: &UserId, docs: &Vec<DocContext<DocUpsert>
 pub fn invoke_on_delete_doc(caller: &UserId, doc: &DocContext<Option<Doc>>) {
     #[cfg(not(feature = "disable_on_delete_doc"))]
     {
-        let context: HookContext<DocContext<Option<Doc>>> = HookContext::<DocContext<Option<Doc>>> {
+        let context: OnDeleteDocContext = OnDeleteDocContext {
             caller: caller.clone(),
             data: doc.clone(),
         };
@@ -99,11 +98,10 @@ pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &Vec<DocContext<Option<
             let filtered_docs = filter_docs(&collections, docs);
 
             if filtered_docs.len() > 0 {
-                let context: HookContext<Vec<DocContext<Option<Doc>>>> =
-                    HookContext::<Vec<DocContext<Option<Doc>>>> {
-                        caller: caller.clone(),
-                        data: filtered_docs.clone(),
-                    };
+                let context: OnDeleteManyDocsContext = OnDeleteManyDocsContext {
+                    caller: caller.clone(),
+                    data: filtered_docs.clone(),
+                };
 
                 set_timer(Duration::from_nanos(0), || {
                     juno_on_delete_many_docs(context);

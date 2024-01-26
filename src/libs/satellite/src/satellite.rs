@@ -9,7 +9,10 @@ use crate::db::store::{
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
-use crate::hooks::{invoke_on_delete_doc, invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset};
+use crate::hooks::{
+    invoke_on_delete_asset, invoke_on_delete_doc, invoke_on_delete_many_assets,
+    invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset,
+};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
@@ -39,6 +42,7 @@ use crate::storage::types::http_request::{
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+use crate::storage::types::store::Asset;
 use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListParams;
@@ -473,15 +477,23 @@ pub fn del_asset(collection: CollectionKey, full_path: String) {
     let result = delete_asset_store(caller, &collection, full_path);
 
     match result {
-        Ok(_) => (),
+        Ok(asset) => invoke_on_delete_asset(&caller, &asset),
         Err(error) => trap(&["Asset cannot be deleted: ", &error].join("")),
     }
 }
 
 pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
+    let caller = caller();
+
+    let mut results: Vec<Option<Asset>> = Vec::new();
+
     for (collection, full_path) in assets {
-        del_asset(collection, full_path);
+        let deleted_asset =
+            delete_asset_store(caller, &collection, full_path).unwrap_or_else(|e| trap(&e));
+        results.push(deleted_asset);
     }
+
+    invoke_on_delete_many_assets(&caller, &results);
 }
 
 pub fn del_assets(collection: CollectionKey) {

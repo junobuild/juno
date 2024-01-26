@@ -30,3 +30,13 @@ pub fn on_delete_many_docs(attr: TokenStream, item: TokenStream) -> TokenStream 
 pub fn on_upload_asset(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::OnUploadAsset, attr, item)
 }
+
+#[proc_macro_attribute]
+pub fn on_delete_asset(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnDeleteAsset, attr, item)
+}
+
+#[proc_macro_attribute]
+pub fn on_delete_many_assets(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnDeleteManyAssets, attr, item)
+}

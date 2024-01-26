@@ -131,10 +131,10 @@ pub mod memory {
 
 pub mod hooks {
     use crate::db::types::state::{DocContext, DocUpsert};
+    use crate::storage::types::store::Asset;
     use crate::Doc;
     use candid::{CandidType, Deserialize};
     use shared::types::state::UserId;
-    use crate::storage::types::store::Asset;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct HookContext<T> {
@@ -148,4 +148,6 @@ pub mod hooks {
     pub type OnDeleteManyDocsContext = HookContext<Vec<DocContext<Option<Doc>>>>;
 
     pub type OnUploadAssetContext = HookContext<Asset>;
+    pub type OnDeleteAssetContext = HookContext<Option<Asset>>;
+    pub type OnDeleteManyAssetsContext = HookContext<Vec<Option<Asset>>>;
 }

@@ -19,6 +19,8 @@ pub enum Hook {
     OnDeleteDoc,
     OnDeleteManyDocs,
     OnUploadAsset,
+    OnDeleteAsset,
+    OnDeleteManyAssets,
 }
 
 const CONTEXT_PARAM: &str = "context";
@@ -30,6 +32,8 @@ fn map_hook_name(hook: Hook) -> String {
         Hook::OnDeleteDoc => "juno_on_delete_doc".to_string(),
         Hook::OnDeleteManyDocs => "juno_on_delete_many_docs".to_string(),
         Hook::OnUploadAsset => "juno_on_upload_asset".to_string(),
+        Hook::OnDeleteAsset => "juno_on_delete_asset".to_string(),
+        Hook::OnDeleteManyAssets => "juno_on_delete_many_assets".to_string(),
     }
 }
 
@@ -40,6 +44,8 @@ fn map_hook_collections(hook: Hook) -> String {
         Hook::OnDeleteDoc => "juno_on_delete_doc_collections".to_string(),
         Hook::OnDeleteManyDocs => "juno_on_delete_many_docs_collections".to_string(),
         Hook::OnUploadAsset => "juno_on_upload_asset_collections".to_string(),
+        Hook::OnDeleteAsset => "juno_on_delete_asset_collections".to_string(),
+        Hook::OnDeleteManyAssets => "juno_on_delete_many_assets_collections".to_string(),
     }
 }
 
@@ -50,6 +56,8 @@ fn map_hook_type(hook: Hook) -> String {
         Hook::OnDeleteDoc => "OnDeleteDocContext".to_string(),
         Hook::OnDeleteManyDocs => "OnDeleteManyDocsContext".to_string(),
         Hook::OnUploadAsset => "OnUploadAssetContext".to_string(),
+        Hook::OnDeleteAsset => "OnDeleteAssetContext".to_string(),
+        Hook::OnDeleteManyAssets => "OnDeleteManyAssetsContext".to_string(),
     }
 }
 

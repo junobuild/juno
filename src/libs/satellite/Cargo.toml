@@ -9,6 +9,8 @@ disable_on_set_many_docs = []
 disable_on_delete_doc = []
 disable_on_delete_many_docs = []
 disable_on_upload_asset = []
+disable_on_delete_asset = []
+disable_on_delete_many_assets = []
 
 [dependencies]
 candid.workspace = true

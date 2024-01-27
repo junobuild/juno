@@ -4,13 +4,14 @@ version = "0.1.0"
 edition = "2021"
 
 [features]
-disable_on_set_doc = []
-disable_on_set_many_docs = []
-disable_on_delete_doc = []
-disable_on_delete_many_docs = []
-disable_on_upload_asset = []
-disable_on_delete_asset = []
-disable_on_delete_many_assets = []
+default = ["on_set_doc", "on_set_many_docs", "on_delete_doc", "on_delete_many_docs", "on_upload_asset", "on_delete_asset", "on_delete_many_assets"]
+on_set_doc = []
+on_set_many_docs = []
+on_delete_doc = []
+on_delete_many_docs = []
+on_upload_asset = []
+on_delete_asset = []
+on_delete_many_assets = []
 
 [dependencies]
 candid.workspace = true

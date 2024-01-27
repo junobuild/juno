@@ -36,7 +36,7 @@ extern "Rust" {
 
 #[allow(unused_variables)]
 pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<DocUpsert>) {
-    #[cfg(not(feature = "disable_on_set_doc"))]
+    #[cfg(feature = "on_set_doc")]
     {
         let context: OnSetDocContext = OnSetDocContext {
             caller: caller.clone(),
@@ -57,7 +57,7 @@ pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<DocUpsert>) {
 
 #[allow(dead_code, unused_variables)]
 pub fn invoke_on_set_many_docs(caller: &UserId, docs: &[DocContext<DocUpsert>]) {
-    #[cfg(not(feature = "disable_on_set_many_docs"))]
+    #[cfg(feature = "on_set_many_docs")]
     {
         unsafe {
             let collections = juno_on_set_many_docs_collections();
@@ -80,7 +80,7 @@ pub fn invoke_on_set_many_docs(caller: &UserId, docs: &[DocContext<DocUpsert>]) 
 
 #[allow(dead_code, unused_variables)]
 pub fn invoke_on_delete_doc(caller: &UserId, doc: &DocContext<Option<Doc>>) {
-    #[cfg(not(feature = "disable_on_delete_doc"))]
+    #[cfg(feature = "on_delete_doc")]
     {
         let context: OnDeleteDocContext = OnDeleteDocContext {
             caller: caller.clone(),
@@ -101,7 +101,7 @@ pub fn invoke_on_delete_doc(caller: &UserId, doc: &DocContext<Option<Doc>>) {
 
 #[allow(dead_code, unused_variables)]
 pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &[DocContext<Option<Doc>>]) {
-    #[cfg(not(feature = "disable_on_delete_many_docs"))]
+    #[cfg(feature = "on_delete_many_docs")]
     {
         unsafe {
             let collections = juno_on_delete_many_docs_collections();
@@ -124,7 +124,7 @@ pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &[DocContext<Option<Doc
 
 #[allow(unused_variables)]
 pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
-    #[cfg(not(feature = "disable_on_upload_asset"))]
+    #[cfg(feature = "on_upload_asset")]
     {
         // We perform this check here for performance reason given that this callback might be called when the developer deploys their frontend dapps
         if is_not_asset_collection(&asset.key.collection) {
@@ -150,7 +150,7 @@ pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
 
 #[allow(dead_code, unused_variables)]
 pub fn invoke_on_delete_asset(caller: &UserId, asset: &Option<Asset>) {
-    #[cfg(not(feature = "disable_on_delete_asset"))]
+    #[cfg(feature = "on_delete_asset")]
     {
         unsafe {
             let collections = juno_on_delete_asset_collections();
@@ -173,7 +173,7 @@ pub fn invoke_on_delete_asset(caller: &UserId, asset: &Option<Asset>) {
 
 #[allow(dead_code, unused_variables)]
 pub fn invoke_on_delete_many_assets(caller: &UserId, assets: &[Option<Asset>]) {
-    #[cfg(not(feature = "disable_on_delete_many_assets"))]
+    #[cfg(feature = "on_delete_many_assets")]
     {
         unsafe {
             let collections = juno_on_delete_many_assets_collections();

@@ -104,10 +104,7 @@ pub fn list_assets_store(
     secure_list_assets_impl(caller, &controllers, collection, filters)
 }
 
-pub fn get_public_asset_store(
-    full_path: FullPath,
-    token: Option<String>,
-) -> Option<(Asset, Memory)> {
+pub fn get_asset_store(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
     let (asset, memory) = get_state_public_asset(&full_path);
 
     match asset {

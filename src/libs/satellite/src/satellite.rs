@@ -30,10 +30,10 @@ use crate::storage::http::utils::create_token;
 use crate::storage::routing::get_routing;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
-    delete_asset_store, delete_assets_store, delete_domain_store,
+    delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
     get_config_store as get_storage_config, get_content_chunks_store, get_custom_domains_store,
-    get_public_asset_store, init_certified_assets_store, list_assets_store,
-    set_config_store as set_storage_config, set_domain_store,
+    init_certified_assets_store, list_assets_store, set_config_store as set_storage_config,
+    set_domain_store,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http_request::{
@@ -395,7 +395,7 @@ pub fn http_request_streaming_callback(
         memory: _,
     }: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
-    let asset = get_public_asset_store(full_path, token);
+    let asset = get_asset_store(full_path, token);
 
     match asset {
         Some((asset, memory)) => {

@@ -1,3 +1,4 @@
+use crate::rules::constants::ASSET_COLLECTION_KEY;
 use crate::storage::constants::{ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS};
 use crate::storage::http::types::HeaderField;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
@@ -12,7 +13,7 @@ pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<
         name: "custom-domains".to_string(),
         full_path: BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string(),
         token: None,
-        collection: "#dapp".to_string(),
+        collection: ASSET_COLLECTION_KEY.to_string(),
         owner: id(),
         description: None,
     };

@@ -16,8 +16,10 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 1] = [(
     },
 )];
 
+pub const ASSET_COLLECTION_KEY: &str = "#dapp";
+
 pub const DEFAULT_ASSETS_COLLECTIONS: [(&str, SetRule); 1] = [(
-    "#dapp",
+    ASSET_COLLECTION_KEY,
     SetRule {
         read: Controllers,
         write: Controllers,

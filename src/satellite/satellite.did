@@ -47,7 +47,7 @@ type Doc = record {
   description : opt text;
   created_at : nat64;
 };
-type DocContext = record { doc : Doc; key : text; collection : text };
+type DocContext = record { key : text; collection : text; data : Doc };
 type HttpRequest = record {
   url : text;
   method : text;

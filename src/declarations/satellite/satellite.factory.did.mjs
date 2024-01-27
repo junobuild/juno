@@ -180,9 +180,9 @@ export const idlFactory = ({ IDL }) => {
 		description: IDL.Opt(IDL.Text)
 	});
 	const DocContext = IDL.Record({
-		doc: Doc,
 		key: IDL.Text,
-		collection: IDL.Text
+		collection: IDL.Text,
+		data: Doc
 	});
 	const SetRule = IDL.Record({
 		memory: IDL.Opt(Memory),

@@ -10,7 +10,8 @@ use crate::db::store::{
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::hooks::{
-    invoke_on_delete_doc, invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs,
+    invoke_on_delete_asset, invoke_on_delete_doc, invoke_on_delete_many_assets,
+    invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset,
 };
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::rules::store::{
@@ -29,10 +30,10 @@ use crate::storage::http::utils::create_token;
 use crate::storage::routing::get_routing;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
-    delete_asset_store, delete_assets_store, delete_domain_store,
+    delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
     get_config_store as get_storage_config, get_content_chunks_store, get_custom_domains_store,
-    get_public_asset_store, init_certified_assets_store, list_assets_store,
-    set_config_store as set_storage_config, set_domain_store,
+    init_certified_assets_store, list_assets_store, set_config_store as set_storage_config,
+    set_domain_store,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http_request::{
@@ -41,6 +42,7 @@ use crate::storage::types::http_request::{
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+use crate::storage::types::store::Asset;
 use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListParams;
@@ -393,7 +395,7 @@ pub fn http_request_streaming_callback(
         memory: _,
     }: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
-    let asset = get_public_asset_store(full_path, token);
+    let asset = get_asset_store(full_path, token);
 
     match asset {
         Some((asset, memory)) => {
@@ -453,7 +455,9 @@ pub fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 pub fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
-    commit_batch_store(caller, commit).unwrap_or_else(|e| trap(&e));
+    let asset = commit_batch_store(caller, commit).unwrap_or_else(|e| trap(&e));
+
+    invoke_upload_asset(&caller, &asset);
 }
 
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
@@ -473,15 +477,23 @@ pub fn del_asset(collection: CollectionKey, full_path: String) {
     let result = delete_asset_store(caller, &collection, full_path);
 
     match result {
-        Ok(_) => (),
+        Ok(asset) => invoke_on_delete_asset(&caller, &asset),
         Err(error) => trap(&["Asset cannot be deleted: ", &error].join("")),
     }
 }
 
 pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
+    let caller = caller();
+
+    let mut results: Vec<Option<Asset>> = Vec::new();
+
     for (collection, full_path) in assets {
-        del_asset(collection, full_path);
+        let deleted_asset =
+            delete_asset_store(caller, &collection, full_path).unwrap_or_else(|e| trap(&e));
+        results.push(deleted_asset);
     }
+
+    invoke_on_delete_many_assets(&caller, &results);
 }
 
 pub fn del_assets(collection: CollectionKey) {

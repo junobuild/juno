@@ -42,9 +42,13 @@ pub use crate::db::store::{
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
 use crate::db::types::state::DocContext;
+pub use crate::storage::store::{
+    count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
+};
 pub use crate::types::core::{Blob, CollectionKey};
 pub use crate::types::hooks::{
-    HookContext, OnDeleteDocContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
+    HookContext, OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext,
+    OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
 
 ///

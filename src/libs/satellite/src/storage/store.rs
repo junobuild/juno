@@ -104,10 +104,7 @@ pub fn list_assets_store(
     secure_list_assets_impl(caller, &controllers, collection, filters)
 }
 
-pub fn get_public_asset_store(
-    full_path: FullPath,
-    token: Option<String>,
-) -> Option<(Asset, Memory)> {
+pub fn get_asset_store(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
     let (asset, memory) = get_state_public_asset(&full_path);
 
     match asset {
@@ -342,7 +339,7 @@ pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<u128,
     create_chunk_impl(caller, chunk)
 }
 
-pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<(), String> {
+pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<Asset, String> {
     let controllers: Controllers = get_controllers();
     let config = get_config_store();
 
@@ -465,7 +462,7 @@ fn commit_batch_impl(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     config: &StorageConfig,
-) -> Result<(), String> {
+) -> Result<Asset, String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
     match batch {
@@ -473,7 +470,7 @@ fn commit_batch_impl(
         Some(b) => {
             let asset = secure_commit_chunks(caller, controllers, commit_batch, &b)?;
             update_runtime_certified_asset(&asset, config);
-            Ok(())
+            Ok(asset)
         }
     }
 }

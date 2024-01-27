@@ -60,9 +60,9 @@ export interface Doc {
 	created_at: bigint;
 }
 export interface DocContext {
-	doc: Doc;
 	key: string;
 	collection: string;
+	data: Doc;
 }
 export interface HttpRequest {
 	url: string;

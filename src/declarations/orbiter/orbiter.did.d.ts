@@ -1,4 +1,5 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export interface AnalyticKey {
@@ -156,3 +157,4 @@ export interface _SERVICE {
 	set_track_events: ActorMethod<[Array<[AnalyticKey, SetTrackEvent]>], Result_1>;
 	version: ActorMethod<[], string>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;

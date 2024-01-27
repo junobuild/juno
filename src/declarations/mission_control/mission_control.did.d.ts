@@ -1,4 +1,5 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export type CanisterStatusType = { stopped: null } | { stopping: null } | { running: null };
@@ -107,3 +108,4 @@ export interface _SERVICE {
 	top_up: ActorMethod<[Principal, Tokens], undefined>;
 	version: ActorMethod<[], string>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;

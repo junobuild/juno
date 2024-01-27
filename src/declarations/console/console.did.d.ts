@@ -1,4 +1,5 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export interface AssertMissionControlCenterArgs {
@@ -70,3 +71,4 @@ export interface _SERVICE {
 	update_rate_config: ActorMethod<[Segment, RateConfig], undefined>;
 	version: ActorMethod<[], string>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;

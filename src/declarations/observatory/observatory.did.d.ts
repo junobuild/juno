@@ -1,4 +1,5 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export interface ArchiveStatuses {
@@ -89,3 +90,4 @@ export interface _SERVICE {
 	set_cron_tab: ActorMethod<[SetCronTab], CronTab>;
 	version: ActorMethod<[], string>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;

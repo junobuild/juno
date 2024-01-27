@@ -280,6 +280,11 @@ macro_rules! include_satellite {
             set_many_docs, set_rule, upload_asset_chunk, version,
         };
 
+        #[ic_cdk::query]
+        pub fn version_extension() -> String {
+            env!("CARGO_PKG_VERSION").to_string()
+        }
+
         ic_cdk::export_candid!();
     };
 }

@@ -1,12 +1,13 @@
 #![allow(dead_code)]
 
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
+use crate::rules::constants::ASSET_COLLECTION_KEY;
 use crate::storage::types::store::Asset;
 use crate::types::hooks::{
     OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext, OnDeleteManyDocsContext,
     OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
-use crate::HookContext;
+use crate::{CollectionKey, HookContext};
 #[allow(unused)]
 use ic_cdk_timers::set_timer;
 use shared::types::state::UserId;
@@ -125,6 +126,11 @@ pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &[DocContext<Option<Doc
 pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
     #[cfg(not(feature = "disable_on_upload_asset"))]
     {
+        // We perform this check here for performance reason given that this callback might be called when the developer deploys their frontend dapps
+        if is_not_asset_collection(&asset.key.collection) {
+            return;
+        }
+
         let context: OnUploadAssetContext = OnUploadAssetContext {
             caller: caller.clone(),
             data: asset.clone(),
@@ -213,7 +219,8 @@ fn should_invoke_asset_hook(
     collections: Option<Vec<String>>,
     context: &HookContext<Asset>,
 ) -> bool {
-    collections.map_or(true, |c| c.contains(&context.data.key.collection))
+    is_not_asset_collection(&context.data.key.collection)
+        && collections.map_or(true, |c| c.contains(&context.data.key.collection))
 }
 
 fn filter_assets(
@@ -222,12 +229,19 @@ fn filter_assets(
 ) -> Vec<Option<Asset>> {
     assets
         .iter()
-        .filter(|a| match a {
+        .filter(|asset| match asset {
             None => false,
-            Some(a) => collections
-                .as_ref()
-                .map_or(true, |cols| cols.contains(&a.key.collection.to_string())),
+            Some(asset) => {
+                is_not_asset_collection(&asset.key.collection)
+                    && collections.as_ref().map_or(true, |cols| {
+                        cols.contains(&asset.key.collection.to_string())
+                    })
+            }
         })
         .cloned() // Clone each matching DocContext
         .collect()
+}
+
+fn is_not_asset_collection(collection: &CollectionKey) -> bool {
+    collection != ASSET_COLLECTION_KEY
 }

@@ -1,4 +1,4 @@
-function generate_did() {
+function generate_did_idl() {
   local canister=$1
   local canister_root=$2
 
@@ -15,11 +15,11 @@ CANISTERS=console,observatory,mission_control,orbiter,satellite
 
 for canister in $(echo $CANISTERS | sed "s/,/ /g")
 do
-    generate_did "$canister" "src/$canister"
+    generate_did_idl "$canister" "src/$canister"
 done
 
-generate_did "cmc" "candid"
-generate_did "ic" "candid"
-generate_did "index" "."
-generate_did "ledger" "."
-generate_did "internet_identity" "."
+generate_did_idl "cmc" "candid"
+generate_did_idl "ic" "candid"
+generate_did_idl "index" "."
+generate_did_idl "ledger" "."
+generate_did_idl "internet_identity" "."

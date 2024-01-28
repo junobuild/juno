@@ -19,7 +19,6 @@ use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
-use crate::types::core::Key;
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
 use ic_cdk::api::trap;
@@ -45,7 +44,7 @@ use crate::db::types::state::DocContext;
 pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };
-pub use crate::types::core::{Blob, CollectionKey};
+pub use crate::types::core::{Blob, CollectionKey, Key};
 pub use crate::types::hooks::{
     HookContext, OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext,
     OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
@@ -279,6 +278,11 @@ macro_rules! include_satellite {
             post_upgrade, pre_upgrade, set_config, set_controllers, set_custom_domain, set_doc,
             set_many_docs, set_rule, upload_asset_chunk, version,
         };
+
+        #[ic_cdk::query]
+        pub fn version_extension() -> String {
+            env!("CARGO_PKG_VERSION").to_string()
+        }
 
         ic_cdk::export_candid!();
     };

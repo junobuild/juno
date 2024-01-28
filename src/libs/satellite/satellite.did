@@ -204,5 +204,4 @@ service : () -> {
   set_rule : (RulesType, text, SetRule) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
-  version_extension : () -> (text) query;
 }

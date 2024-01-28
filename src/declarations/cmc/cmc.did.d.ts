@@ -1,4 +1,5 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export type BlockIndex = bigint;
@@ -46,3 +47,4 @@ export interface _SERVICE {
 	notify_create_canister: ActorMethod<[NotifyCreateCanisterArg], NotifyCreateCanisterResult>;
 	notify_top_up: ActorMethod<[NotifyTopUpArg], NotifyTopUpResult>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;

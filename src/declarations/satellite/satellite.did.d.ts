@@ -1,4 +1,5 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export interface AssetEncodingNoContent {
@@ -238,4 +239,6 @@ export interface _SERVICE {
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
+	version_extension: ActorMethod<[], string>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;

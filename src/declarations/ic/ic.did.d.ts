@@ -1,9 +1,10 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export type bitcoin_address = string;
 export type bitcoin_network = { mainnet: null } | { testnet: null };
-export type block_hash = Uint8Array;
+export type block_hash = Uint8Array | number[];
 export type canister_id = Principal;
 export interface canister_settings {
 	freezing_threshold: [] | [bigint];
@@ -24,7 +25,7 @@ export type change_details =
 	| {
 			code_deployment: {
 				mode: { reinstall: null } | { upgrade: null } | { install: null };
-				module_hash: Uint8Array;
+				module_hash: Uint8Array | number[];
 			};
 	  }
 	| { controllers_change: { controllers: Array<Principal> } }
@@ -54,11 +55,11 @@ export interface get_current_fee_percentiles_request {
 }
 export interface get_utxos_request {
 	network: bitcoin_network;
-	filter: [] | [{ page: Uint8Array } | { min_confirmations: number }];
+	filter: [] | [{ page: Uint8Array | number[] } | { min_confirmations: number }];
 	address: bitcoin_address;
 }
 export interface get_utxos_response {
-	next_page: [] | [Uint8Array];
+	next_page: [] | [Uint8Array | number[]];
 	tip_height: number;
 	tip_block_hash: block_hash;
 	utxos: Array<utxo>;
@@ -69,17 +70,17 @@ export interface http_header {
 }
 export interface http_response {
 	status: bigint;
-	body: Uint8Array;
+	body: Uint8Array | number[];
 	headers: Array<http_header>;
 }
 export type millisatoshi_per_byte = bigint;
 export interface outpoint {
-	txid: Uint8Array;
+	txid: Uint8Array | number[];
 	vout: number;
 }
 export type satoshi = bigint;
 export interface send_transaction_request {
-	transaction: Uint8Array;
+	transaction: Uint8Array | number[];
 	network: bitcoin_network;
 }
 export interface utxo {
@@ -87,12 +88,12 @@ export interface utxo {
 	value: satoshi;
 	outpoint: outpoint;
 }
-export type wasm_module = Uint8Array;
+export type wasm_module = Uint8Array | number[];
 export interface _SERVICE {
 	bitcoin_get_balance: ActorMethod<[get_balance_request], satoshi>;
 	bitcoin_get_current_fee_percentiles: ActorMethod<
 		[get_current_fee_percentiles_request],
-		BigUint64Array
+		BigUint64Array | bigint[]
 	>;
 	bitcoin_get_utxos: ActorMethod<[get_utxos_request], get_utxos_response>;
 	bitcoin_send_transaction: ActorMethod<[send_transaction_request], undefined>;
@@ -100,7 +101,7 @@ export interface _SERVICE {
 		[{ canister_id: canister_id; num_requested_changes: [] | [bigint] }],
 		{
 			controllers: Array<Principal>;
-			module_hash: [] | [Uint8Array];
+			module_hash: [] | [Uint8Array | number[]];
 			recent_changes: Array<change>;
 			total_num_changes: bigint;
 		}
@@ -113,7 +114,7 @@ export interface _SERVICE {
 			cycles: bigint;
 			settings: definite_canister_settings;
 			idle_cycles_burned_per_day: bigint;
-			module_hash: [] | [Uint8Array];
+			module_hash: [] | [Uint8Array | number[]];
 		}
 	>;
 	create_canister: ActorMethod<
@@ -132,10 +133,13 @@ export interface _SERVICE {
 			{
 				key_id: { name: string; curve: ecdsa_curve };
 				canister_id: [] | [canister_id];
-				derivation_path: Array<Uint8Array>;
+				derivation_path: Array<Uint8Array | number[]>;
 			}
 		],
-		{ public_key: Uint8Array; chain_code: Uint8Array }
+		{
+			public_key: Uint8Array | number[];
+			chain_code: Uint8Array | number[];
+		}
 	>;
 	http_request: ActorMethod<
 		[
@@ -143,8 +147,15 @@ export interface _SERVICE {
 				url: string;
 				method: { get: null } | { head: null } | { post: null };
 				max_response_bytes: [] | [bigint];
-				body: [] | [Uint8Array];
-				transform: [] | [{ function: [Principal, string]; context: Uint8Array }];
+				body: [] | [Uint8Array | number[]];
+				transform:
+					| []
+					| [
+							{
+								function: [Principal, string];
+								context: Uint8Array | number[];
+							}
+					  ];
 				headers: Array<http_header>;
 			}
 		],
@@ -153,7 +164,7 @@ export interface _SERVICE {
 	install_code: ActorMethod<
 		[
 			{
-				arg: Uint8Array;
+				arg: Uint8Array | number[];
 				wasm_module: wasm_module;
 				mode: { reinstall: null } | { upgrade: null } | { install: null };
 				canister_id: canister_id;
@@ -176,16 +187,16 @@ export interface _SERVICE {
 		[{ canister_id: canister_id; amount: bigint }],
 		undefined
 	>;
-	raw_rand: ActorMethod<[], Uint8Array>;
+	raw_rand: ActorMethod<[], Uint8Array | number[]>;
 	sign_with_ecdsa: ActorMethod<
 		[
 			{
 				key_id: { name: string; curve: ecdsa_curve };
-				derivation_path: Array<Uint8Array>;
-				message_hash: Uint8Array;
+				derivation_path: Array<Uint8Array | number[]>;
+				message_hash: Uint8Array | number[];
 			}
 		],
-		{ signature: Uint8Array }
+		{ signature: Uint8Array | number[] }
 	>;
 	start_canister: ActorMethod<[{ canister_id: canister_id }], undefined>;
 	stop_canister: ActorMethod<[{ canister_id: canister_id }], undefined>;
@@ -209,3 +220,4 @@ export interface _SERVICE {
 		undefined
 	>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;

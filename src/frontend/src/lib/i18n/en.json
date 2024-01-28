@@ -235,6 +235,15 @@
 		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes",
 		"files_deployed": "files deployed"
 	},
+	"functions": {
+		"title": "Functions",
+		"logs": "Logs",
+		"time": "Time",
+		"level": "Level",
+		"source": "Source",
+		"msg": "Event message",
+		"empty": "No logs collected."
+	},
 	"cli": {
 		"title": "Juno CLI Authentication",
 		"sign_in": "Sign in to set up your terminal for interacting with your mission control, satellite(s) and analytics.",

@@ -280,7 +280,7 @@ macro_rules! include_satellite {
         };
 
         #[ic_cdk::query]
-        pub fn version_extension() -> String {
+        pub fn version_build() -> String {
             env!("CARGO_PKG_VERSION").to_string()
         }
 

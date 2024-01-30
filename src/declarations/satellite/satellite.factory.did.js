@@ -252,7 +252,7 @@ export const idlFactory = ({ IDL }) => {
 		set_rule: IDL.Func([RulesType, IDL.Text, SetRule], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query']),
-		version_extension: IDL.Func([], [IDL.Text], ['query'])
+		version_build: IDL.Func([], [IDL.Text], ['query'])
 	});
 };
 // @ts-ignore

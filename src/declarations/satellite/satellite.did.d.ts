@@ -239,6 +239,6 @@ export interface _SERVICE {
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
-	version_extension: ActorMethod<[], string>;
+	version_build: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

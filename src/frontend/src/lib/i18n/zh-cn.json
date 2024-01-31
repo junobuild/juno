@@ -122,7 +122,10 @@
 		"create_satellite_price": "创建一个新的 satellite 需要 <strong>{0}</strong> ICP. 你的当前 mission control 余额是 {1} ICP.",
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",
-		"id": "Satellite ID"
+		"id": "Satellite ID",
+		"stock_version": "Stock version",
+		"extended_version": "Extended version",
+		"build": "Build"
 	},
 	"mission_control": {
 		"title": "Mission Control",

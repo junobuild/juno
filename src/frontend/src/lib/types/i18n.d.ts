@@ -129,6 +129,9 @@ interface I18nSatellites {
 	loading_satellites: string;
 	overview: string;
 	id: string;
+	stock_version: string;
+	extended_version: string;
+	build: string;
 }
 
 interface I18nMission_control {

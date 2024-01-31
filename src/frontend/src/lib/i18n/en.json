@@ -122,7 +122,10 @@
 		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",
-		"id": "Satellite ID"
+		"id": "Satellite ID",
+		"stock_version": "Stock version",
+		"extended_version": "Extended version",
+		"build": "Build"
 	},
 	"mission_control": {
 		"title": "Mission Control",

@@ -137,8 +137,19 @@ export const satelliteVersion = async ({
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<string> => {
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	return actor.version();
+	const { version } = await getSatelliteActor({ satelliteId, identity });
+	return version();
+};
+
+export const satelliteVersionBuild = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	const { version_build } = await getSatelliteActor({ satelliteId, identity });
+	return version_build();
 };
 
 export const setCustomDomain = async ({

@@ -11,6 +11,7 @@ import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { satelliteWasmMetadataBuild } from '@junobuild/admin';
 import { get } from 'svelte/store';
+import {container} from "$lib/utils/juno.utils";
 
 export const initMissionControl = async ({
 	identity,
@@ -104,7 +105,8 @@ export const loadVersion = async ({
 				satelliteWasmMetadataBuild({
 					satellite: {
 						satelliteId: satelliteId.toText(),
-						identity
+						identity,
+						...container()
 					}
 				})
 			]);

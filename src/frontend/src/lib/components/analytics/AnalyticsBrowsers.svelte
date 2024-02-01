@@ -1,8 +1,5 @@
 <script lang="ts">
-	import type {
-		AnalyticsBrowsersPageViews,
-		AnalyticsDevicesPageViews
-	} from '$declarations/orbiter/orbiter.did';
+	import type { AnalyticsBrowsersPageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews, AnalyticsPageViewsClients } from '$lib/types/ortbiter';
 	import { nonNullish } from '@dfinity/utils';

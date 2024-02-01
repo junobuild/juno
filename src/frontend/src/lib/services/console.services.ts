@@ -2,13 +2,15 @@ import type { Orbiter } from '$declarations/mission_control/mission_control.did'
 import { initMissionControl as initMissionControlApi, releasesVersion } from '$lib/api/console.api';
 import { missionControlVersion } from '$lib/api/mission-control.api';
 import { orbiterVersion } from '$lib/api/orbiter.api';
-import { satelliteVersion } from '$lib/api/satellites.api';
+import { satelliteVersion, satelliteVersionBuild } from '$lib/api/satellites.api';
 import { authStore } from '$lib/stores/auth.store';
 import { toasts } from '$lib/stores/toasts.store';
-import { versionStore } from '$lib/stores/version.store';
+import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
+import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { satelliteBuildType } from '@junobuild/admin';
 import { get } from 'svelte/store';
 
 export const initMissionControl = async ({
@@ -92,8 +94,38 @@ export const loadVersion = async ({
 
 		const identity = get(authStore).identity;
 
+		assertNonNullish(identity);
+
+		const satelliteInfo = async (
+			satelliteId: Principal
+		): Promise<Omit<ReleaseVersionSatellite, 'release'> | undefined> => {
+			const [version, versionBuild, metadataBuild] = await Promise.allSettled([
+				satelliteVersion({ satelliteId, identity }),
+				satelliteVersionBuild({ satelliteId, identity }),
+				satelliteBuildType({
+					satellite: {
+						satelliteId: satelliteId.toText(),
+						identity,
+						...container()
+					}
+				})
+			]);
+
+			if (version.status === 'rejected') {
+				return undefined;
+			}
+
+			const { value: current } = version;
+
+			return {
+				current,
+				...(versionBuild.status === 'fulfilled' && { currentBuild: versionBuild.value }),
+				build: metadataBuild.status === 'fulfilled' ? metadataBuild.value ?? 'stock' : 'stock'
+			};
+		};
+
 		const [satVersion, ctrlVersion, releases] = await Promise.all([
-			nonNullish(satelliteId) ? satelliteVersion({ satelliteId, identity }) : empty(),
+			nonNullish(satelliteId) ? satelliteInfo(satelliteId) : empty(),
 			missionControlVersion({ missionControlId, identity }),
 			releasesVersion(identity)
 		]);
@@ -112,7 +144,7 @@ export const loadVersion = async ({
 			version: nonNullish(satVersion)
 				? {
 						release: fromNullable(releases.satellite),
-						current: satVersion
+						...satVersion
 					}
 				: undefined
 		});

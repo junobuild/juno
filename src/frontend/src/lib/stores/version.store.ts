@@ -1,4 +1,5 @@
 import type { SatelliteIdText } from '$lib/types/satellite';
+import type { BuildType } from '@junobuild/admin';
 import type { Readable } from 'svelte/store';
 import { writable } from 'svelte/store';
 
@@ -7,8 +8,13 @@ export interface ReleaseVersion {
 	release: string | undefined;
 }
 
+export interface ReleaseVersionSatellite extends ReleaseVersion {
+	currentBuild?: string | undefined;
+	build: BuildType;
+}
+
 export interface ReleasesVersion {
-	satellites: Record<SatelliteIdText, ReleaseVersion | undefined>;
+	satellites: Record<SatelliteIdText, ReleaseVersionSatellite | undefined>;
 	missionControl: ReleaseVersion | undefined;
 	orbiter: ReleaseVersion | undefined;
 }
@@ -17,7 +23,7 @@ export interface VersionStore extends Readable<ReleasesVersion> {
 	setMissionControl: (version: ReleaseVersion) => void;
 	setSatellite: (params: {
 		satelliteId: SatelliteIdText;
-		version: ReleaseVersion | undefined;
+		version: ReleaseVersionSatellite | undefined;
 	}) => void;
 	setOrbiter: (version: ReleaseVersion) => void;
 	reset: () => void;

@@ -4,10 +4,10 @@
 	import SatelliteActions from '$lib/components/satellites/SatelliteActions.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { versionStore } from '$lib/stores/version.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
+	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 
 	export let satellite: Satellite;
 
@@ -24,10 +24,7 @@
 			<Identifier identifier={satelliteId} shorten={false} small={false} />
 		</Value>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-			<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
-		</Value>
+		<SatelliteOverviewVersion {satelliteId} />
 	</div>
 
 	<div>

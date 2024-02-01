@@ -55,6 +55,7 @@
 		"upgrade_description": "你的 {0} 将会升级到版本 <strong>v{1}</strong>.",
 		"more_upgrade": "这个升级后，还会有 {0} 个.",
 		"upgrade_note": "一共有 {0} 升级包为你的 {1}.升级应该按顺序执行, 从小版本开始依次向上升级. 这个过程会引导你升级到适配的版本. 重复这个流程直到你的 {2} 为最新版本.",
+		"upgrade_confirm": "Your {0} appears to be an <strong>extended</strong> build. Upgrading to the <strong>stock</strong> version will remove any custom features you have developed. Are you sure you want to continue?",
 		"additional_cycles": "额外 Cycles",
 		"top_up_info": "你当前的 mission control 余额是 {0} ICP,以及用于充值网络费用是 {1} ICP.",
 		"top_up_mission_control_done": "充值你的 mission control center 完成.",

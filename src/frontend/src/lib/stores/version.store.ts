@@ -1,5 +1,5 @@
 import type { SatelliteIdText } from '$lib/types/satellite';
-import type { SatelliteBuild } from '@junobuild/admin';
+import type { BuildType } from '@junobuild/admin';
 import type { Readable } from 'svelte/store';
 import { writable } from 'svelte/store';
 
@@ -10,7 +10,7 @@ export interface ReleaseVersion {
 
 export interface ReleaseVersionSatellite extends ReleaseVersion {
 	currentBuild?: string | undefined;
-	build: SatelliteBuild;
+	build: BuildType;
 }
 
 export interface ReleasesVersion {

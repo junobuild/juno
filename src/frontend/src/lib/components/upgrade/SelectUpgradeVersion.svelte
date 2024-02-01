@@ -12,6 +12,7 @@
 	export let currentVersion: string;
 	export let newerReleases: string[];
 	export let segment: 'satellite' | 'mission_control' | 'orbiter';
+	export let back = false;
 
 	let selectedVersion: string | undefined = undefined;
 
@@ -111,5 +112,12 @@
 		])}
 	</p>
 
-	<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
+	<div class="toolbar">
+		{#if back}
+			<button type="button" on:click={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+		{:else}
+			<button type="button" on:click={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
+		{/if}
+		<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
+	</div>
 </form>

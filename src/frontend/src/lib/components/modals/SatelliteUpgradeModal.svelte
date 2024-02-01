@@ -5,19 +5,21 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { upgradeSatellite } from '@junobuild/admin';
+	import { type BuildType, upgradeSatellite } from '@junobuild/admin';
 	import { compare } from 'semver';
 	import { authStore } from '$lib/stores/auth.store';
 	import { AnonymousIdentity } from '@dfinity/agent';
-	import {container} from "$lib/utils/juno.utils";
+	import { container } from '$lib/utils/juno.utils';
 
 	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
 	let currentVersion: string;
 	let newerReleases: string[];
+	let build: BuildType | undefined;
 
-	$: ({ satellite, currentVersion, newerReleases } = detail as JunoModalUpgradeSatelliteDetail);
+	$: ({ satellite, currentVersion, newerReleases, build } =
+		detail as JunoModalUpgradeSatelliteDetail);
 
 	const upgradeSatelliteWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
 		upgradeSatellite({
@@ -37,6 +39,7 @@
 	on:junoClose
 	{newerReleases}
 	{currentVersion}
+	{build}
 	upgrade={upgradeSatelliteWasm}
 	segment="satellite"
 >

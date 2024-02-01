@@ -8,7 +8,7 @@
 	import { AnonymousIdentity } from '@dfinity/agent';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { upgradeOrbiter } from '@junobuild/admin';
-	import {container} from "$lib/utils/juno.utils";
+	import { container } from '$lib/utils/juno.utils';
 
 	export let detail: JunoModalDetail;
 

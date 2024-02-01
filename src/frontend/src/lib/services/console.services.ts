@@ -6,12 +6,12 @@ import { satelliteVersion, satelliteVersionBuild } from '$lib/api/satellites.api
 import { authStore } from '$lib/stores/auth.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
+import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-import { satelliteWasmMetadataBuild } from '@junobuild/admin';
+import { satelliteBuildType } from '@junobuild/admin';
 import { get } from 'svelte/store';
-import {container} from "$lib/utils/juno.utils";
 
 export const initMissionControl = async ({
 	identity,
@@ -102,7 +102,7 @@ export const loadVersion = async ({
 			const [version, versionBuild, metadataBuild] = await Promise.allSettled([
 				satelliteVersion({ satelliteId, identity }),
 				satelliteVersionBuild({ satelliteId, identity }),
-				satelliteWasmMetadataBuild({
+				satelliteBuildType({
 					satellite: {
 						satelliteId: satelliteId.toText(),
 						identity,

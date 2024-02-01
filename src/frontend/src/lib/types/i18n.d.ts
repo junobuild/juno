@@ -59,6 +59,7 @@ interface I18nCanisters {
 	upgrade_description: string;
 	more_upgrade: string;
 	upgrade_note: string;
+	upgrade_confirm: string;
 	additional_cycles: string;
 	top_up_info: string;
 	top_up_mission_control_done: string;

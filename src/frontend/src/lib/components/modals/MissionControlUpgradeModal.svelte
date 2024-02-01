@@ -8,7 +8,7 @@
 	import { upgradeMissionControl } from '@junobuild/admin';
 	import { authStore } from '$lib/stores/auth.store';
 	import { AnonymousIdentity } from '@dfinity/agent';
-	import {container} from "$lib/utils/juno.utils";
+	import { container } from '$lib/utils/juno.utils';
 
 	export let detail: JunoModalDetail;
 

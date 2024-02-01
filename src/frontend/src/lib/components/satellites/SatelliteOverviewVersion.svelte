@@ -4,7 +4,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { nonNullish } from '@dfinity/utils';
-	import type { SatelliteBuild } from '@junobuild/admin';
+	import type { BuildType } from '@junobuild/admin';
 	import { fade } from 'svelte/transition';
 
 	export let satelliteId: SatelliteIdText;
@@ -16,7 +16,7 @@
 	$: extended =
 		nonNullish(currentBuild) && currentBuild !== $versionStore?.satellites[satelliteId]?.current;
 
-	let build: SatelliteBuild | undefined;
+	let build: BuildType | undefined;
 	$: build = $versionStore?.satellites[satelliteId]?.build;
 </script>
 

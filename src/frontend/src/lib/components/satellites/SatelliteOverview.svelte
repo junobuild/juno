@@ -37,11 +37,3 @@
 
 	<SatelliteActions {satellite} />
 </div>
-
-<style lang="scss">
-	@use '../../styles/mixins/text';
-
-	p {
-		@include text.truncate;
-	}
-</style>

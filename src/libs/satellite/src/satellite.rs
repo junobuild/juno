@@ -30,10 +30,10 @@ use crate::storage::http::utils::create_token;
 use crate::storage::routing::get_routing;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
-    delete_asset_store, delete_assets_store, delete_domain_store, get_public_asset_store,
+    delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
     get_config_store as get_storage_config, get_content_chunks_store, get_custom_domains_store,
-    init_certified_assets_store, list_assets_store, set_config_store as set_storage_config,
-    set_domain_store,
+    get_public_asset_store, init_certified_assets_store, list_assets_store,
+    set_config_store as set_storage_config, set_domain_store,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http_request::{
@@ -42,6 +42,7 @@ use crate::storage::types::http_request::{
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
@@ -507,4 +508,27 @@ pub fn count_assets(collection: CollectionKey) -> usize {
         Ok(value) => value,
         Err(error) => trap(&error),
     }
+}
+
+pub fn get_asset(collection: CollectionKey, full_path: FullPath) -> Option<AssetNoContent> {
+    let caller = caller();
+
+    let result = get_asset_store(caller, &collection, full_path);
+
+    match result {
+        Ok(asset) => asset.map(|asset| AssetNoContent::from(&asset)),
+        Err(error) => trap(&error),
+    }
+}
+
+pub fn get_many_assets(
+    assets: Vec<(CollectionKey, FullPath)>,
+) -> Vec<(FullPath, Option<AssetNoContent>)> {
+    assets
+        .iter()
+        .map(|(collection, full_path)| {
+            let asset = get_asset(collection.clone(), full_path.clone());
+            (full_path.clone(), asset.clone())
+        })
+        .collect()
 }

@@ -94,7 +94,8 @@ fn get_alternative_asset(path: &String, token: &Option<String>) -> Option<(Asset
     let alternative_paths = map_alternative_paths(path);
 
     for alternative_path in alternative_paths {
-        let asset: Option<(Asset, Memory)> = get_public_asset_store(alternative_path, token.clone());
+        let asset: Option<(Asset, Memory)> =
+            get_public_asset_store(alternative_path, token.clone());
 
         // We return the first match
         match asset {
@@ -159,7 +160,8 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
 fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
     if !is_root_path(path) {
         // Search for potential /404.html to rewrite to
-        let asset_404: Option<(Asset, Memory)> = get_public_asset_store(ROOT_404_HTML.to_string(), None);
+        let asset_404: Option<(Asset, Memory)> =
+            get_public_asset_store(ROOT_404_HTML.to_string(), None);
 
         match asset_404 {
             None => (),

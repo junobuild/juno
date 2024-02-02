@@ -104,7 +104,52 @@ pub fn list_assets_store(
     secure_list_assets_impl(caller, &controllers, collection, filters)
 }
 
-pub fn get_public_asset_store(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
+pub fn get_asset_store(
+    caller: Principal,
+    collection: &CollectionKey,
+    full_path: FullPath,
+) -> Result<Option<Asset>, String> {
+    let controllers: Controllers = get_controllers();
+
+    secure_get_asset_impl(caller, &controllers, collection, full_path)
+}
+
+fn secure_get_asset_impl(
+    caller: Principal,
+    controllers: &Controllers,
+    collection: &CollectionKey,
+    full_path: FullPath,
+) -> Result<Option<Asset>, String> {
+    let rule = get_state_rule(collection)?;
+
+    get_asset_impl(caller, controllers, full_path, collection, &rule)
+}
+
+fn get_asset_impl(
+    caller: Principal,
+    controllers: &Controllers,
+    full_path: FullPath,
+    collection: &CollectionKey,
+    rule: &Rule,
+) -> Result<Option<Asset>, String> {
+    let asset = get_state_asset(collection, &full_path, rule);
+
+    match asset {
+        None => Ok(None),
+        Some(asset) => {
+            if !assert_permission(&rule.read, asset.key.owner, caller, controllers) {
+                return Ok(None);
+            }
+
+            Ok(Some(asset))
+        }
+    }
+}
+
+pub fn get_public_asset_store(
+    full_path: FullPath,
+    token: Option<String>,
+) -> Option<(Asset, Memory)> {
     let (asset, memory) = get_state_public_asset(&full_path);
 
     match asset {

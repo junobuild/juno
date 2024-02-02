@@ -1,5 +1,5 @@
 use crate::storage::types::config::{StorageConfig, StorageConfigIFrame, StorageConfigRedirects};
-use crate::storage::types::interface::AssetNoContent;
+use crate::storage::types::interface::{AssetEncodingNoContent, AssetNoContent};
 use crate::storage::types::state::{StableEncodingChunkKey, StableKey};
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::types::core::{Blob, Compare};
@@ -51,6 +51,32 @@ impl Compare for AssetNoContent {
 
     fn cmp_created_at(&self, other: &Self) -> Ordering {
         self.created_at.cmp(&other.created_at)
+    }
+}
+
+impl From<&Asset> for AssetNoContent {
+    fn from(asset: &Asset) -> Self {
+        AssetNoContent {
+            key: asset.key.clone(),
+            headers: asset.headers.clone(),
+            encodings: asset
+                .encodings
+                .clone()
+                .into_iter()
+                .map(|(key, encoding)| {
+                    (
+                        key,
+                        AssetEncodingNoContent {
+                            modified: encoding.modified,
+                            total_length: encoding.total_length,
+                            sha256: encoding.sha256,
+                        },
+                    )
+                })
+                .collect(),
+            created_at: asset.created_at,
+            updated_at: asset.updated_at,
+        }
     }
 }
 

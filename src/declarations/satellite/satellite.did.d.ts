@@ -211,8 +211,10 @@ export interface _SERVICE {
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
 	del_rule: ActorMethod<[RulesType, string, DelDoc], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
+	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_config: ActorMethod<[], Config>;
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
+	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<

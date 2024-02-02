@@ -30,15 +30,7 @@ use crate::storage::runtime::{
     insert_batch as insert_runtime_batch, insert_chunk as insert_runtime_chunk,
     update_certified_asset as update_runtime_certified_asset,
 };
-use crate::storage::state::{
-    delete_asset as delete_state_asset, delete_domain as delete_state_domain,
-    get_asset as get_state_asset, get_assets_heap, get_assets_stable,
-    get_config as get_state_config, get_content_chunks as get_state_content_chunks,
-    get_domain as get_state_domain, get_domains as get_state_domains,
-    get_public_asset as get_state_public_asset, get_rule as get_state_rule, get_rule,
-    insert_asset as insert_state_asset, insert_asset_encoding as insert_state_asset_encoding,
-    insert_config as insert_state_config, insert_domain as insert_state_domain,
-};
+use crate::storage::state::{count_assets_heap, count_assets_stable, delete_asset as delete_state_asset, delete_domain as delete_state_domain, get_asset as get_state_asset, get_assets_heap, get_assets_stable, get_config as get_state_config, get_content_chunks as get_state_content_chunks, get_domain as get_state_domain, get_domains as get_state_domains, get_public_asset as get_state_public_asset, get_rule as get_state_rule, get_rule, insert_asset as insert_state_asset, insert_asset_encoding as insert_state_asset_encoding, insert_config as insert_state_config, insert_domain as insert_state_domain};
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
@@ -356,12 +348,12 @@ pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
-            Ok(assets.len())
+            let length = count_assets_heap(collection, &state_ref.heap.storage.assets);
+            Ok(length)
         }),
         Memory::Stable => STATE.with(|state| {
-            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
-            Ok(stable.len())
+            let length = count_assets_stable(collection, &state.borrow().stable.assets);
+            Ok(length)
         }),
     }
 }

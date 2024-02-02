@@ -13,6 +13,7 @@ use crate::types::core::{Blob, CollectionKey};
 use crate::types::state::StableState;
 use shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use std::borrow::Cow;
+use std::ops::RangeBounds;
 
 /// Assets
 
@@ -243,6 +244,17 @@ pub fn get_assets_stable(
     collection: &CollectionKey,
     assets: &AssetsStable,
 ) -> Vec<(StableKey, Asset)> {
+    assets.range(filter_assets_range(collection)).collect()
+}
+
+pub fn count_assets_stable(
+    collection: &CollectionKey,
+    assets: &AssetsStable,
+) -> usize {
+    assets.range(filter_assets_range(collection)).count()
+}
+
+fn filter_assets_range(collection: &CollectionKey) -> impl RangeBounds<StableKey> {
     let start_key = StableKey {
         collection: collection.clone(),
         full_path: "".to_string(),
@@ -253,7 +265,7 @@ pub fn get_assets_stable(
         full_path: "".to_string(),
     };
 
-    assets.range(start_key..end_key).collect()
+    start_key..end_key
 }
 
 pub fn get_assets_heap<'a>(
@@ -262,14 +274,29 @@ pub fn get_assets_heap<'a>(
 ) -> Vec<(&'a FullPath, &'a Asset)> {
     assets
         .iter()
-        .filter_map(|(_, asset)| {
-            if &asset.key.collection == collection {
-                Some((&asset.key.full_path, asset))
-            } else {
-                None
-            }
-        })
+        .filter_map(|(_, asset)| filter_assets_heap(asset, collection))
         .collect()
+}
+
+pub fn count_assets_heap(
+    collection: &CollectionKey,
+    assets: &AssetsHeap,
+) -> usize {
+    assets
+        .iter()
+        .filter_map(|(_, asset)| filter_assets_heap(asset, collection))
+        .count()
+}
+
+fn filter_assets_heap<'a>(
+    asset: &'a Asset,
+    collection: &CollectionKey,
+) -> Option<(&'a FullPath, &'a Asset)> {
+    if &asset.key.collection == collection {
+        Some((&asset.key.full_path, asset))
+    } else {
+        None
+    }
 }
 
 fn stable_full_path(collection: &CollectionKey, full_path: &FullPath) -> StableKey {

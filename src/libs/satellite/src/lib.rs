@@ -41,9 +41,7 @@ pub use crate::db::store::{
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
 use crate::db::types::state::DocContext;
-pub use crate::storage::store::{
-    count_assets_store, delete_asset_store, get_content_chunks_store,
-};
+pub use crate::storage::store::{count_assets_store, delete_asset_store, get_content_chunks_store};
 pub use crate::types::core::{Blob, CollectionKey, Key};
 pub use crate::types::hooks::{
     HookContext, OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext,
@@ -247,6 +245,11 @@ pub fn count_assets(collection: CollectionKey) -> usize {
     satellite::count_assets(collection)
 }
 
+#[query]
+pub fn get_asset(collection: CollectionKey, full_path: String) -> Option<AssetNoContent> {
+    satellite::get_asset(collection, full_path)
+}
+
 /// Mgmt
 
 #[update(guard = "caller_is_admin_controller")]
@@ -272,7 +275,7 @@ macro_rules! include_satellite {
         use junobuild_satellite::{
             commit_asset_upload, count_assets, count_docs, del_asset, del_assets, del_controllers,
             del_custom_domain, del_doc, del_docs, del_many_assets, del_many_docs, del_rule,
-            deposit_cycles, get_config, get_doc, get_many_docs, http_request,
+            deposit_cycles, get_asset, get_config, get_doc, get_many_docs, http_request,
             http_request_streaming_callback, init, init_asset_upload, list_assets,
             list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
             post_upgrade, pre_upgrade, set_config, set_controllers, set_custom_domain, set_doc,

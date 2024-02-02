@@ -198,6 +198,7 @@ export interface UploadChunkResult {
 	chunk_id: bigint;
 }
 export interface _SERVICE {
+	build_version: ActorMethod<[], string>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	count_assets: ActorMethod<[string], bigint>;
 	count_docs: ActorMethod<[string], bigint>;
@@ -236,6 +237,5 @@ export interface _SERVICE {
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
-	version_build: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

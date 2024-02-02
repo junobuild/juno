@@ -179,22 +179,17 @@ pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)>
         .collect()
 }
 
-pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<DocContext<Doc>> {
+pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
     let caller = caller();
 
     let mut hook_payload: Vec<DocContext<DocUpsert>> = Vec::new();
-    let mut results: Vec<DocContext<Doc>> = Vec::new();
+    let mut results: Vec<(Key, Doc)> = Vec::new();
 
     for (collection, key, doc) in docs {
         let result =
             set_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
 
-        // The caller knows the "before" values therefore to reduce the size of the answer we filter those information.
-        results.push(DocContext {
-            key: result.key.clone(),
-            collection: result.collection.clone(),
-            data: result.data.after.clone(),
-        });
+        results.push((result.key.clone(), result.data.after.clone()));
 
         hook_payload.push(result);
     }

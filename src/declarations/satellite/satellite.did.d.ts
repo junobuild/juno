@@ -60,11 +60,6 @@ export interface Doc {
 	description: [] | [string];
 	created_at: bigint;
 }
-export interface DocContext {
-	key: string;
-	collection: string;
-	data: Doc;
-}
 export interface HttpRequest {
 	url: string;
 	method: string;
@@ -235,7 +230,7 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
-	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<DocContext>>;
+	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;

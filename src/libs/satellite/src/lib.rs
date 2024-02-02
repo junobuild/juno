@@ -40,7 +40,6 @@ pub use crate::db::store::{
 };
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
-use crate::db::types::state::DocContext;
 pub use crate::storage::store::{count_assets_store, delete_asset_store, get_content_chunks_store};
 use crate::storage::types::state::FullPath;
 pub use crate::types::core::{Blob, CollectionKey, Key};
@@ -98,7 +97,7 @@ pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)>
 }
 
 #[update]
-pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<DocContext<Doc>> {
+pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
     satellite::set_many_docs(docs)
 }
 

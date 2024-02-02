@@ -40,7 +40,7 @@ pub use crate::db::store::{
 };
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
-pub use crate::storage::store::{count_assets_store, delete_asset_store, get_content_chunks_store};
+pub use crate::storage::store::{count_assets_store, delete_asset_store, get_content_chunks_store, get_asset_store};
 use crate::storage::types::state::FullPath;
 pub use crate::types::core::{Blob, CollectionKey, Key};
 pub use crate::types::hooks::{

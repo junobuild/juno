@@ -99,9 +99,19 @@ export const loadVersion = async ({
 		const satelliteInfo = async (
 			satelliteId: Principal
 		): Promise<Omit<ReleaseVersionSatellite, 'release'> | undefined> => {
+			// Backwards compatibility for Satellite <= 0.0.14 which did not expose the end point "version_build"
+			const queryVersionBuild = async (): Promise<string | undefined> => {
+				try {
+					const version = await satelliteVersionBuild({ satelliteId, identity });
+					return version;
+				} catch (_: unknown) {
+					return undefined;
+				}
+			};
+
 			const [version, versionBuild, metadataBuild] = await Promise.allSettled([
 				satelliteVersion({ satelliteId, identity }),
-				satelliteVersionBuild({ satelliteId, identity }),
+				queryVersionBuild(),
 				satelliteBuildType({
 					satellite: {
 						satelliteId: satelliteId.toText(),
@@ -119,7 +129,8 @@ export const loadVersion = async ({
 
 			return {
 				current,
-				...(versionBuild.status === 'fulfilled' && { currentBuild: versionBuild.value }),
+				...(versionBuild.status === 'fulfilled' &&
+					nonNullish(versionBuild.value) && { currentBuild: versionBuild.value }),
 				build: metadataBuild.status === 'fulfilled' ? metadataBuild.value ?? 'stock' : 'stock'
 			};
 		};

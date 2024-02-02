@@ -2,7 +2,7 @@ import type { Orbiter } from '$declarations/mission_control/mission_control.did'
 import { initMissionControl as initMissionControlApi, releasesVersion } from '$lib/api/console.api';
 import { missionControlVersion } from '$lib/api/mission-control.api';
 import { orbiterVersion } from '$lib/api/orbiter.api';
-import { satelliteVersion, satelliteVersionBuild } from '$lib/api/satellites.api';
+import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
 import { authStore } from '$lib/stores/auth.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
@@ -100,18 +100,17 @@ export const loadVersion = async ({
 			satelliteId: Principal
 		): Promise<Omit<ReleaseVersionSatellite, 'release'> | undefined> => {
 			// Backwards compatibility for Satellite <= 0.0.14 which did not expose the end point "version_build"
-			const queryVersionBuild = async (): Promise<string | undefined> => {
+			const queryBuildVersion = async (): Promise<string | undefined> => {
 				try {
-					const version = await satelliteVersionBuild({ satelliteId, identity });
-					return version;
+					return await satelliteBuildVersion({ satelliteId, identity });
 				} catch (_: unknown) {
 					return undefined;
 				}
 			};
 
-			const [version, versionBuild, metadataBuild] = await Promise.allSettled([
+			const [version, buildVersion, buildType] = await Promise.allSettled([
 				satelliteVersion({ satelliteId, identity }),
-				queryVersionBuild(),
+				queryBuildVersion(),
 				satelliteBuildType({
 					satellite: {
 						satelliteId: satelliteId.toText(),
@@ -129,9 +128,9 @@ export const loadVersion = async ({
 
 			return {
 				current,
-				...(versionBuild.status === 'fulfilled' &&
-					nonNullish(versionBuild.value) && { currentBuild: versionBuild.value }),
-				build: metadataBuild.status === 'fulfilled' ? metadataBuild.value ?? 'stock' : 'stock'
+				...(buildVersion.status === 'fulfilled' &&
+					nonNullish(buildVersion.value) && { currentBuild: buildVersion.value }),
+				build: buildType.status === 'fulfilled' ? buildType.value ?? 'stock' : 'stock'
 			};
 		};
 

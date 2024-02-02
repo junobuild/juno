@@ -228,7 +228,7 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
 }
 
 #[update]
-pub fn del_asset(collection: CollectionKey, full_path: String) {
+pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
     satellite::del_asset(collection, full_path);
 }
 

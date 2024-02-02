@@ -247,10 +247,7 @@ pub fn get_assets_stable(
     assets.range(filter_assets_range(collection)).collect()
 }
 
-pub fn count_assets_stable(
-    collection: &CollectionKey,
-    assets: &AssetsStable,
-) -> usize {
+pub fn count_assets_stable(collection: &CollectionKey, assets: &AssetsStable) -> usize {
     assets.range(filter_assets_range(collection)).count()
 }
 
@@ -278,10 +275,7 @@ pub fn get_assets_heap<'a>(
         .collect()
 }
 
-pub fn count_assets_heap(
-    collection: &CollectionKey,
-    assets: &AssetsHeap,
-) -> usize {
+pub fn count_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> usize {
     assets
         .iter()
         .filter_map(|(_, asset)| filter_assets_heap(asset, collection))

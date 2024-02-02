@@ -467,7 +467,7 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
     }
 }
 
-pub fn del_asset(collection: CollectionKey, full_path: String) {
+pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
     let caller = caller();
 
     let result = delete_asset_store(caller, &collection, full_path);

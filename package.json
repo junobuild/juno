@@ -84,7 +84,7 @@
 		"@dfinity/identity": "^0.20.2",
 		"@dfinity/principal": "^0.20.2",
 		"@dfinity/utils": "next",
-		"@junobuild/admin": "^0.0.44-next-2024-02-01",
+		"@junobuild/admin": "^0.0.44-next-2024-02-02.1",
 		"@junobuild/ledger": "^0.0.28-next-2024-01-30",
 		"@junobuild/utils": "^0.0.17-next-2024-01-30",
 		"buffer": "^6.0.3",

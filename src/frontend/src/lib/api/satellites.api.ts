@@ -141,15 +141,15 @@ export const satelliteVersion = async ({
 	return version();
 };
 
-export const satelliteVersionBuild = async ({
+export const satelliteBuildVersion = async ({
 	satelliteId,
 	identity
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<string> => {
-	const { version_build } = await getSatelliteActor({ satelliteId, identity });
-	return version_build();
+	const { build_version } = await getSatelliteActor({ satelliteId, identity });
+	return build_version();
 };
 
 export const setCustomDomain = async ({

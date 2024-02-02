@@ -42,6 +42,7 @@ use crate::storage::types::http_request::{
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
@@ -514,7 +515,7 @@ pub fn count_assets(collection: CollectionKey) -> usize {
     }
 }
 
-pub fn get_asset(collection: CollectionKey, full_path: String) -> Option<AssetNoContent> {
+pub fn get_asset(collection: CollectionKey, full_path: FullPath) -> Option<AssetNoContent> {
     let caller = caller();
 
     let result = get_asset_store(caller, &collection, full_path);
@@ -523,4 +524,16 @@ pub fn get_asset(collection: CollectionKey, full_path: String) -> Option<AssetNo
         Ok(asset) => asset.map(|asset| AssetNoContent::from(&asset)),
         Err(error) => trap(&error),
     }
+}
+
+pub fn get_many_assets(
+    assets: Vec<(CollectionKey, FullPath)>,
+) -> Vec<(FullPath, Option<AssetNoContent>)> {
+    assets
+        .iter()
+        .map(|(collection, full_path)| {
+            let asset = get_asset(collection.clone(), full_path.clone());
+            (full_path.clone(), asset.clone())
+        })
+        .collect()
 }

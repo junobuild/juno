@@ -5,6 +5,7 @@ use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::{CollectionKey, Key};
 use std::collections::BTreeMap;
+use std::ops::RangeBounds;
 
 /// Collections
 
@@ -166,17 +167,7 @@ pub fn get_docs_stable(
     collection: &CollectionKey,
     db: &DbStable,
 ) -> Result<Vec<(StableKey, Doc)>, String> {
-    let start_key = StableKey {
-        collection: collection.clone(),
-        key: "".to_string(),
-    };
-
-    let end_key = StableKey {
-        collection: range_collection_end(collection).clone(),
-        key: "".to_string(),
-    };
-
-    let items = db.range(start_key..end_key).collect();
+    let items = db.range(filter_docs_range(collection)).collect();
 
     Ok(items)
 }
@@ -194,6 +185,35 @@ pub fn get_docs_heap<'a>(
             Ok(items)
         }
     }
+}
+
+pub fn count_docs_heap(collection: &CollectionKey, db: &DbHeap) -> Result<usize, String> {
+    let col = db.get(collection);
+
+    match col {
+        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        Some(col) => Ok(col.len()),
+    }
+}
+
+pub fn count_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<usize, String> {
+    let length = db.range(filter_docs_range(collection)).count();
+
+    Ok(length)
+}
+
+fn filter_docs_range(collection: &CollectionKey) -> impl RangeBounds<StableKey> {
+    let start_key = StableKey {
+        collection: collection.clone(),
+        key: "".to_string(),
+    };
+
+    let end_key = StableKey {
+        collection: range_collection_end(collection).clone(),
+        key: "".to_string(),
+    };
+
+    start_key..end_key
 }
 
 // Insert

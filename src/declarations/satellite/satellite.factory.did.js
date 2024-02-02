@@ -25,6 +25,26 @@ export const idlFactory = ({ IDL }) => {
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
 	});
+	const AssetKey = IDL.Record({
+		token: IDL.Opt(IDL.Text),
+		collection: IDL.Text,
+		owner: IDL.Principal,
+		name: IDL.Text,
+		description: IDL.Opt(IDL.Text),
+		full_path: IDL.Text
+	});
+	const AssetEncodingNoContent = IDL.Record({
+		modified: IDL.Nat64,
+		sha256: IDL.Vec(IDL.Nat8),
+		total_length: IDL.Nat
+	});
+	const AssetNoContent = IDL.Record({
+		key: AssetKey,
+		updated_at: IDL.Nat64,
+		encodings: IDL.Vec(IDL.Tuple(IDL.Text, AssetEncodingNoContent)),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64
+	});
 	const StorageConfigIFrame = IDL.Variant({
 		Deny: IDL.Null,
 		AllowAny: IDL.Null,
@@ -110,26 +130,6 @@ export const idlFactory = ({ IDL }) => {
 		matcher: IDL.Opt(ListMatcher),
 		paginate: IDL.Opt(ListPaginate)
 	});
-	const AssetKey = IDL.Record({
-		token: IDL.Opt(IDL.Text),
-		collection: IDL.Text,
-		owner: IDL.Principal,
-		name: IDL.Text,
-		description: IDL.Opt(IDL.Text),
-		full_path: IDL.Text
-	});
-	const AssetEncodingNoContent = IDL.Record({
-		modified: IDL.Nat64,
-		sha256: IDL.Vec(IDL.Nat8),
-		total_length: IDL.Nat
-	});
-	const AssetNoContent = IDL.Record({
-		key: AssetKey,
-		updated_at: IDL.Nat64,
-		encodings: IDL.Vec(IDL.Tuple(IDL.Text, AssetEncodingNoContent)),
-		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		created_at: IDL.Nat64
-	});
 	const ListResults = IDL.Record({
 		matches_pages: IDL.Opt(IDL.Nat64),
 		matches_length: IDL.Nat64,
@@ -211,8 +211,14 @@ export const idlFactory = ({ IDL }) => {
 		del_many_docs: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, DelDoc))], [], []),
 		del_rule: IDL.Func([RulesType, IDL.Text, DelDoc], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
+		get_asset: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(AssetNoContent)], ['query']),
 		get_config: IDL.Func([], [Config], []),
 		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
+		get_many_assets: IDL.Func(
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
+			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Opt(AssetNoContent)))],
+			['query']
+		),
 		get_many_docs: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Opt(Doc)))],

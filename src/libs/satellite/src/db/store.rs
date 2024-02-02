@@ -1,10 +1,10 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::db::state::{
-    delete_collection as delete_state_collection, delete_doc as delete_state_doc,
-    get_doc as get_state_doc, get_docs_heap, get_docs_stable, get_rule as get_state_rule,
-    init_collection as init_state_collection, insert_doc as insert_state_doc,
-    is_collection_empty as is_state_collection_empty,
+    count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
+    delete_doc as delete_state_doc, get_doc as get_state_doc, get_docs_heap, get_docs_stable,
+    get_rule as get_state_rule, init_collection as init_state_collection,
+    insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
@@ -350,12 +350,12 @@ pub fn count_docs_store(collection: &CollectionKey) -> Result<usize, String> {
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            let docs = get_docs_heap(collection, &state_ref.heap.db.db)?;
-            Ok(docs.len())
+            let length = count_docs_heap(collection, &state_ref.heap.db.db)?;
+            Ok(length)
         }),
         Memory::Stable => STATE.with(|state| {
-            let stable = get_docs_stable(collection, &state.borrow().stable.db)?;
-            Ok(stable.len())
+            let length = count_docs_stable(collection, &state.borrow().stable.db)?;
+            Ok(length)
         }),
     }
 }

@@ -14,6 +14,14 @@ use ic_ledger_types::{
 // We do not use subaccount, yet.
 pub static SUB_ACCOUNT: Subaccount = DEFAULT_SUBACCOUNT;
 
+/// Converts a principal and subaccount into an account identifier.
+///
+/// # Arguments
+/// * `principal` - A reference to the principal to be converted.
+/// * `sub_account` - A reference to the subaccount.
+///
+/// # Returns
+/// An `AccountIdentifier` derived from the given principal and subaccount.
 pub fn principal_to_account_identifier(
     principal: &Principal,
     sub_account: &Subaccount,
@@ -21,6 +29,17 @@ pub fn principal_to_account_identifier(
     AccountIdentifier::new(principal, sub_account)
 }
 
+/// Transfers tokens to a specified account.
+///
+/// # Arguments
+/// * `to` - The principal of the destination account.
+/// * `to_sub_account` - The subaccount of the destination account.
+/// * `memo` - A memo for the transaction.
+/// * `amount` - The amount of tokens to transfer.
+/// * `fee` - The transaction fee.
+///
+/// # Returns
+/// A result containing the transfer result or an error message.
 pub async fn transfer_payment(
     to: &Principal,
     to_sub_account: &Subaccount,
@@ -42,6 +61,16 @@ pub async fn transfer_payment(
     transfer(ledger, args).await
 }
 
+/// Finds a payment transaction based on specified criteria.
+///
+/// # Arguments
+/// * `from` - The account identifier of the sender.
+/// * `to` - The account identifier of the receiver.
+/// * `amount` - The amount of tokens transferred.
+/// * `block_index` - The starting block index to search from.
+///
+/// # Returns
+/// An option containing the found block indexed or None if not found.
 pub async fn find_payment(
     from: AccountIdentifier,
     to: AccountIdentifier,
@@ -87,6 +116,13 @@ pub async fn find_payment(
     block.cloned()
 }
 
+/// Queries the ledger for the current chain length.
+///
+/// # Arguments
+/// * `block_index` - The block index from which to start the query.
+///
+/// # Returns
+/// A result containing the chain length or an error message.
 pub async fn chain_length(block_index: BlockIndex) -> CallResult<u64> {
     let ledger = Principal::from_text(LEDGER).unwrap();
     let response = query_blocks(
@@ -100,6 +136,15 @@ pub async fn chain_length(block_index: BlockIndex) -> CallResult<u64> {
     Ok(response.chain_length)
 }
 
+/// Finds blocks containing transfers for specified account identifiers.
+///
+/// # Arguments
+/// * `block_index` - The starting block index for the query.
+/// * `length` - The number of blocks to query.
+/// * `account_identifiers` - A list of account identifiers to match transactions.
+///
+/// # Returns
+/// A collection of blocks matching the criteria.
 pub async fn find_blocks_transfer(
     block_index: BlockIndex,
     length: u64,
@@ -139,13 +184,23 @@ pub async fn find_blocks_transfer(
         .collect()
 }
 
-// Source: OpenChat
-// https://github.com/open-ic/transaction-notifier/blob/cf8c2deaaa2e90aac9dc1e39ecc3e67e94451c08/canister/impl/src/lifecycle/heartbeat.rs
+/// Queries the ledger for blocks since a specified index, including handling archived blocks.
+///
+/// # Arguments
+/// * `ledger_canister_id` - The principal of the ledger canister.
+/// * `start` - The starting block index.
+/// * `length` - The number of blocks to query.
+///
+/// # Returns
+/// A result containing the queried blocks or an error message.
 async fn blocks_since(
     ledger_canister_id: Principal,
     start: BlockIndex,
     length: u64,
 ) -> CallResult<Blocks> {
+    // Source: OpenChat
+    // https://github.com/open-ic/transaction-notifier/blob/cf8c2deaaa2e90aac9dc1e39ecc3e67e94451c08/canister/impl/src/lifecycle/heartbeat.rs
+
     let response = query_blocks(ledger_canister_id, GetBlocksArgs { start, length }).await?;
 
     let blocks: Blocks = response

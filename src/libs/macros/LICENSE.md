@@ -7,4 +7,4 @@
 
 This dual licensing approach is designed to offer flexibility for Juno platform users while ensuring that the broader open-source community benefits from the AGPLv3's strong copyleft provisions.
 
-For more details, please see the [LICENSE-MIT] and [LICENSE-AGPL] files in the repository.
+For more details, please see the [LICENSE-MIT](LICENSE-MIT) and [LICENSE-AGPL](LICENSE-AGPL) files in the repository.

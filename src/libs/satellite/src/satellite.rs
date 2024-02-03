@@ -56,12 +56,12 @@ use ic_cdk::api::{caller, trap};
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
-use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
-use shared::controllers::{
+use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
+use junobuild_shared::controllers::{
     assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
 };
-use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
-use shared::types::state::{ControllerScope, Controllers};
+use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
+use junobuild_shared::types::state::{ControllerScope, Controllers};
 use std::mem;
 
 pub fn init() {

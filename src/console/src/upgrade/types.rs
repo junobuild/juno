@@ -1,8 +1,8 @@
 pub mod upgrade {
     use crate::types::state::{Fees, InvitationCodes, MissionControls, Payments, Rates, Releases};
     use candid::CandidType;
+    use junobuild_shared::types::state::Controllers;
     use serde::Deserialize;
-    use shared::types::state::Controllers;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct UpgradeStableState {

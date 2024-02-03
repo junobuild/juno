@@ -18,8 +18,8 @@ use crate::types::core::{CollectionKey, Key};
 use crate::types::list::{ListParams, ListResults};
 use candid::Principal;
 use ic_cdk::api::time;
-use shared::assert::assert_timestamp;
-use shared::types::state::{Controllers, UserId};
+use junobuild_shared::assert::assert_timestamp;
+use junobuild_shared::types::state::{Controllers, UserId};
 
 /// Collection
 

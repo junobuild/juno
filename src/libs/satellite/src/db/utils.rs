@@ -5,8 +5,8 @@ use crate::rules::types::rules::Permission;
 use crate::types::core::Key;
 use crate::types::list::ListParams;
 use candid::Principal;
+use junobuild_shared::types::state::{Controllers, UserId};
 use regex::Regex;
-use shared::types::state::{Controllers, UserId};
 
 pub fn filter_values<'a>(
     caller: Principal,

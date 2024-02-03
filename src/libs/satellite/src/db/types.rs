@@ -4,8 +4,8 @@ pub mod state {
     use crate::types::memory::Memory;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::state::UserId;
     use serde::{Deserialize, Serialize};
-    use shared::types::state::UserId;
     use std::collections::{BTreeMap, HashMap};
 
     pub type Collection = BTreeMap<Key, Doc>;

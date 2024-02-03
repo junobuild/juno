@@ -15,4 +15,4 @@ ic-cdk-macros.workspace = true
 ic-cdk-timers.workspace = true
 serde.workspace = true
 lazy_static = "1.4.0"
-shared = { path = "../libs/shared" }
+junobuild-shared = { path = "../libs/shared" }

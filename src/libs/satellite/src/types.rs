@@ -5,8 +5,8 @@ pub mod state {
         AssetsStable, ContentChunksStable, StorageHeapState, StorageRuntimeState,
     };
     use candid::CandidType;
+    use junobuild_shared::types::state::Controllers;
     use serde::{Deserialize, Serialize};
-    use shared::types::state::Controllers;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -75,8 +75,8 @@ pub mod interface {
 pub mod list {
     use crate::types::core::Key;
     use candid::CandidType;
+    use junobuild_shared::types::state::UserId;
     use serde::Deserialize;
-    use shared::types::state::UserId;
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ListPaginate {
@@ -134,7 +134,7 @@ pub mod hooks {
     use crate::storage::types::store::Asset;
     use crate::Doc;
     use candid::{CandidType, Deserialize};
-    use shared::types::state::UserId;
+    use junobuild_shared::types::state::UserId;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct HookContext<T> {

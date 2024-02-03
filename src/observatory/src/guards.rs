@@ -1,10 +1,10 @@
 use crate::STATE;
 use ic_cdk::caller;
-use shared::controllers::{
+use junobuild_shared::controllers::{
     caller_is_console as caller_is_console_impl, is_admin_controller as is_admin_controller_impl,
     is_controller as is_controller_impl,
 };
-use shared::types::state::Controllers;
+use junobuild_shared::types::state::Controllers;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {
     if is_admin_controller() {

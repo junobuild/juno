@@ -1,10 +1,10 @@
 use crate::STATE;
-use shared::controllers::{
+use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, filter_admin_controllers,
     set_controllers as set_controllers_impl,
 };
-use shared::types::interface::SetController;
-use shared::types::state::{ControllerId, Controllers};
+use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::state::{ControllerId, Controllers};
 
 /// Controllers
 

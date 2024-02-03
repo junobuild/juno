@@ -7,8 +7,8 @@ use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::list::ListParams;
 use candid::Principal;
+use junobuild_shared::types::state::{Controllers, UserId};
 use regex::Regex;
-use shared::types::state::{Controllers, UserId};
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (asset.key.full_path.clone(), AssetNoContent::from(asset))

@@ -2,12 +2,12 @@ use crate::types::interface::SetCronTab;
 use crate::types::state::{ArchiveStatuses, CronTab, CronTabs, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
-use shared::assert::assert_timestamp;
-use shared::controllers::{
+use junobuild_shared::assert::assert_timestamp;
+use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
-use shared::types::interface::SetController;
-use shared::types::state::{ControllerId, SegmentsStatuses, UserId};
+use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::state::{ControllerId, SegmentsStatuses, UserId};
 
 ///
 /// CronJobs

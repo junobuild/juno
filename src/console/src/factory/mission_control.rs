@@ -6,9 +6,9 @@ use crate::store::{
 use crate::types::state::MissionControl;
 use crate::wasm::mission_control_wasm_arg;
 use candid::Principal;
-use shared::constants::CREATE_MISSION_CONTROL_CYCLES;
-use shared::ic::create_canister_install_code;
-use shared::types::state::UserId;
+use junobuild_shared::constants::CREATE_MISSION_CONTROL_CYCLES;
+use junobuild_shared::ic::create_canister_install_code;
+use junobuild_shared::types::state::UserId;
 
 pub async fn init_user_mission_control(
     console: &Principal,

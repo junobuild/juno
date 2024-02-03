@@ -7,9 +7,9 @@ use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use ic_ledger_types::BlockIndex;
-use shared::env::CONSOLE;
-use shared::types::interface::CreateCanisterArgs;
-use shared::types::state::{SatelliteId, UserId};
+use junobuild_shared::env::CONSOLE;
+use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::state::{SatelliteId, UserId};
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
     create_canister(

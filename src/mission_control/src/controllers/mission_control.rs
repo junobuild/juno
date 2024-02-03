@@ -1,13 +1,13 @@
 use crate::controllers::store::{delete_controllers, get_admin_controllers, set_controllers};
 use crate::store::get_user;
 use ic_cdk::id;
-use shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
-use shared::controllers::{
+use junobuild_shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
+use junobuild_shared::controllers::{
     assert_max_number_of_controllers, assert_no_anonymous_controller, into_controller_ids,
 };
-use shared::ic::update_canister_controllers;
-use shared::types::interface::SetController;
-use shared::types::state::{ControllerId, ControllerScope, Controllers};
+use junobuild_shared::ic::update_canister_controllers;
+use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::state::{ControllerId, ControllerScope, Controllers};
 
 pub async fn set_mission_control_controllers(
     controllers: &[ControllerId],

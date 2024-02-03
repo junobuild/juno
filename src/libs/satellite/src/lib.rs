@@ -23,10 +23,10 @@ use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
-use shared::types::interface::{
+use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
 };
-use shared::types::state::Controllers;
+use junobuild_shared::types::state::Controllers;
 use storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
@@ -263,7 +263,7 @@ pub fn get_many_assets(
 
 #[update(guard = "caller_is_admin_controller")]
 pub async fn deposit_cycles(args: DepositCyclesArgs) {
-    shared::ic::deposit_cycles(args)
+    junobuild_shared::ic::deposit_cycles(args)
         .await
         .unwrap_or_else(|e| trap(&e))
 }
@@ -275,7 +275,7 @@ pub fn version() -> String {
 
 #[query(guard = "caller_is_admin_controller")]
 pub fn memory_size() -> MemorySize {
-    shared::canister::memory_size()
+    junobuild_shared::canister::memory_size()
 }
 
 #[macro_export]

@@ -10,7 +10,7 @@ use crate::types::hooks::{
 use crate::{CollectionKey, HookContext};
 #[allow(unused)]
 use ic_cdk_timers::set_timer;
-use shared::types::state::UserId;
+use junobuild_shared::types::state::UserId;
 #[allow(unused)]
 use std::time::Duration;
 

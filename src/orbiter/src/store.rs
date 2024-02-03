@@ -7,7 +7,7 @@ use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
 use ic_cdk::api::time;
-use shared::assert::assert_timestamp;
+use junobuild_shared::assert::assert_timestamp;
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))

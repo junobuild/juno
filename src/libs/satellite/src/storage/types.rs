@@ -56,8 +56,8 @@ pub mod store {
     use crate::types::core::{Blob, CollectionKey};
     use candid::CandidType;
     use ic_certification::Hash;
+    use junobuild_shared::types::state::UserId;
     use serde::{Deserialize, Serialize};
-    use shared::types::state::UserId;
     use std::clone::Clone;
     use std::collections::HashMap;
 

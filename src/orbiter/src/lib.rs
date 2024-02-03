@@ -45,16 +45,16 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
-use shared::canister::memory_size as canister_memory_size;
-use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
-use shared::controllers::{
+use junobuild_shared::canister::memory_size as canister_memory_size;
+use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
+use junobuild_shared::controllers::{
     assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
 };
-use shared::ic::deposit_cycles as deposit_cycles_shared;
-use shared::types::interface::{
+use junobuild_shared::ic::deposit_cycles as deposit_cycles_shared;
+use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SegmentArgs, SetControllersArgs,
 };
-use shared::types::state::{ControllerScope, Controllers, SatelliteId};
+use junobuild_shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use std::mem;
 
 #[init]

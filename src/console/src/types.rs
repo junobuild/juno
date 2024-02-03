@@ -2,9 +2,9 @@ pub mod state {
     use crate::types::ledger::Payment;
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
+    use junobuild_shared::types::state::Controllers;
+    use junobuild_shared::types::state::{MissionControlId, UserId};
     use serde::Deserialize;
-    use shared::types::state::Controllers;
-    use shared::types::state::{MissionControlId, UserId};
     use std::collections::HashMap;
 
     pub type MissionControls = HashMap<UserId, MissionControl>;
@@ -99,8 +99,8 @@ pub mod state {
 
 pub mod interface {
     use candid::CandidType;
+    use junobuild_shared::types::cronjob::CronJobs;
     use serde::Deserialize;
-    use shared::types::cronjob::CronJobs;
 
     #[derive(CandidType, Deserialize)]
     pub enum Segment {
@@ -131,8 +131,8 @@ pub mod interface {
 pub mod ledger {
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
+    use junobuild_shared::types::state::MissionControlId;
     use serde::Deserialize;
-    use shared::types::state::MissionControlId;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Payment {

@@ -8,9 +8,9 @@ use crate::msg::{
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
 use ic_cdk::api::time;
-use shared::controllers::is_controller;
-use shared::types::state::Controllers;
-use shared::utils::principal_not_equal;
+use junobuild_shared::controllers::is_controller;
+use junobuild_shared::types::state::Controllers;
+use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
 
 use crate::rules::assert_stores::{

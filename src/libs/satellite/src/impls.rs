@@ -8,7 +8,7 @@ use crate::storage::types::config::{
 use crate::storage::types::state::StorageHeapState;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ic_cdk::api::time;
-use shared::types::state::Controllers;
+use junobuild_shared::types::state::Controllers;
 use std::collections::{BTreeMap, HashMap};
 
 impl Default for State {

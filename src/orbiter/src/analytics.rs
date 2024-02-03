@@ -3,9 +3,9 @@ use crate::types::interface::{
     AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents,
 };
 use crate::types::state::{AnalyticKey, PageView, TrackEvent};
+use junobuild_shared::day::calendar_date;
+use junobuild_shared::types::utils::CalendarDate;
 use regex::Regex;
-use shared::day::calendar_date;
-use shared::types::utils::CalendarDate;
 use std::collections::{HashMap, HashSet};
 use url::Url;
 

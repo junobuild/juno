@@ -1,7 +1,7 @@
 use crate::types::core::Segment;
 use crate::types::state::{Archive, ArchiveStatuses, Orbiter, Satellite, User};
 use ic_cdk::api::time;
-use shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
+use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
 
 impl From<&UserId> for User {

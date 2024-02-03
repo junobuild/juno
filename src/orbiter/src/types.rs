@@ -3,8 +3,10 @@ pub mod state {
     use crate::types::memory::Memory;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::state::{
+        Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId,
+    };
     use serde::{Deserialize, Serialize};
-    use shared::types::state::{Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId};
     use std::collections::HashMap;
 
     #[derive(Serialize, Deserialize)]
@@ -97,9 +99,9 @@ pub mod memory {
 pub mod interface {
     use crate::types::state::{PageViewDevice, SessionId};
     use candid::CandidType;
+    use junobuild_shared::types::state::{Metadata, SatelliteId};
+    use junobuild_shared::types::utils::CalendarDate;
     use serde::Deserialize;
-    use shared::types::state::{Metadata, SatelliteId};
-    use shared::types::utils::CalendarDate;
     use std::collections::HashMap;
 
     #[derive(CandidType, Deserialize, Clone)]

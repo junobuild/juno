@@ -45,7 +45,7 @@ pub fn decode_doc_data<T: for<'a> Deserialize<'a>>(data: &[u8]) -> Result<T, Str
 
 /// Encodes a Rust struct into serialized document data, designed for use with Juno hooks.
 ///
-/// When preparing document data to be sent or stored, this function facilitates the serialization
+/// When preparing document data to be stored, this function facilitates the serialization
 /// of a Rust data structure into a byte vector. It leverages Serde's serialization capabilities,
 /// ensuring that any Rust type implementing the `Serialize` trait can be efficiently converted
 /// into a format compatible with Juno's document requirements.

@@ -1,9 +1,9 @@
 use candid::Principal as CandidPrincipal;
 
-pub struct Principal {
+pub struct DocDataPrincipal {
     pub value: CandidPrincipal,
 }
 
-pub struct BigInt {
+pub struct DocDataBigInt {
     pub value: u64,
 }

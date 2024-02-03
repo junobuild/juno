@@ -1,7 +1,9 @@
-pub mod serializers;
+mod serializers;
 
 use serde::{Deserialize, Serialize};
 use serde_json::{from_slice, to_vec};
+
+pub use crate::serializers::types::{DocDataBigInt, DocDataPrincipal};
 
 pub fn decode_doc_data<T: for<'a> Deserialize<'a>>(data: &[u8]) -> Result<T, String> {
     from_slice::<T>(data).map_err(|e| e.to_string())

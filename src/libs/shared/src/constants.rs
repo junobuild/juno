@@ -24,7 +24,7 @@ pub const CREATE_ORBITER_CYCLES: u128 = 1_000_000_000_000;
 
 // Memos for different operations, encoded from specific ASCII strings to hexadecimal values.
 pub const MEMO_CANISTER_CREATE: Memo = Memo(0x41455243); // == 'CREA'
-// Note: For topup, it has to be exactly the memo used by the IC
+                                                         // Note: For topup, it has to be exactly the memo used by the IC
 pub const MEMO_CANISTER_TOP_UP: Memo = Memo(0x50555054); // == 'TPUP'
 pub const MEMO_SATELLITE_CREATE_REFUND: Memo = Memo(0x44464552544153); // == 'SATREFD'
 pub const MEMO_ORBITER_CREATE_REFUND: Memo = Memo(0x4446455242524f); // == 'ORBREFD'

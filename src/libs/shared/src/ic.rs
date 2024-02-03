@@ -14,6 +14,16 @@ use ic_cdk::api::management_canister::main::{
 };
 use ic_cdk::api::{canister_balance128, time};
 
+/// Asynchronously creates a new canister and installs provided Wasm code with additional cycles.
+///
+/// # Arguments
+/// - `controllers`: A list of `Principal` IDs to set as controllers of the new canister.
+/// - `wasm_arg`: Wasm binary and arguments to install in the new canister (`WasmArg` struct).
+/// - `cycles`: Additional cycles to deposit during canister creation on top of `CREATE_CANISTER_CYCLES`.
+///
+/// # Returns
+/// - `Ok(Principal)`: On success, returns the `Principal` ID of the newly created canister.
+/// - `Err(String)`: On failure, returns an error message.
 pub async fn create_canister_install_code(
     controllers: Vec<Principal>,
     wasm_arg: &WasmArg,
@@ -48,6 +58,15 @@ pub async fn create_canister_install_code(
     }
 }
 
+/// Asynchronously installs code on a specified canister.
+///
+/// # Arguments
+/// - `canister_id`: `Principal` ID of the target canister.
+/// - `wasm_arg`: Contains the Wasm module and installation arguments.
+/// - `mode`: Installation mode defined by `CanisterInstallMode`.
+///
+/// # Returns
+/// - A `CallResult<()>` indicating success or failure.
 async fn install_code(
     canister_id: Principal,
     WasmArg { wasm, install_arg }: &WasmArg,
@@ -63,6 +82,14 @@ async fn install_code(
     ic_install_code(arg).await
 }
 
+/// Asynchronously updates the controller list of a specified canister.
+///
+/// # Arguments
+/// - `canister_id`: `Principal` ID of the target canister.
+/// - `controllers`: New list of `Principal` IDs to set as controllers.
+///
+/// # Returns
+/// - A `CallResult<()>` indicating success or failure.
 pub async fn update_canister_controllers(
     canister_id: Principal,
     controllers: Vec<Principal>,
@@ -81,6 +108,14 @@ pub async fn update_canister_controllers(
     update_settings(arg).await
 }
 
+/// Fetches the status of a segment (canister), including its configuration and resource usage.
+///
+/// # Arguments
+/// - `canister_id`: The `CanisterId` of the segment canister.
+///
+/// # Returns
+/// - `SegmentStatusResult`: Contains detailed status and settings of the canister on success.
+/// - `Err(String)`: On failure, returns an error message.
 pub async fn segment_status(canister_id: CanisterId) -> SegmentStatusResult {
     let status = ic_canister_status(CanisterIdRecord { canister_id }).await;
 
@@ -111,6 +146,14 @@ pub async fn segment_status(canister_id: CanisterId) -> SegmentStatusResult {
     }
 }
 
+/// Deposits cycles into a specified canister from the calling canister's balance.
+///
+/// # Arguments
+/// - `args`: `DepositCyclesArgs` struct containing the destination canister ID and cycle amount.
+///
+/// # Returns
+/// - `Ok(())`: On successful deposit.
+/// - `Err(String)`: If the balance is insufficient or on failure to deposit.
 pub async fn deposit_cycles(
     DepositCyclesArgs {
         destination_id,
@@ -140,6 +183,14 @@ pub async fn deposit_cycles(
     }
 }
 
+/// Stops the execution of a specified segment (canister).
+///
+/// # Arguments
+/// - `canister_id`: The `CanisterId` of the canister to stop.
+///
+/// # Returns
+/// - `Ok(())`: If the canister is successfully stopped.
+/// - `Err(String)`: On failure, returns an error message.
 pub async fn stop_segment(canister_id: CanisterId) -> Result<(), String> {
     let result = stop_canister(CanisterIdRecord { canister_id }).await;
 
@@ -149,6 +200,14 @@ pub async fn stop_segment(canister_id: CanisterId) -> Result<(), String> {
     }
 }
 
+/// Deletes a specified segment (canister).
+///
+/// # Arguments
+/// - `canister_id`: The `CanisterId` of the canister to delete.
+///
+/// # Returns
+/// - `Ok(())`: If the canister is successfully deleted.
+/// - `Err(String)`: On failure, returns an error message.
 pub async fn delete_segment(canister_id: CanisterId) -> Result<(), String> {
     let result = delete_canister(CanisterIdRecord { canister_id }).await;
 

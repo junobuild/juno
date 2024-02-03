@@ -1,7 +1,15 @@
 [package]
 name = "junobuild-shared"
 version = "0.0.11"
-edition = "2021"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+description = "Shared utilities and constants for Juno."
+homepage.workspace = true
+documentation = "https://docs.rs/junobuild-shared"
+readme = "README.md"
+license = "MIT OR AGPL-3.0-only"
+license-file = "LICENSE.md"
 
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 

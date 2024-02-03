@@ -1,3 +1,4 @@
+#![doc = include_str!("../README.md")]
 pub mod assert;
 pub mod canister;
 pub mod constants;

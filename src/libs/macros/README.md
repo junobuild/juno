@@ -1,4 +1,4 @@
-# JunoBuild-Shared
+# JunoBuild-Macros
 
 `junobuild-macros` are procedural macros for hooking into various events in [Juno](https://juno.build).
 

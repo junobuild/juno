@@ -17,12 +17,10 @@ pub const CREATE_ORBITER_CYCLES: u128 = 1_000_000_000_000;
 // NNS canister topup: CREA 0x50555054
 // SAT -> TAS = 0x544153
 
-/**
-* let reversed: Vec<char> = "CREA".chars().rev().collect();
-* for c in reversed {
-*   println!("{:#x}", c as u32);
-* }
-*/
+// let reversed: Vec<char> = "CREA".chars().rev().collect();
+// * for c in reversed {
+// *   println!("{:#x}", c as u32);
+// * }
 
 // Memos for different operations, encoded from specific ASCII strings to hexadecimal values.
 pub const MEMO_CANISTER_CREATE: Memo = Memo(0x41455243); // == 'CREA'

@@ -1,7 +1,14 @@
 [package]
 name = "junobuild-satellite"
 version = "0.0.15"
-edition = "2021"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+description = "Extend Juno satellite functionality."
+homepage.workspace = true
+documentation = "https://docs.rs/junobuild-utils"
+readme = "README.md"
+license-file = "LICENSE.md"
 
 [features]
 default = ["on_set_doc", "on_set_many_docs", "on_delete_doc", "on_delete_many_docs", "on_upload_asset", "on_delete_asset", "on_delete_many_assets"]

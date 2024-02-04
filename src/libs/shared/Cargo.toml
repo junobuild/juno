@@ -10,6 +10,9 @@ documentation = "https://docs.rs/junobuild-shared"
 readme = "README.md"
 license-file = "LICENSE.md"
 
+[package.metadata.docs.rs]
+targets = ["wasm32-unknown-unknown"]
+
 [dependencies]
 candid.workspace = true
 ic-cdk.workspace = true

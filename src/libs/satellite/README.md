@@ -26,6 +26,18 @@ include_satellite!();
 
 By using the `include_satellite!` macro, you can effortlessly integrate all the necessary features into your satellite project.
 
+## Features
+
+- **on_set_doc**: Enables the `on_set_doc` feature.
+- **on_set_many_docs**: Enables the `on_set_many_docs` feature.
+- **on_delete_doc**: Enables the `on_delete_doc` feature.
+- **on_delete_many_docs**: Enables the `on_delete_many_docs` feature.
+- **on_upload_asset**: Enables the `on_upload_asset` feature.
+- **on_delete_asset**: Enables the `on_delete_asset` feature.
+- **on_delete_many_assets**: Enables the `on_delete_many_assets` feature.
+
+These features are enabled by default and do not have additional dependencies.
+
 ### Links & Resources
 
 Here are some useful links:

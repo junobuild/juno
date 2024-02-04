@@ -11,6 +11,11 @@ pub mod state {
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
+    /// Represents the relative path of an asset in the storage.
+    ///
+    /// This type, `FullPath`, is an alias for `Key`, indicating the relative path of an asset within the storage system.
+    ///
+    /// `FullPath` is commonly used to identify the location of assets within a storage system.
     pub type FullPath = Key;
 
     pub type Batches = HashMap<u128, Batch>;

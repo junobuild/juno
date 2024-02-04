@@ -53,6 +53,21 @@ use crate::types::list::{ListParams, ListResults};
 /// Getter, list and delete
 ///
 
+/// Get content chunks of an asset.
+///
+/// This function retrieves content chunks of an asset based on the specified parameters.
+/// It returns an `Option<Blob>` representing the content chunks, or `None` if no chunks are found.
+///
+/// # Parameters
+/// - `encoding`: A reference to the `AssetEncoding` indicating the encoding of the asset.
+/// - `chunk_index`: The index of the content chunk to retrieve.
+/// - `memory`: A reference to the `Memory` type (Heap or Stable).
+///
+/// # Returns
+/// - `Some(Blob)`: Content chunks of the asset.
+/// - `None`: No content chunks found.
+///
+/// This function allows you to retrieve content chunks of an asset stored in a Juno collection's store.
 pub fn get_content_chunks_store(
     encoding: &AssetEncoding,
     chunk_index: usize,
@@ -61,6 +76,24 @@ pub fn get_content_chunks_store(
     get_state_content_chunks(encoding, chunk_index, memory)
 }
 
+/// Delete an asset from a collection's store.
+///
+/// This function deletes an asset from a collection's store based on the specified parameters.
+/// It returns a `Result<Option<Asset>, String>` where `Ok(Some(Asset))` indicates successful deletion
+/// of the asset, `Ok(None)` represents no asset found for the specified path, or an error message
+/// as `Err(String)` if the deletion encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the deletion.
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to delete the asset.
+/// - `full_path`: A `FullPath` identifying the asset to be deleted.
+///
+/// # Returns
+/// - `Ok(Some(Asset))`: Indicates successful deletion of the asset.
+/// - `Ok(None)`: Indicates no asset found for the specified path.
+/// - `Err(String)`: An error message if the deletion operation fails.
+///
+/// This function allows you to securely delete assets from a Juno collection's store.
 pub fn delete_asset_store(
     caller: Principal,
     collection: &CollectionKey,
@@ -105,6 +138,24 @@ pub fn list_assets_store(
     secure_list_assets_impl(caller, &controllers, collection, filters)
 }
 
+/// Get an asset from a collection's store.
+///
+/// This function retrieves an asset from a collection's store based on the specified parameters.
+/// It returns a `Result<Option<Asset>, String>` where `Ok(Some(Asset))` indicates a successfully retrieved
+/// asset, `Ok(None)` represents no asset found for the specified path, or an error message as `Err(String)`
+/// if retrieval encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller requesting the asset.
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to retrieve the asset.
+/// - `full_path`: A `FullPath` identifying the asset to be retrieved.
+///
+/// # Returns
+/// - `Ok(Some(Asset))`: Indicates successful retrieval of the asset.
+/// - `Ok(None)`: Indicates no asset found for the specified path.
+/// - `Err(String)`: An error message if the retrieval operation fails.
+///
+/// This function allows you to securely retrieve an asset from a Juno collection's store.
 pub fn get_asset_store(
     caller: Principal,
     collection: &CollectionKey,
@@ -351,6 +402,20 @@ fn delete_assets_impl(
     Ok(())
 }
 
+/// Count the number of assets in a collection's store.
+///
+/// This function retrieves the state rule for the specified collection and counts the assets
+/// based on the memory type (Heap or Stable). It returns the count as a `Result<usize, String>`
+/// on success, or an error message as `Err(String)` if an issue occurs during counting.
+///
+/// # Parameters
+/// - `collection`: A reference to the `CollectionKey` representing the collection to count assets in.
+///
+/// # Returns
+/// - `Ok(usize)`: The count of assets in the collection.
+/// - `Err(String)`: An error message if counting fails.
+///
+/// This function provides a convenient way to determine the number of assets in a Juno collection's store.
 pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
     let rule = get_state_rule(collection)?;
 

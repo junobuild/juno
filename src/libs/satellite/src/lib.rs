@@ -1,3 +1,5 @@
+#![doc = include_str!("../README.md")]
+
 mod assert;
 mod controllers;
 mod db;
@@ -32,9 +34,8 @@ use storage::http::types::{
 };
 use types::list::ListParams;
 
-///
-/// Re-export types
-///
+// Re-export types
+
 pub use crate::db::store::{
     count_docs_store, delete_doc_store, delete_docs_store, get_doc_store, set_doc_store,
 };
@@ -54,16 +55,19 @@ pub use crate::types::hooks::{
 /// Init and Upgrade
 ///
 
+#[doc(hidden)]
 #[init]
 pub fn init() {
     satellite::init();
 }
 
+#[doc(hidden)]
 #[pre_upgrade]
 pub fn pre_upgrade() {
     satellite::pre_upgrade();
 }
 
+#[doc(hidden)]
 #[post_upgrade]
 pub fn post_upgrade() {
     satellite::post_upgrade();
@@ -73,46 +77,55 @@ pub fn post_upgrade() {
 /// Db
 ///
 
+#[doc(hidden)]
 #[update]
 pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     satellite::set_doc(collection, key, doc)
 }
 
+#[doc(hidden)]
 #[query]
 pub fn get_doc(collection: CollectionKey, key: Key) -> Option<Doc> {
     satellite::get_doc(collection, key)
 }
 
+#[doc(hidden)]
 #[update]
 pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
     satellite::del_doc(collection, key, doc);
 }
 
+#[doc(hidden)]
 #[query]
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
     satellite::list_docs(collection, filter)
 }
 
+#[doc(hidden)]
 #[query]
 pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)> {
     satellite::get_many_docs(docs)
 }
 
+#[doc(hidden)]
 #[update]
 pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
     satellite::set_many_docs(docs)
 }
 
+#[doc(hidden)]
 #[update]
 pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     satellite::del_many_docs(docs)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn del_docs(collection: CollectionKey) {
     satellite::del_docs(collection)
 }
 
+#[doc(hidden)]
 #[query(guard = "caller_is_controller")]
 pub fn count_docs(collection: CollectionKey) -> usize {
     satellite::count_docs(collection)
@@ -120,16 +133,19 @@ pub fn count_docs(collection: CollectionKey) -> usize {
 
 /// Rules
 
+#[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
     satellite::list_rules(rules_type)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
     satellite::set_rule(rules_type, collection, rule)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule) {
     satellite::del_rule(rules_type, collection, rule)
@@ -139,16 +155,19 @@ pub fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule)
 /// Controllers
 ///
 
+#[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_controllers(args: SetControllersArgs) -> Controllers {
     satellite::set_controllers(args)
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_controllers(args: DeleteControllersArgs) -> Controllers {
     satellite::del_controllers(args)
 }
 
+#[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_controllers() -> Controllers {
     satellite::list_controllers()
@@ -158,11 +177,13 @@ pub fn list_controllers() -> Controllers {
 /// Config
 ///
 
+#[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_config(config: Config) {
     satellite::set_config(config);
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn get_config() -> Config {
     satellite::get_config()
@@ -172,16 +193,19 @@ pub fn get_config() -> Config {
 /// Custom domains
 ///
 
+#[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_custom_domains() -> CustomDomains {
     satellite::list_custom_domains()
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
     satellite::set_custom_domain(domain_name, bn_id);
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
     satellite::del_custom_domain(domain_name);
@@ -191,11 +215,13 @@ pub fn del_custom_domain(domain_name: DomainName) {
 /// Http
 ///
 
+#[doc(hidden)]
 #[query]
 pub fn http_request(request: HttpRequest) -> HttpResponse {
     satellite::http_request(request)
 }
 
+#[doc(hidden)]
 #[query]
 pub fn http_request_streaming_callback(
     callback: StreamingCallbackToken,
@@ -207,51 +233,61 @@ pub fn http_request_streaming_callback(
 // Storage
 //
 
+#[doc(hidden)]
 #[update]
 pub fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
     satellite::init_asset_upload(init)
 }
 
+#[doc(hidden)]
 #[update]
 pub fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     satellite::upload_asset_chunk(chunk)
 }
 
+#[doc(hidden)]
 #[update]
 pub fn commit_asset_upload(commit: CommitBatch) {
     satellite::commit_asset_upload(commit);
 }
 
+#[doc(hidden)]
 #[query]
 pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
     satellite::list_assets(collection, filter)
 }
 
+#[doc(hidden)]
 #[update]
 pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
     satellite::del_asset(collection, full_path);
 }
 
+#[doc(hidden)]
 #[update]
 pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
     satellite::del_many_assets(assets);
 }
 
+#[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn del_assets(collection: CollectionKey) {
     satellite::del_assets(collection);
 }
 
+#[doc(hidden)]
 #[query(guard = "caller_is_controller")]
 pub fn count_assets(collection: CollectionKey) -> usize {
     satellite::count_assets(collection)
 }
 
+#[doc(hidden)]
 #[query]
 pub fn get_asset(collection: CollectionKey, full_path: FullPath) -> Option<AssetNoContent> {
     satellite::get_asset(collection, full_path)
 }
 
+#[doc(hidden)]
 #[query]
 pub fn get_many_assets(
     assets: Vec<(CollectionKey, FullPath)>,
@@ -261,6 +297,7 @@ pub fn get_many_assets(
 
 /// Mgmt
 
+#[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub async fn deposit_cycles(args: DepositCyclesArgs) {
     junobuild_shared::ic::deposit_cycles(args)
@@ -268,16 +305,33 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
         .unwrap_or_else(|e| trap(&e))
 }
 
+#[doc(hidden)]
 #[query]
 pub fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
+#[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
 pub fn memory_size() -> MemorySize {
     junobuild_shared::canister::memory_size()
 }
 
+/// Include the stock Juno satellite features into your Juno application.
+///
+/// The `include_satellite!` macro allows you to easily import and use all the essential features and
+/// functionalities provided by the Juno satellite crate (`junobuild_satellite`). These features include
+/// various functions and utilities for managing documents, assets, controllers, rules, custom domains,
+/// and more, effectively supercharging the functionality of your Juno dapp.
+///
+/// Example:
+/// ```rust
+/// use junobuild_satellite::include_satellite;
+///
+/// // Include Juno satellite features
+/// include_satellite!();
+/// ```
+///
 #[macro_export]
 macro_rules! include_satellite {
     () => {

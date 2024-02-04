@@ -44,9 +44,26 @@ pub mod state {
 pub mod core {
     use std::cmp::Ordering;
 
+    /// Represents a unique identifier or key.
+    ///
+    /// This type, `Key`, is an alias for `String`, used to represent unique identifiers or keys within the context
+    /// of various data structures and operations.
+    ///
+    /// `Key` is commonly employed as a unique identifier or key in Rust code.
     pub type Key = String;
+
+    /// Represents the key or identifier of a collection.
+    ///
+    /// This type, `CollectionKey`, is an alias for `String`, used to represent the key or identifier of a collection
+    /// within the context of various data structures and operations.
+    ///
+    /// `CollectionKey` is commonly employed as a unique identifier for collections in Rust code.
     pub type CollectionKey = String;
 
+    /// Represents binary data as a vector of bytes.
+    ///
+    /// This type, `Blob`, is an alias for `Vec<u8>`, providing a convenient way to represent binary data
+    /// as a collection of bytes.
     pub type Blob = Vec<u8>;
 
     pub trait Compare {
@@ -136,18 +153,48 @@ pub mod hooks {
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::state::UserId;
 
+    /// A generic context struct used in Juno satellite hooks.
+    ///
+    /// The `HookContext` struct contains information about the caller and associated data.
+    ///
+    /// # Fields
+    /// - `caller`: A `UserId` representing the caller of the hook.
+    /// - `data`: A generic type `T` representing the associated data for the hook.
+    ///
+    /// This context struct is used in various satellite hooks to provide information about the caller
+    /// and the specific data related to the hook.
+    ///
+    /// Example usage:
+    /// ```rust
+    /// #[on_set_doc(collections = ["demo"])]
+    /// async fn on_set_doc(context: OnSetDocContext) -> Result<(), String> {
+    ///     // Your hook logic here
+    /// }
+    /// ```
     #[derive(CandidType, Deserialize, Clone)]
     pub struct HookContext<T> {
         pub caller: UserId,
         pub data: T,
     }
 
+    /// A type alias for the context used in the `on_set_doc` satellite hook.
     pub type OnSetDocContext = HookContext<DocContext<DocUpsert>>;
+
+    /// A type alias for the context used in the `on_set_many_docs` satellite hook.
     pub type OnSetManyDocsContext = HookContext<Vec<DocContext<DocUpsert>>>;
+
+    /// A type alias for the context used in the `on_delete_doc` satellite hook.
     pub type OnDeleteDocContext = HookContext<DocContext<Option<Doc>>>;
+
+    /// A type alias for the context used in the `on_delete_many_docs` satellite hook.
     pub type OnDeleteManyDocsContext = HookContext<Vec<DocContext<Option<Doc>>>>;
 
+    /// A type alias for the context used in the `on_upload_asset` satellite hook.
     pub type OnUploadAssetContext = HookContext<Asset>;
+
+    /// A type alias for the context used in the `on_delete_asset` satellite hook.
     pub type OnDeleteAssetContext = HookContext<Option<Asset>>;
+
+    /// A type alias for the context used in the `on_delete_many_assets` satellite hook.
     pub type OnDeleteManyAssetsContext = HookContext<Vec<Option<Asset>>>;
 }

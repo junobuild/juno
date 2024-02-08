@@ -312,7 +312,7 @@ pub fn version() -> String {
 }
 
 #[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_controller")]
 pub fn memory_size() -> MemorySize {
     junobuild_shared::canister::memory_size()
 }

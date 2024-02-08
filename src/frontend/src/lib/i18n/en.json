@@ -462,6 +462,7 @@
 		"examples": "Examples",
 		"tutorial_framework_description": "Use Juno with {0}.",
 		"tutorial_github_description": "Deploy using GitHub Actions.",
+		"tutorial_docker_description": "Run a Satellite in a Docker sandbox.",
 		"example_1_title": "Svelte",
 		"example_1_description": "A sample app that uses Juno datastore and authentication.",
 		"example_2_title": "React",
@@ -477,7 +478,9 @@
 		"example_7_title": "Vue",
 		"example_7_description": "Another iteration of the dapp developed with Vue.",
 		"example_8_title": "Next.JS",
-		"example_8_description": "Same as the React sample dapp but, built with Next."
+		"example_8_description": "Same as the React sample dapp but, built with Next.",
+		"example_9_title": "Rust",
+		"example_9_description": "An example of a hook that updates a document in serverless functions."
 	},
 	"resources": {
 		"product": "Product",

@@ -462,6 +462,7 @@
 		"examples": "例子",
 		"tutorial_framework_description": "用 Juno 和 {0}.",
 		"tutorial_github_description": "用 GitHub Actions 发布.",
+		"tutorial_docker_description": "Run a Satellite in a Docker sandbox.",
 		"example_1_title": "Svelte",
 		"example_1_description": "一个用 Juno datastore and authentication 简单应用.",
 		"example_2_title": "React",
@@ -477,7 +478,9 @@
 		"example_7_title": "Vue",
 		"example_7_description": "另外一体个用Vue开发的应用例子.",
 		"example_8_title": "Next.JS",
-		"example_8_description": "用Next开发的类似 React 应用示例."
+		"example_8_description": "用Next开发的类似 React 应用示例.",
+		"example_9_title": "Rust",
+		"example_9_description": "An example of a hook that updates a document in serverless functions."
 	},
 	"resources": {
 		"product": "产品",

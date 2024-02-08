@@ -46,7 +46,10 @@ COPY src/observatory/Cargo.toml src/observatory/Cargo.toml
 COPY src/orbiter/Cargo.toml src/orbiter/Cargo.toml
 COPY src/mission_control/Cargo.toml src/mission_control/Cargo.toml
 COPY src/satellite/Cargo.toml src/satellite/Cargo.toml
-COPY src/shared/Cargo.toml src/shared/Cargo.toml
+COPY src/libs/macros/Cargo.toml src/libs/macros/Cargo.toml
+COPY src/libs/satellite/Cargo.toml src/libs/satellite/Cargo.toml
+COPY src/libs/shared/Cargo.toml src/libs/shared/Cargo.toml
+COPY src/libs/utils/Cargo.toml src/libs/utils/Cargo.toml
 ENV CARGO_TARGET_DIR=/cargo_target
 RUN mkdir -p src/console/src \
     && touch src/console/src/lib.rs \
@@ -58,8 +61,14 @@ RUN mkdir -p src/console/src \
     && touch src/mission_control/src/lib.rs \
     && mkdir -p src/satellite/src \
     && touch src/satellite/src/lib.rs \
-    && mkdir -p src/shared/src \
-    && touch src/shared/src/lib.rs \
+    && mkdir -p src/libs/macros/src \
+    && touch src/libs/macros/src/lib.rs \
+    && mkdir -p src/libs/satellite/src \
+    && touch src/libs/satellite/src/lib.rs \
+    && mkdir -p src/libs/shared/src \
+    && touch src/libs/shared/src/lib.rs \
+    && mkdir -p src/libs/utils/src \
+    && touch src/libs/utils/src/lib.rs \
     && ./docker/build --only-dependencies \
     && rm -rf src
 
@@ -72,7 +81,10 @@ RUN touch src/observatory/src/lib.rs
 RUN touch src/orbiter/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
 RUN touch src/satellite/src/lib.rs
-RUN touch src/shared/src/lib.rs
+RUN touch src/libs/macros/src/lib.rs
+RUN touch src/libs/satellite/src/lib.rs
+RUN touch src/libs/shared/src/lib.rs
+RUN touch src/libs/utils/src/lib.rs
 RUN npm ci
 
 RUN ./docker/build
@@ -87,7 +99,10 @@ RUN touch src/observatory/src/lib.rs
 RUN touch src/orbiter/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
 RUN touch src/satellite/src/lib.rs
-RUN touch src/shared/src/lib.rs
+RUN touch src/libs/macros/src/lib.rs
+RUN touch src/libs/satellite/src/lib.rs
+RUN touch src/libs/shared/src/lib.rs
+RUN touch src/libs/utils/src/lib.rs
 
 RUN ./docker/build --satellite
 RUN sha256sum /satellite.wasm.gz
@@ -101,7 +116,10 @@ RUN touch src/observatory/src/lib.rs
 RUN touch src/orbiter/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
 RUN touch src/satellite/src/lib.rs
-RUN touch src/shared/src/lib.rs
+RUN touch src/libs/macros/src/lib.rs
+RUN touch src/libs/satellite/src/lib.rs
+RUN touch src/libs/shared/src/lib.rs
+RUN touch src/libs/utils/src/lib.rs
 
 RUN ./docker/build --console
 RUN sha256sum /console.wasm.gz
@@ -115,7 +133,10 @@ RUN touch src/observatory/src/lib.rs
 RUN touch src/orbiter/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
 RUN touch src/satellite/src/lib.rs
-RUN touch src/shared/src/lib.rs
+RUN touch src/libs/macros/src/lib.rs
+RUN touch src/libs/satellite/src/lib.rs
+RUN touch src/libs/shared/src/lib.rs
+RUN touch src/libs/utils/src/lib.rs
 
 RUN ./docker/build --observatory
 RUN sha256sum /observatory.wasm.gz
@@ -129,7 +150,10 @@ RUN touch src/observatory/src/lib.rs
 RUN touch src/orbiter/src/lib.rs
 RUN touch src/mission_control/src/lib.rs
 RUN touch src/satellite/src/lib.rs
-RUN touch src/shared/src/lib.rs
+RUN touch src/libs/macros/src/lib.rs
+RUN touch src/libs/satellite/src/lib.rs
+RUN touch src/libs/shared/src/lib.rs
+RUN touch src/libs/utils/src/lib.rs
 
 RUN ./docker/build --orbiter
 RUN sha256sum /orbiter.wasm.gz

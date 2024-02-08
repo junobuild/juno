@@ -782,7 +782,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.15-1"
+version = "0.0.15-patch.1"
 dependencies = [
  "base64 0.13.1",
  "candid",

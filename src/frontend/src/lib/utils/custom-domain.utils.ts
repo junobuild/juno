@@ -31,7 +31,7 @@ export const toCustomDomainDns = ({
 			{
 				type: 'CNAME',
 				host: subdomain !== '' ? subdomain : '@',
-				value: 'icp1.io'
+				value: `${domainName}.icp1.io`
 			},
 			{
 				type: 'CNAME',

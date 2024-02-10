@@ -838,7 +838,7 @@ fn delete_domain_impl(domain_name: &DomainName) -> Result<(), String> {
 }
 
 fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
-    set_stable_domain_impl(domain_name, bn_id);
+    set_state_domain_impl(domain_name, bn_id);
 
     update_custom_domains_asset()
 }
@@ -866,7 +866,7 @@ fn update_custom_domains_asset() -> Result<(), String> {
     Ok(())
 }
 
-fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
+fn set_state_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
     let domain = get_state_domain(domain_name);
 
     let now = time();

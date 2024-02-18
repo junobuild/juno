@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 function generate_did_idl() {
   local canister=$1
   local canister_root=$2
@@ -20,6 +22,10 @@ done
 
 generate_did_idl "cmc" "candid"
 generate_did_idl "ic" "candid"
-generate_did_idl "index" "."
-generate_did_idl "ledger" "."
-generate_did_idl "internet_identity" "."
+
+if [ "$ENV" != "github" ]
+then 
+  generate_did_idl "index" "."
+  generate_did_idl "ledger" "."
+  generate_did_idl "internet_identity" "."
+fi

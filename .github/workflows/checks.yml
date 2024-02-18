@@ -32,12 +32,24 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+      - name: Add Rust
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+          targets: wasm32-unknown-unknown
       - name: Install dependencies
         run: npm ci
+      - name: Add didc dependency
+        run: |
+          release=$(curl --silent "https://api.github.com/repos/dfinity/candid/releases/latest" | grep -e '"tag_name"' | cut -c 16-25)
+          curl -SL https://github.com/dfinity/candid/releases/download/$release/didc-linux64 > /usr/local/bin/didc
+          chmod +x /usr/local/bin/didc
+      - name: Install candid-extractor
+        run: cargo install candid-extractor
       - name: Generating candids
-        run: npm run generate
-      - name: Check if dirty
-        run: if [[ -n $(git status --porcelain) ]]; then exit 1; fi
+        run: ENV=github npm run generate
+      - name: Check if files are touched
+        run: if [[ -n $(git status --porcelain) ]]; then echo "Files diff. Failed. Exiting" >&2 && exit 1; else echo "PASSED"; fi
 
   may-merge:
     needs: ['check', 'lint', 'generate']

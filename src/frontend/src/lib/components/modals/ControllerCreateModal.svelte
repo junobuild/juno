@@ -44,7 +44,7 @@
 			return controllerId;
 		}
 
-		const key = Ed25519KeyIdentity.generate();
+		const key = Ed25519KeyIdentity.generate(null as unknown as Uint8Array | undefined);
 		identity = btoa(JSON.stringify({ token: key.toJSON() }));
 		controllerId = key.getPrincipal().toText();
 

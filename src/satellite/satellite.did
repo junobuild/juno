@@ -1,3 +1,5 @@
+import service "satellite_extension.did";
+
 type AssetEncodingNoContent = record {
   modified : nat64;
   sha256 : vec nat8;
@@ -209,5 +211,4 @@ service : () -> {
   set_rule : (RulesType, text, SetRule) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
-  build_version : () -> (text) query
 }

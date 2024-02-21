@@ -31,3 +31,12 @@ export const DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION = 0.5;
 export const PAGINATION = 10n;
 
 export const DEV_FEATURES = import.meta.env.VITE_DEV_FEATURES === 'true';
+
+/**
+ * Revoked principals that must not be used.
+ *
+ * @see https://forum.dfinity.org/t/agent-js-insecure-key-generation-in-ed25519keyidentity-generate/27732
+ */
+export const REVOKED_CONTROLLERS: string[] = [
+	'535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe'
+];

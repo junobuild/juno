@@ -17,6 +17,7 @@
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
+	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 
 	export let principal: string;
 	export let redirect_uri: string;
@@ -72,7 +73,7 @@
 	let profile = '';
 
 	const onSubmit = async () => {
-		if (!redirect_uri || !principal) {
+		if (isNullish(redirect_uri) || isNullish(principal)) {
 			toasts.error({
 				text: $i18n.errors.cli_missing_params
 			});
@@ -89,6 +90,13 @@
 		if (disabled) {
 			toasts.error({
 				text: $i18n.errors.cli_missing_selection
+			});
+			return;
+		}
+
+		if (REVOKED_CONTROLLERS.includes(principal)) {
+			toasts.error({
+				text: 'The controller intended for sign-in purposes has been revoked. Please update your Juno CLI!'
 			});
 			return;
 		}

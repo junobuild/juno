@@ -136,13 +136,15 @@ pub fn assert_max_number_of_controllers(
 ) -> Result<(), String> {
     let current_controller_ids = into_controller_ids(current_controllers);
 
+    let current_active_controller_ids = current_controller_ids.iter().filter(|id|controller_not_revoked(id)).collect();
+
     let new_controller_ids = controllers_ids.iter().copied().filter(|id| {
-        !current_controller_ids
+        !current_active_controller_ids
             .iter()
             .any(|current_id| current_id == id)
     });
 
-    if current_controller_ids.len() + new_controller_ids.count() > max_controllers {
+    if current_active_controller_ids.len() + new_controller_ids.count() > max_controllers {
         return Err(format!(
             "Maximum number of controllers ({}) is already reached.",
             max_controllers
@@ -160,9 +162,10 @@ pub fn assert_max_number_of_controllers(
 /// # Returns
 /// `Ok(())` if no anonymous IDs are present, or `Err(String)` if any are found.
 pub fn assert_no_anonymous_controller(controllers_ids: &[ControllerId]) -> Result<(), String> {
+    // We treat revoked controllers as anonymous controllers.
     let has_anonymous = controllers_ids
         .iter()
-        .any(|controller_id| principal_anonymous(*controller_id));
+        .any(|controller_id| principal_anonymous(*controller_id) || controller_revoked(controller_id));
 
     match has_anonymous {
         true => Err("Anonymous controller not allowed.".to_string()),
@@ -212,4 +215,16 @@ pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
             ControllerScope::Admin => true,
         })
         .collect()
+}
+
+/// Principals, hopefully only one, that were revoked following inherited security incident.
+
+pub const REVOKED_CONTROLLERS: [ControllerId; 1] = [Principal::from_text("535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe").unwrap()];
+
+fn controller_revoked(controller_id: &ControllerId) -> bool {
+    REVOKED_CONTROLLERS.iter().any(|revoked_controller_id|principal_equal(*revoked_controller_id, *controller_id))
+}
+
+fn controller_not_revoked(controller_id: &ControllerId) -> bool {
+    !controller_revoked(controller_id)
 }

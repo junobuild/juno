@@ -43,5 +43,5 @@ These features are enabled by default and do not have additional dependencies.
 Here are some useful links:
 
 - Looking to get started? Check out the [documentation](https://juno.build).
-- Have a look at the [LICENSE](https://github.com/junobuild/juno/blob/main/src/libs/shared/LICENSE.md) for information about licensing and limitation.
+- Have a look at the [LICENSE](https://github.com/junobuild/juno/blob/main/src/libs/satellite/LICENSE.md) for information about licensing and limitation.
 - Have questions, comments or feedback? Join our [Discord](https://discord.gg/wHZ57Z2RAG) or [OpenChat](https://oc.app/community/vxgpi-nqaaa-aaaar-ar4lq-cai/?ref=xanzv-uaaaa-aaaaf-aneba-cai).

@@ -47,10 +47,6 @@
 
 		const key = Ed25519KeyIdentity.generate();
 
-		if (REVOKED_CONTROLLERS.includes(key.getPrincipal().toText())) {
-			return undefined;
-		}
-
 		identity = btoa(JSON.stringify({ token: key.toJSON() }));
 		controllerId = key.getPrincipal().toText();
 
@@ -65,9 +61,6 @@
 			return;
 		}
 
-		wizardBusy.start();
-		steps = 'in_progress';
-
 		const controller = initController();
 
 		if (isNullish(controller) || controller === '') {
@@ -76,6 +69,16 @@
 			});
 			return;
 		}
+
+		if (REVOKED_CONTROLLERS.includes(controller)) {
+			toasts.error({
+				text: 'The controller has been revoked for security reason!'
+			});
+			return;
+		}
+
+		wizardBusy.start();
+		steps = 'in_progress';
 
 		try {
 			await add({

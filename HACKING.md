@@ -7,6 +7,7 @@ This document explains how to run locally [Juno](https://juno.build).
 - [Run locally](#run-locally)
 - [Development](#development)
 - [Top-up](#top-up)
+- [Troubleshooting](#troubleshooting)
 
 ## Run locally
 
@@ -75,4 +76,24 @@ Top-up the local console with some cycles:
 
 ```
 npm run console:topup
+```
+
+## Troubleshooting
+
+### didc command not found
+
+Go to [Candid releases](https://github.com/dfinity/candid/releases) page to download your OS version didc.
+
+Example, for macos
+
+```sh
+release=$(curl --silent "https://api.github.com/repos/dfinity/candid/releases/latest" | grep -e '"tag_name"' | cut -c 16-25)
+curl -fsSL https://github.com/dfinity/candid/releases/download/$release/didc-macos > ~/.cargo/bin/didc
+chmod 755 ~/.cargo/bin/didc
+```
+
+### candid-extractor command not found
+
+```sh
+cargo install candid-extractor
 ```

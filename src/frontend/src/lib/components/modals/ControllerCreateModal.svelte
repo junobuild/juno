@@ -14,6 +14,7 @@
 	import { Ed25519KeyIdentity } from '@dfinity/identity';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 
 	export let detail: JunoModalDetail;
 
@@ -39,12 +40,17 @@
 	let scope: SetControllerScope = 'write';
 	let identity: string | undefined;
 
-	const initController = () => {
+	const initController = (): string | undefined => {
 		if (action === 'add') {
 			return controllerId;
 		}
 
-		const key = Ed25519KeyIdentity.generate(null as unknown as Uint8Array | undefined);
+		const key = Ed25519KeyIdentity.generate();
+
+		if (REVOKED_CONTROLLERS.includes(key.getPrincipal().toText())) {
+			return undefined;
+		}
+
 		identity = btoa(JSON.stringify({ token: key.toJSON() }));
 		controllerId = key.getPrincipal().toText();
 

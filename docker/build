@@ -133,6 +133,10 @@ function build_canister() {
     then
       CARGO_TARGET_DIR="${CARGO_TARGET_DIR:-$SRC_DIR/../../target/}"
 
+      # Generate did file
+      candid-extractor "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" > "./$canister.did"
+
+      # Optimize WASM and set metadata
       ic-wasm \
           "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" \
           -o "./$canister.wasm" \

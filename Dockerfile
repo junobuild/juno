@@ -160,15 +160,20 @@ RUN sha256sum /orbiter.wasm.gz
 
 FROM scratch AS scratch_mission_control
 COPY --from=build_mission_control /mission_control.wasm.gz /
+COPY --from=build_mission_control /mission_control.did /
 
 FROM scratch AS scratch_satellite
 COPY --from=build_satellite /satellite.wasm.gz /
+COPY --from=build_satellite /satellite.did /
 
 FROM scratch AS scratch_console
 COPY --from=build_console /console.wasm.gz /
+COPY --from=build_console /console.did /
 
 FROM scratch AS scratch_observatory
 COPY --from=build_observatory /observatory.wasm.gz /
+COPY --from=build_observatory /observatory.did /
 
 FROM scratch AS scratch_orbiter
 COPY --from=build_orbiter /orbiter.wasm.gz /
+COPY --from=build_orbiter /orbiter.did /

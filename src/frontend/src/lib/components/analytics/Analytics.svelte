@@ -23,13 +23,16 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { getAnalyticsPageViews, getAnalyticsTrackEvents } from '$lib/services/orbiters.services';
+	import { addMonths, format } from 'date-fns';
 
 	let loading = true;
 
 	let pageViews: AnalyticsPageViewsType | undefined = undefined;
 	let trackEvents: AnalyticsTrackEvents | undefined = undefined;
 
-	let period: PageViewsPeriod = {};
+	let period: PageViewsPeriod = {
+		from: addMonths(new Date(), -1)
+	};
 
 	const loadAnalytics = async () => {
 		if (isNullish($orbiterStore)) {

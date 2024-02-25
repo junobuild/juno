@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import LoaderWarnings from '$lib/components/warning/LoaderWarnings.svelte';
-	import VersionWarning from '$lib/components/warning/VersionWarnings.svelte';
+	import VersionWarnings from '$lib/components/warning/VersionWarnings.svelte';
 	import CanisterWarnings from '$lib/components/canister/CanisterWarnings.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
@@ -11,7 +11,7 @@
 	export let satellite: Satellite | undefined = undefined;
 </script>
 
-<VersionWarning {satellite} />
+<VersionWarnings {satellite} />
 
 {#if nonNullish($missionControlStore)}
 	<LoaderWarnings canisterId={$missionControlStore}>

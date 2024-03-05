@@ -192,13 +192,18 @@ fn insert_doc_impl(
         Some(current_doc) => current_doc.created_at,
     };
 
+    let owner: UserId = match &current_doc {
+        None => caller,
+        Some(current_doc) => current_doc.owner,
+    };
+
     let updated_at: u64 = now;
 
     let doc: Doc = Doc {
         created_at,
         updated_at,
         data: value.data,
-        owner: caller,
+        owner,
         description: value.description,
     };
 

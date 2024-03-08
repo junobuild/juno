@@ -5,6 +5,7 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+	import IconClose from '$lib/components/icons/IconClose.svelte';
 
 	const close = () => {
 		if (isNullish($busy) || !$busy.close) {
@@ -34,7 +35,7 @@
 
 			{#if $busy.close}
 				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} class="text close"
-					>{$i18n.core.cancel}</button
+					><IconClose size="12px" /> {$i18n.core.cancel}</button
 				>
 			{/if}
 		</div>
@@ -82,13 +83,12 @@
 		margin: 1.45rem;
 	}
 
-	.close {
-		align-self: flex-end;
-	}
-
 	.text {
 		font-size: var(--font-size-very-small);
 		color: var(--label-color);
+		text-decoration: none;
+		display: inline-flex;
+		gap: var(--padding-0_5x);
 	}
 
 	@include media.dark-theme {

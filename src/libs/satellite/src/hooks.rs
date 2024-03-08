@@ -127,7 +127,7 @@ pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
     #[cfg(feature = "on_upload_asset")]
     {
         // We perform this check here for performance reason given that this callback might be called when the developer deploys their frontend dapps
-        if is_not_asset_collection(&asset.key.collection) {
+        if is_asset_collection(&asset.key.collection) {
             return;
         }
 
@@ -242,6 +242,10 @@ fn filter_assets(
         .collect()
 }
 
+fn is_asset_collection(collection: &CollectionKey) -> bool {
+    collection == ASSET_COLLECTION_KEY
+}
+
 fn is_not_asset_collection(collection: &CollectionKey) -> bool {
-    collection != ASSET_COLLECTION_KEY
+    !is_asset_collection(collection)
 }

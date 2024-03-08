@@ -4,19 +4,19 @@
 #
 # The docker image. To update, run `docker pull ubuntu` locally, and update the
 # sha256:... accordingly.
-FROM ubuntu@sha256:626ffe58f6e7566e00254b638eb7e0f3b11d4da9675088f4781a50ae288f3322 as deps
+FROM --platform=linux/amd64 ubuntu@sha256:bbf3d1baa208b7649d1d0264ef7d522e1dc0deeeaaf6085bf8e4618867f03494 as deps
 
 ENV TZ=UTC
 
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone && \
     apt -yq update && \
     apt -yqq install --no-install-recommends curl ca-certificates \
-        build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake
+        build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake jq
 
-ENV NODE_VERSION=18.13.0
+ENV NODE_VERSION=20.11.1
 
 # Install node
-RUN curl --fail -sSf https://raw.githubusercontent.com/creationix/nvm/v0.34.0/install.sh | bash
+RUN curl --fail -sSf https://raw.githubusercontent.com/creationix/nvm/v0.39.7/install.sh | bash
 ENV NVM_DIR=/root/.nvm
 RUN . "$NVM_DIR/nvm.sh" && nvm install ${NODE_VERSION}
 RUN . "$NVM_DIR/nvm.sh" && nvm use v${NODE_VERSION}
@@ -160,15 +160,20 @@ RUN sha256sum /orbiter.wasm.gz
 
 FROM scratch AS scratch_mission_control
 COPY --from=build_mission_control /mission_control.wasm.gz /
+COPY --from=build_mission_control /mission_control.did /
 
 FROM scratch AS scratch_satellite
 COPY --from=build_satellite /satellite.wasm.gz /
+COPY --from=build_satellite /satellite.did /
 
 FROM scratch AS scratch_console
 COPY --from=build_console /console.wasm.gz /
+COPY --from=build_console /console.did /
 
 FROM scratch AS scratch_observatory
 COPY --from=build_observatory /observatory.wasm.gz /
+COPY --from=build_observatory /observatory.did /
 
 FROM scratch AS scratch_orbiter
 COPY --from=build_orbiter /orbiter.wasm.gz /
+COPY --from=build_orbiter /orbiter.did /

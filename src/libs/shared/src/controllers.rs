@@ -153,6 +153,20 @@ pub fn assert_max_number_of_controllers(
     Ok(())
 }
 
+/// Asserts that the controller IDs are not anonymous and not revoked.
+///
+/// # Arguments
+/// - `controllers_ids`: Slice of `ControllerId` to validate.
+///
+/// # Returns
+/// `Ok(())` if no anonymous and no revoked IDs are present, or `Err(String)` if any are found.
+pub fn assert_controllers(controllers_ids: &[ControllerId]) -> Result<(), String> {
+    assert_no_anonymous_controller(controllers_ids)?;
+    assert_no_revoked_controller(controllers_ids)?;
+
+    Ok(())
+}
+
 /// Asserts that no controller IDs are anonymous.
 ///
 /// # Arguments
@@ -160,14 +174,30 @@ pub fn assert_max_number_of_controllers(
 ///
 /// # Returns
 /// `Ok(())` if no anonymous IDs are present, or `Err(String)` if any are found.
-pub fn assert_no_anonymous_controller(controllers_ids: &[ControllerId]) -> Result<(), String> {
-    // We treat revoked controllers as anonymous controllers.
-    let has_anonymous = controllers_ids.iter().any(|controller_id| {
-        principal_anonymous(*controller_id) || controller_revoked(controller_id)
-    });
+fn assert_no_anonymous_controller(controllers_ids: &[ControllerId]) -> Result<(), String> {
+    let has_anonymous = controllers_ids
+        .iter()
+        .any(|controller_id| principal_anonymous(*controller_id));
 
     match has_anonymous {
         true => Err("Anonymous controller not allowed.".to_string()),
+        false => Ok(()),
+    }
+}
+
+/// Asserts that no controller IDs are revoked for security reason.
+///
+/// # Arguments
+/// - `controllers_ids`: Slice of `ControllerId` to validate.
+///
+/// # Returns
+/// `Ok(())` if no revoked IDs are present, or `Err(String)` if any are found.
+fn assert_no_revoked_controller(controllers_ids: &[ControllerId]) -> Result<(), String> {
+    // We treat revoked controllers as anonymous controllers.
+    let has_revoked = controllers_ids.iter().any(controller_revoked);
+
+    match has_revoked {
+        true => Err("Revoked controller not allowed.".to_string()),
         false => Ok(()),
     }
 }

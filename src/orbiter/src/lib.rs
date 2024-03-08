@@ -48,7 +48,7 @@ use ic_stable_structures::Memory as _;
 use junobuild_shared::canister::memory_size as canister_memory_size;
 use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
-    assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
+    assert_controllers, assert_max_number_of_controllers, init_controllers,
 };
 use junobuild_shared::ic::deposit_cycles as deposit_cycles_shared;
 use junobuild_shared::types::interface::{
@@ -249,7 +249,7 @@ fn set_controllers(
         }
     }
 
-    assert_no_anonymous_controller(&controllers).unwrap_or_else(|e| trap(&e));
+    assert_controllers(&controllers).unwrap_or_else(|e| trap(&e));
 
     set_controllers_store(&controllers, &controller);
     get_controllers()

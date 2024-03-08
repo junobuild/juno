@@ -161,9 +161,9 @@ pub fn assert_max_number_of_controllers(
 /// `Ok(())` if no anonymous IDs are present, or `Err(String)` if any are found.
 pub fn assert_no_anonymous_controller(controllers_ids: &[ControllerId]) -> Result<(), String> {
     // We treat revoked controllers as anonymous controllers.
-    let has_anonymous = controllers_ids
-        .iter()
-        .any(|controller_id| principal_anonymous(*controller_id) || controller_revoked(controller_id));
+    let has_anonymous = controllers_ids.iter().any(|controller_id| {
+        principal_anonymous(*controller_id) || controller_revoked(controller_id)
+    });
 
     match has_anonymous {
         true => Err("Anonymous controller not allowed.".to_string()),
@@ -217,8 +217,14 @@ pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
 
 /// Principals, hopefully only one, that were revoked following inherited security incident.
 
-pub const REVOKED_CONTROLLERS: [ControllerId; 1] = [Principal::from_text("535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe").unwrap()];
+const REVOKED_CONTROLLERS: [&str; 1] =
+    ["535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe"];
 
 fn controller_revoked(controller_id: &ControllerId) -> bool {
-    REVOKED_CONTROLLERS.iter().any(|revoked_controller_id|principal_equal(*revoked_controller_id, *controller_id))
+    REVOKED_CONTROLLERS.iter().any(|revoked_controller_id| {
+        principal_equal(
+            Principal::from_text(revoked_controller_id).unwrap(),
+            *controller_id,
+        )
+    })
 }

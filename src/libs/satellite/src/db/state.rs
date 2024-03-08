@@ -155,7 +155,7 @@ pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Opt
             STATE.with(|state| get_doc_heap(collection, key, &state.borrow().heap.db.db))
         }
         Memory::Stable => {
-            STATE.with(|state| get_doc_stable(collection, key, &state.borrow().stable.db))
+            STATE.with(|state| get_doc_stable(collection, key, &state.borrow().stable))
         }
     }
 }
@@ -193,6 +193,28 @@ pub fn delete_doc(
 // Get
 
 fn get_doc_stable(
+    collection: &CollectionKey,
+    key: &Key,
+    state: &StableState,
+) -> Result<Option<Doc>, String> {
+    if let Some(collections) = state.collections.as_ref() {
+        if let Some(col) = collections.get(collection) {
+            let value = col.get(key);
+
+            let result = match value {
+                None => Ok(None),
+                Some(value) => Ok(Some(value)),
+            };
+
+            return result;
+        }
+    }
+
+    // Fallback on deprecated db
+    get_doc_db_stable(collection, key, &state.db)
+}
+
+fn get_doc_db_stable(
     collection: &CollectionKey,
     key: &Key,
     db: &DbStable,

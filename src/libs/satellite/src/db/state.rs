@@ -1,10 +1,10 @@
-use crate::db::types::state::{DbHeap, DbStable, Doc, StableKey};
+use crate::db::types::state::{CollectionsStable, DbHeap, DbStable, Doc, StableKey};
 use crate::list::utils::range_collection_end;
-use crate::memory::STATE;
+use crate::memory::{init_stable_collection, STATE};
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::{CollectionKey, Key};
-use std::collections::BTreeMap;
+use std::collections::{BTreeMap, HashMap};
 use std::ops::RangeBounds;
 
 /// Collections
@@ -14,7 +14,9 @@ pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
         Memory::Heap => {
             STATE.with(|state| init_collection_heap(collection, &mut state.borrow_mut().heap.db.db))
         }
-        Memory::Stable => (),
+        Memory::Stable => {
+            STATE.with(|state| init_collection_stable(collection, &mut state.borrow_mut().stable.collections))
+        },
     }
 }
 
@@ -52,6 +54,25 @@ fn init_collection_heap(collection: &CollectionKey, db: &mut DbHeap) {
         Some(_) => {}
         None => {
             db.insert(collection.clone(), BTreeMap::new());
+        }
+    }
+}
+
+fn init_collection_stable(collection: &CollectionKey, db: &mut Option<CollectionsStable>) {
+    // We have introduced the collections at a later stage therefore for backwards compatibility those have been added as Optional type.
+    if db.is_none() {
+        *db = Some(HashMap::new());
+    }
+
+    // Now that we know db is Some, we can proceed with the logic safely.
+    let db_unwrapped = db.as_mut().unwrap();
+
+    let col = db_unwrapped.get(collection);
+
+    match col {
+        Some(_) => {}
+        None => {
+            db_unwrapped.insert(collection.clone(), init_stable_collection(u8::try_from(db_unwrapped.len()).unwrap_or(0) + 1));
         }
     }
 }

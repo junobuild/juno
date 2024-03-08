@@ -13,6 +13,9 @@ pub mod state {
 
     pub type DbStable = StableBTreeMap<StableKey, Doc, Memory>;
 
+    pub type CollectionStable = StableBTreeMap<Key, Doc, Memory>;
+    pub type CollectionsStable = HashMap<CollectionKey, CollectionStable>;
+
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct StableKey {
         pub collection: CollectionKey,

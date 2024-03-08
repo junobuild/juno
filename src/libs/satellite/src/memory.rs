@@ -4,6 +4,7 @@ use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
 use ic_stable_structures::DefaultMemoryImpl;
 use ic_stable_structures::StableBTreeMap;
 use std::cell::RefCell;
+use crate::db::types::state::{CollectionStable};
 
 const UPGRADES: MemoryId = MemoryId::new(0);
 const DB: MemoryId = MemoryId::new(1);
@@ -29,14 +30,23 @@ fn get_memory_assets() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(ASSETS))
 }
 
-fn get_content_chunks() -> Memory {
+fn get_memory_content_chunks() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(CONTENT_CHUNKS))
+}
+
+fn get_memory_collections(index: u8) -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(MemoryId::new(3 + index)))
 }
 
 pub fn init_stable_state() -> StableState {
     StableState {
         db: StableBTreeMap::init(get_memory_db()),
+        collections: None,
         assets: StableBTreeMap::init(get_memory_assets()),
-        content_chunks: StableBTreeMap::init(get_content_chunks()),
+        content_chunks: StableBTreeMap::init(get_memory_content_chunks()),
     }
+}
+
+pub fn init_stable_collection(index: u8) -> CollectionStable {
+    StableBTreeMap::init(get_memory_collections(index))
 }

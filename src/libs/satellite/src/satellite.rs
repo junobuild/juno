@@ -58,7 +58,7 @@ use ic_stable_structures::writer::Writer;
 use ic_stable_structures::Memory as _;
 use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
-    assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
+    assert_controllers, assert_max_number_of_controllers, init_controllers,
 };
 use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use junobuild_shared::types::state::{ControllerScope, Controllers};
@@ -279,7 +279,7 @@ pub fn set_controllers(
         }
     }
 
-    assert_no_anonymous_controller(&controllers).unwrap_or_else(|e| trap(&e));
+    assert_controllers(&controllers).unwrap_or_else(|e| trap(&e));
 
     set_controllers_store(&controllers, &controller);
     get_controllers()

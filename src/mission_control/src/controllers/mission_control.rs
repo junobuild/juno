@@ -3,7 +3,7 @@ use crate::store::get_user;
 use ic_cdk::id;
 use junobuild_shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
 use junobuild_shared::controllers::{
-    assert_max_number_of_controllers, assert_no_anonymous_controller, into_controller_ids,
+    assert_controllers, assert_max_number_of_controllers, into_controller_ids,
 };
 use junobuild_shared::ic::update_canister_controllers;
 use junobuild_shared::types::interface::SetController;
@@ -24,7 +24,7 @@ pub async fn set_mission_control_controllers(
         }
     }
 
-    assert_no_anonymous_controller(controllers)?;
+    assert_controllers(controllers)?;
 
     set_controllers(controllers, controller);
 

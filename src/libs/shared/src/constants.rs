@@ -34,3 +34,7 @@ pub const MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS: usize = 8;
 
 // 10 controllers max on the IC. User and mission control principals are copied in satellite state controllers
 pub const MAX_NUMBER_OF_SATELLITE_CONTROLLERS: usize = 10;
+
+// Controllers / principals, hopefully only one, that were revoked following inherited security incident in February 2024.
+pub const REVOKED_CONTROLLERS: [&str; 1] =
+    ["535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe"];

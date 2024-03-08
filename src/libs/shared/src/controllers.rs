@@ -1,3 +1,4 @@
+use crate::constants::REVOKED_CONTROLLERS;
 use crate::env::{CONSOLE, OBSERVATORY};
 use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
@@ -214,11 +215,6 @@ pub fn filter_admin_controllers(controllers: &Controllers) -> Controllers {
         })
         .collect()
 }
-
-/// Principals, hopefully only one, that were revoked following inherited security incident.
-
-const REVOKED_CONTROLLERS: [&str; 1] =
-    ["535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe"];
 
 fn controller_revoked(controller_id: &ControllerId) -> bool {
     REVOKED_CONTROLLERS.iter().any(|revoked_controller_id| {

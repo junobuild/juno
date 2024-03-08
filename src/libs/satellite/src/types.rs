@@ -23,7 +23,9 @@ pub mod state {
     }
 
     pub struct StableState {
-        #[deprecated(note = "db is kept for backwards compatibility but, collections should be used.")]
+        #[deprecated(
+            note = "db is kept for backwards compatibility but, collections should be used."
+        )]
         pub db: DbStable,
         pub collections: Option<CollectionsStable>,
 

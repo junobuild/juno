@@ -4,6 +4,7 @@ use crate::memory::{init_stable_collection, STATE};
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::{CollectionKey, Key};
+use crate::types::state::StableState;
 use std::collections::{BTreeMap, HashMap};
 use std::ops::RangeBounds;
 
@@ -14,9 +15,9 @@ pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
         Memory::Heap => {
             STATE.with(|state| init_collection_heap(collection, &mut state.borrow_mut().heap.db.db))
         }
-        Memory::Stable => {
-            STATE.with(|state| init_collection_stable(collection, &mut state.borrow_mut().stable.collections))
-        },
+        Memory::Stable => STATE.with(|state| {
+            init_collection_stable(collection, &mut state.borrow_mut().stable.collections)
+        }),
     }
 }
 
@@ -29,7 +30,7 @@ pub fn is_collection_empty(
             STATE.with(|state| is_collection_empty_heap(collection, &state.borrow().heap.db.db))
         }
         Memory::Stable => {
-            STATE.with(|state| is_collection_empty_stable(collection, &state.borrow().stable.db))
+            STATE.with(|state| is_collection_empty_stable(collection, &state.borrow().stable))
         }
     }
 }
@@ -41,7 +42,9 @@ pub fn delete_collection(
     match memory.clone().unwrap_or_default() {
         Memory::Heap => STATE
             .with(|state| delete_collection_heap(collection, &mut state.borrow_mut().heap.db.db)),
-        Memory::Stable => Ok(()),
+        Memory::Stable => STATE.with(|state| {
+            delete_collection_stable(collection, &mut state.borrow_mut().stable.collections)
+        }),
     }
 }
 
@@ -72,7 +75,10 @@ fn init_collection_stable(collection: &CollectionKey, db: &mut Option<Collection
     match col {
         Some(_) => {}
         None => {
-            db_unwrapped.insert(collection.clone(), init_stable_collection(u8::try_from(db_unwrapped.len()).unwrap_or(0) + 1));
+            db_unwrapped.insert(
+                collection.clone(),
+                init_stable_collection(u8::try_from(db_unwrapped.len()).unwrap_or(0) + 1),
+            );
         }
     }
 }
@@ -88,8 +94,17 @@ fn is_collection_empty_heap(collection: &CollectionKey, db: &DbHeap) -> Result<b
     }
 }
 
-fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Result<bool, String> {
-    let stable = get_docs_stable(collection, db)?;
+fn is_collection_empty_stable(
+    collection: &CollectionKey,
+    state: &StableState,
+) -> Result<bool, String> {
+    if let Some(collections) = state.collections.as_ref() {
+        if let Some(col) = collections.get(collection) {
+            return Ok(col.is_empty());
+        }
+    }
+
+    let stable = get_docs_stable(collection, &state.db)?;
     Ok(stable.is_empty())
 }
 
@@ -106,6 +121,30 @@ fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result
             Ok(())
         }
     }
+}
+
+fn delete_collection_stable(
+    collection: &CollectionKey,
+    db: &mut Option<CollectionsStable>,
+) -> Result<(), String> {
+    if db.is_none() {
+        return Ok(());
+    }
+
+    // Now that we know db is Some, we can proceed with the logic safely.
+    let db_unwrapped = db.as_mut().unwrap();
+
+    let col = db_unwrapped.get(collection);
+
+    match col {
+        // We do not throw an exception collection not found because we do not delete the fallback deprecated db.
+        None => (),
+        Some(_) => {
+            db_unwrapped.remove(collection);
+        }
+    }
+
+    Ok(())
 }
 
 /// Documents

@@ -48,4 +48,4 @@ export interface _SERVICE {
 	notify_top_up: ActorMethod<[NotifyTopUpArg], NotifyTopUpResult>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
-export declare const init: ({ IDL }: { IDL: IDL }) => IDL.Type[];
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

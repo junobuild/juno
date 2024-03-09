@@ -75,7 +75,11 @@ export const idlFactory = ({ IDL }) => {
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		certificate_version: IDL.Opt(IDL.Nat16)
 	});
-	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
+	const Memory = IDL.Variant({
+		Heap: IDL.Null,
+		Stable: IDL.Null,
+		StableV2: IDL.Null
+	});
 	const StreamingCallbackToken = IDL.Record({
 		memory: Memory,
 		token: IDL.Opt(IDL.Text),

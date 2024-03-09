@@ -62,7 +62,7 @@ pub fn get_asset(collection: &CollectionKey, full_path: &FullPath, rule: &Rule) 
         Memory::Heap => {
             STATE.with(|state| get_asset_heap(full_path, &state.borrow().heap.storage.assets))
         }
-        Memory::Stable => STATE
+        Memory::Stable | Memory::StableV2 => STATE
             .with(|state| get_asset_stable(collection, full_path, &state.borrow().stable.assets)),
     }
 }
@@ -74,7 +74,7 @@ pub fn get_content_chunks(
 ) -> Option<Blob> {
     match memory {
         Memory::Heap => Some(encoding.content_chunks[chunk_index].clone()),
-        Memory::Stable => STATE.with(|state| {
+        Memory::Stable | Memory::StableV2 => STATE.with(|state| {
             get_content_chunks_stable(encoding, chunk_index, &state.borrow().stable.content_chunks)
         }),
     }
@@ -93,7 +93,7 @@ pub fn insert_asset_encoding(
                 .encodings
                 .insert(encoding_type.to_owned(), encoding.clone());
         }
-        Memory::Stable => STATE.with(|state| {
+        Memory::Stable | Memory::StableV2 => STATE.with(|state| {
             insert_asset_encoding_stable(
                 full_path,
                 encoding_type,
@@ -114,7 +114,7 @@ pub fn insert_asset(collection: &CollectionKey, full_path: &FullPath, asset: &As
                 &mut state.borrow_mut().heap.storage.assets,
             )
         }),
-        Memory::Stable => STATE.with(|state| {
+        Memory::Stable | Memory::StableV2 => STATE.with(|state| {
             insert_asset_stable(
                 collection,
                 full_path,
@@ -134,7 +134,7 @@ pub fn delete_asset(
         Memory::Heap => STATE.with(|state| {
             delete_asset_heap(full_path, &mut state.borrow_mut().heap.storage.assets)
         }),
-        Memory::Stable => STATE.with(|state| {
+        Memory::Stable | Memory::StableV2 => STATE.with(|state| {
             delete_content_chunks_stable(collection, full_path, &mut state.borrow_mut().stable);
             delete_asset_stable(collection, full_path, &mut state.borrow_mut().stable.assets)
         }),

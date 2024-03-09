@@ -1,10 +1,9 @@
-use crate::db::types::state::{CollectionsStable, DbHeap, DbStable, Doc, StableKey};
+use crate::db::types::state::{DbCollectionsStable, DbHeap, DbStable, Doc, StableKey};
 use crate::list::utils::range_collection_end;
 use crate::memory::{init_stable_collection, STATE};
-use crate::msg::COLLECTION_NOT_FOUND;
+use crate::msg::{COLLECTION_NOT_FOUND, COLLECTION_NOT_INITIALIZED};
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::{CollectionKey, Key};
-use crate::types::state::StableState;
 use std::collections::{BTreeMap, HashMap};
 use std::ops::RangeBounds;
 
@@ -15,8 +14,9 @@ pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
         Memory::Heap => {
             STATE.with(|state| init_collection_heap(collection, &mut state.borrow_mut().heap.db.db))
         }
-        Memory::Stable => STATE.with(|state| {
-            init_collection_stable(collection, &mut state.borrow_mut().stable.collections)
+        Memory::Stable => (),
+        Memory::StableV2 => STATE.with(|state| {
+            init_collection_stable_v2(collection, &mut state.borrow_mut().stable.db_collections)
         }),
     }
 }
@@ -30,8 +30,11 @@ pub fn is_collection_empty(
             STATE.with(|state| is_collection_empty_heap(collection, &state.borrow().heap.db.db))
         }
         Memory::Stable => {
-            STATE.with(|state| is_collection_empty_stable(collection, &state.borrow().stable))
+            STATE.with(|state| is_collection_empty_stable(collection, &state.borrow().stable.db))
         }
+        Memory::StableV2 => STATE.with(|state| {
+            is_collection_empty_stable_v2(collection, &state.borrow().stable.db_collections)
+        }),
     }
 }
 
@@ -42,8 +45,9 @@ pub fn delete_collection(
     match memory.clone().unwrap_or_default() {
         Memory::Heap => STATE
             .with(|state| delete_collection_heap(collection, &mut state.borrow_mut().heap.db.db)),
-        Memory::Stable => STATE.with(|state| {
-            delete_collection_stable(collection, &mut state.borrow_mut().stable.collections)
+        Memory::Stable => Ok(()),
+        Memory::StableV2 => STATE.with(|state| {
+            delete_collection_stable_v2(collection, &mut state.borrow_mut().stable.db_collections)
         }),
     }
 }
@@ -61,7 +65,7 @@ fn init_collection_heap(collection: &CollectionKey, db: &mut DbHeap) {
     }
 }
 
-fn init_collection_stable(collection: &CollectionKey, db: &mut Option<CollectionsStable>) {
+fn init_collection_stable_v2(collection: &CollectionKey, db: &mut Option<DbCollectionsStable>) {
     // We have introduced the collections at a later stage therefore for backwards compatibility those have been added as Optional type.
     if db.is_none() {
         *db = Some(HashMap::new());
@@ -94,18 +98,24 @@ fn is_collection_empty_heap(collection: &CollectionKey, db: &DbHeap) -> Result<b
     }
 }
 
-fn is_collection_empty_stable(
+fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Result<bool, String> {
+    let stable = get_docs_stable(collection, db)?;
+    Ok(stable.is_empty())
+}
+
+fn is_collection_empty_stable_v2(
     collection: &CollectionKey,
-    state: &StableState,
+    collections: &Option<DbCollectionsStable>,
 ) -> Result<bool, String> {
-    if let Some(collections) = state.collections.as_ref() {
-        if let Some(col) = collections.get(collection) {
+    if let Some(cols) = collections {
+        if let Some(col) = cols.get(collection) {
             return Ok(col.is_empty());
         }
+
+        return Err([COLLECTION_NOT_FOUND, collection].join(""));
     }
 
-    let stable = get_docs_stable(collection, &state.db)?;
-    Ok(stable.is_empty())
+    Err([COLLECTION_NOT_INITIALIZED, collection].join(""))
 }
 
 // Delete
@@ -123,12 +133,12 @@ fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result
     }
 }
 
-fn delete_collection_stable(
+fn delete_collection_stable_v2(
     collection: &CollectionKey,
-    db: &mut Option<CollectionsStable>,
+    db: &mut Option<DbCollectionsStable>,
 ) -> Result<(), String> {
     if db.is_none() {
-        return Ok(());
+        return Err([COLLECTION_NOT_INITIALIZED, collection].join(""));
     }
 
     // Now that we know db is Some, we can proceed with the logic safely.
@@ -137,14 +147,12 @@ fn delete_collection_stable(
     let col = db_unwrapped.get(collection);
 
     match col {
-        // We do not throw an exception collection not found because we do not delete the fallback deprecated db.
-        None => (),
+        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(_) => {
             db_unwrapped.remove(collection);
+            Ok(())
         }
     }
-
-    Ok(())
 }
 
 /// Documents
@@ -155,8 +163,11 @@ pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Opt
             STATE.with(|state| get_doc_heap(collection, key, &state.borrow().heap.db.db))
         }
         Memory::Stable => {
-            STATE.with(|state| get_doc_stable(collection, key, &state.borrow().stable))
+            STATE.with(|state| get_doc_stable(collection, key, &state.borrow().stable.db))
         }
+        Memory::StableV2 => STATE.with(|state| {
+            get_doc_stable_v2(collection, key, &state.borrow().stable.db_collections)
+        }),
     }
 }
 
@@ -173,6 +184,14 @@ pub fn insert_doc(
         Memory::Stable => STATE.with(|state| {
             insert_doc_stable(collection, key, doc, &mut state.borrow_mut().stable.db)
         }),
+        Memory::StableV2 => STATE.with(|state| {
+            insert_doc_stable_v2(
+                collection,
+                key,
+                doc,
+                &mut state.borrow_mut().stable.db_collections,
+            )
+        }),
     }
 }
 
@@ -187,18 +206,25 @@ pub fn delete_doc(
         }
         Memory::Stable => STATE
             .with(|state| delete_doc_stable(collection, key, &mut state.borrow_mut().stable.db)),
+        Memory::StableV2 => STATE.with(|state| {
+            delete_doc_stable_v2(
+                collection,
+                key,
+                &mut state.borrow_mut().stable.db_collections,
+            )
+        }),
     }
 }
 
 // Get
 
-fn get_doc_stable(
+fn get_doc_stable_v2(
     collection: &CollectionKey,
     key: &Key,
-    state: &StableState,
+    collections: &Option<DbCollectionsStable>,
 ) -> Result<Option<Doc>, String> {
-    if let Some(collections) = state.collections.as_ref() {
-        if let Some(col) = collections.get(collection) {
+    if let Some(cols) = collections {
+        if let Some(col) = cols.get(collection) {
             let value = col.get(key);
 
             let result = match value {
@@ -208,13 +234,14 @@ fn get_doc_stable(
 
             return result;
         }
+
+        return Err([COLLECTION_NOT_FOUND, collection].join(""));
     }
 
-    // Fallback on deprecated db
-    get_doc_db_stable(collection, key, &state.db)
+    Err([COLLECTION_NOT_INITIALIZED, collection].join(""))
 }
 
-fn get_doc_db_stable(
+fn get_doc_stable(
     collection: &CollectionKey,
     key: &Key,
     db: &DbStable,
@@ -244,6 +271,22 @@ fn get_doc_heap(collection: &CollectionKey, key: &Key, db: &DbHeap) -> Result<Op
 }
 
 // List
+
+pub fn get_docs_stable_v2(
+    collection: &CollectionKey,
+    collections: &Option<DbCollectionsStable>,
+) -> Result<Vec<(Key, Doc)>, String> {
+    if let Some(cols) = collections {
+        if let Some(col) = cols.get(collection) {
+            let items = col.iter().collect();
+            return Ok(items);
+        }
+
+        return Err([COLLECTION_NOT_FOUND, collection].join(""));
+    }
+
+    Err([COLLECTION_NOT_INITIALIZED, collection].join(""))
+}
 
 pub fn get_docs_stable(
     collection: &CollectionKey,
@@ -278,6 +321,21 @@ pub fn count_docs_heap(collection: &CollectionKey, db: &DbHeap) -> Result<usize,
     }
 }
 
+pub fn count_docs_stable_v2(
+    collection: &CollectionKey,
+    collections: &Option<DbCollectionsStable>,
+) -> Result<usize, String> {
+    if let Some(cols) = collections {
+        if let Some(col) = cols.get(collection) {
+            return Ok(col.len() as usize);
+        }
+
+        return Err([COLLECTION_NOT_FOUND, collection].join(""));
+    }
+
+    Err([COLLECTION_NOT_INITIALIZED, collection].join(""))
+}
+
 pub fn count_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<usize, String> {
     let length = db.range(filter_docs_range(collection)).count();
 
@@ -299,6 +357,24 @@ fn filter_docs_range(collection: &CollectionKey) -> impl RangeBounds<StableKey> 
 }
 
 // Insert
+
+fn insert_doc_stable_v2(
+    collection: &CollectionKey,
+    key: &Key,
+    doc: &Doc,
+    collections: &mut Option<DbCollectionsStable>,
+) -> Result<Doc, String> {
+    if let Some(cols) = collections {
+        if let Some(col) = cols.get_mut(collection) {
+            col.insert(key.clone(), doc.clone());
+            return Ok(doc.clone());
+        }
+
+        return Err([COLLECTION_NOT_FOUND, collection].join(""));
+    }
+
+    Err([COLLECTION_NOT_INITIALIZED, collection].join(""))
+}
 
 fn insert_doc_stable(
     collection: &CollectionKey,
@@ -329,6 +405,24 @@ fn insert_doc_heap(
 }
 
 // Delete
+
+fn delete_doc_stable_v2(
+    collection: &CollectionKey,
+    key: &Key,
+    collections: &mut Option<DbCollectionsStable>,
+) -> Result<Option<Doc>, String> {
+    if let Some(cols) = collections {
+        if let Some(col) = cols.get_mut(collection) {
+            let deleted_doc = col.remove(key);
+
+            return Ok(deleted_doc);
+        }
+
+        return Err([COLLECTION_NOT_FOUND, collection].join(""));
+    }
+
+    Err([COLLECTION_NOT_INITIALIZED, collection].join(""))
+}
 
 fn delete_doc_stable(
     collection: &CollectionKey,

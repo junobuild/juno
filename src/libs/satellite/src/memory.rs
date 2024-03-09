@@ -1,4 +1,4 @@
-use crate::db::types::state::CollectionStable;
+use crate::db::types::state::DbCollectionStable;
 use crate::types::memory::Memory;
 use crate::types::state::{StableState, State};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
@@ -41,12 +41,12 @@ fn get_memory_collections(index: u8) -> Memory {
 pub fn init_stable_state() -> StableState {
     StableState {
         db: StableBTreeMap::init(get_memory_db()),
-        collections: None,
+        db_collections: None,
         assets: StableBTreeMap::init(get_memory_assets()),
         content_chunks: StableBTreeMap::init(get_memory_content_chunks()),
     }
 }
 
-pub fn init_stable_collection(index: u8) -> CollectionStable {
+pub fn init_stable_collection(index: u8) -> DbCollectionStable {
     StableBTreeMap::init(get_memory_collections(index))
 }

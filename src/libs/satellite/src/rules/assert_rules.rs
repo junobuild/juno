@@ -19,6 +19,13 @@ pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Re
             }
             Some(Memory::Stable) => {
                 if !matches!(&current_rule.mem(), Memory::Stable) {
+                    return Err(
+                        "The type of memory cannot be modified to deprecated stable.".to_string(),
+                    );
+                }
+            }
+            Some(Memory::StableV2) => {
+                if !matches!(&current_rule.mem(), Memory::StableV2) {
                     return Err("The type of memory cannot be modified to stable.".to_string());
                 }
             }

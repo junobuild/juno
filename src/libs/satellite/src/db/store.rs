@@ -1,8 +1,9 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::db::state::{
-    count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
-    delete_doc as delete_state_doc, get_doc as get_state_doc, get_docs_heap, get_docs_stable,
+    count_docs_heap, count_docs_stable, count_docs_stable_v2,
+    delete_collection as delete_state_collection, delete_doc as delete_state_doc,
+    get_doc as get_state_doc, get_docs_heap, get_docs_stable, get_docs_stable_v2,
     get_rule as get_state_rule, init_collection as init_state_collection,
     insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
@@ -246,6 +247,12 @@ fn secure_get_docs(
             let docs: Vec<(&Key, &Doc)> = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
             get_docs_impl(&docs, caller, controllers, filter, &rule)
         }),
+        Memory::StableV2 => STATE.with(|state| {
+            let stable = get_docs_stable_v2(&collection, &state.borrow().stable.db_collections)?;
+            let docs: Vec<(&Key, &Doc)> =
+                stable.iter().map(|(key, doc)| (key as &Key, doc)).collect();
+            get_docs_impl(&docs, caller, controllers, filter, &rule)
+        }),
     }
 }
 
@@ -403,6 +410,10 @@ pub fn delete_docs_store(collection: &CollectionKey) -> Result<(), String> {
             get_docs_stable(collection, &state.borrow().stable.db)
                 .map(|docs| docs.iter().map(|(key, _)| key.key.clone()).collect())
         }),
+        Memory::StableV2 => STATE.with(|state| {
+            get_docs_stable_v2(collection, &state.borrow().stable.db_collections)
+                .map(|docs| docs.iter().map(|(key, _)| key.clone()).collect())
+        }),
     }?;
 
     delete_docs_impl(&keys, collection, &rule)
@@ -445,6 +456,10 @@ pub fn count_docs_store(collection: &CollectionKey) -> Result<usize, String> {
         }),
         Memory::Stable => STATE.with(|state| {
             let length = count_docs_stable(collection, &state.borrow().stable.db)?;
+            Ok(length)
+        }),
+        Memory::StableV2 => STATE.with(|state| {
+            let length = count_docs_stable_v2(collection, &state.borrow().stable.db_collections)?;
             Ok(length)
         }),
     }

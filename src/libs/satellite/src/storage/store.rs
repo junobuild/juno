@@ -116,7 +116,7 @@ pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
                 .map(|(_, asset)| asset.key.full_path.clone())
                 .collect()
         }),
-        Memory::Stable => STATE.with(|state| {
+        Memory::Stable | Memory::StableV2 => STATE.with(|state| {
             let stable = get_assets_stable(collection, &state.borrow().stable.assets);
             stable
                 .iter()
@@ -242,7 +242,7 @@ pub fn assert_assets_collection_empty_store(collection: &CollectionKey) -> Resul
             let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
             assert_assets_collection_empty_impl(&assets, collection)
         }),
-        Memory::Stable => STATE.with(|state| {
+        Memory::Stable | Memory::StableV2 => STATE.with(|state| {
             let stable = get_assets_stable(collection, &state.borrow().stable.assets);
             let assets: Vec<(&FullPath, &Asset)> = stable
                 .iter()
@@ -287,7 +287,7 @@ fn secure_list_assets_impl(
                 filters,
             ))
         }),
-        Memory::Stable => STATE.with(|state| {
+        Memory::Stable | Memory::StableV2 => STATE.with(|state| {
             let stable = get_assets_stable(collection, &state.borrow().stable.assets);
             let assets: Vec<(&FullPath, &Asset)> = stable
                 .iter()
@@ -425,7 +425,7 @@ pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
             let length = count_assets_heap(collection, &state_ref.heap.storage.assets);
             Ok(length)
         }),
-        Memory::Stable => STATE.with(|state| {
+        Memory::Stable | Memory::StableV2 => STATE.with(|state| {
             let length = count_assets_stable(collection, &state.borrow().stable.assets);
             Ok(length)
         }),

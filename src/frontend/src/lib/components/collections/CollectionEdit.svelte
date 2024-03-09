@@ -5,7 +5,7 @@
 	import { createEventDispatcher, getContext } from 'svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { memoryToText, permissionToText } from '$lib/utils/rules.utils';
-	import { MemoryHeap, MemoryStable, PermissionManaged } from '$lib/constants/rules.constants';
+	import { MemoryHeap, MemoryStableV2, PermissionManaged } from '$lib/constants/rules.constants';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { fromNullable } from '@dfinity/utils';
@@ -46,7 +46,7 @@
 		// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
 		memoryToText(
 			fromNullable(rule?.memory ?? []) ??
-				(typeStorage && mode === 'new' ? MemoryStable : MemoryHeap)
+				(typeStorage && mode === 'new' ? MemoryStableV2 : MemoryHeap)
 		)
 	);
 
@@ -166,7 +166,15 @@
 				<svelte:fragment slot="label">{$i18n.collections.memory}</svelte:fragment>
 				<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
 					<option value="Heap">{$i18n.collections.heap}</option>
-					<option value="Stable">{$i18n.collections.stable}</option>
+					<option value="StableV2">{$i18n.collections.stable}</option>
+
+					{#if mode === 'edit'}
+						<option value="Stable"
+							>{typeStorage
+								? $i18n.collections.stable
+								: $i18n.collections.stable_deprecated}</option
+						>
+					{/if}
 				</select>
 			</Value>
 		</div>

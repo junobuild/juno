@@ -11,6 +11,12 @@ export const PermissionControllers: Permission = { Controllers: null };
 export type PermissionText = 'Public' | 'Private' | 'Managed' | 'Controllers';
 
 export const MemoryHeap: Memory = { Heap: null };
+
+/**
+ * @deprecated use MemoryStableV2
+ */
 export const MemoryStable: Memory = { Stable: null };
 
-export type MemoryText = 'Heap' | 'Stable';
+export const MemoryStableV2: Memory = { StableV2: null };
+
+export type MemoryText = 'Heap' | 'Stable' | 'StableV2';

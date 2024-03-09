@@ -428,6 +428,7 @@ interface I18nCollections {
 	memory: string;
 	heap: string;
 	stable: string;
+	stable_deprecated: string;
 	immutable: string;
 }
 

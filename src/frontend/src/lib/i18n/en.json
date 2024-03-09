@@ -407,6 +407,7 @@
 		"memory": "Memory",
 		"heap": "Heap",
 		"stable": "Stable",
+		"stable_deprecated": "Stable (deprecated)",
 		"immutable": "Make permissions immutable"
 	},
 	"sort": {

@@ -4,6 +4,7 @@ import { listRulesDeprecated } from '$lib/api/satellites.deprecated.api';
 import {
 	MemoryHeap,
 	MemoryStable,
+	MemoryStableV2,
 	PermissionControllers,
 	PermissionManaged,
 	PermissionPrivate,
@@ -50,6 +51,8 @@ export const memoryFromText = (text: MemoryText): Memory => {
 	switch (text) {
 		case 'Stable':
 			return MemoryStable;
+		case 'StableV2':
+			return MemoryStableV2;
 		default:
 			return MemoryHeap;
 	}
@@ -58,6 +61,10 @@ export const memoryFromText = (text: MemoryText): Memory => {
 export const memoryToText = (memory: Memory): MemoryText => {
 	if ('Stable' in memory) {
 		return 'Stable';
+	}
+
+	if ('StableV2' in memory) {
+		return 'StableV2';
 	}
 
 	return 'Heap';

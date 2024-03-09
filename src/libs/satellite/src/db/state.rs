@@ -1,6 +1,6 @@
 use crate::db::types::state::{DbCollectionsStable, DbHeap, DbStable, Doc, StableKey};
 use crate::list::utils::range_collection_end;
-use crate::memory::{init_stable_collection, STATE};
+use crate::memory::{init_stable_db_collection, STATE};
 use crate::msg::{COLLECTION_NOT_FOUND, COLLECTION_NOT_INITIALIZED};
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::{CollectionKey, Key};
@@ -81,7 +81,7 @@ fn init_collection_stable_v2(collection: &CollectionKey, db: &mut Option<DbColle
         None => {
             db_unwrapped.insert(
                 collection.clone(),
-                init_stable_collection(u8::try_from(db_unwrapped.len()).unwrap_or(0) + 1),
+                init_stable_db_collection(u8::try_from(db_unwrapped.len()).unwrap_or(0) + 1),
             );
         }
     }

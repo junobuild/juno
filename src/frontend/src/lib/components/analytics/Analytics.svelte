@@ -23,7 +23,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { getAnalyticsPageViews, getAnalyticsTrackEvents } from '$lib/services/orbiters.services';
-	import { addMonths, format } from 'date-fns';
+	import { addMonths } from 'date-fns';
 
 	let loading = true;
 

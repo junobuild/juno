@@ -13,6 +13,7 @@ pub mod state {
 
     pub type DbStable = StableBTreeMap<StableKey, Doc, Memory>;
 
+    pub type DbCollectionsIds = StableBTreeMap<Key, u8, Memory>;
     pub type DbCollectionStable = StableBTreeMap<Key, Doc, Memory>;
     pub type DbCollectionsStable = HashMap<CollectionKey, DbCollectionStable>;
 

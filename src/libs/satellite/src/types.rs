@@ -1,5 +1,5 @@
 pub mod state {
-    use crate::db::types::state::{DbCollectionsStable, DbHeapState, DbStable};
+    use crate::db::types::state::{DbCollectionsIds, DbCollectionsStable, DbHeapState, DbStable};
     use crate::memory::init_stable_state;
     use crate::storage::types::state::{
         AssetsStable, ContentChunksStable, StorageHeapState, StorageRuntimeState,
@@ -27,7 +27,9 @@ pub mod state {
             note = "db is kept for backwards compatibility but, db_collections should be used."
         )]
         pub db: DbStable,
-        pub db_collections: Option<DbCollectionsStable>,
+
+        pub db_collections_ids: DbCollectionsIds,
+        pub db_collections: DbCollectionsStable,
 
         pub assets: AssetsStable,
         pub content_chunks: ContentChunksStable,

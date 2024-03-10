@@ -15,6 +15,8 @@
 	import IconDocker from '$lib/components/icons/IconDocker.svelte';
 </script>
 
+<hr />
+
 <h4>{$i18n.examples.tutorials}</h4>
 
 <section>
@@ -176,8 +178,12 @@
 	@use '../../styles/mixins/grid';
 	@use '../../styles/mixins/button';
 
+	hr {
+		margin: var(--padding-8x) 0 0;
+	}
+
 	h4 {
-		margin: var(--padding-12x) 0 0;
+		margin: var(--padding-8x) 0 0;
 	}
 
 	section {

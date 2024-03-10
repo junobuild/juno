@@ -5,7 +5,6 @@ use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::{CollectionKey, Key};
 use crate::types::state::StableState;
-use ic_cdk::print;
 use std::collections::{BTreeMap};
 use std::ops::RangeBounds;
 
@@ -260,10 +259,7 @@ pub fn get_docs_stable_v2(
     collections: &DbCollectionsStable,
 ) -> Result<Vec<(Key, Doc)>, String> {
     if let Some(col) = collections.get(collection) {
-        let items: Vec<_> = col.iter().collect();
-
-        print(format!("------------------> List items {}", items.len()));
-
+        let items = col.iter().collect();
         return Ok(items);
     }
 

@@ -16,8 +16,6 @@
 
 	export let satellite: Satellite;
 
-	let dailyTotalArray: [string, number][];
-
 	const xKey = 'myX';
 	const yKey = 'myY';
 

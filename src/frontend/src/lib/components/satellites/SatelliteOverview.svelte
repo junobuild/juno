@@ -8,7 +8,7 @@
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
-	import SatelliteCycles from "$lib/components/satellites/SatelliteCycles.svelte";
+	import SatelliteCycles from '$lib/components/satellites/SatelliteCycles.svelte';
 
 	export let satellite: Satellite;
 
@@ -24,10 +24,16 @@
 			<svelte:fragment slot="label">{$i18n.satellites.id}</svelte:fragment>
 			<Identifier identifier={satelliteId} shorten={false} small={false} />
 		</Value>
+	</div>
 
+	<div>
 		<SatelliteOverviewVersion {satelliteId} />
 	</div>
 
+	<SatelliteActions {satellite} />
+</div>
+
+<div class="card-container columns-3">
 	<div>
 		<CanisterOverview
 			canisterId={satellite.satellite_id}
@@ -36,7 +42,11 @@
 		/>
 	</div>
 
-	<SatelliteActions {satellite} />
+	<SatelliteCycles {satellite} />
 </div>
 
-<SatelliteCycles {satellite} />
+<style lang="scss">
+	.card-container:last-of-type {
+		margin: var(--padding-4x) 0 0;
+	}
+</style>

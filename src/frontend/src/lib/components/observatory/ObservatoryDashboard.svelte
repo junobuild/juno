@@ -25,7 +25,7 @@
 			timestamp = results?.timestamp;
 			statuses = results?.statuses;
 
-			console.log(statuses)
+			console.log(statuses);
 
 			loading = false;
 		} catch (err: unknown) {

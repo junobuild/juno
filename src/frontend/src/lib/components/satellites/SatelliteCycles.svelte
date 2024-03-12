@@ -6,7 +6,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { authStore } from '$lib/stores/auth.store';
 	import { fromNullable, isNullish } from '@dfinity/utils';
-	import { formatToDay, fromBigIntNanoSeconds } from '$lib/utils/date.utils';
+	import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { startOfDay } from 'date-fns';
 	import Value from '$lib/components/ui/Value.svelte';

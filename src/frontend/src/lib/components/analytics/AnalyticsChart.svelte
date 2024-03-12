@@ -1,10 +1,4 @@
 <script lang="ts">
-	import { LayerCake, Svg } from 'layercake';
-	import AxisX from '$lib/components/charts/AxisX.svelte';
-	import AxisY from '$lib/components/charts/AxisY.svelte';
-	import Line from '$lib/components/charts/Line.svelte';
-	import Area from '$lib/components/charts/Area.svelte';
-	import { formatToDay } from '$lib/utils/date.utils';
 	import { last } from '$lib/utils/utils';
 	import { isNullish } from '@dfinity/utils';
 	import { eachDayOfInterval, startOfDay } from 'date-fns';
@@ -14,6 +8,8 @@
 		DateStartOfTheDay
 	} from '$lib/types/ortbiter';
 	import { fade } from 'svelte/transition';
+	import type { ChartsData } from '$lib/types/chart';
+	import Chart from '$lib/components/charts/Chart.svelte';
 
 	export let data: AnalyticsPageViews;
 
@@ -26,21 +22,13 @@
 	let dailyTotalArray: [string, number][];
 	$: dailyTotalArray = Object.entries(daily_total_page_views);
 
-	const xKey = 'myX';
-	const yKey = 'myY';
-
-	type ChartsData = {
-		[xKey]: string;
-		[yKey]: number;
-	};
-
 	let chartsPageViews: ChartsData[];
 	$: chartsPageViews = dailyTotalArray
 		.map(([key, value]) => ({
-			[xKey]: key,
-			[yKey]: value
+			x: key,
+			y: value
 		}))
-		.sort(({ [xKey]: aKey }, { [xKey]: bKey }) => parseInt(aKey) - parseInt(bKey));
+		.sort(({ x: aKey }, { x: bKey }) => parseInt(aKey) - parseInt(bKey));
 
 	const populateChartsData = (chartsPageViews: ChartsData[]): ChartsData[] => {
 		if (chartsPageViews.length < 1) {
@@ -48,7 +36,7 @@
 		}
 
 		const firstPageView = chartsPageViews[0];
-		const startDate = new Date(parseInt(firstPageView[xKey]));
+		const startDate = new Date(parseInt(firstPageView.x));
 
 		const datePlusOneDay = () => {
 			const nextDate = new Date(startDate);
@@ -57,8 +45,8 @@
 			return [
 				...chartsPageViews,
 				{
-					[xKey]: `${nextDate.getTime()}`,
-					[yKey]: 0
+					x: `${nextDate.getTime()}`,
+					y: 0
 				}
 			];
 		};
@@ -73,7 +61,7 @@
 			return datePlusOneDay();
 		}
 
-		const endDate = new Date(parseInt(lastPageView[xKey]));
+		const endDate = new Date(parseInt(lastPageView.x));
 
 		const allDates = eachDayOfInterval({
 			start: startDate,
@@ -81,46 +69,18 @@
 		});
 
 		return allDates.map((date) => ({
-			[xKey]: `${startOfDay(date).getTime()}`,
-			[yKey]: daily_total_page_views[date.getTime()] ?? 0
+			x: `${startOfDay(date).getTime()}`,
+			y: daily_total_page_views[date.getTime()] ?? 0
 		}));
 	};
 
 	let chartsData: ChartsData[];
 	$: chartsData = populateChartsData(chartsPageViews);
-
-	let ticks: string[];
-	$: ticks = Object.values(chartsData).map(({ [xKey]: a }) => a);
-
-	const formatTick = (d: string): string => {
-		const date = new Date(parseInt(d));
-		const time = date.getDate();
-
-		return chartsPageViews.length <= 31 && time % 2 != 0
-			? formatToDay(date)
-			: time % 5 === 0
-				? formatToDay(date)
-				: '';
-	};
 </script>
 
 {#if dailyTotalArray.length > 0}
 	<div class="chart-container" in:fade>
-		<LayerCake
-			padding={{ top: 32, right: 16, bottom: 32, left: 16 }}
-			x={xKey}
-			y={yKey}
-			yNice={4}
-			yDomain={[0, null]}
-			data={chartsData}
-		>
-			<Svg>
-				<AxisX {formatTick} {ticks} />
-				<AxisY ticks={4} />
-				<Line />
-				<Area />
-			</Svg>
-		</LayerCake>
+		<Chart {chartsData} />
 	</div>
 {/if}
 

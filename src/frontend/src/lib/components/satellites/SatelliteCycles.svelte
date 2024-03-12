@@ -6,28 +6,15 @@
 	import type { Principal } from '@dfinity/principal';
 	import { authStore } from '$lib/stores/auth.store';
 	import { fromNullable, isNullish } from '@dfinity/utils';
-	import { formatToDateNumeric, formatToDay, fromBigIntNanoSeconds } from '$lib/utils/date.utils';
+	import { formatToDay, fromBigIntNanoSeconds } from '$lib/utils/date.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import AxisY from '$lib/components/charts/AxisY.svelte';
-	import AxisX from '$lib/components/charts/AxisX.svelte';
-	import Area from '$lib/components/charts/Area.svelte';
-	import Line from '$lib/components/charts/Line.svelte';
-	import { LayerCake, Svg } from 'layercake';
-	import { last } from '$lib/utils/utils';
-	import { eachDayOfInterval, startOfDay } from 'date-fns';
+	import { startOfDay } from 'date-fns';
 	import Value from '$lib/components/ui/Value.svelte';
-	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { ChartsData } from '$lib/types/chart';
+	import Chart from '$lib/components/charts/Chart.svelte';
 
 	export let satellite: Satellite;
-
-	const xKey = 'myX';
-	const yKey = 'myY';
-
-	type ChartsData = {
-		[xKey]: string;
-		[yKey]: number;
-	};
 
 	let chartsStatuses: ChartsData[] = [];
 
@@ -46,8 +33,8 @@
 			.map(([timestamp, result]) => {
 				if ('Err' in result) {
 					return {
-						[xKey]: `${fromBigIntNanoSeconds(timestamp).getTime()}`,
-						[yKey]: 0
+						x: `${fromBigIntNanoSeconds(timestamp).getTime()}`,
+						y: 0
 					};
 				}
 
@@ -58,24 +45,24 @@
 				} = result;
 
 				return {
-					[xKey]: `${fromBigIntNanoSeconds(timestamp).getTime()}`,
-					[yKey]: parseFloat(formatTCycles(cycles))
+					x: `${fromBigIntNanoSeconds(timestamp).getTime()}`,
+					y: parseFloat(formatTCycles(cycles))
 				};
 			})
-			.sort(({ [xKey]: aKey }, { [xKey]: bKey }) => parseInt(aKey) - parseInt(bKey));
+			.sort(({ x: aKey }, { x: bKey }) => parseInt(aKey) - parseInt(bKey));
 	};
 
 	$: $missionControlStore, (async () => load({ missionControlId: $missionControlStore }))();
 
 	let totalStatusesPerDay: Record<string, number[]>;
 	$: totalStatusesPerDay = chartsStatuses.reduce(
-		(acc, value) => {
-			const date = new Date(parseInt(value[xKey]));
+		(acc, { x, y }) => {
+			const date = new Date(parseInt(x));
 			const key = startOfDay(date).getTime();
 
 			return {
 				...acc,
-				[key]: [...(acc[key] ?? []), value[yKey]]
+				[key]: [...(acc[key] ?? []), y]
 			};
 		},
 		{} as Record<string, number[]>
@@ -83,23 +70,9 @@
 
 	let chartsData: ChartsData[];
 	$: chartsData = Object.entries(totalStatusesPerDay).map(([key, values]) => ({
-		[xKey]: key,
-		[yKey]: values.reduce((acc, value) => acc + value, 0) / values.length
+		x: key,
+		y: values.reduce((acc, value) => acc + value, 0) / values.length
 	}));
-
-	let ticks: string[];
-	$: ticks = Object.values(chartsData).map(({ [xKey]: a }) => a);
-
-	const formatTick = (d: string): string => {
-		const date = new Date(parseInt(d));
-		const time = date.getDate();
-
-		return chartsData.length <= 31 && time % 2 != 0
-			? formatToDay(date)
-			: time % 5 === 0
-				? formatToDay(date)
-				: '';
-	};
 </script>
 
 {#if chartsData.length > 0}
@@ -110,21 +83,7 @@
 			>
 
 			<div class="chart-container">
-				<LayerCake
-					padding={{ top: 32, right: 16, bottom: 32, left: 16 }}
-					x={xKey}
-					y={yKey}
-					yNice={4}
-					yDomain={[0, null]}
-					data={chartsData}
-				>
-					<Svg>
-						<AxisX {formatTick} {ticks} />
-						<AxisY ticks={4} />
-						<Line />
-						<Area />
-					</Svg>
-				</LayerCake>
+				<Chart {chartsData} />
 			</div>
 		</Value>
 	</div>
@@ -139,7 +98,7 @@
 
 	.chart-container {
 		width: 100%;
-		height: 300px;
+		height: 258px;
 		fill: var(--value-color);
 
 		margin: 0 0 var(--padding-4x);

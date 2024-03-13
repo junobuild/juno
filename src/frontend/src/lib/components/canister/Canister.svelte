@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import type {
-		Canister,
+		CanisterIcStatus,
 		CanisterData,
 		CanisterStatus,
 		CanisterSyncStatus,
@@ -22,10 +22,10 @@
 	export let segment: Segment;
 	export let display = true;
 
-	let canister: Canister | undefined = undefined;
+	let canister: CanisterIcStatus | undefined = undefined;
 
 	const syncCanister = ({ canister: c }: PostMessageDataResponse) => {
-		canister = c;
+		canister = c as CanisterIcStatus;
 		emit({ message: 'junoSyncCanister', detail: { canister } });
 	};
 
@@ -54,7 +54,12 @@
 			return;
 		}
 
-		worker?.restartCyclesTimer([canisterId.toText()]);
+		worker?.restartCyclesTimer([
+			{
+				canisterId: canisterId.toText(),
+				segment
+			}
+		]);
 	};
 
 	export let data: CanisterData | undefined = undefined;

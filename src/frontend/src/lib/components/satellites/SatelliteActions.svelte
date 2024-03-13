@@ -2,7 +2,7 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
-	import type { Canister } from '$lib/types/canister';
+	import type { CanisterIcStatus } from '$lib/types/canister';
 	import Actions from '$lib/components/core/Actions.svelte';
 	import { emit } from '$lib/utils/events.utils';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
@@ -14,9 +14,9 @@
 
 	let detail = { satellite };
 
-	let canister: Canister | undefined = undefined;
+	let canister: CanisterIcStatus | undefined = undefined;
 
-	const onSyncCanister = (syncCanister: Canister) => {
+	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
 		if (syncCanister.id !== satellite.satellite_id.toText()) {
 			return;
 		}

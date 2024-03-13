@@ -8,13 +8,13 @@ import {
 	MEMORY_HEAP_WARNING,
 	SYNC_CYCLES_TIMER_INTERVAL
 } from '$lib/constants/constants';
-import type { Canister, CanisterInfo, CanisterSegment } from '$lib/types/canister';
+import type { CanisterIcStatus, CanisterInfo, CanisterSegment } from '$lib/types/canister';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
-import { loadIdentity } from '$lib/utils/worker.utils';
+import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { isNullish, nonNullish } from '@dfinity/utils';
-import { createStore, getMany, set } from 'idb-keyval';
+import { createStore, set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -81,18 +81,21 @@ const syncCanisters = async ({
 		return;
 	}
 
-	await emitSavedCanisters({ canisterIds: segments.map(({ canisterId }) => canisterId) });
+	await emitSavedCanisters({
+		canisterIds: segments.map(({ canisterId }) => canisterId),
+		customStore
+	});
 
 	try {
 		const trillionRatio: bigint = await icpXdrConversionRate();
 
-		await syncNnsCanisters({ identity, segments, trillionRatio });
+		await syncIcStatusCanisters({ identity, segments, trillionRatio });
 	} finally {
 		syncing = false;
 	}
 };
 
-const syncNnsCanisters = async ({
+const syncIcStatusCanisters = async ({
 	identity,
 	segments,
 	trillionRatio
@@ -145,15 +148,6 @@ const syncNnsCanisters = async ({
 	);
 };
 
-// Update ui with one canister information
-const emitCanister = (canister: Canister) =>
-	postMessage({
-		msg: 'syncCanister',
-		data: {
-			canister
-		}
-	});
-
 const syncCanister = async ({
 	canisterId,
 	trillionRatio,
@@ -165,7 +159,7 @@ const syncCanister = async ({
 	canisterInfo: CanisterInfo;
 	memory: MemorySize | undefined;
 }) => {
-	const canister: Canister = {
+	const canister: CanisterIcStatus = {
 		id: canisterId,
 		sync: 'synced',
 		data: {
@@ -188,24 +182,4 @@ const syncCanister = async ({
 	await set(canisterId, canister, customStore);
 
 	emitCanister(canister);
-};
-
-const emitSavedCanisters = async ({ canisterIds }: { canisterIds: string[] }) => {
-	const canisters = (await getMany(canisterIds, customStore))
-		.filter((canister: Canister | undefined) => canister !== undefined)
-		.map((canister) => ({
-			...canister,
-			sync: 'syncing'
-		}));
-
-	const canistersNeverSynced: Canister[] = canisterIds
-		.filter((id) => canisters.find(({ syncedId }) => id === syncedId) === undefined)
-		.map((id) => ({
-			id,
-			sync: 'loading'
-		}));
-
-	await Promise.all(canistersNeverSynced.map(emitCanister));
-
-	await Promise.all(canisters.map(emitCanister));
 };

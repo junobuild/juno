@@ -8,7 +8,7 @@
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
-	import SatelliteCycles from '$lib/components/satellites/SatelliteCycles.svelte';
+	import SatelliteStatuses from '$lib/components/satellites/SatelliteStatuses.svelte';
 
 	export let satellite: Satellite;
 
@@ -42,7 +42,7 @@
 		/>
 	</div>
 
-	<SatelliteCycles {satellite} />
+	<SatelliteStatuses {satellite} />
 </div>
 
 <style lang="scss">

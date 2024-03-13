@@ -6,7 +6,7 @@ export type CyclesCallback = (data: PostMessageDataResponse) => void;
 export interface CyclesWorker {
 	startCyclesTimer: (params: { segments: CanisterSegment[]; callback: CyclesCallback }) => void;
 	stopCyclesTimer: () => void;
-	restartCyclesTimer: (canisterIds: string[]) => void;
+	restartCyclesTimer: (segments: CanisterSegment[]) => void;
 }
 
 export const initCyclesWorker = async (): Promise<CyclesWorker> => {
@@ -45,10 +45,10 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
 				msg: 'stopCyclesTimer'
 			});
 		},
-		restartCyclesTimer: (canisterIds: string[]) => {
+		restartCyclesTimer: (segments) => {
 			cyclesWorker.postMessage({
 				msg: 'restartCyclesTimer',
-				data: { canisterIds }
+				data: { segments }
 			});
 		}
 	};

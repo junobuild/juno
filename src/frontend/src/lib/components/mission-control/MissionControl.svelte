@@ -8,6 +8,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
+	import { fade } from 'svelte/transition';
+	import MissionControlStatuses from '$lib/components/mission-control/MissionControlStatuses.svelte';
 </script>
 
 {#if $authSignedInStore}
@@ -31,17 +33,27 @@
 		</div>
 
 		{#if nonNullish($missionControlStore)}
+			<MissionControlActions missionControlId={$missionControlStore} />
+		{/if}
+	</div>
+
+	{#if nonNullish($missionControlStore)}
+		<div class="card-container columns-3" in:fade>
 			<div>
 				<CanisterOverview canisterId={$missionControlStore} segment="mission_control" />
 			</div>
 
-			<MissionControlActions missionControlId={$missionControlStore} />
-		{/if}
-	</div>
+			<MissionControlStatuses missionControlId={$missionControlStore} />
+		</div>
+	{/if}
 {/if}
 
 <style lang="scss">
 	.id {
 		max-width: 80%;
+	}
+
+	.card-container:last-of-type {
+		margin: var(--padding-4x) 0 0;
 	}
 </style>

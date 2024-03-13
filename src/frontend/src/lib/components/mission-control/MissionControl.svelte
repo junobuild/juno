@@ -14,23 +14,21 @@
 
 {#if $authSignedInStore}
 	<div class="card-container columns-3 fit-column-1">
-		<div>
-			<div class="id">
-				<Value>
-					<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
-					<Identifier
-						identifier={$missionControlStore?.toText() ?? ''}
-						shorten={false}
-						small={false}
-					/>
-				</Value>
-			</div>
-
+		<div class="id">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-				<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
+				<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
+				<Identifier
+					identifier={$missionControlStore?.toText() ?? ''}
+					shorten={false}
+					small={false}
+				/>
 			</Value>
 		</div>
+
+		<Value>
+			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+			<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
+		</Value>
 
 		{#if nonNullish($missionControlStore)}
 			<MissionControlActions missionControlId={$missionControlStore} />

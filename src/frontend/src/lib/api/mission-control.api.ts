@@ -339,3 +339,30 @@ export const listSatelliteStatuses = async ({
 	const { list_satellite_statuses } = await getMissionControlActor({ missionControlId, identity });
 	return list_satellite_statuses(satelliteId);
 };
+
+export const listOrbiterStatuses = async ({
+	missionControlId,
+	identity,
+	orbiterId
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	orbiterId: Principal;
+}): Promise<[] | [[bigint, Result][]]> => {
+	const { list_orbiter_statuses } = await getMissionControlActor({ missionControlId, identity });
+	return list_orbiter_statuses(orbiterId);
+};
+
+export const listMissionControlStatuses = async ({
+	missionControlId,
+	identity
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+}): Promise<[] | [[bigint, Result][]]> => {
+	const { list_mission_control_statuses } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+	return [await list_mission_control_statuses()];
+};

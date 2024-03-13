@@ -1,4 +1,8 @@
-import { listSatelliteStatuses } from '$lib/api/mission-control.api';
+import {
+	listMissionControlStatuses,
+	listOrbiterStatuses,
+	listSatelliteStatuses
+} from '$lib/api/mission-control.api';
 import { SYNC_STATUSES_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { CanisterJunoStatus } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
@@ -110,11 +114,22 @@ const syncJunoStatusesCanisters = async ({
 	await Promise.allSettled(
 		segments.map(async ({ canisterId, segment }) => {
 			try {
-				const results = await listSatelliteStatuses({
-					satelliteId: Principal.fromText(canisterId),
-					missionControlId: Principal.fromText(missionControlId),
-					identity
-				});
+				const results = await (segment === 'satellite'
+					? listSatelliteStatuses({
+							satelliteId: Principal.fromText(canisterId),
+							missionControlId: Principal.fromText(missionControlId),
+							identity
+						})
+					: segment === 'orbiter'
+						? listOrbiterStatuses({
+								orbiterId: Principal.fromText(canisterId),
+								missionControlId: Principal.fromText(missionControlId),
+								identity
+							})
+						: listMissionControlStatuses({
+								missionControlId: Principal.fromText(missionControlId),
+								identity
+							}));
 
 				const chartsStatuses = (fromNullable(results) ?? [])
 					.map(([timestamp, result]) => {

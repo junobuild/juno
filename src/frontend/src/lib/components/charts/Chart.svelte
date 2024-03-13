@@ -14,13 +14,9 @@
 
 	const formatTick = (d: string): string => {
 		const date = new Date(parseInt(d));
-		const time = date.getDate();
+		const day = date.getDate();
 
-		return chartsData.length <= 31 && time % 2 != 0
-			? formatToDay(date)
-			: time % 5 === 0
-				? formatToDay(date)
-				: '';
+		return day % 3 === 0 ? formatToDay(date) : '';
 	};
 </script>
 

@@ -6,7 +6,6 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
 
 	export let orbiter: Orbiter;

@@ -1,8 +1,5 @@
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import {
-	idlFactory as idlFactorSatellite,
-	init as initSatellite
-} from '$declarations/satellite/satellite.factory.did';
+import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@hadronous/pic';
@@ -39,7 +36,7 @@ describe('Satellite', () => {
 		const fixture = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,
 			wasm: WASM_PATH,
-			arg: IDL.encode(initSatellite({ IDL }), [arg])
+			arg
 		});
 
 		actor = fixture.actor;

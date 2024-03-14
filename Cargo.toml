@@ -3,7 +3,29 @@ members = [
     "src/console",
     "src/mission_control",
     "src/satellite",
-    "src/shared",
     "src/observatory",
-    "src/orbiter"
+    "src/orbiter",
+    "src/libs/shared",
+    "src/libs/satellite",
+    "src/libs/macros",
+    "src/libs/utils"
 ]
+resolver = "2"
+
+[workspace.package]
+authors = ["David Dal Busco <https://daviddalbusco.com>"]
+edition = "2021"
+repository = "https://github.com/junobuild/juno"
+homepage = "https://juno.build"
+
+[workspace.dependencies]
+candid = "0.10.2"
+ic-cdk = "0.12.1"
+ic-cdk-macros = "0.8.1"
+ic-ledger-types = "0.9.0"
+ic-cdk-timers = "0.6.0"
+serde = "1.0.190"
+serde_cbor = "0.11.2"
+
+[patch.crates-io]
+junobuild-shared = { path = "./src/libs/shared" }

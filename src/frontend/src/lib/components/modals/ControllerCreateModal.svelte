@@ -14,6 +14,7 @@
 	import { Ed25519KeyIdentity } from '@dfinity/identity';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 
 	export let detail: JunoModalDetail;
 
@@ -39,12 +40,13 @@
 	let scope: SetControllerScope = 'write';
 	let identity: string | undefined;
 
-	const initController = () => {
+	const initController = (): string | undefined => {
 		if (action === 'add') {
 			return controllerId;
 		}
 
 		const key = Ed25519KeyIdentity.generate();
+
 		identity = btoa(JSON.stringify({ token: key.toJSON() }));
 		controllerId = key.getPrincipal().toText();
 
@@ -59,9 +61,6 @@
 			return;
 		}
 
-		wizardBusy.start();
-		steps = 'in_progress';
-
 		const controller = initController();
 
 		if (isNullish(controller) || controller === '') {
@@ -70,6 +69,16 @@
 			});
 			return;
 		}
+
+		if (REVOKED_CONTROLLERS.includes(controller)) {
+			toasts.error({
+				text: 'The controller has been revoked for security reason!'
+			});
+			return;
+		}
+
+		wizardBusy.start();
+		steps = 'in_progress';
 
 		try {
 			await add({

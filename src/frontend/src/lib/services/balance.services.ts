@@ -23,7 +23,7 @@ export const getMissionControlBalance = async (
 		const queryBalance = async (): Promise<bigint> =>
 			await getBalance({ owner: missionControlId, identity });
 
-		const [balance, credits] = await Promise.all([queryBalance(), getCredits()]);
+		const [balance, credits] = await Promise.all([queryBalance(), getCredits(identity)]);
 
 		return {
 			result: {

@@ -90,7 +90,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Build metadata
-        run: bash ./docker/metadata
+        run: bash .github/scripts/metadata
         env:
           CANISTERS: console,observatory,mission_control,satellite,orbiter
 
@@ -127,7 +127,7 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: 'Copy ${{ matrix.name }}'
-        run: bash ./docker/candid
+        run: bash .github/scripts/candid
         env:
           CANISTER: ${{ matrix.target }}
 
@@ -189,7 +189,7 @@ jobs:
           name: metadata.json
 
       - name: Prepare canisters
-        run: bash ./docker/prepare
+        run: bash .github/scripts/prepare
         env:
           CANISTERS: console,observatory,mission_control,satellite,orbiter
 

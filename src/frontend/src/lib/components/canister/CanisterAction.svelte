@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Canister } from '$lib/types/canister';
+	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 
-	export let canister: Canister | undefined = undefined;
+	export let canister: CanisterIcStatus | undefined = undefined;
 
 	let enabled = false;
 	$: enabled =

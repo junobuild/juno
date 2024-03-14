@@ -1,6 +1,15 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
+export interface ActiveAnchorCounter {
+	counter: bigint;
+	start_timestamp: Timestamp;
+}
+export interface ActiveAnchorStatistics {
+	completed: CompletedActiveAnchorStats;
+	ongoing: OngoingActiveAnchorStats;
+}
 export type AddTentativeDeviceResponse =
 	| {
 			device_registration_mode_off: null;
@@ -27,21 +36,6 @@ export interface ArchiveInfo {
 	archive_config: [] | [ArchiveConfig];
 	archive_canister: [] | [Principal];
 }
-export type AuthnMethod = { webauthn: WebAuthn } | { pubkey: PublicKeyAuthn };
-export type AuthnMethodAddResponse = { ok: null } | { invalid_metadata: string };
-export interface AuthnMethodData {
-	metadata: MetadataMap;
-	protection: AuthnMethodProtection;
-	last_authentication: [] | [Timestamp];
-	authn_method: AuthnMethod;
-	purpose: Purpose;
-}
-export type AuthnMethodProtection = { unprotected: null } | { protected: null };
-export interface AuthnMethodRegistrationInfo {
-	expiration: Timestamp;
-	authn_method: [] | [AuthnMethodData];
-}
-export type AuthnMethodRemoveResponse = { ok: null };
 export interface BufferedArchiveEntry {
 	sequence_number: bigint;
 	entry: Uint8Array | number[];
@@ -57,6 +51,10 @@ export interface ChallengeResult {
 	key: ChallengeKey;
 	chars: string;
 }
+export interface CompletedActiveAnchorStats {
+	monthly_active_anchors: [] | [ActiveAnchorCounter];
+	daily_active_anchors: [] | [ActiveAnchorCounter];
+}
 export type CredentialId = Uint8Array | number[];
 export interface Delegation {
 	pubkey: PublicKey;
@@ -69,7 +67,6 @@ export type DeployArchiveResult =
 	| { failed: string };
 export interface DeviceData {
 	alias: string;
-	metadata: [] | [MetadataMap];
 	origin: [] | [string];
 	protection: DeviceProtection;
 	pubkey: DeviceKey;
@@ -86,7 +83,6 @@ export interface DeviceRegistrationInfo {
 export interface DeviceWithUsage {
 	alias: string;
 	last_usage: [] | [Timestamp];
-	metadata: [] | [MetadataMap];
 	origin: [] | [string];
 	protection: DeviceProtection;
 	pubkey: DeviceKey;
@@ -104,7 +100,6 @@ export interface HttpRequest {
 	method: string;
 	body: Uint8Array | number[];
 	headers: Array<HeaderField>;
-	certificate_version: [] | [number];
 }
 export interface HttpResponse {
 	body: Uint8Array | number[];
@@ -117,18 +112,8 @@ export interface IdentityAnchorInfo {
 	devices: Array<DeviceWithUsage>;
 	device_registration: [] | [DeviceRegistrationInfo];
 }
-export interface IdentityInfo {
-	authn_methods: Array<AuthnMethodData>;
-	metadata: MetadataMap;
-	authn_method_registration: [] | [AuthnMethodRegistrationInfo];
-}
-export type IdentityInfoResponse = { ok: IdentityInfo };
-export type IdentityMetadataReplaceResponse = { ok: null };
-export type IdentityNumber = bigint;
 export interface InternetIdentityInit {
-	max_num_latest_delegation_origins: [] | [bigint];
 	assigned_user_number_range: [] | [[bigint, bigint]];
-	max_inflight_captchas: [] | [bigint];
 	archive_config: [] | [ArchiveConfig];
 	canister_creation_cycles_cost: [] | [bigint];
 	register_rate_limit: [] | [RateLimitConfig];
@@ -136,25 +121,21 @@ export interface InternetIdentityInit {
 export interface InternetIdentityStats {
 	storage_layout_version: number;
 	users_registered: bigint;
-	max_num_latest_delegation_origins: bigint;
 	assigned_user_number_range: [bigint, bigint];
-	latest_delegation_origins: Array<FrontendHostname>;
 	archive_info: ArchiveInfo;
 	canister_creation_cycles_cost: bigint;
+	active_anchor_stats: [] | [ActiveAnchorStatistics];
 }
 export type KeyType =
 	| { platform: null }
 	| { seed_phrase: null }
 	| { cross_platform: null }
-	| { unknown: null }
-	| { browser_storage_key: null };
-export type MetadataMap = Array<
-	[string, { map: MetadataMap } | { string: string } | { bytes: Uint8Array | number[] }]
->;
-export type PublicKey = Uint8Array | number[];
-export interface PublicKeyAuthn {
-	pubkey: PublicKey;
+	| { unknown: null };
+export interface OngoingActiveAnchorStats {
+	monthly_active_anchors: Array<ActiveAnchorCounter>;
+	daily_active_anchors: ActiveAnchorCounter;
 }
+export type PublicKey = Uint8Array | number[];
 export type Purpose = { authentication: null } | { recovery: null };
 export interface RateLimitConfig {
 	max_tokens: bigint;
@@ -187,10 +168,6 @@ export type VerifyTentativeDeviceResponse =
 	| { verified: null }
 	| { wrong_code: { retries_left: number } }
 	| { no_device_to_verify: null };
-export interface WebAuthn {
-	pubkey: PublicKey;
-	credential_id: CredentialId;
-}
 export interface WebAuthnCredential {
 	pubkey: PublicKey;
 	credential_id: CredentialId;
@@ -199,8 +176,6 @@ export interface _SERVICE {
 	acknowledge_entries: ActorMethod<[bigint], undefined>;
 	add: ActorMethod<[UserNumber, DeviceData], undefined>;
 	add_tentative_device: ActorMethod<[UserNumber, DeviceData], AddTentativeDeviceResponse>;
-	authn_method_add: ActorMethod<[IdentityNumber, AuthnMethodData], [] | [AuthnMethodAddResponse]>;
-	authn_method_remove: ActorMethod<[IdentityNumber, PublicKey], [] | [AuthnMethodRemoveResponse]>;
 	create_challenge: ActorMethod<[], Challenge>;
 	deploy_archive: ActorMethod<[Uint8Array | number[]], DeployArchiveResult>;
 	enter_device_registration_mode: ActorMethod<[UserNumber], Timestamp>;
@@ -215,21 +190,18 @@ export interface _SERVICE {
 	get_principal: ActorMethod<[UserNumber, FrontendHostname], Principal>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_update: ActorMethod<[HttpRequest], HttpResponse>;
-	identity_info: ActorMethod<[IdentityNumber], [] | [IdentityInfoResponse]>;
-	identity_metadata_replace: ActorMethod<
-		[IdentityNumber, MetadataMap],
-		[] | [IdentityMetadataReplaceResponse]
-	>;
 	init_salt: ActorMethod<[], undefined>;
 	lookup: ActorMethod<[UserNumber], Array<DeviceData>>;
 	prepare_delegation: ActorMethod<
 		[UserNumber, FrontendHostname, SessionKey, [] | [bigint]],
 		[UserKey, Timestamp]
 	>;
-	register: ActorMethod<[DeviceData, ChallengeResult, [] | [Principal]], RegisterResponse>;
+	register: ActorMethod<[DeviceData, ChallengeResult], RegisterResponse>;
 	remove: ActorMethod<[UserNumber, DeviceKey], undefined>;
 	replace: ActorMethod<[UserNumber, DeviceKey, DeviceData], undefined>;
 	stats: ActorMethod<[], InternetIdentityStats>;
 	update: ActorMethod<[UserNumber, DeviceKey, DeviceData], undefined>;
 	verify_tentative_device: ActorMethod<[UserNumber, string], VerifyTentativeDeviceResponse>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

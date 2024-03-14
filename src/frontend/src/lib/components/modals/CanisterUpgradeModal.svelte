@@ -7,13 +7,20 @@
 	import type { Wasm } from '$lib/types/upgrade';
 	import ReviewUpgradeVersion from '$lib/components/upgrade/ReviewUpgradeVersion.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { BuildType } from '@junobuild/admin';
+	import ConfirmUpgradeVersion from '$lib/components/upgrade/ConfirmUpgradeVersion.svelte';
 
 	export let currentVersion: string;
 	export let newerReleases: string[];
+	export let build: BuildType | undefined = undefined;
 	export let segment: 'satellite' | 'mission_control' | 'orbiter';
 	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
 
-	let steps: 'init' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' = 'init';
+	let buildExtended = false;
+	$: buildExtended = build === 'extended';
+
+	let steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error';
+	$: steps = buildExtended ? 'confirm' : 'init';
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
@@ -64,8 +71,20 @@
 			on:junoNext={({ detail }) => (steps = detail)}
 			on:junoClose
 		/>
+	{:else if steps === 'confirm'}
+		<ConfirmUpgradeVersion {segment} on:junoClose on:junoContinue={() => (steps = 'init')}>
+			<slot name="intro" slot="intro" />
+		</ConfirmUpgradeVersion>
 	{:else}
-		<SelectUpgradeVersion {newerReleases} {segment} {currentVersion} on:junoNext={onSelect}>
+		<SelectUpgradeVersion
+			{newerReleases}
+			{segment}
+			{currentVersion}
+			back={buildExtended}
+			on:junoNext={onSelect}
+			on:junoClose
+			on:junoBack={() => (steps = 'confirm')}
+		>
 			<slot name="intro" slot="intro" />
 		</SelectUpgradeVersion>
 	{/if}

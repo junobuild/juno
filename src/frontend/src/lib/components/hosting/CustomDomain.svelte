@@ -72,8 +72,8 @@
 		registrationState === undefined
 			? undefined
 			: registrationState === null
-			? null
-			: keyOf({ obj: $i18n.hosting, key: registrationState.toLowerCase() });
+				? null
+				: keyOf({ obj: $i18n.hosting, key: registrationState.toLowerCase() });
 </script>
 
 {#if toolsColumn}

@@ -41,18 +41,18 @@ use ic_cdk::api::call::arg_data;
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
+use junobuild_shared::ic::deposit_cycles as deposit_cycles_shared;
+use junobuild_shared::types::interface::{
+    DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
+};
+use junobuild_shared::types::state::{
+    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
+};
+use junobuild_shared::types::state::{Metadata, UserId};
 use segments::store::{
     get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
     set_satellite_metadata as set_satellite_metadata_store,
 };
-use shared::ic::deposit_cycles as deposit_cycles_shared;
-use shared::types::interface::{
-    DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
-};
-use shared::types::state::{
-    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
-};
-use shared::types::state::{Metadata, UserId};
 use std::cell::RefCell;
 use std::collections::HashMap;
 

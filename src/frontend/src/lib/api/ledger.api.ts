@@ -1,7 +1,7 @@
-import { localIdentityCanisterId } from '$lib/constants/constants';
+import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { isNullish } from '@dfinity/utils';
 import type { GetAccountIdentifierTransactionsResponse } from '@junobuild/ledger';
 import { AccountIdentifier, balance, transactions } from '@junobuild/ledger';
 
@@ -21,7 +21,7 @@ export const getBalance = ({
 
 	return balance({
 		index: {
-			...(nonNullish(localIdentityCanisterId) && { env: 'dev' }),
+			...container(),
 			identity
 		},
 		accountIdentifier: getAccountIdentifier(owner).toHex()
@@ -45,7 +45,7 @@ export const getTransactions = ({
 
 	return transactions({
 		index: {
-			...(nonNullish(localIdentityCanisterId) && { env: 'dev' }),
+			...container(),
 			identity
 		},
 		args: {

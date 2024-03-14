@@ -1,7 +1,9 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { MissionControlBalance } from '$lib/types/balance.types';
 import type { SetControllerParams } from '$lib/types/controllers';
+import type { CustomDomains } from '$lib/types/custom-domain';
 import type { Principal } from '@dfinity/principal';
+import type { BuildType } from '@junobuild/admin';
 
 export interface JunoModalBalance {
 	missionControlBalance?: MissionControlBalance;
@@ -24,7 +26,8 @@ export interface JunoModalUpgradeDetail {
 	newerReleases: string[];
 }
 
-export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail & JunoModalSatelliteDetail;
+export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
+	JunoModalSatelliteDetail & { build?: BuildType };
 
 export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
 	fee: bigint;
@@ -39,7 +42,15 @@ export interface JunoModalCycles {
 	cycles: bigint;
 }
 
+export interface JunoModalCustomDomainsDetail {
+	customDomains: CustomDomains;
+}
+
 export type JunoModalCyclesSatelliteDetail = JunoModalCycles & JunoModalSatelliteDetail;
+
+export type JunoModalDeleteSatelliteDetail = JunoModalCycles &
+	JunoModalCustomDomainsDetail &
+	JunoModalSatelliteDetail;
 
 export interface JunoModalCreateControllerDetail {
 	add: (
@@ -60,7 +71,8 @@ export type JunoModalDetail =
 	| JunoModalCreateSegmentDetail
 	| JunoModalCustomDomainDetail
 	| JunoModalCreateControllerDetail
-	| JunoModalCyclesSatelliteDetail;
+	| JunoModalCyclesSatelliteDetail
+	| JunoModalDeleteSatelliteDetail;
 
 export interface JunoModal {
 	type:

@@ -11,6 +11,7 @@ import {
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import { authStore } from '$lib/stores/auth.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import type { SetControllerParams } from '$lib/types/controllers';
@@ -26,7 +27,9 @@ export const setMissionControlControllerForVersion = async ({
 }: {
 	missionControlId: Principal;
 } & SetControllerParams) => {
-	const version = await missionControlVersion({ missionControlId });
+	const identity = get(authStore).identity;
+
+	const version = await missionControlVersion({ missionControlId, identity });
 
 	const missionControlController =
 		compare(version, '0.0.3') >= 0
@@ -35,7 +38,13 @@ export const setMissionControlControllerForVersion = async ({
 				: setMissionControlController004
 			: addMissionControlController;
 
-	await missionControlController({ missionControlId, controllerId, profile, scope: 'admin' });
+	await missionControlController({
+		missionControlId,
+		controllerId,
+		profile,
+		scope: 'admin',
+		identity
+	});
 };
 
 // TODO: to be removed in next version as only supported if < v0.0.7
@@ -48,10 +57,12 @@ export const setSatellitesForVersion = async ({
 	missionControlId: Principal;
 	satelliteIds: Principal[];
 } & SetControllerParams) => {
+	const identity = get(authStore).identity;
+
 	const mapVersions = async (
 		satelliteId: Principal
 	): Promise<{ satelliteId: Principal; version: string }> => {
-		const version = await satelliteVersion({ satelliteId });
+		const version = await satelliteVersion({ satelliteId, identity });
 		return {
 			version,
 			satelliteId
@@ -91,9 +102,10 @@ export const setSatellitesForVersion = async ({
 						missionControlId,
 						controllerId,
 						profile,
-						scope: 'admin'
+						scope: 'admin',
+						identity
 					})
-			  ]
+				]
 			: []),
 		...(addSatellitesIds.length > 0
 			? [
@@ -102,9 +114,10 @@ export const setSatellitesForVersion = async ({
 						missionControlId,
 						controllerId,
 						profile,
-						scope: 'admin'
+						scope: 'admin',
+						identity
 					})
-			  ]
+				]
 			: [])
 	]);
 };
@@ -121,10 +134,13 @@ export const setSatelliteName = async ({
 	const updateData = new Map(metadata);
 	updateData.set(METADATA_KEY_NAME, satelliteName);
 
+	const identity = get(authStore).identity;
+
 	const updatedSatellite = await setSatelliteMetadata({
 		missionControlId,
 		satelliteId,
-		metadata: Array.from(updateData)
+		metadata: Array.from(updateData),
+		identity
 	});
 
 	const satellites = get(satellitesStore);
@@ -140,7 +156,9 @@ export const attachOrbiter = async (params: {
 	missionControlId: Principal;
 	orbiterId: Principal;
 }) => {
-	const orbiter = await setOrbiter(params);
+	const identity = get(authStore).identity;
+
+	const orbiter = await setOrbiter({ ...params, identity });
 
 	orbitersStore.set([orbiter]);
 };

@@ -5,9 +5,9 @@ use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use ic_ledger_types::BlockIndex;
-use shared::env::CONSOLE;
-use shared::types::interface::CreateCanisterArgs;
-use shared::types::state::{OrbiterId, OrbiterSatelliteConfig, SatelliteId, UserId};
+use junobuild_shared::env::CONSOLE;
+use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::state::{OrbiterId, OrbiterSatelliteConfig, SatelliteId, UserId};
 use std::collections::HashMap;
 
 pub async fn create_orbiter(name: &Option<String>) -> Result<Orbiter, String> {

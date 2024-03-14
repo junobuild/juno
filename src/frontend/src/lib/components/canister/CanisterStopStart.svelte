@@ -1,11 +1,11 @@
 <script lang="ts">
-	import type { Canister, CanisterStatus, CanisterSyncStatus } from '$lib/types/canister';
+	import type { CanisterIcStatus, CanisterStatus, CanisterSyncStatus } from '$lib/types/canister';
 	import CanisterStart from '$lib/components/canister/CanisterStart.svelte';
 	import CanisterStop from '$lib/components/canister/CanisterStop.svelte';
 	import { fade } from 'svelte/transition';
 	import { nonNullish } from '@dfinity/utils';
 
-	export let canister: Canister | undefined = undefined;
+	export let canister: CanisterIcStatus | undefined = undefined;
 	export let segment: 'satellite' | 'orbiter';
 
 	let status: CanisterStatus | undefined = undefined;

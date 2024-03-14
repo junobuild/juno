@@ -4,10 +4,11 @@
 	import SatelliteActions from '$lib/components/satellites/SatelliteActions.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { versionStore } from '$lib/stores/version.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
+	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
+	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
 
 	export let satellite: Satellite;
 
@@ -23,24 +24,29 @@
 			<svelte:fragment slot="label">{$i18n.satellites.id}</svelte:fragment>
 			<Identifier identifier={satelliteId} shorten={false} small={false} />
 		</Value>
-
-		<Value>
-			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-			<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
-		</Value>
 	</div>
 
 	<div>
-		<CanisterOverview canisterId={satellite.satellite_id} segment="satellite" />
+		<SatelliteOverviewVersion {satelliteId} />
 	</div>
 
 	<SatelliteActions {satellite} />
 </div>
 
-<style lang="scss">
-	@use '../../styles/mixins/text';
+<div class="card-container columns-3">
+	<div>
+		<CanisterOverview
+			canisterId={satellite.satellite_id}
+			segment="satellite"
+			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
+		/>
+	</div>
 
-	p {
-		@include text.truncate;
+	<CanisterJunoStatuses segment="satellite" canisterId={satellite.satellite_id} />
+</div>
+
+<style lang="scss">
+	.card-container:last-of-type {
+		margin: var(--padding-4x) 0 0;
 	}
 </style>

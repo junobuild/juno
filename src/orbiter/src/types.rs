@@ -3,8 +3,10 @@ pub mod state {
     use crate::types::memory::Memory;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::state::{
+        Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId,
+    };
     use serde::{Deserialize, Serialize};
-    use shared::types::state::{Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId};
     use std::collections::HashMap;
 
     #[derive(Serialize, Deserialize)]
@@ -97,8 +99,10 @@ pub mod memory {
 pub mod interface {
     use crate::types::state::{PageViewDevice, SessionId};
     use candid::CandidType;
+    use junobuild_shared::types::state::{Metadata, SatelliteId};
+    use junobuild_shared::types::utils::CalendarDate;
     use serde::Deserialize;
-    use shared::types::state::{Metadata, SatelliteId};
+    use std::collections::HashMap;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPageView {
@@ -139,5 +143,48 @@ pub mod interface {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct DelSatelliteConfig {
         pub updated_at: Option<u64>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsMetricsPageViews {
+        pub daily_total_page_views: HashMap<CalendarDate, u32>,
+        pub unique_sessions: usize,
+        pub unique_page_views: usize,
+        pub total_page_views: u32,
+        pub average_page_views_per_session: f64,
+        pub bounce_rate: f64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsTop10PageViews {
+        pub referrers: Vec<(String, u32)>,
+        pub pages: Vec<(String, u32)>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsDevicesPageViews {
+        pub mobile: f64,
+        pub desktop: f64,
+        pub others: f64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsBrowsersPageViews {
+        pub chrome: f64,
+        pub opera: f64,
+        pub firefox: f64,
+        pub safari: f64,
+        pub others: f64,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsClientsPageViews {
+        pub devices: AnalyticsDevicesPageViews,
+        pub browsers: AnalyticsBrowsersPageViews,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsTrackEvents {
+        pub total: HashMap<String, u32>,
     }
 }

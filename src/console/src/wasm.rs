@@ -1,8 +1,8 @@
 use crate::STATE;
 use candid::{Encode, Principal};
-use shared::types::ic::WasmArg;
-use shared::types::interface::{MissionControlArgs, SegmentArgs};
-use shared::types::state::{MissionControlId, UserId};
+use junobuild_shared::types::ic::WasmArg;
+use junobuild_shared::types::interface::{MissionControlArgs, SegmentArgs};
+use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub fn mission_control_wasm_arg(user: &UserId) -> WasmArg {
     let wasm: Vec<u8> =

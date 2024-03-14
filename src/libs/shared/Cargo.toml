@@ -1,0 +1,24 @@
+[package]
+name = "junobuild-shared"
+version = "0.0.13"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+description = "Shared utilities for Juno."
+homepage.workspace = true
+documentation = "https://docs.rs/junobuild-shared"
+readme = "README.md"
+license-file = "LICENSE.md"
+
+[package.metadata.docs.rs]
+targets = ["wasm32-unknown-unknown"]
+
+[dependencies]
+candid.workspace = true
+ic-cdk.workspace = true
+ic-cdk-macros.workspace = true
+ic-ledger-types.workspace = true
+serde.workspace = true
+futures = "0.3.28"
+ciborium = "0.2.1"
+time = "0.3.31"

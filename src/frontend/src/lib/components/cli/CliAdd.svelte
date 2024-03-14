@@ -5,7 +5,7 @@
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import type { Principal } from '@dfinity/principal';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
-	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -17,6 +17,7 @@
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
+	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 
 	export let principal: string;
 	export let redirect_uri: string;
@@ -38,11 +39,16 @@
 		}
 
 		try {
-			const actor = await getMissionControlActor($missionControlStore);
+			const actor = await getMissionControlActor({
+				missionControlId: $missionControlStore,
+				identity: $authStore.identity
+			});
 			const [sats, orbs] = await Promise.all([actor.list_satellites(), actor.list_orbiters()]);
 
 			satellites = sats;
 			orbiters = orbs;
+
+			toggleAll();
 		} catch (err: unknown) {
 			console.error(err);
 		}
@@ -67,7 +73,7 @@
 	let profile = '';
 
 	const onSubmit = async () => {
-		if (!redirect_uri || !principal) {
+		if (isNullish(redirect_uri) || isNullish(principal)) {
 			toasts.error({
 				text: $i18n.errors.cli_missing_params
 			});
@@ -88,6 +94,13 @@
 			return;
 		}
 
+		if (REVOKED_CONTROLLERS.includes(principal)) {
+			toasts.error({
+				text: 'The controller intended for sign-in purposes has been revoked. Please update your Juno CLI!'
+			});
+			return;
+		}
+
 		busy.start();
 
 		try {
@@ -100,7 +113,7 @@
 								profile,
 								scope: 'admin'
 							})
-					  ]
+						]
 					: []),
 				...(selectedSatellites.length > 0
 					? [
@@ -111,7 +124,7 @@
 								profile,
 								scope: 'admin'
 							})
-					  ]
+						]
 					: []),
 				...(selectedOrbiters.length > 0
 					? [
@@ -120,9 +133,10 @@
 								controllerId: principal,
 								orbiterIds: selectedOrbiters.map((s) => s[0]),
 								profile,
-								scope: 'admin'
+								scope: 'admin',
+								identity: $authStore.identity
 							})
-					  ]
+						]
 					: [])
 			]);
 
@@ -136,7 +150,7 @@
 								})),
 								bigintStringify
 							)
-					  )}`
+						)}`
 					: undefined,
 				selectedOrbiters.length > 0
 					? `orbiters=${encodeURIComponent(
@@ -147,7 +161,7 @@
 								})),
 								bigintStringify
 							)
-					  )}`
+						)}`
 					: undefined,
 				missionControl ? `mission_control=${$missionControlStore.toText()}` : undefined,
 				profile !== '' ? `profile=${profile}` : undefined
@@ -172,12 +186,16 @@
 </script>
 
 <p>
-	{@html i18nFormat($i18n.cli.add, [
+	{@html i18nFormat($i18n.cli.controller, [
 		{
 			placeholder: '{0}',
 			value: principal
 		}
 	])}
+</p>
+
+<p class="add">
+	{$i18n.cli.add}
 </p>
 
 <form on:submit|preventDefault={onSubmit}>
@@ -209,7 +227,7 @@
 		{/each}
 
 		<div class="checkbox all">
-			<input type="checkbox" on:change={toggleAll} />
+			<input type="checkbox" on:change={toggleAll} checked={allSelected} />
 			<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
 		</div>
 	</div>
@@ -227,7 +245,7 @@
 		bind:value={profile}
 	/>
 
-	<button {disabled}>{$i18n.core.submit}</button>
+	<button {disabled}>{$i18n.cli.authorize}</button>
 </form>
 
 <style lang="scss">
@@ -264,7 +282,7 @@
 	}
 
 	.objects {
-		margin: var(--padding-2x) 0;
+		margin: var(--padding) 0 var(--padding-2x);
 		padding: var(--padding);
 	}
 
@@ -272,5 +290,10 @@
 		@include media.min-width(large) {
 			max-width: 50%;
 		}
+	}
+
+	.add {
+		padding: var(--padding-2x) 0 0;
+		margin: 0;
 	}
 </style>

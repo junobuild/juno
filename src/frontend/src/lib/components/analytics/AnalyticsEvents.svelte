@@ -1,17 +1,11 @@
 <script lang="ts">
-	import type { AnalyticKey, TrackEvent } from '$declarations/orbiter/orbiter.did';
+	import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let trackEvents: [AnalyticKey, TrackEvent][] = [];
+	export let trackEvents: AnalyticsTrackEvents;
 
-	let trackEventsSum: Record<string, number> = {};
-	$: trackEventsSum = trackEvents.reduce(
-		(acc, [_, { name }]) => ({
-			...acc,
-			[name]: (acc[name] ?? 0) + 1
-		}),
-		{} as Record<string, number>
-	);
+	let total: Array<[string, number]>;
+	$: ({ total } = trackEvents);
 </script>
 
 <div class="table-container">
@@ -24,7 +18,7 @@
 		</thead>
 
 		<tbody>
-			{#each Object.entries(trackEventsSum) as [name, count]}
+			{#each total as [name, count]}
 				<tr>
 					<td>{name}</td>
 					<td>{count}</td>

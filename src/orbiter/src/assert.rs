@@ -7,8 +7,8 @@ use crate::msg::{ERROR_BOT_CALL, ERROR_FEATURE_NOT_ENABLED};
 use crate::types::interface::{SetPageView, SetTrackEvent};
 use crate::types::state::{AnalyticKey, SatelliteConfig};
 use isbot::Bots;
-use shared::types::state::SatelliteId;
-use shared::utils::principal_not_equal;
+use junobuild_shared::types::state::SatelliteId;
+use junobuild_shared::utils::principal_not_equal;
 
 pub fn assert_enabled(satellite_id: &SatelliteId) -> Result<(), String> {
     let config: Option<SatelliteConfig> = STATE.with(|state| {

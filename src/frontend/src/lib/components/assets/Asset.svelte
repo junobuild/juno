@@ -17,6 +17,7 @@
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 
 	const { store, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
@@ -45,7 +46,7 @@
 	$: downloadUrl = nonNullish(full_path)
 		? `${satelliteUrl($rulesStore.satelliteId.toText())}${full_path}${
 				token !== undefined ? `?token=${token}` : ''
-		  }`
+			}`
 		: undefined;
 
 	let description: string | undefined;
@@ -62,7 +63,8 @@
 
 		await deleteAsset({
 			...params,
-			full_path
+			full_path,
+			identity: $authStore.identity
 		});
 
 		resetData();

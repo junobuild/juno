@@ -10,6 +10,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { newerReleases } from '$lib/services/upgrade.services';
+	import type { BuildType } from '@junobuild/admin';
 
 	export let satellite: Satellite | undefined = undefined;
 
@@ -24,6 +25,7 @@
 
 	let satVersion: string | undefined;
 	let satRelease: string | undefined;
+	let satBuild: BuildType | undefined;
 
 	let ctrlVersion: string | undefined;
 	let ctrlRelease: string | undefined;
@@ -38,6 +40,10 @@
 	$: satRelease =
 		nonNullish(satellite) && nonNullish(satellite?.satellite_id)
 			? $versionStore?.satellites[satellite?.satellite_id.toText()]?.release
+			: undefined;
+	$: satBuild =
+		nonNullish(satellite) && nonNullish(satellite?.satellite_id)
+			? $versionStore?.satellites[satellite?.satellite_id.toText()]?.build
 			: undefined;
 
 	$: ctrlVersion = $versionStore?.missionControl?.current;
@@ -70,11 +76,13 @@
 	const openModal = async ({
 		currentVersion,
 		type,
-		satellite
+		satellite,
+		build
 	}: {
 		currentVersion: string;
 		type: 'upgrade_satellite' | 'upgrade_mission_control' | 'upgrade_orbiter';
 		satellite?: Satellite;
+		build?: BuildType;
 	}) => {
 		busy.start();
 
@@ -84,8 +92,8 @@
 				type === 'upgrade_mission_control'
 					? 'mission_controls'
 					: type === 'upgrade_orbiter'
-					? 'orbiters'
-					: 'satellites'
+						? 'orbiters'
+						: 'satellites'
 		});
 
 		busy.stop();
@@ -101,7 +109,8 @@
 				detail: {
 					...(nonNullish(satellite) && { satellite }),
 					currentVersion,
-					newerReleases: result
+					newerReleases: result,
+					build
 				}
 			}
 		});
@@ -111,7 +120,8 @@
 		await openModal({
 			type: 'upgrade_satellite',
 			satellite: satellite!,
-			currentVersion: satVersion!
+			currentVersion: satVersion!,
+			build: satBuild
 		});
 
 	const upgradeMissionControl = async () =>

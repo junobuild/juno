@@ -1,0 +1,26 @@
+[package]
+name = "junobuild-macros"
+version = "0.0.1"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+description = "Procedural macros for hooking into various events in Juno."
+homepage.workspace = true
+documentation = "https://docs.rs/junobuild-macros"
+readme = "README.md"
+license-file = "LICENSE.md"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+quote = "1.0.35"
+syn = { version = "2.0.48", features = ["full"] }
+proc-macro2 = "1.0.76"
+serde.workspace = true
+serde_tokenstream = "0.2.0"
+
+[dev-dependencies]
+candid.workspace = true
+ic-cdk.workspace = true
+trybuild = "1.0.89"

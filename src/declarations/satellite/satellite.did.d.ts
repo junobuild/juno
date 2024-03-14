@@ -1,4 +1,5 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export interface AssetEncodingNoContent {
@@ -197,7 +198,10 @@ export interface UploadChunkResult {
 	chunk_id: bigint;
 }
 export interface _SERVICE {
+	build_version: ActorMethod<[], string>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
+	count_assets: ActorMethod<[string], bigint>;
+	count_docs: ActorMethod<[string], bigint>;
 	del_asset: ActorMethod<[string, string], undefined>;
 	del_assets: ActorMethod<[string], undefined>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
@@ -208,8 +212,10 @@ export interface _SERVICE {
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
 	del_rule: ActorMethod<[RulesType, string, DelDoc], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
+	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_config: ActorMethod<[], Config>;
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
+	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
@@ -232,3 +238,5 @@ export interface _SERVICE {
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

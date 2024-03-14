@@ -1,7 +1,12 @@
 import { open, readFile } from 'node:fs/promises';
 
-export const loadWasm = async (type) => {
+export const loadLocalWasm = async (type) => {
 	const buffer = await readFile(`${process.cwd()}/.dfx/local/canisters/${type}/${type}.wasm`);
+	return [...new Uint8Array(buffer)];
+};
+
+export const loadGzippedWasm = async (type) => {
+	const buffer = await readFile(`${process.cwd()}/${type}.wasm.gz`);
 	return [...new Uint8Array(buffer)];
 };
 

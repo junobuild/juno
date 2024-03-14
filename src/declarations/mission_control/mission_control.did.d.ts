@@ -1,4 +1,5 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export type CanisterStatusType = { stopped: null } | { stopping: null } | { running: null };
@@ -13,12 +14,6 @@ export type ControllerScope = { Write: null } | { Admin: null };
 export interface CronJobStatusesConfig {
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
-}
-export interface DefiniteCanisterSettings {
-	freezing_threshold: bigint;
-	controllers: Array<Principal>;
-	memory_allocation: bigint;
-	compute_allocation: bigint;
 }
 export interface DepositCyclesArgs {
 	cycles: bigint;
@@ -37,11 +32,17 @@ export interface Satellite {
 	created_at: bigint;
 	satellite_id: Principal;
 }
+export interface SegmentCanisterSettings {
+	freezing_threshold: bigint;
+	controllers: Array<Principal>;
+	memory_allocation: bigint;
+	compute_allocation: bigint;
+}
 export interface SegmentCanisterStatus {
 	status: CanisterStatusType;
 	memory_size: bigint;
 	cycles: bigint;
-	settings: DefiniteCanisterSettings;
+	settings: SegmentCanisterSettings;
 	idle_cycles_burned_per_day: bigint;
 	module_hash: [] | [Uint8Array | number[]];
 }
@@ -107,3 +108,5 @@ export interface _SERVICE {
 	top_up: ActorMethod<[Principal, Tokens], undefined>;
 	version: ActorMethod<[], string>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

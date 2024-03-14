@@ -7,6 +7,7 @@ This document explains how to run locally [Juno](https://juno.build).
 - [Run locally](#run-locally)
 - [Development](#development)
 - [Top-up](#top-up)
+- [Troubleshooting](#troubleshooting)
 
 ## Run locally
 
@@ -20,10 +21,10 @@ dfx start --clean
 First, deploy II:
 
 ```
-dfx deploy internet_identity --specified-id rrkah-fqaaa-aaaaa-aaaaq-cai
+dfx deploy internet_identity --specified-id rdmx6-jaaaa-aaaaa-aaadq-cai
 ```
 
-Collect "internet_identity" canister ID and update [client/src/main.ts](client/src/main.ts) (if not `rrkah-fqaaa-aaaaa-aaaaq-cai`).
+Collect "internet_identity" canister ID and update [client/src/main.ts](client/src/main.ts) (if not `rdmx6-jaaaa-aaaaa-aaadq-cai`).
 
 Next, deploy the ICP ledger:
 
@@ -75,4 +76,24 @@ Top-up the local console with some cycles:
 
 ```
 npm run console:topup
+```
+
+## Troubleshooting
+
+### didc command not found
+
+Go to [Candid releases](https://github.com/dfinity/candid/releases) page to download your OS version didc.
+
+Example, for macos
+
+```sh
+release=$(curl --silent "https://api.github.com/repos/dfinity/candid/releases/latest" | grep -e '"tag_name"' | cut -c 16-25)
+curl -fsSL https://github.com/dfinity/candid/releases/download/$release/didc-macos > ~/.cargo/bin/didc
+chmod 755 ~/.cargo/bin/didc
+```
+
+### candid-extractor command not found
+
+```sh
+cargo install candid-extractor
 ```

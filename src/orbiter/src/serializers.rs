@@ -4,7 +4,7 @@ use crate::constants::{
     SERIALIZED_STRING_LENGTH,
 };
 use candid::Principal;
-use shared::types::state::Metadata;
+use junobuild_shared::types::state::Metadata;
 
 /// Principal
 
@@ -86,7 +86,7 @@ pub fn bytes_to_long_string(bytes: &[u8; SERIALIZED_LONG_STRING_LENGTH]) -> Stri
 pub fn metadata_to_bytes(m: &Option<Metadata>) -> [u8; SERIALIZED_METADATA_LENGTH] {
     let mut bytes: Vec<u8> = Vec::new();
 
-    let metadata: Metadata = m.clone().unwrap_or(Metadata::new());
+    let metadata: Metadata = m.clone().unwrap_or_default();
 
     for (key, value) in metadata.clone().into_iter() {
         bytes.extend_from_slice(&short_string_to_bytes(&key));

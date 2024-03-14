@@ -1,9 +1,7 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
-export interface AddCreditsArgs {
-	user: Principal;
-}
 export interface AssertMissionControlCenterArgs {
 	mission_control_id: Principal;
 	user: Principal;
@@ -15,6 +13,9 @@ export interface CreateCanisterArgs {
 }
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
+}
+export interface GetCreateCanisterFeeArgs {
+	user: Principal;
 }
 export interface LoadRelease {
 	total: bigint;
@@ -50,14 +51,14 @@ export interface Tokens {
 	e8s: bigint;
 }
 export interface _SERVICE {
-	add_credits: ActorMethod<[AddCreditsArgs], undefined>;
+	add_credits: ActorMethod<[Principal, Tokens], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
-	get_create_orbiter_fee: ActorMethod<[AddCreditsArgs], [] | [Tokens]>;
-	get_create_satellite_fee: ActorMethod<[AddCreditsArgs], [] | [Tokens]>;
+	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
+	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
 	get_releases_version: ActorMethod<[], ReleasesVersion>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
@@ -66,6 +67,9 @@ export interface _SERVICE {
 	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
 	reset_release: ActorMethod<[Segment], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
+	set_fee: ActorMethod<[Segment, Tokens], undefined>;
 	update_rate_config: ActorMethod<[Segment, RateConfig], undefined>;
 	version: ActorMethod<[], string>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

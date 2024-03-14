@@ -5,6 +5,7 @@
 	import { createEventDispatcher } from 'svelte';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { AccountIdentifier } from '@junobuild/ledger';
+	import { E8S_PER_ICP } from '$lib/constants/constants';
 
 	export let detail: JunoModalDetail;
 	export let priceLabel: string;
@@ -21,10 +22,10 @@
 		?.accountIdentifier;
 
 	export let insufficientFunds = true;
-	$: insufficientFunds = balance + credits < fee;
+	$: insufficientFunds = balance < fee && notEnoughCredits;
 
 	let notEnoughCredits = false;
-	$: notEnoughCredits = credits < fee;
+	$: notEnoughCredits = credits * fee < fee * E8S_PER_ICP;
 
 	const dispatch = createEventDispatcher();
 </script>
@@ -39,10 +40,6 @@
 			{
 				placeholder: '{1}',
 				value: formatE8sICP(balance)
-			},
-			{
-				placeholder: '{2}',
-				value: formatE8sICP(credits)
 			}
 		])}
 	</p>

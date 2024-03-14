@@ -1,0 +1,212 @@
+type AssetEncodingNoContent = record {
+  modified : nat64;
+  sha256 : vec nat8;
+  total_length : nat;
+};
+type AssetKey = record {
+  token : opt text;
+  collection : text;
+  owner : principal;
+  name : text;
+  description : opt text;
+  full_path : text;
+};
+type AssetNoContent = record {
+  key : AssetKey;
+  updated_at : nat64;
+  encodings : vec record { text; AssetEncodingNoContent };
+  headers : vec record { text; text };
+  created_at : nat64;
+};
+type CommitBatch = record {
+  batch_id : nat;
+  headers : vec record { text; text };
+  chunk_ids : vec nat;
+};
+type Config = record { storage : StorageConfig };
+type Controller = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  scope : ControllerScope;
+  expires_at : opt nat64;
+};
+type ControllerScope = variant { Write; Admin };
+type CustomDomain = record {
+  updated_at : nat64;
+  created_at : nat64;
+  bn_id : opt text;
+};
+type DelDoc = record { updated_at : opt nat64 };
+type DeleteControllersArgs = record { controllers : vec principal };
+type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
+type Doc = record {
+  updated_at : nat64;
+  owner : principal;
+  data : vec nat8;
+  description : opt text;
+  created_at : nat64;
+};
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : vec nat8;
+  headers : vec record { text; text };
+  certificate_version : opt nat16;
+};
+type HttpResponse = record {
+  body : vec nat8;
+  headers : vec record { text; text };
+  streaming_strategy : opt StreamingStrategy;
+  status_code : nat16;
+};
+type InitAssetKey = record {
+  token : opt text;
+  collection : text;
+  name : text;
+  description : opt text;
+  encoding_type : opt text;
+  full_path : text;
+};
+type InitUploadResult = record { batch_id : nat };
+type ListMatcher = record { key : opt text; description : opt text };
+type ListOrder = record { field : ListOrderField; desc : bool };
+type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
+type ListPaginate = record { start_after : opt text; limit : opt nat64 };
+type ListParams = record {
+  order : opt ListOrder;
+  owner : opt principal;
+  matcher : opt ListMatcher;
+  paginate : opt ListPaginate;
+};
+type ListResults = record {
+  matches_pages : opt nat64;
+  matches_length : nat64;
+  items_page : opt nat64;
+  items : vec record { text; AssetNoContent };
+  items_length : nat64;
+};
+type ListResults_1 = record {
+  matches_pages : opt nat64;
+  matches_length : nat64;
+  items_page : opt nat64;
+  items : vec record { text; Doc };
+  items_length : nat64;
+};
+type Memory = variant { Heap; Stable };
+type MemorySize = record { stable : nat64; heap : nat64 };
+type Permission = variant { Controllers; Private; Public; Managed };
+type Rule = record {
+  memory : opt Memory;
+  updated_at : nat64;
+  max_size : opt nat;
+  read : Permission;
+  created_at : nat64;
+  mutable_permissions : opt bool;
+  write : Permission;
+};
+type RulesType = variant { Db; Storage };
+type SetController = record {
+  metadata : vec record { text; text };
+  scope : ControllerScope;
+  expires_at : opt nat64;
+};
+type SetControllersArgs = record {
+  controller : SetController;
+  controllers : vec principal;
+};
+type SetDoc = record {
+  updated_at : opt nat64;
+  data : vec nat8;
+  description : opt text;
+};
+type SetRule = record {
+  memory : opt Memory;
+  updated_at : opt nat64;
+  max_size : opt nat;
+  read : Permission;
+  mutable_permissions : opt bool;
+  write : Permission;
+};
+type StorageConfig = record {
+  iframe : opt StorageConfigIFrame;
+  rewrites : vec record { text; text };
+  headers : vec record { text; vec record { text; text } };
+  redirects : opt vec record { text; StorageConfigRedirect };
+};
+type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
+type StorageConfigRedirect = record { status_code : nat16; location : text };
+type StreamingCallbackHttpResponse = record {
+  token : opt StreamingCallbackToken;
+  body : vec nat8;
+};
+type StreamingCallbackToken = record {
+  memory : Memory;
+  token : opt text;
+  sha256 : opt vec nat8;
+  headers : vec record { text; text };
+  index : nat64;
+  encoding_type : text;
+  full_path : text;
+};
+type StreamingStrategy = variant {
+  Callback : record {
+    token : StreamingCallbackToken;
+    callback : func () -> () query;
+  };
+};
+type UploadChunk = record {
+  content : vec nat8;
+  batch_id : nat;
+  order_id : opt nat;
+};
+type UploadChunkResult = record { chunk_id : nat };
+service : () -> {
+  commit_asset_upload : (CommitBatch) -> ();
+  count_assets : (text) -> (nat64) query;
+  count_docs : (text) -> (nat64) query;
+  del_asset : (text, text) -> ();
+  del_assets : (text) -> ();
+  del_controllers : (DeleteControllersArgs) -> (
+      vec record { principal; Controller },
+    );
+  del_custom_domain : (text) -> ();
+  del_doc : (text, text, DelDoc) -> ();
+  del_docs : (text) -> ();
+  del_many_assets : (vec record { text; text }) -> ();
+  del_many_docs : (vec record { text; text; DelDoc }) -> ();
+  del_rule : (RulesType, text, DelDoc) -> ();
+  deposit_cycles : (DepositCyclesArgs) -> ();
+  get_asset : (text, text) -> (opt AssetNoContent) query;
+  get_config : () -> (Config);
+  get_doc : (text, text) -> (opt Doc) query;
+  get_many_assets : (vec record { text; text }) -> (
+      vec record { text; opt AssetNoContent },
+    ) query;
+  get_many_docs : (vec record { text; text }) -> (
+      vec record { text; opt Doc },
+    ) query;
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  http_request_streaming_callback : (StreamingCallbackToken) -> (
+      StreamingCallbackHttpResponse,
+    ) query;
+  init_asset_upload : (InitAssetKey) -> (InitUploadResult);
+  list_assets : (text, ListParams) -> (ListResults) query;
+  list_controllers : () -> (vec record { principal; Controller }) query;
+  list_custom_domains : () -> (vec record { text; CustomDomain }) query;
+  list_docs : (text, ListParams) -> (ListResults_1) query;
+  list_rules : (RulesType) -> (vec record { text; Rule }) query;
+  memory_size : () -> (MemorySize) query;
+  set_config : (Config) -> ();
+  set_controllers : (SetControllersArgs) -> (
+      vec record { principal; Controller },
+    );
+  set_custom_domain : (text, opt text) -> ();
+  set_doc : (text, text, SetDoc) -> (Doc);
+  set_many_docs : (vec record { text; text; SetDoc }) -> (
+      vec record { text; Doc },
+    );
+  set_rule : (RulesType, text, SetRule) -> ();
+  upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
+  version : () -> (text) query;
+}

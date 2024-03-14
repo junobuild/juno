@@ -1,16 +1,20 @@
 import type {
 	AnalyticKey,
+	AnalyticsClientsPageViews,
+	AnalyticsMetricsPageViews,
+	AnalyticsTop10PageViews,
+	AnalyticsTrackEvents,
 	Controller,
+	GetAnalytics,
 	PageView,
 	OrbiterSatelliteConfig as SatelliteConfig,
 	SetSatelliteConfig,
 	TrackEvent
 } from '$declarations/orbiter/orbiter.did';
-import type { MemorySize } from '$declarations/satellite/satellite.did';
-import type { PageViewsPeriod } from '$lib/types/ortbiter';
+import type { OptionIdentity } from '$lib/types/itentity';
+import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
 import { getOrbiterActor } from '$lib/utils/actor.juno.utils';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
-import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
 
@@ -18,96 +22,173 @@ export const getPageViews = async ({
 	satelliteId,
 	orbiterId,
 	from,
-	to
+	to,
+	identity
+}: PageViewsParams): Promise<[AnalyticKey, PageView][]> => {
+	const { get_page_views } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_page_views
+	});
+};
+
+export const getAnalyticsMetricsPageViews = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: PageViewsParams): Promise<AnalyticsMetricsPageViews> => {
+	const { get_page_views_analytics_metrics } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_page_views_analytics_metrics
+	});
+};
+
+export const getAnalyticsTop10PageViews = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: PageViewsParams): Promise<AnalyticsTop10PageViews> => {
+	const { get_page_views_analytics_top_10 } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_page_views_analytics_top_10
+	});
+};
+
+export const getAnalyticsClientsPageViews = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: PageViewsParams): Promise<AnalyticsClientsPageViews> => {
+	const { get_page_views_analytics_clients } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_page_views_analytics_clients
+	});
+};
+
+const getAnalytics = async <T>({
+	satelliteId,
+	from,
+	to,
+	fn
 }: {
 	satelliteId?: Principal;
-	orbiterId: Principal;
-} & PageViewsPeriod): Promise<[AnalyticKey, PageView][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
-	return actor.get_page_views({
+	fn: (params: GetAnalytics) => Promise<T>;
+} & PageViewsPeriod): Promise<T> =>
+	fn({
 		satellite_id: toNullable(satelliteId),
 		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
 		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
 	});
-};
 
 export const getTrackEvents = async ({
 	satelliteId,
 	orbiterId,
 	from,
-	to
-}: {
-	satelliteId?: Principal;
-	orbiterId: Principal;
-} & PageViewsPeriod): Promise<[AnalyticKey, TrackEvent][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
-	return actor.get_track_events({
-		satellite_id: toNullable(satelliteId),
-		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
-		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
+	to,
+	identity
+}: PageViewsParams): Promise<[AnalyticKey, TrackEvent][]> => {
+	const { get_track_events } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_track_events
+	});
+};
+
+export const getTrackEventsAnalytics = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: PageViewsParams): Promise<AnalyticsTrackEvents> => {
+	const { get_track_events_analytics } = await getOrbiterActor({ orbiterId, identity });
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_track_events_analytics
 	});
 };
 
 export const listOrbiterControllers = async ({
-	orbiterId
+	orbiterId,
+	identity
 }: {
 	orbiterId: Principal;
+	identity: OptionIdentity;
 }): Promise<[Principal, Controller][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.list_controllers();
 };
 
 export const listOrbiterSatelliteConfigs = async ({
-	orbiterId
+	orbiterId,
+	identity
 }: {
 	orbiterId: Principal;
+	identity: OptionIdentity;
 }): Promise<[Principal, SatelliteConfig][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.list_satellite_configs();
 };
 
 export const setOrbiterSatelliteConfigs = async ({
 	orbiterId,
-	config
+	config,
+	identity
 }: {
 	orbiterId: Principal;
 	config: [Principal, SetSatelliteConfig][];
+	identity: OptionIdentity;
 }): Promise<[Principal, SatelliteConfig][]> => {
-	const actor = await getOrbiterActor({ orbiterId });
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.set_satellite_configs(config);
 };
 
-export const orbiterVersion = async ({ orbiterId }: { orbiterId: Principal }): Promise<string> => {
-	const actor = await getOrbiterActor({ orbiterId });
+export const orbiterVersion = async ({
+	orbiterId,
+	identity
+}: {
+	orbiterId: Principal;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	const actor = await getOrbiterActor({ orbiterId, identity });
 	return actor.version();
 };
 
 export const depositCycles = async ({
 	orbiterId,
 	cycles,
-	destinationId: destination_id
+	destinationId: destination_id,
+	identity
 }: {
 	orbiterId: Principal;
 	cycles: bigint;
 	destinationId: Principal;
+	identity: OptionIdentity;
 }) => {
-	const { deposit_cycles } = await getOrbiterActor({ orbiterId });
+	const { deposit_cycles } = await getOrbiterActor({ orbiterId, identity });
 	return deposit_cycles({
 		cycles,
 		destination_id
 	});
-};
-
-export const memorySize = async ({
-	orbiterId,
-	identity
-}: {
-	orbiterId: string;
-	identity: Identity;
-}): Promise<MemorySize> => {
-	const { memory_size } = await getOrbiterActor({
-		orbiterId: Principal.fromText(orbiterId),
-		identity
-	});
-	return memory_size();
 };

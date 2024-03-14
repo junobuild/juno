@@ -1,4 +1,5 @@
 import type { ActorMethod } from '@dfinity/agent';
+import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export interface ArchiveStatuses {
@@ -28,12 +29,6 @@ export interface CronTab {
 	mission_control_id: Principal;
 	created_at: bigint;
 }
-export interface DefiniteCanisterSettings {
-	freezing_threshold: bigint;
-	controllers: Array<Principal>;
-	memory_allocation: bigint;
-	compute_allocation: bigint;
-}
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
@@ -47,11 +42,17 @@ export interface ListStatusesArgs {
 }
 export type Result = { Ok: SegmentStatus } | { Err: string };
 export type Result_1 = { Ok: SegmentsStatuses } | { Err: string };
+export interface SegmentCanisterSettings {
+	freezing_threshold: bigint;
+	controllers: Array<Principal>;
+	memory_allocation: bigint;
+	compute_allocation: bigint;
+}
 export interface SegmentCanisterStatus {
 	status: CanisterStatusType;
 	memory_size: bigint;
 	cycles: bigint;
-	settings: DefiniteCanisterSettings;
+	settings: SegmentCanisterSettings;
 	idle_cycles_burned_per_day: bigint;
 	module_hash: [] | [Uint8Array | number[]];
 }
@@ -89,3 +90,5 @@ export interface _SERVICE {
 	set_cron_tab: ActorMethod<[SetCronTab], CronTab>;
 	version: ActorMethod<[], string>;
 }
+export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

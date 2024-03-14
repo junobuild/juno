@@ -8,6 +8,7 @@
 	import StorageData from '$lib/components/storage/StorageData.svelte';
 	import StorageRules from '$lib/components/storage/StorageRules.svelte';
 	import { reloadContextRules } from '$lib/utils/rules.utils';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let satelliteId: Principal;
 
@@ -18,7 +19,12 @@
 	});
 
 	const reloadRules = async () =>
-		reloadContextRules({ satelliteId, type: StorageRulesType, store });
+		reloadContextRules({
+			satelliteId,
+			type: StorageRulesType,
+			store,
+			identity: $authStore.identity
+		});
 
 	$: satelliteId, (async () => reloadRules())();
 

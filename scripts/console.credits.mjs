@@ -12,7 +12,10 @@ const addCredits = async () => {
 
 	const actor = await consoleActorLocal();
 
-	await actor.add_credits({ user: Principal.fromText(user) });
+	// 100_000_000n === 1 credit
+	// e.g. a satellite costs 2 ICP, then 1 credit covers it
+	// 10 days later, a satellite costs 9 ICP, then 1 credits covers it
+	await actor.add_credits(Principal.fromText(user), { e8s: 100_000_000n });
 
 	console.log('Credits added.');
 };

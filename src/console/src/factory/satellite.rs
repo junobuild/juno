@@ -1,12 +1,12 @@
 use crate::controllers::remove_console_controller;
 use crate::factory::canister::create_canister;
-use crate::store::{has_create_satellite_credits, increment_satellites_rate};
+use crate::store::{get_satellite_fee, increment_satellites_rate};
 use crate::wasm::satellite_wasm_arg;
 use candid::Principal;
-use shared::constants::CREATE_SATELLITE_CYCLES;
-use shared::ic::create_canister_install_code;
-use shared::types::interface::CreateCanisterArgs;
-use shared::types::state::{MissionControlId, UserId};
+use junobuild_shared::constants::CREATE_SATELLITE_CYCLES;
+use junobuild_shared::ic::create_canister_install_code;
+use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub async fn create_satellite(
     console: Principal,
@@ -16,7 +16,7 @@ pub async fn create_satellite(
     create_canister(
         create_satellite_wasm,
         &increment_satellites_rate,
-        &has_create_satellite_credits,
+        &get_satellite_fee,
         console,
         caller,
         args,

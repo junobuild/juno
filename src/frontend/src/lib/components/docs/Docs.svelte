@@ -1,71 +1,33 @@
 <script lang="ts">
 	import type { RulesContext } from '$lib/types/rules.context';
-	import { getContext, setContext } from 'svelte';
+	import { getContext } from 'svelte';
 	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { deleteDocs, listDocs, satelliteVersion } from '$lib/api/satellites.api';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { deleteDocs } from '$lib/api/satellites.api';
 	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
-	import type { ListParams } from '$lib/types/list';
-	import { compare } from 'semver';
-	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
 	import { DEV_FEATURES } from '$lib/constants/constants';
+	import { authStore } from '$lib/stores/auth.store';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	const list = async () => {
-		try {
-			const version = await satelliteVersion({ satelliteId: $store.satelliteId });
+	let collection: string | undefined;
+	$: collection = $store.rule?.[0];
 
-			// TODO: remove at the same time as satellite version query
-			if (isNullish(collection)) {
-				setItems({ items: undefined, matches_length: undefined });
-				return;
-			}
-
-			const list = compare(version, '0.0.9') >= 0 ? listDocs : listDocs008;
-
-			const { items, matches_length } = await list({
-				collection,
-				satelliteId: $store.satelliteId,
-				params: {
-					startAfter: $paginationStore.startAfter,
-					// prettier-ignore parenthesis required for Webstorm Svelte plugin
-					...$listParamsStore
-				} as ListParams
-			});
-			setItems({ items, matches_length });
-		} catch (err: unknown) {
-			toasts.error({
-				text: `Error while listing the documents.`,
-				detail: err
-			});
-		}
-	};
-
-	setContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY, {
-		...initPaginationContext(),
-		list
-	});
 	const {
 		store: paginationStore,
 		resetPage,
-		setItems
+		list
 	}: PaginationContext<DocType> = getContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY);
-
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
 
 	let empty = false;
 	$: empty = $paginationStore.items?.length === 0 && nonNullish(collection);
@@ -90,7 +52,7 @@
 
 	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
 	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
-		await deleteDocs(params);
+		await deleteDocs({ ...params, identity: $authStore.identity });
 
 		resetData();
 	};

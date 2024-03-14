@@ -1,0 +1,16 @@
+[package]
+name = "junobuild-utils"
+version = "0.0.1"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+description = "A collection of utilities for developers on Juno."
+homepage.workspace = true
+documentation = "https://docs.rs/junobuild-utils"
+readme = "README.md"
+license-file = "LICENSE.md"
+
+[dependencies]
+candid.workspace = true
+serde.workspace = true
+serde_json = "1.0.111"

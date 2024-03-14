@@ -8,12 +8,12 @@
 	import { emit } from '$lib/utils/events.utils';
 	import IconStart from '$lib/components/icons/IconStart.svelte';
 	import { createEventDispatcher } from 'svelte';
-	import type { Canister } from '$lib/types/canister';
+	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { Principal } from '@dfinity/principal';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 	import Text from '$lib/components/ui/Text.svelte';
 
-	export let canister: Canister;
+	export let canister: CanisterIcStatus;
 	export let segment: 'satellite' | 'orbiter';
 
 	let visible = false;

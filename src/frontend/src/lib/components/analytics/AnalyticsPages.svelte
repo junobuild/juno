@@ -1,35 +1,15 @@
 <script lang="ts">
-	import type { AnalyticKey, PageView } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
+	import type { AnalyticsTop10PageViews } from '$declarations/orbiter/orbiter.did';
 
-	export let pageViews: [AnalyticKey, PageView][] = [];
+	export let pageViews: AnalyticsPageViews;
 
-	let referrers: Record<string, number> = {};
-	$: referrers = pageViews.reduce(
-		(acc, [_, { href }]) => {
-			let pages: string;
-			try {
-				const { pathname } = new URL(href);
-				pages = pathname;
-			} catch (err: unknown) {
-				pages = href;
-			}
-
-			return {
-				...acc,
-				[pages]: (acc[pages] ?? 0) + 1
-			};
-		},
-		{} as Record<string, number>
-	);
-
-	let entries: [string, number][] = [];
-	$: entries = Object.entries(referrers)
-		.slice(0, 10)
-		.sort(([_a, countA], [_b, countB]) => countB - countA);
+	let top10: AnalyticsTop10PageViews;
+	$: ({ top10 } = pageViews);
 </script>
 
-{#if entries.length > 0}
+{#if top10.pages.length > 0}
 	<div class="table-container">
 		<table>
 			<thead>
@@ -40,9 +20,9 @@
 			</thead>
 
 			<tbody>
-				{#each entries as [referrer, count]}
+				{#each top10.pages as [pages, count]}
 					<tr>
-						<td>{referrer}</td>
+						<td>{pages}</td>
 						<td>{count}</td>
 					</tr>
 				{/each}

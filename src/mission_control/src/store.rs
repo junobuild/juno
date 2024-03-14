@@ -3,7 +3,9 @@ use crate::types::state::{ArchiveStatusesSegments, StableState, Statuses, User};
 use crate::STATE;
 use candid::Principal;
 use ic_cdk::api::time;
-use shared::types::state::{Metadata, OrbiterId, SatelliteId, SegmentStatusResult, UserId};
+use junobuild_shared::types::state::{
+    Metadata, OrbiterId, SatelliteId, SegmentStatusResult, UserId,
+};
 use std::collections::BTreeMap;
 
 pub fn get_user() -> UserId {

@@ -14,6 +14,7 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
 	import { CYCLES_WARNING, ONE_TRILLION } from '$lib/constants/constants';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let missionControlId: Principal;
 
@@ -46,7 +47,8 @@
 						satellites: [],
 						orbiters: []
 					}
-				}
+				},
+				identity: $authStore.identity
 			});
 
 			setInitValues();
@@ -73,7 +75,7 @@
 
 	const loadCrontab = async () => {
 		try {
-			cronTab = fromNullable(await getCronTab());
+			cronTab = fromNullable(await getCronTab($authStore.identity));
 
 			enabled = cronTab?.cron_jobs.statuses.enabled ?? false;
 			email = metadataEmail(cronTab?.cron_jobs.metadata ?? []);

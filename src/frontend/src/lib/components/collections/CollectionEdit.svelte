@@ -162,8 +162,8 @@
 			<Value ref="memory">
 				<svelte:fragment slot="label">{$i18n.collections.memory}</svelte:fragment>
 				<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
-					<option value="Heap">{$i18n.collections.heap}</option>
 					<option value="Stable">{$i18n.collections.stable}</option>
+					<option value="Heap">{$i18n.collections.heap}</option>
 				</select>
 			</Value>
 		</div>

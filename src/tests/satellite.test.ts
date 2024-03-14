@@ -47,8 +47,6 @@ describe('Satellite', () => {
 	});
 
 	it('should expose version', async () => {
-		console.log(await actor.version());
-
 		expect(await actor.version()).not.toBeNull();
 	});
 });

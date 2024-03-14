@@ -545,9 +545,9 @@ dependencies = [
 
 [[package]]
 name = "ic-cbor"
-version = "2.3.0"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "027916ece94814fc7eebad43f91d691988ac8294121f54e8f22f4611c7d17f17"
+checksum = "8e1e30f631a2a5987d843721dd83b49908d0c0cdb21fbcbbb51c1548ff01d99c"
 dependencies = [
  "candid",
  "ic-certification",
@@ -599,9 +599,9 @@ dependencies = [
 
 [[package]]
 name = "ic-certificate-verification"
-version = "2.3.0"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "74807b58655db518e68de1d65e1734da76af43949569b752aa27237e206bd4ad"
+checksum = "769142849e241e6cf7f5611f9b04983e958729495ea67d2de95e5d9a9c687d9b"
 dependencies = [
  "cached",
  "candid",
@@ -618,9 +618,9 @@ dependencies = [
 
 [[package]]
 name = "ic-certification"
-version = "2.3.0"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "b79fd38f674173bd0af3c80b9dab6fedd3391b81a2fc0f87a2e393fb723fe13b"
+checksum = "480b6a64a6602ed8c4eac150ef72f2206dc2910069d0cf524b5c6f90d8bc03fc"
 dependencies = [
  "hex",
  "serde",
@@ -630,9 +630,9 @@ dependencies = [
 
 [[package]]
 name = "ic-http-certification"
-version = "2.3.0"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "1920329afced339a770ca2a56b00fb8229a63ab0dcf1bb119bdeb54b5b70dbfd"
+checksum = "03d4e5ef38b5315b0e619c8a50c2d3ce485d769dbe3eca88ef64165597056e24"
 dependencies = [
  "candid",
  "http",
@@ -660,9 +660,9 @@ dependencies = [
 
 [[package]]
 name = "ic-representation-independent-hash"
-version = "2.3.0"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "be48db2f8b954b9b2a0f46424ddedda2728703d7b361bc65328ed17dcacd1e21"
+checksum = "257c90372cfbf5bf5b7f473d034dac2fb344665015c582592b8b45d90b181c88"
 dependencies = [
  "leb128",
  "sha2",
@@ -670,9 +670,9 @@ dependencies = [
 
 [[package]]
 name = "ic-response-verification"
-version = "2.3.0"
+version = "2.4.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "dd4b20dcd2bc7b1098c79dd545fa9ff7cb8cdca4345e2a823ffa73ebaf542b2b"
+checksum = "69ce81210d3747a4e334a86851c57725a5ec4d2d0c40b05b5dc4f9114c19c78a"
 dependencies = [
  "base64 0.21.7",
  "candid",
@@ -700,9 +700,9 @@ checksum = "95dce29e3ceb0e6da3e78b305d95365530f2efd2146ca18590c0ef3aa6038568"
 
 [[package]]
 name = "ic-stable-structures"
-version = "0.6.2"
+version = "0.6.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "774d7d26420c095f2b5f0f71f7b2ff4a5b58b87e0959dccc78b3d513a7db5112"
+checksum = "a314297eb9edb4bbcc2e04d2e634e38d5900b68eadae661e927946d1aba3f9f7"
 dependencies = [
  "ic_principal",
 ]
@@ -795,7 +795,7 @@ dependencies = [
  "ic-certification",
  "ic-representation-independent-hash",
  "ic-response-verification",
- "ic-stable-structures 0.6.2",
+ "ic-stable-structures 0.6.3",
  "junobuild-shared",
  "regex",
  "serde",

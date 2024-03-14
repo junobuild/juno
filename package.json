@@ -48,12 +48,15 @@
 		"ledger:transfer": "node scripts/ledger.transfer.mjs",
 		"i18n": "node scripts/i18n.mjs && prettier --write ./src/frontend/src/lib/types/i18n.d.ts",
 		"observatory:statuses": "node scripts/observatory.statuses.mjs",
-		"clippy": "cargo clippy --target=wasm32-unknown-unknown"
+		"clippy": "cargo clippy --target=wasm32-unknown-unknown",
+		"test": "vitest"
 	},
 	"devDependencies": {
 		"@dfinity/identity-secp256k1": "^1.0.1",
 		"@dfinity/ledger-icrc": "^2.1.3",
 		"@esbuild-plugins/node-modules-polyfill": "^0.2.2",
+		"@hadronous/pic": "^0.5.0",
+		"@ltd/j-toml": "^1.38.0",
 		"@rollup/plugin-inject": "^5.0.5",
 		"@sveltejs/adapter-static": "^3.0.1",
 		"@sveltejs/kit": "^2.5.0",
@@ -76,7 +79,8 @@
 		"svelte-preprocess": "^5.1.3",
 		"tslib": "^2.6.2",
 		"typescript": "^5.2.2",
-		"vite": "^5.0.12"
+		"vite": "^5.0.12",
+		"vitest": "^1.3.1"
 	},
 	"dependencies": {
 		"@dfinity/agent": "^1.0.1",

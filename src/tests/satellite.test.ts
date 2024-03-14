@@ -18,8 +18,6 @@ const WASM_PATH = resolve(
 	'satellite.wasm'
 );
 
-console.log('HERE');
-
 describe('Satellite', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;

@@ -3,7 +3,9 @@ import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satell
 import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { resolve } from 'node:path';
+import { parse } from '@ltd/j-toml';
+import { readFileSync } from 'node:fs';
+import { join, resolve } from 'node:path';
 import { afterAll, beforeAll, expect } from 'vitest';
 
 const WASM_PATH = resolve(
@@ -46,7 +48,15 @@ describe('Satellite', () => {
 		await pic?.tearDown();
 	});
 
-	it('should expose version', async () => {
-		expect(await actor.version()).not.toBeNull();
+	it('should expose version of the consumer', async () => {
+		const tomlFile = readFileSync(join(process.cwd(), 'src', 'satellite', 'Cargo.toml'));
+
+		type Toml = { package: { version: string } } | undefined;
+
+		const result: Toml = parse(tomlFile.toString()) as unknown as Toml;
+
+		expect(result?.package?.version).not.toBeNull();
+
+		expect(await actor.version()).toEqual(result?.package?.version);
 	});
 });

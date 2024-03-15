@@ -14,7 +14,7 @@ import {
 	satelliteInitArgs
 } from './utils/satellite-tests.utils';
 
-describe('satellite upgrade v0.0.16', () => {
+describe('Satellite upgrade v0.0.16', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 	let canisterId: Principal;

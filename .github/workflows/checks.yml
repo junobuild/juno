@@ -2,6 +2,8 @@ name: Checks
 
 on:
   pull_request:
+    paths:
+      - 'src/frontend/**'
 
 jobs:
   lint:

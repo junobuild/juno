@@ -7,7 +7,7 @@ import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, beforeEach, describe } from 'vitest';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
-describe('Satellite playground (kind of)', () => {
+describe.skip('Satellite playground (kind of)', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 

@@ -123,4 +123,32 @@ describe('satellite upgrade v0.0.16', () => {
 
 		await testUsers([...users, ...moreUsers]);
 	});
+
+	it('should keep listing existing heap collections as such', async () => {
+		const { set_rule, list_rules } = actor;
+
+		await set_rule({ Db: null }, 'test', {
+			memory: toNullable({ Heap: null }),
+			updated_at: toNullable(),
+			max_size: toNullable(),
+			read: { Managed: null },
+			mutable_permissions: toNullable(),
+			write: { Managed: null }
+		});
+
+		const testCollection = async () => {
+			const [[collection, { memory }], _] = await list_rules({
+				Db: null
+			});
+
+			expect(collection).toEqual('test');
+			expect(memory).toEqual(toNullable({ Heap: null }));
+		};
+
+		await testCollection();
+
+		await upgrade();
+
+		await testCollection();
+	});
 });

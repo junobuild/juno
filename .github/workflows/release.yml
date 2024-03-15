@@ -59,7 +59,7 @@ jobs:
       - run: mv out/${{ matrix.name }} ${{ matrix.name }}
 
       - name: 'Upload ${{ matrix.name }}'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           # name is the name used to display and retrieve the artifact
           name: ${{ matrix.name }}
@@ -78,7 +78,7 @@ jobs:
           CANISTERS: console,observatory,mission_control,satellite,orbiter
 
       - name: Upload metadata
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           # name is the name used to display and retrieve the artifact
           name: metadata.json
@@ -115,7 +115,7 @@ jobs:
           CANISTER: ${{ matrix.target }}
 
       - name: 'Upload ${{ matrix.name }}'
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.name }}
           path: ./${{ matrix.name }}

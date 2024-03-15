@@ -47,7 +47,7 @@ jobs:
       - run: mv out/${{ matrix.wasm }} ${{ matrix.wasm }}
 
       - name: Upload ${{ matrix.name }}
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           # name is the name used to display and retrieve the artifact
           name: ${{ matrix.wasm }}

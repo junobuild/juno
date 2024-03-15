@@ -64,7 +64,7 @@ describe('Satellite', () => {
 			});
 
 			expect(collection).toEqual('test');
-			expect(memory).toEqual(toNullable({ Heap: null }));
+			expect(memory).toEqual(toNullable({ Stable: null }));
 			expect(read).toEqual({ Managed: null });
 			expect(write).toEqual({ Managed: null });
 			expect(created_at).toBeGreaterThan(0n);
@@ -82,7 +82,7 @@ describe('Satellite', () => {
 			] = await list_rules({ Db: null });
 
 			expect(collection).toEqual('test');
-			expect(memory).toEqual(toNullable({ Heap: null }));
+			expect(memory).toEqual(toNullable({ Stable: null }));
 			expect(read).toEqual({ Managed: null });
 			expect(write).toEqual({ Managed: null });
 			expect(mutable_permissions).toEqual([true]);

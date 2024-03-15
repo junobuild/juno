@@ -1,0 +1,33 @@
+name: Build Base Docker Image
+
+description: The image shared by all builds, containing pre-built rust deps
+
+outputs: {}
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+      shell: bash
+
+    - name: Update system packages
+      run: sudo apt-get update
+      shell: bash
+
+    # We use buildx and its GitHub Actions caching support `type=gha`. For
+    # more information, see
+    # https://github.com/docker/build-push-action/issues/539
+    - name: Set up Docker Buildx
+      uses: docker/setup-buildx-action@v2
+      shell: bash
+
+    - name: Build base Docker image
+      uses: docker/build-push-action@v3
+      with:
+        file: Dockerfile
+        cache-from: type=gha,scope=cached-stage
+        cache-to: type=gha,scope=cached-stage,mode=max
+        outputs: type=cacheonly
+        target: deps
+      shell: bash

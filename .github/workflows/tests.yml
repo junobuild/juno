@@ -2,6 +2,10 @@ name: Tests
 
 on:
   pull_request:
+    paths:
+      - 'src/satellite/**'
+      - 'src/libs/**'
+      - 'src/tests/**'
 
 jobs:
   docker-build-base:

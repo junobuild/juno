@@ -37,8 +37,19 @@ jobs:
           file: Dockerfile
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage
-          outputs: ./.dfx/local/canisters/${{ matrix.name }}/${{ matrix.wasm }}
+          outputs: ./out
           target: ${{ matrix.target }}
+
+      - run: mv out/${{ matrix.wasm }} ${{ matrix.wasm }}
+
+      - name: Upload ${{ matrix.name }}
+        uses: actions/upload-artifact@v3
+        with:
+          # name is the name used to display and retrieve the artifact
+          name: ${{ matrix.name }}
+          # path is the name used as the file to upload and the name of the
+          # downloaded file
+          path: ./${{ matrix.wasm }}
 
   tests:
     runs-on: ubuntu-latest
@@ -47,6 +58,11 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
+      - name: Download satellite.wasm.gz
+        uses: actions/download-artifact@v3
+        with:
+          name: satellite.wasm.gz
 
       - name: Install dependencies
         run: npm ci

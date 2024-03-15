@@ -5,11 +5,11 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { parse } from '@ltd/j-toml';
-import { readFileSync } from 'node:fs';
+import { existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { afterAll, beforeAll, describe, expect } from 'vitest';
 
-const WASM_PATH = resolve(
+const WASM_PATH_LOCAL = resolve(
 	process.cwd(),
 	'.dfx',
 	'local',
@@ -17,6 +17,10 @@ const WASM_PATH = resolve(
 	'satellite',
 	'satellite.wasm'
 );
+
+const WASM_PATH_CI = resolve(process.cwd(), 'satellite.wasm.gz');
+
+const WASM_PATH = existsSync(WASM_PATH_CI) ? WASM_PATH_CI : WASM_PATH_LOCAL;
 
 describe('Satellite', () => {
 	let pic: PocketIc;

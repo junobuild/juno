@@ -92,7 +92,7 @@ describe('Satellite', () => {
 			testRuleUpdatedAt = updated_at;
 		});
 
-		it('should  list collections', async () => {
+		it('should list collections', async () => {
 			const { list_rules, set_rule } = actor;
 
 			const [
@@ -475,7 +475,7 @@ describe('Satellite', () => {
 			).rejects.toThrow('Bach initializer does not match chunk uploader.');
 		});
 
-		it('should throw errors on upload chunk to admin batch', async () => {
+		it('should throw errors on trying to commit admin batch', async () => {
 			const { init_asset_upload, commit_asset_upload, upload_asset_chunk } = actor;
 
 			const batch = await init_asset_upload({

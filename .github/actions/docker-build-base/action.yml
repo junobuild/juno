@@ -21,8 +21,9 @@ runs:
       uses: docker/setup-buildx-action@v3
 
     - name: Build base Docker image
-      uses: docker/build-push-action@v3
+      uses: docker/build-push-action@v5
       with:
+        context: .
         file: Dockerfile
         cache-from: type=gha,scope=cached-stage
         cache-to: type=gha,scope=cached-stage,mode=max

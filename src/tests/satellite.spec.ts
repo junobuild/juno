@@ -4,27 +4,16 @@ import type {
 	StorageConfig
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { IDL } from '@dfinity/candid';
+import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { arrayBufferToUint8Array, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
+import { toArray } from '@junobuild/utils';
 import { parse } from '@ltd/j-toml';
-import { existsSync, readFileSync } from 'node:fs';
-import { join, resolve } from 'node:path';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect } from 'vitest';
-
-const WASM_PATH_LOCAL = resolve(
-	process.cwd(),
-	'.dfx',
-	'local',
-	'canisters',
-	'satellite',
-	'satellite.wasm'
-);
-
-const WASM_PATH_CI = resolve(process.cwd(), 'satellite.wasm.gz');
-
-const WASM_PATH = existsSync(WASM_PATH_CI) ? WASM_PATH_CI : WASM_PATH_LOCAL;
+import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
 describe('Satellite', () => {
 	let pic: PocketIc;
@@ -35,19 +24,11 @@ describe('Satellite', () => {
 	beforeAll(async () => {
 		pic = await PocketIc.create();
 
-		const arg = IDL.encode(
-			[
-				IDL.Record({
-					controllers: IDL.Vec(IDL.Principal)
-				})
-			],
-			[{ controllers: [controller.getPrincipal()] }]
-		);
-
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,
 			wasm: WASM_PATH,
-			arg
+			arg: satelliteInitArgs(controller),
+			sender: controller.getPrincipal()
 		});
 
 		actor = c;
@@ -74,7 +55,7 @@ describe('Satellite', () => {
 		});
 
 		it('should create a collection', async () => {
-			const { set_rule, list_rules, list_controllers } = actor;
+			const { set_rule, list_rules } = actor;
 
 			await set_rule({ Db: null }, 'test', setRule);
 
@@ -93,7 +74,7 @@ describe('Satellite', () => {
 		});
 
 		it('should list collections', async () => {
-			const { list_rules, set_rule } = actor;
+			const { list_rules } = actor;
 
 			const [
 				[collection, { updated_at, created_at, memory, mutable_permissions, read, write }],
@@ -104,6 +85,7 @@ describe('Satellite', () => {
 			expect(memory).toEqual(toNullable({ Heap: null }));
 			expect(read).toEqual({ Managed: null });
 			expect(write).toEqual({ Managed: null });
+			expect(mutable_permissions).toEqual([true]);
 			expect(created_at).toBeGreaterThan(0n);
 			expect(updated_at).toBeGreaterThan(0n);
 		});
@@ -442,6 +424,58 @@ describe('Satellite', () => {
 					token: toNullable()
 				})
 			).rejects.toThrow('Caller not allowed to upload data.');
+		});
+	});
+
+	describe('user', () => {
+		const user = Ed25519KeyIdentity.generate();
+
+		beforeAll(() => {
+			actor.setIdentity(user);
+		});
+
+		it('should create a user', async () => {
+			const { set_doc, list_docs } = actor;
+
+			await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider: 'internet_identity'
+				}),
+				description: toNullable(),
+				updated_at: toNullable()
+			});
+
+			const { items: users } = await list_docs('#user', {
+				matcher: toNullable(),
+				order: toNullable(),
+				owner: toNullable(),
+				paginate: toNullable()
+			});
+
+			expect(users).toHaveLength(1);
+			expect(users.find(([key]) => key === user.getPrincipal().toText())).not.toBeUndefined();
+		});
+	});
+
+	describe('anonymous', () => {
+		beforeAll(() => {
+			actor.setIdentity(new AnonymousIdentity());
+		});
+
+		it('should create a user', async () => {
+			const { set_doc } = actor;
+
+			const user = Ed25519KeyIdentity.generate();
+
+			await expect(
+				set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					updated_at: toNullable()
+				})
+			).rejects.toThrow('Cannot write.');
 		});
 	});
 

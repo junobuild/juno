@@ -225,6 +225,12 @@ describe('Satellite', () => {
 				})
 			).rejects.toThrow(ADMIN_ERROR_MSG);
 		});
+
+		it('should throw errors on getting memory size', async () => {
+			const { memory_size } = actor;
+
+			await expect(memory_size()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
 	});
 
 	describe('public', () => {

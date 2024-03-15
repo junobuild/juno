@@ -127,49 +127,70 @@ jobs:
       - uses: actions/checkout@v3
 
       - name: Download console.wasm.gz
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: console.wasm.gz
+          path: .
+
       - name: Download observatory.wasm.gz
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: observatory.wasm.gz
+          path: .
+
       - name: Download mission_control.wasm.gz
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: mission_control.wasm.gz
+          path: .
+
       - name: Download satellite.wasm.gz
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: satellite.wasm.gz
+          path: .
+
       - name: Download orbiter.wasm.gz
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: orbiter.wasm.gz
+          path: .
+
       - name: Download console.did
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: console.did
+          path: .
+
       - name: Download observatory.did
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: observatory.did
+          path: .
+
       - name: Download mission_control.did
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: mission_control.did
+          path: .
+
       - name: Download satellite.did
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: satellite.did
+          path: .
+
       - name: Download orbiter.did
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: orbiter.did
+          path: .
+
       - name: Download metadata.json
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           name: metadata.json
+          path: .
 
       - name: Prepare canisters
         run: bash .github/scripts/prepare

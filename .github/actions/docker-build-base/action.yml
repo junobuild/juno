@@ -8,7 +8,7 @@ runs:
   using: 'composite'
   steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
       shell: bash
 
     - name: Update system packages

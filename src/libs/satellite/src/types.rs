@@ -70,6 +70,11 @@ pub mod core {
         fn cmp_updated_at(&self, other: &Self) -> Ordering;
         fn cmp_created_at(&self, other: &Self) -> Ordering;
     }
+
+    /// A key might be a String or a Trait - e.g. StableKey. Using a Keyed we can extract functions that accept both as parameters.
+    pub trait Keyed {
+        fn key_ref(&self) -> &Key;
+    }
 }
 
 pub mod interface {

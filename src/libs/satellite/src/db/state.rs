@@ -68,8 +68,8 @@ fn is_collection_empty_heap(collection: &CollectionKey, db: &DbHeap) -> Result<b
 }
 
 fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Result<bool, String> {
-    let stable = get_docs_stable(collection, db)?;
-    Ok(stable.is_empty())
+    let mut stable = get_docs_stable(collection, db)?;
+    Ok(stable.next().is_none())
 }
 
 // Delete
@@ -163,13 +163,12 @@ fn get_doc_heap(collection: &CollectionKey, key: &Key, db: &DbHeap) -> Result<Op
 
 // List
 
-pub fn get_docs_stable(
+pub fn get_docs_stable<'a>(
     collection: &CollectionKey,
-    db: &DbStable,
-) -> Result<Vec<(StableKey, Doc)>, String> {
-    let items = db.range(filter_docs_range(collection)).collect();
-
-    Ok(items)
+    db: &'a DbStable,
+) -> Result<Box<dyn Iterator<Item = (StableKey, Doc)> + 'a>, String> {
+    let items = db.range(filter_docs_range(collection));
+    Ok(Box::new(items))
 }
 
 pub fn get_docs_heap<'a>(

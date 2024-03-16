@@ -1,5 +1,5 @@
-use crate::types::core::Key;
 use crate::types::core::{CollectionKey, Compare};
+use crate::types::core::{Key, Keyed};
 use crate::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults,
 };
@@ -12,6 +12,35 @@ pub fn list_values<'a, T: Clone + Compare>(
     let matches_length = matches.len();
 
     let ordered = order_values(matches, filters);
+
+    let start = start_at(&ordered, filters);
+
+    let paginated = paginate_values(ordered, filters, &start);
+
+    let length = paginated.len();
+
+    ListResults {
+        items: paginated,
+        items_length: length,
+        matches_length,
+        items_page: current_page(start, filters),
+        matches_pages: total_pages(matches_length, filters),
+    }
+}
+
+pub fn list_keyed_values<'a, I, T, K>(matches_iter: I, filters: &'a ListParams) -> ListResults<T>
+where
+    I: Iterator<Item = (K, T)> + 'a,
+    T: Clone + Compare + 'a,
+    K: Keyed + 'a,
+{
+    let matches: Vec<(K, T)> = matches_iter.collect();
+    let matches_length = matches.len();
+
+    // TODO: we collected the matches, can we keep a box further?
+    let matches_refs: Vec<(&K, &T)> = matches.iter().map(|(k, t)| (k, t)).collect();
+
+    let ordered = order_values(&matches_refs[..], filters);
 
     let start = start_at(&ordered, filters);
 
@@ -45,7 +74,11 @@ fn total_pages(matches_length: usize, filters: &ListParams) -> Option<usize> {
     }
 }
 
-fn start_at<T: Clone + Compare>(matches: &[(&Key, &T)], filters: &ListParams) -> Option<usize> {
+fn start_at<K, T>(matches: &[(&K, &T)], filters: &ListParams) -> Option<usize>
+where
+    K: Keyed,
+    T: Clone + Compare,
+{
     match filters.clone().paginate {
         None => None,
         Some(paginate) => match paginate.start_after {
@@ -53,22 +86,26 @@ fn start_at<T: Clone + Compare>(matches: &[(&Key, &T)], filters: &ListParams) ->
             Some(start_after) => {
                 let index = matches
                     .iter()
-                    .position(|(key, _)| (*key).clone().eq(&start_after));
+                    .position(|(key, _)| (*key.key_ref()).clone().eq(&start_after));
                 index.map(|index| index + 1)
             }
         },
     }
 }
 
-fn order_values<'a, T: Clone + Compare>(
-    matches: &'a [(&'a Key, &'a T)],
+fn order_values<'a, K, T>(
+    matches: &'a [(&'a K, &'a T)],
     ListParams {
         matcher: _,
         order,
         paginate: _,
         owner: _,
     }: &'a ListParams,
-) -> Vec<(&'a Key, &'a T)> {
+) -> Vec<(&'a K, &'a T)>
+where
+    K: Keyed + 'a,
+    T: Clone + Compare + 'a,
+{
     match order {
         None => matches.to_vec(),
         Some(ListOrder { desc, field }) => match field {
@@ -79,10 +116,14 @@ fn order_values<'a, T: Clone + Compare>(
     }
 }
 
-fn order_values_with_updated_at<'a, T: Clone + Compare>(
-    matches: &'a [(&'a Key, &'a T)],
+fn order_values_with_updated_at<'a, K, T>(
+    matches: &'a [(&'a K, &'a T)],
     desc: &bool,
-) -> Vec<(&'a Key, &'a T)> {
+) -> Vec<(&'a K, &'a T)>
+where
+    K: Keyed + 'a,
+    T: Clone + Compare + 'a,
+{
     let mut sorted_matches = matches.to_vec();
 
     if *desc {
@@ -94,10 +135,14 @@ fn order_values_with_updated_at<'a, T: Clone + Compare>(
     sorted_matches
 }
 
-fn order_values_with_created_at<'a, T: Clone + Compare>(
-    matches: &'a [(&'a Key, &'a T)],
+fn order_values_with_created_at<'a, K, T>(
+    matches: &'a [(&'a K, &'a T)],
     desc: &bool,
-) -> Vec<(&'a Key, &'a T)> {
+) -> Vec<(&'a K, &'a T)>
+where
+    K: Keyed + 'a,
+    T: Clone + Compare + 'a,
+{
     let mut sorted_matches = matches.to_vec();
 
     if *desc {
@@ -109,23 +154,27 @@ fn order_values_with_created_at<'a, T: Clone + Compare>(
     sorted_matches
 }
 
-fn order_values_with_keys<'a, T: Clone + Compare>(
-    matches: &'a [(&'a Key, &'a T)],
+fn order_values_with_keys<'a, K, T>(
+    matches: &'a [(&'a K, &'a T)],
     desc: &bool,
-) -> Vec<(&'a Key, &'a T)> {
+) -> Vec<(&'a K, &'a T)>
+where
+    K: Keyed + 'a,
+    T: Clone + Compare + 'a,
+{
     let mut sorted_matches = matches.to_vec();
 
     if *desc {
-        sorted_matches.sort_by(|(key_a, _), (key_b, _)| key_b.cmp(key_a));
+        sorted_matches.sort_by(|(key_a, _), (key_b, _)| key_b.key_ref().cmp(key_a.key_ref()));
         return sorted_matches;
     }
 
-    sorted_matches.sort_by(|(key_a, _), (key_b, _)| key_a.cmp(key_b));
+    sorted_matches.sort_by(|(key_a, _), (key_b, _)| key_a.key_ref().cmp(key_b.key_ref()));
     sorted_matches
 }
 
-fn paginate_values<T: Clone + Compare>(
-    matches: Vec<(&Key, &T)>,
+fn paginate_values<K, T>(
+    matches: Vec<(&K, &T)>,
     ListParams {
         matcher: _,
         order: _,
@@ -133,11 +182,15 @@ fn paginate_values<T: Clone + Compare>(
         owner: _,
     }: &ListParams,
     start_at: &Option<usize>,
-) -> Vec<(Key, T)> {
+) -> Vec<(Key, T)>
+where
+    K: Keyed,
+    T: Clone + Compare,
+{
     match paginate {
         None => matches
             .iter()
-            .map(|(key, value)| ((*key).clone(), (*value).clone()))
+            .map(|(key, value)| ((*key.key_ref()).clone(), (*value).clone()))
             .collect(),
         Some(ListPaginate {
             start_after: _,
@@ -174,13 +227,13 @@ fn paginate_values<T: Clone + Compare>(
             if (start + length) > max - 1 {
                 return matches[start..=(max - 1)]
                     .iter()
-                    .map(|(key, value)| ((*key).clone(), (*value).clone()))
+                    .map(|(key, value)| ((*key.key_ref()).clone(), (*value).clone()))
                     .collect();
             }
 
             matches[start..=(start + length - 1)]
                 .iter()
-                .map(|(key, value)| ((*key).clone(), (*value).clone()))
+                .map(|(key, value)| ((*key.key_ref()).clone(), (*value).clone()))
                 .collect()
         }
     }

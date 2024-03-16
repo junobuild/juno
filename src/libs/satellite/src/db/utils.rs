@@ -1,8 +1,8 @@
-use crate::db::types::state::Doc;
+use crate::db::types::state::{Doc, StableKey};
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
 use crate::rules::types::rules::Permission;
-use crate::types::core::Key;
+use crate::types::core::{Key, Keyed};
 use crate::types::list::ListParams;
 use candid::Principal;
 use junobuild_shared::types::state::{Controllers, UserId};
@@ -35,6 +35,34 @@ pub fn filter_values<'a>(
             }
         })
         .collect()
+}
+
+pub fn filter_keyed_values<'a, I, K>(
+    caller: Principal,
+    controllers: &'a Controllers,
+    rule: &'a Permission,
+    col: I,
+    ListParams {
+        matcher,
+        order: _,
+        paginate: _,
+        owner,
+    }: &'a ListParams,
+) -> Box<dyn Iterator<Item = (K, Doc)> + 'a>
+where
+    I: Iterator<Item = (K, Doc)> + 'a,
+    K: Keyed + 'a,
+{
+    let (regex_key, regex_description) = matcher_regex(matcher);
+
+    let filtered_iter = col.filter(move |(key, doc)| {
+        filter_key_matcher(&regex_key, key.key_ref())
+            && filter_description_matcher(&regex_description, &doc.description)
+            && filter_owner(owner, &doc.owner)
+            && assert_permission(rule, doc.owner, caller, controllers)
+    });
+
+    Box::new(filtered_iter)
 }
 
 fn filter_key_matcher(regex: &Option<Regex>, key: &Key) -> bool {

@@ -6,7 +6,9 @@ use crate::storage::types::config::{
     StorageConfig, StorageConfigHeaders, StorageConfigRedirects, StorageConfigRewrites,
 };
 use crate::storage::types::state::StorageHeapState;
+use crate::types::core::Keyed;
 use crate::types::state::{HeapState, RuntimeState, State};
+use crate::Key;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::Controllers;
 use std::collections::{BTreeMap, HashMap};
@@ -76,5 +78,11 @@ impl Default for HeapState {
             db,
             storage,
         }
+    }
+}
+
+impl Keyed for Key {
+    fn key_ref(&self) -> &Key {
+        self
     }
 }

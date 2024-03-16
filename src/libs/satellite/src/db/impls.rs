@@ -1,5 +1,6 @@
 use crate::db::types::state::{Doc, StableKey};
-use crate::types::core::Compare;
+use crate::types::core::{Compare, Keyed};
+use crate::Key;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
@@ -38,4 +39,10 @@ impl Storable for StableKey {
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Keyed for StableKey {
+    fn key_ref(&self) -> &Key {
+        &self.key
+    }
 }

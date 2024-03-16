@@ -1,4 +1,4 @@
-use crate::db::types::state::{Doc, StableKey};
+use crate::db::types::state::{Doc};
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
 use crate::rules::types::rules::Permission;

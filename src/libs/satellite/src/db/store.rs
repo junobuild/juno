@@ -7,7 +7,7 @@ use crate::db::state::{
     insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Doc, DocContext, DocUpsert, StableKey};
+use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::db::utils::{filter_keyed_values, filter_values};
 use crate::list::utils::{list_keyed_values, list_values};
 use crate::memory::STATE;

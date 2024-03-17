@@ -414,18 +414,18 @@ fn assert_write_permission(
 pub fn delete_docs_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    match rule.mem() {
+    let keys = match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            let keys = get_docs_heap(collection, &state.borrow().heap.db.db)
-                .map(|docs| docs.into_iter().map(|(key, _)| key.clone()).collect())?;
-            delete_docs_impl(&keys, collection, &rule)
+            get_docs_heap(collection, &state.borrow().heap.db.db)
+                .map(|docs| docs.into_iter().map(|(key, _)| key.clone()).collect())
         }),
         Memory::Stable => STATE.with(|state| {
-            let keys = get_docs_stable(collection, &state.borrow().stable.db)
-                .map(|docs| docs.map(|(key, _)| key.clone()).collect())?;
-            delete_docs_stable_impl(&keys, collection, &rule)
+            get_docs_stable(collection, &state.borrow().stable.db)
+                .map(|docs| docs.map(|(key, _)| key.key_ref().clone()).collect())
         }),
-    }
+    }?;
+
+    delete_docs_impl(&keys, collection, &rule)
 }
 
 fn delete_docs_impl(
@@ -435,18 +435,6 @@ fn delete_docs_impl(
 ) -> Result<(), String> {
     for key in keys {
         delete_state_doc(collection, key, rule)?;
-    }
-
-    Ok(())
-}
-
-fn delete_docs_stable_impl(
-    keys: &Vec<StableKey>,
-    collection: &CollectionKey,
-    rule: &Rule,
-) -> Result<(), String> {
-    for key in keys {
-        delete_state_doc(collection, key.key_ref(), rule)?;
     }
 
     Ok(())

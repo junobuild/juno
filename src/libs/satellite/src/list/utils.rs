@@ -28,7 +28,7 @@ pub fn list_values<'a, T: Clone + Compare>(
     }
 }
 
-pub fn list_keyed_values<'a, I, T, K>(matches_iter: I, filters: &'a ListParams) -> ListResults<T>
+pub fn list_owned_values<'a, I, T, K>(matches_iter: I, filters: &'a ListParams) -> ListResults<T>
 where
     I: Iterator<Item = (K, T)> + 'a,
     T: Clone + Compare + 'a,

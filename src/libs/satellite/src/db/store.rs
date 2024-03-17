@@ -7,9 +7,9 @@ use crate::db::state::{
     insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Doc, DocContext, DocUpsert};
-use crate::db::utils::{filter_keyed_values, filter_values};
-use crate::list::utils::{list_keyed_values, list_values};
+use crate::db::types::state::{Doc, DocContext, DocUpsert, StableKey};
+use crate::db::utils::{filter_owned_values, filter_values};
+use crate::list::utils::{list_owned_values, list_values};
 use crate::memory::STATE;
 use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
 use crate::rules::assert_stores::{assert_create_permission, assert_permission, public_permission};
@@ -244,7 +244,7 @@ fn secure_get_docs(
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
             let stable = get_docs_stable(&collection, &binding.stable.db)?;
-            get_docs_keyed_impl(stable, caller, controllers, filter, &rule)
+            get_docs_stable_impl(stable, caller, controllers, filter, &rule)
         }),
     }
 }
@@ -263,7 +263,7 @@ fn get_docs_impl<'a>(
     Ok(results)
 }
 
-fn get_docs_keyed_impl<'a, I, K>(
+fn get_docs_stable_impl<'a, I>(
     docs: I,
     caller: Principal,
     controllers: &Controllers,
@@ -271,12 +271,11 @@ fn get_docs_keyed_impl<'a, I, K>(
     rule: &Rule,
 ) -> Result<ListResults<Doc>, String>
 where
-    I: Iterator<Item = (K, Doc)> + 'a,
-    K: Keyed + 'a,
+    I: Iterator<Item = (StableKey, Doc)> + 'a,
 {
-    let matches = filter_keyed_values(caller, controllers, &rule.read, docs, filters);
+    let matches = filter_owned_values(caller, controllers, &rule.read, docs, filters);
 
-    let results = list_keyed_values(matches, filters);
+    let results = list_owned_values(matches, filters);
 
     Ok(results)
 }
@@ -421,7 +420,7 @@ pub fn delete_docs_store(collection: &CollectionKey) -> Result<(), String> {
         Memory::Stable => STATE.with(|state| {
             let keys = get_docs_stable(collection, &state.borrow().stable.db)
                 .map(|docs| docs.map(|(key, _)| key.clone()).collect())?;
-            delete_docs_keyed_impl(&keys, collection, &rule)
+            delete_docs_stable_impl(&keys, collection, &rule)
         }),
     }
 }
@@ -438,14 +437,11 @@ fn delete_docs_impl(
     Ok(())
 }
 
-fn delete_docs_keyed_impl<K>(
-    keys: &Vec<K>,
+fn delete_docs_stable_impl(
+    keys: &Vec<StableKey>,
     collection: &CollectionKey,
     rule: &Rule,
-) -> Result<(), String>
-where
-    K: Keyed,
-{
+) -> Result<(), String> {
     for key in keys {
         delete_state_doc(collection, key.key_ref(), rule)?;
     }

@@ -1,4 +1,4 @@
-use crate::db::types::state::{Doc};
+use crate::db::types::state::Doc;
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
 use crate::rules::types::rules::Permission;
@@ -37,7 +37,7 @@ pub fn filter_values<'a>(
         .collect()
 }
 
-pub fn filter_keyed_values<'a, I, K>(
+pub fn filter_owned_values<'a, I, K>(
     caller: Principal,
     controllers: &'a Controllers,
     rule: &'a Permission,

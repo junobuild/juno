@@ -6,7 +6,12 @@ export default defineConfig({
 		globals: true,
 		watch: false,
 		silent: false,
-		environment: 'node'
+		environment: 'node',
+		poolOptions: {
+			threads: {
+				singleThread: true
+			}
+		}
 	},
 	resolve: {
 		alias: [

@@ -8,8 +8,8 @@ use crate::db::state::{
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert, StableKey};
-use crate::db::utils::{filter_owned_values, filter_values};
-use crate::list::utils::{list_owned_values, list_values};
+use crate::db::utils::{filter_owned_values, filter_ref_values};
+use crate::list::utils::{list_owned_values, list_ref_values};
 use crate::memory::STATE;
 use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
 use crate::rules::assert_stores::{assert_create_permission, assert_permission, public_permission};
@@ -239,26 +239,29 @@ fn secure_get_docs(
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
             let docs = get_docs_heap(&collection, &state_ref.heap.db.db)?;
-            get_docs_impl(&docs, caller, controllers, filter, &rule)
+            get_docs_heap_impl(docs, caller, controllers, filter, &rule)
         }),
         Memory::Stable => STATE.with(|state| {
             let binding = state.borrow();
-            let stable = get_docs_stable(&collection, &binding.stable.db)?;
-            get_docs_stable_impl(stable, caller, controllers, filter, &rule)
+            let docs = get_docs_stable(&collection, &binding.stable.db)?;
+            get_docs_stable_impl(docs, caller, controllers, filter, &rule)
         }),
     }
 }
 
-fn get_docs_impl<'a>(
-    docs: &[(&'a Key, &'a Doc)],
+fn get_docs_heap_impl<'a, I>(
+    docs: I,
     caller: Principal,
-    controllers: &Controllers,
-    filters: &ListParams,
-    rule: &Rule,
-) -> Result<ListResults<Doc>, String> {
-    let matches = filter_values(caller, controllers, &rule.read, docs, filters);
+    controllers: &'a Controllers,
+    filters: &'a ListParams,
+    rule: &'a Rule,
+) -> Result<ListResults<Doc>, String>
+where
+    I: Iterator<Item = (&'a Key, &'a Doc)> + 'a,
+{
+    let matches = filter_ref_values(caller, controllers, &rule.read, docs, filters);
 
-    let results = list_values(&matches, filters);
+    let results = list_ref_values(matches, filters);
 
     Ok(results)
 }

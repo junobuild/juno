@@ -5,6 +5,7 @@ use crate::types::list::{
 };
 use regex::Regex;
 
+// TODO: still used in storage
 pub fn list_values<'a, T: Clone + Compare>(
     matches: &'a [(&'a Key, &'a T)],
     filters: &'a ListParams,
@@ -12,6 +13,33 @@ pub fn list_values<'a, T: Clone + Compare>(
     let matches_length = matches.len();
 
     let ordered = order_values(matches, filters);
+
+    let start = start_at(&ordered, filters);
+
+    let paginated = paginate_values(ordered, filters, &start);
+
+    let length = paginated.len();
+
+    ListResults {
+        items: paginated,
+        items_length: length,
+        matches_length,
+        items_page: current_page(start, filters),
+        matches_pages: total_pages(matches_length, filters),
+    }
+}
+
+pub fn list_ref_values<'a, I, T, K>(matches_iter: I, filters: &'a ListParams) -> ListResults<T>
+where
+    I: Iterator<Item = (&'a K, &'a T)> + 'a,
+    T: Clone + Compare + 'a,
+    K: Keyed + 'a,
+{
+    let matches: Vec<(&'a K, &'a T)> = matches_iter.collect();
+    let matches_length = matches.len();
+
+    // TODO: we collected the matches, can we keep a box further?
+    let ordered = order_values(&matches, filters);
 
     let start = start_at(&ordered, filters);
 

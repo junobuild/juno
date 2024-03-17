@@ -8,33 +8,37 @@ use candid::Principal;
 use junobuild_shared::types::state::{Controllers, UserId};
 use regex::Regex;
 
-pub fn filter_values<'a>(
+pub fn filter_ref_values<'a, I, K>(
     caller: Principal,
     controllers: &'a Controllers,
     rule: &'a Permission,
-    col: &'a [(&'a Key, &'a Doc)],
+    col: I,
     ListParams {
         matcher,
         order: _,
         paginate: _,
         owner,
     }: &'a ListParams,
-) -> Vec<(&'a Key, &'a Doc)> {
+) -> Box<dyn Iterator<Item = (&'a K, &'a Doc)> + 'a>
+where
+    I: Iterator<Item = (&'a K, &'a Doc)> + 'a,
+    K: Keyed + 'a,
+{
     let (regex_key, regex_description) = matcher_regex(matcher);
 
-    col.iter()
-        .filter_map(|(key, doc)| {
-            if filter_key_matcher(&regex_key, key)
-                && filter_description_matcher(&regex_description, &doc.description)
-                && filter_owner(owner, &doc.owner)
-                && assert_permission(rule, doc.owner, caller, controllers)
-            {
-                Some((*key, *doc))
-            } else {
-                None
-            }
-        })
-        .collect()
+    let filtered_iter = col.filter_map(move |(key, doc)| {
+        if filter_key_matcher(&regex_key, key.key_ref())
+            && filter_description_matcher(&regex_description, &doc.description)
+            && filter_owner(owner, &doc.owner)
+            && assert_permission(rule, doc.owner, caller, controllers)
+        {
+            Some((key, doc))
+        } else {
+            None
+        }
+    });
+
+    Box::new(filtered_iter)
 }
 
 pub fn filter_owned_values<'a, I, K>(

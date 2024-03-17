@@ -174,14 +174,14 @@ pub fn get_docs_stable<'a>(
 pub fn get_docs_heap<'a>(
     collection: &CollectionKey,
     db: &'a DbHeap,
-) -> Result<Vec<(&'a Key, &'a Doc)>, String> {
+) -> Result<Box<dyn Iterator<Item = (&'a Key, &'a Doc)> + 'a>, String> {
     let col = db.get(collection);
 
     match col {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(col) => {
-            let items = col.iter().collect();
-            Ok(items)
+            let items = col.iter().map(|(key, doc)| (key, doc));
+            Ok(Box::new(items))
         }
     }
 }

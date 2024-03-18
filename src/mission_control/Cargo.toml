@@ -2,8 +2,7 @@
 name = "mission_control"
 version = "0.0.9"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
@@ -15,4 +14,4 @@ ic-cdk-macros.workspace = true
 ic-ledger-types.workspace = true
 serde.workspace = true
 futures = "0.3.28"
-shared = { path = "../libs/shared" }
+junobuild-shared = { path = "../libs/shared" }

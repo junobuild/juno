@@ -8,40 +8,50 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { versionStore } from '$lib/stores/version.store';
+	import { fade } from 'svelte/transition';
+	import MissionControlStatuses from '$lib/components/mission-control/MissionControlStatuses.svelte';
 </script>
 
 {#if $authSignedInStore}
 	<div class="card-container columns-3 fit-column-1">
-		<div>
-			<div class="id">
-				<Value>
-					<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
-					<Identifier
-						identifier={$missionControlStore?.toText() ?? ''}
-						shorten={false}
-						small={false}
-					/>
-				</Value>
-			</div>
-
+		<div class="id">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-				<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
+				<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
+				<Identifier
+					identifier={$missionControlStore?.toText() ?? ''}
+					shorten={false}
+					small={false}
+				/>
 			</Value>
 		</div>
 
+		<Value>
+			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+			<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
+		</Value>
+
 		{#if nonNullish($missionControlStore)}
+			<MissionControlActions missionControlId={$missionControlStore} />
+		{/if}
+	</div>
+
+	{#if nonNullish($missionControlStore)}
+		<div class="card-container columns-3" in:fade>
 			<div>
 				<CanisterOverview canisterId={$missionControlStore} segment="mission_control" />
 			</div>
 
-			<MissionControlActions missionControlId={$missionControlStore} />
-		{/if}
-	</div>
+			<MissionControlStatuses missionControlId={$missionControlStore} />
+		</div>
+	{/if}
 {/if}
 
 <style lang="scss">
 	.id {
 		max-width: 80%;
+	}
+
+	.card-container:last-of-type {
+		margin: var(--padding-4x) 0 0;
 	}
 </style>

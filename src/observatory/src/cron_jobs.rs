@@ -2,9 +2,9 @@ use crate::store::{get_cron_tabs, set_statuses};
 use crate::types::state::CronTab;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, spawn};
+use junobuild_shared::types::interface::StatusesArgs;
+use junobuild_shared::types::state::{SegmentsStatuses, UserId};
 use lazy_static::lazy_static;
-use shared::types::interface::StatusesArgs;
-use shared::types::state::{SegmentsStatuses, UserId};
 use std::sync::Mutex;
 
 lazy_static! {

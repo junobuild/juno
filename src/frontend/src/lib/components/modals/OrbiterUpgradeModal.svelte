@@ -8,6 +8,7 @@
 	import { AnonymousIdentity } from '@dfinity/agent';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { upgradeOrbiter } from '@junobuild/admin';
+	import { container } from '$lib/utils/juno.utils';
 
 	export let detail: JunoModalDetail;
 
@@ -21,7 +22,7 @@
 			orbiter: {
 				orbiterId: $orbiterStore!.orbiter_id.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
-				...(import.meta.env.DEV && { env: 'dev' })
+				...container()
 			},
 			wasm_module
 		});

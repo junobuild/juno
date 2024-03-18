@@ -6,12 +6,12 @@ use crate::store::{
 use crate::types::ledger::Payment;
 use candid::Principal;
 use ic_ledger_types::{BlockIndex, Tokens};
-use shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
-use shared::ledger::{
+use junobuild_shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_REFUND};
+use junobuild_shared::ledger::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
 };
-use shared::types::interface::CreateCanisterArgs;
-use shared::types::state::{MissionControlId, UserId};
+use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::state::{MissionControlId, UserId};
 use std::future::Future;
 
 pub async fn create_canister<F, Fut>(

@@ -7,13 +7,13 @@ use crate::types::state::{
 use crate::STATE;
 use ic_cdk::api::time;
 use ic_ledger_types::{BlockIndex, Tokens};
-use shared::controllers::{
+use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
-use shared::types::interface::SetController;
-use shared::types::state::UserId;
-use shared::types::state::{ControllerId, MissionControlId};
-use shared::utils::principal_equal;
+use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::state::UserId;
+use junobuild_shared::types::state::{ControllerId, MissionControlId};
+use junobuild_shared::utils::principal_equal;
 use std::cmp::min;
 
 /// Mission control centers

@@ -1,9 +1,11 @@
 use crate::store::get_user;
 use crate::STATE;
 use ic_cdk::caller;
-use shared::controllers::{caller_is_console, caller_is_observatory, is_admin_controller};
-use shared::types::state::Controllers;
-use shared::utils::principal_equal;
+use junobuild_shared::controllers::{
+    caller_is_console, caller_is_observatory, is_admin_controller,
+};
+use junobuild_shared::types::state::Controllers;
+use junobuild_shared::utils::principal_equal;
 
 pub fn caller_is_user_or_admin_controller() -> Result<(), String> {
     if caller_is_user() || caller_is_admin_controller() {

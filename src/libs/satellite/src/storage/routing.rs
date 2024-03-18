@@ -4,7 +4,7 @@ use crate::storage::constants::{
 };
 use crate::storage::rewrites::{is_root_path, redirect_url, rewrite_url};
 use crate::storage::state::get_config;
-use crate::storage::store::get_asset_store;
+use crate::storage::store::get_public_asset_store;
 use crate::storage::types::http_request::{
     MapUrl, Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
 };
@@ -29,7 +29,7 @@ pub fn get_routing(
     let MapUrl { path, token } = map_url(&url)?;
 
     // We return the asset that matches the effective path
-    let asset: Option<(Asset, Memory)> = get_asset_store(path.clone(), token.clone());
+    let asset: Option<(Asset, Memory)> = get_public_asset_store(path.clone(), token.clone());
 
     match asset {
         None => (),
@@ -94,7 +94,8 @@ fn get_alternative_asset(path: &String, token: &Option<String>) -> Option<(Asset
     let alternative_paths = map_alternative_paths(path);
 
     for alternative_path in alternative_paths {
-        let asset: Option<(Asset, Memory)> = get_asset_store(alternative_path, token.clone());
+        let asset: Option<(Asset, Memory)> =
+            get_public_asset_store(alternative_path, token.clone());
 
         // We return the first match
         match asset {
@@ -137,7 +138,7 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
             // Rewrite is maybe configured as an absolute path
             // e.g. write /demo/* to /sample.html
             let rewrite_absolute_asset: Option<(Asset, Memory)> =
-                get_asset_store(destination.clone(), token.clone());
+                get_public_asset_store(destination.clone(), token.clone());
 
             match rewrite_absolute_asset {
                 None => (),
@@ -159,7 +160,8 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
 fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
     if !is_root_path(path) {
         // Search for potential /404.html to rewrite to
-        let asset_404: Option<(Asset, Memory)> = get_asset_store(ROOT_404_HTML.to_string(), None);
+        let asset_404: Option<(Asset, Memory)> =
+            get_public_asset_store(ROOT_404_HTML.to_string(), None);
 
         match asset_404 {
             None => (),
@@ -175,7 +177,7 @@ fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
 
         // Search for potential /index.html to rewrite to
         let asset_index: Option<(Asset, Memory)> =
-            get_asset_store(ROOT_INDEX_HTML.to_string(), None);
+            get_public_asset_store(ROOT_INDEX_HTML.to_string(), None);
 
         match asset_index {
             None => (),

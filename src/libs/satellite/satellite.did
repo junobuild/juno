@@ -47,7 +47,6 @@ type Doc = record {
   description : opt text;
   created_at : nat64;
 };
-type DocContext = record { key : text; collection : text; data : Doc };
 type HttpRequest = record {
   url : text;
   method : text;
@@ -178,8 +177,12 @@ service : () -> {
   del_many_docs : (vec record { text; text; DelDoc }) -> ();
   del_rule : (RulesType, text, DelDoc) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
+  get_asset : (text, text) -> (opt AssetNoContent) query;
   get_config : () -> (Config);
   get_doc : (text, text) -> (opt Doc) query;
+  get_many_assets : (vec record { text; text }) -> (
+      vec record { text; opt AssetNoContent },
+    ) query;
   get_many_docs : (vec record { text; text }) -> (
       vec record { text; opt Doc },
     ) query;
@@ -200,7 +203,9 @@ service : () -> {
     );
   set_custom_domain : (text, opt text) -> ();
   set_doc : (text, text, SetDoc) -> (Doc);
-  set_many_docs : (vec record { text; text; SetDoc }) -> (vec DocContext);
+  set_many_docs : (vec record { text; text; SetDoc }) -> (
+      vec record { text; Doc },
+    );
   set_rule : (RulesType, text, SetRule) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;

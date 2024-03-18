@@ -35,12 +35,12 @@ use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
-use shared::controllers::init_controllers;
-use shared::types::interface::{
+use junobuild_shared::controllers::init_controllers;
+use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
-use shared::types::state::UserId;
+use junobuild_shared::types::state::UserId;
 use std::cell::RefCell;
 use std::collections::HashMap;
 

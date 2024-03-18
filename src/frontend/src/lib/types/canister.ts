@@ -1,4 +1,5 @@
 import type { MemorySize } from '$declarations/satellite/satellite.did';
+import type { ChartsData } from '$lib/types/chart';
 
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';
 export type CanisterSyncStatus = 'loading' | 'syncing' | 'synced' | 'error';
@@ -23,15 +24,23 @@ export interface CanisterWarning {
 	heap: boolean;
 }
 
-export type CanisterData = {
+export interface CanisterData {
 	icp: number;
 	warning: CanisterWarning;
 	canister: Pick<CanisterInfo, 'memory_size' | 'cycles' | 'status' | 'idle_cycles_burned_per_day'>;
 	memory?: MemorySize;
-};
+}
 
-export interface Canister {
+export interface CanisterStatusData {
+	chartsData: ChartsData[];
+}
+
+export interface Canister<T> {
 	id: string;
 	sync: CanisterSyncStatus;
-	data?: CanisterData;
+	data?: T;
 }
+
+export type CanisterIcStatus = Canister<CanisterData>;
+
+export type CanisterJunoStatus = Canister<CanisterStatusData>;

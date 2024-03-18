@@ -31,4 +31,5 @@ console.wasm
 mission_control.wasm
 observatory.wasm
 satellite.wasm
+satellite-v0.0.15.wasm.gz
 out/

@@ -1,6 +1,7 @@
 import type {
 	Controller,
 	Orbiter,
+	Result,
 	Satellite
 } from '$declarations/mission_control/mission_control.did';
 import type { SetControllerParams } from '$lib/types/controllers';
@@ -324,4 +325,44 @@ export const setOrbiter = async ({
 }): Promise<Orbiter> => {
 	const { set_orbiter } = await getMissionControlActor({ missionControlId, identity });
 	return set_orbiter(orbiterId, toNullable(orbiterName));
+};
+
+export const listSatelliteStatuses = async ({
+	missionControlId,
+	identity,
+	satelliteId
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	satelliteId: Principal;
+}): Promise<[] | [[bigint, Result][]]> => {
+	const { list_satellite_statuses } = await getMissionControlActor({ missionControlId, identity });
+	return list_satellite_statuses(satelliteId);
+};
+
+export const listOrbiterStatuses = async ({
+	missionControlId,
+	identity,
+	orbiterId
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	orbiterId: Principal;
+}): Promise<[] | [[bigint, Result][]]> => {
+	const { list_orbiter_statuses } = await getMissionControlActor({ missionControlId, identity });
+	return list_orbiter_statuses(orbiterId);
+};
+
+export const listMissionControlStatuses = async ({
+	missionControlId,
+	identity
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+}): Promise<[] | [[bigint, Result][]]> => {
+	const { list_mission_control_statuses } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+	return [await list_mission_control_statuses()];
 };

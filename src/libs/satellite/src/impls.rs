@@ -8,7 +8,7 @@ use crate::storage::types::config::{
 use crate::storage::types::state::StorageHeapState;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ic_cdk::api::time;
-use shared::types::state::Controllers;
+use junobuild_shared::types::state::Controllers;
 use std::collections::{BTreeMap, HashMap};
 
 impl Default for State {
@@ -36,7 +36,7 @@ impl Default for HeapState {
                     Rule {
                         read: rule.read,
                         write: rule.write,
-                        memory: Some(rule.memory.unwrap_or(Memory::Heap)),
+                        memory: Some(rule.memory.unwrap_or(Memory::Stable)),
                         mutable_permissions: Some(rule.mutable_permissions.unwrap_or(false)),
                         max_size: rule.max_size,
                         created_at: now,

@@ -9,7 +9,7 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 1] = [(
     SetRule {
         read: Managed,
         write: Managed,
-        memory: Some(Memory::Heap),
+        memory: Some(Memory::Stable),
         mutable_permissions: Some(false),
         max_size: None,
         updated_at: None,

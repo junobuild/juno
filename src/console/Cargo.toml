@@ -2,8 +2,7 @@
 name = "console"
 version = "0.0.8"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+publish = false
 
 [lib]
 crate-type = ["cdylib"]
@@ -15,4 +14,4 @@ ic-cdk-macros.workspace = true
 ic-ledger-types.workspace = true
 serde.workspace = true
 serde_cbor.workspace = true
-shared = { path = "../libs/shared" }
+junobuild-shared = { path = "../libs/shared" }

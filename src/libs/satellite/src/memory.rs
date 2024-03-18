@@ -29,7 +29,7 @@ fn get_memory_assets() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(ASSETS))
 }
 
-fn get_content_chunks() -> Memory {
+fn get_memory_content_chunks() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(CONTENT_CHUNKS))
 }
 
@@ -37,6 +37,6 @@ pub fn init_stable_state() -> StableState {
     StableState {
         db: StableBTreeMap::init(get_memory_db()),
         assets: StableBTreeMap::init(get_memory_assets()),
-        content_chunks: StableBTreeMap::init(get_content_chunks()),
+        content_chunks: StableBTreeMap::init(get_memory_content_chunks()),
     }
 }

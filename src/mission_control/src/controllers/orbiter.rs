@@ -1,6 +1,6 @@
 use crate::controllers::segment::{delete_segment_controllers, set_segment_controllers};
-use shared::types::interface::SetController;
-use shared::types::state::{ControllerId, OrbiterId};
+use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::state::{ControllerId, OrbiterId};
 
 pub async fn set_orbiter_controllers(
     orbiter_id: &OrbiterId,

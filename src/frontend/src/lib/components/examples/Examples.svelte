@@ -11,7 +11,11 @@
 	import IconNextJS from '$lib/components/icons/IconNextJS.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import IconAstro from '$lib/components/icons/IconAstro.svelte';
+	import IconRust from '$lib/components/icons/IconRust.svelte';
+	import IconDocker from '$lib/components/icons/IconDocker.svelte';
 </script>
+
+<hr />
 
 <h4>{$i18n.examples.tutorials}</h4>
 
@@ -94,6 +98,13 @@
 
 		{$i18n.examples.tutorial_github_description}
 	</Resource>
+
+	<Resource href="https://juno.build/docs/miscellaneous/local-development">
+		<IconDocker slot="icon" />
+		<svelte:fragment slot="title">Docker</svelte:fragment>
+
+		{$i18n.examples.tutorial_docker_description}
+	</Resource>
 </section>
 
 <h4>{$i18n.examples.examples}</h4>
@@ -141,6 +152,13 @@
 		{$i18n.examples.example_3_description}
 	</Resource>
 
+	<Resource href="https://github.com/junobuild/examples/blob/main/rust/hooks">
+		<IconRust slot="icon" />
+		<svelte:fragment slot="title">{$i18n.examples.example_9_title}</svelte:fragment>
+
+		{$i18n.examples.example_9_description}
+	</Resource>
+
 	<Resource href="https://github.com/junobuild/examples/blob/main/node/basic">
 		<IconNodeJS slot="icon" />
 		<svelte:fragment slot="title">{$i18n.examples.example_4_title}</svelte:fragment>
@@ -160,8 +178,12 @@
 	@use '../../styles/mixins/grid';
 	@use '../../styles/mixins/button';
 
+	hr {
+		margin: var(--padding-8x) 0 0;
+	}
+
 	h4 {
-		margin: var(--padding-12x) 0 0;
+		margin: var(--padding-8x) 0 0;
 	}
 
 	section {

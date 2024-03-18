@@ -44,10 +44,7 @@
 	const initMemory = (text: MemoryText) => (memory = text);
 	$: initMemory(
 		// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
-		memoryToText(
-			fromNullable(rule?.memory ?? []) ??
-				(typeStorage && mode === 'new' ? MemoryStable : MemoryHeap)
-		)
+		memoryToText(fromNullable(rule?.memory ?? []) ?? (mode === 'new' ? MemoryStable : MemoryHeap))
 	);
 
 	let currentImmutable: boolean;
@@ -165,8 +162,8 @@
 			<Value ref="memory">
 				<svelte:fragment slot="label">{$i18n.collections.memory}</svelte:fragment>
 				<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
-					<option value="Heap">{$i18n.collections.heap}</option>
 					<option value="Stable">{$i18n.collections.stable}</option>
+					<option value="Heap">{$i18n.collections.heap}</option>
 				</select>
 			</Value>
 		</div>

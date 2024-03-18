@@ -59,6 +59,7 @@ interface I18nCanisters {
 	upgrade_description: string;
 	more_upgrade: string;
 	upgrade_note: string;
+	upgrade_confirm: string;
 	additional_cycles: string;
 	top_up_info: string;
 	top_up_mission_control_done: string;
@@ -129,6 +130,9 @@ interface I18nSatellites {
 	loading_satellites: string;
 	overview: string;
 	id: string;
+	stock_version: string;
+	extended_version: string;
+	build: string;
 }
 
 interface I18nMission_control {
@@ -495,6 +499,7 @@ interface I18nExamples {
 	examples: string;
 	tutorial_framework_description: string;
 	tutorial_github_description: string;
+	tutorial_docker_description: string;
 	example_1_title: string;
 	example_1_description: string;
 	example_2_title: string;
@@ -511,6 +516,8 @@ interface I18nExamples {
 	example_7_description: string;
 	example_8_title: string;
 	example_8_description: string;
+	example_9_title: string;
+	example_9_description: string;
 }
 
 interface I18nResources {

@@ -3,6 +3,7 @@ import type { MissionControlBalance } from '$lib/types/balance.types';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { Principal } from '@dfinity/principal';
+import type { BuildType } from '@junobuild/admin';
 
 export interface JunoModalBalance {
 	missionControlBalance?: MissionControlBalance;
@@ -25,7 +26,8 @@ export interface JunoModalUpgradeDetail {
 	newerReleases: string[];
 }
 
-export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail & JunoModalSatelliteDetail;
+export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
+	JunoModalSatelliteDetail & { build?: BuildType };
 
 export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
 	fee: bigint;

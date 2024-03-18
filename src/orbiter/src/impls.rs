@@ -14,7 +14,7 @@ use crate::types::state::{
     State, TrackEvent,
 };
 use ic_stable_structures::{BoundedStorable, Storable};
-use shared::types::state::{Controllers, SatelliteId};
+use junobuild_shared::types::state::{Controllers, SatelliteId};
 use std::borrow::Cow;
 use std::mem::size_of;
 

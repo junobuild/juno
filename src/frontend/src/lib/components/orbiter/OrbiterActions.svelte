@@ -3,16 +3,16 @@
 	import Actions from '$lib/components/core/Actions.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-	import type { Canister } from '$lib/types/canister';
+	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 
 	export let orbiter: Orbiter;
 
-	let canister: Canister | undefined = undefined;
+	let canister: CanisterIcStatus | undefined = undefined;
 
-	const onSyncCanister = (syncCanister: Canister) => {
+	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
 		if (syncCanister.id !== orbiter.orbiter_id.toText()) {
 			return;
 		}

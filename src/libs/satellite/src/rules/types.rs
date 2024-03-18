@@ -1,8 +1,8 @@
 pub mod rules {
     use crate::types::core::CollectionKey;
     use candid::CandidType;
+    use junobuild_shared::serializers::deserialize_default_as_true;
     use serde::{Deserialize, Serialize};
-    use shared::serializers::deserialize_default_as_true;
     use std::collections::HashMap;
 
     pub type Rules = HashMap<CollectionKey, Rule>;
@@ -21,8 +21,8 @@ pub mod rules {
 
     #[derive(CandidType, Serialize, Deserialize, Default, Clone, Debug)]
     pub enum Memory {
-        #[default]
         Heap,
+        #[default]
         Stable,
     }
 

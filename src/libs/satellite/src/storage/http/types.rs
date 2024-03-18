@@ -1,4 +1,5 @@
 use crate::rules::types::rules::Memory;
+use crate::storage::types::state::FullPath;
 use crate::storage::types::store::EncodingType;
 use crate::types::core::Blob;
 use candid::{define_function, CandidType};
@@ -39,7 +40,7 @@ pub enum StreamingStrategy {
 
 #[derive(CandidType, Deserialize, Clone)]
 pub struct StreamingCallbackToken {
-    pub full_path: String,
+    pub full_path: FullPath,
     pub token: Option<String>,
     pub headers: Vec<HeaderField>,
     pub sha256: Option<ByteBuf>,

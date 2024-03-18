@@ -3,8 +3,8 @@ use crate::controllers::segment::{
 };
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
-use shared::types::interface::{DeleteControllersArgs, SetController};
-use shared::types::state::{ControllerId, SatelliteId};
+use junobuild_shared::types::interface::{DeleteControllersArgs, SetController};
+use junobuild_shared::types::state::{ControllerId, SatelliteId};
 
 #[deprecated(since = "0.0.3", note = "please use `set_controllers` instead")]
 pub async fn add_satellite_controllers(

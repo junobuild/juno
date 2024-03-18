@@ -2,7 +2,7 @@ use crate::store::{get_cron_tab, list_statuses as list_statuses_store};
 use crate::types::interface::{ListStatuses, ListStatusesArgs};
 use crate::types::state::ArchiveStatuses;
 use ic_cdk::api::time;
-use shared::types::state::UserId;
+use junobuild_shared::types::state::UserId;
 
 pub fn collect_statuses(args: &ListStatusesArgs) -> Vec<ListStatuses> {
     let statuses = list_statuses_store();

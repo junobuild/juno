@@ -1,6 +1,6 @@
 use crate::types::interface::GetAnalytics;
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey};
-use shared::types::state::SatelliteId;
+use junobuild_shared::types::state::SatelliteId;
 use std::ops::RangeBounds;
 
 pub fn filter_analytics(

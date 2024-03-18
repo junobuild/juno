@@ -8,9 +8,9 @@ use crate::msg::{
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
 use ic_cdk::api::time;
-use shared::controllers::is_controller;
-use shared::types::state::Controllers;
-use shared::utils::principal_not_equal;
+use junobuild_shared::controllers::is_controller;
+use junobuild_shared::types::state::Controllers;
+use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
 
 use crate::rules::assert_stores::{
@@ -31,13 +31,14 @@ use crate::storage::runtime::{
     update_certified_asset as update_runtime_certified_asset,
 };
 use crate::storage::state::{
-    delete_asset as delete_state_asset, delete_domain as delete_state_domain,
-    get_asset as get_state_asset, get_assets_heap, get_assets_stable,
-    get_config as get_state_config, get_content_chunks as get_state_content_chunks,
-    get_domain as get_state_domain, get_domains as get_state_domains,
-    get_public_asset as get_state_public_asset, get_rule as get_state_rule, get_rule,
-    insert_asset as insert_state_asset, insert_asset_encoding as insert_state_asset_encoding,
-    insert_config as insert_state_config, insert_domain as insert_state_domain,
+    count_assets_heap, count_assets_stable, delete_asset as delete_state_asset,
+    delete_domain as delete_state_domain, get_asset as get_state_asset, get_assets_heap,
+    get_assets_stable, get_config as get_state_config,
+    get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
+    get_domains as get_state_domains, get_public_asset as get_state_public_asset,
+    get_rule as get_state_rule, get_rule, insert_asset as insert_state_asset,
+    insert_asset_encoding as insert_state_asset_encoding, insert_config as insert_state_config,
+    insert_domain as insert_state_domain,
 };
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
@@ -52,6 +53,21 @@ use crate::types::list::{ListParams, ListResults};
 /// Getter, list and delete
 ///
 
+/// Get content chunks of an asset.
+///
+/// This function retrieves content chunks of an asset based on the specified parameters.
+/// It returns an `Option<Blob>` representing the content chunks, or `None` if no chunks are found.
+///
+/// # Parameters
+/// - `encoding`: A reference to the `AssetEncoding` indicating the encoding of the asset.
+/// - `chunk_index`: The index of the content chunk to retrieve.
+/// - `memory`: A reference to the `Memory` type (Heap or Stable).
+///
+/// # Returns
+/// - `Some(Blob)`: Content chunks of the asset.
+/// - `None`: No content chunks found.
+///
+/// This function allows you to retrieve content chunks of an asset stored in a Juno collection's store.
 pub fn get_content_chunks_store(
     encoding: &AssetEncoding,
     chunk_index: usize,
@@ -60,6 +76,24 @@ pub fn get_content_chunks_store(
     get_state_content_chunks(encoding, chunk_index, memory)
 }
 
+/// Delete an asset from a collection's store.
+///
+/// This function deletes an asset from a collection's store based on the specified parameters.
+/// It returns a `Result<Option<Asset>, String>` where `Ok(Some(Asset))` indicates successful deletion
+/// of the asset, `Ok(None)` represents no asset found for the specified path, or an error message
+/// as `Err(String)` if the deletion encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the deletion.
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to delete the asset.
+/// - `full_path`: A `FullPath` identifying the asset to be deleted.
+///
+/// # Returns
+/// - `Ok(Some(Asset))`: Indicates successful deletion of the asset.
+/// - `Ok(None)`: Indicates no asset found for the specified path.
+/// - `Err(String)`: An error message if the deletion operation fails.
+///
+/// This function allows you to securely delete assets from a Juno collection's store.
 pub fn delete_asset_store(
     caller: Principal,
     collection: &CollectionKey,
@@ -104,7 +138,70 @@ pub fn list_assets_store(
     secure_list_assets_impl(caller, &controllers, collection, filters)
 }
 
-pub fn get_asset_store(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
+/// Get an asset from a collection's store.
+///
+/// This function retrieves an asset from a collection's store based on the specified parameters.
+/// It returns a `Result<Option<Asset>, String>` where `Ok(Some(Asset))` indicates a successfully retrieved
+/// asset, `Ok(None)` represents no asset found for the specified path, or an error message as `Err(String)`
+/// if retrieval encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller requesting the asset.
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to retrieve the asset.
+/// - `full_path`: A `FullPath` identifying the asset to be retrieved.
+///
+/// # Returns
+/// - `Ok(Some(Asset))`: Indicates successful retrieval of the asset.
+/// - `Ok(None)`: Indicates no asset found for the specified path.
+/// - `Err(String)`: An error message if the retrieval operation fails.
+///
+/// This function allows you to securely retrieve an asset from a Juno collection's store.
+pub fn get_asset_store(
+    caller: Principal,
+    collection: &CollectionKey,
+    full_path: FullPath,
+) -> Result<Option<Asset>, String> {
+    let controllers: Controllers = get_controllers();
+
+    secure_get_asset_impl(caller, &controllers, collection, full_path)
+}
+
+fn secure_get_asset_impl(
+    caller: Principal,
+    controllers: &Controllers,
+    collection: &CollectionKey,
+    full_path: FullPath,
+) -> Result<Option<Asset>, String> {
+    let rule = get_state_rule(collection)?;
+
+    get_asset_impl(caller, controllers, full_path, collection, &rule)
+}
+
+fn get_asset_impl(
+    caller: Principal,
+    controllers: &Controllers,
+    full_path: FullPath,
+    collection: &CollectionKey,
+    rule: &Rule,
+) -> Result<Option<Asset>, String> {
+    let asset = get_state_asset(collection, &full_path, rule);
+
+    match asset {
+        None => Ok(None),
+        Some(asset) => {
+            if !assert_permission(&rule.read, asset.key.owner, caller, controllers) {
+                return Ok(None);
+            }
+
+            Ok(Some(asset))
+        }
+    }
+}
+
+pub fn get_public_asset_store(
+    full_path: FullPath,
+    token: Option<String>,
+) -> Option<(Asset, Memory)> {
     let (asset, memory) = get_state_public_asset(&full_path);
 
     match asset {
@@ -305,18 +402,32 @@ fn delete_assets_impl(
     Ok(())
 }
 
+/// Count the number of assets in a collection's store.
+///
+/// This function retrieves the state rule for the specified collection and counts the assets
+/// based on the memory type (Heap or Stable). It returns the count as a `Result<usize, String>`
+/// on success, or an error message as `Err(String)` if an issue occurs during counting.
+///
+/// # Parameters
+/// - `collection`: A reference to the `CollectionKey` representing the collection to count assets in.
+///
+/// # Returns
+/// - `Ok(usize)`: The count of assets in the collection.
+/// - `Err(String)`: An error message if counting fails.
+///
+/// This function provides a convenient way to determine the number of assets in a Juno collection's store.
 pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
     let rule = get_state_rule(collection)?;
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
-            Ok(assets.len())
+            let length = count_assets_heap(collection, &state_ref.heap.storage.assets);
+            Ok(length)
         }),
         Memory::Stable => STATE.with(|state| {
-            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
-            Ok(stable.len())
+            let length = count_assets_stable(collection, &state.borrow().stable.assets);
+            Ok(length)
         }),
     }
 }
@@ -727,7 +838,7 @@ fn delete_domain_impl(domain_name: &DomainName) -> Result<(), String> {
 }
 
 fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
-    set_stable_domain_impl(domain_name, bn_id);
+    set_state_domain_impl(domain_name, bn_id);
 
     update_custom_domains_asset()
 }
@@ -755,7 +866,7 @@ fn update_custom_domains_asset() -> Result<(), String> {
     Ok(())
 }
 
-fn set_stable_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
+fn set_state_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
     let domain = get_state_domain(domain_name);
 
     let now = time();

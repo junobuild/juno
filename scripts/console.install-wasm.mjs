@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { consoleActorLocal } from './actor.mjs';
-import { loadWasm, readVersion } from './code.utils.mjs';
+import { loadLocalWasm, readVersion } from './code.utils.mjs';
 import { segmentType } from './console.utils.mjs';
 
 const resetRelease = ({ actor, type }) => actor.reset_release(segmentType(type));
@@ -24,7 +24,7 @@ const installRelease = async ({ actor, type, wasmModule, version }) => {
 	console.log(`Installation ${type} done.`);
 };
 
-const install = async ({ actor, type }) => {
+const install = async ({ actor, type, loadWasm }) => {
 	const wasmModule = await loadWasm(type);
 	const version = await readVersion(type);
 
@@ -39,10 +39,11 @@ const install = async ({ actor, type }) => {
 
 (async () => {
 	const actor = await consoleActorLocal();
+	const loadWasm = loadLocalWasm;
 
 	await Promise.all([
-		install({ actor, type: 'mission_control' }),
-		install({ actor, type: 'satellite' }),
-		install({ actor, type: 'orbiter' })
+		install({ actor, type: 'mission_control', loadWasm }),
+		install({ actor, type: 'satellite', loadWasm }),
+		install({ actor, type: 'orbiter', loadWasm })
 	]);
 })();

@@ -4,8 +4,8 @@ pub mod state {
     use crate::types::memory::Memory;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::state::UserId;
     use serde::{Deserialize, Serialize};
-    use shared::types::state::UserId;
     use std::collections::{BTreeMap, HashMap};
 
     pub type Collection = BTreeMap<Key, Doc>;
@@ -25,6 +25,16 @@ pub mod state {
         pub rules: Rules,
     }
 
+    /// Represents a document in a collection's store.
+    ///
+    /// This struct defines the structure of a document stored in a collection. It includes the following fields:
+    /// - `owner`: The `UserId` representing the owner of the document.
+    /// - `data`: A `Blob` containing the document's data.
+    /// - `created_at`: A `u64` timestamp for the document's creation.
+    /// - `updated_at`: A `u64` timestamp for the document's last update.
+    /// - `description`: An optional `String` providing additional document description, limited to 1024 characters.
+    ///
+    /// This struct is used to store and manage documents within a collection's store.
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Doc {
         pub owner: UserId,
@@ -53,6 +63,16 @@ pub mod interface {
     use candid::CandidType;
     use serde::Deserialize;
 
+    /// Parameters for setting a document.
+    ///
+    /// This struct, `SetDoc`, is used to specify the parameters for setting or updating a document in a collection's store.
+    /// It includes the following fields:
+    /// - `updated_at`: An optional `u64` timestamp representing the last update time of the document to ensure
+    ///   update consistency. This field is optional.
+    /// - `data`: A `Blob` containing the new data for the document.
+    /// - `description`: An optional `String` providing additional description for the document. This field is optional.
+    ///
+    /// `SetDoc` is used to provide parameters for setting or updating a document in the collection's store.
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct SetDoc {
         pub updated_at: Option<u64>,
@@ -60,6 +80,14 @@ pub mod interface {
         pub description: Option<String>,
     }
 
+    /// Parameters for deleting a document.
+    ///
+    /// This struct, `DelDoc`, is used to specify the parameters for deleting a document from a collection's store.
+    /// It includes the following field:
+    /// - `updated_at`: An optional `u64` timestamp representing the last update time of the document to ensure
+    ///   deletion consistency. This field is optional.
+    ///
+    /// `DelDoc` is used to provide deletion parameters when removing a document.
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct DelDoc {
         pub updated_at: Option<u64>,

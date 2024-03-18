@@ -8,8 +8,7 @@ import type {
 	RulesType,
 	SetRule
 } from '$declarations/satellite/satellite.did';
-import type { MemoryText, PermissionText } from '$lib/constants/rules.constants';
-import { MemoryHeap } from '$lib/constants/rules.constants';
+import { MemoryStable, type MemoryText, type PermissionText } from '$lib/constants/rules.constants';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
@@ -90,7 +89,9 @@ export const setRule = async ({
 		write: permissionFromText(write),
 		updated_at: isNullish(rule) ? [] : [rule.updated_at],
 		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
-		memory: isNullish(rule) ? [memoryFromText(memory)] : [fromNullable(rule.memory) ?? MemoryHeap],
+		memory: isNullish(rule)
+			? [memoryFromText(memory)]
+			: [fromNullable(rule.memory) ?? MemoryStable],
 		mutable_permissions: toNullable(mutablePermissions)
 	};
 
@@ -137,8 +138,19 @@ export const satelliteVersion = async ({
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<string> => {
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	return actor.version();
+	const { version } = await getSatelliteActor({ satelliteId, identity });
+	return version();
+};
+
+export const satelliteBuildVersion = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<string> => {
+	const { build_version } = await getSatelliteActor({ satelliteId, identity });
+	return build_version();
 };
 
 export const setCustomDomain = async ({

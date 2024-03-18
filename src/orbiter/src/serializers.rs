@@ -4,7 +4,7 @@ use crate::constants::{
     SERIALIZED_STRING_LENGTH,
 };
 use candid::Principal;
-use shared::types::state::Metadata;
+use junobuild_shared::types::state::Metadata;
 
 /// Principal
 

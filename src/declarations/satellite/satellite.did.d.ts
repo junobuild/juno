@@ -60,11 +60,6 @@ export interface Doc {
 	description: [] | [string];
 	created_at: bigint;
 }
-export interface DocContext {
-	key: string;
-	collection: string;
-	data: Doc;
-}
 export interface HttpRequest {
 	url: string;
 	method: string;
@@ -203,6 +198,7 @@ export interface UploadChunkResult {
 	chunk_id: bigint;
 }
 export interface _SERVICE {
+	build_version: ActorMethod<[], string>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
 	count_assets: ActorMethod<[string], bigint>;
 	count_docs: ActorMethod<[string], bigint>;
@@ -216,8 +212,10 @@ export interface _SERVICE {
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
 	del_rule: ActorMethod<[RulesType, string, DelDoc], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
+	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_config: ActorMethod<[], Config>;
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
+	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
@@ -235,10 +233,10 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
-	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<DocContext>>;
+	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
-	version_extension: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

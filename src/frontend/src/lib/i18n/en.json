@@ -55,6 +55,7 @@
 		"upgrade_description": "Your {0} will be upgraded to version <strong>v{1}</strong>.",
 		"more_upgrade": "After this upgrade, there will be {0} more upgrades available.",
 		"upgrade_note": "There is a total of {0} upgrades available for your {1}. Upgrades should be executed one after the other, starting with the lower version number and moving upward. This process will guide you by upgrading to the next compatible version. Repeat the process until your {2} is up-to-date.",
+		"upgrade_confirm": "Your {0} appears to be an <strong>extended</strong> build. Upgrading to the <strong>stock</strong> version will remove any custom features you have developed. Are you sure you want to continue?",
 		"additional_cycles": "Additional Cycles",
 		"top_up_info": "Your current mission control balance is {0} ICP, and network fees for topping up are {1} ICP.",
 		"top_up_mission_control_done": "Your mission control center has been topped-up.",
@@ -122,7 +123,10 @@
 		"create_satellite_price": "Starting a new satellite requires <strong>{0}</strong> ICP. Your current mission control balance is {1} ICP.",
 		"loading_satellites": "Loading your satellites",
 		"overview": "Overview",
-		"id": "Satellite ID"
+		"id": "Satellite ID",
+		"stock_version": "Stock version",
+		"extended_version": "Extended version",
+		"build": "Build"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -467,6 +471,7 @@
 		"examples": "Examples",
 		"tutorial_framework_description": "Use Juno with {0}.",
 		"tutorial_github_description": "Deploy using GitHub Actions.",
+		"tutorial_docker_description": "Run a Satellite in a Docker sandbox.",
 		"example_1_title": "Svelte",
 		"example_1_description": "A sample app that uses Juno datastore and authentication.",
 		"example_2_title": "React",
@@ -482,7 +487,9 @@
 		"example_7_title": "Vue",
 		"example_7_description": "Another iteration of the dapp developed with Vue.",
 		"example_8_title": "Next.JS",
-		"example_8_description": "Same as the React sample dapp but, built with Next."
+		"example_8_description": "Same as the React sample dapp but, built with Next.",
+		"example_9_title": "Rust",
+		"example_9_description": "An example of a hook that updates a document in serverless functions."
 	},
 	"resources": {
 		"product": "Product",

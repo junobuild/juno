@@ -3,10 +3,10 @@ use crate::factory::canister::create_canister;
 use crate::store::{get_orbiter_fee, increment_orbiters_rate};
 use crate::wasm::orbiter_wasm_arg;
 use candid::Principal;
-use shared::constants::CREATE_ORBITER_CYCLES;
-use shared::ic::create_canister_install_code;
-use shared::types::interface::CreateCanisterArgs;
-use shared::types::state::{MissionControlId, UserId};
+use junobuild_shared::constants::CREATE_ORBITER_CYCLES;
+use junobuild_shared::ic::create_canister_install_code;
+use junobuild_shared::types::interface::CreateCanisterArgs;
+use junobuild_shared::types::state::{MissionControlId, UserId};
 
 pub async fn create_orbiter(
     console: Principal,

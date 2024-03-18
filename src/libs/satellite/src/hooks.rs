@@ -10,7 +10,7 @@ use crate::types::hooks::{
 use crate::{CollectionKey, HookContext};
 #[allow(unused)]
 use ic_cdk_timers::set_timer;
-use shared::types::state::UserId;
+use junobuild_shared::types::state::UserId;
 #[allow(unused)]
 use std::time::Duration;
 
@@ -39,7 +39,7 @@ pub fn invoke_on_set_doc(caller: &UserId, doc: &DocContext<DocUpsert>) {
     #[cfg(feature = "on_set_doc")]
     {
         let context: OnSetDocContext = OnSetDocContext {
-            caller: caller.clone(),
+            caller: *caller,
             data: doc.clone(),
         };
 
@@ -64,9 +64,9 @@ pub fn invoke_on_set_many_docs(caller: &UserId, docs: &[DocContext<DocUpsert>]) 
 
             let filtered_docs = filter_docs(&collections, docs);
 
-            if filtered_docs.len() > 0 {
+            if !filtered_docs.is_empty() {
                 let context: OnSetManyDocsContext = OnSetManyDocsContext {
-                    caller: caller.clone(),
+                    caller: *caller,
                     data: filtered_docs.clone(),
                 };
 
@@ -83,7 +83,7 @@ pub fn invoke_on_delete_doc(caller: &UserId, doc: &DocContext<Option<Doc>>) {
     #[cfg(feature = "on_delete_doc")]
     {
         let context: OnDeleteDocContext = OnDeleteDocContext {
-            caller: caller.clone(),
+            caller: *caller,
             data: doc.clone(),
         };
 
@@ -108,9 +108,9 @@ pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &[DocContext<Option<Doc
 
             let filtered_docs = filter_docs(&collections, docs);
 
-            if filtered_docs.len() > 0 {
+            if !filtered_docs.is_empty() {
                 let context: OnDeleteManyDocsContext = OnDeleteManyDocsContext {
-                    caller: caller.clone(),
+                    caller: *caller,
                     data: filtered_docs.clone(),
                 };
 
@@ -127,12 +127,12 @@ pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
     #[cfg(feature = "on_upload_asset")]
     {
         // We perform this check here for performance reason given that this callback might be called when the developer deploys their frontend dapps
-        if is_not_asset_collection(&asset.key.collection) {
+        if is_asset_collection(&asset.key.collection) {
             return;
         }
 
         let context: OnUploadAssetContext = OnUploadAssetContext {
-            caller: caller.clone(),
+            caller: *caller,
             data: asset.clone(),
         };
 
@@ -155,11 +155,11 @@ pub fn invoke_on_delete_asset(caller: &UserId, asset: &Option<Asset>) {
         unsafe {
             let collections = juno_on_delete_asset_collections();
 
-            let filtered_assets = filter_assets(&collections, &vec![asset.clone()]);
+            let filtered_assets = filter_assets(&collections, &[asset.clone()]);
 
-            if filtered_assets.len() > 0 {
+            if !filtered_assets.is_empty() {
                 let context: OnDeleteAssetContext = OnDeleteAssetContext {
-                    caller: caller.clone(),
+                    caller: *caller,
                     data: asset.clone(),
                 };
 
@@ -180,9 +180,9 @@ pub fn invoke_on_delete_many_assets(caller: &UserId, assets: &[Option<Asset>]) {
 
             let filtered_assets = filter_assets(&collections, assets);
 
-            if filtered_assets.len() > 0 {
+            if !filtered_assets.is_empty() {
                 let context: OnDeleteManyAssetsContext = OnDeleteManyAssetsContext {
-                    caller: caller.clone(),
+                    caller: *caller,
                     data: filtered_assets.clone(),
                 };
 
@@ -242,6 +242,10 @@ fn filter_assets(
         .collect()
 }
 
+fn is_asset_collection(collection: &CollectionKey) -> bool {
+    collection == ASSET_COLLECTION_KEY
+}
+
 fn is_not_asset_collection(collection: &CollectionKey) -> bool {
-    collection != ASSET_COLLECTION_KEY
+    !is_asset_collection(collection)
 }

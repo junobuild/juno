@@ -1,7 +1,14 @@
 [package]
 name = "junobuild-macros"
 version = "0.0.1"
-edition = "2021"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+description = "Procedural macros for hooking into various events in Juno."
+homepage.workspace = true
+documentation = "https://docs.rs/junobuild-macros"
+readme = "README.md"
+license-file = "LICENSE.md"
 
 [lib]
 proc-macro = true

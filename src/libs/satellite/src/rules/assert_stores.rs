@@ -2,9 +2,9 @@ use crate::memory::STATE;
 use crate::rules::constants::DEFAULT_DB_COLLECTIONS;
 use crate::rules::types::rules::Permission;
 use candid::Principal;
-use shared::controllers::is_controller;
-use shared::types::state::Controllers;
-use shared::utils::{principal_equal, principal_not_anonymous};
+use junobuild_shared::controllers::is_controller;
+use junobuild_shared::types::state::Controllers;
+use junobuild_shared::utils::{principal_equal, principal_not_anonymous};
 
 pub fn assert_permission(
     permission: &Permission,

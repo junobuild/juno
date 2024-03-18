@@ -2,8 +2,8 @@ use crate::memory::STATE;
 use crate::types::interface::{DelSatelliteConfig, SetSatelliteConfig};
 use crate::types::state::{SatelliteConfig, SatelliteConfigs};
 use ic_cdk::api::time;
-use shared::assert::assert_timestamp;
-use shared::types::state::SatelliteId;
+use junobuild_shared::assert::assert_timestamp;
+use junobuild_shared::types::state::SatelliteId;
 
 pub fn set_satellite_config(
     satellite_id: &SatelliteId,

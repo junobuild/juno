@@ -1,10 +1,10 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::db::state::{
-    delete_collection as delete_state_collection, delete_doc as delete_state_doc,
-    get_doc as get_state_doc, get_docs_heap, get_docs_stable, get_rule as get_state_rule,
-    init_collection as init_state_collection, insert_doc as insert_state_doc,
-    is_collection_empty as is_state_collection_empty,
+    count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
+    delete_doc as delete_state_doc, get_doc as get_state_doc, get_docs_heap, get_docs_stable,
+    get_rule as get_state_rule, init_collection as init_state_collection,
+    insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
@@ -18,8 +18,8 @@ use crate::types::core::{CollectionKey, Key};
 use crate::types::list::{ListParams, ListResults};
 use candid::Principal;
 use ic_cdk::api::time;
-use shared::assert::assert_timestamp;
-use shared::types::state::{Controllers, UserId};
+use junobuild_shared::assert::assert_timestamp;
+use junobuild_shared::types::state::{Controllers, UserId};
 
 /// Collection
 
@@ -53,6 +53,24 @@ fn delete_collection_impl(
 
 /// Get
 
+/// Get a document from a collection's store.
+///
+/// This function retrieves a document from a collection's store based on the specified parameters.
+/// It returns a `Result<Option<Doc>, String>` where `Ok(Some(Doc))` indicates a successfully retrieved
+/// document, `Ok(None)` represents no document found, or an error message as `Err(String)` if retrieval
+/// encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `UserId` representing the caller requesting the document.
+/// - `collection`: A `CollectionKey` representing the collection from which to retrieve the document.
+/// - `key`: A `Key` identifying the document to be retrieved.
+///
+/// # Returns
+/// - `Ok(Some(Doc))`: Indicates successful retrieval of a document.
+/// - `Ok(None)`: Indicates no document found for the specified key.
+/// - `Err(String)`: An error message if retrieval fails.
+///
+/// This function allows you to securely retrieve a document from a Juno collection's store.
 pub fn get_doc_store(
     caller: UserId,
     collection: CollectionKey,
@@ -96,6 +114,24 @@ fn get_doc_impl(
 
 /// Insert
 
+/// Set a document in a collection's store.
+///
+/// This function sets a document in a collection's store based on the specified parameters.
+/// It returns a `Result<DocContext<DocUpsert>, String>` where `Ok(DocContext)` indicates successful
+/// insertion or update of the document, or an error message as `Err(String)` if the operation encounters
+/// issues.
+///
+/// # Parameters
+/// - `caller`: The `UserId` representing the caller initiating the operation.
+/// - `collection`: A `CollectionKey` representing the collection in which to set the document.
+/// - `key`: A `Key` identifying the document to be set.
+/// - `value`: An instance of `SetDoc` representing the document to be inserted or updated.
+///
+/// # Returns
+/// - `Ok(DocContext<DocUpsert>)`: Indicates successful insertion or update of the document.
+/// - `Err(String)`: An error message if the operation fails.
+///
+/// This function allows you to securely insert or update documents in a Juno collection's store.
 pub fn set_doc_store(
     caller: UserId,
     collection: CollectionKey,
@@ -156,13 +192,18 @@ fn insert_doc_impl(
         Some(current_doc) => current_doc.created_at,
     };
 
+    let owner: UserId = match &current_doc {
+        None => caller,
+        Some(current_doc) => current_doc.owner,
+    };
+
     let updated_at: u64 = now;
 
     let doc: Doc = Doc {
         created_at,
         updated_at,
         data: value.data,
-        owner: caller,
+        owner,
         description: value.description,
     };
 
@@ -224,6 +265,27 @@ fn get_docs_impl<'a>(
 
 /// Delete
 
+/// Delete a document from a collection's store.
+///
+/// This function deletes a document from a collection's store based on the specified parameters.
+/// It returns a `Result` with `Ok(DocContext<Option<Doc>>)` on success, containing information
+/// about the deleted document, or an error message as `Err(String)` if the deletion encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `UserId` representing the caller initiating the deletion.
+/// - `collection`: A `CollectionKey` representing the collection from which to delete the document.
+/// - `key`: A `Key` identifying the document to be deleted.
+/// - `value`: An instance of `DelDoc` representing the deletion action.
+///
+/// # Returns
+/// - `Ok(DocContext<Option<Doc>>)`:
+///   - `key`: The `Key` of the deleted document.
+///   - `collection`: The `CollectionKey` from which the document was deleted.
+///   - `data`: An `Option<Doc>` representing the deleted document data, if available.
+/// - `Err(String)`: An error message if the deletion operation fails.
+///
+/// This function allows you to securely delete documents from a Juno collection's store, returning
+/// relevant context information or error messages.
 pub fn delete_doc_store(
     caller: UserId,
     collection: CollectionKey,
@@ -315,6 +377,20 @@ fn assert_write_permission(
     Ok(())
 }
 
+/// Delete multiple documents from a collection's store.
+///
+/// This function deletes multiple documents from a collection's store based on the specified collection key.
+/// It returns a `Result<(), String>` where `Ok(())` indicates successful deletion, or an error message
+/// as `Err(String)` if the deletion encounters issues.
+///
+/// # Parameters
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to delete documents.
+///
+/// # Returns
+/// - `Ok(())`: Indicates successful deletion of documents.
+/// - `Err(String)`: An error message if the deletion operation fails.
+///
+/// This function allows you to securely delete multiple documents from a Juno collection's store.
 pub fn delete_docs_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
@@ -344,18 +420,32 @@ fn delete_docs_impl(
     Ok(())
 }
 
+/// Count the number of documents in a collection's store.
+///
+/// This function retrieves the state rule for the specified collection and counts the documents
+/// based on the memory type (Heap or Stable). It returns the count as a `Result` with `Ok(usize)`
+/// on success, or an error message as `Err(String)` if an issue occurs during counting.
+///
+/// # Parameters
+/// - `collection`: A reference to the `CollectionKey` representing the collection to count documents in.
+///
+/// # Returns
+/// - `Ok(usize)`: The count of documents in the collection.
+/// - `Err(String)`: An error message if counting fails.
+///
+/// This function provides a convenient way to determine the number of documents in a Juno collection's store.
 pub fn count_docs_store(collection: &CollectionKey) -> Result<usize, String> {
     let rule = get_state_rule(collection)?;
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            let docs = get_docs_heap(collection, &state_ref.heap.db.db)?;
-            Ok(docs.len())
+            let length = count_docs_heap(collection, &state_ref.heap.db.db)?;
+            Ok(length)
         }),
         Memory::Stable => STATE.with(|state| {
-            let stable = get_docs_stable(collection, &state.borrow().stable.db)?;
-            Ok(stable.len())
+            let length = count_docs_stable(collection, &state.borrow().stable.db)?;
+            Ok(length)
         }),
     }
 }

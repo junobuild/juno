@@ -267,3 +267,4 @@ export interface _SERVICE {
 	transfer_fee: ActorMethod<[TransferFeeArg], TransferFee>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;
+export declare const init: (args: { IDL: typeof IDL }) => IDL.Type[];

@@ -1,10 +1,10 @@
 use crate::STATE;
 use candid::Principal;
 use ic_cdk::caller;
-use shared::controllers::is_admin_controller;
-use shared::env::OBSERVATORY;
-use shared::types::state::Controllers;
-use shared::utils::principal_equal;
+use junobuild_shared::controllers::is_admin_controller;
+use junobuild_shared::env::OBSERVATORY;
+use junobuild_shared::types::state::Controllers;
+use junobuild_shared::utils::principal_equal;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {
     let caller = caller();

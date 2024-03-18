@@ -1,10 +1,12 @@
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
-use shared::controllers::{filter_admin_controllers, into_controller_ids};
-use shared::ic::update_canister_controllers;
-use shared::types::interface::{DeleteControllersArgs, SetController, SetControllersArgs};
-use shared::types::state::{ControllerId, Controllers};
+use junobuild_shared::controllers::{filter_admin_controllers, into_controller_ids};
+use junobuild_shared::ic::update_canister_controllers;
+use junobuild_shared::types::interface::{
+    DeleteControllersArgs, SetController, SetControllersArgs,
+};
+use junobuild_shared::types::state::{ControllerId, Controllers};
 
 pub async fn set_segment_controllers(
     segment_id: &Principal,

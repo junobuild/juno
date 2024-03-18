@@ -32,8 +32,8 @@ use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
     delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
     get_config_store as get_storage_config, get_content_chunks_store, get_custom_domains_store,
-    init_certified_assets_store, list_assets_store, set_config_store as set_storage_config,
-    set_domain_store,
+    get_public_asset_store, init_certified_assets_store, list_assets_store,
+    set_config_store as set_storage_config, set_domain_store,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http_request::{
@@ -42,6 +42,7 @@ use crate::storage::types::http_request::{
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
@@ -55,12 +56,12 @@ use ic_cdk::api::{caller, trap};
 use ic_stable_structures::writer::Writer;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
-use shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
-use shared::controllers::{
-    assert_max_number_of_controllers, assert_no_anonymous_controller, init_controllers,
+use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
+use junobuild_shared::controllers::{
+    assert_controllers, assert_max_number_of_controllers, init_controllers,
 };
-use shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
-use shared::types::state::{ControllerScope, Controllers};
+use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
+use junobuild_shared::types::state::{ControllerScope, Controllers};
 use std::mem;
 
 pub fn init() {
@@ -178,22 +179,17 @@ pub fn get_many_docs(docs: Vec<(CollectionKey, Key)>) -> Vec<(Key, Option<Doc>)>
         .collect()
 }
 
-pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<DocContext<Doc>> {
+pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)> {
     let caller = caller();
 
     let mut hook_payload: Vec<DocContext<DocUpsert>> = Vec::new();
-    let mut results: Vec<DocContext<Doc>> = Vec::new();
+    let mut results: Vec<(Key, Doc)> = Vec::new();
 
     for (collection, key, doc) in docs {
         let result =
             set_doc_store(caller, collection, key.clone(), doc).unwrap_or_else(|e| trap(&e));
 
-        // The caller knows the "before" values therefore to reduce the size of the answer we filter those information.
-        results.push(DocContext {
-            key: result.key.clone(),
-            collection: result.collection.clone(),
-            data: result.data.after.clone(),
-        });
+        results.push((result.key.clone(), result.data.after.clone()));
 
         hook_payload.push(result);
     }
@@ -283,7 +279,7 @@ pub fn set_controllers(
         }
     }
 
-    assert_no_anonymous_controller(&controllers).unwrap_or_else(|e| trap(&e));
+    assert_controllers(&controllers).unwrap_or_else(|e| trap(&e));
 
     set_controllers_store(&controllers, &controller);
     get_controllers()
@@ -395,7 +391,7 @@ pub fn http_request_streaming_callback(
         memory: _,
     }: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
-    let asset = get_asset_store(full_path, token);
+    let asset = get_public_asset_store(full_path, token);
 
     match asset {
         Some((asset, memory)) => {
@@ -471,7 +467,7 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
     }
 }
 
-pub fn del_asset(collection: CollectionKey, full_path: String) {
+pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
     let caller = caller();
 
     let result = delete_asset_store(caller, &collection, full_path);
@@ -512,4 +508,27 @@ pub fn count_assets(collection: CollectionKey) -> usize {
         Ok(value) => value,
         Err(error) => trap(&error),
     }
+}
+
+pub fn get_asset(collection: CollectionKey, full_path: FullPath) -> Option<AssetNoContent> {
+    let caller = caller();
+
+    let result = get_asset_store(caller, &collection, full_path);
+
+    match result {
+        Ok(asset) => asset.map(|asset| AssetNoContent::from(&asset)),
+        Err(error) => trap(&error),
+    }
+}
+
+pub fn get_many_assets(
+    assets: Vec<(CollectionKey, FullPath)>,
+) -> Vec<(FullPath, Option<AssetNoContent>)> {
+    assets
+        .iter()
+        .map(|(collection, full_path)| {
+            let asset = get_asset(collection.clone(), full_path.clone());
+            (full_path.clone(), asset.clone())
+        })
+        .collect()
 }

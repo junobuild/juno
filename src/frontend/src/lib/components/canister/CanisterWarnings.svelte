@@ -1,6 +1,6 @@
 <script lang="ts">
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
-	import type { Canister } from '$lib/types/canister';
+	import type { CanisterIcStatus } from '$lib/types/canister';
 	import type { Principal } from '@dfinity/principal';
 
 	export let canisterId: Principal;
@@ -8,7 +8,7 @@
 	let cyclesWarning = false;
 	let heapWarning = false;
 
-	const syncCanister = ({ id, data }: Canister) => {
+	const syncCanister = ({ id, data }: CanisterIcStatus) => {
 		if (id !== canisterId.toText()) {
 			return;
 		}

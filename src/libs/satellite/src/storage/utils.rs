@@ -1,40 +1,17 @@
 use crate::list::utils::matcher_regex;
 use crate::rules::assert_stores::assert_permission;
 use crate::rules::types::rules::Permission;
-use crate::storage::types::interface::{AssetEncodingNoContent, AssetNoContent};
+use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::types::core::CollectionKey;
 use crate::types::list::ListParams;
 use candid::Principal;
+use junobuild_shared::types::state::{Controllers, UserId};
 use regex::Regex;
-use shared::types::state::{Controllers, UserId};
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
-    (
-        asset.key.full_path.clone(),
-        AssetNoContent {
-            key: asset.key.clone(),
-            headers: asset.headers.clone(),
-            encodings: asset
-                .encodings
-                .clone()
-                .into_iter()
-                .map(|(key, encoding)| {
-                    (
-                        key,
-                        AssetEncodingNoContent {
-                            modified: encoding.modified,
-                            total_length: encoding.total_length,
-                            sha256: encoding.sha256,
-                        },
-                    )
-                })
-                .collect(),
-            created_at: asset.created_at,
-            updated_at: asset.updated_at,
-        },
-    )
+    (asset.key.full_path.clone(), AssetNoContent::from(asset))
 }
 
 pub fn filter_values<'a>(

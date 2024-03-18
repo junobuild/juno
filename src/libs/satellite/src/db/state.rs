@@ -1,9 +1,11 @@
-use crate::db::types::state::{DbHeap, DbStable, Doc, StableKey};
+use crate::db::types::state::{DbHeap, DbStable, DbUsersStable, Doc, StableKey, UserStableKey};
 use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::{CollectionKey, Key};
+use candid::Principal;
+use junobuild_shared::types::state::UserId;
 use std::collections::BTreeMap;
 use std::ops::RangeBounds;
 
@@ -14,7 +16,7 @@ pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
         Memory::Heap => {
             STATE.with(|state| init_collection_heap(collection, &mut state.borrow_mut().heap.db.db))
         }
-        Memory::Stable => (),
+        Memory::Stable | Memory::StableUsers => (),
     }
 }
 
@@ -29,6 +31,9 @@ pub fn is_collection_empty(
         Memory::Stable => {
             STATE.with(|state| is_collection_empty_stable(collection, &state.borrow().stable.db))
         }
+        Memory::StableUsers => STATE.with(|state| {
+            is_collection_empty_users_stable(collection, &state.borrow().stable.db_users)
+        }),
     }
 }
 
@@ -39,7 +44,7 @@ pub fn delete_collection(
     match memory.clone().unwrap_or_default() {
         Memory::Heap => STATE
             .with(|state| delete_collection_heap(collection, &mut state.borrow_mut().heap.db.db)),
-        Memory::Stable => Ok(()),
+        Memory::Stable | Memory::StableUsers => Ok(()),
     }
 }
 
@@ -72,6 +77,14 @@ fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Resu
     Ok(stable.is_empty())
 }
 
+fn is_collection_empty_users_stable(
+    collection: &CollectionKey,
+    db: &DbUsersStable,
+) -> Result<bool, String> {
+    let stable = get_docs_users_stable(collection, &None, db)?;
+    Ok(stable.is_empty())
+}
+
 // Delete
 
 fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result<(), String> {
@@ -89,7 +102,12 @@ fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result
 
 /// Documents
 
-pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Option<Doc>, String> {
+pub fn get_doc(
+    collection: &CollectionKey,
+    key: &Key,
+    owner: &UserId,
+    rule: &Rule,
+) -> Result<Option<Doc>, String> {
     match rule.mem() {
         Memory::Heap => {
             STATE.with(|state| get_doc_heap(collection, key, &state.borrow().heap.db.db))
@@ -97,12 +115,16 @@ pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Opt
         Memory::Stable => {
             STATE.with(|state| get_doc_stable(collection, key, &state.borrow().stable.db))
         }
+        Memory::StableUsers => STATE.with(|state| {
+            get_doc_users_stable(collection, key, owner, &state.borrow().stable.db_users)
+        }),
     }
 }
 
 pub fn insert_doc(
     collection: &CollectionKey,
     key: &Key,
+    owner: &UserId,
     doc: &Doc,
     rule: &Rule,
 ) -> Result<Doc, String> {
@@ -113,12 +135,22 @@ pub fn insert_doc(
         Memory::Stable => STATE.with(|state| {
             insert_doc_stable(collection, key, doc, &mut state.borrow_mut().stable.db)
         }),
+        Memory::StableUsers => STATE.with(|state| {
+            insert_doc_users_stable(
+                collection,
+                key,
+                owner,
+                doc,
+                &mut state.borrow_mut().stable.db_users,
+            )
+        }),
     }
 }
 
 pub fn delete_doc(
     collection: &CollectionKey,
     key: &Key,
+    owner: &UserId,
     rule: &Rule,
 ) -> Result<Option<Doc>, String> {
     match rule.mem() {
@@ -127,6 +159,14 @@ pub fn delete_doc(
         }
         Memory::Stable => STATE
             .with(|state| delete_doc_stable(collection, key, &mut state.borrow_mut().stable.db)),
+        Memory::StableUsers => STATE.with(|state| {
+            delete_doc_users_stable(
+                collection,
+                key,
+                owner,
+                &mut state.borrow_mut().stable.db_users,
+            )
+        }),
     }
 }
 
@@ -138,6 +178,20 @@ fn get_doc_stable(
     db: &DbStable,
 ) -> Result<Option<Doc>, String> {
     let value = db.get(&stable_key(collection, key));
+
+    match value {
+        None => Ok(None),
+        Some(value) => Ok(Some(value)),
+    }
+}
+
+fn get_doc_users_stable(
+    collection: &CollectionKey,
+    key: &Key,
+    owner: &UserId,
+    db: &DbUsersStable,
+) -> Result<Option<Doc>, String> {
+    let value = db.get(&user_stable_key(collection, key, owner));
 
     match value {
         None => Ok(None),
@@ -167,7 +221,19 @@ pub fn get_docs_stable(
     collection: &CollectionKey,
     db: &DbStable,
 ) -> Result<Vec<(StableKey, Doc)>, String> {
-    let items = db.range(filter_docs_range(collection)).collect();
+    let items = db.range(filter_docs_stable_range(collection)).collect();
+
+    Ok(items)
+}
+
+pub fn get_docs_users_stable(
+    collection: &CollectionKey,
+    owner: &Option<UserId>,
+    db: &DbUsersStable,
+) -> Result<Vec<(UserStableKey, Doc)>, String> {
+    let items = db
+        .range(filter_docs_users_stable_range(collection, owner))
+        .collect();
 
     Ok(items)
 }
@@ -197,18 +263,51 @@ pub fn count_docs_heap(collection: &CollectionKey, db: &DbHeap) -> Result<usize,
 }
 
 pub fn count_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<usize, String> {
-    let length = db.range(filter_docs_range(collection)).count();
+    let length = db.range(filter_docs_stable_range(collection)).count();
 
     Ok(length)
 }
 
-fn filter_docs_range(collection: &CollectionKey) -> impl RangeBounds<StableKey> {
+pub fn count_docs_users_stable(
+    collection: &CollectionKey,
+    db: &DbUsersStable,
+) -> Result<usize, String> {
+    let length = db
+        .range(filter_docs_users_stable_range(collection, &None))
+        .count();
+
+    Ok(length)
+}
+
+fn filter_docs_stable_range(collection: &CollectionKey) -> impl RangeBounds<StableKey> {
     let start_key = StableKey {
         collection: collection.clone(),
         key: "".to_string(),
     };
 
     let end_key = StableKey {
+        collection: range_collection_end(collection).clone(),
+        key: "".to_string(),
+    };
+
+    start_key..end_key
+}
+
+const PRINCIPAL_MIN: Principal = Principal::from_slice(&[]);
+const PRINCIPAL_MAX: Principal = Principal::from_slice(&[255; 29]);
+
+fn filter_docs_users_stable_range(
+    collection: &CollectionKey,
+    owner: &Option<UserId>,
+) -> impl RangeBounds<UserStableKey> {
+    let start_key = UserStableKey {
+        owner: owner.unwrap_or(PRINCIPAL_MIN),
+        collection: collection.clone(),
+        key: "".to_string(),
+    };
+
+    let end_key = UserStableKey {
+        owner: owner.unwrap_or(PRINCIPAL_MAX),
         collection: range_collection_end(collection).clone(),
         key: "".to_string(),
     };
@@ -225,6 +324,18 @@ fn insert_doc_stable(
     db: &mut DbStable,
 ) -> Result<Doc, String> {
     db.insert(stable_key(collection, key), doc.clone());
+
+    Ok(doc.clone())
+}
+
+fn insert_doc_users_stable(
+    collection: &CollectionKey,
+    key: &Key,
+    owner: &UserId,
+    doc: &Doc,
+    db: &mut DbUsersStable,
+) -> Result<Doc, String> {
+    db.insert(user_stable_key(collection, key, owner), doc.clone());
 
     Ok(doc.clone())
 }
@@ -258,6 +369,17 @@ fn delete_doc_stable(
     Ok(deleted_doc)
 }
 
+fn delete_doc_users_stable(
+    collection: &CollectionKey,
+    key: &Key,
+    owner: &UserId,
+    db: &mut DbUsersStable,
+) -> Result<Option<Doc>, String> {
+    let deleted_doc = db.remove(&user_stable_key(collection, key, owner));
+
+    Ok(deleted_doc)
+}
+
 fn delete_doc_heap(
     collection: &CollectionKey,
     key: &Key,
@@ -277,6 +399,14 @@ fn delete_doc_heap(
 
 fn stable_key(collection: &CollectionKey, key: &Key) -> StableKey {
     StableKey {
+        collection: collection.clone(),
+        key: key.clone(),
+    }
+}
+
+fn user_stable_key(collection: &CollectionKey, key: &Key, owner: &UserId) -> UserStableKey {
+    UserStableKey {
+        owner: owner.clone(),
         collection: collection.clone(),
         key: key.clone(),
     }

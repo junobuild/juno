@@ -12,9 +12,17 @@ pub mod state {
     pub type DbHeap = HashMap<CollectionKey, Collection>;
 
     pub type DbStable = StableBTreeMap<StableKey, Doc, Memory>;
+    pub type DbUsersStable = StableBTreeMap<UserStableKey, Doc, Memory>;
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct StableKey {
+        pub collection: CollectionKey,
+        pub key: Key,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct UserStableKey {
+        pub owner: UserId,
         pub collection: CollectionKey,
         pub key: Key,
     }

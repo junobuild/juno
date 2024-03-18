@@ -1,8 +1,9 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::db::state::{
-    count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
-    delete_doc as delete_state_doc, get_doc as get_state_doc, get_docs_heap, get_docs_stable,
+    count_docs_heap, count_docs_stable, count_docs_users_stable,
+    delete_collection as delete_state_collection, delete_doc as delete_state_doc,
+    get_doc as get_state_doc, get_docs_heap, get_docs_stable, get_docs_users_stable,
     get_rule as get_state_rule, init_collection as init_state_collection,
     insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
@@ -98,7 +99,7 @@ fn get_doc_impl(
     key: Key,
     rule: &Rule,
 ) -> Result<Option<Doc>, String> {
-    let value = get_state_doc(&collection, &key, rule)?;
+    let value = get_state_doc(&collection, &key, &caller, rule)?;
 
     match value {
         None => Ok(None),
@@ -168,7 +169,7 @@ fn insert_doc_impl(
     value: SetDoc,
     rule: &Rule,
 ) -> Result<DocUpsert, String> {
-    let current_doc = get_state_doc(&collection, &key, rule)?;
+    let current_doc = get_state_doc(&collection, &key, &caller, rule)?;
 
     match assert_write_permission(
         caller,
@@ -207,7 +208,7 @@ fn insert_doc_impl(
         description: value.description,
     };
 
-    let after = insert_state_doc(&collection, &key, &doc, rule)?;
+    let after = insert_state_doc(&collection, &key, &owner, &doc, rule)?;
 
     Ok(DocUpsert {
         before: current_doc,
@@ -243,6 +244,12 @@ fn secure_get_docs(
         }),
         Memory::Stable => STATE.with(|state| {
             let stable = get_docs_stable(&collection, &state.borrow().stable.db)?;
+            let docs: Vec<(&Key, &Doc)> = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
+            get_docs_impl(&docs, caller, controllers, filter, &rule)
+        }),
+        Memory::StableUsers => STATE.with(|state| {
+            let stable =
+                get_docs_users_stable(&collection, &Some(caller), &state.borrow().stable.db_users)?;
             let docs: Vec<(&Key, &Doc)> = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
             get_docs_impl(&docs, caller, controllers, filter, &rule)
         }),
@@ -322,7 +329,7 @@ fn delete_doc_impl(
     value: DelDoc,
     rule: &Rule,
 ) -> Result<Option<Doc>, String> {
-    let current_doc = get_state_doc(&collection, &key, rule)?;
+    let current_doc = get_state_doc(&collection, &key, &caller, rule)?;
 
     match assert_write_permission(
         caller,
@@ -337,7 +344,7 @@ fn delete_doc_impl(
         }
     }
 
-    delete_state_doc(&collection, &key, rule)
+    delete_state_doc(&collection, &key, &caller, rule)
 }
 
 fn assert_write_permission(
@@ -396,12 +403,25 @@ pub fn delete_docs_store(collection: &CollectionKey) -> Result<(), String> {
 
     let keys = match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            get_docs_heap(collection, &state.borrow().heap.db.db)
-                .map(|docs| docs.into_iter().map(|(key, _)| key.clone()).collect())
+            get_docs_heap(collection, &state.borrow().heap.db.db).map(|docs| {
+                docs.into_iter()
+                    .map(|(key, doc)| (key.clone(), doc.owner))
+                    .collect()
+            })
         }),
         Memory::Stable => STATE.with(|state| {
-            get_docs_stable(collection, &state.borrow().stable.db)
-                .map(|docs| docs.iter().map(|(key, _)| key.key.clone()).collect())
+            get_docs_stable(collection, &state.borrow().stable.db).map(|docs| {
+                docs.iter()
+                    .map(|(key, doc)| (key.key.clone(), doc.owner))
+                    .collect()
+            })
+        }),
+        Memory::StableUsers => STATE.with(|state| {
+            get_docs_users_stable(collection, &None, &state.borrow().stable.db_users).map(|docs| {
+                docs.iter()
+                    .map(|(key, _)| (key.key.clone(), key.owner))
+                    .collect()
+            })
         }),
     }?;
 
@@ -409,12 +429,12 @@ pub fn delete_docs_store(collection: &CollectionKey) -> Result<(), String> {
 }
 
 fn delete_docs_impl(
-    keys: &Vec<Key>,
+    keys: &Vec<(Key, UserId)>,
     collection: &CollectionKey,
     rule: &Rule,
 ) -> Result<(), String> {
-    for key in keys {
-        delete_state_doc(collection, key, rule)?;
+    for (key, owner) in keys {
+        delete_state_doc(collection, key, owner, rule)?;
     }
 
     Ok(())
@@ -445,6 +465,10 @@ pub fn count_docs_store(collection: &CollectionKey) -> Result<usize, String> {
         }),
         Memory::Stable => STATE.with(|state| {
             let length = count_docs_stable(collection, &state.borrow().stable.db)?;
+            Ok(length)
+        }),
+        Memory::StableUsers => STATE.with(|state| {
+            let length = count_docs_users_stable(collection, &state.borrow().stable.db_users)?;
             Ok(length)
         }),
     }

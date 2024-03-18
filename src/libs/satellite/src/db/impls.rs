@@ -1,4 +1,4 @@
-use crate::db::types::state::{Doc, StableKey};
+use crate::db::types::state::{Doc, StableKey, UserStableKey};
 use crate::types::core::Compare;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
@@ -29,6 +29,18 @@ impl Storable for Doc {
 }
 
 impl Storable for StableKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for UserStableKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }

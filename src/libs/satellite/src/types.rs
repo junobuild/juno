@@ -1,5 +1,5 @@
 pub mod state {
-    use crate::db::types::state::{DbHeapState, DbStable};
+    use crate::db::types::state::{DbHeapState, DbStable, DbUsersStable};
     use crate::memory::init_stable_state;
     use crate::storage::types::state::{
         AssetsStable, ContentChunksStable, StorageHeapState, StorageRuntimeState,
@@ -26,6 +26,7 @@ pub mod state {
         pub db: DbStable,
         pub assets: AssetsStable,
         pub content_chunks: ContentChunksStable,
+        pub db_users: DbUsersStable,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

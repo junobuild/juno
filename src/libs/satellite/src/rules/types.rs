@@ -24,6 +24,7 @@ pub mod rules {
         Heap,
         #[default]
         Stable,
+        StableUsers,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]

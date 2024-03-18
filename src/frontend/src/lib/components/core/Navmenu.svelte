@@ -9,7 +9,7 @@
 	import { page } from '$app/stores';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Theme from '$lib/components/ui/Theme.svelte';
-	import IconBlurCircular from '$lib/components/icons/IconBlurCircular.svelte';
+	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 
 	let routeId: string | null;
 	$: routeId = $page.route.id;
@@ -73,7 +73,7 @@
 			href={`/functions/?s=${satelliteId}`}
 			class:selected={isSelected({ routeId, path: 'functions' })}
 		>
-			<IconBlurCircular />
+			<IconFunctions size="24px" />
 			<span>{$i18n.functions.title}</span>
 		</a>
 	</nav>

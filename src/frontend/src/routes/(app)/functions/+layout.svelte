@@ -7,7 +7,7 @@
 
 	onMount(() => {
 		layoutTitle.set($i18n.functions.title);
-		applyColor(Color.AERO_BLUE);
+		applyColor(Color.SHANDY);
 	});
 </script>
 

@@ -50,3 +50,19 @@ export const canisterStop = async ({
 	const actor: ICActor = await getICActor(identity);
 	return actor.stop_canister({ canister_id: canisterId });
 };
+
+export const canisterLogs = async ({
+	canisterId,
+	identity
+}: {
+	canisterId: Principal;
+	identity: Identity;
+}): Promise<void> => {
+	const { fetch_canister_logs } = await getICActor(identity);
+
+	const results = await fetch_canister_logs({
+		canister_id: canisterId
+	});
+
+	console.log(results);
+};

@@ -7,7 +7,8 @@
 	id="uuid-37e6a5a2-cb21-4a36-a7be-dfb31df07699"
 	xmlns="http://www.w3.org/2000/svg"
 	viewBox="0 0 29 29"
-	height={size} width={size}
+	height={size}
+	width={size}
 	><defs
 		><style>
 			.uuid-6ee6014c-dbb3-4770-b018-42da8f70ae29,

@@ -10,7 +10,7 @@
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
-	import IconChartBar from '$lib/components/icons/IconChartBar.svelte';
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import { analyticsLink } from '$lib/utils/nav.utils';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 
@@ -57,7 +57,7 @@
 			aria-haspopup="menu"
 			rel="external noopener norefferer"
 		>
-			<IconChartBar />
+			<IconAnalytics />
 			<span>{$i18n.analytics.title}</span>
 		</a>
 

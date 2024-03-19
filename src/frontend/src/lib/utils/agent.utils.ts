@@ -3,9 +3,12 @@ import { HttpAgent, type Identity } from '@dfinity/agent';
 import type { HttpAgentOptions } from '@dfinity/agent/lib/esm/agent/http';
 import { nonNullish } from '@dfinity/utils';
 
-export const getAgent = async (
-	params: { identity: Identity } & Pick<HttpAgentOptions, 'verifyQuerySignatures'>
-): Promise<HttpAgent> => {
+export type GetAgentParams = { identity: Identity } & Pick<
+	HttpAgentOptions,
+	'verifyQuerySignatures'
+>;
+
+export const getAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	const local = nonNullish(localIdentityCanisterId);
 
 	if (local) {
@@ -15,18 +18,12 @@ export const getAgent = async (
 	return getMainnetAgent(params);
 };
 
-const getMainnetAgent = async ({
-	identity,
-	verifyQuerySignatures = true
-}: { identity: Identity } & Pick<HttpAgentOptions, 'verifyQuerySignatures'>) => {
+const getMainnetAgent = async ({ identity, verifyQuerySignatures = true }: GetAgentParams) => {
 	const host = 'https://icp0.io';
 	return new HttpAgent({ identity, host, verifyQuerySignatures });
 };
 
-const getLocalAgent = async ({
-	identity,
-	verifyQuerySignatures = true
-}: { identity: Identity } & Pick<HttpAgentOptions, 'verifyQuerySignatures'>) => {
+const getLocalAgent = async ({ identity, verifyQuerySignatures = true }: GetAgentParams) => {
 	const host = 'http://localhost:8000/';
 
 	const agent: HttpAgent = new HttpAgent({ identity, host, verifyQuerySignatures });

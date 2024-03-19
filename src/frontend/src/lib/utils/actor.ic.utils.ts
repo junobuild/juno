@@ -3,9 +3,9 @@ import { idlFactory as idlFactorCMC } from '$declarations/cmc/cmc.factory.did';
 import type { _SERVICE as ICActor } from '$declarations/ic/ic.did';
 import { idlFactory as idlFactorIC } from '$declarations/ic/ic.factory.did';
 import { createActor } from '$lib/utils/actor.utils';
-import { getAgent } from '$lib/utils/agent.utils';
+import { getAgent, type GetAgentParams } from '$lib/utils/agent.utils';
 import type { CallConfig } from '@dfinity/agent';
-import { Actor, AnonymousIdentity, type Identity } from '@dfinity/agent';
+import { Actor, AnonymousIdentity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 
 export const getCMCActor = async (): Promise<CMCActor> => {
@@ -41,7 +41,7 @@ const transform = (
 
 /* eslint-enable */
 
-export const getICActor = (identity: Identity): Promise<ICActor> =>
+export const getICActor = (params: GetAgentParams): Promise<ICActor> =>
 	createActor<ICActor>({
 		canisterId: MANAGEMENT_CANISTER_ID,
 		config: {
@@ -49,5 +49,5 @@ export const getICActor = (identity: Identity): Promise<ICActor> =>
 			queryTransform: transform
 		},
 		idlFactory: idlFactorIC,
-		identity
+		...params
 	});

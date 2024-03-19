@@ -20,7 +20,7 @@ export const canisterStatus = async ({
 	canisterId: string;
 	identity: Identity;
 }): Promise<CanisterInfo> => {
-	const actor: ICActor = await getICActor(identity);
+	const actor: ICActor = await getICActor({ identity });
 
 	const { cycles, status, memory_size, idle_cycles_burned_per_day } = await actor.canister_status({
 		canister_id: Principal.fromText(canisterId)
@@ -36,7 +36,7 @@ export const canisterStart = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<void> => {
-	const actor: ICActor = await getICActor(identity);
+	const actor: ICActor = await getICActor({ identity });
 	return actor.start_canister({ canister_id: canisterId });
 };
 
@@ -47,7 +47,7 @@ export const canisterStop = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<void> => {
-	const actor: ICActor = await getICActor(identity);
+	const actor: ICActor = await getICActor({ identity });
 	return actor.stop_canister({ canister_id: canisterId });
 };
 
@@ -58,7 +58,8 @@ export const canisterLogs = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<void> => {
-	const { fetch_canister_logs } = await getICActor(identity);
+	// TODO: agent-js currently has an issue with querying the logs if verifyQuerySignatures is set to true
+	const { fetch_canister_logs } = await getICActor({ identity, verifyQuerySignatures: false });
 
 	const results = await fetch_canister_logs({
 		canister_id: canisterId

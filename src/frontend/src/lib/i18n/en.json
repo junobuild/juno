@@ -242,10 +242,8 @@
 	"functions": {
 		"title": "Functions",
 		"logs": "Logs",
-		"time": "Time",
-		"level": "Level",
-		"source": "Source",
-		"msg": "Event message",
+		"timestamp": "Timestamp",
+		"message": "Message",
 		"empty": "No logs collected."
 	},
 	"cli": {

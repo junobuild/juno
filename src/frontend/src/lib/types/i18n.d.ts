@@ -256,10 +256,8 @@ interface I18nHosting {
 interface I18nFunctions {
 	title: string;
 	logs: string;
-	time: string;
-	level: string;
-	source: string;
-	msg: string;
+	timestamp: string;
+	message: string;
 	empty: string;
 }
 

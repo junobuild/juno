@@ -1,4 +1,4 @@
-import type { _SERVICE as ICActor } from '$declarations/ic/ic.did';
+import type { _SERVICE as ICActor, canister_log_record } from '$declarations/ic/ic.did';
 import type { CanisterInfo, CanisterStatus } from '$lib/types/canister';
 import { getICActor } from '$lib/utils/actor.ic.utils';
 import type { Identity } from '@dfinity/agent';
@@ -57,13 +57,13 @@ export const canisterLogs = async ({
 }: {
 	canisterId: Principal;
 	identity: Identity;
-}): Promise<void> => {
+}): Promise<canister_log_record[]> => {
 	// TODO: agent-js currently has an issue with querying the logs if verifyQuerySignatures is set to true
 	const { fetch_canister_logs } = await getICActor({ identity, verifyQuerySignatures: false });
 
-	const results = await fetch_canister_logs({
+	const { canister_log_records } = await fetch_canister_logs({
 		canister_id: canisterId
 	});
 
-	console.log(results);
+	return canister_log_records;
 };

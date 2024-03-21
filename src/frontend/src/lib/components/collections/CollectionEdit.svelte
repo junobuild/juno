@@ -24,6 +24,9 @@
 	let typeStorage = false;
 	$: typeStorage = 'Storage' in type;
 
+	let typeDatastore = false;
+	$: typeDatastore = 'Db' in type;
+
 	let collection: string;
 	const initCollection = (initialCollection: string) => (collection = initialCollection);
 	$: initCollection($store.rule?.[0] ?? '');
@@ -163,6 +166,9 @@
 				<svelte:fragment slot="label">{$i18n.collections.memory}</svelte:fragment>
 				<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
 					<option value="Stable">{$i18n.collections.stable}</option>
+					{#if typeDatastore}
+						<option value="StableUsers">{$i18n.collections.stable_users}</option>
+					{/if}
 					<option value="Heap">{$i18n.collections.heap}</option>
 				</select>
 			</Value>

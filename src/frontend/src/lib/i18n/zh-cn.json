@@ -407,6 +407,7 @@
 		"memory": "内存",
 		"heap": "堆栈",
 		"stable": "稳定",
+		"stable_users": "Stable (Users)",
 		"immutable": "将权限改为只读"
 	},
 	"sort": {

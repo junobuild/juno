@@ -117,7 +117,7 @@ export interface ListResults_1 {
 	items: Array<[string, Doc]>;
 	items_length: bigint;
 }
-export type Memory = { Heap: null } | { Stable: null };
+export type Memory = { Heap: null } | { Stable: null } | { StableUsers: null };
 export interface MemorySize {
 	stable: bigint;
 	heap: bigint;

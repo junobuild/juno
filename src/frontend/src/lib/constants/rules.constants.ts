@@ -12,5 +12,6 @@ export type PermissionText = 'Public' | 'Private' | 'Managed' | 'Controllers';
 
 export const MemoryHeap: Memory = { Heap: null };
 export const MemoryStable: Memory = { Stable: null };
+export const MemoryStableUsers: Memory = { StableUsers: null };
 
-export type MemoryText = 'Heap' | 'Stable';
+export type MemoryText = 'Heap' | 'Stable' | 'StableUsers';

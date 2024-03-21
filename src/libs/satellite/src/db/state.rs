@@ -406,7 +406,7 @@ fn stable_key(collection: &CollectionKey, key: &Key) -> StableKey {
 
 fn user_stable_key(collection: &CollectionKey, key: &Key, owner: &UserId) -> UserStableKey {
     UserStableKey {
-        owner: owner.clone(),
+        owner: *owner,
         collection: collection.clone(),
         key: key.clone(),
     }

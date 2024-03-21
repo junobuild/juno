@@ -69,13 +69,13 @@ pub fn pre_filter_owner(
     ListParams { owner, .. }: &ListParams,
 ) -> Option<UserId> {
     match rule {
-        Permission::Public => owner.clone(),
-        Permission::Private => owner.clone().or_else(|| Some(caller)),
+        Permission::Public => *owner,
+        Permission::Private => (*owner).or(Some(caller)),
         Permission::Managed | Permission::Controllers => {
             if is_controller(caller, controllers) {
-                owner.clone()
+                *owner
             } else {
-                owner.clone().or_else(|| Some(caller))
+                (*owner).or(Some(caller))
             }
         }
     }

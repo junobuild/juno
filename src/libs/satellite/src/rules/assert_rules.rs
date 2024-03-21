@@ -24,7 +24,9 @@ pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Re
             }
             Some(Memory::StableUsers) => {
                 if !matches!(&current_rule.mem(), Memory::StableUsers) {
-                    return Err("The type of memory cannot be modified to stable users.".to_string());
+                    return Err(
+                        "The type of memory cannot be modified to stable users.".to_string()
+                    );
                 }
             }
         },

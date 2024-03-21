@@ -5,6 +5,7 @@ use crate::rules::types::rules::Permission;
 use crate::types::core::Key;
 use crate::types::list::ListParams;
 use candid::Principal;
+use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, UserId};
 use regex::Regex;
 
@@ -58,5 +59,24 @@ fn filter_owner(owner: &Option<UserId>, doc_owner: &UserId) -> bool {
     match owner {
         None => true,
         Some(filter_owner) => filter_owner == doc_owner,
+    }
+}
+
+pub fn pre_filter_owner(
+    caller: Principal,
+    controllers: &Controllers,
+    rule: &Permission,
+    ListParams { owner, .. }: &ListParams,
+) -> Option<UserId> {
+    match rule {
+        Permission::Public => owner.clone(),
+        Permission::Private => owner.clone().or_else(|| Some(caller)),
+        Permission::Managed | Permission::Controllers => {
+            if is_controller(caller, controllers) {
+                owner.clone()
+            } else {
+                owner.clone().or_else(|| Some(caller))
+            }
+        }
     }
 }

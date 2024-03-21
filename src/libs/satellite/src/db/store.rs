@@ -9,7 +9,7 @@ use crate::db::state::{
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
-use crate::db::utils::filter_values;
+use crate::db::utils::{filter_values, pre_filter_owner};
 use crate::list::utils::list_values;
 use crate::memory::STATE;
 use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
@@ -248,8 +248,10 @@ fn secure_get_docs(
             get_docs_impl(&docs, caller, controllers, filter, &rule)
         }),
         Memory::StableUsers => STATE.with(|state| {
+            let filter_owner = pre_filter_owner(caller, controllers, &rule.read, filter);
+
             let stable =
-                get_docs_users_stable(&collection, &Some(caller), &state.borrow().stable.db_users)?;
+                get_docs_users_stable(&collection, &filter_owner, &state.borrow().stable.db_users)?;
             let docs: Vec<(&Key, &Doc)> = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
             get_docs_impl(&docs, caller, controllers, filter, &rule)
         }),

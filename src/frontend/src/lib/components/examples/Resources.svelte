@@ -11,7 +11,7 @@
 	import IconBook from '$lib/components/icons/IconBook.svelte';
 	import IconScience from '$lib/components/icons/IconScience.svelte';
 	import type { Languages } from '$lib/types/languages';
-	import IconChartBar from '$lib/components/icons/IconChartBar.svelte';
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 
 	let anchor: HTMLDivElement | undefined;
 	let visible = false;
@@ -110,7 +110,7 @@
 			</Resource>
 
 			<Resource href="https://juno.build/docs/build/analytics">
-				<IconChartBar size="36px" slot="icon" />
+				<IconAnalytics size="36px" slot="icon" />
 				<svelte:fragment slot="title">{$i18n.analytics.title}</svelte:fragment>
 
 				{$i18n.analytics.short_description}

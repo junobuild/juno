@@ -1,4 +1,4 @@
-use crate::db::types::state::{DbHeap, DbStable, Doc, StableKey};
+use crate::db::types::state::{Collection, DbHeap, DbStable, Doc, StableKey};
 use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
@@ -108,10 +108,22 @@ pub fn insert_doc(
 ) -> Result<Doc, String> {
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            insert_doc_heap(collection, key, doc, &mut state.borrow_mut().heap.db.db)
+            insert_doc_heap(
+                collection,
+                key,
+                doc,
+                rule.max_length,
+                &mut state.borrow_mut().heap.db.db,
+            )
         }),
         Memory::Stable => STATE.with(|state| {
-            insert_doc_stable(collection, key, doc, &mut state.borrow_mut().stable.db)
+            insert_doc_stable(
+                collection,
+                key,
+                doc,
+                rule.max_length,
+                &mut state.borrow_mut().stable.db,
+            )
         }),
     }
 }
@@ -222,17 +234,41 @@ fn insert_doc_stable(
     collection: &CollectionKey,
     key: &Key,
     doc: &Doc,
+    max_length: Option<u32>,
     db: &mut DbStable,
 ) -> Result<Doc, String> {
+    limit_doc_stable_length(collection, max_length, db)?;
+
     db.insert(stable_key(collection, key), doc.clone());
 
     Ok(doc.clone())
+}
+
+fn limit_doc_stable_length(
+    collection: &CollectionKey,
+    max_length: Option<u32>,
+    db: &mut DbStable,
+) -> Result<(), String> {
+    if let Some(max_length) = max_length {
+        let col_length = count_docs_stable(collection, db)?;
+
+        if col_length >= max_length as usize {
+            let last_item = db.range(filter_docs_range(collection)).last();
+
+            if let Some((last_key, _)) = last_item {
+                delete_doc_stable(collection, &last_key.key, db)?;
+            }
+        }
+    }
+
+    Ok(())
 }
 
 fn insert_doc_heap(
     collection: &CollectionKey,
     key: &Key,
     doc: &Doc,
+    max_length: Option<u32>,
     db: &mut DbHeap,
 ) -> Result<Doc, String> {
     let col = db.get_mut(collection);
@@ -240,8 +276,18 @@ fn insert_doc_heap(
     match col {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(col) => {
+            limit_doc_heap_length(max_length, col);
+
             col.insert(key.clone(), doc.clone());
             Ok(doc.clone())
+        }
+    }
+}
+
+fn limit_doc_heap_length(max_length: Option<u32>, col: &mut Collection) {
+    if let Some(max_length) = max_length {
+        if col.len() >= max_length as usize {
+            col.pop_last();
         }
     }
 }

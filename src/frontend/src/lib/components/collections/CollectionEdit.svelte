@@ -181,10 +181,10 @@
 		{#if typeDatastore}
 			<div>
 				<Value>
-					<svelte:fragment slot="label">{$i18n.collections.max_length}</svelte:fragment>
+					<svelte:fragment slot="label">{$i18n.collections.max_capacity}</svelte:fragment>
 					<Input
 						inputType="number"
-						placeholder={$i18n.collections.max_length_placeholder}
+						placeholder={$i18n.collections.max_capacity_placeholder}
 						name="maxLength"
 						required={false}
 						bind:value={maxCapacity}

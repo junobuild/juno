@@ -394,7 +394,7 @@
 		"max_size": "大小上限控制",
 		"max_size_placeholder": "以bytes为单位最大值",
 		"max_capacity": "Max capacity",
-      "max_capacity_placeholder": "Max number of documents within the collection",
+		"max_capacity_placeholder": "Max number of documents within the collection",
 		"public": "公开",
 		"private": "私有",
 		"managed": "可管理的",

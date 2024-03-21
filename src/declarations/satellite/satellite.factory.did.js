@@ -162,6 +162,7 @@ export const idlFactory = ({ IDL }) => {
 		read: Permission,
 		created_at: IDL.Nat64,
 		mutable_permissions: IDL.Opt(IDL.Bool),
+		max_length: IDL.Opt(IDL.Nat32),
 		write: Permission
 	});
 	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
@@ -185,6 +186,7 @@ export const idlFactory = ({ IDL }) => {
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
 		mutable_permissions: IDL.Opt(IDL.Bool),
+		max_length: IDL.Opt(IDL.Nat32),
 		write: Permission
 	});
 	const UploadChunk = IDL.Record({

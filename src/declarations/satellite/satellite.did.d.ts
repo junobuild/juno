@@ -134,6 +134,7 @@ export interface Rule {
 	read: Permission;
 	created_at: bigint;
 	mutable_permissions: [] | [boolean];
+	max_length: [] | [number];
 	write: Permission;
 }
 export type RulesType = { Db: null } | { Storage: null };
@@ -157,6 +158,7 @@ export interface SetRule {
 	max_size: [] | [bigint];
 	read: Permission;
 	mutable_permissions: [] | [boolean];
+	max_length: [] | [number];
 	write: Permission;
 }
 export interface StorageConfig {

@@ -103,6 +103,7 @@ type Rule = record {
   read : Permission;
   created_at : nat64;
   mutable_permissions : opt bool;
+  max_length : opt nat32;
   write : Permission;
 };
 type RulesType = variant { Db; Storage };
@@ -126,6 +127,7 @@ type SetRule = record {
   max_size : opt nat;
   read : Permission;
   mutable_permissions : opt bool;
+  max_length : opt nat32;
   write : Permission;
 };
 type StorageConfig = record {

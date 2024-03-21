@@ -1,9 +1,9 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::db::state::{
-    count_docs_heap, count_docs_stable, count_docs_users_stable,
+    count_docs_heap, count_docs_stable, count_docs_stable_users,
     delete_collection as delete_state_collection, delete_doc as delete_state_doc,
-    get_doc as get_state_doc, get_docs_heap, get_docs_stable, get_docs_users_stable,
+    get_doc as get_state_doc, get_docs_heap, get_docs_stable, get_docs_stable_users,
     get_rule as get_state_rule, init_collection as init_state_collection,
     insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
@@ -251,7 +251,7 @@ fn secure_get_docs(
             let filter_owner = pre_filter_owner(caller, controllers, &rule.read, filter);
 
             let stable =
-                get_docs_users_stable(&collection, &filter_owner, &state.borrow().stable.db_users)?;
+                get_docs_stable_users(&collection, &filter_owner, &state.borrow().stable.db_users)?;
             let docs: Vec<(&Key, &Doc)> = stable.iter().map(|(key, doc)| (&key.key, doc)).collect();
             get_docs_impl(&docs, caller, controllers, filter, &rule)
         }),
@@ -419,7 +419,7 @@ pub fn delete_docs_store(collection: &CollectionKey) -> Result<(), String> {
             })
         }),
         Memory::StableUsers => STATE.with(|state| {
-            get_docs_users_stable(collection, &None, &state.borrow().stable.db_users).map(|docs| {
+            get_docs_stable_users(collection, &None, &state.borrow().stable.db_users).map(|docs| {
                 docs.iter()
                     .map(|(key, _)| (key.key.clone(), key.owner))
                     .collect()
@@ -470,7 +470,7 @@ pub fn count_docs_store(collection: &CollectionKey) -> Result<usize, String> {
             Ok(length)
         }),
         Memory::StableUsers => STATE.with(|state| {
-            let length = count_docs_users_stable(collection, &state.borrow().stable.db_users)?;
+            let length = count_docs_stable_users(collection, &state.borrow().stable.db_users)?;
             Ok(length)
         }),
     }

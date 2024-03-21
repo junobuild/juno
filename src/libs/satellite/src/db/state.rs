@@ -32,7 +32,7 @@ pub fn is_collection_empty(
             STATE.with(|state| is_collection_empty_stable(collection, &state.borrow().stable.db))
         }
         Memory::StableUsers => STATE.with(|state| {
-            is_collection_empty_users_stable(collection, &state.borrow().stable.db_users)
+            is_collection_empty_stable_users(collection, &state.borrow().stable.db_users)
         }),
     }
 }
@@ -77,11 +77,11 @@ fn is_collection_empty_stable(collection: &CollectionKey, db: &DbStable) -> Resu
     Ok(stable.is_empty())
 }
 
-fn is_collection_empty_users_stable(
+fn is_collection_empty_stable_users(
     collection: &CollectionKey,
     db: &DbUsersStable,
 ) -> Result<bool, String> {
-    let stable = get_docs_users_stable(collection, &None, db)?;
+    let stable = get_docs_stable_users(collection, &None, db)?;
     Ok(stable.is_empty())
 }
 
@@ -116,7 +116,7 @@ pub fn get_doc(
             STATE.with(|state| get_doc_stable(collection, key, &state.borrow().stable.db))
         }
         Memory::StableUsers => STATE.with(|state| {
-            get_doc_users_stable(collection, key, owner, &state.borrow().stable.db_users)
+            get_doc_stable_users(collection, key, owner, &state.borrow().stable.db_users)
         }),
     }
 }
@@ -136,7 +136,7 @@ pub fn insert_doc(
             insert_doc_stable(collection, key, doc, &mut state.borrow_mut().stable.db)
         }),
         Memory::StableUsers => STATE.with(|state| {
-            insert_doc_users_stable(
+            insert_doc_stable_users(
                 collection,
                 key,
                 owner,
@@ -160,7 +160,7 @@ pub fn delete_doc(
         Memory::Stable => STATE
             .with(|state| delete_doc_stable(collection, key, &mut state.borrow_mut().stable.db)),
         Memory::StableUsers => STATE.with(|state| {
-            delete_doc_users_stable(
+            delete_doc_stable_users(
                 collection,
                 key,
                 owner,
@@ -185,7 +185,7 @@ fn get_doc_stable(
     }
 }
 
-fn get_doc_users_stable(
+fn get_doc_stable_users(
     collection: &CollectionKey,
     key: &Key,
     owner: &UserId,
@@ -226,13 +226,13 @@ pub fn get_docs_stable(
     Ok(items)
 }
 
-pub fn get_docs_users_stable(
+pub fn get_docs_stable_users(
     collection: &CollectionKey,
     owner: &Option<UserId>,
     db: &DbUsersStable,
 ) -> Result<Vec<(UserStableKey, Doc)>, String> {
     let items = db
-        .range(filter_docs_users_stable_range(collection, owner))
+        .range(filter_docs_stable_users_range(collection, owner))
         .collect();
 
     Ok(items)
@@ -268,12 +268,12 @@ pub fn count_docs_stable(collection: &CollectionKey, db: &DbStable) -> Result<us
     Ok(length)
 }
 
-pub fn count_docs_users_stable(
+pub fn count_docs_stable_users(
     collection: &CollectionKey,
     db: &DbUsersStable,
 ) -> Result<usize, String> {
     let length = db
-        .range(filter_docs_users_stable_range(collection, &None))
+        .range(filter_docs_stable_users_range(collection, &None))
         .count();
 
     Ok(length)
@@ -296,7 +296,7 @@ fn filter_docs_stable_range(collection: &CollectionKey) -> impl RangeBounds<Stab
 const PRINCIPAL_MIN: Principal = Principal::from_slice(&[]);
 const PRINCIPAL_MAX: Principal = Principal::from_slice(&[255; 29]);
 
-fn filter_docs_users_stable_range(
+fn filter_docs_stable_users_range(
     collection: &CollectionKey,
     owner: &Option<UserId>,
 ) -> impl RangeBounds<UserStableKey> {
@@ -328,7 +328,7 @@ fn insert_doc_stable(
     Ok(doc.clone())
 }
 
-fn insert_doc_users_stable(
+fn insert_doc_stable_users(
     collection: &CollectionKey,
     key: &Key,
     owner: &UserId,
@@ -369,7 +369,7 @@ fn delete_doc_stable(
     Ok(deleted_doc)
 }
 
-fn delete_doc_users_stable(
+fn delete_doc_stable_users(
     collection: &CollectionKey,
     key: &Key,
     owner: &UserId,

@@ -1,6 +1,6 @@
 use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
-use crate::msg::COLLECTION_NOT_FOUND;
+use crate::msg::{COLLECTION_NOT_FOUND, ERROR_MEMORY_NOT_SUPPORTED};
 use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
@@ -64,6 +64,7 @@ pub fn get_asset(collection: &CollectionKey, full_path: &FullPath, rule: &Rule) 
         }
         Memory::Stable => STATE
             .with(|state| get_asset_stable(collection, full_path, &state.borrow().stable.assets)),
+        Memory::StableUsers => None,
     }
 }
 
@@ -77,6 +78,7 @@ pub fn get_content_chunks(
         Memory::Stable => STATE.with(|state| {
             get_content_chunks_stable(encoding, chunk_index, &state.borrow().stable.content_chunks)
         }),
+        Memory::StableUsers => None,
     }
 }
 
@@ -86,7 +88,7 @@ pub fn insert_asset_encoding(
     encoding: &AssetEncoding,
     asset: &mut Asset,
     rule: &Rule,
-) {
+) -> Result<(), String> {
     match rule.mem() {
         Memory::Heap => {
             asset
@@ -102,10 +104,20 @@ pub fn insert_asset_encoding(
                 &mut state.borrow_mut().stable.content_chunks,
             )
         }),
+        Memory::StableUsers => {
+            return Err(ERROR_MEMORY_NOT_SUPPORTED.to_string());
+        }
     }
+
+    Ok(())
 }
 
-pub fn insert_asset(collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule) {
+pub fn insert_asset(
+    collection: &CollectionKey,
+    full_path: &FullPath,
+    asset: &Asset,
+    rule: &Rule,
+) -> Result<(), String> {
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             insert_asset_heap(
@@ -122,7 +134,12 @@ pub fn insert_asset(collection: &CollectionKey, full_path: &FullPath, asset: &As
                 &mut state.borrow_mut().stable.assets,
             )
         }),
+        Memory::StableUsers => {
+            return Err(ERROR_MEMORY_NOT_SUPPORTED.to_string());
+        }
     }
+
+    Ok(())
 }
 
 pub fn delete_asset(
@@ -138,6 +155,7 @@ pub fn delete_asset(
             delete_content_chunks_stable(collection, full_path, &mut state.borrow_mut().stable);
             delete_asset_stable(collection, full_path, &mut state.borrow_mut().stable.assets)
         }),
+        Memory::StableUsers => None,
     }
 }
 

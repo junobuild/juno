@@ -3,7 +3,8 @@ use crate::controllers::store::get_controllers;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
 use crate::msg::{
-    COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
+    COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH,
+    ERROR_MEMORY_NOT_SUPPORTED, UPLOAD_NOT_ALLOWED,
 };
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
@@ -123,6 +124,9 @@ pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
                 .map(|(_, asset)| asset.key.full_path.clone())
                 .collect()
         }),
+        Memory::StableUsers => {
+            return Err([ERROR_MEMORY_NOT_SUPPORTED, collection].join(""));
+        }
     };
 
     delete_assets_impl(&full_paths, collection, &rule)
@@ -250,6 +254,7 @@ pub fn assert_assets_collection_empty_store(collection: &CollectionKey) -> Resul
                 .collect();
             assert_assets_collection_empty_impl(&assets, collection)
         }),
+        Memory::StableUsers => Err([ERROR_MEMORY_NOT_SUPPORTED, collection].join("")),
     }
 }
 
@@ -302,6 +307,7 @@ fn secure_list_assets_impl(
                 filters,
             ))
         }),
+        Memory::StableUsers => Err([ERROR_MEMORY_NOT_SUPPORTED, collection].join("")),
     }
 }
 
@@ -429,6 +435,7 @@ pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
             let length = count_assets_stable(collection, &state.borrow().stable.assets);
             Ok(length)
         }),
+        Memory::StableUsers => Err([ERROR_MEMORY_NOT_SUPPORTED, collection].join("")),
     }
 }
 
@@ -763,14 +770,14 @@ fn commit_chunks(
         &encoding,
         &mut asset,
         rule,
-    );
+    )?;
 
     insert_state_asset(
         &batch.clone().key.collection,
         &batch.clone().key.full_path,
         &asset,
         rule,
-    );
+    )?;
 
     clear_runtime_batch(&batch_id, &chunk_ids);
 
@@ -857,7 +864,7 @@ fn update_custom_domains_asset() -> Result<(), String> {
 
     let asset = map_custom_domains_asset(&custom_domains, existing_asset);
 
-    insert_state_asset(&collection, &full_path, &asset, &rule);
+    insert_state_asset(&collection, &full_path, &asset, &rule)?;
 
     let config = get_config_store();
 

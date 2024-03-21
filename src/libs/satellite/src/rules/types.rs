@@ -15,7 +15,7 @@ pub mod rules {
         pub mutable_permissions: Option<bool>,
         pub memory: Option<Memory>,
         pub max_size: Option<u128>,
-        pub max_length: Option<u32>,
+        pub max_capacity: Option<u32>,
         pub created_at: u64,
         pub updated_at: u64,
     }
@@ -53,7 +53,7 @@ pub mod interface {
         pub mutable_permissions: Option<bool>,
         pub memory: Option<Memory>,
         pub max_size: Option<u128>,
-        pub max_length: Option<u32>,
+        pub max_capacity: Option<u32>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]

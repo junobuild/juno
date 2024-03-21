@@ -156,13 +156,13 @@ export const idlFactory = ({ IDL }) => {
 		Managed: IDL.Null
 	});
 	const Rule = IDL.Record({
+		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
 		updated_at: IDL.Nat64,
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
 		created_at: IDL.Nat64,
 		mutable_permissions: IDL.Opt(IDL.Bool),
-		max_length: IDL.Opt(IDL.Nat32),
 		write: Permission
 	});
 	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
@@ -181,12 +181,12 @@ export const idlFactory = ({ IDL }) => {
 		description: IDL.Opt(IDL.Text)
 	});
 	const SetRule = IDL.Record({
+		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
 		updated_at: IDL.Opt(IDL.Nat64),
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
 		mutable_permissions: IDL.Opt(IDL.Bool),
-		max_length: IDL.Opt(IDL.Nat32),
 		write: Permission
 	});
 	const UploadChunk = IDL.Record({

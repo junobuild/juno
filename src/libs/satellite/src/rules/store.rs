@@ -97,7 +97,7 @@ fn set_rule_impl(
         memory: Some(user_rule.memory.unwrap_or(Memory::Stable)),
         mutable_permissions: Some(user_rule.mutable_permissions.unwrap_or(true)),
         max_size: user_rule.max_size,
-        max_length: user_rule.max_length,
+        max_capacity: user_rule.max_capacity,
     };
 
     rules.insert(collection, rule);

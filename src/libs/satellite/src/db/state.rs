@@ -112,7 +112,7 @@ pub fn insert_doc(
                 collection,
                 key,
                 doc,
-                rule.max_length,
+                rule.max_capacity,
                 &mut state.borrow_mut().heap.db.db,
             )
         }),
@@ -121,7 +121,7 @@ pub fn insert_doc(
                 collection,
                 key,
                 doc,
-                rule.max_length,
+                rule.max_capacity,
                 &mut state.borrow_mut().stable.db,
             )
         }),
@@ -234,25 +234,25 @@ fn insert_doc_stable(
     collection: &CollectionKey,
     key: &Key,
     doc: &Doc,
-    max_length: Option<u32>,
+    max_capacity: Option<u32>,
     db: &mut DbStable,
 ) -> Result<Doc, String> {
-    limit_doc_stable_length(collection, max_length, db)?;
+    limit_docs_stable_capacity(collection, max_capacity, db)?;
 
     db.insert(stable_key(collection, key), doc.clone());
 
     Ok(doc.clone())
 }
 
-fn limit_doc_stable_length(
+fn limit_docs_stable_capacity(
     collection: &CollectionKey,
-    max_length: Option<u32>,
+    max_capacity: Option<u32>,
     db: &mut DbStable,
 ) -> Result<(), String> {
-    if let Some(max_length) = max_length {
+    if let Some(max_capacity) = max_capacity {
         let col_length = count_docs_stable(collection, db)?;
 
-        if col_length >= max_length as usize {
+        if col_length >= max_capacity as usize {
             let last_item = db.range(filter_docs_range(collection)).last();
 
             if let Some((last_key, _)) = last_item {
@@ -268,7 +268,7 @@ fn insert_doc_heap(
     collection: &CollectionKey,
     key: &Key,
     doc: &Doc,
-    max_length: Option<u32>,
+    max_capacity: Option<u32>,
     db: &mut DbHeap,
 ) -> Result<Doc, String> {
     let col = db.get_mut(collection);
@@ -276,7 +276,7 @@ fn insert_doc_heap(
     match col {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(col) => {
-            limit_doc_heap_length(max_length, col);
+            limit_docs_heap_capacity(max_capacity, col);
 
             col.insert(key.clone(), doc.clone());
             Ok(doc.clone())
@@ -284,9 +284,9 @@ fn insert_doc_heap(
     }
 }
 
-fn limit_doc_heap_length(max_length: Option<u32>, col: &mut Collection) {
-    if let Some(max_length) = max_length {
-        if col.len() >= max_length as usize {
+fn limit_docs_heap_capacity(max_capacity: Option<u32>, col: &mut Collection) {
+    if let Some(max_capacity) = max_capacity {
+        if col.len() >= max_capacity as usize {
             col.pop_last();
         }
     }

@@ -128,13 +128,13 @@ export type Permission =
 	| { Public: null }
 	| { Managed: null };
 export interface Rule {
+	max_capacity: [] | [number];
 	memory: [] | [Memory];
 	updated_at: bigint;
 	max_size: [] | [bigint];
 	read: Permission;
 	created_at: bigint;
 	mutable_permissions: [] | [boolean];
-	max_length: [] | [number];
 	write: Permission;
 }
 export type RulesType = { Db: null } | { Storage: null };
@@ -153,12 +153,12 @@ export interface SetDoc {
 	description: [] | [string];
 }
 export interface SetRule {
+	max_capacity: [] | [number];
 	memory: [] | [Memory];
 	updated_at: [] | [bigint];
 	max_size: [] | [bigint];
 	read: Permission;
 	mutable_permissions: [] | [boolean];
-	max_length: [] | [number];
 	write: Permission;
 }
 export interface StorageConfig {

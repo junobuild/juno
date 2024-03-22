@@ -253,7 +253,7 @@ fn limit_docs_stable_capacity(
         let col_length = count_docs_stable(collection, db)?;
 
         if col_length >= max_capacity as usize {
-            let last_item = db.range(filter_docs_range(collection)).last();
+            let last_item = db.range(filter_docs_range(collection)).next();
 
             if let Some((last_key, _)) = last_item {
                 delete_doc_stable(collection, &last_key.key, db)?;
@@ -287,7 +287,7 @@ fn insert_doc_heap(
 fn limit_docs_heap_capacity(max_capacity: Option<u32>, col: &mut Collection) {
     if let Some(max_capacity) = max_capacity {
         if col.len() >= max_capacity as usize {
-            col.pop_last();
+            col.pop_first();
         }
     }
 }

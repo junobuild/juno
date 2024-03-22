@@ -64,6 +64,7 @@ use junobuild_shared::controllers::{
 use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use junobuild_shared::types::state::{ControllerScope, Controllers};
 use std::mem;
+use crate::rules::upgrade::init_log_collection;
 
 pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
@@ -81,8 +82,6 @@ pub fn init() {
             runtime: RuntimeState::default(),
         };
     });
-
-    init_random_seed();
 }
 
 pub fn pre_upgrade() {
@@ -122,6 +121,11 @@ pub fn post_upgrade() {
     STATE.with(|s| *s.borrow_mut() = state);
 
     init_certified_assets_store();
+
+    init_random_seed();
+
+    // TODO: to be removed - one time upgrade!
+    init_log_collection();
 }
 
 ///

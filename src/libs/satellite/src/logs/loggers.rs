@@ -3,7 +3,7 @@ use crate::memory::STATE;
 use crate::rules::constants::LOG_COLLECTION_KEY;
 use crate::{set_doc_store, Key, SetDoc};
 use ic_cdk::api::time;
-use ic_cdk::caller;
+use ic_cdk::{id};
 use junobuild_utils::encode_doc_data;
 use rand::Rng;
 
@@ -24,7 +24,7 @@ pub fn log(message: String) -> Result<(), String> {
         data: encode_doc_data(&log)?,
     };
 
-    set_doc_store(caller(), LOG_COLLECTION_KEY.to_string(), key, doc)?;
+    set_doc_store(id(), LOG_COLLECTION_KEY.to_string(), key, doc)?;
 
     Ok(())
 }

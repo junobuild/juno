@@ -55,7 +55,6 @@ pub mod state {
     pub struct DocUpsert {
         pub before: Option<Doc>,
         pub after: Doc,
-        pub evicted_doc: Option<(Key, Doc)>, // Potential document removed due to reaching collection capacity
     }
 }
 

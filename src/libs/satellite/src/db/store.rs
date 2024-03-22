@@ -212,7 +212,7 @@ fn insert_doc_impl(
     Ok(DocUpsert {
         before: current_doc,
         after,
-        evicted_doc
+        evicted_doc,
     })
 }
 

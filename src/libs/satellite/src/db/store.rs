@@ -207,11 +207,12 @@ fn insert_doc_impl(
         description: value.description,
     };
 
-    let after = insert_state_doc(&collection, &key, &doc, rule)?;
+    let (evicted_doc, after) = insert_state_doc(&collection, &key, &doc, rule)?;
 
     Ok(DocUpsert {
         before: current_doc,
         after,
+        evicted_doc
     })
 }
 

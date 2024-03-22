@@ -105,7 +105,7 @@ pub fn insert_doc(
     key: &Key,
     doc: &Doc,
     rule: &Rule,
-) -> Result<Doc, String> {
+) -> Result<(Option<(Key, Doc)>, Doc), String> {
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             insert_doc_heap(
@@ -236,19 +236,19 @@ fn insert_doc_stable(
     doc: &Doc,
     max_capacity: Option<u32>,
     db: &mut DbStable,
-) -> Result<Doc, String> {
-    limit_docs_stable_capacity(collection, max_capacity, db)?;
+) -> Result<(Option<(Key, Doc)>, Doc), String> {
+    let evicted_doc = limit_docs_stable_capacity(collection, max_capacity, db)?;
 
     db.insert(stable_key(collection, key), doc.clone());
 
-    Ok(doc.clone())
+    Ok((evicted_doc.clone(), doc.clone()))
 }
 
 fn limit_docs_stable_capacity(
     collection: &CollectionKey,
     max_capacity: Option<u32>,
     db: &mut DbStable,
-) -> Result<(), String> {
+) -> Result<Option<(Key, Doc)>, String> {
     if let Some(max_capacity) = max_capacity {
         let col_length = count_docs_stable(collection, db)?;
 
@@ -256,12 +256,14 @@ fn limit_docs_stable_capacity(
             let last_item = db.range(filter_docs_range(collection)).next();
 
             if let Some((last_key, _)) = last_item {
-                delete_doc_stable(collection, &last_key.key, db)?;
+                let evicted_doc = delete_doc_stable(collection, &last_key.key, db)?;
+
+                return Ok(evicted_doc.map(|doc| (last_key.key.clone(), doc)));
             }
         }
     }
 
-    Ok(())
+    Ok(None)
 }
 
 fn insert_doc_heap(
@@ -270,26 +272,28 @@ fn insert_doc_heap(
     doc: &Doc,
     max_capacity: Option<u32>,
     db: &mut DbHeap,
-) -> Result<Doc, String> {
+) -> Result<(Option<(Key, Doc)>, Doc), String> {
     let col = db.get_mut(collection);
 
     match col {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(col) => {
-            limit_docs_heap_capacity(max_capacity, col);
+            let evicted_doc = limit_docs_heap_capacity(max_capacity, col);
 
             col.insert(key.clone(), doc.clone());
-            Ok(doc.clone())
+            Ok((evicted_doc.clone(), doc.clone()))
         }
     }
 }
 
-fn limit_docs_heap_capacity(max_capacity: Option<u32>, col: &mut Collection) {
+fn limit_docs_heap_capacity(max_capacity: Option<u32>, col: &mut Collection) -> Option<(Key, Doc)> {
     if let Some(max_capacity) = max_capacity {
         if col.len() >= max_capacity as usize {
-            col.pop_first();
+            return col.pop_first();
         }
     }
+
+    None
 }
 
 // Delete

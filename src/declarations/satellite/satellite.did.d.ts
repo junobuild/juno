@@ -128,6 +128,7 @@ export type Permission =
 	| { Public: null }
 	| { Managed: null };
 export interface Rule {
+	max_capacity: [] | [number];
 	memory: [] | [Memory];
 	updated_at: bigint;
 	max_size: [] | [bigint];
@@ -152,6 +153,7 @@ export interface SetDoc {
 	description: [] | [string];
 }
 export interface SetRule {
+	max_capacity: [] | [number];
 	memory: [] | [Memory];
 	updated_at: [] | [bigint];
 	max_size: [] | [bigint];

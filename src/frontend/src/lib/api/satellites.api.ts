@@ -70,6 +70,7 @@ export const setRule = async ({
 	memory,
 	rule,
 	maxSize,
+	maxCapacity,
 	mutablePermissions,
 	identity
 }: {
@@ -81,6 +82,7 @@ export const setRule = async ({
 	memory: MemoryText;
 	rule: Rule | undefined;
 	maxSize: number | undefined;
+	maxCapacity: number | undefined;
 	mutablePermissions: boolean;
 	identity: OptionIdentity;
 }) => {
@@ -89,6 +91,7 @@ export const setRule = async ({
 		write: permissionFromText(write),
 		updated_at: isNullish(rule) ? [] : [rule.updated_at],
 		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
+		max_capacity: toNullable(nonNullish(maxCapacity) && maxCapacity > 0 ? maxCapacity : undefined),
 		memory: isNullish(rule)
 			? [memoryFromText(memory)]
 			: [fromNullable(rule.memory) ?? MemoryStable],

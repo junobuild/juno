@@ -133,7 +133,8 @@ describe('satellite upgrade v0.0.16', () => {
 			max_size: toNullable(),
 			read: { Managed: null },
 			mutable_permissions: toNullable(),
-			write: { Managed: null }
+			write: { Managed: null },
+			max_capacity: toNullable()
 		});
 
 		const testCollection = async () => {

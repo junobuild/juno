@@ -1,4 +1,4 @@
-use crate::db::types::state::{DbHeap, DbStable, Doc, StableKey};
+use crate::db::types::state::{Collection, DbHeap, DbStable, Doc, StableKey};
 use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
@@ -105,13 +105,25 @@ pub fn insert_doc(
     key: &Key,
     doc: &Doc,
     rule: &Rule,
-) -> Result<Doc, String> {
+) -> Result<(Option<(Key, Doc)>, Doc), String> {
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
-            insert_doc_heap(collection, key, doc, &mut state.borrow_mut().heap.db.db)
+            insert_doc_heap(
+                collection,
+                key,
+                doc,
+                rule.max_capacity,
+                &mut state.borrow_mut().heap.db.db,
+            )
         }),
         Memory::Stable => STATE.with(|state| {
-            insert_doc_stable(collection, key, doc, &mut state.borrow_mut().stable.db)
+            insert_doc_stable(
+                collection,
+                key,
+                doc,
+                rule.max_capacity,
+                &mut state.borrow_mut().stable.db,
+            )
         }),
     }
 }
@@ -222,28 +234,66 @@ fn insert_doc_stable(
     collection: &CollectionKey,
     key: &Key,
     doc: &Doc,
+    max_capacity: Option<u32>,
     db: &mut DbStable,
-) -> Result<Doc, String> {
+) -> Result<(Option<(Key, Doc)>, Doc), String> {
+    let evicted_doc = limit_docs_stable_capacity(collection, max_capacity, db)?;
+
     db.insert(stable_key(collection, key), doc.clone());
 
-    Ok(doc.clone())
+    Ok((evicted_doc.clone(), doc.clone()))
+}
+
+fn limit_docs_stable_capacity(
+    collection: &CollectionKey,
+    max_capacity: Option<u32>,
+    db: &mut DbStable,
+) -> Result<Option<(Key, Doc)>, String> {
+    if let Some(max_capacity) = max_capacity {
+        let col_length = count_docs_stable(collection, db)?;
+
+        if col_length >= max_capacity as usize {
+            let last_item = db.range(filter_docs_range(collection)).next();
+
+            if let Some((last_key, _)) = last_item {
+                let evicted_doc = delete_doc_stable(collection, &last_key.key, db)?;
+
+                return Ok(evicted_doc.map(|doc| (last_key.key.clone(), doc)));
+            }
+        }
+    }
+
+    Ok(None)
 }
 
 fn insert_doc_heap(
     collection: &CollectionKey,
     key: &Key,
     doc: &Doc,
+    max_capacity: Option<u32>,
     db: &mut DbHeap,
-) -> Result<Doc, String> {
+) -> Result<(Option<(Key, Doc)>, Doc), String> {
     let col = db.get_mut(collection);
 
     match col {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(col) => {
+            let evicted_doc = limit_docs_heap_capacity(max_capacity, col);
+
             col.insert(key.clone(), doc.clone());
-            Ok(doc.clone())
+            Ok((evicted_doc.clone(), doc.clone()))
         }
     }
+}
+
+fn limit_docs_heap_capacity(max_capacity: Option<u32>, col: &mut Collection) -> Option<(Key, Doc)> {
+    if let Some(max_capacity) = max_capacity {
+        if col.len() >= max_capacity as usize {
+            return col.pop_first();
+        }
+    }
+
+    None
 }
 
 // Delete

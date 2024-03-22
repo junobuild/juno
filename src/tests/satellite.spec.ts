@@ -42,6 +42,7 @@ describe('Satellite', () => {
 		memory: toNullable(),
 		updated_at: toNullable(),
 		max_size: toNullable(),
+		max_capacity: toNullable(),
 		read: { Managed: null },
 		mutable_permissions: toNullable(),
 		write: { Managed: null }

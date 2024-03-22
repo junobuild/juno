@@ -24,6 +24,9 @@
 	let typeStorage = false;
 	$: typeStorage = 'Storage' in type;
 
+	let typeDatastore = false;
+	$: typeDatastore = 'Db' in type;
+
 	let collection: string;
 	const initCollection = (initialCollection: string) => (collection = initialCollection);
 	$: initCollection($store.rule?.[0] ?? '');
@@ -56,11 +59,17 @@
 	$: initMutable($store.rule?.[1] ?? undefined);
 
 	let maxSize: number | undefined;
-	const initMaxLength = (size: [] | [bigint]) => {
+	const initMaxSize = (size: [] | [bigint]) => {
 		const tmp = fromNullable(size);
 		maxSize = nonNullish(tmp) ? Number(tmp) : undefined;
 	};
-	$: initMaxLength(rule?.max_size ?? []);
+	$: initMaxSize(rule?.max_size ?? []);
+
+	let maxCapacity: number | undefined;
+	const initMaxCapacity = (capacity: [] | [number]) => {
+		maxCapacity = fromNullable(capacity);
+	};
+	$: initMaxCapacity(rule?.max_capacity ?? []);
 
 	let mode: 'new' | 'edit';
 	$: mode = rule !== undefined ? 'edit' : 'new';
@@ -80,6 +89,7 @@
 				type,
 				rule,
 				maxSize,
+				maxCapacity,
 				mutablePermissions: !immutable,
 				identity: $authStore.identity
 			});
@@ -167,6 +177,23 @@
 				</select>
 			</Value>
 		</div>
+
+		{#if typeDatastore}
+			<div>
+				<Value>
+					<svelte:fragment slot="label">{$i18n.collections.max_capacity}</svelte:fragment>
+					<Input
+						inputType="number"
+						placeholder={$i18n.collections.max_capacity_placeholder}
+						name="maxLength"
+						required={false}
+						bind:value={maxCapacity}
+						on:blur={() =>
+							(maxCapacity = nonNullish(maxCapacity) ? Math.trunc(maxCapacity) : undefined)}
+					/>
+				</Value>
+			</div>
+		{/if}
 
 		{#if typeStorage}
 			<div>

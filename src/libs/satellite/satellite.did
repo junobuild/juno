@@ -97,6 +97,7 @@ type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
 type Permission = variant { Controllers; Private; Public; Managed };
 type Rule = record {
+  max_capacity : opt nat32;
   memory : opt Memory;
   updated_at : nat64;
   max_size : opt nat;
@@ -121,6 +122,7 @@ type SetDoc = record {
   description : opt text;
 };
 type SetRule = record {
+  max_capacity : opt nat32;
   memory : opt Memory;
   updated_at : opt nat64;
   max_size : opt nat;

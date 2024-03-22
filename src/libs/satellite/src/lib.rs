@@ -8,8 +8,10 @@ mod guards;
 mod hooks;
 mod impls;
 mod list;
+mod logs;
 mod memory;
 mod msg;
+mod random;
 mod rules;
 mod satellite;
 mod storage;
@@ -43,6 +45,7 @@ pub use crate::db::store::{
 };
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
+pub use crate::logs::loggers::log;
 pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };

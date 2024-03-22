@@ -170,17 +170,9 @@ fn set_doc_impl(
 ) -> Result<DocUpsert, String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
-    assert_write_permission(
-        caller,
-        controllers,
-        &current_doc,
-        &rule.write,
-    )?;
+    assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
 
-    assert_write_timestamp(
-        &current_doc,
-        value.updated_at,
-    )?;
+    assert_write_timestamp(&current_doc, value.updated_at)?;
 
     assert_description_length(&value.description)?;
 
@@ -323,17 +315,9 @@ fn delete_doc_impl(
 ) -> Result<Option<Doc>, String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
-    assert_write_permission(
-        caller,
-        controllers,
-        &current_doc,
-        &rule.write,
-    )?;
+    assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
 
-    assert_write_timestamp(
-        &current_doc,
-        value.updated_at,
-    )?;
+    assert_write_timestamp(&current_doc, value.updated_at)?;
 
     delete_state_doc(&collection, &key, rule)
 }

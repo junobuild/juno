@@ -45,7 +45,7 @@ pub use crate::db::store::{
 };
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
-pub use crate::logs::loggers::log;
+pub use crate::logs::loggers::{log, log_with_data};
 pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };

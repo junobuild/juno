@@ -6,16 +6,27 @@ use ic_cdk::api::time;
 use ic_cdk::{id};
 use junobuild_utils::encode_doc_data;
 use rand::Rng;
+use serde::Serialize;
 
 pub fn log(message: String) -> Result<(), String> {
+    set_log::<()>(message, None)
+}
+
+pub fn log_with_data<T: Serialize>(message: String, data: &T) -> Result<(), String> {
+    set_log::<T>(message, Some(data))
+}
+
+fn set_log<T: Serialize>(message: String, data: Option<&T>) -> Result<(), String> {
     let nonce = random()?;
 
     let key: Key = format!("{}-{}", time(), nonce);
 
+    let log_data = data.map(encode_doc_data).transpose()?;
+
     let log: Log = Log {
         level: LogLevel::Info,
         message,
-        data: None,
+        data: log_data,
     };
 
     let doc: SetDoc = SetDoc {

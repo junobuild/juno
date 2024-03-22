@@ -5,8 +5,8 @@ use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
 use ic_cdk::api::time;
+use ic_cdk::id;
 use std::collections::HashMap;
-use ic_cdk::{id};
 
 /// Initializes a set of controllers with default administrative scope.
 ///
@@ -85,11 +85,10 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
 /// `true` if the caller is a controller (not anonymous, calling itself or one of the known controllers), otherwise `false`.
 pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
     principal_not_anonymous(caller)
-        && (caller_is_self(caller) || controllers
-            .iter()
-            .any(|(&controller_id, _)| {
-                principal_equal(controller_id, caller)
-            }))
+        && (caller_is_self(caller)
+            || controllers
+                .iter()
+                .any(|(&controller_id, _)| principal_equal(controller_id, caller)))
 }
 
 /// Checks if a caller is an admin controller.

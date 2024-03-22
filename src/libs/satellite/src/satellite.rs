@@ -20,6 +20,7 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
+use crate::rules::upgrade::init_log_collection;
 use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
 use crate::storage::http::response::{
     build_asset_response, build_redirect_response, error_response,
@@ -64,7 +65,6 @@ use junobuild_shared::controllers::{
 use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use junobuild_shared::types::state::{ControllerScope, Controllers};
 use std::mem;
-use crate::rules::upgrade::init_log_collection;
 
 pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;

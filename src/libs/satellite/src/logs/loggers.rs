@@ -3,7 +3,7 @@ use crate::memory::STATE;
 use crate::rules::constants::LOG_COLLECTION_KEY;
 use crate::{set_doc_store, Key, SetDoc};
 use ic_cdk::api::time;
-use ic_cdk::{id};
+use ic_cdk::id;
 use junobuild_utils::encode_doc_data;
 use rand::Rng;
 use serde::Serialize;

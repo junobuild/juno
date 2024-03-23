@@ -6,6 +6,7 @@ pub mod state {
     };
     use candid::CandidType;
     use junobuild_shared::types::state::Controllers;
+    use rand::rngs::StdRng;
     use serde::{Deserialize, Serialize};
 
     #[derive(Serialize, Deserialize)]
@@ -38,6 +39,7 @@ pub mod state {
     #[derive(Default, Clone)]
     pub struct RuntimeState {
         pub storage: StorageRuntimeState,
+        pub rng: Option<StdRng>, // rng = Random Number Generator
     }
 }
 

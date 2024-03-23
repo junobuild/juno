@@ -14,11 +14,13 @@ use crate::hooks::{
     invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset,
 };
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
+use crate::random::init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
+use crate::rules::upgrade::init_log_collection;
 use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
 use crate::storage::http::response::{
     build_asset_response, build_redirect_response, error_response,
@@ -119,6 +121,11 @@ pub fn post_upgrade() {
     STATE.with(|s| *s.borrow_mut() = state);
 
     init_certified_assets_store();
+
+    init_random_seed();
+
+    // TODO: to be removed - one time upgrade!
+    init_log_collection();
 }
 
 ///

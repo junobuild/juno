@@ -6,6 +6,16 @@ pub const SYS_COLLECTION_PREFIX: char = '#';
 
 pub const LOG_COLLECTION_KEY: &str = "#log";
 
+pub const DEFAULT_DB_LOG_RULE: SetRule = SetRule {
+    read: Controllers,
+    write: Controllers,
+    memory: Some(Memory::Stable),
+    mutable_permissions: Some(false),
+    max_size: None,
+    max_capacity: Some(100),
+    updated_at: None,
+};
+
 pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 2] = [
     (
         "#user",
@@ -21,15 +31,7 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 2] = [
     ),
     (
         LOG_COLLECTION_KEY,
-        SetRule {
-            read: Controllers,
-            write: Controllers,
-            memory: Some(Memory::Stable),
-            mutable_permissions: Some(false),
-            max_size: None,
-            max_capacity: Some(100),
-            updated_at: None,
-        },
+        DEFAULT_DB_LOG_RULE,
     ),
 ];
 

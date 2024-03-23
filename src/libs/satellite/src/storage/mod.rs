@@ -9,5 +9,6 @@ mod runtime;
 mod state;
 pub mod store;
 pub mod types;
+pub mod upgrade;
 mod url;
 mod utils;

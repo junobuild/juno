@@ -29,10 +29,7 @@ pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 2] = [
             updated_at: None,
         },
     ),
-    (
-        LOG_COLLECTION_KEY,
-        DEFAULT_DB_LOG_RULE,
-    ),
+    (LOG_COLLECTION_KEY, DEFAULT_DB_LOG_RULE),
 ];
 
 pub const ASSET_COLLECTION_KEY: &str = "#dapp";

@@ -9,14 +9,46 @@ use rand::Rng;
 use serde::Serialize;
 
 pub fn log(message: String) -> Result<(), String> {
-    set_log::<()>(message, None)
+    set_log::<()>(LogLevel::Info, message, None)
 }
 
 pub fn log_with_data<T: Serialize>(message: String, data: &T) -> Result<(), String> {
-    set_log::<T>(message, Some(data))
+    set_log::<T>(LogLevel::Info, message, Some(data))
 }
 
-fn set_log<T: Serialize>(message: String, data: Option<&T>) -> Result<(), String> {
+pub fn info(message: String) -> Result<(), String> {
+    set_log::<()>(LogLevel::Info, message, None)
+}
+
+pub fn info_with_data<T: Serialize>(message: String, data: &T) -> Result<(), String> {
+    set_log::<T>(LogLevel::Info, message, Some(data))
+}
+
+pub fn debug(message: String) -> Result<(), String> {
+    set_log::<()>(LogLevel::Debug, message, None)
+}
+
+pub fn debug_with_data<T: Serialize>(message: String, data: &T) -> Result<(), String> {
+    set_log::<T>(LogLevel::Debug, message, Some(data))
+}
+
+pub fn warn(message: String) -> Result<(), String> {
+    set_log::<()>(LogLevel::Warning, message, None)
+}
+
+pub fn warn_with_data<T: Serialize>(message: String, data: &T) -> Result<(), String> {
+    set_log::<T>(LogLevel::Warning, message, Some(data))
+}
+
+pub fn error(message: String) -> Result<(), String> {
+    set_log::<()>(LogLevel::Error, message, None)
+}
+
+pub fn error_with_data<T: Serialize>(message: String, data: &T) -> Result<(), String> {
+    set_log::<T>(LogLevel::Error, message, Some(data))
+}
+
+fn set_log<T: Serialize>(level: LogLevel, message: String, data: Option<&T>) -> Result<(), String> {
     let nonce = random()?;
 
     let key: Key = format!("{}-{}", time(), nonce);
@@ -24,15 +56,15 @@ fn set_log<T: Serialize>(message: String, data: Option<&T>) -> Result<(), String
     let log_data = data.map(encode_doc_data).transpose()?;
 
     let log: Log = Log {
-        level: LogLevel::Info,
+        level,
         message,
         data: log_data,
     };
 
     let doc: SetDoc = SetDoc {
-        updated_at: None,
         description: None,
         data: encode_doc_data(&log)?,
+        updated_at: None,
     };
 
     set_doc_store(id(), LOG_COLLECTION_KEY.to_string(), key, doc)?;

@@ -808,7 +808,7 @@ fn clear_expired_batches() {
 pub fn set_config_store(config: &StorageConfig) {
     insert_state_config(config);
 
-    init_certified_assets_store();
+    init_runtime_certified_assets();
 }
 
 pub fn get_config_store() -> StorageConfig {
@@ -894,10 +894,4 @@ fn get_custom_domains_as_content() -> String {
         .into_keys()
         .collect::<Vec<DomainName>>()
         .join("\n")
-}
-
-/// Certified assets
-
-pub fn init_certified_assets_store() {
-    init_runtime_certified_assets();
 }

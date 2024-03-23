@@ -9,7 +9,7 @@ use rand::{rngs::StdRng, RngCore, SeedableRng};
 use std::num::NonZeroU32;
 use std::time::Duration;
 
-pub fn init_random_seed() {
+pub fn defer_init_random_seed() {
     set_timer(Duration::ZERO, || spawn(set_random_seed()));
     register_custom_getrandom!(custom_getrandom);
 }

@@ -131,8 +131,6 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 			beforeAll(async () => {
 				actor.setIdentity(controller);
-
-				const { set_rule } = actor;
 			});
 
 			const testItemsLength = async ({

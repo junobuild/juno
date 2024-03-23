@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { consoleActorLocal } from './actor.mjs';
-import { loadLocalWasm, readVersion } from './code.utils.mjs';
+import { gzipAndLoadLocalWasm, readVersion } from './code.utils.mjs';
 import { segmentType } from './console.utils.mjs';
 
 const resetRelease = ({ actor, type }) => actor.reset_release(segmentType(type));
@@ -39,7 +39,7 @@ const install = async ({ actor, type, loadWasm }) => {
 
 (async () => {
 	const actor = await consoleActorLocal();
-	const loadWasm = loadLocalWasm;
+	const loadWasm = gzipAndLoadLocalWasm;
 
 	await Promise.all([
 		install({ actor, type: 'mission_control', loadWasm }),

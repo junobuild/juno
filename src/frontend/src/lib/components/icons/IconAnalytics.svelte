@@ -16,9 +16,7 @@
 			.uuid-52bd93a8-d9df-4604-95e4-d6fa82adce84 {
 				stroke-width: 0px;
 			}
-			.uuid-9a1685bf-6390-4225-bc91-8463142d207b {
-				fill: #fff;
-			}
+
 			.uuid-52bd93a8-d9df-4604-95e4-d6fa82adce84 {
 				fill: none;
 				opacity: 0.25;
@@ -55,3 +53,13 @@
 		/></g
 	></svg
 >
+
+<style lang="scss">
+	.uuid-9a1685bf-6390-4225-bc91-8463142d207b {
+		fill: var(--color-background);
+	}
+
+	.uuid-6ee6014c-dbb3-4770-b018-42da8f70ae29 {
+		fill: var(--color-background-contrast);
+	}
+</style>

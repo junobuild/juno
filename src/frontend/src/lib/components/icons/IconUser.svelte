@@ -20,6 +20,10 @@
 
 <style lang="scss">
 	.icon-user {
-		fill: #fff;
+		fill: var(--color-background);
+	}
+
+	path {
+		fill: var(--color-background-contrast);
 	}
 </style>

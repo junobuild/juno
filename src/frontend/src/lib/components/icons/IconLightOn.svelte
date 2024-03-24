@@ -31,6 +31,10 @@
 
 <style lang="scss">
 	.icon-light-on {
-		fill: #fff;
+		fill: var(--color-background);
+	}
+
+	path {
+		fill: var(--color-background-contrast);
 	}
 </style>

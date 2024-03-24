@@ -61,20 +61,20 @@
 
 		<a
 			class="link"
-			href={`/hosting/?s=${satelliteId}`}
-			class:selected={isSelected({ routeId, path: 'hosting' })}
-		>
-			<IconHosting size="24px" />
-			<span>{$i18n.hosting.title}</span>
-		</a>
-
-		<a
-			class="link"
 			href={`/functions/?s=${satelliteId}`}
 			class:selected={isSelected({ routeId, path: 'functions' })}
 		>
 			<IconFunctions size="24px" />
 			<span>{$i18n.functions.title}</span>
+		</a>
+
+		<a
+			class="link"
+			href={`/hosting/?s=${satelliteId}`}
+			class:selected={isSelected({ routeId, path: 'hosting' })}
+		>
+			<IconHosting size="24px" />
+			<span>{$i18n.hosting.title}</span>
 		</a>
 	</nav>
 

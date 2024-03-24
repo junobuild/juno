@@ -250,7 +250,8 @@
 		"error": "Error",
 		"message": "Message",
 		"empty": "No logs collected.",
-		"expand": "Expand message"
+		"expand": "Expand message",
+		"loading_logs": "Loading logs..."
 	},
 	"cli": {
 		"title": "Juno CLI Authentication",

@@ -13,7 +13,7 @@
 	}
 
 	p {
-		margin-top: var(--padding-3x);
+		margin: var(--spinner-paragraph-margin, var(--padding-3x) 0 0);
 		color: var(--value-color);
 	}
 </style>

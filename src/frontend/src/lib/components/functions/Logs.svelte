@@ -8,6 +8,7 @@
 	import Log from '$lib/components/functions/Log.svelte';
 	import { listLogs } from '$lib/services/logs.services';
 	import type { Log as LogType } from '$lib/types/log';
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 
 	export let satelliteId: Principal;
 
@@ -44,7 +45,10 @@
 
 		<tbody>
 			{#if isNullish(logs)}
-				<tr><td colspan="3">&ZeroWidthSpace;</td></tr>
+				<tr
+					><td colspan="3"><SpinnerParagraph>{$i18n.functions.loading_logs}</SpinnerParagraph></td
+					></tr
+				>
 			{:else if empty}
 				<tr in:fade><td colspan="3">{$i18n.functions.empty}</td></tr>
 			{:else}
@@ -73,6 +77,8 @@
 
 	.table-container {
 		padding: 0 0 var(--padding);
+
+		--spinner-paragraph-margin: var(--padding) 0 0;
 	}
 
 	tbody {

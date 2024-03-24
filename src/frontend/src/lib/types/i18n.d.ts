@@ -265,6 +265,7 @@ interface I18nFunctions {
 	message: string;
 	empty: string;
 	expand: string;
+	loading_logs: string;
 }
 
 interface I18nCli {

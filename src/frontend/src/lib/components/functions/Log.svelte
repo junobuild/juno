@@ -5,6 +5,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
+	import LogLevel from "$lib/components/functions/LogLevel.svelte";
 
 	export let log: canister_log_record;
 
@@ -21,7 +22,7 @@
 
 <tr>
 	<td class="timestamp"><span>{formatToDate(log.timestamp_nanos)}</span></td>
-	<td class="level"><span>{$i18n.functions.error}</span></td>
+	<td class="level"><LogLevel /></td>
 	<td class="content"
 		><button
 			class="text"
@@ -33,7 +34,7 @@
 			{#if isNullish(content)}&ZeroWidthSpace;{:else}{content}
 
 				<p class="info" class:expand>
-					{formatToDate(log.timestamp_nanos)} | {$i18n.functions.error}
+					{formatToDate(log.timestamp_nanos)} | <LogLevel />
 				</p>
 			{/if}
 		</div>
@@ -91,6 +92,8 @@
 
 	.timestamp,
 	.level {
+		overflow: visible;
+
 		span {
 			padding: var(--padding-0_5x) 0;
 			display: inline-block;

@@ -54,6 +54,18 @@
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
+	.timestamp,
+	.level {
+		display: none;
+	}
+
+	@include media.min-width(medium) {
+		.timestamp,
+		.level {
+			display: table-cell;
+		}
+	}
+
 	.table-container {
 		padding: 0 0 var(--padding);
 	}

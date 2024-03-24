@@ -29,14 +29,36 @@
 			aria-label={$i18n.functions.expand}
 			on:click={() => (expand = !expand)}><IconChevron /></button
 		>
-		<p class:expand>
-			{#if isNullish(content)}&ZeroWidthSpace;{:else}{content}{/if}
-		</p>
+		<div class:expand>
+			{#if isNullish(content)}&ZeroWidthSpace;{:else}{content}
+
+				<p class="info" class:expand>
+					{formatToDate(log.timestamp_nanos)} | {$i18n.functions.error}
+				</p>
+			{/if}
+		</div>
 	</td>
 </tr>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';
+	@use '../../styles/mixins/media';
+
+	.timestamp,
+	.level {
+		display: none;
+	}
+
+	.message {
+		width: 100%;
+	}
+
+	@include media.min-width(medium) {
+		.timestamp,
+		.level {
+			display: table-cell;
+		}
+	}
 
 	td {
 		padding: var(--padding-0_25x) var(--padding-2x);
@@ -50,7 +72,7 @@
 	.content {
 		display: grid;
 		grid-template-columns: auto 1fr;
-		gap: var(--padding);
+		gap: var(--padding-0_5x);
 	}
 
 	button.text {
@@ -62,7 +84,7 @@
 		}
 	}
 
-	p {
+	div {
 		padding: var(--padding-0_5x) 0;
 		@include text.truncate;
 	}
@@ -72,6 +94,22 @@
 		span {
 			padding: var(--padding-0_5x) 0;
 			display: inline-block;
+		}
+	}
+
+	.info {
+		display: none;
+		font-size: var(--font-size-very-small);
+		padding: var(--padding-2x) 0 0;
+
+		&.expand {
+			display: block;
+		}
+
+		@include media.min-width(medium) {
+			&.expand {
+				display: none;
+			}
 		}
 	}
 </style>

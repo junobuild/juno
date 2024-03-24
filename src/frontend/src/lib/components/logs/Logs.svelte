@@ -5,7 +5,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { fade } from 'svelte/transition';
-	import Log from '$lib/components/functions/Log.svelte';
+	import Log from '$lib/components/logs/Log.svelte';
 	import { listLogs } from '$lib/services/logs.services';
 	import type { Log as LogType } from '$lib/types/log';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';

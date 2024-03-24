@@ -9,7 +9,7 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import Logs from '$lib/components/functions/Logs.svelte';
+	import Logs from '$lib/components/logs/Logs.svelte';
 
 	const tabs: Tab[] = [
 		{

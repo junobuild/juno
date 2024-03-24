@@ -2,7 +2,7 @@
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
-	import LogLevel from '$lib/components/functions/LogLevel.svelte';
+	import LogLevel from '$lib/components/logs/LogLevel.svelte';
 	import type { Log } from '$lib/types/log';
 
 	export let log: Log;

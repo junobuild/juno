@@ -28,11 +28,16 @@ fn get_rules(rules: &Rules) -> Vec<(CollectionKey, Rule)> {
         .collect()
 }
 
-pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), String> {
+pub fn set_rule_db(
+    collection: CollectionKey,
+    rule: SetRule,
+    validate_collection_prefix: bool,
+) -> Result<(), String> {
     STATE.with(|state| {
         set_rule_impl(
             collection.clone(),
             rule.clone(),
+            validate_collection_prefix,
             &mut state.borrow_mut().heap.db.rules,
         )
     })?;
@@ -44,7 +49,14 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
 }
 
 pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), String> {
-    STATE.with(|state| set_rule_impl(collection, rule, &mut state.borrow_mut().heap.storage.rules))
+    STATE.with(|state| {
+        set_rule_impl(
+            collection,
+            rule,
+            true,
+            &mut state.borrow_mut().heap.storage.rules,
+        )
+    })
 }
 
 pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), String> {
@@ -72,11 +84,17 @@ pub fn del_rule_storage(collection: CollectionKey, rule: DelRule) -> Result<(), 
 fn set_rule_impl(
     collection: CollectionKey,
     user_rule: SetRule,
+    validate_collection_prefix: bool,
     rules: &mut Rules,
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    assert_write_permission(&collection, current_rule, &user_rule.updated_at)?;
+    assert_write_permission(
+        &collection,
+        current_rule,
+        &user_rule.updated_at,
+        validate_collection_prefix,
+    )?;
     assert_memory(current_rule, &user_rule.memory)?;
     assert_mutable_permissions(current_rule, &user_rule)?;
 
@@ -112,7 +130,7 @@ fn del_rule_impl(
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    assert_write_permission(&collection, current_rule, &user_rule.updated_at)?;
+    assert_write_permission(&collection, current_rule, &user_rule.updated_at, true)?;
 
     rules.remove(&collection);
 

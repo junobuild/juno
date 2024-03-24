@@ -24,3 +24,26 @@
 		margin: var(--padding-1_5x) 0 var(--padding);
 	}
 }
+
+@mixin apply {
+	label {
+		display: flex;
+		gap: var(--padding-2x);
+		align-items: center;
+
+		cursor: pointer;
+	}
+
+	.category {
+		font-weight: var(--font-weight-bold);
+		margin: 0 0 var(--padding);
+
+		&.sort {
+			margin-top: var(--padding-1_5x);
+		}
+	}
+
+	label span {
+		color: var(--value-color);
+	}
+}

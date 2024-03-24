@@ -7,7 +7,6 @@ export interface LogDataDid {
 }
 
 export interface Log {
-	key: string;
 	level: LogLevel;
 	message: string;
 	data?: Blob;

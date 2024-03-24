@@ -18,7 +18,7 @@ export const listLogs = async ({
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<{ results?: Log[]; error?: unknown }> => {
+}): Promise<{ results?: [string, Log][]; error?: unknown }> => {
 	const labels = get(i18n);
 
 	if (isNullish(identity) || isNullish(identity?.getPrincipal())) {
@@ -34,7 +34,7 @@ export const listLogs = async ({
 
 		return {
 			results: [...fnLogs, ...icLogs].sort(
-				({ timestamp: aTimestamp }, { timestamp: bTimestamp }) =>
+				([, { timestamp: aTimestamp }], [_, { timestamp: bTimestamp }]) =>
 					aTimestamp > bTimestamp ? -1 : aTimestamp === bTimestamp ? 0 : 1
 			)
 		};
@@ -51,7 +51,7 @@ export const listLogs = async ({
 const functionLogs = async (params: {
 	satelliteId: Principal;
 	identity: Identity;
-}): Promise<Log[]> => {
+}): Promise<[string, Log][]> => {
 	const { items: fnLogs } = await listDocs({
 		collection: '#log',
 		params: {
@@ -64,25 +64,29 @@ const functionLogs = async (params: {
 		...params
 	});
 
-	const mapLog = async ([key, { data, created_at: timestamp }]: [string, Doc]): Promise<Log> => {
+	const mapLog = async ([key, { data, created_at: timestamp }]: [string, Doc]): Promise<
+		[string, Log]
+	> => {
 		const { message, data: msgData, level }: LogDataDid = await fromArray(data);
 
 		const msgDataArray = fromNullable(msgData);
 
-		return {
-			key: `[juno]-${key}`,
-			message,
-			level:
-				'error' in level
-					? 'error'
-					: 'warning' in level
-						? 'warning'
-						: 'debug' in level
-							? 'debug'
-							: 'info',
-			timestamp,
-			...(nonNullish(msgDataArray) && { data: await fromArray(msgDataArray) })
-		};
+		return [
+			`[juno]-${key}`,
+			{
+				message,
+				level:
+					'error' in level
+						? 'error'
+						: 'warning' in level
+							? 'warning'
+							: 'debug' in level
+								? 'debug'
+								: 'info',
+				timestamp,
+				...(nonNullish(msgDataArray) && { data: await fromArray(msgDataArray) })
+			}
+		];
 	};
 
 	return await Promise.all(fnLogs.map(mapLog));
@@ -91,24 +95,26 @@ const functionLogs = async (params: {
 const canisterLogs = async (params: {
 	canisterId: Principal;
 	identity: Identity;
-}): Promise<Log[]> => {
+}): Promise<[string, Log][]> => {
 	const icLogs = await canisterLogsApi(params);
 
 	const mapLog = async ({
 		idx,
 		timestamp_nanos: timestamp,
 		content
-	}: canister_log_record): Promise<Log> => {
+	}: canister_log_record): Promise<[string, Log]> => {
 		const blob: Blob = new Blob([
 			content instanceof Uint8Array ? content : new Uint8Array(content)
 		]);
 
-		return {
-			key: `[ic]-${idx}`,
-			message: await blob.text(),
-			level: 'error',
-			timestamp
-		};
+		return [
+			`[ic]-${idx}`,
+			{
+				message: await blob.text(),
+				level: 'error',
+				timestamp
+			}
+		];
 	};
 
 	return await Promise.all(icLogs.map(mapLog));

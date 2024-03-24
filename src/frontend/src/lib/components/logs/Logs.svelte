@@ -12,13 +12,18 @@
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import DataCount from '$lib/components/data/DataCount.svelte';
+	import LogsTitle from '$lib/components/logs/LogsTitle.svelte';
+	import LogsOrder from '$lib/components/logs/LogsOrder.svelte';
 
 	export let satelliteId: Principal;
+
+	let desc = true;
 
 	const list = async () => {
 		const { results, error } = await listLogs({
 			satelliteId,
-			identity: $authStore.identity
+			identity: $authStore.identity,
+			desc
 		});
 
 		if (nonNullish(error)) {
@@ -53,7 +58,12 @@
 		<thead>
 			<tr>
 				<th class="level"> {$i18n.functions.level} </th>
-				<th class="timestamp"> {$i18n.functions.timestamp} </th>
+				<th class="timestamp">
+					<LogsTitle>
+						{$i18n.functions.timestamp}
+						<LogsOrder slot="actions" bind:desc />
+					</LogsTitle>
+				</th>
 				<th class="message"> {$i18n.functions.message} </th>
 			</tr>
 		</thead>

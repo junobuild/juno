@@ -266,6 +266,8 @@ interface I18nFunctions {
 	empty: string;
 	expand: string;
 	loading_logs: string;
+	sort: string;
+	levels: string;
 }
 
 interface I18nCli {

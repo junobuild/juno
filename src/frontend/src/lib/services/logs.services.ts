@@ -14,10 +14,12 @@ import { get } from 'svelte/store';
 
 export const listLogs = async ({
 	satelliteId,
-	identity
+	identity,
+	desc
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
+	desc?: boolean;
 }): Promise<{ results?: [string, Log][]; error?: unknown }> => {
 	const labels = get(i18n);
 
@@ -35,7 +37,7 @@ export const listLogs = async ({
 		return {
 			results: [...fnLogs, ...icLogs].sort(
 				([, { timestamp: aTimestamp }], [_, { timestamp: bTimestamp }]) =>
-					aTimestamp > bTimestamp ? -1 : aTimestamp === bTimestamp ? 0 : 1
+					aTimestamp > bTimestamp ? (desc ? -1 : 1) : aTimestamp === bTimestamp ? 0 : desc ? 1 : -1
 			)
 		};
 	} catch (error: unknown) {

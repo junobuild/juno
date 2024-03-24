@@ -251,7 +251,9 @@
 		"message": "Message",
 		"empty": "No logs collected.",
 		"expand": "Expand message",
-		"loading_logs": "Loading logs..."
+		"loading_logs": "Loading logs...",
+		"sort": "Sort:",
+		"levels": "Levels:"
 	},
 	"cli": {
 		"title": "授权命令行",

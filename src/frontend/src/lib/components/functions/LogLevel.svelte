@@ -14,15 +14,34 @@
 </span>
 
 <style lang="scss">
-	.error {
-		background: var(--color-error);
-		color: var(--color-error-contrast);
+	span {
+		--padding-0_75x: calc(var(--padding) / 1.25);
 
 		padding: 0 var(--padding);
-		margin: var(--padding-0_5x) 0;
+		margin: var(--padding-0_75x) 0;
 
 		display: inline-block;
 
 		border-radius: var(--border-radius);
+
+		background: var(--color-secondary);
+		color: var(--color-secondary-contrast);
+
+		font-size: var(--font-size-very-small);
+	}
+
+	.debug {
+		background: var(--color-tertiary);
+		color: var(--color-tertiary-contrast);
+	}
+
+	.warning {
+		background: var(--color-warning);
+		color: var(--color-warning-contrast);
+	}
+
+	.error {
+		background: var(--color-error);
+		color: var(--color-error-contrast);
 	}
 </style>

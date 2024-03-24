@@ -246,7 +246,7 @@
 		"level": "Level",
 		"info": "Info",
 		"debug": "Debug",
-		"warning": "warning",
+		"warning": "Warning",
 		"error": "Error",
 		"message": "Message",
 		"empty": "No logs collected.",

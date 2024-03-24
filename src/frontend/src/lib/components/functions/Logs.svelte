@@ -88,6 +88,6 @@
 	}
 
 	.level {
-		width: 80px;
+		width: 88px;
 	}
 </style>

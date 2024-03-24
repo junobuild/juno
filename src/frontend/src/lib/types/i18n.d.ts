@@ -253,6 +253,20 @@ interface I18nHosting {
 	files_deployed: string;
 }
 
+interface I18nFunctions {
+	title: string;
+	logs: string;
+	timestamp: string;
+	level: string;
+	info: string;
+	debug: string;
+	warning: string;
+	error: string;
+	message: string;
+	empty: string;
+	expand: string;
+}
+
 interface I18nCli {
 	title: string;
 	sign_in: string;
@@ -534,6 +548,7 @@ interface I18n {
 	storage: I18nStorage;
 	analytics: I18nAnalytics;
 	hosting: I18nHosting;
+	functions: I18nFunctions;
 	cli: I18nCli;
 	errors: I18nErrors;
 	document: I18nDocument;

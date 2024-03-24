@@ -1,4 +1,4 @@
-import type { _SERVICE as ICActor } from '$declarations/ic/ic.did';
+import type { _SERVICE as ICActor, canister_log_record } from '$declarations/ic/ic.did';
 import type { CanisterInfo, CanisterStatus } from '$lib/types/canister';
 import { getICActor } from '$lib/utils/actor.ic.utils';
 import type { Identity } from '@dfinity/agent';
@@ -20,7 +20,7 @@ export const canisterStatus = async ({
 	canisterId: string;
 	identity: Identity;
 }): Promise<CanisterInfo> => {
-	const actor: ICActor = await getICActor(identity);
+	const actor: ICActor = await getICActor({ identity });
 
 	const { cycles, status, memory_size, idle_cycles_burned_per_day } = await actor.canister_status({
 		canister_id: Principal.fromText(canisterId)
@@ -36,7 +36,7 @@ export const canisterStart = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<void> => {
-	const actor: ICActor = await getICActor(identity);
+	const actor: ICActor = await getICActor({ identity });
 	return actor.start_canister({ canister_id: canisterId });
 };
 
@@ -47,6 +47,23 @@ export const canisterStop = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<void> => {
-	const actor: ICActor = await getICActor(identity);
+	const actor: ICActor = await getICActor({ identity });
 	return actor.stop_canister({ canister_id: canisterId });
+};
+
+export const canisterLogs = async ({
+	canisterId,
+	identity
+}: {
+	canisterId: Principal;
+	identity: Identity;
+}): Promise<canister_log_record[]> => {
+	// TODO: agent-js currently has an issue with querying the logs if verifyQuerySignatures is set to true
+	const { fetch_canister_logs } = await getICActor({ identity, verifyQuerySignatures: false });
+
+	const { canister_log_records } = await fetch_canister_logs({
+		canister_id: canisterId
+	});
+
+	return canister_log_records;
 };

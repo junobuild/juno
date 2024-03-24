@@ -9,6 +9,7 @@
 	import { page } from '$app/stores';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Theme from '$lib/components/ui/Theme.svelte';
+	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 
 	let routeId: string | null;
 	$: routeId = $page.route.id;
@@ -56,6 +57,15 @@
 		>
 			<IconStorage size="24px" />
 			<span>{$i18n.storage.title}</span>
+		</a>
+
+		<a
+			class="link"
+			href={`/functions/?s=${satelliteId}`}
+			class:selected={isSelected({ routeId, path: 'functions' })}
+		>
+			<IconFunctions size="24px" />
+			<span>{$i18n.functions.title}</span>
 		</a>
 
 		<a

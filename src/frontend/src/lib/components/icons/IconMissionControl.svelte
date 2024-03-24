@@ -24,7 +24,13 @@
 		fill: none;
 		opacity: 0.25;
 	}
+
 	.icon-mission-control-2 {
-		fill: #fff;
+		fill: var(--color-background);
+	}
+
+	path,
+	circle {
+		fill: var(--color-background-contrast);
 	}
 </style>

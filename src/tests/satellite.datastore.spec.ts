@@ -10,7 +10,7 @@ import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite datastore',
-	({ memory }) => {
+	async ({ memory }) => {
 		let pic: PocketIc;
 		let actor: Actor<SatelliteActor>;
 
@@ -35,6 +35,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				memory: toNullable(memory),
 				updated_at: toNullable(),
 				max_size: toNullable(),
+				max_capacity: toNullable(),
 				read: { Managed: null },
 				mutable_permissions: toNullable(),
 				write: { Managed: null }
@@ -48,15 +49,15 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			await pic?.tearDown();
 		});
 
+		const data = await toArray({
+			hello: 'World'
+		});
+
 		describe('user', async () => {
 			const user = Ed25519KeyIdentity.generate();
 
 			beforeAll(() => {
 				actor.setIdentity(user);
-			});
-
-			const data = await toArray({
-				hello: 'World'
 			});
 
 			const createDoc = async (): Promise<string> => {
@@ -115,6 +116,126 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				const results = await Promise.all(keys.map(delDoc));
 				expect(results).toHaveLength(10);
+			});
+		});
+
+		describe('rules', () => {
+			const setRule: Omit<SetRule, 'max_capacity'> = {
+				memory: toNullable(memory),
+				updated_at: toNullable(),
+				max_size: toNullable(),
+				read: { Managed: null },
+				mutable_permissions: toNullable(),
+				write: { Managed: null }
+			};
+
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+			});
+
+			const testItemsLength = async ({
+				setLength,
+				expectedLength,
+				collection
+			}: {
+				setLength: number;
+				expectedLength: number;
+				collection: string;
+			}) => {
+				const { list_docs, set_many_docs } = actor;
+
+				await set_many_docs(
+					Array.from({ length: setLength }).map(() => [
+						collection,
+						nanoid(),
+						{
+							data,
+							description: toNullable(),
+							updated_at: toNullable()
+						}
+					])
+				);
+
+				const docs = await list_docs(collection, {
+					matcher: toNullable(),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				});
+
+				expect(docs.items_length).toEqual(BigInt(expectedLength));
+			};
+
+			it('should set documents without capacity limit', async () => {
+				const { set_rule } = actor;
+
+				const COLLECTION = 'test_no_capacity_collection';
+				const MAX_CAPACITY = 2;
+
+				await set_rule({ Db: null }, COLLECTION, {
+					...setRule,
+					max_capacity: toNullable(MAX_CAPACITY)
+				});
+
+				await testItemsLength({
+					setLength: 4,
+					expectedLength: MAX_CAPACITY,
+					collection: COLLECTION
+				});
+			});
+
+			it('should set documents up to max capacity', async () => {
+				const { set_rule } = actor;
+
+				const COLLECTION = 'test_max_capacity_collection';
+				const MAX_CAPACITY = 2;
+
+				await set_rule({ Db: null }, COLLECTION, {
+					...setRule,
+					max_capacity: toNullable(MAX_CAPACITY)
+				});
+
+				await testItemsLength({
+					setLength: 4,
+					expectedLength: MAX_CAPACITY,
+					collection: COLLECTION
+				});
+			});
+
+			it('should pop first', async () => {
+				const { set_rule, set_many_docs, list_docs } = actor;
+
+				const COLLECTION = 'test_pop_first_collection';
+				const MAX_CAPACITY = 2;
+
+				await set_rule({ Db: null }, COLLECTION, {
+					...setRule,
+					max_capacity: toNullable(MAX_CAPACITY)
+				});
+
+				const docsCreated = await set_many_docs(
+					Array.from({ length: 4 }).map((_, i) => [
+						COLLECTION,
+						`${i}`,
+						{
+							data,
+							description: toNullable(),
+							updated_at: toNullable()
+						}
+					])
+				);
+
+				const docs = await list_docs(COLLECTION, {
+					matcher: toNullable(),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				});
+
+				expect(docs.items_length).toEqual(BigInt(MAX_CAPACITY));
+
+				expect(docs.items[0][0]).toEqual(docsCreated[2][0]);
+				expect(docs.items[1][0]).toEqual(docsCreated[3][0]);
 			});
 		});
 	}

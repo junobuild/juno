@@ -5,6 +5,7 @@ use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
 use ic_cdk::api::time;
+use ic_cdk::id;
 use std::collections::HashMap;
 
 /// Initializes a set of controllers with default administrative scope.
@@ -81,12 +82,13 @@ pub fn delete_controllers(remove_controllers: &[UserId], controllers: &mut Contr
 /// - `controllers`: Reference to the current set of controllers.
 ///
 /// # Returns
-/// `true` if the caller is a controller, otherwise `false`.
+/// `true` if the caller is a controller (not anonymous, calling itself or one of the known controllers), otherwise `false`.
 pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
     principal_not_anonymous(caller)
-        && controllers
-            .iter()
-            .any(|(&controller_id, _)| principal_equal(controller_id, caller))
+        && (caller_is_self(caller)
+            || controllers
+                .iter()
+                .any(|(&controller_id, _)| principal_equal(controller_id, caller)))
 }
 
 /// Checks if a caller is an admin controller.
@@ -226,6 +228,19 @@ pub fn caller_is_observatory(caller: UserId) -> bool {
     let observatory = Principal::from_text(OBSERVATORY).unwrap();
 
     principal_equal(caller, observatory)
+}
+
+/// Checks if the caller is the canister itself.
+///
+/// # Arguments
+/// - `caller`: `UserId` of the caller.
+///
+/// # Returns
+/// `true` if the caller is calling itself, if the canister is the caller, otherwise `false`.
+pub fn caller_is_self(caller: UserId) -> bool {
+    let itself = id();
+
+    principal_equal(caller, itself)
 }
 
 /// Filters the set of controllers, returning only those with administrative scope.

@@ -14,11 +14,13 @@ use crate::hooks::{
     invoke_on_delete_many_docs, invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset,
 };
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
+use crate::random::defer_init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
+use crate::rules::upgrade::init_log_collection;
 use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
 use crate::storage::http::response::{
     build_asset_response, build_redirect_response, error_response,
@@ -32,8 +34,8 @@ use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
     delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
     get_config_store as get_storage_config, get_content_chunks_store, get_custom_domains_store,
-    get_public_asset_store, init_certified_assets_store, list_assets_store,
-    set_config_store as set_storage_config, set_domain_store,
+    get_public_asset_store, list_assets_store, set_config_store as set_storage_config,
+    set_domain_store,
 };
 use crate::storage::types::domain::{CustomDomains, DomainName};
 use crate::storage::types::http_request::{
@@ -44,6 +46,7 @@ use crate::storage::types::interface::{
 };
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
+use crate::storage::upgrade::defer_init_certified_assets;
 use crate::types::core::{CollectionKey, Key};
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListParams;
@@ -118,7 +121,11 @@ pub fn post_upgrade() {
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
 
-    init_certified_assets_store();
+    defer_init_certified_assets();
+    defer_init_random_seed();
+
+    // TODO: to be removed - one time upgrade!
+    init_log_collection();
 }
 
 ///

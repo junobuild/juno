@@ -422,6 +422,8 @@ interface I18nCollections {
 	write_permission: string;
 	max_size: string;
 	max_size_placeholder: string;
+	max_capacity: string;
+	max_capacity_placeholder: string;
 	public: string;
 	private: string;
 	managed: string;

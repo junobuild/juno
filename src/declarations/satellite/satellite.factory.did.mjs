@@ -156,6 +156,7 @@ export const idlFactory = ({ IDL }) => {
 		Managed: IDL.Null
 	});
 	const Rule = IDL.Record({
+		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
 		updated_at: IDL.Nat64,
 		max_size: IDL.Opt(IDL.Nat),
@@ -180,6 +181,7 @@ export const idlFactory = ({ IDL }) => {
 		description: IDL.Opt(IDL.Text)
 	});
 	const SetRule = IDL.Record({
+		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
 		updated_at: IDL.Opt(IDL.Nat64),
 		max_size: IDL.Opt(IDL.Nat),

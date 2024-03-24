@@ -140,7 +140,7 @@ pub fn set_doc_store(
 ) -> Result<DocContext<DocUpsert>, String> {
     let controllers: Controllers = get_controllers();
 
-    let data = secure_insert_doc(caller, &controllers, collection.clone(), key.clone(), value)?;
+    let data = secure_set_doc(caller, &controllers, collection.clone(), key.clone(), value)?;
 
     Ok(DocContext {
         key,
@@ -149,7 +149,7 @@ pub fn set_doc_store(
     })
 }
 
-fn secure_insert_doc(
+fn secure_set_doc(
     caller: Principal,
     controllers: &Controllers,
     collection: CollectionKey,
@@ -157,10 +157,10 @@ fn secure_insert_doc(
     value: SetDoc,
 ) -> Result<DocUpsert, String> {
     let rule = get_state_rule(&collection)?;
-    insert_doc_impl(caller, controllers, collection, key, value, &rule)
+    set_doc_impl(caller, controllers, collection, key, value, &rule)
 }
 
-fn insert_doc_impl(
+fn set_doc_impl(
     caller: Principal,
     controllers: &Controllers,
     collection: CollectionKey,
@@ -170,18 +170,9 @@ fn insert_doc_impl(
 ) -> Result<DocUpsert, String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
-    match assert_write_permission(
-        caller,
-        controllers,
-        &current_doc,
-        &rule.write,
-        value.updated_at,
-    ) {
-        Ok(_) => (),
-        Err(e) => {
-            return Err(e);
-        }
-    }
+    assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
+
+    assert_write_timestamp(&current_doc, value.updated_at)?;
 
     assert_description_length(&value.description)?;
 
@@ -207,7 +198,7 @@ fn insert_doc_impl(
         description: value.description,
     };
 
-    let after = insert_state_doc(&collection, &key, &doc, rule)?;
+    let (_evicted_doc, after) = insert_state_doc(&collection, &key, &doc, rule)?;
 
     Ok(DocUpsert {
         before: current_doc,
@@ -324,18 +315,9 @@ fn delete_doc_impl(
 ) -> Result<Option<Doc>, String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
-    match assert_write_permission(
-        caller,
-        controllers,
-        &current_doc,
-        &rule.write,
-        value.updated_at,
-    ) {
-        Ok(_) => (),
-        Err(e) => {
-            return Err(e);
-        }
-    }
+    assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
+
+    assert_write_timestamp(&current_doc, value.updated_at)?;
 
     delete_state_doc(&collection, &key, rule)
 }
@@ -345,7 +327,6 @@ fn assert_write_permission(
     controllers: &Controllers,
     current_doc: &Option<Doc>,
     rule: &Permission,
-    user_timestamp: Option<u64>,
 ) -> Result<(), String> {
     // For existing collection and document, check user editing is the caller
     if !public_permission(rule) {
@@ -363,6 +344,13 @@ fn assert_write_permission(
         }
     }
 
+    Ok(())
+}
+
+fn assert_write_timestamp(
+    current_doc: &Option<Doc>,
+    user_timestamp: Option<u64>,
+) -> Result<(), String> {
     // Validate timestamp
     match current_doc.clone() {
         None => (),

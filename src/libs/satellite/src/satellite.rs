@@ -249,7 +249,7 @@ pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
 
 pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
     match rules_type {
-        RulesType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
+        RulesType::Db => set_rule_db(collection, rule, true).unwrap_or_else(|e| trap(&e)),
         RulesType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }
 }

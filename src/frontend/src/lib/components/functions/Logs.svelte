@@ -22,7 +22,7 @@
 		});
 
 		if (nonNullish(error)) {
-			setItems({ items: undefined, matches_length: undefined, items_length: undefined });
+			setItems({ items: [], matches_length: 0n, items_length: 0n });
 			return;
 		}
 
@@ -42,7 +42,11 @@
 
 	let empty = false;
 	$: empty = $store.items?.length === 0;
+
+	let innerWidth = 0;
 </script>
+
+<svelte:window bind:innerWidth />
 
 <div class="table-container">
 	<table>
@@ -57,11 +61,16 @@
 		<tbody>
 			{#if isNullish($store.items)}
 				<tr
-					><td colspan="3"><SpinnerParagraph>{$i18n.functions.loading_logs}</SpinnerParagraph></td
+					><td colspan={innerWidth >= 768 ? 3 : 0}
+						><SpinnerParagraph>{$i18n.functions.loading_logs}</SpinnerParagraph></td
 					></tr
 				>
 			{:else if empty}
-				<tr in:fade><td colspan="3">{$i18n.functions.empty}</td></tr>
+				<tr in:fade
+					><td colspan={innerWidth >= 768 ? 3 : 0}
+						><span class="empty">{$i18n.functions.empty}</span></td
+					></tr
+				>
 			{:else}
 				{#each $store.items as [_, log]}
 					<Log {log} />
@@ -100,6 +109,11 @@
 
 	td {
 		padding: var(--padding-0_25x) var(--padding-2x);
+	}
+
+	.empty {
+		display: inline-block;
+		padding: var(--padding) 0 0;
 	}
 
 	.timestamp {

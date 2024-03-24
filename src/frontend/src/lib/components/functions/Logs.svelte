@@ -31,8 +31,8 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="timestamp"> {$i18n.functions.timestamp} </th>
 				<th class="level"> {$i18n.functions.level} </th>
+				<th class="timestamp"> {$i18n.functions.timestamp} </th>
 				<th class="message"> {$i18n.functions.message} </th>
 			</tr>
 		</thead>

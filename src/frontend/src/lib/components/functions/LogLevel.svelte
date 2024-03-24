@@ -14,6 +14,6 @@
 
 		display: inline-block;
 
-      border-radius: var(--border-radius);
+		border-radius: var(--border-radius);
 	}
 </style>

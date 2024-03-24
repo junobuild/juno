@@ -1,5 +1,8 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store.js';
+	import type { Log } from '$lib/types/log';
+
+	export let log: Log;
 </script>
 
 <span class="error">{$i18n.functions.error}</span>

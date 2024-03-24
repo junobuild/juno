@@ -1,24 +1,29 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { onMount } from 'svelte';
-	import { isNullish } from '@dfinity/utils';
-	import { canisterLogs } from '$lib/api/ic.api';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { authStore } from '$lib/stores/auth.store';
-	import type { canister_log_record } from '$declarations/ic/ic.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { fade } from 'svelte/transition';
 	import Log from '$lib/components/functions/Log.svelte';
+	import { listLogs } from '$lib/services/logs.services';
+	import type { Log as LogType } from '$lib/types/log';
 
 	export let satelliteId: Principal;
 
-	let logs: canister_log_record[] | undefined;
+	let logs: LogType[] | undefined;
 
 	const list = async () => {
-		if (isNullish($authStore.identity)) {
+		const { results, error } = await listLogs({
+			canisterId: satelliteId,
+			identity: $authStore.identity
+		});
+
+		if (nonNullish(error)) {
 			return;
 		}
 
-		logs = await canisterLogs({ canisterId: satelliteId, identity: $authStore.identity });
+		logs = results ?? [];
 	};
 
 	onMount(async () => await list());

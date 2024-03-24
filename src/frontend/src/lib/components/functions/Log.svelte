@@ -1,28 +1,18 @@
 <script lang="ts">
-	import type { canister_log_record } from '$declarations/ic/ic.did';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import { onMount } from 'svelte';
-	import { isNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
 	import LogLevel from '$lib/components/functions/LogLevel.svelte';
+	import type { Log } from '$lib/types/log';
 
-	export let log: canister_log_record;
-
-	let content: string | undefined;
-	onMount(async () => {
-		const blob: Blob = new Blob([
-			log.content instanceof Uint8Array ? log.content : new Uint8Array(log.content)
-		]);
-		content = await blob.text();
-	});
+	export let log: Log;
 
 	let expand = false;
 </script>
 
 <tr>
-	<td class="level"><LogLevel /></td>
-	<td class="timestamp"><span>{formatToDate(log.timestamp_nanos)}</span></td>
+	<td class="level"><LogLevel {log} /></td>
+	<td class="timestamp"><span>{formatToDate(log.timestamp)}</span></td>
 	<td class="content"
 		><button
 			class="text"
@@ -31,12 +21,11 @@
 			on:click={() => (expand = !expand)}><IconChevron /></button
 		>
 		<div class:expand>
-			{#if isNullish(content)}&ZeroWidthSpace;{:else}{content}
+			{log.message}
 
-				<p class="info" class:expand>
-					<LogLevel /> | {formatToDate(log.timestamp_nanos)}
-				</p>
-			{/if}
+			<p class="info" class:expand>
+				<LogLevel {log} /> | {formatToDate(log.timestamp)}
+			</p>
 		</div>
 	</td>
 </tr>
@@ -78,7 +67,6 @@
 
 	button.text {
 		margin: 0;
-		animation: rotate 0.5s ease-out;
 
 		&.rotate {
 			transform: rotate(90deg);

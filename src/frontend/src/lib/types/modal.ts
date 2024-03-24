@@ -1,5 +1,5 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import type { MissionControlBalance } from '$lib/types/balance.types';
+import type { MissionControlBalance } from '$lib/types/balance';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { Principal } from '@dfinity/principal';

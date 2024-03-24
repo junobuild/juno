@@ -249,7 +249,8 @@
 		"warning": "warning",
 		"error": "Error",
 		"message": "Message",
-		"empty": "No logs collected."
+		"empty": "No logs collected.",
+		"expand": "Expand message"
 	},
 	"cli": {
 		"title": "Juno CLI Authentication",

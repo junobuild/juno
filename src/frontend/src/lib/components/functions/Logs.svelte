@@ -39,9 +39,9 @@
 
 		<tbody>
 			{#if isNullish(logs)}
-				<tr><td colspan="2">&ZeroWidthSpace;</td></tr>
+				<tr><td colspan="3">&ZeroWidthSpace;</td></tr>
 			{:else if empty}
-				<tr in:fade><td colspan="2">{$i18n.functions.empty}</td></tr>
+				<tr in:fade><td colspan="3">{$i18n.functions.empty}</td></tr>
 			{:else}
 				{#each logs as log}
 					<Log {log} />
@@ -71,6 +71,6 @@
 	}
 
 	.level {
-		width: 100px;
+		width: 80px;
 	}
 </style>

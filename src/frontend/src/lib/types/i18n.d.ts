@@ -264,6 +264,7 @@ interface I18nFunctions {
 	error: string;
 	message: string;
 	empty: string;
+	expand: string;
 }
 
 interface I18nCli {

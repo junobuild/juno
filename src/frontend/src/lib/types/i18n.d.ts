@@ -257,6 +257,11 @@ interface I18nFunctions {
 	title: string;
 	logs: string;
 	timestamp: string;
+	level: string;
+	info: string;
+	debug: string;
+	warning: string;
+	error: string;
 	message: string;
 	empty: string;
 }

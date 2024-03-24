@@ -243,6 +243,11 @@
 		"title": "Functions",
 		"logs": "Logs",
 		"timestamp": "Timestamp",
+		"level": "Level",
+		"info": "Info",
+		"debug": "Debug",
+		"warning": "warning",
+		"error": "Error",
 		"message": "Message",
 		"empty": "No logs collected."
 	},

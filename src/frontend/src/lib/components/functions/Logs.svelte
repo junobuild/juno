@@ -32,6 +32,7 @@
 		<thead>
 			<tr>
 				<th class="timestamp"> {$i18n.functions.timestamp} </th>
+				<th class="level"> {$i18n.functions.level} </th>
 				<th class="message"> {$i18n.functions.message} </th>
 			</tr>
 		</thead>
@@ -53,7 +54,23 @@
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
+	.table-container {
+		padding: 0 0 var(--padding);
+	}
+
+	tbody {
+		font-size: var(--font-size-small);
+	}
+
+	td {
+		padding: var(--padding-0_25x) var(--padding-2x);
+	}
+
 	.timestamp {
 		width: 200px;
+	}
+
+	.level {
+		width: 100px;
 	}
 </style>

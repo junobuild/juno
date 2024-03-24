@@ -3,6 +3,7 @@
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { onMount } from 'svelte';
 	import { isNullish } from '@dfinity/utils';
+	import {i18n} from "$lib/stores/i18n.store";
 
 	export let log: canister_log_record;
 
@@ -17,7 +18,14 @@
 
 <tr>
 	<td>{formatToDate(log.timestamp_nanos)}</td>
+	<td>{$i18n.functions.error}</td>
 	<td>
 		{#if isNullish(content)}&ZeroWidthSpace;{:else}{content}{/if}
 	</td>
 </tr>
+
+<style lang="scss">
+	td {
+		padding: var(--padding-0_25x) var(--padding-2x);
+	}
+</style>

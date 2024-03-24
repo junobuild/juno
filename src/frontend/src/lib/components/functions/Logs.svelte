@@ -15,7 +15,7 @@
 
 	const list = async () => {
 		const { results, error } = await listLogs({
-			canisterId: satelliteId,
+			satelliteId,
 			identity: $authStore.identity
 		});
 

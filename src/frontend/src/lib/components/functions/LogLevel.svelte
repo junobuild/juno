@@ -5,7 +5,13 @@
 	export let log: Log;
 </script>
 
-<span class="error">{$i18n.functions.error}</span>
+<span
+	class:error={log.level === 'error'}
+	class:warning={log.level === 'warning'}
+	class:debug={log.level === 'debug'}
+>
+	{$i18n.functions[log.level]}
+</span>
 
 <style lang="scss">
 	.error {

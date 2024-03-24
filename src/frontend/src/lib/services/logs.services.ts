@@ -1,19 +1,22 @@
 import type { canister_log_record } from '$declarations/ic/ic.did';
+import type { Doc } from '$declarations/satellite/satellite.did';
 import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
+import { listDocs } from '$lib/api/satellites.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Log } from '$lib/types/log';
+import type { Log, LogDataDid } from '$lib/types/log';
+import { fromArray } from '$lib/utils/did.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { isNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const listLogs = async ({
-	canisterId,
+	satelliteId,
 	identity
 }: {
-	canisterId: Principal;
+	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<{ results?: Log[]; error?: unknown }> => {
 	const labels = get(i18n);
@@ -24,11 +27,15 @@ export const listLogs = async ({
 	}
 
 	try {
-		const [icLogs] = await Promise.all([canisterLogs({ canisterId, identity })]);
+		const [fnLogs, icLogs] = await Promise.all([
+			functionLogs({ satelliteId, identity }),
+			canisterLogs({ canisterId: satelliteId, identity })
+		]);
 
 		return {
-			results: icLogs.sort(({ timestamp: aTimestamp }, { timestamp: bTimestamp }) =>
-				aTimestamp > bTimestamp ? -1 : aTimestamp === bTimestamp ? 0 : 1
+			results: [...fnLogs, ...icLogs].sort(
+				({ timestamp: aTimestamp }, { timestamp: bTimestamp }) =>
+					aTimestamp > bTimestamp ? -1 : aTimestamp === bTimestamp ? 0 : 1
 			)
 		};
 	} catch (error: unknown) {
@@ -41,6 +48,46 @@ export const listLogs = async ({
 	}
 };
 
+const functionLogs = async (params: {
+	satelliteId: Principal;
+	identity: Identity;
+}): Promise<Log[]> => {
+	const { items: fnLogs } = await listDocs({
+		collection: '#log',
+		params: {
+			filter: {},
+			order: {
+				desc: true,
+				field: 'created_at'
+			}
+		},
+		...params
+	});
+
+	const mapLog = async ([key, { data, created_at: timestamp }]: [string, Doc]): Promise<Log> => {
+		const { message, data: msgData, level }: LogDataDid = await fromArray(data);
+
+		const msgDataArray = fromNullable(msgData);
+
+		return {
+			key: `[juno]-${key}`,
+			message,
+			level:
+				'error' in level
+					? 'error'
+					: 'warning' in level
+						? 'warning'
+						: 'debug' in level
+							? 'debug'
+							: 'info',
+			timestamp,
+			...(nonNullish(msgDataArray) && { data: await fromArray(msgDataArray) })
+		};
+	};
+
+	return await Promise.all(fnLogs.map(mapLog));
+};
+
 const canisterLogs = async (params: {
 	canisterId: Principal;
 	identity: Identity;
@@ -48,6 +95,7 @@ const canisterLogs = async (params: {
 	const icLogs = await canisterLogsApi(params);
 
 	const mapLog = async ({
+		idx,
 		timestamp_nanos: timestamp,
 		content
 	}: canister_log_record): Promise<Log> => {
@@ -56,6 +104,7 @@ const canisterLogs = async (params: {
 		]);
 
 		return {
+			key: `[ic]-${idx}`,
 			message: await blob.text(),
 			level: 'error',
 			timestamp

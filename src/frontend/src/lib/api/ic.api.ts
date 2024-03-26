@@ -58,8 +58,7 @@ export const canisterLogs = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<canister_log_record[]> => {
-	// TODO: agent-js currently has an issue with querying the logs if verifyQuerySignatures is set to true
-	const { fetch_canister_logs } = await getICActor({ identity, verifyQuerySignatures: false });
+	const { fetch_canister_logs } = await getICActor({ identity });
 
 	const { canister_log_records } = await fetch_canister_logs({
 		canister_id: canisterId

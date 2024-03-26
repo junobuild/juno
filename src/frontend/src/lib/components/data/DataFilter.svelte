@@ -7,7 +7,6 @@
 	let matcher = $listParamsStore.filter.matcher ?? '';
 	let owner = $listParamsStore.filter.owner ?? '';
 
-	let button: HTMLButtonElement | undefined;
 	let visible: boolean | undefined;
 
 	const apply = () => {

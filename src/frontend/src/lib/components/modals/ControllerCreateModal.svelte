@@ -103,7 +103,7 @@
 		wizardBusy.stop();
 	};
 
-	let action: 'add' | 'generate' = 'generate';
+	let action = 'generate';
 
 	$: action, (() => (controllerId = ''))();
 </script>

@@ -55,6 +55,7 @@ const initAuthStore = (): AuthStore => {
 
 				await authClient?.login({
 					maxTimeToLive: AUTH_MAX_TIME_TO_LIVE,
+					allowPinAuthentication: false,
 					onSuccess: () => {
 						update((state: AuthStoreData) => ({
 							...state,

@@ -11,9 +11,9 @@
 	import { fromArray } from '$lib/utils/did.utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';
-	import Json from '$lib/components/ui/Json.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 
 	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
@@ -72,7 +72,7 @@
 		<div class="data">
 			<Value>
 				<svelte:fragment slot="label">{$i18n.document.data}</svelte:fragment>
-				<div class="json"><Json json={obj} /></div>
+				<div class="json"><JsonCode json={obj} /></div>
 			</Value>
 		</div>
 	</article>

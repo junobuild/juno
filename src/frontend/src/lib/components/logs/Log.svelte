@@ -5,7 +5,7 @@
 	import LogLevel from '$lib/components/logs/LogLevel.svelte';
 	import type { Log } from '$lib/types/log';
 	import { nonNullish } from '@dfinity/utils';
-	import Json from '$lib/components/ui/Json.svelte';
+	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 
 	export let log: Log;
 
@@ -26,9 +26,9 @@
 			{log.message}
 
 			{#if nonNullish(log.data)}
-				<p class="info" class:expand>
-					<Json json={log.data} />
-				</p>
+				<output class="info" class:expand>
+					<JsonCode json={log.data} />
+				</output>
 			{/if}
 
 			<p class="info hide-wide-screen" class:expand>
@@ -110,5 +110,9 @@
 				display: none;
 			}
 		}
+	}
+
+	output {
+		margin: var(--padding) 0 var(--padding-2x);
 	}
 </style>

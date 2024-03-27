@@ -38,7 +38,8 @@
 		"save": "保存",
 		"more": "更多选项",
 		"are_you_sure": "你确定？这个操作无法恢复",
-		"attach": "附加"
+		"attach": "附加",
+		"refresh": "Refresh"
 	},
 	"canisters": {
 		"top_up": "充值",

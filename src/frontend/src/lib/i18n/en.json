@@ -38,7 +38,8 @@
 		"save": "Save",
 		"more": "More options",
 		"are_you_sure": "Are you sure? This action is irreversible",
-		"attach": "Attach"
+		"attach": "Attach",
+		"refresh": "Refresh"
 	},
 	"canisters": {
 		"top_up": "Top-up",

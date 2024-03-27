@@ -42,6 +42,7 @@ interface I18nCore {
 	more: string;
 	are_you_sure: string;
 	attach: string;
+	refresh: string;
 }
 
 interface I18nCanisters {

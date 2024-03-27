@@ -14,6 +14,7 @@
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import LogsOrder from '$lib/components/logs/LogsOrder.svelte';
 	import LogsFilter from '$lib/components/logs/LogsFilter.svelte';
+	import LogsRefresh from '$lib/components/logs/LogsRefresh.svelte';
 
 	export let satelliteId: Principal;
 
@@ -61,8 +62,9 @@
 			<tr>
 				<th colspan={innerWidth >= 768 ? 3 : 0}>
 					<div class="actions">
-						<LogsFilter slot="actions" bind:levels />
-						<LogsOrder slot="actions" bind:desc />
+						<LogsFilter bind:levels />
+						<LogsOrder bind:desc />
+						<LogsRefresh />
 					</div>
 				</th>
 			</tr>

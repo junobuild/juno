@@ -58,3 +58,16 @@ export const getLocalStorageTheme = (): Theme => {
 		return Theme.LIGHT;
 	}
 };
+
+export const getLocalStorageObserveLogs = (): boolean => {
+	try {
+		const { observe_logs }: Storage = browser
+			? localStorage
+			: ({ observe_logs: 'true' } as unknown as Storage);
+		return observe_logs === 'true';
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return true;
+	}
+};

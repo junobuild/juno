@@ -12,6 +12,9 @@ export const SYNC_CUSTOM_DOMAIN_TIMER_INTERVAL = 10000;
 export const SYNC_WALLET_TIMER_INTERVAL = 30000;
 export const SYNC_STATUSES_TIMER_INTERVAL = 3600000;
 
+// Timer UI
+export const SYNC_LOGS_TIMER_INTERVAL = 60000;
+
 // How long the delegation identity should remain valid?
 // e.g. BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000) = 7 days in nanoseconds
 export const AUTH_MAX_TIME_TO_LIVE = BigInt(7 * 24 * 60 * 60 * 1000 * 1000 * 1000);

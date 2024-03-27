@@ -2,10 +2,14 @@
 	import { i18n } from '$lib/stores/i18n.store.js';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { Log as LogType } from '$lib/types/log';
-	import { getContext } from 'svelte';
+	import { getContext, onDestroy } from 'svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import IconMore from '$lib/components/icons/IconMore.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import IconTimer from '$lib/components/icons/IconTimer.svelte';
+	import IconTimerOff from '$lib/components/icons/IconTimerOff.svelte';
+	import { getLocalStorageObserveLogs, setLocalStorageItem } from '$lib/utils/local-storage.utils';
+	import { SYNC_LOGS_TIMER_INTERVAL } from '$lib/constants/constants';
 
 	const { list, resetPage }: PaginationContext<LogType> =
 		getContext<PaginationContext<LogType>>(PAGINATION_CONTEXT_KEY);
@@ -16,6 +20,41 @@
 		resetPage();
 		await list();
 	};
+
+	let observe = getLocalStorageObserveLogs();
+	let timer: number | undefined;
+
+	const saveToggle = () =>
+		setLocalStorageItem({ key: 'observe_logs', value: JSON.stringify(observe) });
+
+	const watch = async () => {
+		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+		// @ts-ignore NodeJS.timeout vs number
+		timer = setInterval(async () => {
+			console.log('list');
+			await list();
+		}, SYNC_LOGS_TIMER_INTERVAL);
+	};
+
+	const unwatch = () => clearInterval(timer);
+
+	const toggle = () => {
+		if (!observe) {
+			unwatch();
+			return;
+		}
+
+		watch();
+	};
+
+	const onToggle = () => {
+		observe = !observe;
+		saveToggle();
+	};
+
+	$: observe, toggle();
+
+	onDestroy(unwatch);
 
 	export let visible: boolean | undefined = undefined;
 
@@ -33,8 +72,15 @@
 <Popover bind:visible anchor={button} direction="ltr">
 	<div class="container">
 		<button class="menu" type="button" on:click={reload}
-			><IconAutoRenew size="20px" /> {$i18n.core.refresh}</button
+			><IconAutoRenew /> {$i18n.core.refresh}</button
 		>
+
+		<button class="menu" type="button" on:click={onToggle}
+			>{#if observe}<IconTimer /> {$i18n.functions.auto_refresh_enabled}{:else}<IconTimerOff
+					size="20px"
+				/>
+				{$i18n.functions.auto_refresh_disabled}{/if}
+		</button>
 	</div>
 </Popover>
 
@@ -45,5 +91,9 @@
 
 	button.icon {
 		padding: 0;
+	}
+
+	button.menu {
+		text-align: left;
 	}
 </style>

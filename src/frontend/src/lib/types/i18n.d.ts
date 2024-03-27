@@ -269,6 +269,8 @@ interface I18nFunctions {
 	loading_logs: string;
 	sort: string;
 	levels: string;
+	auto_refresh_enabled: string;
+	auto_refresh_disabled: string;
 }
 
 interface I18nCli {

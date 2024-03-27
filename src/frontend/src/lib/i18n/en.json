@@ -254,7 +254,9 @@
 		"expand": "Expand message",
 		"loading_logs": "Loading logs...",
 		"sort": "Sort:",
-		"levels": "Levels:"
+		"levels": "Levels:",
+		"auto_refresh_enabled": "Auto refresh (1min)",
+		"auto_refresh_disabled": "Auto refresh disabled"
 	},
 	"cli": {
 		"title": "Juno CLI Authentication",

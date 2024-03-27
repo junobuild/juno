@@ -5,7 +5,7 @@ import { listDocs } from '$lib/api/satellites.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { Log, LogDataDid } from '$lib/types/log';
+import type { Log, LogDataDid, LogLevel } from '$lib/types/log';
 import { fromArray } from '$lib/utils/did.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
@@ -15,11 +15,13 @@ import { get } from 'svelte/store';
 export const listLogs = async ({
 	satelliteId,
 	identity,
-	desc
+	desc = true,
+	levels = ['Info', 'Debug', 'Warning', 'Error']
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
 	desc?: boolean;
+	levels?: LogLevel[];
 }): Promise<{ results?: [string, Log][]; error?: unknown }> => {
 	const labels = get(i18n);
 
@@ -35,10 +37,11 @@ export const listLogs = async ({
 		]);
 
 		return {
-			results: [...fnLogs, ...icLogs].sort(
-				([, { timestamp: aTimestamp }], [_, { timestamp: bTimestamp }]) =>
+			results: [...fnLogs, ...icLogs]
+				.filter(([_, { level }]) => levels.includes(level))
+				.sort(([, { timestamp: aTimestamp }], [_, { timestamp: bTimestamp }]) =>
 					aTimestamp > bTimestamp ? (desc ? -1 : 1) : aTimestamp === bTimestamp ? 0 : desc ? 1 : -1
-			)
+				)
 		};
 	} catch (error: unknown) {
 		toasts.error({

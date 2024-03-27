@@ -7,23 +7,26 @@
 	import { fade } from 'svelte/transition';
 	import Log from '$lib/components/logs/Log.svelte';
 	import { listLogs } from '$lib/services/logs.services';
-	import type { Log as LogType } from '$lib/types/log';
+	import type { Log as LogType, LogLevel as LogLevelType } from '$lib/types/log';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import LogsTitle from '$lib/components/logs/LogsTitle.svelte';
 	import LogsOrder from '$lib/components/logs/LogsOrder.svelte';
+	import LogsFilter from '$lib/components/logs/LogsFilter.svelte';
 
 	export let satelliteId: Principal;
 
 	let desc = true;
+	let levels: LogLevelType[] = ['Info', 'Debug', 'Warning', 'Error'];
 
 	const list = async () => {
 		const { results, error } = await listLogs({
 			satelliteId,
 			identity: $authStore.identity,
-			desc
+			desc,
+			levels
 		});
 
 		if (nonNullish(error)) {
@@ -57,7 +60,12 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="level"> {$i18n.functions.level} </th>
+				<th class="level">
+					<LogsTitle>
+						{$i18n.functions.level}
+						<LogsFilter slot="actions" bind:levels />
+					</LogsTitle>
+				</th>
 				<th class="timestamp">
 					<LogsTitle>
 						{$i18n.functions.timestamp}

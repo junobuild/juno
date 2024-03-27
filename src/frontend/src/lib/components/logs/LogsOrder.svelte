@@ -20,7 +20,7 @@
 	};
 </script>
 
-<PopoverApply ariaLabel={$i18n.sort.title} on:click={apply} bind:visible>
+<PopoverApply ariaLabel={$i18n.sort.title} on:click={apply} bind:visible direction="ltr">
 	<IconSort size="20px" slot="icon" />
 
 	<p class="category sort">{$i18n.functions.sort}</p>

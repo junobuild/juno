@@ -4,6 +4,7 @@
 
 	export let ariaLabel: string;
 	export let visible: boolean | undefined;
+	export let direction: 'ltr' | 'rtl' = 'rtl';
 
 	let button: HTMLButtonElement | undefined;
 </script>
@@ -16,7 +17,7 @@
 	bind:this={button}><slot name="icon" /></button
 >
 
-<Popover bind:visible anchor={button} direction="rtl">
+<Popover bind:visible anchor={button} {direction}>
 	<div class="container">
 		<slot />
 

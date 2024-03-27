@@ -12,7 +12,6 @@
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import DataCount from '$lib/components/data/DataCount.svelte';
-	import LogsTitle from '$lib/components/logs/LogsTitle.svelte';
 	import LogsOrder from '$lib/components/logs/LogsOrder.svelte';
 	import LogsFilter from '$lib/components/logs/LogsFilter.svelte';
 
@@ -60,17 +59,19 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="level">
-					<LogsTitle>
-						{$i18n.functions.level}
+				<th colspan={innerWidth >= 768 ? 3 : 0}>
+					<div class="actions">
 						<LogsFilter slot="actions" bind:levels />
-					</LogsTitle>
+						<LogsOrder slot="actions" bind:desc />
+					</div>
+				</th>
+			</tr>
+			<tr>
+				<th class="level">
+					{$i18n.functions.level}
 				</th>
 				<th class="timestamp">
-					<LogsTitle>
-						{$i18n.functions.timestamp}
-						<LogsOrder slot="actions" bind:desc />
-					</LogsTitle>
+					{$i18n.functions.timestamp}
 				</th>
 				<th class="message"> {$i18n.functions.message} </th>
 			</tr>
@@ -102,6 +103,10 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+
+	table {
+		table-layout: auto;
+	}
 
 	.timestamp,
 	.level {
@@ -140,5 +145,11 @@
 
 	.level {
 		width: 88px;
+	}
+
+	.actions {
+		display: flex;
+		gap: var(--padding-1_5x);
+		padding: var(--padding) 0;
 	}
 </style>

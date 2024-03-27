@@ -9,7 +9,7 @@ import type { Log, LogDataDid } from '$lib/types/log';
 import { fromArray } from '$lib/utils/did.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { isNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const listLogs = async ({
@@ -42,7 +42,7 @@ export const listLogs = async ({
 		};
 	} catch (error: unknown) {
 		toasts.error({
-			text: `Cannot fetch logs.`,
+			text: labels.errors.cannot_fetch_logs,
 			detail: error
 		});
 
@@ -71,22 +71,13 @@ const functionLogs = async (params: {
 	> => {
 		const { message, data: msgData, level }: LogDataDid = await fromArray(data);
 
-		const msgDataArray = fromNullable(msgData);
-
 		return [
 			`[juno]-${key}`,
 			{
 				message,
-				level:
-					'error' in level
-						? 'error'
-						: 'warning' in level
-							? 'warning'
-							: 'debug' in level
-								? 'debug'
-								: 'info',
+				level,
 				timestamp,
-				...(nonNullish(msgDataArray) && { data: await fromArray(msgDataArray) })
+				...(nonNullish(msgData) && { data: await fromArray(msgData) })
 			}
 		];
 	};
@@ -113,7 +104,7 @@ const canisterLogs = async (params: {
 			`[ic]-${idx}`,
 			{
 				message: await blob.text(),
-				level: 'error',
+				level: 'Error',
 				timestamp
 			}
 		];

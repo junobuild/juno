@@ -1,9 +1,9 @@
-export type LogLevel = 'error' | 'warning' | 'debug' | 'info';
+export type LogLevel = 'Debug' | 'Info' | 'Warning' | 'Error';
 
 export interface LogDataDid {
 	message: string;
-	data: [] | [Uint8Array | number[]];
-	level: { error: null } | { warning: null } | { debug: null } | { info: null };
+	data: Uint8Array | number[] | undefined;
+	level: LogLevel;
 }
 
 export interface Log {

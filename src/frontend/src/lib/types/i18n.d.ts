@@ -342,6 +342,7 @@ interface I18nErrors {
 	invalid_cycles_to_transfer: string;
 	invalid_cycles_destination: string;
 	transfer_cycles: string;
+	cannot_fetch_logs: string;
 }
 
 interface I18nDocument {

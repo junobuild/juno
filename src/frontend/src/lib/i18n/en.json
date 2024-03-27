@@ -325,7 +325,8 @@
 		"transactions_export": "Unexpected error(s) while exporting the transactions.",
 		"invalid_cycles_to_transfer": "Invalid amount of cycles to transfer.",
 		"invalid_cycles_destination": "Invalid destination to transfer the cycles.",
-		"transfer_cycles": "Unexpected error(s) while transferring the cycles."
+		"transfer_cycles": "Unexpected error(s) while transferring the cycles.",
+		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs."
 	},
 	"document": {
 		"owner": "Owner",

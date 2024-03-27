@@ -1,16 +1,17 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store.js';
 	import type { Log } from '$lib/types/log';
+	import { i18nText } from '$lib/utils/i18n.utils';
 
 	export let log: Log;
 </script>
 
 <span
-	class:error={log.level === 'error'}
-	class:warning={log.level === 'warning'}
-	class:debug={log.level === 'debug'}
+	class:error={log.level === 'Error'}
+	class:warning={log.level === 'Warning'}
+	class:debug={log.level === 'Debug'}
 >
-	{$i18n.functions[log.level]}
+	{i18nText({ i18n: $i18n, labelKey: `functions.${log.level.toLowerCase()}` })}
 </span>
 
 <style lang="scss">

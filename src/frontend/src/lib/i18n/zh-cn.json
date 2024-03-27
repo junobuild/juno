@@ -325,7 +325,8 @@
 		"transactions_export": "导出事务时出现异常错误.",
 		"invalid_cycles_to_transfer": "转移 cycles 的数额无效.",
 		"invalid_cycles_destination": "转移 cycles 的目的地无效.",
-		"transfer_cycles": "转移 cycles 是出现异常错误."
+		"transfer_cycles": "转移 cycles 是出现异常错误.",
+		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs."
 	},
 	"document": {
 		"owner": "拥有者",

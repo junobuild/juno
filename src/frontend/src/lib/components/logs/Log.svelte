@@ -4,6 +4,8 @@
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
 	import LogLevel from '$lib/components/logs/LogLevel.svelte';
 	import type { Log } from '$lib/types/log';
+	import { nonNullish } from '@dfinity/utils';
+	import Json from '$lib/components/ui/Json.svelte';
 
 	export let log: Log;
 
@@ -23,7 +25,13 @@
 		<div class:expand>
 			{log.message}
 
-			<p class="info" class:expand>
+			{#if nonNullish(log.data)}
+				<p class="info" class:expand>
+					<Json json={log.data} />
+				</p>
+			{/if}
+
+			<p class="info hide-wide-screen" class:expand>
 				<LogLevel {log} /> | {formatToDate(log.timestamp)}
 			</p>
 		</div>
@@ -98,7 +106,7 @@
 		}
 
 		@include media.min-width(medium) {
-			&.expand {
+			&.hide-wide-screen.expand {
 				display: none;
 			}
 		}

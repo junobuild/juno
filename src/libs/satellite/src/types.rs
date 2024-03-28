@@ -149,7 +149,7 @@ pub mod memory {
 }
 
 pub mod hooks {
-    use crate::db::types::state::{DocAssert, DocContext, DocUpsert};
+    use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
     use crate::storage::types::store::Asset;
     use crate::Doc;
     use candid::{CandidType, Deserialize};
@@ -201,5 +201,8 @@ pub mod hooks {
     pub type OnDeleteManyAssetsContext = HookContext<Vec<Option<Asset>>>;
 
     /// A type alias for the context used in the `assert_set_doc` satellite hook.
-    pub type AssertSetDocContext = HookContext<DocContext<DocAssert>>;
+    pub type AssertSetDocContext = HookContext<DocContext<DocAssertSet>>;
+
+    /// A type alias for the context used in the `assert_delete_doc` satellite hook.
+    pub type AssertDeleteDocContext = HookContext<DocContext<DocAssertDelete>>;
 }

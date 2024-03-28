@@ -23,6 +23,7 @@ pub enum Hook {
     OnDeleteAsset,
     OnDeleteManyAssets,
     AssertSetDoc,
+    AssertDeleteDoc,
 }
 
 const CONTEXT_PARAM: &str = "context";
@@ -37,6 +38,7 @@ fn map_hook_name(hook: Hook) -> String {
         Hook::OnDeleteAsset => "juno_on_delete_asset".to_string(),
         Hook::OnDeleteManyAssets => "juno_on_delete_many_assets".to_string(),
         Hook::AssertSetDoc => "juno_assert_set_doc".to_string(),
+        Hook::AssertDeleteDoc => "juno_assert_delete_doc".to_string(),
     }
 }
 
@@ -50,6 +52,7 @@ fn map_hook_collections(hook: Hook) -> String {
         Hook::OnDeleteAsset => "juno_on_delete_asset_collections".to_string(),
         Hook::OnDeleteManyAssets => "juno_on_delete_many_assets_collections".to_string(),
         Hook::AssertSetDoc => "juno_assert_set_doc_collections".to_string(),
+        Hook::AssertDeleteDoc => "juno_assert_delete_doc_collections".to_string(),
     }
 }
 
@@ -63,6 +66,7 @@ fn map_hook_type(hook: &Hook) -> String {
         Hook::OnDeleteAsset => "OnDeleteAssetContext".to_string(),
         Hook::OnDeleteManyAssets => "OnDeleteManyAssetsContext".to_string(),
         Hook::AssertSetDoc => "AssertSetDocContext".to_string(),
+        Hook::AssertDeleteDoc => "AssertDeleteDocContext".to_string(),
     }
 }
 
@@ -94,10 +98,11 @@ fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<Token
         quote! { None }
     };
 
-    let hook_body = if matches!(hook, Hook::AssertSetDoc) {
-        parse_assert_hook(&signature, &hook_fn, &hook_param, &hook_param_type)
-    } else {
-        parse_on_hook(&signature, &hook_fn, &hook_param, &hook_param_type)
+    let hook_body = match hook {
+        Hook::AssertSetDoc | Hook::AssertDeleteDoc => {
+            parse_assert_hook(&signature, &hook_fn, &hook_param, &hook_param_type)
+        }
+        _ => parse_on_hook(&signature, &hook_fn, &hook_param, &hook_param_type),
     };
 
     let result = quote! {

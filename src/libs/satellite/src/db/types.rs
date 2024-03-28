@@ -2,7 +2,7 @@ pub mod state {
     use crate::rules::types::rules::Rules;
     use crate::types::core::{Blob, CollectionKey, Key};
     use crate::types::memory::Memory;
-    use crate::SetDoc;
+    use crate::{DelDoc, SetDoc};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::state::UserId;
@@ -59,9 +59,15 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct DocAssert {
+    pub struct DocAssertSet {
         pub current: Option<Doc>,
         pub proposed: SetDoc,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DocAssertDelete {
+        pub current: Option<Doc>,
+        pub proposed: DelDoc,
     }
 }
 
@@ -95,7 +101,7 @@ pub mod interface {
     ///   deletion consistency. This field is optional.
     ///
     /// `DelDoc` is used to provide deletion parameters when removing a document.
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct DelDoc {
         pub updated_at: Option<u64>,
     }

@@ -7,9 +7,9 @@ use crate::db::state::{
     insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Doc, DocAssert, DocContext, DocUpsert};
+use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
-use crate::hooks::invoke_assert_set_doc;
+use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::list::utils::list_values;
 use crate::memory::STATE;
 use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
@@ -182,7 +182,7 @@ fn set_doc_impl(
         &DocContext {
             key: key.clone(),
             collection: collection.clone(),
-            data: DocAssert {
+            data: DocAssertSet {
                 current: current_doc.clone(),
                 proposed: value.clone(),
             },
@@ -331,6 +331,18 @@ fn delete_doc_impl(
     assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
 
     assert_write_timestamp(&current_doc, value.updated_at)?;
+
+    invoke_assert_delete_doc(
+        &caller,
+        &DocContext {
+            key: key.clone(),
+            collection: collection.clone(),
+            data: DocAssertDelete {
+                current: current_doc.clone(),
+                proposed: value.clone(),
+            },
+        },
+    )?;
 
     delete_state_doc(&collection, &key, rule)
 }

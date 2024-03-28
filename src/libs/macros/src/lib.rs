@@ -249,3 +249,33 @@ pub fn on_delete_many_assets(attr: TokenStream, item: TokenStream) -> TokenStrea
 pub fn assert_set_doc(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::AssertSetDoc, attr, item)
 }
+
+/// The `assert_delete_doc` function is a procedural macro attribute for asserting conditions before deleting a document.
+/// It enables you to define custom validation logic to be executed prior to a document deletion.
+///
+/// Example:
+///
+/// ```rust
+/// #[assert_delete_doc]
+/// fn assert_delete_doc(context: AssertDeleteDocContext) -> Result<(), String> {
+///     // Your assertion logic here
+/// }
+/// ```
+///
+/// When no attributes are provided, the assertion logic is applied to any document delete within any collection.
+/// You can scope the assertion to a particular list of collections.
+///
+/// Example:
+/// ```rust
+/// #[assert_delete_doc(collections = ["demo"])]
+/// fn assert_delete_doc(context: AssertDeleteDocContext) -> Result<(), String> {
+///     // Your assertion logic here, specific to the "demo" collection
+/// }
+/// ```
+///
+/// The attributes accept a list of comma-separated collections. If the attribute array is left empty, the assertion will always be evaluated.
+///
+#[proc_macro_attribute]
+pub fn assert_delete_doc(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::AssertDeleteDoc, attr, item)
+}

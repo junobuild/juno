@@ -104,9 +104,9 @@ fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<Token
 
     let hook_body = match hook {
         Hook::AssertSetDoc | Hook::AssertDeleteDoc | Hook::AssertUploadAsset => {
-            parse_assert_hook(&signature, &hook_fn, &hook_param, &hook_param_type)
+            parse_assert_hook(signature, &hook_fn, &hook_param, &hook_param_type)
         }
-        _ => parse_on_hook(&signature, &hook_fn, &hook_param, &hook_param_type),
+        _ => parse_on_hook(signature, &hook_fn, &hook_param, &hook_param_type),
     };
 
     let result = quote! {

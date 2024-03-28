@@ -208,4 +208,7 @@ pub mod hooks {
 
     /// A type alias for the context used in the `assert_upload_asset` satellite hook.
     pub type AssertUploadAssetContext = HookContext<AssetAssertUpload>;
+
+    /// A type alias for the context used in the `assert_delete_asset` satellite hook.
+    pub type AssertDeleteAssetContext = HookContext<Asset>;
 }

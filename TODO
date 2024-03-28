@@ -1,0 +1,3 @@
+- ic_cdk::print
+- don't call hook on assert dapps
+- don't call hook on logs

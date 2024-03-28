@@ -309,3 +309,33 @@ pub fn assert_delete_doc(attr: TokenStream, item: TokenStream) -> TokenStream {
 pub fn assert_upload_asset(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::AssertUploadAsset, attr, item)
 }
+
+/// The `assert_delete_asset` function is a procedural macro attribute for asserting conditions before deleting an asset.
+/// It enables you to define custom validation logic to be executed prior to an asset being deleted.
+///
+/// Example:
+///
+/// ```rust
+/// #[assert_delete_asset]
+/// fn assert_delete_asset(context: AssertDeleteAssetContext) -> Result<(), String> {
+///     // Your assertion logic here
+/// }
+/// ```
+///
+/// When no attributes are provided, the assertion logic is applied to any asset deletion within any collection.
+/// You can scope the assertion to a particular list of collections.
+///
+/// Example:
+/// ```rust
+/// #[assert_delete_asset(collections = ["assets"])]
+/// fn juno_assert_delete_asset(context: AssertDeleteAssetContext) -> Result<(), String> {
+///     // Your assertion logic here, specific to the "assets" collection
+/// }
+/// ```
+///
+/// The attributes accept a list of comma-separated collections. If the attribute array is left empty, the assertion will always be evaluated.
+///
+#[proc_macro_attribute]
+pub fn assert_delete_asset(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::AssertDeleteAsset, attr, item)
+}

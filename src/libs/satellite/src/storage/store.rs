@@ -1,6 +1,6 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
-use crate::hooks::invoke_assert_upload_asset;
+use crate::hooks::{invoke_assert_delete_asset, invoke_assert_upload_asset};
 use crate::list::utils::list_values;
 use crate::memory::STATE;
 use crate::msg::{
@@ -368,6 +368,8 @@ fn delete_asset_impl(
             if !assert_permission(&rule.write, asset.key.owner, caller, controllers) {
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
+
+            invoke_assert_delete_asset(&caller, &asset)?;
 
             let deleted = delete_state_asset(collection, &full_path, rule);
             delete_runtime_certified_asset(&asset);

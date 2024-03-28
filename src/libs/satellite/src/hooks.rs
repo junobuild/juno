@@ -4,9 +4,9 @@ use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, Do
 use crate::rules::constants::ASSET_COLLECTION_KEY;
 use crate::storage::types::store::{Asset, AssetAssertUpload};
 use crate::types::hooks::{
-    AssertDeleteDocContext, AssertSetDocContext, AssertUploadAssetContext, OnDeleteAssetContext,
-    OnDeleteDocContext, OnDeleteManyAssetsContext, OnDeleteManyDocsContext, OnSetDocContext,
-    OnSetManyDocsContext, OnUploadAssetContext,
+    AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
+    AssertUploadAssetContext, OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext,
+    OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
 use crate::{CollectionKey, HookContext};
 #[allow(unused)]
@@ -41,8 +41,10 @@ extern "Rust" {
     fn juno_assert_delete_doc_collections() -> Option<Vec<String>>;
 
     fn juno_assert_upload_asset(context: AssertUploadAssetContext) -> Result<(), String>;
+    fn juno_assert_delete_asset(context: AssertDeleteAssetContext) -> Result<(), String>;
 
     fn juno_assert_upload_asset_collections() -> Option<Vec<String>>;
+    fn juno_assert_delete_asset_collections() -> Option<Vec<String>>;
 }
 
 #[allow(unused_variables)]
@@ -275,6 +277,32 @@ pub fn invoke_assert_upload_asset(
 
             if should_invoke_asset_hook(collections, &context.data.batch.key.collection) {
                 return juno_assert_upload_asset(context);
+            }
+        }
+    }
+
+    Ok(())
+}
+
+#[allow(dead_code, unused_variables)]
+pub fn invoke_assert_delete_asset(caller: &UserId, asset: &Asset) -> Result<(), String> {
+    #[cfg(feature = "assert_delete_asset")]
+    {
+        // We perform this check here for performance reason given that this callback might be called when the developer deletes any assets of the dapps
+        if is_asset_collection(&asset.key.collection) {
+            return Ok(());
+        }
+
+        let context: AssertDeleteAssetContext = AssertDeleteAssetContext {
+            caller: *caller,
+            data: asset.clone(),
+        };
+
+        unsafe {
+            let collections = juno_assert_delete_asset_collections();
+
+            if should_invoke_asset_hook(collections, &context.data.key.collection) {
+                return juno_assert_delete_asset(context);
             }
         }
     }

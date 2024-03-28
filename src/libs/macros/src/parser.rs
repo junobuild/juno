@@ -153,7 +153,6 @@ fn parse_on_hook(
                 Ok(_) => {}
                 Err(e) => {
                     let error = format!("{}", e);
-                    ic_cdk::print(&error);
                     ic_cdk::trap(&error);
                 }
             }

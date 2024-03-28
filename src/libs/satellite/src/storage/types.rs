@@ -57,6 +57,7 @@ pub mod state {
 
 pub mod store {
     use crate::storage::http::types::HeaderField;
+    use crate::storage::types::interface::CommitBatch;
     use crate::storage::types::state::FullPath;
     use crate::types::core::{Blob, CollectionKey};
     use candid::CandidType;
@@ -111,17 +112,25 @@ pub mod store {
         pub updated_at: u64,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Batch {
         pub key: AssetKey,
         pub expires_at: u64,
         pub encoding_type: Option<EncodingType>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct AssetAssertUpload {
+        pub current: Option<Asset>,
+        pub batch: Batch,
+        pub commit_batch: CommitBatch,
     }
 }
 
 pub mod interface {
     use candid::{CandidType, Deserialize};
     use ic_certification::Hash;
+    use serde::Serialize;
 
     use crate::storage::http::types::HeaderField;
     use crate::storage::types::state::FullPath;
@@ -155,7 +164,7 @@ pub mod interface {
         pub chunk_id: u128,
     }
 
-    #[derive(CandidType, Deserialize)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CommitBatch {
         pub batch_id: u128,
         pub headers: Vec<HeaderField>,

@@ -279,3 +279,33 @@ pub fn assert_set_doc(attr: TokenStream, item: TokenStream) -> TokenStream {
 pub fn assert_delete_doc(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::AssertDeleteDoc, attr, item)
 }
+
+/// The `assert_upload_asset` function is a procedural macro attribute for asserting conditions before committing the upload of an asset.
+/// It enables you to define custom validation logic to be executed prior to an asset being committed.
+///
+/// Example:
+///
+/// ```rust
+/// #[assert_upload_asset]
+/// fn assert_upload_asset(context: AssertUploadAssetContext) -> Result<(), String> {
+///     // Your assertion logic here
+/// }
+/// ```
+///
+/// When no attributes are provided, the assertion logic is applied to any asset upload within any collection.
+/// You can scope the assertion to a particular list of collections.
+///
+/// Example:
+/// ```rust
+/// #[assert_upload_asset(collections = ["assets"])]
+/// fn juno_assert_upload_asset(context: AssertUploadAssetContext) -> Result<(), String> {
+///     // Your assertion logic here, specific to the "assets" collection
+/// }
+/// ```
+///
+/// The attributes accept a list of comma-separated collections. If the attribute array is left empty, the assertion will always be evaluated.
+///
+#[proc_macro_attribute]
+pub fn assert_upload_asset(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::AssertUploadAsset, attr, item)
+}

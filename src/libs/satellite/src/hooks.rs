@@ -1,7 +1,7 @@
 #![allow(dead_code)]
 
 use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
-use crate::rules::constants::ASSET_COLLECTION_KEY;
+use crate::rules::constants::{ASSET_COLLECTION_KEY, LOG_COLLECTION_KEY};
 use crate::storage::types::store::{Asset, AssetAssertUpload};
 use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
@@ -165,6 +165,13 @@ pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
 pub fn invoke_on_delete_asset(caller: &UserId, asset: &Option<Asset>) {
     #[cfg(feature = "on_delete_asset")]
     {
+        // We perform this check here for performance reason in case this hook gets ever called when the developer deletes any assets of the dapps
+        if let Some(asset) = asset {
+            if is_asset_collection(&asset.key.collection) {
+                return;
+            }
+        }
+
         unsafe {
             let collections = juno_on_delete_asset_collections();
 
@@ -288,7 +295,7 @@ pub fn invoke_assert_upload_asset(
 pub fn invoke_assert_delete_asset(caller: &UserId, asset: &Asset) -> Result<(), String> {
     #[cfg(feature = "assert_delete_asset")]
     {
-        // We perform this check here for performance reason given that this callback might be called when the developer deletes any assets of the dapps
+        // We perform this check here for performance reason in case this hook gets ever called when the developer deletes any assets of the dapps
         if is_asset_collection(&asset.key.collection) {
             return Ok(());
         }
@@ -314,7 +321,8 @@ fn should_invoke_doc_hook<T>(
     collections: Option<Vec<String>>,
     context: &HookContext<DocContext<T>>,
 ) -> bool {
-    collections.map_or(true, |c| c.contains(&context.data.collection))
+    is_not_log_collection(&context.data.collection)
+        && collections.map_or(true, |c| c.contains(&context.data.collection))
 }
 
 fn filter_docs<T: Clone>(
@@ -323,12 +331,22 @@ fn filter_docs<T: Clone>(
 ) -> Vec<DocContext<T>> {
     docs.iter()
         .filter(|d| {
-            collections
-                .as_ref()
-                .map_or(true, |cols| cols.contains(&d.collection.to_string()))
+            is_not_log_collection(&d.collection.to_string())
+                && collections
+                    .as_ref()
+                    .map_or(true, |cols| cols.contains(&d.collection.to_string()))
         })
         .cloned() // Clone each matching DocContext
         .collect()
+}
+
+// Logs are set internally without calling hooks anyway, so this use case cannot happen at the time I wrote these lines, but I added those to prevent any unwanted issues in the future.
+fn is_log_collection(collection: &CollectionKey) -> bool {
+    collection == LOG_COLLECTION_KEY
+}
+
+fn is_not_log_collection(collection: &CollectionKey) -> bool {
+    !is_log_collection(collection)
 }
 
 fn should_invoke_asset_hook(collections: Option<Vec<String>>, collection: &CollectionKey) -> bool {

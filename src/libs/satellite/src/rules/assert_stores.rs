@@ -1,3 +1,4 @@
+use crate::get_doc_store;
 use crate::rules::constants::DEFAULT_DB_COLLECTIONS;
 use crate::rules::types::rules::Permission;
 use candid::Principal;
@@ -5,7 +6,6 @@ use ic_cdk::id;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::{principal_equal, principal_not_anonymous};
-use crate::get_doc_store;
 
 pub fn assert_permission(
     permission: &Permission,

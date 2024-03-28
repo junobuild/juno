@@ -1,11 +1,11 @@
 #![allow(dead_code)]
 
-use crate::db::types::state::{Doc, DocContext, DocUpsert};
+use crate::db::types::state::{Doc, DocAssert, DocContext, DocUpsert};
 use crate::rules::constants::ASSET_COLLECTION_KEY;
 use crate::storage::types::store::Asset;
 use crate::types::hooks::{
-    OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext, OnDeleteManyDocsContext,
-    OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
+    AssertSetDocContext, OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext,
+    OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
 use crate::{CollectionKey, HookContext};
 #[allow(unused)]
@@ -32,6 +32,10 @@ extern "Rust" {
     fn juno_on_upload_asset_collections() -> Option<Vec<String>>;
     fn juno_on_delete_asset_collections() -> Option<Vec<String>>;
     fn juno_on_delete_many_assets_collections() -> Option<Vec<String>>;
+
+    fn juno_assert_set_doc(context: AssertSetDocContext) -> Result<(), String>;
+
+    fn juno_assert_set_doc_collections() -> Option<Vec<String>>;
 }
 
 #[allow(unused_variables)]
@@ -192,6 +196,27 @@ pub fn invoke_on_delete_many_assets(caller: &UserId, assets: &[Option<Asset>]) {
             }
         }
     }
+}
+
+#[allow(unused_variables)]
+pub fn invoke_assert_set_doc(caller: &UserId, doc: &DocContext<DocAssert>) -> Result<(), String> {
+    #[cfg(feature = "assert_set_doc")]
+    {
+        let context: AssertSetDocContext = AssertSetDocContext {
+            caller: *caller,
+            data: doc.clone(),
+        };
+
+        unsafe {
+            let collections = juno_assert_set_doc_collections();
+
+            if should_invoke_doc_hook(collections, &context) {
+                return juno_assert_set_doc(context);
+            }
+        }
+    }
+
+    Ok(())
 }
 
 fn should_invoke_doc_hook<T>(

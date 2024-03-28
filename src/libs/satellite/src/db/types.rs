@@ -2,6 +2,7 @@ pub mod state {
     use crate::rules::types::rules::Rules;
     use crate::types::core::{Blob, CollectionKey, Key};
     use crate::types::memory::Memory;
+    use crate::SetDoc;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::state::UserId;
@@ -56,12 +57,18 @@ pub mod state {
         pub before: Option<Doc>,
         pub after: Doc,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DocAssert {
+        pub current: Option<Doc>,
+        pub proposed: SetDoc,
+    }
 }
 
 pub mod interface {
     use crate::types::core::Blob;
     use candid::CandidType;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
 
     /// Parameters for setting a document.
     ///
@@ -73,7 +80,7 @@ pub mod interface {
     /// - `description`: An optional `String` providing additional description for the document. This field is optional.
     ///
     /// `SetDoc` is used to provide parameters for setting or updating a document in the collection's store.
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct SetDoc {
         pub updated_at: Option<u64>,
         pub data: Blob,

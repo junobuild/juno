@@ -7,8 +7,9 @@ use crate::db::state::{
     insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Doc, DocContext, DocUpsert};
+use crate::db::types::state::{Doc, DocAssert, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
+use crate::hooks::invoke_assert_set_doc;
 use crate::list::utils::list_values;
 use crate::memory::STATE;
 use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
@@ -175,6 +176,18 @@ fn set_doc_impl(
     assert_write_timestamp(&current_doc, value.updated_at)?;
 
     assert_description_length(&value.description)?;
+
+    invoke_assert_set_doc(
+        &caller,
+        &DocContext {
+            key: key.clone(),
+            collection: collection.clone(),
+            data: DocAssert {
+                current: current_doc.clone(),
+                proposed: value.clone(),
+            },
+        },
+    )?;
 
     let now = time();
 

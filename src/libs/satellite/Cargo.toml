@@ -14,7 +14,7 @@ license-file = "LICENSE.md"
 targets = ["wasm32-unknown-unknown"]
 
 [features]
-default = ["on_set_doc", "on_set_many_docs", "on_delete_doc", "on_delete_many_docs", "on_upload_asset", "on_delete_asset", "on_delete_many_assets"]
+default = ["on_set_doc", "on_set_many_docs", "on_delete_doc", "on_delete_many_docs", "on_upload_asset", "on_delete_asset", "on_delete_many_assets", "assert_set_doc"]
 on_set_doc = []
 on_set_many_docs = []
 on_delete_doc = []
@@ -22,6 +22,7 @@ on_delete_many_docs = []
 on_upload_asset = []
 on_delete_asset = []
 on_delete_many_assets = []
+assert_set_doc = []
 
 [dependencies]
 candid.workspace = true

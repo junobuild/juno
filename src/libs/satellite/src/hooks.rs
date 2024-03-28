@@ -340,6 +340,7 @@ fn filter_docs<T: Clone>(
         .collect()
 }
 
+// Logs are set internally without calling hooks anyway, so this use case cannot happen at the time I wrote these lines, but I added those to prevent any unwanted issues in the future.
 fn is_log_collection(collection: &CollectionKey) -> bool {
     collection == LOG_COLLECTION_KEY
 }

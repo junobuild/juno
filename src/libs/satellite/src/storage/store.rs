@@ -1,5 +1,6 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
+use crate::hooks::{invoke_assert_delete_asset, invoke_assert_upload_asset};
 use crate::list::utils::list_values;
 use crate::memory::STATE;
 use crate::msg::{
@@ -44,7 +45,9 @@ use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use crate::storage::types::state::FullPath;
-use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, Batch, Chunk, EncodingType};
+use crate::storage::types::store::{
+    Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType,
+};
 use crate::storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
 use crate::types::core::{Blob, CollectionKey};
 use crate::types::list::{ListParams, ListResults};
@@ -366,6 +369,8 @@ fn delete_asset_impl(
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
+            invoke_assert_delete_asset(&caller, &asset)?;
+
             let deleted = delete_state_asset(collection, &full_path, rule);
             delete_runtime_certified_asset(&asset);
 
@@ -644,7 +649,7 @@ fn secure_commit_chunks(
                 return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
             }
 
-            commit_chunks(commit_batch, batch, &rule)
+            commit_chunks(caller, commit_batch, batch, &rule, &None)
         }
         Some(current) => {
             secure_commit_chunks_update(caller, controllers, commit_batch, batch, rule, current)
@@ -669,17 +674,15 @@ fn secure_commit_chunks_update(
         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
-    commit_chunks(commit_batch, batch, &rule)
+    commit_chunks(caller, commit_batch, batch, &rule, &Some(current))
 }
 
 fn commit_chunks(
-    CommitBatch {
-        chunk_ids,
-        batch_id,
-        headers,
-    }: CommitBatch,
+    caller: Principal,
+    commit_batch: CommitBatch,
     batch: &Batch,
     rule: &Rule,
+    current: &Option<Asset>,
 ) -> Result<Asset, String> {
     let now = time();
 
@@ -687,6 +690,21 @@ fn commit_chunks(
         clear_expired_batches();
         return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
     }
+
+    invoke_assert_upload_asset(
+        &caller,
+        &AssetAssertUpload {
+            current: current.clone(),
+            batch: batch.clone(),
+            commit_batch: commit_batch.clone(),
+        },
+    )?;
+
+    let CommitBatch {
+        chunk_ids,
+        batch_id,
+        headers,
+    } = commit_batch;
 
     // Collect all chunks
     let mut chunks: Vec<Chunk> = vec![];
@@ -734,11 +752,7 @@ fn commit_chunks(
         updated_at: now,
     };
 
-    if let Some(existing_asset) = get_state_asset(
-        &batch.clone().key.collection,
-        &batch.clone().key.full_path,
-        rule,
-    ) {
+    if let Some(existing_asset) = current {
         asset.encodings = existing_asset.encodings.clone();
         asset.created_at = existing_asset.created_at;
     }

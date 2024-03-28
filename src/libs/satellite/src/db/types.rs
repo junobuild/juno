@@ -2,6 +2,7 @@ pub mod state {
     use crate::rules::types::rules::Rules;
     use crate::types::core::{Blob, CollectionKey, Key};
     use crate::types::memory::Memory;
+    use crate::{DelDoc, SetDoc};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::state::UserId;
@@ -56,12 +57,24 @@ pub mod state {
         pub before: Option<Doc>,
         pub after: Doc,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DocAssertSet {
+        pub current: Option<Doc>,
+        pub proposed: SetDoc,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DocAssertDelete {
+        pub current: Option<Doc>,
+        pub proposed: DelDoc,
+    }
 }
 
 pub mod interface {
     use crate::types::core::Blob;
     use candid::CandidType;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
 
     /// Parameters for setting a document.
     ///
@@ -73,7 +86,7 @@ pub mod interface {
     /// - `description`: An optional `String` providing additional description for the document. This field is optional.
     ///
     /// `SetDoc` is used to provide parameters for setting or updating a document in the collection's store.
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct SetDoc {
         pub updated_at: Option<u64>,
         pub data: Blob,
@@ -88,7 +101,7 @@ pub mod interface {
     ///   deletion consistency. This field is optional.
     ///
     /// `DelDoc` is used to provide deletion parameters when removing a document.
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct DelDoc {
         pub updated_at: Option<u64>,
     }

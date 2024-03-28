@@ -149,8 +149,8 @@ pub mod memory {
 }
 
 pub mod hooks {
-    use crate::db::types::state::{DocContext, DocUpsert};
-    use crate::storage::types::store::Asset;
+    use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
+    use crate::storage::types::store::{Asset, AssetAssertUpload};
     use crate::Doc;
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::state::UserId;
@@ -199,4 +199,16 @@ pub mod hooks {
 
     /// A type alias for the context used in the `on_delete_many_assets` satellite hook.
     pub type OnDeleteManyAssetsContext = HookContext<Vec<Option<Asset>>>;
+
+    /// A type alias for the context used in the `assert_set_doc` satellite hook.
+    pub type AssertSetDocContext = HookContext<DocContext<DocAssertSet>>;
+
+    /// A type alias for the context used in the `assert_delete_doc` satellite hook.
+    pub type AssertDeleteDocContext = HookContext<DocContext<DocAssertDelete>>;
+
+    /// A type alias for the context used in the `assert_upload_asset` satellite hook.
+    pub type AssertUploadAssetContext = HookContext<AssetAssertUpload>;
+
+    /// A type alias for the context used in the `assert_delete_asset` satellite hook.
+    pub type AssertDeleteAssetContext = HookContext<Asset>;
 }

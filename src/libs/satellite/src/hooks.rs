@@ -1,11 +1,12 @@
 #![allow(dead_code)]
 
-use crate::db::types::state::{Doc, DocContext, DocUpsert};
+use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
 use crate::rules::constants::ASSET_COLLECTION_KEY;
-use crate::storage::types::store::Asset;
+use crate::storage::types::store::{Asset, AssetAssertUpload};
 use crate::types::hooks::{
-    OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext, OnDeleteManyDocsContext,
-    OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
+    AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
+    AssertUploadAssetContext, OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext,
+    OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
 use crate::{CollectionKey, HookContext};
 #[allow(unused)]
@@ -32,6 +33,18 @@ extern "Rust" {
     fn juno_on_upload_asset_collections() -> Option<Vec<String>>;
     fn juno_on_delete_asset_collections() -> Option<Vec<String>>;
     fn juno_on_delete_many_assets_collections() -> Option<Vec<String>>;
+
+    fn juno_assert_set_doc(context: AssertSetDocContext) -> Result<(), String>;
+    fn juno_assert_delete_doc(context: AssertDeleteDocContext) -> Result<(), String>;
+
+    fn juno_assert_set_doc_collections() -> Option<Vec<String>>;
+    fn juno_assert_delete_doc_collections() -> Option<Vec<String>>;
+
+    fn juno_assert_upload_asset(context: AssertUploadAssetContext) -> Result<(), String>;
+    fn juno_assert_delete_asset(context: AssertDeleteAssetContext) -> Result<(), String>;
+
+    fn juno_assert_upload_asset_collections() -> Option<Vec<String>>;
+    fn juno_assert_delete_asset_collections() -> Option<Vec<String>>;
 }
 
 #[allow(unused_variables)]
@@ -139,7 +152,7 @@ pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
         unsafe {
             let collections = juno_on_upload_asset_collections();
 
-            if should_invoke_asset_hook(collections, &context) {
+            if should_invoke_asset_hook(collections, &context.data.key.collection) {
                 set_timer(Duration::from_nanos(0), || {
                     juno_on_upload_asset(context);
                 });
@@ -194,6 +207,109 @@ pub fn invoke_on_delete_many_assets(caller: &UserId, assets: &[Option<Asset>]) {
     }
 }
 
+#[allow(unused_variables)]
+pub fn invoke_assert_set_doc(
+    caller: &UserId,
+    doc: &DocContext<DocAssertSet>,
+) -> Result<(), String> {
+    #[cfg(feature = "assert_set_doc")]
+    {
+        let context: AssertSetDocContext = AssertSetDocContext {
+            caller: *caller,
+            data: doc.clone(),
+        };
+
+        unsafe {
+            let collections = juno_assert_set_doc_collections();
+
+            if should_invoke_doc_hook(collections, &context) {
+                return juno_assert_set_doc(context);
+            }
+        }
+    }
+
+    Ok(())
+}
+
+#[allow(unused_variables)]
+pub fn invoke_assert_delete_doc(
+    caller: &UserId,
+    doc: &DocContext<DocAssertDelete>,
+) -> Result<(), String> {
+    #[cfg(feature = "assert_delete_doc")]
+    {
+        let context: AssertDeleteDocContext = AssertDeleteDocContext {
+            caller: *caller,
+            data: doc.clone(),
+        };
+
+        unsafe {
+            let collections = juno_assert_delete_doc_collections();
+
+            if should_invoke_doc_hook(collections, &context) {
+                return juno_assert_delete_doc(context);
+            }
+        }
+    }
+
+    Ok(())
+}
+
+#[allow(unused_variables)]
+pub fn invoke_assert_upload_asset(
+    caller: &UserId,
+    asset: &AssetAssertUpload,
+) -> Result<(), String> {
+    #[cfg(feature = "assert_upload_asset")]
+    {
+        // We perform this check here for performance reason given that this callback might be called when the developer deploys their frontend dapps
+        if is_asset_collection(&asset.batch.key.collection) {
+            return Ok(());
+        }
+
+        let context: AssertUploadAssetContext = AssertUploadAssetContext {
+            caller: *caller,
+            data: asset.clone(),
+        };
+
+        unsafe {
+            let collections = juno_assert_upload_asset_collections();
+
+            if should_invoke_asset_hook(collections, &context.data.batch.key.collection) {
+                return juno_assert_upload_asset(context);
+            }
+        }
+    }
+
+    Ok(())
+}
+
+#[allow(dead_code, unused_variables)]
+pub fn invoke_assert_delete_asset(caller: &UserId, asset: &Asset) -> Result<(), String> {
+    #[cfg(feature = "assert_delete_asset")]
+    {
+        // We perform this check here for performance reason given that this callback might be called when the developer deletes any assets of the dapps
+        if is_asset_collection(&asset.key.collection) {
+            return Ok(());
+        }
+
+        let context: AssertDeleteAssetContext = AssertDeleteAssetContext {
+            caller: *caller,
+            data: asset.clone(),
+        };
+
+        unsafe {
+            let collections = juno_assert_delete_asset_collections();
+
+            if should_invoke_asset_hook(collections, &context.data.key.collection) {
+                return juno_assert_delete_asset(context);
+            }
+        }
+    }
+
+    Ok(())
+}
+
 fn should_invoke_doc_hook<T>(
     collections: Option<Vec<String>>,
     context: &HookContext<DocContext<T>>,
@@ -215,12 +331,8 @@ fn filter_docs<T: Clone>(
         .collect()
 }
 
-fn should_invoke_asset_hook(
-    collections: Option<Vec<String>>,
-    context: &HookContext<Asset>,
-) -> bool {
-    is_not_asset_collection(&context.data.key.collection)
-        && collections.map_or(true, |c| c.contains(&context.data.key.collection))
+fn should_invoke_asset_hook(collections: Option<Vec<String>>, collection: &CollectionKey) -> bool {
+    is_not_asset_collection(collection) && collections.map_or(true, |c| c.contains(collection))
 }
 
 fn filter_assets(

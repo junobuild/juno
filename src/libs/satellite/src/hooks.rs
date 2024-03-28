@@ -165,7 +165,7 @@ pub fn invoke_upload_asset(caller: &UserId, asset: &Asset) {
 pub fn invoke_on_delete_asset(caller: &UserId, asset: &Option<Asset>) {
     #[cfg(feature = "on_delete_asset")]
     {
-        // We perform this check here for performance reason given that this callback might be called when the developer deletes any assets of the dapps
+        // We perform this check here for performance reason in case this hook gets ever called when the developer deletes any assets of the dapps
         if let Some(asset) = asset {
             if is_asset_collection(&asset.key.collection) {
                 return;
@@ -295,7 +295,7 @@ pub fn invoke_assert_upload_asset(
 pub fn invoke_assert_delete_asset(caller: &UserId, asset: &Asset) -> Result<(), String> {
     #[cfg(feature = "assert_delete_asset")]
     {
-        // We perform this check here for performance reason given that this callback might be called when the developer deletes any assets of the dapps
+        // We perform this check here for performance reason in case this hook gets ever called when the developer deletes any assets of the dapps
         if is_asset_collection(&asset.key.collection) {
             return Ok(());
         }

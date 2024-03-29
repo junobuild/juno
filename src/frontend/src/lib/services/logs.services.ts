@@ -31,13 +31,14 @@ export const listLogs = async ({
 	}
 
 	try {
-		const [fnLogs, icLogs] = await Promise.all([
-			functionLogs({ satelliteId, identity }),
-			canisterLogs({ canisterId: satelliteId, identity })
+		const [fnLogs] = await Promise.all([
+			functionLogs({ satelliteId, identity })
+			// TODO: IC logs are not available on mainnet yet
+			// canisterLogs({ canisterId: satelliteId, identity })
 		]);
 
 		return {
-			results: [...fnLogs, ...icLogs]
+			results: [...fnLogs]
 				.filter(([_, { level }]) => levels.includes(level))
 				.sort(([, { timestamp: aTimestamp }], [_, { timestamp: bTimestamp }]) =>
 					aTimestamp > bTimestamp ? (desc ? -1 : 1) : aTimestamp === bTimestamp ? 0 : desc ? 1 : -1

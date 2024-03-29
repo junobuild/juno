@@ -1,7 +1,7 @@
 import type { canister_log_record } from '$declarations/ic/ic.did';
 import type { Doc } from '$declarations/satellite/satellite.did';
 import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
-import { listDocs } from '$lib/api/satellites.api';
+import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -10,6 +10,7 @@ import { fromArray } from '$lib/utils/did.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
+import { compare } from 'semver';
 import { get } from 'svelte/store';
 
 export const listLogs = async ({
@@ -58,6 +59,15 @@ const functionLogs = async (params: {
 	satelliteId: Principal;
 	identity: Identity;
 }): Promise<[string, Log][]> => {
+	// TODO: load versions globally and use store value instead of fetching version again
+	const version = await satelliteVersion(params);
+
+	const logSupported = compare(version, '0.0.16') >= 0;
+
+	if (!logSupported) {
+		return [];
+	}
+
 	const { items: fnLogs } = await listDocs({
 		collection: '#log',
 		params: {

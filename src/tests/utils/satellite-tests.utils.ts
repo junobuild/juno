@@ -47,15 +47,18 @@ const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
 	});
 };
 
-export const WASM_PATH_V0_0_15 = resolve(process.cwd(), 'satellite-v0.0.15.wasm.gz');
+export const downloadSatellite = async (version: string) => {
+	const destination = resolve(process.cwd(), `satellite-v${version}.wasm.gz`);
 
-export const downloadSatelliteV0_0_15 = async () => {
-	if (existsSync(WASM_PATH_V0_0_15)) {
-		return;
+	if (existsSync(destination)) {
+		return destination;
 	}
 
 	const buffer = await downloadFromURL(
-		'https://github.com/junobuild/juno/releases/download/v0.0.26/satellite-v0.0.15.wasm.gz'
+		`https://cdn.juno.build/releases/satellite-v${version}.wasm.gz`
 	);
-	writeFileSync(WASM_PATH_V0_0_15, buffer);
+
+	writeFileSync(destination, buffer);
+
+	return destination;
 };

@@ -203,4 +203,33 @@ describe('satellite upgrade', () => {
 			{ timeout: 600000 }
 		);
 	});
+
+	describe('v0.0.16 -> v0.0.16', async () => {
+		beforeEach(async () => {
+			pic = await PocketIc.create();
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
+				idlFactory: idlFactorSatellite,
+				wasm: WASM_PATH,
+				arg: satelliteInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+		});
+
+		it('should keep users', async () => {
+			await initUsers();
+
+			const users = await initUsers();
+
+			await testUsers(users);
+
+			await upgrade();
+
+			await testUsers(users);
+		});
+	});
 });

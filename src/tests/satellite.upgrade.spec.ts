@@ -7,40 +7,33 @@ import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterEach, beforeEach, describe, expect } from 'vitest';
-import {
-	WASM_PATH,
-	WASM_PATH_V0_0_15,
-	downloadSatelliteV0_0_15,
-	satelliteInitArgs
-} from './utils/satellite-tests.utils';
+import { WASM_PATH, downloadSatellite, satelliteInitArgs } from './utils/satellite-tests.utils';
 
-describe('satellite upgrade v0.0.16', () => {
+describe('satellite upgrade', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
 
-	beforeEach(async () => {
-		pic = await PocketIc.create();
-
-		await downloadSatelliteV0_0_15();
-
-		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
-			wasm: WASM_PATH_V0_0_15,
-			arg: satelliteInitArgs(controller),
-			sender: controller.getPrincipal()
-		});
-
-		actor = c;
-		canisterId = cId;
-		actor.setIdentity(controller);
-	});
-
 	afterEach(async () => {
 		await pic?.tearDown();
 	});
+
+	const upgradeVersion = async (version: string) => {
+		// Prevent Error: Canister lxzze-o7777-77777-aaaaa-cai is rate limited because it executed too many instructions in the previous install_code messages. Please retry installation after several minutes.
+		for (let i = 0; i < 100; i++) {
+			await pic.tick();
+		}
+
+		const destination = await downloadSatellite(version);
+
+		await pic.upgradeCanister({
+			canisterId,
+			wasm: destination,
+			sender: controller.getPrincipal()
+		});
+	};
 
 	const upgrade = async () => {
 		// Prevent Error: Canister lxzze-o7777-77777-aaaaa-cai is rate limited because it executed too many instructions in the previous install_code messages. Please retry installation after several minutes.
@@ -98,58 +91,116 @@ describe('satellite upgrade v0.0.16', () => {
 		}
 	};
 
-	it('should still list users from heap', async () => {
-		await initUsers();
+	describe('v0.0.15 -> v0.0.16', async () => {
+		beforeEach(async () => {
+			pic = await PocketIc.create();
 
-		const users = await initUsers();
+			const destination = await downloadSatellite('0.0.15');
 
-		await testUsers(users);
-
-		await upgrade();
-
-		await testUsers(users);
-	});
-
-	it('should add users after upgrade and still list all users from heap', async () => {
-		await initUsers();
-
-		const users = await initUsers();
-
-		await testUsers(users);
-
-		await upgrade();
-
-		const moreUsers = await initUsers();
-
-		await testUsers([...users, ...moreUsers]);
-	});
-
-	it('should keep listing existing heap collections as such', async () => {
-		const { set_rule, list_rules } = actor;
-
-		await set_rule({ Db: null }, 'test', {
-			memory: toNullable({ Heap: null }),
-			updated_at: toNullable(),
-			max_size: toNullable(),
-			read: { Managed: null },
-			mutable_permissions: toNullable(),
-			write: { Managed: null },
-			max_capacity: toNullable()
-		});
-
-		const testCollection = async () => {
-			const [[collection, { memory }], _] = await list_rules({
-				Db: null
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
+				idlFactory: idlFactorSatellite,
+				wasm: destination,
+				arg: satelliteInitArgs(controller),
+				sender: controller.getPrincipal()
 			});
 
-			expect(collection).toEqual('test');
-			expect(memory).toEqual(toNullable({ Heap: null }));
-		};
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+		});
 
-		await testCollection();
+		it('should add users after upgrade and still list all users from heap', async () => {
+			await initUsers();
 
-		await upgrade();
+			const users = await initUsers();
 
-		await testCollection();
+			await testUsers(users);
+
+			await upgrade();
+
+			const moreUsers = await initUsers();
+
+			await testUsers([...users, ...moreUsers]);
+		});
+
+		it('should keep listing existing heap collections as such', async () => {
+			const { set_rule, list_rules } = actor;
+
+			await set_rule({ Db: null }, 'test', {
+				memory: toNullable({ Heap: null }),
+				updated_at: toNullable(),
+				max_size: toNullable(),
+				read: { Managed: null },
+				mutable_permissions: toNullable(),
+				write: { Managed: null },
+				max_capacity: toNullable()
+			});
+
+			const testCollection = async () => {
+				const [[collection, { memory }], _] = await list_rules({
+					Db: null
+				});
+
+				expect(collection).toEqual('test');
+				expect(memory).toEqual(toNullable({ Heap: null }));
+			};
+
+			await testCollection();
+
+			await upgrade();
+
+			await testCollection();
+		});
+	});
+
+	describe('v0.0.11 -> v0.0.16', async () => {
+		beforeEach(async () => {
+			pic = await PocketIc.create();
+
+			const destination = await downloadSatellite('0.0.11');
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
+				idlFactory: idlFactorSatellite,
+				wasm: destination,
+				arg: satelliteInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+		});
+
+		it(
+			'should still list users from heap',
+			async () => {
+				await initUsers();
+
+				const users = await initUsers();
+
+				await testUsers(users);
+
+				await upgradeVersion('0.0.12');
+
+				await testUsers(users);
+
+				await upgradeVersion('0.0.13');
+
+				await testUsers(users);
+
+				await upgradeVersion('0.0.14');
+
+				await testUsers(users);
+
+				await upgradeVersion('0.0.15');
+
+				await testUsers(users);
+
+				await upgrade();
+
+				await testUsers(users);
+			},
+			{ timeout: 600000 }
+		);
 	});
 });

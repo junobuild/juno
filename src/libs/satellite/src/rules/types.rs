@@ -22,8 +22,9 @@ pub mod rules {
 
     #[derive(CandidType, Serialize, Deserialize, Default, Clone, Debug)]
     pub enum Memory {
-        Heap,
+        // Backwards compatibility for historical reason. If we do not keep Heap as default, data of Satellites with users and other collections on Heap will not get migrated.
         #[default]
+        Heap,
         Stable,
     }
 

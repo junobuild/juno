@@ -779,7 +779,7 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
 name = "junobuild-macros"
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -793,7 +793,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.15-patch.3"
+version = "0.0.16"
 dependencies = [
  "base64 0.13.1",
  "candid",
@@ -822,7 +822,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.0.13"
+version = "0.0.14"
 dependencies = [
  "candid",
  "ciborium",

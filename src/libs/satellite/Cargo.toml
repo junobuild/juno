@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-satellite"
-version = "0.0.15-patch.3"
+version = "0.0.16"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -49,5 +49,5 @@ ic-stable-structures = "0.6.3"
 ciborium = "0.2.1"
 getrandom = { version = "0.2", features = ["custom"] }
 rand = { version = "0.8.5", features = ["getrandom"]}
-junobuild-shared = "0.0.13"
+junobuild-shared = "0.0.14"
 junobuild-utils = "0.0.1"

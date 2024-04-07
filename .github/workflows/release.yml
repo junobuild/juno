@@ -52,6 +52,7 @@ jobs:
       - name: Build ${{ matrix.name }}
         uses: docker/build-push-action@v5
         with:
+          context: .
           file: Dockerfile
           cache-from: type=gha,scope=cached-stage
           # Exports the artefacts from the final stage

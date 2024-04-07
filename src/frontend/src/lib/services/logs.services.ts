@@ -71,6 +71,7 @@ const functionLogs = async (params: {
 	const { items: fnLogs } = await listDocs({
 		collection: '#log',
 		params: {
+			limit: 100n,
 			filter: {},
 			order: {
 				desc: true,

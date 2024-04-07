@@ -18,6 +18,7 @@ export const satelliteName = ({ metadata }: Satellite): string => metadataName(m
 
 export const toListParams = ({
 	startAfter,
+	limit = PAGINATION,
 	order,
 	filter: { matcher, owner }
 }: ListParams): ListParamsApi => ({
@@ -33,7 +34,7 @@ export const toListParams = ({
 	paginate: [
 		{
 			start_after: toNullable(startAfter),
-			limit: [PAGINATION]
+			limit: [limit]
 		}
 	],
 	order: [

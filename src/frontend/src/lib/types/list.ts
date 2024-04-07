@@ -18,6 +18,7 @@ export interface ListFilter {
 
 export interface ListParams {
 	startAfter?: string;
+	limit?: bigint;
 	order: ListOrder;
 	filter: ListFilter;
 }

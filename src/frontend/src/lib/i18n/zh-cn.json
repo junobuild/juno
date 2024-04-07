@@ -39,7 +39,7 @@
 		"more": "更多选项",
 		"are_you_sure": "你确定？这个操作无法恢复",
 		"attach": "附加",
-		"refresh": "Refresh"
+		"refresh": "刷新"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -56,7 +56,7 @@
 		"upgrade_description": "你的 {0} 将会升级到版本 <strong>v{1}</strong>.",
 		"more_upgrade": "这个升级后，还会有 {0} 个.",
 		"upgrade_note": "一共有 {0} 升级包为你的 {1}.升级应该按顺序执行, 从小版本开始依次向上升级. 这个过程会引导你升级到适配的版本. 重复这个流程直到你的 {2} 为最新版本.",
-		"upgrade_confirm": "Your {0} appears to be an <strong>extended</strong> build. Upgrading to the <strong>stock</strong> version will remove any custom features you have developed. Are you sure you want to continue?",
+		"upgrade_confirm": "你的 {0} 是<strong>扩展</strong>版本，升级为<strong>默认</strong>版本会丢失所有定制开发的功能，你确定要继续吗？",
 		"additional_cycles": "额外 Cycles",
 		"top_up_info": "你当前的 mission control 余额是 {0} ICP,以及用于充值网络费用是 {1} ICP.",
 		"top_up_mission_control_done": "充值你的 mission control center 完成.",
@@ -125,8 +125,8 @@
 		"loading_satellites": "加载你的satellites",
 		"overview": "概要",
 		"id": "Satellite ID",
-		"stock_version": "Stock version",
-		"extended_version": "Extended version",
+		"stock_version": "默认版本",
+		"extended_version": "扩展版本",
 		"build": "Build"
 	},
 	"mission_control": {
@@ -206,7 +206,7 @@
 		"mobile": "移动端",
 		"desktop": "桌面",
 		"others": "其他",
-		"browsers": "Browsers",
+		"browsers": "浏览器",
 		"attach": "附加已有的 Analytics",
 		"attach_id": "输入 Orbiter ID"
 	},
@@ -241,22 +241,22 @@
 		"files_deployed": "文件已经部署"
 	},
 	"functions": {
-		"title": "Functions",
-		"logs": "Logs",
-		"timestamp": "Timestamp",
-		"level": "Level",
-		"info": "Info",
-		"debug": "Debug",
-		"warning": "Warning",
-		"error": "Error",
-		"message": "Message",
-		"empty": "No logs collected.",
-		"expand": "Expand message",
-		"loading_logs": "Loading logs...",
-		"sort": "Sort:",
-		"levels": "Levels:",
-		"auto_refresh_enabled": "Auto refresh (1min)",
-		"auto_refresh_disabled": "Auto refresh disabled"
+		"title": "功能",
+		"logs": "日志",
+		"timestamp": "时间戳",
+		"level": "级别",
+		"info": "信息",
+		"debug": "调试",
+		"warning": "警告",
+		"error": "错误",
+		"message": "消息",
+		"empty": "没有日志.",
+		"expand": "扩展消息",
+		"loading_logs": "加载日志...",
+		"sort": "排序:",
+		"levels": "级别:",
+		"auto_refresh_enabled": "自动刷新 (1分钟)",
+		"auto_refresh_disabled": "自动刷新未启用"
 	},
 	"cli": {
 		"title": "授权命令行",
@@ -329,7 +329,7 @@
 		"invalid_cycles_to_transfer": "转移 cycles 的数额无效.",
 		"invalid_cycles_destination": "转移 cycles 的目的地无效.",
 		"transfer_cycles": "转移 cycles 是出现异常错误.",
-		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs."
+		"cannot_fetch_logs": "获取日志出现异常错误."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -413,13 +413,13 @@
 		"write_permission": "写入权限",
 		"max_size": "大小上限控制",
 		"max_size_placeholder": "以bytes为单位最大值",
-		"max_capacity": "Max capacity",
-		"max_capacity_placeholder": "Max number of documents within the collection",
+		"max_capacity": "最大容许范围",
+		"max_capacity_placeholder": "在当前文档集中文档数量最大值",
 		"public": "公开",
 		"private": "私有",
 		"managed": "可管理的",
 		"controllers": "控制者",
-		"empty": "你的文档集 <strong>{0}</strong> is empty.",
+		"empty": "你的文档集 <strong>{0}</strong> 为空.",
 		"empty_private": "你的文档集 <strong>{0}</strong> 读权限设置为私有.",
 		"added": "文档集 {0} 已曾加.",
 		"updated": "文档集 {0} 已更改.",
@@ -484,7 +484,7 @@
 		"examples": "例子",
 		"tutorial_framework_description": "用 Juno 和 {0}.",
 		"tutorial_github_description": "用 GitHub Actions 发布.",
-		"tutorial_docker_description": "Run a Satellite in a Docker sandbox.",
+		"tutorial_docker_description": "在Docker沙箱中运行 Satellite.",
 		"example_1_title": "Svelte",
 		"example_1_description": "一个用 Juno datastore and authentication 简单应用.",
 		"example_2_title": "React",
@@ -502,7 +502,7 @@
 		"example_8_title": "Next.JS",
 		"example_8_description": "用Next开发的类似 React 应用示例.",
 		"example_9_title": "Rust",
-		"example_9_description": "An example of a hook that updates a document in serverless functions."
+		"example_9_description": "用hook演示如何在在无服务架构功能中更新文档."
 	},
 	"resources": {
 		"product": "产品",

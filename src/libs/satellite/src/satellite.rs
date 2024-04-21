@@ -20,7 +20,7 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::rules::upgrade::{init_custom_domains, init_log_collection};
+use crate::rules::upgrade::init_custom_domains;
 use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
 use crate::storage::http::response::{
     build_asset_response, build_redirect_response, error_response,
@@ -126,9 +126,6 @@ pub fn post_upgrade() {
 
     defer_init_certified_assets();
     defer_init_random_seed();
-
-    // TODO: to be removed - one time upgrade!
-    init_log_collection();
 }
 
 ///
@@ -252,7 +249,7 @@ pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
 
 pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
     match rules_type {
-        RulesType::Db => set_rule_db(collection, rule, true).unwrap_or_else(|e| trap(&e)),
+        RulesType::Db => set_rule_db(collection, rule).unwrap_or_else(|e| trap(&e)),
         RulesType::Storage => set_rule_storage(collection, rule).unwrap_or_else(|e| trap(&e)),
     }
 }

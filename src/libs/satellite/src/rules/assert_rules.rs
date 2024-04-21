@@ -74,8 +74,6 @@ pub fn assert_write_permission(
     collection: &CollectionKey,
     current_rule: Option<&Rule>,
     updated_at: &Option<u64>,
-    // TODO: to be removed
-    validate_collection_prefix: bool,
 ) -> Result<(), String> {
     // Validate timestamp
     match current_rule {
@@ -88,7 +86,7 @@ pub fn assert_write_permission(
         },
     }
 
-    if validate_collection_prefix && collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) {
+    if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) {
         return Err(format!(
             "Collection starts with {}, a reserved prefix",
             SYS_COLLECTION_PREFIX

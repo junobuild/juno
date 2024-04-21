@@ -111,11 +111,17 @@ pub fn delete_asset_store(
 pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
+    let excluded_paths = vec![BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string()];
+
+    let should_include_asset =
+        |asset_path: &String| collection != "#dapp" || !excluded_paths.contains(asset_path);
+
     let full_paths = match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
             get_assets_heap(collection, &state_ref.heap.storage.assets)
                 .iter()
+                .filter(|(_, asset)| should_include_asset(&asset.key.full_path))
                 .map(|(_, asset)| asset.key.full_path.clone())
                 .collect()
         }),
@@ -123,6 +129,7 @@ pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
             let stable = get_assets_stable(collection, &state.borrow().stable.assets);
             stable
                 .iter()
+                .filter(|(_, asset)| should_include_asset(&asset.key.full_path))
                 .map(|(_, asset)| asset.key.full_path.clone())
                 .collect()
         }),

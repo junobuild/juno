@@ -1,7 +1,7 @@
 use crate::memory::STATE;
 use crate::rules::constants::{DEFAULT_DB_LOG_RULE, LOG_COLLECTION_KEY};
 use crate::rules::store::set_rule_db;
-use crate::storage::store::update_custom_domains_asset;
+use crate::storage::store::{get_custom_domains_store, update_custom_domains_asset};
 
 /// One time upgrade
 /// TODO: to be removed. Remove validate_collection_prefix at the same time.
@@ -21,5 +21,9 @@ pub fn init_log_collection() {
 
 // Re-init custom domains for those who have run juno clear before bug #484 was fixed.
 pub fn init_custom_domains() {
-    let _ = update_custom_domains_asset();
+    let custom_domains = get_custom_domains_store();
+
+    if !custom_domains.is_empty() {
+        let _ = update_custom_domains_asset();
+    }
 }

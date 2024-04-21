@@ -1,6 +1,7 @@
 #![doc = include_str!("../README.md")]
 
 mod assert;
+mod auth;
 mod constants;
 mod controllers;
 mod db;
@@ -21,7 +22,7 @@ use crate::constants::SATELLITE_VERSION;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::storage::types::domain::{CustomDomains, DomainName};
+use crate::storage::types::domain::CustomDomains;
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
@@ -54,6 +55,7 @@ pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };
 use crate::storage::types::state::FullPath;
+use crate::types::core::DomainName;
 pub use crate::types::core::{Blob, CollectionKey, Key};
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,

@@ -263,11 +263,11 @@ pub mod http_request {
 }
 
 pub mod domain {
+    use crate::types::core::DomainName;
     use candid::CandidType;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
-    pub type DomainName = String;
     pub type CustomDomains = HashMap<DomainName, CustomDomain>;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

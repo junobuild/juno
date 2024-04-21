@@ -37,7 +37,7 @@ use crate::storage::store::{
     get_public_asset_store, list_assets_store, set_config_store as set_storage_config,
     set_domain_store,
 };
-use crate::storage::types::domain::{CustomDomains, DomainName};
+use crate::storage::types::domain::CustomDomains;
 use crate::storage::types::http_request::{
     Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
 };
@@ -47,7 +47,7 @@ use crate::storage::types::interface::{
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::upgrade::defer_init_certified_assets;
-use crate::types::core::{CollectionKey, Key};
+use crate::types::core::{CollectionKey, DomainName, Key};
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListParams;
 use crate::types::list::ListResults;

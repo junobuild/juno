@@ -20,7 +20,7 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::rules::upgrade::init_log_collection;
+use crate::rules::upgrade::{init_custom_domains, init_log_collection};
 use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
 use crate::storage::http::response::{
     build_asset_response, build_redirect_response, error_response,
@@ -120,6 +120,9 @@ pub fn post_upgrade() {
     let state = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
+
+    // TODO: to be removed - one time upgrade!
+    init_custom_domains();
 
     defer_init_certified_assets();
     defer_init_random_seed();

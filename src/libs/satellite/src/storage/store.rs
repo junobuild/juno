@@ -864,7 +864,7 @@ fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(
     update_custom_domains_asset()
 }
 
-fn update_custom_domains_asset() -> Result<(), String> {
+pub fn update_custom_domains_asset() -> Result<(), String> {
     let custom_domains = get_custom_domains_as_content();
 
     let full_path = BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string();

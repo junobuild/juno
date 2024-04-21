@@ -322,7 +322,7 @@ describe('Satellite storage', () => {
 			});
 
 			it('should throw error if try to upload ic-domains', async () => {
-				const { http_request, commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+				const { init_asset_upload } = actor;
 
 				await expect(
 					init_asset_upload({
@@ -376,8 +376,7 @@ describe('Satellite storage', () => {
 				});
 
 				it('should throw error if path not prefixed with collection', async () => {
-					const { http_request, commit_asset_upload, upload_asset_chunk, init_asset_upload } =
-						actor;
+					const { init_asset_upload } = actor;
 
 					await expect(
 						init_asset_upload({

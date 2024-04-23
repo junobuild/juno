@@ -18,6 +18,7 @@ mod satellite;
 mod storage;
 mod types;
 
+use crate::auth::types::state::AuthenticationConfig;
 use crate::constants::SATELLITE_VERSION;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::rules::types::interface::{DelRule, SetRule};
@@ -225,6 +226,22 @@ pub fn del_custom_domain(domain_name: DomainName) {
 }
 
 ///
+/// Authentication config
+///
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_auth_config(config: AuthenticationConfig) {
+    satellite::set_auth_config(config);
+}
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn get_auth_config() -> Option<AuthenticationConfig> {
+    satellite::get_auth_config()
+}
+
+///
 /// Http
 ///
 
@@ -351,11 +368,11 @@ macro_rules! include_satellite {
         use junobuild_satellite::{
             commit_asset_upload, count_assets, count_docs, del_asset, del_assets, del_controllers,
             del_custom_domain, del_doc, del_docs, del_many_assets, del_many_docs, del_rule,
-            deposit_cycles, get_asset, get_config, get_doc, get_many_assets, get_many_docs,
-            http_request, http_request_streaming_callback, init, init_asset_upload, list_assets,
-            list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
-            post_upgrade, pre_upgrade, set_config, set_controllers, set_custom_domain, set_doc,
-            set_many_docs, set_rule, upload_asset_chunk, version,
+            deposit_cycles, get_asset, get_auth_config, get_config, get_doc, get_many_assets,
+            get_many_docs, http_request, http_request_streaming_callback, init, init_asset_upload,
+            list_assets, list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
+            post_upgrade, pre_upgrade, set_auth_config, set_config, set_controllers,
+            set_custom_domain, set_doc, set_many_docs, set_rule, upload_asset_chunk, version,
         };
 
         #[ic_cdk::query]

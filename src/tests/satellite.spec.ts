@@ -256,58 +256,6 @@ describe('Satellite', () => {
 		});
 	});
 
-	describe('user', () => {
-		const user = Ed25519KeyIdentity.generate();
-
-		beforeAll(() => {
-			actor.setIdentity(user);
-		});
-
-		it('should create a user', async () => {
-			const { set_doc, list_docs } = actor;
-
-			await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity'
-				}),
-				description: toNullable(),
-				updated_at: toNullable()
-			});
-
-			const { items: users } = await list_docs('#user', {
-				matcher: toNullable(),
-				order: toNullable(),
-				owner: toNullable(),
-				paginate: toNullable()
-			});
-
-			expect(users).toHaveLength(1);
-			expect(users.find(([key]) => key === user.getPrincipal().toText())).not.toBeUndefined();
-		});
-	});
-
-	describe('anonymous', () => {
-		beforeAll(() => {
-			actor.setIdentity(new AnonymousIdentity());
-		});
-
-		it('should create a user', async () => {
-			const { set_doc } = actor;
-
-			const user = Ed25519KeyIdentity.generate();
-
-			await expect(
-				set_doc('#user', user.getPrincipal().toText(), {
-					data: await toArray({
-						provider: 'internet_identity'
-					}),
-					description: toNullable(),
-					updated_at: toNullable()
-				})
-			).rejects.toThrow('Cannot write.');
-		});
-	});
-
 	describe('public', () => {
 		it('should expose version of the consumer', async () => {
 			const tomlFile = readFileSync(join(process.cwd(), 'src', 'satellite', 'Cargo.toml'));

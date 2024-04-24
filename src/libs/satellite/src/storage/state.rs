@@ -3,13 +3,13 @@ use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::StorageConfig;
-use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
+use crate::storage::types::domain::{CustomDomain, CustomDomains};
 use crate::storage::types::state::{
     AssetsHeap, AssetsStable, ContentChunksStable, FullPath, StableEncodingChunkKey, StableKey,
     StorageHeapState,
 };
 use crate::storage::types::store::{Asset, AssetEncoding};
-use crate::types::core::{Blob, CollectionKey};
+use crate::types::core::{Blob, CollectionKey, DomainName};
 use crate::types::state::StableState;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use std::borrow::Cow;

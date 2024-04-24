@@ -12,3 +12,4 @@ pub mod types;
 pub mod upgrade;
 mod url;
 mod utils;
+pub mod well_known;

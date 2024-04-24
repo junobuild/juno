@@ -1,3 +1,7 @@
+use crate::auth::authentication::{
+    get_config as get_authentication_config, set_config as set_authentication_config,
+};
+use crate::auth::types::state::AuthenticationConfig;
 use crate::controllers::store::get_admin_controllers;
 use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
@@ -37,7 +41,7 @@ use crate::storage::store::{
     get_public_asset_store, list_assets_store, set_config_store as set_storage_config,
     set_domain_store,
 };
-use crate::storage::types::domain::{CustomDomains, DomainName};
+use crate::storage::types::domain::CustomDomains;
 use crate::storage::types::http_request::{
     Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
 };
@@ -47,7 +51,7 @@ use crate::storage::types::interface::{
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::upgrade::defer_init_certified_assets;
-use crate::types::core::{CollectionKey, Key};
+use crate::types::core::{CollectionKey, DomainName, Key};
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListParams;
 use crate::types::list::ListResults;
@@ -330,6 +334,18 @@ pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
 
 pub fn del_custom_domain(domain_name: DomainName) {
     delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
+}
+
+///
+/// Authentication config
+///
+
+pub fn set_auth_config(config: AuthenticationConfig) {
+    set_authentication_config(&config).unwrap_or_else(|e| trap(&e));
+}
+
+pub fn get_auth_config() -> Option<AuthenticationConfig> {
+    get_authentication_config()
 }
 
 ///

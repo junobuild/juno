@@ -77,6 +77,7 @@ impl Default for HeapState {
             controllers: Controllers::default(),
             db,
             storage,
+            authentication: None,
         }
     }
 }

@@ -1,4 +1,5 @@
 pub mod state {
+    use crate::auth::types::state::AuthenticationHeapState;
     use crate::db::types::state::{DbHeapState, DbStable};
     use crate::memory::init_stable_state;
     use crate::storage::types::state::{
@@ -34,6 +35,7 @@ pub mod state {
         pub controllers: Controllers,
         pub db: DbHeapState,
         pub storage: StorageHeapState,
+        pub authentication: Option<AuthenticationHeapState>,
     }
 
     #[derive(Default, Clone)]
@@ -67,6 +69,22 @@ pub mod core {
     /// This type, `Blob`, is an alias for `Vec<u8>`, providing a convenient way to represent binary data
     /// as a collection of bytes.
     pub type Blob = Vec<u8>;
+
+    /// Represents the domain name used in various configurations across the satellite.
+    ///
+    /// This type alias simplifies the reuse of `String` for domain names, providing a clear and
+    /// specific semantic meaning when used in structs and function signatures. It is used to
+    /// identify domains for authentication, custom domains, and potentially more areas where
+    /// domain names are needed.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// let main_domain: DomainName = "example.com".to_string();
+    /// ```
+    pub type DomainName = String;
 
     pub trait Compare {
         fn cmp_updated_at(&self, other: &Self) -> Ordering;

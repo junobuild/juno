@@ -23,19 +23,16 @@ fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), Strin
         .internet_identity
         .as_ref()
         .and_then(|config| config.authentication_domain.as_ref())
-        .map_or_else(
-            || delete_alternative_origins_asset(),
-            |domain| {
-                let json = to_string(&AlternativeOrigins {
-                    alternative_origins: vec![domain.clone()],
-                })
-                .map_err(|_| {
-                    "Cannot convert domain to II alternative origins JSON data.".to_string()
-                })?;
+        .map_or_else(delete_alternative_origins_asset, |domain| {
+            let json = to_string(&AlternativeOrigins {
+                alternative_origins: vec![domain.clone()],
+            })
+            .map_err(|_| {
+                "Cannot convert domain to II alternative origins JSON data.".to_string()
+            })?;
 
-                update_alternative_origins_asset(&json)
-            },
-        )
+            update_alternative_origins_asset(&json)
+        })
 }
 
 pub fn get_config() -> Option<AuthenticationConfig> {

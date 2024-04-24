@@ -1,5 +1,5 @@
-use crate::auth::store::{
-    get_config_store as get_authentication_config, set_config_store as set_authentication_config,
+use crate::auth::authentication::{
+    get_config as get_authentication_config, set_config as set_authentication_config,
 };
 use crate::auth::types::state::AuthenticationConfig;
 use crate::controllers::store::get_admin_controllers;
@@ -344,7 +344,7 @@ pub fn del_custom_domain(domain_name: DomainName) {
 ///
 
 pub fn set_auth_config(config: AuthenticationConfig) {
-    set_authentication_config(&config);
+    set_authentication_config(&config).unwrap_or_else(|e| trap(&e));
 }
 
 pub fn get_auth_config() -> Option<AuthenticationConfig> {

@@ -64,6 +64,23 @@ describe('Satellite storage', () => {
 			expect(result).toEqual([config]);
 		});
 
+		it('should expose /.well-known/ii-alternative-origins', async () => {
+			const { http_request } = actor;
+
+			const { body } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/.well-known/ii-alternative-origins'
+			});
+
+			const decoder = new TextDecoder();
+			const responseBody = decoder.decode(body as ArrayBuffer);
+			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins: ['domain.com'] }));
+			expect(JSON.parse(responseBody).alternativeOrigins).toEqual(['domain.com']);
+		});
+
 		it('should set config auth domain to none', async () => {
 			const { set_auth_config, get_auth_config } = actor;
 
@@ -81,6 +98,20 @@ describe('Satellite storage', () => {
 			expect(result).toEqual([config]);
 		});
 
+		it('should not expose /.well-known/ii-alternative-origins', async () => {
+			const { http_request } = actor;
+
+			const { status_code } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/.well-known/ii-alternative-origins'
+			});
+
+			expect(status_code).toBe(404);
+		});
+
 		it('should set config for ii to none', async () => {
 			const { set_auth_config, get_auth_config } = actor;
 
@@ -92,6 +123,20 @@ describe('Satellite storage', () => {
 
 			const result = await get_auth_config();
 			expect(result).toEqual([config]);
+		});
+
+		it('should not expose /.well-known/ii-alternative-origins if the all config as been deleted as well', async () => {
+			const { http_request } = actor;
+
+			const { status_code } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/.well-known/ii-alternative-origins'
+			});
+
+			expect(status_code).toBe(404);
 		});
 	});
 

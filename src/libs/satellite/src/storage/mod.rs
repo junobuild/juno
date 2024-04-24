@@ -1,6 +1,5 @@
 mod certification;
 pub mod constants;
-mod custom_domains;
 pub mod http;
 pub mod impls;
 pub mod rewrites;

@@ -1,6 +1,6 @@
 use crate::auth::state::{get_config as get_state_config, insert_config as insert_state_config};
 use crate::auth::types::state::AuthenticationConfig;
-use crate::storage::well_known::{
+use crate::storage::well_known::update::{
     delete_alternative_origins_asset, update_alternative_origins_asset,
 };
 use serde::{Deserialize, Serialize};

@@ -48,7 +48,7 @@ use crate::storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType,
 };
 use crate::storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
-use crate::storage::well_known::update_custom_domains_asset;
+use crate::storage::well_known::update::update_custom_domains_asset;
 use crate::types::core::{Blob, CollectionKey, DomainName};
 use crate::types::list::{ListParams, ListResults};
 

@@ -9,6 +9,7 @@ pub static ENCODING_CERTIFICATION_ORDER: &[&str] = &[
     "br",
 ];
 pub static BN_WELL_KNOWN_CUSTOM_DOMAINS: &str = "/.well-known/ic-domains";
+pub static WELL_KNOWN_II_ALTERNATIVE_ORIGINS: &str = "/.well-known/ii-alternative-origins";
 
 pub static ROOT_PATH: &str = "/";
 pub static ROOT_INDEX_HTML: &str = "/index.html";

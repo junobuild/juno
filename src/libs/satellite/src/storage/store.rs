@@ -42,14 +42,14 @@ use crate::storage::state::{
     insert_domain as insert_state_domain,
 };
 use crate::storage::types::config::StorageConfig;
-use crate::storage::types::domain::{CustomDomain, CustomDomains, DomainName};
+use crate::storage::types::domain::{CustomDomain, CustomDomains};
 use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType,
 };
 use crate::storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
-use crate::types::core::{Blob, CollectionKey};
+use crate::types::core::{Blob, CollectionKey, DomainName};
 use crate::types::list::{ListParams, ListResults};
 
 ///

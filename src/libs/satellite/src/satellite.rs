@@ -24,7 +24,6 @@ use crate::rules::store::{
 };
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
-use crate::rules::upgrade::init_custom_domains;
 use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
 use crate::storage::http::response::{
     build_asset_response, build_redirect_response, error_response,
@@ -57,6 +56,7 @@ use crate::types::list::ListParams;
 use crate::types::list::ListResults;
 use crate::types::memory::Memory;
 use crate::types::state::{HeapState, RuntimeState, State};
+use crate::upgrade::init_custom_domains;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, trap};

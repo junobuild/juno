@@ -17,6 +17,7 @@ mod rules;
 mod satellite;
 mod storage;
 mod types;
+mod upgrade;
 
 use crate::auth::types::state::AuthenticationConfig;
 use crate::constants::SATELLITE_VERSION;

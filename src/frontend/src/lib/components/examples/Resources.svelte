@@ -1,46 +1,12 @@
 <script lang="ts">
-	import Popover from '$lib/components/ui/Popover.svelte';
 	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Resource from '$lib/components/examples/Resource.svelte';
-	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
-	import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
-	import IconStorage from '$lib/components/icons/IconStorage.svelte';
-	import IconHosting from '$lib/components/icons/IconHosting.svelte';
 	import AppLang from '$lib/components/core/AppLang.svelte';
-	import IconBook from '$lib/components/icons/IconBook.svelte';
-	import IconScience from '$lib/components/icons/IconScience.svelte';
 	import type { Languages } from '$lib/types/languages';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
-
-	let anchor: HTMLDivElement | undefined;
-	let visible = false;
-	let category: 'product' | 'developers' = 'product';
-
-	const openProduct = () => {
-		category = 'product';
-		visible = true;
-	};
-
-	const openDevelopers = () => {
-		category = 'developers';
-		visible = true;
-	};
 
 	let lang: Languages;
-
-	let innerWidth = 0;
 </script>
 
-<div bind:this={anchor} class="actions">
-	<button class="text action" on:click={openProduct}
-		><span>{$i18n.resources.product}</span> <IconArrowDropDown size="16px" /></button
-	>
-
-	<button class="text action" on:click={openDevelopers}
-		><span>{$i18n.resources.developers}</span> <IconArrowDropDown size="16px" /></button
-	>
-
+<div class="actions">
 	<div class="select">
 		<button class="text action select-action"
 			><span>
@@ -57,67 +23,6 @@
 		<AppLang bind:selected={lang} />
 	</div>
 </div>
-
-<svelte:window bind:innerWidth />
-
-<Popover
-	bind:visible
-	{anchor}
-	--popover-min-size={innerWidth < 1024 ? '340px' : 'calc(45vw - 0.45rem)'}
->
-	<div class="content">
-		{#if category === 'developers'}
-			<Resource href="https://github.com/junobuild/examples">
-				<IconBook slot="icon" />
-				<svelte:fragment slot="title">{$i18n.resources.resources}</svelte:fragment>
-
-				{$i18n.resources.resources_description}
-			</Resource>
-
-			<Resource href="https://github.com/junobuild/juno/releases">
-				<IconScience slot="icon" />
-				<svelte:fragment slot="title">{$i18n.resources.changelog}</svelte:fragment>
-
-				{$i18n.resources.changelog_description}
-			</Resource>
-		{:else}
-			<Resource href="https://juno.build/docs/build/authentication">
-				<IconAuthentication slot="icon" />
-				<svelte:fragment slot="title">{$i18n.authentication.title}</svelte:fragment>
-
-				{$i18n.authentication.short_description}
-			</Resource>
-
-			<Resource href="https://juno.build/docs/build/datastore">
-				<IconDatastore slot="icon" />
-				<svelte:fragment slot="title">{$i18n.datastore.title}</svelte:fragment>
-
-				{$i18n.datastore.short_description}
-			</Resource>
-
-			<Resource href="https://juno.build/docs/build/storage">
-				<IconStorage slot="icon" />
-				<svelte:fragment slot="title">{$i18n.storage.title}</svelte:fragment>
-
-				{$i18n.storage.short_description}
-			</Resource>
-
-			<Resource href="https://juno.build/docs/build/hosting">
-				<IconHosting slot="icon" />
-				<svelte:fragment slot="title">{$i18n.hosting.title}</svelte:fragment>
-
-				{$i18n.hosting.short_description}
-			</Resource>
-
-			<Resource href="https://juno.build/docs/build/analytics">
-				<IconAnalytics size="36px" slot="icon" />
-				<svelte:fragment slot="title">{$i18n.analytics.title}</svelte:fragment>
-
-				{$i18n.analytics.short_description}
-			</Resource>
-		{/if}
-	</div>
-</Popover>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

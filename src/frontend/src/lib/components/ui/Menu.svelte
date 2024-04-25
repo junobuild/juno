@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { layoutMenuOpen } from '$lib/stores/layout.store';
-	import Logo from '$lib/components/ui/Logo.svelte';
+	import Logo from '$lib/components/core/Logo.svelte';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	const close = () => layoutMenuOpen.set(false);

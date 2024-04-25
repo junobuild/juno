@@ -5,7 +5,7 @@
 	import User from '$lib/components/core/User.svelte';
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
-	import Logo from '$lib/components/ui/Logo.svelte';
+	import Logo from '$lib/components/core/Logo.svelte';
 	import Resources from '$lib/components/examples/Resources.svelte';
 
 	export let start: 'logo' | 'back' | 'menu' = 'logo';

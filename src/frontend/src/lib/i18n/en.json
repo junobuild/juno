@@ -39,7 +39,8 @@
 		"more": "More options",
 		"are_you_sure": "Are you sure? This action is irreversible",
 		"attach": "Attach",
-		"refresh": "Refresh"
+		"refresh": "Refresh",
+		"open_website": "Open Juno website and documentation"
 	},
 	"canisters": {
 		"top_up": "Top-up",

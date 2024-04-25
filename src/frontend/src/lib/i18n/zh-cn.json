@@ -39,7 +39,8 @@
 		"more": "更多选项",
 		"are_you_sure": "你确定？这个操作无法恢复",
 		"attach": "附加",
-		"refresh": "刷新"
+		"refresh": "刷新",
+		"open_website": "Open Juno website and documentation"
 	},
 	"canisters": {
 		"top_up": "充值",

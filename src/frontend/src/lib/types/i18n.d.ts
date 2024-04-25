@@ -43,6 +43,7 @@ interface I18nCore {
 	are_you_sure: string;
 	attach: string;
 	refresh: string;
+	open_website: string;
 }
 
 interface I18nCanisters {

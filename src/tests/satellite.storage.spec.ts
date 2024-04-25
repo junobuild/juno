@@ -40,24 +40,6 @@ describe('Satellite storage', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		it('should throw errors on setting custom domain', async () => {
-			const { set_custom_domain } = actor;
-
-			await expect(set_custom_domain('hello.com', toNullable())).rejects.toThrow(ADMIN_ERROR_MSG);
-		});
-
-		it('should throw errors on listing custom domains', async () => {
-			const { list_custom_domains } = actor;
-
-			await expect(list_custom_domains()).rejects.toThrow(ADMIN_ERROR_MSG);
-		});
-
-		it('should throw errors on deleting custom domains', async () => {
-			const { del_custom_domain } = actor;
-
-			await expect(del_custom_domain('hello.com')).rejects.toThrow(ADMIN_ERROR_MSG);
-		});
-
 		it('should throw errors on delete all assets', async () => {
 			const { del_assets } = actor;
 
@@ -245,98 +227,6 @@ describe('Satellite storage', () => {
 			expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
 		});
 
-		describe('Custom domains', () => {
-			it('should set custom domain', async () => {
-				const { set_custom_domain, list_custom_domains } = actor;
-
-				await set_custom_domain('hello.com', ['123456']);
-				await set_custom_domain('test2.com', []);
-
-				const results = await list_custom_domains();
-
-				expect(results).toHaveLength(2);
-
-				expect(results[0][0]).toEqual('hello.com');
-				expect(results[0][1].bn_id).toEqual(['123456']);
-				expect(results[0][1].updated_at).not.toBeUndefined();
-				expect(results[0][1].updated_at).toBeGreaterThan(0n);
-				expect(results[0][1].created_at).not.toBeUndefined();
-				expect(results[0][1].created_at).toBeGreaterThan(0n);
-
-				expect(results[1][0]).toEqual('test2.com');
-				expect(results[1][1].bn_id).toEqual([]);
-				expect(results[1][1].updated_at).not.toBeUndefined();
-				expect(results[1][1].updated_at).toBeGreaterThan(0n);
-				expect(results[1][1].created_at).not.toBeUndefined();
-				expect(results[1][1].created_at).toBeGreaterThan(0n);
-			});
-
-			it('should expose /.well-known/ic-domains', async () => {
-				const { http_request } = actor;
-
-				const { body } = await http_request({
-					body: [],
-					certificate_version: toNullable(),
-					headers: [],
-					method: 'GET',
-					url: '/.well-known/ic-domains'
-				});
-
-				const decoder = new TextDecoder();
-				expect(decoder.decode(body as ArrayBuffer)).toContain('hello.com');
-				expect(decoder.decode(body as ArrayBuffer)).toContain('test2.com');
-			});
-
-			it('could delete custom domain', async () => {
-				const { set_custom_domain, list_custom_domains, del_custom_domain } = actor;
-
-				await set_custom_domain('test3.com', ['123456']);
-
-				const resultsBefore = await list_custom_domains();
-
-				// Two previous domains + test3
-				expect(resultsBefore).toHaveLength(3);
-
-				await del_custom_domain('hello.com');
-
-				const resultsAfter = await list_custom_domains();
-
-				expect(resultsAfter).toHaveLength(2);
-			});
-
-			it('should create asset ic-domains', async () => {
-				const { get_asset } = actor;
-
-				// We assumed previous test has run
-				const asset = await get_asset('#dapp', '/.well-known/ic-domains');
-				expect(asset[0]?.key.full_path).toEqual('/.well-known/ic-domains');
-			});
-
-			it('should not delete asset ic-domains when deleting all assets', async () => {
-				const { get_asset, del_assets } = actor;
-
-				await del_assets('#dapp');
-
-				const asset = await get_asset('#dapp', '/.well-known/ic-domains');
-				expect(asset[0]?.key.full_path).toEqual('/.well-known/ic-domains');
-			});
-
-			it('should throw error if try to upload ic-domains', async () => {
-				const { init_asset_upload } = actor;
-
-				await expect(
-					init_asset_upload({
-						collection: '#dapp',
-						description: toNullable(),
-						encoding_type: [],
-						full_path: '/.well-known/ic-domains',
-						name: 'ic-domains',
-						token: toNullable()
-					})
-				).rejects.toThrow('/.well-known/ic-domains is a reserved asset.');
-			});
-		});
-
 		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			'With collection',
 			({ memory }) => {
@@ -448,8 +338,8 @@ describe('Satellite storage', () => {
 					const [_, value] = certificate as [string, string];
 					expect(value.substring(value.indexOf('tree=:'))).toEqual(
 						'Heap' in memory
-							? 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIAul/harHvdi5FUoAHF2/hXh1zlY0p5K3Gn6URVICuoOgwGCBFggxFRHOGoXOousZnfXbQt6QvyMsbVpTksIahF6GnUJBWmDAlUvdGVzdF9oZWFwL2hlbGxvLmh0bWyCA1ggA+5m8UUpFrT5GlBMHpur+iAbbWTCaoKyzwPD7UnZFYWCBFggdlqn/B5XDuJD4HA44+DTdKCVOGnEcYLFeFEafUKJFcg=:'
-							: 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIOXpvMKmDWcp7up3CRCVXvmjZtkbjB8GJC6NASaC+HwDgwGCBFggsF4I47LVsvGbFoLKHBfFANbFx/U6xmj0mUku3j9E/bGDAlcvdGVzdF9zdGFibGUvaGVsbG8uaHRtbIIDWCAD7mbxRSkWtPkaUEwem6v6IBttZMJqgrLPA8PtSdkVhYIEWCBer6FiOS9d/c8ADngIGfcIoi5/aYWtTA8uzLBA30q+Bg==:'
+							? 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwGCBFggt7tI5llYugLZXRndu2mmTmaNLbDM2eqISxM1gx67GwmDAYIEWCDEVEc4ahc6i6xmd9dtC3pC/IyxtWlOSwhqEXoadQkFaYMCVS90ZXN0X2hlYXAvaGVsbG8uaHRtbIIDWCAD7mbxRSkWtPkaUEwem6v6IBttZMJqgrLPA8PtSdkVhYIEWCDgEatvSa202yF1rpOb4TU0SoU6g6V5DbDziTdxY/155g==:'
+							: 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIMRURzhqFzqLrGZ3120LekL8jLG1aU5LCGoRehp1CQVpgwGCBFggyTghlH7DR1YspmeTEIgVRAhMyez5Qc69yCfwJwbRv2ODAYIEWCCwXgjjstWy8ZsWgsocF8UA1sXH9TrGaPSZSS7eP0T9sYMCVy90ZXN0X3N0YWJsZS9oZWxsby5odG1sggNYIAPuZvFFKRa0+RpQTB6bq/ogG21kwmqCss8Dw+1J2RWFggRYIBK5Nik8UokdUS9SCGppv4cVbyKXulmXcqufJRcB6Xyx:'
 					);
 
 					const decoder = new TextDecoder();

@@ -101,10 +101,17 @@
 		"warning_orbiter_heap_memory": "你的 orbiter 堆内存已经达到 1 GB."
 	},
 	"sign_in": {
-		"title": "创建你的第一个satellite",
-		"overview_1": "satellite 是一个用于你的应用的web3容器.",
-		"overview_2": "它提供了匿名的认证，数据存储，定制域名等功能以及更多.",
-		"overview_3": "100% 低能耗运行在区块链上.",
+		"quote_1": "Stars can't shine without darkness.",
+		"quote_2": "Explore. Dream. Discover. Infinity.",
+		"quote_3": "One small step, giant leap.",
+		"quote_4": "The cosmos is within us.",
+		"quote_5": "Dream beyond Earth’s limits.",
+		"quote_6": "Seek the stars. Achieve wonders.",
+		"quote_7": "Beyond Earth lies possibility.",
+		"quote_8": "Galaxies within grasp forever.",
+		"quote_9": "Navigate stars, chase dreams.",
+		"quote_10": "Universe: endless exploration awaits.",
+		"mission_control": "Sign in to your mission control.",
 		"internet_identity": "继续使用Internet Identity"
 	},
 	"satellites": {

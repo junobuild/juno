@@ -12,16 +12,16 @@
 </script>
 
 <p class="sign-in-now">
-	Juno uses
+	Juno defaults to
 	<button
 		class="text action"
 		on:click={async () => await doSignIn('internetcomputer.org')}
 		disabled={$isBusy}>internetcomputer.org</button
-	> by default.
+	> for authentication.
 </p>
 
 <p>
-	You can also sign-in for now with deprecated method
+	Alternatively, use the legacy method at
 	<button class="text action" on:click={async () => await doSignIn('ic0.app')} disabled={$isBusy}
 		>ic0.app</button
 	>.

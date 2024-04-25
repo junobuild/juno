@@ -106,10 +106,17 @@ interface I18nCanisters {
 }
 
 interface I18nSign_in {
-	title: string;
-	overview_1: string;
-	overview_2: string;
-	overview_3: string;
+	quote_1: string;
+	quote_2: string;
+	quote_3: string;
+	quote_4: string;
+	quote_5: string;
+	quote_6: string;
+	quote_7: string;
+	quote_8: string;
+	quote_9: string;
+	quote_10: string;
+	mission_control: string;
 	internet_identity: string;
 }
 

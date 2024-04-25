@@ -9,7 +9,7 @@ hr {
 }
 
 hr:before {
-	content: "\23FA\23FA\23FA";
+	content: '\23FA\23FA\23FA';
 	display: inline-block;
 	color: var(--color-card-contrast);
 	position: absolute;

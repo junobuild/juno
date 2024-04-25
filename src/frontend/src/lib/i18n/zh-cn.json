@@ -158,24 +158,20 @@
 	},
 	"authentication": {
 		"title": "认证",
-		"short_description": "利用无密码认证确保最大安全和隐私地验证用户.",
 		"users": "用户",
 		"methods": "登录方法"
 	},
 	"datastore": {
 		"title": "数据池",
-		"short_description": "一个简单且有效的编程模式来存储数据到区块链上.",
 		"data": "数据",
 		"documents": "文档"
 	},
 	"storage": {
 		"title": "存储",
-		"short_description": "简单方便地存储并服务用户贡献的内容在WEB3上，比如文件，图片，视频等.",
 		"assets": "资料"
 	},
 	"analytics": {
 		"title": "统计",
-		"short_description": "一个高效，私密性好的 Web3 分析解决方案.",
 		"dashboard": "仪表盘",
 		"loading": "加载数据",
 		"empty": "Juno 提供简单，轻便，开源的网络统计功能，不需要使用 cookies. 它会通过智能合约统计匿名数据并尊重您的网站用户隐私.",
@@ -212,7 +208,6 @@
 	},
 	"hosting": {
 		"title": "网站托管",
-		"short_description": "用定制的域名来管理你的去中心化应用的品牌标识.",
 		"success": "你的定制域名配置好了.",
 		"configure": "设置你的DNS",
 		"add_records": "在你的DNS提供者服务创建记录并验证你的 {0}. 在使用这个域名期间不要删除记录.",
@@ -505,8 +500,6 @@
 		"example_9_description": "用hook演示如何在在无服务架构功能中更新文档."
 	},
 	"resources": {
-		"product": "产品",
-		"developers": "开发者",
 		"resources": "资源",
 		"resources_description": "查看利用Juno开发的代码，应用，为服务等例子",
 		"changelog": "发布",

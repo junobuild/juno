@@ -167,27 +167,23 @@ interface I18nWallet {
 
 interface I18nAuthentication {
 	title: string;
-	short_description: string;
 	users: string;
 	methods: string;
 }
 
 interface I18nDatastore {
 	title: string;
-	short_description: string;
 	data: string;
 	documents: string;
 }
 
 interface I18nStorage {
 	title: string;
-	short_description: string;
 	assets: string;
 }
 
 interface I18nAnalytics {
 	title: string;
-	short_description: string;
 	dashboard: string;
 	loading: string;
 	empty: string;
@@ -225,7 +221,6 @@ interface I18nAnalytics {
 
 interface I18nHosting {
 	title: string;
-	short_description: string;
 	success: string;
 	configure: string;
 	add_records: string;
@@ -534,8 +529,6 @@ interface I18nExamples {
 }
 
 interface I18nResources {
-	product: string;
-	developers: string;
 	resources: string;
 	resources_description: string;
 	changelog: string;

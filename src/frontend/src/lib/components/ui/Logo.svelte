@@ -5,7 +5,7 @@
 	export let color: 'lavender' | 'white' = 'lavender';
 </script>
 
-<a href="/" aria-label={$i18n.core.home}><IconJuno {color} /></a>
+<a href="/src/frontend/static" aria-label={$i18n.core.home}><IconJuno {color} /></a>
 
 <style lang="scss">
 	a {

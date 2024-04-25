@@ -15,10 +15,8 @@
 {/if}
 
 {#if $authSignedInStore}
-	<section>
-		<div in:fade>
-			<Satellites />
-		</div>
+	<section in:fade>
+		<Satellites />
 	</section>
 {:else}
 	<SignIn />

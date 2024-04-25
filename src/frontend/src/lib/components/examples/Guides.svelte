@@ -2,8 +2,6 @@
 	import Resource from '$lib/components/examples/Resource.svelte';
 	import IconReact from '$lib/components/icons/IconReact.svelte';
 	import IconSvelte from '$lib/components/icons/IconSvelte.svelte';
-	import IconJavaScript from '$lib/components/icons/IconJavaScript.svelte';
-	import IconNodeJS from '$lib/components/icons/IconNodeJS.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconAngular from '$lib/components/icons/IconAngular.svelte';
 	import IconVue from '$lib/components/icons/IconVue.svelte';

@@ -92,6 +92,18 @@
 		])}
 	</Resource>
 
+	<Resource href="https://juno.build/docs/guides/astro">
+		<IconRust slot="icon" />
+		<svelte:fragment slot="title">Rust</svelte:fragment>
+
+		{@html i18nFormat($i18n.examples.tutorial_serverless_functions, [
+			{
+				placeholder: '{0}',
+				value: 'Rust'
+			}
+		])}
+	</Resource>
+
 	<Resource href="https://juno.build/docs/miscellaneous/github_actions">
 		<IconGitHub slot="icon" size="48px" />
 		<svelte:fragment slot="title">GitHub</svelte:fragment>
@@ -104,73 +116,6 @@
 		<svelte:fragment slot="title">Docker</svelte:fragment>
 
 		{$i18n.examples.tutorial_docker_description}
-	</Resource>
-</section>
-
-<h4>{$i18n.examples.examples}</h4>
-
-<section>
-	<Resource href="https://github.com/junobuild/examples/tree/main/next/diary">
-		<IconNextJS slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_8_title}</svelte:fragment>
-
-		{$i18n.examples.example_8_description}
-	</Resource>
-
-	<Resource href="https://github.com/junobuild/examples/blob/main/react/diary">
-		<IconReact slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_2_title}</svelte:fragment>
-
-		{$i18n.examples.example_2_description}
-	</Resource>
-
-	<Resource href="https://github.com/junobuild/examples/tree/main/svelte/form">
-		<IconSvelte slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_1_title}</svelte:fragment>
-
-		{$i18n.examples.example_1_description}
-	</Resource>
-
-	<Resource href="https://github.com/junobuild/examples/tree/main/vue/diary">
-		<IconVue slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_7_title}</svelte:fragment>
-
-		{$i18n.examples.example_7_description}
-	</Resource>
-
-	<Resource href="https://github.com/junobuild/examples/blob/main/angular/diary">
-		<IconAngular slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_6_title}</svelte:fragment>
-
-		{$i18n.examples.example_6_description}
-	</Resource>
-
-	<Resource href="https://github.com/junobuild/examples/tree/main/vanilla">
-		<IconJavaScript slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_3_title}</svelte:fragment>
-
-		{$i18n.examples.example_3_description}
-	</Resource>
-
-	<Resource href="https://github.com/junobuild/examples/blob/main/rust/hooks">
-		<IconRust slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_9_title}</svelte:fragment>
-
-		{$i18n.examples.example_9_description}
-	</Resource>
-
-	<Resource href="https://github.com/junobuild/examples/blob/main/node/basic">
-		<IconNodeJS slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_4_title}</svelte:fragment>
-
-		{$i18n.examples.example_4_description}
-	</Resource>
-
-	<Resource href="https://github.com/junobuild/examples/blob/main/node/admin">
-		<IconNodeJS slot="icon" />
-		<svelte:fragment slot="title">{$i18n.examples.example_5_title}</svelte:fragment>
-
-		{$i18n.examples.example_5_description}
 	</Resource>
 </section>
 

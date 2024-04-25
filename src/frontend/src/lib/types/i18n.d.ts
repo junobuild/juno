@@ -504,28 +504,10 @@ interface I18nSettings {
 
 interface I18nExamples {
 	tutorials: string;
-	examples: string;
 	tutorial_framework_description: string;
+	tutorial_serverless_functions: string;
 	tutorial_github_description: string;
 	tutorial_docker_description: string;
-	example_1_title: string;
-	example_1_description: string;
-	example_2_title: string;
-	example_2_description: string;
-	example_3_title: string;
-	example_3_description: string;
-	example_4_title: string;
-	example_4_description: string;
-	example_5_title: string;
-	example_5_description: string;
-	example_6_title: string;
-	example_6_description: string;
-	example_7_title: string;
-	example_7_description: string;
-	example_8_title: string;
-	example_8_description: string;
-	example_9_title: string;
-	example_9_description: string;
 }
 
 interface I18nResources {

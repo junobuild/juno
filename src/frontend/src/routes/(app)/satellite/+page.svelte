@@ -16,7 +16,7 @@
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import Examples from '$lib/components/examples/Examples.svelte';
+	import Guides from '$lib/components/examples/Guides.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
@@ -58,7 +58,7 @@
 					{#if $store.tabId === $store.tabs[0].id}
 						<SatelliteOverview satellite={$satelliteStore} />
 
-						<Examples />
+						<Guides />
 					{:else if $store.tabId === $store.tabs[1].id}
 						<SatelliteControllers satellite={$satelliteStore} />
 					{/if}

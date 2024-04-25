@@ -12,7 +12,7 @@ import { afterAll, beforeAll, describe, expect } from 'vitest';
 import { ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
-describe('Satellite storage', () => {
+describe('Satellite authentication', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
 

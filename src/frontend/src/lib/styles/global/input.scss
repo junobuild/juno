@@ -17,7 +17,7 @@ select {
 	transition: box-shadow 0.15s ease-out;
 
 	&:focus {
-		box-shadow: 4px 4px var(--color-secondary);
+		box-shadow: 2px 2px var(--color-secondary);
 	}
 }
 
@@ -32,7 +32,7 @@ input:not([type='checkbox']):not([type='radio']) {
 }
 
 input[type='checkbox'] {
-	box-shadow: 2px 2px var(--color-card-contrast);
+	border-color: var(--color-card-contrast);
 }
 
 input[type='radio'] {

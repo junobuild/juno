@@ -29,7 +29,7 @@
 		box-shadow 0.25s ease-out,
 		border 0.15s ease-out;
 
-	@include shadow.card;
+	@include shadow.card-action;
 
 	&:disabled {
 		@include disabled.disabled;
@@ -38,7 +38,7 @@
 
 	&:active {
 		box-shadow: none;
-		transform: translateX(3px) translateY(3px);
+		transform: translateX(1px) translateY(1px);
 	}
 
 	&:hover:not(:disabled),
@@ -144,11 +144,10 @@
 	text-align: inherit;
 
 	padding: 0;
-	border: 3px solid var(--color-card-contrast);
 
 	width: 100%;
 
-	@include shadow.strong-card;
+	@include shadow.strong-card-action;
 
 	display: flex;
 	flex-direction: column;
@@ -173,6 +172,6 @@
 
 	&:active {
 		box-shadow: none;
-		transform: translateX(9px) translateY(9px);
+		transform: translateX(0) translateY(0);
 	}
 }

@@ -5,6 +5,7 @@
 	import { onLayoutTitleIntersection } from '$lib/stores/layout.store';
 	import SignIn from '$lib/components/core/SignIn.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { fade } from 'svelte/transition';
 </script>
 
 {#if $authSignedInStore}
@@ -13,13 +14,15 @@
 	</h1>
 {/if}
 
-<section>
-	{#if $authSignedInStore}
-		<Satellites />
-	{:else}
-		<SignIn />
-	{/if}
-</section>
+{#if $authSignedInStore}
+	<section>
+		<div in:fade>
+			<Satellites />
+		</div>
+	</section>
+{:else}
+	<SignIn />
+{/if}
 
 <style lang="scss">
 	@use '../../lib/styles/mixins/grid';

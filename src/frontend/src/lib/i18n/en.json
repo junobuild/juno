@@ -101,10 +101,17 @@
 		"warning_orbiter_heap_memory": "Your orbiter heap memory is approaching 1 GB."
 	},
 	"sign_in": {
-		"title": "Launch your first satellite",
-		"overview_1": "A satellite is your Web3 app's all-in-one container.",
-		"overview_2": "It provides secure anonymous authentication, datastore, file storage, hosting, and custom domain capabilities.",
-		"overview_3": "100% on blockchain with low carbon footprint.",
+		"quote_1": "Stars can't shine without darkness.",
+		"quote_2": "Explore. Dream. Discover. Infinity.",
+		"quote_3": "One small step, giant leap.",
+		"quote_4": "The cosmos is within us.",
+		"quote_5": "Dream beyond Earth’s limits.",
+		"quote_6": "Seek the stars. Achieve wonders.",
+		"quote_7": "Beyond Earth lies possibility.",
+		"quote_8": "Galaxies within grasp forever.",
+		"quote_9": "Navigate stars, chase dreams.",
+		"quote_10": "Universe: endless exploration awaits.",
+		"mission_control": "Sign in to your mission control.",
 		"internet_identity": "Continue with Internet Identity"
 	},
 	"satellites": {

@@ -4,15 +4,30 @@
 	import DeprecatedSignIn from '$lib/components/core/DeprecatedSignIn.svelte';
 	import IconICMonochrome from '$lib/components/icons/IconICMonochrome.svelte';
 	import { signIn } from '$lib/services/auth.services';
+
+	let quotes: string[];
+	$: quotes = [
+		$i18n.sign_in.quote_1,
+		$i18n.sign_in.quote_2,
+		$i18n.sign_in.quote_3,
+		$i18n.sign_in.quote_4,
+		$i18n.sign_in.quote_5,
+		$i18n.sign_in.quote_6,
+		$i18n.sign_in.quote_7,
+		$i18n.sign_in.quote_8,
+		$i18n.sign_in.quote_9,
+		$i18n.sign_in.quote_10
+	];
+
+	let title: string;
+	$: title = quotes[Math.floor(Math.random() * quotes.length)];
 </script>
 
 <div class="container">
 	<div class="overview">
-		<h1>{$i18n.sign_in.title}</h1>
+		<h1>{title}</h1>
 
-		<p>{@html $i18n.sign_in.overview_1}</p>
-		<p>{@html $i18n.sign_in.overview_2}</p>
-		<p>{@html $i18n.sign_in.overview_3}</p>
+		<p>{$i18n.sign_in.mission_control}</p>
 	</div>
 
 	<div class="sign-in">
@@ -32,33 +47,33 @@
 		display: flex;
 		flex-direction: column;
 		justify-content: center;
+		align-items: center;
+
+		text-align: center;
 
 		min-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--padding-8x));
-
-		grid-column: span 12 / auto;
-
-		@include media.min-width(large) {
-			grid-column: span 6 / auto;
-		}
-
-		@include media.min-width(xlarge) {
-			grid-column: span 5 / auto;
-		}
 	}
 
 	h1 {
 		color: var(--color-primary);
-		padding: 0 0 var(--padding-3x);
+		padding: var(--padding-2x) 0 var(--padding);
 
-		--bigger-title: 1.2;
+		--bigger-title: 1;
 		font-size: calc(var(--font-size-h1) * var(--bigger-title));
 
 		@include media.min-width(large) {
+			--bigger-title: 1.4;
 			margin-top: var(--padding-8x);
 		}
+
+		max-width: 470px;
 	}
 
 	.sign-in {
-		padding: var(--padding-1_5x) 0 0;
+		padding: var(--padding) 0 0;
+	}
+
+	button {
+		font-size: var(--font-size-small);
 	}
 </style>

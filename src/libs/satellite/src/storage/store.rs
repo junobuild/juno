@@ -22,7 +22,6 @@ use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
     ROOT_404_HTML, ROOT_INDEX_HTML,
 };
-use crate::storage::custom_domains::map_custom_domains_asset;
 use crate::storage::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks,
@@ -37,7 +36,7 @@ use crate::storage::state::{
     get_assets_stable, get_config as get_state_config,
     get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
     get_domains as get_state_domains, get_public_asset as get_state_public_asset,
-    get_rule as get_state_rule, get_rule, insert_asset as insert_state_asset,
+    get_rule as get_state_rule, insert_asset as insert_state_asset,
     insert_asset_encoding as insert_state_asset_encoding, insert_config as insert_state_config,
     insert_domain as insert_state_domain,
 };
@@ -49,6 +48,7 @@ use crate::storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType,
 };
 use crate::storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
+use crate::storage::well_known::update::update_custom_domains_asset;
 use crate::types::core::{Blob, CollectionKey, DomainName};
 use crate::types::list::{ListParams, ListResults};
 
@@ -864,29 +864,6 @@ fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(
     update_custom_domains_asset()
 }
 
-pub fn update_custom_domains_asset() -> Result<(), String> {
-    let custom_domains = get_custom_domains_as_content();
-
-    let full_path = BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string();
-
-    let collection = DEFAULT_ASSETS_COLLECTIONS[0].0.to_string();
-
-    // #app collection rule
-    let rule = get_rule(&collection)?;
-
-    let existing_asset = get_state_asset(&collection, &full_path, &rule);
-
-    let asset = map_custom_domains_asset(&custom_domains, existing_asset);
-
-    insert_state_asset(&collection, &full_path, &asset, &rule);
-
-    let config = get_config_store();
-
-    update_runtime_certified_asset(&asset, &config);
-
-    Ok(())
-}
-
 fn set_state_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
     let domain = get_state_domain(domain_name);
 
@@ -906,13 +883,4 @@ fn set_state_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
     };
 
     insert_state_domain(domain_name, &custom_domain);
-}
-
-fn get_custom_domains_as_content() -> String {
-    let custom_domains = get_state_domains();
-
-    custom_domains
-        .into_keys()
-        .collect::<Vec<DomainName>>()
-        .join("\n")
 }

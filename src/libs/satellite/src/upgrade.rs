@@ -1,4 +1,5 @@
-use crate::storage::store::{get_custom_domains_store, update_custom_domains_asset};
+use crate::storage::store::get_custom_domains_store;
+use crate::storage::well_known::update::update_custom_domains_asset;
 
 /// One time upgrade
 

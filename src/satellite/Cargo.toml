@@ -3,6 +3,7 @@ name = "satellite"
 version = "0.0.16"
 edition = "2021"
 publish = false
+build = "../build.rs"
 
 [lib]
 crate-type = ["cdylib"]

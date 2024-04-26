@@ -2,10 +2,10 @@
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
 	import { layoutTitle } from '$lib/stores/layout.store';
 	import { nonNullish } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
 
 	export let centered = false;
 	export let title = true;
-	export let titleColored = false;
 </script>
 
 <SplitPane>
@@ -17,11 +17,16 @@
 		<div class="page">
 			<main class:centered>
 				{#if title}
-					<h1 class:color={titleColored}>
-						<span class={`title ${nonNullish($layoutTitle) ? 'visible' : ''}`}
-							>{$layoutTitle ?? ''}</span
-						>
-					</h1>
+					{#if nonNullish($layoutTitle)}
+						<h1 in:fade>
+							<span>
+								<span class="icon"><svelte:component this={$layoutTitle.icon} size="32px" /></span>
+								<span>{$layoutTitle.title}</span>
+							</span>
+						</h1>
+					{:else}
+						<span class="empty">&ZeroWidthSpace;</span>
+					{/if}
 				{/if}
 
 				<slot />
@@ -76,48 +81,19 @@
 		line-height: var(--line-height-standard);
 
 		padding: 0 var(--padding-2x) 0 0;
-		margin: 0 0 var(--padding-3x);
+		margin: var(--padding-3x) 0;
 
 		display: inline-block;
 
 		@include text.truncate;
-
-		position: relative;
-		overflow: visible;
-
-		&:before {
-			content: '';
-			display: inline-block;
-		}
-
-		&:after {
-			content: '';
-
-			background: var(--text-color);
-			border-radius: var(--border-radius);
-
-			height: 5px;
-			width: 100%;
-
-			position: absolute;
-			bottom: -3px;
-			left: 0;
-		}
-
-		&.color:after {
-			background: var(--color-primary);
-		}
 	}
 
-	.title {
-		visibility: hidden;
-		opacity: 0;
+	.icon {
+		vertical-align: sub;
+	}
 
-		transition: opacity 0.15s ease-out;
-
-		&.visible {
-			visibility: visible;
-			opacity: 1;
-		}
+	.empty {
+		display: block;
+		height: 99.5px;
 	}
 </style>

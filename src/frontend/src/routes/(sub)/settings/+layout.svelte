@@ -5,8 +5,14 @@
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import Navbar from '$lib/components/core/Navbar.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
+	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 
-	onMount(() => layoutTitle.set($i18n.settings.title));
+	onMount(() =>
+		layoutTitle.set({
+			title: $i18n.settings.title,
+			icon: IconRaygun
+		})
+	);
 </script>
 
 <Layout>

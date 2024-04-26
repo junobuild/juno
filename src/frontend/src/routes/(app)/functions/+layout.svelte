@@ -4,9 +4,13 @@
 	import { Color } from '$lib/types/theme';
 	import { layoutTitle } from '$lib/stores/layout.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
 
 	onMount(() => {
-		layoutTitle.set($i18n.functions.title);
+		layoutTitle.set({
+			title: $i18n.functions.title,
+			icon: IconFunctions
+		});
 		applyColor(Color.SHANDY);
 	});
 </script>

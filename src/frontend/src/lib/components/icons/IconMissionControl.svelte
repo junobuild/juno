@@ -1,5 +1,9 @@
 <!-- CC BY-NC-SA - Didier Renaud - https://www.customfuture.com/ -->
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" height="24px"
+<script lang="ts">
+	export let size = '24px';
+</script>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 29 29" height={size} width={size}
 	><g
 		><g
 			><rect class="icon-mission-control-1" width="29" height="29" /><rect

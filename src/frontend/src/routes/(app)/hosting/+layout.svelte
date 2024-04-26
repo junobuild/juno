@@ -4,9 +4,13 @@
 	import { Color } from '$lib/types/theme';
 	import { layoutTitle } from '$lib/stores/layout.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconHosting from '$lib/components/icons/IconHosting.svelte';
 
 	onMount(() => {
-		layoutTitle.set($i18n.hosting.title);
+		layoutTitle.set({
+			title: $i18n.hosting.title,
+			icon: IconHosting
+		});
 		applyColor(Color.BABY_PINK);
 	});
 </script>

@@ -4,8 +4,14 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadSatellites } from '$lib/services/satellites.services';
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 
-	onMount(() => layoutTitle.set($i18n.analytics.title));
+	onMount(() =>
+		layoutTitle.set({
+			title: $i18n.analytics.title,
+			icon: IconAnalytics
+		})
+	);
 
 	$: $missionControlStore,
 		(async () => await loadSatellites({ missionControl: $missionControlStore }))();

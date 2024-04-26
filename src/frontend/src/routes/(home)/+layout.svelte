@@ -6,7 +6,7 @@
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Footer from '$lib/components/ui/Footer.svelte';
 
-	onMount(() => layoutTitle.set(''));
+	onMount(() => layoutTitle.set(undefined));
 </script>
 
 <Layout centered title={false}>

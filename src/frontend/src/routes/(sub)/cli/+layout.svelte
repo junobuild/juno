@@ -5,8 +5,14 @@
 	import { onMount } from 'svelte';
 	import { layoutTitle } from '$lib/stores/layout.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconUser from '$lib/components/icons/IconUser.svelte';
 
-	onMount(() => layoutTitle.set($i18n.cli.title));
+	onMount(() =>
+		layoutTitle.set({
+			title: $i18n.cli.title,
+			icon: IconUser
+		})
+	);
 </script>
 
 <Layout centered={true}>

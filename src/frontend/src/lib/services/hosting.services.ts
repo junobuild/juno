@@ -8,7 +8,6 @@ import {
 	setCustomDomain as setCustomDomainApi
 } from '$lib/api/satellites.api';
 import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
-import { nullishSignOut } from '$lib/services/auth.services';
 import { authStore } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
@@ -18,7 +17,7 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, nonNullish } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -172,11 +171,6 @@ const getAuthConfig = async ({
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<{ success: boolean; config?: AuthenticationConfig | undefined }> => {
-	if (isNullish(identity)) {
-		await nullishSignOut();
-		return { success: false };
-	}
-
 	const config = await getAuthConfigApi({
 		satelliteId,
 		identity

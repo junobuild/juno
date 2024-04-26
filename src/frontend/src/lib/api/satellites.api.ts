@@ -199,6 +199,15 @@ export const getAuthConfig = async (params: {
 	return get_auth_config();
 };
 
+export const setAuthConfig = async ({config, ...rest}: {
+	satelliteId: Principal;
+	config: AuthenticationConfig;
+	identity: OptionIdentity;
+}): Promise<void> => {
+	const { set_auth_config } = await getSatelliteActor(rest);
+	return set_auth_config(config);
+};
+
 export const deleteDoc = async ({
 	satelliteId,
 	collection,

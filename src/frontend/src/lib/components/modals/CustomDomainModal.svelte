@@ -2,7 +2,7 @@
 	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
@@ -17,6 +17,8 @@
 	import AddCustomDomainAuth from '$lib/components/hosting/AddCustomDomainAuth.svelte';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import AddCustomDomainDns from '$lib/components/hosting/AddCustomDomainDns.svelte';
+	import { setAuthConfig } from '$lib/api/satellites.api';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let detail: JunoModalDetail;
 
@@ -65,6 +67,14 @@
 				satelliteId: satellite.satellite_id,
 				domainName: dns.hostname
 			});
+
+			if (nonNullish(editConfig)) {
+				await setAuthConfig({
+					satelliteId: satellite.satellite_id,
+					config: editConfig,
+					identity: $authStore.identity
+				});
+			}
 
 			steps = 'ready';
 		} catch (err: unknown) {

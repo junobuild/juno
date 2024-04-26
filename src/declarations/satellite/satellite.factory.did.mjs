@@ -221,7 +221,7 @@ export const idlFactory = ({ IDL }) => {
 		del_rule: IDL.Func([RulesType, IDL.Text, DelDoc], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_asset: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(AssetNoContent)], ['query']),
-		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], []),
+		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], []),
 		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
 		get_many_assets: IDL.Func(

@@ -1,3 +1,4 @@
+import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { AuthenticationConfig, CustomDomain } from '$declarations/satellite/satellite.did';
 import {
 	deleteCustomDomain as deleteCustomDomainApi,
@@ -8,10 +9,13 @@ import {
 import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
 import { nullishSignOut } from '$lib/services/auth.services';
 import { authStore } from '$lib/stores/auth.store';
+import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
+import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
@@ -100,7 +104,34 @@ export const listCustomDomains = async ({
 	}
 };
 
-export const getAuthConfig = async ({
+const openAddCustomDomain = async ({
+	satellite,
+	identity,
+	editDomainName
+}: {
+	satellite: Satellite;
+	identity: OptionIdentity;
+} & Pick<JunoModalCustomDomainDetail, 'editDomainName'>) => {
+	busy.start();
+
+	const { success, config } = await getAuthConfig({
+		satelliteId: satellite.satellite_id,
+		identity
+	});
+
+	busy.stop();
+
+	if (!success) {
+		return;
+	}
+
+	emit({
+		message: 'junoModal',
+		detail: { type: 'add_custom_domain', detail: { satellite, config, editDomainName } }
+	});
+};
+
+const getAuthConfig = async ({
 	satelliteId,
 	identity
 }: {

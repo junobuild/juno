@@ -10,6 +10,9 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
 	import { emit } from '$lib/utils/events.utils';
+	import { authStore } from '$lib/stores/auth.store';
+	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
+	import { openAddCustomDomain as openAddCustomDomainServices } from '$lib/services/hosting.services';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
@@ -63,6 +66,16 @@
 
 		busy.stop();
 	};
+
+	const openAddCustomDomain = async (
+		params: Pick<JunoModalCustomDomainDetail, 'editDomainName'>
+	) => {
+		await openAddCustomDomainServices({
+			identity: $authStore.identity,
+			satellite,
+			...params
+		});
+	};
 </script>
 
 <div class="tools">
@@ -70,14 +83,7 @@
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<ButtonTableAction
-			on:click={() =>
-				emit({
-					message: 'junoModal',
-					detail: {
-						type: 'add_custom_domain',
-						detail: { satellite, editDomainName: customDomain?.[0] }
-					}
-				})}
+			on:click={async () => await openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 			ariaLabel={$i18n.hosting.edit}
 			icon="edit"
 		/>

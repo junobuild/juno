@@ -237,7 +237,7 @@ pub fn set_auth_config(config: AuthenticationConfig) {
 }
 
 #[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin_controller")]
 pub fn get_auth_config() -> Option<AuthenticationConfig> {
     satellite::get_auth_config()
 }

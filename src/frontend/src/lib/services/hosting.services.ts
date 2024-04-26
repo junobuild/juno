@@ -104,7 +104,7 @@ export const listCustomDomains = async ({
 	}
 };
 
-const openAddCustomDomain = async ({
+export const openAddCustomDomain = async ({
 	satellite,
 	identity,
 	editDomainName

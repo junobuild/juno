@@ -2,7 +2,6 @@
 
 mod assert;
 mod auth;
-mod constants;
 mod controllers;
 mod db;
 mod guards;
@@ -20,7 +19,6 @@ mod types;
 mod upgrade;
 
 use crate::auth::types::state::AuthenticationConfig;
-use crate::constants::SATELLITE_VERSION;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
@@ -339,7 +337,7 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
 #[doc(hidden)]
 #[query]
 pub fn version() -> String {
-    SATELLITE_VERSION.to_string()
+    env!("SATELLITE_VERSION").to_string()
 }
 
 #[doc(hidden)]

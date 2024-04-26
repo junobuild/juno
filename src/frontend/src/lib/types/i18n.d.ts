@@ -2,8 +2,6 @@
  * Auto-generated definitions file ("npm run i18n")
  */
 
-import type { Languages } from '$lib/types/languages';
-
 interface I18nCore {
 	close: string;
 	back: string;

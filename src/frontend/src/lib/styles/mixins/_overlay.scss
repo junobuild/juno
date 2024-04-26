@@ -49,7 +49,7 @@
 		min-width: var(--size);
 		max-width: var(--size);
 
-		@include shadow.strong-card-action;
+		@include shadow.strong-card;
 
 		width: fit-content;
 		height: auto;

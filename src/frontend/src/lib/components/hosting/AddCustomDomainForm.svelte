@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
-	import { isNullish } from '@dfinity/utils';
+	import {isNullish, notEmptyString} from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
@@ -8,13 +8,13 @@
 	import { createEventDispatcher } from 'svelte';
 
 	export let satellite: Satellite;
-	export let domainNameInput: string | undefined = undefined;
+	export let domainNameInput: string;
 	export let dns: CustomDomainDns | undefined = undefined;
 
 	const dispatch = createEventDispatcher();
 
 	const onSubmitDomainName = () => {
-		if (isNullish(domainNameInput)) {
+		if (isNullish(domainNameInput) || !notEmptyString(domainNameInput)) {
 			toasts.error({
 				text: $i18n.errors.hosting_missing_domain_name
 			});
@@ -41,7 +41,7 @@
 </p>
 
 <form on:submit|preventDefault={onSubmitDomainName}>
-	<input bind:value={domainNameInput} type="text" name="domain_name" placeholder="Domain name" />
+	<input bind:value={domainNameInput} type="text" name="domain_name" placeholder={$i18n.hosting.domain_name} />
 
-	<button type="submit">Continue</button>
+	<button type="submit">{$i18n.core.continue}</button>
 </form>

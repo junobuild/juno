@@ -2,7 +2,7 @@
 	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import Copy from '$lib/components/ui/Copy.svelte';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
@@ -17,14 +17,16 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import AddCustomDomainForm from '$lib/components/hosting/AddCustomDomainForm.svelte';
 	import AddCustomDomainAuth from '$lib/components/hosting/AddCustomDomainAuth.svelte';
+	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 
 	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
-	$: ({ satellite } = detail as JunoModalCustomDomainDetail);
+	let config: AuthenticationConfig | undefined;
+	$: ({ satellite, config } = detail as JunoModalCustomDomainDetail);
 
 	let steps: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = 'init';
-	let domainNameInput: string | undefined = undefined;
+	let domainNameInput = '';
 	let dns: CustomDomainDns | undefined = undefined;
 
 	let edit = false;
@@ -37,9 +39,16 @@
 		}
 
 		dns = toCustomDomainDns({ domainName: domainNameInput, canisterId: satellite.satellite_id });
-		steps = 'dns';
+		steps = 'auth';
 		edit = true;
 	});
+
+	let editConfig: AuthenticationConfig | undefined;
+	const onAuth = ({ detail }: CustomEvent<AuthenticationConfig | undefined>) => {
+		editConfig = detail;
+
+		steps = "dns";
+	};
 
 	const setupCustomDomain = async () => {
 		if (isNullish(dns)) {
@@ -133,7 +142,7 @@
 			<p>{$i18n.hosting.config_in_progress}</p>
 		</SpinnerModal>
 	{:else if steps === 'auth'}
-		<AddCustomDomainAuth />
+		<AddCustomDomainAuth {domainNameInput} {config} on:junoNext={onAuth} />
 	{:else}
 		<AddCustomDomainForm
 			bind:domainNameInput

@@ -135,11 +135,7 @@
 		"id": "Satellite ID",
 		"stock_version": "Stock version",
 		"extended_version": "Extended version",
-		"build": "Build",
-		"set_auth_domain_title": "Set main domain for authentication",
-		"set_auth_domain_question": "Would you like to use \"$domain\" as the primary domain for all user sign-ins? This setting ensures that users are recognized on your app, regardless of whether they use the system URL or any other custom domain you might configure later.",
-		"update_auth_domain_title": "Update main domain for authentication",
-		"update_auth_domain_question": "Your current main domain for authentication is set to \"[currentdomain.com]\". Would you like to change it to \"[newdomain.com]\" to serve as the primary domain for all user sign-ins?"
+		"build": "Build"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -247,7 +243,12 @@
 		"available": "Available",
 		"failed": "Failed",
 		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes",
-		"files_deployed": "files deployed"
+		"files_deployed": "files deployed",
+		"set_auth_domain_title": "Set main domain for authentication",
+		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the primary domain for all user sign-ins?<br/><br/>This setting ensures that users are recognized on your app, regardless of whether they use the system URL or any other custom domain you might configure later.<br><br>For example, a user signing on at {1} will receive the same identifier (principal) as when signing on at {2}.",
+		"update_auth_domain_title": "Update main domain for authentication",
+		"update_auth_domain_question": "Your current main domain for authentication is set to <strong>{1}</strong>. Would you like to change it to <strong>{0}</strong> to serve as the primary domain for all user sign-ins?",
+		"domain_name": "Domain name"
 	},
 	"functions": {
 		"title": "Functions",

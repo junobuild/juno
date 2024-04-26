@@ -142,10 +142,6 @@ interface I18nSatellites {
 	stock_version: string;
 	extended_version: string;
 	build: string;
-	set_auth_domain_title: string;
-	set_auth_domain_question: string;
-	update_auth_domain_title: string;
-	update_auth_domain_question: string;
 }
 
 interface I18nMission_control {
@@ -261,6 +257,11 @@ interface I18nHosting {
 	failed: string;
 	skip_delete_domain: string;
 	files_deployed: string;
+	set_auth_domain_title: string;
+	set_auth_domain_question: string;
+	update_auth_domain_title: string;
+	update_auth_domain_question: string;
+	domain_name: string;
 }
 
 interface I18nFunctions {

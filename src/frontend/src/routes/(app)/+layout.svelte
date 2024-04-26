@@ -5,7 +5,6 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import Footer from '$lib/components/ui/Footer.svelte';
-	import { authSignedInStore } from '$lib/stores/auth.store';
 
 	$: $missionControlStore,
 		(async () => await loadSatellites({ missionControl: $missionControlStore }))();
@@ -14,9 +13,9 @@
 <Layout>
 	<Navmenu slot="menu" />
 
-	<Navbar start="menu" slot="navbar" resources={!$authSignedInStore} />
+	<Navbar start="menu" slot="navbar" />
 
 	<slot />
 
-	<Footer slot="footer" />
+	<Footer slot="footer" end="social" />
 </Layout>

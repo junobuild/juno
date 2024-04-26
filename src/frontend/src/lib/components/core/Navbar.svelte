@@ -6,11 +6,9 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
-	import Resources from '$lib/components/examples/Resources.svelte';
 
 	export let start: 'logo' | 'back' | 'menu' = 'logo';
 	export let signIn = true;
-	export let resources = false;
 	export let switcher = true;
 	export let headerOpaqueOnScroll = true;
 </script>
@@ -25,10 +23,6 @@
 			<div class="logo">
 				<Logo />
 			</div>
-		{/if}
-
-		{#if resources}
-			<Resources />
 		{/if}
 
 		{#if switcher}

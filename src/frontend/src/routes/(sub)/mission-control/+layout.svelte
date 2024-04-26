@@ -6,6 +6,7 @@
 	import Navbar from '$lib/components/core/Navbar.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
+	import { authSignedInStore } from '$lib/stores/auth.store';
 
 	onMount(() =>
 		layoutTitle.set({
@@ -20,5 +21,5 @@
 
 	<slot />
 
-	<Footer slot="footer" themeToggle />
+	<Footer slot="footer" themeToggle end={$authSignedInStore ? 'social' : 'lang'} />
 </Layout>

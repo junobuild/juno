@@ -6,6 +6,7 @@
 	import { layoutTitle } from '$lib/stores/layout.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
+	import { authSignedInStore } from '$lib/stores/auth.store';
 
 	onMount(() =>
 		layoutTitle.set({
@@ -20,5 +21,5 @@
 
 	<slot />
 
-	<Footer slot="footer" themeToggle />
+	<Footer slot="footer" themeToggle end={$authSignedInStore ? 'social' : 'lang'} />
 </Layout>

@@ -3,7 +3,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';
 	import Value from '$lib/components/ui/Value.svelte';
-	import AppLang from '$lib/components/core/AppLang.svelte';
+	import AppLangSelect from '$lib/components/core/AppLangSelect.svelte';
 	import type { Languages } from '$lib/types/languages';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { nonNullish } from '@dfinity/utils';
@@ -38,7 +38,7 @@
 			</Value>
 		</div>
 
-		<AppLang bind:selected={lang} />
+		<AppLangSelect bind:selected={lang} />
 	</div>
 </IdentityGuard>
 

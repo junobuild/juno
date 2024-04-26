@@ -25,7 +25,7 @@ const generateTypes = async () => {
 	const main = `\n\ninterface I18n {${lang}${data.map((i) => `${i.key}: ${i.name};`).join('')}}`;
 	const interfaces = data.map((i) => `\n\ninterface ${i.name} {${i.properties.join('')}}`).join('');
 
-	const comment = `/**\n* Auto-generated definitions file ("npm run i18n")\n*/`;
+	const comment = `/**\n* Auto-generated definitions file ("npm run i18n")\n*/\n\nimport type {Languages} from "$lib/types/languages";\n\n`;
 
 	const output = `${comment}${interfaces}${main}`;
 

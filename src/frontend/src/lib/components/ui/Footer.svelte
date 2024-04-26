@@ -3,9 +3,10 @@
 	import Theme from '$lib/components/ui/Theme.svelte';
 	import IconTwitter from '$lib/components/icons/IconTwitter.svelte';
 	import IconDiscord from '$lib/components/icons/IconDiscord.svelte';
+	import AppLang from '$lib/components/core/AppLang.svelte';
 
 	export let themeToggle = false;
-	export let social = true;
+	export let end: 'social' | 'lang' | 'none';
 </script>
 
 <footer>
@@ -14,7 +15,7 @@
 			<Theme />
 		{/if}
 
-		{#if social}
+		{#if end === 'social'}
 			<div class="social">
 				<a
 					href="https://twitter.com/JunoBuild"
@@ -37,6 +38,8 @@
 					aria-label="Discord"><IconDiscord /></a
 				>
 			</div>
+		{:else if end === 'lang'}
+			<AppLang />
 		{/if}
 	</div>
 </footer>

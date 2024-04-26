@@ -1,24 +1,93 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { onMount } from 'svelte';
+	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
+	import AppLangSelect from '$lib/components/core/AppLangSelect.svelte';
 	import type { Languages } from '$lib/types/languages';
 
-	export let selected: Languages;
-
-	onMount(() => (selected = $i18n.lang));
+	let lang: Languages;
 </script>
 
-<Value>
-	<svelte:fragment slot="label">{$i18n.core.language}</svelte:fragment>
-	<select bind:value={selected} on:change={async () => await i18n.switchLang(selected)}>
-		<option value="en"> English </option>
-		<option value="zh-cn"> 简体中文 </option>
-	</select>
-</Value>
+<div class="actions">
+	<div class="select">
+		<button class="text action select-action"
+			><span>
+				{#if lang === 'zh-cn'}
+					简体中文
+				{:else}
+					English
+				{/if}</span
+			>
+
+			<IconArrowDropDown size="16px" /></button
+		>
+
+		<AppLangSelect bind:selected={lang} />
+	</div>
+</div>
 
 <style lang="scss">
-	select {
-		width: fit-content;
+	@use '../../styles/mixins/media';
+
+	.actions {
+		display: flex;
+		align-items: center;
+		gap: var(--padding-2x);
+
+		font-size: var(--font-size-ultra-small);
+
+		button:not(.select-action) {
+			display: none;
+		}
+
+		@include media.min-width(small) {
+			button:not(.select-action) {
+				display: inherit;
+			}
+		}
+
+		:global(label) {
+			display: none;
+		}
+
+		:global(select) {
+			position: absolute;
+			top: 0;
+			left: 0;
+			opacity: 0;
+			cursor: pointer;
+		}
+	}
+
+	.select {
+		position: relative;
+	}
+
+	button.text {
+		text-decoration: none;
+		margin: 0;
+	}
+
+	.content {
+		display: flex;
+		flex-direction: column;
+
+		padding: var(--padding-2x);
+
+		max-height: 70vh;
+		overflow-y: auto;
+
+		@include media.min-width(large) {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+		}
+
+		:global(a) {
+			box-shadow: none;
+			border: none;
+			grid-column: inherit;
+		}
+
+		:global(div.icon) {
+			display: none;
+		}
 	}
 </style>

@@ -36,7 +36,11 @@ pub fn update_custom_domains_asset() -> Result<(), String> {
         .collect::<Vec<DomainName>>()
         .join("\n");
 
-    update_asset(&full_path, &concat_custom_domains, &map_custom_domains_asset)
+    update_asset(
+        &full_path,
+        &concat_custom_domains,
+        &map_custom_domains_asset,
+    )
 }
 
 pub fn delete_alternative_origins_asset() -> Result<(), String> {

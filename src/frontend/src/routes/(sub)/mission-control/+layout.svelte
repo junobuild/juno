@@ -5,8 +5,14 @@
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import Navbar from '$lib/components/core/Navbar.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
+	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 
-	onMount(() => layoutTitle.set($i18n.mission_control.title));
+	onMount(() =>
+		layoutTitle.set({
+			title: $i18n.mission_control.title,
+			icon: IconMissionControl
+		})
+	);
 </script>
 
 <Layout>

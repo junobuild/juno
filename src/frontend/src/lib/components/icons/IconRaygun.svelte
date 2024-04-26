@@ -1,6 +1,10 @@
 <!-- source: Font Awesome v5.15.4 - David Pro License -->
 <!-- tweaked for plan background -->
-<svg height="24px" viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"
+<script lang="ts">
+	export let size = '24px';
+</script>
+
+<svg height={size} width={size} viewBox="0 0 576 512" xmlns="http://www.w3.org/2000/svg"
 	><path
 		d="M160.609,249.614l-106.394,183.371l72.588,42.116l106.393,-183.372l-72.587,-42.115Z"
 		class="icon-raygun-2"

@@ -1,6 +1,10 @@
 <!-- source: Font Awesome v5.15.4 - David Pro License -->
 <!-- tweaked for plan background -->
-<svg height="24px" viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"
+<script lang="ts">
+	export let size = '24px';
+</script>
+
+<svg height={size} width={size} viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"
 	><path
 		d="M525.007,52.114l-67.802,27.626l64.699,158.792l67.802,-27.626l-64.699,-158.792Z"
 		class="icon-telescope-2"

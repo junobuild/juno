@@ -11,7 +11,7 @@
 		(async () => await loadSatellites({ missionControl: $missionControlStore }))();
 </script>
 
-<Layout titleColored>
+<Layout>
 	<Navmenu slot="menu" />
 
 	<Navbar start="menu" slot="navbar" resources={!$authSignedInStore} />

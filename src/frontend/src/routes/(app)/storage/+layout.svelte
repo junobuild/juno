@@ -4,9 +4,13 @@
 	import { Color } from '$lib/types/theme';
 	import { layoutTitle } from '$lib/stores/layout.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 
 	onMount(() => {
-		layoutTitle.set($i18n.storage.title);
+		layoutTitle.set({
+			title: $i18n.storage.title,
+			icon: IconStorage
+		});
 		applyColor(Color.PINK_LACE);
 	});
 </script>

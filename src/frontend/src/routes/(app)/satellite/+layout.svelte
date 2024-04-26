@@ -10,14 +10,18 @@
 	import { debounce } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 
 	onMount(() => applyColor(Color.LAVENDER_BLUE));
 
 	const debounceSetTitle = debounce(
 		() =>
-			layoutTitle.set(
-				nonNullish($satelliteStore) ? satelliteName($satelliteStore) : $i18n.satellites.satellite
-			),
+			layoutTitle.set({
+				title: nonNullish($satelliteStore)
+					? satelliteName($satelliteStore)
+					: $i18n.satellites.satellite,
+				icon: IconSatellite
+			}),
 		100
 	);
 

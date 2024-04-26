@@ -1,10 +1,10 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
-import type {AuthenticationConfig} from "$declarations/satellite/satellite.did";
 
 export interface JunoModalBalance {
 	missionControlBalance?: MissionControlBalance;

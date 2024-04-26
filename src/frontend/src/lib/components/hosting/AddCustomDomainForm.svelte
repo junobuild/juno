@@ -3,15 +3,15 @@
 	import { isNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
-    import type {CustomDomainDns} from "$lib/types/custom-domain";
-    import type {Satellite} from "$declarations/mission_control/mission_control.did";
-    import {createEventDispatcher} from "svelte";
+	import type { CustomDomainDns } from '$lib/types/custom-domain';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { createEventDispatcher } from 'svelte';
 
-    export let satellite: Satellite;
-    export let domainNameInput: string | undefined = undefined;
-    export let dns: CustomDomainDns | undefined = undefined;
+	export let satellite: Satellite;
+	export let domainNameInput: string | undefined = undefined;
+	export let dns: CustomDomainDns | undefined = undefined;
 
-    const dispatch = createEventDispatcher();
+	const dispatch = createEventDispatcher();
 
 	const onSubmitDomainName = () => {
 		if (isNullish(domainNameInput)) {
@@ -30,7 +30,7 @@
 			return;
 		}
 
-        dispatch("junoNext");
+		dispatch('junoNext');
 	};
 </script>
 

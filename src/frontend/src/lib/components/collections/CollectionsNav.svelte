@@ -99,7 +99,6 @@
 		@include text.truncate;
 
 		&:focus {
-			box-shadow: none;
 			outline: 2px solid var(--color-secondary);
 		}
 

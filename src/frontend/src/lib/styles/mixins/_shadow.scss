@@ -6,8 +6,7 @@
 }
 
 @mixin strong-card {
-	box-shadow: 9px 9px var(--color-card-contrast);
-	border: 3px solid var(--color-card-contrast);
+	border: 1px solid var(--color-card-contrast);
 	border-radius: var(--border-radius);
 
 	background: var(--color-card);
@@ -15,7 +14,19 @@
 }
 
 @mixin shadow {
-	box-shadow: 4px 4px var(--color-card-contrast);
-	border: 2px solid var(--color-card-contrast);
+	border: 1px solid var(--color-card-contrast);
 	border-radius: var(--border-radius);
+}
+
+@mixin card-action {
+	@include card;
+
+	box-shadow: 2px 2px var(--color-card-contrast);
+}
+
+@mixin strong-card-action {
+	@include strong-card;
+
+	border: 2px solid var(--color-card-contrast);
+	box-shadow: 1px 1px var(--color-card-contrast);
 }

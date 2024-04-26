@@ -102,7 +102,7 @@
 			max-height: -webkit-fill-available;
 		}
 
-		@include shadow.strong-card;
+		@include shadow.strong-card-action;
 
 		overflow: hidden;
 	}

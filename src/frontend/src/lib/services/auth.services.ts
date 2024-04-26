@@ -4,6 +4,8 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { ToastLevel, ToastMsg } from '$lib/types/toast';
 import { replaceHistory } from '$lib/utils/route.utils';
 import { isNullish } from '@dfinity/utils';
+import {get} from "svelte/store";
+import {i18n} from "$lib/stores/i18n.store";
 
 export const signIn = async (
 	params: AuthSignInParams
@@ -33,13 +35,19 @@ export const signIn = async (
 
 export const signOut = (): Promise<void> => logout({});
 
-export const idleSignOut = async () =>
+export const warnSignOut = (text: string): Promise<void> =>
 	logout({
 		msg: {
-			text: 'You have been logged out because your session has expired.',
+			text,
 			level: 'warn'
 		}
 	});
+
+export const nullishSignOut = (): Promise<void> =>
+	warnSignOut(get(i18n).authentication.not_signed_in);
+
+export const idleSignOut = async () =>
+	warnSignOut(get(i18n).authentication.session_expired);
 
 const logout = async ({ msg = undefined }: { msg?: ToastMsg }) => {
 	// To mask not operational UI (a side effect of sometimes slow JS loading after window.reload because of service worker and no cache).

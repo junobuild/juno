@@ -4,6 +4,7 @@ import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
+import type {AuthenticationConfig} from "$declarations/satellite/satellite.did";
 
 export interface JunoModalBalance {
 	missionControlBalance?: MissionControlBalance;
@@ -36,6 +37,7 @@ export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
 export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
 	satellite: Satellite;
+	config: AuthenticationConfig | undefined;
 }
 
 export interface JunoModalCycles {

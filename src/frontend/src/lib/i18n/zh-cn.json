@@ -167,7 +167,9 @@
 	"authentication": {
 		"title": "认证",
 		"users": "用户",
-		"methods": "登录方法"
+		"methods": "登录方法",
+		"not_signed_in": "You are not signed in. Please sign in to continue.",
+		"session_expired": "You have been logged out because your session has expired."
 	},
 	"datastore": {
 		"title": "数据池",
@@ -332,7 +334,8 @@
 		"invalid_cycles_to_transfer": "转移 cycles 的数额无效.",
 		"invalid_cycles_destination": "转移 cycles 的目的地无效.",
 		"transfer_cycles": "转移 cycles 是出现异常错误.",
-		"cannot_fetch_logs": "获取日志出现异常错误."
+		"cannot_fetch_logs": "获取日志出现异常错误.",
+		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication."
 	},
 	"document": {
 		"owner": "拥有者",

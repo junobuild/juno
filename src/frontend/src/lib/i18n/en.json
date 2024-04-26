@@ -135,7 +135,11 @@
 		"id": "Satellite ID",
 		"stock_version": "Stock version",
 		"extended_version": "Extended version",
-		"build": "Build"
+		"build": "Build",
+		"set_auth_domain_title": "Set main domain for authentication",
+		"set_auth_domain_question": "Would you like to use \"$domain\" as the primary domain for all user sign-ins? This setting ensures that users are recognized on your app, regardless of whether they use the system URL or any other custom domain you might configure later.",
+		"update_auth_domain_title": "Update main domain for authentication",
+		"update_auth_domain_question": "Your current main domain for authentication is set to \"[currentdomain.com]\". Would you like to change it to \"[newdomain.com]\" to serve as the primary domain for all user sign-ins?"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -167,7 +171,9 @@
 	"authentication": {
 		"title": "Authentication",
 		"users": "Users",
-		"methods": "Sign-in methods"
+		"methods": "Sign-in methods",
+		"not_signed_in": "You are not signed in. Please sign in to continue.",
+		"session_expired": "You have been logged out because your session has expired."
 	},
 	"datastore": {
 		"title": "Datastore",
@@ -332,7 +338,8 @@
 		"invalid_cycles_to_transfer": "Invalid amount of cycles to transfer.",
 		"invalid_cycles_destination": "Invalid destination to transfer the cycles.",
 		"transfer_cycles": "Unexpected error(s) while transferring the cycles.",
-		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs."
+		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs.",
+		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication."
 	},
 	"document": {
 		"owner": "Owner",

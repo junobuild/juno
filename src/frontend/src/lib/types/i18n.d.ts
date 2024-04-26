@@ -2,8 +2,6 @@
  * Auto-generated definitions file ("npm run i18n")
  */
 
-import type { Languages } from '$lib/types/languages';
-
 interface I18nCore {
 	close: string;
 	back: string;
@@ -144,6 +142,10 @@ interface I18nSatellites {
 	stock_version: string;
 	extended_version: string;
 	build: string;
+	set_auth_domain_title: string;
+	set_auth_domain_question: string;
+	update_auth_domain_title: string;
+	update_auth_domain_question: string;
 }
 
 interface I18nMission_control {
@@ -179,6 +181,8 @@ interface I18nAuthentication {
 	title: string;
 	users: string;
 	methods: string;
+	not_signed_in: string;
+	session_expired: string;
 }
 
 interface I18nDatastore {
@@ -351,6 +355,7 @@ interface I18nErrors {
 	invalid_cycles_destination: string;
 	transfer_cycles: string;
 	cannot_fetch_logs: string;
+	authentication_config_loading: string;
 }
 
 interface I18nDocument {

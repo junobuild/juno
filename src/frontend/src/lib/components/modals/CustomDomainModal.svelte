@@ -15,13 +15,15 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { setCustomDomain } from '$lib/services/hosting.services';
 	import { wizardBusy } from '$lib/stores/busy.store';
+	import AddCustomDomainForm from '$lib/components/hosting/AddCustomDomainForm.svelte';
+	import AddCustomDomainAuth from '$lib/components/hosting/AddCustomDomainAuth.svelte';
 
 	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
 	$: ({ satellite } = detail as JunoModalCustomDomainDetail);
 
-	let steps: 'init' | 'dns' | 'in_progress' | 'ready' = 'init';
+	let steps: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = 'init';
 	let domainNameInput: string | undefined = undefined;
 	let dns: CustomDomainDns | undefined = undefined;
 
@@ -38,26 +40,6 @@
 		steps = 'dns';
 		edit = true;
 	});
-
-	const onSubmitDomainName = () => {
-		if (isNullish(domainNameInput)) {
-			toasts.error({
-				text: $i18n.errors.hosting_missing_domain_name
-			});
-			return;
-		}
-
-		try {
-			dns = toCustomDomainDns({ domainName: domainNameInput, canisterId: satellite.satellite_id });
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.hosting_invalid_url
-			});
-			return;
-		}
-
-		steps = 'dns';
-	};
 
 	const setupCustomDomain = async () => {
 		if (isNullish(dns)) {
@@ -150,23 +132,15 @@
 		<SpinnerModal>
 			<p>{$i18n.hosting.config_in_progress}</p>
 		</SpinnerModal>
+	{:else if steps === 'auth'}
+		<AddCustomDomainAuth />
 	{:else}
-		<h2>{$i18n.hosting.add_custom_domain}</h2>
-
-		<p>
-			{$i18n.hosting.description}
-		</p>
-
-		<form on:submit|preventDefault={onSubmitDomainName}>
-			<input
-				bind:value={domainNameInput}
-				type="text"
-				name="domain_name"
-				placeholder="Domain name"
-			/>
-
-			<button type="submit">Continue</button>
-		</form>
+		<AddCustomDomainForm
+			bind:domainNameInput
+			bind:dns
+			{satellite}
+			on:junoNext={() => (steps = 'auth')}
+		/>
 	{/if}
 </Modal>
 

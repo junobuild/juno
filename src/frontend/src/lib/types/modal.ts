@@ -38,6 +38,7 @@ export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
 	satellite: Satellite;
 	config: AuthenticationConfig | undefined;
+	satelliteVersion: string;
 }
 
 export interface JunoModalCycles {

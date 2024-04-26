@@ -4,6 +4,7 @@ import {
 	deleteCustomDomain as deleteCustomDomainApi,
 	getAuthConfig as getAuthConfigApi,
 	listCustomDomains as listCustomDomainsApi,
+	satelliteVersion,
 	setCustomDomain as setCustomDomainApi
 } from '$lib/api/satellites.api';
 import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
@@ -18,6 +19,7 @@ import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { compare } from 'semver';
 import { get } from 'svelte/store';
 
 /**
@@ -112,23 +114,55 @@ export const openAddCustomDomain = async ({
 	satellite: Satellite;
 	identity: OptionIdentity;
 } & Pick<JunoModalCustomDomainDetail, 'editDomainName'>) => {
-	busy.start();
+	try {
+		busy.start();
 
-	const { success, config } = await getAuthConfig({
-		satelliteId: satellite.satellite_id,
-		identity
-	});
+		// TODO: load versions globally and use store value instead of fetching version again
+		const version = await satelliteVersion({ satelliteId: satellite.satellite_id, identity });
 
-	busy.stop();
+		// TODO: keep a list of those version checks and remove them incrementally
+		// Also would be cleaner than to have 0.0.17 hardcoded there and there...
+		const authConfigSupported = compare(version, '0.0.17') >= 0;
 
-	if (!success) {
-		return;
+		if (!authConfigSupported) {
+			emit({
+				message: 'junoModal',
+				detail: {
+					type: 'add_custom_domain',
+					detail: { satellite, editDomainName, satelliteVersion: version }
+				}
+			});
+			return { success: true };
+		}
+
+		const { success, config } = await getAuthConfig({
+			satelliteId: satellite.satellite_id,
+			identity
+		});
+
+		if (!success) {
+			return;
+		}
+
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'add_custom_domain',
+				detail: { satellite, config, editDomainName, satelliteVersion: version }
+			}
+		});
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: labels.errors.authentication_config_loading,
+			detail: err
+		});
+
+		return { success: false };
+	} finally {
+		busy.stop();
 	}
-
-	emit({
-		message: 'junoModal',
-		detail: { type: 'add_custom_domain', detail: { satellite, config, editDomainName } }
-	});
 };
 
 const getAuthConfig = async ({
@@ -143,21 +177,10 @@ const getAuthConfig = async ({
 		return { success: false };
 	}
 
-	try {
-		const config = await getAuthConfigApi({
-			satelliteId,
-			identity
-		});
+	const config = await getAuthConfigApi({
+		satelliteId,
+		identity
+	});
 
-		return { success: true, config: fromNullable(config) };
-	} catch (err: unknown) {
-		const labels = get(i18n);
-
-		toasts.error({
-			text: labels.errors.authentication_config_loading,
-			detail: err
-		});
-
-		return { success: false };
-	}
+	return { success: true, config: fromNullable(config) };
 };

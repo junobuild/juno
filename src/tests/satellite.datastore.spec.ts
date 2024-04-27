@@ -5,7 +5,7 @@ import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import { afterAll, beforeAll, describe, expect } from 'vitest';
+import {afterAll, beforeAll, describe, expect, inject} from 'vitest';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
@@ -19,7 +19,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		const TEST_COLLECTION = 'test';
 
 		beforeAll(async () => {
-			pic = await PocketIc.create();
+			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const { actor: c } = await pic.setupCanister<SatelliteActor>({
 				idlFactory: idlFactorSatellite,

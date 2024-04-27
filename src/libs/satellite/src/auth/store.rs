@@ -19,7 +19,8 @@ pub fn set_config(config: &Option<AuthenticationConfig>) -> Result<(), String> {
     match config {
         None => {
             delete_state_config();
-            Ok(())
+
+            delete_alternative_origins_asset()
         }
         Some(config) => {
             insert_state_config(config);

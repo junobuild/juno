@@ -134,6 +134,20 @@ describe('Satellite authentication', () => {
 		it('should set config for ii to none', async () => {
 			const { set_config, get_config } = actor;
 
+			// First reset a valid config
+			await set_config({
+				storage,
+				authentication: [
+					{
+						internet_identity: [
+							{
+								authentication_domain: ['domain.com']
+							}
+						]
+					}
+				]
+			});
+
 			const authentication: AuthenticationConfig = {
 				internet_identity: []
 			};
@@ -149,7 +163,49 @@ describe('Satellite authentication', () => {
 			expect(result).toEqual(config);
 		});
 
-		it('should not expose /.well-known/ii-alternative-origins if the all config as been deleted as well', async () => {
+		it('should not expose /.well-known/ii-alternative-origins if the all II config as been deleted as well', async () => {
+			const { http_request } = actor;
+
+			const { status_code } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/.well-known/ii-alternative-origins'
+			});
+
+			expect(status_code).toBe(404);
+		});
+
+		it('should set config for authentication to none', async () => {
+			const { set_config, get_config } = actor;
+
+			// First reset a valid config
+			await set_config({
+				storage,
+				authentication: [
+					{
+						internet_identity: [
+							{
+								authentication_domain: ['domain.com']
+							}
+						]
+					}
+				]
+			});
+
+			const config: Config = {
+				storage,
+				authentication: []
+			};
+
+			await set_config(config);
+
+			const result = await get_config();
+			expect(result).toEqual(config);
+		});
+
+		it('should not expose /.well-known/ii-alternative-origins if the all authentication config as been deleted as well', async () => {
 			const { http_request } = actor;
 
 			const { status_code } = await http_request({

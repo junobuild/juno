@@ -18,7 +18,6 @@ mod storage;
 mod types;
 mod upgrade;
 
-use crate::auth::types::state::AuthenticationConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
@@ -193,7 +192,7 @@ pub fn list_controllers() -> Controllers {
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_config(config: Config) {
-    satellite::set_config(config);
+    satellite::set_config(config).unwrap_or_else(|e| trap(&e));
 }
 
 #[doc(hidden)]
@@ -222,22 +221,6 @@ pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
     satellite::del_custom_domain(domain_name);
-}
-
-///
-/// Authentication config
-///
-
-#[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
-pub fn set_auth_config(config: AuthenticationConfig) {
-    satellite::set_auth_config(config);
-}
-
-#[doc(hidden)]
-#[query(guard = "caller_is_admin_controller")]
-pub fn get_auth_config() -> Option<AuthenticationConfig> {
-    satellite::get_auth_config()
 }
 
 ///
@@ -367,11 +350,11 @@ macro_rules! include_satellite {
         use junobuild_satellite::{
             commit_asset_upload, count_assets, count_docs, del_asset, del_assets, del_controllers,
             del_custom_domain, del_doc, del_docs, del_many_assets, del_many_docs, del_rule,
-            deposit_cycles, get_asset, get_auth_config, get_config, get_doc, get_many_assets,
-            get_many_docs, http_request, http_request_streaming_callback, init, init_asset_upload,
-            list_assets, list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
-            post_upgrade, pre_upgrade, set_auth_config, set_config, set_controllers,
-            set_custom_domain, set_doc, set_many_docs, set_rule, upload_asset_chunk, version,
+            deposit_cycles, get_asset, get_config, get_doc, get_many_assets, get_many_docs,
+            http_request, http_request_streaming_callback, init, init_asset_upload, list_assets,
+            list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
+            post_upgrade, pre_upgrade, set_config, set_controllers, set_custom_domain, set_doc,
+            set_many_docs, set_rule, upload_asset_chunk, version,
         };
 
         #[ic_cdk::query]

@@ -1,7 +1,6 @@
-use crate::auth::authentication::{
+use crate::auth::store::{
     get_config as get_authentication_config, set_config as set_authentication_config,
 };
-use crate::auth::types::state::AuthenticationConfig;
 use crate::controllers::store::get_admin_controllers;
 use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
@@ -311,13 +310,19 @@ pub fn list_controllers() -> Controllers {
 /// Config
 ///
 
-pub fn set_config(config: Config) {
+pub fn set_config(config: Config) -> Result<(), String> {
     set_storage_config(&config.storage);
+    set_authentication_config(&config.authentication)
 }
 
 pub fn get_config() -> Config {
     let storage = get_storage_config();
-    Config { storage }
+    let authentication = get_authentication_config();
+
+    Config {
+        storage,
+        authentication,
+    }
 }
 
 ///
@@ -334,18 +339,6 @@ pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
 
 pub fn del_custom_domain(domain_name: DomainName) {
     delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
-}
-
-///
-/// Authentication config
-///
-
-pub fn set_auth_config(config: AuthenticationConfig) {
-    set_authentication_config(&config).unwrap_or_else(|e| trap(&e));
-}
-
-pub fn get_auth_config() -> Option<AuthenticationConfig> {
-    get_authentication_config()
 }
 
 ///

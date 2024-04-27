@@ -1,4 +1,7 @@
-use crate::auth::state::{get_config as get_state_config, insert_config as insert_state_config};
+use crate::auth::state::{
+    delete_config as delete_state_config, get_config as get_state_config,
+    insert_config as insert_state_config,
+};
 use crate::auth::types::state::AuthenticationConfig;
 use crate::storage::well_known::update::{
     delete_alternative_origins_asset, update_alternative_origins_asset,
@@ -12,10 +15,18 @@ struct AlternativeOrigins {
     alternative_origins: Vec<String>,
 }
 
-pub fn set_config(config: &AuthenticationConfig) -> Result<(), String> {
-    insert_state_config(config);
+pub fn set_config(config: &Option<AuthenticationConfig>) -> Result<(), String> {
+    match config {
+        None => {
+            delete_state_config();
+            Ok(())
+        }
+        Some(config) => {
+            insert_state_config(config);
 
-    update_alternative_origins(config)
+            update_alternative_origins(config)
+        }
+    }
 }
 
 fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), String> {

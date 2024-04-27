@@ -93,6 +93,7 @@ pub mod core {
 }
 
 pub mod interface {
+    use crate::auth::types::state::AuthenticationConfig;
     use crate::storage::types::config::StorageConfig;
     use candid::CandidType;
     use serde::Deserialize;
@@ -106,6 +107,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct Config {
         pub storage: StorageConfig,
+        pub authentication: Option<AuthenticationConfig>,
     }
 }
 

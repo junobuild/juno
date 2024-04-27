@@ -1,5 +1,6 @@
 use crate::auth::types::state::{AuthenticationConfig, AuthenticationHeapState};
 use crate::memory::STATE;
+use crate::types::state::HeapState;
 
 ///
 /// Config
@@ -29,4 +30,12 @@ fn insert_config_impl(config: &AuthenticationConfig, state: &mut Option<Authenti
         }
         Some(state) => state.config = config.clone(),
     }
+}
+
+pub fn delete_config() {
+    STATE.with(|state| delete_config_impl(&mut state.borrow_mut().heap))
+}
+
+fn delete_config_impl(state: &mut HeapState) {
+    state.authentication = None
 }

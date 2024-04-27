@@ -29,7 +29,10 @@ type CommitBatch = record {
   headers : vec record { text; text };
   chunk_ids : vec nat;
 };
-type Config = record { storage : StorageConfig };
+type Config = record {
+  authentication : opt AuthenticationConfig;
+  storage : StorageConfig;
+};
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -186,7 +189,6 @@ service : () -> {
   del_rule : (RulesType, text, DelDoc) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
   get_asset : (text, text) -> (opt AssetNoContent) query;
-  get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config);
   get_doc : (text, text) -> (opt Doc) query;
   get_many_assets : (vec record { text; text }) -> (
@@ -206,7 +208,6 @@ service : () -> {
   list_docs : (text, ListParams) -> (ListResults_1) query;
   list_rules : (RulesType) -> (vec record { text; Rule }) query;
   memory_size : () -> (MemorySize) query;
-  set_auth_config : (AuthenticationConfig) -> ();
   set_config : (Config) -> ();
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },

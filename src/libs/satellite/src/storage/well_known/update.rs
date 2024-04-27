@@ -59,11 +59,11 @@ fn update_asset(
     // #app collection rule
     let rule = get_rule(&collection)?;
 
-    let existing_asset = get_state_asset(&collection, &full_path, &rule);
+    let existing_asset = get_state_asset(&collection, full_path, &rule);
 
     let asset = f(content, existing_asset);
 
-    insert_state_asset(&collection, &full_path, &asset, &rule);
+    insert_state_asset(&collection, full_path, &asset, &rule);
 
     let config = get_config_store();
 
@@ -78,7 +78,7 @@ fn delete_asset(full_path: &String) -> Result<(), String> {
     // #app collection rule
     let rule = get_rule(&collection)?;
 
-    let asset = delete_state_asset(&collection, &full_path, &rule);
+    let asset = delete_state_asset(&collection, full_path, &rule);
 
     if let Some(asset) = asset {
         delete_certified_asset(&asset);

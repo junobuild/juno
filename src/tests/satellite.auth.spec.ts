@@ -10,7 +10,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
-import { afterAll, beforeAll, describe, expect } from 'vitest';
+import {afterAll, beforeAll, describe, expect, inject} from 'vitest';
 import { ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
@@ -28,7 +28,7 @@ describe('Satellite authentication', () => {
 	};
 
 	beforeAll(async () => {
-		pic = await PocketIc.create();
+		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,

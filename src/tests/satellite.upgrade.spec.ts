@@ -6,7 +6,7 @@ import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
-import { afterEach, beforeEach, describe, expect } from 'vitest';
+import {afterEach, beforeEach, describe, expect, inject} from 'vitest';
 import { WASM_PATH, downloadSatellite, satelliteInitArgs } from './utils/satellite-tests.utils';
 
 describe('satellite upgrade', () => {
@@ -93,7 +93,7 @@ describe('satellite upgrade', () => {
 
 	describe('v0.0.15 -> v0.0.16', async () => {
 		beforeEach(async () => {
-			pic = await PocketIc.create();
+			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const destination = await downloadSatellite('0.0.15');
 
@@ -155,7 +155,7 @@ describe('satellite upgrade', () => {
 
 	describe('v0.0.11 -> v0.0.16', async () => {
 		beforeEach(async () => {
-			pic = await PocketIc.create();
+			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const destination = await downloadSatellite('0.0.11');
 
@@ -206,7 +206,7 @@ describe('satellite upgrade', () => {
 
 	describe('v0.0.16 -> v0.0.16', async () => {
 		beforeEach(async () => {
-			pic = await PocketIc.create();
+			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
 				idlFactory: idlFactorSatellite,

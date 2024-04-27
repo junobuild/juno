@@ -8,7 +8,7 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { afterAll, beforeAll, beforeEach, describe, expect } from 'vitest';
+import {afterAll, beforeAll, beforeEach, describe, expect, inject} from 'vitest';
 import { ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
@@ -19,7 +19,7 @@ describe('Satellite storage', () => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	beforeAll(async () => {
-		pic = await PocketIc.create();
+		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,

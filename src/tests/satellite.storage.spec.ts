@@ -56,7 +56,8 @@ describe('Satellite storage', () => {
 						iframe: toNullable(),
 						redirects: toNullable(),
 						rewrites: []
-					}
+					},
+					authentication: []
 				})
 			).rejects.toThrow(ADMIN_ERROR_MSG);
 		});
@@ -154,13 +155,15 @@ describe('Satellite storage', () => {
 			};
 
 			await set_config({
-				storage
+				storage,
+				authentication: []
 			});
 
 			const configs = await get_config();
 
 			expect(configs).toEqual({
-				storage
+				storage,
+				authentication: []
 			});
 		});
 

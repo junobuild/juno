@@ -1,6 +1,8 @@
 import type {
 	AuthenticationConfig,
-	_SERVICE as SatelliteActor
+	Config,
+	_SERVICE as SatelliteActor,
+	StorageConfig
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
@@ -17,6 +19,13 @@ describe('Satellite authentication', () => {
 	let actor: Actor<SatelliteActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
+
+	const storage: StorageConfig = {
+		headers: [],
+		redirects: [],
+		iframe: [],
+		rewrites: []
+	};
 
 	beforeAll(async () => {
 		pic = await PocketIc.create();
@@ -41,16 +50,16 @@ describe('Satellite authentication', () => {
 		});
 
 		it('should have empty config per default', async () => {
-			const { get_auth_config } = actor;
+			const { get_config } = actor;
 
-			const config = await get_auth_config();
-			expect(config).toEqual([]);
+			const config = await get_config();
+			expect(config.authentication).toEqual([]);
 		});
 
 		it('should set config auth domain', async () => {
-			const { set_auth_config, get_auth_config } = actor;
+			const { set_config, get_config } = actor;
 
-			const config: AuthenticationConfig = {
+			const authentication: AuthenticationConfig = {
 				internet_identity: [
 					{
 						authentication_domain: ['domain.com']
@@ -58,10 +67,15 @@ describe('Satellite authentication', () => {
 				]
 			};
 
-			await set_auth_config(config);
+			const config: Config = {
+				storage,
+				authentication: [authentication]
+			};
 
-			const result = await get_auth_config();
-			expect(result).toEqual([config]);
+			await set_config(config);
+
+			const result = await get_config();
+			expect(result).toEqual(config);
 		});
 
 		it('should expose /.well-known/ii-alternative-origins', async () => {
@@ -82,9 +96,9 @@ describe('Satellite authentication', () => {
 		});
 
 		it('should set config auth domain to none', async () => {
-			const { set_auth_config, get_auth_config } = actor;
+			const { set_config, get_config } = actor;
 
-			const config: AuthenticationConfig = {
+			const authentication: AuthenticationConfig = {
 				internet_identity: [
 					{
 						authentication_domain: []
@@ -92,10 +106,15 @@ describe('Satellite authentication', () => {
 				]
 			};
 
-			await set_auth_config(config);
+			const config: Config = {
+				storage,
+				authentication: [authentication]
+			};
 
-			const result = await get_auth_config();
-			expect(result).toEqual([config]);
+			await set_config(config);
+
+			const result = await get_config();
+			expect(result).toEqual(config);
 		});
 
 		it('should not expose /.well-known/ii-alternative-origins', async () => {
@@ -113,16 +132,21 @@ describe('Satellite authentication', () => {
 		});
 
 		it('should set config for ii to none', async () => {
-			const { set_auth_config, get_auth_config } = actor;
+			const { set_config, get_config } = actor;
 
-			const config: AuthenticationConfig = {
+			const authentication: AuthenticationConfig = {
 				internet_identity: []
 			};
 
-			await set_auth_config(config);
+			const config: Config = {
+				storage,
+				authentication: [authentication]
+			};
 
-			const result = await get_auth_config();
-			expect(result).toEqual([config]);
+			await set_config(config);
+
+			const result = await get_config();
+			expect(result).toEqual(config);
 		});
 
 		it('should not expose /.well-known/ii-alternative-origins if the all config as been deleted as well', async () => {
@@ -176,19 +200,24 @@ describe('Satellite authentication', () => {
 		});
 
 		it('should throw errors on setting config', async () => {
-			const { set_auth_config } = actor;
+			const { set_config } = actor;
 
-			await expect(
-				set_auth_config({
-					internet_identity: [{ authentication_domain: ['demo.com'] }]
-				})
-			).rejects.toThrow(ADMIN_ERROR_MSG);
+			const config: Config = {
+				storage,
+				authentication: [
+					{
+						internet_identity: [{ authentication_domain: ['demo.com'] }]
+					}
+				]
+			};
+
+			await expect(set_config(config)).rejects.toThrow(ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on getting config', async () => {
-			const { get_auth_config } = actor;
+			const { get_config } = actor;
 
-			await expect(get_auth_config()).rejects.toThrow(ADMIN_ERROR_MSG);
+			await expect(get_config()).rejects.toThrow(ADMIN_ERROR_MSG);
 		});
 
 		it('should not create a user', async () => {

@@ -1,4 +1,3 @@
-use crate::auth::state::{get_config as get_state_config, insert_config as insert_state_config};
 use crate::auth::types::state::AuthenticationConfig;
 use crate::storage::well_known::update::{
     delete_alternative_origins_asset, update_alternative_origins_asset,
@@ -12,13 +11,7 @@ struct AlternativeOrigins {
     alternative_origins: Vec<String>,
 }
 
-pub fn set_config(config: &AuthenticationConfig) -> Result<(), String> {
-    insert_state_config(config);
-
-    update_alternative_origins(config)
-}
-
-fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), String> {
+pub fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), String> {
     config
         .internet_identity
         .as_ref()
@@ -33,8 +26,4 @@ fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), Strin
 
             update_alternative_origins_asset(&json)
         })
-}
-
-pub fn get_config() -> Option<AuthenticationConfig> {
-    get_state_config()
 }

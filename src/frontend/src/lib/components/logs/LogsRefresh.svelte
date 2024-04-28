@@ -31,7 +31,6 @@
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore NodeJS.timeout vs number
 		timer = setInterval(async () => {
-			console.log('list');
 			await list();
 		}, SYNC_LOGS_TIMER_INTERVAL);
 	};

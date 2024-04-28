@@ -4,7 +4,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
-import {afterAll, beforeAll, beforeEach, describe, inject} from 'vitest';
+import { afterAll, beforeAll, beforeEach, describe, inject } from 'vitest';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
 describe.skip('Satellite playground (kind of)', () => {

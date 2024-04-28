@@ -6,7 +6,7 @@ import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
-import {afterEach, beforeEach, describe, expect, inject} from 'vitest';
+import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import { WASM_PATH, downloadSatellite, satelliteInitArgs } from './utils/satellite-tests.utils';
 
 describe('satellite upgrade', () => {

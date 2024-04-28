@@ -227,6 +227,26 @@ describe('Satellite storage', () => {
 			expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
 		});
 
+		describe.each(['/.well-known/ic-domains', '/.well-known/ii-alternative-origins'])(
+			'Assertion',
+			(full_path) => {
+				it(`should throw errors on upload ${full_path}`, async () => {
+					const { init_asset_upload } = actor;
+
+					await expect(
+						init_asset_upload({
+							collection: '#dapp',
+							description: toNullable(),
+							encoding_type: [],
+							full_path,
+							name: 'ic-domains',
+							token: toNullable()
+						})
+					).rejects.toThrow(`${full_path} is a reserved asset.`);
+				});
+			}
+		);
+
 		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			'With collection',
 			({ memory }) => {

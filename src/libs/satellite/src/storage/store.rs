@@ -18,10 +18,7 @@ use crate::rules::assert_stores::{
     assert_create_permission, assert_permission, is_known_user, public_permission,
 };
 use crate::rules::types::rules::{Memory, Rule};
-use crate::storage::constants::{
-    ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
-    ROOT_404_HTML, ROOT_INDEX_HTML,
-};
+use crate::storage::constants::{ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER, ROOT_404_HTML, ROOT_INDEX_HTML, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::storage::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks,
@@ -605,11 +602,10 @@ fn assert_key(
     controllers: &Controllers,
 ) -> Result<(), &'static str> {
     // /.well-known/ic-domains is automatically generated for custom domains
-    if full_path == BN_WELL_KNOWN_CUSTOM_DOMAINS {
-        let error =
-            format!("{} is a reserved asset.", BN_WELL_KNOWN_CUSTOM_DOMAINS).into_boxed_str();
-        return Err(Box::leak(error));
-    }
+    assert_well_known_key(full_path, BN_WELL_KNOWN_CUSTOM_DOMAINS)?;
+
+    // /.well-known/ii-alternative-origins is automatically generated for alternative origins
+    assert_well_known_key(full_path, WELL_KNOWN_II_ALTERNATIVE_ORIGINS)?;
 
     let dapp_collection = DEFAULT_ASSETS_COLLECTIONS[0].0;
 
@@ -625,6 +621,14 @@ fn assert_key(
         return Err("Asset path must be prefixed with collection key.");
     }
 
+    Ok(())
+}
+
+fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), &'static str> {
+    if full_path == reserved_path {
+        let error = format!("{} is a reserved asset.", reserved_path);
+        return Err(Box::leak(error.into_boxed_str()));
+    }
     Ok(())
 }
 

@@ -42,20 +42,7 @@
 		dispatch('junoNext', payload);
 	};
 
-	const no = () => {
-		const payload: AuthenticationConfig | undefined = isNullish(config)
-			? undefined
-			: {
-					...config,
-					...(nonNullish(fromNullable(config.internet_identity)) && {
-						internet_identity: [
-							{ ...fromNullable(config.internet_identity), authentication_domain: [] }
-						]
-					})
-				};
-
-		dispatch('junoNext', payload);
-	};
+	const no = () => dispatch('junoNext', config);
 </script>
 
 <h2>{edit ? $i18n.hosting.update_auth_domain_title : $i18n.hosting.set_auth_domain_title}</h2>
@@ -93,12 +80,14 @@
 
 <div class="toolbar">
 	<button on:click={no}
-		><span>{@html i18nFormat($i18n.hosting.no_keep_domain, [
-		{
-			placeholder: '{0}',
-			value: authDomain ?? ''
-		}
-	])}</span></button
+		><span
+			>{@html i18nFormat($i18n.hosting.no_keep_domain, [
+				{
+					placeholder: '{0}',
+					value: authDomain ?? ''
+				}
+			])}</span
+		></button
 	>
 	<button on:click={yes}>{$i18n.core.yes}</button>
 </div>

@@ -199,7 +199,10 @@ export const getAuthConfig = async (params: {
 	return get_auth_config();
 };
 
-export const setAuthConfig = async ({config, ...rest}: {
+export const setAuthConfig = async ({
+	config,
+	...rest
+}: {
 	satelliteId: Principal;
 	config: AuthenticationConfig;
 	identity: OptionIdentity;

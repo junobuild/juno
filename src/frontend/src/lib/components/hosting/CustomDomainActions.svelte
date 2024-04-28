@@ -40,7 +40,7 @@
 	$: deleteMainDomain =
 		nonNullish(customDomain?.[0]) &&
 		customDomain?.[0] ===
-			fromNullable(fromNullable(config?.internet_identity ?? [])?.authentication_domain ?? []);
+			fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []);
 
 	let advancedOptions = false;
 	let skipDeleteDomain = false;
@@ -57,7 +57,7 @@
 						internet_identity: [
 							{
 								...fromNullable(config.internet_identity),
-								authentication_domain: []
+								derivation_origin: []
 							}
 						]
 					})

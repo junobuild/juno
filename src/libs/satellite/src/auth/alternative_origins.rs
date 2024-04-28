@@ -19,7 +19,7 @@ pub fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), S
     config
         .internet_identity
         .as_ref()
-        .and_then(|config| config.authentication_domain.as_ref())
+        .and_then(|config| config.derivation_origin.as_ref())
         .map_or_else(delete_alternative_origins_asset, set_alternative_origins)
 }
 

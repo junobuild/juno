@@ -30,7 +30,7 @@
 
 	let authDomain: string | undefined;
 	$: authDomain = fromNullable(
-		fromNullable(config?.internet_identity ?? [])?.authentication_domain ?? []
+		fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []
 	);
 
 	let mainDomain: boolean;

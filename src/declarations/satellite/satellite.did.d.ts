@@ -26,7 +26,7 @@ export interface AuthenticationConfig {
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
 }
 export interface AuthenticationConfigInternetIdentity {
-	authentication_domain: [] | [string];
+	derivation_origin: [] | [string];
 }
 export interface CommitBatch {
 	batch_id: bigint;

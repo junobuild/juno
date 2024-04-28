@@ -15,6 +15,6 @@ pub mod state {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationConfigInternetIdentity {
-        pub authentication_domain: Option<DomainName>,
+        pub derivation_origin: Option<DomainName>,
     }
 }

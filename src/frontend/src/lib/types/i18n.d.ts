@@ -177,6 +177,8 @@ interface I18nAuthentication {
 	title: string;
 	users: string;
 	methods: string;
+	not_signed_in: string;
+	session_expired: string;
 }
 
 interface I18nDatastore {
@@ -235,6 +237,7 @@ interface I18nHosting {
 	dns_notes: string;
 	delete_custom_domain: string;
 	before_continuing: string;
+	delete_auth_domain_warning: string;
 	delete_are_you_sure: string;
 	delete: string;
 	edit: string;
@@ -255,6 +258,12 @@ interface I18nHosting {
 	failed: string;
 	skip_delete_domain: string;
 	files_deployed: string;
+	set_auth_domain_title: string;
+	set_auth_domain_question: string;
+	update_auth_domain_title: string;
+	update_auth_domain_question: string;
+	domain_name: string;
+	no_keep_domain: string;
 }
 
 interface I18nFunctions {
@@ -349,6 +358,7 @@ interface I18nErrors {
 	invalid_cycles_destination: string;
 	transfer_cycles: string;
 	cannot_fetch_logs: string;
+	authentication_config_loading: string;
 }
 
 interface I18nDocument {

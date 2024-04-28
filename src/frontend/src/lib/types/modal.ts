@@ -1,4 +1,5 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
@@ -36,6 +37,8 @@ export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
 export interface JunoModalCustomDomainDetail {
 	editDomainName?: string;
 	satellite: Satellite;
+	config: AuthenticationConfig | undefined;
+	satelliteVersion: string;
 }
 
 export interface JunoModalCycles {

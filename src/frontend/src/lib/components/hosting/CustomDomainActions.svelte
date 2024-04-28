@@ -3,21 +3,33 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
-	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
-	import { isNullish } from '@dfinity/utils';
+	import type {
+		AuthenticationConfig,
+		CustomDomain as CustomDomainType
+	} from '$declarations/satellite/satellite.did';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
+	import {
+		deleteCustomDomain as deleteCustomDomainService,
+		openDeleteCustomDomain
+	} from '$lib/services/hosting.services';
 	import { emit } from '$lib/utils/events.utils';
+	import { authStore } from '$lib/stores/auth.store';
+	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
+	import { openAddCustomDomain as openAddCustomDomainServices } from '$lib/services/hosting.services';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import { setAuthConfig } from '$lib/api/satellites.api';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
 	export let displayState: string | null | undefined;
 
 	let visible = false;
+	let config: AuthenticationConfig | undefined;
 
-	const openDelete = () => {
+	const openDelete = async () => {
 		if (isNullish(customDomain)) {
 			toasts.error({
 				text: $i18n.errors.hosting_no_custom_domain
@@ -25,11 +37,53 @@
 			return;
 		}
 
-		visible = true;
+		// Reset for next popover
+		config = undefined;
+
+		await openDeleteCustomDomain({
+			identity: $authStore.identity,
+			satellite,
+			open: ({ config: c }) => {
+				config = c;
+				visible = true;
+			}
+		});
 	};
+
+	let deleteMainDomain = false;
+	$: deleteMainDomain =
+		nonNullish(customDomain?.[0]) &&
+		customDomain?.[0] ===
+			fromNullable(fromNullable(config?.internet_identity ?? [])?.authentication_domain ?? []);
 
 	let advancedOptions = false;
 	let skipDeleteDomain = false;
+
+	const updateConfig = async () => {
+		if (isNullish(config)) {
+			return;
+		}
+
+		const updateConfig: AuthenticationConfig = deleteMainDomain
+			? {
+					...config,
+					...(nonNullish(fromNullable(config.internet_identity)) && {
+						internet_identity: [
+							{
+								...fromNullable(config.internet_identity),
+								authentication_domain: []
+							}
+						]
+					})
+				}
+			: config;
+
+		await setAuthConfig({
+			satelliteId: satellite.satellite_id,
+			config: updateConfig,
+			identity: $authStore.identity
+		});
+	};
 
 	const deleteCustomDomain = async () => {
 		if (isNullish(customDomain)) {
@@ -49,6 +103,8 @@
 				deleteCustomDomain: !skipDeleteDomain
 			});
 
+			await updateConfig();
+
 			emit({ message: 'junoSyncCustomDomains' });
 
 			visible = false;
@@ -63,6 +119,16 @@
 
 		busy.stop();
 	};
+
+	const openAddCustomDomain = async (
+		params: Pick<JunoModalCustomDomainDetail, 'editDomainName'>
+	) => {
+		await openAddCustomDomainServices({
+			identity: $authStore.identity,
+			satellite,
+			...params
+		});
+	};
 </script>
 
 <div class="tools">
@@ -70,14 +136,7 @@
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<ButtonTableAction
-			on:click={() =>
-				emit({
-					message: 'junoModal',
-					detail: {
-						type: 'add_custom_domain',
-						detail: { satellite, editDomainName: customDomain?.[0] }
-					}
-				})}
+			on:click={async () => await openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 			ariaLabel={$i18n.hosting.edit}
 			icon="edit"
 		/>
@@ -96,6 +155,10 @@
 		</h3>
 
 		<p>{$i18n.hosting.before_continuing}</p>
+
+		{#if deleteMainDomain}
+			<p><span class="warning"><IconWarning /></span> {$i18n.hosting.delete_auth_domain_warning}</p>
+		{/if}
 
 		<p>{$i18n.hosting.delete_are_you_sure}</p>
 
@@ -153,5 +216,9 @@
 		span {
 			white-space: pre-wrap;
 		}
+	}
+
+	.warning {
+		color: var(--color-warning);
 	}
 </style>

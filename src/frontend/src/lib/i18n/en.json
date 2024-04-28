@@ -167,7 +167,9 @@
 	"authentication": {
 		"title": "Authentication",
 		"users": "Users",
-		"methods": "Sign-in methods"
+		"methods": "Sign-in methods",
+		"not_signed_in": "You are not signed in. Please sign in to continue.",
+		"session_expired": "You have been logged out because your session has expired."
 	},
 	"datastore": {
 		"title": "Datastore",
@@ -222,6 +224,7 @@
 		"dns_notes": "You might have to adjust above records for your domain provider. Find more information in the <a href=\"https://juno.build/docs/build/hosting#about-dns-records\" rel=\"external noopener noreferrer\" target=\"_blank\">documentation</a>.",
 		"delete_custom_domain": "Delete {0}",
 		"before_continuing": "Before continuing, the records must be removed from your DNS provider.",
+		"delete_auth_domain_warning": "This domain is the primary domain for all user sign-ins.",
 		"delete_are_you_sure": "Proceed with deletion?",
 		"delete": "Delete a custom domain",
 		"edit": "Edit a custom domain",
@@ -241,7 +244,13 @@
 		"available": "Available",
 		"failed": "Failed",
 		"skip_delete_domain": "Skip custom domain deletion in Boundary Nodes",
-		"files_deployed": "files deployed"
+		"files_deployed": "files deployed",
+		"set_auth_domain_title": "Set main domain for authentication",
+		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the primary domain for all user sign-ins?<br/><br/>This setting ensures that users are recognized on your app, regardless of whether they use the system URL or any other custom domain you might configure later.<br><br>For example, a user signing on at {1} will receive the same identifier (principal) as when signing on at {2}.",
+		"update_auth_domain_title": "Update main domain for authentication",
+		"update_auth_domain_question": "Your current main domain for authentication is set to <strong>{1}</strong>. Would you like to change it to <strong>{0}</strong> to serve as the primary domain for all user sign-ins?",
+		"domain_name": "Domain name",
+		"no_keep_domain": "No, keep {0}"
 	},
 	"functions": {
 		"title": "Functions",
@@ -332,7 +341,8 @@
 		"invalid_cycles_to_transfer": "Invalid amount of cycles to transfer.",
 		"invalid_cycles_destination": "Invalid destination to transfer the cycles.",
 		"transfer_cycles": "Unexpected error(s) while transferring the cycles.",
-		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs."
+		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs.",
+		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication."
 	},
 	"document": {
 		"owner": "Owner",

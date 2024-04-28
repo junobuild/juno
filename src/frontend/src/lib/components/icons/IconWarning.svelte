@@ -14,4 +14,9 @@
 	svg {
 		vertical-align: bottom;
 	}
+
+	path {
+		stroke: var(--text-color);
+		stroke-width: 8px;
+	}
 </style>

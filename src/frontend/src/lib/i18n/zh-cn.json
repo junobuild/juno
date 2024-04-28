@@ -167,7 +167,9 @@
 	"authentication": {
 		"title": "认证",
 		"users": "用户",
-		"methods": "登录方法"
+		"methods": "登录方法",
+		"not_signed_in": "You are not signed in. Please sign in to continue.",
+		"session_expired": "You have been logged out because your session has expired."
 	},
 	"datastore": {
 		"title": "数据池",
@@ -222,6 +224,7 @@
 		"dns_notes": "你可能需要在你的DNS提供者服务上调整以上记录,更多信息请参考 <a href=\"https://juno.build/docs/build/hosting#about-dns-records\" rel=\"external noopener noreferrer\" target=\"_blank\">文档</a>.",
 		"delete_custom_domain": "删除 {0}",
 		"before_continuing": "在继续操作之前，请务必从你的DNS提供者服务上删除记录.",
+		"delete_auth_domain_warning": "This domain is the primary domain for all user sign-ins.",
 		"delete_are_you_sure": "确认删除?",
 		"delete": "删除域名",
 		"edit": "编辑域名",
@@ -241,7 +244,13 @@
 		"available": "有效",
 		"failed": "失败",
 		"skip_delete_domain": "跳过在Boundary节点删除定制域名",
-		"files_deployed": "文件已经部署"
+		"files_deployed": "文件已经部署",
+		"set_auth_domain_title": "Set main domain for authentication",
+		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the primary domain for all user sign-ins?<br/><br/>This setting ensures that users are recognized on your app, regardless of whether they use the system URL or any other custom domain you might configure later.<br><br>For example, a user signing on at {1} will receive the same identifier (principal) as when signing on at {2}.",
+		"update_auth_domain_title": "Update main domain for authentication",
+		"update_auth_domain_question": "Your current main domain for authentication is set to <strong>{1}</strong>. Would you like to change it to <strong>{0}</strong> to serve as the primary domain for all user sign-ins?",
+		"domain_name": "Domain name",
+		"no_keep_domain": "No, keep {0}"
 	},
 	"functions": {
 		"title": "功能",
@@ -332,7 +341,8 @@
 		"invalid_cycles_to_transfer": "转移 cycles 的数额无效.",
 		"invalid_cycles_destination": "转移 cycles 的目的地无效.",
 		"transfer_cycles": "转移 cycles 是出现异常错误.",
-		"cannot_fetch_logs": "获取日志出现异常错误."
+		"cannot_fetch_logs": "获取日志出现异常错误.",
+		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication."
 	},
 	"document": {
 		"owner": "拥有者",

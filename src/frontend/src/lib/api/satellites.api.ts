@@ -1,5 +1,6 @@
 import type { Controller } from '$declarations/mission_control/mission_control.did';
 import type {
+	AuthenticationConfig,
 	DelDoc as DelRule,
 	Doc,
 	ListResults as ListAssets,
@@ -157,42 +158,57 @@ export const satelliteBuildVersion = async ({
 };
 
 export const setCustomDomain = async ({
-	satelliteId,
 	domainName,
 	boundaryNodesId,
-	identity
+	...rest
 }: {
 	satelliteId: Principal;
 	domainName: string;
 	boundaryNodesId: string | undefined;
 	identity: OptionIdentity;
 }): Promise<void> => {
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	await actor.set_custom_domain(domainName, toNullable(boundaryNodesId));
+	const { set_custom_domain } = await getSatelliteActor(rest);
+	await set_custom_domain(domainName, toNullable(boundaryNodesId));
 };
 
 export const deleteCustomDomain = async ({
-	satelliteId,
 	domainName,
-	identity
+	...rest
 }: {
 	satelliteId: Principal;
 	domainName: string;
 	identity: OptionIdentity;
 }): Promise<void> => {
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	await actor.del_custom_domain(domainName);
+	const { del_custom_domain } = await getSatelliteActor(rest);
+	await del_custom_domain(domainName);
 };
 
-export const listCustomDomains = async ({
-	satelliteId,
-	identity
-}: {
+export const listCustomDomains = async (params: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
 }): Promise<CustomDomains> => {
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	return actor.list_custom_domains();
+	const { list_custom_domains } = await getSatelliteActor(params);
+	return list_custom_domains();
+};
+
+export const getAuthConfig = async (params: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<[] | [AuthenticationConfig]> => {
+	const { get_auth_config } = await getSatelliteActor(params);
+	return get_auth_config();
+};
+
+export const setAuthConfig = async ({
+	config,
+	...rest
+}: {
+	satelliteId: Principal;
+	config: AuthenticationConfig;
+	identity: OptionIdentity;
+}): Promise<void> => {
+	const { set_auth_config } = await getSatelliteActor(rest);
+	return set_auth_config(config);
 };
 
 export const deleteDoc = async ({

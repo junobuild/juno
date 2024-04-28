@@ -43,9 +43,6 @@ export const warnSignOut = (text: string): Promise<void> =>
 		}
 	});
 
-export const nullishSignOut = (): Promise<void> =>
-	warnSignOut(get(i18n).authentication.not_signed_in);
-
 export const idleSignOut = async () => warnSignOut(get(i18n).authentication.session_expired);
 
 const logout = async ({ msg = undefined }: { msg?: ToastMsg }) => {

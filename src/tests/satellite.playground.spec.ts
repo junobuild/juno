@@ -48,6 +48,7 @@ describe.skip('Satellite playground (kind of)', () => {
 				updated_at: toNullable()
 			});
 
+			// eslint-disable-next-line no-console
 			console.log(`[${counter}] User ${user.getPrincipal().toText()} created.`);
 		};
 
@@ -68,6 +69,7 @@ describe.skip('Satellite playground (kind of)', () => {
 			paginate: toNullable()
 		});
 
+		// eslint-disable-next-line no-console
 		console.log(users);
 	}, 2000000); // 451569 for 5000 with 100 create user in promise
 });

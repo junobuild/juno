@@ -37,6 +37,7 @@ module.exports = {
 			}
 		],
 		'no-underscore-dangle': 'off',
-		'svelte/no-at-html-tags': 'off'
+		'svelte/no-at-html-tags': 'off',
+		'no-console': ['error', { allow: ['error', 'warn'] }],
 	}
 };

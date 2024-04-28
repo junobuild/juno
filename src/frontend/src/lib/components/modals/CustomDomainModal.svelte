@@ -2,7 +2,7 @@
 	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
@@ -35,7 +35,7 @@
 	onMount(() => {
 		domainNameInput = (detail as JunoModalCustomDomainDetail).editDomainName ?? '';
 
-		if (isNullish(domainNameInput)) {
+		if (!notEmptyString(domainNameInput)) {
 			return;
 		}
 

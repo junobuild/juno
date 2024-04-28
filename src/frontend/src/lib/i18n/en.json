@@ -238,6 +238,7 @@
 		"default_domain": "Default satellite domain",
 		"domain": "Domain",
 		"status": "Status",
+		"primary": "Primary",
 		"pendingorder": "Pending order",
 		"pendingchallengeresponse": "Certificate ordered",
 		"pendingacmeapproval": "Challenge completed",

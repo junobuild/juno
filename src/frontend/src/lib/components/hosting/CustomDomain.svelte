@@ -1,17 +1,21 @@
 <script lang="ts">
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { keyOf } from '$lib/utils/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
+	import type {
+		AuthenticationConfig,
+		CustomDomain as CustomDomainType
+	} from '$declarations/satellite/satellite.did';
 	import type { HostingCallback } from '$lib/services/worker.hosting.services';
 	import { onDestroy, onMount } from 'svelte';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { initHostingWorker } from '$lib/services/worker.hosting.services';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
+	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 
 	export let url: string;
 	export let ariaLabel = '';
@@ -19,9 +23,18 @@
 	export let customDomain: [string, CustomDomainType] | undefined = undefined;
 	export let satellite: Satellite | undefined = undefined;
 	export let toolsColumn = true;
+	export let config: AuthenticationConfig | undefined = undefined;
 
 	let host = '';
 	$: ({ host } = new URL(url));
+
+	let authDomain: string | undefined;
+	$: authDomain = fromNullable(
+		fromNullable(config?.internet_identity ?? [])?.authentication_domain ?? []
+	);
+
+	let mainDomain: boolean;
+	$: mainDomain = host === authDomain && nonNullish(authDomain);
 
 	let registrationState: CustomDomainRegistrationState | null | undefined = undefined;
 
@@ -79,7 +92,7 @@
 {#if toolsColumn}
 	<td>
 		{#if type === 'custom' && nonNullish(satellite)}
-			<CustomDomainActions {satellite} {customDomain} {displayState} />
+			<CustomDomainActions {satellite} {customDomain} {config} {displayState} />
 		{/if}
 	</td>
 {/if}
@@ -92,6 +105,11 @@
 </td>
 
 {#if type === 'custom'}
+	<td class="auth">
+		{#if mainDomain}
+			<IconCheckCircle />
+		{/if}</td
+	>
 	<td class="state"
 		><span
 			>{#if nonNullish(displayState)}
@@ -155,5 +173,13 @@
 
 	td {
 		vertical-align: middle;
+	}
+
+	.auth {
+		display: none;
+
+		@include media.min-width(medium) {
+			display: table-cell;
+		}
 	}
 </style>

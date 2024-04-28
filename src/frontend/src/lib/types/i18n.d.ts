@@ -251,6 +251,7 @@ interface I18nHosting {
 	default_domain: string;
 	domain: string;
 	status: string;
+	primary: string;
 	pendingorder: string;
 	pendingchallengeresponse: string;
 	pendingacmeapproval: string;

@@ -20,16 +20,21 @@
 
 	const yes = () => {
 		const payload: AuthenticationConfig = isNullish(config)
-				? {
-					internet_identity: [{
-						authentication_domain: [domainNameInput]
-					}]
+			? {
+					internet_identity: [
+						{
+							authentication_domain: [domainNameInput]
+						}
+					]
 				}
-				: {
+			: {
 					...config,
 					...(nonNullish(fromNullable(config.internet_identity)) && {
 						internet_identity: [
-							{ ...fromNullable(config.internet_identity), authentication_domain: [domainNameInput] }
+							{
+								...fromNullable(config.internet_identity),
+								authentication_domain: [domainNameInput]
+							}
 						]
 					})
 				};
@@ -67,27 +72,45 @@
 				value: authDomain ?? ''
 			}
 		])}
-	{:else}{/if}
-
-	{@html i18nFormat($i18n.hosting.set_auth_domain_question, [
-		{
-			placeholder: '{0}',
-			value: domainNameInput
-		},
-		{
-			placeholder: '{1}',
-			value: domainNameInput.startsWith('www')
-				? domainNameInput.replace('www.', '')
-				: `www.${domainNameInput}`
-		},
-		{
-			placeholder: '{2}',
-			value: domainNameInput
-		}
-	])}
+	{:else}
+		{@html i18nFormat($i18n.hosting.set_auth_domain_question, [
+			{
+				placeholder: '{0}',
+				value: domainNameInput
+			},
+			{
+				placeholder: '{1}',
+				value: domainNameInput.startsWith('www')
+					? domainNameInput.replace('www.', '')
+					: `www.${domainNameInput}`
+			},
+			{
+				placeholder: '{2}',
+				value: domainNameInput
+			}
+		])}{/if}
 </p>
 
 <div class="toolbar">
-	<button on:click={no}>{$i18n.core.no}</button>
+	<button on:click={no}
+		><span>{@html i18nFormat($i18n.hosting.no_keep_domain, [
+		{
+			placeholder: '{0}',
+			value: authDomain ?? ''
+		}
+	])}</span></button
+	>
 	<button on:click={yes}>{$i18n.core.yes}</button>
 </div>
+
+<style lang="scss">
+	@use '../../styles/mixins/text';
+
+	button {
+		max-width: 100%;
+
+		span {
+			@include text.truncate;
+		}
+	}
+</style>

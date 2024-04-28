@@ -1,4 +1,3 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { AuthenticationConfig, CustomDomain } from '$declarations/satellite/satellite.did';
 import {
 	deleteCustomDomain as deleteCustomDomainApi,
@@ -9,13 +8,10 @@ import {
 } from '$lib/api/satellites.api';
 import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
 import { authStore } from '$lib/stores/auth.store';
-import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
-import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
-import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, nonNullish } from '@dfinity/utils';
 import { compare } from 'semver';
@@ -105,90 +101,33 @@ export const listCustomDomains = async ({
 	}
 };
 
-export const openAddCustomDomain = async ({
-	editDomainName,
-	satellite,
-	...rest
+export const getAuthConfig = async ({
+	satelliteId,
+	identity
 }: {
-	satellite: Satellite;
+	satelliteId: Principal;
 	identity: OptionIdentity;
-} & Pick<JunoModalCustomDomainDetail, 'editDomainName'>) => {
-	await openWithAuthConfig({
-		satellite,
-		...rest,
-		open: ({ version, config }: { version: string; config?: AuthenticationConfig | undefined }) =>
-			emit({
-				message: 'junoModal',
-				detail: {
-					type: 'add_custom_domain',
-					detail: { satellite, config, editDomainName, satelliteVersion: version }
-				}
-			})
-	});
-};
-
-export const openDeleteCustomDomain = async ({
-	satellite,
-	open,
-	...rest
-}: {
-	satellite: Satellite;
-	identity: OptionIdentity;
-	open: ({
-		config,
-		version
-	}: {
-		config?: AuthenticationConfig | undefined;
-		version: string;
-	}) => void;
-}) => {
-	await openWithAuthConfig({
-		satellite,
-		...rest,
-		open
-	});
-};
-
-export const openWithAuthConfig = async ({
-	satellite,
-	identity,
-	open
-}: {
-	satellite: Satellite;
-	identity: OptionIdentity;
-	open: ({
-		config,
-		version
-	}: {
-		config?: AuthenticationConfig | undefined;
-		version: string;
-	}) => void;
-}) => {
+}): Promise<{ success: boolean; config?: AuthenticationConfig | undefined }> => {
 	try {
-		busy.start();
-
 		// TODO: load versions globally and use store value instead of fetching version again
-		const version = await satelliteVersion({ satelliteId: satellite.satellite_id, identity });
+		const version = await satelliteVersion({ satelliteId, identity });
+
+		// TODO v0.0.17
 
 		// TODO: keep a list of those version checks and remove them incrementally
 		// Also would be cleaner than to have 0.0.17 hardcoded there and there...
 		const authConfigSupported = compare(version, '0.0.11') >= 0;
 
 		if (!authConfigSupported) {
-			open({ version });
-			return;
+			return { success: true };
 		}
 
-		const { success, config } = await getAuthConfig({
-			satelliteId: satellite.satellite_id,
+		const config = await getAuthConfigApi({
+			satelliteId,
 			identity
 		});
 
-		if (!success) {
-			return;
-		}
-
-		open({ config, version });
+		return { success: true, config: fromNullable(config) };
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
@@ -196,22 +135,7 @@ export const openWithAuthConfig = async ({
 			text: labels.errors.authentication_config_loading,
 			detail: err
 		});
-	} finally {
-		busy.stop();
+
+		return { success: false };
 	}
-};
-
-const getAuthConfig = async ({
-	satelliteId,
-	identity
-}: {
-	satelliteId: Principal;
-	identity: OptionIdentity;
-}): Promise<{ success: boolean; config?: AuthenticationConfig | undefined }> => {
-	const config = await getAuthConfigApi({
-		satelliteId,
-		identity
-	});
-
-	return { success: true, config: fromNullable(config) };
 };

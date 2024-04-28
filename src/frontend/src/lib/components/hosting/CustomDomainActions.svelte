@@ -11,23 +11,19 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import {
-		deleteCustomDomain as deleteCustomDomainService,
-		openDeleteCustomDomain
-	} from '$lib/services/hosting.services';
+	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
 	import { emit } from '$lib/utils/events.utils';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
-	import { openAddCustomDomain as openAddCustomDomainServices } from '$lib/services/hosting.services';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import { setAuthConfig } from '$lib/api/satellites.api';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
 	export let displayState: string | null | undefined;
+	export let config: AuthenticationConfig | undefined;
 
 	let visible = false;
-	let config: AuthenticationConfig | undefined;
 
 	const openDelete = async () => {
 		if (isNullish(customDomain)) {
@@ -37,17 +33,7 @@
 			return;
 		}
 
-		// Reset for next popover
-		config = undefined;
-
-		await openDeleteCustomDomain({
-			identity: $authStore.identity,
-			satellite,
-			open: ({ config: c }) => {
-				config = c;
-				visible = true;
-			}
-		});
+		visible = true;
 	};
 
 	let deleteMainDomain = false;
@@ -123,10 +109,12 @@
 	const openAddCustomDomain = async (
 		params: Pick<JunoModalCustomDomainDetail, 'editDomainName'>
 	) => {
-		await openAddCustomDomainServices({
-			identity: $authStore.identity,
-			satellite,
-			...params
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'add_custom_domain',
+				detail: { satellite, config, ...params }
+			}
 		});
 	};
 </script>

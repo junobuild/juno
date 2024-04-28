@@ -4,11 +4,15 @@
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import { onMount } from 'svelte';
-	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
+	import type {
+		AuthenticationConfig,
+		CustomDomain as CustomDomainType
+	} from '$declarations/satellite/satellite.did';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { listCustomDomains } from '$lib/services/hosting.services';
+	import { listCustomDomains, getAuthConfig } from '$lib/services/hosting.services';
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { authStore } from '$lib/stores/auth.store';
 
 	export let satellite: Satellite;
 
@@ -16,13 +20,21 @@
 	$: satelliteId = satellite.satellite_id.toText();
 
 	let customDomains: [string, CustomDomainType][] = [];
+	let config: AuthenticationConfig | undefined;
 
 	const list = async () => {
-		const { customDomains: domains } = await listCustomDomains({
-			satelliteId: satellite.satellite_id
-		});
+		const [{ customDomains: domains }, { config: c }] = await Promise.all([
+			listCustomDomains({
+				satelliteId: satellite.satellite_id
+			}),
+			getAuthConfig({
+				satelliteId: satellite.satellite_id,
+				identity: $authStore.identity
+			})
+		]);
 
 		customDomains = domains ?? [];
+		config = c;
 	};
 
 	onMount(list);
@@ -41,6 +53,7 @@
 					<th class="tools" />
 				{/if}
 				<th class="domain"> {$i18n.hosting.domain} </th>
+				<th class="auth"> {$i18n.hosting.primary}</th>
 				<th> {$i18n.hosting.status}</th>
 			</tr>
 		</thead>
@@ -59,6 +72,7 @@
 						type="custom"
 						url={`https://${customDomainUrl}`}
 						customDomain={[customDomainUrl, customDomain]}
+						{config}
 						ariaLabel={$i18n.hosting.custom_domain}
 						{satellite}
 					/>
@@ -69,7 +83,7 @@
 </div>
 
 <div class="footer">
-	<AddCustomDomain {satellite} />
+	<AddCustomDomain {satellite} {config} />
 
 	<HostingCount {satellite} />
 </div>
@@ -83,7 +97,16 @@
 
 	.domain {
 		@include media.min-width(small) {
-			width: 60%;
+			width: 50%;
+		}
+	}
+
+	.auth {
+		display: none;
+
+		@include media.min-width(medium) {
+			display: table-cell;
+			width: 20%;
 		}
 	}
 

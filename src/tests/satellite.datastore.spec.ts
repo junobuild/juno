@@ -5,7 +5,7 @@ import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
-import {afterAll, beforeAll, describe, expect, inject} from 'vitest';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(

@@ -6,7 +6,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { parse } from '@ltd/j-toml';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
-import {afterAll, beforeAll, describe, expect, inject} from 'vitest';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 

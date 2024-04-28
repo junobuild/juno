@@ -10,7 +10,7 @@
 
 	let authDomain: string | undefined;
 	$: authDomain = fromNullable(
-		fromNullable(config?.internet_identity ?? [])?.authentication_domain ?? []
+		fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []
 	);
 
 	let edit: boolean;
@@ -23,7 +23,7 @@
 			? {
 					internet_identity: [
 						{
-							authentication_domain: [domainNameInput]
+							derivation_origin: [domainNameInput]
 						}
 					]
 				}
@@ -33,7 +33,7 @@
 						internet_identity: [
 							{
 								...fromNullable(config.internet_identity),
-								authentication_domain: [domainNameInput]
+								derivation_origin: [domainNameInput]
 							}
 						]
 					})

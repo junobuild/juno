@@ -58,7 +58,7 @@ describe('Satellite authentication', () => {
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						authentication_domain: ['domain.com']
+						derivation_origin: ['domain.com']
 					}
 				]
 			};
@@ -92,7 +92,7 @@ describe('Satellite authentication', () => {
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						authentication_domain: []
+						derivation_origin: []
 					}
 				]
 			};
@@ -155,7 +155,7 @@ describe('Satellite authentication', () => {
 			const config: AuthenticationConfig = {
 				internet_identity: [
 					{
-						authentication_domain: ['domain.com']
+						derivation_origin: ['domain.com']
 					}
 				]
 			};
@@ -222,7 +222,7 @@ describe('Satellite authentication', () => {
 
 			await expect(
 				set_auth_config({
-					internet_identity: [{ authentication_domain: ['demo.com'] }]
+					internet_identity: [{ derivation_origin: ['demo.com'] }]
 				})
 			).rejects.toThrow(ADMIN_ERROR_MSG);
 		});

@@ -46,7 +46,7 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64
 	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({
-		authentication_domain: IDL.Opt(IDL.Text)
+		derivation_origin: IDL.Opt(IDL.Text)
 	});
 	const AuthenticationConfig = IDL.Record({
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity)

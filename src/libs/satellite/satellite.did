@@ -22,7 +22,7 @@ type AuthenticationConfig = record {
   internet_identity : opt AuthenticationConfigInternetIdentity;
 };
 type AuthenticationConfigInternetIdentity = record {
-  authentication_domain : opt text;
+  derivation_origin : opt text;
 };
 type CommitBatch = record {
   batch_id : nat;

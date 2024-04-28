@@ -5,23 +5,26 @@ import type {
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
-import {afterAll, beforeAll, describe, expect, inject} from 'vitest';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
 describe('Satellite authentication', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor>;
+	let canisterId: Principal;
+	let canisterIdUrl: string;
 
 	const controller = Ed25519KeyIdentity.generate();
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const { actor: c } = await pic.setupCanister<SatelliteActor>({
+		const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,
 			wasm: WASM_PATH,
 			arg: satelliteInitArgs(controller),
@@ -29,6 +32,8 @@ describe('Satellite authentication', () => {
 		});
 
 		actor = c;
+		canisterId = cId;
+		canisterIdUrl = `https://${canisterId.toText()}.icp0.io`;
 	});
 
 	afterAll(async () => {
@@ -77,8 +82,8 @@ describe('Satellite authentication', () => {
 
 			const decoder = new TextDecoder();
 			const responseBody = decoder.decode(body as ArrayBuffer);
-			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins: ['domain.com'] }));
-			expect(JSON.parse(responseBody).alternativeOrigins).toEqual(['domain.com']);
+			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins: [canisterIdUrl] }));
+			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([canisterIdUrl]);
 		});
 
 		it('should set config auth domain to none', async () => {
@@ -137,6 +142,43 @@ describe('Satellite authentication', () => {
 			});
 
 			expect(status_code).toBe(404);
+		});
+
+		it('should exporse canister id and filtered custom domains as alternative origin', async () => {
+			const { set_auth_config, http_request, set_custom_domain, get_auth_config } = actor;
+
+			const urls = ['test.com', 'test2.com'];
+
+			await set_custom_domain(urls[0], []);
+			await set_custom_domain(urls[1], []);
+
+			const config: AuthenticationConfig = {
+				internet_identity: [
+					{
+						authentication_domain: ['domain.com']
+					}
+				]
+			};
+
+			await set_auth_config(config);
+
+			const { body } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/.well-known/ii-alternative-origins'
+			});
+
+			const decoder = new TextDecoder();
+			const responseBody = decoder.decode(body as ArrayBuffer);
+
+			const httpsUrls = urls.map((url) => `https://${url}`);
+
+			expect(responseBody).toEqual(
+				JSON.stringify({ alternativeOrigins: [...httpsUrls, canisterIdUrl] })
+			);
+			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([...httpsUrls, canisterIdUrl]);
 		});
 	});
 

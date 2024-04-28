@@ -113,6 +113,57 @@ export const openAddCustomDomain = async ({
 	satellite: Satellite;
 	identity: OptionIdentity;
 } & Pick<JunoModalCustomDomainDetail, 'editDomainName'>) => {
+	await openWithAuthConfig({
+		satellite,
+		...rest,
+		open: ({ version, config }: { version: string; config?: AuthenticationConfig | undefined }) =>
+			emit({
+				message: 'junoModal',
+				detail: {
+					type: 'add_custom_domain',
+					detail: { satellite, config, editDomainName, satelliteVersion: version }
+				}
+			})
+	});
+};
+
+export const openDeleteCustomDomain = async ({
+	satellite,
+	open,
+	...rest
+}: {
+	satellite: Satellite;
+	identity: OptionIdentity;
+	open: ({
+		config,
+		version
+	}: {
+		config?: AuthenticationConfig | undefined;
+		version: string;
+	}) => void;
+}) => {
+	await openWithAuthConfig({
+		satellite,
+		...rest,
+		open
+	});
+};
+
+export const openWithAuthConfig = async ({
+	satellite,
+	identity,
+	open
+}: {
+	satellite: Satellite;
+	identity: OptionIdentity;
+	open: ({
+		config,
+		version
+	}: {
+		config?: AuthenticationConfig | undefined;
+		version: string;
+	}) => void;
+}) => {
 	try {
 		busy.start();
 

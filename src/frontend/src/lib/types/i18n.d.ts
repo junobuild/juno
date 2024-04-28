@@ -237,6 +237,7 @@ interface I18nHosting {
 	dns_notes: string;
 	delete_custom_domain: string;
 	before_continuing: string;
+	delete_auth_domain_warning: string;
 	delete_are_you_sure: string;
 	delete: string;
 	edit: string;

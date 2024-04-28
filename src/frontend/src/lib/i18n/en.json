@@ -224,6 +224,7 @@
 		"dns_notes": "You might have to adjust above records for your domain provider. Find more information in the <a href=\"https://juno.build/docs/build/hosting#about-dns-records\" rel=\"external noopener noreferrer\" target=\"_blank\">documentation</a>.",
 		"delete_custom_domain": "Delete {0}",
 		"before_continuing": "Before continuing, the records must be removed from your DNS provider.",
+		"delete_auth_domain_warning": "This domain is the primary domain for all user sign-ins.",
 		"delete_are_you_sure": "Proceed with deletion?",
 		"delete": "Delete a custom domain",
 		"edit": "Edit a custom domain",

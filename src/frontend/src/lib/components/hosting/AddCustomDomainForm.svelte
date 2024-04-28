@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
-	import {isNullish, notEmptyString} from '@dfinity/utils';
+	import { isNullish, notEmptyString } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
@@ -41,7 +41,12 @@
 </p>
 
 <form on:submit|preventDefault={onSubmitDomainName}>
-	<input bind:value={domainNameInput} type="text" name="domain_name" placeholder={$i18n.hosting.domain_name} />
+	<input
+		bind:value={domainNameInput}
+		type="text"
+		name="domain_name"
+		placeholder={$i18n.hosting.domain_name}
+	/>
 
 	<button type="submit">{$i18n.core.continue}</button>
 </form>

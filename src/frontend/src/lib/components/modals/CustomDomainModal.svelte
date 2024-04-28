@@ -33,7 +33,7 @@
 	let edit = false;
 
 	onMount(() => {
-		domainNameInput = (detail as JunoModalCustomDomainDetail).editDomainName;
+		domainNameInput = (detail as JunoModalCustomDomainDetail).editDomainName ?? '';
 
 		if (isNullish(domainNameInput)) {
 			return;

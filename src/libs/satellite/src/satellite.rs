@@ -1,4 +1,4 @@
-use crate::auth::authentication::{
+use crate::auth::store::{
     get_config as get_authentication_config, set_config as set_authentication_config,
 };
 use crate::auth::types::state::AuthenticationConfig;

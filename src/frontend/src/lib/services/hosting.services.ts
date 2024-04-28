@@ -106,9 +106,9 @@ export const listCustomDomains = async ({
 };
 
 export const openAddCustomDomain = async ({
+	editDomainName,
 	satellite,
-	identity,
-	editDomainName
+	...rest
 }: {
 	satellite: Satellite;
 	identity: OptionIdentity;
@@ -172,17 +172,11 @@ export const openWithAuthConfig = async ({
 
 		// TODO: keep a list of those version checks and remove them incrementally
 		// Also would be cleaner than to have 0.0.17 hardcoded there and there...
-		const authConfigSupported = compare(version, '0.0.17') >= 0;
+		const authConfigSupported = compare(version, '0.0.11') >= 0;
 
 		if (!authConfigSupported) {
-			emit({
-				message: 'junoModal',
-				detail: {
-					type: 'add_custom_domain',
-					detail: { satellite, editDomainName, satelliteVersion: version }
-				}
-			});
-			return { success: true };
+			open({ version });
+			return;
 		}
 
 		const { success, config } = await getAuthConfig({
@@ -194,13 +188,7 @@ export const openWithAuthConfig = async ({
 			return;
 		}
 
-		emit({
-			message: 'junoModal',
-			detail: {
-				type: 'add_custom_domain',
-				detail: { satellite, config, editDomainName, satelliteVersion: version }
-			}
-		});
+		open({ config, version });
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
@@ -208,8 +196,6 @@ export const openWithAuthConfig = async ({
 			text: labels.errors.authentication_config_loading,
 			detail: err
 		});
-
-		return { success: false };
 	} finally {
 		busy.stop();
 	}

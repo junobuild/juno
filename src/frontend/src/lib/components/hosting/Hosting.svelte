@@ -53,7 +53,7 @@
 					<th class="tools" />
 				{/if}
 				<th class="domain"> {$i18n.hosting.domain} </th>
-				<th class="auth"> {$i18n.hosting.primary}</th>
+				<th class="auth"> {$i18n.core.sign_in}</th>
 				<th> {$i18n.hosting.status}</th>
 			</tr>
 		</thead>

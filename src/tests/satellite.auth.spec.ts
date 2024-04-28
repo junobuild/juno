@@ -144,10 +144,11 @@ describe('Satellite authentication', () => {
 			expect(status_code).toBe(404);
 		});
 
-		it('should exporse canister id and filtered custom domains as alternative origin', async () => {
-			const { set_auth_config, http_request, set_custom_domain, get_auth_config } = actor;
+		const urls = ['test.com', 'test2.com'];
+		const httpsUrls = urls.map((url) => `https://${url}`);
 
-			const urls = ['test.com', 'test2.com'];
+		it('should expose canister id and filtered custom domains as alternative origin', async () => {
+			const { set_auth_config, http_request, set_custom_domain } = actor;
 
 			await set_custom_domain(urls[0], []);
 			await set_custom_domain(urls[1], []);
@@ -173,12 +174,65 @@ describe('Satellite authentication', () => {
 			const decoder = new TextDecoder();
 			const responseBody = decoder.decode(body as ArrayBuffer);
 
-			const httpsUrls = urls.map((url) => `https://${url}`);
-
 			expect(responseBody).toEqual(
 				JSON.stringify({ alternativeOrigins: [...httpsUrls, canisterIdUrl] })
 			);
 			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([...httpsUrls, canisterIdUrl]);
+		});
+
+		it('should not expose canister id if canister id is the derivation origin', async () => {
+			const { set_auth_config, http_request } = actor;
+
+			const config: AuthenticationConfig = {
+				internet_identity: [
+					{
+						derivation_origin: [`${canisterId.toText()}.icp0.io`]
+					}
+				]
+			};
+
+			await set_auth_config(config);
+
+			const { body } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/.well-known/ii-alternative-origins'
+			});
+
+			const decoder = new TextDecoder();
+			const responseBody = decoder.decode(body as ArrayBuffer);
+
+			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins: [...httpsUrls] }));
+			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([...httpsUrls]);
+		});
+
+		it('should not expose alternative origins if derivation is the canister ID and no custom domains', async () => {
+			const { del_custom_domain, set_auth_config, http_request } = actor;
+
+			await del_custom_domain(urls[0]);
+			await del_custom_domain(urls[1]);
+
+			const config: AuthenticationConfig = {
+				internet_identity: [
+					{
+						derivation_origin: [`${canisterId.toText()}.icp0.io`]
+					}
+				]
+			};
+
+			await set_auth_config(config);
+
+			const { status_code } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/.well-known/ii-alternative-origins'
+			});
+
+			expect(status_code).toBe(404);
 		});
 	});
 

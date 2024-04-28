@@ -23,16 +23,29 @@ pub fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), S
         .map_or_else(delete_alternative_origins_asset, set_alternative_origins)
 }
 
-fn set_alternative_origins(main_domain: &DomainName) -> Result<(), String> {
+fn set_alternative_origins(derivation_origin: &DomainName) -> Result<(), String> {
     let mut custom_domains: Vec<DomainName> = get_custom_domains_store()
         .keys()
-        .filter(|domain| *domain != main_domain)
+        .filter(|domain| *domain != derivation_origin)
         .cloned()
         .collect();
 
-    // Add default system URL to alternative origin as well
-    custom_domains.push(format!("{}.icp0.io", id().to_text()));
+    // Add default system URL to alternative origins if not equals to derivation origin
+    let canister_url = format!("{}.icp0.io", id().to_text());
+    if canister_url != *derivation_origin {
+        custom_domains.push(canister_url);
+    }
 
+    if custom_domains.is_empty() {
+        return delete_alternative_origins_asset();
+    }
+
+    set_alternative_origins_with_custom_domains(&mut custom_domains)
+}
+
+fn set_alternative_origins_with_custom_domains(
+    custom_domains: &mut Vec<DomainName>,
+) -> Result<(), String> {
     // Assert URLs are valid
     fn parse_url(domain: &DomainName) -> Result<String, String> {
         let parsed_url = Url::parse(&format!("https://{}", domain));
@@ -52,13 +65,13 @@ fn set_alternative_origins(main_domain: &DomainName) -> Result<(), String> {
                 }
 
                 Ok(url_str)
-            },
+            }
         }
     }
 
     let mut urls: Vec<String> = Vec::new();
     for domain in custom_domains {
-        let url = parse_url(&domain)?;
+        let url = parse_url(domain)?;
 
         urls.push(url);
     }

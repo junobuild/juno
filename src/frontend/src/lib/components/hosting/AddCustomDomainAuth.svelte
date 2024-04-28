@@ -80,14 +80,16 @@
 
 <div class="toolbar">
 	<button on:click={no}
-		><span
-			>{@html i18nFormat($i18n.hosting.no_keep_domain, [
-				{
-					placeholder: '{0}',
-					value: authDomain ?? ''
-				}
-			])}</span
-		></button
+		>{#if edit}
+			<span
+				>{@html i18nFormat($i18n.hosting.no_keep_domain, [
+					{
+						placeholder: '{0}',
+						value: authDomain ?? ''
+					}
+				])}</span
+			>
+		{:else}{$i18n.core.no}{/if}</button
 	>
 	<button on:click={yes}>{$i18n.core.yes}</button>
 </div>

@@ -7,7 +7,12 @@ import { parse } from '@ltd/j-toml';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
+import {
+	ADMIN_ERROR_MSG,
+	CONTROLLER_ERROR_MSG,
+	INVALID_TIMESTAMP_ERROR_MSG,
+	NO_TIMESTAMP_ERROR_MSG
+} from './constants/satellite-tests.constants';
 import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
 
 describe('Satellite', () => {
@@ -134,6 +139,47 @@ describe('Satellite', () => {
 			const updatedControllers = await list_controllers();
 			expect(updatedControllers).toHaveLength(1);
 			expect(updatedControllers[0][0].toText()).toEqual(controller.getPrincipal().toText());
+		});
+
+		describe('errors', () => {
+			it('should throw errors on creating reserved collection', async () => {
+				const { set_rule } = actor;
+
+				await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrow(
+					'Collection starts with #, a reserved prefix'
+				);
+			});
+
+			it('should not update rule if no timestamp', async () => {
+				const { set_rule, list_rules } = actor;
+
+				await set_rule({ Db: null }, 'test3', setRule);
+
+				await pic.advanceTime(100);
+
+				await expect(set_rule({ Db: null }, 'test3', setRule)).rejects.toThrow(
+					NO_TIMESTAMP_ERROR_MSG
+				);
+			});
+
+			it('should not update rule if invalid timestamp', async () => {
+				const { set_rule, list_rules } = actor;
+
+				await set_rule({ Db: null }, 'test4', setRule);
+
+				await pic.advanceTime(100);
+
+				try {
+					await set_rule({ Db: null }, 'test4', {
+						...setRule,
+						updated_at: [123n]
+					});
+
+					expect(true).toBe(false);
+				} catch (error: unknown) {
+					expect((error as Error).message).toContain(INVALID_TIMESTAMP_ERROR_MSG);
+				}
+			});
 		});
 	});
 

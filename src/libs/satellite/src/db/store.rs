@@ -18,9 +18,8 @@ use crate::rules::types::rules::{Memory, Permission, Rule};
 use crate::types::core::{CollectionKey, Key};
 use crate::types::list::{ListParams, ListResults};
 use candid::Principal;
-use ic_cdk::api::time;
-use junobuild_shared::assert::assert_timestamp;
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::assert::assert_version;
+use junobuild_shared::types::state::{Controllers, UserId, Version};
 
 /// Collection
 
@@ -173,7 +172,7 @@ fn set_doc_impl(
 
     assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
 
-    assert_write_timestamp(&current_doc, value.updated_at)?;
+    assert_write_version(&current_doc, value.version)?;
 
     assert_description_length(&value.description)?;
 
@@ -189,27 +188,7 @@ fn set_doc_impl(
         },
     )?;
 
-    let now = time();
-
-    let created_at: u64 = match &current_doc {
-        None => now,
-        Some(current_doc) => current_doc.created_at,
-    };
-
-    let owner: UserId = match &current_doc {
-        None => caller,
-        Some(current_doc) => current_doc.owner,
-    };
-
-    let updated_at: u64 = now;
-
-    let doc: Doc = Doc {
-        created_at,
-        updated_at,
-        data: value.data,
-        owner,
-        description: value.description,
-    };
+    let doc: Doc = Doc::prepare(caller, &current_doc, value);
 
     let (_evicted_doc, after) = insert_state_doc(&collection, &key, &doc, rule)?;
 
@@ -330,7 +309,7 @@ fn delete_doc_impl(
 
     assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
 
-    assert_write_timestamp(&current_doc, value.updated_at)?;
+    assert_write_version(&current_doc, value.version)?;
 
     invoke_assert_delete_doc(
         &caller,
@@ -372,14 +351,14 @@ fn assert_write_permission(
     Ok(())
 }
 
-fn assert_write_timestamp(
+fn assert_write_version(
     current_doc: &Option<Doc>,
-    user_timestamp: Option<u64>,
+    user_version: Option<Version>,
 ) -> Result<(), String> {
     // Validate timestamp
     match current_doc.clone() {
         None => (),
-        Some(current_doc) => match assert_timestamp(user_timestamp, current_doc.updated_at) {
+        Some(current_doc) => match assert_version(user_version, current_doc.version) {
             Ok(_) => (),
             Err(e) => {
                 return Err(e);

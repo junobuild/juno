@@ -251,7 +251,7 @@ describe('Satellite authentication', () => {
 					provider: 'internet_identity'
 				}),
 				description: toNullable(),
-				updated_at: toNullable()
+				version: toNullable()
 			});
 
 			const { items: users } = await list_docs('#user', {
@@ -298,7 +298,7 @@ describe('Satellite authentication', () => {
 						provider: 'internet_identity'
 					}),
 					description: toNullable(),
-					updated_at: toNullable()
+					version: toNullable()
 				})
 			).rejects.toThrow('Cannot write.');
 		});

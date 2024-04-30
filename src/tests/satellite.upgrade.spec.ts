@@ -1,16 +1,22 @@
 import type {
 	_SERVICE as SatelliteActor_0_0_16,
+	SetDoc as SetDoc0_0_16,
 	SetRule as SetRule0_0_16
 } from '$declarations/deprecated/satellite-0-0-16.did';
 import { idlFactory as idlFactorSatellite_0_0_16 } from '$declarations/deprecated/satellite-0-0-16.factory.did';
-import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
+import type {
+	_SERVICE as SatelliteActor,
+	SetDoc,
+	SetRule
+} from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
+import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import { NO_VERSION_ERROR_MSG } from './constants/satellite-tests.constants';
 import {
@@ -277,75 +283,142 @@ describe('satellite upgrade', () => {
 			updated_at: toNullable()
 		};
 
-		it('should add version set to none to rules', async () => {
-			const { set_rule: set_rule_deprecated } = actor as SatelliteActor_0_0_16;
+		describe('Rules', () => {
+			let newActor: Actor<SatelliteActor>;
 
-			await set_rule_deprecated({ Db: null }, 'test', setRule);
+			beforeEach(async () => {
+				const { set_rule: set_rule_deprecated } = actor as SatelliteActor_0_0_16;
 
-			await upgrade();
+				await set_rule_deprecated({ Db: null }, 'test', setRule);
 
-			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
-			newActor.setIdentity(controller);
+				await upgrade();
 
-			const { list_rules } = newActor;
+				newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+				newActor.setIdentity(controller);
+			});
 
-			const [[collection, { version }], _] = await list_rules({ Db: null });
+			it('should add version set to none to rules', async () => {
+				const { list_rules } = newActor;
 
-			expect(collection).toEqual('test');
-			expect(version).toEqual(toNullable());
+				const [[collection, { version }], _] = await list_rules({ Db: null });
+
+				expect(collection).toEqual('test');
+				expect(version).toEqual(toNullable());
+			});
+
+			it('should be able to update rule after upgrade', async () => {
+				const { set_rule } = newActor;
+
+				const setUpdateRule: SetRule = {
+					...setRule,
+					version: toNullable()
+				};
+
+				await expect(set_rule({ Db: null }, 'test', setUpdateRule)).resolves.not.toThrowError();
+			});
+
+			it('should be able to update rule after upgrade only once without version provided', async () => {
+				const { set_rule: set_rule_deprecated } = actor as SatelliteActor_0_0_16;
+
+				// We do not provide the version so it counts as a first set
+				await set_rule_deprecated({ Db: null }, 'test', setRule);
+
+				// We do not provide the version again so it should failed
+				await expect(set_rule_deprecated({ Db: null }, 'test', setRule)).rejects.toThrow(
+					NO_VERSION_ERROR_MSG
+				);
+
+				const { list_rules, set_rule } = newActor;
+
+				const [[_, rule]] = await list_rules({ Db: null });
+
+				expect(rule.version).toEqual(toNullable(1n));
+
+				const setNewRule: SetRule = {
+					...setRule,
+					version: rule.version
+				};
+
+				// We do not provide the version so it counts as a first set
+				await expect(set_rule({ Db: null }, 'test', setNewRule)).resolves.not.toThrowError();
+			});
 		});
 
-		it('should be able to update rule after upgrade', async () => {
-			const { set_rule: set_rule_deprecated } = actor as SatelliteActor_0_0_16;
-
-			await set_rule_deprecated({ Db: null }, 'test', setRule);
-
-			await upgrade();
-
-			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
-			newActor.setIdentity(controller);
-
-			const { set_rule } = newActor;
-
-			const setUpdateRule: SetRule = {
-				...setRule,
-				version: toNullable()
+		describe('Documents', async () => {
+			const setDoc: SetDoc0_0_16 = {
+				description: toNullable(),
+				data: await toArray({
+					hello: 'World'
+				}),
+				updated_at: toNullable()
 			};
 
-			await set_rule({ Db: null }, 'test', setUpdateRule);
-		});
+			const key = nanoid();
+			const collection = 'test';
 
-		it('should be able to update rule after upgrade only once without version provided', async () => {
-			const { set_rule: set_rule_deprecated } = actor as SatelliteActor_0_0_16;
+			let newActor: Actor<SatelliteActor>;
 
-			await set_rule_deprecated({ Db: null }, 'test', setRule);
+			beforeEach(async () => {
+				const { set_rule: set_rule_deprecated } = actor as SatelliteActor_0_0_16;
 
-			await upgrade();
+				await set_rule_deprecated({ Db: null }, collection, setRule);
 
-			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
-			newActor.setIdentity(controller);
+				const { set_doc: set_doc_deprecated } = actor as SatelliteActor_0_0_16;
 
-			const { list_rules, set_rule } = newActor;
+				await set_doc_deprecated(collection, key, setDoc);
 
-			// We do not provide the version so it counts as a first set
-			await set_rule_deprecated({ Db: null }, 'test', setRule);
+				await upgrade();
 
-			// We do not provide the version again so it should failed
-			await expect(set_rule_deprecated({ Db: null }, 'test', setRule)).rejects.toThrow(
-				NO_VERSION_ERROR_MSG
-			);
+				newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+				newActor.setIdentity(controller);
+			});
 
-			const [[_, rule]] = await list_rules({ Db: null });
+			it('should add version set to none to doc', async () => {
+				const { get_doc } = newActor;
 
-			expect(rule.version).toEqual(toNullable(1n));
+				const doc = fromNullable(await get_doc(collection, key));
 
-			const setNewRule: SetRule = {
-				...setRule,
-				version: rule.version
-			};
+				expect(doc).not.toBeUndefined();
+				expect(doc?.version).toEqual(toNullable());
+			});
 
-			// We do not provide the version so it counts as a first set
-			await expect(set_rule({ Db: null }, 'test', setNewRule)).resolves.not.toThrowError();
+			it('should be able to update doc after upgrade', async () => {
+				const { set_doc } = newActor;
+
+				const setUpdateDoc: SetDoc = {
+					...setDoc,
+					version: toNullable()
+				};
+
+				await expect(set_doc(collection, key, setUpdateDoc)).resolves.not.toThrowError();
+			});
+
+			it('should be able to update doc after upgrade only once without version provided', async () => {
+				const { set_doc: set_doc_deprecated } = actor as SatelliteActor_0_0_16;
+
+				// We do not provide the version so it counts as a first set
+				await set_doc_deprecated(collection, key, setDoc);
+
+				// We do not provide the version again so it should failed
+				await expect(set_doc_deprecated(collection, key, setDoc)).rejects.toThrow(
+					NO_VERSION_ERROR_MSG
+				);
+
+				const { get_doc, set_doc } = newActor;
+
+				const doc = fromNullable(await get_doc(collection, key));
+
+				expect(doc).not.toBeUndefined();
+				expect(doc!.version).toEqual(toNullable(1n));
+
+				const setNewDoc: SetDoc = {
+					...setDoc,
+					version: doc!.version
+				};
+
+				// We do not provide the version so it counts as a first set
+				await expect(set_doc(collection, key, setNewDoc)).resolves.not.toThrowError();
+			});
 		});
 	});
 });

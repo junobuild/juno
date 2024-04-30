@@ -93,7 +93,7 @@ fn set_log<T: Serialize>(level: LogLevel, message: String, data: Option<&T>) -> 
     let doc: SetDoc = SetDoc {
         description: None,
         data: encode_doc_data(&log)?,
-        updated_at: None,
+        version: None,
     };
 
     set_doc_store(id(), LOG_COLLECTION_KEY.to_string(), key, doc)?;

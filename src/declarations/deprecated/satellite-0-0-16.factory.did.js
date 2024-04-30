@@ -21,7 +21,6 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const DelDoc = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
 	const RulesType = IDL.Variant({ Db: IDL.Null, Storage: IDL.Null });
-	const DelRule = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
@@ -45,12 +44,6 @@ export const idlFactory = ({ IDL }) => {
 		encodings: IDL.Vec(IDL.Tuple(IDL.Text, AssetEncodingNoContent)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		created_at: IDL.Nat64
-	});
-	const AuthenticationConfigInternetIdentity = IDL.Record({
-		derivation_origin: IDL.Opt(IDL.Text)
-	});
-	const AuthenticationConfig = IDL.Record({
-		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity)
 	});
 	const StorageConfigIFrame = IDL.Variant({
 		Deny: IDL.Null,
@@ -169,7 +162,6 @@ export const idlFactory = ({ IDL }) => {
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
 		created_at: IDL.Nat64,
-		version: IDL.Opt(IDL.Nat64),
 		mutable_permissions: IDL.Opt(IDL.Bool),
 		write: Permission
 	});
@@ -191,9 +183,9 @@ export const idlFactory = ({ IDL }) => {
 	const SetRule = IDL.Record({
 		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
+		updated_at: IDL.Opt(IDL.Nat64),
 		max_size: IDL.Opt(IDL.Nat),
 		read: Permission,
-		version: IDL.Opt(IDL.Nat64),
 		mutable_permissions: IDL.Opt(IDL.Bool),
 		write: Permission
 	});
@@ -220,10 +212,9 @@ export const idlFactory = ({ IDL }) => {
 		del_docs: IDL.Func([IDL.Text], [], []),
 		del_many_assets: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		del_many_docs: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, DelDoc))], [], []),
-		del_rule: IDL.Func([RulesType, IDL.Text, DelRule], [], []),
+		del_rule: IDL.Func([RulesType, IDL.Text, DelDoc], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_asset: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(AssetNoContent)], ['query']),
-		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], []),
 		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
 		get_many_assets: IDL.Func(
@@ -249,7 +240,6 @@ export const idlFactory = ({ IDL }) => {
 		list_docs: IDL.Func([IDL.Text, ListParams], [ListResults_1], ['query']),
 		list_rules: IDL.Func([RulesType], [IDL.Vec(IDL.Tuple(IDL.Text, Rule))], ['query']),
 		memory_size: IDL.Func([], [MemorySize], ['query']),
-		set_auth_config: IDL.Func([AuthenticationConfig], [], []),
 		set_config: IDL.Func([Config], [], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],

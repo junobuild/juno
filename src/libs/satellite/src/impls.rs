@@ -42,6 +42,7 @@ impl Default for HeapState {
                         max_capacity: rule.max_capacity,
                         created_at: now,
                         updated_at: now,
+                        version: None,
                     },
                 )
             })),
@@ -61,6 +62,7 @@ impl Default for HeapState {
                         max_capacity: rule.max_capacity,
                         created_at: now,
                         updated_at: now,
+                        version: None,
                     },
                 )
             })),

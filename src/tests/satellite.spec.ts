@@ -10,8 +10,8 @@ import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
 	ADMIN_ERROR_MSG,
 	CONTROLLER_ERROR_MSG,
-	INVALID_TIMESTAMP_ERROR_MSG,
-	NO_TIMESTAMP_ERROR_MSG
+	INVALID_VERSION_ERROR_MSG,
+	NO_VERSION_ERROR_MSG
 } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -40,15 +40,15 @@ describe('Satellite', () => {
 
 	const setRule: SetRule = {
 		memory: toNullable(),
-		updated_at: toNullable(),
 		max_size: toNullable(),
 		max_capacity: toNullable(),
 		read: { Managed: null },
 		mutable_permissions: toNullable(),
-		write: { Managed: null }
+		write: { Managed: null },
+		version: toNullable()
 	};
 
-	let testRuleUpdatedAt: bigint | undefined;
+	let testRuleVersion: [] | [bigint];
 
 	describe('admin', () => {
 		beforeAll(() => {
@@ -60,9 +60,10 @@ describe('Satellite', () => {
 
 			await set_rule({ Db: null }, 'test', setRule);
 
-			const [[collection, { memory, created_at, updated_at, read, write }], _] = await list_rules({
-				Db: null
-			});
+			const [[collection, { memory, version, created_at, updated_at, read, write }], _] =
+				await list_rules({
+					Db: null
+				});
 
 			expect(collection).toEqual('test');
 			expect(memory).toEqual(toNullable({ Stable: null }));
@@ -70,8 +71,9 @@ describe('Satellite', () => {
 			expect(write).toEqual({ Managed: null });
 			expect(created_at).toBeGreaterThan(0n);
 			expect(updated_at).toBeGreaterThan(0n);
+			expect(version).toEqual(toNullable(1n));
 
-			testRuleUpdatedAt = updated_at;
+			testRuleVersion = version;
 		});
 
 		it('should list collections', async () => {
@@ -99,10 +101,10 @@ describe('Satellite', () => {
 			const rules = await list_rules({ Db: null });
 			expect(rules).toHaveLength(2);
 
-			const [_, { updated_at }] = rules[1];
+			const [_, { version }] = rules[1];
 
 			await del_rule({ Db: null }, 'test2', {
-				updated_at: toNullable(updated_at)
+				version
 			});
 
 			expect(await list_rules({ Db: null })).toHaveLength(1);
@@ -150,7 +152,7 @@ describe('Satellite', () => {
 				);
 			});
 
-			it('should not update rule if no timestamp', async () => {
+			it('should not update rule if no version', async () => {
 				const { set_rule, list_rules } = actor;
 
 				await set_rule({ Db: null }, 'test3', setRule);
@@ -158,11 +160,11 @@ describe('Satellite', () => {
 				await pic.advanceTime(100);
 
 				await expect(set_rule({ Db: null }, 'test3', setRule)).rejects.toThrow(
-					NO_TIMESTAMP_ERROR_MSG
+					NO_VERSION_ERROR_MSG
 				);
 			});
 
-			it('should not update rule if invalid timestamp', async () => {
+			it('should not update rule if invalid version', async () => {
 				const { set_rule, list_rules } = actor;
 
 				await set_rule({ Db: null }, 'test4', setRule);
@@ -172,12 +174,12 @@ describe('Satellite', () => {
 				try {
 					await set_rule({ Db: null }, 'test4', {
 						...setRule,
-						updated_at: [123n]
+						version: [123n]
 					});
 
 					expect(true).toBe(false);
 				} catch (error: unknown) {
-					expect((error as Error).message).toContain(INVALID_TIMESTAMP_ERROR_MSG);
+					expect((error as Error).message).toContain(INVALID_VERSION_ERROR_MSG);
 				}
 			});
 		});
@@ -205,9 +207,9 @@ describe('Satellite', () => {
 		it('should throw errors on deleting collections', async () => {
 			const { del_rule } = actor;
 
-			await expect(
-				del_rule({ Db: null }, 'test', { updated_at: toNullable(testRuleUpdatedAt) })
-			).rejects.toThrow(ADMIN_ERROR_MSG);
+			await expect(del_rule({ Db: null }, 'test', { version: testRuleVersion })).rejects.toThrow(
+				ADMIN_ERROR_MSG
+			);
 		});
 
 		it('should throw errors on creating controller', async () => {

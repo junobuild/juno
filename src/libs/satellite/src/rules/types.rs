@@ -3,6 +3,7 @@ pub mod rules {
     use candid::CandidType;
     use junobuild_shared::serializers::deserialize_default_as_true;
     use junobuild_shared::types::state::Timestamp;
+    use junobuild_shared::types::state::Version;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -19,6 +20,7 @@ pub mod rules {
         pub max_capacity: Option<u32>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+        pub version: Option<Version>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Default, Clone, Debug)]
@@ -47,22 +49,22 @@ pub mod rules {
 pub mod interface {
     use crate::rules::types::rules::{Memory, Permission};
     use candid::CandidType;
-    use junobuild_shared::types::state::Timestamp;
+    use junobuild_shared::types::state::Version;
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetRule {
-        pub updated_at: Option<Timestamp>,
         pub read: Permission,
         pub write: Permission,
         pub mutable_permissions: Option<bool>,
         pub memory: Option<Memory>,
         pub max_size: Option<u128>,
         pub max_capacity: Option<u32>,
+        pub version: Option<Version>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct DelRule {
-        pub updated_at: Option<Timestamp>,
+        pub version: Option<Version>,
     }
 }

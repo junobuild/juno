@@ -52,6 +52,9 @@ export interface CustomDomain {
 export interface DelDoc {
 	updated_at: [] | [bigint];
 }
+export interface DelRule {
+	version: [] | [bigint];
+}
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
@@ -140,6 +143,7 @@ export interface Rule {
 	max_size: [] | [bigint];
 	read: Permission;
 	created_at: bigint;
+	version: [] | [bigint];
 	mutable_permissions: [] | [boolean];
 	write: Permission;
 }
@@ -161,9 +165,9 @@ export interface SetDoc {
 export interface SetRule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
-	updated_at: [] | [bigint];
 	max_size: [] | [bigint];
 	read: Permission;
+	version: [] | [bigint];
 	mutable_permissions: [] | [boolean];
 	write: Permission;
 }
@@ -218,7 +222,7 @@ export interface _SERVICE {
 	del_docs: ActorMethod<[string], undefined>;
 	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
-	del_rule: ActorMethod<[RulesType, string, DelDoc], undefined>;
+	del_rule: ActorMethod<[RulesType, string, DelRule], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;

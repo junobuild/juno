@@ -8,7 +8,6 @@ use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::{Memory, Rule, Rules};
 use crate::storage::store::assert_assets_collection_empty_store;
 use crate::types::core::CollectionKey;
-use ic_cdk::api::time;
 
 /// Rules
 
@@ -76,29 +75,11 @@ fn set_rule_impl(
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    assert_write_permission(&collection, current_rule, &user_rule.updated_at)?;
+    assert_write_permission(&collection, current_rule, &user_rule.version)?;
     assert_memory(current_rule, &user_rule.memory)?;
     assert_mutable_permissions(current_rule, &user_rule)?;
 
-    let now = time();
-
-    let created_at: u64 = match current_rule {
-        None => now,
-        Some(current_rule) => current_rule.created_at,
-    };
-
-    let updated_at: u64 = now;
-
-    let rule: Rule = Rule {
-        created_at,
-        updated_at,
-        read: user_rule.read,
-        write: user_rule.write,
-        memory: Some(user_rule.memory.unwrap_or(Memory::Stable)),
-        mutable_permissions: Some(user_rule.mutable_permissions.unwrap_or(true)),
-        max_size: user_rule.max_size,
-        max_capacity: user_rule.max_capacity,
-    };
+    let rule: Rule = Rule::prepare(&current_rule, &user_rule);
 
     rules.insert(collection, rule);
 
@@ -112,7 +93,7 @@ fn del_rule_impl(
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    assert_write_permission(&collection, current_rule, &user_rule.updated_at)?;
+    assert_write_permission(&collection, current_rule, &user_rule.version)?;
 
     rules.remove(&collection);
 

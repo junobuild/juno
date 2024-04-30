@@ -18,6 +18,8 @@ pub mod state {
     pub type ArchiveTime = u64;
     pub type Timestamp = u64;
 
+    pub type Version = u64;
+
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Controller {
         pub metadata: Metadata,

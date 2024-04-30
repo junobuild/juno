@@ -10,7 +10,7 @@ import {
 	INVALID_TIMESTAMP_ERROR_MSG,
 	NO_TIMESTAMP_ERROR_MSG
 } from './constants/satellite-tests.constants';
-import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
+import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite datastore',
@@ -27,8 +27,8 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 			const { actor: c } = await pic.setupCanister<SatelliteActor>({
 				idlFactory: idlFactorSatellite,
-				wasm: WASM_PATH,
-				arg: satelliteInitArgs(controller),
+				wasm: SATELLITE_WASM_PATH,
+				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
 			});
 

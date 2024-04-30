@@ -10,7 +10,7 @@ import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/util
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
 import { ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
-import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
+import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite storage', () => {
 	let pic: PocketIc;
@@ -23,8 +23,8 @@ describe('Satellite storage', () => {
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,
-			wasm: WASM_PATH,
-			arg: satelliteInitArgs(controller),
+			wasm: SATELLITE_WASM_PATH,
+			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
 		});
 

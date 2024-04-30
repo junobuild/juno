@@ -305,11 +305,14 @@ describe('satellite upgrade', () => {
 			const newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
 			newActor.setIdentity(controller);
 
-			const { list_rules, set_rule } = newActor;
+			const { set_rule } = newActor;
 
-			const [rule, _] = await list_rules({ Db: null });
+			const setUpdateRule: SetRule = {
+				...setRule,
+				version: toNullable()
+			};
 
-			await set_rule_deprecated({ Db: null }, 'test', setRule);
+			await set_rule({ Db: null }, 'test', setUpdateRule);
 		});
 
 		it('should be able to update rule after upgrade only once without version provided', async () => {

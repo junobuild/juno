@@ -177,7 +177,7 @@ describe('satellite upgrade', () => {
 			actor.setIdentity(controller);
 		});
 
-		it.only(
+		it(
 			'should still list users from heap',
 			async () => {
 				await initUsers();

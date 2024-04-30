@@ -45,8 +45,7 @@ type CustomDomain = record {
   created_at : nat64;
   bn_id : opt text;
 };
-type DelDoc = record { updated_at : opt nat64 };
-type DelRule = record { version : opt nat64 };
+type DelDoc = record { version : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
 type Doc = record {
@@ -55,6 +54,7 @@ type Doc = record {
   data : vec nat8;
   description : opt text;
   created_at : nat64;
+  version : opt nat64;
 };
 type HttpRequest = record {
   url : text;
@@ -127,9 +127,9 @@ type SetControllersArgs = record {
   controllers : vec principal;
 };
 type SetDoc = record {
-  updated_at : opt nat64;
   data : vec nat8;
   description : opt text;
+  version : opt nat64;
 };
 type SetRule = record {
   max_capacity : opt nat32;
@@ -187,7 +187,7 @@ service : () -> {
   del_docs : (text) -> ();
   del_many_assets : (vec record { text; text }) -> ();
   del_many_docs : (vec record { text; text; DelDoc }) -> ();
-  del_rule : (RulesType, text, DelRule) -> ();
+  del_rule : (RulesType, text, DelDoc) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
   get_asset : (text, text) -> (opt AssetNoContent) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;

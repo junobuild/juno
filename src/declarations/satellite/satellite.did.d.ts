@@ -50,9 +50,6 @@ export interface CustomDomain {
 	bn_id: [] | [string];
 }
 export interface DelDoc {
-	updated_at: [] | [bigint];
-}
-export interface DelRule {
 	version: [] | [bigint];
 }
 export interface DeleteControllersArgs {
@@ -68,6 +65,7 @@ export interface Doc {
 	data: Uint8Array | number[];
 	description: [] | [string];
 	created_at: bigint;
+	version: [] | [bigint];
 }
 export interface HttpRequest {
 	url: string;
@@ -158,9 +156,9 @@ export interface SetControllersArgs {
 	controllers: Array<Principal>;
 }
 export interface SetDoc {
-	updated_at: [] | [bigint];
 	data: Uint8Array | number[];
 	description: [] | [string];
+	version: [] | [bigint];
 }
 export interface SetRule {
 	max_capacity: [] | [number];
@@ -222,7 +220,7 @@ export interface _SERVICE {
 	del_docs: ActorMethod<[string], undefined>;
 	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
-	del_rule: ActorMethod<[RulesType, string, DelRule], undefined>;
+	del_rule: ActorMethod<[RulesType, string, DelDoc], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;

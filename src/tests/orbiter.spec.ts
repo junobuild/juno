@@ -1,7 +1,8 @@
 import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
-	SetPageView
+	SetPageView,
+	SetTrackEvent
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
@@ -59,6 +60,17 @@ describe('Orbiter', () => {
 		updated_at: []
 	};
 
+	const trackEvent: SetTrackEvent = {
+		name: 'my_event',
+		metadata: [],
+		satellite_id,
+		session_id: nanoid(),
+		user_agent: [
+			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
+		],
+		updated_at: []
+	};
+
 	describe('not configured', () => {
 		describe('user', () => {
 			const user = Ed25519KeyIdentity.generate();
@@ -67,7 +79,7 @@ describe('Orbiter', () => {
 				actor.setIdentity(user);
 			});
 
-			it('should set page views', async () => {
+			it('should not set page views if feature not enabled', async () => {
 				const { set_page_views } = actor;
 
 				const pagesViews: [AnalyticKey, SetPageView][] = [
@@ -76,6 +88,23 @@ describe('Orbiter', () => {
 				];
 
 				const results = await set_page_views(pagesViews);
+
+				expect('Err' in results).toBeTruthy();
+
+				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					expect(msg).toEqual('error_feature_not_enabled')
+				);
+			});
+
+			it('should not set page views if feature not enabled', async () => {
+				const { set_track_events } = actor;
+
+				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+					[{ key: nanoid(), collected_at: 123n }, trackEvent],
+					[{ key: nanoid(), collected_at: 123n }, trackEvent]
+				];
+
+				const results = await set_track_events(trackEvents);
 
 				expect('Err' in results).toBeTruthy();
 
@@ -189,6 +218,55 @@ describe('Orbiter', () => {
 				];
 
 				const results = await set_page_views(pagesViews);
+
+				expect('Err' in results).toBeTruthy();
+
+				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					expect(msg).toContain(INVALID_TIMESTAMP_ERROR_MSG)
+				);
+			});
+
+			it('should set track events', async () => {
+				const { set_track_events } = actor;
+
+				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+					[{ key, collected_at: 123n }, trackEvent],
+					[{ key: nanoid(), collected_at: 123n }, trackEvent]
+				];
+
+				await expect(set_track_events(trackEvents)).resolves.not.toThrowError();
+			});
+
+			it('should not set track events if no timestamp', async () => {
+				const { set_track_events } = actor;
+
+				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+					[{ key, collected_at: 123n }, trackEvent]
+				];
+
+				const results = await set_track_events(trackEvents);
+
+				expect('Err' in results).toBeTruthy();
+
+				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					expect(msg).toEqual(NO_TIMESTAMP_ERROR_MSG)
+				);
+			});
+
+			it('should not set track events if if invalid timestamp', async () => {
+				const { set_track_events } = actor;
+
+				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+					[
+						{ key, collected_at: 123n },
+						{
+							...trackEvent,
+							updated_at: [123n]
+						}
+					]
+				];
+
+				const results = await set_track_events(trackEvents);
 
 				expect('Err' in results).toBeTruthy();
 

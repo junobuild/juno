@@ -28,6 +28,10 @@ jobs:
             wasm: satellite.wasm.gz
             target: scratch_satellite
 
+          - name: orbiter
+            wasm: orbiter.wasm.gz
+            target: scratch_orbiter
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4

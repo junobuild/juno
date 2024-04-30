@@ -8,7 +8,11 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
-import { afterAll, beforeAll, describe, inject } from 'vitest';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import {
+	INVALID_TIMESTAMP_ERROR_MSG,
+	NO_TIMESTAMP_ERROR_MSG
+} from './constants/satellite-tests.constants';
 import { ORBITER_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Orbiter', () => {
@@ -55,22 +59,143 @@ describe('Orbiter', () => {
 		updated_at: []
 	};
 
-	describe('user', async () => {
-		const user = Ed25519KeyIdentity.generate();
+	describe('not configured', () => {
+		describe('user', () => {
+			const user = Ed25519KeyIdentity.generate();
 
-		beforeAll(() => {
-			actor.setIdentity(user);
+			beforeAll(() => {
+				actor.setIdentity(user);
+			});
+
+			it('should set page views', async () => {
+				const { set_page_views } = actor;
+
+				const pagesViews: [AnalyticKey, SetPageView][] = [
+					[{ key: nanoid(), collected_at: 123n }, pageView],
+					[{ key: nanoid(), collected_at: 123n }, pageView]
+				];
+
+				const results = await set_page_views(pagesViews);
+
+				expect('Err' in results).toBeTruthy();
+
+				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					expect(msg).toEqual('error_feature_not_enabled')
+				);
+			});
+		});
+	});
+
+	describe('configured', () => {
+		describe('controller', () => {
+			beforeAll(() => {
+				actor.setIdentity(controller);
+			});
+
+			it('should configure satellite', async () => {
+				const { set_satellite_configs } = actor;
+
+				await expect(
+					set_satellite_configs([
+						[
+							satellite_id,
+							{
+								updated_at: [],
+								enabled: true
+							}
+						]
+					])
+				).resolves.not.toThrowError();
+			});
+
+			it('should not configure satellite if no timestamp', async () => {
+				const { set_satellite_configs } = actor;
+
+				await expect(
+					set_satellite_configs([
+						[
+							satellite_id,
+							{
+								updated_at: [],
+								enabled: true
+							}
+						]
+					])
+				).rejects.toThrow(NO_TIMESTAMP_ERROR_MSG);
+			});
+
+			it('should not configure satellite if invalid timestamp', async () => {
+				const { set_satellite_configs } = actor;
+
+				await expect(
+					set_satellite_configs([
+						[
+							satellite_id,
+							{
+								updated_at: [123n],
+								enabled: true
+							}
+						]
+					])
+				).rejects.toThrowError(new RegExp(INVALID_TIMESTAMP_ERROR_MSG, 'i'));
+			});
 		});
 
-		it('should set page views', async () => {
-			const { set_page_views } = actor;
+		describe('user', () => {
+			const user = Ed25519KeyIdentity.generate();
 
-			const pagesViews: [AnalyticKey, SetPageView][] = [
-				[{ key: nanoid(), collected_at: 123n }, pageView],
-				[{ key: nanoid(), collected_at: 123n }, pageView]
-			];
+			beforeAll(() => {
+				actor.setIdentity(user);
+			});
 
-			await expect(set_page_views(pagesViews)).resolves.not.toThrowError();
+			const key = nanoid();
+
+			it('should set page views', async () => {
+				const { set_page_views } = actor;
+
+				const pagesViews: [AnalyticKey, SetPageView][] = [
+					[{ key, collected_at: 123n }, pageView],
+					[{ key: nanoid(), collected_at: 123n }, pageView]
+				];
+
+				await expect(set_page_views(pagesViews)).resolves.not.toThrowError();
+			});
+
+			it('should not set page views if no timestamp', async () => {
+				const { set_page_views } = actor;
+
+				const pagesViews: [AnalyticKey, SetPageView][] = [[{ key, collected_at: 123n }, pageView]];
+
+				const results = await set_page_views(pagesViews);
+
+				expect('Err' in results).toBeTruthy();
+
+				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					expect(msg).toEqual(NO_TIMESTAMP_ERROR_MSG)
+				);
+			});
+
+			it('should not set page views if if invalid timestamp', async () => {
+				const { set_page_views } = actor;
+
+				const pagesViews: [AnalyticKey, SetPageView][] = [
+					[
+						{ key, collected_at: 123n },
+						{
+							...pageView,
+							updated_at: [123n]
+						}
+					]
+				];
+
+				const results = await set_page_views(pagesViews);
+
+				expect('Err' in results).toBeTruthy();
+
+				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					expect(msg).toContain(INVALID_TIMESTAMP_ERROR_MSG)
+				);
+			});
 		});
 	});
 });

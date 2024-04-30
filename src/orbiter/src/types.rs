@@ -114,7 +114,7 @@ pub mod interface {
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
-        pub updated_at: Option<u64>,
+        pub updated_at: Option<Timestamp>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -124,7 +124,7 @@ pub mod interface {
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
-        pub updated_at: Option<u64>,
+        pub updated_at: Option<Timestamp>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

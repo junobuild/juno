@@ -3,6 +3,7 @@ use crate::rules::types::interface::SetRule;
 use crate::rules::types::rules::{Memory, Rule};
 use crate::types::core::CollectionKey;
 use junobuild_shared::assert::assert_timestamp;
+use junobuild_shared::types::state::Timestamp;
 
 pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result<(), String> {
     // Validate memory type does not change
@@ -73,7 +74,7 @@ pub fn assert_mutable_permissions(
 pub fn assert_write_permission(
     collection: &CollectionKey,
     current_rule: Option<&Rule>,
-    updated_at: &Option<u64>,
+    updated_at: &Option<Timestamp>,
 ) -> Result<(), String> {
     // Validate timestamp
     match current_rule {

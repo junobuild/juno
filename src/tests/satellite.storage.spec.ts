@@ -257,12 +257,12 @@ describe('Satellite storage', () => {
 
 					const setRule: SetRule = {
 						memory: toNullable(memory),
-						updated_at: toNullable(),
 						max_size: toNullable(),
 						max_capacity: toNullable(),
 						read: { Managed: null },
 						mutable_permissions: toNullable(),
-						write: { Managed: null }
+						write: { Managed: null },
+						version: toNullable()
 					};
 
 					await set_rule({ Storage: null }, collection, setRule);

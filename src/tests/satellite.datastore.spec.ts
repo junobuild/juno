@@ -37,12 +37,12 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 			const setRule: SetRule = {
 				memory: toNullable(memory),
-				updated_at: toNullable(),
 				max_size: toNullable(),
 				max_capacity: toNullable(),
 				read: { Managed: null },
 				mutable_permissions: toNullable(),
-				write: { Managed: null }
+				write: { Managed: null },
+				version: toNullable()
 			};
 
 			const { set_rule } = actor;
@@ -177,11 +177,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		describe('rules', () => {
 			const setRule: Omit<SetRule, 'max_capacity'> = {
 				memory: toNullable(memory),
-				updated_at: toNullable(),
 				max_size: toNullable(),
 				read: { Managed: null },
 				mutable_permissions: toNullable(),
-				write: { Managed: null }
+				write: { Managed: null },
+				version: toNullable()
 			};
 
 			beforeAll(async () => {

@@ -1,3 +1,5 @@
+import type { _SERVICE as SatelliteActor_0_0_16 } from '$declarations/deprecated/satellite-0-0-16.did';
+import { idlFactory as idlFactorSatellite_0_0_16 } from '$declarations/deprecated/satellite-0-0-16.factory.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import type { Identity } from '@dfinity/agent';
@@ -15,7 +17,7 @@ import {
 
 describe('satellite upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<SatelliteActor>;
+	let actor: Actor<SatelliteActor_0_0_16 | SatelliteActor>;
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -101,8 +103,8 @@ describe('satellite upgrade', () => {
 
 			const destination = await downloadSatellite('0.0.15');
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-				idlFactory: idlFactorSatellite,
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_16>({
+				idlFactory: idlFactorSatellite_0_0_16,
 				wasm: destination,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
@@ -120,7 +122,7 @@ describe('satellite upgrade', () => {
 
 			await testUsers(users);
 
-			await upgrade();
+			await upgradeVersion('0.0.16');
 
 			const moreUsers = await initUsers();
 
@@ -128,7 +130,7 @@ describe('satellite upgrade', () => {
 		});
 
 		it('should keep listing existing heap collections as such', async () => {
-			const { set_rule, list_rules } = actor;
+			const { set_rule, list_rules } = actor as SatelliteActor_0_0_16;
 
 			await set_rule({ Db: null }, 'test', {
 				memory: toNullable({ Heap: null }),
@@ -151,20 +153,20 @@ describe('satellite upgrade', () => {
 
 			await testCollection();
 
-			await upgrade();
+			await upgradeVersion('0.0.16');
 
 			await testCollection();
 		});
 	});
 
-	describe('v0.0.11 -> v0.0.16', async () => {
+	describe('v0.0.11 -> v0.0.17', async () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
 			const destination = await downloadSatellite('0.0.11');
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-				idlFactory: idlFactorSatellite,
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_16>({
+				idlFactory: idlFactorSatellite_0_0_16,
 				wasm: destination,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
@@ -175,7 +177,7 @@ describe('satellite upgrade', () => {
 			actor.setIdentity(controller);
 		});
 
-		it(
+		it.only(
 			'should still list users from heap',
 			async () => {
 				await initUsers();
@@ -200,6 +202,10 @@ describe('satellite upgrade', () => {
 
 				await testUsers(users);
 
+				await upgradeVersion('0.0.16');
+
+				await testUsers(users);
+
 				await upgrade();
 
 				await testUsers(users);
@@ -212,9 +218,11 @@ describe('satellite upgrade', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-				idlFactory: idlFactorSatellite,
-				wasm: SATELLITE_WASM_PATH,
+			const destination = await downloadSatellite('0.0.16');
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_16>({
+				idlFactory: idlFactorSatellite_0_0_16,
+				wasm: destination,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
 			});

@@ -705,12 +705,6 @@ dependencies = [
 
 [[package]]
 name = "ic-stable-structures"
-version = "0.5.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "95dce29e3ceb0e6da3e78b305d95365530f2efd2146ca18590c0ef3aa6038568"
-
-[[package]]
-name = "ic-stable-structures"
 version = "0.6.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "07e2282054c8ddf0cb2a7abf5c174c373917b4345c9a096ae4aa7f7185cdcdc7"
@@ -807,7 +801,7 @@ dependencies = [
  "ic-certification",
  "ic-representation-independent-hash",
  "ic-response-verification",
- "ic-stable-structures 0.6.4",
+ "ic-stable-structures",
  "junobuild-shared",
  "junobuild-utils 0.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand",
@@ -1002,7 +996,7 @@ dependencies = [
  "ciborium",
  "ic-cdk",
  "ic-cdk-macros",
- "ic-stable-structures 0.5.6",
+ "ic-stable-structures",
  "isbot",
  "junobuild-shared",
  "lazy_static",

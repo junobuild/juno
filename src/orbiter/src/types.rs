@@ -45,13 +45,13 @@ pub mod state {
         pub config: SatelliteConfigs,
     }
 
-    #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticKey {
         pub collected_at: Timestamp,
         pub key: Key,
     }
 
-    #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticSatelliteKey {
         pub satellite_id: SatelliteId,
         pub collected_at: Timestamp,

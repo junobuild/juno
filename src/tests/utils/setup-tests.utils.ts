@@ -3,22 +3,25 @@ import { IDL } from '@dfinity/candid';
 import { nonNullish } from '@dfinity/utils';
 import { existsSync, writeFileSync } from 'node:fs';
 import { get, type RequestOptions } from 'node:https';
-import { resolve } from 'node:path';
+import { join } from 'node:path';
 
-const WASM_PATH_LOCAL = resolve(
-	process.cwd(),
-	'.dfx',
-	'local',
-	'canisters',
-	'satellite',
-	'satellite.wasm'
-);
+const WASM_PATH_LOCAL = join(process.cwd(), '.dfx', 'local', 'canisters');
 
-const WASM_PATH_CI = resolve(process.cwd(), 'satellite.wasm.gz');
+const SATELLITE_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'satellite', 'satellite.wasm');
 
-export const WASM_PATH = existsSync(WASM_PATH_CI) ? WASM_PATH_CI : WASM_PATH_LOCAL;
+const ORBITER_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'orbiter', 'orbiter.wasm');
 
-export const satelliteInitArgs = (controller: Identity): ArrayBuffer =>
+const SATELLITE_WASM_PATH_CI = join(process.cwd(), 'satellite.wasm.gz');
+export const SATELLITE_WASM_PATH = existsSync(SATELLITE_WASM_PATH_CI)
+	? SATELLITE_WASM_PATH_CI
+	: SATELLITE_WASM_PATH_LOCAL;
+
+const ORBITER_WASM_PATH_CI = join(process.cwd(), 'orbiter.wasm.gz');
+export const ORBITER_WASM_PATH = existsSync(ORBITER_WASM_PATH_CI)
+	? ORBITER_WASM_PATH_CI
+	: ORBITER_WASM_PATH_LOCAL;
+
+export const controllersInitArgs = (controller: Identity): ArrayBuffer =>
 	IDL.encode(
 		[
 			IDL.Record({
@@ -48,7 +51,7 @@ const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
 };
 
 export const downloadSatellite = async (version: string) => {
-	const destination = resolve(process.cwd(), `satellite-v${version}.wasm.gz`);
+	const destination = join(process.cwd(), `satellite-v${version}.wasm.gz`);
 
 	if (existsSync(destination)) {
 		return destination;

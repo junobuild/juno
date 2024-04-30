@@ -7,7 +7,11 @@ import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
-import { WASM_PATH, downloadSatellite, satelliteInitArgs } from './utils/satellite-tests.utils';
+import {
+	SATELLITE_WASM_PATH,
+	controllersInitArgs,
+	downloadSatellite
+} from './utils/setup-tests.utils';
 
 describe('satellite upgrade', () => {
 	let pic: PocketIc;
@@ -43,7 +47,7 @@ describe('satellite upgrade', () => {
 
 		await pic.upgradeCanister({
 			canisterId,
-			wasm: WASM_PATH,
+			wasm: SATELLITE_WASM_PATH,
 			sender: controller.getPrincipal()
 		});
 	};
@@ -100,7 +104,7 @@ describe('satellite upgrade', () => {
 			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
 				idlFactory: idlFactorSatellite,
 				wasm: destination,
-				arg: satelliteInitArgs(controller),
+				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
 			});
 
@@ -162,7 +166,7 @@ describe('satellite upgrade', () => {
 			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
 				idlFactory: idlFactorSatellite,
 				wasm: destination,
-				arg: satelliteInitArgs(controller),
+				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
 			});
 
@@ -210,8 +214,8 @@ describe('satellite upgrade', () => {
 
 			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor>({
 				idlFactory: idlFactorSatellite,
-				wasm: WASM_PATH,
-				arg: satelliteInitArgs(controller),
+				wasm: SATELLITE_WASM_PATH,
+				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
 			});
 

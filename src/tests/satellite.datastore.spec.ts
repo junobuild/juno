@@ -6,7 +6,11 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
+import {
+	INVALID_TIMESTAMP_ERROR_MSG,
+	NO_TIMESTAMP_ERROR_MSG
+} from './constants/satellite-tests.constants';
+import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 	'Satellite datastore',
@@ -23,8 +27,8 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 			const { actor: c } = await pic.setupCanister<SatelliteActor>({
 				idlFactory: idlFactorSatellite,
-				wasm: WASM_PATH,
-				arg: satelliteInitArgs(controller),
+				wasm: SATELLITE_WASM_PATH,
+				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
 			});
 
@@ -116,6 +120,57 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				const results = await Promise.all(keys.map(delDoc));
 				expect(results).toHaveLength(10);
+			});
+
+			it('should update a document', async () => {
+				const key = await createDoc();
+
+				const { get_doc, set_doc } = actor;
+
+				const doc = fromNullable(await get_doc(TEST_COLLECTION, key));
+
+				await pic.advanceTime(100);
+
+				const updatedDoc = await set_doc(TEST_COLLECTION, key, {
+					...doc!,
+					updated_at: toNullable(doc!.updated_at)
+				});
+
+				expect(updatedDoc.updated_at).toBeGreaterThan(doc!.updated_at);
+			});
+
+			it('should not update a document if no timestamp', async () => {
+				const key = await createDoc();
+
+				const { get_doc, set_doc } = actor;
+
+				const doc = fromNullable(await get_doc(TEST_COLLECTION, key));
+
+				await pic.advanceTime(100);
+
+				await expect(
+					set_doc(TEST_COLLECTION, key, {
+						...doc!,
+						updated_at: []
+					})
+				).rejects.toThrow(NO_TIMESTAMP_ERROR_MSG);
+			});
+
+			it('should not update a document if invalid timestamp', async () => {
+				const key = await createDoc();
+
+				const { get_doc, set_doc } = actor;
+
+				const doc = fromNullable(await get_doc(TEST_COLLECTION, key));
+
+				await pic.advanceTime(100);
+
+				await expect(
+					set_doc(TEST_COLLECTION, key, {
+						...doc!,
+						updated_at: [123n]
+					})
+				).rejects.toThrowError(new RegExp(INVALID_TIMESTAMP_ERROR_MSG, 'i'));
 			});
 		});
 

@@ -5,7 +5,7 @@ import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, beforeEach, describe, inject } from 'vitest';
-import { WASM_PATH, satelliteInitArgs } from './utils/satellite-tests.utils';
+import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe.skip('Satellite playground (kind of)', () => {
 	let pic: PocketIc;
@@ -18,8 +18,8 @@ describe.skip('Satellite playground (kind of)', () => {
 
 		const { actor: c } = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,
-			wasm: WASM_PATH,
-			arg: satelliteInitArgs(controller),
+			wasm: SATELLITE_WASM_PATH,
+			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
 		});
 

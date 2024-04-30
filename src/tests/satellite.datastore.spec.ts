@@ -7,8 +7,8 @@ import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	INVALID_TIMESTAMP_ERROR_MSG,
-	NO_TIMESTAMP_ERROR_MSG
+	INVALID_VERSION_ERROR_MSG,
+	NO_VERSION_ERROR_MSG
 } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -72,7 +72,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				await set_doc(TEST_COLLECTION, key, {
 					data,
 					description: toNullable(),
-					updated_at: toNullable()
+					version: toNullable()
 				});
 
 				return key;
@@ -114,7 +114,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				const delDoc = async (key: string): Promise<undefined> => {
 					const doc = await get_doc(TEST_COLLECTION, key);
 					return del_doc(TEST_COLLECTION, key, {
-						updated_at: toNullable(fromNullable(doc)?.updated_at)
+						version: fromNullable(doc)?.version ?? []
 					});
 				};
 
@@ -133,7 +133,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				const updatedDoc = await set_doc(TEST_COLLECTION, key, {
 					...doc!,
-					updated_at: toNullable(doc!.updated_at)
+					version: doc!.version
 				});
 
 				expect(updatedDoc.updated_at).toBeGreaterThan(doc!.updated_at);
@@ -151,9 +151,9 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				await expect(
 					set_doc(TEST_COLLECTION, key, {
 						...doc!,
-						updated_at: []
+						version: []
 					})
-				).rejects.toThrow(NO_TIMESTAMP_ERROR_MSG);
+				).rejects.toThrow(NO_VERSION_ERROR_MSG);
 			});
 
 			it('should not update a document if invalid timestamp', async () => {
@@ -168,9 +168,9 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				await expect(
 					set_doc(TEST_COLLECTION, key, {
 						...doc!,
-						updated_at: [123n]
+						version: [123n]
 					})
-				).rejects.toThrowError(new RegExp(INVALID_TIMESTAMP_ERROR_MSG, 'i'));
+				).rejects.toThrowError(new RegExp(INVALID_VERSION_ERROR_MSG, 'i'));
 			});
 		});
 
@@ -206,7 +206,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						{
 							data,
 							description: toNullable(),
-							updated_at: toNullable()
+							version: toNullable()
 						}
 					])
 				);
@@ -275,7 +275,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						{
 							data,
 							description: toNullable(),
-							updated_at: toNullable()
+							version: toNullable()
 						}
 					])
 				);

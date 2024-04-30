@@ -45,7 +45,7 @@ describe.skip('Satellite playground (kind of)', () => {
 					provider: 'internet_identity'
 				}),
 				description: toNullable(),
-				updated_at: toNullable()
+				version: toNullable()
 			});
 
 			// eslint-disable-next-line no-console

@@ -2,7 +2,7 @@ pub mod state {
     use crate::types::ledger::Payment;
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
-    use junobuild_shared::types::state::Controllers;
+    use junobuild_shared::types::state::{Controllers, Timestamp};
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use serde::Deserialize;
     use std::collections::HashMap;
@@ -32,8 +32,8 @@ pub mod state {
         pub mission_control_id: Option<MissionControlId>,
         pub owner: UserId,
         pub credits: Tokens,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -53,8 +53,8 @@ pub mod state {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct InvitationCodeRedeem {
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
         pub redeemed: bool,
         pub user_id: Option<UserId>,
     }
@@ -75,7 +75,7 @@ pub mod state {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct RateTokens {
         pub tokens: u64,
-        pub updated_at: u64,
+        pub updated_at: Timestamp,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -87,7 +87,7 @@ pub mod state {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Fee {
         pub fee: Tokens,
-        pub updated_at: u64,
+        pub updated_at: Timestamp,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -131,7 +131,7 @@ pub mod interface {
 pub mod ledger {
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
-    use junobuild_shared::types::state::MissionControlId;
+    use junobuild_shared::types::state::{MissionControlId, Timestamp};
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -140,8 +140,8 @@ pub mod ledger {
         pub block_index_payment: BlockIndex,
         pub block_index_refunded: Option<BlockIndex>,
         pub status: PaymentStatus,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

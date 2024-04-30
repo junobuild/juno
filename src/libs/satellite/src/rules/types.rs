@@ -2,6 +2,7 @@ pub mod rules {
     use crate::types::core::CollectionKey;
     use candid::CandidType;
     use junobuild_shared::serializers::deserialize_default_as_true;
+    use junobuild_shared::types::state::Timestamp;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -16,8 +17,8 @@ pub mod rules {
         pub memory: Option<Memory>,
         pub max_size: Option<u128>,
         pub max_capacity: Option<u32>,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Default, Clone, Debug)]
@@ -46,11 +47,12 @@ pub mod rules {
 pub mod interface {
     use crate::rules::types::rules::{Memory, Permission};
     use candid::CandidType;
+    use junobuild_shared::types::state::Timestamp;
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetRule {
-        pub updated_at: Option<u64>,
+        pub updated_at: Option<Timestamp>,
         pub read: Permission,
         pub write: Permission,
         pub mutable_permissions: Option<bool>,

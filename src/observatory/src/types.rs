@@ -2,7 +2,7 @@ pub mod state {
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::cronjob::CronJobs;
     use junobuild_shared::types::state::{
-        ArchiveTime, Controllers, MissionControlId, SegmentsStatuses, UserId,
+        ArchiveTime, Controllers, MissionControlId, SegmentsStatuses, Timestamp, UserId,
     };
     use std::collections::HashMap;
 
@@ -24,8 +24,8 @@ pub mod state {
     pub struct CronTab {
         pub mission_control_id: MissionControlId,
         pub cron_jobs: CronJobs,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -43,7 +43,9 @@ pub mod state {
 pub mod interface {
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::cronjob::CronJobs;
-    use junobuild_shared::types::state::{ArchiveTime, MissionControlId, SegmentsStatuses};
+    use junobuild_shared::types::state::{
+        ArchiveTime, MissionControlId, SegmentsStatuses, Timestamp,
+    };
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ListStatusesArgs {
@@ -61,6 +63,6 @@ pub mod interface {
     pub struct SetCronTab {
         pub mission_control_id: MissionControlId,
         pub cron_jobs: CronJobs,
-        pub updated_at: Option<u64>,
+        pub updated_at: Option<Timestamp>,
     }
 }

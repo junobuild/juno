@@ -16,13 +16,14 @@ pub mod state {
     pub type Controllers = HashMap<ControllerId, Controller>;
 
     pub type ArchiveTime = u64;
+    pub type Timestamp = u64;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Controller {
         pub metadata: Metadata,
-        pub created_at: u64,
-        pub updated_at: u64,
-        pub expires_at: Option<u64>,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+        pub expires_at: Option<Timestamp>,
         pub scope: ControllerScope,
     }
 
@@ -56,7 +57,7 @@ pub mod state {
         pub id: Principal,
         pub metadata: Option<Metadata>,
         pub status: SegmentCanisterStatus,
-        pub status_at: u64,
+        pub status_at: Timestamp,
     }
 
     pub type SegmentStatusResult = Result<SegmentStatus, String>;
@@ -71,14 +72,16 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OrbiterSatelliteConfig {
         pub enabled: bool,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 }
 
 pub mod interface {
     use crate::types::cronjob::CronJobStatusesSegments;
-    use crate::types::state::{ControllerId, ControllerScope, Metadata, MissionControlId, UserId};
+    use crate::types::state::{
+        ControllerId, ControllerScope, Metadata, MissionControlId, Timestamp, UserId,
+    };
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
@@ -107,7 +110,7 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetController {
         pub metadata: Metadata,
-        pub expires_at: Option<u64>,
+        pub expires_at: Option<Timestamp>,
         pub scope: ControllerScope,
     }
 

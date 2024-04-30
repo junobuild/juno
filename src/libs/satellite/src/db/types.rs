@@ -5,7 +5,7 @@ pub mod state {
     use crate::{DelDoc, SetDoc};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
-    use junobuild_shared::types::state::UserId;
+    use junobuild_shared::types::state::{Timestamp, UserId};
     use serde::{Deserialize, Serialize};
     use std::collections::{BTreeMap, HashMap};
 
@@ -40,8 +40,8 @@ pub mod state {
     pub struct Doc {
         pub owner: UserId,
         pub data: Blob,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
         pub description: Option<String>,
     }
 
@@ -74,6 +74,7 @@ pub mod state {
 pub mod interface {
     use crate::types::core::Blob;
     use candid::CandidType;
+    use junobuild_shared::types::state::Timestamp;
     use serde::{Deserialize, Serialize};
 
     /// Parameters for setting a document.
@@ -88,7 +89,7 @@ pub mod interface {
     /// `SetDoc` is used to provide parameters for setting or updating a document in the collection's store.
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct SetDoc {
-        pub updated_at: Option<u64>,
+        pub updated_at: Option<Timestamp>,
         pub data: Blob,
         pub description: Option<String>,
     }
@@ -103,6 +104,6 @@ pub mod interface {
     /// `DelDoc` is used to provide deletion parameters when removing a document.
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct DelDoc {
-        pub updated_at: Option<u64>,
+        pub updated_at: Option<Timestamp>,
     }
 }

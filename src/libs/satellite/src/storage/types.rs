@@ -62,7 +62,7 @@ pub mod store {
     use crate::types::core::{Blob, CollectionKey};
     use candid::CandidType;
     use ic_certification::Hash;
-    use junobuild_shared::types::state::UserId;
+    use junobuild_shared::types::state::{Timestamp, UserId};
     use serde::{Deserialize, Serialize};
     use std::clone::Clone;
     use std::collections::HashMap;
@@ -79,7 +79,7 @@ pub mod store {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetEncoding {
-        pub modified: u64,
+        pub modified: Timestamp,
         pub content_chunks: Vec<BlobOrKey>,
         pub total_length: u128,
         pub sha256: Hash,
@@ -108,14 +108,14 @@ pub mod store {
         pub key: AssetKey,
         pub headers: Vec<HeaderField>,
         pub encodings: HashMap<EncodingType, AssetEncoding>,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Batch {
         pub key: AssetKey,
-        pub expires_at: u64,
+        pub expires_at: Timestamp,
         pub encoding_type: Option<EncodingType>,
     }
 
@@ -130,6 +130,7 @@ pub mod store {
 pub mod interface {
     use candid::{CandidType, Deserialize};
     use ic_certification::Hash;
+    use junobuild_shared::types::state::Timestamp;
     use serde::Serialize;
 
     use crate::storage::http::types::HeaderField;
@@ -176,13 +177,13 @@ pub mod interface {
         pub key: AssetKey,
         pub headers: Vec<HeaderField>,
         pub encodings: Vec<(EncodingType, AssetEncodingNoContent)>,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AssetEncodingNoContent {
-        pub modified: u64,
+        pub modified: Timestamp,
         pub total_length: u128,
         pub sha256: Hash,
     }
@@ -265,6 +266,7 @@ pub mod http_request {
 pub mod domain {
     use crate::types::core::DomainName;
     use candid::CandidType;
+    use junobuild_shared::types::state::Timestamp;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -273,7 +275,7 @@ pub mod domain {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CustomDomain {
         pub bn_id: Option<String>,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 }

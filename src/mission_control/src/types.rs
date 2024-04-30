@@ -1,7 +1,7 @@
 pub mod state {
     use candid::{CandidType, Deserialize, Principal};
     use junobuild_shared::types::state::{
-        ArchiveTime, Controllers, Metadata, OrbiterId, SegmentStatusResult,
+        ArchiveTime, Controllers, Metadata, OrbiterId, SegmentStatusResult, Timestamp,
     };
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use std::collections::{BTreeMap, HashMap};
@@ -28,8 +28,8 @@ pub mod state {
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct User {
         pub user: Option<UserId>,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
         pub metadata: Metadata,
     }
 
@@ -37,16 +37,16 @@ pub mod state {
     pub struct Satellite {
         pub satellite_id: SatelliteId,
         pub metadata: Metadata,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Orbiter {
         pub orbiter_id: OrbiterId,
         pub metadata: Metadata,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]

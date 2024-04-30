@@ -4,7 +4,7 @@ pub mod state {
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::state::{
-        Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId,
+        Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId, Timestamp,
     };
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
@@ -47,14 +47,14 @@ pub mod state {
 
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticKey {
-        pub collected_at: u64,
+        pub collected_at: Timestamp,
         pub key: Key,
     }
 
     #[derive(CandidType, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticSatelliteKey {
         pub satellite_id: SatelliteId,
-        pub collected_at: u64,
+        pub collected_at: Timestamp,
         pub key: Key,
     }
 
@@ -68,8 +68,8 @@ pub mod state {
         pub time_zone: String,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -84,8 +84,8 @@ pub mod state {
         pub metadata: Option<Metadata>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
-        pub created_at: u64,
-        pub updated_at: u64,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 }
 
@@ -99,7 +99,7 @@ pub mod memory {
 pub mod interface {
     use crate::types::state::{PageViewDevice, SessionId};
     use candid::CandidType;
-    use junobuild_shared::types::state::{Metadata, SatelliteId};
+    use junobuild_shared::types::state::{Metadata, SatelliteId, Timestamp};
     use junobuild_shared::types::utils::CalendarDate;
     use serde::Deserialize;
     use std::collections::HashMap;
@@ -130,19 +130,19 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct GetAnalytics {
         pub satellite_id: Option<SatelliteId>,
-        pub from: Option<u64>,
-        pub to: Option<u64>,
+        pub from: Option<Timestamp>,
+        pub to: Option<Timestamp>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetSatelliteConfig {
         pub enabled: bool,
-        pub updated_at: Option<u64>,
+        pub updated_at: Option<Timestamp>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct DelSatelliteConfig {
-        pub updated_at: Option<u64>,
+        pub updated_at: Option<Timestamp>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

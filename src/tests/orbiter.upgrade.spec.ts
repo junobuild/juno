@@ -1,6 +1,7 @@
 import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
+	_SERVICE as OrbiterActor0_0_6,
 	SetPageView
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
@@ -16,7 +17,7 @@ import { ORBITER_WASM_PATH, controllersInitArgs, downloadOrbiter } from './utils
 
 describe('Orbiter upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<OrbiterActor>;
+	let actor: Actor<OrbiterActor0_0_6>;
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -47,8 +48,10 @@ describe('Orbiter upgrade', () => {
 		});
 	};
 
-	const initPageViews = async (): Promise<AnalyticKey[]> => {
-		const { set_page_views } = actor;
+	const setPageViews = async (
+		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>
+	): Promise<AnalyticKey[]> => {
+		const { set_page_views } = useActor ?? actor;
 
 		const keys = Array.from({ length: 100 }).map((_, i) => ({
 			key: nanoid(),
@@ -64,8 +67,14 @@ describe('Orbiter upgrade', () => {
 		return keys;
 	};
 
-	const testPageViews = async ({ keys }: { keys: AnalyticKey[] }) => {
-		const { get_page_views } = actor;
+	const testPageViews = async ({
+		keys,
+		useActor
+	}: {
+		keys: { key: AnalyticKey; memoryAllocation?: 'bounded' | 'unbounded' }[];
+		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>;
+	}) => {
+		const { get_page_views } = useActor ?? actor;
 
 		const results = await get_page_views({
 			to: toNullable(),
@@ -75,7 +84,7 @@ describe('Orbiter upgrade', () => {
 
 		expect(results).toHaveLength(keys.length);
 
-		for (const key of keys) {
+		for (const { key, memoryAllocation } of keys) {
 			const result = results.find(([{ key: k }, _]) => k === key.key);
 
 			expect(result).not.toBeUndefined();
@@ -95,6 +104,17 @@ describe('Orbiter upgrade', () => {
 			expect(pageView.user_agent).toEqual(pageViewMock.user_agent);
 			expect(pageView.created_at).toBeGreaterThan(0n);
 			expect(pageView.updated_at).toBeGreaterThan(0n);
+
+			switch (memoryAllocation) {
+				case 'bounded':
+					expect(pageView.memory_allocation).toEqual(toNullable({ Bounded: null }));
+					break;
+				case 'unbounded':
+					expect(pageView.memory_allocation).toEqual(toNullable({ Unbounded: null }));
+					break;
+				default:
+					expect(pageView.memory_allocation).toEqual(toNullable());
+			}
 		}
 	};
 
@@ -106,7 +126,7 @@ describe('Orbiter upgrade', () => {
 
 			const destination = await downloadOrbiter('0.0.6');
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor>({
+			const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor0_0_6>({
 				idlFactory: idlFactorOrbiter,
 				wasm: destination,
 				arg: controllersInitArgs(controller),
@@ -133,25 +153,40 @@ describe('Orbiter upgrade', () => {
 		});
 
 		it('should still list all page views after upgrade', async () => {
-			const keys = await initPageViews();
+			const keys = await setPageViews();
 
-			await testPageViews({ keys });
+			await testPageViews({ keys: keys.map((key) => ({ key })) });
 
 			await upgrade();
 
-			await testPageViews({ keys });
+			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			newActor.setIdentity(controller);
+
+			await testPageViews({
+				keys: keys.map((key) => ({ key, memoryAllocation: 'bounded' })),
+				useActor: newActor
+			});
 		});
 
 		it('should be able to collect new page views and list both bounded and unbounded serialized data', async () => {
-			const keysBeforeUpgrade = await initPageViews();
+			const keysBeforeUpgrade = await setPageViews();
 
-			await testPageViews({ keys: keysBeforeUpgrade });
+			await testPageViews({ keys: keysBeforeUpgrade.map((key) => ({ key })) });
 
 			await upgrade();
 
-			const keysAfterUpgrade = await initPageViews();
+			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			newActor.setIdentity(controller);
 
-			await testPageViews({ keys: [...keysAfterUpgrade, ...keysAfterUpgrade] });
+			const keysAfterUpgrade = await setPageViews(newActor);
+
+			await testPageViews({
+				keys: [
+					...keysBeforeUpgrade.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
+					...keysAfterUpgrade.map((key) => ({ key, memoryAllocation: 'unbounded' as const }))
+				],
+				useActor: newActor
+			});
 		});
 	});
 });

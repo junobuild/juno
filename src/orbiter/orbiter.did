@@ -45,6 +45,7 @@ type GetAnalytics = record {
   from : opt nat64;
   satellite_id : opt principal;
 };
+type MemoryAllocation = variant { Unbounded; Bounded };
 type MemorySize = record { stable : nat64; heap : nat64 };
 type OrbiterSatelliteConfig = record {
   updated_at : nat64;
@@ -62,6 +63,7 @@ type PageView = record {
   satellite_id : principal;
   device : PageViewDevice;
   user_agent : opt text;
+  memory_allocation : opt MemoryAllocation;
 };
 type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
 type Result = variant { Ok : PageView; Err : text };
@@ -103,6 +105,7 @@ type TrackEvent = record {
   name : text;
   created_at : nat64;
   satellite_id : principal;
+  memory_allocation : opt MemoryAllocation;
 };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> (

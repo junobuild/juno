@@ -14,8 +14,7 @@ use crate::types::state::{
 };
 use std::borrow::Cow;
 use std::mem::size_of;
-
-const TIMESTAMP_LENGTH: usize = size_of::<u64>();
+use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE, TIMESTAMP_LENGTH};
 
 // updated_at and created_at
 const TIMESTAMPS_LENGTH: usize = TIMESTAMP_LENGTH * 2;
@@ -245,11 +244,6 @@ pub fn deserialize_bounded_track_event(bytes: Cow<[u8]>) -> TrackEvent {
     }
 }
 
-// Size of AnalyticKey:
-// - collected_at
-// - key (String max length KEY_MAX_LENGTH)
-const ANALYTIC_KEY_MAX_SIZE: usize = TIMESTAMP_LENGTH + SERIALIZED_KEY_LENGTH;
-
 pub fn serialize_bounded_analytic_key(key: &AnalyticKey) -> Cow<[u8]> {
     let mut buf = Vec::with_capacity(ANALYTIC_KEY_MAX_SIZE);
 
@@ -275,13 +269,6 @@ pub fn deserialize_bounded_analytic_key(bytes: Cow<[u8]>) -> AnalyticKey {
 
     AnalyticKey { collected_at, key }
 }
-
-// Size of AnalyticSatelliteKey:
-// - Principal to bytes (30 because a principal is max 29 bytes and one byte to save effective length)
-// - collected_at
-// - key (String max length KEY_MAX_LENGTH)
-const ANALYTIC_SATELLITE_KEY_MAX_SIZE: usize =
-    SERIALIZED_PRINCIPAL_LENGTH + TIMESTAMP_LENGTH + SERIALIZED_KEY_LENGTH;
 
 pub fn serialize_bounded_analytic_satellite_key(key: &AnalyticSatelliteKey) -> Cow<[u8]> {
     let mut buf = Vec::with_capacity(ANALYTIC_SATELLITE_KEY_MAX_SIZE);

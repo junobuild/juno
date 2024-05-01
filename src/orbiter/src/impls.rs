@@ -15,6 +15,7 @@ use ic_stable_structures::Storable;
 use junobuild_shared::serializers::serialize_to_bytes;
 use junobuild_shared::types::state::{Controllers, SatelliteId};
 use std::borrow::Cow;
+use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
 
 impl Default for State {
     fn default() -> Self {
@@ -67,7 +68,10 @@ impl Storable for AnalyticKey {
         deserialize_bounded_analytic_key(bytes)
     }
 
-    const BOUND: Bound = Bound::Unbounded;
+    const BOUND: Bound = Bound::Bounded {
+        max_size: ANALYTIC_KEY_MAX_SIZE as u32,
+        is_fixed_size: false,
+    };
 }
 
 impl Storable for AnalyticSatelliteKey {
@@ -79,7 +83,10 @@ impl Storable for AnalyticSatelliteKey {
         deserialize_bounded_analytic_satellite_key(bytes)
     }
 
-    const BOUND: Bound = Bound::Unbounded;
+    const BOUND: Bound = Bound::Bounded {
+        max_size: ANALYTIC_SATELLITE_KEY_MAX_SIZE as u32,
+        is_fixed_size: false,
+    };
 }
 
 /// Key conversion

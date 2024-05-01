@@ -8,6 +8,7 @@ mod guards;
 mod impls;
 mod memory;
 mod msg;
+mod serializers;
 mod store;
 mod types;
 

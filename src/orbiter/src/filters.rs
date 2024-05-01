@@ -1,5 +1,4 @@
 use crate::types::interface::GetAnalytics;
-use crate::types::memory::StoredSatelliteId;
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey};
 use junobuild_shared::types::state::SatelliteId;
 use std::ops::RangeBounds;
@@ -33,13 +32,13 @@ pub fn filter_satellites_analytics(
     satellite_id: SatelliteId,
 ) -> impl RangeBounds<AnalyticSatelliteKey> {
     let start_key = AnalyticSatelliteKey {
-        satellite_id: StoredSatelliteId(satellite_id),
+        satellite_id,
         collected_at: from.unwrap_or(u64::MIN),
         key: "".to_string(),
     };
 
     let end_key = AnalyticSatelliteKey {
-        satellite_id: StoredSatelliteId(satellite_id),
+        satellite_id,
         collected_at: to.unwrap_or(u64::MAX),
         key: "".to_string(),
     };

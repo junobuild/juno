@@ -5,7 +5,6 @@ use crate::constants::{
 use crate::memory::STATE;
 use crate::msg::{ERROR_BOT_CALL, ERROR_FEATURE_NOT_ENABLED};
 use crate::types::interface::{SetPageView, SetTrackEvent};
-use crate::types::memory::StoredSatelliteId;
 use crate::types::state::{AnalyticKey, SatelliteConfig};
 use isbot::Bots;
 use junobuild_shared::types::state::SatelliteId;
@@ -177,13 +176,13 @@ pub fn assert_session_id(
 
 pub fn assert_satellite_id(
     user_satellite_id: SatelliteId,
-    current_satellite_id: StoredSatelliteId,
+    current_satellite_id: SatelliteId,
 ) -> Result<(), String> {
-    if principal_not_equal(user_satellite_id, current_satellite_id.get_id().clone()) {
+    if principal_not_equal(user_satellite_id, current_satellite_id) {
         return Err(format!(
             "Satellite IDs do not match ({} - {})",
             user_satellite_id.to_text(),
-            current_satellite_id.get_id().to_text()
+            current_satellite_id.to_text()
         ));
     }
 

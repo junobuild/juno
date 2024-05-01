@@ -160,7 +160,7 @@ fn insert_track_event_impl(
 
     let memory_allocation: Option<MemoryAllocation> = match current_track_event.clone() {
         None => Some(MemoryAllocation::Unbounded),
-        Some(current_page_view) => current_page_view.memory_allocation,
+        Some(current_track_event) => current_track_event.memory_allocation,
     };
 
     let new_track_event: TrackEvent = TrackEvent {

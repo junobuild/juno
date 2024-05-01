@@ -2,16 +2,17 @@ import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
 	_SERVICE as OrbiterActor0_0_6,
-	SetPageView
+	SetPageView,
+	SetTrackEvent
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
-import { pageViewMock } from './mocks/orbiter.mocks';
+import { pageViewMock, satelliteIdMock, trackEventMock } from './mocks/orbiter.mocks';
 import { tick } from './utils/pic-tests.utils';
 import { ORBITER_WASM_PATH, controllersInitArgs, downloadOrbiter } from './utils/setup-tests.utils';
 
@@ -118,7 +119,72 @@ describe('Orbiter upgrade', () => {
 		}
 	};
 
-	const satellite_id = Principal.fromText('ck4tp-3iaaa-aaaal-ab7da-cai');
+	const setTrackEvents = async (
+		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>
+	): Promise<AnalyticKey[]> => {
+		const { set_track_events } = useActor ?? actor;
+
+		const keys = Array.from({ length: 100 }).map((_, i) => ({
+			key: nanoid(),
+			collected_at: BigInt(i)
+		}));
+
+		const trackEvents: [AnalyticKey, SetTrackEvent][] = keys.map((key) => [key, trackEventMock]);
+
+		const results = await set_track_events(trackEvents);
+
+		expect('Err' in results).toBeFalsy();
+
+		return keys;
+	};
+
+	const testTrackEvents = async ({
+		keys,
+		useActor
+	}: {
+		keys: { key: AnalyticKey; memoryAllocation?: 'bounded' | 'unbounded' }[];
+		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>;
+	}) => {
+		const { get_track_events } = useActor ?? actor;
+
+		const results = await get_track_events({
+			to: toNullable(),
+			from: toNullable(),
+			satellite_id: toNullable()
+		});
+
+		expect(results).toHaveLength(keys.length);
+
+		for (const { key, memoryAllocation } of keys) {
+			const result = results.find(([{ key: k }, _]) => k === key.key);
+
+			expect(result).not.toBeUndefined();
+
+			const [{ collected_at }, trackEvent] = result!;
+
+			expect(collected_at).toEqual(key.collected_at);
+
+			expect(trackEvent.name).toEqual(trackEventMock.name);
+			expect(fromNullable(trackEvent.metadata)!.sort()).toEqual(
+				fromNullable(trackEventMock.metadata)!.sort()
+			);
+			expect(trackEvent.session_id).toEqual(trackEventMock.session_id);
+			expect(trackEvent.satellite_id.toText()).toEqual(trackEventMock.satellite_id.toText());
+			expect(trackEvent.created_at).toBeGreaterThan(0n);
+			expect(trackEvent.updated_at).toBeGreaterThan(0n);
+
+			switch (memoryAllocation) {
+				case 'bounded':
+					expect(trackEvent.memory_allocation).toEqual(toNullable({ Bounded: null }));
+					break;
+				case 'unbounded':
+					expect(trackEvent.memory_allocation).toEqual(toNullable({ Unbounded: null }));
+					break;
+				default:
+					expect(trackEvent.memory_allocation).toEqual(toNullable());
+			}
+		}
+	};
 
 	describe('v0.0.6 -> v0.0.7', async () => {
 		beforeEach(async () => {
@@ -142,7 +208,7 @@ describe('Orbiter upgrade', () => {
 			await expect(
 				set_satellite_configs([
 					[
-						satellite_id,
+						satelliteIdMock,
 						{
 							updated_at: [],
 							enabled: true
@@ -152,80 +218,160 @@ describe('Orbiter upgrade', () => {
 			).resolves.not.toThrowError();
 		});
 
-		it('should still list all page views after upgrade', async () => {
-			const keys = await setPageViews();
+		describe('Page views', () => {
+			it('should still list all entries after upgrade', async () => {
+				const keys = await setPageViews();
 
-			await testPageViews({ keys: keys.map((key) => ({ key })) });
+				await testPageViews({ keys: keys.map((key) => ({ key })) });
 
-			await upgrade();
+				await upgrade();
 
-			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-			newActor.setIdentity(controller);
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
 
-			await testPageViews({
-				keys: keys.map((key) => ({ key, memoryAllocation: 'bounded' })),
-				useActor: newActor
+				await testPageViews({
+					keys: keys.map((key) => ({ key, memoryAllocation: 'bounded' })),
+					useActor: newActor
+				});
+			});
+
+			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
+				const keysBeforeUpgrade = await setPageViews();
+
+				await testPageViews({ keys: keysBeforeUpgrade.map((key) => ({ key })) });
+
+				await upgrade();
+
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
+
+				const keysAfterUpgrade = await setPageViews(newActor);
+
+				await testPageViews({
+					keys: [
+						...keysBeforeUpgrade.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
+						...keysAfterUpgrade.map((key) => ({ key, memoryAllocation: 'unbounded' as const }))
+					],
+					useActor: newActor
+				});
+			});
+
+			it('should be able to update existing entry after upgrade and remain bounded', async () => {
+				const keysBeforeUpgrade = await setPageViews();
+
+				await upgrade();
+
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
+
+				const { set_page_views, get_page_views } = newActor;
+
+				const [[__, { updated_at }]] = await get_page_views({
+					to: toNullable(),
+					from: toNullable(),
+					satellite_id: toNullable()
+				});
+
+				const [key, _] = keysBeforeUpgrade;
+
+				const results = await set_page_views([
+					[
+						key,
+						{
+							...pageViewMock,
+							updated_at: toNullable(updated_at)
+						}
+					]
+				]);
+
+				expect('Err' in results).toBeFalsy();
+
+				const [[___, { memory_allocation }]] = await get_page_views({
+					to: toNullable(),
+					from: toNullable(),
+					satellite_id: toNullable()
+				});
+
+				expect(memory_allocation).toEqual(toNullable({ Bounded: null }));
 			});
 		});
 
-		it('should be able to collect new page views and list both bounded and unbounded serialized data', async () => {
-			const keysBeforeUpgrade = await setPageViews();
+		describe('Track events', () => {
+			it('should still list all entries after upgrade', async () => {
+				const keys = await setTrackEvents();
 
-			await testPageViews({ keys: keysBeforeUpgrade.map((key) => ({ key })) });
+				await testTrackEvents({ keys: keys.map((key) => ({ key })) });
 
-			await upgrade();
+				await upgrade();
 
-			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-			newActor.setIdentity(controller);
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
 
-			const keysAfterUpgrade = await setPageViews(newActor);
-
-			await testPageViews({
-				keys: [
-					...keysBeforeUpgrade.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
-					...keysAfterUpgrade.map((key) => ({ key, memoryAllocation: 'unbounded' as const }))
-				],
-				useActor: newActor
-			});
-		});
-
-		it('should be able to update existing page views after upgrade and remain bounded', async () => {
-			const keysBeforeUpgrade = await setPageViews();
-
-			await upgrade();
-
-			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
-			newActor.setIdentity(controller);
-
-			const { set_page_views, get_page_views } = newActor;
-
-			const [[__, { updated_at }]] = await get_page_views({
-				to: toNullable(),
-				from: toNullable(),
-				satellite_id: toNullable()
+				await testTrackEvents({
+					keys: keys.map((key) => ({ key, memoryAllocation: 'bounded' })),
+					useActor: newActor
+				});
 			});
 
-			const [key, _] = keysBeforeUpgrade;
+			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
+				const keysBeforeUpgrade = await setTrackEvents();
 
-			const results = await set_page_views([
-				[
-					key,
-					{
-						...pageViewMock,
-						updated_at: toNullable(updated_at)
-					}
-				]
-			]);
+				await testTrackEvents({ keys: keysBeforeUpgrade.map((key) => ({ key })) });
 
-			expect('Err' in results).toBeFalsy();
+				await upgrade();
 
-			const [[___, { memory_allocation }]] = await get_page_views({
-				to: toNullable(),
-				from: toNullable(),
-				satellite_id: toNullable()
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
+
+				const keysAfterUpgrade = await setTrackEvents(newActor);
+
+				await testTrackEvents({
+					keys: [
+						...keysBeforeUpgrade.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
+						...keysAfterUpgrade.map((key) => ({ key, memoryAllocation: 'unbounded' as const }))
+					],
+					useActor: newActor
+				});
 			});
 
-			expect(memory_allocation).toEqual(toNullable({ Bounded: null }));
+			it('should be able to update existing entry after upgrade and remain bounded', async () => {
+				const keysBeforeUpgrade = await setTrackEvents();
+
+				await upgrade();
+
+				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+				newActor.setIdentity(controller);
+
+				const { set_track_events, get_track_events } = newActor;
+
+				const [[__, { updated_at }]] = await get_track_events({
+					to: toNullable(),
+					from: toNullable(),
+					satellite_id: toNullable()
+				});
+
+				const [key, _] = keysBeforeUpgrade;
+
+				const results = await set_track_events([
+					[
+						key,
+						{
+							...trackEventMock,
+							updated_at: toNullable(updated_at)
+						}
+					]
+				]);
+
+				expect('Err' in results).toBeFalsy();
+
+				const [[___, { memory_allocation }]] = await get_track_events({
+					to: toNullable(),
+					from: toNullable(),
+					satellite_id: toNullable()
+				});
+
+				expect(memory_allocation).toEqual(toNullable({ Bounded: null }));
+			});
 		});
 	});
 });

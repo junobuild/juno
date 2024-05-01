@@ -5,6 +5,7 @@ use crate::serializers::bounded::{
     serialize_bounded_analytic_satellite_key, serialize_bounded_page_view,
     serialize_bounded_track_event,
 };
+use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
 use crate::types::memory::MemoryAllocation;
 use crate::types::state::{
     AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent,
@@ -15,7 +16,6 @@ use ic_stable_structures::Storable;
 use junobuild_shared::serializers::serialize_to_bytes;
 use junobuild_shared::types::state::{Controllers, SatelliteId};
 use std::borrow::Cow;
-use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
 
 impl Default for State {
     fn default() -> Self {

@@ -4,7 +4,7 @@ pub mod state {
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::state::{
-        Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId, Timestamp,
+        Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId, Timestamp, Version,
     };
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
@@ -70,6 +70,7 @@ pub mod state {
         pub session_id: SessionId,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+        pub version: Option<Version>,
         pub memory_allocation: Option<MemoryAllocation>,
     }
 
@@ -87,6 +88,7 @@ pub mod state {
         pub session_id: SessionId,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+        pub version: Option<Version>,
         pub memory_allocation: Option<MemoryAllocation>,
     }
 }
@@ -109,7 +111,7 @@ pub mod memory {
 pub mod interface {
     use crate::types::state::{PageViewDevice, SessionId};
     use candid::CandidType;
-    use junobuild_shared::types::state::{Metadata, SatelliteId, Timestamp};
+    use junobuild_shared::types::state::{Metadata, SatelliteId, Timestamp, Version};
     use junobuild_shared::types::utils::CalendarDate;
     use serde::Deserialize;
     use std::collections::HashMap;
@@ -124,7 +126,7 @@ pub mod interface {
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
-        pub updated_at: Option<Timestamp>,
+        pub version: Option<Version>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -134,7 +136,7 @@ pub mod interface {
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
-        pub updated_at: Option<Timestamp>,
+        pub version: Option<Version>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -147,12 +149,12 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetSatelliteConfig {
         pub enabled: bool,
-        pub updated_at: Option<Timestamp>,
+        pub version: Option<Version>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct DelSatelliteConfig {
-        pub updated_at: Option<Timestamp>,
+        pub version: Option<Version>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

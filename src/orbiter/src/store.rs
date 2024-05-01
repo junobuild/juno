@@ -5,6 +5,7 @@ use crate::assert::{
 use crate::filters::{filter_analytics, filter_satellites_analytics};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
+use crate::types::memory::MemoryAllocation;
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
 use ic_cdk::api::time;
 use junobuild_shared::assert::assert_timestamp;
@@ -65,6 +66,11 @@ fn insert_page_view_impl(
         Some(current_page_view) => current_page_view.session_id,
     };
 
+    let memory_allocation: Option<MemoryAllocation> = match current_page_view.clone() {
+        None => Some(MemoryAllocation::Unbounded),
+        Some(current_page_view) => current_page_view.memory_allocation,
+    };
+
     let new_page_view: PageView = PageView {
         title: page_view.title,
         href: page_view.href,
@@ -76,6 +82,7 @@ fn insert_page_view_impl(
         session_id,
         created_at,
         updated_at: now,
+        memory_allocation,
     };
 
     state.page_views.insert(key.clone(), new_page_view.clone());
@@ -151,6 +158,11 @@ fn insert_track_event_impl(
         Some(current_track_event) => current_track_event.session_id,
     };
 
+    let memory_allocation: Option<MemoryAllocation> = match current_track_event.clone() {
+        None => Some(MemoryAllocation::Unbounded),
+        Some(current_page_view) => current_page_view.memory_allocation,
+    };
+
     let new_track_event: TrackEvent = TrackEvent {
         name: track_event.name,
         metadata: track_event.metadata,
@@ -158,6 +170,7 @@ fn insert_track_event_impl(
         session_id,
         created_at,
         updated_at: now,
+        memory_allocation,
     };
 
     state

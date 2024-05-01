@@ -1,15 +1,20 @@
 use crate::memory::init_stable_state;
-use crate::types::state::{
-    AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, SatelliteConfigs,
-    State, TrackEvent,
+use crate::serializers::bounded::{
+    deserialize_bounded_analytic_key, deserialize_bounded_analytic_satellite_key,
+    deserialize_bounded_page_view, deserialize_bounded_track_event, serialize_bounded_analytic_key,
+    serialize_bounded_analytic_satellite_key, serialize_bounded_page_view,
+    serialize_bounded_track_event,
 };
+use crate::types::memory::MemoryAllocation;
+use crate::types::state::{
+    AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent,
+};
+use ciborium::from_reader;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_shared::serializers::serialize_to_bytes;
 use junobuild_shared::types::state::{Controllers, SatelliteId};
 use std::borrow::Cow;
-use ciborium::from_reader;
-use junobuild_shared::serializers::serialize_to_bytes;
-use crate::serializers::bounded::{deserialize_bounded_analytic_key, deserialize_bounded_page_view, deserialize_bounded_track_event, deserialize_bounded_analytic_satellite_key};
 
 impl Default for State {
     fn default() -> Self {
@@ -25,7 +30,10 @@ impl Default for State {
 
 impl Storable for PageView {
     fn to_bytes(&self) -> Cow<[u8]> {
-        serialize_to_bytes(self)
+        match self.memory_allocation {
+            Some(MemoryAllocation::Bounded) => serialize_bounded_page_view(self),
+            _ => serialize_to_bytes(self),
+        }
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -37,7 +45,10 @@ impl Storable for PageView {
 
 impl Storable for TrackEvent {
     fn to_bytes(&self) -> Cow<[u8]> {
-        serialize_to_bytes(self)
+        match self.memory_allocation {
+            Some(MemoryAllocation::Bounded) => serialize_bounded_track_event(self),
+            _ => serialize_to_bytes(self),
+        }
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
@@ -49,11 +60,11 @@ impl Storable for TrackEvent {
 
 impl Storable for AnalyticKey {
     fn to_bytes(&self) -> Cow<[u8]> {
-        serialize_to_bytes(self)
+        serialize_bounded_analytic_key(self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        from_reader(&*bytes).unwrap_or_else(|_| deserialize_bounded_analytic_key(bytes))
+        deserialize_bounded_analytic_key(bytes)
     }
 
     const BOUND: Bound = Bound::Unbounded;
@@ -61,11 +72,11 @@ impl Storable for AnalyticKey {
 
 impl Storable for AnalyticSatelliteKey {
     fn to_bytes(&self) -> Cow<[u8]> {
-        serialize_to_bytes(self)
+        serialize_bounded_analytic_satellite_key(self)
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        from_reader(&*bytes).unwrap_or_else(|_| deserialize_bounded_analytic_satellite_key(bytes))
+        deserialize_bounded_analytic_satellite_key(bytes)
     }
 
     const BOUND: Bound = Bound::Unbounded;

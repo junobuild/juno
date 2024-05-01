@@ -1,6 +1,6 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::types::memory::Memory;
+    use crate::types::memory::{Memory, MemoryAllocation};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::state::{
@@ -70,6 +70,7 @@ pub mod state {
         pub session_id: SessionId,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+        pub memory_allocation: Option<MemoryAllocation>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -86,14 +87,23 @@ pub mod state {
         pub session_id: SessionId,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+        pub memory_allocation: Option<MemoryAllocation>,
     }
 }
 
 pub mod memory {
+    use candid::CandidType;
     use ic_stable_structures::memory_manager::VirtualMemory;
     use ic_stable_structures::DefaultMemoryImpl;
+    use serde::{Deserialize, Serialize};
 
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+    pub enum MemoryAllocation {
+        Unbounded,
+        Bounded,
+    }
 }
 
 pub mod interface {

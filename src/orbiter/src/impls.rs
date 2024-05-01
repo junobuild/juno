@@ -2,7 +2,8 @@ use crate::constants::SERIALIZED_PRINCIPAL_LENGTH;
 use crate::memory::init_stable_state;
 use crate::types::memory::StoredSatelliteId;
 use crate::types::state::{
-    AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent,
+    AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, PageViewDevice, SatelliteConfigs,
+    State, TrackEvent,
 };
 use candid::Principal;
 use ic_stable_structures::storable::{Blob, Bound};
@@ -10,6 +11,7 @@ use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Controllers, SatelliteId};
 use std::borrow::Cow;
+use std::mem::size_of;
 
 impl Default for State {
     fn default() -> Self {
@@ -93,6 +95,41 @@ impl StoredSatelliteId {
     pub fn get_id(&self) -> &SatelliteId {
         &self.0
     }
+}
+
+const SERIALIZED_PAGE_VIEW_DEVICE_LENGTH: usize = size_of::<u16>() * 2;
+
+impl Storable for PageViewDevice {
+    fn to_bytes(&self) -> Cow<'_, [u8]> {
+        let mut bytes = Vec::with_capacity(SERIALIZED_PAGE_VIEW_DEVICE_LENGTH);
+        bytes.extend_from_slice(&self.inner_width.to_be_bytes());
+        bytes.extend_from_slice(&self.inner_height.to_be_bytes());
+
+        Cow::Owned(bytes)
+    }
+
+    fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
+        let size: usize = size_of::<u16>();
+
+        let inner_width = u16::from_be_bytes(
+            bytes[0..size]
+                .try_into()
+                .expect("Failed to deserialize inner_width"),
+        );
+
+        let inner_height = u16::from_be_bytes(
+            bytes[size..size * 2]
+                .try_into()
+                .expect("Failed to deserialize inner_height"),
+        );
+
+        PageViewDevice {
+            inner_width,
+            inner_height,
+        }
+    }
+
+    const BOUND: Bound = Blob::<SERIALIZED_PAGE_VIEW_DEVICE_LENGTH>::BOUND;
 }
 
 /// Key conversion

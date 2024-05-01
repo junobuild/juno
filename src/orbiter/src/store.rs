@@ -5,6 +5,7 @@ use crate::assert::{
 use crate::filters::{filter_analytics, filter_satellites_analytics};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
+use crate::types::memory::StoredSatelliteId;
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
 use ic_cdk::api::time;
 use junobuild_shared::assert::assert_timestamp;
@@ -72,7 +73,7 @@ fn insert_page_view_impl(
         device: page_view.device,
         user_agent: page_view.user_agent,
         time_zone: page_view.time_zone,
-        satellite_id: page_view.satellite_id,
+        satellite_id: StoredSatelliteId(page_view.satellite_id),
         session_id,
         created_at,
         updated_at: now,
@@ -154,7 +155,7 @@ fn insert_track_event_impl(
     let new_track_event: TrackEvent = TrackEvent {
         name: track_event.name,
         metadata: track_event.metadata,
-        satellite_id: track_event.satellite_id,
+        satellite_id: StoredSatelliteId(track_event.satellite_id),
         session_id,
         created_at,
         updated_at: now,

@@ -1,6 +1,6 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::types::memory::Memory;
+    use crate::types::memory::{Memory, StoredSatelliteId};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::state::{
@@ -53,7 +53,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AnalyticSatelliteKey {
-        pub satellite_id: SatelliteId,
+        pub satellite_id: StoredSatelliteId,
         pub collected_at: Timestamp,
         pub key: Key,
     }
@@ -66,7 +66,7 @@ pub mod state {
         pub device: PageViewDevice,
         pub user_agent: Option<String>,
         pub time_zone: String,
-        pub satellite_id: SatelliteId,
+        pub satellite_id: StoredSatelliteId,
         pub session_id: SessionId,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
@@ -82,7 +82,7 @@ pub mod state {
     pub struct TrackEvent {
         pub name: String,
         pub metadata: Option<Metadata>,
-        pub satellite_id: SatelliteId,
+        pub satellite_id: StoredSatelliteId,
         pub session_id: SessionId,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
@@ -90,10 +90,16 @@ pub mod state {
 }
 
 pub mod memory {
+    use candid::CandidType;
     use ic_stable_structures::memory_manager::VirtualMemory;
     use ic_stable_structures::DefaultMemoryImpl;
+    use junobuild_shared::types::state::SatelliteId;
+    use serde::{Deserialize, Serialize};
 
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct StoredSatelliteId(pub SatelliteId);
 }
 
 pub mod interface {

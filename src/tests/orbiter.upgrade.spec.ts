@@ -188,5 +188,44 @@ describe('Orbiter upgrade', () => {
 				useActor: newActor
 			});
 		});
+
+		it('should be able to update existing page views after upgrade and remain bounded', async () => {
+			const keysBeforeUpgrade = await setPageViews();
+
+			await upgrade();
+
+			const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
+			newActor.setIdentity(controller);
+
+			const { set_page_views, get_page_views } = newActor;
+
+			const [[__, { updated_at }]] = await get_page_views({
+				to: toNullable(),
+				from: toNullable(),
+				satellite_id: toNullable()
+			});
+
+			const [key, _] = keysBeforeUpgrade;
+
+			const results = await set_page_views([
+				[
+					key,
+					{
+						...pageViewMock,
+						updated_at: toNullable(updated_at)
+					}
+				]
+			]);
+
+			expect('Err' in results).toBeFalsy();
+
+			const [[___, { memory_allocation }]] = await get_page_views({
+				to: toNullable(),
+				from: toNullable(),
+				satellite_id: toNullable()
+			});
+
+			expect(memory_allocation).toEqual(toNullable({ Bounded: null }));
+		});
 	});
 });

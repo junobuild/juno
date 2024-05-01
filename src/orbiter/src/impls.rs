@@ -73,8 +73,6 @@ impl Storable for AnalyticSatelliteKey {
 
 // Source: https://forum.dfinity.org/t/convert-principal-to-vec-29-bytes-length/22468/3
 impl Storable for StoredSatelliteId {
-    const BOUND: Bound = Blob::<SERIALIZED_PRINCIPAL_LENGTH>::BOUND;
-
     fn to_bytes(&self) -> Cow<'_, [u8]> {
         let mut bytes: [u8; SERIALIZED_PRINCIPAL_LENGTH] = [0; SERIALIZED_PRINCIPAL_LENGTH];
         let p_bytes: &[u8] = self.get_id().as_slice();
@@ -87,6 +85,8 @@ impl Storable for StoredSatelliteId {
     fn from_bytes(bytes: Cow<'_, [u8]>) -> Self {
         Self(Principal::from_slice(&bytes[1..1 + bytes[0] as usize]))
     }
+
+    const BOUND: Bound = Blob::<SERIALIZED_PRINCIPAL_LENGTH>::BOUND;
 }
 
 impl StoredSatelliteId {

@@ -47,20 +47,24 @@ describe('Orbiter upgrade', () => {
 		});
 	};
 
-	const initPageViews = async () => {
+	const initPageViews = async (): Promise<AnalyticKey[]> => {
 		const { set_page_views } = actor;
 
-		const pagesViews: [AnalyticKey, SetPageView][] = Array.from({ length: 100 }).map(() => [
-			{ key: nanoid(), collected_at: 123n },
-			pageViewMock
-		]);
+		const keys = Array.from({ length: 100 }).map((_, i) => ({
+			key: nanoid(),
+			collected_at: BigInt(i)
+		}));
+
+		const pagesViews: [AnalyticKey, SetPageView][] = keys.map((key) => [key, pageViewMock]);
 
 		const results = await set_page_views(pagesViews);
 
 		expect('Err' in results).toBeFalsy();
+
+		return keys;
 	};
 
-	const testPageViews = async () => {
+	const testPageViews = async ({ keys }: { keys: AnalyticKey[] }) => {
 		const { get_page_views } = actor;
 
 		const results = await get_page_views({
@@ -69,7 +73,29 @@ describe('Orbiter upgrade', () => {
 			satellite_id: toNullable()
 		});
 
-		expect(results).toHaveLength(100);
+		expect(results).toHaveLength(keys.length);
+
+		for (const key of keys) {
+			const result = results.find(([{ key: k }, _]) => k === key.key);
+
+			expect(result).not.toBeUndefined();
+
+			const [{ collected_at }, pageView] = result!;
+
+			expect(collected_at).toEqual(key.collected_at);
+
+			expect(pageView.title).toEqual(pageViewMock.title);
+			expect(pageView.referrer).toEqual(pageViewMock.referrer);
+			expect(pageView.time_zone).toEqual(pageViewMock.time_zone);
+			expect(pageView.session_id).toEqual(pageViewMock.session_id);
+			expect(pageView.href).toEqual(pageViewMock.href);
+			expect(pageView.satellite_id.toText()).toEqual(pageViewMock.satellite_id.toText());
+			expect(pageView.device.inner_width).toEqual(pageViewMock.device.inner_width);
+			expect(pageView.device.inner_height).toEqual(pageViewMock.device.inner_height);
+			expect(pageView.user_agent).toEqual(pageViewMock.user_agent);
+			expect(pageView.created_at).toBeGreaterThan(0n);
+			expect(pageView.updated_at).toBeGreaterThan(0n);
+		}
 	};
 
 	const satellite_id = Principal.fromText('ck4tp-3iaaa-aaaal-ab7da-cai');
@@ -107,13 +133,25 @@ describe('Orbiter upgrade', () => {
 		});
 
 		it('should still list all page views after upgrade', async () => {
-			await initPageViews();
+			const keys = await initPageViews();
 
-			await testPageViews();
+			await testPageViews({ keys });
 
 			await upgrade();
 
-			await testPageViews();
+			await testPageViews({ keys });
+		});
+
+		it('should be able to collect new page views and list both bounded and unbounded serialized data', async () => {
+			const keysBeforeUpgrade = await initPageViews();
+
+			await testPageViews({ keys: keysBeforeUpgrade });
+
+			await upgrade();
+
+			const keysAfterUpgrade = await initPageViews();
+
+			await testPageViews({ keys: [...keysAfterUpgrade, ...keysAfterUpgrade] });
 		});
 	});
 });

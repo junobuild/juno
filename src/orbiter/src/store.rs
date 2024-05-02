@@ -82,7 +82,7 @@ fn insert_page_view_impl(
         updated_at: now,
     };
 
-    let stored_page_view = match current_page_view.map(|pv| pv.is_bounded()) {
+    let stored_page_view = match current_page_view.map(|page_view| page_view.is_bounded()) {
         Some(true) => StoredPageView::Bounded(new_page_view.clone()),
         _ => StoredPageView::Unbounded(new_page_view.clone()),
     };

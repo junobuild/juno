@@ -178,7 +178,7 @@ fn insert_track_event_impl(
         updated_at: now,
     };
 
-    let stored_track_event = match current_track_event.map(|pv| pv.is_bounded()) {
+    let stored_track_event = match current_track_event.map(|track_event| track_event.is_bounded()) {
         Some(true) => StoredTrackEvent::Bounded(new_track_event.clone()),
         _ => StoredTrackEvent::Unbounded(new_track_event.clone()),
     };

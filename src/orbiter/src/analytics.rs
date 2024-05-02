@@ -2,7 +2,6 @@ use crate::types::interface::{
     AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
     AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents,
 };
-use crate::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::types::state::{AnalyticKey, PageView, TrackEvent};
 use junobuild_shared::day::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;
@@ -38,7 +37,7 @@ struct BrowsersRegex {
 }
 
 pub fn analytics_page_views_metrics(
-    page_views: &Vec<(AnalyticKey, StoredPageView)>,
+    page_views: &Vec<(AnalyticKey, PageView)>,
 ) -> AnalyticsMetricsPageViews {
     let mut daily_total_page_views: HashMap<CalendarDate, u32> = HashMap::new();
     let mut unique_sessions = HashSet::new();
@@ -50,13 +49,11 @@ pub fn analytics_page_views_metrics(
             collected_at,
             key: _,
         },
-        page_view,
+        PageView {
+            session_id, href, ..
+        },
     ) in page_views
     {
-        let PageView {
-            session_id, href, ..
-        } = page_view.inner();
-
         analytics_metrics(
             collected_at,
             session_id,
@@ -98,14 +95,12 @@ pub fn analytics_page_views_metrics(
 }
 
 pub fn analytics_page_views_top_10(
-    page_views: &Vec<(AnalyticKey, StoredPageView)>,
+    page_views: &Vec<(AnalyticKey, PageView)>,
 ) -> AnalyticsTop10PageViews {
     let mut referrers: HashMap<String, u32> = HashMap::new();
     let mut pages: HashMap<String, u32> = HashMap::new();
 
-    for (_, page_view) in page_views {
-        let PageView { referrer, href, .. } = page_view.inner();
-
+    for (_, PageView { referrer, href, .. }) in page_views {
         analytics_referrers(referrer, &mut referrers);
         analytics_pages(href, &mut pages);
     }
@@ -123,7 +118,7 @@ pub fn analytics_page_views_top_10(
 }
 
 pub fn analytics_page_views_clients(
-    page_views: &Vec<(AnalyticKey, StoredPageView)>,
+    page_views: &Vec<(AnalyticKey, PageView)>,
 ) -> AnalyticsClientsPageViews {
     let mut total_devices = Devices {
         mobile: 0,
@@ -152,9 +147,7 @@ pub fn analytics_page_views_clients(
         safari: Regex::new(r"(?i)safari").unwrap(),
     };
 
-    for (_, page_view) in page_views {
-        let PageView { user_agent, .. } = page_view.inner();
-
+    for (_, PageView { user_agent, .. }) in page_views {
         analytics_devices(user_agent, &devices_regex, &mut total_devices);
         analytics_browsers(user_agent, &browsers_regex, &mut total_browsers);
     }
@@ -211,13 +204,11 @@ pub fn analytics_page_views_clients(
 }
 
 pub fn analytics_track_events(
-    track_events: &Vec<(AnalyticKey, StoredTrackEvent)>,
+    track_events: &Vec<(AnalyticKey, TrackEvent)>,
 ) -> AnalyticsTrackEvents {
     let mut total_track_events: HashMap<String, u32> = HashMap::new();
 
-    for (_, track_event) in track_events {
-        let TrackEvent { name, .. } = track_event.inner();
-
+    for (_, TrackEvent { name, .. }) in track_events {
         let count = total_track_events.entry(name.clone()).or_insert(0);
         *count += 1;
     }

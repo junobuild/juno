@@ -136,43 +136,6 @@ describe('Orbiter upgrade', () => {
 		}
 	};
 
-	const testPageViewsMemoryAllocation = async ({
-		keys,
-		useActor
-	}: {
-		keys: { key: AnalyticKey; memoryAllocation?: 'bounded' | 'unbounded' }[];
-		useActor: Actor<OrbiterActor>;
-	}) => {
-		const { get_page_views } = useActor;
-
-		const results = await get_page_views({
-			to: toNullable(),
-			from: toNullable(),
-			satellite_id: toNullable()
-		});
-
-		expect(results).toHaveLength(keys.length);
-
-		for (const { key, memoryAllocation } of keys) {
-			const result = results.find(([{ key: k }, _]) => k === key.key);
-
-			expect(result).not.toBeUndefined();
-
-			const [_, pageView] = result!;
-
-			switch (memoryAllocation) {
-				case 'bounded':
-					expect(pageView.memory_allocation).toEqual(toNullable({ Bounded: null }));
-					break;
-				case 'unbounded':
-					expect(pageView.memory_allocation).toEqual(toNullable({ Unbounded: null }));
-					break;
-				default:
-					expect(pageView.memory_allocation).toEqual(toNullable());
-			}
-		}
-	};
-
 	const setTrackEvents0_0_6 = async (): Promise<AnalyticKey[]> => {
 		const { set_track_events } = actor;
 
@@ -252,43 +215,6 @@ describe('Orbiter upgrade', () => {
 		}
 	};
 
-	const testTrackEventsMemoryAllocation = async ({
-		keys,
-		useActor
-	}: {
-		keys: { key: AnalyticKey; memoryAllocation?: 'bounded' | 'unbounded' }[];
-		useActor: Actor<OrbiterActor>;
-	}) => {
-		const { get_track_events } = useActor ?? actor;
-
-		const results = await get_track_events({
-			to: toNullable(),
-			from: toNullable(),
-			satellite_id: toNullable()
-		});
-
-		expect(results).toHaveLength(keys.length);
-
-		for (const { key, memoryAllocation } of keys) {
-			const result = results.find(([{ key: k }, _]) => k === key.key);
-
-			expect(result).not.toBeUndefined();
-
-			const [_, trackEvent] = result!;
-
-			switch (memoryAllocation) {
-				case 'bounded':
-					expect(trackEvent.memory_allocation).toEqual(toNullable({ Bounded: null }));
-					break;
-				case 'unbounded':
-					expect(trackEvent.memory_allocation).toEqual(toNullable({ Unbounded: null }));
-					break;
-				default:
-					expect(trackEvent.memory_allocation).toEqual(toNullable());
-			}
-		}
-	};
-
 	describe('v0.0.6 -> v0.0.7', async () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
@@ -332,12 +258,7 @@ describe('Orbiter upgrade', () => {
 				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
 				newActor.setIdentity(controller);
 
-				await testPageViews({ keys: originalKeys });
-
-				await testPageViewsMemoryAllocation({
-					keys: originalKeys.map((key) => ({ key, memoryAllocation: 'bounded' })),
-					useActor: newActor
-				});
+				await testPageViews({ keys: originalKeys, useActor: newActor });
 			});
 
 			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
@@ -354,14 +275,6 @@ describe('Orbiter upgrade', () => {
 
 				await testPageViews({
 					keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
-					useActor: newActor
-				});
-
-				await testPageViewsMemoryAllocation({
-					keys: [
-						...keysBeforeUpgrade.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
-						...keysAfterUpgrade.map((key) => ({ key, memoryAllocation: 'unbounded' as const }))
-					],
 					useActor: newActor
 				});
 			});
@@ -396,14 +309,6 @@ describe('Orbiter upgrade', () => {
 				]);
 
 				expect('Err' in results).toBeFalsy();
-
-				const [[___, { memory_allocation }]] = await get_page_views({
-					to: toNullable(),
-					from: toNullable(),
-					satellite_id: toNullable()
-				});
-
-				expect(memory_allocation).toEqual(toNullable({ Bounded: null }));
 			});
 		});
 
@@ -422,11 +327,6 @@ describe('Orbiter upgrade', () => {
 					keys: keys,
 					useActor: newActor
 				});
-
-				await testTrackEventsMemoryAllocation({
-					keys: keys.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
-					useActor: newActor
-				});
 			});
 
 			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
@@ -443,14 +343,6 @@ describe('Orbiter upgrade', () => {
 
 				await testTrackEvents({
 					keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
-					useActor: newActor
-				});
-
-				await testTrackEventsMemoryAllocation({
-					keys: [
-						...keysBeforeUpgrade.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
-						...keysAfterUpgrade.map((key) => ({ key, memoryAllocation: 'unbounded' as const }))
-					],
 					useActor: newActor
 				});
 			});
@@ -485,14 +377,6 @@ describe('Orbiter upgrade', () => {
 				]);
 
 				expect('Err' in results).toBeFalsy();
-
-				const [[___, { memory_allocation }]] = await get_track_events({
-					to: toNullable(),
-					from: toNullable(),
-					satellite_id: toNullable()
-				});
-
-				expect(memory_allocation).toEqual(toNullable({ Bounded: null }));
 			});
 		});
 	});

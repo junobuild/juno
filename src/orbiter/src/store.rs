@@ -5,7 +5,7 @@ use crate::assert::{
 use crate::filters::{filter_analytics, filter_satellites_analytics};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
-use crate::types::memory::MemoryAllocation;
+use crate::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
 use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
@@ -29,16 +29,16 @@ fn insert_page_view_impl(
     // Validate overwrite
     match current_page_view.clone() {
         None => (),
-        Some(current_page_view) => match current_page_view.memory_allocation {
-            Some(MemoryAllocation::Bounded) => {
-                match assert_timestamp(page_view.updated_at, current_page_view.updated_at) {
+        Some(current_page_view) => match current_page_view.is_bounded() {
+            true => {
+                match assert_timestamp(page_view.updated_at, current_page_view.inner().updated_at) {
                     Ok(_) => (),
                     Err(e) => {
                         return Err(e);
                     }
                 }
             }
-            _ => match assert_version(page_view.version, current_page_view.version) {
+            false => match assert_version(page_view.version, current_page_view.inner().version) {
                 Ok(_) => (),
                 Err(e) => {
                     return Err(e);
@@ -51,7 +51,7 @@ fn insert_page_view_impl(
     match current_page_view.clone() {
         None => (),
         Some(current_page_view) => {
-            assert_session_id(&page_view.session_id, &current_page_view.session_id)?;
+            assert_session_id(&page_view.session_id, &current_page_view.inner().session_id)?;
         }
     }
 
@@ -59,7 +59,10 @@ fn insert_page_view_impl(
     match current_page_view.clone() {
         None => (),
         Some(current_page_view) => {
-            assert_satellite_id(page_view.satellite_id, current_page_view.satellite_id)?;
+            assert_satellite_id(
+                page_view.satellite_id,
+                current_page_view.inner().satellite_id,
+            )?;
         }
     }
 
@@ -67,22 +70,17 @@ fn insert_page_view_impl(
 
     let created_at: Timestamp = match current_page_view.clone() {
         None => now,
-        Some(current_page_view) => current_page_view.created_at,
+        Some(current_page_view) => current_page_view.inner().created_at,
     };
 
     let version: Version = match current_page_view.clone() {
         None => 1,
-        Some(current_page_view) => current_page_view.version.unwrap_or_default() + 1,
+        Some(current_page_view) => current_page_view.inner().version.unwrap_or_default() + 1,
     };
 
     let session_id: String = match current_page_view.clone() {
         None => page_view.session_id.clone(),
-        Some(current_page_view) => current_page_view.session_id,
-    };
-
-    let memory_allocation: Option<MemoryAllocation> = match current_page_view.clone() {
-        None => Some(MemoryAllocation::Unbounded),
-        Some(current_page_view) => current_page_view.memory_allocation,
+        Some(current_page_view) => current_page_view.inner().session_id.clone(),
     };
 
     let new_page_view: PageView = PageView {
@@ -97,10 +95,14 @@ fn insert_page_view_impl(
         created_at,
         updated_at: now,
         version: Some(version),
-        memory_allocation,
     };
 
-    state.page_views.insert(key.clone(), new_page_view.clone());
+    let stored_page_view = match current_page_view.map(|page_view| page_view.is_bounded()) {
+        Some(true) => StoredPageView::Bounded(new_page_view.clone()),
+        _ => StoredPageView::Unbounded(new_page_view.clone()),
+    };
+
+    state.page_views.insert(key.clone(), stored_page_view);
 
     state.satellites_page_views.insert(
         AnalyticSatelliteKey::from_key(&key, &page_view.satellite_id),
@@ -131,16 +133,20 @@ fn insert_track_event_impl(
     // Validate overwrite
     match current_track_event.clone() {
         None => (),
-        Some(current_track_event) => match current_track_event.memory_allocation {
-            Some(MemoryAllocation::Bounded) => {
-                match assert_timestamp(track_event.updated_at, current_track_event.updated_at) {
+        Some(current_track_event) => match current_track_event.is_bounded() {
+            true => {
+                match assert_timestamp(
+                    track_event.updated_at,
+                    current_track_event.inner().updated_at,
+                ) {
                     Ok(_) => (),
                     Err(e) => {
                         return Err(e);
                     }
                 }
             }
-            _ => match assert_version(track_event.version, current_track_event.version) {
+            false => match assert_version(track_event.version, current_track_event.inner().version)
+            {
                 Ok(_) => (),
                 Err(e) => {
                     return Err(e);
@@ -153,7 +159,10 @@ fn insert_track_event_impl(
     match current_track_event.clone() {
         None => (),
         Some(current_track_event) => {
-            assert_session_id(&track_event.session_id, &current_track_event.session_id)?;
+            assert_session_id(
+                &track_event.session_id,
+                &current_track_event.inner().session_id,
+            )?;
         }
     }
 
@@ -161,7 +170,10 @@ fn insert_track_event_impl(
     match current_track_event.clone() {
         None => (),
         Some(current_track_event) => {
-            assert_satellite_id(track_event.satellite_id, current_track_event.satellite_id)?;
+            assert_satellite_id(
+                track_event.satellite_id,
+                current_track_event.inner().satellite_id,
+            )?;
         }
     }
 
@@ -173,22 +185,17 @@ fn insert_track_event_impl(
 
     let created_at: Timestamp = match current_track_event.clone() {
         None => now,
-        Some(current_track_event) => current_track_event.created_at,
+        Some(current_track_event) => current_track_event.inner().created_at,
     };
 
     let version: Version = match current_track_event.clone() {
         None => 1,
-        Some(current_track_event) => current_track_event.version.unwrap_or_default() + 1,
+        Some(current_track_event) => current_track_event.inner().version.unwrap_or_default() + 1,
     };
 
     let session_id: String = match current_track_event.clone() {
         None => track_event.session_id.clone(),
-        Some(current_track_event) => current_track_event.session_id,
-    };
-
-    let memory_allocation: Option<MemoryAllocation> = match current_track_event.clone() {
-        None => Some(MemoryAllocation::Unbounded),
-        Some(current_track_event) => current_track_event.memory_allocation,
+        Some(current_track_event) => current_track_event.inner().session_id.clone(),
     };
 
     let new_track_event: TrackEvent = TrackEvent {
@@ -199,12 +206,16 @@ fn insert_track_event_impl(
         created_at,
         updated_at: now,
         version: Some(version),
-        memory_allocation,
+    };
+
+    let stored_track_event = match current_track_event.map(|track_event| track_event.is_bounded()) {
+        Some(true) => StoredTrackEvent::Bounded(new_track_event.clone()),
+        _ => StoredTrackEvent::Unbounded(new_track_event.clone()),
     };
 
     state
         .track_events
-        .insert(key.clone(), new_track_event.clone());
+        .insert(key.clone(), stored_track_event.clone());
 
     state.satellites_track_events.insert(
         AnalyticSatelliteKey::from_key(&key, &track_event.satellite_id),
@@ -220,7 +231,11 @@ pub fn get_page_views(filter: &GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
 
 fn get_page_views_impl(filter: &GetAnalytics, state: &StableState) -> Vec<(AnalyticKey, PageView)> {
     match filter.satellite_id {
-        None => state.page_views.range(filter_analytics(filter)).collect(),
+        None => state
+            .page_views
+            .range(filter_analytics(filter))
+            .map(|(key, page_view)| (key, page_view.inner()))
+            .collect(),
         Some(satellite_id) => {
             let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
                 .satellites_page_views
@@ -230,7 +245,7 @@ fn get_page_views_impl(filter: &GetAnalytics, state: &StableState) -> Vec<(Analy
                 .iter()
                 .filter_map(|(_, key)| {
                     let page_view = state.page_views.get(key);
-                    page_view.map(|page_view| (key.clone(), page_view))
+                    page_view.map(|page_view| (key.clone(), page_view.inner()))
                 })
                 .collect()
         }
@@ -246,7 +261,11 @@ fn get_track_events_impl(
     state: &StableState,
 ) -> Vec<(AnalyticKey, TrackEvent)> {
     match filter.satellite_id {
-        None => state.track_events.range(filter_analytics(filter)).collect(),
+        None => state
+            .track_events
+            .range(filter_analytics(filter))
+            .map(|(key, track_event)| (key.clone(), track_event.inner()))
+            .collect(),
         Some(satellite_id) => {
             let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
                 .satellites_track_events
@@ -256,7 +275,7 @@ fn get_track_events_impl(
                 .iter()
                 .filter_map(|(_, key)| {
                     let track_event = state.track_events.get(key);
-                    track_event.map(|track_event| (key.clone(), track_event))
+                    track_event.map(|track_event| (key.clone(), track_event.inner()))
                 })
                 .collect()
         }

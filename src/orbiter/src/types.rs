@@ -1,6 +1,6 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::types::memory::{Memory, MemoryAllocation};
+    use crate::types::memory::{Memory, StoredPageView, StoredTrackEvent};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::state::{
@@ -22,8 +22,8 @@ pub mod state {
     pub type Key = String;
     pub type SessionId = String;
 
-    pub type PageViewsStable = StableBTreeMap<AnalyticKey, PageView, Memory>;
-    pub type TrackEventsStable = StableBTreeMap<AnalyticKey, TrackEvent, Memory>;
+    pub type PageViewsStable = StableBTreeMap<AnalyticKey, StoredPageView, Memory>;
+    pub type TrackEventsStable = StableBTreeMap<AnalyticKey, StoredTrackEvent, Memory>;
 
     pub type SatellitesPageViewsStable = StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
     pub type SatellitesTrackEventsStable =
@@ -71,7 +71,6 @@ pub mod state {
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
-        pub memory_allocation: Option<MemoryAllocation>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -89,11 +88,11 @@ pub mod state {
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
-        pub memory_allocation: Option<MemoryAllocation>,
     }
 }
 
 pub mod memory {
+    use crate::types::state::{PageView, TrackEvent};
     use candid::CandidType;
     use ic_stable_structures::memory_manager::VirtualMemory;
     use ic_stable_structures::DefaultMemoryImpl;
@@ -101,10 +100,16 @@ pub mod memory {
 
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
 
-    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
-    pub enum MemoryAllocation {
-        Unbounded,
-        Bounded,
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum StoredPageView {
+        Unbounded(PageView),
+        Bounded(PageView),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum StoredTrackEvent {
+        Unbounded(TrackEvent),
+        Bounded(TrackEvent),
     }
 }
 

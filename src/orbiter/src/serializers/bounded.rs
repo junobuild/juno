@@ -1,10 +1,21 @@
+use crate::constants::{
+    METADATA_MAX_ELEMENTS, SERIALIZED_KEY_LENGTH, SERIALIZED_LONG_STRING_LENGTH,
+    SERIALIZED_METADATA_LENGTH, SERIALIZED_PRINCIPAL_LENGTH, SERIALIZED_SHORT_STRING_LENGTH,
+    SERIALIZED_STRING_LENGTH,
+};
+use crate::serializers::constants::{
+    ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE, TIMESTAMP_LENGTH,
+};
+use crate::serializers::utils::{
+    bytes_to_key, bytes_to_long_string, bytes_to_metadata, bytes_to_principal,
+    bytes_to_short_string, bytes_to_string, key_to_bytes, long_string_to_bytes, metadata_to_bytes,
+    principal_to_bytes, short_string_to_bytes, string_to_bytes,
+};
+use crate::types::state::{
+    AnalyticKey, AnalyticSatelliteKey, PageView, PageViewDevice, TrackEvent,
+};
 use std::borrow::Cow;
 use std::mem::size_of;
-use crate::constants::{METADATA_MAX_ELEMENTS, SERIALIZED_KEY_LENGTH, SERIALIZED_LONG_STRING_LENGTH, SERIALIZED_METADATA_LENGTH, SERIALIZED_PRINCIPAL_LENGTH, SERIALIZED_SHORT_STRING_LENGTH, SERIALIZED_STRING_LENGTH};
-use crate::serializers::utils::{bytes_to_key, bytes_to_long_string, bytes_to_metadata, bytes_to_principal, bytes_to_short_string, bytes_to_string, key_to_bytes, long_string_to_bytes, metadata_to_bytes, principal_to_bytes, short_string_to_bytes, string_to_bytes};
-use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, PageViewDevice, TrackEvent};
-
-const TIMESTAMP_LENGTH: usize = size_of::<u64>();
 
 // updated_at and created_at
 const TIMESTAMPS_LENGTH: usize = TIMESTAMP_LENGTH * 2;
@@ -232,11 +243,6 @@ pub fn deserialize_bounded_track_event(bytes: Cow<[u8]>) -> TrackEvent {
     }
 }
 
-// Size of AnalyticKey:
-// - collected_at
-// - key (String max length KEY_MAX_LENGTH)
-const ANALYTIC_KEY_MAX_SIZE: usize = TIMESTAMP_LENGTH + SERIALIZED_KEY_LENGTH;
-
 pub fn serialize_bounded_analytic_key(key: &AnalyticKey) -> Cow<[u8]> {
     let mut buf = Vec::with_capacity(ANALYTIC_KEY_MAX_SIZE);
 
@@ -250,8 +256,7 @@ pub fn deserialize_bounded_analytic_key(bytes: Cow<[u8]>) -> AnalyticKey {
     let mut index = 0;
 
     let collected_at = u64::from_be_bytes(
-        TryFrom::try_from(&bytes[0..TIMESTAMP_LENGTH])
-            .expect("Failed to deserialize collected_at"),
+        TryFrom::try_from(&bytes[0..TIMESTAMP_LENGTH]).expect("Failed to deserialize collected_at"),
     );
 
     index += TIMESTAMP_LENGTH;
@@ -263,13 +268,6 @@ pub fn deserialize_bounded_analytic_key(bytes: Cow<[u8]>) -> AnalyticKey {
 
     AnalyticKey { collected_at, key }
 }
-
-// Size of AnalyticSatelliteKey:
-// - Principal to bytes (30 because a principal is max 29 bytes and one byte to save effective length)
-// - collected_at
-// - key (String max length KEY_MAX_LENGTH)
-const ANALYTIC_SATELLITE_KEY_MAX_SIZE: usize =
-    SERIALIZED_PRINCIPAL_LENGTH + TIMESTAMP_LENGTH + SERIALIZED_KEY_LENGTH;
 
 pub fn serialize_bounded_analytic_satellite_key(key: &AnalyticSatelliteKey) -> Cow<[u8]> {
     let mut buf = Vec::with_capacity(ANALYTIC_SATELLITE_KEY_MAX_SIZE);

@@ -8,9 +8,9 @@ mod guards;
 mod impls;
 mod memory;
 mod msg;
+mod serializers;
 mod store;
 mod types;
-mod serializers;
 
 use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,

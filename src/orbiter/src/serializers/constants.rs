@@ -1,5 +1,5 @@
-use std::mem::size_of;
 use crate::constants::{SERIALIZED_KEY_LENGTH, SERIALIZED_PRINCIPAL_LENGTH};
+use std::mem::size_of;
 
 pub const TIMESTAMP_LENGTH: usize = size_of::<u64>();
 

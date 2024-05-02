@@ -3,6 +3,9 @@ use crate::constants::{
     SERIALIZED_METADATA_LENGTH, SERIALIZED_PRINCIPAL_LENGTH, SERIALIZED_SHORT_STRING_LENGTH,
     SERIALIZED_STRING_LENGTH,
 };
+use crate::serializers::constants::{
+    ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE, TIMESTAMP_LENGTH,
+};
 use crate::serializers::utils::{
     bytes_to_key, bytes_to_long_string, bytes_to_metadata, bytes_to_principal,
     bytes_to_short_string, bytes_to_string, key_to_bytes, long_string_to_bytes, metadata_to_bytes,
@@ -14,7 +17,6 @@ use crate::types::state::{
 };
 use std::borrow::Cow;
 use std::mem::size_of;
-use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE, TIMESTAMP_LENGTH};
 
 // updated_at and created_at
 const TIMESTAMPS_LENGTH: usize = TIMESTAMP_LENGTH * 2;
@@ -161,7 +163,6 @@ pub fn deserialize_bounded_page_view(bytes: Cow<[u8]>) -> PageView {
         session_id,
         created_at,
         updated_at,
-        memory_allocation: Some(MemoryAllocation::Bounded),
     }
 }
 

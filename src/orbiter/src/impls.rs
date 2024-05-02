@@ -5,7 +5,8 @@ use crate::serializers::bounded::{
     serialize_bounded_analytic_satellite_key, serialize_bounded_page_view,
     serialize_bounded_track_event,
 };
-use crate::types::memory::MemoryAllocation;
+use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
+use crate::types::memory::{MemoryAllocation, StoredPageView};
 use crate::types::state::{
     AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent,
 };
@@ -15,7 +16,6 @@ use ic_stable_structures::Storable;
 use junobuild_shared::serializers::serialize_to_bytes;
 use junobuild_shared::types::state::{Controllers, SatelliteId};
 use std::borrow::Cow;
-use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
 
 impl Default for State {
     fn default() -> Self {
@@ -29,19 +29,33 @@ impl Default for State {
     }
 }
 
-impl Storable for PageView {
+impl Storable for StoredPageView {
     fn to_bytes(&self) -> Cow<[u8]> {
-        match self.memory_allocation {
-            Some(MemoryAllocation::Bounded) => serialize_bounded_page_view(self),
-            _ => serialize_to_bytes(self),
+        match self {
+            StoredPageView::Unbounded(page_view) => serialize_to_bytes(page_view),
+            StoredPageView::Bounded(page_view) => serialize_bounded_page_view(page_view),
         }
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        from_reader(&*bytes).unwrap_or_else(|_| deserialize_bounded_page_view(bytes))
+        from_reader(&*bytes)
+            .map(StoredPageView::Unbounded)
+            .unwrap_or_else(|_| StoredPageView::Bounded(deserialize_bounded_page_view(bytes)))
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl StoredPageView {
+    pub fn inner(&self) -> &PageView {
+        match self {
+            StoredPageView::Unbounded(page_view) | StoredPageView::Bounded(page_view) => page_view,
+        }
+    }
+
+    pub fn is_bounded(&self) -> bool {
+        matches!(self, StoredPageView::Bounded(_))
+    }
 }
 
 impl Storable for TrackEvent {

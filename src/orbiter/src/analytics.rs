@@ -2,6 +2,7 @@ use crate::types::interface::{
     AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
     AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents,
 };
+use crate::types::memory::StoredPageView;
 use crate::types::state::{AnalyticKey, PageView, TrackEvent};
 use junobuild_shared::day::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;
@@ -37,7 +38,7 @@ struct BrowsersRegex {
 }
 
 pub fn analytics_page_views_metrics(
-    page_views: &Vec<(AnalyticKey, PageView)>,
+    page_views: &Vec<(AnalyticKey, StoredPageView)>,
 ) -> AnalyticsMetricsPageViews {
     let mut daily_total_page_views: HashMap<CalendarDate, u32> = HashMap::new();
     let mut unique_sessions = HashSet::new();
@@ -49,11 +50,13 @@ pub fn analytics_page_views_metrics(
             collected_at,
             key: _,
         },
-        PageView {
-            session_id, href, ..
-        },
+        page_view,
     ) in page_views
     {
+        let PageView {
+            session_id, href, ..
+        } = page_view.inner();
+
         analytics_metrics(
             collected_at,
             session_id,
@@ -95,12 +98,14 @@ pub fn analytics_page_views_metrics(
 }
 
 pub fn analytics_page_views_top_10(
-    page_views: &Vec<(AnalyticKey, PageView)>,
+    page_views: &Vec<(AnalyticKey, StoredPageView)>,
 ) -> AnalyticsTop10PageViews {
     let mut referrers: HashMap<String, u32> = HashMap::new();
     let mut pages: HashMap<String, u32> = HashMap::new();
 
-    for (_, PageView { referrer, href, .. }) in page_views {
+    for (_, page_view) in page_views {
+        let PageView { referrer, href, .. } = page_view.inner();
+
         analytics_referrers(referrer, &mut referrers);
         analytics_pages(href, &mut pages);
     }
@@ -118,7 +123,7 @@ pub fn analytics_page_views_top_10(
 }
 
 pub fn analytics_page_views_clients(
-    page_views: &Vec<(AnalyticKey, PageView)>,
+    page_views: &Vec<(AnalyticKey, StoredPageView)>,
 ) -> AnalyticsClientsPageViews {
     let mut total_devices = Devices {
         mobile: 0,
@@ -147,7 +152,9 @@ pub fn analytics_page_views_clients(
         safari: Regex::new(r"(?i)safari").unwrap(),
     };
 
-    for (_, PageView { user_agent, .. }) in page_views {
+    for (_, page_view) in page_views {
+        let PageView { user_agent, .. } = page_view.inner();
+
         analytics_devices(user_agent, &devices_regex, &mut total_devices);
         analytics_browsers(user_agent, &browsers_regex, &mut total_browsers);
     }

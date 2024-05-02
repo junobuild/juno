@@ -36,7 +36,7 @@ use crate::types::interface::{
     AnalyticsTrackEvents, DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig,
     SetTrackEvent,
 };
-use crate::types::memory::Memory;
+use crate::types::memory::{Memory, StoredPageView};
 use crate::types::state::{AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
@@ -154,7 +154,7 @@ fn set_page_views(
 }
 
 #[query(guard = "caller_is_controller")]
-fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
+fn get_page_views(filter: GetAnalytics) -> Vec<(AnalyticKey, StoredPageView)> {
     get_page_views_store(&filter)
 }
 

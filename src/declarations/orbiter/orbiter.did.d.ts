@@ -65,7 +65,6 @@ export interface GetAnalytics {
 	from: [] | [bigint];
 	satellite_id: [] | [Principal];
 }
-export type MemoryAllocation = { Unbounded: null } | { Bounded: null };
 export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
@@ -86,7 +85,6 @@ export interface PageView {
 	satellite_id: Principal;
 	device: PageViewDevice;
 	user_agent: [] | [string];
-	memory_allocation: [] | [MemoryAllocation];
 }
 export interface PageViewDevice {
 	inner_height: number;
@@ -127,6 +125,8 @@ export interface SetTrackEvent {
 	satellite_id: Principal;
 	user_agent: [] | [string];
 }
+export type StoredPageView = { Unbounded: PageView } | { Bounded: PageView };
+export type StoredTrackEvent = { Unbounded: TrackEvent } | { Bounded: TrackEvent };
 export interface TrackEvent {
 	updated_at: bigint;
 	session_id: string;
@@ -134,17 +134,16 @@ export interface TrackEvent {
 	name: string;
 	created_at: bigint;
 	satellite_id: Principal;
-	memory_allocation: [] | [MemoryAllocation];
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
-	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PageView]>>;
+	get_page_views: ActorMethod<[GetAnalytics], Array<[AnalyticKey, StoredPageView]>>;
 	get_page_views_analytics_clients: ActorMethod<[GetAnalytics], AnalyticsClientsPageViews>;
 	get_page_views_analytics_metrics: ActorMethod<[GetAnalytics], AnalyticsMetricsPageViews>;
 	get_page_views_analytics_top_10: ActorMethod<[GetAnalytics], AnalyticsTop10PageViews>;
-	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
+	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, StoredTrackEvent]>>;
 	get_track_events_analytics: ActorMethod<[GetAnalytics], AnalyticsTrackEvents>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
 	list_satellite_configs: ActorMethod<[], Array<[Principal, OrbiterSatelliteConfig]>>;

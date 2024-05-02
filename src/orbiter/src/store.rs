@@ -119,7 +119,10 @@ fn insert_track_event_impl(
     match current_track_event.clone() {
         None => (),
         Some(current_track_event) => {
-            match assert_timestamp(track_event.updated_at, current_track_event.inner().updated_at) {
+            match assert_timestamp(
+                track_event.updated_at,
+                current_track_event.inner().updated_at,
+            ) {
                 Ok(_) => (),
                 Err(e) => {
                     return Err(e);
@@ -132,7 +135,10 @@ fn insert_track_event_impl(
     match current_track_event.clone() {
         None => (),
         Some(current_track_event) => {
-            assert_session_id(&track_event.session_id, &current_track_event.inner().session_id)?;
+            assert_session_id(
+                &track_event.session_id,
+                &current_track_event.inner().session_id,
+            )?;
         }
     }
 
@@ -140,7 +146,10 @@ fn insert_track_event_impl(
     match current_track_event.clone() {
         None => (),
         Some(current_track_event) => {
-            assert_satellite_id(track_event.satellite_id, current_track_event.inner().satellite_id)?;
+            assert_satellite_id(
+                track_event.satellite_id,
+                current_track_event.inner().satellite_id,
+            )?;
         }
     }
 
@@ -186,16 +195,17 @@ fn insert_track_event_impl(
     Ok(new_track_event.clone())
 }
 
-pub fn get_page_views(filter: &GetAnalytics) -> Vec<(AnalyticKey, StoredPageView)> {
+pub fn get_page_views(filter: &GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
     STATE.with(|state| get_page_views_impl(filter, &state.borrow_mut().stable))
 }
 
-fn get_page_views_impl(
-    filter: &GetAnalytics,
-    state: &StableState,
-) -> Vec<(AnalyticKey, StoredPageView)> {
+fn get_page_views_impl(filter: &GetAnalytics, state: &StableState) -> Vec<(AnalyticKey, PageView)> {
     match filter.satellite_id {
-        None => state.page_views.range(filter_analytics(filter)).collect(),
+        None => state
+            .page_views
+            .range(filter_analytics(filter))
+            .map(|(key, page_view)| (key, page_view.inner()))
+            .collect(),
         Some(satellite_id) => {
             let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
                 .satellites_page_views
@@ -205,23 +215,27 @@ fn get_page_views_impl(
                 .iter()
                 .filter_map(|(_, key)| {
                     let page_view = state.page_views.get(key);
-                    page_view.map(|page_view| (key.clone(), page_view))
+                    page_view.map(|page_view| (key.clone(), page_view.inner()))
                 })
                 .collect()
         }
     }
 }
 
-pub fn get_track_events(filter: &GetAnalytics) -> Vec<(AnalyticKey, StoredTrackEvent)> {
+pub fn get_track_events(filter: &GetAnalytics) -> Vec<(AnalyticKey, TrackEvent)> {
     STATE.with(|state| get_track_events_impl(filter, &state.borrow_mut().stable))
 }
 
 fn get_track_events_impl(
     filter: &GetAnalytics,
     state: &StableState,
-) -> Vec<(AnalyticKey, StoredTrackEvent)> {
+) -> Vec<(AnalyticKey, TrackEvent)> {
     match filter.satellite_id {
-        None => state.track_events.range(filter_analytics(filter)).collect(),
+        None => state
+            .track_events
+            .range(filter_analytics(filter))
+            .map(|(key, track_event)| (key.clone(), track_event.inner()))
+            .collect(),
         Some(satellite_id) => {
             let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
                 .satellites_track_events
@@ -231,7 +245,7 @@ fn get_track_events_impl(
                 .iter()
                 .filter_map(|(_, key)| {
                     let track_event = state.track_events.get(key);
-                    track_event.map(|track_event| (key.clone(), track_event))
+                    track_event.map(|track_event| (key.clone(), track_event.inner()))
                 })
                 .collect()
         }

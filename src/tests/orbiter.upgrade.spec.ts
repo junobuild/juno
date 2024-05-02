@@ -116,16 +116,9 @@ describe('Orbiter upgrade', () => {
 
 			expect(result).not.toBeUndefined();
 
-			const [{ collected_at }, storedPageView] = result!;
+			const [{ collected_at }, pageView] = result!;
 
 			expect(collected_at).toEqual(key.collected_at);
-
-			const pageView =
-				'Bounded' in storedPageView
-					? storedPageView.Bounded
-					: 'Unbounded' in storedPageView
-						? storedPageView.Unbounded
-						: storedPageView;
 
 			expect(pageView.title).toEqual(pageViewMock.title);
 			expect(pageView.referrer).toEqual(pageViewMock.referrer);
@@ -203,16 +196,9 @@ describe('Orbiter upgrade', () => {
 
 			expect(result).not.toBeUndefined();
 
-			const [{ collected_at }, storedTrackEvent] = result!;
+			const [{ collected_at }, trackEvent] = result!;
 
 			expect(collected_at).toEqual(key.collected_at);
-
-			const trackEvent =
-				'Bounded' in storedTrackEvent
-					? storedTrackEvent.Bounded
-					: 'Unbounded' in storedTrackEvent
-						? storedTrackEvent.Unbounded
-						: storedTrackEvent;
 
 			expect(trackEvent.name).toEqual(trackEventMock.name);
 			expect(fromNullable(trackEvent.metadata)!.sort()).toEqual(
@@ -299,14 +285,11 @@ describe('Orbiter upgrade', () => {
 
 				const { set_page_views, get_page_views } = newActor;
 
-				const [[__, storedPageView]] = await get_page_views({
+				const [[__, { updated_at }]] = await get_page_views({
 					to: toNullable(),
 					from: toNullable(),
 					satellite_id: toNullable()
 				});
-
-				const { updated_at } =
-					'Bounded' in storedPageView ? storedPageView.Bounded : storedPageView.Unbounded;
 
 				const [key, _] = keysBeforeUpgrade;
 
@@ -369,14 +352,11 @@ describe('Orbiter upgrade', () => {
 
 				const { set_track_events, get_track_events } = newActor;
 
-				const [[__, storedTrackEvent]] = await get_track_events({
+				const [[__, { updated_at }]] = await get_track_events({
 					to: toNullable(),
 					from: toNullable(),
 					satellite_id: toNullable()
 				});
-
-				const { updated_at } =
-					'Bounded' in storedTrackEvent ? storedTrackEvent.Bounded : storedTrackEvent.Unbounded;
 
 				const [key, _] = keysBeforeUpgrade;
 

@@ -50,16 +50,20 @@ const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
 	});
 };
 
-export const downloadSatellite = async (version: string) => {
-	const destination = join(process.cwd(), `satellite-v${version}.wasm.gz`);
+export const downloadSatellite = async (version: string) =>
+	download(`satellite-v${version}.wasm.gz`);
+
+export const downloadOrbiter = async (version: string): Promise<string> =>
+	download(`orbiter-v${version}.wasm.gz`);
+
+const download = async (wasm: string): Promise<string> => {
+	const destination = join(process.cwd(), wasm);
 
 	if (existsSync(destination)) {
 		return destination;
 	}
 
-	const buffer = await downloadFromURL(
-		`https://cdn.juno.build/releases/satellite-v${version}.wasm.gz`
-	);
+	const buffer = await downloadFromURL(`https://cdn.juno.build/releases/${wasm}`);
 
 	writeFileSync(destination, buffer);
 

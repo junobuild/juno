@@ -8,7 +8,7 @@ use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::memory::MemoryAllocation;
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
 use ic_cdk::api::time;
-use junobuild_shared::assert::assert_version;
+use junobuild_shared::assert::{assert_timestamp, assert_version};
 use junobuild_shared::types::state::{Timestamp, Version};
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
@@ -26,17 +26,25 @@ fn insert_page_view_impl(
 
     let current_page_view = state.page_views.get(&key);
 
-    // Validate version
+    // Validate overwrite
     match current_page_view.clone() {
         None => (),
-        Some(current_page_view) => {
-            match assert_version(page_view.version, current_page_view.version) {
+        Some(current_page_view) => match current_page_view.memory_allocation {
+            Some(MemoryAllocation::Bounded) => {
+                match assert_timestamp(page_view.updated_at, current_page_view.updated_at) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        return Err(e);
+                    }
+                }
+            }
+            _ => match assert_version(page_view.version, current_page_view.version) {
                 Ok(_) => (),
                 Err(e) => {
                     return Err(e);
                 }
-            }
-        }
+            },
+        },
     }
 
     // Validate session id
@@ -120,17 +128,25 @@ fn insert_track_event_impl(
 
     let current_track_event = state.track_events.get(&key);
 
-    // Validate version
+    // Validate overwrite
     match current_track_event.clone() {
         None => (),
-        Some(current_track_event) => {
-            match assert_version(track_event.version, current_track_event.version) {
+        Some(current_track_event) => match current_track_event.memory_allocation {
+            Some(MemoryAllocation::Bounded) => {
+                match assert_timestamp(track_event.updated_at, current_track_event.updated_at) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        return Err(e);
+                    }
+                }
+            }
+            _ => match assert_version(track_event.version, current_track_event.version) {
                 Ok(_) => (),
                 Err(e) => {
                     return Err(e);
                 }
-            }
-        }
+            },
+        },
     }
 
     // Validate session id

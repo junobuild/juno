@@ -126,6 +126,11 @@ pub mod interface {
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
+        #[deprecated(
+            since = "0.0.7",
+            note = "Support for backwards compatibility. It has been replaced by version for overwrite checks."
+        )]
+        pub updated_at: Option<Timestamp>,
         pub version: Option<Version>,
     }
 
@@ -136,6 +141,11 @@ pub mod interface {
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
+        #[deprecated(
+            since = "0.0.7",
+            note = "Support for backwards compatibility. It has been replaced by version for overwrite checks."
+        )]
+        pub updated_at: Option<Timestamp>,
         pub version: Option<Version>,
     }
 

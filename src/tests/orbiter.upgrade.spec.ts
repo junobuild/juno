@@ -1,7 +1,12 @@
 import type {
+	_SERVICE as OrbiterActor0_0_6,
+	SetPageView as SetPageView0_0_6,
+	SetTrackEvent as SetTrackEvent0_0_6
+} from '$declarations/deprecated/orbiter-0-0-6.did';
+import { idlFactory as idlFactorOrbiter0_0_6 } from '$declarations/deprecated/orbiter-0-0-6.factory.did';
+import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
-	_SERVICE as OrbiterActor0_0_6,
 	SetPageView,
 	SetTrackEvent
 } from '$declarations/orbiter/orbiter.did';
@@ -49,10 +54,33 @@ describe('Orbiter upgrade', () => {
 		});
 	};
 
-	const setPageViews = async (
-		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>
-	): Promise<AnalyticKey[]> => {
-		const { set_page_views } = useActor ?? actor;
+	const setPageViews0_0_6 = async (): Promise<AnalyticKey[]> => {
+		const { set_page_views } = actor;
+
+		const keys = Array.from({ length: 100 }).map((_, i) => ({
+			key: nanoid(),
+			collected_at: BigInt(i)
+		}));
+
+		const { version: _, ...rest } = pageViewMock;
+
+		const pagesViews: [AnalyticKey, SetPageView0_0_6][] = keys.map((key) => [
+			key,
+			{
+				...rest,
+				updated_at: []
+			}
+		]);
+
+		const results = await set_page_views(pagesViews);
+
+		expect('Err' in results).toBeFalsy();
+
+		return keys;
+	};
+
+	const setPageViews = async (useActor: Actor<OrbiterActor>): Promise<AnalyticKey[]> => {
+		const { set_page_views } = useActor;
 
 		const keys = Array.from({ length: 100 }).map((_, i) => ({
 			key: nanoid(),
@@ -72,7 +100,7 @@ describe('Orbiter upgrade', () => {
 		keys,
 		useActor
 	}: {
-		keys: { key: AnalyticKey; memoryAllocation?: 'bounded' | 'unbounded' }[];
+		keys: AnalyticKey[];
 		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>;
 	}) => {
 		const { get_page_views } = useActor ?? actor;
@@ -85,7 +113,7 @@ describe('Orbiter upgrade', () => {
 
 		expect(results).toHaveLength(keys.length);
 
-		for (const { key, memoryAllocation } of keys) {
+		for (const key of keys) {
 			const result = results.find(([{ key: k }, _]) => k === key.key);
 
 			expect(result).not.toBeUndefined();
@@ -105,6 +133,32 @@ describe('Orbiter upgrade', () => {
 			expect(pageView.user_agent).toEqual(pageViewMock.user_agent);
 			expect(pageView.created_at).toBeGreaterThan(0n);
 			expect(pageView.updated_at).toBeGreaterThan(0n);
+		}
+	};
+
+	const testPageViewsMemoryAllocation = async ({
+		keys,
+		useActor
+	}: {
+		keys: { key: AnalyticKey; memoryAllocation?: 'bounded' | 'unbounded' }[];
+		useActor: Actor<OrbiterActor>;
+	}) => {
+		const { get_page_views } = useActor;
+
+		const results = await get_page_views({
+			to: toNullable(),
+			from: toNullable(),
+			satellite_id: toNullable()
+		});
+
+		expect(results).toHaveLength(keys.length);
+
+		for (const { key, memoryAllocation } of keys) {
+			const result = results.find(([{ key: k }, _]) => k === key.key);
+
+			expect(result).not.toBeUndefined();
+
+			const [_, pageView] = result!;
 
 			switch (memoryAllocation) {
 				case 'bounded':
@@ -119,10 +173,33 @@ describe('Orbiter upgrade', () => {
 		}
 	};
 
-	const setTrackEvents = async (
-		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>
-	): Promise<AnalyticKey[]> => {
-		const { set_track_events } = useActor ?? actor;
+	const setTrackEvents0_0_6 = async (): Promise<AnalyticKey[]> => {
+		const { set_track_events } = actor;
+
+		const keys = Array.from({ length: 100 }).map((_, i) => ({
+			key: nanoid(),
+			collected_at: BigInt(i)
+		}));
+
+		const { version: _, ...rest } = trackEventMock;
+
+		const trackEvents: [AnalyticKey, SetTrackEvent0_0_6][] = keys.map((key) => [
+			key,
+			{
+				...rest,
+				updated_at: []
+			}
+		]);
+
+		const results = await set_track_events(trackEvents);
+
+		expect('Err' in results).toBeFalsy();
+
+		return keys;
+	};
+
+	const setTrackEvents = async (useActor: Actor<OrbiterActor>): Promise<AnalyticKey[]> => {
+		const { set_track_events } = useActor;
 
 		const keys = Array.from({ length: 100 }).map((_, i) => ({
 			key: nanoid(),
@@ -142,7 +219,7 @@ describe('Orbiter upgrade', () => {
 		keys,
 		useActor
 	}: {
-		keys: { key: AnalyticKey; memoryAllocation?: 'bounded' | 'unbounded' }[];
+		keys: AnalyticKey[];
 		useActor?: Actor<OrbiterActor | OrbiterActor0_0_6>;
 	}) => {
 		const { get_track_events } = useActor ?? actor;
@@ -155,7 +232,7 @@ describe('Orbiter upgrade', () => {
 
 		expect(results).toHaveLength(keys.length);
 
-		for (const { key, memoryAllocation } of keys) {
+		for (const key of keys) {
 			const result = results.find(([{ key: k }, _]) => k === key.key);
 
 			expect(result).not.toBeUndefined();
@@ -172,6 +249,32 @@ describe('Orbiter upgrade', () => {
 			expect(trackEvent.satellite_id.toText()).toEqual(trackEventMock.satellite_id.toText());
 			expect(trackEvent.created_at).toBeGreaterThan(0n);
 			expect(trackEvent.updated_at).toBeGreaterThan(0n);
+		}
+	};
+
+	const testTrackEventsMemoryAllocation = async ({
+		keys,
+		useActor
+	}: {
+		keys: { key: AnalyticKey; memoryAllocation?: 'bounded' | 'unbounded' }[];
+		useActor: Actor<OrbiterActor>;
+	}) => {
+		const { get_track_events } = useActor ?? actor;
+
+		const results = await get_track_events({
+			to: toNullable(),
+			from: toNullable(),
+			satellite_id: toNullable()
+		});
+
+		expect(results).toHaveLength(keys.length);
+
+		for (const { key, memoryAllocation } of keys) {
+			const result = results.find(([{ key: k }, _]) => k === key.key);
+
+			expect(result).not.toBeUndefined();
+
+			const [_, trackEvent] = result!;
 
 			switch (memoryAllocation) {
 				case 'bounded':
@@ -193,7 +296,7 @@ describe('Orbiter upgrade', () => {
 			const destination = await downloadOrbiter('0.0.6');
 
 			const { actor: c, canisterId: cId } = await pic.setupCanister<OrbiterActor0_0_6>({
-				idlFactory: idlFactorOrbiter,
+				idlFactory: idlFactorOrbiter0_0_6,
 				wasm: destination,
 				arg: controllersInitArgs(controller),
 				sender: controller.getPrincipal()
@@ -220,25 +323,27 @@ describe('Orbiter upgrade', () => {
 
 		describe('Page views', () => {
 			it('should still list all entries after upgrade', async () => {
-				const keys = await setPageViews();
+				const originalKeys = await setPageViews0_0_6();
 
-				await testPageViews({ keys: keys.map((key) => ({ key })) });
+				await testPageViews({ keys: originalKeys });
 
 				await upgrade();
 
 				const newActor = pic.createActor<OrbiterActor>(idlFactorOrbiter, canisterId);
 				newActor.setIdentity(controller);
 
-				await testPageViews({
-					keys: keys.map((key) => ({ key, memoryAllocation: 'bounded' })),
+				await testPageViews({ keys: originalKeys });
+
+				await testPageViewsMemoryAllocation({
+					keys: originalKeys.map((key) => ({ key, memoryAllocation: 'bounded' })),
 					useActor: newActor
 				});
 			});
 
 			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
-				const keysBeforeUpgrade = await setPageViews();
+				const keysBeforeUpgrade = await setPageViews0_0_6();
 
-				await testPageViews({ keys: keysBeforeUpgrade.map((key) => ({ key })) });
+				await testPageViews({ keys: keysBeforeUpgrade });
 
 				await upgrade();
 
@@ -248,6 +353,11 @@ describe('Orbiter upgrade', () => {
 				const keysAfterUpgrade = await setPageViews(newActor);
 
 				await testPageViews({
+					keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
+					useActor: newActor
+				});
+
+				await testPageViewsMemoryAllocation({
 					keys: [
 						...keysBeforeUpgrade.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
 						...keysAfterUpgrade.map((key) => ({ key, memoryAllocation: 'unbounded' as const }))
@@ -257,7 +367,7 @@ describe('Orbiter upgrade', () => {
 			});
 
 			it('should be able to update existing entry after upgrade and remain bounded', async () => {
-				const keysBeforeUpgrade = await setPageViews();
+				const keysBeforeUpgrade = await setPageViews0_0_6();
 
 				await upgrade();
 
@@ -279,7 +389,8 @@ describe('Orbiter upgrade', () => {
 						key,
 						{
 							...pageViewMock,
-							updated_at: toNullable(updated_at)
+							updated_at: toNullable(updated_at),
+							version: []
 						}
 					]
 				]);
@@ -298,9 +409,9 @@ describe('Orbiter upgrade', () => {
 
 		describe('Track events', () => {
 			it('should still list all entries after upgrade', async () => {
-				const keys = await setTrackEvents();
+				const keys = await setTrackEvents0_0_6();
 
-				await testTrackEvents({ keys: keys.map((key) => ({ key })) });
+				await testTrackEvents({ keys });
 
 				await upgrade();
 
@@ -308,15 +419,20 @@ describe('Orbiter upgrade', () => {
 				newActor.setIdentity(controller);
 
 				await testTrackEvents({
-					keys: keys.map((key) => ({ key, memoryAllocation: 'bounded' })),
+					keys: keys,
+					useActor: newActor
+				});
+
+				await testTrackEventsMemoryAllocation({
+					keys: keys.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
 					useActor: newActor
 				});
 			});
 
 			it('should be able to collect new entry and list both bounded and unbounded serialized data', async () => {
-				const keysBeforeUpgrade = await setTrackEvents();
+				const keysBeforeUpgrade = await setTrackEvents0_0_6();
 
-				await testTrackEvents({ keys: keysBeforeUpgrade.map((key) => ({ key })) });
+				await testTrackEvents({ keys: keysBeforeUpgrade });
 
 				await upgrade();
 
@@ -326,6 +442,11 @@ describe('Orbiter upgrade', () => {
 				const keysAfterUpgrade = await setTrackEvents(newActor);
 
 				await testTrackEvents({
+					keys: [...keysBeforeUpgrade, ...keysAfterUpgrade],
+					useActor: newActor
+				});
+
+				await testTrackEventsMemoryAllocation({
 					keys: [
 						...keysBeforeUpgrade.map((key) => ({ key, memoryAllocation: 'bounded' as const })),
 						...keysAfterUpgrade.map((key) => ({ key, memoryAllocation: 'unbounded' as const }))
@@ -335,7 +456,7 @@ describe('Orbiter upgrade', () => {
 			});
 
 			it('should be able to update existing entry after upgrade and remain bounded', async () => {
-				const keysBeforeUpgrade = await setTrackEvents();
+				const keysBeforeUpgrade = await setTrackEvents0_0_6();
 
 				await upgrade();
 
@@ -357,7 +478,8 @@ describe('Orbiter upgrade', () => {
 						key,
 						{
 							...trackEventMock,
-							updated_at: toNullable(updated_at)
+							updated_at: toNullable(updated_at),
+							version: toNullable()
 						}
 					]
 				]);

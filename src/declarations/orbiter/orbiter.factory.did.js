@@ -14,7 +14,7 @@ export const idlFactory = ({ IDL }) => {
 		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
-	const DelSatelliteConfig = IDL.Record({ updated_at: IDL.Opt(IDL.Nat64) });
+	const DelSatelliteConfig = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
@@ -46,6 +46,7 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal,
 		device: PageViewDevice,
+		version: IDL.Opt(IDL.Nat64),
 		user_agent: IDL.Opt(IDL.Text),
 		memory_allocation: IDL.Opt(MemoryAllocation)
 	});
@@ -89,6 +90,7 @@ export const idlFactory = ({ IDL }) => {
 		name: IDL.Text,
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal,
+		version: IDL.Opt(IDL.Nat64),
 		memory_allocation: IDL.Opt(MemoryAllocation)
 	});
 	const AnalyticsTrackEvents = IDL.Record({
@@ -97,6 +99,7 @@ export const idlFactory = ({ IDL }) => {
 	const OrbiterSatelliteConfig = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64),
 		enabled: IDL.Bool
 	});
 	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
@@ -118,6 +121,7 @@ export const idlFactory = ({ IDL }) => {
 		href: IDL.Text,
 		satellite_id: IDL.Principal,
 		device: PageViewDevice,
+		version: IDL.Opt(IDL.Nat64),
 		user_agent: IDL.Opt(IDL.Text)
 	});
 	const Result = IDL.Variant({ Ok: PageView, Err: IDL.Text });
@@ -126,7 +130,7 @@ export const idlFactory = ({ IDL }) => {
 		Err: IDL.Vec(IDL.Tuple(AnalyticKey, IDL.Text))
 	});
 	const SetSatelliteConfig = IDL.Record({
-		updated_at: IDL.Opt(IDL.Nat64),
+		version: IDL.Opt(IDL.Nat64),
 		enabled: IDL.Bool
 	});
 	const SetTrackEvent = IDL.Record({
@@ -135,6 +139,7 @@ export const idlFactory = ({ IDL }) => {
 		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
 		name: IDL.Text,
 		satellite_id: IDL.Principal,
+		version: IDL.Opt(IDL.Nat64),
 		user_agent: IDL.Opt(IDL.Text)
 	});
 	const Result_2 = IDL.Variant({ Ok: TrackEvent, Err: IDL.Text });

@@ -44,10 +44,6 @@ export const idlFactory = ({ IDL }) => {
 		device: PageViewDevice,
 		user_agent: IDL.Opt(IDL.Text)
 	});
-	const StoredPageView = IDL.Variant({
-		Unbounded: PageView,
-		Bounded: PageView
-	});
 	const AnalyticsBrowsersPageViews = IDL.Record({
 		safari: IDL.Float64,
 		opera: IDL.Float64,
@@ -88,10 +84,6 @@ export const idlFactory = ({ IDL }) => {
 		name: IDL.Text,
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal
-	});
-	const StoredTrackEvent = IDL.Variant({
-		Unbounded: TrackEvent,
-		Bounded: TrackEvent
 	});
 	const AnalyticsTrackEvents = IDL.Record({
 		total: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
@@ -150,7 +142,7 @@ export const idlFactory = ({ IDL }) => {
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_page_views: IDL.Func(
 			[GetAnalytics],
-			[IDL.Vec(IDL.Tuple(AnalyticKey, StoredPageView))],
+			[IDL.Vec(IDL.Tuple(AnalyticKey, PageView))],
 			['query']
 		),
 		get_page_views_analytics_clients: IDL.Func(
@@ -166,7 +158,7 @@ export const idlFactory = ({ IDL }) => {
 		get_page_views_analytics_top_10: IDL.Func([GetAnalytics], [AnalyticsTop10PageViews], ['query']),
 		get_track_events: IDL.Func(
 			[GetAnalytics],
-			[IDL.Vec(IDL.Tuple(AnalyticKey, StoredTrackEvent))],
+			[IDL.Vec(IDL.Tuple(AnalyticKey, TrackEvent))],
 			['query']
 		),
 		get_track_events_analytics: IDL.Func([GetAnalytics], [AnalyticsTrackEvents], ['query']),

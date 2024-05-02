@@ -5,7 +5,7 @@ use crate::assert::{
 use crate::filters::{filter_analytics, filter_satellites_analytics};
 use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
-use crate::types::memory::{MemoryAllocation, StoredPageView};
+use crate::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
 use ic_cdk::api::time;
 use junobuild_shared::assert::assert_timestamp;
@@ -119,7 +119,7 @@ fn insert_track_event_impl(
     match current_track_event.clone() {
         None => (),
         Some(current_track_event) => {
-            match assert_timestamp(track_event.updated_at, current_track_event.updated_at) {
+            match assert_timestamp(track_event.updated_at, current_track_event.inner().updated_at) {
                 Ok(_) => (),
                 Err(e) => {
                     return Err(e);
@@ -132,7 +132,7 @@ fn insert_track_event_impl(
     match current_track_event.clone() {
         None => (),
         Some(current_track_event) => {
-            assert_session_id(&track_event.session_id, &current_track_event.session_id)?;
+            assert_session_id(&track_event.session_id, &current_track_event.inner().session_id)?;
         }
     }
 
@@ -140,7 +140,7 @@ fn insert_track_event_impl(
     match current_track_event.clone() {
         None => (),
         Some(current_track_event) => {
-            assert_satellite_id(track_event.satellite_id, current_track_event.satellite_id)?;
+            assert_satellite_id(track_event.satellite_id, current_track_event.inner().satellite_id)?;
         }
     }
 
@@ -152,17 +152,12 @@ fn insert_track_event_impl(
 
     let created_at: u64 = match current_track_event.clone() {
         None => now,
-        Some(current_track_event) => current_track_event.created_at,
+        Some(current_track_event) => current_track_event.inner().created_at,
     };
 
     let session_id: String = match current_track_event.clone() {
         None => track_event.session_id.clone(),
-        Some(current_track_event) => current_track_event.session_id,
-    };
-
-    let memory_allocation: Option<MemoryAllocation> = match current_track_event.clone() {
-        None => Some(MemoryAllocation::Unbounded),
-        Some(current_track_event) => current_track_event.memory_allocation,
+        Some(current_track_event) => current_track_event.inner().session_id.clone(),
     };
 
     let new_track_event: TrackEvent = TrackEvent {
@@ -172,12 +167,16 @@ fn insert_track_event_impl(
         session_id,
         created_at,
         updated_at: now,
-        memory_allocation,
+    };
+
+    let stored_track_event = match current_track_event.map(|pv| pv.is_bounded()) {
+        Some(true) => StoredTrackEvent::Bounded(new_track_event.clone()),
+        _ => StoredTrackEvent::Unbounded(new_track_event.clone()),
     };
 
     state
         .track_events
-        .insert(key.clone(), new_track_event.clone());
+        .insert(key.clone(), stored_track_event.clone());
 
     state.satellites_track_events.insert(
         AnalyticSatelliteKey::from_key(&key, &track_event.satellite_id),
@@ -213,14 +212,14 @@ fn get_page_views_impl(
     }
 }
 
-pub fn get_track_events(filter: &GetAnalytics) -> Vec<(AnalyticKey, TrackEvent)> {
+pub fn get_track_events(filter: &GetAnalytics) -> Vec<(AnalyticKey, StoredTrackEvent)> {
     STATE.with(|state| get_track_events_impl(filter, &state.borrow_mut().stable))
 }
 
 fn get_track_events_impl(
     filter: &GetAnalytics,
     state: &StableState,
-) -> Vec<(AnalyticKey, TrackEvent)> {
+) -> Vec<(AnalyticKey, StoredTrackEvent)> {
     match filter.satellite_id {
         None => state.track_events.range(filter_analytics(filter)).collect(),
         Some(satellite_id) => {

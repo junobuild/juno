@@ -11,7 +11,6 @@ use crate::serializers::utils::{
     bytes_to_short_string, bytes_to_string, key_to_bytes, long_string_to_bytes, metadata_to_bytes,
     principal_to_bytes, short_string_to_bytes, string_to_bytes,
 };
-use crate::types::memory::MemoryAllocation;
 use crate::types::state::{
     AnalyticKey, AnalyticSatelliteKey, PageView, PageViewDevice, TrackEvent,
 };
@@ -241,7 +240,6 @@ pub fn deserialize_bounded_track_event(bytes: Cow<[u8]>) -> TrackEvent {
         session_id,
         created_at,
         updated_at,
-        memory_allocation: Some(MemoryAllocation::Bounded),
     }
 }
 

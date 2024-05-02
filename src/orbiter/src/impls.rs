@@ -6,7 +6,7 @@ use crate::serializers::bounded::{
     serialize_bounded_track_event,
 };
 use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
-use crate::types::memory::{MemoryAllocation, StoredPageView};
+use crate::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::types::state::{
     AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent,
 };
@@ -58,19 +58,35 @@ impl StoredPageView {
     }
 }
 
-impl Storable for TrackEvent {
+impl Storable for StoredTrackEvent {
     fn to_bytes(&self) -> Cow<[u8]> {
-        match self.memory_allocation {
-            Some(MemoryAllocation::Bounded) => serialize_bounded_track_event(self),
-            _ => serialize_to_bytes(self),
+        match self {
+            StoredTrackEvent::Unbounded(track_event) => serialize_to_bytes(track_event),
+            StoredTrackEvent::Bounded(track_event) => serialize_bounded_track_event(track_event),
         }
     }
 
     fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        from_reader(&*bytes).unwrap_or_else(|_| deserialize_bounded_track_event(bytes))
+        from_reader(&*bytes)
+            .map(StoredTrackEvent::Unbounded)
+            .unwrap_or_else(|_| StoredTrackEvent::Bounded(deserialize_bounded_track_event(bytes)))
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl StoredTrackEvent {
+    pub fn inner(&self) -> &TrackEvent {
+        match self {
+            StoredTrackEvent::Unbounded(track_event) | StoredTrackEvent::Bounded(track_event) => {
+                track_event
+            }
+        }
+    }
+
+    pub fn is_bounded(&self) -> bool {
+        matches!(self, StoredTrackEvent::Bounded(_))
+    }
 }
 
 impl Storable for AnalyticKey {

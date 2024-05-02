@@ -2,7 +2,7 @@ use crate::types::interface::{
     AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
     AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents,
 };
-use crate::types::memory::StoredPageView;
+use crate::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::types::state::{AnalyticKey, PageView, TrackEvent};
 use junobuild_shared::day::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;
@@ -211,11 +211,13 @@ pub fn analytics_page_views_clients(
 }
 
 pub fn analytics_track_events(
-    track_events: &Vec<(AnalyticKey, TrackEvent)>,
+    track_events: &Vec<(AnalyticKey, StoredTrackEvent)>,
 ) -> AnalyticsTrackEvents {
     let mut total_track_events: HashMap<String, u32> = HashMap::new();
 
-    for (_, TrackEvent { name, .. }) in track_events {
+    for (_, track_event) in track_events {
+        let TrackEvent { name, .. } = track_event.inner();
+
         let count = total_track_events.entry(name.clone()).or_insert(0);
         *count += 1;
     }

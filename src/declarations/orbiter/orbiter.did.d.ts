@@ -65,7 +65,6 @@ export interface GetAnalytics {
 	from: [] | [bigint];
 	satellite_id: [] | [Principal];
 }
-export type MemoryAllocation = { Unbounded: null } | { Bounded: null };
 export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
@@ -88,7 +87,6 @@ export interface PageView {
 	device: PageViewDevice;
 	version: [] | [bigint];
 	user_agent: [] | [string];
-	memory_allocation: [] | [MemoryAllocation];
 }
 export interface PageViewDevice {
 	inner_height: number;
@@ -139,7 +137,6 @@ export interface TrackEvent {
 	created_at: bigint;
 	satellite_id: Principal;
 	version: [] | [bigint];
-	memory_allocation: [] | [MemoryAllocation];
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;

@@ -32,10 +32,6 @@ export const idlFactory = ({ IDL }) => {
 		inner_height: IDL.Nat16,
 		inner_width: IDL.Nat16
 	});
-	const MemoryAllocation = IDL.Variant({
-		Unbounded: IDL.Null,
-		Bounded: IDL.Null
-	});
 	const PageView = IDL.Record({
 		title: IDL.Text,
 		updated_at: IDL.Nat64,
@@ -47,8 +43,7 @@ export const idlFactory = ({ IDL }) => {
 		satellite_id: IDL.Principal,
 		device: PageViewDevice,
 		version: IDL.Opt(IDL.Nat64),
-		user_agent: IDL.Opt(IDL.Text),
-		memory_allocation: IDL.Opt(MemoryAllocation)
+		user_agent: IDL.Opt(IDL.Text)
 	});
 	const AnalyticsBrowsersPageViews = IDL.Record({
 		safari: IDL.Float64,
@@ -90,8 +85,7 @@ export const idlFactory = ({ IDL }) => {
 		name: IDL.Text,
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal,
-		version: IDL.Opt(IDL.Nat64),
-		memory_allocation: IDL.Opt(MemoryAllocation)
+		version: IDL.Opt(IDL.Nat64)
 	});
 	const AnalyticsTrackEvents = IDL.Record({
 		total: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))

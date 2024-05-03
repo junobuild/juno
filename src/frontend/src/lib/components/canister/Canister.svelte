@@ -111,8 +111,6 @@
 
 <style lang="scss">
 	p {
-		font-size: var(--font-size-small);
-
 		&:not(:last-of-type) {
 			margin: 0 0 var(--padding-0_25x);
 		}
@@ -137,6 +135,8 @@
 		p {
 			margin: 0;
 			position: relative;
+
+			font-size: var(--font-size-small);
 
 			&:not(:last-of-type):after {
 				content: '';

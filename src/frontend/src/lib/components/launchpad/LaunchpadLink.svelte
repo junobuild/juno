@@ -22,6 +22,8 @@
 </a>
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
 	.summary {
 		display: flex;
 		justify-content: space-between;
@@ -50,9 +52,12 @@
 	.row {
 		grid-column: 1 / 13;
 
-		display: grid;
-		grid-template-columns: 30% auto;
-		grid-gap: var(--padding);
+		@include media.min-width(medium) {
+			display: grid;
+			grid-template-columns: 30% auto;
+			grid-gap: var(--padding);
+		}
+
 		height: auto;
 
 		.content,

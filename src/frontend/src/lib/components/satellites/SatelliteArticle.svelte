@@ -27,7 +27,7 @@
 
 <LaunchpadLink {href} ariaLabel={`${$i18n.satellites.open}: ${name}`} {row}>
 	<svelte:fragment slot="summary">
-		<h4>{name}</h4>
+		<p>{name}</p>
 		<IconSatellite size={row ? '28px' : '48px'} />
 	</svelte:fragment>
 
@@ -36,8 +36,11 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/text';
+	@use '../../styles/mixins/fonts';
 
-	h4 {
+	p {
+		@include fonts.bold(true);
+
 		@include text.truncate;
 		margin: 0;
 	}

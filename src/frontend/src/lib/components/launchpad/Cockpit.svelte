@@ -19,10 +19,10 @@
 		href="/mission-control"
 		ariaLabel={`${$i18n.satellites.open}: ${$i18n.mission_control.title}`}
 	>
-		<h4>
+		<p>
 			<IconMissionControl />
 			<span>{$i18n.mission_control.title}</span>
-		</h4>
+		</p>
 	</LaunchpadLink>
 </div>
 
@@ -33,10 +33,10 @@
 			href="/analytics"
 			ariaLabel={`${$i18n.satellites.open}: ${$i18n.analytics.title}`}
 		>
-			<h4>
+			<p>
 				<IconAnalytics size="24px" />
 				<span>{$i18n.analytics.title}</span>
-			</h4>
+			</p>
 		</LaunchpadLink>
 	</div>
 {/if}
@@ -44,11 +44,16 @@
 <style lang="scss">
 	@use '../../../lib/styles/mixins/grid';
 	@use '../../../lib/styles/mixins/media';
+	@use '../../../lib/styles/mixins/fonts';
 
-	h4 {
+	p {
+		@include fonts.bold(true);
+
 		display: flex;
 		align-items: center;
 		gap: var(--padding-3x);
+
+		margin: 0 0 var(--padding);
 	}
 
 	.mission-control {

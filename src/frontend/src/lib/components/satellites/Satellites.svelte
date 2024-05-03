@@ -5,6 +5,8 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import SatellitesToolbar from '$lib/components/satellites/SatellitesToolbar.svelte';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { layoutSatellites } from '$lib/stores/layout.store';
+	import { SatellitesLayout } from '$lib/types/layout';
 
 	let filter = '';
 
@@ -18,7 +20,7 @@
 
 <SatellitesToolbar bind:filter />
 
-<SatelliteNew />
+<SatelliteNew row={$layoutSatellites === SatellitesLayout.LIST} />
 
 {#each satellites as satellite}
 	<SatelliteArticle {satellite} />

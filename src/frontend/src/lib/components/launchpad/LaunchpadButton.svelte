@@ -3,11 +3,12 @@
 
 	export let disabled: boolean | undefined = undefined;
 	export let primary = false;
+	export let row = false;
 
 	let summary = nonNullish($$slots.summary);
 </script>
 
-<button class="article" on:click {disabled} class:primary>
+<button class="article" on:click {disabled} class:primary class:row>
 	{#if summary}
 		<div class="summary">
 			<slot name="summary" />
@@ -53,5 +54,15 @@
 
 	.only {
 		height: 100%;
+	}
+
+	.row {
+		grid-column: 1 / 13;
+		min-height: auto;
+
+		.content {
+			padding: var(--padding-2x) var(--padding-4x);
+			min-height: auto;
+		}
 	}
 </style>

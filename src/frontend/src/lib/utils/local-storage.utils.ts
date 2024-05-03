@@ -2,6 +2,7 @@ import { browser } from '$app/environment';
 import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
 import type { ListParamsStoreData } from '$lib/stores/data.store';
 import type { Languages } from '$lib/types/languages';
+import { SatellitesLayout } from '$lib/types/layout';
 import { Theme } from '$lib/types/theme';
 import { nonNullish } from '@dfinity/utils';
 
@@ -69,5 +70,18 @@ export const getLocalStorageObserveLogs = (): boolean => {
 		// We use the local storage for the operational part of the app but, not crucial
 		console.error(err);
 		return true;
+	}
+};
+
+export const getLocalStorageSatellitesLayout = (): SatellitesLayout => {
+	try {
+		const { satellites_layout }: Storage = browser
+			? localStorage
+			: ({ satellites_layout: SatellitesLayout.CARDS } as unknown as Storage);
+		return satellites_layout ?? SatellitesLayout.CARDS;
+	} catch (err: unknown) {
+		// We use the local storage for the operational part of the app but, not crucial
+		console.error(err);
+		return SatellitesLayout.CARDS;
 	}
 };

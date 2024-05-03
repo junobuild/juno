@@ -21,6 +21,7 @@
 	export let canisterId: Principal;
 	export let segment: Segment;
 	export let display = true;
+	export let row = false;
 
 	let canister: CanisterIcStatus | undefined = undefined;
 
@@ -86,24 +87,26 @@
 <svelte:window on:junoRestartCycles={restartCycles} />
 
 {#if display}
-	{#if ['synced', 'syncing'].includes(sync ?? '')}
-		<p class="status">{status ?? '???'}</p>
-		<p class="cycles">
-			<span
-				>{formatTCycles(cycles)}
-				<small
-					>T Cycles {#if warning}<IconWarning />{/if}</small
-				></span
-			>{#if sync === 'syncing'}<IconSync />{/if}
-		</p>
-		<p>
-			{formatNumber(Number(memory_size) / 1_000_000)} MB <small>{$i18n.canisters.in_total}</small>
-		</p>
-	{:else if sync === 'loading'}
-		<p><SkeletonText /></p>
-		<p><SkeletonText /></p>
-		<p><SkeletonText /></p>
-	{/if}
+	<div class:row>
+		{#if ['synced', 'syncing'].includes(sync ?? '')}
+			<p class="status">{status ?? '???'}</p>
+			<p class="cycles">
+				<span
+					>{formatTCycles(cycles)}
+					<small
+						>T Cycles {#if warning}<IconWarning />{/if}</small
+					></span
+				>{#if sync === 'syncing'}<IconSync />{/if}
+			</p>
+			<p>
+				{formatNumber(Number(memory_size) / 1_000_000)} MB <small>{$i18n.canisters.in_total}</small>
+			</p>
+		{:else if sync === 'loading'}
+			<p><SkeletonText /></p>
+			<p><SkeletonText /></p>
+			<p><SkeletonText /></p>
+		{/if}
+	</div>
 {/if}
 
 <style lang="scss">
@@ -123,5 +126,30 @@
 	.cycles {
 		display: inline-flex;
 		gap: var(--padding);
+	}
+
+	.row {
+		display: flex;
+		gap: var(--padding-2x);
+
+		p {
+			margin: 0;
+			position: relative;
+
+			font-size: var(--font-size-small);
+
+			&:not(:last-of-type):after {
+				content: '';
+				border-right: 1px solid currentColor;
+
+				display: block;
+				height: 75%;
+
+				position: absolute;
+				top: 0;
+				right: 0;
+				transform: translate(var(--padding), 20%);
+			}
+		}
 	}
 </style>

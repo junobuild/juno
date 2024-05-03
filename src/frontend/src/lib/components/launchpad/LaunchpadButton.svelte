@@ -1,10 +1,14 @@
 <script lang="ts">
-	export let disabled: boolean | undefined = undefined;
+	import { nonNullish } from '@dfinity/utils';
 
-	let summary = $$slots.summary !== undefined;
+	export let disabled: boolean | undefined = undefined;
+	export let primary = false;
+	export let row = false;
+
+	let summary = nonNullish($$slots.summary);
 </script>
 
-<button class="article" on:click {disabled}>
+<button class="article" on:click {disabled} class:primary class:row>
 	{#if summary}
 		<div class="summary">
 			<slot name="summary" />
@@ -19,8 +23,12 @@
 <style lang="scss">
 	button {
 		height: 100%;
-		min-height: 220px;
+		min-height: 231px;
 		margin: 0;
+
+		&.primary {
+			--color-card-contrast: var(--color-primary);
+		}
 	}
 
 	.summary {
@@ -46,5 +54,15 @@
 
 	.only {
 		height: 100%;
+	}
+
+	.row {
+		grid-column: 1 / 13;
+		min-height: auto;
+
+		.content {
+			padding: var(--padding-2x) var(--padding-4x);
+			min-height: auto;
+		}
 	}
 </style>

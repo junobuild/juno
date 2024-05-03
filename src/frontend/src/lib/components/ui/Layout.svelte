@@ -59,7 +59,7 @@
 	}
 
 	main {
-		max-width: media.$breakpoint-extra-large;
+		max-width: calc(media.$breakpoint-extra-large - 100px);
 		overflow-x: hidden;
 
 		padding: 0 var(--padding-4x) var(--padding-4x) var(--padding-2x);

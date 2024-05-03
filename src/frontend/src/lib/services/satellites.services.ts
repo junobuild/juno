@@ -55,5 +55,7 @@ export const loadSatellites = async ({
 			text: labels.errors.satellites_loading,
 			detail: err
 		});
+
+		satellitesStore.set(null);
 	}
 };

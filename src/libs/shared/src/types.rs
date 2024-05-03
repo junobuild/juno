@@ -76,6 +76,7 @@ pub mod state {
         pub enabled: bool,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+        pub version: Option<Version>,
     }
 }
 

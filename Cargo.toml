@@ -24,6 +24,7 @@ ic-cdk = "0.12.1"
 ic-cdk-macros = "0.8.1"
 ic-ledger-types = "0.9.0"
 ic-cdk-timers = "0.6.0"
+ic-stable-structures = "0.6.4"
 serde = "1.0.190"
 serde_cbor = "0.11.2"
 

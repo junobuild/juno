@@ -6,14 +6,14 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	INVALID_TIMESTAMP_ERROR_MSG,
-	NO_TIMESTAMP_ERROR_MSG
+	INVALID_VERSION_ERROR_MSG,
+	NO_VERSION_ERROR_MSG
 } from './constants/satellite-tests.constants';
+import { pageViewMock, satelliteIdMock, trackEventMock } from './mocks/orbiter.mocks';
 import { ORBITER_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Orbiter', () => {
@@ -39,38 +39,6 @@ describe('Orbiter', () => {
 		await pic?.tearDown();
 	});
 
-	const satellite_id = Principal.fromText('ck4tp-3iaaa-aaaal-ab7da-cai');
-
-	const { timeZone } = Intl.DateTimeFormat().resolvedOptions();
-
-	const pageView: SetPageView = {
-		href: 'https://test.com',
-		device: {
-			inner_height: 300,
-			inner_width: 600
-		},
-		satellite_id,
-		referrer: [],
-		session_id: nanoid(),
-		title: 'Test',
-		time_zone: timeZone,
-		user_agent: [
-			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
-		],
-		updated_at: []
-	};
-
-	const trackEvent: SetTrackEvent = {
-		name: 'my_event',
-		metadata: [],
-		satellite_id,
-		session_id: nanoid(),
-		user_agent: [
-			'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
-		],
-		updated_at: []
-	};
-
 	describe('not configured', () => {
 		describe('user', () => {
 			const user = Ed25519KeyIdentity.generate();
@@ -83,8 +51,8 @@ describe('Orbiter', () => {
 				const { set_page_views } = actor;
 
 				const pagesViews: [AnalyticKey, SetPageView][] = [
-					[{ key: nanoid(), collected_at: 123n }, pageView],
-					[{ key: nanoid(), collected_at: 123n }, pageView]
+					[{ key: nanoid(), collected_at: 123n }, pageViewMock],
+					[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 				];
 
 				const results = await set_page_views(pagesViews);
@@ -100,8 +68,8 @@ describe('Orbiter', () => {
 				const { set_track_events } = actor;
 
 				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
-					[{ key: nanoid(), collected_at: 123n }, trackEvent],
-					[{ key: nanoid(), collected_at: 123n }, trackEvent]
+					[{ key: nanoid(), collected_at: 123n }, trackEventMock],
+					[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 				];
 
 				const results = await set_track_events(trackEvents);
@@ -127,9 +95,9 @@ describe('Orbiter', () => {
 				await expect(
 					set_satellite_configs([
 						[
-							satellite_id,
+							satelliteIdMock,
 							{
-								updated_at: [],
+								version: [],
 								enabled: true
 							}
 						]
@@ -143,14 +111,14 @@ describe('Orbiter', () => {
 				await expect(
 					set_satellite_configs([
 						[
-							satellite_id,
+							satelliteIdMock,
 							{
-								updated_at: [],
+								version: [],
 								enabled: true
 							}
 						]
 					])
-				).rejects.toThrow(NO_TIMESTAMP_ERROR_MSG);
+				).rejects.toThrow(NO_VERSION_ERROR_MSG);
 			});
 
 			it('should not configure satellite if invalid timestamp', async () => {
@@ -159,14 +127,14 @@ describe('Orbiter', () => {
 				await expect(
 					set_satellite_configs([
 						[
-							satellite_id,
+							satelliteIdMock,
 							{
-								updated_at: [123n],
+								version: [123n],
 								enabled: true
 							}
 						]
 					])
-				).rejects.toThrowError(new RegExp(INVALID_TIMESTAMP_ERROR_MSG, 'i'));
+				).rejects.toThrowError(new RegExp(INVALID_VERSION_ERROR_MSG, 'i'));
 			});
 		});
 
@@ -183,8 +151,8 @@ describe('Orbiter', () => {
 				const { set_page_views } = actor;
 
 				const pagesViews: [AnalyticKey, SetPageView][] = [
-					[{ key, collected_at: 123n }, pageView],
-					[{ key: nanoid(), collected_at: 123n }, pageView]
+					[{ key, collected_at: 123n }, pageViewMock],
+					[{ key: nanoid(), collected_at: 123n }, pageViewMock]
 				];
 
 				await expect(set_page_views(pagesViews)).resolves.not.toThrowError();
@@ -193,14 +161,16 @@ describe('Orbiter', () => {
 			it('should not set page views if no timestamp', async () => {
 				const { set_page_views } = actor;
 
-				const pagesViews: [AnalyticKey, SetPageView][] = [[{ key, collected_at: 123n }, pageView]];
+				const pagesViews: [AnalyticKey, SetPageView][] = [
+					[{ key, collected_at: 123n }, pageViewMock]
+				];
 
 				const results = await set_page_views(pagesViews);
 
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(NO_TIMESTAMP_ERROR_MSG)
+					expect(msg).toEqual(NO_VERSION_ERROR_MSG)
 				);
 			});
 
@@ -211,8 +181,8 @@ describe('Orbiter', () => {
 					[
 						{ key, collected_at: 123n },
 						{
-							...pageView,
-							updated_at: [123n]
+							...pageViewMock,
+							version: [123n]
 						}
 					]
 				];
@@ -222,7 +192,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(INVALID_TIMESTAMP_ERROR_MSG)
+					expect(msg).toContain(INVALID_VERSION_ERROR_MSG)
 				);
 			});
 
@@ -230,8 +200,8 @@ describe('Orbiter', () => {
 				const { set_track_events } = actor;
 
 				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
-					[{ key, collected_at: 123n }, trackEvent],
-					[{ key: nanoid(), collected_at: 123n }, trackEvent]
+					[{ key, collected_at: 123n }, trackEventMock],
+					[{ key: nanoid(), collected_at: 123n }, trackEventMock]
 				];
 
 				await expect(set_track_events(trackEvents)).resolves.not.toThrowError();
@@ -241,7 +211,7 @@ describe('Orbiter', () => {
 				const { set_track_events } = actor;
 
 				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
-					[{ key, collected_at: 123n }, trackEvent]
+					[{ key, collected_at: 123n }, trackEventMock]
 				];
 
 				const results = await set_track_events(trackEvents);
@@ -249,7 +219,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(NO_TIMESTAMP_ERROR_MSG)
+					expect(msg).toEqual(NO_VERSION_ERROR_MSG)
 				);
 			});
 
@@ -260,8 +230,8 @@ describe('Orbiter', () => {
 					[
 						{ key, collected_at: 123n },
 						{
-							...trackEvent,
-							updated_at: [123n]
+							...trackEventMock,
+							version: [123n]
 						}
 					]
 				];
@@ -271,7 +241,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(INVALID_TIMESTAMP_ERROR_MSG)
+					expect(msg).toContain(INVALID_VERSION_ERROR_MSG)
 				);
 			});
 		});

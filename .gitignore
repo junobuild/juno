@@ -32,4 +32,5 @@ mission_control.wasm
 observatory.wasm
 satellite.wasm
 satellite-v*.wasm.gz
+orbiter-v*.wasm.gz
 out/

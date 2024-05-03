@@ -51,7 +51,7 @@ export interface Controller {
 }
 export type ControllerScope = { Write: null } | { Admin: null };
 export interface DelSatelliteConfig {
-	version: [] | [bigint];
+	updated_at: [] | [bigint];
 }
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
@@ -72,7 +72,6 @@ export interface MemorySize {
 export interface OrbiterSatelliteConfig {
 	updated_at: bigint;
 	created_at: bigint;
-	version: [] | [bigint];
 	enabled: boolean;
 }
 export interface PageView {
@@ -85,7 +84,6 @@ export interface PageView {
 	created_at: bigint;
 	satellite_id: Principal;
 	device: PageViewDevice;
-	version: [] | [bigint];
 	user_agent: [] | [string];
 }
 export interface PageViewDevice {
@@ -113,11 +111,10 @@ export interface SetPageView {
 	href: string;
 	satellite_id: Principal;
 	device: PageViewDevice;
-	version: [] | [bigint];
 	user_agent: [] | [string];
 }
 export interface SetSatelliteConfig {
-	version: [] | [bigint];
+	updated_at: [] | [bigint];
 	enabled: boolean;
 }
 export interface SetTrackEvent {
@@ -126,7 +123,6 @@ export interface SetTrackEvent {
 	metadata: [] | [Array<[string, string]>];
 	name: string;
 	satellite_id: Principal;
-	version: [] | [bigint];
 	user_agent: [] | [string];
 }
 export interface TrackEvent {
@@ -136,7 +132,6 @@ export interface TrackEvent {
 	name: string;
 	created_at: bigint;
 	satellite_id: Principal;
-	version: [] | [bigint];
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;

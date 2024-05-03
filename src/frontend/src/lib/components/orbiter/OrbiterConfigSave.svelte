@@ -36,7 +36,7 @@
 					Principal.fromText(satelliteId),
 					{
 						enabled: value.enabled,
-						updated_at: nonNullish(value.config) ? [value.config.updated_at] : []
+						version: nonNullish(value.config) ? value.config.version : []
 					}
 				]),
 				identity: $authStore.identity

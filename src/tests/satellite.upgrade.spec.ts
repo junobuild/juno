@@ -19,13 +19,14 @@ import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import { NO_VERSION_ERROR_MSG } from './constants/satellite-tests.constants';
+import { tick } from './utils/pic-tests.utils';
 import {
 	SATELLITE_WASM_PATH,
 	controllersInitArgs,
 	downloadSatellite
 } from './utils/setup-tests.utils';
 
-describe('satellite upgrade', () => {
+describe('Satellite upgrade', () => {
 	let pic: PocketIc;
 	let actor: Actor<SatelliteActor_0_0_16>;
 	let canisterId: Principal;
@@ -37,10 +38,7 @@ describe('satellite upgrade', () => {
 	});
 
 	const upgradeVersion = async (version: string) => {
-		// Prevent Error: Canister lxzze-o7777-77777-aaaaa-cai is rate limited because it executed too many instructions in the previous install_code messages. Please retry installation after several minutes.
-		for (let i = 0; i < 100; i++) {
-			await pic.tick();
-		}
+		await tick(pic);
 
 		const destination = await downloadSatellite(version);
 
@@ -52,10 +50,7 @@ describe('satellite upgrade', () => {
 	};
 
 	const upgrade = async () => {
-		// Prevent Error: Canister lxzze-o7777-77777-aaaaa-cai is rate limited because it executed too many instructions in the previous install_code messages. Please retry installation after several minutes.
-		for (let i = 0; i < 100; i++) {
-			await pic.tick();
-		}
+		await tick(pic);
 
 		await pic.upgradeCanister({
 			canisterId,

@@ -90,7 +90,7 @@ export const setRule = async ({
 	const updateRule: SetRule = {
 		read: permissionFromText(read),
 		write: permissionFromText(write),
-		updated_at: isNullish(rule) ? [] : [rule.updated_at],
+		version: isNullish(rule) ? [] : rule.version,
 		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
 		max_capacity: toNullable(nonNullish(maxCapacity) && maxCapacity > 0 ? maxCapacity : undefined),
 		memory: isNullish(rule)
@@ -99,8 +99,8 @@ export const setRule = async ({
 		mutable_permissions: toNullable(mutablePermissions)
 	};
 
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	await actor.set_rule(type, collection, updateRule);
+	const { set_rule } = await getSatelliteActor({ satelliteId, identity });
+	await set_rule(type, collection, updateRule);
 };
 
 export const deleteRule = async ({
@@ -117,11 +117,11 @@ export const deleteRule = async ({
 	identity: OptionIdentity;
 }) => {
 	const delRule: DelRule = {
-		updated_at: [rule.updated_at]
+		version: rule.version
 	};
 
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	await actor.del_rule(type, collection, delRule);
+	const { del_rule } = await getSatelliteActor({ satelliteId, identity });
+	await del_rule(type, collection, delRule);
 };
 
 export const listControllers = async ({
@@ -224,10 +224,9 @@ export const deleteDoc = async ({
 	doc: Doc | undefined;
 	identity: OptionIdentity;
 }) => {
-	const actor = await getSatelliteActor({ satelliteId, identity });
-	const { updated_at } = doc ?? { updated_at: undefined };
-	return actor.del_doc(collection, key, {
-		updated_at: toNullable(updated_at)
+	const { del_doc } = await getSatelliteActor({ satelliteId, identity });
+	return del_doc(collection, key, {
+		version: isNullish(doc) ? [] : doc.version
 	});
 };
 

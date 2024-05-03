@@ -25,10 +25,10 @@ export const setCronTab = async ({
 	cron_jobs: CronJobs;
 	identity: OptionIdentity;
 }): Promise<CronTab> => {
-	const actor = await getObservatoryActor(identity);
-	return actor.set_cron_tab({
+	const {set_cron_tab} = await getObservatoryActor(identity);
+	return set_cron_tab({
 		mission_control_id: missionControlId,
 		cron_jobs,
-		updated_at: toNullable(cronTab?.updated_at)
+		version: cronTab?.version ?? []
 	});
 };

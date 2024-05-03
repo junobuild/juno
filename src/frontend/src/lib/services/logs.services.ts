@@ -100,7 +100,7 @@ const functionLogs = async (params: {
 	return await Promise.all(fnLogs.map(mapLog));
 };
 
-const canisterLogs = async (params: {
+const _canisterLogs = async (params: {
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<[string, Log][]> => {

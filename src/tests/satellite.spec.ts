@@ -153,7 +153,7 @@ describe('Satellite', () => {
 			});
 
 			it('should not update rule if no version', async () => {
-				const { set_rule, list_rules } = actor;
+				const { set_rule } = actor;
 
 				await set_rule({ Db: null }, 'test3', setRule);
 
@@ -165,7 +165,7 @@ describe('Satellite', () => {
 			});
 
 			it('should not update rule if invalid version', async () => {
-				const { set_rule, list_rules } = actor;
+				const { set_rule } = actor;
 
 				await set_rule({ Db: null }, 'test4', setRule);
 

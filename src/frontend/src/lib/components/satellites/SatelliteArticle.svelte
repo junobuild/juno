@@ -1,12 +1,14 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import LinkCard from '$lib/components/ui/LinkCard.svelte';
+	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { layoutSatellites } from '$lib/stores/layout.store';
+	import { SatellitesLayout } from '$lib/types/layout';
 
 	export let satellite: Satellite;
 
@@ -18,16 +20,19 @@
 
 	let href: string;
 	$: href = overviewLink(satellite.satellite_id);
+
+	let row = false;
+	$: row = $layoutSatellites === SatellitesLayout.LIST;
 </script>
 
-<LinkCard {href} ariaLabel={`${$i18n.satellites.open}: ${name}`}>
+<LaunchpadLink {href} ariaLabel={`${$i18n.satellites.open}: ${name}`} {row}>
 	<svelte:fragment slot="summary">
 		<h4>{name}</h4>
-		<IconSatellite />
+		<IconSatellite size={row ? '28px' : '48px'} />
 	</svelte:fragment>
 
-	<Canister canisterId={satellite_id} segment="satellite" />
-</LinkCard>
+	<Canister canisterId={satellite_id} segment="satellite" {row} />
+</LaunchpadLink>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';

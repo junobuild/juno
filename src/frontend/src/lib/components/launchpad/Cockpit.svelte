@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store.js';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
-	import LinkCard from '$lib/components/ui/LinkCard.svelte';
+	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { nonNullish } from '@dfinity/utils';
@@ -14,7 +14,7 @@
 </script>
 
 <div class="mission-control">
-	<LinkCard
+	<LaunchpadLink
 		size="small"
 		href="/mission-control"
 		ariaLabel={`${$i18n.satellites.open}: ${$i18n.mission_control.title}`}
@@ -23,12 +23,12 @@
 			<IconMissionControl />
 			<span>{$i18n.mission_control.title}</span>
 		</h4>
-	</LinkCard>
+	</LaunchpadLink>
 </div>
 
 {#if nonNullish($orbiterStore)}
 	<div in:fade class="analytics">
-		<LinkCard
+		<LaunchpadLink
 			size="small"
 			href="/analytics"
 			ariaLabel={`${$i18n.satellites.open}: ${$i18n.analytics.title}`}
@@ -37,7 +37,7 @@
 				<IconAnalytics size="24px" />
 				<span>{$i18n.analytics.title}</span>
 			</h4>
-		</LinkCard>
+		</LaunchpadLink>
 	</div>
 {/if}
 

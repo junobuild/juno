@@ -2,12 +2,12 @@ use crate::types::interface::SetCronTab;
 use crate::types::state::{ArchiveStatuses, CronTab, CronTabs, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
-use junobuild_shared::assert::assert_timestamp;
+use junobuild_shared::assert::{assert_version};
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::{ControllerId, SegmentsStatuses, UserId};
+use junobuild_shared::types::state::{ControllerId, SegmentsStatuses, Timestamp, UserId, Version};
 
 ///
 /// CronJobs
@@ -37,10 +37,10 @@ fn set_cron_tab_impl(
 ) -> Result<CronTab, String> {
     let current_tab = state.cron_tabs.get(user);
 
-    // Validate timestamp
+    // Validate version
     match current_tab {
         None => (),
-        Some(current_tab) => match assert_timestamp(cron_tab.updated_at, current_tab.updated_at) {
+        Some(current_tab) => match assert_version(cron_tab.version, current_tab.version) {
             Ok(_) => (),
             Err(e) => {
                 return Err(e);
@@ -50,9 +50,14 @@ fn set_cron_tab_impl(
 
     let now = time();
 
-    let created_at: u64 = match current_tab {
+    let created_at: Timestamp = match current_tab {
         None => now,
         Some(current_tab) => current_tab.created_at,
+    };
+
+    let version: Version = match current_tab {
+        None => 1,
+        Some(current_rule) => current_rule.version.unwrap_or_default() + 1,
     };
 
     let updated_at: u64 = now;
@@ -62,6 +67,7 @@ fn set_cron_tab_impl(
         cron_jobs: cron_tab.cron_jobs.clone(),
         created_at,
         updated_at,
+        version: Some(version),
     };
 
     state.cron_tabs.insert(*user, new_cron_tab.clone());

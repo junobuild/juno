@@ -28,6 +28,7 @@ export interface CronTab {
 	updated_at: bigint;
 	mission_control_id: Principal;
 	created_at: bigint;
+	version: [] | [bigint];
 }
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
@@ -78,8 +79,8 @@ export interface SetControllersArgs {
 }
 export interface SetCronTab {
 	cron_jobs: CronJobs;
-	updated_at: [] | [bigint];
 	mission_control_id: Principal;
+	version: [] | [bigint];
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;

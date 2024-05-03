@@ -9,6 +9,7 @@ use crate::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
 use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
+use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::state::{Timestamp, Version};
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
@@ -75,7 +76,7 @@ fn insert_page_view_impl(
     };
 
     let version: Version = match current_page_view.clone() {
-        None => 1,
+        None => INITIAL_VERSION,
         Some(current_page_view) => current_page_view.inner().version.unwrap_or_default() + 1,
     };
 
@@ -190,7 +191,7 @@ fn insert_track_event_impl(
     };
 
     let version: Version = match current_track_event.clone() {
-        None => 1,
+        None => INITIAL_VERSION,
         Some(current_track_event) => current_track_event.inner().version.unwrap_or_default() + 1,
     };
 

@@ -2,7 +2,8 @@ use crate::types::interface::SetCronTab;
 use crate::types::state::{ArchiveStatuses, CronTab, CronTabs, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
-use junobuild_shared::assert::{assert_version};
+use junobuild_shared::assert::assert_version;
+use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
@@ -56,7 +57,7 @@ fn set_cron_tab_impl(
     };
 
     let version: Version = match current_tab {
-        None => 1,
+        None => INITIAL_VERSION,
         Some(current_rule) => current_rule.version.unwrap_or_default() + 1,
     };
 

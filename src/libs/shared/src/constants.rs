@@ -1,3 +1,4 @@
+use crate::types::state::Version;
 use ic_ledger_types::{Memo, Tokens};
 
 // Specifies the transaction fee for ICP transactions.
@@ -38,3 +39,6 @@ pub const MAX_NUMBER_OF_SATELLITE_CONTROLLERS: usize = 10;
 // Controllers / principals, hopefully only one, that were revoked following inherited security incident in February 2024.
 pub const REVOKED_CONTROLLERS: [&str; 1] =
     ["535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe"];
+
+// The default version number when a new entity is persisted for the first time.
+pub const INITIAL_VERSION: Version = 1;

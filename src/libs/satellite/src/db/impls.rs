@@ -5,6 +5,7 @@ use candid::Principal;
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Timestamp, UserId, Version};
 use std::borrow::Cow;
@@ -54,7 +55,7 @@ impl Doc {
         };
 
         let version: Version = match current_doc {
-            None => 1,
+            None => INITIAL_VERSION,
             Some(current_doc) => current_doc.version.unwrap_or_default() + 1,
         };
 

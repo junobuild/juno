@@ -1,6 +1,7 @@
 use crate::rules::types::interface::SetRule;
 use crate::rules::types::rules::{Memory, Rule};
 use ic_cdk::api::time;
+use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::state::{Timestamp, Version};
 
 impl Rule {
@@ -17,7 +18,7 @@ impl Rule {
         };
 
         let version: Version = match current_rule {
-            None => 1,
+            None => INITIAL_VERSION,
             Some(current_rule) => current_rule.version.unwrap_or_default() + 1,
         };
 

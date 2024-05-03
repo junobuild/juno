@@ -35,7 +35,7 @@
 			<SatelliteNew />
 		{/if}
 	</section>
-{:else if $satellitesStore?.length >= 1}
+{:else if ($satellitesStore?.length ?? 0) >= 1}
 	<div in:blur use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
 		<section>
 			<Cockpit />

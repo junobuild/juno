@@ -2,6 +2,7 @@
 	import { i18n } from '$lib/stores/i18n.store.js';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { debounce } from '@dfinity/utils';
+	import SatellitesLayout from '$lib/components/satellites/SatellitesLayout.svelte';
 
 	export let filter = '';
 
@@ -22,6 +23,8 @@
 			spellcheck={false}
 		/>
 	</div>
+
+	<SatellitesLayout />
 </div>
 
 <style lang="scss">
@@ -29,11 +32,17 @@
 
 	[role='toolbar'] {
 		grid-column: 1 / 13;
+
+		display: flex;
+		align-items: flex-start;
+		gap: var(--padding-2x);
 	}
 
 	.input {
+		flex: 1;
+
 		@include media.min-width(medium) {
-			max-width: media.$breakpoint-small;
+			max-width: media.$breakpoint-medium;
 		}
 	}
 </style>

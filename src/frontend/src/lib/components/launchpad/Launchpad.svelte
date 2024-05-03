@@ -4,19 +4,51 @@
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout.store';
 	import Cockpit from '$lib/components/launchpad/Cockpit.svelte';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { loadSatellites } from '$lib/services/satellites.services';
+	import { satellitesStore } from '$lib/stores/satellite.store';
+	import Loading from '$lib/components/launchpad/Loading.svelte';
+	import { nonNullish } from '@dfinity/utils';
+	import { blur } from 'svelte/transition';
+	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
+
+	$: $missionControlStore,
+		(async () => await loadSatellites({ missionControl: $missionControlStore }))();
+
+	let loading = true;
+	$: (() => {
+		if (nonNullish($satellitesStore)) {
+			setTimeout(() => (loading = false), 500);
+			return;
+		}
+
+		loading = true;
+	})();
 </script>
 
-<section use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
-	<Cockpit />
-</section>
+{#if loading || ($satellitesStore?.length ?? 0n) === 0}
+	<section use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
+		{#if loading}
+			<Loading />
+		{:else}
+			<SatelliteNew />
+		{/if}
+	</section>
+{:else if $satellitesStore?.length >= 1}
+	<div in:blur use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
+		<section>
+			<Cockpit />
+		</section>
 
-<h1>
-	{$i18n.satellites.title}
-</h1>
+		<h1>
+			{$i18n.satellites.title}
+		</h1>
 
-<section>
-	<Satellites />
-</section>
+		<section>
+			<Satellites />
+		</section>
+	</div>
+{/if}
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/grid';

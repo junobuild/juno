@@ -2,11 +2,12 @@
 	import { nonNullish } from '@dfinity/utils';
 
 	export let disabled: boolean | undefined = undefined;
+	export let primary = false;
 
 	let summary = nonNullish($$slots.summary);
 </script>
 
-<button class="article" on:click {disabled}>
+<button class="article" on:click {disabled} class:primary>
 	{#if summary}
 		<div class="summary">
 			<slot name="summary" />
@@ -23,6 +24,10 @@
 		height: 100%;
 		min-height: 231px;
 		margin: 0;
+
+		&.primary {
+			--color-card-contrast: var(--color-primary);
+		}
 	}
 
 	.summary {

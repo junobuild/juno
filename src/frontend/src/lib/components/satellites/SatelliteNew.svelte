@@ -27,7 +27,7 @@
 	};
 </script>
 
-<ButtonCard on:click={createSatellite}>
+<ButtonCard on:click={createSatellite} primary>
 	<div class="new">
 		<IconNew size="48px" />
 
@@ -54,7 +54,7 @@
 	p {
 		@include fonts.bold(true);
 
-		color: var(--text-color);
+		color: var(--color-primary);
 		max-width: 150px;
 		text-align: center;
 

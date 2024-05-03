@@ -13,7 +13,7 @@ import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satell
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { nanoid } from 'nanoid';
@@ -413,6 +413,137 @@ describe('Satellite upgrade', () => {
 
 				// We do not provide the version so it counts as a first set
 				await expect(set_doc(collection, key, setNewDoc)).resolves.not.toThrowError();
+			});
+		});
+
+		describe('Storage', async () => {
+			let newActor: Actor<SatelliteActor>;
+
+			describe('Custom domain', () => {
+				it('should add version set to none to custom domain', async () => {
+					const { set_custom_domain } = actor;
+
+					await set_custom_domain('hello.com', ['123456']);
+					await set_custom_domain('test2.com', []);
+
+					await upgrade();
+
+					newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+					newActor.setIdentity(controller);
+
+					const { list_custom_domains } = newActor;
+
+					const results = await list_custom_domains();
+
+					expect(results).toHaveLength(2);
+
+					expect(fromNullable(results[0][1].version)).toBeUndefined();
+					expect(fromNullable(results[1][1].version)).toBeUndefined();
+				});
+
+				it('should be able to update after upgrade and has version set', async () => {
+					const { set_custom_domain: set_custom_domain_deprecated } = actor;
+
+					await set_custom_domain_deprecated('hello.com', ['123456']);
+
+					await upgrade();
+
+					newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+					newActor.setIdentity(controller);
+
+					const { list_custom_domains, set_custom_domain } = newActor;
+
+					await set_custom_domain('hello.com', ['123456']);
+
+					const [[_, { version }]] = await list_custom_domains();
+
+					expect(fromNullable(version)).toEqual(1n);
+				});
+			});
+
+			describe('Asset', () => {
+				const HTML = '<html><body>Hello</body></html>';
+
+				const blob = new Blob([HTML], {
+					type: 'text/plain; charset=utf-8'
+				});
+
+				const collection = '#dapp';
+
+				const upload = async ({
+					full_path,
+					actor
+				}: {
+					actor: Actor<SatelliteActor | SatelliteActor_0_0_16>;
+					full_path: string;
+				}) => {
+					const { init_asset_upload, upload_asset_chunk, commit_asset_upload } = actor;
+
+					const file = await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path,
+						name: full_path,
+						token: toNullable()
+					});
+
+					const chunk = await upload_asset_chunk({
+						batch_id: file.batch_id,
+						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+						order_id: [0n]
+					});
+
+					await commit_asset_upload({
+						batch_id: file.batch_id,
+						chunk_ids: [chunk.chunk_id],
+						headers: []
+					});
+				};
+
+				it('should add version set to none to custom domain', async () => {
+					await upload({ actor, full_path: `/${collection}/ugprade.html` });
+					await upload({ actor, full_path: `/${collection}/ugprade2.html` });
+					await upload({ actor, full_path: `/${collection}/ugprade3.html` });
+
+					await upgrade();
+
+					newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+					newActor.setIdentity(controller);
+
+					const { list_assets } = newActor;
+
+					const assets = await list_assets(collection, {
+						matcher: [],
+						order: [],
+						owner: [],
+						paginate: []
+					});
+
+					for (const [_, { version }] of assets.items) {
+						expect(fromNullable(version)).toBeUndefined();
+					}
+				});
+
+				it('should be able to update after upgrade and has version set', async () => {
+					const full_path = `/${collection}/ugprade.html`;
+
+					await upload({ actor, full_path });
+
+					await upgrade();
+
+					newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+					newActor.setIdentity(controller);
+
+					await upload({ actor: newActor, full_path });
+
+					const { get_asset } = newActor;
+
+					const asset = fromNullable(await get_asset(collection, full_path));
+
+					expect(asset).not.toBeUndefined();
+					expect(fromNullable(asset!.version)).toEqual(1n);
+				});
 			});
 		});
 	});

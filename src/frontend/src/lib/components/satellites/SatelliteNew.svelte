@@ -1,5 +1,5 @@
 <script lang="ts">
-	import Article from '$lib/components/ui/Article.svelte';
+	import ButtonCard from '$lib/components/ui/ButtonCard.svelte';
 	import { emit } from '$lib/utils/events.utils';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -27,13 +27,13 @@
 	};
 </script>
 
-<Article on:click={createSatellite}>
+<ButtonCard on:click={createSatellite}>
 	<div class="new">
 		<IconNew size="48px" />
 
 		<p>{$i18n.satellites.launch}</p>
 	</div>
-</Article>
+</ButtonCard>
 
 <style lang="scss">
 	@use '../../styles/mixins/fonts';

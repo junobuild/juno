@@ -1,7 +1,9 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
+
 	export let disabled: boolean | undefined = undefined;
 
-	let summary = $$slots.summary !== undefined;
+	let summary = nonNullish($$slots.summary);
 </script>
 
 <button class="article" on:click {disabled}>
@@ -19,7 +21,7 @@
 <style lang="scss">
 	button {
 		height: 100%;
-		min-height: 220px;
+		min-height: 231px;
 		margin: 0;
 	}
 

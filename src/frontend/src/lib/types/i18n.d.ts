@@ -126,6 +126,7 @@ interface I18nSatellites {
 	launch: string;
 	open: string;
 	create: string;
+	search: string;
 	satellite: string;
 	ready: string;
 	initializing: string;

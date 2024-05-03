@@ -7,7 +7,7 @@ select {
 	@include shadow.card;
 
 	margin: var(--padding) 0 var(--padding-2x);
-	padding: var(--padding-0_5x) var(--padding);
+	padding: var(--padding) var(--padding-2x);
 
 	width: 100%;
 	max-width: 100%;

@@ -120,6 +120,7 @@
 		"launch": "启动一个新的satellite",
 		"open": "打开satellite",
 		"create": "创建 satellite",
+		"search": "Search",
 		"satellite": "Satellite",
 		"ready": "你的 satellite 可以使用.",
 		"initializing": "初始化你的新的 satellite...",

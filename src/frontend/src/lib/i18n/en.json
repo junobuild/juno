@@ -120,6 +120,7 @@
 		"launch": "Launch a new satellite",
 		"open": "Open satellite",
 		"create": "Create satellite",
+		"search": "Search",
 		"satellite": "Satellite",
 		"ready": "Your satellite is ready!",
 		"initializing": "Initializing your new satellite...",

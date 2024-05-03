@@ -6,6 +6,9 @@
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import SatelliteArticleSkeleton from '$lib/components/satellites/SatelliteArticleSkeleton.svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import SatellitesToolbar from '$lib/components/satellites/SatellitesToolbar.svelte';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	$: $missionControlStore,
 		(async () => await loadSatellites({ missionControl: $missionControlStore }))();
@@ -19,12 +22,23 @@
 
 		loading = true;
 	})();
+
+	let filter = '';
+
+	let satellites: Satellite[];
+	$: satellites = ($satellitesStore ?? []).filter(
+		(satellite) =>
+			satelliteName(satellite).toLowerCase().includes(filter.toLowerCase()) ||
+			satellite.satellite_id.toText().includes(filter.toLowerCase())
+	);
 </script>
 
 {#if !loading}
+	<SatellitesToolbar bind:filter />
+
 	<SatelliteNew />
 
-	{#each $satellitesStore ?? [] as satellite}
+	{#each satellites as satellite}
 		<SatelliteArticle {satellite} />
 	{/each}
 {:else}

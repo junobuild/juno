@@ -32,18 +32,6 @@ describe('Orbiter upgrade', () => {
 		await pic?.tearDown();
 	});
 
-	const upgradeVersion = async (version: string) => {
-		await tick(pic);
-
-		const destination = await downloadOrbiter(version);
-
-		await pic.upgradeCanister({
-			canisterId,
-			wasm: destination,
-			sender: controller.getPrincipal()
-		});
-	};
-
 	const upgrade = async () => {
 		await tick(pic);
 

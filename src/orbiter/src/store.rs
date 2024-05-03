@@ -29,22 +29,23 @@ fn insert_page_view_impl(
     // Validate overwrite
     match current_page_view.clone() {
         None => (),
-        Some(current_page_view) => match current_page_view.is_bounded() {
-            true => {
+        Some(current_page_view) => {
+            if current_page_view.is_bounded() {
                 match assert_timestamp(page_view.updated_at, current_page_view.inner().updated_at) {
                     Ok(_) => (),
                     Err(e) => {
                         return Err(e);
                     }
                 }
-            }
-            false => match assert_version(page_view.version, current_page_view.inner().version) {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
+            } else {
+                match assert_version(page_view.version, current_page_view.inner().version) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        return Err(e);
+                    }
                 }
-            },
-        },
+            }
+        }
     }
 
     // Validate session id
@@ -133,8 +134,8 @@ fn insert_track_event_impl(
     // Validate overwrite
     match current_track_event.clone() {
         None => (),
-        Some(current_track_event) => match current_track_event.is_bounded() {
-            true => {
+        Some(current_track_event) => {
+            if current_track_event.is_bounded() {
                 match assert_timestamp(
                     track_event.updated_at,
                     current_track_event.inner().updated_at,
@@ -144,15 +145,15 @@ fn insert_track_event_impl(
                         return Err(e);
                     }
                 }
-            }
-            false => match assert_version(track_event.version, current_track_event.inner().version)
-            {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
+            } else {
+                match assert_version(track_event.version, current_track_event.inner().version) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        return Err(e);
+                    }
                 }
-            },
-        },
+            }
+        }
     }
 
     // Validate session id

@@ -11,6 +11,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { blur } from 'svelte/transition';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
+	import Illustration from '$lib/components/launchpad/Illustration.svelte';
 
 	$: $missionControlStore,
 		(async () => await loadSatellites({ missionControl: $missionControlStore }))();
@@ -50,6 +51,8 @@
 	</div>
 {/if}
 
+<Illustration />
+
 <style lang="scss">
 	@use '../../../lib/styles/mixins/grid';
 
@@ -65,5 +68,12 @@
 
 	h1 {
 		margin-top: var(--padding-8x);
+	}
+
+	section,
+	h1,
+	div {
+		position: relative;
+		z-index: var(--z-index);
 	}
 </style>

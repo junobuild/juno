@@ -19,6 +19,7 @@ type AssetNoContent = record {
   encodings : vec record { text; AssetEncodingNoContent };
   headers : vec record { text; text };
   created_at : nat64;
+  version : opt nat64;
 };
 type AuthenticationConfig = record {
   internet_identity : opt AuthenticationConfigInternetIdentity;
@@ -43,6 +44,7 @@ type ControllerScope = variant { Write; Admin };
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;
+  version : opt nat64;
   bn_id : opt text;
 };
 type DelDoc = record { version : opt nat64 };

@@ -34,13 +34,7 @@ pub fn build_asset_response(
                         &rewrite_source,
                     );
 
-                    let Asset {
-                        key,
-                        headers: _,
-                        encodings: _,
-                        created_at: _,
-                        updated_at: _,
-                    } = &asset;
+                    let Asset { key, .. } = &asset;
 
                     match headers {
                         Ok(headers) => {

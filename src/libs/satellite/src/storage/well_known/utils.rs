@@ -6,6 +6,8 @@ use crate::storage::http::types::HeaderField;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
 use ic_cdk::api::time;
 use ic_cdk::id;
+use junobuild_shared::constants::INITIAL_VERSION;
+use junobuild_shared::types::state::{Timestamp, Version};
 use std::collections::HashMap;
 
 pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<Asset>) -> Asset {
@@ -20,6 +22,16 @@ pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<
         description: None,
     };
 
+    let created_at: Timestamp = match existing_asset.clone() {
+        None => now,
+        Some(existing_asset) => existing_asset.created_at,
+    };
+
+    let version: Version = match existing_asset {
+        None => INITIAL_VERSION,
+        Some(existing_asset) => existing_asset.version.unwrap_or_default() + 1,
+    };
+
     let mut asset: Asset = Asset {
         key,
         headers: Vec::from([HeaderField(
@@ -27,14 +39,10 @@ pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<
             "application/octet-stream".to_string(),
         )]),
         encodings: HashMap::new(),
-        created_at: now,
+        created_at,
         updated_at: now,
+        version: Some(version),
     };
-
-    match existing_asset {
-        None => (),
-        Some(existing_asset) => asset.created_at = existing_asset.created_at,
-    }
 
     let chunks = Vec::from([custom_domains.as_bytes().to_vec()]);
 
@@ -61,6 +69,16 @@ pub fn map_alternative_origins_asset(
         description: None,
     };
 
+    let created_at: Timestamp = match existing_asset.clone() {
+        None => now,
+        Some(existing_asset) => existing_asset.created_at,
+    };
+
+    let version: Version = match existing_asset {
+        None => INITIAL_VERSION,
+        Some(existing_asset) => existing_asset.version.unwrap_or_default() + 1,
+    };
+
     let mut asset: Asset = Asset {
         key,
         headers: Vec::from([HeaderField(
@@ -68,14 +86,10 @@ pub fn map_alternative_origins_asset(
             "application/json".to_string(),
         )]),
         encodings: HashMap::new(),
-        created_at: now,
+        created_at,
         updated_at: now,
+        version: Some(version),
     };
-
-    match existing_asset {
-        None => (),
-        Some(existing_asset) => asset.created_at = existing_asset.created_at,
-    }
 
     let chunks = Vec::from([alternative_origins.as_bytes().to_vec()]);
 

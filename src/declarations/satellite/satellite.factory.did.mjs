@@ -43,7 +43,8 @@ export const idlFactory = ({ IDL }) => {
 		updated_at: IDL.Nat64,
 		encodings: IDL.Vec(IDL.Tuple(IDL.Text, AssetEncodingNoContent)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		created_at: IDL.Nat64
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64)
 	});
 	const AuthenticationConfigInternetIdentity = IDL.Record({
 		derivation_origin: IDL.Opt(IDL.Text)
@@ -147,6 +148,7 @@ export const idlFactory = ({ IDL }) => {
 	const CustomDomain = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64),
 		bn_id: IDL.Opt(IDL.Text)
 	});
 	const ListResults_1 = IDL.Record({

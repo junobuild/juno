@@ -62,7 +62,7 @@ pub mod store {
     use crate::types::core::{Blob, CollectionKey};
     use candid::CandidType;
     use ic_certification::Hash;
-    use junobuild_shared::types::state::{Timestamp, UserId};
+    use junobuild_shared::types::state::{Timestamp, UserId, Version};
     use serde::{Deserialize, Serialize};
     use std::clone::Clone;
     use std::collections::HashMap;
@@ -110,6 +110,7 @@ pub mod store {
         pub encodings: HashMap<EncodingType, AssetEncoding>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+        pub version: Option<Version>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -130,7 +131,7 @@ pub mod store {
 pub mod interface {
     use candid::{CandidType, Deserialize};
     use ic_certification::Hash;
-    use junobuild_shared::types::state::Timestamp;
+    use junobuild_shared::types::state::{Timestamp, Version};
     use serde::Serialize;
 
     use crate::storage::http::types::HeaderField;
@@ -179,6 +180,7 @@ pub mod interface {
         pub encodings: Vec<(EncodingType, AssetEncodingNoContent)>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+        pub version: Option<Version>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -266,7 +268,7 @@ pub mod http_request {
 pub mod domain {
     use crate::types::core::DomainName;
     use candid::CandidType;
-    use junobuild_shared::types::state::Timestamp;
+    use junobuild_shared::types::state::{Timestamp, Version};
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -277,5 +279,6 @@ pub mod domain {
         pub bn_id: Option<String>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+        pub version: Option<Version>,
     }
 }

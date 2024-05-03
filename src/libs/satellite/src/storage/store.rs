@@ -9,8 +9,9 @@ use crate::msg::{
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
 use ic_cdk::api::time;
+use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;
-use junobuild_shared::types::state::Controllers;
+use junobuild_shared::types::state::{Controllers, Timestamp, Version};
 use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
 
@@ -764,11 +765,13 @@ fn commit_chunks(
         encodings: HashMap::new(),
         created_at: now,
         updated_at: now,
+        version: Some(INITIAL_VERSION),
     };
 
     if let Some(existing_asset) = current {
         asset.encodings = existing_asset.encodings.clone();
         asset.created_at = existing_asset.created_at;
+        asset.version = Some(existing_asset.version.unwrap_or_default() + 1);
     }
 
     let encoding_type = get_encoding_type(&batch.encoding_type)?;
@@ -876,17 +879,23 @@ fn set_state_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
 
     let now = time();
 
-    let created_at: u64 = match domain {
+    let created_at: Timestamp = match domain.clone() {
         None => now,
         Some(domain) => domain.created_at,
     };
 
-    let updated_at: u64 = now;
+    let version: Version = match domain {
+        None => INITIAL_VERSION,
+        Some(domain) => domain.version.unwrap_or_default() + 1,
+    };
+
+    let updated_at: Timestamp = now;
 
     let custom_domain = CustomDomain {
         bn_id: bn_id.to_owned(),
         created_at,
         updated_at,
+        version: Some(version),
     };
 
     insert_state_domain(domain_name, &custom_domain);

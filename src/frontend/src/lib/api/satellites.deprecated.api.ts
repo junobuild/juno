@@ -107,7 +107,11 @@ export const listAssets009 = async ({
 	params: ListParams;
 }): Promise<ListAssets> => {
 	const actor = await getSatelliteActor009(satelliteId);
-	return actor.list_assets(toNullable(collection), toListParams(params));
+	const { items, ...rest } = await actor.list_assets(toNullable(collection), toListParams(params));
+	return {
+		items: items.map(([key, asset]) => [key, { ...asset, version: [] }]),
+		...rest
+	};
 };
 
 /**
@@ -126,6 +130,7 @@ export const listRulesDeprecated = async ({
 		key,
 		{
 			...rule,
+			version: [],
 			memory: [{ Heap: null }]
 		} as Rule
 	]);

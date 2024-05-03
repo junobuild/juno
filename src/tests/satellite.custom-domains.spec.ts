@@ -2,7 +2,7 @@ import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satelli
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
@@ -76,6 +76,7 @@ describe('Satellite custom domains', () => {
 			expect(results[0][1].updated_at).toBeGreaterThan(0n);
 			expect(results[0][1].created_at).not.toBeUndefined();
 			expect(results[0][1].created_at).toBeGreaterThan(0n);
+			expect(fromNullable(results[0][1].version) ?? 0n).toBeGreaterThan(0n);
 
 			expect(results[1][0]).toEqual('test2.com');
 			expect(results[1][1].bn_id).toEqual([]);
@@ -83,6 +84,7 @@ describe('Satellite custom domains', () => {
 			expect(results[1][1].updated_at).toBeGreaterThan(0n);
 			expect(results[1][1].created_at).not.toBeUndefined();
 			expect(results[1][1].created_at).toBeGreaterThan(0n);
+			expect(fromNullable(results[1][1].version) ?? 0n).toBeGreaterThan(0n);
 		});
 
 		it('should expose /.well-known/ic-domains', async () => {

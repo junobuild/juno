@@ -139,18 +139,8 @@ describe('Satellite storage', () => {
 			const storage: StorageConfig = {
 				headers: [['*', [['Cache-Control', 'no-cache']]]],
 				iframe: toNullable({ Deny: null }),
-				redirects: [
-					[
-						[
-							'/*',
-							{
-								location: '/hello.html',
-								status_code: 302
-							}
-						]
-					]
-				],
-				rewrites: [['/hello.html', '/hello.html']]
+				redirects: [],
+				rewrites: []
 			};
 
 			await set_config({
@@ -220,7 +210,7 @@ describe('Satellite storage', () => {
 
 			const [_, value] = certificate as [string, string];
 			expect(value.substring(value.indexOf('tree=:'))).toEqual(
-				'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwJLL2hlbGxvLmh0bWyCA1ggA+5m8UUpFrT5GlBMHpur+iAbbWTCaoKyzwPD7UnZFYWCBFggu+vgJ40baoH6QaigqUGb3VrUkopUK4LJuugRxX7g6qc=:'
+				'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwJLL2hlbGxvLmh0bWyCA1ggA+5m8UUpFrT5GlBMHpur+iAbbWTCaoKyzwPD7UnZFYWCBFggqaxo4lOdUyS+X9luPEzOoyC9c2+ICLLJ6ogdBRYOj+8=:'
 			);
 
 			const decoder = new TextDecoder();
@@ -275,7 +265,7 @@ describe('Satellite storage', () => {
 
 					expect(collectionResult).not.toBeUndefined();
 
-					const [_, { memory: memoryResult, created_at, updated_at, read, write }] =
+					const [_, { memory: memoryResult, version, created_at, updated_at, read, write }] =
 						collectionResult!;
 
 					expect(memoryResult).toEqual(toNullable(memory));
@@ -283,6 +273,7 @@ describe('Satellite storage', () => {
 					expect(write).toEqual({ Managed: null });
 					expect(created_at).toBeGreaterThan(0n);
 					expect(updated_at).toBeGreaterThan(0n);
+					expect(fromNullable(version) ?? 0n).toBeGreaterThan(0n);
 				});
 
 				it('should throw error if path not prefixed with collection', async () => {
@@ -358,8 +349,8 @@ describe('Satellite storage', () => {
 					const [_, value] = certificate as [string, string];
 					expect(value.substring(value.indexOf('tree=:'))).toEqual(
 						'Heap' in memory
-							? 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwGCBFggt7tI5llYugLZXRndu2mmTmaNLbDM2eqISxM1gx67GwmDAYIEWCDEVEc4ahc6i6xmd9dtC3pC/IyxtWlOSwhqEXoadQkFaYMCVS90ZXN0X2hlYXAvaGVsbG8uaHRtbIIDWCAD7mbxRSkWtPkaUEwem6v6IBttZMJqgrLPA8PtSdkVhYIEWCDgEatvSa202yF1rpOb4TU0SoU6g6V5DbDziTdxY/155g==:'
-							: 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIMRURzhqFzqLrGZ3120LekL8jLG1aU5LCGoRehp1CQVpgwGCBFggyTghlH7DR1YspmeTEIgVRAhMyez5Qc69yCfwJwbRv2ODAYIEWCCwXgjjstWy8ZsWgsocF8UA1sXH9TrGaPSZSS7eP0T9sYMCVy90ZXN0X3N0YWJsZS9oZWxsby5odG1sggNYIAPuZvFFKRa0+RpQTB6bq/ogG21kwmqCss8Dw+1J2RWFggRYIBK5Nik8UokdUS9SCGppv4cVbyKXulmXcqufJRcB6Xyx:'
+							? 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwGCBFggt7tI5llYugLZXRndu2mmTmaNLbDM2eqISxM1gx67GwmDAYIEWCDEVEc4ahc6i6xmd9dtC3pC/IyxtWlOSwhqEXoadQkFaYMCVS90ZXN0X2hlYXAvaGVsbG8uaHRtbIIDWCAD7mbxRSkWtPkaUEwem6v6IBttZMJqgrLPA8PtSdkVhYIEWCDFugcAM49e3AzOhjYl0yM44iKyWE3AhTjwyDEvXJIBSg==:'
+							: 'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIMRURzhqFzqLrGZ3120LekL8jLG1aU5LCGoRehp1CQVpgwGCBFggyTghlH7DR1YspmeTEIgVRAhMyez5Qc69yCfwJwbRv2ODAYIEWCCwXgjjstWy8ZsWgsocF8UA1sXH9TrGaPSZSS7eP0T9sYMCVy90ZXN0X3N0YWJsZS9oZWxsby5odG1sggNYIAPuZvFFKRa0+RpQTB6bq/ogG21kwmqCss8Dw+1J2RWFggRYIG0xIVQMYLbFiFp7+GtLirVS/jAQ4pfd52Uc+oSPPc2b:'
 					);
 
 					const decoder = new TextDecoder();
@@ -374,7 +365,151 @@ describe('Satellite storage', () => {
 					const assetUploaded = await get_asset(collection, `/${collection}/hello.html`);
 					expect(fromNullable(assetUploaded)).not.toBeUndefined();
 				});
+
+				it('should increment version of asset on update', async () => {
+					const {
+						get_asset,
+						del_asset,
+						commit_asset_upload,
+						upload_asset_chunk,
+						init_asset_upload
+					} = actor;
+
+					const full_path = `/${collection}/update.html`;
+
+					const HTML = '<html><body>Hello</body></html>';
+
+					const blob = new Blob([HTML], {
+						type: 'text/plain; charset=utf-8'
+					});
+
+					const upload = async () => {
+						const file = await init_asset_upload({
+							collection,
+							description: toNullable(),
+							encoding_type: [],
+							full_path,
+							name: 'update.html',
+							token: toNullable()
+						});
+
+						const chunk = await upload_asset_chunk({
+							batch_id: file.batch_id,
+							content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+							order_id: [0n]
+						});
+
+						await commit_asset_upload({
+							batch_id: file.batch_id,
+							chunk_ids: [chunk.chunk_id],
+							headers: []
+						});
+					};
+
+					await upload();
+
+					const asset = fromNullable(await get_asset(collection, full_path));
+
+					expect(asset).not.toBeUndefined();
+					expect(fromNullable(asset!.version) ?? 0n).toEqual(1n);
+
+					await upload();
+
+					const updatedAsset = fromNullable(await get_asset(collection, full_path));
+
+					expect(updatedAsset).not.toBeUndefined();
+					expect(fromNullable(updatedAsset!.version) ?? 0n).toEqual(2n);
+				});
+
+				it('should delete asset', async () => {
+					const { del_asset, get_asset, http_request } = actor;
+
+					const full_path = `/${collection}/update.html`;
+
+					await expect(del_asset(collection, full_path)).resolves.not.toThrowError();
+
+					const asset = fromNullable(await get_asset(collection, full_path));
+
+					expect(asset).toBeUndefined();
+				});
 			}
 		);
+
+		describe('Rewrite', () => {
+			it('should rewrite to index.html per default if not found', async () => {
+				const { http_request, commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+
+				const file = await init_asset_upload({
+					collection: '#dapp',
+					description: toNullable(),
+					encoding_type: [],
+					full_path: '/index.html',
+					name: 'index.html',
+					token: toNullable()
+				});
+
+				const HTML = '<html><body>Index</body></html>';
+
+				const blob = new Blob([HTML], {
+					type: 'text/plain; charset=utf-8'
+				});
+
+				const chunk = await upload_asset_chunk({
+					batch_id: file.batch_id,
+					content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+					order_id: [0n]
+				});
+
+				await commit_asset_upload({
+					batch_id: file.batch_id,
+					chunk_ids: [chunk.chunk_id],
+					headers: []
+				});
+
+				const { status_code, body } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: [],
+					method: 'GET',
+					url: '/unknown.html'
+				});
+
+				expect(status_code).toEqual(200);
+
+				const decoder = new TextDecoder();
+				expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
+			});
+
+			it('should set a config for a rewrite and redirect', async () => {
+				const { set_config, get_config } = actor;
+
+				const storage: StorageConfig = {
+					headers: [['*', [['Cache-Control', 'no-cache']]]],
+					iframe: toNullable({ Deny: null }),
+					redirects: [
+						[
+							[
+								'/*',
+								{
+									location: '/hello.html',
+									status_code: 302
+								}
+							]
+						]
+					],
+					rewrites: [['/hello.html', '/hello.html']]
+				};
+
+				await set_config({
+					storage
+				});
+
+				const configs = await get_config();
+
+				expect(configs).toEqual({
+					storage
+				});
+			});
+		});
 	});
 });

@@ -2,8 +2,8 @@ use crate::memory::STATE;
 use crate::types::interface::{DelSatelliteConfig, SetSatelliteConfig};
 use crate::types::state::{SatelliteConfig, SatelliteConfigs};
 use ic_cdk::api::time;
-use junobuild_shared::assert::assert_timestamp;
-use junobuild_shared::types::state::SatelliteId;
+use junobuild_shared::assert::assert_version;
+use junobuild_shared::types::state::{SatelliteId, Timestamp, Version};
 
 pub fn set_satellite_config(
     satellite_id: &SatelliteId,
@@ -34,24 +34,27 @@ fn set_satellite_config_impl(
 ) -> Result<SatelliteConfig, String> {
     let current_config = state.get(satellite_id);
 
-    // Validate timestamp
+    // Validate version
     match current_config {
         None => (),
-        Some(current_config) => {
-            match assert_timestamp(config.updated_at, current_config.updated_at) {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
-                }
+        Some(current_config) => match assert_version(config.version, current_config.version) {
+            Ok(_) => (),
+            Err(e) => {
+                return Err(e);
             }
-        }
+        },
     }
 
     let now = time();
 
-    let created_at: u64 = match current_config {
+    let created_at: Timestamp = match current_config {
         None => now,
-        Some(current_tab) => current_tab.created_at,
+        Some(current_config) => current_config.created_at,
+    };
+
+    let version: Version = match current_config {
+        None => 1,
+        Some(current_config) => current_config.version.unwrap_or_default() + 1,
     };
 
     let updated_at: u64 = now;
@@ -60,6 +63,7 @@ fn set_satellite_config_impl(
         enabled: config.enabled,
         created_at,
         updated_at,
+        version: Some(version),
     };
 
     state.insert(*satellite_id, new_config.clone());
@@ -74,17 +78,15 @@ fn del_satellite_config_impl(
 ) -> Result<(), String> {
     let current_config = state.get(satellite_id);
 
-    // Validate timestamp
+    // Validate version
     match current_config {
         None => (),
-        Some(current_config) => {
-            match assert_timestamp(config.updated_at, current_config.updated_at) {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
-                }
+        Some(current_config) => match assert_version(config.version, current_config.version) {
+            Ok(_) => (),
+            Err(e) => {
+                return Err(e);
             }
-        }
+        },
     }
 
     state.remove(satellite_id);

@@ -10,8 +10,8 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	INVALID_TIMESTAMP_ERROR_MSG,
-	NO_TIMESTAMP_ERROR_MSG
+	INVALID_VERSION_ERROR_MSG,
+	NO_VERSION_ERROR_MSG
 } from './constants/satellite-tests.constants';
 import { pageViewMock, satelliteIdMock, trackEventMock } from './mocks/orbiter.mocks';
 import { ORBITER_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
@@ -97,7 +97,7 @@ describe('Orbiter', () => {
 						[
 							satelliteIdMock,
 							{
-								updated_at: [],
+								version: [],
 								enabled: true
 							}
 						]
@@ -113,12 +113,12 @@ describe('Orbiter', () => {
 						[
 							satelliteIdMock,
 							{
-								updated_at: [],
+								version: [],
 								enabled: true
 							}
 						]
 					])
-				).rejects.toThrow(NO_TIMESTAMP_ERROR_MSG);
+				).rejects.toThrow(NO_VERSION_ERROR_MSG);
 			});
 
 			it('should not configure satellite if invalid timestamp', async () => {
@@ -129,12 +129,12 @@ describe('Orbiter', () => {
 						[
 							satelliteIdMock,
 							{
-								updated_at: [123n],
+								version: [123n],
 								enabled: true
 							}
 						]
 					])
-				).rejects.toThrowError(new RegExp(INVALID_TIMESTAMP_ERROR_MSG, 'i'));
+				).rejects.toThrowError(new RegExp(INVALID_VERSION_ERROR_MSG, 'i'));
 			});
 		});
 
@@ -170,7 +170,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(NO_TIMESTAMP_ERROR_MSG)
+					expect(msg).toEqual(NO_VERSION_ERROR_MSG)
 				);
 			});
 
@@ -182,7 +182,7 @@ describe('Orbiter', () => {
 						{ key, collected_at: 123n },
 						{
 							...pageViewMock,
-							updated_at: [123n]
+							version: [123n]
 						}
 					]
 				];
@@ -192,7 +192,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(INVALID_TIMESTAMP_ERROR_MSG)
+					expect(msg).toContain(INVALID_VERSION_ERROR_MSG)
 				);
 			});
 
@@ -219,7 +219,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual(NO_TIMESTAMP_ERROR_MSG)
+					expect(msg).toEqual(NO_VERSION_ERROR_MSG)
 				);
 			});
 
@@ -231,7 +231,7 @@ describe('Orbiter', () => {
 						{ key, collected_at: 123n },
 						{
 							...trackEventMock,
-							updated_at: [123n]
+							version: [123n]
 						}
 					]
 				];
@@ -241,7 +241,7 @@ describe('Orbiter', () => {
 				expect('Err' in results).toBeTruthy();
 
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toContain(INVALID_TIMESTAMP_ERROR_MSG)
+					expect(msg).toContain(INVALID_VERSION_ERROR_MSG)
 				);
 			});
 		});

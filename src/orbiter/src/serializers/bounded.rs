@@ -162,6 +162,7 @@ pub fn deserialize_bounded_page_view(bytes: Cow<[u8]>) -> PageView {
         session_id,
         created_at,
         updated_at,
+        version: None,
     }
 }
 
@@ -240,6 +241,7 @@ pub fn deserialize_bounded_track_event(bytes: Cow<[u8]>) -> TrackEvent {
         session_id,
         created_at,
         updated_at,
+        version: None,
     }
 }
 

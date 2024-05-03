@@ -62,10 +62,12 @@ describe('Orbiter upgrade', () => {
 			collected_at: BigInt(i)
 		}));
 
+		const { version: _, ...rest } = pageViewMock;
+
 		const pagesViews: [AnalyticKey, SetPageView0_0_6][] = keys.map((key) => [
 			key,
 			{
-				...pageViewMock,
+				...rest,
 				updated_at: []
 			}
 		]);
@@ -142,10 +144,12 @@ describe('Orbiter upgrade', () => {
 			collected_at: BigInt(i)
 		}));
 
+		const { version: _, ...rest } = trackEventMock;
+
 		const trackEvents: [AnalyticKey, SetTrackEvent0_0_6][] = keys.map((key) => [
 			key,
 			{
-				...trackEventMock,
+				...rest,
 				updated_at: []
 			}
 		]);
@@ -298,7 +302,8 @@ describe('Orbiter upgrade', () => {
 						key,
 						{
 							...pageViewMock,
-							updated_at: toNullable(updated_at)
+							updated_at: toNullable(updated_at),
+							version: []
 						}
 					]
 				]);
@@ -365,7 +370,8 @@ describe('Orbiter upgrade', () => {
 						key,
 						{
 							...trackEventMock,
-							updated_at: toNullable(updated_at)
+							updated_at: toNullable(updated_at),
+							version: toNullable()
 						}
 					]
 				]);

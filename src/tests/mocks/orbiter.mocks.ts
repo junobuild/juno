@@ -22,6 +22,7 @@ export const pageViewMock: SetPageView = {
 	user_agent: [
 		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 	],
+	version: [],
 	updated_at: []
 };
 
@@ -38,5 +39,6 @@ export const trackEventMock: SetTrackEvent = {
 	user_agent: [
 		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
 	],
+	version: [],
 	updated_at: []
 };

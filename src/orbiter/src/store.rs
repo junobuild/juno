@@ -8,7 +8,8 @@ use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
 use crate::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
 use ic_cdk::api::time;
-use junobuild_shared::assert::assert_timestamp;
+use junobuild_shared::assert::{assert_timestamp, assert_version};
+use junobuild_shared::types::state::{Timestamp, Version};
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))
@@ -25,14 +26,23 @@ fn insert_page_view_impl(
 
     let current_page_view = state.page_views.get(&key);
 
-    // Validate timestamp
+    // Validate overwrite
     match current_page_view.clone() {
         None => (),
         Some(current_page_view) => {
-            match assert_timestamp(page_view.updated_at, current_page_view.inner().updated_at) {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
+            if current_page_view.is_bounded() {
+                match assert_timestamp(page_view.updated_at, current_page_view.inner().updated_at) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        return Err(e);
+                    }
+                }
+            } else {
+                match assert_version(page_view.version, current_page_view.inner().version) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        return Err(e);
+                    }
                 }
             }
         }
@@ -59,9 +69,14 @@ fn insert_page_view_impl(
 
     let now = time();
 
-    let created_at: u64 = match current_page_view.clone() {
+    let created_at: Timestamp = match current_page_view.clone() {
         None => now,
         Some(current_page_view) => current_page_view.inner().created_at,
+    };
+
+    let version: Version = match current_page_view.clone() {
+        None => 1,
+        Some(current_page_view) => current_page_view.inner().version.unwrap_or_default() + 1,
     };
 
     let session_id: String = match current_page_view.clone() {
@@ -80,6 +95,7 @@ fn insert_page_view_impl(
         session_id,
         created_at,
         updated_at: now,
+        version: Some(version),
     };
 
     let stored_page_view = match current_page_view.map(|page_view| page_view.is_bounded()) {
@@ -115,17 +131,26 @@ fn insert_track_event_impl(
 
     let current_track_event = state.track_events.get(&key);
 
-    // Validate timestamp
+    // Validate overwrite
     match current_track_event.clone() {
         None => (),
         Some(current_track_event) => {
-            match assert_timestamp(
-                track_event.updated_at,
-                current_track_event.inner().updated_at,
-            ) {
-                Ok(_) => (),
-                Err(e) => {
-                    return Err(e);
+            if current_track_event.is_bounded() {
+                match assert_timestamp(
+                    track_event.updated_at,
+                    current_track_event.inner().updated_at,
+                ) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        return Err(e);
+                    }
+                }
+            } else {
+                match assert_version(track_event.version, current_track_event.inner().version) {
+                    Ok(_) => (),
+                    Err(e) => {
+                        return Err(e);
+                    }
                 }
             }
         }
@@ -159,9 +184,14 @@ fn insert_track_event_impl(
 
     let now = time();
 
-    let created_at: u64 = match current_track_event.clone() {
+    let created_at: Timestamp = match current_track_event.clone() {
         None => now,
         Some(current_track_event) => current_track_event.inner().created_at,
+    };
+
+    let version: Version = match current_track_event.clone() {
+        None => 1,
+        Some(current_track_event) => current_track_event.inner().version.unwrap_or_default() + 1,
     };
 
     let session_id: String = match current_track_event.clone() {
@@ -176,6 +206,7 @@ fn insert_track_event_impl(
         session_id,
         created_at,
         updated_at: now,
+        version: Some(version),
     };
 
     let stored_track_event = match current_track_event.map(|track_event| track_event.is_bounded()) {

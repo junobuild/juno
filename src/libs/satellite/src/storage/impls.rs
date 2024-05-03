@@ -76,6 +76,7 @@ impl From<&Asset> for AssetNoContent {
                 .collect(),
             created_at: asset.created_at,
             updated_at: asset.updated_at,
+            version: asset.version,
         }
     }
 }

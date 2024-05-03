@@ -21,6 +21,7 @@ type CronTab = record {
   updated_at : nat64;
   mission_control_id : principal;
   created_at : nat64;
+  version : opt nat64;
 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type ListStatuses = record {
@@ -67,8 +68,8 @@ type SetControllersArgs = record {
 };
 type SetCronTab = record {
   cron_jobs : CronJobs;
-  updated_at : opt nat64;
   mission_control_id : principal;
+  version : opt nat64;
 };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();

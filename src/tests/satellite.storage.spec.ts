@@ -367,13 +367,7 @@ describe('Satellite storage', () => {
 				});
 
 				it('should increment version of asset on update', async () => {
-					const {
-						get_asset,
-						del_asset,
-						commit_asset_upload,
-						upload_asset_chunk,
-						init_asset_upload
-					} = actor;
+					const { get_asset, commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
 					const full_path = `/${collection}/update.html`;
 
@@ -422,7 +416,7 @@ describe('Satellite storage', () => {
 				});
 
 				it('should delete asset', async () => {
-					const { del_asset, get_asset, http_request } = actor;
+					const { del_asset, get_asset } = actor;
 
 					const full_path = `/${collection}/update.html`;
 

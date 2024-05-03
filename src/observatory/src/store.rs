@@ -2,7 +2,7 @@ use crate::types::interface::SetCronTab;
 use crate::types::state::{ArchiveStatuses, CronTab, CronTabs, StableState};
 use crate::STATE;
 use ic_cdk::api::time;
-use junobuild_shared::assert::{assert_timestamp, assert_version};
+use junobuild_shared::assert::{assert_version};
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };

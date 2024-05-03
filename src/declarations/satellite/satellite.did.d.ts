@@ -21,6 +21,7 @@ export interface AssetNoContent {
 	encodings: Array<[string, AssetEncodingNoContent]>;
 	headers: Array<[string, string]>;
 	created_at: bigint;
+	version: [] | [bigint];
 }
 export interface AuthenticationConfig {
 	internet_identity: [] | [AuthenticationConfigInternetIdentity];
@@ -47,6 +48,7 @@ export type ControllerScope = { Write: null } | { Admin: null };
 export interface CustomDomain {
 	updated_at: bigint;
 	created_at: bigint;
+	version: [] | [bigint];
 	bn_id: [] | [string];
 }
 export interface DelDoc {

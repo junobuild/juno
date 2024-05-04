@@ -99,7 +99,8 @@
 		"warning_satellite_low_cycles": "你的 satellite 的 cycles 将要耗尽.",
 		"warning_orbiter_low_cycles": "你的 orbiter的 cycles 将要耗尽.",
 		"warning_satellite_heap_memory": "你的 satellite 堆内存已经达到 1 GB.",
-		"warning_orbiter_heap_memory": "你的 orbiter 堆内存已经达到 1 GB."
+		"warning_orbiter_heap_memory": "你的 orbiter 堆内存已经达到 1 GB.",
+		"warning_indicator": "Warning: This segment requires your attention. Either stopping or running low on cycles."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

@@ -99,7 +99,8 @@
 		"warning_satellite_low_cycles": "Your satellite is running low on cycles.",
 		"warning_orbiter_low_cycles": "Your orbiter is running low on cycles.",
 		"warning_satellite_heap_memory": "Your satellite heap memory is approaching 1 GB.",
-		"warning_orbiter_heap_memory": "Your orbiter heap memory is approaching 1 GB."
+		"warning_orbiter_heap_memory": "Your orbiter heap memory is approaching 1 GB.",
+		"warning_indicator": "Warning: This segment requires your attention. Either stopping or running low on cycles."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

@@ -104,6 +104,7 @@ interface I18nCanisters {
 	warning_orbiter_low_cycles: string;
 	warning_satellite_heap_memory: string;
 	warning_orbiter_heap_memory: string;
+	warning_indicator: string;
 }
 
 interface I18nSign_in {

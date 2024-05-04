@@ -2,6 +2,7 @@
 	import type { CanisterData, CanisterStatus } from '$lib/types/canister';
 	import { isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let data: CanisterData | undefined = undefined;
 
@@ -15,7 +16,7 @@
 {#if isNullish(status)}
 	<div in:fade />
 {:else if warning || status === 'stopping'}
-	<div class="warning" in:fade />
+	<div class="warning" in:fade aria-label={$i18n.canisters.warning_indicator} />
 {:else if status === 'stopped'}
 	<div class="stopped" in:fade />
 {:else}

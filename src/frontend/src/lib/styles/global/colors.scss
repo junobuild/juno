@@ -1,19 +1,26 @@
 :root {
 	/** Colors */
 
-	--color-error: #ef476f;
-	--color-error-rgb: 239, 71, 111;
-	--color-error-contrast: #ffffff;
-	--color-error-contrast-rgb: 255, 255, 255;
-	--color-error-shade: #d23e62;
-	--color-error-tint: #f1597d;
+	--color-error: #ea385f;
+	--color-error-rgb: 234, 56, 95;
+	--color-error-contrast: #000000;
+	--color-error-contrast-rgb: 0, 0, 0;
+	--color-error-shade: #ce3154;
+	--color-error-tint: #ec4c6f;
 
-	--color-warning: #fff05a;
-	--color-warning-rgb: 255, 240, 90;
+	--color-warning: #f3b141;
+	--color-warning-rgb: 243, 177, 65;
 	--color-warning-contrast: #000000;
 	--color-warning-contrast-rgb: 0, 0, 0;
-	--color-warning-shade: #e0d34f;
-	--color-warning-tint: #fff26b;
+	--color-warning-shade: #d69c39;
+	--color-warning-tint: #f4b954;
+
+	--color-success: #6add56;
+	--color-success-rgb: 106, 221, 86;
+	--color-success-contrast: #000000;
+	--color-success-contrast-rgb: 0, 0, 0;
+	--color-success-shade: #5dc24c;
+	--color-success-tint: #79e067;
 
 	/** Default: light */
 	--color-background: #ffffff;

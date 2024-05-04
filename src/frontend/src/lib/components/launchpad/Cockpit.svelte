@@ -9,8 +9,8 @@
 	import { fade } from 'svelte/transition';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import type {CanisterData} from "$lib/types/canister";
-	import CanisterIndicator from "$lib/components/canister/CanisterIndicator.svelte";
+	import type { CanisterData } from '$lib/types/canister';
+	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 
 	$: $missionControlStore,
 		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
@@ -20,7 +20,12 @@
 </script>
 
 {#if nonNullish($missionControlStore)}
-	<Canister canisterId={$missionControlStore} segment="mission_control" display={false} bind:data={missionControlData} />
+	<Canister
+		canisterId={$missionControlStore}
+		segment="mission_control"
+		display={false}
+		bind:data={missionControlData}
+	/>
 {/if}
 
 <div class="mission-control">
@@ -37,7 +42,12 @@
 </div>
 
 {#if nonNullish($orbiterStore)}
-	<Canister canisterId={$orbiterStore.orbiter_id} segment="orbiter" display={false} bind:data={orbiterData} />
+	<Canister
+		canisterId={$orbiterStore.orbiter_id}
+		segment="orbiter"
+		display={false}
+		bind:data={orbiterData}
+	/>
 
 	<div in:fade class="analytics">
 		<LaunchpadLink

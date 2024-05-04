@@ -8,10 +8,20 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { fade } from 'svelte/transition';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import Canister from '$lib/components/canister/Canister.svelte';
+	import type {CanisterData} from "$lib/types/canister";
+	import CanisterIndicator from "$lib/components/canister/CanisterIndicator.svelte";
 
 	$: $missionControlStore,
 		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+
+	let missionControlData: CanisterData | undefined = undefined;
+	let orbiterData: CanisterData | undefined = undefined;
 </script>
+
+{#if nonNullish($missionControlStore)}
+	<Canister canisterId={$missionControlStore} segment="mission_control" display={false} bind:data={missionControlData} />
+{/if}
 
 <div class="mission-control">
 	<LaunchpadLink
@@ -21,12 +31,14 @@
 	>
 		<p>
 			<IconMissionControl />
-			<span>{$i18n.mission_control.title}</span>
+			<span>{$i18n.mission_control.title} <CanisterIndicator data={missionControlData} /></span>
 		</p>
 	</LaunchpadLink>
 </div>
 
 {#if nonNullish($orbiterStore)}
+	<Canister canisterId={$orbiterStore.orbiter_id} segment="orbiter" display={false} bind:data={orbiterData} />
+
 	<div in:fade class="analytics">
 		<LaunchpadLink
 			size="small"
@@ -35,7 +47,7 @@
 		>
 			<p>
 				<IconAnalytics size="24px" />
-				<span>{$i18n.analytics.title}</span>
+				<span>{$i18n.analytics.title} <CanisterIndicator data={orbiterData} /></span>
 			</p>
 		</LaunchpadLink>
 	</div>
@@ -54,6 +66,12 @@
 		gap: var(--padding-3x);
 
 		margin: 0 0 var(--padding);
+	}
+
+	span {
+		display: inline-flex;
+		align-items: center;
+		gap: var(--padding);
 	}
 
 	.mission-control {

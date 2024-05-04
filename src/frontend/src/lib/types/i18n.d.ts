@@ -144,6 +144,8 @@ interface I18nSatellites {
 	stock_version: string;
 	extended_version: string;
 	build: string;
+	see_all_satellites: string;
+	go_launchpad: string;
 }
 
 interface I18nMission_control {

@@ -137,7 +137,9 @@
 		"id": "Satellite ID",
 		"stock_version": "Stock version",
 		"extended_version": "Extended version",
-		"build": "Build"
+		"build": "Build",
+		"see_all_satellites": "See all satellites",
+		"go_launchpad": "Go to launchpad"
 	},
 	"mission_control": {
 		"title": "Mission Control",

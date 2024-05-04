@@ -137,7 +137,9 @@
 		"id": "Satellite ID",
 		"stock_version": "默认版本",
 		"extended_version": "扩展版本",
-		"build": "Build"
+		"build": "Build",
+		"see_all_satellites": "See all satellites",
+		"go_launchpad": "Go to launchpad"
 	},
 	"mission_control": {
 		"title": "Mission Control",

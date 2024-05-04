@@ -5,6 +5,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	let button: HTMLButtonElement | undefined;
 	let visible: boolean | undefined;
@@ -19,14 +20,14 @@
 <Popover bind:visible anchor={button}>
 	<div class="container">
 		<a
-			aria-label="To the satellites"
+			aria-label={$i18n.satellites.go_launchpad}
 			href="/"
 			class="menu"
 			role="menuitem"
 			aria-haspopup="menu"
 			rel="external noopener norefferer"
 		>
-			<span>See all satellites</span>
+			<span>{$i18n.satellites.see_all_satellites}</span>
 		</a>
 
 		<hr />

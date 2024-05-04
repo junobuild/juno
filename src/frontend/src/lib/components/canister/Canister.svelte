@@ -17,7 +17,6 @@
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
-	import { ca } from 'date-fns/locale';
 
 	export let canisterId: Principal;
 	export let segment: Segment;

@@ -16,7 +16,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 
 	export let canisterId: Principal;
 	export let segment: Segment;
@@ -72,9 +72,6 @@
 	let memory_size: bigint;
 	let cycles: bigint;
 
-	let warning: boolean;
-	$: warning = data?.warning?.cycles === true ?? false;
-
 	$: ({ status, memory_size, cycles } = data?.canister ?? {
 		status: undefined,
 		memory_size: BigInt(0),
@@ -89,13 +86,11 @@
 {#if display}
 	<div class:row>
 		{#if ['synced', 'syncing'].includes(sync ?? '')}
-			<p class="status">{status ?? '???'}</p>
+			<p class="status"><CanisterIndicator {data} /><span>{status ?? '???'}</span></p>
 			<p class="cycles">
 				<span
 					>{formatTCycles(cycles)}
-					<small
-						>T Cycles {#if warning}<IconWarning />{/if}</small
-					></span
+					<small>T Cycles</small></span
 				>{#if sync === 'syncing'}<IconSync />{/if}
 			</p>
 			<p>
@@ -115,7 +110,8 @@
 			margin: 0 0 var(--padding-0_25x);
 		}
 
-		&::first-letter {
+		&::first-letter,
+		span::first-letter {
 			text-transform: uppercase;
 		}
 
@@ -125,6 +121,12 @@
 
 	.cycles {
 		display: inline-flex;
+		gap: var(--padding);
+	}
+
+	.status {
+		display: flex;
+		align-items: center;
 		gap: var(--padding);
 	}
 

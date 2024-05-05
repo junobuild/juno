@@ -175,9 +175,11 @@ export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
+	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
 }
 export type StorageConfigIFrame = { Deny: null } | { AllowAny: null } | { SameOrigin: null };
+export type StorageConfigRawAccess = { Deny: null } | { Allow: null };
 export interface StorageConfigRedirect {
 	status_code: number;
 	location: string;

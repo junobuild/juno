@@ -57,6 +57,10 @@ export const idlFactory = ({ IDL }) => {
 		AllowAny: IDL.Null,
 		SameOrigin: IDL.Null
 	});
+	const StorageConfigRawAccess = IDL.Variant({
+		Deny: IDL.Null,
+		Allow: IDL.Null
+	});
 	const StorageConfigRedirect = IDL.Record({
 		status_code: IDL.Nat16,
 		location: IDL.Text
@@ -65,6 +69,7 @@ export const idlFactory = ({ IDL }) => {
 		iframe: IDL.Opt(StorageConfigIFrame),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)))),
+		raw_access: IDL.Opt(StorageConfigRawAccess),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
 	});
 	const Config = IDL.Record({ storage: StorageConfig });

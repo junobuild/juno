@@ -6,7 +6,7 @@
 
 	export let data: CanisterData | undefined = undefined;
 
-	let cycles: bigint;
+	let cycles: bigint | undefined;
 	$: cycles = data?.canister?.cycles;
 </script>
 

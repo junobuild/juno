@@ -75,6 +75,10 @@
 
 	.centered {
 		margin: 0 auto;
+
+		@include media.min-width(xlarge) {
+			min-height: calc(100vh - var(--header-height) - calc((var(--padding) * 14) - 3px));
+		}
 	}
 
 	h1 {

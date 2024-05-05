@@ -82,6 +82,6 @@
 	}
 
 	.logo {
-		padding: var(--padding-4x) 0 16vh;
+		padding: calc(var(--padding-4x) - 2px) 0 16vh;
 	}
 </style>

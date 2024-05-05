@@ -25,13 +25,13 @@
 
 		color: var(--color-background-contrast);
 
-		padding: var(--padding-2x) var(--padding-2x) var(--padding-2x) var(--padding);
-
 		pointer-events: none;
 
 		:global(*) {
 			pointer-events: all;
 		}
+
+		padding: var(--padding-2x) var(--padding-2x);
 
 		@include media.min-width(xlarge) {
 			padding: var(--padding-4x) var(--padding-6x);

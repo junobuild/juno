@@ -140,9 +140,5 @@
 		padding: 0 var(--padding-6x) var(--padding-4x);
 		width: var(--menu-width);
 		overflow: hidden;
-
-		@include media.min-width(xlarge) {
-			padding: 0 var(--padding-6x) var(--padding-8x);
-		}
 	}
 </style>

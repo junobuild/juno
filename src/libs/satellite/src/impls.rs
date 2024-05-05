@@ -3,7 +3,7 @@ use crate::memory::init_stable_state;
 use crate::rules::constants::{DEFAULT_ASSETS_COLLECTIONS, DEFAULT_DB_COLLECTIONS};
 use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::{
-    StorageConfig, StorageConfigHeaders, StorageConfigRawAccess, StorageConfigRedirects,
+    StorageConfig, StorageConfigHeaders, StorageConfigRedirects,
     StorageConfigRewrites,
 };
 use crate::storage::types::state::StorageHeapState;

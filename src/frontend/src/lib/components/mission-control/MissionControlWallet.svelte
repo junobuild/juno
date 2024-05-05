@@ -17,7 +17,7 @@
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
 	import { fade } from 'svelte/transition';
 	import type { TransactionWithId } from '@junobuild/ledger';
-	import Wallet from "$lib/components/core/Wallet.svelte";
+	import Wallet from '$lib/components/core/Wallet.svelte';
 
 	export let missionControlId: Principal;
 
@@ -111,7 +111,8 @@
 				<Value>
 					<svelte:fragment slot="label">{$i18n.wallet.balance}</svelte:fragment>
 					<p>
-						{#if nonNullish(balance)}<span in:fade>{formatE8sICP(balance)} <small>ICP</small></span>{/if}
+						{#if nonNullish(balance)}<span in:fade>{formatE8sICP(balance)} <small>ICP</small></span
+							>{/if}
 					</p>
 				</Value>
 
@@ -126,18 +127,18 @@
 			<div>
 				{#if nonNullish(accountIdentifier)}
 					<QRCodeContainer
-							value={accountIdentifier.toHex()}
-							ariaLabel={$i18n.wallet.account_identifier}
+						value={accountIdentifier.toHex()}
+						ariaLabel={$i18n.wallet.account_identifier}
 					/>
 				{/if}
 			</div>
 		</div>
 
 		<Transactions
-				{transactions}
-				{disableInfiniteScroll}
-				{missionControlId}
-				on:junoIntersect={onIntersect}
+			{transactions}
+			{disableInfiniteScroll}
+			{missionControlId}
+			on:junoIntersect={onIntersect}
 		/>
 
 		<TransactionsExport {transactions} {missionControlId} />

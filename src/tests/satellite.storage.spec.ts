@@ -551,19 +551,24 @@ describe('Satellite storage', () => {
 		});
 
 		describe('raw', () => {
-			it('should not be able to access on raw per default', async () => {
-				const { http_request } = actor;
+			describe.each(['icp0.io', 'ic0.app', 'icp-api.io', 'internetcomputer.org'])(
+				`Disable raw %s`,
+				(domain) => {
+					it('should not be able to access on raw per default', async () => {
+						const { http_request } = actor;
 
-				const { status_code } = await http_request({
-					body: [],
-					certificate_version: toNullable(),
-					headers: [['Host', `${canisterId.toText()}.raw.icp0.io`]],
-					method: 'GET',
-					url: '/hello.html'
-				});
+						const { status_code } = await http_request({
+							body: [],
+							certificate_version: toNullable(),
+							headers: [['Host', `${canisterId.toText()}.raw.${domain}`]],
+							method: 'GET',
+							url: '/hello.html'
+						});
 
-				expect(status_code).toEqual(308);
-			});
+						expect(status_code).toEqual(308);
+					});
+				}
+			);
 
 			it('should be able to access on raw if allowed', async () => {
 				const { http_request, set_config } = actor;
@@ -618,6 +623,35 @@ describe('Satellite storage', () => {
 				});
 
 				expect(status_code).toEqual(308);
+			});
+
+			it('should be able to access content if not raw', async () => {
+				const { http_request, set_config } = actor;
+
+				const storage: StorageConfig = {
+					headers: [],
+					iframe: toNullable(),
+					redirects: [],
+					rewrites: [],
+					raw_access: toNullable({ Allow: null })
+				};
+
+				await set_config({
+					storage
+				});
+
+				const { status_code, body } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: toNullable(),
+					method: 'GET',
+					url: '/hello.html'
+				});
+
+				expect(status_code).toEqual(200);
+
+				const decoder = new TextDecoder();
+				expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
 			});
 		});
 	});

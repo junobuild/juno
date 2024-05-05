@@ -1,6 +1,7 @@
 use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
-    RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH,
+    RAW_DOMAINS, RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, ROOT_404_HTML,
+    ROOT_INDEX_HTML, ROOT_PATH,
 };
 use crate::storage::http::types::HeaderField;
 use crate::storage::rewrites::{is_root_path, redirect_url, rewrite_url};
@@ -229,8 +230,7 @@ fn get_routing_redirect(path: &FullPath) -> Option<Routing> {
 
 fn get_routing_redirect_raw(url: &String, req_headers: &Vec<HeaderField>) -> Option<Routing> {
     let raw = req_headers.iter().any(|HeaderField(key, value)| {
-        key.eq_ignore_ascii_case("Host")
-            && (value.contains(".raw.icp0.io") || value.contains(".raw.ic0.app"))
+        key.eq_ignore_ascii_case("Host") && RAW_DOMAINS.iter().any(|domain| value.contains(domain))
     });
 
     if raw {

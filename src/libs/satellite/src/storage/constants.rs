@@ -22,3 +22,10 @@ pub static RESPONSE_STATUS_CODE_404: StatusCode = 404;
 pub static RESPONSE_STATUS_CODE_405: StatusCode = 405;
 pub static RESPONSE_STATUS_CODE_406: StatusCode = 406;
 pub static RESPONSE_STATUS_CODE_500: StatusCode = 500;
+
+pub const RAW_DOMAINS: [&str; 4] = [
+    ".raw.icp0.io",
+    ".raw.ic0.app",
+    ".raw.icp-api.io",
+    ".raw.internetcomputer.org",
+];

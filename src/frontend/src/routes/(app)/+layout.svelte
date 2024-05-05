@@ -13,7 +13,7 @@
 <Layout>
 	<Navmenu slot="menu" />
 
-	<Navbar start="menu" slot="navbar" />
+	<Navbar start="menu" slot="navbar" launchpad />
 
 	<slot />
 

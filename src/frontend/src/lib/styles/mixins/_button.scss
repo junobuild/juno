@@ -63,21 +63,14 @@
 	font-size: inherit;
 
 	svg {
-		margin: var(--padding) var(--padding) var(--padding) 0;
+		margin: var(--padding) var(--padding);
 		width: var(--padding-2_5x);
 		height: var(--padding-2_5x);
 	}
 
 	&:hover:not(:disabled),
 	&:focus:not(:disabled) {
-		background: inherit;
-		color: inherit;
 		text-decoration: none;
-
-		span {
-			background: var(--color-primary-opaque);
-			color: var(--color-primary-opaque-contrast);
-		}
 	}
 }
 

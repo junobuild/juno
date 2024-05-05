@@ -26,6 +26,7 @@
 <style lang="scss">
 	div {
 		width: var(--padding-2x);
+		min-width: var(--padding-2x);
 		height: var(--padding-2x);
 
 		border-radius: 50%;

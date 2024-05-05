@@ -19,9 +19,12 @@
 
 	let target: '_blank' | undefined;
 	$: target = home ? '_blank' : undefined;
+
+	let rel: string | undefined;
+	$: rel = home ? 'external noopener noreferrer' : undefined;
 </script>
 
-<a {href} aria-label={alt} rel="external noopener noreferrer" {target}><IconJuno {color} /></a>
+<a {href} aria-label={alt} {rel} {target}><IconJuno {color} /></a>
 
 <style lang="scss">
 	a {

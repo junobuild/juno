@@ -40,23 +40,11 @@
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
-		<a
-			href="/mission-control"
-			class="menu"
-			role="menuitem"
-			aria-haspopup="menu"
-			rel="external noopener norefferer"
-		>
+		<a href="/mission-control" class="menu" role="menuitem" aria-haspopup="menu">
 			<IconMissionControl />
 			<span>{$i18n.mission_control.title}</span>
 		</a>
-		<a
-			href="/mission-control?tab=wallet"
-			class="menu"
-			role="menuitem"
-			aria-haspopup="menu"
-			rel="external noopener norefferer"
-		>
+		<a href="/mission-control?tab=wallet" class="menu" role="menuitem" aria-haspopup="menu">
 			<IconWallet />
 			<span>{$i18n.wallet.title}</span>
 		</a>
@@ -66,30 +54,17 @@
 			class="menu"
 			role="menuitem"
 			aria-haspopup="menu"
-			rel="external noopener norefferer"
 		>
 			<IconAnalytics />
 			<span>{$i18n.analytics.title}</span>
 		</a>
 
-		<a
-			href="/monitoring"
-			class="menu"
-			role="menuitem"
-			aria-haspopup="menu"
-			rel="external noopener norefferer"
-		>
+		<a href="/monitoring" class="menu" role="menuitem" aria-haspopup="menu">
 			<IconTelescope />
 			<span>{$i18n.observatory.title}</span>
 		</a>
 
-		<a
-			href="/settings"
-			class="menu"
-			role="menuitem"
-			aria-haspopup="menu"
-			rel="external noopener norefferer"
-		>
+		<a href="/settings" class="menu" role="menuitem" aria-haspopup="menu">
 			<IconRaygun />
 			<span>{$i18n.settings.title}</span>
 		</a>

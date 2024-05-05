@@ -11,12 +11,12 @@
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import { onDestroy, onMount } from 'svelte';
 	import { formatNumber } from '$lib/utils/number.utils';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
+	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 
 	export let canisterId: Principal;
 	export let segment: Segment;
@@ -88,10 +88,7 @@
 		{#if ['synced', 'syncing'].includes(sync ?? '')}
 			<p class="status"><CanisterIndicator {data} /><span>{status ?? '???'}</span></p>
 			<p class="cycles">
-				<span
-					>{formatTCycles(cycles)}
-					<small>T Cycles</small></span
-				>{#if sync === 'syncing'}<IconSync />{/if}
+				<CanisterTCycles {data} />{#if sync === 'syncing'}<IconSync />{/if}
 			</p>
 			<p>
 				{formatNumber(Number(memory_size) / 1_000_000)} MB <small>{$i18n.canisters.in_total}</small>

@@ -6,7 +6,7 @@
 </script>
 
 <Layout>
-	<Navbar start="back" slot="navbar" switcher={false} />
+	<Navbar start="back" slot="navbar" />
 
 	<slot />
 

@@ -6,10 +6,11 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
+	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
 
 	export let start: 'logo' | 'back' | 'menu' = 'logo';
 	export let signIn = true;
-	export let switcher = true;
+	export let launchpad = false;
 	export let headerOpaqueOnScroll = true;
 </script>
 
@@ -25,12 +26,18 @@
 			</div>
 		{/if}
 
-		{#if switcher}
+		{#if launchpad}
 			<SatellitesSwitcher />
 		{/if}
 	</div>
 
 	<div class="end">
+		{#if launchpad}
+			<div>
+				<NavbarCockpit />
+			</div>
+		{/if}
+
 		<User {signIn} />
 	</div>
 </Header>
@@ -48,5 +55,9 @@
 
 	.logo {
 		margin: 0 var(--padding-4x) 0 0;
+	}
+
+	.end {
+		gap: var(--padding-6x);
 	}
 </style>

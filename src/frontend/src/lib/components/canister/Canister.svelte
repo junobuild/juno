@@ -70,9 +70,8 @@
 
 	let status: CanisterStatus | undefined;
 	let memory_size: bigint;
-	let cycles: bigint;
 
-	$: ({ status, memory_size, cycles } = data?.canister ?? {
+	$: ({ status, memory_size } = data?.canister ?? {
 		status: undefined,
 		memory_size: BigInt(0),
 		cycles: BigInt(0),

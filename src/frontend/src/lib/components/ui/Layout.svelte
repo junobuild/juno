@@ -93,6 +93,7 @@
 		display: inline-block;
 
 		@include text.truncate;
+		max-width: 100%;
 	}
 
 	.icon {

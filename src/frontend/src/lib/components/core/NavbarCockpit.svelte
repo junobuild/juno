@@ -8,12 +8,16 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import type { CanisterData } from '$lib/types/canister';
-	import { slide } from 'svelte/transition';
+	import { slide, fade } from 'svelte/transition';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
+	import Wallet from '$lib/components/core/Wallet.svelte';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	let missionControlData: CanisterData | undefined = undefined;
 	let orbiterData: CanisterData | undefined = undefined;
+	let balance: bigint | undefined = undefined;
 </script>
 
 {#if nonNullish($missionControlStore)}
@@ -57,6 +61,22 @@
 	</div>
 {/if}
 
+{#if nonNullish($missionControlStore)}
+	<Wallet missionControlId={$missionControlStore} bind:balance>
+		{#if nonNullish(balance)}
+			<div in:slide={{ axis: 'x' }} class="container wallet">
+				<NavbarLink
+					href="/mission-control?tab=wallet"
+					ariaLabel={`${$i18n.satellites.open}: ${$i18n.wallet.title}`}
+				>
+					<IconWallet />
+					<span in:fade>{formatE8sICP(balance)} <small>ICP</small></span>
+				</NavbarLink>
+			</div>
+		{/if}
+	</Wallet>
+{/if}
+
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
@@ -71,7 +91,17 @@
 	.cycles {
 		display: none;
 
+		margin: 0 0 0 var(--padding-0_5x);
+
 		@include media.min-width(medium) {
+			display: block;
+		}
+	}
+
+	.wallet {
+		display: none;
+
+		@include media.min-width(large) {
 			display: block;
 		}
 	}

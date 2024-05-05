@@ -53,7 +53,7 @@
 	<td class="memo">{memo}</td>
 	<td class="amount">
 		{#if nonNullish(amount)}
-			{amount} ICP
+			{amount} <small>ICP</small>
 		{/if}
 	</td>
 </tr>

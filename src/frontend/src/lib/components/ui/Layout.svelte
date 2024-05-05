@@ -63,7 +63,7 @@
 		max-width: calc(media.$breakpoint-extra-large - 100px);
 		overflow-x: hidden;
 
-		padding: 0 var(--padding-4x) var(--padding-4x) var(--padding-2x);
+		padding: 0 var(--padding-2x) var(--padding-4x);
 
 		position: relative;
 		min-height: calc(100% - var(--footer-height));

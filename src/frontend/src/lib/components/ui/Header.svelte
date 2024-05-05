@@ -25,7 +25,7 @@
 
 		color: var(--color-background-contrast);
 
-		padding: var(--padding-2x) var(--padding-2x);
+		padding: var(--padding-2x) var(--padding-2x) var(--padding-2x) var(--padding);
 
 		pointer-events: none;
 
@@ -34,7 +34,7 @@
 		}
 
 		@include media.min-width(xlarge) {
-			padding: var(--padding-4x) var(--padding-10x);
+			padding: var(--padding-4x) var(--padding-6x);
 		}
 
 		&.opaque {

@@ -15,6 +15,6 @@
 </script>
 
 <ButtonIcon on:click={async () => await back({ pop: nonNullish(fromRoute) })}>
-	<IconBack slot="icon" />
+	<IconBack slot="icon" size="28px" />
 	{$i18n.core.back}
 </ButtonIcon>

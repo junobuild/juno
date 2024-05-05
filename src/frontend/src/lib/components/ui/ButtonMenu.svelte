@@ -22,9 +22,17 @@
 	@use '../../styles/mixins/media';
 
 	.menu {
+		padding: 0;
+
 		// On large screen the menu is sticky therefore it cannot be opened or closed
 		@include media.min-width(xlarge) {
 			display: none;
+		}
+
+		:global(svg) {
+			width: 28px;
+			height: 28px;
+			min-width: 28px;
 		}
 	}
 </style>

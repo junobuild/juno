@@ -4,7 +4,7 @@
 	import AxisX from '$lib/components/charts/AxisX.svelte';
 	import AxisY from '$lib/components/charts/AxisY.svelte';
 	import { LayerCake, Svg } from 'layercake';
-	import { formatToDay } from '$lib/utils/date.utils.js';
+	import { formatToDay } from '$lib/utils/date.utils';
 	import type { ChartsData } from '$lib/types/chart';
 
 	export let chartsData: ChartsData[];

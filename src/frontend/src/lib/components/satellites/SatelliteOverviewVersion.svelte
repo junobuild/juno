@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store.js';
-	import { versionStore } from '$lib/stores/version.store.js';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { versionStore } from '$lib/stores/version.store';
 	import Value from '$lib/components/ui/Value.svelte';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { nonNullish } from '@dfinity/utils';

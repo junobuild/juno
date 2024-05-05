@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store.js';
+	import { i18n } from '$lib/stores/i18n.store';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';

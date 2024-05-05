@@ -12,7 +12,7 @@ use ic_ledger_types::{
 };
 
 // We do not use subaccount, yet.
-pub static SUB_ACCOUNT: Subaccount = DEFAULT_SUBACCOUNT;
+pub const SUB_ACCOUNT: Subaccount = DEFAULT_SUBACCOUNT;
 
 /// Converts a principal and subaccount into an account identifier.
 ///

@@ -6,6 +6,7 @@ import type {
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import type { Principal } from '@dfinity/principal';
 import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
@@ -14,6 +15,7 @@ import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.ut
 
 describe('Satellite storage', () => {
 	let pic: PocketIc;
+	let canisterId: Principal;
 	let actor: Actor<SatelliteActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -21,14 +23,15 @@ describe('Satellite storage', () => {
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const { actor: c } = await pic.setupCanister<SatelliteActor>({
+		const { actor: a, canisterId: c } = await pic.setupCanister<SatelliteActor>({
 			idlFactory: idlFactorSatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs(controller),
 			sender: controller.getPrincipal()
 		});
 
-		actor = c;
+		actor = a;
+		canisterId = c;
 	});
 
 	afterAll(async () => {
@@ -503,6 +506,60 @@ describe('Satellite storage', () => {
 				expect(configs).toEqual({
 					storage
 				});
+			});
+		});
+	});
+
+	describe('routing', () => {
+		const collection = '#dapp';
+		const HTML = '<html><body>Hello</body></html>';
+
+		const blob = new Blob([HTML], {
+			type: 'text/plain; charset=utf-8'
+		});
+
+		const full_path = '/index.html';
+
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+
+			const { init_asset_upload, upload_asset_chunk, commit_asset_upload } = actor;
+
+			const file = await init_asset_upload({
+				collection,
+				description: toNullable(),
+				encoding_type: [],
+				full_path,
+				name: full_path,
+				token: toNullable()
+			});
+
+			const chunk = await upload_asset_chunk({
+				batch_id: file.batch_id,
+				content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+				order_id: [0n]
+			});
+
+			await commit_asset_upload({
+				batch_id: file.batch_id,
+				chunk_ids: [chunk.chunk_id],
+				headers: []
+			});
+		});
+
+		describe('raw', () => {
+			it('should not be able to access on raw per default', async () => {
+				const { http_request } = actor;
+
+				const { status_code } = await http_request({
+					body: [],
+					certificate_version: toNullable(),
+					headers: [['Host', `${canisterId.toText()}.raw.icp0.io`]],
+					method: 'GET',
+					url: '/hello.html'
+				});
+
+				expect(status_code).toEqual(308);
 			});
 		});
 	});

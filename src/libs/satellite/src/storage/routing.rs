@@ -229,7 +229,8 @@ fn get_routing_redirect(path: &FullPath) -> Option<Routing> {
 
 fn get_routing_redirect_raw(url: &String, req_headers: &Vec<HeaderField>) -> Option<Routing> {
     let raw = req_headers.iter().any(|HeaderField(key, value)| {
-        key.eq_ignore_ascii_case("Host") && value.contains(".raw.ic")
+        key.eq_ignore_ascii_case("Host")
+            && (value.contains(".raw.icp0.io") || value.contains(".raw.ic0.app"))
     });
 
     if raw {

@@ -6,6 +6,7 @@
 
 	export let centered = false;
 	export let title = true;
+	export let topMargin: 'default' | 'wide' = 'default';
 </script>
 
 <SplitPane>
@@ -18,7 +19,7 @@
 			<main class:centered>
 				{#if title}
 					{#if nonNullish($layoutTitle)}
-						<h1 in:fade>
+						<h1 in:fade class:space={topMargin === 'wide'}>
 							<span>
 								<span class="icon"><svelte:component this={$layoutTitle.icon} size="32px" /></span>
 								<span>{$layoutTitle.title}</span>
@@ -82,6 +83,12 @@
 
 		padding: 0 var(--padding-2x) 0 0;
 		margin: var(--padding-3x) 0;
+
+		&.space {
+			@include media.min-width(medium) {
+				margin: var(--padding-10x) 0 var(--padding-3x);
+			}
+		}
 
 		display: inline-block;
 

@@ -27,7 +27,7 @@ pub fn init_certified_assets() {
         }
 
         for (source, destination) in state.heap.storage.config.rewrites.clone() {
-            if let Ok(routing) = get_routing(destination, false) {
+            if let Ok(routing) = get_routing(destination, &Vec::new(), false) {
                 match routing {
                     Routing::Default(RoutingDefault { url: _, asset }) => {
                         let src_path = rewrite_source_to_path(&source);
@@ -38,6 +38,7 @@ pub fn init_certified_assets() {
                     }
                     Routing::Rewrite(_) => (),
                     Routing::Redirect(_) => (),
+                    Routing::RedirectRaw(_) => (),
                 }
             }
         }

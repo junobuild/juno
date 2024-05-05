@@ -1,7 +1,9 @@
 use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
-    RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_406, RESPONSE_STATUS_CODE_500,
+    RESPONSE_STATUS_CODE_308, RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_406,
+    RESPONSE_STATUS_CODE_500,
 };
+use crate::storage::http::headers::build_redirect_headers;
 use crate::storage::http::types::{HeaderField, HttpResponse, StatusCode};
 use crate::storage::http::utils::{
     build_encodings, build_response_headers, build_response_redirect_headers, streaming_strategy,
@@ -105,6 +107,20 @@ pub fn build_redirect_response(
         body: Vec::new().clone(),
         headers: headers.clone(),
         status_code: redirect.status_code,
+        streaming_strategy: None,
+    }
+}
+
+pub fn build_redirect_raw_response(
+    redirect_url: &String,
+    iframe: &StorageConfigIFrame,
+) -> HttpResponse {
+    let headers = build_redirect_headers(redirect_url, iframe);
+
+    HttpResponse {
+        body: Vec::new().clone(),
+        headers: headers.clone(),
+        status_code: RESPONSE_STATUS_CODE_308,
         streaming_strategy: None,
     }
 }

@@ -17,6 +17,7 @@ pub static ROOT_404_HTML: &str = "/404.html";
 pub static ROOT_PATHS: [&str; 5] = ["/index.html", "/index", "/", "/404", "/404.html"];
 
 pub static RESPONSE_STATUS_CODE_200: StatusCode = 200;
+pub static RESPONSE_STATUS_CODE_308: StatusCode = 308;
 pub static RESPONSE_STATUS_CODE_404: StatusCode = 404;
 pub static RESPONSE_STATUS_CODE_405: StatusCode = 405;
 pub static RESPONSE_STATUS_CODE_406: StatusCode = 406;

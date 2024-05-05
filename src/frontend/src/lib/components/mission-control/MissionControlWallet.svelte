@@ -8,7 +8,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
-	import { onDestroy, onMount } from 'svelte';
+	import { onMount } from 'svelte';
 	import { getAccountIdentifier, getTransactions } from '$lib/api/ledger.api';
 	import { getCredits } from '$lib/api/console.api';
 	import { toasts } from '$lib/stores/toasts.store';

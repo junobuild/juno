@@ -27,5 +27,9 @@
 			min-width: 24px;
 			margin: 0 0 0 var(--padding-1_5x);
 		}
+
+		:global(svg + span) {
+			margin: 0;
+		}
 	}
 </style>

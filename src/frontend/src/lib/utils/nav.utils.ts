@@ -16,20 +16,13 @@ export const navigateToSatellite = async (satelliteId: Principal | undefined | n
 export const navigateToAnalytics = async (satelliteId: Principal | undefined | null) =>
 	await goto(analyticsLink(satelliteId), { replaceState: true });
 
-export const back = async () => {
-	const stack: number | undefined = history.state?.['sveltekit:index'];
-
-	if (!stack || stack === 0) {
-		await goBack();
+export const back = async ({ pop }: { pop: boolean }) => {
+	if (pop) {
+		history.back();
 		return;
 	}
 
-	history.back();
-};
-
-const goBack = async (defaultRoute = '/') => {
-	const { referrer } = document;
-	return goto(referrer.length > 0 ? referrer : defaultRoute);
+	await goto('/');
 };
 
 export type RouteSatellite = { satellite: string | null | undefined };

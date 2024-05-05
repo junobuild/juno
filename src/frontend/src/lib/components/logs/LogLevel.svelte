@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store.js';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { Log } from '$lib/types/log';
 	import { i18nText } from '$lib/utils/i18n.utils';
 

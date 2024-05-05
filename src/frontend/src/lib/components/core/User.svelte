@@ -13,6 +13,7 @@
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import { analyticsLink } from '$lib/utils/nav.utils';
 	import { satelliteStore } from '$lib/stores/satellite.store';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 
 	export let signIn = true;
 
@@ -48,6 +49,16 @@
 		>
 			<IconMissionControl />
 			<span>{$i18n.mission_control.title}</span>
+		</a>
+		<a
+			href="/mission-control?tab=wallet"
+			class="menu"
+			role="menuitem"
+			aria-haspopup="menu"
+			rel="external noopener norefferer"
+		>
+			<IconWallet />
+			<span>{$i18n.wallet.title}</span>
 		</a>
 
 		<a

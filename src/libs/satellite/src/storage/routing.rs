@@ -24,7 +24,7 @@ pub fn get_routing(
         return Err("No url provided.");
     }
 
-    // .raw. is not allowed for security reason.
+    // .raw. is not allowed per default for security reason.
     let redirect_raw = get_routing_redirect_raw(&url, req_headers);
 
     match redirect_raw {

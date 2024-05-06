@@ -90,7 +90,7 @@
 
 		&.space {
 			@include media.min-width(medium) {
-				margin: var(--padding-10x) 0 var(--padding-3x);
+				margin: var(--padding-8x) 0 var(--padding-3x);
 			}
 		}
 

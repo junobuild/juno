@@ -69,6 +69,13 @@
 			</Value>
 		</div>
 
+		<div class="date">
+			<Value>
+				<svelte:fragment slot="label">{$i18n.document.version}</svelte:fragment>
+				{doc.version ?? ''}
+			</Value>
+		</div>
+
 		<div class="data">
 			<Value>
 				<svelte:fragment slot="label">{$i18n.document.data}</svelte:fragment>

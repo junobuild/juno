@@ -140,6 +140,13 @@
 				{formatToDate(asset.updated_at)}
 			</Value>
 		</div>
+
+		<div class="version">
+			<Value>
+				<svelte:fragment slot="label">{$i18n.asset.version}</svelte:fragment>
+				{asset.version ?? ''}
+			</Value>
+		</div>
 	</article>
 {/if}
 
@@ -173,6 +180,7 @@
 
 	.data,
 	.date,
+	.version,
 	.headers-block {
 		padding: 0 0 var(--padding-2x);
 	}

@@ -4,7 +4,7 @@
 @mixin list {
 	.title,
 	.data {
-		border-right: 2px solid var(--color-card-contrast);
+		border-right: 1px solid var(--color-card-contrast);
 	}
 
 	.title {

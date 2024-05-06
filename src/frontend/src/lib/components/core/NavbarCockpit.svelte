@@ -14,10 +14,14 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import Wallet from '$lib/components/core/Wallet.svelte';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
 
 	let missionControlData: CanisterData | undefined = undefined;
 	let orbiterData: CanisterData | undefined = undefined;
 	let balance: bigint | undefined = undefined;
+
+	$: $missionControlStore,
+		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
 </script>
 
 {#if nonNullish($missionControlStore)}

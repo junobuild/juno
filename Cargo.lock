@@ -787,7 +787,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.16-patch.2"
+version = "0.0.17"
 dependencies = [
  "base64 0.13.1",
  "candid",
@@ -817,7 +817,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.0.14"
+version = "0.0.15"
 dependencies = [
  "candid",
  "ciborium",
@@ -971,7 +971,7 @@ dependencies = [
 
 [[package]]
 name = "observatory"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -990,7 +990,7 @@ checksum = "3fdb12b2476b595f9358c5161aa467c2438859caa136dec86c26fdd2efe17b92"
 
 [[package]]
 name = "orbiter"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "candid",
  "ciborium",
@@ -1184,7 +1184,7 @@ checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
 
 [[package]]
 name = "satellite"
-version = "0.0.16"
+version = "0.0.17"
 dependencies = [
  "candid",
  "ic-cdk",

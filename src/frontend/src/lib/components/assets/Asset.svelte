@@ -18,6 +18,7 @@
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
 	import { authStore } from '$lib/stores/auth.store';
+	import DataEdit from '$lib/components/data/DataEdit.svelte';
 
 	const { store, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
@@ -79,6 +80,11 @@
 		{key ?? ''}
 
 		<svelte:fragment slot="actions">
+			<DataEdit>
+				<svelte:fragment slot="title">{$i18n.asset.edit}</svelte:fragment>
+				{$i18n.asset.edit_info}
+			</DataEdit>
+
 			<DataKeyDelete {deleteData}>
 				<svelte:fragment slot="title">{$i18n.asset.delete}</svelte:fragment>
 				{key}

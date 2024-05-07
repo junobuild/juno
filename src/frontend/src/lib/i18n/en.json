@@ -28,6 +28,7 @@
 		"user_menu": "User menu",
 		"version": "Version",
 		"delete": "Delete",
+		"edit": "Edit",
 		"skip": "Skip",
 		"done": "Done",
 		"from": "From",
@@ -392,7 +393,10 @@
 		"delete": "Delete asset?",
 		"delete_all": "Delete all assets?",
 		"description": "Description",
-		"full_path": "Full path"
+		"full_path": "Full path",
+		"edit": "Edit asset?",
+		"edit_info": "You can upload an asset to overwrite the existing data; please note that this action is irreversible.",
+		"upload_file": "Upload file"
 	},
 	"admin": {
 		"mission_control_new_version": "A new version of your mission control is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",

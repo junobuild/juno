@@ -36,9 +36,7 @@ pub fn init_certified_assets() {
                             asset_hashes.insert_rewrite_v2(&src_path, &asset, config);
                         }
                     }
-                    Routing::Rewrite(_) => (),
-                    Routing::Redirect(_) => (),
-                    Routing::RedirectRaw(_) => (),
+                    _ => (),
                 }
             }
         }

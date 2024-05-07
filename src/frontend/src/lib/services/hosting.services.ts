@@ -112,11 +112,9 @@ export const getAuthConfig = async ({
 		// TODO: load versions globally and use store value instead of fetching version again
 		const version = await satelliteVersion({ satelliteId, identity });
 
-		// TODO v0.0.17
-
 		// TODO: keep a list of those version checks and remove them incrementally
 		// Also would be cleaner than to have 0.0.17 hardcoded there and there...
-		const authConfigSupported = compare(version, '0.0.11') >= 0;
+		const authConfigSupported = compare(version, '0.0.17') >= 0;
 
 		if (!authConfigSupported) {
 			return { success: true };

@@ -8,6 +8,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { downloadWasm } from '$lib/services/upgrade.services';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 
 	export let currentVersion: string;
 	export let newerReleases: string[];
@@ -99,6 +100,11 @@
 		</p>
 	{/if}
 
+	<p class="warning">
+		<IconWarning />
+		{@html $i18n.canisters.upgrade_breaking_change}
+	</p>
+
 	<p>
 		{@html i18nFormat($i18n.canisters.upgrade_description, [
 			{
@@ -121,3 +127,13 @@
 		<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
 	</div>
 </form>
+
+<style lang="scss">
+	@use '../../styles/mixins/info';
+
+	.warning {
+		@include info.warning;
+
+		margin: var(--padding-2x) 0;
+	}
+</style>

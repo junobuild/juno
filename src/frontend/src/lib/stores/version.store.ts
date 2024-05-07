@@ -30,11 +30,11 @@ export interface VersionStore extends Readable<ReleasesVersion> {
 }
 
 const initVersionStore = (): VersionStore => {
-	const INITIAL = {
+	const INITIAL: ReleasesVersion = {
 		satellites: {},
 		missionControl: undefined,
 		orbiter: undefined
-	} as const;
+	};
 
 	const { subscribe, update, set } = writable<ReleasesVersion>(INITIAL);
 

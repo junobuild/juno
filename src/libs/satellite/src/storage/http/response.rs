@@ -112,7 +112,7 @@ pub fn build_redirect_response(
 }
 
 pub fn build_redirect_raw_response(
-    redirect_url: &String,
+    redirect_url: &str,
     iframe: &StorageConfigIFrame,
 ) -> HttpResponse {
     let headers = build_redirect_headers(redirect_url, iframe);

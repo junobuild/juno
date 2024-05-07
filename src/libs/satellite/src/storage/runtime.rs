@@ -27,16 +27,13 @@ pub fn init_certified_assets() {
         }
 
         for (source, destination) in state.heap.storage.config.rewrites.clone() {
-            if let Ok(routing) = get_routing(destination, &Vec::new(), false) {
-                match routing {
-                    Routing::Default(RoutingDefault { url: _, asset }) => {
-                        let src_path = rewrite_source_to_path(&source);
+            if let Ok(Routing::Default(RoutingDefault { url: _, asset })) =
+                get_routing(destination, &Vec::new(), false)
+            {
+                let src_path = rewrite_source_to_path(&source);
 
-                        if let Some((asset, _)) = asset {
-                            asset_hashes.insert_rewrite_v2(&src_path, &asset, config);
-                        }
-                    }
-                    _ => (),
+                if let Some((asset, _)) = asset {
+                    asset_hashes.insert_rewrite_v2(&src_path, &asset, config);
                 }
             }
         }

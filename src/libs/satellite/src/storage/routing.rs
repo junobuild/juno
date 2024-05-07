@@ -18,7 +18,7 @@ use ic_cdk::id;
 
 pub fn get_routing(
     url: String,
-    req_headers: &Vec<HeaderField>,
+    req_headers: &[HeaderField],
     include_alternative_routing: bool,
 ) -> Result<Routing, &'static str> {
     if url.is_empty() {
@@ -228,7 +228,7 @@ fn get_routing_redirect(path: &FullPath) -> Option<Routing> {
     None
 }
 
-fn get_routing_redirect_raw(url: &String, req_headers: &Vec<HeaderField>) -> Option<Routing> {
+fn get_routing_redirect_raw(url: &String, req_headers: &[HeaderField]) -> Option<Routing> {
     let raw = req_headers.iter().any(|HeaderField(key, value)| {
         key.eq_ignore_ascii_case("Host") && RAW_DOMAINS.iter().any(|domain| value.contains(domain))
     });

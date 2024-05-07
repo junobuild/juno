@@ -54,12 +54,16 @@ template {
 }
 
 a,
+button {
+	color: inherit;
+}
+
+a,
 input,
 button,
 select,
 textarea {
 	font-family: inherit;
-	color: inherit;
 }
 a {
 	color: inherit;

@@ -30,6 +30,9 @@
 	let description: string | undefined;
 	$: description = nonNullish(doc) ? fromNullable(doc.description) : undefined;
 
+	let version: bigint | undefined;
+	$: version = fromNullable(doc?.version ?? []);
+
 	let obj: unknown | undefined = undefined;
 	$: (async () =>
 		(obj = nonNullish(doc) && nonNullish(doc?.data) ? await fromArray(doc.data) : undefined))();
@@ -68,6 +71,15 @@
 				{formatToDate(doc.updated_at)}
 			</Value>
 		</div>
+
+		{#if nonNullish(version)}
+			<div class="version">
+				<Value>
+					<svelte:fragment slot="label">{$i18n.document.version}</svelte:fragment>
+					{version}
+				</Value>
+			</div>
+		{/if}
 
 		<div class="data">
 			<Value>
@@ -108,7 +120,8 @@
 	}
 
 	.data,
-	.date {
+	.date,
+	.version {
 		padding: 0 0 var(--padding-2x);
 	}
 

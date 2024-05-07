@@ -43,7 +43,7 @@
 
 	.collections {
 		grid-column-start: 1;
-		border-right: 2px solid var(--color-card-contrast);
+		border-right: 1px solid var(--color-card-contrast);
 
 		display: none;
 

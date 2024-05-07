@@ -369,6 +369,7 @@ interface I18nDocument {
 	owner: string;
 	created: string;
 	updated: string;
+	version: string;
 	data: string;
 	no_match: string;
 	delete: string;
@@ -404,6 +405,7 @@ interface I18nAsset {
 	headers: string;
 	created: string;
 	updated: string;
+	version: string;
 	no_match: string;
 	delete: string;
 	delete_all: string;

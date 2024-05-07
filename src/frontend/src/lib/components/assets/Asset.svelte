@@ -52,6 +52,9 @@
 	let description: string | undefined;
 	$: description = nonNullish(asset) ? fromNullable(asset.key.description) : undefined;
 
+	let version: bigint | undefined;
+	$: version = fromNullable(asset?.version ?? []);
+
 	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
 	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
 		if (isNullish(full_path) || full_path === '') {
@@ -140,6 +143,15 @@
 				{formatToDate(asset.updated_at)}
 			</Value>
 		</div>
+
+		{#if nonNullish(version)}
+			<div class="version">
+				<Value>
+					<svelte:fragment slot="label">{$i18n.asset.version}</svelte:fragment>
+					{version}
+				</Value>
+			</div>
+		{/if}
 	</article>
 {/if}
 
@@ -173,6 +185,7 @@
 
 	.data,
 	.date,
+	.version,
 	.headers-block {
 		padding: 0 0 var(--padding-2x);
 	}

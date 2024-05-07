@@ -71,6 +71,7 @@ impl Default for HeapState {
                 rewrites: StorageConfigRewrites::default(),
                 redirects: Some(StorageConfigRedirects::default()),
                 iframe: None,
+                raw_access: None,
             },
             custom_domains: HashMap::new(),
         };

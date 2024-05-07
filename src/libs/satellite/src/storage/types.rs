@@ -208,12 +208,19 @@ pub mod config {
         AllowAny,
     }
 
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum StorageConfigRawAccess {
+        Deny,
+        Allow,
+    }
+
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageConfig {
         pub headers: StorageConfigHeaders,
         pub rewrites: StorageConfigRewrites,
         pub redirects: Option<StorageConfigRedirects>,
         pub iframe: Option<StorageConfigIFrame>,
+        pub raw_access: Option<StorageConfigRawAccess>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -241,6 +248,7 @@ pub mod http_request {
         Default(RoutingDefault),
         Rewrite(RoutingRewrite),
         Redirect(RoutingRedirect),
+        RedirectRaw(RoutingRedirectRaw),
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -261,6 +269,12 @@ pub mod http_request {
     pub struct RoutingRedirect {
         pub url: String,
         pub redirect: StorageConfigRedirect,
+        pub iframe: StorageConfigIFrame,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct RoutingRedirectRaw {
+        pub redirect_url: String,
         pub iframe: StorageConfigIFrame,
     }
 }

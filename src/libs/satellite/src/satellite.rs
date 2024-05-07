@@ -26,7 +26,7 @@ use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::Rule;
 use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
 use crate::storage::http::response::{
-    build_asset_response, build_redirect_response, error_response,
+    build_asset_response, build_redirect_raw_response, build_redirect_response, error_response,
 };
 use crate::storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
@@ -42,7 +42,7 @@ use crate::storage::store::{
 };
 use crate::storage::types::domain::CustomDomains;
 use crate::storage::types::http_request::{
-    Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
+    Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
 };
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
@@ -365,7 +365,7 @@ pub fn http_request(
         return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
     }
 
-    let result = get_routing(url, true);
+    let result = get_routing(url, &req_headers, true);
 
     match result {
         Ok(routing) => match routing {
@@ -395,6 +395,10 @@ pub fn http_request(
                 redirect,
                 iframe,
             }) => build_redirect_response(url, certificate_version, &redirect, &iframe),
+            Routing::RedirectRaw(RoutingRedirectRaw {
+                redirect_url,
+                iframe,
+            }) => build_redirect_raw_response(&redirect_url, &iframe),
         },
         Err(err) => error_response(
             RESPONSE_STATUS_CODE_405,

@@ -1,23 +1,38 @@
 use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
-    RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH,
+    RAW_DOMAINS, RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, ROOT_404_HTML,
+    ROOT_INDEX_HTML, ROOT_PATH,
 };
+use crate::storage::http::types::HeaderField;
 use crate::storage::rewrites::{is_root_path, redirect_url, rewrite_url};
 use crate::storage::state::get_config;
 use crate::storage::store::get_public_asset_store;
+use crate::storage::types::config::StorageConfigRawAccess;
 use crate::storage::types::http_request::{
-    MapUrl, Routing, RoutingDefault, RoutingRedirect, RoutingRewrite,
+    MapUrl, Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
 };
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::{map_alternative_paths, map_url};
+use ic_cdk::id;
 
 pub fn get_routing(
     url: String,
+    req_headers: &[HeaderField],
     include_alternative_routing: bool,
 ) -> Result<Routing, &'static str> {
     if url.is_empty() {
         return Err("No url provided.");
+    }
+
+    // .raw. is not allowed per default for security reason.
+    let redirect_raw = get_routing_redirect_raw(&url, req_headers);
+
+    match redirect_raw {
+        None => (),
+        Some(redirect_raw) => {
+            return Ok(redirect_raw);
+        }
     }
 
     // The certification considers, and should only, the path of the URL. If query parameters, these should be omitted in the certificate.
@@ -207,6 +222,30 @@ fn get_routing_redirect(path: &FullPath) -> Option<Routing> {
                 redirect,
                 iframe: config.unwrap_iframe(),
             }));
+        }
+    }
+
+    None
+}
+
+fn get_routing_redirect_raw(url: &String, req_headers: &[HeaderField]) -> Option<Routing> {
+    let raw = req_headers.iter().any(|HeaderField(key, value)| {
+        key.eq_ignore_ascii_case("Host") && RAW_DOMAINS.iter().any(|domain| value.contains(domain))
+    });
+
+    if raw {
+        let config = get_config();
+
+        let allow_raw_access = config.unwrap_raw_access();
+
+        match allow_raw_access {
+            StorageConfigRawAccess::Deny => {
+                return Some(Routing::RedirectRaw(RoutingRedirectRaw {
+                    redirect_url: format!("https://{}.icp0.io{}", id().to_text(), url),
+                    iframe: config.unwrap_iframe(),
+                }));
+            }
+            StorageConfigRawAccess::Allow => (),
         }
     }
 

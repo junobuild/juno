@@ -112,7 +112,10 @@ pub fn delete_asset_store(
 pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let excluded_paths = vec![WELL_KNOWN_CUSTOM_DOMAINS.to_string()];
+    let excluded_paths = vec![
+        WELL_KNOWN_CUSTOM_DOMAINS.to_string(),
+        WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
+    ];
 
     let should_include_asset =
         |asset_path: &String| collection != "#dapp" || !excluded_paths.contains(asset_path);

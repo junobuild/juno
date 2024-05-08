@@ -8,7 +8,7 @@ pub const ENCODING_CERTIFICATION_ORDER: &[&str] = &[
     "deflate",
     "br",
 ];
-pub const BN_WELL_KNOWN_CUSTOM_DOMAINS: &str = "/.well-known/ic-domains";
+pub const WELL_KNOWN_CUSTOM_DOMAINS: &str = "/.well-known/ic-domains";
 pub const WELL_KNOWN_II_ALTERNATIVE_ORIGINS: &str = "/.well-known/ii-alternative-origins";
 
 pub const ROOT_PATH: &str = "/";

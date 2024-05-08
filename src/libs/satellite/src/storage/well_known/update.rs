@@ -1,5 +1,5 @@
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
-use crate::storage::constants::{BN_WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
+use crate::storage::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::storage::runtime::{
     delete_certified_asset, update_certified_asset as update_runtime_certified_asset,
 };
@@ -23,7 +23,7 @@ pub fn update_alternative_origins_asset(alternative_origins: &String) -> Result<
 }
 
 pub fn update_custom_domains_asset() -> Result<(), String> {
-    let full_path = BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string();
+    let full_path = WELL_KNOWN_CUSTOM_DOMAINS.to_string();
 
     let custom_domains = get_domains();
 

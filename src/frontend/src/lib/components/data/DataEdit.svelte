@@ -22,6 +22,7 @@
 		<p><slot /></p>
 
 		<input type="file" />
+		test
 
 		<div>
 			<button type="button" on:click|stopPropagation={close} disabled={$isBusy}>

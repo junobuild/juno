@@ -9,7 +9,6 @@ homepage.workspace = true
 documentation = "https://docs.rs/junobuild-satellite"
 readme = "README.md"
 license-file = "LICENSE.md"
-build = "../../build.rs"
 
 [package.metadata.docs.rs]
 targets = ["wasm32-unknown-unknown"]

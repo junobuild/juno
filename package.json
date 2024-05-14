@@ -49,7 +49,10 @@
 		"i18n": "node scripts/i18n.mjs && prettier --write ./src/frontend/src/lib/types/i18n.d.ts",
 		"observatory:statuses": "node scripts/observatory.statuses.mjs",
 		"clippy": "cargo clippy --target=wasm32-unknown-unknown",
-		"test": "vitest"
+		"test": "vitest",
+		"cargo:console": "scripts/cargo.sh console",
+		"cargo:observatory": "scripts/cargo.sh observatory",
+		"docker": "docker compose up"
 	},
 	"devDependencies": {
 		"@dfinity/identity-secp256k1": "^1.3.0",

@@ -10,6 +10,10 @@ WASM_MODULE="${MODULE}.wasm"
 
 cargo build --target wasm32-unknown-unknown -p $MODULE  --release --locked
 
+# Metadata for Docker image
+VERSION=$(cargo metadata --format-version=1 --no-deps | jq -r '.packages[] | select(.name == "'"$MODULE"'") | .version')
+node ./scripts/cargo.metadata.mjs "$MODULE" "$VERSION"
+
 # TODO: did
 
 # TODO: ic-wasm

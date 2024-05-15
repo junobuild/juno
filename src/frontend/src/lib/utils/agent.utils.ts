@@ -20,7 +20,7 @@ const getMainnetAgent = async (params: GetAgentParams) => {
 };
 
 const getLocalAgent = async (params: GetAgentParams) => {
-	const host = 'http://localhost:8000/';
+	const host = 'http://localhost:5987/';
 
 	const agent: HttpAgent = new HttpAgent({ ...params, host });
 

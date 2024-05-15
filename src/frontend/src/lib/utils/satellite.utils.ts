@@ -8,7 +8,7 @@ import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
 
 export const satelliteUrl = (satelliteId: string): string => {
 	if (nonNullish(localIdentityCanisterId)) {
-		return `http://${satelliteId}.localhost:8000`;
+		return `http://${satelliteId}.localhost:5987`;
 	}
 
 	return `https://${satelliteId}.icp0.io`;

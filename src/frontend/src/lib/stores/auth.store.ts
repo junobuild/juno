@@ -50,7 +50,7 @@ const initAuthStore = (): AuthStore => {
 				authClient = authClient ?? (await createAuthClient());
 
 				const identityProvider = nonNullish(localIdentityCanisterId)
-					? `http://${localIdentityCanisterId}.localhost:8000`
+					? `http://${localIdentityCanisterId}.localhost:5987`
 					: `https://identity.${domain ?? 'internetcomputer.org'}`;
 
 				await authClient?.login({

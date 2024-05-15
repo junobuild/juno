@@ -50,9 +50,12 @@
 		"observatory:statuses": "node scripts/observatory.statuses.mjs",
 		"clippy": "cargo clippy --target=wasm32-unknown-unknown",
 		"test": "vitest",
-		"cargo:console": "scripts/cargo.sh console",
-		"cargo:observatory": "scripts/cargo.sh observatory",
-		"docker": "docker compose up"
+		"build:console": "scripts/cargo.sh console",
+		"build:observatory": "scripts/cargo.sh observatory",
+		"build:satellite": "scripts/cargo.sh satellite",
+		"build:mission-control": "scripts/cargo.sh mission_control",
+		"build:orbiter": "scripts/cargo.sh orbiter",
+		"emulator": "docker compose up"
 	},
 	"devDependencies": {
 		"@dfinity/identity-secp256k1": "^1.3.0",

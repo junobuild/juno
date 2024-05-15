@@ -12,17 +12,15 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import { createActor } from '$lib/utils/actor.utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
+import {CONSOLE_CANISTER_ID, OBSERVATORY_CANISTER_ID} from "$lib/constants/constants";
 
 export const getConsoleActor = async (identity: OptionIdentity): Promise<ConsoleActor> => {
 	if (isNullish(identity)) {
 		throw new Error('No internet identity.');
 	}
 
-	// Canister IDs are automatically expanded to .env config - see vite.config.ts
-	const canisterId = import.meta.env.VITE_CONSOLE_CANISTER_ID;
-
 	return createActor({
-		canisterId,
+		canisterId: CONSOLE_CANISTER_ID,
 		idlFactory: idlFactorConsole,
 		identity
 	});
@@ -33,11 +31,8 @@ export const getObservatoryActor = async (identity: OptionIdentity): Promise<Obs
 		throw new Error('No internet identity.');
 	}
 
-	// Canister IDs are automatically expanded to .env config - see vite.config.ts
-	const canisterId = import.meta.env.VITE_OBSERVATORY_CANISTER_ID;
-
 	return createActor({
-		canisterId,
+		canisterId: OBSERVATORY_CANISTER_ID,
 		idlFactory: idlFactorObservatory,
 		identity
 	});

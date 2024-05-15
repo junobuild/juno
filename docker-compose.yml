@@ -1,6 +1,6 @@
 services:
   juno-console:
-    image: juno-console
+    image: junobuild/console:latest
     ports:
       - 5987:5987
     volumes:

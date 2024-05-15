@@ -18,10 +18,12 @@ const { version } = JSON.parse(json);
 const network = process.env.DFX_NETWORK ?? 'local';
 
 const readCanisterIds = ({ prefix }: { prefix?: string }): Record<string, string> => {
-	const canisterIdsJsonFile =
-		network === 'ic'
-			? join(process.cwd(), 'canister_ids.json')
-			: join(process.cwd(), '.dfx', 'local', 'canister_ids.json');
+	// TODO: We do not use DFX for local development anymore. Remove dfx for deployment to mainnet as well.
+	if (network !== 'ic') {
+		return {};
+	}
+
+	const canisterIdsJsonFile = join(process.cwd(), 'canister_ids.json');
 
 	try {
 		type Details = {

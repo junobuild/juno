@@ -1,13 +1,10 @@
-import { localIdentityCanisterId } from '$lib/constants/constants';
+import { DEV } from '$lib/constants/constants';
 import { HttpAgent, type Identity } from '@dfinity/agent';
-import { nonNullish } from '@dfinity/utils';
 
 export type GetAgentParams = { identity: Identity };
 
 export const getAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
-	const local = nonNullish(localIdentityCanisterId);
-
-	if (local) {
+	if (DEV) {
 		return getLocalAgent(params);
 	}
 

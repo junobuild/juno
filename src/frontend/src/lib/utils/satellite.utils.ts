@@ -1,13 +1,13 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { ListParams as ListParamsApi } from '$declarations/satellite/satellite.did';
-import { localIdentityCanisterId, PAGINATION } from '$lib/constants/constants';
+import { DEV, PAGINATION } from '$lib/constants/constants';
 import type { ListParams } from '$lib/types/list';
 import { metadataName } from '$lib/utils/metadata.utils';
 import { Principal } from '@dfinity/principal';
-import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { isNullish, toNullable } from '@dfinity/utils';
 
 export const satelliteUrl = (satelliteId: string): string => {
-	if (nonNullish(localIdentityCanisterId)) {
+	if (DEV) {
 		return `http://${satelliteId}.localhost:5987`;
 	}
 

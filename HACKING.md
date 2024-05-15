@@ -42,16 +42,18 @@ npm run emulator
 npm run dev
 ```
 
-Both the emulator and the front-end server support live reloading, facilitating a smoother development experience. 
+Both the emulator and the front-end server support live reloading, facilitating a smoother development experience.
 
 ## Building the Smart Contracts
 
 You can manually build the smart contracts using standard Rust and Cargo commands targeting `wasm32-unknown-unknown`. For example:
+
 ```
 cargo build --target wasm32-unknown-unknown -p console  --release
 ```
 
 However, these commands do not instruct the emulator to redeploy the resulting builds. Therefore, to automate both build and deployment, we provide the following npm commands:
+
 ```
 npm run build:console
 npm run build:observatory

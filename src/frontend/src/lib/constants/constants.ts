@@ -36,9 +36,9 @@ export const PAGINATION = 10n;
 
 export const DEV_FEATURES = import.meta.env.VITE_DEV_FEATURES === 'true';
 
-export const CMC_CANISTER_ID = "rkp4c-7iaaa-aaaaa-aaaca-cai";
-export const CONSOLE_CANISTER_ID = "cokmz-oiaaa-aaaal-aby6q-cai";
-export const OBSERVATORY_CANISTER_ID = "klbfr-lqaaa-aaaak-qbwsa-cai";
+export const CMC_CANISTER_ID = 'rkp4c-7iaaa-aaaaa-aaaca-cai';
+export const CONSOLE_CANISTER_ID = 'cokmz-oiaaa-aaaal-aby6q-cai';
+export const OBSERVATORY_CANISTER_ID = 'klbfr-lqaaa-aaaak-qbwsa-cai';
 
 /**
  * Revoked principals that must not be used.

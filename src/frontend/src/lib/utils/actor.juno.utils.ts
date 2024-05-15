@@ -8,11 +8,11 @@ import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import { CONSOLE_CANISTER_ID, OBSERVATORY_CANISTER_ID } from '$lib/constants/constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { createActor } from '$lib/utils/actor.utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
-import {CONSOLE_CANISTER_ID, OBSERVATORY_CANISTER_ID} from "$lib/constants/constants";
 
 export const getConsoleActor = async (identity: OptionIdentity): Promise<ConsoleActor> => {
 	if (isNullish(identity)) {

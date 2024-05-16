@@ -55,59 +55,6 @@
 			"declarations": {
 				"node_compatibility": true
 			}
-		},
-		"internet_identity": {
-			"type": "custom",
-			"candid": "https://github.com/dfinity/internet-identity/releases/download/release-2024-03-22/internet_identity.did",
-			"wasm": "https://github.com/dfinity/internet-identity/releases/download/release-2024-03-22/internet_identity_dev.wasm.gz",
-			"remote": {
-				"candid": "internet_identity.did",
-				"id": {
-					"ic": "rdmx6-jaaaa-aaaaa-aaadq-cai"
-				}
-			},
-			"declarations": {
-				"node_compatibility": true
-			}
-		},
-		"ledger": {
-			"type": "custom",
-			"candid": "ledger.did",
-			"wasm": "ledger.wasm",
-			"remote": {
-				"id": {
-					"ic": "ryjl3-tyaaa-aaaaa-aaaba-cai"
-				}
-			},
-			"declarations": {
-				"node_compatibility": true
-			}
-		},
-		"index": {
-			"type": "custom",
-			"candid": "index.did",
-			"wasm": "index.wasm",
-			"remote": {
-				"id": {
-					"ic": "qhbym-qaaaa-aaaaa-aaafq-cai"
-				}
-			},
-			"declarations": {
-				"node_compatibility": true
-			}
-		},
-		"cmc": {
-			"type": "custom",
-			"candid": "candid/cmc.did",
-			"wasm": "cmc.wasm",
-			"remote": {
-				"id": {
-					"ic": "rkp4c-7iaaa-aaaaa-aaaca-cai"
-				}
-			},
-			"declarations": {
-				"node_compatibility": true
-			}
 		}
 	},
 	"defaults": {

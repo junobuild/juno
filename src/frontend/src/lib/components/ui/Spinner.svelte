@@ -1,57 +1,65 @@
 <!-- adapted from pen: https://codepen.io/mimoh/pen/VmVqPB -->
 <script lang="ts">
-	export let inline = false;
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+
+	// Source of the animation: https://codepen.io/nelledejones/pen/gOOPWrK
+	export let animation: 'gelatine' | 'swing' = 'gelatine';
+
+	export let small = false;
 </script>
 
-<div class="spinner" class:inline />
+<div class="spinner" class:swing={animation === 'swing'} class:gelatine={animation === 'gelatine'}>
+	<IconSatellite size={small ? '16px' : '40px'} />
+</div>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
-	@include media.dark-theme {
-		.spinner {
-			border-color: var(--text-color);
+	/* -global- */
+	@keyframes -global-gelatine {
+		from,
+		to {
+			transform: scale(1, 1);
 		}
-	}
-
-	@include media.light-theme {
-		.spinner.inline {
-			border-color: var(--color-primary);
+		25% {
+			transform: scale(0.9, 1.1);
 		}
-	}
-
-	.spinner {
-		display: block;
-
-		background: transparent;
-		border: var(--spinner-border-size, 2px) solid var(--label-color);
-
-		margin: var(--spinner-margin);
-
-		width: var(--spinner-size);
-		height: var(--spinner-size);
-
-		border-radius: var(--border-radius);
-
-		&:not(.inline) {
-			position: absolute;
-			top: calc(50% - (var(--spinner-size) / 2));
-			left: calc(50% - (var(--spinner-size) / 2));
+		50% {
+			transform: scale(1.1, 0.9);
 		}
-
-		animation: spinner-rotate 1.2s infinite linear;
+		75% {
+			transform: scale(0.95, 1.05);
+		}
 	}
 
 	/* -global- */
-	@keyframes -global-spinner-rotate {
-		0% {
-			transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+	@keyframes -global-swing {
+		20% {
+			transform: rotate(15deg);
 		}
-		50% {
-			transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+		40% {
+			transform: rotate(-10deg);
+		}
+		60% {
+			transform: rotate(5deg);
+		}
+		80% {
+			transform: rotate(-5deg);
 		}
 		100% {
-			transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+			transform: rotate(0deg);
 		}
+	}
+
+	.gelatine {
+		animation: gelatine 0.5s infinite;
+	}
+
+	.swing {
+		animation: swing 2s ease infinite;
+	}
+
+	.spinner {
+		display: inline-flex;
 	}
 </style>

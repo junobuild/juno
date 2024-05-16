@@ -8,7 +8,8 @@
 </script>
 
 <div class="msg">
-	<Spinner inline />
+	<Spinner />
+
 	<slot />
 </div>
 

@@ -16,7 +16,7 @@
 
 	@include media.light-theme {
 		.spinner.inline {
-			border-color: black;
+			border-color: var(--color-primary);
 		}
 	}
 
@@ -24,7 +24,7 @@
 		display: block;
 
 		background: transparent;
-		border: var(--spinner-border-size, 3px) solid var(--label-color);
+		border: var(--spinner-border-size, 2px) solid var(--label-color);
 
 		margin: var(--spinner-margin);
 

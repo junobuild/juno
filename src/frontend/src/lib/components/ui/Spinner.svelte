@@ -1,15 +1,19 @@
-<!-- adapted from pen: https://codepen.io/mimoh/pen/VmVqPB -->
 <script lang="ts">
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import type { ComponentType } from 'svelte';
+	import IconRocket from '$lib/components/icons/IconRocket.svelte';
 
 	// Source of the animation: https://codepen.io/nelledejones/pen/gOOPWrK
 	export let animation: 'gelatine' | 'swing' = 'gelatine';
-
+	export let icon: 'satellite' | 'rocket' = 'rocket';
 	export let small = false;
+
+	let iconCmp: ComponentType;
+	$: iconCmp = icon === 'satellite' ? IconSatellite : IconRocket;
 </script>
 
 <div class="spinner" class:swing={animation === 'swing'} class:gelatine={animation === 'gelatine'}>
-	<IconSatellite size={small ? '16px' : '40px'} />
+	<svelte:component this={iconCmp} size={small ? '16px' : '40px'} />
 </div>
 
 <style lang="scss">

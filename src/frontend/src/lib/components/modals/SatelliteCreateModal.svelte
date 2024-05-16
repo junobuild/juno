@@ -14,8 +14,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
-	import Confetti from "$lib/components/ui/Confetti.svelte";
+	import Confetti from '$lib/components/ui/Confetti.svelte';
 
 	export let detail: JunoModalDetail;
 

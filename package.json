@@ -91,6 +91,7 @@
 	"dependencies": {
 		"@dfinity/agent": "^1.3.0",
 		"@dfinity/auth-client": "^1.3.0",
+		"@dfinity/cmc": "^3.0.5",
 		"@dfinity/identity": "^1.3.0",
 		"@dfinity/principal": "^1.3.0",
 		"@dfinity/utils": "^2.2.0",

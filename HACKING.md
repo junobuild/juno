@@ -6,6 +6,7 @@ This document explains how to run locally [Juno](https://juno.build).
 
 - [Local Development](#local-development)
 - [Building the Smart Contracts](#building-the-smart-contracts)
+- [Useful Administration Commands](#useful-administration-commands)
 - [Troubleshooting](#troubleshooting)
 
 ## Local Development
@@ -61,6 +62,14 @@ npm run build:satellite
 npm run build:mission-control
 npm run build:orbiter
 ```
+
+## Useful Administration Commands
+
+Here are a few commands that can be useful if you spend some time developing and contributing features for Juno:
+
+| Command                   | Description                                      |
+|---------------------------|--------------------------------------------------|
+| `npm run ledger:transfer` | Transfer 55 ICP to a Mission Control aka Wallet. |
 
 ## Troubleshooting
 

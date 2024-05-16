@@ -120,6 +120,7 @@
 	"satellites": {
 		"title": "Satellites",
 		"launch": "Launch a new satellite",
+		"loading_launchpad": "Loading your launchpad...",
 		"open": "Open satellite",
 		"create": "Create satellite",
 		"search": "Search",

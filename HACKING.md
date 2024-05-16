@@ -68,7 +68,7 @@ npm run build:orbiter
 Here are a few commands that can be useful if you spend some time developing and contributing features for Juno:
 
 | Command                   | Description                                      |
-|---------------------------|--------------------------------------------------|
+| ------------------------- | ------------------------------------------------ |
 | `npm run ledger:transfer` | Transfer 55 ICP to a Mission Control aka Wallet. |
 
 ## Troubleshooting

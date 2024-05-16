@@ -11,6 +11,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import { createOrbiter, loadOrbiters } from '$lib/services/orbiters.services';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -49,6 +50,8 @@
 
 <Modal on:junoClose>
 	{#if steps === 'ready'}
+		<Confetti />
+
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
 			<button on:click={close}>{$i18n.core.close}</button>
@@ -90,5 +93,9 @@
 
 	.msg {
 		@include overlay.message;
+
+		p {
+			margin: var(--padding-8x) 0 0;
+		}
 	}
 </style>

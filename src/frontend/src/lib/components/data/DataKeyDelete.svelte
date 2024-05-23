@@ -8,6 +8,8 @@
 </script>
 
 <DataDelete {deleteData}>
+	<svelte:fragment slot="button">{$i18n.core.delete}</svelte:fragment>
+
 	<slot name="title" slot="title" />
 
 	<Value>

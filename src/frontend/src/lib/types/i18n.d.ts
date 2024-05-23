@@ -376,6 +376,7 @@ interface I18nDocument {
 	no_match: string;
 	delete: string;
 	delete_all: string;
+	delete_all_documents: string;
 	description: string;
 	document_submission_success: string;
 	document_submission_failed: string;
@@ -411,6 +412,7 @@ interface I18nAsset {
 	no_match: string;
 	delete: string;
 	delete_all: string;
+	delete_all_assets: string;
 	description: string;
 	full_path: string;
 }
@@ -473,6 +475,7 @@ interface I18nCollections {
 	heap: string;
 	stable: string;
 	immutable: string;
+	clear_collection: string;
 }
 
 interface I18nSort {

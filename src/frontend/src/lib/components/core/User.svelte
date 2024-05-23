@@ -13,7 +13,6 @@
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import { analyticsLink } from '$lib/utils/nav.utils';
 	import { satelliteStore } from '$lib/stores/satellite.store';
-	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 
 	export let signIn = true;
 
@@ -21,9 +20,11 @@
 	let visible: boolean | undefined;
 
 	const signOutClose = async () => {
-		visible = false;
+		close();
 		await signOut();
 	};
+
+	const close = () => (visible = false);
 </script>
 
 {#if $authSignedInStore}
@@ -40,13 +41,9 @@
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
-		<a href="/mission-control" class="menu" role="menuitem" aria-haspopup="menu">
+		<a href="/mission-control" class="menu" role="menuitem" aria-haspopup="menu" on:click={close}>
 			<IconMissionControl />
 			<span>{$i18n.mission_control.title}</span>
-		</a>
-		<a href="/mission-control?tab=wallet" class="menu" role="menuitem" aria-haspopup="menu">
-			<IconWallet />
-			<span>{$i18n.wallet.title}</span>
 		</a>
 
 		<a
@@ -54,17 +51,18 @@
 			class="menu"
 			role="menuitem"
 			aria-haspopup="menu"
+			on:click={close}
 		>
 			<IconAnalytics />
 			<span>{$i18n.analytics.title}</span>
 		</a>
 
-		<a href="/monitoring" class="menu" role="menuitem" aria-haspopup="menu">
+		<a href="/monitoring" class="menu" role="menuitem" aria-haspopup="menu" on:click={close}>
 			<IconTelescope />
 			<span>{$i18n.observatory.title}</span>
 		</a>
 
-		<a href="/settings" class="menu" role="menuitem" aria-haspopup="menu">
+		<a href="/settings" class="menu" role="menuitem" aria-haspopup="menu" on:click={close}>
 			<IconRaygun />
 			<span>{$i18n.settings.title}</span>
 		</a>

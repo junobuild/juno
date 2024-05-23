@@ -17,6 +17,7 @@ mod satellite;
 mod storage;
 mod types;
 mod upgrade;
+mod version;
 
 use crate::auth::types::state::AuthenticationConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
@@ -28,6 +29,7 @@ use crate::storage::types::interface::{
 };
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListResults;
+use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_shared::types::interface::{
@@ -337,7 +339,7 @@ pub async fn deposit_cycles(args: DepositCyclesArgs) {
 #[doc(hidden)]
 #[query]
 pub fn version() -> String {
-    env!("SATELLITE_VERSION").to_string()
+    SATELLITE_VERSION.to_string()
 }
 
 #[doc(hidden)]

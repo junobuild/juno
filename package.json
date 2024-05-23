@@ -45,11 +45,17 @@
 		"console:topup": "dfx wallet send cokmz-oiaaa-aaaal-aby6q-cai 20000000000000",
 		"ledger:account-id": "node ./scripts/ledger.account-id.mjs",
 		"ledger:balance": "node scripts/ledger.balance.mjs",
-		"ledger:transfer": "node scripts/ledger.transfer.mjs",
+		"ledger:transfer": "scripts/ledger.transfer.sh",
 		"i18n": "node scripts/i18n.mjs && prettier --write ./src/frontend/src/lib/types/i18n.d.ts",
 		"observatory:statuses": "node scripts/observatory.statuses.mjs",
 		"clippy": "cargo clippy --target=wasm32-unknown-unknown",
-		"test": "vitest"
+		"test": "vitest",
+		"build:console": "scripts/cargo.sh console",
+		"build:observatory": "scripts/cargo.sh observatory",
+		"build:satellite": "scripts/cargo.sh satellite",
+		"build:mission-control": "scripts/cargo.sh mission_control",
+		"build:orbiter": "scripts/cargo.sh orbiter",
+		"emulator": "docker compose up"
 	},
 	"devDependencies": {
 		"@dfinity/identity-secp256k1": "^1.3.0",
@@ -85,6 +91,7 @@
 	"dependencies": {
 		"@dfinity/agent": "^1.3.0",
 		"@dfinity/auth-client": "^1.3.0",
+		"@dfinity/cmc": "^3.0.5",
 		"@dfinity/identity": "^1.3.0",
 		"@dfinity/principal": "^1.3.0",
 		"@dfinity/utils": "^2.2.0",
@@ -96,6 +103,7 @@
 		"idb-keyval": "^6.2.1",
 		"layercake": "^8.1.4",
 		"nanoid": "^5.0.7",
-		"semver": "^7.6.1"
+		"semver": "^7.6.1",
+		"svelte-confetti": "^2.0.1"
 	}
 }

@@ -1,13 +1,10 @@
-import { localIdentityCanisterId } from '$lib/constants/constants';
+import { DEV } from '$lib/constants/constants';
 import { HttpAgent, type Identity } from '@dfinity/agent';
-import { nonNullish } from '@dfinity/utils';
 
 export type GetAgentParams = { identity: Identity };
 
 export const getAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
-	const local = nonNullish(localIdentityCanisterId);
-
-	if (local) {
+	if (DEV) {
 		return getLocalAgent(params);
 	}
 
@@ -20,7 +17,7 @@ const getMainnetAgent = async (params: GetAgentParams) => {
 };
 
 const getLocalAgent = async (params: GetAgentParams) => {
-	const host = 'http://localhost:8000/';
+	const host = 'http://localhost:5987/';
 
 	const agent: HttpAgent = new HttpAgent({ ...params, host });
 

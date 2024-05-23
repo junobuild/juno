@@ -20,8 +20,8 @@ use crate::rules::assert_stores::{
 };
 use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::constants::{
-    ASSET_ENCODING_NO_COMPRESSION, BN_WELL_KNOWN_CUSTOM_DOMAINS, ENCODING_CERTIFICATION_ORDER,
-    ROOT_404_HTML, ROOT_INDEX_HTML, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
+    ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, ROOT_404_HTML, ROOT_INDEX_HTML,
+    WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
 use crate::storage::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
@@ -112,7 +112,10 @@ pub fn delete_asset_store(
 pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let excluded_paths = vec![BN_WELL_KNOWN_CUSTOM_DOMAINS.to_string()];
+    let excluded_paths = vec![
+        WELL_KNOWN_CUSTOM_DOMAINS.to_string(),
+        WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
+    ];
 
     let should_include_asset =
         |asset_path: &String| collection != "#dapp" || !excluded_paths.contains(asset_path);
@@ -606,7 +609,7 @@ fn assert_key(
     controllers: &Controllers,
 ) -> Result<(), &'static str> {
     // /.well-known/ic-domains is automatically generated for custom domains
-    assert_well_known_key(full_path, BN_WELL_KNOWN_CUSTOM_DOMAINS)?;
+    assert_well_known_key(full_path, WELL_KNOWN_CUSTOM_DOMAINS)?;
 
     // /.well-known/ii-alternative-origins is automatically generated for alternative origins
     assert_well_known_key(full_path, WELL_KNOWN_II_ALTERNATIVE_ORIGINS)?;

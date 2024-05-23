@@ -20,12 +20,4 @@ do
     generate_did_idl "$canister" "src/$canister"
 done
 
-generate_did_idl "cmc" "candid"
 generate_did_idl "ic" "candid"
-
-if [ "$ENV" != "github" ]
-then 
-  generate_did_idl "index" "."
-  generate_did_idl "ledger" "."
-  generate_did_idl "internet_identity" "."
-fi

@@ -1,9 +1,6 @@
 export const APP_VERSION = VITE_APP_VERSION;
 
-export const PROD = import.meta.env.PROD;
-
-export const localIdentityCanisterId: string | null | undefined = import.meta.env
-	.VITE_INTERNET_IDENTITY_CANISTER_ID as string | null | undefined;
+export const DEV = import.meta.env.DEV;
 
 // Workers
 export const AUTH_TIMER_INTERVAL = 1000;
@@ -35,6 +32,11 @@ export const DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION = 0.5;
 export const PAGINATION = 10n;
 
 export const DEV_FEATURES = import.meta.env.VITE_DEV_FEATURES === 'true';
+
+export const INTERNET_IDENTITY_CANISTER_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
+export const CMC_CANISTER_ID = 'rkp4c-7iaaa-aaaaa-aaaca-cai';
+export const CONSOLE_CANISTER_ID = 'cokmz-oiaaa-aaaal-aby6q-cai';
+export const OBSERVATORY_CANISTER_ID = 'klbfr-lqaaa-aaaak-qbwsa-cai';
 
 /**
  * Revoked principals that must not be used.

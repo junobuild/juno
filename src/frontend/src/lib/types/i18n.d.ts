@@ -127,6 +127,7 @@ interface I18nSign_in {
 interface I18nSatellites {
 	title: string;
 	launch: string;
+	loading_launchpad: string;
 	open: string;
 	create: string;
 	search: string;

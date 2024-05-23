@@ -2,13 +2,13 @@ import {
 	AUTH_MAX_TIME_TO_LIVE,
 	AUTH_POPUP_HEIGHT,
 	AUTH_POPUP_WIDTH,
-	localIdentityCanisterId
+	DEV,
+	INTERNET_IDENTITY_CANISTER_ID
 } from '$lib/constants/constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { createAuthClient } from '$lib/utils/auth.utils';
 import { popupCenter } from '$lib/utils/window.utils';
 import type { AuthClient } from '@dfinity/auth-client';
-import { nonNullish } from '@dfinity/utils';
 import { derived, writable, type Readable } from 'svelte/store';
 
 export interface AuthStoreData {
@@ -49,8 +49,8 @@ const initAuthStore = (): AuthStore => {
 			new Promise<void>(async (resolve, reject) => {
 				authClient = authClient ?? (await createAuthClient());
 
-				const identityProvider = nonNullish(localIdentityCanisterId)
-					? `http://${localIdentityCanisterId}.localhost:8000`
+				const identityProvider = DEV
+					? `http://${INTERNET_IDENTITY_CANISTER_ID}.localhost:5987`
 					: `https://identity.${domain ?? 'internetcomputer.org'}`;
 
 				await authClient?.login({

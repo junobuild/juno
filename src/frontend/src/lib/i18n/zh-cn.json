@@ -121,6 +121,7 @@
 	"satellites": {
 		"title": "Satellites",
 		"launch": "启动一个新的satellite",
+		"loading_launchpad": "Loading your launchpad...",
 		"open": "打开satellite",
 		"create": "创建 satellite",
 		"search": "Search",

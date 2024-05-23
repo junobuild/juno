@@ -14,7 +14,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -69,13 +69,14 @@
 
 <Modal on:junoClose>
 	{#if steps === 'ready'}
+		<Confetti />
+
 		<div class="msg">
-			<IconSatellite />
 			<p>{$i18n.satellites.ready}</p>
 			<button on:click={navigate}>{$i18n.core.continue}</button>
 		</div>
 	{:else if steps === 'in_progress'}
-		<SpinnerModal>
+		<SpinnerModal icon="satellite">
 			<p>{$i18n.satellites.initializing}</p>
 		</SpinnerModal>
 	{:else}
@@ -124,7 +125,7 @@
 		@include overlay.message;
 
 		p {
-			margin: 0;
+			margin: var(--padding-8x) 0 0;
 		}
 	}
 

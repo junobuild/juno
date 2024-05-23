@@ -81,6 +81,7 @@
 		position: relative;
 		height: 30px;
 		margin: 1.45rem;
+		background: none;
 	}
 
 	.text {
@@ -91,8 +92,13 @@
 		gap: var(--padding-0_5x);
 	}
 
+	.spinner {
+		color: var(--label-color);
+	}
+
 	@include media.dark-theme {
-		.text {
+		.text,
+		.spinner {
 			color: var(--value-color);
 		}
 	}

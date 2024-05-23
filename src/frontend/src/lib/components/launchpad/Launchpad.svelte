@@ -7,11 +7,11 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { satellitesStore } from '$lib/stores/satellite.store';
-	import Loading from '$lib/components/launchpad/Loading.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import { blur } from 'svelte/transition';
+	import { fade } from 'svelte/transition';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import Illustration from '$lib/components/launchpad/Illustration.svelte';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
 
 	$: $missionControlStore,
 		(async () => await loadSatellites({ missionControl: $missionControlStore }))();
@@ -28,15 +28,19 @@
 </script>
 
 {#if loading || ($satellitesStore?.length ?? 0n) === 0}
-	<section use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
-		{#if loading}
-			<Loading />
-		{:else}
+	{#if loading}
+		<div class="spinner" out:fade>
+			<Spinner />
+
+			<p>{$i18n.satellites.loading_launchpad}</p>
+		</div>
+	{:else}
+		<section use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
 			<SatelliteNew />
-		{/if}
-	</section>
+		</section>
+	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
-	<div in:blur use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
+	<div in:fade use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
 		<section>
 			<Cockpit />
 		</section>
@@ -75,5 +79,18 @@
 	div {
 		position: relative;
 		z-index: var(--z-index);
+	}
+
+	.spinner {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		transform: translate(-50%, -50%);
+
+		display: flex;
+		flex-direction: column;
+		justify-content: center;
+		align-items: center;
+		gap: var(--padding-2x);
 	}
 </style>

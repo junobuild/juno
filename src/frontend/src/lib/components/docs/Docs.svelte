@@ -64,8 +64,9 @@
 
 		<svelte:fragment slot="actions">
 			<DataCollectionDelete {deleteData}>
-				<svelte:fragment slot="title">{$i18n.document.delete_all}</svelte:fragment>
-				{$i18n.core.are_you_sure}
+				<svelte:fragment slot="button">{$i18n.collections.clear_collection}</svelte:fragment>
+				<svelte:fragment slot="title">{$i18n.collections.clear_collection}</svelte:fragment>
+				{$i18n.document.delete_all}
 			</DataCollectionDelete>
 		</svelte:fragment>
 	</DataCollectionHeader>

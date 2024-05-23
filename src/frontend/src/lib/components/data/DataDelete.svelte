@@ -58,7 +58,7 @@
 </script>
 
 <button class="menu" type="button" on:click={() => (visible = true)}
-	><IconDelete size="20px" /> {$i18n.core.delete}</button
+	><IconDelete size="20px" /> <slot name="button" /></button
 >
 
 <Confirmation bind:visible on:junoYes={deleteSelectedData} on:junoNo={close}>

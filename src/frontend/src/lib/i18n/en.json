@@ -349,7 +349,10 @@
 		"invalid_cycles_destination": "Invalid destination to transfer the cycles.",
 		"transfer_cycles": "Unexpected error(s) while transferring the cycles.",
 		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs.",
-		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication."
+		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication.",
+		"no_file_selected_for_upload": "No file was selected for the upload.",
+		"upload_error": "Unexpected error(s) while uploading the file.",
+		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload."
 	},
 	"document": {
 		"owner": "Owner",
@@ -397,7 +400,9 @@
 		"full_path": "Full path",
 		"edit": "Edit asset?",
 		"edit_info": "You can upload an asset to overwrite the existing data; please note that this action is irreversible.",
-		"upload_file": "Upload file"
+		"upload_file": "Upload a file",
+		"upload_description": "Select and upload a file to the collection <strong>{0}</strong>. You will be the owner, i.e. the user currently signed into the console.",
+		"upload": "Upload"
 	},
 	"admin": {
 		"mission_control_new_version": "A new version of your mission control is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",

@@ -349,7 +349,10 @@
 		"invalid_cycles_destination": "转移 cycles 的目的地无效.",
 		"transfer_cycles": "转移 cycles 是出现异常错误.",
 		"cannot_fetch_logs": "获取日志出现异常错误.",
-		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication."
+		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication.",
+		"no_file_selected_for_upload": "No file was selected for the upload.",
+		"upload_error": "Unexpected error(s) while uploading the file.",
+		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -397,7 +400,9 @@
 		"full_path": "完整路徑",
 		"edit": "Edit asset?",
 		"edit_info": "You can upload an asset to overwrite the existing data; please note that this action is irreversible.",
-		"upload_file": "Upload file"
+		"upload_file": "Upload a file",
+		"upload_description": "Select and upload a file to the collection {0}. You will be the owner, i.e. the user currently signed into the console.",
+		"upload": "Upload"
 	},
 	"admin": {
 		"mission_control_new_version": "你的mission control 有个新版本发布，你可以通过交互方式升级，或者 <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">命令行</a>.",

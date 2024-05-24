@@ -395,7 +395,7 @@
 		"version": "Version",
 		"no_match": "No asset matches your filters.",
 		"delete": "Delete asset?",
-		"delete_all": "You are about to delete all assets in the collection.",
+		"delete_all": "You are about to delete all assets in the collection <strong>{0}</strong>.",
 		"description": "Description",
 		"full_path": "Full path",
 		"edit": "Edit asset?",

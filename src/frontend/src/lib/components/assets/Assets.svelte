@@ -81,7 +81,12 @@
 			<DataCollectionDelete {deleteData}>
 				<svelte:fragment slot="button">{$i18n.collections.clear_collection}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.collections.clear_collection}</svelte:fragment>
-				{$i18n.asset.delete_all}
+				{@html i18nFormat($i18n.asset.delete_all, [
+					{
+						placeholder: '{0}',
+						value: collection ?? ''
+					}
+				])}
 			</DataCollectionDelete>
 		</svelte:fragment>
 	</DataCollectionHeader>

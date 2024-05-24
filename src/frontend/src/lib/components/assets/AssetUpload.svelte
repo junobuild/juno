@@ -100,7 +100,7 @@
 				{$i18n.core.cancel}
 			</button>
 
-			<button type="button" on:click|stopPropagation={upload} disabled={$isBusy}>
+			<button type="button" on:click|stopPropagation={upload} disabled={disableUpload}>
 				{$i18n.asset.upload}
 			</button>
 		</div>

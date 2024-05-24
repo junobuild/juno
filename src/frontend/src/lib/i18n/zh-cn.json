@@ -28,7 +28,6 @@
 		"user_menu": "用户菜单",
 		"version": "版本",
 		"delete": "删除",
-		"edit": "Edit",
 		"skip": "跳过",
 		"done": "完成",
 		"from": "从",
@@ -399,9 +398,10 @@
 		"description": "描述",
 		"full_path": "完整路徑",
 		"edit": "Edit asset?",
-		"edit_info": "You can upload an asset to overwrite the existing data; please note that this action is irreversible.",
 		"upload_file": "Upload a file",
+		"replace_file": "Replace file",
 		"upload_description": "Select and upload a file to the collection {0}. You will be the owner, i.e. the user currently signed into the console.",
+		"replace_description": "Select and upload a file to overwrite the existing data; please note that this action is irreversible.",
 		"upload": "Upload"
 	},
 	"admin": {

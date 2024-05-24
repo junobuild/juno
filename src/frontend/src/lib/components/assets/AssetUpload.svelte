@@ -6,11 +6,14 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { isNullish } from '@dfinity/utils';
+	import {fromNullable, isNullish, nonNullish} from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { uploadFile } from '@junobuild/core-peer';
 	import { container } from '$lib/utils/juno.utils';
 	import { authStore } from '$lib/stores/auth.store';
+	import type {AssetNoContent} from "$declarations/satellite/satellite.did";
+
+	export let asset: AssetNoContent | undefined;
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -60,6 +63,12 @@
 
 		try {
 			await uploadFile({
+				...(nonNullish(asset) && {
+					filename: asset.key.name,
+					fullPath: asset.key.full_path,
+					description: fromNullable(asset.key.description),
+					token: fromNullable(asset.key.token)
+				}),
 				collection,
 				data: file,
 				satellite: {

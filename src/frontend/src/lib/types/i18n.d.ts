@@ -31,7 +31,6 @@ interface I18nCore {
 	user_menu: string;
 	version: string;
 	delete: string;
-	edit: string;
 	skip: string;
 	done: string;
 	from: string;
@@ -418,9 +417,10 @@ interface I18nAsset {
 	description: string;
 	full_path: string;
 	edit: string;
-	edit_info: string;
 	upload_file: string;
+	replace_file: string;
 	upload_description: string;
+	replace_description: string;
 	upload: string;
 }
 

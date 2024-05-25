@@ -1,6 +1,6 @@
 import type { canister_log_record } from '$declarations/ic/ic.did';
 import type { Doc } from '$declarations/satellite/satellite.did';
-import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
+import {canisterLogs, canisterLogs as canisterLogsApi} from '$lib/api/ic.api';
 import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -32,11 +32,13 @@ export const listLogs = async ({
 	}
 
 	try {
-		const [fnLogs] = await Promise.all([
-			functionLogs({ satelliteId, identity })
-			// TODO: IC logs are not available on mainnet yet
-			// canisterLogs({ canisterId: satelliteId, identity })
+		const [fnLogs, icLogs] = await Promise.all([
+			functionLogs({ satelliteId, identity }),
+			canisterLogs({ canisterId: satelliteId, identity })
 		]);
+
+		// TODO: map icLogs if we ever get some...
+		console.log('Canister logs ->', icLogs);
 
 		return {
 			results: [...fnLogs]

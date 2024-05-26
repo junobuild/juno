@@ -5,11 +5,11 @@ import { existsSync, writeFileSync } from 'node:fs';
 import { get, type RequestOptions } from 'node:https';
 import { join } from 'node:path';
 
-const WASM_PATH_LOCAL = join(process.cwd(), '.dfx', 'local', 'canisters');
+const WASM_PATH_LOCAL = join(process.cwd(), 'target', 'deploy');
 
-const SATELLITE_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'satellite', 'satellite.wasm');
+const SATELLITE_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'satellite.wasm.gz');
 
-const ORBITER_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'orbiter', 'orbiter.wasm');
+const ORBITER_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'orbiter.wasm.gz');
 
 const SATELLITE_WASM_PATH_CI = join(process.cwd(), 'satellite.wasm.gz');
 export const SATELLITE_WASM_PATH = existsSync(SATELLITE_WASM_PATH_CI)

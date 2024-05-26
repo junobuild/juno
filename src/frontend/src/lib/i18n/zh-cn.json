@@ -40,7 +40,7 @@
 		"are_you_sure": "你确定？这个操作无法恢复.",
 		"attach": "附加",
 		"refresh": "刷新",
-		"open_website": "Open Juno website and documentation"
+		"open_website": "打开Juno网站以及文档"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -55,7 +55,7 @@
 		"top_up_title": "充值 {0}",
 		"upgrade_title": "升级 {0}",
 		"upgrade_description": "你的 {0} 将会升级到版本 <strong>v{1}</strong>.",
-		"upgrade_breaking_change": "The upgrade may contain some breaking changes. Please read the <a href=\"https://github.com/junobuild/juno/releases\" rel=\"external noopener noreferrer\" target=\"_blank\">release notes</a> carefully before continuing.",
+		"upgrade_breaking_change": "本次升级涉及到一些重大变更（影响已有功能），所以在继续之前请仔细阅读 <a href=\"https://github.com/junobuild/juno/releases\" rel=\"external noopener noreferrer\" target=\"_blank\">发布说明</a> .",
 		"more_upgrade": "这个升级后，还会有 {0} 个.",
 		"upgrade_note": "一共有 {0} 升级包为你的 {1}.升级应该按顺序执行, 从小版本开始依次向上升级. 这个过程会引导你升级到适配的版本. 重复这个流程直到你的 {2} 为最新版本.",
 		"upgrade_confirm": "你的 {0} 是<strong>扩展</strong>版本，升级为<strong>默认</strong>版本会丢失所有定制开发的功能，你确定要继续吗？",
@@ -101,7 +101,7 @@
 		"warning_orbiter_low_cycles": "你的 orbiter的 cycles 将要耗尽.",
 		"warning_satellite_heap_memory": "你的 satellite 堆内存已经达到 1 GB.",
 		"warning_orbiter_heap_memory": "你的 orbiter 堆内存已经达到 1 GB.",
-		"warning_indicator": "Warning: This segment requires your attention. Either stopping or running low on cycles."
+		"warning_indicator": "警告: 这个 segment 需要您的注意. 可能停止或者 cycles 余额不足."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -114,16 +114,16 @@
 		"quote_8": "Galaxies within grasp forever.",
 		"quote_9": "Navigate stars, chase dreams.",
 		"quote_10": "Universe: endless exploration awaits.",
-		"mission_control": "Sign in to your mission control.",
+		"mission_control": "登录你的 mission control.",
 		"internet_identity": "继续使用Internet Identity"
 	},
 	"satellites": {
 		"title": "Satellites",
 		"launch": "启动一个新的satellite",
-		"loading_launchpad": "Loading your launchpad...",
+		"loading_launchpad": "启动发射台...",
 		"open": "打开satellite",
 		"create": "创建 satellite",
-		"search": "Search",
+		"search": "查询",
 		"satellite": "Satellite",
 		"ready": "你的 satellite 可以使用.",
 		"initializing": "初始化你的新的 satellite...",
@@ -140,8 +140,8 @@
 		"stock_version": "默认版本",
 		"extended_version": "扩展版本",
 		"build": "Build",
-		"see_all_satellites": "See all satellites",
-		"go_launchpad": "Go to launchpad"
+		"see_all_satellites": "查看所有的 satellites",
+		"go_launchpad": "前往发射台"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -174,8 +174,8 @@
 		"title": "认证",
 		"users": "用户",
 		"methods": "登录方法",
-		"not_signed_in": "You are not signed in. Please sign in to continue.",
-		"session_expired": "You have been logged out because your session has expired."
+		"not_signed_in": "您还没有登录，请先登录.",
+		"session_expired": "您已经退出由于会话过期."
 	},
 	"datastore": {
 		"title": "数据池",
@@ -251,12 +251,12 @@
 		"failed": "失败",
 		"skip_delete_domain": "跳过在Boundary节点删除定制域名",
 		"files_deployed": "文件已经部署",
-		"set_auth_domain_title": "Set domain for authentication",
-		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the main domain for all user sign-ins?<br/><br/>This setting, also known as \"derivation origin\", ensures that users are recognized on your app, regardless of whether they use the default URL or any other custom domain you might configure later.<br><br>For example, a user signing on at {1} will receive the same identifier (principal) as when signing on at {2}.",
-		"update_auth_domain_title": "Update domain for authentication",
-		"update_auth_domain_question": "Your current domain for authentication is set to <strong>{1}</strong>. Would you like to change it to <strong>{0}</strong>?<br><br>If you answer \"Yes\", please be certain, as all existing users will no longer be recognized by your app.",
-		"domain_name": "Domain name",
-		"no_keep_domain": "No, keep {0}"
+		"set_auth_domain_title": "设置用于认证的域名",
+		"set_auth_domain_question": "你想用 <strong>{0}</strong> 作为所有用户登录的主域名吗？?<br/><br/>这个设置就是熟知的 \"derivation origin\", 用来确保无论用户通过任何域名登录，都会被识别为相同的身份(principal).",
+		"update_auth_domain_title": "更新用于认证的域名",
+		"update_auth_domain_question": "你当前设置的用于认证的域名是 <strong>{1}</strong>. 你想更改为 <strong>{0}</strong>?<br><br>如果你回答 \"是\", 请注意，现有的用户身份信息将无法被识别.",
+		"domain_name": "域名",
+		"no_keep_domain": "不, 保留 {0}"
 	},
 	"functions": {
 		"title": "功能",
@@ -299,9 +299,9 @@
 		"satellite_no_found": "Satellite没找到，返回 <a href=\"/\">开始</a>去找你的 satellites.",
 		"satellite_name_update": "试图修改你的 satellite 名字出现异常.",
 		"satellite_missing_name": "必须提供一个名字.",
-		"canister_stop": "停止 smart contract 中遇到异常错误",
-		"canister_start": "启动 smart contract 过程中遇到异常错误",
-		"canister_delete": "Unexpected error(s) while trying to delete the smart contract",
+		"canister_stop": "停止智能合约中遇到异常错误",
+		"canister_start": "启动智能合约过程中遇到异常错误",
+		"canister_delete": "删除智能合约时出现异常错误",
 		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
 		"load_credits": "无法加载你当前credit状态.",
 		"hosting_missing_domain_name": "必须提供一个域名.",
@@ -348,7 +348,7 @@
 		"invalid_cycles_destination": "转移 cycles 的目的地无效.",
 		"transfer_cycles": "转移 cycles 是出现异常错误.",
 		"cannot_fetch_logs": "获取日志出现异常错误.",
-		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication."
+		"authentication_config_loading": "加载认证配置信息时出现异常错误."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -358,7 +358,7 @@
 		"data": "数据",
 		"no_match": "找不到满足条件的文档.",
 		"delete": "删除文档?",
-		"delete_all": "You are about to delete all documents in the collection.",
+		"delete_all": "你将删除该文件集下的所有文档.",
 		"description": "描述",
 		"document_submission_success": "文件已成功提交！",
 		"document_submission_failed": "文件提交失败！"
@@ -372,11 +372,11 @@
 		"field_type_label": "类型",
 		"field_value_label": "值",
 		"field_value_placeholder": "字段值",
-		"field_type_boolean": "Boolean",
-		"field_type_string": "String",
-		"field_type_number": "Number",
-		"field_value_true": "True",
-		"field_value_false": "False",
+		"field_type_boolean": "布尔",
+		"field_type_string": "字符串",
+		"field_type_number": "数字",
+		"field_value_true": "真",
+		"field_value_false": "假",
 		"btn_add_field": "添加字段",
 		"btn_add_document": "添加文档",
 		"title_add_new_document": "添加新文档",
@@ -391,7 +391,7 @@
 		"version": "Version",
 		"no_match": "找不到满足条件的资料.",
 		"delete": "删除资料?",
-		"delete_all": "You are about to delete all assets in the collection.",
+		"delete_all": "你将删除该文件集下所有资料.",
 		"description": "描述",
 		"full_path": "完整路徑"
 	},
@@ -405,7 +405,7 @@
 		"profile": "简介",
 		"scope": "范围",
 		"delete": "删除控制者",
-		"info": "Information",
+		"info": "信息",
 		"delete_question": "删除选择的控制者?",
 		"controller_id": "ID",
 		"controller_id_placeholder": "Controller ID",
@@ -433,7 +433,7 @@
 		"read_permission": "只读权限",
 		"write_permission": "写入权限",
 		"max_size": "大小上限控制",
-		"max_size_placeholder": "以bytes为单位最大值",
+		"max_size_placeholder": "以字节为单位最大值",
 		"max_capacity": "最大容许范围",
 		"max_capacity_placeholder": "在当前文档集中文档数量最大值",
 		"public": "公开",
@@ -451,7 +451,7 @@
 		"heap": "堆栈",
 		"stable": "稳定",
 		"immutable": "将权限改为只读",
-		"clear_collection": "Clear collection"
+		"clear_collection": "清除文件集"
 	},
 	"sort": {
 		"title": "排序结果",
@@ -504,7 +504,7 @@
 	"examples": {
 		"tutorials": "指南",
 		"tutorial_framework_description": "用 Juno 和 {0}.",
-		"tutorial_serverless_functions": "Write serverless functions in {0}.",
+		"tutorial_serverless_functions": "在 {0} 里面写无服务函数.",
 		"tutorial_github_description": "用 GitHub Actions 发布.",
 		"tutorial_docker_description": "在Docker沙箱中运行 Satellite."
 	},

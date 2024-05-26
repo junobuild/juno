@@ -51,7 +51,7 @@ jobs:
           key: ${{ runner.os }}-didc-${{ env.DIDC_RELEASE }}
       - name: Install candid-extractor
         if: steps.cargo-cache.outputs.cache-hit != 'true'
-        run: cargo install candid-extractor
+        run: cargo install candid-extractor --locked
       - name: Generating candids
         run: ENV=github npm run generate
       - name: Save Cargo

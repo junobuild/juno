@@ -56,7 +56,6 @@ use crate::types::list::ListParams;
 use crate::types::list::ListResults;
 use crate::types::memory::Memory;
 use crate::types::state::{HeapState, RuntimeState, State};
-use crate::upgrade::init_custom_domains;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, trap};
@@ -124,9 +123,6 @@ pub fn post_upgrade() {
     let state = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
-
-    // TODO: to be removed - one time upgrade!
-    init_custom_domains();
 
     defer_init_certified_assets();
     defer_init_random_seed();

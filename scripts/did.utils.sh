@@ -5,7 +5,7 @@ function generate_did() {
 
   cargo build --manifest-path="$canister_root/Cargo.toml" \
       --target wasm32-unknown-unknown \
-      --release --package "$canister"
+      --release --locked --package "$canister"
 
   if [ -z "$did_filename" ]; then
     candid-extractor "target/wasm32-unknown-unknown/release/$canister.wasm" > "$canister_root/$canister.did"

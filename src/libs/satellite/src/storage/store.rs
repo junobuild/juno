@@ -494,44 +494,35 @@ fn secure_create_batch_impl(
     // Assert supported encoding type
     get_encoding_type(&init.encoding_type)?;
 
-    let key = create_batch_key(caller, &rule, &init);
-
-    Ok(create_batch_impl(key, init.encoding_type))
+    Ok(create_batch_impl(caller, init))
 }
 
-fn create_batch_key(
+fn create_batch_impl(
     caller: Principal,
-    rule: &Rule,
     InitAssetKey {
         token,
         name,
         collection,
+        encoding_type,
         full_path,
         description,
-        ..
-    }: &InitAssetKey,
-) -> AssetKey {
-    let current = get_state_asset(collection, full_path, rule);
-
-    let owner = current.as_ref().map_or(caller, |asset| asset.key.owner);
-
-    AssetKey {
-        full_path: full_path.clone(),
-        collection: collection.clone(),
-        owner,
-        token: token.clone(),
-        name: name.clone(),
-        description: description.clone(),
-    }
-}
-
-fn create_batch_impl(key: AssetKey, encoding_type: Option<EncodingType>) -> u128 {
+    }: InitAssetKey,
+) -> u128 {
     let now = time();
 
     unsafe {
         clear_expired_batches();
 
         NEXT_BATCH_ID += 1;
+
+        let key: AssetKey = AssetKey {
+            full_path,
+            collection,
+            owner: caller,
+            token,
+            name,
+            description,
+        };
 
         insert_runtime_batch(
             &NEXT_BATCH_ID,
@@ -767,7 +758,14 @@ fn commit_chunks(
         return Err("No chunk to commit.".to_string());
     }
 
-    let key = batch.clone().key;
+    // We clone the key with the new information provided by the upload (name, full_path, token, etc.) to set the new key.
+    // However, the owner remains the one who originally created the asset.
+    let owner = current.as_ref().map_or(caller, |asset| asset.key.owner);
+
+    let key = AssetKey {
+        owner,
+        ..batch.clone().key
+    };
 
     let now = time();
 

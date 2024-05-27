@@ -758,7 +758,14 @@ fn commit_chunks(
         return Err("No chunk to commit.".to_string());
     }
 
-    let key = batch.clone().key;
+    // We clone the key with the new information provided by the upload (name, full_path, token, etc.) to set the new key.
+    // However, the owner remains the one who originally created the asset.
+    let owner = current.as_ref().map_or(caller, |asset| asset.key.owner);
+
+    let key = AssetKey {
+        owner,
+        ..batch.clone().key
+    };
 
     let now = time();
 

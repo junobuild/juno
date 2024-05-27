@@ -682,7 +682,7 @@ describe('Satellite storage', () => {
 				beforeAll(async () => {
 					actor.setIdentity(controller);
 
-					const { set_rule, list_rules } = actor;
+					const { set_rule } = actor;
 
 					const setRule: SetRule = {
 						memory: toNullable(memory),

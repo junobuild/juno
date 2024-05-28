@@ -58,7 +58,7 @@
 				{/if}
 
 				{#if deleteButton}
-					<button class="text action start" type="button" on:click={() => dispatch('junoDelete')}>
+					<button class="text action start" type="button" on:click={() => dispatch('junoCloseActions')}>
 						<IconDelete size="24px" />
 					</button>
 				{/if}

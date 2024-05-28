@@ -365,6 +365,9 @@ interface I18nErrors {
 	transfer_cycles: string;
 	cannot_fetch_logs: string;
 	authentication_config_loading: string;
+	no_file_selected_for_upload: string;
+	upload_error: string;
+	no_collection_for_upload: string;
 }
 
 interface I18nDocument {
@@ -413,6 +416,12 @@ interface I18nAsset {
 	delete_all: string;
 	description: string;
 	full_path: string;
+	edit: string;
+	upload_file: string;
+	replace_file: string;
+	upload_description: string;
+	replace_description: string;
+	upload: string;
 }
 
 interface I18nAdmin {

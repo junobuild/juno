@@ -96,6 +96,7 @@
 		"@dfinity/principal": "^1.3.0",
 		"@dfinity/utils": "^2.2.0",
 		"@junobuild/admin": "^0.0.47",
+		"@junobuild/core-peer": "^0.0.16",
 		"@junobuild/ledger": "^0.0.31",
 		"@junobuild/utils": "^0.0.20",
 		"buffer": "^6.0.3",

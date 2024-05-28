@@ -172,7 +172,7 @@
 					bind:fieldType={field.fieldType}
 					bind:value={field.value}
 					deleteButton={fields.length > 1}
-					on:junoDelete={() => onDeleteFieldPressed(i)}
+					on:junoCloseActions={() => onDeleteFieldPressed(i)}
 				/>
 			{/each}
 

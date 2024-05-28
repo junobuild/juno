@@ -348,7 +348,10 @@
 		"invalid_cycles_destination": "转移 cycles 的目的地无效.",
 		"transfer_cycles": "转移 cycles 是出现异常错误.",
 		"cannot_fetch_logs": "获取日志出现异常错误.",
-		"authentication_config_loading": "加载认证配置信息时出现异常错误."
+		"authentication_config_loading": "加载认证配置信息时出现异常错误.",
+		"no_file_selected_for_upload": "No file was selected for the upload.",
+		"upload_error": "Unexpected error(s) while uploading the file.",
+		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -391,9 +394,15 @@
 		"version": "Version",
 		"no_match": "找不到满足条件的资料.",
 		"delete": "删除资料?",
-		"delete_all": "你将删除该文件集下所有资料.",
+		"delete_all": "You are about to delete <strong>all assets</strong> in the collection <strong>{0}</strong>.",
 		"description": "描述",
-		"full_path": "完整路徑"
+		"full_path": "完整路徑",
+		"edit": "Edit asset?",
+		"upload_file": "Upload a file",
+		"replace_file": "Replace file",
+		"upload_description": "Select and upload a file to the collection {0}. You will be the owner, i.e. the user currently signed into the console.",
+		"replace_description": "Select and upload a file to overwrite the existing data.",
+		"upload": "Upload"
 	},
 	"admin": {
 		"mission_control_new_version": "你的mission control 有个新版本发布，你可以通过交互方式升级，或者 <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">命令行</a>.",

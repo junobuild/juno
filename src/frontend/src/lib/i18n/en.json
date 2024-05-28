@@ -348,7 +348,10 @@
 		"invalid_cycles_destination": "Invalid destination to transfer the cycles.",
 		"transfer_cycles": "Unexpected error(s) while transferring the cycles.",
 		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs.",
-		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication."
+		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication.",
+		"no_file_selected_for_upload": "No file was selected for the upload.",
+		"upload_error": "Unexpected error(s) while uploading the file.",
+		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload."
 	},
 	"document": {
 		"owner": "Owner",
@@ -391,9 +394,15 @@
 		"version": "Version",
 		"no_match": "No asset matches your filters.",
 		"delete": "Delete asset?",
-		"delete_all": "You are about to delete all assets in the collection.",
+		"delete_all": "You are about to delete <strong>all assets</strong> in the collection <strong>{0}</strong>.",
 		"description": "Description",
-		"full_path": "Full path"
+		"full_path": "Full path",
+		"edit": "Edit asset?",
+		"upload_file": "Upload a file",
+		"replace_file": "Replace file",
+		"upload_description": "Select and upload a file to the collection <strong>{0}</strong>. You will be the owner, i.e. the user currently signed into the console.",
+		"replace_description": "Select and upload a file to overwrite the existing data.",
+		"upload": "Upload"
 	},
 	"admin": {
 		"mission_control_new_version": "A new version of your mission control is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",

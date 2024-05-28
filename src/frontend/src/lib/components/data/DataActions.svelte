@@ -8,7 +8,7 @@
 	let button: HTMLButtonElement | undefined;
 </script>
 
-<svelte:window on:junoDelete={() => (visible = false)} />
+<svelte:window on:junoCloseActions={() => (visible = false)} />
 
 <button
 	class="icon"

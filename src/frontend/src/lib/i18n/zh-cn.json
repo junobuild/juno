@@ -349,9 +349,9 @@
 		"transfer_cycles": "转移 cycles 是出现异常错误.",
 		"cannot_fetch_logs": "获取日志出现异常错误.",
 		"authentication_config_loading": "加载认证配置信息时出现异常错误.",
-        "no_file_selected_for_upload": "No file was selected for the upload.",
-        "upload_error": "Unexpected error(s) while uploading the file.",
-        "no_collection_for_upload": "Unexpected error. No collection is selected for the upload."
+		"no_file_selected_for_upload": "No file was selected for the upload.",
+		"upload_error": "Unexpected error(s) while uploading the file.",
+		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -394,8 +394,8 @@
 		"version": "Version",
 		"no_match": "找不到满足条件的资料.",
 		"delete": "删除资料?",
-        "delete_all": "You are about to delete all assets in the collection <strong>{0}</strong>.",
-        "description": "描述",
+		"delete_all": "You are about to delete all assets in the collection <strong>{0}</strong>.",
+		"description": "描述",
 		"full_path": "完整路徑",
 		"edit": "Edit asset?",
 		"upload_file": "Upload a file",

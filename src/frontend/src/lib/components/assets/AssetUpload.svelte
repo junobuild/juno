@@ -6,12 +6,12 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import {fromNullable, isNullish, nonNullish} from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { uploadFile } from '@junobuild/core-peer';
 	import { container } from '$lib/utils/juno.utils';
 	import { authStore } from '$lib/stores/auth.store';
-	import type {AssetNoContent} from "$declarations/satellite/satellite.did";
+	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 
 	export let asset: AssetNoContent | undefined;
 

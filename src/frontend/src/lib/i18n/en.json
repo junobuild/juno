@@ -401,7 +401,7 @@
 		"upload_file": "Upload a file",
 		"replace_file": "Replace file",
 		"upload_description": "Select and upload a file to the collection <strong>{0}</strong>. You will be the owner, i.e. the user currently signed into the console.",
-		"replace_description": "Select and upload a file to overwrite the existing data; please note that this action is irreversible.",
+		"replace_description": "Select and upload a file to overwrite the existing data.",
 		"upload": "Upload"
 	},
 	"admin": {

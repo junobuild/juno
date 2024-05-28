@@ -18,12 +18,16 @@
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
 	import { authStore } from '$lib/stores/auth.store';
-	import AssetUpload from "$lib/components/assets/AssetUpload.svelte";
+	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
+	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 
 	const { store, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
 
 	const { store: rulesStore }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
+
+	const { resetPage, list }: PaginationContext<AssetNoContent> =
+		getContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY);
 
 	let key: string | undefined;
 	$: key = $store?.key;
@@ -73,6 +77,12 @@
 
 		resetData();
 	};
+
+	const reload = async () => {
+		resetPage();
+		resetData();
+		await list();
+	};
 </script>
 
 <div class="title doc">
@@ -80,7 +90,7 @@
 		{key ?? ''}
 
 		<svelte:fragment slot="actions">
-			<AssetUpload on:junoUploaded={resetData} {asset}>
+			<AssetUpload on:junoUploaded={reload} {asset}>
 				<svelte:fragment slot="action">{$i18n.asset.replace_file}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.asset.replace_file}</svelte:fragment>
 				{$i18n.asset.replace_description}

@@ -13,7 +13,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 
-	export let asset: AssetNoContent | undefined;
+	export let asset: AssetNoContent | undefined = undefined;
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 

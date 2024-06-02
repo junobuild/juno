@@ -8,18 +8,22 @@ import { join } from 'node:path';
 const WASM_PATH_LOCAL = join(process.cwd(), 'target', 'deploy');
 
 const SATELLITE_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'satellite.wasm.gz');
-
-const ORBITER_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'orbiter.wasm.gz');
-
 const SATELLITE_WASM_PATH_CI = join(process.cwd(), 'satellite.wasm.gz');
 export const SATELLITE_WASM_PATH = existsSync(SATELLITE_WASM_PATH_CI)
 	? SATELLITE_WASM_PATH_CI
 	: SATELLITE_WASM_PATH_LOCAL;
 
+const ORBITER_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'orbiter.wasm.gz');
 const ORBITER_WASM_PATH_CI = join(process.cwd(), 'orbiter.wasm.gz');
 export const ORBITER_WASM_PATH = existsSync(ORBITER_WASM_PATH_CI)
 	? ORBITER_WASM_PATH_CI
 	: ORBITER_WASM_PATH_LOCAL;
+
+const CONSOLE_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'console.wasm.gz');
+const CONSOLE_WASM_PATH_CI = join(process.cwd(), 'console.wasm.gz');
+export const CONSOLE_WASM_PATH = existsSync(CONSOLE_WASM_PATH_CI)
+	? CONSOLE_WASM_PATH_CI
+	: CONSOLE_WASM_PATH_LOCAL;
 
 export const controllersInitArgs = (controller: Identity): ArrayBuffer =>
 	IDL.encode(
@@ -55,6 +59,9 @@ export const downloadSatellite = async (version: string) =>
 
 export const downloadOrbiter = async (version: string): Promise<string> =>
 	download(`orbiter-v${version}.wasm.gz`);
+
+export const downloadConsole = async (version: string): Promise<string> =>
+	download(`console-v${version}.wasm.gz`);
 
 const download = async (wasm: string): Promise<string> => {
 	const destination = join(process.cwd(), wasm);

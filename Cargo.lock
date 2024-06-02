@@ -252,6 +252,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-macros",
  "ic-ledger-types",
+ "ic-stable-structures",
  "junobuild-shared",
  "serde",
  "serde_cbor",

@@ -7,6 +7,7 @@ mod store;
 mod types;
 mod upgrade;
 mod wasm;
+mod memory;
 
 use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;

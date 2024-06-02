@@ -5,7 +5,6 @@ mod guards;
 mod impls;
 mod store;
 mod types;
-mod upgrade;
 mod wasm;
 
 use crate::factory::mission_control::init_user_mission_control;
@@ -28,7 +27,6 @@ use crate::types::state::{
     Fees, InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases,
     StableState, State,
 };
-use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
 use ic_cdk::api::caller;
 use ic_cdk::storage::stable_restore;
@@ -74,9 +72,7 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
-
-    let stable = StableState::from(&upgrade_stable);
+    let (stable,): (StableState,) = stable_restore().unwrap();
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
 }

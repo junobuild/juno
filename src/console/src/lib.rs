@@ -26,7 +26,7 @@ use crate::store::{
 use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
     Fees, InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases,
-    StableState, State,
+    HeapState, State,
 };
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
@@ -54,7 +54,7 @@ fn init() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            stable: StableState {
+            heap: HeapState {
                 mission_controls: HashMap::new(),
                 payments: HashMap::new(),
                 releases: Releases::default(),
@@ -69,16 +69,16 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| storage::stable_save((&state.borrow().stable,)).unwrap());
+    STATE.with(|state| storage::stable_save((&state.borrow().heap,)).unwrap());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
     let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
 
-    let stable = StableState::from(&upgrade_stable);
+    let stable = HeapState::from(&upgrade_stable);
 
-    STATE.with(|state| *state.borrow_mut() = State { stable });
+    STATE.with(|state| *state.borrow_mut() = State { heap: stable });
 }
 
 /// Mission control center and satellite releases and wasm
@@ -97,15 +97,15 @@ fn load_release(segment: Segment, blob: Vec<u8>, version: String) -> LoadRelease
     let total: usize = match segment {
         Segment::Satellite => {
             load_satellite_release(&blob, &version);
-            STATE.with(|state| state.borrow().stable.releases.satellite.wasm.len())
+            STATE.with(|state| state.borrow().heap.releases.satellite.wasm.len())
         }
         Segment::MissionControl => {
             load_mission_control_release(&blob, &version);
-            STATE.with(|state| state.borrow().stable.releases.mission_control.wasm.len())
+            STATE.with(|state| state.borrow().heap.releases.mission_control.wasm.len())
         }
         Segment::Orbiter => {
             load_orbiter_release(&blob, &version);
-            STATE.with(|state| state.borrow().stable.releases.orbiter.wasm.len())
+            STATE.with(|state| state.borrow().heap.releases.orbiter.wasm.len())
         }
     };
 

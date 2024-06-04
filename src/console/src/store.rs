@@ -2,7 +2,7 @@ use crate::constants::E8S_PER_ICP;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     Fee, Fees, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl,
-    MissionControls, Rate, RateConfig, StableState, Wasm,
+    MissionControls, Rate, RateConfig, HeapState, Wasm,
 };
 use crate::STATE;
 use ic_cdk::api::time;
@@ -19,12 +19,12 @@ use std::cmp::min;
 /// Mission control centers
 
 pub fn get_mission_control(user: &UserId) -> Result<Option<MissionControl>, &'static str> {
-    STATE.with(|state| get_mission_control_impl(user, &state.borrow().stable))
+    STATE.with(|state| get_mission_control_impl(user, &state.borrow().heap))
 }
 
 fn get_mission_control_impl(
     user: &UserId,
-    state: &StableState,
+    state: &HeapState,
 ) -> Result<Option<MissionControl>, &'static str> {
     let mission_control = state.mission_controls.get(user);
 
@@ -45,14 +45,14 @@ pub fn get_existing_mission_control(
     mission_control_id: &MissionControlId,
 ) -> Result<MissionControl, &'static str> {
     STATE.with(|state| {
-        get_existing_mission_control_impl(user, mission_control_id, &state.borrow().stable)
+        get_existing_mission_control_impl(user, mission_control_id, &state.borrow().heap)
     })
 }
 
 fn get_existing_mission_control_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
-    state: &StableState,
+    state: &HeapState,
 ) -> Result<MissionControl, &'static str> {
     let existing_mission_control = state.mission_controls.get(user);
 
@@ -72,18 +72,18 @@ fn get_existing_mission_control_impl(
 }
 
 pub fn list_mission_controls() -> MissionControls {
-    STATE.with(|state| list_mission_controls_impl(&state.borrow().stable))
+    STATE.with(|state| list_mission_controls_impl(&state.borrow().heap))
 }
 
-fn list_mission_controls_impl(state: &StableState) -> MissionControls {
+fn list_mission_controls_impl(state: &HeapState) -> MissionControls {
     state.mission_controls.clone()
 }
 
 pub fn init_empty_mission_control(user: &UserId) {
-    STATE.with(|state| init_empty_mission_control_impl(user, &mut state.borrow_mut().stable))
+    STATE.with(|state| init_empty_mission_control_impl(user, &mut state.borrow_mut().heap))
 }
 
-fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
+fn init_empty_mission_control_impl(user: &UserId, state: &mut HeapState) {
     let now = time();
 
     let mission_control = MissionControl {
@@ -99,14 +99,14 @@ fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
 
 pub fn add_mission_control(user: &UserId, mission_control_id: &MissionControlId) -> MissionControl {
     STATE.with(|state| {
-        add_mission_control_impl(user, mission_control_id, &mut state.borrow_mut().stable)
+        add_mission_control_impl(user, mission_control_id, &mut state.borrow_mut().heap)
     })
 }
 
 fn add_mission_control_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
-    state: &mut StableState,
+    state: &mut HeapState,
 ) -> MissionControl {
     let now = time();
 
@@ -129,20 +129,20 @@ fn add_mission_control_impl(
 }
 
 pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {
-    STATE.with(|state| delete_mission_control_impl(user, &mut state.borrow_mut().stable))
+    STATE.with(|state| delete_mission_control_impl(user, &mut state.borrow_mut().heap))
 }
 
-fn delete_mission_control_impl(user: &UserId, state: &mut StableState) -> Option<MissionControl> {
+fn delete_mission_control_impl(user: &UserId, state: &mut HeapState) -> Option<MissionControl> {
     state.mission_controls.remove(user)
 }
 
 /// Credits
 
 pub fn get_credits(user: &UserId) -> Result<Tokens, &'static str> {
-    STATE.with(|state| get_credits_impl(user, &state.borrow().stable))
+    STATE.with(|state| get_credits_impl(user, &state.borrow().heap))
 }
 
-fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'static str> {
+fn get_credits_impl(user: &UserId, state: &HeapState) -> Result<Tokens, &'static str> {
     let existing_mission_control = state.mission_controls.get(user);
 
     match existing_mission_control {
@@ -175,19 +175,19 @@ pub fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Toke
 
 pub fn use_credits(user: &UserId) -> Result<Tokens, &'static str> {
     STATE.with(|state| {
-        update_credits_impl(user, false, &E8S_PER_ICP, &mut state.borrow_mut().stable)
+        update_credits_impl(user, false, &E8S_PER_ICP, &mut state.borrow_mut().heap)
     })
 }
 
 pub fn add_credits(user: &UserId, credits: &Tokens) -> Result<Tokens, &'static str> {
-    STATE.with(|state| update_credits_impl(user, true, credits, &mut state.borrow_mut().stable))
+    STATE.with(|state| update_credits_impl(user, true, credits, &mut state.borrow_mut().heap))
 }
 
 fn update_credits_impl(
     user: &UserId,
     increment: bool,
     credits: &Tokens,
-    state: &mut StableState,
+    state: &mut HeapState,
 ) -> Result<Tokens, &'static str> {
     let existing_mission_control = state.mission_controls.get(user);
 
@@ -224,20 +224,20 @@ fn update_credits_impl(
 /// Transactions
 
 pub fn is_known_payment(block_index: &BlockIndex) -> bool {
-    STATE.with(|state| state.borrow_mut().stable.payments.contains_key(block_index))
+    STATE.with(|state| state.borrow_mut().heap.payments.contains_key(block_index))
 }
 
 pub fn insert_new_payment(
     user: &UserId,
     block_index: &BlockIndex,
 ) -> Result<Payment, &'static str> {
-    STATE.with(|state| insert_new_payment_impl(user, block_index, &mut state.borrow_mut().stable))
+    STATE.with(|state| insert_new_payment_impl(user, block_index, &mut state.borrow_mut().heap))
 }
 
 fn insert_new_payment_impl(
     user: &UserId,
     block_index: &BlockIndex,
-    state: &mut StableState,
+    state: &mut HeapState,
 ) -> Result<Payment, &'static str> {
     let existing_mission_control = state.mission_controls.get(user);
 
@@ -263,12 +263,12 @@ fn insert_new_payment_impl(
 }
 
 pub fn update_payment_completed(block_index: &BlockIndex) -> Result<Payment, &'static str> {
-    STATE.with(|state| update_payment_completed_impl(block_index, &mut state.borrow_mut().stable))
+    STATE.with(|state| update_payment_completed_impl(block_index, &mut state.borrow_mut().heap))
 }
 
 fn update_payment_completed_impl(
     block_index: &BlockIndex,
-    state: &mut StableState,
+    state: &mut HeapState,
 ) -> Result<Payment, &'static str> {
     let payment = state.payments.get(block_index);
 
@@ -301,7 +301,7 @@ pub fn update_payment_refunded(
         update_payment_refunded_impl(
             block_index_payment,
             block_index_refunded,
-            &mut state.borrow_mut().stable,
+            &mut state.borrow_mut().heap,
         )
     })
 }
@@ -309,7 +309,7 @@ pub fn update_payment_refunded(
 fn update_payment_refunded_impl(
     block_index_payment: &BlockIndex,
     block_index_refunded: &BlockIndex,
-    state: &mut StableState,
+    state: &mut HeapState,
 ) -> Result<Payment, &'static str> {
     let payment = state.payments.get(block_index_payment);
 
@@ -339,14 +339,14 @@ fn update_payment_refunded_impl(
 /// Wasm
 
 pub fn reset_satellite_release() {
-    STATE.with(|state| reset_satellite_release_impl(&mut state.borrow_mut().stable))
+    STATE.with(|state| reset_satellite_release_impl(&mut state.borrow_mut().heap))
 }
 
 pub fn get_satellite_release_version() -> Option<String> {
-    STATE.with(|state| state.borrow().stable.releases.satellite.version.clone())
+    STATE.with(|state| state.borrow().heap.releases.satellite.version.clone())
 }
 
-fn reset_satellite_release_impl(state: &mut StableState) {
+fn reset_satellite_release_impl(state: &mut HeapState) {
     state.releases.satellite = Wasm {
         wasm: Vec::new(),
         version: None,
@@ -354,10 +354,10 @@ fn reset_satellite_release_impl(state: &mut StableState) {
 }
 
 pub fn load_satellite_release(blob: &[u8], version: &str) {
-    STATE.with(|state| load_satellite_release_impl(blob, version, &mut state.borrow_mut().stable))
+    STATE.with(|state| load_satellite_release_impl(blob, version, &mut state.borrow_mut().heap))
 }
 
-fn load_satellite_release_impl(blob: &[u8], version: &str, state: &mut StableState) {
+fn load_satellite_release_impl(blob: &[u8], version: &str, state: &mut HeapState) {
     let wasm = state
         .releases
         .satellite
@@ -376,14 +376,14 @@ fn load_satellite_release_impl(blob: &[u8], version: &str, state: &mut StableSta
 // TODO: there is probably a way to refactor this to avoid duplicate code
 
 pub fn reset_mission_control_release() {
-    STATE.with(|state| reset_mission_control_release_impl(&mut state.borrow_mut().stable))
+    STATE.with(|state| reset_mission_control_release_impl(&mut state.borrow_mut().heap))
 }
 
 pub fn get_mission_control_release_version() -> Option<String> {
     STATE.with(|state| {
         state
             .borrow()
-            .stable
+            .heap
             .releases
             .mission_control
             .version
@@ -391,7 +391,7 @@ pub fn get_mission_control_release_version() -> Option<String> {
     })
 }
 
-fn reset_mission_control_release_impl(state: &mut StableState) {
+fn reset_mission_control_release_impl(state: &mut HeapState) {
     state.releases.mission_control = Wasm {
         wasm: Vec::new(),
         version: None,
@@ -400,11 +400,11 @@ fn reset_mission_control_release_impl(state: &mut StableState) {
 
 pub fn load_mission_control_release(blob: &[u8], version: &str) {
     STATE.with(|state| {
-        load_mission_control_release_impl(blob, version, &mut state.borrow_mut().stable)
+        load_mission_control_release_impl(blob, version, &mut state.borrow_mut().heap)
     })
 }
 
-fn load_mission_control_release_impl(blob: &[u8], version: &str, state: &mut StableState) {
+fn load_mission_control_release_impl(blob: &[u8], version: &str, state: &mut HeapState) {
     let wasm = state
         .releases
         .mission_control
@@ -423,10 +423,10 @@ fn load_mission_control_release_impl(blob: &[u8], version: &str, state: &mut Sta
 /// Orbiter
 
 pub fn reset_orbiter_release() {
-    STATE.with(|state| reset_orbiter_release_impl(&mut state.borrow_mut().stable))
+    STATE.with(|state| reset_orbiter_release_impl(&mut state.borrow_mut().heap))
 }
 
-fn reset_orbiter_release_impl(state: &mut StableState) {
+fn reset_orbiter_release_impl(state: &mut HeapState) {
     state.releases.orbiter = Wasm {
         wasm: Vec::new(),
         version: None,
@@ -434,14 +434,14 @@ fn reset_orbiter_release_impl(state: &mut StableState) {
 }
 
 pub fn get_orbiter_release_version() -> Option<String> {
-    STATE.with(|state| state.borrow().stable.releases.orbiter.version.clone())
+    STATE.with(|state| state.borrow().heap.releases.orbiter.version.clone())
 }
 
 pub fn load_orbiter_release(blob: &[u8], version: &str) {
-    STATE.with(|state| load_orbiter_release_impl(blob, version, &mut state.borrow_mut().stable))
+    STATE.with(|state| load_orbiter_release_impl(blob, version, &mut state.borrow_mut().heap))
 }
 
-fn load_orbiter_release_impl(blob: &[u8], version: &str, state: &mut StableState) {
+fn load_orbiter_release_impl(blob: &[u8], version: &str, state: &mut HeapState) {
     let wasm = state
         .releases
         .orbiter
@@ -461,7 +461,7 @@ fn load_orbiter_release_impl(blob: &[u8], version: &str, state: &mut StableState
 
 pub fn add_invitation_code(code: &InvitationCode) {
     STATE.with(|state| {
-        add_invitation_code_impl(code, &mut state.borrow_mut().stable.invitation_codes)
+        add_invitation_code_impl(code, &mut state.borrow_mut().heap.invitation_codes)
     })
 }
 
@@ -470,7 +470,7 @@ pub fn redeem_invitation_code(user_id: &UserId, code: &InvitationCode) -> Result
         redeem_invitation_code_impl(
             user_id,
             code,
-            &mut state.borrow_mut().stable.invitation_codes,
+            &mut state.borrow_mut().heap.invitation_codes,
         )
     })
 }
@@ -525,7 +525,7 @@ pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetControl
         set_controllers_impl(
             new_controllers,
             controller,
-            &mut state.borrow_mut().stable.controllers,
+            &mut state.borrow_mut().heap.controllers,
         )
     })
 }
@@ -534,7 +534,7 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
     STATE.with(|state| {
         delete_controllers_impl(
             remove_controllers,
-            &mut state.borrow_mut().stable.controllers,
+            &mut state.borrow_mut().heap.controllers,
         )
     })
 }
@@ -542,15 +542,15 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
 /// Rates
 
 pub fn increment_satellites_rate() -> Result<(), String> {
-    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().stable.rates.satellites))
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.satellites))
 }
 
 pub fn increment_mission_controls_rate() -> Result<(), String> {
-    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().stable.rates.mission_controls))
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.mission_controls))
 }
 
 pub fn increment_orbiters_rate() -> Result<(), String> {
-    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().stable.rates.orbiters))
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.orbiters))
 }
 
 fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
@@ -571,20 +571,20 @@ fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
 }
 
 pub fn update_satellites_rate_config(config: &RateConfig) {
-    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().stable.rates.satellites))
+    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().heap.rates.satellites))
 }
 
 pub fn update_mission_controls_rate_config(config: &RateConfig) {
     STATE.with(|state| {
         update_rate_config(
             config,
-            &mut state.borrow_mut().stable.rates.mission_controls,
+            &mut state.borrow_mut().heap.rates.mission_controls,
         )
     })
 }
 
 pub fn update_orbiters_rate_config(config: &RateConfig) {
-    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().stable.rates.orbiters))
+    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().heap.rates.orbiters))
 }
 
 fn update_rate_config(config: &RateConfig, rate: &mut Rate) {
@@ -594,19 +594,19 @@ fn update_rate_config(config: &RateConfig, rate: &mut Rate) {
 /// Fees
 
 pub fn get_satellite_fee() -> Tokens {
-    STATE.with(|state| state.borrow().stable.fees.satellite.fee)
+    STATE.with(|state| state.borrow().heap.fees.satellite.fee)
 }
 
 pub fn get_orbiter_fee() -> Tokens {
-    STATE.with(|state| state.borrow().stable.fees.orbiter.fee)
+    STATE.with(|state| state.borrow().heap.fees.orbiter.fee)
 }
 
 pub fn set_create_satellite_fee(fee: &Tokens) {
-    STATE.with(|state| set_satellite_fee(fee, &mut state.borrow_mut().stable.fees))
+    STATE.with(|state| set_satellite_fee(fee, &mut state.borrow_mut().heap.fees))
 }
 
 pub fn set_create_orbiter_fee(fee: &Tokens) {
-    STATE.with(|state| set_orbiter_fee(fee, &mut state.borrow_mut().stable.fees))
+    STATE.with(|state| set_orbiter_fee(fee, &mut state.borrow_mut().heap.fees))
 }
 
 fn set_satellite_fee(fee: &Tokens, state: &mut Fees) {

@@ -1,9 +1,9 @@
-use crate::types::state::StableState;
+use crate::types::state::HeapState;
 use crate::upgrade::types::upgrade::UpgradeStableState;
 
-impl From<&UpgradeStableState> for StableState {
+impl From<&UpgradeStableState> for HeapState {
     fn from(state: &UpgradeStableState) -> Self {
-        StableState {
+        HeapState {
             mission_controls: state.mission_controls.clone(),
             payments: state.payments.clone(),
             releases: state.releases.clone(),

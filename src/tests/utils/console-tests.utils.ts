@@ -2,9 +2,10 @@ import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable } from '@dfinity/utils';
-import type { Actor } from '@hadronous/pic';
+import { PocketIc, type Actor } from '@hadronous/pic';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
+import { tick } from './pic-tests.utils';
 import { downloadMissionControl, downloadOrbiter, downloadSatellite } from './setup-tests.utils';
 
 const installRelease = async ({
@@ -74,16 +75,24 @@ export const installReleases = async (actor: Actor<ConsoleActor>) => {
 	expect(fromNullable(mission_control)).toEqual(versionMissionControl);
 };
 
-export const initMissionControls = async (actor: Actor<ConsoleActor>): Promise<Identity[]> => {
-	const users = await Promise.all(
-		Array.from({ length: 3 }).map(() => Ed25519KeyIdentity.generate())
-	);
+export const initMissionControls = async ({
+	actor,
+	pic,
+	length
+}: {
+	actor: Actor<ConsoleActor>;
+	pic: PocketIc;
+	length: number;
+}): Promise<Identity[]> => {
+	const users = await Promise.all(Array.from({ length }).map(() => Ed25519KeyIdentity.generate()));
 
 	for (const user of users) {
 		actor.setIdentity(user);
 
 		const { init_user_mission_control_center } = actor;
 		await init_user_mission_control_center();
+
+		await tick(pic);
 	}
 
 	return users;

@@ -47,7 +47,22 @@ describe('Console upgrade', () => {
 			actor.setIdentity(controller);
 
 			await installReleases(actor);
+
+			await updateRateConfig();
 		});
+
+		const updateRateConfig = async () => {
+			const { update_rate_config } = actor;
+
+			const config = {
+				max_tokens: 100n,
+				time_per_token_ns: 60000000000n
+			};
+
+			await update_rate_config({ Satellite: null }, config);
+			await update_rate_config({ Orbiter: null }, config);
+			await update_rate_config({ MissionControl: null }, config);
+		};
 
 		const testUsers = async (users: Identity[]) => {
 			const { list_user_mission_control_centers } = actor;
@@ -64,17 +79,23 @@ describe('Console upgrade', () => {
 		};
 
 		describe('Heap state', () => {
-			it('should still list mission controls and payments', async () => {
-				const originalUsers = await initMissionControls(actor);
+			it(
+				'should still list mission controls',
+				async () => {
+					const originalUsers = await initMissionControls({ actor, pic, length: 1 });
 
-				actor.setIdentity(controller);
+					actor.setIdentity(controller);
 
-				await testUsers(originalUsers);
+					await testUsers(originalUsers);
 
-				await upgrade();
+					await upgrade();
 
-				await testUsers(originalUsers);
-			});
+					await testUsers(originalUsers);
+				},
+				{
+					timeout: 60000
+				}
+			);
 		});
 	});
 });

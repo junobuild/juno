@@ -32,6 +32,10 @@ jobs:
             wasm: orbiter.wasm.gz
             target: scratch_orbiter
 
+          - name: console
+            wasm: console.wasm.gz
+            target: scratch_console
+
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -77,6 +81,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: orbiter.wasm.gz
+          path: .
+
+      - name: Download console.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: console.wasm.gz
           path: .
 
       - name: Install dependencies

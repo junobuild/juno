@@ -5,7 +5,6 @@ mod guards;
 mod impls;
 mod store;
 mod types;
-mod upgrade;
 mod wasm;
 
 use crate::factory::mission_control::init_user_mission_control;
@@ -28,7 +27,6 @@ use crate::types::state::{
     Fees, InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases,
     HeapState, State,
 };
-use crate::upgrade::types::upgrade::UpgradeStableState;
 use candid::Principal;
 use ic_cdk::api::caller;
 use ic_cdk::storage::stable_restore;
@@ -74,11 +72,9 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
+    let (heap,): (HeapState,) = stable_restore().unwrap();
 
-    let stable = HeapState::from(&upgrade_stable);
-
-    STATE.with(|state| *state.borrow_mut() = State { heap: stable });
+    STATE.with(|state| *state.borrow_mut() = State { heap });
 }
 
 /// Mission control center and satellite releases and wasm

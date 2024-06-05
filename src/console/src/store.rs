@@ -1,8 +1,8 @@
 use crate::constants::E8S_PER_ICP;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
-    Fee, Fees, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl,
-    MissionControls, Rate, RateConfig, HeapState, Wasm,
+    Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl,
+    MissionControls, Rate, RateConfig, Wasm,
 };
 use crate::STATE;
 use ic_cdk::api::time;
@@ -174,9 +174,7 @@ pub fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Toke
 }
 
 pub fn use_credits(user: &UserId) -> Result<Tokens, &'static str> {
-    STATE.with(|state| {
-        update_credits_impl(user, false, &E8S_PER_ICP, &mut state.borrow_mut().heap)
-    })
+    STATE.with(|state| update_credits_impl(user, false, &E8S_PER_ICP, &mut state.borrow_mut().heap))
 }
 
 pub fn add_credits(user: &UserId, credits: &Tokens) -> Result<Tokens, &'static str> {
@@ -380,15 +378,7 @@ pub fn reset_mission_control_release() {
 }
 
 pub fn get_mission_control_release_version() -> Option<String> {
-    STATE.with(|state| {
-        state
-            .borrow()
-            .heap
-            .releases
-            .mission_control
-            .version
-            .clone()
-    })
+    STATE.with(|state| state.borrow().heap.releases.mission_control.version.clone())
 }
 
 fn reset_mission_control_release_impl(state: &mut HeapState) {
@@ -460,18 +450,13 @@ fn load_orbiter_release_impl(blob: &[u8], version: &str, state: &mut HeapState) 
 /// Invitation codes
 
 pub fn add_invitation_code(code: &InvitationCode) {
-    STATE.with(|state| {
-        add_invitation_code_impl(code, &mut state.borrow_mut().heap.invitation_codes)
-    })
+    STATE
+        .with(|state| add_invitation_code_impl(code, &mut state.borrow_mut().heap.invitation_codes))
 }
 
 pub fn redeem_invitation_code(user_id: &UserId, code: &InvitationCode) -> Result<(), &'static str> {
     STATE.with(|state| {
-        redeem_invitation_code_impl(
-            user_id,
-            code,
-            &mut state.borrow_mut().heap.invitation_codes,
-        )
+        redeem_invitation_code_impl(user_id, code, &mut state.borrow_mut().heap.invitation_codes)
     })
 }
 
@@ -532,10 +517,7 @@ pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetControl
 
 pub fn delete_controllers(remove_controllers: &[ControllerId]) {
     STATE.with(|state| {
-        delete_controllers_impl(
-            remove_controllers,
-            &mut state.borrow_mut().heap.controllers,
-        )
+        delete_controllers_impl(remove_controllers, &mut state.borrow_mut().heap.controllers)
     })
 }
 
@@ -576,10 +558,7 @@ pub fn update_satellites_rate_config(config: &RateConfig) {
 
 pub fn update_mission_controls_rate_config(config: &RateConfig) {
     STATE.with(|state| {
-        update_rate_config(
-            config,
-            &mut state.borrow_mut().heap.rates.mission_controls,
-        )
+        update_rate_config(config, &mut state.borrow_mut().heap.rates.mission_controls)
     })
 }
 

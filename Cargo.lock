@@ -825,6 +825,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-macros",
  "ic-ledger-types",
+ "ic-stable-structures",
  "serde",
  "time",
 ]

@@ -253,3 +253,10 @@ pub mod utils {
         pub day: u8,
     }
 }
+
+pub mod memory {
+    use ic_stable_structures::memory_manager::VirtualMemory;
+    use ic_stable_structures::DefaultMemoryImpl;
+
+    pub type Memory = VirtualMemory<DefaultMemoryImpl>;
+}

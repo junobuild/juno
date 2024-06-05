@@ -159,13 +159,6 @@ pub mod list {
     }
 }
 
-pub mod memory {
-    use ic_stable_structures::memory_manager::VirtualMemory;
-    use ic_stable_structures::DefaultMemoryImpl;
-
-    pub type Memory = VirtualMemory<DefaultMemoryImpl>;
-}
-
 pub mod hooks {
     use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
     use crate::storage::types::store::{Asset, AssetAssertUpload};

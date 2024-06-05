@@ -1,4 +1,6 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
+import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
+import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable } from '@dfinity/utils';
@@ -96,4 +98,39 @@ export const initMissionControls = async ({
 	}
 
 	return users;
+};
+
+export const testSatelliteExists = async ({
+	users,
+	actor,
+	pic
+}: {
+	users: Identity[];
+	actor: Actor<ConsoleActor>;
+	pic: PocketIc;
+}) => {
+	const { list_user_mission_control_centers } = actor;
+
+	const missionControls = await list_user_mission_control_centers();
+
+	for (const user of users) {
+		const missionControl = missionControls.find(
+			([key]) => key.toText() === user.getPrincipal().toText()
+		);
+
+		expect(missionControl).not.toBeUndefined();
+
+		const [_, { mission_control_id }] = missionControl!;
+
+		const missionControlId = fromNullable(mission_control_id);
+
+		expect(missionControlId).not.toBeUndefined();
+
+		const { version } = pic.createActor<MissionControlActor>(
+			idlFactorMissionControl,
+			missionControlId!
+		);
+
+		await expect(version()).resolves.not.toThrowError();
+	}
 };

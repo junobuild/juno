@@ -5,7 +5,11 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
-import { initMissionControls, installReleases } from './utils/console-tests.utils';
+import {
+	initMissionControls,
+	installReleases,
+	testSatelliteExists
+} from './utils/console-tests.utils';
 import { tick } from './utils/pic-tests.utils';
 import { CONSOLE_WASM_PATH, downloadConsole } from './utils/setup-tests.utils';
 
@@ -91,9 +95,21 @@ describe('Console upgrade', () => {
 
 					await testUsers(originalUsers);
 
+					await testSatelliteExists({
+						users: originalUsers,
+						actor,
+						pic
+					});
+
 					await upgrade();
 
 					await testUsers(originalUsers);
+
+					await testSatelliteExists({
+						users: originalUsers,
+						actor,
+						pic
+					});
 				},
 				{
 					timeout: 60000

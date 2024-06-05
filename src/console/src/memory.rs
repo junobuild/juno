@@ -16,3 +16,21 @@ thread_local! {
         RefCell::new(MemoryManager::init(DefaultMemoryImpl::default()));
 }
 
+pub fn get_memory_upgrades() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(UPGRADES))
+}
+
+fn get_memory_mission_controls() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(MISSION_CONTROLS))
+}
+
+fn get_memory_payments() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(PAYMENTS))
+}
+
+pub fn init_stable_state() -> StableState {
+    StableState {
+        mission_controls: StableBTreeMap::init(get_memory_mission_controls()),
+        payments: StableBTreeMap::init(get_memory_payments()),
+    }
+}

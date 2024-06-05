@@ -6,19 +6,34 @@ pub mod state {
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use serde::Deserialize;
     use std::collections::HashMap;
+    use ic_stable_structures::StableBTreeMap;
+    use crate::types::memory::Memory;
 
     pub type MissionControls = HashMap<UserId, MissionControl>;
     pub type Payments = HashMap<BlockIndex, Payment>;
     pub type InvitationCodes = HashMap<InvitationCode, InvitationCodeRedeem>;
 
-    #[derive(Default, Clone)]
+    pub type MissionControlsStable = StableBTreeMap<UserId, MissionControls, Memory>;
+    pub type PaymentsStable = StableBTreeMap<BlockIndex, Payment, Memory>;
+
     pub struct State {
+        // Direct stable state: State that is uses stable memory directly as its store. No need for pre/post upgrade hooks.
+        #[serde(skip, default = "init_stable_state")]
+        pub stable: StableState,
+
         pub heap: HeapState,
+    }
+
+    pub struct StableState {
+        pub mission_controls: MissionControlsStable,
+        pub payments: PaymentsStable,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct HeapState {
+        #[deprecated(note = "Deprecated. Use stable memory instead.")]
         pub mission_controls: MissionControls,
+        #[deprecated(note = "Deprecated. Use stable memory instead.")]
         pub payments: Payments,
         pub releases: Releases,
         pub invitation_codes: InvitationCodes,

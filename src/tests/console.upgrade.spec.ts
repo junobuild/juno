@@ -8,6 +8,7 @@ import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import {
 	initMissionControls,
 	installReleases,
+	testReleases,
 	testSatelliteExists
 } from './utils/console-tests.utils';
 import { tick } from './utils/pic-tests.utils';
@@ -102,6 +103,8 @@ describe('Console upgrade', () => {
 					});
 
 					await upgrade();
+
+					await testReleases(actor);
 
 					await testUsers(originalUsers);
 

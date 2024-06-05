@@ -42,13 +42,11 @@ const installRelease = async ({
 	}
 };
 
+const versionSatellite = '0.0.17';
+const versionOrbiter = '0.0.7';
+const versionMissionControl = '0.0.10';
+
 export const installReleases = async (actor: Actor<ConsoleActor>) => {
-	const { get_releases_version, reset_release } = actor;
-
-	const versionSatellite = '0.0.17';
-	const versionOrbiter = '0.0.7';
-	const versionMissionControl = '0.0.10';
-
 	await installRelease({
 		download: downloadSatellite,
 		version: versionSatellite,
@@ -69,6 +67,12 @@ export const installReleases = async (actor: Actor<ConsoleActor>) => {
 		segment: { MissionControl: null },
 		actor
 	});
+
+	await testReleases(actor);
+};
+
+export const testReleases = async (actor: Actor<ConsoleActor>) => {
+	const { get_releases_version } = actor;
 
 	const { satellite, mission_control, orbiter } = await get_releases_version();
 

@@ -56,7 +56,7 @@ describe('Console upgrade', () => {
 
 			const config = {
 				max_tokens: 100n,
-				time_per_token_ns: 60000000000n
+				time_per_token_ns: 60n
 			};
 
 			await update_rate_config({ Satellite: null }, config);
@@ -82,7 +82,10 @@ describe('Console upgrade', () => {
 			it(
 				'should still list mission controls',
 				async () => {
-					const originalUsers = await initMissionControls({ actor, pic, length: 1 });
+					// We need to advance time for the rate limiter
+					await pic.advanceTime(1000);
+
+					const originalUsers = await initMissionControls({ actor, pic, length: 3 });
 
 					actor.setIdentity(controller);
 

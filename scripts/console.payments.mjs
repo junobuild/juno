@@ -11,13 +11,16 @@ import { consoleActorIC, consoleActorLocal } from './actor.mjs';
  * @returns {Promise<void>}
  */
 const savePayments = async (mainnet) => {
-	const actor = await (mainnet ? consoleActorIC() : consoleActorLocal());
+	const { list_payments } = await (mainnet ? consoleActorIC() : consoleActorLocal());
 
-	const payments = await actor.list_payments();
+	const payments = await list_payments();
 
 	await writeFile(
-		join(process.cwd(), 'console.payments.json', JSON.stringify(payments, jsonReplacer, 2))
+		join(process.cwd(), 'console.payments.json'),
+		JSON.stringify(payments, jsonReplacer, 2)
 	);
+
+	console.log(`💰 ${payments.length} payments saved locally successfully.`);
 };
 
 const mainnet = process.argv.find((arg) => arg.indexOf(`--mainnet`) > -1) !== undefined;

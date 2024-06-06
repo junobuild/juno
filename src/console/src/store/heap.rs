@@ -1,4 +1,5 @@
 use crate::constants::E8S_PER_ICP;
+use crate::store::stable::get_existing_mission_control;
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl,
     MissionControls, Payments, Rate, RateConfig, Wasm,
@@ -13,8 +14,6 @@ use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, MissionControlId};
 use std::cmp::min;
-
-use super::stable::get_existing_mission_control;
 
 /// Mission control centers
 

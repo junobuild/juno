@@ -1,10 +1,11 @@
 use crate::constants::{DEFAULT_RATE_CONFIG, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
+use crate::memory::init_stable_state;
+use crate::types::ledger::Payment;
 use crate::types::state::{Fee, Fees, HeapState, MissionControl, Rate, RateTokens, Rates, State};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use crate::types::ledger::Payment;
 use std::borrow::Cow;
 
 impl Default for State {

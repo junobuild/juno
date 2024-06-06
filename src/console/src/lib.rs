@@ -3,10 +3,10 @@ mod controllers;
 mod factory;
 mod guards;
 mod impls;
+mod memory;
 mod store;
 mod types;
 mod wasm;
-mod memory;
 
 use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
@@ -29,6 +29,7 @@ use crate::types::state::{
     State,
 };
 use candid::Principal;
+use ciborium::into_writer;
 use ic_cdk::api::caller;
 use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, trap};
@@ -40,11 +41,10 @@ use junobuild_shared::types::interface::{
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
 use junobuild_shared::types::state::UserId;
+use junobuild_shared::upgrade::write_pre_upgrade;
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
-use junobuild_shared::upgrade::write_pre_upgrade;
-use ciborium::into_writer;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -53,7 +53,7 @@ thread_local! {
 #[init]
 fn init() {
     let manager = caller();
-    
+
     let heap: HeapState = HeapState {
         mission_controls: HashMap::new(),
         payments: HashMap::new(),
@@ -67,7 +67,7 @@ fn init() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             heap,
-            stable: init_stable_state()
+            stable: init_stable_state(),
         };
     });
 }
@@ -87,11 +87,13 @@ fn post_upgrade() {
     // TODO: remove once stable memory introduced on mainnet
     let (heap,): (HeapState,) = stable_restore().unwrap();
 
-    STATE.with(|state| *state.borrow_mut() = State { 
-        heap,
-        stable: init_stable_state(),
+    STATE.with(|state| {
+        *state.borrow_mut() = State {
+            heap,
+            stable: init_stable_state(),
+        }
     });
-    
+
     // TODO: uncomment once stable memory introduced on mainnet
     // let memory: Memory = get_memory_upgrades();
     // let state_bytes = read_post_upgrade(&memory);

@@ -1,8 +1,8 @@
 use crate::types::memory::Memory;
 use ic_stable_structures::writer::Writer;
-use std::mem;
 #[allow(unused)]
 use ic_stable_structures::Memory as _;
+use std::mem;
 
 pub fn write_pre_upgrade(state_bytes: &Vec<u8>, memory: &mut Memory) {
     // Write the length of the serialized bytes to memory, followed by the bytes themselves.

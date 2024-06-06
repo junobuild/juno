@@ -25,6 +25,19 @@ export const idlFactory = ({ IDL }) => {
 		owner: IDL.Principal,
 		created_at: IDL.Nat64
 	});
+	const PaymentStatus = IDL.Variant({
+		Refunded: IDL.Null,
+		Acknowledged: IDL.Null,
+		Completed: IDL.Null
+	});
+	const Payment = IDL.Record({
+		status: PaymentStatus,
+		updated_at: IDL.Nat64,
+		block_index_payment: IDL.Nat64,
+		mission_control_id: IDL.Opt(IDL.Principal),
+		created_at: IDL.Nat64,
+		block_index_refunded: IDL.Opt(IDL.Nat64)
+	});
 	const Segment = IDL.Variant({
 		Orbiter: IDL.Null,
 		MissionControl: IDL.Null,
@@ -61,6 +74,7 @@ export const idlFactory = ({ IDL }) => {
 		get_releases_version: IDL.Func([], [ReleasesVersion], ['query']),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
+		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),
 		list_user_mission_control_centers: IDL.Func(
 			[],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],

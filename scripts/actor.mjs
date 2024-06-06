@@ -59,7 +59,7 @@ export const localAgent = async () => {
 
 	console.log('Local identity:', identity.getPrincipal().toText());
 
-	const agent = new HttpAgent({ identity, fetch, host: 'http://127.0.0.1:8000/' });
+	const agent = new HttpAgent({ identity, fetch, host: 'http://127.0.0.1:5987/' });
 
 	await agent.fetchRootKey();
 

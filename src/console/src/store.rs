@@ -2,7 +2,7 @@ use crate::constants::E8S_PER_ICP;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl,
-    MissionControls, Rate, RateConfig, Wasm,
+    MissionControls, Payments, Rate, RateConfig, Wasm,
 };
 use crate::STATE;
 use ic_cdk::api::time;
@@ -332,6 +332,14 @@ fn update_payment_refunded_impl(
             Ok(updated_payment)
         }
     }
+}
+
+pub fn list_payments() -> Payments {
+    STATE.with(|state| list_payments_impl(&state.borrow().heap))
+}
+
+fn list_payments_impl(state: &HeapState) -> Payments {
+    state.payments.clone()
 }
 
 /// Wasm

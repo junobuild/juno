@@ -14,6 +14,15 @@ type MissionControl = record {
   owner : principal;
   created_at : nat64;
 };
+type Payment = record {
+  status : PaymentStatus;
+  updated_at : nat64;
+  block_index_payment : nat64;
+  mission_control_id : opt principal;
+  created_at : nat64;
+  block_index_refunded : opt nat64;
+};
+type PaymentStatus = variant { Refunded; Acknowledged; Completed };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type ReleasesVersion = record {
   satellite : opt text;
@@ -44,6 +53,7 @@ service : () -> {
   get_releases_version : () -> (ReleasesVersion) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
   init_user_mission_control_center : () -> (MissionControl);
+  list_payments : () -> (vec record { nat64; Payment }) query;
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;

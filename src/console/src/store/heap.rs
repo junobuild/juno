@@ -120,6 +120,14 @@ fn list_payments_heap_impl(state: &HeapState) -> Payments {
     state.payments.clone()
 }
 
+pub fn list_payments() -> Payments {
+    STATE.with(|state| list_payments_impl(&state.borrow().heap))
+}
+
+fn list_payments_impl(state: &HeapState) -> Payments {
+    state.payments.clone()
+}
+
 /// Wasm
 
 pub fn reset_satellite_release() {

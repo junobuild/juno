@@ -71,11 +71,12 @@ fn get_existing_mission_control_impl(
     }
 }
 
-pub fn list_mission_controls() -> MissionControls {
-    STATE.with(|state| list_mission_controls_impl(&state.borrow().heap))
+#[deprecated(note = "Use stable memory instead")]
+pub fn list_mission_controls_heap() -> MissionControls {
+    STATE.with(|state| list_mission_controls_heap_impl(&state.borrow().heap))
 }
 
-fn list_mission_controls_impl(state: &HeapState) -> MissionControls {
+fn list_mission_controls_heap_impl(state: &HeapState) -> MissionControls {
     state.mission_controls.clone()
 }
 

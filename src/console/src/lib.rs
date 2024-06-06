@@ -6,6 +6,7 @@ mod impls;
 mod memory;
 mod store;
 mod types;
+mod upgrade;
 mod wasm;
 
 use crate::factory::mission_control::init_user_mission_control;
@@ -17,7 +18,7 @@ use crate::store::{
     delete_controllers, get_credits as get_credits_store, get_existing_mission_control,
     get_mission_control, get_mission_control_release_version, get_orbiter_fee,
     get_orbiter_release_version, get_satellite_fee, get_satellite_release_version, has_credits,
-    list_mission_controls, load_mission_control_release, load_orbiter_release,
+    list_mission_controls_heap, load_mission_control_release, load_orbiter_release,
     load_satellite_release, reset_mission_control_release, reset_orbiter_release,
     reset_satellite_release, set_controllers as set_controllers_store, set_create_orbiter_fee,
     set_create_satellite_fee, update_mission_controls_rate_config, update_orbiters_rate_config,
@@ -45,6 +46,7 @@ use junobuild_shared::upgrade::write_pre_upgrade;
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use upgrade::defer_migrate_mission_controls;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -93,6 +95,8 @@ fn post_upgrade() {
             stable: init_stable_state(),
         }
     });
+
+    defer_migrate_mission_controls();
 
     // TODO: uncomment once stable memory introduced on mainnet
     // let memory: Memory = get_memory_upgrades();
@@ -172,7 +176,7 @@ fn assert_mission_control_center(
 
 #[query(guard = "caller_is_admin_controller")]
 fn list_user_mission_control_centers() -> MissionControls {
-    list_mission_controls()
+    list_mission_controls_heap()
 }
 
 #[update]

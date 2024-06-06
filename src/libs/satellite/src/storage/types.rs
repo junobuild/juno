@@ -5,9 +5,9 @@ pub mod state {
     use crate::storage::types::domain::CustomDomains;
     use crate::storage::types::store::{Asset, Batch, Chunk, EncodingType};
     use crate::types::core::{Blob, CollectionKey, Key};
-    use crate::types::memory::Memory;
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::memory::Memory;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 

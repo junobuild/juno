@@ -23,3 +23,7 @@ mkdir -p ./target/deploy
 gzip -c "./target/wasm32-unknown-unknown/release/${WASM_MODULE}" > "./target/deploy/${WASM_MODULE}.tmp.gz"
 
 mv "./target/deploy/${WASM_MODULE}.tmp.gz" "./target/deploy/${WASM_MODULE}.gz"
+
+echo ""
+echo "👉 ./target/deploy/${WASM_MODULE}.gz"
+echo ""

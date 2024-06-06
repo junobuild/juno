@@ -25,8 +25,8 @@ use crate::store::{
 };
 use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
-    Fees, InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases,
-    HeapState, State,
+    Fees, HeapState, InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases,
+    State,
 };
 use candid::Principal;
 use ic_cdk::api::caller;

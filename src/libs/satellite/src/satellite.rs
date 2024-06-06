@@ -54,21 +54,18 @@ use crate::types::core::{CollectionKey, DomainName, Key};
 use crate::types::interface::{Config, RulesType};
 use crate::types::list::ListParams;
 use crate::types::list::ListResults;
-use crate::types::memory::Memory;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, trap};
-use ic_stable_structures::writer::Writer;
-#[allow(unused)]
-use ic_stable_structures::Memory as _;
 use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
     assert_controllers, assert_max_number_of_controllers, init_controllers,
 };
 use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
+use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers};
-use std::mem;
+use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
@@ -95,29 +92,12 @@ pub fn pre_upgrade() {
         .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
         .expect("Failed to encode the state of the satellite in pre_upgrade hook.");
 
-    // Write the length of the serialized bytes to memory, followed by the by the bytes themselves.
-    let len = state_bytes.len() as u32;
-    let mut memory = get_memory_upgrades();
-    let mut writer = Writer::new(&mut memory, 0);
-    writer.write(&len.to_le_bytes()).unwrap();
-    writer.write(&state_bytes).unwrap()
+    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
 }
 
 pub fn post_upgrade() {
-    // The memory offset is 4 bytes because that's the length we used in pre_upgrade to store the length of the memory data for the upgrade.
-    // https://github.com/dfinity/stable-structures/issues/104
-    const OFFSET: usize = mem::size_of::<u32>();
-
     let memory: Memory = get_memory_upgrades();
-
-    // Read the length of the state bytes.
-    let mut state_len_bytes = [0; OFFSET];
-    memory.read(0, &mut state_len_bytes);
-    let state_len = u32::from_le_bytes(state_len_bytes) as usize;
-
-    // Read the bytes
-    let mut state_bytes = vec![0; state_len];
-    memory.read(u64::try_from(OFFSET).unwrap(), &mut state_bytes);
+    let state_bytes = read_post_upgrade(&memory);
 
     // Deserialize and set the state.
     let state = from_reader(&*state_bytes)

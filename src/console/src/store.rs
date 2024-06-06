@@ -2,7 +2,7 @@ use crate::constants::E8S_PER_ICP;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl,
-    MissionControls, Payments, Rate, RateConfig, Wasm,
+    MissionControls, Payments, Rate, RateConfig, StableState, Wasm,
 };
 use crate::STATE;
 use ic_cdk::api::time;
@@ -19,12 +19,12 @@ use std::cmp::min;
 /// Mission control centers
 
 pub fn get_mission_control(user: &UserId) -> Result<Option<MissionControl>, &'static str> {
-    STATE.with(|state| get_mission_control_impl(user, &state.borrow().heap))
+    STATE.with(|state| get_mission_control_impl(user, &state.borrow().stable))
 }
 
 fn get_mission_control_impl(
     user: &UserId,
-    state: &HeapState,
+    state: &StableState,
 ) -> Result<Option<MissionControl>, &'static str> {
     let mission_control = state.mission_controls.get(user);
 
@@ -45,14 +45,14 @@ pub fn get_existing_mission_control(
     mission_control_id: &MissionControlId,
 ) -> Result<MissionControl, &'static str> {
     STATE.with(|state| {
-        get_existing_mission_control_impl(user, mission_control_id, &state.borrow().heap)
+        get_existing_mission_control_impl(user, mission_control_id, &state.borrow().stable)
     })
 }
 
 fn get_existing_mission_control_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
-    state: &HeapState,
+    state: &StableState,
 ) -> Result<MissionControl, &'static str> {
     let existing_mission_control = state.mission_controls.get(user);
 
@@ -81,10 +81,10 @@ fn list_mission_controls_heap_impl(state: &HeapState) -> MissionControls {
 }
 
 pub fn init_empty_mission_control(user: &UserId) {
-    STATE.with(|state| init_empty_mission_control_impl(user, &mut state.borrow_mut().heap))
+    STATE.with(|state| init_empty_mission_control_impl(user, &mut state.borrow_mut().stable))
 }
 
-fn init_empty_mission_control_impl(user: &UserId, state: &mut HeapState) {
+fn init_empty_mission_control_impl(user: &UserId, state: &mut StableState) {
     let now = time();
 
     let mission_control = MissionControl {
@@ -100,14 +100,14 @@ fn init_empty_mission_control_impl(user: &UserId, state: &mut HeapState) {
 
 pub fn add_mission_control(user: &UserId, mission_control_id: &MissionControlId) -> MissionControl {
     STATE.with(|state| {
-        add_mission_control_impl(user, mission_control_id, &mut state.borrow_mut().heap)
+        add_mission_control_impl(user, mission_control_id, &mut state.borrow_mut().stable)
     })
 }
 
 fn add_mission_control_impl(
     user: &UserId,
     mission_control_id: &MissionControlId,
-    state: &mut HeapState,
+    state: &mut StableState,
 ) -> MissionControl {
     let now = time();
 
@@ -130,22 +130,11 @@ fn add_mission_control_impl(
 }
 
 pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {
-    STATE.with(|state| delete_mission_control_impl(user, &mut state.borrow_mut().heap))
+    STATE.with(|state| delete_mission_control_impl(user, &mut state.borrow_mut().stable))
 }
 
-fn delete_mission_control_impl(user: &UserId, state: &mut HeapState) -> Option<MissionControl> {
+fn delete_mission_control_impl(user: &UserId, state: &mut StableState) -> Option<MissionControl> {
     state.mission_controls.remove(user)
-}
-
-/// Payments
-
-#[deprecated(note = "Use stable memory instead")]
-pub fn list_payments_heap() -> Payments {
-    STATE.with(|state| list_payments_heap_impl(&state.borrow().heap))
-}
-
-fn list_payments_heap_impl(state: &HeapState) -> Payments {
-    state.payments.clone()
 }
 
 /// Credits
@@ -234,20 +223,20 @@ fn update_credits_impl(
 /// Transactions
 
 pub fn is_known_payment(block_index: &BlockIndex) -> bool {
-    STATE.with(|state| state.borrow_mut().heap.payments.contains_key(block_index))
+    STATE.with(|state| state.borrow_mut().stable.payments.contains_key(block_index))
 }
 
 pub fn insert_new_payment(
     user: &UserId,
     block_index: &BlockIndex,
 ) -> Result<Payment, &'static str> {
-    STATE.with(|state| insert_new_payment_impl(user, block_index, &mut state.borrow_mut().heap))
+    STATE.with(|state| insert_new_payment_impl(user, block_index, &mut state.borrow_mut().stable))
 }
 
 fn insert_new_payment_impl(
     user: &UserId,
     block_index: &BlockIndex,
-    state: &mut HeapState,
+    state: &mut StableState,
 ) -> Result<Payment, &'static str> {
     let existing_mission_control = state.mission_controls.get(user);
 
@@ -273,12 +262,12 @@ fn insert_new_payment_impl(
 }
 
 pub fn update_payment_completed(block_index: &BlockIndex) -> Result<Payment, &'static str> {
-    STATE.with(|state| update_payment_completed_impl(block_index, &mut state.borrow_mut().heap))
+    STATE.with(|state| update_payment_completed_impl(block_index, &mut state.borrow_mut().stable))
 }
 
 fn update_payment_completed_impl(
     block_index: &BlockIndex,
-    state: &mut HeapState,
+    state: &mut StableState,
 ) -> Result<Payment, &'static str> {
     let payment = state.payments.get(block_index);
 
@@ -311,7 +300,7 @@ pub fn update_payment_refunded(
         update_payment_refunded_impl(
             block_index_payment,
             block_index_refunded,
-            &mut state.borrow_mut().heap,
+            &mut state.borrow_mut().stable,
         )
     })
 }
@@ -319,7 +308,7 @@ pub fn update_payment_refunded(
 fn update_payment_refunded_impl(
     block_index_payment: &BlockIndex,
     block_index_refunded: &BlockIndex,
-    state: &mut HeapState,
+    state: &mut StableState,
 ) -> Result<Payment, &'static str> {
     let payment = state.payments.get(block_index_payment);
 
@@ -344,6 +333,15 @@ fn update_payment_refunded_impl(
             Ok(updated_payment)
         }
     }
+}
+
+#[deprecated(note = "Use stable memory instead")]
+pub fn list_payments_heap() -> Payments {
+    STATE.with(|state| list_payments_heap_impl(&state.borrow().heap))
+}
+
+fn list_payments_heap_impl(state: &HeapState) -> Payments {
+    state.payments.clone()
 }
 
 /// Wasm

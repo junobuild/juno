@@ -1,6 +1,6 @@
 use crate::types::memory::Memory;
 use crate::{
-    store::{list_mission_controls_heap, list_payments_heap},
+    store::heap::{list_mission_controls_heap, list_payments_heap},
     types::{ledger::Payment, state::MissionControl},
     STATE,
 };

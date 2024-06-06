@@ -1,6 +1,6 @@
 use crate::controllers::remove_console_controller;
 use crate::factory::canister::create_canister;
-use crate::store::{get_satellite_fee, increment_satellites_rate};
+use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
 use crate::wasm::satellite_wasm_arg;
 use candid::Principal;
 use junobuild_shared::constants::CREATE_SATELLITE_CYCLES;

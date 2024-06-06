@@ -86,7 +86,6 @@ pub fn init() {
 }
 
 pub fn pre_upgrade() {
-    // Serialize the state using CBOR.
     let mut state_bytes = vec![];
     STATE
         .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
@@ -99,7 +98,6 @@ pub fn post_upgrade() {
     let memory: Memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    // Deserialize and set the state.
     let state = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);

@@ -41,6 +41,8 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::state::UserId;
 use std::cell::RefCell;
 use std::collections::HashMap;
+use store::list_payments as list_user_payments;
+use types::state::Payments;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -156,6 +158,13 @@ async fn init_user_mission_control_center() -> MissionControl {
     init_user_mission_control(&console, &caller)
         .await
         .unwrap_or_else(|e| trap(&e))
+}
+
+/// Transactions
+
+#[query(guard = "caller_is_admin_controller")]
+fn list_payments() -> Payments {
+    list_user_payments()
 }
 
 /// Satellites

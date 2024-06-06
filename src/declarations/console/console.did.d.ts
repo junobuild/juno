@@ -28,6 +28,15 @@ export interface MissionControl {
 	owner: Principal;
 	created_at: bigint;
 }
+export interface Payment {
+	status: PaymentStatus;
+	updated_at: bigint;
+	block_index_payment: bigint;
+	mission_control_id: [] | [Principal];
+	created_at: bigint;
+	block_index_refunded: [] | [bigint];
+}
+export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
@@ -63,6 +72,7 @@ export interface _SERVICE {
 	get_releases_version: ActorMethod<[], ReleasesVersion>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
+	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
 	reset_release: ActorMethod<[Segment], undefined>;

@@ -9,7 +9,7 @@ pub fn write_pre_upgrade(state_bytes: &Vec<u8>, memory: &mut Memory) {
     let len = state_bytes.len() as u32;
     let mut writer = Writer::new(memory, 0);
     writer.write(&len.to_le_bytes()).unwrap();
-    writer.write(&state_bytes).unwrap()
+    writer.write(state_bytes).unwrap()
 }
 
 pub fn read_post_upgrade(memory: &Memory) -> Vec<u8> {

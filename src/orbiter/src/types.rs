@@ -1,8 +1,9 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::types::memory::{Memory, StoredPageView, StoredTrackEvent};
+    use crate::types::memory::{StoredPageView, StoredTrackEvent};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
         Controllers, Metadata, OrbiterSatelliteConfig, SatelliteId, Timestamp, Version,
     };
@@ -94,11 +95,7 @@ pub mod state {
 pub mod memory {
     use crate::types::state::{PageView, TrackEvent};
     use candid::CandidType;
-    use ic_stable_structures::memory_manager::VirtualMemory;
-    use ic_stable_structures::DefaultMemoryImpl;
     use serde::{Deserialize, Serialize};
-
-    pub type Memory = VirtualMemory<DefaultMemoryImpl>;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum StoredPageView {

@@ -4,7 +4,7 @@ pub mod state {
     use ic_ledger_types::{BlockIndex, Tokens};
     use junobuild_shared::types::state::{Controllers, Timestamp};
     use junobuild_shared::types::state::{MissionControlId, UserId};
-    use serde::Deserialize;
+    use serde::{Serialize, Deserialize};
     use std::collections::HashMap;
     use ic_stable_structures::StableBTreeMap;
     use crate::types::memory::Memory;
@@ -13,7 +13,7 @@ pub mod state {
     pub type Payments = HashMap<BlockIndex, Payment>;
     pub type InvitationCodes = HashMap<InvitationCode, InvitationCodeRedeem>;
 
-    pub type MissionControlsStable = StableBTreeMap<UserId, MissionControls, Memory>;
+    pub type MissionControlsStable = StableBTreeMap<UserId, MissionControl, Memory>;
     pub type PaymentsStable = StableBTreeMap<BlockIndex, Payment, Memory>;
 
     pub struct State {
@@ -42,7 +42,7 @@ pub mod state {
         pub fees: Fees,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MissionControl {
         pub mission_control_id: Option<MissionControlId>,
         pub owner: UserId,
@@ -147,9 +147,9 @@ pub mod ledger {
     use candid::CandidType;
     use ic_ledger_types::BlockIndex;
     use junobuild_shared::types::state::{MissionControlId, Timestamp};
-    use serde::Deserialize;
+    use serde::{Serialize, Deserialize};
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Payment {
         pub mission_control_id: Option<MissionControlId>,
         pub block_index_payment: BlockIndex,
@@ -159,7 +159,7 @@ pub mod ledger {
         pub updated_at: Timestamp,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum PaymentStatus {
         Acknowledged,
         Completed,

@@ -31,7 +31,7 @@ use crate::types::state::{
 use candid::Principal;
 use ic_cdk::api::caller;
 use ic_cdk::storage::stable_restore;
-use ic_cdk::{id, storage, trap};
+use ic_cdk::{id, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::init_controllers;
@@ -40,9 +40,11 @@ use junobuild_shared::types::interface::{
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
 use junobuild_shared::types::state::UserId;
-use memory::init_stable_state;
+use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use junobuild_shared::upgrade::write_pre_upgrade;
+use ciborium::into_writer;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();

@@ -40,6 +40,7 @@ use junobuild_shared::types::interface::{
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
 use junobuild_shared::types::state::UserId;
+use memory::init_stable_state;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
@@ -50,32 +51,53 @@ thread_local! {
 #[init]
 fn init() {
     let manager = caller();
+    
+    let heap: HeapState = HeapState {
+        mission_controls: HashMap::new(),
+        payments: HashMap::new(),
+        releases: Releases::default(),
+        invitation_codes: HashMap::new(),
+        controllers: init_controllers(&[manager]),
+        rates: Rates::default(),
+        fees: Fees::default(),
+    };
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            heap: HeapState {
-                mission_controls: HashMap::new(),
-                payments: HashMap::new(),
-                releases: Releases::default(),
-                invitation_codes: HashMap::new(),
-                controllers: init_controllers(&[manager]),
-                rates: Rates::default(),
-                fees: Fees::default(),
-            },
+            heap,
+            stable: init_stable_state()
         };
     });
 }
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| storage::stable_save((&state.borrow().heap,)).unwrap());
+    let mut state_bytes = vec![];
+    STATE
+        .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
+        .expect("Failed to encode the state of the console in pre_upgrade hook.");
+
+    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
+    // TODO: remove once stable memory introduced on mainnet
     let (heap,): (HeapState,) = stable_restore().unwrap();
 
-    STATE.with(|state| *state.borrow_mut() = State { heap });
+    STATE.with(|state| *state.borrow_mut() = State { 
+        heap,
+        stable: init_stable_state(),
+    });
+    
+    // TODO: uncomment once stable memory introduced on mainnet
+    // let memory: Memory = get_memory_upgrades();
+    // let state_bytes = read_post_upgrade(&memory);
+
+    // let state: State = from_reader(&*state_bytes)
+    //     .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
+
+    // STATE.with(|s| *s.borrow_mut() = state);
 }
 
 /// Mission control center and satellite releases and wasm

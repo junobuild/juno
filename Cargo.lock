@@ -249,6 +249,7 @@ name = "console"
 version = "0.0.8"
 dependencies = [
  "candid",
+ "ciborium",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-ledger-types",

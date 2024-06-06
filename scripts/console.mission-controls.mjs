@@ -10,8 +10,10 @@ import { consoleActorIC, consoleActorLocal } from './actor.mjs';
  * @param mainnet
  * @returns {Promise<void>}
  */
-const savePayments = async (mainnet) => {
-	const { list_user_mission_control_centers } = await (mainnet ? consoleActorIC() : consoleActorLocal());
+const saveMissionControls = async (mainnet) => {
+	const { list_user_mission_control_centers } = await (mainnet
+		? consoleActorIC()
+		: consoleActorLocal());
 
 	const users = await list_user_mission_control_centers();
 
@@ -25,4 +27,4 @@ const savePayments = async (mainnet) => {
 
 const mainnet = process.argv.find((arg) => arg.indexOf(`--mainnet`) > -1) !== undefined;
 
-await savePayments(mainnet);
+await saveMissionControls(mainnet);

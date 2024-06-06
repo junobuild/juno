@@ -27,6 +27,7 @@ ic-cdk-timers = "0.6.0"
 ic-stable-structures = "0.6.4"
 serde = "1.0.190"
 serde_cbor = "0.11.2"
+ciborium = "0.2.1"
 
 [patch.crates-io]
 junobuild-shared = { path = "./src/libs/shared" }

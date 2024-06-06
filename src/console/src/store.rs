@@ -2,7 +2,7 @@ use crate::constants::E8S_PER_ICP;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControl,
-    MissionControls, Rate, RateConfig, Wasm,
+    MissionControls, Payments, Rate, RateConfig, Wasm,
 };
 use crate::STATE;
 use ic_cdk::api::time;
@@ -135,6 +135,17 @@ pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {
 
 fn delete_mission_control_impl(user: &UserId, state: &mut HeapState) -> Option<MissionControl> {
     state.mission_controls.remove(user)
+}
+
+/// Payments
+
+#[deprecated(note = "Use stable memory instead")]
+pub fn list_payments_heap() -> Payments {
+    STATE.with(|state| list_payments_heap_impl(&state.borrow().heap))
+}
+
+fn list_payments_heap_impl(state: &HeapState) -> Payments {
+    state.payments.clone()
 }
 
 /// Credits

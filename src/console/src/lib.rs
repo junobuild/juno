@@ -46,7 +46,7 @@ use junobuild_shared::upgrade::write_pre_upgrade;
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
-use upgrade::defer_migrate_mission_controls;
+use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -97,6 +97,7 @@ fn post_upgrade() {
     });
 
     defer_migrate_mission_controls();
+    defer_migrate_payments();
 
     // TODO: uncomment once stable memory introduced on mainnet
     // let memory: Memory = get_memory_upgrades();

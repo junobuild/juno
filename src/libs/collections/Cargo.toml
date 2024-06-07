@@ -19,3 +19,4 @@ ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
 ic-cdk-timers.workspace = true
 serde.workspace = true
+junobuild-shared = "0.0.15"

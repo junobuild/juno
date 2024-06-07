@@ -1,6 +1,6 @@
 pub mod certified {
-    use crate::types::core::Blob;
     use ic_certification::{Hash, NestedTree, RbTree};
+    use junobuild_shared::types::core::Blob;
     use std::clone::Clone;
 
     #[derive(Default, Clone)]

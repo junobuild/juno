@@ -3,8 +3,8 @@ use crate::storage::store::get_custom_domains_store;
 use crate::storage::well_known::update::{
     delete_alternative_origins_asset, update_alternative_origins_asset,
 };
-use crate::types::core::DomainName;
 use ic_cdk::id;
+use junobuild_shared::types::core::DomainName;
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
 use url::Url;

@@ -1,6 +1,6 @@
 pub mod state {
-    use crate::types::core::DomainName;
     use candid::CandidType;
+    use junobuild_shared::types::core::DomainName;
     use serde::{Deserialize, Serialize};
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

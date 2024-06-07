@@ -4,11 +4,11 @@ use crate::storage::types::config::{
 use crate::storage::types::interface::{AssetEncodingNoContent, AssetNoContent};
 use crate::storage::types::state::{StableEncodingChunkKey, StableKey};
 use crate::storage::types::store::{Asset, AssetEncoding};
-use crate::types::core::{Blob, Compare};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::types::core::{Blob, Compare};
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;

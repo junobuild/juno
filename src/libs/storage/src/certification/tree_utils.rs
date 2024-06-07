@@ -4,9 +4,9 @@ use crate::certification::constants::{
 };
 use crate::http::types::{HeaderField, StatusCode};
 use crate::types::state::FullPath;
-use crate::types::core::Blob;
 use ic_certification::Hash;
 use ic_representation_independent_hash::{representation_independent_hash, Value};
+use junobuild_shared::types::core::Blob;
 use sha2::{Digest, Sha256};
 
 pub fn nested_tree_key(

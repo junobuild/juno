@@ -9,8 +9,8 @@ use crate::state::{
 use crate::store::get_config_store;
 use crate::types::store::Asset;
 use crate::well_known::utils::{map_alternative_origins_asset, map_custom_domains_asset};
-use crate::types::core::DomainName;
 use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_shared::types::core::DomainName;
 
 pub fn update_alternative_origins_asset(alternative_origins: &String) -> Result<(), String> {
     let full_path = WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string();

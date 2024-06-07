@@ -1,8 +1,8 @@
 use crate::types::state::FullPath;
 use crate::types::store::EncodingType;
-use crate::types::core::Blob;
 use candid::{define_function, CandidType};
 use junobuild_collections::types::rules::Memory;
+use junobuild_shared::types::core::Blob;
 use serde::{Deserialize, Serialize};
 use serde_bytes::ByteBuf;
 

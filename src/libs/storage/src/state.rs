@@ -1,4 +1,3 @@
-use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::types::config::StorageConfig;
@@ -8,10 +7,11 @@ use crate::types::state::{
     StorageHeapState,
 };
 use crate::types::store::{Asset, AssetEncoding};
-use crate::types::core::{Blob, CollectionKey, DomainName};
 use crate::types::state::StableState;
 use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_shared::list::range_collection_end;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
 

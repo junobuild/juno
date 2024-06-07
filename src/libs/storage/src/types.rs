@@ -3,10 +3,10 @@ pub mod state {
     use crate::types::config::StorageConfig;
     use crate::types::domain::CustomDomains;
     use crate::types::store::{Asset, Batch, Chunk, EncodingType};
-    use crate::types::core::{Blob, CollectionKey, Key};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_collections::types::rules::Rules;
+    use junobuild_shared::types::core::{Blob, CollectionKey, Key};
     use junobuild_shared::types::memory::Memory;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
@@ -59,9 +59,9 @@ pub mod store {
     use crate::http::types::HeaderField;
     use crate::types::interface::CommitBatch;
     use crate::types::state::FullPath;
-    use crate::types::core::{Blob, CollectionKey};
     use candid::CandidType;
     use ic_certification::Hash;
+    use junobuild_shared::types::core::{Blob, CollectionKey};
     use junobuild_shared::types::state::{Timestamp, UserId, Version};
     use serde::{Deserialize, Serialize};
     use std::clone::Clone;
@@ -137,7 +137,7 @@ pub mod interface {
     use crate::http::types::HeaderField;
     use crate::types::state::FullPath;
     use crate::types::store::{AssetKey, EncodingType};
-    use crate::types::core::{Blob, CollectionKey};
+    use junobuild_shared::types::core::{Blob, CollectionKey};
 
     #[derive(CandidType, Deserialize)]
     pub struct InitAssetKey {
@@ -280,8 +280,8 @@ pub mod http_request {
 }
 
 pub mod domain {
-    use crate::types::core::DomainName;
     use candid::CandidType;
+    use junobuild_shared::types::core::DomainName;
     use junobuild_shared::types::state::{Timestamp, Version};
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;

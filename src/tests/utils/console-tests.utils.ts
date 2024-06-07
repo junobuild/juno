@@ -21,7 +21,7 @@ const installRelease = async ({
 	version: string;
 	actor: Actor<ConsoleActor>;
 }) => {
-	const { load_release, reset_release, get_releases_version } = actor;
+	const { load_release, reset_release } = actor;
 
 	await reset_release(segment);
 

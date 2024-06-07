@@ -10,7 +10,6 @@ import { CONSOLE_WASM_PATH } from './utils/setup-tests.utils';
 describe('Console', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
-	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -24,7 +23,6 @@ describe('Console', () => {
 		});
 
 		actor = c;
-		canisterId = cId;
 		actor.setIdentity(controller);
 
 		await installReleases(actor);

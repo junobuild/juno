@@ -2,7 +2,7 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 </script>
 
-<p class="label loading"><slot /> <Spinner small animation="swing" /></p>
+<p class="label loading"><slot /> <Spinner inline /></p>
 
 <style lang="scss">
 	.loading {

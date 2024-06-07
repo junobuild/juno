@@ -1,69 +1,57 @@
+<!-- adapted from pen: https://codepen.io/mimoh/pen/VmVqPB -->
 <script lang="ts">
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
-	import type { ComponentType } from 'svelte';
-	import IconRocket from '$lib/components/icons/IconRocket.svelte';
-
-	// Source of the animation: https://codepen.io/nelledejones/pen/gOOPWrK
-	export let animation: 'gelatine' | 'swing' = 'gelatine';
-	export let icon: 'satellite' | 'rocket' = 'rocket';
-	export let small = false;
-
-	let iconCmp: ComponentType;
-	$: iconCmp = icon === 'satellite' ? IconSatellite : IconRocket;
+	export let inline = false;
 </script>
 
-<div class="spinner" class:swing={animation === 'swing'} class:gelatine={animation === 'gelatine'}>
-	<svelte:component this={iconCmp} size={small ? '16px' : '40px'} />
-</div>
+<div class="spinner" class:inline />
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
 
-	/* -global- */
-	@keyframes -global-gelatine {
-		from,
-		to {
-			transform: scale(1, 1);
-		}
-		25% {
-			transform: scale(0.9, 1.1);
-		}
-		50% {
-			transform: scale(1.1, 0.9);
-		}
-		75% {
-			transform: scale(0.95, 1.05);
+	@include media.dark-theme {
+		.spinner {
+			border-color: var(--text-color);
 		}
 	}
 
-	/* -global- */
-	@keyframes -global-swing {
-		20% {
-			transform: rotate(15deg);
+	@include media.light-theme {
+		.spinner.inline {
+			border-color: var(--color-primary);
 		}
-		40% {
-			transform: rotate(-10deg);
-		}
-		60% {
-			transform: rotate(5deg);
-		}
-		80% {
-			transform: rotate(-5deg);
-		}
-		100% {
-			transform: rotate(0deg);
-		}
-	}
-
-	.gelatine {
-		animation: gelatine 0.5s infinite;
-	}
-
-	.swing {
-		animation: swing 2s ease infinite;
 	}
 
 	.spinner {
-		display: inline-flex;
+		display: block;
+
+		background: transparent;
+		border: var(--spinner-border-size, 2px) solid var(--label-color);
+
+		margin: var(--spinner-margin);
+
+		width: var(--spinner-size);
+		height: var(--spinner-size);
+
+		border-radius: 50%;
+
+		&:not(.inline) {
+			position: absolute;
+			top: calc(50% - (var(--spinner-size) / 2));
+			left: calc(50% - (var(--spinner-size) / 2));
+		}
+
+		animation: spinner-rotate 1.2s infinite linear;
+	}
+
+	/* -global- */
+	@keyframes -global-spinner-rotate {
+		0% {
+			transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+		}
+		50% {
+			transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+		}
+		100% {
+			transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+		}
 	}
 </style>

@@ -1,8 +1,7 @@
 use crate::constants::SATELLITE_CREATION_FEE_ICP;
-use crate::store::heap::{has_credits, use_credits};
 use crate::store::stable::{
-    get_existing_mission_control, insert_new_payment, is_known_payment, update_payment_completed,
-    update_payment_refunded,
+    get_existing_mission_control, has_credits, insert_new_payment, is_known_payment,
+    update_payment_completed, update_payment_refunded, use_credits,
 };
 use crate::types::ledger::Payment;
 use candid::Principal;

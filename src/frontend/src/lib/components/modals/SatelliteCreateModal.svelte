@@ -76,7 +76,7 @@
 			<button on:click={navigate}>{$i18n.core.continue}</button>
 		</div>
 	{:else if steps === 'in_progress'}
-		<SpinnerModal icon="satellite">
+		<SpinnerModal>
 			<p>{$i18n.satellites.initializing}</p>
 		</SpinnerModal>
 	{:else}

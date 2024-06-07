@@ -10,7 +10,6 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
-	import Illustration from '$lib/components/launchpad/Illustration.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 
 	$: $missionControlStore,
@@ -54,8 +53,6 @@
 		</section>
 	</div>
 {/if}
-
-<Illustration />
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/grid';

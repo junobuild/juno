@@ -12,6 +12,7 @@ pub mod ic;
 #[doc(hidden)]
 pub mod impls;
 pub mod ledger;
+pub mod list;
 #[doc(hidden)]
 pub mod msg;
 pub mod serializers;
@@ -20,4 +21,3 @@ pub mod types;
 #[doc(hidden)]
 pub mod upgrade;
 pub mod utils;
-pub mod list;

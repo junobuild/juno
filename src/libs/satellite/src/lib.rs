@@ -26,18 +26,18 @@ use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use crate::types::interface::{Config, RulesType};
-use junobuild_shared::types::list::ListResults;
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
 };
+use junobuild_shared::types::list::ListParams;
+use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::state::Controllers;
 use storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
-use junobuild_shared::types::list::ListParams;
 
 // Re-export types
 

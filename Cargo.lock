@@ -829,6 +829,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-ledger-types",
  "ic-stable-structures",
+ "regex",
  "serde",
  "time",
 ]

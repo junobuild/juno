@@ -1,7 +1,7 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::hooks::{invoke_assert_delete_asset, invoke_assert_upload_asset};
-use crate::list::utils::list_values;
+use junobuild_shared::list::list_values;
 use crate::memory::STATE;
 use crate::msg::{
     COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
@@ -50,7 +50,7 @@ use crate::storage::types::store::{
 };
 use crate::storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
 use crate::storage::well_known::update::update_custom_domains_asset;
-use crate::types::list::{ListParams, ListResults};
+use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 
 ///

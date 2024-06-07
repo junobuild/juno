@@ -307,3 +307,53 @@ pub mod core {
         fn cmp_created_at(&self, other: &Self) -> Ordering;
     }
 }
+
+pub mod list {
+    use candid::CandidType;
+    use crate::types::core::Key;
+    use crate::types::state::UserId;
+    use serde::Deserialize;
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct ListPaginate {
+        pub start_after: Option<Key>,
+        pub limit: Option<usize>,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub enum ListOrderField {
+        #[default]
+        Keys,
+        CreatedAt,
+        UpdatedAt,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct ListOrder {
+        pub desc: bool,
+        pub field: ListOrderField,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct ListMatcher {
+        pub key: Option<Key>,
+        pub description: Option<String>,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct ListParams {
+        pub matcher: Option<ListMatcher>,
+        pub paginate: Option<ListPaginate>,
+        pub order: Option<ListOrder>,
+        pub owner: Option<UserId>,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct ListResults<T> {
+        pub items: Vec<(Key, T)>,
+        pub items_length: usize,
+        pub items_page: Option<usize>,
+        pub matches_length: usize,
+        pub matches_pages: Option<usize>,
+    }
+}

@@ -62,56 +62,6 @@ pub mod interface {
     }
 }
 
-pub mod list {
-    use candid::CandidType;
-    use junobuild_shared::types::core::Key;
-    use junobuild_shared::types::state::UserId;
-    use serde::Deserialize;
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListPaginate {
-        pub start_after: Option<Key>,
-        pub limit: Option<usize>,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub enum ListOrderField {
-        #[default]
-        Keys,
-        CreatedAt,
-        UpdatedAt,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListOrder {
-        pub desc: bool,
-        pub field: ListOrderField,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListMatcher {
-        pub key: Option<Key>,
-        pub description: Option<String>,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListParams {
-        pub matcher: Option<ListMatcher>,
-        pub paginate: Option<ListPaginate>,
-        pub order: Option<ListOrder>,
-        pub owner: Option<UserId>,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListResults<T> {
-        pub items: Vec<(Key, T)>,
-        pub items_length: usize,
-        pub items_page: Option<usize>,
-        pub matches_length: usize,
-        pub matches_pages: Option<usize>,
-    }
-}
-
 pub mod hooks {
     use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
     use crate::storage::types::store::{Asset, AssetAssertUpload};

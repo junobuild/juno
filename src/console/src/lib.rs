@@ -44,9 +44,9 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::upgrade::write_pre_upgrade;
 use memory::{get_memory_upgrades, init_stable_state};
-use types::state::Payments;
 use std::cell::RefCell;
 use std::collections::HashMap;
+use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
 
 thread_local! {

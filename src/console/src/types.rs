@@ -1,10 +1,10 @@
 pub mod state {
     use crate::memory::init_stable_state;
     use crate::types::ledger::Payment;
-    use crate::types::memory::Memory;
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Controllers, Timestamp};
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use serde::{Deserialize, Serialize};
@@ -167,11 +167,4 @@ pub mod ledger {
         Completed,
         Refunded,
     }
-}
-
-pub mod memory {
-    use ic_stable_structures::memory_manager::VirtualMemory;
-    use ic_stable_structures::DefaultMemoryImpl;
-
-    pub type Memory = VirtualMemory<DefaultMemoryImpl>;
 }

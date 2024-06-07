@@ -1,4 +1,3 @@
-use crate::types::memory::Memory;
 use crate::{
     store::heap::{list_mission_controls_heap, list_payments_heap},
     types::{ledger::Payment, state::MissionControl},
@@ -8,6 +7,7 @@ use ic_cdk::spawn;
 use ic_cdk_timers::set_timer;
 use ic_ledger_types::BlockIndex;
 use ic_stable_structures::{StableBTreeMap, Storable};
+use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::UserId;
 use std::collections::HashMap;
 use std::time::Duration;

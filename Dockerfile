@@ -51,6 +51,7 @@ COPY src/libs/satellite/Cargo.toml src/libs/satellite/Cargo.toml
 COPY src/libs/shared/Cargo.toml src/libs/shared/Cargo.toml
 COPY src/libs/utils/Cargo.toml src/libs/utils/Cargo.toml
 COPY src/libs/collections/Cargo.toml src/libs/collections/Cargo.toml
+COPY src/libs/storage/Cargo.toml src/libs/storage/Cargo.toml
 ENV CARGO_TARGET_DIR=/cargo_target
 RUN mkdir -p src/console/src \
     && touch src/console/src/lib.rs \
@@ -72,6 +73,8 @@ RUN mkdir -p src/console/src \
     && touch src/libs/utils/src/lib.rs \
     && mkdir -p src/libs/collections/src \
     && touch src/libs/collections/src/lib.rs \
+    && mkdir -p src/libs/storage/src \
+    && touch src/libs/storage/src/lib.rs \
     && ./docker/build --only-dependencies \
     && rm -rf src
 
@@ -89,6 +92,7 @@ RUN touch src/libs/satellite/src/lib.rs
 RUN touch src/libs/shared/src/lib.rs
 RUN touch src/libs/utils/src/lib.rs
 RUN touch src/libs/collections/src/lib.rs
+RUN touch src/libs/storage/src/lib.rs
 RUN npm ci
 
 RUN ./docker/build
@@ -108,6 +112,7 @@ RUN touch src/libs/satellite/src/lib.rs
 RUN touch src/libs/shared/src/lib.rs
 RUN touch src/libs/utils/src/lib.rs
 RUN touch src/libs/collections/src/lib.rs
+RUN touch src/libs/storage/src/lib.rs
 
 RUN ./docker/build --satellite
 RUN sha256sum /satellite.wasm.gz
@@ -126,6 +131,7 @@ RUN touch src/libs/satellite/src/lib.rs
 RUN touch src/libs/shared/src/lib.rs
 RUN touch src/libs/utils/src/lib.rs
 RUN touch src/libs/collections/src/lib.rs
+RUN touch src/libs/storage/src/lib.rs
 
 RUN ./docker/build --console
 RUN sha256sum /console.wasm.gz
@@ -144,6 +150,7 @@ RUN touch src/libs/satellite/src/lib.rs
 RUN touch src/libs/shared/src/lib.rs
 RUN touch src/libs/utils/src/lib.rs
 RUN touch src/libs/collections/src/lib.rs
+RUN touch src/libs/storage/src/lib.rs
 
 RUN ./docker/build --observatory
 RUN sha256sum /observatory.wasm.gz
@@ -162,6 +169,7 @@ RUN touch src/libs/satellite/src/lib.rs
 RUN touch src/libs/shared/src/lib.rs
 RUN touch src/libs/utils/src/lib.rs
 RUN touch src/libs/collections/src/lib.rs
+RUN touch src/libs/storage/src/lib.rs
 
 RUN ./docker/build --orbiter
 RUN sha256sum /orbiter.wasm.gz

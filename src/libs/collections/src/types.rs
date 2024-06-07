@@ -9,9 +9,9 @@ pub mod core {
 }
 
 pub mod rules {
-    use crate::types::core::CollectionKey;
     use candid::CandidType;
     use junobuild_shared::serializers::deserialize_default_as_true;
+    use junobuild_shared::types::core::CollectionKey;
     use junobuild_shared::types::state::Timestamp;
     use junobuild_shared::types::state::Version;
     use serde::{Deserialize, Serialize};

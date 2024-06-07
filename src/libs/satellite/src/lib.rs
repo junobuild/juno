@@ -7,7 +7,6 @@ mod db;
 mod guards;
 mod hooks;
 mod impls;
-mod list;
 mod logs;
 mod memory;
 mod msg;
@@ -25,7 +24,6 @@ use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use crate::types::interface::{Config, RulesType};
-use crate::types::list::ListResults;
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
@@ -34,11 +32,12 @@ use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
 };
+use junobuild_shared::types::list::ListParams;
+use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::state::Controllers;
 use storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
-use types::list::ListParams;
 
 // Re-export types
 
@@ -56,14 +55,14 @@ pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };
 use crate::storage::types::state::FullPath;
-use crate::types::core::DomainName;
-pub use crate::types::core::{Blob, CollectionKey, Key};
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
     AssertUploadAssetContext, HookContext, OnDeleteAssetContext, OnDeleteDocContext,
     OnDeleteManyAssetsContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
     OnUploadAssetContext,
 };
+use junobuild_shared::types::core::DomainName;
+pub use junobuild_shared::types::core::{Blob, CollectionKey, Key};
 
 ///
 /// Init and Upgrade

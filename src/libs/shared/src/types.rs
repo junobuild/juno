@@ -309,9 +309,9 @@ pub mod core {
 }
 
 pub mod list {
-    use candid::CandidType;
     use crate::types::core::Key;
     use crate::types::state::UserId;
+    use candid::CandidType;
     use serde::Deserialize;
 
     #[derive(Default, CandidType, Deserialize, Clone)]

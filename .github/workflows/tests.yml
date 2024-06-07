@@ -4,6 +4,8 @@ on:
   pull_request:
     paths:
       - 'src/satellite/**'
+      - 'src/orbiter/**'
+      - 'src/console/**'
       - 'src/libs/**'
       - 'src/tests/**'
 

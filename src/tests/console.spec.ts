@@ -1,7 +1,6 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import { initMissionControls, installReleases } from './utils/console-tests.utils';
@@ -16,7 +15,7 @@ describe('Console', () => {
 	beforeEach(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
+		const { actor: c } = await pic.setupCanister<ConsoleActor>({
 			idlFactory: idlFactorConsole,
 			wasm: CONSOLE_WASM_PATH,
 			sender: controller.getPrincipal()

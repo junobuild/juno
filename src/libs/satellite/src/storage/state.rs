@@ -9,9 +9,9 @@ use crate::storage::types::state::{
     StorageHeapState,
 };
 use crate::storage::types::store::{Asset, AssetEncoding};
-use crate::types::core::{Blob, CollectionKey, DomainName};
 use crate::types::state::StableState;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
 

@@ -7,7 +7,7 @@ use crate::rules::constants::SYS_COLLECTION_PREFIX;
 use crate::rules::types::interface::{DelRule, SetRule};
 use crate::rules::types::rules::{Memory, Rule, Rules};
 use crate::storage::store::assert_assets_collection_empty_store;
-use crate::types::core::CollectionKey;
+use junobuild_shared::types::core::CollectionKey;
 
 /// Rules
 

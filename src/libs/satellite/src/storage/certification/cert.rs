@@ -4,9 +4,9 @@ use crate::storage::certification::constants::{
 use crate::storage::certification::tree_utils::response_headers_expression;
 use crate::storage::certification::types::certified::CertifiedAssetHashes;
 use crate::storage::http::types::HeaderField;
-use crate::types::core::Blob;
 use base64::encode;
 use ic_cdk::api::{data_certificate, set_certified_data};
+use junobuild_shared::types::core::Blob;
 use serde::Serialize;
 use serde_cbor::ser::Serializer;
 

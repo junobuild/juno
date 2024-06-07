@@ -56,14 +56,14 @@ pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };
 use crate::storage::types::state::FullPath;
-use crate::types::core::DomainName;
-pub use crate::types::core::{Blob, CollectionKey, Key};
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
     AssertUploadAssetContext, HookContext, OnDeleteAssetContext, OnDeleteDocContext,
     OnDeleteManyAssetsContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
     OnUploadAssetContext,
 };
+use junobuild_shared::types::core::DomainName;
+pub use junobuild_shared::types::core::{Blob, CollectionKey, Key};
 
 ///
 /// Init and Upgrade

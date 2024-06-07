@@ -50,8 +50,8 @@ use crate::storage::types::store::{
 };
 use crate::storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
 use crate::storage::well_known::update::update_custom_domains_asset;
-use crate::types::core::{Blob, CollectionKey, DomainName};
 use crate::types::list::{ListParams, ListResults};
+use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 
 ///
 /// Getter, list and delete

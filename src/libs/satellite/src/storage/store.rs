@@ -1,7 +1,7 @@
 use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::hooks::{invoke_assert_delete_asset, invoke_assert_upload_asset};
-use crate::list::utils::list_values;
+use junobuild_shared::list::list_values;
 use crate::memory::STATE;
 use crate::msg::{
     COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,

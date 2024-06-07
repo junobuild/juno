@@ -1,8 +1,8 @@
-use junobuild_shared::types::list::{
+use crate::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults,
 };
-use junobuild_shared::types::core::Key;
-use junobuild_shared::types::core::{CollectionKey, Compare};
+use crate::types::core::Key;
+use crate::types::core::{CollectionKey, Compare};
 use regex::Regex;
 
 pub fn list_values<'a, T: Clone + Compare>(

@@ -7,7 +7,6 @@ mod db;
 mod guards;
 mod hooks;
 mod impls;
-mod list;
 mod logs;
 mod memory;
 mod msg;

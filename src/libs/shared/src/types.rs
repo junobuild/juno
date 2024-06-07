@@ -260,3 +260,50 @@ pub mod memory {
 
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
 }
+
+pub mod core {
+    use std::cmp::Ordering;
+
+    /// Represents a unique identifier or key.
+    ///
+    /// This type, `Key`, is an alias for `String`, used to represent unique identifiers or keys within the context
+    /// of various data structures and operations.
+    ///
+    /// `Key` is commonly employed as a unique identifier or key in Rust code.
+    pub type Key = String;
+
+    /// Represents the key or identifier of a collection.
+    ///
+    /// This type, `CollectionKey`, is an alias for `String`, used to represent the key or identifier of a collection
+    /// within the context of various data structures and operations.
+    ///
+    /// `CollectionKey` is commonly employed as a unique identifier for collections in Rust code.
+    pub type CollectionKey = String;
+
+    /// Represents binary data as a vector of bytes.
+    ///
+    /// This type, `Blob`, is an alias for `Vec<u8>`, providing a convenient way to represent binary data
+    /// as a collection of bytes.
+    pub type Blob = Vec<u8>;
+
+    /// Represents the domain name used in various configurations across the satellite.
+    ///
+    /// This type alias simplifies the reuse of `String` for domain names, providing a clear and
+    /// specific semantic meaning when used in structs and function signatures. It is used to
+    /// identify domains for authentication, custom domains, and potentially more areas where
+    /// domain names are needed.
+    ///
+    /// # Examples
+    ///
+    /// Basic usage:
+    ///
+    /// ```
+    /// let main_domain: DomainName = "example.com".to_string();
+    /// ```
+    pub type DomainName = String;
+
+    pub trait Compare {
+        fn cmp_updated_at(&self, other: &Self) -> Ordering;
+        fn cmp_created_at(&self, other: &Self) -> Ordering;
+    }
+}

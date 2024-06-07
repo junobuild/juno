@@ -1,8 +1,8 @@
 use crate::rules::constants::SYS_COLLECTION_PREFIX;
 use crate::rules::types::interface::SetRule;
 use crate::rules::types::rules::{Memory, Rule};
-use crate::types::core::CollectionKey;
 use junobuild_shared::assert::assert_version;
+use junobuild_shared::types::core::CollectionKey;
 use junobuild_shared::types::state::Version;
 
 pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result<(), String> {

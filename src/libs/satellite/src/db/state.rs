@@ -3,7 +3,7 @@ use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
 use crate::msg::COLLECTION_NOT_FOUND;
 use crate::rules::types::rules::{Memory, Rule};
-use crate::types::core::{CollectionKey, Key};
+use junobuild_shared::types::core::{CollectionKey, Key};
 use std::collections::BTreeMap;
 use std::ops::RangeBounds;
 

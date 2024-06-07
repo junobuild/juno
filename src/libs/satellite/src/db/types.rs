@@ -1,9 +1,9 @@
 pub mod state {
     use crate::rules::types::rules::Rules;
-    use crate::types::core::{Blob, CollectionKey, Key};
     use crate::{DelDoc, SetDoc};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::core::{Blob, CollectionKey, Key};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Timestamp, UserId, Version};
     use serde::{Deserialize, Serialize};
@@ -74,8 +74,8 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::types::core::Blob;
     use candid::CandidType;
+    use junobuild_shared::types::core::Blob;
     use junobuild_shared::types::state::Version;
     use serde::{Deserialize, Serialize};
 

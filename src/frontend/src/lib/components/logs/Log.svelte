@@ -47,10 +47,6 @@
 		display: none;
 	}
 
-	.message {
-		width: 100%;
-	}
-
 	@include media.min-width(medium) {
 		.timestamp,
 		.level {
@@ -89,11 +85,6 @@
 	.timestamp,
 	.level {
 		overflow: visible;
-
-		span {
-			padding: var(--padding-0_5x) 0;
-			display: inline-block;
-		}
 	}
 
 	.info {

@@ -4,7 +4,7 @@ use crate::rules::types::rules::Permission;
 use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
-use crate::types::list::ListParams;
+use junobuild_shared::types::list::ListParams;
 use candid::Principal;
 use junobuild_shared::types::core::CollectionKey;
 use junobuild_shared::types::state::{Controllers, UserId};

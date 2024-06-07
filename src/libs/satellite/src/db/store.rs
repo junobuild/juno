@@ -15,7 +15,7 @@ use crate::memory::STATE;
 use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
 use crate::rules::assert_stores::{assert_create_permission, assert_permission, public_permission};
 use crate::rules::types::rules::{Memory, Permission, Rule};
-use crate::types::list::{ListParams, ListResults};
+use junobuild_shared::types::list::{ListParams, ListResults};
 use candid::Principal;
 use junobuild_shared::assert::assert_version;
 use junobuild_shared::types::core::{CollectionKey, Key};

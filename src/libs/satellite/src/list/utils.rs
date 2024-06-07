@@ -1,4 +1,4 @@
-use crate::types::list::{
+use junobuild_shared::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults,
 };
 use junobuild_shared::types::core::Key;

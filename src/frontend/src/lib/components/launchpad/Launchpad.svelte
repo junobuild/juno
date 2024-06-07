@@ -30,7 +30,7 @@
 {#if loading || ($satellitesStore?.length ?? 0n) === 0}
 	{#if loading}
 		<div class="spinner" out:fade>
-			<Spinner />
+			<Spinner inline />
 
 			<p>{$i18n.satellites.loading_launchpad}</p>
 		</div>
@@ -92,5 +92,7 @@
 		justify-content: center;
 		align-items: center;
 		gap: var(--padding-2x);
+
+		font-size: var(--font-size-very-small);
 	}
 </style>

@@ -20,8 +20,6 @@ mod version;
 
 use crate::auth::types::state::AuthenticationConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::rules::types::interface::{DelRule, SetRule};
-use crate::rules::types::rules::Rule;
 use crate::storage::types::domain::CustomDomains;
 use crate::storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
@@ -31,6 +29,8 @@ use crate::types::list::ListResults;
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use junobuild_collections::types::interface::{DelRule, SetRule};
+use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
 };

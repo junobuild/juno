@@ -1,4 +1,3 @@
-use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
     RAW_DOMAINS, RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, ROOT_404_HTML,
     ROOT_INDEX_HTML, ROOT_PATH,
@@ -15,6 +14,7 @@ use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use crate::storage::url::{map_alternative_paths, map_url};
 use ic_cdk::id;
+use junobuild_collections::types::rules::Memory;
 
 pub fn get_routing(
     url: String,

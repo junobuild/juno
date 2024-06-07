@@ -1,5 +1,4 @@
 use crate::memory::STATE;
-use crate::rules::types::rules::Memory;
 use crate::storage::certification::cert::{
     build_asset_certificate_header, build_certified_expression,
 };
@@ -13,6 +12,7 @@ use crate::storage::types::config::StorageConfigIFrame;
 use crate::storage::types::state::StorageRuntimeState;
 use crate::storage::types::store::{Asset, AssetEncoding, AssetKey, EncodingType};
 use ic_cdk::id;
+use junobuild_collections::types::rules::Memory;
 use serde_bytes::ByteBuf;
 
 pub fn streaming_strategy(

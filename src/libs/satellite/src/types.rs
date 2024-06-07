@@ -46,6 +46,7 @@ pub mod state {
 }
 
 pub mod core {
+    use junobuild_collections::types::core::CollectionKey as CoreCollectionKey;
     use std::cmp::Ordering;
 
     /// Represents a unique identifier or key.
@@ -62,7 +63,7 @@ pub mod core {
     /// within the context of various data structures and operations.
     ///
     /// `CollectionKey` is commonly employed as a unique identifier for collections in Rust code.
-    pub type CollectionKey = String;
+    pub type CollectionKey = CoreCollectionKey;
 
     /// Represents binary data as a vector of bytes.
     ///

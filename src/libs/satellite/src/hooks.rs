@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
-use crate::rules::constants::{ASSET_COLLECTION_KEY, LOG_COLLECTION_KEY};
 use crate::storage::types::store::{Asset, AssetAssertUpload};
 use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
@@ -11,6 +10,7 @@ use crate::types::hooks::{
 use crate::{CollectionKey, HookContext};
 #[allow(unused)]
 use ic_cdk_timers::set_timer;
+use junobuild_collections::constants::{ASSET_COLLECTION_KEY, LOG_COLLECTION_KEY};
 use junobuild_shared::types::state::UserId;
 #[allow(unused)]
 use std::time::Duration;

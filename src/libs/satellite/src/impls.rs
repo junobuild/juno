@@ -1,13 +1,13 @@
 use crate::db::types::state::DbHeapState;
 use crate::memory::init_stable_state;
-use crate::rules::constants::{DEFAULT_ASSETS_COLLECTIONS, DEFAULT_DB_COLLECTIONS};
-use crate::rules::types::rules::{Memory, Rule};
 use crate::storage::types::config::{
     StorageConfig, StorageConfigHeaders, StorageConfigRedirects, StorageConfigRewrites,
 };
 use crate::storage::types::state::StorageHeapState;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ic_cdk::api::time;
+use junobuild_collections::constants::{DEFAULT_ASSETS_COLLECTIONS, DEFAULT_DB_COLLECTIONS};
+use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::state::Controllers;
 use std::collections::{BTreeMap, HashMap};
 

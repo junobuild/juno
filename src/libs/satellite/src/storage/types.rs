@@ -1,5 +1,4 @@
 pub mod state {
-    use crate::rules::types::rules::Rules;
     use crate::storage::certification::types::certified::CertifiedAssetHashes;
     use crate::storage::types::config::StorageConfig;
     use crate::storage::types::domain::CustomDomains;
@@ -7,6 +6,7 @@ pub mod state {
     use crate::types::core::{Blob, CollectionKey, Key};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_collections::types::rules::Rules;
     use junobuild_shared::types::memory::Memory;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
@@ -231,11 +231,11 @@ pub mod config {
 }
 
 pub mod http_request {
-    use crate::rules::types::rules::Memory;
     use crate::storage::http::types::StatusCode;
     use crate::storage::types::config::{StorageConfigIFrame, StorageConfigRedirect};
     use crate::storage::types::store::Asset;
     use candid::{CandidType, Deserialize};
+    use junobuild_collections::types::rules::Memory;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct MapUrl {

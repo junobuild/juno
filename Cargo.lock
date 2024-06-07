@@ -817,6 +817,7 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-response-verification",
  "ic-stable-structures",
+ "junobuild-collections",
  "junobuild-shared",
  "junobuild-utils 0.0.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand",

@@ -6,19 +6,20 @@ use crate::memory::STATE;
 use crate::msg::{
     COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
 };
-use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
 use ic_cdk::api::time;
+use junobuild_collections::assert_stores::{
+    assert_create_permission, assert_permission, public_permission,
+};
+use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::state::{Controllers, Timestamp, Version};
 use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
 
-use crate::rules::assert_stores::{
-    assert_create_permission, assert_permission, is_known_user, public_permission,
-};
-use crate::rules::types::rules::{Memory, Rule};
+use crate::rules::assert_stores::is_known_user;
 use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, ROOT_404_HTML, ROOT_INDEX_HTML,
     WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,

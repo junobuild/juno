@@ -2,15 +2,14 @@ use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::hooks::{invoke_assert_delete_asset, invoke_assert_upload_asset};
 use crate::memory::STATE;
-use crate::msg::{
-    COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
-};
+use crate::msg::{ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
 use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_collections::assert_stores::{
     assert_create_permission, assert_permission, public_permission,
 };
 use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;

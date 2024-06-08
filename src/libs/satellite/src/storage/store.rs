@@ -18,11 +18,11 @@ use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
 
 use crate::rules::assert_stores::is_known_user;
-use crate::storage::constants::{
+use junobuild_storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, ROOT_404_HTML, ROOT_INDEX_HTML,
     WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
-use crate::storage::runtime::{
+use junobuild_storage::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks,
     delete_certified_asset as delete_runtime_certified_asset, get_batch as get_runtime_batch,
@@ -40,15 +40,15 @@ use crate::storage::state::{
     insert_asset_encoding as insert_state_asset_encoding, insert_config as insert_state_config,
     insert_domain as insert_state_domain,
 };
-use crate::storage::types::config::StorageConfig;
-use crate::storage::types::domain::{CustomDomain, CustomDomains};
-use crate::storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
-use crate::storage::types::state::FullPath;
-use crate::storage::types::store::{
+use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
+use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
+use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType,
 };
-use crate::storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
-use crate::storage::well_known::update::update_custom_domains_asset;
+use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
+use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};

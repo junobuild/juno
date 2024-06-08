@@ -3,7 +3,7 @@ use crate::controllers::store::get_controllers;
 use crate::hooks::{invoke_assert_delete_asset, invoke_assert_upload_asset};
 use crate::memory::STATE;
 use crate::msg::{
-    COLLECTION_NOT_EMPTY, ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
+    ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED,
 };
 use candid::Principal;
 use ic_cdk::api::time;
@@ -18,6 +18,7 @@ use junobuild_shared::list::list_values;
 use junobuild_shared::types::state::{Controllers, Timestamp, Version};
 use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
+use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
 
 use crate::rules::assert_stores::is_known_user;
 use crate::constants::{

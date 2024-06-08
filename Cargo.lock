@@ -866,6 +866,7 @@ dependencies = [
  "junobuild-shared",
  "regex",
  "serde",
+ "serde_bytes",
  "serde_cbor",
  "sha2",
  "url",

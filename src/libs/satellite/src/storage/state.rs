@@ -1,5 +1,4 @@
 use crate::memory::STATE;
-use crate::msg::COLLECTION_NOT_FOUND;
 use crate::storage::types::config::StorageConfig;
 use crate::storage::types::domain::{CustomDomain, CustomDomains};
 use crate::storage::types::state::{
@@ -8,6 +7,7 @@ use crate::storage::types::state::{
 };
 use crate::storage::types::store::{Asset, AssetEncoding};
 use crate::types::state::StableState;
+use junobuild_collections::msg::COLLECTION_NOT_FOUND;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::list::range_collection_end;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};

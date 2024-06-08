@@ -2,7 +2,7 @@ use crate::types::config::{
     StorageConfig, StorageConfigIFrame, StorageConfigRawAccess, StorageConfigRedirects,
 };
 use crate::types::interface::{AssetEncodingNoContent, AssetNoContent};
-use crate::types::state::{StableEncodingChunkKey, StableKey};
+use crate::types::state::{RuntimeState, StableEncodingChunkKey, StableKey, State};
 use crate::types::store::{Asset, AssetEncoding};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
@@ -12,6 +12,14 @@ use junobuild_shared::types::core::{Blob, Compare};
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
+
+impl Default for State {
+    fn default() -> Self {
+        Self {
+            runtime: RuntimeState::default(),
+        }
+    }
+}
 
 impl From<&Vec<Blob>> for AssetEncoding {
     fn from(content_chunks: &Vec<Blob>) -> Self {

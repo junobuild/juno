@@ -1,32 +1,31 @@
-use crate::memory::STATE;
 use crate::certification::cert::update_certified_data;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::rewrites::rewrite_source_to_path;
 use crate::routing::get_routing;
 use crate::types::config::StorageConfig;
 use crate::types::http_request::{Routing, RoutingDefault};
-use crate::types::state::{Batches, Chunks, StorageRuntimeState};
+use crate::types::state::{AssetsStable, Batches, Chunks, RuntimeState, StorageHeapState, StorageRuntimeState};
 use crate::types::store::{Asset, Batch, Chunk};
-use crate::types::state::{RuntimeState, State};
 use ic_cdk::api::time;
+use crate::memory::STATE;
 
 /// Certified assets
 
-pub fn init_certified_assets() {
-    fn init_asset_hashes(state: &State) -> CertifiedAssetHashes {
+pub fn init_certified_assets(heap: &StorageHeapState, stable_assets: &AssetsStable) {
+    fn init_asset_hashes(heap: &StorageHeapState, stable_assets: &AssetsStable) -> CertifiedAssetHashes {
         let mut asset_hashes = CertifiedAssetHashes::default();
 
-        let config = &state.heap.storage.config;
+        let config = &heap.config;
 
-        for (_key, asset) in state.heap.storage.assets.iter() {
+        for (_key, asset) in heap.assets.iter() {
             asset_hashes.insert(asset, config);
         }
 
-        for (_key, asset) in state.stable.assets.iter() {
+        for (_key, asset) in stable_assets.iter() {
             asset_hashes.insert(&asset, config);
         }
 
-        for (source, destination) in state.heap.storage.config.rewrites.clone() {
+        for (source, destination) in heap.config.rewrites.clone() {
             if let Ok(Routing::Default(RoutingDefault { url: _, asset })) =
                 get_routing(destination, &Vec::new(), false)
             {
@@ -38,7 +37,7 @@ pub fn init_certified_assets() {
             }
         }
 
-        for (source, redirect) in state.heap.storage.config.unwrap_redirects() {
+        for (source, redirect) in heap.config.unwrap_redirects() {
             asset_hashes.insert_redirect_v2(
                 &source,
                 redirect.status_code,
@@ -50,7 +49,7 @@ pub fn init_certified_assets() {
         asset_hashes
     }
 
-    let asset_hashes = STATE.with(|state| init_asset_hashes(&state.borrow()));
+    let asset_hashes = init_asset_hashes(heap, stable_assets);
 
     STATE.with(|state| {
         init_certified_assets_impl(&asset_hashes, &mut state.borrow_mut().runtime.storage)

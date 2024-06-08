@@ -26,6 +26,13 @@ pub mod state {
 
     pub type AssetsHeap = HashMap<FullPath, Asset>;
 
+    #[derive(Serialize, Deserialize)]
+    pub struct State {
+        // Unstable state: State that resides only on the heap, that’s lost after an upgrade.
+        #[serde(skip, default)]
+        pub runtime: RuntimeState,
+    }
+
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct StableKey {
         pub collection: CollectionKey,
@@ -52,6 +59,11 @@ pub mod state {
         pub chunks: Chunks,
         pub batches: Batches,
         pub asset_hashes: CertifiedAssetHashes,
+    }
+
+    #[derive(Default, Clone)]
+    pub struct RuntimeState {
+        pub storage: StorageRuntimeState,
     }
 }
 

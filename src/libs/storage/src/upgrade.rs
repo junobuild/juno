@@ -1,14 +1,6 @@
 use crate::runtime::init_certified_assets as init_runtime_certified_assets;
-use ic_cdk::spawn;
-use ic_cdk_timers::set_timer;
-use std::time::Duration;
+use crate::types::state::{AssetsStable, StorageHeapState};
 
-/// If required, building the certification asset hashes is something we can also initiate "manually."
-/// This is why we can avoid blocking the post_upgrade process. That way, the execution instructions are specifically scoped to the operation.
-pub fn defer_init_certified_assets() {
-    set_timer(Duration::ZERO, || spawn(init_certified_assets()));
-}
-
-async fn init_certified_assets() {
-    init_runtime_certified_assets();
+pub async fn init_certified_assets(heap: &StorageHeapState, stable_assets: &AssetsStable) {
+    init_runtime_certified_assets(heap, stable_assets);
 }

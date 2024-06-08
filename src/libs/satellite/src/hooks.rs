@@ -1,7 +1,6 @@
 #![allow(dead_code)]
 
 use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
-use crate::storage::types::store::{Asset, AssetAssertUpload};
 use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
     AssertUploadAssetContext, OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext,
@@ -14,6 +13,7 @@ use junobuild_collections::constants::{ASSET_COLLECTION_KEY, LOG_COLLECTION_KEY}
 use junobuild_shared::types::state::UserId;
 #[allow(unused)]
 use std::time::Duration;
+use junobuild_storage::types::store::{Asset, AssetAssertUpload};
 
 extern "Rust" {
     fn juno_on_set_doc(context: OnSetDocContext);

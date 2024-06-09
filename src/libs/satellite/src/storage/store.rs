@@ -20,7 +20,6 @@ use junobuild_storage::constants::{
 };
 use junobuild_storage::runtime::{
     delete_certified_asset as delete_runtime_certified_asset,
-    init_certified_assets as init_runtime_certified_assets,
     update_certified_asset as update_runtime_certified_asset,
 };
 use crate::storage::state::{
@@ -47,6 +46,7 @@ use junobuild_storage::store::{create_batch, create_chunk, commit_batch as commi
 use crate::storage::impls::{SatelliteAssertOps, SatelliteContentStore, SatelliteInsertOps};
 use crate::storage::well_known::update::update_custom_domains_asset;
 use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
+use crate::storage::runtime::init_certified_assets as init_runtime_certified_assets;
 
 ///
 /// Getter, list and delete

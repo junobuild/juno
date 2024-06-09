@@ -8,7 +8,6 @@ mod hooks;
 mod impls;
 mod logs;
 mod memory;
-mod msg;
 mod random;
 mod rules;
 mod satellite;

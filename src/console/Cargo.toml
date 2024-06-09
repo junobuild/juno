@@ -18,3 +18,4 @@ serde.workspace = true
 serde_cbor.workspace = true
 ciborium.workspace = true
 junobuild-shared = { path = "../libs/shared" }
+junobuild-storage = { path = "../libs/storage" }

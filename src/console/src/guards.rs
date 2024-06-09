@@ -1,14 +1,14 @@
+use crate::store::heap::get_controllers;
 use crate::STATE;
 use candid::Principal;
 use ic_cdk::caller;
 use junobuild_shared::controllers::is_admin_controller;
 use junobuild_shared::env::OBSERVATORY;
-use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_equal;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {
     let caller = caller();
-    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
+    let controllers = get_controllers();
 
     if is_admin_controller(caller, &controllers) {
         Ok(())

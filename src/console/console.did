@@ -6,6 +6,15 @@ type ControllerScope = variant { Write; Admin };
 type CreateCanisterArgs = record { block_index : opt nat64; user : principal };
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetCreateCanisterFeeArgs = record { user : principal };
+type InitAssetKey = record {
+  token : opt text;
+  collection : text;
+  name : text;
+  description : opt text;
+  encoding_type : opt text;
+  full_path : text;
+};
+type InitUploadResult = record { batch_id : nat };
 type LoadRelease = record { total : nat64; chunks : nat64 };
 type MissionControl = record {
   updated_at : nat64;
@@ -40,6 +49,12 @@ type SetControllersArgs = record {
   controllers : vec principal;
 };
 type Tokens = record { e8s : nat64 };
+type UploadChunk = record {
+  content : vec nat8;
+  batch_id : nat;
+  order_id : opt nat;
+};
+type UploadChunkResult = record { chunk_id : nat };
 service : () -> {
   add_credits : (principal, Tokens) -> ();
   add_invitation_code : (text) -> ();
@@ -52,6 +67,7 @@ service : () -> {
   get_credits : () -> (Tokens) query;
   get_releases_version : () -> (ReleasesVersion) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
+  init_asset_upload : (InitAssetKey) -> (InitUploadResult);
   init_user_mission_control_center : () -> (MissionControl);
   list_payments : () -> (vec record { nat64; Payment }) query;
   list_user_mission_control_centers : () -> (
@@ -62,5 +78,6 @@ service : () -> {
   set_controllers : (SetControllersArgs) -> ();
   set_fee : (Segment, Tokens) -> ();
   update_rate_config : (Segment, RateConfig) -> ();
+  upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
 }

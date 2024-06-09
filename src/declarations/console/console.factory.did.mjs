@@ -25,6 +25,15 @@ export const idlFactory = ({ IDL }) => {
 		owner: IDL.Principal,
 		created_at: IDL.Nat64
 	});
+	const InitAssetKey = IDL.Record({
+		token: IDL.Opt(IDL.Text),
+		collection: IDL.Text,
+		name: IDL.Text,
+		description: IDL.Opt(IDL.Text),
+		encoding_type: IDL.Opt(IDL.Text),
+		full_path: IDL.Text
+	});
+	const InitUploadResult = IDL.Record({ batch_id: IDL.Nat });
 	const PaymentStatus = IDL.Variant({
 		Refunded: IDL.Null,
 		Acknowledged: IDL.Null,
@@ -61,6 +70,12 @@ export const idlFactory = ({ IDL }) => {
 		max_tokens: IDL.Nat64,
 		time_per_token_ns: IDL.Nat64
 	});
+	const UploadChunk = IDL.Record({
+		content: IDL.Vec(IDL.Nat8),
+		batch_id: IDL.Nat,
+		order_id: IDL.Opt(IDL.Nat)
+	});
+	const UploadChunkResult = IDL.Record({ chunk_id: IDL.Nat });
 	return IDL.Service({
 		add_credits: IDL.Func([IDL.Principal, Tokens], [], []),
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
@@ -73,6 +88,7 @@ export const idlFactory = ({ IDL }) => {
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_releases_version: IDL.Func([], [ReleasesVersion], ['query']),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),
+		init_asset_upload: IDL.Func([InitAssetKey], [InitUploadResult], []),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),
 		list_user_mission_control_centers: IDL.Func(
@@ -85,6 +101,7 @@ export const idlFactory = ({ IDL }) => {
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_fee: IDL.Func([Segment, Tokens], [], []),
 		update_rate_config: IDL.Func([Segment, RateConfig], [], []),
+		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

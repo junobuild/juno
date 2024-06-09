@@ -14,7 +14,7 @@ use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::store::heap::{
-    add_invitation_code as add_invitation_code_store, delete_controllers,
+    add_invitation_code as add_invitation_code_store, create_batch_store, delete_controllers,
     get_mission_control_release_version, get_orbiter_fee, get_orbiter_release_version,
     get_satellite_fee, get_satellite_release_version, list_mission_controls_heap,
     list_payments_heap, load_mission_control_release, load_orbiter_release, load_satellite_release,
@@ -46,6 +46,10 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::upgrade::write_pre_upgrade;
+use junobuild_storage::store::create_chunk;
+use junobuild_storage::types::interface::{
+    InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
+};
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -316,6 +320,31 @@ fn set_controllers(
 #[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
     delete_controllers(&controllers);
+}
+
+/// Storage
+
+#[update(guard = "caller_is_admin_controller")]
+fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
+    let caller = caller();
+    let result = create_batch_store(caller, init);
+
+    match result {
+        Ok(batch_id) => InitUploadResult { batch_id },
+        Err(error) => trap(&error),
+    }
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
+    let caller = caller();
+
+    let result = create_chunk(caller, chunk);
+
+    match result {
+        Ok(chunk_id) => UploadChunkResult { chunk_id },
+        Err(error) => trap(error),
+    }
 }
 
 // Generate did files

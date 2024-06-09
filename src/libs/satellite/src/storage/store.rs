@@ -1,4 +1,3 @@
-use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::hooks::{invoke_assert_delete_asset, invoke_assert_upload_asset};
 use crate::memory::STATE;
@@ -17,6 +16,7 @@ use junobuild_shared::list::list_values;
 use junobuild_shared::types::state::{Controllers, Timestamp, Version};
 use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
+use junobuild_shared::assert::assert_description_length;
 
 use crate::rules::assert_stores::is_known_user;
 use crate::storage::constants::{

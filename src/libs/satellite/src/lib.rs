@@ -1,6 +1,5 @@
 #![doc = include_str!("../README.md")]
 
-mod assert;
 mod auth;
 mod controllers;
 mod db;

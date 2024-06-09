@@ -3,14 +3,17 @@ use crate::types::state::{
     Payments, Rate, RateConfig, Wasm,
 };
 use crate::STATE;
+use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::ControllerId;
 use junobuild_shared::types::state::UserId;
+use junobuild_shared::types::state::{ControllerId, Controllers};
+use junobuild_storage::store::create_batch;
+use junobuild_storage::types::interface::InitAssetKey;
 use std::cmp::min;
 
 /// Mission control centers
@@ -206,6 +209,10 @@ fn add_invitation_code_impl(code: &InvitationCode, invitation_codes: &mut Invita
 
 /// Controllers
 
+pub fn get_controllers() -> Controllers {
+    STATE.with(|state| state.borrow().heap.controllers.clone())
+}
+
 pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetController) {
     STATE.with(|state| {
         set_controllers_impl(
@@ -301,4 +308,13 @@ fn set_orbiter_fee(fee: &Tokens, state: &mut Fees) {
         fee: *fee,
         updated_at: time(),
     };
+}
+
+///
+/// Upload batch and chunks
+///
+
+pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
+    let controllers = get_controllers();
+    create_batch(caller, &controllers, init)
 }

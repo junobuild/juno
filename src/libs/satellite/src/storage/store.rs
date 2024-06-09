@@ -1,33 +1,26 @@
-use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
-use crate::hooks::{invoke_assert_delete_asset, invoke_assert_upload_asset};
+use crate::hooks::{invoke_assert_delete_asset};
 use crate::memory::STATE;
 use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_collections::assert_stores::{
-    assert_create_permission, assert_permission, public_permission,
+    assert_permission, public_permission,
 };
-use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::state::{Controllers, Timestamp, Version};
-use junobuild_shared::utils::principal_not_equal;
-use std::collections::HashMap;
 
 use crate::rules::assert_stores::is_known_user;
 use junobuild_storage::constants::{
-    ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, ROOT_404_HTML, ROOT_INDEX_HTML,
+    ROOT_404_HTML, ROOT_INDEX_HTML,
     WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
 use junobuild_storage::runtime::{
-    clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
-    clear_expired_chunks as clear_expired_runtime_chunks,
-    delete_certified_asset as delete_runtime_certified_asset, get_batch as get_runtime_batch,
-    get_chunk as get_runtime_chunk, init_certified_assets as init_runtime_certified_assets,
-    insert_batch as insert_runtime_batch, insert_chunk as insert_runtime_chunk,
+    delete_certified_asset as delete_runtime_certified_asset,
+    init_certified_assets as init_runtime_certified_assets,
     update_certified_asset as update_runtime_certified_asset,
 };
 use crate::storage::state::{
@@ -36,8 +29,8 @@ use crate::storage::state::{
     get_assets_stable, get_config as get_state_config,
     get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
     get_domains as get_state_domains, get_public_asset as get_state_public_asset,
-    get_rule as get_state_rule, insert_asset as insert_state_asset,
-    insert_asset_encoding as insert_state_asset_encoding, insert_config as insert_state_config,
+    get_rule as get_state_rule,
+    insert_config as insert_state_config,
     insert_domain as insert_state_domain,
 };
 use junobuild_storage::types::config::StorageConfig;
@@ -45,16 +38,15 @@ use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
-    Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType,
+    Asset, AssetEncoding,
 };
-use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
-use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
-use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
+use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, UPLOAD_NOT_ALLOWED};
 use junobuild_storage::store::{create_batch, create_chunk, commit_batch as commit_batch_storage};
 use crate::storage::impls::{SatelliteAssertOps, SatelliteContentStore, SatelliteInsertOps};
 use crate::storage::well_known::update::update_custom_domains_asset;
+use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
 
 ///
 /// Getter, list and delete

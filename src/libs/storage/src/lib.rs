@@ -13,4 +13,4 @@ pub mod store;
 pub mod types;
 pub mod upgrade;
 mod url;
-mod utils;
+pub mod utils;

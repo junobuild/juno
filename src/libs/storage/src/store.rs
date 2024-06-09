@@ -2,7 +2,7 @@ use crate::constants::{
     ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, WELL_KNOWN_CUSTOM_DOMAINS,
     WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
-use crate::interfaces::{AssertOperations, ContentStore, InsertOperations};
+use crate::interfaces::{HooksAssertions, ContentStore, InsertOperations};
 use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
@@ -145,7 +145,7 @@ pub fn commit_batch(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     config: &StorageConfig,
-    assert_ops: Option<&impl AssertOperations>,
+    assertions: Option<&impl HooksAssertions>,
     insert_ops: &impl InsertOperations,
     content_store: &impl ContentStore,
 ) -> Result<Asset, String> {
@@ -159,7 +159,7 @@ pub fn commit_batch(
                 controllers,
                 commit_batch,
                 &b,
-                assert_ops,
+                assertions,
                 insert_ops,
                 content_store,
             )?;
@@ -211,7 +211,7 @@ fn secure_commit_chunks(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
-    assert_ops: Option<&impl AssertOperations>,
+    assertions: Option<&impl HooksAssertions>,
     insert_ops: &impl InsertOperations,
     content_store: &impl ContentStore,
 ) -> Result<Asset, String> {
@@ -243,7 +243,7 @@ fn secure_commit_chunks(
                 batch,
                 &rule,
                 &None,
-                assert_ops,
+                assertions,
                 insert_ops,
             )
         }
@@ -254,7 +254,7 @@ fn secure_commit_chunks(
             batch,
             rule,
             current,
-            assert_ops,
+            assertions,
             insert_ops,
         ),
     }
@@ -267,7 +267,7 @@ fn secure_commit_chunks_update(
     batch: &Batch,
     rule: Rule,
     current: Asset,
-    assert_ops: Option<&impl AssertOperations>,
+    assertions: Option<&impl HooksAssertions>,
     insert_ops: &impl InsertOperations,
 ) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
@@ -285,7 +285,7 @@ fn secure_commit_chunks_update(
         batch,
         &rule,
         &Some(current),
-        assert_ops,
+        assertions,
         insert_ops,
     )
 }
@@ -296,7 +296,7 @@ fn commit_chunks(
     batch: &Batch,
     rule: &Rule,
     current: &Option<Asset>,
-    assert_ops: Option<&impl AssertOperations>,
+    assertions: Option<&impl HooksAssertions>,
     insert_ops: &impl InsertOperations,
 ) -> Result<Asset, String> {
     let now = time();
@@ -306,7 +306,7 @@ fn commit_chunks(
         return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
     }
 
-    if let Some(ops) = assert_ops {
+    if let Some(ops) = assertions {
         ops.invoke_assert_upload_asset(
             &caller,
             &AssetAssertUpload {

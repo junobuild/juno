@@ -5,7 +5,7 @@ use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
 
-pub trait AssertOperations {
+pub trait HooksAssertions {
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,

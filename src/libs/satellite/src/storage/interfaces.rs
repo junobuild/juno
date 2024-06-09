@@ -5,14 +5,14 @@ use crate::storage::store::get_public_asset_store;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
-use junobuild_storage::interfaces::{AssertOperations, ContentStore, InsertOperations};
+use junobuild_storage::interfaces::{HooksAssertions, ContentStore, InsertOperations};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 
-pub struct SatelliteAssertOps;
+pub struct StorageHooksAssertions;
 
-impl AssertOperations for SatelliteAssertOps {
+impl HooksAssertions for StorageHooksAssertions {
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,

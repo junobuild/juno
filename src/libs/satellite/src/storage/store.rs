@@ -12,7 +12,7 @@ use junobuild_shared::list::list_values;
 use junobuild_shared::types::state::{Controllers, Timestamp, Version};
 
 use crate::rules::assert_stores::is_known_user;
-use crate::storage::interfaces::{SatelliteAssertOps, SatelliteContentStore, SatelliteInsertOps};
+use crate::storage::interfaces::{StorageHooksAssertions, SatelliteContentStore, SatelliteInsertOps};
 use crate::storage::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::{
     count_assets_heap, count_assets_stable, delete_asset as delete_state_asset,
@@ -454,7 +454,6 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
     let controllers: Controllers = get_controllers();
     let config = get_config_store();
 
-    let assert_ops = SatelliteAssertOps;
     let insert_ops = SatelliteInsertOps;
     let content_store = SatelliteContentStore;
 
@@ -463,7 +462,7 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
         &controllers,
         commit_batch,
         &config,
-        Some(&assert_ops),
+        Some(&StorageHooksAssertions),
         &insert_ops,
         &content_store,
     )

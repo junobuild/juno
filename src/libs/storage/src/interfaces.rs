@@ -1,5 +1,5 @@
 use crate::types::config::StorageConfig;
-use crate::types::state::{AssetsHeap, AssetsStable, FullPath};
+use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};

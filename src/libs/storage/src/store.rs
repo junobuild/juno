@@ -310,7 +310,7 @@ fn commit_chunks(
         ops.invoke_assert_upload_asset(
             &caller,
             &AssetAssertUpload {
-                current: current.cloned(),
+                current: current.clone(),
                 batch: batch.clone(),
                 commit_batch: commit_batch.clone(),
             },

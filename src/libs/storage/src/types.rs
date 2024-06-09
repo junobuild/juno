@@ -12,8 +12,11 @@ pub mod state {
     /// `FullPath` is commonly used to identify the location of assets within a storage system.
     pub type FullPath = Key;
 
-    pub type Batches = HashMap<u128, Batch>;
-    pub type Chunks = HashMap<u128, Chunk>;
+    pub type Batches = HashMap<BatchId, Batch>;
+    pub type Chunks = HashMap<ChunkId, Chunk>;
+
+    pub type BatchId = u128;
+    pub type ChunkId = u128;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -38,7 +41,7 @@ pub mod state {
 pub mod store {
     use crate::http::types::HeaderField;
     use crate::types::interface::CommitBatch;
-    use crate::types::state::FullPath;
+    use crate::types::state::{BatchId, FullPath};
     use candid::CandidType;
     use ic_certification::Hash;
     use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -49,7 +52,7 @@ pub mod store {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Chunk {
-        pub batch_id: u128,
+        pub batch_id: BatchId,
         pub order_id: u128,
         pub content: Blob,
     }
@@ -115,7 +118,7 @@ pub mod interface {
     use serde::Serialize;
 
     use crate::http::types::HeaderField;
-    use crate::types::state::FullPath;
+    use crate::types::state::{BatchId, ChunkId, FullPath};
     use crate::types::store::{AssetKey, EncodingType};
     use junobuild_shared::types::core::{Blob, CollectionKey};
 
@@ -131,26 +134,26 @@ pub mod interface {
 
     #[derive(CandidType)]
     pub struct InitUploadResult {
-        pub batch_id: u128,
+        pub batch_id: BatchId,
     }
 
     #[derive(CandidType, Deserialize)]
     pub struct UploadChunk {
-        pub batch_id: u128,
+        pub batch_id: BatchId,
         pub content: Blob,
         pub order_id: Option<u128>,
     }
 
     #[derive(CandidType)]
     pub struct UploadChunkResult {
-        pub chunk_id: u128,
+        pub chunk_id: ChunkId,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CommitBatch {
-        pub batch_id: u128,
+        pub batch_id: BatchId,
         pub headers: Vec<HeaderField>,
-        pub chunk_ids: Vec<u128>,
+        pub chunk_ids: Vec<ChunkId>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

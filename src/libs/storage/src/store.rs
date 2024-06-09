@@ -11,7 +11,7 @@ use crate::runtime::{
 };
 use crate::strategies::{StorageAssertionsStrategy, StorageStoreStrategy, StorageUploadStrategy};
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
-use crate::types::state::FullPath;
+use crate::types::state::{BatchId, ChunkId, FullPath};
 use crate::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType,
 };
@@ -34,14 +34,14 @@ use std::collections::HashMap;
 
 const BATCH_EXPIRY_NANOS: u64 = 300_000_000_000;
 
-static mut NEXT_BATCH_ID: u128 = 0;
-static mut NEXT_CHUNK_ID: u128 = 0;
+static mut NEXT_BATCH_ID: BatchId = 0;
+static mut NEXT_CHUNK_ID: ChunkId = 0;
 
 pub fn create_batch(
     caller: Principal,
     controllers: &Controllers,
     init: InitAssetKey,
-) -> Result<u128, String> {
+) -> Result<BatchId, String> {
     assert_key(caller, &init.full_path, &init.collection, controllers)?;
 
     assert_description_length(&init.description)?;
@@ -62,7 +62,7 @@ fn create_batch_impl(
         full_path,
         description,
     }: InitAssetKey,
-) -> u128 {
+) -> BatchId {
     let now = time();
 
     unsafe {
@@ -99,7 +99,7 @@ pub fn create_chunk(
         content,
         order_id,
     }: UploadChunk,
-) -> Result<u128, &'static str> {
+) -> Result<ChunkId, &'static str> {
     let batch = get_runtime_batch(&batch_id);
 
     match batch {

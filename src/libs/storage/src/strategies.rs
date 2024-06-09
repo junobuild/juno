@@ -30,7 +30,9 @@ pub trait StorageStoreStrategy {
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String>;
 
     fn get_config(&self) -> StorageConfig;
+}
 
+pub trait StorageUploadStrategy {
     fn get_asset(
         &self,
         collection: &CollectionKey,
@@ -47,11 +49,5 @@ pub trait StorageStoreStrategy {
         rule: &Rule,
     );
 
-    fn insert_asset(
-        &self,
-        collection: &String,
-        full_path: &String,
-        asset: &Asset,
-        rule: &Rule,
-    );
+    fn insert_asset(&self, collection: &String, full_path: &String, asset: &Asset, rule: &Rule);
 }

@@ -22,7 +22,7 @@ use crate::storage::state::{
     get_rule as get_state_rule, insert_config as insert_state_config,
     insert_domain as insert_state_domain,
 };
-use crate::storage::strategy_impls::{StorageAssertions, StorageStore};
+use crate::storage::strategy_impls::{StorageAssertions, StorageStore, StorageUpload};
 use crate::storage::types::domain::{CustomDomain, CustomDomains};
 use crate::storage::well_known::update::update_custom_domains_asset;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
@@ -459,6 +459,7 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
         commit_batch,
         Some(&StorageAssertions),
         &StorageStore,
+        &StorageUpload,
     )
 }
 

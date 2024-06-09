@@ -9,7 +9,7 @@ use crate::runtime::{
     get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
     insert_chunk as insert_runtime_chunk, update_certified_asset as update_runtime_certified_asset,
 };
-use crate::strategies::{StorageAssertionsStrategy, StorageStoreStrategy};
+use crate::strategies::{StorageAssertionsStrategy, StorageStoreStrategy, StorageUploadStrategy};
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
 use crate::types::state::FullPath;
 use crate::types::store::{
@@ -145,6 +145,7 @@ pub fn commit_batch(
     commit_batch: CommitBatch,
     assertions: Option<&impl StorageAssertionsStrategy>,
     storage_store: &impl StorageStoreStrategy,
+    storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
@@ -158,6 +159,7 @@ pub fn commit_batch(
                 &b,
                 assertions,
                 storage_store,
+                storage_upload,
             )?;
             update_runtime_certified_asset(&asset, &storage_store.get_config());
             Ok(asset)
@@ -209,6 +211,7 @@ fn secure_commit_chunks(
     batch: &Batch,
     assertions: Option<&impl StorageAssertionsStrategy>,
     storage_store: &impl StorageStoreStrategy,
+    storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
     // The one that started the batch should be the one that commits it
     if principal_not_equal(caller, batch.key.owner) {
@@ -224,7 +227,7 @@ fn secure_commit_chunks(
 
     let rule = storage_store.get_rule(&batch.key.collection)?;
 
-    let current = storage_store.get_asset(&batch.key.collection, &batch.key.full_path, &rule);
+    let current = storage_upload.get_asset(&batch.key.collection, &batch.key.full_path, &rule);
 
     match current {
         None => {
@@ -239,7 +242,7 @@ fn secure_commit_chunks(
                 &rule,
                 &None,
                 assertions,
-                storage_store,
+                storage_upload,
             )
         }
         Some(current) => secure_commit_chunks_update(
@@ -250,7 +253,7 @@ fn secure_commit_chunks(
             rule,
             current,
             assertions,
-            storage_store,
+            storage_upload,
         ),
     }
 }
@@ -263,7 +266,7 @@ fn secure_commit_chunks_update(
     rule: Rule,
     current: Asset,
     assertions: Option<&impl StorageAssertionsStrategy>,
-    storage_store: &impl StorageStoreStrategy,
+    storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
     if batch.key.collection != current.key.collection {
@@ -281,7 +284,7 @@ fn secure_commit_chunks_update(
         &rule,
         &Some(current),
         assertions,
-        storage_store,
+        storage_upload,
     )
 }
 
@@ -292,7 +295,7 @@ fn commit_chunks(
     rule: &Rule,
     current: &Option<Asset>,
     assertions: Option<&impl StorageAssertionsStrategy>,
-    storage_store: &impl StorageStoreStrategy,
+    storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
     let now = time();
 
@@ -392,7 +395,7 @@ fn commit_chunks(
         }
     }
 
-    storage_store.insert_asset_encoding(
+    storage_upload.insert_asset_encoding(
         &batch.clone().key.full_path,
         &encoding_type,
         &encoding,
@@ -400,7 +403,7 @@ fn commit_chunks(
         rule,
     );
 
-    storage_store.insert_asset(
+    storage_upload.insert_asset(
         &batch.clone().key.collection,
         &batch.clone().key.full_path,
         &asset,

@@ -5,7 +5,9 @@ use crate::storage::store::get_public_asset_store;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
-use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageStoreStrategy};
+use junobuild_storage::strategies::{
+    StorageAssertionsStrategy, StorageStoreStrategy, StorageUploadStrategy,
+};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
@@ -42,6 +44,18 @@ impl StorageStoreStrategy for StorageStore {
         get_public_asset_store(full_path, token)
     }
 
+    fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String> {
+        get_rule(collection)
+    }
+
+    fn get_config(&self) -> StorageConfig {
+        get_config()
+    }
+}
+
+pub struct StorageUpload;
+
+impl StorageUploadStrategy for StorageUpload {
     fn get_asset(
         &self,
         collection: &CollectionKey,
@@ -49,14 +63,6 @@ impl StorageStoreStrategy for StorageStore {
         rule: &Rule,
     ) -> Option<Asset> {
         get_asset(collection, full_path, rule)
-    }
-
-    fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String> {
-        get_rule(collection)
-    }
-
-    fn get_config(&self) -> StorageConfig {
-        get_config()
     }
 
     fn insert_asset_encoding(
@@ -70,13 +76,7 @@ impl StorageStoreStrategy for StorageStore {
         insert_asset_encoding(full_path, encoding_type, encoding, asset, rule);
     }
 
-    fn insert_asset(
-        &self,
-        collection: &String,
-        full_path: &String,
-        asset: &Asset,
-        rule: &Rule,
-    ) {
+    fn insert_asset(&self, collection: &String, full_path: &String, asset: &Asset, rule: &Rule) {
         insert_asset(collection, full_path, asset, rule);
     }
 }

@@ -452,13 +452,11 @@ pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<u128,
 
 pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<Asset, String> {
     let controllers: Controllers = get_controllers();
-    let config = get_config_store();
 
     commit_batch_storage(
         caller,
         &controllers,
         commit_batch,
-        &config,
         Some(&StorageAssertions),
         &StorageStore,
     )

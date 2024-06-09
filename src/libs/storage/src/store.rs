@@ -10,7 +10,6 @@ use crate::runtime::{
     insert_chunk as insert_runtime_chunk, update_certified_asset as update_runtime_certified_asset,
 };
 use crate::strategies::{StorageAssertionsStrategy, StorageStoreStrategy};
-use crate::types::config::StorageConfig;
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
 use crate::types::state::FullPath;
 use crate::types::store::{
@@ -144,7 +143,6 @@ pub fn commit_batch(
     caller: Principal,
     controllers: &Controllers,
     commit_batch: CommitBatch,
-    config: &StorageConfig,
     assertions: Option<&impl StorageAssertionsStrategy>,
     storage_store: &impl StorageStoreStrategy,
 ) -> Result<Asset, String> {
@@ -161,7 +159,7 @@ pub fn commit_batch(
                 assertions,
                 storage_store,
             )?;
-            update_runtime_certified_asset(&asset, config);
+            update_runtime_certified_asset(&asset, &storage_store.get_config());
             Ok(asset)
         }
     }

@@ -1,4 +1,3 @@
-use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
@@ -15,7 +14,7 @@ use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
 use crate::rules::assert_stores::{assert_create_permission, assert_permission, public_permission};
 use crate::rules::types::rules::{Memory, Permission, Rule};
 use candid::Principal;
-use junobuild_shared::assert::assert_version;
+use junobuild_shared::assert::{assert_description_length, assert_version};
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::{CollectionKey, Key};
 use junobuild_shared::types::list::{ListParams, ListResults};

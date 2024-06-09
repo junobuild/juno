@@ -1,4 +1,3 @@
-use crate::assert::assert_description_length;
 use crate::controllers::store::get_controllers;
 use crate::hooks::{invoke_assert_delete_asset, invoke_assert_upload_asset};
 use crate::memory::STATE;
@@ -8,6 +7,7 @@ use crate::msg::{
 use crate::rules::constants::DEFAULT_ASSETS_COLLECTIONS;
 use candid::Principal;
 use ic_cdk::api::time;
+use junobuild_shared::assert::assert_description_length;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::list::list_values;

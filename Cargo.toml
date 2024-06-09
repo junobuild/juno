@@ -8,8 +8,9 @@ members = [
     "src/libs/shared",
     "src/libs/satellite",
     "src/libs/macros",
-    "src/libs/utils"
-, "src/libs/collections", "src/libs/storage"]
+    "src/libs/utils",
+    "src/libs/collections",
+    "src/libs/storage"]
 resolver = "2"
 
 [workspace.package]

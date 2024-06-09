@@ -2,7 +2,7 @@ use crate::certification::cert::update_certified_data;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::memory::STATE;
 use crate::types::config::StorageConfig;
-use crate::types::state::{Batches, Chunks, RuntimeState, StorageRuntimeState};
+use crate::types::state::{BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState};
 use crate::types::store::{Asset, Batch, Chunk};
 use ic_cdk::api::time;
 
@@ -51,7 +51,7 @@ fn delete_certified_asset_impl(asset: &Asset, runtime: &mut RuntimeState) {
 
 /// Batch
 
-pub fn get_batch(batch_id: &u128) -> Option<Batch> {
+pub fn get_batch(batch_id: &BatchId) -> Option<Batch> {
     STATE.with(|state| {
         let batches = state.borrow().runtime.storage.batches.clone();
         let batch = batches.get(batch_id);
@@ -59,7 +59,7 @@ pub fn get_batch(batch_id: &u128) -> Option<Batch> {
     })
 }
 
-pub fn insert_batch(batch_id: &u128, batch: Batch) {
+pub fn insert_batch(batch_id: &BatchId, batch: Batch) {
     STATE.with(|state| {
         insert_batch_impl(
             batch_id,
@@ -73,13 +73,13 @@ pub fn clear_expired_batches() {
     STATE.with(|state| clear_expired_batches_impl(&mut state.borrow_mut().runtime.storage.batches));
 }
 
-pub fn clear_batch(batch_id: &u128, chunk_ids: &[u128]) {
+pub fn clear_batch(batch_id: &BatchId, chunk_ids: &[ChunkId]) {
     STATE.with(|state| {
         clear_batch_impl(batch_id, chunk_ids, &mut state.borrow_mut().runtime.storage)
     });
 }
 
-fn insert_batch_impl(batch_id: &u128, batch: Batch, batches: &mut Batches) {
+fn insert_batch_impl(batch_id: &BatchId, batch: Batch, batches: &mut Batches) {
     batches.insert(*batch_id, batch);
 }
 
@@ -95,7 +95,7 @@ fn clear_expired_batches_impl(batches: &mut Batches) {
     }
 }
 
-fn clear_batch_impl(batch_id: &u128, chunk_ids: &[u128], state: &mut StorageRuntimeState) {
+fn clear_batch_impl(batch_id: &BatchId, chunk_ids: &[ChunkId], state: &mut StorageRuntimeState) {
     for chunk_id in chunk_ids.iter() {
         state.chunks.remove(chunk_id);
     }
@@ -105,7 +105,7 @@ fn clear_batch_impl(batch_id: &u128, chunk_ids: &[u128], state: &mut StorageRunt
 
 /// Chunks
 
-pub fn get_chunk(chunk_id: &u128) -> Option<Chunk> {
+pub fn get_chunk(chunk_id: &ChunkId) -> Option<Chunk> {
     STATE.with(|state| {
         let chunks = state.borrow().runtime.storage.chunks.clone();
         let chunk = chunks.get(chunk_id);
@@ -117,7 +117,7 @@ pub fn clear_expired_chunks() {
     STATE.with(|state| clear_expired_chunks_impl(&mut state.borrow_mut().runtime.storage));
 }
 
-pub fn insert_chunk(chunk_id: &u128, chunk: Chunk) {
+pub fn insert_chunk(chunk_id: &ChunkId, chunk: Chunk) {
     STATE.with(|state| {
         insert_chunk_impl(
             chunk_id,
@@ -137,6 +137,6 @@ fn clear_expired_chunks_impl(state: &mut StorageRuntimeState) {
     }
 }
 
-fn insert_chunk_impl(chunk_id: &u128, chunk: Chunk, chunks: &mut Chunks) {
+fn insert_chunk_impl(chunk_id: &ChunkId, chunk: Chunk, chunks: &mut Chunks) {
     chunks.insert(*chunk_id, chunk);
 }

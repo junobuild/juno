@@ -38,7 +38,7 @@ use junobuild_storage::runtime::{
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{BatchId, ChunkId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
 
@@ -441,12 +441,12 @@ pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
 /// Upload batch and chunks
 ///
 
-pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
+pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<BatchId, String> {
     let controllers: Controllers = get_controllers();
     secure_create_batch_impl(caller, &controllers, init)
 }
 
-pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<u128, &'static str> {
+pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<ChunkId, &'static str> {
     create_chunk(caller, chunk)
 }
 
@@ -467,7 +467,7 @@ fn secure_create_batch_impl(
     caller: Principal,
     controllers: &Controllers,
     init: InitAssetKey,
-) -> Result<u128, String> {
+) -> Result<BatchId, String> {
     let rule = get_state_rule(&init.collection)?;
 
     if !(public_permission(&rule.write)

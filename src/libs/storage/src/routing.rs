@@ -5,7 +5,7 @@ use crate::constants::{
 use crate::http::types::HeaderField;
 use crate::interfaces::ContentStore;
 use crate::rewrites::{is_root_path, redirect_url, rewrite_url};
-use crate::types::config::{StorageConfig, StorageConfigRawAccess};
+use crate::types::config::StorageConfigRawAccess;
 use crate::types::http_request::{
     MapUrl, Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
 };
@@ -19,7 +19,6 @@ pub fn get_routing(
     url: String,
     req_headers: &[HeaderField],
     include_alternative_routing: bool,
-    config: &StorageConfig,
     content_store: &impl ContentStore,
 ) -> Result<Routing, &'static str> {
     if url.is_empty() {
@@ -27,7 +26,7 @@ pub fn get_routing(
     }
 
     // .raw. is not allowed per default for security reason.
-    let redirect_raw = get_routing_redirect_raw(&url, req_headers, config);
+    let redirect_raw = get_routing_redirect_raw(&url, req_headers, content_store);
 
     match redirect_raw {
         None => (),
@@ -71,7 +70,7 @@ pub fn get_routing(
 
     if include_alternative_routing {
         // Search for potential redirect
-        let redirect = get_routing_redirect(&path, config);
+        let redirect = get_routing_redirect(&path, content_store);
 
         match redirect {
             None => (),
@@ -81,7 +80,7 @@ pub fn get_routing(
         }
 
         // Search for potential rewrite
-        let rewrite = get_routing_rewrite(&path, &token, config, content_store);
+        let rewrite = get_routing_rewrite(&path, &token, content_store);
 
         match rewrite {
             None => (),
@@ -133,12 +132,11 @@ fn get_alternative_asset(
 fn get_routing_rewrite(
     path: &FullPath,
     token: &Option<String>,
-    config: &StorageConfig,
     content_store: &impl ContentStore,
 ) -> Option<Routing> {
     // If we have found no asset, we try a rewrite rule
     // This is for example useful for single-page app to redirect all urls to /index.html
-    let rewrite = rewrite_url(path, config);
+    let rewrite = rewrite_url(path, &content_store.get_config());
 
     match rewrite {
         None => (),
@@ -221,7 +219,8 @@ fn get_routing_root_rewrite(path: &FullPath, content_store: &impl ContentStore) 
     None
 }
 
-fn get_routing_redirect(path: &FullPath, config: &StorageConfig) -> Option<Routing> {
+fn get_routing_redirect(path: &FullPath, content_store: &impl ContentStore) -> Option<Routing> {
+    let config = content_store.get_config();
     let redirect = redirect_url(path, &config);
 
     match redirect {
@@ -241,11 +240,13 @@ fn get_routing_redirect(path: &FullPath, config: &StorageConfig) -> Option<Routi
 fn get_routing_redirect_raw(
     url: &String,
     req_headers: &[HeaderField],
-    config: &StorageConfig,
+    content_store: &impl ContentStore,
 ) -> Option<Routing> {
     let raw = req_headers.iter().any(|HeaderField(key, value)| {
         key.eq_ignore_ascii_case("Host") && RAW_DOMAINS.iter().any(|domain| value.contains(domain))
     });
+
+    let config = content_store.get_config();
 
     if raw {
         let allow_raw_access = config.unwrap_raw_access();

@@ -1,4 +1,5 @@
-use crate::types::state::FullPath;
+use crate::types::config::StorageConfig;
+use crate::types::state::{AssetsHeap, AssetsStable, FullPath};
 use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
@@ -45,7 +46,14 @@ pub trait ContentStore {
         token: Option<String>,
     ) -> Option<(Asset, Memory)>;
 
-    fn get_asset(&self, collection: &CollectionKey, full_path: &FullPath, rule: &Rule) -> Option<Asset>;
+    fn get_asset(
+        &self,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        rule: &Rule,
+    ) -> Option<Asset>;
 
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String>;
+
+    fn get_config(&self) -> StorageConfig;
 }

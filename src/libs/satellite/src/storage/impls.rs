@@ -2,11 +2,12 @@ use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_storage::interfaces::{AssertOperations, ContentStore, InsertOperations};
+use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 use crate::get_content_chunks_store;
 use crate::hooks::invoke_assert_upload_asset;
-use crate::storage::state::{get_asset, get_rule, insert_asset, insert_asset_encoding};
+use crate::storage::state::{get_asset, get_config, get_rule, insert_asset, insert_asset_encoding};
 use crate::storage::store::get_public_asset_store;
 
 pub struct SatelliteAssertOps;
@@ -90,5 +91,9 @@ impl ContentStore for SatelliteContentStore {
 
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String> {
         get_rule(collection)
+    }
+
+    fn get_config(&self) -> StorageConfig {
+        get_config()
     }
 }

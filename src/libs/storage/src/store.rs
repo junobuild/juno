@@ -404,6 +404,7 @@ fn commit_chunks(
     );
 
     storage_upload.insert_asset(
+        &batch_id,
         &batch.clone().key.collection,
         &batch.clone().key.full_path,
         &asset,

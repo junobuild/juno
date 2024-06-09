@@ -9,7 +9,7 @@ use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStoreStrategy, StorageUploadStrategy,
 };
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 
 pub struct StorageAssertions;
@@ -76,7 +76,14 @@ impl StorageUploadStrategy for StorageUpload {
         insert_asset_encoding(full_path, encoding_type, encoding, asset, rule);
     }
 
-    fn insert_asset(&self, collection: &String, full_path: &String, asset: &Asset, rule: &Rule) {
+    fn insert_asset(
+        &self,
+        _batch_id: &BatchId,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        asset: &Asset,
+        rule: &Rule,
+    ) {
         insert_asset(collection, full_path, asset, rule);
     }
 }

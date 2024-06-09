@@ -59,7 +59,7 @@ impl StorageStoreStrategy for StorageStore {
         get_config()
     }
 
-    fn insert_state_asset_encoding(
+    fn insert_asset_encoding(
         &self,
         full_path: &FullPath,
         encoding_type: &str,
@@ -70,7 +70,7 @@ impl StorageStoreStrategy for StorageStore {
         insert_asset_encoding(full_path, encoding_type, encoding, asset, rule);
     }
 
-    fn insert_state_asset(
+    fn insert_asset(
         &self,
         collection: &String,
         full_path: &String,

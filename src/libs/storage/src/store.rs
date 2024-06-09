@@ -392,7 +392,7 @@ fn commit_chunks(
         }
     }
 
-    storage_store.insert_state_asset_encoding(
+    storage_store.insert_asset_encoding(
         &batch.clone().key.full_path,
         &encoding_type,
         &encoding,
@@ -400,7 +400,7 @@ fn commit_chunks(
         rule,
     );
 
-    storage_store.insert_state_asset(
+    storage_store.insert_asset(
         &batch.clone().key.collection,
         &batch.clone().key.full_path,
         &asset,

@@ -38,7 +38,7 @@ pub trait StorageStoreStrategy {
         rule: &Rule,
     ) -> Option<Asset>;
 
-    fn insert_state_asset_encoding(
+    fn insert_asset_encoding(
         &self,
         full_path: &String,
         encoding_type: &str,
@@ -47,7 +47,7 @@ pub trait StorageStoreStrategy {
         rule: &Rule,
     );
 
-    fn insert_state_asset(
+    fn insert_asset(
         &self,
         collection: &String,
         full_path: &String,

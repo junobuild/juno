@@ -13,25 +13,6 @@ pub trait HooksAssertions {
     ) -> Result<(), String>;
 }
 
-pub trait InsertOperations {
-    fn insert_state_asset_encoding(
-        &self,
-        full_path: &String,
-        encoding_type: &str,
-        encoding: &AssetEncoding,
-        asset: &mut Asset,
-        rule: &Rule,
-    );
-
-    fn insert_state_asset(
-        &self,
-        collection: &String,
-        full_path: &String,
-        asset: &Asset,
-        rule: &Rule,
-    );
-}
-
 pub trait ContentStore {
     fn get_content_chunks(
         &self,
@@ -56,4 +37,21 @@ pub trait ContentStore {
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String>;
 
     fn get_config(&self) -> StorageConfig;
+
+    fn insert_state_asset_encoding(
+        &self,
+        full_path: &String,
+        encoding_type: &str,
+        encoding: &AssetEncoding,
+        asset: &mut Asset,
+        rule: &Rule,
+    );
+
+    fn insert_state_asset(
+        &self,
+        collection: &String,
+        full_path: &String,
+        asset: &Asset,
+        rule: &Rule,
+    );
 }

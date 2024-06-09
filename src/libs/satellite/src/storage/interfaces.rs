@@ -5,7 +5,7 @@ use crate::storage::store::get_public_asset_store;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
-use junobuild_storage::interfaces::{HooksAssertions, ContentStore, InsertOperations};
+use junobuild_storage::interfaces::{ContentStore, HooksAssertions, InsertOperations};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
@@ -19,31 +19,6 @@ impl HooksAssertions for StorageHooksAssertions {
         asset: &AssetAssertUpload,
     ) -> Result<(), String> {
         invoke_assert_upload_asset(caller, asset)
-    }
-}
-
-pub struct SatelliteInsertOps;
-
-impl InsertOperations for SatelliteInsertOps {
-    fn insert_state_asset_encoding(
-        &self,
-        full_path: &FullPath,
-        encoding_type: &str,
-        encoding: &AssetEncoding,
-        asset: &mut Asset,
-        rule: &Rule,
-    ) {
-        insert_asset_encoding(full_path, encoding_type, encoding, asset, rule);
-    }
-
-    fn insert_state_asset(
-        &self,
-        collection: &String,
-        full_path: &String,
-        asset: &Asset,
-        rule: &Rule,
-    ) {
-        insert_asset(collection, full_path, asset, rule);
     }
 }
 
@@ -82,5 +57,26 @@ impl ContentStore for SatelliteContentStore {
 
     fn get_config(&self) -> StorageConfig {
         get_config()
+    }
+
+    fn insert_state_asset_encoding(
+        &self,
+        full_path: &FullPath,
+        encoding_type: &str,
+        encoding: &AssetEncoding,
+        asset: &mut Asset,
+        rule: &Rule,
+    ) {
+        insert_asset_encoding(full_path, encoding_type, encoding, asset, rule);
+    }
+
+    fn insert_state_asset(
+        &self,
+        collection: &String,
+        full_path: &String,
+        asset: &Asset,
+        rule: &Rule,
+    ) {
+        insert_asset(collection, full_path, asset, rule);
     }
 }

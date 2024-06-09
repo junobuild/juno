@@ -2,7 +2,7 @@ use crate::constants::{
     ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, WELL_KNOWN_CUSTOM_DOMAINS,
     WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
-use crate::interfaces::{HooksAssertions, ContentStore, InsertOperations};
+use crate::interfaces::{ContentStore, HooksAssertions};
 use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
@@ -146,7 +146,6 @@ pub fn commit_batch(
     commit_batch: CommitBatch,
     config: &StorageConfig,
     assertions: Option<&impl HooksAssertions>,
-    insert_ops: &impl InsertOperations,
     content_store: &impl ContentStore,
 ) -> Result<Asset, String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
@@ -160,7 +159,6 @@ pub fn commit_batch(
                 commit_batch,
                 &b,
                 assertions,
-                insert_ops,
                 content_store,
             )?;
             update_runtime_certified_asset(&asset, config);
@@ -212,7 +210,6 @@ fn secure_commit_chunks(
     commit_batch: CommitBatch,
     batch: &Batch,
     assertions: Option<&impl HooksAssertions>,
-    insert_ops: &impl InsertOperations,
     content_store: &impl ContentStore,
 ) -> Result<Asset, String> {
     // The one that started the batch should be the one that commits it
@@ -244,7 +241,7 @@ fn secure_commit_chunks(
                 &rule,
                 &None,
                 assertions,
-                insert_ops,
+                content_store,
             )
         }
         Some(current) => secure_commit_chunks_update(
@@ -255,7 +252,7 @@ fn secure_commit_chunks(
             rule,
             current,
             assertions,
-            insert_ops,
+            content_store,
         ),
     }
 }
@@ -268,7 +265,7 @@ fn secure_commit_chunks_update(
     rule: Rule,
     current: Asset,
     assertions: Option<&impl HooksAssertions>,
-    insert_ops: &impl InsertOperations,
+    content_store: &impl ContentStore,
 ) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
     if batch.key.collection != current.key.collection {
@@ -286,7 +283,7 @@ fn secure_commit_chunks_update(
         &rule,
         &Some(current),
         assertions,
-        insert_ops,
+        content_store,
     )
 }
 
@@ -297,7 +294,7 @@ fn commit_chunks(
     rule: &Rule,
     current: &Option<Asset>,
     assertions: Option<&impl HooksAssertions>,
-    insert_ops: &impl InsertOperations,
+    content_store: &impl ContentStore,
 ) -> Result<Asset, String> {
     let now = time();
 
@@ -397,7 +394,7 @@ fn commit_chunks(
         }
     }
 
-    insert_ops.insert_state_asset_encoding(
+    content_store.insert_state_asset_encoding(
         &batch.clone().key.full_path,
         &encoding_type,
         &encoding,
@@ -405,7 +402,7 @@ fn commit_chunks(
         rule,
     );
 
-    insert_ops.insert_state_asset(
+    content_store.insert_state_asset(
         &batch.clone().key.collection,
         &batch.clone().key.full_path,
         &asset,

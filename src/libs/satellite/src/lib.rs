@@ -18,10 +18,6 @@ mod version;
 
 use crate::auth::types::state::AuthenticationConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::storage::types::domain::CustomDomains;
-use crate::storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
-};
 use crate::types::interface::{Config, RulesType};
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
@@ -34,8 +30,8 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::state::Controllers;
-use storage::http::types::{
-    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+use junobuild_storage::types::interface::{
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 
 // Re-export types
@@ -53,7 +49,7 @@ pub use crate::logs::types::logs::{Log, LogLevel};
 pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };
-use crate::storage::types::state::FullPath;
+use crate::storage::types::domain::CustomDomains;
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
     AssertUploadAssetContext, HookContext, OnDeleteAssetContext, OnDeleteDocContext,
@@ -62,6 +58,10 @@ pub use crate::types::hooks::{
 };
 use junobuild_shared::types::core::DomainName;
 pub use junobuild_shared::types::core::{Blob, CollectionKey, Key};
+use junobuild_storage::http::types::{
+    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+};
+use junobuild_storage::types::state::FullPath;
 
 ///
 /// Init and Upgrade

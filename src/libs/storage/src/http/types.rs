@@ -1,5 +1,5 @@
-use crate::storage::types::state::FullPath;
-use crate::storage::types::store::EncodingType;
+use crate::types::state::FullPath;
+use crate::types::store::EncodingType;
 use candid::{define_function, CandidType};
 use junobuild_collections::types::rules::Memory;
 use junobuild_shared::types::core::Blob;

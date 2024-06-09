@@ -2,9 +2,7 @@ pub mod state {
     use crate::auth::types::state::AuthenticationHeapState;
     use crate::db::types::state::{DbHeapState, DbStable};
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{
-        AssetsStable, ContentChunksStable, StorageHeapState, StorageRuntimeState,
-    };
+    use crate::storage::types::state::{AssetsStable, ContentChunksStable, StorageHeapState};
     use candid::CandidType;
     use junobuild_shared::types::state::Controllers;
     use rand::rngs::StdRng;
@@ -40,14 +38,13 @@ pub mod state {
 
     #[derive(Default, Clone)]
     pub struct RuntimeState {
-        pub storage: StorageRuntimeState,
         pub rng: Option<StdRng>, // rng = Random Number Generator
     }
 }
 
 pub mod interface {
-    use crate::storage::types::config::StorageConfig;
     use candid::CandidType;
+    use junobuild_storage::types::config::StorageConfig;
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
@@ -64,10 +61,10 @@ pub mod interface {
 
 pub mod hooks {
     use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
-    use crate::storage::types::store::{Asset, AssetAssertUpload};
     use crate::Doc;
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::state::UserId;
+    use junobuild_storage::types::store::{Asset, AssetAssertUpload};
 
     /// A generic context struct used in Juno satellite hooks.
     ///

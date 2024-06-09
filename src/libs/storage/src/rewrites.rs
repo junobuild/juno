@@ -1,6 +1,6 @@
-use crate::storage::constants::ROOT_PATHS;
-use crate::storage::types::config::{StorageConfig, StorageConfigRedirect};
-use crate::storage::url::{matching_urls as matching_urls_utils, separator};
+use crate::constants::ROOT_PATHS;
+use crate::types::config::{StorageConfig, StorageConfigRedirect};
+use crate::url::{matching_urls as matching_urls_utils, separator};
 use std::cmp::Ordering;
 use std::collections::HashMap;
 

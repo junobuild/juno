@@ -1,8 +1,8 @@
-use crate::storage::constants::ASSET_ENCODING_NO_COMPRESSION;
-use crate::storage::http::types::HeaderField;
-use crate::storage::types::config::{StorageConfig, StorageConfigIFrame};
-use crate::storage::types::store::{Asset, AssetEncoding, EncodingType};
-use crate::storage::url::matching_urls;
+use crate::constants::ASSET_ENCODING_NO_COMPRESSION;
+use crate::http::types::HeaderField;
+use crate::types::config::{StorageConfig, StorageConfigIFrame};
+use crate::types::store::{Asset, AssetEncoding, EncodingType};
+use crate::url::matching_urls;
 use hex::encode;
 
 pub fn build_headers(

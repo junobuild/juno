@@ -1,6 +1,6 @@
-use crate::storage::types::interface::AssetNoContent;
-use crate::storage::types::state::FullPath;
-use crate::storage::types::store::Asset;
+use crate::types::interface::AssetNoContent;
+use crate::types::state::FullPath;
+use crate::types::store::Asset;
 use candid::Principal;
 use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::types::rules::Permission;

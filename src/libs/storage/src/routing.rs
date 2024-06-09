@@ -1,18 +1,17 @@
-use crate::storage::constants::{
+use crate::constants::{
     RAW_DOMAINS, RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404, ROOT_404_HTML,
     ROOT_INDEX_HTML, ROOT_PATH,
 };
-use crate::storage::http::types::HeaderField;
-use crate::storage::rewrites::{is_root_path, redirect_url, rewrite_url};
-use crate::storage::state::get_config;
-use crate::storage::store::get_public_asset_store;
-use crate::storage::types::config::StorageConfigRawAccess;
-use crate::storage::types::http_request::{
+use crate::http::types::HeaderField;
+use crate::rewrites::{is_root_path, redirect_url, rewrite_url};
+use crate::strategies::StorageStoreStrategy;
+use crate::types::config::StorageConfigRawAccess;
+use crate::types::http_request::{
     MapUrl, Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
 };
-use crate::storage::types::state::FullPath;
-use crate::storage::types::store::Asset;
-use crate::storage::url::{map_alternative_paths, map_url};
+use crate::types::state::FullPath;
+use crate::types::store::Asset;
+use crate::url::{map_alternative_paths, map_url};
 use ic_cdk::id;
 use junobuild_collections::types::rules::Memory;
 
@@ -20,13 +19,14 @@ pub fn get_routing(
     url: String,
     req_headers: &[HeaderField],
     include_alternative_routing: bool,
+    storage_store: &impl StorageStoreStrategy,
 ) -> Result<Routing, &'static str> {
     if url.is_empty() {
         return Err("No url provided.");
     }
 
     // .raw. is not allowed per default for security reason.
-    let redirect_raw = get_routing_redirect_raw(&url, req_headers);
+    let redirect_raw = get_routing_redirect_raw(&url, req_headers, storage_store);
 
     match redirect_raw {
         None => (),
@@ -44,7 +44,8 @@ pub fn get_routing(
     let MapUrl { path, token } = map_url(&url)?;
 
     // We return the asset that matches the effective path
-    let asset: Option<(Asset, Memory)> = get_public_asset_store(path.clone(), token.clone());
+    let asset: Option<(Asset, Memory)> =
+        storage_store.get_public_asset(path.clone(), token.clone());
 
     match asset {
         None => (),
@@ -56,7 +57,7 @@ pub fn get_routing(
     // ⚠️ Limitation: requesting an url without extension try to resolve first a corresponding asset
     // e.g. /.well-known/hello -> try to find /.well-known/hello.html
     // Therefore if a file without extension is uploaded to the storage, it is important to not upload an .html file with the same name next to it or a folder/index.html
-    let alternative_asset = get_alternative_asset(&path, &token);
+    let alternative_asset = get_alternative_asset(&path, &token, storage_store);
     match alternative_asset {
         None => (),
         Some(alternative_asset) => {
@@ -69,7 +70,7 @@ pub fn get_routing(
 
     if include_alternative_routing {
         // Search for potential redirect
-        let redirect = get_routing_redirect(&path);
+        let redirect = get_routing_redirect(&path, storage_store);
 
         match redirect {
             None => (),
@@ -79,7 +80,7 @@ pub fn get_routing(
         }
 
         // Search for potential rewrite
-        let rewrite = get_routing_rewrite(&path, &token);
+        let rewrite = get_routing_rewrite(&path, &token, storage_store);
 
         match rewrite {
             None => (),
@@ -89,7 +90,7 @@ pub fn get_routing(
         }
 
         // Search for potential default rewrite for HTML pages
-        let root_rewrite = get_routing_root_rewrite(&path);
+        let root_rewrite = get_routing_root_rewrite(&path, storage_store);
 
         match root_rewrite {
             None => (),
@@ -105,12 +106,16 @@ pub fn get_routing(
     }))
 }
 
-fn get_alternative_asset(path: &String, token: &Option<String>) -> Option<(Asset, Memory)> {
+fn get_alternative_asset(
+    path: &String,
+    token: &Option<String>,
+    storage_store: &impl StorageStoreStrategy,
+) -> Option<(Asset, Memory)> {
     let alternative_paths = map_alternative_paths(path);
 
     for alternative_path in alternative_paths {
         let asset: Option<(Asset, Memory)> =
-            get_public_asset_store(alternative_path, token.clone());
+            storage_store.get_public_asset(alternative_path, token.clone());
 
         // We return the first match
         match asset {
@@ -124,10 +129,14 @@ fn get_alternative_asset(path: &String, token: &Option<String>) -> Option<(Asset
     None
 }
 
-fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routing> {
+fn get_routing_rewrite(
+    path: &FullPath,
+    token: &Option<String>,
+    storage_store: &impl StorageStoreStrategy,
+) -> Option<Routing> {
     // If we have found no asset, we try a rewrite rule
     // This is for example useful for single-page app to redirect all urls to /index.html
-    let rewrite = rewrite_url(path, &get_config());
+    let rewrite = rewrite_url(path, &storage_store.get_config());
 
     match rewrite {
         None => (),
@@ -136,7 +145,7 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
 
             // Search for rewrite configured as an alternative path
             // e.g. rewrite /demo/* to /sample
-            let rewrite_asset = get_alternative_asset(&destination, token);
+            let rewrite_asset = get_alternative_asset(&destination, token, storage_store);
 
             match rewrite_asset {
                 None => (),
@@ -153,7 +162,7 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
             // Rewrite is maybe configured as an absolute path
             // e.g. write /demo/* to /sample.html
             let rewrite_absolute_asset: Option<(Asset, Memory)> =
-                get_public_asset_store(destination.clone(), token.clone());
+                storage_store.get_public_asset(destination.clone(), token.clone());
 
             match rewrite_absolute_asset {
                 None => (),
@@ -172,11 +181,14 @@ fn get_routing_rewrite(path: &FullPath, token: &Option<String>) -> Option<Routin
     None
 }
 
-fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
+fn get_routing_root_rewrite(
+    path: &FullPath,
+    storage_store: &impl StorageStoreStrategy,
+) -> Option<Routing> {
     if !is_root_path(path) {
         // Search for potential /404.html to rewrite to
         let asset_404: Option<(Asset, Memory)> =
-            get_public_asset_store(ROOT_404_HTML.to_string(), None);
+            storage_store.get_public_asset(ROOT_404_HTML.to_string(), None);
 
         match asset_404 {
             None => (),
@@ -192,7 +204,7 @@ fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
 
         // Search for potential /index.html to rewrite to
         let asset_index: Option<(Asset, Memory)> =
-            get_public_asset_store(ROOT_INDEX_HTML.to_string(), None);
+            storage_store.get_public_asset(ROOT_INDEX_HTML.to_string(), None);
 
         match asset_index {
             None => (),
@@ -210,8 +222,11 @@ fn get_routing_root_rewrite(path: &FullPath) -> Option<Routing> {
     None
 }
 
-fn get_routing_redirect(path: &FullPath) -> Option<Routing> {
-    let config = get_config();
+fn get_routing_redirect(
+    path: &FullPath,
+    storage_store: &impl StorageStoreStrategy,
+) -> Option<Routing> {
+    let config = storage_store.get_config();
     let redirect = redirect_url(path, &config);
 
     match redirect {
@@ -228,14 +243,18 @@ fn get_routing_redirect(path: &FullPath) -> Option<Routing> {
     None
 }
 
-fn get_routing_redirect_raw(url: &String, req_headers: &[HeaderField]) -> Option<Routing> {
+fn get_routing_redirect_raw(
+    url: &String,
+    req_headers: &[HeaderField],
+    storage_store: &impl StorageStoreStrategy,
+) -> Option<Routing> {
     let raw = req_headers.iter().any(|HeaderField(key, value)| {
         key.eq_ignore_ascii_case("Host") && RAW_DOMAINS.iter().any(|domain| value.contains(domain))
     });
 
-    if raw {
-        let config = get_config();
+    let config = storage_store.get_config();
 
+    if raw {
         let allow_raw_access = config.unwrap_raw_access();
 
         match allow_raw_access {

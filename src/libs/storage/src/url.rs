@@ -1,5 +1,5 @@
-use crate::storage::types::http_request::MapUrl;
-use crate::storage::types::state::FullPath;
+use crate::types::http_request::MapUrl;
+use crate::types::state::FullPath;
 use globset::Glob;
 use std::collections::HashMap;
 use url::Url;

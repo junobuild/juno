@@ -22,15 +22,6 @@ use crate::random::defer_init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
 };
-use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
-use crate::storage::http::response::{
-    build_asset_response, build_redirect_raw_response, build_redirect_response, error_response,
-};
-use crate::storage::http::types::{
-    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
-};
-use crate::storage::http::utils::create_token;
-use crate::storage::routing::get_routing;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
     delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
@@ -38,15 +29,8 @@ use crate::storage::store::{
     get_public_asset_store, list_assets_store, set_config_store as set_storage_config,
     set_domain_store,
 };
+use crate::storage::strategy_impls::StorageStore;
 use crate::storage::types::domain::CustomDomains;
-use crate::storage::types::http_request::{
-    Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
-};
-use crate::storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
-};
-use crate::storage::types::state::FullPath;
-use crate::storage::types::store::Asset;
 use crate::storage::upgrade::defer_init_certified_assets;
 use crate::types::interface::{Config, RulesType};
 use crate::types::state::{HeapState, RuntimeState, State};
@@ -66,6 +50,23 @@ use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
+use junobuild_storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
+use junobuild_storage::http::response::{
+    build_asset_response, build_redirect_raw_response, build_redirect_response, error_response,
+};
+use junobuild_storage::http::types::{
+    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+};
+use junobuild_storage::http::utils::create_token;
+use junobuild_storage::routing::get_routing;
+use junobuild_storage::types::http_request::{
+    Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
+};
+use junobuild_storage::types::interface::{
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
+};
+use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::store::Asset;
 
 pub fn init() {
     let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
@@ -339,7 +340,9 @@ pub fn http_request(
         return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
     }
 
-    let result = get_routing(url, &req_headers, true);
+    let storage_store = StorageStore;
+
+    let result = get_routing(url, &req_headers, true, &storage_store);
 
     match result {
         Ok(routing) => match routing {
@@ -350,6 +353,7 @@ pub fn http_request(
                 asset,
                 None,
                 RESPONSE_STATUS_CODE_200,
+                &storage_store,
             ),
             Routing::Rewrite(RoutingRewrite {
                 url,
@@ -363,6 +367,7 @@ pub fn http_request(
                 asset,
                 Some(source),
                 status_code,
+                &storage_store,
             ),
             Routing::Redirect(RoutingRedirect {
                 url,

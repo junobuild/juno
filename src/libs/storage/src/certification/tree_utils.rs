@@ -1,9 +1,9 @@
-use crate::storage::certification::constants::{
+use crate::certification::constants::{
     EXACT_MATCH_TERMINATOR, IC_CERTIFICATE_EXPRESSION, IC_CERTIFICATE_EXPRESSION_HEADER,
     IC_STATUS_CODE_PSEUDO_HEADER, LABEL_HTTP_EXPR, WILDCARD_MATCH_TERMINATOR,
 };
-use crate::storage::http::types::{HeaderField, StatusCode};
-use crate::storage::types::state::FullPath;
+use crate::http::types::{HeaderField, StatusCode};
+use crate::types::state::FullPath;
 use ic_certification::Hash;
 use ic_representation_independent_hash::{representation_independent_hash, Value};
 use junobuild_shared::types::core::Blob;

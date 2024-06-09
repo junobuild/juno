@@ -1,17 +1,16 @@
-use crate::storage::constants::{
+use crate::constants::{
     RESPONSE_STATUS_CODE_308, RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_406,
     RESPONSE_STATUS_CODE_500,
 };
-use crate::storage::http::headers::build_redirect_headers;
-use crate::storage::http::types::{HeaderField, HttpResponse, StatusCode};
-use crate::storage::http::utils::{
+use crate::http::headers::build_redirect_headers;
+use crate::http::types::{HeaderField, HttpResponse, StatusCode};
+use crate::http::utils::{
     build_encodings, build_response_headers, build_response_redirect_headers, streaming_strategy,
 };
-use crate::storage::types::store::Asset;
+use crate::strategies::StorageStoreStrategy;
+use crate::types::config::{StorageConfigIFrame, StorageConfigRedirect};
+use crate::types::store::Asset;
 use junobuild_collections::types::rules::Memory;
-
-use crate::storage::store::get_content_chunks_store;
-use crate::storage::types::config::{StorageConfigIFrame, StorageConfigRedirect};
 
 pub fn build_asset_response(
     requested_url: String,
@@ -20,6 +19,7 @@ pub fn build_asset_response(
     asset: Option<(Asset, Memory)>,
     rewrite_source: Option<String>,
     status_code: StatusCode,
+    storage_store: &impl StorageStoreStrategy,
 ) -> HttpResponse {
     match asset {
         Some((asset, memory)) => {
@@ -34,13 +34,14 @@ pub fn build_asset_response(
                         encoding_type,
                         &certificate_version,
                         &rewrite_source,
+                        &storage_store.get_config(),
                     );
 
                     let Asset { key, .. } = &asset;
 
                     match headers {
                         Ok(headers) => {
-                            let body = get_content_chunks_store(encoding, 0, &memory);
+                            let body = storage_store.get_content_chunks(encoding, 0, &memory);
 
                             // TODO: support for HTTP response 304
                             // On hold til DFINITY foundation implements:

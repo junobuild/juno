@@ -1,20 +1,20 @@
-use crate::storage::certification::constants::{
+use crate::certification::constants::{
     EXACT_MATCH_TERMINATOR, LABEL_ASSETS_V1, LABEL_ASSETS_V2, WILDCARD_MATCH_TERMINATOR,
 };
-use crate::storage::certification::tree_utils::{
+use crate::certification::tree_utils::{
     fallback_paths, nested_tree_expr_path, nested_tree_key, nested_tree_path,
 };
-use crate::storage::certification::types::certified::CertifiedAssetHashes;
-use crate::storage::constants::{
+use crate::certification::types::certified::CertifiedAssetHashes;
+use crate::constants::{
     ENCODING_CERTIFICATION_ORDER, RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_404,
     ROOT_404_HTML, ROOT_INDEX_HTML, ROOT_PATH,
 };
-use crate::storage::http::headers::{build_headers, build_redirect_headers};
-use crate::storage::http::types::{HeaderField, StatusCode};
-use crate::storage::types::config::{StorageConfig, StorageConfigIFrame};
-use crate::storage::types::state::FullPath;
-use crate::storage::types::store::Asset;
-use crate::storage::url::alternative_paths;
+use crate::http::headers::{build_headers, build_redirect_headers};
+use crate::http::types::{HeaderField, StatusCode};
+use crate::types::config::{StorageConfig, StorageConfigIFrame};
+use crate::types::state::FullPath;
+use crate::types::store::Asset;
+use crate::url::alternative_paths;
 use ic_certification::{
     fork, fork_hash, labeled, labeled_hash, merge_hash_trees, pruned, AsHashTree, Hash, HashTree,
 };

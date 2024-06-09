@@ -1,4 +1,4 @@
-use crate::storage::http::types::StatusCode;
+use crate::http::types::StatusCode;
 
 pub const ASSET_ENCODING_NO_COMPRESSION: &str = "identity";
 pub const ENCODING_CERTIFICATION_ORDER: &[&str] = &[

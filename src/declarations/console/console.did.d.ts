@@ -17,6 +17,17 @@ export interface DeleteControllersArgs {
 export interface GetCreateCanisterFeeArgs {
 	user: Principal;
 }
+export interface InitAssetKey {
+	token: [] | [string];
+	collection: string;
+	name: string;
+	description: [] | [string];
+	encoding_type: [] | [string];
+	full_path: string;
+}
+export interface InitUploadResult {
+	batch_id: bigint;
+}
 export interface LoadRelease {
 	total: bigint;
 	chunks: bigint;
@@ -59,6 +70,14 @@ export interface SetControllersArgs {
 export interface Tokens {
 	e8s: bigint;
 }
+export interface UploadChunk {
+	content: Uint8Array | number[];
+	batch_id: bigint;
+	order_id: [] | [bigint];
+}
+export interface UploadChunkResult {
+	chunk_id: bigint;
+}
 export interface _SERVICE {
 	add_credits: ActorMethod<[Principal, Tokens], undefined>;
 	add_invitation_code: ActorMethod<[string], undefined>;
@@ -71,6 +90,7 @@ export interface _SERVICE {
 	get_credits: ActorMethod<[], Tokens>;
 	get_releases_version: ActorMethod<[], ReleasesVersion>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
+	init_asset_upload: ActorMethod<[InitAssetKey], InitUploadResult>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
@@ -79,6 +99,7 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_fee: ActorMethod<[Segment, Tokens], undefined>;
 	update_rate_config: ActorMethod<[Segment, RateConfig], undefined>;
+	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

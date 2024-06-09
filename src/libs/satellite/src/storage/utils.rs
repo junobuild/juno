@@ -1,9 +1,9 @@
-use crate::rules::assert_stores::assert_permission;
-use crate::rules::types::rules::Permission;
 use crate::storage::types::interface::AssetNoContent;
 use crate::storage::types::state::FullPath;
 use crate::storage::types::store::Asset;
 use candid::Principal;
+use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::types::rules::Permission;
 use junobuild_shared::list::matcher_regex;
 use junobuild_shared::types::core::CollectionKey;
 use junobuild_shared::types::list::ListParams;

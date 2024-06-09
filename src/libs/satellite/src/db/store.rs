@@ -10,10 +10,13 @@ use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, Do
 use crate::db::utils::filter_values;
 use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::memory::STATE;
-use crate::msg::{COLLECTION_NOT_EMPTY, ERROR_CANNOT_WRITE};
-use crate::rules::assert_stores::{assert_create_permission, assert_permission, public_permission};
-use crate::rules::types::rules::{Memory, Permission, Rule};
+use crate::msg::ERROR_CANNOT_WRITE;
 use candid::Principal;
+use junobuild_collections::assert_stores::{
+    assert_create_permission, assert_permission, public_permission,
+};
+use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
+use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::assert::{assert_description_length, assert_version};
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::{CollectionKey, Key};

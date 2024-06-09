@@ -22,8 +22,6 @@ use crate::random::defer_init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
 };
-use crate::rules::types::interface::{DelRule, SetRule};
-use crate::rules::types::rules::Rule;
 use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
 use crate::storage::http::response::{
     build_asset_response, build_redirect_raw_response, build_redirect_response, error_response,
@@ -55,6 +53,8 @@ use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::arg_data;
 use ic_cdk::api::{caller, trap};
+use junobuild_collections::types::interface::{DelRule, SetRule};
+use junobuild_collections::types::rules::Rule;
 use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
     assert_controllers, assert_max_number_of_controllers, init_controllers,

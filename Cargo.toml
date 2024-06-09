@@ -9,7 +9,7 @@ members = [
     "src/libs/satellite",
     "src/libs/macros",
     "src/libs/utils"
-]
+, "src/libs/collections"]
 resolver = "2"
 
 [workspace.package]
@@ -31,3 +31,4 @@ ciborium = "0.2.1"
 
 [patch.crates-io]
 junobuild-shared = { path = "./src/libs/shared" }
+junobuild-collections = { path = "./src/libs/collections" }

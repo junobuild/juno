@@ -1,7 +1,7 @@
 use crate::db::types::state::Doc;
-use crate::rules::assert_stores::assert_permission;
-use crate::rules::types::rules::Permission;
 use candid::Principal;
+use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::types::rules::Permission;
 use junobuild_shared::list::matcher_regex;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::ListParams;

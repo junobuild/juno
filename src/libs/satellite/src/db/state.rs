@@ -1,7 +1,7 @@
 use crate::db::types::state::{Collection, DbHeap, DbStable, Doc, StableKey};
 use crate::memory::STATE;
-use crate::msg::COLLECTION_NOT_FOUND;
-use crate::rules::types::rules::{Memory, Rule};
+use junobuild_collections::msg::COLLECTION_NOT_FOUND;
+use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::list::range_collection_end;
 use junobuild_shared::types::core::{CollectionKey, Key};
 use std::collections::BTreeMap;

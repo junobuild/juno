@@ -1,5 +1,5 @@
-use crate::rules::types::interface::SetRule;
-use crate::rules::types::rules::{Memory, Rule};
+use crate::types::interface::SetRule;
+use crate::types::rules::{Memory, Rule};
 use ic_cdk::api::time;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::state::{Timestamp, Version};

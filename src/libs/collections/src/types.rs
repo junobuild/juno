@@ -1,3 +1,13 @@
+pub mod core {
+    /// Represents the key or identifier of a collection.
+    ///
+    /// This type, `CollectionKey`, is an alias for `String`, used to represent the key or identifier of a collection
+    /// within the context of various data structures and operations.
+    ///
+    /// `CollectionKey` is commonly employed as a unique identifier for collections in Rust code.
+    pub type CollectionKey = String;
+}
+
 pub mod rules {
     use candid::CandidType;
     use junobuild_shared::serializers::deserialize_default_as_true;
@@ -47,7 +57,7 @@ pub mod rules {
 }
 
 pub mod interface {
-    use crate::rules::types::rules::{Memory, Permission};
+    use crate::types::rules::{Memory, Permission};
     use candid::CandidType;
     use junobuild_shared::types::state::Version;
     use serde::Deserialize;

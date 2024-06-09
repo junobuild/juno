@@ -1,6 +1,6 @@
-use crate::rules::constants::SYS_COLLECTION_PREFIX;
-use crate::rules::types::interface::SetRule;
-use crate::rules::types::rules::{Memory, Rule};
+use crate::constants::SYS_COLLECTION_PREFIX;
+use crate::types::interface::SetRule;
+use crate::types::rules::{Memory, Rule};
 use junobuild_shared::assert::assert_version;
 use junobuild_shared::types::core::CollectionKey;
 use junobuild_shared::types::state::Version;

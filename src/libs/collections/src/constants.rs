@@ -1,6 +1,6 @@
-use crate::rules::types::interface::SetRule;
-use crate::rules::types::rules::Memory;
-use crate::rules::types::rules::Permission::{Controllers, Managed};
+use crate::types::interface::SetRule;
+use crate::types::rules::Memory;
+use crate::types::rules::Permission::{Controllers, Managed};
 
 pub const SYS_COLLECTION_PREFIX: char = '#';
 

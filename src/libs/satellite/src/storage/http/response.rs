@@ -1,4 +1,3 @@
-use crate::rules::types::rules::Memory;
 use crate::storage::constants::{
     RESPONSE_STATUS_CODE_308, RESPONSE_STATUS_CODE_404, RESPONSE_STATUS_CODE_406,
     RESPONSE_STATUS_CODE_500,
@@ -9,6 +8,7 @@ use crate::storage::http::utils::{
     build_encodings, build_response_headers, build_response_redirect_headers, streaming_strategy,
 };
 use crate::storage::types::store::Asset;
+use junobuild_collections::types::rules::Memory;
 
 use crate::storage::store::get_content_chunks_store;
 use crate::storage::types::config::{StorageConfigIFrame, StorageConfigRedirect};

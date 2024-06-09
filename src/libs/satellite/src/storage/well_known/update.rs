@@ -1,16 +1,16 @@
-use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use crate::storage::state::{
     delete_asset as delete_state_asset, get_asset as get_state_asset, get_domains, get_rule,
     insert_asset as insert_state_asset,
 };
 use crate::storage::store::get_config_store;
 use crate::storage::well_known::utils::{map_alternative_origins_asset, map_custom_domains_asset};
+use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_shared::types::core::DomainName;
 use junobuild_storage::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
-use junobuild_storage::types::store::Asset;
 use junobuild_storage::runtime::{
     delete_certified_asset, update_certified_asset as update_runtime_certified_asset,
 };
+use junobuild_storage::types::store::Asset;
 
 pub fn update_alternative_origins_asset(alternative_origins: &String) -> Result<(), String> {
     let full_path = WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string();

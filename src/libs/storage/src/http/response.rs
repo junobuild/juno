@@ -19,7 +19,6 @@ pub fn build_asset_response(
     asset: Option<(Asset, Memory)>,
     rewrite_source: Option<String>,
     status_code: StatusCode,
-    config: &StorageConfig,
     content_store: &impl ContentStore,
 ) -> HttpResponse {
     match asset {
@@ -35,7 +34,7 @@ pub fn build_asset_response(
                         encoding_type,
                         &certificate_version,
                         &rewrite_source,
-                        config,
+                        &content_store.get_config(),
                     );
 
                     let Asset { key, .. } = &asset;

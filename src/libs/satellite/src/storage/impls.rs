@@ -1,3 +1,7 @@
+use crate::get_content_chunks_store;
+use crate::hooks::invoke_assert_upload_asset;
+use crate::storage::state::{get_asset, get_config, get_rule, insert_asset, insert_asset_encoding};
+use crate::storage::store::get_public_asset_store;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -5,10 +9,6 @@ use junobuild_storage::interfaces::{AssertOperations, ContentStore, InsertOperat
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
-use crate::get_content_chunks_store;
-use crate::hooks::invoke_assert_upload_asset;
-use crate::storage::state::{get_asset, get_config, get_rule, insert_asset, insert_asset_encoding};
-use crate::storage::store::get_public_asset_store;
 
 pub struct SatelliteAssertOps;
 
@@ -33,13 +33,7 @@ impl InsertOperations for SatelliteInsertOps {
         asset: &mut Asset,
         rule: &Rule,
     ) {
-        insert_asset_encoding(
-            full_path,
-            encoding_type,
-            encoding,
-            asset,
-            rule
-        );
+        insert_asset_encoding(full_path, encoding_type, encoding, asset, rule);
     }
 
     fn insert_state_asset(
@@ -49,12 +43,7 @@ impl InsertOperations for SatelliteInsertOps {
         asset: &Asset,
         rule: &Rule,
     ) {
-        insert_asset(
-            collection,
-            full_path,
-            asset,
-            rule
-        );
+        insert_asset(collection, full_path, asset, rule);
     }
 }
 
@@ -67,11 +56,7 @@ impl ContentStore for SatelliteContentStore {
         chunk_index: usize,
         memory: &Memory,
     ) -> Option<Blob> {
-        get_content_chunks_store(
-            encoding,
-            chunk_index,
-            memory
-        )
+        get_content_chunks_store(encoding, chunk_index, memory)
     }
 
     fn get_public_asset(
@@ -79,13 +64,15 @@ impl ContentStore for SatelliteContentStore {
         full_path: FullPath,
         token: Option<String>,
     ) -> Option<(Asset, Memory)> {
-        get_public_asset_store(
-            full_path,
-            token
-        )
+        get_public_asset_store(full_path, token)
     }
 
-    fn get_asset(&self, collection: &CollectionKey, full_path: &FullPath, rule: &Rule) -> Option<Asset> {
+    fn get_asset(
+        &self,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        rule: &Rule,
+    ) -> Option<Asset> {
         get_asset(collection, full_path, rule)
     }
 

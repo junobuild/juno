@@ -2,11 +2,11 @@ pub mod state {
     use crate::auth::types::state::AuthenticationHeapState;
     use crate::db::types::state::{DbHeapState, DbStable};
     use crate::memory::init_stable_state;
+    use crate::storage::types::state::{AssetsStable, ContentChunksStable, StorageHeapState};
     use candid::CandidType;
     use junobuild_shared::types::state::Controllers;
     use rand::rngs::StdRng;
     use serde::{Deserialize, Serialize};
-    use junobuild_storage::types::state::{AssetsStable, ContentChunksStable, StorageHeapState};
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -44,8 +44,8 @@ pub mod state {
 
 pub mod interface {
     use candid::CandidType;
-    use serde::Deserialize;
     use junobuild_storage::types::config::StorageConfig;
+    use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
     pub enum RulesType {

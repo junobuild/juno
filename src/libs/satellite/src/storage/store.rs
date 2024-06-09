@@ -1,11 +1,9 @@
 use crate::controllers::store::get_controllers;
-use crate::hooks::{invoke_assert_delete_asset};
+use crate::hooks::invoke_assert_delete_asset;
 use crate::memory::STATE;
 use candid::Principal;
 use ic_cdk::api::time;
-use junobuild_collections::assert_stores::{
-    assert_permission, public_permission,
-};
+use junobuild_collections::assert_stores::{assert_permission, public_permission};
 use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::constants::INITIAL_VERSION;
@@ -14,39 +12,35 @@ use junobuild_shared::list::list_values;
 use junobuild_shared::types::state::{Controllers, Timestamp, Version};
 
 use crate::rules::assert_stores::is_known_user;
-use junobuild_storage::constants::{
-    ROOT_404_HTML, ROOT_INDEX_HTML,
-    WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
-};
-use junobuild_storage::runtime::{
-    delete_certified_asset as delete_runtime_certified_asset,
-    update_certified_asset as update_runtime_certified_asset,
-};
+use crate::storage::impls::{SatelliteAssertOps, SatelliteContentStore, SatelliteInsertOps};
+use crate::storage::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::{
     count_assets_heap, count_assets_stable, delete_asset as delete_state_asset,
     delete_domain as delete_state_domain, get_asset as get_state_asset, get_assets_heap,
     get_assets_stable, get_config as get_state_config,
     get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
     get_domains as get_state_domains, get_public_asset as get_state_public_asset,
-    get_rule as get_state_rule,
-    insert_config as insert_state_config,
+    get_rule as get_state_rule, insert_config as insert_state_config,
     insert_domain as insert_state_domain,
 };
-use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
-use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
-use junobuild_storage::types::state::FullPath;
-use junobuild_storage::types::store::{
-    Asset, AssetEncoding,
-};
+use crate::storage::types::domain::{CustomDomain, CustomDomains};
+use crate::storage::well_known::update::update_custom_domains_asset;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
+use junobuild_storage::constants::{
+    ROOT_404_HTML, ROOT_INDEX_HTML, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
+};
 use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, UPLOAD_NOT_ALLOWED};
-use junobuild_storage::store::{create_batch, create_chunk, commit_batch as commit_batch_storage};
-use crate::storage::impls::{SatelliteAssertOps, SatelliteContentStore, SatelliteInsertOps};
-use crate::storage::well_known::update::update_custom_domains_asset;
+use junobuild_storage::runtime::{
+    delete_certified_asset as delete_runtime_certified_asset,
+    update_certified_asset as update_runtime_certified_asset,
+};
+use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
+use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
+use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
-use crate::storage::runtime::init_certified_assets as init_runtime_certified_assets;
 
 ///
 /// Getter, list and delete
@@ -464,7 +458,15 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
     let insert_ops = SatelliteInsertOps;
     let content_store = SatelliteContentStore;
 
-    commit_batch_storage(caller, &controllers, commit_batch, &config, Some(&assert_ops), &insert_ops, &content_store)
+    commit_batch_storage(
+        caller,
+        &controllers,
+        commit_batch,
+        &config,
+        Some(&assert_ops),
+        &insert_ops,
+        &content_store,
+    )
 }
 
 fn secure_create_batch_impl(

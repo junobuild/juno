@@ -1,13 +1,7 @@
 pub mod state {
     use crate::certification::types::certified::CertifiedAssetHashes;
-    use crate::types::config::StorageConfig;
-    use crate::types::domain::CustomDomains;
-    use crate::types::store::{Asset, Batch, Chunk, EncodingType};
-    use candid::CandidType;
-    use ic_stable_structures::StableBTreeMap;
-    use junobuild_collections::types::rules::Rules;
-    use junobuild_shared::types::core::{Blob, CollectionKey, Key};
-    use junobuild_shared::types::memory::Memory;
+    use crate::types::store::{Batch, Chunk};
+    use junobuild_shared::types::core::Key;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -21,11 +15,6 @@ pub mod state {
     pub type Batches = HashMap<u128, Batch>;
     pub type Chunks = HashMap<u128, Chunk>;
 
-    pub type AssetsStable = StableBTreeMap<StableKey, Asset, Memory>;
-    pub type ContentChunksStable = StableBTreeMap<StableEncodingChunkKey, Blob, Memory>;
-
-    pub type AssetsHeap = HashMap<FullPath, Asset>;
-
     #[derive(Serialize, Deserialize)]
     pub struct State {
         // Unstable state: State that resides only on the heap, that’s lost after an upgrade.
@@ -33,25 +22,9 @@ pub mod state {
         pub runtime: RuntimeState,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct StableKey {
-        pub collection: CollectionKey,
-        pub full_path: FullPath,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct StableEncodingChunkKey {
-        pub full_path: FullPath,
-        pub encoding_type: EncodingType,
-        pub chunk_index: usize,
-    }
-
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct StorageHeapState {
-        pub assets: AssetsHeap,
-        pub rules: Rules,
-        pub config: StorageConfig,
-        pub custom_domains: CustomDomains,
+    #[derive(Default, Clone)]
+    pub struct RuntimeState {
+        pub storage: StorageRuntimeState,
     }
 
     #[derive(Default, Clone)]
@@ -59,11 +32,6 @@ pub mod state {
         pub chunks: Chunks,
         pub batches: Batches,
         pub asset_hashes: CertifiedAssetHashes,
-    }
-
-    #[derive(Default, Clone)]
-    pub struct RuntimeState {
-        pub storage: StorageRuntimeState,
     }
 }
 
@@ -288,23 +256,5 @@ pub mod http_request {
     pub struct RoutingRedirectRaw {
         pub redirect_url: String,
         pub iframe: StorageConfigIFrame,
-    }
-}
-
-pub mod domain {
-    use candid::CandidType;
-    use junobuild_shared::types::core::DomainName;
-    use junobuild_shared::types::state::{Timestamp, Version};
-    use serde::{Deserialize, Serialize};
-    use std::collections::HashMap;
-
-    pub type CustomDomains = HashMap<DomainName, CustomDomain>;
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CustomDomain {
-        pub bn_id: Option<String>,
-        pub created_at: Timestamp,
-        pub updated_at: Timestamp,
-        pub version: Option<Version>,
     }
 }

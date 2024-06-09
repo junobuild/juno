@@ -21,13 +21,13 @@ use ic_cdk::api::time;
 use junobuild_collections::assert_stores::{assert_create_permission, assert_permission};
 use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::rules::Rule;
+use junobuild_shared::assert::assert_description_length;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
-use junobuild_shared::assert::assert_description_length;
 
 ///
 /// Upload batch and chunks

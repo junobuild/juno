@@ -27,16 +27,16 @@ pub trait StorageStoreStrategy {
         token: Option<String>,
     ) -> Option<(Asset, Memory)>;
 
+    fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String>;
+
+    fn get_config(&self) -> StorageConfig;
+
     fn get_asset(
         &self,
         collection: &CollectionKey,
         full_path: &FullPath,
         rule: &Rule,
     ) -> Option<Asset>;
-
-    fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String>;
-
-    fn get_config(&self) -> StorageConfig;
 
     fn insert_state_asset_encoding(
         &self,

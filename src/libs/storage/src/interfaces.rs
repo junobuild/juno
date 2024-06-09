@@ -17,7 +17,7 @@ pub trait InsertOperations {
     fn insert_state_asset_encoding(
         &self,
         full_path: &String,
-        encoding_type: &String,
+        encoding_type: &str,
         encoding: &AssetEncoding,
         asset: &mut Asset,
         rule: &Rule,

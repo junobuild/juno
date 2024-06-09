@@ -31,7 +31,6 @@ use crate::storage::store::{
     set_domain_store,
 };
 use crate::storage::types::domain::CustomDomains;
-use crate::storage::types::state::FullPath;
 use crate::storage::upgrade::defer_init_certified_assets;
 use crate::types::interface::{Config, RulesType};
 use crate::types::state::{HeapState, RuntimeState, State};
@@ -66,6 +65,7 @@ use junobuild_storage::types::http_request::{
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
 
 pub fn init() {

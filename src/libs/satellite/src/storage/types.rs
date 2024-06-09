@@ -3,7 +3,7 @@ pub mod state {
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_collections::types::rules::Rules;
-    use junobuild_shared::types::core::{Blob, CollectionKey, Key};
+    use junobuild_shared::types::core::{Blob, CollectionKey};
     use junobuild_shared::types::memory::Memory;
     use junobuild_storage::types::config::StorageConfig;
     use junobuild_storage::types::state::FullPath;

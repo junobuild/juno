@@ -7,11 +7,10 @@ use crate::http::types::{HeaderField, HttpResponse, StatusCode};
 use crate::http::utils::{
     build_encodings, build_response_headers, build_response_redirect_headers, streaming_strategy,
 };
+use crate::interfaces::ContentStore;
+use crate::types::config::{StorageConfig, StorageConfigIFrame, StorageConfigRedirect};
 use crate::types::store::Asset;
 use junobuild_collections::types::rules::Memory;
-
-use crate::store::get_content_chunks_store;
-use crate::types::config::{StorageConfigIFrame, StorageConfigRedirect};
 
 pub fn build_asset_response(
     requested_url: String,
@@ -20,6 +19,8 @@ pub fn build_asset_response(
     asset: Option<(Asset, Memory)>,
     rewrite_source: Option<String>,
     status_code: StatusCode,
+    config: &StorageConfig,
+    content_store: &impl ContentStore,
 ) -> HttpResponse {
     match asset {
         Some((asset, memory)) => {
@@ -34,13 +35,14 @@ pub fn build_asset_response(
                         encoding_type,
                         &certificate_version,
                         &rewrite_source,
+                        config,
                     );
 
                     let Asset { key, .. } = &asset;
 
                     match headers {
                         Ok(headers) => {
-                            let body = get_content_chunks_store(encoding, 0, &memory);
+                            let body = content_store.get_content_chunks_store(encoding, 0, &memory);
 
                             // TODO: support for HTTP response 304
                             // On hold til DFINITY foundation implements:

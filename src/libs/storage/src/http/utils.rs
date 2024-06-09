@@ -3,8 +3,7 @@ use crate::constants::ASSET_ENCODING_NO_COMPRESSION;
 use crate::http::headers::{build_headers, build_redirect_headers};
 use crate::http::types::{CallbackFunc, HeaderField, StreamingCallbackToken, StreamingStrategy};
 use crate::memory::STATE;
-use crate::state::get_config;
-use crate::types::config::StorageConfigIFrame;
+use crate::types::config::{StorageConfig, StorageConfigIFrame};
 use crate::types::state::StorageRuntimeState;
 use crate::types::store::{Asset, AssetEncoding, AssetKey, EncodingType};
 use ic_cdk::id;
@@ -57,10 +56,9 @@ pub fn build_response_headers(
     encoding_type: &EncodingType,
     certificate_version: &Option<u16>,
     rewrite_source: &Option<String>,
+    config: &StorageConfig,
 ) -> Result<Vec<HeaderField>, &'static str> {
-    let config = get_config();
-
-    let asset_headers = build_headers(asset, encoding, encoding_type, &config);
+    let asset_headers = build_headers(asset, encoding, encoding_type, config);
 
     extend_headers_with_certification(asset_headers, url, certificate_version, rewrite_source)
 }

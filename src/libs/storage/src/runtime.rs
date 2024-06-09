@@ -1,5 +1,6 @@
 use crate::certification::cert::update_certified_data;
 use crate::certification::types::certified::CertifiedAssetHashes;
+use crate::interfaces::ContentStore;
 use crate::memory::STATE;
 use crate::rewrites::rewrite_source_to_path;
 use crate::routing::get_routing;
@@ -13,10 +14,15 @@ use ic_cdk::api::time;
 
 /// Certified assets
 
-pub fn init_certified_assets(heap: &StorageHeapState, stable_assets: &AssetsStable) {
+pub fn init_certified_assets(
+    heap: &StorageHeapState,
+    stable_assets: &AssetsStable,
+    content_store: &impl ContentStore,
+) {
     fn init_asset_hashes(
         heap: &StorageHeapState,
         stable_assets: &AssetsStable,
+        content_store: &impl ContentStore,
     ) -> CertifiedAssetHashes {
         let mut asset_hashes = CertifiedAssetHashes::default();
 
@@ -32,7 +38,7 @@ pub fn init_certified_assets(heap: &StorageHeapState, stable_assets: &AssetsStab
 
         for (source, destination) in heap.config.rewrites.clone() {
             if let Ok(Routing::Default(RoutingDefault { url: _, asset })) =
-                get_routing(destination, &Vec::new(), false)
+                get_routing(destination, &Vec::new(), false, config, content_store)
             {
                 let src_path = rewrite_source_to_path(&source);
 
@@ -54,7 +60,7 @@ pub fn init_certified_assets(heap: &StorageHeapState, stable_assets: &AssetsStab
         asset_hashes
     }
 
-    let asset_hashes = init_asset_hashes(heap, stable_assets);
+    let asset_hashes = init_asset_hashes(heap, stable_assets, content_store);
 
     STATE.with(|state| {
         init_certified_assets_impl(&asset_hashes, &mut state.borrow_mut().runtime.storage)

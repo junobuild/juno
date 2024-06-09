@@ -1,11 +1,11 @@
-use crate::constants::{
+use crate::rules::constants::ASSET_COLLECTION_KEY;
+use crate::storage::constants::{
     ASSET_ENCODING_NO_COMPRESSION, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
-use crate::http::types::HeaderField;
-use crate::types::store::{Asset, AssetEncoding, AssetKey};
+use crate::storage::http::types::HeaderField;
+use crate::storage::types::store::{Asset, AssetEncoding, AssetKey};
 use ic_cdk::api::time;
 use ic_cdk::id;
-use junobuild_collections::constants::ASSET_COLLECTION_KEY;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::state::{Timestamp, Version};
 use std::collections::HashMap;

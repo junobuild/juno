@@ -1,6 +1,8 @@
+use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 use candid::Principal;
-use junobuild_collections::types::rules::Rule;
+use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_shared::types::core::Blob;
 
 pub trait AssertOperations {
     fn invoke_assert_upload_asset(
@@ -27,4 +29,19 @@ pub trait InsertOperations {
         asset: &Asset,
         rule: &Rule,
     );
+}
+
+pub trait ContentStore {
+    fn get_content_chunks_store(
+        &self,
+        encoding: &AssetEncoding,
+        chunk_index: usize,
+        memory: &Memory,
+    ) -> Option<Blob>;
+
+    fn get_public_asset_store(
+        &self,
+        full_path: FullPath,
+        token: Option<String>,
+    ) -> Option<(Asset, Memory)>;
 }

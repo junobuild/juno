@@ -1,9 +1,9 @@
 use crate::assert::assert_description_length;
-use crate::commit::{AssertOperations, InsertOperations};
 use crate::constants::{
     ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, WELL_KNOWN_CUSTOM_DOMAINS,
     WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
+use crate::interfaces::{AssertOperations, InsertOperations};
 use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,

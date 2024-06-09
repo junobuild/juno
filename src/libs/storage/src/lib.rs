@@ -1,9 +1,9 @@
 mod assert;
 mod certification;
-mod commit;
 pub mod constants;
 pub mod http;
 pub mod impls;
+mod interfaces;
 mod memory;
 pub mod msg;
 pub mod rewrites;
@@ -14,4 +14,3 @@ pub mod types;
 pub mod upgrade;
 mod url;
 mod utils;
-pub mod well_known;

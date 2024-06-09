@@ -22,7 +22,6 @@ use crate::random::defer_init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
 };
-use crate::storage::interfaces::SatelliteContentStore;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
     delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
@@ -30,6 +29,7 @@ use crate::storage::store::{
     get_public_asset_store, list_assets_store, set_config_store as set_storage_config,
     set_domain_store,
 };
+use crate::storage::strategy_impls::StorageStore;
 use crate::storage::types::domain::CustomDomains;
 use crate::storage::upgrade::defer_init_certified_assets;
 use crate::types::interface::{Config, RulesType};
@@ -340,9 +340,9 @@ pub fn http_request(
         return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
     }
 
-    let content_store = SatelliteContentStore;
+    let storage_store = StorageStore;
 
-    let result = get_routing(url, &req_headers, true, &content_store);
+    let result = get_routing(url, &req_headers, true, &storage_store);
 
     match result {
         Ok(routing) => match routing {
@@ -353,7 +353,7 @@ pub fn http_request(
                 asset,
                 None,
                 RESPONSE_STATUS_CODE_200,
-                &content_store,
+                &storage_store,
             ),
             Routing::Rewrite(RoutingRewrite {
                 url,
@@ -367,7 +367,7 @@ pub fn http_request(
                 asset,
                 Some(source),
                 status_code,
-                &content_store,
+                &storage_store,
             ),
             Routing::Redirect(RoutingRedirect {
                 url,

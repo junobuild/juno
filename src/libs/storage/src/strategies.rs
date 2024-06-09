@@ -5,7 +5,7 @@ use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
 
-pub trait HooksAssertions {
+pub trait StorageAssertionsStrategy {
     fn invoke_assert_upload_asset(
         &self,
         caller: &Principal,
@@ -13,7 +13,7 @@ pub trait HooksAssertions {
     ) -> Result<(), String>;
 }
 
-pub trait ContentStore {
+pub trait StorageStoreStrategy {
     fn get_content_chunks(
         &self,
         encoding: &AssetEncoding,

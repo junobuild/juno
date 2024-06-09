@@ -2,7 +2,6 @@ use crate::constants::{
     ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, WELL_KNOWN_CUSTOM_DOMAINS,
     WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
-use crate::interfaces::{ContentStore, HooksAssertions};
 use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
@@ -10,6 +9,7 @@ use crate::runtime::{
     get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
     insert_chunk as insert_runtime_chunk, update_certified_asset as update_runtime_certified_asset,
 };
+use crate::strategies::{StorageAssertionsStrategy, StorageStoreStrategy};
 use crate::types::config::StorageConfig;
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
 use crate::types::state::FullPath;
@@ -145,8 +145,8 @@ pub fn commit_batch(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     config: &StorageConfig,
-    assertions: Option<&impl HooksAssertions>,
-    content_store: &impl ContentStore,
+    assertions: Option<&impl StorageAssertionsStrategy>,
+    storage_store: &impl StorageStoreStrategy,
 ) -> Result<Asset, String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
@@ -159,7 +159,7 @@ pub fn commit_batch(
                 commit_batch,
                 &b,
                 assertions,
-                content_store,
+                storage_store,
             )?;
             update_runtime_certified_asset(&asset, config);
             Ok(asset)
@@ -209,8 +209,8 @@ fn secure_commit_chunks(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
-    assertions: Option<&impl HooksAssertions>,
-    content_store: &impl ContentStore,
+    assertions: Option<&impl StorageAssertionsStrategy>,
+    storage_store: &impl StorageStoreStrategy,
 ) -> Result<Asset, String> {
     // The one that started the batch should be the one that commits it
     if principal_not_equal(caller, batch.key.owner) {
@@ -224,9 +224,9 @@ fn secure_commit_chunks(
         controllers,
     )?;
 
-    let rule = content_store.get_rule(&batch.key.collection)?;
+    let rule = storage_store.get_rule(&batch.key.collection)?;
 
-    let current = content_store.get_asset(&batch.key.collection, &batch.key.full_path, &rule);
+    let current = storage_store.get_asset(&batch.key.collection, &batch.key.full_path, &rule);
 
     match current {
         None => {
@@ -241,7 +241,7 @@ fn secure_commit_chunks(
                 &rule,
                 &None,
                 assertions,
-                content_store,
+                storage_store,
             )
         }
         Some(current) => secure_commit_chunks_update(
@@ -252,7 +252,7 @@ fn secure_commit_chunks(
             rule,
             current,
             assertions,
-            content_store,
+            storage_store,
         ),
     }
 }
@@ -264,8 +264,8 @@ fn secure_commit_chunks_update(
     batch: &Batch,
     rule: Rule,
     current: Asset,
-    assertions: Option<&impl HooksAssertions>,
-    content_store: &impl ContentStore,
+    assertions: Option<&impl StorageAssertionsStrategy>,
+    storage_store: &impl StorageStoreStrategy,
 ) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
     if batch.key.collection != current.key.collection {
@@ -283,7 +283,7 @@ fn secure_commit_chunks_update(
         &rule,
         &Some(current),
         assertions,
-        content_store,
+        storage_store,
     )
 }
 
@@ -293,8 +293,8 @@ fn commit_chunks(
     batch: &Batch,
     rule: &Rule,
     current: &Option<Asset>,
-    assertions: Option<&impl HooksAssertions>,
-    content_store: &impl ContentStore,
+    assertions: Option<&impl StorageAssertionsStrategy>,
+    storage_store: &impl StorageStoreStrategy,
 ) -> Result<Asset, String> {
     let now = time();
 
@@ -394,7 +394,7 @@ fn commit_chunks(
         }
     }
 
-    content_store.insert_state_asset_encoding(
+    storage_store.insert_state_asset_encoding(
         &batch.clone().key.full_path,
         &encoding_type,
         &encoding,
@@ -402,7 +402,7 @@ fn commit_chunks(
         rule,
     );
 
-    content_store.insert_state_asset(
+    storage_store.insert_state_asset(
         &batch.clone().key.collection,
         &batch.clone().key.full_path,
         &asset,

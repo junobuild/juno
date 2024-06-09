@@ -1,4 +1,3 @@
-mod assert;
 pub mod certification;
 pub mod constants;
 pub mod http;

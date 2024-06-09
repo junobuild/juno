@@ -1,4 +1,3 @@
-use crate::assert::assert_description_length;
 use crate::constants::{
     ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, WELL_KNOWN_CUSTOM_DOMAINS,
     WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
@@ -28,6 +27,7 @@ use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
+use junobuild_shared::assert::assert_description_length;
 
 ///
 /// Upload batch and chunks

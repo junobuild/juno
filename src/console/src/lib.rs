@@ -4,6 +4,7 @@ mod factory;
 mod guards;
 mod impls;
 mod memory;
+mod storage;
 mod store;
 mod types;
 mod upgrade;

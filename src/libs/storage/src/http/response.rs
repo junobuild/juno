@@ -42,7 +42,7 @@ pub fn build_asset_response(
 
                     match headers {
                         Ok(headers) => {
-                            let body = content_store.get_content_chunks_store(encoding, 0, &memory);
+                            let body = content_store.get_content_chunks(encoding, 0, &memory);
 
                             // TODO: support for HTTP response 304
                             // On hold til DFINITY foundation implements:

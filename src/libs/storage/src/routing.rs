@@ -46,7 +46,7 @@ pub fn get_routing(
 
     // We return the asset that matches the effective path
     let asset: Option<(Asset, Memory)> =
-        content_store.get_public_asset_store(path.clone(), token.clone());
+        content_store.get_public_asset(path.clone(), token.clone());
 
     match asset {
         None => (),
@@ -116,7 +116,7 @@ fn get_alternative_asset(
 
     for alternative_path in alternative_paths {
         let asset: Option<(Asset, Memory)> =
-            content_store.get_public_asset_store(alternative_path, token.clone());
+            content_store.get_public_asset(alternative_path, token.clone());
 
         // We return the first match
         match asset {
@@ -164,7 +164,7 @@ fn get_routing_rewrite(
             // Rewrite is maybe configured as an absolute path
             // e.g. write /demo/* to /sample.html
             let rewrite_absolute_asset: Option<(Asset, Memory)> =
-                content_store.get_public_asset_store(destination.clone(), token.clone());
+                content_store.get_public_asset(destination.clone(), token.clone());
 
             match rewrite_absolute_asset {
                 None => (),
@@ -187,7 +187,7 @@ fn get_routing_root_rewrite(path: &FullPath, content_store: &impl ContentStore) 
     if !is_root_path(path) {
         // Search for potential /404.html to rewrite to
         let asset_404: Option<(Asset, Memory)> =
-            content_store.get_public_asset_store(ROOT_404_HTML.to_string(), None);
+            content_store.get_public_asset(ROOT_404_HTML.to_string(), None);
 
         match asset_404 {
             None => (),
@@ -203,7 +203,7 @@ fn get_routing_root_rewrite(path: &FullPath, content_store: &impl ContentStore) 
 
         // Search for potential /index.html to rewrite to
         let asset_index: Option<(Asset, Memory)> =
-            content_store.get_public_asset_store(ROOT_INDEX_HTML.to_string(), None);
+            content_store.get_public_asset(ROOT_INDEX_HTML.to_string(), None);
 
         match asset_index {
             None => (),

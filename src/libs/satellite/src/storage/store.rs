@@ -52,6 +52,9 @@ use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
+use junobuild_storage::store::{create_batch, create_chunk, commit_batch as commit_batch_storage};
+use crate::storage::impls::{SatelliteAssertOps, SatelliteContentStore, SatelliteInsertOps};
+use crate::storage::well_known::update::update_custom_domains_asset;
 
 ///
 /// Getter, list and delete
@@ -452,25 +455,24 @@ pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
 /// Upload batch and chunks
 ///
 
-const BATCH_EXPIRY_NANOS: u64 = 300_000_000_000;
-
-static mut NEXT_BATCH_ID: u128 = 0;
-static mut NEXT_CHUNK_ID: u128 = 0;
-
 pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
     let controllers: Controllers = get_controllers();
     secure_create_batch_impl(caller, &controllers, init)
 }
 
 pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<u128, &'static str> {
-    create_chunk_impl(caller, chunk)
+    create_chunk(caller, chunk)
 }
 
 pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<Asset, String> {
     let controllers: Controllers = get_controllers();
     let config = get_config_store();
 
-    commit_batch_impl(caller, &controllers, commit_batch, &config)
+    let assert_ops = SatelliteAssertOps;
+    let insert_ops = SatelliteInsertOps;
+    let content_store = SatelliteContentStore;
+
+    commit_batch_storage(caller, &controllers, commit_batch, &config, Some(&assert_ops), &insert_ops, &content_store)
 }
 
 fn secure_create_batch_impl(
@@ -487,359 +489,7 @@ fn secure_create_batch_impl(
         return Err(UPLOAD_NOT_ALLOWED.to_string());
     }
 
-    assert_key(caller, &init.full_path, &init.collection, controllers)?;
-
-    assert_description_length(&init.description)?;
-
-    // Assert supported encoding type
-    get_encoding_type(&init.encoding_type)?;
-
-    Ok(create_batch_impl(caller, init))
-}
-
-fn create_batch_impl(
-    caller: Principal,
-    InitAssetKey {
-        token,
-        name,
-        collection,
-        encoding_type,
-        full_path,
-        description,
-    }: InitAssetKey,
-) -> u128 {
-    let now = time();
-
-    unsafe {
-        clear_expired_batches();
-
-        NEXT_BATCH_ID += 1;
-
-        let key: AssetKey = AssetKey {
-            full_path,
-            collection,
-            owner: caller,
-            token,
-            name,
-            description,
-        };
-
-        insert_runtime_batch(
-            &NEXT_BATCH_ID,
-            Batch {
-                key,
-                expires_at: now + BATCH_EXPIRY_NANOS,
-                encoding_type,
-            },
-        );
-
-        NEXT_BATCH_ID
-    }
-}
-
-fn create_chunk_impl(
-    caller: Principal,
-    UploadChunk {
-        batch_id,
-        content,
-        order_id,
-    }: UploadChunk,
-) -> Result<u128, &'static str> {
-    let batch = get_runtime_batch(&batch_id);
-
-    match batch {
-        None => Err("Batch not found."),
-        Some(b) => {
-            if principal_not_equal(caller, b.key.owner) {
-                return Err("Bach initializer does not match chunk uploader.");
-            }
-
-            let now = time();
-
-            // Update batch to extend expires_at
-            insert_runtime_batch(
-                &batch_id,
-                Batch {
-                    key: b.key.clone(),
-                    expires_at: now + BATCH_EXPIRY_NANOS,
-                    encoding_type: b.encoding_type,
-                },
-            );
-
-            unsafe {
-                NEXT_CHUNK_ID += 1;
-
-                insert_runtime_chunk(
-                    &NEXT_CHUNK_ID,
-                    Chunk {
-                        batch_id,
-                        content,
-                        order_id: order_id.unwrap_or(NEXT_CHUNK_ID),
-                    },
-                );
-
-                Ok(NEXT_CHUNK_ID)
-            }
-        }
-    }
-}
-
-fn commit_batch_impl(
-    caller: Principal,
-    controllers: &Controllers,
-    commit_batch: CommitBatch,
-    config: &StorageConfig,
-) -> Result<Asset, String> {
-    let batch = get_runtime_batch(&commit_batch.batch_id);
-
-    match batch {
-        None => Err(ERROR_CANNOT_COMMIT_BATCH.to_string()),
-        Some(b) => {
-            let asset = secure_commit_chunks(caller, controllers, commit_batch, &b)?;
-            update_runtime_certified_asset(&asset, config);
-            Ok(asset)
-        }
-    }
-}
-
-fn assert_key(
-    caller: Principal,
-    full_path: &FullPath,
-    collection: &CollectionKey,
-    controllers: &Controllers,
-) -> Result<(), &'static str> {
-    // /.well-known/ic-domains is automatically generated for custom domains
-    assert_well_known_key(full_path, WELL_KNOWN_CUSTOM_DOMAINS)?;
-
-    // /.well-known/ii-alternative-origins is automatically generated for alternative origins
-    assert_well_known_key(full_path, WELL_KNOWN_II_ALTERNATIVE_ORIGINS)?;
-
-    let dapp_collection = DEFAULT_ASSETS_COLLECTIONS[0].0;
-
-    // Only controllers can write in collection #dapp
-    if collection.clone() == *dapp_collection && !is_controller(caller, controllers) {
-        return Err(UPLOAD_NOT_ALLOWED);
-    }
-
-    // Asset uploaded by users should be prefixed with the collection. That way developers can organize assets to particular folders.
-    if collection.clone() != *dapp_collection
-        && !full_path.starts_with(&["/", collection, "/"].join(""))
-    {
-        return Err("Asset path must be prefixed with collection key.");
-    }
-
-    Ok(())
-}
-
-fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), &'static str> {
-    if full_path == reserved_path {
-        let error = format!("{} is a reserved asset.", reserved_path);
-        return Err(Box::leak(error.into_boxed_str()));
-    }
-    Ok(())
-}
-
-fn secure_commit_chunks(
-    caller: Principal,
-    controllers: &Controllers,
-    commit_batch: CommitBatch,
-    batch: &Batch,
-) -> Result<Asset, String> {
-    // The one that started the batch should be the one that commits it
-    if principal_not_equal(caller, batch.key.owner) {
-        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
-    }
-
-    assert_key(
-        caller,
-        &batch.key.full_path,
-        &batch.key.collection,
-        controllers,
-    )?;
-
-    let rule = get_state_rule(&batch.key.collection)?;
-
-    let current = get_state_asset(&batch.key.collection, &batch.key.full_path, &rule);
-
-    match current {
-        None => {
-            if !assert_create_permission(&rule.write, caller, controllers) {
-                return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
-            }
-
-            commit_chunks(caller, commit_batch, batch, &rule, &None)
-        }
-        Some(current) => {
-            secure_commit_chunks_update(caller, controllers, commit_batch, batch, rule, current)
-        }
-    }
-}
-
-fn secure_commit_chunks_update(
-    caller: Principal,
-    controllers: &Controllers,
-    commit_batch: CommitBatch,
-    batch: &Batch,
-    rule: Rule,
-    current: Asset,
-) -> Result<Asset, String> {
-    // The collection of the existing asset should be the same as the one we commit
-    if batch.key.collection != current.key.collection {
-        return Err("Provided collection does not match existing collection.".to_string());
-    }
-
-    if !assert_permission(&rule.write, current.key.owner, caller, controllers) {
-        return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
-    }
-
-    commit_chunks(caller, commit_batch, batch, &rule, &Some(current))
-}
-
-fn commit_chunks(
-    caller: Principal,
-    commit_batch: CommitBatch,
-    batch: &Batch,
-    rule: &Rule,
-    current: &Option<Asset>,
-) -> Result<Asset, String> {
-    let now = time();
-
-    if now > batch.expires_at {
-        clear_expired_batches();
-        return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
-    }
-
-    invoke_assert_upload_asset(
-        &caller,
-        &AssetAssertUpload {
-            current: current.clone(),
-            batch: batch.clone(),
-            commit_batch: commit_batch.clone(),
-        },
-    )?;
-
-    let CommitBatch {
-        chunk_ids,
-        batch_id,
-        headers,
-    } = commit_batch;
-
-    // Collect all chunks
-    let mut chunks: Vec<Chunk> = vec![];
-
-    for chunk_id in chunk_ids.iter() {
-        let chunk = get_runtime_chunk(chunk_id);
-
-        match chunk {
-            None => {
-                return Err("Chunk does not exist.".to_string());
-            }
-            Some(c) => {
-                if batch_id != c.batch_id {
-                    return Err("Chunk not included in the provided batch.".to_string());
-                }
-
-                chunks.push(c);
-            }
-        }
-    }
-
-    // Sort with ordering
-    chunks.sort_by(|a, b| a.order_id.cmp(&b.order_id));
-
-    let mut content_chunks: Vec<Blob> = vec![];
-
-    // Collect content
-    for c in chunks.iter() {
-        content_chunks.push(c.content.clone());
-    }
-
-    if content_chunks.is_empty() {
-        return Err("No chunk to commit.".to_string());
-    }
-
-    // We clone the key with the new information provided by the upload (name, full_path, token, etc.) to set the new key.
-    // However, the owner remains the one who originally created the asset.
-    let owner = current.as_ref().map_or(caller, |asset| asset.key.owner);
-
-    let key = AssetKey {
-        owner,
-        ..batch.clone().key
-    };
-
-    let now = time();
-
-    let mut asset: Asset = Asset {
-        key,
-        headers,
-        encodings: HashMap::new(),
-        created_at: now,
-        updated_at: now,
-        version: Some(INITIAL_VERSION),
-    };
-
-    if let Some(existing_asset) = current {
-        asset.encodings = existing_asset.encodings.clone();
-        asset.created_at = existing_asset.created_at;
-        asset.version = Some(existing_asset.version.unwrap_or_default() + 1);
-    }
-
-    let encoding_type = get_encoding_type(&batch.encoding_type)?;
-
-    let encoding = AssetEncoding::from(&content_chunks);
-
-    match rule.max_size {
-        None => (),
-        Some(max_size) => {
-            if encoding.total_length > max_size {
-                clear_runtime_batch(&batch_id, &chunk_ids);
-                return Err("Asset exceed max allowed size.".to_string());
-            }
-        }
-    }
-
-    insert_state_asset_encoding(
-        &batch.clone().key.full_path,
-        &encoding_type,
-        &encoding,
-        &mut asset,
-        rule,
-    );
-
-    insert_state_asset(
-        &batch.clone().key.collection,
-        &batch.clone().key.full_path,
-        &asset,
-        rule,
-    );
-
-    clear_runtime_batch(&batch_id, &chunk_ids);
-
-    Ok(asset)
-}
-
-fn get_encoding_type(encoding_type: &Option<EncodingType>) -> Result<EncodingType, &'static str> {
-    let provided_type = encoding_type
-        .clone()
-        .unwrap_or_else(|| ASSET_ENCODING_NO_COMPRESSION.to_string());
-
-    let matching_type = Vec::from(ENCODING_CERTIFICATION_ORDER)
-        .iter()
-        .any(|&e| *e == provided_type);
-
-    if !matching_type {
-        return Err("Asset encoding not supported for certification purpose.");
-    }
-
-    Ok(provided_type)
-}
-
-fn clear_expired_batches() {
-    // Remove expired batches
-    clear_expired_runtime_batches();
-
-    // Remove chunk without existing batches (those we just deleted above)
-    clear_expired_runtime_chunks();
+    create_batch(caller, controllers, init)
 }
 
 ///

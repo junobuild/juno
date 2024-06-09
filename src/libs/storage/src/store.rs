@@ -3,7 +3,7 @@ use crate::constants::{
     ASSET_ENCODING_NO_COMPRESSION, ENCODING_CERTIFICATION_ORDER, WELL_KNOWN_CUSTOM_DOMAINS,
     WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
-use crate::interfaces::{AssertOperations, InsertOperations};
+use crate::interfaces::{AssertOperations, ContentStore, InsertOperations};
 use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
@@ -143,12 +143,11 @@ pub fn create_chunk(
 pub fn commit_batch(
     caller: Principal,
     controllers: &Controllers,
-    rule: &Rule,
-    current_asset: &Option<Asset>,
     commit_batch: CommitBatch,
     config: &StorageConfig,
     assert_ops: Option<&impl AssertOperations>,
     insert_ops: &impl InsertOperations,
+    content_store: &impl ContentStore,
 ) -> Result<Asset, String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
@@ -158,12 +157,11 @@ pub fn commit_batch(
             let asset = secure_commit_chunks(
                 caller,
                 controllers,
-                rule,
-                current_asset,
                 commit_batch,
                 &b,
                 assert_ops,
                 insert_ops,
+                content_store,
             )?;
             update_runtime_certified_asset(&asset, config);
             Ok(asset)
@@ -211,12 +209,11 @@ fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), &'s
 fn secure_commit_chunks(
     caller: Principal,
     controllers: &Controllers,
-    rule: &Rule,
-    current_asset: &Option<Asset>,
     commit_batch: CommitBatch,
     batch: &Batch,
     assert_ops: Option<&impl AssertOperations>,
     insert_ops: &impl InsertOperations,
+    content_store: &impl ContentStore,
 ) -> Result<Asset, String> {
     // The one that started the batch should be the one that commits it
     if principal_not_equal(caller, batch.key.owner) {
@@ -230,7 +227,11 @@ fn secure_commit_chunks(
         controllers,
     )?;
 
-    match current_asset {
+    let rule = content_store.get_rule(&batch.key.collection)?;
+
+    let current = content_store.get_asset(&batch.key.collection, &batch.key.full_path, &rule);
+
+    match current {
         None => {
             if !assert_create_permission(&rule.write, caller, controllers) {
                 return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
@@ -241,7 +242,7 @@ fn secure_commit_chunks(
                 commit_batch,
                 batch,
                 &rule,
-                None,
+                &None,
                 assert_ops,
                 insert_ops,
             )
@@ -252,7 +253,7 @@ fn secure_commit_chunks(
             commit_batch,
             batch,
             rule,
-            &current,
+            current,
             assert_ops,
             insert_ops,
         ),
@@ -264,8 +265,8 @@ fn secure_commit_chunks_update(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
-    rule: &Rule,
-    current: &Asset,
+    rule: Rule,
+    current: Asset,
     assert_ops: Option<&impl AssertOperations>,
     insert_ops: &impl InsertOperations,
 ) -> Result<Asset, String> {
@@ -283,7 +284,7 @@ fn secure_commit_chunks_update(
         commit_batch,
         batch,
         &rule,
-        Some(current),
+        &Some(current),
         assert_ops,
         insert_ops,
     )
@@ -294,7 +295,7 @@ fn commit_chunks(
     commit_batch: CommitBatch,
     batch: &Batch,
     rule: &Rule,
-    current: Option<&Asset>,
+    current: &Option<Asset>,
     assert_ops: Option<&impl AssertOperations>,
     insert_ops: &impl InsertOperations,
 ) -> Result<Asset, String> {

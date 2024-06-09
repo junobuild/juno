@@ -3,7 +3,7 @@ mod certification;
 pub mod constants;
 pub mod http;
 pub mod impls;
-mod interfaces;
+pub mod interfaces;
 mod memory;
 pub mod msg;
 pub mod rewrites;

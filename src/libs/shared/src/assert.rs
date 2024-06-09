@@ -118,3 +118,49 @@ pub fn assert_version(
 
     Ok(())
 }
+
+/// Validates the length of a description field in entities such as documents or assets.
+///
+/// Ensures that the description does not exceed 1024 characters. If the description exceeds
+/// this limit, the function returns an error message.
+///
+/// # Parameters
+///
+/// - `description`: An optional reference to a `String` that represents the description field
+///   of an entity. If the description is `None`, the function considers it valid and does not
+///   perform any length checks.
+///
+/// # Returns
+///
+/// - `Ok(())`: If the description is valid (either `None` or within the length limit).
+/// - `Err(String)`: If the description exceeds 1024 characters, containing an error message.
+///
+/// # Examples
+///
+/// ```
+/// let valid_description = Some(String::from("This is a valid description."));
+/// assert_eq!(assert_description_length(&valid_description), Ok(()));
+///
+/// let invalid_description = Some(String::from("a".repeat(1025)));
+/// assert_eq!(
+///     assert_description_length(&invalid_description),
+///     Err(String::from("Description field should not contains more than 1024 characters."))
+/// );
+///
+/// let none_description: Option<String> = None;
+/// assert_eq!(assert_description_length(&none_description), Ok(()));
+/// ```
+pub fn assert_description_length(description: &Option<String>) -> Result<(), String> {
+    match description {
+        None => (),
+        Some(description) => {
+            if description.len() > 1024 {
+                return Err(
+                    "Description field should not contains more than 1024 characters.".to_string(),
+                );
+            }
+        }
+    }
+
+    Ok(())
+}

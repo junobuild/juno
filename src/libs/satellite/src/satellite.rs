@@ -22,7 +22,7 @@ use crate::random::defer_init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
 };
-use crate::storage::impls::SatelliteContentStore;
+use crate::storage::interfaces::SatelliteContentStore;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
     delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,

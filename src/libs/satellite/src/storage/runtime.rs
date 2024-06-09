@@ -1,5 +1,5 @@
 use crate::memory::STATE;
-use crate::storage::impls::SatelliteContentStore;
+use crate::storage::interfaces::SatelliteContentStore;
 use crate::types::state::State;
 use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::rewrites::rewrite_source_to_path;

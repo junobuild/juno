@@ -2,7 +2,7 @@ use crate::types::config::{
     StorageConfig, StorageConfigIFrame, StorageConfigRawAccess, StorageConfigRedirects,
 };
 use crate::types::interface::{AssetEncodingNoContent, AssetNoContent};
-use crate::types::state::{RuntimeState, StableEncodingChunkKey, StableKey, State};
+use crate::types::state::{RuntimeState, State};
 use crate::types::store::{Asset, AssetEncoding};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
@@ -117,28 +117,4 @@ impl Compare for Asset {
     fn cmp_created_at(&self, other: &Self) -> Ordering {
         self.created_at.cmp(&other.created_at)
     }
-}
-
-impl Storable for StableKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
-        serialize_to_bytes(self)
-    }
-
-    fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        deserialize_from_bytes(bytes)
-    }
-
-    const BOUND: Bound = Bound::Unbounded;
-}
-
-impl Storable for StableEncodingChunkKey {
-    fn to_bytes(&self) -> Cow<[u8]> {
-        serialize_to_bytes(self)
-    }
-
-    fn from_bytes(bytes: Cow<[u8]>) -> Self {
-        deserialize_from_bytes(bytes)
-    }
-
-    const BOUND: Bound = Bound::Unbounded;
 }

@@ -12,7 +12,7 @@ use junobuild_shared::list::list_values;
 use junobuild_shared::types::state::{Controllers, Timestamp, Version};
 
 use crate::rules::assert_stores::is_known_user;
-use crate::storage::impls::{SatelliteAssertOps, SatelliteContentStore, SatelliteInsertOps};
+use crate::storage::interfaces::{SatelliteAssertOps, SatelliteContentStore, SatelliteInsertOps};
 use crate::storage::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::{
     count_assets_heap, count_assets_stable, delete_asset as delete_state_asset,

@@ -8,7 +8,7 @@ use crate::http::utils::{
     build_encodings, build_response_headers, build_response_redirect_headers, streaming_strategy,
 };
 use crate::interfaces::ContentStore;
-use crate::types::config::{StorageConfig, StorageConfigIFrame, StorageConfigRedirect};
+use crate::types::config::{StorageConfigIFrame, StorageConfigRedirect};
 use crate::types::store::Asset;
 use junobuild_collections::types::rules::Memory;
 

@@ -1,4 +1,5 @@
-pub mod impls;
+mod impls;
+pub mod interfaces;
 mod runtime;
 mod state;
 pub mod store;

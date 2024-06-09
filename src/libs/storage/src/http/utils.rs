@@ -1,12 +1,8 @@
-use crate::memory::STATE;
-use crate::certification::cert::{
-    build_asset_certificate_header, build_certified_expression,
-};
+use crate::certification::cert::{build_asset_certificate_header, build_certified_expression};
 use crate::constants::ASSET_ENCODING_NO_COMPRESSION;
 use crate::http::headers::{build_headers, build_redirect_headers};
-use crate::http::types::{
-    CallbackFunc, HeaderField, StreamingCallbackToken, StreamingStrategy,
-};
+use crate::http::types::{CallbackFunc, HeaderField, StreamingCallbackToken, StreamingStrategy};
+use crate::memory::STATE;
 use crate::state::get_config;
 use crate::types::config::StorageConfigIFrame;
 use crate::types::state::StorageRuntimeState;

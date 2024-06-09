@@ -1,6 +1,4 @@
-use crate::certification::constants::{
-    IC_CERTIFICATE_EXPRESSION_HEADER, IC_CERTIFICATE_HEADER,
-};
+use crate::certification::constants::{IC_CERTIFICATE_EXPRESSION_HEADER, IC_CERTIFICATE_HEADER};
 use crate::certification::tree_utils::response_headers_expression;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::http::types::HeaderField;

@@ -1,18 +1,23 @@
 use crate::certification::cert::update_certified_data;
 use crate::certification::types::certified::CertifiedAssetHashes;
+use crate::memory::STATE;
 use crate::rewrites::rewrite_source_to_path;
 use crate::routing::get_routing;
 use crate::types::config::StorageConfig;
 use crate::types::http_request::{Routing, RoutingDefault};
-use crate::types::state::{AssetsStable, Batches, Chunks, RuntimeState, StorageHeapState, StorageRuntimeState};
+use crate::types::state::{
+    AssetsStable, Batches, Chunks, RuntimeState, StorageHeapState, StorageRuntimeState,
+};
 use crate::types::store::{Asset, Batch, Chunk};
 use ic_cdk::api::time;
-use crate::memory::STATE;
 
 /// Certified assets
 
 pub fn init_certified_assets(heap: &StorageHeapState, stable_assets: &AssetsStable) {
-    fn init_asset_hashes(heap: &StorageHeapState, stable_assets: &AssetsStable) -> CertifiedAssetHashes {
+    fn init_asset_hashes(
+        heap: &StorageHeapState,
+        stable_assets: &AssetsStable,
+    ) -> CertifiedAssetHashes {
         let mut asset_hashes = CertifiedAssetHashes::default();
 
         let config = &heap.config;

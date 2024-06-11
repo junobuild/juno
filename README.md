@@ -1,17 +1,14 @@
-[![GitHub release](https://img.shields.io/github/release/junobuild/juno/all?logo=GitHub&style=flat-square&color=7888ff)](https://github.com/junobuild/juno/releases/latest)
-[![GitHub CI Checks Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/checks.yml?logo=github&label=CI%20checks&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/checks.yml)
-[![GitHub CI Tests Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/tests.yml?logo=github&label=CI%20tests&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/tests.yml)
-[![Follow Juno on Twitter](https://img.shields.io/twitter/follow/junobuild?label=Follow%20Juno&style=social)](https://twitter.com/JunoBuild)
-[![Chat on Discord](https://img.shields.io/badge/chat-Discord-lightgrey?logo=Discord&style=flat-square)](https://discord.gg/wHZ57Z2RAG)
-
-<br />
-
 <div align="center" style="display:flex;flex-direction:column;">
   <a href="https://juno.build/">
     <img src="https://github.com/junobuild/juno/raw/main/src/frontend/static/images/juno_logo.png" width="100%" alt="Juno" role="presentation"/>
   </a>
 
   <br />
+  <br />
+
+  [![GitHub release](https://img.shields.io/github/release/junobuild/juno/all?logo=GitHub&style=flat-square&color=7888ff)](https://github.com/junobuild/juno/releases/latest)
+  [![GitHub CI Checks Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/checks.yml?logo=github&label=CI%20checks&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/checks.yml)
+  [![GitHub CI Tests Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/tests.yml?logo=github&label=CI%20tests&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/tests.yml)
 </div>
 
 ## 🚀 Introduction

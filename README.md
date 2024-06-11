@@ -44,6 +44,7 @@ pnpm create juno
 
 When building your project locally or contributing to this repo, ensure you have Docker installed on your machine ([Windows](https://docs.docker.com/desktop/install/windows-install/), [MacOS](https://docs.docker.com/desktop/install/mac-install/), or [Linux](https://docs.docker.com/desktop/install/linux-install/)).
 
+> [!NOTE]
 > For MacBooks with M processors, it is important to use Docker Desktop version 4.25.0 or later, ideally the latest available version.
 
 ## 🧑‍🤝‍🧑 Community

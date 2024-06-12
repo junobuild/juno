@@ -23,7 +23,7 @@ use crate::storage::state::{
     insert_domain as insert_state_domain,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageStore, StorageUpload};
-use crate::storage::well_known::update::update_custom_domains_asset;
+use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::constants::{

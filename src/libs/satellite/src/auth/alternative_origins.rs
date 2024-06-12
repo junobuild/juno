@@ -1,6 +1,6 @@
 use crate::auth::types::state::AuthenticationConfig;
 use crate::storage::store::get_custom_domains_store;
-use crate::storage::well_known::update::{
+use junobuild_storage::well_known::update::{
     delete_alternative_origins_asset, update_alternative_origins_asset,
 };
 use ic_cdk::id;

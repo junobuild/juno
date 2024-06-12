@@ -1,9 +1,13 @@
-use crate::storage::types::state::StorageHeapState;
+use crate::storage::types::state::{BatchStableEncodingChunkKey, BatchStableKey, StorageHeapState};
+use ic_stable_structures::storable::Bound;
+use ic_stable_structures::Storable;
 use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_storage::types::config::{
     StorageConfig, StorageConfigHeaders, StorageConfigRedirects, StorageConfigRewrites,
 };
+use std::borrow::Cow;
 use std::collections::HashMap;
 
 impl Default for StorageHeapState {
@@ -44,4 +48,28 @@ impl Default for StorageHeapState {
             // custom_domains: HashMap::new(),
         }
     }
+}
+
+impl Storable for BatchStableKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for BatchStableEncodingChunkKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
 }

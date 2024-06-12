@@ -30,7 +30,7 @@ pub mod state {
     }
 
     // TODO: extract heap state to storage? including impls?
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageHeapState {
         pub assets: AssetsHeap,
         pub rules: Rules,

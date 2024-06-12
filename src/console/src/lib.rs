@@ -15,6 +15,7 @@ use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::storage::strategy_impls::{StorageStore, StorageUpload};
+use crate::storage::types::state::StorageHeapState;
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
     get_mission_control_release_version, get_orbiter_fee, get_orbiter_release_version,
@@ -57,7 +58,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
-use crate::storage::types::state::StorageHeapState;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -75,7 +75,7 @@ fn init() {
         controllers: init_controllers(&[manager]),
         rates: Rates::default(),
         fees: Fees::default(),
-        storage: Some(StorageHeapState::default())
+        storage: Some(StorageHeapState::default()),
     };
 
     STATE.with(|state| {

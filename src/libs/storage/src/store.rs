@@ -143,7 +143,7 @@ pub fn commit_batch(
     caller: Principal,
     controllers: &Controllers,
     commit_batch: CommitBatch,
-    assertions: Option<&impl StorageAssertionsStrategy>,
+    assertions: &impl StorageAssertionsStrategy,
     storage_store: &impl StorageStoreStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
@@ -209,7 +209,7 @@ fn secure_commit_chunks(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     batch: &Batch,
-    assertions: Option<&impl StorageAssertionsStrategy>,
+    assertions: &impl StorageAssertionsStrategy,
     storage_store: &impl StorageStoreStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
@@ -265,7 +265,7 @@ fn secure_commit_chunks_update(
     batch: &Batch,
     rule: Rule,
     current: Asset,
-    assertions: Option<&impl StorageAssertionsStrategy>,
+    assertions: &impl StorageAssertionsStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
@@ -294,7 +294,7 @@ fn commit_chunks(
     batch: &Batch,
     rule: &Rule,
     current: &Option<Asset>,
-    assertions: Option<&impl StorageAssertionsStrategy>,
+    assertions: &impl StorageAssertionsStrategy,
     storage_upload: &impl StorageUploadStrategy,
 ) -> Result<Asset, String> {
     let now = time();
@@ -304,16 +304,14 @@ fn commit_chunks(
         return Err("Batch did not complete in time. Chunks cannot be committed.".to_string());
     }
 
-    if let Some(ops) = assertions {
-        ops.invoke_assert_upload_asset(
-            &caller,
-            &AssetAssertUpload {
-                current: current.clone(),
-                batch: batch.clone(),
-                commit_batch: commit_batch.clone(),
-            },
-        )?;
-    }
+    assertions.invoke_assert_upload_asset(
+        &caller,
+        &AssetAssertUpload {
+            current: current.clone(),
+            batch: batch.clone(),
+            commit_batch: commit_batch.clone(),
+        },
+    )?;
 
     let CommitBatch {
         chunk_ids,
@@ -404,6 +402,7 @@ fn commit_chunks(
     );
 
     storage_upload.insert_asset(
+        &batch_id,
         &batch.clone().key.collection,
         &batch.clone().key.full_path,
         &asset,

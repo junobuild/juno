@@ -1,5 +1,4 @@
 use crate::store::heap::get_controllers;
-use crate::STATE;
 use candid::Principal;
 use ic_cdk::caller;
 use junobuild_shared::controllers::is_admin_controller;

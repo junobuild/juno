@@ -3,7 +3,6 @@ use crate::types::state::{
     Payments, Rate, RateConfig, Wasm,
 };
 use crate::STATE;
-use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::{
@@ -12,8 +11,6 @@ use junobuild_shared::controllers::{
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
-use junobuild_storage::store::create_batch;
-use junobuild_storage::types::interface::InitAssetKey;
 use std::cmp::min;
 
 /// Mission control centers
@@ -308,13 +305,4 @@ fn set_orbiter_fee(fee: &Tokens, state: &mut Fees) {
         fee: *fee,
         updated_at: time(),
     };
-}
-
-///
-/// Upload batch and chunks
-///
-
-pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<u128, String> {
-    let controllers = get_controllers();
-    create_batch(caller, &controllers, init)
 }

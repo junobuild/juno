@@ -1,7 +1,7 @@
-use crate::get_content_chunks_store;
-use crate::hooks::invoke_assert_upload_asset;
-use crate::storage::state::{get_asset, get_config, get_rule, insert_asset, insert_asset_encoding};
-use crate::storage::store::get_public_asset_store;
+use crate::storage::state::{
+    get_config, get_content_chunks, get_rule, insert_asset, insert_asset_encoding,
+};
+use crate::storage::store::get_public_asset;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -17,10 +17,11 @@ pub struct StorageAssertions;
 impl StorageAssertionsStrategy for StorageAssertions {
     fn invoke_assert_upload_asset(
         &self,
-        caller: &Principal,
-        asset: &AssetAssertUpload,
+        _caller: &Principal,
+        _asset: &AssetAssertUpload,
     ) -> Result<(), String> {
-        invoke_assert_upload_asset(caller, asset)
+        // No pre-assertions on the console
+        Ok(())
     }
 }
 
@@ -31,9 +32,9 @@ impl StorageStoreStrategy for StorageStore {
         &self,
         encoding: &AssetEncoding,
         chunk_index: usize,
-        memory: &Memory,
+        _memory: &Memory,
     ) -> Option<Blob> {
-        get_content_chunks_store(encoding, chunk_index, memory)
+        get_content_chunks(encoding, chunk_index)
     }
 
     fn get_public_asset(
@@ -41,7 +42,7 @@ impl StorageStoreStrategy for StorageStore {
         full_path: FullPath,
         token: Option<String>,
     ) -> Option<(Asset, Memory)> {
-        get_public_asset_store(full_path, token)
+        get_public_asset(full_path, token)
     }
 
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String> {
@@ -58,11 +59,12 @@ pub struct StorageUpload;
 impl StorageUploadStrategy for StorageUpload {
     fn get_asset(
         &self,
-        collection: &CollectionKey,
-        full_path: &FullPath,
-        rule: &Rule,
+        _collection: &CollectionKey,
+        _full_path: &FullPath,
+        _rule: &Rule,
     ) -> Option<Asset> {
-        get_asset(collection, full_path, rule)
+        // Function unused in case of the console
+        None
     }
 
     fn insert_asset_encoding(
@@ -71,19 +73,19 @@ impl StorageUploadStrategy for StorageUpload {
         encoding_type: &str,
         encoding: &AssetEncoding,
         asset: &mut Asset,
-        rule: &Rule,
+        _rule: &Rule,
     ) {
-        insert_asset_encoding(full_path, encoding_type, encoding, asset, rule);
+        insert_asset_encoding(full_path, encoding_type, encoding, asset);
     }
 
     fn insert_asset(
         &self,
-        _batch_id: &BatchId,
+        batch_id: &BatchId,
         collection: &CollectionKey,
         full_path: &FullPath,
         asset: &Asset,
-        rule: &Rule,
+        _rule: &Rule,
     ) {
-        insert_asset(collection, full_path, asset, rule);
+        insert_asset(batch_id, collection, full_path, asset);
     }
 }

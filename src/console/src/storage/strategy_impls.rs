@@ -8,6 +8,16 @@ use junobuild_storage::types::store::{Asset, AssetEncoding};
 pub struct StorageUpload;
 
 impl StorageUploadStrategy for StorageUpload {
+    fn get_asset(
+        &self,
+        _collection: &CollectionKey,
+        _full_path: &FullPath,
+        _rule: &Rule,
+    ) -> Option<Asset> {
+        // Function unused in case of the console
+        None
+    }
+
     fn insert_asset_encoding(
         &self,
         full_path: &FullPath,

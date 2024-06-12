@@ -30,9 +30,7 @@ pub trait StorageStateStrategy {
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String>;
 
     fn get_config(&self) -> StorageConfig;
-}
 
-pub trait StorageStoreStrategy {
     fn get_asset(
         &self,
         collection: &CollectionKey,

@@ -14,7 +14,7 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
-use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageStore};
+use crate::storage::strategy_impls::{StorageAssertions, StorageState};
 use crate::storage::types::state::StorageHeapState;
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
@@ -366,7 +366,6 @@ fn commit_asset_upload(commit: CommitBatch) {
         commit,
         &StorageAssertions,
         &StorageState,
-        &StorageStore,
     )
     .unwrap_or_else(|e| trap(&e));
 }

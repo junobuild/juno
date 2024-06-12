@@ -340,9 +340,9 @@ pub fn http_request(
         return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
     }
 
-    let storage_store = StorageState;
+    let storage_state = StorageState;
 
-    let result = get_routing(url, &req_headers, true, &storage_store);
+    let result = get_routing(url, &req_headers, true, &storage_state);
 
     match result {
         Ok(routing) => match routing {
@@ -353,7 +353,7 @@ pub fn http_request(
                 asset,
                 None,
                 RESPONSE_STATUS_CODE_200,
-                &storage_store,
+                &storage_state,
             ),
             Routing::Rewrite(RoutingRewrite {
                 url,
@@ -367,7 +367,7 @@ pub fn http_request(
                 asset,
                 Some(source),
                 status_code,
-                &storage_store,
+                &storage_state,
             ),
             Routing::Redirect(RoutingRedirect {
                 url,

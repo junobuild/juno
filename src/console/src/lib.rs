@@ -57,6 +57,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
+use crate::storage::types::state::StorageHeapState;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -74,6 +75,7 @@ fn init() {
         controllers: init_controllers(&[manager]),
         rates: Rates::default(),
         fees: Fees::default(),
+        storage: Some(StorageHeapState::default())
     };
 
     STATE.with(|state| {

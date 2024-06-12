@@ -56,6 +56,7 @@ use junobuild_storage::types::interface::{
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use junobuild_storage::strategies::StorageAssertionsStrategy;
 use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
 
@@ -364,7 +365,7 @@ fn commit_asset_upload(commit: CommitBatch) {
         caller,
         &controllers,
         commit,
-        None,
+        None::<&impl StorageAssertionsStrategy>,
         &StorageStore,
         &StorageUpload,
     )

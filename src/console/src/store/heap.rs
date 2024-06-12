@@ -3,7 +3,6 @@ use crate::types::state::{
     Payments, Rate, RateConfig, Wasm,
 };
 use crate::STATE;
-use candid::Principal;
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::{

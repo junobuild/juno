@@ -18,7 +18,7 @@ pub mod state {
     pub type BatchId = u128;
     pub type ChunkId = u128;
 
-    #[derive(Serialize, Deserialize)]
+    #[derive(Default, Serialize, Deserialize)]
     pub struct State {
         // Unstable state: State that resides only on the heap, that’s lost after an upgrade.
         #[serde(skip, default)]

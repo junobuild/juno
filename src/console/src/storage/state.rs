@@ -61,7 +61,7 @@ fn stable_key(
     full_path: &FullPath,
 ) -> BatchStableKey {
     BatchStableKey {
-        batch_id: batch_id.clone(),
+        batch_id: *batch_id,
         collection: collection.clone(),
         full_path: full_path.clone(),
     }

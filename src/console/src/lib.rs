@@ -50,7 +50,6 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
-use junobuild_storage::strategies::StorageAssertionsStrategy;
 use junobuild_storage::types::interface::{
     CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };

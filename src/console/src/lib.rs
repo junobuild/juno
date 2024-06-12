@@ -14,16 +14,7 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
-use crate::store::heap::{
-    add_invitation_code as add_invitation_code_store, create_batch_store, delete_controllers,
-    get_mission_control_release_version, get_orbiter_fee, get_orbiter_release_version,
-    get_satellite_fee, get_satellite_release_version, list_mission_controls_heap,
-    list_payments_heap, load_mission_control_release, load_orbiter_release, load_satellite_release,
-    reset_mission_control_release, reset_orbiter_release, reset_satellite_release,
-    set_controllers as set_controllers_store, set_create_orbiter_fee, set_create_satellite_fee,
-    update_mission_controls_rate_config, update_orbiters_rate_config,
-    update_satellites_rate_config,
-};
+use crate::store::heap::{add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers, get_mission_control_release_version, get_orbiter_fee, get_orbiter_release_version, get_satellite_fee, get_satellite_release_version, list_mission_controls_heap, list_payments_heap, load_mission_control_release, load_orbiter_release, load_satellite_release, reset_mission_control_release, reset_orbiter_release, reset_satellite_release, set_controllers as set_controllers_store, set_create_orbiter_fee, set_create_satellite_fee, update_mission_controls_rate_config, update_orbiters_rate_config, update_satellites_rate_config};
 use crate::store::stable::{
     add_credits as add_credits_store, get_credits as get_credits_store,
     get_existing_mission_control, get_mission_control, has_credits,
@@ -45,17 +36,16 @@ use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
-use junobuild_shared::types::state::UserId;
+use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;
-use junobuild_storage::store::create_chunk;
-use junobuild_storage::types::interface::{
-    InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
-};
+use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
+use junobuild_storage::types::interface::{CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult};
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
+use crate::storage::strategy_impls::StorageUpload;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -328,7 +318,10 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
 #[update(guard = "caller_is_admin_controller")]
 fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
     let caller = caller();
-    let result = create_batch_store(caller, init);
+
+    let controllers = get_controllers();
+
+    let result = create_batch(caller, &controllers, init);
 
     match result {
         Ok(batch_id) => InitUploadResult { batch_id },
@@ -346,6 +339,22 @@ fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
         Ok(chunk_id) => UploadChunkResult { chunk_id },
         Err(error) => trap(error),
     }
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn commit_asset_upload(commit: CommitBatch) {
+    let caller = caller();
+
+    let controllers: Controllers = get_controllers();
+
+    commit_batch_storage(
+        caller,
+        &controllers,
+        commit,
+        None,
+        &StorageStore,
+        &StorageUpload,
+    ).unwrap_or_else(|e| trap(&e));
 }
 
 // Generate did files

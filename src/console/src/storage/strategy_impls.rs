@@ -1,11 +1,13 @@
-use candid::Principal;
 use crate::storage::state::{
     get_config, get_content_chunks, get_rule, insert_asset, insert_asset_encoding,
 };
 use crate::storage::store::get_public_asset;
+use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
-use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageStoreStrategy, StorageUploadStrategy};
+use junobuild_storage::strategies::{
+    StorageAssertionsStrategy, StorageStoreStrategy, StorageUploadStrategy,
+};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};

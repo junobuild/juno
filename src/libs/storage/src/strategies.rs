@@ -13,7 +13,7 @@ pub trait StorageAssertionsStrategy {
     ) -> Result<(), String>;
 }
 
-pub trait StorageStoreStrategy {
+pub trait StorageStateStrategy {
     fn get_content_chunks(
         &self,
         encoding: &AssetEncoding,
@@ -32,7 +32,7 @@ pub trait StorageStoreStrategy {
     fn get_config(&self) -> StorageConfig;
 }
 
-pub trait StorageUploadStrategy {
+pub trait StorageStoreStrategy {
     fn get_asset(
         &self,
         collection: &CollectionKey,

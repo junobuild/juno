@@ -7,7 +7,7 @@ use crate::http::types::{HeaderField, HttpResponse, StatusCode};
 use crate::http::utils::{
     build_encodings, build_response_headers, build_response_redirect_headers, streaming_strategy,
 };
-use crate::strategies::StorageStoreStrategy;
+use crate::strategies::StorageStateStrategy;
 use crate::types::config::{StorageConfigIFrame, StorageConfigRedirect};
 use crate::types::store::Asset;
 use junobuild_collections::types::rules::Memory;
@@ -19,7 +19,7 @@ pub fn build_asset_response(
     asset: Option<(Asset, Memory)>,
     rewrite_source: Option<String>,
     status_code: StatusCode,
-    storage_store: &impl StorageStoreStrategy,
+    storage_store: &impl StorageStateStrategy,
 ) -> HttpResponse {
     match asset {
         Some((asset, memory)) => {

@@ -9,7 +9,7 @@ use crate::runtime::{
     get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
     insert_chunk as insert_runtime_chunk, update_certified_asset as update_runtime_certified_asset,
 };
-use crate::strategies::{StorageAssertionsStrategy, StorageStoreStrategy, StorageUploadStrategy};
+use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy, StorageStoreStrategy};
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
 use crate::types::state::{BatchId, ChunkId, FullPath};
 use crate::types::store::{
@@ -144,8 +144,8 @@ pub fn commit_batch(
     controllers: &Controllers,
     commit_batch: CommitBatch,
     assertions: &impl StorageAssertionsStrategy,
-    storage_store: &impl StorageStoreStrategy,
-    storage_upload: &impl StorageUploadStrategy,
+    storage_store: &impl StorageStateStrategy,
+    storage_upload: &impl StorageStoreStrategy,
 ) -> Result<Asset, String> {
     let batch = get_runtime_batch(&commit_batch.batch_id);
 
@@ -210,8 +210,8 @@ fn secure_commit_chunks(
     commit_batch: CommitBatch,
     batch: &Batch,
     assertions: &impl StorageAssertionsStrategy,
-    storage_store: &impl StorageStoreStrategy,
-    storage_upload: &impl StorageUploadStrategy,
+    storage_store: &impl StorageStateStrategy,
+    storage_upload: &impl StorageStoreStrategy,
 ) -> Result<Asset, String> {
     // The one that started the batch should be the one that commits it
     if principal_not_equal(caller, batch.key.owner) {
@@ -266,7 +266,7 @@ fn secure_commit_chunks_update(
     rule: Rule,
     current: Asset,
     assertions: &impl StorageAssertionsStrategy,
-    storage_upload: &impl StorageUploadStrategy,
+    storage_upload: &impl StorageStoreStrategy,
 ) -> Result<Asset, String> {
     // The collection of the existing asset should be the same as the one we commit
     if batch.key.collection != current.key.collection {
@@ -295,7 +295,7 @@ fn commit_chunks(
     rule: &Rule,
     current: &Option<Asset>,
     assertions: &impl StorageAssertionsStrategy,
-    storage_upload: &impl StorageUploadStrategy,
+    storage_upload: &impl StorageStoreStrategy,
 ) -> Result<Asset, String> {
     let now = time();
 

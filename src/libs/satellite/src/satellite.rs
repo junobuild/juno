@@ -29,7 +29,7 @@ use crate::storage::store::{
     get_public_asset_store, list_assets_store, set_config_store as set_storage_config,
     set_domain_store,
 };
-use crate::storage::strategy_impls::StorageStore;
+use crate::storage::strategy_impls::StorageState;
 use crate::storage::upgrade::defer_init_certified_assets;
 use crate::types::interface::{Config, RulesType};
 use crate::types::state::{HeapState, RuntimeState, State};
@@ -340,7 +340,7 @@ pub fn http_request(
         return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
     }
 
-    let storage_store = StorageStore;
+    let storage_store = StorageState;
 
     let result = get_routing(url, &req_headers, true, &storage_store);
 

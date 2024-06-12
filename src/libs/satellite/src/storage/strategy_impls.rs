@@ -6,7 +6,7 @@ use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_storage::strategies::{
-    StorageAssertionsStrategy, StorageStoreStrategy, StorageUploadStrategy,
+    StorageAssertionsStrategy, StorageStateStrategy, StorageStoreStrategy,
 };
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{BatchId, FullPath};
@@ -24,9 +24,9 @@ impl StorageAssertionsStrategy for StorageAssertions {
     }
 }
 
-pub struct StorageStore;
+pub struct StorageState;
 
-impl StorageStoreStrategy for StorageStore {
+impl StorageStateStrategy for StorageState {
     fn get_content_chunks(
         &self,
         encoding: &AssetEncoding,
@@ -53,9 +53,9 @@ impl StorageStoreStrategy for StorageStore {
     }
 }
 
-pub struct StorageUpload;
+pub struct StorageStore;
 
-impl StorageUploadStrategy for StorageUpload {
+impl StorageStoreStrategy for StorageStore {
     fn get_asset(
         &self,
         collection: &CollectionKey,

@@ -4,7 +4,7 @@ use crate::constants::{
 };
 use crate::http::types::HeaderField;
 use crate::rewrites::{is_root_path, redirect_url, rewrite_url};
-use crate::strategies::StorageStoreStrategy;
+use crate::strategies::StorageStateStrategy;
 use crate::types::config::StorageConfigRawAccess;
 use crate::types::http_request::{
     MapUrl, Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
@@ -19,7 +19,7 @@ pub fn get_routing(
     url: String,
     req_headers: &[HeaderField],
     include_alternative_routing: bool,
-    storage_store: &impl StorageStoreStrategy,
+    storage_store: &impl StorageStateStrategy,
 ) -> Result<Routing, &'static str> {
     if url.is_empty() {
         return Err("No url provided.");
@@ -109,7 +109,7 @@ pub fn get_routing(
 fn get_alternative_asset(
     path: &String,
     token: &Option<String>,
-    storage_store: &impl StorageStoreStrategy,
+    storage_store: &impl StorageStateStrategy,
 ) -> Option<(Asset, Memory)> {
     let alternative_paths = map_alternative_paths(path);
 
@@ -132,7 +132,7 @@ fn get_alternative_asset(
 fn get_routing_rewrite(
     path: &FullPath,
     token: &Option<String>,
-    storage_store: &impl StorageStoreStrategy,
+    storage_store: &impl StorageStateStrategy,
 ) -> Option<Routing> {
     // If we have found no asset, we try a rewrite rule
     // This is for example useful for single-page app to redirect all urls to /index.html
@@ -183,7 +183,7 @@ fn get_routing_rewrite(
 
 fn get_routing_root_rewrite(
     path: &FullPath,
-    storage_store: &impl StorageStoreStrategy,
+    storage_store: &impl StorageStateStrategy,
 ) -> Option<Routing> {
     if !is_root_path(path) {
         // Search for potential /404.html to rewrite to
@@ -224,7 +224,7 @@ fn get_routing_root_rewrite(
 
 fn get_routing_redirect(
     path: &FullPath,
-    storage_store: &impl StorageStoreStrategy,
+    storage_store: &impl StorageStateStrategy,
 ) -> Option<Routing> {
     let config = storage_store.get_config();
     let redirect = redirect_url(path, &config);
@@ -246,7 +246,7 @@ fn get_routing_redirect(
 fn get_routing_redirect_raw(
     url: &String,
     req_headers: &[HeaderField],
-    storage_store: &impl StorageStoreStrategy,
+    storage_store: &impl StorageStateStrategy,
 ) -> Option<Routing> {
     let raw = req_headers.iter().any(|HeaderField(key, value)| {
         key.eq_ignore_ascii_case("Host") && RAW_DOMAINS.iter().any(|domain| value.contains(domain))

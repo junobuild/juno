@@ -23,7 +23,6 @@ use crate::storage::state::{
     insert_domain as insert_state_domain,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageStore, StorageUpload};
-use crate::storage::types::domain::{CustomDomain, CustomDomains};
 use crate::storage::well_known::update::update_custom_domains_asset;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
@@ -37,6 +36,7 @@ use junobuild_storage::runtime::{
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
 use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use junobuild_storage::types::state::{BatchId, ChunkId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};

@@ -261,3 +261,21 @@ pub mod http_request {
         pub iframe: StorageConfigIFrame,
     }
 }
+
+pub mod domain {
+    use candid::CandidType;
+    use junobuild_shared::types::core::DomainName;
+    use junobuild_shared::types::state::{Timestamp, Version};
+    use serde::{Deserialize, Serialize};
+    use std::collections::HashMap;
+
+    pub type CustomDomains = HashMap<DomainName, CustomDomain>;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CustomDomain {
+        pub bn_id: Option<String>,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+        pub version: Option<Version>,
+    }
+}

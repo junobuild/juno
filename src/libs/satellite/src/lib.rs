@@ -48,7 +48,6 @@ pub use crate::logs::types::logs::{Log, LogLevel};
 pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };
-use crate::storage::types::domain::CustomDomains;
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
     AssertUploadAssetContext, HookContext, OnDeleteAssetContext, OnDeleteDocContext,
@@ -60,6 +59,7 @@ pub use junobuild_shared::types::core::{Blob, CollectionKey, Key};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
+use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::state::FullPath;
 
 ///

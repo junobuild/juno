@@ -1,5 +1,4 @@
 use crate::memory::STATE;
-use crate::storage::types::domain::{CustomDomain, CustomDomains};
 use crate::storage::types::state::{
     AssetsHeap, AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
     StorageHeapState,
@@ -11,6 +10,7 @@ use junobuild_shared::list::range_collection_end;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;

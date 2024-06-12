@@ -1,13 +1,27 @@
+use candid::Principal;
 use crate::storage::state::{
     get_config, get_content_chunks, get_rule, insert_asset, insert_asset_encoding,
 };
 use crate::storage::store::get_public_asset;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
-use junobuild_storage::strategies::{StorageStoreStrategy, StorageUploadStrategy};
+use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageStoreStrategy, StorageUploadStrategy};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{BatchId, FullPath};
-use junobuild_storage::types::store::{Asset, AssetEncoding};
+use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
+
+pub struct StorageAssertions;
+
+impl StorageAssertionsStrategy for StorageAssertions {
+    fn invoke_assert_upload_asset(
+        &self,
+        _caller: &Principal,
+        _asset: &AssetAssertUpload,
+    ) -> Result<(), String> {
+        // No pre-assertions on the console
+        Ok(())
+    }
+}
 
 pub struct StorageStore;
 

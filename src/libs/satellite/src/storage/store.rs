@@ -457,7 +457,7 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
         caller,
         &controllers,
         commit_batch,
-        Some(&StorageAssertions),
+        &StorageAssertions,
         &StorageStore,
         &StorageUpload,
     )

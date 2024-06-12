@@ -39,8 +39,7 @@ impl Default for StorageHeapState {
                 iframe: None,
                 raw_access: None,
             },
-            // TODO: custom domains
-            // custom_domains: HashMap::new(),
+            custom_domains: HashMap::new(),
         }
     }
 }

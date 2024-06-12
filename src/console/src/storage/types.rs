@@ -5,6 +5,7 @@ pub mod state {
     use junobuild_shared::types::core::{Blob, CollectionKey};
     use junobuild_shared::types::memory::Memory;
     use junobuild_storage::types::config::StorageConfig;
+    use junobuild_storage::types::domain::CustomDomains;
     use junobuild_storage::types::state::{BatchId, FullPath};
     use junobuild_storage::types::store::{Asset, EncodingType};
     use serde::Serialize;
@@ -35,6 +36,6 @@ pub mod state {
         pub assets: AssetsHeap,
         pub rules: Rules,
         pub config: StorageConfig,
-        // TODO: custom domain
+        pub custom_domains: CustomDomains,
     }
 }

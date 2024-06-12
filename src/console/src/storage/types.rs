@@ -1,6 +1,7 @@
 pub mod state {
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_collections::types::rules::Rules;
     use junobuild_shared::types::core::{Blob, CollectionKey};
     use junobuild_shared::types::memory::Memory;
     use junobuild_storage::types::config::StorageConfig;
@@ -28,9 +29,11 @@ pub mod state {
         pub chunk_index: usize,
     }
 
+    // TODO: extract heap state to storage? including impls?
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageHeapState {
         pub assets: AssetsHeap,
+        pub rules: Rules,
         pub config: StorageConfig,
         // TODO: custom domain
     }

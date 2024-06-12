@@ -1,9 +1,42 @@
-use crate::storage::state::{insert_asset, insert_asset_encoding};
-use junobuild_collections::types::rules::Rule;
-use junobuild_shared::types::core::CollectionKey;
-use junobuild_storage::strategies::StorageUploadStrategy;
+use crate::storage::state::{
+    get_config, get_content_chunks, get_rule, insert_asset, insert_asset_encoding,
+};
+use crate::storage::store::get_public_asset;
+use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_shared::types::core::{Blob, CollectionKey};
+use junobuild_storage::strategies::{StorageStoreStrategy, StorageUploadStrategy};
+use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
+
+pub struct StorageStore;
+
+impl StorageStoreStrategy for StorageStore {
+    fn get_content_chunks(
+        &self,
+        encoding: &AssetEncoding,
+        chunk_index: usize,
+        _memory: &Memory,
+    ) -> Option<Blob> {
+        get_content_chunks(encoding, chunk_index)
+    }
+
+    fn get_public_asset(
+        &self,
+        full_path: FullPath,
+        token: Option<String>,
+    ) -> Option<(Asset, Memory)> {
+        get_public_asset(full_path, token)
+    }
+
+    fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String> {
+        get_rule(collection)
+    }
+
+    fn get_config(&self) -> StorageConfig {
+        get_config()
+    }
+}
 
 pub struct StorageUpload;
 

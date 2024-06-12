@@ -10,33 +10,28 @@ use junobuild_storage::types::config::{
 use std::borrow::Cow;
 use std::collections::HashMap;
 
+// TODO: basically same as in satellite
 impl Default for StorageHeapState {
     fn default() -> Self {
         let now = 0; // Replace with actual timestamp logic
         StorageHeapState {
             assets: HashMap::new(),
-            rules: HashMap::from(
-                DEFAULT_ASSETS_COLLECTIONS
-                    .map(|(collection, rule)| {
-                        (
-                            collection.to_owned(),
-                            Rule {
-                                read: rule.read,
-                                write: rule.write,
-                                memory: Some(rule.memory.unwrap_or(Memory::Heap)),
-                                mutable_permissions: Some(
-                                    rule.mutable_permissions.unwrap_or(false),
-                                ),
-                                max_size: rule.max_size,
-                                max_capacity: rule.max_capacity,
-                                created_at: now,
-                                updated_at: now,
-                                version: None,
-                            },
-                        )
-                    })
-                    .collect(),
-            ),
+            rules: HashMap::from(DEFAULT_ASSETS_COLLECTIONS.map(|(collection, rule)| {
+                (
+                    collection.to_owned(),
+                    Rule {
+                        read: rule.read,
+                        write: rule.write,
+                        memory: Some(rule.memory.unwrap_or(Memory::Heap)),
+                        mutable_permissions: Some(rule.mutable_permissions.unwrap_or(false)),
+                        max_size: rule.max_size,
+                        max_capacity: rule.max_capacity,
+                        created_at: now,
+                        updated_at: now,
+                        version: None,
+                    },
+                )
+            })),
             config: StorageConfig {
                 headers: StorageConfigHeaders::default(),
                 rewrites: StorageConfigRewrites::default(),
@@ -44,7 +39,7 @@ impl Default for StorageHeapState {
                 iframe: None,
                 raw_access: None,
             },
-            // TODO: custom_domains
+            // TODO: custom domains
             // custom_domains: HashMap::new(),
         }
     }

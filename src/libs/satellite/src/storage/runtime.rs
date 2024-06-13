@@ -1,5 +1,5 @@
 use crate::memory::STATE;
-use crate::storage::strategy_impls::StorageStore;
+use crate::storage::strategy_impls::StorageState;
 use crate::types::state::State;
 use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::rewrites::rewrite_source_to_path;
@@ -25,7 +25,7 @@ pub fn init_certified_assets() {
 
         for (source, destination) in state.heap.storage.config.rewrites.clone() {
             if let Ok(Routing::Default(RoutingDefault { url: _, asset })) =
-                get_routing(destination, &Vec::new(), false, &StorageStore)
+                get_routing(destination, &Vec::new(), false, &StorageState)
             {
                 let src_path = rewrite_source_to_path(&source);
 

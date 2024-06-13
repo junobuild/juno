@@ -9,6 +9,8 @@ use junobuild_storage::types::http_request::{Routing, RoutingDefault};
 
 /// Certified assets
 
+// TODO: quite similar as satellite
+
 pub fn init_certified_assets() {
     fn init_asset_hashes(state: &State) -> CertifiedAssetHashes {
         let mut asset_hashes = CertifiedAssetHashes::default();

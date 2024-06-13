@@ -4,21 +4,45 @@ use crate::storage::types::state::{
 };
 use crate::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
-use junobuild_collections::types::rules::Rule;
+use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::serializers::serialize_to_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 
-pub fn insert_asset_encoding(
+pub fn get_batch_asset(
+    batch_id: &BatchId,
+    collection: &CollectionKey,
+    full_path: &FullPath,
+) -> Option<Asset> {
+    STATE.with(|state| {
+        get_batch_asset_impl(
+            batch_id,
+            collection,
+            full_path,
+            &state.borrow().stable.batch_assets,
+        )
+    })
+}
+
+fn get_batch_asset_impl(
+    batch_id: &BatchId,
+    collection: &CollectionKey,
+    full_path: &FullPath,
+    assets: &BatchAssetsStable,
+) -> Option<Asset> {
+    assets.get(&stable_key(batch_id, collection, full_path))
+}
+
+pub fn insert_batch_asset_encoding(
     full_path: &FullPath,
     encoding_type: &str,
     encoding: &AssetEncoding,
     asset: &mut Asset,
 ) {
     STATE.with(|state| {
-        insert_asset_encoding_stable(
+        insert_batch_asset_encoding_impl(
             full_path,
             encoding_type,
             encoding,
@@ -28,14 +52,14 @@ pub fn insert_asset_encoding(
     })
 }
 
-pub fn insert_asset(
+pub fn insert_batch_asset(
     batch_id: &BatchId,
     collection: &CollectionKey,
     full_path: &FullPath,
     asset: &Asset,
 ) {
     STATE.with(|state| {
-        insert_asset_stable(
+        insert_batch_asset_impl(
             batch_id,
             collection,
             full_path,
@@ -45,7 +69,7 @@ pub fn insert_asset(
     })
 }
 
-fn insert_asset_stable(
+fn insert_batch_asset_impl(
     batch_id: &BatchId,
     collection: &CollectionKey,
     full_path: &FullPath,
@@ -68,7 +92,7 @@ fn stable_key(
 }
 
 // TODO: duplicates Satellite insert_asset_encoding_stable
-fn insert_asset_encoding_stable(
+fn insert_batch_asset_encoding_impl(
     full_path: &FullPath,
     encoding_type: &str,
     encoding: &AssetEncoding,

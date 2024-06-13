@@ -53,6 +53,7 @@ pub trait StorageUploadStrategy {
 
     fn get_asset(
         &self,
+        batch_id: &BatchId,
         collection: &CollectionKey,
         full_path: &FullPath,
         rule: &Rule,

@@ -1,5 +1,6 @@
 use crate::storage::state::{
-    get_config, get_content_chunks, get_rule, insert_asset, insert_asset_encoding,
+    get_asset, get_batch_asset, get_config, get_content_chunks, get_rule, insert_batch_asset,
+    insert_batch_asset_encoding,
 };
 use crate::storage::store::get_public_asset;
 use candid::Principal;
@@ -65,7 +66,7 @@ impl StorageUploadStrategy for StorageUpload {
         asset: &mut Asset,
         _rule: &Rule,
     ) {
-        insert_asset_encoding(full_path, encoding_type, encoding, asset);
+        insert_batch_asset_encoding(full_path, encoding_type, encoding, asset);
     }
 
     fn insert_asset(
@@ -76,16 +77,21 @@ impl StorageUploadStrategy for StorageUpload {
         asset: &Asset,
         _rule: &Rule,
     ) {
-        insert_asset(batch_id, collection, full_path, asset);
+        insert_batch_asset(batch_id, collection, full_path, asset);
     }
 
     fn get_asset(
         &self,
-        _collection: &CollectionKey,
-        _full_path: &FullPath,
+        batch_id: &BatchId,
+        collection: &CollectionKey,
+        full_path: &FullPath,
         _rule: &Rule,
     ) -> Option<Asset> {
-        // Function unused in case of the console
-        None
+        let asset = get_batch_asset(batch_id, collection, full_path);
+
+        match asset {
+            Some(asset) => Some(asset),
+            None => get_asset(full_path),
+        }
     }
 }

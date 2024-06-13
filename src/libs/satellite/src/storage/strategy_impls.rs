@@ -79,6 +79,7 @@ impl StorageUploadStrategy for StorageUpload {
 
     fn get_asset(
         &self,
+        _batch_id: &BatchId,
         collection: &CollectionKey,
         full_path: &FullPath,
         rule: &Rule,

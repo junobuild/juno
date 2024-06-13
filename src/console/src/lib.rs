@@ -14,7 +14,7 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
-use crate::storage::store::get_custom_domains_store;
+use crate::storage::store::{get_config_store, get_custom_domains_store, set_config_store};
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::storage::types::state::StorageHeapState;
 use crate::store::heap::{
@@ -31,7 +31,7 @@ use crate::store::stable::{
     add_credits as add_credits_store, get_credits as get_credits_store,
     get_existing_mission_control, get_mission_control, has_credits,
 };
-use crate::types::interface::{LoadRelease, ReleasesVersion, Segment};
+use crate::types::interface::{Config, LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases,
     State,
@@ -372,6 +372,21 @@ fn commit_asset_upload(commit: CommitBatch) {
         &StorageUpload,
     )
     .unwrap_or_else(|e| trap(&e));
+}
+
+///
+/// Config
+///
+
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_config(config: Config) {
+    set_config_store(&config.storage);
+}
+
+#[update(guard = "caller_is_admin_controller")]
+pub fn get_config() -> Config {
+    let storage = get_config_store();
+    Config { storage }
 }
 
 ///

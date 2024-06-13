@@ -123,6 +123,7 @@ pub mod state {
 pub mod interface {
     use candid::CandidType;
     use junobuild_shared::types::cronjob::CronJobs;
+    use junobuild_storage::types::config::StorageConfig;
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
@@ -148,6 +149,11 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct CronJobsArgs {
         pub cron_jobs: CronJobs,
+    }
+
+    #[derive(CandidType, Deserialize)]
+    pub struct Config {
+        pub storage: StorageConfig,
     }
 }
 

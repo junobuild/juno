@@ -4,7 +4,8 @@ use crate::storage::types::state::{
 use crate::STATE;
 use junobuild_shared::types::core::CollectionKey;
 use junobuild_storage::stable_utils::insert_asset_encoding_stable;
-use junobuild_storage::types::state::{BatchId, FullPath};
+use junobuild_storage::types::runtime_state::BatchId;
+use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 
 pub fn get_batch_asset(

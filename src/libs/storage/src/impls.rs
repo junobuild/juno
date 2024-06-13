@@ -1,16 +1,54 @@
 use crate::types::config::{
-    StorageConfig, StorageConfigIFrame, StorageConfigRawAccess, StorageConfigRedirects,
+    StorageConfig, StorageConfigHeaders, StorageConfigIFrame, StorageConfigRawAccess,
+    StorageConfigRedirects, StorageConfigRewrites,
 };
 use crate::types::interface::{AssetEncodingNoContent, AssetNoContent};
+use crate::types::state::StorageHeapState;
 use crate::types::store::{Asset, AssetEncoding};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::{Blob, Compare};
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
+use std::collections::HashMap;
+
+impl Default for StorageHeapState {
+    fn default() -> Self {
+        let now = 0; // Replace with actual timestamp logic
+        StorageHeapState {
+            assets: HashMap::new(),
+            rules: HashMap::from(DEFAULT_ASSETS_COLLECTIONS.map(|(collection, rule)| {
+                (
+                    collection.to_owned(),
+                    Rule {
+                        read: rule.read,
+                        write: rule.write,
+                        memory: Some(rule.memory.unwrap_or(Memory::Heap)),
+                        mutable_permissions: Some(rule.mutable_permissions.unwrap_or(false)),
+                        max_size: rule.max_size,
+                        max_capacity: rule.max_capacity,
+                        created_at: now,
+                        updated_at: now,
+                        version: None,
+                    },
+                )
+            })),
+            config: StorageConfig {
+                headers: StorageConfigHeaders::default(),
+                rewrites: StorageConfigRewrites::default(),
+                redirects: Some(StorageConfigRedirects::default()),
+                iframe: None,
+                raw_access: None,
+            },
+            custom_domains: HashMap::new(),
+        }
+    }
+}
 
 impl From<&Vec<Blob>> for AssetEncoding {
     fn from(content_chunks: &Vec<Blob>) -> Self {

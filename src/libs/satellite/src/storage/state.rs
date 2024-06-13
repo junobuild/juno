@@ -1,7 +1,6 @@
 use crate::memory::STATE;
 use crate::storage::types::state::{
-    AssetsHeap, AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
-    StorageHeapState,
+    AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
 };
 use crate::types::state::StableState;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
@@ -12,7 +11,7 @@ use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;
 use std::ops::RangeBounds;

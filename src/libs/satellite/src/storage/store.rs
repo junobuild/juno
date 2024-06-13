@@ -37,7 +37,8 @@ use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batc
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
-use junobuild_storage::types::state::{BatchId, ChunkId, FullPath};
+use junobuild_storage::types::runtime_state::{BatchId, ChunkId};
+use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
 use junobuild_storage::well_known::update::update_custom_domains_asset;

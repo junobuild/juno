@@ -56,7 +56,7 @@ pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
 }
 
 fn insert_asset_impl(full_path: &FullPath, asset: &Asset, heap: &mut HeapState) {
-    let storage = heap.storage.get_or_insert_with(Default::default);
+    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
     storage.assets.insert(full_path.clone(), asset.clone());
 }
 
@@ -65,7 +65,7 @@ pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
 }
 
 fn delete_asset_impl(full_path: &FullPath, heap: &mut HeapState) -> Option<Asset> {
-    let storage = heap.storage.get_or_insert_with(Default::default);
+    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
     storage.assets.remove(full_path)
 }
 
@@ -102,7 +102,7 @@ pub fn insert_config(config: &StorageConfig) {
 }
 
 fn insert_config_impl(config: &StorageConfig, heap: &mut HeapState) {
-    let storage = heap.storage.get_or_insert_with(Default::default);
+    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
     storage.config = config.clone();
 }
 
@@ -135,13 +135,13 @@ fn insert_domain_impl(
     custom_domain: &CustomDomain,
     heap: &mut HeapState,
 ) {
-    let storage = heap.storage.get_or_insert_with(Default::default);
+    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
     storage
         .custom_domains
         .insert(domain_name.clone(), custom_domain.clone());
 }
 
 fn delete_domain_impl(domain_name: &DomainName, heap: &mut HeapState) {
-    let storage = heap.storage.get_or_insert_with(Default::default);
+    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
     storage.custom_domains.remove(domain_name);
 }

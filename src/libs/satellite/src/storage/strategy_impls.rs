@@ -52,15 +52,6 @@ impl StorageStateStrategy for StorageState {
         get_config()
     }
 
-    fn get_asset(
-        &self,
-        collection: &CollectionKey,
-        full_path: &FullPath,
-        rule: &Rule,
-    ) -> Option<Asset> {
-        get_asset(collection, full_path, rule)
-    }
-
     fn get_domains(&self) -> CustomDomains {
         get_domains()
     }
@@ -102,5 +93,15 @@ impl StorageUploadStrategy for StorageUpload {
         rule: &Rule,
     ) {
         insert_asset(collection, full_path, asset, rule);
+    }
+
+    fn get_asset(
+        &self,
+        _batch_id: &BatchId,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        rule: &Rule,
+    ) -> Option<Asset> {
+        get_asset(collection, full_path, rule)
     }
 }

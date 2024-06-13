@@ -32,13 +32,6 @@ pub trait StorageStateStrategy {
 
     fn get_config(&self) -> StorageConfig;
 
-    fn get_asset(
-        &self,
-        collection: &CollectionKey,
-        full_path: &FullPath,
-        rule: &Rule,
-    ) -> Option<Asset>;
-
     fn get_domains(&self) -> CustomDomains;
 
     fn insert_asset(&self, collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule);
@@ -69,4 +62,12 @@ pub trait StorageUploadStrategy {
         asset: &Asset,
         rule: &Rule,
     );
+
+    fn get_asset(
+        &self,
+        batch_id: &BatchId,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        rule: &Rule,
+    ) -> Option<Asset>;
 }

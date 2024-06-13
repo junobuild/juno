@@ -1,5 +1,8 @@
-use crate::storage::state::{get_config, get_content_chunks, get_domains, get_rule, insert_asset, insert_asset_encoding};
-use crate::storage::store::get_public_asset;
+use crate::storage::store::heap::{get_asset, get_config, get_domains, get_public_asset, get_rule};
+use crate::storage::store::stable::{
+    get_batch_asset, insert_batch_asset, insert_batch_asset_encoding,
+};
+use crate::storage::store::utils::get_content_chunks;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -52,16 +55,6 @@ impl StorageStateStrategy for StorageState {
         get_config()
     }
 
-    fn get_asset(
-        &self,
-        _collection: &CollectionKey,
-        _full_path: &FullPath,
-        _rule: &Rule,
-    ) -> Option<Asset> {
-        // Function unused in case of the console
-        None
-    }
-
     fn get_domains(&self) -> CustomDomains {
         get_domains()
     }
@@ -78,7 +71,7 @@ impl StorageUploadStrategy for StorageUpload {
         asset: &mut Asset,
         _rule: &Rule,
     ) {
-        insert_asset_encoding(full_path, encoding_type, encoding, asset);
+        insert_batch_asset_encoding(full_path, encoding_type, encoding, asset);
     }
 
     fn insert_asset(
@@ -89,6 +82,21 @@ impl StorageUploadStrategy for StorageUpload {
         asset: &Asset,
         _rule: &Rule,
     ) {
-        insert_asset(batch_id, collection, full_path, asset);
+        insert_batch_asset(batch_id, collection, full_path, asset);
+    }
+
+    fn get_asset(
+        &self,
+        batch_id: &BatchId,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        _rule: &Rule,
+    ) -> Option<Asset> {
+        let asset = get_batch_asset(batch_id, collection, full_path);
+
+        match asset {
+            Some(asset) => Some(asset),
+            None => get_asset(full_path),
+        }
     }
 }

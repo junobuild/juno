@@ -7,6 +7,7 @@ pub mod msg;
 pub mod rewrites;
 pub mod routing;
 pub mod runtime;
+pub mod stable_utils;
 pub mod store;
 pub mod strategies;
 pub mod types;

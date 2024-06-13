@@ -7,8 +7,9 @@ use crate::types::state::StableState;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::list::range_collection_end;
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
+use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::FullPath;
@@ -100,6 +101,7 @@ pub fn insert_asset_encoding(
                 encoding_type,
                 encoding,
                 asset,
+                stable_encoding_chunk_key,
                 &mut state.borrow_mut().stable.content_chunks,
             )
         }),
@@ -205,34 +207,6 @@ fn insert_asset_stable(
     assets: &mut AssetsStable,
 ) {
     assets.insert(stable_full_path(collection, full_path), asset.clone());
-}
-
-fn insert_asset_encoding_stable(
-    full_path: &FullPath,
-    encoding_type: &str,
-    encoding: &AssetEncoding,
-    asset: &mut Asset,
-    chunks: &mut ContentChunksStable,
-) {
-    let mut content_chunks = Vec::new();
-
-    // Insert each chunk into the StableBTreeMap
-    for (i, chunk) in encoding.content_chunks.iter().enumerate() {
-        let key = stable_encoding_chunk_key(full_path, encoding_type, i);
-
-        chunks.insert(key.clone(), chunk.clone());
-
-        content_chunks.push(serialize_to_bytes(&key).into_owned());
-    }
-
-    // Insert the encoding by replacing the chunks with their referenced keys serialized
-    asset.encodings.insert(
-        encoding_type.to_owned(),
-        AssetEncoding {
-            content_chunks,
-            ..encoding.clone()
-        },
-    );
 }
 
 fn insert_asset_heap(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHeap) {

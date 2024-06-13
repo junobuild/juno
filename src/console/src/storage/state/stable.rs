@@ -1,9 +1,9 @@
 use crate::storage::types::state::{
-    BatchAssetsStable, BatchContentChunksStable, BatchStableEncodingChunkKey, BatchStableKey,
+    BatchAssetsStable, BatchStableEncodingChunkKey, BatchStableKey,
 };
 use crate::STATE;
-use junobuild_shared::serializers::serialize_to_bytes;
 use junobuild_shared::types::core::CollectionKey;
+use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 
@@ -38,11 +38,12 @@ pub fn insert_batch_asset_encoding(
     asset: &mut Asset,
 ) {
     STATE.with(|state| {
-        insert_batch_asset_encoding_impl(
+        insert_asset_encoding_stable(
             full_path,
             encoding_type,
             encoding,
             asset,
+            stable_encoding_chunk_key,
             &mut state.borrow_mut().stable.batch_content_chunks,
         )
     })
@@ -85,35 +86,6 @@ fn stable_key(
         collection: collection.clone(),
         full_path: full_path.clone(),
     }
-}
-
-// TODO: duplicates Satellite insert_asset_encoding_stable
-fn insert_batch_asset_encoding_impl(
-    full_path: &FullPath,
-    encoding_type: &str,
-    encoding: &AssetEncoding,
-    asset: &mut Asset,
-    chunks: &mut BatchContentChunksStable,
-) {
-    let mut content_chunks = Vec::new();
-
-    // Insert each chunk into the StableBTreeMap
-    for (i, chunk) in encoding.content_chunks.iter().enumerate() {
-        let key = stable_encoding_chunk_key(full_path, encoding_type, i);
-
-        chunks.insert(key.clone(), chunk.clone());
-
-        content_chunks.push(serialize_to_bytes(&key).into_owned());
-    }
-
-    // Insert the encoding by replacing the chunks with their referenced keys serialized
-    asset.encodings.insert(
-        encoding_type.to_owned(),
-        AssetEncoding {
-            content_chunks,
-            ..encoding.clone()
-        },
-    );
 }
 
 fn stable_encoding_chunk_key(

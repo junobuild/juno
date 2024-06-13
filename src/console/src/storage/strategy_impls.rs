@@ -5,7 +5,9 @@ use crate::storage::store::get_public_asset;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
-use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
+use junobuild_storage::strategies::{
+    StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
+};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
@@ -60,7 +62,11 @@ impl StorageStateStrategy for StorageState {
         // Function unused in case of the console
         None
     }
+}
 
+pub struct StorageUpload;
+
+impl StorageUploadStrategy for StorageUpload {
     fn insert_asset_encoding(
         &self,
         full_path: &FullPath,

@@ -37,7 +37,9 @@ pub trait StorageStateStrategy {
         full_path: &FullPath,
         rule: &Rule,
     ) -> Option<Asset>;
+}
 
+pub trait StorageUploadStrategy {
     fn insert_asset_encoding(
         &self,
         full_path: &FullPath,

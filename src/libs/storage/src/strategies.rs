@@ -4,6 +4,7 @@ use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
+use crate::types::domain::CustomDomains;
 
 pub trait StorageAssertionsStrategy {
     fn invoke_assert_upload_asset(
@@ -55,4 +56,6 @@ pub trait StorageStateStrategy {
         asset: &Asset,
         rule: &Rule,
     );
+
+    fn get_domains(&self) -> CustomDomains;
 }

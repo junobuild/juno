@@ -1,11 +1,12 @@
 use crate::hooks::invoke_assert_upload_asset;
-use crate::storage::state::{get_asset, get_config, get_rule, insert_asset, insert_asset_encoding};
+use crate::storage::state::{get_asset, get_config, get_domains, get_rule, insert_asset, insert_asset_encoding};
 use crate::storage::store::{get_public_asset_store, get_content_chunks_store};
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
 use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 
@@ -78,5 +79,9 @@ impl StorageStateStrategy for StorageState {
         rule: &Rule,
     ) {
         insert_asset(collection, full_path, asset, rule);
+    }
+
+    fn get_domains(&self) -> CustomDomains {
+        get_domains()
     }
 }

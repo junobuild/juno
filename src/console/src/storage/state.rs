@@ -6,8 +6,9 @@ use crate::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::serializers::serialize_to_bytes;
-use junobuild_shared::types::core::{Blob, CollectionKey};
+use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 
@@ -137,6 +138,53 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(rule) => Ok(rule),
     }
+}
+
+/// Custom domains
+
+// TODO: almost same as satellite except get_storage()
+
+pub fn get_domains() -> CustomDomains {
+    STATE.with(|state| state.borrow().heap.get_storage().custom_domains.clone())
+}
+
+pub fn get_domain(domain_name: &DomainName) -> Option<CustomDomain> {
+    STATE.with(|state| {
+        let domains = state.borrow().heap.get_storage().custom_domains.clone();
+        let domain = domains.get(domain_name);
+        domain.cloned()
+    })
+}
+
+pub fn insert_domain(domain_name: &DomainName, custom_domain: &CustomDomain) {
+    STATE.with(|state| {
+        insert_domain_impl(
+            domain_name,
+            custom_domain,
+            &mut state.borrow_mut().heap.get_storage().custom_domains,
+        )
+    })
+}
+
+pub fn delete_domain(domain_name: &DomainName) {
+    STATE.with(|state| {
+        delete_domain_impl(
+            domain_name,
+            &mut state.borrow_mut().heap.get_storage().custom_domains,
+        )
+    })
+}
+
+fn insert_domain_impl(
+    domain_name: &DomainName,
+    custom_domain: &CustomDomain,
+    custom_domains: &mut CustomDomains,
+) {
+    custom_domains.insert(domain_name.clone(), custom_domain.clone());
+}
+
+fn delete_domain_impl(domain_name: &DomainName, custom_domains: &mut CustomDomains) {
+    custom_domains.remove(domain_name);
 }
 
 ///

@@ -227,7 +227,12 @@ fn secure_commit_chunks(
 
     let rule = storage_state.get_rule(&batch.key.collection)?;
 
-    let current = storage_upload.get_asset(&commit_batch.batch_id, &batch.key.collection, &batch.key.full_path, &rule);
+    let current = storage_upload.get_asset(
+        &commit_batch.batch_id,
+        &batch.key.collection,
+        &batch.key.full_path,
+        &rule,
+    );
 
     match current {
         None => {

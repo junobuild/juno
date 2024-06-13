@@ -1,8 +1,8 @@
-use crate::storage::state::{
-    get_asset, get_batch_asset, get_config, get_content_chunks, get_rule, insert_batch_asset,
-    insert_batch_asset_encoding,
+use crate::storage::store::heap::{get_asset, get_config, get_public_asset, get_rule};
+use crate::storage::store::stable::{
+    get_batch_asset, insert_batch_asset, insert_batch_asset_encoding,
 };
-use crate::storage::store::get_public_asset;
+use crate::storage::store::utils::get_content_chunks;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};

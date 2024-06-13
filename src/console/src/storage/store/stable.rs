@@ -1,13 +1,9 @@
 use crate::storage::types::state::{
-    AssetsHeap, BatchAssetsStable, BatchContentChunksStable, BatchStableEncodingChunkKey,
-    BatchStableKey, StorageHeapState,
+    BatchAssetsStable, BatchContentChunksStable, BatchStableEncodingChunkKey, BatchStableKey,
 };
 use crate::STATE;
-use junobuild_collections::msg::COLLECTION_NOT_FOUND;
-use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::serializers::serialize_to_bytes;
-use junobuild_shared::types::core::{Blob, CollectionKey};
-use junobuild_storage::types::config::StorageConfig;
+use junobuild_shared::types::core::CollectionKey;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 
@@ -129,64 +125,5 @@ fn stable_encoding_chunk_key(
         full_path: full_path.clone(),
         encoding_type: encoding_type.to_owned(),
         chunk_index,
-    }
-}
-
-pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
-    STATE.with(|state| get_asset_impl(full_path, &state.borrow().heap.get_storage().assets))
-}
-
-fn get_asset_impl(full_path: &FullPath, assets: &AssetsHeap) -> Option<Asset> {
-    let value = assets.get(full_path);
-    value.cloned()
-}
-
-pub fn get_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Option<Blob> {
-    Some(encoding.content_chunks[chunk_index].clone())
-}
-
-/// Rules
-
-// TODO: almost same as satellite except get_storage()
-
-pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
-    let rule = STATE.with(|state| {
-        let rules = &state.borrow().heap.get_storage().rules.clone();
-        let rule = rules.get(collection);
-
-        rule.cloned()
-    });
-
-    match rule {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
-        Some(rule) => Ok(rule),
-    }
-}
-
-///
-/// Config
-///
-
-// TODO: almost same as satellite except get_storage()
-
-pub fn get_config() -> StorageConfig {
-    STATE.with(|state| state.borrow().heap.get_storage().config.clone())
-}
-
-pub fn insert_config(config: &StorageConfig) {
-    STATE.with(|state| insert_config_impl(config, &mut state.borrow_mut().heap.storage))
-}
-
-fn insert_config_impl(config: &StorageConfig, state: &mut Option<StorageHeapState>) {
-    match state {
-        Some(state) => {
-            state.config = config.clone();
-        }
-        None => {
-            *state = Some(StorageHeapState {
-                config: config.clone(),
-                ..Default::default()
-            });
-        }
     }
 }

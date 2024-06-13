@@ -56,6 +56,15 @@ impl StorageStateStrategy for StorageState {
         get_domains()
     }
 
+    fn get_asset(
+        &self,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        rule: &Rule,
+    ) -> Option<Asset> {
+        get_asset(collection, full_path, rule)
+    }
+
     fn insert_asset(&self, collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule) {
         insert_asset(collection, full_path, asset, rule)
     }

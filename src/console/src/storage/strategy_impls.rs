@@ -58,6 +58,15 @@ impl StorageStateStrategy for StorageState {
     fn get_domains(&self) -> CustomDomains {
         get_domains()
     }
+
+    fn get_asset(
+        &self,
+        _collection: &CollectionKey,
+        full_path: &FullPath,
+        _rule: &Rule,
+    ) -> Option<Asset> {
+        get_asset(full_path)
+    }
 }
 
 pub struct StorageUpload;

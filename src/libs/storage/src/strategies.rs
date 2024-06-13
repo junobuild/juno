@@ -34,6 +34,13 @@ pub trait StorageStateStrategy {
 
     fn get_domains(&self) -> CustomDomains;
 
+    fn get_asset(
+        &self,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        rule: &Rule,
+    ) -> Option<Asset>;
+
     fn insert_asset(&self, collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule);
 
     fn delete_asset(

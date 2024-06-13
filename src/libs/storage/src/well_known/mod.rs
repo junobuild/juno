@@ -1,2 +1,2 @@
 pub mod update;
-mod utils;
+pub mod utils;

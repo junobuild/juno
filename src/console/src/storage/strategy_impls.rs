@@ -1,4 +1,6 @@
-use crate::storage::store::heap::{get_asset, get_config, get_public_asset, get_rule};
+use crate::storage::store::heap::{
+    delete_asset, get_asset, get_config, get_domains, get_public_asset, get_rule, insert_asset,
+};
 use crate::storage::store::stable::{
     get_batch_asset, insert_batch_asset, insert_batch_asset_encoding,
 };
@@ -10,6 +12,7 @@ use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };
 use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 
@@ -52,6 +55,38 @@ impl StorageStateStrategy for StorageState {
 
     fn get_config(&self) -> StorageConfig {
         get_config()
+    }
+
+    fn get_domains(&self) -> CustomDomains {
+        get_domains()
+    }
+
+    fn get_asset(
+        &self,
+        _collection: &CollectionKey,
+        full_path: &FullPath,
+        _rule: &Rule,
+    ) -> Option<Asset> {
+        get_asset(full_path)
+    }
+
+    fn insert_asset(
+        &self,
+        _collection: &CollectionKey,
+        full_path: &FullPath,
+        asset: &Asset,
+        _rule: &Rule,
+    ) {
+        insert_asset(full_path, asset)
+    }
+
+    fn delete_asset(
+        &self,
+        _collection: &CollectionKey,
+        full_path: &FullPath,
+        _rule: &Rule,
+    ) -> Option<Asset> {
+        delete_asset(full_path)
     }
 }
 

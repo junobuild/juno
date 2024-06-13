@@ -1,4 +1,5 @@
 use crate::types::config::StorageConfig;
+use crate::types::domain::CustomDomains;
 use crate::types::state::{BatchId, FullPath};
 use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 use candid::Principal;
@@ -30,6 +31,30 @@ pub trait StorageStateStrategy {
     fn get_rule(&self, collection: &CollectionKey) -> Result<Rule, String>;
 
     fn get_config(&self) -> StorageConfig;
+
+    fn get_domains(&self) -> CustomDomains;
+
+    fn get_asset(
+        &self,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        rule: &Rule,
+    ) -> Option<Asset>;
+
+    fn insert_asset(
+        &self,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        asset: &Asset,
+        rule: &Rule,
+    );
+
+    fn delete_asset(
+        &self,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        rule: &Rule,
+    ) -> Option<Asset>;
 }
 
 pub trait StorageUploadStrategy {

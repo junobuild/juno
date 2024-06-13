@@ -14,7 +14,10 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
-use crate::storage::store::{get_config_store, get_custom_domains_store, set_config_store};
+use crate::storage::store::{
+    delete_domain_store, get_config_store, get_custom_domains_store, set_config_store,
+    set_domain_store,
+};
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::storage::types::state::StorageHeapState;
 use crate::store::heap::{
@@ -400,12 +403,12 @@ pub fn list_custom_domains() -> CustomDomains {
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
-    set_custom_domain(domain_name, bn_id);
+    set_domain_store(&domain_name, &bn_id).unwrap_or_else(|e| trap(&e));
 }
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
-    del_custom_domain(domain_name);
+    delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
 }
 
 // Generate did files

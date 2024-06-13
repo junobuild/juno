@@ -262,6 +262,7 @@ fn secure_commit_chunks(
     }
 }
 
+#[allow(clippy::too_many_arguments)]
 fn secure_commit_chunks_update(
     caller: Principal,
     controllers: &Controllers,

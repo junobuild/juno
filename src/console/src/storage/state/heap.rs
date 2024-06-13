@@ -2,7 +2,7 @@ use crate::storage::types::state::{AssetsHeap, StorageHeapState};
 use crate::types::state::HeapState;
 use crate::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
-use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::{CollectionKey, DomainName};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};

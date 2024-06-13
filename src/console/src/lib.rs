@@ -14,6 +14,7 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
+use crate::storage::store::get_custom_domains_store;
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::storage::types::state::StorageHeapState;
 use crate::store::heap::{
@@ -43,6 +44,7 @@ use ic_cdk::{id, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::init_controllers;
+use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateCanisterFeeArgs, SetControllersArgs,
@@ -50,6 +52,7 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
+use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{
     CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
@@ -369,6 +372,25 @@ fn commit_asset_upload(commit: CommitBatch) {
         &StorageUpload,
     )
     .unwrap_or_else(|e| trap(&e));
+}
+
+///
+/// Custom domains
+///
+
+#[query(guard = "caller_is_admin_controller")]
+pub fn list_custom_domains() -> CustomDomains {
+    get_custom_domains_store()
+}
+
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
+    set_custom_domain(domain_name, bn_id);
+}
+
+#[update(guard = "caller_is_admin_controller")]
+pub fn del_custom_domain(domain_name: DomainName) {
+    del_custom_domain(domain_name);
 }
 
 // Generate did files

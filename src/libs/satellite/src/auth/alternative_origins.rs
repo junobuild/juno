@@ -1,5 +1,6 @@
 use crate::auth::types::state::AuthenticationConfig;
 use crate::storage::store::get_custom_domains_store;
+use crate::storage::strategy_impls::StorageState;
 use ic_cdk::id;
 use junobuild_shared::types::core::DomainName;
 use junobuild_storage::well_known::update::{
@@ -8,7 +9,6 @@ use junobuild_storage::well_known::update::{
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
 use url::Url;
-use crate::storage::strategy_impls::StorageState;
 
 #[derive(Serialize, Deserialize)]
 struct AlternativeOrigins {
@@ -21,7 +21,10 @@ pub fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), S
         .internet_identity
         .as_ref()
         .and_then(|config| config.derivation_origin.as_ref())
-        .map_or_else(|| delete_alternative_origins_asset(&StorageState), set_alternative_origins)
+        .map_or_else(
+            || delete_alternative_origins_asset(&StorageState),
+            set_alternative_origins,
+        )
 }
 
 fn set_alternative_origins(derivation_origin: &DomainName) -> Result<(), String> {

@@ -7,7 +7,7 @@ use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks, get_batch as get_runtime_batch,
     get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
-    insert_chunk as insert_runtime_chunk, update_certified_asset as update_runtime_certified_asset,
+    insert_chunk as insert_runtime_chunk,
 };
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy};
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
@@ -161,7 +161,6 @@ pub fn commit_batch(
                 storage_state,
                 storage_upload,
             )?;
-            update_runtime_certified_asset(&asset, &storage_state.get_config());
             Ok(asset)
         }
     }

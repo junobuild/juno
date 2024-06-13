@@ -1,4 +1,5 @@
 use crate::storage::types::state::{AssetsHeap, StorageHeapState};
+use crate::types::state::HeapState;
 use crate::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
 use junobuild_collections::types::rules::{Memory, Rule};
@@ -7,7 +8,6 @@ use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
-use crate::types::state::HeapState;
 
 pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
     let asset = get_asset(&full_path);
@@ -52,34 +52,21 @@ fn get_asset_impl(full_path: &FullPath, assets: &AssetsHeap) -> Option<Asset> {
 }
 
 pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
-    STATE.with(|state| {
-        insert_asset_impl(
-            full_path,
-            asset,
-            &mut state.borrow_mut().heap,
-        )
-    })
+    STATE.with(|state| insert_asset_impl(full_path, asset, &mut state.borrow_mut().heap))
 }
 
-fn insert_asset_impl(full_path: &FullPath, asset: &Asset, heap: &mut HeapState,) {
+fn insert_asset_impl(full_path: &FullPath, asset: &Asset, heap: &mut HeapState) {
     let storage = heap.storage.get_or_insert_with(Default::default);
     storage.assets.insert(full_path.clone(), asset.clone());
 }
 
-pub fn delete_asset(
-    full_path: &FullPath,
-) -> Option<Asset> {
-    STATE.with(|state| {
-        delete_asset_impl(
-            full_path,
-            &mut state.borrow_mut().heap,
-        )
-    })
+pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
+    STATE.with(|state| delete_asset_impl(full_path, &mut state.borrow_mut().heap))
 }
 
 fn delete_asset_impl(full_path: &FullPath, heap: &mut HeapState) -> Option<Asset> {
     let storage = heap.storage.get_or_insert_with(Default::default);
-    storage.assets.remove(full_path);
+    storage.assets.remove(full_path)
 }
 
 /// Rules
@@ -119,7 +106,6 @@ fn insert_config_impl(config: &StorageConfig, heap: &mut HeapState) {
     storage.config = config.clone();
 }
 
-
 /// Custom domains
 
 // TODO: almost same as satellite except get_storage()
@@ -137,22 +123,11 @@ pub fn get_domain(domain_name: &DomainName) -> Option<CustomDomain> {
 }
 
 pub fn insert_domain(domain_name: &DomainName, custom_domain: &CustomDomain) {
-    STATE.with(|state| {
-        insert_domain_impl(
-            domain_name,
-            custom_domain,
-            &mut state.borrow_mut().heap,
-        )
-    })
+    STATE.with(|state| insert_domain_impl(domain_name, custom_domain, &mut state.borrow_mut().heap))
 }
 
 pub fn delete_domain(domain_name: &DomainName) {
-    STATE.with(|state| {
-        delete_domain_impl(
-            domain_name,
-            &mut state.borrow_mut().heap,
-        )
-    })
+    STATE.with(|state| delete_domain_impl(domain_name, &mut state.borrow_mut().heap))
 }
 
 fn insert_domain_impl(
@@ -161,10 +136,12 @@ fn insert_domain_impl(
     heap: &mut HeapState,
 ) {
     let storage = heap.storage.get_or_insert_with(Default::default);
-    storage.custom_domains.insert(domain_name.clone(), custom_domain.clone());
+    storage
+        .custom_domains
+        .insert(domain_name.clone(), custom_domain.clone());
 }
 
-fn delete_domain_impl(domain_name: &DomainName, heap: &mut HeapState,) {
+fn delete_domain_impl(domain_name: &DomainName, heap: &mut HeapState) {
     let storage = heap.storage.get_or_insert_with(Default::default);
     storage.custom_domains.remove(domain_name);
 }

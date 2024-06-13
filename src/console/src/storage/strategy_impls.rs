@@ -1,4 +1,6 @@
-use crate::storage::store::heap::{delete_asset, get_asset, get_config, get_domains, get_public_asset, get_rule, insert_asset};
+use crate::storage::store::heap::{
+    delete_asset, get_asset, get_config, get_domains, get_public_asset, get_rule, insert_asset,
+};
 use crate::storage::store::stable::{
     get_batch_asset, insert_batch_asset, insert_batch_asset_encoding,
 };
@@ -68,7 +70,13 @@ impl StorageStateStrategy for StorageState {
         get_asset(full_path)
     }
 
-    fn insert_asset(&self, _collection: &CollectionKey, full_path: &FullPath, asset: &Asset, _rule: &Rule) {
+    fn insert_asset(
+        &self,
+        _collection: &CollectionKey,
+        full_path: &FullPath,
+        asset: &Asset,
+        _rule: &Rule,
+    ) {
         insert_asset(full_path, asset)
     }
 

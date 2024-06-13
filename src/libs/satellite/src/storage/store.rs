@@ -23,7 +23,6 @@ use crate::storage::state::{
     insert_domain as insert_state_domain,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
-use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::constants::{
@@ -41,6 +40,7 @@ use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAsset
 use junobuild_storage::types::state::{BatchId, ChunkId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
+use junobuild_storage::well_known::update::update_custom_domains_asset;
 
 ///
 /// Getter, list and delete
@@ -513,13 +513,13 @@ pub fn get_custom_domains_store() -> CustomDomains {
 fn delete_domain_impl(domain_name: &DomainName) -> Result<(), String> {
     delete_state_domain(domain_name);
 
-    update_custom_domains_asset()
+    update_custom_domains_asset(&StorageState)
 }
 
 fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
     set_state_domain_impl(domain_name, bn_id);
 
-    update_custom_domains_asset()
+    update_custom_domains_asset(&StorageState)
 }
 
 fn set_state_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {

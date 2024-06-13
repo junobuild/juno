@@ -1,10 +1,10 @@
 use crate::types::config::StorageConfig;
+use crate::types::domain::CustomDomains;
 use crate::types::state::{BatchId, FullPath};
 use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
-use crate::types::domain::CustomDomains;
 
 pub trait StorageAssertionsStrategy {
     fn invoke_assert_upload_asset(
@@ -41,7 +41,13 @@ pub trait StorageStateStrategy {
         rule: &Rule,
     ) -> Option<Asset>;
 
-    fn insert_asset(&self, collection: &CollectionKey, full_path: &FullPath, asset: &Asset, rule: &Rule);
+    fn insert_asset(
+        &self,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        asset: &Asset,
+        rule: &Rule,
+    );
 
     fn delete_asset(
         &self,

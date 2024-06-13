@@ -1,5 +1,3 @@
-use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
-use junobuild_shared::types::core::DomainName;
 use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::runtime::{
     delete_certified_asset, update_certified_asset as update_runtime_certified_asset,
@@ -7,8 +5,13 @@ use crate::runtime::{
 use crate::strategies::StorageStateStrategy;
 use crate::types::store::Asset;
 use crate::well_known::utils::{map_alternative_origins_asset, map_custom_domains_asset};
+use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_shared::types::core::DomainName;
 
-pub fn update_alternative_origins_asset(alternative_origins: &String, storage_state: &impl StorageStateStrategy) -> Result<(), String> {
+pub fn update_alternative_origins_asset(
+    alternative_origins: &String,
+    storage_state: &impl StorageStateStrategy,
+) -> Result<(), String> {
     let full_path = WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string();
 
     update_asset(
@@ -19,7 +22,9 @@ pub fn update_alternative_origins_asset(alternative_origins: &String, storage_st
     )
 }
 
-pub fn update_custom_domains_asset(storage_state: &impl StorageStateStrategy) -> Result<(), String> {
+pub fn update_custom_domains_asset(
+    storage_state: &impl StorageStateStrategy,
+) -> Result<(), String> {
     let full_path = WELL_KNOWN_CUSTOM_DOMAINS.to_string();
 
     let custom_domains = storage_state.get_domains();
@@ -41,7 +46,9 @@ pub fn update_custom_domains_asset(storage_state: &impl StorageStateStrategy) ->
     )
 }
 
-pub fn delete_alternative_origins_asset(storage_state: &impl StorageStateStrategy) -> Result<(), String> {
+pub fn delete_alternative_origins_asset(
+    storage_state: &impl StorageStateStrategy,
+) -> Result<(), String> {
     let full_path = WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string();
 
     delete_asset(&full_path, storage_state)
@@ -71,7 +78,10 @@ fn update_asset(
     Ok(())
 }
 
-fn delete_asset(full_path: &String, storage_state: &impl StorageStateStrategy) -> Result<(), String> {
+fn delete_asset(
+    full_path: &String,
+    storage_state: &impl StorageStateStrategy,
+) -> Result<(), String> {
     let collection = DEFAULT_ASSETS_COLLECTIONS[0].0.to_string();
 
     // #app collection rule

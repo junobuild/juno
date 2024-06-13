@@ -1,5 +1,6 @@
+use crate::storage::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::heap::{
-    delete_domain, get_asset, get_domain, get_domains, insert_domain,
+    delete_domain, get_asset, get_config, get_domain, get_domains, insert_config, insert_domain,
 };
 use crate::storage::strategy_impls::StorageState;
 use ic_cdk::api::time;
@@ -7,6 +8,7 @@ use junobuild_collections::types::rules::Memory;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::state::{Timestamp, Version};
+use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
@@ -43,6 +45,20 @@ fn get_token_protected_asset(
             None
         }
     }
+}
+
+///
+/// Config
+///
+
+pub fn set_config_store(config: &StorageConfig) {
+    insert_config(config);
+
+    init_runtime_certified_assets();
+}
+
+pub fn get_config_store() -> StorageConfig {
+    get_config()
 }
 
 ///

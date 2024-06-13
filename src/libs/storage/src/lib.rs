@@ -1,4 +1,5 @@
 pub mod certification;
+pub mod certified_assets;
 pub mod constants;
 pub mod http;
 pub mod impls;
@@ -14,4 +15,3 @@ pub mod types;
 mod url;
 pub mod utils;
 pub mod well_known;
-pub mod certified_assets;

@@ -6,7 +6,11 @@ use crate::strategies::StorageStateStrategy;
 use crate::types::config::StorageConfig;
 use crate::types::http_request::{Routing, RoutingDefault};
 
-pub fn extend_and_init_certified_assets(asset_hashes: &mut CertifiedAssetHashes, config: &StorageConfig, storage_state: &impl StorageStateStrategy) {
+pub fn extend_and_init_certified_assets(
+    asset_hashes: &mut CertifiedAssetHashes,
+    config: &StorageConfig,
+    storage_state: &impl StorageStateStrategy,
+) {
     for (source, destination) in config.rewrites.clone() {
         if let Ok(Routing::Default(RoutingDefault { url: _, asset })) =
             get_routing(destination, &Vec::new(), false, storage_state)

@@ -1,6 +1,6 @@
-use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use crate::memory::STATE;
 use crate::storage::strategy_impls::StorageState;
+use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
 use junobuild_storage::certified_assets::extend_and_init_certified_assets as init_certified_assets_storage;
 use junobuild_storage::types::state::StorageHeapState;
 

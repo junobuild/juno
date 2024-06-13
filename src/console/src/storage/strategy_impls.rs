@@ -1,5 +1,5 @@
 use crate::storage::state::heap::{
-    delete_asset, get_asset, get_config, get_domains, get_public_asset, get_rule, insert_asset,
+    delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset,
 };
 use crate::storage::state::stable::{
     get_batch_asset, insert_batch_asset, insert_batch_asset_encoding,
@@ -15,6 +15,7 @@ use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
+use crate::storage::store::get_public_asset;
 
 pub struct StorageAssertions;
 

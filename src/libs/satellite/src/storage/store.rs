@@ -16,7 +16,7 @@ use crate::storage::runtime::init_certified_assets as init_runtime_certified_ass
 use crate::storage::state::{
     count_assets_heap, count_assets_stable, delete_asset as delete_state_asset,
     delete_domain as delete_state_domain, get_asset as get_state_asset, get_assets_heap,
-    get_assets_stable, get_config as get_state_config,
+    get_assets_stable, get_config as get_state_config, get_config,
     get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
     get_domains as get_state_domains, get_public_asset as get_state_public_asset,
     get_rule as get_state_rule, insert_config as insert_state_config,
@@ -453,14 +453,20 @@ pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<Chunk
 pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<Asset, String> {
     let controllers: Controllers = get_controllers();
 
-    commit_batch_storage(
+    let asset = commit_batch_storage(
         caller,
         &controllers,
         commit_batch,
         &StorageAssertions,
         &StorageState,
         &StorageUpload,
-    )
+    )?;
+
+    let config = get_config();
+
+    update_runtime_certified_asset(&asset, &config);
+
+    Ok(asset)
 }
 
 fn secure_create_batch_impl(

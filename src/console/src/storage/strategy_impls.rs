@@ -5,6 +5,7 @@ use crate::storage::state::stable::{
     get_batch_asset, insert_batch_asset, insert_batch_asset_encoding,
 };
 use crate::storage::state::utils::get_content_chunks;
+use crate::storage::store::get_public_asset;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -15,7 +16,6 @@ use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::state::{BatchId, FullPath};
 use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
-use crate::storage::store::get_public_asset;
 
 pub struct StorageAssertions;
 

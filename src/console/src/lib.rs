@@ -64,6 +64,7 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
+use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -125,6 +126,8 @@ fn post_upgrade() {
     //     .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
 
     // STATE.with(|s| *s.borrow_mut() = state);
+
+    defer_init_certified_assets();
 }
 
 /// Mission control center and satellite releases and wasm

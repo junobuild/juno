@@ -1,7 +1,6 @@
-use crate::get_content_chunks_store;
 use crate::hooks::invoke_assert_upload_asset;
 use crate::storage::state::{get_asset, get_config, get_rule, insert_asset, insert_asset_encoding};
-use crate::storage::store::get_public_asset_store;
+use crate::storage::store::{get_public_asset_store, get_content_chunks_store};
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};

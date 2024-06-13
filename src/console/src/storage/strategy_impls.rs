@@ -3,7 +3,9 @@ use crate::storage::store::get_public_asset;
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
-use junobuild_storage::strategies::{StorageAssertionsStrategy, StorageStateStrategy};
+use junobuild_storage::strategies::{
+    StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
+};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::state::{BatchId, FullPath};
@@ -60,6 +62,14 @@ impl StorageStateStrategy for StorageState {
         None
     }
 
+    fn get_domains(&self) -> CustomDomains {
+        get_domains()
+    }
+}
+
+pub struct StorageUpload;
+
+impl StorageUploadStrategy for StorageUpload {
     fn insert_asset_encoding(
         &self,
         full_path: &FullPath,
@@ -80,9 +90,5 @@ impl StorageStateStrategy for StorageState {
         _rule: &Rule,
     ) {
         insert_asset(batch_id, collection, full_path, asset);
-    }
-
-    fn get_domains(&self) -> CustomDomains {
-        get_domains()
     }
 }

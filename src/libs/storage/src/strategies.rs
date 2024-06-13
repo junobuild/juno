@@ -39,6 +39,10 @@ pub trait StorageStateStrategy {
         rule: &Rule,
     ) -> Option<Asset>;
 
+    fn get_domains(&self) -> CustomDomains;
+}
+
+pub trait StorageUploadStrategy {
     fn insert_asset_encoding(
         &self,
         full_path: &FullPath,
@@ -56,6 +60,4 @@ pub trait StorageStateStrategy {
         asset: &Asset,
         rule: &Rule,
     );
-
-    fn get_domains(&self) -> CustomDomains;
 }

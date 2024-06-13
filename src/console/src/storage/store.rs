@@ -12,6 +12,7 @@ use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
+use junobuild_storage::utils::get_token_protected_asset;
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 
 pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
@@ -26,24 +27,6 @@ pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(A
                 protected_asset.map(|protected_asset| (protected_asset, Memory::Heap))
             }
         },
-    }
-}
-
-// TODO: same code as in satellite
-fn get_token_protected_asset(
-    asset: &Asset,
-    asset_token: &String,
-    token: Option<String>,
-) -> Option<Asset> {
-    match token {
-        None => None,
-        Some(token) => {
-            if &token == asset_token {
-                return Some(asset.clone());
-            }
-
-            None
-        }
     }
 }
 

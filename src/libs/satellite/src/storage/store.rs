@@ -40,7 +40,9 @@ use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAsset
 use junobuild_storage::types::runtime_state::{BatchId, ChunkId};
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
-use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
+use junobuild_storage::utils::{
+    filter_collection_values, filter_values, get_token_protected_asset, map_asset_no_content,
+};
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 
 ///
@@ -217,23 +219,6 @@ pub fn get_public_asset_store(
                 protected_asset.map(|protected_asset| (protected_asset, memory))
             }
         },
-    }
-}
-
-fn get_token_protected_asset(
-    asset: &Asset,
-    asset_token: &String,
-    token: Option<String>,
-) -> Option<Asset> {
-    match token {
-        None => None,
-        Some(token) => {
-            if &token == asset_token {
-                return Some(asset.clone());
-            }
-
-            None
-        }
     }
 }
 

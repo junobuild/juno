@@ -1,4 +1,4 @@
 mod impls;
-mod store;
+mod state;
 pub mod strategy_impls;
 pub mod types;

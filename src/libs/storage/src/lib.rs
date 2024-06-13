@@ -14,3 +14,4 @@ pub mod types;
 mod url;
 pub mod utils;
 pub mod well_known;
+pub mod certified_assets;

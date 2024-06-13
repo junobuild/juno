@@ -50,15 +50,6 @@ impl StorageStateStrategy for StorageState {
     fn get_config(&self) -> StorageConfig {
         get_config()
     }
-
-    fn get_asset(
-        &self,
-        collection: &CollectionKey,
-        full_path: &FullPath,
-        rule: &Rule,
-    ) -> Option<Asset> {
-        get_asset(collection, full_path, rule)
-    }
 }
 
 pub struct StorageUpload;
@@ -84,5 +75,14 @@ impl StorageUploadStrategy for StorageUpload {
         rule: &Rule,
     ) {
         insert_asset(collection, full_path, asset, rule);
+    }
+
+    fn get_asset(
+        &self,
+        collection: &CollectionKey,
+        full_path: &FullPath,
+        rule: &Rule,
+    ) -> Option<Asset> {
+        get_asset(collection, full_path, rule)
     }
 }

@@ -342,7 +342,7 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
 /// Storage
 
 #[update(guard = "caller_is_admin_controller")]
-fn init_upload_group() -> BatchGroupId {
+fn init_assets_upload_group() -> BatchGroupId {
     let caller = caller();
 
     create_batch_group(caller)
@@ -392,7 +392,7 @@ fn commit_asset_upload(commit: CommitBatch) {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn commit_upload_group(batch_group_id: BatchGroupId) -> Proposal {
+fn commit_assets_upload_group(batch_group_id: BatchGroupId) -> Proposal {
     let caller = caller();
 
     commit_assets_proposal_store(caller, &batch_group_id).unwrap_or_else(|e| trap(&e))

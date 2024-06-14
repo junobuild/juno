@@ -8,9 +8,9 @@ use std::cell::RefCell;
 const UPGRADES: MemoryId = MemoryId::new(0);
 const MISSION_CONTROLS: MemoryId = MemoryId::new(1);
 const PAYMENTS: MemoryId = MemoryId::new(2);
-const BATCH_GROUP_ASSETS: MemoryId = MemoryId::new(3);
-const BATCH_GROUP_CONTENT_CHUNKS: MemoryId = MemoryId::new(4);
-const BATCH_GROUP_PROPOSALS: MemoryId = MemoryId::new(5);
+const PROPOSAL_ASSETS: MemoryId = MemoryId::new(3);
+const PROPOSAL_CONTENT_CHUNKS: MemoryId = MemoryId::new(4);
+const PROPOSALS: MemoryId = MemoryId::new(5);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -31,24 +31,24 @@ fn get_memory_payments() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(PAYMENTS))
 }
 
-fn get_memory_batch_assets() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(BATCH_GROUP_ASSETS))
+fn get_memory_proposal_assets() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(PROPOSAL_ASSETS))
 }
 
-fn get_memory_batch_content_chunks() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(BATCH_GROUP_CONTENT_CHUNKS))
+fn get_memory_proposal_content_chunks() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(PROPOSAL_CONTENT_CHUNKS))
 }
 
-fn get_memory_batch_group_proposals() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(BATCH_GROUP_PROPOSALS))
+fn get_memory_proposals() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(PROPOSALS))
 }
 
 pub fn init_stable_state() -> StableState {
     StableState {
         mission_controls: StableBTreeMap::init(get_memory_mission_controls()),
         payments: StableBTreeMap::init(get_memory_payments()),
-        batch_assets: StableBTreeMap::init(get_memory_batch_assets()),
-        batch_content_chunks: StableBTreeMap::init(get_memory_batch_content_chunks()),
-        batch_group_proposals: StableBTreeMap::init(get_memory_batch_group_proposals()),
+        proposal_assets: StableBTreeMap::init(get_memory_proposal_assets()),
+        proposal_content_chunks: StableBTreeMap::init(get_memory_proposal_content_chunks()),
+        proposals: StableBTreeMap::init(get_memory_proposals()),
     }
 }

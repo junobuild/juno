@@ -8,39 +8,37 @@ pub mod state {
     use junobuild_storage::types::store::{Asset, EncodingType};
     use serde::Serialize;
 
-    pub type BatchGroupAssetsStable = StableBTreeMap<BatchGroupStableKey, Asset, Memory>;
-    pub type BatchGroupContentChunksStable =
-        StableBTreeMap<BatchGroupStableEncodingChunkKey, Blob, Memory>;
-    pub type BatchGroupProposalsStable =
-    StableBTreeMap<BatchGroupProposalStableKey, BatchGroupProposal, Memory>;
+    pub type ProposalAssetsStable = StableBTreeMap<ProposalAssetKey, Asset, Memory>;
+    pub type ProposalContentChunksStable = StableBTreeMap<ProposalContentChunkKey, Blob, Memory>;
+    pub type ProposalsStable = StableBTreeMap<ProposalKey, Proposal, Memory>;
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct BatchGroupStableKey {
+    pub struct ProposalAssetKey {
         pub batch_group_id: BatchGroupId,
         pub collection: CollectionKey,
         pub full_path: FullPath,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct BatchGroupStableEncodingChunkKey {
+    pub struct ProposalContentChunkKey {
         pub full_path: FullPath,
         pub encoding_type: EncodingType,
         pub chunk_index: usize,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct BatchGroupProposalStableKey {
+    pub struct ProposalKey {
         pub batch_group_id: BatchGroupId,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct BatchGroupProposal {
+    pub struct Proposal {
         pub evidence: Hash,
-        pub status: BatchGroupProposalStatus,
+        pub status: ProposalStatus,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
-    pub enum BatchGroupProposalStatus {
+    pub enum ProposalStatus {
         Open,
         Rejected,
         Accepted,

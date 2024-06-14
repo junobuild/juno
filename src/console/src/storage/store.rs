@@ -2,7 +2,7 @@ use crate::storage::certified_assets::runtime::init_certified_assets as init_run
 use crate::storage::state::heap::{
     delete_domain, get_asset, get_config, get_domain, get_domains, insert_config, insert_domain,
 };
-use crate::storage::state::stable::get_batch_groups_assets;
+use crate::storage::state::stable::get_proposal_assets;
 use crate::storage::strategy_impls::StorageState;
 use candid::Principal;
 use junobuild_collections::types::rules::Memory;
@@ -111,7 +111,7 @@ fn secure_commit_batch_group(
         return Err(ERROR_CANNOT_COMMIT_BATCH_GROUP.to_string());
     }
 
-    let batch_groups_assets = get_batch_groups_assets(batch_group_id);
+    let batch_groups_assets = get_proposal_assets(batch_group_id);
 
     let mut hasher = Sha256::new();
 

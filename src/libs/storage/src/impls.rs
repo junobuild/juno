@@ -4,7 +4,7 @@ use crate::types::config::{
 };
 use crate::types::interface::{AssetEncodingNoContent, AssetNoContent};
 use crate::types::state::StorageHeapState;
-use crate::types::store::{Asset, AssetEncoding};
+use crate::types::store::{Asset, AssetEncoding, Batch, BatchExpiry, BatchGroup};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
@@ -12,6 +12,7 @@ use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::{Blob, Compare};
+use junobuild_shared::types::state::Timestamp;
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 use std::cmp::Ordering;
@@ -146,5 +147,17 @@ impl Compare for Asset {
 
     fn cmp_created_at(&self, other: &Self) -> Ordering {
         self.created_at.cmp(&other.created_at)
+    }
+}
+
+impl BatchExpiry for Batch {
+    fn expires_at(&self) -> Timestamp {
+        self.expires_at
+    }
+}
+
+impl BatchExpiry for BatchGroup {
+    fn expires_at(&self) -> Timestamp {
+        self.expires_at
     }
 }

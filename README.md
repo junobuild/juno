@@ -6,9 +6,10 @@
   <br />
   <br />
 
-  [![GitHub release](https://img.shields.io/github/release/junobuild/juno/all?logo=GitHub&style=flat-square&color=7888ff)](https://github.com/junobuild/juno/releases/latest)
-  [![GitHub CI Checks Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/checks.yml?logo=github&label=CI%20checks&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/checks.yml)
-  [![GitHub CI Tests Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/tests.yml?logo=github&label=CI%20tests&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/tests.yml)
+[![GitHub release](https://img.shields.io/github/release/junobuild/juno/all?logo=GitHub&style=flat-square&color=7888ff)](https://github.com/junobuild/juno/releases/latest)
+[![GitHub CI Checks Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/checks.yml?logo=github&label=CI%20checks&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/checks.yml)
+[![GitHub CI Tests Workflow Status](https://img.shields.io/github/actions/workflow/status/junobuild/juno/tests.yml?logo=github&label=CI%20tests&style=flat-square)](https://github.com/junobuild/juno/actions/workflows/tests.yml)
+
 </div>
 
 ## 🚀 Introduction

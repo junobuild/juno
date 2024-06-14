@@ -2,7 +2,7 @@ use crate::types::config::StorageConfig;
 use crate::types::domain::CustomDomains;
 use crate::types::runtime_state::BatchId;
 use crate::types::state::FullPath;
-use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding};
+use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding, Batch};
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -68,14 +68,7 @@ pub trait StorageUploadStrategy {
         rule: &Rule,
     );
 
-    fn insert_asset(
-        &self,
-        batch_id: &BatchId,
-        collection: &CollectionKey,
-        full_path: &FullPath,
-        asset: &Asset,
-        rule: &Rule,
-    );
+    fn insert_asset(&self, batch: &Batch, asset: &Asset, rule: &Rule) -> Result<(), String>;
 
     fn get_asset(
         &self,

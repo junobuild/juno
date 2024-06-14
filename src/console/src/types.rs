@@ -1,6 +1,6 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{BatchAssetsStable, BatchContentChunksStable};
+    use crate::storage::types::state::{BatchGroupAssetsStable, BatchGroupContentChunksStable};
     use crate::types::ledger::Payment;
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
@@ -31,8 +31,8 @@ pub mod state {
     pub struct StableState {
         pub mission_controls: MissionControlsStable,
         pub payments: PaymentsStable,
-        pub batch_assets: BatchAssetsStable,
-        pub batch_content_chunks: BatchContentChunksStable,
+        pub batch_assets: BatchGroupAssetsStable,
+        pub batch_content_chunks: BatchGroupContentChunksStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

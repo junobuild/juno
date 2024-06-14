@@ -2,7 +2,7 @@ use crate::storage::state::heap::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset,
 };
 use crate::storage::state::stable::{
-    get_batch_asset, insert_batch_asset, insert_batch_asset_encoding,
+    get_batch_group_asset, insert_batch_group_asset, insert_batch_group_asset_encoding,
 };
 use crate::storage::state::utils::get_content_chunks;
 use crate::storage::store::get_public_asset;
@@ -16,7 +16,7 @@ use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::runtime_state::BatchId;
 use junobuild_storage::types::state::FullPath;
-use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding};
+use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding, Batch};
 
 pub struct StorageAssertions;
 
@@ -103,18 +103,22 @@ impl StorageUploadStrategy for StorageUpload {
         asset: &mut Asset,
         _rule: &Rule,
     ) {
-        insert_batch_asset_encoding(full_path, encoding_type, encoding, asset);
+        insert_batch_group_asset_encoding(full_path, encoding_type, encoding, asset);
     }
 
-    fn insert_asset(
-        &self,
-        batch_id: &BatchId,
-        collection: &CollectionKey,
-        full_path: &FullPath,
-        asset: &Asset,
-        _rule: &Rule,
-    ) {
-        insert_batch_asset(batch_id, collection, full_path, asset);
+    fn insert_asset(&self, batch: &Batch, asset: &Asset, _rule: &Rule) -> Result<(), String> {
+        match &batch.batch_group_id {
+            Some(batch_group_id) => {
+                insert_batch_group_asset(
+                    batch_group_id,
+                    &batch.key.collection,
+                    &batch.key.full_path,
+                    asset,
+                );
+                Ok(())
+            }
+            None => Err("Cannot insert asset to unknown batch group id.".to_string()),
+        }
     }
 
     fn get_asset(
@@ -124,7 +128,7 @@ impl StorageUploadStrategy for StorageUpload {
         full_path: &FullPath,
         _rule: &Rule,
     ) -> Option<Asset> {
-        let asset = get_batch_asset(batch_id, collection, full_path);
+        let asset = get_batch_group_asset(batch_id, collection, full_path);
 
         match asset {
             Some(asset) => Some(asset),

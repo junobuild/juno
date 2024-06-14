@@ -464,13 +464,7 @@ fn commit_chunks(
         rule,
     );
 
-    storage_upload.insert_asset(
-        &batch_id,
-        &batch.clone().key.collection,
-        &batch.clone().key.full_path,
-        &asset,
-        rule,
-    );
+    storage_upload.insert_asset(batch, &asset, rule)?;
 
     clear_runtime_batch(&batch_id, &chunk_ids);
 

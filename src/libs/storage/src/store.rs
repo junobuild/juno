@@ -55,16 +55,12 @@ pub fn create_batch(
 
     assert_description_length(&init.description)?;
 
-    assert_batch_group(caller, &batch_group_id)?;
-
     // Assert supported encoding type
     get_encoding_type(&init.encoding_type)?;
 
-    let batch_id = create_batch_impl(caller, init);
+    extend_group_batch_expiry(caller, &batch_group_id)?;
 
-    group_batch(&batch_id, &batch_group_id)?;
-
-    Ok(batch_id)
+    Ok(create_batch_impl(caller, init, batch_group_id))
 }
 
 fn create_batch_group_impl(caller: Principal) -> BatchId {
@@ -80,7 +76,6 @@ fn create_batch_group_impl(caller: Principal) -> BatchId {
             BatchGroup {
                 owner: caller,
                 expires_at: now + BATCH_EXPIRY_NANOS,
-                batch_ids: Vec::new(),
             },
         );
 
@@ -98,6 +93,7 @@ fn create_batch_impl(
         full_path,
         description,
     }: InitAssetKey,
+    batch_group_id: Option<BatchGroupId>,
 ) -> BatchId {
     let now = time();
 
@@ -119,6 +115,7 @@ fn create_batch_impl(
             &NEXT_BATCH_ID,
             Batch {
                 key,
+                batch_group_id,
                 expires_at: now + BATCH_EXPIRY_NANOS,
                 encoding_type,
             },
@@ -128,16 +125,17 @@ fn create_batch_impl(
     }
 }
 
-fn group_batch(
-    batch_id: &BatchId,
+fn extend_group_batch_expiry(
+    caller: Principal,
     batch_group_id: &Option<BatchGroupId>,
 ) -> Result<(), &'static str> {
     if let Some(batch_group_id) = batch_group_id {
-        let mut batch_group = get_runtime_batch_group(batch_group_id)
-            .ok_or("Batch was committed but corresponding batch group was not found.")?;
+        let mut batch_group =
+            get_runtime_batch_group(batch_group_id).ok_or("Batch group not found.")?;
+
+        assert_batch_group(caller, &batch_group)?;
 
         batch_group.expires_at = time() + BATCH_EXPIRY_NANOS;
-        batch_group.batch_ids.push(batch_id.clone());
 
         insert_batch_group(batch_group_id, batch_group);
     }
@@ -168,9 +166,8 @@ pub fn create_chunk(
             insert_runtime_batch(
                 &batch_id,
                 Batch {
-                    key: b.key.clone(),
                     expires_at: now + BATCH_EXPIRY_NANOS,
-                    encoding_type: b.encoding_type,
+                    ..b
                 },
             );
 
@@ -248,17 +245,9 @@ fn assert_key(
     Ok(())
 }
 
-fn assert_batch_group(
-    caller: Principal,
-    batch_group_id: &Option<BatchGroupId>,
-) -> Result<(), &'static str> {
-    if let Some(batch_group_id) = batch_group_id {
-        let batch_group =
-            get_runtime_batch_group(batch_group_id).ok_or("Batch group not found.")?;
-
-        if principal_not_equal(caller, batch_group.owner) {
-            return Err("Caller not allowed to upload data for batch group.");
-        }
+fn assert_batch_group(caller: Principal, batch_group: &BatchGroup) -> Result<(), &'static str> {
+    if principal_not_equal(caller, batch_group.owner) {
+        return Err("Caller not allowed to upload data for batch group.");
     }
 
     Ok(())

@@ -1,4 +1,5 @@
 pub mod certification;
+pub mod certified_assets;
 pub mod constants;
 pub mod http;
 pub mod impls;

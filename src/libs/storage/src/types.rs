@@ -120,6 +120,10 @@ pub mod store {
         pub version: Option<Version>,
     }
 
+    pub trait BatchExpiry {
+        fn expires_at(&self) -> Timestamp;
+    }
+
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct BatchGroup {
         pub owner: UserId,

@@ -5,8 +5,9 @@ use crate::types::config::StorageConfig;
 use crate::types::runtime_state::{
     BatchGroupId, BatchGroups, BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState,
 };
-use crate::types::store::{Asset, Batch, BatchGroup, Chunk};
+use crate::types::store::{Asset, Batch, BatchExpiry, BatchGroup, Chunk};
 use ic_cdk::api::time;
+use std::collections::HashMap;
 
 /// Certified assets
 
@@ -67,10 +68,13 @@ pub fn get_batch_group(batch_group_id: &BatchGroupId) -> Option<BatchGroup> {
 
 pub fn get_batch(batch_id: &BatchId) -> Option<Batch> {
     STATE.with(|state| {
-        // TODO: improve
-        let batches = state.borrow().runtime.storage.batches.clone();
-        let batch = batches.get(batch_id);
-        batch.cloned()
+        state
+            .borrow()
+            .runtime
+            .storage
+            .batches
+            .get(batch_id)
+            .cloned()
     })
 }
 
@@ -123,34 +127,33 @@ fn insert_batch_impl(batch_id: &BatchId, batch: Batch, batches: &mut Batches) {
 }
 
 fn clear_expired_batch_groups_impl(batch_groups: &mut BatchGroups) {
+    clear_expired_items(batch_groups);
+}
+
+fn clear_expired_batches_impl(batches: &mut Batches) {
+    clear_expired_items(batches);
+}
+
+fn clear_expired_items<K, V>(batches: &mut HashMap<K, V>)
+where
+    K: Clone + Eq + std::hash::Hash,
+    V: BatchExpiry,
+{
     let now = time();
 
-    let expired_batch_group_ids: Vec<BatchGroupId> = batch_groups
+    let expired_ids: Vec<K> = batches
         .iter()
-        .filter_map(|(batch_group_id, batch_group)| {
-            if now > batch_group.expires_at {
-                Some(batch_group_id.clone())
+        .filter_map(|(id, item)| {
+            if now > item.expires_at() {
+                Some(id.clone())
             } else {
                 None
             }
         })
         .collect();
 
-    for batch_group_id in expired_batch_group_ids {
-        batch_groups.remove(&batch_group_id);
-    }
-}
-
-fn clear_expired_batches_impl(batches: &mut Batches) {
-    let now = time();
-
-    // TODO: improve
-    let clone_batches = batches.clone();
-
-    for (batch_id, batch) in clone_batches.iter() {
-        if now > batch.expires_at {
-            batches.remove(batch_id);
-        }
+    for id in expired_ids {
+        batches.remove(&id);
     }
 }
 

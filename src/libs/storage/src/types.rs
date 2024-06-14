@@ -64,7 +64,7 @@ pub mod runtime_state {
 pub mod store {
     use crate::http::types::HeaderField;
     use crate::types::interface::CommitBatch;
-    use crate::types::runtime_state::BatchId;
+    use crate::types::runtime_state::{BatchGroupId, BatchId};
     use crate::types::state::FullPath;
     use candid::CandidType;
     use ic_certification::Hash;
@@ -128,12 +128,12 @@ pub mod store {
     pub struct BatchGroup {
         pub owner: UserId,
         pub expires_at: Timestamp,
-        pub batch_ids: Vec<BatchId>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Batch {
         pub key: AssetKey,
+        pub batch_group_id: Option<BatchGroupId>,
         pub expires_at: Timestamp,
         pub encoding_type: Option<EncodingType>,
     }

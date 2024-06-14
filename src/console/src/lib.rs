@@ -14,6 +14,7 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
+use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     delete_domain_store, get_config_store, get_custom_domains_store, set_config_store,
     set_domain_store,
@@ -64,7 +65,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
-use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();

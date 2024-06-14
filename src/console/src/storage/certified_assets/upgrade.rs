@@ -1,7 +1,7 @@
+use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use ic_cdk::spawn;
 use ic_cdk_timers::set_timer;
 use std::time::Duration;
-use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 
 /// If required, building the certification asset hashes is something we can also initiate "manually."
 /// This is why we can avoid blocking the post_upgrade process. That way, the execution instructions are specifically scoped to the operation.

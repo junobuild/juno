@@ -54,11 +54,14 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;
-use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
+use junobuild_storage::store::{
+    commit_batch as commit_batch_storage, create_batch, create_batch_group, create_chunk,
+};
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{
     CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::state::StorageHeapState;
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
@@ -338,13 +341,19 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
 /// Storage
 
 #[update(guard = "caller_is_admin_controller")]
-fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
+fn init_upload_group() -> BatchGroupId {
+    let caller = caller();
+
+    create_batch_group(caller)
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn init_asset_upload(init: InitAssetKey, batch_group_id: BatchGroupId) -> InitUploadResult {
     let caller = caller();
 
     let controllers = get_controllers();
 
-    // TODO: use batch_group_id
-    let result = create_batch(caller, &controllers, init, None);
+    let result = create_batch(caller, &controllers, init, Some(batch_group_id));
 
     match result {
         Ok(batch_id) => InitUploadResult { batch_id },

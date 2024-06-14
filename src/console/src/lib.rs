@@ -14,6 +14,7 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
+use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     delete_domain_store, get_config_store, get_custom_domains_store, set_config_store,
     set_domain_store,
@@ -125,6 +126,8 @@ fn post_upgrade() {
     //     .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
 
     // STATE.with(|s| *s.borrow_mut() = state);
+
+    defer_init_certified_assets();
 }
 
 /// Mission control center and satellite releases and wasm

@@ -1,4 +1,4 @@
-mod certified_assets;
+pub mod certified_assets;
 mod impls;
 mod state;
 pub mod store;

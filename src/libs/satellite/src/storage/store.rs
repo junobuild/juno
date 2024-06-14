@@ -468,7 +468,7 @@ fn secure_create_batch_impl(
         return Err(UPLOAD_NOT_ALLOWED.to_string());
     }
 
-    create_batch(caller, controllers, init)
+    create_batch(caller, controllers, init, None)
 }
 
 ///

@@ -4,17 +4,19 @@ use crate::constants::{
 };
 use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
 use crate::runtime::{
-    clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
+    clear_batch as clear_runtime_batch,
+    clear_expired_batch_groups as clear_expired_runtime_batch_groups,
+    clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks, get_batch as get_runtime_batch,
-    get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
-    insert_chunk as insert_runtime_chunk,
+    get_batch_group as get_runtime_batch_group, get_chunk as get_runtime_chunk,
+    insert_batch as insert_runtime_batch, insert_batch_group, insert_chunk as insert_runtime_chunk,
 };
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy};
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
-use crate::types::runtime_state::{BatchId, ChunkId};
+use crate::types::runtime_state::{BatchGroupId, BatchId, ChunkId};
 use crate::types::state::FullPath;
 use crate::types::store::{
-    Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType,
+    Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, BatchGroup, Chunk, EncodingType,
 };
 use candid::Principal;
 use ic_cdk::api::time;
@@ -35,13 +37,19 @@ use std::collections::HashMap;
 
 const BATCH_EXPIRY_NANOS: u64 = 300_000_000_000;
 
+static mut NEXT_BATCH_GROUP_ID: BatchGroupId = 0;
 static mut NEXT_BATCH_ID: BatchId = 0;
 static mut NEXT_CHUNK_ID: ChunkId = 0;
+
+pub fn create_batch_group(caller: Principal) -> BatchId {
+    create_batch_group_impl(caller)
+}
 
 pub fn create_batch(
     caller: Principal,
     controllers: &Controllers,
     init: InitAssetKey,
+    batch_group_id: Option<BatchGroupId>,
 ) -> Result<BatchId, String> {
     assert_key(caller, &init.full_path, &init.collection, controllers)?;
 
@@ -50,7 +58,32 @@ pub fn create_batch(
     // Assert supported encoding type
     get_encoding_type(&init.encoding_type)?;
 
-    Ok(create_batch_impl(caller, init))
+    let batch_id = create_batch_impl(caller, init);
+
+    group_batch(&batch_id, &batch_group_id)?;
+
+    Ok(batch_id)
+}
+
+fn create_batch_group_impl(caller: Principal) -> BatchId {
+    let now = time();
+
+    unsafe {
+        clear_expired_batches();
+
+        NEXT_BATCH_GROUP_ID += 1;
+
+        insert_batch_group(
+            &NEXT_BATCH_GROUP_ID,
+            BatchGroup {
+                owner: caller,
+                expires_at: now + BATCH_EXPIRY_NANOS,
+                batch_ids: Vec::new(),
+            },
+        );
+
+        NEXT_BATCH_GROUP_ID
+    }
 }
 
 fn create_batch_impl(
@@ -91,6 +124,23 @@ fn create_batch_impl(
 
         NEXT_BATCH_ID
     }
+}
+
+fn group_batch(
+    batch_id: &BatchId,
+    batch_group_id: &Option<BatchGroupId>,
+) -> Result<(), &'static str> {
+    if let Some(batch_group_id) = batch_group_id {
+        let mut batch_group = get_runtime_batch_group(batch_group_id)
+            .ok_or("Batch was committed but corresponding batch group was not found.")?;
+
+        batch_group.expires_at = time() + BATCH_EXPIRY_NANOS;
+        batch_group.batch_ids.push(batch_id.clone());
+
+        insert_batch_group(batch_group_id, batch_group);
+    }
+
+    Ok(())
 }
 
 pub fn create_chunk(
@@ -437,6 +487,9 @@ fn get_encoding_type(encoding_type: &Option<EncodingType>) -> Result<EncodingTyp
 }
 
 fn clear_expired_batches() {
+    // Remove expired batch groups
+    clear_expired_runtime_batch_groups();
+
     // Remove expired batches
     clear_expired_runtime_batches();
 

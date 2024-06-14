@@ -89,3 +89,20 @@ pub fn filter_collection_values<'a>(
         })
         .collect()
 }
+
+pub fn get_token_protected_asset(
+    asset: &Asset,
+    asset_token: &String,
+    token: Option<String>,
+) -> Option<Asset> {
+    match token {
+        None => None,
+        Some(token) => {
+            if &token == asset_token {
+                return Some(asset.clone());
+            }
+
+            None
+        }
+    }
+}

@@ -1,4 +1,3 @@
-use crate::storage::types::state::{AssetsHeap, StorageHeapState};
 use crate::types::state::HeapState;
 use crate::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
@@ -6,7 +5,7 @@ use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::{CollectionKey, DomainName};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
-use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
 use junobuild_storage::types::store::Asset;
 
 pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
@@ -38,8 +37,6 @@ fn delete_asset_impl(full_path: &FullPath, heap: &mut HeapState) -> Option<Asset
 
 /// Rules
 
-// TODO: almost same as satellite except get_storage()
-
 pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     let rule = STATE.with(|state| {
         let rules = &state.borrow().heap.get_storage().rules.clone();
@@ -58,8 +55,6 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
 /// Config
 ///
 
-// TODO: almost same as satellite except get_storage()
-
 pub fn get_config() -> StorageConfig {
     STATE.with(|state| state.borrow().heap.get_storage().config.clone())
 }
@@ -74,8 +69,6 @@ fn insert_config_impl(config: &StorageConfig, heap: &mut HeapState) {
 }
 
 /// Custom domains
-
-// TODO: almost same as satellite except get_storage()
 
 pub fn get_domains() -> CustomDomains {
     STATE.with(|state| state.borrow().heap.get_storage().custom_domains.clone())

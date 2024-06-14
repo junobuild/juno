@@ -2,7 +2,9 @@ use crate::certification::cert::update_certified_data;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::memory::STATE;
 use crate::types::config::StorageConfig;
-use crate::types::state::{BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState};
+use crate::types::runtime_state::{
+    BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState,
+};
 use crate::types::store::{Asset, Batch, Chunk};
 use ic_cdk::api::time;
 

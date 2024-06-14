@@ -2,6 +2,7 @@ use crate::constants::{
     ASSET_ENCODING_NO_COMPRESSION, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
 use crate::http::types::HeaderField;
+use crate::types::domain::CustomDomain;
 use crate::types::store::{Asset, AssetEncoding, AssetKey};
 use ic_cdk::api::time;
 use ic_cdk::id;
@@ -99,4 +100,27 @@ pub fn map_alternative_origins_asset(
     );
 
     asset
+}
+
+pub fn build_custom_domain(domain: Option<CustomDomain>, bn_id: &Option<String>) -> CustomDomain {
+    let now = time();
+
+    let created_at: Timestamp = match domain.clone() {
+        None => now,
+        Some(domain) => domain.created_at,
+    };
+
+    let version: Version = match domain {
+        None => INITIAL_VERSION,
+        Some(domain) => domain.version.unwrap_or_default() + 1,
+    };
+
+    let updated_at: Timestamp = now;
+
+    CustomDomain {
+        bn_id: bn_id.to_owned(),
+        created_at,
+        updated_at,
+        version: Some(version),
+    }
 }

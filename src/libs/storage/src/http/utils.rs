@@ -4,7 +4,7 @@ use crate::http::headers::{build_headers, build_redirect_headers};
 use crate::http::types::{CallbackFunc, HeaderField, StreamingCallbackToken, StreamingStrategy};
 use crate::memory::STATE;
 use crate::types::config::{StorageConfig, StorageConfigIFrame};
-use crate::types::state::StorageRuntimeState;
+use crate::types::runtime_state::StorageRuntimeState;
 use crate::types::store::{Asset, AssetEncoding, AssetKey, EncodingType};
 use ic_cdk::id;
 use junobuild_collections::types::rules::Memory;

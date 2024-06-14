@@ -1,14 +1,11 @@
 use crate::db::types::state::DbHeapState;
 use crate::memory::init_stable_state;
-use crate::storage::types::state::StorageHeapState;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ic_cdk::api::time;
-use junobuild_collections::constants::{DEFAULT_ASSETS_COLLECTIONS, DEFAULT_DB_COLLECTIONS};
+use junobuild_collections::constants::DEFAULT_DB_COLLECTIONS;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::types::state::Controllers;
-use junobuild_storage::types::config::{
-    StorageConfig, StorageConfigHeaders, StorageConfigRedirects, StorageConfigRewrites,
-};
+use junobuild_storage::types::state::StorageHeapState;
 use std::collections::{BTreeMap, HashMap};
 
 impl Default for State {
@@ -48,38 +45,10 @@ impl Default for HeapState {
             })),
         };
 
-        let storage: StorageHeapState = StorageHeapState {
-            assets: HashMap::new(),
-            rules: HashMap::from(DEFAULT_ASSETS_COLLECTIONS.map(|(collection, rule)| {
-                (
-                    collection.to_owned(),
-                    Rule {
-                        read: rule.read,
-                        write: rule.write,
-                        memory: Some(rule.memory.unwrap_or(Memory::Heap)),
-                        mutable_permissions: Some(rule.mutable_permissions.unwrap_or(false)),
-                        max_size: rule.max_size,
-                        max_capacity: rule.max_capacity,
-                        created_at: now,
-                        updated_at: now,
-                        version: None,
-                    },
-                )
-            })),
-            config: StorageConfig {
-                headers: StorageConfigHeaders::default(),
-                rewrites: StorageConfigRewrites::default(),
-                redirects: Some(StorageConfigRedirects::default()),
-                iframe: None,
-                raw_access: None,
-            },
-            custom_domains: HashMap::new(),
-        };
-
         Self {
             controllers: Controllers::default(),
             db,
-            storage,
+            storage: StorageHeapState::default(),
             authentication: None,
         }
     }

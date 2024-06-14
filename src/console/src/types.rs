@@ -1,8 +1,6 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{
-        BatchAssetsStable, BatchContentChunksStable, StorageHeapState,
-    };
+    use crate::storage::types::state::{BatchAssetsStable, BatchContentChunksStable};
     use crate::types::ledger::Payment;
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
@@ -10,6 +8,7 @@ pub mod state {
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Controllers, Timestamp};
     use junobuild_shared::types::state::{MissionControlId, UserId};
+    use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 

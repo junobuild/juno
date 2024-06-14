@@ -2,14 +2,12 @@ use crate::controllers::store::get_controllers;
 use crate::hooks::invoke_assert_delete_asset;
 use crate::memory::STATE;
 use candid::Principal;
-use ic_cdk::api::time;
 use junobuild_collections::assert_stores::{assert_permission, public_permission};
 use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::list::list_values;
-use junobuild_shared::types::state::{Controllers, Timestamp, Version};
+use junobuild_shared::types::state::Controllers;
 
 use crate::rules::assert_stores::is_known_user;
 use crate::storage::runtime::init_certified_assets as init_runtime_certified_assets;
@@ -35,12 +33,16 @@ use junobuild_storage::runtime::{
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
+use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
-use junobuild_storage::types::state::{BatchId, ChunkId, FullPath};
+use junobuild_storage::types::runtime_state::{BatchId, ChunkId};
+use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
-use junobuild_storage::utils::{filter_collection_values, filter_values, map_asset_no_content};
+use junobuild_storage::utils::{
+    filter_collection_values, filter_values, get_token_protected_asset, map_asset_no_content,
+};
 use junobuild_storage::well_known::update::update_custom_domains_asset;
+use junobuild_storage::well_known::utils::build_custom_domain;
 
 ///
 /// Getter, list and delete
@@ -216,23 +218,6 @@ pub fn get_public_asset_store(
                 protected_asset.map(|protected_asset| (protected_asset, memory))
             }
         },
-    }
-}
-
-fn get_token_protected_asset(
-    asset: &Asset,
-    asset_token: &String,
-    token: Option<String>,
-) -> Option<Asset> {
-    match token {
-        None => None,
-        Some(token) => {
-            if &token == asset_token {
-                return Some(asset.clone());
-            }
-
-            None
-        }
     }
 }
 
@@ -531,26 +516,7 @@ fn set_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(
 fn set_state_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
     let domain = get_state_domain(domain_name);
 
-    let now = time();
-
-    let created_at: Timestamp = match domain.clone() {
-        None => now,
-        Some(domain) => domain.created_at,
-    };
-
-    let version: Version = match domain {
-        None => INITIAL_VERSION,
-        Some(domain) => domain.version.unwrap_or_default() + 1,
-    };
-
-    let updated_at: Timestamp = now;
-
-    let custom_domain = CustomDomain {
-        bn_id: bn_id.to_owned(),
-        created_at,
-        updated_at,
-        version: Some(version),
-    };
+    let custom_domain = build_custom_domain(domain, bn_id);
 
     insert_state_domain(domain_name, &custom_domain);
 }

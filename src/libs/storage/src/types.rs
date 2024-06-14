@@ -1,8 +1,11 @@
 pub mod state {
-    use crate::certification::types::certified::CertifiedAssetHashes;
-    use crate::types::store::{Batch, Chunk};
+    use crate::types::config::StorageConfig;
+    use crate::types::domain::CustomDomains;
+    use crate::types::store::Asset;
+    use candid::{CandidType, Deserialize};
+    use junobuild_collections::types::rules::Rules;
     use junobuild_shared::types::core::Key;
-    use serde::{Deserialize, Serialize};
+    use serde::Serialize;
     use std::collections::HashMap;
 
     /// Represents the relative path of an asset in the storage.
@@ -11,6 +14,23 @@ pub mod state {
     ///
     /// `FullPath` is commonly used to identify the location of assets within a storage system.
     pub type FullPath = Key;
+
+    pub type AssetsHeap = HashMap<FullPath, Asset>;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct StorageHeapState {
+        pub assets: AssetsHeap,
+        pub rules: Rules,
+        pub config: StorageConfig,
+        pub custom_domains: CustomDomains,
+    }
+}
+
+pub mod runtime_state {
+    use crate::certification::types::certified::CertifiedAssetHashes;
+    use crate::types::store::{Batch, Chunk};
+    use serde::{Deserialize, Serialize};
+    use std::collections::HashMap;
 
     pub type Batches = HashMap<BatchId, Batch>;
     pub type Chunks = HashMap<ChunkId, Chunk>;
@@ -41,7 +61,8 @@ pub mod state {
 pub mod store {
     use crate::http::types::HeaderField;
     use crate::types::interface::CommitBatch;
-    use crate::types::state::{BatchId, FullPath};
+    use crate::types::runtime_state::BatchId;
+    use crate::types::state::FullPath;
     use candid::CandidType;
     use ic_certification::Hash;
     use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -118,7 +139,8 @@ pub mod interface {
     use serde::Serialize;
 
     use crate::http::types::HeaderField;
-    use crate::types::state::{BatchId, ChunkId, FullPath};
+    use crate::types::runtime_state::{BatchId, ChunkId};
+    use crate::types::state::FullPath;
     use crate::types::store::{AssetKey, EncodingType};
     use junobuild_shared::types::core::{Blob, CollectionKey};
 

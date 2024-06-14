@@ -2,9 +2,10 @@ pub mod state {
     use crate::auth::types::state::AuthenticationHeapState;
     use crate::db::types::state::{DbHeapState, DbStable};
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{AssetsStable, ContentChunksStable, StorageHeapState};
+    use crate::storage::types::state::{AssetsStable, ContentChunksStable};
     use candid::CandidType;
     use junobuild_shared::types::state::Controllers;
+    use junobuild_storage::types::state::StorageHeapState;
     use rand::rngs::StdRng;
     use serde::{Deserialize, Serialize};
 

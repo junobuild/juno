@@ -1,6 +1,7 @@
 use crate::types::config::StorageConfig;
 use crate::types::domain::CustomDomains;
-use crate::types::state::{BatchId, FullPath};
+use crate::types::runtime_state::BatchId;
+use crate::types::state::FullPath;
 use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding};
 use candid::Principal;
 use junobuild_collections::types::rules::{Memory, Rule};

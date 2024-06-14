@@ -11,7 +11,8 @@ use crate::runtime::{
 };
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy};
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
-use crate::types::state::{BatchId, ChunkId, FullPath};
+use crate::types::runtime_state::{BatchId, ChunkId};
+use crate::types::state::FullPath;
 use crate::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType,
 };

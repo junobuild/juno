@@ -177,7 +177,9 @@ describe('Satellite authentication', () => {
 			expect(responseBody).toEqual(
 				JSON.stringify({ alternativeOrigins: [...httpsUrls, canisterIdUrl] })
 			);
-			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([...httpsUrls, canisterIdUrl]);
+			expect(JSON.parse(responseBody)).toStrictEqual({
+				alternativeOrigins: [...httpsUrls, canisterIdUrl]
+			});
 		});
 
 		it('should not expose canister id if canister id is the derivation origin', async () => {

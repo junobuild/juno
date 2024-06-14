@@ -55,6 +55,8 @@ pub fn create_batch(
 
     assert_description_length(&init.description)?;
 
+    assert_batch_group(caller, &batch_group_id)?;
+
     // Assert supported encoding type
     get_encoding_type(&init.encoding_type)?;
 
@@ -241,6 +243,22 @@ fn assert_key(
         && !full_path.starts_with(&["/", collection, "/"].join(""))
     {
         return Err("Asset path must be prefixed with collection key.");
+    }
+
+    Ok(())
+}
+
+fn assert_batch_group(
+    caller: Principal,
+    batch_group_id: &Option<BatchGroupId>,
+) -> Result<(), &'static str> {
+    if let Some(batch_group_id) = batch_group_id {
+        let batch_group =
+            get_runtime_batch_group(batch_group_id).ok_or("Batch group not found.")?;
+
+        if principal_not_equal(caller, batch_group.owner) {
+            return Err("Caller not allowed to upload data for batch group.");
+        }
     }
 
     Ok(())

@@ -1,7 +1,7 @@
 use crate::memory::STATE;
 use crate::storage::strategy_impls::StorageState;
 use junobuild_storage::certification::types::certified::CertifiedAssetHashes;
-use junobuild_storage::certified_assets::extend_and_init_certified_assets as init_certified_assets_storage;
+use junobuild_storage::certified_assets::extend_and_init_certified_assets;
 use junobuild_storage::types::state::StorageHeapState;
 
 pub fn init_certified_assets() {
@@ -17,5 +17,5 @@ fn init_certified_assets_impl(storage: &StorageHeapState) {
         asset_hashes.insert(asset, config);
     }
 
-    init_certified_assets_storage(&mut asset_hashes, config, &StorageState)
+    extend_and_init_certified_assets(&mut asset_hashes, config, &StorageState)
 }

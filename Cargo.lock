@@ -260,6 +260,7 @@ dependencies = [
  "junobuild-storage",
  "serde",
  "serde_cbor",
+ "sha2",
 ]
 
 [[package]]

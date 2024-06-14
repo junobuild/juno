@@ -19,7 +19,8 @@ use std::collections::HashMap;
 
 impl Default for StorageHeapState {
     fn default() -> Self {
-        let now = 0; // Replace with actual timestamp logic
+        let now = time();
+
         StorageHeapState {
             assets: HashMap::new(),
             rules: HashMap::from(DEFAULT_ASSETS_COLLECTIONS.map(|(collection, rule)| {

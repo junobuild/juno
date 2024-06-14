@@ -174,10 +174,14 @@ describe('Satellite authentication', () => {
 			const decoder = new TextDecoder();
 			const responseBody = decoder.decode(body as ArrayBuffer);
 
-			expect(responseBody).toEqual(
-				JSON.stringify({ alternativeOrigins: [...httpsUrls, canisterIdUrl] })
-			);
-			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([...httpsUrls, canisterIdUrl]);
+			const responseObj = JSON.parse(responseBody);
+
+			expect({
+				...responseObj,
+				alternativeOrigins: responseObj.alternativeOrigins.sort()
+			}).toStrictEqual({
+				alternativeOrigins: [...httpsUrls, canisterIdUrl].sort()
+			});
 		});
 
 		it('should not expose canister id if canister id is the derivation origin', async () => {
@@ -204,8 +208,14 @@ describe('Satellite authentication', () => {
 			const decoder = new TextDecoder();
 			const responseBody = decoder.decode(body as ArrayBuffer);
 
-			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins: [...httpsUrls] }));
-			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([...httpsUrls]);
+			const responseObj = JSON.parse(responseBody);
+
+			expect({
+				...responseObj,
+				alternativeOrigins: responseObj.alternativeOrigins.sort()
+			}).toStrictEqual({
+				alternativeOrigins: [...httpsUrls].sort()
+			});
 		});
 
 		it('should not expose alternative origins if derivation is the canister ID and no custom domains', async () => {

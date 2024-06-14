@@ -28,13 +28,15 @@ pub mod state {
 
 pub mod runtime_state {
     use crate::certification::types::certified::CertifiedAssetHashes;
-    use crate::types::store::{Batch, Chunk};
+    use crate::types::store::{Batch, BatchGroup, Chunk};
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
+    pub type BatchGroups = HashMap<BatchGroupId, BatchGroup>;
     pub type Batches = HashMap<BatchId, Batch>;
     pub type Chunks = HashMap<ChunkId, Chunk>;
 
+    pub type BatchGroupId = u128;
     pub type BatchId = u128;
     pub type ChunkId = u128;
 
@@ -52,8 +54,9 @@ pub mod runtime_state {
 
     #[derive(Default, Clone)]
     pub struct StorageRuntimeState {
-        pub chunks: Chunks,
+        pub batch_groups: BatchGroups,
         pub batches: Batches,
+        pub chunks: Chunks,
         pub asset_hashes: CertifiedAssetHashes,
     }
 }
@@ -115,6 +118,13 @@ pub mod store {
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct BatchGroup {
+        pub owner: UserId,
+        pub expires_at: Timestamp,
+        pub batch_ids: Vec<BatchId>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

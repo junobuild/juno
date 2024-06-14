@@ -343,7 +343,8 @@ fn init_asset_upload(init: InitAssetKey) -> InitUploadResult {
 
     let controllers = get_controllers();
 
-    let result = create_batch(caller, &controllers, init);
+    // TODO: use batch_group_id
+    let result = create_batch(caller, &controllers, init, None);
 
     match result {
         Ok(batch_id) => InitUploadResult { batch_id },

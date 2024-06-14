@@ -1,4 +1,4 @@
-use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
+use crate::storage::certified_assets::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::heap::{
     delete_domain, get_asset, get_config, get_domain, get_domains, insert_config, insert_domain,
 };

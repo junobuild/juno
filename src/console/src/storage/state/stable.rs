@@ -1,13 +1,20 @@
-use std::borrow::Cow;
-use std::ops::RangeBounds;
-use junobuild_shared::serializers::deserialize_from_bytes;
-use crate::storage::types::state::{ProposalAssetKey, ProposalAssetsStable, ProposalContentChunkKey, ProposalContentChunksStable};
+use crate::storage::types::state::{
+    Proposal, ProposalAssetKey, ProposalAssetsStable, ProposalContentChunkKey,
+    ProposalContentChunksStable, ProposalKey, ProposalsStable,
+};
 use crate::STATE;
+use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_storage::stable_utils::insert_proposal_asset_encoding_stable;
 use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
+use std::borrow::Cow;
+use std::ops::RangeBounds;
+
+pub fn get_proposal(batch_group_id: &BatchGroupId) -> Option<Proposal> {
+    STATE.with(|state| get_proposal_impl(batch_group_id, &state.borrow().stable.proposals))
+}
 
 pub fn get_proposal_asset(
     batch_group_id: &BatchGroupId,
@@ -24,10 +31,7 @@ pub fn get_proposal_asset(
     })
 }
 
-pub fn get_proposal_content_chunks(
-    encoding: &AssetEncoding,
-    chunk_index: usize,
-) -> Option<Blob> {
+pub fn get_proposal_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Option<Blob> {
     STATE.with(|state| {
         get_proposal_content_chunks_impl(
             encoding,
@@ -62,7 +66,9 @@ fn get_proposal_assets_impl(
         .collect()
 }
 
-fn filter_proposal_assets_range(batch_group_id: &BatchGroupId) -> impl RangeBounds<ProposalAssetKey> {
+fn filter_proposal_assets_range(
+    batch_group_id: &BatchGroupId,
+) -> impl RangeBounds<ProposalAssetKey> {
     let start_key = ProposalAssetKey {
         batch_group_id: *batch_group_id,
         collection: "".to_string(),
@@ -78,13 +84,24 @@ fn filter_proposal_assets_range(batch_group_id: &BatchGroupId) -> impl RangeBoun
     start_key..end_key
 }
 
+fn get_proposal_impl(
+    batch_group_id: &BatchGroupId,
+    proposals: &ProposalsStable,
+) -> Option<Proposal> {
+    proposals.get(&stable_proposal_key(batch_group_id))
+}
+
 fn get_proposal_asset_impl(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
     full_path: &FullPath,
     assets: &ProposalAssetsStable,
 ) -> Option<Asset> {
-    assets.get(&stable_proposal_key(batch_group_id, collection, full_path))
+    assets.get(&stable_proposal_asset_key(
+        batch_group_id,
+        collection,
+        full_path,
+    ))
 }
 
 pub fn insert_proposal_asset_encoding(
@@ -122,6 +139,24 @@ pub fn insert_proposal_asset(
     })
 }
 
+pub fn insert_proposal(batch_group_id: &BatchGroupId, proposal: &Proposal) {
+    STATE.with(|state| {
+        insert_proposal_impl(
+            batch_group_id,
+            proposal,
+            &mut state.borrow_mut().stable.proposals,
+        )
+    })
+}
+
+fn insert_proposal_impl(
+    batch_group_id: &BatchGroupId,
+    proposal: &Proposal,
+    proposals: &mut ProposalsStable,
+) {
+    proposals.insert(stable_proposal_key(batch_group_id), proposal.clone());
+}
+
 fn insert_proposal_asset_impl(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
@@ -130,12 +165,18 @@ fn insert_proposal_asset_impl(
     assets: &mut ProposalAssetsStable,
 ) {
     assets.insert(
-        stable_proposal_key(batch_group_id, collection, full_path),
+        stable_proposal_asset_key(batch_group_id, collection, full_path),
         asset.clone(),
     );
 }
 
-fn stable_proposal_key(
+fn stable_proposal_key(batch_group_id: &BatchGroupId) -> ProposalKey {
+    ProposalKey {
+        batch_group_id: *batch_group_id,
+    }
+}
+
+fn stable_proposal_asset_key(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
     full_path: &FullPath,

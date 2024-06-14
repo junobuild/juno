@@ -1,6 +1,8 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{ProposalAssetsStable, ProposalContentChunksStable, ProposalsStable};
+    use crate::storage::types::state::{
+        ProposalAssetsStable, ProposalContentChunksStable, ProposalsStable,
+    };
     use crate::types::ledger::Payment;
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};

@@ -202,7 +202,7 @@ impl Hashable for AssetEncoding {
         let mut hasher = Sha256::new();
         hasher.update(self.modified.to_le_bytes());
         hasher.update(self.total_length.to_le_bytes());
-        hasher.update(&self.sha256);
+        hasher.update(self.sha256);
         hasher.finalize().into()
     }
 }

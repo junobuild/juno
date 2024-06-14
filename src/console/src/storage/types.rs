@@ -8,19 +8,18 @@ pub mod state {
     use junobuild_storage::types::store::{Asset, EncodingType};
     use serde::Serialize;
 
-    pub type BatchGroupAssetsStable = StableBTreeMap<BatchGroupStableKey, Asset, Memory>;
-    pub type BatchGroupContentChunksStable =
-        StableBTreeMap<BatchGroupStableEncodingChunkKey, Blob, Memory>;
+    pub type ProposalAssetsStable = StableBTreeMap<ProposalAssetStableKey, Asset, Memory>;
+    pub type ProposalContentChunksStable = StableBTreeMap<ProposalContentChunkKey, Blob, Memory>;
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct BatchGroupStableKey {
+    pub struct ProposalAssetStableKey {
         pub batch_group_id: BatchGroupId,
         pub collection: CollectionKey,
         pub full_path: FullPath,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct BatchGroupStableEncodingChunkKey {
+    pub struct ProposalContentChunkKey {
         pub full_path: FullPath,
         pub encoding_type: EncodingType,
         pub chunk_index: usize,

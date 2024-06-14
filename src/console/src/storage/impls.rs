@@ -1,10 +1,10 @@
-use crate::storage::types::state::{BatchGroupStableEncodingChunkKey, BatchGroupStableKey};
+use crate::storage::types::state::{ProposalAssetStableKey, ProposalContentChunkKey};
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use std::borrow::Cow;
 
-impl Storable for BatchGroupStableKey {
+impl Storable for ProposalAssetStableKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }
@@ -16,7 +16,7 @@ impl Storable for BatchGroupStableKey {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl Storable for BatchGroupStableEncodingChunkKey {
+impl Storable for ProposalContentChunkKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }

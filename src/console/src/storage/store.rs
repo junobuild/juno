@@ -119,7 +119,9 @@ fn secure_commit_batch_group(
         hasher.update(key.hash());
         hasher.update(asset.hash());
 
-        // TODO: hash encoding
+        for (_, encoding) in asset.encodings {
+            hasher.update(encoding.hash());
+        }
     }
 
     // TODO: save hash

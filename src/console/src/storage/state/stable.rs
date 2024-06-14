@@ -1,14 +1,14 @@
-use crate::storage::types::state::{
-    BatchGroupAssetsStable, BatchGroupStableEncodingChunkKey, BatchGroupStableKey,
-};
+use std::borrow::Cow;
+use crate::storage::types::state::{BatchGroupAssetsStable, BatchGroupContentChunksStable, BatchGroupStableEncodingChunkKey, BatchGroupStableKey};
 use crate::STATE;
 use junobuild_shared::list::range_collection_end;
-use junobuild_shared::types::core::CollectionKey;
+use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::ops::RangeBounds;
+use junobuild_shared::serializers::deserialize_from_bytes;
 
 pub fn get_batch_group_asset(
     batch_group_id: &BatchGroupId,
@@ -23,6 +23,29 @@ pub fn get_batch_group_asset(
             &state.borrow().stable.batch_assets,
         )
     })
+}
+
+pub fn get_batch_group_content_chunks(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+) -> Option<Blob> {
+    STATE.with(|state| {
+        get_batch_group_content_chunks_impl(
+            encoding,
+            chunk_index,
+            &state.borrow().stable.batch_content_chunks,
+        )
+    })
+}
+
+fn get_batch_group_content_chunks_impl(
+    encoding: &AssetEncoding,
+    chunk_index: usize,
+    content_chunks: &BatchGroupContentChunksStable,
+) -> Option<Blob> {
+    let key: BatchGroupStableEncodingChunkKey =
+        deserialize_from_bytes(Cow::Owned(encoding.content_chunks[chunk_index].clone()));
+    content_chunks.get(&key)
 }
 
 pub fn get_batch_groups_assets(batch_group_id: &BatchGroupId) -> Vec<(BatchGroupStableKey, Asset)> {

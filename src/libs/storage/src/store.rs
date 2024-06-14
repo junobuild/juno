@@ -41,7 +41,7 @@ static mut NEXT_BATCH_GROUP_ID: BatchGroupId = 0;
 static mut NEXT_BATCH_ID: BatchId = 0;
 static mut NEXT_CHUNK_ID: ChunkId = 0;
 
-pub fn create_batch_group(caller: Principal) -> BatchId {
+pub fn create_batch_group(caller: Principal) -> BatchGroupId {
     create_batch_group_impl(caller)
 }
 

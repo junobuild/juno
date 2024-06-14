@@ -8,8 +8,9 @@ use std::cell::RefCell;
 const UPGRADES: MemoryId = MemoryId::new(0);
 const MISSION_CONTROLS: MemoryId = MemoryId::new(1);
 const PAYMENTS: MemoryId = MemoryId::new(2);
-const BATCH_ASSETS: MemoryId = MemoryId::new(3);
-const BATCH_CONTENT_CHUNKS: MemoryId = MemoryId::new(4);
+const BATCH_GROUP_ASSETS: MemoryId = MemoryId::new(3);
+const BATCH_GROUP_CONTENT_CHUNKS: MemoryId = MemoryId::new(4);
+const BATCH_GROUP_PROPOSALS: MemoryId = MemoryId::new(5);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -31,11 +32,15 @@ fn get_memory_payments() -> Memory {
 }
 
 fn get_memory_batch_assets() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(BATCH_ASSETS))
+    MEMORY_MANAGER.with(|m| m.borrow().get(BATCH_GROUP_ASSETS))
 }
 
 fn get_memory_batch_content_chunks() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(BATCH_CONTENT_CHUNKS))
+    MEMORY_MANAGER.with(|m| m.borrow().get(BATCH_GROUP_CONTENT_CHUNKS))
+}
+
+fn get_memory_batch_group_proposals() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(BATCH_GROUP_PROPOSALS))
 }
 
 pub fn init_stable_state() -> StableState {
@@ -44,5 +49,6 @@ pub fn init_stable_state() -> StableState {
         payments: StableBTreeMap::init(get_memory_payments()),
         batch_assets: StableBTreeMap::init(get_memory_batch_assets()),
         batch_content_chunks: StableBTreeMap::init(get_memory_batch_content_chunks()),
+        batch_group_proposals: StableBTreeMap::init(get_memory_batch_group_proposals()),
     }
 }

@@ -2,7 +2,9 @@ use crate::certification::cert::update_certified_data;
 use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::memory::STATE;
 use crate::types::config::StorageConfig;
-use crate::types::runtime_state::{BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState, BatchGroups, BatchGroupId};
+use crate::types::runtime_state::{
+    BatchGroupId, BatchGroups, BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState,
+};
 use crate::types::store::{Asset, Batch, BatchGroup, Chunk};
 use ic_cdk::api::time;
 
@@ -53,7 +55,13 @@ fn delete_certified_asset_impl(asset: &Asset, runtime: &mut RuntimeState) {
 
 pub fn get_batch_group(batch_group_id: &BatchGroupId) -> Option<BatchGroup> {
     STATE.with(|state| {
-        state.borrow().runtime.storage.batch_groups.get(batch_group_id).cloned()
+        state
+            .borrow()
+            .runtime
+            .storage
+            .batch_groups
+            .get(batch_group_id)
+            .cloned()
     })
 }
 
@@ -87,7 +95,9 @@ pub fn insert_batch(batch_id: &BatchId, batch: Batch) {
 }
 
 pub fn clear_expired_batch_groups() {
-    STATE.with(|state| clear_expired_batch_groups_impl(&mut state.borrow_mut().runtime.storage.batch_groups));
+    STATE.with(|state| {
+        clear_expired_batch_groups_impl(&mut state.borrow_mut().runtime.storage.batch_groups)
+    });
 }
 
 pub fn clear_expired_batches() {
@@ -100,7 +110,11 @@ pub fn clear_batch(batch_id: &BatchId, chunk_ids: &[ChunkId]) {
     });
 }
 
-fn insert_batch_group_impl(batch_group_id: &BatchGroupId, batch: BatchGroup, batch_groups: &mut BatchGroups) {
+fn insert_batch_group_impl(
+    batch_group_id: &BatchGroupId,
+    batch: BatchGroup,
+    batch_groups: &mut BatchGroups,
+) {
     batch_groups.insert(*batch_group_id, batch);
 }
 

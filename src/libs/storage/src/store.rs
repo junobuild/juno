@@ -3,12 +3,21 @@ use crate::constants::{
     WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
 use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
-use crate::runtime::{clear_batch as clear_runtime_batch, clear_expired_batch_groups as clear_expired_runtime_batch_groups, clear_expired_batches as clear_expired_runtime_batches, clear_expired_chunks as clear_expired_runtime_chunks, get_batch_group as get_runtime_batch_group, get_batch as get_runtime_batch, get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch, insert_batch_group, insert_chunk as insert_runtime_chunk};
+use crate::runtime::{
+    clear_batch as clear_runtime_batch,
+    clear_expired_batch_groups as clear_expired_runtime_batch_groups,
+    clear_expired_batches as clear_expired_runtime_batches,
+    clear_expired_chunks as clear_expired_runtime_chunks, get_batch as get_runtime_batch,
+    get_batch_group as get_runtime_batch_group, get_chunk as get_runtime_chunk,
+    insert_batch as insert_runtime_batch, insert_batch_group, insert_chunk as insert_runtime_chunk,
+};
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy};
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
 use crate::types::runtime_state::{BatchGroupId, BatchId, ChunkId};
 use crate::types::state::FullPath;
-use crate::types::store::{Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, BatchGroup, Chunk, EncodingType};
+use crate::types::store::{
+    Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, BatchGroup, Chunk, EncodingType,
+};
 use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_collections::assert_stores::{assert_create_permission, assert_permission};
@@ -32,9 +41,7 @@ static mut NEXT_BATCH_GROUP_ID: BatchGroupId = 0;
 static mut NEXT_BATCH_ID: BatchId = 0;
 static mut NEXT_CHUNK_ID: ChunkId = 0;
 
-pub fn create_batch_group(
-    caller: Principal,
-) -> BatchId {
+pub fn create_batch_group(caller: Principal) -> BatchId {
     create_batch_group_impl(caller)
 }
 
@@ -42,7 +49,7 @@ pub fn create_batch(
     caller: Principal,
     controllers: &Controllers,
     init: InitAssetKey,
-    batch_group_id: Option<BatchGroupId>
+    batch_group_id: Option<BatchGroupId>,
 ) -> Result<BatchId, String> {
     assert_key(caller, &init.full_path, &init.collection, controllers)?;
 
@@ -58,9 +65,7 @@ pub fn create_batch(
     Ok(batch_id)
 }
 
-fn create_batch_group_impl(
-    caller: Principal,
-) -> BatchId {
+fn create_batch_group_impl(caller: Principal) -> BatchId {
     let now = time();
 
     unsafe {
@@ -121,7 +126,10 @@ fn create_batch_impl(
     }
 }
 
-fn group_batch(batch_id: &BatchId, batch_group_id: &Option<BatchGroupId>) -> Result<(), &'static str> {
+fn group_batch(
+    batch_id: &BatchId,
+    batch_group_id: &Option<BatchGroupId>,
+) -> Result<(), &'static str> {
     if let Some(batch_group_id) = batch_group_id {
         let mut batch_group = get_runtime_batch_group(batch_group_id)
             .ok_or("Batch was committed but corresponding batch group was not found.")?;

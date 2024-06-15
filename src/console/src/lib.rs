@@ -406,7 +406,9 @@ fn propose_assets_upload_group(batch_group_id: BatchGroupId) -> BatchGroupPropos
 
 #[update(guard = "caller_is_admin_controller")]
 fn commit_assets_upload_group(batch_group: CommitBatchGroup) {
-    commit_batch_group(&batch_group).unwrap_or_else(|e| trap(&e))
+    commit_batch_group(&batch_group).unwrap_or_else(|e| trap(&e));
+
+    defer_init_certified_assets();
 }
 
 ///

@@ -133,4 +133,4 @@ await commit_assets_upload_group({
 	sha256
 });
 
-console.log('\n✅ Assets committed.');
+console.log('\n✅ Assets committed to http://cokmz-oiaaa-aaaal-aby6q-cai.localhost:5987/.');

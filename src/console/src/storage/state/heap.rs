@@ -21,8 +21,19 @@ pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
     STATE.with(|state| insert_asset_impl(full_path, asset, &mut state.borrow_mut().heap))
 }
 
-pub fn insert_asset_encoding(full_path: &FullPath, encoding_type: &EncodingType, encoding: &AssetEncoding) -> Result<(), String> {
-    STATE.with(|state| insert_asset_encoding_impl(full_path, encoding_type, encoding, &mut state.borrow_mut().heap))
+pub fn insert_asset_encoding(
+    full_path: &FullPath,
+    encoding_type: &EncodingType,
+    encoding: &AssetEncoding,
+) -> Result<(), String> {
+    STATE.with(|state| {
+        insert_asset_encoding_impl(
+            full_path,
+            encoding_type,
+            encoding,
+            &mut state.borrow_mut().heap,
+        )
+    })
 }
 
 fn insert_asset_impl(full_path: &FullPath, asset: &Asset, heap: &mut HeapState) {
@@ -30,12 +41,17 @@ fn insert_asset_impl(full_path: &FullPath, asset: &Asset, heap: &mut HeapState) 
     storage.assets.insert(full_path.clone(), asset.clone());
 }
 
-fn insert_asset_encoding_impl(full_path: &FullPath, encoding_type: &EncodingType, encoding: &AssetEncoding, heap: &mut HeapState) -> Result<(), String> {
+fn insert_asset_encoding_impl(
+    full_path: &FullPath,
+    encoding_type: &EncodingType,
+    encoding: &AssetEncoding,
+    heap: &mut HeapState,
+) -> Result<(), String> {
     let asset = get_asset_impl(full_path, &heap.get_storage().assets);
 
     match asset {
         None => Err(format!("No asset found for {}", full_path)),
-        Ok(asset) => {
+        Some(mut asset) => {
             asset
                 .encodings
                 .insert(encoding_type.to_owned(), encoding.clone());

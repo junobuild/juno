@@ -1,52 +1,51 @@
-use crate::storage::msg::ERROR_CANNOT_PROPOSE_BATCH_GROUP;
+use crate::storage::msg::ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE;
 use crate::storage::state::heap::{insert_asset, insert_asset_encoding};
 use crate::storage::state::stable::{
-    count_batch_group_proposal, get_assets_stable, get_batch_group_proposal,
-    get_content_chunks_stable, insert_batch_group_proposal,
+    count_proposals, get_assets_stable, get_content_chunks_stable, get_proposal, insert_proposal,
 };
-use crate::storage::types::state::{BatchGroupProposal, BatchGroupProposalStatus};
+use crate::types::interface::CommitAssetsUpgrade;
+use crate::types::state::{Proposal, ProposalId, ProposalStatus, ProposalType};
 use candid::Principal;
 use hex::encode;
 use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_storage::runtime::get_batch_group;
-use junobuild_storage::types::interface::CommitBatchGroup;
 use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::store::{AssetEncoding, BatchGroup};
 use sha2::{Digest, Sha256};
 
-pub fn propose_batch_group(
+pub fn propose_assets_upgrade(
     caller: Principal,
     batch_group_id: &BatchGroupId,
-) -> Result<(BatchGroupId, BatchGroupProposal), String> {
+) -> Result<(ProposalId, Proposal), String> {
     let batch_group = get_batch_group(batch_group_id);
 
     match batch_group {
-        None => Err(ERROR_CANNOT_PROPOSE_BATCH_GROUP.to_string()),
-        Some(batch_group) => secure_propose_batch_group(caller, batch_group_id, &batch_group),
+        None => Err(ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE.to_string()),
+        Some(batch_group) => secure_propose_assets_upgrade(caller, batch_group_id, &batch_group),
     }
 }
 
-pub fn commit_batch_group(commit_batch_group: &CommitBatchGroup) -> Result<(), String> {
-    let batch_group = get_batch_group_proposal(&commit_batch_group.batch_group_id);
+pub fn commit_assets_upgrade(assets_upgrade: &CommitAssetsUpgrade) -> Result<(), String> {
+    let proposal = get_proposal(&assets_upgrade.proposal_id);
 
-    match batch_group {
+    match proposal {
         None => Err(format!(
             "{} {}",
-            ERROR_CANNOT_PROPOSE_BATCH_GROUP, commit_batch_group.batch_group_id
+            ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE, assets_upgrade.proposal_id
         )),
-        Some(batch_group) => secure_commit_batch_group(commit_batch_group, &batch_group),
+        Some(proposal) => secure_commit_assets_upgrade(assets_upgrade, &proposal),
     }
 }
 
-fn secure_propose_batch_group(
+fn secure_propose_assets_upgrade(
     caller: Principal,
     batch_group_id: &BatchGroupId,
     batch_group: &BatchGroup,
-) -> Result<(BatchGroupId, BatchGroupProposal), String> {
+) -> Result<(ProposalId, Proposal), String> {
     // The one that started the batch group should be the one that commits it
     if principal_not_equal(caller, batch_group.owner) {
-        return Err(ERROR_CANNOT_PROPOSE_BATCH_GROUP.to_string());
+        return Err(ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE.to_string());
     }
 
     let batch_groups_assets = get_assets_stable(batch_group_id);
@@ -64,38 +63,38 @@ fn secure_propose_batch_group(
 
     let hash: Hash = hasher.finalize().into();
 
-    let proposal_id = u128::try_from(count_batch_group_proposal() + 1)
-        .map_err(|_| "Cannot convert next proposal ID.")?;
-    let proposal: BatchGroupProposal = BatchGroupProposal::open(caller, hash);
+    let proposal_id =
+        u128::try_from(count_proposals() + 1).map_err(|_| "Cannot convert next proposal ID.")?;
+    let proposal: Proposal = Proposal::open(caller, hash, ProposalType::AssetsUpgrade);
 
-    insert_batch_group_proposal(&proposal_id, &proposal);
+    insert_proposal(&proposal_id, &proposal);
 
     Ok((proposal_id, proposal))
 }
 
-fn secure_commit_batch_group(
-    commit_batch_group: &CommitBatchGroup,
-    batch_group: &BatchGroupProposal,
+fn secure_commit_assets_upgrade(
+    assets_upgrade: &CommitAssetsUpgrade,
+    proposal: &Proposal,
 ) -> Result<(), String> {
-    if batch_group.status != BatchGroupProposalStatus::Open {
+    if proposal.status != ProposalStatus::Open {
         return Err(format!(
-            "Batch group cannot be committed. Current status: {:?}",
-            batch_group.status
+            "Proposal cannot be committed. Current status: {:?}",
+            proposal.status
         ));
     }
 
-    if batch_group.sha256 != commit_batch_group.sha256 {
-        return Err(format!("The provided SHA-256 hash ({}) does not match the expected value for the batch group to commit.", encode(commit_batch_group.sha256)));
+    if proposal.sha256 != assets_upgrade.sha256 {
+        return Err(format!("The provided SHA-256 hash ({}) does not match the expected value for the proposal to commit.", encode(assets_upgrade.sha256)));
     }
 
-    // Mark batch_group as accepted.
-    let accepted_batch_group = BatchGroupProposal::accept(batch_group);
-    insert_batch_group_proposal(&commit_batch_group.batch_group_id, &accepted_batch_group);
+    // Mark proposal as accepted.
+    let accepted_proposal = Proposal::accept(proposal);
+    insert_proposal(&assets_upgrade.proposal_id, &accepted_proposal);
 
     // Copy from stable memory to heap.
-    let batch_groups_assets = get_assets_stable(&commit_batch_group.batch_group_id);
+    let assets = get_assets_stable(&assets_upgrade.proposal_id);
 
-    for (key, asset) in batch_groups_assets {
+    for (key, asset) in assets {
         insert_asset(&key.full_path, &asset);
 
         for (encoding_type, encoding) in asset.encodings {
@@ -128,9 +127,9 @@ fn secure_commit_batch_group(
         }
     }
 
-    // Mark batch_group as executed.
-    let executed_batch_group = BatchGroupProposal::execute(batch_group);
-    insert_batch_group_proposal(&commit_batch_group.batch_group_id, &executed_batch_group);
+    // Mark proposal as executed.
+    let executed_proposal = Proposal::execute(proposal);
+    insert_proposal(&assets_upgrade.proposal_id, &executed_proposal);
 
     Ok(())
 }

@@ -1,14 +1,13 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{
-        AssetsStable, BatchGroupProposalsStable, ContentChunksStable,
-    };
+    use crate::storage::types::state::{AssetsStable, ContentChunksStable};
     use crate::types::ledger::Payment;
-    use candid::CandidType;
+    use candid::{CandidType, Principal};
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::core::Hash;
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{Controllers, Timestamp};
+    use junobuild_shared::types::state::{Controllers, Timestamp, Version};
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
@@ -20,6 +19,7 @@ pub mod state {
 
     pub type MissionControlsStable = StableBTreeMap<UserId, MissionControl, Memory>;
     pub type PaymentsStable = StableBTreeMap<BlockIndex, Payment, Memory>;
+    pub type ProposalsStable = StableBTreeMap<ProposalKey, Proposal, Memory>;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -33,9 +33,9 @@ pub mod state {
     pub struct StableState {
         pub mission_controls: MissionControlsStable,
         pub payments: PaymentsStable,
-        pub proposal_assets: AssetsStable,
-        pub proposal_content_chunks: ContentChunksStable,
-        pub proposals: BatchGroupProposalsStable,
+        pub proposals_assets: AssetsStable,
+        pub proposals_content_chunks: ContentChunksStable,
+        pub proposals: ProposalsStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -120,13 +120,48 @@ pub mod state {
         pub satellite: Fee,
         pub orbiter: Fee,
     }
+
+    pub type ProposalId = u128;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct ProposalKey {
+        pub proposal_id: ProposalId,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct Proposal {
+        pub owner: Principal,
+        pub sha256: Hash,
+        pub status: ProposalStatus,
+        pub executed_at: Option<Timestamp>,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+        pub version: Option<Version>,
+        pub proposal_type: ProposalType,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum ProposalType {
+        AssetsUpgrade,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]
+    pub enum ProposalStatus {
+        Open,
+        Rejected,
+        Accepted,
+        Executed,
+        Failed,
+    }
 }
 
 pub mod interface {
+    use crate::types::state::ProposalId;
     use candid::CandidType;
+    use junobuild_shared::types::core::Hash;
     use junobuild_shared::types::cronjob::CronJobs;
     use junobuild_storage::types::config::StorageConfig;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
     pub enum Segment {
@@ -156,6 +191,12 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct Config {
         pub storage: StorageConfig,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CommitAssetsUpgrade {
+        pub proposal_id: ProposalId,
+        pub sha256: Hash,
     }
 }
 

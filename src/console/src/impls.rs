@@ -1,11 +1,18 @@
 use crate::constants::{DEFAULT_RATE_CONFIG, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::memory::init_stable_state;
 use crate::types::ledger::Payment;
-use crate::types::state::{Fee, Fees, HeapState, MissionControl, Rate, RateTokens, Rates, State};
+use crate::types::state::{
+    Fee, Fees, HeapState, MissionControl, Proposal, ProposalKey, ProposalStatus, ProposalType,
+    Rate, RateTokens, Rates, State,
+};
+use candid::Principal;
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
+use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::types::core::Hash;
+use junobuild_shared::types::state::Version;
 use junobuild_storage::types::state::StorageHeapState;
 use std::borrow::Cow;
 
@@ -88,5 +95,82 @@ impl Storable for Payment {
 impl HeapState {
     pub fn get_storage(&self) -> StorageHeapState {
         self.storage.clone().unwrap_or_default()
+    }
+}
+
+impl Storable for ProposalKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for Proposal {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Proposal {
+    fn get_next_version(current_proposal: &Option<Proposal>) -> Version {
+        match current_proposal {
+            None => INITIAL_VERSION,
+            Some(current_proposal) => current_proposal.version.unwrap_or_default() + 1,
+        }
+    }
+
+    pub fn open(caller: Principal, sha256: Hash, proposal_type: ProposalType) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&None);
+
+        Proposal {
+            owner: caller,
+            sha256,
+            status: ProposalStatus::Open,
+            executed_at: None,
+            created_at: now,
+            updated_at: now,
+            version: Some(version),
+            proposal_type,
+        }
+    }
+
+    pub fn accept(current_proposal: &Proposal) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&Some(current_proposal.clone()));
+
+        Proposal {
+            status: ProposalStatus::Accepted,
+            updated_at: now,
+            version: Some(version),
+            ..current_proposal.clone()
+        }
+    }
+
+    pub fn execute(current_proposal: &Proposal) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&Some(current_proposal.clone()));
+
+        Proposal {
+            status: ProposalStatus::Executed,
+            updated_at: now,
+            executed_at: Some(now),
+            version: Some(version),
+            ..current_proposal.clone()
+        }
     }
 }

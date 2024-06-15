@@ -250,6 +250,7 @@ version = "0.0.8-patch.1"
 dependencies = [
  "candid",
  "ciborium",
+ "hex",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",

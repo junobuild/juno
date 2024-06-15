@@ -1,5 +1,4 @@
 use crate::storage::types::state::{AssetKey, AssetsStable, ContentChunkKey, ContentChunksStable};
-use crate::types::state::{Proposal, ProposalId, ProposalKey, ProposalsStable};
 use crate::STATE;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -9,10 +8,6 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
-
-pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
-    STATE.with(|state| get_proposal_impl(proposal_id, &state.borrow().stable.proposals))
-}
 
 pub fn get_asset_stable(
     batch_group_id: &BatchGroupId,
@@ -80,10 +75,6 @@ fn filter_assets_range(batch_group_id: &BatchGroupId) -> impl RangeBounds<AssetK
     start_key..end_key
 }
 
-fn get_proposal_impl(proposal_id: &ProposalId, proposals: &ProposalsStable) -> Option<Proposal> {
-    proposals.get(&stable_proposal_key(proposal_id))
-}
-
 fn get_asset_stable_impl(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
@@ -128,32 +119,6 @@ pub fn insert_asset_stable(
     })
 }
 
-pub fn count_proposals() -> usize {
-    STATE.with(|state| count_proposals_impl(&state.borrow().stable.proposals))
-}
-
-fn count_proposals_impl(proposals: &ProposalsStable) -> usize {
-    proposals.iter().count()
-}
-
-pub fn insert_proposal(proposal_id: &ProposalId, proposal: &Proposal) {
-    STATE.with(|state| {
-        insert_proposal_impl(
-            proposal_id,
-            proposal,
-            &mut state.borrow_mut().stable.proposals,
-        )
-    })
-}
-
-fn insert_proposal_impl(
-    proposal_id: &ProposalId,
-    proposal: &Proposal,
-    proposals: &mut ProposalsStable,
-) {
-    proposals.insert(stable_proposal_key(proposal_id), proposal.clone());
-}
-
 fn insert_asset_stable_impl(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
@@ -165,12 +130,6 @@ fn insert_asset_stable_impl(
         stable_asset_key(batch_group_id, collection, full_path),
         asset.clone(),
     );
-}
-
-fn stable_proposal_key(proposal_id: &ProposalId) -> ProposalKey {
-    ProposalKey {
-        proposal_id: *proposal_id,
-    }
 }
 
 fn stable_asset_key(

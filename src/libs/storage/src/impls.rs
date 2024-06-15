@@ -5,7 +5,7 @@ use crate::types::config::{
 };
 use crate::types::interface::{AssetEncodingNoContent, AssetNoContent};
 use crate::types::state::StorageHeapState;
-use crate::types::store::{Asset, AssetEncoding, AssetKey, Batch, BatchExpiry, BatchGroup};
+use crate::types::store::{Asset, AssetEncoding, AssetKey, Batch, BatchExpiry};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
@@ -152,12 +152,6 @@ impl Compare for Asset {
 }
 
 impl BatchExpiry for Batch {
-    fn expires_at(&self) -> Timestamp {
-        self.expires_at
-    }
-}
-
-impl BatchExpiry for BatchGroup {
     fn expires_at(&self) -> Timestamp {
         self.expires_at
     }

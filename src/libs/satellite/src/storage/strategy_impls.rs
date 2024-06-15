@@ -11,10 +11,9 @@ use junobuild_storage::strategies::{
 };
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
-use junobuild_storage::types::runtime_state::BatchId;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
-    Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType,
+    Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 
 pub struct StorageAssertions;
@@ -111,7 +110,7 @@ impl StorageUploadStrategy for StorageUpload {
 
     fn get_asset(
         &self,
-        _batch_id: &BatchId,
+        _reference_id: &ReferenceId,
         collection: &CollectionKey,
         full_path: &FullPath,
         rule: &Rule,

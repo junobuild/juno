@@ -18,6 +18,7 @@ use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::proposals::{
     commit_assets_upgrade as commit_assets_upgrade_proposal,
+    init_assets_upgrade as init_assets_upgrade_proposal,
     propose_assets_upgrade as create_assets_upgrade_proposal,
 };
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
@@ -67,14 +68,11 @@ use junobuild_storage::http_request::{
     http_request as http_request_storage,
     http_request_streaming_callback as http_request_streaming_callback_storage,
 };
-use junobuild_storage::store::{
-    commit_batch as commit_batch_storage, create_batch, create_batch_group, create_chunk,
-};
+use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{
     CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
-use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::state::StorageHeapState;
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
@@ -354,19 +352,19 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
 /// Storage
 
 #[update(guard = "caller_is_admin_controller")]
-fn init_assets_upload_group() -> BatchGroupId {
+fn init_assets_upgrade1() -> (ProposalId, Proposal) {
     let caller = caller();
 
-    create_batch_group(caller)
+    init_assets_upgrade_proposal(caller).unwrap_or_else(|e| trap(&e))
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn init_asset_upload(init: InitAssetKey, batch_group_id: BatchGroupId) -> InitUploadResult {
+fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     let caller = caller();
 
     let controllers = get_controllers();
 
-    let result = create_batch(caller, &controllers, init, Some(batch_group_id));
+    let result = create_batch(caller, &controllers, init, Some(proposal_id));
 
     match result {
         Ok(batch_id) => InitUploadResult { batch_id },
@@ -404,10 +402,10 @@ fn commit_asset_upload(commit: CommitBatch) {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn propose_assets_upgrade(batch_group_id: BatchGroupId) -> (ProposalId, Proposal) {
+fn propose_assets_upgrade(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     let caller = caller();
 
-    create_assets_upgrade_proposal(caller, &batch_group_id).unwrap_or_else(|e| trap(&e))
+    create_assets_upgrade_proposal(caller, &proposal_id).unwrap_or_else(|e| trap(&e))
 }
 
 #[update(guard = "caller_is_admin_controller")]

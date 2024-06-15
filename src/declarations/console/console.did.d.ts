@@ -50,6 +50,19 @@ export interface DeleteControllersArgs {
 export interface GetCreateCanisterFeeArgs {
 	user: Principal;
 }
+export interface HttpRequest {
+	url: string;
+	method: string;
+	body: Uint8Array | number[];
+	headers: Array<[string, string]>;
+	certificate_version: [] | [number];
+}
+export interface HttpResponse {
+	body: Uint8Array | number[];
+	headers: Array<[string, string]>;
+	streaming_strategy: [] | [StreamingStrategy];
+	status_code: number;
+}
 export interface InitAssetKey {
 	token: [] | [string];
 	collection: string;
@@ -65,6 +78,7 @@ export interface LoadRelease {
 	total: bigint;
 	chunks: bigint;
 }
+export type Memory = { Heap: null } | { Stable: null };
 export interface MissionControl {
 	updated_at: bigint;
 	credits: Tokens;
@@ -113,6 +127,25 @@ export interface StorageConfigRedirect {
 	status_code: number;
 	location: string;
 }
+export interface StreamingCallbackHttpResponse {
+	token: [] | [StreamingCallbackToken];
+	body: Uint8Array | number[];
+}
+export interface StreamingCallbackToken {
+	memory: Memory;
+	token: [] | [string];
+	sha256: [] | [Uint8Array | number[]];
+	headers: Array<[string, string]>;
+	index: bigint;
+	encoding_type: string;
+	full_path: string;
+}
+export type StreamingStrategy = {
+	Callback: {
+		token: StreamingCallbackToken;
+		callback: [Principal, string];
+	};
+};
 export interface Tokens {
 	e8s: bigint;
 }
@@ -140,6 +173,11 @@ export interface _SERVICE {
 	get_credits: ActorMethod<[], Tokens>;
 	get_releases_version: ActorMethod<[], ReleasesVersion>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
+	http_request: ActorMethod<[HttpRequest], HttpResponse>;
+	http_request_streaming_callback: ActorMethod<
+		[StreamingCallbackToken],
+		StreamingCallbackHttpResponse
+	>;
 	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_assets_upload_group: ActorMethod<[], bigint>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;

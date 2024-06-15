@@ -56,6 +56,13 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;
+use junobuild_storage::http::types::{
+    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+};
+use junobuild_storage::http_request::{
+    http_request as http_request_storage,
+    http_request_streaming_callback as http_request_streaming_callback_storage,
+};
 use junobuild_storage::store::{
     commit_batch as commit_batch_storage, create_batch, create_batch_group, create_chunk,
 };
@@ -68,13 +75,8 @@ use junobuild_storage::types::state::StorageHeapState;
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
-use junobuild_storage::http::types::{HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken};
 use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
-use junobuild_storage::http_request::{
-    http_request as http_request_storage,
-    http_request_streaming_callback as http_request_streaming_callback_storage,
-};
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();

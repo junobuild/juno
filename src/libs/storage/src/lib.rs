@@ -2,6 +2,7 @@ pub mod certification;
 pub mod certified_assets;
 pub mod constants;
 pub mod http;
+pub mod http_request;
 pub mod impls;
 mod memory;
 pub mod msg;

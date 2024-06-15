@@ -135,11 +135,11 @@ pub fn insert_asset_stable(
     })
 }
 
-pub fn insert_batch_group_proposal(batch_group_id: &BatchGroupId, proposal: &BatchGroupProposal) {
+pub fn insert_batch_group_proposal(batch_group_id: &BatchGroupId, batch_group_proposal: &BatchGroupProposal) {
     STATE.with(|state| {
         insert_batch_group_proposal_impl(
             batch_group_id,
-            proposal,
+            batch_group_proposal,
             &mut state.borrow_mut().stable.proposals,
         )
     })
@@ -147,12 +147,12 @@ pub fn insert_batch_group_proposal(batch_group_id: &BatchGroupId, proposal: &Bat
 
 fn insert_batch_group_proposal_impl(
     batch_group_id: &BatchGroupId,
-    proposal: &BatchGroupProposal,
-    proposals: &mut BatchGroupProposalsStable,
+    batch_group_proposal: &BatchGroupProposal,
+    batch_group_proposals: &mut BatchGroupProposalsStable,
 ) {
-    proposals.insert(
+    batch_group_proposals.insert(
         stable_batch_group_proposal_key(batch_group_id),
-        proposal.clone(),
+        batch_group_proposal.clone(),
     );
 }
 

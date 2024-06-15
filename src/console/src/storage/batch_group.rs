@@ -7,6 +7,7 @@ use crate::storage::state::stable::{
 use crate::storage::types::state::{BatchGroupProposal, BatchGroupProposalStatus};
 use candid::Principal;
 use hex::encode;
+use ic_cdk::api::time;
 use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_storage::runtime::get_batch_group;
@@ -103,6 +104,17 @@ fn secure_commit_batch_group(
         return Err(format!("The provided SHA-256 hash ({}) does not match the expected value for the batch group to commit.", encode(commit_batch_group.sha256)));
     }
 
+    ///
+    /// Mark batch_group as accepted.
+    ///
+
+    let accepted_batch_group = BatchGroupProposal::accept(batch_group);
+    insert_batch_group_proposal(&commit_batch_group.batch_group_id, &accepted_batch_group);
+
+    ///
+    /// Copy from stable memory to heap.
+    ///
+
     let batch_groups_assets = get_assets_stable(&commit_batch_group.batch_group_id);
 
     for (key, asset) in batch_groups_assets {
@@ -137,6 +149,13 @@ fn secure_commit_batch_group(
             insert_asset_encoding(&key.full_path, &encoding_type, &encoding_with_content)?;
         }
     }
+
+    ///
+    /// Mark batch_group as executed.
+    ///
+
+    let executed_batch_group = BatchGroupProposal::execute(batch_group);
+    insert_batch_group_proposal(&commit_batch_group.batch_group_id, &executed_batch_group);
 
     Ok(())
 }

@@ -2,28 +2,12 @@ type AssertMissionControlCenterArgs = record {
   mission_control_id : principal;
   user : principal;
 };
-type BatchGroupProposal = record {
-  status : BatchGroupProposalStatus;
-  updated_at : nat64;
-  sha256 : vec nat8;
-  executed_at : opt nat64;
-  owner : principal;
-  created_at : nat64;
-  version : opt nat64;
-};
-type BatchGroupProposalStatus = variant {
-  Failed;
-  Open;
-  Rejected;
-  Executed;
-  Accepted;
-};
+type CommitAssetsUpgrade = record { sha256 : vec nat8; proposal_id : nat };
 type CommitBatch = record {
   batch_id : nat;
   headers : vec record { text; text };
   chunk_ids : vec nat;
 };
-type CommitBatchGroup = record { sha256 : vec nat8; batch_group_id : nat };
 type Config = record { storage : StorageConfig };
 type ControllerScope = variant { Write; Admin };
 type CreateCanisterArgs = record { block_index : opt nat64; user : principal };
@@ -75,6 +59,18 @@ type Payment = record {
   block_index_refunded : opt nat64;
 };
 type PaymentStatus = variant { Refunded; Acknowledged; Completed };
+type Proposal = record {
+  status : ProposalStatus;
+  updated_at : nat64;
+  sha256 : vec nat8;
+  executed_at : opt nat64;
+  owner : principal;
+  created_at : nat64;
+  version : opt nat64;
+  proposal_type : ProposalType;
+};
+type ProposalStatus = variant { Failed; Open; Rejected; Executed; Accepted };
+type ProposalType = variant { AssetsUpgrade };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type ReleasesVersion = record {
   satellite : opt text;
@@ -132,7 +128,7 @@ service : () -> {
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
   commit_asset_upload : (CommitBatch) -> ();
-  commit_assets_upload_group : (CommitBatchGroup) -> ();
+  commit_assets_upgrade : (CommitAssetsUpgrade) -> ();
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
@@ -156,7 +152,7 @@ service : () -> {
       vec record { principal; MissionControl },
     ) query;
   load_release : (Segment, vec nat8, text) -> (LoadRelease);
-  propose_assets_upload_group : (nat) -> (nat, BatchGroupProposal);
+  propose_assets_upgrade : (nat) -> (nat, Proposal);
   reset_release : (Segment) -> ();
   set_config : (Config) -> ();
   set_controllers : (SetControllersArgs) -> ();

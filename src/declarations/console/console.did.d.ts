@@ -83,7 +83,7 @@ export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Comp
 export interface Proposal {
 	status: ProposalStatus;
 	updated_at: bigint;
-	sha256: Uint8Array | number[];
+	sha256: [] | [Uint8Array | number[]];
 	executed_at: [] | [bigint];
 	owner: Principal;
 	created_at: bigint;
@@ -91,6 +91,7 @@ export interface Proposal {
 	proposal_type: ProposalType;
 }
 export type ProposalStatus =
+	| { Initialized: null }
 	| { Failed: null }
 	| { Open: null }
 	| { Rejected: null }
@@ -181,7 +182,7 @@ export interface _SERVICE {
 		StreamingCallbackHttpResponse
 	>;
 	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
-	init_assets_upload_group: ActorMethod<[], bigint>;
+	init_assets_upgrade: ActorMethod<[], [bigint, Proposal]>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;

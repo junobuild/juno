@@ -352,7 +352,7 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
 /// Storage
 
 #[update(guard = "caller_is_admin_controller")]
-fn init_assets_upgrade1() -> (ProposalId, Proposal) {
+fn init_assets_upgrade() -> (ProposalId, Proposal) {
     let caller = caller();
 
     init_assets_upgrade_proposal(caller).unwrap_or_else(|e| trap(&e))

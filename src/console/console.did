@@ -62,14 +62,21 @@ type PaymentStatus = variant { Refunded; Acknowledged; Completed };
 type Proposal = record {
   status : ProposalStatus;
   updated_at : nat64;
-  sha256 : vec nat8;
+  sha256 : opt vec nat8;
   executed_at : opt nat64;
   owner : principal;
   created_at : nat64;
   version : opt nat64;
   proposal_type : ProposalType;
 };
-type ProposalStatus = variant { Failed; Open; Rejected; Executed; Accepted };
+type ProposalStatus = variant {
+  Initialized;
+  Failed;
+  Open;
+  Rejected;
+  Executed;
+  Accepted;
+};
 type ProposalType = variant { AssetsUpgrade };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type ReleasesVersion = record {
@@ -144,7 +151,7 @@ service : () -> {
       StreamingCallbackHttpResponse,
     ) query;
   init_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
-  init_assets_upload_group : () -> (nat);
+  init_assets_upgrade : () -> (nat, Proposal);
   init_user_mission_control_center : () -> (MissionControl);
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;

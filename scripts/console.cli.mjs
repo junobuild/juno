@@ -2,7 +2,7 @@
 
 import {
 	nextArg,
-	prepareDeploy,
+	deploy as cliDeploy,
 	readJunoConfig as readJunoConfigTools
 } from '@junobuild/cli-tools';
 
@@ -35,12 +35,15 @@ const deploy = async () => {
 	// TODO: listAssets in console
 	const listExistingAssets = async () => [];
 
-	const { files: sourceFiles, sourceAbsolutePath } = await prepareDeploy({
-		config,
-		listAssets: listExistingAssets
-	});
+	const uploadFile = async (file) => {
+		// TODO: upload
+	}
 
-	console.log(sourceFiles, sourceAbsolutePath);
+	await cliDeploy({
+		config,
+		listAssets: listExistingAssets,
+		uploadFile
+	});
 };
 
 await deploy();

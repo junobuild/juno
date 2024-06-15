@@ -130,7 +130,7 @@ console.log('⏳ ', status);
 
 await commit_assets_upgrade({
 	proposal_id: proposalId,
-	sha256
+	sha256: fromNullable(sha256)
 });
 
 console.log(`\n✅ Assets committed to http://${config.id}.localhost:5987/.`);

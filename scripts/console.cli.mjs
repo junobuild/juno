@@ -1,6 +1,10 @@
 #!/usr/bin/env node
 
-import { nextArg, readJunoConfig as readJunoConfigTools } from '@junobuild/cli-tools';
+import {
+	nextArg,
+	prepareDeploy,
+	readJunoConfig as readJunoConfigTools
+} from '@junobuild/cli-tools';
 
 export const JUNO_CONFIG_FILENAME = 'juno.config';
 const JUNO_CONFIG_FILE = { filename: JUNO_CONFIG_FILENAME };
@@ -25,4 +29,18 @@ const readJunoConfig = async (env) => {
 	});
 };
 
-console.log(await readJunoConfig(env));
+const deploy = async () => {
+	const config = await readJunoConfig(env);
+
+	// TODO: listAssets in console
+	const listExistingAssets = async () => [];
+
+	const { files: sourceFiles, sourceAbsolutePath } = await prepareDeploy({
+		config,
+		listAssets: listExistingAssets
+	});
+
+	console.log(sourceFiles, sourceAbsolutePath);
+};
+
+await deploy();

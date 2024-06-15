@@ -24,9 +24,8 @@
 		"hosting"
 	],
 	"scripts": {
-		"build:compress": "./scripts/build.compress.sh",
 		"build:csp": "node scripts/build.csp.mjs",
-		"build:post-process": "npm run build:csp && npm run build:compress",
+		"build:post-process": "npm run build:csp",
 		"dev": "npm run i18n && vite dev",
 		"build": "tsc --noEmit && vite build && npm run build:post-process",
 		"preview": "vite preview",
@@ -62,8 +61,8 @@
 		"@dfinity/ledger-icrc": "^2.3.0",
 		"@esbuild-plugins/node-modules-polyfill": "^0.2.2",
 		"@hadronous/pic": "^0.8.1",
-		"@junobuild/cli-tools": "^0.0.10-next-2024-06-15.1",
-		"@junobuild/config": "^0.0.8-next-2024-06-15.1",
+		"@junobuild/cli-tools": "^0.0.10-next-2024-06-15.6",
+		"@junobuild/config": "^0.0.8-next-2024-06-15.6",
 		"@ltd/j-toml": "^1.38.0",
 		"@rollup/plugin-inject": "^5.0.5",
 		"@sveltejs/adapter-static": "^3.0.1",

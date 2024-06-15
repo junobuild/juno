@@ -135,7 +135,10 @@ pub fn insert_asset_stable(
     })
 }
 
-pub fn insert_batch_group_proposal(batch_group_id: &BatchGroupId, batch_group_proposal: &BatchGroupProposal) {
+pub fn insert_batch_group_proposal(
+    batch_group_id: &BatchGroupId,
+    batch_group_proposal: &BatchGroupProposal,
+) {
     STATE.with(|state| {
         insert_batch_group_proposal_impl(
             batch_group_id,

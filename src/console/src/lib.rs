@@ -14,10 +14,11 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
+use crate::storage::batch_group::{commit_batch_group, propose_batch_group};
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
-    delete_domain_store, get_config_store, get_custom_domains_store,
-    set_config_store, set_domain_store,
+    delete_domain_store, get_config_store, get_custom_domains_store, set_config_store,
+    set_domain_store,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::storage::types::state::BatchGroupProposal;
@@ -59,7 +60,9 @@ use junobuild_storage::store::{
     commit_batch as commit_batch_storage, create_batch, create_batch_group, create_chunk,
 };
 use junobuild_storage::types::domain::CustomDomains;
-use junobuild_storage::types::interface::{CommitBatch, CommitBatchGroup, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult};
+use junobuild_storage::types::interface::{
+    CommitBatch, CommitBatchGroup, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
+};
 use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::state::StorageHeapState;
 use memory::{get_memory_upgrades, init_stable_state};
@@ -67,7 +70,6 @@ use std::cell::RefCell;
 use std::collections::HashMap;
 use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
-use crate::storage::batch_group::{commit_batch_group, propose_batch_group};
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();

@@ -16,7 +16,9 @@ use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::runtime_state::BatchId;
 use junobuild_storage::types::state::FullPath;
-use junobuild_storage::types::store::{Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType};
+use junobuild_storage::types::store::{
+    Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType,
+};
 
 pub struct StorageAssertions;
 

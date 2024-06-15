@@ -1,16 +1,19 @@
+use crate::storage::msg::ERROR_CANNOT_PROPOSE_BATCH_GROUP;
+use crate::storage::state::heap::{insert_asset, insert_asset_encoding};
+use crate::storage::state::stable::{
+    get_assets_stable, get_batch_group_proposal, get_content_chunks_stable,
+    insert_batch_group_proposal,
+};
+use crate::storage::types::state::{BatchGroupProposal, BatchGroupProposalStatus};
 use candid::Principal;
+use hex::encode;
+use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_storage::runtime::get_batch_group;
+use junobuild_storage::types::interface::CommitBatchGroup;
 use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::store::{AssetEncoding, BatchGroup};
-use crate::storage::state::stable::{get_assets_stable, get_batch_group_proposal, get_content_chunks_stable, insert_batch_group_proposal};
-use crate::storage::types::state::{BatchGroupProposal, BatchGroupProposalStatus};
 use sha2::{Digest, Sha256};
-use junobuild_shared::types::core::{Hash, Hashable};
-use junobuild_storage::types::interface::CommitBatchGroup;
-use crate::storage::msg::ERROR_CANNOT_PROPOSE_BATCH_GROUP;
-use hex::encode;
-use crate::storage::state::heap::{insert_asset, insert_asset_encoding};
 
 pub fn propose_batch_group(
     caller: Principal,
@@ -24,13 +27,15 @@ pub fn propose_batch_group(
     }
 }
 
-pub fn commit_batch_group(
-    commit_batch_group: &CommitBatchGroup,
-) -> Result<(), String> {
+pub fn commit_batch_group(commit_batch_group: &CommitBatchGroup) -> Result<(), String> {
     let batch_group = get_batch_group_proposal(&commit_batch_group.batch_group_id);
 
     match batch_group {
-        None => Err(format!("{} {}", ERROR_CANNOT_PROPOSE_BATCH_GROUP.to_string(), commit_batch_group.batch_group_id)),
+        None => Err(format!(
+            "{} {}",
+            ERROR_CANNOT_PROPOSE_BATCH_GROUP.to_string(),
+            commit_batch_group.batch_group_id
+        )),
         Some(batch_group) => secure_commit_batch_group(commit_batch_group, &batch_group),
     }
 }
@@ -75,7 +80,8 @@ fn secure_propose_batch_group(
 
     let hash: Hash = hasher.finalize().into();
 
-    let proposal: BatchGroupProposal = BatchGroupProposal::prepare(caller, &current_batch_group, hash);
+    let proposal: BatchGroupProposal =
+        BatchGroupProposal::prepare(caller, &current_batch_group, hash);
 
     insert_batch_group_proposal(batch_group_id, &proposal);
 
@@ -106,13 +112,21 @@ fn secure_commit_batch_group(
             let mut content_chunks = Vec::new();
 
             for (i, _) in encoding.content_chunks.iter().enumerate() {
-                let chunks = get_content_chunks_stable(&encoding, i).ok_or_else(|| format!("No content chunks found for encoding {} at index {}.", encoding_type, i))?;
+                let chunks = get_content_chunks_stable(&encoding, i).ok_or_else(|| {
+                    format!(
+                        "No content chunks found for encoding {} at index {}.",
+                        encoding_type, i
+                    )
+                })?;
 
                 content_chunks.push(chunks);
             }
 
             if content_chunks.is_empty() {
-                return Err(format!("Empty content chunks for encoding {}.", encoding_type));
+                return Err(format!(
+                    "Empty content chunks for encoding {}.",
+                    encoding_type
+                ));
             }
 
             let encoding_with_content: AssetEncoding = AssetEncoding {

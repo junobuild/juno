@@ -195,7 +195,7 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CommitBatchGroup {
         pub batch_group_id: BatchGroupId,
-        pub sha256: Hash
+        pub sha256: Hash,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

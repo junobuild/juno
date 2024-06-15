@@ -68,8 +68,13 @@ use junobuild_storage::types::state::StorageHeapState;
 use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
+use junobuild_storage::http::types::{HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken};
 use types::state::Payments;
 use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
+use junobuild_storage::http_request::{
+    http_request as http_request_storage,
+    http_request_streaming_callback as http_request_streaming_callback_storage,
+};
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -436,6 +441,22 @@ pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
     delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
+}
+
+///
+/// Http
+///
+
+#[query]
+pub fn http_request(request: HttpRequest) -> HttpResponse {
+    http_request_storage(request, &StorageState)
+}
+
+#[query]
+pub fn http_request_streaming_callback(
+    streaming_callback_token: StreamingCallbackToken,
+) -> StreamingCallbackHttpResponse {
+    http_request_streaming_callback_storage(streaming_callback_token, &StorageState)
 }
 
 // Generate did files

@@ -35,6 +35,19 @@ type CustomDomain = record {
 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetCreateCanisterFeeArgs = record { user : principal };
+type HttpRequest = record {
+  url : text;
+  method : text;
+  body : vec nat8;
+  headers : vec record { text; text };
+  certificate_version : opt nat16;
+};
+type HttpResponse = record {
+  body : vec nat8;
+  headers : vec record { text; text };
+  streaming_strategy : opt StreamingStrategy;
+  status_code : nat16;
+};
 type InitAssetKey = record {
   token : opt text;
   collection : text;
@@ -45,6 +58,7 @@ type InitAssetKey = record {
 };
 type InitUploadResult = record { batch_id : nat };
 type LoadRelease = record { total : nat64; chunks : nat64 };
+type Memory = variant { Heap; Stable };
 type MissionControl = record {
   updated_at : nat64;
   credits : Tokens;
@@ -87,6 +101,25 @@ type StorageConfig = record {
 type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
 type StorageConfigRawAccess = variant { Deny; Allow };
 type StorageConfigRedirect = record { status_code : nat16; location : text };
+type StreamingCallbackHttpResponse = record {
+  token : opt StreamingCallbackToken;
+  body : vec nat8;
+};
+type StreamingCallbackToken = record {
+  memory : Memory;
+  token : opt text;
+  sha256 : opt vec nat8;
+  headers : vec record { text; text };
+  index : nat64;
+  encoding_type : text;
+  full_path : text;
+};
+type StreamingStrategy = variant {
+  Callback : record {
+    token : StreamingCallbackToken;
+    callback : func () -> () query;
+  };
+};
 type Tokens = record { e8s : nat64 };
 type UploadChunk = record {
   content : vec nat8;
@@ -110,6 +143,10 @@ service : () -> {
   get_credits : () -> (Tokens) query;
   get_releases_version : () -> (ReleasesVersion) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
+  http_request : (HttpRequest) -> (HttpResponse) query;
+  http_request_streaming_callback : (StreamingCallbackToken) -> (
+      StreamingCallbackHttpResponse,
+    ) query;
   init_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   init_assets_upload_group : () -> (nat);
   init_user_mission_control_center : () -> (MissionControl);

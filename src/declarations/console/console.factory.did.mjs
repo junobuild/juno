@@ -55,6 +55,39 @@ export const idlFactory = ({ IDL }) => {
 		owner: IDL.Principal,
 		created_at: IDL.Nat64
 	});
+	const HttpRequest = IDL.Record({
+		url: IDL.Text,
+		method: IDL.Text,
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		certificate_version: IDL.Opt(IDL.Nat16)
+	});
+	const Memory = IDL.Variant({ Heap: IDL.Null, Stable: IDL.Null });
+	const StreamingCallbackToken = IDL.Record({
+		memory: Memory,
+		token: IDL.Opt(IDL.Text),
+		sha256: IDL.Opt(IDL.Vec(IDL.Nat8)),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		index: IDL.Nat64,
+		encoding_type: IDL.Text,
+		full_path: IDL.Text
+	});
+	const StreamingStrategy = IDL.Variant({
+		Callback: IDL.Record({
+			token: StreamingCallbackToken,
+			callback: IDL.Func([], [], ['query'])
+		})
+	});
+	const HttpResponse = IDL.Record({
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		streaming_strategy: IDL.Opt(StreamingStrategy),
+		status_code: IDL.Nat16
+	});
+	const StreamingCallbackHttpResponse = IDL.Record({
+		token: IDL.Opt(StreamingCallbackToken),
+		body: IDL.Vec(IDL.Nat8)
+	});
 	const InitAssetKey = IDL.Record({
 		token: IDL.Opt(IDL.Text),
 		collection: IDL.Text,
@@ -144,6 +177,12 @@ export const idlFactory = ({ IDL }) => {
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_releases_version: IDL.Func([], [ReleasesVersion], ['query']),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),
+		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
+		http_request_streaming_callback: IDL.Func(
+			[StreamingCallbackToken],
+			[StreamingCallbackHttpResponse],
+			['query']
+		),
 		init_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_assets_upload_group: IDL.Func([], [IDL.Nat], []),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),

@@ -2,14 +2,15 @@ use candid::Principal;
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_storage::runtime::get_batch_group;
 use junobuild_storage::types::runtime_state::BatchGroupId;
-use junobuild_storage::types::store::BatchGroup;
-use crate::storage::state::stable::{get_assets_stable, get_batch_group_proposal, insert_batch_group_proposal};
+use junobuild_storage::types::store::{AssetEncoding, BatchGroup};
+use crate::storage::state::stable::{get_assets_stable, get_batch_group_proposal, get_content_chunks_stable, insert_batch_group_proposal};
 use crate::storage::types::state::{BatchGroupProposal, BatchGroupProposalStatus};
 use sha2::{Digest, Sha256};
 use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_storage::types::interface::CommitBatchGroup;
 use crate::storage::msg::ERROR_CANNOT_PROPOSE_BATCH_GROUP;
 use hex::encode;
+use crate::storage::state::heap::{insert_asset, insert_asset_encoding};
 
 pub fn propose_batch_group(
     caller: Principal,
@@ -96,7 +97,32 @@ fn secure_commit_batch_group(
         return Err(format!("The provided SHA-256 hash ({}) does not match the expected value for the batch group to commit.", encode(commit_batch_group.sha256)));
     }
 
-    // TODO list asset and encoding and apply
+    let batch_groups_assets = get_assets_stable(&commit_batch_group.batch_group_id);
+
+    for (key, asset) in batch_groups_assets {
+        insert_asset(&key.full_path, &asset);
+
+        for (encoding_type, encoding) in asset.encodings {
+            let mut content_chunks = Vec::new();
+
+            for (i, _) in encoding.content_chunks.iter().enumerate() {
+                let chunks = get_content_chunks_stable(&encoding, i).ok_or_else(|| format!("No content chunks found for encoding {} at index {}.", encoding_type, i))?;
+
+                content_chunks.push(chunks);
+            }
+
+            if content_chunks.is_empty() {
+                return Err(format!("Empty content chunks for encoding {}.", encoding_type));
+            }
+
+            let encoding_with_content: AssetEncoding = AssetEncoding {
+                content_chunks,
+                ..encoding
+            };
+
+            insert_asset_encoding(&key.full_path, &encoding_type, &encoding_with_content)?;
+        }
+    }
 
     Ok(())
 }

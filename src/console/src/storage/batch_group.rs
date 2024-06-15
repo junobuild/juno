@@ -109,7 +109,7 @@ fn secure_commit_batch_group(
         insert_asset(&key.full_path, &asset);
 
         for (encoding_type, encoding) in asset.encodings {
-            let mut content_chunks = Vec::new();
+            let mut content_chunks = Vec::with_capacity(encoding.content_chunks.len());
 
             for (i, _) in encoding.content_chunks.iter().enumerate() {
                 let chunks = get_content_chunks_stable(&encoding, i).ok_or_else(|| {
@@ -129,7 +129,7 @@ fn secure_commit_batch_group(
                 ));
             }
 
-            let encoding_with_content: AssetEncoding = AssetEncoding {
+            let encoding_with_content = AssetEncoding {
                 content_chunks,
                 ..encoding
             };

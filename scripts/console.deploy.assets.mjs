@@ -36,20 +36,24 @@ const {
 	propose_assets_upload_group,
 	init_asset_upload,
 	commit_asset_upload,
-	upload_asset_chunk
+	upload_asset_chunk,
+	commit_assets_upload_group
 } = await consoleActorLocal();
 
 const batchGroupId = await init_assets_upload_group();
 
 const uploadFile = async ({ collection, encoding, filename, fullPath, headers, data }) => {
-	const { batch_id: batchId } = await init_asset_upload({
-		collection,
-		full_path: fullPath,
-		name: filename,
-		token: toNullable(),
-		encoding_type: toNullable(encoding),
-		description: toNullable()
-	}, batchGroupId);
+	const { batch_id: batchId } = await init_asset_upload(
+		{
+			collection,
+			full_path: fullPath,
+			name: filename,
+			token: toNullable(),
+			encoding_type: toNullable(encoding),
+			description: toNullable()
+		},
+		batchGroupId
+	);
 
 	const chunkSize = 1900000;
 
@@ -123,3 +127,10 @@ console.log('\nAssets uploaded and proposed.\n');
 console.log('🆔 ', batchGroupId);
 console.log('🔒 ', uint8ArrayToHexString(sha256));
 console.log('⏳ ', status);
+
+await commit_assets_upload_group({
+	batch_group_id: batchGroupId,
+	sha256
+});
+
+console.log('\n✅ Assets committed.');

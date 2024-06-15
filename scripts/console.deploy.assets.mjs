@@ -52,7 +52,7 @@ const uploadFile = async ({ collection, encoding, filename, fullPath, headers, d
 			encoding_type: toNullable(encoding),
 			description: toNullable()
 		},
-		batchGroupId
+		proposalId
 	);
 
 	const chunkSize = 1900000;

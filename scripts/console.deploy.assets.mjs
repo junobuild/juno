@@ -29,15 +29,15 @@ const readJunoConfig = async (env) => {
 	});
 };
 
+const uploadFile = async (file) => {
+	// TODO: upload
+}
+
 const deploy = async () => {
 	const config = await readJunoConfig(env);
 
 	// TODO: listAssets in console
 	const listExistingAssets = async () => [];
-
-	const uploadFile = async (file) => {
-		// TODO: upload
-	}
 
 	await cliDeploy({
 		config,

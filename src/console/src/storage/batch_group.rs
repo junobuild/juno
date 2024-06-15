@@ -107,14 +107,12 @@ fn secure_commit_batch_group(
     ///
     /// Mark batch_group as accepted.
     ///
-
     let accepted_batch_group = BatchGroupProposal::accept(batch_group);
     insert_batch_group_proposal(&commit_batch_group.batch_group_id, &accepted_batch_group);
 
     ///
     /// Copy from stable memory to heap.
     ///
-
     let batch_groups_assets = get_assets_stable(&commit_batch_group.batch_group_id);
 
     for (key, asset) in batch_groups_assets {
@@ -153,7 +151,6 @@ fn secure_commit_batch_group(
     ///
     /// Mark batch_group as executed.
     ///
-
     let executed_batch_group = BatchGroupProposal::execute(batch_group);
     insert_batch_group_proposal(&commit_batch_group.batch_group_id, &executed_batch_group);
 

@@ -6,6 +6,7 @@ import { idlFactory } from '../src/declarations/console/console.factory.did.mjs'
 import { idlFactory as icIdlFactory } from '../src/declarations/ic/ic.factory.did.mjs';
 import { idlFactory as observatoryIdlFactory } from '../src/declarations/observatory/observatory.factory.did.mjs';
 import { idlFactory as orbiterIdlFactory } from '../src/declarations/orbiter/orbiter.factory.did.mjs';
+import { getIdentity } from './console.config.utils.mjs';
 import { CONSOLE_ID } from './constants.mjs';
 import { initIdentity } from './identity.utils.mjs';
 
@@ -42,7 +43,7 @@ export const icAgent = () => {
 };
 
 export const localAgent = async () => {
-	const identity = initIdentity(false);
+	const identity = getIdentity();
 
 	console.log('Local identity:', identity.getPrincipal().toText());
 

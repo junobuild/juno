@@ -106,9 +106,9 @@ const uploadChunk = async ({ batchId, chunk, actor, orderId }) =>
 		order_id: toNullable(orderId)
 	});
 
-const deploy = async () => {
-	const config = await readJunoConfig(env);
+const config = await readJunoConfig(env);
 
+const deploy = async () => {
 	// TODO: listAssets in console
 	const listExistingAssets = async () => [];
 
@@ -133,4 +133,4 @@ await commit_assets_upload_group({
 	sha256
 });
 
-console.log('\n✅ Assets committed to http://cokmz-oiaaa-aaaal-aby6q-cai.localhost:5987/.');
+console.log(`\n✅ Assets committed to http://${config.id}.localhost:5987/.`);

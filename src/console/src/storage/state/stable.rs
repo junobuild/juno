@@ -76,7 +76,7 @@ fn filter_assets_range(batch_group_id: &BatchGroupId) -> impl RangeBounds<AssetK
     };
 
     let end_key = AssetKey {
-        batch_group_id: *batch_group_id,
+        batch_group_id: *batch_group_id + 1,
         collection: "".to_string(),
         full_path: "".to_string(),
     };

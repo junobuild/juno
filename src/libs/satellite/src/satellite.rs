@@ -26,8 +26,8 @@ use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
     delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
-    get_config_store as get_storage_config, get_content_chunks_store, get_custom_domains_store,
-    get_public_asset_store, list_assets_store, set_config_store as set_storage_config,
+    get_config_store as get_storage_config, get_custom_domains_store,
+    list_assets_store, set_config_store as set_storage_config,
     set_domain_store,
 };
 use crate::storage::strategy_impls::StorageState;
@@ -49,19 +49,14 @@ use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
-use junobuild_storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
-use junobuild_storage::http::response::{
-    build_asset_response, build_redirect_raw_response, build_redirect_response, error_response,
-};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
-use junobuild_storage::http::utils::create_token;
-use junobuild_storage::routing::get_routing;
-use junobuild_storage::types::domain::CustomDomains;
-use junobuild_storage::types::http_request::{
-    Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
+use junobuild_storage::http_request::{
+    http_request as http_request_storage,
+    http_request_streaming_callback as http_request_streaming_callback_storage,
 };
+use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
@@ -327,106 +322,14 @@ pub fn get_auth_config() -> Option<AuthenticationConfig> {
 /// Http
 ///
 
-pub fn http_request(
-    HttpRequest {
-        method,
-        url,
-        headers: req_headers,
-        body: _,
-        certificate_version,
-    }: HttpRequest,
-) -> HttpResponse {
-    if method != "GET" {
-        return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
-    }
-
-    let storage_state = StorageState;
-
-    let result = get_routing(url, &req_headers, true, &storage_state);
-
-    match result {
-        Ok(routing) => match routing {
-            Routing::Default(RoutingDefault { url, asset }) => build_asset_response(
-                url,
-                req_headers,
-                certificate_version,
-                asset,
-                None,
-                RESPONSE_STATUS_CODE_200,
-                &storage_state,
-            ),
-            Routing::Rewrite(RoutingRewrite {
-                url,
-                asset,
-                source,
-                status_code,
-            }) => build_asset_response(
-                url,
-                req_headers,
-                certificate_version,
-                asset,
-                Some(source),
-                status_code,
-                &storage_state,
-            ),
-            Routing::Redirect(RoutingRedirect {
-                url,
-                redirect,
-                iframe,
-            }) => build_redirect_response(url, certificate_version, &redirect, &iframe),
-            Routing::RedirectRaw(RoutingRedirectRaw {
-                redirect_url,
-                iframe,
-            }) => build_redirect_raw_response(&redirect_url, &iframe),
-        },
-        Err(err) => error_response(
-            RESPONSE_STATUS_CODE_405,
-            ["Permission denied. Cannot perform this operation. ", err].join(""),
-        ),
-    }
+pub fn http_request(request: HttpRequest) -> HttpResponse {
+    http_request_storage(request, &StorageState)
 }
 
 pub fn http_request_streaming_callback(
-    StreamingCallbackToken {
-        token,
-        headers,
-        index,
-        sha256: _,
-        full_path,
-        encoding_type,
-        memory: _,
-    }: StreamingCallbackToken,
+    streaming_callback_token: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
-    let asset = get_public_asset_store(full_path, token);
-
-    match asset {
-        Some((asset, memory)) => {
-            let encoding = asset.encodings.get(&encoding_type);
-
-            match encoding {
-                Some(encoding) => {
-                    let body = get_content_chunks_store(encoding, index, &memory);
-
-                    match body {
-                        Some(body) => StreamingCallbackHttpResponse {
-                            token: create_token(
-                                &asset.key,
-                                index,
-                                encoding,
-                                &encoding_type,
-                                &headers,
-                                &memory,
-                            ),
-                            body: body.clone(),
-                        },
-                        None => trap("Streamed chunks not found."),
-                    }
-                }
-                None => trap("Streamed asset encoding not found."),
-            }
-        }
-        None => trap("Streamed asset not found."),
-    }
+    http_request_streaming_callback_storage(streaming_callback_token, &StorageState)
 }
 
 //

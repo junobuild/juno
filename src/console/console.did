@@ -2,8 +2,37 @@ type AssertMissionControlCenterArgs = record {
   mission_control_id : principal;
   user : principal;
 };
+type BatchGroupProposal = record {
+  status : BatchGroupProposalStatus;
+  updated_at : nat64;
+  sha256 : vec nat8;
+  executed_at : opt nat64;
+  owner : principal;
+  created_at : nat64;
+  version : opt nat64;
+};
+type BatchGroupProposalStatus = variant {
+  Failed;
+  Open;
+  Rejected;
+  Executed;
+  Accepted;
+};
+type CommitBatch = record {
+  batch_id : nat;
+  headers : vec record { text; text };
+  chunk_ids : vec nat;
+};
+type CommitBatchGroup = record { sha256 : vec nat8; batch_group_id : nat };
+type Config = record { storage : StorageConfig };
 type ControllerScope = variant { Write; Admin };
 type CreateCanisterArgs = record { block_index : opt nat64; user : principal };
+type CustomDomain = record {
+  updated_at : nat64;
+  created_at : nat64;
+  version : opt nat64;
+  bn_id : opt text;
+};
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetCreateCanisterFeeArgs = record { user : principal };
 type InitAssetKey = record {
@@ -48,6 +77,16 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
+type StorageConfig = record {
+  iframe : opt StorageConfigIFrame;
+  rewrites : vec record { text; text };
+  headers : vec record { text; vec record { text; text } };
+  raw_access : opt StorageConfigRawAccess;
+  redirects : opt vec record { text; StorageConfigRedirect };
+};
+type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
+type StorageConfigRawAccess = variant { Deny; Allow };
+type StorageConfigRedirect = record { status_code : nat16; location : text };
 type Tokens = record { e8s : nat64 };
 type UploadChunk = record {
   content : vec nat8;
@@ -59,23 +98,32 @@ service : () -> {
   add_credits : (principal, Tokens) -> ();
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
+  commit_asset_upload : (CommitBatch) -> ();
+  commit_assets_upload_group : (CommitBatchGroup) -> ();
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
+  del_custom_domain : (text) -> ();
+  get_config : () -> (Config);
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_releases_version : () -> (ReleasesVersion) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
-  init_asset_upload : (InitAssetKey) -> (InitUploadResult);
+  init_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
+  init_assets_upload_group : () -> (nat);
   init_user_mission_control_center : () -> (MissionControl);
+  list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;
   load_release : (Segment, vec nat8, text) -> (LoadRelease);
+  propose_assets_upload_group : (nat) -> (BatchGroupProposal);
   reset_release : (Segment) -> ();
+  set_config : (Config) -> ();
   set_controllers : (SetControllersArgs) -> ();
+  set_custom_domain : (text, opt text) -> ();
   set_fee : (Segment, Tokens) -> ();
   update_rate_config : (Segment, RateConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);

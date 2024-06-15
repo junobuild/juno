@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 
+import { uint8ArrayToHexString } from '@dfinity/utils';
 import {
-	nextArg,
 	deploy as cliDeploy,
+	nextArg,
 	readJunoConfig as readJunoConfigTools
 } from '@junobuild/cli-tools';
+import { consoleActorLocal } from './actor.mjs';
 
 export const JUNO_CONFIG_FILENAME = 'juno.config';
 const JUNO_CONFIG_FILE = { filename: JUNO_CONFIG_FILENAME };
@@ -29,9 +31,11 @@ const readJunoConfig = async (env) => {
 	});
 };
 
+const { init_assets_upload_group, propose_assets_upload_group } = await consoleActorLocal();
+
 const uploadFile = async (file) => {
 	// TODO: upload
-}
+};
 
 const deploy = async () => {
 	const config = await readJunoConfig(env);
@@ -46,4 +50,13 @@ const deploy = async () => {
 	});
 };
 
+const batchGroupId = await init_assets_upload_group();
+
 await deploy();
+
+const { sha256, status } = await propose_assets_upload_group(batchGroupId);
+
+console.log('\nAssets uploaded and proposed.\n');
+console.log('🆔 ', batchGroupId);
+console.log('🔒 ', uint8ArrayToHexString(sha256));
+console.log('⏳ ', status);

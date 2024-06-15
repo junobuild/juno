@@ -10,9 +10,9 @@ export const idlFactory = ({ IDL }) => {
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		chunk_ids: IDL.Vec(IDL.Nat)
 	});
-	const CommitBatchGroup = IDL.Record({
+	const CommitAssetsUpgrade = IDL.Record({
 		sha256: IDL.Vec(IDL.Nat8),
-		batch_group_id: IDL.Nat
+		proposal_id: IDL.Nat
 	});
 	const CreateCanisterArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
@@ -122,21 +122,23 @@ export const idlFactory = ({ IDL }) => {
 		Satellite: IDL.Null
 	});
 	const LoadRelease = IDL.Record({ total: IDL.Nat64, chunks: IDL.Nat64 });
-	const BatchGroupProposalStatus = IDL.Variant({
+	const ProposalStatus = IDL.Variant({
 		Failed: IDL.Null,
 		Open: IDL.Null,
 		Rejected: IDL.Null,
 		Executed: IDL.Null,
 		Accepted: IDL.Null
 	});
-	const BatchGroupProposal = IDL.Record({
-		status: BatchGroupProposalStatus,
+	const ProposalType = IDL.Variant({ AssetsUpgrade: IDL.Null });
+	const Proposal = IDL.Record({
+		status: ProposalStatus,
 		updated_at: IDL.Nat64,
 		sha256: IDL.Vec(IDL.Nat8),
 		executed_at: IDL.Opt(IDL.Nat64),
 		owner: IDL.Principal,
 		created_at: IDL.Nat64,
-		version: IDL.Opt(IDL.Nat64)
+		version: IDL.Opt(IDL.Nat64),
+		proposal_type: ProposalType
 	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
@@ -166,7 +168,7 @@ export const idlFactory = ({ IDL }) => {
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
-		commit_assets_upload_group: IDL.Func([CommitBatchGroup], [], []),
+		commit_assets_upgrade: IDL.Func([CommitAssetsUpgrade], [], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		create_satellite: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
@@ -194,7 +196,7 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		load_release: IDL.Func([Segment, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
-		propose_assets_upload_group: IDL.Func([IDL.Nat], [IDL.Nat, BatchGroupProposal], []),
+		propose_assets_upgrade: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		reset_release: IDL.Func([Segment], [], []),
 		set_config: IDL.Func([Config], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),

@@ -6,29 +6,14 @@ export interface AssertMissionControlCenterArgs {
 	mission_control_id: Principal;
 	user: Principal;
 }
-export interface BatchGroupProposal {
-	status: BatchGroupProposalStatus;
-	updated_at: bigint;
+export interface CommitAssetsUpgrade {
 	sha256: Uint8Array | number[];
-	executed_at: [] | [bigint];
-	owner: Principal;
-	created_at: bigint;
-	version: [] | [bigint];
+	proposal_id: bigint;
 }
-export type BatchGroupProposalStatus =
-	| { Failed: null }
-	| { Open: null }
-	| { Rejected: null }
-	| { Executed: null }
-	| { Accepted: null };
 export interface CommitBatch {
 	batch_id: bigint;
 	headers: Array<[string, string]>;
 	chunk_ids: Array<bigint>;
-}
-export interface CommitBatchGroup {
-	sha256: Uint8Array | number[];
-	batch_group_id: bigint;
 }
 export interface Config {
 	storage: StorageConfig;
@@ -95,6 +80,23 @@ export interface Payment {
 	block_index_refunded: [] | [bigint];
 }
 export type PaymentStatus = { Refunded: null } | { Acknowledged: null } | { Completed: null };
+export interface Proposal {
+	status: ProposalStatus;
+	updated_at: bigint;
+	sha256: Uint8Array | number[];
+	executed_at: [] | [bigint];
+	owner: Principal;
+	created_at: bigint;
+	version: [] | [bigint];
+	proposal_type: ProposalType;
+}
+export type ProposalStatus =
+	| { Failed: null }
+	| { Open: null }
+	| { Rejected: null }
+	| { Executed: null }
+	| { Accepted: null };
+export type ProposalType = { AssetsUpgrade: null };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
@@ -162,7 +164,7 @@ export interface _SERVICE {
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
-	commit_assets_upload_group: ActorMethod<[CommitBatchGroup], undefined>;
+	commit_assets_upgrade: ActorMethod<[CommitAssetsUpgrade], undefined>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
@@ -185,7 +187,7 @@ export interface _SERVICE {
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
-	propose_assets_upload_group: ActorMethod<[bigint], [bigint, BatchGroupProposal]>;
+	propose_assets_upgrade: ActorMethod<[bigint], [bigint, Proposal]>;
 	reset_release: ActorMethod<[Segment], undefined>;
 	set_config: ActorMethod<[Config], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;

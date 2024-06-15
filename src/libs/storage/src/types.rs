@@ -153,7 +153,7 @@ pub mod interface {
     use serde::Serialize;
 
     use crate::http::types::HeaderField;
-    use crate::types::runtime_state::{BatchGroupId, BatchId, ChunkId};
+    use crate::types::runtime_state::{BatchId, ChunkId};
     use crate::types::state::FullPath;
     use crate::types::store::{AssetKey, EncodingType};
     use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -190,12 +190,6 @@ pub mod interface {
         pub batch_id: BatchId,
         pub headers: Vec<HeaderField>,
         pub chunk_ids: Vec<ChunkId>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CommitBatchGroup {
-        pub batch_group_id: BatchGroupId,
-        pub sha256: Hash,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

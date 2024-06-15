@@ -1,7 +1,4 @@
-use crate::storage::types::state::{
-    AssetKey, AssetsStable, BatchGroupProposal, BatchGroupProposalKey, BatchGroupProposalsStable,
-    ContentChunkKey, ContentChunksStable,
-};
+use crate::storage::types::state::{AssetKey, AssetsStable, ContentChunkKey, ContentChunksStable};
 use crate::STATE;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey};
@@ -11,12 +8,6 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
-
-pub fn get_batch_group_proposal(batch_group_id: &BatchGroupId) -> Option<BatchGroupProposal> {
-    STATE.with(|state| {
-        get_batch_group_proposal_impl(batch_group_id, &state.borrow().stable.proposals)
-    })
-}
 
 pub fn get_asset_stable(
     batch_group_id: &BatchGroupId,
@@ -28,7 +19,7 @@ pub fn get_asset_stable(
             batch_group_id,
             collection,
             full_path,
-            &state.borrow().stable.proposal_assets,
+            &state.borrow().stable.proposals_assets,
         )
     })
 }
@@ -38,7 +29,7 @@ pub fn get_content_chunks_stable(encoding: &AssetEncoding, chunk_index: usize) -
         get_content_chunks_stable_impl(
             encoding,
             chunk_index,
-            &state.borrow().stable.proposal_content_chunks,
+            &state.borrow().stable.proposals_content_chunks,
         )
     })
 }
@@ -55,7 +46,7 @@ fn get_content_chunks_stable_impl(
 
 pub fn get_assets_stable(batch_group_id: &BatchGroupId) -> Vec<(AssetKey, Asset)> {
     STATE.with(|state| {
-        get_assets_stable_impl(batch_group_id, &state.borrow().stable.proposal_assets)
+        get_assets_stable_impl(batch_group_id, &state.borrow().stable.proposals_assets)
     })
 }
 
@@ -84,13 +75,6 @@ fn filter_assets_range(batch_group_id: &BatchGroupId) -> impl RangeBounds<AssetK
     start_key..end_key
 }
 
-fn get_batch_group_proposal_impl(
-    batch_group_id: &BatchGroupId,
-    proposals: &BatchGroupProposalsStable,
-) -> Option<BatchGroupProposal> {
-    proposals.get(&stable_batch_group_proposal_key(batch_group_id))
-}
-
 fn get_asset_stable_impl(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
@@ -113,7 +97,7 @@ pub fn insert_asset_encoding_stable(
             encoding,
             asset,
             stable_encoding_chunk_key,
-            &mut state.borrow_mut().stable.proposal_content_chunks,
+            &mut state.borrow_mut().stable.proposals_content_chunks,
         )
     })
 }
@@ -130,41 +114,9 @@ pub fn insert_asset_stable(
             collection,
             full_path,
             asset,
-            &mut state.borrow_mut().stable.proposal_assets,
+            &mut state.borrow_mut().stable.proposals_assets,
         )
     })
-}
-
-pub fn count_batch_group_proposal() -> usize {
-    STATE.with(|state| count_batch_group_proposal_impl(&state.borrow().stable.proposals))
-}
-
-fn count_batch_group_proposal_impl(batch_group_proposals: &BatchGroupProposalsStable) -> usize {
-    batch_group_proposals.iter().count()
-}
-
-pub fn insert_batch_group_proposal(
-    batch_group_id: &BatchGroupId,
-    batch_group_proposal: &BatchGroupProposal,
-) {
-    STATE.with(|state| {
-        insert_batch_group_proposal_impl(
-            batch_group_id,
-            batch_group_proposal,
-            &mut state.borrow_mut().stable.proposals,
-        )
-    })
-}
-
-fn insert_batch_group_proposal_impl(
-    batch_group_id: &BatchGroupId,
-    batch_group_proposal: &BatchGroupProposal,
-    batch_group_proposals: &mut BatchGroupProposalsStable,
-) {
-    batch_group_proposals.insert(
-        stable_batch_group_proposal_key(batch_group_id),
-        batch_group_proposal.clone(),
-    );
 }
 
 fn insert_asset_stable_impl(
@@ -178,12 +130,6 @@ fn insert_asset_stable_impl(
         stable_asset_key(batch_group_id, collection, full_path),
         asset.clone(),
     );
-}
-
-fn stable_batch_group_proposal_key(batch_group_id: &BatchGroupId) -> BatchGroupProposalKey {
-    BatchGroupProposalKey {
-        batch_group_id: *batch_group_id,
-    }
 }
 
 fn stable_asset_key(

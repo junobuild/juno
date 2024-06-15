@@ -33,11 +33,11 @@ const readJunoConfig = async (env) => {
 
 const {
 	init_assets_upload_group,
-	propose_assets_upload_group,
+	propose_assets_upgrade,
 	init_asset_upload,
 	commit_asset_upload,
 	upload_asset_chunk,
-	commit_assets_upload_group
+	commit_assets_upgrade
 } = await consoleActorLocal();
 
 const batchGroupId = await init_assets_upload_group();
@@ -121,15 +121,15 @@ const deploy = async () => {
 
 await deploy();
 
-const [proposalId, { sha256, status }] = await propose_assets_upload_group(batchGroupId);
+const [proposalId, { sha256, status }] = await propose_assets_upgrade(batchGroupId);
 
 console.log('\nAssets uploaded and proposed.\n');
 console.log('🆔 ', proposalId);
 console.log('🔒 ', uint8ArrayToHexString(sha256));
 console.log('⏳ ', status);
 
-await commit_assets_upload_group({
-	batch_group_id: proposalId,
+await commit_assets_upgrade({
+	proposal_id: proposalId,
 	sha256
 });
 

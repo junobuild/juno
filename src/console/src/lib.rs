@@ -4,6 +4,8 @@ mod factory;
 mod guards;
 mod impls;
 mod memory;
+mod msg;
+mod proposals;
 mod storage;
 mod store;
 mod types;
@@ -14,14 +16,16 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
-use crate::storage::batch_group::{commit_batch_group, propose_batch_group};
+use crate::proposals::{
+    commit_assets_upgrade as commit_assets_upgrade_proposal,
+    propose_assets_upgrade as create_assets_upgrade_proposal,
+};
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     delete_domain_store, get_config_store, get_custom_domains_store, set_config_store,
     set_domain_store,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
-use crate::storage::types::state::BatchGroupProposal;
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
     get_mission_control_release_version, get_orbiter_fee, get_orbiter_release_version,
@@ -36,10 +40,10 @@ use crate::store::stable::{
     add_credits as add_credits_store, get_credits as get_credits_store,
     get_existing_mission_control, get_mission_control, has_credits,
 };
-use crate::types::interface::{Config, LoadRelease, ReleasesVersion, Segment};
+use crate::types::interface::{CommitAssetsUpgrade, Config, LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
-    Fees, HeapState, InvitationCode, MissionControl, MissionControls, RateConfig, Rates, Releases,
-    State,
+    Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
+    RateConfig, Rates, Releases, State,
 };
 use candid::Principal;
 use ciborium::into_writer;
@@ -68,7 +72,7 @@ use junobuild_storage::store::{
 };
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{
-    CommitBatch, CommitBatchGroup, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
+    CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::state::StorageHeapState;
@@ -400,15 +404,15 @@ fn commit_asset_upload(commit: CommitBatch) {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn propose_assets_upload_group(batch_group_id: BatchGroupId) -> (BatchGroupId, BatchGroupProposal) {
+fn propose_assets_upgrade(batch_group_id: BatchGroupId) -> (ProposalId, Proposal) {
     let caller = caller();
 
-    propose_batch_group(caller, &batch_group_id).unwrap_or_else(|e| trap(&e))
+    create_assets_upgrade_proposal(caller, &batch_group_id).unwrap_or_else(|e| trap(&e))
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn commit_assets_upload_group(batch_group: CommitBatchGroup) {
-    commit_batch_group(&batch_group).unwrap_or_else(|e| trap(&e));
+fn commit_assets_upgrade(assets_upgrade: CommitAssetsUpgrade) {
+    commit_assets_upgrade_proposal(&assets_upgrade).unwrap_or_else(|e| trap(&e));
 
     defer_init_certified_assets();
 }

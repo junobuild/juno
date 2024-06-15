@@ -1,17 +1,18 @@
+use crate::http::types::HeaderField;
 use crate::types::config::{
     StorageConfig, StorageConfigHeaders, StorageConfigIFrame, StorageConfigRawAccess,
     StorageConfigRedirects, StorageConfigRewrites,
 };
 use crate::types::interface::{AssetEncodingNoContent, AssetNoContent};
 use crate::types::state::StorageHeapState;
-use crate::types::store::{Asset, AssetEncoding, Batch, BatchExpiry, BatchGroup};
+use crate::types::store::{Asset, AssetEncoding, AssetKey, Batch, BatchExpiry, BatchGroup};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use junobuild_shared::types::core::{Blob, Compare};
+use junobuild_shared::types::core::{Blob, Compare, Hash, Hashable};
 use junobuild_shared::types::state::Timestamp;
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
@@ -159,5 +160,49 @@ impl BatchExpiry for Batch {
 impl BatchExpiry for BatchGroup {
     fn expires_at(&self) -> Timestamp {
         self.expires_at
+    }
+}
+
+impl Hashable for AssetKey {
+    fn hash(&self) -> Hash {
+        let mut hasher = Sha256::new();
+        hasher.update(self.name.as_bytes());
+        hasher.update(self.full_path.as_bytes());
+        if let Some(token) = &self.token {
+            hasher.update(token.as_bytes());
+        }
+        hasher.update(self.collection.as_bytes());
+        hasher.update(serialize_to_bytes(&self.owner));
+        if let Some(description) = &self.description {
+            hasher.update(description.as_bytes());
+        }
+        hasher.finalize().into()
+    }
+}
+
+impl Hashable for Asset {
+    fn hash(&self) -> Hash {
+        let mut hasher = Sha256::new();
+        hasher.update(self.key.hash());
+        for HeaderField(ref key, ref value) in &self.headers {
+            hasher.update(key.as_bytes());
+            hasher.update(value.as_bytes());
+        }
+        hasher.update(self.created_at.to_le_bytes());
+        hasher.update(self.updated_at.to_le_bytes());
+        if let Some(version) = self.version {
+            hasher.update(version.to_le_bytes());
+        }
+        hasher.finalize().into()
+    }
+}
+
+impl Hashable for AssetEncoding {
+    fn hash(&self) -> Hash {
+        let mut hasher = Sha256::new();
+        hasher.update(self.modified.to_le_bytes());
+        hasher.update(self.total_length.to_le_bytes());
+        hasher.update(self.sha256);
+        hasher.finalize().into()
     }
 }

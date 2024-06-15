@@ -306,6 +306,13 @@ pub mod core {
         fn cmp_updated_at(&self, other: &Self) -> Ordering;
         fn cmp_created_at(&self, other: &Self) -> Ordering;
     }
+
+    /// Sha256 Digest: 32 bytes
+    pub type Hash = [u8; 32];
+
+    pub trait Hashable {
+        fn hash(&self) -> Hash;
+    }
 }
 
 pub mod list {

@@ -1,6 +1,8 @@
 pub mod state {
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{ProposalAssetsStable, ProposalContentChunksStable};
+    use crate::storage::types::state::{
+        ProposalAssetsStable, ProposalContentChunksStable, ProposalsStable,
+    };
     use crate::types::ledger::Payment;
     use candid::CandidType;
     use ic_ledger_types::{BlockIndex, Tokens};
@@ -33,6 +35,7 @@ pub mod state {
         pub payments: PaymentsStable,
         pub proposal_assets: ProposalAssetsStable,
         pub proposal_content_chunks: ProposalContentChunksStable,
+        pub proposals: ProposalsStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

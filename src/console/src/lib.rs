@@ -4,6 +4,8 @@ mod factory;
 mod guards;
 mod impls;
 mod memory;
+mod msg;
+mod proposals;
 mod storage;
 mod store;
 mod types;
@@ -14,16 +16,16 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
+use crate::proposals::{
+    commit_assets_upgrade as commit_assets_upgrade_proposal,
+    propose_assets_upgrade as create_assets_upgrade_proposal,
+};
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     delete_domain_store, get_config_store, get_custom_domains_store, set_config_store,
     set_domain_store,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
-use crate::storage::upgrade::{
-    commit_assets_upgrade as commit_assets_upgrade_proposal,
-    propose_assets_upgrade as create_assets_upgrade_proposal,
-};
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
     get_mission_control_release_version, get_orbiter_fee, get_orbiter_release_version,

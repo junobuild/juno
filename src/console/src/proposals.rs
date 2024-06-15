@@ -1,4 +1,4 @@
-use crate::storage::msg::ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE;
+use crate::msg::ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE;
 use crate::storage::state::heap::{insert_asset, insert_asset_encoding};
 use crate::storage::state::stable::{get_assets_stable, get_content_chunks_stable};
 use crate::store::stable::{count_proposals, get_proposal, insert_proposal};

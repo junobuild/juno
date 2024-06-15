@@ -117,9 +117,7 @@ impl BatchGroupProposal {
         }
     }
 
-    pub fn accept(
-        current_batch_group_proposal: &BatchGroupProposal,
-    ) -> Self {
+    pub fn accept(current_batch_group_proposal: &BatchGroupProposal) -> Self {
         let now = time();
 
         let version = Self::get_next_version(&Some(current_batch_group_proposal.clone()));
@@ -132,13 +130,11 @@ impl BatchGroupProposal {
         }
     }
 
-    pub fn execute(
-        current_batch_group_proposal: &BatchGroupProposal,
-    ) -> Self {
+    pub fn execute(current_batch_group_proposal: &BatchGroupProposal) -> Self {
         let now = time();
 
         let version = Self::get_next_version(&Some(current_batch_group_proposal.clone()));
-        
+
         BatchGroupProposal {
             status: BatchGroupProposalStatus::Executed,
             updated_at: now,

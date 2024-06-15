@@ -156,7 +156,7 @@ service : () -> {
       vec record { principal; MissionControl },
     ) query;
   load_release : (Segment, vec nat8, text) -> (LoadRelease);
-  propose_assets_upload_group : (nat) -> (BatchGroupProposal);
+  propose_assets_upload_group : (nat) -> (nat, BatchGroupProposal);
   reset_release : (Segment) -> ();
   set_config : (Config) -> ();
   set_controllers : (SetControllersArgs) -> ();

@@ -194,7 +194,7 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		load_release: IDL.Func([Segment, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
-		propose_assets_upload_group: IDL.Func([IDL.Nat], [BatchGroupProposal], []),
+		propose_assets_upload_group: IDL.Func([IDL.Nat], [IDL.Nat, BatchGroupProposal], []),
 		reset_release: IDL.Func([Segment], [], []),
 		set_config: IDL.Func([Config], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),

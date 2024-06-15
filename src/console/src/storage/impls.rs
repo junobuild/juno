@@ -80,39 +80,18 @@ impl BatchGroupProposal {
         }
     }
 
-    pub fn prepare(
-        caller: Principal,
-        current_batch_group_proposal: &Option<BatchGroupProposal>,
-        sha256: Hash,
-    ) -> Self {
+    pub fn open(caller: Principal, sha256: Hash) -> Self {
         let now = time();
 
-        let created_at: Timestamp = match current_batch_group_proposal {
-            None => now,
-            Some(current_proposal) => current_proposal.created_at,
-        };
-
-        let version = Self::get_next_version(current_batch_group_proposal);
-
-        let owner: Principal = match current_batch_group_proposal {
-            None => caller,
-            Some(current_proposal) => current_proposal.owner,
-        };
-
-        let status: BatchGroupProposalStatus = match current_batch_group_proposal {
-            None => BatchGroupProposalStatus::Open,
-            Some(current_proposal) => current_proposal.status.clone(),
-        };
-
-        let updated_at: Timestamp = now;
+        let version = Self::get_next_version(&None);
 
         BatchGroupProposal {
-            owner,
+            owner: caller,
             sha256,
-            status,
+            status: BatchGroupProposalStatus::Open,
             executed_at: None,
-            created_at,
-            updated_at,
+            created_at: now,
+            updated_at: now,
             version: Some(version),
         }
     }

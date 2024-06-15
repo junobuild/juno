@@ -121,15 +121,15 @@ const deploy = async () => {
 
 await deploy();
 
-const { sha256, status } = await propose_assets_upload_group(batchGroupId);
+const [proposalId, { sha256, status }] = await propose_assets_upload_group(batchGroupId);
 
 console.log('\nAssets uploaded and proposed.\n');
-console.log('🆔 ', batchGroupId);
+console.log('🆔 ', proposalId);
 console.log('🔒 ', uint8ArrayToHexString(sha256));
 console.log('⏳ ', status);
 
 await commit_assets_upload_group({
-	batch_group_id: batchGroupId,
+	batch_group_id: proposalId,
 	sha256
 });
 

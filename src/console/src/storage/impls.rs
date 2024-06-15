@@ -73,29 +73,33 @@ impl Hashable for AssetKey {
 }
 
 impl BatchGroupProposal {
+    fn get_next_version(current_batch_group_proposal: &Option<BatchGroupProposal>) -> Version {
+        match current_batch_group_proposal {
+            None => INITIAL_VERSION,
+            Some(current_proposal) => current_proposal.version.unwrap_or_default() + 1,
+        }
+    }
+
     pub fn prepare(
         caller: Principal,
-        current_proposal: &Option<BatchGroupProposal>,
-        evidence: Hash,
+        current_batch_group_proposal: &Option<BatchGroupProposal>,
+        sha256: Hash,
     ) -> Self {
         let now = time();
 
-        let created_at: Timestamp = match current_proposal {
+        let created_at: Timestamp = match current_batch_group_proposal {
             None => now,
             Some(current_proposal) => current_proposal.created_at,
         };
 
-        let version: Version = match current_proposal {
-            None => INITIAL_VERSION,
-            Some(current_proposal) => current_proposal.version.unwrap_or_default() + 1,
-        };
+        let version = Self::get_next_version(current_batch_group_proposal);
 
-        let owner: Principal = match current_proposal {
+        let owner: Principal = match current_batch_group_proposal {
             None => caller,
             Some(current_proposal) => current_proposal.owner,
         };
 
-        let status: BatchGroupProposalStatus = match current_proposal {
+        let status: BatchGroupProposalStatus = match current_batch_group_proposal {
             None => BatchGroupProposalStatus::Open,
             Some(current_proposal) => current_proposal.status.clone(),
         };
@@ -104,12 +108,43 @@ impl BatchGroupProposal {
 
         BatchGroupProposal {
             owner,
-            sha256: evidence,
+            sha256,
             status,
             executed_at: None,
             created_at,
             updated_at,
             version: Some(version),
+        }
+    }
+
+    pub fn accept(
+        current_batch_group_proposal: &BatchGroupProposal,
+    ) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&Some(current_batch_group_proposal.clone()));
+
+        BatchGroupProposal {
+            status: BatchGroupProposalStatus::Accepted,
+            updated_at: now,
+            version: Some(version),
+            ..current_batch_group_proposal.clone()
+        }
+    }
+
+    pub fn execute(
+        current_batch_group_proposal: &BatchGroupProposal,
+    ) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&Some(current_batch_group_proposal.clone()));
+        
+        BatchGroupProposal {
+            status: BatchGroupProposalStatus::Executed,
+            updated_at: now,
+            executed_at: Some(now),
+            version: Some(version),
+            ..current_batch_group_proposal.clone()
         }
     }
 }

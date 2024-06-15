@@ -18,6 +18,7 @@ serde.workspace = true
 serde_cbor.workspace = true
 ciborium.workspace = true
 sha2 = "0.10.7"
+hex = "0.4.3"
 junobuild-shared = { path = "../libs/shared" }
 junobuild-storage = { path = "../libs/storage" }
 junobuild-collections = { path = "../libs/collections" }

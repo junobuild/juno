@@ -1,8 +1,8 @@
 use crate::storage::msg::ERROR_CANNOT_PROPOSE_BATCH_GROUP;
 use crate::storage::state::heap::{insert_asset, insert_asset_encoding};
 use crate::storage::state::stable::{
-    get_assets_stable, get_batch_group_proposal, get_content_chunks_stable,
-    insert_batch_group_proposal,
+    count_batch_group_proposal, get_assets_stable, get_batch_group_proposal,
+    get_content_chunks_stable, insert_batch_group_proposal,
 };
 use crate::storage::types::state::{BatchGroupProposal, BatchGroupProposalStatus};
 use candid::Principal;
@@ -18,7 +18,7 @@ use sha2::{Digest, Sha256};
 pub fn propose_batch_group(
     caller: Principal,
     batch_group_id: &BatchGroupId,
-) -> Result<BatchGroupProposal, String> {
+) -> Result<(BatchGroupId, BatchGroupProposal), String> {
     let batch_group = get_batch_group(batch_group_id);
 
     match batch_group {
@@ -43,25 +43,10 @@ fn secure_propose_batch_group(
     caller: Principal,
     batch_group_id: &BatchGroupId,
     batch_group: &BatchGroup,
-) -> Result<BatchGroupProposal, String> {
+) -> Result<(BatchGroupId, BatchGroupProposal), String> {
     // The one that started the batch group should be the one that commits it
     if principal_not_equal(caller, batch_group.owner) {
         return Err(ERROR_CANNOT_PROPOSE_BATCH_GROUP.to_string());
-    }
-
-    let current_batch_group = get_batch_group_proposal(batch_group_id);
-
-    if let Some(current_batch_group) = &current_batch_group {
-        if current_batch_group.status != BatchGroupProposalStatus::Open {
-            return Err(format!(
-                "Batch group cannot be proposed. Current status: {:?}",
-                current_batch_group.status
-            ));
-        }
-
-        if principal_not_equal(current_batch_group.owner, caller) {
-            return Err("Caller is not the owner of the batch group proposal.".to_string());
-        }
     }
 
     let batch_groups_assets = get_assets_stable(batch_group_id);
@@ -79,12 +64,13 @@ fn secure_propose_batch_group(
 
     let hash: Hash = hasher.finalize().into();
 
-    let proposal: BatchGroupProposal =
-        BatchGroupProposal::prepare(caller, &current_batch_group, hash);
+    let proposal_id = u128::try_from(count_batch_group_proposal() + 1)
+        .map_err(|_| "Cannot convert next proposal ID.")?;
+    let proposal: BatchGroupProposal = BatchGroupProposal::open(caller, hash);
 
-    insert_batch_group_proposal(batch_group_id, &proposal);
+    insert_batch_group_proposal(&proposal_id, &proposal);
 
-    Ok(proposal)
+    Ok((proposal_id, proposal))
 }
 
 fn secure_commit_batch_group(

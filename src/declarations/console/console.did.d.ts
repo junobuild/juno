@@ -185,7 +185,7 @@ export interface _SERVICE {
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
-	propose_assets_upload_group: ActorMethod<[bigint], BatchGroupProposal>;
+	propose_assets_upload_group: ActorMethod<[bigint], [bigint, BatchGroupProposal]>;
 	reset_release: ActorMethod<[Segment], undefined>;
 	set_config: ActorMethod<[Config], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;

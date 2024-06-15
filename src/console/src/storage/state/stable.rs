@@ -135,6 +135,14 @@ pub fn insert_asset_stable(
     })
 }
 
+pub fn count_batch_group_proposal() -> usize {
+    STATE.with(|state| count_batch_group_proposal_impl(&state.borrow().stable.proposals))
+}
+
+fn count_batch_group_proposal_impl(batch_group_proposals: &BatchGroupProposalsStable) -> usize {
+    batch_group_proposals.iter().count()
+}
+
 pub fn insert_batch_group_proposal(
     batch_group_id: &BatchGroupId,
     batch_group_proposal: &BatchGroupProposal,

@@ -400,7 +400,7 @@ fn commit_asset_upload(commit: CommitBatch) {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn propose_assets_upload_group(batch_group_id: BatchGroupId) -> BatchGroupProposal {
+fn propose_assets_upload_group(batch_group_id: BatchGroupId) -> (BatchGroupId, BatchGroupProposal) {
     let caller = caller();
 
     propose_batch_group(caller, &batch_group_id).unwrap_or_else(|e| trap(&e))

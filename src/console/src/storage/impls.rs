@@ -104,7 +104,7 @@ impl BatchGroupProposal {
 
         BatchGroupProposal {
             owner,
-            evidence,
+            sha256: evidence,
             status,
             executed_at: None,
             created_at,

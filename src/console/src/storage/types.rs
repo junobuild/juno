@@ -36,7 +36,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct BatchGroupProposal {
         pub owner: Principal,
-        pub evidence: Hash,
+        pub sha256: Hash,
         pub status: BatchGroupProposalStatus,
         pub executed_at: Option<Timestamp>,
         pub created_at: Timestamp,

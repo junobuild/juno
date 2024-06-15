@@ -9,34 +9,35 @@ pub mod state {
     use junobuild_storage::types::store::{Asset, EncodingType};
     use serde::Serialize;
 
-    pub type ProposalAssetsStable = StableBTreeMap<ProposalAssetKey, Asset, Memory>;
-    pub type ProposalContentChunksStable = StableBTreeMap<ProposalContentChunkKey, Blob, Memory>;
-    pub type ProposalsStable = StableBTreeMap<ProposalKey, Proposal, Memory>;
+    pub type AssetsStable = StableBTreeMap<AssetKey, Asset, Memory>;
+    pub type ContentChunksStable = StableBTreeMap<ContentChunkKey, Blob, Memory>;
+    pub type BatchGroupProposalsStable =
+        StableBTreeMap<BatchGroupProposalKey, BatchGroupProposal, Memory>;
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct ProposalAssetKey {
+    pub struct AssetKey {
         pub batch_group_id: BatchGroupId,
         pub collection: CollectionKey,
         pub full_path: FullPath,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct ProposalContentChunkKey {
+    pub struct ContentChunkKey {
         pub full_path: FullPath,
         pub encoding_type: EncodingType,
         pub chunk_index: usize,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct ProposalKey {
+    pub struct BatchGroupProposalKey {
         pub batch_group_id: BatchGroupId,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct Proposal {
+    pub struct BatchGroupProposal {
         pub owner: Principal,
         pub evidence: Hash,
-        pub status: ProposalStatus,
+        pub status: BatchGroupProposalStatus,
         pub executed_at: Option<Timestamp>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
@@ -44,7 +45,7 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]
-    pub enum ProposalStatus {
+    pub enum BatchGroupProposalStatus {
         Open,
         Rejected,
         Accepted,

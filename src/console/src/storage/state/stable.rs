@@ -1,28 +1,30 @@
 use crate::storage::types::state::{
-    Proposal, ProposalAssetKey, ProposalAssetsStable, ProposalContentChunkKey,
-    ProposalContentChunksStable, ProposalKey, ProposalsStable,
+    AssetKey, AssetsStable, BatchGroupProposal, BatchGroupProposalKey, BatchGroupProposalsStable,
+    ContentChunkKey, ContentChunksStable,
 };
 use crate::STATE;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey};
-use junobuild_storage::stable_utils::insert_proposal_asset_encoding_stable;
+use junobuild_storage::stable_utils::insert_asset_encoding_stable as insert_asset_encoding_stable_utils;
 use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
 
-pub fn get_proposal(batch_group_id: &BatchGroupId) -> Option<Proposal> {
-    STATE.with(|state| get_proposal_impl(batch_group_id, &state.borrow().stable.proposals))
+pub fn get_batch_group_proposal(batch_group_id: &BatchGroupId) -> Option<BatchGroupProposal> {
+    STATE.with(|state| {
+        get_batch_group_proposal_impl(batch_group_id, &state.borrow().stable.proposals)
+    })
 }
 
-pub fn get_proposal_asset(
+pub fn get_asset_stable(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
     full_path: &FullPath,
 ) -> Option<Asset> {
     STATE.with(|state| {
-        get_proposal_asset_impl(
+        get_asset_stable_impl(
             batch_group_id,
             collection,
             full_path,
@@ -31,9 +33,9 @@ pub fn get_proposal_asset(
     })
 }
 
-pub fn get_proposal_content_chunks(encoding: &AssetEncoding, chunk_index: usize) -> Option<Blob> {
+pub fn get_content_chunks_stable(encoding: &AssetEncoding, chunk_index: usize) -> Option<Blob> {
     STATE.with(|state| {
-        get_proposal_content_chunks_impl(
+        get_content_chunks_stable_impl(
             encoding,
             chunk_index,
             &state.borrow().stable.proposal_content_chunks,
@@ -41,41 +43,39 @@ pub fn get_proposal_content_chunks(encoding: &AssetEncoding, chunk_index: usize)
     })
 }
 
-fn get_proposal_content_chunks_impl(
+fn get_content_chunks_stable_impl(
     encoding: &AssetEncoding,
     chunk_index: usize,
-    content_chunks: &ProposalContentChunksStable,
+    content_chunks: &ContentChunksStable,
 ) -> Option<Blob> {
-    let key: ProposalContentChunkKey =
+    let key: ContentChunkKey =
         deserialize_from_bytes(Cow::Owned(encoding.content_chunks[chunk_index].clone()));
     content_chunks.get(&key)
 }
 
-pub fn get_proposal_assets(batch_group_id: &BatchGroupId) -> Vec<(ProposalAssetKey, Asset)> {
+pub fn get_assets_stable(batch_group_id: &BatchGroupId) -> Vec<(AssetKey, Asset)> {
     STATE.with(|state| {
-        get_proposal_assets_impl(batch_group_id, &state.borrow().stable.proposal_assets)
+        get_assets_stable_impl(batch_group_id, &state.borrow().stable.proposal_assets)
     })
 }
 
-fn get_proposal_assets_impl(
+fn get_assets_stable_impl(
     batch_group_id: &BatchGroupId,
-    proposal_assets: &ProposalAssetsStable,
-) -> Vec<(ProposalAssetKey, Asset)> {
+    proposal_assets: &AssetsStable,
+) -> Vec<(AssetKey, Asset)> {
     proposal_assets
-        .range(filter_proposal_assets_range(batch_group_id))
+        .range(filter_assets_range(batch_group_id))
         .collect()
 }
 
-fn filter_proposal_assets_range(
-    batch_group_id: &BatchGroupId,
-) -> impl RangeBounds<ProposalAssetKey> {
-    let start_key = ProposalAssetKey {
+fn filter_assets_range(batch_group_id: &BatchGroupId) -> impl RangeBounds<AssetKey> {
+    let start_key = AssetKey {
         batch_group_id: *batch_group_id,
         collection: "".to_string(),
         full_path: "".to_string(),
     };
 
-    let end_key = ProposalAssetKey {
+    let end_key = AssetKey {
         batch_group_id: *batch_group_id,
         collection: "".to_string(),
         full_path: "".to_string(),
@@ -84,52 +84,48 @@ fn filter_proposal_assets_range(
     start_key..end_key
 }
 
-fn get_proposal_impl(
+fn get_batch_group_proposal_impl(
     batch_group_id: &BatchGroupId,
-    proposals: &ProposalsStable,
-) -> Option<Proposal> {
-    proposals.get(&stable_proposal_key(batch_group_id))
+    proposals: &BatchGroupProposalsStable,
+) -> Option<BatchGroupProposal> {
+    proposals.get(&stable_batch_group_proposal_key(batch_group_id))
 }
 
-fn get_proposal_asset_impl(
+fn get_asset_stable_impl(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
     full_path: &FullPath,
-    assets: &ProposalAssetsStable,
+    assets: &AssetsStable,
 ) -> Option<Asset> {
-    assets.get(&stable_proposal_asset_key(
-        batch_group_id,
-        collection,
-        full_path,
-    ))
+    assets.get(&stable_asset_key(batch_group_id, collection, full_path))
 }
 
-pub fn insert_proposal_asset_encoding(
+pub fn insert_asset_encoding_stable(
     full_path: &FullPath,
     encoding_type: &str,
     encoding: &AssetEncoding,
     asset: &mut Asset,
 ) {
     STATE.with(|state| {
-        insert_proposal_asset_encoding_stable(
+        insert_asset_encoding_stable_utils(
             full_path,
             encoding_type,
             encoding,
             asset,
-            stable_proposal_encoding_chunk_key,
+            stable_encoding_chunk_key,
             &mut state.borrow_mut().stable.proposal_content_chunks,
         )
     })
 }
 
-pub fn insert_proposal_asset(
+pub fn insert_asset_stable(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
     full_path: &FullPath,
     asset: &Asset,
 ) {
     STATE.with(|state| {
-        insert_proposal_asset_impl(
+        insert_asset_stable_impl(
             batch_group_id,
             collection,
             full_path,
@@ -139,9 +135,9 @@ pub fn insert_proposal_asset(
     })
 }
 
-pub fn insert_proposal(batch_group_id: &BatchGroupId, proposal: &Proposal) {
+pub fn insert_batch_group_proposal(batch_group_id: &BatchGroupId, proposal: &BatchGroupProposal) {
     STATE.with(|state| {
-        insert_proposal_impl(
+        insert_batch_group_proposal_impl(
             batch_group_id,
             proposal,
             &mut state.borrow_mut().stable.proposals,
@@ -149,51 +145,54 @@ pub fn insert_proposal(batch_group_id: &BatchGroupId, proposal: &Proposal) {
     })
 }
 
-fn insert_proposal_impl(
+fn insert_batch_group_proposal_impl(
     batch_group_id: &BatchGroupId,
-    proposal: &Proposal,
-    proposals: &mut ProposalsStable,
+    proposal: &BatchGroupProposal,
+    proposals: &mut BatchGroupProposalsStable,
 ) {
-    proposals.insert(stable_proposal_key(batch_group_id), proposal.clone());
+    proposals.insert(
+        stable_batch_group_proposal_key(batch_group_id),
+        proposal.clone(),
+    );
 }
 
-fn insert_proposal_asset_impl(
+fn insert_asset_stable_impl(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
     full_path: &FullPath,
     asset: &Asset,
-    assets: &mut ProposalAssetsStable,
+    assets: &mut AssetsStable,
 ) {
     assets.insert(
-        stable_proposal_asset_key(batch_group_id, collection, full_path),
+        stable_asset_key(batch_group_id, collection, full_path),
         asset.clone(),
     );
 }
 
-fn stable_proposal_key(batch_group_id: &BatchGroupId) -> ProposalKey {
-    ProposalKey {
+fn stable_batch_group_proposal_key(batch_group_id: &BatchGroupId) -> BatchGroupProposalKey {
+    BatchGroupProposalKey {
         batch_group_id: *batch_group_id,
     }
 }
 
-fn stable_proposal_asset_key(
+fn stable_asset_key(
     batch_group_id: &BatchGroupId,
     collection: &CollectionKey,
     full_path: &FullPath,
-) -> ProposalAssetKey {
-    ProposalAssetKey {
+) -> AssetKey {
+    AssetKey {
         batch_group_id: *batch_group_id,
         collection: collection.clone(),
         full_path: full_path.clone(),
     }
 }
 
-fn stable_proposal_encoding_chunk_key(
+fn stable_encoding_chunk_key(
     full_path: &FullPath,
     encoding_type: &str,
     chunk_index: usize,
-) -> ProposalContentChunkKey {
-    ProposalContentChunkKey {
+) -> ContentChunkKey {
+    ContentChunkKey {
         full_path: full_path.clone(),
         encoding_type: encoding_type.to_owned(),
         chunk_index,

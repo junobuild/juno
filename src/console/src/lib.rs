@@ -16,11 +16,11 @@ use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
-    commit_assets_proposal as commit_assets_proposal_store, delete_domain_store, get_config_store,
-    get_custom_domains_store, set_config_store, set_domain_store,
+    commit_batch_group, delete_domain_store, get_config_store, get_custom_domains_store,
+    set_config_store, set_domain_store,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
-use crate::storage::types::state::Proposal;
+use crate::storage::types::state::BatchGroupProposal;
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
     get_mission_control_release_version, get_orbiter_fee, get_orbiter_release_version,
@@ -392,10 +392,10 @@ fn commit_asset_upload(commit: CommitBatch) {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn commit_assets_upload_group(batch_group_id: BatchGroupId) -> Proposal {
+fn commit_assets_upload_group(batch_group_id: BatchGroupId) -> BatchGroupProposal {
     let caller = caller();
 
-    commit_assets_proposal_store(caller, &batch_group_id).unwrap_or_else(|e| trap(&e))
+    commit_batch_group(caller, &batch_group_id).unwrap_or_else(|e| trap(&e))
 }
 
 ///

@@ -1,7 +1,7 @@
 pub mod state {
     use crate::memory::init_stable_state;
     use crate::storage::types::state::{
-        ProposalAssetsStable, ProposalContentChunksStable, ProposalsStable,
+        AssetsStable, BatchGroupProposalsStable, ContentChunksStable,
     };
     use crate::types::ledger::Payment;
     use candid::CandidType;
@@ -33,9 +33,9 @@ pub mod state {
     pub struct StableState {
         pub mission_controls: MissionControlsStable,
         pub payments: PaymentsStable,
-        pub proposal_assets: ProposalAssetsStable,
-        pub proposal_content_chunks: ProposalContentChunksStable,
-        pub proposals: ProposalsStable,
+        pub proposal_assets: AssetsStable,
+        pub proposal_content_chunks: ContentChunksStable,
+        pub proposals: BatchGroupProposalsStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

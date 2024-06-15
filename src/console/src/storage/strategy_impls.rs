@@ -2,7 +2,7 @@ use crate::storage::state::heap::{
     delete_asset, get_asset, get_config, get_domains, get_rule, insert_asset,
 };
 use crate::storage::state::stable::{
-    get_proposal_asset, insert_proposal_asset, insert_proposal_asset_encoding,
+    get_asset_stable, insert_asset_encoding_stable, insert_asset_stable,
 };
 use crate::storage::state::utils::get_content_chunks;
 use crate::storage::store::get_public_asset;
@@ -103,13 +103,13 @@ impl StorageUploadStrategy for StorageUpload {
         asset: &mut Asset,
         _rule: &Rule,
     ) {
-        insert_proposal_asset_encoding(full_path, encoding_type, encoding, asset);
+        insert_asset_encoding_stable(full_path, encoding_type, encoding, asset);
     }
 
     fn insert_asset(&self, batch: &Batch, asset: &Asset, _rule: &Rule) -> Result<(), String> {
         match &batch.batch_group_id {
             Some(batch_group_id) => {
-                insert_proposal_asset(
+                insert_asset_stable(
                     batch_group_id,
                     &batch.key.collection,
                     &batch.key.full_path,
@@ -128,7 +128,7 @@ impl StorageUploadStrategy for StorageUpload {
         full_path: &FullPath,
         _rule: &Rule,
     ) -> Option<Asset> {
-        let asset = get_proposal_asset(batch_id, collection, full_path);
+        let asset = get_asset_stable(batch_id, collection, full_path);
 
         match asset {
             Some(asset) => Some(asset),

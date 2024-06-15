@@ -6,7 +6,7 @@ use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::memory::Memory;
 use serde::Serialize;
 
-pub fn insert_proposal_asset_encoding_stable<K>(
+pub fn insert_asset_encoding_stable<K>(
     full_path: &FullPath,
     encoding_type: &str,
     encoding: &AssetEncoding,

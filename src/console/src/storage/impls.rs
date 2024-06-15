@@ -1,5 +1,5 @@
 use crate::storage::types::state::{
-    Proposal, ProposalAssetKey, ProposalContentChunkKey, ProposalKey, ProposalStatus,
+    AssetKey, BatchGroupProposal, BatchGroupProposalKey, BatchGroupProposalStatus, ContentChunkKey,
 };
 use candid::Principal;
 use ic_cdk::api::time;
@@ -12,7 +12,7 @@ use junobuild_shared::types::state::{Timestamp, Version};
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
 
-impl Storable for ProposalAssetKey {
+impl Storable for AssetKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }
@@ -24,7 +24,7 @@ impl Storable for ProposalAssetKey {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl Storable for ProposalContentChunkKey {
+impl Storable for ContentChunkKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }
@@ -36,7 +36,7 @@ impl Storable for ProposalContentChunkKey {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl Storable for ProposalKey {
+impl Storable for BatchGroupProposalKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }
@@ -48,7 +48,7 @@ impl Storable for ProposalKey {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl Storable for Proposal {
+impl Storable for BatchGroupProposal {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }
@@ -60,7 +60,7 @@ impl Storable for Proposal {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl Hashable for ProposalAssetKey {
+impl Hashable for AssetKey {
     fn hash(&self) -> Hash {
         let mut hasher = Sha256::new();
 
@@ -72,8 +72,12 @@ impl Hashable for ProposalAssetKey {
     }
 }
 
-impl Proposal {
-    pub fn prepare(caller: Principal, current_proposal: &Option<Proposal>, evidence: Hash) -> Self {
+impl BatchGroupProposal {
+    pub fn prepare(
+        caller: Principal,
+        current_proposal: &Option<BatchGroupProposal>,
+        evidence: Hash,
+    ) -> Self {
         let now = time();
 
         let created_at: Timestamp = match current_proposal {
@@ -91,14 +95,14 @@ impl Proposal {
             Some(current_proposal) => current_proposal.owner,
         };
 
-        let status: ProposalStatus = match current_proposal {
-            None => ProposalStatus::Open,
+        let status: BatchGroupProposalStatus = match current_proposal {
+            None => BatchGroupProposalStatus::Open,
             Some(current_proposal) => current_proposal.status.clone(),
         };
 
         let updated_at: Timestamp = now;
 
-        Proposal {
+        BatchGroupProposal {
             owner,
             evidence,
             status,

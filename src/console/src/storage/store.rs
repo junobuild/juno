@@ -2,9 +2,11 @@ use crate::storage::certified_assets::runtime::init_certified_assets as init_run
 use crate::storage::state::heap::{
     delete_domain, get_asset, get_config, get_domain, get_domains, insert_config, insert_domain,
 };
-use crate::storage::state::stable::{get_proposal, get_proposal_assets, insert_proposal};
+use crate::storage::state::stable::{
+    get_assets_stable, get_batch_group_proposal, insert_batch_group_proposal,
+};
 use crate::storage::strategy_impls::StorageState;
-use crate::storage::types::state::{Proposal, ProposalStatus};
+use crate::storage::types::state::{BatchGroupProposal, BatchGroupProposalStatus};
 use candid::Principal;
 use junobuild_collections::types::rules::Memory;
 use junobuild_shared::types::core::{DomainName, Hash, Hashable};
@@ -92,32 +94,32 @@ fn set_state_domain_impl(domain_name: &DomainName, bn_id: &Option<String>) {
 /// Upload
 ///
 
-pub fn commit_assets_proposal(
+pub fn commit_batch_group(
     caller: Principal,
     batch_group_id: &BatchGroupId,
-) -> Result<Proposal, String> {
+) -> Result<BatchGroupProposal, String> {
     let batch_group = get_batch_group(batch_group_id);
 
     match batch_group {
         None => Err(ERROR_CANNOT_COMMIT_BATCH_GROUP.to_string()),
-        Some(batch_group) => secure_commit_assets_proposal(caller, batch_group_id, &batch_group),
+        Some(batch_group) => secure_commit_batch_group(caller, batch_group_id, &batch_group),
     }
 }
 
-fn secure_commit_assets_proposal(
+fn secure_commit_batch_group(
     caller: Principal,
     batch_group_id: &BatchGroupId,
     batch_group: &BatchGroup,
-) -> Result<Proposal, String> {
+) -> Result<BatchGroupProposal, String> {
     // The one that started the batch group should be the one that commits it
     if principal_not_equal(caller, batch_group.owner) {
         return Err(ERROR_CANNOT_COMMIT_BATCH_GROUP.to_string());
     }
 
-    let current_proposal = get_proposal(batch_group_id);
+    let current_proposal = get_batch_group_proposal(batch_group_id);
 
     if let Some(current_proposal) = &current_proposal {
-        if current_proposal.status != ProposalStatus::Open {
+        if current_proposal.status != BatchGroupProposalStatus::Open {
             return Err(format!(
                 "Proposal cannot be committed. Current status: {:?}",
                 current_proposal.status
@@ -129,7 +131,7 @@ fn secure_commit_assets_proposal(
         }
     }
 
-    let batch_groups_assets = get_proposal_assets(batch_group_id);
+    let batch_groups_assets = get_assets_stable(batch_group_id);
 
     let mut hasher = Sha256::new();
 
@@ -144,9 +146,9 @@ fn secure_commit_assets_proposal(
 
     let hash: Hash = hasher.finalize().into();
 
-    let proposal: Proposal = Proposal::prepare(caller, &current_proposal, hash);
+    let proposal: BatchGroupProposal = BatchGroupProposal::prepare(caller, &current_proposal, hash);
 
-    insert_proposal(batch_group_id, &proposal);
+    insert_batch_group_proposal(batch_group_id, &proposal);
 
     Ok(proposal)
 }

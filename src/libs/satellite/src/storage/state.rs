@@ -8,7 +8,7 @@ use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::list::range_collection_end;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
-use junobuild_storage::stable_utils::insert_proposal_asset_encoding_stable;
+use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
@@ -95,7 +95,7 @@ pub fn insert_asset_encoding(
                 .insert(encoding_type.to_owned(), encoding.clone());
         }
         Memory::Stable => STATE.with(|state| {
-            insert_proposal_asset_encoding_stable(
+            insert_asset_encoding_stable(
                 full_path,
                 encoding_type,
                 encoding,

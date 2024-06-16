@@ -8,20 +8,28 @@ use candid::Principal;
 use hex::encode;
 use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_shared::utils::principal_not_equal;
-use junobuild_storage::runtime::get_batch_group;
-use junobuild_storage::types::runtime_state::BatchGroupId;
-use junobuild_storage::types::store::{AssetEncoding, BatchGroup};
+use junobuild_storage::types::store::AssetEncoding;
 use sha2::{Digest, Sha256};
+
+pub fn init_assets_upgrade(caller: Principal) -> Result<(ProposalId, Proposal), String> {
+    let proposal_id =
+        u128::try_from(count_proposals() + 1).map_err(|_| "Cannot convert next proposal ID.")?;
+    let proposal: Proposal = Proposal::init(caller, ProposalType::AssetsUpgrade);
+
+    insert_proposal(&proposal_id, &proposal);
+
+    Ok((proposal_id, proposal))
+}
 
 pub fn propose_assets_upgrade(
     caller: Principal,
-    batch_group_id: &BatchGroupId,
+    proposal_id: &ProposalId,
 ) -> Result<(ProposalId, Proposal), String> {
-    let batch_group = get_batch_group(batch_group_id);
+    let proposal = get_proposal(proposal_id);
 
-    match batch_group {
+    match proposal {
         None => Err(ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE.to_string()),
-        Some(batch_group) => secure_propose_assets_upgrade(caller, batch_group_id, &batch_group),
+        Some(proposal) => secure_propose_assets_upgrade(caller, proposal_id, &proposal),
     }
 }
 
@@ -39,19 +47,19 @@ pub fn commit_assets_upgrade(assets_upgrade: &CommitAssetsUpgrade) -> Result<(),
 
 fn secure_propose_assets_upgrade(
     caller: Principal,
-    batch_group_id: &BatchGroupId,
-    batch_group: &BatchGroup,
+    proposal_id: &ProposalId,
+    proposal: &Proposal,
 ) -> Result<(ProposalId, Proposal), String> {
-    // The one that started the batch group should be the one that commits it
-    if principal_not_equal(caller, batch_group.owner) {
+    // The one that started the upload should be the one that propose it.
+    if principal_not_equal(caller, proposal.owner) {
         return Err(ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE.to_string());
     }
 
-    let batch_groups_assets = get_assets_stable(batch_group_id);
+    let assets = get_assets_stable(proposal_id);
 
     let mut hasher = Sha256::new();
 
-    for (key, asset) in batch_groups_assets {
+    for (key, asset) in assets {
         hasher.update(key.hash());
         hasher.update(asset.hash());
 
@@ -62,13 +70,11 @@ fn secure_propose_assets_upgrade(
 
     let hash: Hash = hasher.finalize().into();
 
-    let proposal_id =
-        u128::try_from(count_proposals() + 1).map_err(|_| "Cannot convert next proposal ID.")?;
-    let proposal: Proposal = Proposal::open(caller, hash, ProposalType::AssetsUpgrade);
+    let proposal: Proposal = Proposal::open(proposal, hash);
 
-    insert_proposal(&proposal_id, &proposal);
+    insert_proposal(proposal_id, &proposal);
 
-    Ok((proposal_id, proposal))
+    Ok((*proposal_id, proposal))
 }
 
 fn secure_commit_assets_upgrade(
@@ -82,8 +88,11 @@ fn secure_commit_assets_upgrade(
         ));
     }
 
-    if proposal.sha256 != assets_upgrade.sha256 {
-        return Err(format!("The provided SHA-256 hash ({}) does not match the expected value for the proposal to commit.", encode(assets_upgrade.sha256)));
+    match &proposal.sha256 {
+        Some(sha256) if sha256 == &assets_upgrade.sha256 => (),
+        _ => {
+            return Err(format!("The provided SHA-256 hash ({}) does not match the expected value for the proposal to commit.", encode(assets_upgrade.sha256)));
+        }
     }
 
     // Mark proposal as accepted.

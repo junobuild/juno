@@ -131,7 +131,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Proposal {
         pub owner: Principal,
-        pub sha256: Hash,
+        pub sha256: Option<Hash>,
         pub status: ProposalStatus,
         pub executed_at: Option<Timestamp>,
         pub created_at: Timestamp,
@@ -147,6 +147,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]
     pub enum ProposalStatus {
+        Initialized,
         Open,
         Rejected,
         Accepted,

@@ -97,6 +97,25 @@ export const idlFactory = ({ IDL }) => {
 		full_path: IDL.Text
 	});
 	const InitUploadResult = IDL.Record({ batch_id: IDL.Nat });
+	const ProposalStatus = IDL.Variant({
+		Initialized: IDL.Null,
+		Failed: IDL.Null,
+		Open: IDL.Null,
+		Rejected: IDL.Null,
+		Executed: IDL.Null,
+		Accepted: IDL.Null
+	});
+	const ProposalType = IDL.Variant({ AssetsUpgrade: IDL.Null });
+	const Proposal = IDL.Record({
+		status: ProposalStatus,
+		updated_at: IDL.Nat64,
+		sha256: IDL.Opt(IDL.Vec(IDL.Nat8)),
+		executed_at: IDL.Opt(IDL.Nat64),
+		owner: IDL.Principal,
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64),
+		proposal_type: ProposalType
+	});
 	const CustomDomain = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
@@ -122,24 +141,6 @@ export const idlFactory = ({ IDL }) => {
 		Satellite: IDL.Null
 	});
 	const LoadRelease = IDL.Record({ total: IDL.Nat64, chunks: IDL.Nat64 });
-	const ProposalStatus = IDL.Variant({
-		Failed: IDL.Null,
-		Open: IDL.Null,
-		Rejected: IDL.Null,
-		Executed: IDL.Null,
-		Accepted: IDL.Null
-	});
-	const ProposalType = IDL.Variant({ AssetsUpgrade: IDL.Null });
-	const Proposal = IDL.Record({
-		status: ProposalStatus,
-		updated_at: IDL.Nat64,
-		sha256: IDL.Vec(IDL.Nat8),
-		executed_at: IDL.Opt(IDL.Nat64),
-		owner: IDL.Principal,
-		created_at: IDL.Nat64,
-		version: IDL.Opt(IDL.Nat64),
-		proposal_type: ProposalType
-	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
 		Admin: IDL.Null
@@ -186,7 +187,7 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		init_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
-		init_assets_upload_group: IDL.Func([], [IDL.Nat], []),
+		init_assets_upgrade: IDL.Func([], [IDL.Nat, Proposal], []),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),

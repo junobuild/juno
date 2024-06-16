@@ -34,7 +34,7 @@ impl Hashable for AssetKey {
     fn hash(&self) -> Hash {
         let mut hasher = Sha256::new();
 
-        hasher.update(self.batch_group_id.to_le_bytes());
+        hasher.update(self.proposal_id.to_le_bytes());
         hasher.update(self.collection.to_bytes());
         hasher.update(self.full_path.to_bytes());
 

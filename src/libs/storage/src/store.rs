@@ -4,19 +4,17 @@ use crate::constants::{
 };
 use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
 use crate::runtime::{
-    clear_batch as clear_runtime_batch,
-    clear_expired_batch_groups as clear_expired_runtime_batch_groups,
-    clear_expired_batches as clear_expired_runtime_batches,
+    clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks, get_batch as get_runtime_batch,
-    get_batch_group as get_runtime_batch_group, get_chunk as get_runtime_chunk,
-    insert_batch as insert_runtime_batch, insert_batch_group, insert_chunk as insert_runtime_chunk,
+    get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
+    insert_chunk as insert_runtime_chunk,
 };
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy};
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
-use crate::types::runtime_state::{BatchGroupId, BatchId, ChunkId};
+use crate::types::runtime_state::{BatchId, ChunkId};
 use crate::types::state::FullPath;
 use crate::types::store::{
-    Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, BatchGroup, Chunk, EncodingType,
+    Asset, AssetAssertUpload, AssetEncoding, AssetKey, Batch, Chunk, EncodingType, ReferenceId,
 };
 use candid::Principal;
 use ic_cdk::api::time;
@@ -37,19 +35,14 @@ use std::collections::HashMap;
 
 const BATCH_EXPIRY_NANOS: u64 = 300_000_000_000;
 
-static mut NEXT_BATCH_GROUP_ID: BatchGroupId = 0;
 static mut NEXT_BATCH_ID: BatchId = 0;
 static mut NEXT_CHUNK_ID: ChunkId = 0;
-
-pub fn create_batch_group(caller: Principal) -> BatchGroupId {
-    create_batch_group_impl(caller)
-}
 
 pub fn create_batch(
     caller: Principal,
     controllers: &Controllers,
     init: InitAssetKey,
-    batch_group_id: Option<BatchGroupId>,
+    reference_id: Option<ReferenceId>,
 ) -> Result<BatchId, String> {
     assert_key(caller, &init.full_path, &init.collection, controllers)?;
 
@@ -58,29 +51,7 @@ pub fn create_batch(
     // Assert supported encoding type
     get_encoding_type(&init.encoding_type)?;
 
-    extend_group_batch_expiry(caller, &batch_group_id)?;
-
-    Ok(create_batch_impl(caller, init, batch_group_id))
-}
-
-fn create_batch_group_impl(caller: Principal) -> BatchId {
-    let now = time();
-
-    unsafe {
-        clear_expired_batches();
-
-        NEXT_BATCH_GROUP_ID += 1;
-
-        insert_batch_group(
-            &NEXT_BATCH_GROUP_ID,
-            BatchGroup {
-                owner: caller,
-                expires_at: now + BATCH_EXPIRY_NANOS,
-            },
-        );
-
-        NEXT_BATCH_GROUP_ID
-    }
+    Ok(create_batch_impl(caller, init, reference_id))
 }
 
 fn create_batch_impl(
@@ -93,7 +64,7 @@ fn create_batch_impl(
         full_path,
         description,
     }: InitAssetKey,
-    batch_group_id: Option<BatchGroupId>,
+    reference_id: Option<ReferenceId>,
 ) -> BatchId {
     let now = time();
 
@@ -115,7 +86,7 @@ fn create_batch_impl(
             &NEXT_BATCH_ID,
             Batch {
                 key,
-                batch_group_id,
+                reference_id,
                 expires_at: now + BATCH_EXPIRY_NANOS,
                 encoding_type,
             },
@@ -123,24 +94,6 @@ fn create_batch_impl(
 
         NEXT_BATCH_ID
     }
-}
-
-fn extend_group_batch_expiry(
-    caller: Principal,
-    batch_group_id: &Option<BatchGroupId>,
-) -> Result<(), &'static str> {
-    if let Some(batch_group_id) = batch_group_id {
-        let mut batch_group =
-            get_runtime_batch_group(batch_group_id).ok_or("Batch group not found.")?;
-
-        assert_batch_group(caller, &batch_group)?;
-
-        batch_group.expires_at = time() + BATCH_EXPIRY_NANOS;
-
-        insert_batch_group(batch_group_id, batch_group);
-    }
-
-    Ok(())
 }
 
 pub fn create_chunk(
@@ -240,14 +193,6 @@ fn assert_key(
         && !full_path.starts_with(&["/", collection, "/"].join(""))
     {
         return Err("Asset path must be prefixed with collection key.");
-    }
-
-    Ok(())
-}
-
-fn assert_batch_group(caller: Principal, batch_group: &BatchGroup) -> Result<(), &'static str> {
-    if principal_not_equal(caller, batch_group.owner) {
-        return Err("Caller not allowed to upload data for batch group.");
     }
 
     Ok(())
@@ -488,9 +433,6 @@ fn get_encoding_type(encoding_type: &Option<EncodingType>) -> Result<EncodingTyp
 }
 
 fn clear_expired_batches() {
-    // Remove expired batch groups
-    clear_expired_runtime_batch_groups();
-
     // Remove expired batches
     clear_expired_runtime_batches();
 

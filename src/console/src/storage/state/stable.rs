@@ -1,22 +1,22 @@
 use crate::storage::types::state::{AssetKey, AssetsStable, ContentChunkKey, ContentChunksStable};
+use crate::types::state::ProposalId;
 use crate::STATE;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_storage::stable_utils::insert_asset_encoding_stable as insert_asset_encoding_stable_utils;
-use junobuild_storage::types::runtime_state::BatchGroupId;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
 
 pub fn get_asset_stable(
-    batch_group_id: &BatchGroupId,
+    proposal_id: &ProposalId,
     collection: &CollectionKey,
     full_path: &FullPath,
 ) -> Option<Asset> {
     STATE.with(|state| {
         get_asset_stable_impl(
-            batch_group_id,
+            proposal_id,
             collection,
             full_path,
             &state.borrow().stable.proposals_assets,
@@ -44,30 +44,28 @@ fn get_content_chunks_stable_impl(
     content_chunks.get(&key)
 }
 
-pub fn get_assets_stable(batch_group_id: &BatchGroupId) -> Vec<(AssetKey, Asset)> {
-    STATE.with(|state| {
-        get_assets_stable_impl(batch_group_id, &state.borrow().stable.proposals_assets)
-    })
+pub fn get_assets_stable(proposal_id: &ProposalId) -> Vec<(AssetKey, Asset)> {
+    STATE.with(|state| get_assets_stable_impl(proposal_id, &state.borrow().stable.proposals_assets))
 }
 
 fn get_assets_stable_impl(
-    batch_group_id: &BatchGroupId,
+    proposal_id: &ProposalId,
     proposal_assets: &AssetsStable,
 ) -> Vec<(AssetKey, Asset)> {
     proposal_assets
-        .range(filter_assets_range(batch_group_id))
+        .range(filter_assets_range(proposal_id))
         .collect()
 }
 
-fn filter_assets_range(batch_group_id: &BatchGroupId) -> impl RangeBounds<AssetKey> {
+fn filter_assets_range(proposal_id: &ProposalId) -> impl RangeBounds<AssetKey> {
     let start_key = AssetKey {
-        batch_group_id: *batch_group_id,
+        proposal_id: *proposal_id,
         collection: "".to_string(),
         full_path: "".to_string(),
     };
 
     let end_key = AssetKey {
-        batch_group_id: *batch_group_id + 1,
+        proposal_id: *proposal_id + 1,
         collection: "".to_string(),
         full_path: "".to_string(),
     };
@@ -76,12 +74,12 @@ fn filter_assets_range(batch_group_id: &BatchGroupId) -> impl RangeBounds<AssetK
 }
 
 fn get_asset_stable_impl(
-    batch_group_id: &BatchGroupId,
+    proposal_id: &ProposalId,
     collection: &CollectionKey,
     full_path: &FullPath,
     assets: &AssetsStable,
 ) -> Option<Asset> {
-    assets.get(&stable_asset_key(batch_group_id, collection, full_path))
+    assets.get(&stable_asset_key(proposal_id, collection, full_path))
 }
 
 pub fn insert_asset_encoding_stable(
@@ -103,14 +101,14 @@ pub fn insert_asset_encoding_stable(
 }
 
 pub fn insert_asset_stable(
-    batch_group_id: &BatchGroupId,
+    proposal_id: &ProposalId,
     collection: &CollectionKey,
     full_path: &FullPath,
     asset: &Asset,
 ) {
     STATE.with(|state| {
         insert_asset_stable_impl(
-            batch_group_id,
+            proposal_id,
             collection,
             full_path,
             asset,
@@ -120,25 +118,25 @@ pub fn insert_asset_stable(
 }
 
 fn insert_asset_stable_impl(
-    batch_group_id: &BatchGroupId,
+    proposal_id: &ProposalId,
     collection: &CollectionKey,
     full_path: &FullPath,
     asset: &Asset,
     assets: &mut AssetsStable,
 ) {
     assets.insert(
-        stable_asset_key(batch_group_id, collection, full_path),
+        stable_asset_key(proposal_id, collection, full_path),
         asset.clone(),
     );
 }
 
 fn stable_asset_key(
-    batch_group_id: &BatchGroupId,
+    proposal_id: &ProposalId,
     collection: &CollectionKey,
     full_path: &FullPath,
 ) -> AssetKey {
     AssetKey {
-        batch_group_id: *batch_group_id,
+        proposal_id: *proposal_id,
         collection: collection.clone(),
         full_path: full_path.clone(),
     }

@@ -3,9 +3,9 @@ use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::memory::STATE;
 use crate::types::config::StorageConfig;
 use crate::types::runtime_state::{
-    BatchGroupId, BatchGroups, BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState,
+    BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState,
 };
-use crate::types::store::{Asset, Batch, BatchExpiry, BatchGroup, Chunk};
+use crate::types::store::{Asset, Batch, BatchExpiry, Chunk};
 use ic_cdk::api::time;
 use std::collections::HashMap;
 
@@ -54,18 +54,6 @@ fn delete_certified_asset_impl(asset: &Asset, runtime: &mut RuntimeState) {
 
 /// Batch
 
-pub fn get_batch_group(batch_group_id: &BatchGroupId) -> Option<BatchGroup> {
-    STATE.with(|state| {
-        state
-            .borrow()
-            .runtime
-            .storage
-            .batch_groups
-            .get(batch_group_id)
-            .cloned()
-    })
-}
-
 pub fn get_batch(batch_id: &BatchId) -> Option<Batch> {
     STATE.with(|state| {
         state
@@ -75,16 +63,6 @@ pub fn get_batch(batch_id: &BatchId) -> Option<Batch> {
             .batches
             .get(batch_id)
             .cloned()
-    })
-}
-
-pub fn insert_batch_group(batch_group_id: &BatchGroupId, batch_group: BatchGroup) {
-    STATE.with(|state| {
-        insert_batch_group_impl(
-            batch_group_id,
-            batch_group,
-            &mut state.borrow_mut().runtime.storage.batch_groups,
-        )
     })
 }
 
@@ -98,12 +76,6 @@ pub fn insert_batch(batch_id: &BatchId, batch: Batch) {
     })
 }
 
-pub fn clear_expired_batch_groups() {
-    STATE.with(|state| {
-        clear_expired_batch_groups_impl(&mut state.borrow_mut().runtime.storage.batch_groups)
-    });
-}
-
 pub fn clear_expired_batches() {
     STATE.with(|state| clear_expired_batches_impl(&mut state.borrow_mut().runtime.storage.batches));
 }
@@ -114,20 +86,8 @@ pub fn clear_batch(batch_id: &BatchId, chunk_ids: &[ChunkId]) {
     });
 }
 
-fn insert_batch_group_impl(
-    batch_group_id: &BatchGroupId,
-    batch: BatchGroup,
-    batch_groups: &mut BatchGroups,
-) {
-    batch_groups.insert(*batch_group_id, batch);
-}
-
 fn insert_batch_impl(batch_id: &BatchId, batch: Batch, batches: &mut Batches) {
     batches.insert(*batch_id, batch);
-}
-
-fn clear_expired_batch_groups_impl(batch_groups: &mut BatchGroups) {
-    clear_expired_items(batch_groups);
 }
 
 fn clear_expired_batches_impl(batches: &mut Batches) {

@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 
-import { toNullable, uint8ArrayToHexString } from '@dfinity/utils';
+import { fromNullable, toNullable, uint8ArrayToHexString } from '@dfinity/utils';
 import {
 	deploy as cliDeploy,
 	nextArg,
@@ -32,7 +32,7 @@ const readJunoConfig = async (env) => {
 };
 
 const {
-	init_assets_upload_group,
+	init_assets_upgrade,
 	propose_assets_upgrade,
 	init_asset_upload,
 	commit_asset_upload,
@@ -40,7 +40,7 @@ const {
 	commit_assets_upgrade
 } = await consoleActorLocal();
 
-const batchGroupId = await init_assets_upload_group();
+const [proposalId, _] = await init_assets_upgrade();
 
 const uploadFile = async ({ collection, encoding, filename, fullPath, headers, data }) => {
 	const { batch_id: batchId } = await init_asset_upload(
@@ -52,7 +52,7 @@ const uploadFile = async ({ collection, encoding, filename, fullPath, headers, d
 			encoding_type: toNullable(encoding),
 			description: toNullable()
 		},
-		batchGroupId
+		proposalId
 	);
 
 	const chunkSize = 1900000;
@@ -121,16 +121,16 @@ const deploy = async () => {
 
 await deploy();
 
-const [proposalId, { sha256, status }] = await propose_assets_upgrade(batchGroupId);
+const [__, { sha256, status }] = await propose_assets_upgrade(proposalId);
 
 console.log('\nAssets uploaded and proposed.\n');
 console.log('🆔 ', proposalId);
-console.log('🔒 ', uint8ArrayToHexString(sha256));
+console.log('🔒 ', uint8ArrayToHexString(fromNullable(sha256)));
 console.log('⏳ ', status);
 
 await commit_assets_upgrade({
 	proposal_id: proposalId,
-	sha256
+	sha256: fromNullable(sha256)
 });
 
 console.log(`\n✅ Assets committed to http://${config.id}.localhost:5987/.`);

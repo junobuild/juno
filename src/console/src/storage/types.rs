@@ -1,9 +1,9 @@
 pub mod state {
+    use crate::types::state::ProposalId;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::core::{Blob, CollectionKey};
     use junobuild_shared::types::memory::Memory;
-    use junobuild_storage::types::runtime_state::BatchGroupId;
     use junobuild_storage::types::state::FullPath;
     use junobuild_storage::types::store::{Asset, EncodingType};
     use serde::Serialize;
@@ -13,7 +13,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct AssetKey {
-        pub batch_group_id: BatchGroupId,
+        pub proposal_id: ProposalId,
         pub collection: CollectionKey,
         pub full_path: FullPath,
     }

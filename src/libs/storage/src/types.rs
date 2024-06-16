@@ -28,15 +28,13 @@ pub mod state {
 
 pub mod runtime_state {
     use crate::certification::types::certified::CertifiedAssetHashes;
-    use crate::types::store::{Batch, BatchGroup, Chunk};
+    use crate::types::store::{Batch, Chunk};
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
-    pub type BatchGroups = HashMap<BatchGroupId, BatchGroup>;
     pub type Batches = HashMap<BatchId, Batch>;
     pub type Chunks = HashMap<ChunkId, Chunk>;
 
-    pub type BatchGroupId = u128;
     pub type BatchId = u128;
     pub type ChunkId = u128;
 
@@ -54,7 +52,6 @@ pub mod runtime_state {
 
     #[derive(Default, Clone)]
     pub struct StorageRuntimeState {
-        pub batch_groups: BatchGroups,
         pub batches: Batches,
         pub chunks: Chunks,
         pub asset_hashes: CertifiedAssetHashes,
@@ -64,7 +61,7 @@ pub mod runtime_state {
 pub mod store {
     use crate::http::types::HeaderField;
     use crate::types::interface::CommitBatch;
-    use crate::types::runtime_state::{BatchGroupId, BatchId};
+    use crate::types::runtime_state::BatchId;
     use crate::types::state::FullPath;
     use candid::CandidType;
     use ic_certification::Hash;
@@ -124,16 +121,12 @@ pub mod store {
         fn expires_at(&self) -> Timestamp;
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct BatchGroup {
-        pub owner: UserId,
-        pub expires_at: Timestamp,
-    }
+    pub type ReferenceId = u128;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Batch {
         pub key: AssetKey,
-        pub batch_group_id: Option<BatchGroupId>,
+        pub reference_id: Option<ReferenceId>,
         pub expires_at: Timestamp,
         pub encoding_type: Option<EncodingType>,
     }

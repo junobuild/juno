@@ -14,10 +14,9 @@ use junobuild_storage::strategies::{
 };
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
-use junobuild_storage::types::runtime_state::BatchId;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{
-    Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType,
+    Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 
 pub struct StorageAssertions;
@@ -109,28 +108,28 @@ impl StorageUploadStrategy for StorageUpload {
     }
 
     fn insert_asset(&self, batch: &Batch, asset: &Asset, _rule: &Rule) -> Result<(), String> {
-        match &batch.batch_group_id {
-            Some(batch_group_id) => {
+        match &batch.reference_id {
+            Some(reference_id) => {
                 insert_asset_stable(
-                    batch_group_id,
+                    reference_id,
                     &batch.key.collection,
                     &batch.key.full_path,
                     asset,
                 );
                 Ok(())
             }
-            None => Err("Cannot insert asset to unknown batch group id.".to_string()),
+            None => Err("Cannot insert asset with unknown reference / proposal ID.".to_string()),
         }
     }
 
     fn get_asset(
         &self,
-        batch_id: &BatchId,
+        reference_id: &ReferenceId,
         collection: &CollectionKey,
         full_path: &FullPath,
         _rule: &Rule,
     ) -> Option<Asset> {
-        let asset = get_asset_stable(batch_id, collection, full_path);
+        let asset = get_asset_stable(reference_id, collection, full_path);
 
         match asset {
             Some(asset) => Some(asset),

@@ -130,20 +130,34 @@ impl Proposal {
         }
     }
 
-    pub fn open(caller: Principal, sha256: Hash, proposal_type: ProposalType) -> Self {
+    pub fn init(caller: Principal, proposal_type: ProposalType) -> Self {
         let now = time();
 
         let version = Self::get_next_version(&None);
 
         Proposal {
             owner: caller,
-            sha256,
-            status: ProposalStatus::Open,
+            sha256: None,
+            status: ProposalStatus::Initialized,
             executed_at: None,
             created_at: now,
             updated_at: now,
             version: Some(version),
             proposal_type,
+        }
+    }
+
+    pub fn open(current_proposal: &Proposal, sha256: Hash) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&Some(current_proposal.clone()));
+
+        Proposal {
+            status: ProposalStatus::Open,
+            sha256: Some(sha256),
+            updated_at: now,
+            version: Some(version),
+            ..current_proposal.clone()
         }
     }
 

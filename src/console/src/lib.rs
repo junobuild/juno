@@ -46,6 +46,7 @@ use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
     RateConfig, Rates, Releases, State,
 };
+use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;
 use ciborium::into_writer;
 use ic_cdk::api::caller;
@@ -78,7 +79,7 @@ use memory::{get_memory_upgrades, init_stable_state};
 use std::cell::RefCell;
 use std::collections::HashMap;
 use types::state::Payments;
-use upgrade::{defer_migrate_mission_controls, defer_migrate_payments};
+use upgrade::heap_to_stable::{defer_migrate_mission_controls, defer_migrate_payments};
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -96,7 +97,7 @@ fn init() {
         controllers: init_controllers(&[manager]),
         rates: Rates::default(),
         fees: Fees::default(),
-        storage: Some(StorageHeapState::default()),
+        storage: StorageHeapState::default(),
     };
 
     STATE.with(|state| {
@@ -120,7 +121,9 @@ fn pre_upgrade() {
 #[post_upgrade]
 fn post_upgrade() {
     // TODO: remove once stable memory introduced on mainnet
-    let (heap,): (HeapState,) = stable_restore().unwrap();
+    let (upgrade_heap,): (UpgradeHeapState,) = stable_restore().unwrap();
+
+    let heap = HeapState::from(&upgrade_heap);
 
     STATE.with(|state| {
         *state.borrow_mut() = State {

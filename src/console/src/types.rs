@@ -49,7 +49,7 @@ pub mod state {
         pub controllers: Controllers,
         pub rates: Rates,
         pub fees: Fees,
-        pub storage: Option<StorageHeapState>,
+        pub storage: StorageHeapState,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

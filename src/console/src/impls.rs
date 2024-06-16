@@ -13,7 +13,6 @@ use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::Hash;
 use junobuild_shared::types::state::Version;
-use junobuild_storage::types::state::StorageHeapState;
 use std::borrow::Cow;
 
 impl Default for State {
@@ -90,12 +89,6 @@ impl Storable for Payment {
     }
 
     const BOUND: Bound = Bound::Unbounded;
-}
-
-impl HeapState {
-    pub fn get_storage(&self) -> StorageHeapState {
-        self.storage.clone().unwrap_or_default()
-    }
 }
 
 impl Storable for ProposalKey {

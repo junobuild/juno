@@ -1,6 +1,7 @@
 use crate::msg::ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE;
-use crate::storage::state::heap::{insert_asset, insert_asset_encoding};
+use crate::storage::state::heap::insert_asset;
 use crate::storage::state::stable::{get_assets_stable, get_content_chunks_stable};
+use crate::storage::store::insert_asset_encoding;
 use crate::store::stable::{count_proposals, get_proposal, insert_proposal};
 use crate::types::interface::CommitAssetsUpgrade;
 use crate::types::state::{Proposal, ProposalId, ProposalStatus, ProposalType};
@@ -106,7 +107,7 @@ fn secure_commit_assets_upgrade(
         insert_asset(&key.full_path, &asset);
 
         for (encoding_type, encoding) in asset.encodings {
-            let mut content_chunks = Vec::with_capacity(encoding.content_chunks.len());
+            let mut content_chunks = Vec::new();
 
             for (i, _) in encoding.content_chunks.iter().enumerate() {
                 let chunks = get_content_chunks_stable(&encoding, i).ok_or_else(|| {

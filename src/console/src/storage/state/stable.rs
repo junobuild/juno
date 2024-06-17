@@ -1,6 +1,5 @@
 use crate::storage::types::state::{AssetKey, AssetsStable, ContentChunkKey, ContentChunksStable};
 use crate::types::state::ProposalId;
-use crate::STATE;
 use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_storage::stable_utils::insert_asset_encoding_stable as insert_asset_encoding_stable_utils;
@@ -8,6 +7,7 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
+use crate::memory::STATE;
 
 pub fn get_asset_stable(
     proposal_id: &ProposalId,

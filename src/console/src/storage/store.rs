@@ -1,6 +1,7 @@
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::heap::{
-    delete_domain, get_asset, get_config, get_domain, get_domains, insert_config, insert_domain,
+    delete_domain, get_asset, get_config, get_domain, get_domains, insert_asset, insert_config,
+    insert_domain,
 };
 use crate::storage::strategy_impls::StorageState;
 use junobuild_collections::types::rules::Memory;
@@ -8,7 +9,7 @@ use junobuild_shared::types::core::DomainName;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::state::FullPath;
-use junobuild_storage::types::store::Asset;
+use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
 use junobuild_storage::utils::get_token_protected_asset;
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_storage::well_known::utils::build_custom_domain;
@@ -26,6 +27,25 @@ pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(A
             }
         },
     }
+}
+
+pub fn insert_asset_encoding(
+    full_path: &FullPath,
+    encoding_type: &EncodingType,
+    encoding: &AssetEncoding,
+) -> Result<(), String> {
+    let mut asset = match get_asset(full_path) {
+        Some(asset) => asset,
+        None => return Err(format!("No asset found for {}", full_path)),
+    };
+
+    asset
+        .encodings
+        .insert(encoding_type.to_owned(), encoding.clone());
+
+    insert_asset(full_path, &asset);
+
+    Ok(())
 }
 
 ///

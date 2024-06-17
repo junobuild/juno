@@ -1,4 +1,3 @@
-use crate::types::state::HeapState;
 use crate::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
 use junobuild_collections::types::rules::Rule;
@@ -6,10 +5,10 @@ use junobuild_shared::types::core::{CollectionKey, DomainName};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
-use junobuild_storage::types::store::Asset;
+use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
 
 pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
-    STATE.with(|state| get_asset_impl(full_path, &state.borrow().heap.get_storage().assets))
+    STATE.with(|state| get_asset_impl(full_path, &state.borrow().heap.storage.assets))
 }
 
 fn get_asset_impl(full_path: &FullPath, assets: &AssetsHeap) -> Option<Asset> {
@@ -18,28 +17,67 @@ fn get_asset_impl(full_path: &FullPath, assets: &AssetsHeap) -> Option<Asset> {
 }
 
 pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
-    STATE.with(|state| insert_asset_impl(full_path, asset, &mut state.borrow_mut().heap))
+    STATE.with(|state| {
+        insert_asset_impl(
+            full_path,
+            asset,
+            &mut state.borrow_mut().heap.storage.assets,
+        )
+    })
 }
 
-fn insert_asset_impl(full_path: &FullPath, asset: &Asset, heap: &mut HeapState) {
-    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
-    storage.assets.insert(full_path.clone(), asset.clone());
+pub fn insert_asset_encoding(
+    full_path: &FullPath,
+    encoding_type: &EncodingType,
+    encoding: &AssetEncoding,
+) -> Result<(), String> {
+    STATE.with(|state| {
+        insert_asset_encoding_impl(
+            full_path,
+            encoding_type,
+            encoding,
+            &mut state.borrow_mut().heap.storage.assets,
+        )
+    })
+}
+
+fn insert_asset_impl(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHeap) {
+    assets.insert(full_path.clone(), asset.clone());
+}
+
+fn insert_asset_encoding_impl(
+    full_path: &FullPath,
+    encoding_type: &EncodingType,
+    encoding: &AssetEncoding,
+    assets: &mut AssetsHeap,
+) -> Result<(), String> {
+    let asset = get_asset_impl(full_path, assets);
+
+    match asset {
+        None => Err(format!("No asset found for {}", full_path)),
+        Some(mut asset) => {
+            asset
+                .encodings
+                .insert(encoding_type.to_owned(), encoding.clone());
+
+            Ok(())
+        }
+    }
 }
 
 pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
-    STATE.with(|state| delete_asset_impl(full_path, &mut state.borrow_mut().heap))
+    STATE.with(|state| delete_asset_impl(full_path, &mut state.borrow_mut().heap.storage.assets))
 }
 
-fn delete_asset_impl(full_path: &FullPath, heap: &mut HeapState) -> Option<Asset> {
-    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
-    storage.assets.remove(full_path)
+fn delete_asset_impl(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<Asset> {
+    assets.remove(full_path)
 }
 
 /// Rules
 
 pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     let rule = STATE.with(|state| {
-        let rules = &state.borrow().heap.get_storage().rules.clone();
+        let rules = &state.borrow().heap.storage.rules.clone();
         let rule = rules.get(collection);
 
         rule.cloned()
@@ -56,52 +94,55 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
 ///
 
 pub fn get_config() -> StorageConfig {
-    STATE.with(|state| state.borrow().heap.get_storage().config.clone())
+    STATE.with(|state| state.borrow().heap.storage.config.clone())
 }
 
 pub fn insert_config(config: &StorageConfig) {
-    STATE.with(|state| insert_config_impl(config, &mut state.borrow_mut().heap))
+    STATE.with(|state| insert_config_impl(config, &mut state.borrow_mut().heap.storage))
 }
 
-fn insert_config_impl(config: &StorageConfig, heap: &mut HeapState) {
-    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
+fn insert_config_impl(config: &StorageConfig, storage: &mut StorageHeapState) {
     storage.config = config.clone();
 }
 
 /// Custom domains
 
 pub fn get_domains() -> CustomDomains {
-    STATE.with(|state| state.borrow().heap.get_storage().custom_domains.clone())
+    STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())
 }
 
 pub fn get_domain(domain_name: &DomainName) -> Option<CustomDomain> {
     STATE.with(|state| {
-        let domains = state.borrow().heap.get_storage().custom_domains.clone();
+        let domains = state.borrow().heap.storage.custom_domains.clone();
         let domain = domains.get(domain_name);
         domain.cloned()
     })
 }
 
 pub fn insert_domain(domain_name: &DomainName, custom_domain: &CustomDomain) {
-    STATE.with(|state| insert_domain_impl(domain_name, custom_domain, &mut state.borrow_mut().heap))
+    STATE.with(|state| {
+        insert_domain_impl(
+            domain_name,
+            custom_domain,
+            &mut state.borrow_mut().heap.storage,
+        )
+    })
 }
 
 pub fn delete_domain(domain_name: &DomainName) {
-    STATE.with(|state| delete_domain_impl(domain_name, &mut state.borrow_mut().heap))
+    STATE.with(|state| delete_domain_impl(domain_name, &mut state.borrow_mut().heap.storage))
 }
 
 fn insert_domain_impl(
     domain_name: &DomainName,
     custom_domain: &CustomDomain,
-    heap: &mut HeapState,
+    storage: &mut StorageHeapState,
 ) {
-    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
     storage
         .custom_domains
         .insert(domain_name.clone(), custom_domain.clone());
 }
 
-fn delete_domain_impl(domain_name: &DomainName, heap: &mut HeapState) {
-    let storage = heap.storage.get_or_insert_with(StorageHeapState::default);
+fn delete_domain_impl(domain_name: &DomainName, storage: &mut StorageHeapState) {
     storage.custom_domains.remove(domain_name);
 }

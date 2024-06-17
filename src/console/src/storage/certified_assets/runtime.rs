@@ -5,7 +5,7 @@ use junobuild_storage::certified_assets::extend_and_init_certified_assets;
 use junobuild_storage::types::state::StorageHeapState;
 
 pub fn init_certified_assets() {
-    STATE.with(|state| init_certified_assets_impl(&state.borrow().heap.get_storage()));
+    STATE.with(|state| init_certified_assets_impl(&state.borrow().heap.storage));
 }
 
 fn init_certified_assets_impl(storage: &StorageHeapState) {

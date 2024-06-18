@@ -6,6 +6,27 @@ export interface AssertMissionControlCenterArgs {
 	mission_control_id: Principal;
 	user: Principal;
 }
+export interface AssetEncodingNoContent {
+	modified: bigint;
+	sha256: Uint8Array | number[];
+	total_length: bigint;
+}
+export interface AssetKey {
+	token: [] | [string];
+	collection: string;
+	owner: Principal;
+	name: string;
+	description: [] | [string];
+	full_path: string;
+}
+export interface AssetNoContent {
+	key: AssetKey;
+	updated_at: bigint;
+	encodings: Array<[string, AssetEncodingNoContent]>;
+	headers: Array<[string, string]>;
+	created_at: bigint;
+	version: [] | [bigint];
+}
 export interface CommitAssetsUpgrade {
 	sha256: Uint8Array | number[];
 	proposal_id: bigint;
@@ -58,6 +79,32 @@ export interface InitAssetKey {
 }
 export interface InitUploadResult {
 	batch_id: bigint;
+}
+export interface ListMatcher {
+	key: [] | [string];
+	description: [] | [string];
+}
+export interface ListOrder {
+	field: ListOrderField;
+	desc: boolean;
+}
+export type ListOrderField = { UpdatedAt: null } | { Keys: null } | { CreatedAt: null };
+export interface ListPaginate {
+	start_after: [] | [string];
+	limit: [] | [bigint];
+}
+export interface ListParams {
+	order: [] | [ListOrder];
+	owner: [] | [Principal];
+	matcher: [] | [ListMatcher];
+	paginate: [] | [ListPaginate];
+}
+export interface ListResults {
+	matches_pages: [] | [bigint];
+	matches_length: bigint;
+	items_page: [] | [bigint];
+	items: Array<[string, AssetNoContent]>;
+	items_length: bigint;
 }
 export interface LoadRelease {
 	total: bigint;
@@ -184,6 +231,7 @@ export interface _SERVICE {
 	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_assets_upgrade: ActorMethod<[], [bigint, Proposal]>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
+	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;

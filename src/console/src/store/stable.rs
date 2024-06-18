@@ -3,13 +3,13 @@ use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     MissionControl, Proposal, ProposalId, ProposalKey, ProposalsStable, StableState,
 };
-use crate::STATE;
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
 use ic_ledger_types::Tokens;
 use junobuild_shared::types::state::MissionControlId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
+use crate::memory::STATE;
 
 /// Mission control centers
 

@@ -2,7 +2,6 @@ use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
     Payments, Rate, RateConfig, Wasm,
 };
-use crate::STATE;
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::{
@@ -12,6 +11,7 @@ use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
 use std::cmp::min;
+use crate::memory::STATE;
 
 /// Mission control centers
 

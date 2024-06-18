@@ -76,14 +76,10 @@ use junobuild_storage::types::interface::{
 };
 use junobuild_storage::types::state::StorageHeapState;
 use memory::{get_memory_upgrades, init_stable_state};
-use std::cell::RefCell;
 use std::collections::HashMap;
 use types::state::Payments;
 use upgrade::heap_to_stable::{defer_migrate_mission_controls, defer_migrate_payments};
-
-thread_local! {
-    static STATE: RefCell<State> = RefCell::default();
-}
+use crate::memory::STATE;
 
 #[init]
 fn init() {

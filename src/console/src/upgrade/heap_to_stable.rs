@@ -1,7 +1,6 @@
 use crate::{
     store::heap::{list_mission_controls_heap, list_payments_heap},
     types::{ledger::Payment, state::MissionControl},
-    STATE,
 };
 use ic_cdk::spawn;
 use ic_cdk_timers::set_timer;
@@ -11,6 +10,7 @@ use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::UserId;
 use std::collections::HashMap;
 use std::time::Duration;
+use crate::memory::STATE;
 
 // One time migration of the mission controls from heap to stable
 pub fn defer_migrate_mission_controls() {

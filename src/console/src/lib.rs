@@ -16,6 +16,7 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
+use crate::memory::STATE;
 use crate::proposals::{
     commit_assets_upgrade as commit_assets_upgrade_proposal,
     init_assets_upgrade as init_assets_upgrade_proposal,
@@ -23,8 +24,8 @@ use crate::proposals::{
 };
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
-    delete_domain_store, get_config_store, get_custom_domains_store, set_config_store,
-    set_domain_store,
+    delete_domain_store, get_config_store, get_custom_domains_store,
+    list_assets as list_assets_store, set_config_store, set_domain_store,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::store::heap::{
@@ -55,11 +56,12 @@ use ic_cdk::{id, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::init_controllers;
-use junobuild_shared::types::core::DomainName;
+use junobuild_shared::types::core::{CollectionKey, DomainName};
 use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
+use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::{Controllers, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;
 use junobuild_storage::http::types::{
@@ -72,14 +74,13 @@ use junobuild_storage::http_request::{
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
 use junobuild_storage::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{
-    CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use junobuild_storage::types::state::StorageHeapState;
 use memory::{get_memory_upgrades, init_stable_state};
 use std::collections::HashMap;
 use types::state::Payments;
 use upgrade::heap_to_stable::{defer_migrate_mission_controls, defer_migrate_payments};
-use crate::memory::STATE;
 
 #[init]
 fn init() {
@@ -412,6 +413,16 @@ fn commit_assets_upgrade(assets_upgrade: CommitAssetsUpgrade) {
     commit_assets_upgrade_proposal(&assets_upgrade).unwrap_or_else(|e| trap(&e));
 
     defer_init_certified_assets();
+}
+
+#[query(guard = "caller_is_admin_controller")]
+pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults<AssetNoContent> {
+    let result = list_assets_store(&collection, &filter);
+
+    match result {
+        Ok(result) => result,
+        Err(error) => trap(&["Assets cannot be listed: ".to_string(), error].join("")),
+    }
 }
 
 ///

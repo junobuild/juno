@@ -12,9 +12,8 @@ use junobuild_shared::types::state::Controllers;
 use crate::rules::assert_stores::is_known_user;
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::{
-    count_assets_heap, count_assets_stable, delete_asset as delete_state_asset,
-    delete_domain as delete_state_domain, get_asset as get_state_asset, get_assets_heap,
-    get_assets_stable, get_config as get_state_config, get_config,
+    count_assets_stable, delete_asset as delete_state_asset, delete_domain as delete_state_domain,
+    get_asset as get_state_asset, get_assets_stable, get_config as get_state_config, get_config,
     get_content_chunks as get_state_content_chunks, get_domain as get_state_domain,
     get_domains as get_state_domains, get_public_asset as get_state_public_asset,
     get_rule as get_state_rule, insert_config as insert_state_config,
@@ -26,6 +25,7 @@ use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::constants::{
     ROOT_404_HTML, ROOT_INDEX_HTML, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
 };
+use junobuild_storage::heap_utils::{collect_assets_heap, count_assets_heap};
 use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, UPLOAD_NOT_ALLOWED};
 use junobuild_storage::runtime::{
     delete_certified_asset as delete_runtime_certified_asset,
@@ -114,7 +114,7 @@ pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
     let full_paths = match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            get_assets_heap(collection, &state_ref.heap.storage.assets)
+            collect_assets_heap(collection, &state_ref.heap.storage.assets)
                 .iter()
                 .filter(|(_, asset)| should_include_asset(&asset.key.full_path))
                 .map(|(_, asset)| asset.key.full_path.clone())
@@ -227,7 +227,7 @@ pub fn assert_assets_collection_empty_store(collection: &CollectionKey) -> Resul
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
+            let assets = collect_assets_heap(collection, &state_ref.heap.storage.assets);
             assert_assets_collection_empty_impl(&assets, collection)
         }),
         Memory::Stable => STATE.with(|state| {
@@ -265,7 +265,7 @@ fn secure_list_assets_impl(
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            let assets = get_assets_heap(collection, &state_ref.heap.storage.assets);
+            let assets = collect_assets_heap(collection, &state_ref.heap.storage.assets);
             Ok(list_assets_impl(
                 &assets,
                 caller,

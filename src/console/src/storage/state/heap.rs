@@ -5,7 +5,7 @@ use junobuild_shared::types::core::{CollectionKey, DomainName};
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
-use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
+use junobuild_storage::types::store::Asset;
 
 pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
     STATE.with(|state| get_asset_impl(full_path, &state.borrow().heap.storage.assets))
@@ -26,43 +26,8 @@ pub fn insert_asset(full_path: &FullPath, asset: &Asset) {
     })
 }
 
-pub fn insert_asset_encoding(
-    full_path: &FullPath,
-    encoding_type: &EncodingType,
-    encoding: &AssetEncoding,
-) -> Result<(), String> {
-    STATE.with(|state| {
-        insert_asset_encoding_impl(
-            full_path,
-            encoding_type,
-            encoding,
-            &mut state.borrow_mut().heap.storage.assets,
-        )
-    })
-}
-
 fn insert_asset_impl(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHeap) {
     assets.insert(full_path.clone(), asset.clone());
-}
-
-fn insert_asset_encoding_impl(
-    full_path: &FullPath,
-    encoding_type: &EncodingType,
-    encoding: &AssetEncoding,
-    assets: &mut AssetsHeap,
-) -> Result<(), String> {
-    let asset = get_asset_impl(full_path, assets);
-
-    match asset {
-        None => Err(format!("No asset found for {}", full_path)),
-        Some(mut asset) => {
-            asset
-                .encodings
-                .insert(encoding_type.to_owned(), encoding.clone());
-
-            Ok(())
-        }
-    }
 }
 
 pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {

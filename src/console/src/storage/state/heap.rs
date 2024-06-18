@@ -1,3 +1,4 @@
+use crate::memory::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::{CollectionKey, DomainName};
@@ -5,7 +6,6 @@ use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
 use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
-use crate::memory::STATE;
 
 pub fn get_asset(full_path: &FullPath) -> Option<Asset> {
     STATE.with(|state| get_asset_impl(full_path, &state.borrow().heap.storage.assets))

@@ -1,3 +1,4 @@
+use crate::memory::STATE;
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
     Payments, Rate, RateConfig, Wasm,
@@ -11,7 +12,6 @@ use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
 use std::cmp::min;
-use crate::memory::STATE;
 
 /// Mission control centers
 

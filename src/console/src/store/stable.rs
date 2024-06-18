@@ -1,4 +1,5 @@
 use crate::constants::E8S_PER_ICP;
+use crate::memory::STATE;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
     MissionControl, Proposal, ProposalId, ProposalKey, ProposalsStable, StableState,
@@ -9,7 +10,6 @@ use ic_ledger_types::Tokens;
 use junobuild_shared::types::state::MissionControlId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
-use crate::memory::STATE;
 
 /// Mission control centers
 

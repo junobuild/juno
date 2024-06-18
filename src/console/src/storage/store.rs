@@ -1,3 +1,4 @@
+use crate::memory::STATE;
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::heap::{
     delete_domain, get_asset, get_config, get_domain, get_domains, insert_asset, insert_config,
@@ -5,12 +6,16 @@ use crate::storage::state::heap::{
 };
 use crate::storage::strategy_impls::StorageState;
 use junobuild_collections::types::rules::Memory;
-use junobuild_shared::types::core::DomainName;
+use junobuild_shared::list::list_values;
+use junobuild_shared::types::core::{CollectionKey, DomainName};
+use junobuild_shared::types::list::{ListParams, ListResults};
+use junobuild_storage::heap_utils::collect_assets_heap;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
+use junobuild_storage::types::interface::AssetNoContent;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
-use junobuild_storage::utils::get_token_protected_asset;
+use junobuild_storage::utils::{get_token_protected_asset, map_asset_no_content};
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_storage::well_known::utils::build_custom_domain;
 
@@ -46,6 +51,36 @@ pub fn insert_asset_encoding(
     insert_asset(full_path, &asset);
 
     Ok(())
+}
+
+pub fn list_assets(
+    collection: &CollectionKey,
+    filters: &ListParams,
+) -> Result<ListResults<AssetNoContent>, String> {
+    STATE.with(|state| {
+        let state_ref = state.borrow();
+        let assets = collect_assets_heap(collection, &state_ref.heap.storage.assets);
+        Ok(list_assets_impl(&assets, filters))
+    })
+}
+
+fn list_assets_impl(
+    assets: &[(&FullPath, &Asset)],
+    filters: &ListParams,
+) -> ListResults<AssetNoContent> {
+    let values = list_values(assets, filters);
+
+    ListResults::<AssetNoContent> {
+        items: values
+            .items
+            .into_iter()
+            .map(|(_, asset)| map_asset_no_content(&asset))
+            .collect(),
+        items_length: values.items_length,
+        items_page: values.items_page,
+        matches_length: values.matches_length,
+        matches_pages: values.matches_pages,
+    }
 }
 
 ///

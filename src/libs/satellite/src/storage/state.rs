@@ -239,34 +239,6 @@ fn filter_assets_range(collection: &CollectionKey) -> impl RangeBounds<StableKey
     start_key..end_key
 }
 
-pub fn get_assets_heap<'a>(
-    collection: &CollectionKey,
-    assets: &'a AssetsHeap,
-) -> Vec<(&'a FullPath, &'a Asset)> {
-    assets
-        .iter()
-        .filter_map(|(_, asset)| filter_assets_heap(asset, collection))
-        .collect()
-}
-
-pub fn count_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> usize {
-    assets
-        .iter()
-        .filter_map(|(_, asset)| filter_assets_heap(asset, collection))
-        .count()
-}
-
-fn filter_assets_heap<'a>(
-    asset: &'a Asset,
-    collection: &CollectionKey,
-) -> Option<(&'a FullPath, &'a Asset)> {
-    if &asset.key.collection == collection {
-        Some((&asset.key.full_path, asset))
-    } else {
-        None
-    }
-}
-
 fn stable_full_path(collection: &CollectionKey, full_path: &FullPath) -> StableKey {
     StableKey {
         collection: collection.clone(),

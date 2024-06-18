@@ -2,6 +2,27 @@ type AssertMissionControlCenterArgs = record {
   mission_control_id : principal;
   user : principal;
 };
+type AssetEncodingNoContent = record {
+  modified : nat64;
+  sha256 : vec nat8;
+  total_length : nat;
+};
+type AssetKey = record {
+  token : opt text;
+  collection : text;
+  owner : principal;
+  name : text;
+  description : opt text;
+  full_path : text;
+};
+type AssetNoContent = record {
+  key : AssetKey;
+  updated_at : nat64;
+  encodings : vec record { text; AssetEncodingNoContent };
+  headers : vec record { text; text };
+  created_at : nat64;
+  version : opt nat64;
+};
 type CommitAssetsUpgrade = record { sha256 : vec nat8; proposal_id : nat };
 type CommitBatch = record {
   batch_id : nat;
@@ -41,6 +62,23 @@ type InitAssetKey = record {
   full_path : text;
 };
 type InitUploadResult = record { batch_id : nat };
+type ListMatcher = record { key : opt text; description : opt text };
+type ListOrder = record { field : ListOrderField; desc : bool };
+type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
+type ListPaginate = record { start_after : opt text; limit : opt nat64 };
+type ListParams = record {
+  order : opt ListOrder;
+  owner : opt principal;
+  matcher : opt ListMatcher;
+  paginate : opt ListPaginate;
+};
+type ListResults = record {
+  matches_pages : opt nat64;
+  matches_length : nat64;
+  items_page : opt nat64;
+  items : vec record { text; AssetNoContent };
+  items_length : nat64;
+};
 type LoadRelease = record { total : nat64; chunks : nat64 };
 type Memory = variant { Heap; Stable };
 type MissionControl = record {
@@ -153,6 +191,7 @@ service : () -> {
   init_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
   init_assets_upgrade : () -> (nat, Proposal);
   init_user_mission_control_center : () -> (MissionControl);
+  list_assets : (text, ListParams) -> (ListResults) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
   list_payments : () -> (vec record { nat64; Payment }) query;
   list_user_mission_control_centers : () -> (

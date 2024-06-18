@@ -116,6 +116,54 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		proposal_type: ProposalType
 	});
+	const ListOrderField = IDL.Variant({
+		UpdatedAt: IDL.Null,
+		Keys: IDL.Null,
+		CreatedAt: IDL.Null
+	});
+	const ListOrder = IDL.Record({ field: ListOrderField, desc: IDL.Bool });
+	const ListMatcher = IDL.Record({
+		key: IDL.Opt(IDL.Text),
+		description: IDL.Opt(IDL.Text)
+	});
+	const ListPaginate = IDL.Record({
+		start_after: IDL.Opt(IDL.Text),
+		limit: IDL.Opt(IDL.Nat64)
+	});
+	const ListParams = IDL.Record({
+		order: IDL.Opt(ListOrder),
+		owner: IDL.Opt(IDL.Principal),
+		matcher: IDL.Opt(ListMatcher),
+		paginate: IDL.Opt(ListPaginate)
+	});
+	const AssetKey = IDL.Record({
+		token: IDL.Opt(IDL.Text),
+		collection: IDL.Text,
+		owner: IDL.Principal,
+		name: IDL.Text,
+		description: IDL.Opt(IDL.Text),
+		full_path: IDL.Text
+	});
+	const AssetEncodingNoContent = IDL.Record({
+		modified: IDL.Nat64,
+		sha256: IDL.Vec(IDL.Nat8),
+		total_length: IDL.Nat
+	});
+	const AssetNoContent = IDL.Record({
+		key: AssetKey,
+		updated_at: IDL.Nat64,
+		encodings: IDL.Vec(IDL.Tuple(IDL.Text, AssetEncodingNoContent)),
+		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64)
+	});
+	const ListResults = IDL.Record({
+		matches_pages: IDL.Opt(IDL.Nat64),
+		matches_length: IDL.Nat64,
+		items_page: IDL.Opt(IDL.Nat64),
+		items: IDL.Vec(IDL.Tuple(IDL.Text, AssetNoContent)),
+		items_length: IDL.Nat64
+	});
 	const CustomDomain = IDL.Record({
 		updated_at: IDL.Nat64,
 		created_at: IDL.Nat64,
@@ -189,6 +237,7 @@ export const idlFactory = ({ IDL }) => {
 		init_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_assets_upgrade: IDL.Func([], [IDL.Nat, Proposal], []),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
+		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),
 		list_user_mission_control_centers: IDL.Func(

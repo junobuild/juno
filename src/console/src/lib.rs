@@ -16,6 +16,7 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
+use crate::memory::STATE;
 use crate::proposals::{
     commit_assets_upgrade as commit_assets_upgrade_proposal,
     init_assets_upgrade as init_assets_upgrade_proposal,
@@ -79,7 +80,6 @@ use memory::{get_memory_upgrades, init_stable_state};
 use std::collections::HashMap;
 use types::state::Payments;
 use upgrade::heap_to_stable::{defer_migrate_mission_controls, defer_migrate_payments};
-use crate::memory::STATE;
 
 #[init]
 fn init() {

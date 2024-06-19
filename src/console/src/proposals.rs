@@ -114,7 +114,7 @@ fn secure_commit_assets_upgrade(
     insert_proposal(&assets_upgrade.proposal_id, &accepted_proposal);
 
     // Clear existing assets if required.
-    if options.clear_existing_assets {
+    if let Some(true) = options.clear_existing_assets {
         delete_assets(&ASSET_COLLECTION_KEY.to_string());
     }
 

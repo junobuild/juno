@@ -147,7 +147,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetsUpgradeOptions {
-        pub clear_existing_assets: bool,
+        pub clear_existing_assets: Option<bool>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]

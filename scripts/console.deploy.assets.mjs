@@ -3,6 +3,7 @@
 import { fromNullable, toNullable, uint8ArrayToHexString } from '@dfinity/utils';
 import {
 	deploy as cliDeploy,
+	hasArgs,
 	nextArg,
 	readJunoConfig as readJunoConfigTools
 } from '@junobuild/cli-tools';
@@ -18,7 +19,7 @@ const configEnv = (args) => {
 	};
 };
 
-const [_cmd, ...args] = process.argv.slice(2);
+const args = process.argv.slice(2);
 
 const env = configEnv(args);
 
@@ -41,7 +42,11 @@ const {
 	list_assets
 } = await consoleActorLocal();
 
-const [proposalId, _] = await init_assets_upgrade();
+const clear = hasArgs({ args, options: ['--clear'] }) !== undefined;
+
+const [proposalId, _] = await init_assets_upgrade({
+	clear_existing_assets: clear ? toNullable(true) : toNullable()
+});
 
 const uploadFile = async ({ collection, encoding, filename, fullPath, headers, data }) => {
 	const { batch_id: batchId } = await init_asset_upload(
@@ -109,7 +114,7 @@ const uploadChunk = async ({ batchId, chunk, actor, orderId }) =>
 
 const config = await readJunoConfig(env);
 
-const listExistingAssets = async ({ startAfter }) => {
+const listAssets = async ({ startAfter }) => {
 	const { items, items_page, matches_pages } = await list_assets('#dapp', {
 		order: [
 			{
@@ -160,7 +165,7 @@ const listExistingAssets = async ({ startAfter }) => {
 	};
 
 	if ((items_page ?? 0n) < (matches_pages ?? 0n)) {
-		const nextAssets = await listExistingAssets({
+		const nextAssets = await listAssets({
 			startAfter: last(assets)?.fullPath
 		});
 		return [...assets, ...nextAssets];
@@ -169,6 +174,14 @@ const listExistingAssets = async ({ startAfter }) => {
 };
 
 const deploy = async () => {
+	const listExistingAssets = async ({ startAfter }) => {
+		if (clear) {
+			return [];
+		}
+
+		return await listAssets({ startAfter });
+	};
+
 	return await cliDeploy({
 		config,
 		listAssets: listExistingAssets,

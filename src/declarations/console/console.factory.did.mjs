@@ -98,7 +98,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const InitUploadResult = IDL.Record({ batch_id: IDL.Nat });
 	const AssetsUpgradeOptions = IDL.Record({
-		clear_existing_assets: IDL.Bool
+		clear_existing_assets: IDL.Opt(IDL.Bool)
 	});
 	const ProposalStatus = IDL.Variant({
 		Initialized: IDL.Null,

@@ -28,7 +28,7 @@ export interface AssetNoContent {
 	version: [] | [bigint];
 }
 export interface AssetsUpgradeOptions {
-	clear_existing_assets: boolean;
+	clear_existing_assets: [] | [boolean];
 }
 export interface CommitAssetsUpgrade {
 	sha256: Uint8Array | number[];

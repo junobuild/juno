@@ -23,7 +23,7 @@ type AssetNoContent = record {
   created_at : nat64;
   version : opt nat64;
 };
-type AssetsUpgradeOptions = record { clear_existing_assets : bool };
+type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
 type CommitAssetsUpgrade = record { sha256 : vec nat8; proposal_id : nat };
 type CommitBatch = record {
   batch_id : nat;

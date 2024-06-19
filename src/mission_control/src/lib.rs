@@ -43,7 +43,7 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_ledger_types::Tokens;
 use junobuild_shared::ic::deposit_cycles as deposit_cycles_shared;
 use junobuild_shared::types::interface::{
-    DepositCyclesArgs, MissionControlArgs, SegmentArgs, SetController, StatusesArgs,
+    DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
 };
 use junobuild_shared::types::state::{
     ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,

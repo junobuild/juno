@@ -142,7 +142,12 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum ProposalType {
-        AssetsUpgrade,
+        AssetsUpgrade(AssetsUpgradeOptions),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct AssetsUpgradeOptions {
+        pub clear_existing_assets: bool,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]

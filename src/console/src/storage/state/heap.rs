@@ -2,6 +2,7 @@ use crate::memory::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::{CollectionKey, DomainName};
+use junobuild_storage::heap_utils::collect_delete_assets_heap;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
@@ -36,6 +37,13 @@ pub fn delete_asset(full_path: &FullPath) -> Option<Asset> {
 
 fn delete_asset_impl(full_path: &FullPath, assets: &mut AssetsHeap) -> Option<Asset> {
     assets.remove(full_path)
+}
+
+pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
+    STATE.with(|state| {
+        let state_ref = state.borrow();
+        collect_delete_assets_heap(collection, &state_ref.heap.storage.assets)
+    })
 }
 
 /// Rules

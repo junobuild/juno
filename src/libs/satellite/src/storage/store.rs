@@ -22,10 +22,10 @@ use crate::storage::state::{
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
-use junobuild_storage::constants::{
-    ROOT_404_HTML, ROOT_INDEX_HTML, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
+use junobuild_storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML};
+use junobuild_storage::heap_utils::{
+    collect_assets_heap, collect_delete_assets_heap, count_assets_heap,
 };
-use junobuild_storage::heap_utils::{collect_assets_heap, count_assets_heap};
 use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, UPLOAD_NOT_ALLOWED};
 use junobuild_storage::runtime::{
     delete_certified_asset as delete_runtime_certified_asset,
@@ -40,6 +40,7 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use junobuild_storage::utils::{
     filter_collection_values, filter_values, get_token_protected_asset, map_asset_no_content,
+    should_include_asset_for_deletion,
 };
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_storage::well_known::utils::build_custom_domain;
@@ -103,28 +104,18 @@ pub fn delete_asset_store(
 pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
     let rule = get_state_rule(collection)?;
 
-    let excluded_paths = vec![
-        WELL_KNOWN_CUSTOM_DOMAINS.to_string(),
-        WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
-    ];
-
-    let should_include_asset =
-        |asset_path: &String| collection != "#dapp" || !excluded_paths.contains(asset_path);
-
     let full_paths = match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            collect_assets_heap(collection, &state_ref.heap.storage.assets)
-                .iter()
-                .filter(|(_, asset)| should_include_asset(&asset.key.full_path))
-                .map(|(_, asset)| asset.key.full_path.clone())
-                .collect()
+            collect_delete_assets_heap(collection, &state_ref.heap.storage.assets)
         }),
         Memory::Stable => STATE.with(|state| {
             let stable = get_assets_stable(collection, &state.borrow().stable.assets);
             stable
                 .iter()
-                .filter(|(_, asset)| should_include_asset(&asset.key.full_path))
+                .filter(|(_, asset)| {
+                    should_include_asset_for_deletion(collection, &asset.key.full_path)
+                })
                 .map(|(_, asset)| asset.key.full_path.clone())
                 .collect()
         }),

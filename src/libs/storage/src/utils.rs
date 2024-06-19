@@ -1,3 +1,4 @@
+use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::types::interface::AssetNoContent;
 use crate::types::state::FullPath;
 use crate::types::store::Asset;
@@ -105,4 +106,13 @@ pub fn get_token_protected_asset(
             None
         }
     }
+}
+
+pub fn should_include_asset_for_deletion(collection: &CollectionKey, asset_path: &String) -> bool {
+    let excluded_paths = vec![
+        WELL_KNOWN_CUSTOM_DOMAINS.to_string(),
+        WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
+    ];
+
+    collection != "#dapp" || !excluded_paths.contains(asset_path)
 }

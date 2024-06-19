@@ -44,8 +44,8 @@ use crate::store::stable::{
 };
 use crate::types::interface::{CommitAssetsUpgrade, Config, LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
-    Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
-    RateConfig, Rates, Releases, State,
+    AssetsUpgradeOptions, Fees, HeapState, InvitationCode, MissionControl, MissionControls,
+    Proposal, ProposalId, RateConfig, Rates, Releases, State,
 };
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;
@@ -352,10 +352,10 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
 /// Storage
 
 #[update(guard = "caller_is_admin_controller")]
-fn init_assets_upgrade() -> (ProposalId, Proposal) {
+fn init_assets_upgrade(options: AssetsUpgradeOptions) -> (ProposalId, Proposal) {
     let caller = caller();
 
-    init_assets_upgrade_proposal(caller).unwrap_or_else(|e| trap(&e))
+    init_assets_upgrade_proposal(caller, options).unwrap_or_else(|e| trap(&e))
 }
 
 #[update(guard = "caller_is_admin_controller")]

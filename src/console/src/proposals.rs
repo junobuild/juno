@@ -1,21 +1,28 @@
 use crate::msg::ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE;
 use crate::storage::state::heap::insert_asset;
 use crate::storage::state::stable::{get_assets_stable, get_content_chunks_stable};
-use crate::storage::store::insert_asset_encoding;
+use crate::storage::store::{delete_assets, insert_asset_encoding};
 use crate::store::stable::{count_proposals, get_proposal, insert_proposal};
 use crate::types::interface::CommitAssetsUpgrade;
-use crate::types::state::{Proposal, ProposalId, ProposalStatus, ProposalType};
+use crate::types::state::{
+    AssetsUpgradeOptions, Proposal, ProposalId, ProposalStatus, ProposalType,
+};
 use candid::Principal;
 use hex::encode;
+use junobuild_collections::constants::ASSET_COLLECTION_KEY;
 use junobuild_shared::types::core::{Hash, Hashable};
 use junobuild_shared::utils::principal_not_equal;
 use junobuild_storage::types::store::AssetEncoding;
 use sha2::{Digest, Sha256};
 
-pub fn init_assets_upgrade(caller: Principal) -> Result<(ProposalId, Proposal), String> {
+pub fn init_assets_upgrade(
+    caller: Principal,
+    options: AssetsUpgradeOptions,
+) -> Result<(ProposalId, Proposal), String> {
     let proposal_id =
         u128::try_from(count_proposals() + 1).map_err(|_| "Cannot convert next proposal ID.")?;
-    let proposal: Proposal = Proposal::init(caller, ProposalType::AssetsUpgrade);
+
+    let proposal: Proposal = Proposal::init(caller, ProposalType::AssetsUpgrade(options));
 
     insert_proposal(&proposal_id, &proposal);
 
@@ -96,9 +103,20 @@ fn secure_commit_assets_upgrade(
         }
     }
 
+    #[allow(unreachable_patterns)]
+    let options = match &proposal.proposal_type {
+        ProposalType::AssetsUpgrade(ref options) => options,
+        _ => return Err("Proposal is not of type AssetsUpgrade.".to_string()),
+    };
+
     // Mark proposal as accepted.
     let accepted_proposal = Proposal::accept(proposal);
     insert_proposal(&assets_upgrade.proposal_id, &accepted_proposal);
+
+    // Clear existing assets if required.
+    if let Some(true) = options.clear_existing_assets {
+        delete_assets(&ASSET_COLLECTION_KEY.to_string());
+    }
 
     // Copy from stable memory to heap.
     let assets = get_assets_stable(&assets_upgrade.proposal_id);

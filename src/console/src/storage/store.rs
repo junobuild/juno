@@ -1,8 +1,8 @@
 use crate::memory::STATE;
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::heap::{
-    delete_domain, get_asset, get_config, get_domain, get_domains, insert_asset, insert_config,
-    insert_domain,
+    collect_delete_assets, delete_asset, delete_domain, get_asset, get_config, get_domain,
+    get_domains, insert_asset, insert_config, insert_domain,
 };
 use crate::storage::strategy_impls::StorageState;
 use junobuild_collections::types::rules::Memory;
@@ -80,6 +80,14 @@ fn list_assets_impl(
         items_page: values.items_page,
         matches_length: values.matches_length,
         matches_pages: values.matches_pages,
+    }
+}
+
+pub fn delete_assets(collection: &CollectionKey) {
+    let full_paths = collect_delete_assets(collection);
+
+    for full_path in full_paths {
+        delete_asset(&full_path);
     }
 }
 

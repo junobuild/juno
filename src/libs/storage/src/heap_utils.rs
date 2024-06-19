@@ -1,5 +1,6 @@
 use crate::types::state::{AssetsHeap, FullPath};
 use crate::types::store::Asset;
+use crate::utils::should_include_asset_for_deletion;
 use junobuild_shared::types::core::CollectionKey;
 
 pub fn collect_assets_heap<'a>(
@@ -9,6 +10,17 @@ pub fn collect_assets_heap<'a>(
     assets
         .iter()
         .filter_map(|(_, asset)| filter_assets_heap(asset, collection))
+        .collect()
+}
+
+pub fn collect_delete_assets_heap(
+    collection: &CollectionKey,
+    assets: &AssetsHeap,
+) -> Vec<FullPath> {
+    collect_assets_heap(collection, assets)
+        .iter()
+        .filter(|(_, asset)| should_include_asset_for_deletion(collection, &asset.key.full_path))
+        .map(|(_, asset)| asset.key.full_path.clone())
         .collect()
 }
 

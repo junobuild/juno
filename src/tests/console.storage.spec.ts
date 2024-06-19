@@ -400,6 +400,23 @@ describe('Console / Storage', () => {
 			expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
 		});
 
+		it('should list assets', async () => {
+			const { list_assets } = actor;
+
+			const assets = await list_assets('#dapp', {
+				matcher: [],
+				order: [],
+				owner: [],
+				paginate: []
+			});
+
+			for (const [_, { version }] of assets.items) {
+				expect(fromNullable(version)).not.toBeUndefined();
+			}
+
+			expect(assets.items.find(([fullPath]) => fullPath === '/hello.html')).not.toBeUndefined();
+		});
+
 		it('should clear assets on upgrade', async () => {
 			const {
 				http_request,

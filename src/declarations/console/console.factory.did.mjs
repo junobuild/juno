@@ -97,6 +97,9 @@ export const idlFactory = ({ IDL }) => {
 		full_path: IDL.Text
 	});
 	const InitUploadResult = IDL.Record({ batch_id: IDL.Nat });
+	const AssetsUpgradeOptions = IDL.Record({
+		clear_existing_assets: IDL.Bool
+	});
 	const ProposalStatus = IDL.Variant({
 		Initialized: IDL.Null,
 		Failed: IDL.Null,
@@ -105,7 +108,7 @@ export const idlFactory = ({ IDL }) => {
 		Executed: IDL.Null,
 		Accepted: IDL.Null
 	});
-	const ProposalType = IDL.Variant({ AssetsUpgrade: IDL.Null });
+	const ProposalType = IDL.Variant({ AssetsUpgrade: AssetsUpgradeOptions });
 	const Proposal = IDL.Record({
 		status: ProposalStatus,
 		updated_at: IDL.Nat64,
@@ -235,7 +238,7 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		init_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
-		init_assets_upgrade: IDL.Func([], [IDL.Nat, Proposal], []),
+		init_assets_upgrade: IDL.Func([AssetsUpgradeOptions], [IDL.Nat, Proposal], []),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),

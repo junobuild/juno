@@ -27,6 +27,9 @@ export interface AssetNoContent {
 	created_at: bigint;
 	version: [] | [bigint];
 }
+export interface AssetsUpgradeOptions {
+	clear_existing_assets: boolean;
+}
 export interface CommitAssetsUpgrade {
 	sha256: Uint8Array | number[];
 	proposal_id: bigint;
@@ -144,7 +147,7 @@ export type ProposalStatus =
 	| { Rejected: null }
 	| { Executed: null }
 	| { Accepted: null };
-export type ProposalType = { AssetsUpgrade: null };
+export type ProposalType = { AssetsUpgrade: AssetsUpgradeOptions };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
@@ -229,7 +232,7 @@ export interface _SERVICE {
 		StreamingCallbackHttpResponse
 	>;
 	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
-	init_assets_upgrade: ActorMethod<[], [bigint, Proposal]>;
+	init_assets_upgrade: ActorMethod<[AssetsUpgradeOptions], [bigint, Proposal]>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;

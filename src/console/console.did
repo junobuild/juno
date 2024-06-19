@@ -23,6 +23,7 @@ type AssetNoContent = record {
   created_at : nat64;
   version : opt nat64;
 };
+type AssetsUpgradeOptions = record { clear_existing_assets : bool };
 type CommitAssetsUpgrade = record { sha256 : vec nat8; proposal_id : nat };
 type CommitBatch = record {
   batch_id : nat;
@@ -115,7 +116,7 @@ type ProposalStatus = variant {
   Executed;
   Accepted;
 };
-type ProposalType = variant { AssetsUpgrade };
+type ProposalType = variant { AssetsUpgrade : AssetsUpgradeOptions };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type ReleasesVersion = record {
   satellite : opt text;
@@ -189,7 +190,7 @@ service : () -> {
       StreamingCallbackHttpResponse,
     ) query;
   init_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
-  init_assets_upgrade : () -> (nat, Proposal);
+  init_assets_upgrade : (AssetsUpgradeOptions) -> (nat, Proposal);
   init_user_mission_control_center : () -> (MissionControl);
   list_assets : (text, ListParams) -> (ListResults) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;

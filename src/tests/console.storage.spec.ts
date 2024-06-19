@@ -20,7 +20,7 @@ import { CONTROLLER_ERROR_MSG } from './constants/console-tests.constants';
 import { sha256ToBase64String } from './utils/crypto-tests.utils';
 import { CONSOLE_WASM_PATH } from './utils/setup-tests.utils';
 
-describe('Console', () => {
+describe('Console / Storage', () => {
 	let pic: PocketIc;
 	let actor: Actor<ConsoleActor>;
 

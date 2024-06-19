@@ -44,6 +44,28 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Config = IDL.Record({ storage: StorageConfig });
 	const GetCreateCanisterFeeArgs = IDL.Record({ user: IDL.Principal });
+	const ProposalStatus = IDL.Variant({
+		Initialized: IDL.Null,
+		Failed: IDL.Null,
+		Open: IDL.Null,
+		Rejected: IDL.Null,
+		Executed: IDL.Null,
+		Accepted: IDL.Null
+	});
+	const AssetsUpgradeOptions = IDL.Record({
+		clear_existing_assets: IDL.Opt(IDL.Bool)
+	});
+	const ProposalType = IDL.Variant({ AssetsUpgrade: AssetsUpgradeOptions });
+	const Proposal = IDL.Record({
+		status: ProposalStatus,
+		updated_at: IDL.Nat64,
+		sha256: IDL.Opt(IDL.Vec(IDL.Nat8)),
+		executed_at: IDL.Opt(IDL.Nat64),
+		owner: IDL.Principal,
+		created_at: IDL.Nat64,
+		version: IDL.Opt(IDL.Nat64),
+		proposal_type: ProposalType
+	});
 	const ReleasesVersion = IDL.Record({
 		satellite: IDL.Opt(IDL.Text),
 		orbiter: IDL.Opt(IDL.Text),
@@ -98,28 +120,6 @@ export const idlFactory = ({ IDL }) => {
 		full_path: IDL.Text
 	});
 	const InitUploadResult = IDL.Record({ batch_id: IDL.Nat });
-	const AssetsUpgradeOptions = IDL.Record({
-		clear_existing_assets: IDL.Opt(IDL.Bool)
-	});
-	const ProposalStatus = IDL.Variant({
-		Initialized: IDL.Null,
-		Failed: IDL.Null,
-		Open: IDL.Null,
-		Rejected: IDL.Null,
-		Executed: IDL.Null,
-		Accepted: IDL.Null
-	});
-	const ProposalType = IDL.Variant({ AssetsUpgrade: AssetsUpgradeOptions });
-	const Proposal = IDL.Record({
-		status: ProposalStatus,
-		updated_at: IDL.Nat64,
-		sha256: IDL.Opt(IDL.Vec(IDL.Nat8)),
-		executed_at: IDL.Opt(IDL.Nat64),
-		owner: IDL.Principal,
-		created_at: IDL.Nat64,
-		version: IDL.Opt(IDL.Nat64),
-		proposal_type: ProposalType
-	});
 	const ListOrderField = IDL.Variant({
 		UpdatedAt: IDL.Null,
 		Keys: IDL.Null,
@@ -231,6 +231,7 @@ export const idlFactory = ({ IDL }) => {
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
+		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
 		get_releases_version: IDL.Func([], [ReleasesVersion], ['query']),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),

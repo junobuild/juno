@@ -1,6 +1,7 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { fromNullable, toNullable } from '@dfinity/utils';
+import { assertNonNullish } from '@junobuild/utils';
 import { expect } from 'vitest';
 
 export const anonymousCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>({
@@ -44,21 +45,27 @@ export const adminCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>
 
 		expect(results).toHaveLength(2);
 
-		expect(results[0][0]).toEqual('hello.com');
-		expect(results[0][1].bn_id).toEqual(['123456']);
-		expect(results[0][1].updated_at).not.toBeUndefined();
-		expect(results[0][1].updated_at).toBeGreaterThan(0n);
-		expect(results[0][1].created_at).not.toBeUndefined();
-		expect(results[0][1].created_at).toBeGreaterThan(0n);
-		expect(fromNullable(results[0][1].version) ?? 0n).toBeGreaterThan(0n);
+		const hello = results.find(([key, _]) => key === 'hello.com');
+		const test2 = results.find(([key, _]) => key === 'test2.com');
 
-		expect(results[1][0]).toEqual('test2.com');
-		expect(results[1][1].bn_id).toEqual([]);
-		expect(results[1][1].updated_at).not.toBeUndefined();
-		expect(results[1][1].updated_at).toBeGreaterThan(0n);
-		expect(results[1][1].created_at).not.toBeUndefined();
-		expect(results[1][1].created_at).toBeGreaterThan(0n);
-		expect(fromNullable(results[1][1].version) ?? 0n).toBeGreaterThan(0n);
+		assertNonNullish(hello);
+		assertNonNullish(test2);
+
+		expect(hello[0]).toEqual('hello.com');
+		expect(hello[1].bn_id).toEqual(['123456']);
+		expect(hello[1].updated_at).not.toBeUndefined();
+		expect(hello[1].updated_at).toBeGreaterThan(0n);
+		expect(hello[1].created_at).not.toBeUndefined();
+		expect(hello[1].created_at).toBeGreaterThan(0n);
+		expect(fromNullable(hello[1].version) ?? 0n).toBeGreaterThan(0n);
+
+		expect(test2[0]).toEqual('test2.com');
+		expect(test2[1].bn_id).toEqual([]);
+		expect(test2[1].updated_at).not.toBeUndefined();
+		expect(test2[1].updated_at).toBeGreaterThan(0n);
+		expect(test2[1].created_at).not.toBeUndefined();
+		expect(test2[1].created_at).toBeGreaterThan(0n);
+		expect(fromNullable(test2[1].version) ?? 0n).toBeGreaterThan(0n);
 	});
 
 	it('should expose /.well-known/ic-domains', async () => {

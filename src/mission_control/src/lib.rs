@@ -37,7 +37,7 @@ use crate::types::state::{
     Archive, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
 };
 use candid::Principal;
-use ic_cdk::api::call::arg_data;
+use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
@@ -62,7 +62,7 @@ thread_local! {
 
 #[init]
 fn init() {
-    let call_arg = arg_data::<(Option<MissionControlArgs>,)>().0;
+    let call_arg = arg_data::<(Option<MissionControlArgs>,)>(ArgDecoderConfig::default()).0;
     let user = call_arg.unwrap().user;
 
     STATE.with(|state| {

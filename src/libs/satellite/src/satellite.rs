@@ -33,7 +33,7 @@ use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::{Config, RulesType};
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
-use ic_cdk::api::call::arg_data;
+use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
 use junobuild_collections::types::interface::{DelRule, SetRule};
 use junobuild_collections::types::rules::Rule;
@@ -63,7 +63,7 @@ use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::Asset;
 
 pub fn init() {
-    let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
+    let call_arg = arg_data::<(Option<SegmentArgs>,)>(ArgDecoderConfig::default()).0;
     let SegmentArgs { controllers } = call_arg.unwrap();
 
     let heap = HeapState {

@@ -37,6 +37,7 @@ pub async fn create_canister_install_code(
                 memory_allocation: None,
                 freezing_threshold: None,
                 reserved_cycles_limit: None,
+                wasm_memory_limit: None,
             }),
         },
         CREATE_CANISTER_CYCLES + cycles,
@@ -102,6 +103,7 @@ pub async fn update_canister_controllers(
             memory_allocation: None,
             freezing_threshold: None,
             reserved_cycles_limit: None,
+            wasm_memory_limit: None,
         },
     };
 

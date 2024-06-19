@@ -5,14 +5,21 @@ use crate::storage::state::heap::{
     get_domains, insert_asset, insert_config, insert_domain,
 };
 use crate::storage::strategy_impls::StorageState;
+use crate::store::heap::get_controllers;
+use crate::store::stable::get_proposal;
+use crate::types::state::ProposalId;
+use candid::Principal;
+use ic_cdk::trap;
 use junobuild_collections::types::rules::Memory;
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::{CollectionKey, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::heap_utils::collect_assets_heap;
+use junobuild_storage::store::create_batch;
 use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::domain::CustomDomains;
-use junobuild_storage::types::interface::AssetNoContent;
+use junobuild_storage::types::interface::{AssetNoContent, InitAssetKey, InitUploadResult};
+use junobuild_storage::types::runtime_state::BatchId;
 use junobuild_storage::types::state::FullPath;
 use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
 use junobuild_storage::utils::{get_token_protected_asset, map_asset_no_content};
@@ -89,6 +96,22 @@ pub fn delete_assets(collection: &CollectionKey) {
     for full_path in full_paths {
         delete_asset(&full_path);
     }
+}
+
+pub fn init_asset_upload(
+    caller: Principal,
+    init: InitAssetKey,
+    proposal_id: ProposalId,
+) -> Result<BatchId, String> {
+    let proposal = get_proposal(&proposal_id);
+
+    if proposal.is_none() {
+        return Err(format!("No proposal found for {}", proposal_id));
+    }
+
+    let controllers = get_controllers();
+
+    create_batch(caller, &controllers, init, Some(proposal_id))
 }
 
 ///

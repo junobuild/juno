@@ -1,6 +1,8 @@
 use crate::msg::{ERROR_CANNOT_DELETE_ASSETS_UPGRADE, ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE};
 use crate::storage::state::heap::insert_asset;
-use crate::storage::state::stable::{delete_asset_stable, delete_content_chunks_stable, get_assets_stable, get_content_chunks_stable};
+use crate::storage::state::stable::{
+    delete_asset_stable, delete_content_chunks_stable, get_assets_stable, get_content_chunks_stable,
+};
 use crate::storage::store::{delete_assets, insert_asset_encoding};
 use crate::store::stable::{count_proposals, get_proposal, insert_proposal};
 use crate::types::interface::CommitAssetsUpgrade;
@@ -80,6 +82,19 @@ fn secure_propose_assets_upgrade(
     if principal_not_equal(caller, proposal.owner) {
         return Err(ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE.to_string());
     }
+
+    if proposal.status != ProposalStatus::Initialized {
+        return Err(format!(
+            "Proposal assets cannot be proposed. Current status: {:?}",
+            proposal.status
+        ));
+    }
+
+    #[allow(unreachable_patterns)]
+    match &proposal.proposal_type {
+        ProposalType::AssetsUpgrade(_) => (),
+        _ => return Err("Proposal is not of type AssetsUpgrade.".to_string()),
+    };
 
     let assets = get_assets_stable(proposal_id);
 

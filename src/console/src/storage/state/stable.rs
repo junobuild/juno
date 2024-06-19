@@ -132,10 +132,7 @@ fn insert_asset_stable_impl(
 
 pub fn delete_asset_stable(key: &AssetKey) -> Option<Asset> {
     STATE.with(|state| {
-        delete_asset_stable_impl(
-            key,
-            &mut state.borrow_mut().stable.proposals_assets,
-        )
+        delete_asset_stable_impl(key, &mut state.borrow_mut().stable.proposals_assets)
     })
 }
 

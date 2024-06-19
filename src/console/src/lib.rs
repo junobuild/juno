@@ -17,11 +17,17 @@ use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::memory::STATE;
-use crate::proposals::{commit_assets_upgrade as commit_assets_upgrade_proposal, delete_assets_upgrade as delete_assets_upgrade_proposal, init_assets_upgrade as init_assets_upgrade_proposal, propose_assets_upgrade as create_assets_upgrade_proposal};
+use crate::proposals::{
+    commit_assets_upgrade as commit_assets_upgrade_proposal,
+    delete_assets_upgrade as delete_assets_upgrade_proposal,
+    init_assets_upgrade as init_assets_upgrade_proposal,
+    propose_assets_upgrade as create_assets_upgrade_proposal,
+};
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     delete_domain_store, get_config_store, get_custom_domains_store,
-    list_assets as list_assets_store, set_config_store, set_domain_store,
+    init_asset_upload as init_asset_upload_store, list_assets as list_assets_store,
+    set_config_store, set_domain_store,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::store::heap::{
@@ -34,8 +40,14 @@ use crate::store::heap::{
     update_mission_controls_rate_config, update_orbiters_rate_config,
     update_satellites_rate_config,
 };
-use crate::store::stable::{add_credits as add_credits_store, get_credits as get_credits_store, get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state, has_credits};
-use crate::types::interface::{CommitAssetsUpgrade, Config, DeleteAssetsUpgrade, LoadRelease, ReleasesVersion, Segment};
+use crate::store::stable::{
+    add_credits as add_credits_store, get_credits as get_credits_store,
+    get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
+    has_credits,
+};
+use crate::types::interface::{
+    CommitAssetsUpgrade, Config, DeleteAssetsUpgrade, LoadRelease, ReleasesVersion, Segment,
+};
 use crate::types::state::{
     AssetsUpgradeOptions, Fees, HeapState, InvitationCode, MissionControl, MissionControls,
     Proposal, ProposalId, RateConfig, Rates, Releases, State,
@@ -362,9 +374,7 @@ fn init_assets_upgrade(options: AssetsUpgradeOptions) -> (ProposalId, Proposal) 
 fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
     let caller = caller();
 
-    let controllers = get_controllers();
-
-    let result = create_batch(caller, &controllers, init, Some(proposal_id));
+    let result = init_asset_upload_store(caller, init, proposal_id);
 
     match result {
         Ok(batch_id) => InitUploadResult { batch_id },
@@ -416,7 +426,7 @@ fn commit_assets_upgrade(assets_upgrade: CommitAssetsUpgrade) {
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn delete_assets_upgrade(DeleteAssetsUpgrade {proposal_ids}: DeleteAssetsUpgrade) {
+fn delete_assets_upgrade(DeleteAssetsUpgrade { proposal_ids }: DeleteAssetsUpgrade) {
     let caller = caller();
 
     delete_assets_upgrade_proposal(caller, &proposal_ids).unwrap_or_else(|e| trap(&e));

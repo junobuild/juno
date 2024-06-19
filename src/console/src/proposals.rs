@@ -83,6 +83,19 @@ fn secure_propose_assets_upgrade(
         return Err(ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE.to_string());
     }
 
+    if proposal.status != ProposalStatus::Initialized {
+        return Err(format!(
+            "Proposal assets cannot be proposed. Current status: {:?}",
+            proposal.status
+        ));
+    }
+
+    #[allow(unreachable_patterns)]
+    match &proposal.proposal_type {
+        ProposalType::AssetsUpgrade(_) => (),
+        _ => return Err("Proposal is not of type AssetsUpgrade.".to_string()),
+    };
+
     let assets = get_assets_stable(proposal_id);
 
     let mut hasher = Sha256::new();

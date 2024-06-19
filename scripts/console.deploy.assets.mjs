@@ -130,20 +130,29 @@ const listExistingAssets = async ({ startAfter }) => {
 	const sha256ToBase64String = (sha256) =>
 		btoa([...sha256].map((c) => String.fromCharCode(c)).join(''));
 
-	const assets = items.map(([_, { key: { full_path }, encodings }]) => ({
-		fullPath: full_path,
-		encodings: encodings.reduce(
-			(acc, [type, { modified, sha256, total_length }]) => ({
-				...acc,
-				[type]: {
-					modified,
-					sha256: sha256ToBase64String(sha256),
-					total_length
-				}
-			}),
-			{}
-		)
-	}));
+	// For the deployment, we do not need the full Asset object but only fullPath and the sha256 encodings
+	const assets = items.map(
+		([
+			_,
+			{
+				key: { full_path },
+				encodings
+			}
+		]) => ({
+			fullPath: full_path,
+			encodings: encodings.reduce(
+				(acc, [type, { modified, sha256, total_length }]) => ({
+					...acc,
+					[type]: {
+						modified,
+						sha256: sha256ToBase64String(sha256),
+						total_length
+					}
+				}),
+				{}
+			)
+		})
+	);
 
 	const last = (elements) => {
 		const { length, [length - 1]: last } = elements;
@@ -160,14 +169,18 @@ const listExistingAssets = async ({ startAfter }) => {
 };
 
 const deploy = async () => {
-	await cliDeploy({
+	return await cliDeploy({
 		config,
 		listAssets: listExistingAssets,
 		uploadFile
 	});
 };
 
-await deploy();
+const { sourceFiles } = await deploy();
+
+if (sourceFiles.length === 0) {
+	process.exit(0);
+}
 
 const [__, { sha256, status }] = await propose_assets_upgrade(proposalId);
 

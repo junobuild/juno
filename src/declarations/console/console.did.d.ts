@@ -228,6 +228,7 @@ export interface _SERVICE {
 	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
+	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
 	get_releases_version: ActorMethod<[], ReleasesVersion>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;

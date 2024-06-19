@@ -34,10 +34,7 @@ use crate::store::heap::{
     update_mission_controls_rate_config, update_orbiters_rate_config,
     update_satellites_rate_config,
 };
-use crate::store::stable::{
-    add_credits as add_credits_store, get_credits as get_credits_store,
-    get_existing_mission_control, get_mission_control, has_credits,
-};
+use crate::store::stable::{add_credits as add_credits_store, get_credits as get_credits_store, get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state, has_credits};
 use crate::types::interface::{CommitAssetsUpgrade, Config, DeleteAssetsUpgrade, LoadRelease, ReleasesVersion, Segment};
 use crate::types::state::{
     AssetsUpgradeOptions, Fees, HeapState, InvitationCode, MissionControl, MissionControls,
@@ -343,6 +340,13 @@ fn set_controllers(
 #[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
     delete_controllers(&controllers);
+}
+
+/// Proposal
+
+#[query]
+fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
+    get_proposal_state(&proposal_id)
 }
 
 /// Storage

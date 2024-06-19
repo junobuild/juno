@@ -185,6 +185,7 @@ service : () -> {
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
+  get_proposal : (nat) -> (opt Proposal) query;
   get_releases_version : () -> (ReleasesVersion) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
   http_request : (HttpRequest) -> (HttpResponse) query;

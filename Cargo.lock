@@ -808,18 +808,12 @@ dependencies = [
 name = "junobuild-satellite"
 version = "0.0.17"
 dependencies = [
- "base64 0.13.1",
  "candid",
  "ciborium",
  "getrandom",
- "globset",
- "hex",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
- "ic-certification",
- "ic-representation-independent-hash",
- "ic-response-verification",
  "ic-stable-structures",
  "junobuild-collections",
  "junobuild-shared",
@@ -828,12 +822,9 @@ dependencies = [
  "rand",
  "regex",
  "serde",
- "serde_bytes",
  "serde_cbor",
  "serde_json",
- "sha2",
  "url",
- "urlencoding",
 ]
 
 [[package]]

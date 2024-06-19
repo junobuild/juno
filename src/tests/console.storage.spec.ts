@@ -15,6 +15,7 @@ import {
 	uint8ArrayToHexString
 } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
+import { assertNonNullish } from '@junobuild/utils';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/console-tests.constants';
 import { sha256ToBase64String } from './utils/crypto-tests.utils';
@@ -145,12 +146,13 @@ describe('Console / Storage', () => {
 		});
 	});
 
+	let proposalId: bigint;
+
 	describe('admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 
-		let proposalId: bigint;
 		let sha256: [] | [Uint8Array | number[]];
 
 		const HTML = '<html><body>Hello</body></html>';
@@ -467,6 +469,34 @@ describe('Console / Storage', () => {
 			});
 
 			expect(status_code_200).toEqual(200);
+		});
+	});
+
+	describe('anonymous', () => {
+		beforeAll(() => {
+			actor.setIdentity(new AnonymousIdentity());
+		});
+
+		it('should get proposal', async () => {
+			const { get_proposal } = actor;
+
+			const proposal = fromNullable(await get_proposal(proposalId));
+
+			assertNonNullish(proposal);
+
+			expect(proposal.status).toEqual({ Executed: null });
+			expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
+			expect(fromNullable(proposal.executed_at)).not.toBeUndefined();
+			expect(proposal.owner.toText()).toEqual(controller.getPrincipal().toText());
+			expect(proposal.proposal_type).toEqual({
+				AssetsUpgrade: { clear_existing_assets: toNullable() }
+			});
+			expect(proposal.created_at).not.toBeUndefined();
+			expect(proposal.created_at).toBeGreaterThan(0n);
+			expect(proposal.updated_at).not.toBeUndefined();
+			expect(proposal.updated_at).toBeGreaterThan(0n);
+			expect(proposal.updated_at).toBeGreaterThan(proposal.created_at);
+			expect(fromNullable(proposal.version) ?? 0n).toEqual(3n);
 		});
 	});
 });

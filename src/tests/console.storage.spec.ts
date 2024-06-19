@@ -397,5 +397,76 @@ describe('Console / Storage', () => {
 			const decoder = new TextDecoder();
 			expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
 		});
+
+		it('should clear assets on upgrade', async () => {
+			const {
+				http_request,
+				init_assets_upgrade,
+				commit_assets_upgrade,
+				propose_assets_upgrade,
+				commit_asset_upload,
+				upload_asset_chunk,
+				init_asset_upload
+			} = actor;
+
+			const [proposalId, __] = await init_assets_upgrade({
+				clear_existing_assets: toNullable(true)
+			});
+
+			const file = await init_asset_upload(
+				{
+					collection: '#dapp',
+					description: toNullable(),
+					encoding_type: [],
+					full_path: '/hello2.html',
+					name: 'hello2.html',
+					token: toNullable()
+				},
+				proposalId
+			);
+
+			const blob = new Blob([HTML], {
+				type: 'text/plain; charset=utf-8'
+			});
+
+			const chunk = await upload_asset_chunk({
+				batch_id: file.batch_id,
+				content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+				order_id: [0n]
+			});
+
+			await commit_asset_upload({
+				batch_id: file.batch_id,
+				chunk_ids: [chunk.chunk_id],
+				headers: []
+			});
+
+			const [_, proposal] = await propose_assets_upgrade(proposalId);
+
+			await commit_assets_upgrade({
+				sha256: fromNullable(proposal.sha256)!,
+				proposal_id: proposalId
+			});
+
+			const { status_code } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/hello.html'
+			});
+
+			expect(status_code).toEqual(404);
+
+			const { status_code: status_code_200 } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/hello2.html'
+			});
+
+			expect(status_code_200).toEqual(200);
+		});
 	});
 });

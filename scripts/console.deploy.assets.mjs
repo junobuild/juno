@@ -37,7 +37,8 @@ const {
 	init_asset_upload,
 	commit_asset_upload,
 	upload_asset_chunk,
-	commit_assets_upgrade
+	commit_assets_upgrade,
+	list_assets
 } = await consoleActorLocal();
 
 const [proposalId, _] = await init_assets_upgrade();
@@ -108,18 +109,78 @@ const uploadChunk = async ({ batchId, chunk, actor, orderId }) =>
 
 const config = await readJunoConfig(env);
 
-const deploy = async () => {
-	// TODO: listAssets in console
-	const listExistingAssets = async () => [];
+const listExistingAssets = async ({ startAfter }) => {
+	const { items, items_page, matches_pages } = await list_assets('#dapp', {
+		order: [
+			{
+				desc: true,
+				field: { Keys: null }
+			}
+		],
+		owner: [],
+		matcher: [],
+		paginate: [
+			{
+				start_after: toNullable(startAfter),
+				limit: [500n]
+			}
+		]
+	});
 
-	await cliDeploy({
+	const sha256ToBase64String = (sha256) =>
+		btoa([...sha256].map((c) => String.fromCharCode(c)).join(''));
+
+	// For the deployment, we do not need the full Asset object but only fullPath and the sha256 encodings
+	const assets = items.map(
+		([
+			_,
+			{
+				key: { full_path },
+				encodings
+			}
+		]) => ({
+			fullPath: full_path,
+			encodings: encodings.reduce(
+				(acc, [type, { modified, sha256, total_length }]) => ({
+					...acc,
+					[type]: {
+						modified,
+						sha256: sha256ToBase64String(sha256),
+						total_length
+					}
+				}),
+				{}
+			)
+		})
+	);
+
+	const last = (elements) => {
+		const { length, [length - 1]: last } = elements;
+		return last;
+	};
+
+	if ((items_page ?? 0n) < (matches_pages ?? 0n)) {
+		const nextAssets = await listExistingAssets({
+			startAfter: last(assets)?.fullPath
+		});
+		return [...assets, ...nextAssets];
+	}
+	return assets;
+};
+
+const deploy = async () => {
+	return await cliDeploy({
 		config,
 		listAssets: listExistingAssets,
 		uploadFile
 	});
 };
 
-await deploy();
+const { sourceFiles } = await deploy();
+
+if (sourceFiles.length === 0) {
+	process.exit(0);
+}
 
 const [__, { sha256, status }] = await propose_assets_upgrade(proposalId);
 

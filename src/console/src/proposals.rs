@@ -1,6 +1,6 @@
-use crate::msg::ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE;
+use crate::msg::{ERROR_CANNOT_DELETE_ASSETS_UPGRADE, ERROR_CANNOT_PROPOSE_ASSETS_UPGRADE};
 use crate::storage::state::heap::insert_asset;
-use crate::storage::state::stable::{get_assets_stable, get_content_chunks_stable};
+use crate::storage::state::stable::{delete_asset_stable, delete_content_chunks_stable, get_assets_stable, get_content_chunks_stable};
 use crate::storage::store::{delete_assets, insert_asset_encoding};
 use crate::store::stable::{count_proposals, get_proposal, insert_proposal};
 use crate::types::interface::CommitAssetsUpgrade;
@@ -51,6 +51,24 @@ pub fn commit_assets_upgrade(assets_upgrade: &CommitAssetsUpgrade) -> Result<(),
         )),
         Some(proposal) => secure_commit_assets_upgrade(assets_upgrade, &proposal),
     }
+}
+
+pub fn delete_assets_upgrade(
+    caller: Principal,
+    proposal_ids: &Vec<ProposalId>,
+) -> Result<(), String> {
+    for proposal_id in proposal_ids {
+        let proposal = get_proposal(proposal_id);
+
+        match proposal {
+            None => {
+                return Err(ERROR_CANNOT_DELETE_ASSETS_UPGRADE.to_string());
+            }
+            Some(proposal) => secure_delete_assets_upgrade(caller, proposal_id, &proposal)?,
+        }
+    }
+
+    Ok(())
 }
 
 fn secure_propose_assets_upgrade(
@@ -157,6 +175,42 @@ fn secure_commit_assets_upgrade(
     // Mark proposal as executed.
     let executed_proposal = Proposal::execute(proposal);
     insert_proposal(&assets_upgrade.proposal_id, &executed_proposal);
+
+    Ok(())
+}
+
+pub fn secure_delete_assets_upgrade(
+    caller: Principal,
+    proposal_id: &ProposalId,
+    proposal: &Proposal,
+) -> Result<(), String> {
+    // The one that uploaded the assets can remove those.
+    if principal_not_equal(caller, proposal.owner) {
+        return Err(ERROR_CANNOT_DELETE_ASSETS_UPGRADE.to_string());
+    }
+
+    if proposal.status == ProposalStatus::Open {
+        return Err(format!(
+            "Proposal assets cannot be deleted. Current status: {:?}",
+            proposal.status
+        ));
+    }
+
+    #[allow(unreachable_patterns)]
+    match &proposal.proposal_type {
+        ProposalType::AssetsUpgrade(_) => (),
+        _ => return Err("Proposal is not of type AssetsUpgrade.".to_string()),
+    };
+
+    let assets = get_assets_stable(proposal_id);
+
+    for (key, asset) in assets {
+        for (_, encoding) in asset.encodings.iter() {
+            delete_content_chunks_stable(&encoding.content_chunks);
+        }
+
+        delete_asset_stable(&key);
+    }
 
     Ok(())
 }

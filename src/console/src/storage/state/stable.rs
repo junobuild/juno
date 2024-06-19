@@ -5,7 +5,7 @@ use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey};
 use junobuild_storage::stable_utils::insert_asset_encoding_stable as insert_asset_encoding_stable_utils;
 use junobuild_storage::types::state::FullPath;
-use junobuild_storage::types::store::{Asset, AssetEncoding};
+use junobuild_storage::types::store::{Asset, AssetEncoding, BlobOrKey};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
 
@@ -128,6 +128,38 @@ fn insert_asset_stable_impl(
         stable_asset_key(proposal_id, collection, full_path),
         asset.clone(),
     );
+}
+
+pub fn delete_asset_stable(key: &AssetKey) -> Option<Asset> {
+    STATE.with(|state| {
+        delete_asset_stable_impl(
+            key,
+            &mut state.borrow_mut().stable.proposals_assets,
+        )
+    })
+}
+
+fn delete_asset_stable_impl(key: &AssetKey, assets: &mut AssetsStable) -> Option<Asset> {
+    assets.remove(key)
+}
+
+pub fn delete_content_chunks_stable(content_chunks_keys: &[BlobOrKey]) {
+    STATE.with(|state| {
+        delete_content_chunks_stable_impl(
+            content_chunks_keys,
+            &mut state.borrow_mut().stable.proposals_content_chunks,
+        )
+    })
+}
+
+fn delete_content_chunks_stable_impl(
+    content_chunks_keys: &[BlobOrKey],
+    content_chunks: &mut ContentChunksStable,
+) {
+    for chunk in content_chunks_keys.iter() {
+        let key: ContentChunkKey = deserialize_from_bytes(Cow::Owned(chunk.clone()));
+        content_chunks.remove(&key);
+    }
 }
 
 fn stable_asset_key(

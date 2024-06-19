@@ -204,6 +204,11 @@ pub mod interface {
         pub proposal_id: ProposalId,
         pub sha256: Hash,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DeleteAssetsUpgrade {
+        pub proposal_ids: Vec<ProposalId>,
+    }
 }
 
 pub mod ledger {

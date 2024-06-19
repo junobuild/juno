@@ -39,6 +39,7 @@ type CustomDomain = record {
   version : opt nat64;
   bn_id : opt text;
 };
+type DeleteAssetsUpgrade = record { proposal_ids : vec nat };
 type DeleteControllersArgs = record { controllers : vec principal };
 type GetCreateCanisterFeeArgs = record { user : principal };
 type HttpRequest = record {
@@ -179,6 +180,7 @@ service : () -> {
   create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
+  delete_assets_upgrade : (DeleteAssetsUpgrade) -> ();
   get_config : () -> (Config);
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;

@@ -53,6 +53,9 @@ export interface CustomDomain {
 	version: [] | [bigint];
 	bn_id: [] | [string];
 }
+export interface DeleteAssetsUpgrade {
+	proposal_ids: Array<bigint>;
+}
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
@@ -220,6 +223,7 @@ export interface _SERVICE {
 	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_custom_domain: ActorMethod<[string], undefined>;
+	delete_assets_upgrade: ActorMethod<[DeleteAssetsUpgrade], undefined>;
 	get_config: ActorMethod<[], Config>;
 	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;

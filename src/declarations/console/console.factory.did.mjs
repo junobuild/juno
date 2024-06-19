@@ -21,6 +21,7 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
+	const DeleteAssetsUpgrade = IDL.Record({ proposal_ids: IDL.Vec(IDL.Nat) });
 	const StorageConfigIFrame = IDL.Variant({
 		Deny: IDL.Null,
 		AllowAny: IDL.Null,
@@ -225,6 +226,7 @@ export const idlFactory = ({ IDL }) => {
 		create_satellite: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
+		delete_assets_upgrade: IDL.Func([DeleteAssetsUpgrade], [], []),
 		get_config: IDL.Func([], [Config], []),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),

@@ -2,7 +2,8 @@ use crate::constants::E8S_PER_ICP;
 use crate::memory::STATE;
 use crate::types::ledger::{Payment, PaymentStatus};
 use crate::types::state::{
-    MissionControl, Proposal, ProposalId, ProposalKey, ProposalsStable, StableState,
+    MissionControl, MissionControls, MissionControlsStable, Payments, PaymentsStable, Proposal,
+    ProposalId, ProposalKey, ProposalsStable, StableState,
 };
 use ic_cdk::api::time;
 use ic_ledger_types::BlockIndex;
@@ -121,6 +122,14 @@ pub fn delete_mission_control(user: &UserId) -> Option<MissionControl> {
 
 fn delete_mission_control_impl(user: &UserId, state: &mut StableState) -> Option<MissionControl> {
     state.mission_controls.remove(user)
+}
+
+pub fn list_mission_controls() -> MissionControls {
+    STATE.with(|state| list_mission_controls_impl(&state.borrow_mut().stable.mission_controls))
+}
+
+fn list_mission_controls_impl(mission_controls: &MissionControlsStable) -> MissionControls {
+    mission_controls.iter().collect()
 }
 
 /// Credits
@@ -321,6 +330,14 @@ fn update_payment_refunded_impl(
             Ok(updated_payment)
         }
     }
+}
+
+pub fn list_payments() -> Payments {
+    STATE.with(|state| list_payments_impl(&state.borrow_mut().stable.payments))
+}
+
+fn list_payments_impl(payments: &PaymentsStable) -> Payments {
+    payments.iter().collect()
 }
 
 /// Proposals

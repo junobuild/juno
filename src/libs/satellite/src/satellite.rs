@@ -55,7 +55,7 @@ use junobuild_storage::http_request::{
     http_request as http_request_storage,
     http_request_streaming_callback as http_request_streaming_callback_storage,
 };
-use junobuild_storage::types::domain::CustomDomains;
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };

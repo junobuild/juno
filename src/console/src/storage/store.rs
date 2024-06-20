@@ -16,7 +16,7 @@ use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::heap_utils::collect_assets_heap;
 use junobuild_storage::store::create_batch;
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::domain::CustomDomains;
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{AssetNoContent, InitAssetKey};
 use junobuild_storage::types::runtime_state::BatchId;
 use junobuild_storage::types::state::FullPath;

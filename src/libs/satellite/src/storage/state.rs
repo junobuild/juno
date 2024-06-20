@@ -10,7 +10,7 @@ use junobuild_shared::serializers::deserialize_from_bytes;
 use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
 use junobuild_storage::stable_utils::insert_asset_encoding_stable;
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::domain::{CustomDomain, CustomDomains};
+use junobuild_shared::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
 use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;

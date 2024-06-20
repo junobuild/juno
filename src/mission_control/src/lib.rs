@@ -25,7 +25,7 @@ use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console, delete_orbiter, detach_orbiter,
 };
-use crate::segments::satellite::{create_satellite as create_satellite_console, delete_satellite};
+use crate::segments::satellite::{attach_satellite, create_satellite as create_satellite_console, delete_satellite, detach_satellite};
 use crate::segments::store::get_orbiters;
 use crate::store::{
     get_user as get_user_store,
@@ -168,6 +168,20 @@ async fn del_satellite(satellite_id: SatelliteId, cycles_to_deposit: u128) {
     delete_satellite(&satellite_id, cycles_to_deposit)
         .await
         .unwrap_or_else(|e| trap(&e));
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn set_satellite(satellite_id: SatelliteId, name: Option<String>) -> Satellite {
+    attach_satellite(&satellite_id, &name)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn unset_satellite(satellite_id: SatelliteId) {
+    detach_satellite(&satellite_id)
+        .await
+        .unwrap_or_else(|e| trap(&e))
 }
 
 /// Orbiters

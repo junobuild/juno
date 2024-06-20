@@ -1,5 +1,6 @@
 import type { Identity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
+import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
 import { existsSync, writeFileSync } from 'node:fs';
 import { get, type RequestOptions } from 'node:https';
@@ -25,14 +26,20 @@ export const CONSOLE_WASM_PATH = existsSync(CONSOLE_WASM_PATH_CI)
 	? CONSOLE_WASM_PATH_CI
 	: CONSOLE_WASM_PATH_LOCAL;
 
-export const controllersInitArgs = (controller: Identity): ArrayBuffer =>
+const MISSION_CONTROL_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'mission_control.wasm.gz');
+const MISSION_CONTROL_WASM_PATH_CI = join(process.cwd(), 'mission_control.wasm.gz');
+export const MISSION_CONTROL_WASM_PATH = existsSync(MISSION_CONTROL_WASM_PATH_CI)
+	? MISSION_CONTROL_WASM_PATH_CI
+	: MISSION_CONTROL_WASM_PATH_LOCAL;
+
+export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayBuffer =>
 	IDL.encode(
 		[
 			IDL.Record({
 				controllers: IDL.Vec(IDL.Principal)
 			})
 		],
-		[{ controllers: [controller.getPrincipal()] }]
+		[{ controllers: Array.isArray(controllers) ? controllers : [controllers.getPrincipal()] }]
 	);
 
 const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> => {

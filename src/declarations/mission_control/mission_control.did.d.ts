@@ -106,6 +106,7 @@ export interface _SERVICE {
 	>;
 	status: ActorMethod<[StatusesArgs], SegmentsStatuses>;
 	top_up: ActorMethod<[Principal, Tokens], undefined>;
+	unset_orbiter: ActorMethod<[Principal], Orbiter>;
 	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

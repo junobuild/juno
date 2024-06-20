@@ -25,6 +25,12 @@ export const CONSOLE_WASM_PATH = existsSync(CONSOLE_WASM_PATH_CI)
 	? CONSOLE_WASM_PATH_CI
 	: CONSOLE_WASM_PATH_LOCAL;
 
+const MISSION_CONTROL_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'mission_control.wasm.gz');
+const MISSION_CONTROL_WASM_PATH_CI = join(process.cwd(), 'mission_control.wasm.gz');
+export const MISSION_CONTROL_WASM_PATH = existsSync(MISSION_CONTROL_WASM_PATH_CI)
+	? MISSION_CONTROL_WASM_PATH_CI
+	: MISSION_CONTROL_WASM_PATH_LOCAL;
+
 export const controllersInitArgs = (controller: Identity): ArrayBuffer =>
 	IDL.encode(
 		[

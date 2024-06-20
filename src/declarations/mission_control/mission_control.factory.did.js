@@ -135,6 +135,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		status: IDL.Func([StatusesArgs], [SegmentsStatuses], []),
 		top_up: IDL.Func([IDL.Principal, Tokens], [], []),
+		unset_orbiter: IDL.Func([IDL.Principal], [Orbiter], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

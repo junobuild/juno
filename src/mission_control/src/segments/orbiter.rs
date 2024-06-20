@@ -33,7 +33,7 @@ pub async fn attach_orbiter(
     }
 }
 
-pub async fn detach_orbiter(orbiter_id: &OrbiterId) -> Result<Orbiter, String> {
+pub async fn detach_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
     let orbiter = get_orbiter(orbiter_id);
 
     match orbiter {
@@ -41,7 +41,7 @@ pub async fn detach_orbiter(orbiter_id: &OrbiterId) -> Result<Orbiter, String> {
         Some(orbiter) => {
             delete_orbiter_store(orbiter_id);
 
-            Ok(orbiter)
+            Ok(())
         }
     }
 }

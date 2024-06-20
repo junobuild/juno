@@ -192,7 +192,7 @@ async fn set_orbiter(orbiter_id: OrbiterId, name: Option<String>) -> Orbiter {
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
-async fn unset_orbiter(orbiter_id: OrbiterId) -> Orbiter {
+async fn unset_orbiter(orbiter_id: OrbiterId) {
     detach_orbiter(&orbiter_id)
         .await
         .unwrap_or_else(|e| trap(&e))

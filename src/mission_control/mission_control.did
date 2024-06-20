@@ -107,6 +107,6 @@ service : () -> {
     ) -> ();
   status : (StatusesArgs) -> (SegmentsStatuses);
   top_up : (principal, Tokens) -> ();
-  unset_orbiter : (principal) -> (Orbiter);
+  unset_orbiter : (principal) -> ();
   version : () -> (text) query;
 }

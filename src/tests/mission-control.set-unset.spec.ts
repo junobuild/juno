@@ -36,19 +36,21 @@ describe('Mission Control', () => {
 				[{ user: controller.getPrincipal() }]
 			);
 
-		const { actor: c } = await pic.setupCanister<MissionControlActor>({
-			idlFactory: idlFactorMissionControl,
-			wasm: MISSION_CONTROL_WASM_PATH,
-			arg: userInitArgs(),
-			sender: controller.getPrincipal()
-		});
+		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
+			{
+				idlFactory: idlFactorMissionControl,
+				wasm: MISSION_CONTROL_WASM_PATH,
+				arg: userInitArgs(),
+				sender: controller.getPrincipal()
+			}
+		);
 
 		actor = c;
 
 		const { canisterId } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
-			arg: controllersInitArgs(controller),
+			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
 			sender: controller.getPrincipal()
 		});
 
@@ -74,6 +76,49 @@ describe('Mission Control', () => {
 			const { unset_orbiter } = actor;
 
 			await expect(unset_orbiter(orbiterId)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
+	});
+
+	describe('admin', () => {
+		beforeAll(() => {
+			actor.setIdentity(controller);
+		});
+
+		it('should have no orbiters set', async () => {
+			const { list_orbiters } = actor;
+
+			const results = await list_orbiters();
+
+			expect(results).toHaveLength(0);
+		});
+
+		it('should set an orbiter', async () => {
+			const { set_orbiter, list_orbiters } = actor;
+
+			const orbiter = await set_orbiter(orbiterId, ['Hello']);
+
+			expect(orbiter.orbiter_id.toText()).toEqual(orbiterId.toText());
+			expect(orbiter.created_at).toBeGreaterThan(0n);
+			expect(orbiter.updated_at).toBeGreaterThan(0n);
+
+			const results = await list_orbiters();
+
+			expect(results).toHaveLength(1);
+
+			expect(results[0][0].toText()).toEqual(orbiterId.toText());
+			expect(results[0][1].orbiter_id.toText()).toEqual(orbiterId.toText());
+			expect(results[0][1].created_at).toBeGreaterThan(0n);
+			expect(results[0][1].updated_at).toBeGreaterThan(0n);
+		});
+
+		it('should unset an orbiter', async () => {
+			const { unset_orbiter, list_orbiters } = actor;
+
+			await unset_orbiter(orbiterId);
+
+			const results = await list_orbiters();
+
+			expect(results).toHaveLength(0);
 		});
 	});
 });

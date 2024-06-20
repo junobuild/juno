@@ -2,6 +2,8 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
+import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
@@ -12,6 +14,7 @@ import { CONTROLLER_ERROR_MSG } from './constants/mission-control-tests.constant
 import {
 	MISSION_CONTROL_WASM_PATH,
 	ORBITER_WASM_PATH,
+	SATELLITE_WASM_PATH,
 	controllersInitArgs
 } from './utils/setup-tests.utils';
 
@@ -20,6 +23,7 @@ describe('Mission Control', () => {
 	let actor: Actor<MissionControlActor>;
 
 	let orbiterId: Principal;
+	let satelliteId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
 
@@ -55,6 +59,15 @@ describe('Mission Control', () => {
 		});
 
 		orbiterId = canisterId;
+
+		const { canisterId: cId } = await pic.setupCanister<SatelliteActor>({
+			idlFactory: idlFactorSatellite,
+			wasm: SATELLITE_WASM_PATH,
+			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
+			sender: controller.getPrincipal()
+		});
+
+		satelliteId = cId;
 	});
 
 	afterAll(async () => {
@@ -76,6 +89,18 @@ describe('Mission Control', () => {
 			const { unset_orbiter } = actor;
 
 			await expect(unset_orbiter(orbiterId)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
+
+		it('should throw errors on set satellite', async () => {
+			const { set_satellite } = actor;
+
+			await expect(set_satellite(satelliteId, [])).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
+
+		it('should throw errors on unset satellite', async () => {
+			const { unset_satellite } = actor;
+
+			await expect(unset_satellite(satelliteId)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 	});
 
@@ -117,6 +142,43 @@ describe('Mission Control', () => {
 			await unset_orbiter(orbiterId);
 
 			const results = await list_orbiters();
+
+			expect(results).toHaveLength(0);
+		});
+
+		it('should have no satellites set', async () => {
+			const { list_satellites } = actor;
+
+			const results = await list_satellites();
+
+			expect(results).toHaveLength(0);
+		});
+
+		it('should set an satellite', async () => {
+			const { set_satellite, list_satellites } = actor;
+
+			const satellite = await set_satellite(satelliteId, ['Hello']);
+
+			expect(satellite.satellite_id.toText()).toEqual(satelliteId.toText());
+			expect(satellite.created_at).toBeGreaterThan(0n);
+			expect(satellite.updated_at).toBeGreaterThan(0n);
+
+			const results = await list_satellites();
+
+			expect(results).toHaveLength(1);
+
+			expect(results[0][0].toText()).toEqual(satelliteId.toText());
+			expect(results[0][1].satellite_id.toText()).toEqual(satelliteId.toText());
+			expect(results[0][1].created_at).toBeGreaterThan(0n);
+			expect(results[0][1].updated_at).toBeGreaterThan(0n);
+		});
+
+		it('should unset an satellite', async () => {
+			const { unset_satellite, list_satellites } = actor;
+
+			await unset_satellite(satelliteId);
+
+			const results = await list_satellites();
 
 			expect(results).toHaveLength(0);
 		});

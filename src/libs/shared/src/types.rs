@@ -364,3 +364,21 @@ pub mod list {
         pub matches_pages: Option<usize>,
     }
 }
+
+pub mod domain {
+    use candid::CandidType;
+    use crate::types::core::DomainName;
+    use crate::types::state::{Timestamp, Version};
+    use serde::{Deserialize, Serialize};
+    use std::collections::HashMap;
+
+    pub type CustomDomains = HashMap<DomainName, CustomDomain>;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CustomDomain {
+        pub bn_id: Option<String>,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+        pub version: Option<Version>,
+    }
+}

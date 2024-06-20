@@ -1,5 +1,5 @@
 use crate::types::config::StorageConfig;
-use crate::types::domain::CustomDomains;
+use junobuild_shared::types::domain::CustomDomains;
 use crate::types::state::FullPath;
 use crate::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,

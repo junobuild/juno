@@ -97,6 +97,7 @@ service : () -> {
       vec principal,
       SetController,
     ) -> ();
+  set_satellite : (principal, opt text) -> (Satellite);
   set_satellite_metadata : (principal, vec record { text; text }) -> (
       Satellite,
     );
@@ -108,5 +109,6 @@ service : () -> {
   status : (StatusesArgs) -> (SegmentsStatuses);
   top_up : (principal, Tokens) -> ();
   unset_orbiter : (principal) -> ();
+  unset_satellite : (principal) -> ();
   version : () -> (text) query;
 }

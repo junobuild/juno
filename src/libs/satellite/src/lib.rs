@@ -59,7 +59,7 @@ pub use junobuild_shared::types::core::{Blob, CollectionKey, Key};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
-use junobuild_storage::types::domain::CustomDomains;
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::state::FullPath;
 
 ///

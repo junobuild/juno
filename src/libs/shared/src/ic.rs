@@ -1,10 +1,10 @@
-use crate::constants::CREATE_CANISTER_CYCLES;
+use crate::constants::{CREATE_CANISTER_CYCLES, WASM_MEMORY_LIMIT};
 use crate::types::ic::WasmArg;
 use crate::types::interface::DepositCyclesArgs;
 use crate::types::state::{
     SegmentCanisterSettings, SegmentCanisterStatus, SegmentStatus, SegmentStatusResult,
 };
-use candid::Principal;
+use candid::{Nat, Principal};
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::{
     canister_status as ic_canister_status, create_canister, delete_canister,
@@ -37,7 +37,7 @@ pub async fn create_canister_install_code(
                 memory_allocation: None,
                 freezing_threshold: None,
                 reserved_cycles_limit: None,
-                wasm_memory_limit: None,
+                wasm_memory_limit: Some(Nat::from(WASM_MEMORY_LIMIT)),
             }),
         },
         CREATE_CANISTER_CYCLES + cycles,
@@ -95,6 +95,8 @@ pub async fn update_canister_controllers(
     canister_id: Principal,
     controllers: Vec<Principal>,
 ) -> CallResult<()> {
+    // Not including a setting in the settings record means not changing that field.
+    // In other words, setting wasm_memory_limit to None here means keeping the actual value of wasm_memory_limit.
     let arg = UpdateSettingsArgument {
         canister_id,
         settings: CanisterSettings {

@@ -38,7 +38,7 @@ pub async fn detach_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
 
     match orbiter {
         None => Err(ORBITER_NOT_FOUND.to_string()),
-        Some(orbiter) => {
+        Some(_orbiter) => {
             delete_orbiter_store(orbiter_id);
 
             Ok(())

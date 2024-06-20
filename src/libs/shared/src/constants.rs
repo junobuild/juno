@@ -1,4 +1,3 @@
-use candid::Nat;
 use crate::types::state::Version;
 use ic_ledger_types::{Memo, Tokens};
 

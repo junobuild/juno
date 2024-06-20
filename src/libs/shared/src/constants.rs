@@ -1,3 +1,4 @@
+use candid::Nat;
 use crate::types::state::Version;
 use ic_ledger_types::{Memo, Tokens};
 
@@ -42,3 +43,8 @@ pub const REVOKED_CONTROLLERS: [&str; 1] =
 
 // The default version number when a new entity is persisted for the first time.
 pub const INITIAL_VERSION: Version = 1;
+
+// The upper limit on the WASM heap memory consumption of the canister per default on the IC is now 3_221_225_472 (3 GiB).
+// According to our experience, we start noticing issue when we upgrade canister at 1 GB. That's why the Juno CLI and Console already warn when this limited is reached.
+// To enforce this limit, we set per default 1_073_741_824 (1 GiB) + 10%.
+pub const WASM_MEMORY_LIMIT: u32 = 1_181_116_006;

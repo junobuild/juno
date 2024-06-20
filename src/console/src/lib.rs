@@ -33,17 +33,16 @@ use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpl
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
     get_mission_control_release_version, get_orbiter_fee, get_orbiter_release_version,
-    get_satellite_fee, get_satellite_release_version, list_mission_controls_heap,
-    list_payments_heap, load_mission_control_release, load_orbiter_release, load_satellite_release,
-    reset_mission_control_release, reset_orbiter_release, reset_satellite_release,
-    set_controllers as set_controllers_store, set_create_orbiter_fee, set_create_satellite_fee,
-    update_mission_controls_rate_config, update_orbiters_rate_config,
-    update_satellites_rate_config,
+    get_satellite_fee, get_satellite_release_version, load_mission_control_release,
+    load_orbiter_release, load_satellite_release, reset_mission_control_release,
+    reset_orbiter_release, reset_satellite_release, set_controllers as set_controllers_store,
+    set_create_orbiter_fee, set_create_satellite_fee, update_mission_controls_rate_config,
+    update_orbiters_rate_config, update_satellites_rate_config,
 };
 use crate::store::stable::{
     add_credits as add_credits_store, get_credits as get_credits_store,
     get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
-    has_credits,
+    has_credits, list_mission_controls, list_payments as list_payments_state,
 };
 use crate::types::interface::{
     CommitAssetsUpgrade, Config, DeleteAssetsUpgrade, LoadRelease, ReleasesVersion, Segment,
@@ -217,7 +216,7 @@ fn assert_mission_control_center(
 
 #[query(guard = "caller_is_admin_controller")]
 fn list_user_mission_control_centers() -> MissionControls {
-    list_mission_controls_heap()
+    list_mission_controls()
 }
 
 #[update]
@@ -234,7 +233,7 @@ async fn init_user_mission_control_center() -> MissionControl {
 
 #[query(guard = "caller_is_admin_controller")]
 fn list_payments() -> Payments {
-    list_payments_heap()
+    list_payments_state()
 }
 
 /// Satellites

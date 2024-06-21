@@ -7,6 +7,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
+	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 
 	export let orbiter: Orbiter;
 
@@ -46,6 +47,8 @@
 	<CanisterTransferCycles {canister} on:click={() => onCanisterAction('transfer_cycles_orbiter')} />
 
 	<CanisterStopStart {canister} segment="orbiter" on:junoStop={close} on:junoStart={close} />
+
+	<SegmentDetach segment="orbiter" segmentId={orbiter.orbiter_id} on:junoDetach={close} />
 
 	<CanisterDelete {canister} on:click={() => onCanisterAction('delete_orbiter')} />
 </Actions>

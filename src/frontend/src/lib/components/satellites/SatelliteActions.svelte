@@ -9,6 +9,7 @@
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { listCustomDomains } from '$lib/services/hosting.services';
+	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 
 	export let satellite: Satellite;
 
@@ -79,6 +80,8 @@
 	<CanisterTransferCycles {canister} on:click={onTransferCycles} />
 
 	<CanisterStopStart {canister} segment="satellite" on:junoStop={close} on:junoStart={close} />
+
+	<SegmentDetach segment="satellite" segmentId={satellite.satellite_id} on:junoStop={close} />
 
 	<CanisterDelete {canister} on:click={onDeleteSatellite} />
 </Actions>

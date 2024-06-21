@@ -42,6 +42,7 @@ interface I18nCore {
 	more: string;
 	are_you_sure: string;
 	attach: string;
+	detach: string;
 	refresh: string;
 	open_website: string;
 }
@@ -88,6 +89,10 @@ interface I18nCanisters {
 	start_tile: string;
 	start_info: string;
 	start_success: string;
+	detach_title: string;
+	detach_explanation: string;
+	detach_info: string;
+	detach_success: string;
 	delete_success: string;
 	transfer_cycles: string;
 	transfer_cycles_description: string;
@@ -318,6 +323,7 @@ interface I18nErrors {
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
+	segment_detach: string;
 	ledger_balance_credits: string;
 	load_credits: string;
 	hosting_missing_domain_name: string;

@@ -11,11 +11,11 @@ pub mod core {
 pub mod rules {
     use candid::CandidType;
     use junobuild_shared::serializers::deserialize_default_as_true;
-    use junobuild_shared::types::core::CollectionKey;
     use junobuild_shared::types::state::Timestamp;
     use junobuild_shared::types::state::Version;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
+    use crate::types::core::CollectionKey;
 
     pub type Rules = HashMap<CollectionKey, Rule>;
 

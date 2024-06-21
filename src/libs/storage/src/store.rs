@@ -24,10 +24,11 @@ use junobuild_collections::types::rules::Rule;
 use junobuild_shared::assert::assert_description_length;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;
-use junobuild_shared::types::core::{Blob, CollectionKey};
+use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
+use junobuild_collections::types::core::CollectionKey;
 
 ///
 /// Upload batch and chunks

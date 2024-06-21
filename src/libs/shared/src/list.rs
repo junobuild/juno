@@ -1,5 +1,5 @@
 use crate::types::core::Key;
-use crate::types::core::{CollectionKey, Compare};
+use crate::types::core::Compare;
 use crate::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults,
 };

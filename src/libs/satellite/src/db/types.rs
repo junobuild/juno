@@ -3,11 +3,12 @@ pub mod state {
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
     use junobuild_collections::types::rules::Rules;
-    use junobuild_shared::types::core::{Blob, CollectionKey, Key};
+    use junobuild_shared::types::core::{Blob, Key};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Timestamp, UserId, Version};
     use serde::{Deserialize, Serialize};
     use std::collections::{BTreeMap, HashMap};
+    use junobuild_collections::types::core::CollectionKey;
 
     pub type Collection = BTreeMap<Key, Doc>;
     pub type DbHeap = HashMap<CollectionKey, Collection>;

@@ -5,8 +5,9 @@ use crate::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 use candid::Principal;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::types::core::{Blob, CollectionKey};
+use junobuild_shared::types::core::Blob;
 
 pub trait StorageAssertionsStrategy {
     fn invoke_assert_upload_asset(

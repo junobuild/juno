@@ -4,6 +4,7 @@ use crate::memory::STATE;
 use candid::Principal;
 use junobuild_collections::assert_stores::{assert_permission, public_permission};
 use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::list::list_values;
@@ -20,7 +21,7 @@ use crate::storage::state::{
     insert_domain as insert_state_domain,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
-use junobuild_shared::types::core::{Blob, CollectionKey, DomainName};
+use junobuild_shared::types::core::{Blob, DomainName};
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML};
 use junobuild_storage::heap_utils::{

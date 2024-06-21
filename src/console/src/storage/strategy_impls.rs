@@ -7,8 +7,9 @@ use crate::storage::state::stable::{
 use crate::storage::state::utils::get_content_chunks;
 use crate::storage::store::get_public_asset;
 use candid::Principal;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::types::core::{Blob, CollectionKey};
+use junobuild_shared::types::core::Blob;
 use junobuild_storage::strategies::{
     StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy,
 };

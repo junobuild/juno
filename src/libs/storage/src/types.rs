@@ -65,11 +65,12 @@ pub mod store {
     use crate::types::state::FullPath;
     use candid::CandidType;
     use ic_certification::Hash;
-    use junobuild_shared::types::core::{Blob, CollectionKey};
+    use junobuild_shared::types::core::Blob;
     use junobuild_shared::types::state::{Timestamp, UserId, Version};
     use serde::{Deserialize, Serialize};
     use std::clone::Clone;
     use std::collections::HashMap;
+    use junobuild_collections::types::core::CollectionKey;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Chunk {

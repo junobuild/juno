@@ -35,13 +35,14 @@ use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
     assert_controllers, assert_max_number_of_controllers, init_controllers,
 };
-use junobuild_shared::types::core::{CollectionKey, DomainName, Key};
+use junobuild_shared::types::core::{DomainName, Key};
 use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;

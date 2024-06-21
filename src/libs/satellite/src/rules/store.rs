@@ -21,6 +21,7 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
         set_rule(
             collection.clone(),
             rule.clone(),
+            false,
             &mut state.borrow_mut().heap.db.rules,
         )
     })?;
@@ -32,7 +33,14 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
 }
 
 pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), String> {
-    STATE.with(|state| set_rule(collection, rule, &mut state.borrow_mut().heap.storage.rules))
+    STATE.with(|state| {
+        set_rule(
+            collection,
+            rule,
+            true,
+            &mut state.borrow_mut().heap.storage.rules,
+        )
+    })
 }
 
 pub fn del_rule_db(collection: CollectionKey, rule: DelRule) -> Result<(), String> {

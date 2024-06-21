@@ -514,6 +514,20 @@ describe('Console / Storage', () => {
 
 			expect(status_code_200).toEqual(200);
 		});
+
+		it('should still serve asset after #dApp has been cleared', async () => {
+			const { http_request } = actor;
+
+			const { status_code, headers, body } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/releases/hello2.html'
+			});
+
+			expect(status_code).toBe(200);
+		});
 	});
 
 	describe('anonymous', () => {

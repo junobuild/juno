@@ -2,6 +2,7 @@ import type {
 	CommitProposal,
 	_SERVICE as ConsoleActor,
 	InitAssetKey,
+	ProposalType,
 	UploadChunk
 } from '$declarations/console/console.did';
 import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
@@ -49,7 +50,7 @@ describe('Console / Storage', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		it('should throw errors on delete assets', async () => {
+		it('should throw errors on delete proposal assets', async () => {
 			const { delete_proposal_assets } = actor;
 
 			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
@@ -57,7 +58,7 @@ describe('Console / Storage', () => {
 			);
 		});
 
-		it('should throw errors on init assets upgrade', async () => {
+		it('should throw errors on init proposal', async () => {
 			const { init_proposal } = actor;
 
 			await expect(init_proposal({ AssetsUpgrade: { clear_existing_assets: [] } })).rejects.toThrow(
@@ -65,7 +66,7 @@ describe('Console / Storage', () => {
 			);
 		});
 
-		it('should throw errors on propose assets upgrade', async () => {
+		it('should throw errors on submit proposal', async () => {
 			const { submit_proposal } = actor;
 
 			await expect(submit_proposal(123n)).rejects.toThrow(CONTROLLER_ERROR_MSG);
@@ -110,7 +111,7 @@ describe('Console / Storage', () => {
 			await expect(commit_asset_upload(batch)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
-		it('should throw errors on commit assets upgrade', async () => {
+		it('should throw errors on commit proposal', async () => {
 			const { commit_proposal } = actor;
 
 			const commit: CommitProposal = {
@@ -146,14 +147,10 @@ describe('Console / Storage', () => {
 		});
 	});
 
-	let proposalId: bigint;
-
 	describe('admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
-
-		let sha256: [] | [Uint8Array | number[]];
 
 		const HTML = '<html><body>Hello</body></html>';
 
@@ -179,247 +176,273 @@ describe('Console / Storage', () => {
 			});
 		});
 
-		it('should init a assets upgrade', async () => {
-			const { init_proposal } = actor;
-
-			const [id, proposal] = await init_proposal({
-				AssetsUpgrade: {
-					clear_existing_assets: toNullable()
-				}
-			});
-
-			proposalId = id;
-
-			expect(proposalId).toEqual(1n);
-
-			expect(proposal.status).toEqual({ Initialized: null });
-			expect(fromNullable(proposal.sha256)).toBeUndefined();
-			expect(fromNullable(proposal.executed_at)).toBeUndefined();
-			expect(proposal.owner.toText()).toEqual(controller.getPrincipal().toText());
-			expect(proposal.proposal_type).toEqual({
-				AssetsUpgrade: { clear_existing_assets: toNullable() }
-			});
-			expect(proposal.created_at).not.toBeUndefined();
-			expect(proposal.created_at).toBeGreaterThan(0n);
-			expect(proposal.updated_at).not.toBeUndefined();
-			expect(proposal.updated_at).toBeGreaterThan(0n);
-			expect(fromNullable(proposal.version) ?? 0n).toBeGreaterThan(0n);
-		});
-
-		it('should fail at uploading asset for unknown proposal', async () => {
-			const { init_asset_upload } = actor;
-
-			const unknownProposalId = proposalId + 1n;
-
-			await expect(
-				init_asset_upload(
-					{
-						collection: '#dapp',
-						description: toNullable(),
-						encoding_type: [],
-						full_path: '/hello.html',
-						name: 'hello.html',
-						token: toNullable()
-					},
-					unknownProposalId
-				)
-			).rejects.toThrow(`No proposal found for ${unknownProposalId}`);
-		});
-
-		it('should upload asset', async () => {
-			const { http_request, commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
-
-			const file = await init_asset_upload(
-				{
-					collection: '#dapp',
-					description: toNullable(),
-					encoding_type: [],
-					full_path: '/hello.html',
-					name: 'hello.html',
-					token: toNullable()
-				},
-				proposalId
-			);
-
-			const blob = new Blob([HTML], {
-				type: 'text/plain; charset=utf-8'
-			});
-
-			const chunk = await upload_asset_chunk({
-				batch_id: file.batch_id,
-				content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-				order_id: [0n]
-			});
-
-			await commit_asset_upload({
-				batch_id: file.batch_id,
-				chunk_ids: [chunk.chunk_id],
-				headers: []
-			});
-
-			const { status_code } = await http_request({
-				body: [],
-				certificate_version: toNullable(),
-				headers: [],
-				method: 'GET',
-				url: '/hello.html'
-			});
-
-			expect(status_code).toBe(404);
-		});
-
-		it('should fail at submitting an unknown proposal', async () => {
-			const { submit_proposal } = actor;
-
-			const unknownProposalId = proposalId + 1n;
-
-			await expect(submit_proposal(unknownProposalId)).rejects.toThrow(
-				'Cannot submit proposal.'
-			);
-		});
-
-		it('should submit proposal', async () => {
-			const { submit_proposal } = actor;
-
-			// Advance time for updated_at
-			await pic.advanceTime(100);
-
-			const [_, proposal] = await submit_proposal(proposalId);
-
-			expect(proposal.status).toEqual({ Open: null });
-			expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
-			expect(fromNullable(proposal.executed_at)).toBeUndefined();
-			expect(proposal.owner.toText()).toEqual(controller.getPrincipal().toText());
-			expect(proposal.proposal_type).toEqual({
-				AssetsUpgrade: { clear_existing_assets: toNullable() }
-			});
-			expect(proposal.created_at).not.toBeUndefined();
-			expect(proposal.created_at).toBeGreaterThan(0n);
-			expect(proposal.updated_at).not.toBeUndefined();
-			expect(proposal.updated_at).toBeGreaterThan(0n);
-			expect(proposal.updated_at).toBeGreaterThan(proposal.created_at);
-			expect(fromNullable(proposal.version) ?? 0n).toEqual(2n);
-
-			sha256 = proposal.sha256;
-		});
-
-		it('should still not serve asset', async () => {
-			const { http_request } = actor;
-
-			const { status_code } = await http_request({
-				body: [],
-				certificate_version: toNullable(),
-				headers: [],
-				method: 'GET',
-				url: '/hello.html'
-			});
-
-			expect(status_code).toBe(404);
-		});
-
-		it('should fail at submitting a proposal if already open', async () => {
-			const { submit_proposal } = actor;
-
-			await expect(submit_proposal(proposalId)).rejects.toThrow(
-				'Proposal cannot be submitted. Current status: Open'
-			);
-		});
-
-		it('should fail at committing a proposal if unknown', async () => {
-			const { commit_proposal } = actor;
-
-			const unknownProposalId = proposalId + 1n;
-
-			await expect(
-				commit_proposal({
-					sha256: Array.from({ length: 32 }).map((_, i) => i),
-					proposal_id: proposalId + 1n
-				})
-			).rejects.toThrow(`Cannot commit proposal. ${unknownProposalId}`);
-		});
-
-		it('should fail at committing a proposal with incorrect sha256', async () => {
-			const { commit_proposal } = actor;
-
-			const sha256 = Array.from({ length: 32 }).map((_, i) => i);
-
-			await expect(
-				commit_proposal({
-					sha256,
-					proposal_id: proposalId
-				})
-			).rejects.toThrow(
-				`The provided SHA-256 hash (${uint8ArrayToHexString(sha256)}) does not match the expected value for the proposal to commit.`
-			);
-		});
-
-		it('should commit proposal', async () => {
-			const { commit_proposal } = actor;
-
-			await expect(
-				commit_proposal({
-					sha256: fromNullable(sha256)!,
-					proposal_id: proposalId
-				})
-			).resolves.not.toThrowError();
-		});
-
-		it('should serve asset', async () => {
-			const { http_request } = actor;
-
-			const { status_code, headers, body } = await http_request({
-				body: [],
-				certificate_version: toNullable(),
-				headers: [],
-				method: 'GET',
-				url: '/hello.html'
-			});
-
-			expect(status_code).toBe(200);
-
-			const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
-
-			expect(rest).toEqual([
-				['accept-ranges', 'bytes'],
-				['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
-				['X-Content-Type-Options', 'nosniff'],
-				['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
-				['Referrer-Policy', 'same-origin'],
-				['X-Frame-Options', 'DENY'],
-				['Cache-Control', 'no-cache']
-			]);
-
-			const certificate = headers.find(([header, _]) => header === 'IC-Certificate');
-
-			expect(certificate).not.toBeUndefined();
-
-			const [_, value] = certificate as [string, string];
-			expect(value.substring(value.indexOf('tree=:'))).toEqual(
-				'tree=:2dn3gwGDAktodHRwX2Fzc2V0c4EAggRYIEKdEzNVVN//oyhbMyr+jpaHvXLSS++G0FDxoOHNPxMy:'
-			);
-
-			const decoder = new TextDecoder();
-			expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
-		});
-
-		it('should list assets', async () => {
-			const { list_assets } = actor;
-
-			const assets = await list_assets('#dapp', {
-				matcher: [],
-				order: [],
-				owner: [],
-				paginate: []
-			});
-
-			for (const [_, { version }] of assets.items) {
-				expect(fromNullable(version)).not.toBeUndefined();
+		describe.each([
+			{
+				proposal_type: {
+					AssetsUpgrade: {
+						clear_existing_assets: toNullable()
+					}
+				} as ProposalType,
+				collection: '#dapp',
+				full_path: '/hello.html',
+				expected_proposal_id: 1n,
+				expected_asset_tree:
+					'2dn3gwGDAktodHRwX2Fzc2V0c4EAggRYIEKdEzNVVN//oyhbMyr+jpaHvXLSS++G0FDxoOHNPxMy'
+			},
+			{
+				proposal_type: { SegmentsDeployment: null } as ProposalType,
+				collection: '#releases',
+				full_path: '/releases/hello2.html',
+				expected_proposal_id: 2n,
+				expected_asset_tree:
+					'2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwJLL2hlbGxvLmh0bWyCBFggHw1FFuN/7ZgqBSfwV2enJYVUtL9EM+nvOePuHXQ1yCaCBFggqaxo4lOdUyS+X9luPEzOoyC9c2+ICLLJ6ogdBRYOj+8='
 			}
+		])(
+			'Proposal, upload and serve',
+			async ({
+				proposal_type,
+				collection,
+				full_path,
+				expected_proposal_id,
+				expected_asset_tree
+			}) => {
+				let sha256: [] | [Uint8Array | number[]];
+				let proposalId: bigint;
 
-			expect(assets.items.find(([fullPath]) => fullPath === '/hello.html')).not.toBeUndefined();
-		});
+				it('should init a proposal', async () => {
+					const { init_proposal } = actor;
 
-		it('should clear assets on upgrade', async () => {
+					const [id, proposal] = await init_proposal(proposal_type);
+
+					proposalId = id;
+
+					expect(proposalId).toEqual(expected_proposal_id);
+
+					expect(proposal.status).toEqual({ Initialized: null });
+					expect(fromNullable(proposal.sha256)).toBeUndefined();
+					expect(fromNullable(proposal.executed_at)).toBeUndefined();
+					expect(proposal.owner.toText()).toEqual(controller.getPrincipal().toText());
+					expect(proposal.proposal_type).toEqual(proposal_type);
+					expect(proposal.created_at).not.toBeUndefined();
+					expect(proposal.created_at).toBeGreaterThan(0n);
+					expect(proposal.updated_at).not.toBeUndefined();
+					expect(proposal.updated_at).toBeGreaterThan(0n);
+					expect(fromNullable(proposal.version) ?? 0n).toBeGreaterThan(0n);
+				});
+
+				it('should fail at uploading asset for unknown proposal', async () => {
+					const { init_asset_upload } = actor;
+
+					const unknownProposalId = proposalId + 1n;
+
+					await expect(
+						init_asset_upload(
+							{
+								collection,
+								description: toNullable(),
+								encoding_type: [],
+								full_path,
+								name: 'hello.html',
+								token: toNullable()
+							},
+							unknownProposalId
+						)
+					).rejects.toThrow(`No proposal found for ${unknownProposalId}`);
+				});
+
+				it('should upload asset', async () => {
+					const { http_request, commit_asset_upload, upload_asset_chunk, init_asset_upload } =
+						actor;
+
+					const file = await init_asset_upload(
+						{
+							collection,
+							description: toNullable(),
+							encoding_type: [],
+							full_path,
+							name: 'hello.html',
+							token: toNullable()
+						},
+						proposalId
+					);
+
+					const blob = new Blob([HTML], {
+						type: 'text/plain; charset=utf-8'
+					});
+
+					const chunk = await upload_asset_chunk({
+						batch_id: file.batch_id,
+						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+						order_id: [0n]
+					});
+
+					await commit_asset_upload({
+						batch_id: file.batch_id,
+						chunk_ids: [chunk.chunk_id],
+						headers: []
+					});
+
+					const { status_code } = await http_request({
+						body: [],
+						certificate_version: toNullable(),
+						headers: [],
+						method: 'GET',
+						url: full_path
+					});
+
+					expect(status_code).toBe(404);
+				});
+
+				it('should fail at submitting an unknown proposal', async () => {
+					const { submit_proposal } = actor;
+
+					const unknownProposalId = proposalId + 1n;
+
+					await expect(submit_proposal(unknownProposalId)).rejects.toThrow(
+						'Cannot submit proposal.'
+					);
+				});
+
+				it('should submit proposal', async () => {
+					const { submit_proposal } = actor;
+
+					// Advance time for updated_at
+					await pic.advanceTime(100);
+
+					const [_, proposal] = await submit_proposal(proposalId);
+
+					expect(proposal.status).toEqual({ Open: null });
+					expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
+					expect(fromNullable(proposal.executed_at)).toBeUndefined();
+					expect(proposal.owner.toText()).toEqual(controller.getPrincipal().toText());
+					expect(proposal.proposal_type).toEqual(proposal_type);
+					expect(proposal.created_at).not.toBeUndefined();
+					expect(proposal.created_at).toBeGreaterThan(0n);
+					expect(proposal.updated_at).not.toBeUndefined();
+					expect(proposal.updated_at).toBeGreaterThan(0n);
+					expect(proposal.updated_at).toBeGreaterThan(proposal.created_at);
+					expect(fromNullable(proposal.version) ?? 0n).toEqual(2n);
+
+					sha256 = proposal.sha256;
+				});
+
+				it('should still not serve asset', async () => {
+					const { http_request } = actor;
+
+					const { status_code } = await http_request({
+						body: [],
+						certificate_version: toNullable(),
+						headers: [],
+						method: 'GET',
+						url: full_path
+					});
+
+					expect(status_code).toBe(404);
+				});
+
+				it('should fail at submitting a proposal if already open', async () => {
+					const { submit_proposal } = actor;
+
+					await expect(submit_proposal(proposalId)).rejects.toThrow(
+						'Proposal cannot be submitted. Current status: Open'
+					);
+				});
+
+				it('should fail at committing a proposal if unknown', async () => {
+					const { commit_proposal } = actor;
+
+					const unknownProposalId = proposalId + 1n;
+
+					await expect(
+						commit_proposal({
+							sha256: Array.from({ length: 32 }).map((_, i) => i),
+							proposal_id: proposalId + 1n
+						})
+					).rejects.toThrow(`Cannot commit proposal. ${unknownProposalId}`);
+				});
+
+				it('should fail at committing a proposal with incorrect sha256', async () => {
+					const { commit_proposal } = actor;
+
+					const sha256 = Array.from({ length: 32 }).map((_, i) => i);
+
+					await expect(
+						commit_proposal({
+							sha256,
+							proposal_id: proposalId
+						})
+					).rejects.toThrow(
+						`The provided SHA-256 hash (${uint8ArrayToHexString(sha256)}) does not match the expected value for the proposal to commit.`
+					);
+				});
+
+				it('should commit proposal', async () => {
+					const { commit_proposal } = actor;
+
+					await expect(
+						commit_proposal({
+							sha256: fromNullable(sha256)!,
+							proposal_id: proposalId
+						})
+					).resolves.not.toThrowError();
+				});
+
+				it('should serve asset', async () => {
+					const { http_request } = actor;
+
+					const { status_code, headers, body } = await http_request({
+						body: [],
+						certificate_version: toNullable(),
+						headers: [],
+						method: 'GET',
+						url: full_path
+					});
+
+					expect(status_code).toBe(200);
+
+					const rest = headers.filter(([header, _]) => header !== 'IC-Certificate');
+
+					expect(rest).toEqual([
+						['accept-ranges', 'bytes'],
+						['etag', '"03ee66f1452916b4f91a504c1e9babfa201b6d64c26a82b2cf03c3ed49d91585"'],
+						['X-Content-Type-Options', 'nosniff'],
+						['Strict-Transport-Security', 'max-age=31536000 ; includeSubDomains'],
+						['Referrer-Policy', 'same-origin'],
+						['X-Frame-Options', 'DENY'],
+						['Cache-Control', 'no-cache']
+					]);
+
+					const certificate = headers.find(([header, _]) => header === 'IC-Certificate');
+
+					expect(certificate).not.toBeUndefined();
+
+					const [_, value] = certificate as [string, string];
+					expect(value.substring(value.indexOf('tree=:'))).toEqual(`tree=:${expected_asset_tree}:`);
+
+					const decoder = new TextDecoder();
+					expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
+				});
+
+				it('should list assets', async () => {
+					const { list_assets } = actor;
+
+					const assets = await list_assets(collection, {
+						matcher: [],
+						order: [],
+						owner: [],
+						paginate: []
+					});
+
+					for (const [_, { version }] of assets.items) {
+						expect(fromNullable(version)).not.toBeUndefined();
+					}
+
+					expect(assets.items.find(([fullPath]) => fullPath === full_path)).not.toBeUndefined();
+				});
+			}
+		);
+
+		it('should clear assets with proposal', async () => {
 			const {
 				http_request,
 				init_proposal,
@@ -441,8 +464,8 @@ describe('Console / Storage', () => {
 					collection: '#dapp',
 					description: toNullable(),
 					encoding_type: [],
-					full_path: '/hello2.html',
-					name: 'hello2.html',
+					full_path: '/hello3.html',
+					name: 'hello3.html',
 					token: toNullable()
 				},
 				proposalId
@@ -486,7 +509,7 @@ describe('Console / Storage', () => {
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',
-				url: '/hello2.html'
+				url: '/hello3.html'
 			});
 
 			expect(status_code_200).toEqual(200);
@@ -501,7 +524,7 @@ describe('Console / Storage', () => {
 		it('should get proposal', async () => {
 			const { get_proposal } = actor;
 
-			const proposal = fromNullable(await get_proposal(proposalId));
+			const proposal = fromNullable(await get_proposal(1n));
 
 			assertNonNullish(proposal);
 

@@ -16,12 +16,11 @@ use crate::factory::mission_control::init_user_mission_control;
 use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
-use crate::memory::STATE;
+use crate::memory::{init_storage_heap_state, STATE};
 use crate::proposals::{
-    commit_assets_upgrade as commit_assets_upgrade_proposal,
-    delete_assets_upgrade as delete_assets_upgrade_proposal,
-    init_assets_upgrade as init_assets_upgrade_proposal,
-    propose_assets_upgrade as create_assets_upgrade_proposal,
+    commit_proposal as make_commit_proposal,
+    delete_proposal_assets as delete_proposal_assets_proposal, init_proposal as make_init_proposal,
+    submit_proposal as make_submit_proposal,
 };
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
@@ -45,11 +44,11 @@ use crate::store::stable::{
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
 use crate::types::interface::{
-    CommitAssetsUpgrade, Config, DeleteAssetsUpgrade, LoadRelease, ReleasesVersion,
+    CommitProposal, Config, DeleteProposalAssets, LoadRelease, ReleasesVersion,
 };
 use crate::types::state::{
-    AssetsUpgradeOptions, Fees, HeapState, InvitationCode, MissionControl, MissionControls,
-    Proposal, ProposalId, RateConfig, Rates, Releases, SegmentType, State,
+    Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
+    ProposalType, RateConfig, Rates, Releases, SegmentType, State,
 };
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;
@@ -80,7 +79,6 @@ use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chun
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
-use junobuild_storage::types::state::StorageHeapState;
 use memory::{get_memory_upgrades, init_stable_state};
 use std::collections::HashMap;
 use types::state::Payments;
@@ -98,7 +96,7 @@ fn init() {
         controllers: init_controllers(&[manager]),
         rates: Rates::default(),
         fees: Fees::default(),
-        storage: StorageHeapState::default(),
+        storage: init_storage_heap_state(),
     };
 
     STATE.with(|state| {
@@ -360,14 +358,35 @@ fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
     get_proposal_state(&proposal_id)
 }
 
-/// Storage
-
 #[update(guard = "caller_is_admin_controller")]
-fn init_assets_upgrade(options: AssetsUpgradeOptions) -> (ProposalId, Proposal) {
+fn init_proposal(proposal_type: ProposalType) -> (ProposalId, Proposal) {
     let caller = caller();
 
-    init_assets_upgrade_proposal(caller, options).unwrap_or_else(|e| trap(&e))
+    make_init_proposal(caller, &proposal_type).unwrap_or_else(|e| trap(&e))
 }
+
+#[update(guard = "caller_is_admin_controller")]
+fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
+    let caller = caller();
+
+    make_submit_proposal(caller, &proposal_id).unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn commit_proposal(proposal: CommitProposal) {
+    make_commit_proposal(&proposal).unwrap_or_else(|e| trap(&e));
+
+    defer_init_certified_assets();
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: DeleteProposalAssets) {
+    let caller = caller();
+
+    delete_proposal_assets_proposal(caller, &proposal_ids).unwrap_or_else(|e| trap(&e));
+}
+
+/// Storage
 
 #[update(guard = "caller_is_admin_controller")]
 fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {
@@ -408,27 +427,6 @@ fn commit_asset_upload(commit: CommitBatch) {
         &StorageUpload,
     )
     .unwrap_or_else(|e| trap(&e));
-}
-
-#[update(guard = "caller_is_admin_controller")]
-fn propose_assets_upgrade(proposal_id: ProposalId) -> (ProposalId, Proposal) {
-    let caller = caller();
-
-    create_assets_upgrade_proposal(caller, &proposal_id).unwrap_or_else(|e| trap(&e))
-}
-
-#[update(guard = "caller_is_admin_controller")]
-fn commit_assets_upgrade(assets_upgrade: CommitAssetsUpgrade) {
-    commit_assets_upgrade_proposal(&assets_upgrade).unwrap_or_else(|e| trap(&e));
-
-    defer_init_certified_assets();
-}
-
-#[update(guard = "caller_is_admin_controller")]
-fn delete_assets_upgrade(DeleteAssetsUpgrade { proposal_ids }: DeleteAssetsUpgrade) {
-    let caller = caller();
-
-    delete_assets_upgrade_proposal(caller, &proposal_ids).unwrap_or_else(|e| trap(&e));
 }
 
 #[query(guard = "caller_is_admin_controller")]

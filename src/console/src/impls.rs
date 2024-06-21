@@ -123,7 +123,7 @@ impl Proposal {
         }
     }
 
-    pub fn init(caller: Principal, proposal_type: ProposalType) -> Self {
+    pub fn init(caller: Principal, proposal_type: &ProposalType) -> Self {
         let now = time();
 
         let version = Self::get_next_version(&None);
@@ -136,7 +136,7 @@ impl Proposal {
             created_at: now,
             updated_at: now,
             version: Some(version),
-            proposal_type,
+            proposal_type: proposal_type.clone(),
         }
     }
 

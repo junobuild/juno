@@ -1,6 +1,6 @@
+use crate::memory::init_storage_heap_state;
 use crate::types::state::HeapState;
 use crate::upgrade::types::upgrade::UpgradeHeapState;
-use junobuild_storage::types::state::StorageHeapState;
 
 impl From<&UpgradeHeapState> for HeapState {
     fn from(state: &UpgradeHeapState) -> Self {
@@ -12,7 +12,7 @@ impl From<&UpgradeHeapState> for HeapState {
             controllers: state.controllers.clone(),
             rates: state.rates.clone(),
             fees: state.fees.clone(),
-            storage: StorageHeapState::default(),
+            storage: init_storage_heap_state(),
         }
     }
 }

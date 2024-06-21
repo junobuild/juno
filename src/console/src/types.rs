@@ -9,7 +9,7 @@ pub mod state {
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Controllers, Timestamp, Version};
     use junobuild_shared::types::state::{MissionControlId, UserId};
-    use junobuild_storage::types::state::{FullPath, StorageHeapState};
+    use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -143,24 +143,12 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum ProposalType {
         AssetsUpgrade(AssetsUpgradeOptions),
-        SegmentsDeployment(SegmentsDeploymentOptions),
+        SegmentsDeployment,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetsUpgradeOptions {
         pub clear_existing_assets: Option<bool>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentsDeploymentOptions {
-        pub segments: Vec<SegmentOptions>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentOptions {
-        pub segment_type: SegmentType,
-        pub full_path: FullPath,
-        pub version: String,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -213,13 +201,13 @@ pub mod interface {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CommitAssetsUpgrade {
+    pub struct CommitProposal {
         pub proposal_id: ProposalId,
         pub sha256: Hash,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct DeleteAssetsUpgrade {
+    pub struct DeleteProposalAssets {
         pub proposal_ids: Vec<ProposalId>,
     }
 }

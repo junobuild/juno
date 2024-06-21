@@ -16,10 +16,11 @@ use junobuild_collections::assert_stores::{
     assert_create_permission, assert_permission, public_permission,
 };
 use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::assert::{assert_description_length, assert_version};
 use junobuild_shared::list::list_values;
-use junobuild_shared::types::core::{CollectionKey, Key};
+use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::{Controllers, UserId, Version};
 

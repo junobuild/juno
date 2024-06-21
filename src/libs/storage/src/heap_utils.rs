@@ -1,7 +1,7 @@
 use crate::types::state::{AssetsHeap, FullPath};
 use crate::types::store::Asset;
 use crate::utils::should_include_asset_for_deletion;
-use junobuild_shared::types::core::CollectionKey;
+use junobuild_collections::types::core::CollectionKey;
 
 pub fn collect_assets_heap<'a>(
     collection: &CollectionKey,

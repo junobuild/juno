@@ -25,7 +25,10 @@ use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console, delete_orbiter, detach_orbiter,
 };
-use crate::segments::satellite::{attach_satellite, create_satellite as create_satellite_console, delete_satellite, detach_satellite};
+use crate::segments::satellite::{
+    attach_satellite, create_satellite as create_satellite_console, delete_satellite,
+    detach_satellite,
+};
 use crate::segments::store::get_orbiters;
 use crate::store::{
     get_user as get_user_store,

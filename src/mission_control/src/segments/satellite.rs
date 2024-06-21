@@ -1,4 +1,5 @@
 use crate::segments::canister::{create_canister, delete_canister};
+use crate::segments::msg::SATELLITE_NOT_FOUND;
 use crate::segments::store::{
     add_satellite, delete_satellite as delete_satellite_store, get_satellite,
 };
@@ -11,7 +12,6 @@ use junobuild_shared::env::CONSOLE;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{SatelliteId, UserId};
-use crate::segments::msg::SATELLITE_NOT_FOUND;
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
     create_canister(

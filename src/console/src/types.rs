@@ -9,7 +9,7 @@ pub mod state {
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Controllers, Timestamp, Version};
     use junobuild_shared::types::state::{MissionControlId, UserId};
-    use junobuild_storage::types::state::StorageHeapState;
+    use junobuild_storage::types::state::{FullPath, StorageHeapState};
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -143,11 +143,31 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum ProposalType {
         AssetsUpgrade(AssetsUpgradeOptions),
+        SegmentsDeployment(SegmentsDeploymentOptions),
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetsUpgradeOptions {
         pub clear_existing_assets: Option<bool>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct SegmentsDeploymentOptions {
+        pub segments: Vec<SegmentOptions>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct SegmentOptions {
+        pub segment_type: SegmentType,
+        pub full_path: FullPath,
+        pub version: String,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum SegmentType {
+        Satellite,
+        MissionControl,
+        Orbiter,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -168,13 +188,6 @@ pub mod interface {
     use junobuild_shared::types::cronjob::CronJobs;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
-
-    #[derive(CandidType, Deserialize)]
-    pub enum Segment {
-        Satellite,
-        MissionControl,
-        Orbiter,
-    }
 
     #[derive(CandidType)]
     pub struct LoadRelease {

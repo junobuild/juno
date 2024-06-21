@@ -45,11 +45,11 @@ use crate::store::stable::{
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
 use crate::types::interface::{
-    CommitAssetsUpgrade, Config, DeleteAssetsUpgrade, LoadRelease, ReleasesVersion, Segment,
+    CommitAssetsUpgrade, Config, DeleteAssetsUpgrade, LoadRelease, ReleasesVersion,
 };
 use crate::types::state::{
     AssetsUpgradeOptions, Fees, HeapState, InvitationCode, MissionControl, MissionControls,
-    Proposal, ProposalId, RateConfig, Rates, Releases, State,
+    Proposal, ProposalId, RateConfig, Rates, Releases, SegmentType, State,
 };
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;
@@ -61,6 +61,7 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::core::{CollectionKey, DomainName};
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateCanisterFeeArgs, SetControllersArgs,
@@ -76,7 +77,6 @@ use junobuild_storage::http_request::{
     http_request_streaming_callback as http_request_streaming_callback_storage,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chunk};
-use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
@@ -151,26 +151,26 @@ fn post_upgrade() {
 /// Mission control center and satellite releases and wasm
 
 #[update(guard = "caller_is_admin_controller")]
-fn reset_release(segment: Segment) {
+fn reset_release(segment: SegmentType) {
     match segment {
-        Segment::Satellite => reset_satellite_release(),
-        Segment::MissionControl => reset_mission_control_release(),
-        Segment::Orbiter => reset_orbiter_release(),
+        SegmentType::Satellite => reset_satellite_release(),
+        SegmentType::MissionControl => reset_mission_control_release(),
+        SegmentType::Orbiter => reset_orbiter_release(),
     }
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn load_release(segment: Segment, blob: Vec<u8>, version: String) -> LoadRelease {
+fn load_release(segment: SegmentType, blob: Vec<u8>, version: String) -> LoadRelease {
     let total: usize = match segment {
-        Segment::Satellite => {
+        SegmentType::Satellite => {
             load_satellite_release(&blob, &version);
             STATE.with(|state| state.borrow().heap.releases.satellite.wasm.len())
         }
-        Segment::MissionControl => {
+        SegmentType::MissionControl => {
             load_mission_control_release(&blob, &version);
             STATE.with(|state| state.borrow().heap.releases.mission_control.wasm.len())
         }
-        Segment::Orbiter => {
+        SegmentType::Orbiter => {
             load_orbiter_release(&blob, &version);
             STATE.with(|state| state.borrow().heap.releases.orbiter.wasm.len())
         }
@@ -303,11 +303,11 @@ fn get_create_orbiter_fee(
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn set_fee(segment: Segment, fee: Tokens) {
+fn set_fee(segment: SegmentType, fee: Tokens) {
     match segment {
-        Segment::Satellite => set_create_satellite_fee(&fee),
-        Segment::MissionControl => trap("Fee for mission control not supported."),
-        Segment::Orbiter => set_create_orbiter_fee(&fee),
+        SegmentType::Satellite => set_create_satellite_fee(&fee),
+        SegmentType::MissionControl => trap("Fee for mission control not supported."),
+        SegmentType::Orbiter => set_create_orbiter_fee(&fee),
     }
 }
 
@@ -321,11 +321,11 @@ fn add_invitation_code(code: InvitationCode) {
 /// Rates
 
 #[update(guard = "caller_is_admin_controller")]
-fn update_rate_config(segment: Segment, config: RateConfig) {
+fn update_rate_config(segment: SegmentType, config: RateConfig) {
     match segment {
-        Segment::Satellite => update_satellites_rate_config(&config),
-        Segment::MissionControl => update_mission_controls_rate_config(&config),
-        Segment::Orbiter => update_orbiters_rate_config(&config),
+        SegmentType::Satellite => update_satellites_rate_config(&config),
+        SegmentType::MissionControl => update_mission_controls_rate_config(&config),
+        SegmentType::Orbiter => update_orbiters_rate_config(&config),
     }
 }
 

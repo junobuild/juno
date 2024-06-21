@@ -56,10 +56,10 @@ pub use crate::types::hooks::{
 };
 use junobuild_shared::types::core::DomainName;
 pub use junobuild_shared::types::core::{Blob, CollectionKey, Key};
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
-use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::state::FullPath;
 
 ///

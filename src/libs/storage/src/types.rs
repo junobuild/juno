@@ -1,10 +1,10 @@
 pub mod state {
     use crate::types::config::StorageConfig;
-    use junobuild_shared::types::domain::CustomDomains;
     use crate::types::store::Asset;
     use candid::{CandidType, Deserialize};
     use junobuild_collections::types::rules::Rules;
     use junobuild_shared::types::core::Key;
+    use junobuild_shared::types::domain::CustomDomains;
     use serde::Serialize;
     use std::collections::HashMap;
 

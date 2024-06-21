@@ -1,7 +1,8 @@
 use crate::memory::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::types::core::{CollectionKey, DomainName};
+use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::{CustomDomain, CustomDomains};
 use junobuild_storage::heap_utils::collect_delete_assets_heap;
 use junobuild_storage::types::config::StorageConfig;

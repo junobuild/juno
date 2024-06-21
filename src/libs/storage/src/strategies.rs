@@ -4,8 +4,9 @@ use crate::types::store::{
     Asset, AssetAssertUpload, AssetEncoding, Batch, EncodingType, ReferenceId,
 };
 use candid::Principal;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::types::core::{Blob, CollectionKey};
+use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::domain::CustomDomains;
 
 pub trait StorageAssertionsStrategy {

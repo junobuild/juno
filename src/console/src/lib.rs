@@ -58,8 +58,9 @@ use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::init_controllers;
-use junobuild_shared::types::core::{CollectionKey, DomainName};
+use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,

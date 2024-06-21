@@ -177,8 +177,10 @@ pub mod ledger {
 }
 
 pub mod ic {
+    use crate::types::core::Blob;
+
     pub struct WasmArg {
-        pub wasm: Vec<u8>,
+        pub wasm: Blob,
         pub install_arg: Vec<u8>,
     }
 }

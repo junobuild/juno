@@ -35,7 +35,7 @@ async fn create_mission_control(
 ) -> Result<MissionControl, String> {
     init_empty_mission_control(user);
 
-    let wasm_arg = mission_control_wasm_arg(user);
+    let wasm_arg = mission_control_wasm_arg(user)?;
 
     let create = create_canister_install_code(
         Vec::from([*console, *user]),

@@ -59,8 +59,10 @@ use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::init_controllers;
-use junobuild_shared::types::core::{CollectionKey, DomainName};
+use junobuild_shared::types::core::DomainName;
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
     AssertMissionControlCenterArgs, CreateCanisterArgs, DeleteControllersArgs,
     GetCreateCanisterFeeArgs, SetControllersArgs,
@@ -76,7 +78,6 @@ use junobuild_storage::http_request::{
     http_request_streaming_callback as http_request_streaming_callback_storage,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chunk};
-use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };

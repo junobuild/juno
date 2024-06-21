@@ -2,7 +2,8 @@ pub mod state {
     use crate::types::state::ProposalId;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
-    use junobuild_shared::types::core::{Blob, CollectionKey};
+    use junobuild_collections::types::core::CollectionKey;
+    use junobuild_shared::types::core::Blob;
     use junobuild_shared::types::memory::Memory;
     use junobuild_storage::types::state::FullPath;
     use junobuild_storage::types::store::{Asset, EncodingType};

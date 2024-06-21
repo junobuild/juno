@@ -272,14 +272,6 @@ pub mod core {
     /// `Key` is commonly employed as a unique identifier or key in Rust code.
     pub type Key = String;
 
-    /// Represents the key or identifier of a collection.
-    ///
-    /// This type, `CollectionKey`, is an alias for `String`, used to represent the key or identifier of a collection
-    /// within the context of various data structures and operations.
-    ///
-    /// `CollectionKey` is commonly employed as a unique identifier for collections in Rust code.
-    pub type CollectionKey = String;
-
     /// Represents binary data as a vector of bytes.
     ///
     /// This type, `Blob`, is an alias for `Vec<u8>`, providing a convenient way to represent binary data
@@ -366,9 +358,9 @@ pub mod list {
 }
 
 pub mod domain {
-    use candid::CandidType;
     use crate::types::core::DomainName;
     use crate::types::state::{Timestamp, Version};
+    use candid::CandidType;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 

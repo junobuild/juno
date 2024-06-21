@@ -1,10 +1,10 @@
 pub mod state {
     use crate::types::config::StorageConfig;
-    use junobuild_shared::types::domain::CustomDomains;
     use crate::types::store::Asset;
     use candid::{CandidType, Deserialize};
     use junobuild_collections::types::rules::Rules;
     use junobuild_shared::types::core::Key;
+    use junobuild_shared::types::domain::CustomDomains;
     use serde::Serialize;
     use std::collections::HashMap;
 
@@ -65,12 +65,12 @@ pub mod store {
     use crate::types::state::FullPath;
     use candid::CandidType;
     use ic_certification::Hash;
+    use junobuild_collections::types::core::CollectionKey;
     use junobuild_shared::types::core::Blob;
     use junobuild_shared::types::state::{Timestamp, UserId, Version};
     use serde::{Deserialize, Serialize};
     use std::clone::Clone;
     use std::collections::HashMap;
-    use junobuild_collections::types::core::CollectionKey;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct Chunk {
@@ -143,6 +143,8 @@ pub mod store {
 pub mod interface {
     use candid::{CandidType, Deserialize};
     use ic_certification::Hash;
+    use junobuild_collections::types::core::CollectionKey;
+    use junobuild_shared::types::core::Blob;
     use junobuild_shared::types::state::{Timestamp, Version};
     use serde::Serialize;
 
@@ -150,7 +152,6 @@ pub mod interface {
     use crate::types::runtime_state::{BatchId, ChunkId};
     use crate::types::state::FullPath;
     use crate::types::store::{AssetKey, EncodingType};
-    use junobuild_shared::types::core::{Blob, CollectionKey};
 
     #[derive(CandidType, Deserialize)]
     pub struct InitAssetKey {

@@ -22,6 +22,7 @@ use crate::storage::state::{
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use junobuild_shared::types::core::{Blob, DomainName};
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_storage::constants::{ROOT_404_HTML, ROOT_INDEX_HTML};
 use junobuild_storage::heap_utils::{
@@ -34,7 +35,6 @@ use junobuild_storage::runtime::{
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
 use junobuild_storage::types::config::StorageConfig;
-use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::types::interface::{AssetNoContent, CommitBatch, InitAssetKey, UploadChunk};
 use junobuild_storage::types::runtime_state::{BatchId, ChunkId};
 use junobuild_storage::types::state::FullPath;

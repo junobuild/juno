@@ -4,12 +4,12 @@ use crate::types::state::FullPath;
 use crate::types::store::Asset;
 use candid::Principal;
 use junobuild_collections::assert_stores::assert_permission;
+use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::list::matcher_regex;
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::state::{Controllers, UserId};
 use regex::Regex;
-use junobuild_collections::types::core::CollectionKey;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (asset.key.full_path.clone(), AssetNoContent::from(asset))

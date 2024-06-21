@@ -1,9 +1,9 @@
 use crate::constants::SYS_COLLECTION_PREFIX;
+use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule};
 use junobuild_shared::assert::assert_version;
 use junobuild_shared::types::state::Version;
-use crate::types::core::CollectionKey;
 
 pub fn assert_memory(current_rule: Option<&Rule>, memory: &Option<Memory>) -> Result<(), String> {
     // Validate memory type does not change

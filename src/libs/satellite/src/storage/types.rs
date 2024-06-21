@@ -1,12 +1,12 @@
 pub mod state {
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_collections::types::core::CollectionKey;
     use junobuild_shared::types::core::Blob;
     use junobuild_shared::types::memory::Memory;
     use junobuild_storage::types::state::FullPath;
     use junobuild_storage::types::store::{Asset, EncodingType};
     use serde::{Deserialize, Serialize};
-    use junobuild_collections::types::core::CollectionKey;
 
     pub type AssetsStable = StableBTreeMap<StableKey, Asset, Memory>;
     pub type ContentChunksStable = StableBTreeMap<StableEncodingChunkKey, Blob, Memory>;

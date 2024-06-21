@@ -358,9 +358,9 @@ pub mod list {
 }
 
 pub mod domain {
-    use candid::CandidType;
     use crate::types::core::DomainName;
     use crate::types::state::{Timestamp, Version};
+    use candid::CandidType;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 

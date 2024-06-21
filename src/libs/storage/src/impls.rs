@@ -10,7 +10,8 @@ use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
-use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_collections::types::interface::SetRule;
+use junobuild_collections::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::{Blob, Compare, Hash, Hashable};
 use junobuild_shared::types::state::Timestamp;
@@ -21,26 +22,35 @@ use std::collections::HashMap;
 
 impl Default for StorageHeapState {
     fn default() -> Self {
+        Self::new_with_storage_collections(Vec::from(DEFAULT_ASSETS_COLLECTIONS))
+    }
+}
+
+impl StorageHeapState {
+    pub fn new_with_storage_collections(storage_collections: Vec<(&str, SetRule)>) -> Self {
         let now = time();
 
         StorageHeapState {
             assets: HashMap::new(),
-            rules: HashMap::from(DEFAULT_ASSETS_COLLECTIONS.map(|(collection, rule)| {
-                (
-                    collection.to_owned(),
-                    Rule {
-                        read: rule.read,
-                        write: rule.write,
-                        memory: Some(rule.memory.unwrap_or(Memory::Heap)),
-                        mutable_permissions: Some(rule.mutable_permissions.unwrap_or(false)),
-                        max_size: rule.max_size,
-                        max_capacity: rule.max_capacity,
-                        created_at: now,
-                        updated_at: now,
-                        version: None,
-                    },
-                )
-            })),
+            rules: storage_collections
+                .into_iter()
+                .map(|(collection, rule)| {
+                    (
+                        collection.to_owned(),
+                        Rule {
+                            read: rule.read,
+                            write: rule.write,
+                            memory: Some(rule.memory.unwrap_or(Memory::Heap)),
+                            mutable_permissions: Some(rule.mutable_permissions.unwrap_or(false)),
+                            max_size: rule.max_size,
+                            max_capacity: rule.max_capacity,
+                            created_at: now,
+                            updated_at: now,
+                            version: None,
+                        },
+                    )
+                })
+                .collect::<Rules>(),
             config: StorageConfig {
                 headers: StorageConfigHeaders::default(),
                 rewrites: StorageConfigRewrites::default(),

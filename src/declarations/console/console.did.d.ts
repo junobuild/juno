@@ -30,14 +30,14 @@ export interface AssetNoContent {
 export interface AssetsUpgradeOptions {
 	clear_existing_assets: [] | [boolean];
 }
-export interface CommitAssetsUpgrade {
-	sha256: Uint8Array | number[];
-	proposal_id: bigint;
-}
 export interface CommitBatch {
 	batch_id: bigint;
 	headers: Array<[string, string]>;
 	chunk_ids: Array<bigint>;
+}
+export interface CommitProposal {
+	sha256: Uint8Array | number[];
+	proposal_id: bigint;
 }
 export interface Config {
 	storage: StorageConfig;
@@ -53,11 +53,11 @@ export interface CustomDomain {
 	version: [] | [bigint];
 	bn_id: [] | [string];
 }
-export interface DeleteAssetsUpgrade {
-	proposal_ids: Array<bigint>;
-}
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
+}
+export interface DeleteProposalAssets {
+	proposal_ids: Array<bigint>;
 }
 export interface GetCreateCanisterFeeArgs {
 	user: Principal;
@@ -150,7 +150,7 @@ export type ProposalStatus =
 	| { Rejected: null }
 	| { Executed: null }
 	| { Accepted: null };
-export type ProposalType = { AssetsUpgrade: AssetsUpgradeOptions };
+export type ProposalType = { AssetsUpgrade: AssetsUpgradeOptions } | { SegmentsDeployment: null };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
@@ -160,7 +160,7 @@ export interface ReleasesVersion {
 	orbiter: [] | [string];
 	mission_control: [] | [string];
 }
-export type Segment = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
+export type SegmentType = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -218,12 +218,12 @@ export interface _SERVICE {
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
-	commit_assets_upgrade: ActorMethod<[CommitAssetsUpgrade], undefined>;
+	commit_proposal: ActorMethod<[CommitProposal], undefined>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	del_custom_domain: ActorMethod<[string], undefined>;
-	delete_assets_upgrade: ActorMethod<[DeleteAssetsUpgrade], undefined>;
+	delete_proposal_assets: ActorMethod<[DeleteProposalAssets], undefined>;
 	get_config: ActorMethod<[], Config>;
 	get_create_orbiter_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
@@ -237,20 +237,20 @@ export interface _SERVICE {
 		StreamingCallbackHttpResponse
 	>;
 	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
-	init_assets_upgrade: ActorMethod<[AssetsUpgradeOptions], [bigint, Proposal]>;
+	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
 	init_user_mission_control_center: ActorMethod<[], MissionControl>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
-	load_release: ActorMethod<[Segment, Uint8Array | number[], string], LoadRelease>;
-	propose_assets_upgrade: ActorMethod<[bigint], [bigint, Proposal]>;
-	reset_release: ActorMethod<[Segment], undefined>;
+	load_release: ActorMethod<[SegmentType, Uint8Array | number[], string], LoadRelease>;
+	reset_release: ActorMethod<[SegmentType], undefined>;
 	set_config: ActorMethod<[Config], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
-	set_fee: ActorMethod<[Segment, Tokens], undefined>;
-	update_rate_config: ActorMethod<[Segment, RateConfig], undefined>;
+	set_fee: ActorMethod<[SegmentType, Tokens], undefined>;
+	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
+	update_rate_config: ActorMethod<[SegmentType, RateConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
 }

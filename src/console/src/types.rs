@@ -143,11 +143,19 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum ProposalType {
         AssetsUpgrade(AssetsUpgradeOptions),
+        SegmentsDeployment,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetsUpgradeOptions {
         pub clear_existing_assets: Option<bool>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum SegmentType {
+        Satellite,
+        MissionControl,
+        Orbiter,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]
@@ -168,13 +176,6 @@ pub mod interface {
     use junobuild_shared::types::cronjob::CronJobs;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
-
-    #[derive(CandidType, Deserialize)]
-    pub enum Segment {
-        Satellite,
-        MissionControl,
-        Orbiter,
-    }
 
     #[derive(CandidType)]
     pub struct LoadRelease {
@@ -200,13 +201,13 @@ pub mod interface {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CommitAssetsUpgrade {
+    pub struct CommitProposal {
         pub proposal_id: ProposalId,
         pub sha256: Hash,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct DeleteAssetsUpgrade {
+    pub struct DeleteProposalAssets {
         pub proposal_ids: Vec<ProposalId>,
     }
 }

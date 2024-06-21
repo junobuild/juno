@@ -1,5 +1,8 @@
 use crate::types::state::RateConfig;
 use ic_ledger_types::Tokens;
+use junobuild_collections::types::interface::SetRule;
+use junobuild_collections::types::rules::Memory;
+use junobuild_collections::types::rules::Permission::Controllers;
 
 // 0.5 ICP
 pub const SATELLITE_CREATION_FEE_ICP: Tokens = Tokens::from_e8s(50_000_000);
@@ -17,3 +20,18 @@ pub const DEFAULT_RATE_CONFIG: RateConfig = RateConfig {
     max_tokens: 10,
     time_per_token_ns: 60000000000,
 };
+
+pub const RELEASES_COLLECTION_KEY: &str = "#releases";
+
+pub const DEFAULT_RELEASES_COLLECTIONS: [(&str, SetRule); 1] = [(
+    RELEASES_COLLECTION_KEY,
+    SetRule {
+        read: Controllers,
+        write: Controllers,
+        memory: Some(Memory::Heap),
+        mutable_permissions: Some(false),
+        max_size: None,
+        max_capacity: None,
+        version: None,
+    },
+)];

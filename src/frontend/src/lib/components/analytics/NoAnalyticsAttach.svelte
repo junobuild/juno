@@ -3,7 +3,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { Principal } from '@dfinity/principal';
-	import IconInsertLink from '$lib/components/icons/IconInsertLink.svelte';
+	import IconLink from '$lib/components/icons/IconLink.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
@@ -68,9 +68,7 @@
 	const dispatch = createEventDispatcher();
 </script>
 
-<button on:click={() => (visible = true)} class="menu"
-	><IconInsertLink /> {$i18n.core.attach}</button
->
+<button on:click={() => (visible = true)} class="menu"><IconLink /> {$i18n.core.attach}</button>
 
 <Popover bind:visible center backdrop="dark">
 	<form class="container" on:submit|preventDefault={handleSubmit}>

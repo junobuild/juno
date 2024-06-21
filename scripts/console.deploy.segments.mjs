@@ -8,11 +8,6 @@ const proposal_type = {
 	SegmentsDeployment: null
 };
 
-const loadGzippedWasm = async (destination) => {
-	const buffer = await readFile(destination);
-	return [...new Uint8Array(buffer)];
-};
-
 const target = join(process.cwd(), 'target', 'deploy');
 
 const deploy = async (proposalId) => {
@@ -34,7 +29,7 @@ const deploy = async (proposalId) => {
 			filename,
 			fullPath: `/releases/${filename}`,
 			headers: [],
-			data: await loadGzippedWasm(source)
+			data: new Blob([await readFile(source)])
 		};
 
 		await uploadFile({

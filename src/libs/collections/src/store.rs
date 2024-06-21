@@ -1,4 +1,7 @@
-use crate::assert_rules::{assert_memory, assert_mutable_permissions, assert_write_permission};
+use crate::assert_rules::{
+    assert_memory, assert_mutable_permissions, assert_storage_reserved_collection,
+    assert_write_permission,
+};
 use crate::constants::SYS_COLLECTION_PREFIX;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{DelRule, SetRule};
@@ -17,11 +20,17 @@ pub fn filter_rules(rules: &Rules) -> Vec<(CollectionKey, Rule)> {
 pub fn set_rule(
     collection: CollectionKey,
     user_rule: SetRule,
+    storage_checks: bool,
     rules: &mut Rules,
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
     assert_write_permission(&collection, current_rule, &user_rule.version)?;
+
+    if storage_checks {
+        assert_storage_reserved_collection(&collection, rules)?;
+    }
+
     assert_memory(current_rule, &user_rule.memory)?;
     assert_mutable_permissions(current_rule, &user_rule)?;
 

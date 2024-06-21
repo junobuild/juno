@@ -196,7 +196,7 @@ fn assert_key(
     }
 
     // Asset uploaded by users should be prefixed with the collection. That way developers can organize assets to particular folders.
-    let collection_path = collection.strip_prefix("#").unwrap_or(&collection);
+    let collection_path = collection.strip_prefix(SYS_COLLECTION_PREFIX).unwrap_or(collection);
 
     if collection.clone() != *dapp_collection
         && !full_path.starts_with(&["/", collection_path, "/"].join(""))

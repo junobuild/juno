@@ -51,16 +51,17 @@ describe('Console / Custom Domains', () => {
 		adminCustomDomainsTests({ actor: () => actor });
 
 		it('should not delete asset ic-domains when deleting all assets', async () => {
-			const { http_request, init_assets_upgrade, propose_assets_upgrade, commit_assets_upgrade } =
-				actor;
+			const { http_request, init_proposal, submit_proposal, commit_proposal } = actor;
 
-			const [proposalId, _] = await init_assets_upgrade({
-				clear_existing_assets: toNullable(true)
+			const [proposalId, _] = await init_proposal({
+				AssetsUpgrade: {
+					clear_existing_assets: toNullable(true)
+				}
 			});
 
-			const [__, proposal] = await propose_assets_upgrade(proposalId);
+			const [__, proposal] = await submit_proposal(proposalId);
 
-			await commit_assets_upgrade({
+			await commit_proposal({
 				sha256: fromNullable(proposal.sha256)!,
 				proposal_id: proposalId
 			});
@@ -77,10 +78,12 @@ describe('Console / Custom Domains', () => {
 		});
 
 		it('should throw error if try to upload ic-domains', async () => {
-			const { init_asset_upload, init_assets_upgrade } = actor;
+			const { init_asset_upload, init_proposal } = actor;
 
-			const [proposalId, _] = await init_assets_upgrade({
-				clear_existing_assets: toNullable()
+			const [proposalId, _] = await init_proposal({
+				AssetsUpgrade: {
+					clear_existing_assets: toNullable()
+				}
 			});
 
 			await expect(

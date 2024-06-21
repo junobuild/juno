@@ -10,7 +10,7 @@ export const idlFactory = ({ IDL }) => {
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		chunk_ids: IDL.Vec(IDL.Nat)
 	});
-	const CommitAssetsUpgrade = IDL.Record({
+	const CommitProposal = IDL.Record({
 		sha256: IDL.Vec(IDL.Nat8),
 		proposal_id: IDL.Nat
 	});
@@ -21,7 +21,9 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const DeleteAssetsUpgrade = IDL.Record({ proposal_ids: IDL.Vec(IDL.Nat) });
+	const DeleteProposalAssets = IDL.Record({
+		proposal_ids: IDL.Vec(IDL.Nat)
+	});
 	const StorageConfigIFrame = IDL.Variant({
 		Deny: IDL.Null,
 		AllowAny: IDL.Null,
@@ -55,7 +57,10 @@ export const idlFactory = ({ IDL }) => {
 	const AssetsUpgradeOptions = IDL.Record({
 		clear_existing_assets: IDL.Opt(IDL.Bool)
 	});
-	const ProposalType = IDL.Variant({ AssetsUpgrade: AssetsUpgradeOptions });
+	const ProposalType = IDL.Variant({
+		AssetsUpgrade: AssetsUpgradeOptions,
+		SegmentsDeployment: IDL.Null
+	});
 	const Proposal = IDL.Record({
 		status: ProposalStatus,
 		updated_at: IDL.Nat64,
@@ -187,7 +192,7 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		block_index_refunded: IDL.Opt(IDL.Nat64)
 	});
-	const Segment = IDL.Variant({
+	const SegmentType = IDL.Variant({
 		Orbiter: IDL.Null,
 		MissionControl: IDL.Null,
 		Satellite: IDL.Null
@@ -221,12 +226,12 @@ export const idlFactory = ({ IDL }) => {
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
-		commit_assets_upgrade: IDL.Func([CommitAssetsUpgrade], [], []),
+		commit_proposal: IDL.Func([CommitProposal], [], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		create_satellite: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
-		delete_assets_upgrade: IDL.Func([DeleteAssetsUpgrade], [], []),
+		delete_proposal_assets: IDL.Func([DeleteProposalAssets], [], []),
 		get_config: IDL.Func([], [Config], []),
 		get_create_orbiter_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
@@ -241,7 +246,7 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		init_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
-		init_assets_upgrade: IDL.Func([AssetsUpgradeOptions], [IDL.Nat, Proposal], []),
+		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
 		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
@@ -251,14 +256,14 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],
 			['query']
 		),
-		load_release: IDL.Func([Segment, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
-		propose_assets_upgrade: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
-		reset_release: IDL.Func([Segment], [], []),
+		load_release: IDL.Func([SegmentType, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
+		reset_release: IDL.Func([SegmentType], [], []),
 		set_config: IDL.Func([Config], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
-		set_fee: IDL.Func([Segment, Tokens], [], []),
-		update_rate_config: IDL.Func([Segment, RateConfig], [], []),
+		set_fee: IDL.Func([SegmentType, Tokens], [], []),
+		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
+		update_rate_config: IDL.Func([SegmentType, RateConfig], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

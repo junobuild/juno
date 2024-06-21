@@ -1,5 +1,5 @@
 import type {
-	CommitAssetsUpgrade,
+	CommitProposal,
 	_SERVICE as ConsoleActor,
 	InitAssetKey,
 	UploadChunk
@@ -50,25 +50,25 @@ describe('Console / Storage', () => {
 		});
 
 		it('should throw errors on delete assets', async () => {
-			const { delete_assets_upgrade } = actor;
+			const { delete_proposal_assets } = actor;
 
-			await expect(delete_assets_upgrade({ proposal_ids: [1n] })).rejects.toThrow(
+			await expect(delete_proposal_assets({ proposal_ids: [1n] })).rejects.toThrow(
 				CONTROLLER_ERROR_MSG
 			);
 		});
 
 		it('should throw errors on init assets upgrade', async () => {
-			const { init_assets_upgrade } = actor;
+			const { init_proposal } = actor;
 
-			await expect(init_assets_upgrade({ clear_existing_assets: [] })).rejects.toThrow(
+			await expect(init_proposal({ AssetsUpgrade: { clear_existing_assets: [] } })).rejects.toThrow(
 				CONTROLLER_ERROR_MSG
 			);
 		});
 
 		it('should throw errors on propose assets upgrade', async () => {
-			const { propose_assets_upgrade } = actor;
+			const { submit_proposal } = actor;
 
-			await expect(propose_assets_upgrade(123n)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(submit_proposal(123n)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on init asset upload', async () => {
@@ -111,14 +111,14 @@ describe('Console / Storage', () => {
 		});
 
 		it('should throw errors on commit assets upgrade', async () => {
-			const { commit_assets_upgrade } = actor;
+			const { commit_proposal } = actor;
 
-			const commit: CommitAssetsUpgrade = {
+			const commit: CommitProposal = {
 				sha256: [1, 2, 3],
 				proposal_id: 123n
 			};
 
-			await expect(commit_assets_upgrade(commit)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(commit_proposal(commit)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on list assets', async () => {
@@ -180,10 +180,12 @@ describe('Console / Storage', () => {
 		});
 
 		it('should init a assets upgrade', async () => {
-			const { init_assets_upgrade } = actor;
+			const { init_proposal } = actor;
 
-			const [id, proposal] = await init_assets_upgrade({
-				clear_existing_assets: toNullable()
+			const [id, proposal] = await init_proposal({
+				AssetsUpgrade: {
+					clear_existing_assets: toNullable()
+				}
 			});
 
 			proposalId = id;
@@ -266,23 +268,23 @@ describe('Console / Storage', () => {
 			expect(status_code).toBe(404);
 		});
 
-		it('should fail at proposing an unknown proposal', async () => {
-			const { propose_assets_upgrade } = actor;
+		it('should fail at submitting an unknown proposal', async () => {
+			const { submit_proposal } = actor;
 
 			const unknownProposalId = proposalId + 1n;
 
-			await expect(propose_assets_upgrade(unknownProposalId)).rejects.toThrow(
-				'Cannot propose assets upgrade.'
+			await expect(submit_proposal(unknownProposalId)).rejects.toThrow(
+				'Cannot submit proposal.'
 			);
 		});
 
-		it('should propose proposal', async () => {
-			const { propose_assets_upgrade } = actor;
+		it('should submit proposal', async () => {
+			const { submit_proposal } = actor;
 
 			// Advance time for updated_at
 			await pic.advanceTime(100);
 
-			const [_, proposal] = await propose_assets_upgrade(proposalId);
+			const [_, proposal] = await submit_proposal(proposalId);
 
 			expect(proposal.status).toEqual({ Open: null });
 			expect(sha256ToBase64String(fromNullable(proposal.sha256) ?? [])).not.toBeUndefined();
@@ -315,34 +317,34 @@ describe('Console / Storage', () => {
 			expect(status_code).toBe(404);
 		});
 
-		it('should fail at proposing a proposal if already open', async () => {
-			const { propose_assets_upgrade } = actor;
+		it('should fail at submitting a proposal if already open', async () => {
+			const { submit_proposal } = actor;
 
-			await expect(propose_assets_upgrade(proposalId)).rejects.toThrow(
-				'Proposal assets cannot be proposed. Current status: Open'
+			await expect(submit_proposal(proposalId)).rejects.toThrow(
+				'Proposal cannot be submitted. Current status: Open'
 			);
 		});
 
 		it('should fail at committing a proposal if unknown', async () => {
-			const { commit_assets_upgrade } = actor;
+			const { commit_proposal } = actor;
 
 			const unknownProposalId = proposalId + 1n;
 
 			await expect(
-				commit_assets_upgrade({
+				commit_proposal({
 					sha256: Array.from({ length: 32 }).map((_, i) => i),
 					proposal_id: proposalId + 1n
 				})
-			).rejects.toThrow(`Cannot propose assets upgrade. ${unknownProposalId}`);
+			).rejects.toThrow(`Cannot commit proposal. ${unknownProposalId}`);
 		});
 
 		it('should fail at committing a proposal with incorrect sha256', async () => {
-			const { commit_assets_upgrade } = actor;
+			const { commit_proposal } = actor;
 
 			const sha256 = Array.from({ length: 32 }).map((_, i) => i);
 
 			await expect(
-				commit_assets_upgrade({
+				commit_proposal({
 					sha256,
 					proposal_id: proposalId
 				})
@@ -352,10 +354,10 @@ describe('Console / Storage', () => {
 		});
 
 		it('should commit proposal', async () => {
-			const { commit_assets_upgrade } = actor;
+			const { commit_proposal } = actor;
 
 			await expect(
-				commit_assets_upgrade({
+				commit_proposal({
 					sha256: fromNullable(sha256)!,
 					proposal_id: proposalId
 				})
@@ -420,16 +422,18 @@ describe('Console / Storage', () => {
 		it('should clear assets on upgrade', async () => {
 			const {
 				http_request,
-				init_assets_upgrade,
-				commit_assets_upgrade,
-				propose_assets_upgrade,
+				init_proposal,
+				commit_proposal,
+				submit_proposal,
 				commit_asset_upload,
 				upload_asset_chunk,
 				init_asset_upload
 			} = actor;
 
-			const [proposalId, __] = await init_assets_upgrade({
-				clear_existing_assets: toNullable(true)
+			const [proposalId, __] = await init_proposal({
+				AssetsUpgrade: {
+					clear_existing_assets: toNullable(true)
+				}
 			});
 
 			const file = await init_asset_upload(
@@ -460,9 +464,9 @@ describe('Console / Storage', () => {
 				headers: []
 			});
 
-			const [_, proposal] = await propose_assets_upgrade(proposalId);
+			const [_, proposal] = await submit_proposal(proposalId);
 
-			await commit_assets_upgrade({
+			await commit_proposal({
 				sha256: fromNullable(proposal.sha256)!,
 				proposal_id: proposalId
 			});

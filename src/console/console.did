@@ -24,12 +24,12 @@ type AssetNoContent = record {
   version : opt nat64;
 };
 type AssetsUpgradeOptions = record { clear_existing_assets : opt bool };
-type CommitAssetsUpgrade = record { sha256 : blob; proposal_id : nat };
 type CommitBatch = record {
   batch_id : nat;
   headers : vec record { text; text };
   chunk_ids : vec nat;
 };
+type CommitProposal = record { sha256 : blob; proposal_id : nat };
 type Config = record { storage : StorageConfig };
 type ControllerScope = variant { Write; Admin };
 type CreateCanisterArgs = record { block_index : opt nat64; user : principal };
@@ -39,8 +39,8 @@ type CustomDomain = record {
   version : opt nat64;
   bn_id : opt text;
 };
-type DeleteAssetsUpgrade = record { proposal_ids : vec nat };
 type DeleteControllersArgs = record { controllers : vec principal };
+type DeleteProposalAssets = record { proposal_ids : vec nat };
 type GetCreateCanisterFeeArgs = record { user : principal };
 type HttpRequest = record {
   url : text;
@@ -117,14 +117,17 @@ type ProposalStatus = variant {
   Executed;
   Accepted;
 };
-type ProposalType = variant { AssetsUpgrade : AssetsUpgradeOptions };
+type ProposalType = variant {
+  AssetsUpgrade : AssetsUpgradeOptions;
+  SegmentsDeployment;
+};
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type ReleasesVersion = record {
   satellite : opt text;
   orbiter : opt text;
   mission_control : opt text;
 };
-type Segment = variant { Orbiter; MissionControl; Satellite };
+type SegmentType = variant { Orbiter; MissionControl; Satellite };
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -175,12 +178,12 @@ service : () -> {
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
   commit_asset_upload : (CommitBatch) -> ();
-  commit_assets_upgrade : (CommitAssetsUpgrade) -> ();
+  commit_proposal : (CommitProposal) -> ();
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();
   del_custom_domain : (text) -> ();
-  delete_assets_upgrade : (DeleteAssetsUpgrade) -> ();
+  delete_proposal_assets : (DeleteProposalAssets) -> ();
   get_config : () -> (Config);
   get_create_orbiter_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
@@ -193,7 +196,7 @@ service : () -> {
       StreamingCallbackHttpResponse,
     ) query;
   init_asset_upload : (InitAssetKey, nat) -> (InitUploadResult);
-  init_assets_upgrade : (AssetsUpgradeOptions) -> (nat, Proposal);
+  init_proposal : (ProposalType) -> (nat, Proposal);
   init_user_mission_control_center : () -> (MissionControl);
   list_assets : (text, ListParams) -> (ListResults) query;
   list_custom_domains : () -> (vec record { text; CustomDomain }) query;
@@ -201,14 +204,14 @@ service : () -> {
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;
-  load_release : (Segment, blob, text) -> (LoadRelease);
-  propose_assets_upgrade : (nat) -> (nat, Proposal);
-  reset_release : (Segment) -> ();
+  load_release : (SegmentType, blob, text) -> (LoadRelease);
+  reset_release : (SegmentType) -> ();
   set_config : (Config) -> ();
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
-  set_fee : (Segment, Tokens) -> ();
-  update_rate_config : (Segment, RateConfig) -> ();
+  set_fee : (SegmentType, Tokens) -> ();
+  submit_proposal : (nat) -> (nat, Proposal);
+  update_rate_config : (SegmentType, RateConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
 }

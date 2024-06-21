@@ -1,6 +1,6 @@
 use crate::constants::SYS_COLLECTION_PREFIX;
 use crate::types::interface::SetRule;
-use crate::types::rules::{Memory, Rule};
+use crate::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::assert::assert_version;
 use junobuild_shared::types::core::CollectionKey;
 use junobuild_shared::types::state::Version;
@@ -92,6 +92,16 @@ pub fn assert_write_permission(
             "Collection starts with {}, a reserved prefix",
             SYS_COLLECTION_PREFIX
         ));
+    }
+
+    Ok(())
+}
+
+pub fn assert_reserved_collection(collection: &CollectionKey, rules: &Rules) -> Result<(), String> {
+    let reserved_collection = format!("#{}", collection);
+
+    if rules.contains_key(&reserved_collection) {
+        return Err("The collection name matches a system collection.".to_string());
     }
 
     Ok(())

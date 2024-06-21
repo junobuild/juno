@@ -1,4 +1,4 @@
-use crate::assert_rules::{assert_memory, assert_mutable_permissions, assert_write_permission};
+use crate::assert_rules::{assert_memory, assert_mutable_permissions, assert_reserved_collection, assert_write_permission};
 use crate::constants::SYS_COLLECTION_PREFIX;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{DelRule, SetRule};
@@ -17,11 +17,20 @@ pub fn filter_rules(rules: &Rules) -> Vec<(CollectionKey, Rule)> {
 pub fn set_rule(
     collection: CollectionKey,
     user_rule: SetRule,
+    check_reserved: bool,
     rules: &mut Rules,
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
     assert_write_permission(&collection, current_rule, &user_rule.version)?;
+
+    if check_reserved {
+        // In the storage, the collection name must be included within the path (e.g., /hello/index.html for the collection "hello").
+        // Therefore, to avoid conflicts with system collections like #dapp and #releases (used in the Console),
+        // we need to ensure that the custom collection name does not clash with any reserved system collection names.
+        assert_reserved_collection(&collection, rules)?;
+    }
+
     assert_memory(current_rule, &user_rule.memory)?;
     assert_mutable_permissions(current_rule, &user_rule)?;
 

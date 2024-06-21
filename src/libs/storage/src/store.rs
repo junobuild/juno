@@ -19,7 +19,7 @@ use crate::types::store::{
 use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_collections::assert_stores::{assert_create_permission, assert_permission};
-use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
+use junobuild_collections::constants::{DEFAULT_ASSETS_COLLECTIONS, SYS_COLLECTION_PREFIX};
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::assert::assert_description_length;
 use junobuild_shared::constants::INITIAL_VERSION;
@@ -188,9 +188,16 @@ fn assert_key(
         return Err(UPLOAD_NOT_ALLOWED);
     }
 
+    // Only controllers can write in reserved collections starting with #
+    if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) && !is_controller(caller, controllers) {
+        return Err(UPLOAD_NOT_ALLOWED);
+    }
+
     // Asset uploaded by users should be prefixed with the collection. That way developers can organize assets to particular folders.
+    let collection_path = collection.strip_prefix("#").unwrap_or(&collection);
+
     if collection.clone() != *dapp_collection
-        && !full_path.starts_with(&["/", collection, "/"].join(""))
+        && !full_path.starts_with(&["/", collection_path, "/"].join(""))
     {
         return Err("Asset path must be prefixed with collection key.");
     }

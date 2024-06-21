@@ -98,7 +98,7 @@ pub fn assert_write_permission(
 }
 
 pub fn assert_reserved_collection(collection: &CollectionKey, rules: &Rules) -> Result<(), String> {
-    let reserved_collection = format!("#{}", collection);
+    let reserved_collection = format!("{}{}", SYS_COLLECTION_PREFIX, collection);
 
     if rules.contains_key(&reserved_collection) {
         return Err("The collection name matches a system collection.".to_string());

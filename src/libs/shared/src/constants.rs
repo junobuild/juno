@@ -44,6 +44,6 @@ pub const REVOKED_CONTROLLERS: [&str; 1] =
 pub const INITIAL_VERSION: Version = 1;
 
 // The upper limit on the WASM heap memory consumption of the canister per default on the IC is now 3_221_225_472 (3 GiB).
-// According to our experience, we start noticing issue when we upgrade canister at 1 GB. That's why the Juno CLI and Console already warn when this limited is reached.
-// To enforce this limit, we set per default 1_073_741_824 (1 GiB) + 10%.
-pub const WASM_MEMORY_LIMIT: u32 = 1_181_116_006;
+// According to our experience, we start noticing issue when we upgrade canister at 1 GB. That's why the Juno CLI and Console already warn when this limited is reached - i.e. warns when 900 Mb is reached.
+// So, to enforce this limit, we set the canister maximum heap memory per default to 1_073_741_824 (1 GiB).
+pub const WASM_MEMORY_LIMIT: u32 = 1_073_741_824;

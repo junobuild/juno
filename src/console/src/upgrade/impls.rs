@@ -1,5 +1,5 @@
 use crate::memory::init_storage_heap_state;
-use crate::types::state::HeapState;
+use crate::types::state::{HeapState, ReleasesMetadata};
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 
 impl From<&UpgradeHeapState> for HeapState {
@@ -13,6 +13,7 @@ impl From<&UpgradeHeapState> for HeapState {
             rates: state.rates.clone(),
             fees: state.fees.clone(),
             storage: init_storage_heap_state(),
+            releases_metadata: ReleasesMetadata::default(),
         }
     }
 }

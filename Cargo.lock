@@ -259,8 +259,10 @@ dependencies = [
  "junobuild-collections",
  "junobuild-shared",
  "junobuild-storage",
+ "regex",
  "serde",
  "serde_cbor",
+ "serde_json",
  "sha2",
 ]
 

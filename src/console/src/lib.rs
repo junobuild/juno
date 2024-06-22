@@ -4,6 +4,7 @@ mod factory;
 mod guards;
 mod impls;
 mod memory;
+mod metadata;
 mod msg;
 mod proposals;
 mod storage;
@@ -48,7 +49,7 @@ use crate::types::interface::{
 };
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
-    ProposalType, RateConfig, Rates, Releases, State,
+    ProposalType, RateConfig, Rates, Releases, ReleasesMetadata, State,
 };
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;
@@ -98,6 +99,7 @@ fn init() {
         rates: Rates::default(),
         fees: Fees::default(),
         storage: init_storage_heap_state(),
+        releases_metadata: ReleasesMetadata::default(),
     };
 
     STATE.with(|state| {

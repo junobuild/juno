@@ -11,7 +11,7 @@ pub mod state {
     use junobuild_shared::types::state::{MissionControlId, UserId};
     use junobuild_storage::types::state::StorageHeapState;
     use serde::{Deserialize, Serialize};
-    use std::collections::HashMap;
+    use std::collections::{HashMap, HashSet};
 
     pub type MissionControls = HashMap<UserId, MissionControl>;
     pub type Payments = HashMap<BlockIndex, Payment>;
@@ -50,6 +50,7 @@ pub mod state {
         pub rates: Rates,
         pub fees: Fees,
         pub storage: StorageHeapState,
+        pub releases_metadata: ReleasesMetadata,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -66,6 +67,15 @@ pub mod state {
         pub mission_control: Wasm,
         pub satellite: Wasm,
         pub orbiter: Wasm,
+    }
+
+    pub type ReleaseVersion = String;
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct ReleasesMetadata {
+        pub mission_controls: HashSet<ReleaseVersion>,
+        pub satellites: HashSet<ReleaseVersion>,
+        pub orbiters: HashSet<ReleaseVersion>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -143,12 +153,19 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum ProposalType {
         AssetsUpgrade(AssetsUpgradeOptions),
-        SegmentsDeployment,
+        SegmentsDeployment(SegmentsDeploymentOptions),
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetsUpgradeOptions {
         pub clear_existing_assets: Option<bool>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct SegmentsDeploymentOptions {
+        pub satellite_version: Option<ReleaseVersion>,
+        pub mission_control_version: Option<ReleaseVersion>,
+        pub orbiter: Option<ReleaseVersion>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]

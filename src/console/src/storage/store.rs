@@ -25,6 +25,7 @@ use junobuild_storage::types::store::{Asset, AssetEncoding, EncodingType};
 use junobuild_storage::utils::{get_token_protected_asset, map_asset_no_content};
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_storage::well_known::utils::build_custom_domain;
+use regex::Regex;
 
 pub fn get_public_asset(full_path: FullPath, token: Option<String>) -> Option<(Asset, Memory)> {
     let asset = get_asset(&full_path);
@@ -109,9 +110,37 @@ pub fn init_asset_upload(
         return Err(format!("No proposal found for {}", proposal_id));
     }
 
+    assert_releases_keys(&init)?;
+
     let controllers = get_controllers();
 
     create_batch(caller, &controllers, init, Some(proposal_id))
+}
+
+fn assert_releases_keys(InitAssetKey { full_path, .. }: &InitAssetKey) -> Result<(), String> {
+    if full_path == "/releases/metadata.json" {
+        return Err(format!("{} is a reserved asset.", full_path).to_string());
+    }
+
+    if full_path.starts_with("/releases/satellite")
+        || full_path.starts_with("/releases/mission_control")
+        || full_path.starts_with("/releases/orbiter")
+    {
+        let re =
+            Regex::new(r"^/releases/(satellite|mission_control|orbiter)-v\d+\.\d+\.\d+\.wasm\.gz$")
+                .unwrap();
+
+        return if re.is_match(full_path) {
+            Ok(())
+        } else {
+            Err(format!(
+                "{} does not match the required pattern.",
+                full_path
+            ))
+        };
+    }
+
+    Ok(())
 }
 
 ///

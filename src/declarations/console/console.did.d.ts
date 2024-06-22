@@ -150,7 +150,9 @@ export type ProposalStatus =
 	| { Rejected: null }
 	| { Executed: null }
 	| { Accepted: null };
-export type ProposalType = { AssetsUpgrade: AssetsUpgradeOptions } | { SegmentsDeployment: null };
+export type ProposalType =
+	| { AssetsUpgrade: AssetsUpgradeOptions }
+	| { SegmentsDeployment: SegmentsDeploymentOptions };
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
@@ -161,6 +163,11 @@ export interface ReleasesVersion {
 	mission_control: [] | [string];
 }
 export type SegmentType = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
+export interface SegmentsDeploymentOptions {
+	orbiter: [] | [string];
+	mission_control_version: [] | [string];
+	satellite_version: [] | [string];
+}
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;

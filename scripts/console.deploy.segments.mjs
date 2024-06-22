@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { deployWithProposal } from './console.deploy.services.mjs';
-import { uploadFile } from './console.deploy.utils.mjs';
+import {readJunoConfig, uploadFile} from './console.deploy.utils.mjs';
 
 const readVersion = (segment) => {
 	const tomlFile = readFileSync(join(process.cwd(), 'src', segment, 'Cargo.toml'));
@@ -72,3 +72,7 @@ await deployWithProposal({
 	proposal_type,
 	deploy
 });
+
+const config = await readJunoConfig();
+
+console.log(`\n✅ Segments uploaded. Metadata: http://${config.id}.localhost:5987/releases/metadata.json`);

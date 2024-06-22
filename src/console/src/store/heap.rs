@@ -1,7 +1,7 @@
 use crate::memory::STATE;
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
-    Payments, Rate, RateConfig, ReleaseVersion, ReleasesMetadata, Wasm,
+    Payments, Rate, RateConfig, ReleaseVersion, ReleasesMetadata,
 };
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
@@ -34,119 +34,6 @@ pub fn list_payments_heap() -> Payments {
 
 fn list_payments_heap_impl(state: &HeapState) -> Payments {
     state.payments.clone()
-}
-
-/// Wasm
-
-pub fn reset_satellite_release() {
-    STATE.with(|state| reset_satellite_release_impl(&mut state.borrow_mut().heap))
-}
-
-pub fn get_satellite_release_version() -> Option<String> {
-    STATE.with(|state| state.borrow().heap.releases.satellite.version.clone())
-}
-
-fn reset_satellite_release_impl(state: &mut HeapState) {
-    state.releases.satellite = Wasm {
-        wasm: Vec::new(),
-        version: None,
-    };
-}
-
-pub fn load_satellite_release(blob: &[u8], version: &str) {
-    STATE.with(|state| load_satellite_release_impl(blob, version, &mut state.borrow_mut().heap))
-}
-
-fn load_satellite_release_impl(blob: &[u8], version: &str, state: &mut HeapState) {
-    let wasm = state
-        .releases
-        .satellite
-        .wasm
-        .iter()
-        .copied()
-        .chain(blob.iter().copied())
-        .collect();
-
-    state.releases.satellite = Wasm {
-        wasm,
-        version: Some(version.to_owned()),
-    };
-}
-
-// TODO: there is probably a way to refactor this to avoid duplicate code
-
-pub fn reset_mission_control_release() {
-    STATE.with(|state| reset_mission_control_release_impl(&mut state.borrow_mut().heap))
-}
-
-pub fn get_mission_control_release_version() -> Option<String> {
-    STATE.with(|state| state.borrow().heap.releases.mission_control.version.clone())
-}
-
-fn reset_mission_control_release_impl(state: &mut HeapState) {
-    state.releases.mission_control = Wasm {
-        wasm: Vec::new(),
-        version: None,
-    };
-}
-
-pub fn load_mission_control_release(blob: &[u8], version: &str) {
-    STATE.with(|state| {
-        load_mission_control_release_impl(blob, version, &mut state.borrow_mut().heap)
-    })
-}
-
-fn load_mission_control_release_impl(blob: &[u8], version: &str, state: &mut HeapState) {
-    let wasm = state
-        .releases
-        .mission_control
-        .wasm
-        .iter()
-        .copied()
-        .chain(blob.iter().copied())
-        .collect();
-
-    state.releases.mission_control = Wasm {
-        wasm,
-        version: Some(version.to_owned()),
-    };
-}
-
-/// Orbiter
-
-pub fn reset_orbiter_release() {
-    STATE.with(|state| reset_orbiter_release_impl(&mut state.borrow_mut().heap))
-}
-
-fn reset_orbiter_release_impl(state: &mut HeapState) {
-    state.releases.orbiter = Wasm {
-        wasm: Vec::new(),
-        version: None,
-    };
-}
-
-pub fn get_orbiter_release_version() -> Option<String> {
-    STATE.with(|state| state.borrow().heap.releases.orbiter.version.clone())
-}
-
-pub fn load_orbiter_release(blob: &[u8], version: &str) {
-    STATE.with(|state| load_orbiter_release_impl(blob, version, &mut state.borrow_mut().heap))
-}
-
-fn load_orbiter_release_impl(blob: &[u8], version: &str, state: &mut HeapState) {
-    let wasm = state
-        .releases
-        .orbiter
-        .wasm
-        .iter()
-        .copied()
-        .chain(blob.iter().copied())
-        .collect();
-
-    state.releases.orbiter = Wasm {
-        wasm,
-        version: Some(version.to_owned()),
-    };
 }
 
 /// Invitation codes

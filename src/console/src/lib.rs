@@ -32,10 +32,7 @@ use crate::storage::store::{
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::store::heap::{
     add_invitation_code as add_invitation_code_store, delete_controllers, get_controllers,
-    get_mission_control_release_version, get_orbiter_fee, get_orbiter_release_version,
-    get_satellite_fee, get_satellite_release_version, load_mission_control_release,
-    load_orbiter_release, load_satellite_release, reset_mission_control_release,
-    reset_orbiter_release, reset_satellite_release, set_controllers as set_controllers_store,
+    get_orbiter_fee, get_satellite_fee, set_controllers as set_controllers_store,
     set_create_orbiter_fee, set_create_satellite_fee, update_mission_controls_rate_config,
     update_orbiters_rate_config, update_satellites_rate_config,
 };
@@ -44,12 +41,10 @@ use crate::store::stable::{
     get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
-use crate::types::interface::{
-    CommitProposal, Config, DeleteProposalAssets, LoadRelease, ReleasesVersion, SegmentType,
-};
+use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets, SegmentType};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
-    ProposalType, RateConfig, Rates, Releases, ReleasesMetadata, State,
+    ProposalType, RateConfig, Rates, ReleasesMetadata, State,
 };
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;
@@ -93,7 +88,6 @@ fn init() {
     let heap: HeapState = HeapState {
         mission_controls: HashMap::new(),
         payments: HashMap::new(),
-        releases: Releases::default(),
         invitation_codes: HashMap::new(),
         controllers: init_controllers(&[manager]),
         rates: Rates::default(),
@@ -147,49 +141,6 @@ fn post_upgrade() {
     // STATE.with(|s| *s.borrow_mut() = state);
 
     defer_init_certified_assets();
-}
-
-/// Mission control center and satellite releases and wasm
-
-#[update(guard = "caller_is_admin_controller")]
-fn reset_release(segment: SegmentType) {
-    match segment {
-        SegmentType::Satellite => reset_satellite_release(),
-        SegmentType::MissionControl => reset_mission_control_release(),
-        SegmentType::Orbiter => reset_orbiter_release(),
-    }
-}
-
-#[update(guard = "caller_is_admin_controller")]
-fn load_release(segment: SegmentType, blob: Vec<u8>, version: String) -> LoadRelease {
-    let total: usize = match segment {
-        SegmentType::Satellite => {
-            load_satellite_release(&blob, &version);
-            STATE.with(|state| state.borrow().heap.releases.satellite.wasm.len())
-        }
-        SegmentType::MissionControl => {
-            load_mission_control_release(&blob, &version);
-            STATE.with(|state| state.borrow().heap.releases.mission_control.wasm.len())
-        }
-        SegmentType::Orbiter => {
-            load_orbiter_release(&blob, &version);
-            STATE.with(|state| state.borrow().heap.releases.orbiter.wasm.len())
-        }
-    };
-
-    LoadRelease {
-        total,
-        chunks: blob.len(),
-    }
-}
-
-#[query]
-fn get_releases_version() -> ReleasesVersion {
-    ReleasesVersion {
-        satellite: get_satellite_release_version(),
-        mission_control: get_mission_control_release_version(),
-        orbiter: get_orbiter_release_version(),
-    }
 }
 
 /// User mission control centers

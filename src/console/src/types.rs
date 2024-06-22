@@ -44,7 +44,6 @@ pub mod state {
         pub mission_controls: MissionControls,
         #[deprecated(note = "Deprecated. Use stable memory instead.")]
         pub payments: Payments,
-        pub releases: Releases,
         pub invitation_codes: InvitationCodes,
         pub controllers: Controllers,
         pub rates: Rates,
@@ -62,13 +61,6 @@ pub mod state {
         pub updated_at: Timestamp,
     }
 
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct Releases {
-        pub mission_control: Wasm,
-        pub satellite: Wasm,
-        pub orbiter: Wasm,
-    }
-
     pub type ReleaseVersion = String;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -76,12 +68,6 @@ pub mod state {
         pub mission_controls: HashSet<ReleaseVersion>,
         pub satellites: HashSet<ReleaseVersion>,
         pub orbiters: HashSet<ReleaseVersion>,
-    }
-
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct Wasm {
-        pub wasm: Vec<u8>,
-        pub version: Option<String>,
     }
 
     pub type InvitationCode = String;
@@ -186,19 +172,6 @@ pub mod interface {
     use junobuild_shared::types::cronjob::CronJobs;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
-
-    #[derive(CandidType)]
-    pub struct LoadRelease {
-        pub total: usize,
-        pub chunks: usize,
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct ReleasesVersion {
-        pub satellite: Option<String>,
-        pub mission_control: Option<String>,
-        pub orbiter: Option<String>,
-    }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum SegmentType {

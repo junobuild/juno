@@ -1,11 +1,30 @@
+import { toNullable } from '@dfinity/utils';
 import { fileExists } from '@junobuild/cli-tools';
+import { assertNonNullish } from '@junobuild/utils';
+import { parse } from '@ltd/j-toml';
+import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { deployWithProposal } from './console.deploy.services.mjs';
 import { uploadFile } from './console.deploy.utils.mjs';
 
+const readVersion = (segment) => {
+	const tomlFile = readFileSync(join(process.cwd(), 'src', segment, 'Cargo.toml'));
+	const result = parse(tomlFile.toString());
+
+	const version = result?.package?.version;
+
+	assertNonNullish(version);
+
+	return version;
+};
+
 const proposal_type = {
-	SegmentsDeployment: null
+	SegmentsDeployment: {
+		orbiter: toNullable(readVersion('orbiter')),
+		mission_control_version: toNullable(readVersion('mission_control')),
+		satellite_version: toNullable(readVersion('satellite'))
+	}
 };
 
 const target = join(process.cwd(), 'target', 'deploy');

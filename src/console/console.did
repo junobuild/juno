@@ -119,7 +119,7 @@ type ProposalStatus = variant {
 };
 type ProposalType = variant {
   AssetsUpgrade : AssetsUpgradeOptions;
-  SegmentsDeployment;
+  SegmentsDeployment : SegmentsDeploymentOptions;
 };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type ReleasesVersion = record {
@@ -128,6 +128,11 @@ type ReleasesVersion = record {
   mission_control : opt text;
 };
 type SegmentType = variant { Orbiter; MissionControl; Satellite };
+type SegmentsDeploymentOptions = record {
+  orbiter : opt nat64;
+  mission_control_version : opt nat64;
+  satellite_version : opt nat64;
+};
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;

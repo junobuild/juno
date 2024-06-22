@@ -190,9 +190,15 @@ describe('Console / Storage', () => {
 					'2dn3gwGDAktodHRwX2Fzc2V0c4EAggRYIEKdEzNVVN//oyhbMyr+jpaHvXLSS++G0FDxoOHNPxMy'
 			},
 			{
-				proposal_type: { SegmentsDeployment: null } as ProposalType,
+				proposal_type: {
+					SegmentsDeployment: {
+						mission_control_version: [],
+						orbiter: [],
+						satellite_version: ['0.0.18']
+					}
+				} as ProposalType,
 				collection: '#releases',
-				full_path: '/releases/hello2.html',
+				full_path: '/releases/satellite-v0.0.18.wasm.gz',
 				expected_proposal_id: 2n,
 				expected_asset_tree:
 					'2dn3gwGDAktodHRwX2Fzc2V0c4MBggRYIDmN5doHXoiKCtNGBOZIdmQ+WGqYjcmdRB1MPuJBK2oXgwJLL2hlbGxvLmh0bWyCBFggHw1FFuN/7ZgqBSfwV2enJYVUtL9EM+nvOePuHXQ1yCaCBFggqaxo4lOdUyS+X9luPEzOoyC9c2+ICLLJ6ogdBRYOj+8='
@@ -523,7 +529,7 @@ describe('Console / Storage', () => {
 				certificate_version: toNullable(),
 				headers: [],
 				method: 'GET',
-				url: '/releases/hello2.html'
+				url: '/releases/satellite-v0.0.18.wasm.gz'
 			});
 
 			expect(status_code).toBe(200);

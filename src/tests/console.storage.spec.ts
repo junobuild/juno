@@ -534,6 +534,44 @@ describe('Console / Storage', () => {
 
 			expect(status_code).toBe(200);
 		});
+
+		describe('Releases assertions', () => {
+			describe.each([
+				'satellite.wasm.gz',
+				'mission_control.wasm.gz',
+				'orbiter.wasm.gz',
+				'satellite.wasm',
+				'mission_control.wasm',
+				'orbiter.wasm',
+				'satellite.txt',
+				'mission_control.txt',
+				'orbiter.txt'
+			])(`Assert upload %s`, (filename) => {
+				it('should throw error if try to upload without version', async () => {
+					const { init_asset_upload, init_proposal } = actor;
+
+					const [proposalId, _] = await init_proposal({
+						AssetsUpgrade: {
+							clear_existing_assets: toNullable()
+						}
+					});
+
+					await expect(
+						init_asset_upload(
+							{
+								collection: '#releases',
+								description: toNullable(),
+								encoding_type: [],
+								full_path: `/releases/${filename}`,
+								name: filename,
+								token: toNullable()
+							},
+							proposalId
+						)
+					).rejects.toThrow(`/releases/${filename} does not match the required pattern.`);
+				});
+			});
+		});
 	});
 
 	describe('anonymous', () => {

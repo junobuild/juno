@@ -20,6 +20,7 @@ serde_json.workspace = true
 ciborium.workspace = true
 sha2.workspace = true
 hex.workspace = true
+regex.workspace = true
 junobuild-shared = { path = "../libs/shared" }
 junobuild-storage = { path = "../libs/storage" }
 junobuild-collections = { path = "../libs/collections" }

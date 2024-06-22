@@ -122,3 +122,10 @@ export const readWasmVersion = (segment: string): string => {
 
 	return version;
 };
+
+export const WASM_VERSIONS = {
+	console: readWasmVersion('console'),
+	orbiter: readWasmVersion('orbiter'),
+	satellite: readWasmVersion('satellite'),
+	mission_control: readWasmVersion('mission_control')
+};

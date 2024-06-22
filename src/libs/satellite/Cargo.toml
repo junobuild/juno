@@ -37,7 +37,7 @@ serde_cbor.workspace = true
 serde_json.workspace = true
 ic-stable-structures.workspace = true
 ciborium.workspace = true
-regex = "1.9.3"
+regex.workspace = true
 url = "2.4.0"
 getrandom = { version = "0.2", features = ["custom"] }
 rand = { version = "0.8.5", features = ["getrandom"]}

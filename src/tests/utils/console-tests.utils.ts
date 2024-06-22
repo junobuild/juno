@@ -13,10 +13,10 @@ import {
 	MISSION_CONTROL_WASM_PATH,
 	ORBITER_WASM_PATH,
 	SATELLITE_WASM_PATH,
+	WASM_VERSIONS,
 	downloadMissionControl,
 	downloadOrbiter,
-	downloadSatellite,
-	readWasmVersion
+	downloadSatellite
 } from './setup-tests.utils';
 
 const installRelease = async ({
@@ -165,37 +165,31 @@ const uploadSegment = async ({
 export const deploySegments = async (actor: Actor<ConsoleActor>) => {
 	const { init_proposal, submit_proposal, commit_proposal } = actor;
 
-	const segments = {
-		orbiter: readWasmVersion('orbiter'),
-		satellite: readWasmVersion('satellite'),
-		mission_control: readWasmVersion('mission_control')
-	};
-
 	const [proposalId, proposal] = await init_proposal({
 		SegmentsDeployment: {
-			orbiter: toNullable(segments.orbiter),
-			mission_control_version: toNullable(segments.mission_control),
-			satellite_version: toNullable(segments.satellite)
+			orbiter: toNullable(WASM_VERSIONS.orbiter),
+			mission_control_version: toNullable(WASM_VERSIONS.mission_control),
+			satellite_version: toNullable(WASM_VERSIONS.satellite)
 		}
 	});
 
 	await uploadSegment({
 		segment: 'satellite',
-		version: segments.satellite,
+		version: WASM_VERSIONS.satellite,
 		actor,
 		proposalId
 	});
 
 	await uploadSegment({
 		segment: 'orbiter',
-		version: segments.orbiter,
+		version: WASM_VERSIONS.orbiter,
 		actor,
 		proposalId
 	});
 
 	await uploadSegment({
 		segment: 'mission_control',
-		version: segments.mission_control,
+		version: WASM_VERSIONS.mission_control,
 		actor,
 		proposalId
 	});

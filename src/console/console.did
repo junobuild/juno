@@ -81,7 +81,6 @@ type ListResults = record {
   items : vec record { text; AssetNoContent };
   items_length : nat64;
 };
-type LoadRelease = record { total : nat64; chunks : nat64 };
 type Memory = variant { Heap; Stable };
 type MissionControl = record {
   updated_at : nat64;
@@ -122,11 +121,6 @@ type ProposalType = variant {
   SegmentsDeployment : SegmentsDeploymentOptions;
 };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
-type ReleasesVersion = record {
-  satellite : opt text;
-  orbiter : opt text;
-  mission_control : opt text;
-};
 type SegmentType = variant { Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
@@ -194,7 +188,6 @@ service : () -> {
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_proposal : (nat) -> (opt Proposal) query;
-  get_releases_version : () -> (ReleasesVersion) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
@@ -209,8 +202,6 @@ service : () -> {
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;
-  load_release : (SegmentType, blob, text) -> (LoadRelease);
-  reset_release : (SegmentType) -> ();
   set_config : (Config) -> ();
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();

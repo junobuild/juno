@@ -112,10 +112,6 @@ export interface ListResults {
 	items: Array<[string, AssetNoContent]>;
 	items_length: bigint;
 }
-export interface LoadRelease {
-	total: bigint;
-	chunks: bigint;
-}
 export type Memory = { Heap: null } | { Stable: null };
 export interface MissionControl {
 	updated_at: bigint;
@@ -156,11 +152,6 @@ export type ProposalType =
 export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
-}
-export interface ReleasesVersion {
-	satellite: [] | [string];
-	orbiter: [] | [string];
-	mission_control: [] | [string];
 }
 export type SegmentType = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
@@ -236,7 +227,6 @@ export interface _SERVICE {
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
-	get_releases_version: ActorMethod<[], ReleasesVersion>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
@@ -250,8 +240,6 @@ export interface _SERVICE {
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
-	load_release: ActorMethod<[SegmentType, Uint8Array | number[], string], LoadRelease>;
-	reset_release: ActorMethod<[SegmentType], undefined>;
 	set_config: ActorMethod<[Config], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;

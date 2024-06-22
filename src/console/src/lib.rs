@@ -44,11 +44,11 @@ use crate::store::stable::{
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
 use crate::types::interface::{
-    CommitProposal, Config, DeleteProposalAssets, LoadRelease, ReleasesVersion,
+    CommitProposal, Config, DeleteProposalAssets, LoadRelease, ReleasesVersion, SegmentType,
 };
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
-    ProposalType, RateConfig, Rates, Releases, SegmentType, State,
+    ProposalType, RateConfig, Rates, Releases, State,
 };
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;

@@ -6,7 +6,7 @@ import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { deployWithProposal } from './console.deploy.services.mjs';
-import {readJunoConfig, uploadFile} from './console.deploy.utils.mjs';
+import { readJunoConfig, uploadFile } from './console.deploy.utils.mjs';
 
 const readVersion = (segment) => {
 	const tomlFile = readFileSync(join(process.cwd(), 'src', segment, 'Cargo.toml'));
@@ -19,34 +19,41 @@ const readVersion = (segment) => {
 	return version;
 };
 
+const segments = {
+	orbiter: readVersion('orbiter'),
+	satellite: readVersion('satellite'),
+	mission_control: readVersion('mission_control')
+};
+
 const proposal_type = {
 	SegmentsDeployment: {
-		orbiter: toNullable(readVersion('orbiter')),
-		mission_control_version: toNullable(readVersion('mission_control')),
-		satellite_version: toNullable(readVersion('satellite'))
+		orbiter: toNullable(segments.orbiter),
+		mission_control_version: toNullable(segments.mission_control),
+		satellite_version: toNullable(segments.satellite)
 	}
 };
 
 const target = join(process.cwd(), 'target', 'deploy');
 
 const deploy = async (proposalId) => {
-	const segments = ['satellite', 'orbiter', 'mission_control'];
-
-	const upload = async (sourceFile) => {
-		const filename = `${sourceFile}.wasm.gz`;
-		const source = join(target, filename);
+	const upload = async ([sourceFile, version]) => {
+		const sourceFilename = `${sourceFile}.wasm.gz`;
+		const source = join(target, sourceFilename);
 
 		if (!(await fileExists(source))) {
 			return { sourceFile, uploaded: false };
 		}
 
-		console.log(`↗️  Uploading ${source}`);
+		const destinationFilename = `${sourceFile}-v${version}.wasm.gz`;
+		const fullPath = `/releases/${destinationFilename}`;
+
+		console.log(`↗️  Uploading ${source} to ${fullPath}`);
 
 		const asset = {
 			collection: '#releases',
 			encoding: 'identity',
-			filename,
-			fullPath: `/releases/${filename}`,
+			filename: destinationFilename,
+			fullPath,
 			headers: [],
 			data: new Blob([await readFile(source)])
 		};
@@ -56,12 +63,12 @@ const deploy = async (proposalId) => {
 			proposalId
 		});
 
-		console.log(`✅  ${source} uploaded`);
+		console.log(`✅  ${source} uploaded to ${fullPath}`);
 
 		return { sourceFile, uploaded: true };
 	};
 
-	const results = await Promise.all(segments.map(upload));
+	const results = await Promise.all(Object.entries(segments).map(upload));
 
 	return {
 		sourceFiles: results.filter(({ uploaded }) => uploaded).map(({ sourceFile }) => sourceFile)
@@ -75,4 +82,6 @@ await deployWithProposal({
 
 const config = await readJunoConfig();
 
-console.log(`\n✅ Segments uploaded. Metadata: http://${config.id}.localhost:5987/releases/metadata.json`);
+console.log(
+	`\n✅ Segments uploaded. Metadata: http://${config.id}.localhost:5987/releases/metadata.json`
+);

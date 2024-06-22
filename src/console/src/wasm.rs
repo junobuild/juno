@@ -35,7 +35,7 @@ fn get_chunks(full_path: &FullPath) -> Result<Blob, String> {
 pub fn mission_control_wasm_arg(user: &UserId) -> Result<WasmArg, String> {
     let latest_version =
         get_latest_mission_control_version().ok_or("No mission control versions available.")?;
-    let full_path = format!("/releases/mission_control_{}.wasm.gz", latest_version);
+    let full_path = format!("/releases/mission_control-v{}.wasm.gz", latest_version);
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&MissionControlArgs { user: *user }).unwrap();
 
@@ -48,7 +48,7 @@ pub fn satellite_wasm_arg(
 ) -> Result<WasmArg, String> {
     let latest_version =
         get_latest_satellite_version().ok_or("No mission control versions available.")?;
-    let full_path = format!("/releases/satellite{}.wasm.gz", latest_version);
+    let full_path = format!("/releases/satellite-v{}.wasm.gz", latest_version);
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&SegmentArgs {
         controllers: user_mission_control_controllers(user, mission_control_id)
@@ -63,7 +63,7 @@ pub fn orbiter_wasm_arg(
 ) -> Result<WasmArg, String> {
     let latest_version =
         get_latest_orbiter_version().ok_or("No mission control versions available.")?;
-    let full_path = format!("/releases/orbiter{}.wasm.gz", latest_version);
+    let full_path = format!("/releases/orbiter-v{}.wasm.gz", latest_version);
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&SegmentArgs {
         controllers: user_mission_control_controllers(user, mission_control_id)

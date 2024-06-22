@@ -1,15 +1,22 @@
-use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
+use crate::constants::{
+    ASSET_ENCODING_NO_COMPRESSION, WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS,
+};
+use crate::http::types::HeaderField;
 use crate::types::interface::AssetNoContent;
 use crate::types::state::FullPath;
-use crate::types::store::Asset;
+use crate::types::store::{Asset, AssetEncoding, AssetKey};
 use candid::Principal;
+use ic_cdk::api::time;
 use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
+use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::list::matcher_regex;
+use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::types::state::{Controllers, Timestamp, UserId, Version};
 use regex::Regex;
+use std::collections::HashMap;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (asset.key.full_path.clone(), AssetNoContent::from(asset))
@@ -115,4 +122,49 @@ pub fn should_include_asset_for_deletion(collection: &CollectionKey, asset_path:
     ];
 
     collection != "#dapp" || !excluded_paths.contains(asset_path)
+}
+
+pub fn create_asset_with_content(
+    content: &String,
+    existing_asset: Option<Asset>,
+    key: AssetKey,
+    content_type: &str,
+) -> Asset {
+    let now = time();
+
+    let created_at: Timestamp = match existing_asset.clone() {
+        None => now,
+        Some(existing_asset) => existing_asset.created_at,
+    };
+
+    let version: Version = match existing_asset {
+        None => INITIAL_VERSION,
+        Some(existing_asset) => existing_asset.version.unwrap_or_default() + 1,
+    };
+
+    let mut asset: Asset = Asset {
+        key,
+        headers: vec![HeaderField(
+            "content-type".to_string(),
+            content_type.to_string(),
+        )],
+        encodings: HashMap::new(),
+        created_at,
+        updated_at: now,
+        version: Some(version),
+    };
+
+    let max_chunk_size = 1_900_000; // Max 1.9 MB per chunk
+    let chunks: Vec<Blob> = content
+        .as_bytes()
+        .chunks(max_chunk_size)
+        .map(|chunk| chunk.to_vec())
+        .collect();
+
+    asset.encodings.insert(
+        ASSET_ENCODING_NO_COMPRESSION.to_string(),
+        AssetEncoding::from(&chunks),
+    );
+
+    asset
 }

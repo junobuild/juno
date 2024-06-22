@@ -35,3 +35,5 @@ pub const DEFAULT_RELEASES_COLLECTIONS: [(&str, SetRule); 1] = [(
         version: None,
     },
 )];
+
+pub const RELEASES_METADATA_JSON: &str = "/releases/metadata.json";

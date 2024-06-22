@@ -50,6 +50,7 @@ pub mod state {
         pub rates: Rates,
         pub fees: Fees,
         pub storage: StorageHeapState,
+        pub releases_metadata: ReleasesMetadata,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -66,6 +67,13 @@ pub mod state {
         pub mission_control: Wasm,
         pub satellite: Wasm,
         pub orbiter: Wasm,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct ReleasesMetadata {
+        pub mission_controls: Vec<Version>,
+        pub satellites: Vec<Version>,
+        pub orbiters: Vec<Version>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -143,12 +151,19 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum ProposalType {
         AssetsUpgrade(AssetsUpgradeOptions),
-        SegmentsDeployment,
+        SegmentsDeployment(SegmentsDeploymentOptions),
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct AssetsUpgradeOptions {
         pub clear_existing_assets: Option<bool>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct SegmentsDeploymentOptions {
+        pub satellite_version: Option<Version>,
+        pub mission_control_version: Option<Version>,
+        pub orbiter: Option<Version>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]

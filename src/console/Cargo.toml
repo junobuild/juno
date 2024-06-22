@@ -16,6 +16,7 @@ ic-ledger-types.workspace = true
 ic-stable-structures.workspace = true
 serde.workspace = true
 serde_cbor.workspace = true
+serde_json.workspace = true
 ciborium.workspace = true
 sha2.workspace = true
 hex.workspace = true

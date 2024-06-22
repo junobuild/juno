@@ -1,7 +1,7 @@
 use crate::memory::STATE;
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
-    Payments, Rate, RateConfig, Wasm,
+    Payments, Rate, RateConfig, ReleasesMetadata, Wasm,
 };
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
@@ -305,4 +305,18 @@ fn set_orbiter_fee(fee: &Tokens, state: &mut Fees) {
         fee: *fee,
         updated_at: time(),
     };
+}
+
+/// Releases metadata
+
+pub fn get_releases_metadata() -> ReleasesMetadata {
+    STATE.with(|state| state.borrow().heap.releases_metadata.clone())
+}
+
+pub fn set_releases_metadata(metadata: &ReleasesMetadata) {
+    STATE.with(|state| set_releases_metadata_impl(metadata, &mut state.borrow_mut().heap))
+}
+
+fn set_releases_metadata_impl(metadata: &ReleasesMetadata, heap_state: &mut HeapState) {
+    heap_state.releases_metadata = metadata.clone();
 }

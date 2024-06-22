@@ -1,3 +1,4 @@
+use crate::metadata::update_releases_metadata;
 use crate::msg::{
     ERROR_CANNOT_COMMIT_PROPOSAL, ERROR_CANNOT_DELETE_PROPOSAL_ASSETS,
     ERROR_CANNOT_SUBMIT_PROPOSAL, ERROR_PROPOSAL_TYPE_NOT_SUPPORTED,
@@ -143,6 +144,8 @@ fn secure_commit_proposal(
 
     copy_committed_assets(&commit_proposal.proposal_id)?;
 
+    post_commit_assets(proposal)?;
+
     // Mark proposal as executed.
     let executed_proposal = Proposal::execute(proposal);
     insert_proposal(&commit_proposal.proposal_id, &executed_proposal);
@@ -158,8 +161,19 @@ fn pre_commit_assets(proposal: &Proposal) {
                 delete_assets(&ASSET_COLLECTION_KEY.to_string());
             }
         }
-        ProposalType::SegmentsDeployment => (),
+        ProposalType::SegmentsDeployment(_) => (),
     }
+}
+
+fn post_commit_assets(proposal: &Proposal) -> Result<(), String> {
+    match &proposal.proposal_type {
+        ProposalType::AssetsUpgrade(_) => (),
+        ProposalType::SegmentsDeployment(ref options) => {
+            return update_releases_metadata(options);
+        }
+    }
+
+    Ok(())
 }
 
 fn copy_committed_assets(proposal_id: &ProposalId) -> Result<(), String> {
@@ -238,7 +252,7 @@ fn assert_known_proposal_type(proposal: &Proposal) -> Result<(), String> {
     #[allow(unreachable_patterns)]
     match &proposal.proposal_type {
         ProposalType::AssetsUpgrade(_) => (),
-        ProposalType::SegmentsDeployment => (),
+        ProposalType::SegmentsDeployment(_) => (),
         _ => return Err(ERROR_PROPOSAL_TYPE_NOT_SUPPORTED.to_string()),
     };
 

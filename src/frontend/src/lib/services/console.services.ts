@@ -1,8 +1,9 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-import { initMissionControl as initMissionControlApi, releasesVersion } from '$lib/api/console.api';
+import { initMissionControl as initMissionControlApi } from '$lib/api/console.api';
 import { missionControlVersion } from '$lib/api/mission-control.api';
 import { orbiterVersion } from '$lib/api/orbiter.api';
 import { satelliteBuildVersion, satelliteVersion } from '$lib/api/satellites.api';
+import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
@@ -137,11 +138,11 @@ export const loadVersion = async ({
 		const [satVersion, ctrlVersion, releases] = await Promise.all([
 			nonNullish(satelliteId) ? satelliteInfo(satelliteId) : empty(),
 			missionControlVersion({ missionControlId, identity }),
-			releasesVersion(identity)
+			getNewestReleasesMetadata()
 		]);
 
 		versionStore.setMissionControl({
-			release: fromNullable(releases.mission_control),
+			release: releases.mission_control,
 			current: ctrlVersion
 		});
 
@@ -153,7 +154,7 @@ export const loadVersion = async ({
 			satelliteId: satelliteId.toText(),
 			version: nonNullish(satVersion)
 				? {
-						release: fromNullable(releases.satellite),
+						release: releases.satellite,
 						...satVersion
 					}
 				: undefined
@@ -187,11 +188,11 @@ export const loadOrbiterVersion = async ({
 
 	const [orbVersion, releases] = await Promise.all([
 		orbiterVersion({ orbiterId: orbiter.orbiter_id, identity }),
-		releasesVersion(identity)
+		getNewestReleasesMetadata()
 	]);
 
 	versionStore.setOrbiter({
-		release: fromNullable(releases.orbiter),
+		release: releases.orbiter,
 		current: orbVersion
 	});
 };

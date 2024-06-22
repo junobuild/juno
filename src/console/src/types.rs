@@ -151,13 +151,6 @@ pub mod state {
         pub clear_existing_assets: Option<bool>,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum SegmentType {
-        Satellite,
-        MissionControl,
-        Orbiter,
-    }
-
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]
     pub enum ProposalStatus {
         Initialized,
@@ -188,6 +181,13 @@ pub mod interface {
         pub satellite: Option<String>,
         pub mission_control: Option<String>,
         pub orbiter: Option<String>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum SegmentType {
+        Satellite,
+        MissionControl,
+        Orbiter,
     }
 
     #[derive(CandidType, Deserialize)]

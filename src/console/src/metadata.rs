@@ -11,15 +11,17 @@ pub fn update_releases_metadata(options: &SegmentsDeploymentOptions) -> Result<(
     let mut metadata = get_releases_metadata();
 
     if let Some(satellite_version) = &options.satellite_version {
-        metadata.satellites.insert(*satellite_version);
+        metadata.satellites.insert(satellite_version.clone());
     }
 
     if let Some(mission_control_version) = &options.mission_control_version {
-        metadata.mission_controls.insert(*mission_control_version);
+        metadata
+            .mission_controls
+            .insert(mission_control_version.clone());
     }
 
     if let Some(orbiter_version) = &options.orbiter {
-        metadata.orbiters.insert(*orbiter_version);
+        metadata.orbiters.insert(orbiter_version.clone());
     }
 
     set_releases_metadata(&metadata);

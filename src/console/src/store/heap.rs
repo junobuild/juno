@@ -1,7 +1,7 @@
 use crate::memory::STATE;
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
-    Payments, Rate, RateConfig, ReleasesMetadata, Wasm,
+    Payments, Rate, RateConfig, ReleaseVersion, ReleasesMetadata, Wasm,
 };
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
@@ -9,8 +9,8 @@ use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use junobuild_shared::types::interface::SetController;
+use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
-use junobuild_shared::types::state::{UserId, Version};
 use std::cmp::min;
 use std::collections::HashSet;
 
@@ -322,18 +322,18 @@ fn set_releases_metadata_impl(metadata: &ReleasesMetadata, heap_state: &mut Heap
     heap_state.releases_metadata = metadata.clone();
 }
 
-pub fn get_latest_mission_control_version() -> Option<Version> {
+pub fn get_latest_mission_control_version() -> Option<ReleaseVersion> {
     STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.mission_controls))
 }
 
-pub fn get_latest_orbiter_version() -> Option<Version> {
+pub fn get_latest_orbiter_version() -> Option<ReleaseVersion> {
     STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.orbiters))
 }
 
-pub fn get_latest_satellite_version() -> Option<Version> {
+pub fn get_latest_satellite_version() -> Option<ReleaseVersion> {
     STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.satellites))
 }
 
-fn get_latest_version(versions: &HashSet<Version>) -> Option<Version> {
+fn get_latest_version(versions: &HashSet<ReleaseVersion>) -> Option<ReleaseVersion> {
     versions.iter().max().cloned()
 }

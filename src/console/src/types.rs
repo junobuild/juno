@@ -69,11 +69,13 @@ pub mod state {
         pub orbiter: Wasm,
     }
 
+    pub type ReleaseVersion = String;
+
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct ReleasesMetadata {
-        pub mission_controls: HashSet<Version>,
-        pub satellites: HashSet<Version>,
-        pub orbiters: HashSet<Version>,
+        pub mission_controls: HashSet<ReleaseVersion>,
+        pub satellites: HashSet<ReleaseVersion>,
+        pub orbiters: HashSet<ReleaseVersion>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -161,9 +163,9 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SegmentsDeploymentOptions {
-        pub satellite_version: Option<Version>,
-        pub mission_control_version: Option<Version>,
-        pub orbiter: Option<Version>,
+        pub satellite_version: Option<ReleaseVersion>,
+        pub mission_control_version: Option<ReleaseVersion>,
+        pub orbiter: Option<ReleaseVersion>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]

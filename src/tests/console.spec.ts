@@ -3,7 +3,7 @@ import { idlFactory as idlFactorConsole } from '$declarations/console/console.fa
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
-import { initMissionControls, installReleases } from './utils/console-tests.utils';
+import { deploySegments, initMissionControls } from './utils/console-tests.utils';
 import { CONSOLE_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Console', () => {
@@ -24,7 +24,7 @@ describe('Console', () => {
 		actor = c;
 		actor.setIdentity(controller);
 
-		await installReleases(actor);
+		await deploySegments(actor);
 	});
 
 	afterEach(async () => {

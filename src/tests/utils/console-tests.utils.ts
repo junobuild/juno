@@ -3,12 +3,20 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { fromNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
+import { assertNonNullish } from '@junobuild/utils';
 import { readFile } from 'node:fs/promises';
 import { expect } from 'vitest';
 import { tick } from './pic-tests.utils';
-import { downloadMissionControl, downloadOrbiter, downloadSatellite } from './setup-tests.utils';
+import {
+	MISSION_CONTROL_WASM_PATH,
+	ORBITER_WASM_PATH,
+	SATELLITE_WASM_PATH,
+	downloadMissionControl,
+	downloadOrbiter,
+	downloadSatellite
+} from './setup-tests.utils';
 
 const installRelease = async ({
 	download,
@@ -45,6 +53,138 @@ const installRelease = async ({
 const versionSatellite = '0.0.17';
 const versionOrbiter = '0.0.7';
 const versionMissionControl = '0.0.10';
+
+const uploadSegment = async ({
+	segment,
+	actor,
+	proposalId
+}: {
+	segment: 'satellite' | 'mission_control' | 'orbiter';
+	actor: Actor<ConsoleActor>;
+	proposalId: bigint;
+}) => {
+	const { init_asset_upload, upload_asset_chunk, commit_asset_upload } = actor;
+
+	const name = `${segment}.wasm.gz`;
+	const fullPath = `/releases/${name}`;
+
+	let wasmPath: string;
+	switch (segment) {
+		case 'mission_control':
+			wasmPath = MISSION_CONTROL_WASM_PATH;
+			break;
+		case 'orbiter':
+			wasmPath = ORBITER_WASM_PATH;
+			break;
+		default:
+			wasmPath = SATELLITE_WASM_PATH;
+	}
+
+	const data = new Blob([await readFile(wasmPath)]);
+
+	const { batch_id: batchId } = await init_asset_upload(
+		{
+			collection: '#releases',
+			description: toNullable(),
+			encoding_type: ['identity'],
+			full_path: fullPath,
+			name,
+			token: toNullable()
+		},
+		proposalId
+	);
+
+	const chunkSize = 1900000;
+
+	const uploadChunks = [];
+
+	let orderId = 0n;
+	for (let start = 0; start < data.size; start += chunkSize) {
+		const chunk = data.slice(start, start + chunkSize);
+
+		uploadChunks.push({
+			batchId,
+			chunk,
+			orderId
+		});
+
+		orderId++;
+	}
+
+	async function* batchUploadChunks({
+		uploadChunks,
+		limit = 12
+	}: {
+		uploadChunks: UploadChunk[];
+		limit?: number;
+	}) {
+		for (let i = 0; i < uploadChunks.length; i = i + limit) {
+			const batch = uploadChunks.slice(i, i + limit);
+			const result = await Promise.all(batch.map((params) => uploadChunk(params)));
+			yield result;
+		}
+	}
+
+	type UploadChunk = {
+		batchId: bigint;
+		chunk: Blob;
+		orderId: bigint;
+	};
+
+	const uploadChunk = async ({ batchId, chunk, orderId }: UploadChunk) =>
+		upload_asset_chunk({
+			batch_id: batchId,
+			content: new Uint8Array(await chunk.arrayBuffer()),
+			order_id: toNullable(orderId)
+		});
+
+	let chunkIds: { chunk_id: bigint }[] = [];
+	for await (const results of batchUploadChunks({ uploadChunks })) {
+		chunkIds = [...chunkIds, ...results];
+	}
+
+	const headers: [string, string][] = [['Content-Encoding', 'gzip']];
+
+	const contentType: [string, string][] | undefined =
+		headers.find(([type, _]) => type.toLowerCase() === 'content-type') === undefined &&
+		data.type !== undefined &&
+		data.type !== ''
+			? [['Content-Type', data.type]]
+			: undefined;
+
+	await commit_asset_upload({
+		batch_id: batchId,
+		chunk_ids: chunkIds.map(({ chunk_id }) => chunk_id),
+		headers: [...headers, ...(contentType ? contentType : [])]
+	});
+};
+
+export const deploySegments = async (actor: Actor<ConsoleActor>) => {
+	const { init_proposal, submit_proposal, commit_proposal } = actor;
+
+	const [proposalId, proposal] = await init_proposal({ SegmentsDeployment: null });
+
+	await Promise.all(
+		['satellite', 'mission_control', 'orbiter'].map((segment) =>
+			uploadSegment({
+				segment: segment as 'satellite' | 'mission_control' | 'orbiter',
+				actor,
+				proposalId
+			})
+		)
+	);
+
+	const [__, { sha256, status }] = await submit_proposal(proposalId);
+
+	const definedSha256 = fromNullable(sha256);
+
+	assertNonNullish(definedSha256);
+
+	await commit_proposal({
+		proposal_id: proposalId,
+		sha256: definedSha256
+	});
+};
 
 export const installReleases = async (actor: Actor<ConsoleActor>) => {
 	await installRelease({

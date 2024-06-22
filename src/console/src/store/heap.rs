@@ -9,8 +9,8 @@ use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
+use junobuild_shared::types::state::{UserId, Version};
 use std::cmp::min;
 
 /// Mission control centers
@@ -319,4 +319,20 @@ pub fn set_releases_metadata(metadata: &ReleasesMetadata) {
 
 fn set_releases_metadata_impl(metadata: &ReleasesMetadata, heap_state: &mut HeapState) {
     heap_state.releases_metadata = metadata.clone();
+}
+
+pub fn get_latest_mission_control_version() -> Option<Version> {
+    STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.mission_controls))
+}
+
+pub fn get_latest_orbiter_version() -> Option<Version> {
+    STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.orbiters))
+}
+
+pub fn get_latest_satellite_version() -> Option<Version> {
+    STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.satellites))
+}
+
+fn get_latest_version(versions: &[Version]) -> Option<Version> {
+    versions.iter().max().cloned()
 }

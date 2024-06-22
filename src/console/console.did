@@ -129,9 +129,9 @@ type ReleasesVersion = record {
 };
 type SegmentType = variant { Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
-  orbiter : opt nat64;
-  mission_control_version : opt nat64;
-  satellite_version : opt nat64;
+  orbiter : opt text;
+  mission_control_version : opt text;
+  satellite_version : opt text;
 };
 type SetController = record {
   metadata : vec record { text; text };

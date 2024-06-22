@@ -58,9 +58,9 @@ export const idlFactory = ({ IDL }) => {
 		clear_existing_assets: IDL.Opt(IDL.Bool)
 	});
 	const SegmentsDeploymentOptions = IDL.Record({
-		orbiter: IDL.Opt(IDL.Nat64),
-		mission_control_version: IDL.Opt(IDL.Nat64),
-		satellite_version: IDL.Opt(IDL.Nat64)
+		orbiter: IDL.Opt(IDL.Text),
+		mission_control_version: IDL.Opt(IDL.Text),
+		satellite_version: IDL.Opt(IDL.Text)
 	});
 	const ProposalType = IDL.Variant({
 		AssetsUpgrade: AssetsUpgradeOptions,

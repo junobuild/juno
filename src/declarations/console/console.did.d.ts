@@ -164,9 +164,9 @@ export interface ReleasesVersion {
 }
 export type SegmentType = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
-	orbiter: [] | [bigint];
-	mission_control_version: [] | [bigint];
-	satellite_version: [] | [bigint];
+	orbiter: [] | [string];
+	mission_control_version: [] | [string];
+	satellite_version: [] | [string];
 }
 export interface SetController {
 	metadata: Array<[string, string]>;

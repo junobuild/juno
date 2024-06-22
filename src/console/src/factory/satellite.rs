@@ -29,7 +29,7 @@ async fn create_satellite_wasm(
     mission_control_id: MissionControlId,
     user: UserId,
 ) -> Result<Principal, String> {
-    let wasm_arg = satellite_wasm_arg(&user, &mission_control_id);
+    let wasm_arg = satellite_wasm_arg(&user, &mission_control_id)?;
     let result = create_canister_install_code(
         Vec::from([console, mission_control_id, user]),
         &wasm_arg,

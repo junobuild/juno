@@ -1,12 +1,13 @@
 import { toNullable } from '@dfinity/utils';
 import { fileExists } from '@junobuild/cli-tools';
+import { uploadAsset } from '@junobuild/console';
 import { assertNonNullish } from '@junobuild/utils';
 import { parse } from '@ltd/j-toml';
 import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { deployWithProposal } from './console.deploy.services.mjs';
-import { readJunoConfig, uploadFile } from './console.deploy.utils.mjs';
+import { LOCAL_CONSOLE, readJunoConfig } from './console.deploy.utils.mjs';
 
 const readVersion = (segment) => {
 	const tomlFile = readFileSync(join(process.cwd(), 'src', segment, 'Cargo.toml'));
@@ -58,9 +59,10 @@ const deploy = async (proposalId) => {
 			data: new Blob([await readFile(source)])
 		};
 
-		await uploadFile({
+		await uploadAsset({
 			asset,
-			proposalId
+			proposalId,
+			console: LOCAL_CONSOLE
 		});
 
 		console.log(`✅  ${source} uploaded to ${fullPath}`);

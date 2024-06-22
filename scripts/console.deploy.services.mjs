@@ -1,12 +1,12 @@
-#!/usr/bin/env node
-
 import { fromNullable, uint8ArrayToHexString } from '@dfinity/utils';
-import { consoleActorLocal } from './actor.mjs';
-
-const { init_proposal, submit_proposal, commit_proposal } = await consoleActorLocal();
+import { commitProposal, initProposal, submitProposal } from '@junobuild/console';
+import { LOCAL_CONSOLE } from './console.deploy.utils.mjs';
 
 export const deployWithProposal = async ({ proposal_type, deploy }) => {
-	const [proposalId, _] = await init_proposal(proposal_type);
+	const [proposalId, _] = await initProposal({
+		proposalType: proposal_type,
+		console: LOCAL_CONSOLE
+	});
 
 	const { sourceFiles } = await deploy(proposalId);
 
@@ -14,15 +14,21 @@ export const deployWithProposal = async ({ proposal_type, deploy }) => {
 		process.exit(0);
 	}
 
-	const [__, { sha256, status }] = await submit_proposal(proposalId);
+	const [__, { sha256, status }] = await submitProposal({
+		proposalId,
+		console: LOCAL_CONSOLE
+	});
 
 	console.log('\nProposal submitted.\n');
 	console.log('🆔 ', proposalId);
 	console.log('🔒 ', uint8ArrayToHexString(fromNullable(sha256)));
 	console.log('⏳ ', status);
 
-	await commit_proposal({
-		proposal_id: proposalId,
-		sha256: fromNullable(sha256)
+	await commitProposal({
+		commitProposal: {
+			proposal_id: proposalId,
+			sha256: fromNullable(sha256)
+		},
+		console: LOCAL_CONSOLE
 	});
 };

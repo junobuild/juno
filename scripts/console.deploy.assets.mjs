@@ -1,8 +1,9 @@
 import { toNullable } from '@dfinity/utils';
 import { deploy as cliDeploy, hasArgs } from '@junobuild/cli-tools';
+import { uploadAsset } from '@junobuild/console';
 import { consoleActorLocal } from './actor.mjs';
 import { deployWithProposal } from './console.deploy.services.mjs';
-import { readJunoConfig, uploadFile } from './console.deploy.utils.mjs';
+import { LOCAL_CONSOLE, readJunoConfig } from './console.deploy.utils.mjs';
 
 const args = process.argv.slice(2);
 
@@ -87,7 +88,11 @@ const config = await readJunoConfig();
 
 const deployWithCli = async (proposalId) => {
 	const upload = async (asset) => {
-		await uploadFile({ asset, proposalId });
+		await uploadAsset({
+			asset,
+			proposalId,
+			console: LOCAL_CONSOLE
+		});
 	};
 
 	return await cliDeploy({

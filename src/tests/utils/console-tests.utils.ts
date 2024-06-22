@@ -164,15 +164,23 @@ export const deploySegments = async (actor: Actor<ConsoleActor>) => {
 
 	const [proposalId, proposal] = await init_proposal({ SegmentsDeployment: null });
 
-	await Promise.all(
-		['satellite', 'mission_control', 'orbiter'].map((segment) =>
-			uploadSegment({
-				segment: segment as 'satellite' | 'mission_control' | 'orbiter',
-				actor,
-				proposalId
-			})
-		)
-	);
+	await uploadSegment({
+		segment: 'satellite',
+		actor,
+		proposalId
+	});
+
+	await uploadSegment({
+		segment: 'orbiter',
+		actor,
+		proposalId
+	});
+
+	await uploadSegment({
+		segment: 'mission_control',
+		actor,
+		proposalId
+	});
 
 	const [__, { sha256, status }] = await submit_proposal(proposalId);
 

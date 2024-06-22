@@ -1,5 +1,7 @@
 use crate::storage::state::heap::get_asset;
-use crate::store::heap::{get_latest_mission_control_version, get_latest_orbiter_version, get_latest_satellite_version};
+use crate::store::heap::{
+    get_latest_mission_control_version, get_latest_orbiter_version, get_latest_satellite_version,
+};
 use candid::{Encode, Principal};
 use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::ic::WasmArg;

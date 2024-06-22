@@ -12,6 +12,7 @@ use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{ControllerId, Controllers};
 use junobuild_shared::types::state::{UserId, Version};
 use std::cmp::min;
+use std::collections::HashSet;
 
 /// Mission control centers
 
@@ -333,6 +334,6 @@ pub fn get_latest_satellite_version() -> Option<Version> {
     STATE.with(|state| get_latest_version(&state.borrow().heap.releases_metadata.satellites))
 }
 
-fn get_latest_version(versions: &[Version]) -> Option<Version> {
+fn get_latest_version(versions: &HashSet<Version>) -> Option<Version> {
     versions.iter().max().cloned()
 }

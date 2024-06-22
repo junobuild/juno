@@ -76,11 +76,6 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		proposal_type: ProposalType
 	});
-	const ReleasesVersion = IDL.Record({
-		satellite: IDL.Opt(IDL.Text),
-		orbiter: IDL.Opt(IDL.Text),
-		mission_control: IDL.Opt(IDL.Text)
-	});
 	const MissionControl = IDL.Record({
 		updated_at: IDL.Nat64,
 		credits: Tokens,
@@ -197,12 +192,6 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		block_index_refunded: IDL.Opt(IDL.Nat64)
 	});
-	const SegmentType = IDL.Variant({
-		Orbiter: IDL.Null,
-		MissionControl: IDL.Null,
-		Satellite: IDL.Null
-	});
-	const LoadRelease = IDL.Record({ total: IDL.Nat64, chunks: IDL.Nat64 });
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
 		Admin: IDL.Null
@@ -215,6 +204,11 @@ export const idlFactory = ({ IDL }) => {
 	const SetControllersArgs = IDL.Record({
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
+	});
+	const SegmentType = IDL.Variant({
+		Orbiter: IDL.Null,
+		MissionControl: IDL.Null,
+		Satellite: IDL.Null
 	});
 	const RateConfig = IDL.Record({
 		max_tokens: IDL.Nat64,
@@ -242,7 +236,6 @@ export const idlFactory = ({ IDL }) => {
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
-		get_releases_version: IDL.Func([], [ReleasesVersion], ['query']),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
@@ -261,8 +254,6 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],
 			['query']
 		),
-		load_release: IDL.Func([SegmentType, IDL.Vec(IDL.Nat8), IDL.Text], [LoadRelease], []),
-		reset_release: IDL.Func([SegmentType], [], []),
 		set_config: IDL.Func([Config], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),

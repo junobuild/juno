@@ -7,7 +7,6 @@ impl From<&UpgradeHeapState> for HeapState {
         HeapState {
             mission_controls: state.mission_controls.clone(),
             payments: state.payments.clone(),
-            releases: state.releases.clone(),
             invitation_codes: state.invitation_codes.clone(),
             controllers: state.controllers.clone(),
             rates: state.rates.clone(),

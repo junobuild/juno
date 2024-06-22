@@ -1,4 +1,5 @@
 import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
+import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { Identity } from '@dfinity/agent';
@@ -28,7 +29,7 @@ const installRelease = async ({
 	download: (version: string) => Promise<string>;
 	segment: { Satellite: null } | { Orbiter: null } | { MissionControl: null };
 	version: string;
-	actor: Actor<ConsoleActor>;
+	actor: Actor<ConsoleActor_0_0_8>;
 }) => {
 	const { load_release, reset_release } = actor;
 
@@ -206,7 +207,7 @@ export const deploySegments = async (actor: Actor<ConsoleActor>) => {
 	});
 };
 
-export const installReleases = async (actor: Actor<ConsoleActor>) => {
+export const installReleases = async (actor: Actor<ConsoleActor_0_0_8>) => {
 	await installRelease({
 		download: downloadSatellite,
 		version: versionSatellite,
@@ -231,7 +232,7 @@ export const installReleases = async (actor: Actor<ConsoleActor>) => {
 	await testReleases(actor);
 };
 
-export const testReleases = async (actor: Actor<ConsoleActor>) => {
+export const testReleases = async (actor: Actor<ConsoleActor_0_0_8>) => {
 	const { get_releases_version } = actor;
 
 	const { satellite, mission_control, orbiter } = await get_releases_version();
@@ -246,7 +247,7 @@ export const initMissionControls = async ({
 	pic,
 	length
 }: {
-	actor: Actor<ConsoleActor>;
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_8>;
 	pic: PocketIc;
 	length: number;
 }): Promise<Identity[]> => {
@@ -270,7 +271,7 @@ export const testSatelliteExists = async ({
 	pic
 }: {
 	users: Identity[];
-	actor: Actor<ConsoleActor>;
+	actor: Actor<ConsoleActor | ConsoleActor_0_0_8>;
 	pic: PocketIc;
 }) => {
 	const { list_user_mission_control_centers } = actor;

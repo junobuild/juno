@@ -2,7 +2,9 @@ import type { Identity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
-import { existsSync, writeFileSync } from 'node:fs';
+import { assertNonNullish } from '@junobuild/utils';
+import { parse } from '@ltd/j-toml';
+import { existsSync, readFileSync, writeFileSync } from 'node:fs';
 import { get, type RequestOptions } from 'node:https';
 import { join } from 'node:path';
 
@@ -105,4 +107,18 @@ const download = async ({ wasm, url }: { wasm: string; url: string }): Promise<s
 	writeFileSync(destination, buffer);
 
 	return destination;
+};
+
+export const readWasmVersion = (segment: string): string => {
+	const tomlFile = readFileSync(join(process.cwd(), 'src', segment, 'Cargo.toml'));
+
+	type Toml = { package: { version: string } } | undefined;
+
+	const result: Toml = parse(tomlFile.toString()) as unknown as Toml;
+
+	const version = result?.package?.version;
+
+	assertNonNullish(version);
+
+	return version;
 };

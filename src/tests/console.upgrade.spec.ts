@@ -1,5 +1,5 @@
-import type { _SERVICE as ConsoleActor } from '$declarations/console/console.did';
-import { idlFactory as idlFactorConsole } from '$declarations/console/console.factory.did';
+import type { _SERVICE as ConsoleActor_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.did';
+import { idlFactory as idlFactorConsole_0_0_8 } from '$declarations/deprecated/console-0-0-8-patch1.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
@@ -8,7 +8,6 @@ import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import {
 	initMissionControls,
 	installReleases,
-	testReleases,
 	testSatelliteExists
 } from './utils/console-tests.utils';
 import { tick } from './utils/pic-tests.utils';
@@ -16,7 +15,7 @@ import { CONSOLE_WASM_PATH, downloadConsole } from './utils/setup-tests.utils';
 
 describe('Console upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<ConsoleActor>;
+	let actor: Actor<ConsoleActor_0_0_8>;
 	let canisterId: Principal;
 
 	const controller = Ed25519KeyIdentity.generate();
@@ -41,8 +40,8 @@ describe('Console upgrade', () => {
 
 			const destination = await downloadConsole({ junoVersion: '0.0.30', version: '0.0.8' });
 
-			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor>({
-				idlFactory: idlFactorConsole,
+			const { actor: c, canisterId: cId } = await pic.setupCanister<ConsoleActor_0_0_8>({
+				idlFactory: idlFactorConsole_0_0_8,
 				wasm: destination,
 				sender: controller.getPrincipal()
 			});
@@ -104,7 +103,8 @@ describe('Console upgrade', () => {
 
 					await upgrade();
 
-					await testReleases(actor);
+					// Moving from 0.0.8 to 0.0.9 we are on purpose deprecating previous ways to hold wasm in memory
+					// await testReleases(actor);
 
 					await testUsers(originalUsers);
 

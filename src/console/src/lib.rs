@@ -41,6 +41,7 @@ use crate::store::stable::{
     get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
+use crate::types::core::CommitProposalError;
 use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets, SegmentType};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
@@ -49,6 +50,7 @@ use crate::types::state::{
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;
 use ciborium::into_writer;
+use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::caller;
 use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, trap};
@@ -326,11 +328,18 @@ fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     make_submit_proposal(caller, &proposal_id).unwrap_or_else(|e| trap(&e))
 }
 
-#[update(guard = "caller_is_admin_controller")]
-fn commit_proposal(proposal: CommitProposal) {
-    make_commit_proposal(&proposal).unwrap_or_else(|e| trap(&e));
-
-    defer_init_certified_assets();
+#[update(guard = "caller_is_admin_controller", manual_reply = true)]
+fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
+    match make_commit_proposal(&proposal) {
+        Ok(_) => {
+            defer_init_certified_assets();
+            ManualReply::one(())
+        }
+        Err(CommitProposalError::ProposalNotFound(e)) => {
+            trap(&e);
+        }
+        Err(e) => ManualReply::reject(e.to_string()),
+    }
 }
 
 #[update(guard = "caller_is_admin_controller")]

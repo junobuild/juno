@@ -9,6 +9,7 @@ use crate::storage::state::stable::{
 };
 use crate::storage::store::{delete_assets, insert_asset_encoding};
 use crate::store::stable::{count_proposals, get_proposal, insert_proposal};
+use crate::types::core::CommitProposalError;
 use crate::types::interface::CommitProposal;
 use crate::types::state::{Proposal, ProposalId, ProposalStatus, ProposalType};
 use candid::Principal;
@@ -45,15 +46,26 @@ pub fn submit_proposal(
     }
 }
 
-pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), String> {
+pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposalError> {
     let proposal = get_proposal(&proposition.proposal_id);
 
     match proposal {
-        None => Err(format!(
+        None => Err(CommitProposalError::ProposalNotFound(format!(
             "{} {}",
             ERROR_CANNOT_COMMIT_PROPOSAL, proposition.proposal_id
-        )),
-        Some(proposal) => secure_commit_proposal(proposition, &proposal),
+        ))),
+        Some(proposal) => match secure_commit_proposal(proposition, &proposal) {
+            Ok(_) => {
+                let executed_proposal = Proposal::execute(&proposal);
+                insert_proposal(&proposition.proposal_id, &executed_proposal);
+                Ok(())
+            }
+            Err(e) => {
+                let failed_proposal = Proposal::fail(&proposal);
+                insert_proposal(&proposition.proposal_id, &failed_proposal);
+                Err(e)
+            }
+        },
     }
 }
 
@@ -119,22 +131,22 @@ fn secure_submit_proposal(
 fn secure_commit_proposal(
     commit_proposal: &CommitProposal,
     proposal: &Proposal,
-) -> Result<(), String> {
+) -> Result<(), CommitProposalError> {
     if proposal.status != ProposalStatus::Open {
-        return Err(format!(
+        return Err(CommitProposalError::ProposalNotOpen(format!(
             "Proposal cannot be committed. Current status: {:?}",
             proposal.status
-        ));
+        )));
     }
 
     match &proposal.sha256 {
         Some(sha256) if sha256 == &commit_proposal.sha256 => (),
         _ => {
-            return Err(format!("The provided SHA-256 hash ({}) does not match the expected value for the proposal to commit.", encode(commit_proposal.sha256)));
+            return Err(CommitProposalError::InvalidSha256(format!("The provided SHA-256 hash ({}) does not match the expected value for the proposal to commit.", encode(commit_proposal.sha256))));
         }
     }
 
-    assert_known_proposal_type(proposal)?;
+    assert_known_proposal_type(proposal).map_err(CommitProposalError::InvalidType)?;
 
     // Mark proposal as accepted.
     let accepted_proposal = Proposal::accept(proposal);
@@ -142,13 +154,10 @@ fn secure_commit_proposal(
 
     pre_commit_assets(proposal);
 
-    copy_committed_assets(&commit_proposal.proposal_id)?;
+    copy_committed_assets(&commit_proposal.proposal_id)
+        .map_err(CommitProposalError::CommitAssetsIssue)?;
 
-    post_commit_assets(proposal)?;
-
-    // Mark proposal as executed.
-    let executed_proposal = Proposal::execute(proposal);
-    insert_proposal(&commit_proposal.proposal_id, &executed_proposal);
+    post_commit_assets(proposal).map_err(CommitProposalError::PostCommitAssetsIssue)?;
 
     Ok(())
 }

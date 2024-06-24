@@ -335,9 +335,6 @@ fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
             defer_init_certified_assets();
             ManualReply::one(())
         }
-        Err(CommitProposalError::ProposalNotFound(e)) => {
-            trap(&e);
-        }
         Err(e) => ManualReply::reject(e.to_string()),
     }
 }

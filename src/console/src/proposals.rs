@@ -47,25 +47,28 @@ pub fn submit_proposal(
 }
 
 pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposalError> {
-    let proposal = get_proposal(&proposition.proposal_id);
-
-    match proposal {
-        None => Err(CommitProposalError::ProposalNotFound(format!(
+    let proposal = get_proposal(&proposition.proposal_id).ok_or_else(|| {
+        CommitProposalError::ProposalNotFound(format!(
             "{} {}",
             ERROR_CANNOT_COMMIT_PROPOSAL, proposition.proposal_id
-        ))),
-        Some(proposal) => match secure_commit_proposal(proposition, &proposal) {
-            Ok(_) => {
-                let executed_proposal = Proposal::execute(&proposal);
-                insert_proposal(&proposition.proposal_id, &executed_proposal);
-                Ok(())
-            }
-            Err(e) => {
-                let failed_proposal = Proposal::fail(&proposal);
-                insert_proposal(&proposition.proposal_id, &failed_proposal);
-                Err(e)
-            }
-        },
+        ))
+    })?;
+
+    match secure_commit_proposal(proposition, &proposal) {
+        Ok(_) => {
+            let executed_proposal = Proposal::execute(&proposal);
+            insert_proposal(&proposition.proposal_id, &executed_proposal);
+            Ok(())
+        }
+        Err(e @ CommitProposalError::ProposalNotFound(_))
+        | Err(e @ CommitProposalError::ProposalNotOpen(_))
+        | Err(e @ CommitProposalError::InvalidSha256(_))
+        | Err(e @ CommitProposalError::InvalidType(_)) => Err(e),
+        Err(e) => {
+            let failed_proposal = Proposal::fail(&proposal);
+            insert_proposal(&proposition.proposal_id, &failed_proposal);
+            Err(e)
+        }
     }
 }
 

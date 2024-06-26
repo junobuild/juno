@@ -41,7 +41,6 @@ use crate::store::stable::{
     get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
-use crate::types::core::CommitProposalError;
 use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets, SegmentType};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,

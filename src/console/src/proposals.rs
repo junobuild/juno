@@ -60,15 +60,13 @@ pub fn commit_proposal(proposition: &CommitProposal) -> Result<(), CommitProposa
             insert_proposal(&proposition.proposal_id, &executed_proposal);
             Ok(())
         }
-        Err(e @ CommitProposalError::ProposalNotFound(_))
-        | Err(e @ CommitProposalError::ProposalNotOpen(_))
-        | Err(e @ CommitProposalError::InvalidSha256(_))
-        | Err(e @ CommitProposalError::InvalidType(_)) => Err(e),
-        Err(e) => {
+        Err(e @ CommitProposalError::CommitAssetsIssue(_))
+        | Err(e @ CommitProposalError::PostCommitAssetsIssue(_)) => {
             let failed_proposal = Proposal::fail(&proposal);
             insert_proposal(&proposition.proposal_id, &failed_proposal);
             Err(e)
         }
+        Err(e) => Err(e),
     }
 }
 

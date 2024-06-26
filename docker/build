@@ -150,7 +150,10 @@ function build_canister() {
       then
         # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.
         ic-wasm "$canister.wasm" -o "$canister.wasm" metadata juno:build -d "stock" -v public
+      fi
 
+      if [ "$canister" == "satellite" ] || [ "$canister" == "console" ];
+      then
         # indicate support for certificate version 1 and 2 in the canister metadata
         ic-wasm "$canister.wasm" -o "$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public
       fi

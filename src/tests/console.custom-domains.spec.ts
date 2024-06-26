@@ -6,6 +6,7 @@ import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/console-tests.constants';
+import { uploadFile } from './utils/console-tests.utils';
 import {
 	adminCustomDomainsTests,
 	anonymousCustomDomainsTests
@@ -58,6 +59,8 @@ describe('Console / Custom Domains', () => {
 					clear_existing_assets: toNullable(true)
 				}
 			});
+
+			await uploadFile({ proposalId, actor });
 
 			const [__, proposal] = await submit_proposal(proposalId);
 

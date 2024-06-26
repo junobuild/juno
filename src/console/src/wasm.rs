@@ -61,8 +61,7 @@ pub fn orbiter_wasm_arg(
     user: &UserId,
     mission_control_id: &MissionControlId,
 ) -> Result<WasmArg, String> {
-    let latest_version =
-        get_latest_orbiter_version().ok_or("No orbiter versions available.")?;
+    let latest_version = get_latest_orbiter_version().ok_or("No orbiter versions available.")?;
     let full_path = format!("/releases/orbiter-v{}.wasm.gz", latest_version);
     let wasm: Blob = get_chunks(&full_path)?;
     let install_arg: Vec<u8> = Encode!(&SegmentArgs {

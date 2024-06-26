@@ -1,5 +1,6 @@
 use crate::constants::{DEFAULT_RATE_CONFIG, ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::memory::init_stable_state;
+use crate::types::core::CommitProposalError;
 use crate::types::ledger::Payment;
 use crate::types::state::{
     Fee, Fees, HeapState, MissionControl, Proposal, ProposalKey, ProposalStatus, ProposalType,
@@ -14,6 +15,7 @@ use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::Hash;
 use junobuild_shared::types::state::Version;
 use std::borrow::Cow;
+use std::fmt;
 
 impl Default for State {
     fn default() -> Self {
@@ -178,6 +180,32 @@ impl Proposal {
             executed_at: Some(now),
             version: Some(version),
             ..current_proposal.clone()
+        }
+    }
+
+    pub fn fail(current_proposal: &Proposal) -> Self {
+        let now = time();
+
+        let version = Self::get_next_version(&Some(current_proposal.clone()));
+
+        Proposal {
+            status: ProposalStatus::Failed,
+            updated_at: now,
+            version: Some(version),
+            ..current_proposal.clone()
+        }
+    }
+}
+
+impl fmt::Display for CommitProposalError {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            CommitProposalError::ProposalNotFound(err) => write!(f, "{}", err),
+            CommitProposalError::ProposalNotOpen(err) => write!(f, "{}", err),
+            CommitProposalError::InvalidSha256(err) => write!(f, "{}", err),
+            CommitProposalError::InvalidType(err) => write!(f, "{}", err),
+            CommitProposalError::CommitAssetsIssue(err) => write!(f, "{}", err),
+            CommitProposalError::PostCommitAssetsIssue(err) => write!(f, "{}", err),
         }
     }
 }

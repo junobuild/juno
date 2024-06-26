@@ -49,6 +49,7 @@ use crate::types::state::{
 use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;
 use ciborium::into_writer;
+use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::caller;
 use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, trap};
@@ -326,11 +327,15 @@ fn submit_proposal(proposal_id: ProposalId) -> (ProposalId, Proposal) {
     make_submit_proposal(caller, &proposal_id).unwrap_or_else(|e| trap(&e))
 }
 
-#[update(guard = "caller_is_admin_controller")]
-fn commit_proposal(proposal: CommitProposal) {
-    make_commit_proposal(&proposal).unwrap_or_else(|e| trap(&e));
-
-    defer_init_certified_assets();
+#[update(guard = "caller_is_admin_controller", manual_reply = true)]
+fn commit_proposal(proposal: CommitProposal) -> ManualReply<()> {
+    match make_commit_proposal(&proposal) {
+        Ok(_) => {
+            defer_init_certified_assets();
+            ManualReply::one(())
+        }
+        Err(e) => ManualReply::reject(e.to_string()),
+    }
 }
 
 #[update(guard = "caller_is_admin_controller")]

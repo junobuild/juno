@@ -5,7 +5,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { beforeAll, describe, expect, inject } from 'vitest';
-import { deploySegments } from './utils/console-tests.utils';
+import { deploySegments, uploadFile } from './utils/console-tests.utils';
 import { CONSOLE_WASM_PATH, WASM_VERSIONS } from './utils/setup-tests.utils';
 
 describe('Console / Metadata', () => {
@@ -74,6 +74,8 @@ describe('Console / Metadata', () => {
 					clear_existing_assets: toNullable(true)
 				}
 			});
+
+			await uploadFile({ proposalId, actor });
 
 			const [__, proposal] = await submit_proposal(proposalId);
 

@@ -19,6 +19,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { assertNonNullish } from '@junobuild/utils';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/console-tests.constants';
+import { uploadFile } from './utils/console-tests.utils';
 import { sha256ToBase64String } from './utils/crypto-tests.utils';
 import { CONSOLE_WASM_PATH } from './utils/setup-tests.utils';
 
@@ -382,6 +383,16 @@ describe('Console / Storage', () => {
 					);
 				});
 
+				it('should not update proposal status', async () => {
+					const { get_proposal } = actor;
+
+					const proposal = fromNullable(await get_proposal(proposalId));
+
+					assertNonNullish(proposal);
+
+					expect(proposal.status).toEqual({ Open: null });
+				});
+
 				it('should commit proposal', async () => {
 					const { commit_proposal } = actor;
 
@@ -391,6 +402,16 @@ describe('Console / Storage', () => {
 							proposal_id: proposalId
 						})
 					).resolves.not.toThrowError();
+				});
+
+				it('should have updated proposal to executed', async () => {
+					const { get_proposal } = actor;
+
+					const proposal = fromNullable(await get_proposal(proposalId));
+
+					assertNonNullish(proposal);
+
+					expect(proposal.status).toEqual({ Executed: null });
 				});
 
 				it('should serve asset', async () => {
@@ -449,15 +470,7 @@ describe('Console / Storage', () => {
 		);
 
 		it('should clear assets with proposal', async () => {
-			const {
-				http_request,
-				init_proposal,
-				commit_proposal,
-				submit_proposal,
-				commit_asset_upload,
-				upload_asset_chunk,
-				init_asset_upload
-			} = actor;
+			const { http_request, init_proposal, commit_proposal, submit_proposal } = actor;
 
 			const [proposalId, __] = await init_proposal({
 				AssetsUpgrade: {
@@ -465,33 +478,7 @@ describe('Console / Storage', () => {
 				}
 			});
 
-			const file = await init_asset_upload(
-				{
-					collection: '#dapp',
-					description: toNullable(),
-					encoding_type: [],
-					full_path: '/hello3.html',
-					name: 'hello3.html',
-					token: toNullable()
-				},
-				proposalId
-			);
-
-			const blob = new Blob([HTML], {
-				type: 'text/plain; charset=utf-8'
-			});
-
-			const chunk = await upload_asset_chunk({
-				batch_id: file.batch_id,
-				content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-				order_id: [0n]
-			});
-
-			await commit_asset_upload({
-				batch_id: file.batch_id,
-				chunk_ids: [chunk.chunk_id],
-				headers: []
-			});
+			await uploadFile({ proposalId, actor });
 
 			const [_, proposal] = await submit_proposal(proposalId);
 
@@ -524,7 +511,7 @@ describe('Console / Storage', () => {
 		it('should still serve asset after #dApp has been cleared', async () => {
 			const { http_request } = actor;
 
-			const { status_code, headers, body } = await http_request({
+			const { status_code } = await http_request({
 				body: [],
 				certificate_version: toNullable(),
 				headers: [],
@@ -533,6 +520,33 @@ describe('Console / Storage', () => {
 			});
 
 			expect(status_code).toBe(200);
+		});
+
+		it('should mark proposal as failed', async () => {
+			const { init_proposal, commit_proposal, submit_proposal, get_proposal } = actor;
+
+			const [proposalId, __] = await init_proposal({
+				AssetsUpgrade: {
+					clear_existing_assets: toNullable(false)
+				}
+			});
+
+			// We do not upload any chunks and commit batch to make the proposal fail.
+
+			const [_, { sha256 }] = await submit_proposal(proposalId);
+
+			await expect(
+				commit_proposal({
+					sha256: fromNullable(sha256)!,
+					proposal_id: proposalId
+				})
+			).rejects.toThrow(`Empty assets for proposal ID ${proposalId}.`);
+
+			const proposal = fromNullable(await get_proposal(proposalId));
+
+			assertNonNullish(proposal);
+
+			expect(proposal.status).toEqual({ Failed: null });
 		});
 
 		describe('Releases assertions', () => {

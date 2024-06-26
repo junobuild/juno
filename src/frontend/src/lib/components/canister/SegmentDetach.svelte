@@ -1,15 +1,12 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store.js';
-	import IconStop from '$lib/components/icons/IconStop.svelte';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import IconLinkOff from '$lib/components/icons/IconLinkOff.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
-	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
+	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { busy } from '$lib/stores/busy.store';
-	import { canisterStop } from '$lib/api/ic.api';
-	import { emit } from '$lib/utils/events.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 	import { createEventDispatcher } from 'svelte';
 	import { detachOrbiter, detachSatellite } from '$lib/services/mission-control.services';

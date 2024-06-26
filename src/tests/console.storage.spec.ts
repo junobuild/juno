@@ -556,12 +556,7 @@ describe('Console / Storage', () => {
 		});
 
 		it('should mark proposal as failed', async () => {
-			const {
-				init_proposal,
-				commit_proposal,
-				submit_proposal,
-				get_proposal
-			} = actor;
+			const { init_proposal, commit_proposal, submit_proposal, get_proposal } = actor;
 
 			const [proposalId, __] = await init_proposal({
 				AssetsUpgrade: {

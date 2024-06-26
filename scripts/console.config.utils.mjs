@@ -1,5 +1,6 @@
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { nonNullish } from '@dfinity/utils';
+import { assertAnswerCtrlC } from '@junobuild/cli-tools';
 import Conf from 'conf';
 import prompts from 'prompts';
 
@@ -12,8 +13,7 @@ const askForPassword = async () => {
 		}
 	]);
 
-	// TODO: cli-tools
-	// assertAnswerCtrlC(satellite, 'The satellite ID is mandatory');
+	assertAnswerCtrlC(encryptionKey);
 
 	return encryptionKey;
 };
@@ -27,12 +27,12 @@ const initConfig = async (mainnet) => {
 
 	const encryptionKey = await askForPassword();
 
-	const projectName = `juno-${mainnet ? "" : "dev-"}console`
+	const projectName = `juno-${mainnet ? '' : 'dev-'}console`;
 
 	config = new Conf({ projectName, encryptionKey });
 };
 
-export const saveToken = async ({mainnet, token}) => {
+export const saveToken = async ({ mainnet, token }) => {
 	await initConfig(mainnet);
 
 	config.set('token', token);

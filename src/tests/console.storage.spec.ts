@@ -382,6 +382,16 @@ describe('Console / Storage', () => {
 					);
 				});
 
+				it('should not update proposal status', async () => {
+					const { get_proposal } = actor;
+
+					const proposal = fromNullable(await get_proposal(proposalId));
+
+					assertNonNullish(proposal);
+
+					expect(proposal.status).toEqual({ Open: null });
+				});
+
 				it('should commit proposal', async () => {
 					const { commit_proposal } = actor;
 
@@ -391,6 +401,16 @@ describe('Console / Storage', () => {
 							proposal_id: proposalId
 						})
 					).resolves.not.toThrowError();
+				});
+
+				it('should have updated proposal to executed', async () => {
+					const { get_proposal } = actor;
+
+					const proposal = fromNullable(await get_proposal(proposalId));
+
+					assertNonNullish(proposal);
+
+					expect(proposal.status).toEqual({ Executed: null });
 				});
 
 				it('should serve asset', async () => {
@@ -533,6 +553,38 @@ describe('Console / Storage', () => {
 			});
 
 			expect(status_code).toBe(200);
+		});
+
+		it('should mark proposal as failed', async () => {
+			const {
+				init_proposal,
+				commit_proposal,
+				submit_proposal,
+				get_proposal
+			} = actor;
+
+			const [proposalId, __] = await init_proposal({
+				AssetsUpgrade: {
+					clear_existing_assets: toNullable(false)
+				}
+			});
+
+			// We do not upload any chunks and commit batch to make the proposal fail.
+
+			const [_, { sha256 }] = await submit_proposal(proposalId);
+
+			await expect(
+				commit_proposal({
+					sha256: fromNullable(sha256)!,
+					proposal_id: proposalId
+				})
+			).rejects.toThrow(`Empty assets for proposal ID ${proposalId}.`);
+
+			const proposal = fromNullable(await get_proposal(proposalId));
+
+			assertNonNullish(proposal);
+
+			expect(proposal.status).toEqual({ Failed: null });
 		});
 
 		describe('Releases assertions', () => {

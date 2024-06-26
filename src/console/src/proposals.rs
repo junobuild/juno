@@ -190,6 +190,13 @@ fn copy_committed_assets(proposal_id: &ProposalId) -> Result<(), String> {
     // Copy from stable memory to heap.
     let assets = get_assets_stable(proposal_id);
 
+    if assets.is_empty() {
+        return Err(format!(
+            "Empty assets for proposal ID {}.",
+            proposal_id
+        ));
+    }
+
     for (key, asset) in assets {
         insert_asset(&key.full_path, &asset);
 

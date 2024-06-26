@@ -19,6 +19,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { assertNonNullish } from '@junobuild/utils';
 import { beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/console-tests.constants';
+import { uploadFile } from './utils/console-tests.utils';
 import { sha256ToBase64String } from './utils/crypto-tests.utils';
 import { CONSOLE_WASM_PATH } from './utils/setup-tests.utils';
 
@@ -469,15 +470,7 @@ describe('Console / Storage', () => {
 		);
 
 		it('should clear assets with proposal', async () => {
-			const {
-				http_request,
-				init_proposal,
-				commit_proposal,
-				submit_proposal,
-				commit_asset_upload,
-				upload_asset_chunk,
-				init_asset_upload
-			} = actor;
+			const { http_request, init_proposal, commit_proposal, submit_proposal } = actor;
 
 			const [proposalId, __] = await init_proposal({
 				AssetsUpgrade: {
@@ -485,33 +478,7 @@ describe('Console / Storage', () => {
 				}
 			});
 
-			const file = await init_asset_upload(
-				{
-					collection: '#dapp',
-					description: toNullable(),
-					encoding_type: [],
-					full_path: '/hello3.html',
-					name: 'hello3.html',
-					token: toNullable()
-				},
-				proposalId
-			);
-
-			const blob = new Blob([HTML], {
-				type: 'text/plain; charset=utf-8'
-			});
-
-			const chunk = await upload_asset_chunk({
-				batch_id: file.batch_id,
-				content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-				order_id: [0n]
-			});
-
-			await commit_asset_upload({
-				batch_id: file.batch_id,
-				chunk_ids: [chunk.chunk_id],
-				headers: []
-			});
+			await uploadFile({ proposalId, actor });
 
 			const [_, proposal] = await submit_proposal(proposalId);
 
@@ -544,7 +511,7 @@ describe('Console / Storage', () => {
 		it('should still serve asset after #dApp has been cleared', async () => {
 			const { http_request } = actor;
 
-			const { status_code, headers, body } = await http_request({
+			const { status_code } = await http_request({
 				body: [],
 				certificate_version: toNullable(),
 				headers: [],

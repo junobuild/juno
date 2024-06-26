@@ -4,7 +4,7 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { assertNonNullish } from '@junobuild/utils';
 import { readFile } from 'node:fs/promises';
@@ -166,7 +166,7 @@ const uploadSegment = async ({
 export const deploySegments = async (actor: Actor<ConsoleActor>) => {
 	const { init_proposal, submit_proposal, commit_proposal } = actor;
 
-	const [proposalId, proposal] = await init_proposal({
+	const [proposalId, _] = await init_proposal({
 		SegmentsDeployment: {
 			orbiter: toNullable(WASM_VERSIONS.orbiter),
 			mission_control_version: toNullable(WASM_VERSIONS.mission_control),
@@ -195,7 +195,7 @@ export const deploySegments = async (actor: Actor<ConsoleActor>) => {
 		proposalId
 	});
 
-	const [__, { sha256, status }] = await submit_proposal(proposalId);
+	const [__, { sha256 }] = await submit_proposal(proposalId);
 
 	const definedSha256 = fromNullable(sha256);
 
@@ -298,4 +298,44 @@ export const testSatelliteExists = async ({
 
 		await expect(version()).resolves.not.toThrowError();
 	}
+};
+
+export const uploadFile = async ({
+	actor,
+	proposalId
+}: {
+	actor: Actor<ConsoleActor>;
+	proposalId: bigint;
+}) => {
+	const { init_asset_upload, commit_asset_upload, upload_asset_chunk } = actor;
+
+	const file = await init_asset_upload(
+		{
+			collection: '#dapp',
+			description: toNullable(),
+			encoding_type: [],
+			full_path: '/hello3.html',
+			name: 'hello3.html',
+			token: toNullable()
+		},
+		proposalId
+	);
+
+	const HTML = '<html><body>Hello</body></html>';
+
+	const blob = new Blob([HTML], {
+		type: 'text/plain; charset=utf-8'
+	});
+
+	const chunk = await upload_asset_chunk({
+		batch_id: file.batch_id,
+		content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+		order_id: [0n]
+	});
+
+	await commit_asset_upload({
+		batch_id: file.batch_id,
+		chunk_ids: [chunk.chunk_id],
+		headers: []
+	});
 };

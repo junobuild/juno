@@ -177,7 +177,7 @@ service : () -> {
   add_invitation_code : (text) -> ();
   assert_mission_control_center : (AssertMissionControlCenterArgs) -> () query;
   commit_asset_upload : (CommitBatch) -> ();
-  commit_proposal : (CommitProposal) -> ();
+  commit_proposal : (CommitProposal) -> (null);
   create_orbiter : (CreateCanisterArgs) -> (principal);
   create_satellite : (CreateCanisterArgs) -> (principal);
   del_controllers : (DeleteControllersArgs) -> ();

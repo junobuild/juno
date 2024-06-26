@@ -225,7 +225,7 @@ export const idlFactory = ({ IDL }) => {
 		add_invitation_code: IDL.Func([IDL.Text], [], []),
 		assert_mission_control_center: IDL.Func([AssertMissionControlCenterArgs], [], ['query']),
 		commit_asset_upload: IDL.Func([CommitBatch], [], []),
-		commit_proposal: IDL.Func([CommitProposal], [], []),
+		commit_proposal: IDL.Func([CommitProposal], [IDL.Null], []),
 		create_orbiter: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		create_satellite: IDL.Func([CreateCanisterArgs], [IDL.Principal], []),
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),

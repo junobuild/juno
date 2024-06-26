@@ -216,7 +216,7 @@ export interface _SERVICE {
 	add_invitation_code: ActorMethod<[string], undefined>;
 	assert_mission_control_center: ActorMethod<[AssertMissionControlCenterArgs], undefined>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
-	commit_proposal: ActorMethod<[CommitProposal], undefined>;
+	commit_proposal: ActorMethod<[CommitProposal], null>;
 	create_orbiter: ActorMethod<[CreateCanisterArgs], Principal>;
 	create_satellite: ActorMethod<[CreateCanisterArgs], Principal>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;

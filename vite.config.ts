@@ -2,50 +2,14 @@ import { NodeModulesPolyfillPlugin } from '@esbuild-plugins/node-modules-polyfil
 import inject from '@rollup/plugin-inject';
 import { sveltekit } from '@sveltejs/kit/vite';
 import { readFileSync } from 'fs';
-import { dirname, join, resolve } from 'path';
+import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
 import type { UserConfig } from 'vite';
-import { defineConfig, loadEnv } from 'vite';
+import { defineConfig } from 'vite';
 
 const file = fileURLToPath(new URL('package.json', import.meta.url));
 const json = readFileSync(file, 'utf8');
 const { version } = JSON.parse(json);
-
-// npm run dev = local
-// npm run build = local
-// dfx deploy = local
-// dfx deploy --network ic = ic
-const network = process.env.DFX_NETWORK ?? 'local';
-
-const readCanisterIds = ({ prefix }: { prefix?: string }): Record<string, string> => {
-	// TODO: We do not use DFX for local development anymore. Remove dfx for deployment to mainnet as well.
-	if (network !== 'ic') {
-		return {};
-	}
-
-	const canisterIdsJsonFile = join(process.cwd(), 'canister_ids.json');
-
-	try {
-		type Details = {
-			ic?: string;
-			local?: string;
-		};
-
-		const config: Record<string, Details> = JSON.parse(readFileSync(canisterIdsJsonFile, 'utf-8'));
-
-		return Object.entries(config).reduce((acc, current: [string, Details]) => {
-			const [canisterName, canisterDetails] = current;
-
-			return {
-				...acc,
-				[`${prefix ?? ''}${canisterName.toUpperCase()}_CANISTER_ID`]:
-					canisterDetails[network as keyof Details]
-			};
-		}, {});
-	} catch (e) {
-		throw Error(`Could not get canister ID from ${canisterIdsJsonFile}: ${e}`);
-	}
-};
 
 const config: UserConfig = {
 	plugins: [sveltekit()],
@@ -80,15 +44,6 @@ const config: UserConfig = {
 			]
 		}
 	},
-	// proxy /api to port 8000 during development
-	server: {
-		proxy: {
-			'/api': 'http://localhost:8000'
-		},
-		watch: {
-			ignored: ['**/.dfx/**', '**/.github/**']
-		}
-	},
 	// Node polyfill agent-js. Thanks solution shared by chovyfu on the Discord channel.
 	// https://stackoverflow.com/questions/71744659/how-do-i-deploy-a-sveltekit-app-to-a-dfinity-container
 	optimizeDeps: {
@@ -114,23 +69,11 @@ const config: UserConfig = {
 	}
 };
 
-export default defineConfig(({ mode }: UserConfig): UserConfig => {
-	// Expand environment - .env files - with canister IDs
-	process.env = {
-		...process.env,
-		...loadEnv(mode ?? 'development', process.cwd()),
-		...readCanisterIds({ prefix: 'VITE_' })
-	};
-
-	return {
+export default defineConfig(
+	(): UserConfig => ({
 		...config,
-		// Backwards compatibility for auto generated types of dfx that are meant for webpack and process.env
 		define: {
-			'process.env': {
-				...readCanisterIds({}),
-				DFX_NETWORK: network
-			},
 			VITE_APP_VERSION: JSON.stringify(version)
 		}
-	};
-});
+	})
+);

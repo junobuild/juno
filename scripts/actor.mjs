@@ -43,7 +43,7 @@ export const icAgent = () => {
 };
 
 export const localAgent = async () => {
-	const identity = getIdentity();
+	const identity = await getIdentity();
 
 	console.log('Local identity:', identity.getPrincipal().toText());
 

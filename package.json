@@ -82,6 +82,7 @@
 		"prettier": "^3.2.5",
 		"prettier-plugin-organize-imports": "^3.2.4",
 		"prettier-plugin-svelte": "^3.2.3",
+		"prompts": "^2.4.2",
 		"sass": "^1.77.0",
 		"svelte": "^4.2.16",
 		"svelte-check": "^3.7.1",

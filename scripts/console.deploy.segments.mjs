@@ -7,7 +7,7 @@ import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { deployWithProposal } from './console.deploy.services.mjs';
-import { LOCAL_CONSOLE, readJunoConfig } from './console.deploy.utils.mjs';
+import { localConsole, readJunoConfig } from './console.deploy.utils.mjs';
 
 const readVersion = (segment) => {
 	const tomlFile = readFileSync(join(process.cwd(), 'src', segment, 'Cargo.toml'));
@@ -62,7 +62,7 @@ const deploy = async (proposalId) => {
 		await uploadAsset({
 			asset,
 			proposalId,
-			console: LOCAL_CONSOLE
+			console: await localConsole()
 		});
 
 		console.log(`✅  ${source} uploaded to ${fullPath}`);

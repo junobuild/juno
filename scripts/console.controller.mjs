@@ -9,6 +9,6 @@ const token = key.toJSON();
 
 await fetch(`http://localhost:5999/console/controller/?id=${principal}`);
 
-saveToken(token);
+await saveToken(token);
 
-console.log('Controller generated:', getIdentity().getPrincipal().toText());
+console.log('Controller generated:', (await getIdentity()).getPrincipal().toText());

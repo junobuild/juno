@@ -1,12 +1,12 @@
 services:
   juno-console:
-    image: junobuild/console:latest
+    image: juno-console
     ports:
       - 5987:5987
       - 5999:5999
     volumes:
-      - juno_console:/juno/.juno
+      - juno_console_61:/juno/.juno
       - ./target/deploy:/juno/target/deploy/
 
 volumes:
-  juno_console:
+  juno_console_61:

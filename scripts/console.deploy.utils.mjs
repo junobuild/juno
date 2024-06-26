@@ -1,10 +1,9 @@
 import { nextArg, readJunoConfig as readJunoConfigTools } from '@junobuild/cli-tools';
-import fetch from 'node-fetch';
 import { getIdentity } from './console.config.utils.mjs';
 import { CONSOLE_ID } from './constants.mjs';
 
 export const localConsole = async () => ({
-	identity: await getIdentity(),
+	identity: await getIdentity(false),
 	consoleId: CONSOLE_ID,
 	fetch,
 	container: 'http://127.0.0.1:5987/'

@@ -1,7 +1,6 @@
 import pkgAgent from '@dfinity/agent';
 import pkgPrincipal from '@dfinity/principal';
-import { readFileSync } from 'fs';
-import fetch from 'node-fetch';
+import { readFileSync } from 'node:fs';
 import { idlFactory } from '../src/declarations/console/console.factory.did.mjs';
 import { idlFactory as icIdlFactory } from '../src/declarations/ic/ic.factory.did.mjs';
 import { idlFactory as observatoryIdlFactory } from '../src/declarations/observatory/observatory.factory.did.mjs';
@@ -43,7 +42,7 @@ export const icAgent = () => {
 };
 
 export const localAgent = async () => {
-	const identity = await getIdentity();
+	const identity = await getIdentity(false);
 
 	console.log('Local identity:', identity.getPrincipal().toText());
 

@@ -5,7 +5,7 @@ import { idlFactory as icIdlFactory } from '../src/declarations/ic/ic.factory.di
 import { idlFactory as observatoryIdlFactory } from '../src/declarations/observatory/observatory.factory.did.mjs';
 import { idlFactory as orbiterIdlFactory } from '../src/declarations/orbiter/orbiter.factory.did.mjs';
 import { getIdentity } from './console.config.utils.mjs';
-import {CONSOLE_ID, OBSERVATORY_ID} from './constants.mjs';
+import { CONSOLE_ID, OBSERVATORY_ID } from './constants.mjs';
 
 const { HttpAgent, Actor } = pkgAgent;
 const { Principal } = pkgPrincipal;

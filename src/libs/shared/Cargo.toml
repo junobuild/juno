@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-shared"
-version = "0.0.15"
+version = "0.0.16"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true

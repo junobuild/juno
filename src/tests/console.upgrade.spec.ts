@@ -11,7 +11,7 @@ import {
 	testSatelliteExists
 } from './utils/console-tests.utils';
 import { tick } from './utils/pic-tests.utils';
-import { CONSOLE_WASM_PATH, downloadConsole } from './utils/setup-tests.utils';
+import { downloadConsole } from './utils/setup-tests.utils';
 
 describe('Console upgrade', () => {
 	let pic: PocketIc;
@@ -24,12 +24,14 @@ describe('Console upgrade', () => {
 		await pic?.tearDown();
 	});
 
-	const upgrade = async () => {
+	const upgradeVersion = async (params: { junoVersion: string; version: string }) => {
 		await tick(pic);
+
+		const destination = await downloadConsole(params);
 
 		await pic.upgradeCanister({
 			canisterId,
-			wasm: CONSOLE_WASM_PATH,
+			wasm: destination,
 			sender: controller.getPrincipal()
 		});
 	};
@@ -101,7 +103,7 @@ describe('Console upgrade', () => {
 						pic
 					});
 
-					await upgrade();
+					await upgradeVersion({ junoVersion: '0.0.31', version: '0.0.9' });
 
 					// Moving from 0.0.8 to 0.0.9 we are on purpose deprecating previous ways to hold wasm in memory
 					// await testReleases(actor);

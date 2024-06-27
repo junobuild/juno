@@ -52,9 +52,9 @@ const installRelease = async ({
 	}
 };
 
-const versionSatellite = '0.0.17';
+const versionSatellite = '0.0.18';
 const versionOrbiter = '0.0.7';
-const versionMissionControl = '0.0.10';
+const versionMissionControl = '0.0.11';
 
 const uploadSegment = async ({
 	segment,

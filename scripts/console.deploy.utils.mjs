@@ -1,11 +1,11 @@
-import { hasArgs, nextArg } from '@junobuild/cli-tools';
+import { nextArg } from '@junobuild/cli-tools';
 import { readJunoConfig as readJunoConfigTools } from '@junobuild/config-loader';
 import { getIdentity } from './console.config.utils.mjs';
 import { CONSOLE_ID } from './constants.mjs';
+import { targetMainnet } from './utils.mjs';
 
 export const deployConsole = async () => {
-	const args = process.argv.slice(2);
-	const mainnet = hasArgs({ args, options: ['--mainnet'] });
+	const mainnet = targetMainnet();
 
 	return {
 		identity: await getIdentity(mainnet),

@@ -3,6 +3,7 @@ import { icAgent, localAgent } from './actor.mjs';
 import { getIdentity } from './console.config.utils.mjs';
 import { CONSOLE_ID, LEDGER_ID } from './constants.mjs';
 import { accountIdentifier } from './ledger.utils.mjs';
+import { targetMainnet } from './utils.mjs';
 
 const getBalance = async (mainnet, console_) => {
 	const agent = await (mainnet ? icAgent : localAgent)();
@@ -29,7 +30,7 @@ const getBalance = async (mainnet, console_) => {
 	console.log(identifier.toHex());
 };
 
-const mainnet = process.argv.find((arg) => arg.indexOf(`--mainnet`) > -1) !== undefined;
+const mainnet = targetMainnet();
 const console_ = process.argv.find((arg) => arg.indexOf(`--console`) > -1) !== undefined;
 
 await getBalance(mainnet, console_);

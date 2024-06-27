@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 
 import { consoleActorIC, consoleActorLocal } from './actor.mjs';
+import { targetMainnet } from './utils.mjs';
 
 const countDevs = async (mainnet) => {
 	const actor = await (mainnet ? consoleActorIC() : consoleActorLocal());
@@ -10,6 +11,6 @@ const countDevs = async (mainnet) => {
 	console.log('Developers:', devs.length);
 };
 
-const mainnet = process.argv.find((arg) => arg.indexOf(`--mainnet`) > -1) !== undefined;
+const mainnet = targetMainnet();
 
 await countDevs(mainnet);

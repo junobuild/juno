@@ -4,7 +4,7 @@ import { jsonReplacer } from '@dfinity/utils';
 import { writeFile } from 'fs/promises';
 import { join } from 'node:path';
 import { consoleActorIC, consoleActorLocal } from './actor.mjs';
-import {targetMainnet} from "./utils.mjs";
+import { targetMainnet } from './utils.mjs';
 
 /**
  * A temporary script used to backup the payments of the console as we aim to migrate those from heap to stable.

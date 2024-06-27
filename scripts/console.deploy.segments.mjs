@@ -10,6 +10,7 @@ import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { deployWithProposal } from './console.deploy.services.mjs';
 import { deployConsole, readJunoConfig } from './console.deploy.utils.mjs';
+import { targetMainnet } from './utils.mjs';
 
 const readVersion = (segment) => {
 	const tomlFile = readFileSync(join(process.cwd(), 'src', segment, 'Cargo.toml'));
@@ -36,12 +37,16 @@ const proposal_type = {
 	}
 };
 
-const target = join(process.cwd(), 'target', 'deploy');
+const MAINNET_WASM_SOURCE = join(process.cwd(), 'target', 'mainnet');
+const CONTAINER_WASM_SOURCE = join(process.cwd(), 'target', 'deploy');
 
 const deploy = async (proposalId) => {
 	const upload = async ([sourceFile, version]) => {
 		const sourceFilename = `${sourceFile}.wasm.gz`;
-		const source = join(target, sourceFilename);
+		const source = join(
+			targetMainnet() ? MAINNET_WASM_SOURCE : CONTAINER_WASM_SOURCE,
+			sourceFilename
+		);
 
 		if (!(await fileExists(source))) {
 			return { sourceFile, uploaded: false };

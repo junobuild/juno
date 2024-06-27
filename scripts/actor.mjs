@@ -1,40 +1,18 @@
 import pkgAgent from '@dfinity/agent';
 import pkgPrincipal from '@dfinity/principal';
-import { readFileSync } from 'node:fs';
 import { idlFactory } from '../src/declarations/console/console.factory.did.mjs';
 import { idlFactory as icIdlFactory } from '../src/declarations/ic/ic.factory.did.mjs';
 import { idlFactory as observatoryIdlFactory } from '../src/declarations/observatory/observatory.factory.did.mjs';
 import { idlFactory as orbiterIdlFactory } from '../src/declarations/orbiter/orbiter.factory.did.mjs';
 import { getIdentity } from './console.config.utils.mjs';
-import { CONSOLE_ID } from './constants.mjs';
-import { initIdentity } from './identity.utils.mjs';
+import { CONSOLE_ID, OBSERVATORY_ID } from './constants.mjs';
+import { targetMainnet } from './utils.mjs';
 
 const { HttpAgent, Actor } = pkgAgent;
 const { Principal } = pkgPrincipal;
 
-const observatoryPrincipalIC = () => {
-	const buffer = readFileSync('./canister_ids.json');
-	const { observatory } = JSON.parse(buffer.toString('utf-8'));
-	return Principal.fromText(observatory.ic);
-};
-
-const observatoryPrincipalLocal = () => {
-	const buffer = readFileSync('./.dfx/local/canister_ids.json');
-	const { observatory } = JSON.parse(buffer.toString('utf-8'));
-	return Principal.fromText(observatory.local);
-};
-
-export const consoleActorIC = async () => {
-	const agent = icAgent();
-
-	return Actor.createActor(idlFactory, {
-		agent,
-		canisterId: CONSOLE_ID
-	});
-};
-
-export const icAgent = () => {
-	const identity = initIdentity(true);
+export const icAgent = async () => {
+	const identity = await getIdentity(true);
 
 	console.log('IC identity:', identity.getPrincipal().toText());
 
@@ -53,6 +31,23 @@ export const localAgent = async () => {
 	return agent;
 };
 
+export const consoleActor = async () => {
+	if (targetMainnet()) {
+		return await consoleActorIC();
+	}
+
+	return await consoleActorLocal();
+};
+
+export const consoleActorIC = async () => {
+	const agent = await icAgent();
+
+	return Actor.createActor(idlFactory, {
+		agent,
+		canisterId: CONSOLE_ID
+	});
+};
+
 export const consoleActorLocal = async () => {
 	const agent = await localAgent(false);
 
@@ -63,9 +58,9 @@ export const consoleActorLocal = async () => {
 };
 
 export const observatoryActorIC = async () => {
-	const canisterId = observatoryPrincipalIC();
+	const canisterId = OBSERVATORY_ID;
 
-	const agent = icAgent();
+	const agent = await icAgent();
 
 	return Actor.createActor(observatoryIdlFactory, {
 		agent,
@@ -74,7 +69,7 @@ export const observatoryActorIC = async () => {
 };
 
 export const observatoryActorLocal = async () => {
-	const canisterId = observatoryPrincipalLocal();
+	const canisterId = OBSERVATORY_ID;
 
 	const agent = await localAgent(false);
 
@@ -85,7 +80,7 @@ export const observatoryActorLocal = async () => {
 };
 
 export const orbiterActorIC = async (canisterId) => {
-	const agent = icAgent();
+	const agent = await icAgent();
 
 	return Actor.createActor(orbiterIdlFactory, {
 		agent,
@@ -116,7 +111,7 @@ const transform = (_methodName, args, _callConfig) => {
 };
 
 export const icActorIC = async () => {
-	const agent = icAgent();
+	const agent = await icAgent();
 
 	return Actor.createActor(icIdlFactory, {
 		agent,

@@ -4,6 +4,7 @@ import { jsonReplacer } from '@dfinity/utils';
 import { writeFile } from 'fs/promises';
 import { join } from 'node:path';
 import { consoleActorIC, consoleActorLocal } from './actor.mjs';
+import { targetMainnet } from './utils.mjs';
 
 /**
  * A temporary script used to backup the payments of the console as we aim to migrate those from heap to stable.
@@ -23,6 +24,6 @@ const savePayments = async (mainnet) => {
 	console.log(`💰 ${payments.length} payments saved locally successfully.`);
 };
 
-const mainnet = process.argv.find((arg) => arg.indexOf(`--mainnet`) > -1) !== undefined;
+const mainnet = targetMainnet();
 
 await savePayments(mainnet);

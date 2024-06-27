@@ -246,7 +246,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.0.8-patch.1"
+version = "0.0.9"
 dependencies = [
  "candid",
  "ciborium",
@@ -808,7 +808,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.17"
+version = "0.0.18"
 dependencies = [
  "candid",
  "ciborium",
@@ -831,7 +831,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.0.15"
+version = "0.0.16"
 dependencies = [
  "candid",
  "ciborium",
@@ -954,7 +954,7 @@ checksum = "d07cbe42e2a8dd41df582fb8e00fc24d920b5561cc301fcb6d14e2e0434b500f"
 
 [[package]]
 name = "mission_control"
-version = "0.0.10"
+version = "0.0.11"
 dependencies = [
  "candid",
  "futures",
@@ -1226,7 +1226,7 @@ checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
 
 [[package]]
 name = "satellite"
-version = "0.0.17"
+version = "0.0.18"
 dependencies = [
  "candid",
  "ic-cdk",

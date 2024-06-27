@@ -1,9 +1,12 @@
+#!/usr/bin/env node
+
 import { toNullable } from '@dfinity/utils';
 import { deploy as cliDeploy, hasArgs } from '@junobuild/cli-tools';
 import { uploadAsset } from '@junobuild/console';
-import { consoleActorLocal } from './actor.mjs';
+import { consoleActor } from './actor.mjs';
 import { deployWithProposal } from './console.deploy.services.mjs';
-import { localConsole, readJunoConfig } from './console.deploy.utils.mjs';
+import { deployConsole, readJunoConfig } from './console.deploy.utils.mjs';
+import { targetMainnet } from './utils.mjs';
 
 const args = process.argv.slice(2);
 
@@ -15,7 +18,7 @@ const proposal_type = {
 	}
 };
 
-const { list_assets } = await consoleActorLocal();
+const { list_assets } = await consoleActor();
 
 const listAssets = async ({ startAfter }) => {
 	const { items, items_page, matches_pages } = await list_assets('#dapp', {
@@ -91,7 +94,7 @@ const deployWithCli = async (proposalId) => {
 		await uploadAsset({
 			asset,
 			proposalId,
-			console: await localConsole()
+			console: await deployConsole()
 		});
 	};
 
@@ -107,4 +110,8 @@ await deployWithProposal({
 	deploy: deployWithCli
 });
 
-console.log(`\n✅ Assets committed to http://${config.id}.localhost:5987/`);
+const consoleUrl = targetMainnet()
+	? `https://console.juno.build`
+	: `http://${config.id}.localhost:5987`;
+
+console.log(`\n✅ Assets committed to ${consoleUrl}`);

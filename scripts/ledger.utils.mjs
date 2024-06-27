@@ -1,8 +1,8 @@
 import { AccountIdentifier } from '@junobuild/ledger';
-import { initIdentity } from './identity.utils.mjs';
+import { getIdentity } from './console.config.utils.mjs';
 
-export const accountIdentifier = (mainnet, principal) => {
-	const identity = initIdentity(mainnet);
+export const accountIdentifier = async (mainnet, principal) => {
+	const identity = getIdentity(mainnet);
 
 	return AccountIdentifier.fromPrincipal({
 		principal: principal ?? identity.getPrincipal(),

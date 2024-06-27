@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { toNullable } from '@dfinity/utils';
 import { fileExists } from '@junobuild/cli-tools';
 import { uploadAsset } from '@junobuild/console';
@@ -7,7 +9,8 @@ import { readFileSync } from 'node:fs';
 import { readFile } from 'node:fs/promises';
 import { join } from 'node:path';
 import { deployWithProposal } from './console.deploy.services.mjs';
-import { localConsole, readJunoConfig } from './console.deploy.utils.mjs';
+import { deployConsole, readJunoConfig } from './console.deploy.utils.mjs';
+import { targetMainnet } from './utils.mjs';
 
 const readVersion = (segment) => {
 	const tomlFile = readFileSync(join(process.cwd(), 'src', segment, 'Cargo.toml'));
@@ -34,12 +37,16 @@ const proposal_type = {
 	}
 };
 
-const target = join(process.cwd(), 'target', 'deploy');
+const MAINNET_WASM_SOURCE = join(process.cwd(), 'target', 'mainnet');
+const CONTAINER_WASM_SOURCE = join(process.cwd(), 'target', 'deploy');
 
 const deploy = async (proposalId) => {
 	const upload = async ([sourceFile, version]) => {
 		const sourceFilename = `${sourceFile}.wasm.gz`;
-		const source = join(target, sourceFilename);
+		const source = join(
+			targetMainnet() ? MAINNET_WASM_SOURCE : CONTAINER_WASM_SOURCE,
+			sourceFilename
+		);
 
 		if (!(await fileExists(source))) {
 			return { sourceFile, uploaded: false };
@@ -62,7 +69,7 @@ const deploy = async (proposalId) => {
 		await uploadAsset({
 			asset,
 			proposalId,
-			console: await localConsole()
+			console: await deployConsole()
 		});
 
 		console.log(`✅  ${source} uploaded to ${fullPath}`);
@@ -84,6 +91,8 @@ await deployWithProposal({
 
 const config = await readJunoConfig();
 
-console.log(
-	`\n✅ Segments uploaded. Metadata: http://${config.id}.localhost:5987/releases/metadata.json`
-);
+const consoleUrl = targetMainnet()
+	? `https://console.juno.build`
+	: `http://${config.id}.localhost:5987`;
+
+console.log(`\n✅ Segments uploaded. Metadata: ${consoleUrl}/releases/metadata.json`);

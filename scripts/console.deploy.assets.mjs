@@ -7,7 +7,7 @@ import { localConsole, readJunoConfig } from './console.deploy.utils.mjs';
 
 const args = process.argv.slice(2);
 
-const clear = hasArgs({ args, options: ['--clear'] }) !== undefined;
+const clear = hasArgs({ args, options: ['--clear'] });
 
 const proposal_type = {
 	AssetsUpgrade: {

@@ -1,13 +1,7 @@
 import { IcrcLedgerCanister } from '@dfinity/ledger-icrc';
-import { Principal } from '@dfinity/principal';
 import { icAgent, localAgent } from './actor.mjs';
-import {
-	CONSOLE_CANISTER_ID_LOCAL,
-	CONSOLE_CANISTER_ID_MAINNET,
-	LEDGER_CANISTER_ID_LOCAL,
-	LEDGER_CANISTER_ID_MAINNET
-} from './env.mjs';
-import { initIdentity } from './identity.utils.mjs';
+import { getIdentity } from './console.config.utils.mjs';
+import { CONSOLE_ID, LEDGER_ID } from './constants.mjs';
 import { accountIdentifier } from './ledger.utils.mjs';
 
 const getBalance = async (mainnet, console_) => {
@@ -15,12 +9,10 @@ const getBalance = async (mainnet, console_) => {
 
 	const { balance } = IcrcLedgerCanister.create({
 		agent,
-		canisterId: mainnet ? LEDGER_CANISTER_ID_MAINNET : LEDGER_CANISTER_ID_LOCAL
+		canisterId: LEDGER_ID
 	});
 
-	const owner = console_
-		? Principal.fromText(mainnet ? CONSOLE_CANISTER_ID_MAINNET : CONSOLE_CANISTER_ID_LOCAL)
-		: initIdentity(mainnet).getPrincipal();
+	const owner = console_ ? CONSOLE_ID : getIdentity(mainnet).getPrincipal();
 
 	const e8sBalance = await balance({
 		owner,
@@ -32,7 +24,7 @@ const getBalance = async (mainnet, console_) => {
 
 	console.log(formatE8sICP(e8sBalance), '|', e8sBalance);
 
-	const identifier = accountIdentifier(mainnet, owner);
+	const identifier = await accountIdentifier(mainnet, owner);
 
 	console.log(identifier.toHex());
 };

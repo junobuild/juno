@@ -9,7 +9,6 @@ const principal = key.getPrincipal().toText();
 const token = key.toJSON();
 
 const args = process.argv.slice(2);
-
 const mainnet = hasArgs({ args, options: ['--mainnet'] });
 
 if (!mainnet) {

@@ -1,5 +1,6 @@
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { nonNullish } from '@dfinity/utils';
+import { assertAnswerCtrlC } from '@junobuild/cli-tools';
 import Conf from 'conf';
 import prompts from 'prompts';
 
@@ -12,37 +13,38 @@ const askForPassword = async () => {
 		}
 	]);
 
-	// TODO: cli-tools
-	// assertAnswerCtrlC(satellite, 'The satellite ID is mandatory');
+	assertAnswerCtrlC(encryptionKey);
 
 	return encryptionKey;
 };
 
 let config;
 
-const initConfig = async () => {
+const initConfig = async (mainnet) => {
 	if (nonNullish(config)) {
 		return;
 	}
 
 	const encryptionKey = await askForPassword();
 
-	config = new Conf({ projectName: 'juno-dev-console', encryptionKey });
+	const projectName = `juno-${mainnet ? '' : 'dev-'}console`;
+
+	config = new Conf({ projectName, encryptionKey });
 };
 
-export const saveToken = async (token) => {
-	await initConfig();
+export const saveToken = async ({ mainnet, token }) => {
+	await initConfig(mainnet);
 
 	config.set('token', token);
 };
 
-export const getToken = async () => {
-	await initConfig();
+export const getToken = async (mainnet) => {
+	await initConfig(mainnet);
 
 	return config.get('token');
 };
 
-export const getIdentity = async () => {
-	const token = await getToken();
+export const getIdentity = async (mainnet) => {
+	const token = await getToken(mainnet);
 	return Ed25519KeyIdentity.fromParsedJson(token);
 };

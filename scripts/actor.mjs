@@ -6,6 +6,7 @@ import { idlFactory as observatoryIdlFactory } from '../src/declarations/observa
 import { idlFactory as orbiterIdlFactory } from '../src/declarations/orbiter/orbiter.factory.did.mjs';
 import { getIdentity } from './console.config.utils.mjs';
 import { CONSOLE_ID, OBSERVATORY_ID } from './constants.mjs';
+import { targetMainnet } from './utils.mjs';
 
 const { HttpAgent, Actor } = pkgAgent;
 const { Principal } = pkgPrincipal;
@@ -28,6 +29,14 @@ export const localAgent = async () => {
 	await agent.fetchRootKey();
 
 	return agent;
+};
+
+export const consoleActor = async () => {
+	if (targetMainnet()) {
+		return await consoleActorIC();
+	}
+
+	return await consoleActorLocal();
 };
 
 export const consoleActorIC = async () => {

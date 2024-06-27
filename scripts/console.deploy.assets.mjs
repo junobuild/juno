@@ -3,7 +3,7 @@
 import { toNullable } from '@dfinity/utils';
 import { deploy as cliDeploy, hasArgs } from '@junobuild/cli-tools';
 import { uploadAsset } from '@junobuild/console';
-import { consoleActorLocal } from './actor.mjs';
+import { consoleActor } from './actor.mjs';
 import { deployWithProposal } from './console.deploy.services.mjs';
 import { deployConsole, readJunoConfig } from './console.deploy.utils.mjs';
 import { targetMainnet } from './utils.mjs';
@@ -18,7 +18,7 @@ const proposal_type = {
 	}
 };
 
-const { list_assets } = await consoleActorLocal();
+const { list_assets } = await consoleActor();
 
 const listAssets = async ({ startAfter }) => {
 	const { items, items_page, matches_pages } = await list_assets('#dapp', {

@@ -6,6 +6,7 @@ import { uploadAsset } from '@junobuild/console';
 import { consoleActorLocal } from './actor.mjs';
 import { deployWithProposal } from './console.deploy.services.mjs';
 import { deployConsole, readJunoConfig } from './console.deploy.utils.mjs';
+import { targetMainnet } from './utils.mjs';
 
 const args = process.argv.slice(2);
 
@@ -109,4 +110,8 @@ await deployWithProposal({
 	deploy: deployWithCli
 });
 
-console.log(`\n✅ Assets committed to http://${config.id}.localhost:5987/`);
+const consoleUrl = targetMainnet()
+	? `https://console.juno.build`
+	: `http://${config.id}.localhost:5987`;
+
+console.log(`\n✅ Assets committed to ${consoleUrl}`);

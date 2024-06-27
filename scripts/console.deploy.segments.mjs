@@ -91,6 +91,8 @@ await deployWithProposal({
 
 const config = await readJunoConfig();
 
-console.log(
-	`\n✅ Segments uploaded. Metadata: http://${config.id}.localhost:5987/releases/metadata.json`
-);
+const consoleUrl = targetMainnet()
+	? `https://console.juno.build`
+	: `http://${config.id}.localhost:5987`;
+
+console.log(`\n✅ Segments uploaded. Metadata: ${consoleUrl}/releases/metadata.json`);

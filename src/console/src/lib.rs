@@ -10,7 +10,6 @@ mod proposals;
 mod storage;
 mod store;
 mod types;
-mod upgrade;
 mod wasm;
 
 use crate::factory::mission_control::init_user_mission_control;
@@ -46,7 +45,6 @@ use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
     ProposalType, RateConfig, Rates, ReleasesMetadata, State,
 };
-use crate::upgrade::types::upgrade::UpgradeHeapState;
 use candid::Principal;
 use ciborium::into_writer;
 use ic_cdk::api::call::ManualReply;
@@ -65,7 +63,7 @@ use junobuild_shared::types::interface::{
 };
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::{Controllers, UserId};
-use junobuild_shared::upgrade::write_pre_upgrade;
+use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
@@ -78,9 +76,9 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use memory::{get_memory_upgrades, init_stable_state};
+use serde_cbor::from_reader;
 use std::collections::HashMap;
 use types::state::Payments;
-use upgrade::heap_to_stable::{defer_migrate_mission_controls, defer_migrate_payments};
 
 #[init]
 fn init() {
@@ -117,29 +115,13 @@ fn pre_upgrade() {
 
 #[post_upgrade]
 fn post_upgrade() {
-    // TODO: remove once stable memory introduced on mainnet
-    let (upgrade_heap,): (UpgradeHeapState,) = stable_restore().unwrap();
+    let memory = get_memory_upgrades();
+    let state_bytes = read_post_upgrade(&memory);
 
-    let heap = HeapState::from(&upgrade_heap);
+    let state: State = from_reader(&*state_bytes)
+        .expect("Failed to decode the state of the console in post_upgrade hook.");
 
-    STATE.with(|state| {
-        *state.borrow_mut() = State {
-            heap,
-            stable: init_stable_state(),
-        }
-    });
-
-    defer_migrate_mission_controls();
-    defer_migrate_payments();
-
-    // TODO: uncomment once stable memory introduced on mainnet
-    // let memory: Memory = get_memory_upgrades();
-    // let state_bytes = read_post_upgrade(&memory);
-
-    // let state: State = from_reader(&*state_bytes)
-    //     .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
-
-    // STATE.with(|s| *s.borrow_mut() = state);
+    STATE.with(|s| *s.borrow_mut() = state);
 
     defer_init_certified_assets();
 }

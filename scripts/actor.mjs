@@ -10,15 +10,6 @@ import { CONSOLE_ID, OBSERVATORY_ID } from './constants.mjs';
 const { HttpAgent, Actor } = pkgAgent;
 const { Principal } = pkgPrincipal;
 
-export const consoleActorIC = async () => {
-	const agent = await icAgent();
-
-	return Actor.createActor(idlFactory, {
-		agent,
-		canisterId: CONSOLE_ID
-	});
-};
-
 export const icAgent = async () => {
 	const identity = await getIdentity(true);
 
@@ -37,6 +28,15 @@ export const localAgent = async () => {
 	await agent.fetchRootKey();
 
 	return agent;
+};
+
+export const consoleActorIC = async () => {
+	const agent = await icAgent();
+
+	return Actor.createActor(idlFactory, {
+		agent,
+		canisterId: CONSOLE_ID
+	});
 };
 
 export const consoleActorLocal = async () => {

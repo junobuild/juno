@@ -5,7 +5,7 @@ import { deploy as cliDeploy, hasArgs } from '@junobuild/cli-tools';
 import { uploadAsset } from '@junobuild/console';
 import { consoleActorLocal } from './actor.mjs';
 import { deployWithProposal } from './console.deploy.services.mjs';
-import { localConsole, readJunoConfig } from './console.deploy.utils.mjs';
+import { deployConsole, readJunoConfig } from './console.deploy.utils.mjs';
 
 const args = process.argv.slice(2);
 
@@ -93,7 +93,7 @@ const deployWithCli = async (proposalId) => {
 		await uploadAsset({
 			asset,
 			proposalId,
-			console: await localConsole()
+			console: await deployConsole()
 		});
 	};
 

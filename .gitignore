@@ -12,7 +12,6 @@ node_modules
 /.svelte-kit
 /package
 !.env.example
-.dfx
 target
 internet_identity.wasm
 internet_identity.wasm.gz

@@ -1,4 +1,5 @@
-import { nextArg, readJunoConfig as readJunoConfigTools } from '@junobuild/cli-tools';
+import { nextArg } from '@junobuild/cli-tools';
+import { readJunoConfig as readJunoConfigTools } from '@junobuild/config-loader';
 import { getIdentity } from './console.config.utils.mjs';
 import { CONSOLE_ID } from './constants.mjs';
 

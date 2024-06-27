@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import { toNullable } from '@dfinity/utils';
 import { fileExists } from '@junobuild/cli-tools';
 import { uploadAsset } from '@junobuild/console';

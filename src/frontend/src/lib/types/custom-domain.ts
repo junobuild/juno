@@ -23,8 +23,10 @@ export type CustomDomainRegistrationState =
 	| 'Available'
 	| 'Failed';
 
+export type CustomDomainRegistrationStateFailed = { Failed: string };
+
 export interface CustomDomainRegistration {
 	name: string;
 	canister: string;
-	state: CustomDomainRegistrationState;
+	state: CustomDomainRegistrationState | CustomDomainRegistrationStateFailed;
 }

@@ -9,6 +9,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
+import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
 import { ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
@@ -654,5 +655,114 @@ describe('Satellite storage', () => {
 				expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
 			});
 		});
+	});
+
+	const user = Ed25519KeyIdentity.generate();
+
+	describe('user', () => {
+		beforeAll(async () => {
+			actor.setIdentity(user);
+
+			const { set_doc } = actor;
+
+			await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider: 'internet_identity'
+				}),
+				description: toNullable(),
+				version: toNullable()
+			});
+		});
+
+		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
+			'With memory %s',
+			async ({ memory }) => {
+				const collection = 'Heap' in memory ? 'images_heap' : 'images_stable';
+
+				beforeAll(async () => {
+					actor.setIdentity(controller);
+
+					const { set_rule } = actor;
+
+					const setRule: SetRule = {
+						memory: toNullable(memory),
+						max_size: toNullable(),
+						max_capacity: toNullable(),
+						read: { Managed: null },
+						mutable_permissions: toNullable(),
+						write: { Managed: null },
+						version: toNullable()
+					};
+
+					await set_rule({ Storage: null }, collection, setRule);
+
+					actor.setIdentity(user);
+				});
+
+				const SVG =
+					'<svg height="100" width="100"><circle r="45" cx="50" cy="50" fill="red" /></svg>';
+
+				const uploadCustomAsset = async () => {
+					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+
+					const file = await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path: `/${collection}/hello.svg`,
+						name: 'hello.svg',
+						token: toNullable()
+					});
+
+					const blob = new Blob([SVG], {
+						type: 'text/plain; charset=utf-8'
+					});
+
+					const chunk = await upload_asset_chunk({
+						batch_id: file.batch_id,
+						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+						order_id: [0n]
+					});
+
+					await commit_asset_upload({
+						batch_id: file.batch_id,
+						chunk_ids: [chunk.chunk_id],
+						headers: []
+					});
+				};
+
+				it('should upload custom asset', async () => {
+					const { http_request } = actor;
+
+					await uploadCustomAsset();
+
+					const { body } = await http_request({
+						body: [],
+						certificate_version: toNullable(),
+						headers: [],
+						method: 'GET',
+						url: `/${collection}/hello.svg`
+					});
+
+					const decoder = new TextDecoder();
+					expect(decoder.decode(body as ArrayBuffer)).toEqual(SVG);
+				});
+
+				it('should not change owner if controller overwrite asset', async () => {
+					actor.setIdentity(controller);
+
+					const { get_asset } = actor;
+
+					await uploadCustomAsset();
+
+					const assetUpdated = fromNullable(
+						await get_asset(collection, `/${collection}/hello.svg`)
+					);
+					expect(assetUpdated).not.toBeUndefined();
+					expect(assetUpdated?.key.owner.toText()).not.toBeUndefined();
+					expect(assetUpdated?.key.owner.toText()).toEqual(user.getPrincipal().toText());
+				});
+			}
+		);
 	});
 });

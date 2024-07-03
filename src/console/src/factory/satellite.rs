@@ -1,6 +1,6 @@
 use crate::controllers::remove_console_controller;
 use crate::factory::canister::create_canister;
-use crate::store::{get_satellite_fee, increment_satellites_rate};
+use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
 use crate::wasm::satellite_wasm_arg;
 use candid::Principal;
 use junobuild_shared::constants::CREATE_SATELLITE_CYCLES;
@@ -29,7 +29,7 @@ async fn create_satellite_wasm(
     mission_control_id: MissionControlId,
     user: UserId,
 ) -> Result<Principal, String> {
-    let wasm_arg = satellite_wasm_arg(&user, &mission_control_id);
+    let wasm_arg = satellite_wasm_arg(&user, &mission_control_id)?;
     let result = create_canister_install_code(
         Vec::from([console, mission_control_id, user]),
         &wasm_arg,

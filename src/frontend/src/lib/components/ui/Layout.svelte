@@ -26,7 +26,7 @@
 							</span>
 						</h1>
 					{:else}
-						<span class="empty">&ZeroWidthSpace;</span>
+						<span class="empty" class:space={topMargin === 'wide'}>&ZeroWidthSpace;</span>
 					{/if}
 				{/if}
 
@@ -81,9 +81,15 @@
 		}
 	}
 
+	.empty,
 	h1 {
 		letter-spacing: -0.03rem;
 		line-height: var(--line-height-standard);
+
+		display: inline-block;
+
+		@include text.truncate;
+		max-width: 100%;
 
 		padding: 0 var(--padding-2x) 0 0;
 		margin: var(--padding-3x) 0;
@@ -93,11 +99,6 @@
 				margin: var(--padding-6x) 0 var(--padding-3x);
 			}
 		}
-
-		display: inline-block;
-
-		@include text.truncate;
-		max-width: 100%;
 	}
 
 	.icon {
@@ -106,6 +107,6 @@
 
 	.empty {
 		display: block;
-		height: 99.5px;
+		height: 63.5px;
 	}
 </style>

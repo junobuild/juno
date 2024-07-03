@@ -39,6 +39,7 @@
 		"more": "More options",
 		"are_you_sure": "Are you sure? This action is irreversible.",
 		"attach": "Attach",
+		"detach": "Detach",
 		"refresh": "Refresh",
 		"open_website": "Open Juno website and documentation"
 	},
@@ -84,6 +85,10 @@
 		"start_tile": "Restart {0}",
 		"start_info": "Do you want to resume your {0}?",
 		"start_success": "{0} resumed.",
+		"detach_title": "Detach {0}",
+		"detach_explanation": "Detaching this {0} will remove it from your mission control list. It will continue to function if it's active, or be forgotten if it's inactive and won't appear in the console anymore.",
+		"detach_info": "Do you want to detach your {0}?",
+		"detach_success": "{0} detached.",
 		"delete_success": "{0} deleted.",
 		"transfer_cycles": "Transfer cycles",
 		"transfer_cycles_description": "You can manage your cycles by moving them between your satellite, mission control, and analytics, ensuring your resources are where you need them most",
@@ -299,9 +304,10 @@
 		"satellite_no_found": "Satellite not found. Return to <a href=\"/\">start</a> to find your satellites.",
 		"satellite_name_update": "Unexpected error(s) while trying to rename your satellite.",
 		"satellite_missing_name": "A name must be provided.",
-		"canister_stop": "Unexpected error(s) while trying to stop the smart contract",
-		"canister_start": "Unexpected error(s) while trying to start the smart contract",
-		"canister_delete": "Unexpected error(s) while trying to delete the smart contract",
+		"canister_stop": "Unexpected error(s) while trying to stop the smart contract.",
+		"canister_start": "Unexpected error(s) while trying to start the smart contract.",
+		"canister_delete": "Unexpected error(s) while trying to delete the smart contract.",
+		"segment_detach": "Unexpected error(s) while trying to detach the segment.",
 		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits.",
 		"load_credits": "Cannot load your current credits status.",
 		"hosting_missing_domain_name": "A domain name must be provided.",
@@ -348,7 +354,10 @@
 		"invalid_cycles_destination": "Invalid destination to transfer the cycles.",
 		"transfer_cycles": "Unexpected error(s) while transferring the cycles.",
 		"cannot_fetch_logs": "Unexpected error(s) while fetching the logs.",
-		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication."
+		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication.",
+		"no_file_selected_for_upload": "No file was selected for the upload.",
+		"upload_error": "Unexpected error(s) while uploading the file.",
+		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload."
 	},
 	"document": {
 		"owner": "Owner",
@@ -391,9 +400,15 @@
 		"version": "Version",
 		"no_match": "No asset matches your filters.",
 		"delete": "Delete asset?",
-		"delete_all": "You are about to delete all assets in the collection.",
+		"delete_all": "You are about to delete <strong>all assets</strong> in the collection <strong>{0}</strong>.",
 		"description": "Description",
-		"full_path": "Full path"
+		"full_path": "Full path",
+		"edit": "Edit asset?",
+		"upload_file": "Upload a file",
+		"replace_file": "Replace file",
+		"upload_description": "Select and upload a file to the collection <strong>{0}</strong>. You will be the owner, i.e. the user currently signed into the console.",
+		"replace_description": "Select and upload a file to overwrite the existing data.",
+		"upload": "Upload"
 	},
 	"admin": {
 		"mission_control_new_version": "A new version of your mission control is available! Upgrade it either interactively or through the <a href=\"https://juno.build/docs/miscellaneous/cli#upgrade\" rel=\"external noopener noreferrer\" target=\"_blank\">CLI</a>.",

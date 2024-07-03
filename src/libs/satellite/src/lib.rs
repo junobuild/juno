@@ -1,16 +1,13 @@
 #![doc = include_str!("../README.md")]
 
-mod assert;
 mod auth;
 mod controllers;
 mod db;
 mod guards;
 mod hooks;
 mod impls;
-mod list;
 mod logs;
 mod memory;
-mod msg;
 mod random;
 mod rules;
 mod satellite;
@@ -20,25 +17,22 @@ mod version;
 
 use crate::auth::types::state::AuthenticationConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
-use crate::rules::types::interface::{DelRule, SetRule};
-use crate::rules::types::rules::Rule;
-use crate::storage::types::domain::CustomDomains;
-use crate::storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
-};
 use crate::types::interface::{Config, RulesType};
-use crate::types::list::ListResults;
 use crate::version::SATELLITE_VERSION;
 use ic_cdk::api::trap;
 use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
+use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::interface::{DelRule, SetRule};
+use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
 };
+use junobuild_shared::types::list::ListParams;
+use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::state::Controllers;
-use storage::http::types::{
-    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+use junobuild_storage::types::interface::{
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
-use types::list::ListParams;
 
 // Re-export types
 
@@ -55,15 +49,19 @@ pub use crate::logs::types::logs::{Log, LogLevel};
 pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };
-use crate::storage::types::state::FullPath;
-use crate::types::core::DomainName;
-pub use crate::types::core::{Blob, CollectionKey, Key};
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
     AssertUploadAssetContext, HookContext, OnDeleteAssetContext, OnDeleteDocContext,
     OnDeleteManyAssetsContext, OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext,
     OnUploadAssetContext,
 };
+use junobuild_shared::types::core::DomainName;
+pub use junobuild_shared::types::core::{Blob, Key};
+use junobuild_shared::types::domain::CustomDomains;
+use junobuild_storage::http::types::{
+    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+};
+use junobuild_storage::types::state::FullPath;
 
 ///
 /// Init and Upgrade

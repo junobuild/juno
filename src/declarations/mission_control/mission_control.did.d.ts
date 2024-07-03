@@ -99,6 +99,7 @@ export interface _SERVICE {
 		[Array<Principal>, Array<Principal>, SetController],
 		undefined
 	>;
+	set_satellite: ActorMethod<[Principal, [] | [string]], Satellite>;
 	set_satellite_metadata: ActorMethod<[Principal, Array<[string, string]>], Satellite>;
 	set_satellites_controllers: ActorMethod<
 		[Array<Principal>, Array<Principal>, SetController],
@@ -106,6 +107,8 @@ export interface _SERVICE {
 	>;
 	status: ActorMethod<[StatusesArgs], SegmentsStatuses>;
 	top_up: ActorMethod<[Principal, Tokens], undefined>;
+	unset_orbiter: ActorMethod<[Principal], undefined>;
+	unset_satellite: ActorMethod<[Principal], undefined>;
 	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

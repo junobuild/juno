@@ -23,9 +23,12 @@ use crate::guards::{
 use crate::mgmt::canister::top_up_canister;
 use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
-    attach_orbiter, create_orbiter as create_orbiter_console, delete_orbiter,
+    attach_orbiter, create_orbiter as create_orbiter_console, delete_orbiter, detach_orbiter,
 };
-use crate::segments::satellite::{create_satellite as create_satellite_console, delete_satellite};
+use crate::segments::satellite::{
+    attach_satellite, create_satellite as create_satellite_console, delete_satellite,
+    detach_satellite,
+};
 use crate::segments::store::get_orbiters;
 use crate::store::{
     get_user as get_user_store,
@@ -37,7 +40,7 @@ use crate::types::state::{
     Archive, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
 };
 use candid::Principal;
-use ic_cdk::api::call::arg_data;
+use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;
@@ -62,7 +65,7 @@ thread_local! {
 
 #[init]
 fn init() {
-    let call_arg = arg_data::<(Option<MissionControlArgs>,)>().0;
+    let call_arg = arg_data::<(Option<MissionControlArgs>,)>(ArgDecoderConfig::default()).0;
     let user = call_arg.unwrap().user;
 
     STATE.with(|state| {
@@ -170,6 +173,20 @@ async fn del_satellite(satellite_id: SatelliteId, cycles_to_deposit: u128) {
         .unwrap_or_else(|e| trap(&e));
 }
 
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn set_satellite(satellite_id: SatelliteId, name: Option<String>) -> Satellite {
+    attach_satellite(&satellite_id, &name)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn unset_satellite(satellite_id: SatelliteId) {
+    detach_satellite(&satellite_id)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
 /// Orbiters
 
 #[query(guard = "caller_is_user_or_admin_controller")]
@@ -187,6 +204,13 @@ async fn create_orbiter(name: Option<String>) -> Orbiter {
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn set_orbiter(orbiter_id: OrbiterId, name: Option<String>) -> Orbiter {
     attach_orbiter(&orbiter_id, &name)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn unset_orbiter(orbiter_id: OrbiterId) {
+    detach_orbiter(&orbiter_id)
         .await
         .unwrap_or_else(|e| trap(&e))
 }

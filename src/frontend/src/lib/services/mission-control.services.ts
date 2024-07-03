@@ -6,11 +6,14 @@ import {
 	setMissionControlController,
 	setOrbiter,
 	setSatelliteMetadata,
-	setSatellitesController
+	setSatellitesController,
+	unsetOrbiter,
+	unsetSatellite
 } from '$lib/api/mission-control.api';
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
@@ -152,6 +155,23 @@ export const setSatelliteName = async ({
 	]);
 };
 
+export const detachSatellite = async ({
+	canisterId,
+	missionControlId
+}: {
+	missionControlId: Principal;
+	canisterId: Principal;
+}) => {
+	const identity = get(authStore).identity;
+
+	await unsetSatellite({ missionControlId, satelliteId: canisterId, identity });
+
+	await loadSatellites({
+		missionControl: missionControlId,
+		reload: true
+	});
+};
+
 export const attachOrbiter = async (params: {
 	missionControlId: Principal;
 	orbiterId: Principal;
@@ -161,4 +181,18 @@ export const attachOrbiter = async (params: {
 	const orbiter = await setOrbiter({ ...params, identity });
 
 	orbitersStore.set([orbiter]);
+};
+
+export const detachOrbiter = async ({
+	canisterId,
+	...rest
+}: {
+	missionControlId: Principal;
+	canisterId: Principal;
+}) => {
+	const identity = get(authStore).identity;
+
+	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
+
+	orbitersStore.set(null);
 };

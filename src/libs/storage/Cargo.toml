@@ -1,0 +1,36 @@
+[package]
+name = "junobuild-storage"
+version = "0.0.1"
+authors.workspace = true
+edition.workspace = true
+repository.workspace = true
+description = "Web and storage features of Juno."
+homepage.workspace = true
+documentation = "https://docs.rs/junobuild-collections"
+readme = "README.md"
+license-file = "LICENSE.md"
+
+[package.metadata.docs.rs]
+targets = ["wasm32-unknown-unknown"]
+
+[dependencies]
+candid.workspace = true
+ic-cdk.workspace = true
+ic-cdk-macros.workspace = true
+ic-cdk-timers.workspace = true
+serde.workspace = true
+serde_cbor.workspace = true
+ic-stable-structures.workspace = true
+sha2.workspace = true
+hex.workspace = true
+serde_bytes = "0.11.12"
+ic-certification = "2.4.0"
+ic-response-verification = "2.4.0"
+ic-representation-independent-hash = "2.4.0"
+regex.workspace = true
+base64 = "0.13.1"
+url = "2.4.0"
+urlencoding = "2.1.3"
+globset = "0.4.13"
+junobuild-shared = "0.0.16"
+junobuild-collections = "0.0.1"

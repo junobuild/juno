@@ -20,7 +20,7 @@ declare namespace svelteHTML {
 		'on:junoSyncCanister'?: (event: CustomEvent<any>) => void;
 		'on:junoRestartCycles'?: (event: CustomEvent<any>) => void;
 		'on:junoReloadVersions'?: (event: CustomEvent<any>) => void;
-		'on:junoDelete'?: (event: CustomEvent<any>) => void;
+		'on:junoCloseActions'?: (event: CustomEvent<any>) => void;
 	}
 }
 

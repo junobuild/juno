@@ -1,14 +1,6 @@
-mod certification;
-pub mod constants;
-pub mod http;
-pub mod impls;
-pub mod rewrites;
-pub mod routing;
-mod runtime;
+pub mod certified_assets;
+mod impls;
 mod state;
 pub mod store;
+pub mod strategy_impls;
 pub mod types;
-pub mod upgrade;
-mod url;
-mod utils;
-pub mod well_known;

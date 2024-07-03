@@ -1,7 +1,7 @@
 use crate::controllers::update_mission_control_controllers;
-use crate::store::{
-    add_mission_control, delete_mission_control, get_mission_control,
-    increment_mission_controls_rate, init_empty_mission_control,
+use crate::store::heap::increment_mission_controls_rate;
+use crate::store::stable::{
+    add_mission_control, delete_mission_control, get_mission_control, init_empty_mission_control,
 };
 use crate::types::state::MissionControl;
 use crate::wasm::mission_control_wasm_arg;
@@ -35,7 +35,7 @@ async fn create_mission_control(
 ) -> Result<MissionControl, String> {
     init_empty_mission_control(user);
 
-    let wasm_arg = mission_control_wasm_arg(user);
+    let wasm_arg = mission_control_wasm_arg(user)?;
 
     let create = create_canister_install_code(
         Vec::from([*console, *user]),

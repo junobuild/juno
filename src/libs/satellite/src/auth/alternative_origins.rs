@@ -1,10 +1,11 @@
 use crate::auth::types::state::AuthenticationConfig;
 use crate::storage::store::get_custom_domains_store;
-use crate::storage::well_known::update::{
+use crate::storage::strategy_impls::StorageState;
+use ic_cdk::id;
+use junobuild_shared::types::core::DomainName;
+use junobuild_storage::well_known::update::{
     delete_alternative_origins_asset, update_alternative_origins_asset,
 };
-use crate::types::core::DomainName;
-use ic_cdk::id;
 use serde::{Deserialize, Serialize};
 use serde_json::to_string;
 use url::Url;
@@ -20,7 +21,10 @@ pub fn update_alternative_origins(config: &AuthenticationConfig) -> Result<(), S
         .internet_identity
         .as_ref()
         .and_then(|config| config.derivation_origin.as_ref())
-        .map_or_else(delete_alternative_origins_asset, set_alternative_origins)
+        .map_or_else(
+            || delete_alternative_origins_asset(&StorageState),
+            set_alternative_origins,
+        )
 }
 
 fn set_alternative_origins(derivation_origin: &DomainName) -> Result<(), String> {
@@ -37,7 +41,7 @@ fn set_alternative_origins(derivation_origin: &DomainName) -> Result<(), String>
     }
 
     if custom_domains.is_empty() {
-        return delete_alternative_origins_asset();
+        return delete_alternative_origins_asset(&StorageState);
     }
 
     set_alternative_origins_with_custom_domains(&mut custom_domains)
@@ -83,5 +87,5 @@ fn set_alternative_origins_with_custom_domains(
         "Cannot convert custom domains to II alternative origins JSON data.".to_string()
     })?;
 
-    update_alternative_origins_asset(&json)
+    update_alternative_origins_asset(&json, &StorageState)
 }

@@ -17,6 +17,9 @@
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { authStore } from '$lib/stores/auth.store';
+	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { emit } from '$lib/utils/events.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -40,13 +43,13 @@
 	let emptyCollection = false;
 	$: emptyCollection = $store.rules?.length === 0;
 
-	$: collection,
-		$listParamsStore,
-		(async () => {
-			resetPage();
-			resetData();
-			await list();
-		})();
+	const load = async () => {
+		resetPage();
+		resetData();
+		await list();
+	};
+
+	$: collection, $listParamsStore, (async () => await load())();
 
 	/**
 	 * Delete data
@@ -58,6 +61,11 @@
 
 		resetData();
 	};
+
+	const reload = async () => {
+		emit({ message: 'junoCloseActions' });
+		await load();
+	};
 </script>
 
 <div class="title">
@@ -65,10 +73,26 @@
 		{$i18n.storage.assets}
 
 		<svelte:fragment slot="actions">
+			<AssetUpload on:junoUploaded={reload}>
+				<svelte:fragment slot="action">{$i18n.asset.upload_file}</svelte:fragment>
+				<svelte:fragment slot="title">{$i18n.asset.upload_file}</svelte:fragment>
+				{@html i18nFormat($i18n.asset.upload_description, [
+					{
+						placeholder: '{0}',
+						value: collection ?? ''
+					}
+				])}
+			</AssetUpload>
+
 			<DataCollectionDelete {deleteData}>
 				<svelte:fragment slot="button">{$i18n.collections.clear_collection}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.collections.clear_collection}</svelte:fragment>
-				{$i18n.asset.delete_all}
+				{@html i18nFormat($i18n.asset.delete_all, [
+					{
+						placeholder: '{0}',
+						value: collection ?? ''
+					}
+				])}
 			</DataCollectionDelete>
 		</svelte:fragment>
 	</DataCollectionHeader>

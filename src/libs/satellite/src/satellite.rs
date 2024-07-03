@@ -22,56 +22,49 @@ use crate::random::defer_init_random_seed;
 use crate::rules::store::{
     del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
 };
-use crate::rules::types::interface::{DelRule, SetRule};
-use crate::rules::types::rules::Rule;
-use crate::storage::constants::{RESPONSE_STATUS_CODE_200, RESPONSE_STATUS_CODE_405};
-use crate::storage::http::response::{
-    build_asset_response, build_redirect_raw_response, build_redirect_response, error_response,
-};
-use crate::storage::http::types::{
-    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
-};
-use crate::storage::http::utils::create_token;
-use crate::storage::routing::get_routing;
+use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
     delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
-    get_config_store as get_storage_config, get_content_chunks_store, get_custom_domains_store,
-    get_public_asset_store, list_assets_store, set_config_store as set_storage_config,
-    set_domain_store,
+    get_config_store as get_storage_config, get_custom_domains_store, list_assets_store,
+    set_config_store as set_storage_config, set_domain_store,
 };
-use crate::storage::types::domain::CustomDomains;
-use crate::storage::types::http_request::{
-    Routing, RoutingDefault, RoutingRedirect, RoutingRedirectRaw, RoutingRewrite,
-};
-use crate::storage::types::interface::{
-    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
-};
-use crate::storage::types::state::FullPath;
-use crate::storage::types::store::Asset;
-use crate::storage::upgrade::defer_init_certified_assets;
-use crate::types::core::{CollectionKey, DomainName, Key};
+use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::{Config, RulesType};
-use crate::types::list::ListParams;
-use crate::types::list::ListResults;
-use crate::types::memory::Memory;
 use crate::types::state::{HeapState, RuntimeState, State};
 use ciborium::{from_reader, into_writer};
-use ic_cdk::api::call::arg_data;
+use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::api::{caller, trap};
-use ic_stable_structures::writer::Writer;
-#[allow(unused)]
-use ic_stable_structures::Memory as _;
+use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::interface::{DelRule, SetRule};
+use junobuild_collections::types::rules::Rule;
 use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
     assert_controllers, assert_max_number_of_controllers, init_controllers,
 };
+use junobuild_shared::types::core::{DomainName, Key};
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SegmentArgs, SetControllersArgs};
+use junobuild_shared::types::list::ListParams;
+use junobuild_shared::types::list::ListResults;
+use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers};
-use std::mem;
+use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
+use junobuild_storage::http::types::{
+    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+};
+use junobuild_storage::http_request::{
+    http_request as http_request_storage,
+    http_request_streaming_callback as http_request_streaming_callback_storage,
+};
+use junobuild_storage::types::interface::{
+    AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
+};
+use junobuild_storage::types::state::FullPath;
+use junobuild_storage::types::store::Asset;
 
 pub fn init() {
-    let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
+    let call_arg = arg_data::<(Option<SegmentArgs>,)>(ArgDecoderConfig::default()).0;
     let SegmentArgs { controllers } = call_arg.unwrap();
 
     let heap = HeapState {
@@ -89,37 +82,18 @@ pub fn init() {
 }
 
 pub fn pre_upgrade() {
-    // Serialize the state using CBOR.
     let mut state_bytes = vec![];
     STATE
         .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
         .expect("Failed to encode the state of the satellite in pre_upgrade hook.");
 
-    // Write the length of the serialized bytes to memory, followed by the by the bytes themselves.
-    let len = state_bytes.len() as u32;
-    let mut memory = get_memory_upgrades();
-    let mut writer = Writer::new(&mut memory, 0);
-    writer.write(&len.to_le_bytes()).unwrap();
-    writer.write(&state_bytes).unwrap()
+    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
 }
 
 pub fn post_upgrade() {
-    // The memory offset is 4 bytes because that's the length we used in pre_upgrade to store the length of the memory data for the upgrade.
-    // https://github.com/dfinity/stable-structures/issues/104
-    const OFFSET: usize = mem::size_of::<u32>();
-
     let memory: Memory = get_memory_upgrades();
+    let state_bytes = read_post_upgrade(&memory);
 
-    // Read the length of the state bytes.
-    let mut state_len_bytes = [0; OFFSET];
-    memory.read(0, &mut state_len_bytes);
-    let state_len = u32::from_le_bytes(state_len_bytes) as usize;
-
-    // Read the bytes
-    let mut state_bytes = vec![0; state_len];
-    memory.read(u64::try_from(OFFSET).unwrap(), &mut state_bytes);
-
-    // Deserialize and set the state.
     let state = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the satellite in post_upgrade hook.");
     STATE.with(|s| *s.borrow_mut() = state);
@@ -348,102 +322,14 @@ pub fn get_auth_config() -> Option<AuthenticationConfig> {
 /// Http
 ///
 
-pub fn http_request(
-    HttpRequest {
-        method,
-        url,
-        headers: req_headers,
-        body: _,
-        certificate_version,
-    }: HttpRequest,
-) -> HttpResponse {
-    if method != "GET" {
-        return error_response(RESPONSE_STATUS_CODE_405, "Method Not Allowed.".to_string());
-    }
-
-    let result = get_routing(url, &req_headers, true);
-
-    match result {
-        Ok(routing) => match routing {
-            Routing::Default(RoutingDefault { url, asset }) => build_asset_response(
-                url,
-                req_headers,
-                certificate_version,
-                asset,
-                None,
-                RESPONSE_STATUS_CODE_200,
-            ),
-            Routing::Rewrite(RoutingRewrite {
-                url,
-                asset,
-                source,
-                status_code,
-            }) => build_asset_response(
-                url,
-                req_headers,
-                certificate_version,
-                asset,
-                Some(source),
-                status_code,
-            ),
-            Routing::Redirect(RoutingRedirect {
-                url,
-                redirect,
-                iframe,
-            }) => build_redirect_response(url, certificate_version, &redirect, &iframe),
-            Routing::RedirectRaw(RoutingRedirectRaw {
-                redirect_url,
-                iframe,
-            }) => build_redirect_raw_response(&redirect_url, &iframe),
-        },
-        Err(err) => error_response(
-            RESPONSE_STATUS_CODE_405,
-            ["Permission denied. Cannot perform this operation. ", err].join(""),
-        ),
-    }
+pub fn http_request(request: HttpRequest) -> HttpResponse {
+    http_request_storage(request, &StorageState)
 }
 
 pub fn http_request_streaming_callback(
-    StreamingCallbackToken {
-        token,
-        headers,
-        index,
-        sha256: _,
-        full_path,
-        encoding_type,
-        memory: _,
-    }: StreamingCallbackToken,
+    streaming_callback_token: StreamingCallbackToken,
 ) -> StreamingCallbackHttpResponse {
-    let asset = get_public_asset_store(full_path, token);
-
-    match asset {
-        Some((asset, memory)) => {
-            let encoding = asset.encodings.get(&encoding_type);
-
-            match encoding {
-                Some(encoding) => {
-                    let body = get_content_chunks_store(encoding, index, &memory);
-
-                    match body {
-                        Some(body) => StreamingCallbackHttpResponse {
-                            token: create_token(
-                                &asset.key,
-                                index,
-                                encoding,
-                                &encoding_type,
-                                &headers,
-                                &memory,
-                            ),
-                            body: body.clone(),
-                        },
-                        None => trap("Streamed chunks not found."),
-                    }
-                }
-                None => trap("Streamed asset encoding not found."),
-            }
-        }
-        None => trap("Streamed asset not found."),
-    }
+    http_request_streaming_callback_storage(streaming_callback_token, &StorageState)
 }
 
 //

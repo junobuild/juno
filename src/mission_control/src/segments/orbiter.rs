@@ -1,4 +1,5 @@
 use crate::segments::canister::{create_canister, delete_canister};
+use crate::segments::msg::ORBITER_NOT_FOUND;
 use crate::segments::store::{add_orbiter, delete_orbiter as delete_orbiter_store, get_orbiter};
 use crate::types::state::Orbiter;
 use candid::Principal;
@@ -32,11 +33,24 @@ pub async fn attach_orbiter(
     }
 }
 
+pub async fn detach_orbiter(orbiter_id: &OrbiterId) -> Result<(), String> {
+    let orbiter = get_orbiter(orbiter_id);
+
+    match orbiter {
+        None => Err(ORBITER_NOT_FOUND.to_string()),
+        Some(_orbiter) => {
+            delete_orbiter_store(orbiter_id);
+
+            Ok(())
+        }
+    }
+}
+
 pub async fn delete_orbiter(orbiter_id: &OrbiterId, cycles_to_deposit: u128) -> Result<(), String> {
     let orbiter = get_orbiter(orbiter_id);
 
     match orbiter {
-        None => Err("Orbiter not found or not owned by this mission control.".to_string()),
+        None => Err(ORBITER_NOT_FOUND.to_string()),
         Some(_) => {
             delete_canister(orbiter_id, cycles_to_deposit).await?;
 

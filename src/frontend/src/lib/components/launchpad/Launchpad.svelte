@@ -10,7 +10,6 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
-	import Illustration from '$lib/components/launchpad/Illustration.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 
 	$: $missionControlStore,
@@ -30,7 +29,7 @@
 {#if loading || ($satellitesStore?.length ?? 0n) === 0}
 	{#if loading}
 		<div class="spinner" out:fade>
-			<Spinner />
+			<Spinner inline />
 
 			<p>{$i18n.satellites.loading_launchpad}</p>
 		</div>
@@ -54,8 +53,6 @@
 		</section>
 	</div>
 {/if}
-
-<Illustration />
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/grid';
@@ -92,5 +89,7 @@
 		justify-content: center;
 		align-items: center;
 		gap: var(--padding-2x);
+
+		font-size: var(--font-size-very-small);
 	}
 </style>

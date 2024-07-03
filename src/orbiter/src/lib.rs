@@ -36,15 +36,11 @@ use crate::types::interface::{
     AnalyticsTrackEvents, DelSatelliteConfig, GetAnalytics, SetPageView, SetSatelliteConfig,
     SetTrackEvent,
 };
-use crate::types::memory::Memory;
 use crate::types::state::{AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent};
 use ciborium::{from_reader, into_writer};
-use ic_cdk::api::call::arg_data;
+use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
-use ic_stable_structures::writer::Writer;
-#[allow(unused)]
-use ic_stable_structures::Memory as _;
 use junobuild_shared::canister::memory_size as canister_memory_size;
 use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
@@ -54,12 +50,13 @@ use junobuild_shared::ic::deposit_cycles as deposit_cycles_shared;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SegmentArgs, SetControllersArgs,
 };
+use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers, SatelliteId};
-use std::mem;
+use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 
 #[init]
 fn init() {
-    let call_arg = arg_data::<(Option<SegmentArgs>,)>().0;
+    let call_arg = arg_data::<(Option<SegmentArgs>,)>(ArgDecoderConfig::default()).0;
     let SegmentArgs { controllers } = call_arg.unwrap();
 
     let heap = HeapState {
@@ -77,40 +74,21 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    // Serialize the state using CBOR.
     let mut state_bytes = vec![];
     STATE
         .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
-        .expect("Failed to encode the state of the satellite in pre_upgrade hook.");
+        .expect("Failed to encode the state of the orbiter in pre_upgrade hook.");
 
-    // Write the length of the serialized bytes to memory, followed by the by the bytes themselves.
-    let len = state_bytes.len() as u32;
-    let mut memory = get_memory_upgrades();
-    let mut writer = Writer::new(&mut memory, 0);
-    writer.write(&len.to_le_bytes()).unwrap();
-    writer.write(&state_bytes).unwrap()
+    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
     let memory: Memory = get_memory_upgrades();
+    let state_bytes = read_post_upgrade(&memory);
 
-    // The memory offset is 4 bytes because that's the length we used in pre_upgrade to store the length of the memory data for the upgrade.
-    // https://github.com/dfinity/stable-structures/issues/104
-    const OFFSET: usize = mem::size_of::<u32>();
-
-    // Read the length of the state bytes.
-    let mut state_len_bytes = [0; OFFSET];
-    memory.read(0, &mut state_len_bytes);
-    let state_len = u32::from_le_bytes(state_len_bytes) as usize;
-
-    // Read the bytes
-    let mut state_bytes = vec![0; state_len];
-    memory.read(u64::try_from(OFFSET).unwrap(), &mut state_bytes);
-
-    // Deserialize and set the state.
     let state: State = from_reader(&*state_bytes)
-        .expect("Failed to decode the state of the satellite in post_upgrade hook.");
+        .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
 
     STATE.with(|s| *s.borrow_mut() = state);
 }

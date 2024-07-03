@@ -2,11 +2,10 @@ pub mod state {
     use crate::auth::types::state::AuthenticationHeapState;
     use crate::db::types::state::{DbHeapState, DbStable};
     use crate::memory::init_stable_state;
-    use crate::storage::types::state::{
-        AssetsStable, ContentChunksStable, StorageHeapState, StorageRuntimeState,
-    };
+    use crate::storage::types::state::{AssetsStable, ContentChunksStable};
     use candid::CandidType;
     use junobuild_shared::types::state::Controllers;
+    use junobuild_storage::types::state::StorageHeapState;
     use rand::rngs::StdRng;
     use serde::{Deserialize, Serialize};
 
@@ -40,61 +39,13 @@ pub mod state {
 
     #[derive(Default, Clone)]
     pub struct RuntimeState {
-        pub storage: StorageRuntimeState,
         pub rng: Option<StdRng>, // rng = Random Number Generator
     }
 }
 
-pub mod core {
-    use std::cmp::Ordering;
-
-    /// Represents a unique identifier or key.
-    ///
-    /// This type, `Key`, is an alias for `String`, used to represent unique identifiers or keys within the context
-    /// of various data structures and operations.
-    ///
-    /// `Key` is commonly employed as a unique identifier or key in Rust code.
-    pub type Key = String;
-
-    /// Represents the key or identifier of a collection.
-    ///
-    /// This type, `CollectionKey`, is an alias for `String`, used to represent the key or identifier of a collection
-    /// within the context of various data structures and operations.
-    ///
-    /// `CollectionKey` is commonly employed as a unique identifier for collections in Rust code.
-    pub type CollectionKey = String;
-
-    /// Represents binary data as a vector of bytes.
-    ///
-    /// This type, `Blob`, is an alias for `Vec<u8>`, providing a convenient way to represent binary data
-    /// as a collection of bytes.
-    pub type Blob = Vec<u8>;
-
-    /// Represents the domain name used in various configurations across the satellite.
-    ///
-    /// This type alias simplifies the reuse of `String` for domain names, providing a clear and
-    /// specific semantic meaning when used in structs and function signatures. It is used to
-    /// identify domains for authentication, custom domains, and potentially more areas where
-    /// domain names are needed.
-    ///
-    /// # Examples
-    ///
-    /// Basic usage:
-    ///
-    /// ```
-    /// let main_domain: DomainName = "example.com".to_string();
-    /// ```
-    pub type DomainName = String;
-
-    pub trait Compare {
-        fn cmp_updated_at(&self, other: &Self) -> Ordering;
-        fn cmp_created_at(&self, other: &Self) -> Ordering;
-    }
-}
-
 pub mod interface {
-    use crate::storage::types::config::StorageConfig;
     use candid::CandidType;
+    use junobuild_storage::types::config::StorageConfig;
     use serde::Deserialize;
 
     #[derive(CandidType, Deserialize)]
@@ -109,69 +60,12 @@ pub mod interface {
     }
 }
 
-pub mod list {
-    use crate::types::core::Key;
-    use candid::CandidType;
-    use junobuild_shared::types::state::UserId;
-    use serde::Deserialize;
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListPaginate {
-        pub start_after: Option<Key>,
-        pub limit: Option<usize>,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub enum ListOrderField {
-        #[default]
-        Keys,
-        CreatedAt,
-        UpdatedAt,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListOrder {
-        pub desc: bool,
-        pub field: ListOrderField,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListMatcher {
-        pub key: Option<Key>,
-        pub description: Option<String>,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListParams {
-        pub matcher: Option<ListMatcher>,
-        pub paginate: Option<ListPaginate>,
-        pub order: Option<ListOrder>,
-        pub owner: Option<UserId>,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct ListResults<T> {
-        pub items: Vec<(Key, T)>,
-        pub items_length: usize,
-        pub items_page: Option<usize>,
-        pub matches_length: usize,
-        pub matches_pages: Option<usize>,
-    }
-}
-
-pub mod memory {
-    use ic_stable_structures::memory_manager::VirtualMemory;
-    use ic_stable_structures::DefaultMemoryImpl;
-
-    pub type Memory = VirtualMemory<DefaultMemoryImpl>;
-}
-
 pub mod hooks {
     use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
-    use crate::storage::types::store::{Asset, AssetAssertUpload};
     use crate::Doc;
     use candid::{CandidType, Deserialize};
     use junobuild_shared::types::state::UserId;
+    use junobuild_storage::types::store::{Asset, AssetAssertUpload};
 
     /// A generic context struct used in Juno satellite hooks.
     ///

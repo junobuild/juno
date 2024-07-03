@@ -51,7 +51,7 @@
 
 		close();
 
-		emit({ message: 'junoDelete' });
+		emit({ message: 'junoCloseActions' });
 
 		busy.stop();
 	};

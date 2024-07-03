@@ -1,17 +1,19 @@
-use crate::list::utils::range_collection_end;
 use crate::memory::STATE;
-use crate::msg::COLLECTION_NOT_FOUND;
-use crate::rules::types::rules::{Memory, Rule};
-use crate::storage::types::config::StorageConfig;
-use crate::storage::types::domain::{CustomDomain, CustomDomains};
 use crate::storage::types::state::{
-    AssetsHeap, AssetsStable, ContentChunksStable, FullPath, StableEncodingChunkKey, StableKey,
-    StorageHeapState,
+    AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
 };
-use crate::storage::types::store::{Asset, AssetEncoding};
-use crate::types::core::{Blob, CollectionKey, DomainName};
 use crate::types::state::StableState;
-use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_collections::msg::COLLECTION_NOT_FOUND;
+use junobuild_collections::types::core::CollectionKey;
+use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_collections::utils::range_collection_end;
+use junobuild_shared::serializers::deserialize_from_bytes;
+use junobuild_shared::types::core::{Blob, DomainName};
+use junobuild_shared::types::domain::{CustomDomain, CustomDomains};
+use junobuild_storage::stable_utils::insert_asset_encoding_stable;
+use junobuild_storage::types::config::StorageConfig;
+use junobuild_storage::types::state::{AssetsHeap, FullPath, StorageHeapState};
+use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
 
@@ -99,6 +101,7 @@ pub fn insert_asset_encoding(
                 encoding_type,
                 encoding,
                 asset,
+                stable_encoding_chunk_key,
                 &mut state.borrow_mut().stable.content_chunks,
             )
         }),
@@ -206,34 +209,6 @@ fn insert_asset_stable(
     assets.insert(stable_full_path(collection, full_path), asset.clone());
 }
 
-fn insert_asset_encoding_stable(
-    full_path: &FullPath,
-    encoding_type: &str,
-    encoding: &AssetEncoding,
-    asset: &mut Asset,
-    chunks: &mut ContentChunksStable,
-) {
-    let mut content_chunks = Vec::new();
-
-    // Insert each chunk into the StableBTreeMap
-    for (i, chunk) in encoding.content_chunks.iter().enumerate() {
-        let key = stable_encoding_chunk_key(full_path, encoding_type, i);
-
-        chunks.insert(key.clone(), chunk.clone());
-
-        content_chunks.push(serialize_to_bytes(&key).into_owned());
-    }
-
-    // Insert the encoding by replacing the chunks with their referenced keys serialized
-    asset.encodings.insert(
-        encoding_type.to_owned(),
-        AssetEncoding {
-            content_chunks,
-            ..encoding.clone()
-        },
-    );
-}
-
 fn insert_asset_heap(full_path: &FullPath, asset: &Asset, assets: &mut AssetsHeap) {
     assets.insert(full_path.clone(), asset.clone());
 }
@@ -263,34 +238,6 @@ fn filter_assets_range(collection: &CollectionKey) -> impl RangeBounds<StableKey
     };
 
     start_key..end_key
-}
-
-pub fn get_assets_heap<'a>(
-    collection: &CollectionKey,
-    assets: &'a AssetsHeap,
-) -> Vec<(&'a FullPath, &'a Asset)> {
-    assets
-        .iter()
-        .filter_map(|(_, asset)| filter_assets_heap(asset, collection))
-        .collect()
-}
-
-pub fn count_assets_heap(collection: &CollectionKey, assets: &AssetsHeap) -> usize {
-    assets
-        .iter()
-        .filter_map(|(_, asset)| filter_assets_heap(asset, collection))
-        .count()
-}
-
-fn filter_assets_heap<'a>(
-    asset: &'a Asset,
-    collection: &CollectionKey,
-) -> Option<(&'a FullPath, &'a Asset)> {
-    if &asset.key.collection == collection {
-        Some((&asset.key.full_path, asset))
-    } else {
-        None
-    }
 }
 
 fn stable_full_path(collection: &CollectionKey, full_path: &FullPath) -> StableKey {

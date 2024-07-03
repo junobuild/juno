@@ -17,6 +17,7 @@
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
 	import { DEV_FEATURES } from '$lib/constants/constants';
 	import { authStore } from '$lib/stores/auth.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -66,7 +67,12 @@
 			<DataCollectionDelete {deleteData}>
 				<svelte:fragment slot="button">{$i18n.collections.clear_collection}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.collections.clear_collection}</svelte:fragment>
-				{$i18n.document.delete_all}
+				{@html i18nFormat($i18n.asset.delete_all, [
+					{
+						placeholder: '{0}',
+						value: collection ?? ''
+					}
+				])}
 			</DataCollectionDelete>
 		</svelte:fragment>
 	</DataCollectionHeader>

@@ -42,6 +42,7 @@ interface I18nCore {
 	more: string;
 	are_you_sure: string;
 	attach: string;
+	detach: string;
 	refresh: string;
 	open_website: string;
 }
@@ -88,6 +89,10 @@ interface I18nCanisters {
 	start_tile: string;
 	start_info: string;
 	start_success: string;
+	detach_title: string;
+	detach_explanation: string;
+	detach_info: string;
+	detach_success: string;
 	delete_success: string;
 	transfer_cycles: string;
 	transfer_cycles_description: string;
@@ -318,6 +323,7 @@ interface I18nErrors {
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
+	segment_detach: string;
 	ledger_balance_credits: string;
 	load_credits: string;
 	hosting_missing_domain_name: string;
@@ -365,6 +371,9 @@ interface I18nErrors {
 	transfer_cycles: string;
 	cannot_fetch_logs: string;
 	authentication_config_loading: string;
+	no_file_selected_for_upload: string;
+	upload_error: string;
+	no_collection_for_upload: string;
 }
 
 interface I18nDocument {
@@ -413,6 +422,12 @@ interface I18nAsset {
 	delete_all: string;
 	description: string;
 	full_path: string;
+	edit: string;
+	upload_file: string;
+	replace_file: string;
+	upload_description: string;
+	replace_description: string;
+	upload: string;
 }
 
 interface I18nAdmin {

@@ -1,4 +1,4 @@
-import type { MissionControl, ReleasesVersion } from '$declarations/console/console.did';
+import type { MissionControl } from '$declarations/console/console.did';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { getConsoleActor } from '$lib/utils/actor.juno.utils';
 import type { Principal } from '@dfinity/principal';
@@ -52,9 +52,4 @@ export const getOrbiterFee = async ({
 
 	// If user has enough credits, it returns no fee
 	return isNullish(fee) ? 0n : fee.e8s;
-};
-
-export const releasesVersion = async (identity: OptionIdentity): Promise<ReleasesVersion> => {
-	const actor = await getConsoleActor(identity);
-	return actor.get_releases_version();
 };

@@ -55,7 +55,11 @@ const syncCustomDomainRegistration = async ({ customDomain }: { customDomain: Cu
 
 	try {
 		const registration = await getCustomDomainRegistration(customDomain);
-		const registrationState = nonNullish(registration) ? registration.state : null;
+		const registrationState = nonNullish(registration)
+			? typeof registration.state !== 'string' && 'Failed' in registration.state
+				? 'Failed'
+				: registration.state
+			: null;
 
 		emit(registrationState);
 

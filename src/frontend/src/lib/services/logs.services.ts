@@ -1,6 +1,6 @@
 import type { canister_log_record } from '$declarations/ic/ic.did';
 import type { Doc } from '$declarations/satellite/satellite.did';
-import {canisterLogs, canisterLogs as canisterLogsApi} from '$lib/api/ic.api';
+import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
 import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -37,11 +37,8 @@ export const listLogs = async ({
 			canisterLogs({ canisterId: satelliteId, identity })
 		]);
 
-		// TODO: map icLogs if we ever get some...
-		console.log('Canister logs ->', icLogs);
-
 		return {
-			results: [...fnLogs]
+			results: [...fnLogs, ...icLogs]
 				.filter(([_, { level }]) => levels.includes(level))
 				.sort(([, { timestamp: aTimestamp }], [_, { timestamp: bTimestamp }]) =>
 					aTimestamp > bTimestamp ? (desc ? -1 : 1) : aTimestamp === bTimestamp ? 0 : desc ? 1 : -1
@@ -102,7 +99,7 @@ const functionLogs = async (params: {
 	return await Promise.all(fnLogs.map(mapLog));
 };
 
-const _canisterLogs = async (params: {
+const canisterLogs = async (params: {
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<[string, Log][]> => {

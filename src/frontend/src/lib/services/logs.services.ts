@@ -32,14 +32,13 @@ export const listLogs = async ({
 	}
 
 	try {
-		const [fnLogs] = await Promise.all([
-			functionLogs({ satelliteId, identity })
-			// TODO: IC logs are not available on mainnet yet
-			// canisterLogs({ canisterId: satelliteId, identity })
+		const [fnLogs, icLogs] = await Promise.all([
+			functionLogs({ satelliteId, identity }),
+			canisterLogs({ canisterId: satelliteId, identity })
 		]);
 
 		return {
-			results: [...fnLogs]
+			results: [...fnLogs, ...icLogs]
 				.filter(([_, { level }]) => levels.includes(level))
 				.sort(([, { timestamp: aTimestamp }], [_, { timestamp: bTimestamp }]) =>
 					aTimestamp > bTimestamp ? (desc ? -1 : 1) : aTimestamp === bTimestamp ? 0 : desc ? 1 : -1
@@ -100,7 +99,7 @@ const functionLogs = async (params: {
 	return await Promise.all(fnLogs.map(mapLog));
 };
 
-const _canisterLogs = async (params: {
+const canisterLogs = async (params: {
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<[string, Log][]> => {

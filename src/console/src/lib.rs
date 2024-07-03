@@ -49,7 +49,6 @@ use candid::Principal;
 use ciborium::into_writer;
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::caller;
-use ic_cdk::storage::stable_restore;
 use ic_cdk::{id, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::Tokens;

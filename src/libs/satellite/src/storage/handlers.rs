@@ -37,7 +37,7 @@ use junobuild_storage::utils::{create_empty_asset, map_content_encoding};
 /// compression applied.
 pub fn set_asset_handler(
     key: &AssetKey,
-    content: &String,
+    content: &str,
     headers: &[HeaderField],
 ) -> Result<(), String> {
     let rule = get_rule(&key.collection)?;
@@ -61,7 +61,7 @@ pub fn set_asset_handler(
 fn set_asset_handler_impl(
     key: &AssetKey,
     existing_asset: &Option<Asset>,
-    content: &String,
+    content: &str,
     headers: &[HeaderField],
     rule: &Rule,
 ) -> Result<(), String> {

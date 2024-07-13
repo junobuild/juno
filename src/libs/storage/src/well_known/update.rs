@@ -9,7 +9,7 @@ use junobuild_collections::constants::DEFAULT_ASSETS_COLLECTIONS;
 use junobuild_shared::types::core::DomainName;
 
 pub fn update_alternative_origins_asset(
-    alternative_origins: &String,
+    alternative_origins: &str,
     storage_state: &impl StorageStateStrategy,
 ) -> Result<(), String> {
     let full_path = WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string();
@@ -56,9 +56,9 @@ pub fn delete_alternative_origins_asset(
 
 fn update_asset(
     full_path: &String,
-    content: &String,
+    content: &str,
     storage_state: &impl StorageStateStrategy,
-    f: &dyn Fn(&String, Option<Asset>) -> Asset,
+    f: &dyn Fn(&str, Option<Asset>) -> Asset,
 ) -> Result<(), String> {
     let collection = DEFAULT_ASSETS_COLLECTIONS[0].0.to_string();
 

@@ -142,7 +142,7 @@ pub fn map_content_encoding(content: &str) -> AssetEncoding {
 }
 
 pub fn create_asset_with_content(
-    content: &String,
+    content: &str,
     headers: &[HeaderField],
     existing_asset: Option<Asset>,
     key: AssetKey,

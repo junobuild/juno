@@ -8,7 +8,7 @@ use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::types::domain::CustomDomain;
 use junobuild_shared::types::state::{Timestamp, Version};
 
-pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<Asset>) -> Asset {
+pub fn map_custom_domains_asset(custom_domains: &str, existing_asset: Option<Asset>) -> Asset {
     let key = AssetKey {
         name: "custom-domains".to_string(),
         full_path: WELL_KNOWN_CUSTOM_DOMAINS.to_string(),
@@ -24,7 +24,7 @@ pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<
 }
 
 pub fn map_alternative_origins_asset(
-    alternative_origins: &String,
+    alternative_origins: &str,
     existing_asset: Option<Asset>,
 ) -> Asset {
     let key = AssetKey {

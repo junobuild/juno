@@ -37,7 +37,7 @@ use junobuild_storage::types::interface::{
 // Re-export types
 
 pub use crate::db::store::{
-    count_docs_store, delete_doc_store, delete_docs_store, get_doc_store, set_doc_store,
+    count_docs_store, delete_doc_store, delete_docs_store, get_doc_store, set_doc_store, list_docs_store,
 };
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
@@ -48,7 +48,7 @@ pub use crate::logs::loggers::{
 pub use crate::logs::types::logs::{Log, LogLevel};
 pub use crate::storage::store::{
     count_assets_store, delete_asset_store, delete_assets_store, get_asset_store,
-    get_content_chunks_store,
+    get_content_chunks_store, list_assets_store
 };
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,

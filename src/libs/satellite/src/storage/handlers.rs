@@ -40,7 +40,7 @@ fn set_asset_handler_impl(
     rule: &Rule,
 ) -> Result<(), String> {
     let asset =
-        create_asset_with_content(content, existing_asset.clone(), key.clone(), content_type);
+        create_asset_with_content(content, content_type, existing_asset.clone(), key.clone());
 
     insert_asset(&key.collection, &key.full_path, &asset, rule);
 

@@ -10,6 +10,30 @@ use junobuild_storage::runtime::update_certified_asset as update_runtime_certifi
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::create_asset_with_content;
 
+/// Handles the setting of an asset within the store. This function performs
+/// various checks and operations to ensure the asset can be set and updated
+/// correctly.
+///
+/// # Parameters
+/// - `key`: A reference to the `AssetKey` representing the unique identifier
+///   for the asset within the collection.
+/// - `content`: A reference to the `String` containing the asset content to be
+///   stored.
+/// - `headers`: A slice of `HeaderField` representing any additional headers
+///   associated with the asset.
+///
+/// # Returns
+/// - `Result<(), String>`: Returns `Ok(())` if the asset is successfully set.
+///   Returns an `Err(String)` with an error message if the operation fails.
+///
+/// # Errors
+/// - Returns an error if the asset cannot be retrieved from the storage.
+/// - Returns an error if the permission check fails when the asset is
+///   identified as existing and private.
+///
+/// # Important Note
+/// The content is set for the identity encoding, meaning there is no
+/// compression applied.
 pub fn set_asset_handler(
     key: &AssetKey,
     content: &String,

@@ -1,4 +1,5 @@
 pub mod certified_assets;
+pub mod handlers;
 mod impls;
 mod state;
 pub mod store;

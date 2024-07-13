@@ -46,6 +46,7 @@ pub use crate::logs::loggers::{
     warn_with_data,
 };
 pub use crate::logs::types::logs::{Log, LogLevel};
+pub use crate::storage::handlers::set_asset_handler;
 pub use crate::storage::store::{
     count_assets_store, delete_asset_store, get_asset_store, get_content_chunks_store,
 };

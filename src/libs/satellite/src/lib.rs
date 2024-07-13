@@ -47,7 +47,8 @@ pub use crate::logs::loggers::{
 };
 pub use crate::logs::types::logs::{Log, LogLevel};
 pub use crate::storage::store::{
-    count_assets_store, delete_asset_store, delete_assets_store, get_asset_store, get_content_chunks_store,
+    count_assets_store, delete_asset_store, delete_assets_store, get_asset_store,
+    get_content_chunks_store,
 };
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,

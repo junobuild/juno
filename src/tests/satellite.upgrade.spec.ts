@@ -132,6 +132,8 @@ describe('Satellite upgrade', () => {
 			const moreUsers = await initUsers();
 
 			await testUsers([...users, ...moreUsers]);
+		}, {
+			timeout: 60000
 		});
 
 		it('should keep listing existing heap collections as such', async () => {

@@ -58,5 +58,5 @@ pub fn map_releases_metadata_asset(metadata: &String, existing_asset: Option<Ass
         description: None,
     };
 
-    create_asset_with_content(metadata, existing_asset, key, "application/json")
+    create_asset_with_content(metadata, "application/json", existing_asset, key)
 }

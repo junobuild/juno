@@ -44,4 +44,4 @@ rand = { version = "0.8.5", features = ["getrandom"]}
 junobuild-shared = "0.0.16"
 junobuild-utils = "0.0.2"
 junobuild-collections = "0.0.1"
-junobuild-storage = "0.0.2"
+junobuild-storage = "0.0.3"

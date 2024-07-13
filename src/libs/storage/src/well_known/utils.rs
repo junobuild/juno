@@ -20,9 +20,9 @@ pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<
 
     create_asset_with_content(
         custom_domains,
+        "application/octet-stream",
         existing_asset,
         key,
-        "application/octet-stream",
     )
 }
 
@@ -39,7 +39,7 @@ pub fn map_alternative_origins_asset(
         description: None,
     };
 
-    create_asset_with_content(alternative_origins, existing_asset, key, "application/json")
+    create_asset_with_content(alternative_origins, "application/json", existing_asset, key)
 }
 
 pub fn build_custom_domain(domain: Option<CustomDomain>, bn_id: &Option<String>) -> CustomDomain {

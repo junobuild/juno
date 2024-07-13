@@ -126,9 +126,9 @@ pub fn should_include_asset_for_deletion(collection: &CollectionKey, asset_path:
 
 pub fn create_asset_with_content(
     content: &String,
+    content_type: &str,
     existing_asset: Option<Asset>,
     key: AssetKey,
-    content_type: &str,
 ) -> Asset {
     let now = time();
 

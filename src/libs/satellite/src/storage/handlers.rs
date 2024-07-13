@@ -10,7 +10,7 @@ use junobuild_storage::msg::SET_NOT_ALLOWED;
 use junobuild_storage::runtime::update_certified_asset as update_runtime_certified_asset;
 use junobuild_storage::types::store::{Asset, AssetKey};
 use junobuild_storage::utils::{
-    create_asset_with_content, create_empty_asset, map_content_no_compression_encoding,
+    create_asset_with_content, create_empty_asset, map_content_encoding,
 };
 
 /// Handles the setting of an asset within the store. This function performs
@@ -101,7 +101,7 @@ fn insert_asset_stable(
 ) -> Asset {
     let mut asset = create_empty_asset(headers, existing_asset.clone(), key.clone());
 
-    let encoding = map_content_no_compression_encoding(content);
+    let encoding = map_content_encoding(content);
 
     insert_asset_encoding(
         &key.full_path,

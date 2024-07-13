@@ -130,7 +130,7 @@ pub fn map_content_type_headers(content_type: &str) -> Vec<HeaderField> {
     )]
 }
 
-pub fn map_content_no_compression_encoding(content: &str) -> AssetEncoding {
+pub fn map_content_encoding(content: &str) -> AssetEncoding {
     let max_chunk_size = 1_900_000; // Max 1.9 MB per chunk
     let chunks = content
         .as_bytes()
@@ -149,7 +149,7 @@ pub fn create_asset_with_content(
 ) -> Asset {
     let mut asset: Asset = create_empty_asset(headers, existing_asset, key);
 
-    let encoding = map_content_no_compression_encoding(content);
+    let encoding = map_content_encoding(content);
 
     asset
         .encodings

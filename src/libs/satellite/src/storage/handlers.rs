@@ -4,6 +4,7 @@ use ic_cdk::id;
 use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::state::Controllers;
+use junobuild_storage::http::types::HeaderField;
 use junobuild_storage::msg::SET_NOT_ALLOWED;
 use junobuild_storage::runtime::update_certified_asset as update_runtime_certified_asset;
 use junobuild_storage::types::store::{Asset, AssetKey};
@@ -12,7 +13,7 @@ use junobuild_storage::utils::create_asset_with_content;
 pub fn set_asset_handler(
     key: &AssetKey,
     content: &String,
-    content_type: &str,
+    headers: &[HeaderField],
 ) -> Result<(), String> {
     let rule = get_rule(&key.collection)?;
 
@@ -29,18 +30,17 @@ pub fn set_asset_handler(
         }
     }
 
-    set_asset_handler_impl(key, &existing_asset, content, content_type, &rule)
+    set_asset_handler_impl(key, &existing_asset, content, headers, &rule)
 }
 
 fn set_asset_handler_impl(
     key: &AssetKey,
     existing_asset: &Option<Asset>,
     content: &String,
-    content_type: &str,
+    headers: &[HeaderField],
     rule: &Rule,
 ) -> Result<(), String> {
-    let asset =
-        create_asset_with_content(content, content_type, existing_asset.clone(), key.clone());
+    let asset = create_asset_with_content(content, headers, existing_asset.clone(), key.clone());
 
     insert_asset(&key.collection, &key.full_path, &asset, rule);
 

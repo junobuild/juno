@@ -12,7 +12,6 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::list::matcher_regex;
-use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::state::{Controllers, Timestamp, UserId, Version};
 use regex::Regex;
@@ -131,8 +130,35 @@ pub fn map_content_type_headers(content_type: &str) -> Vec<HeaderField> {
     )]
 }
 
+pub fn map_content_no_compression_encoding(content: &str) -> AssetEncoding {
+    let max_chunk_size = 1_900_000; // Max 1.9 MB per chunk
+    let chunks = content
+        .as_bytes()
+        .chunks(max_chunk_size)
+        .map(|chunk| chunk.to_vec())
+        .collect();
+
+    AssetEncoding::from(&chunks)
+}
+
 pub fn create_asset_with_content(
     content: &String,
+    headers: &[HeaderField],
+    existing_asset: Option<Asset>,
+    key: AssetKey,
+) -> Asset {
+    let mut asset: Asset = create_empty_asset(headers, existing_asset, key);
+
+    let encoding = map_content_no_compression_encoding(content);
+
+    asset
+        .encodings
+        .insert(ASSET_ENCODING_NO_COMPRESSION.to_string(), encoding);
+
+    asset
+}
+
+pub fn create_empty_asset(
     headers: &[HeaderField],
     existing_asset: Option<Asset>,
     key: AssetKey,
@@ -149,26 +175,12 @@ pub fn create_asset_with_content(
         Some(existing_asset) => existing_asset.version.unwrap_or_default() + 1,
     };
 
-    let mut asset: Asset = Asset {
+    Asset {
         key,
         headers: headers.to_owned(),
         encodings: HashMap::new(),
         created_at,
         updated_at: now,
         version: Some(version),
-    };
-
-    let max_chunk_size = 1_900_000; // Max 1.9 MB per chunk
-    let chunks: Vec<Blob> = content
-        .as_bytes()
-        .chunks(max_chunk_size)
-        .map(|chunk| chunk.to_vec())
-        .collect();
-
-    asset.encodings.insert(
-        ASSET_ENCODING_NO_COMPRESSION.to_string(),
-        AssetEncoding::from(&chunks),
-    );
-
-    asset
+    }
 }

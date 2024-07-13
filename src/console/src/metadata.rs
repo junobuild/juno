@@ -4,7 +4,7 @@ use crate::store::heap::{get_releases_metadata, set_releases_metadata};
 use crate::types::state::SegmentsDeploymentOptions;
 use ic_cdk::id;
 use junobuild_storage::types::store::{Asset, AssetKey};
-use junobuild_storage::utils::create_asset_with_content;
+use junobuild_storage::utils::{create_asset_with_content, map_content_type_headers};
 use serde_json::to_string;
 
 pub fn update_releases_metadata(options: &SegmentsDeploymentOptions) -> Result<(), String> {
@@ -58,5 +58,7 @@ pub fn map_releases_metadata_asset(metadata: &String, existing_asset: Option<Ass
         description: None,
     };
 
-    create_asset_with_content(metadata, "application/json", existing_asset, key)
+    let headers = map_content_type_headers("application/json");
+
+    create_asset_with_content(metadata, &headers, existing_asset, key)
 }

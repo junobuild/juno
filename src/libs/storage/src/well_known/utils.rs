@@ -1,6 +1,6 @@
 use crate::constants::{WELL_KNOWN_CUSTOM_DOMAINS, WELL_KNOWN_II_ALTERNATIVE_ORIGINS};
 use crate::types::store::{Asset, AssetKey};
-use crate::utils::create_asset_with_content;
+use crate::utils::{create_asset_with_content, map_content_type_headers};
 use ic_cdk::api::time;
 use ic_cdk::id;
 use junobuild_collections::constants::ASSET_COLLECTION_KEY;
@@ -18,12 +18,9 @@ pub fn map_custom_domains_asset(custom_domains: &String, existing_asset: Option<
         description: None,
     };
 
-    create_asset_with_content(
-        custom_domains,
-        "application/octet-stream",
-        existing_asset,
-        key,
-    )
+    let headers = map_content_type_headers("application/octet-stream");
+
+    create_asset_with_content(custom_domains, &headers, existing_asset, key)
 }
 
 pub fn map_alternative_origins_asset(
@@ -39,7 +36,9 @@ pub fn map_alternative_origins_asset(
         description: None,
     };
 
-    create_asset_with_content(alternative_origins, "application/json", existing_asset, key)
+    let headers = map_content_type_headers("application/json");
+
+    create_asset_with_content(alternative_origins, &headers, existing_asset, key)
 }
 
 pub fn build_custom_domain(domain: Option<CustomDomain>, bn_id: &Option<String>) -> CustomDomain {

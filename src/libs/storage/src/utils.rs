@@ -124,9 +124,16 @@ pub fn should_include_asset_for_deletion(collection: &CollectionKey, asset_path:
     collection != "#dapp" || !excluded_paths.contains(asset_path)
 }
 
+pub fn map_content_type_headers(content_type: &str) -> Vec<HeaderField> {
+    vec![HeaderField(
+        "content-type".to_string(),
+        content_type.to_string(),
+    )]
+}
+
 pub fn create_asset_with_content(
     content: &String,
-    content_type: &str,
+    headers: &[HeaderField],
     existing_asset: Option<Asset>,
     key: AssetKey,
 ) -> Asset {
@@ -144,10 +151,7 @@ pub fn create_asset_with_content(
 
     let mut asset: Asset = Asset {
         key,
-        headers: vec![HeaderField(
-            "content-type".to_string(),
-            content_type.to_string(),
-        )],
+        headers: headers.to_owned(),
         encodings: HashMap::new(),
         created_at,
         updated_at: now,

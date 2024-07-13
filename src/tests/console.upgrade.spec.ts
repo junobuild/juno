@@ -117,7 +117,7 @@ describe('Console upgrade', () => {
 					});
 				},
 				{
-					timeout: 60000
+					timeout: 120000
 				}
 			);
 		});

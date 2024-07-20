@@ -34,13 +34,13 @@ const config = {
 		},
 		alias: {
 			$declarations: './src/declarations'
+		},
+		version: {
+			name: version
 		}
 	},
 	serviceWorker: {
 		register: false
-	},
-	version: {
-		name: version
 	}
 };
 export default config;

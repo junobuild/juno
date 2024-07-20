@@ -15,5 +15,11 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run reproducibility test
-        run: bash .github/scripts/test-frontend-reproducibility
-        continue-on-error: false
+        id: reproducibility
+        run: |
+          bash .github/scripts/test-reproducibility
+        shell: bash
+
+      - name: Check script exit status
+        if: steps.reproducibility.outcome == 'failure'
+        run: exit 1

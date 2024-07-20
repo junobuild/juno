@@ -16,3 +16,4 @@ jobs:
 
       - name: Run reproducibility test
         run: bash .github/scripts/test-frontend-reproducibility
+        continue-on-error: false

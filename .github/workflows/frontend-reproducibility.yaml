@@ -15,11 +15,17 @@ jobs:
         uses: ./.github/actions/prepare
 
       - name: Run reproducibility test
-        id: reproducibility
         run: |
           bash .github/scripts/test-reproducibility
         shell: bash
 
       - name: Check script exit status
-        if: steps.reproducibility.outcome == 'failure'
-        run: exit 1
+        run: |
+          exit_code=$?
+          echo "Script exited with code $exit_code"
+          if [ $exit_code -ne 0 ]; then
+            echo "Difference detected in build files"
+            exit 1
+          else
+            echo "No difference found"
+          fi

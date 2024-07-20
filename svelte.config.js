@@ -34,9 +34,6 @@ const config = {
 		},
 		alias: {
 			$declarations: './src/declarations'
-		},
-		version: {
-			name: version
 		}
 	},
 	serviceWorker: {

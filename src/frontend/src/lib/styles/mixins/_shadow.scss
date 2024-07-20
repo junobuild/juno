@@ -1,8 +1,8 @@
 @mixin card {
-	@include shadow;
-
 	background: var(--color-card);
 	color: var(--color-card-contrast);
+
+	@include shadow;
 }
 
 @mixin base-card {
@@ -13,9 +13,9 @@
 }
 
 @mixin strong-card {
-	@include base-card;
-
 	border: 1px solid var(--color-card-contrast);
+
+	@include base-card;
 }
 
 @mixin shadow {
@@ -24,14 +24,14 @@
 }
 
 @mixin card-action {
-	@include card;
-
 	box-shadow: 2px 2px var(--color-card-contrast);
+
+	@include card;
 }
 
 @mixin strong-card-action {
-	@include base-card;
-
 	border: 2px solid var(--color-card-contrast);
 	box-shadow: 1px 1px var(--color-card-contrast);
+
+	@include base-card;
 }

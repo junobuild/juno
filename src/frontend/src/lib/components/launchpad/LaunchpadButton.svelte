@@ -45,11 +45,11 @@
 
 	.content,
 	.summary {
+		width: 100%;
+
 		:global(*::first-letter) {
 			text-transform: uppercase;
 		}
-
-		width: 100%;
 	}
 
 	.only {

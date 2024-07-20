@@ -42,23 +42,23 @@
 
 	.content,
 	.summary {
+		width: 100%;
+
 		:global(*::first-letter) {
 			text-transform: uppercase;
 		}
-
-		width: 100%;
 	}
 
 	.row {
 		grid-column: 1 / 13;
+
+		height: auto;
 
 		@include media.min-width(medium) {
 			display: grid;
 			grid-template-columns: 30% auto;
 			grid-gap: var(--padding);
 		}
-
-		height: auto;
 
 		.content,
 		.summary {

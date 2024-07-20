@@ -75,9 +75,8 @@
 
 	.modal {
 		position: fixed;
-		@include display.inset;
-
 		z-index: calc(var(--z-index) + 998);
+		@include display.inset;
 	}
 
 	.backdrop {
@@ -95,16 +94,18 @@
 		left: 50%;
 		transform: translate(-50%, -50%);
 
-		@include section.large;
+		overflow: hidden;
 		height: calc(min(100vh, 796px) - 2.75rem);
 
-		@supports (-webkit-touch-callout: none) {
-			max-height: -webkit-fill-available;
-		}
+		@include section.large;
 
 		@include shadow.strong-card;
 
-		overflow: hidden;
+		@supports (-webkit-touch-callout: none) {
+			& {
+				max-height: -webkit-fill-available;
+			}
+		}
 	}
 
 	.flex {

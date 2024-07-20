@@ -1,0 +1,18 @@
+name: Frontend Reproducibility
+
+on:
+  workflow_dispatch:
+
+jobs:
+  frontend-reproducibility:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
+      - name: Run reproducibility test
+        run: bash .github/scripts/test-frontend-reproducibility

@@ -25,7 +25,7 @@ for ((n = 0; n < 10; n++)); do
       continue
     else
       printf 'The file "%s" is different from "%s".\n' "$file1" "$file2"
-      exit
+      exit 1
     fi
   fi
 done

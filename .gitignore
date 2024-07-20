@@ -35,3 +35,4 @@ orbiter-v*.wasm.gz
 mission_control-v*.wasm.gz
 console-v*.wasm.gz
 out/
+tmp/

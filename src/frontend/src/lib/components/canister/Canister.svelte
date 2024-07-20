@@ -102,6 +102,9 @@
 
 <style lang="scss">
 	p {
+		max-width: 300px;
+		color: var(--value-color);
+
 		&:not(:last-of-type) {
 			margin: 0 0 var(--padding-0_25x);
 		}
@@ -110,9 +113,6 @@
 		span::first-letter {
 			text-transform: uppercase;
 		}
-
-		max-width: 300px;
-		color: var(--value-color);
 	}
 
 	.cycles {

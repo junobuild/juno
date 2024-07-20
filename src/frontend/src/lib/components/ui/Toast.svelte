@@ -86,11 +86,6 @@
 		left: 50%;
 		transform: translate(-50%, 0);
 
-		@include shadow.shadow;
-
-		background: var(--color-card);
-		color: var(--color-card-contrast);
-
 		width: calc(100% - (8 * var(--padding)));
 
 		padding: var(--padding) calc(var(--padding) * 2);
@@ -98,12 +93,14 @@
 
 		z-index: calc(var(--z-index) + 999);
 
+		background: var(--color-primary);
+		color: var(--color-primary-contrast);
+
+		@include shadow.shadow;
+
 		@media (min-width: 768px) {
 			max-width: var(--section-max-width);
 		}
-
-		background: var(--color-primary);
-		color: var(--color-primary-contrast);
 
 		&.error {
 			background: var(--color-error);

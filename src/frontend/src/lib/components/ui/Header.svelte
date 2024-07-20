@@ -27,10 +27,6 @@
 
 		pointer-events: none;
 
-		:global(*) {
-			pointer-events: all;
-		}
-
 		padding: var(--padding-2x) var(--padding-2x);
 
 		@include media.min-width(xlarge) {
@@ -39,6 +35,10 @@
 
 		&.opaque {
 			background: var(--color-background);
+		}
+
+		:global(*) {
+			pointer-events: all;
 		}
 	}
 </style>

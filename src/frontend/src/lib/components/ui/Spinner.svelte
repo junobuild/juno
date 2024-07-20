@@ -33,13 +33,13 @@
 
 		border-radius: 50%;
 
+		animation: spinner-rotate 1.2s infinite linear;
+
 		&:not(.inline) {
 			position: absolute;
 			top: calc(50% - (var(--spinner-size) / 2));
 			left: calc(50% - (var(--spinner-size) / 2));
 		}
-
-		animation: spinner-rotate 1.2s infinite linear;
 	}
 
 	/* -global- */

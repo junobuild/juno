@@ -96,6 +96,9 @@
 		margin: 0;
 
 		width: 100%;
+
+		display: block;
+
 		@include text.truncate;
 
 		&:focus {
@@ -106,8 +109,6 @@
 			content: '\003E';
 			padding: 0 var(--padding) 0 0;
 		}
-
-		display: block;
 
 		@include media.min-width(large) {
 			display: none;

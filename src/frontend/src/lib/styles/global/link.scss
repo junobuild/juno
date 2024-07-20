@@ -2,19 +2,25 @@
 
 a.menu {
 	@include button.primary;
-	@include button.menu;
+
+	& {
+		@include button.menu;
+	}
 }
 
 a.icon {
 	@include button.primary;
-	@include button.icon;
+
+	& {
+		@include button.icon;
+	}
 }
 
 a.article {
-	@include button.article;
-
 	position: relative;
 	text-decoration: none;
+
+	@include button.article;
 
 	&:hover:not(:disabled),
 	&:focus:not(:disabled) {

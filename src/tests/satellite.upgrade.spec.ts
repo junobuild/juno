@@ -120,21 +120,25 @@ describe('Satellite upgrade', () => {
 			actor.setIdentity(controller);
 		});
 
-		it('should add users after upgrade and still list all users from heap', async () => {
-			await initUsers();
+		it(
+			'should add users after upgrade and still list all users from heap',
+			async () => {
+				await initUsers();
 
-			const users = await initUsers();
+				const users = await initUsers();
 
-			await testUsers(users);
+				await testUsers(users);
 
-			await upgradeVersion('0.0.16');
+				await upgradeVersion('0.0.16');
 
-			const moreUsers = await initUsers();
+				const moreUsers = await initUsers();
 
-			await testUsers([...users, ...moreUsers]);
-		}, {
-			timeout: 60000
-		});
+				await testUsers([...users, ...moreUsers]);
+			},
+			{
+				timeout: 60000
+			}
+		);
 
 		it('should keep listing existing heap collections as such', async () => {
 			const { set_rule, list_rules } = actor;

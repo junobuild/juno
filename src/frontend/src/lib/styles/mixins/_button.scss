@@ -31,6 +31,10 @@
 
 	@include shadow.card-action;
 
+	svg + span {
+		margin: 0 0 0 0.45rem;
+	}
+
 	&:disabled {
 		@include disabled.disabled;
 		pointer-events: none;
@@ -45,10 +49,6 @@
 	&:focus:not(:disabled) {
 		background: var(--color-primary-opaque);
 		color: var(--color-primary-opaque-contrast);
-	}
-
-	svg + span {
-		margin: 0 0 0 0.45rem;
 	}
 }
 

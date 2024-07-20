@@ -61,6 +61,13 @@
 		overflow-y: auto;
 		overflow-x: hidden;
 
+		transition:
+			margin-left var(--animation-time) var(--menu-animation-timing-function),
+			width var(--animation-time) var(--menu-animation-timing-function);
+
+		// On xlarge screen the header is not sticky but within the content that's why we align the inner menu start
+		box-sizing: border-box;
+
 		// On xlarge screen the menu can be always open
 		@include media.min-width(xlarge) {
 			width: var(--menu-width);
@@ -72,13 +79,6 @@
 			width: var(--menu-width);
 			margin-left: 0;
 		}
-
-		transition:
-			margin-left var(--animation-time) var(--menu-animation-timing-function),
-			width var(--animation-time) var(--menu-animation-timing-function);
-
-		// On xlarge screen the header is not sticky but within the content that's why we align the inner menu start
-		box-sizing: border-box;
 	}
 
 	.logo {

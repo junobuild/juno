@@ -110,6 +110,8 @@
 
 		transition: background var(--animation-time) ease-out;
 
+		text-decoration: none;
+
 		&:hover:not(:disabled),
 		&:active:not(:disabled) {
 			color: var(--color-primary-contrast);
@@ -119,8 +121,6 @@
 		span {
 			font-size: var(--font-size-ultra-small);
 		}
-
-		text-decoration: none;
 	}
 
 	@include media.dark-theme {

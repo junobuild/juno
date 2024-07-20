@@ -1,6 +1,8 @@
 name: Frontend Reproducibility
 
 on:
+  release:
+    types: [released]
   workflow_dispatch:
 
 jobs:

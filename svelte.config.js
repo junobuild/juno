@@ -1,8 +1,8 @@
 import adapter from '@sveltejs/adapter-static';
 import autoprefixer from 'autoprefixer';
-import { readFileSync } from 'fs';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
 import preprocess from 'svelte-preprocess';
-import { fileURLToPath } from 'url';
 
 const file = fileURLToPath(new URL('package.json', import.meta.url));
 const json = readFileSync(file, 'utf8');

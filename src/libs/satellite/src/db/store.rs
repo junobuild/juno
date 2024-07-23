@@ -11,6 +11,7 @@ use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, Do
 use crate::db::utils::filter_values;
 use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::memory::STATE;
+use crate::rules::assert_stores::assert_user_collection_caller_key;
 use candid::Principal;
 use junobuild_collections::assert_stores::{
     assert_create_permission, assert_permission, public_permission,
@@ -178,6 +179,8 @@ fn set_doc_impl(
     assert_write_version(&current_doc, value.version)?;
 
     assert_description_length(&value.description)?;
+
+    assert_user_collection_caller_key(caller, &collection, &key)?;
 
     invoke_assert_set_doc(
         &caller,

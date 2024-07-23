@@ -247,32 +247,70 @@ describe('Satellite authentication', () => {
 	});
 
 	describe('user', () => {
-		const user = Ed25519KeyIdentity.generate();
+		describe('success', () => {
+			const user = Ed25519KeyIdentity.generate();
 
-		beforeAll(() => {
-			actor.setIdentity(user);
+			beforeAll(() => {
+				actor.setIdentity(user);
+			});
+
+			it('should create a user', async () => {
+				const { set_doc, list_docs } = actor;
+
+				await set_doc('#user', user.getPrincipal().toText(), {
+					data: await toArray({
+						provider: 'internet_identity'
+					}),
+					description: toNullable(),
+					version: toNullable()
+				});
+
+				const { items: users } = await list_docs('#user', {
+					matcher: toNullable(),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				});
+
+				expect(users).toHaveLength(1);
+				expect(users.find(([key]) => key === user.getPrincipal().toText())).not.toBeUndefined();
+			});
 		});
 
-		it('should create a user', async () => {
-			const { set_doc, list_docs } = actor;
+		describe('error', () => {
+			const user = Ed25519KeyIdentity.generate();
 
-			await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity'
-				}),
-				description: toNullable(),
-				version: toNullable()
+			beforeAll(() => {
+				actor.setIdentity(controller);
 			});
 
-			const { items: users } = await list_docs('#user', {
-				matcher: toNullable(),
-				order: toNullable(),
-				owner: toNullable(),
-				paginate: toNullable()
+			it('should not create a user if caller is not the user', async () => {
+				const { set_doc, list_docs } = actor;
+
+				await expect(
+					set_doc('#user', user.getPrincipal().toText(), {
+						data: await toArray({
+							provider: 'internet_identity'
+						}),
+						description: toNullable(),
+						version: toNullable()
+					})
+				).rejects.toThrow('Caller and key must match to create a user.');
 			});
 
-			expect(users).toHaveLength(1);
-			expect(users.find(([key]) => key === user.getPrincipal().toText())).not.toBeUndefined();
+			it('should not create a user if key is not a principal', async () => {
+				const { set_doc, list_docs } = actor;
+
+				await expect(
+					set_doc('#user', 'test', {
+						data: await toArray({
+							provider: 'internet_identity'
+						}),
+						description: toNullable(),
+						version: toNullable()
+					})
+				).rejects.toThrow('User key must be a textual representation of a principal.');
+			});
 		});
 	});
 

@@ -4,6 +4,13 @@ import type { ChartsData } from '$lib/types/chart';
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';
 export type CanisterSyncStatus = 'loading' | 'syncing' | 'synced' | 'error';
 
+export interface CanisterQueryStats {
+	numInstructionsTotal: bigint;
+	numCallsTotal: bigint;
+	requestPayloadBytesTotal: bigint;
+	responsePayloadBytesTotal: bigint;
+}
+
 export type Segment = 'satellite' | 'mission_control' | 'orbiter';
 
 export interface CanisterSegment {
@@ -13,10 +20,11 @@ export interface CanisterSegment {
 
 export interface CanisterInfo {
 	cycles: bigint;
-	memorySize: bigint;
+    memorySize: bigint;
 	status: CanisterStatus;
-	canisterId: string;
-	idleCyclesBurnedPerDay?: bigint;
+    canisterId: string;
+    idleCyclesBurnedPerDay?: bigint;
+	queryStats?: CanisterQueryStats;
 }
 
 export interface CanisterWarning {
@@ -27,7 +35,7 @@ export interface CanisterWarning {
 export interface CanisterData {
 	icp: number;
 	warning: CanisterWarning;
-	canister: Pick<CanisterInfo, 'memorySize' | 'cycles' | 'status' | 'idleCyclesBurnedPerDay'>;
+	canister: Pick<CanisterInfo, 'memorySize' | 'cycles' | 'status' | 'idleCyclesBurnedPerDay' | 'queryStats'>;
 	memory?: MemorySize;
 }
 

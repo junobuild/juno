@@ -37,9 +37,7 @@
 
 	{#if nonNullish($missionControlStore)}
 		<div class="card-container columns-3" in:fade>
-			<div>
-				<CanisterOverview canisterId={$missionControlStore} segment="mission_control" />
-			</div>
+			<CanisterOverview canisterId={$missionControlStore} segment="mission_control" />
 
 			<MissionControlStatuses missionControlId={$missionControlStore} />
 		</div>

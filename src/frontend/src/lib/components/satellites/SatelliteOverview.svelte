@@ -37,13 +37,11 @@
 </div>
 
 <div class="card-container columns-3">
-	<div>
-		<CanisterOverview
-			canisterId={satellite.satellite_id}
-			segment="satellite"
-			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
-		/>
-	</div>
+	<CanisterOverview
+		canisterId={satellite.satellite_id}
+		segment="satellite"
+		heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
+	/>
 
 	<CanisterJunoStatuses segment="satellite" canisterId={satellite.satellite_id} />
 </div>

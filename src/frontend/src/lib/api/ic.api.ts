@@ -29,7 +29,7 @@ export const canisterStatus = async ({
 	return {
 		cycles,
 		status: toStatus(status),
-		memory_size,
+		memorySize: memory_size,
 		canisterId,
 		idleCyclesBurnedPerDay: idle_cycles_burned_per_day
 	};

@@ -13,7 +13,7 @@ export interface CanisterSegment {
 
 export interface CanisterInfo {
 	cycles: bigint;
-	memory_size: bigint;
+	memorySize: bigint;
 	status: CanisterStatus;
 	canisterId: string;
 	idleCyclesBurnedPerDay?: bigint;
@@ -27,7 +27,7 @@ export interface CanisterWarning {
 export interface CanisterData {
 	icp: number;
 	warning: CanisterWarning;
-	canister: Pick<CanisterInfo, 'memory_size' | 'cycles' | 'status' | 'idleCyclesBurnedPerDay'>;
+	canister: Pick<CanisterInfo, 'memorySize' | 'cycles' | 'status' | 'idleCyclesBurnedPerDay'>;
 	memory?: MemorySize;
 }
 

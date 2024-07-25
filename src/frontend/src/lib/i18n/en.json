@@ -41,6 +41,7 @@
 		"attach": "Attach",
 		"detach": "Detach",
 		"refresh": "Refresh",
+		"reload": "Reload",
 		"open_website": "Open Juno website and documentation"
 	},
 	"canisters": {

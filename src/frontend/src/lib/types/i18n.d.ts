@@ -44,6 +44,7 @@ interface I18nCore {
 	attach: string;
 	detach: string;
 	refresh: string;
+	reload: string;
 	open_website: string;
 }
 

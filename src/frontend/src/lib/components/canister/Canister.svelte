@@ -90,7 +90,7 @@
 				<CanisterTCycles {data} />{#if sync === 'syncing'}<IconSync />{/if}
 			</p>
 			<p>
-				{formatNumber(Number(memorySize) / 1_000_000)} MB <small>{$i18n.canisters.in_total}</small>
+				{formatNumber(Number(memorySize) / 1_000_000)} <small>MB {$i18n.canisters.in_total}</small>
 			</p>
 		{:else if sync === 'loading'}
 			<p><SkeletonText /></p>

@@ -53,16 +53,16 @@
 			<svelte:fragment slot="label">{$i18n.canisters.memory}</svelte:fragment>
 			{#if nonNullish(memory)}
 				<p>
-					{formatNumber(Number(memory.heap) / 1_000_000)} MB
+					{formatNumber(Number(memory.heap) / 1_000_000)}
 					<small
-						>{$i18n.canisters.on_heap}
+						>MB {$i18n.canisters.on_heap}
 						{#if warning}<span class="warning" title={heapWarningLabel}><IconWarning /></span
 							>{/if}</small
 					>
 				</p>
 				<p>
-					{formatNumber(Number(memory.stable) / 1_000_000)} MB
-					<small>{$i18n.canisters.on_stable}</small>
+					{formatNumber(Number(memory.stable) / 1_000_000)}
+					<small>MB {$i18n.canisters.on_stable}</small>
 				</p>
 			{:else if isNullish(sync) || ['loading', 'syncing'].includes(sync ?? '')}
 				<p><SkeletonText /></p>

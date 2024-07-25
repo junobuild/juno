@@ -10,7 +10,7 @@
 
 	onMount(() =>
 		layoutTitle.set({
-			title: $i18n.settings.title,
+			title: $i18n.preferences.title,
 			icon: IconRaygun
 		})
 	);

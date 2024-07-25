@@ -519,8 +519,8 @@
 		"cycles_collected": "T Cycles 搜集",
 		"error_collecting_data": "搜集数据出错."
 	},
-	"settings": {
-		"title": "设置",
+	"preferences": {
+		"title": "Preferences",
 		"dev_id": "开发者 ID",
 		"session_expires_in": "会话将过期在"
 	},

@@ -364,6 +364,7 @@ interface I18nErrors {
 	orbiter_configuration_listing: string;
 	orbiter_id_missing: string;
 	orbiter_attach: string;
+	orbiter_unexpected_error: string;
 	transactions_next: string;
 	transactions_export: string;
 	invalid_cycles_to_transfer: string;

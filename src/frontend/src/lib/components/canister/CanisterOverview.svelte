@@ -80,16 +80,28 @@
 		<Value>
 			<svelte:fragment slot="label">{$i18n.canisters.queries}</svelte:fragment>
 			{#if ['synced', 'syncing'].includes(sync ?? '')}
-				<p>{numCallsTotal ?? '???'} <small>{$i18n.canisters.calls}</small></p>
+				<p>
+					{nonNullish(numCallsTotal)
+						? formatNumber(Number(numCallsTotal), {
+								minFraction: 0,
+								maxFraction: 0,
+								notation: 'compact'
+							})
+						: '???'} <small>{$i18n.canisters.calls}</small>
+				</p>
 				<p>
 					{nonNullish(numInstructionsTotal)
-						? formatNumber(Number(numInstructionsTotal), { minFraction: 0, maxFraction: 0 })
+						? formatNumber(Number(numInstructionsTotal), {
+								minFraction: 0,
+								maxFraction: 0,
+								notation: 'compact'
+							})
 						: '???'}
 					<small>{$i18n.canisters.instructions}</small>
 				</p>
 				<p>
 					{nonNullish(requestPayloadBytesTotal)
-						? formatNumber(Number(requestPayloadBytesTotal) / 1_000_000)
+						? formatNumber(Number(requestPayloadBytesTotal) / 1_000_000, { notation: 'compact' })
 						: '???'}
 					<small
 						>{nonNullish(requestPayloadBytesTotal) ? 'MB ' : ''}{$i18n.canisters.requests}</small
@@ -97,7 +109,7 @@
 				</p>
 				<p>
 					{nonNullish(responsePayloadBytesTotal)
-						? formatNumber(Number(responsePayloadBytesTotal) / 1_000_000)
+						? formatNumber(Number(responsePayloadBytesTotal) / 1_000_000, { notation: 'compact' })
 						: '???'}
 					<small
 						>{nonNullish(responsePayloadBytesTotal) ? 'MB ' : ''}{$i18n.canisters.responses}</small

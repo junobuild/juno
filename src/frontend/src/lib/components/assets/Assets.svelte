@@ -20,6 +20,8 @@
 	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { emit } from '$lib/utils/events.utils';
+	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
+	import { fade } from 'svelte/transition';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -84,6 +86,10 @@
 				])}
 			</AssetUpload>
 
+			<button class="menu" type="button" on:click={load}
+				><IconRefresh size="20px" /> {$i18n.core.reload}</button
+			>
+
 			<DataCollectionDelete {deleteData}>
 				<svelte:fragment slot="button">{$i18n.collections.clear_collection}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.collections.clear_collection}</svelte:fragment>
@@ -105,26 +111,28 @@
 		class:data-nullish={isNullish($paginationStore.items)}
 	>
 		{#if nonNullish($paginationStore.items)}
-			{#each $paginationStore.items as item}
-				{@const asset = item[1]}
-				{@const key = asset.key.full_path}
+			<div out:fade>
+				{#each $paginationStore.items as item}
+					{@const asset = item[1]}
+					{@const key = asset.key.full_path}
 
-				<button
-					class="text action"
-					on:click={() => assetsStore.set({ key, data: asset, action: 'view' })}
-					><span>{key}</span></button
-				>
-			{/each}
+					<button
+						class="text action"
+						on:click={() => assetsStore.set({ key, data: asset, action: 'view' })}
+						><span>{key}</span></button
+					>
+				{/each}
 
-			{#if !empty}
-				<DataPaginator />
-			{/if}
+				{#if !empty}
+					<DataPaginator />
+				{/if}
 
-			{#if empty}
-				<CollectionEmpty {collection} rule={$store.rule?.[1]}>
-					<svelte:fragment slot="filter">{$i18n.asset.no_match}</svelte:fragment>
-				</CollectionEmpty>
-			{/if}
+				{#if empty}
+					<CollectionEmpty {collection} rule={$store.rule?.[1]}>
+						<svelte:fragment slot="filter">{$i18n.asset.no_match}</svelte:fragment>
+					</CollectionEmpty>
+				{/if}
+			</div>
 		{/if}
 	</div>
 {/if}

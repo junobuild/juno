@@ -41,6 +41,7 @@
 		"attach": "附加",
 		"detach": "Detach",
 		"refresh": "刷新",
+		"reload": "Reload",
 		"open_website": "打开Juno网站以及文档"
 	},
 	"canisters": {

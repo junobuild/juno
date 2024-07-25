@@ -151,7 +151,7 @@ const syncIcStatusCanisters = async ({
 const syncCanister = async ({
 	canisterId,
 	trillionRatio,
-	canisterInfo: { cycles, status, memorySize, idleCyclesBurnedPerDay, queryStats },
+	canisterInfo: { canisterId: _, cycles, ...rest },
 	memory
 }: {
 	canisterId: string;
@@ -169,11 +169,8 @@ const syncCanister = async ({
 				heap: (memory?.heap ?? 0n) >= MEMORY_HEAP_WARNING
 			},
 			canister: {
-				status,
-				memorySize,
-				idleCyclesBurnedPerDay,
-				queryStats,
-				cycles
+				cycles,
+				...rest
 			},
 			...(nonNullish(memory) && { memory })
 		}

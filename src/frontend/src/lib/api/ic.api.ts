@@ -1,5 +1,9 @@
-import type { _SERVICE as ICActor, canister_log_record } from '$declarations/ic/ic.did';
-import type { CanisterInfo, CanisterStatus } from '$lib/types/canister';
+import type {
+	_SERVICE as ICActor,
+	canister_log_record,
+	log_visibility
+} from '$declarations/ic/ic.did';
+import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
 import { getICActor } from '$lib/utils/actor.ic.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
@@ -12,6 +16,9 @@ const toStatus = (
 		: 'stopping' in status && status.stopping === null
 			? 'stopping'
 			: 'running';
+
+const toLogVisibility = (log_visibility: log_visibility): CanisterLogVisibility =>
+	'controllers' in log_visibility ? 'controllers' : 'public';
 
 export const canisterStatus = async ({
 	canisterId,
@@ -32,6 +39,15 @@ export const canisterStatus = async ({
 			num_calls_total: numCallsTotal,
 			request_payload_bytes_total: requestPayloadBytesTotal,
 			response_payload_bytes_total: responsePayloadBytesTotal
+		},
+		settings: {
+			freezing_threshold: freezingThreshold,
+			controllers,
+			reserved_cycles_limit: reservedCyclesLimit,
+			log_visibility,
+			wasm_memory_limit: wasmMemoryLimit,
+			memory_allocation: memoryAllocation,
+			compute_allocation: computeAllocation
 		}
 	} = await actor.canister_status({
 		canister_id: Principal.fromText(canisterId)
@@ -48,6 +64,15 @@ export const canisterStatus = async ({
 			numCallsTotal,
 			requestPayloadBytesTotal,
 			responsePayloadBytesTotal
+		},
+		settings: {
+			freezingThreshold,
+			controllers,
+			reservedCyclesLimit,
+			logVisibility: toLogVisibility(log_visibility),
+			wasmMemoryLimit,
+			memoryAllocation,
+			computeAllocation
 		}
 	};
 };

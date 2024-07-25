@@ -20,10 +20,10 @@ export interface CanisterSegment {
 
 export interface CanisterInfo {
 	cycles: bigint;
-    memorySize: bigint;
+	memorySize: bigint;
 	status: CanisterStatus;
-    canisterId: string;
-    idleCyclesBurnedPerDay?: bigint;
+	canisterId: string;
+	idleCyclesBurnedPerDay?: bigint;
 	queryStats?: CanisterQueryStats;
 }
 
@@ -35,7 +35,10 @@ export interface CanisterWarning {
 export interface CanisterData {
 	icp: number;
 	warning: CanisterWarning;
-	canister: Pick<CanisterInfo, 'memorySize' | 'cycles' | 'status' | 'idleCyclesBurnedPerDay' | 'queryStats'>;
+	canister: Pick<
+		CanisterInfo,
+		'memorySize' | 'cycles' | 'status' | 'idleCyclesBurnedPerDay' | 'queryStats'
+	>;
 	memory?: MemorySize;
 }
 

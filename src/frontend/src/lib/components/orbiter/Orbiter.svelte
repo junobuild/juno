@@ -29,9 +29,9 @@
 
 <div class="card-container columns-3">
 	<CanisterOverview
-			canisterId={orbiter.orbiter_id}
-			segment="orbiter"
-			heapWarningLabel={$i18n.canisters.warning_orbiter_heap_memory}
+		canisterId={orbiter.orbiter_id}
+		segment="orbiter"
+		heapWarningLabel={$i18n.canisters.warning_orbiter_heap_memory}
 	/>
 
 	<CanisterJunoStatuses segment="orbiter" canisterId={orbiter.orbiter_id} />

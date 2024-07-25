@@ -92,17 +92,15 @@
 						? formatNumber(Number(requestPayloadBytesTotal) / 1_000_000)
 						: '???'}
 					<small
-						>{nonNullish(requestPayloadBytesTotal) ? 'MB ' : ''}{$i18n.canisters
-							.requests}</small
+						>{nonNullish(requestPayloadBytesTotal) ? 'MB ' : ''}{$i18n.canisters.requests}</small
 					>
 				</p>
 				<p>
 					{nonNullish(responsePayloadBytesTotal)
-							? formatNumber(Number(responsePayloadBytesTotal) / 1_000_000)
-							: '???'}
+						? formatNumber(Number(responsePayloadBytesTotal) / 1_000_000)
+						: '???'}
 					<small
-					>{nonNullish(responsePayloadBytesTotal) ? 'MB ' : ''}{$i18n.canisters
-							.responses}</small
+						>{nonNullish(responsePayloadBytesTotal) ? 'MB ' : ''}{$i18n.canisters.responses}</small
 					>
 				</p>
 			{:else if sync === 'loading'}
@@ -126,7 +124,6 @@
 			{/if}
 		</Value>
 	</div>
-
 </div>
 
 <style lang="scss">

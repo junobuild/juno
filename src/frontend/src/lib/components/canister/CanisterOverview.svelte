@@ -8,7 +8,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import type { MemorySize } from '$declarations/satellite/satellite.did';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { formatNumber } from '$lib/utils/number.utils';
+	import { formatBytes, formatNumber } from '$lib/utils/number.utils';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 
 	export let canisterId: Principal;
@@ -53,16 +53,16 @@
 			<svelte:fragment slot="label">{$i18n.canisters.memory}</svelte:fragment>
 			{#if nonNullish(memory)}
 				<p>
-					{formatNumber(Number(memory.heap) / 1_000_000)}
+					{formatBytes(Number(memory.heap))}
 					<small
-						>MB {$i18n.canisters.on_heap}
+						>{$i18n.canisters.on_heap}
 						{#if warning}<span class="warning" title={heapWarningLabel}><IconWarning /></span
 							>{/if}</small
 					>
 				</p>
 				<p>
-					{formatNumber(Number(memory.stable) / 1_000_000)}
-					<small>MB {$i18n.canisters.on_stable}</small>
+					{formatBytes(Number(memory.stable))}
+					<small>{$i18n.canisters.on_stable}</small>
 				</p>
 			{:else if isNullish(sync) || ['loading', 'syncing'].includes(sync ?? '')}
 				<p><SkeletonText /></p>
@@ -101,19 +101,15 @@
 				</p>
 				<p>
 					{nonNullish(requestPayloadBytesTotal)
-						? formatNumber(Number(requestPayloadBytesTotal) / 1_000_000, { notation: 'compact' })
+						? formatBytes(Number(requestPayloadBytesTotal))
 						: '???'}
-					<small
-						>{nonNullish(requestPayloadBytesTotal) ? 'MB ' : ''}{$i18n.canisters.requests}</small
-					>
+					<small>{$i18n.canisters.requests}</small>
 				</p>
 				<p>
 					{nonNullish(responsePayloadBytesTotal)
-						? formatNumber(Number(responsePayloadBytesTotal) / 1_000_000, { notation: 'compact' })
+						? formatBytes(Number(responsePayloadBytesTotal))
 						: '???'}
-					<small
-						>{nonNullish(responsePayloadBytesTotal) ? 'MB ' : ''}{$i18n.canisters.responses}</small
-					>
+					<small>{$i18n.canisters.responses}</small>
 				</p>
 			{:else if sync === 'loading'}
 				<p><SkeletonText /></p>

@@ -26,7 +26,13 @@ export const canisterStatus = async ({
 		canister_id: Principal.fromText(canisterId)
 	});
 
-	return { cycles, status: toStatus(status), memory_size, canisterId, idle_cycles_burned_per_day };
+	return {
+		cycles,
+		status: toStatus(status),
+		memory_size,
+		canisterId,
+		idleCyclesBurnedPerDay: idle_cycles_burned_per_day
+	};
 };
 
 export const canisterStart = async ({

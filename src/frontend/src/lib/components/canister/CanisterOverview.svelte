@@ -18,8 +18,8 @@
 	let data: CanisterData | undefined;
 	let sync: CanisterSyncStatus | undefined;
 
-	let idle_cycles_burned_per_day: bigint | undefined;
-	$: idle_cycles_burned_per_day = data?.canister?.idle_cycles_burned_per_day;
+	let idleCyclesBurnedPerDay: bigint | undefined;
+	$: idleCyclesBurnedPerDay = data?.canister?.idleCyclesBurnedPerDay;
 
 	let memory: MemorySize | undefined;
 	$: memory = data?.memory;
@@ -40,7 +40,7 @@
 		<svelte:fragment slot="label">{$i18n.canisters.daily_consumption}</svelte:fragment>
 		{#if ['synced', 'syncing'].includes(sync ?? '')}
 			<p>
-				{formatTCycles(idle_cycles_burned_per_day ?? 0n)} <small>T Cycles</small>
+				{formatTCycles(idleCyclesBurnedPerDay ?? 0n)} <small>T Cycles</small>
 			</p>
 		{:else if sync === 'loading'}
 			<p><SkeletonText /></p>

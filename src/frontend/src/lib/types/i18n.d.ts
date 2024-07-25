@@ -71,6 +71,11 @@ interface I18nCanisters {
 	top_up_satellite_done: string;
 	top_up_orbiter_done: string;
 	daily_consumption: string;
+	queries: string;
+	calls: string;
+	instructions: string;
+	requests: string;
+	responses: string;
 	review_upgrade: string;
 	confirm_upgrade: string;
 	upgrade_done: string;

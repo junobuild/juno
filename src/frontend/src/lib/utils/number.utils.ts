@@ -2,17 +2,25 @@ export const formatNumber = (
 	value: number,
 	options?: { minFraction?: number; maxFraction?: number } & Pick<
 		Intl.NumberFormatOptions,
-		'notation'
+		'notation' | 'unit' | 'style' | 'unitDisplay'
 	>
 ): string => {
-	const { minFraction = 2, maxFraction = 2, notation } = options || {};
+	const { minFraction = 2, maxFraction = 2, ...rest } = options || {};
 
 	return new Intl.NumberFormat('en-US', {
-		notation,
 		minimumFractionDigits: minFraction,
-		maximumFractionDigits: maxFraction
+		maximumFractionDigits: maxFraction,
+		...rest
 	}).format(value);
 };
+
+export const formatBytes = (value: number): string =>
+	formatNumber(value, {
+		notation: 'compact',
+		style: 'unit',
+		unit: 'byte',
+		unitDisplay: 'narrow'
+	});
 
 export const bigintStringify = (_key: string, value: unknown): unknown =>
 	typeof value === 'bigint' ? `BIGINT::${value}` : value;

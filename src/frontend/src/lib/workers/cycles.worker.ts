@@ -151,7 +151,7 @@ const syncIcStatusCanisters = async ({
 const syncCanister = async ({
 	canisterId,
 	trillionRatio,
-	canisterInfo: { cycles, status, memorySize, idleCyclesBurnedPerDay },
+	canisterInfo: { cycles, status, memorySize, idleCyclesBurnedPerDay, queryStats },
 	memory
 }: {
 	canisterId: string;
@@ -172,6 +172,7 @@ const syncCanister = async ({
 				status,
 				memorySize,
 				idleCyclesBurnedPerDay,
+				queryStats,
 				cycles
 			},
 			...(nonNullish(memory) && { memory })

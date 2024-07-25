@@ -22,7 +22,18 @@ export const canisterStatus = async ({
 }): Promise<CanisterInfo> => {
 	const actor: ICActor = await getICActor({ identity });
 
-	const { cycles, status, memory_size, idle_cycles_burned_per_day } = await actor.canister_status({
+	const {
+		cycles,
+		status,
+		memory_size,
+		idle_cycles_burned_per_day,
+		query_stats: {
+			num_instructions_total: numInstructionsTotal,
+			num_calls_total: numCallsTotal,
+			request_payload_bytes_total: requestPayloadBytesTotal,
+			response_payload_bytes_total: responsePayloadBytesTotal
+		}
+	} = await actor.canister_status({
 		canister_id: Principal.fromText(canisterId)
 	});
 
@@ -31,7 +42,13 @@ export const canisterStatus = async ({
 		status: toStatus(status),
 		memorySize: memory_size,
 		canisterId,
-		idleCyclesBurnedPerDay: idle_cycles_burned_per_day
+		idleCyclesBurnedPerDay: idle_cycles_burned_per_day,
+		queryStats: {
+			numInstructionsTotal,
+			numCallsTotal,
+			requestPayloadBytesTotal,
+			responsePayloadBytesTotal
+		}
 	};
 };
 

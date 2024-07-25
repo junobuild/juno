@@ -46,8 +46,10 @@
 
 		width: fit-content;
 		height: auto;
+		max-height: 100vh;
 
-		overflow: hidden;
+		overflow-x: hidden;
+		overflow-y: auto;
 
 		display: flex;
 		flex-direction: column;

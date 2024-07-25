@@ -84,6 +84,7 @@ interface I18nCanisters {
 	delete_info: string;
 	stop_title: string;
 	stop_info: string;
+	stop_forewords: string;
 	stop_explanation: string;
 	stop_error: string;
 	stop_success: string;

@@ -70,6 +70,8 @@
 	<svelte:fragment slot="title"><Text key="canisters.stop_title" value={segment} /></svelte:fragment
 	>
 
+	<p><Text key="canisters.stop_forewords" value={segment} /></p>
+
 	<p><Text key="canisters.stop_explanation" value={segment} /></p>
 
 	<p><Text key="canisters.stop_error" value={segment} /></p>

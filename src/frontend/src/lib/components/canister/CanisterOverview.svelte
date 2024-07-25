@@ -125,7 +125,7 @@
 			<svelte:fragment slot="label">{$i18n.canisters.daily_consumption}</svelte:fragment>
 			{#if ['synced', 'syncing'].includes(sync ?? '')}
 				<p>
-					{formatTCycles(idleCyclesBurnedPerDay ?? 0n)} <small>T Cycles</small>
+					{formatTCycles(idleCyclesBurnedPerDay ?? 0n)}T <small>cycles</small>
 				</p>
 			{:else if sync === 'loading'}
 				<p><SkeletonText /></p>

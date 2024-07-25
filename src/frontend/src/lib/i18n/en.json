@@ -348,6 +348,7 @@
 		"orbiter_configuration_listing": "Error while fetching the configuration.",
 		"orbiter_id_missing": "A valid Orbiter ID must be provided.",
 		"orbiter_attach": "Unexpected error(s) while trying to attach the orbiter to your mission control.",
+		"orbiter_unexpected_error": "Unexpected error(s) while creating the orbiter.",
 		"transactions_next": "Error while fetching the next transactions.",
 		"transactions_export": "Unexpected error(s) while exporting the transactions.",
 		"invalid_cycles_to_transfer": "Invalid amount of cycles to transfer.",

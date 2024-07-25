@@ -348,6 +348,7 @@
 		"orbiter_configuration_listing": "获取配置时出错.",
 		"orbiter_id_missing": "提供一个有效的 Orbiter ID .",
 		"orbiter_attach": "试图关联 orbiter 到你的 mission control时候出现异常.",
+		"orbiter_unexpected_error": "Unexpected error(s) while creating the orbiter.",
 		"transactions_next": "获取下一部分事务时出错.",
 		"transactions_export": "导出事务时出现异常错误.",
 		"invalid_cycles_to_transfer": "转移 cycles 的数额无效.",

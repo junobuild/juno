@@ -29,7 +29,7 @@
 		},
 		{
 			id: Symbol('3'),
-			labelKey: 'controllers.title'
+			labelKey: 'core.settings'
 		}
 	];
 

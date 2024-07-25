@@ -206,6 +206,22 @@ fn set_doc_impl(
 
 /// List
 
+/// List documents in a collection.
+///
+/// This function retrieves a list of documents from a collection's store based on the specified parameters.
+/// It returns a `Result<ListResults<Doc>, String>` where `Ok(ListResults)` contains the retrieved documents,
+/// or an error message as `Err(String)` if the operation encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `collection`: A `CollectionKey` representing the collection from which to list the documents.
+/// - `filter`: A reference to `ListParams` containing the filter criteria for listing the documents.
+///
+/// # Returns
+/// - `Ok(ListResults<Doc>)`: Contains the list of retrieved documents matching the filter criteria.
+/// - `Err(String)`: An error message if the operation fails.
+///
+/// This function retrieves documents from a Juno collection's store, applying the specified filter criteria.
 pub fn list_docs_store(
     caller: Principal,
     collection: CollectionKey,

@@ -10,18 +10,17 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { createEventDispatcher } from 'svelte';
+	import {
+		satelliteCustomDomain,
+		satelliteCustomDomains
+	} from '$lib/derived/custom-domains.derived';
 
 	export let detail: JunoModalDetail;
 
 	let satellite: Satellite;
 	let currentCycles: bigint;
-	let customDomains: CustomDomains;
 
-	$: ({
-		satellite,
-		cycles: currentCycles,
-		customDomains
-	} = detail as JunoModalDeleteSatelliteDetail);
+	$: ({ satellite, cycles: currentCycles } = detail as JunoModalDeleteSatelliteDetail);
 
 	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
 	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
@@ -36,7 +35,7 @@
 </script>
 
 <Modal on:junoClose>
-	{#if customDomains.length > 0}
+	{#if $satelliteCustomDomains.length > 0}
 		<h2>
 			{@html i18nFormat($i18n.canisters.delete_title, [
 				{

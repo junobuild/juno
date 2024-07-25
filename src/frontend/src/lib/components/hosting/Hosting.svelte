@@ -4,28 +4,26 @@
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import { onMount } from 'svelte';
-	import type {
-		AuthenticationConfig,
-		CustomDomain as CustomDomainType
-	} from '$declarations/satellite/satellite.did';
+	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listCustomDomains, getAuthConfig } from '$lib/services/hosting.services';
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { authStore } from '$lib/stores/auth.store';
+	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
 
 	export let satellite: Satellite;
 
 	let satelliteId: SatelliteIdText;
 	$: satelliteId = satellite.satellite_id.toText();
 
-	let customDomains: [string, CustomDomainType][] = [];
 	let config: AuthenticationConfig | undefined;
 
 	const list = async () => {
-		const [{ customDomains: domains }, { config: c }] = await Promise.all([
+		const [_, { config: c }] = await Promise.all([
 			listCustomDomains({
-				satelliteId: satellite.satellite_id
+				satelliteId: satellite.satellite_id,
+				reload: true
 			}),
 			getAuthConfig({
 				satelliteId: satellite.satellite_id,
@@ -33,14 +31,13 @@
 			})
 		]);
 
-		customDomains = domains ?? [];
 		config = c;
 	};
 
 	onMount(list);
 
 	let hasCustomDomains = false;
-	$: hasCustomDomains = customDomains.length > 0;
+	$: hasCustomDomains = $satelliteCustomDomains.length > 0;
 </script>
 
 <svelte:window on:junoSyncCustomDomains={list} />
@@ -66,7 +63,7 @@
 				/>
 			</tr>
 
-			{#each customDomains as [customDomainUrl, customDomain]}
+			{#each $satelliteCustomDomains as [customDomainUrl, customDomain]}
 				<tr>
 					<CustomDomain
 						type="custom"

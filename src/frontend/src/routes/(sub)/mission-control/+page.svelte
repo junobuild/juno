@@ -21,7 +21,7 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'mission_control.overview'
+			labelKey: 'mission_control.title'
 		},
 		{
 			id: Symbol('2'),

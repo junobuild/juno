@@ -49,6 +49,7 @@ interface I18nCore {
 }
 
 interface I18nCanisters {
+	insight: string;
 	top_up: string;
 	cycles: string;
 	top_up_in_progress: string;
@@ -178,6 +179,7 @@ interface I18nMission_control {
 
 interface I18nWallet {
 	title: string;
+	overview: string;
 	account_identifier: string;
 	balance: string;
 	credits: string;
@@ -238,6 +240,7 @@ interface I18nAnalytics {
 	average_page_views_per_session: string;
 	bounce_rate: string;
 	overview: string;
+	visitors: string;
 	id: string;
 	tracked_events: string;
 	count: string;
@@ -390,6 +393,7 @@ interface I18nErrors {
 	no_file_selected_for_upload: string;
 	upload_error: string;
 	no_collection_for_upload: string;
+	invalid_email: string;
 }
 
 interface I18nDocument {
@@ -552,6 +556,7 @@ interface I18nObservatory {
 	segment: string;
 	cycles_collected: string;
 	error_collecting_data: string;
+	parameters: string;
 }
 
 interface I18nPreferences {

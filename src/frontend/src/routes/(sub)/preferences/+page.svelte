@@ -17,28 +17,32 @@
 </script>
 
 <IdentityGuard>
-	<div class="card-container">
-		<Value>
-			<svelte:fragment slot="label">{$i18n.preferences.dev_id}</svelte:fragment>
-			<Identifier identifier={$authStore.identity?.getPrincipal().toText() ?? ''} />
-		</Value>
+	<div class="card-container with-title">
+		<span class="title">{$i18n.preferences.title}</span>
 
-		<div class="session">
+		<div class="content">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.preferences.session_expires_in}</svelte:fragment>
-				<p>
-					{#if nonNullish(remainingTimeMilliseconds)}
-						<output class="mr-1.5" in:fade>
-							{remainingTimeMilliseconds <= 0
-								? '0'
-								: secondsToDuration(BigInt(remainingTimeMilliseconds) / 1000n)}
-						</output>
-					{/if}
-				</p>
+				<svelte:fragment slot="label">{$i18n.preferences.dev_id}</svelte:fragment>
+				<Identifier identifier={$authStore.identity?.getPrincipal().toText() ?? ''} />
 			</Value>
-		</div>
 
-		<AppLangSelect bind:selected={lang} />
+			<div class="session">
+				<Value>
+					<svelte:fragment slot="label">{$i18n.preferences.session_expires_in}</svelte:fragment>
+					<p>
+						{#if nonNullish(remainingTimeMilliseconds)}
+							<output class="mr-1.5" in:fade>
+								{remainingTimeMilliseconds <= 0
+									? '0'
+									: secondsToDuration(BigInt(remainingTimeMilliseconds) / 1000n)}
+							</output>
+						{/if}
+					</p>
+				</Value>
+			</div>
+
+			<AppLangSelect bind:selected={lang} />
+		</div>
 	</div>
 </IdentityGuard>
 

@@ -99,38 +99,43 @@
 
 {#if $authSignedInStore}
 	<Wallet {missionControlId} bind:balance bind:transactions>
-		<div class="card-container columns-3">
-			<div>
-				<Value>
-					<svelte:fragment slot="label">{$i18n.wallet.account_identifier}</svelte:fragment>
-					<p>
-						<Identifier identifier={accountIdentifier?.toHex() ?? ''} />
-					</p>
-				</Value>
+		<div class="card-container with-title">
+			<span class="title">{$i18n.wallet.overview}</span>
 
-				<Value>
-					<svelte:fragment slot="label">{$i18n.wallet.balance}</svelte:fragment>
-					<p>
-						{#if nonNullish(balance)}<span in:fade>{formatE8sICP(balance)} <small>ICP</small></span
-							>{/if}
-					</p>
-				</Value>
+			<div class="columns-3">
+				<div>
+					<Value>
+						<svelte:fragment slot="label">{$i18n.wallet.account_identifier}</svelte:fragment>
+						<p>
+							<Identifier identifier={accountIdentifier?.toHex() ?? ''} />
+						</p>
+					</Value>
 
-				<Value>
-					<svelte:fragment slot="label">{$i18n.wallet.credits}</svelte:fragment>
-					<p>
-						{#if nonNullish(credits)}<span in:fade>{formatE8sCredits(credits)}</span>{/if}
-					</p>
-				</Value>
-			</div>
+					<Value>
+						<svelte:fragment slot="label">{$i18n.wallet.balance}</svelte:fragment>
+						<p>
+							{#if nonNullish(balance)}<span in:fade
+									>{formatE8sICP(balance)} <small>ICP</small></span
+								>{/if}
+						</p>
+					</Value>
 
-			<div>
-				{#if nonNullish(accountIdentifier)}
-					<QRCodeContainer
-						value={accountIdentifier.toHex()}
-						ariaLabel={$i18n.wallet.account_identifier}
-					/>
-				{/if}
+					<Value>
+						<svelte:fragment slot="label">{$i18n.wallet.credits}</svelte:fragment>
+						<p>
+							{#if nonNullish(credits)}<span in:fade>{formatE8sCredits(credits)}</span>{/if}
+						</p>
+					</Value>
+				</div>
+
+				<div>
+					{#if nonNullish(accountIdentifier)}
+						<QRCodeContainer
+							value={accountIdentifier.toHex()}
+							ariaLabel={$i18n.wallet.account_identifier}
+						/>
+					{/if}
+				</div>
 			</div>
 		</div>
 

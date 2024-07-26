@@ -39,8 +39,12 @@
 			font-weight: var(--font-weight-bold);
 		}
 
-		.columns-3 {
+		.columns-3,
+		.content {
 			padding: var(--padding-2x);
+		}
+
+		.columns-3 {
 			@include columns-3;
 		}
 	}

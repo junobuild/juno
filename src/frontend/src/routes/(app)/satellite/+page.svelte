@@ -22,7 +22,7 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'satellites.overview'
+			labelKey: 'satellites.satellite'
 		},
 		{
 			id: Symbol('2'),

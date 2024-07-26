@@ -76,6 +76,14 @@ interface I18nCanisters {
 	instructions: string;
 	requests: string;
 	responses: string;
+	freezing_threshold: string;
+	reserved_cycles_limit: string;
+	log_visibility: string;
+	wasm_memory_limit: string;
+	memory_allocation: string;
+	compute_allocation: string;
+	not_set: string;
+	parameters: string;
 	review_upgrade: string;
 	confirm_upgrade: string;
 	upgrade_done: string;

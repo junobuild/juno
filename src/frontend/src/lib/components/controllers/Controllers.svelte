@@ -14,6 +14,7 @@
 	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import type { SetControllerParams } from '$lib/types/controllers';
+	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 
 	export let list: () => Promise<[Principal, Controller][]>;
 	export let remove: (params: {
@@ -25,10 +26,7 @@
 			missionControlId: Principal;
 		} & SetControllerParams
 	) => Promise<void>;
-	export let segment: {
-		label: string;
-		id: Principal;
-	};
+	export let segment: CanisterSegmentWithLabel;
 
 	// The canister and user are controllers of the mission control but not added in its state per default
 	export let extraControllers: [Principal, Controller | undefined][] = [];

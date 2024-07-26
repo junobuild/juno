@@ -1,6 +1,7 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
+import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { Principal } from '@dfinity/principal';
@@ -61,10 +62,7 @@ export interface JunoModalCreateControllerDetail {
 		} & SetControllerParams
 	) => Promise<void>;
 	load: () => Promise<void>;
-	segment: {
-		label: string;
-		id: Principal;
-	};
+	segment: CanisterSegmentWithLabel;
 }
 
 export type JunoModalDetail =

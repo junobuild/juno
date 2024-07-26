@@ -132,6 +132,7 @@ interface I18nCanisters {
 	settings_updated_text: string;
 	in_seconds: string;
 	in_bytes: string;
+	in_percent: string;
 	in_t_cycles: string;
 	no_update_required: string;
 	controllers: string;

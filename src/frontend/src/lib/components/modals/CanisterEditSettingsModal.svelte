@@ -47,12 +47,22 @@
 	const initWasmMemoryLimit = (memoryLimit: bigint) => (wasmMemoryLimit = Number(memoryLimit));
 	$: initWasmMemoryLimit(settings.wasmMemoryLimit);
 
+	let memoryAllocation: number;
+	const initMemoryAllocation = (memory: bigint) => (memoryAllocation = Number(memory));
+	$: initMemoryAllocation(settings.memoryAllocation);
+
+	let computeAllocation: number;
+	const initComputeAllocation = (memory: bigint) => (computeAllocation = Number(memory));
+	$: initComputeAllocation(settings.computeAllocation);
+
 	let disabled = true;
 	$: disabled =
 		(BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0) &&
 		reservedCyclesLimit === settings.reservedCyclesLimit &&
 		logVisibility === settings.logVisibility &&
-		BigInt(wasmMemoryLimit ?? 0n) === settings.wasmMemoryLimit;
+		BigInt(wasmMemoryLimit ?? 0n) === settings.wasmMemoryLimit &&
+		BigInt(memoryAllocation ?? 0n) === settings.memoryAllocation &&
+		BigInt(computeAllocation ?? 0n) === settings.computeAllocation;
 
 	let steps: 'edit' | 'in_progress' | 'ready' = 'edit';
 
@@ -69,11 +79,12 @@
 			canisterId,
 			currentSettings: settings,
 			newSettings: {
-				...settings,
 				freezingThreshold: BigInt(freezingThreshold),
 				reservedCyclesLimit: reservedCyclesLimit,
 				logVisibility,
-				wasmMemoryLimit: BigInt(wasmMemoryLimit)
+				wasmMemoryLimit: BigInt(wasmMemoryLimit),
+				memoryAllocation: BigInt(memoryAllocation),
+				computeAllocation: BigInt(computeAllocation)
 			},
 			identity: $authStore.identity
 		});
@@ -159,6 +170,31 @@
 					name="wasmMemoryLimit"
 					placeholder=""
 					bind:value={wasmMemoryLimit}
+				/>
+			</Value>
+
+			<Value>
+				<svelte:fragment slot="label"
+					>{$i18n.canisters.memory_allocation} ({$i18n.canisters.in_bytes})</svelte:fragment
+				>
+				<Input
+					inputType="number"
+					name="memoryAllocation"
+					placeholder=""
+					bind:value={memoryAllocation}
+				/>
+			</Value>
+
+			<Value>
+				<svelte:fragment slot="label"
+					>{$i18n.canisters.compute_allocation} ({$i18n.canisters.in_percent})</svelte:fragment
+				>
+				<Input
+					inputType="number"
+					name="computeAllocation"
+					placeholder=""
+					max={100}
+					bind:value={computeAllocation}
 				/>
 			</Value>
 

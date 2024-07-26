@@ -527,8 +527,8 @@
 		"cycles_collected": "T Cycles collected",
 		"error_collecting_data": "There was an error collecting the data."
 	},
-	"settings": {
-		"title": "Settings",
+	"preferences": {
+		"title": "Preferences",
 		"dev_id": "Developer ID",
 		"session_expires_in": "Your session expires in"
 	},

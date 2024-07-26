@@ -554,7 +554,7 @@ interface I18nObservatory {
 	error_collecting_data: string;
 }
 
-interface I18nSettings {
+interface I18nPreferences {
 	title: string;
 	dev_id: string;
 	session_expires_in: string;
@@ -601,7 +601,7 @@ interface I18n {
 	filter: I18nFilter;
 	users: I18nUsers;
 	observatory: I18nObservatory;
-	settings: I18nSettings;
+	preferences: I18nPreferences;
 	examples: I18nExamples;
 	resources: I18nResources;
 }

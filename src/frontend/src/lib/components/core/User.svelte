@@ -62,9 +62,9 @@
 			<span>{$i18n.observatory.title}</span>
 		</a>
 
-		<a href="/settings" class="menu" role="menuitem" aria-haspopup="menu" on:click={close}>
+		<a href="/preferences" class="menu" role="menuitem" aria-haspopup="menu" on:click={close}>
 			<IconRaygun />
-			<span>{$i18n.settings.title}</span>
+			<span>{$i18n.preferences.title}</span>
 		</a>
 
 		<button type="button" role="menuitem" aria-haspopup="menu" on:click={signOutClose} class="menu">

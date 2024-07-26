@@ -19,13 +19,13 @@
 <IdentityGuard>
 	<div class="card-container">
 		<Value>
-			<svelte:fragment slot="label">{$i18n.settings.dev_id}</svelte:fragment>
+			<svelte:fragment slot="label">{$i18n.preferences.dev_id}</svelte:fragment>
 			<Identifier identifier={$authStore.identity?.getPrincipal().toText() ?? ''} />
 		</Value>
 
 		<div class="session">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.settings.session_expires_in}</svelte:fragment>
+				<svelte:fragment slot="label">{$i18n.preferences.session_expires_in}</svelte:fragment>
 				<p>
 					{#if nonNullish(remainingTimeMilliseconds)}
 						<output class="mr-1.5" in:fade>

@@ -32,4 +32,9 @@
 		});
 </script>
 
-<Controllers {list} {remove} {add} segment={{ label: $i18n.analytics.orbiter, id: orbiterId }} />
+<Controllers
+	{list}
+	{remove}
+	{add}
+	segment={{ label: $i18n.analytics.orbiter, canisterId: orbiterId.toText(), segment: 'orbiter' }}
+/>

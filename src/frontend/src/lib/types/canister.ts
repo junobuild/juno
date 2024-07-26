@@ -30,6 +30,10 @@ export interface CanisterSegment {
 	segment: Segment;
 }
 
+export interface CanisterSegmentWithLabel extends CanisterSegment {
+	label: string;
+}
+
 export interface CanisterInfo {
 	cycles: bigint;
 	memorySize: bigint;

@@ -39,5 +39,9 @@
 	{remove}
 	{add}
 	{extraControllers}
-	segment={{ label: $i18n.mission_control.title, id: missionControlId }}
+	segment={{
+		label: $i18n.mission_control.title,
+		canisterId: missionControlId.toText(),
+		segment: 'mission_control'
+	}}
 />

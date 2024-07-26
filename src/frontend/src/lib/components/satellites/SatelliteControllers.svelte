@@ -40,5 +40,9 @@
 	{list}
 	{remove}
 	{add}
-	segment={{ label: $i18n.satellites.satellite, id: satellite.satellite_id }}
+	segment={{
+		label: $i18n.satellites.satellite,
+		canisterId: satellite.satellite_id.toText(),
+		segment: 'satellite'
+	}}
 />

@@ -20,7 +20,7 @@ export const formatBytes = (value: number): string =>
 		style: 'unit',
 		unit: 'byte',
 		unitDisplay: 'narrow'
-	});
+	}).replace('BB', 'GB');
 
 export const bigintStringify = (_key: string, value: unknown): unknown =>
 	typeof value === 'bigint' ? `BIGINT::${value}` : value;

@@ -10,13 +10,13 @@
 	import { setContext } from 'svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import MissionControlWallet from '$lib/components/mission-control/MissionControlWallet.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -61,7 +61,7 @@
 			{:else if $store.tabId === $store.tabs[1].id}
 				<MissionControlWallet missionControlId={$missionControlStore} />
 			{:else if $store.tabId === $store.tabs[2].id}
-				<MissionControlControllers missionControlId={$missionControlStore} />
+				<MissionControlSettings missionControlId={$missionControlStore} />
 			{/if}
 		{/if}
 	</Tabs>

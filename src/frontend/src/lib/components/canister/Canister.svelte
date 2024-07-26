@@ -10,7 +10,7 @@
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import { onDestroy, onMount } from 'svelte';
-	import { formatBytes, formatNumber } from '$lib/utils/number.utils';
+	import { formatBytes } from '$lib/utils/number.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';
 	import IconSync from '$lib/components/icons/IconSync.svelte';

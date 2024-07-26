@@ -1,6 +1,20 @@
 @use '../mixins/shadow';
 @use '../mixins/media';
 
+@mixin columns-3 {
+	@include media.min-width(medium) {
+		display: grid;
+		grid-template-columns: repeat(2, auto) 1fr;
+		grid-column-gap: var(--padding-12x);
+	}
+
+	&.fit-column-1 {
+		@include media.min-width(large) {
+			grid-template-columns: minmax(380px, 100px) auto 1fr;
+		}
+	}
+}
+
 .card-container {
 	position: relative;
 
@@ -8,17 +22,30 @@
 	padding: var(--padding-2x);
 	@include shadow.strong-card;
 
-	&.columns-3 {
-		@include media.min-width(medium) {
-			display: grid;
-			grid-template-columns: repeat(2, auto) 1fr;
-			grid-column-gap: var(--padding-12x);
+	&.with-title {
+		padding: 0;
+		display: block;
+
+		.title {
+			padding: var(--padding-0_5x) var(--padding-2x);
+
+			background: var(--color-card-contrast);
+			color: var(--color-card);
+
+			display: flex;
+			align-items: center;
+
+			font-size: var(--font-size-small);
+			font-weight: var(--font-weight-bold);
 		}
 
-		&.fit-column-1 {
-			@include media.min-width(large) {
-				grid-template-columns: minmax(380px, 100px) auto 1fr;
-			}
+		.columns-3 {
+			padding: var(--padding-2x);
+			@include columns-3;
 		}
+	}
+
+	&.columns-3 {
+		@include columns-3;
 	}
 }

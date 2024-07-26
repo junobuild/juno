@@ -7,7 +7,6 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import Analytics from '$lib/components/analytics/Analytics.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import AnalyticsControllers from '$lib/components/analytics/AnalyticsControllers.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
@@ -18,6 +17,7 @@
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import AnalyticsSettings from '$lib/components/analytics/AnalyticsSettings.svelte';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -85,7 +85,7 @@
 			{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
 				<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
 
-				<AnalyticsControllers orbiterId={$orbiterStore.orbiter_id} />
+				<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
 			{/if}
 		</MissionControlGuard>
 	</Tabs>

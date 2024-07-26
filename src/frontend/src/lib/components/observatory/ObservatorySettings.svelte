@@ -57,8 +57,6 @@
 				},
 				identity: $authStore.identity
 			});
-
-			setInitValues();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.observatory_set_unexpected_error,
@@ -76,10 +74,6 @@
 	let threshold: number | undefined;
 	let email: string | undefined = undefined;
 
-	let initialEnabled = false;
-	let initialThreshold: number | undefined;
-	let initialEmail: string | undefined = undefined;
-
 	const loadCrontab = async () => {
 		try {
 			cronTab = fromNullable(await getCronTab($authStore.identity));
@@ -90,8 +84,6 @@
 				? Number(cronTab?.cron_jobs.statuses.cycles_threshold) / ONE_TRILLION
 				: undefined;
 
-			setInitValues();
-
 			loading = false;
 		} catch (err: unknown) {
 			toasts.error({
@@ -99,12 +91,6 @@
 				detail: err
 			});
 		}
-	};
-
-	const setInitValues = () => {
-		initialEnabled = enabled;
-		initialEmail = email;
-		initialThreshold = threshold;
 	};
 
 	onMount(async () => await loadCrontab());

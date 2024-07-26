@@ -29,6 +29,13 @@
 	};
 
 	const onSubmit = async () => {
+		if (enabled && (email === '' || !validEmail(email ?? ''))) {
+			toasts.error({
+				text: $i18n.errors.invalid_email
+			});
+			return;
+		}
+
 		busy.start();
 
 		try {
@@ -116,60 +123,62 @@
 	<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
 {:else}
 	<form on:submit|preventDefault={onSubmit} in:fade>
-		<div class="card-container">
-			<div>
-				<Value>
-					<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
+		<div class="card-container with-title">
+			<span class="title">{$i18n.observatory.parameters}</span>
 
-					<div class="radio">
-						<label>
-							<input type="radio" bind:group={enabled} name="field" value={false} />
-							<span>{$i18n.observatory.disabled}</span>
-						</label>
+			<div class="content">
+				<div>
+					<Value>
+						<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
 
-						<label>
-							<input type="radio" bind:group={enabled} name="field" value={true} />
-							<span>{$i18n.observatory.enabled}</span>
-						</label>
-					</div>
-				</Value>
-			</div>
+						<div class="radio">
+							<label>
+								<input type="radio" bind:group={enabled} name="field" value={false} />
+								<span>{$i18n.observatory.disabled}</span>
+							</label>
 
-			<div class="email">
-				<Value>
-					<svelte:fragment slot="label">{$i18n.observatory.email_notifications}</svelte:fragment>
-					<input
-						bind:value={email}
-						type="email"
-						name="email"
-						placeholder={$i18n.observatory.email_notifications_placeholder}
-					/>
-				</Value>
-			</div>
+							<label>
+								<input type="radio" bind:group={enabled} name="field" value={true} />
+								<span>{$i18n.observatory.enabled}</span>
+							</label>
+						</div>
+					</Value>
+				</div>
 
-			<div>
-				<Value>
-					<svelte:fragment slot="label">{$i18n.observatory.cycles_threshold}</svelte:fragment>
-					<div class="input">
-						<Input
-							inputType="number"
-							placeholder={$i18n.observatory.cycles_threshold_placeholder}
-							name="threshold"
-							required={false}
-							bind:value={threshold}
+				<div class="email">
+					<Value>
+						<svelte:fragment slot="label">{$i18n.observatory.email_notifications}</svelte:fragment>
+						<input
+							bind:value={email}
+							type="email"
+							name="email"
+							placeholder={$i18n.observatory.email_notifications_placeholder}
 						/>
-					</div>
-				</Value>
+					</Value>
+				</div>
+
+				<div>
+					<Value>
+						<svelte:fragment slot="label">{$i18n.observatory.cycles_threshold}</svelte:fragment>
+						<div class="input">
+							<Input
+								inputType="number"
+								placeholder={$i18n.observatory.cycles_threshold_placeholder}
+								name="threshold"
+								required={false}
+								bind:value={threshold}
+							/>
+						</div>
+					</Value>
+				</div>
 			</div>
 		</div>
 
-		{#if dirty}
-			<div in:fade>
-				<button type="submit" disabled={$isBusy || invalidEmail || invalidThreshold}
-					>{$i18n.core.save}</button
-				>
-			</div>
-		{/if}
+		<div>
+			<button type="submit" disabled={$isBusy || invalidEmail || invalidThreshold}
+				>{$i18n.core.save}</button
+			>
+		</div>
 	</form>
 {/if}
 
@@ -188,7 +197,7 @@
 		display: flex;
 		flex-direction: column;
 
-		padding: 0 0 var(--padding);
+		padding: 0 0 var(--padding-2x);
 	}
 
 	.email {

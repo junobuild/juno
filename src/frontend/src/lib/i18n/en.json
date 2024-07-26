@@ -45,6 +45,7 @@
 		"open_website": "Open Juno website and documentation"
 	},
 	"canisters": {
+		"insight": "Insight",
 		"top_up": "Top-up",
 		"cycles": "are the unit of payment for operating your smart contracts.",
 		"top_up_in_progress": "Top-up in progress...",
@@ -170,6 +171,7 @@
 	},
 	"wallet": {
 		"title": "Wallet",
+		"overview": "Overview",
 		"account_identifier": "Account identifier",
 		"balance": "Balance",
 		"credits": "Credits",
@@ -226,6 +228,7 @@
 		"average_page_views_per_session": "Average page views per session",
 		"bounce_rate": "Bounce rate",
 		"overview": "Overview",
+		"visitors": "Visitors",
 		"id": "Orbiter ID",
 		"tracked_events": "Tracked events",
 		"count": "Count",
@@ -373,7 +376,8 @@
 		"authentication_config_loading": "Unexpected error(s) while loading the configuration of the authentication.",
 		"no_file_selected_for_upload": "No file was selected for the upload.",
 		"upload_error": "Unexpected error(s) while uploading the file.",
-		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload."
+		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload.",
+		"invalid_email": "Please enter a valid email address."
 	},
 	"document": {
 		"owner": "Owner",
@@ -521,11 +525,12 @@
 		"cycles_threshold_placeholder": "A threshold to limit the notifications",
 		"last_data_collection": "Last data collection",
 		"no_data_or_disabled_go_settings": "No data has been collected yet (the job runs every hour) or the monitoring feature appears to be disabled.",
-		"go_to_settings": "You can enable it by going to the",
+		"go_to_settings": "You can enable it in the",
 		"id": "ID",
 		"segment": "Segment",
 		"cycles_collected": "T Cycles collected",
-		"error_collecting_data": "There was an error collecting the data."
+		"error_collecting_data": "There was an error collecting the data.",
+		"parameters": "Parameters"
 	},
 	"preferences": {
 		"title": "Preferences",

@@ -45,6 +45,7 @@
 		"open_website": "打开Juno网站以及文档"
 	},
 	"canisters": {
+		"insight": "Insight",
 		"top_up": "充值",
 		"cycles": "用于支付只能合约运行消耗.",
 		"top_up_in_progress": "充值中...",
@@ -170,6 +171,7 @@
 	},
 	"wallet": {
 		"title": "钱包",
+		"overview": "概要",
 		"account_identifier": "账号",
 		"balance": "余额",
 		"credits": "积分",
@@ -226,6 +228,7 @@
 		"average_page_views_per_session": "平均每个会话页面浏览量",
 		"bounce_rate": "跳出率",
 		"overview": "概要",
+		"visitors": "Visitors",
 		"id": "Orbiter ID",
 		"tracked_events": "跟踪事件",
 		"count": "数量",
@@ -373,7 +376,8 @@
 		"authentication_config_loading": "加载认证配置信息时出现异常错误.",
 		"no_file_selected_for_upload": "没有选择要上传的文件.",
 		"upload_error": "上传文件时出现异常错误.",
-		"no_collection_for_upload": "异常错误，没有选择用于上传的集合."
+		"no_collection_for_upload": "异常错误，没有选择用于上传的集合.",
+		"invalid_email": "Please enter a valid email address."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -525,7 +529,8 @@
 		"id": "ID",
 		"segment": "Segment",
 		"cycles_collected": "T Cycles 搜集",
-		"error_collecting_data": "搜集数据出错."
+		"error_collecting_data": "搜集数据出错.",
+		"parameters": "Parameters"
 	},
 	"preferences": {
 		"title": "Preferences",

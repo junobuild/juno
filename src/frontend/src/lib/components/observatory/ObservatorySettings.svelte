@@ -190,7 +190,7 @@
 	}
 
 	button {
-		margin: var(--padding-2x) 0 0;
+		margin: 0;
 	}
 
 	.radio {

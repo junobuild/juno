@@ -114,9 +114,6 @@
 
 	let invalidThreshold = false;
 	$: invalidThreshold = nonNullish(threshold) && threshold < Number(CYCLES_WARNING) / ONE_TRILLION;
-
-	let dirty = false;
-	$: dirty = enabled !== initialEnabled || email !== initialEmail || threshold !== initialThreshold;
 </script>
 
 {#if loading}

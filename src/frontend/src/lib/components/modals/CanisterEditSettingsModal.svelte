@@ -43,11 +43,16 @@
 	let reservedCyclesLimit: bigint;
 	$: reservedCyclesLimit = BigInt(reservedTCyclesLimit * ONE_TRILLION);
 
+	let wasmMemoryLimit: number;
+	const initWasmMemoryLimit = (memoryLimit: bigint) => (wasmMemoryLimit = Number(memoryLimit));
+	$: initWasmMemoryLimit(settings.wasmMemoryLimit);
+
 	let disabled = true;
 	$: disabled =
 		(BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0) &&
 		reservedCyclesLimit === settings.reservedCyclesLimit &&
-		logVisibility === settings.logVisibility;
+		logVisibility === settings.logVisibility &&
+		BigInt(wasmMemoryLimit ?? 0n) === settings.wasmMemoryLimit;
 
 	let steps: 'edit' | 'in_progress' | 'ready' = 'edit';
 
@@ -67,7 +72,8 @@
 				...settings,
 				freezingThreshold: BigInt(freezingThreshold),
 				reservedCyclesLimit: reservedCyclesLimit,
-				logVisibility
+				logVisibility,
+				wasmMemoryLimit: BigInt(wasmMemoryLimit)
 			},
 			identity: $authStore.identity
 		});
@@ -142,6 +148,18 @@
 					<option value="controllers">{$i18n.canisters.controllers}</option>
 					<option value="public">{$i18n.canisters.public}</option>
 				</select>
+			</Value>
+
+			<Value>
+				<svelte:fragment slot="label"
+					>{$i18n.canisters.wasm_memory_limit} ({$i18n.canisters.in_bytes})</svelte:fragment
+				>
+				<Input
+					inputType="number"
+					name="wasmMemoryLimit"
+					placeholder=""
+					bind:value={wasmMemoryLimit}
+				/>
 			</Value>
 
 			<button type="submit" disabled={disabled || $isBusy}>

@@ -26,7 +26,7 @@ export const updateSettings = async ({
 		return { success: 'error' };
 	}
 
-	const { freezingThreshold, reservedCyclesLimit, logVisibility } = newSettings;
+	const { freezingThreshold, reservedCyclesLimit, logVisibility, wasmMemoryLimit } = newSettings;
 
 	const updateSettings: canister_settings = {
 		freezing_threshold: toNullable(
@@ -45,7 +45,9 @@ export const updateSettings = async ({
 		reserved_cycles_limit: toNullable(
 			reservedCyclesLimit === currentSettings.reservedCyclesLimit ? undefined : reservedCyclesLimit
 		),
-		wasm_memory_limit: toNullable()
+		wasm_memory_limit: toNullable(
+			wasmMemoryLimit === currentSettings.wasmMemoryLimit ? undefined : wasmMemoryLimit
+		)
 	};
 
 	if (

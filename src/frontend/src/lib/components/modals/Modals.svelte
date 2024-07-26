@@ -16,6 +16,7 @@
 	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
+	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 
@@ -50,6 +51,10 @@
 
 {#if modal?.type === 'create_controller' && nonNullish(modal.detail)}
 	<ControllerCreateModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'edit_canister_settings' && nonNullish(modal.detail)}
+	<CanisterEditSettingsModal on:junoClose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'upgrade_satellite' && nonNullish(modal.detail)}

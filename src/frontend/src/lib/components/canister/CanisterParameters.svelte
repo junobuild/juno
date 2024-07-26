@@ -4,6 +4,7 @@
 	import type {
 		CanisterData,
 		CanisterLogVisibility,
+		CanisterSettings,
 		CanisterSyncStatus,
 		Segment
 	} from '$lib/types/canister';
@@ -12,31 +13,59 @@
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { emit } from '$lib/utils/events.utils';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	export let canisterId: Principal;
 	export let segment: Segment;
+	export let segmentLabel: string;
 
 	let data: CanisterData | undefined;
 	let sync: CanisterSyncStatus | undefined;
 
+	let settings: CanisterSettings | undefined;
+	$: settings = data?.canister?.settings;
+
 	let freezingThreshold: bigint | undefined;
-	$: freezingThreshold = data?.canister?.settings?.freezingThreshold;
+	$: freezingThreshold = settings?.freezingThreshold;
 
 	let reservedCyclesLimit: bigint | undefined;
-	$: reservedCyclesLimit = data?.canister?.settings?.reservedCyclesLimit;
+	$: reservedCyclesLimit = settings?.reservedCyclesLimit;
 
 	let logVisibility: CanisterLogVisibility | undefined;
-	$: logVisibility = data?.canister?.settings?.logVisibility;
+	$: logVisibility = settings?.logVisibility;
 
 	let wasmMemoryLimit: bigint | undefined;
-	$: wasmMemoryLimit = data?.canister?.settings?.wasmMemoryLimit;
+	$: wasmMemoryLimit = settings?.wasmMemoryLimit;
 
 	let memoryAllocation: bigint | undefined;
-	$: memoryAllocation = data?.canister?.settings?.memoryAllocation;
+	$: memoryAllocation = settings?.memoryAllocation;
 
 	let computeAllocation: bigint | undefined;
-	$: computeAllocation = data?.canister?.settings?.computeAllocation;
+	$: computeAllocation = settings?.computeAllocation;
+
+	const openModal = () => {
+		if (isNullish(settings)) {
+			toasts.error({ text: $i18n.errors.canister_settings_no_loaded });
+			return;
+		}
+
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'edit_canister_settings',
+				detail: {
+					segment: {
+						canisterId: canisterId.toText(),
+						segment,
+						label: segmentLabel
+					},
+					settings
+				}
+			}
+		});
+	};
 </script>
 
 <div class="card-container with-title">
@@ -93,8 +122,10 @@
 
 <Canister {canisterId} {segment} bind:data bind:sync display={false} />
 
+<button on:click={openModal}>{$i18n.canisters.edit_parameters}</button>
+
 <style lang="scss">
-	.card-container {
+	button {
 		margin: 0 0 var(--padding-8x);
 	}
 

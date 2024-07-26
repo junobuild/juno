@@ -563,7 +563,6 @@ interface I18nObservatory {
 	segment: string;
 	cycles_collected: string;
 	error_collecting_data: string;
-	parameters: string;
 }
 
 interface I18nPreferences {

@@ -129,74 +129,89 @@
 		</p>
 
 		<form class="content" on:submit|preventDefault={updateSettings}>
-			<Value>
-				<svelte:fragment slot="label"
-					>{$i18n.canisters.freezing_threshold} ({$i18n.canisters.in_seconds})</svelte:fragment
-				>
-				<Input
-					inputType="number"
-					name="freezingThreshold"
-					placeholder=""
-					bind:value={freezingThreshold}
-				/>
-			</Value>
+			<div class="container">
+				<div>
+					<Value>
+						<svelte:fragment slot="label"
+							>{$i18n.canisters.freezing_threshold} ({$i18n.canisters.in_seconds})</svelte:fragment
+						>
+						<Input
+							inputType="number"
+							name="freezingThreshold"
+							placeholder=""
+							bind:value={freezingThreshold}
+						/>
+					</Value>
+				</div>
 
-			<Value>
-				<svelte:fragment slot="label"
-					>{$i18n.canisters.reserved_cycles_limit} ({$i18n.canisters.in_t_cycles})</svelte:fragment
-				>
-				<Input
-					inputType="number"
-					name="reservedCyclesLimit"
-					placeholder=""
-					bind:value={reservedTCyclesLimit}
-				/>
-			</Value>
+				<div>
+					<Value>
+						<svelte:fragment slot="label"
+							>{$i18n.canisters.reserved_cycles_limit} ({$i18n.canisters
+								.in_t_cycles})</svelte:fragment
+						>
+						<Input
+							inputType="number"
+							name="reservedCyclesLimit"
+							placeholder=""
+							bind:value={reservedTCyclesLimit}
+						/>
+					</Value>
+				</div>
 
-			<Value>
-				<svelte:fragment slot="label">{$i18n.canisters.log_visibility}</svelte:fragment>
-				<select id="logVisibility" name="logVisibility" bind:value={logVisibility}>
-					<option value="controllers">{$i18n.canisters.controllers}</option>
-					<option value="public">{$i18n.canisters.public}</option>
-				</select>
-			</Value>
+				<div>
+					<Value>
+						<svelte:fragment slot="label">{$i18n.canisters.log_visibility}</svelte:fragment>
+						<select id="logVisibility" name="logVisibility" bind:value={logVisibility}>
+							<option value="controllers">{$i18n.canisters.controllers}</option>
+							<option value="public">{$i18n.canisters.public}</option>
+						</select>
+					</Value>
+				</div>
 
-			<Value>
-				<svelte:fragment slot="label"
-					>{$i18n.canisters.wasm_memory_limit} ({$i18n.canisters.in_bytes})</svelte:fragment
-				>
-				<Input
-					inputType="number"
-					name="wasmMemoryLimit"
-					placeholder=""
-					bind:value={wasmMemoryLimit}
-				/>
-			</Value>
+				<div>
+					<Value>
+						<svelte:fragment slot="label"
+							>{$i18n.canisters.wasm_memory_limit} ({$i18n.canisters.in_bytes})</svelte:fragment
+						>
+						<Input
+							inputType="number"
+							name="wasmMemoryLimit"
+							placeholder=""
+							bind:value={wasmMemoryLimit}
+						/>
+					</Value>
+				</div>
 
-			<Value>
-				<svelte:fragment slot="label"
-					>{$i18n.canisters.memory_allocation} ({$i18n.canisters.in_bytes})</svelte:fragment
-				>
-				<Input
-					inputType="number"
-					name="memoryAllocation"
-					placeholder=""
-					bind:value={memoryAllocation}
-				/>
-			</Value>
+				<div>
+					<Value>
+						<svelte:fragment slot="label"
+							>{$i18n.canisters.memory_allocation} ({$i18n.canisters.in_bytes})</svelte:fragment
+						>
+						<Input
+							inputType="number"
+							name="memoryAllocation"
+							placeholder=""
+							bind:value={memoryAllocation}
+						/>
+					</Value>
+				</div>
 
-			<Value>
-				<svelte:fragment slot="label"
-					>{$i18n.canisters.compute_allocation} ({$i18n.canisters.in_percent})</svelte:fragment
-				>
-				<Input
-					inputType="number"
-					name="computeAllocation"
-					placeholder=""
-					max={100}
-					bind:value={computeAllocation}
-				/>
-			</Value>
+				<div>
+					<Value>
+						<svelte:fragment slot="label"
+							>{$i18n.canisters.compute_allocation} ({$i18n.canisters.in_percent})</svelte:fragment
+						>
+						<Input
+							inputType="number"
+							name="computeAllocation"
+							placeholder=""
+							max={100}
+							bind:value={computeAllocation}
+						/>
+					</Value>
+				</div>
+			</div>
 
 			<button type="submit" disabled={disabled || $isBusy}>
 				{$i18n.core.submit}
@@ -207,8 +222,20 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/overlay';
+	@use '../../styles/mixins/media';
 
 	.msg {
 		@include overlay.message;
+	}
+
+	.container {
+		margin: var(--padding-4x) 0;
+
+		@include media.min-width(large) {
+			display: grid;
+			grid-template-columns: repeat(2, 1fr);
+			column-gap: var(--padding-4x);
+			row-gap: var(--padding);
+		}
 	}
 </style>

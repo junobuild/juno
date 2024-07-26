@@ -67,7 +67,7 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<p>
-				{@html i18nFormat($i18n.canisters.parameters_updated_text, [
+				{@html i18nFormat($i18n.canisters.settings_updated_text, [
 					{
 						placeholder: '{0}',
 						value: segment.label
@@ -78,13 +78,13 @@
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
-			<p>{$i18n.canisters.updating_parameters}</p>
+			<p>{$i18n.canisters.updating_settings}</p>
 		</SpinnerModal>
 	{:else}
-		<h2>{$i18n.canisters.edit_parameters}</h2>
+		<h2>{$i18n.canisters.edit_settings}</h2>
 
 		<p>
-			{i18nFormat($i18n.canisters.edit_parameters_segment, [
+			{i18nFormat($i18n.canisters.edit_settings_segment, [
 				{ placeholder: '{0}', value: segment.label }
 			])}
 		</p>

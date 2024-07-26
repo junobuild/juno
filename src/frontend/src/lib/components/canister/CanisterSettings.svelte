@@ -69,7 +69,7 @@
 </script>
 
 <div class="card-container with-title">
-	<span class="title">{$i18n.canisters.parameters}</span>
+	<span class="title">{$i18n.core.settings}</span>
 
 	<div class="columns-3 fit-column-1">
 		<div>
@@ -122,7 +122,7 @@
 
 <Canister {canisterId} {segment} bind:data bind:sync display={false} />
 
-<button on:click={openModal}>{$i18n.canisters.edit_parameters}</button>
+<button on:click={openModal}>{$i18n.canisters.edit_settings}</button>
 
 <style lang="scss">
 	button {

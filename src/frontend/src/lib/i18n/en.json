@@ -79,10 +79,9 @@
 		"wasm_memory_limit": "Wasm memory limit",
 		"memory_allocation": "Memory allocation",
 		"compute_allocation": "Compute allocation",
-		"edit_parameters": "Edit the parameters",
-		"edit_parameters_segment": "Update the settings of your {0} using the form below. Please note that any changes made will impact its runtime behavior.",
+		"edit_settings": "Edit settings",
+		"edit_settings_segment": "Update the settings of your {0} using the form below. Please note that any changes made will impact its runtime behavior.",
 		"not_set": "Not set",
-		"parameters": "Parameters",
 		"review_upgrade": "Review upgrade",
 		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
 		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
@@ -125,10 +124,10 @@
 		"warning_satellite_heap_memory": "Your satellite heap memory is approaching 1 GB.",
 		"warning_orbiter_heap_memory": "Your orbiter heap memory is approaching 1 GB.",
 		"warning_indicator": "Warning: This segment requires your attention. Either stopping or running low on cycles.",
-		"updating_parameters": "Updating parameters...",
-		"parameters_updated_text": "The parameters of your {0} have been updated.",
+		"updating_settings": "Updating settings...",
+		"settings_updated_text": "The settings of your {0} have been updated.",
 		"in_seconds": "in seconds",
-		"no_update_required": "No parameters have been modified, so the settings do not need to be updated."
+		"no_update_required": "No settings have been modified, so the settings do not need to be updated."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -537,8 +536,7 @@
 		"id": "ID",
 		"segment": "Segment",
 		"cycles_collected": "T Cycles collected",
-		"error_collecting_data": "There was an error collecting the data.",
-		"parameters": "Parameters"
+		"error_collecting_data": "There was an error collecting the data."
 	},
 	"preferences": {
 		"title": "Preferences",

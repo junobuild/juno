@@ -83,10 +83,9 @@ interface I18nCanisters {
 	wasm_memory_limit: string;
 	memory_allocation: string;
 	compute_allocation: string;
-	edit_parameters: string;
-	edit_parameters_segment: string;
+	edit_settings: string;
+	edit_settings_segment: string;
 	not_set: string;
-	parameters: string;
 	review_upgrade: string;
 	confirm_upgrade: string;
 	upgrade_done: string;
@@ -129,8 +128,8 @@ interface I18nCanisters {
 	warning_satellite_heap_memory: string;
 	warning_orbiter_heap_memory: string;
 	warning_indicator: string;
-	updating_parameters: string;
-	parameters_updated_text: string;
+	updating_settings: string;
+	settings_updated_text: string;
 	in_seconds: string;
 	no_update_required: string;
 }

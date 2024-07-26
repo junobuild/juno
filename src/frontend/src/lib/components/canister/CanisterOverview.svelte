@@ -5,11 +5,11 @@
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import type { MemorySize } from '$declarations/satellite/satellite.did';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { formatBytes, formatNumber } from '$lib/utils/number.utils';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 
 	export let canisterId: Principal;
 	export let segment: Segment;
@@ -49,88 +49,70 @@
 	</div>
 
 	{#if ['satellite', 'orbiter'].includes(segment)}
-		<Value>
+		<CanisterValue {sync} rows={2}>
 			<svelte:fragment slot="label">{$i18n.canisters.memory}</svelte:fragment>
-			{#if nonNullish(memory)}
-				<p>
-					{formatBytes(Number(memory.heap))}
-					<small
-						>{$i18n.canisters.on_heap}
-						{#if warning}<span class="warning" title={heapWarningLabel}><IconWarning /></span
-							>{/if}</small
-					>
-				</p>
-				<p>
-					{formatBytes(Number(memory.stable))}
-					<small>{$i18n.canisters.on_stable}</small>
-				</p>
-			{:else if isNullish(sync) || ['loading', 'syncing'].includes(sync ?? '')}
-				<p><SkeletonText /></p>
-				<p><SkeletonText /></p>
-			{:else if sync !== 'synced'}
-				<p>Heap ???</p>
-				<p>Stable ???</p>
-			{/if}
-		</Value>
+			<p>
+				{nonNullish(memory) ? formatBytes(Number(memory.heap)) : '???'}
+				<small
+					>{$i18n.canisters.on_heap}
+					{#if warning}<span class="warning" title={heapWarningLabel}><IconWarning /></span
+						>{/if}</small
+				>
+			</p>
+			<p>
+				{nonNullish(memory) ? formatBytes(Number(memory.stable)) : '???'}
+				<small>{$i18n.canisters.on_stable}</small>
+			</p>
+		</CanisterValue>
 	{/if}
 </div>
 
 <div>
 	<div class="queries">
-		<Value>
+		<CanisterValue {sync} rows={4}>
 			<svelte:fragment slot="label">{$i18n.canisters.queries}</svelte:fragment>
-			{#if ['synced', 'syncing'].includes(sync ?? '')}
-				<p>
-					{nonNullish(numCallsTotal)
-						? formatNumber(Number(numCallsTotal), {
-								minFraction: 0,
-								maxFraction: 0,
-								notation: 'compact'
-							})
-						: '???'} <small>{$i18n.canisters.calls}</small>
-				</p>
-				<p>
-					{nonNullish(numInstructionsTotal)
-						? formatNumber(Number(numInstructionsTotal), {
-								minFraction: 0,
-								maxFraction: 0,
-								notation: 'compact'
-							})
-						: '???'}
-					<small>{$i18n.canisters.instructions}</small>
-				</p>
-				<p>
-					{nonNullish(requestPayloadBytesTotal)
-						? formatBytes(Number(requestPayloadBytesTotal))
-						: '???'}
-					<small>{$i18n.canisters.requests}</small>
-				</p>
-				<p>
-					{nonNullish(responsePayloadBytesTotal)
-						? formatBytes(Number(responsePayloadBytesTotal))
-						: '???'}
-					<small>{$i18n.canisters.responses}</small>
-				</p>
-			{:else if sync === 'loading'}
-				<p><SkeletonText /></p>
-				<p><SkeletonText /></p>
-				<p><SkeletonText /></p>
-				<p><SkeletonText /></p>
-			{/if}
-		</Value>
+
+			<p>
+				{nonNullish(numCallsTotal)
+					? formatNumber(Number(numCallsTotal), {
+							minFraction: 0,
+							maxFraction: 0,
+							notation: 'compact'
+						})
+					: '???'} <small>{$i18n.canisters.calls}</small>
+			</p>
+			<p>
+				{nonNullish(numInstructionsTotal)
+					? formatNumber(Number(numInstructionsTotal), {
+							minFraction: 0,
+							maxFraction: 0,
+							notation: 'compact'
+						})
+					: '???'}
+				<small>{$i18n.canisters.instructions}</small>
+			</p>
+			<p>
+				{nonNullish(requestPayloadBytesTotal)
+					? formatBytes(Number(requestPayloadBytesTotal))
+					: '???'}
+				<small>{$i18n.canisters.requests}</small>
+			</p>
+			<p>
+				{nonNullish(responsePayloadBytesTotal)
+					? formatBytes(Number(responsePayloadBytesTotal))
+					: '???'}
+				<small>{$i18n.canisters.responses}</small>
+			</p>
+		</CanisterValue>
 	</div>
 
 	<div class="consumption">
-		<Value>
+		<CanisterValue {sync}>
 			<svelte:fragment slot="label">{$i18n.canisters.daily_consumption}</svelte:fragment>
-			{#if ['synced', 'syncing'].includes(sync ?? '')}
-				<p>
-					{formatTCycles(idleCyclesBurnedPerDay ?? 0n)}T <small>cycles</small>
-				</p>
-			{:else if sync === 'loading'}
-				<p><SkeletonText /></p>
-			{/if}
-		</Value>
+			<p>
+				{formatTCycles(idleCyclesBurnedPerDay ?? 0n)}T <small>cycles</small>
+			</p>
+		</CanisterValue>
 	</div>
 </div>
 

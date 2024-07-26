@@ -13,6 +13,8 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { ONE_TRILLION } from '$lib/constants/constants';
 
 	export let detail: JunoModalDetail;
 
@@ -25,9 +27,18 @@
 	const initFreezingThreshold = (threshold: bigint) => (freezingThreshold = Number(threshold));
 	$: initFreezingThreshold(settings.freezingThreshold);
 
+	let reservedTCyclesLimit: number;
+	const initReservedTCyclesLimit = (cycles: bigint) =>
+		(reservedTCyclesLimit = Number(formatTCycles(cycles)));
+	$: initReservedTCyclesLimit(settings.reservedCyclesLimit);
+
+	let reservedCyclesLimit: bigint;
+	$: reservedCyclesLimit = BigInt(reservedTCyclesLimit * ONE_TRILLION);
+
 	let disabled = true;
 	$: disabled =
-		BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0;
+		(BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0) &&
+		reservedCyclesLimit === settings.reservedCyclesLimit;
 
 	let steps: 'edit' | 'in_progress' | 'ready' = 'edit';
 
@@ -45,7 +56,8 @@
 			currentSettings: settings,
 			newSettings: {
 				...settings,
-				freezingThreshold: BigInt(freezingThreshold)
+				freezingThreshold: BigInt(freezingThreshold),
+				reservedCyclesLimit: reservedCyclesLimit
 			},
 			identity: $authStore.identity
 		});
@@ -96,10 +108,21 @@
 				>
 				<Input
 					inputType="number"
-					placeholder={$i18n.collections.max_capacity_placeholder}
 					name="freezingThreshold"
-					required={false}
+					placeholder=""
 					bind:value={freezingThreshold}
+				/>
+			</Value>
+
+			<Value>
+				<svelte:fragment slot="label"
+					>{$i18n.canisters.reserved_cycles_limit} ({$i18n.canisters.in_t_cycles})</svelte:fragment
+				>
+				<Input
+					inputType="number"
+					name="reservedCyclesLimit"
+					placeholder=""
+					bind:value={reservedTCyclesLimit}
 				/>
 			</Value>
 

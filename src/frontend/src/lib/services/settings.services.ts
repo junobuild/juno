@@ -26,14 +26,20 @@ export const updateSettings = async ({
 		return { success: 'error' };
 	}
 
-	const { freezingThreshold, reservedCyclesLimit } = newSettings;
+	const { freezingThreshold, reservedCyclesLimit, logVisibility } = newSettings;
 
 	const updateSettings: canister_settings = {
 		freezing_threshold: toNullable(
 			freezingThreshold === currentSettings.freezingThreshold ? undefined : freezingThreshold
 		),
 		controllers: toNullable(),
-		log_visibility: toNullable(),
+		log_visibility: toNullable(
+			logVisibility === currentSettings.logVisibility
+				? undefined
+				: logVisibility === 'controllers'
+					? { controllers: null }
+					: { public: null }
+		),
 		compute_allocation: toNullable(),
 		memory_allocation: toNullable(),
 		reserved_cycles_limit: toNullable(

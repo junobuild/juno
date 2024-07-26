@@ -133,6 +133,8 @@ interface I18nCanisters {
 	in_seconds: string;
 	in_t_cycles: string;
 	no_update_required: string;
+	controllers: string;
+	public: string;
 }
 
 interface I18nSign_in {

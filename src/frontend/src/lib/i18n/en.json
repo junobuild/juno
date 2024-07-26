@@ -128,7 +128,9 @@
 		"settings_updated_text": "The settings of your {0} have been updated.",
 		"in_seconds": "in seconds",
 		"in_t_cycles": "in T Cycles",
-		"no_update_required": "No settings have been modified, so the settings do not need to be updated."
+		"no_update_required": "No settings have been modified, so the settings do not need to be updated.",
+		"controllers": "Controllers",
+		"public": "Public"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

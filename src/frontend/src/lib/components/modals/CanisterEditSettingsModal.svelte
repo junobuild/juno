@@ -1,6 +1,10 @@
 <script lang="ts">
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
+	import type {
+		CanisterLogVisibility,
+		CanisterSegmentWithLabel,
+		CanisterSettings
+	} from '$lib/types/canister';
 	import type { JunoModalDetail, JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
 	import { createEventDispatcher } from 'svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -32,13 +36,18 @@
 		(reservedTCyclesLimit = Number(formatTCycles(cycles)));
 	$: initReservedTCyclesLimit(settings.reservedCyclesLimit);
 
+	let logVisibility: CanisterLogVisibility;
+	const initLogVisibility = (visibility: CanisterLogVisibility) => (logVisibility = visibility);
+	$: initLogVisibility(settings.logVisibility);
+
 	let reservedCyclesLimit: bigint;
 	$: reservedCyclesLimit = BigInt(reservedTCyclesLimit * ONE_TRILLION);
 
 	let disabled = true;
 	$: disabled =
 		(BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0) &&
-		reservedCyclesLimit === settings.reservedCyclesLimit;
+		reservedCyclesLimit === settings.reservedCyclesLimit &&
+		logVisibility === settings.logVisibility;
 
 	let steps: 'edit' | 'in_progress' | 'ready' = 'edit';
 
@@ -57,7 +66,8 @@
 			newSettings: {
 				...settings,
 				freezingThreshold: BigInt(freezingThreshold),
-				reservedCyclesLimit: reservedCyclesLimit
+				reservedCyclesLimit: reservedCyclesLimit,
+				logVisibility
 			},
 			identity: $authStore.identity
 		});
@@ -124,6 +134,14 @@
 					placeholder=""
 					bind:value={reservedTCyclesLimit}
 				/>
+			</Value>
+
+			<Value>
+				<svelte:fragment slot="label">{$i18n.canisters.log_visibility}</svelte:fragment>
+				<select id="logVisibility" name="logVisibility" bind:value={logVisibility}>
+					<option value="controllers">{$i18n.canisters.controllers}</option>
+					<option value="public">{$i18n.canisters.public}</option>
+				</select>
 			</Value>
 
 			<button type="submit" disabled={disabled || $isBusy}>

@@ -83,8 +83,9 @@ interface I18nCanisters {
 	wasm_memory_limit: string;
 	memory_allocation: string;
 	compute_allocation: string;
+	edit_settings: string;
+	edit_settings_segment: string;
 	not_set: string;
-	parameters: string;
 	review_upgrade: string;
 	confirm_upgrade: string;
 	upgrade_done: string;
@@ -127,6 +128,15 @@ interface I18nCanisters {
 	warning_satellite_heap_memory: string;
 	warning_orbiter_heap_memory: string;
 	warning_indicator: string;
+	updating_settings: string;
+	settings_updated_text: string;
+	in_seconds: string;
+	in_bytes: string;
+	in_percent: string;
+	in_t_cycles: string;
+	no_update_required: string;
+	controllers: string;
+	public: string;
 }
 
 interface I18nSign_in {
@@ -341,6 +351,8 @@ interface I18nErrors {
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
+	canister_settings_no_loaded: string;
+	canister_update_error: string;
 	segment_detach: string;
 	ledger_balance_credits: string;
 	load_credits: string;
@@ -556,7 +568,6 @@ interface I18nObservatory {
 	segment: string;
 	cycles_collected: string;
 	error_collecting_data: string;
-	parameters: string;
 }
 
 interface I18nPreferences {

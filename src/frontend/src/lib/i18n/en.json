@@ -79,8 +79,9 @@
 		"wasm_memory_limit": "Wasm memory limit",
 		"memory_allocation": "Memory allocation",
 		"compute_allocation": "Compute allocation",
+		"edit_settings": "Edit settings",
+		"edit_settings_segment": "Update the settings of your {0} using the form below. Please note that any changes made will impact its runtime behavior.",
 		"not_set": "Not set",
-		"parameters": "Parameters",
 		"review_upgrade": "Review upgrade",
 		"confirm_upgrade": "Your {0} code will be upgraded with the wasm <strong>{1}</strong>. Would you like to proceed with the upgrade?",
 		"upgrade_done": "Your {0} has been has been successfully upgraded to version <strong>{1}</strong>.",
@@ -122,7 +123,16 @@
 		"warning_orbiter_low_cycles": "Your orbiter is running low on cycles.",
 		"warning_satellite_heap_memory": "Your satellite heap memory is approaching 1 GB.",
 		"warning_orbiter_heap_memory": "Your orbiter heap memory is approaching 1 GB.",
-		"warning_indicator": "Warning: This segment requires your attention. Either stopping or running low on cycles."
+		"warning_indicator": "Warning: This segment requires your attention. Either stopping or running low on cycles.",
+		"updating_settings": "Updating settings...",
+		"settings_updated_text": "The settings of your {0} have been updated.",
+		"in_seconds": "in seconds",
+		"in_bytes": "in bytes",
+		"in_percent": "in percent",
+		"in_t_cycles": "in T Cycles",
+		"no_update_required": "No settings have been modified, so the settings do not need to be updated.",
+		"controllers": "Controllers",
+		"public": "Public"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -325,6 +335,8 @@
 		"canister_stop": "Unexpected error(s) while trying to stop the smart contract.",
 		"canister_start": "Unexpected error(s) while trying to start the smart contract.",
 		"canister_delete": "Unexpected error(s) while trying to delete the smart contract.",
+		"canister_settings_no_loaded": "The settings of the smart contract are not yet loaded.",
+		"canister_update_error": "Unexpected error(s) while updating the settings.",
 		"segment_detach": "Unexpected error(s) while trying to detach the segment.",
 		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits.",
 		"load_credits": "Cannot load your current credits status.",
@@ -529,8 +541,7 @@
 		"id": "ID",
 		"segment": "Segment",
 		"cycles_collected": "T Cycles collected",
-		"error_collecting_data": "There was an error collecting the data.",
-		"parameters": "Parameters"
+		"error_collecting_data": "There was an error collecting the data."
 	},
 	"preferences": {
 		"title": "Preferences",

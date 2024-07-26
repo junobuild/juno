@@ -107,7 +107,7 @@
 {:else}
 	<form on:submit|preventDefault={onSubmit} in:fade>
 		<div class="card-container with-title">
-			<span class="title">{$i18n.observatory.parameters}</span>
+			<span class="title">{$i18n.core.settings}</span>
 
 			<div class="content">
 				<div>

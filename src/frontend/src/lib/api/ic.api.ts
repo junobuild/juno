@@ -1,6 +1,6 @@
 import type {
-	_SERVICE as ICActor,
 	canister_log_record,
+	canister_settings,
 	log_visibility
 } from '$declarations/ic/ic.did';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
@@ -27,7 +27,7 @@ export const canisterStatus = async ({
 	canisterId: string;
 	identity: Identity;
 }): Promise<CanisterInfo> => {
-	const actor: ICActor = await getICActor({ identity });
+	const { canister_status } = await getICActor({ identity });
 
 	const {
 		cycles,
@@ -49,7 +49,7 @@ export const canisterStatus = async ({
 			memory_allocation: memoryAllocation,
 			compute_allocation: computeAllocation
 		}
-	} = await actor.canister_status({
+	} = await canister_status({
 		canister_id: Principal.fromText(canisterId)
 	});
 
@@ -84,8 +84,8 @@ export const canisterStart = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<void> => {
-	const actor: ICActor = await getICActor({ identity });
-	return actor.start_canister({ canister_id: canisterId });
+	const { start_canister } = await getICActor({ identity });
+	return start_canister({ canister_id: canisterId });
 };
 
 export const canisterStop = async ({
@@ -95,8 +95,8 @@ export const canisterStop = async ({
 	canisterId: Principal;
 	identity: Identity;
 }): Promise<void> => {
-	const actor: ICActor = await getICActor({ identity });
-	return actor.stop_canister({ canister_id: canisterId });
+	const { stop_canister } = await getICActor({ identity });
+	return stop_canister({ canister_id: canisterId });
 };
 
 export const canisterLogs = async ({
@@ -113,4 +113,17 @@ export const canisterLogs = async ({
 	});
 
 	return canister_log_records;
+};
+
+export const canisterUpdateSettings = async ({
+	canisterId,
+	identity,
+	settings
+}: {
+	canisterId: Principal;
+	identity: Identity;
+	settings: canister_settings;
+}): Promise<void> => {
+	const { update_settings } = await getICActor({ identity });
+	return update_settings({ canister_id: canisterId, sender_canister_version: [], settings });
 };

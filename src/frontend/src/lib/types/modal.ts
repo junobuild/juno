@@ -1,7 +1,7 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
-import type { CanisterSegmentWithLabel } from '$lib/types/canister';
+import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { Principal } from '@dfinity/principal';
@@ -65,6 +65,11 @@ export interface JunoModalCreateControllerDetail {
 	segment: CanisterSegmentWithLabel;
 }
 
+export interface JunoModalEditCanisterSettingsDetail {
+	segment: CanisterSegmentWithLabel;
+	settings: CanisterSettings;
+}
+
 export type JunoModalDetail =
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
@@ -88,6 +93,7 @@ export interface JunoModal {
 		| 'topup_orbiter'
 		| 'add_custom_domain'
 		| 'create_controller'
+		| 'edit_canister_settings'
 		| 'upgrade_satellite'
 		| 'upgrade_mission_control'
 		| 'upgrade_orbiter';

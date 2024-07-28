@@ -169,7 +169,7 @@
 					</Value>
 				</div>
 
-				<div>
+				<div class="row-1 column-2">
 					<Value>
 						<svelte:fragment slot="label"
 							>{$i18n.canisters.wasm_memory_limit} ({$i18n.canisters.in_bytes})</svelte:fragment
@@ -183,7 +183,7 @@
 					</Value>
 				</div>
 
-				<div>
+				<div class="row-2 column-2">
 					<Value>
 						<svelte:fragment slot="label"
 							>{$i18n.canisters.memory_allocation} ({$i18n.canisters.in_bytes})</svelte:fragment
@@ -197,7 +197,7 @@
 					</Value>
 				</div>
 
-				<div>
+				<div class="column-2">
 					<Value>
 						<svelte:fragment slot="label"
 							>{$i18n.canisters.compute_allocation} ({$i18n.canisters.in_percent})</svelte:fragment
@@ -236,6 +236,18 @@
 			grid-template-columns: repeat(2, 1fr);
 			column-gap: var(--padding-4x);
 			row-gap: var(--padding);
+
+			.row-1 {
+				grid-row-start: 1;
+			}
+
+			.row-2 {
+				grid-row-start: 2;
+			}
+
+			.column-2 {
+				grid-column-start: 2;
+			}
 		}
 	}
 </style>

@@ -43,9 +43,9 @@ export const updateSettings = async ({
 		log_visibility: toNullable(
 			logVisibility === currentSettings.logVisibility
 				? undefined
-				: logVisibility === 'controllers'
-					? { controllers: null }
-					: { public: null }
+				: logVisibility === 'public'
+					? { public: null }
+					: { controllers: null }
 		),
 		compute_allocation: toNullable(
 			computeAllocation === currentSettings.computeAllocation ? undefined : computeAllocation

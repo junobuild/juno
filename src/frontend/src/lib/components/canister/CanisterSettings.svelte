@@ -91,7 +91,7 @@
 
 		<div>
 			<CanisterValue {sync}>
-				<svelte:fragment slot="label">{$i18n.canisters.wasm_memory_limit}</svelte:fragment>
+				<svelte:fragment slot="label">{$i18n.canisters.heap_memory_limit}</svelte:fragment>
 				<p>
 					{nonNullish(wasmMemoryLimit) && wasmMemoryLimit > 0n
 						? formatBytes(Number(wasmMemoryLimit))

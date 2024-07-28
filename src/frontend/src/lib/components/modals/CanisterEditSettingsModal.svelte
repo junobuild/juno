@@ -172,7 +172,7 @@
 				<div class="row-1 column-2">
 					<Value>
 						<svelte:fragment slot="label"
-							>{$i18n.canisters.wasm_memory_limit} ({$i18n.canisters.in_bytes})</svelte:fragment
+							>{$i18n.canisters.heap_memory_limit} ({$i18n.canisters.in_bytes})</svelte:fragment
 						>
 						<Input
 							inputType="number"

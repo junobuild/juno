@@ -80,7 +80,7 @@ interface I18nCanisters {
 	freezing_threshold: string;
 	reserved_cycles_limit: string;
 	log_visibility: string;
-	wasm_memory_limit: string;
+	heap_memory_limit: string;
 	memory_allocation: string;
 	compute_allocation: string;
 	edit_settings: string;

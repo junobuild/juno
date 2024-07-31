@@ -70,7 +70,11 @@
 />
 
 <IdentityGuard>
-	<Tabs help="https://juno.build/docs/build/analytics">
+	<Tabs
+		help={$store.tabId === $store.tabs[0].id
+			? 'https://juno.build/docs/build/analytics'
+			: 'https://juno.build/docs/miscellaneous/settings'}
+	>
 		<svelte:fragment slot="info">
 			{#if $authSignedInStore}
 				<Warnings />

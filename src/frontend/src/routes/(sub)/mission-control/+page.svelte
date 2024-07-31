@@ -47,7 +47,7 @@
 	<Tabs
 		help={$store.tabId === $store.tabs[0].id
 			? 'https://juno.build/docs/architecture'
-			: 'https://juno.build/docs/miscellaneous/controllers'}
+			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
 		<svelte:fragment slot="info">
 			{#if $authSignedInStore}

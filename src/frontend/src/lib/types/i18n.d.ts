@@ -46,6 +46,7 @@ interface I18nCore {
 	refresh: string;
 	reload: string;
 	open_website: string;
+	file: string;
 }
 
 interface I18nCanisters {
@@ -420,6 +421,15 @@ interface I18nDocument {
 	description: string;
 	document_submission_success: string;
 	document_submission_failed: string;
+	upload_document: string;
+	replace_document: string;
+	upload_description: string;
+	replace_description: string;
+	upload: string;
+	key: string;
+	key_generate: string;
+	key_placeholder: string;
+	description_placeholder: string;
 }
 
 interface I18nDocument_form {

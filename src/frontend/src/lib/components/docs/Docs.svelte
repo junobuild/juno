@@ -20,6 +20,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { fade } from 'svelte/transition';
+	import DocUpload from '$lib/components/docs/DocUpload.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -66,6 +67,17 @@
 		{$i18n.datastore.documents}
 
 		<svelte:fragment slot="actions">
+			<DocUpload>
+				<svelte:fragment slot="action">{$i18n.document.upload_document}</svelte:fragment>
+				<svelte:fragment slot="title">{$i18n.document.upload_document}</svelte:fragment>
+				{@html i18nFormat($i18n.document.upload_description, [
+					{
+						placeholder: '{0}',
+						value: collection ?? ''
+					}
+				])}
+			</DocUpload>
+
 			<button class="menu" type="button" on:click={load}
 				><IconRefresh size="20px" /> {$i18n.core.reload}</button
 			>

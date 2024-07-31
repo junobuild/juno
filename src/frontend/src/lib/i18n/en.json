@@ -42,7 +42,8 @@
 		"detach": "Detach",
 		"refresh": "Refresh",
 		"reload": "Reload",
-		"open_website": "Open Juno website and documentation"
+		"open_website": "Open Juno website and documentation",
+		"file": "File"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -402,7 +403,16 @@
 		"delete_all": "You are about to delete all documents in the collection.",
 		"description": "Description",
 		"document_submission_success": "Document has been successfully submitted!",
-		"document_submission_failed": "Document submission failed!"
+		"document_submission_failed": "Document submission failed!",
+		"upload_document": "Upload a document",
+		"replace_document": "Replace a document",
+		"upload_description": "To upload a document to the collection <strong>{0}</strong>, select a JSON file, specify a key, and optionally provide a description. You will be the owner, i.e. the user currently signed into the console.",
+		"replace_description": "To overwrite a document's data, upload a new JSON file.",
+		"upload": "Upload",
+		"key": "Key",
+		"key_generate": "Auto generate key",
+		"key_placeholder": "Enter or generate a key",
+		"description_placeholder": "Enter an optional description"
 	},
 	"document_form": {
 		"field_doc_key_label": "Key",

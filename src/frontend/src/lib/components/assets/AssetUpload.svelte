@@ -2,16 +2,15 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
-	import IconUpload from '$lib/components/icons/IconUpload.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';
-	import Popover from '$lib/components/ui/Popover.svelte';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { uploadFile } from '@junobuild/core-peer';
 	import { container } from '$lib/utils/juno.utils';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+	import DataUpload from '$lib/components/data/DataUpload.svelte';
 
 	export let asset: AssetNoContent | undefined = undefined;
 
@@ -26,17 +25,9 @@
 	let satelliteId: Principal;
 	$: satelliteId = $store.satelliteId;
 
-	let file: File | undefined = undefined;
-
-	const onChangeFile = ($event: Event) =>
-		(file = ($event as unknown as { target: EventTarget & HTMLInputElement }).target?.files?.[0]);
-
-	let disableUpload = true;
-	$: disableUpload = isNullish(file) || $isBusy;
-
 	const dispatch = createEventDispatcher();
 
-	const upload = async () => {
+	const upload = async ({ detail: file }: CustomEvent<File | undefined>) => {
 		if (isNullish(file)) {
 			// Upload is disabled if not valid
 			toasts.error({
@@ -92,42 +83,8 @@
 	};
 </script>
 
-<button class="menu" type="button" on:click={() => (visible = true)}
-	><IconUpload size="20px" /> <slot name="action" /></button
->
-
-<Popover bind:visible center={true} backdrop="dark">
-	<div class="content">
-		<h3><slot name="title" /></h3>
-
-		<p><slot /></p>
-
-		<input type="file" on:change={onChangeFile} disabled={$isBusy} />
-
-		<div>
-			<button type="button" on:click|stopPropagation={close} disabled={$isBusy}>
-				{$i18n.core.cancel}
-			</button>
-
-			<button type="button" on:click|stopPropagation={upload} disabled={disableUpload}>
-				{$i18n.asset.upload}
-			</button>
-		</div>
-	</div>
-</Popover>
-
-<style lang="scss">
-	.content {
-		padding: var(--padding-2x);
-		max-width: 100%;
-	}
-
-	h3 {
-		margin-bottom: var(--padding-2x);
-	}
-
-	p {
-		white-space: initial;
-		word-break: break-word;
-	}
-</style>
+<DataUpload on:junoUpload={upload}>
+	<slot name="action" slot="action" />
+	<slot name="title" slot="title" />
+	<slot slot="description" />
+</DataUpload>

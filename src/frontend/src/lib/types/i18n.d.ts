@@ -291,6 +291,9 @@ interface I18nHosting {
 	default_domain: string;
 	domain: string;
 	status: string;
+	bn_id: string;
+	info: string;
+	autentication_main_domain: string;
 	pendingorder: string;
 	pendingchallengeresponse: string;
 	pendingacmeapproval: string;

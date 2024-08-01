@@ -4,13 +4,18 @@
 	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
 	import { onMount } from 'svelte';
-	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+	import type {
+		AuthenticationConfig,
+		CustomDomain as CustomDomainType
+	} from '$declarations/satellite/satellite.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listCustomDomains, getAuthConfig } from '$lib/services/hosting.services';
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { authStore } from '$lib/stores/auth.store';
 	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
+	import { nonNullish } from '@dfinity/utils';
 
 	export let satellite: Satellite;
 
@@ -36,8 +41,15 @@
 
 	onMount(list);
 
-	let hasCustomDomains = false;
-	$: hasCustomDomains = $satelliteCustomDomains.length > 0;
+	type SelectedCustomDomain = {
+		customDomain: [string, CustomDomainType] | undefined;
+		displayState: string | undefined | null;
+		mainDomain: boolean;
+	};
+
+	let selectedInfo: SelectedCustomDomain | undefined;
+
+	const onDisplayInfo = ({ detail }: CustomEvent<SelectedCustomDomain>) => (selectedInfo = detail);
 </script>
 
 <svelte:window on:junoSyncCustomDomains={list} />
@@ -46,9 +58,7 @@
 	<table>
 		<thead>
 			<tr>
-				{#if hasCustomDomains}
-					<th class="tools" />
-				{/if}
+				<th class="tools" />
 				<th class="domain"> {$i18n.hosting.domain} </th>
 				<th class="auth"> {$i18n.core.sign_in}</th>
 				<th> {$i18n.hosting.status}</th>
@@ -56,11 +66,7 @@
 		</thead>
 		<tbody>
 			<tr>
-				<CustomDomain
-					url={satelliteUrl(satelliteId)}
-					ariaLabel={$i18n.hosting.default_domain}
-					toolsColumn={hasCustomDomains}
-				/>
+				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
 			</tr>
 
 			{#each $satelliteCustomDomains as [customDomainUrl, customDomain]}
@@ -72,6 +78,7 @@
 						{config}
 						ariaLabel={$i18n.hosting.custom_domain}
 						{satellite}
+						on:junoDisplayInfo={onDisplayInfo}
 					/>
 				</tr>
 			{/each}
@@ -84,6 +91,10 @@
 
 	<HostingCount {satellite} />
 </div>
+
+{#if nonNullish(selectedInfo)}
+	<CustomDomainInfo info={selectedInfo} on:junoClose={() => (selectedInfo = undefined)} />
+{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

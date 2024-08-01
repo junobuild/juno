@@ -357,6 +357,7 @@
 		"full_path_invalid": "Key (full_path) is invalid or empty.",
 		"collection_invalid": "Collection is invalid or empty.",
 		"controller_invalid": "Controller is invalid or empty.",
+		"document_invalid": "No document selected.",
 		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
 		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data.",
 		"collection_added": "Collection {0} cannot be added.",
@@ -390,8 +391,7 @@
 		"no_file_selected_for_upload": "No file was selected for the upload.",
 		"upload_error": "Unexpected error(s) while uploading the file.",
 		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload.",
-		"invalid_email": "Please enter a valid email address.",
-		"key_undefined": "A key is mandatory to set a document."
+		"invalid_email": "Please enter a valid email address."
 	},
 	"document": {
 		"owner": "Owner",
@@ -407,6 +407,7 @@
 		"document_submission_failed": "Document submission failed!",
 		"create_document": "Create a document",
 		"replace_document": "Replace document",
+		"download_document": "Download document",
 		"upload_description": "To create a document to the collection <strong>{0}</strong>, select a JSON file for the data, specify a key, and optionally provide a description. You will be the owner, i.e. the user currently signed into the console.",
 		"replace_description": "To overwrite the document's data in the collection <strong>{0}</strong>, upload a new JSON file.",
 		"upload": "Upload",

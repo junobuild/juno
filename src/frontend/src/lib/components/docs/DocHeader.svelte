@@ -13,6 +13,9 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import DocUpload from '$lib/components/docs/DocUpload.svelte';
+	import IconDelete from "$lib/components/icons/IconDelete.svelte";
+	import IconDownload from "$lib/components/icons/IconDownload.svelte";
+	import {fromArray} from "@junobuild/utils";
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 	const { store: docsStore, resetData }: DataContext<Doc> =
@@ -49,6 +52,20 @@
 
 		resetData();
 	};
+
+	const download = async () => {
+		if (isNullish(doc)) {
+			toasts.error({
+				text: $i18n.errors.document_invalid
+			});
+			return;
+		}
+
+		const data = await fromArray(doc.data);
+
+		// TODO
+		console.log(data)
+	}
 </script>
 
 <div class="title doc">
@@ -66,6 +83,10 @@
 					}
 				])}
 			</DocUpload>
+
+			<button class="menu" type="button" on:click={download}
+			><IconDownload size="20px" /> {$i18n.document.download_document}</button
+			>
 
 			<DataKeyDelete {deleteData}>
 				<svelte:fragment slot="title">{$i18n.document.delete}</svelte:fragment>

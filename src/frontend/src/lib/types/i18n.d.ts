@@ -373,6 +373,7 @@ interface I18nErrors {
 	full_path_invalid: string;
 	collection_invalid: string;
 	controller_invalid: string;
+	document_invalid: string;
 	observatory_get_unexpected_error: string;
 	observatory_set_unexpected_error: string;
 	collection_added: string;
@@ -407,7 +408,6 @@ interface I18nErrors {
 	upload_error: string;
 	no_collection_for_upload: string;
 	invalid_email: string;
-	key_undefined: string;
 }
 
 interface I18nDocument {
@@ -424,6 +424,7 @@ interface I18nDocument {
 	document_submission_failed: string;
 	create_document: string;
 	replace_document: string;
+	download_document: string;
 	upload_description: string;
 	replace_description: string;
 	upload: string;

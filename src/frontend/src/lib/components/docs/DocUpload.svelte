@@ -54,7 +54,7 @@
 		if (isNullish(key) || !notEmptyString(key)) {
 			// Upload is disabled if not valid
 			toasts.error({
-				text: $i18n.errors.key_undefined
+				text: $i18n.errors.key_invalid
 			});
 			return;
 		}

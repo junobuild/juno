@@ -6,7 +6,7 @@
 	import { writable } from 'svelte/store';
 	import type { Doc as DocType, Doc as DocDid } from '$declarations/satellite/satellite.did';
 	import Data from '$lib/components/data/Data.svelte';
-	import DocForm from '../docs/DocForm.svelte';
+	import DocForm from '../docs/DocHeader.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';

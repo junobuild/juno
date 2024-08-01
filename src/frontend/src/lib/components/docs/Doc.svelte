@@ -4,12 +4,12 @@
 	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
-	import { fromArray } from '$lib/utils/did.utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import JsonCode from '$lib/components/ui/JsonCode.svelte';
+	import { fromArray } from '@junobuild/utils';
 
 	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 

@@ -3,8 +3,8 @@ import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 import { authStore } from '$lib/stores/auth.store';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
-import { fromArray } from '$lib/utils/did.utils';
 import type { Principal } from '@dfinity/principal';
+import { fromArray } from '@junobuild/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 

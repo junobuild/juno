@@ -12,10 +12,8 @@
 	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
-	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
-	import { DEV_FEATURES } from '$lib/constants/constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
@@ -103,11 +101,7 @@
 </div>
 
 {#if !emptyCollection}
-	<div
-		class="data"
-		class:data-selected={nonNullish($docsStore?.action)}
-		class:data-nullish={isNullish($paginationStore.items)}
-	>
+	<div class="data" class:data-nullish={isNullish($paginationStore.items)}>
 		{#if nonNullish($paginationStore.items)}
 			<div out:fade>
 				{#if empty}
@@ -116,18 +110,8 @@
 					</CollectionEmpty>
 				{/if}
 
-				{#if DEV_FEATURES}
-					<button
-						class="text action start"
-						on:click={() => docsStore.set({ key: undefined, data: undefined, action: 'create' })}
-						><IconNew size="16px" /> <span>{$i18n.document_form.btn_add_document}</span></button
-					>
-				{/if}
-
 				{#each $paginationStore.items as [key, doc]}
-					<button
-						class="text action"
-						on:click={() => docsStore.set({ key, data: doc, action: 'view' })}
+					<button class="text action" on:click={() => docsStore.set({ key, data: doc })}
 						><span>{key}</span></button
 					>
 				{/each}

@@ -31,8 +31,6 @@ export const DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION = 0.5;
 
 export const PAGINATION = 10n;
 
-export const DEV_FEATURES = import.meta.env.VITE_DEV_FEATURES === 'true';
-
 export const INTERNET_IDENTITY_CANISTER_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
 export const CMC_CANISTER_ID = 'rkp4c-7iaaa-aaaaa-aaaca-cai';
 export const CONSOLE_CANISTER_ID = 'cokmz-oiaaa-aaaal-aby6q-cai';

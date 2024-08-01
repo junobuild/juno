@@ -101,7 +101,11 @@
 </div>
 
 {#if !emptyCollection}
-	<div class="data" class:data-nullish={isNullish($paginationStore.items)}>
+	<div
+		class="data"
+		class:data-selected={nonNullish($docsStore?.data)}
+		class:data-nullish={isNullish($paginationStore.items)}
+	>
 		{#if nonNullish($paginationStore.items)}
 			<div out:fade>
 				{#if empty}

@@ -16,8 +16,8 @@
 	import { fileToDocData } from '$lib/utils/doc.utils';
 	import type { Doc } from '$declarations/satellite/satellite.did';
 
-	export let docKey: string | undefined;
-	export let doc: Doc | undefined;
+	export let docKey: string | undefined = undefined;
+	export let doc: Doc | undefined = undefined;
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 

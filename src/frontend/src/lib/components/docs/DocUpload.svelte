@@ -1,12 +1,19 @@
 <script lang="ts">
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { getContext } from 'svelte';
+	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Value from '$lib/components/ui/Value.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import { nanoid } from 'nanoid';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { authStore } from '$lib/stores/auth.store';
+	import { busy } from '$lib/stores/busy.store';
+	import { setDoc } from '@junobuild/core-peer';
+	import { container } from '$lib/utils/juno.utils';
+	import { fileToDocData } from '$lib/utils/doc.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -24,10 +31,71 @@
 
 	const generateKey = () => (key = nanoid());
 
-	const upload = async ({ detail: file }: CustomEvent<File | undefined>) => {};
+	const dispatch = createEventDispatcher();
+
+	const upload = async ({ detail: file }: CustomEvent<File | undefined>) => {
+		if (isNullish(file)) {
+			// Upload is disabled if not valid
+			toasts.error({
+				text: $i18n.errors.no_file_selected_for_upload
+			});
+			return;
+		}
+
+		if (isNullish(key) || !notEmptyString(key)) {
+			// Upload is disabled if not valid
+			toasts.error({
+				text: $i18n.errors.key_undefined
+			});
+			return;
+		}
+
+		if (isNullish(collection)) {
+			toasts.error({
+				text: $i18n.errors.no_collection_for_upload
+			});
+			return;
+		}
+
+		if (isNullish($authStore.identity)) {
+			toasts.error({
+				text: $i18n.authentication.not_signed_in
+			});
+			return;
+		}
+
+		busy.start();
+
+		try {
+			await setDoc({
+				collection,
+				doc: {
+					key,
+					...(notEmptyString(description) && { description }),
+					data: await fileToDocData(file)
+				},
+				satellite: {
+					satelliteId: satelliteId.toText(),
+					identity: $authStore.identity,
+					...container()
+				}
+			});
+
+			dispatch('junoUploaded');
+
+			close();
+		} catch (err: unknown) {
+			toasts.error({
+				text: $i18n.errors.upload_error,
+				detail: err
+			});
+		}
+
+		busy.stop();
+	};
 </script>
 
-<DataUpload on:junoUpload={upload}>
+<DataUpload on:junoUpload={upload} disabled={!notEmptyString(key)}>
 	<slot name="action" slot="action" />
 	<slot name="title" slot="title" />
 	<slot slot="description" />
@@ -48,7 +116,7 @@
 					on:click={generateKey}
 					aria-label={$i18n.document.key_generate}
 				>
-					<IconAutoRenew />
+					<IconAutoRenew size="20px" />
 				</button>
 			</div>
 		</Value>

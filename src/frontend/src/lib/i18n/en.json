@@ -390,7 +390,8 @@
 		"no_file_selected_for_upload": "No file was selected for the upload.",
 		"upload_error": "Unexpected error(s) while uploading the file.",
 		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload.",
-		"invalid_email": "Please enter a valid email address."
+		"invalid_email": "Please enter a valid email address.",
+		"key_undefined": "A key is mandatory to set a document."
 	},
 	"document": {
 		"owner": "Owner",

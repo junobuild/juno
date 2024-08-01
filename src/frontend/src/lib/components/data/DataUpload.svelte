@@ -7,6 +7,8 @@
 	import { isNullish } from '@dfinity/utils';
 	import Value from '$lib/components/ui/Value.svelte';
 
+	export let disabled = false;
+
 	let visible: boolean | undefined;
 	const close = () => (visible = false);
 
@@ -16,7 +18,7 @@
 		(file = ($event as unknown as { target: EventTarget & HTMLInputElement }).target?.files?.[0]);
 
 	let disableUpload = true;
-	$: disableUpload = isNullish(file) || $isBusy;
+	$: disableUpload = isNullish(file) || $isBusy || disabled;
 
 	const dispatch = createEventDispatcher();
 	const upload = () => dispatch('junoUpload', file);

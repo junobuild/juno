@@ -21,6 +21,7 @@
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { fade } from 'svelte/transition';
 	import DocUpload from '$lib/components/docs/DocUpload.svelte';
+	import { emit } from '$lib/utils/events.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -60,6 +61,11 @@
 
 		resetData();
 	};
+
+	const reload = async () => {
+		emit({ message: 'junoCloseActions' });
+		await load();
+	};
 </script>
 
 <div class="title">
@@ -67,7 +73,7 @@
 		{$i18n.datastore.documents}
 
 		<svelte:fragment slot="actions">
-			<DocUpload>
+			<DocUpload on:junoUploaded={reload}>
 				<svelte:fragment slot="action">{$i18n.document.upload_document}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.document.upload_document}</svelte:fragment>
 				{@html i18nFormat($i18n.document.upload_description, [

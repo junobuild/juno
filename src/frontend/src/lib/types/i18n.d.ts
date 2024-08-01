@@ -407,6 +407,7 @@ interface I18nErrors {
 	upload_error: string;
 	no_collection_for_upload: string;
 	invalid_email: string;
+	key_undefined: string;
 }
 
 interface I18nDocument {

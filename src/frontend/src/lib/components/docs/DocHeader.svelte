@@ -13,7 +13,6 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import DocUpload from '$lib/components/docs/DocUpload.svelte';
-	import IconDelete from "$lib/components/icons/IconDelete.svelte";
 	import IconDownload from "$lib/components/icons/IconDownload.svelte";
 	import {fromArray} from "@junobuild/utils";
 

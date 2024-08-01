@@ -46,6 +46,7 @@ interface I18nCore {
 	refresh: string;
 	reload: string;
 	open_website: string;
+	file: string;
 }
 
 interface I18nCanisters {
@@ -372,6 +373,7 @@ interface I18nErrors {
 	full_path_invalid: string;
 	collection_invalid: string;
 	controller_invalid: string;
+	document_invalid: string;
 	observatory_get_unexpected_error: string;
 	observatory_set_unexpected_error: string;
 	collection_added: string;
@@ -420,6 +422,18 @@ interface I18nDocument {
 	description: string;
 	document_submission_success: string;
 	document_submission_failed: string;
+	create_document: string;
+	replace_document: string;
+	download_document: string;
+	upload_description: string;
+	replace_description: string;
+	upload: string;
+	key: string;
+	key_generate: string;
+	key_placeholder: string;
+	description_placeholder: string;
+	create: string;
+	replace: string;
 }
 
 interface I18nAsset {

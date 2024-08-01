@@ -42,7 +42,8 @@
 		"detach": "Detach",
 		"refresh": "刷新",
 		"reload": "Reload",
-		"open_website": "打开Juno网站以及文档"
+		"open_website": "打开Juno网站以及文档",
+		"file": "File"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -356,6 +357,7 @@
 		"full_path_invalid": "空或者无效的Key (完整路径) .",
 		"collection_invalid": "空或者无效的 文档集 .",
 		"controller_invalid": "空或者无效的 Controller .",
+		"document_invalid": "No document selected.",
 		"observatory_get_unexpected_error": "加载 observatory 数据时出错.",
 		"observatory_set_unexpected_error": "设置 observatory 数据时出错 .",
 		"collection_added": "无法增加文档集 {0} .",
@@ -402,7 +404,19 @@
 		"delete_all": "你将删除该文件集下的所有文档.",
 		"description": "描述",
 		"document_submission_success": "文件已成功提交！",
-		"document_submission_failed": "文件提交失败！"
+		"document_submission_failed": "文件提交失败！",
+		"create_document": "Create a document",
+		"replace_document": "Replace document",
+		"download_document": "Download document",
+		"upload_description": "To create a document to the collection <strong>{0}</strong>, select a JSON file for the data, specify a key, and optionally provide a description. You will be the owner, i.e. the user currently signed into the console.",
+		"replace_description": "To overwrite the document's data in the collection <strong>{0}</strong>, upload a new JSON file.",
+		"upload": "Upload",
+		"key": "Key",
+		"key_generate": "Auto generate key",
+		"key_placeholder": "Enter or generate a key",
+		"description_placeholder": "Enter an optional description",
+		"create": "Create",
+		"replace": "Replace"
 	},
 	"asset": {
 		"owner": "拥有者",

@@ -62,8 +62,7 @@
 
 		const data = await fromArray(doc.data);
 
-		// TODO
-		console.log(data)
+		download()
 	}
 </script>
 

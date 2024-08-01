@@ -1,5 +1,5 @@
 import { formatToDateNumeric } from '$lib/utils/date.utils';
-import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToCSVFile } from '$lib/utils/save.utils';
+import { CSV_PICKER_OPTIONS, filenameTimestamp, saveToFileSystem } from '$lib/utils/save.utils';
 import {
 	transactionAmount,
 	transactionFrom,
@@ -53,7 +53,7 @@ export const exportTransactions = async ({
 
 	const csv = transactionsCsv.map((transaction) => transaction.join(',')).join('\n');
 
-	await saveToCSVFile({
+	await saveToFileSystem({
 		blob: new Blob([csv], {
 			type: 'text/csv'
 		}),

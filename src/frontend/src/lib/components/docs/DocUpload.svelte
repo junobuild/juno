@@ -103,6 +103,9 @@
 
 		busy.stop();
 	};
+
+	let mode: 'create' | 'replace' = 'create';
+	$: mode = nonNullish(doc) && nonNullish(docKey) ? 'replace' : 'create';
 </script>
 
 <DataUpload on:junoUpload={upload} disabled={!notEmptyString(key)}>
@@ -110,7 +113,7 @@
 	<slot name="title" slot="title" />
 	<slot slot="description" />
 
-	{#if isNullish(doc) && isNullish(docKey)}
+	{#if mode === 'create'}
 		<div>
 			<Value ref="doc-key">
 				<svelte:fragment slot="label">{$i18n.document.key}</svelte:fragment>
@@ -146,7 +149,9 @@
 		</div>
 	{/if}
 
-	<svelte:fragment slot="confirm">{$i18n.document.create}</svelte:fragment>
+	<svelte:fragment slot="confirm"
+		>{mode === 'replace' ? $i18n.document.replace : $i18n.document.create}</svelte:fragment
+	>
 </DataUpload>
 
 <style lang="scss">

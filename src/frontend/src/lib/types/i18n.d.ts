@@ -433,6 +433,7 @@ interface I18nDocument {
 	key_placeholder: string;
 	description_placeholder: string;
 	create: string;
+	replace: string;
 }
 
 interface I18nAsset {

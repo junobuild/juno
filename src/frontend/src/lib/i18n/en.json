@@ -415,7 +415,8 @@
 		"key_generate": "Auto generate key",
 		"key_placeholder": "Enter or generate a key",
 		"description_placeholder": "Enter an optional description",
-		"create": "Create"
+		"create": "Create",
+		"replace": "Replace"
 	},
 	"asset": {
 		"owner": "Owner",

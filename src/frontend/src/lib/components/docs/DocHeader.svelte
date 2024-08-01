@@ -11,6 +11,8 @@
 	import { deleteDoc } from '$lib/api/satellites.api';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
 	import { authStore } from '$lib/stores/auth.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import DocUpload from '$lib/components/docs/DocUpload.svelte';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 	const { store: docsStore, resetData }: DataContext<Doc> =
@@ -54,6 +56,17 @@
 		{key ?? ''}
 
 		<svelte:fragment slot="actions">
+			<DocUpload on:junoUploaded={reload} {doc} docKey={key}>
+				<svelte:fragment slot="action">{$i18n.document.replace_document}</svelte:fragment>
+				<svelte:fragment slot="title">{$i18n.document.replace_document}</svelte:fragment>
+				{@html i18nFormat($i18n.document.replace_description, [
+					{
+						placeholder: '{0}',
+						value: collection ?? ''
+					}
+				])}
+			</DocUpload>
+
 			<DataKeyDelete {deleteData}>
 				<svelte:fragment slot="title">{$i18n.document.delete}</svelte:fragment>
 				{key}

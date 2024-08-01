@@ -47,7 +47,7 @@
 			</button>
 
 			<button type="button" on:click|stopPropagation={upload} disabled={disableUpload}>
-				{$i18n.asset.upload}
+				<slot name="confirm" />
 			</button>
 		</div>
 	</div>

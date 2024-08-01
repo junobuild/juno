@@ -74,8 +74,8 @@
 
 		<svelte:fragment slot="actions">
 			<DocUpload on:junoUploaded={reload}>
-				<svelte:fragment slot="action">{$i18n.document.upload_document}</svelte:fragment>
-				<svelte:fragment slot="title">{$i18n.document.upload_document}</svelte:fragment>
+				<svelte:fragment slot="action">{$i18n.document.create_document}</svelte:fragment>
+				<svelte:fragment slot="title">{$i18n.document.create_document}</svelte:fragment>
 				{@html i18nFormat($i18n.document.upload_description, [
 					{
 						placeholder: '{0}',

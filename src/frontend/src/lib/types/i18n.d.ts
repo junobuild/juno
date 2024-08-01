@@ -422,7 +422,7 @@ interface I18nDocument {
 	description: string;
 	document_submission_success: string;
 	document_submission_failed: string;
-	upload_document: string;
+	create_document: string;
 	replace_document: string;
 	upload_description: string;
 	replace_description: string;
@@ -431,6 +431,7 @@ interface I18nDocument {
 	key_generate: string;
 	key_placeholder: string;
 	description_placeholder: string;
+	create: string;
 }
 
 interface I18nDocument_form {

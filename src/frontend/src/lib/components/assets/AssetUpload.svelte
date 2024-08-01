@@ -87,4 +87,5 @@
 	<slot name="action" slot="action" />
 	<slot name="title" slot="title" />
 	<slot slot="description" />
+	<svelte:fragment slot="confirm">{$i18n.asset.upload}</svelte:fragment>
 </DataUpload>

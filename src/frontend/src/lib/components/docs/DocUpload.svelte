@@ -7,7 +7,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import { nanoid } from 'nanoid';
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isNullish, notEmptyString } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -133,6 +133,8 @@
 			/>
 		</Value>
 	</div>
+
+	<svelte:fragment slot="confirm">{$i18n.document.create}</svelte:fragment>
 </DataUpload>
 
 <style lang="scss">

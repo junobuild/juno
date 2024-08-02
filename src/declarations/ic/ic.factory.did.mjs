@@ -266,12 +266,39 @@ export const idlFactory = ({ IDL }) => {
 		amount: IDL.Nat
 	});
 	const raw_rand_result = IDL.Vec(IDL.Nat8);
+	const schnorr_algorithm = IDL.Variant({
+		ed25519: IDL.Null,
+		bip340secp256k1: IDL.Null
+	});
+	const schnorr_public_key_args = IDL.Record({
+		key_id: IDL.Record({
+			algorithm: schnorr_algorithm,
+			name: IDL.Text
+		}),
+		canister_id: IDL.Opt(canister_id),
+		derivation_path: IDL.Vec(IDL.Vec(IDL.Nat8))
+	});
+	const schnorr_public_key_result = IDL.Record({
+		public_key: IDL.Vec(IDL.Nat8),
+		chain_code: IDL.Vec(IDL.Nat8)
+	});
 	const sign_with_ecdsa_args = IDL.Record({
 		key_id: IDL.Record({ name: IDL.Text, curve: ecdsa_curve }),
 		derivation_path: IDL.Vec(IDL.Vec(IDL.Nat8)),
 		message_hash: IDL.Vec(IDL.Nat8)
 	});
 	const sign_with_ecdsa_result = IDL.Record({
+		signature: IDL.Vec(IDL.Nat8)
+	});
+	const sign_with_schnorr_args = IDL.Record({
+		key_id: IDL.Record({
+			algorithm: schnorr_algorithm,
+			name: IDL.Text
+		}),
+		derivation_path: IDL.Vec(IDL.Vec(IDL.Nat8)),
+		message: IDL.Vec(IDL.Nat8)
+	});
+	const sign_with_schnorr_result = IDL.Record({
 		signature: IDL.Vec(IDL.Nat8)
 	});
 	const start_canister_args = IDL.Record({ canister_id: canister_id });
@@ -334,7 +361,9 @@ export const idlFactory = ({ IDL }) => {
 		),
 		provisional_top_up_canister: IDL.Func([provisional_top_up_canister_args], [], []),
 		raw_rand: IDL.Func([], [raw_rand_result], []),
+		schnorr_public_key: IDL.Func([schnorr_public_key_args], [schnorr_public_key_result], []),
 		sign_with_ecdsa: IDL.Func([sign_with_ecdsa_args], [sign_with_ecdsa_result], []),
+		sign_with_schnorr: IDL.Func([sign_with_schnorr_args], [sign_with_schnorr_result], []),
 		start_canister: IDL.Func([start_canister_args], [], []),
 		stop_canister: IDL.Func([stop_canister_args], [], []),
 		stored_chunks: IDL.Func([stored_chunks_args], [stored_chunks_result], []),

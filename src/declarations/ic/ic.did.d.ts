@@ -240,12 +240,30 @@ export interface provisional_top_up_canister_args {
 }
 export type raw_rand_result = Uint8Array | number[];
 export type satoshi = bigint;
+export type schnorr_algorithm = { ed25519: null } | { bip340secp256k1: null };
+export interface schnorr_public_key_args {
+	key_id: { algorithm: schnorr_algorithm; name: string };
+	canister_id: [] | [canister_id];
+	derivation_path: Array<Uint8Array | number[]>;
+}
+export interface schnorr_public_key_result {
+	public_key: Uint8Array | number[];
+	chain_code: Uint8Array | number[];
+}
 export interface sign_with_ecdsa_args {
 	key_id: { name: string; curve: ecdsa_curve };
 	derivation_path: Array<Uint8Array | number[]>;
 	message_hash: Uint8Array | number[];
 }
 export interface sign_with_ecdsa_result {
+	signature: Uint8Array | number[];
+}
+export interface sign_with_schnorr_args {
+	key_id: { algorithm: schnorr_algorithm; name: string };
+	derivation_path: Array<Uint8Array | number[]>;
+	message: Uint8Array | number[];
+}
+export interface sign_with_schnorr_result {
 	signature: Uint8Array | number[];
 }
 export interface start_canister_args {
@@ -312,7 +330,9 @@ export interface _SERVICE {
 	>;
 	provisional_top_up_canister: ActorMethod<[provisional_top_up_canister_args], undefined>;
 	raw_rand: ActorMethod<[], raw_rand_result>;
+	schnorr_public_key: ActorMethod<[schnorr_public_key_args], schnorr_public_key_result>;
 	sign_with_ecdsa: ActorMethod<[sign_with_ecdsa_args], sign_with_ecdsa_result>;
+	sign_with_schnorr: ActorMethod<[sign_with_schnorr_args], sign_with_schnorr_result>;
 	start_canister: ActorMethod<[start_canister_args], undefined>;
 	stop_canister: ActorMethod<[stop_canister_args], undefined>;
 	stored_chunks: ActorMethod<[stored_chunks_args], stored_chunks_result>;

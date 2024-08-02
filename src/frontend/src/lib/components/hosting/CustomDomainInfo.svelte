@@ -9,6 +9,7 @@
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import { fade } from 'svelte/transition';
+	import { keyOf } from '$lib/utils/utils';
 
 	export let info: {
 		customDomain: [string, CustomDomainType] | undefined;
@@ -79,7 +80,9 @@
 			<div class="space" in:fade>
 				<Value>
 					<svelte:fragment slot="label">{$i18n.hosting.status}</svelte:fragment>
-					<span class="capitalize">{displayState}</span>
+					<span class="capitalize"
+						>{keyOf({ obj: $i18n.hosting, key: registrationState.toLowerCase() })}</span
+					>
 				</Value>
 			</div>
 		{/if}

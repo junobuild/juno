@@ -68,8 +68,6 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				version: toNullable()
 			});
 
-			await pic.advanceTime(100);
-
 			return key;
 		};
 
@@ -200,6 +198,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				for (const _ of Array.from({ length: 10 })) {
 					await createDoc();
+					await pic.advanceTime(100);
 				}
 			});
 

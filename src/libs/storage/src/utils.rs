@@ -11,7 +11,7 @@ use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::list::matcher_regex;
+use junobuild_shared::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::state::{Controllers, Timestamp, UserId, Version};
 use regex::Regex;
@@ -43,6 +43,7 @@ pub fn filter_values<'a>(
                 && filter_full_path(&regex_key, asset)
                 && filter_description(&regex_description, asset)
                 && filter_owner(*owner, asset)
+                && filter_timestamps(matcher, *asset)
                 && assert_permission(rule, asset.key.owner, caller, controllers)
             {
                 Some((*key, *asset))

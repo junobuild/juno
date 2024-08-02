@@ -57,26 +57,28 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			hello: 'World'
 		});
 
-		describe('user', async () => {
+		const createDoc = async (): Promise<string> => {
+			const key = nanoid();
+
+			const { set_doc } = actor;
+
+			await set_doc(TEST_COLLECTION, key, {
+				data,
+				description: toNullable(),
+				version: toNullable()
+			});
+
+			await pic.advanceTime(100);
+
+			return key;
+		};
+
+		describe('user (part 1)', async () => {
 			const user = Ed25519KeyIdentity.generate();
 
 			beforeAll(() => {
 				actor.setIdentity(user);
 			});
-
-			const createDoc = async (): Promise<string> => {
-				const key = nanoid();
-
-				const { set_doc } = actor;
-
-				await set_doc(TEST_COLLECTION, key, {
-					data,
-					description: toNullable(),
-					version: toNullable()
-				});
-
-				return key;
-			};
 
 			it('should set few documents', async () => {
 				const keys = await Promise.all(Array.from({ length: 10 }).map(createDoc));
@@ -139,7 +141,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				expect(updatedDoc.updated_at).toBeGreaterThan(doc!.updated_at);
 			});
 
-			it('should not update a document if no timestamp', async () => {
+			it('should not update a document if no version', async () => {
 				const key = await createDoc();
 
 				const { get_doc, set_doc } = actor;
@@ -156,7 +158,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				).rejects.toThrow(NO_VERSION_ERROR_MSG);
 			});
 
-			it('should not update a document if invalid timestamp', async () => {
+			it('should not update a document if invalid version', async () => {
 				const key = await createDoc();
 
 				const { get_doc, set_doc } = actor;
@@ -171,6 +173,45 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 						version: [123n]
 					})
 				).rejects.toThrowError(new RegExp(INVALID_VERSION_ERROR_MSG, 'i'));
+			});
+		});
+
+		describe('controller', () => {
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+			});
+
+			it('should delete all documents', async () => {
+				const { del_docs, count_docs } = actor;
+
+				await del_docs(TEST_COLLECTION);
+
+				const count = await count_docs(TEST_COLLECTION);
+
+				expect(count).toBe(0n);
+			});
+		});
+
+		describe('user (part 2)', async () => {
+			const user = Ed25519KeyIdentity.generate();
+
+			beforeAll(() => {
+				actor.setIdentity(user);
+			});
+
+			it('should list documents according timestamps', async () => {
+				const keys = await Promise.all(Array.from({ length: 10 }).map(createDoc));
+
+				const { list_docs } = actor;
+
+				const { items_length } = await list_docs(TEST_COLLECTION, {
+					matcher: toNullable(),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				});
+
+				expect(items_length).toBe(10n);
 			});
 		});
 

@@ -2,7 +2,7 @@ import service "satellite_extension.did";
 
 type AssetEncodingNoContent = record {
   modified : nat64;
-  sha256 : vec nat8;
+  sha256 : blob;
   total_length : nat;
 };
 type AssetKey = record {
@@ -48,12 +48,13 @@ type CustomDomain = record {
   bn_id : opt text;
 };
 type DelDoc = record { version : opt nat64 };
+type DelRule = record { version : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
 type Doc = record {
   updated_at : nat64;
   owner : principal;
-  data : vec nat8;
+  data : blob;
   description : opt text;
   created_at : nat64;
   version : opt nat64;
@@ -61,12 +62,12 @@ type Doc = record {
 type HttpRequest = record {
   url : text;
   method : text;
-  body : vec nat8;
+  body : blob;
   headers : vec record { text; text };
   certificate_version : opt nat16;
 };
 type HttpResponse = record {
-  body : vec nat8;
+  body : blob;
   headers : vec record { text; text };
   streaming_strategy : opt StreamingStrategy;
   status_code : nat16;
@@ -80,7 +81,12 @@ type InitAssetKey = record {
   full_path : text;
 };
 type InitUploadResult = record { batch_id : nat };
-type ListMatcher = record { key : opt text; description : opt text };
+type ListMatcher = record {
+  key : opt text;
+  updated_at : opt TimestampMatcher;
+  description : opt text;
+  created_at : opt TimestampMatcher;
+};
 type ListOrder = record { field : ListOrderField; desc : bool };
 type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
 type ListPaginate = record { start_after : opt text; limit : opt nat64 };
@@ -129,7 +135,7 @@ type SetControllersArgs = record {
   controllers : vec principal;
 };
 type SetDoc = record {
-  data : vec nat8;
+  data : blob;
   description : opt text;
   version : opt nat64;
 };
@@ -154,12 +160,12 @@ type StorageConfigRawAccess = variant { Deny; Allow };
 type StorageConfigRedirect = record { status_code : nat16; location : text };
 type StreamingCallbackHttpResponse = record {
   token : opt StreamingCallbackToken;
-  body : vec nat8;
+  body : blob;
 };
 type StreamingCallbackToken = record {
   memory : Memory;
   token : opt text;
-  sha256 : opt vec nat8;
+  sha256 : opt blob;
   headers : vec record { text; text };
   index : nat64;
   encoding_type : text;
@@ -171,8 +177,14 @@ type StreamingStrategy = variant {
     callback : func () -> () query;
   };
 };
+type TimestampMatcher = variant {
+  Equal : nat64;
+  Between : record { nat64; nat64 };
+  GreaterThan : nat64;
+  LessThan : nat64;
+};
 type UploadChunk = record {
-  content : vec nat8;
+  content : blob;
   batch_id : nat;
   order_id : opt nat;
 };
@@ -191,7 +203,7 @@ service : () -> {
   del_docs : (text) -> ();
   del_many_assets : (vec record { text; text }) -> ();
   del_many_docs : (vec record { text; text; DelDoc }) -> ();
-  del_rule : (RulesType, text, DelDoc) -> ();
+  del_rule : (RulesType, text, DelRule) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
   get_asset : (text, text) -> (opt AssetNoContent) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;

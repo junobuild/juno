@@ -64,7 +64,12 @@ type InitAssetKey = record {
   full_path : text;
 };
 type InitUploadResult = record { batch_id : nat };
-type ListMatcher = record { key : opt text; description : opt text };
+type ListMatcher = record {
+  key : opt text;
+  updated_at : opt TimestampMatcher;
+  description : opt text;
+  created_at : opt TimestampMatcher;
+};
 type ListOrder = record { field : ListOrderField; desc : bool };
 type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
 type ListPaginate = record { start_after : opt text; limit : opt nat64 };
@@ -164,6 +169,12 @@ type StreamingStrategy = variant {
     token : StreamingCallbackToken;
     callback : func () -> () query;
   };
+};
+type TimestampMatcher = variant {
+  Equal : nat64;
+  Between : record { nat64; nat64 };
+  GreaterThan : nat64;
+  LessThan : nat64;
 };
 type Tokens = record { e8s : nat64 };
 type UploadChunk = record {

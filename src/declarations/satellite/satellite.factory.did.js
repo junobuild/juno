@@ -21,6 +21,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const DelDoc = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
 	const RulesType = IDL.Variant({ Db: IDL.Null, Storage: IDL.Null });
+	const DelRule = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
@@ -129,9 +130,17 @@ export const idlFactory = ({ IDL }) => {
 		CreatedAt: IDL.Null
 	});
 	const ListOrder = IDL.Record({ field: ListOrderField, desc: IDL.Bool });
+	const TimestampMatcher = IDL.Variant({
+		Equal: IDL.Nat64,
+		Between: IDL.Tuple(IDL.Nat64, IDL.Nat64),
+		GreaterThan: IDL.Nat64,
+		LessThan: IDL.Nat64
+	});
 	const ListMatcher = IDL.Record({
 		key: IDL.Opt(IDL.Text),
-		description: IDL.Opt(IDL.Text)
+		updated_at: IDL.Opt(TimestampMatcher),
+		description: IDL.Opt(IDL.Text),
+		created_at: IDL.Opt(TimestampMatcher)
 	});
 	const ListPaginate = IDL.Record({
 		start_after: IDL.Opt(IDL.Text),
@@ -227,7 +236,7 @@ export const idlFactory = ({ IDL }) => {
 		del_docs: IDL.Func([IDL.Text], [], []),
 		del_many_assets: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		del_many_docs: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, DelDoc))], [], []),
-		del_rule: IDL.Func([RulesType, IDL.Text, DelDoc], [], []),
+		del_rule: IDL.Func([RulesType, IDL.Text, DelRule], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_asset: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(AssetNoContent)], ['query']),
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),

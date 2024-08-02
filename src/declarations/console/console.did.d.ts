@@ -88,7 +88,9 @@ export interface InitUploadResult {
 }
 export interface ListMatcher {
 	key: [] | [string];
+	updated_at: [] | [TimestampMatcher];
 	description: [] | [string];
+	created_at: [] | [TimestampMatcher];
 }
 export interface ListOrder {
 	field: ListOrderField;
@@ -200,6 +202,11 @@ export type StreamingStrategy = {
 		callback: [Principal, string];
 	};
 };
+export type TimestampMatcher =
+	| { Equal: bigint }
+	| { Between: [bigint, bigint] }
+	| { GreaterThan: bigint }
+	| { LessThan: bigint };
 export interface Tokens {
 	e8s: bigint;
 }

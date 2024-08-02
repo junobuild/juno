@@ -200,18 +200,71 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 
 			it('should list documents according timestamps', async () => {
-				const keys = await Promise.all(Array.from({ length: 10 }).map(createDoc));
+				for (const _ of Array.from({ length: 10 })) {
+					await createDoc();
+				}
 
 				const { list_docs } = actor;
 
-				const { items_length } = await list_docs(TEST_COLLECTION, {
+				const { items_length, items } = await list_docs(TEST_COLLECTION, {
 					matcher: toNullable(),
-					order: toNullable(),
+					order: toNullable({
+						desc: false,
+						field: { CreatedAt: null }
+					}),
 					owner: toNullable(),
 					paginate: toNullable()
 				});
 
 				expect(items_length).toBe(10n);
+
+				const { items_length: items_length_from } = await list_docs(TEST_COLLECTION, {
+					matcher: toNullable({
+						key: toNullable(),
+						description: toNullable(),
+						created_at: toNullable({
+							GreaterThan: items[4][1].created_at
+						}),
+						updated_at: toNullable()
+					}),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				});
+
+				expect(items_length_from).toBe(5n);
+
+				const { items_length: items_length_to } = await list_docs(TEST_COLLECTION, {
+					matcher: toNullable({
+						key: toNullable(),
+						description: toNullable(),
+						created_at: toNullable({
+							LessThan: items[4][1].created_at
+						}),
+						updated_at: toNullable()
+					}),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				});
+
+				expect(items_length_to).toBe(4n);
+
+				const { items_length: items_length_between } = await list_docs(TEST_COLLECTION, {
+					matcher: toNullable({
+						key: toNullable(),
+						description: toNullable(),
+						created_at: toNullable({
+							Between: [items[4][1].created_at, items[8][1].created_at]
+						}),
+						updated_at: toNullable()
+					}),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				});
+
+				expect(items_length_between).toBe(5n);
 			});
 		});
 

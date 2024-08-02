@@ -22,6 +22,8 @@ pub mod state {
     pub type Version = u64;
 
     pub trait Timestamped {
+        fn created_at(&self) -> Timestamp;
+        fn updated_at(&self) -> Timestamp;
         fn cmp_updated_at(&self, other: &Self) -> Ordering;
         fn cmp_created_at(&self, other: &Self) -> Ordering;
     }
@@ -270,8 +272,6 @@ pub mod memory {
 }
 
 pub mod core {
-    use std::cmp::Ordering;
-
     /// Represents a unique identifier or key.
     ///
     /// This type, `Key`, is an alias for `String`, used to represent unique identifiers or keys within the context
@@ -312,7 +312,7 @@ pub mod core {
 
 pub mod list {
     use crate::types::core::Key;
-    use crate::types::state::UserId;
+    use crate::types::state::{Timestamp, UserId};
     use candid::CandidType;
     use serde::Deserialize;
 
@@ -336,10 +336,20 @@ pub mod list {
         pub field: ListOrderField,
     }
 
+    #[derive(CandidType, Deserialize, Clone)]
+    pub enum TimestampMatcher {
+        Equal(Timestamp),
+        GreaterThan(Timestamp),
+        LessThan(Timestamp),
+        Between(Timestamp, Timestamp),
+    }
+
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ListMatcher {
         pub key: Option<Key>,
         pub description: Option<String>,
+        pub created_at: Option<TimestampMatcher>,
+        pub updated_at: Option<TimestampMatcher>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]

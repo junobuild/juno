@@ -702,15 +702,15 @@ describe('Satellite storage', () => {
 				const SVG =
 					'<svg height="100" width="100"><circle r="45" cx="50" cy="50" fill="red" /></svg>';
 
-				const uploadCustomAsset = async () => {
+				const uploadCustomAsset = async (name: string = 'hello.svg') => {
 					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
 					const file = await init_asset_upload({
 						collection,
 						description: toNullable(),
 						encoding_type: [],
-						full_path: `/${collection}/hello.svg`,
-						name: 'hello.svg',
+						full_path: `/${collection}/${name}`,
+						name,
 						token: toNullable()
 					});
 
@@ -761,6 +761,157 @@ describe('Satellite storage', () => {
 					expect(assetUpdated).not.toBeUndefined();
 					expect(assetUpdated?.key.owner.toText()).not.toBeUndefined();
 					expect(assetUpdated?.key.owner.toText()).toEqual(user.getPrincipal().toText());
+				});
+
+				it('should delete asset', async () => {
+					actor.setIdentity(user);
+
+					const { get_asset, del_asset } = actor;
+
+					await del_asset(collection, `/${collection}/hello.svg`);
+
+					const assetDeleted = fromNullable(
+						await get_asset(collection, `/${collection}/hello.svg`)
+					);
+
+					expect(assetDeleted).toBeUndefined();
+				});
+
+				describe('list', () => {
+					beforeAll(async () => {
+						for (const i of Array.from({ length: 10 }).map((_, i) => i)) {
+							await uploadCustomAsset(`hello-${i}.svg`);
+							await pic.advanceTime(100);
+						}
+					});
+
+					it('should list assets according created_at timestamps', async () => {
+						const { list_assets } = actor;
+
+						const { items_length, items } = await list_assets(collection, {
+							matcher: toNullable(),
+							order: toNullable({
+								desc: false,
+								field: { CreatedAt: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						});
+
+						expect(items_length).toBe(10n);
+
+						const { items_length: items_length_from } = await list_assets(collection, {
+							matcher: toNullable({
+								key: toNullable(),
+								description: toNullable(),
+								created_at: toNullable({
+									GreaterThan: items[4][1].created_at
+								}),
+								updated_at: toNullable()
+							}),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						});
+
+						expect(items_length_from).toBe(5n);
+
+						const { items_length: items_length_to } = await list_assets(collection, {
+							matcher: toNullable({
+								key: toNullable(),
+								description: toNullable(),
+								created_at: toNullable({
+									LessThan: items[4][1].created_at
+								}),
+								updated_at: toNullable()
+							}),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						});
+
+						expect(items_length_to).toBe(4n);
+
+						const { items_length: items_length_between } = await list_assets(collection, {
+							matcher: toNullable({
+								key: toNullable(),
+								description: toNullable(),
+								created_at: toNullable({
+									Between: [items[4][1].created_at, items[8][1].created_at]
+								}),
+								updated_at: toNullable()
+							}),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						});
+
+						expect(items_length_between).toBe(5n);
+					});
+
+					it('should list assets according updated_at timestamps', async () => {
+						const { list_assets } = actor;
+
+						const { items_length, items } = await list_assets(collection, {
+							matcher: toNullable(),
+							order: toNullable({
+								desc: false,
+								field: { UpdatedAt: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						});
+
+						expect(items_length).toBe(10n);
+
+						const { items_length: items_length_from } = await list_assets(collection, {
+							matcher: toNullable({
+								key: toNullable(),
+								description: toNullable(),
+								updated_at: toNullable({
+									GreaterThan: items[4][1].created_at
+								}),
+								created_at: toNullable()
+							}),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						});
+
+						expect(items_length_from).toBe(5n);
+
+						const { items_length: items_length_to } = await list_assets(collection, {
+							matcher: toNullable({
+								key: toNullable(),
+								description: toNullable(),
+								updated_at: toNullable({
+									LessThan: items[4][1].created_at
+								}),
+								created_at: toNullable()
+							}),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						});
+
+						expect(items_length_to).toBe(4n);
+
+						const { items_length: items_length_between } = await list_assets(collection, {
+							matcher: toNullable({
+								key: toNullable(),
+								description: toNullable(),
+								updated_at: toNullable({
+									Between: [items[4][1].created_at, items[8][1].created_at]
+								}),
+								created_at: toNullable()
+							}),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						});
+
+						expect(items_length_between).toBe(5n);
+					});
 				});
 			}
 		);

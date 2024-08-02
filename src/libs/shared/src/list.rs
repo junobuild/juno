@@ -1,7 +1,8 @@
 use crate::types::core::Key;
 use crate::types::list::{
-    ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults,
+    ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults, TimestampMatcher,
 };
+use crate::types::state::Timestamp;
 use crate::types::state::Timestamped;
 use regex::Regex;
 
@@ -204,4 +205,31 @@ pub fn matcher_regex(matcher: &Option<ListMatcher>) -> (Option<Regex>, Option<Re
     };
 
     (regex_key, regex_description)
+}
+
+pub fn filter_timestamps<T: Timestamped>(matcher: &Option<ListMatcher>, item: &T) -> bool {
+    if let Some(matcher) = matcher {
+        if let Some(ref created_at_filter) = matcher.created_at {
+            if !match_timestamp(item.created_at(), created_at_filter) {
+                return false;
+            }
+        }
+
+        if let Some(ref updated_at_filter) = matcher.updated_at {
+            if !match_timestamp(item.updated_at(), updated_at_filter) {
+                return false;
+            }
+        }
+    }
+
+    true
+}
+
+fn match_timestamp(timestamp: Timestamp, filter: &TimestampMatcher) -> bool {
+    match filter {
+        TimestampMatcher::Equal(ts) => timestamp == *ts,
+        TimestampMatcher::GreaterThan(ts) => timestamp > *ts,
+        TimestampMatcher::LessThan(ts) => timestamp < *ts,
+        TimestampMatcher::Between(start, end) => timestamp >= *start && timestamp <= *end,
+    }
 }

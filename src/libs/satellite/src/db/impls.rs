@@ -12,6 +12,14 @@ use std::borrow::Cow;
 use std::cmp::Ordering;
 
 impl Timestamped for Doc {
+    fn created_at(&self) -> Timestamp {
+        self.created_at
+    }
+
+    fn updated_at(&self) -> Timestamp {
+        self.updated_at
+    }
+
     fn cmp_updated_at(&self, other: &Self) -> Ordering {
         self.updated_at.cmp(&other.updated_at)
     }

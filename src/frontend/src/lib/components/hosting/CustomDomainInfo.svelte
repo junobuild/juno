@@ -7,18 +7,20 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
+	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import { fade } from 'svelte/transition';
 
 	export let info: {
 		customDomain: [string, CustomDomainType] | undefined;
-		displayState: string | undefined | null;
+		registrationState: CustomDomainRegistrationState | null | undefined;
 		mainDomain: boolean;
 	};
 
 	let customDomain: [string, CustomDomainType] | undefined;
-	let displayState: string | undefined | null;
+	let registrationState: CustomDomainRegistrationState | null | undefined;
 	let mainDomain: boolean;
 
-	$: ({ customDomain, displayState, mainDomain } = info);
+	$: ({ customDomain, registrationState, mainDomain } = info);
 
 	let visible = true;
 
@@ -34,15 +36,18 @@
 	};
 
 	let bnId: string | undefined;
-	$: bnId = 'sdalkdsaklmasdlkmaslkmasldkmslakmlkdsm'; // fromNullable(customDomain?.[1].bn_id ?? []);
+	$: bnId = fromNullable(customDomain?.[1].bn_id ?? []);
 
 	$: visible, onVisible();
 </script>
 
+<svelte:window
+	on:junoRegistrationState={({ detail: { registrationState: state } }) =>
+		(registrationState = state)}
+/>
+
 <Popover bind:visible center={true} backdrop="dark">
 	<div class="content">
-		<h3>{$i18n.hosting.custom_domain}</h3>
-
 		{#if nonNullish(customDomain)}
 			<div class="space">
 				<Value>
@@ -70,8 +75,8 @@
 			</div>
 		{/if}
 
-		{#if nonNullish(displayState)}
-			<div class="space">
+		{#if nonNullish(registrationState)}
+			<div class="space" in:fade>
 				<Value>
 					<svelte:fragment slot="label">{$i18n.hosting.status}</svelte:fragment>
 					<span class="capitalize">{displayState}</span>
@@ -88,10 +93,6 @@
 <style lang="scss">
 	.content {
 		padding: var(--padding-2x);
-	}
-
-	h3 {
-		margin-bottom: var(--padding-2x);
 	}
 
 	.space {

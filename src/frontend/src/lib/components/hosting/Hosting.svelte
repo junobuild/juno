@@ -16,6 +16,7 @@
 	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
 	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
 	import { nonNullish } from '@dfinity/utils';
+	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 
 	export let satellite: Satellite;
 
@@ -43,7 +44,7 @@
 
 	type SelectedCustomDomain = {
 		customDomain: [string, CustomDomainType] | undefined;
-		displayState: string | undefined | null;
+		registrationState: CustomDomainRegistrationState | null | undefined;
 		mainDomain: boolean;
 	};
 

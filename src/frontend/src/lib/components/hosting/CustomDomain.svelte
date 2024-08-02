@@ -17,6 +17,7 @@
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let url: string;
 	export let ariaLabel = '';
@@ -55,6 +56,8 @@
 		if (registrationState === 'Available') {
 			worker?.stopCustomDomainRegistrationTimer();
 		}
+
+		emit({ message: 'junoRegistrationState', detail: { registrationState } });
 	};
 
 	const loadRegistrationState = async () => {
@@ -92,7 +95,7 @@
 	const displayInfo = () =>
 		dispatch('junoDisplayInfo', {
 			customDomain,
-			displayState,
+			registrationState,
 			mainDomain
 		});
 </script>

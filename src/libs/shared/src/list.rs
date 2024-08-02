@@ -1,8 +1,8 @@
-use crate::types::core::Compare;
 use crate::types::core::Key;
 use crate::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults,
 };
+use crate::types::state::Compare;
 use regex::Regex;
 
 pub fn list_values<'a, T: Clone + Compare>(

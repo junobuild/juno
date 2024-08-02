@@ -3,6 +3,7 @@ pub mod state {
     use candid::{CandidType, Nat};
     use ic_cdk::api::management_canister::main::CanisterStatusType;
     use serde::{Deserialize, Serialize};
+    use std::cmp::Ordering;
     use std::collections::HashMap;
 
     pub type UserId = Principal;
@@ -19,6 +20,11 @@ pub mod state {
     pub type Timestamp = u64;
 
     pub type Version = u64;
+
+    pub trait Compare {
+        fn cmp_updated_at(&self, other: &Self) -> Ordering;
+        fn cmp_created_at(&self, other: &Self) -> Ordering;
+    }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Controller {
@@ -295,11 +301,6 @@ pub mod core {
     /// let main_domain: DomainName = "example.com".to_string();
     /// ```
     pub type DomainName = String;
-
-    pub trait Compare {
-        fn cmp_updated_at(&self, other: &Self) -> Ordering;
-        fn cmp_created_at(&self, other: &Self) -> Ordering;
-    }
 
     /// Sha256 Digest: 32 bytes
     pub type Hash = [u8; 32];

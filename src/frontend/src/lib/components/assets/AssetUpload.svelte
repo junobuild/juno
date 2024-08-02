@@ -3,7 +3,7 @@
 	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { busy, isBusy } from '$lib/stores/busy.store';
+	import { busy } from '$lib/stores/busy.store';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { uploadFile } from '@junobuild/core-peer';
@@ -15,9 +15,6 @@
 	export let asset: AssetNoContent | undefined = undefined;
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
-
-	let visible: boolean | undefined;
-	const close = () => (visible = false);
 
 	let collection: string | undefined;
 	$: collection = $store.rule?.[0];

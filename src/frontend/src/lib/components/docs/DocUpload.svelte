@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { createEventDispatcher, getContext, onMount } from 'svelte';
+	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -20,9 +20,6 @@
 	export let doc: Doc | undefined = undefined;
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
-
-	let visible: boolean | undefined;
-	const close = () => (visible = false);
 
 	let collection: string | undefined;
 	$: collection = $store.rule?.[0];

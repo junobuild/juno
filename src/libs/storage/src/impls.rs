@@ -14,7 +14,7 @@ use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::{Memory, Rule, Rules};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::{Blob, Hash, Hashable};
-use junobuild_shared::types::state::Compare;
+use junobuild_shared::types::state::Timestamped;
 use junobuild_shared::types::state::Timestamp;
 use sha2::{Digest, Sha256};
 use std::borrow::Cow;
@@ -103,7 +103,7 @@ impl StorageConfig {
     }
 }
 
-impl Compare for AssetNoContent {
+impl Timestamped for AssetNoContent {
     fn cmp_updated_at(&self, other: &Self) -> Ordering {
         self.updated_at.cmp(&other.updated_at)
     }
@@ -152,7 +152,7 @@ impl Storable for Asset {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl Compare for Asset {
+impl Timestamped for Asset {
     fn cmp_updated_at(&self, other: &Self) -> Ordering {
         self.updated_at.cmp(&other.updated_at)
     }

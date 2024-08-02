@@ -2,10 +2,10 @@ use crate::types::core::Key;
 use crate::types::list::{
     ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults,
 };
-use crate::types::state::Compare;
+use crate::types::state::Timestamped;
 use regex::Regex;
 
-pub fn list_values<'a, T: Clone + Compare>(
+pub fn list_values<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     filters: &'a ListParams,
 ) -> ListResults<T> {
@@ -45,7 +45,7 @@ fn total_pages(matches_length: usize, filters: &ListParams) -> Option<usize> {
     }
 }
 
-fn start_at<T: Clone + Compare>(matches: &[(&Key, &T)], filters: &ListParams) -> Option<usize> {
+fn start_at<T: Clone + Timestamped>(matches: &[(&Key, &T)], filters: &ListParams) -> Option<usize> {
     match filters.clone().paginate {
         None => None,
         Some(paginate) => match paginate.start_after {
@@ -60,7 +60,7 @@ fn start_at<T: Clone + Compare>(matches: &[(&Key, &T)], filters: &ListParams) ->
     }
 }
 
-fn order_values<'a, T: Clone + Compare>(
+fn order_values<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     ListParams {
         matcher: _,
@@ -79,7 +79,7 @@ fn order_values<'a, T: Clone + Compare>(
     }
 }
 
-fn order_values_with_updated_at<'a, T: Clone + Compare>(
+fn order_values_with_updated_at<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     desc: &bool,
 ) -> Vec<(&'a Key, &'a T)> {
@@ -94,7 +94,7 @@ fn order_values_with_updated_at<'a, T: Clone + Compare>(
     sorted_matches
 }
 
-fn order_values_with_created_at<'a, T: Clone + Compare>(
+fn order_values_with_created_at<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     desc: &bool,
 ) -> Vec<(&'a Key, &'a T)> {
@@ -109,7 +109,7 @@ fn order_values_with_created_at<'a, T: Clone + Compare>(
     sorted_matches
 }
 
-fn order_values_with_keys<'a, T: Clone + Compare>(
+fn order_values_with_keys<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     desc: &bool,
 ) -> Vec<(&'a Key, &'a T)> {
@@ -124,7 +124,7 @@ fn order_values_with_keys<'a, T: Clone + Compare>(
     sorted_matches
 }
 
-fn paginate_values<T: Clone + Compare>(
+fn paginate_values<T: Clone + Timestamped>(
     matches: Vec<(&Key, &T)>,
     ListParams {
         matcher: _,

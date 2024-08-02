@@ -21,7 +21,7 @@ pub mod state {
 
     pub type Version = u64;
 
-    pub trait Compare {
+    pub trait Timestamped {
         fn cmp_updated_at(&self, other: &Self) -> Ordering;
         fn cmp_created_at(&self, other: &Self) -> Ordering;
     }

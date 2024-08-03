@@ -29,7 +29,7 @@ pub mod state {
         pub content_chunks: ContentChunksStable,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct HeapState {
         pub controllers: Controllers,
         pub db: DbHeapState,

@@ -21,7 +21,7 @@ pub mod state {
         pub key: Key,
     }
 
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct DbHeapState {
         pub db: DbHeap,
         pub rules: Rules,

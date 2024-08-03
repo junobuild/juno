@@ -1,7 +1,7 @@
 use crate::auth::store::{
     get_config as get_authentication_config, set_config as set_authentication_config,
 };
-use crate::auth::types::state::AuthenticationConfig;
+use crate::auth::types::config::AuthenticationConfig;
 use crate::controllers::store::get_admin_controllers;
 use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,

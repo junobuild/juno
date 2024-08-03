@@ -15,7 +15,7 @@ mod storage;
 mod types;
 mod version;
 
-use crate::auth::types::state::AuthenticationConfig;
+use crate::auth::types::config::AuthenticationConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::types::interface::{Config, RulesType};
 use crate::version::SATELLITE_VERSION;

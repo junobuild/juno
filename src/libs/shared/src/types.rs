@@ -96,6 +96,7 @@ pub mod interface {
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
+    use crate::types::core::Bytes;
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateCanisterArgs {
@@ -155,8 +156,6 @@ pub mod interface {
         pub destination_id: Principal,
         pub cycles: u128,
     }
-
-    pub type Bytes = usize;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct MemorySize {
@@ -298,12 +297,15 @@ pub mod core {
     /// Basic usage:
     ///
     /// ```
-    /// let main_domain: DomainName = "example.com".to_string();
+    /// let main_domain: junobuild_shared::types::core::DomainName = "example.com".to_string();
     /// ```
     pub type DomainName = String;
 
     /// Sha256 Digest: 32 bytes
     pub type Hash = [u8; 32];
+
+    /// A shorthand for example to represents the type of the memory size in bytes.
+    pub type Bytes = usize;
 
     pub trait Hashable {
         fn hash(&self) -> Hash;

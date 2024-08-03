@@ -96,7 +96,6 @@ pub mod interface {
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
-    use crate::types::core::Bytes;
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateCanisterArgs {
@@ -155,12 +154,6 @@ pub mod interface {
     pub struct DepositCyclesArgs {
         pub destination_id: Principal,
         pub cycles: u128,
-    }
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct MemorySize {
-        pub heap: Bytes,
-        pub stable: Bytes,
     }
 }
 
@@ -264,10 +257,18 @@ pub mod utils {
 }
 
 pub mod memory {
+    use crate::types::core::Bytes;
+    use candid::{CandidType, Deserialize};
     use ic_stable_structures::memory_manager::VirtualMemory;
     use ic_stable_structures::DefaultMemoryImpl;
 
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct MemorySize {
+        pub heap: Bytes,
+        pub stable: Bytes,
+    }
 }
 
 pub mod core {
@@ -304,12 +305,12 @@ pub mod core {
     /// Sha256 Digest: 32 bytes
     pub type Hash = [u8; 32];
 
-    /// A shorthand for example to represents the type of the memory size in bytes.
-    pub type Bytes = usize;
-
     pub trait Hashable {
         fn hash(&self) -> Hash;
     }
+
+    /// A shorthand for example to represents the type of the memory size in bytes.
+    pub type Bytes = usize;
 }
 
 pub mod list {

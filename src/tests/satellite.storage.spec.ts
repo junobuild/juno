@@ -333,7 +333,7 @@ describe('Satellite storage', () => {
 				});
 
 				it('should deploy asset', async () => {
-					const { http_request, memory_size } = actor;
+					const { http_request } = actor;
 
 					const name = 'hello.html';
 					const full_path = `/${collection}/${name}`;
@@ -973,7 +973,7 @@ describe('Satellite storage', () => {
 			};
 
 			beforeAll(async () => {
-				const { set_config, memory_size } = actor;
+				const { set_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [['*', [['Cache-Control', 'no-cache']]]],
@@ -1026,7 +1026,7 @@ describe('Satellite storage', () => {
 				});
 
 				it('should not allow to commit a batch', async () => {
-					const { commit_asset_upload, memory_size } = actor;
+					const { commit_asset_upload } = actor;
 
 					await expect(
 						commit_asset_upload({

@@ -250,6 +250,37 @@ describe('Satellite storage', () => {
 			({ memory }) => {
 				const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
 
+				const HTML = '<html><body>Hello</body></html>';
+
+				const upload = async ({ full_path, name }: { full_path: string; name: string }) => {
+					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+
+					const blob = new Blob([HTML], {
+						type: 'text/plain; charset=utf-8'
+					});
+
+					const file = await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path,
+						name,
+						token: toNullable()
+					});
+
+					const chunk = await upload_asset_chunk({
+						batch_id: file.batch_id,
+						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+						order_id: [0n]
+					});
+
+					await commit_asset_upload({
+						batch_id: file.batch_id,
+						chunk_ids: [chunk.chunk_id],
+						headers: []
+					});
+				};
+
 				it('should create a collection', async () => {
 					const { set_rule, list_rules } = actor;
 
@@ -303,32 +334,10 @@ describe('Satellite storage', () => {
 					const { http_request, commit_asset_upload, upload_asset_chunk, init_asset_upload } =
 						actor;
 
-					const file = await init_asset_upload({
-						collection,
-						description: toNullable(),
-						encoding_type: [],
-						full_path: `/${collection}/hello.html`,
-						name: 'hello.html',
-						token: toNullable()
-					});
+					const name = 'hello.html';
+					const full_path = `/${collection}/${name}`;
 
-					const HTML = '<html><body>Hello</body></html>';
-
-					const blob = new Blob([HTML], {
-						type: 'text/plain; charset=utf-8'
-					});
-
-					const chunk = await upload_asset_chunk({
-						batch_id: file.batch_id,
-						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-						order_id: [0n]
-					});
-
-					await commit_asset_upload({
-						batch_id: file.batch_id,
-						chunk_ids: [chunk.chunk_id],
-						headers: []
-					});
+					await upload({ full_path, name });
 
 					const { headers, body } = await http_request({
 						body: [],
@@ -377,45 +386,17 @@ describe('Satellite storage', () => {
 				it('should increment version of asset on update', async () => {
 					const { get_asset, commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
-					const full_path = `/${collection}/update.html`;
+					const name = 'update.html';
+					const full_path = `/${collection}/${name}`;
 
-					const HTML = '<html><body>Hello</body></html>';
-
-					const blob = new Blob([HTML], {
-						type: 'text/plain; charset=utf-8'
-					});
-
-					const upload = async () => {
-						const file = await init_asset_upload({
-							collection,
-							description: toNullable(),
-							encoding_type: [],
-							full_path,
-							name: 'update.html',
-							token: toNullable()
-						});
-
-						const chunk = await upload_asset_chunk({
-							batch_id: file.batch_id,
-							content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-							order_id: [0n]
-						});
-
-						await commit_asset_upload({
-							batch_id: file.batch_id,
-							chunk_ids: [chunk.chunk_id],
-							headers: []
-						});
-					};
-
-					await upload();
+					await upload({ full_path, name });
 
 					const asset = fromNullable(await get_asset(collection, full_path));
 
 					expect(asset).not.toBeUndefined();
 					expect(fromNullable(asset!.version) ?? 0n).toEqual(1n);
 
-					await upload();
+					await upload({ full_path, name });
 
 					const updatedAsset = fromNullable(await get_asset(collection, full_path));
 

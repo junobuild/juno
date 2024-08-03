@@ -31,6 +31,7 @@ type CommitBatch = record {
 };
 type CommitProposal = record { sha256 : blob; proposal_id : nat };
 type Config = record { storage : StorageConfig };
+type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type ControllerScope = variant { Write; Admin };
 type CreateCanisterArgs = record { block_index : opt nat64; user : principal };
 type CustomDomain = record {
@@ -145,14 +146,13 @@ type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
   headers : vec record { text; vec record { text; text } };
-  max_memory_size : opt StorageMaxMemorySize;
+  max_memory_size : opt ConfigMaxMemorySize;
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
 };
 type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
 type StorageConfigRawAccess = variant { Deny; Allow };
 type StorageConfigRedirect = record { status_code : nat16; location : text };
-type StorageMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type StreamingCallbackHttpResponse = record {
   token : opt StreamingCallbackToken;
   body : blob;

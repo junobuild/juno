@@ -30,7 +30,12 @@ type CommitBatch = record {
   headers : vec record { text; text };
   chunk_ids : vec nat;
 };
-type Config = record { storage : StorageConfig };
+type Config = record {
+  db : opt DbConfig;
+  authentication : opt AuthenticationConfig;
+  storage : StorageConfig;
+};
+type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -45,6 +50,7 @@ type CustomDomain = record {
   version : opt nat64;
   bn_id : opt text;
 };
+type DbConfig = record { max_memory_size : opt ConfigMaxMemorySize };
 type DelDoc = record { version : opt nat64 };
 type DelRule = record { version : opt nat64 };
 type DeleteControllersArgs = record { controllers : vec principal };
@@ -150,14 +156,13 @@ type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
   headers : vec record { text; vec record { text; text } };
-  max_memory_size : opt StorageMaxMemorySize;
+  max_memory_size : opt ConfigMaxMemorySize;
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
 };
 type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
 type StorageConfigRawAccess = variant { Deny; Allow };
 type StorageConfigRedirect = record { status_code : nat16; location : text };
-type StorageMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type StreamingCallbackHttpResponse = record {
   token : opt StreamingCallbackToken;
   body : blob;
@@ -208,6 +213,7 @@ service : () -> {
   get_asset : (text, text) -> (opt AssetNoContent) query;
   get_auth_config : () -> (opt AuthenticationConfig) query;
   get_config : () -> (Config);
+  get_db_config : () -> (opt DbConfig) query;
   get_doc : (text, text) -> (opt Doc) query;
   get_many_assets : (vec record { text; text }) -> (
       vec record { text; opt AssetNoContent },
@@ -215,6 +221,7 @@ service : () -> {
   get_many_docs : (vec record { text; text }) -> (
       vec record { text; opt Doc },
     ) query;
+  get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
       StreamingCallbackHttpResponse,
@@ -232,11 +239,13 @@ service : () -> {
       vec record { principal; Controller },
     );
   set_custom_domain : (text, opt text) -> ();
+  set_db_config : (DbConfig) -> ();
   set_doc : (text, text, SetDoc) -> (Doc);
   set_many_docs : (vec record { text; text; SetDoc }) -> (
       vec record { text; Doc },
     );
   set_rule : (RulesType, text, SetRule) -> ();
+  set_storage_config : (StorageConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
 }

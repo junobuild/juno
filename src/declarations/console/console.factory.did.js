@@ -29,7 +29,7 @@ export const idlFactory = ({ IDL }) => {
 		AllowAny: IDL.Null,
 		SameOrigin: IDL.Null
 	});
-	const StorageMaxMemorySize = IDL.Record({
+	const ConfigMaxMemorySize = IDL.Record({
 		stable: IDL.Opt(IDL.Nat64),
 		heap: IDL.Opt(IDL.Nat64)
 	});
@@ -45,7 +45,7 @@ export const idlFactory = ({ IDL }) => {
 		iframe: IDL.Opt(StorageConfigIFrame),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)))),
-		max_memory_size: IDL.Opt(StorageMaxMemorySize),
+		max_memory_size: IDL.Opt(ConfigMaxMemorySize),
 		raw_access: IDL.Opt(StorageConfigRawAccess),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
 	});

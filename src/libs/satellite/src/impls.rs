@@ -43,6 +43,7 @@ impl Default for HeapState {
                     },
                 )
             })),
+            config: None,
         };
 
         Self {

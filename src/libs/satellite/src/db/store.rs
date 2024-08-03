@@ -2,10 +2,12 @@ use crate::controllers::store::get_controllers;
 use crate::db::msg::ERROR_CANNOT_WRITE;
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
-    delete_doc as delete_state_doc, get_doc as get_state_doc, get_docs_heap, get_docs_stable,
-    get_rule as get_state_rule, init_collection as init_state_collection,
-    insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
+    delete_doc as delete_state_doc, get_config, get_doc as get_state_doc, get_docs_heap,
+    get_docs_stable, get_rule as get_state_rule, init_collection as init_state_collection,
+    insert_config, insert_doc as insert_state_doc,
+    is_collection_empty as is_state_collection_empty,
 };
+use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
@@ -462,4 +464,14 @@ pub fn count_docs_store(collection: &CollectionKey) -> Result<usize, String> {
             Ok(length)
         }),
     }
+}
+
+/// Config
+
+pub fn set_config_store(config: &DbConfig) {
+    insert_config(config);
+}
+
+pub fn get_config_store() -> Option<DbConfig> {
+    get_config()
 }

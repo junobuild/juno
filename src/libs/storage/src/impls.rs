@@ -58,6 +58,7 @@ impl StorageHeapState {
                 redirects: Some(StorageConfigRedirects::default()),
                 iframe: None,
                 raw_access: None,
+                max_memory_size: None,
             },
             custom_domains: HashMap::new(),
         }

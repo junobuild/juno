@@ -10,6 +10,8 @@ import type { Principal } from '@dfinity/principal';
 import { arrayBufferToUint8Array, fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
+import { readFileSync } from 'node:fs';
+import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
 import { ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
@@ -60,7 +62,8 @@ describe('Satellite storage', () => {
 						iframe: toNullable(),
 						redirects: toNullable(),
 						rewrites: [],
-						raw_access: toNullable()
+						raw_access: toNullable(),
+						max_memory_size: toNullable()
 					}
 				})
 			).rejects.toThrow(ADMIN_ERROR_MSG);
@@ -146,7 +149,8 @@ describe('Satellite storage', () => {
 				iframe: toNullable({ Deny: null }),
 				redirects: [],
 				rewrites: [],
-				raw_access: toNullable()
+				raw_access: toNullable(),
+				max_memory_size: toNullable()
 			};
 
 			await set_config({
@@ -248,6 +252,37 @@ describe('Satellite storage', () => {
 			({ memory }) => {
 				const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
 
+				const HTML = '<html><body>Hello</body></html>';
+
+				const blob = new Blob([HTML], {
+					type: 'text/plain; charset=utf-8'
+				});
+
+				const upload = async ({ full_path, name }: { full_path: string; name: string }) => {
+					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+
+					const file = await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path,
+						name,
+						token: toNullable()
+					});
+
+					const chunk = await upload_asset_chunk({
+						batch_id: file.batch_id,
+						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+						order_id: [0n]
+					});
+
+					await commit_asset_upload({
+						batch_id: file.batch_id,
+						chunk_ids: [chunk.chunk_id],
+						headers: []
+					});
+				};
+
 				it('should create a collection', async () => {
 					const { set_rule, list_rules } = actor;
 
@@ -298,35 +333,12 @@ describe('Satellite storage', () => {
 				});
 
 				it('should deploy asset', async () => {
-					const { http_request, commit_asset_upload, upload_asset_chunk, init_asset_upload } =
-						actor;
+					const { http_request } = actor;
 
-					const file = await init_asset_upload({
-						collection,
-						description: toNullable(),
-						encoding_type: [],
-						full_path: `/${collection}/hello.html`,
-						name: 'hello.html',
-						token: toNullable()
-					});
+					const name = 'hello.html';
+					const full_path = `/${collection}/${name}`;
 
-					const HTML = '<html><body>Hello</body></html>';
-
-					const blob = new Blob([HTML], {
-						type: 'text/plain; charset=utf-8'
-					});
-
-					const chunk = await upload_asset_chunk({
-						batch_id: file.batch_id,
-						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-						order_id: [0n]
-					});
-
-					await commit_asset_upload({
-						batch_id: file.batch_id,
-						chunk_ids: [chunk.chunk_id],
-						headers: []
-					});
+					await upload({ full_path, name });
 
 					const { headers, body } = await http_request({
 						body: [],
@@ -373,47 +385,19 @@ describe('Satellite storage', () => {
 				});
 
 				it('should increment version of asset on update', async () => {
-					const { get_asset, commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+					const { get_asset } = actor;
 
-					const full_path = `/${collection}/update.html`;
+					const name = 'update.html';
+					const full_path = `/${collection}/${name}`;
 
-					const HTML = '<html><body>Hello</body></html>';
-
-					const blob = new Blob([HTML], {
-						type: 'text/plain; charset=utf-8'
-					});
-
-					const upload = async () => {
-						const file = await init_asset_upload({
-							collection,
-							description: toNullable(),
-							encoding_type: [],
-							full_path,
-							name: 'update.html',
-							token: toNullable()
-						});
-
-						const chunk = await upload_asset_chunk({
-							batch_id: file.batch_id,
-							content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-							order_id: [0n]
-						});
-
-						await commit_asset_upload({
-							batch_id: file.batch_id,
-							chunk_ids: [chunk.chunk_id],
-							headers: []
-						});
-					};
-
-					await upload();
+					await upload({ full_path, name });
 
 					const asset = fromNullable(await get_asset(collection, full_path));
 
 					expect(asset).not.toBeUndefined();
 					expect(fromNullable(asset!.version) ?? 0n).toEqual(1n);
 
-					await upload();
+					await upload({ full_path, name });
 
 					const updatedAsset = fromNullable(await get_asset(collection, full_path));
 
@@ -498,7 +482,8 @@ describe('Satellite storage', () => {
 						]
 					],
 					rewrites: [['/hello.html', '/hello.html']],
-					raw_access: toNullable()
+					raw_access: toNullable(),
+					max_memory_size: toNullable()
 				};
 
 				await set_config({
@@ -579,7 +564,8 @@ describe('Satellite storage', () => {
 					iframe: toNullable(),
 					redirects: [],
 					rewrites: [],
-					raw_access: toNullable({ Allow: null })
+					raw_access: toNullable({ Allow: null }),
+					max_memory_size: toNullable()
 				};
 
 				await set_config({
@@ -608,7 +594,8 @@ describe('Satellite storage', () => {
 					iframe: toNullable(),
 					redirects: [],
 					rewrites: [],
-					raw_access: toNullable({ Deny: null })
+					raw_access: toNullable({ Deny: null }),
+					max_memory_size: toNullable()
 				};
 
 				await set_config({
@@ -634,7 +621,8 @@ describe('Satellite storage', () => {
 					iframe: toNullable(),
 					redirects: [],
 					rewrites: [],
-					raw_access: toNullable({ Allow: null })
+					raw_access: toNullable({ Allow: null }),
+					max_memory_size: toNullable()
 				};
 
 				await set_config({
@@ -915,5 +903,140 @@ describe('Satellite storage', () => {
 				});
 			}
 		);
+	});
+
+	describe('More configuration', () => {
+		const maxHeapMemorySize = 3_932_160n;
+		const maxStableMemorySize = 2_000_000n;
+
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+		});
+
+		describe.each([
+			{
+				memory: { Heap: null },
+				expectMemory: 3_997_696n,
+				allowedMemory: maxHeapMemorySize,
+				preUploadCount: 13
+			},
+			{
+				memory: { Stable: null },
+				expectMemory: 25_231_360n,
+				allowedMemory: maxStableMemorySize,
+				preUploadCount: 0
+			}
+		])('With collection', ({ memory, expectMemory, allowedMemory, preUploadCount }) => {
+			const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
+
+			const errorMsg = `${'Heap' in memory ? 'Heap' : 'Stable'} memory usage exceeded: ${expectMemory} bytes used, ${allowedMemory} bytes allowed.`;
+
+			const HTML = readFileSync(join(process.cwd(), 'src/frontend/src/app.html'));
+
+			const blob = new Blob([HTML], {
+				type: 'text/plain; charset=utf-8'
+			});
+
+			const upload = async ({ full_path, name }: { full_path: string; name: string }) => {
+				const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+
+				const file = await init_asset_upload({
+					collection,
+					description: toNullable(),
+					encoding_type: [],
+					full_path,
+					name,
+					token: toNullable()
+				});
+
+				const chunk = await upload_asset_chunk({
+					batch_id: file.batch_id,
+					content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+					order_id: [0n]
+				});
+
+				await commit_asset_upload({
+					batch_id: file.batch_id,
+					chunk_ids: [chunk.chunk_id],
+					headers: []
+				});
+			};
+
+			const preUpload = async () => {
+				if (preUploadCount === 0) {
+					return;
+				}
+
+				for (const i of Array.from({ length: preUploadCount }).map((_, i) => i)) {
+					await upload({ full_path: `/${collection}/hello${i}.html`, name: `hello${i}.html` });
+				}
+			};
+
+			beforeAll(async () => {
+				const { set_config } = actor;
+
+				const storage: StorageConfig = {
+					headers: [['*', [['Cache-Control', 'no-cache']]]],
+					iframe: toNullable({ Deny: null }),
+					redirects: [],
+					rewrites: [],
+					raw_access: toNullable(),
+					max_memory_size: toNullable({
+						heap: 'Heap' in memory ? [maxHeapMemorySize] : [],
+						stable: 'Stable' in memory ? [maxStableMemorySize] : []
+					})
+				};
+
+				await set_config({
+					storage
+				});
+
+				await preUpload();
+			});
+
+			describe('should limit max memory size', () => {
+				const name = 'more_data.html';
+				const full_path = `/${collection}/${name}`;
+
+				it('should not allow to create a batch', async () => {
+					const { init_asset_upload } = actor;
+
+					await expect(
+						init_asset_upload({
+							collection,
+							description: toNullable(),
+							encoding_type: [],
+							full_path,
+							name,
+							token: toNullable()
+						})
+					).rejects.toThrow(errorMsg);
+				});
+
+				it('should not allow to upload a chunk', async () => {
+					const { upload_asset_chunk } = actor;
+
+					await expect(
+						upload_asset_chunk({
+							batch_id: 12345n,
+							content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+							order_id: [0n]
+						})
+					).rejects.toThrow(errorMsg);
+				});
+
+				it('should not allow to commit a batch', async () => {
+					const { commit_asset_upload } = actor;
+
+					await expect(
+						commit_asset_upload({
+							batch_id: 1234n,
+							chunk_ids: [567n],
+							headers: []
+						})
+					).rejects.toThrow(errorMsg);
+				});
+			});
+		});
 	});
 });

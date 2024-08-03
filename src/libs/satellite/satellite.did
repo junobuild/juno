@@ -150,12 +150,14 @@ type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
   headers : vec record { text; vec record { text; text } };
+  max_memory_size : opt StorageMaxMemorySize;
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
 };
 type StorageConfigIFrame = variant { Deny; AllowAny; SameOrigin };
 type StorageConfigRawAccess = variant { Deny; Allow };
 type StorageConfigRedirect = record { status_code : nat16; location : text };
+type StorageMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type StreamingCallbackHttpResponse = record {
   token : opt StreamingCallbackToken;
   body : blob;

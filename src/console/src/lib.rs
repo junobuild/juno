@@ -348,7 +348,7 @@ fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
 
     match result {
         Ok(chunk_id) => UploadChunkResult { chunk_id },
-        Err(error) => trap(error),
+        Err(error) => trap(&error),
     }
 }
 

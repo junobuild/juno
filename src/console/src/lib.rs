@@ -24,9 +24,9 @@ use crate::proposals::{
 };
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
-    delete_domain_store, get_config_store, get_custom_domains_store,
+    delete_domain_store, get_config_store as get_storage_config_store, get_custom_domains_store,
     init_asset_upload as init_asset_upload_store, list_assets as list_assets_store,
-    set_config_store, set_domain_store,
+    set_config_store as set_storage_config_store, set_domain_store,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
 use crate::store::heap::{
@@ -343,8 +343,9 @@ fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadR
 #[update(guard = "caller_is_admin_controller")]
 fn upload_asset_chunk(chunk: UploadChunk) -> UploadChunkResult {
     let caller = caller();
+    let config = get_storage_config_store();
 
-    let result = create_chunk(caller, chunk);
+    let result = create_chunk(caller, &config, chunk);
 
     match result {
         Ok(chunk_id) => UploadChunkResult { chunk_id },
@@ -357,10 +358,12 @@ fn commit_asset_upload(commit: CommitBatch) {
     let caller = caller();
 
     let controllers: Controllers = get_controllers();
+    let config = get_storage_config_store();
 
     commit_batch_storage(
         caller,
         &controllers,
+        &config,
         commit,
         &StorageAssertions,
         &StorageState,
@@ -385,12 +388,12 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_config(config: Config) {
-    set_config_store(&config.storage);
+    set_storage_config_store(&config.storage);
 }
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn get_config() -> Config {
-    let storage = get_config_store();
+    let storage = get_storage_config_store();
     Config { storage }
 }
 

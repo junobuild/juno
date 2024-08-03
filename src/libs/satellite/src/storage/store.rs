@@ -6,7 +6,6 @@ use junobuild_collections::assert_stores::{assert_permission, public_permission}
 use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
-use junobuild_shared::assert::assert_memory_size;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::state::Controllers;
@@ -420,26 +419,26 @@ pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
 ///
 
 pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<BatchId, String> {
-    assert_max_memory_size()?;
-
     let controllers: Controllers = get_controllers();
-    secure_create_batch_impl(caller, &controllers, init)
+    let config = get_config();
+
+    secure_create_batch_impl(caller, &controllers, &config, init)
 }
 
 pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<ChunkId, String> {
-    assert_max_memory_size()?;
+    let config = get_config();
 
-    create_chunk(caller, chunk)
+    create_chunk(caller, &config, chunk)
 }
 
 pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<Asset, String> {
-    assert_max_memory_size()?;
-
     let controllers: Controllers = get_controllers();
+    let config = get_config();
 
     let asset = commit_batch_storage(
         caller,
         &controllers,
+        &config,
         commit_batch,
         &StorageAssertions,
         &StorageState,
@@ -453,14 +452,10 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
     Ok(asset)
 }
 
-fn assert_max_memory_size() -> Result<(), String> {
-    let config = get_config_store();
-    assert_memory_size(&config.max_memory_size)
-}
-
 fn secure_create_batch_impl(
     caller: Principal,
     controllers: &Controllers,
+    config: &StorageConfig,
     init: InitAssetKey,
 ) -> Result<BatchId, String> {
     let rule = get_state_rule(&init.collection)?;
@@ -472,7 +467,7 @@ fn secure_create_batch_impl(
         return Err(UPLOAD_NOT_ALLOWED.to_string());
     }
 
-    create_batch(caller, controllers, init, None)
+    create_batch(caller, controllers, config, init, None)
 }
 
 ///

@@ -78,18 +78,14 @@ pub mod state {
 
 pub mod config {
     use candid::{CandidType, Deserialize};
-    use junobuild_shared::types::core::Bytes;
+    use junobuild_shared::types::config::ConfigMaxMemorySize;
     use serde::Serialize;
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct DbMaxMemorySize {
-        pub heap: Option<Bytes>,
-        pub stable: Option<Bytes>,
-    }
+    pub type DbConfigMaxMemorySize = ConfigMaxMemorySize;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct DbConfig {
-        pub max_memory_size: Option<DbMaxMemorySize>,
+        pub max_memory_size: Option<DbConfigMaxMemorySize>,
     }
 }
 

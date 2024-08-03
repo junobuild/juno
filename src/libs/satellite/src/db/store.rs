@@ -21,7 +21,7 @@ use junobuild_collections::assert_stores::{
 use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
-use junobuild_shared::assert::{assert_description_length, assert_version};
+use junobuild_shared::assert::{assert_description_length, assert_memory_size, assert_version};
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
@@ -145,8 +145,16 @@ pub fn set_doc_store(
     value: SetDoc,
 ) -> Result<DocContext<DocUpsert>, String> {
     let controllers: Controllers = get_controllers();
+    let config = get_config();
 
-    let data = secure_set_doc(caller, &controllers, collection.clone(), key.clone(), value)?;
+    let data = secure_set_doc(
+        caller,
+        &controllers,
+        &config,
+        collection.clone(),
+        key.clone(),
+        value,
+    )?;
 
     Ok(DocContext {
         key,
@@ -158,17 +166,19 @@ pub fn set_doc_store(
 fn secure_set_doc(
     caller: Principal,
     controllers: &Controllers,
+    config: &Option<DbConfig>,
     collection: CollectionKey,
     key: Key,
     value: SetDoc,
 ) -> Result<DocUpsert, String> {
     let rule = get_state_rule(&collection)?;
-    set_doc_impl(caller, controllers, collection, key, value, &rule)
+    set_doc_impl(caller, controllers, config, collection, key, value, &rule)
 }
 
 fn set_doc_impl(
     caller: Principal,
     controllers: &Controllers,
+    config: &Option<DbConfig>,
     collection: CollectionKey,
     key: Key,
     value: SetDoc,
@@ -177,6 +187,8 @@ fn set_doc_impl(
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
     assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
+
+    assert_max_memory_size(config)?;
 
     assert_write_version(&current_doc, value.version)?;
 
@@ -348,6 +360,13 @@ fn delete_doc_impl(
     )?;
 
     delete_state_doc(&collection, &key, rule)
+}
+
+fn assert_max_memory_size(config: &Option<DbConfig>) -> Result<(), String> {
+    match config {
+        None => Ok(()),
+        Some(config) => assert_memory_size(&config.max_memory_size),
+    }
 }
 
 fn assert_write_permission(

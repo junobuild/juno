@@ -389,3 +389,15 @@ pub mod domain {
         pub version: Option<Version>,
     }
 }
+
+pub mod config {
+    use crate::types::core::Bytes;
+    use candid::{CandidType, Deserialize};
+    use serde::Serialize;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct ConfigMaxMemorySize {
+        pub heap: Option<Bytes>,
+        pub stable: Option<Bytes>,
+    }
+}

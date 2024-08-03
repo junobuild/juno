@@ -1,7 +1,10 @@
+use crate::canister::memory_size;
 use crate::msg::{
     ERROR_NO_TIMESTAMP, ERROR_NO_VERSION, ERROR_TIMESTAMP_OUTDATED_OR_FUTURE,
     ERROR_VERSION_OUTDATED_OR_FUTURE,
 };
+use crate::types::config::ConfigMaxMemorySize;
+use crate::types::interface::MemorySize;
 use crate::types::state::Version;
 
 /// Asserts the validity of a given user timestamp against the current timestamp.
@@ -158,6 +161,34 @@ pub fn assert_description_length(description: &Option<String>) -> Result<(), Str
                 return Err(
                     "Description field should not contains more than 1024 characters.".to_string(),
                 );
+            }
+        }
+    }
+
+    Ok(())
+}
+
+pub fn assert_memory_size(
+    config_max_memory_size: &Option<ConfigMaxMemorySize>,
+) -> Result<(), String> {
+    if let Some(max_memory_size) = &config_max_memory_size {
+        let MemorySize { heap, stable } = memory_size();
+
+        if let Some(max_heap) = max_memory_size.heap {
+            if heap > max_heap {
+                return Err(format!(
+                    "Heap memory usage exceeded: {} bytes used, {} bytes allowed.",
+                    heap, max_heap
+                ));
+            }
+        }
+
+        if let Some(max_stable) = max_memory_size.stable {
+            if stable > max_stable {
+                return Err(format!(
+                    "Stable memory usage exceeded: {} bytes used, {} bytes allowed.",
+                    stable, max_stable
+                ));
             }
         }
     }

@@ -6,12 +6,12 @@ use junobuild_collections::assert_stores::{assert_permission, public_permission}
 use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
+use junobuild_shared::assert::assert_memory_size;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::state::Controllers;
 
 use crate::rules::assert_stores::is_known_user;
-use crate::storage::assert_store::assert_memory_size;
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::{
     count_assets_stable, delete_asset as delete_state_asset, delete_domain as delete_state_domain,
@@ -455,7 +455,7 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
 
 fn assert_max_memory_size() -> Result<(), String> {
     let config = get_config_store();
-    assert_memory_size(&config)
+    assert_memory_size(&config.max_memory_size)
 }
 
 fn secure_create_batch_impl(

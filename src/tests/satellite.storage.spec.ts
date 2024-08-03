@@ -60,7 +60,8 @@ describe('Satellite storage', () => {
 						iframe: toNullable(),
 						redirects: toNullable(),
 						rewrites: [],
-						raw_access: toNullable()
+						raw_access: toNullable(),
+						max_memory_size: toNullable()
 					}
 				})
 			).rejects.toThrow(ADMIN_ERROR_MSG);
@@ -146,7 +147,8 @@ describe('Satellite storage', () => {
 				iframe: toNullable({ Deny: null }),
 				redirects: [],
 				rewrites: [],
-				raw_access: toNullable()
+				raw_access: toNullable(),
+				max_memory_size: toNullable()
 			};
 
 			await set_config({
@@ -498,7 +500,8 @@ describe('Satellite storage', () => {
 						]
 					],
 					rewrites: [['/hello.html', '/hello.html']],
-					raw_access: toNullable()
+					raw_access: toNullable(),
+					max_memory_size: toNullable()
 				};
 
 				await set_config({
@@ -579,7 +582,8 @@ describe('Satellite storage', () => {
 					iframe: toNullable(),
 					redirects: [],
 					rewrites: [],
-					raw_access: toNullable({ Allow: null })
+					raw_access: toNullable({ Allow: null }),
+					max_memory_size: toNullable()
 				};
 
 				await set_config({
@@ -608,7 +612,8 @@ describe('Satellite storage', () => {
 					iframe: toNullable(),
 					redirects: [],
 					rewrites: [],
-					raw_access: toNullable({ Deny: null })
+					raw_access: toNullable({ Deny: null }),
+					max_memory_size: toNullable()
 				};
 
 				await set_config({
@@ -634,7 +639,8 @@ describe('Satellite storage', () => {
 					iframe: toNullable(),
 					redirects: [],
 					rewrites: [],
-					raw_access: toNullable({ Allow: null })
+					raw_access: toNullable({ Allow: null }),
+					max_memory_size: toNullable()
 				};
 
 				await set_config({

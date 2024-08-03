@@ -141,7 +141,8 @@ describe('Console / Storage', () => {
 						iframe: toNullable(),
 						redirects: toNullable(),
 						rewrites: [],
-						raw_access: toNullable()
+						raw_access: toNullable(),
+						max_memory_size: toNullable()
 					}
 				})
 			).rejects.toThrow(CONTROLLER_ERROR_MSG);
@@ -163,7 +164,8 @@ describe('Console / Storage', () => {
 				iframe: toNullable({ Deny: null }),
 				redirects: [],
 				rewrites: [],
-				raw_access: toNullable()
+				raw_access: toNullable(),
+				max_memory_size: toNullable()
 			};
 
 			await set_config({

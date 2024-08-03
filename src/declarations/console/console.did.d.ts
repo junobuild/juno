@@ -174,6 +174,7 @@ export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
+	max_memory_size: [] | [StorageMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
 }
@@ -182,6 +183,10 @@ export type StorageConfigRawAccess = { Deny: null } | { Allow: null };
 export interface StorageConfigRedirect {
 	status_code: number;
 	location: string;
+}
+export interface StorageMaxMemorySize {
+	stable: [] | [bigint];
+	heap: [] | [bigint];
 }
 export interface StreamingCallbackHttpResponse {
 	token: [] | [StreamingCallbackToken];

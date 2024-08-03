@@ -1,4 +1,4 @@
-use crate::types::memory::MemorySize;
+use crate::types::interface::MemorySize;
 use core::arch::wasm32::memory_size as wasm_memory_size;
 use ic_cdk::api::stable::{stable_size, WASM_PAGE_SIZE_IN_BYTES};
 

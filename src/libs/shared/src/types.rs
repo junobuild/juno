@@ -96,6 +96,7 @@ pub mod interface {
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
+    use crate::types::core::Bytes;
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateCanisterArgs {
@@ -154,6 +155,12 @@ pub mod interface {
     pub struct DepositCyclesArgs {
         pub destination_id: Principal,
         pub cycles: u128,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct MemorySize {
+        pub heap: Bytes,
+        pub stable: Bytes,
     }
 }
 
@@ -257,18 +264,10 @@ pub mod utils {
 }
 
 pub mod memory {
-    use crate::types::core::Bytes;
-    use candid::{CandidType, Deserialize};
     use ic_stable_structures::memory_manager::VirtualMemory;
     use ic_stable_structures::DefaultMemoryImpl;
 
     pub type Memory = VirtualMemory<DefaultMemoryImpl>;
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct MemorySize {
-        pub heap: Bytes,
-        pub stable: Bytes,
-    }
 }
 
 pub mod core {

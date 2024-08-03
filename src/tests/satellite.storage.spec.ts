@@ -53,18 +53,16 @@ describe('Satellite storage', () => {
 		});
 
 		it('should throw errors on setting config', async () => {
-			const { set_config } = actor;
+			const { set_storage_config } = actor;
 
 			await expect(
-				set_config({
-					storage: {
-						headers: [],
-						iframe: toNullable(),
-						redirects: toNullable(),
-						rewrites: [],
-						raw_access: toNullable(),
-						max_memory_size: toNullable()
-					}
+				set_storage_config({
+					headers: [],
+					iframe: toNullable(),
+					redirects: toNullable(),
+					rewrites: [],
+					raw_access: toNullable(),
+					max_memory_size: toNullable()
 				})
 			).rejects.toThrow(ADMIN_ERROR_MSG);
 		});
@@ -142,7 +140,7 @@ describe('Satellite storage', () => {
 		});
 
 		it('should set and get config', async () => {
-			const { set_config, get_config } = actor;
+			const { set_storage_config, get_config } = actor;
 
 			const storage: StorageConfig = {
 				headers: [['*', [['Cache-Control', 'no-cache']]]],
@@ -153,14 +151,14 @@ describe('Satellite storage', () => {
 				max_memory_size: toNullable()
 			};
 
-			await set_config({
-				storage
-			});
+			await set_storage_config(storage);
 
 			const configs = await get_config();
 
 			expect(configs).toEqual({
-				storage
+				storage,
+				authentication: toNullable(),
+				db: toNullable()
 			});
 		});
 
@@ -465,7 +463,7 @@ describe('Satellite storage', () => {
 			});
 
 			it('should set a config for a rewrite and redirect', async () => {
-				const { set_config, get_config } = actor;
+				const { set_storage_config, get_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [['*', [['Cache-Control', 'no-cache']]]],
@@ -486,14 +484,14 @@ describe('Satellite storage', () => {
 					max_memory_size: toNullable()
 				};
 
-				await set_config({
-					storage
-				});
+				await set_storage_config(storage);
 
 				const configs = await get_config();
 
 				expect(configs).toEqual({
-					storage
+					storage,
+					authentication: toNullable(),
+					db: toNullable()
 				});
 			});
 		});
@@ -557,7 +555,7 @@ describe('Satellite storage', () => {
 			);
 
 			it('should be able to access on raw if allowed', async () => {
-				const { http_request, set_config } = actor;
+				const { http_request, set_storage_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [],
@@ -568,9 +566,7 @@ describe('Satellite storage', () => {
 					max_memory_size: toNullable()
 				};
 
-				await set_config({
-					storage
-				});
+				await set_storage_config(storage);
 
 				const { status_code, body } = await http_request({
 					body: [],
@@ -587,7 +583,7 @@ describe('Satellite storage', () => {
 			});
 
 			it('should not be able to access on raw if explicitly disabled', async () => {
-				const { http_request, set_config } = actor;
+				const { http_request, set_storage_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [],
@@ -598,9 +594,7 @@ describe('Satellite storage', () => {
 					max_memory_size: toNullable()
 				};
 
-				await set_config({
-					storage
-				});
+				await set_storage_config(storage);
 
 				const { status_code } = await http_request({
 					body: [],
@@ -614,7 +608,7 @@ describe('Satellite storage', () => {
 			});
 
 			it('should be able to access content if not raw', async () => {
-				const { http_request, set_config } = actor;
+				const { http_request, set_storage_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [],
@@ -625,9 +619,7 @@ describe('Satellite storage', () => {
 					max_memory_size: toNullable()
 				};
 
-				await set_config({
-					storage
-				});
+				await set_storage_config(storage);
 
 				const { status_code, body } = await http_request({
 					body: [],
@@ -973,7 +965,7 @@ describe('Satellite storage', () => {
 			};
 
 			beforeAll(async () => {
-				const { set_config } = actor;
+				const { set_storage_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [['*', [['Cache-Control', 'no-cache']]]],
@@ -987,9 +979,7 @@ describe('Satellite storage', () => {
 					})
 				};
 
-				await set_config({
-					storage
-				});
+				await set_storage_config(storage);
 
 				await preUpload();
 			});

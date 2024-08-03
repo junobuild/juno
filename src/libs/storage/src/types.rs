@@ -208,6 +208,7 @@ pub mod interface {
 pub mod config {
     use crate::http::types::{HeaderField, StatusCode};
     use candid::CandidType;
+    use junobuild_shared::types::core::Bytes;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -228,6 +229,12 @@ pub mod config {
         Allow,
     }
 
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct StorageMaxMemorySize {
+        pub heap: Option<Bytes>,
+        pub stable: Option<Bytes>,
+    }
+
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct StorageConfig {
         pub headers: StorageConfigHeaders,
@@ -235,6 +242,7 @@ pub mod config {
         pub redirects: Option<StorageConfigRedirects>,
         pub iframe: Option<StorageConfigIFrame>,
         pub raw_access: Option<StorageConfigRawAccess>,
+        pub max_memory_size: Option<StorageMaxMemorySize>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

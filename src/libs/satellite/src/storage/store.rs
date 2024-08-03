@@ -11,6 +11,7 @@ use junobuild_shared::list::list_values;
 use junobuild_shared::types::state::Controllers;
 
 use crate::rules::assert_stores::is_known_user;
+use crate::storage::assert_store::assert_memory_size;
 use crate::storage::certified_assets::runtime::init_certified_assets as init_runtime_certified_assets;
 use crate::storage::state::{
     count_assets_stable, delete_asset as delete_state_asset, delete_domain as delete_state_domain,
@@ -419,15 +420,21 @@ pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
 ///
 
 pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<BatchId, String> {
+    assert_max_memory_size()?;
+
     let controllers: Controllers = get_controllers();
     secure_create_batch_impl(caller, &controllers, init)
 }
 
-pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<ChunkId, &'static str> {
+pub fn create_chunk_store(caller: Principal, chunk: UploadChunk) -> Result<ChunkId, String> {
+    assert_max_memory_size()?;
+
     create_chunk(caller, chunk)
 }
 
 pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Result<Asset, String> {
+    assert_max_memory_size()?;
+
     let controllers: Controllers = get_controllers();
 
     let asset = commit_batch_storage(
@@ -444,6 +451,11 @@ pub fn commit_batch_store(caller: Principal, commit_batch: CommitBatch) -> Resul
     update_runtime_certified_asset(&asset, &config);
 
     Ok(asset)
+}
+
+fn assert_max_memory_size() -> Result<(), String> {
+    let config = get_config_store();
+    assert_memory_size(&config)
 }
 
 fn secure_create_batch_impl(

@@ -104,14 +104,14 @@ pub fn create_chunk(
         content,
         order_id,
     }: UploadChunk,
-) -> Result<ChunkId, &'static str> {
+) -> Result<ChunkId, String> {
     let batch = get_runtime_batch(&batch_id);
 
     match batch {
-        None => Err("Batch not found."),
+        None => Err("Batch not found.".to_string()),
         Some(b) => {
             if principal_not_equal(caller, b.key.owner) {
-                return Err("Bach initializer does not match chunk uploader.");
+                return Err("Bach initializer does not match chunk uploader.".to_string());
             }
 
             let now = time();

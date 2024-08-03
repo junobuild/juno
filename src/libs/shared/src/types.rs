@@ -89,6 +89,7 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::types::core::Bytes;
     use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{
         ControllerId, ControllerScope, Metadata, MissionControlId, Timestamp, UserId,
@@ -96,7 +97,6 @@ pub mod interface {
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
     use serde::Deserialize;
-    use crate::types::core::Bytes;
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateCanisterArgs {

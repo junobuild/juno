@@ -53,18 +53,16 @@ describe('Satellite storage', () => {
 		});
 
 		it('should throw errors on setting config', async () => {
-			const { set_config } = actor;
+			const { set_storage_config } = actor;
 
 			await expect(
-				set_config({
-					storage: {
-						headers: [],
-						iframe: toNullable(),
-						redirects: toNullable(),
-						rewrites: [],
-						raw_access: toNullable(),
-						max_memory_size: toNullable()
-					}
+				set_storage_config({
+					headers: [],
+					iframe: toNullable(),
+					redirects: toNullable(),
+					rewrites: [],
+					raw_access: toNullable(),
+					max_memory_size: toNullable()
 				})
 			).rejects.toThrow(ADMIN_ERROR_MSG);
 		});
@@ -142,7 +140,7 @@ describe('Satellite storage', () => {
 		});
 
 		it('should set and get config', async () => {
-			const { set_config, get_config } = actor;
+			const { set_storage_config, get_config } = actor;
 
 			const storage: StorageConfig = {
 				headers: [['*', [['Cache-Control', 'no-cache']]]],
@@ -153,14 +151,14 @@ describe('Satellite storage', () => {
 				max_memory_size: toNullable()
 			};
 
-			await set_config({
-				storage
-			});
+			await set_storage_config(storage);
 
 			const configs = await get_config();
 
 			expect(configs).toEqual({
-				storage
+				storage,
+				authentication: toNullable(),
+				db: toNullable()
 			});
 		});
 
@@ -465,7 +463,7 @@ describe('Satellite storage', () => {
 			});
 
 			it('should set a config for a rewrite and redirect', async () => {
-				const { set_config, get_config } = actor;
+				const { set_storage_config, get_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [['*', [['Cache-Control', 'no-cache']]]],
@@ -486,14 +484,14 @@ describe('Satellite storage', () => {
 					max_memory_size: toNullable()
 				};
 
-				await set_config({
-					storage
-				});
+				await set_storage_config(storage);
 
 				const configs = await get_config();
 
 				expect(configs).toEqual({
-					storage
+					storage,
+					authentication: toNullable(),
+					db: toNullable()
 				});
 			});
 		});
@@ -557,7 +555,7 @@ describe('Satellite storage', () => {
 			);
 
 			it('should be able to access on raw if allowed', async () => {
-				const { http_request, set_config } = actor;
+				const { http_request, set_storage_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [],
@@ -568,9 +566,7 @@ describe('Satellite storage', () => {
 					max_memory_size: toNullable()
 				};
 
-				await set_config({
-					storage
-				});
+				await set_storage_config(storage);
 
 				const { status_code, body } = await http_request({
 					body: [],
@@ -587,7 +583,7 @@ describe('Satellite storage', () => {
 			});
 
 			it('should not be able to access on raw if explicitly disabled', async () => {
-				const { http_request, set_config } = actor;
+				const { http_request, set_storage_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [],
@@ -598,9 +594,7 @@ describe('Satellite storage', () => {
 					max_memory_size: toNullable()
 				};
 
-				await set_config({
-					storage
-				});
+				await set_storage_config(storage);
 
 				const { status_code } = await http_request({
 					body: [],
@@ -614,7 +608,7 @@ describe('Satellite storage', () => {
 			});
 
 			it('should be able to access content if not raw', async () => {
-				const { http_request, set_config } = actor;
+				const { http_request, set_storage_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [],
@@ -625,9 +619,7 @@ describe('Satellite storage', () => {
 					max_memory_size: toNullable()
 				};
 
-				await set_config({
-					storage
-				});
+				await set_storage_config(storage);
 
 				const { status_code, body } = await http_request({
 					body: [],
@@ -973,7 +965,11 @@ describe('Satellite storage', () => {
 			};
 
 			beforeAll(async () => {
-				const { set_config } = actor;
+				await preUpload();
+			});
+
+			const configMaxMemory = async (max: 'heap' | 'stable' | 'none') => {
+				const { set_storage_config } = actor;
 
 				const storage: StorageConfig = {
 					headers: [['*', [['Cache-Control', 'no-cache']]]],
@@ -982,23 +978,21 @@ describe('Satellite storage', () => {
 					rewrites: [],
 					raw_access: toNullable(),
 					max_memory_size: toNullable({
-						heap: 'Heap' in memory ? [maxHeapMemorySize] : [],
-						stable: 'Stable' in memory ? [maxStableMemorySize] : []
+						heap: max === 'heap' ? [maxHeapMemorySize] : [],
+						stable: max === 'stable' ? [maxStableMemorySize] : []
 					})
 				};
 
-				await set_config({
-					storage
-				});
-
-				await preUpload();
-			});
+				await set_storage_config(storage);
+			};
 
 			describe('should limit max memory size', () => {
 				const name = 'more_data.html';
 				const full_path = `/${collection}/${name}`;
 
 				it('should not allow to create a batch', async () => {
+					await configMaxMemory('Heap' in memory ? 'heap' : 'stable');
+
 					const { init_asset_upload } = actor;
 
 					await expect(
@@ -1014,11 +1008,24 @@ describe('Satellite storage', () => {
 				});
 
 				it('should not allow to upload a chunk', async () => {
-					const { upload_asset_chunk } = actor;
+					const { upload_asset_chunk, init_asset_upload } = actor;
+
+					await configMaxMemory('none');
+
+					const { batch_id } = await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path,
+						name,
+						token: toNullable()
+					});
+
+					await configMaxMemory('Heap' in memory ? 'heap' : 'stable');
 
 					await expect(
 						upload_asset_chunk({
-							batch_id: 12345n,
+							batch_id,
 							content: arrayBufferToUint8Array(await blob.arrayBuffer()),
 							order_id: [0n]
 						})
@@ -1026,12 +1033,31 @@ describe('Satellite storage', () => {
 				});
 
 				it('should not allow to commit a batch', async () => {
-					const { commit_asset_upload } = actor;
+					const { commit_asset_upload, init_asset_upload, upload_asset_chunk } = actor;
+
+					await configMaxMemory('none');
+
+					const { batch_id } = await init_asset_upload({
+						collection,
+						description: toNullable(),
+						encoding_type: [],
+						full_path,
+						name,
+						token: toNullable()
+					});
+
+					const { chunk_id } = await upload_asset_chunk({
+						batch_id,
+						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+						order_id: [0n]
+					});
+
+					await configMaxMemory('Heap' in memory ? 'heap' : 'stable');
 
 					await expect(
 						commit_asset_upload({
-							batch_id: 1234n,
-							chunk_ids: [567n],
+							batch_id,
+							chunk_ids: [chunk_id],
 							headers: []
 						})
 					).rejects.toThrow(errorMsg);

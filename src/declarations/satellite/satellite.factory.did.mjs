@@ -53,14 +53,17 @@ export const idlFactory = ({ IDL }) => {
 	const AuthenticationConfig = IDL.Record({
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity)
 	});
+	const ConfigMaxMemorySize = IDL.Record({
+		stable: IDL.Opt(IDL.Nat64),
+		heap: IDL.Opt(IDL.Nat64)
+	});
+	const DbConfig = IDL.Record({
+		max_memory_size: IDL.Opt(ConfigMaxMemorySize)
+	});
 	const StorageConfigIFrame = IDL.Variant({
 		Deny: IDL.Null,
 		AllowAny: IDL.Null,
 		SameOrigin: IDL.Null
-	});
-	const StorageMaxMemorySize = IDL.Record({
-		stable: IDL.Opt(IDL.Nat64),
-		heap: IDL.Opt(IDL.Nat64)
 	});
 	const StorageConfigRawAccess = IDL.Variant({
 		Deny: IDL.Null,
@@ -74,11 +77,15 @@ export const idlFactory = ({ IDL }) => {
 		iframe: IDL.Opt(StorageConfigIFrame),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)))),
-		max_memory_size: IDL.Opt(StorageMaxMemorySize),
+		max_memory_size: IDL.Opt(ConfigMaxMemorySize),
 		raw_access: IDL.Opt(StorageConfigRawAccess),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
 	});
-	const Config = IDL.Record({ storage: StorageConfig });
+	const Config = IDL.Record({
+		db: IDL.Opt(DbConfig),
+		authentication: IDL.Opt(AuthenticationConfig),
+		storage: StorageConfig
+	});
 	const Doc = IDL.Record({
 		updated_at: IDL.Nat64,
 		owner: IDL.Principal,
@@ -246,6 +253,7 @@ export const idlFactory = ({ IDL }) => {
 		get_asset: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(AssetNoContent)], ['query']),
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], []),
+		get_db_config: IDL.Func([], [IDL.Opt(DbConfig)], ['query']),
 		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
 		get_many_assets: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
@@ -257,6 +265,7 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Opt(Doc)))],
 			['query']
 		),
+		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],
@@ -278,6 +287,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
+		set_db_config: IDL.Func([DbConfig], [], []),
 		set_doc: IDL.Func([IDL.Text, IDL.Text, SetDoc], [Doc], []),
 		set_many_docs: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, SetDoc))],
@@ -285,6 +295,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		set_rule: IDL.Func([RulesType, IDL.Text, SetRule], [], []),
+		set_storage_config: IDL.Func([StorageConfig], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

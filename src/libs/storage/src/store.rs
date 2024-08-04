@@ -10,6 +10,7 @@ use crate::runtime::{
     insert_chunk as insert_runtime_chunk,
 };
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy};
+use crate::types::config::StorageConfig;
 use crate::types::interface::{CommitBatch, InitAssetKey, UploadChunk};
 use crate::types::runtime_state::{BatchId, ChunkId};
 use crate::types::state::FullPath;
@@ -22,7 +23,7 @@ use junobuild_collections::assert_stores::{assert_create_permission, assert_perm
 use junobuild_collections::constants::{DEFAULT_ASSETS_COLLECTIONS, SYS_COLLECTION_PREFIX};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::assert::assert_description_length;
+use junobuild_shared::assert::{assert_description_length, assert_max_memory_size};
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::core::Blob;
@@ -42,9 +43,12 @@ static mut NEXT_CHUNK_ID: ChunkId = 0;
 pub fn create_batch(
     caller: Principal,
     controllers: &Controllers,
+    config: &StorageConfig,
     init: InitAssetKey,
     reference_id: Option<ReferenceId>,
 ) -> Result<BatchId, String> {
+    assert_memory_size(config)?;
+
     assert_key(caller, &init.full_path, &init.collection, controllers)?;
 
     assert_description_length(&init.description)?;
@@ -99,6 +103,7 @@ fn create_batch_impl(
 
 pub fn create_chunk(
     caller: Principal,
+    config: &StorageConfig,
     UploadChunk {
         batch_id,
         content,
@@ -113,6 +118,8 @@ pub fn create_chunk(
             if principal_not_equal(caller, b.key.owner) {
                 return Err("Bach initializer does not match chunk uploader.".to_string());
             }
+
+            assert_memory_size(config)?;
 
             let now = time();
 
@@ -146,6 +153,7 @@ pub fn create_chunk(
 pub fn commit_batch(
     caller: Principal,
     controllers: &Controllers,
+    config: &StorageConfig,
     commit_batch: CommitBatch,
     assertions: &impl StorageAssertionsStrategy,
     storage_state: &impl StorageStateStrategy,
@@ -159,6 +167,7 @@ pub fn commit_batch(
             let asset = secure_commit_chunks(
                 caller,
                 controllers,
+                config,
                 commit_batch,
                 &b,
                 assertions,
@@ -168,6 +177,10 @@ pub fn commit_batch(
             Ok(asset)
         }
     }
+}
+
+fn assert_memory_size(config: &StorageConfig) -> Result<(), String> {
+    assert_max_memory_size(&config.max_memory_size)
 }
 
 fn assert_key(
@@ -217,9 +230,11 @@ fn assert_well_known_key(full_path: &str, reserved_path: &str) -> Result<(), &'s
     Ok(())
 }
 
+#[allow(clippy::too_many_arguments)]
 fn secure_commit_chunks(
     caller: Principal,
     controllers: &Controllers,
+    config: &StorageConfig,
     commit_batch: CommitBatch,
     batch: &Batch,
     assertions: &impl StorageAssertionsStrategy,
@@ -253,6 +268,8 @@ fn secure_commit_chunks(
                 return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
             }
 
+            assert_memory_size(config)?;
+
             commit_chunks(
                 caller,
                 commit_batch,
@@ -266,6 +283,7 @@ fn secure_commit_chunks(
         Some(current) => secure_commit_chunks_update(
             caller,
             controllers,
+            config,
             commit_batch,
             batch,
             rule,
@@ -280,6 +298,7 @@ fn secure_commit_chunks(
 fn secure_commit_chunks_update(
     caller: Principal,
     controllers: &Controllers,
+    config: &StorageConfig,
     commit_batch: CommitBatch,
     batch: &Batch,
     rule: Rule,
@@ -295,6 +314,8 @@ fn secure_commit_chunks_update(
     if !assert_permission(&rule.write, current.key.owner, caller, controllers) {
         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
+
+    assert_memory_size(config)?;
 
     commit_chunks(
         caller,

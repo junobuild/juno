@@ -1,4 +1,8 @@
-import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
+import type {
+	DbConfig,
+	_SERVICE as SatelliteActor,
+	SetRule
+} from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
@@ -187,6 +191,36 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				const count = await count_docs(TEST_COLLECTION);
 
 				expect(count).toBe(0n);
+			});
+
+			it('should have empty config per default', async () => {
+				const { get_db_config } = actor;
+
+				const config = await get_db_config();
+				expect(config).toEqual([]);
+			});
+
+			it('should set db config', async () => {
+				const { set_db_config, get_db_config } = actor;
+
+				const config: DbConfig = {
+					max_memory_size: [
+						{
+							heap: [1234n],
+							stable: [789n]
+						}
+					]
+				};
+
+				await set_db_config(config);
+
+				const result = await get_db_config();
+				expect(result).toEqual([config]);
+
+				// Redo for next test
+				await set_db_config({
+					max_memory_size: []
+				});
 			});
 		});
 
@@ -448,6 +482,74 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 
 				expect(docs.items[0][0]).toEqual(docsCreated[2][0]);
 				expect(docs.items[1][0]).toEqual(docsCreated[3][0]);
+			});
+		});
+
+		describe('config', () => {
+			const setRule: SetRule = {
+				memory: toNullable(memory),
+				max_size: toNullable(),
+				read: { Managed: null },
+				mutable_permissions: toNullable(),
+				write: { Managed: null },
+				version: toNullable(),
+				max_capacity: toNullable()
+			};
+
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+			});
+
+			describe.each([
+				{
+					memory: { Heap: null },
+					expectMemory: 3_866_624n
+				},
+				{
+					memory: { Stable: null },
+					expectMemory: 25_231_360n
+				}
+			])('With collection', ({ memory, expectMemory }) => {
+				const errorMsg = `${'Heap' in memory ? 'Heap' : 'Stable'} memory usage exceeded: ${expectMemory} bytes used, 20000 bytes allowed.`;
+
+				const collection = `test_config_${'Heap' in memory ? 'heap' : 'stable'}`;
+
+				beforeAll(async () => {
+					actor.setIdentity(controller);
+
+					const { set_rule, set_db_config } = actor;
+
+					await set_rule({ Db: null }, collection, setRule);
+
+					await set_db_config({
+						max_memory_size: toNullable({
+							heap: 'Heap' in memory ? [20_000n] : [],
+							stable: 'Stable' in memory ? [20_000n] : []
+						})
+					});
+				});
+
+				it('should not allow to set a document', async () => {
+					expect(createDoc()).rejects.toThrow(errorMsg);
+				});
+
+				it('should not allow to set many documents', async () => {
+					const { set_many_docs } = actor;
+
+					expect(
+						set_many_docs(
+							Array.from({ length: 4 }).map((_, i) => [
+								collection,
+								`${i}`,
+								{
+									data,
+									description: toNullable(),
+									version: toNullable()
+								}
+							])
+						)
+					).rejects.toThrow(errorMsg);
+				});
 			});
 		});
 	}

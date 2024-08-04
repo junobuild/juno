@@ -39,6 +39,7 @@ impl Default for DbHeapState {
                     },
                 )
             })),
+            config: None,
         }
     }
 }

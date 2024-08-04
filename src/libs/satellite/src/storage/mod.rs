@@ -1,4 +1,3 @@
-mod assert_store;
 pub mod certified_assets;
 pub mod handlers;
 mod impls;

@@ -35,7 +35,13 @@ export interface CommitBatch {
 	chunk_ids: Array<bigint>;
 }
 export interface Config {
+	db: [] | [DbConfig];
+	authentication: [] | [AuthenticationConfig];
 	storage: StorageConfig;
+}
+export interface ConfigMaxMemorySize {
+	stable: [] | [bigint];
+	heap: [] | [bigint];
 }
 export interface Controller {
 	updated_at: bigint;
@@ -50,6 +56,9 @@ export interface CustomDomain {
 	created_at: bigint;
 	version: [] | [bigint];
 	bn_id: [] | [string];
+}
+export interface DbConfig {
+	max_memory_size: [] | [ConfigMaxMemorySize];
 }
 export interface DelDoc {
 	version: [] | [bigint];
@@ -180,7 +189,7 @@ export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
-	max_memory_size: [] | [StorageMaxMemorySize];
+	max_memory_size: [] | [ConfigMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
 }
@@ -189,10 +198,6 @@ export type StorageConfigRawAccess = { Deny: null } | { Allow: null };
 export interface StorageConfigRedirect {
 	status_code: number;
 	location: string;
-}
-export interface StorageMaxMemorySize {
-	stable: [] | [bigint];
-	heap: [] | [bigint];
 }
 export interface StreamingCallbackHttpResponse {
 	token: [] | [StreamingCallbackToken];
@@ -244,9 +249,11 @@ export interface _SERVICE {
 	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
+	get_db_config: ActorMethod<[], [] | [DbConfig]>;
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
 	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
+	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
 		[StreamingCallbackToken],
@@ -263,9 +270,11 @@ export interface _SERVICE {
 	set_config: ActorMethod<[Config], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
+	set_db_config: ActorMethod<[DbConfig], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
+	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
 }

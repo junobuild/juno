@@ -1,16 +1,17 @@
 use crate::auth::store::{
     get_config as get_authentication_config, set_config as set_authentication_config,
 };
-use crate::auth::types::state::AuthenticationConfig;
+use crate::auth::types::config::AuthenticationConfig;
 use crate::controllers::store::get_admin_controllers;
 use crate::controllers::store::{
     delete_controllers as delete_controllers_store, get_controllers,
     set_controllers as set_controllers_store,
 };
 use crate::db::store::{
-    count_docs_store, delete_doc_store, delete_docs_store, get_doc_store, list_docs_store,
-    set_doc_store,
+    count_docs_store, delete_doc_store, delete_docs_store, get_config_store as get_db_config_store,
+    get_doc_store, list_docs_store, set_config_store as set_db_config_store, set_doc_store,
 };
+use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::hooks::{
@@ -26,8 +27,8 @@ use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, create_batch_store, create_chunk_store,
     delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
-    get_config_store as get_storage_config, get_custom_domains_store, list_assets_store,
-    set_config_store as set_storage_config, set_domain_store,
+    get_config_store as get_storage_config_store, get_custom_domains_store, list_assets_store,
+    set_config_store as set_storage_config_store, set_domain_store,
 };
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::{Config, RulesType};
@@ -57,6 +58,7 @@ use junobuild_storage::http_request::{
     http_request as http_request_storage,
     http_request_streaming_callback as http_request_streaming_callback_storage,
 };
+use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
@@ -282,12 +284,19 @@ pub fn list_controllers() -> Controllers {
 ///
 
 pub fn set_config(config: Config) {
-    set_storage_config(&config.storage);
+    set_storage_config_store(&config.storage);
 }
 
 pub fn get_config() -> Config {
-    let storage = get_storage_config();
-    Config { storage }
+    let storage = get_storage_config_store();
+    let db = get_db_config_store();
+    let authentication = get_authentication_config();
+
+    Config {
+        storage,
+        db,
+        authentication,
+    }
 }
 
 ///
@@ -316,6 +325,30 @@ pub fn set_auth_config(config: AuthenticationConfig) {
 
 pub fn get_auth_config() -> Option<AuthenticationConfig> {
     get_authentication_config()
+}
+
+///
+/// Db config
+///
+
+pub fn set_db_config(config: DbConfig) {
+    set_db_config_store(&config);
+}
+
+pub fn get_db_config() -> Option<DbConfig> {
+    get_db_config_store()
+}
+
+///
+/// Storage config
+///
+
+pub fn set_storage_config(config: StorageConfig) {
+    set_storage_config_store(&config);
+}
+
+pub fn get_storage_config() -> StorageConfig {
+    get_storage_config_store()
 }
 
 ///

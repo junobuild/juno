@@ -1,4 +1,5 @@
-use crate::db::types::state::{Collection, DbHeap, DbStable, Doc, StableKey};
+use crate::db::types::config::DbConfig;
+use crate::db::types::state::{Collection, DbHeap, DbHeapState, DbStable, Doc, StableKey};
 use crate::memory::STATE;
 use junobuild_collections::msg::COLLECTION_NOT_FOUND;
 use junobuild_collections::types::core::CollectionKey;
@@ -347,4 +348,20 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
         None => Err([COLLECTION_NOT_FOUND, collection].join("")),
         Some(rule) => Ok(rule),
     }
+}
+
+///
+/// Config
+///
+
+pub fn get_config() -> Option<DbConfig> {
+    STATE.with(|state| state.borrow().heap.db.config.clone())
+}
+
+pub fn insert_config(config: &DbConfig) {
+    STATE.with(|state| insert_config_impl(config, &mut state.borrow_mut().heap.db))
+}
+
+fn insert_config_impl(config: &DbConfig, state: &mut DbHeapState) {
+    state.config = Some(config.clone());
 }

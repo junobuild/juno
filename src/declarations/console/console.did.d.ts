@@ -42,6 +42,10 @@ export interface CommitProposal {
 export interface Config {
 	storage: StorageConfig;
 }
+export interface ConfigMaxMemorySize {
+	stable: [] | [bigint];
+	heap: [] | [bigint];
+}
 export type ControllerScope = { Write: null } | { Admin: null };
 export interface CreateCanisterArgs {
 	block_index: [] | [bigint];
@@ -174,7 +178,7 @@ export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
-	max_memory_size: [] | [StorageMaxMemorySize];
+	max_memory_size: [] | [ConfigMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
 }
@@ -183,10 +187,6 @@ export type StorageConfigRawAccess = { Deny: null } | { Allow: null };
 export interface StorageConfigRedirect {
 	status_code: number;
 	location: string;
-}
-export interface StorageMaxMemorySize {
-	stable: [] | [bigint];
-	heap: [] | [bigint];
 }
 export interface StreamingCallbackHttpResponse {
 	token: [] | [StreamingCallbackToken];

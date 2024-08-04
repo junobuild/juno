@@ -49,6 +49,7 @@ const deploy = async (proposalId) => {
 		);
 
 		if (!(await fileExists(source))) {
+			console.log("🤔 File not found:", source);
 			return { sourceFile, uploaded: false };
 		}
 

@@ -168,7 +168,7 @@ pub fn assert_description_length(description: &Option<String>) -> Result<(), Str
     Ok(())
 }
 
-pub fn assert_memory_size(
+pub fn assert_max_memory_size(
     config_max_memory_size: &Option<ConfigMaxMemorySize>,
 ) -> Result<(), String> {
     if let Some(max_memory_size) = &config_max_memory_size {

@@ -23,7 +23,7 @@ use junobuild_collections::assert_stores::{assert_create_permission, assert_perm
 use junobuild_collections::constants::{DEFAULT_ASSETS_COLLECTIONS, SYS_COLLECTION_PREFIX};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
-use junobuild_shared::assert::{assert_description_length, assert_memory_size};
+use junobuild_shared::assert::{assert_description_length, assert_max_memory_size};
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::controllers::is_controller;
 use junobuild_shared::types::core::Blob;
@@ -47,7 +47,7 @@ pub fn create_batch(
     init: InitAssetKey,
     reference_id: Option<ReferenceId>,
 ) -> Result<BatchId, String> {
-    assert_max_memory_size(config)?;
+    assert_memory_size(config)?;
 
     assert_key(caller, &init.full_path, &init.collection, controllers)?;
 
@@ -119,7 +119,7 @@ pub fn create_chunk(
                 return Err("Bach initializer does not match chunk uploader.".to_string());
             }
 
-            assert_max_memory_size(config)?;
+            assert_memory_size(config)?;
 
             let now = time();
 
@@ -179,8 +179,8 @@ pub fn commit_batch(
     }
 }
 
-fn assert_max_memory_size(config: &StorageConfig) -> Result<(), String> {
-    assert_memory_size(&config.max_memory_size)
+fn assert_memory_size(config: &StorageConfig) -> Result<(), String> {
+    assert_max_memory_size(&config.max_memory_size)
 }
 
 fn assert_key(
@@ -268,7 +268,7 @@ fn secure_commit_chunks(
                 return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
             }
 
-            assert_max_memory_size(config)?;
+            assert_memory_size(config)?;
 
             commit_chunks(
                 caller,
@@ -315,7 +315,7 @@ fn secure_commit_chunks_update(
         return Err(ERROR_CANNOT_COMMIT_BATCH.to_string());
     }
 
-    assert_max_memory_size(config)?;
+    assert_memory_size(config)?;
 
     commit_chunks(
         caller,

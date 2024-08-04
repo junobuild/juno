@@ -1,4 +1,8 @@
-import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
+import type {
+	DbConfig,
+	_SERVICE as SatelliteActor,
+	SetRule
+} from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
@@ -187,6 +191,36 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				const count = await count_docs(TEST_COLLECTION);
 
 				expect(count).toBe(0n);
+			});
+
+			it('should have empty config per default', async () => {
+				const { get_db_config } = actor;
+
+				const config = await get_db_config();
+				expect(config).toEqual([]);
+			});
+
+			it('should set db config', async () => {
+				const { set_db_config, get_db_config } = actor;
+
+				const config: DbConfig = {
+					max_memory_size: [
+						{
+							heap: [1234n],
+							stable: [789n]
+						}
+					]
+				};
+
+				await set_db_config(config);
+
+				const result = await get_db_config();
+				expect(result).toEqual([config]);
+
+				// Redo for next test
+				await set_db_config({
+					max_memory_size: []
+				});
 			});
 		});
 

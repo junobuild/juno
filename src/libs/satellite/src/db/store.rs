@@ -2,10 +2,12 @@ use crate::controllers::store::get_controllers;
 use crate::db::msg::ERROR_CANNOT_WRITE;
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
-    delete_doc as delete_state_doc, get_doc as get_state_doc, get_docs_heap, get_docs_stable,
-    get_rule as get_state_rule, init_collection as init_state_collection,
-    insert_doc as insert_state_doc, is_collection_empty as is_state_collection_empty,
+    delete_doc as delete_state_doc, get_config, get_doc as get_state_doc, get_docs_heap,
+    get_docs_stable, get_rule as get_state_rule, init_collection as init_state_collection,
+    insert_config, insert_doc as insert_state_doc,
+    is_collection_empty as is_state_collection_empty,
 };
+use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
@@ -19,7 +21,7 @@ use junobuild_collections::assert_stores::{
 use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
-use junobuild_shared::assert::{assert_description_length, assert_version};
+use junobuild_shared::assert::{assert_description_length, assert_max_memory_size, assert_version};
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
@@ -143,8 +145,16 @@ pub fn set_doc_store(
     value: SetDoc,
 ) -> Result<DocContext<DocUpsert>, String> {
     let controllers: Controllers = get_controllers();
+    let config = get_config();
 
-    let data = secure_set_doc(caller, &controllers, collection.clone(), key.clone(), value)?;
+    let data = secure_set_doc(
+        caller,
+        &controllers,
+        &config,
+        collection.clone(),
+        key.clone(),
+        value,
+    )?;
 
     Ok(DocContext {
         key,
@@ -156,17 +166,19 @@ pub fn set_doc_store(
 fn secure_set_doc(
     caller: Principal,
     controllers: &Controllers,
+    config: &Option<DbConfig>,
     collection: CollectionKey,
     key: Key,
     value: SetDoc,
 ) -> Result<DocUpsert, String> {
     let rule = get_state_rule(&collection)?;
-    set_doc_impl(caller, controllers, collection, key, value, &rule)
+    set_doc_impl(caller, controllers, config, collection, key, value, &rule)
 }
 
 fn set_doc_impl(
     caller: Principal,
     controllers: &Controllers,
+    config: &Option<DbConfig>,
     collection: CollectionKey,
     key: Key,
     value: SetDoc,
@@ -175,6 +187,8 @@ fn set_doc_impl(
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
     assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
+
+    assert_memory_size(config)?;
 
     assert_write_version(&current_doc, value.version)?;
 
@@ -206,6 +220,22 @@ fn set_doc_impl(
 
 /// List
 
+/// List documents in a collection.
+///
+/// This function retrieves a list of documents from a collection's store based on the specified parameters.
+/// It returns a `Result<ListResults<Doc>, String>` where `Ok(ListResults)` contains the retrieved documents,
+/// or an error message as `Err(String)` if the operation encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `collection`: A `CollectionKey` representing the collection from which to list the documents.
+/// - `filter`: A reference to `ListParams` containing the filter criteria for listing the documents.
+///
+/// # Returns
+/// - `Ok(ListResults<Doc>)`: Contains the list of retrieved documents matching the filter criteria.
+/// - `Err(String)`: An error message if the operation fails.
+///
+/// This function retrieves documents from a Juno collection's store, applying the specified filter criteria.
 pub fn list_docs_store(
     caller: Principal,
     collection: CollectionKey,
@@ -332,6 +362,13 @@ fn delete_doc_impl(
     delete_state_doc(&collection, &key, rule)
 }
 
+fn assert_memory_size(config: &Option<DbConfig>) -> Result<(), String> {
+    match config {
+        None => Ok(()),
+        Some(config) => assert_max_memory_size(&config.max_memory_size),
+    }
+}
+
 fn assert_write_permission(
     caller: Principal,
     controllers: &Controllers,
@@ -446,4 +483,14 @@ pub fn count_docs_store(collection: &CollectionKey) -> Result<usize, String> {
             Ok(length)
         }),
     }
+}
+
+/// Config
+
+pub fn set_config_store(config: &DbConfig) {
+    insert_config(config);
+}
+
+pub fn get_config_store() -> Option<DbConfig> {
+    get_config()
 }

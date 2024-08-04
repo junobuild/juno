@@ -1,19 +1,15 @@
 <script lang="ts">
-	import {
-		DATA_CONTEXT_KEY,
-		type DataStoreAction,
-		type DataContext
-	} from '$lib/types/data.context';
+	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
-	import { fromArray } from '$lib/utils/did.utils';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import JsonCode from '$lib/components/ui/JsonCode.svelte';
+	import { fromArray } from '@junobuild/utils';
 
 	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
@@ -21,8 +17,6 @@
 	$: key = $store?.key;
 	let doc: Doc | undefined;
 	$: doc = $store?.data;
-	let action: DataStoreAction | undefined;
-	$: action = $store?.action;
 
 	let owner: Principal | undefined;
 	$: owner = doc?.owner;
@@ -38,7 +32,7 @@
 		(obj = nonNullish(doc) && nonNullish(doc?.data) ? await fromArray(doc.data) : undefined))();
 </script>
 
-{#if nonNullish(doc) && action === 'view'}
+{#if nonNullish(doc)}
 	<p class="title doc">{key ?? ''}</p>
 
 	<article class="doc">

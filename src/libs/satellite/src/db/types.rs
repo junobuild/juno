@@ -1,4 +1,5 @@
 pub mod state {
+    use crate::db::types::config::DbConfig;
     use crate::{DelDoc, SetDoc};
     use candid::CandidType;
     use ic_stable_structures::StableBTreeMap;
@@ -21,10 +22,11 @@ pub mod state {
         pub key: Key,
     }
 
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct DbHeapState {
         pub db: DbHeap,
         pub rules: Rules,
+        pub config: Option<DbConfig>,
     }
 
     /// Represents a document in a collection's store.
@@ -71,6 +73,19 @@ pub mod state {
     pub struct DocAssertDelete {
         pub current: Option<Doc>,
         pub proposed: DelDoc,
+    }
+}
+
+pub mod config {
+    use candid::{CandidType, Deserialize};
+    use junobuild_shared::types::config::ConfigMaxMemorySize;
+    use serde::Serialize;
+
+    pub type DbConfigMaxMemorySize = ConfigMaxMemorySize;
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct DbConfig {
+        pub max_memory_size: Option<DbConfigMaxMemorySize>,
     }
 }
 

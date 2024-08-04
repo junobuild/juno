@@ -14,7 +14,7 @@ export const JSON_PICKER_OPTIONS: FilePickerAcceptType = {
 
 export const filenameTimestamp = (): string => new Date().toJSON().split('.')[0].replace(/:/g, '-');
 
-export const saveToCSVFile = ({
+export const saveToFileSystem = ({
 	type,
 	...rest
 }: {

@@ -1,4 +1,5 @@
-use crate::auth::types::state::{AuthenticationConfig, AuthenticationHeapState};
+use crate::auth::types::config::AuthenticationConfig;
+use crate::auth::types::state::AuthenticationHeapState;
 use crate::memory::STATE;
 
 ///

@@ -35,7 +35,13 @@ export interface CommitBatch {
 	chunk_ids: Array<bigint>;
 }
 export interface Config {
+	db: [] | [DbConfig];
+	authentication: [] | [AuthenticationConfig];
 	storage: StorageConfig;
+}
+export interface ConfigMaxMemorySize {
+	stable: [] | [bigint];
+	heap: [] | [bigint];
 }
 export interface Controller {
 	updated_at: bigint;
@@ -51,7 +57,13 @@ export interface CustomDomain {
 	version: [] | [bigint];
 	bn_id: [] | [string];
 }
+export interface DbConfig {
+	max_memory_size: [] | [ConfigMaxMemorySize];
+}
 export interface DelDoc {
+	version: [] | [bigint];
+}
+export interface DelRule {
 	version: [] | [bigint];
 }
 export interface DeleteControllersArgs {
@@ -95,7 +107,9 @@ export interface InitUploadResult {
 }
 export interface ListMatcher {
 	key: [] | [string];
+	updated_at: [] | [TimestampMatcher];
 	description: [] | [string];
+	created_at: [] | [TimestampMatcher];
 }
 export interface ListOrder {
 	field: ListOrderField;
@@ -175,6 +189,7 @@ export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
+	max_memory_size: [] | [ConfigMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
 }
@@ -203,6 +218,11 @@ export type StreamingStrategy = {
 		callback: [Principal, string];
 	};
 };
+export type TimestampMatcher =
+	| { Equal: bigint }
+	| { Between: [bigint, bigint] }
+	| { GreaterThan: bigint }
+	| { LessThan: bigint };
 export interface UploadChunk {
 	content: Uint8Array | number[];
 	batch_id: bigint;
@@ -224,14 +244,16 @@ export interface _SERVICE {
 	del_docs: ActorMethod<[string], undefined>;
 	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
-	del_rule: ActorMethod<[RulesType, string, DelDoc], undefined>;
+	del_rule: ActorMethod<[RulesType, string, DelRule], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_asset: ActorMethod<[string, string], [] | [AssetNoContent]>;
 	get_auth_config: ActorMethod<[], [] | [AuthenticationConfig]>;
 	get_config: ActorMethod<[], Config>;
+	get_db_config: ActorMethod<[], [] | [DbConfig]>;
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
 	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
+	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
 		[StreamingCallbackToken],
@@ -245,12 +267,13 @@ export interface _SERVICE {
 	list_rules: ActorMethod<[RulesType], Array<[string, Rule]>>;
 	memory_size: ActorMethod<[], MemorySize>;
 	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;
-	set_config: ActorMethod<[Config], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
+	set_db_config: ActorMethod<[DbConfig], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
 	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
+	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
 }

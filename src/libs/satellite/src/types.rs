@@ -29,7 +29,7 @@ pub mod state {
         pub content_chunks: ContentChunksStable,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct HeapState {
         pub controllers: Controllers,
         pub db: DbHeapState,
@@ -44,6 +44,8 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::auth::types::config::AuthenticationConfig;
+    use crate::db::types::config::DbConfig;
     use candid::CandidType;
     use junobuild_storage::types::config::StorageConfig;
     use serde::Deserialize;
@@ -57,6 +59,8 @@ pub mod interface {
     #[derive(CandidType, Deserialize)]
     pub struct Config {
         pub storage: StorageConfig,
+        pub db: Option<DbConfig>,
+        pub authentication: Option<AuthenticationConfig>,
     }
 }
 

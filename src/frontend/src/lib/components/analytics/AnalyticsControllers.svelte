@@ -32,12 +32,9 @@
 		});
 </script>
 
-<div>
-	<Controllers {list} {remove} {add} segment={{ label: $i18n.analytics.orbiter, id: orbiterId }} />
-</div>
-
-<style lang="scss">
-	div {
-		margin: var(--padding-8x) 0 0;
-	}
-</style>
+<Controllers
+	{list}
+	{remove}
+	{add}
+	segment={{ label: $i18n.analytics.orbiter, canisterId: orbiterId.toText(), segment: 'orbiter' }}
+/>

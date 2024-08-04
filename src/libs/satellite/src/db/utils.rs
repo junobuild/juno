@@ -2,7 +2,7 @@ use crate::db::types::state::Doc;
 use candid::Principal;
 use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::types::rules::Permission;
-use junobuild_shared::list::matcher_regex;
+use junobuild_shared::list::{filter_timestamps, matcher_regex};
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::state::{Controllers, UserId};
@@ -27,6 +27,7 @@ pub fn filter_values<'a>(
             if filter_key_matcher(&regex_key, key)
                 && filter_description_matcher(&regex_description, &doc.description)
                 && filter_owner(owner, &doc.owner)
+                && filter_timestamps(matcher, *doc)
                 && assert_permission(rule, doc.owner, caller, controllers)
             {
                 Some((*key, *doc))

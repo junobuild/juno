@@ -48,8 +48,9 @@
 
 		busy.start();
 
-		const { customDomains, success } = await listCustomDomains({
-			satelliteId: satellite.satellite_id
+		const { success } = await listCustomDomains({
+			satelliteId: satellite.satellite_id,
+			reload: true
 		});
 
 		busy.stop();
@@ -64,8 +65,7 @@
 				type: 'delete_satellite',
 				detail: {
 					satellite,
-					cycles: canister?.data?.canister?.cycles ?? 0n,
-					customDomains: customDomains ?? []
+					cycles: canister?.data?.canister?.cycles ?? 0n
 				}
 			}
 		});

@@ -59,3 +59,9 @@
 		{$i18n.analytics.configure}
 	</button>
 </form>
+
+<style lang="scss">
+	button {
+		margin: 0;
+	}
+</style>

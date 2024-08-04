@@ -10,7 +10,7 @@
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import { onDestroy, onMount } from 'svelte';
-	import { formatNumber } from '$lib/utils/number.utils';
+	import { formatBytes } from '$lib/utils/number.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
@@ -69,11 +69,11 @@
 	$: ({ data, sync } = canister ?? { data: undefined, sync: undefined });
 
 	let status: CanisterStatus | undefined;
-	let memory_size: bigint;
+	let memorySize: bigint;
 
-	$: ({ status, memory_size } = data?.canister ?? {
+	$: ({ status, memorySize } = data?.canister ?? {
 		status: undefined,
-		memory_size: BigInt(0),
+		memorySize: BigInt(0),
 		cycles: BigInt(0),
 		icp: 0,
 		warning: false
@@ -90,7 +90,7 @@
 				<CanisterTCycles {data} />{#if sync === 'syncing'}<IconSync />{/if}
 			</p>
 			<p>
-				{formatNumber(Number(memory_size) / 1_000_000)} MB <small>{$i18n.canisters.in_total}</small>
+				{formatBytes(Number(memorySize))} <small>{$i18n.canisters.in_total}</small>
 			</p>
 		{:else if sync === 'loading'}
 			<p><SkeletonText /></p>

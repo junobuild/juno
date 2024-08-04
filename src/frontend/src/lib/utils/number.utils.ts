@@ -1,17 +1,26 @@
 export const formatNumber = (
 	value: number,
-	options?: { minFraction: number; maxFraction: number }
+	options?: { minFraction?: number; maxFraction?: number } & Pick<
+		Intl.NumberFormatOptions,
+		'notation' | 'unit' | 'style' | 'unitDisplay'
+	>
 ): string => {
-	const { minFraction = 2, maxFraction = 2 } = options || {};
+	const { minFraction = 2, maxFraction = 2, ...rest } = options || {};
 
-	return new Intl.NumberFormat('fr-FR', {
+	return new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: minFraction,
-		maximumFractionDigits: maxFraction
-	})
-		.format(value)
-		.replace(/\s/g, '’')
-		.replace(',', '.');
+		maximumFractionDigits: maxFraction,
+		...rest
+	}).format(value);
 };
+
+export const formatBytes = (value: number): string =>
+	formatNumber(value, {
+		notation: 'compact',
+		style: 'unit',
+		unit: 'byte',
+		unitDisplay: 'narrow'
+	}).replace('BB', 'GB');
 
 export const bigintStringify = (_key: string, value: unknown): unknown =>
 	typeof value === 'bigint' ? `BIGINT::${value}` : value;

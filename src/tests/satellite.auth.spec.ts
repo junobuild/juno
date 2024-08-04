@@ -285,7 +285,7 @@ describe('Satellite authentication', () => {
 			});
 
 			it('should not create a user if caller is not the user', async () => {
-				const { set_doc, list_docs } = actor;
+				const { set_doc } = actor;
 
 				await expect(
 					set_doc('#user', user.getPrincipal().toText(), {
@@ -299,7 +299,7 @@ describe('Satellite authentication', () => {
 			});
 
 			it('should not create a user if key is not a principal', async () => {
-				const { set_doc, list_docs } = actor;
+				const { set_doc } = actor;
 
 				await expect(
 					set_doc('#user', 'test', {

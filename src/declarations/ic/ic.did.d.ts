@@ -58,6 +58,19 @@ export interface canister_info_result {
 	recent_changes: Array<change>;
 	total_num_changes: bigint;
 }
+export type canister_install_mode =
+	| { reinstall: null }
+	| {
+			upgrade:
+				| []
+				| [
+						{
+							wasm_memory_persistence: [] | [{ keep: null } | { replace: null }];
+							skip_pre_upgrade: [] | [boolean];
+						}
+				  ];
+	  }
+	| { install: null };
 export interface canister_log_record {
 	idx: bigint;
 	timestamp_nanos: bigint;
@@ -68,6 +81,7 @@ export interface canister_settings {
 	controllers: [] | [Array<Principal>];
 	reserved_cycles_limit: [] | [bigint];
 	log_visibility: [] | [log_visibility];
+	wasm_memory_limit: [] | [bigint];
 	memory_allocation: [] | [bigint];
 	compute_allocation: [] | [bigint];
 }
@@ -79,6 +93,12 @@ export interface canister_status_result {
 	memory_size: bigint;
 	cycles: bigint;
 	settings: definite_canister_settings;
+	query_stats: {
+		response_payload_bytes_total: bigint;
+		num_instructions_total: bigint;
+		num_calls_total: bigint;
+		request_payload_bytes_total: bigint;
+	};
 	idle_cycles_burned_per_day: bigint;
 	module_hash: [] | [Uint8Array | number[]];
 	reserved_cycles: bigint;
@@ -109,7 +129,9 @@ export type change_origin =
 				canister_id: Principal;
 			};
 	  };
-export type chunk_hash = Uint8Array | number[];
+export interface chunk_hash {
+	hash: Uint8Array | number[];
+}
 export interface clear_chunk_store_args {
 	canister_id: canister_id;
 }
@@ -125,6 +147,7 @@ export interface definite_canister_settings {
 	controllers: Array<Principal>;
 	reserved_cycles_limit: bigint;
 	log_visibility: log_visibility;
+	wasm_memory_limit: bigint;
 	memory_allocation: bigint;
 	compute_allocation: bigint;
 }
@@ -170,22 +193,16 @@ export interface http_request_result {
 export interface install_chunked_code_args {
 	arg: Uint8Array | number[];
 	wasm_module_hash: Uint8Array | number[];
-	mode:
-		| { reinstall: null }
-		| { upgrade: [] | [{ skip_pre_upgrade: [] | [boolean] }] }
-		| { install: null };
+	mode: canister_install_mode;
 	chunk_hashes_list: Array<chunk_hash>;
 	target_canister: canister_id;
+	store_canister: [] | [canister_id];
 	sender_canister_version: [] | [bigint];
-	storage_canister: [] | [canister_id];
 }
 export interface install_code_args {
 	arg: Uint8Array | number[];
 	wasm_module: wasm_module;
-	mode:
-		| { reinstall: null }
-		| { upgrade: [] | [{ skip_pre_upgrade: [] | [boolean] }] }
-		| { install: null };
+	mode: canister_install_mode;
 	canister_id: canister_id;
 	sender_canister_version: [] | [bigint];
 }
@@ -194,7 +211,7 @@ export type millisatoshi_per_byte = bigint;
 export interface node_metrics {
 	num_block_failures_total: bigint;
 	node_id: Principal;
-	num_blocks_total: bigint;
+	num_blocks_proposed_total: bigint;
 }
 export interface node_metrics_history_args {
 	start_at_timestamp_nanos: bigint;
@@ -223,12 +240,30 @@ export interface provisional_top_up_canister_args {
 }
 export type raw_rand_result = Uint8Array | number[];
 export type satoshi = bigint;
+export type schnorr_algorithm = { ed25519: null } | { bip340secp256k1: null };
+export interface schnorr_public_key_args {
+	key_id: { algorithm: schnorr_algorithm; name: string };
+	canister_id: [] | [canister_id];
+	derivation_path: Array<Uint8Array | number[]>;
+}
+export interface schnorr_public_key_result {
+	public_key: Uint8Array | number[];
+	chain_code: Uint8Array | number[];
+}
 export interface sign_with_ecdsa_args {
 	key_id: { name: string; curve: ecdsa_curve };
 	derivation_path: Array<Uint8Array | number[]>;
 	message_hash: Uint8Array | number[];
 }
 export interface sign_with_ecdsa_result {
+	signature: Uint8Array | number[];
+}
+export interface sign_with_schnorr_args {
+	key_id: { algorithm: schnorr_algorithm; name: string };
+	derivation_path: Array<Uint8Array | number[]>;
+	message: Uint8Array | number[];
+}
+export interface sign_with_schnorr_result {
 	signature: Uint8Array | number[];
 }
 export interface start_canister_args {
@@ -295,7 +330,9 @@ export interface _SERVICE {
 	>;
 	provisional_top_up_canister: ActorMethod<[provisional_top_up_canister_args], undefined>;
 	raw_rand: ActorMethod<[], raw_rand_result>;
+	schnorr_public_key: ActorMethod<[schnorr_public_key_args], schnorr_public_key_result>;
 	sign_with_ecdsa: ActorMethod<[sign_with_ecdsa_args], sign_with_ecdsa_result>;
+	sign_with_schnorr: ActorMethod<[sign_with_schnorr_args], sign_with_schnorr_result>;
 	start_canister: ActorMethod<[start_canister_args], undefined>;
 	stop_canister: ActorMethod<[stop_canister_args], undefined>;
 	stored_chunks: ActorMethod<[stored_chunks_args], stored_chunks_result>;

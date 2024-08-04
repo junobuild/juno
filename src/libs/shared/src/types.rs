@@ -3,6 +3,7 @@ pub mod state {
     use candid::{CandidType, Nat};
     use ic_cdk::api::management_canister::main::CanisterStatusType;
     use serde::{Deserialize, Serialize};
+    use std::cmp::Ordering;
     use std::collections::HashMap;
 
     pub type UserId = Principal;
@@ -19,6 +20,13 @@ pub mod state {
     pub type Timestamp = u64;
 
     pub type Version = u64;
+
+    pub trait Timestamped {
+        fn created_at(&self) -> Timestamp;
+        fn updated_at(&self) -> Timestamp;
+        fn cmp_updated_at(&self, other: &Self) -> Ordering;
+        fn cmp_created_at(&self, other: &Self) -> Ordering;
+    }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Controller {
@@ -81,6 +89,7 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::types::core::Bytes;
     use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{
         ControllerId, ControllerScope, Metadata, MissionControlId, Timestamp, UserId,
@@ -147,8 +156,6 @@ pub mod interface {
         pub destination_id: Principal,
         pub cycles: u128,
     }
-
-    pub type Bytes = usize;
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct MemorySize {
@@ -264,8 +271,6 @@ pub mod memory {
 }
 
 pub mod core {
-    use std::cmp::Ordering;
-
     /// Represents a unique identifier or key.
     ///
     /// This type, `Key`, is an alias for `String`, used to represent unique identifiers or keys within the context
@@ -292,14 +297,9 @@ pub mod core {
     /// Basic usage:
     ///
     /// ```
-    /// let main_domain: DomainName = "example.com".to_string();
+    /// let main_domain: junobuild_shared::types::core::DomainName = "example.com".to_string();
     /// ```
     pub type DomainName = String;
-
-    pub trait Compare {
-        fn cmp_updated_at(&self, other: &Self) -> Ordering;
-        fn cmp_created_at(&self, other: &Self) -> Ordering;
-    }
 
     /// Sha256 Digest: 32 bytes
     pub type Hash = [u8; 32];
@@ -307,11 +307,14 @@ pub mod core {
     pub trait Hashable {
         fn hash(&self) -> Hash;
     }
+
+    /// A shorthand for example to represents the type of the memory size in bytes.
+    pub type Bytes = usize;
 }
 
 pub mod list {
     use crate::types::core::Key;
-    use crate::types::state::UserId;
+    use crate::types::state::{Timestamp, UserId};
     use candid::CandidType;
     use serde::Deserialize;
 
@@ -335,10 +338,20 @@ pub mod list {
         pub field: ListOrderField,
     }
 
+    #[derive(CandidType, Deserialize, Clone)]
+    pub enum TimestampMatcher {
+        Equal(Timestamp),
+        GreaterThan(Timestamp),
+        LessThan(Timestamp),
+        Between(Timestamp, Timestamp),
+    }
+
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct ListMatcher {
         pub key: Option<Key>,
         pub description: Option<String>,
+        pub created_at: Option<TimestampMatcher>,
+        pub updated_at: Option<TimestampMatcher>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -374,5 +387,17 @@ pub mod domain {
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
+    }
+}
+
+pub mod config {
+    use crate::types::core::Bytes;
+    use candid::{CandidType, Deserialize};
+    use serde::Serialize;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct ConfigMaxMemorySize {
+        pub heap: Option<Bytes>,
+        pub stable: Option<Bytes>,
     }
 }

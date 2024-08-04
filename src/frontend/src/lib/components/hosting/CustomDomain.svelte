@@ -11,18 +11,19 @@
 		CustomDomain as CustomDomainType
 	} from '$declarations/satellite/satellite.did';
 	import type { HostingCallback } from '$lib/services/worker.hosting.services';
-	import { onDestroy, onMount } from 'svelte';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { initHostingWorker } from '$lib/services/worker.hosting.services';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
+	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let url: string;
 	export let ariaLabel = '';
 	export let type: 'default' | 'custom' = 'default';
 	export let customDomain: [string, CustomDomainType] | undefined = undefined;
 	export let satellite: Satellite | undefined = undefined;
-	export let toolsColumn = true;
 	export let config: AuthenticationConfig | undefined = undefined;
 
 	let host = '';
@@ -55,6 +56,8 @@
 		if (registrationState === 'Available') {
 			worker?.stopCustomDomainRegistrationTimer();
 		}
+
+		emit({ message: 'junoRegistrationState', detail: { registrationState } });
 	};
 
 	const loadRegistrationState = async () => {
@@ -87,15 +90,25 @@
 			: registrationState === null
 				? null
 				: keyOf({ obj: $i18n.hosting, key: registrationState.toLowerCase() });
+
+	const dispatch = createEventDispatcher();
+	const displayInfo = () =>
+		dispatch('junoDisplayInfo', {
+			customDomain,
+			registrationState,
+			mainDomain
+		});
 </script>
 
-{#if toolsColumn}
-	<td>
-		{#if type === 'custom' && nonNullish(satellite)}
+<td>
+	{#if type === 'custom' && nonNullish(satellite)}
+		<div class="actions">
+			<ButtonTableAction icon="info" ariaLabel={$i18n.hosting.info} on:click={displayInfo} />
+
 			<CustomDomainActions {satellite} {customDomain} {config} {displayState} />
-		{/if}
-	</td>
-{/if}
+		</div>
+	{/if}
+</td>
 
 <td colspan={type === 'default' ? 2 : undefined}>
 	<div class="domain">
@@ -181,5 +194,10 @@
 		@include media.min-width(medium) {
 			display: table-cell;
 		}
+	}
+
+	.actions {
+		display: inline-flex;
+		gap: var(--padding);
 	}
 </style>

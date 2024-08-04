@@ -12,12 +12,14 @@
 	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
-	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import type { Principal } from '@dfinity/principal';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
-	import { DEV_FEATURES } from '$lib/constants/constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
+	import { fade } from 'svelte/transition';
+	import DocUpload from '$lib/components/docs/DocUpload.svelte';
+	import { emit } from '$lib/utils/events.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -39,13 +41,13 @@
 	let emptyCollection = false;
 	$: emptyCollection = $store.rules?.length === 0;
 
-	$: collection,
-		$listParamsStore,
-		(async () => {
-			resetPage();
-			resetData();
-			await list();
-		})();
+	const load = async () => {
+		resetPage();
+		resetData();
+		await list();
+	};
+
+	$: collection, $listParamsStore, (async () => await load())();
 
 	/**
 	 * Delete data
@@ -57,6 +59,11 @@
 
 		resetData();
 	};
+
+	const reload = async () => {
+		emit({ message: 'junoCloseActions' });
+		await load();
+	};
 </script>
 
 <div class="title">
@@ -64,6 +71,21 @@
 		{$i18n.datastore.documents}
 
 		<svelte:fragment slot="actions">
+			<DocUpload on:junoUploaded={reload}>
+				<svelte:fragment slot="action">{$i18n.document.create_document}</svelte:fragment>
+				<svelte:fragment slot="title">{$i18n.document.create_document}</svelte:fragment>
+				{@html i18nFormat($i18n.document.upload_description, [
+					{
+						placeholder: '{0}',
+						value: collection ?? ''
+					}
+				])}
+			</DocUpload>
+
+			<button class="menu" type="button" on:click={load}
+				><IconRefresh size="20px" /> {$i18n.core.reload}</button
+			>
+
 			<DataCollectionDelete {deleteData}>
 				<svelte:fragment slot="button">{$i18n.collections.clear_collection}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.collections.clear_collection}</svelte:fragment>
@@ -81,35 +103,27 @@
 {#if !emptyCollection}
 	<div
 		class="data"
-		class:data-selected={nonNullish($docsStore?.action)}
+		class:data-selected={nonNullish($docsStore?.data)}
 		class:data-nullish={isNullish($paginationStore.items)}
 	>
 		{#if nonNullish($paginationStore.items)}
-			{#if empty}
-				<CollectionEmpty {collection} rule={$store.rule?.[1]}>
-					<svelte:fragment slot="filter">{$i18n.document.no_match}</svelte:fragment>
-				</CollectionEmpty>
-			{/if}
+			<div out:fade>
+				{#if empty}
+					<CollectionEmpty {collection} rule={$store.rule?.[1]}>
+						<svelte:fragment slot="filter">{$i18n.document.no_match}</svelte:fragment>
+					</CollectionEmpty>
+				{/if}
 
-			{#if DEV_FEATURES}
-				<button
-					class="text action start"
-					on:click={() => docsStore.set({ key: undefined, data: undefined, action: 'create' })}
-					><IconNew size="16px" /> <span>{$i18n.document_form.btn_add_document}</span></button
-				>
-			{/if}
+				{#each $paginationStore.items as [key, doc]}
+					<button class="text action" on:click={() => docsStore.set({ key, data: doc })}
+						><span>{key}</span></button
+					>
+				{/each}
 
-			{#each $paginationStore.items as [key, doc]}
-				<button
-					class="text action"
-					on:click={() => docsStore.set({ key, data: doc, action: 'view' })}
-					><span>{key}</span></button
-				>
-			{/each}
-
-			{#if !empty}
-				<DataPaginator />
-			{/if}
+				{#if !empty}
+					<DataPaginator />
+				{/if}
+			</div>
 		{/if}
 	</div>
 {/if}

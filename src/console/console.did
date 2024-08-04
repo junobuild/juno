@@ -31,6 +31,7 @@ type CommitBatch = record {
 };
 type CommitProposal = record { sha256 : blob; proposal_id : nat };
 type Config = record { storage : StorageConfig };
+type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type ControllerScope = variant { Write; Admin };
 type CreateCanisterArgs = record { block_index : opt nat64; user : principal };
 type CustomDomain = record {
@@ -64,7 +65,12 @@ type InitAssetKey = record {
   full_path : text;
 };
 type InitUploadResult = record { batch_id : nat };
-type ListMatcher = record { key : opt text; description : opt text };
+type ListMatcher = record {
+  key : opt text;
+  updated_at : opt TimestampMatcher;
+  description : opt text;
+  created_at : opt TimestampMatcher;
+};
 type ListOrder = record { field : ListOrderField; desc : bool };
 type ListOrderField = variant { UpdatedAt; Keys; CreatedAt };
 type ListPaginate = record { start_after : opt text; limit : opt nat64 };
@@ -140,6 +146,7 @@ type StorageConfig = record {
   iframe : opt StorageConfigIFrame;
   rewrites : vec record { text; text };
   headers : vec record { text; vec record { text; text } };
+  max_memory_size : opt ConfigMaxMemorySize;
   raw_access : opt StorageConfigRawAccess;
   redirects : opt vec record { text; StorageConfigRedirect };
 };
@@ -165,6 +172,12 @@ type StreamingStrategy = variant {
     callback : func () -> () query;
   };
 };
+type TimestampMatcher = variant {
+  Equal : nat64;
+  Between : record { nat64; nat64 };
+  GreaterThan : nat64;
+  LessThan : nat64;
+};
 type Tokens = record { e8s : nat64 };
 type UploadChunk = record {
   content : blob;
@@ -188,6 +201,7 @@ service : () -> {
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_proposal : (nat) -> (opt Proposal) query;
+  get_storage_config : () -> (StorageConfig) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
@@ -202,10 +216,10 @@ service : () -> {
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;
-  set_config : (Config) -> ();
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentType, Tokens) -> ();
+  set_storage_config : (StorageConfig) -> ();
   submit_proposal : (nat) -> (nat, Proposal);
   update_rate_config : (SegmentType, RateConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);

@@ -8,9 +8,9 @@ import {
 } from '$lib/api/satellites.api';
 import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
 import { authStore } from '$lib/stores/auth.store';
+import { customDomainsStore } from '$lib/stores/custom-domains.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, nonNullish } from '@dfinity/utils';
@@ -76,19 +76,28 @@ export const deleteCustomDomain = async ({
 };
 
 export const listCustomDomains = async ({
-	satelliteId
+	satelliteId,
+	reload
 }: {
 	satelliteId: Principal;
-}): Promise<{ success: boolean; customDomains?: CustomDomains }> => {
+	reload: boolean;
+}): Promise<{ success: boolean }> => {
 	try {
 		const identity = get(authStore).identity;
+
+		const store = get(customDomainsStore);
+		if (nonNullish(store[satelliteId.toText()]) && !reload) {
+			return { success: true };
+		}
 
 		const customDomains = await listCustomDomainsApi({
 			satelliteId,
 			identity
 		});
 
-		return { success: true, customDomains };
+		customDomainsStore.setCustomDomains({ satelliteId: satelliteId.toText(), customDomains });
+
+		return { success: true };
 	} catch (err: unknown) {
 		const labels = get(i18n);
 

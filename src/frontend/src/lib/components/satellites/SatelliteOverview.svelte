@@ -9,6 +9,7 @@
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
+	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
 
 	export let satellite: Satellite;
 
@@ -16,33 +17,41 @@
 	$: satelliteId = satellite.satellite_id.toText();
 </script>
 
-<div class="card-container columns-3 fit-column-1">
-	<div>
-		<SatelliteName {satellite} />
+<div class="card-container with-title">
+	<span class="title">{$i18n.satellites.overview}</span>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.satellites.id}</svelte:fragment>
-			<Identifier identifier={satelliteId} shorten={false} small={false} />
-		</Value>
-	</div>
+	<div class="columns-3 fit-column-1">
+		<div>
+			<SatelliteName {satellite} />
 
-	<div>
-		<SatelliteOverviewVersion {satelliteId} />
+			<Value>
+				<svelte:fragment slot="label">{$i18n.satellites.id}</svelte:fragment>
+				<Identifier identifier={satelliteId} shorten={false} small={false} />
+			</Value>
+
+			<SatelliteOverviewCustomDomain {satellite} />
+		</div>
+
+		<div>
+			<SatelliteOverviewVersion {satelliteId} />
+		</div>
 	</div>
 
 	<SatelliteActions {satellite} />
 </div>
 
-<div class="card-container columns-3">
-	<div>
+<div class="card-container with-title">
+	<span class="title">{$i18n.canisters.insight}</span>
+
+	<div class="columns-3">
 		<CanisterOverview
 			canisterId={satellite.satellite_id}
 			segment="satellite"
 			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
 		/>
-	</div>
 
-	<CanisterJunoStatuses segment="satellite" canisterId={satellite.satellite_id} />
+		<CanisterJunoStatuses segment="satellite" canisterId={satellite.satellite_id} />
+	</div>
 </div>
 
 <style lang="scss">

@@ -15,6 +15,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
+	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 
 	export let detail: JunoModalDetail;
 
@@ -24,10 +25,7 @@
 		} & SetControllerParams
 	) => Promise<void>;
 	let load: () => Promise<void>;
-	let segment: {
-		label: string;
-		id: Principal;
-	};
+	let segment: CanisterSegmentWithLabel;
 
 	$: ({ add, load, segment } = detail as JunoModalCreateControllerDetail);
 
@@ -125,7 +123,7 @@
 				<div>
 					<Value>
 						<svelte:fragment slot="label">{segment.label}</svelte:fragment>
-						<Identifier identifier={segment.id.toText()} shorten={false} small={false} />
+						<Identifier identifier={segment.canisterId} shorten={false} small={false} />
 					</Value>
 				</div>
 

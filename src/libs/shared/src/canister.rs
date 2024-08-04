@@ -16,7 +16,7 @@ use ic_cdk::api::stable::{stable_size, WASM_PAGE_SIZE_IN_BYTES};
 ///
 /// # Example
 /// ```
-/// let memory_usage = memory_size();
+/// let memory_usage = junobuild_shared::canister::memory_size();
 /// println!("Heap size: {} bytes", memory_usage.heap);
 /// println!("Stable storage size: {} bytes", memory_usage.stable);
 /// ```

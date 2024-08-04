@@ -44,10 +44,13 @@ interface I18nCore {
 	attach: string;
 	detach: string;
 	refresh: string;
+	reload: string;
 	open_website: string;
+	file: string;
 }
 
 interface I18nCanisters {
+	insight: string;
 	top_up: string;
 	cycles: string;
 	top_up_in_progress: string;
@@ -70,6 +73,20 @@ interface I18nCanisters {
 	top_up_satellite_done: string;
 	top_up_orbiter_done: string;
 	daily_consumption: string;
+	queries: string;
+	calls: string;
+	instructions: string;
+	requests: string;
+	responses: string;
+	freezing_threshold: string;
+	reserved_cycles_limit: string;
+	log_visibility: string;
+	heap_memory_limit: string;
+	memory_allocation: string;
+	compute_allocation: string;
+	edit_settings: string;
+	edit_settings_segment: string;
+	not_set: string;
 	review_upgrade: string;
 	confirm_upgrade: string;
 	upgrade_done: string;
@@ -83,6 +100,7 @@ interface I18nCanisters {
 	delete_info: string;
 	stop_title: string;
 	stop_info: string;
+	stop_forewords: string;
 	stop_explanation: string;
 	stop_error: string;
 	stop_success: string;
@@ -111,6 +129,15 @@ interface I18nCanisters {
 	warning_satellite_heap_memory: string;
 	warning_orbiter_heap_memory: string;
 	warning_indicator: string;
+	updating_settings: string;
+	settings_updated_text: string;
+	in_seconds: string;
+	in_bytes: string;
+	in_percent: string;
+	in_t_cycles: string;
+	no_update_required: string;
+	controllers: string;
+	public: string;
 }
 
 interface I18nSign_in {
@@ -163,6 +190,7 @@ interface I18nMission_control {
 
 interface I18nWallet {
 	title: string;
+	overview: string;
 	account_identifier: string;
 	balance: string;
 	credits: string;
@@ -223,6 +251,7 @@ interface I18nAnalytics {
 	average_page_views_per_session: string;
 	bounce_rate: string;
 	overview: string;
+	visitors: string;
 	id: string;
 	tracked_events: string;
 	count: string;
@@ -262,6 +291,9 @@ interface I18nHosting {
 	default_domain: string;
 	domain: string;
 	status: string;
+	bn_id: string;
+	info: string;
+	autentication_main_domain: string;
 	pendingorder: string;
 	pendingchallengeresponse: string;
 	pendingacmeapproval: string;
@@ -323,6 +355,8 @@ interface I18nErrors {
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
+	canister_settings_no_loaded: string;
+	canister_update_error: string;
 	segment_detach: string;
 	ledger_balance_credits: string;
 	load_credits: string;
@@ -342,6 +376,7 @@ interface I18nErrors {
 	full_path_invalid: string;
 	collection_invalid: string;
 	controller_invalid: string;
+	document_invalid: string;
 	observatory_get_unexpected_error: string;
 	observatory_set_unexpected_error: string;
 	collection_added: string;
@@ -364,6 +399,7 @@ interface I18nErrors {
 	orbiter_configuration_listing: string;
 	orbiter_id_missing: string;
 	orbiter_attach: string;
+	orbiter_unexpected_error: string;
 	transactions_next: string;
 	transactions_export: string;
 	invalid_cycles_to_transfer: string;
@@ -374,6 +410,7 @@ interface I18nErrors {
 	no_file_selected_for_upload: string;
 	upload_error: string;
 	no_collection_for_upload: string;
+	invalid_email: string;
 }
 
 interface I18nDocument {
@@ -388,26 +425,18 @@ interface I18nDocument {
 	description: string;
 	document_submission_success: string;
 	document_submission_failed: string;
-}
-
-interface I18nDocument_form {
-	field_doc_key_label: string;
-	field_doc_key_btn_auto_key: string;
-	field_doc_key_placeholder: string;
-	field_name_label: string;
-	field_name_placeholder: string;
-	field_type_label: string;
-	field_value_label: string;
-	field_value_placeholder: string;
-	field_type_boolean: string;
-	field_type_string: string;
-	field_type_number: string;
-	field_value_true: string;
-	field_value_false: string;
-	btn_add_field: string;
-	btn_add_document: string;
-	title_add_new_document: string;
-	title_edit_document: string;
+	create_document: string;
+	replace_document: string;
+	download_document: string;
+	upload_description: string;
+	replace_description: string;
+	upload: string;
+	key: string;
+	key_generate: string;
+	key_placeholder: string;
+	description_placeholder: string;
+	create: string;
+	replace: string;
 }
 
 interface I18nAsset {
@@ -538,7 +567,7 @@ interface I18nObservatory {
 	error_collecting_data: string;
 }
 
-interface I18nSettings {
+interface I18nPreferences {
 	title: string;
 	dev_id: string;
 	session_expires_in: string;
@@ -576,7 +605,6 @@ interface I18n {
 	cli: I18nCli;
 	errors: I18nErrors;
 	document: I18nDocument;
-	document_form: I18nDocument_form;
 	asset: I18nAsset;
 	admin: I18nAdmin;
 	controllers: I18nControllers;
@@ -585,7 +613,7 @@ interface I18n {
 	filter: I18nFilter;
 	users: I18nUsers;
 	observatory: I18nObservatory;
-	settings: I18nSettings;
+	preferences: I18nPreferences;
 	examples: I18nExamples;
 	resources: I18nResources;
 }

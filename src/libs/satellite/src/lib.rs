@@ -15,7 +15,7 @@ mod storage;
 mod types;
 mod version;
 
-use crate::auth::types::state::AuthenticationConfig;
+use crate::auth::types::config::AuthenticationConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::types::interface::{Config, RulesType};
 use crate::version::SATELLITE_VERSION;
@@ -40,6 +40,7 @@ pub use crate::db::store::{
     count_docs_store, delete_doc_store, delete_docs_store, get_doc_store, list_docs_store,
     set_doc_store,
 };
+use crate::db::types::config::DbConfig;
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
 pub use crate::logs::loggers::{
@@ -64,6 +65,7 @@ use junobuild_shared::types::domain::CustomDomains;
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
 };
+use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::state::FullPath;
 
 ///
@@ -189,22 +191,6 @@ pub fn list_controllers() -> Controllers {
 }
 
 ///
-/// Config
-///
-
-#[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
-pub fn set_config(config: Config) {
-    satellite::set_config(config);
-}
-
-#[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
-pub fn get_config() -> Config {
-    satellite::get_config()
-}
-
-///
 /// Custom domains
 ///
 
@@ -227,6 +213,16 @@ pub fn del_custom_domain(domain_name: DomainName) {
 }
 
 ///
+/// Config
+///
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn get_config() -> Config {
+    satellite::get_config()
+}
+
+///
 /// Authentication config
 ///
 
@@ -240,6 +236,38 @@ pub fn set_auth_config(config: AuthenticationConfig) {
 #[query(guard = "caller_is_admin_controller")]
 pub fn get_auth_config() -> Option<AuthenticationConfig> {
     satellite::get_auth_config()
+}
+
+///
+/// Db config
+///
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_db_config(config: DbConfig) {
+    satellite::set_db_config(config);
+}
+
+#[doc(hidden)]
+#[query(guard = "caller_is_admin_controller")]
+pub fn get_db_config() -> Option<DbConfig> {
+    satellite::get_db_config()
+}
+
+///
+/// Storage config
+///
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_storage_config(config: StorageConfig) {
+    satellite::set_storage_config(config);
+}
+
+#[doc(hidden)]
+#[query(guard = "caller_is_admin_controller")]
+pub fn get_storage_config() -> StorageConfig {
+    satellite::get_storage_config()
 }
 
 ///
@@ -369,11 +397,13 @@ macro_rules! include_satellite {
         use junobuild_satellite::{
             commit_asset_upload, count_assets, count_docs, del_asset, del_assets, del_controllers,
             del_custom_domain, del_doc, del_docs, del_many_assets, del_many_docs, del_rule,
-            deposit_cycles, get_asset, get_auth_config, get_config, get_doc, get_many_assets,
-            get_many_docs, http_request, http_request_streaming_callback, init, init_asset_upload,
-            list_assets, list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
-            post_upgrade, pre_upgrade, set_auth_config, set_config, set_controllers,
-            set_custom_domain, set_doc, set_many_docs, set_rule, upload_asset_chunk, version,
+            deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_doc,
+            get_many_assets, get_many_docs, get_storage_config, http_request,
+            http_request_streaming_callback, init, init_asset_upload, list_assets,
+            list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
+            post_upgrade, pre_upgrade, set_auth_config, set_controllers,
+            set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
+            upload_asset_chunk, version,
         };
 
         #[ic_cdk::query]

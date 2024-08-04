@@ -34,7 +34,7 @@
 			steps = 'ready';
 		} catch (err) {
 			toasts.error({
-				text: $i18n.errors.satellite_unexpected_error,
+				text: $i18n.errors.orbiter_unexpected_error,
 				detail: err
 			});
 

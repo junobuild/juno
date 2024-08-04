@@ -85,7 +85,7 @@
 <svelte:window on:junoRestartCycles={restartCycles} />
 
 {#if chartsData.length > 0}
-	<div class="container" in:fade>
+	<div in:fade>
 		<Value>
 			<svelte:fragment slot="label"
 				>{$i18n.observatory.title} <small>(T Cycles)</small></svelte:fragment
@@ -100,10 +100,6 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/shadow';
-
-	.container {
-		grid-column: 2 / 4;
-	}
 
 	.chart-container {
 		width: 100%;

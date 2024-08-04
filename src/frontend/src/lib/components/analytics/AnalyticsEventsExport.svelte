@@ -2,7 +2,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToCSVFile } from '$lib/utils/save.utils';
+	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 	import { jsonReplacer } from '@dfinity/utils';
 	import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
 	import { satelliteStore } from '$lib/stores/satellite.store';
@@ -28,7 +28,7 @@
 
 			const json = JSON.stringify(trackEvents, jsonReplacer);
 
-			await saveToCSVFile({
+			await saveToFileSystem({
 				blob: new Blob([json], {
 					type: 'application/json'
 				}),

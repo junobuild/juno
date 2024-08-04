@@ -42,6 +42,10 @@ export interface CommitProposal {
 export interface Config {
 	storage: StorageConfig;
 }
+export interface ConfigMaxMemorySize {
+	stable: [] | [bigint];
+	heap: [] | [bigint];
+}
 export type ControllerScope = { Write: null } | { Admin: null };
 export interface CreateCanisterArgs {
 	block_index: [] | [bigint];
@@ -88,7 +92,9 @@ export interface InitUploadResult {
 }
 export interface ListMatcher {
 	key: [] | [string];
+	updated_at: [] | [TimestampMatcher];
 	description: [] | [string];
+	created_at: [] | [TimestampMatcher];
 }
 export interface ListOrder {
 	field: ListOrderField;
@@ -172,6 +178,7 @@ export interface StorageConfig {
 	iframe: [] | [StorageConfigIFrame];
 	rewrites: Array<[string, string]>;
 	headers: Array<[string, Array<[string, string]>]>;
+	max_memory_size: [] | [ConfigMaxMemorySize];
 	raw_access: [] | [StorageConfigRawAccess];
 	redirects: [] | [Array<[string, StorageConfigRedirect]>];
 }
@@ -200,6 +207,11 @@ export type StreamingStrategy = {
 		callback: [Principal, string];
 	};
 };
+export type TimestampMatcher =
+	| { Equal: bigint }
+	| { Between: [bigint, bigint] }
+	| { GreaterThan: bigint }
+	| { LessThan: bigint };
 export interface Tokens {
 	e8s: bigint;
 }
@@ -227,6 +239,7 @@ export interface _SERVICE {
 	get_create_satellite_fee: ActorMethod<[GetCreateCanisterFeeArgs], [] | [Tokens]>;
 	get_credits: ActorMethod<[], Tokens>;
 	get_proposal: ActorMethod<[bigint], [] | [Proposal]>;
+	get_storage_config: ActorMethod<[], StorageConfig>;
 	get_user_mission_control_center: ActorMethod<[], [] | [MissionControl]>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
@@ -240,10 +253,10 @@ export interface _SERVICE {
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
-	set_config: ActorMethod<[Config], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_fee: ActorMethod<[SegmentType, Tokens], undefined>;
+	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
 	update_rate_config: ActorMethod<[SegmentType, RateConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;

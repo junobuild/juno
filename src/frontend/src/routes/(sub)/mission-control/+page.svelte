@@ -10,18 +10,18 @@
 	import { setContext } from 'svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import MissionControlWallet from '$lib/components/mission-control/MissionControlWallet.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'mission_control.overview'
+			labelKey: 'mission_control.title'
 		},
 		{
 			id: Symbol('2'),
@@ -29,7 +29,7 @@
 		},
 		{
 			id: Symbol('3'),
-			labelKey: 'controllers.title'
+			labelKey: 'core.settings'
 		}
 	];
 
@@ -47,7 +47,7 @@
 	<Tabs
 		help={$store.tabId === $store.tabs[0].id
 			? 'https://juno.build/docs/architecture'
-			: 'https://juno.build/docs/miscellaneous/controllers'}
+			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
 		<svelte:fragment slot="info">
 			{#if $authSignedInStore}
@@ -61,7 +61,7 @@
 			{:else if $store.tabId === $store.tabs[1].id}
 				<MissionControlWallet missionControlId={$missionControlStore} />
 			{:else if $store.tabId === $store.tabs[2].id}
-				<MissionControlControllers missionControlId={$missionControlStore} />
+				<MissionControlSettings missionControlId={$missionControlStore} />
 			{/if}
 		{/if}
 	</Tabs>

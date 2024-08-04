@@ -1,11 +1,12 @@
-use crate::types::core::Compare;
 use crate::types::core::Key;
 use crate::types::list::{
-    ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults,
+    ListMatcher, ListOrder, ListOrderField, ListPaginate, ListParams, ListResults, TimestampMatcher,
 };
+use crate::types::state::Timestamp;
+use crate::types::state::Timestamped;
 use regex::Regex;
 
-pub fn list_values<'a, T: Clone + Compare>(
+pub fn list_values<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     filters: &'a ListParams,
 ) -> ListResults<T> {
@@ -45,7 +46,7 @@ fn total_pages(matches_length: usize, filters: &ListParams) -> Option<usize> {
     }
 }
 
-fn start_at<T: Clone + Compare>(matches: &[(&Key, &T)], filters: &ListParams) -> Option<usize> {
+fn start_at<T: Clone + Timestamped>(matches: &[(&Key, &T)], filters: &ListParams) -> Option<usize> {
     match filters.clone().paginate {
         None => None,
         Some(paginate) => match paginate.start_after {
@@ -60,7 +61,7 @@ fn start_at<T: Clone + Compare>(matches: &[(&Key, &T)], filters: &ListParams) ->
     }
 }
 
-fn order_values<'a, T: Clone + Compare>(
+fn order_values<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     ListParams {
         matcher: _,
@@ -79,7 +80,7 @@ fn order_values<'a, T: Clone + Compare>(
     }
 }
 
-fn order_values_with_updated_at<'a, T: Clone + Compare>(
+fn order_values_with_updated_at<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     desc: &bool,
 ) -> Vec<(&'a Key, &'a T)> {
@@ -94,7 +95,7 @@ fn order_values_with_updated_at<'a, T: Clone + Compare>(
     sorted_matches
 }
 
-fn order_values_with_created_at<'a, T: Clone + Compare>(
+fn order_values_with_created_at<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     desc: &bool,
 ) -> Vec<(&'a Key, &'a T)> {
@@ -109,7 +110,7 @@ fn order_values_with_created_at<'a, T: Clone + Compare>(
     sorted_matches
 }
 
-fn order_values_with_keys<'a, T: Clone + Compare>(
+fn order_values_with_keys<'a, T: Clone + Timestamped>(
     matches: &'a [(&'a Key, &'a T)],
     desc: &bool,
 ) -> Vec<(&'a Key, &'a T)> {
@@ -124,7 +125,7 @@ fn order_values_with_keys<'a, T: Clone + Compare>(
     sorted_matches
 }
 
-fn paginate_values<T: Clone + Compare>(
+fn paginate_values<T: Clone + Timestamped>(
     matches: Vec<(&Key, &T)>,
     ListParams {
         matcher: _,
@@ -204,4 +205,31 @@ pub fn matcher_regex(matcher: &Option<ListMatcher>) -> (Option<Regex>, Option<Re
     };
 
     (regex_key, regex_description)
+}
+
+pub fn filter_timestamps<T: Timestamped>(matcher: &Option<ListMatcher>, item: &T) -> bool {
+    if let Some(matcher) = matcher {
+        if let Some(ref created_at_filter) = matcher.created_at {
+            if !match_timestamp(item.created_at(), created_at_filter) {
+                return false;
+            }
+        }
+
+        if let Some(ref updated_at_filter) = matcher.updated_at {
+            if !match_timestamp(item.updated_at(), updated_at_filter) {
+                return false;
+            }
+        }
+    }
+
+    true
+}
+
+fn match_timestamp(timestamp: Timestamp, filter: &TimestampMatcher) -> bool {
+    match filter {
+        TimestampMatcher::Equal(ts) => timestamp == *ts,
+        TimestampMatcher::GreaterThan(ts) => timestamp > *ts,
+        TimestampMatcher::LessThan(ts) => timestamp < *ts,
+        TimestampMatcher::Between(start, end) => timestamp >= *start && timestamp <= *end,
+    }
 }

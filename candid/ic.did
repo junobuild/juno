@@ -13,6 +13,7 @@ type canister_settings = record {
     freezing_threshold : opt nat;
     reserved_cycles_limit : opt nat;
     log_visibility : opt log_visibility;
+    wasm_memory_limit : opt nat;
 };
 
 type definite_canister_settings = record {
@@ -22,6 +23,7 @@ type definite_canister_settings = record {
     freezing_threshold : nat;
     reserved_cycles_limit : nat;
     log_visibility : log_visibility;
+    wasm_memory_limit : nat;
 };
 
 type change_origin = variant {
@@ -55,7 +57,9 @@ type change = record {
     details : change_details;
 };
 
-type chunk_hash = blob;
+type chunk_hash = record {
+  hash : blob;
+};
 
 type http_header = record {
     name : text;
@@ -70,6 +74,11 @@ type http_request_result = record {
 
 type ecdsa_curve = variant {
     secp256k1;
+};
+
+type schnorr_algorithm = variant {
+    bip340secp256k1;
+    ed25519;
 };
 
 type satoshi = nat64;
@@ -151,7 +160,7 @@ type millisatoshi_per_byte = nat64;
 
 type node_metrics = record {
     node_id : principal;
-    num_blocks_total : nat64;
+    num_blocks_proposed_total : nat64;
     num_block_failures_total : nat64;
 };
 
@@ -183,14 +192,20 @@ type stored_chunks_args = record {
     canister_id : canister_id;
 };
 
-type install_code_args = record {
-    mode : variant {
-        install;
-        reinstall;
-        upgrade : opt record {
-            skip_pre_upgrade : opt bool;
+type canister_install_mode = variant {
+    install;
+    reinstall;
+    upgrade : opt record {
+        skip_pre_upgrade : opt bool;
+        wasm_memory_persistence : opt variant {
+            keep;
+            replace;
         };
     };
+};
+
+type install_code_args = record {
+    mode : canister_install_mode;
     canister_id : canister_id;
     wasm_module : wasm_module;
     arg : blob;
@@ -198,15 +213,9 @@ type install_code_args = record {
 };
 
 type install_chunked_code_args = record {
-    mode : variant {
-        install;
-        reinstall;
-        upgrade : opt record {
-            skip_pre_upgrade : opt bool;
-        };
-    };
+    mode : canister_install_mode;
     target_canister : canister_id;
-    storage_canister : opt canister_id;
+    store_canister : opt canister_id;
     chunk_hashes_list : vec chunk_hash;
     wasm_module_hash : blob;
     arg : blob;
@@ -238,6 +247,12 @@ type canister_status_result = record {
     cycles : nat;
     reserved_cycles : nat;
     idle_cycles_burned_per_day : nat;
+    query_stats: record {
+        num_calls_total: nat;
+        num_instructions_total: nat;
+        request_payload_bytes_total: nat;
+        response_payload_bytes_total: nat;
+    };
 };
 
 type canister_info_args = record {
@@ -290,6 +305,27 @@ type sign_with_ecdsa_args = record {
 };
 
 type sign_with_ecdsa_result = record {
+    signature : blob;
+};
+
+type schnorr_public_key_args = record {
+    canister_id : opt canister_id;
+    derivation_path : vec blob;
+    key_id : record { algorithm : schnorr_algorithm; name : text };
+};
+
+type schnorr_public_key_result = record {
+    public_key : blob;
+    chain_code : blob;
+};
+
+type sign_with_schnorr_args = record {
+    message : blob;
+    derivation_path : vec blob;
+    key_id : record { algorithm : schnorr_algorithm; name : text };
+};
+
+type sign_with_schnorr_result = record {
     signature : blob;
 };
 
@@ -366,6 +402,10 @@ service ic : {
     // Threshold ECDSA signature
     ecdsa_public_key : (ecdsa_public_key_args) -> (ecdsa_public_key_result);
     sign_with_ecdsa : (sign_with_ecdsa_args) -> (sign_with_ecdsa_result);
+
+    // Threshold Schnorr signature
+    schnorr_public_key : (schnorr_public_key_args) -> (schnorr_public_key_result);
+    sign_with_schnorr : (sign_with_schnorr_args) -> (sign_with_schnorr_result);
 
     // bitcoin interface
     bitcoin_get_balance : (bitcoin_get_balance_args) -> (bitcoin_get_balance_result);

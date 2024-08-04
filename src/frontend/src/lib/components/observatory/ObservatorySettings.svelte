@@ -29,6 +29,13 @@
 	};
 
 	const onSubmit = async () => {
+		if (enabled && (email === '' || !validEmail(email ?? ''))) {
+			toasts.error({
+				text: $i18n.errors.invalid_email
+			});
+			return;
+		}
+
 		busy.start();
 
 		try {
@@ -50,8 +57,6 @@
 				},
 				identity: $authStore.identity
 			});
-
-			setInitValues();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.observatory_set_unexpected_error,
@@ -69,10 +74,6 @@
 	let threshold: number | undefined;
 	let email: string | undefined = undefined;
 
-	let initialEnabled = false;
-	let initialThreshold: number | undefined;
-	let initialEmail: string | undefined = undefined;
-
 	const loadCrontab = async () => {
 		try {
 			cronTab = fromNullable(await getCronTab($authStore.identity));
@@ -83,8 +84,6 @@
 				? Number(cronTab?.cron_jobs.statuses.cycles_threshold) / ONE_TRILLION
 				: undefined;
 
-			setInitValues();
-
 			loading = false;
 		} catch (err: unknown) {
 			toasts.error({
@@ -94,12 +93,6 @@
 		}
 	};
 
-	const setInitValues = () => {
-		initialEnabled = enabled;
-		initialEmail = email;
-		initialThreshold = threshold;
-	};
-
 	onMount(async () => await loadCrontab());
 
 	let invalidEmail = false;
@@ -107,69 +100,68 @@
 
 	let invalidThreshold = false;
 	$: invalidThreshold = nonNullish(threshold) && threshold < Number(CYCLES_WARNING) / ONE_TRILLION;
-
-	let dirty = false;
-	$: dirty = enabled !== initialEnabled || email !== initialEmail || threshold !== initialThreshold;
 </script>
 
 {#if loading}
 	<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
 {:else}
 	<form on:submit|preventDefault={onSubmit} in:fade>
-		<div class="card-container">
-			<div>
-				<Value>
-					<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
+		<div class="card-container with-title">
+			<span class="title">{$i18n.core.settings}</span>
 
-					<div class="radio">
-						<label>
-							<input type="radio" bind:group={enabled} name="field" value={false} />
-							<span>{$i18n.observatory.disabled}</span>
-						</label>
+			<div class="content">
+				<div>
+					<Value>
+						<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
 
-						<label>
-							<input type="radio" bind:group={enabled} name="field" value={true} />
-							<span>{$i18n.observatory.enabled}</span>
-						</label>
-					</div>
-				</Value>
-			</div>
+						<div class="radio">
+							<label>
+								<input type="radio" bind:group={enabled} name="field" value={false} />
+								<span>{$i18n.observatory.disabled}</span>
+							</label>
 
-			<div class="email">
-				<Value>
-					<svelte:fragment slot="label">{$i18n.observatory.email_notifications}</svelte:fragment>
-					<input
-						bind:value={email}
-						type="email"
-						name="email"
-						placeholder={$i18n.observatory.email_notifications_placeholder}
-					/>
-				</Value>
-			</div>
+							<label>
+								<input type="radio" bind:group={enabled} name="field" value={true} />
+								<span>{$i18n.observatory.enabled}</span>
+							</label>
+						</div>
+					</Value>
+				</div>
 
-			<div>
-				<Value>
-					<svelte:fragment slot="label">{$i18n.observatory.cycles_threshold}</svelte:fragment>
-					<div class="input">
-						<Input
-							inputType="number"
-							placeholder={$i18n.observatory.cycles_threshold_placeholder}
-							name="threshold"
-							required={false}
-							bind:value={threshold}
+				<div class="email">
+					<Value>
+						<svelte:fragment slot="label">{$i18n.observatory.email_notifications}</svelte:fragment>
+						<input
+							bind:value={email}
+							type="email"
+							name="email"
+							placeholder={$i18n.observatory.email_notifications_placeholder}
 						/>
-					</div>
-				</Value>
+					</Value>
+				</div>
+
+				<div>
+					<Value>
+						<svelte:fragment slot="label">{$i18n.observatory.cycles_threshold}</svelte:fragment>
+						<div class="input">
+							<Input
+								inputType="number"
+								placeholder={$i18n.observatory.cycles_threshold_placeholder}
+								name="threshold"
+								required={false}
+								bind:value={threshold}
+							/>
+						</div>
+					</Value>
+				</div>
 			</div>
 		</div>
 
-		{#if dirty}
-			<div in:fade>
-				<button type="submit" disabled={$isBusy || invalidEmail || invalidThreshold}
-					>{$i18n.core.save}</button
-				>
-			</div>
-		{/if}
+		<div>
+			<button type="submit" disabled={$isBusy || invalidEmail || invalidThreshold}
+				>{$i18n.core.save}</button
+			>
+		</div>
 	</form>
 {/if}
 
@@ -181,14 +173,14 @@
 	}
 
 	button {
-		margin: var(--padding-2x) 0 0;
+		margin: 0;
 	}
 
 	.radio {
 		display: flex;
 		flex-direction: column;
 
-		padding: 0 0 var(--padding);
+		padding: 0 0 var(--padding-2x);
 	}
 
 	.email {

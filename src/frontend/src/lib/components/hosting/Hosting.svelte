@@ -13,19 +13,23 @@
 	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { authStore } from '$lib/stores/auth.store';
+	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
+	import { nonNullish } from '@dfinity/utils';
+	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 
 	export let satellite: Satellite;
 
 	let satelliteId: SatelliteIdText;
 	$: satelliteId = satellite.satellite_id.toText();
 
-	let customDomains: [string, CustomDomainType][] = [];
 	let config: AuthenticationConfig | undefined;
 
 	const list = async () => {
-		const [{ customDomains: domains }, { config: c }] = await Promise.all([
+		const [_, { config: c }] = await Promise.all([
 			listCustomDomains({
-				satelliteId: satellite.satellite_id
+				satelliteId: satellite.satellite_id,
+				reload: true
 			}),
 			getAuthConfig({
 				satelliteId: satellite.satellite_id,
@@ -33,14 +37,20 @@
 			})
 		]);
 
-		customDomains = domains ?? [];
 		config = c;
 	};
 
 	onMount(list);
 
-	let hasCustomDomains = false;
-	$: hasCustomDomains = customDomains.length > 0;
+	type SelectedCustomDomain = {
+		customDomain: [string, CustomDomainType] | undefined;
+		registrationState: CustomDomainRegistrationState | null | undefined;
+		mainDomain: boolean;
+	};
+
+	let selectedInfo: SelectedCustomDomain | undefined;
+
+	const onDisplayInfo = ({ detail }: CustomEvent<SelectedCustomDomain>) => (selectedInfo = detail);
 </script>
 
 <svelte:window on:junoSyncCustomDomains={list} />
@@ -49,9 +59,7 @@
 	<table>
 		<thead>
 			<tr>
-				{#if hasCustomDomains}
-					<th class="tools" />
-				{/if}
+				<th class="tools" />
 				<th class="domain"> {$i18n.hosting.domain} </th>
 				<th class="auth"> {$i18n.core.sign_in}</th>
 				<th> {$i18n.hosting.status}</th>
@@ -59,14 +67,10 @@
 		</thead>
 		<tbody>
 			<tr>
-				<CustomDomain
-					url={satelliteUrl(satelliteId)}
-					ariaLabel={$i18n.hosting.default_domain}
-					toolsColumn={hasCustomDomains}
-				/>
+				<CustomDomain url={satelliteUrl(satelliteId)} ariaLabel={$i18n.hosting.default_domain} />
 			</tr>
 
-			{#each customDomains as [customDomainUrl, customDomain]}
+			{#each $satelliteCustomDomains as [customDomainUrl, customDomain]}
 				<tr>
 					<CustomDomain
 						type="custom"
@@ -75,6 +79,7 @@
 						{config}
 						ariaLabel={$i18n.hosting.custom_domain}
 						{satellite}
+						on:junoDisplayInfo={onDisplayInfo}
 					/>
 				</tr>
 			{/each}
@@ -87,6 +92,10 @@
 
 	<HostingCount {satellite} />
 </div>
+
+{#if nonNullish(selectedInfo)}
+	<CustomDomainInfo info={selectedInfo} on:junoClose={() => (selectedInfo = undefined)} />
+{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

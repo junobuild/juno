@@ -13,22 +13,26 @@
 </script>
 
 {#if $authSignedInStore}
-	<div class="card-container columns-3 fit-column-1">
-		<div class="id">
+	<div class="card-container with-title">
+		<span class="title">{$i18n.satellites.overview}</span>
+
+		<div class="columns-3 fit-column-1">
+			<div class="id">
+				<Value>
+					<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
+					<Identifier
+						identifier={$missionControlStore?.toText() ?? ''}
+						shorten={false}
+						small={false}
+					/>
+				</Value>
+			</div>
+
 			<Value>
-				<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
-				<Identifier
-					identifier={$missionControlStore?.toText() ?? ''}
-					shorten={false}
-					small={false}
-				/>
+				<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+				<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
 			</Value>
 		</div>
-
-		<Value>
-			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-			<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
-		</Value>
 
 		{#if nonNullish($missionControlStore)}
 			<MissionControlActions missionControlId={$missionControlStore} />
@@ -36,12 +40,14 @@
 	</div>
 
 	{#if nonNullish($missionControlStore)}
-		<div class="card-container columns-3" in:fade>
-			<div>
-				<CanisterOverview canisterId={$missionControlStore} segment="mission_control" />
-			</div>
+		<div class="card-container with-title" in:fade>
+			<span class="title">{$i18n.canisters.insight}</span>
 
-			<MissionControlStatuses missionControlId={$missionControlStore} />
+			<div class="columns-3">
+				<CanisterOverview canisterId={$missionControlStore} segment="mission_control" />
+
+				<MissionControlStatuses missionControlId={$missionControlStore} />
+			</div>
 		</div>
 	{/if}
 {/if}

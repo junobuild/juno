@@ -21,6 +21,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const DelDoc = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
 	const RulesType = IDL.Variant({ Db: IDL.Null, Storage: IDL.Null });
+	const DelRule = IDL.Record({ version: IDL.Opt(IDL.Nat64) });
 	const DepositCyclesArgs = IDL.Record({
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
@@ -52,6 +53,13 @@ export const idlFactory = ({ IDL }) => {
 	const AuthenticationConfig = IDL.Record({
 		internet_identity: IDL.Opt(AuthenticationConfigInternetIdentity)
 	});
+	const ConfigMaxMemorySize = IDL.Record({
+		stable: IDL.Opt(IDL.Nat64),
+		heap: IDL.Opt(IDL.Nat64)
+	});
+	const DbConfig = IDL.Record({
+		max_memory_size: IDL.Opt(ConfigMaxMemorySize)
+	});
 	const StorageConfigIFrame = IDL.Variant({
 		Deny: IDL.Null,
 		AllowAny: IDL.Null,
@@ -69,10 +77,15 @@ export const idlFactory = ({ IDL }) => {
 		iframe: IDL.Opt(StorageConfigIFrame),
 		rewrites: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		headers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)))),
+		max_memory_size: IDL.Opt(ConfigMaxMemorySize),
 		raw_access: IDL.Opt(StorageConfigRawAccess),
 		redirects: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, StorageConfigRedirect)))
 	});
-	const Config = IDL.Record({ storage: StorageConfig });
+	const Config = IDL.Record({
+		db: IDL.Opt(DbConfig),
+		authentication: IDL.Opt(AuthenticationConfig),
+		storage: StorageConfig
+	});
 	const Doc = IDL.Record({
 		updated_at: IDL.Nat64,
 		owner: IDL.Principal,
@@ -129,9 +142,17 @@ export const idlFactory = ({ IDL }) => {
 		CreatedAt: IDL.Null
 	});
 	const ListOrder = IDL.Record({ field: ListOrderField, desc: IDL.Bool });
+	const TimestampMatcher = IDL.Variant({
+		Equal: IDL.Nat64,
+		Between: IDL.Tuple(IDL.Nat64, IDL.Nat64),
+		GreaterThan: IDL.Nat64,
+		LessThan: IDL.Nat64
+	});
 	const ListMatcher = IDL.Record({
 		key: IDL.Opt(IDL.Text),
-		description: IDL.Opt(IDL.Text)
+		updated_at: IDL.Opt(TimestampMatcher),
+		description: IDL.Opt(IDL.Text),
+		created_at: IDL.Opt(TimestampMatcher)
 	});
 	const ListPaginate = IDL.Record({
 		start_after: IDL.Opt(IDL.Text),
@@ -227,11 +248,12 @@ export const idlFactory = ({ IDL }) => {
 		del_docs: IDL.Func([IDL.Text], [], []),
 		del_many_assets: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		del_many_docs: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, DelDoc))], [], []),
-		del_rule: IDL.Func([RulesType, IDL.Text, DelDoc], [], []),
+		del_rule: IDL.Func([RulesType, IDL.Text, DelRule], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
 		get_asset: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(AssetNoContent)], ['query']),
 		get_auth_config: IDL.Func([], [IDL.Opt(AuthenticationConfig)], ['query']),
 		get_config: IDL.Func([], [Config], []),
+		get_db_config: IDL.Func([], [IDL.Opt(DbConfig)], ['query']),
 		get_doc: IDL.Func([IDL.Text, IDL.Text], [IDL.Opt(Doc)], ['query']),
 		get_many_assets: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],
@@ -243,6 +265,7 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Opt(Doc)))],
 			['query']
 		),
+		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
 			[StreamingCallbackToken],
@@ -257,13 +280,13 @@ export const idlFactory = ({ IDL }) => {
 		list_rules: IDL.Func([RulesType], [IDL.Vec(IDL.Tuple(IDL.Text, Rule))], ['query']),
 		memory_size: IDL.Func([], [MemorySize], ['query']),
 		set_auth_config: IDL.Func([AuthenticationConfig], [], []),
-		set_config: IDL.Func([Config], [], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],
 			[]
 		),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
+		set_db_config: IDL.Func([DbConfig], [], []),
 		set_doc: IDL.Func([IDL.Text, IDL.Text, SetDoc], [Doc], []),
 		set_many_docs: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, SetDoc))],
@@ -271,6 +294,7 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		set_rule: IDL.Func([RulesType, IDL.Text, SetRule], [], []),
+		set_storage_config: IDL.Func([StorageConfig], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

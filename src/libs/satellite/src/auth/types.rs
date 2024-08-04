@@ -1,12 +1,18 @@
 pub mod state {
+    use crate::auth::types::config::AuthenticationConfig;
     use candid::CandidType;
-    use junobuild_shared::types::core::DomainName;
     use serde::{Deserialize, Serialize};
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationHeapState {
         pub config: AuthenticationConfig,
     }
+}
+
+pub mod config {
+    use candid::{CandidType, Deserialize};
+    use junobuild_shared::types::core::DomainName;
+    use serde::Serialize;
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct AuthenticationConfig {

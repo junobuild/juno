@@ -12,21 +12,21 @@
 	import { setContext } from 'svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
-	import SatelliteControllers from '$lib/components/satellites/SatelliteControllers.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import { nonNullish } from '@dfinity/utils';
 	import Guides from '$lib/components/examples/Guides.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'satellites.overview'
+			labelKey: 'satellites.satellite'
 		},
 		{
 			id: Symbol('2'),
-			labelKey: 'core.controllers'
+			labelKey: 'core.settings'
 		}
 	];
 
@@ -44,7 +44,7 @@
 	<Tabs
 		help={$store.tabId === $store.tabs[0].id
 			? 'https://juno.build/docs/add-juno-to-an-app/install-the-sdk-and-initialize-juno'
-			: 'https://juno.build/docs/miscellaneous/controllers'}
+			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
 		<svelte:fragment slot="info">
 			{#if nonNullish($satelliteStore)}
@@ -60,7 +60,7 @@
 
 						<Guides />
 					{:else if $store.tabId === $store.tabs[1].id}
-						<SatelliteControllers satellite={$satelliteStore} />
+						<SatelliteSettings satellite={$satelliteStore} />
 					{/if}
 				{/if}
 			</MissionControlGuard>

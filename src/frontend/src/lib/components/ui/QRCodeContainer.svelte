@@ -6,13 +6,25 @@
 </script>
 
 <div class="qrcode">
-	<QRCode {value} {ariaLabel} />
+	<div>
+		<QRCode {value} {ariaLabel} />
+	</div>
 </div>
 
 <style lang="scss">
+	@use '../../styles/mixins/shadow';
+
 	.qrcode {
-		width: calc(var(--padding) * 40);
+		min-width: calc(var(--padding) * 30);
 		padding: var(--padding-2x);
-		margin: var(--padding) 0;
+
+		background: var(--color-card-contrast);
+		color: var(--color-card);
+
+		border-radius: calc(var(--border-radius) * 4);
+
+		> div {
+			border: 2px solid var(--color-card);
+		}
 	}
 </style>

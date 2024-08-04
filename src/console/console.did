@@ -201,6 +201,7 @@ service : () -> {
   get_create_satellite_fee : (GetCreateCanisterFeeArgs) -> (opt Tokens) query;
   get_credits : () -> (Tokens) query;
   get_proposal : (nat) -> (opt Proposal) query;
+  get_storage_config : () -> (StorageConfig) query;
   get_user_mission_control_center : () -> (opt MissionControl) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
@@ -215,10 +216,10 @@ service : () -> {
   list_user_mission_control_centers : () -> (
       vec record { principal; MissionControl },
     ) query;
-  set_config : (Config) -> ();
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
   set_fee : (SegmentType, Tokens) -> ();
+  set_storage_config : (StorageConfig) -> ();
   submit_proposal : (nat) -> (nat, Proposal);
   update_rate_config : (SegmentType, RateConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);

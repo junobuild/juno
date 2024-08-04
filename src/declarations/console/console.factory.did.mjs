@@ -249,6 +249,7 @@ export const idlFactory = ({ IDL }) => {
 		get_create_satellite_fee: IDL.Func([GetCreateCanisterFeeArgs], [IDL.Opt(Tokens)], ['query']),
 		get_credits: IDL.Func([], [Tokens], ['query']),
 		get_proposal: IDL.Func([IDL.Nat], [IDL.Opt(Proposal)], ['query']),
+		get_storage_config: IDL.Func([], [StorageConfig], ['query']),
 		get_user_mission_control_center: IDL.Func([], [IDL.Opt(MissionControl)], ['query']),
 		http_request: IDL.Func([HttpRequest], [HttpResponse], ['query']),
 		http_request_streaming_callback: IDL.Func(
@@ -267,10 +268,10 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Principal, MissionControl))],
 			['query']
 		),
-		set_config: IDL.Func([Config], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
 		set_fee: IDL.Func([SegmentType, Tokens], [], []),
+		set_storage_config: IDL.Func([StorageConfig], [], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
 		update_rate_config: IDL.Func([SegmentType, RateConfig], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),

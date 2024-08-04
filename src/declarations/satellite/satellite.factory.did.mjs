@@ -280,7 +280,6 @@ export const idlFactory = ({ IDL }) => {
 		list_rules: IDL.Func([RulesType], [IDL.Vec(IDL.Tuple(IDL.Text, Rule))], ['query']),
 		memory_size: IDL.Func([], [MemorySize], ['query']),
 		set_auth_config: IDL.Func([AuthenticationConfig], [], []),
-		set_config: IDL.Func([Config], [], []),
 		set_controllers: IDL.Func(
 			[SetControllersArgs],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, Controller))],

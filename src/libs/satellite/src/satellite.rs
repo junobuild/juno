@@ -283,10 +283,6 @@ pub fn list_controllers() -> Controllers {
 /// Config
 ///
 
-pub fn set_config(config: Config) {
-    set_storage_config_store(&config.storage);
-}
-
 pub fn get_config() -> Config {
     let storage = get_storage_config_store();
     let db = get_db_config_store();

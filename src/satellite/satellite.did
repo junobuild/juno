@@ -236,7 +236,6 @@ service : () -> {
   list_rules : (RulesType) -> (vec record { text; Rule }) query;
   memory_size : () -> (MemorySize) query;
   set_auth_config : (AuthenticationConfig) -> ();
-  set_config : (Config) -> ();
   set_controllers : (SetControllersArgs) -> (
       vec record { principal; Controller },
     );

@@ -132,18 +132,16 @@ describe('Console / Storage', () => {
 		});
 
 		it('should throw errors on setting config', async () => {
-			const { set_config } = actor;
+			const { set_storage_config } = actor;
 
 			await expect(
-				set_config({
-					storage: {
-						headers: [],
-						iframe: toNullable(),
-						redirects: toNullable(),
-						rewrites: [],
-						raw_access: toNullable(),
-						max_memory_size: toNullable()
-					}
+				set_storage_config({
+					headers: [],
+					iframe: toNullable(),
+					redirects: toNullable(),
+					rewrites: [],
+					raw_access: toNullable(),
+					max_memory_size: toNullable()
 				})
 			).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
@@ -157,9 +155,9 @@ describe('Console / Storage', () => {
 		const HTML = '<html><body>Hello</body></html>';
 
 		it('should set and get config', async () => {
-			const { set_config, get_config } = actor;
+			const { set_storage_config, get_storage_config } = actor;
 
-			const storage: StorageConfig = {
+			const config: StorageConfig = {
 				headers: [['*', [['Cache-Control', 'no-cache']]]],
 				iframe: toNullable({ Deny: null }),
 				redirects: [],
@@ -168,15 +166,11 @@ describe('Console / Storage', () => {
 				max_memory_size: toNullable()
 			};
 
-			await set_config({
-				storage
-			});
+			await set_storage_config(config);
 
-			const configs = await get_config();
+			const savedConfig = await get_storage_config();
 
-			expect(configs).toEqual({
-				storage
-			});
+			expect(savedConfig).toEqual(config);
 		});
 
 		describe.each([

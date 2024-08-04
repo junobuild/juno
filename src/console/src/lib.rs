@@ -77,6 +77,7 @@ use junobuild_storage::types::interface::{
 use memory::{get_memory_upgrades, init_stable_state};
 use serde_cbor::from_reader;
 use std::collections::HashMap;
+use junobuild_storage::types::config::StorageConfig;
 use types::state::Payments;
 
 #[init]
@@ -387,14 +388,22 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
 ///
 
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_config(config: Config) {
-    set_storage_config_store(&config.storage);
-}
-
-#[update(guard = "caller_is_admin_controller")]
 pub fn get_config() -> Config {
     let storage = get_storage_config_store();
     Config { storage }
+}
+///
+/// Storage config
+///
+
+#[update(guard = "caller_is_admin_controller")]
+pub fn set_storage_config(config: StorageConfig) {
+    set_storage_config_store(&config);
+}
+
+#[query(guard = "caller_is_admin_controller")]
+pub fn get_storage_config() -> StorageConfig {
+    get_storage_config_store()
 }
 
 ///

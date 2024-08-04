@@ -191,23 +191,6 @@ pub fn list_controllers() -> Controllers {
 }
 
 ///
-/// Config
-///
-
-#[deprecated(since = "0.0.19", note = "Use dedicated set configuration methods")]
-#[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
-pub fn set_config(config: Config) {
-    satellite::set_config(config);
-}
-
-#[doc(hidden)]
-#[update(guard = "caller_is_admin_controller")]
-pub fn get_config() -> Config {
-    satellite::get_config()
-}
-
-///
 /// Custom domains
 ///
 
@@ -227,6 +210,16 @@ pub fn set_custom_domain(domain_name: DomainName, bn_id: Option<String>) {
 #[update(guard = "caller_is_admin_controller")]
 pub fn del_custom_domain(domain_name: DomainName) {
     satellite::del_custom_domain(domain_name);
+}
+
+///
+/// Config
+///
+
+#[doc(hidden)]
+#[update(guard = "caller_is_admin_controller")]
+pub fn get_config() -> Config {
+    satellite::get_config()
 }
 
 ///
@@ -408,7 +401,7 @@ macro_rules! include_satellite {
             get_many_assets, get_many_docs, get_storage_config, http_request,
             http_request_streaming_callback, init, init_asset_upload, list_assets,
             list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
-            post_upgrade, pre_upgrade, set_auth_config, set_config, set_controllers,
+            post_upgrade, pre_upgrade, set_auth_config, set_controllers,
             set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
             upload_asset_chunk, version,
         };

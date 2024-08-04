@@ -267,7 +267,6 @@ export interface _SERVICE {
 	list_rules: ActorMethod<[RulesType], Array<[string, Rule]>>;
 	memory_size: ActorMethod<[], MemorySize>;
 	set_auth_config: ActorMethod<[AuthenticationConfig], undefined>;
-	set_config: ActorMethod<[Config], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
 	set_db_config: ActorMethod<[DbConfig], undefined>;

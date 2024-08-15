@@ -28,10 +28,12 @@
 				</Value>
 			</div>
 
-			<Value>
-				<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-				<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
-			</Value>
+			<div>
+				<Value>
+					<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+					<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
+				</Value>
+			</div>
 		</div>
 
 		{#if nonNullish($missionControlStore)}

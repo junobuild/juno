@@ -78,6 +78,36 @@ export const idlFactory = ({ IDL }) => {
 		referrers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
 		pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
 	});
+	const NetworkInformation = IDL.Record({
+		rtt: IDL.Opt(IDL.Float64),
+		downlink: IDL.Opt(IDL.Float64),
+		effective_type: IDL.Opt(IDL.Text)
+	});
+	const NavigationTiming = IDL.Record({
+		worker_time: IDL.Opt(IDL.Float64),
+		redirect_time: IDL.Opt(IDL.Float64),
+		fetch_time: IDL.Opt(IDL.Float64),
+		time_to_first_byte: IDL.Opt(IDL.Float64),
+		total_time: IDL.Opt(IDL.Float64),
+		header_size: IDL.Opt(IDL.Float64),
+		dns_lookup_time: IDL.Opt(IDL.Float64),
+		download_time: IDL.Opt(IDL.Float64)
+	});
+	const PerformanceData = IDL.Variant({
+		NetworkInformation: NetworkInformation,
+		NavigationTiming: NavigationTiming,
+		Number: IDL.Float64
+	});
+	const PerformanceMetric = IDL.Record({
+		updated_at: IDL.Nat64,
+		session_id: IDL.Text,
+		data: PerformanceData,
+		href: IDL.Text,
+		metric_name: IDL.Text,
+		created_at: IDL.Nat64,
+		satellite_id: IDL.Principal,
+		version: IDL.Opt(IDL.Nat64)
+	});
 	const TrackEvent = IDL.Record({
 		updated_at: IDL.Nat64,
 		session_id: IDL.Text,
@@ -123,6 +153,16 @@ export const idlFactory = ({ IDL }) => {
 		Ok: IDL.Null,
 		Err: IDL.Vec(IDL.Tuple(AnalyticKey, IDL.Text))
 	});
+	const SetPerformanceMetric = IDL.Record({
+		session_id: IDL.Text,
+		data: PerformanceData,
+		href: IDL.Text,
+		metric_name: IDL.Text,
+		satellite_id: IDL.Principal,
+		version: IDL.Opt(IDL.Nat64),
+		user_agent: IDL.Opt(IDL.Text)
+	});
+	const Result_2 = IDL.Variant({ Ok: PerformanceMetric, Err: IDL.Text });
 	const SetSatelliteConfig = IDL.Record({
 		version: IDL.Opt(IDL.Nat64),
 		enabled: IDL.Bool
@@ -136,7 +176,7 @@ export const idlFactory = ({ IDL }) => {
 		version: IDL.Opt(IDL.Nat64),
 		user_agent: IDL.Opt(IDL.Text)
 	});
-	const Result_2 = IDL.Variant({ Ok: TrackEvent, Err: IDL.Text });
+	const Result_3 = IDL.Variant({ Ok: TrackEvent, Err: IDL.Text });
 	return IDL.Service({
 		del_controllers: IDL.Func(
 			[DeleteControllersArgs],
@@ -161,6 +201,11 @@ export const idlFactory = ({ IDL }) => {
 			['query']
 		),
 		get_page_views_analytics_top_10: IDL.Func([GetAnalytics], [AnalyticsTop10PageViews], ['query']),
+		get_performance_metrics: IDL.Func(
+			[GetAnalytics],
+			[IDL.Vec(IDL.Tuple(AnalyticKey, PerformanceMetric))],
+			['query']
+		),
 		get_track_events: IDL.Func(
 			[GetAnalytics],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, TrackEvent))],
@@ -181,12 +226,18 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_page_view: IDL.Func([AnalyticKey, SetPageView], [Result], []),
 		set_page_views: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetPageView))], [Result_1], []),
+		set_performance_metric: IDL.Func([AnalyticKey, SetPerformanceMetric], [Result_2], []),
+		set_performance_metrics: IDL.Func(
+			[IDL.Vec(IDL.Tuple(AnalyticKey, SetPerformanceMetric))],
+			[Result_1],
+			[]
+		),
 		set_satellite_configs: IDL.Func(
 			[IDL.Vec(IDL.Tuple(IDL.Principal, SetSatelliteConfig))],
 			[IDL.Vec(IDL.Tuple(IDL.Principal, OrbiterSatelliteConfig))],
 			[]
 		),
-		set_track_event: IDL.Func([AnalyticKey, SetTrackEvent], [Result_2], []),
+		set_track_event: IDL.Func([AnalyticKey, SetTrackEvent], [Result_3], []),
 		set_track_events: IDL.Func([IDL.Vec(IDL.Tuple(AnalyticKey, SetTrackEvent))], [Result_1], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

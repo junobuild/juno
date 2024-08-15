@@ -46,6 +46,21 @@ type GetAnalytics = record {
   satellite_id : opt principal;
 };
 type MemorySize = record { stable : nat64; heap : nat64 };
+type NavigationTiming = record {
+  worker_time : opt float64;
+  redirect_time : opt float64;
+  fetch_time : opt float64;
+  time_to_first_byte : opt float64;
+  total_time : opt float64;
+  header_size : opt float64;
+  dns_lookup_time : opt float64;
+  download_time : opt float64;
+};
+type NetworkInformation = record {
+  rtt : opt float64;
+  downlink : opt float64;
+  effective_type : opt text;
+};
 type OrbiterSatelliteConfig = record {
   updated_at : nat64;
   created_at : nat64;
@@ -66,9 +81,25 @@ type PageView = record {
   user_agent : opt text;
 };
 type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
+type PerformanceData = variant {
+  NetworkInformation : NetworkInformation;
+  NavigationTiming : NavigationTiming;
+  Number : float64;
+};
+type PerformanceMetric = record {
+  updated_at : nat64;
+  session_id : text;
+  data : PerformanceData;
+  href : text;
+  metric_name : text;
+  created_at : nat64;
+  satellite_id : principal;
+  version : opt nat64;
+};
 type Result = variant { Ok : PageView; Err : text };
 type Result_1 = variant { Ok; Err : vec record { AnalyticKey; text } };
-type Result_2 = variant { Ok : TrackEvent; Err : text };
+type Result_2 = variant { Ok : PerformanceMetric; Err : text };
+type Result_3 = variant { Ok : TrackEvent; Err : text };
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -87,6 +118,15 @@ type SetPageView = record {
   href : text;
   satellite_id : principal;
   device : PageViewDevice;
+  version : opt nat64;
+  user_agent : opt text;
+};
+type SetPerformanceMetric = record {
+  session_id : text;
+  data : PerformanceData;
+  href : text;
+  metric_name : text;
+  satellite_id : principal;
   version : opt nat64;
   user_agent : opt text;
 };
@@ -127,6 +167,9 @@ service : () -> {
   get_page_views_analytics_top_10 : (GetAnalytics) -> (
       AnalyticsTop10PageViews,
     ) query;
+  get_performance_metrics : (GetAnalytics) -> (
+      vec record { AnalyticKey; PerformanceMetric },
+    ) query;
   get_track_events : (GetAnalytics) -> (
       vec record { AnalyticKey; TrackEvent },
     ) query;
@@ -141,10 +184,14 @@ service : () -> {
     );
   set_page_view : (AnalyticKey, SetPageView) -> (Result);
   set_page_views : (vec record { AnalyticKey; SetPageView }) -> (Result_1);
+  set_performance_metric : (AnalyticKey, SetPerformanceMetric) -> (Result_2);
+  set_performance_metrics : (
+      vec record { AnalyticKey; SetPerformanceMetric },
+    ) -> (Result_1);
   set_satellite_configs : (vec record { principal; SetSatelliteConfig }) -> (
       vec record { principal; OrbiterSatelliteConfig },
     );
-  set_track_event : (AnalyticKey, SetTrackEvent) -> (Result_2);
+  set_track_event : (AnalyticKey, SetTrackEvent) -> (Result_3);
   set_track_events : (vec record { AnalyticKey; SetTrackEvent }) -> (Result_1);
   version : () -> (text) query;
 }

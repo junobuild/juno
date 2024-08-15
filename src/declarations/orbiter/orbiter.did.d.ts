@@ -69,6 +69,21 @@ export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
 }
+export interface NavigationTiming {
+	worker_time: [] | [number];
+	redirect_time: [] | [number];
+	fetch_time: [] | [number];
+	time_to_first_byte: [] | [number];
+	total_time: [] | [number];
+	header_size: [] | [number];
+	dns_lookup_time: [] | [number];
+	download_time: [] | [number];
+}
+export interface NetworkInformation {
+	rtt: [] | [number];
+	downlink: [] | [number];
+	effective_type: [] | [string];
+}
 export interface OrbiterSatelliteConfig {
 	updated_at: bigint;
 	created_at: bigint;
@@ -92,9 +107,24 @@ export interface PageViewDevice {
 	inner_height: number;
 	inner_width: number;
 }
+export type PerformanceData =
+	| { NetworkInformation: NetworkInformation }
+	| { NavigationTiming: NavigationTiming }
+	| { Number: number };
+export interface PerformanceMetric {
+	updated_at: bigint;
+	session_id: string;
+	data: PerformanceData;
+	href: string;
+	metric_name: string;
+	created_at: bigint;
+	satellite_id: Principal;
+	version: [] | [bigint];
+}
 export type Result = { Ok: PageView } | { Err: string };
 export type Result_1 = { Ok: null } | { Err: Array<[AnalyticKey, string]> };
-export type Result_2 = { Ok: TrackEvent } | { Err: string };
+export type Result_2 = { Ok: PerformanceMetric } | { Err: string };
+export type Result_3 = { Ok: TrackEvent } | { Err: string };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -113,6 +143,15 @@ export interface SetPageView {
 	href: string;
 	satellite_id: Principal;
 	device: PageViewDevice;
+	version: [] | [bigint];
+	user_agent: [] | [string];
+}
+export interface SetPerformanceMetric {
+	session_id: string;
+	data: PerformanceData;
+	href: string;
+	metric_name: string;
+	satellite_id: Principal;
 	version: [] | [bigint];
 	user_agent: [] | [string];
 }
@@ -146,6 +185,7 @@ export interface _SERVICE {
 	get_page_views_analytics_clients: ActorMethod<[GetAnalytics], AnalyticsClientsPageViews>;
 	get_page_views_analytics_metrics: ActorMethod<[GetAnalytics], AnalyticsMetricsPageViews>;
 	get_page_views_analytics_top_10: ActorMethod<[GetAnalytics], AnalyticsTop10PageViews>;
+	get_performance_metrics: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PerformanceMetric]>>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	get_track_events_analytics: ActorMethod<[GetAnalytics], AnalyticsTrackEvents>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
@@ -154,11 +194,13 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;
+	set_performance_metric: ActorMethod<[AnalyticKey, SetPerformanceMetric], Result_2>;
+	set_performance_metrics: ActorMethod<[Array<[AnalyticKey, SetPerformanceMetric]>], Result_1>;
 	set_satellite_configs: ActorMethod<
 		[Array<[Principal, SetSatelliteConfig]>],
 		Array<[Principal, OrbiterSatelliteConfig]>
 	>;
-	set_track_event: ActorMethod<[AnalyticKey, SetTrackEvent], Result_2>;
+	set_track_event: ActorMethod<[AnalyticKey, SetTrackEvent], Result_3>;
 	set_track_events: ActorMethod<[Array<[AnalyticKey, SetTrackEvent]>], Result_1>;
 	version: ActorMethod<[], string>;
 }

@@ -10,6 +10,8 @@ const PAGE_VIEWS: MemoryId = MemoryId::new(1);
 const TRACK_EVENTS: MemoryId = MemoryId::new(2);
 const SATELLITES_PAGE_VIEWS: MemoryId = MemoryId::new(3);
 const SATELLITES_TRACK_EVENTS: MemoryId = MemoryId::new(4);
+const PERFORMANCE_METRICS: MemoryId = MemoryId::new(5);
+const SATELLITES_PERFORMANCE_METRICS: MemoryId = MemoryId::new(6);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -30,7 +32,11 @@ pub fn init_stable_state() -> StableState {
     StableState {
         page_views: StableBTreeMap::init(get_memory(PAGE_VIEWS)),
         track_events: StableBTreeMap::init(get_memory(TRACK_EVENTS)),
+        performance_metrics: StableBTreeMap::init(get_memory(PERFORMANCE_METRICS)),
         satellites_page_views: StableBTreeMap::init(get_memory(SATELLITES_PAGE_VIEWS)),
         satellites_track_events: StableBTreeMap::init(get_memory(SATELLITES_TRACK_EVENTS)),
+        satellites_performance_metrics: StableBTreeMap::init(get_memory(
+            SATELLITES_PERFORMANCE_METRICS,
+        )),
     }
 }

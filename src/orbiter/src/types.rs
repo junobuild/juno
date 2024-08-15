@@ -25,16 +25,21 @@ pub mod state {
 
     pub type PageViewsStable = StableBTreeMap<AnalyticKey, StoredPageView, Memory>;
     pub type TrackEventsStable = StableBTreeMap<AnalyticKey, StoredTrackEvent, Memory>;
+    pub type PerformanceMetricsStable = StableBTreeMap<AnalyticKey, PerformanceMetric, Memory>;
 
     pub type SatellitesPageViewsStable = StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
     pub type SatellitesTrackEventsStable =
+        StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
+    pub type SatellitesPerformanceMetricsStable =
         StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
 
     pub struct StableState {
         pub page_views: PageViewsStable,
         pub track_events: TrackEventsStable,
+        pub performance_metrics: PerformanceMetricsStable,
         pub satellites_page_views: SatellitesPageViewsStable,
         pub satellites_track_events: SatellitesTrackEventsStable,
+        pub satellites_performance_metrics: SatellitesPerformanceMetricsStable,
     }
 
     pub type SatelliteConfig = OrbiterSatelliteConfig;
@@ -90,6 +95,44 @@ pub mod state {
         pub updated_at: Timestamp,
         pub version: Option<Version>,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct PerformanceMetric {
+        pub href: String,
+        pub metric_name: String,
+        pub data: PerformanceData,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+        pub version: Option<Version>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum PerformanceData {
+        Number(f64),
+        NavigationTiming(NavigationTiming),
+        NetworkInformation(NetworkInformation),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct NetworkInformation {
+        pub downlink: Option<f64>,
+        pub effective_type: Option<String>,
+        pub rtt: Option<f64>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct NavigationTiming {
+        pub fetch_time: Option<f64>,
+        pub worker_time: Option<f64>,
+        pub total_time: Option<f64>,
+        pub download_time: Option<f64>,
+        pub time_to_first_byte: Option<f64>,
+        pub header_size: Option<f64>,
+        pub dns_lookup_time: Option<f64>,
+        pub redirect_time: Option<f64>,
+    }
 }
 
 pub mod memory {
@@ -111,7 +154,7 @@ pub mod memory {
 }
 
 pub mod interface {
-    use crate::types::state::{PageViewDevice, SessionId};
+    use crate::types::state::{PageViewDevice, PerformanceData, SessionId};
     use candid::CandidType;
     use junobuild_shared::types::state::{Metadata, SatelliteId, Timestamp, Version};
     use junobuild_shared::types::utils::CalendarDate;
@@ -148,6 +191,17 @@ pub mod interface {
             note = "Support for backwards compatibility. It has been replaced by version for overwrite checks."
         )]
         pub updated_at: Option<Timestamp>,
+        pub version: Option<Version>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SetPerformanceMetric {
+        pub href: String,
+        pub metric_name: String,
+        pub data: PerformanceData,
+        pub user_agent: Option<String>,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub version: Option<Version>,
     }
 

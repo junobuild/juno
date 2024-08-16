@@ -111,7 +111,7 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum PerformanceData {
-        Number(f64),
+        Value(f64),
         NavigationTiming(NavigationTiming),
         NetworkInformation(NetworkInformation),
     }

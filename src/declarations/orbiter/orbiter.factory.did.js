@@ -96,7 +96,7 @@ export const idlFactory = ({ IDL }) => {
 	const PerformanceData = IDL.Variant({
 		NetworkInformation: NetworkInformation,
 		NavigationTiming: NavigationTiming,
-		Number: IDL.Float64
+		Value: IDL.Float64
 	});
 	const PerformanceInformation = IDL.Record({
 		low_end_experience: IDL.Opt(IDL.Bool),

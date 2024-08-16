@@ -84,7 +84,7 @@ type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
 type PerformanceData = variant {
   NetworkInformation : NetworkInformation;
   NavigationTiming : NavigationTiming;
-  Number : float64;
+  Value : float64;
 };
 type PerformanceInformation = record {
   low_end_experience : opt bool;

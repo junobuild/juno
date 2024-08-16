@@ -101,6 +101,7 @@ pub mod state {
         pub href: String,
         pub metric_name: String,
         pub data: PerformanceData,
+        pub info: PerformanceInformation,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
         pub created_at: Timestamp,
@@ -133,6 +134,12 @@ pub mod state {
         pub dns_lookup_time: Option<f64>,
         pub redirect_time: Option<f64>,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct PerformanceInformation {
+        low_end_device: bool,
+        low_end_experience: bool,
+    }
 }
 
 pub mod memory {
@@ -154,7 +161,7 @@ pub mod memory {
 }
 
 pub mod interface {
-    use crate::types::state::{PageViewDevice, PerformanceData, SessionId};
+    use crate::types::state::{PerformanceInformation, PageViewDevice, PerformanceData, SessionId};
     use candid::CandidType;
     use junobuild_shared::types::state::{Metadata, SatelliteId, Timestamp, Version};
     use junobuild_shared::types::utils::CalendarDate;
@@ -199,6 +206,7 @@ pub mod interface {
         pub href: String,
         pub metric_name: String,
         pub data: PerformanceData,
+        pub info: PerformanceInformation,
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,

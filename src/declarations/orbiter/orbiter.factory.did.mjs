@@ -98,11 +98,16 @@ export const idlFactory = ({ IDL }) => {
 		NavigationTiming: NavigationTiming,
 		Number: IDL.Float64
 	});
+	const PerformanceInformation = IDL.Record({
+		low_end_experience: IDL.Bool,
+		low_end_device: IDL.Bool
+	});
 	const PerformanceMetric = IDL.Record({
 		updated_at: IDL.Nat64,
 		session_id: IDL.Text,
 		data: PerformanceData,
 		href: IDL.Text,
+		info: PerformanceInformation,
 		metric_name: IDL.Text,
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal,
@@ -157,6 +162,7 @@ export const idlFactory = ({ IDL }) => {
 		session_id: IDL.Text,
 		data: PerformanceData,
 		href: IDL.Text,
+		info: PerformanceInformation,
 		metric_name: IDL.Text,
 		satellite_id: IDL.Principal,
 		version: IDL.Opt(IDL.Nat64),

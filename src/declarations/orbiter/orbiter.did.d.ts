@@ -111,11 +111,16 @@ export type PerformanceData =
 	| { NetworkInformation: NetworkInformation }
 	| { NavigationTiming: NavigationTiming }
 	| { Number: number };
+export interface PerformanceInformation {
+	low_end_experience: boolean;
+	low_end_device: boolean;
+}
 export interface PerformanceMetric {
 	updated_at: bigint;
 	session_id: string;
 	data: PerformanceData;
 	href: string;
+	info: PerformanceInformation;
 	metric_name: string;
 	created_at: bigint;
 	satellite_id: Principal;
@@ -150,6 +155,7 @@ export interface SetPerformanceMetric {
 	session_id: string;
 	data: PerformanceData;
 	href: string;
+	info: PerformanceInformation;
 	metric_name: string;
 	satellite_id: Principal;
 	version: [] | [bigint];

@@ -86,11 +86,16 @@ type PerformanceData = variant {
   NavigationTiming : NavigationTiming;
   Number : float64;
 };
+type PerformanceInformation = record {
+  low_end_experience : bool;
+  low_end_device : bool;
+};
 type PerformanceMetric = record {
   updated_at : nat64;
   session_id : text;
   data : PerformanceData;
   href : text;
+  info : PerformanceInformation;
   metric_name : text;
   created_at : nat64;
   satellite_id : principal;
@@ -125,6 +130,7 @@ type SetPerformanceMetric = record {
   session_id : text;
   data : PerformanceData;
   href : text;
+  info : PerformanceInformation;
   metric_name : text;
   satellite_id : principal;
   version : opt nat64;

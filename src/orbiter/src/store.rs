@@ -305,6 +305,7 @@ fn insert_performance_metric_impl(
         href: performance_metric.href,
         metric_name: performance_metric.metric_name,
         data: performance_metric.data,
+        info: performance_metric.info,
         satellite_id: performance_metric.satellite_id,
         session_id,
         created_at,

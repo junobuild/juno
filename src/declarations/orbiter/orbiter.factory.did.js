@@ -99,8 +99,8 @@ export const idlFactory = ({ IDL }) => {
 		Number: IDL.Float64
 	});
 	const PerformanceInformation = IDL.Record({
-		low_end_experience: IDL.Bool,
-		low_end_device: IDL.Bool
+		low_end_experience: IDL.Opt(IDL.Bool),
+		low_end_device: IDL.Opt(IDL.Bool)
 	});
 	const PerformanceMetric = IDL.Record({
 		updated_at: IDL.Nat64,

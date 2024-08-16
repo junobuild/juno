@@ -137,8 +137,8 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct PerformanceInformation {
-        low_end_device: bool,
-        low_end_experience: bool,
+        low_end_device: Option<bool>,
+        low_end_experience: Option<bool>,
     }
 }
 

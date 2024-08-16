@@ -87,8 +87,8 @@ type PerformanceData = variant {
   Number : float64;
 };
 type PerformanceInformation = record {
-  low_end_experience : bool;
-  low_end_device : bool;
+  low_end_experience : opt bool;
+  low_end_device : opt bool;
 };
 type PerformanceMetric = record {
   updated_at : nat64;

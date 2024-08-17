@@ -246,7 +246,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.0.10"
+version = "0.0.11"
 dependencies = [
  "candid",
  "ciborium",
@@ -808,7 +808,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.19"
+version = "0.0.19-patch.1"
 dependencies = [
  "candid",
  "ciborium",
@@ -847,7 +847,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.0.4"
+version = "0.0.5"
 dependencies = [
  "base64 0.13.1",
  "candid",

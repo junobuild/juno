@@ -111,11 +111,12 @@ impl StorageUploadStrategy for StorageUpload {
 
     fn get_asset(
         &self,
-        _reference_id: &ReferenceId,
+        _reference_id: &Option<ReferenceId>,
         collection: &CollectionKey,
         full_path: &FullPath,
         rule: &Rule,
-    ) -> Option<Asset> {
-        get_asset(collection, full_path, rule)
+    ) -> Result<Option<Asset>, String> {
+        let asset = get_asset(collection, full_path, rule);
+        Ok(asset)
     }
 }

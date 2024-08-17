@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-satellite"
-version = "0.0.19"
+version = "0.0.19-patch.1"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -44,4 +44,4 @@ rand = { version = "0.8.5", features = ["getrandom"]}
 junobuild-shared = "0.0.17"
 junobuild-utils = "0.0.2"
 junobuild-collections = "0.0.2"
-junobuild-storage = "0.0.4"
+junobuild-storage = "0.0.5"

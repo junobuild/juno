@@ -151,7 +151,7 @@ interface I18nSign_in {
 	quote_8: string;
 	quote_9: string;
 	quote_10: string;
-	mission_control: string;
+	future: string;
 	internet_identity: string;
 }
 

@@ -71,13 +71,13 @@ use junobuild_storage::http_request::{
     http_request_streaming_callback as http_request_streaming_callback_storage,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chunk};
+use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use memory::{get_memory_upgrades, init_stable_state};
 use serde_cbor::from_reader;
 use std::collections::HashMap;
-use junobuild_storage::types::config::StorageConfig;
 use types::state::Payments;
 
 #[init]

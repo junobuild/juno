@@ -7,7 +7,6 @@
 		satelliteCustomDomain,
 		satelliteCustomDomainsLoaded
 	} from '$lib/derived/custom-domains.derived';
-	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
@@ -32,19 +31,27 @@
 	$: host = $satelliteCustomDomain ?? new URL(defaultUrl).host;
 </script>
 
-{#if nonNullish($satelliteCustomDomainsLoaded)}
-	<div in:fade>
-		<Value>
-			<svelte:fragment slot="label">{$i18n.hosting.title}</svelte:fragment>
+<div>
+	<Value>
+		<svelte:fragment slot="label">{$i18n.hosting.title}</svelte:fragment>
+		{#if $satelliteCustomDomainsLoaded}
 			<ExternalLink {href} ariaLabel={$i18n.hosting.custom_domain}
 				><span class="host">{host}</span></ExternalLink
 			>
-		</Value>
-	</div>
-{/if}
+		{:else}
+			<span>&ZeroWidthSpace;</span>
+		{/if}
+	</Value>
+</div>
 
 <style lang="scss">
 	@use '../../styles/mixins/text';
+
+	div {
+		:global(a) {
+			min-width: 100%;
+		}
+	}
 
 	.host {
 		max-width: 65%;

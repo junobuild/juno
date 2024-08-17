@@ -33,7 +33,7 @@ const config: UserConfig = {
 						return 'vendor';
 					}
 
-					return 'index';
+					return undefined;
 				}
 			},
 			// Polyfill Buffer for production build

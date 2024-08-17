@@ -74,9 +74,9 @@ pub trait StorageUploadStrategy {
 
     fn get_asset(
         &self,
-        reference_id: &ReferenceId,
+        reference_id: &Option<ReferenceId>,
         collection: &CollectionKey,
         full_path: &FullPath,
         rule: &Rule,
-    ) -> Option<Asset>;
+    ) -> Result<Option<Asset>, String>;
 }

@@ -316,13 +316,16 @@
 	"cli": {
 		"title": "Juno CLI Authentication",
 		"sign_in": "Sign in to set up your terminal for interacting with your mission control, satellite(s) and analytics.",
-		"controller": "Your terminal is authenticated as the controller <strong>{0}</strong>.",
-		"add": "The following segments will be controlled by your terminal:",
-		"select_all": "Select all segments",
-		"unselect_all": "Unselect all segments",
-		"profile": "You can also provide an optional profile name to easily identify the controller.",
-		"segments": "Segments:",
-		"profile_placeholder": "A hint for additional context",
+		"controller": "Your terminal is authenticated as the controller: <strong>{0}</strong>.",
+		"add": "Please confirm the modules that will be controlled by your terminal:",
+		"selected": "Selected",
+		"module": "Module",
+		"terminal": "Terminal",
+		"select_all": "Select all",
+		"unselect_all": "Deselect all",
+		"profile": "Providing a profile name, if desired, can help you easily identify the controller in future sessions.",
+		"segments": "Modules:",
+		"profile_placeholder": "A optional profile name",
 		"authorize": "Authorize"
 	},
 	"errors": {

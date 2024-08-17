@@ -333,6 +333,9 @@ interface I18nCli {
 	sign_in: string;
 	controller: string;
 	add: string;
+	selected: string;
+	module: string;
+	terminal: string;
 	select_all: string;
 	unselect_all: string;
 	profile: string;

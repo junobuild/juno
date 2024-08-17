@@ -185,65 +185,93 @@
 	$: disabled = selectedSatellites.length === 0 && !missionControl && selectedOrbiters.length === 0;
 </script>
 
-<p>
-	{@html i18nFormat($i18n.cli.controller, [
-		{
-			placeholder: '{0}',
-			value: principal
-		}
-	])}
-</p>
-
 <p class="add">
 	{$i18n.cli.add}
 </p>
 
 <form on:submit|preventDefault={onSubmit}>
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th class="tools"> {$i18n.cli.selected} </th>
+					<th> {$i18n.cli.module} </th>
+				</tr>
+			</thead>
+			<tbody>
+				<tr>
+					<td class="actions"><input type="checkbox" bind:checked={missionControl} /></td>
+
+					<td>
+						<span>{$i18n.mission_control.title}</span>
+						<span class="canister-id">({$missionControlStore?.toText() ?? ''})</span>
+					</td>
+				</tr>
+
+				{#each satellites as satellite}
+					<tr>
+						<td class="actions"
+							><input type="checkbox" bind:group={selectedSatellites} value={satellite} /></td
+						>
+						<td
+							><span>{satelliteName(satellite[1])}</span>
+							<span class="canister-id">({satellite[0].toText()})</span></td
+						>
+					</tr>
+				{/each}
+
+				{#each orbiters as orbiter}
+					{@const orbName = orbiterName(orbiter[1])}
+
+					<tr>
+						<td class="actions"
+							><input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /></td
+						>
+						<td>
+							<span>{!orbName ? 'Analytics' : orbName}</span>
+							<span class="canister-id">({orbiter[0].toText()})</span>
+						</td>
+					</tr>
+				{/each}
+			</tbody>
+		</table>
+	</div>
+
 	<div class="objects">
-		<div class="checkbox">
-			<input type="checkbox" bind:checked={missionControl} />
-			<span>{$i18n.mission_control.title}</span>
-			<span class="canister-id">({$missionControlStore?.toText() ?? ''})</span>
-		</div>
-
-		{#each satellites as satellite}
-			<div class="checkbox">
-				<input type="checkbox" bind:group={selectedSatellites} value={satellite} /><span
-					>{satelliteName(satellite[1])}</span
-				>
-				<span class="canister-id">({satellite[0].toText()})</span>
-			</div>
-		{/each}
-
-		{#each orbiters as orbiter}
-			{@const orbName = orbiterName(orbiter[1])}
-
-			<div class="checkbox">
-				<input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /><span
-					>{!orbName ? 'Analytics' : orbName}</span
-				>
-				<span class="canister-id">({orbiter[0].toText()})</span>
-			</div>
-		{/each}
-
 		<div class="checkbox all">
 			<input type="checkbox" on:change={toggleAll} checked={allSelected} />
 			<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
 		</div>
 	</div>
 
-	<label for="profile">
-		{$i18n.cli.profile}
-	</label>
+	<div class="card-container with-title">
+		<span class="title">{$i18n.cli.terminal}</span>
 
-	<input
-		id="profile"
-		type="text"
-		placeholder={$i18n.cli.profile_placeholder}
-		name="profile"
-		class="profile"
-		bind:value={profile}
-	/>
+		<div class="content">
+			<p>
+				{@html i18nFormat($i18n.cli.controller, [
+					{
+						placeholder: '{0}',
+						value: principal
+					}
+				])}
+			</p>
+
+			<p class="profile-hint">
+				<label for="profile">
+					{$i18n.cli.profile}
+				</label>
+			</p>
+
+			<input
+				id="profile"
+				type="text"
+				placeholder={$i18n.cli.profile_placeholder}
+				name="profile"
+				bind:value={profile}
+			/>
+		</div>
+	</div>
 
 	<button {disabled}>{$i18n.cli.authorize}</button>
 </form>
@@ -251,6 +279,10 @@
 <style lang="scss">
 	@use '../../../lib/styles/mixins/text';
 	@use '../../../lib/styles/mixins/media';
+
+	.tools {
+		width: 88px;
+	}
 
 	.checkbox {
 		display: flex;
@@ -282,18 +314,33 @@
 	}
 
 	.objects {
-		margin: var(--padding) 0 var(--padding-2x);
-		padding: var(--padding);
-	}
-
-	.profile {
-		@include media.min-width(large) {
-			max-width: 50%;
-		}
+		margin: 0 0 var(--padding-2x);
+		padding: var(--padding) var(--padding-2x);
 	}
 
 	.add {
-		padding: var(--padding-2x) 0 0;
+		padding: 0 0 var(--padding-2x);
+		margin: 0;
+	}
+
+	.table-container {
+		margin: 0;
+	}
+
+	.card-container {
+		margin: var(--padding-4x) 0 var(--padding-6x);
+	}
+
+	.actions {
+		display: flex;
+		padding: var(--padding-2x) var(--padding-2x);
+	}
+
+	input[type='checkbox'] {
+		margin: 0;
+	}
+
+	.profile-hint {
 		margin: 0;
 	}
 </style>

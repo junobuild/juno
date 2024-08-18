@@ -274,10 +274,17 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsWebVitalsPerformanceMetrics {
-        pub cls: f64,
-        pub fcp: f64,
-        pub inp: f64,
-        pub lcp: f64,
-        pub ttfb: f64,
+        pub overall: AnalyticsWebVitalsPageMetrics,
+        pub pages: HashMap<String, AnalyticsWebVitalsPageMetrics>,
+    }
+
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsWebVitalsPageMetrics {
+        pub cls: Option<f64>,
+        pub fcp: Option<f64>,
+        pub inp: Option<f64>,
+        pub lcp: Option<f64>,
+        pub ttfb: Option<f64>,
     }
 }

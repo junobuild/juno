@@ -28,12 +28,16 @@ type AnalyticsTop10PageViews = record {
   pages : vec record { text; nat32 };
 };
 type AnalyticsTrackEvents = record { total : vec record { text; nat32 } };
+type AnalyticsWebVitalsPageMetrics = record {
+  cls : opt float64;
+  fcp : opt float64;
+  inp : opt float64;
+  lcp : opt float64;
+  ttfb : opt float64;
+};
 type AnalyticsWebVitalsPerformanceMetrics = record {
-  cls : float64;
-  fcp : float64;
-  inp : float64;
-  lcp : float64;
-  ttfb : float64;
+  overall : AnalyticsWebVitalsPageMetrics;
+  pages : vec record { text; AnalyticsWebVitalsPageMetrics };
 };
 type CalendarDate = record { day : nat8; month : nat8; year : int32 };
 type Controller = record {

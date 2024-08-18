@@ -1,8 +1,4 @@
-use crate::types::interface::{
-    AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
-    AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents,
-    AnalyticsWebVitalsPerformanceMetrics,
-};
+use crate::types::interface::{AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents, AnalyticsWebVitalsPageMetrics, AnalyticsWebVitalsPerformanceMetrics};
 use crate::types::state::{
     AnalyticKey, PageView, PerformanceData, PerformanceMetric, PerformanceMetricName, TrackEvent,
     WebVitalsMetric,
@@ -234,11 +230,11 @@ impl PerformanceMetricAccumulator {
         self.count += 1;
     }
 
-    fn average(&self) -> f64 {
+    fn average(&self) -> Option<f64> {
         if self.count > 0 {
-            self.sum / self.count as f64
+            Some(self.sum / self.count as f64)
         } else {
-            0.0
+            None
         }
     }
 }
@@ -246,37 +242,87 @@ impl PerformanceMetricAccumulator {
 pub fn analytics_performance_metrics_web_vitals(
     metrics: &Vec<(AnalyticKey, PerformanceMetric)>,
 ) -> AnalyticsWebVitalsPerformanceMetrics {
-    let mut cls = PerformanceMetricAccumulator::default();
-    let mut fcp = PerformanceMetricAccumulator::default();
-    let mut inp = PerformanceMetricAccumulator::default();
-    let mut lcp = PerformanceMetricAccumulator::default();
-    let mut ttfb = PerformanceMetricAccumulator::default();
+    let mut overall_cls_acc = PerformanceMetricAccumulator::default();
+    let mut overall_fcp_acc = PerformanceMetricAccumulator::default();
+    let mut overall_inp_acc = PerformanceMetricAccumulator::default();
+    let mut overall_lcp_acc = PerformanceMetricAccumulator::default();
+    let mut overall_ttfb_acc = PerformanceMetricAccumulator::default();
+
+    let mut page_metrics: HashMap<String, (PerformanceMetricAccumulator, PerformanceMetricAccumulator, PerformanceMetricAccumulator, PerformanceMetricAccumulator, PerformanceMetricAccumulator)> = HashMap::new();
 
     for (
         _,
         PerformanceMetric {
-            data, metric_name, ..
+            data, metric_name, href, ..
         },
     ) in metrics
     {
         #[allow(irrefutable_let_patterns)]
         if let PerformanceData::WebVitalsMetric(WebVitalsMetric { value, .. }) = &data {
+            let page = match Url::parse(&href) {
+                Ok(parsed_url) => parsed_url.path().to_string(),
+                Err(_) => href.clone(),
+            };
+
+            let entry = page_metrics.entry(page).or_insert_with(|| (
+                PerformanceMetricAccumulator::default(),
+                PerformanceMetricAccumulator::default(),
+                PerformanceMetricAccumulator::default(),
+                PerformanceMetricAccumulator::default(),
+                PerformanceMetricAccumulator::default(),
+            ));
+
+            let (cls_acc, fcp_acc, inp_acc, lcp_acc, ttfb_acc) = entry;
+
             match metric_name {
-                PerformanceMetricName::CLS => cls.add(value),
-                PerformanceMetricName::FCP => fcp.add(value),
-                PerformanceMetricName::INP => inp.add(value),
-                PerformanceMetricName::LCP => lcp.add(value),
-                PerformanceMetricName::TTFB => ttfb.add(value),
+                PerformanceMetricName::CLS => {
+                    cls_acc.add(value);
+                    overall_cls_acc.add(value);
+                },
+                PerformanceMetricName::FCP => {
+                    fcp_acc.add(value);
+                    overall_fcp_acc.add(value);
+                },
+                PerformanceMetricName::INP => {
+                    inp_acc.add(value);
+                    overall_inp_acc.add(value);
+                },
+                PerformanceMetricName::LCP => {
+                    lcp_acc.add(value);
+                    overall_lcp_acc.add(value);
+                },
+                PerformanceMetricName::TTFB => {
+                    ttfb_acc.add(value);
+                    overall_ttfb_acc.add(value);
+                },
             }
         }
     }
 
+    let overall_metrics = AnalyticsWebVitalsPageMetrics {
+        cls: overall_cls_acc.average(),
+        fcp: overall_fcp_acc.average(),
+        inp: overall_inp_acc.average(),
+        lcp: overall_lcp_acc.average(),
+        ttfb: overall_ttfb_acc.average(),
+    };
+
+    let page_metrics = page_metrics.into_iter().map(|(page, (cls_acc, fcp_acc, inp_acc, lcp_acc, ttfb_acc))| {
+        (
+            page,
+            AnalyticsWebVitalsPageMetrics {
+                cls: cls_acc.average(),
+                fcp: fcp_acc.average(),
+                inp: inp_acc.average(),
+                lcp: lcp_acc.average(),
+                ttfb: ttfb_acc.average(),
+            }
+        )
+    }).collect();
+
     AnalyticsWebVitalsPerformanceMetrics {
-        cls: cls.average(),
-        fcp: fcp.average(),
-        inp: inp.average(),
-        lcp: lcp.average(),
-        ttfb: ttfb.average(),
+        overall: overall_metrics,
+        pages: page_metrics
     }
 }
 

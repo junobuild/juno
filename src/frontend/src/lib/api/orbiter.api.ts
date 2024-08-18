@@ -137,7 +137,10 @@ export const getPerformanceMetricsAnalyticsWebVitals = async ({
 	to,
 	identity
 }: PageViewsParams): Promise<AnalyticsWebVitalsPerformanceMetrics> => {
-	const { get_performance_metrics_analytics_web_vitals } = await getOrbiterActor({ orbiterId, identity });
+	const { get_performance_metrics_analytics_web_vitals } = await getOrbiterActor({
+		orbiterId,
+		identity
+	});
 	return getAnalytics({
 		satelliteId,
 		from,

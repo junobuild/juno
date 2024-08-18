@@ -110,12 +110,16 @@ export const idlFactory = ({ IDL }) => {
 		satellite_id: IDL.Principal,
 		version: IDL.Opt(IDL.Nat64)
 	});
+	const AnalyticsWebVitalsPageMetrics = IDL.Record({
+		cls: IDL.Opt(IDL.Float64),
+		fcp: IDL.Opt(IDL.Float64),
+		inp: IDL.Opt(IDL.Float64),
+		lcp: IDL.Opt(IDL.Float64),
+		ttfb: IDL.Opt(IDL.Float64)
+	});
 	const AnalyticsWebVitalsPerformanceMetrics = IDL.Record({
-		cls: IDL.Float64,
-		fcp: IDL.Float64,
-		inp: IDL.Float64,
-		lcp: IDL.Float64,
-		ttfb: IDL.Float64
+		overall: AnalyticsWebVitalsPageMetrics,
+		pages: IDL.Vec(IDL.Tuple(IDL.Text, AnalyticsWebVitalsPageMetrics))
 	});
 	const TrackEvent = IDL.Record({
 		updated_at: IDL.Nat64,

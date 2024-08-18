@@ -33,11 +33,7 @@ use crate::store::{
     get_track_events as get_track_events_store, insert_page_view, insert_performance_metric,
     insert_track_event,
 };
-use crate::types::interface::{
-    AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
-    AnalyticsTrackEvents, AnalyticsWebVitalsPerformanceMetrics, DelSatelliteConfig, GetAnalytics,
-    SetPageView, SetPerformanceMetric, SetSatelliteConfig, SetTrackEvent,
-};
+use crate::types::interface::{AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents, AnalyticsWebVitalsPageMetrics, AnalyticsWebVitalsPerformanceMetrics, DelSatelliteConfig, GetAnalytics, SetPageView, SetPerformanceMetric, SetSatelliteConfig, SetTrackEvent};
 use crate::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };

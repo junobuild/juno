@@ -37,12 +37,16 @@ export interface AnalyticsTop10PageViews {
 export interface AnalyticsTrackEvents {
 	total: Array<[string, number]>;
 }
+export interface AnalyticsWebVitalsPageMetrics {
+	cls: [] | [number];
+	fcp: [] | [number];
+	inp: [] | [number];
+	lcp: [] | [number];
+	ttfb: [] | [number];
+}
 export interface AnalyticsWebVitalsPerformanceMetrics {
-	cls: number;
-	fcp: number;
-	inp: number;
-	lcp: number;
-	ttfb: number;
+	overall: AnalyticsWebVitalsPageMetrics;
+	pages: Array<[string, AnalyticsWebVitalsPageMetrics]>;
 }
 export interface CalendarDate {
 	day: number;

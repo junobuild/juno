@@ -215,7 +215,7 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PerformanceMetric))],
 			['query']
 		),
-		get_performance_metrics_web_vitals: IDL.Func(
+		get_performance_metrics_analytics_web_vitals: IDL.Func(
 			[GetAnalytics],
 			[AnalyticsWebVitalsPerformanceMetrics],
 			['query']

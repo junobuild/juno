@@ -254,7 +254,7 @@ fn get_performance_metrics(filter: GetAnalytics) -> Vec<(AnalyticKey, Performanc
 }
 
 #[query(guard = "caller_is_controller")]
-fn get_performance_metrics_web_vitals(
+fn get_performance_metrics_analytics_web_vitals(
     filter: GetAnalytics,
 ) -> AnalyticsWebVitalsPerformanceMetrics {
     let metrics = get_performance_metrics_store(&filter);

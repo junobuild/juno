@@ -173,7 +173,7 @@ service : () -> {
   get_performance_metrics : (GetAnalytics) -> (
       vec record { AnalyticKey; PerformanceMetric },
     ) query;
-  get_performance_metrics_web_vitals : (GetAnalytics) -> (
+  get_performance_metrics_analytics_web_vitals : (GetAnalytics) -> (
       AnalyticsWebVitalsPerformanceMetrics,
     ) query;
   get_track_events : (GetAnalytics) -> (

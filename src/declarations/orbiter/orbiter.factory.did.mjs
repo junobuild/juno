@@ -78,7 +78,7 @@ export const idlFactory = ({ IDL }) => {
 		referrers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
 		pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
 	});
-	const WebVitalsMetricNavigationType = IDL.Variant({
+	const NavigationType = IDL.Variant({
 		Navigate: IDL.Null,
 		Restore: IDL.Null,
 		Reload: IDL.Null,
@@ -89,7 +89,7 @@ export const idlFactory = ({ IDL }) => {
 	const WebVitalsMetric = IDL.Record({
 		id: IDL.Text,
 		value: IDL.Float64,
-		navigation_type: WebVitalsMetricNavigationType,
+		navigation_type: IDL.Opt(NavigationType),
 		delta: IDL.Float64
 	});
 	const PerformanceData = IDL.Variant({ WebVitalsMetric: WebVitalsMetric });

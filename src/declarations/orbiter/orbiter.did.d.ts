@@ -69,6 +69,13 @@ export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
 }
+export type NavigationType =
+	| { Navigate: null }
+	| { Restore: null }
+	| { Reload: null }
+	| { BackForward: null }
+	| { BackForwardCache: null }
+	| { Prerender: null };
 export interface OrbiterSatelliteConfig {
 	updated_at: bigint;
 	created_at: bigint;
@@ -168,16 +175,9 @@ export interface TrackEvent {
 export interface WebVitalsMetric {
 	id: string;
 	value: number;
-	navigation_type: WebVitalsMetricNavigationType;
+	navigation_type: [] | [NavigationType];
 	delta: number;
 }
-export type WebVitalsMetricNavigationType =
-	| { Navigate: null }
-	| { Restore: null }
-	| { Reload: null }
-	| { BackForward: null }
-	| { BackForwardCache: null }
-	| { Prerender: null };
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;

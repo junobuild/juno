@@ -46,6 +46,14 @@ type GetAnalytics = record {
   satellite_id : opt principal;
 };
 type MemorySize = record { stable : nat64; heap : nat64 };
+type NavigationType = variant {
+  Navigate;
+  Restore;
+  Reload;
+  BackForward;
+  BackForwardCache;
+  Prerender;
+};
 type OrbiterSatelliteConfig = record {
   updated_at : nat64;
   created_at : nat64;
@@ -134,16 +142,8 @@ type TrackEvent = record {
 type WebVitalsMetric = record {
   id : text;
   value : float64;
-  navigation_type : WebVitalsMetricNavigationType;
+  navigation_type : opt NavigationType;
   delta : float64;
-};
-type WebVitalsMetricNavigationType = variant {
-  Navigate;
-  Restore;
-  Reload;
-  BackForward;
-  BackForwardCache;
-  Prerender;
 };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> (

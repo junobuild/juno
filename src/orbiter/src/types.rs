@@ -127,11 +127,11 @@ pub mod state {
         pub value: f64,
         pub delta: f64,
         pub id: String,
-        pub navigation_type: WebVitalsMetricNavigationType,
+        pub navigation_type: Option<NavigationType>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum WebVitalsMetricNavigationType {
+    pub enum NavigationType {
         Navigate,
         Reload,
         BackForward,

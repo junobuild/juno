@@ -270,6 +270,8 @@ interface I18nAnalytics {
 	score: string;
 	rating: string;
 	web_vitals: string;
+	overall: string;
+	metric: string;
 	ttfb: string;
 	fcp: string;
 	lcp: string;

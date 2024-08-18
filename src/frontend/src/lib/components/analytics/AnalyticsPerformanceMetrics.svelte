@@ -1,12 +1,19 @@
 <script lang="ts">
-	import type { AnalyticsWebVitalsPerformanceMetrics } from '$declarations/orbiter/orbiter.did';
-	import AnalyticsPerformancePageMetrics from '$lib/components/analytics/AnalyticsPerformancePageMetrics.svelte';
+	import type {
+		AnalyticsWebVitalsPageMetrics,
+		AnalyticsWebVitalsPerformanceMetrics
+	} from '$declarations/orbiter/orbiter.did';
+	import AnalyticsPerformanceMetricsPage from '$lib/components/analytics/AnalyticsPerformanceMetricsPage.svelte';
+	import AnalyticsPerformanceMetricsFilter from '$lib/components/analytics/AnalyticsPerformanceMetricsFilter.svelte';
 
 	export let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics;
 
-	let metrics: AnalyticsPerformancePageMetrics;
+	let page: AnalyticsWebVitalsPageMetrics | undefined = undefined;
 
-	$: metrics = performanceMetrics.overall;
+	let metrics: AnalyticsPerformanceMetricsPage;
+	$: metrics = page ?? performanceMetrics.overall;
 </script>
 
-<AnalyticsPerformancePageMetrics {metrics} />
+<AnalyticsPerformanceMetricsFilter bind:page {performanceMetrics} />
+
+<AnalyticsPerformanceMetricsPage {metrics} />

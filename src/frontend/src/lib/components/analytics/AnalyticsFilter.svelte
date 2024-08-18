@@ -6,6 +6,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 	import { addMonths, format } from 'date-fns';
+	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
 
 	let from = format(addMonths(new Date(), -1), 'yyyy-MM-dd');
 	let to = '';
@@ -19,54 +20,21 @@
 		} as PageViewsPeriod);
 </script>
 
-<div class="filters">
-	<div class="satellites">
-		<Value>
-			<svelte:fragment slot="label">{$i18n.analytics.satellites}</svelte:fragment>
-			<SatellitesPicker />
-		</Value>
-	</div>
+<AnalyticsToolbar>
+	<Value slot="start">
+		<svelte:fragment slot="label">{$i18n.analytics.satellites}</svelte:fragment>
+		<SatellitesPicker />
+	</Value>
 
-	<div>
-		<Value ref="from">
-			<svelte:fragment slot="label">{$i18n.core.from}</svelte:fragment>
+	<Value ref="from" slot="center">
+		<svelte:fragment slot="label">{$i18n.core.from}</svelte:fragment>
 
-			<input bind:value={from} id="from" name="from" type="date" on:change={onChange} />
-		</Value>
-	</div>
+		<input bind:value={from} id="from" name="from" type="date" on:change={onChange} />
+	</Value>
 
-	<div>
-		<Value ref="to">
-			<svelte:fragment slot="label">{$i18n.core.to}</svelte:fragment>
+	<Value ref="to" slot="end">
+		<svelte:fragment slot="label">{$i18n.core.to}</svelte:fragment>
 
-			<input bind:value={to} id="to" name="to" type="date" on:change={onChange} />
-		</Value>
-	</div>
-</div>
-
-<style lang="scss">
-	@use '../../styles/mixins/grid';
-	@use '../../styles/mixins/media';
-
-	.filters {
-		display: grid;
-		grid-template-columns: repeat(2, calc((100% - var(--padding-1_5x)) / 2));
-
-		column-gap: var(--padding-1_5x);
-		padding: var(--padding-2x) 0;
-
-		@include media.min-width(large) {
-			grid-template-columns: repeat(3, calc((100% - (2 * var(--padding-4x))) / 3));
-
-			gap: var(--padding-4x);
-		}
-	}
-
-	.satellites {
-		grid-column: 1 / 3;
-
-		@include media.min-width(large) {
-			grid-column: 1 / 2;
-		}
-	}
-</style>
+		<input bind:value={to} id="to" name="to" type="date" on:change={onChange} />
+	</Value>
+</AnalyticsToolbar>

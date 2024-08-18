@@ -258,6 +258,8 @@
 		"score": "Score",
 		"rating": "Rating",
 		"web_vitals": "Web Vitals",
+		"overall": "Overall",
+		"metric": "Metric",
 		"ttfb": "Time to First Byte <small>(TTFB)</small>",
 		"fcp": "First Contentful Paint <small>(FCP)</small>",
 		"lcp": "Largest Contentful Paint <small>(LCP)",

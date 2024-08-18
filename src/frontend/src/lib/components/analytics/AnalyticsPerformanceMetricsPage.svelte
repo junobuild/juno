@@ -69,7 +69,7 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="description"> {$i18n.analytics.web_vitals} </th>
+				<th class="description"> {$i18n.analytics.metric} </th>
 				<th class="score"> {$i18n.analytics.score} </th>
 				<th> {$i18n.analytics.rating} </th>
 			</tr>

@@ -108,6 +108,7 @@ pub mod state {
         pub version: Option<Version>,
     }
 
+    #[allow(clippy::upper_case_acronyms)]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum PerformanceMetricName {
         CLS,
@@ -275,9 +276,8 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsWebVitalsPerformanceMetrics {
         pub overall: AnalyticsWebVitalsPageMetrics,
-        pub pages: HashMap<String, AnalyticsWebVitalsPageMetrics>,
+        pub pages: Vec<(String, AnalyticsWebVitalsPageMetrics)>,
     }
-
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsWebVitalsPageMetrics {

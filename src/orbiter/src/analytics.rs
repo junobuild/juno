@@ -1,4 +1,8 @@
-use crate::types::interface::{AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents, AnalyticsWebVitalsPageMetrics, AnalyticsWebVitalsPerformanceMetrics};
+use crate::types::interface::{
+    AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
+    AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents,
+    AnalyticsWebVitalsPageMetrics, AnalyticsWebVitalsPerformanceMetrics,
+};
 use crate::types::state::{
     AnalyticKey, PageView, PerformanceData, PerformanceMetric, PerformanceMetricName, TrackEvent,
     WebVitalsMetric,
@@ -6,6 +10,7 @@ use crate::types::state::{
 use junobuild_shared::day::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;
 use regex::Regex;
+use std::cmp::Ordering;
 use std::collections::{HashMap, HashSet};
 use url::Url;
 
@@ -248,29 +253,43 @@ pub fn analytics_performance_metrics_web_vitals(
     let mut overall_lcp_acc = PerformanceMetricAccumulator::default();
     let mut overall_ttfb_acc = PerformanceMetricAccumulator::default();
 
-    let mut page_metrics: HashMap<String, (PerformanceMetricAccumulator, PerformanceMetricAccumulator, PerformanceMetricAccumulator, PerformanceMetricAccumulator, PerformanceMetricAccumulator)> = HashMap::new();
+    let mut page_metrics: HashMap<
+        String,
+        (
+            PerformanceMetricAccumulator,
+            PerformanceMetricAccumulator,
+            PerformanceMetricAccumulator,
+            PerformanceMetricAccumulator,
+            PerformanceMetricAccumulator,
+        ),
+    > = HashMap::new();
 
     for (
         _,
         PerformanceMetric {
-            data, metric_name, href, ..
+            data,
+            metric_name,
+            href,
+            ..
         },
     ) in metrics
     {
         #[allow(irrefutable_let_patterns)]
         if let PerformanceData::WebVitalsMetric(WebVitalsMetric { value, .. }) = &data {
-            let page = match Url::parse(&href) {
+            let page = match Url::parse(href) {
                 Ok(parsed_url) => parsed_url.path().to_string(),
                 Err(_) => href.clone(),
             };
 
-            let entry = page_metrics.entry(page).or_insert_with(|| (
-                PerformanceMetricAccumulator::default(),
-                PerformanceMetricAccumulator::default(),
-                PerformanceMetricAccumulator::default(),
-                PerformanceMetricAccumulator::default(),
-                PerformanceMetricAccumulator::default(),
-            ));
+            let entry = page_metrics.entry(page).or_insert_with(|| {
+                (
+                    PerformanceMetricAccumulator::default(),
+                    PerformanceMetricAccumulator::default(),
+                    PerformanceMetricAccumulator::default(),
+                    PerformanceMetricAccumulator::default(),
+                    PerformanceMetricAccumulator::default(),
+                )
+            });
 
             let (cls_acc, fcp_acc, inp_acc, lcp_acc, ttfb_acc) = entry;
 
@@ -278,23 +297,23 @@ pub fn analytics_performance_metrics_web_vitals(
                 PerformanceMetricName::CLS => {
                     cls_acc.add(value);
                     overall_cls_acc.add(value);
-                },
+                }
                 PerformanceMetricName::FCP => {
                     fcp_acc.add(value);
                     overall_fcp_acc.add(value);
-                },
+                }
                 PerformanceMetricName::INP => {
                     inp_acc.add(value);
                     overall_inp_acc.add(value);
-                },
+                }
                 PerformanceMetricName::LCP => {
                     lcp_acc.add(value);
                     overall_lcp_acc.add(value);
-                },
+                }
                 PerformanceMetricName::TTFB => {
                     ttfb_acc.add(value);
                     overall_ttfb_acc.add(value);
-                },
+                }
             }
         }
     }
@@ -307,22 +326,35 @@ pub fn analytics_performance_metrics_web_vitals(
         ttfb: overall_ttfb_acc.average(),
     };
 
-    let page_metrics = page_metrics.into_iter().map(|(page, (cls_acc, fcp_acc, inp_acc, lcp_acc, ttfb_acc))| {
-        (
-            page,
-            AnalyticsWebVitalsPageMetrics {
-                cls: cls_acc.average(),
-                fcp: fcp_acc.average(),
-                inp: inp_acc.average(),
-                lcp: lcp_acc.average(),
-                ttfb: ttfb_acc.average(),
-            }
-        )
-    }).collect();
+    let mut page_metrics: Vec<(String, AnalyticsWebVitalsPageMetrics)> = page_metrics
+        .into_iter()
+        .map(|(page, (cls_acc, fcp_acc, inp_acc, lcp_acc, ttfb_acc))| {
+            (
+                page,
+                AnalyticsWebVitalsPageMetrics {
+                    cls: cls_acc.average(),
+                    fcp: fcp_acc.average(),
+                    inp: inp_acc.average(),
+                    lcp: lcp_acc.average(),
+                    ttfb: ttfb_acc.average(),
+                },
+            )
+        })
+        .collect();
+
+    page_metrics.sort_by(|(page_a, _), (page_b, _)| {
+        if page_a == "/" {
+            Ordering::Less
+        } else if page_b == "/" {
+            Ordering::Greater
+        } else {
+            page_a.cmp(page_b)
+        }
+    });
 
     AnalyticsWebVitalsPerformanceMetrics {
         overall: overall_metrics,
-        pages: page_metrics
+        pages: page_metrics,
     }
 }
 

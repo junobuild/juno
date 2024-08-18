@@ -286,7 +286,7 @@ fn insert_performance_metric_impl(
 
     let created_at: Timestamp = match &current_performance_metric {
         None => now,
-        Some(current_performance_metric) => current_performance_metric.created_at.clone(),
+        Some(current_performance_metric) => current_performance_metric.created_at,
     };
 
     let version: Version = match &current_performance_metric {

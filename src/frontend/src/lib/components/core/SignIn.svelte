@@ -27,7 +27,7 @@
 	<div class="overview">
 		<h1>{title}</h1>
 
-		<p>{$i18n.sign_in.mission_control}</p>
+		<p>{$i18n.sign_in.future}</p>
 	</div>
 
 	<div class="sign-in">

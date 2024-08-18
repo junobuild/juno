@@ -78,37 +78,34 @@ export const idlFactory = ({ IDL }) => {
 		referrers: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32)),
 		pages: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
 	});
-	const NetworkInformation = IDL.Record({
-		rtt: IDL.Opt(IDL.Float64),
-		downlink: IDL.Opt(IDL.Float64),
-		effective_type: IDL.Opt(IDL.Text)
+	const WebVitalsMetricNavigationType = IDL.Variant({
+		Navigate: IDL.Null,
+		Restore: IDL.Null,
+		Reload: IDL.Null,
+		BackForward: IDL.Null,
+		BackForwardCache: IDL.Null,
+		Prerender: IDL.Null
 	});
-	const NavigationTiming = IDL.Record({
-		worker_time: IDL.Opt(IDL.Float64),
-		redirect_time: IDL.Opt(IDL.Float64),
-		fetch_time: IDL.Opt(IDL.Float64),
-		time_to_first_byte: IDL.Opt(IDL.Float64),
-		total_time: IDL.Opt(IDL.Float64),
-		header_size: IDL.Opt(IDL.Float64),
-		dns_lookup_time: IDL.Opt(IDL.Float64),
-		download_time: IDL.Opt(IDL.Float64)
+	const WebVitalsMetric = IDL.Record({
+		id: IDL.Text,
+		value: IDL.Float64,
+		navigation_type: WebVitalsMetricNavigationType,
+		delta: IDL.Float64
 	});
-	const PerformanceData = IDL.Variant({
-		NetworkInformation: NetworkInformation,
-		NavigationTiming: NavigationTiming,
-		Value: IDL.Float64
-	});
-	const PerformanceInformation = IDL.Record({
-		low_end_experience: IDL.Opt(IDL.Bool),
-		low_end_device: IDL.Opt(IDL.Bool)
+	const PerformanceData = IDL.Variant({ WebVitalsMetric: WebVitalsMetric });
+	const PerformanceMetricName = IDL.Variant({
+		CLS: IDL.Null,
+		FCP: IDL.Null,
+		INP: IDL.Null,
+		LCP: IDL.Null,
+		TTFB: IDL.Null
 	});
 	const PerformanceMetric = IDL.Record({
 		updated_at: IDL.Nat64,
 		session_id: IDL.Text,
 		data: PerformanceData,
 		href: IDL.Text,
-		info: PerformanceInformation,
-		metric_name: IDL.Text,
+		metric_name: PerformanceMetricName,
 		created_at: IDL.Nat64,
 		satellite_id: IDL.Principal,
 		version: IDL.Opt(IDL.Nat64)
@@ -162,8 +159,7 @@ export const idlFactory = ({ IDL }) => {
 		session_id: IDL.Text,
 		data: PerformanceData,
 		href: IDL.Text,
-		info: PerformanceInformation,
-		metric_name: IDL.Text,
+		metric_name: PerformanceMetricName,
 		satellite_id: IDL.Principal,
 		version: IDL.Opt(IDL.Nat64),
 		user_agent: IDL.Opt(IDL.Text)

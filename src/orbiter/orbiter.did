@@ -46,21 +46,6 @@ type GetAnalytics = record {
   satellite_id : opt principal;
 };
 type MemorySize = record { stable : nat64; heap : nat64 };
-type NavigationTiming = record {
-  worker_time : opt float64;
-  redirect_time : opt float64;
-  fetch_time : opt float64;
-  time_to_first_byte : opt float64;
-  total_time : opt float64;
-  header_size : opt float64;
-  dns_lookup_time : opt float64;
-  download_time : opt float64;
-};
-type NetworkInformation = record {
-  rtt : opt float64;
-  downlink : opt float64;
-  effective_type : opt text;
-};
 type OrbiterSatelliteConfig = record {
   updated_at : nat64;
   created_at : nat64;
@@ -81,26 +66,18 @@ type PageView = record {
   user_agent : opt text;
 };
 type PageViewDevice = record { inner_height : nat16; inner_width : nat16 };
-type PerformanceData = variant {
-  NetworkInformation : NetworkInformation;
-  NavigationTiming : NavigationTiming;
-  Value : float64;
-};
-type PerformanceInformation = record {
-  low_end_experience : opt bool;
-  low_end_device : opt bool;
-};
+type PerformanceData = variant { WebVitalsMetric : WebVitalsMetric };
 type PerformanceMetric = record {
   updated_at : nat64;
   session_id : text;
   data : PerformanceData;
   href : text;
-  info : PerformanceInformation;
-  metric_name : text;
+  metric_name : PerformanceMetricName;
   created_at : nat64;
   satellite_id : principal;
   version : opt nat64;
 };
+type PerformanceMetricName = variant { CLS; FCP; INP; LCP; TTFB };
 type Result = variant { Ok : PageView; Err : text };
 type Result_1 = variant { Ok; Err : vec record { AnalyticKey; text } };
 type Result_2 = variant { Ok : PerformanceMetric; Err : text };
@@ -130,8 +107,7 @@ type SetPerformanceMetric = record {
   session_id : text;
   data : PerformanceData;
   href : text;
-  info : PerformanceInformation;
-  metric_name : text;
+  metric_name : PerformanceMetricName;
   satellite_id : principal;
   version : opt nat64;
   user_agent : opt text;
@@ -154,6 +130,20 @@ type TrackEvent = record {
   created_at : nat64;
   satellite_id : principal;
   version : opt nat64;
+};
+type WebVitalsMetric = record {
+  id : text;
+  value : float64;
+  navigation_type : WebVitalsMetricNavigationType;
+  delta : float64;
+};
+type WebVitalsMetricNavigationType = variant {
+  Navigate;
+  Restore;
+  Reload;
+  BackForward;
+  BackForwardCache;
+  Prerender;
 };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> (

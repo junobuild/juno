@@ -99,9 +99,8 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct PerformanceMetric {
         pub href: String,
-        pub metric_name: String,
+        pub metric_name: PerformanceMetricName,
         pub data: PerformanceData,
-        pub info: PerformanceInformation,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,
         pub created_at: Timestamp,
@@ -110,35 +109,35 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum PerformanceMetricName {
+        CLS,
+        FCP,
+        INP,
+        LCP,
+        TTFB,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum PerformanceData {
-        Value(f64),
-        NavigationTiming(NavigationTiming),
-        NetworkInformation(NetworkInformation),
+        WebVitalsMetric(WebVitalsMetric),
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct NetworkInformation {
-        pub downlink: Option<f64>,
-        pub effective_type: Option<String>,
-        pub rtt: Option<f64>,
+    pub struct WebVitalsMetric {
+        pub value: f64,
+        pub delta: f64,
+        pub id: String,
+        pub navigation_type: WebVitalsMetricNavigationType,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct NavigationTiming {
-        pub fetch_time: Option<f64>,
-        pub worker_time: Option<f64>,
-        pub total_time: Option<f64>,
-        pub download_time: Option<f64>,
-        pub time_to_first_byte: Option<f64>,
-        pub header_size: Option<f64>,
-        pub dns_lookup_time: Option<f64>,
-        pub redirect_time: Option<f64>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct PerformanceInformation {
-        low_end_device: Option<bool>,
-        low_end_experience: Option<bool>,
+    pub enum WebVitalsMetricNavigationType {
+        Navigate,
+        Reload,
+        BackForward,
+        BackForwardCache,
+        Prerender,
+        Restore,
     }
 }
 
@@ -161,7 +160,7 @@ pub mod memory {
 }
 
 pub mod interface {
-    use crate::types::state::{PerformanceInformation, PageViewDevice, PerformanceData, SessionId};
+    use crate::types::state::{PageViewDevice, PerformanceData, PerformanceMetricName, SessionId};
     use candid::CandidType;
     use junobuild_shared::types::state::{Metadata, SatelliteId, Timestamp, Version};
     use junobuild_shared::types::utils::CalendarDate;
@@ -204,9 +203,8 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetPerformanceMetric {
         pub href: String,
-        pub metric_name: String,
+        pub metric_name: PerformanceMetricName,
         pub data: PerformanceData,
-        pub info: PerformanceInformation,
         pub user_agent: Option<String>,
         pub satellite_id: SatelliteId,
         pub session_id: SessionId,

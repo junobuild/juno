@@ -14,7 +14,7 @@ mod types;
 
 use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
-    analytics_track_events,
+    analytics_performance_metrics_web_vitals, analytics_track_events,
 };
 use crate::assert::assert_enabled;
 use crate::config::store::{
@@ -35,8 +35,8 @@ use crate::store::{
 };
 use crate::types::interface::{
     AnalyticsClientsPageViews, AnalyticsMetricsPageViews, AnalyticsTop10PageViews,
-    AnalyticsTrackEvents, DelSatelliteConfig, GetAnalytics, SetPageView, SetPerformanceMetric,
-    SetSatelliteConfig, SetTrackEvent,
+    AnalyticsTrackEvents, AnalyticsWebVitalsPerformanceMetrics, DelSatelliteConfig, GetAnalytics,
+    SetPageView, SetPerformanceMetric, SetSatelliteConfig, SetTrackEvent,
 };
 use crate::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
@@ -251,6 +251,14 @@ fn set_performance_metrics(
 #[query(guard = "caller_is_controller")]
 fn get_performance_metrics(filter: GetAnalytics) -> Vec<(AnalyticKey, PerformanceMetric)> {
     get_performance_metrics_store(&filter)
+}
+
+#[query(guard = "caller_is_controller")]
+fn get_performance_metrics_web_vitals(
+    filter: GetAnalytics,
+) -> AnalyticsWebVitalsPerformanceMetrics {
+    let metrics = get_performance_metrics_store(&filter);
+    analytics_performance_metrics_web_vitals(&metrics)
 }
 
 ///

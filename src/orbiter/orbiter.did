@@ -28,6 +28,13 @@ type AnalyticsTop10PageViews = record {
   pages : vec record { text; nat32 };
 };
 type AnalyticsTrackEvents = record { total : vec record { text; nat32 } };
+type AnalyticsWebVitalsPerformanceMetrics = record {
+  cls : float64;
+  fcp : float64;
+  inp : float64;
+  lcp : float64;
+  ttfb : float64;
+};
 type CalendarDate = record { day : nat8; month : nat8; year : int32 };
 type Controller = record {
   updated_at : nat64;
@@ -165,6 +172,9 @@ service : () -> {
     ) query;
   get_performance_metrics : (GetAnalytics) -> (
       vec record { AnalyticKey; PerformanceMetric },
+    ) query;
+  get_performance_metrics_web_vitals : (GetAnalytics) -> (
+      AnalyticsWebVitalsPerformanceMetrics,
     ) query;
   get_track_events : (GetAnalytics) -> (
       vec record { AnalyticKey; TrackEvent },

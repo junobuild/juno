@@ -1,8 +1,12 @@
 use crate::types::interface::{
     AnalyticsBrowsersPageViews, AnalyticsClientsPageViews, AnalyticsDevicesPageViews,
     AnalyticsMetricsPageViews, AnalyticsTop10PageViews, AnalyticsTrackEvents,
+    AnalyticsWebVitalsPerformanceMetrics,
 };
-use crate::types::state::{AnalyticKey, PageView, TrackEvent};
+use crate::types::state::{
+    AnalyticKey, PageView, PerformanceData, PerformanceMetric, PerformanceMetricName, TrackEvent,
+    WebVitalsMetric,
+};
 use junobuild_shared::day::calendar_date;
 use junobuild_shared::types::utils::CalendarDate;
 use regex::Regex;
@@ -215,6 +219,64 @@ pub fn analytics_track_events(
 
     AnalyticsTrackEvents {
         total: total_track_events,
+    }
+}
+
+#[derive(Default)]
+struct PerformanceMetricAccumulator {
+    sum: f64,
+    count: u32,
+}
+
+impl PerformanceMetricAccumulator {
+    fn add(&mut self, value: &f64) {
+        self.sum += value;
+        self.count += 1;
+    }
+
+    fn average(&self) -> f64 {
+        if self.count > 0 {
+            self.sum / self.count as f64
+        } else {
+            0.0
+        }
+    }
+}
+
+pub fn analytics_performance_metrics_web_vitals(
+    metrics: &Vec<(AnalyticKey, PerformanceMetric)>,
+) -> AnalyticsWebVitalsPerformanceMetrics {
+    let mut cls = PerformanceMetricAccumulator::default();
+    let mut fcp = PerformanceMetricAccumulator::default();
+    let mut inp = PerformanceMetricAccumulator::default();
+    let mut lcp = PerformanceMetricAccumulator::default();
+    let mut ttfb = PerformanceMetricAccumulator::default();
+
+    for (
+        _,
+        PerformanceMetric {
+            data, metric_name, ..
+        },
+    ) in metrics
+    {
+        #[allow(irrefutable_let_patterns)]
+        if let PerformanceData::WebVitalsMetric(WebVitalsMetric { value, .. }) = &data {
+            match metric_name {
+                PerformanceMetricName::CLS => cls.add(value),
+                PerformanceMetricName::FCP => fcp.add(value),
+                PerformanceMetricName::INP => inp.add(value),
+                PerformanceMetricName::LCP => lcp.add(value),
+                PerformanceMetricName::TTFB => ttfb.add(value),
+            }
+        }
+    }
+
+    AnalyticsWebVitalsPerformanceMetrics {
+        cls: cls.average(),
+        fcp: fcp.average(),
+        inp: inp.average(),
+        lcp: lcp.average(),
+        ttfb: ttfb.average(),
     }
 }
 

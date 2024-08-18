@@ -110,6 +110,13 @@ export const idlFactory = ({ IDL }) => {
 		satellite_id: IDL.Principal,
 		version: IDL.Opt(IDL.Nat64)
 	});
+	const AnalyticsWebVitalsPerformanceMetrics = IDL.Record({
+		cls: IDL.Float64,
+		fcp: IDL.Float64,
+		inp: IDL.Float64,
+		lcp: IDL.Float64,
+		ttfb: IDL.Float64
+	});
 	const TrackEvent = IDL.Record({
 		updated_at: IDL.Nat64,
 		session_id: IDL.Text,
@@ -206,6 +213,11 @@ export const idlFactory = ({ IDL }) => {
 		get_performance_metrics: IDL.Func(
 			[GetAnalytics],
 			[IDL.Vec(IDL.Tuple(AnalyticKey, PerformanceMetric))],
+			['query']
+		),
+		get_performance_metrics_web_vitals: IDL.Func(
+			[GetAnalytics],
+			[AnalyticsWebVitalsPerformanceMetrics],
 			['query']
 		),
 		get_track_events: IDL.Func(

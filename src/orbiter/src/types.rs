@@ -271,4 +271,13 @@ pub mod interface {
     pub struct AnalyticsTrackEvents {
         pub total: HashMap<String, u32>,
     }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsWebVitalsPerformanceMetrics {
+        pub cls: f64,
+        pub fcp: f64,
+        pub inp: f64,
+        pub lcp: f64,
+        pub ttfb: f64,
+    }
 }

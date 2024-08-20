@@ -16,7 +16,6 @@ use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
     analytics_track_events,
 };
-use crate::assert::assert_enabled;
 use crate::config::store::{
     del_satellite_config as del_satellite_config_store, get_satellite_configs,
     set_satellite_config as set_satellite_config_store,
@@ -37,6 +36,7 @@ use crate::types::interface::{
     SetTrackEvent,
 };
 use crate::types::state::{AnalyticKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent};
+use assert::config::assert_enabled;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;

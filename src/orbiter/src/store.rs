@@ -1,4 +1,4 @@
-use crate::assert::{
+use crate::assert::constraints::{
     assert_analytic_key_length, assert_bot, assert_page_view_length, assert_satellite_id,
     assert_session_id, assert_track_event_length,
 };

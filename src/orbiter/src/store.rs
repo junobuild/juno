@@ -7,12 +7,13 @@ use crate::memory::STATE;
 use crate::types::interface::{GetAnalytics, SetPageView, SetPerformanceMetric, SetTrackEvent};
 use crate::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::types::state::{
-    AnalyticKey, AnalyticSatelliteKey, PageView, PerformanceMetric, StableState, TrackEvent,
+    AnalyticKey, AnalyticSatelliteKey, PageView, PerformanceMetric, SatelliteConfig, StableState,
+    TrackEvent,
 };
 use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
 use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::types::state::{Timestamp, Version};
+use junobuild_shared::types::state::{SatelliteId, Timestamp, Version};
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))
@@ -408,4 +409,13 @@ fn get_performance_metrics_impl(
                 .collect()
         }
     }
+}
+
+pub fn get_satellite_config(satellite_id: &SatelliteId) -> Option<SatelliteConfig> {
+    STATE.with(|state| {
+        let binding = state.borrow();
+        let config = binding.heap.config.get(satellite_id);
+
+        config.cloned()
+    })
 }

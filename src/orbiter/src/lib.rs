@@ -28,7 +28,7 @@ use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::store::{
     get_page_views as get_page_views_store,
-    get_performance_metrics as get_performance_metrics_store,
+    get_performance_metrics as get_performance_metrics_store, get_satellite_config,
     get_track_events as get_track_events_store, insert_page_view, insert_performance_metric,
     insert_track_event,
 };
@@ -101,7 +101,7 @@ fn post_upgrade() {
 
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
-    assert_enabled(&page_view.satellite_id)?;
+    assert_enabled(&get_satellite_config(&page_view.satellite_id))?;
 
     insert_page_view(key, page_view)
 }
@@ -111,7 +111,7 @@ fn set_page_views(
     page_views: Vec<(AnalyticKey, SetPageView)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, page_view: SetPageView) -> Result<(), String> {
-        assert_enabled(&page_view.satellite_id)?;
+        assert_enabled(&get_satellite_config(&page_view.satellite_id))?;
         insert_page_view(key, page_view)?;
 
         Ok(())
@@ -162,7 +162,7 @@ fn get_page_views_analytics_clients(filter: GetAnalytics) -> AnalyticsClientsPag
 
 #[update]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
-    assert_enabled(&track_event.satellite_id)?;
+    assert_enabled(&get_satellite_config(&track_event.satellite_id))?;
 
     insert_track_event(key, track_event)
 }
@@ -172,7 +172,7 @@ fn set_track_events(
     track_events: Vec<(AnalyticKey, SetTrackEvent)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, track_event: SetTrackEvent) -> Result<(), String> {
-        assert_enabled(&track_event.satellite_id)?;
+        assert_enabled(&get_satellite_config(&track_event.satellite_id))?;
         insert_track_event(key, track_event)?;
 
         Ok(())
@@ -214,7 +214,7 @@ fn set_performance_metric(
     key: AnalyticKey,
     performance_metric: SetPerformanceMetric,
 ) -> Result<PerformanceMetric, String> {
-    assert_enabled(&performance_metric.satellite_id)?;
+    assert_enabled(&get_satellite_config(&performance_metric.satellite_id))?;
 
     insert_performance_metric(key, performance_metric)
 }
@@ -224,7 +224,7 @@ fn set_performance_metrics(
     performance_metrics: Vec<(AnalyticKey, SetPerformanceMetric)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, performance_metric: SetPerformanceMetric) -> Result<(), String> {
-        assert_enabled(&performance_metric.satellite_id)?;
+        assert_enabled(&get_satellite_config(&performance_metric.satellite_id))?;
         insert_performance_metric(key, performance_metric)?;
 
         Ok(())

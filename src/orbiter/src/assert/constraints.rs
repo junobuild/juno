@@ -2,34 +2,12 @@ use crate::constants::{
     KEY_MAX_LENGTH, LONG_STRING_MAX_LENGTH, METADATA_MAX_ELEMENTS, SHORT_STRING_MAX_LENGTH,
     STRING_MAX_LENGTH,
 };
-use crate::memory::STATE;
-use crate::msg::{ERROR_BOT_CALL, ERROR_FEATURE_NOT_ENABLED};
+use crate::msg::ERROR_BOT_CALL;
 use crate::types::interface::{SetPageView, SetTrackEvent};
-use crate::types::state::{AnalyticKey, SatelliteConfig};
+use crate::types::state::AnalyticKey;
 use isbot::Bots;
 use junobuild_shared::types::state::SatelliteId;
 use junobuild_shared::utils::principal_not_equal;
-
-pub fn assert_enabled(satellite_id: &SatelliteId) -> Result<(), String> {
-    let config: Option<SatelliteConfig> = STATE.with(|state| {
-        let binding = state.borrow();
-        let config = binding.heap.config.get(satellite_id);
-
-        config.cloned()
-    });
-
-    // Enabling the analytics for a satellite is an opt-in feature
-    match config {
-        None => {}
-        Some(config) => {
-            if config.enabled {
-                return Ok(());
-            }
-        }
-    }
-
-    Err(ERROR_FEATURE_NOT_ENABLED.to_string())
-}
 
 pub fn assert_analytic_key_length(key: &AnalyticKey) -> Result<(), String> {
     if key.key.len() > KEY_MAX_LENGTH {

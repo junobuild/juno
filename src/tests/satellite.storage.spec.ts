@@ -134,6 +134,45 @@ describe('Satellite storage', () => {
 		});
 	});
 
+	const HTML = '<html><body>Hello</body></html>';
+
+	const blob = new Blob([HTML], {
+		type: 'text/plain; charset=utf-8'
+	});
+
+	const upload = async ({
+		full_path,
+		name,
+		collection
+	}: {
+		full_path: string;
+		name: string;
+		collection: string;
+	}) => {
+		const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+
+		const file = await init_asset_upload({
+			collection,
+			description: toNullable(),
+			encoding_type: [],
+			full_path,
+			name,
+			token: toNullable()
+		});
+
+		const chunk = await upload_asset_chunk({
+			batch_id: file.batch_id,
+			content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+			order_id: [0n]
+		});
+
+		await commit_asset_upload({
+			batch_id: file.batch_id,
+			chunk_ids: [chunk.chunk_id],
+			headers: []
+		});
+	};
+
 	describe('admin', () => {
 		beforeAll(() => {
 			actor.setIdentity(controller);
@@ -250,37 +289,6 @@ describe('Satellite storage', () => {
 			({ memory }) => {
 				const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
 
-				const HTML = '<html><body>Hello</body></html>';
-
-				const blob = new Blob([HTML], {
-					type: 'text/plain; charset=utf-8'
-				});
-
-				const upload = async ({ full_path, name }: { full_path: string; name: string }) => {
-					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
-
-					const file = await init_asset_upload({
-						collection,
-						description: toNullable(),
-						encoding_type: [],
-						full_path,
-						name,
-						token: toNullable()
-					});
-
-					const chunk = await upload_asset_chunk({
-						batch_id: file.batch_id,
-						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-						order_id: [0n]
-					});
-
-					await commit_asset_upload({
-						batch_id: file.batch_id,
-						chunk_ids: [chunk.chunk_id],
-						headers: []
-					});
-				};
-
 				it('should create a collection', async () => {
 					const { set_rule, list_rules } = actor;
 
@@ -336,7 +344,7 @@ describe('Satellite storage', () => {
 					const name = 'hello.html';
 					const full_path = `/${collection}/${name}`;
 
-					await upload({ full_path, name });
+					await upload({ full_path, name, collection });
 
 					const { headers, body } = await http_request({
 						body: [],
@@ -388,14 +396,14 @@ describe('Satellite storage', () => {
 					const name = 'update.html';
 					const full_path = `/${collection}/${name}`;
 
-					await upload({ full_path, name });
+					await upload({ full_path, name, collection });
 
 					const asset = fromNullable(await get_asset(collection, full_path));
 
 					expect(asset).not.toBeUndefined();
 					expect(fromNullable(asset!.version) ?? 0n).toEqual(1n);
 
-					await upload({ full_path, name });
+					await upload({ full_path, name, collection });
 
 					const updatedAsset = fromNullable(await get_asset(collection, full_path));
 
@@ -895,6 +903,48 @@ describe('Satellite storage', () => {
 				});
 			}
 		);
+	});
+
+	describe('collection', () => {
+		beforeAll(async () => {
+			actor.setIdentity(controller);
+		});
+
+		it('should not delete not empty collection', async () => {
+			const { del_rule } = actor;
+
+			const collection = 'images_heap';
+
+			try {
+				await del_rule({ Storage: null }, collection, { version: [1n] });
+
+				expect(true).toBe(false);
+			} catch (error: unknown) {
+				expect((error as Error).message).toContain(
+					`The "${collection}" collection in Storage is not empty.`
+				);
+			}
+		});
+
+		it('should not upload file in existing collection', async () => {
+			const { set_doc } = actor;
+
+			const collectionUnknown = 'unknown';
+
+			try {
+				await upload({
+					full_path: `/${collectionUnknown}/hello.html`,
+					name: 'hello.html',
+					collection: collectionUnknown
+				});
+
+				expect(true).toBe(false);
+			} catch (error: unknown) {
+				expect((error as Error).message).toContain(
+					`Collection "${collectionUnknown}" not found in Storage.`
+				);
+			}
+		});
 	});
 
 	describe('More configuration', () => {

@@ -105,7 +105,7 @@ describe('Orbiter', () => {
 				).resolves.not.toThrowError();
 			});
 
-			it('should not configure satellite if no timestamp', async () => {
+			it('should not configure satellite if no version', async () => {
 				const { set_satellite_configs } = actor;
 
 				await expect(
@@ -158,7 +158,7 @@ describe('Orbiter', () => {
 				await expect(set_page_views(pagesViews)).resolves.not.toThrowError();
 			});
 
-			it('should not set page views if no timestamp', async () => {
+			it('should not set page views if no version', async () => {
 				const { set_page_views } = actor;
 
 				const pagesViews: [AnalyticKey, SetPageView][] = [
@@ -207,7 +207,7 @@ describe('Orbiter', () => {
 				await expect(set_track_events(trackEvents)).resolves.not.toThrowError();
 			});
 
-			it('should not set track events if no timestamp', async () => {
+			it('should not set track events if no version', async () => {
 				const { set_track_events } = actor;
 
 				const trackEvents: [AnalyticKey, SetTrackEvent][] = [

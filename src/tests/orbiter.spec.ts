@@ -121,7 +121,7 @@ describe('Orbiter', () => {
 				).rejects.toThrow(NO_VERSION_ERROR_MSG);
 			});
 
-			it('should not configure satellite if invalid timestamp', async () => {
+			it('should not configure satellite if invalid version', async () => {
 				const { set_satellite_configs } = actor;
 
 				await expect(
@@ -174,7 +174,7 @@ describe('Orbiter', () => {
 				);
 			});
 
-			it('should not set page views if if invalid timestamp', async () => {
+			it('should not set page views if invalid version', async () => {
 				const { set_page_views } = actor;
 
 				const pagesViews: [AnalyticKey, SetPageView][] = [
@@ -223,7 +223,7 @@ describe('Orbiter', () => {
 				);
 			});
 
-			it('should not set track events if if invalid timestamp', async () => {
+			it('should not set track events if invalid version', async () => {
 				const { set_track_events } = actor;
 
 				const trackEvents: [AnalyticKey, SetTrackEvent][] = [

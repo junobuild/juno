@@ -1,5 +1,5 @@
 use crate::memory::STATE;
-use junobuild_collections::msg::COLLECTION_NOT_FOUND;
+use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Rule;
 use junobuild_shared::types::core::DomainName;
@@ -58,7 +58,7 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     });
 
     match rule {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_storage_collection_not_found(collection)),
         Some(rule) => Ok(rule),
     }
 }

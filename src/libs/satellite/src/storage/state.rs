@@ -3,7 +3,7 @@ use crate::storage::types::state::{
     AssetsStable, ContentChunksStable, StableEncodingChunkKey, StableKey,
 };
 use crate::types::state::StableState;
-use junobuild_collections::msg::COLLECTION_NOT_FOUND;
+use junobuild_collections::msg::msg_storage_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_collections::utils::range_collection_end;
@@ -270,7 +270,7 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     });
 
     match rule {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_storage_collection_not_found(collection)),
         Some(rule) => Ok(rule),
     }
 }

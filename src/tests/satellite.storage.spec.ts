@@ -927,8 +927,6 @@ describe('Satellite storage', () => {
 		});
 
 		it('should not upload file in existing collection', async () => {
-			const { set_doc } = actor;
-
 			const collectionUnknown = 'unknown';
 
 			try {

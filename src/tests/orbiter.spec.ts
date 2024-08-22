@@ -2,6 +2,7 @@ import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
 	SetPageView,
+	SetPerformanceMetric,
 	SetTrackEvent
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
@@ -13,7 +14,12 @@ import {
 	INVALID_VERSION_ERROR_MSG,
 	NO_VERSION_ERROR_MSG
 } from './constants/satellite-tests.constants';
-import { pageViewMock, satelliteIdMock, trackEventMock } from './mocks/orbiter.mocks';
+import {
+	pageViewMock,
+	performanceMetricMock,
+	satelliteIdMock,
+	trackEventMock
+} from './mocks/orbiter.mocks';
 import { ORBITER_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Orbiter', () => {
@@ -237,6 +243,55 @@ describe('Orbiter', () => {
 				];
 
 				const results = await set_track_events(trackEvents);
+
+				expect('Err' in results).toBeTruthy();
+
+				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					expect(msg).toContain(INVALID_VERSION_ERROR_MSG)
+				);
+			});
+
+			it('should set performance metrics', async () => {
+				const { set_performance_metrics } = actor;
+
+				const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+					[{ key, collected_at: 123n }, performanceMetricMock],
+					[{ key: nanoid(), collected_at: 123n }, performanceMetricMock]
+				];
+
+				await expect(set_performance_metrics(performanceMetrics)).resolves.not.toThrowError();
+			});
+
+			it('should not set performance metrics if no version', async () => {
+				const { set_performance_metrics } = actor;
+
+				const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+					[{ key, collected_at: 123n }, performanceMetricMock]
+				];
+
+				const results = await set_performance_metrics(performanceMetrics);
+
+				expect('Err' in results).toBeTruthy();
+
+				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
+					expect(msg).toEqual(NO_VERSION_ERROR_MSG)
+				);
+			});
+
+			it('should not set performance metrics if invalid version', async () => {
+				const { set_performance_metrics } = actor;
+
+				const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+					[
+						{ key, collected_at: 123n },
+						{
+							...performanceMetricMock,
+							version: [123n] // Assuming an invalid version format for testing
+						}
+					]
+				];
+
+				const results = await set_performance_metrics(performanceMetrics);
 
 				expect('Err' in results).toBeTruthy();
 

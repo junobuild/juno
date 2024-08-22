@@ -578,9 +578,9 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk"
-version = "0.14.0"
+version = "0.15.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "ff384f182459bec490a7f50a58bbdf8f7a6934de4dcc259e30c70641bcbcb917"
+checksum = "038ff230bf0fc8630943e3c52e989d248a7c89834ccb65da408fabc5817a475b"
 dependencies = [
  "candid",
  "ic-cdk-macros",
@@ -591,9 +591,9 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-macros"
-version = "0.14.0"
+version = "0.15.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "01dc6bc425ec048d6ac4137c7c0f2cfbd6f8b0be8efc568feae2b265f566117c"
+checksum = "3af44fb4ec3a4b18831c9d3303ca8fa2ace846c4022d50cb8df4122635d3782e"
 dependencies = [
  "candid",
  "proc-macro2",
@@ -605,9 +605,9 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-timers"
-version = "0.8.0"
+version = "0.9.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "bc4a42e669e47cf58fc18e071898e67922c81aa480edbf930ed1468dd53f44ee"
+checksum = "61fdca8e1d9ffb65ae68019b342c182009de9dc206fd849db0b0e90ee19f6fa4"
 dependencies = [
  "futures",
  "ic-cdk",
@@ -665,9 +665,9 @@ dependencies = [
 
 [[package]]
 name = "ic-ledger-types"
-version = "0.11.0"
+version = "0.12.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7ff0912dee73950385bb95f083b6f0cd6d87bac6be52b7aecce7ea5d2c043f49"
+checksum = "0fd70c701d11208d5d853c1a908bb143848d89c1951f401413cef9c062642112"
 dependencies = [
  "candid",
  "crc32fast",

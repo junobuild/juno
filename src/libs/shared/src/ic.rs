@@ -37,6 +37,7 @@ pub async fn create_canister_install_code(
                 memory_allocation: None,
                 freezing_threshold: None,
                 reserved_cycles_limit: None,
+                log_visibility: None,
                 wasm_memory_limit: Some(Nat::from(WASM_MEMORY_LIMIT)),
             }),
         },
@@ -105,6 +106,7 @@ pub async fn update_canister_controllers(
             memory_allocation: None,
             freezing_threshold: None,
             reserved_cycles_limit: None,
+            log_visibility: None,
             wasm_memory_limit: None,
         },
     };

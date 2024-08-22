@@ -1,7 +1,7 @@
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{Collection, DbHeap, DbHeapState, DbStable, Doc, StableKey};
 use crate::memory::STATE;
-use junobuild_collections::msg::COLLECTION_NOT_FOUND;
+use junobuild_collections::msg::msg_db_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_collections::utils::range_collection_end;
@@ -64,7 +64,7 @@ fn is_collection_empty_heap(collection: &CollectionKey, db: &DbHeap) -> Result<b
     let col = db.get(collection);
 
     match col {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_db_collection_not_found(collection)),
         Some(col) => Ok(col.is_empty()),
     }
 }
@@ -80,7 +80,7 @@ fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result
     let col = db.get(collection);
 
     match col {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_db_collection_not_found(collection)),
         Some(_) => {
             db.remove(collection);
 
@@ -163,7 +163,7 @@ fn get_doc_heap(collection: &CollectionKey, key: &Key, db: &DbHeap) -> Result<Op
     let col = db.get(collection);
 
     match col {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_db_collection_not_found(collection)),
         Some(col) => {
             let value = col.get(key);
 
@@ -193,7 +193,7 @@ pub fn get_docs_heap<'a>(
     let col = db.get(collection);
 
     match col {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_db_collection_not_found(collection)),
         Some(col) => {
             let items = col.iter().collect();
             Ok(items)
@@ -205,7 +205,7 @@ pub fn count_docs_heap(collection: &CollectionKey, db: &DbHeap) -> Result<usize,
     let col = db.get(collection);
 
     match col {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_db_collection_not_found(collection)),
         Some(col) => Ok(col.len()),
     }
 }
@@ -278,7 +278,7 @@ fn insert_doc_heap(
     let col = db.get_mut(collection);
 
     match col {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_db_collection_not_found(collection)),
         Some(col) => {
             let evicted_doc = limit_docs_heap_capacity(max_capacity, col);
 
@@ -318,7 +318,7 @@ fn delete_doc_heap(
     let col = db.get_mut(collection);
 
     match col {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_db_collection_not_found(collection)),
         Some(col) => {
             let deleted_doc = col.remove(key);
 
@@ -345,7 +345,7 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     });
 
     match rule {
-        None => Err([COLLECTION_NOT_FOUND, collection].join("")),
+        None => Err(msg_db_collection_not_found(collection)),
         Some(rule) => Ok(rule),
     }
 }

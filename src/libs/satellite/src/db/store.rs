@@ -18,7 +18,7 @@ use candid::Principal;
 use junobuild_collections::assert_stores::{
     assert_create_permission, assert_permission, public_permission,
 };
-use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
+use junobuild_collections::msg::msg_db_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Permission, Rule};
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size, assert_version};
@@ -49,7 +49,7 @@ fn delete_collection_impl(
     let empty = is_state_collection_empty(collection, memory)?;
 
     if !empty {
-        return Err([COLLECTION_NOT_EMPTY, collection].join(""));
+        return Err(msg_db_collection_not_empty(collection));
     }
 
     delete_state_collection(collection, memory)?;

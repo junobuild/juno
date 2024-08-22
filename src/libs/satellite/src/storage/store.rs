@@ -3,7 +3,7 @@ use crate::hooks::invoke_assert_delete_asset;
 use crate::memory::STATE;
 use candid::Principal;
 use junobuild_collections::assert_stores::{assert_permission, public_permission};
-use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
+use junobuild_collections::msg::msg_storage_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::controllers::is_controller;
@@ -240,7 +240,7 @@ fn assert_assets_collection_empty_impl(
     let values = filter_collection_values(collection.clone(), assets);
 
     if !values.is_empty() {
-        return Err([COLLECTION_NOT_EMPTY, collection].join(""));
+        return Err(msg_storage_collection_not_empty(collection));
     }
 
     Ok(())

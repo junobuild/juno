@@ -4,62 +4,25 @@ use crate::msg::{
 };
 use crate::types::state::SatelliteConfig;
 
-pub fn assert_page_views_enabled(config: &Option<SatelliteConfig>) -> Result<(), String> {
+fn assert_feature_enabled<F>(config: &Option<SatelliteConfig>, check_feature: F, error_message: &str) -> Result<(), String>
+    where
+        F: Fn(&SatelliteConfig) -> bool,
+{
     if let Some(config) = config {
-        match &config.features {
-            Some(features) => {
-                if features.page_views {
-                    return Ok(());
-                }
-            }
-            None => (),
-        }
-
-        // Fallback on previous configuration
-        if config.enabled {
+        if check_feature(config) {
             return Ok(());
         }
     }
-
-    Err(ERROR_PAGE_VIEWS_FEATURE_DISABLED.to_string())
+    Err(error_message.to_string())
+}
+pub fn assert_page_views_enabled(config: &Option<SatelliteConfig>) -> Result<(), String> {
+    assert_feature_enabled(config, |c| c.features.as_ref().map_or(false, |f| f.page_views), ERROR_PAGE_VIEWS_FEATURE_DISABLED)
 }
 
 pub fn assert_track_events_enabled(config: &Option<SatelliteConfig>) -> Result<(), String> {
-    if let Some(config) = config {
-        match &config.features {
-            Some(features) => {
-                if features.track_events {
-                    return Ok(());
-                }
-            }
-            None => (),
-        }
-
-        // Fallback on previous configuration
-        if config.enabled {
-            return Ok(());
-        }
-    }
-
-    Err(ERROR_TRACK_EVENTS_FEATURE_DISABLED.to_string())
+    assert_feature_enabled(config, |c| c.features.as_ref().map_or(false, |f| f.track_events), ERROR_TRACK_EVENTS_FEATURE_DISABLED)
 }
 
 pub fn assert_performance_metrics_enabled(config: &Option<SatelliteConfig>) -> Result<(), String> {
-    if let Some(config) = config {
-        match &config.features {
-            Some(features) => {
-                if features.performance_metrics {
-                    return Ok(());
-                }
-            }
-            None => (),
-        }
-
-        // Fallback on previous configuration
-        if config.enabled {
-            return Ok(());
-        }
-    }
-
-    Err(ERROR_PERFORMANCE_FEATURE_DISABLED.to_string())
+    assert_feature_enabled(config, |c| c.features.as_ref().map_or(false, |f| f.performance_metrics), ERROR_PERFORMANCE_FEATURE_DISABLED)
 }

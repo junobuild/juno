@@ -58,18 +58,9 @@ fn set_satellite_config_impl(
         Some(current_config) => current_config.version.unwrap_or_default() + 1,
     };
 
-    // Enabled equals all features are enabled. Backwards compatibility.
-    let enabled: bool = match &config.features {
-        None => true,
-        Some(features) => {
-            features.page_views && features.track_events && features.performance_metrics
-        }
-    };
-
     let updated_at: u64 = now;
 
     let new_config = SatelliteConfig {
-        enabled,
         features: config.features.clone(),
         created_at,
         updated_at,

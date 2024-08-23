@@ -81,8 +81,6 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OrbiterSatelliteConfig {
-        #[deprecated(note = "Deprecated. Use features instead.")]
-        pub enabled: bool,
         pub features: Option<OrbiterSatelliteFeatures>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,

@@ -11,6 +11,7 @@ mod msg;
 mod serializers;
 mod store;
 mod types;
+mod upgrade;
 
 use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
@@ -59,6 +60,7 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
+use crate::upgrade::types::upgrade::UpgradeState;
 
 #[init]
 fn init() {
@@ -93,10 +95,13 @@ fn post_upgrade() {
     let memory: Memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    let state: State = from_reader(&*state_bytes)
+    let upgrade_state: UpgradeState = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
 
-    STATE.with(|s| *s.borrow_mut() = state);
+    STATE.with(|s| *s.borrow_mut() = State {
+        stable: upgrade_state.stable,
+        heap: HeapState::from(&upgrade_state.heap),
+    });
 }
 
 /// Page views

@@ -1,15 +1,18 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import type {
 	AnalyticsTrackEvents,
-	AnalyticsWebVitalsPerformanceMetrics
+	AnalyticsWebVitalsPerformanceMetrics,
+	OrbiterSatelliteConfig
 } from '$declarations/orbiter/orbiter.did';
 import {
 	getAnalyticsClientsPageViews,
 	getAnalyticsMetricsPageViews,
 	getAnalyticsTop10PageViews,
 	getPerformanceMetricsAnalyticsWebVitals,
-	getTrackEventsAnalytics
+	getTrackEventsAnalytics,
+	setOrbiterSatelliteConfigs as setOrbiterSatelliteConfigsApi
 } from '$lib/api/orbiter.api';
+import { setOrbiterSatelliteConfigs as setOrbiterSatelliteConfigsDeprecatedApi } from '$lib/api/orbiter.deprecated.api';
 import {
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
@@ -18,9 +21,15 @@ import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
-import type { AnalyticsPageViews, PageViewsParams } from '$lib/types/ortbiter';
+import type { OptionIdentity } from '$lib/types/itentity';
+import type {
+	AnalyticsPageViews,
+	OrbiterSatelliteConfigEntry,
+	PageViewsParams
+} from '$lib/types/ortbiter';
+import type { SatelliteIdText } from '$lib/types/satellite';
 import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
-import type { Principal } from '@dfinity/principal';
+import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
@@ -143,4 +152,57 @@ export const getAnalyticsPerformanceMetrics = async ({
 	}
 
 	return undefined;
+};
+
+export const setOrbiterSatelliteConfigs = async ({
+	orbiterId,
+	config,
+	identity,
+	orbiterVersion
+}: {
+	orbiterId: Principal;
+	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
+	identity: OptionIdentity;
+	orbiterVersion: string;
+}): Promise<[Principal, OrbiterSatelliteConfig][]> => {
+	const enabledFeatures = {
+		performance_metrics: true,
+		track_events: true,
+		page_views: true
+	};
+
+	if (compare(orbiterVersion, '0.0.8') >= 0) {
+		return await setOrbiterSatelliteConfigsApi({
+			orbiterId,
+			config: Object.entries(config).map(([satelliteId, value]) => [
+				Principal.fromText(satelliteId),
+				{
+					features: value.enabled ? [enabledFeatures] : [],
+					version: nonNullish(value.config) ? value.config.version : []
+				}
+			]),
+			identity
+		});
+	}
+
+	// Backwards compatibility
+	const results = await setOrbiterSatelliteConfigsDeprecatedApi({
+		orbiterId,
+		config: Object.entries(config).map(([satelliteId, value]) => [
+			Principal.fromText(satelliteId),
+			{
+				enabled: value.enabled,
+				version: nonNullish(value.config) ? value.config.version : []
+			}
+		]),
+		identity
+	});
+
+	return results.map(([satelliteId, { enabled, ...rest }]) => [
+		satelliteId,
+		{
+			...rest,
+			features: enabled ? [enabledFeatures] : []
+		}
+	]);
 };

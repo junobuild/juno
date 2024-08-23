@@ -2,13 +2,14 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { setOrbiterSatelliteConfigs } from '$lib/api/orbiter.api';
 	import { Principal } from '@dfinity/principal';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { authStore } from '$lib/stores/auth.store';
+	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
+	import { versionStore } from '$lib/stores/version.store';
+	import { isNullish } from '@dfinity/utils';
 
 	export let orbiterId: Principal;
 	export let config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
@@ -27,19 +28,21 @@
 			return;
 		}
 
+		if (isNullish($versionStore.orbiter?.current)) {
+			toasts.error({
+				text: $i18n.errors.missing_version
+			});
+			return;
+		}
+
 		busy.start();
 
 		try {
 			const results = await setOrbiterSatelliteConfigs({
 				orbiterId,
-				config: Object.entries(config).map(([satelliteId, value]) => [
-					Principal.fromText(satelliteId),
-					{
-						enabled: value.enabled,
-						version: nonNullish(value.config) ? value.config.version : []
-					}
-				]),
-				identity: $authStore.identity
+				config,
+				identity: $authStore.identity,
+				orbiterVersion: $versionStore.orbiter.current
 			});
 
 			dispatch('junoConfigUpdate', results);

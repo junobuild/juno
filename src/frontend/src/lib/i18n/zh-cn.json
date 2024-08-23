@@ -383,6 +383,7 @@
 		"collection_updated": "无法修改文档集 {0} .",
 		"collection_deleted": "无法删除文档集 {0} .",
 		"rule_invalid": "无效规则.",
+		"missing_version": "Unexpected error. No version has been loaded yet.",
 		"upgrade_load_versions": "获取有效版本时出错.",
 		"upgrade_download_error": "下载 wasm 出错.",
 		"upgrade_error": "升级出错，如果问题一直存在请联系Juno!",

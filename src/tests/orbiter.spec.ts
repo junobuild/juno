@@ -7,6 +7,7 @@ import type {
 } from '$declarations/orbiter/orbiter.did';
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { fromNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { nanoid } from 'nanoid';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
@@ -298,6 +299,126 @@ describe('Orbiter', () => {
 				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
 					expect(msg).toContain(INVALID_VERSION_ERROR_MSG)
 				);
+			});
+
+			it('should throw on retrieve page views if not controller', async () => {
+				const { get_page_views } = actor;
+
+				await expect(
+					get_page_views({
+						from: [100n],
+						to: [500n],
+						satellite_id: [satelliteIdMock]
+					})
+				).rejects.toThrow('Caller is not a controller of the orbiter.');
+			});
+
+			it('should throw on retrieve track events if not controller', async () => {
+				const { get_track_events } = actor;
+
+				await expect(
+					get_track_events({
+						from: [100n],
+						to: [500n],
+						satellite_id: [satelliteIdMock]
+					})
+				).rejects.toThrow('Caller is not a controller of the orbiter.');
+			});
+
+			it('should throw on retrieve performance metrics if not controller', async () => {
+				const { get_performance_metrics } = actor;
+
+				await expect(
+					get_performance_metrics({
+						from: [100n],
+						to: [500n],
+						satellite_id: [satelliteIdMock]
+					})
+				).rejects.toThrow('Caller is not a controller of the orbiter.');
+			});
+		});
+
+		describe('controller read', () => {
+			beforeAll(() => {
+				actor.setIdentity(controller);
+			});
+
+			it('should retrieve page views', async () => {
+				const { set_page_views, get_page_views } = actor;
+
+				const pagesViews: [AnalyticKey, SetPageView][] = [
+					[{ key: nanoid(), collected_at: 1230n }, pageViewMock],
+					[{ key: nanoid(), collected_at: 4560n }, pageViewMock]
+				];
+
+				await set_page_views(pagesViews);
+
+				const result = await get_page_views({
+					from: [1000n],
+					to: [5000n],
+					satellite_id: [satelliteIdMock]
+				});
+
+				expect(Array.isArray(result)).toBe(true);
+				expect(result.length).toEqual(pagesViews.length);
+				result.forEach(([key, pageView]) => {
+					expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
+					expect(key.collected_at).toBeLessThanOrEqual(5000n);
+					expect(pageView.href).toBe('https://test.com');
+					expect(fromNullable(pageView.version)).toBe(1n);
+				});
+			});
+
+			it('should retrieve track events', async () => {
+				const { set_track_events, get_track_events } = actor;
+
+				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+					[{ key: nanoid(), collected_at: 1230n }, trackEventMock],
+					[{ key: nanoid(), collected_at: 4560n }, trackEventMock]
+				];
+
+				await set_track_events(trackEvents);
+
+				const result = await get_track_events({
+					from: [1000n],
+					to: [5000n],
+					satellite_id: [satelliteIdMock]
+				});
+
+				expect(Array.isArray(result)).toBe(true);
+				expect(result.length).toEqual(trackEvents.length);
+				result.forEach(([key, trackEvent]) => {
+					expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
+					expect(key.collected_at).toBeLessThanOrEqual(5000n);
+					expect(trackEvent.name).toBe('my_event');
+					expect(fromNullable(trackEvent.version)).toBe(1n);
+				});
+			});
+
+			it('should retrieve performance metrics', async () => {
+				const { set_performance_metrics, get_performance_metrics } = actor;
+
+				const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+					[{ key: nanoid(), collected_at: 1230n }, performanceMetricMock],
+					[{ key: nanoid(), collected_at: 4560n }, performanceMetricMock]
+				];
+
+				await set_performance_metrics(performanceMetrics);
+
+				const result = await get_performance_metrics({
+					from: [1000n],
+					to: [5000n],
+					satellite_id: [satelliteIdMock]
+				});
+
+				expect(Array.isArray(result)).toBe(true);
+				expect(result.length).toBeGreaterThan(0);
+				result.forEach(([key, performanceMetric]) => {
+					expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
+					expect(key.collected_at).toBeLessThanOrEqual(5000n);
+					expect(performanceMetric.metric_name).toEqual({ LCP: null });
+					expect(fromNullable(performanceMetric.version)).toBe(1n);
+				});
 			});
 		});
 	});

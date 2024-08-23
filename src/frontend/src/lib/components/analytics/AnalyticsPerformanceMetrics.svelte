@@ -10,7 +10,7 @@
 
 	let page: AnalyticsWebVitalsPageMetrics | undefined = undefined;
 
-	let metrics: AnalyticsPerformanceMetricsPage;
+	let metrics: AnalyticsWebVitalsPageMetrics;
 	$: metrics = page ?? performanceMetrics.overall;
 </script>
 

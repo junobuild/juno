@@ -485,6 +485,46 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 		});
 
+		describe('collection', () => {
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+			});
+
+			it('should not delete not empty collection', async () => {
+				const { del_rule } = actor;
+
+				try {
+					await del_rule({ Db: null }, TEST_COLLECTION, { version: [1n] });
+
+					expect(true).toBe(false);
+				} catch (error: unknown) {
+					expect((error as Error).message).toContain(
+						`The "${TEST_COLLECTION}" collection in Datastore is not empty.`
+					);
+				}
+			});
+
+			it('should not set doc in unknown collection', async () => {
+				const { set_doc } = actor;
+
+				const collectionUnknown = 'unknown';
+
+				try {
+					await set_doc(collectionUnknown, nanoid(), {
+						data,
+						description: toNullable(),
+						version: toNullable()
+					});
+
+					expect(true).toBe(false);
+				} catch (error: unknown) {
+					expect((error as Error).message).toContain(
+						`Collection "${collectionUnknown}" not found in Datastore.`
+					);
+				}
+			});
+		});
+
 		describe('config', () => {
 			const setRule: SetRule = {
 				memory: toNullable(memory),

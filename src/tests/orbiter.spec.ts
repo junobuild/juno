@@ -1,6 +1,7 @@
 import type {
 	AnalyticKey,
 	_SERVICE as OrbiterActor,
+	OrbiterSatelliteFeatures,
 	SetPageView,
 	SetPerformanceMetric,
 	SetTrackEvent
@@ -46,52 +47,14 @@ describe('Orbiter', () => {
 		await pic?.tearDown();
 	});
 
-	describe('not configured', () => {
-		describe('user', () => {
-			const user = Ed25519KeyIdentity.generate();
-
-			beforeAll(() => {
-				actor.setIdentity(user);
-			});
-
-			it('should not set page views if feature not enabled', async () => {
-				const { set_page_views } = actor;
-
-				const pagesViews: [AnalyticKey, SetPageView][] = [
-					[{ key: nanoid(), collected_at: 123n }, pageViewMock],
-					[{ key: nanoid(), collected_at: 123n }, pageViewMock]
-				];
-
-				const results = await set_page_views(pagesViews);
-
-				expect('Err' in results).toBeTruthy();
-
-				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual('error_feature_not_enabled')
-				);
-			});
-
-			it('should not set page views if feature not enabled', async () => {
-				const { set_track_events } = actor;
-
-				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
-					[{ key: nanoid(), collected_at: 123n }, trackEventMock],
-					[{ key: nanoid(), collected_at: 123n }, trackEventMock]
-				];
-
-				const results = await set_track_events(trackEvents);
-
-				expect('Err' in results).toBeTruthy();
-
-				(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-					expect(msg).toEqual('error_feature_not_enabled')
-				);
-			});
-		});
-	});
-
 	describe('configured', () => {
 		describe('controller', () => {
+			const allFeatures: OrbiterSatelliteFeatures = {
+				page_views: true,
+				performance_metrics: true,
+				track_events: true
+			};
+
 			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
@@ -105,7 +68,7 @@ describe('Orbiter', () => {
 							satelliteIdMock,
 							{
 								version: [],
-								enabled: true
+								features: [allFeatures]
 							}
 						]
 					])
@@ -121,7 +84,7 @@ describe('Orbiter', () => {
 							satelliteIdMock,
 							{
 								version: [],
-								enabled: true
+								features: [allFeatures]
 							}
 						]
 					])
@@ -137,7 +100,7 @@ describe('Orbiter', () => {
 							satelliteIdMock,
 							{
 								version: [123n],
-								enabled: true
+								features: [allFeatures]
 							}
 						]
 					])

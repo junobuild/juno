@@ -343,82 +343,192 @@ describe('Orbiter', () => {
 				actor.setIdentity(controller);
 			});
 
-			it('should retrieve page views', async () => {
-				const { set_page_views, get_page_views } = actor;
+			describe('list', () => {
+				it('should retrieve page views', async () => {
+					const { set_page_views, get_page_views } = actor;
 
-				const pagesViews: [AnalyticKey, SetPageView][] = [
-					[{ key: nanoid(), collected_at: 1230n }, pageViewMock],
-					[{ key: nanoid(), collected_at: 4560n }, pageViewMock]
-				];
+					const pagesViews: [AnalyticKey, SetPageView][] = [
+						[{ key: nanoid(), collected_at: 1230n }, pageViewMock],
+						[{ key: nanoid(), collected_at: 4560n }, pageViewMock]
+					];
 
-				await set_page_views(pagesViews);
+					await set_page_views(pagesViews);
 
-				const result = await get_page_views({
-					from: [1000n],
-					to: [5000n],
-					satellite_id: [satelliteIdMock]
+					const result = await get_page_views({
+						from: [1000n],
+						to: [5000n],
+						satellite_id: [satelliteIdMock]
+					});
+
+					expect(Array.isArray(result)).toBe(true);
+					expect(result.length).toEqual(pagesViews.length);
+					result.forEach(([key, pageView]) => {
+						expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
+						expect(key.collected_at).toBeLessThanOrEqual(5000n);
+						expect(pageView.href).toBe('https://test.com');
+						expect(fromNullable(pageView.version)).toBe(1n);
+					});
 				});
 
-				expect(Array.isArray(result)).toBe(true);
-				expect(result.length).toEqual(pagesViews.length);
-				result.forEach(([key, pageView]) => {
-					expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
-					expect(key.collected_at).toBeLessThanOrEqual(5000n);
-					expect(pageView.href).toBe('https://test.com');
-					expect(fromNullable(pageView.version)).toBe(1n);
+				it('should retrieve track events', async () => {
+					const { set_track_events, get_track_events } = actor;
+
+					const trackEvents: [AnalyticKey, SetTrackEvent][] = [
+						[{ key: nanoid(), collected_at: 1230n }, trackEventMock],
+						[{ key: nanoid(), collected_at: 4560n }, trackEventMock]
+					];
+
+					await set_track_events(trackEvents);
+
+					const result = await get_track_events({
+						from: [1000n],
+						to: [5000n],
+						satellite_id: [satelliteIdMock]
+					});
+
+					expect(Array.isArray(result)).toBe(true);
+					expect(result.length).toEqual(trackEvents.length);
+					result.forEach(([key, trackEvent]) => {
+						expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
+						expect(key.collected_at).toBeLessThanOrEqual(5000n);
+						expect(trackEvent.name).toBe('my_event');
+						expect(fromNullable(trackEvent.version)).toBe(1n);
+					});
+				});
+
+				it('should retrieve performance metrics', async () => {
+					const { set_performance_metrics, get_performance_metrics } = actor;
+
+					const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
+						[{ key: nanoid(), collected_at: 1230n }, performanceMetricMock],
+						[{ key: nanoid(), collected_at: 4560n }, performanceMetricMock]
+					];
+
+					await set_performance_metrics(performanceMetrics);
+
+					const result = await get_performance_metrics({
+						from: [1000n],
+						to: [5000n],
+						satellite_id: [satelliteIdMock]
+					});
+
+					expect(Array.isArray(result)).toBe(true);
+					expect(result.length).toBeGreaterThan(0);
+					result.forEach(([key, performanceMetric]) => {
+						expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
+						expect(key.collected_at).toBeLessThanOrEqual(5000n);
+						expect(performanceMetric.metric_name).toEqual({ LCP: null });
+						expect(fromNullable(performanceMetric.version)).toBe(1n);
+					});
 				});
 			});
 
-			it('should retrieve track events', async () => {
-				const { set_track_events, get_track_events } = actor;
+			describe('aggregate', () => {
+				it('should retrieve page views analytics clients', async () => {
+					const { get_page_views_analytics_clients } = actor;
 
-				const trackEvents: [AnalyticKey, SetTrackEvent][] = [
-					[{ key: nanoid(), collected_at: 1230n }, trackEventMock],
-					[{ key: nanoid(), collected_at: 4560n }, trackEventMock]
-				];
+					const result = await get_page_views_analytics_clients({
+						from: [1000n],
+						to: [5000n],
+						satellite_id: [satelliteIdMock]
+					});
 
-				await set_track_events(trackEvents);
+					expect(result).toHaveProperty('browsers');
+					expect(result.browsers).toHaveProperty('chrome');
+					expect(result.browsers).toHaveProperty('safari');
+					expect(result.browsers).toHaveProperty('firefox');
+					expect(result.browsers).toHaveProperty('opera');
+					expect(result.browsers).toHaveProperty('others');
 
-				const result = await get_track_events({
-					from: [1000n],
-					to: [5000n],
-					satellite_id: [satelliteIdMock]
+					expect(result).toHaveProperty('devices');
+					expect(result.devices).toHaveProperty('desktop');
+					expect(result.devices).toHaveProperty('mobile');
+					expect(result.devices).toHaveProperty('others');
+
+					expect(result.browsers.firefox).toEqual(1);
+					expect(result.devices.desktop).toEqual(1);
 				});
 
-				expect(Array.isArray(result)).toBe(true);
-				expect(result.length).toEqual(trackEvents.length);
-				result.forEach(([key, trackEvent]) => {
-					expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
-					expect(key.collected_at).toBeLessThanOrEqual(5000n);
-					expect(trackEvent.name).toBe('my_event');
-					expect(fromNullable(trackEvent.version)).toBe(1n);
+				it('should retrieve page views analytics metrics', async () => {
+					const { get_page_views_analytics_metrics } = actor;
+
+					const result = await get_page_views_analytics_metrics({
+						from: [1000n],
+						to: [5000n],
+						satellite_id: [satelliteIdMock]
+					});
+
+					expect(result).toHaveProperty('bounce_rate');
+					expect(result).toHaveProperty('average_page_views_per_session');
+					expect(result).toHaveProperty('daily_total_page_views');
+					expect(result).toHaveProperty('total_page_views');
+					expect(result).toHaveProperty('unique_page_views');
+					expect(result).toHaveProperty('unique_sessions');
+
+					expect(result.average_page_views_per_session).toEqual(2);
+					expect(result.total_page_views).toEqual(2);
+					expect(result.unique_page_views).toEqual(1n);
+					expect(result.unique_sessions).toEqual(1n);
+				});
+
+				it('should retrieve page views analytics top 10', async () => {
+					const { get_page_views_analytics_top_10 } = actor;
+
+					const result = await get_page_views_analytics_top_10({
+						from: [1000n],
+						to: [5000n],
+						satellite_id: [satelliteIdMock]
+					});
+
+					expect(result).toHaveProperty('referrers');
+					expect(result.referrers).toBeInstanceOf(Array);
+					expect(result.referrers.length).toBeLessThanOrEqual(10);
+
+					expect(result).toHaveProperty('pages');
+					expect(result.pages).toBeInstanceOf(Array);
+					expect(result.pages.length).toBeLessThanOrEqual(10);
+
+					expect(result.pages.find((page) => page[0] === '/')?.[1]).toEqual(2);
 				});
 			});
 
-			it('should retrieve performance metrics', async () => {
-				const { set_performance_metrics, get_performance_metrics } = actor;
+			it('should retrieve performance metrics analytics web vitals', async () => {
+				const { get_performance_metrics_analytics_web_vitals } = actor;
 
-				const performanceMetrics: [AnalyticKey, SetPerformanceMetric][] = [
-					[{ key: nanoid(), collected_at: 1230n }, performanceMetricMock],
-					[{ key: nanoid(), collected_at: 4560n }, performanceMetricMock]
-				];
-
-				await set_performance_metrics(performanceMetrics);
-
-				const result = await get_performance_metrics({
+				const result = await get_performance_metrics_analytics_web_vitals({
 					from: [1000n],
 					to: [5000n],
 					satellite_id: [satelliteIdMock]
 				});
 
-				expect(Array.isArray(result)).toBe(true);
-				expect(result.length).toBeGreaterThan(0);
-				result.forEach(([key, performanceMetric]) => {
-					expect(key.collected_at).toBeGreaterThanOrEqual(1000n);
-					expect(key.collected_at).toBeLessThanOrEqual(5000n);
-					expect(performanceMetric.metric_name).toEqual({ LCP: null });
-					expect(fromNullable(performanceMetric.version)).toBe(1n);
+				expect(result).toHaveProperty('overall');
+				expect(result.overall).toHaveProperty('cls');
+				expect(result.overall).toHaveProperty('fcp');
+				expect(result.overall).toHaveProperty('inp');
+				expect(result.overall).toHaveProperty('lcp');
+				expect(result.overall).toHaveProperty('ttfb');
+
+				expect(result).toHaveProperty('pages');
+				expect(result.pages).toBeInstanceOf(Array);
+				expect(result.pages.length).toBeGreaterThan(0);
+
+				expect(fromNullable(result.overall.lcp)).toEqual(1.23);
+			});
+
+			it('should retrieve track events analytics', async () => {
+				const { get_track_events_analytics } = actor;
+
+				const result = await get_track_events_analytics({
+					from: [1000n],
+					to: [5000n],
+					satellite_id: [satelliteIdMock]
 				});
+
+				expect(result).toHaveProperty('total');
+				expect(result.total).toBeInstanceOf(Array);
+				expect(result.total.length).toBeGreaterThan(0);
+
+				expect(result.total.find((entry) => entry[0] === 'my_event')?.[1]).toEqual(2);
 			});
 		});
 	});

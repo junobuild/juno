@@ -1,7 +1,7 @@
 import type { _SERVICE as MissionControlActor004 } from '$declarations/deprecated/mission_control-0-0-4.did';
 import { idlFactory as idlFactorMissionControl004 } from '$declarations/deprecated/mission_control-0-0-4.factory.did';
-import type { _SERVICE as OrbiterActor008 } from '$declarations/deprecated/orbiter-0-0-8.did';
-import { idlFactory as idlFactorOrbiter008 } from '$declarations/deprecated/orbiter-0-0-8.factory.did';
+import type { _SERVICE as OrbiterActor007 } from '$declarations/deprecated/orbiter-0-0-7.did';
+import { idlFactory as idlFactorOrbiter007 } from '$declarations/deprecated/orbiter-0-0-7.factory.did';
 import type { _SERVICE as SatelliteActor008 } from '$declarations/deprecated/satellite-0-0-8.did';
 import { idlFactory as idlFactorSatellite008 } from '$declarations/deprecated/satellite-0-0-8.factory.did';
 import type { _SERVICE as SatelliteActor009 } from '$declarations/deprecated/satellite-0-0-9.did';
@@ -70,20 +70,20 @@ export const getSatelliteActor009 = (canisterId: Principal): Promise<SatelliteAc
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getOrbiterActor008 = async ({
+export const getOrbiterActor007 = async ({
 	orbiterId,
 	identity
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<OrbiterActor008> => {
+}): Promise<OrbiterActor007> => {
 	if (isNullish(identity)) {
 		throw new Error('No internet identity.');
 	}
 
 	return createActor({
 		canisterId: orbiterId,
-		idlFactory: idlFactorOrbiter008,
+		idlFactory: idlFactorOrbiter007,
 		identity
 	});
 };

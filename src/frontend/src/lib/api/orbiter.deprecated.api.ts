@@ -1,9 +1,9 @@
 import type {
 	OrbiterSatelliteConfig as SatelliteConfig,
 	SetSatelliteConfig
-} from '$declarations/deprecated/orbiter-0-0-8.did';
+} from '$declarations/deprecated/orbiter-0-0-7.did';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { getOrbiterActor008 } from '$lib/utils/actor.deprecated.utils';
+import { getOrbiterActor007 } from '$lib/utils/actor.deprecated.utils';
 import { Principal } from '@dfinity/principal';
 
 export const setOrbiterSatelliteConfigs = async ({
@@ -15,6 +15,6 @@ export const setOrbiterSatelliteConfigs = async ({
 	config: [Principal, SetSatelliteConfig][];
 	identity: OptionIdentity;
 }): Promise<[Principal, SatelliteConfig][]> => {
-	const actor = await getOrbiterActor008({ orbiterId, identity });
+	const actor = await getOrbiterActor007({ orbiterId, identity });
 	return actor.set_satellite_configs(config);
 };

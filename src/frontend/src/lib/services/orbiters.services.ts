@@ -1,9 +1,13 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
+import type {
+	AnalyticsTrackEvents,
+	AnalyticsWebVitalsPerformanceMetrics
+} from '$declarations/orbiter/orbiter.did';
 import {
 	getAnalyticsClientsPageViews,
 	getAnalyticsMetricsPageViews,
 	getAnalyticsTop10PageViews,
+	getPerformanceMetricsAnalyticsWebVitals,
 	getTrackEventsAnalytics
 } from '$lib/api/orbiter.api';
 import {
@@ -125,4 +129,18 @@ export const getAnalyticsTrackEvents = async ({
 
 	// TODO: support for deprecated version of the Orbiter where the analytics are calculated in the frontend. To be removed.
 	return getDeprecatedAnalyticsTrackEvents(params);
+};
+
+export const getAnalyticsPerformanceMetrics = async ({
+	orbiterVersion,
+	params
+}: {
+	params: PageViewsParams;
+	orbiterVersion: string;
+}): Promise<AnalyticsWebVitalsPerformanceMetrics | undefined> => {
+	if (compare(orbiterVersion, '0.0.8') >= 0) {
+		return getPerformanceMetricsAnalyticsWebVitals(params);
+	}
+
+	return undefined;
 };

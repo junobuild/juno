@@ -4,6 +4,7 @@ import type {
 	AnalyticsMetricsPageViews,
 	AnalyticsTop10PageViews,
 	AnalyticsTrackEvents,
+	AnalyticsWebVitalsPerformanceMetrics,
 	Controller,
 	GetAnalytics,
 	PageView,
@@ -126,6 +127,25 @@ export const getTrackEventsAnalytics = async ({
 		from,
 		to,
 		fn: get_track_events_analytics
+	});
+};
+
+export const getPerformanceMetricsAnalyticsWebVitals = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: PageViewsParams): Promise<AnalyticsWebVitalsPerformanceMetrics> => {
+	const { get_performance_metrics_analytics_web_vitals } = await getOrbiterActor({
+		orbiterId,
+		identity
+	});
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_performance_metrics_analytics_web_vitals
 	});
 };
 

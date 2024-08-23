@@ -2,7 +2,10 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
+	import type {
+		AnalyticsTrackEvents,
+		AnalyticsWebVitalsPerformanceMetrics
+	} from '$declarations/orbiter/orbiter.did';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
@@ -22,13 +25,19 @@
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import { getAnalyticsPageViews, getAnalyticsTrackEvents } from '$lib/services/orbiters.services';
+	import {
+		getAnalyticsPageViews,
+		getAnalyticsPerformanceMetrics,
+		getAnalyticsTrackEvents
+	} from '$lib/services/orbiters.services';
 	import { addMonths } from 'date-fns';
+	import AnalyticsPerformanceMetrics from '$lib/components/analytics/AnalyticsPerformanceMetrics.svelte';
 
 	let loading = true;
 
 	let pageViews: AnalyticsPageViewsType | undefined = undefined;
 	let trackEvents: AnalyticsTrackEvents | undefined = undefined;
+	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = undefined;
 
 	let period: PageViewsPeriod = {
 		from: addMonths(new Date(), -1)
@@ -52,13 +61,15 @@
 				...period
 			};
 
-			const [views, events] = await Promise.all([
+			const [views, events, metrics] = await Promise.all([
 				getAnalyticsPageViews({ params, orbiterVersion: $versionStore.orbiter.current }),
-				getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current })
+				getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current }),
+				getAnalyticsPerformanceMetrics({ params, orbiterVersion: $versionStore.orbiter.current })
 			]);
 
 			pageViews = views;
 			trackEvents = events;
+			performanceMetrics = metrics;
 
 			loading = false;
 		} catch (err: unknown) {
@@ -89,6 +100,12 @@
 		<AnalyticsMetrics {pageViews} />
 
 		<AnalyticsPageViews {pageViews} />
+
+		{#if nonNullish(performanceMetrics)}
+			<hr />
+
+			<AnalyticsPerformanceMetrics {performanceMetrics} />
+		{/if}
 
 		{#if nonNullish(trackEvents) && trackEvents.total.length > 0}
 			<hr />

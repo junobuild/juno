@@ -254,7 +254,20 @@
 		"others": "Others",
 		"browsers": "Browsers",
 		"attach": "Attach existing Analytics",
-		"attach_id": "Enter Orbiter ID"
+		"attach_id": "Enter Orbiter ID",
+		"score": "Score",
+		"rating": "Rating",
+		"web_vitals": "Web Vitals",
+		"overall": "Overall",
+		"metric": "Metric",
+		"ttfb": "Time to First Byte <small>(TTFB)</small>",
+		"fcp": "First Contentful Paint <small>(FCP)</small>",
+		"lcp": "Largest Contentful Paint <small>(LCP)",
+		"cls": "Cumulative Layout Shift <small>(CLS)</small>",
+		"inp": "Interaction to Next Paint <small>(INP)</small>",
+		"good": "Good",
+		"needs_improvement": "Needs improvement",
+		"poor": "Poor"
 	},
 	"hosting": {
 		"title": "Hosting",

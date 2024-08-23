@@ -25,16 +25,21 @@ pub mod state {
 
     pub type PageViewsStable = StableBTreeMap<AnalyticKey, StoredPageView, Memory>;
     pub type TrackEventsStable = StableBTreeMap<AnalyticKey, StoredTrackEvent, Memory>;
+    pub type PerformanceMetricsStable = StableBTreeMap<AnalyticKey, PerformanceMetric, Memory>;
 
     pub type SatellitesPageViewsStable = StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
     pub type SatellitesTrackEventsStable =
+        StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
+    pub type SatellitesPerformanceMetricsStable =
         StableBTreeMap<AnalyticSatelliteKey, AnalyticKey, Memory>;
 
     pub struct StableState {
         pub page_views: PageViewsStable,
         pub track_events: TrackEventsStable,
+        pub performance_metrics: PerformanceMetricsStable,
         pub satellites_page_views: SatellitesPageViewsStable,
         pub satellites_track_events: SatellitesTrackEventsStable,
+        pub satellites_performance_metrics: SatellitesPerformanceMetricsStable,
     }
 
     pub type SatelliteConfig = OrbiterSatelliteConfig;
@@ -90,6 +95,51 @@ pub mod state {
         pub updated_at: Timestamp,
         pub version: Option<Version>,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct PerformanceMetric {
+        pub href: String,
+        pub metric_name: PerformanceMetricName,
+        pub data: PerformanceData,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
+        pub version: Option<Version>,
+    }
+
+    #[allow(clippy::upper_case_acronyms)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum PerformanceMetricName {
+        CLS,
+        FCP,
+        INP,
+        LCP,
+        TTFB,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum PerformanceData {
+        WebVitalsMetric(WebVitalsMetric),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct WebVitalsMetric {
+        pub value: f64,
+        pub delta: f64,
+        pub id: String,
+        pub navigation_type: Option<NavigationType>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum NavigationType {
+        Navigate,
+        Reload,
+        BackForward,
+        BackForwardCache,
+        Prerender,
+        Restore,
+    }
 }
 
 pub mod memory {
@@ -111,7 +161,7 @@ pub mod memory {
 }
 
 pub mod interface {
-    use crate::types::state::{PageViewDevice, SessionId};
+    use crate::types::state::{PageViewDevice, PerformanceData, PerformanceMetricName, SessionId};
     use candid::CandidType;
     use junobuild_shared::types::state::{Metadata, SatelliteId, Timestamp, Version};
     use junobuild_shared::types::utils::CalendarDate;
@@ -148,6 +198,17 @@ pub mod interface {
             note = "Support for backwards compatibility. It has been replaced by version for overwrite checks."
         )]
         pub updated_at: Option<Timestamp>,
+        pub version: Option<Version>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SetPerformanceMetric {
+        pub href: String,
+        pub metric_name: PerformanceMetricName,
+        pub data: PerformanceData,
+        pub user_agent: Option<String>,
+        pub satellite_id: SatelliteId,
+        pub session_id: SessionId,
         pub version: Option<Version>,
     }
 
@@ -210,5 +271,20 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct AnalyticsTrackEvents {
         pub total: HashMap<String, u32>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsWebVitalsPerformanceMetrics {
+        pub overall: AnalyticsWebVitalsPageMetrics,
+        pub pages: Vec<(String, AnalyticsWebVitalsPageMetrics)>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct AnalyticsWebVitalsPageMetrics {
+        pub cls: Option<f64>,
+        pub fcp: Option<f64>,
+        pub inp: Option<f64>,
+        pub lcp: Option<f64>,
+        pub ttfb: Option<f64>,
     }
 }

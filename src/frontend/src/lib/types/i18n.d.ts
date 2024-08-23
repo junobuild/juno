@@ -267,6 +267,19 @@ interface I18nAnalytics {
 	browsers: string;
 	attach: string;
 	attach_id: string;
+	score: string;
+	rating: string;
+	web_vitals: string;
+	overall: string;
+	metric: string;
+	ttfb: string;
+	fcp: string;
+	lcp: string;
+	cls: string;
+	inp: string;
+	good: string;
+	needs_improvement: string;
+	poor: string;
 }
 
 interface I18nHosting {

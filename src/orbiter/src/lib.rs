@@ -17,9 +17,6 @@ use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
     analytics_performance_metrics_web_vitals, analytics_track_events,
 };
-use crate::assert::config::{
-    assert_page_views_enabled, assert_performance_metrics_enabled, assert_track_events_enabled,
-};
 use crate::config::store::{
     del_satellite_config as del_satellite_config_store, get_satellite_configs,
     set_satellite_config as set_satellite_config_store,
@@ -60,6 +57,7 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
+use crate::assert::config::{assert_page_views_enabled, assert_performance_metrics_enabled, assert_track_events_enabled};
 use crate::upgrade::types::upgrade::UpgradeState;
 
 #[init]

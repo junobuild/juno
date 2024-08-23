@@ -1,4 +1,8 @@
-import type { SetPageView, SetTrackEvent } from '$declarations/orbiter/orbiter.did';
+import type {
+	SetPageView,
+	SetPerformanceMetric,
+	SetTrackEvent
+} from '$declarations/orbiter/orbiter.did';
 import { Principal } from '@dfinity/principal';
 import { nanoid } from 'nanoid';
 
@@ -41,4 +45,23 @@ export const trackEventMock: SetTrackEvent = {
 	],
 	version: [],
 	updated_at: []
+};
+
+export const performanceMetricMock: SetPerformanceMetric = {
+	session_id: sessionId,
+	data: {
+		WebVitalsMetric: {
+			id: nanoid(),
+			value: 1.23,
+			navigation_type: [{ Navigate: null }],
+			delta: 0.5
+		}
+	},
+	href: 'https://test.com',
+	metric_name: { LCP: null },
+	satellite_id: satelliteIdMock,
+	version: [],
+	user_agent: [
+		'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:125.0) Gecko/20100101 Firefox/125.0'
+	]
 };

@@ -258,7 +258,7 @@ dependencies = [
  "ic-stable-structures",
  "junobuild-collections 0.0.4",
  "junobuild-shared 0.0.18",
- "junobuild-storage 0.0.6",
+ "junobuild-storage 0.0.7",
  "regex",
  "serde",
  "serde_cbor",
@@ -963,7 +963,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "base64 0.13.1",
  "candid",
@@ -976,8 +976,8 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-response-verification",
  "ic-stable-structures",
- "junobuild-collections 0.0.2",
- "junobuild-shared 0.0.17",
+ "junobuild-collections 0.0.4",
+ "junobuild-shared 0.0.18",
  "regex",
  "serde",
  "serde_bytes",

@@ -469,7 +469,7 @@ fn delete_docs_impl(
 /// - `Err(String)`: An error message if counting fails.
 ///
 /// This function provides a convenient way to determine the number of documents in a Juno collection's store.
-pub fn count_docs_store(collection: &CollectionKey) -> Result<usize, String> {
+pub fn count_collection_docs_store(collection: &CollectionKey) -> Result<usize, String> {
     let rule = get_state_rule(collection)?;
 
     match rule.mem() {

@@ -398,7 +398,7 @@ fn delete_assets_impl(
 /// - `Err(String)`: An error message if counting fails.
 ///
 /// This function provides a convenient way to determine the number of assets in a Juno collection's store.
-pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
+pub fn count_collection_assets_store(collection: &CollectionKey) -> Result<usize, String> {
     let rule = get_state_rule(collection)?;
 
     match rule.mem() {

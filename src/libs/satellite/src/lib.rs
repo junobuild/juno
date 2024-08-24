@@ -37,7 +37,7 @@ use junobuild_storage::types::interface::{
 // Re-export types
 
 pub use crate::db::store::{
-    count_docs_store, delete_doc_store, delete_docs_store, get_doc_store, list_docs_store,
+    count_collection_docs_store, delete_doc_store, delete_docs_store, get_doc_store, list_docs_store,
     set_doc_store,
 };
 use crate::db::types::config::DbConfig;
@@ -50,7 +50,7 @@ pub use crate::logs::loggers::{
 pub use crate::logs::types::logs::{Log, LogLevel};
 pub use crate::storage::handlers::set_asset_handler;
 pub use crate::storage::store::{
-    count_assets_store, delete_asset_store, delete_assets_store, get_asset_store,
+    count_collection_assets_store, delete_asset_store, delete_assets_store, get_asset_store,
     get_content_chunks_store, list_assets_store,
 };
 pub use crate::types::hooks::{
@@ -144,8 +144,8 @@ pub fn del_docs(collection: CollectionKey) {
 
 #[doc(hidden)]
 #[query(guard = "caller_is_controller")]
-pub fn count_docs(collection: CollectionKey) -> usize {
-    satellite::count_docs(collection)
+pub fn count_collection_docs(collection: CollectionKey) -> usize {
+    satellite::count_collection_docs(collection)
 }
 
 /// Rules
@@ -336,8 +336,8 @@ pub fn del_assets(collection: CollectionKey) {
 
 #[doc(hidden)]
 #[query(guard = "caller_is_controller")]
-pub fn count_assets(collection: CollectionKey) -> usize {
-    satellite::count_assets(collection)
+pub fn count_collection_assets(collection: CollectionKey) -> usize {
+    satellite::count_collection_assets(collection)
 }
 
 #[doc(hidden)]
@@ -395,7 +395,7 @@ pub fn memory_size() -> MemorySize {
 macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
-            commit_asset_upload, count_assets, count_docs, del_asset, del_assets, del_controllers,
+            commit_asset_upload, count_collection_assets, count_collection_docs, del_asset, del_assets, del_controllers,
             del_custom_domain, del_doc, del_docs, del_many_assets, del_many_docs, del_rule,
             deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_doc,
             get_many_assets, get_many_docs, get_storage_config, http_request,

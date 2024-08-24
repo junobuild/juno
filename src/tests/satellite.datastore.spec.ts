@@ -184,11 +184,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 
 			it('should delete all documents', async () => {
-				const { del_docs, count_docs } = actor;
+				const { del_docs, count_collection_docs } = actor;
 
 				await del_docs(TEST_COLLECTION);
 
-				const count = await count_docs(TEST_COLLECTION);
+				const count = await count_collection_docs(TEST_COLLECTION);
 
 				expect(count).toBe(0n);
 			});

@@ -289,7 +289,7 @@ export const depositCycles = async ({
 	});
 };
 
-export const countAssets = async ({
+export const countCollectionAssets = async ({
 	satelliteId,
 	collection,
 	identity
@@ -298,6 +298,6 @@ export const countAssets = async ({
 	collection: string;
 	identity: OptionIdentity;
 }): Promise<bigint> => {
-	const { count_assets } = await getSatelliteActor({ satelliteId, identity });
-	return count_assets(collection);
+	const { count_collection_assets } = await getSatelliteActor({ satelliteId, identity });
+	return count_collection_assets(collection);
 };

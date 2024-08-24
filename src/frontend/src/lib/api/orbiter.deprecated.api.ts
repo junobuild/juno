@@ -6,7 +6,18 @@ import type { OptionIdentity } from '$lib/types/itentity';
 import { getOrbiterActor007 } from '$lib/utils/actor.deprecated.utils';
 import { Principal } from '@dfinity/principal';
 
-export const setOrbiterSatelliteConfigs = async ({
+export const listOrbiterSatelliteConfigs007 = async ({
+	orbiterId,
+	identity
+}: {
+	orbiterId: Principal;
+	identity: OptionIdentity;
+}): Promise<[Principal, SatelliteConfig][]> => {
+	const { list_satellite_configs } = await getOrbiterActor007({ orbiterId, identity });
+	return list_satellite_configs();
+};
+
+export const setOrbiterSatelliteConfigs007 = async ({
 	orbiterId,
 	config,
 	identity

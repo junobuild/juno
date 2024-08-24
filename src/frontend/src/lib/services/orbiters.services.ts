@@ -2,7 +2,8 @@ import type { Orbiter } from '$declarations/mission_control/mission_control.did'
 import type {
 	AnalyticsTrackEvents,
 	AnalyticsWebVitalsPerformanceMetrics,
-	OrbiterSatelliteConfig
+	OrbiterSatelliteConfig,
+	OrbiterSatelliteConfig as SatelliteConfig
 } from '$declarations/orbiter/orbiter.did';
 import {
 	getAnalyticsClientsPageViews,
@@ -10,9 +11,13 @@ import {
 	getAnalyticsTop10PageViews,
 	getPerformanceMetricsAnalyticsWebVitals,
 	getTrackEventsAnalytics,
+	listOrbiterSatelliteConfigs as listOrbiterSatelliteConfigsApi,
 	setOrbiterSatelliteConfigs as setOrbiterSatelliteConfigsApi
 } from '$lib/api/orbiter.api';
-import { setOrbiterSatelliteConfigs as setOrbiterSatelliteConfigsDeprecatedApi } from '$lib/api/orbiter.deprecated.api';
+import {
+	listOrbiterSatelliteConfigs007,
+	setOrbiterSatelliteConfigs007 as setOrbiterSatelliteConfigsDeprecatedApi
+} from '$lib/api/orbiter.deprecated.api';
 import {
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
@@ -154,6 +159,36 @@ export const getAnalyticsPerformanceMetrics = async ({
 	return undefined;
 };
 
+const enabledFeatures = {
+	performance_metrics: true,
+	track_events: true,
+	page_views: true
+};
+
+export const listOrbiterSatelliteConfigs = async ({
+	orbiterVersion,
+	...rest
+}: {
+	orbiterId: Principal;
+	identity: OptionIdentity;
+	orbiterVersion: string;
+}): Promise<[Principal, SatelliteConfig][]> => {
+	if (compare(orbiterVersion, '0.0.8') >= 0) {
+		return await listOrbiterSatelliteConfigsApi(rest);
+	}
+
+	// Backwards compatibility
+	const results = await listOrbiterSatelliteConfigs007(rest);
+
+	return results.map(([satelliteId, { enabled, ...rest }]) => [
+		satelliteId,
+		{
+			...rest,
+			features: enabled ? [enabledFeatures] : []
+		}
+	]);
+};
+
 export const setOrbiterSatelliteConfigs = async ({
 	orbiterId,
 	config,
@@ -165,12 +200,6 @@ export const setOrbiterSatelliteConfigs = async ({
 	identity: OptionIdentity;
 	orbiterVersion: string;
 }): Promise<[Principal, OrbiterSatelliteConfig][]> => {
-	const enabledFeatures = {
-		performance_metrics: true,
-		track_events: true,
-		page_views: true
-	};
-
 	if (compare(orbiterVersion, '0.0.8') >= 0) {
 		return await setOrbiterSatelliteConfigsApi({
 			orbiterId,

@@ -3,7 +3,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { onMount } from 'svelte';
-	import { listOrbiterSatelliteConfigs } from '$lib/api/orbiter.api';
 	import { satellitesStore } from '$lib/stores/satellite.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -13,17 +12,23 @@
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import { authStore } from '$lib/stores/auth.store';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { listOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
+	import { versionStore } from '$lib/stores/version.store';
 
 	export let orbiterId: Principal;
 
 	let configuration: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = {};
 
-	const list = (): Promise<[Principal, OrbiterSatelliteConfig][]> =>
-		listOrbiterSatelliteConfigs({ orbiterId, identity: $authStore.identity });
+	const list = (orbiterVersion: string): Promise<[Principal, OrbiterSatelliteConfig][]> =>
+		listOrbiterSatelliteConfigs({ orbiterId, identity: $authStore.identity, orbiterVersion });
 
 	const load = async () => {
+		if (isNullish($versionStore.orbiter?.current)) {
+			return;
+		}
+
 		try {
-			const configs = await list();
+			const configs = await list($versionStore.orbiter.current);
 			loadConfig(configs);
 		} catch (err: unknown) {
 			toasts.error({
@@ -40,12 +45,7 @@
 			);
 
 			const entry = config?.[1];
-			const enabled = isNullish(entry)
-				? false
-				: nonNullish(fromNullable(entry.features)) ??
-					// Backwards compatibility for Orbiter <= v0.0.8
-					(entry as unknown as { enabled: boolean | undefined }).enabled ??
-					false;
+			const enabled = nonNullish(fromNullable(entry?.features ?? []));
 
 			return {
 				...acc,
@@ -58,7 +58,7 @@
 		}, {});
 	};
 
-	onMount(async () => await load());
+	$: $versionStore, (async () => await load())();
 
 	// [Principal, SatelliteConfig]
 	const onUpdate = ({ detail }: CustomEvent<[Principal, OrbiterSatelliteConfig][]>) => {

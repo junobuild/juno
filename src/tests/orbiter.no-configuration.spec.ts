@@ -125,7 +125,7 @@ describe('Orbiter - No configuration', () => {
 			expect('Err' in results).toBeTruthy();
 
 			(results as { Err: Array<[AnalyticKey, string]> }).Err.forEach(([_, msg]) =>
-				expect(msg).toEqual('error_performance_feature_disabled')
+				expect(msg).toEqual('error_performance_metrics_feature_disabled')
 			);
 		});
 	});

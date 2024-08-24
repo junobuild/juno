@@ -167,8 +167,8 @@ export const listOrbiterSatelliteConfigs = async ({
 	orbiterId: Principal;
 	identity: OptionIdentity;
 }): Promise<[Principal, SatelliteConfig][]> => {
-	const actor = await getOrbiterActor({ orbiterId, identity });
-	return actor.list_satellite_configs();
+	const { list_satellite_configs } = await getOrbiterActor({ orbiterId, identity });
+	return list_satellite_configs();
 };
 
 export const setOrbiterSatelliteConfigs = async ({

@@ -1,4 +1,5 @@
 import type {
+	ListParams,
 	_SERVICE as SatelliteActor,
 	SetRule,
 	StorageConfig
@@ -774,9 +775,9 @@ describe('Satellite storage', () => {
 					});
 
 					it('should list assets according created_at timestamps', async () => {
-						const { list_assets } = actor;
+						const { list_assets, count_assets } = actor;
 
-						const { items_length, items } = await list_assets(collection, {
+						const paramsCreatedAt: ListParams = {
 							matcher: toNullable(),
 							order: toNullable({
 								desc: false,
@@ -784,11 +785,15 @@ describe('Satellite storage', () => {
 							}),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length, items } = await list_assets(collection, paramsCreatedAt);
 						expect(items_length).toBe(10n);
 
-						const { items_length: items_length_from } = await list_assets(collection, {
+						const countCreatedAt = await count_assets(collection, paramsCreatedAt);
+						expect(countCreatedAt).toBe(10n);
+
+						const paramsGreaterThan: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -800,11 +805,18 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_from } = await list_assets(
+							collection,
+							paramsGreaterThan
+						);
 						expect(items_length_from).toBe(5n);
 
-						const { items_length: items_length_to } = await list_assets(collection, {
+						const countGreaterThan = await count_assets(collection, paramsGreaterThan);
+						expect(countGreaterThan).toBe(5n);
+
+						const paramsLessThan: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -816,11 +828,15 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_to } = await list_assets(collection, paramsLessThan);
 						expect(items_length_to).toBe(4n);
 
-						const { items_length: items_length_between } = await list_assets(collection, {
+						const countLessThan = await count_assets(collection, paramsLessThan);
+						expect(countLessThan).toBe(4n);
+
+						const paramsBetween: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -832,15 +848,22 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_between } = await list_assets(
+							collection,
+							paramsBetween
+						);
 						expect(items_length_between).toBe(5n);
+
+						const countBetween = await count_assets(collection, paramsBetween);
+						expect(countBetween).toBe(5n);
 					});
 
 					it('should list assets according updated_at timestamps', async () => {
-						const { list_assets } = actor;
+						const { list_assets, count_assets } = actor;
 
-						const { items_length, items } = await list_assets(collection, {
+						const paramsUpdatedAt: ListParams = {
 							matcher: toNullable(),
 							order: toNullable({
 								desc: false,
@@ -848,11 +871,15 @@ describe('Satellite storage', () => {
 							}),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length, items } = await list_assets(collection, paramsUpdatedAt);
 						expect(items_length).toBe(10n);
 
-						const { items_length: items_length_from } = await list_assets(collection, {
+						const countUpdatedAt = await count_assets(collection, paramsUpdatedAt);
+						expect(countUpdatedAt).toBe(10n);
+
+						const paramsGreaterThan: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -864,11 +891,18 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_from } = await list_assets(
+							collection,
+							paramsGreaterThan
+						);
 						expect(items_length_from).toBe(5n);
 
-						const { items_length: items_length_to } = await list_assets(collection, {
+						const countGreaterThan = await count_assets(collection, paramsGreaterThan);
+						expect(countGreaterThan).toBe(5n);
+
+						const paramsLessThan: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -880,11 +914,15 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_to } = await list_assets(collection, paramsLessThan);
 						expect(items_length_to).toBe(4n);
 
-						const { items_length: items_length_between } = await list_assets(collection, {
+						const countLessThan = await count_assets(collection, paramsLessThan);
+						expect(countLessThan).toBe(4n);
+
+						const paramsBetween: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -896,9 +934,16 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_between } = await list_assets(
+							collection,
+							paramsBetween
+						);
 						expect(items_length_between).toBe(5n);
+
+						const countBetween = await count_assets(collection, paramsBetween);
+						expect(countBetween).toBe(5n);
 					});
 				});
 			}

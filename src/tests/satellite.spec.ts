@@ -252,9 +252,9 @@ describe('Satellite', () => {
 		});
 
 		it('should throw errors on counting docs', async () => {
-			const { count_docs } = actor;
+			const { count_collection_docs } = actor;
 
-			await expect(count_docs('test')).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(count_collection_docs('test')).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on deleting assets', async () => {
@@ -264,9 +264,9 @@ describe('Satellite', () => {
 		});
 
 		it('should throw errors on counting assets', async () => {
-			const { count_assets } = actor;
+			const { count_collection_assets } = actor;
 
-			await expect(count_assets('test')).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(count_collection_assets('test')).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on deposit cycles', async () => {

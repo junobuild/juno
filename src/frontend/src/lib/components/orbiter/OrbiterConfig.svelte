@@ -97,4 +97,8 @@
 	.tools {
 		width: 88px;
 	}
+
+	input[type='checkbox'] {
+		margin: 0;
+	}
 </style>

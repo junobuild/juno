@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TransactionWithId, Transaction } from '@junobuild/ledger';
+	import type { TransactionWithId, Transaction } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
 	import { fade } from 'svelte/transition';

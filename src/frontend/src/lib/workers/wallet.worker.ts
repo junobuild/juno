@@ -3,13 +3,13 @@ import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
-import { Principal } from '@dfinity/principal';
-import { isNullish, jsonReplacer } from '@dfinity/utils';
 import type {
 	GetAccountIdentifierTransactionsResponse,
 	Transaction,
 	TransactionWithId
-} from '@junobuild/ledger';
+} from '@dfinity/ledger-icp';
+import { Principal } from '@dfinity/principal';
+import { isNullish, jsonReplacer } from '@dfinity/utils';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;

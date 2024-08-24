@@ -16,7 +16,7 @@
 	import { PAGINATION } from '$lib/constants/constants';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
 	import { fade } from 'svelte/transition';
-	import type { TransactionWithId } from '@junobuild/ledger';
+	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import Wallet from '$lib/components/core/Wallet.svelte';
 
 	export let missionControlId: Principal;

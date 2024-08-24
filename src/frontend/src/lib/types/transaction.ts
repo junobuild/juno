@@ -1,4 +1,4 @@
-import type { GetAccountIdentifierTransactionsResponse } from '@junobuild/ledger';
+import type { GetAccountIdentifierTransactionsResponse } from '@dfinity/ledger-icp';
 
 export type JsonTransactionsText = string;
 

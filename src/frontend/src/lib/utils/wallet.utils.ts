@@ -6,9 +6,9 @@ import {
 } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { formatE8sICP } from '$lib/utils/icp.utils';
+import type { Transaction } from '@dfinity/ledger-icp';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
-import type { Transaction } from '@junobuild/ledger';
 import { get } from 'svelte/store';
 
 export const transactionTimestamp = (transaction: Transaction): bigint | undefined =>

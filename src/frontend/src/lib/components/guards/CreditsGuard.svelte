@@ -4,7 +4,7 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { createEventDispatcher } from 'svelte';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
-	import type { AccountIdentifier } from '@junobuild/ledger';
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { E8S_PER_ICP } from '$lib/constants/constants';
 
 	export let detail: JunoModalDetail;

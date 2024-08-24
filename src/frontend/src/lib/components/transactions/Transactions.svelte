@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { TransactionWithId } from '@junobuild/ledger';
+	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

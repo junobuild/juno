@@ -5,7 +5,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalTopUpMissionControlDetail } from '$lib/types/modal';
-	import type { AccountIdentifier } from '@junobuild/ledger';
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 
 	export let detail: JunoModalDetail;
 

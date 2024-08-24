@@ -18,7 +18,7 @@ impl From<&UpgradeHeapState> for HeapState {
                     },
                     created_at: upgrade_config.created_at,
                     updated_at: upgrade_config.updated_at,
-                    version: upgrade_config.version.clone(),
+                    version: upgrade_config.version,
                 };
                 (*id, satellite_config)
             })

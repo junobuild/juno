@@ -101,7 +101,7 @@
 
 		<AnalyticsPageViews {pageViews} />
 
-		{#if nonNullish(performanceMetrics)}
+		{#if nonNullish(performanceMetrics) && performanceMetrics.pages.length > 0}
 			<hr />
 
 			<AnalyticsPerformanceMetrics {performanceMetrics} />

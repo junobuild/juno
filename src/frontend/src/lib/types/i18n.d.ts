@@ -399,6 +399,7 @@ interface I18nErrors {
 	collection_updated: string;
 	collection_deleted: string;
 	rule_invalid: string;
+	missing_version: string;
 	upgrade_load_versions: string;
 	upgrade_download_error: string;
 	upgrade_error: string;

@@ -12,6 +12,7 @@
 	import OrbiterConfigSave from '$lib/components/orbiter/OrbiterConfigSave.svelte';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import { authStore } from '$lib/stores/auth.store';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 
 	export let orbiterId: Principal;
 
@@ -38,11 +39,19 @@
 				([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText()
 			);
 
+			const entry = config?.[1];
+			const enabled = isNullish(entry)
+				? false
+				: nonNullish(fromNullable(entry.features)) ??
+					// Backwards compatibility for Orbiter <= v0.0.8
+					(entry as unknown as { enabled: boolean | undefined }).enabled ??
+					false;
+
 			return {
 				...acc,
 				[satellite.satellite_id.toText()]: {
 					name: satelliteName(satellite),
-					enabled: config?.[1].enabled ?? false,
+					enabled,
 					config: config?.[1]
 				}
 			};

@@ -11,6 +11,7 @@ mod msg;
 mod serializers;
 mod store;
 mod types;
+mod upgrade;
 
 use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
@@ -40,7 +41,6 @@ use crate::types::interface::{
 use crate::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };
-use assert::config::assert_enabled;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
@@ -57,6 +57,8 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
+use crate::assert::config::{assert_page_views_enabled, assert_performance_metrics_enabled, assert_track_events_enabled};
+use crate::upgrade::types::upgrade::UpgradeState;
 
 #[init]
 fn init() {
@@ -91,17 +93,20 @@ fn post_upgrade() {
     let memory: Memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    let state: State = from_reader(&*state_bytes)
+    let upgrade_state: UpgradeState = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
 
-    STATE.with(|s| *s.borrow_mut() = state);
+    STATE.with(|s| *s.borrow_mut() = State {
+        stable: upgrade_state.stable,
+        heap: HeapState::from(&upgrade_state.heap),
+    });
 }
 
 /// Page views
 
 #[update]
 fn set_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
-    assert_enabled(&get_satellite_config(&page_view.satellite_id))?;
+    assert_page_views_enabled(&get_satellite_config(&page_view.satellite_id))?;
 
     insert_page_view(key, page_view)
 }
@@ -111,7 +116,7 @@ fn set_page_views(
     page_views: Vec<(AnalyticKey, SetPageView)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, page_view: SetPageView) -> Result<(), String> {
-        assert_enabled(&get_satellite_config(&page_view.satellite_id))?;
+        assert_page_views_enabled(&get_satellite_config(&page_view.satellite_id))?;
         insert_page_view(key, page_view)?;
 
         Ok(())
@@ -162,7 +167,7 @@ fn get_page_views_analytics_clients(filter: GetAnalytics) -> AnalyticsClientsPag
 
 #[update]
 fn set_track_event(key: AnalyticKey, track_event: SetTrackEvent) -> Result<TrackEvent, String> {
-    assert_enabled(&get_satellite_config(&track_event.satellite_id))?;
+    assert_track_events_enabled(&get_satellite_config(&track_event.satellite_id))?;
 
     insert_track_event(key, track_event)
 }
@@ -172,7 +177,7 @@ fn set_track_events(
     track_events: Vec<(AnalyticKey, SetTrackEvent)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, track_event: SetTrackEvent) -> Result<(), String> {
-        assert_enabled(&get_satellite_config(&track_event.satellite_id))?;
+        assert_track_events_enabled(&get_satellite_config(&track_event.satellite_id))?;
         insert_track_event(key, track_event)?;
 
         Ok(())
@@ -214,7 +219,7 @@ fn set_performance_metric(
     key: AnalyticKey,
     performance_metric: SetPerformanceMetric,
 ) -> Result<PerformanceMetric, String> {
-    assert_enabled(&get_satellite_config(&performance_metric.satellite_id))?;
+    assert_performance_metrics_enabled(&get_satellite_config(&performance_metric.satellite_id))?;
 
     insert_performance_metric(key, performance_metric)
 }
@@ -224,7 +229,9 @@ fn set_performance_metrics(
     performance_metrics: Vec<(AnalyticKey, SetPerformanceMetric)>,
 ) -> Result<(), Vec<(AnalyticKey, String)>> {
     fn insert(key: AnalyticKey, performance_metric: SetPerformanceMetric) -> Result<(), String> {
-        assert_enabled(&get_satellite_config(&performance_metric.satellite_id))?;
+        assert_performance_metrics_enabled(&get_satellite_config(
+            &performance_metric.satellite_id,
+        ))?;
         insert_performance_metric(key, performance_metric)?;
 
         Ok(())

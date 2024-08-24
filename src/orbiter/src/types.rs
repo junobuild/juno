@@ -163,7 +163,9 @@ pub mod memory {
 pub mod interface {
     use crate::types::state::{PageViewDevice, PerformanceData, PerformanceMetricName, SessionId};
     use candid::CandidType;
-    use junobuild_shared::types::state::{Metadata, SatelliteId, Timestamp, Version};
+    use junobuild_shared::types::state::{
+        Metadata, OrbiterSatelliteFeatures, SatelliteId, Timestamp, Version,
+    };
     use junobuild_shared::types::utils::CalendarDate;
     use serde::Deserialize;
     use std::collections::HashMap;
@@ -221,7 +223,7 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SetSatelliteConfig {
-        pub enabled: bool,
+        pub features: Option<OrbiterSatelliteFeatures>,
         pub version: Option<Version>,
     }
 

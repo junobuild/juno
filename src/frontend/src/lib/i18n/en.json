@@ -383,6 +383,7 @@
 		"collection_updated": "Collection {0} cannot be updated.",
 		"collection_deleted": "Collection {0} cannot be deleted.",
 		"rule_invalid": "Rule should exist.",
+		"missing_version": "Unexpected error. No version has been loaded yet.",
 		"upgrade_load_versions": "Error while fetching the available versions.",
 		"upgrade_download_error": "Error while downloading the wasm.",
 		"upgrade_error": "Error while upgrading. Reach out Juno if the problem persists!",

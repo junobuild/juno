@@ -37,17 +37,6 @@ export interface AnalyticsTop10PageViews {
 export interface AnalyticsTrackEvents {
 	total: Array<[string, number]>;
 }
-export interface AnalyticsWebVitalsPageMetrics {
-	cls: [] | [number];
-	fcp: [] | [number];
-	inp: [] | [number];
-	lcp: [] | [number];
-	ttfb: [] | [number];
-}
-export interface AnalyticsWebVitalsPerformanceMetrics {
-	overall: AnalyticsWebVitalsPageMetrics;
-	pages: Array<[string, AnalyticsWebVitalsPageMetrics]>;
-}
 export interface CalendarDate {
 	day: number;
 	month: number;
@@ -80,23 +69,11 @@ export interface MemorySize {
 	stable: bigint;
 	heap: bigint;
 }
-export type NavigationType =
-	| { Navigate: null }
-	| { Restore: null }
-	| { Reload: null }
-	| { BackForward: null }
-	| { BackForwardCache: null }
-	| { Prerender: null };
 export interface OrbiterSatelliteConfig {
 	updated_at: bigint;
-	features: [] | [OrbiterSatelliteFeatures];
 	created_at: bigint;
 	version: [] | [bigint];
-}
-export interface OrbiterSatelliteFeatures {
-	performance_metrics: boolean;
-	track_events: boolean;
-	page_views: boolean;
+	enabled: boolean;
 }
 export interface PageView {
 	title: string;
@@ -115,27 +92,9 @@ export interface PageViewDevice {
 	inner_height: number;
 	inner_width: number;
 }
-export type PerformanceData = { WebVitalsMetric: WebVitalsMetric };
-export interface PerformanceMetric {
-	updated_at: bigint;
-	session_id: string;
-	data: PerformanceData;
-	href: string;
-	metric_name: PerformanceMetricName;
-	created_at: bigint;
-	satellite_id: Principal;
-	version: [] | [bigint];
-}
-export type PerformanceMetricName =
-	| { CLS: null }
-	| { FCP: null }
-	| { INP: null }
-	| { LCP: null }
-	| { TTFB: null };
 export type Result = { Ok: PageView } | { Err: string };
 export type Result_1 = { Ok: null } | { Err: Array<[AnalyticKey, string]> };
-export type Result_2 = { Ok: PerformanceMetric } | { Err: string };
-export type Result_3 = { Ok: TrackEvent } | { Err: string };
+export type Result_2 = { Ok: TrackEvent } | { Err: string };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -157,18 +116,9 @@ export interface SetPageView {
 	version: [] | [bigint];
 	user_agent: [] | [string];
 }
-export interface SetPerformanceMetric {
-	session_id: string;
-	data: PerformanceData;
-	href: string;
-	metric_name: PerformanceMetricName;
-	satellite_id: Principal;
-	version: [] | [bigint];
-	user_agent: [] | [string];
-}
 export interface SetSatelliteConfig {
-	features: [] | [OrbiterSatelliteFeatures];
 	version: [] | [bigint];
+	enabled: boolean;
 }
 export interface SetTrackEvent {
 	updated_at: [] | [bigint];
@@ -188,12 +138,6 @@ export interface TrackEvent {
 	satellite_id: Principal;
 	version: [] | [bigint];
 }
-export interface WebVitalsMetric {
-	id: string;
-	value: number;
-	navigation_type: [] | [NavigationType];
-	delta: number;
-}
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_satellite_config: ActorMethod<[Principal, DelSatelliteConfig], undefined>;
@@ -202,11 +146,6 @@ export interface _SERVICE {
 	get_page_views_analytics_clients: ActorMethod<[GetAnalytics], AnalyticsClientsPageViews>;
 	get_page_views_analytics_metrics: ActorMethod<[GetAnalytics], AnalyticsMetricsPageViews>;
 	get_page_views_analytics_top_10: ActorMethod<[GetAnalytics], AnalyticsTop10PageViews>;
-	get_performance_metrics: ActorMethod<[GetAnalytics], Array<[AnalyticKey, PerformanceMetric]>>;
-	get_performance_metrics_analytics_web_vitals: ActorMethod<
-		[GetAnalytics],
-		AnalyticsWebVitalsPerformanceMetrics
-	>;
 	get_track_events: ActorMethod<[GetAnalytics], Array<[AnalyticKey, TrackEvent]>>;
 	get_track_events_analytics: ActorMethod<[GetAnalytics], AnalyticsTrackEvents>;
 	list_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
@@ -215,13 +154,11 @@ export interface _SERVICE {
 	set_controllers: ActorMethod<[SetControllersArgs], Array<[Principal, Controller]>>;
 	set_page_view: ActorMethod<[AnalyticKey, SetPageView], Result>;
 	set_page_views: ActorMethod<[Array<[AnalyticKey, SetPageView]>], Result_1>;
-	set_performance_metric: ActorMethod<[AnalyticKey, SetPerformanceMetric], Result_2>;
-	set_performance_metrics: ActorMethod<[Array<[AnalyticKey, SetPerformanceMetric]>], Result_1>;
 	set_satellite_configs: ActorMethod<
 		[Array<[Principal, SetSatelliteConfig]>],
 		Array<[Principal, OrbiterSatelliteConfig]>
 	>;
-	set_track_event: ActorMethod<[AnalyticKey, SetTrackEvent], Result_3>;
+	set_track_event: ActorMethod<[AnalyticKey, SetTrackEvent], Result_2>;
 	set_track_events: ActorMethod<[Array<[AnalyticKey, SetTrackEvent]>], Result_1>;
 	version: ActorMethod<[], string>;
 }

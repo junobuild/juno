@@ -133,11 +133,16 @@ export const idlFactory = ({ IDL }) => {
 	const AnalyticsTrackEvents = IDL.Record({
 		total: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Nat32))
 	});
+	const OrbiterSatelliteFeatures = IDL.Record({
+		performance_metrics: IDL.Bool,
+		track_events: IDL.Bool,
+		page_views: IDL.Bool
+	});
 	const OrbiterSatelliteConfig = IDL.Record({
 		updated_at: IDL.Nat64,
+		features: IDL.Opt(OrbiterSatelliteFeatures),
 		created_at: IDL.Nat64,
-		version: IDL.Opt(IDL.Nat64),
-		enabled: IDL.Bool
+		version: IDL.Opt(IDL.Nat64)
 	});
 	const MemorySize = IDL.Record({ stable: IDL.Nat64, heap: IDL.Nat64 });
 	const SetController = IDL.Record({
@@ -177,8 +182,8 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const Result_2 = IDL.Variant({ Ok: PerformanceMetric, Err: IDL.Text });
 	const SetSatelliteConfig = IDL.Record({
-		version: IDL.Opt(IDL.Nat64),
-		enabled: IDL.Bool
+		features: IDL.Opt(OrbiterSatelliteFeatures),
+		version: IDL.Opt(IDL.Nat64)
 	});
 	const SetTrackEvent = IDL.Record({
 		updated_at: IDL.Opt(IDL.Nat64),

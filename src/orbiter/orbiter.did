@@ -67,9 +67,14 @@ type NavigationType = variant {
 };
 type OrbiterSatelliteConfig = record {
   updated_at : nat64;
+  features : opt OrbiterSatelliteFeatures;
   created_at : nat64;
   version : opt nat64;
-  enabled : bool;
+};
+type OrbiterSatelliteFeatures = record {
+  performance_metrics : bool;
+  track_events : bool;
+  page_views : bool;
 };
 type PageView = record {
   title : text;
@@ -131,7 +136,10 @@ type SetPerformanceMetric = record {
   version : opt nat64;
   user_agent : opt text;
 };
-type SetSatelliteConfig = record { version : opt nat64; enabled : bool };
+type SetSatelliteConfig = record {
+  features : opt OrbiterSatelliteFeatures;
+  version : opt nat64;
+};
 type SetTrackEvent = record {
   updated_at : opt nat64;
   session_id : text;

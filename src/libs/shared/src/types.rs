@@ -81,10 +81,17 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OrbiterSatelliteConfig {
-        pub enabled: bool,
+        pub features: Option<OrbiterSatelliteFeatures>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct OrbiterSatelliteFeatures {
+        pub page_views: bool,
+        pub track_events: bool,
+        pub performance_metrics: bool,
     }
 }
 

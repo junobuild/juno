@@ -13,16 +13,6 @@
 		"url": "https://github.com/junobuild/juno/issues"
 	},
 	"description": "An Open Source Blockchain-as-a-Service",
-	"keywords": [
-		"web3",
-		"dapps",
-		"Internet Computer",
-		"authentication",
-		"database",
-		"storage",
-		"cdn",
-		"hosting"
-	],
 	"scripts": {
 		"build:csp": "node scripts/build.csp.mjs",
 		"build:post-process": "npm run build:csp",

@@ -1,14 +1,17 @@
-import { container } from '$lib/utils/juno.utils';
-import type { Identity } from '@dfinity/agent';
+import { getAgent } from '$lib/utils/agent.utils';
+import { type Identity } from '@dfinity/agent';
+import {
+	AccountIdentifier,
+	IndexCanister,
+	type GetAccountIdentifierTransactionsResponse
+} from '@dfinity/ledger-icp';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
-import type { GetAccountIdentifierTransactionsResponse } from '@junobuild/ledger';
-import { AccountIdentifier, balance, transactions } from '@junobuild/ledger';
 
 export const getAccountIdentifier = (principal: Principal): AccountIdentifier =>
 	AccountIdentifier.fromPrincipal({ principal, subAccount: undefined });
 
-export const getBalance = ({
+export const getBalance = async ({
 	owner,
 	identity
 }: {
@@ -19,16 +22,18 @@ export const getBalance = ({
 		throw new Error('No internet identity.');
 	}
 
-	return balance({
-		index: {
-			...container(),
-			identity
-		},
+	const agent = await getAgent({ identity });
+
+	const { accountBalance } = IndexCanister.create({
+		agent
+	});
+
+	return accountBalance({
 		accountIdentifier: getAccountIdentifier(owner).toHex()
 	});
 };
 
-export const getTransactions = ({
+export const getTransactions = async ({
 	owner,
 	identity,
 	start,
@@ -43,15 +48,15 @@ export const getTransactions = ({
 		throw new Error('No internet identity.');
 	}
 
-	return transactions({
-		index: {
-			...container(),
-			identity
-		},
-		args: {
-			start,
-			max_results: maxResults,
-			account_identifier: getAccountIdentifier(owner).toHex()
-		}
+	const agent = await getAgent({ identity });
+
+	const { getTransactions } = IndexCanister.create({
+		agent
+	});
+
+	return getTransactions({
+		start,
+		maxResults,
+		accountIdentifier: getAccountIdentifier(owner).toHex()
 	});
 };

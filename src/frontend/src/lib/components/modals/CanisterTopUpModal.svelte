@@ -19,7 +19,7 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import type { AccountIdentifier } from '@junobuild/ledger';
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { authStore } from '$lib/stores/auth.store';
 
 	export let canisterId: Principal;

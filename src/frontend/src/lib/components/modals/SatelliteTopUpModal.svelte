@@ -6,7 +6,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import type { AccountIdentifier } from '@junobuild/ledger';
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 
 	export let detail: JunoModalDetail;
 

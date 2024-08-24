@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import type { TransactionWithId } from '@junobuild/ledger';
+	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import { busy } from '$lib/stores/busy.store';

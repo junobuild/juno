@@ -4,7 +4,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import type { AccountIdentifier } from '@junobuild/ledger';
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 
 	export let accountIdentifier: AccountIdentifier | undefined;
 </script>

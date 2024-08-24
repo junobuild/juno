@@ -7,9 +7,9 @@ import {
 	transactionTimestamp,
 	transactionTo
 } from '$lib/utils/wallet.utils';
+import type { TransactionWithId } from '@dfinity/ledger-icp';
 import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
-import type { TransactionWithId } from '@junobuild/ledger';
 
 type TransactionId = string;
 type TransactionTimestamp = string;

@@ -37,8 +37,8 @@ use junobuild_storage::types::interface::{
 // Re-export types
 
 pub use crate::db::store::{
-    count_collection_docs_store, delete_doc_store, delete_docs_store, get_doc_store, list_docs_store,
-    set_doc_store,
+    count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
+    get_doc_store, list_docs_store, set_doc_store,
 };
 use crate::db::types::config::DbConfig;
 pub use crate::db::types::interface::{DelDoc, SetDoc};
@@ -50,8 +50,8 @@ pub use crate::logs::loggers::{
 pub use crate::logs::types::logs::{Log, LogLevel};
 pub use crate::storage::handlers::set_asset_handler;
 pub use crate::storage::store::{
-    count_collection_assets_store, delete_asset_store, delete_assets_store, get_asset_store,
-    get_content_chunks_store, list_assets_store,
+    count_assets_store, count_collection_assets_store, delete_asset_store, delete_assets_store,
+    get_asset_store, get_content_chunks_store, list_assets_store,
 };
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
@@ -116,6 +116,12 @@ pub fn del_doc(collection: CollectionKey, key: Key, doc: DelDoc) {
 #[query]
 pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<Doc> {
     satellite::list_docs(collection, filter)
+}
+
+#[doc(hidden)]
+#[query]
+pub fn count_docs(collection: CollectionKey, filter: ListParams) -> usize {
+    satellite::count_docs(collection, filter)
 }
 
 #[doc(hidden)]
@@ -317,6 +323,12 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
 }
 
 #[doc(hidden)]
+#[query]
+pub fn count_assets(collection: CollectionKey, filter: ListParams) -> usize {
+    satellite::count_assets(collection, filter)
+}
+
+#[doc(hidden)]
 #[update]
 pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
     satellite::del_asset(collection, full_path);
@@ -395,14 +407,14 @@ pub fn memory_size() -> MemorySize {
 macro_rules! include_satellite {
     () => {
         use junobuild_satellite::{
-            commit_asset_upload, count_collection_assets, count_collection_docs, del_asset, del_assets, del_controllers,
-            del_custom_domain, del_doc, del_docs, del_many_assets, del_many_docs, del_rule,
-            deposit_cycles, get_asset, get_auth_config, get_config, get_db_config, get_doc,
-            get_many_assets, get_many_docs, get_storage_config, http_request,
-            http_request_streaming_callback, init, init_asset_upload, list_assets,
-            list_controllers, list_custom_domains, list_docs, list_rules, memory_size,
-            post_upgrade, pre_upgrade, set_auth_config, set_controllers, set_custom_domain,
-            set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
+            commit_asset_upload, count_assets, count_collection_assets, count_collection_docs,
+            count_docs, del_asset, del_assets, del_controllers, del_custom_domain, del_doc,
+            del_docs, del_many_assets, del_many_docs, del_rule, deposit_cycles, get_asset,
+            get_auth_config, get_config, get_db_config, get_doc, get_many_assets, get_many_docs,
+            get_storage_config, http_request, http_request_streaming_callback, init,
+            init_asset_upload, list_assets, list_controllers, list_custom_domains, list_docs,
+            list_rules, memory_size, post_upgrade, pre_upgrade, set_auth_config, set_controllers,
+            set_custom_domain, set_db_config, set_doc, set_many_docs, set_rule, set_storage_config,
             upload_asset_chunk, version,
         };
 

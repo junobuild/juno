@@ -125,6 +125,24 @@ pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
     delete_assets_impl(&full_paths, collection, &rule)
 }
 
+/// List assets in a collection.
+///
+/// This function retrieves a list of assets from a collection's store based on the specified parameters.
+/// It returns a `Result<ListResults<AssetNoContent>, String>` where `Ok(ListResults)` contains the retrieved assets,
+/// or an error message as `Err(String)` if the operation encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to list the assets.
+/// - `filters`: A reference to `ListParams` containing the filter criteria for listing the assets.
+///
+/// # Returns
+/// - `Ok(ListResults<AssetNoContent>)`: Contains the list of retrieved assets, without their content, matching the filter criteria.
+/// - `Err(String)`: An error message if the operation fails.
+///
+/// This function lists assets in a Juno collection's store, applying the specified filter criteria to retrieve the assets.
+/// The returned list includes the assets without their content (`AssetNoContent`), which is useful for operations where only
+/// metadata or references are needed.
 pub fn list_assets_store(
     caller: Principal,
     collection: &CollectionKey,
@@ -133,6 +151,34 @@ pub fn list_assets_store(
     let controllers: Controllers = get_controllers();
 
     secure_list_assets_impl(caller, &controllers, collection, filters)
+}
+
+/// Count assets in a collection.
+///
+/// This function retrieves the count of assets from a collection's store based on the specified parameters.
+/// It returns a `Result<usize, String>` where `Ok(usize)` contains the count of assets matching the filter criteria,
+/// or an error message as `Err(String)` if the operation encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to count the assets.
+/// - `filters`: A reference to `ListParams` containing the filter criteria for counting the assets.
+///
+/// # Returns
+/// - `Ok(usize)`: Contains the count of assets matching the filter criteria.
+/// - `Err(String)`: An error message if the operation fails.
+///
+/// This function counts assets in a Juno collection's store by listing them and then determining the length of the result set.
+///
+/// # Note
+/// This implementation can be improved, as it currently relies on `list_assets_store` underneath, meaning that all assets matching the filter criteria are still read from the store. This might lead to unnecessary overhead, especially for large collections. Optimizing this function to count assets directly without retrieving them could enhance performance.
+pub fn count_assets_store(
+    caller: Principal,
+    collection: &CollectionKey,
+    filters: &ListParams,
+) -> Result<usize, String> {
+    let results = list_assets_store(caller, collection, filters)?;
+    Ok(results.items_length)
 }
 
 /// Get an asset from a collection's store.

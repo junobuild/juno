@@ -246,6 +246,34 @@ pub fn list_docs_store(
     secure_get_docs(caller, &controllers, collection, filter)
 }
 
+/// Count documents in a collection.
+///
+/// This function retrieves the count of documents from a collection's store based on the specified parameters.
+/// It returns a `Result<usize, String>` where `Ok(usize)` contains the count of documents matching the filter criteria,
+/// or an error message as `Err(String)` if the operation encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `collection`: A `CollectionKey` representing the collection from which to count the documents.
+/// - `filter`: A reference to `ListParams` containing the filter criteria for counting the documents.
+///
+/// # Returns
+/// - `Ok(usize)`: Contains the count of documents matching the filter criteria.
+/// - `Err(String)`: An error message if the operation fails.
+///
+/// This function counts documents in a Juno collection's store by listing them and then determining the length of the result set.
+///
+/// # Note
+/// This implementation can be improved, as it currently relies on `list_docs_store` underneath, meaning that all documents matching the filter criteria are still read from the store. This might lead to unnecessary overhead, especially for large collections. Optimizing this function to count documents directly without retrieving them could enhance performance.
+pub fn count_docs_store(
+    caller: Principal,
+    collection: CollectionKey,
+    filter: &ListParams,
+) -> Result<usize, String> {
+    let results = list_docs_store(caller, collection, filter)?;
+    Ok(results.items_length)
+}
+
 fn secure_get_docs(
     caller: Principal,
     controllers: &Controllers,

@@ -8,8 +8,9 @@ use crate::controllers::store::{
     set_controllers as set_controllers_store,
 };
 use crate::db::store::{
-    count_collection_docs_store, delete_doc_store, delete_docs_store, get_config_store as get_db_config_store,
-    get_doc_store, list_docs_store, set_config_store as set_db_config_store, set_doc_store,
+    count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
+    get_config_store as get_db_config_store, get_doc_store, list_docs_store,
+    set_config_store as set_db_config_store, set_doc_store,
 };
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
@@ -25,10 +26,10 @@ use crate::rules::store::{
 };
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
-    commit_batch_store, count_collection_assets_store, create_batch_store, create_chunk_store,
-    delete_asset_store, delete_assets_store, delete_domain_store, get_asset_store,
-    get_config_store as get_storage_config_store, get_custom_domains_store, list_assets_store,
-    set_config_store as set_storage_config_store, set_domain_store,
+    commit_batch_store, count_assets_store, count_collection_assets_store, create_batch_store,
+    create_chunk_store, delete_asset_store, delete_assets_store, delete_domain_store,
+    get_asset_store, get_config_store as get_storage_config_store, get_custom_domains_store,
+    list_assets_store, set_config_store as set_storage_config_store, set_domain_store,
 };
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::{Config, RulesType};
@@ -146,6 +147,17 @@ pub fn list_docs(collection: CollectionKey, filter: ListParams) -> ListResults<D
     let caller = caller();
 
     let result = list_docs_store(caller, collection, &filter);
+
+    match result {
+        Ok(value) => value,
+        Err(error) => trap(&error),
+    }
+}
+
+pub fn count_docs(collection: CollectionKey, filter: ListParams) -> usize {
+    let caller = caller();
+
+    let result = count_docs_store(caller, collection, &filter);
 
     match result {
         Ok(value) => value,
@@ -402,6 +414,17 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
     match result {
         Ok(result) => result,
         Err(error) => trap(&["Assets cannot be listed: ".to_string(), error].join("")),
+    }
+}
+
+pub fn count_assets(collection: CollectionKey, filter: ListParams) -> usize {
+    let caller = caller();
+
+    let result = count_assets_store(caller, &collection, &filter);
+
+    match result {
+        Ok(result) => result,
+        Err(error) => trap(&["Assets cannot be counted: ".to_string(), error].join("")),
     }
 }
 

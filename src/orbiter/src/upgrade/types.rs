@@ -1,10 +1,10 @@
 pub mod upgrade {
-    use std::collections::HashMap;
     use crate::memory::init_stable_state;
-    use crate::types::state::{StableState};
+    use crate::types::state::StableState;
     use candid::CandidType;
-    use serde::{Deserialize, Serialize};
     use junobuild_shared::types::state::{Controllers, SatelliteId, Timestamp, Version};
+    use serde::{Deserialize, Serialize};
+    use std::collections::HashMap;
 
     #[derive(Serialize, Deserialize)]
     pub struct UpgradeState {

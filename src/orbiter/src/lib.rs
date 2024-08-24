@@ -17,6 +17,9 @@ use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
     analytics_performance_metrics_web_vitals, analytics_track_events,
 };
+use crate::assert::config::{
+    assert_page_views_enabled, assert_performance_metrics_enabled, assert_track_events_enabled,
+};
 use crate::config::store::{
     del_satellite_config as del_satellite_config_store, get_satellite_configs,
     set_satellite_config as set_satellite_config_store,
@@ -41,6 +44,7 @@ use crate::types::interface::{
 use crate::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };
+use crate::upgrade::types::upgrade::UpgradeState;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
@@ -57,8 +61,6 @@ use junobuild_shared::types::interface::{
 use junobuild_shared::types::memory::Memory;
 use junobuild_shared::types::state::{ControllerScope, Controllers, SatelliteId};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
-use crate::assert::config::{assert_page_views_enabled, assert_performance_metrics_enabled, assert_track_events_enabled};
-use crate::upgrade::types::upgrade::UpgradeState;
 
 #[init]
 fn init() {
@@ -96,9 +98,11 @@ fn post_upgrade() {
     let upgrade_state: UpgradeState = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
 
-    STATE.with(|s| *s.borrow_mut() = State {
-        stable: upgrade_state.stable,
-        heap: HeapState::from(&upgrade_state.heap),
+    STATE.with(|s| {
+        *s.borrow_mut() = State {
+            stable: upgrade_state.stable,
+            heap: HeapState::from(&upgrade_state.heap),
+        }
     });
 }
 

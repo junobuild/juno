@@ -196,8 +196,10 @@ type UploadChunk = record {
 type UploadChunkResult = record { chunk_id : nat };
 service : () -> {
   commit_asset_upload : (CommitBatch) -> ();
+  count_assets : (text, ListParams) -> (nat64) query;
   count_collection_assets : (text) -> (nat64) query;
   count_collection_docs : (text) -> (nat64) query;
+  count_docs : (text, ListParams) -> (nat64) query;
   del_asset : (text, text) -> ();
   del_assets : (text) -> ();
   del_controllers : (DeleteControllersArgs) -> (

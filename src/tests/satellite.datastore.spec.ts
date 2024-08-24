@@ -1,5 +1,6 @@
 import type {
 	DbConfig,
+	ListParams,
 	_SERVICE as SatelliteActor,
 	SetRule
 } from '$declarations/satellite/satellite.did';
@@ -237,9 +238,9 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 
 			it('should list documents according created_at timestamps', async () => {
-				const { list_docs } = actor;
+				const { list_docs, count_docs } = actor;
 
-				const { items_length, items } = await list_docs(TEST_COLLECTION, {
+				const paramsCreatedAt: ListParams = {
 					matcher: toNullable(),
 					order: toNullable({
 						desc: false,
@@ -247,11 +248,15 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					}),
 					owner: toNullable(),
 					paginate: toNullable()
-				});
+				};
 
+				const { items_length, items } = await list_docs(TEST_COLLECTION, paramsCreatedAt);
 				expect(items_length).toBe(10n);
 
-				const { items_length: items_length_from } = await list_docs(TEST_COLLECTION, {
+				const countCreatedAt = await count_docs(TEST_COLLECTION, paramsCreatedAt);
+				expect(countCreatedAt).toBe(10n);
+
+				const paramsGreaterThan: ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -263,11 +268,18 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					order: toNullable(),
 					owner: toNullable(),
 					paginate: toNullable()
-				});
+				};
 
+				const { items_length: items_length_from } = await list_docs(
+					TEST_COLLECTION,
+					paramsGreaterThan
+				);
 				expect(items_length_from).toBe(5n);
 
-				const { items_length: items_length_to } = await list_docs(TEST_COLLECTION, {
+				const countGreaterThan = await count_docs(TEST_COLLECTION, paramsGreaterThan);
+				expect(countGreaterThan).toBe(5n);
+
+				const paramsLessThen: ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -279,11 +291,15 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					order: toNullable(),
 					owner: toNullable(),
 					paginate: toNullable()
-				});
+				};
 
+				const { items_length: items_length_to } = await list_docs(TEST_COLLECTION, paramsLessThen);
 				expect(items_length_to).toBe(4n);
 
-				const { items_length: items_length_between } = await list_docs(TEST_COLLECTION, {
+				const countLessThan = await count_docs(TEST_COLLECTION, paramsLessThen);
+				expect(countLessThan).toBe(4n);
+
+				const paramsBetween: ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -295,15 +311,22 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					order: toNullable(),
 					owner: toNullable(),
 					paginate: toNullable()
-				});
+				};
 
+				const { items_length: items_length_between } = await list_docs(
+					TEST_COLLECTION,
+					paramsBetween
+				);
 				expect(items_length_between).toBe(5n);
+
+				const countBetween = await count_docs(TEST_COLLECTION, paramsBetween);
+				expect(countBetween).toBe(5n);
 			});
 
 			it('should list documents according updated_at timestamps', async () => {
-				const { list_docs } = actor;
+				const { list_docs, count_docs } = actor;
 
-				const { items_length, items } = await list_docs(TEST_COLLECTION, {
+				const paramsUpdatedAt: ListParams = {
 					matcher: toNullable(),
 					order: toNullable({
 						desc: false,
@@ -311,11 +334,15 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					}),
 					owner: toNullable(),
 					paginate: toNullable()
-				});
+				};
 
+				const { items_length, items } = await list_docs(TEST_COLLECTION, paramsUpdatedAt);
 				expect(items_length).toBe(10n);
 
-				const { items_length: items_length_from } = await list_docs(TEST_COLLECTION, {
+				const countUpdatedAt = await count_docs(TEST_COLLECTION, paramsUpdatedAt);
+				expect(countUpdatedAt).toBe(10n);
+
+				const paramsGreaterThan: ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -327,11 +354,18 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					order: toNullable(),
 					owner: toNullable(),
 					paginate: toNullable()
-				});
+				};
 
+				const { items_length: items_length_from } = await list_docs(
+					TEST_COLLECTION,
+					paramsGreaterThan
+				);
 				expect(items_length_from).toBe(5n);
 
-				const { items_length: items_length_to } = await list_docs(TEST_COLLECTION, {
+				const countGreaterThan = await count_docs(TEST_COLLECTION, paramsGreaterThan);
+				expect(countGreaterThan).toBe(5n);
+
+				const paramsLessThan: ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -343,11 +377,15 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					order: toNullable(),
 					owner: toNullable(),
 					paginate: toNullable()
-				});
+				};
 
+				const { items_length: items_length_to } = await list_docs(TEST_COLLECTION, paramsLessThan);
 				expect(items_length_to).toBe(4n);
 
-				const { items_length: items_length_between } = await list_docs(TEST_COLLECTION, {
+				const countLessThan = await count_docs(TEST_COLLECTION, paramsLessThan);
+				expect(countLessThan).toBe(4n);
+
+				const paramsBetween: ListParams = {
 					matcher: toNullable({
 						key: toNullable(),
 						description: toNullable(),
@@ -359,9 +397,16 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					order: toNullable(),
 					owner: toNullable(),
 					paginate: toNullable()
-				});
+				};
 
+				const { items_length: items_length_between } = await list_docs(
+					TEST_COLLECTION,
+					paramsBetween
+				);
 				expect(items_length_between).toBe(5n);
+
+				const countBetween = await count_docs(TEST_COLLECTION, paramsBetween);
+				expect(countBetween).toBe(5n);
 			});
 		});
 

@@ -59,7 +59,7 @@ then
   ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata supported_certificate_versions -d "1,2" -v public
 fi
 
-gzip -c "${WASM_DIR}/${WASM_MODULE}" > "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz"
+gzip -c --no-name --force "${WASM_DIR}/${WASM_MODULE}" > "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz"
 
 mv "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz" "${DEPLOY_DIR}/${WASM_MODULE}.gz"
 

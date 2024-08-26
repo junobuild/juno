@@ -33,11 +33,28 @@ describe('Orbiter upgrade', () => {
 	});
 
 	const upgrade = async () => {
+		await upgradeVersion0_0_8();
+		await upgradeCurrent();
+	};
+
+	const upgradeCurrent = async () => {
 		await tick(pic);
 
 		await pic.upgradeCanister({
 			canisterId,
 			wasm: ORBITER_WASM_PATH,
+			sender: controller.getPrincipal()
+		});
+	};
+
+	const upgradeVersion0_0_8 = async () => {
+		await tick(pic);
+
+		const destination = await downloadOrbiter('0.0.8');
+
+		await pic.upgradeCanister({
+			canisterId,
+			wasm: destination,
 			sender: controller.getPrincipal()
 		});
 	};

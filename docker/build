@@ -158,7 +158,7 @@ function build_canister() {
         ic-wasm "$canister.wasm" -o "$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public
       fi
 
-      gzip "./$canister.wasm"
+      gzip --no-name --force "./$canister.wasm"
     fi
 }
 

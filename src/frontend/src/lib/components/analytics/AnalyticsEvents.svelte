@@ -5,7 +5,7 @@
 	export let trackEvents: AnalyticsTrackEvents;
 
 	let total: Array<[string, number]>;
-	$: ({ total } = trackEvents);
+	$: total = trackEvents.total.sort(([keyA, _], [keyB, __]) => keyA.localeCompare(keyB));
 </script>
 
 <div class="table-container">

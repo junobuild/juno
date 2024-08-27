@@ -11,7 +11,6 @@ mod msg;
 mod serializers;
 mod store;
 mod types;
-mod upgrade;
 
 use crate::analytics::{
     analytics_page_views_clients, analytics_page_views_metrics, analytics_page_views_top_10,
@@ -44,7 +43,6 @@ use crate::types::interface::{
 use crate::types::state::{
     AnalyticKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs, State, TrackEvent,
 };
-use crate::upgrade::types::upgrade::UpgradeState;
 use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::trap;
@@ -95,15 +93,10 @@ fn post_upgrade() {
     let memory: Memory = get_memory_upgrades();
     let state_bytes = read_post_upgrade(&memory);
 
-    let upgrade_state: UpgradeState = from_reader(&*state_bytes)
+    let state: State = from_reader(&*state_bytes)
         .expect("Failed to decode the state of the orbiter in post_upgrade hook.");
 
-    STATE.with(|s| {
-        *s.borrow_mut() = State {
-            stable: upgrade_state.stable,
-            heap: HeapState::from(&upgrade_state.heap),
-        }
-    });
+    STATE.with(|s| *s.borrow_mut() = state);
 }
 
 /// Page views

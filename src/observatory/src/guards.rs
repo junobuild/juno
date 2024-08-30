@@ -5,6 +5,7 @@ use junobuild_shared::controllers::{
     is_controller as is_controller_impl,
 };
 use junobuild_shared::types::state::Controllers;
+use junobuild_shared::utils::principal_not_anonymous;
 
 pub fn caller_is_admin_controller() -> Result<(), String> {
     if is_admin_controller() {
@@ -21,6 +22,16 @@ pub fn caller_can_execute_cron_jobs() -> Result<(), String> {
         Ok(())
     } else {
         Err("Caller is not allowed to read.".to_string())
+    }
+}
+
+pub fn caller_is_not_anonymous() -> Result<(), String> {
+    let caller = caller();
+
+    if principal_not_anonymous(caller) {
+        Ok(())
+    } else {
+        Err("Anonymous caller is not allowed.".to_string())
     }
 }
 

@@ -6,6 +6,7 @@ on:
       - 'src/satellite/**'
       - 'src/orbiter/**'
       - 'src/console/**'
+      - 'src/observatory/**'
       - 'src/mission_control/**'
       - 'src/libs/**'
       - 'src/tests/**'
@@ -38,6 +39,10 @@ jobs:
           - name: console
             wasm: console.wasm.gz
             target: scratch_console
+
+          - name: observatory
+            wasm: observatory.wasm.gz
+            target: scratch_observatory
 
           - name: mission_control
             wasm: mission_control.wasm.gz
@@ -94,6 +99,12 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: console.wasm.gz
+          path: .
+
+      - name: Download observatory.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: observatory.wasm.gz
           path: .
 
       - name: Download mission_control.wasm.gz

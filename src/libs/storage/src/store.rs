@@ -30,6 +30,7 @@ use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
+use std::ptr::addr_of;
 
 ///
 /// Upload batch and chunks
@@ -88,7 +89,7 @@ fn create_batch_impl(
         };
 
         insert_runtime_batch(
-            &NEXT_BATCH_ID,
+            &*addr_of!(NEXT_BATCH_ID),
             Batch {
                 key,
                 reference_id,
@@ -136,7 +137,7 @@ pub fn create_chunk(
                 NEXT_CHUNK_ID += 1;
 
                 insert_runtime_chunk(
-                    &NEXT_CHUNK_ID,
+                    &*addr_of!(NEXT_CHUNK_ID),
                     Chunk {
                         batch_id,
                         content,

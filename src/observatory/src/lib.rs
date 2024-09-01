@@ -9,7 +9,9 @@ mod types;
 use crate::console::assert_mission_control_center;
 use crate::constants::CRON_INTERVAL_NS;
 use crate::cron_jobs::cron_jobs;
-use crate::guards::{caller_can_execute_cron_jobs, caller_is_not_anonymous, caller_is_admin_controller};
+use crate::guards::{
+    caller_can_execute_cron_jobs, caller_is_admin_controller, caller_is_not_anonymous,
+};
 use crate::reports::collect_statuses as collect_statuses_report;
 use crate::store::{
     delete_controllers, get_cron_tab as get_cron_tab_store, get_statuses as get_statuses_store,

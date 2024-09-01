@@ -12,11 +12,11 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::Permission;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::list::{filter_timestamps, matcher_regex};
+use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::state::{Controllers, Timestamp, UserId, Version};
 use regex::Regex;
 use std::collections::HashMap;
-use junobuild_shared::types::core::Blob;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (asset.key.full_path.clone(), AssetNoContent::from(asset))

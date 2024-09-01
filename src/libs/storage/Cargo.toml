@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-storage"
-version = "0.0.7"
+version = "0.0.7-patch.1"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true

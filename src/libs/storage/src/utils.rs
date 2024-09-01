@@ -16,6 +16,7 @@ use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::state::{Controllers, Timestamp, UserId, Version};
 use regex::Regex;
 use std::collections::HashMap;
+use junobuild_shared::types::core::Blob;
 
 pub fn map_asset_no_content(asset: &Asset) -> (FullPath, AssetNoContent) {
     (asset.key.full_path.clone(), AssetNoContent::from(asset))
@@ -131,10 +132,9 @@ pub fn map_content_type_headers(content_type: &str) -> Vec<HeaderField> {
     )]
 }
 
-pub fn map_content_encoding(content: &str) -> AssetEncoding {
+pub fn map_content_encoding(content: &Blob) -> AssetEncoding {
     let max_chunk_size = 1_900_000; // Max 1.9 MB per chunk
     let chunks = content
-        .as_bytes()
         .chunks(max_chunk_size)
         .map(|chunk| chunk.to_vec())
         .collect();
@@ -150,7 +150,7 @@ pub fn create_asset_with_content(
 ) -> Asset {
     let mut asset: Asset = create_empty_asset(headers, existing_asset, key);
 
-    let encoding = map_content_encoding(content);
+    let encoding = map_content_encoding(&content.as_bytes().to_vec());
 
     asset
         .encodings

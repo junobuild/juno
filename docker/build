@@ -92,11 +92,11 @@ if [ ${#CANISTER} -eq 0 ]; then
 fi
 
 # Checking for dependencies
-if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.3.6" ]]
+if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.8.5" ]]
 then
-    echo "could not find ic-wasm 0.3.6"
-    echo "ic-wasm version 0.3.6 is needed, please run the following command:"
-    echo "  cargo install ic-wasm --version 0.3.6"
+    echo "could not find ic-wasm 0.8.5"
+    echo "ic-wasm version 0.8.5 is needed, please run the following command:"
+    echo "  cargo install ic-wasm --version 0.8.5"
     exit 1
 fi
 

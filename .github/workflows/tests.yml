@@ -10,7 +10,7 @@ on:
       - 'src/mission_control/**'
       - 'src/libs/**'
       - 'src/tests/**'
-      - 'rust-toolchain.toml',
+      - 'rust-toolchain.toml'
       - 'Cargo.tml'
 
 jobs:

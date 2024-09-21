@@ -12,6 +12,7 @@ on:
       - 'src/tests/**'
       - 'rust-toolchain.toml'
       - 'Cargo.tml'
+      - 'docker/**'
 
 jobs:
   docker-build-base:

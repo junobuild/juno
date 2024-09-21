@@ -2,7 +2,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Principal } from '@dfinity/principal';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { onMount } from 'svelte';
 	import { satellitesStore } from '$lib/stores/satellite.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satelliteName } from '$lib/utils/satellite.utils';

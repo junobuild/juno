@@ -1,22 +1,19 @@
+import { AccountIdentifier } from '@dfinity/ledger-icp';
 import { IcrcLedgerCanister } from '@dfinity/ledger-icrc';
-import { icAgent, localAgent } from './actor.mjs';
-import { getIdentity } from './console.config.utils.mjs';
+import { icAnonymousAgent, localAgent } from './actor.mjs';
 import { CONSOLE_ID, LEDGER_ID } from './constants.mjs';
-import { accountIdentifier } from './ledger.utils.mjs';
 import { targetMainnet } from './utils.mjs';
 
-const getBalance = async (mainnet, console_) => {
-	const agent = await (mainnet ? icAgent : localAgent)();
+const getBalance = async (mainnet) => {
+	const agent = await (mainnet ? icAnonymousAgent : localAgent)();
 
 	const { balance } = IcrcLedgerCanister.create({
 		agent,
 		canisterId: LEDGER_ID
 	});
 
-	const owner = console_ ? CONSOLE_ID : getIdentity(mainnet).getPrincipal();
-
 	const e8sBalance = await balance({
-		owner,
+		owner: CONSOLE_ID,
 		certified: false
 	});
 
@@ -25,12 +22,14 @@ const getBalance = async (mainnet, console_) => {
 
 	console.log(formatE8sICP(e8sBalance), '|', e8sBalance);
 
-	const identifier = await accountIdentifier(mainnet, owner);
+	const identifier = AccountIdentifier.fromPrincipal({
+		principal: CONSOLE_ID,
+		subAccount: undefined
+	});
 
 	console.log(identifier.toHex());
 };
 
 const mainnet = targetMainnet();
-const console_ = process.argv.find((arg) => arg.indexOf(`--console`) > -1) !== undefined;
 
-await getBalance(mainnet, console_);
+await getBalance(mainnet);

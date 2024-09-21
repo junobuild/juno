@@ -1,4 +1,4 @@
-import pkgAgent from '@dfinity/agent';
+import pkgAgent, { AnonymousIdentity } from '@dfinity/agent';
 import pkgPrincipal from '@dfinity/principal';
 import { idlFactory } from '../src/declarations/console/console.factory.did.mjs';
 import { idlFactory as icIdlFactory } from '../src/declarations/ic/ic.factory.did.mjs';
@@ -17,6 +17,10 @@ export const icAgent = async () => {
 	console.log('IC identity:', identity.getPrincipal().toText());
 
 	return new HttpAgent({ identity, fetch, host: 'https://icp0.io' });
+};
+
+export const icAnonymousAgent = async () => {
+	return new HttpAgent({ identity: new AnonymousIdentity(), fetch, host: 'https://icp0.io' });
 };
 
 export const localAgent = async () => {

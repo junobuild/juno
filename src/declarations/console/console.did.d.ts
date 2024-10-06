@@ -248,7 +248,7 @@ export interface _SERVICE {
 	>;
 	init_asset_upload: ActorMethod<[InitAssetKey, bigint], InitUploadResult>;
 	init_proposal: ActorMethod<[ProposalType], [bigint, Proposal]>;
-	init_user_mission_control_center: ActorMethod<[], MissionControl>;
+	init_user_mission_control_center: ActorMethod<[[] | [string]], MissionControl>;
 	list_assets: ActorMethod<[string, ListParams], ListResults>;
 	list_custom_domains: ActorMethod<[], Array<[string, CustomDomain]>>;
 	list_payments: ActorMethod<[], Array<[bigint, Payment]>>;

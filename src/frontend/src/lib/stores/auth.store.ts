@@ -5,6 +5,7 @@ import {
 	DEV,
 	INTERNET_IDENTITY_CANISTER_ID
 } from '$lib/constants/constants';
+import type { OptionInvitationCode } from '$lib/types/console';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { createAuthClient } from '$lib/utils/auth.utils';
 import { popupCenter } from '$lib/utils/window.utils';
@@ -13,12 +14,14 @@ import { derived, writable, type Readable } from 'svelte/store';
 
 export interface AuthStoreData {
 	identity: OptionIdentity;
+	invitationCode: OptionInvitationCode;
 }
 
 let authClient: AuthClient | undefined | null;
 
 export interface AuthSignInParams {
 	domain?: 'internetcomputer.org' | 'ic0.app';
+	invitationCode?: string;
 }
 
 export interface AuthStore extends Readable<AuthStoreData> {
@@ -29,7 +32,8 @@ export interface AuthStore extends Readable<AuthStoreData> {
 
 const initAuthStore = (): AuthStore => {
 	const { subscribe, set, update } = writable<AuthStoreData>({
-		identity: undefined
+		identity: undefined,
+		invitationCode: undefined
 	});
 
 	return {
@@ -40,11 +44,12 @@ const initAuthStore = (): AuthStore => {
 			const isAuthenticated: boolean = await authClient.isAuthenticated();
 
 			set({
-				identity: isAuthenticated ? authClient.getIdentity() : null
+				identity: isAuthenticated ? authClient.getIdentity() : null,
+				invitationCode: undefined
 			});
 		},
 
-		signIn: ({ domain }: AuthSignInParams) =>
+		signIn: ({ invitationCode, domain }: AuthSignInParams) =>
 			// eslint-disable-next-line no-async-promise-executor
 			new Promise<void>(async (resolve, reject) => {
 				authClient = authClient ?? (await createAuthClient());
@@ -59,7 +64,8 @@ const initAuthStore = (): AuthStore => {
 					onSuccess: () => {
 						update((state: AuthStoreData) => ({
 							...state,
-							identity: authClient?.getIdentity()
+							identity: authClient?.getIdentity(),
+							invitationCode
 						}));
 
 						resolve();
@@ -80,7 +86,8 @@ const initAuthStore = (): AuthStore => {
 
 			update((state: AuthStoreData) => ({
 				...state,
-				identity: null
+				identity: null,
+				invitationCode: null
 			}));
 		}
 	};

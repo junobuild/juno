@@ -28,7 +28,7 @@
 		displayAndCleanLogoutMsg();
 	};
 
-	const initUser = async ({ identity }: AuthStoreData) => {
+	const initUser = async ({ identity, invitationCode }: AuthStoreData) => {
 		if (isNullish(identity)) {
 			return;
 		}
@@ -37,6 +37,7 @@
 			// Poll to init mission control center
 			await initMissionControl({
 				identity,
+				invitationCode,
 				onInitMissionControlSuccess: async (missionControlId) =>
 					missionControlStore.set(missionControlId)
 			});

@@ -27,7 +27,7 @@
 	<div class="overview">
 		<h1>{title}</h1>
 
-		<p>{$i18n.sign_in.future}</p>
+		<p>{$i18n.sign_in.deprecated}</p>
 	</div>
 
 	<div class="sign-in">
@@ -42,6 +42,12 @@
 
 <style lang="scss">
 	@use '../../../lib/styles/mixins/media';
+
+	.overview {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+	}
 
 	.container {
 		display: flex;
@@ -61,12 +67,15 @@
 		--bigger-title: 1;
 		font-size: calc(var(--font-size-h1) * var(--bigger-title));
 
-		max-width: 470px;
-
 		@include media.min-width(large) {
 			--bigger-title: 1.4;
 			margin-top: var(--padding-8x);
 		}
+	}
+
+	h1,
+	p {
+		max-width: 470px;
 	}
 
 	.sign-in {

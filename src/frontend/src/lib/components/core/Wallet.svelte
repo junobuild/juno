@@ -6,6 +6,7 @@
 	import type { WalletWorker } from '$lib/services/worker.wallet.services';
 	import type { Principal } from '@dfinity/principal';
 	import { onDestroy, onMount } from 'svelte';
+    import {emit} from "$lib/utils/events.utils";
 
 	export let missionControlId: Principal;
 	export let balance: bigint | undefined = undefined;
@@ -20,6 +21,11 @@
 
 		balance = data.wallet.balance;
 		transactions = [...JSON.parse(data.wallet.newTransactions, jsonReviver), ...transactions];
+
+        emit({
+            message: "junoSyncBalance",
+            detail: balance
+        })
 	};
 
 	const initWorker = async () => {

@@ -17,6 +17,7 @@
 	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
+	import SendTokenModal from "$lib/components/modals/SendTokenModal.svelte";
 
 	let modal: JunoModal | undefined = undefined;
 
@@ -87,4 +88,8 @@
 
 {#if modal?.type === 'transfer_cycles_mission_control' && nonNullish(modal.detail)}
 	<MissionControlTransferCyclesModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'send_token' && nonNullish(modal.detail)}
+	<SendTokenModal on:junoClose={close} detail={modal.detail} />
 {/if}

@@ -18,6 +18,7 @@
 	import { fade } from 'svelte/transition';
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import Wallet from '$lib/components/core/Wallet.svelte';
+	import {emit} from "$lib/utils/events.utils";
 
 	export let missionControlId: Principal;
 
@@ -95,6 +96,22 @@
 	 */
 
 	onMount(async () => await loadCredits());
+
+	/**
+	 * Actions
+	 */
+
+	const openModal = () => {
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'send_token',
+				detail: {
+					balance
+				}
+			}
+		});
+	}
 </script>
 
 {#if $authSignedInStore}
@@ -138,6 +155,8 @@
 				</div>
 			</div>
 		</div>
+
+		<button on:click={openModal}>{$i18n.wallet.send}</button>
 
 		<Transactions
 			{transactions}

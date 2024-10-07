@@ -210,6 +210,10 @@ interface I18nWallet {
 	memo_sent: string;
 	export_title: string;
 	export_info: string;
+	send: string;
+	send_information: string;
+	destination: string;
+	destination_placeholder: string;
 }
 
 interface I18nAuthentication {

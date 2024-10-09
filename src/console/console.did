@@ -224,4 +224,5 @@ service : () -> {
   update_rate_config : (SegmentType, RateConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
+  withdraw_payments : () -> (nat64);
 }

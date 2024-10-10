@@ -42,7 +42,7 @@
 	<div class="content">
 		<h3>Redeem code</h3>
 
-		<p>Enter your code to sign in and join Juno.</p>
+		<p>Enter your code below, and sign in to join Juno.</p>
 
 		<input
 			bind:value={invitationCode}

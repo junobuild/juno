@@ -47,12 +47,33 @@ pub async fn transfer_payment(
     amount: Tokens,
     fee: Tokens,
 ) -> CallResult<TransferResult> {
+    let account_identifier: AccountIdentifier = principal_to_account_identifier(to, to_sub_account);
+
+    transfer_token(account_identifier, memo, amount, fee).await
+}
+
+/// Transfers tokens to a specified account identified.
+///
+/// # Arguments
+/// * `account_identifier` - The account identifier of the destination.
+/// * `memo` - A memo for the transaction.
+/// * `amount` - The amount of tokens to transfer.
+/// * `fee` - The transaction fee.
+///
+/// # Returns
+/// A result containing the transfer result or an error message.
+pub async fn transfer_token(
+    account_identifier: AccountIdentifier,
+    memo: Memo,
+    amount: Tokens,
+    fee: Tokens,
+) -> CallResult<TransferResult> {
     let args = TransferArgs {
         memo,
         amount,
         fee,
         from_subaccount: Some(SUB_ACCOUNT),
-        to: principal_to_account_identifier(to, to_sub_account),
+        to: account_identifier,
         created_at_time: None,
     };
 

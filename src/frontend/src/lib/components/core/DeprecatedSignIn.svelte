@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { signIn } from '$lib/services/auth.services';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { createEventDispatcher } from 'svelte';
 

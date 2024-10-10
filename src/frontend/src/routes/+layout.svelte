@@ -7,10 +7,10 @@
 	import { initAuthWorker } from '$lib/services/worker.auth.services';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import Overlays from '$lib/components/core/Overlays.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
+	import { displayAndCleanLogoutMsg, errorSignOut } from '$lib/services/auth.services';
+	import { errorDetailToString } from '$lib/utils/error.utils';
 
 	const init = async () => await Promise.all([i18n.init(), syncAuthStore()]);
 
@@ -42,13 +42,12 @@
 					missionControlStore.set(missionControlId)
 			});
 		} catch (err: unknown) {
-			toasts.error({
-				text: `Error initializing the user.`,
-				detail: err
-			});
+			const errMsg = errorDetailToString(err);
 
 			// There was an error so, we sign the user out otherwise skeleton and other spinners will be displayed forever
-			await signOut();
+			await errorSignOut(
+				`Error initializing the user.${nonNullish(errMsg) ? ` | Stacktrace: ${errMsg}` : ''}`
+			);
 		}
 	};
 

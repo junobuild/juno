@@ -105,7 +105,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'send_token',
+				type: 'send_tokens',
 				detail: {
 					balance
 				}

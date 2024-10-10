@@ -70,7 +70,7 @@ export interface JunoModalEditCanisterSettingsDetail {
 	settings: CanisterSettings;
 }
 
-export interface JunoModalSendTokenDetail {
+export interface JunoModalSendTokensDetail {
 	balance: bigint | undefined;
 }
 
@@ -82,7 +82,7 @@ export type JunoModalDetail =
 	| JunoModalCreateControllerDetail
 	| JunoModalCyclesSatelliteDetail
 	| JunoModalDeleteSatelliteDetail
-	| JunoModalSendTokenDetail;
+	| JunoModalSendTokensDetail;
 
 export interface JunoModal {
 	type:
@@ -102,6 +102,6 @@ export interface JunoModal {
 		| 'upgrade_satellite'
 		| 'upgrade_mission_control'
 		| 'upgrade_orbiter'
-		| 'send_token';
+		| 'send_tokens';
 	detail?: JunoModalDetail;
 }

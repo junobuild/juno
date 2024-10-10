@@ -6,6 +6,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalSendTokenDetail } from '$lib/types/modal';
 	import WalletForm from '$lib/components/wallet/WalletForm.svelte';
+	import WalletReview from '$lib/components/wallet/WalletReview.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -13,6 +14,9 @@
 	$: ({ balance } = detail as JunoModalSendTokenDetail);
 
 	let steps: 'form' | 'review' | 'in_progress' | 'ready' | 'error';
+
+	let destination = '';
+	let amount: string | undefined;
 </script>
 
 <svelte:window on:junoSyncBalance={({ detail: syncBalance }) => (balance = syncBalance)} />
@@ -28,8 +32,16 @@
 			<SpinnerModal>
 				<p>{$i18n.canisters.upgrade_in_progress}</p>
 			</SpinnerModal>
-		{:else if steps === 'review'}{:else}
-			<WalletForm {balance} />
+		{:else if steps === 'review'}
+			<WalletReview
+				missionControlId={$missionControlStore}
+				{balance}
+				bind:amount
+				bind:destination
+				on:junoBack={() => (steps = 'form')}
+			/>
+		{:else}
+			<WalletForm {balance} bind:amount bind:destination on:junoReview={() => (steps = 'review')} />
 		{/if}
 	</Modal>
 {/if}

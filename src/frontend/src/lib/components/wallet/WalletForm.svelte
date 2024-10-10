@@ -7,14 +7,16 @@
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { ICPToken, isNullish, TokenAmountV2 } from '@dfinity/utils';
-	import { FromStringToTokenError } from '@dfinity/utils';
+	import { isNullish, TokenAmountV2 } from '@dfinity/utils';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+	import { createEventDispatcher } from 'svelte';
+	import { amountToICPToken } from '$lib/utils/token.utils';
 
 	export let balance: bigint | undefined;
+	export let destination = '';
+	export let amount: string | undefined;
 
-	let destination = '';
-	let amount: string | undefined;
+	const dispatch = createEventDispatcher();
 
 	const onSubmit = async () => {
 		if (isNullish(balance) || balance === 0n) {
@@ -38,9 +40,9 @@
 			return;
 		}
 
-		const tokenAmount = TokenAmountV2.fromString({ token: ICPToken, amount });
+		const tokenAmount = amountToICPToken(amount);
 
-		if (Object.values(FromStringToTokenError).includes(tokenAmount)) {
+		if (isNullish(tokenAmount)) {
 			toasts.error({
 				text: $i18n.errors.invalid_amount
 			});
@@ -53,6 +55,8 @@
 			});
 			return;
 		}
+
+		dispatch('junoReview');
 	};
 </script>
 

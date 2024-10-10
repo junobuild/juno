@@ -122,6 +122,13 @@
 			<div class="columns-3">
 				<div>
 					<Value>
+						<svelte:fragment slot="label">{$i18n.wallet.wallet_id}</svelte:fragment>
+						<p>
+							<Identifier shorten={false} identifier={missionControlId.toText()} />
+						</p>
+					</Value>
+
+					<Value>
 						<svelte:fragment slot="label">{$i18n.wallet.account_identifier}</svelte:fragment>
 						<p>
 							<Identifier identifier={accountIdentifier?.toHex() ?? ''} />

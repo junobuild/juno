@@ -48,6 +48,7 @@ interface I18nCore {
 	open_website: string;
 	file: string;
 	review: string;
+	confirm: string;
 }
 
 interface I18nCanisters {
@@ -217,6 +218,10 @@ interface I18nWallet {
 	destination_placeholder: string;
 	icp_amount: string;
 	amount_placeholder: string;
+	wallet_id: string;
+	sending: string;
+	fee: string;
+	review_and_confirm: string;
 }
 
 interface I18nAuthentication {

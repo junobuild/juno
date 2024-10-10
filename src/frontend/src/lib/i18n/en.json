@@ -44,7 +44,8 @@
 		"reload": "Reload",
 		"open_website": "Open Juno website and documentation",
 		"file": "File",
-		"review": "Review"
+		"review": "Review",
+		"confirm": "Confirm"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -208,7 +209,11 @@
 		"destination": "Destination",
 		"destination_placeholder": "Enter destination address",
 		"icp_amount": "Amount (ICP)",
-		"amount_placeholder": "Enter an amount"
+		"amount_placeholder": "Enter an amount",
+		"wallet_id": "Wallet ID",
+		"sending": "Sending",
+		"fee": "Fee",
+		"review_and_confirm": "Review the details below and confirm to proceed with your transaction."
 	},
 	"authentication": {
 		"title": "Authentication",

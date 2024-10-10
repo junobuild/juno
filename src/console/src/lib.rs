@@ -155,11 +155,11 @@ fn list_user_mission_control_centers() -> MissionControls {
 }
 
 #[update]
-async fn init_user_mission_control_center() -> MissionControl {
+async fn init_user_mission_control_center(invitation_code: Option<String>) -> MissionControl {
     let caller = caller();
     let console = id();
 
-    init_user_mission_control(&console, &caller)
+    init_user_mission_control(&console, &caller, &invitation_code)
         .await
         .unwrap_or_else(|e| trap(&e))
 }

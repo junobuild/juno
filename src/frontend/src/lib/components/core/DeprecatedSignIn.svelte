@@ -4,25 +4,18 @@
 	import { createEventDispatcher } from 'svelte';
 
 	const dispatch = createEventDispatcher();
-
-	const doSignIn = async (domain: 'internetcomputer.org' | 'ic0.app') => {
-		dispatch('junoSignIn');
-		await signIn({ domain });
-	};
 </script>
 
 <p class="sign-in-now">
 	Juno defaults to
-	<button
-		class="text action"
-		on:click={async () => await doSignIn('internetcomputer.org')}
-		disabled={$isBusy}>internetcomputer.org</button
+	<button class="text action" on:click={() => dispatch('junoSignIn')} disabled={$isBusy}
+		>internetcomputer.org</button
 	> for authentication.
 </p>
 
 <p>
 	Alternatively, use the legacy method at
-	<button class="text action" on:click={async () => await doSignIn('ic0.app')} disabled={$isBusy}
+	<button class="text action" on:click={() => dispatch('junoSignInDeprecated')} disabled={$isBusy}
 		>ic0.app</button
 	>.
 </p>

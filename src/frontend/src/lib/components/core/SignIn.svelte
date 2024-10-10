@@ -4,6 +4,7 @@
 	import DeprecatedSignIn from '$lib/components/core/DeprecatedSignIn.svelte';
 	import IconICMonochrome from '$lib/components/icons/IconICMonochrome.svelte';
 	import { signIn } from '$lib/services/auth.services';
+	import Container from '$lib/components/ui/Container.svelte';
 
 	let quotes: string[];
 	$: quotes = [
@@ -21,68 +22,24 @@
 
 	let title: string;
 	$: title = quotes[Math.floor(Math.random() * quotes.length)];
+
+	const doSignIn = async (domain?: 'internetcomputer.org' | 'ic0.app') => {
+		await signIn({ domain });
+	};
 </script>
 
-<div class="container">
-	<div class="overview">
-		<h1>{title}</h1>
-
-		<p>{$i18n.sign_in.deprecated}</p>
-	</div>
-
-	<div class="sign-in">
-		<button on:click={async () => await signIn({})} disabled={$isBusy}
+<Container>
+	{$i18n.sign_in.deprecated}
+	<svelte:fragment slot="title">{title}</svelte:fragment>
+	<svelte:fragment slot="actions">
+		<button on:click={async () => await doSignIn()} disabled={$isBusy}
 			><IconICMonochrome size="20px" />
 			<span>{$i18n.sign_in.internet_identity}</span></button
 		>
 
-		<DeprecatedSignIn />
-	</div>
-</div>
-
-<style lang="scss">
-	@use '../../../lib/styles/mixins/media';
-
-	.overview {
-		display: flex;
-		flex-direction: column;
-		align-items: center;
-	}
-
-	.container {
-		display: flex;
-		flex-direction: column;
-		justify-content: center;
-		align-items: center;
-
-		text-align: center;
-
-		min-height: calc(100vh - var(--header-height) - var(--footer-height) - var(--padding-8x));
-	}
-
-	h1 {
-		color: var(--color-primary);
-		padding: var(--padding-2x) 0 var(--padding);
-
-		--bigger-title: 1;
-		font-size: calc(var(--font-size-h1) * var(--bigger-title));
-
-		@include media.min-width(large) {
-			--bigger-title: 1.4;
-			margin-top: var(--padding-8x);
-		}
-	}
-
-	h1,
-	p {
-		max-width: 470px;
-	}
-
-	.sign-in {
-		padding: var(--padding) 0 0;
-	}
-
-	button {
-		font-size: var(--font-size-small);
-	}
-</style>
+		<DeprecatedSignIn
+			on:junoSignIn={async () => await doSignIn('internetcomputer.org')}
+			on:junoSignInDeprecated={async () => await doSignIn('ic0.app')}
+		/>
+	</svelte:fragment>
+</Container>

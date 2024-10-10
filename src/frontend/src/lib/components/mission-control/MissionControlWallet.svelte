@@ -18,7 +18,7 @@
 	import { fade } from 'svelte/transition';
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import Wallet from '$lib/components/core/Wallet.svelte';
-	import {emit} from "$lib/utils/events.utils";
+	import { emit } from '$lib/utils/events.utils';
 
 	export let missionControlId: Principal;
 
@@ -111,7 +111,7 @@
 				}
 			}
 		});
-	}
+	};
 </script>
 
 {#if $authSignedInStore}
@@ -156,7 +156,9 @@
 			</div>
 		</div>
 
-		<button on:click={openModal}>{$i18n.wallet.send}</button>
+		{#if balance > 0n}
+			<button in:fade on:click={openModal}>{$i18n.wallet.send}</button>
+		{/if}
 
 		<Transactions
 			{transactions}

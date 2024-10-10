@@ -43,7 +43,8 @@
 		"refresh": "Refresh",
 		"reload": "Reload",
 		"open_website": "Open Juno website and documentation",
-		"file": "File"
+		"file": "File",
+		"review": "Review"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -205,7 +206,9 @@
 		"send": "Send",
 		"send_information": "Send tokens securely to any address. Your wallet currently holds <strong>{0}</strong> ICP.",
 		"destination": "Destination",
-		"destination_placeholder": "Enter destination address"
+		"destination_placeholder": "Enter destination address",
+		"icp_amount": "Amount (ICP)",
+		"amount_placeholder": "Enter an amount"
 	},
 	"authentication": {
 		"title": "Authentication",
@@ -415,7 +418,11 @@
 		"no_file_selected_for_upload": "No file was selected for the upload.",
 		"upload_error": "Unexpected error(s) while uploading the file.",
 		"no_collection_for_upload": "Unexpected error. No collection is selected for the upload.",
-		"invalid_email": "Please enter a valid email address."
+		"invalid_email": "Please enter a valid email address.",
+		"invalid_destination": "Please enter a valid ICP or ICRC destination address.",
+		"empty_amount": "Please enter an amount for the transfer.",
+		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",
+		"empty_balance": "Your wallet does not have any available funds."
 	},
 	"document": {
 		"owner": "Owner",

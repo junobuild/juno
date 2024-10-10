@@ -17,7 +17,7 @@
 	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
-	import SendTokenModal from "$lib/components/modals/SendTokenModal.svelte";
+	import SendTokenModal from '$lib/components/modals/SendTokenModal.svelte';
 
 	let modal: JunoModal | undefined = undefined;
 

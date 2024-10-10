@@ -4,11 +4,8 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		JunoModalDetail,
-		JunoModalSendTokenDetail
-	} from '$lib/types/modal';
-    import WalletForm from "$lib/components/wallet/WalletForm.svelte";
+	import type { JunoModalDetail, JunoModalSendTokenDetail } from '$lib/types/modal';
+	import WalletForm from '$lib/components/wallet/WalletForm.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -18,7 +15,7 @@
 	let steps: 'form' | 'review' | 'in_progress' | 'ready' | 'error';
 </script>
 
-<svelte:window on:junoSyncBalance={({ detail: syncBalance }) => balance = syncBalance} />
+<svelte:window on:junoSyncBalance={({ detail: syncBalance }) => (balance = syncBalance)} />
 
 {#if nonNullish($missionControlStore)}
 	<Modal on:junoClose>

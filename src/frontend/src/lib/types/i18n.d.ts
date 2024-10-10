@@ -47,6 +47,7 @@ interface I18nCore {
 	reload: string;
 	open_website: string;
 	file: string;
+	review: string;
 }
 
 interface I18nCanisters {
@@ -214,6 +215,8 @@ interface I18nWallet {
 	send_information: string;
 	destination: string;
 	destination_placeholder: string;
+	icp_amount: string;
+	amount_placeholder: string;
 }
 
 interface I18nAuthentication {
@@ -432,6 +435,10 @@ interface I18nErrors {
 	upload_error: string;
 	no_collection_for_upload: string;
 	invalid_email: string;
+	invalid_destination: string;
+	empty_amount: string;
+	invalid_amount: string;
+	empty_balance: string;
 }
 
 interface I18nDocument {

@@ -5,6 +5,20 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Container from '$lib/components/ui/Container.svelte';
+	import { replaceHistory } from '$lib/utils/route.utils';
+	import { onMount } from 'svelte';
+
+	export let invitationCode: string;
+
+	const cleanUpInviteUrl = () => {
+		const url: URL = new URL(window.location.href);
+
+		url.searchParams.delete('invite');
+
+		replaceHistory(url);
+	};
+
+	onMount(cleanUpInviteUrl);
 
 	const redeemSignIn = async (domain?: 'internetcomputer.org' | 'ic0.app') => {
 		// Close popover to prevent glitch on successful login
@@ -24,7 +38,6 @@
 	};
 
 	let visible = false;
-	let invitationCode = '';
 </script>
 
 <Container>

@@ -1,14 +1,13 @@
 #!/usr/bin/env node
 
 import { nanoid } from 'nanoid';
-import { consoleActorIC } from './actor.mjs';
+import { consoleActorLocal } from './actor.mjs';
 
-(async () => {
-	const actor = await consoleActorIC();
+const actor = await consoleActorLocal();
 
-	const invitationCode = nanoid();
+const invitationCode = nanoid();
 
-	await actor.add_invitation_code(invitationCode);
+await actor.add_invitation_code(invitationCode);
 
-	console.log('Invitation code:', invitationCode);
-})();
+console.log('🏷️ Invitation code:', invitationCode);
+console.log('🔗 Redeem URL:', `https://console.juno.build/join?invite=${invitationCode}`);

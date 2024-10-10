@@ -1,15 +1,22 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+
 	export let name: string;
-	export let inputType: 'icp' | 'number' | 'text' = 'number';
+	export let inputType: 'icp' | 'number' | 'text' | 'currency' = 'number';
 	export let required = true;
 	export let spellcheck: boolean | undefined = undefined;
 	export let step: number | 'any' | undefined = undefined;
 	export let disabled = false;
-	export let minlength: number | undefined = undefined;
+	export let minLength: number | undefined = undefined;
 	export let max: number | undefined = undefined;
 	export let value: string | number | undefined = undefined;
 	export let placeholder: string;
 	export let testId: string | undefined = undefined;
+	export let decimals = 8;
+	export let ignore1Password = true;
+
+	const dispatch = createEventDispatcher();
 
 	// https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
 	export let autocomplete: 'off' | 'on' | undefined = undefined;
@@ -19,47 +26,70 @@
 	$: step = inputType === 'number' ? step ?? 'any' : undefined;
 	$: autocomplete = inputType !== 'number' ? autocomplete ?? 'off' : undefined;
 
+	// This component was developed for ICP and 8 decimals in mind. The "currency" input type was added afterwards therefore, for backwards compatibility reason, if the input type is set to icp, the number of decimals remains 8.
+	let wrapDecimals = 8;
+	$: wrapDecimals = inputType === 'icp' ? 8 : decimals;
+
 	let selectionStart: number | null = 0;
 	let selectionEnd: number | null = 0;
 
+	const toStringWrapDecimals = (value: string): string =>
+		Number(value).toLocaleString('en', {
+			useGrouping: false,
+			maximumFractionDigits: wrapDecimals
+		});
+
+	// replace exponent format (1e-4) w/ plain (0.0001)
+	const exponentToPlainNumberString = (value: string): string =>
+		// number to toLocaleString doesn't support decimals for values >= ~1e16
+		value.includes('e') ? toStringWrapDecimals(value) : value;
 	// To show undefined as "" (because of the type="text")
 	const fixUndefinedValue = (value: string | number | undefined): string =>
-		value === undefined ? '' : `${value}`;
+		isNullish(value) ? '' : `${value}`;
 
-	let icpValue: string = fixUndefinedValue(value);
-	let lastValidICPValue: string | number | undefined = value;
+	let currencyValue: string = exponentToPlainNumberString(fixUndefinedValue(value));
+	let lastValidCurrencyValue: string | number | undefined = value;
 	let internalValueChange = true;
+
+	let currency = false;
+	$: currency = ['icp', 'currency'].includes(inputType);
 
 	$: value,
 		(() => {
-			if (!internalValueChange && inputType === 'icp') {
-				icpValue = fixUndefinedValue(value);
-				lastValidICPValue = icpValue;
+			if (!internalValueChange && currency) {
+				if (typeof value === 'number') {
+					currencyValue = exponentToPlainNumberString(`${value}`);
+				} else {
+					currencyValue = fixUndefinedValue(value);
+				}
+
+				lastValidCurrencyValue = currencyValue;
 			}
 
 			internalValueChange = false;
 		})();
 
 	const restoreFromValidValue = (noValue = false) => {
-		if (inputElement === undefined || inputType !== 'icp') {
+		if (isNullish(inputElement) || !currency) {
 			return;
 		}
 
 		if (noValue) {
-			lastValidICPValue = undefined;
+			lastValidCurrencyValue = undefined;
 		}
 
 		internalValueChange = true;
-		value =
-			lastValidICPValue === undefined
-				? undefined
-				: typeof lastValidICPValue === 'number'
-					? lastValidICPValue.toFixed(8)
-					: +lastValidICPValue;
-		icpValue = fixUndefinedValue(lastValidICPValue);
+		value = isNullish(lastValidCurrencyValue)
+			? undefined
+			: typeof lastValidCurrencyValue === 'number'
+				? lastValidCurrencyValue.toFixed(wrapDecimals)
+				: inputType === 'icp'
+					? +lastValidCurrencyValue
+					: lastValidCurrencyValue;
+		currencyValue = fixUndefinedValue(lastValidCurrencyValue);
 
 		// force dom update (because no active triggers)
-		inputElement.value = icpValue;
+		inputElement.value = currencyValue;
 
 		// restore cursor position
 		inputElement.setSelectionRange(selectionStart, selectionEnd);
@@ -71,41 +101,40 @@
 		currentTarget: EventTarget & HTMLInputElement;
 	};
 
-	const isValidICPFormat = (text: string): boolean => /^[\d]*(\.[\d]{0,8})?$/.test(text);
+	const isDecimalsFormat = (text: string): boolean => {
+		const regex = new RegExp(`^\\d*(\\.\\d{0,${wrapDecimals}})?$`);
+		return regex.test(text);
+	};
 
 	const handleInput = ({ currentTarget }: InputEventHandler) => {
-		if (inputType === 'icp') {
-			const currentValue = currentTarget.value;
+		if (currency) {
+			const currentValue = exponentToPlainNumberString(currentTarget.value);
 
 			// handle invalid input
-			if (isValidICPFormat(currentValue) === false) {
+			if (isDecimalsFormat(currentValue) === false) {
 				// restore value (e.g. to fix invalid paste)
 				restoreFromValidValue();
-				return;
-			}
-
-			// reset to undefined ("" => undefined)
-			if (currentValue.length === 0) {
+			} else if (currentValue.length === 0) {
+				// reset to undefined ("" => undefined)
 				restoreFromValidValue(true);
-				return;
+			} else {
+				lastValidCurrencyValue = currentValue;
+				currencyValue = fixUndefinedValue(currentValue);
+
+				internalValueChange = true;
+				// for inputType="icp" value is a number
+				value = inputType === 'icp' ? +currentValue : toStringWrapDecimals(currentValue);
 			}
-
-			lastValidICPValue = currentValue;
-			icpValue = fixUndefinedValue(currentValue);
-
+		} else {
 			internalValueChange = true;
-			// for inputType="icp" value is a number
-			// TODO: do we need to fix lost precision for too big for number inputs?
-			value = +currentValue;
-			return;
+			value = inputType === 'number' ? +currentTarget.value : currentTarget.value;
 		}
 
-		internalValueChange = true;
-		value = inputType === 'number' ? +currentTarget.value : currentTarget.value;
+		dispatch('nnsInput');
 	};
 
 	const handleKeyDown = () => {
-		if (inputElement === undefined) {
+		if (isNullish(inputElement)) {
 			return;
 		}
 
@@ -114,22 +143,24 @@
 	};
 
 	$: step = inputType === 'number' ? step ?? 'any' : undefined;
-	$: autocomplete =
-		inputType !== 'number' && inputType !== 'icp' ? autocomplete ?? 'off' : undefined;
+	$: autocomplete = inputType !== 'number' && !currency ? autocomplete ?? 'off' : undefined;
+
+	let displayInnerEnd: boolean;
+	$: displayInnerEnd = nonNullish($$slots['inner-end']);
 </script>
 
 <input
 	bind:this={inputElement}
 	data-tid={testId}
-	type={inputType === 'icp' ? 'text' : inputType}
+	type={currency ? 'text' : inputType}
 	{required}
 	{spellcheck}
 	{name}
 	id={name}
 	{step}
 	{disabled}
-	value={inputType === 'icp' ? icpValue : value}
-	{minlength}
+	value={currency ? currencyValue : value}
+	minlength={minLength}
 	{placeholder}
 	{max}
 	{autocomplete}
@@ -137,4 +168,6 @@
 	on:focus
 	on:input={handleInput}
 	on:keydown={handleKeyDown}
+	class:inner-end={displayInnerEnd}
+	data-1p-ignore={ignore1Password}
 />

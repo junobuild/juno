@@ -212,6 +212,7 @@
 		"amount_placeholder": "Enter an amount",
 		"wallet_id": "Wallet ID",
 		"sending": "Sending",
+		"sending_in_progress": "Sending...",
 		"fee": "Fee",
 		"review_and_confirm": "Review the details below and confirm to proceed with your transaction."
 	},

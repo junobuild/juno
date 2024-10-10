@@ -10,6 +10,8 @@
 	import { amountToICPToken } from '$lib/utils/token.utils';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 	import { createEventDispatcher } from 'svelte';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	export let missionControlId: Principal;
 	export let balance: bigint | undefined;
@@ -24,7 +26,24 @@
 
 	const dispatch = createEventDispatcher();
 
-	const onSubmit = async () => {};
+	const onSubmit = async () => {
+		wizardBusy.start();
+
+		dispatch('junoNext', 'in_progress');
+
+		try {
+			// dispatch('junoNext', 'ready');
+		} catch (err: unknown) {
+			toasts.error({
+				text: $i18n.errors.upgrade_error,
+				detail: err
+			});
+
+			dispatch('junoNext', 'error');
+		}
+
+		wizardBusy.stop();
+	};
 </script>
 
 <h2>{$i18n.wallet.send}</h2>
@@ -96,7 +115,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button type="button" on:click={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+		<button type="button" on:click={() => dispatch('junoNext', 'form')}>{$i18n.core.back}</button>
 		<button type="submit">{$i18n.core.confirm}</button>
 	</div>
 </form>

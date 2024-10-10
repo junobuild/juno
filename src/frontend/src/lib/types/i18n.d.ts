@@ -220,6 +220,7 @@ interface I18nWallet {
 	amount_placeholder: string;
 	wallet_id: string;
 	sending: string;
+	sending_in_progress: string;
 	fee: string;
 	review_and_confirm: string;
 }

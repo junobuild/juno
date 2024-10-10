@@ -6,7 +6,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalSendTokensDetail } from '$lib/types/modal';
 	import SendTokensForm from '$lib/components/tokens/SendTokensForm.svelte';
-	import SendTokensReview from "$lib/components/tokens/SendTokensReview.svelte";
+	import SendTokensReview from '$lib/components/tokens/SendTokensReview.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -30,7 +30,7 @@
 			</div>
 		{:else if steps === 'in_progress'}
 			<SpinnerModal>
-				<p>{$i18n.canisters.upgrade_in_progress}</p>
+				<p>{$i18n.wallet.sending_in_progress}</p>
 			</SpinnerModal>
 		{:else if steps === 'review'}
 			<SendTokensReview
@@ -38,10 +38,15 @@
 				{balance}
 				bind:amount
 				bind:destination
-				on:junoBack={() => (steps = 'form')}
+				on:junoNext={({ detail }) => (steps = detail)}
 			/>
 		{:else}
-			<SendTokensForm {balance} bind:amount bind:destination on:junoReview={() => (steps = 'review')} />
+			<SendTokensForm
+				{balance}
+				bind:amount
+				bind:destination
+				on:junoReview={() => (steps = 'review')}
+			/>
 		{/if}
 	</Modal>
 {/if}

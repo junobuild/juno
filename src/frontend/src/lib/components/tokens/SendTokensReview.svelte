@@ -5,13 +5,14 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { getAccountIdentifier } from '$lib/api/ledger.api';
+	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { amountToICPToken } from '$lib/utils/token.utils';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 	import { createEventDispatcher } from 'svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { authStore } from '$lib/stores/auth.store';
+	import { sendTokens } from '$lib/services/tokens.services';
 
 	export let missionControlId: Principal;
 	export let balance: bigint | undefined;
@@ -32,13 +33,14 @@
 		dispatch('junoNext', 'in_progress');
 
 		try {
-			// dispatch('junoNext', 'ready');
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.upgrade_error,
-				detail: err
+			await sendTokens({
+				identity: $authStore.identity,
+				destination,
+				token
 			});
 
+			dispatch('junoNext', 'ready');
+		} catch (err: unknown) {
 			dispatch('junoNext', 'error');
 		}
 

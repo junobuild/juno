@@ -445,6 +445,7 @@ interface I18nErrors {
 	empty_amount: string;
 	invalid_amount: string;
 	empty_balance: string;
+	sending_error: string;
 }
 
 interface I18nDocument {

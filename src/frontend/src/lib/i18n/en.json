@@ -428,7 +428,8 @@
 		"invalid_destination": "Please enter a valid ICP or ICRC destination address.",
 		"empty_amount": "Please enter an amount for the transfer.",
 		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",
-		"empty_balance": "Your wallet does not have any available funds."
+		"empty_balance": "Your wallet does not have any available funds.",
+		"sending_error": "Unexpected error(s) while sending the tokens."
 	},
 	"document": {
 		"owner": "Owner",

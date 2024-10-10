@@ -9,7 +9,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 	import { onMount } from 'svelte';
-	import { getAccountIdentifier, getTransactions } from '$lib/api/ledger.api';
+	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
 	import { getCredits } from '$lib/api/console.api';
 	import { toasts } from '$lib/stores/toasts.store';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';

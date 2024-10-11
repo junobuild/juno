@@ -1,24 +1,28 @@
+import type { TransferArg, TransferArgs } from '$declarations/mission_control/mission_control.did';
+import { icpTransfer, icrcTransfer } from '$lib/api/mission-control.api';
+import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 import type { Identity } from '@dfinity/agent';
+import { AccountIdentifier } from '@dfinity/ledger-icp';
 import { decodeIcrcAccount } from '@dfinity/ledger-icrc';
-import { isNullish, type TokenAmountV2 } from '@dfinity/utils';
+import { Principal } from '@dfinity/principal';
+import { isNullish, toNullable, type TokenAmountV2 } from '@dfinity/utils';
 import { get } from 'svelte/store';
-import {icpTransfer} from "$lib/api/mission-control.api";
-import type {TransferArgs} from "$declarations/mission_control/mission_control.did";
-import {AccountIdentifier} from "@dfinity/ledger-icp";
-import {toTransferRawRequest} from "@dfinity/ledger-icp/dist/types/canisters/ledger/ledger.request.converts";
 
 export const sendTokens = async ({
 	destination,
 	token,
-	identity
+	identity,
+	missionControlId
 }: {
 	destination: string;
 	token: TokenAmountV2 | undefined;
 	identity: Identity | undefined | null;
+	missionControlId: Principal;
 }): Promise<{ success: boolean }> => {
 	const notIcp = invalidIcpAddress(destination);
 	const notIcrc = invalidIcrcAddress(destination);
@@ -41,25 +45,15 @@ export const sendTokens = async ({
 		return { success: false };
 	}
 
-	const amount = token.toE8s();
-
 	try {
-		// TODO: the send should happens within the mission control
+		const fn = !invalidIcrcAddress ? sendIcrc : sendIcp;
 
-		if (!invalidIcrcAddress) {
-			await icrc1Transfer({
-				identity,
-				to: decodeIcrcAccount(destination),
-				amount
-			});
-			return { success: true };
-		}
-
-		await sendIcp({
+		await fn({
 			destination,
 			token,
-			identity
-		})
+			identity,
+			missionControlId
+		});
 
 		return { success: true };
 	} catch (err: unknown) {
@@ -74,20 +68,58 @@ export const sendTokens = async ({
 	}
 };
 
-export const sendIcp = async ({
-									 destination,
-									 token,
-									 identity
-								 }: {
+export const sendIcrc = async ({
+	destination,
+	token,
+	...rest
+}: {
 	destination: string;
 	token: TokenAmountV2;
 	identity: Identity | undefined | null;
+	missionControlId: Principal;
 }): Promise<void> => {
-	const args: TransferArgs = toTransferRawRequest()
+	const { owner, subaccount } = decodeIcrcAccount(destination);
+
+	const args: TransferArg = {
+		to: {
+			owner,
+			subaccount: toNullable(subaccount)
+		},
+		amount: token.toE8s(),
+		fee: toNullable(IC_TRANSACTION_FEE_ICP),
+		memo: toNullable(),
+		from_subaccount: toNullable(),
+		created_at_time: toNullable(nowInBigIntNanoSeconds())
+	};
+
+	await icrcTransfer({
+		args,
+		ledgerId: Principal.fromText(ICP_LEDGER_CANISTER_ID),
+		...rest
+	});
+};
+
+export const sendIcp = async ({
+	destination,
+	token,
+	...rest
+}: {
+	destination: string;
+	token: TokenAmountV2;
+	identity: Identity | undefined | null;
+	missionControlId: Principal;
+}): Promise<void> => {
+	const args: TransferArgs = {
+		to: AccountIdentifier.fromHex(destination).toUint8Array(),
+		amount: { e8s: token.toE8s() },
+		fee: { e8s: IC_TRANSACTION_FEE_ICP },
+		memo: 0n,
+		created_at_time: toNullable({ timestamp_nanos: nowInBigIntNanoSeconds() }),
+		from_subaccount: toNullable()
+	};
 
 	await icpTransfer({
-		identity,
-		to: destination,
-		amount
+		args,
+		...rest
 	});
-}
+};

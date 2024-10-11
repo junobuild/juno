@@ -92,8 +92,6 @@ export const sendIcrc = async ({
 		created_at_time: toNullable(nowInBigIntNanoSeconds())
 	};
 
-	console.log(args);
-
 	await icrcTransfer({
 		args,
 		ledgerId: Principal.fromText(ICP_LEDGER_CANISTER_ID),

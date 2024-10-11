@@ -117,7 +117,7 @@ describe('Mission Control', () => {
 	});
 
 	describe('admin', () => {
-		beforeAll(() => {
+		beforeEach(() => {
 			actor.setIdentity(controller);
 		});
 

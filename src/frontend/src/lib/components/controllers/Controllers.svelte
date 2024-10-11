@@ -91,7 +91,7 @@
 					</td>
 
 					<td>
-						<Identifier identifier={controllerId.toText()} shorten={false} nomargin />
+						<Identifier identifier={controllerId.toText()} shorten={false} small={false} />
 					</td>
 
 					<td class="profile"

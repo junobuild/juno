@@ -45,10 +45,10 @@
 		{/if}
 	</td>
 	<td class="from">
-		<Identifier nomargin identifier={from} />
+		<Identifier small={false} identifier={from} />
 	</td>
 	<td class="to">
-		<Identifier nomargin identifier={to} />
+		<Identifier small={false} identifier={to} />
 	</td>
 	<td class="memo">{memo}</td>
 	<td class="amount">

@@ -89,7 +89,7 @@
 					</td>
 
 					<td>
-						<Identifier identifier={satelliteId} shorten={false} nomargin />
+						<Identifier identifier={satelliteId} shorten={false} small={false} />
 					</td>
 				</tr>
 			{/each}

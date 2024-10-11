@@ -26,7 +26,7 @@
 
 			<Value>
 				<svelte:fragment slot="label">{$i18n.satellites.id}</svelte:fragment>
-				<Identifier identifier={satelliteId} shorten={false} nomargin />
+				<Identifier identifier={satelliteId} shorten={false} small={false} />
 			</Value>
 
 			<SatelliteOverviewCustomDomain {satellite} />

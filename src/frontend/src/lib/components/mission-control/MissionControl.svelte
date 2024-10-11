@@ -23,7 +23,7 @@
 					<Identifier
 						identifier={$missionControlStore?.toText() ?? ''}
 						shorten={false}
-						nomargin
+						small={false}
 					/>
 				</Value>
 			</div>

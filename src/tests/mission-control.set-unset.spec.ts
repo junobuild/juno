@@ -74,11 +74,7 @@ describe('Mission Control', () => {
 		await pic?.tearDown();
 	});
 
-	describe('anonymous', () => {
-		beforeAll(() => {
-			actor.setIdentity(new AnonymousIdentity());
-		});
-
+	const testIdentity = () => {
 		it('should throw errors on set orbiter', async () => {
 			const { set_orbiter } = actor;
 
@@ -102,6 +98,22 @@ describe('Mission Control', () => {
 
 			await expect(unset_satellite(satelliteId)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
+	};
+
+	describe('anonymous', () => {
+		beforeAll(() => {
+			actor.setIdentity(new AnonymousIdentity());
+		});
+
+		testIdentity();
+	});
+
+	describe('unknown identity', () => {
+		beforeAll(() => {
+			actor.setIdentity(Ed25519KeyIdentity.generate());
+		});
+
+		testIdentity();
 	});
 
 	describe('admin', () => {

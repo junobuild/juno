@@ -1,7 +1,7 @@
 import type {
 	Controller,
 	Orbiter,
-	Result,
+	Result_2,
 	Satellite
 } from '$declarations/mission_control/mission_control.did';
 import type { SetControllerParams } from '$lib/types/controllers';
@@ -361,7 +361,7 @@ export const listSatelliteStatuses = async ({
 	missionControlId: Principal;
 	identity: OptionIdentity;
 	satelliteId: Principal;
-}): Promise<[] | [[bigint, Result][]]> => {
+}): Promise<[] | [[bigint, Result_2][]]> => {
 	const { list_satellite_statuses } = await getMissionControlActor({ missionControlId, identity });
 	return list_satellite_statuses(satelliteId);
 };
@@ -374,7 +374,7 @@ export const listOrbiterStatuses = async ({
 	missionControlId: Principal;
 	identity: OptionIdentity;
 	orbiterId: Principal;
-}): Promise<[] | [[bigint, Result][]]> => {
+}): Promise<[] | [[bigint, Result_2][]]> => {
 	const { list_orbiter_statuses } = await getMissionControlActor({ missionControlId, identity });
 	return list_orbiter_statuses(orbiterId);
 };
@@ -385,7 +385,7 @@ export const listMissionControlStatuses = async ({
 }: {
 	missionControlId: Principal;
 	identity: OptionIdentity;
-}): Promise<[] | [[bigint, Result][]]> => {
+}): Promise<[] | [[bigint, Result_2][]]> => {
 	const { list_mission_control_statuses } = await getMissionControlActor({
 		missionControlId,
 		identity

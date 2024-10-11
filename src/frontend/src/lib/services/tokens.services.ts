@@ -20,7 +20,7 @@ export const sendTokens = async ({
 	const notIcp = invalidIcpAddress(destination);
 	const notIcrc = invalidIcrcAddress(destination);
 
-	console.log(token?.toE8s(), destination)
+	console.log(token?.toE8s(), destination);
 
 	if (notIcp && notIcrc) {
 		const labels = get(i18n);

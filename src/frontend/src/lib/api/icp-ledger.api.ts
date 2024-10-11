@@ -18,7 +18,7 @@ export const transfer = async ({
 
 	const { transfer } = await ledgerCanister(identity);
 
-	console.log(to, amount, identity.getPrincipal().toText())
+	console.log(to, amount, identity.getPrincipal().toText());
 
 	return transfer({
 		to: AccountIdentifier.fromHex(to),

@@ -8,10 +8,10 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	SATELLITE_ADMIN_ERROR_MSG,
 	CONTROLLER_ERROR_MSG,
 	INVALID_VERSION_ERROR_MSG,
-	NO_VERSION_ERROR_MSG
+	NO_VERSION_ERROR_MSG,
+	SATELLITE_ADMIN_ERROR_MSG
 } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -195,7 +195,9 @@ describe('Satellite', () => {
 		it('should throw errors on creating collections', async () => {
 			const { set_rule } = actor;
 
-			await expect(set_rule({ Db: null }, 'user-test', setRule)).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+			await expect(set_rule({ Db: null }, 'user-test', setRule)).rejects.toThrow(
+				SATELLITE_ADMIN_ERROR_MSG
+			);
 		});
 
 		it('should throw errors on list collections', async () => {

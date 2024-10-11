@@ -14,7 +14,10 @@ import { toArray } from '@junobuild/utils';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
-import { SATELLITE_ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
+import {
+	CONTROLLER_ERROR_MSG,
+	SATELLITE_ADMIN_ERROR_MSG
+} from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite storage', () => {

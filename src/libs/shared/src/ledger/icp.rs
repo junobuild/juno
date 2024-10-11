@@ -1,6 +1,6 @@
 use crate::env::LEDGER;
-use crate::types::ledger::{BlockIndexed, Blocks};
-use crate::utils::account_identifier_equal;
+use crate::ledger::types::{BlockIndexed, Blocks};
+use crate::ledger::utils::account_identifier_equal;
 use candid::{Func, Principal};
 use futures::future::join_all;
 use ic_cdk::api::call::{CallResult, RejectionCode};

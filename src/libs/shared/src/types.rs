@@ -171,13 +171,6 @@ pub mod interface {
     }
 }
 
-pub mod ledger {
-    use ic_ledger_types::{Block, BlockIndex};
-
-    pub type BlockIndexed = (BlockIndex, Block);
-    pub type Blocks = Vec<BlockIndexed>;
-}
-
 pub mod ic {
     use crate::types::core::Blob;
 

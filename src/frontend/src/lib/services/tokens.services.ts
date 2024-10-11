@@ -46,7 +46,7 @@ export const sendTokens = async ({
 	}
 
 	try {
-		const fn = !invalidIcrcAddress ? sendIcrc : sendIcp;
+		const fn = !invalidIcpAddress(destination) ? sendIcp : sendIcrc;
 
 		await fn({
 			destination,
@@ -91,6 +91,8 @@ export const sendIcrc = async ({
 		from_subaccount: toNullable(),
 		created_at_time: toNullable(nowInBigIntNanoSeconds())
 	};
+
+	console.log(args);
 
 	await icrcTransfer({
 		args,

@@ -98,7 +98,7 @@ describe('Mission Control', () => {
 
 			await expect(unset_satellite(satelliteId)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
-	}
+	};
 
 	describe('anonymous', () => {
 		beforeAll(() => {

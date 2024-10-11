@@ -1,5 +1,5 @@
 use crate::env::LEDGER;
-use crate::ledger::types::{BlockIndexed, Blocks};
+use crate::ledger::types::icp::{BlockIndexed, Blocks};
 use crate::ledger::utils::account_identifier_equal;
 use candid::{Func, Principal};
 use futures::future::join_all;

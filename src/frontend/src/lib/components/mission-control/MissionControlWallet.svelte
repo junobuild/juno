@@ -19,6 +19,8 @@
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import Wallet from '$lib/components/core/Wallet.svelte';
 	import { emit } from '$lib/utils/events.utils';
+	import { versionStore } from '$lib/stores/version.store';
+	import { compare } from 'semver';
 
 	export let missionControlId: Principal;
 
@@ -112,6 +114,10 @@
 			}
 		});
 	};
+
+	let send = false;
+	$: send =
+		balance > 0n && compare($versionStore?.missionControl?.current ?? '0.0.0', '0.0.12') > 0;
 </script>
 
 {#if $authSignedInStore}
@@ -163,7 +169,7 @@
 			</div>
 		</div>
 
-		{#if balance > 0n}
+		{#if send}
 			<button in:fade on:click={openModal}>{$i18n.wallet.send}</button>
 		{/if}
 

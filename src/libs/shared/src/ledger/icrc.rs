@@ -3,7 +3,7 @@ use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use icrc_ledger_types::icrc1::transfer::{TransferArg};
 use crate::env::LEDGER;
-use crate::types::ledger::IcrcTransferResult;
+use crate::ledger::types::icrc::IcrcTransferResult;
 
 /// Initiates a transfer of tokens on the ICP ledger using the provided ICRC-1 arguments.
 ///

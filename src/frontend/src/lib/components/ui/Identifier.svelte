@@ -34,5 +34,9 @@
 
 	.nomargin {
 		margin: 0;
+
+		span {
+			margin: 0;
+		}
 	}
 </style>

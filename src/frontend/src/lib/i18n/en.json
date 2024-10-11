@@ -214,7 +214,8 @@
 		"sending": "Sending",
 		"sending_in_progress": "Sending...",
 		"fee": "Fee",
-		"review_and_confirm": "Review the details below and confirm to proceed with your transaction."
+		"review_and_confirm": "Review the details below and confirm to proceed with your transaction.",
+		"icp_on_its_way": "Your ICP is on its way!"
 	},
 	"authentication": {
 		"title": "Authentication",

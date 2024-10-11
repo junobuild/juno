@@ -223,6 +223,7 @@ interface I18nWallet {
 	sending_in_progress: string;
 	fee: string;
 	review_and_confirm: string;
+	icp_on_its_way: string;
 }
 
 interface I18nAuthentication {

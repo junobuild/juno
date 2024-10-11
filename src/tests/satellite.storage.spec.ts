@@ -14,7 +14,7 @@ import { toArray } from '@junobuild/utils';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
-import { ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
+import { SATELLITE_ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite storage', () => {
@@ -65,13 +65,13 @@ describe('Satellite storage', () => {
 					raw_access: toNullable(),
 					max_memory_size: toNullable()
 				})
-			).rejects.toThrow(ADMIN_ERROR_MSG);
+			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on getting config', async () => {
 			const { get_config } = actor;
 
-			await expect(get_config()).rejects.toThrow(ADMIN_ERROR_MSG);
+			await expect(get_config()).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 	});
 

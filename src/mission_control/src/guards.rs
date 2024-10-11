@@ -1,9 +1,8 @@
 use crate::store::get_user;
 use crate::STATE;
 use ic_cdk::caller;
-use junobuild_shared::controllers::{
-    caller_is_console, caller_is_observatory, is_admin_controller,
-};
+use ic_cdk::api::is_controller as ic_canister_controller;
+use junobuild_shared::controllers::{caller_is_console, caller_is_observatory, is_admin_controller, is_controller};
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_equal;
 
@@ -36,7 +35,7 @@ fn caller_is_user() -> bool {
     let caller = caller();
     let user = get_user();
 
-    principal_equal(caller, user)
+    principal_equal(caller, user) && ic_canister_controller(&caller)
 }
 
 fn caller_is_admin_controller() -> bool {

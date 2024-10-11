@@ -20,7 +20,7 @@
 </script>
 
 <tr>
-	<td><Identifier small={false} identifier={owner.toText()} /></td>
+	<td><Identifier nomargin identifier={owner.toText()} /></td>
 	<td class="providers">
 		{#if provider === 'internet_identity'}
 			<IconIC title="Internet Identity" />

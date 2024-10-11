@@ -123,14 +123,14 @@
 				<div>
 					<Value>
 						<svelte:fragment slot="label">{segment.label}</svelte:fragment>
-						<Identifier identifier={segment.canisterId} shorten={false} small={false} />
+						<Identifier identifier={segment.canisterId} shorten={false} nomargin />
 					</Value>
 				</div>
 
 				<div>
 					<Value>
 						<svelte:fragment slot="label">{$i18n.controllers.new_controller_id}</svelte:fragment>
-						<Identifier identifier={controllerId} shorten={false} small={false} />
+						<Identifier identifier={controllerId} shorten={false} nomargin />
 					</Value>
 				</div>
 

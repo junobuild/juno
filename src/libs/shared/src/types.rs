@@ -176,6 +176,7 @@ pub mod ledger {
     use serde::Deserialize;
 
     use ic_ledger_types::{Block, BlockIndex, Memo, Operation, Timestamp};
+    use icrc_ledger_types::icrc1::transfer::TransferError;
 
     pub type BlockIndexed = (BlockIndex, Block);
     pub type Blocks = Vec<BlockIndexed>;
@@ -188,6 +189,8 @@ pub mod ledger {
         pub operation: Option<Operation>,
         pub timestamp: Timestamp,
     }
+
+    pub type IcrcTransferResult = Result<icrc_ledger_types::icrc1::transfer::BlockIndex, TransferError>;
 }
 
 pub mod ic {

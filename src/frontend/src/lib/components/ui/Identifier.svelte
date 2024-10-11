@@ -4,13 +4,13 @@
 
 	export let identifier: string;
 	export let shorten = true;
-	export let small = true;
+	export let nomargin = false;
 
 	let shortIdentifier: string;
 	$: shortIdentifier = shorten ? shortenWithMiddleEllipsis(identifier) : identifier;
 </script>
 
-<p class:small>
+<p class:nomargin>
 	<span>{shortIdentifier}</span>
 	<Copy value={identifier} />
 </p>
@@ -22,7 +22,7 @@
 		word-break: break-all;
 		@include text.truncate;
 
-		margin: 0 0 var(--padding-0_5x);
+		margin: 0 0 var(--padding);
 	}
 
 	p {
@@ -32,7 +32,7 @@
 		max-width: 100%;
 	}
 
-	.small {
-		margin: 0 0 var(--padding);
+	.nomargin {
+		margin: 0;
 	}
 </style>

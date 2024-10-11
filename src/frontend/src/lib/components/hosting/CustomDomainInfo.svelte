@@ -61,7 +61,7 @@
 				<div>
 					<Value>
 						<svelte:fragment slot="label">{$i18n.hosting.bn_id}</svelte:fragment>
-						<Identifier identifier={bnId} shorten={true} small={false} />
+						<Identifier identifier={bnId} shorten={true} nomargin />
 					</Value>
 				</div>
 			{/if}

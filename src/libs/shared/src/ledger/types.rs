@@ -6,8 +6,7 @@ pub mod icp {
 }
 
 pub mod icrc {
-    use icrc_ledger_types::icrc1::transfer::TransferError;
+    use icrc_ledger_types::icrc1::transfer::{BlockIndex, TransferError};
 
-    pub type IcrcTransferResult =
-        Result<icrc_ledger_types::icrc1::transfer::BlockIndex, TransferError>;
+    pub type IcrcTransferResult = Result<BlockIndex, TransferError>;
 }

@@ -68,9 +68,7 @@ pub async fn transfer_payment(
 ///
 /// # Returns
 /// A `CallResult<TransferResult>` indicating either the success or failure of the ICP token transfer.
-pub async fn transfer_token(
-    args: TransferArgs
-) -> CallResult<TransferResult> {
+pub async fn transfer_token(args: TransferArgs) -> CallResult<TransferResult> {
     let ledger = Principal::from_text(LEDGER).unwrap();
 
     transfer(ledger, args).await

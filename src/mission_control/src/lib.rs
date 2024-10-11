@@ -43,8 +43,12 @@ use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
-use ic_ledger_types::Tokens;
+use ic_ledger_types::{Tokens, TransferArgs, TransferResult};
+use icrc_ledger_types::icrc1::transfer::TransferArg;
 use junobuild_shared::ic::deposit_cycles as deposit_cycles_shared;
+use junobuild_shared::ledger::icp::transfer_token;
+use junobuild_shared::ledger::icrc::icrc_transfer_token;
+use junobuild_shared::ledger::types::icrc::IcrcTransferResult;
 use junobuild_shared::types::interface::{
     DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
 };
@@ -360,6 +364,24 @@ fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
     list_orbiter_statuses_store(&orbiter_id)
+}
+
+///
+/// Wallet
+///
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+async fn icp_transfer(args: TransferArgs) -> TransferResult {
+    transfer_token(args)
+        .await
+        .map_err(|e| format!("Failed to call ledger: {:?}", e))?
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+async fn icrc_transfer(ledger_id: Principal, args: TransferArg) -> IcrcTransferResult {
+    icrc_transfer_token(ledger_id, args)
+        .await
+        .map_err(|e| format!("Failed to call ICRC ledger: {:?}", e))?
 }
 
 // Generate did files

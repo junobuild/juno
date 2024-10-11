@@ -1,4 +1,4 @@
 pub mod icp;
-mod types;
-mod utils;
 pub mod icrc;
+pub mod types;
+mod utils;

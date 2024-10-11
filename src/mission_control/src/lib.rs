@@ -374,14 +374,14 @@ fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
 async fn icp_transfer(args: TransferArgs) -> TransferResult {
     transfer_token(args)
         .await
-        .map_err(|e| format!("Failed to call ledger: {:?}", e))?
+        .map_err(|e| trap(&format!("Failed to call ledger: {:?}", e)))?
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn icrc_transfer(ledger_id: Principal, args: TransferArg) -> IcrcTransferResult {
     icrc_transfer_token(ledger_id, args)
         .await
-        .map_err(|e| format!("Failed to call ICRC ledger: {:?}", e))?
+        .map_err(|e| trap(&format!("Failed to call ICRC ledger: {:?}", e)))?
 }
 
 // Generate did files

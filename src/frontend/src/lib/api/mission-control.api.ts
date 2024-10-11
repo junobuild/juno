@@ -1,8 +1,12 @@
 import type {
 	Controller,
 	Orbiter,
+	Result,
+	Result_1,
 	Result_2,
-	Satellite
+	Satellite,
+	TransferArg,
+	TransferArgs
 } from '$declarations/mission_control/mission_control.did';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -391,4 +395,32 @@ export const listMissionControlStatuses = async ({
 		identity
 	});
 	return [await list_mission_control_statuses()];
+};
+
+export const icpTransfer = async ({
+	missionControlId,
+	args,
+	identity
+}: {
+	missionControlId: Principal;
+	args: TransferArgs;
+	identity: OptionIdentity;
+}): Promise<Result> => {
+	const { icp_transfer } = await getMissionControlActor({ missionControlId, identity });
+	return icp_transfer(args);
+};
+
+export const icrcTransfer = async ({
+	ledgerId,
+	missionControlId,
+	args,
+	identity
+}: {
+	ledgerId: Principal;
+	missionControlId: Principal;
+	args: TransferArg;
+	identity: OptionIdentity;
+}): Promise<Result_1> => {
+	const { icrc_transfer } = await getMissionControlActor({ missionControlId, identity });
+	return icrc_transfer(ledgerId, args);
 };

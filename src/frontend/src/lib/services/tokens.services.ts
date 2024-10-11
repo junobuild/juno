@@ -1,4 +1,3 @@
-import { icrc1Transfer, transfer } from '$lib/api/icp-ledger.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
@@ -7,6 +6,10 @@ import type { Identity } from '@dfinity/agent';
 import { decodeIcrcAccount } from '@dfinity/ledger-icrc';
 import { isNullish, type TokenAmountV2 } from '@dfinity/utils';
 import { get } from 'svelte/store';
+import {icpTransfer} from "$lib/api/mission-control.api";
+import type {TransferArgs} from "$declarations/mission_control/mission_control.did";
+import {AccountIdentifier} from "@dfinity/ledger-icp";
+import {toTransferRawRequest} from "@dfinity/ledger-icp/dist/types/canisters/ledger/ledger.request.converts";
 
 export const sendTokens = async ({
 	destination,
@@ -19,8 +22,6 @@ export const sendTokens = async ({
 }): Promise<{ success: boolean }> => {
 	const notIcp = invalidIcpAddress(destination);
 	const notIcrc = invalidIcrcAddress(destination);
-
-	console.log(token?.toE8s(), destination);
 
 	if (notIcp && notIcrc) {
 		const labels = get(i18n);
@@ -54,11 +55,11 @@ export const sendTokens = async ({
 			return { success: true };
 		}
 
-		await transfer({
-			identity,
-			to: destination,
-			amount
-		});
+		await sendIcp({
+			destination,
+			token,
+			identity
+		})
 
 		return { success: true };
 	} catch (err: unknown) {
@@ -72,3 +73,21 @@ export const sendTokens = async ({
 		return { success: false };
 	}
 };
+
+export const sendIcp = async ({
+									 destination,
+									 token,
+									 identity
+								 }: {
+	destination: string;
+	token: TokenAmountV2;
+	identity: Identity | undefined | null;
+}): Promise<void> => {
+	const args: TransferArgs = toTransferRawRequest()
+
+	await icpTransfer({
+		identity,
+		to: destination,
+		amount
+	});
+}

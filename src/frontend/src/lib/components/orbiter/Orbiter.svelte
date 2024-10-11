@@ -18,7 +18,7 @@
 		<div class="id">
 			<Value>
 				<svelte:fragment slot="label">{$i18n.analytics.id}</svelte:fragment>
-				<Identifier identifier={orbiter.orbiter_id.toText()} shorten={false} nomargin />
+				<Identifier identifier={orbiter.orbiter_id.toText()} shorten={false} small={false} />
 			</Value>
 		</div>
 

@@ -10,7 +10,7 @@ import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite authentication', () => {
@@ -326,13 +326,13 @@ describe('Satellite authentication', () => {
 				set_auth_config({
 					internet_identity: [{ derivation_origin: ['demo.com'] }]
 				})
-			).rejects.toThrow(ADMIN_ERROR_MSG);
+			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on getting config', async () => {
 			const { get_auth_config } = actor;
 
-			await expect(get_auth_config()).rejects.toThrow(ADMIN_ERROR_MSG);
+			await expect(get_auth_config()).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should not create a user', async () => {

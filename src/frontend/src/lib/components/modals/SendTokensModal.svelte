@@ -9,6 +9,7 @@
 	import SendTokensReview from '$lib/components/tokens/SendTokensReview.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import { fade } from 'svelte/transition';
+	import { createEventDispatcher } from 'svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -19,6 +20,9 @@
 
 	let destination = '';
 	let amount: string | undefined;
+
+	const dispatch = createEventDispatcher();
+	const close = () => dispatch('junoClose');
 </script>
 
 <svelte:window on:junoSyncBalance={({ detail: syncBalance }) => (balance = syncBalance)} />
@@ -39,11 +43,11 @@
 		{:else if steps === 'review'}
 			<div in:fade>
 				<SendTokensReview
-						missionControlId={$missionControlStore}
-						{balance}
-						bind:amount
-						bind:destination
-						on:junoNext={({ detail }) => (steps = detail)}
+					missionControlId={$missionControlStore}
+					{balance}
+					bind:amount
+					bind:destination
+					on:junoNext={({ detail }) => (steps = detail)}
 				/>
 			</div>
 		{:else}

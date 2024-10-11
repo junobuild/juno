@@ -171,28 +171,6 @@ pub mod interface {
     }
 }
 
-pub mod ledger {
-    use candid::CandidType;
-    use serde::Deserialize;
-
-    use ic_ledger_types::{Block, BlockIndex, Memo, Operation, Timestamp};
-    use icrc_ledger_types::icrc1::transfer::TransferError;
-
-    pub type BlockIndexed = (BlockIndex, Block);
-    pub type Blocks = Vec<BlockIndexed>;
-    pub type Transactions = Vec<Transaction>;
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct Transaction {
-        pub block_index: BlockIndex,
-        pub memo: Memo,
-        pub operation: Option<Operation>,
-        pub timestamp: Timestamp,
-    }
-
-    pub type IcrcTransferResult = Result<icrc_ledger_types::icrc1::transfer::BlockIndex, TransferError>;
-}
-
 pub mod ic {
     use crate::types::core::Blob;
 

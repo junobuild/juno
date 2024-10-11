@@ -100,14 +100,13 @@ pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
 /// # Returns
 /// `true` if the caller is an admin controller, otherwise `false`.
 pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
-    principal_not_anonymous(caller)
+    is_canister_controller(&caller)
+        && principal_not_anonymous(caller)
         && controllers
             .iter()
             .any(|(&controller_id, controller)| match controller.scope {
                 ControllerScope::Write => false,
-                ControllerScope::Admin => {
-                    principal_equal(controller_id, caller) && is_canister_controller(&caller)
-                }
+                ControllerScope::Admin => principal_equal(controller_id, caller),
             })
 }
 

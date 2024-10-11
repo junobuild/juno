@@ -51,10 +51,18 @@ describe('Mission Control', () => {
 
 		actor = c;
 
+		actor.setIdentity(controller);
+
 		const { canisterId } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
+			sender: controller.getPrincipal()
+		});
+
+		await pic.updateCanisterSettings({
+			canisterId,
+			controllers: [controller.getPrincipal(), missionControlId],
 			sender: controller.getPrincipal()
 		});
 
@@ -64,6 +72,12 @@ describe('Mission Control', () => {
 			idlFactory: idlFactorSatellite,
 			wasm: SATELLITE_WASM_PATH,
 			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
+			sender: controller.getPrincipal()
+		});
+
+		await pic.updateCanisterSettings({
+			canisterId: cId,
+			controllers: [controller.getPrincipal(), missionControlId],
 			sender: controller.getPrincipal()
 		});
 

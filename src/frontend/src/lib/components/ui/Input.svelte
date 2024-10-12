@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { createEventDispatcher } from 'svelte';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 
 	export let name: string;
 	export let inputType: 'icp' | 'number' | 'text' | 'currency' = 'number';

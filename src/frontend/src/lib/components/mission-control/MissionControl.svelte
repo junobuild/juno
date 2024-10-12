@@ -20,11 +20,7 @@
 			<div class="id">
 				<Value>
 					<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
-					<Identifier
-						identifier={$missionControlStore?.toText() ?? ''}
-						shorten={false}
-						small={false}
-					/>
+					<Identifier identifier={$missionControlStore?.toText() ?? ''} shorten={false} />
 				</Value>
 			</div>
 

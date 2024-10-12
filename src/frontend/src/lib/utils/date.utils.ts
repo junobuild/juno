@@ -1,3 +1,5 @@
+export const nowInBigIntNanoSeconds = (): bigint => BigInt(Date.now()) * BigInt(1e6);
+
 export const formatToDate = (nanoseconds: bigint): string => {
 	const options: Intl.DateTimeFormatOptions = {
 		month: 'short',

@@ -8,19 +8,21 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
+import type { _SERVICE as LedgerActor } from '@dfinity/ledger-icp/dist/candid/ledger';
 import { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { beforeAll, describe, expect, inject } from 'vitest';
+import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { LEDGER_ID } from './constants/ledger-tests.contants';
 import { CONTROLLER_ERROR_MSG } from './constants/mission-control-tests.constants';
+import { setupLedger } from './utils/ledger-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Mission Control - Wallet', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
+	let missionControlId: Principal;
 
 	const to = Ed25519KeyIdentity.generate();
-
-	const LEDGER_ID = Principal.fromText('ryjl3-tyaaa-aaaaa-aaaba-cai');
 
 	const args: TransferArgs = {
 		to: AccountIdentifier.fromPrincipal({ principal: to.getPrincipal() }).toUint8Array(),
@@ -47,8 +49,14 @@ describe('Mission Control - Wallet', () => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'));
+		pic = await PocketIc.create(inject('PIC_URL'), { nns: true });
+	});
 
+	afterAll(async () => {
+		await pic?.tearDown();
+	});
+
+	const initMissionControl = async (owner: Principal) => {
 		const userInitArgs = (): ArrayBuffer =>
 			IDL.encode(
 				[
@@ -56,10 +64,10 @@ describe('Mission Control - Wallet', () => {
 						user: IDL.Principal
 					})
 				],
-				[{ user: incorrectUser.getPrincipal() }]
+				[{ user: owner }]
 			);
 
-		const { actor: c } = await pic.setupCanister<MissionControlActor>({
+		const { actor: c, canisterId } = await pic.setupCanister<MissionControlActor>({
 			idlFactory: idlFactorMissionControl,
 			wasm: MISSION_CONTROL_WASM_PATH,
 			arg: userInitArgs(),
@@ -67,35 +75,130 @@ describe('Mission Control - Wallet', () => {
 		});
 
 		actor = c;
-	});
-
-	const testIdentity = () => {
-		it('should throw errors on icp transfer', async () => {
-			const { icp_transfer } = actor;
-
-			await expect(icp_transfer(args)).rejects.toThrow(CONTROLLER_ERROR_MSG);
-		});
-
-		it('should throw errors on icrc transfer', async () => {
-			const { icrc_transfer } = actor;
-
-			await expect(icrc_transfer(LEDGER_ID, arg)).rejects.toThrow(CONTROLLER_ERROR_MSG);
-		});
+		missionControlId = canisterId;
 	};
 
-	describe('anonymous', () => {
-		beforeAll(() => {
-			actor.setIdentity(new AnonymousIdentity());
+	describe('Guards', () => {
+		beforeAll(async () => {
+			await initMissionControl(incorrectUser.getPrincipal());
 		});
 
-		testIdentity();
+		const testIdentity = () => {
+			it('should throw errors on icp transfer', async () => {
+				const { icp_transfer } = actor;
+
+				await expect(icp_transfer(args)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			});
+
+			it('should throw errors on icrc transfer', async () => {
+				const { icrc_transfer } = actor;
+
+				await expect(icrc_transfer(LEDGER_ID, arg)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			});
+		};
+
+		describe('anonymous', () => {
+			beforeAll(() => {
+				actor.setIdentity(new AnonymousIdentity());
+			});
+
+			testIdentity();
+		});
+
+		describe('unknown identity', () => {
+			beforeAll(() => {
+				actor.setIdentity(Ed25519KeyIdentity.generate());
+			});
+
+			testIdentity();
+		});
 	});
 
-	describe('unknown identity', () => {
-		beforeAll(() => {
-			actor.setIdentity(Ed25519KeyIdentity.generate());
+	describe('owner', () => {
+		let ledgerActor: Actor<LedgerActor>;
+
+		beforeAll(async () => {
+			await initMissionControl(controller.getPrincipal());
+
+			actor.setIdentity(controller);
+
+			const { actor: c } = await setupLedger({ pic, controller });
+			ledgerActor = c;
 		});
 
-		testIdentity();
+		describe('InsufficientFunds', () => {
+			it('should fail at icp transfer', async () => {
+				const { icp_transfer } = actor;
+
+				const result = await icp_transfer(args);
+
+				if ('Ok' in result) {
+					throw new Error('Unexpected result. Icp transfer should have failed.');
+				}
+
+				expect(result.Err).toEqual({
+					InsufficientFunds: {
+						balance: {
+							e8s: 0n
+						}
+					}
+				});
+			});
+
+			it('should fail at icrc transfer', async () => {
+				const { icrc_transfer } = actor;
+
+				const result = await icrc_transfer(LEDGER_ID, arg);
+
+				if ('Ok' in result) {
+					throw new Error('Unexpected result. Icrc transfer should have failed.');
+				}
+
+				expect(result.Err).toEqual({
+					InsufficientFunds: {
+						balance: 0n
+					}
+				});
+			});
+		});
+
+		describe('Transfer success', () => {
+			beforeAll(async () => {
+				const { icrc1_transfer } = ledgerActor;
+
+				await icrc1_transfer({
+					amount: 5_500_010_000n,
+					to: { owner: missionControlId, subaccount: [] },
+					fee: [],
+					memo: [],
+					from_subaccount: [],
+					created_at_time: []
+				});
+			});
+
+			it('should execute icp transfer', async () => {
+				const { icp_transfer } = actor;
+
+				const result = await icp_transfer(args);
+
+				if ('Err' in result) {
+					throw new Error('Unexpected result. Icrc transfer should have succeeded.');
+				}
+
+				expect(result.Ok).toEqual(2n);
+			});
+
+			it('should execute icrc transfer', async () => {
+				const { icrc_transfer } = actor;
+
+				const result = await icrc_transfer(LEDGER_ID, arg);
+
+				if ('Err' in result) {
+					throw new Error('Unexpected result. Icrc transfer should have succeeded.');
+				}
+
+				expect(result.Ok).toEqual(3n);
+			});
+		});
 	});
 });

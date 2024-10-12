@@ -101,7 +101,7 @@ const downloadGitHub = async ({
 		url: `https://github.com/junobuild/juno/releases/download/v${junoVersion}/${wasm}`
 	});
 
-const download = async ({ wasm, url }: { wasm: string; url: string }): Promise<string> => {
+export const download = async ({ wasm, url }: { wasm: string; url: string }): Promise<string> => {
 	const destination = join(process.cwd(), wasm);
 
 	if (existsSync(destination)) {

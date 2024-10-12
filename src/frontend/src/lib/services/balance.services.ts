@@ -1,5 +1,5 @@
 import { getCredits } from '$lib/api/console.api';
-import { getAccountIdentifier, getBalance } from '$lib/api/ledger.api';
+import { getAccountIdentifier, getBalance } from '$lib/api/icp-index.api';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';

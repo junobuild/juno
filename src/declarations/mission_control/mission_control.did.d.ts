@@ -2,6 +2,10 @@ import type { ActorMethod } from '@dfinity/agent';
 import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
+export interface Account {
+	owner: Principal;
+	subaccount: [] | [Uint8Array | number[]];
+}
 export type CanisterStatusType = { stopped: null } | { stopping: null } | { running: null };
 export interface Controller {
 	updated_at: bigint;
@@ -25,7 +29,9 @@ export interface Orbiter {
 	metadata: Array<[string, string]>;
 	created_at: bigint;
 }
-export type Result = { Ok: SegmentStatus } | { Err: string };
+export type Result = { Ok: bigint } | { Err: TransferError };
+export type Result_1 = { Ok: bigint } | { Err: TransferError_1 };
+export type Result_2 = { Ok: SegmentStatus } | { Err: string };
 export interface Satellite {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
@@ -53,9 +59,9 @@ export interface SegmentStatus {
 	status_at: bigint;
 }
 export interface SegmentsStatuses {
-	orbiters: [] | [Array<Result>];
-	satellites: [] | [Array<Result>];
-	mission_control: Result;
+	orbiters: [] | [Array<Result_2>];
+	satellites: [] | [Array<Result_2>];
+	mission_control: Result_2;
 }
 export interface SetController {
 	metadata: Array<[string, string]>;
@@ -68,9 +74,47 @@ export interface StatusesArgs {
 	satellites: Array<[Principal, CronJobStatusesConfig]>;
 	cycles_threshold: [] | [bigint];
 }
+export interface Timestamp {
+	timestamp_nanos: bigint;
+}
 export interface Tokens {
 	e8s: bigint;
 }
+export interface TransferArg {
+	to: Account;
+	fee: [] | [bigint];
+	memo: [] | [Uint8Array | number[]];
+	from_subaccount: [] | [Uint8Array | number[]];
+	created_at_time: [] | [bigint];
+	amount: bigint;
+}
+export interface TransferArgs {
+	to: Uint8Array | number[];
+	fee: Tokens;
+	memo: bigint;
+	from_subaccount: [] | [Uint8Array | number[]];
+	created_at_time: [] | [Timestamp];
+	amount: Tokens;
+}
+export type TransferError =
+	| {
+			TxTooOld: { allowed_window_nanos: bigint };
+	  }
+	| { BadFee: { expected_fee: Tokens } }
+	| { TxDuplicate: { duplicate_of: bigint } }
+	| { TxCreatedInFuture: null }
+	| { InsufficientFunds: { balance: Tokens } };
+export type TransferError_1 =
+	| {
+			GenericError: { message: string; error_code: bigint };
+	  }
+	| { TemporarilyUnavailable: null }
+	| { BadBurn: { min_burn_amount: bigint } }
+	| { Duplicate: { duplicate_of: bigint } }
+	| { BadFee: { expected_fee: bigint } }
+	| { CreatedInFuture: { ledger_time: bigint } }
+	| { TooOld: null }
+	| { InsufficientFunds: { balance: bigint } };
 export interface _SERVICE {
 	add_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	add_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
@@ -83,11 +127,13 @@ export interface _SERVICE {
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
 	get_user: ActorMethod<[], Principal>;
+	icp_transfer: ActorMethod<[TransferArgs], Result>;
+	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
-	list_mission_control_statuses: ActorMethod<[], Array<[bigint, Result]>>;
-	list_orbiter_statuses: ActorMethod<[Principal], [] | [Array<[bigint, Result]>]>;
+	list_mission_control_statuses: ActorMethod<[], Array<[bigint, Result_2]>>;
+	list_orbiter_statuses: ActorMethod<[Principal], [] | [Array<[bigint, Result_2]>]>;
 	list_orbiters: ActorMethod<[], Array<[Principal, Orbiter]>>;
-	list_satellite_statuses: ActorMethod<[Principal], [] | [Array<[bigint, Result]>]>;
+	list_satellite_statuses: ActorMethod<[Principal], [] | [Array<[bigint, Result_2]>]>;
 	list_satellites: ActorMethod<[], Array<[Principal, Satellite]>>;
 	remove_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	remove_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;

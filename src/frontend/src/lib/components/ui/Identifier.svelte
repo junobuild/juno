@@ -11,7 +11,7 @@
 </script>
 
 <p class:small>
-	<span>{shortIdentifier}</span>
+	<span class:small>{shortIdentifier}</span>
 	<Copy value={identifier} />
 </p>
 
@@ -22,7 +22,9 @@
 		word-break: break-all;
 		@include text.truncate;
 
-		margin: 0 0 var(--padding-0_5x);
+		&.small {
+			margin: 0 0 var(--padding-0_5x);
+		}
 	}
 
 	p {

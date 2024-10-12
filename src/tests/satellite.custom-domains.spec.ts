@@ -5,7 +5,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
 import {
 	adminCustomDomainsTests,
 	anonymousCustomDomainsTests
@@ -40,7 +40,7 @@ describe('Satellite custom domains', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		anonymousCustomDomainsTests({ actor: () => actor, errorMsg: ADMIN_ERROR_MSG });
+		anonymousCustomDomainsTests({ actor: () => actor, errorMsg: SATELLITE_ADMIN_ERROR_MSG });
 	});
 
 	describe('admin', () => {

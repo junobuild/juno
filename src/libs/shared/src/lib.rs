@@ -8,7 +8,6 @@ pub mod controllers;
 pub mod day;
 #[doc(hidden)]
 pub mod env;
-pub mod factory;
 pub mod ic;
 #[doc(hidden)]
 pub mod impls;

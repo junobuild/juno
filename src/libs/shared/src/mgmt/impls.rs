@@ -1,4 +1,4 @@
-use crate::factory::types::NotifyError;
+use crate::mgmt::types::NotifyError;
 
 impl std::fmt::Display for NotifyError {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {

@@ -117,7 +117,9 @@
 
 	let send = false;
 	$: send =
-		balance > 0n && compare($versionStore?.missionControl?.current ?? '0.0.0', '0.0.12') > 0;
+		nonNullish(balance) &&
+		balance > 0n &&
+		compare($versionStore?.missionControl?.current ?? '0.0.0', '0.0.12') > 0;
 </script>
 
 {#if $authSignedInStore}

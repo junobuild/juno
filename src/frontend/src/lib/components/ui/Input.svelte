@@ -144,9 +144,6 @@
 
 	$: step = inputType === 'number' ? step ?? 'any' : undefined;
 	$: autocomplete = inputType !== 'number' && !currency ? autocomplete ?? 'off' : undefined;
-
-	let displayInnerEnd: boolean;
-	$: displayInnerEnd = nonNullish($$slots['inner-end']);
 </script>
 
 <input
@@ -168,6 +165,5 @@
 	on:focus
 	on:input={handleInput}
 	on:keydown={handleKeyDown}
-	class:inner-end={displayInnerEnd}
 	data-1p-ignore={ignore1Password}
 />

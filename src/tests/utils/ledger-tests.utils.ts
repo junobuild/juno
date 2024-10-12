@@ -3,7 +3,7 @@ import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
 import type { _SERVICE as LedgerActor } from '@dfinity/ledger-icp/dist/candid/ledger';
-// @ts-expect-error
+// @ts-expect-error init is not packaged / exposed
 import { idlFactory, init } from '@dfinity/ledger-icp/dist/candid/ledger.idl.js';
 import type { CanisterFixture, PocketIc } from '@hadronous/pic';
 import { assertNonNullish } from '@junobuild/utils';

@@ -1,11 +1,11 @@
 use candid::Principal;
 use ic_cdk::id;
 use ic_ledger_types::{
-    account_balance, AccountBalanceArgs, AccountIdentifier, BlockIndex, Memo, Tokens,
+    account_balance, AccountBalanceArgs, AccountIdentifier, BlockIndex, Memo, Tokens, TransferArgs,
 };
 use junobuild_shared::constants::IC_TRANSACTION_FEE_ICP;
 use junobuild_shared::env::LEDGER;
-use junobuild_shared::ledger::{principal_to_account_identifier, transfer_token, SUB_ACCOUNT};
+use junobuild_shared::ledger::icp::{principal_to_account_identifier, transfer_token, SUB_ACCOUNT};
 
 /// Withdraws the entire balance of the Console — i.e., withdraws the payments for the additional
 /// Satellites and Orbiters that have been made.
@@ -36,15 +36,19 @@ pub async fn withdraw_balance() -> Result<BlockIndex, String> {
 
     let balance = console_balance().await?;
 
-    let block_index = transfer_token(
-        account_identifier,
-        Memo(0),
-        balance - IC_TRANSACTION_FEE_ICP,
-        IC_TRANSACTION_FEE_ICP,
-    )
-    .await
-    .map_err(|e| format!("failed to call ledger: {:?}", e))?
-    .map_err(|e| format!("ledger transfer error {:?}", e))?;
+    let args = TransferArgs {
+        memo: Memo(0),
+        amount: balance - IC_TRANSACTION_FEE_ICP,
+        fee: IC_TRANSACTION_FEE_ICP,
+        from_subaccount: Some(SUB_ACCOUNT),
+        to: account_identifier,
+        created_at_time: None,
+    };
+
+    let block_index = transfer_token(args)
+        .await
+        .map_err(|e| format!("failed to call ledger: {:?}", e))?
+        .map_err(|e| format!("ledger transfer error {:?}", e))?;
 
     Ok(block_index)
 }

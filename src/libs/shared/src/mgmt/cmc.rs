@@ -1,12 +1,12 @@
+use crate::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP};
+use crate::env::CMC;
+use crate::ledger::icp::transfer_payment;
+use crate::mgmt::types::{Cycles, NotifyError, TopUpCanisterArgs};
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::call;
 use ic_ledger_types::{Subaccount, Tokens};
-use junobuild_shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP};
-use junobuild_shared::env::CMC;
-use junobuild_shared::ledger::icp::transfer_payment;
-use junobuild_shared::types::cmc::{Cycles, NotifyError, TopUpCanisterArgs};
 
 pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Result<(), String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'

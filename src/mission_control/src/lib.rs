@@ -20,7 +20,6 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
-use crate::mgmt::canister::top_up_canister;
 use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console, delete_orbiter, detach_orbiter,
@@ -49,6 +48,7 @@ use junobuild_shared::ic::deposit_cycles as deposit_cycles_shared;
 use junobuild_shared::ledger::icp::transfer_token;
 use junobuild_shared::ledger::icrc::icrc_transfer_token;
 use junobuild_shared::ledger::types::icrc::IcrcTransferResult;
+use junobuild_shared::mgmt::cmc::top_up_canister;
 use junobuild_shared::types::interface::{
     DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
 };

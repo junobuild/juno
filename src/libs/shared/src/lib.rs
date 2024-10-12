@@ -14,6 +14,7 @@ pub mod ic;
 pub mod impls;
 pub mod ledger;
 pub mod list;
+pub mod mgmt;
 #[doc(hidden)]
 pub mod msg;
 pub mod serializers;

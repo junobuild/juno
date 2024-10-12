@@ -51,10 +51,18 @@ describe('Mission Control', () => {
 
 		actor = c;
 
+		actor.setIdentity(controller);
+
 		const { canisterId } = await pic.setupCanister<OrbiterActor>({
 			idlFactory: idlFactorOrbiter,
 			wasm: ORBITER_WASM_PATH,
 			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
+			sender: controller.getPrincipal()
+		});
+
+		await pic.updateCanisterSettings({
+			canisterId,
+			controllers: [controller.getPrincipal(), missionControlId],
 			sender: controller.getPrincipal()
 		});
 
@@ -67,6 +75,12 @@ describe('Mission Control', () => {
 			sender: controller.getPrincipal()
 		});
 
+		await pic.updateCanisterSettings({
+			canisterId: cId,
+			controllers: [controller.getPrincipal(), missionControlId],
+			sender: controller.getPrincipal()
+		});
+
 		satelliteId = cId;
 	});
 
@@ -74,11 +88,7 @@ describe('Mission Control', () => {
 		await pic?.tearDown();
 	});
 
-	describe('anonymous', () => {
-		beforeAll(() => {
-			actor.setIdentity(new AnonymousIdentity());
-		});
-
+	const testIdentity = () => {
 		it('should throw errors on set orbiter', async () => {
 			const { set_orbiter } = actor;
 
@@ -102,6 +112,22 @@ describe('Mission Control', () => {
 
 			await expect(unset_satellite(satelliteId)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
+	};
+
+	describe('anonymous', () => {
+		beforeAll(() => {
+			actor.setIdentity(new AnonymousIdentity());
+		});
+
+		testIdentity();
+	});
+
+	describe('unknown identity', () => {
+		beforeAll(() => {
+			actor.setIdentity(Ed25519KeyIdentity.generate());
+		});
+
+		testIdentity();
 	});
 
 	describe('admin', () => {

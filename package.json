@@ -48,7 +48,6 @@
 	"devDependencies": {
 		"@dfinity/ic-management": "^5.1.0",
 		"@dfinity/identity-secp256k1": "^1.4.0",
-		"@dfinity/ledger-icrc": "^2.4.0",
 		"@esbuild-plugins/node-modules-polyfill": "^0.2.2",
 		"@hadronous/pic": "^0.8.1",
 		"@junobuild/cli-tools": "^0.0.14",
@@ -89,6 +88,7 @@
 		"@dfinity/cmc": "^3.1.0",
 		"@dfinity/identity": "^1.4.0",
 		"@dfinity/ledger-icp": "^2.4.0",
+		"@dfinity/ledger-icrc": "^2.4.0",
 		"@dfinity/principal": "^1.4.0",
 		"@dfinity/utils": "^2.4.0",
 		"@junobuild/admin": "^0.0.55",

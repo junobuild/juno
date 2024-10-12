@@ -5,7 +5,7 @@ use ic_cdk::call;
 use ic_ledger_types::{Subaccount, Tokens};
 use junobuild_shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP};
 use junobuild_shared::env::CMC;
-use junobuild_shared::ledger::transfer_payment;
+use junobuild_shared::ledger::icp::transfer_payment;
 use junobuild_shared::types::cmc::{Cycles, NotifyError, TopUpCanisterArgs};
 
 pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Result<(), String> {

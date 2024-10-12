@@ -1,6 +1,6 @@
 use crate::env::LEDGER;
-use crate::types::ledger::{BlockIndexed, Blocks};
-use crate::utils::account_identifier_equal;
+use crate::ledger::types::icp::{BlockIndexed, Blocks};
+use crate::ledger::utils::account_identifier_equal;
 use candid::{Func, Principal};
 use futures::future::join_all;
 use ic_cdk::api::call::{CallResult, RejectionCode};
@@ -47,15 +47,28 @@ pub async fn transfer_payment(
     amount: Tokens,
     fee: Tokens,
 ) -> CallResult<TransferResult> {
+    let account_identifier: AccountIdentifier = principal_to_account_identifier(to, to_sub_account);
+
     let args = TransferArgs {
         memo,
         amount,
         fee,
         from_subaccount: Some(SUB_ACCOUNT),
-        to: principal_to_account_identifier(to, to_sub_account),
+        to: account_identifier,
         created_at_time: None,
     };
 
+    transfer_token(args).await
+}
+
+/// Initiates a transfer of ICP tokens using the provided arguments and "old" ICP account identifier.
+///
+/// # Arguments
+/// * `args` - A `TransferArgs` struct containing the details of the ICP transfer.
+///
+/// # Returns
+/// A `CallResult<TransferResult>` indicating either the success or failure of the ICP token transfer.
+pub async fn transfer_token(args: TransferArgs) -> CallResult<TransferResult> {
     let ledger = Principal::from_text(LEDGER).unwrap();
 
     transfer(ledger, args).await

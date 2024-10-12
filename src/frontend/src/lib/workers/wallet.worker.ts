@@ -1,4 +1,4 @@
-import { getTransactions } from '$lib/api/ledger.api';
+import { getTransactions } from '$lib/api/icp-index.api';
 import { PAGINATION, SYNC_WALLET_TIMER_INTERVAL } from '$lib/constants/constants';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { loadIdentity } from '$lib/utils/worker.utils';

@@ -12,6 +12,7 @@ candid.workspace = true
 ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
 ic-ledger-types.workspace = true
+icrc-ledger-types.workspace = true
 serde.workspace = true
 futures = "0.3.28"
 junobuild-shared = { path = "../libs/shared" }

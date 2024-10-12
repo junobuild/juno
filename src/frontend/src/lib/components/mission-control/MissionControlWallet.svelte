@@ -9,7 +9,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 	import { onMount } from 'svelte';
-	import { getAccountIdentifier, getTransactions } from '$lib/api/ledger.api';
+	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
 	import { getCredits } from '$lib/api/console.api';
 	import { toasts } from '$lib/stores/toasts.store';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
@@ -18,6 +18,9 @@
 	import { fade } from 'svelte/transition';
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import Wallet from '$lib/components/core/Wallet.svelte';
+	import { emit } from '$lib/utils/events.utils';
+	import { versionStore } from '$lib/stores/version.store';
+	import { compare } from 'semver';
 
 	export let missionControlId: Principal;
 
@@ -95,6 +98,28 @@
 	 */
 
 	onMount(async () => await loadCredits());
+
+	/**
+	 * Actions
+	 */
+
+	const openModal = () => {
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'send_tokens',
+				detail: {
+					balance
+				}
+			}
+		});
+	};
+
+	let send = false;
+	$: send =
+		nonNullish(balance) &&
+		balance > 0n &&
+		compare($versionStore?.missionControl?.current ?? '0.0.0', '0.0.12') > 0;
 </script>
 
 {#if $authSignedInStore}
@@ -104,6 +129,13 @@
 
 			<div class="columns-3">
 				<div>
+					<Value>
+						<svelte:fragment slot="label">{$i18n.wallet.wallet_id}</svelte:fragment>
+						<p>
+							<Identifier shorten={false} identifier={missionControlId.toText()} />
+						</p>
+					</Value>
+
 					<Value>
 						<svelte:fragment slot="label">{$i18n.wallet.account_identifier}</svelte:fragment>
 						<p>
@@ -138,6 +170,10 @@
 				</div>
 			</div>
 		</div>
+
+		{#if send}
+			<button in:fade on:click={openModal}>{$i18n.wallet.send}</button>
+		{/if}
 
 		<Transactions
 			{transactions}

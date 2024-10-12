@@ -43,7 +43,9 @@
 		"refresh": "刷新",
 		"reload": "Reload",
 		"open_website": "打开Juno网站以及文档",
-		"file": "文件"
+		"file": "文件",
+		"review": "Review",
+		"confirm": "Confirm"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -201,7 +203,19 @@
 		"memo_received": "已收到",
 		"memo_sent": "已发送",
 		"export_title": "导出为 CSV",
-		"export_info": "这个过程将导出显示的事务为 CSV 文件. 确认处理?"
+		"export_info": "这个过程将导出显示的事务为 CSV 文件. 确认处理?",
+		"send": "Send",
+		"send_information": "Send tokens securely to any address. Your wallet currently holds <strong>{0}</strong> ICP.",
+		"destination": "Destination",
+		"destination_placeholder": "Enter destination address",
+		"icp_amount": "Amount (ICP)",
+		"amount_placeholder": "Enter an amount",
+		"wallet_id": "Wallet ID",
+		"sending": "Sending",
+		"sending_in_progress": "Sending...",
+		"fee": "Fee",
+		"review_and_confirm": "Review the details below and confirm to proceed with your transaction.",
+		"icp_on_its_way": "Your ICP is on its way!"
 	},
 	"authentication": {
 		"title": "认证",
@@ -411,7 +425,12 @@
 		"no_file_selected_for_upload": "没有选择要上传的文件.",
 		"upload_error": "上传文件时出现异常错误.",
 		"no_collection_for_upload": "异常错误，没有选择用于上传的集合.",
-		"invalid_email": "请提供一个有效的邮箱地址."
+		"invalid_email": "请提供一个有效的邮箱地址.",
+		"invalid_destination": "Please enter a valid ICP or ICRC destination address.",
+		"empty_amount": "Please enter an amount for the transfer.",
+		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",
+		"empty_balance": "Your wallet does not have any available funds.",
+		"sending_error": "Unexpected error(s) while sending the tokens."
 	},
 	"document": {
 		"owner": "拥有者",

@@ -8,10 +8,10 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import {
-	ADMIN_ERROR_MSG,
 	CONTROLLER_ERROR_MSG,
 	INVALID_VERSION_ERROR_MSG,
-	NO_VERSION_ERROR_MSG
+	NO_VERSION_ERROR_MSG,
+	SATELLITE_ADMIN_ERROR_MSG
 } from './constants/satellite-tests.constants';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -195,20 +195,22 @@ describe('Satellite', () => {
 		it('should throw errors on creating collections', async () => {
 			const { set_rule } = actor;
 
-			await expect(set_rule({ Db: null }, 'user-test', setRule)).rejects.toThrow(ADMIN_ERROR_MSG);
+			await expect(set_rule({ Db: null }, 'user-test', setRule)).rejects.toThrow(
+				SATELLITE_ADMIN_ERROR_MSG
+			);
 		});
 
 		it('should throw errors on list collections', async () => {
 			const { list_rules } = actor;
 
-			await expect(list_rules({ Db: null })).rejects.toThrow(ADMIN_ERROR_MSG);
+			await expect(list_rules({ Db: null })).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on deleting collections', async () => {
 			const { del_rule } = actor;
 
 			await expect(del_rule({ Db: null }, 'test', { version: testRuleVersion })).rejects.toThrow(
-				ADMIN_ERROR_MSG
+				SATELLITE_ADMIN_ERROR_MSG
 			);
 		});
 
@@ -226,13 +228,13 @@ describe('Satellite', () => {
 						scope: { Admin: null }
 					}
 				})
-			).rejects.toThrow(ADMIN_ERROR_MSG);
+			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on list controllers', async () => {
 			const { list_controllers } = actor;
 
-			await expect(list_controllers()).rejects.toThrow(ADMIN_ERROR_MSG);
+			await expect(list_controllers()).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on deleting controller', async () => {
@@ -242,7 +244,7 @@ describe('Satellite', () => {
 				del_controllers({
 					controllers: [controller.getPrincipal()]
 				})
-			).rejects.toThrow(ADMIN_ERROR_MSG);
+			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on deleting docs', async () => {
@@ -277,7 +279,7 @@ describe('Satellite', () => {
 					cycles: 123n,
 					destination_id: user.getPrincipal()
 				})
-			).rejects.toThrow(ADMIN_ERROR_MSG);
+			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on getting memory size', async () => {

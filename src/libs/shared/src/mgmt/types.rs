@@ -1,7 +1,7 @@
 use candid::{CandidType, Principal};
 use ic_cdk::api::management_canister::main::{CanisterId, CanisterSettings};
 use ic_ledger_types::BlockIndex;
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
 pub type Cycles = u128;
 
@@ -26,7 +26,15 @@ pub struct TopUpCanisterArgs {
     pub canister_id: Principal,
 }
 
-pub type CreateCanisterResult = Result<CanisterId, NotifyError>;
+#[derive(CandidType, Deserialize)]
+pub enum CreateCanisterError {
+    Refunded {
+        refund_amount: u128,
+        create_error: String,
+    },
+}
+
+pub type CreateCanisterResult = Result<CanisterId, CreateCanisterError>;
 
 #[derive(CandidType, Deserialize)]
 pub struct SubnetFilter {
@@ -50,4 +58,3 @@ pub struct CreateCanister {
     pub subnet_selection: Option<SubnetSelection>,
     pub settings: Option<CanisterSettings>,
 }
-

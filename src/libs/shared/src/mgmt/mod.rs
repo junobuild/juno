@@ -1,3 +1,3 @@
 pub mod cmc;
-mod types;
 mod impls;
+mod types;

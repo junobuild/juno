@@ -1,14 +1,18 @@
-use crate::constants::{CREATE_CANISTER_CYCLES, IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP, WASM_MEMORY_LIMIT};
+use crate::constants::{
+    CREATE_CANISTER_CYCLES, IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP, WASM_MEMORY_LIMIT,
+};
 use crate::env::CMC;
+use crate::ic::install_code;
 use crate::ledger::icp::transfer_payment;
-use crate::mgmt::types::{CreateCanister, CreateCanisterResult, Cycles, NotifyError, TopUpCanisterArgs};
+use crate::mgmt::types::{
+    CreateCanister, CreateCanisterResult, Cycles, NotifyError, TopUpCanisterArgs,
+};
+use crate::types::ic::WasmArg;
 use candid::{Nat, Principal};
 use ic_cdk::api::call::{call_with_payment128, CallResult};
 use ic_cdk::api::management_canister::main::{CanisterId, CanisterInstallMode, CanisterSettings};
 use ic_cdk::call;
 use ic_ledger_types::{Subaccount, Tokens};
-use crate::ic::install_code;
-use crate::types::ic::WasmArg;
 
 pub async fn top_up_canister(canister_id: &CanisterId, amount: &Tokens) -> Result<(), String> {
     // We need to hold back 1 transaction fee for the 'send' and also 1 for the 'notify'
@@ -54,7 +58,6 @@ fn convert_principal_to_sub_account(principal_id: &[u8]) -> Subaccount {
     Subaccount(bytes)
 }
 
-
 /// Asynchronously creates a new canister and installs provided Wasm code with additional cycles.
 ///
 /// # Arguments
@@ -92,7 +95,7 @@ pub async fn cmc_create_canister_install_code(
         (create_canister_arg,),
         CREATE_CANISTER_CYCLES + cycles,
     )
-        .await;
+    .await;
 
     match result {
         Err((_, message)) => Err(["Failed to call CMC to create canister.", &message].join(" - ")),

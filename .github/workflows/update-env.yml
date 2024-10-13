@@ -1,0 +1,33 @@
+name: Update Env
+
+on:
+  schedule:
+    - cron: '30 3 * * MON'
+  workflow_dispatch:
+
+jobs:
+  update-subnets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare
+        uses: ./.github/actions/prepare
+      - name: Update
+        run: npm run build:subnets
+
+      - name: Check for Changes
+        run: |
+          if ! git diff --quiet; then
+            echo "CHANGES_DETECTED=true" >> $GITHUB_ENV
+          fi
+
+      # This action creates a PR only if there are changes.
+      - name: Create Pull Request
+        if: env.CHANGES_DETECTED == 'true'
+        uses: ./.github/actions/create-pr
+        with:
+          branch: bot-cmc-subnets-update
+          title: 'feat(frontend): Update Subnets'
+          body: |
+            Modifications have been made to the list of default subnets known by the CMC canister.

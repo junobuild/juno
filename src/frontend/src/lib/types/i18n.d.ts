@@ -49,6 +49,8 @@ interface I18nCore {
 	file: string;
 	review: string;
 	confirm: string;
+	collapse: string;
+	expand: string;
 }
 
 interface I18nCanisters {
@@ -140,6 +142,7 @@ interface I18nCanisters {
 	no_update_required: string;
 	controllers: string;
 	public: string;
+	advanced_options: string;
 }
 
 interface I18nSign_in {

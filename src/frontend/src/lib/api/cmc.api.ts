@@ -2,7 +2,7 @@ import { CMC_CANISTER_ID } from '$lib/constants/constants';
 import { getAgent } from '$lib/utils/agent.utils';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { CMCCanister } from '@dfinity/cmc';
-import {Principal} from "@dfinity/principal";
+import { Principal } from '@dfinity/principal';
 
 const NUMBER_XDR_PER_ONE_ICP = 10_000;
 
@@ -30,5 +30,5 @@ export const getDefaultSubnets = async (): Promise<Principal[]> => {
 		canisterId: Principal.fromText(CMC_CANISTER_ID)
 	});
 
-	return await getDefaultSubnetsApi({certified: false})
+	return await getDefaultSubnetsApi({ certified: false });
 };

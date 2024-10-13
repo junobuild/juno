@@ -15,6 +15,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
+	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -103,6 +104,8 @@
 						required
 					/>
 				</Value>
+
+				<CanisterAdvancedOptions />
 
 				<button
 					type="submit"

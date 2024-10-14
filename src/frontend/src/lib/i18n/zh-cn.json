@@ -137,7 +137,10 @@
 		"in_t_cycles": "以 T Cycles 为单位",
 		"no_update_required": "没有设置修改, 所以没有需要更新的.",
 		"controllers": "控制者",
-		"public": "公开"
+		"public": "公开",
+		"advanced_options": "Advanced Options",
+		"subnet": "Subnet",
+		"default_subnet": "Default (same as Juno)"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

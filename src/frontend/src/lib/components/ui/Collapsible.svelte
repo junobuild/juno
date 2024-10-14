@@ -58,42 +58,43 @@
 	const toggle = () => toggleContent();
 </script>
 
-<div class="collapsible" class:expanded>
-	<div
+<div class="collapsible">
+<div
 		id={nonNullish(id) ? `heading${id}` : undefined}
 		role="button"
 		class="header"
 		on:click={toggle}
 		on:keypress={($event) => handleKeyPress({ $event, callback: toggle })}
-	>
-		<button
-			class="text"
+>
+	<button
+			type="button"
+			class="square"
 			class:expanded
 			aria-expanded={expanded}
 			aria-controls={id}
 			title={expanded ? $i18n.core.collapse : $i18n.core.expand}
 			tabindex="-1"
-		>
-			<IconChevron />
-		</button>
-		<slot name="header" />
-	</div>
-	<div
+	>
+		<IconChevron size="16px" />
+	</button>
+	<slot name="header" />
+</div>
+<div
 		role="definition"
 		class="wrapper"
 		class:expanded
 		style={`${maxHeightStyle(maxHeight)}${overflyYStyle(maxHeight)}`}
-	>
-		<div
+>
+	<div
 			{id}
 			aria-labelledby={nonNullish(id) ? `heading${id}` : undefined}
 			class="content"
 			class:wrapHeight
 			bind:this={container}
-		>
-			<slot />
-		</div>
+	>
+		<slot />
 	</div>
+</div>
 </div>
 
 <style lang="scss">
@@ -101,24 +102,20 @@
 	@use '../../styles/mixins/media';
 
 	.collapsible {
-		border-radius: var(--border-radius);
-		margin: var(--padding) 0 var(--padding-2x);
-		padding: var(--padding-0_5x) var(--padding);
-
-		border: 1px solid var(--color-card-contrast);
+		margin: var(--padding-1_5x) 0 var(--padding-4x);
 	}
 
 	.header {
 		position: relative;
 
 		display: flex;
-		align-items: center;
 
-		gap: var(--padding-0_5x);
+		gap: var(--padding);
 
 		outline: none;
 
 		color: var(--placeholder-color);
+		font-size: var(--font-size-small);
 
 		@include interaction.tappable;
 		user-select: none;
@@ -130,11 +127,6 @@
 
 	button {
 		transform: rotate(90deg);
-
-		&.text {
-			margin: 0;
-			padding: 0;
-		}
 
 		:global(svg) {
 			transition: transform var(--animation-time);

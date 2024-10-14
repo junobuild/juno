@@ -143,6 +143,8 @@ interface I18nCanisters {
 	controllers: string;
 	public: string;
 	advanced_options: string;
+	subnet: string;
+	default_subnet: string;
 }
 
 interface I18nSign_in {

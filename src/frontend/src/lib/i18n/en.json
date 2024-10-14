@@ -138,7 +138,9 @@
 		"no_update_required": "No settings have been modified, so the settings do not need to be updated.",
 		"controllers": "Controllers",
 		"public": "Public",
-		"advanced_options": "Advanced Options"
+		"advanced_options": "Advanced Options",
+		"subnet": "Subnet",
+		"default_subnet": "Default (same as Juno)"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

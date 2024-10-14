@@ -135,6 +135,8 @@
 	form {
 		display: flex;
 		flex-direction: column;
+
+		padding: var(--padding-2x) 0 0;
 	}
 
 	button {

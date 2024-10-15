@@ -5,9 +5,13 @@
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
-	import { createSatellite, loadSatellites } from '$lib/services/satellites.services';
+	import {
+		createSatellite,
+		createSatelliteWithConfig,
+		loadSatellites
+	} from '$lib/services/satellites.services';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
@@ -16,6 +20,8 @@
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
+	import type { PrincipalText } from '$lib/types/itentity';
+	import { Principal } from '@dfinity/principal';
 
 	export let detail: JunoModalDetail;
 
@@ -36,9 +42,14 @@
 		steps = 'in_progress';
 
 		try {
-			satellite = await createSatellite({
+			const fn = nonNullish(subnetId) ? createSatelliteWithConfig : createSatellite;
+
+			satellite = await fn({
 				missionControl: $missionControlStore,
-				satelliteName
+				config: {
+					name: satelliteName,
+					...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+				}
 			});
 
 			// Reload list of satellites before navigation
@@ -66,6 +77,7 @@
 	};
 
 	let satelliteName: string | undefined = undefined;
+	let subnetId: PrincipalText | undefined;
 </script>
 
 <Modal on:junoClose>
@@ -105,7 +117,7 @@
 					/>
 				</Value>
 
-				<CanisterAdvancedOptions />
+				<CanisterAdvancedOptions bind:subnetId />
 
 				<button
 					type="submit"

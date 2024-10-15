@@ -4,14 +4,21 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
-	import { createOrbiter, loadOrbiters } from '$lib/services/orbiters.services';
+	import {
+		createOrbiter,
+		createOrbiterWithConfig,
+		loadOrbiters
+	} from '$lib/services/orbiters.services';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
+	import type { PrincipalText } from '$lib/types/itentity';
+	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
+	import { Principal } from '@dfinity/principal';
 
 	export let detail: JunoModalDetail;
 
@@ -24,8 +31,13 @@
 		steps = 'in_progress';
 
 		try {
-			await createOrbiter({
-				missionControl: $missionControlStore
+			const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
+
+			await fn({
+				missionControl: $missionControlStore,
+				config: {
+					...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+				}
 			});
 
 			// Reload list of orbiters before navigation
@@ -46,6 +58,8 @@
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
+
+	let subnetId: PrincipalText | undefined;
 </script>
 
 <Modal on:junoClose>
@@ -74,6 +88,8 @@
 			priceLabel={$i18n.analytics.create_orbiter_price}
 		>
 			<form on:submit|preventDefault={onSubmit}>
+				<CanisterAdvancedOptions bind:subnetId />
+
 				<button
 					type="submit"
 					disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}

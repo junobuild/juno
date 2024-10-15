@@ -5,10 +5,6 @@
 	import type { PrincipalText } from '$lib/types/itentity';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';
-	import { arrayBufferToUint8Array } from '@dfinity/utils';
-	import { getAgent } from '$lib/utils/agent.utils';
-	import { AnonymousIdentity, getDefaultAgent } from '@dfinity/agent';
-	import { Principal } from '@dfinity/principal';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 
 	export let subnetId: PrincipalText | undefined;

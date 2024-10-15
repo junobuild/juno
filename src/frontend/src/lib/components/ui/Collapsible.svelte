@@ -59,14 +59,15 @@
 </script>
 
 <div class="collapsible">
-<div
+	<div
 		id={nonNullish(id) ? `heading${id}` : undefined}
 		role="button"
 		class="header"
 		on:click={toggle}
 		on:keypress={($event) => handleKeyPress({ $event, callback: toggle })}
->
-	<button
+		tabindex="-1"
+	>
+		<button
 			type="button"
 			class="square"
 			class:expanded
@@ -74,27 +75,27 @@
 			aria-controls={id}
 			title={expanded ? $i18n.core.collapse : $i18n.core.expand}
 			tabindex="-1"
-	>
-		<IconChevron size="16px" />
-	</button>
-	<slot name="header" />
-</div>
-<div
+		>
+			<IconChevron size="16px" />
+		</button>
+		<slot name="header" />
+	</div>
+	<div
 		role="definition"
 		class="wrapper"
 		class:expanded
 		style={`${maxHeightStyle(maxHeight)}${overflyYStyle(maxHeight)}`}
->
-	<div
+	>
+		<div
 			{id}
 			aria-labelledby={nonNullish(id) ? `heading${id}` : undefined}
 			class="content"
 			class:wrapHeight
 			bind:this={container}
-	>
-		<slot />
+		>
+			<slot />
+		</div>
 	</div>
-</div>
 </div>
 
 <style lang="scss">

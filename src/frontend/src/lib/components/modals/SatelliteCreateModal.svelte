@@ -15,6 +15,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
+	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -104,6 +105,8 @@
 					/>
 				</Value>
 
+				<CanisterAdvancedOptions />
+
 				<button
 					type="submit"
 					disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
@@ -132,6 +135,8 @@
 	form {
 		display: flex;
 		flex-direction: column;
+
+		padding: var(--padding-2x) 0 0;
 	}
 
 	button {

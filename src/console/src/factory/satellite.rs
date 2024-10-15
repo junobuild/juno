@@ -4,7 +4,7 @@ use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
 use crate::wasm::satellite_wasm_arg;
 use candid::Principal;
 use junobuild_shared::constants::CREATE_SATELLITE_CYCLES;
-use junobuild_shared::ic::create_canister_install_code;
+use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 
@@ -30,7 +30,7 @@ async fn create_satellite_wasm(
     user: UserId,
 ) -> Result<Principal, String> {
     let wasm_arg = satellite_wasm_arg(&user, &mission_control_id)?;
-    let result = create_canister_install_code(
+    let result = cmc_create_canister_install_code(
         Vec::from([console, mission_control_id, user]),
         &wasm_arg,
         CREATE_SATELLITE_CYCLES,

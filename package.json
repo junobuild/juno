@@ -86,7 +86,7 @@
 	"dependencies": {
 		"@dfinity/agent": "^1.4.0",
 		"@dfinity/auth-client": "^1.4.0",
-		"@dfinity/cmc": "^3.2.2-next-2024-10-13",
+		"@dfinity/cmc": "^3.2.2-next-2024-10-15",
 		"@dfinity/identity": "^1.4.0",
 		"@dfinity/ledger-icp": "^2.4.0",
 		"@dfinity/ledger-icrc": "^2.4.0",

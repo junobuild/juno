@@ -10,6 +10,7 @@ use junobuild_shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_
 use junobuild_shared::ledger::icp::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
 };
+use junobuild_shared::mgmt::types::SubnetId;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use std::future::Future;
@@ -20,10 +21,14 @@ pub async fn create_canister<F, Fut>(
     get_fee: &dyn Fn() -> Tokens,
     console: Principal,
     caller: Principal,
-    CreateCanisterArgs { user, block_index }: CreateCanisterArgs,
+    CreateCanisterArgs {
+        user,
+        block_index,
+        subnet_id,
+    }: CreateCanisterArgs,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
+    F: FnOnce(Principal, MissionControlId, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     // User should have a mission control center
@@ -38,8 +43,14 @@ where
                 // Guard too many requests
                 increment_rate()?;
 
-                return create_canister_with_credits(create, console, mission_control_id, user)
-                    .await;
+                return create_canister_with_credits(
+                    create,
+                    console,
+                    mission_control_id,
+                    user,
+                    subnet_id,
+                )
+                .await;
             }
 
             create_canister_with_payment(
@@ -47,7 +58,11 @@ where
                 console,
                 caller,
                 mission_control_id,
-                CreateCanisterArgs { user, block_index },
+                CreateCanisterArgs {
+                    user,
+                    block_index,
+                    subnet_id,
+                },
                 fee,
             )
             .await
@@ -60,13 +75,14 @@ async fn create_canister_with_credits<F, Fut>(
     console: Principal,
     mission_control_id: MissionControlId,
     user: UserId,
+    subnet_id: Option<SubnetId>,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
+    F: FnOnce(Principal, MissionControlId, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     // Create the satellite
-    let create_canister_result = create(console, mission_control_id, user).await;
+    let create_canister_result = create(console, mission_control_id, user, subnet_id).await;
 
     match create_canister_result {
         Err(_) => Err("Segment creation with credits failed.".to_string()),
@@ -87,11 +103,15 @@ async fn create_canister_with_payment<F, Fut>(
     console: Principal,
     caller: Principal,
     mission_control_id: MissionControlId,
-    CreateCanisterArgs { user, block_index }: CreateCanisterArgs,
+    CreateCanisterArgs {
+        user,
+        block_index,
+        subnet_id,
+    }: CreateCanisterArgs,
     fee: Tokens,
 ) -> Result<Principal, String>
 where
-    F: FnOnce(Principal, MissionControlId, UserId) -> Fut,
+    F: FnOnce(Principal, MissionControlId, UserId, Option<SubnetId>) -> Fut,
     Fut: Future<Output = Result<Principal, String>>,
 {
     let mission_control_account_identifier = principal_to_account_identifier(&caller, &SUB_ACCOUNT);
@@ -129,7 +149,7 @@ where
             insert_new_payment(&user, &mission_control_payment_block_index)?;
 
             // Create the canister (satellite or orbiter)
-            let create_canister_result = create(console, mission_control_id, user).await;
+            let create_canister_result = create(console, mission_control_id, user, subnet_id).await;
 
             match create_canister_result {
                 Err(error) => {

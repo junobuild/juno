@@ -96,6 +96,7 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::mgmt::types::SubnetId;
     use crate::types::core::Bytes;
     use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{
@@ -109,6 +110,7 @@ pub mod interface {
     pub struct CreateCanisterArgs {
         pub user: UserId,
         pub block_index: Option<BlockIndex>,
+        pub subnet_id: Option<SubnetId>,
     }
 
     #[derive(CandidType, Deserialize)]

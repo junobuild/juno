@@ -1,7 +1,7 @@
 use candid::{CandidType, Principal};
 use ic_cdk::api::management_canister::main::{CanisterId, CanisterSettings};
 use ic_ledger_types::BlockIndex;
-use serde::{Deserialize};
+use serde::Deserialize;
 
 pub type Cycles = u128;
 

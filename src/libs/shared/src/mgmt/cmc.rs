@@ -5,7 +5,8 @@ use crate::env::CMC;
 use crate::ic::install_code;
 use crate::ledger::icp::transfer_payment;
 use crate::mgmt::types::{
-    CreateCanister, CreateCanisterResult, Cycles, NotifyError, TopUpCanisterArgs,
+    CreateCanister, CreateCanisterResult, Cycles, NotifyError, SubnetId, SubnetSelection,
+    TopUpCanisterArgs,
 };
 use crate::types::ic::WasmArg;
 use candid::{Nat, Principal};
@@ -58,12 +59,13 @@ fn convert_principal_to_sub_account(principal_id: &[u8]) -> Subaccount {
     Subaccount(bytes)
 }
 
-/// Asynchronously creates a new canister and installs provided Wasm code with additional cycles.
+/// Asynchronously creates a new canister and installs the provided Wasm code with additional cycles.
 ///
 /// # Arguments
 /// - `controllers`: A list of `Principal` IDs to set as controllers of the new canister.
 /// - `wasm_arg`: Wasm binary and arguments to install in the new canister (`WasmArg` struct).
 /// - `cycles`: Additional cycles to deposit during canister creation on top of `CREATE_CANISTER_CYCLES`.
+/// - `subnet_id`: The `SubnetId` where the canister should be created.
 ///
 /// # Returns
 /// - `Ok(Principal)`: On success, returns the `Principal` ID of the newly created canister.
@@ -72,12 +74,15 @@ pub async fn cmc_create_canister_install_code(
     controllers: Vec<Principal>,
     wasm_arg: &WasmArg,
     cycles: u128,
+    subnet_id: &SubnetId,
 ) -> Result<Principal, String> {
     let cmc = Principal::from_text(CMC).unwrap();
 
     let create_canister_arg = CreateCanister {
         subnet_type: None,
-        subnet_selection: None,
+        subnet_selection: Some(SubnetSelection::Subnet {
+            subnet: subnet_id.clone(),
+        }),
         settings: Some(CanisterSettings {
             controllers: Some(controllers.clone()),
             compute_allocation: None,

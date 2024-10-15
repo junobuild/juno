@@ -4,7 +4,9 @@ use crate::store::heap::{get_satellite_fee, increment_satellites_rate};
 use crate::wasm::satellite_wasm_arg;
 use candid::Principal;
 use junobuild_shared::constants::CREATE_SATELLITE_CYCLES;
+use junobuild_shared::ic::create_canister_install_code;
 use junobuild_shared::mgmt::cmc::cmc_create_canister_install_code;
+use junobuild_shared::mgmt::types::SubnetId;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 
@@ -28,14 +30,18 @@ async fn create_satellite_wasm(
     console: Principal,
     mission_control_id: MissionControlId,
     user: UserId,
+    subnet_id: Option<SubnetId>,
 ) -> Result<Principal, String> {
     let wasm_arg = satellite_wasm_arg(&user, &mission_control_id)?;
-    let result = cmc_create_canister_install_code(
-        Vec::from([console, mission_control_id, user]),
-        &wasm_arg,
-        CREATE_SATELLITE_CYCLES,
-    )
-    .await;
+
+    let controller = Vec::from([console, mission_control_id, user]);
+
+    let result = if let Some(subnet_id) = subnet_id {
+        cmc_create_canister_install_code(controller, &wasm_arg, CREATE_SATELLITE_CYCLES, &subnet_id)
+            .await
+    } else {
+        create_canister_install_code(controller, &wasm_arg, CREATE_SATELLITE_CYCLES).await
+    };
 
     match result {
         Err(error) => Err(error),

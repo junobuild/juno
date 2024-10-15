@@ -3,6 +3,7 @@ use crate::segments::msg::SATELLITE_NOT_FOUND;
 use crate::segments::store::{
     add_satellite, delete_satellite as delete_satellite_store, get_satellite,
 };
+use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::Satellite;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
@@ -14,10 +15,26 @@ use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{SatelliteId, UserId};
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
+    let config: CreateCanisterConfig = CreateCanisterConfig {
+        name: Some(name.to_string()),
+        subnet_id: None,
+    };
+
     create_canister(
         "get_create_satellite_fee",
         create_and_save_satellite,
-        &Some(name.to_string().clone()),
+        &config,
+    )
+    .await
+}
+
+pub async fn create_satellite_with_config(
+    config: &CreateCanisterConfig,
+) -> Result<Satellite, String> {
+    create_canister(
+        "get_create_satellite_fee",
+        create_and_save_satellite,
+        config,
     )
     .await
 }
@@ -42,12 +59,16 @@ pub async fn delete_satellite(
 
 async fn create_and_save_satellite(
     user: UserId,
-    name: Option<String>,
+    CreateCanisterConfig { name, subnet_id }: CreateCanisterConfig,
     block_index: Option<BlockIndex>,
 ) -> Result<Satellite, String> {
     let console = Principal::from_text(CONSOLE).unwrap();
 
-    let args = CreateCanisterArgs { user, block_index };
+    let args = CreateCanisterArgs {
+        user,
+        block_index,
+        subnet_id: subnet_id.clone(),
+    };
 
     let result: CallResult<(SatelliteId,)> = call(console, "create_satellite", (args,)).await;
 

@@ -71,3 +71,15 @@ pub mod core {
         fn set_metadata(&self, metadata: &Metadata) -> Self;
     }
 }
+
+pub mod interface {
+    use candid::{CandidType, Deserialize};
+    use junobuild_shared::mgmt::types::SubnetId;
+    use serde::Serialize;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CreateCanisterConfig {
+        pub name: Option<String>,
+        pub subnet_id: Option<SubnetId>,
+    }
+}

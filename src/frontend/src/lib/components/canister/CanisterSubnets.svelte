@@ -7,12 +7,16 @@
 	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 
+	interface SubnetMetadata {
+		subnetId: PrincipalText;
+	}
+
 	export let subnetId: PrincipalText | undefined;
 
-	let filteredSubnets: PrincipalText[];
+	let filteredSubnets: SubnetMetadata[];
 	$: filteredSubnets = subnets.filter(({ subnetId }) => subnetId !== JUNO_SUBNET_ID);
 
-	let extendedSubnets: PrincipalText[] = [];
+	let extendedSubnets: SubnetMetadata[] = [];
 
 	const extendSubnets = async () => {
 		if (!DEV) {

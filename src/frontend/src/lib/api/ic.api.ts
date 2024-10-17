@@ -149,7 +149,10 @@ export const subnetId = async ({
 
 	const subnet: AgentCanisterStatus.Status | undefined = result.get('subnet');
 
-	return nonNullish(subnet) && 'subnetId' in (subnet as unknown as AgentCanisterStatus.SubnetStatus)
-		? (subnet as unknown as AgentCanisterStatus.SubnetStatus).subnetId
-		: undefined;
+	const isSubnetStatus = (
+		subnet: AgentCanisterStatus.Status | undefined
+	): subnet is AgentCanisterStatus.SubnetStatus =>
+		nonNullish(subnet) && typeof subnet === 'object' && 'subnetId' in subnet;
+
+	return isSubnetStatus(subnet) ? subnet.subnetId : undefined;
 };

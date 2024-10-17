@@ -105,13 +105,13 @@ pub async fn cmc_create_canister_install_code(
     match result {
         Err((_, message)) => Err(["Failed to call CMC to create canister.", &message].join(" - ")),
         Ok((result,)) => match result {
-            Err(err) => Err(format!("Failed to create canister - {}", err)),
+            Err(err) => Err(format!("Failed to create canister with CMC - {}", err)),
             Ok(canister_id) => {
                 let install =
                     install_code(canister_id, wasm_arg, CanisterInstallMode::Install).await;
 
                 match install {
-                    Err(_) => Err("Failed to install code in canister.".to_string()),
+                    Err(_) => Err("Failed to install code in canister created with CMC.".to_string()),
                     Ok(_) => Ok(canister_id),
                 }
             }

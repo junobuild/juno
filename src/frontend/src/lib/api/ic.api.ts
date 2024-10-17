@@ -134,7 +134,7 @@ export const canisterUpdateSettings = async ({
 	return update_settings({ canister_id: canisterId, sender_canister_version: [], settings });
 };
 
-export const subnetId = async ({
+export const getSubnetId = async ({
 	canisterId
 }: {
 	canisterId: string;

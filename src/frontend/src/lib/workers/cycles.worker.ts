@@ -1,6 +1,6 @@
 import type { MemorySize } from '$declarations/satellite/satellite.did';
 import { icpXdrConversionRate } from '$lib/api/cmc.api';
-import { canisterStatus, subnetId } from '$lib/api/ic.api';
+import { canisterStatus } from '$lib/api/ic.api';
 import { memorySize as memorySizeOrbiter } from '$lib/api/orbiter.worker.api';
 import { memorySize as memorySizeSatellite } from '$lib/api/satellites.worker.api';
 import {
@@ -107,9 +107,8 @@ const syncIcStatusCanisters = async ({
 	await Promise.allSettled(
 		segments.map(async ({ canisterId, segment }) => {
 			try {
-				const [canisterResult, subnet, memorySizeResult] = await Promise.allSettled([
+				const [canisterResult, memorySizeResult] = await Promise.allSettled([
 					canisterStatus({ canisterId, identity }),
-					subnetId({ canisterId }),
 					...(segment === 'satellite'
 						? [memorySizeSatellite({ satelliteId: canisterId, identity })]
 						: segment === 'orbiter'

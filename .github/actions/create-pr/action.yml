@@ -1,0 +1,29 @@
+name: Create Pull Request
+
+description: Create a pull request for the changes that were detected
+
+inputs:
+  title:
+    description: 'Title and commit message for the PR'
+    required: true
+  body:
+    description: 'Body of the PR'
+    required: true
+  branch:
+    description: 'Branch name for the PR'
+    required: true
+
+runs:
+  using: 'composite'
+  steps:
+    - name: Create Pull Request
+      uses: peter-evans/create-pull-request@v6
+      with:
+        base: main
+        commit-message: ${{ inputs.title }}
+        committer: GitHub <noreply@github.com>
+        author: gix-bot <gix-bot@users.noreply.github.com>
+        branch: ${{ inputs.branch }}
+        delete-branch: true
+        title: ${{ inputs.title }}
+        body: ${{ inputs.body }}

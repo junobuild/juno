@@ -14,6 +14,7 @@
 	},
 	"description": "An Open Source Blockchain-as-a-Service",
 	"scripts": {
+		"build:subnets": "node scripts/cmc.subnets.mjs && npm run format",
 		"build:csp": "node scripts/build.csp.mjs",
 		"build:post-process": "npm run build:csp",
 		"dev": "npm run i18n && vite dev",
@@ -85,7 +86,7 @@
 	"dependencies": {
 		"@dfinity/agent": "^1.4.0",
 		"@dfinity/auth-client": "^1.4.0",
-		"@dfinity/cmc": "^3.1.0",
+		"@dfinity/cmc": "^3.2.2-next-2024-10-15",
 		"@dfinity/identity": "^1.4.0",
 		"@dfinity/ledger-icp": "^2.4.0",
 		"@dfinity/ledger-icrc": "^2.4.0",

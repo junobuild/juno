@@ -1,4 +1,5 @@
 use crate::store::get_user;
+use crate::types::interface::CreateCanisterConfig;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, id};
@@ -14,10 +15,10 @@ use std::future::Future;
 pub async fn create_canister<F, Fut, T>(
     fee_method: &str,
     create_and_save: F,
-    name: &Option<String>,
+    config: &CreateCanisterConfig,
 ) -> Result<T, String>
 where
-    F: FnOnce(UserId, Option<String>, Option<BlockIndex>) -> Fut,
+    F: FnOnce(UserId, CreateCanisterConfig, Option<BlockIndex>) -> Fut,
     Fut: Future<Output = Result<T, String>>,
 {
     let console = Principal::from_text(CONSOLE).unwrap();
@@ -32,7 +33,7 @@ where
         Ok((fee,)) => {
             match fee {
                 // If no fee provided, the creation of the satellite is probably for free
-                None => create_and_save(user, name.clone(), None).await,
+                None => create_and_save(user, config.clone(), None).await,
                 Some(fee) => {
                     // If a free is set, transfer the requested fee to the console
                     let block_index = transfer_payment(
@@ -46,7 +47,7 @@ where
                     .map_err(|e| format!("failed to call ledger: {:?}", e))?
                     .map_err(|e| format!("ledger transfer error {:?}", e))?;
 
-                    create_and_save(user, name.clone(), Some(block_index)).await
+                    create_and_save(user, config.clone(), Some(block_index)).await
                 }
             }
         }

@@ -16,6 +16,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const CreateCanisterArgs = IDL.Record({
 		block_index: IDL.Opt(IDL.Nat64),
+		subnet_id: IDL.Opt(IDL.Principal),
 		user: IDL.Principal
 	});
 	const DeleteControllersArgs = IDL.Record({

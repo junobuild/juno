@@ -69,7 +69,7 @@ pub async fn create_canister_install_code(
 ///
 /// # Returns
 /// - A `CallResult<()>` indicating success or failure.
-async fn install_code(
+pub async fn install_code(
     canister_id: Principal,
     WasmArg { wasm, install_arg }: &WasmArg,
     mode: CanisterInstallMode,

@@ -22,10 +22,13 @@ use crate::guards::{
 };
 use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
-    attach_orbiter, create_orbiter as create_orbiter_console, delete_orbiter, detach_orbiter,
+    attach_orbiter, create_orbiter as create_orbiter_console,
+    create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
+    detach_orbiter,
 };
 use crate::segments::satellite::{
-    attach_satellite, create_satellite as create_satellite_console, delete_satellite,
+    attach_satellite, create_satellite as create_satellite_console,
+    create_satellite_with_config as create_satellite_with_config_console, delete_satellite,
     detach_satellite,
 };
 use crate::segments::store::get_orbiters;
@@ -35,6 +38,7 @@ use crate::store::{
     list_orbiter_statuses as list_orbiter_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
+use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::{
     Archive, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
 };
@@ -107,6 +111,13 @@ fn list_satellites() -> Satellites {
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn create_satellite(name: String) -> Satellite {
     create_satellite_console(&name)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn create_satellite_with_config(config: CreateCanisterConfig) -> Satellite {
+    create_satellite_with_config_console(&config)
         .await
         .unwrap_or_else(|e| trap(&e))
 }
@@ -201,6 +212,13 @@ fn list_orbiters() -> Orbiters {
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn create_orbiter(name: Option<String>) -> Orbiter {
     create_orbiter_console(&name)
+        .await
+        .unwrap_or_else(|e| trap(&e))
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn create_orbiter_with_config(config: CreateCanisterConfig) -> Orbiter {
+    create_orbiter_with_config_console(&config)
         .await
         .unwrap_or_else(|e| trap(&e))
 }

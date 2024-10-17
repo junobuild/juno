@@ -133,7 +133,7 @@
 	.content {
 		position: relative;
 
-		padding: var(--modal-content-padding, 0 2.45rem);
+		padding: var(--modal-content-padding, 0 var(--padding-2x));
 
 		overflow: auto;
 		height: calc(100% - 60px);

@@ -21,33 +21,45 @@
 </script>
 
 {#if !extended}
-	<Value>
-		<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-		<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
-	</Value>
+	<div>
+		<Value>
+			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+			<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
+		</Value>
+	</div>
 {:else}
-	<Value>
-		<svelte:fragment slot="label">{$i18n.satellites.stock_version}</svelte:fragment>
-		<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
-	</Value>
+	<div>
+		<Value>
+			<svelte:fragment slot="label">{$i18n.satellites.stock_version}</svelte:fragment>
+			<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
+		</Value>
+	</div>
 
-	<Value>
-		<svelte:fragment slot="label">{$i18n.satellites.extended_version}</svelte:fragment>
-		<p>v{$versionStore?.satellites[satelliteId]?.currentBuild ?? '...'}</p>
-	</Value>
+	<div>
+		<Value>
+			<svelte:fragment slot="label">{$i18n.satellites.extended_version}</svelte:fragment>
+			<p>v{$versionStore?.satellites[satelliteId]?.currentBuild ?? '...'}</p>
+		</Value>
+	</div>
 {/if}
 
-<Value>
-	<svelte:fragment slot="label">{$i18n.satellites.build}</svelte:fragment>
-	<p class="build">
-		{#if nonNullish(build)}
-			<span in:fade>{build}</span>
-		{/if}
-	</p>
-</Value>
+<div>
+	<Value>
+		<svelte:fragment slot="label">{$i18n.satellites.build}</svelte:fragment>
+		<p class="build">
+			{#if nonNullish(build)}
+				<span in:fade>{build}</span>
+			{/if}
+		</p>
+	</Value>
+</div>
 
 <style lang="scss">
 	.build {
 		text-transform: capitalize;
+	}
+
+	div:not(:first-of-type) {
+		padding: var(--padding) 0 0;
 	}
 </style>

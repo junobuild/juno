@@ -12,7 +12,7 @@ export const getAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 };
 
 const getMainnetAgent = async (params: GetAgentParams) => {
-	const host = 'https://icp0.io';
+	const host = 'https://icp-api.io';
 	return await HttpAgent.create({ ...params, host });
 };
 

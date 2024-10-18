@@ -48,7 +48,7 @@ use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::{Tokens, TransferArgs, TransferResult};
 use icrc_ledger_types::icrc1::transfer::TransferArg;
-use junobuild_shared::ic::deposit_cycles as deposit_cycles_shared;
+use junobuild_shared::mgmt::ic::deposit_cycles as deposit_cycles_shared;
 use junobuild_shared::ledger::icp::transfer_token;
 use junobuild_shared::ledger::icrc::icrc_transfer_token;
 use junobuild_shared::ledger::types::icrc::IcrcTransferResult;

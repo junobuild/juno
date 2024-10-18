@@ -2,7 +2,7 @@ use crate::constants::{
     CREATE_CANISTER_CYCLES, IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP, WASM_MEMORY_LIMIT,
 };
 use crate::env::CMC;
-use crate::ic::install_code;
+use crate::mgmt::ic::install_code;
 use crate::ledger::icp::transfer_payment;
 use crate::mgmt::types::cmc::{
     CreateCanister, CreateCanisterResult, Cycles, NotifyError, SubnetId, SubnetSelection,

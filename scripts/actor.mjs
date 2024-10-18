@@ -20,7 +20,11 @@ export const icAgent = async () => {
 };
 
 export const icAnonymousAgent = async () => {
-	return await HttpAgent.create({ identity: new AnonymousIdentity(), fetch, host: 'https://icp-api.io' });
+	return await HttpAgent.create({
+		identity: new AnonymousIdentity(),
+		fetch,
+		host: 'https://icp-api.io'
+	});
 };
 
 export const localAgent = async () => {

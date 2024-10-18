@@ -80,9 +80,7 @@ pub async fn cmc_create_canister_install_code(
 
     let create_canister_arg = CreateCanister {
         subnet_type: None,
-        subnet_selection: Some(SubnetSelection::Subnet {
-            subnet: subnet_id.clone(),
-        }),
+        subnet_selection: Some(SubnetSelection::Subnet { subnet: *subnet_id }),
         settings: Some(CanisterSettings {
             controllers: Some(controllers.clone()),
             compute_allocation: None,

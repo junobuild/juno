@@ -67,7 +67,7 @@ async fn create_and_save_satellite(
     let args = CreateCanisterArgs {
         user,
         block_index,
-        subnet_id: subnet_id.clone(),
+        subnet_id,
     };
 
     let result: CallResult<(SatelliteId,)> = call(console, "create_satellite", (args,)).await;

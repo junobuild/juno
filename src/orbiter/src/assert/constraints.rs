@@ -112,7 +112,7 @@ pub fn assert_page_view_length(page_view: &SetPageView) -> Result<(), String> {
     Ok(())
 }
 
-fn assert_session_id_length(session_id: &String) -> Result<(), String> {
+fn assert_session_id_length(session_id: &str) -> Result<(), String> {
     if session_id.len() > KEY_MAX_LENGTH {
         return Err(format!(
             "An analytic session ID must not be longer than {}.",

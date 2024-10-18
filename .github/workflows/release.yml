@@ -130,9 +130,9 @@ jobs:
     strategy:
       matrix:
         include:
-          - name: satellite_did_extension.did
+          - name: satellite_extension.did
             target: satellite
-            custom_did_file: satellite_did_extension.did
+            custom_did_file: satellite_extension.did
 
     steps:
       - uses: actions/checkout@v4

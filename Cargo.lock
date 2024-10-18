@@ -826,7 +826,7 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
 name = "junobuild-collections"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -852,7 +852,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.20-patch.2"
+version = "0.0.20-patch.3"
 dependencies = [
  "candid",
  "ciborium",
@@ -875,7 +875,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.0.19"
+version = "0.0.20"
 dependencies = [
  "candid",
  "ciborium",
@@ -892,7 +892,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.0.9"
+version = "0.0.10"
 dependencies = [
  "base64 0.13.1",
  "candid",

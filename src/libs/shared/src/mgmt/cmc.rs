@@ -4,7 +4,7 @@ use crate::constants::{
 use crate::env::CMC;
 use crate::ic::install_code;
 use crate::ledger::icp::transfer_payment;
-use crate::mgmt::types::{
+use crate::mgmt::types::cmc::{
     CreateCanister, CreateCanisterResult, Cycles, NotifyError, SubnetId, SubnetSelection,
     TopUpCanisterArgs,
 };

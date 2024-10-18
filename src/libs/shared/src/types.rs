@@ -96,7 +96,7 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::mgmt::types::SubnetId;
+    use crate::mgmt::types::cmc::SubnetId;
     use crate::types::core::Bytes;
     use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{

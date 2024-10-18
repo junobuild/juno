@@ -10,4 +10,3 @@
 		fill="var(--color-card)"
 	/>
 </svg>
-

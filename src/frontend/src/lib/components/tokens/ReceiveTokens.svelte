@@ -6,7 +6,7 @@
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import { fade } from 'svelte/transition';
 	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
-	import IconOisy from "$lib/components/icons/IconOisy.svelte";
+	import IconOisy from '$lib/components/icons/IconOisy.svelte';
 
 	export let missionControlId: Principal;
 	export let visible = false;
@@ -50,9 +50,7 @@
 
 				<p>Or connect wallet</p>
 
-				<button on:click={() => (steps = 'account_identifier')}
-				><IconOisy /> OISY</button
-				>
+				<button on:click={() => (steps = 'account_identifier')}><IconOisy /> OISY</button>
 			</div>
 		{/if}
 	</div>

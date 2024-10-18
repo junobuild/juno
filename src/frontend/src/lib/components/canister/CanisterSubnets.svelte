@@ -6,17 +6,14 @@
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
-
-	interface SubnetMetadata {
-		subnetId: PrincipalText;
-	}
+	import type { Subnet } from '$lib/types/subnet';
 
 	export let subnetId: PrincipalText | undefined;
 
-	let filteredSubnets: SubnetMetadata[];
+	let filteredSubnets: Subnet[];
 	$: filteredSubnets = subnets.filter(({ subnetId }) => subnetId !== JUNO_SUBNET_ID);
 
-	let extendedSubnets: SubnetMetadata[] = [];
+	let extendedSubnets: Subnet[] = [];
 
 	const extendSubnets = async () => {
 		if (!DEV) {

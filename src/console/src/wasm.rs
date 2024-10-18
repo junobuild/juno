@@ -4,7 +4,7 @@ use crate::store::heap::{
 };
 use candid::{Encode, Principal};
 use junobuild_shared::types::core::Blob;
-use junobuild_shared::types::ic::WasmArg;
+use junobuild_shared::mgmt::types::ic::WasmArg;
 use junobuild_shared::types::interface::{MissionControlArgs, SegmentArgs};
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;

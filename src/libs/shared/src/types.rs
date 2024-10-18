@@ -173,15 +173,6 @@ pub mod interface {
     }
 }
 
-pub mod ic {
-    use crate::types::core::Blob;
-
-    pub struct WasmArg {
-        pub wasm: Blob,
-        pub install_arg: Vec<u8>,
-    }
-}
-
 pub mod cronjob {
     use crate::types::state::Metadata;
     use candid::{CandidType, Principal};

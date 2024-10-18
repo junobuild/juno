@@ -8,7 +8,7 @@ use crate::mgmt::types::cmc::{
     CreateCanister, CreateCanisterResult, Cycles, NotifyError, SubnetId, SubnetSelection,
     TopUpCanisterArgs,
 };
-use crate::types::ic::WasmArg;
+use crate::mgmt::types::ic::WasmArg;
 use candid::{Nat, Principal};
 use ic_cdk::api::call::{call_with_payment128, CallResult};
 use ic_cdk::api::management_canister::main::{CanisterId, CanisterInstallMode, CanisterSettings};

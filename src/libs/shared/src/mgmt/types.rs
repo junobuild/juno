@@ -59,5 +59,13 @@ pub mod cmc {
         pub subnet_selection: Option<SubnetSelection>,
         pub settings: Option<CanisterSettings>,
     }
+}
 
+pub mod ic {
+    use crate::types::core::Blob;
+
+    pub struct WasmArg {
+        pub wasm: Blob,
+        pub install_arg: Vec<u8>,
+    }
 }

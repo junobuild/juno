@@ -117,7 +117,7 @@ pub fn get_token_protected_asset(
 }
 
 pub fn should_include_asset_for_deletion(collection: &CollectionKey, asset_path: &String) -> bool {
-    let excluded_paths = vec![
+    let excluded_paths = [
         WELL_KNOWN_CUSTOM_DOMAINS.to_string(),
         WELL_KNOWN_II_ALTERNATIVE_ORIGINS.to_string(),
     ];

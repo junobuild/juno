@@ -81,7 +81,7 @@ async fn create_and_save_orbiter(
     let args = CreateCanisterArgs {
         user,
         block_index,
-        subnet_id: subnet_id.clone(),
+        subnet_id,
     };
 
     let result: CallResult<(OrbiterId,)> = call(console, "create_orbiter", (args,)).await;

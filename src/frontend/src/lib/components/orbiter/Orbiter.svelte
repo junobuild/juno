@@ -7,7 +7,7 @@
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
-	import CanisterSubnet from "$lib/components/canister/CanisterSubnet.svelte";
+	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 
 	export let orbiter: Orbiter;
 </script>

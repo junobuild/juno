@@ -6,10 +6,10 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { nonNullish } from '@dfinity/utils';
-    import SkeletonText from "$lib/components/ui/SkeletonText.svelte";
-    import type {PrincipalText} from "$lib/types/itentity";
-    import { subnetsStore } from '$lib/stores/subnets.store'
-    import type {Subnet} from "$lib/types/subnet";
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import type { PrincipalText } from '$lib/types/itentity';
+	import { subnetsStore } from '$lib/stores/subnets.store';
+	import type { Subnet } from '$lib/types/subnet';
 
 	export let canisterId: Principal;
 
@@ -19,11 +19,11 @@
 		});
 	});
 
-    let subnet: Subnet | undefined;
-    $: subnet = $subnetsStore[canisterId.toText()];
+	let subnet: Subnet | undefined;
+	$: subnet = $subnetsStore[canisterId.toText()];
 
-    let subnetId: PrincipalText | undefined;
-    $: subnetId = subnet?.subnetId;
+	let subnetId: PrincipalText | undefined;
+	$: subnetId = subnet?.subnetId;
 </script>
 
 <div>
@@ -32,7 +32,7 @@
 		{#if nonNullish(subnetId)}
 			<Identifier identifier={subnetId} small={false} />
 		{:else}
-            <SkeletonText />
+			<SkeletonText />
 		{/if}
 	</Value>
 </div>

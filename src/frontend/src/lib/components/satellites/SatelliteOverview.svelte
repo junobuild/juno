@@ -10,7 +10,7 @@
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
 	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
-	import CanisterSubnet from "$lib/components/canister/CanisterSubnet.svelte";
+	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 
 	export let satellite: Satellite;
 

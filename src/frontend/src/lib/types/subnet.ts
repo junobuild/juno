@@ -1,6 +1,5 @@
-import type {PrincipalText} from "$lib/types/itentity";
+import type { PrincipalText } from '$lib/types/itentity';
 
 export interface Subnet {
-    subnetId: PrincipalText;
+	subnetId: PrincipalText;
 }
-

@@ -13,10 +13,10 @@ export const loadSubnetId = async ({
 	canisterId: Principal;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-    const canisterIdText = canisterId.toText();
+	const canisterIdText = canisterId.toText();
 
-    try {
-        const store = get(subnetsStore);
+	try {
+		const store = get(subnetsStore);
 		if (nonNullish(store[canisterIdText]) && !reload) {
 			return { success: true };
 		}
@@ -39,10 +39,10 @@ export const loadSubnetId = async ({
 			detail: err
 		});
 
-        subnetsStore.setSubnets({
-            canisterId: canisterIdText,
-            subnet: null
-        });
+		subnetsStore.setSubnets({
+			canisterId: canisterIdText,
+			subnet: null
+		});
 
 		return { success: false };
 	}

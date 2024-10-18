@@ -6,7 +6,7 @@
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
-	import type {Subnet} from "$lib/types/subnet";
+	import type { Subnet } from '$lib/types/subnet';
 
 	export let subnetId: PrincipalText | undefined;
 

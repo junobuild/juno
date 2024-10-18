@@ -919,7 +919,7 @@ dependencies = [
  "junobuild-collections 0.0.4",
  "junobuild-shared",
  "junobuild-storage 0.0.7-patch.1",
- "junobuild-utils 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "junobuild-utils 0.0.3",
  "rand",
  "regex",
  "serde",
@@ -1002,6 +1002,8 @@ dependencies = [
 [[package]]
 name = "junobuild-utils"
 version = "0.0.3"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "9c090377970d0b3c7970a51723f01ad8a4d26c425b828684e6184047d0e27de5"
 dependencies = [
  "candid",
  "serde",
@@ -1010,9 +1012,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-utils"
-version = "0.0.3"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c090377970d0b3c7970a51723f01ad8a4d26c425b828684e6184047d0e27de5"
+version = "0.0.4"
 dependencies = [
  "candid",
  "serde",

@@ -87,7 +87,7 @@ pub fn assert_write_permission(
         },
     }
 
-    if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) {
+    if collection.starts_with(SYS_COLLECTION_PREFIX) {
         return Err(format!(
             "Collection starts with {}, a reserved prefix",
             SYS_COLLECTION_PREFIX
@@ -105,7 +105,7 @@ pub fn assert_storage_reserved_collection(
     rules: &Rules,
 ) -> Result<(), String> {
     // We do not have to check system collection.
-    if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) {
+    if collection.starts_with(SYS_COLLECTION_PREFIX) {
         return Ok(());
     }
 

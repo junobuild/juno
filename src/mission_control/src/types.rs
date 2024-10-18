@@ -74,7 +74,7 @@ pub mod core {
 
 pub mod interface {
     use candid::{CandidType, Deserialize};
-    use junobuild_shared::mgmt::types::SubnetId;
+    use junobuild_shared::mgmt::types::cmc::SubnetId;
     use serde::Serialize;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

@@ -96,7 +96,7 @@ pub mod state {
 }
 
 pub mod interface {
-    use crate::mgmt::types::SubnetId;
+    use crate::mgmt::types::cmc::SubnetId;
     use crate::types::core::Bytes;
     use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{
@@ -170,15 +170,6 @@ pub mod interface {
     pub struct MemorySize {
         pub heap: Bytes,
         pub stable: Bytes,
-    }
-}
-
-pub mod ic {
-    use crate::types::core::Blob;
-
-    pub struct WasmArg {
-        pub wasm: Blob,
-        pub install_arg: Vec<u8>,
     }
 }
 

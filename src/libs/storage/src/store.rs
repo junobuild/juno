@@ -204,8 +204,7 @@ fn assert_key(
     }
 
     // Only controllers can write in reserved collections starting with #
-    if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) && !is_controller(caller, controllers)
-    {
+    if collection.starts_with(SYS_COLLECTION_PREFIX) && !is_controller(caller, controllers) {
         return Err(UPLOAD_NOT_ALLOWED);
     }
 

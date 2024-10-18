@@ -1,7 +1,7 @@
 <script lang="ts">
 	import QRCode from '$lib/components/ui/QRCode.svelte';
 	import { slide } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
+	import { quintOut, circOut } from 'svelte/easing';
 
 	export let ariaLabel: string | undefined = undefined;
 	export let value: string;
@@ -10,7 +10,7 @@
 <div
 	class="qrcode"
 	in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
-	out:slide={{ delay: 0, duration: 50, easing: quintOut, axis: 'y' }}
+	out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
 >
 	<QRCode {value} {ariaLabel} />
 </div>

@@ -826,7 +826,7 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
 name = "junobuild-collections"
-version = "0.0.4"
+version = "0.0.7"
 dependencies = [
  "candid",
  "ic-cdk",
@@ -852,7 +852,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.20-patch.1"
+version = "0.0.20-patch.3"
 dependencies = [
  "candid",
  "ciborium",
@@ -864,7 +864,7 @@ dependencies = [
  "junobuild-collections",
  "junobuild-shared",
  "junobuild-storage",
- "junobuild-utils 0.0.3 (registry+https://github.com/rust-lang/crates.io-index)",
+ "junobuild-utils 0.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand",
  "regex",
  "serde",
@@ -875,7 +875,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-shared"
-version = "0.0.18"
+version = "0.0.20"
 dependencies = [
  "candid",
  "ciborium",
@@ -892,7 +892,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.0.7-patch.1"
+version = "0.0.10"
 dependencies = [
  "base64 0.13.1",
  "candid",
@@ -918,7 +918,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-utils"
-version = "0.0.3"
+version = "0.0.4"
 dependencies = [
  "candid",
  "serde",
@@ -927,9 +927,9 @@ dependencies = [
 
 [[package]]
 name = "junobuild-utils"
-version = "0.0.3"
+version = "0.0.4"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "9c090377970d0b3c7970a51723f01ad8a4d26c425b828684e6184047d0e27de5"
+checksum = "526b6b74dc3a27a7c3c7da96abc1090b618efb2887d4d2c7893814a9790f19ab"
 dependencies = [
  "candid",
  "serde",
@@ -1065,7 +1065,7 @@ dependencies = [
 
 [[package]]
 name = "observatory"
-version = "0.0.6"
+version = "0.0.7"
 dependencies = [
  "candid",
  "ic-cdk",

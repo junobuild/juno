@@ -5,7 +5,7 @@ use junobuild_shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
 use junobuild_shared::controllers::{
     assert_controllers, assert_max_number_of_controllers, into_controller_ids,
 };
-use junobuild_shared::ic::update_canister_controllers;
+use junobuild_shared::mgmt::ic::update_canister_controllers;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{ControllerId, ControllerScope, Controllers};
 

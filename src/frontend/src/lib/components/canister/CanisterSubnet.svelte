@@ -19,7 +19,7 @@
 		});
 	});
 
-	let subnet: Subnet | undefined;
+	let subnet: Subnet | null | undefined;
 	$: subnet = $subnetsStore[canisterId.toText()];
 
 	let subnetId: PrincipalText | undefined;

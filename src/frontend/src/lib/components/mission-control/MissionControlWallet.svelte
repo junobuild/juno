@@ -186,7 +186,7 @@
 	</Wallet>
 {/if}
 
-<ReceiveTokens bind:visible={receiveVisible} />
+<ReceiveTokens bind:visible={receiveVisible} {missionControlId} />
 
 <style lang="scss">
 	p {

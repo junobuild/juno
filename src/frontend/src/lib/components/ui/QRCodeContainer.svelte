@@ -6,9 +6,7 @@
 </script>
 
 <div class="qrcode">
-	<div>
-		<QRCode {value} {ariaLabel} />
-	</div>
+	<QRCode {value} {ariaLabel} />
 </div>
 
 <style lang="scss">
@@ -18,13 +16,8 @@
 		min-width: calc(var(--padding) * 30);
 		padding: var(--padding-2x);
 
-		background: var(--color-card-contrast);
-		color: var(--color-card);
+		aspect-ratio: 1;
 
-		border-radius: calc(var(--border-radius) * 4);
-
-		> div {
-			border: 2px solid var(--color-card);
-		}
+		@include shadow.card-action;
 	}
 </style>

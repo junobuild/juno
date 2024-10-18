@@ -7,6 +7,7 @@ import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
+import type { OptionInvitationCode } from '$lib/types/console';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
@@ -16,22 +17,25 @@ import { get } from 'svelte/store';
 
 export const initMissionControl = async ({
 	identity,
+	invitationCode,
 	onInitMissionControlSuccess
 }: {
 	identity: Identity;
+	invitationCode: OptionInvitationCode;
 	onInitMissionControlSuccess: (missionControlId: Principal) => Promise<void>;
 }) =>
 	// eslint-disable-next-line no-async-promise-executor
 	new Promise<void>(async (resolve, reject) => {
 		try {
 			const { missionControlId } = await getMissionControl({
-				identity
+				identity,
+				invitationCode
 			});
 
 			if (isNullish(missionControlId)) {
 				setTimeout(async () => {
 					try {
-						await initMissionControl({ identity, onInitMissionControlSuccess });
+						await initMissionControl({ identity, invitationCode, onInitMissionControlSuccess });
 						resolve();
 					} catch (err: unknown) {
 						reject(err);
@@ -49,9 +53,11 @@ export const initMissionControl = async ({
 	});
 
 const getMissionControl = async ({
-	identity
+	identity,
+	invitationCode
 }: {
 	identity: Identity | undefined;
+	invitationCode: OptionInvitationCode;
 }): Promise<{
 	missionControlId: Principal | undefined;
 }> => {
@@ -59,7 +65,7 @@ const getMissionControl = async ({
 		throw new Error('Invalid identity.');
 	}
 
-	const mission_control = await initMissionControlApi(identity);
+	const mission_control = await initMissionControlApi({ identity, invitationCode });
 
 	const missionControlId: Principal | undefined = fromNullable<Principal>(
 		mission_control.mission_control_id

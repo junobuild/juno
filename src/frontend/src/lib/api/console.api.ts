@@ -1,10 +1,17 @@
 import type { MissionControl } from '$declarations/console/console.did';
+import type { OptionInvitationCode } from '$lib/types/console';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { getConsoleActor } from '$lib/utils/actor.juno.utils';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, toNullable } from '@dfinity/utils';
 
-export const initMissionControl = async (identity: OptionIdentity): Promise<MissionControl> => {
+export const initMissionControl = async ({
+	identity,
+	invitationCode
+}: {
+	identity: OptionIdentity;
+	invitationCode: OptionInvitationCode;
+}): Promise<MissionControl> => {
 	const actor = await getConsoleActor(identity);
 
 	const existingMissionControl: MissionControl | undefined = fromNullable<MissionControl>(
@@ -12,7 +19,7 @@ export const initMissionControl = async (identity: OptionIdentity): Promise<Miss
 	);
 
 	if (!existingMissionControl) {
-		return await actor.init_user_mission_control_center();
+		return await actor.init_user_mission_control_center(toNullable(invitationCode));
 	}
 
 	return existingMissionControl;

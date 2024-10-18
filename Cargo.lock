@@ -262,9 +262,9 @@ dependencies = [
  "ic-cdk-timers",
  "ic-ledger-types",
  "ic-stable-structures",
- "junobuild-collections 0.0.7",
- "junobuild-shared 0.0.20",
- "junobuild-storage 0.0.10",
+ "junobuild-collections",
+ "junobuild-shared",
+ "junobuild-storage",
  "regex",
  "serde",
  "serde_cbor",
@@ -826,27 +826,13 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 
 [[package]]
 name = "junobuild-collections"
-version = "0.0.6"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "7d762b746fd5b4c443004c43272335482fbbe89b8d6d47d2af46e86564563463"
-dependencies = [
- "candid",
- "ic-cdk",
- "ic-cdk-macros",
- "ic-cdk-timers",
- "junobuild-shared 0.0.19",
- "serde",
-]
-
-[[package]]
-name = "junobuild-collections"
 version = "0.0.7"
 dependencies = [
  "candid",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
- "junobuild-shared 0.0.20",
+ "junobuild-shared",
  "serde",
 ]
 
@@ -866,7 +852,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.20-patch.2"
+version = "0.0.20-patch.3"
 dependencies = [
  "candid",
  "ciborium",
@@ -875,9 +861,9 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-stable-structures",
- "junobuild-collections 0.0.6",
- "junobuild-shared 0.0.19",
- "junobuild-storage 0.0.9",
+ "junobuild-collections",
+ "junobuild-shared",
+ "junobuild-storage",
  "junobuild-utils 0.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand",
  "regex",
@@ -885,25 +871,6 @@ dependencies = [
  "serde_cbor",
  "serde_json",
  "url",
-]
-
-[[package]]
-name = "junobuild-shared"
-version = "0.0.19"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "05ec92716502f32ed85155fbd9837216fd64207ab4f2121aa9ab26c53d2bceef"
-dependencies = [
- "candid",
- "ciborium",
- "futures",
- "ic-cdk",
- "ic-cdk-macros",
- "ic-ledger-types",
- "ic-stable-structures",
- "icrc-ledger-types",
- "regex",
- "serde",
- "time",
 ]
 
 [[package]]
@@ -925,34 +892,6 @@ dependencies = [
 
 [[package]]
 name = "junobuild-storage"
-version = "0.0.9"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "8ec6c579982d6ac17f74c878ec351a80947b2eb510f3a5ee008f216eb33d2121"
-dependencies = [
- "base64 0.13.1",
- "candid",
- "globset",
- "hex",
- "ic-cdk",
- "ic-cdk-macros",
- "ic-cdk-timers",
- "ic-certification",
- "ic-representation-independent-hash",
- "ic-response-verification",
- "ic-stable-structures",
- "junobuild-collections 0.0.6",
- "junobuild-shared 0.0.19",
- "regex",
- "serde",
- "serde_bytes",
- "serde_cbor",
- "sha2",
- "url",
- "urlencoding",
-]
-
-[[package]]
-name = "junobuild-storage"
 version = "0.0.10"
 dependencies = [
  "base64 0.13.1",
@@ -966,8 +905,8 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-response-verification",
  "ic-stable-structures",
- "junobuild-collections 0.0.7",
- "junobuild-shared 0.0.20",
+ "junobuild-collections",
+ "junobuild-shared",
  "regex",
  "serde",
  "serde_bytes",
@@ -1074,7 +1013,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-ledger-types",
  "icrc-ledger-types",
- "junobuild-shared 0.0.20",
+ "junobuild-shared",
  "serde",
 ]
 
@@ -1132,7 +1071,7 @@ dependencies = [
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
- "junobuild-shared 0.0.20",
+ "junobuild-shared",
  "lazy_static",
  "serde",
 ]
@@ -1153,7 +1092,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-stable-structures",
  "isbot",
- "junobuild-shared 0.0.20",
+ "junobuild-shared",
  "lazy_static",
  "regex",
  "serde",

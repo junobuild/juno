@@ -6,6 +6,7 @@
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import { fade } from 'svelte/transition';
 	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
+	import IconOisy from "$lib/components/icons/IconOisy.svelte";
 
 	export let missionControlId: Principal;
 	export let visible = false;
@@ -47,7 +48,11 @@
 					><IconQRCode /> {$i18n.wallet.account_identifier}</button
 				>
 
-				<!-- <p>Or connect wallet</p> -->
+				<p>Or connect wallet</p>
+
+				<button on:click={() => (steps = 'account_identifier')}
+				><IconOisy /> OISY</button
+				>
 			</div>
 		{/if}
 	</div>
@@ -75,6 +80,7 @@
 		font-size: var(--font-size-small);
 		text-align: center;
 
-		padding: var(--padding-2x) 0;
+		padding: var(--padding-2x) 0 var(--padding-1_5x);
+		margin: 0;
 	}
 </style>

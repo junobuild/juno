@@ -76,11 +76,6 @@
 		}
 	}
 
-	form {
-		display: flex;
-		flex-direction: column;
-	}
-
 	button {
 		margin-top: var(--padding-2x);
 	}

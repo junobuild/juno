@@ -49,6 +49,8 @@ interface I18nCore {
 	file: string;
 	review: string;
 	confirm: string;
+	collapse: string;
+	expand: string;
 }
 
 interface I18nCanisters {
@@ -140,6 +142,10 @@ interface I18nCanisters {
 	no_update_required: string;
 	controllers: string;
 	public: string;
+	advanced_options: string;
+	subnet: string;
+	default_subnet: string;
+	subnet_id: string;
 }
 
 interface I18nSign_in {
@@ -213,6 +219,7 @@ interface I18nWallet {
 	export_title: string;
 	export_info: string;
 	send: string;
+	receive: string;
 	send_information: string;
 	destination: string;
 	destination_placeholder: string;
@@ -447,6 +454,7 @@ interface I18nErrors {
 	invalid_amount: string;
 	empty_balance: string;
 	sending_error: string;
+	subnet_loading_errors: string;
 }
 
 interface I18nDocument {

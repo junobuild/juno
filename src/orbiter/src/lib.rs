@@ -52,7 +52,7 @@ use junobuild_shared::constants::MAX_NUMBER_OF_SATELLITE_CONTROLLERS;
 use junobuild_shared::controllers::{
     assert_controllers, assert_max_number_of_controllers, init_controllers,
 };
-use junobuild_shared::ic::deposit_cycles as deposit_cycles_shared;
+use junobuild_shared::mgmt::ic::deposit_cycles as deposit_cycles_shared;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SegmentArgs, SetControllersArgs,
 };

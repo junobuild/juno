@@ -10,6 +10,7 @@
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
 	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
+	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 
 	export let satellite: Satellite;
 
@@ -28,6 +29,8 @@
 				<svelte:fragment slot="label">{$i18n.satellites.id}</svelte:fragment>
 				<Identifier identifier={satelliteId} shorten={false} small={false} />
 			</Value>
+
+			<CanisterSubnet canisterId={satellite.satellite_id} />
 
 			<SatelliteOverviewCustomDomain {satellite} />
 		</div>

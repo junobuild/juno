@@ -45,7 +45,9 @@
 		"open_website": "打开Juno网站以及文档",
 		"file": "文件",
 		"review": "Review",
-		"confirm": "Confirm"
+		"confirm": "Confirm",
+		"collapse": "Collapse",
+		"expand": "Expand"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -135,7 +137,11 @@
 		"in_t_cycles": "以 T Cycles 为单位",
 		"no_update_required": "没有设置修改, 所以没有需要更新的.",
 		"controllers": "控制者",
-		"public": "公开"
+		"public": "公开",
+		"advanced_options": "Advanced Options",
+		"subnet": "Subnet",
+		"default_subnet": "Default (same as Juno)",
+		"subnet_id": "Subnet ID"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -161,8 +167,8 @@
 		"satellite": "Satellite",
 		"ready": "你的 satellite 可以使用.",
 		"initializing": "初始化你的新的 satellite...",
-		"start": "让我们来创建一个新的 satellite",
-		"description": "satellite是一个web3容器，它为开发者提供了简化数据管理，存储以及权限管理等系统解决方案，完全运行在低能耗的区块链上.",
+		"start": "Create a satellite",
+		"description": "A satellite is a Web3 container for your project. It provides features like a simple key pair store, file storage, hosting, and authentication.",
 		"name": "名字",
 		"satellite_name": "Satellite 名字",
 		"enter_name": "输入你的 satellite 名字",
@@ -205,6 +211,7 @@
 		"export_title": "导出为 CSV",
 		"export_info": "这个过程将导出显示的事务为 CSV 文件. 确认处理?",
 		"send": "Send",
+		"receive": "Receive",
 		"send_information": "Send tokens securely to any address. Your wallet currently holds <strong>{0}</strong> ICP.",
 		"destination": "Destination",
 		"destination_placeholder": "Enter destination address",
@@ -430,7 +437,8 @@
 		"empty_amount": "Please enter an amount for the transfer.",
 		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",
 		"empty_balance": "Your wallet does not have any available funds.",
-		"sending_error": "Unexpected error(s) while sending the tokens."
+		"sending_error": "Unexpected error(s) while sending the tokens.",
+		"subnet_loading_errors": "Error while loading the subnet ID of the module."
 	},
 	"document": {
 		"owner": "拥有者",

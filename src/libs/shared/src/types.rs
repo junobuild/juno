@@ -96,6 +96,7 @@ pub mod state {
 }
 
 pub mod interface {
+    use crate::mgmt::types::cmc::SubnetId;
     use crate::types::core::Bytes;
     use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{
@@ -109,6 +110,7 @@ pub mod interface {
     pub struct CreateCanisterArgs {
         pub user: UserId,
         pub block_index: Option<BlockIndex>,
+        pub subnet_id: Option<SubnetId>,
     }
 
     #[derive(CandidType, Deserialize)]
@@ -168,44 +170,6 @@ pub mod interface {
     pub struct MemorySize {
         pub heap: Bytes,
         pub stable: Bytes,
-    }
-}
-
-pub mod ic {
-    use crate::types::core::Blob;
-
-    pub struct WasmArg {
-        pub wasm: Blob,
-        pub install_arg: Vec<u8>,
-    }
-}
-
-pub mod cmc {
-    use candid::{CandidType, Principal};
-    use ic_ledger_types::BlockIndex;
-    use serde::Deserialize;
-
-    pub type Cycles = u128;
-
-    #[derive(CandidType, Deserialize)]
-    pub enum NotifyError {
-        Refunded {
-            reason: String,
-            block_index: Option<BlockIndex>,
-        },
-        InvalidTransaction(String),
-        TransactionTooOld(BlockIndex),
-        Processing,
-        Other {
-            error_code: u64,
-            error_message: String,
-        },
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct TopUpCanisterArgs {
-        pub block_index: BlockIndex,
-        pub canister_id: Principal,
     }
 }
 

@@ -5,6 +5,8 @@
 	--value-color: #606060;
 	--label-color: #c4c4c4;
 
+	--placeholder-color: rgba(var(--text-color-rgb), 0.5);
+
 	&[theme='dark'] {
 		--text-color: #ebedf0;
 		--text-color-rgb: 235, 237, 240;

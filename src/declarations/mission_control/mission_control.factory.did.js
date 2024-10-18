@@ -6,6 +6,10 @@ export const idlFactory = ({ IDL }) => {
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		created_at: IDL.Nat64
 	});
+	const CreateCanisterConfig = IDL.Record({
+		subnet_id: IDL.Opt(IDL.Principal),
+		name: IDL.Opt(IDL.Text)
+	});
 	const Satellite = IDL.Record({
 		updated_at: IDL.Nat64,
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -121,7 +125,9 @@ export const idlFactory = ({ IDL }) => {
 		add_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		add_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
 		create_orbiter: IDL.Func([IDL.Opt(IDL.Text)], [Orbiter], []),
+		create_orbiter_with_config: IDL.Func([CreateCanisterConfig], [Orbiter], []),
 		create_satellite: IDL.Func([IDL.Text], [Satellite], []),
+		create_satellite_with_config: IDL.Func([CreateCanisterConfig], [Satellite], []),
 		del_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal)], [], []),
 		del_orbiter: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_orbiters_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),

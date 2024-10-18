@@ -9,6 +9,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import type { BuildType } from '@junobuild/admin';
 	import ConfirmUpgradeVersion from '$lib/components/upgrade/ConfirmUpgradeVersion.svelte';
+	import { nonNullish } from '@dfinity/utils';
 
 	export let currentVersion: string;
 	export let newerReleases: string[];
@@ -17,7 +18,7 @@
 	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
 
 	let buildExtended = false;
-	$: buildExtended = build === 'extended';
+	$: buildExtended = nonNullish(build) && build === 'extended';
 
 	let steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error';
 	$: steps = buildExtended ? 'confirm' : 'init';

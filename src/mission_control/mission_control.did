@@ -8,6 +8,10 @@ type Controller = record {
   expires_at : opt nat64;
 };
 type ControllerScope = variant { Write; Admin };
+type CreateCanisterConfig = record {
+  subnet_id : opt principal;
+  name : opt text;
+};
 type CronJobStatusesConfig = record {
   enabled : bool;
   cycles_threshold : opt nat64;
@@ -103,7 +107,9 @@ service : () -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
   create_orbiter : (opt text) -> (Orbiter);
+  create_orbiter_with_config : (CreateCanisterConfig) -> (Orbiter);
   create_satellite : (text) -> (Satellite);
+  create_satellite_with_config : (CreateCanisterConfig) -> (Satellite);
   del_mission_control_controllers : (vec principal) -> ();
   del_orbiter : (principal, nat) -> ();
   del_orbiters_controllers : (vec principal, vec principal) -> ();

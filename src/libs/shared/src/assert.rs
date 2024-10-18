@@ -16,9 +16,9 @@ use crate::types::state::Version;
 ///
 /// # Parameters
 /// - `user_timestamp`: An `Option<u64>` representing the user-provided timestamp. This can be `None`
-/// if the user did not provide a timestamp, or `Some(u64)` if a timestamp was provided.
+///   if the user did not provide a timestamp, or `Some(u64)` if a timestamp was provided.
 /// - `current_timestamp`: A `u64` representing the current system timestamp. This should be
-/// the accurate current time in a format consistent with `user_timestamp`.
+///   the accurate current time in a format consistent with `user_timestamp`.
 ///
 /// # Returns
 /// - `Ok(())` if the `user_timestamp` matches the `current_timestamp`.

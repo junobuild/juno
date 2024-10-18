@@ -2,8 +2,9 @@
 
 function copy_candid() {
     local canister=$1
+    local file=${2:-"$canister".did}
 
-    cp src/"$canister"/"$canister".did .
+    cp src/"$canister"/"$file" .
 }
 
-copy_candid "$CANISTER"
+copy_candid "$CANISTER" "$CUSTOM_DID_FILE"

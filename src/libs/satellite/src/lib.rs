@@ -371,7 +371,7 @@ pub fn get_many_assets(
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
 pub async fn deposit_cycles(args: DepositCyclesArgs) {
-    junobuild_shared::ic::deposit_cycles(args)
+    junobuild_shared::mgmt::ic::deposit_cycles(args)
         .await
         .unwrap_or_else(|e| trap(&e))
 }

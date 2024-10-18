@@ -2,13 +2,13 @@ use crate::constants::{
     CREATE_CANISTER_CYCLES, IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP, WASM_MEMORY_LIMIT,
 };
 use crate::env::CMC;
-use crate::ic::install_code;
 use crate::ledger::icp::transfer_payment;
-use crate::mgmt::types::{
+use crate::mgmt::ic::install_code;
+use crate::mgmt::types::cmc::{
     CreateCanister, CreateCanisterResult, Cycles, NotifyError, SubnetId, SubnetSelection,
     TopUpCanisterArgs,
 };
-use crate::types::ic::WasmArg;
+use crate::mgmt::types::ic::WasmArg;
 use candid::{Nat, Principal};
 use ic_cdk::api::call::{call_with_payment128, CallResult};
 use ic_cdk::api::management_canister::main::{CanisterId, CanisterInstallMode, CanisterSettings};
@@ -111,7 +111,9 @@ pub async fn cmc_create_canister_install_code(
                     install_code(canister_id, wasm_arg, CanisterInstallMode::Install).await;
 
                 match install {
-                    Err(_) => Err("Failed to install code in canister created with CMC.".to_string()),
+                    Err(_) => {
+                        Err("Failed to install code in canister created with CMC.".to_string())
+                    }
                     Ok(_) => Ok(canister_id),
                 }
             }

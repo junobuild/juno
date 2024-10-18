@@ -10,7 +10,7 @@ use junobuild_shared::constants::{IC_TRANSACTION_FEE_ICP, MEMO_SATELLITE_CREATE_
 use junobuild_shared::ledger::icp::{
     find_payment, principal_to_account_identifier, transfer_payment, SUB_ACCOUNT,
 };
-use junobuild_shared::mgmt::types::SubnetId;
+use junobuild_shared::mgmt::types::cmc::SubnetId;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{MissionControlId, UserId};
 use std::future::Future;

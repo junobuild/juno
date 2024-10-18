@@ -1,5 +1,5 @@
 use crate::constants::{CREATE_CANISTER_CYCLES, WASM_MEMORY_LIMIT};
-use crate::types::ic::WasmArg;
+use crate::mgmt::types::ic::WasmArg;
 use crate::types::interface::DepositCyclesArgs;
 use crate::types::state::{
     SegmentCanisterSettings, SegmentCanisterStatus, SegmentStatus, SegmentStatusResult,

@@ -2,7 +2,7 @@ use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::call;
 use junobuild_shared::controllers::{filter_admin_controllers, into_controller_ids};
-use junobuild_shared::ic::update_canister_controllers;
+use junobuild_shared::mgmt::ic::update_canister_controllers;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, SetController, SetControllersArgs,
 };

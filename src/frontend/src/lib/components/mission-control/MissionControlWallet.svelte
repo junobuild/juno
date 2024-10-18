@@ -21,7 +21,7 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import { compare } from 'semver';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import ReceiveTokens from "$lib/components/tokens/ReceiveTokens.svelte";
+	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 
 	export let missionControlId: Principal;
 
@@ -106,7 +106,7 @@
 
 	let receiveVisible = false;
 
-	const openReceive = () => receiveVisible = true;
+	const openReceive = () => (receiveVisible = true);
 
 	const openSend = () => {
 		emit({
@@ -150,8 +150,8 @@
 						<svelte:fragment slot="label">{$i18n.wallet.balance}</svelte:fragment>
 						<p>
 							{#if nonNullish(balance)}<span in:fade
-							>{formatE8sICP(balance)} <small>ICP</small></span
-							>{:else}<span class="skeleton"><SkeletonText /></span>{/if}
+									>{formatE8sICP(balance)} <small>ICP</small></span
+								>{:else}<span class="skeleton"><SkeletonText /></span>{/if}
 						</p>
 					</Value>
 
@@ -170,9 +170,9 @@
 		<div class="toolbar">
 			<button on:click={openReceive}>{$i18n.wallet.receive}</button>
 
-		{#if send}
-			<button in:fade on:click={openSend}>{$i18n.wallet.send}</button>
-		{/if}
+			{#if send}
+				<button in:fade on:click={openSend}>{$i18n.wallet.send}</button>
+			{/if}
 		</div>
 
 		<Transactions

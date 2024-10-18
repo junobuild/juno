@@ -7,6 +7,7 @@
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
+	import CanisterSubnet from "$lib/components/canister/CanisterSubnet.svelte";
 
 	export let orbiter: Orbiter;
 </script>
@@ -20,6 +21,8 @@
 				<svelte:fragment slot="label">{$i18n.analytics.id}</svelte:fragment>
 				<Identifier identifier={orbiter.orbiter_id.toText()} shorten={false} small={false} />
 			</Value>
+
+			<CanisterSubnet canisterId={orbiter.orbiter_id} />
 		</div>
 
 		<div>

@@ -211,6 +211,7 @@
 		"export_title": "Export to CSV",
 		"export_info": "This process exports the displayed transactions to a CSV file. Shall we proceed?",
 		"send": "Send",
+		"receive": "Receive",
 		"send_information": "Send tokens securely to any address. Your wallet currently holds <strong>{0}</strong> ICP.",
 		"destination": "Destination",
 		"destination_placeholder": "Enter destination address",

@@ -1,14 +1,18 @@
 <script lang="ts">
 	import QRCode from '$lib/components/ui/QRCode.svelte';
+	import { slide } from 'svelte/transition';
+	import { quintOut } from 'svelte/easing';
 
 	export let ariaLabel: string | undefined = undefined;
 	export let value: string;
 </script>
 
-<div class="qrcode">
-	<div>
-		<QRCode {value} {ariaLabel} />
-	</div>
+<div
+	class="qrcode"
+	in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
+	out:slide={{ delay: 0, duration: 50, easing: quintOut, axis: 'y' }}
+>
+	<QRCode {value} {ariaLabel} />
 </div>
 
 <style lang="scss">
@@ -18,13 +22,8 @@
 		min-width: calc(var(--padding) * 30);
 		padding: var(--padding-2x);
 
-		background: var(--color-card-contrast);
-		color: var(--color-card);
+		aspect-ratio: 1;
 
-		border-radius: calc(var(--border-radius) * 4);
-
-		> div {
-			border: 2px solid var(--color-card);
-		}
+		@include shadow.card-action;
 	}
 </style>

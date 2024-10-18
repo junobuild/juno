@@ -1,0 +1,38 @@
+<script lang="ts">
+	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { createEventDispatcher } from 'svelte';
+
+	export let value: string;
+	export let ariaLabel: string;
+
+	const dispatch = createEventDispatcher();
+</script>
+
+<div class="container">
+	<QRCodeContainer {value} {ariaLabel} />
+
+	<div class="info">
+		<Value>
+			<svelte:fragment slot="label">{ariaLabel}</svelte:fragment>
+			<Identifier shorten={true} small={false} identifier={value} />
+		</Value>
+	</div>
+
+	<button on:click={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+</div>
+
+<style lang="scss">
+	.container {
+		display: flex;
+		flex-direction: column;
+
+		padding: var(--padding) 0 0;
+	}
+
+	.info {
+		padding: var(--padding-4x) 0 0;
+	}
+</style>

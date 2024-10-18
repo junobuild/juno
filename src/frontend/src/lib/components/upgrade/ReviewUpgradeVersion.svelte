@@ -36,7 +36,12 @@
 
 			emit({ message: 'junoReloadVersions' });
 
-			dispatch('junoNext', 'ready');
+			// Small delay to ensure junoReloadVersions is emitted
+			setTimeout(() => {
+				dispatch('junoNext', 'ready');
+
+				wizardBusy.stop();
+			}, 500);
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.upgrade_error,
@@ -44,9 +49,9 @@
 			});
 
 			dispatch('junoNext', 'error');
-		}
 
-		wizardBusy.stop();
+			wizardBusy.stop();
+		}
 	};
 </script>
 

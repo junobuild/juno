@@ -219,6 +219,7 @@ interface I18nWallet {
 	export_title: string;
 	export_info: string;
 	send: string;
+	receive: string;
 	send_information: string;
 	destination: string;
 	destination_placeholder: string;

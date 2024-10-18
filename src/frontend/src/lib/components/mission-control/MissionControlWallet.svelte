@@ -7,7 +7,6 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 	import { onMount } from 'svelte';
 	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
 	import { getCredits } from '$lib/api/console.api';
@@ -21,6 +20,8 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { versionStore } from '$lib/stores/version.store';
 	import { compare } from 'semver';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 
 	export let missionControlId: Principal;
 
@@ -103,7 +104,11 @@
 	 * Actions
 	 */
 
-	const openModal = () => {
+	let receiveVisible = false;
+
+	const openReceive = () => (receiveVisible = true);
+
+	const openSend = () => {
 		emit({
 			message: 'junoModal',
 			detail: {
@@ -127,53 +132,48 @@
 		<div class="card-container with-title">
 			<span class="title">{$i18n.wallet.overview}</span>
 
-			<div class="columns-3">
+			<div class="columns-3 fit-column-1">
 				<div>
 					<Value>
 						<svelte:fragment slot="label">{$i18n.wallet.wallet_id}</svelte:fragment>
-						<p>
-							<Identifier shorten={false} identifier={missionControlId.toText()} />
-						</p>
+						<Identifier shorten={false} small={false} identifier={missionControlId.toText()} />
 					</Value>
 
 					<Value>
 						<svelte:fragment slot="label">{$i18n.wallet.account_identifier}</svelte:fragment>
-						<p>
-							<Identifier identifier={accountIdentifier?.toHex() ?? ''} />
-						</p>
+						<Identifier identifier={accountIdentifier?.toHex() ?? ''} small={false} />
 					</Value>
+				</div>
 
+				<div>
 					<Value>
 						<svelte:fragment slot="label">{$i18n.wallet.balance}</svelte:fragment>
 						<p>
 							{#if nonNullish(balance)}<span in:fade
 									>{formatE8sICP(balance)} <small>ICP</small></span
-								>{/if}
+								>{:else}<span class="skeleton"><SkeletonText /></span>{/if}
 						</p>
 					</Value>
 
-					<Value>
-						<svelte:fragment slot="label">{$i18n.wallet.credits}</svelte:fragment>
-						<p>
-							{#if nonNullish(credits)}<span in:fade>{formatE8sCredits(credits)}</span>{/if}
-						</p>
-					</Value>
-				</div>
-
-				<div>
-					{#if nonNullish(accountIdentifier)}
-						<QRCodeContainer
-							value={accountIdentifier.toHex()}
-							ariaLabel={$i18n.wallet.account_identifier}
-						/>
-					{/if}
+					<div class="credits">
+						<Value>
+							<svelte:fragment slot="label">{$i18n.wallet.credits}</svelte:fragment>
+							<p>
+								{#if nonNullish(credits)}<span in:fade>{formatE8sCredits(credits)}</span>{/if}
+							</p>
+						</Value>
+					</div>
 				</div>
 			</div>
 		</div>
 
-		{#if send}
-			<button in:fade on:click={openModal}>{$i18n.wallet.send}</button>
-		{/if}
+		<div class="toolbar">
+			<button on:click={openReceive}>{$i18n.wallet.receive}</button>
+
+			{#if send}
+				<button in:fade on:click={openSend}>{$i18n.wallet.send}</button>
+			{/if}
+		</div>
 
 		<Transactions
 			{transactions}
@@ -186,8 +186,20 @@
 	</Wallet>
 {/if}
 
+<ReceiveTokens bind:visible={receiveVisible} {missionControlId} />
+
 <style lang="scss">
 	p {
 		min-height: 24px;
+	}
+
+	.skeleton {
+		display: block;
+		padding: var(--padding-0_5x) 0 0;
+		max-width: 150px;
+	}
+
+	.credits {
+		padding: var(--padding) 0 0;
 	}
 </style>

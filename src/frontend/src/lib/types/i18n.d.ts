@@ -145,6 +145,7 @@ interface I18nCanisters {
 	advanced_options: string;
 	subnet: string;
 	default_subnet: string;
+	subnet_id: string;
 }
 
 interface I18nSign_in {
@@ -452,6 +453,7 @@ interface I18nErrors {
 	invalid_amount: string;
 	empty_balance: string;
 	sending_error: string;
+	subnet_loading_errors: string;
 }
 
 interface I18nDocument {

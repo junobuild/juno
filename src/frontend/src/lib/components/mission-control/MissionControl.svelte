@@ -10,6 +10,7 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import { fade } from 'svelte/transition';
 	import MissionControlStatuses from '$lib/components/mission-control/MissionControlStatuses.svelte';
+	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 </script>
 
 {#if $authSignedInStore}
@@ -20,8 +21,16 @@
 			<div class="id">
 				<Value>
 					<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
-					<Identifier identifier={$missionControlStore?.toText() ?? ''} shorten={false} />
+					<Identifier
+						identifier={$missionControlStore?.toText() ?? ''}
+						shorten={false}
+						small={false}
+					/>
 				</Value>
+
+				{#if nonNullish($missionControlStore)}
+					<CanisterSubnet canisterId={$missionControlStore} />
+				{/if}
 			</div>
 
 			<div>

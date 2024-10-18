@@ -140,7 +140,8 @@
 		"public": "Public",
 		"advanced_options": "Advanced Options",
 		"subnet": "Subnet",
-		"default_subnet": "Default (same as Juno)"
+		"default_subnet": "Default (same as Juno)",
+		"subnet_id": "Subnet ID"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -435,7 +436,8 @@
 		"empty_amount": "Please enter an amount for the transfer.",
 		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",
 		"empty_balance": "Your wallet does not have any available funds.",
-		"sending_error": "Unexpected error(s) while sending the tokens."
+		"sending_error": "Unexpected error(s) while sending the tokens.",
+		"subnet_loading_errors": "Error while loading the subnet ID of the module."
 	},
 	"document": {
 		"owner": "Owner",

@@ -5,8 +5,14 @@ import type {
 } from '$declarations/ic/ic.did';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
 import { getICActor } from '$lib/utils/actor.ic.utils';
-import type { Identity } from '@dfinity/agent';
+import { getAgent } from '$lib/utils/agent.utils';
+import {
+	CanisterStatus as AgentCanisterStatus,
+	AnonymousIdentity,
+	type Identity
+} from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
+import { nonNullish } from '@dfinity/utils';
 
 const toStatus = (
 	status: { stopped: null } | { stopping: null } | { running: null }
@@ -126,4 +132,29 @@ export const canisterUpdateSettings = async ({
 }): Promise<void> => {
 	const { update_settings } = await getICActor({ identity });
 	return update_settings({ canister_id: canisterId, sender_canister_version: [], settings });
+};
+
+export const getSubnetId = async ({
+	canisterId
+}: {
+	canisterId: string;
+}): Promise<string | undefined> => {
+	const agent = await getAgent({ identity: new AnonymousIdentity() });
+
+	const path = 'subnet' as const;
+
+	const result = await AgentCanisterStatus.request({
+		canisterId: Principal.from(canisterId),
+		agent,
+		paths: [path]
+	});
+
+	const subnet: AgentCanisterStatus.Status | undefined = result.get(path);
+
+	const isSubnetStatus = (
+		subnet: AgentCanisterStatus.Status | undefined
+	): subnet is AgentCanisterStatus.SubnetStatus =>
+		nonNullish(subnet) && typeof subnet === 'object' && 'subnetId' in subnet;
+
+	return isSubnetStatus(subnet) ? subnet.subnetId : undefined;
 };

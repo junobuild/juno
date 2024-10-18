@@ -21,6 +21,7 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import { compare } from 'semver';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import ReceiveTokens from "$lib/components/tokens/ReceiveTokens.svelte";
 
 	export let missionControlId: Principal;
 
@@ -103,7 +104,11 @@
 	 * Actions
 	 */
 
-	const openModal = () => {
+	let receiveVisible = false;
+
+	const openReceive = () => receiveVisible = true;
+
+	const openSend = () => {
 		emit({
 			message: 'junoModal',
 			detail: {
@@ -162,9 +167,13 @@
 			</div>
 		</div>
 
+		<div class="toolbar">
+			<button on:click={openReceive}>{$i18n.wallet.receive}</button>
+
 		{#if send}
-			<button in:fade on:click={openModal}>{$i18n.wallet.send}</button>
+			<button in:fade on:click={openSend}>{$i18n.wallet.send}</button>
 		{/if}
+		</div>
 
 		<Transactions
 			{transactions}
@@ -176,6 +185,8 @@
 		<TransactionsExport {transactions} {missionControlId} />
 	</Wallet>
 {/if}
+
+<ReceiveTokens bind:visible={receiveVisible} />
 
 <style lang="scss">
 	p {

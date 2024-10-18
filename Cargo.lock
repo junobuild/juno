@@ -262,7 +262,7 @@ dependencies = [
  "ic-cdk-timers 0.10.0",
  "ic-ledger-types 0.13.0",
  "ic-stable-structures",
- "junobuild-collections 0.0.5",
+ "junobuild-collections 0.0.6",
  "junobuild-shared 0.0.19",
  "junobuild-storage",
  "regex",
@@ -896,13 +896,13 @@ dependencies = [
 
 [[package]]
 name = "junobuild-collections"
-version = "0.0.5"
+version = "0.0.6"
 dependencies = [
  "candid",
  "ic-cdk 0.16.0",
  "ic-cdk-macros 0.16.0",
  "ic-cdk-timers 0.10.0",
- "junobuild-shared 0.0.18",
+ "junobuild-shared 0.0.19",
  "serde",
 ]
 

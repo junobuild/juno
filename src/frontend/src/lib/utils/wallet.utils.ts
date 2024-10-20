@@ -1,3 +1,4 @@
+import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import {
 	MEMO_CANISTER_CREATE,
 	MEMO_CANISTER_TOP_UP,
@@ -42,7 +43,9 @@ export const transactionMemo = ({
 		case MEMO_CANISTER_TOP_UP:
 			return labels.wallet.memo_refund_top_up;
 		default:
-			if (from === missionControlId.toText()) {
+			const accountIdentifier = getAccountIdentifier(missionControlId);
+
+			if (from === missionControlId.toText() || from === accountIdentifier.toHex()) {
 				return labels.wallet.memo_sent;
 			}
 

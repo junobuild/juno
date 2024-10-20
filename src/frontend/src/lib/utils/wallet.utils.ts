@@ -42,7 +42,7 @@ export const transactionMemo = ({
 			return labels.wallet.memo_refund_orbiter;
 		case MEMO_CANISTER_TOP_UP:
 			return labels.wallet.memo_refund_top_up;
-		default:
+		default: {
 			const accountIdentifier = getAccountIdentifier(missionControlId);
 
 			if (from === missionControlId.toText() || from === accountIdentifier.toHex()) {
@@ -50,6 +50,7 @@ export const transactionMemo = ({
 			}
 
 			return labels.wallet.memo_received;
+		}
 	}
 };
 

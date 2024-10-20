@@ -110,6 +110,7 @@
 		"detach_title": "Detach {0}",
 		"detach_explanation": "Detaching this {0} will remove it from your mission control list. It will continue to function if it's active, or be forgotten if it's inactive and won't appear in the console anymore.",
 		"detach_info": "Do you want to detach your {0}?",
+		"attach_success": "{0} attached.",
 		"detach_success": "{0} detached.",
 		"delete_success": "{0} deleted.",
 		"transfer_cycles": "Transfer cycles",
@@ -181,7 +182,8 @@
 		"extended_version": "Extended version",
 		"build": "Build",
 		"see_all_satellites": "See all satellites",
-		"go_launchpad": "Go to launchpad"
+		"go_launchpad": "Go to launchpad",
+		"attach": "Attach satellite"
 	},
 	"mission_control": {
 		"title": "Mission Control",

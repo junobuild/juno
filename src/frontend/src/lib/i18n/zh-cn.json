@@ -110,6 +110,7 @@
 		"detach_title": "Detach {0}",
 		"detach_explanation": "解绑这个 {0} 会将它从mission control列表中删除. 如果它是激活状态，那么它将正常工作，否则就会被遗忘，也不会显示在仪表盘里面.",
 		"detach_info": "你想解绑你的 {0}?",
+		"attach_success": "{0} attached.",
 		"detach_success": "{0} 已解绑的.",
 		"delete_success": "{0} 已删除.",
 		"transfer_cycles": "转移 cycles",
@@ -181,7 +182,8 @@
 		"extended_version": "扩展版本",
 		"build": "Build",
 		"see_all_satellites": "查看所有的 satellites",
-		"go_launchpad": "前往发射台"
+		"go_launchpad": "前往发射台",
+		"attach": "Attach satellite"
 	},
 	"mission_control": {
 		"title": "Mission Control",

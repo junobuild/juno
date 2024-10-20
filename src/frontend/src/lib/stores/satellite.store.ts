@@ -3,7 +3,35 @@ import type { Satellite } from '$declarations/mission_control/mission_control.di
 import { isNullish } from '@dfinity/utils';
 import { derived, writable, type Readable } from 'svelte/store';
 
-export const satellitesStore = writable<Satellite[] | undefined | null>(undefined);
+type SatellitesStoreData = Satellite[] | undefined | null;
+
+interface SatellitesStore extends Readable<SatellitesStoreData> {
+	set: (satellites: Satellite[]) => void;
+	add: (satellite: Satellite) => void;
+	reset: () => void;
+}
+
+const initSatellitesStore = (): SatellitesStore => {
+	const { subscribe, update, set } = writable<SatellitesStoreData>(undefined);
+
+	return {
+		subscribe,
+
+		set(satellites) {
+			set(satellites);
+		},
+
+		add(satellite) {
+			update((state) => [...(state ?? []), satellite]);
+		},
+
+		reset: () => {
+			set(null);
+		}
+	};
+};
+
+export const satellitesStore = initSatellitesStore();
 
 export const satelliteStore: Readable<Satellite | undefined | null> = derived(
 	[satellitesStore, page],

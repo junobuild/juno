@@ -16,11 +16,15 @@ export const icAgent = async () => {
 
 	console.log('IC identity:', identity.getPrincipal().toText());
 
-	return new HttpAgent({ identity, fetch, host: 'https://icp0.io' });
+	return await HttpAgent.create({ identity, fetch, host: 'https://icp-api.io' });
 };
 
 export const icAnonymousAgent = async () => {
-	return new HttpAgent({ identity: new AnonymousIdentity(), fetch, host: 'https://icp0.io' });
+	return await HttpAgent.create({
+		identity: new AnonymousIdentity(),
+		fetch,
+		host: 'https://icp-api.io'
+	});
 };
 
 export const localAgent = async () => {
@@ -28,7 +32,7 @@ export const localAgent = async () => {
 
 	console.log('Local identity:', identity.getPrincipal().toText());
 
-	const agent = new HttpAgent({ identity, fetch, host: 'http://127.0.0.1:5987/' });
+	const agent = await HttpAgent.create({ identity, fetch, host: 'http://127.0.0.1:5987/' });
 
 	await agent.fetchRootKey();
 

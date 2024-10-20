@@ -39,19 +39,48 @@ import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/ut
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
+interface CreateOrbiterConfig {
+	name?: string;
+	subnetId?: Principal;
+}
+
 export const createOrbiter = async ({
 	missionControl,
-	orbiterName
+	config: { name }
 }: {
 	missionControl: Principal | undefined | null;
-	orbiterName?: string;
+	config: CreateOrbiterConfig;
 }): Promise<Orbiter | undefined> => {
 	assertNonNullish(missionControl);
 
 	const identity = get(authStore).identity;
 
-	const actor = await getMissionControlActor({ missionControlId: missionControl, identity });
-	return actor.create_orbiter(toNullable(orbiterName));
+	const { create_orbiter } = await getMissionControlActor({
+		missionControlId: missionControl,
+		identity
+	});
+	return create_orbiter(toNullable(name));
+};
+
+export const createOrbiterWithConfig = async ({
+	missionControl,
+	config: { name, subnetId }
+}: {
+	missionControl: Principal | undefined | null;
+	config: CreateOrbiterConfig;
+}): Promise<Orbiter | undefined> => {
+	assertNonNullish(missionControl);
+
+	const identity = get(authStore).identity;
+
+	const { create_orbiter_with_config } = await getMissionControlActor({
+		missionControlId: missionControl,
+		identity
+	});
+	return create_orbiter_with_config({
+		name: toNullable(name),
+		subnet_id: toNullable(subnetId)
+	});
 };
 
 export const loadOrbiters = async ({

@@ -4,7 +4,7 @@ use ic_stable_structures::writer::Writer;
 use ic_stable_structures::Memory as _;
 use std::mem;
 
-pub fn write_pre_upgrade(state_bytes: &Vec<u8>, memory: &mut Memory) {
+pub fn write_pre_upgrade(state_bytes: &[u8], memory: &mut Memory) {
     // Write the length of the serialized bytes to memory, followed by the bytes themselves.
     let len = state_bytes.len() as u32;
     let mut writer = Writer::new(memory, 0);

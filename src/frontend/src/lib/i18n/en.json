@@ -45,7 +45,9 @@
 		"open_website": "Open Juno website and documentation",
 		"file": "File",
 		"review": "Review",
-		"confirm": "Confirm"
+		"confirm": "Confirm",
+		"collapse": "Collapse",
+		"expand": "Expand"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -108,6 +110,7 @@
 		"detach_title": "Detach {0}",
 		"detach_explanation": "Detaching this {0} will remove it from your mission control list. It will continue to function if it's active, or be forgotten if it's inactive and won't appear in the console anymore.",
 		"detach_info": "Do you want to detach your {0}?",
+		"attach_success": "{0} attached.",
 		"detach_success": "{0} detached.",
 		"delete_success": "{0} deleted.",
 		"transfer_cycles": "Transfer cycles",
@@ -135,7 +138,11 @@
 		"in_t_cycles": "in T Cycles",
 		"no_update_required": "No settings have been modified, so the settings do not need to be updated.",
 		"controllers": "Controllers",
-		"public": "Public"
+		"public": "Public",
+		"advanced_options": "Advanced Options",
+		"subnet": "Subnet",
+		"default_subnet": "Default (same as Juno)",
+		"subnet_id": "Subnet ID"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -161,8 +168,8 @@
 		"satellite": "Satellite",
 		"ready": "Your satellite is ready!",
 		"initializing": "Initializing your new satellite...",
-		"start": "Let's create a new satellite",
-		"description": "A satellite is a Web3 container that provides a simple database, file storage, hosting, and permission management system. Develop and run your app on the web, completely on the blockchain with a low carbon footprint.",
+		"start": "Create a satellite",
+		"description": "A satellite is a Web3 container for your project. It provides features like a simple key pair store, file storage, hosting, and authentication.",
 		"name": "Name",
 		"satellite_name": "Satellite name",
 		"enter_name": "Enter a name for your satellite",
@@ -175,7 +182,8 @@
 		"extended_version": "Extended version",
 		"build": "Build",
 		"see_all_satellites": "See all satellites",
-		"go_launchpad": "Go to launchpad"
+		"go_launchpad": "Go to launchpad",
+		"attach": "Attach satellite"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -205,6 +213,7 @@
 		"export_title": "Export to CSV",
 		"export_info": "This process exports the displayed transactions to a CSV file. Shall we proceed?",
 		"send": "Send",
+		"receive": "Receive",
 		"send_information": "Send tokens securely to any address. Your wallet currently holds <strong>{0}</strong> ICP.",
 		"destination": "Destination",
 		"destination_placeholder": "Enter destination address",
@@ -267,7 +276,7 @@
 		"desktop": "Desktop",
 		"others": "Others",
 		"browsers": "Browsers",
-		"attach": "Attach existing Analytics",
+		"attach": "Attach analytics",
 		"attach_id": "Enter Orbiter ID",
 		"score": "Score",
 		"rating": "Rating",
@@ -412,7 +421,8 @@
 		"orbiter_configuration_missing": "Satellites and configuration must be provided.",
 		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
 		"orbiter_configuration_listing": "Error while fetching the configuration.",
-		"orbiter_id_missing": "A valid Orbiter ID must be provided.",
+		"canister_id_missing": "A valid ID must be provided.",
+		"canister_attach_error": "Unexpected error(s) while trying to attach the module.",
 		"orbiter_attach": "Unexpected error(s) while trying to attach the orbiter to your mission control.",
 		"orbiter_unexpected_error": "Unexpected error(s) while creating the orbiter.",
 		"transactions_next": "Error while fetching the next transactions.",
@@ -430,7 +440,8 @@
 		"empty_amount": "Please enter an amount for the transfer.",
 		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",
 		"empty_balance": "Your wallet does not have any available funds.",
-		"sending_error": "Unexpected error(s) while sending the tokens."
+		"sending_error": "Unexpected error(s) while sending the tokens.",
+		"subnet_loading_errors": "Error while loading the subnet ID of the module."
 	},
 	"document": {
 		"owner": "Owner",

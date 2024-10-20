@@ -1,6 +1,7 @@
 use crate::segments::canister::{create_canister, delete_canister};
 use crate::segments::msg::ORBITER_NOT_FOUND;
 use crate::segments::store::{add_orbiter, delete_orbiter as delete_orbiter_store, get_orbiter};
+use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::Orbiter;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
@@ -12,7 +13,16 @@ use junobuild_shared::types::state::{OrbiterId, OrbiterSatelliteConfig, Satellit
 use std::collections::HashMap;
 
 pub async fn create_orbiter(name: &Option<String>) -> Result<Orbiter, String> {
-    create_canister("get_create_orbiter_fee", create_and_save_orbiter, name).await
+    let config: CreateCanisterConfig = CreateCanisterConfig {
+        name: name.clone(),
+        subnet_id: None,
+    };
+
+    create_canister("get_create_orbiter_fee", create_and_save_orbiter, &config).await
+}
+
+pub async fn create_orbiter_with_config(config: &CreateCanisterConfig) -> Result<Orbiter, String> {
+    create_canister("get_create_orbiter_fee", create_and_save_orbiter, config).await
 }
 
 pub async fn attach_orbiter(
@@ -63,12 +73,16 @@ pub async fn delete_orbiter(orbiter_id: &OrbiterId, cycles_to_deposit: u128) -> 
 
 async fn create_and_save_orbiter(
     user: UserId,
-    name: Option<String>,
+    CreateCanisterConfig { name, subnet_id }: CreateCanisterConfig,
     block_index: Option<BlockIndex>,
 ) -> Result<Orbiter, String> {
     let console = Principal::from_text(CONSOLE).unwrap();
 
-    let args = CreateCanisterArgs { user, block_index };
+    let args = CreateCanisterArgs {
+        user,
+        block_index,
+        subnet_id,
+    };
 
     let result: CallResult<(OrbiterId,)> = call(console, "create_orbiter", (args,)).await;
 

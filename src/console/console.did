@@ -33,7 +33,11 @@ type CommitProposal = record { sha256 : blob; proposal_id : nat };
 type Config = record { storage : StorageConfig };
 type ConfigMaxMemorySize = record { stable : opt nat64; heap : opt nat64 };
 type ControllerScope = variant { Write; Admin };
-type CreateCanisterArgs = record { block_index : opt nat64; user : principal };
+type CreateCanisterArgs = record {
+  block_index : opt nat64;
+  subnet_id : opt principal;
+  user : principal;
+};
 type CustomDomain = record {
   updated_at : nat64;
   created_at : nat64;

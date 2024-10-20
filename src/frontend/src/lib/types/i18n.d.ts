@@ -49,6 +49,8 @@ interface I18nCore {
 	file: string;
 	review: string;
 	confirm: string;
+	collapse: string;
+	expand: string;
 }
 
 interface I18nCanisters {
@@ -112,6 +114,7 @@ interface I18nCanisters {
 	detach_title: string;
 	detach_explanation: string;
 	detach_info: string;
+	attach_success: string;
 	detach_success: string;
 	delete_success: string;
 	transfer_cycles: string;
@@ -140,6 +143,10 @@ interface I18nCanisters {
 	no_update_required: string;
 	controllers: string;
 	public: string;
+	advanced_options: string;
+	subnet: string;
+	default_subnet: string;
+	subnet_id: string;
 }
 
 interface I18nSign_in {
@@ -182,6 +189,7 @@ interface I18nSatellites {
 	build: string;
 	see_all_satellites: string;
 	go_launchpad: string;
+	attach: string;
 }
 
 interface I18nMission_control {
@@ -213,6 +221,7 @@ interface I18nWallet {
 	export_title: string;
 	export_info: string;
 	send: string;
+	receive: string;
 	send_information: string;
 	destination: string;
 	destination_placeholder: string;
@@ -428,7 +437,8 @@ interface I18nErrors {
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
-	orbiter_id_missing: string;
+	canister_id_missing: string;
+	canister_attach_error: string;
 	orbiter_attach: string;
 	orbiter_unexpected_error: string;
 	transactions_next: string;
@@ -447,6 +457,7 @@ interface I18nErrors {
 	invalid_amount: string;
 	empty_balance: string;
 	sending_error: string;
+	subnet_loading_errors: string;
 }
 
 interface I18nDocument {

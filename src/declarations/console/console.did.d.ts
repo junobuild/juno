@@ -49,6 +49,7 @@ export interface ConfigMaxMemorySize {
 export type ControllerScope = { Write: null } | { Admin: null };
 export interface CreateCanisterArgs {
 	block_index: [] | [bigint];
+	subnet_id: [] | [Principal];
 	user: Principal;
 }
 export interface CustomDomain {

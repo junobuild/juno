@@ -3,7 +3,7 @@ use crate::segments::store::{get_orbiters, get_satellites};
 use crate::store::{set_mission_control_status, set_orbiter_status, set_satellite_status};
 use candid::Principal;
 use futures::future::join_all;
-use junobuild_shared::ic::segment_status as ic_segment_status;
+use junobuild_shared::mgmt::ic::segment_status as ic_segment_status;
 use junobuild_shared::types::cronjob::CronJobStatusesSegments;
 use junobuild_shared::types::interface::StatusesArgs;
 use junobuild_shared::types::state::{

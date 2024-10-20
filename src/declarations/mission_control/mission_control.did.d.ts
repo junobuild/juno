@@ -15,6 +15,10 @@ export interface Controller {
 	expires_at: [] | [bigint];
 }
 export type ControllerScope = { Write: null } | { Admin: null };
+export interface CreateCanisterConfig {
+	subnet_id: [] | [Principal];
+	name: [] | [string];
+}
 export interface CronJobStatusesConfig {
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
@@ -119,7 +123,9 @@ export interface _SERVICE {
 	add_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	add_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	create_orbiter: ActorMethod<[[] | [string]], Orbiter>;
+	create_orbiter_with_config: ActorMethod<[CreateCanisterConfig], Orbiter>;
 	create_satellite: ActorMethod<[string], Satellite>;
+	create_satellite_with_config: ActorMethod<[CreateCanisterConfig], Satellite>;
 	del_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	del_orbiter: ActorMethod<[Principal, bigint], undefined>;
 	del_orbiters_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;

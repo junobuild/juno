@@ -21,6 +21,15 @@ select {
 	}
 }
 
+input,
+textarea,
+select {
+	&::placeholder {
+		color: var(--placeholder-color);
+		opacity: 1;
+	}
+}
+
 input[type='checkbox'],
 input[type='radio'] {
 	accent-color: var(--color-primary);

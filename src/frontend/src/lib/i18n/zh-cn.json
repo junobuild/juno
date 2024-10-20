@@ -45,7 +45,9 @@
 		"open_website": "打开Juno网站以及文档",
 		"file": "文件",
 		"review": "Review",
-		"confirm": "Confirm"
+		"confirm": "Confirm",
+		"collapse": "Collapse",
+		"expand": "Expand"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -108,6 +110,7 @@
 		"detach_title": "Detach {0}",
 		"detach_explanation": "解绑这个 {0} 会将它从mission control列表中删除. 如果它是激活状态，那么它将正常工作，否则就会被遗忘，也不会显示在仪表盘里面.",
 		"detach_info": "你想解绑你的 {0}?",
+		"attach_success": "{0} attached.",
 		"detach_success": "{0} 已解绑的.",
 		"delete_success": "{0} 已删除.",
 		"transfer_cycles": "转移 cycles",
@@ -135,7 +138,11 @@
 		"in_t_cycles": "以 T Cycles 为单位",
 		"no_update_required": "没有设置修改, 所以没有需要更新的.",
 		"controllers": "控制者",
-		"public": "公开"
+		"public": "公开",
+		"advanced_options": "Advanced Options",
+		"subnet": "Subnet",
+		"default_subnet": "Default (same as Juno)",
+		"subnet_id": "Subnet ID"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -161,8 +168,8 @@
 		"satellite": "Satellite",
 		"ready": "你的 satellite 可以使用.",
 		"initializing": "初始化你的新的 satellite...",
-		"start": "让我们来创建一个新的 satellite",
-		"description": "satellite是一个web3容器，它为开发者提供了简化数据管理，存储以及权限管理等系统解决方案，完全运行在低能耗的区块链上.",
+		"start": "Create a satellite",
+		"description": "A satellite is a Web3 container for your project. It provides features like a simple key pair store, file storage, hosting, and authentication.",
 		"name": "名字",
 		"satellite_name": "Satellite 名字",
 		"enter_name": "输入你的 satellite 名字",
@@ -175,7 +182,8 @@
 		"extended_version": "扩展版本",
 		"build": "Build",
 		"see_all_satellites": "查看所有的 satellites",
-		"go_launchpad": "前往发射台"
+		"go_launchpad": "前往发射台",
+		"attach": "Attach satellite"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -205,6 +213,7 @@
 		"export_title": "导出为 CSV",
 		"export_info": "这个过程将导出显示的事务为 CSV 文件. 确认处理?",
 		"send": "Send",
+		"receive": "Receive",
 		"send_information": "Send tokens securely to any address. Your wallet currently holds <strong>{0}</strong> ICP.",
 		"destination": "Destination",
 		"destination_placeholder": "Enter destination address",
@@ -267,7 +276,7 @@
 		"desktop": "桌面",
 		"others": "其他",
 		"browsers": "浏览器",
-		"attach": "附加已有的 Analytics",
+		"attach": "附加 Analytics",
 		"attach_id": "输入 Orbiter ID",
 		"score": "得分",
 		"rating": "打分",
@@ -412,7 +421,8 @@
 		"orbiter_configuration_missing": "请提供 Satellites 和配置.",
 		"orbiter_configuration_unexpected": "编辑配置时出现意外错误.",
 		"orbiter_configuration_listing": "获取配置时出错.",
-		"orbiter_id_missing": "提供一个有效的 Orbiter ID .",
+		"canister_id_missing": "A valid ID must be provided.",
+		"canister_attach_error": "Unexpected error(s) while trying to attach the module.",
 		"orbiter_attach": "试图关联 orbiter 到你的 mission control时候出现异常.",
 		"orbiter_unexpected_error": "创建 orbiter 时出现异常错误.",
 		"transactions_next": "获取下一部分事务时出错.",
@@ -430,7 +440,8 @@
 		"empty_amount": "Please enter an amount for the transfer.",
 		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",
 		"empty_balance": "Your wallet does not have any available funds.",
-		"sending_error": "Unexpected error(s) while sending the tokens."
+		"sending_error": "Unexpected error(s) while sending the tokens.",
+		"subnet_loading_errors": "Error while loading the subnet ID of the module."
 	},
 	"document": {
 		"owner": "拥有者",

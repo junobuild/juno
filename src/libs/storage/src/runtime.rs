@@ -153,7 +153,7 @@ fn clear_expired_chunks_impl(state: &mut StorageRuntimeState) {
     let cloned_chunks = state.chunks.clone();
 
     for (chunk_id, chunk) in cloned_chunks.iter() {
-        if state.batches.get(&chunk.batch_id).is_none() {
+        if !state.batches.contains_key(&chunk.batch_id) {
             state.chunks.remove(chunk_id);
         }
     }

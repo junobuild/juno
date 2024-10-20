@@ -1,6 +1,6 @@
 use crate::wasm::user_mission_control_controllers;
 use candid::Principal;
-use junobuild_shared::ic::update_canister_controllers;
+use junobuild_shared::mgmt::ic::update_canister_controllers;
 use junobuild_shared::types::state::MissionControlId;
 use junobuild_shared::types::state::UserId;
 

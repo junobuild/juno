@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-satellite"
-version = "0.0.20-patch.1"
+version = "0.0.20-patch.4"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -41,7 +41,7 @@ regex.workspace = true
 url = "2.4.0"
 getrandom = { version = "0.2", features = ["custom"] }
 rand = { version = "0.8.5", features = ["getrandom"]}
-junobuild-shared = "0.0.18"
-junobuild-utils = "0.0.3"
-junobuild-collections = "0.0.4"
-junobuild-storage = "= 0.0.7-patch.1"
+junobuild-shared = "0.0.21"
+junobuild-utils = "0.0.4"
+junobuild-collections = "0.0.8"
+junobuild-storage = "0.0.11"

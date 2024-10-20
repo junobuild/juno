@@ -85,6 +85,6 @@ export const loadSatellites = async ({
 			detail: err
 		});
 
-		satellitesStore.set(null);
+		satellitesStore.reset();
 	}
 };

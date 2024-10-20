@@ -79,6 +79,8 @@
 
 	<CanisterTransferCycles {canister} on:click={onTransferCycles} />
 
+	<hr />
+
 	<CanisterStopStart {canister} segment="satellite" on:junoStop={close} on:junoStart={close} />
 
 	<SegmentDetach segment="satellite" segmentId={satellite.satellite_id} on:junoStop={close} />

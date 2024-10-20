@@ -209,6 +209,12 @@ jobs:
           name: satellite.did
           path: .
 
+      - name: Download satellite_extension.did
+        uses: actions/download-artifact@v4
+        with:
+          name: satellite_extension.did
+          path: .
+
       - name: Download orbiter.did
         uses: actions/download-artifact@v4
         with:

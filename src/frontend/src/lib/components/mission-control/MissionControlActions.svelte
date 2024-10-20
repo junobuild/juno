@@ -5,6 +5,8 @@
 	import { emit } from '$lib/utils/events.utils';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import type { Principal } from '@dfinity/principal';
+	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
+	import MissionControlAttachOrbiter from '$lib/components/mission-control/MissionControlAttachOrbiter.svelte';
 
 	export let missionControlId: Principal;
 
@@ -42,4 +44,10 @@
 	<TopUp type="topup_mission_control" on:junoTopUp={close} />
 
 	<CanisterTransferCycles {canister} on:click={onTransferCycles} />
+
+	<hr />
+
+	<MissionControlAttachSatellite on:junoAttach={close} />
+
+	<MissionControlAttachOrbiter on:junoAttach={close} />
 </Actions>

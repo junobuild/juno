@@ -1,10 +1,10 @@
-use crate::constants::{CREATE_CANISTER_CYCLES, WASM_MEMORY_LIMIT};
+use crate::mgmt::settings::{create_canister_cycles, create_canister_settings};
 use crate::mgmt::types::ic::WasmArg;
 use crate::types::interface::DepositCyclesArgs;
 use crate::types::state::{
     SegmentCanisterSettings, SegmentCanisterStatus, SegmentStatus, SegmentStatusResult,
 };
-use candid::{Nat, Principal};
+use candid::{Principal};
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::{
     canister_status as ic_canister_status, create_canister, delete_canister,
@@ -31,17 +31,9 @@ pub async fn create_canister_install_code(
 ) -> Result<Principal, String> {
     let record = create_canister(
         CreateCanisterArgument {
-            settings: Some(CanisterSettings {
-                controllers: Some(controllers.clone()),
-                compute_allocation: None,
-                memory_allocation: None,
-                freezing_threshold: None,
-                reserved_cycles_limit: None,
-                log_visibility: None,
-                wasm_memory_limit: Some(Nat::from(WASM_MEMORY_LIMIT)),
-            }),
+            settings: create_canister_settings(controllers),
         },
-        CREATE_CANISTER_CYCLES + cycles,
+        create_canister_cycles(cycles),
     )
     .await;
 

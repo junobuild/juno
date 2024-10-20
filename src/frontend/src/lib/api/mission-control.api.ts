@@ -344,6 +344,21 @@ export const unsetOrbiter = async ({
 	return unset_orbiter(orbiterId);
 };
 
+export const setSatellite = async ({
+	missionControlId,
+	satelliteId,
+	satelliteName,
+	identity
+}: {
+	missionControlId: Principal;
+	satelliteId: Principal;
+	satelliteName?: string;
+	identity: OptionIdentity;
+}): Promise<Satellite> => {
+	const { set_satellite } = await getMissionControlActor({ missionControlId, identity });
+	return set_satellite(satelliteId, toNullable(satelliteName));
+};
+
 export const unsetSatellite = async ({
 	missionControlId,
 	satelliteId,

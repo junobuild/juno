@@ -435,7 +435,8 @@ interface I18nErrors {
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
-	orbiter_id_missing: string;
+	canister_id_missing: string;
+	canister_attach_error: string;
 	orbiter_attach: string;
 	orbiter_unexpected_error: string;
 	transactions_next: string;

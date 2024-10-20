@@ -1,17 +1,16 @@
-use crate::constants::{
-    CREATE_CANISTER_CYCLES, IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP, WASM_MEMORY_LIMIT,
-};
+use crate::constants::{IC_TRANSACTION_FEE_ICP, MEMO_CANISTER_TOP_UP};
 use crate::env::CMC;
 use crate::ledger::icp::transfer_payment;
 use crate::mgmt::ic::install_code;
+use crate::mgmt::settings::{create_canister_cycles, create_canister_settings};
 use crate::mgmt::types::cmc::{
     CreateCanister, CreateCanisterResult, Cycles, NotifyError, SubnetId, SubnetSelection,
     TopUpCanisterArgs,
 };
 use crate::mgmt::types::ic::WasmArg;
-use candid::{Nat, Principal};
+use candid::Principal;
 use ic_cdk::api::call::{call_with_payment128, CallResult};
-use ic_cdk::api::management_canister::main::{CanisterId, CanisterInstallMode, CanisterSettings};
+use ic_cdk::api::management_canister::main::{CanisterId, CanisterInstallMode};
 use ic_cdk::call;
 use ic_ledger_types::{Subaccount, Tokens};
 
@@ -81,22 +80,14 @@ pub async fn cmc_create_canister_install_code(
     let create_canister_arg = CreateCanister {
         subnet_type: None,
         subnet_selection: Some(SubnetSelection::Subnet { subnet: *subnet_id }),
-        settings: Some(CanisterSettings {
-            controllers: Some(controllers.clone()),
-            compute_allocation: None,
-            memory_allocation: None,
-            freezing_threshold: None,
-            reserved_cycles_limit: None,
-            log_visibility: None,
-            wasm_memory_limit: Some(Nat::from(WASM_MEMORY_LIMIT)),
-        }),
+        settings: create_canister_settings(controllers),
     };
 
     let result: CallResult<(CreateCanisterResult,)> = call_with_payment128(
         cmc,
         "create_canister",
         (create_canister_arg,),
-        CREATE_CANISTER_CYCLES + cycles,
+        create_canister_cycles(cycles),
     )
     .await;
 

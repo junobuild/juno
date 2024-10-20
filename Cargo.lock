@@ -966,7 +966,7 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-response-verification",
  "ic-stable-structures",
- "junobuild-collections 0.0.7",
+ "junobuild-collections 0.0.8",
  "junobuild-shared 0.0.21",
  "regex",
  "serde",

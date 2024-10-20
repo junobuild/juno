@@ -271,25 +271,6 @@ async fn del_orbiter(orbiter_id: OrbiterId, cycles_to_deposit: u128) {
         .unwrap_or_else(|e| trap(&e));
 }
 
-/// Mgmt
-
-#[update(guard = "caller_is_user_or_admin_controller")]
-async fn top_up(canister_id: Principal, amount: Tokens) {
-    top_up_canister(&canister_id, &amount)
-        .await
-        .unwrap_or_else(|e| trap(&e));
-}
-
-#[query(guard = "caller_is_user_or_admin_controller")]
-fn get_user() -> UserId {
-    get_user_store()
-}
-
-#[update(guard = "caller_is_user_or_admin_controller")]
-fn set_metadata(metadata: Metadata) {
-    set_metadata_store(&metadata)
-}
-
 ///
 /// Controllers
 ///
@@ -347,6 +328,23 @@ fn list_mission_control_controllers() -> Controllers {
 ///
 /// Mgmt
 ///
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn get_user() -> UserId {
+    get_user_store()
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+fn set_metadata(metadata: Metadata) {
+    set_metadata_store(&metadata)
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+async fn top_up(canister_id: Principal, amount: Tokens) {
+    top_up_canister(&canister_id, &amount)
+        .await
+        .unwrap_or_else(|e| trap(&e));
+}
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn deposit_cycles(args: DepositCyclesArgs) {

@@ -257,7 +257,7 @@ export const initMissionControls = async ({
 		actor.setIdentity(user);
 
 		const { init_user_mission_control_center } = actor;
-		await init_user_mission_control_center();
+		await init_user_mission_control_center([]);
 
 		await tick(pic);
 	}

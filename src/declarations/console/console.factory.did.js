@@ -260,7 +260,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		init_asset_upload: IDL.Func([InitAssetKey, IDL.Nat], [InitUploadResult], []),
 		init_proposal: IDL.Func([ProposalType], [IDL.Nat, Proposal], []),
-		init_user_mission_control_center: IDL.Func([], [MissionControl], []),
+		init_user_mission_control_center: IDL.Func([IDL.Opt(IDL.Text)], [MissionControl], []),
 		list_assets: IDL.Func([IDL.Text, ListParams], [ListResults], ['query']),
 		list_custom_domains: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, CustomDomain))], ['query']),
 		list_payments: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Nat64, Payment))], ['query']),

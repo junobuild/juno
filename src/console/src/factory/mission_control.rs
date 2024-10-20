@@ -1,5 +1,5 @@
 use crate::controllers::update_mission_control_controllers;
-use crate::store::heap::increment_mission_controls_rate;
+use crate::store::heap::{increment_mission_controls_rate, redeem_invitation_code};
 use crate::store::stable::{
     add_mission_control, delete_mission_control, get_mission_control, init_empty_mission_control,
 };
@@ -13,17 +13,23 @@ use junobuild_shared::types::state::UserId;
 pub async fn init_user_mission_control(
     console: &Principal,
     caller: &Principal,
+    invitation_code: &Option<String>,
 ) -> Result<MissionControl, String> {
     let result = get_mission_control(caller);
     match result {
         Err(error) => Err(error.to_string()),
         Ok(mission_control) => match mission_control {
             Some(mission_control) => Ok(mission_control),
-            None => {
-                // Guard too many requests
-                increment_mission_controls_rate()?;
+            None => match invitation_code {
+                None => Err("No invitation code provided.".to_string()),
+                Some(invitation_code) => {
+                    // Guard too many requests
+                    increment_mission_controls_rate()?;
 
-                create_mission_control(caller, console).await
+                    redeem_invitation_code(caller, invitation_code)?;
+
+                    create_mission_control(caller, console).await
+                }
             }
         },
     }

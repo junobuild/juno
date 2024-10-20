@@ -156,15 +156,22 @@ export const setSatelliteName = async ({
 	]);
 };
 
-export const attachSatellite = async (params: {
+export const attachSatellite = async ({
+	missionControlId,
+	satelliteId
+}: {
 	missionControlId: Principal;
 	satelliteId: Principal;
 }) => {
 	const identity = get(authStore).identity;
 
-	const satellite = await setSatellite({ ...params, identity });
+	await setSatellite({ missionControlId, satelliteId, identity });
 
-	satellitesStore.add(satellite);
+	// We reload all satellites because if the developer accesses the mission control page directly, the satellites may not be loaded. Adding just one satellite could give the user the impression that there is an issue.
+	await loadSatellites({
+		missionControl: missionControlId,
+		reload: true
+	});
 };
 
 export const detachSatellite = async ({

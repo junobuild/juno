@@ -7,22 +7,17 @@ type SatellitesStoreData = Satellite[] | undefined | null;
 
 interface SatellitesStore extends Readable<SatellitesStoreData> {
 	set: (satellites: Satellite[]) => void;
-	add: (satellite: Satellite) => void;
 	reset: () => void;
 }
 
 const initSatellitesStore = (): SatellitesStore => {
-	const { subscribe, update, set } = writable<SatellitesStoreData>(undefined);
+	const { subscribe, set } = writable<SatellitesStoreData>(undefined);
 
 	return {
 		subscribe,
 
 		set(satellites) {
 			set(satellites);
-		},
-
-		add(satellite) {
-			update((state) => [...(state ?? []), satellite]);
 		},
 
 		reset: () => {

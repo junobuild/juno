@@ -46,6 +46,8 @@
 
 	<CanisterTransferCycles {canister} on:click={() => onCanisterAction('transfer_cycles_orbiter')} />
 
+	<hr />
+
 	<CanisterStopStart {canister} segment="orbiter" on:junoStop={close} on:junoStart={close} />
 
 	<SegmentDetach segment="orbiter" segmentId={orbiter.orbiter_id} on:junoDetach={close} />

@@ -5,6 +5,7 @@ import {
 	missionControlVersion,
 	setMissionControlController,
 	setOrbiter,
+	setSatellite,
 	setSatelliteMetadata,
 	setSatellitesController,
 	unsetOrbiter,
@@ -153,6 +154,17 @@ export const setSatelliteName = async ({
 		),
 		updatedSatellite
 	]);
+};
+
+export const attachSatellite = async (params: {
+	missionControlId: Principal;
+	satelliteId: Principal;
+}) => {
+	const identity = get(authStore).identity;
+
+	const satellite = await setSatellite({ ...params, identity });
+
+	satellitesStore.add(satellite);
 };
 
 export const detachSatellite = async ({

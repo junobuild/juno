@@ -110,6 +110,7 @@
 		"detach_title": "Detach {0}",
 		"detach_explanation": "Detaching this {0} will remove it from your mission control list. It will continue to function if it's active, or be forgotten if it's inactive and won't appear in the console anymore.",
 		"detach_info": "Do you want to detach your {0}?",
+		"attach_success": "{0} attached.",
 		"detach_success": "{0} detached.",
 		"delete_success": "{0} deleted.",
 		"transfer_cycles": "Transfer cycles",
@@ -181,7 +182,8 @@
 		"extended_version": "Extended version",
 		"build": "Build",
 		"see_all_satellites": "See all satellites",
-		"go_launchpad": "Go to launchpad"
+		"go_launchpad": "Go to launchpad",
+		"attach": "Attach satellite"
 	},
 	"mission_control": {
 		"title": "Mission Control",
@@ -274,7 +276,7 @@
 		"desktop": "Desktop",
 		"others": "Others",
 		"browsers": "Browsers",
-		"attach": "Attach existing Analytics",
+		"attach": "Attach analytics",
 		"attach_id": "Enter Orbiter ID",
 		"score": "Score",
 		"rating": "Rating",
@@ -419,7 +421,8 @@
 		"orbiter_configuration_missing": "Satellites and configuration must be provided.",
 		"orbiter_configuration_unexpected": "Unexpected error(s) while trying to edit your configuration.",
 		"orbiter_configuration_listing": "Error while fetching the configuration.",
-		"orbiter_id_missing": "A valid Orbiter ID must be provided.",
+		"canister_id_missing": "A valid ID must be provided.",
+		"canister_attach_error": "Unexpected error(s) while trying to attach the module.",
 		"orbiter_attach": "Unexpected error(s) while trying to attach the orbiter to your mission control.",
 		"orbiter_unexpected_error": "Unexpected error(s) while creating the orbiter.",
 		"transactions_next": "Error while fetching the next transactions.",

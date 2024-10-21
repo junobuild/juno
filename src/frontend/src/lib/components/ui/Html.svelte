@@ -7,7 +7,7 @@
 
 	// force to rerender after SSR
 	let mounted = false;
-	onMount(async () => (mounted = true));
+	onMount(() => (mounted = true));
 </script>
 
 {#if mounted && nonNullish(text)}

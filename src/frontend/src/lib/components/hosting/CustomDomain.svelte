@@ -60,7 +60,7 @@
 		emit({ message: 'junoRegistrationState', detail: { registrationState } });
 	};
 
-	const loadRegistrationState = async () => {
+	const loadRegistrationState = () => {
 		if (isNullish(worker)) {
 			registrationState = undefined;
 			return;
@@ -81,7 +81,7 @@
 	onMount(async () => (worker = await initHostingWorker()));
 	onDestroy(() => worker?.stopCustomDomainRegistrationTimer());
 
-	$: worker, customDomain, (async () => await loadRegistrationState())();
+	$: worker, customDomain, loadRegistrationState();
 
 	let displayState: Option<string>;
 	$: displayState =

@@ -14,7 +14,7 @@ const restoreTargetAttributeHook = (node: Element) => {
 		// Use provided "rel" value if it contains "noopener" or "noreferrer" (https://web.dev/external-anchors-use-rel-noopener/)
 		// otherwise add "noopener".
 		// split() to avoid invalid values (e.g. "noopenernoreferrer")
-		const originRel = node.getAttribute('rel') || '';
+		const originRel = node.getAttribute('rel') ?? '';
 		const parts = originRel.split(/\s+/);
 		const rel = parts.includes('noopener') || parts.includes('noreferrer') ? originRel : 'noopener';
 

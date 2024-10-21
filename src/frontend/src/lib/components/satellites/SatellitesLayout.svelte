@@ -1,8 +1,8 @@
 <script lang="ts">
-	import IconList from '$lib/components/icons/IconList.svelte';
 	import IconCards from '$lib/components/icons/IconCards.svelte';
-	import { SatellitesLayout } from '$lib/types/layout';
+	import IconList from '$lib/components/icons/IconList.svelte';
 	import { layoutSatellites } from '$lib/stores/layout.store';
+	import { SatellitesLayout } from '$lib/types/layout';
 </script>
 
 <button

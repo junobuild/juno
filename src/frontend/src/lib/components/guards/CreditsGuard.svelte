@@ -1,11 +1,11 @@
 <script lang="ts">
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
+	import { createEventDispatcher } from 'svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
+	import { E8S_PER_ICP } from '$lib/constants/constants';
+	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
-	import { createEventDispatcher } from 'svelte';
-	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
-	import { E8S_PER_ICP } from '$lib/constants/constants';
 
 	export let detail: JunoModalDetail;
 	export let priceLabel: string;

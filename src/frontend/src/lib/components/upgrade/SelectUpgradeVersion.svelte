@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
+	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { last } from '$lib/utils/utils';
-	import { isNullish } from '@dfinity/utils';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import { downloadWasm } from '$lib/services/upgrade.services';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { downloadWasm } from '$lib/services/upgrade.services';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import { last } from '$lib/utils/utils';
 
 	export let currentVersion: string;
 	export let newerReleases: string[];

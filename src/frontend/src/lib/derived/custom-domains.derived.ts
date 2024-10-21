@@ -9,7 +9,7 @@ export const satelliteCustomDomains: Readable<CustomDomains> = derived(
 	([$customDomainsStore, $satelliteStore]) =>
 		isNullish($satelliteStore)
 			? []
-			: $customDomainsStore[$satelliteStore.satellite_id.toText()] ?? []
+			: ($customDomainsStore[$satelliteStore.satellite_id.toText()] ?? [])
 );
 
 export const satelliteCustomDomainsLoaded: Readable<boolean> = derived(

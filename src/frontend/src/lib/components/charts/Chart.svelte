@@ -1,11 +1,11 @@
 <script lang="ts">
-	import Line from '$lib/components/charts/Line.svelte';
+	import { LayerCake, Svg } from 'layercake';
 	import Area from '$lib/components/charts/Area.svelte';
 	import AxisX from '$lib/components/charts/AxisX.svelte';
 	import AxisY from '$lib/components/charts/AxisY.svelte';
-	import { LayerCake, Svg } from 'layercake';
-	import { formatToDay } from '$lib/utils/date.utils';
+	import Line from '$lib/components/charts/Line.svelte';
 	import type { ChartsData } from '$lib/types/chart';
+	import { formatToDay } from '$lib/utils/date.utils';
 
 	export let chartsData: ChartsData[];
 

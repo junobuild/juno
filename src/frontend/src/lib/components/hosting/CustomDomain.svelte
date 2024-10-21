@@ -1,23 +1,22 @@
 <script lang="ts">
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { keyOf } from '$lib/utils/utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
+	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
 		CustomDomain as CustomDomainType
 	} from '$declarations/satellite/satellite.did';
-	import type { HostingCallback } from '$lib/services/worker.hosting.services';
-	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
-	import { initHostingWorker } from '$lib/services/worker.hosting.services';
-	import IconSync from '$lib/components/icons/IconSync.svelte';
+	import CustomDomainActions from '$lib/components/hosting/CustomDomainActions.svelte';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
+	import IconSync from '$lib/components/icons/IconSync.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
+	import { type HostingCallback, initHostingWorker } from '$lib/services/worker.hosting.services';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { emit } from '$lib/utils/events.utils';
+	import { keyOf } from '$lib/utils/utils';
 
 	export let url: string;
 	export let ariaLabel = '';
@@ -37,7 +36,7 @@
 	let mainDomain: boolean;
 	$: mainDomain = host === authDomain && nonNullish(authDomain);
 
-	let registrationState: CustomDomainRegistrationState | null | undefined = undefined;
+	let registrationState: Option<CustomDomainRegistrationState> = undefined;
 
 	let worker:
 		| {
@@ -83,7 +82,7 @@
 
 	$: worker, customDomain, (async () => await loadRegistrationState())();
 
-	let displayState: string | undefined | null;
+	let displayState: Option<string>;
 	$: displayState =
 		registrationState === undefined
 			? undefined

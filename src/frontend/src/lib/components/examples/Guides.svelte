@@ -1,16 +1,16 @@
 <script lang="ts">
 	import Resource from '$lib/components/examples/Resource.svelte';
-	import IconReact from '$lib/components/icons/IconReact.svelte';
-	import IconSvelte from '$lib/components/icons/IconSvelte.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import IconAngular from '$lib/components/icons/IconAngular.svelte';
-	import IconVue from '$lib/components/icons/IconVue.svelte';
+	import IconAstro from '$lib/components/icons/IconAstro.svelte';
+	import IconDocker from '$lib/components/icons/IconDocker.svelte';
 	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
 	import IconNextJS from '$lib/components/icons/IconNextJS.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import IconAstro from '$lib/components/icons/IconAstro.svelte';
+	import IconReact from '$lib/components/icons/IconReact.svelte';
 	import IconRust from '$lib/components/icons/IconRust.svelte';
-	import IconDocker from '$lib/components/icons/IconDocker.svelte';
+	import IconSvelte from '$lib/components/icons/IconSvelte.svelte';
+	import IconVue from '$lib/components/icons/IconVue.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 </script>
 
 <hr />

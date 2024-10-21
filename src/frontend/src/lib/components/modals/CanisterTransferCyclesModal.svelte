@@ -1,20 +1,20 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { createEventDispatcher } from 'svelte';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { Principal } from '@dfinity/principal';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { createEventDispatcher } from 'svelte';
+	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import { ONE_TRILLION } from '$lib/constants/constants';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
-	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let canisterId: Principal;
 	export let segment: 'satellite' | 'analytics' | 'mission_control';

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { Provider, User, UserData } from '$lib/types/user';
-	import { formatToDate } from '$lib/utils/date.utils';
 	import type { Principal } from '@dfinity/principal';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import IconIC from '$lib/components/icons/IconIC.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import type { Provider, User, UserData } from '$lib/types/user';
+	import { formatToDate } from '$lib/utils/date.utils';
 
 	export let user: User;
 

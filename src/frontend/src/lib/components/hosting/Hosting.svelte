@@ -1,22 +1,22 @@
 <script lang="ts">
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { satelliteUrl } from '$lib/utils/satellite.utils';
-	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
-	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
+	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
 		CustomDomain as CustomDomainType
 	} from '$declarations/satellite/satellite.did';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { listCustomDomains, getAuthConfig } from '$lib/services/hosting.services';
-	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
-	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { authStore } from '$lib/stores/auth.store';
-	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
+	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
-	import { nonNullish } from '@dfinity/utils';
+	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
+	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import { listCustomDomains, getAuthConfig } from '$lib/services/hosting.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	export let satellite: Satellite;
 
@@ -42,11 +42,11 @@
 
 	onMount(list);
 
-	type SelectedCustomDomain = {
+	interface SelectedCustomDomain {
 		customDomain: [string, CustomDomainType] | undefined;
-		registrationState: CustomDomainRegistrationState | null | undefined;
+		registrationState: Option<CustomDomainRegistrationState>;
 		mainDomain: boolean;
-	};
+	}
 
 	let selectedInfo: SelectedCustomDomain | undefined;
 

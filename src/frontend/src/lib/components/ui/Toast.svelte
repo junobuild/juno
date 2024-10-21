@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { toasts } from '$lib/stores/toasts.store';
-	import { fade, fly } from 'svelte/transition';
-	import type { ToastLevel, ToastMsg } from '$lib/types/toast';
-	import { i18n } from '$lib/stores/i18n.store';
-	import IconClose from '$lib/components/icons/IconClose.svelte';
-	import { onDestroy, onMount } from 'svelte';
 	import { isNullish } from '@dfinity/utils';
+	import { onDestroy, onMount } from 'svelte';
+	import { fade, fly } from 'svelte/transition';
+	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { ToastLevel, ToastMsg } from '$lib/types/toast';
 
 	export let msg: ToastMsg;
 

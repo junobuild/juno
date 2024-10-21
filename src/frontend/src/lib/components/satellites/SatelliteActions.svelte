@@ -1,15 +1,15 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import TopUp from '$lib/components/canister/TopUp.svelte';
-	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
-	import type { CanisterIcStatus } from '$lib/types/canister';
-	import Actions from '$lib/components/core/Actions.svelte';
-	import { emit } from '$lib/utils/events.utils';
-	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
-	import { busy } from '$lib/stores/busy.store';
-	import { listCustomDomains } from '$lib/services/hosting.services';
+	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
+	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
+	import TopUp from '$lib/components/canister/TopUp.svelte';
+	import Actions from '$lib/components/core/Actions.svelte';
+	import { listCustomDomains } from '$lib/services/hosting.services';
+	import { busy } from '$lib/stores/busy.store';
+	import type { CanisterIcStatus } from '$lib/types/canister';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let satellite: Satellite;
 

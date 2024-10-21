@@ -1,10 +1,10 @@
 <script lang="ts">
-	import type { JunoModalCyclesSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { Principal } from '@dfinity/principal';
-	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { depositCycles } from '$lib/api/satellites.api';
+	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { authStore } from '$lib/stores/auth.store';
+	import type { JunoModalCyclesSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 
 	export let detail: JunoModalDetail;
 

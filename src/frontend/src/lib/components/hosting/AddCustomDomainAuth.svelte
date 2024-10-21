@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { createEventDispatcher } from 'svelte';
+	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { createEventDispatcher } from 'svelte';
 
 	export let config: AuthenticationConfig | undefined;
 	export let domainNameInput: string;

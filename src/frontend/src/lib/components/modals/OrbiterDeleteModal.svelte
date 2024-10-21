@@ -1,12 +1,12 @@
 <script lang="ts">
-	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
-	import { deleteOrbiter } from '$lib/api/mission-control.api';
 	import type { Principal } from '@dfinity/principal';
-	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import { authStore } from '$lib/stores/auth.store';
+	import { deleteOrbiter } from '$lib/api/mission-control.api';
+	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
 	export let detail: JunoModalDetail;
 

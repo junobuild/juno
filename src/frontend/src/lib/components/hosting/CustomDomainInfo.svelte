@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store.js';
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
-	import { createEventDispatcher } from 'svelte';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
-	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
+	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store.js';
+	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import { keyOf } from '$lib/utils/utils';
 
 	export let info: {
 		customDomain: [string, CustomDomainType] | undefined;
-		registrationState: CustomDomainRegistrationState | null | undefined;
+		registrationState: Option<CustomDomainRegistrationState>;
 		mainDomain: boolean;
 	};
 
 	let customDomain: [string, CustomDomainType] | undefined;
-	let registrationState: CustomDomainRegistrationState | null | undefined;
+	let registrationState: Option<CustomDomainRegistrationState>;
 	let mainDomain: boolean;
 
 	$: ({ customDomain, registrationState, mainDomain } = info);

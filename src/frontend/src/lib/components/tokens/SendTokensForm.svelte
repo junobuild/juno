@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { isNullish, TokenAmountV2 } from '@dfinity/utils';
+	import { createEventDispatcher } from 'svelte';
 	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
-	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish, TokenAmountV2 } from '@dfinity/utils';
-	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
-	import { createEventDispatcher } from 'svelte';
 	import { amountToICPToken } from '$lib/utils/token.utils';
 
 	export let balance: bigint | undefined;
@@ -49,7 +49,7 @@
 			return;
 		}
 
-		if (balance + IC_TRANSACTION_FEE_ICP < (tokenAmount as TokenAmountV2).toE8s()) {
+		if (balance + IC_TRANSACTION_FEE_ICP < tokenAmount.toE8s()) {
 			toasts.error({
 				text: $i18n.errors.invalid_amount
 			});

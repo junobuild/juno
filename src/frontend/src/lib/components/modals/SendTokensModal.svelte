@@ -1,15 +1,15 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail, JunoModalSendTokensDetail } from '$lib/types/modal';
+	import { createEventDispatcher } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import SendTokensForm from '$lib/components/tokens/SendTokensForm.svelte';
 	import SendTokensReview from '$lib/components/tokens/SendTokensReview.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
-	import { fade } from 'svelte/transition';
-	import { createEventDispatcher } from 'svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import type { JunoModalDetail, JunoModalSendTokensDetail } from '$lib/types/modal';
 
 	export let detail: JunoModalDetail;
 

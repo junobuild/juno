@@ -1,13 +1,13 @@
 <script lang="ts">
-	import TopUp from '$lib/components/canister/TopUp.svelte';
-	import Actions from '$lib/components/core/Actions.svelte';
-	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-	import type { CanisterIcStatus } from '$lib/types/canister';
-	import { emit } from '$lib/utils/events.utils';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
+	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
+	import TopUp from '$lib/components/canister/TopUp.svelte';
+	import Actions from '$lib/components/core/Actions.svelte';
+	import type { CanisterIcStatus } from '$lib/types/canister';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let orbiter: Orbiter;
 

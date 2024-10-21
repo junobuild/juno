@@ -1,21 +1,21 @@
 <script lang="ts">
-	import type { JunoModalCreateControllerDetail, JunoModalDetail } from '$lib/types/modal';
-	import { createEventDispatcher } from 'svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { Ed25519KeyIdentity } from '@dfinity/identity';
 	import type { Principal } from '@dfinity/principal';
-	import type { SetControllerParams, SetControllerScope } from '$lib/types/controllers';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { createEventDispatcher } from 'svelte';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
-	import { Ed25519KeyIdentity } from '@dfinity/identity';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
+	import type { SetControllerParams, SetControllerScope } from '$lib/types/controllers';
+	import type { JunoModalCreateControllerDetail, JunoModalDetail } from '$lib/types/modal';
 
 	export let detail: JunoModalDetail;
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Popover from '$lib/components/ui/Popover.svelte';
 	import IconMore from '$lib/components/icons/IconMore.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	export let visible: boolean | undefined = undefined;

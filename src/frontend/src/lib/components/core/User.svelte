@@ -1,18 +1,18 @@
 <script lang="ts">
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
+	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
+	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
+	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
+	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import IconUser from '$lib/components/icons/IconUser.svelte';
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
-	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
-	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
-	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
-	import { analyticsLink } from '$lib/utils/nav.utils';
 	import { satelliteStore } from '$lib/stores/satellite.store';
+	import { analyticsLink } from '$lib/utils/nav.utils';
 
 	export let signIn = true;
 

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import type { TransactionWithId, Transaction } from '@dfinity/ledger-icp';
+	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
-	import { formatToDate } from '$lib/utils/date.utils';
 	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import type { Principal } from '@dfinity/principal';
+	import { formatToDate } from '$lib/utils/date.utils';
 	import {
 		transactionAmount,
 		transactionFrom,

@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { AnalyticsWebVitalsPageMetrics } from '$declarations/orbiter/orbiter.did';
-	import { formatNumber } from '$lib/utils/number.utils';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import type { AnalyticsWebVitalsPageMetrics } from '$declarations/orbiter/orbiter.did';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { formatNumber } from '$lib/utils/number.utils';
 
 	export let metrics: AnalyticsWebVitalsPageMetrics;
 

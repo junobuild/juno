@@ -1,11 +1,11 @@
 <script lang="ts">
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail, JunoModalTopUpOrbiterDetail } from '$lib/types/modal';
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import type { JunoModalDetail, JunoModalTopUpOrbiterDetail } from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let detail: JunoModalDetail;
 

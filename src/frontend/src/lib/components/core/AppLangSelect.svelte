@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { onMount } from 'svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { Languages } from '$lib/types/languages';
 
 	export let selected: Languages;

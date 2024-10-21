@@ -1,15 +1,15 @@
 <script lang="ts">
-	import Menu from '$lib/components/ui/Menu.svelte';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
-	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
-	import IconStorage from '$lib/components/icons/IconStorage.svelte';
-	import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
-	import IconHosting from '$lib/components/icons/IconHosting.svelte';
-	import { satelliteIdStore } from '$lib/stores/satellite.store';
 	import { page } from '$app/stores';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Theme from '$lib/components/ui/Theme.svelte';
+	import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
+	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
 	import IconFunctions from '$lib/components/icons/IconFunctions.svelte';
+	import IconHosting from '$lib/components/icons/IconHosting.svelte';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import IconStorage from '$lib/components/icons/IconStorage.svelte';
+	import Menu from '$lib/components/ui/Menu.svelte';
+	import Theme from '$lib/components/ui/Theme.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { satelliteIdStore } from '$lib/stores/satellite.store';
 
 	let routeId: string | null;
 	$: routeId = $page.route.id;

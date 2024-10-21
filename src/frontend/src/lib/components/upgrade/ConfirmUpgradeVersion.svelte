@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { createEventDispatcher } from 'svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let segment: 'satellite' | 'mission_control' | 'orbiter';
 

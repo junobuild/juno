@@ -2,11 +2,11 @@
 	/**
 	 * Source gix-components: https://gix.design
 	 */
-	import { afterUpdate, createEventDispatcher, onMount } from 'svelte';
 	import { debounce } from '@dfinity/utils';
-	import type { QrCreateClass } from '$lib/types/qr-creator';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { afterUpdate, createEventDispatcher, onMount } from 'svelte';
 	import { theme } from '$lib/stores/theme.store';
+	import type { QrCreateClass } from '$lib/types/qr-creator';
 	import { Theme } from '$lib/types/theme';
 
 	export let ariaLabel: string | undefined = undefined;

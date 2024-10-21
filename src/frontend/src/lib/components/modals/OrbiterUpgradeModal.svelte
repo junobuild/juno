@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
-	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
-	import { authStore } from '$lib/stores/auth.store';
 	import { AnonymousIdentity } from '@dfinity/agent';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import { nonNullish } from '@dfinity/utils';
 	import { upgradeOrbiter } from '@junobuild/admin';
+	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
 
 	export let detail: JunoModalDetail;

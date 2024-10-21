@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { Principal } from '@dfinity/principal';
+	import { createEventDispatcher } from 'svelte';
 	import CanisterAttach from '$lib/components/canister/CanisterAttach.svelte';
 	import IconLink from '$lib/components/icons/IconLink.svelte';
-	import { Principal } from '@dfinity/principal';
 	import { attachSatellite } from '$lib/services/mission-control.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { createEventDispatcher } from 'svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 

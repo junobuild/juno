@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { isHash, stringifyJson, isPrincipal } from '$lib/utils/json.utils';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { isHash, stringifyJson, isPrincipal } from '$lib/utils/json.utils';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	export let json: unknown | undefined = undefined;
@@ -23,9 +23,15 @@
 		| 'undefined';
 
 	const getValueType = (value: unknown): ValueType => {
-		if (value === null) return 'null';
-		if (isPrincipal(value)) return 'principal';
-		if (Array.isArray(json) && isHash(json)) return 'hash';
+		if (value === null) {
+			return 'null';
+		}
+		if (isPrincipal(value)) {
+			return 'principal';
+		}
+		if (Array.isArray(json) && isHash(json)) {
+			return 'hash';
+		}
 		return typeof value;
 	};
 

@@ -1,25 +1,11 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
-	import type {
-		AnalyticsTrackEvents,
-		AnalyticsWebVitalsPerformanceMetrics
-	} from '$declarations/orbiter/orbiter.did';
-	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import { satelliteStore } from '$lib/stores/satellite.store';
-	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
-	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
+	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
 	import type {
 		AnalyticsPageViews as AnalyticsPageViewsType,
 		PageViewsParams,
 		PageViewsPeriod
 	} from '$lib/types/ortbiter';
-	import { debounce } from '@dfinity/utils';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
-	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
 	import AnalyticsPageViews from '$lib/components/analytics/AnalyticsPageViews.svelte';
 	import AnalyticsMetrics from '$lib/components/analytics/AnalyticsMetrics.svelte';
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
@@ -31,7 +17,20 @@
 		getAnalyticsTrackEvents
 	} from '$lib/services/orbiters.services';
 	import { addMonths } from 'date-fns';
+	import type {
+		AnalyticsTrackEvents,
+		AnalyticsWebVitalsPerformanceMetrics
+	} from '$declarations/orbiter/orbiter.did';
+	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
+	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
+	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
+	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
 	import AnalyticsPerformanceMetrics from '$lib/components/analytics/AnalyticsPerformanceMetrics.svelte';
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import { satelliteStore } from '$lib/stores/satellite.store';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	let loading = true;
 

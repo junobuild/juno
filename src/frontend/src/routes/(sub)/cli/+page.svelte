@@ -1,17 +1,17 @@
 <script lang="ts">
-	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { nonNullish } from '@dfinity/utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { signIn } from '$lib/services/auth.services';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
+	import { signIn } from '$lib/services/auth.services';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let data: {
-		redirect_uri: string | null | undefined;
-		principal: string | null | undefined;
+		redirect_uri: Option<string>;
+		principal: Option<string>;
 	};
 
-	let redirect_uri: string | null | undefined;
-	let principal: string | null | undefined;
+	let redirect_uri: Option<string>;
+	let principal: Option<string>;
 	$: ({ redirect_uri, principal } = data);
 </script>
 

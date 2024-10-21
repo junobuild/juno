@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { theme } from '$lib/stores/theme.store';
-	import { Theme } from '$lib/types/theme';
+	import type { ComponentType } from 'svelte';
 	import IconLightOff from '$lib/components/icons/IconLightOff.svelte';
 	import IconLightOn from '$lib/components/icons/IconLightOn.svelte';
-	import type { ComponentType } from 'svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { theme } from '$lib/stores/theme.store';
+	import { Theme } from '$lib/types/theme';
 
 	let dark: boolean;
 	$: dark = $theme === Theme.DARK;

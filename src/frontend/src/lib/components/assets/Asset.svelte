@@ -1,25 +1,23 @@
 <script lang="ts">
-	import type { DataContext } from '$lib/types/data.context';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import { DATA_CONTEXT_KEY } from '$lib/types/data.context';
-	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable } from '@dfinity/utils';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { formatToDate } from '$lib/utils/date.utils';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
+	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { deleteAsset } from '$lib/api/satellites.api';
-	import { satelliteUrl } from '$lib/utils/satellite.utils';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { formatToDate } from '$lib/utils/date.utils';
+	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	const { store, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);

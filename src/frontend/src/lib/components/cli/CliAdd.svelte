@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 	import type { Principal } from '@dfinity/principal';
-	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
-	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { busy } from '$lib/stores/busy.store';
+	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
+	import { orbiterName } from '$lib/utils/orbiter.utils';
+	import { setOrbitersController } from '$lib/api/mission-control.api';
+	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesForVersion
 	} from '$lib/services/mission-control.services';
+	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { bigintStringify } from '$lib/utils/number.utils';
-	import { orbiterName } from '$lib/utils/orbiter.utils';
-	import { setOrbitersController } from '$lib/api/mission-control.api';
-	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	export let principal: string;
 	export let redirect_uri: string;

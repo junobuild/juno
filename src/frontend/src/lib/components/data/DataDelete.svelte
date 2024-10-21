@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import IconDelete from '$lib/components/icons/IconDelete.svelte';
-	import Confirmation from '$lib/components/core/Confirmation.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { getContext } from 'svelte';
-	import { isNullish } from '@dfinity/utils';
 	import type { Principal } from '@dfinity/principal';
+	import { isNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
+	import Confirmation from '$lib/components/core/Confirmation.svelte';
+	import IconDelete from '$lib/components/icons/IconDelete.svelte';
+	import { busy } from '$lib/stores/busy.store';
 	import { listParamsStore } from '$lib/stores/data.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);

@@ -1,14 +1,12 @@
 <script lang="ts">
-	import type { RulesContext } from '$lib/types/rules.context';
 	import { getContext } from 'svelte';
-	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
-	import IconNew from '$lib/components/icons/IconNew.svelte';
-	import type { Rule } from '$declarations/satellite/satellite.did';
+	import { type Rule, type RulesType } from '$declarations/satellite/satellite.did';
 	import CollectionEdit from '$lib/components/collections/CollectionEdit.svelte';
-	import type { RulesType } from '$declarations/satellite/satellite.did';
-	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
 	import Collections from '$lib/components/collections/Collections.svelte';
+	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';
+	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	export let type: RulesType;
 

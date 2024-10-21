@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
+	import type { Principal } from '@dfinity/principal';
+	import { createEventDispatcher } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { deleteSatellite } from '$lib/api/mission-control.api';
-	import type { Principal } from '@dfinity/principal';
 	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
-	import { authStore } from '$lib/stores/auth.store';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { createEventDispatcher } from 'svelte';
 	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let detail: JunoModalDetail;
 

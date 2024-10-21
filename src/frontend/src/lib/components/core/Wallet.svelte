@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { initWalletWorker } from '$lib/services/worker.wallet.services';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
-	import { isNullish, jsonReviver } from '@dfinity/utils';
-	import type { WalletWorker } from '$lib/services/worker.wallet.services';
 	import type { Principal } from '@dfinity/principal';
+	import { isNullish, jsonReviver } from '@dfinity/utils';
 	import { onDestroy, onMount } from 'svelte';
+	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
+	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { emit } from '$lib/utils/events.utils';
 
 	export let missionControlId: Principal;

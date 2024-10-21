@@ -1,7 +1,7 @@
 <script lang="ts">
-	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import type { CanisterIcStatus } from '$lib/types/canister';
 
 	export let canister: CanisterIcStatus | undefined = undefined;
 

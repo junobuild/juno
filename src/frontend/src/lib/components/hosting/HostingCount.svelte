@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
+	import { compare } from 'semver';
 	import { onMount } from 'svelte';
-	import { countCollectionAssets, satelliteVersion } from '$lib/api/satellites.api';
+	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { countCollectionAssets, satelliteVersion } from '$lib/api/satellites.api';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { compare } from 'semver';
 	import { versionStore } from '$lib/stores/version.store';
 
 	export let satellite: Satellite;

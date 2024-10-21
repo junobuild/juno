@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { getContext, setContext } from 'svelte';
-	import Docs from '$lib/components/docs/Docs.svelte';
-	import Doc from '$lib/components/docs/Doc.svelte';
-	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
-	import { writable } from 'svelte/store';
-	import type { Doc as DocType, Doc as DocDid } from '$declarations/satellite/satellite.did';
-	import Data from '$lib/components/data/Data.svelte';
-	import DocForm from '../docs/DocHeader.svelte';
-	import DataCount from '$lib/components/data/DataCount.svelte';
-	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
+	import { getContext, setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import DocForm from '../docs/DocHeader.svelte';
+	import type { Doc as DocType, Doc as DocDid } from '$declarations/satellite/satellite.did';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
+	import Data from '$lib/components/data/Data.svelte';
+	import DataCount from '$lib/components/data/DataCount.svelte';
+	import Doc from '$lib/components/docs/Doc.svelte';
+	import Docs from '$lib/components/docs/Docs.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
-	import type { ListParams } from '$lib/types/list';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
+	import type { ListParams } from '$lib/types/list';
+	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	const docsStore = writable<DataStoreData<DocDid>>(undefined);

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { afterUpdate, beforeUpdate, createEventDispatcher, onDestroy } from 'svelte';
 	import { isNullish } from '@dfinity/utils';
+	import { afterUpdate, beforeUpdate, createEventDispatcher, onDestroy } from 'svelte';
 
 	/**
 	 * Source: @dfinity/gix-components

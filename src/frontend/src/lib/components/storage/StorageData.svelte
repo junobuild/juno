@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { getContext, setContext } from 'svelte';
-	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
-	import { writable } from 'svelte/store';
-	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import Data from '$lib/components/data/Data.svelte';
-	import Assets from '$lib/components/assets/Assets.svelte';
-	import Asset from '$lib/components/assets/Asset.svelte';
-	import DataCount from '$lib/components/data/DataCount.svelte';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { isNullish } from '@dfinity/utils';
-	import { listAssets, satelliteVersion } from '$lib/api/satellites.api';
 	import { authStore } from '$lib/stores/auth.store';
 	import { compare } from 'semver';
+	import { getContext, setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
+	import { listAssets, satelliteVersion } from '$lib/api/satellites.api';
 	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
+	import Asset from '$lib/components/assets/Asset.svelte';
+	import Assets from '$lib/components/assets/Assets.svelte';
+	import Data from '$lib/components/data/Data.svelte';
+	import DataCount from '$lib/components/data/DataCount.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
-	import type { ListParams } from '$lib/types/list';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
+	import type { ListParams } from '$lib/types/list';
+	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	const assetsStore = writable<DataStoreData<AssetNoContent>>(undefined);
 

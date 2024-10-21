@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type { JunoModalDetail, JunoModalUpgradeSatelliteDetail } from '$lib/types/modal';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { AnonymousIdentity } from '@dfinity/agent';
 	import { type BuildType, upgradeSatellite } from '@junobuild/admin';
 	import { compare } from 'semver';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import { authStore } from '$lib/stores/auth.store';
-	import { AnonymousIdentity } from '@dfinity/agent';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalDetail, JunoModalUpgradeSatelliteDetail } from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	export let detail: JunoModalDetail;
 

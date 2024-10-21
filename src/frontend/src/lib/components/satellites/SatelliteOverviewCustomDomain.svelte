@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { onMount } from 'svelte';
-	import { listCustomDomains } from '$lib/services/hosting.services';
 	import { nonNullish } from '@dfinity/utils';
+	import { onMount } from 'svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		satelliteCustomDomain,
 		satelliteCustomDomainsLoaded
 	} from '$lib/derived/custom-domains.derived';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { listCustomDomains } from '$lib/services/hosting.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	export let satellite: Satellite;

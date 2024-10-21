@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { setSatelliteName } from '$lib/services/mission-control.services';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	export let satellite: Satellite;
 

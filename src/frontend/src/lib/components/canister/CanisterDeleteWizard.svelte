@@ -1,21 +1,21 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import type { Principal } from '@dfinity/principal';
+	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { goto } from '$app/navigation';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish } from '@dfinity/utils';
+	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import { loadSatellites } from '$lib/services/satellites.services';
-	import { goto } from '$app/navigation';
-	import type { Principal } from '@dfinity/principal';
 	import { ONE_TRILLION, DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION } from '$lib/constants/constants';
-	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let segment: 'satellite' | 'analytics';
 	export let currentCycles: bigint;

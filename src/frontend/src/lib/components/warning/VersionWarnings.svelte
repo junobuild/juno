@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { versionStore } from '$lib/stores/version.store';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { BuildType } from '@junobuild/admin';
+	import { compare } from 'semver';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import { loadVersion } from '$lib/services/console.services';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { compare } from 'semver';
-	import { emit } from '$lib/utils/events.utils';
-	import { busy } from '$lib/stores/busy.store';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { newerReleases } from '$lib/services/upgrade.services';
-	import type { BuildType } from '@junobuild/admin';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let satellite: Satellite | undefined = undefined;
 

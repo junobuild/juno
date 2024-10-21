@@ -131,7 +131,7 @@ export const loadVersion = async ({
 				current,
 				...(buildVersion.status === 'fulfilled' &&
 					nonNullish(buildVersion.value) && { currentBuild: buildVersion.value }),
-				build: buildType.status === 'fulfilled' ? buildType.value ?? 'stock' : 'stock'
+				build: buildType.status === 'fulfilled' ? (buildType.value ?? 'stock') : 'stock'
 			};
 		};
 

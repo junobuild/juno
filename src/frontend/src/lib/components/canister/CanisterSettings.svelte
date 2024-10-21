@@ -1,6 +1,10 @@
 <script lang="ts">
-	import Canister from '$lib/components/canister/Canister.svelte';
 	import type { Principal } from '@dfinity/principal';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import Canister from '$lib/components/canister/Canister.svelte';
+	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type {
 		CanisterData,
 		CanisterLogVisibility,
@@ -8,14 +12,10 @@
 		CanisterSyncStatus,
 		Segment
 	} from '$lib/types/canister';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { secondsToDuration } from '$lib/utils/date.utils';
-	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import { formatBytes } from '$lib/utils/number.utils';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { formatBytes } from '$lib/utils/number.utils';
 
 	export let canisterId: Principal;
 	export let segment: Segment;

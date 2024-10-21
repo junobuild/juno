@@ -1,8 +1,9 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { AnalyticsWebVitalsPageMetrics } from '$declarations/orbiter/orbiter.did';
-	import { formatNumber } from '$lib/utils/number.utils';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import type { AnalyticsWebVitalsPageMetrics } from '$declarations/orbiter/orbiter.did';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { formatNumber } from '$lib/utils/number.utils';
 
 	export let metrics: AnalyticsWebVitalsPageMetrics;
 
@@ -78,7 +79,7 @@
 		<tbody>
 			{#if nonNullish(ttfbRating)}
 				<tr>
-					<td>{@html $i18n.analytics.ttfb}</td>
+					<td><Html text={$i18n.analytics.ttfb} /></td>
 					<td class="score">{formatNumber(fromNullable(ttfb) ?? 0)}</td>
 					<td>{$i18n.analytics[ttfbRating]}</td>
 				</tr>
@@ -86,7 +87,7 @@
 
 			{#if nonNullish(fcpRating)}
 				<tr>
-					<td>{@html $i18n.analytics.fcp}</td>
+					<td><Html text={$i18n.analytics.fcp} /></td>
 					<td class="score">{formatNumber(fromNullable(fcp) ?? 0)}</td>
 					<td>{$i18n.analytics[fcpRating]}</td>
 				</tr>
@@ -94,7 +95,7 @@
 
 			{#if nonNullish(lcpRating)}
 				<tr>
-					<td>{@html $i18n.analytics.lcp}</td>
+					<td><Html text={$i18n.analytics.lcp} /></td>
 					<td class="score">{formatNumber(fromNullable(lcp) ?? 0)}</td>
 					<td>{$i18n.analytics[lcpRating]}</td>
 				</tr>
@@ -102,7 +103,7 @@
 
 			{#if nonNullish(clsRating)}
 				<tr>
-					<td>{@html $i18n.analytics.cls}</td>
+					<td><Html text={$i18n.analytics.cls} /></td>
 					<td class="score">{formatNumber(fromNullable(cls) ?? 0)}</td>
 					<td>{$i18n.analytics[clsRating]}</td>
 				</tr>
@@ -110,7 +111,7 @@
 
 			{#if nonNullish(inpRating)}
 				<tr>
-					<td>{@html $i18n.analytics.inp}</td>
+					<td><Html text={$i18n.analytics.inp} /></td>
 					<td class="score">{formatNumber(fromNullable(inp) ?? 0)}</td>
 					<td>{$i18n.analytics[inpRating]}</td>
 				</tr>

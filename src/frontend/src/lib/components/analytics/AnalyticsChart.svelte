@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { last } from '$lib/utils/utils';
 	import { isNullish } from '@dfinity/utils';
 	import { eachDayOfInterval, startOfDay } from 'date-fns';
+	import { fade } from 'svelte/transition';
+	import Chart from '$lib/components/charts/Chart.svelte';
+	import type { ChartsData } from '$lib/types/chart';
 	import type {
 		AnalyticsMetrics,
 		AnalyticsPageViews,
 		DateStartOfTheDay
 	} from '$lib/types/ortbiter';
-	import { fade } from 'svelte/transition';
-	import type { ChartsData } from '$lib/types/chart';
-	import Chart from '$lib/components/charts/Chart.svelte';
+	import { last } from '$lib/utils/utils';
 
 	export let data: AnalyticsPageViews;
 

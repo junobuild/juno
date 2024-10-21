@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { formatToDate } from '$lib/utils/date.utils';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { nonNullish } from '@dfinity/utils';
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
 	import LogLevel from '$lib/components/logs/LogLevel.svelte';
-	import type { Log } from '$lib/types/log';
-	import { nonNullish } from '@dfinity/utils';
 	import JsonCode from '$lib/components/ui/JsonCode.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { Log } from '$lib/types/log';
+	import { formatToDate } from '$lib/utils/date.utils';
 
 	export let log: Log;
 

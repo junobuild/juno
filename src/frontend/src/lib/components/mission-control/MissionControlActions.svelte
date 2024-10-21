@@ -1,12 +1,12 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
+	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import Actions from '$lib/components/core/Actions.svelte';
-	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
-	import { emit } from '$lib/utils/events.utils';
-	import type { CanisterIcStatus } from '$lib/types/canister';
-	import type { Principal } from '@dfinity/principal';
-	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
 	import MissionControlAttachOrbiter from '$lib/components/mission-control/MissionControlAttachOrbiter.svelte';
+	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
+	import type { CanisterIcStatus } from '$lib/types/canister';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let missionControlId: Principal;
 

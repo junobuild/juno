@@ -8,6 +8,7 @@ import { writeFileSync } from 'node:fs';
  * Note: only supports "a one child depth" in the data structure.
  */
 const generateTypes = async () => {
+	// eslint-disable-next-line import/no-relative-parent-imports
 	const en = await import('../src/frontend/src/lib/i18n/en.json', { assert: { type: 'json' } });
 
 	const data = Object.keys(en.default).map((key) => {

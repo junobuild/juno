@@ -10,6 +10,7 @@ import { join } from 'path';
 const cleanTypes = async ({ dest = `./src/declarations` }) => {
 	const promises = readdirSync(dest).map(
 		(dir) =>
+			// eslint-disable-next-line no-async-promise-executor
 			new Promise(async (resolve) => {
 				const indexPath = join(dest, dir, 'index.js');
 
@@ -44,6 +45,7 @@ const cleanTypes = async ({ dest = `./src/declarations` }) => {
 const cleanFactory = async ({ dest = `./src/declarations` }) => {
 	const promises = readdirSync(dest).map(
 		(dir) =>
+			// eslint-disable-next-line no-async-promise-executor
 			new Promise(async (resolve) => {
 				const factoryPath = join(dest, dir, `${dir}.did.js`);
 
@@ -76,6 +78,7 @@ export const init = ({ IDL }) => {`
 const renameFactory = async ({ dest = `./src/declarations` }) => {
 	const promises = readdirSync(dest).map(
 		(dir) =>
+			// eslint-disable-next-line no-async-promise-executor
 			new Promise(async (resolve) => {
 				const factoryPath = join(dest, dir, `${dir}.did.js`);
 				const formattedPath = join(dest, dir, `${dir}.factory.did.js`);

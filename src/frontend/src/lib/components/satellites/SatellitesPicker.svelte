@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { satelliteIdStore, satellitesStore } from '$lib/stores/satellite.store';
-	import { navigateToAnalytics } from '$lib/utils/nav.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 	import { Principal } from '@dfinity/principal';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { satelliteIdStore, satellitesStore } from '$lib/stores/satellite.store';
+	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { navigateToAnalytics } from '$lib/utils/nav.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	const navigate = async () =>
 		await navigateToAnalytics(

@@ -1,11 +1,12 @@
 import type { PrincipalText } from '$lib/types/itentity';
 import type { Subnet } from '$lib/types/subnet';
+import type { Option } from '$lib/types/utils';
 import { writable, type Readable } from 'svelte/store';
 
 export type SubnetsData = Record<PrincipalText, Subnet | undefined | null>;
 
 export interface SubnetsStore extends Readable<SubnetsData> {
-	setSubnets: (params: { canisterId: PrincipalText; subnet: Subnet | undefined | null }) => void;
+	setSubnets: (params: { canisterId: PrincipalText; subnet: Option<Subnet> }) => void;
 	reset: () => void;
 }
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { isNullish } from '@dfinity/utils';
+	import { createEventDispatcher } from 'svelte';
 
 	export let name: string;
 	export let inputType: 'icp' | 'number' | 'text' | 'currency' = 'number';
@@ -23,8 +23,8 @@
 
 	let inputElement: HTMLInputElement | undefined;
 
-	$: step = inputType === 'number' ? step ?? 'any' : undefined;
-	$: autocomplete = inputType !== 'number' ? autocomplete ?? 'off' : undefined;
+	$: step = inputType === 'number' ? (step ?? 'any') : undefined;
+	$: autocomplete = inputType !== 'number' ? (autocomplete ?? 'off') : undefined;
 
 	// This component was developed for ICP and 8 decimals in mind. The "currency" input type was added afterwards therefore, for backwards compatibility reason, if the input type is set to icp, the number of decimals remains 8.
 	let wrapDecimals = 8;
@@ -142,8 +142,8 @@
 		({ selectionStart, selectionEnd } = inputElement);
 	};
 
-	$: step = inputType === 'number' ? step ?? 'any' : undefined;
-	$: autocomplete = inputType !== 'number' && !currency ? autocomplete ?? 'off' : undefined;
+	$: step = inputType === 'number' ? (step ?? 'any') : undefined;
+	$: autocomplete = inputType !== 'number' && !currency ? (autocomplete ?? 'off') : undefined;
 </script>
 
 <input

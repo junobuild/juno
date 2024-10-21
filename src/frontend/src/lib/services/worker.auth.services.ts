@@ -1,6 +1,5 @@
 import { idleSignOut } from '$lib/services/auth.services';
-import type { AuthStoreData } from '$lib/stores/auth.store';
-import { authRemainingTimeStore } from '$lib/stores/auth.store';
+import { authRemainingTimeStore, type AuthStoreData } from '$lib/stores/auth.store';
 import type { PostMessage, PostMessageDataResponseAuth } from '$lib/types/post-message';
 
 export const initAuthWorker = async () => {

@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { applyColor } from '$lib/utils/theme.utils';
-	import { Color } from '$lib/types/theme';
-	import { layoutTitle } from '$lib/stores/layout.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { layoutTitle } from '$lib/stores/layout.store';
+	import { Color } from '$lib/types/theme';
+	import { applyColor } from '$lib/utils/theme.utils';
 
 	onMount(() => {
 		layoutTitle.set({

@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { versionStore } from '$lib/stores/version.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
 	import { fade } from 'svelte/transition';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import type { SatelliteIdText } from '$lib/types/satellite';
 
 	export let satelliteId: SatelliteIdText;
 

@@ -1,18 +1,18 @@
 <script lang="ts">
+	import { AccountIdentifier } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
-	import { AccountIdentifier } from '@dfinity/ledger-icp';
-	import { amountToICPToken } from '$lib/utils/token.utils';
-	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 	import { createEventDispatcher } from 'svelte';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { authStore } from '$lib/stores/auth.store';
+	import { getAccountIdentifier } from '$lib/api/icp-index.api';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 	import { sendTokens } from '$lib/services/tokens.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { amountToICPToken } from '$lib/utils/token.utils';
 
 	export let missionControlId: Principal;
 	export let balance: bigint | undefined;

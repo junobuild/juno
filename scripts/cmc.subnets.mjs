@@ -24,7 +24,7 @@ const listSubnets = async () => {
 	return await getDefaultSubnets({ certified: true });
 };
 
-const writeSubnets = async (subnets) => {
+const writeSubnets = (subnets) => {
 	const subnetsList = subnets.map((principal) => ({
 		subnetId: principal.toText()
 	}));
@@ -34,4 +34,4 @@ const writeSubnets = async (subnets) => {
 
 const subnets = await listSubnets();
 
-await writeSubnets(subnets);
+writeSubnets(subnets);

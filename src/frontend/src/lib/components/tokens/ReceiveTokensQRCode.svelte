@@ -1,9 +1,9 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { createEventDispatcher } from 'svelte';
 
 	export let value: string;
 	export let ariaLabel: string;

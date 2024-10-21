@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
+	import type { Controller } from '$declarations/satellite/satellite.did';
+	import Confirmation from '$lib/components/core/Confirmation.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { busy } from '$lib/stores/busy.store';
-	import type { Controller } from '$declarations/satellite/satellite.did';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Confirmation from '$lib/components/core/Confirmation.svelte';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	export let visible = false;
 	export let selectedController: [Principal, Controller | undefined] | undefined;

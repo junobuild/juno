@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { afterUpdate, createEventDispatcher } from 'svelte';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { handleKeyPress } from '$lib/utils/keyboard.utils';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { afterUpdate, createEventDispatcher } from 'svelte';
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	export let id: string | undefined = undefined;
 	export let initiallyExpanded = false;
@@ -29,7 +29,9 @@
 	};
 
 	const calculateMaxContentHeight = (): number => {
-		if (nonNullish(maxContentHeight)) return maxContentHeight;
+		if (nonNullish(maxContentHeight)) {
+			return maxContentHeight;
+		}
 		const height = container?.getBoundingClientRect().height ?? container?.offsetHeight ?? 0;
 		return height < CONTENT_MIN_HEIGHT ? CONTENT_MIN_HEIGHT : height;
 	};

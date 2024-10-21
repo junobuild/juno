@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import IconCopy from '$lib/components/icons/IconCopy.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let value: string;
 

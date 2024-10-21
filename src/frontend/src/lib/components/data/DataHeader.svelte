@@ -1,9 +1,9 @@
 <script lang="ts" generics="T">
+	import { nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
-	import { getContext } from 'svelte';
-	import { nonNullish } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
 
 	// eslint-disable-next-line no-undef
 	const { store }: DataContext<T> = getContext<DataContext<T>>(DATA_CONTEXT_KEY);

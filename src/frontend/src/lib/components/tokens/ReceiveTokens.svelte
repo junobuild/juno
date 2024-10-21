@@ -1,11 +1,11 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
+	import { fade } from 'svelte/transition';
+	import { getAccountIdentifier } from '$lib/api/icp-index.api';
+	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';
+	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';
-	import type { Principal } from '@dfinity/principal';
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
-	import { fade } from 'svelte/transition';
-	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
 
 	export let missionControlId: Principal;
 	export let visible = false;

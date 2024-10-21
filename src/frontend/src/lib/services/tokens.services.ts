@@ -3,10 +3,10 @@ import { icpTransfer, icrcTransfer } from '$lib/api/mission-control.api';
 import { ICP_LEDGER_CANISTER_ID, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { OptionIdentity } from '$lib/types/itentity';
 import { nowInBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
-import type { Identity } from '@dfinity/agent';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
 import { decodeIcrcAccount } from '@dfinity/ledger-icrc';
 import { Principal } from '@dfinity/principal';
@@ -21,7 +21,7 @@ export const sendTokens = async ({
 }: {
 	destination: string;
 	token: TokenAmountV2 | undefined;
-	identity: Identity | undefined | null;
+	identity: OptionIdentity;
 	missionControlId: Principal;
 }): Promise<{ success: boolean }> => {
 	const notIcp = invalidIcpAddress(destination);
@@ -75,7 +75,7 @@ export const sendIcrc = async ({
 }: {
 	destination: string;
 	token: TokenAmountV2;
-	identity: Identity | undefined | null;
+	identity: OptionIdentity;
 	missionControlId: Principal;
 }): Promise<void> => {
 	const { owner, subaccount } = decodeIcrcAccount(destination);
@@ -106,7 +106,7 @@ export const sendIcp = async ({
 }: {
 	destination: string;
 	token: TokenAmountV2;
-	identity: Identity | undefined | null;
+	identity: OptionIdentity;
 	missionControlId: Principal;
 }): Promise<void> => {
 	const args: TransferArgs = {

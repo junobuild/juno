@@ -1,5 +1,5 @@
+import type { OptionIdentity } from '$lib/types/itentity';
 import { getAgent } from '$lib/utils/agent.utils';
-import { type Identity } from '@dfinity/agent';
 import {
 	AccountIdentifier,
 	IndexCanister,
@@ -16,7 +16,7 @@ export const getBalance = async ({
 	identity
 }: {
 	owner: Principal;
-	identity: Identity | undefined | null;
+	identity: OptionIdentity;
 }): Promise<bigint> => {
 	if (isNullish(identity)) {
 		throw new Error('No internet identity.');
@@ -40,7 +40,7 @@ export const getTransactions = async ({
 	maxResults = 100n
 }: {
 	owner: Principal;
-	identity: Identity | undefined | null;
+	identity: OptionIdentity;
 	start?: bigint;
 	maxResults?: bigint;
 }): Promise<GetAccountIdentifierTransactionsResponse> => {

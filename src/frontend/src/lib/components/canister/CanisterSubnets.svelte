@@ -1,12 +1,12 @@
 <script lang="ts">
-	import subnets from '$lib/env/subnets.json';
+	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';
+	import subnets from '$lib/env/subnets.json';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { PrincipalText } from '$lib/types/itentity';
-	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
-	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';
-	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import type { Subnet } from '$lib/types/subnet';
+	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 
 	export let subnetId: PrincipalText | undefined;
 
@@ -31,7 +31,7 @@
 		];
 	};
 
-	$: filteredSubnets, (async () => extendSubnets())();
+	$: filteredSubnets, (async () => await extendSubnets())();
 </script>
 
 <div class="subnet">

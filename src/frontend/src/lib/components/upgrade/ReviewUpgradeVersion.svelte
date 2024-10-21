@@ -1,12 +1,13 @@
 <script lang="ts">
-	import type { Wasm } from '$lib/types/upgrade';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { toasts } from '$lib/stores/toasts.store';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { Wasm } from '$lib/types/upgrade';
 	import { emit } from '$lib/utils/events.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
 	export let segment: 'satellite' | 'mission_control' | 'orbiter';
@@ -66,16 +67,18 @@
 {:else}
 	<form on:submit|preventDefault={onSubmit}>
 		<p class="confirm">
-			{@html i18nFormat($i18n.canisters.confirm_upgrade, [
-				{
-					placeholder: '{0}',
-					value: segment.replace('_', ' ')
-				},
-				{
-					placeholder: '{1}',
-					value: wasm.hash
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.confirm_upgrade, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					},
+					{
+						placeholder: '{1}',
+						value: wasm.hash
+					}
+				])}
+			/>
 		</p>
 
 		<div class="toolbar">

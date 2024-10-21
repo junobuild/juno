@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
-	import { nonNullish } from '@dfinity/utils';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	export let start = false;
 

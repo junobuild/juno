@@ -7,6 +7,7 @@ import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
+import type { Option } from '$lib/types/utils';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
@@ -20,8 +21,9 @@ export const initMissionControl = async ({
 }: {
 	identity: Identity;
 	onInitMissionControlSuccess: (missionControlId: Principal) => Promise<void>;
+	// eslint-disable-next-line no-async-promise-executor, require-await
 }) =>
-	// eslint-disable-next-line no-async-promise-executor
+	// eslint-disable-next-line no-async-promise-executor, require-await
 	new Promise<void>(async (resolve, reject) => {
 		try {
 			const { missionControlId } = await getMissionControl({
@@ -76,7 +78,7 @@ export const loadVersion = async ({
 	skipReload
 }: {
 	satelliteId: Principal | undefined;
-	missionControlId: Principal | undefined | null;
+	missionControlId: Option<Principal>;
 	skipReload: boolean;
 }) => {
 	if (isNullish(missionControlId)) {
@@ -131,7 +133,7 @@ export const loadVersion = async ({
 				current,
 				...(buildVersion.status === 'fulfilled' &&
 					nonNullish(buildVersion.value) && { currentBuild: buildVersion.value }),
-				build: buildType.status === 'fulfilled' ? buildType.value ?? 'stock' : 'stock'
+				build: buildType.status === 'fulfilled' ? (buildType.value ?? 'stock') : 'stock'
 			};
 		};
 
@@ -171,7 +173,7 @@ export const loadOrbiterVersion = async ({
 	orbiter,
 	reload
 }: {
-	orbiter: Orbiter | null | undefined;
+	orbiter: Option<Orbiter>;
 	reload: boolean;
 }) => {
 	if (isNullish(orbiter)) {

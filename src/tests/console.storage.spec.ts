@@ -202,13 +202,7 @@ describe('Console / Storage', () => {
 			}
 		])(
 			'Proposal, upload and serve',
-			async ({
-				proposal_type,
-				collection,
-				full_path,
-				expected_proposal_id,
-				expected_asset_tree
-			}) => {
+			({ proposal_type, collection, full_path, expected_proposal_id, expected_asset_tree }) => {
 				let sha256: [] | [Uint8Array | number[]];
 				let proposalId: bigint;
 

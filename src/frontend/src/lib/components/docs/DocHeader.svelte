@@ -1,20 +1,21 @@
 <script lang="ts">
-	import { toasts } from '$lib/stores/toasts.store';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { getContext } from 'svelte';
-	import { isNullish, jsonReplacer } from '@dfinity/utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
-	import DataHeader from '$lib/components/data/DataHeader.svelte';
-	import type { Doc } from '$declarations/satellite/satellite.did';
 	import type { Principal } from '@dfinity/principal';
+	import { isNullish, jsonReplacer } from '@dfinity/utils';
+	import { fromArray } from '@junobuild/utils';
+	import { getContext } from 'svelte';
+	import type { Doc } from '$declarations/satellite/satellite.did';
 	import { deleteDoc } from '$lib/api/satellites.api';
+	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
-	import { authStore } from '$lib/stores/auth.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import DocUpload from '$lib/components/docs/DocUpload.svelte';
 	import IconDownload from '$lib/components/icons/IconDownload.svelte';
-	import { fromArray } from '@junobuild/utils';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
@@ -90,12 +91,14 @@
 			<DocUpload on:junoUploaded={reload} {doc} docKey={key}>
 				<svelte:fragment slot="action">{$i18n.document.replace_document}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.document.replace_document}</svelte:fragment>
-				{@html i18nFormat($i18n.document.replace_description, [
-					{
-						placeholder: '{0}',
-						value: collection ?? ''
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.document.replace_description, [
+						{
+							placeholder: '{0}',
+							value: collection ?? ''
+						}
+					])}
+				/>
 			</DocUpload>
 
 			<button class="menu" type="button" on:click={download}

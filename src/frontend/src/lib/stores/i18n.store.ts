@@ -4,19 +4,16 @@ import type { Languages } from '$lib/types/languages';
 import { getLocalStorageLang, setLocalStorageItem } from '$lib/utils/local-storage.utils';
 import { writable, type Readable } from 'svelte/store';
 
-const zhCnI18n = async (): Promise<I18n> => {
-	return {
-		lang: 'zh-cn',
-		...(await import(`../i18n/zh-cn.json`))
-	};
-};
+const zhCnI18n = async (): Promise<I18n> => ({
+	lang: 'zh-cn',
+	...(await import(`../i18n/zh-cn.json`))
+});
 
-const enI18n = (): I18n => {
-	return {
+const enI18n = (): I18n =>
+	({
 		lang: 'en',
 		...en
-	} as I18n;
-};
+	}) as I18n;
 
 const loadLanguage = (lang: Languages): Promise<I18n> => {
 	switch (lang) {

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
 	import IconNavigateNext from '$lib/components/icons/IconNavigateNext.svelte';
 	import { PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
-	import { getContext } from 'svelte';
 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore

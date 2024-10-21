@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { versionStore } from '$lib/stores/version.store';
-	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
+	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
+	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { versionStore } from '$lib/stores/version.store';
 
 	export let orbiter: Orbiter;
 </script>

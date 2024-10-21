@@ -15,7 +15,7 @@ export const initCyclesWorker = async (): Promise<CyclesWorker> => {
 
 	let cyclesCallback: CyclesCallback | undefined;
 
-	cyclesWorker.onmessage = async ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+	cyclesWorker.onmessage = ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
 		const { msg } = data;
 
 		switch (msg) {

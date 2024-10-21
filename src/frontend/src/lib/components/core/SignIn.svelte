@@ -1,9 +1,9 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { isBusy } from '$lib/stores/busy.store';
 	import DeprecatedSignIn from '$lib/components/core/DeprecatedSignIn.svelte';
 	import IconICMonochrome from '$lib/components/icons/IconICMonochrome.svelte';
 	import { signIn } from '$lib/services/auth.services';
+	import { isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	let quotes: string[];
 	$: quotes = [

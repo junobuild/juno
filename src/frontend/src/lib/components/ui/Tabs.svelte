@@ -1,11 +1,10 @@
 <script lang="ts">
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { getContext } from 'svelte';
-	import type { TabsContext } from '$lib/types/tabs.context';
-	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
-	import { onLayoutTitleIntersection } from '$lib/stores/layout.store';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/layout.store';
+	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import { keyOf } from '$lib/utils/utils';
 
 	export let help: string;

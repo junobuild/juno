@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { fade, scale } from 'svelte/transition';
 	import { quintOut } from 'svelte/easing';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { fade, scale } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	export let anchor: HTMLElement | undefined = undefined;

@@ -1,9 +1,9 @@
 <script lang="ts">
-	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
-	import Theme from '$lib/components/ui/Theme.svelte';
-	import IconTwitter from '$lib/components/icons/IconTwitter.svelte';
-	import IconDiscord from '$lib/components/icons/IconDiscord.svelte';
 	import AppLang from '$lib/components/core/AppLang.svelte';
+	import IconDiscord from '$lib/components/icons/IconDiscord.svelte';
+	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
+	import IconTwitter from '$lib/components/icons/IconTwitter.svelte';
+	import Theme from '$lib/components/ui/Theme.svelte';
 
 	export let themeToggle = false;
 	export let end: 'social' | 'lang' | 'none';

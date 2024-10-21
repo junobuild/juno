@@ -61,7 +61,7 @@ describe('Orbiter upgrade- Configuration', () => {
 		});
 	};
 
-	describe('v0.0.7 -> v0.0.8', async () => {
+	describe('v0.0.7 -> v0.0.8', () => {
 		it('should migrate no entry if the configuration was not set', async () => {
 			await upgradeVersion();
 
@@ -139,7 +139,7 @@ describe('Orbiter upgrade- Configuration', () => {
 		});
 	});
 
-	describe('v0.0.7 -> v0.0.8 -> current', async () => {
+	describe('v0.0.7 -> v0.0.8 -> current', () => {
 		it('should migrate configuration enabled to the new features', async () => {
 			const { set_satellite_configs } = actor;
 

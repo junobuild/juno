@@ -92,7 +92,7 @@ const getAnalytics = async <T>({
 	satelliteId?: Principal;
 	fn: (params: GetAnalytics) => Promise<T>;
 } & PageViewsPeriod): Promise<T> =>
-	fn({
+	await fn({
 		satellite_id: toNullable(satelliteId),
 		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
 		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []

@@ -1,13 +1,14 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
-	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
-	import { upgradeMissionControl } from '@junobuild/admin';
-	import { authStore } from '$lib/stores/auth.store';
 	import { AnonymousIdentity } from '@dfinity/agent';
+	import { nonNullish } from '@dfinity/utils';
+	import { upgradeMissionControl } from '@junobuild/admin';
+	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
 
 	export let detail: JunoModalDetail;
@@ -18,7 +19,7 @@
 	$: ({ newerReleases, currentVersion } = detail as JunoModalUpgradeDetail);
 
 	const upgradeMissionControlWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
-		upgradeMissionControl({
+		await upgradeMissionControl({
 			missionControl: {
 				missionControlId: $missionControlStore!.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
@@ -37,12 +38,14 @@
 		segment="mission_control"
 	>
 		<h2 slot="intro">
-			{@html i18nFormat($i18n.canisters.upgrade_title, [
-				{
-					placeholder: '{0}',
-					value: 'mission control center'
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.upgrade_title, [
+					{
+						placeholder: '{0}',
+						value: 'mission control center'
+					}
+				])}
+			/>
 		</h2>
 	</CanisterUpgradeModal>
 {/if}

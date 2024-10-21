@@ -1,21 +1,25 @@
 <script lang="ts">
-	import type { MemoryText, PermissionText } from '$lib/constants/rules.constants';
-	import { setRule } from '$lib/api/satellites.api';
-	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
-	import { busy } from '$lib/stores/busy.store';
-	import { memoryToText, permissionToText } from '$lib/utils/rules.utils';
-	import { MemoryHeap, MemoryStable, PermissionManaged } from '$lib/constants/rules.constants';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { fromNullable } from '@dfinity/utils';
-	import Input from '$lib/components/ui/Input.svelte';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
+	import { setRule } from '$lib/api/satellites.api';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import {
+		MemoryHeap,
+		MemoryStable,
+		PermissionManaged,
+		type MemoryText,
+		type PermissionText
+	} from '$lib/constants/rules.constants';
 	import { authStore } from '$lib/stores/auth.store';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { memoryToText, permissionToText } from '$lib/utils/rules.utils';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 

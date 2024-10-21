@@ -1,13 +1,13 @@
 <script lang="ts">
-	import LaunchpadButton from '$lib/components/launchpad/LaunchpadButton.svelte';
-	import { emit } from '$lib/utils/events.utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
+	import LaunchpadButton from '$lib/components/launchpad/LaunchpadButton.svelte';
+	import { getCreateSatelliteFeeBalance } from '$lib/services/wizard.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { busy } from '$lib/stores/busy.store';
-	import { authStore } from '$lib/stores/auth.store';
-	import { getCreateSatelliteFeeBalance } from '$lib/services/wizard.services';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let row = false;
 

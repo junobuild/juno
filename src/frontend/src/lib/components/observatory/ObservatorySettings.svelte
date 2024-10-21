@@ -1,32 +1,28 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { busy, isBusy } from '$lib/stores/busy.store';
-	import Input from '$lib/components/ui/Input.svelte';
-	import { getCronTab, setCronTab } from '$lib/api/observatory.api';
 	import type { Principal } from '@dfinity/principal';
-	import type { CronTab } from '$declarations/observatory/observatory.did';
-	import { fromNullable, toNullable } from '@dfinity/utils';
+	import { isNullish, nonNullish, fromNullable, toNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import type { CronTab } from '$declarations/observatory/observatory.did';
+	import { getCronTab, setCronTab } from '$lib/api/observatory.api';
+	import Input from '$lib/components/ui/Input.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
-	import { metadataEmail } from '$lib/utils/metadata.utils';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { CYCLES_WARNING, ONE_TRILLION } from '$lib/constants/constants';
 	import { authStore } from '$lib/stores/auth.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { metadataEmail } from '$lib/utils/metadata.utils';
 
 	export let missionControlId: Principal;
 
 	// Source: https://stackoverflow.com/a/46181/5404186
-	const validEmail = (email: string): boolean => {
-		return (
-			email.match(
-				// eslint-disable-next-line no-useless-escape
-				/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
-			) !== null
-		);
-	};
+	const validEmail = (email: string): boolean =>
+		email.match(
+			// eslint-disable-next-line no-useless-escape
+			/^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+		) !== null;
 
 	const onSubmit = async () => {
 		if (enabled && (email === '' || !validEmail(email ?? ''))) {

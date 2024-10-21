@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
-	import { layoutTitle } from '$lib/stores/layout.store';
-	import { i18n } from '$lib/stores/i18n.store';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { layoutTitle } from '$lib/stores/layout.store';
 
 	onMount(() =>
 		layoutTitle.set({

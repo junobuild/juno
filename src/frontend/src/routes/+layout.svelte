@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
-	import { browser } from '$app/environment';
-	import { initMissionControl } from '$lib/services/console.services';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { onMount } from 'svelte';
-	import { initAuthWorker } from '$lib/services/worker.auth.services';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import Overlays from '$lib/components/core/Overlays.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
 	import { isNullish } from '@dfinity/utils';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { onMount } from 'svelte';
+	import { browser } from '$app/environment';
+	import Overlays from '$lib/components/core/Overlays.svelte';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
+	import { initMissionControl } from '$lib/services/console.services';
+	import { initAuthWorker } from '$lib/services/worker.auth.services';
+	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
 
 	const init = async () => await Promise.all([i18n.init(), syncAuthStore()]);
 
@@ -37,6 +37,7 @@
 			// Poll to init mission control center
 			await initMissionControl({
 				identity,
+				// eslint-disable-next-line require-await
 				onInitMissionControlSuccess: async (missionControlId) =>
 					missionControlStore.set(missionControlId)
 			});
@@ -51,7 +52,7 @@
 		}
 	};
 
-	$: (async () => initUser($authStore))();
+	$: (async () => await initUser($authStore))();
 
 	let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
 

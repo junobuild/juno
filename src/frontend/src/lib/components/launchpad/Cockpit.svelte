@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
+	import { nonNullish } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
+	import Canister from '$lib/components/canister/Canister.svelte';
+	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
-	import { nonNullish } from '@dfinity/utils';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import { fade } from 'svelte/transition';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
-	import Canister from '$lib/components/canister/Canister.svelte';
 	import type { CanisterData } from '$lib/types/canister';
-	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 
 	$: $missionControlStore,
 		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();

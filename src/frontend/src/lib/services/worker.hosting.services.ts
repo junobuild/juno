@@ -9,9 +9,7 @@ export const initHostingWorker = async () => {
 
 	let hostingCallback: HostingCallback | undefined;
 
-	hostingWorker.onmessage = async ({
-		data
-	}: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+	hostingWorker.onmessage = ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
 		const { msg } = data;
 
 		switch (msg) {

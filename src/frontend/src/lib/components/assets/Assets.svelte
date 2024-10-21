@@ -1,27 +1,25 @@
 <script lang="ts">
-	import type { RulesContext } from '$lib/types/rules.context';
-	import { getContext } from 'svelte';
-	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
+	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { deleteAssets } from '$lib/api/satellites.api';
+	import { getContext } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import type { PaginationContext } from '$lib/types/pagination.context';
-	import { PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
-	import type { DataContext } from '$lib/types/data.context';
-	import { DATA_CONTEXT_KEY } from '$lib/types/data.context';
-	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
-	import { listParamsStore } from '$lib/stores/data.store';
+	import { deleteAssets } from '$lib/api/satellites.api';
+	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
-	import type { Principal } from '@dfinity/principal';
-	import { authStore } from '$lib/stores/auth.store';
-	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { emit } from '$lib/utils/events.utils';
+	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
+	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
-	import { fade } from 'svelte/transition';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { listParamsStore } from '$lib/stores/data.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
+	import { type PaginationContext, PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
+	import { type RulesContext, RULES_CONTEXT_KEY } from '$lib/types/rules.context';
+	import { emit } from '$lib/utils/events.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -78,12 +76,14 @@
 			<AssetUpload on:junoUploaded={reload}>
 				<svelte:fragment slot="action">{$i18n.asset.upload_file}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.asset.upload_file}</svelte:fragment>
-				{@html i18nFormat($i18n.asset.upload_description, [
-					{
-						placeholder: '{0}',
-						value: collection ?? ''
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.asset.upload_description, [
+						{
+							placeholder: '{0}',
+							value: collection ?? ''
+						}
+					])}
+				/>
 			</AssetUpload>
 
 			<button class="menu" type="button" on:click={load}
@@ -93,12 +93,14 @@
 			<DataCollectionDelete {deleteData}>
 				<svelte:fragment slot="button">{$i18n.collections.clear_collection}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.collections.clear_collection}</svelte:fragment>
-				{@html i18nFormat($i18n.asset.delete_all, [
-					{
-						placeholder: '{0}',
-						value: collection ?? ''
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.asset.delete_all, [
+						{
+							placeholder: '{0}',
+							value: collection ?? ''
+						}
+					])}
+				/>
 			</DataCollectionDelete>
 		</svelte:fragment>
 	</DataCollectionHeader>

@@ -23,9 +23,7 @@ export const initStatusesWorker = async (): Promise<StatusesWorker> => {
 
 	let statusesCallback: StatusesCallback | undefined;
 
-	statusesWorker.onmessage = async ({
-		data
-	}: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+	statusesWorker.onmessage = ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
 		const { msg } = data;
 
 		switch (msg) {

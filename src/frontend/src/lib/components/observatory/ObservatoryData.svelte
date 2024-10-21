@@ -1,19 +1,19 @@
 <script lang="ts">
-	import type { Status, Statuses } from '$lib/types/observatory';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import ObservatoryError from '$lib/components/observatory/ObservatoryError.svelte';
 	import ObservatoryStatus from '$lib/components/observatory/ObservatoryStatus.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { Status, Statuses } from '$lib/types/observatory';
 
 	export let statuses: Statuses;
 
 	let orbiters: Status[];
 	$: orbiters =
-		nonNullish(statuses) && 'Ok' in statuses ? fromNullable(statuses.Ok.orbiters) ?? [] : [];
+		nonNullish(statuses) && 'Ok' in statuses ? (fromNullable(statuses.Ok.orbiters) ?? []) : [];
 
 	let satellites: Status[];
 	$: satellites =
-		nonNullish(statuses) && 'Ok' in statuses ? fromNullable(statuses.Ok.satellites) ?? [] : [];
+		nonNullish(statuses) && 'Ok' in statuses ? (fromNullable(statuses.Ok.satellites) ?? []) : [];
 </script>
 
 {#if 'Err' in statuses}

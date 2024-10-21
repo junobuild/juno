@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { formatNumber } from '$lib/utils/number.utils';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsMetrics, AnalyticsPageViews } from '$lib/types/ortbiter';
+	import { formatNumber } from '$lib/utils/number.utils';
 
 	export let pageViews: AnalyticsPageViews;
 

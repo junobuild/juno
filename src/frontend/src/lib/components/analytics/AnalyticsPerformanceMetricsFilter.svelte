@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 	import type {
 		AnalyticsWebVitalsPageMetrics,
 		AnalyticsWebVitalsPerformanceMetrics
 	} from '$declarations/orbiter/orbiter.did';
+	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics;
 	export let page: AnalyticsWebVitalsPageMetrics | undefined;

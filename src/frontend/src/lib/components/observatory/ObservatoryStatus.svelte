@@ -1,6 +1,6 @@
 <script lang="ts">
-	import type { Status } from '$lib/types/observatory';
 	import ObservatoryError from '$lib/components/observatory/ObservatoryError.svelte';
+	import type { Status } from '$lib/types/observatory';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	export let status: Status;

@@ -1,14 +1,16 @@
 import { DEV } from '$lib/constants/constants';
 import { HttpAgent, type Identity } from '@dfinity/agent';
 
-export type GetAgentParams = { identity: Identity };
+export interface GetAgentParams {
+	identity: Identity;
+}
 
 export const getAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	if (DEV) {
-		return getLocalAgent(params);
+		return await getLocalAgent(params);
 	}
 
-	return getMainnetAgent(params);
+	return await getMainnetAgent(params);
 };
 
 const getMainnetAgent = async (params: GetAgentParams) => {

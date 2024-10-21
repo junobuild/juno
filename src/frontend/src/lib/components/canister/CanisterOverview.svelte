@@ -1,15 +1,15 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { nonNullish } from '@dfinity/utils';
+	import type { MemorySize } from '$declarations/satellite/satellite.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
+	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import type { MemorySize } from '$declarations/satellite/satellite.did';
-	import { nonNullish } from '@dfinity/utils';
 	import { formatBytes, formatNumber } from '$lib/utils/number.utils';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
-	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 
 	export let canisterId: Principal;
 	export let segment: Segment;

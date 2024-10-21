@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { getContext } from 'svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 </script>

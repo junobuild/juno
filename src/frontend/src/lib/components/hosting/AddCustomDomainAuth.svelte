@@ -1,9 +1,10 @@
 <script lang="ts">
-	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { createEventDispatcher } from 'svelte';
+	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { createEventDispatcher } from 'svelte';
 
 	export let config: AuthenticationConfig | undefined;
 	export let domainNameInput: string;
@@ -49,45 +50,51 @@
 
 <p>
 	{#if edit}
-		{@html i18nFormat($i18n.hosting.update_auth_domain_question, [
-			{
-				placeholder: '{0}',
-				value: domainNameInput
-			},
-			{
-				placeholder: '{1}',
-				value: authDomain ?? ''
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.hosting.update_auth_domain_question, [
+				{
+					placeholder: '{0}',
+					value: domainNameInput
+				},
+				{
+					placeholder: '{1}',
+					value: authDomain ?? ''
+				}
+			])}
+		/>
 	{:else}
-		{@html i18nFormat($i18n.hosting.set_auth_domain_question, [
-			{
-				placeholder: '{0}',
-				value: domainNameInput
-			},
-			{
-				placeholder: '{1}',
-				value: domainNameInput.startsWith('www')
-					? domainNameInput.replace('www.', '')
-					: `www.${domainNameInput}`
-			},
-			{
-				placeholder: '{2}',
-				value: domainNameInput
-			}
-		])}{/if}
+		<Html
+			text={i18nFormat($i18n.hosting.set_auth_domain_question, [
+				{
+					placeholder: '{0}',
+					value: domainNameInput
+				},
+				{
+					placeholder: '{1}',
+					value: domainNameInput.startsWith('www')
+						? domainNameInput.replace('www.', '')
+						: `www.${domainNameInput}`
+				},
+				{
+					placeholder: '{2}',
+					value: domainNameInput
+				}
+			])}
+		/>{/if}
 </p>
 
 <div class="toolbar">
 	<button on:click={no}
 		>{#if edit}
 			<span
-				>{@html i18nFormat($i18n.hosting.no_keep_domain, [
-					{
-						placeholder: '{0}',
-						value: authDomain ?? ''
-					}
-				])}</span
+				><Html
+					text={i18nFormat($i18n.hosting.no_keep_domain, [
+						{
+							placeholder: '{0}',
+							value: authDomain ?? ''
+						}
+					])}
+				/></span
 			>
 		{:else}{$i18n.core.no}{/if}</button
 	>

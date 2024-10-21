@@ -1,5 +1,12 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import { onDestroy, onMount } from 'svelte';
+	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
+	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
+	import IconSync from '$lib/components/icons/IconSync.svelte';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type {
 		CanisterIcStatus,
 		CanisterData,
@@ -8,15 +15,8 @@
 		Segment
 	} from '$lib/types/canister';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
-	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
-	import { onDestroy, onMount } from 'svelte';
-	import { formatBytes } from '$lib/utils/number.utils';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { emit } from '$lib/utils/events.utils';
-	import IconSync from '$lib/components/icons/IconSync.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
-	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
+	import { formatBytes } from '$lib/utils/number.utils';
 
 	export let canisterId: Principal;
 	export let segment: Segment;

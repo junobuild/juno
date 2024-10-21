@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import type { CanisterData } from '$lib/types/canister';
-	import { fade } from 'svelte/transition';
 	import { nonNullish } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
+	import type { CanisterData } from '$lib/types/canister';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	export let data: CanisterData | undefined = undefined;
 

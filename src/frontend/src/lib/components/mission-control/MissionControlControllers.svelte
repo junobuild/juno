@@ -1,16 +1,16 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import { nonNullish } from '@dfinity/utils';
+	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import {
 		deleteMissionControlController,
 		listMissionControlControllers,
 		setMissionControlController
 	} from '$lib/api/mission-control.api';
-	import { authStore } from '$lib/stores/auth.store';
-	import { nonNullish } from '@dfinity/utils';
-	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
-	import type { SetControllerParams } from '$lib/types/controllers';
+	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { SetControllerParams } from '$lib/types/controllers';
 
 	export let missionControlId: Principal;
 

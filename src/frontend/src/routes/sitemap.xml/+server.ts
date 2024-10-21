@@ -4,6 +4,7 @@ const staticPages: string[] = [];
 
 export const prerender = true;
 
+// eslint-disable-next-line require-await
 export const GET = async (): Promise<Response> => {
 	const headers: Record<string, string> = {
 		'Cache-Control': 'max-age=3600',

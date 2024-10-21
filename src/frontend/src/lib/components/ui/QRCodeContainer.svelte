@@ -1,7 +1,7 @@
 <script lang="ts">
-	import QRCode from '$lib/components/ui/QRCode.svelte';
-	import { slide } from 'svelte/transition';
 	import { quintOut, circOut } from 'svelte/easing';
+	import { slide } from 'svelte/transition';
+	import QRCode from '$lib/components/ui/QRCode.svelte';
 
 	export let ariaLabel: string | undefined = undefined;
 	export let value: string;

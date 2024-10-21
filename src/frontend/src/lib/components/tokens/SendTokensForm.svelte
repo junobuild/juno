@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { isNullish } from '@dfinity/utils';
+	import { createEventDispatcher } from 'svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
-	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish, TokenAmountV2 } from '@dfinity/utils';
-	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
-	import { createEventDispatcher } from 'svelte';
 	import { amountToICPToken } from '$lib/utils/token.utils';
 
 	export let balance: bigint | undefined;
@@ -18,7 +19,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	const onSubmit = async () => {
+	const onSubmit = () => {
 		if (isNullish(balance) || balance === 0n) {
 			toasts.error({
 				text: $i18n.errors.empty_balance
@@ -49,7 +50,7 @@
 			return;
 		}
 
-		if (balance + IC_TRANSACTION_FEE_ICP < (tokenAmount as TokenAmountV2).toE8s()) {
+		if (balance + IC_TRANSACTION_FEE_ICP < tokenAmount.toE8s()) {
 			toasts.error({
 				text: $i18n.errors.invalid_amount
 			});
@@ -63,12 +64,14 @@
 <h2>{$i18n.wallet.send}</h2>
 
 <p>
-	{@html i18nFormat($i18n.wallet.send_information, [
-		{
-			placeholder: '{0}',
-			value: formatE8sICP(balance ?? 0n)
-		}
-	])}
+	<Html
+		text={i18nFormat($i18n.wallet.send_information, [
+			{
+				placeholder: '{0}',
+				value: formatE8sICP(balance ?? 0n)
+			}
+		])}
+	/>
 </p>
 
 <form class="content" on:submit|preventDefault={onSubmit}>

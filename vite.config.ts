@@ -4,8 +4,7 @@ import { sveltekit } from '@sveltejs/kit/vite';
 import { readFileSync } from 'fs';
 import { dirname, resolve } from 'path';
 import { fileURLToPath } from 'url';
-import type { UserConfig } from 'vite';
-import { defineConfig } from 'vite';
+import { defineConfig, type UserConfig } from 'vite';
 
 const file = fileURLToPath(new URL('package.json', import.meta.url));
 const json = readFileSync(file, 'utf8');

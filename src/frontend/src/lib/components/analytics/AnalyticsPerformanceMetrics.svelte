@@ -3,8 +3,8 @@
 		AnalyticsWebVitalsPageMetrics,
 		AnalyticsWebVitalsPerformanceMetrics
 	} from '$declarations/orbiter/orbiter.did';
-	import AnalyticsPerformanceMetricsPage from '$lib/components/analytics/AnalyticsPerformanceMetricsPage.svelte';
 	import AnalyticsPerformanceMetricsFilter from '$lib/components/analytics/AnalyticsPerformanceMetricsFilter.svelte';
+	import AnalyticsPerformanceMetricsPage from '$lib/components/analytics/AnalyticsPerformanceMetricsPage.svelte';
 
 	export let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics;
 

@@ -1,27 +1,27 @@
 <script lang="ts">
-	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
-	import type { Principal } from '@dfinity/principal';
-	import { formatE8sCredits, formatE8sICP } from '$lib/utils/icp.utils';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { last } from '$lib/utils/utils';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { onMount } from 'svelte';
-	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
-	import { getCredits } from '$lib/api/console.api';
-	import { toasts } from '$lib/stores/toasts.store';
-	import Transactions from '$lib/components/transactions/Transactions.svelte';
-	import { PAGINATION } from '$lib/constants/constants';
-	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
-	import { fade } from 'svelte/transition';
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
-	import Wallet from '$lib/components/core/Wallet.svelte';
-	import { emit } from '$lib/utils/events.utils';
-	import { versionStore } from '$lib/stores/version.store';
+	import type { Principal } from '@dfinity/principal';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import { getCredits } from '$lib/api/console.api';
+	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
+	import Wallet from '$lib/components/core/Wallet.svelte';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
+	import Transactions from '$lib/components/transactions/Transactions.svelte';
+	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { PAGINATION } from '$lib/constants/constants';
+	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import { emit } from '$lib/utils/events.utils';
+	import { formatE8sCredits, formatE8sICP } from '$lib/utils/icp.utils';
+	import { last } from '$lib/utils/utils';
 
 	export let missionControlId: Principal;
 

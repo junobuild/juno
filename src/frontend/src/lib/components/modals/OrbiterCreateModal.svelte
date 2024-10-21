@@ -1,24 +1,24 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail } from '$lib/types/modal';
-	import { wizardBusy } from '$lib/stores/busy.store';
+	import { createEventDispatcher } from 'svelte';
+	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import {
 		createOrbiter,
 		createOrbiterWithConfig,
 		loadOrbiters
 	} from '$lib/services/orbiters.services';
-	import Confetti from '$lib/components/ui/Confetti.svelte';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type { PrincipalText } from '$lib/types/itentity';
-	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
-	import { Principal } from '@dfinity/principal';
+	import type { JunoModalDetail } from '$lib/types/modal';
 
 	export let detail: JunoModalDetail;
 

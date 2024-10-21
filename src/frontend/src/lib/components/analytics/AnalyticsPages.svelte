@@ -1,7 +1,7 @@
 <script lang="ts">
+	import type { AnalyticsTop10PageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
-	import type { AnalyticsTop10PageViews } from '$declarations/orbiter/orbiter.did';
 
 	export let pageViews: AnalyticsPageViews;
 

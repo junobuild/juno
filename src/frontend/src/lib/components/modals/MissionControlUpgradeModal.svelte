@@ -18,7 +18,7 @@
 	$: ({ newerReleases, currentVersion } = detail as JunoModalUpgradeDetail);
 
 	const upgradeMissionControlWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
-		upgradeMissionControl({
+		await upgradeMissionControl({
 			missionControl: {
 				missionControlId: $missionControlStore!.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),

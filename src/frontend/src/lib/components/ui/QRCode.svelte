@@ -2,8 +2,7 @@
 	/**
 	 * Source gix-components: https://gix.design
 	 */
-	import { debounce } from '@dfinity/utils';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
 	import { afterUpdate, createEventDispatcher, onMount } from 'svelte';
 	import { theme } from '$lib/stores/theme.store';
 	import type { QrCreateClass } from '$lib/types/qr-creator';

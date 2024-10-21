@@ -19,6 +19,7 @@
 
 	const dispatch = createEventDispatcher();
 
+	// eslint-disable-next-line local-rules/prefer-object-params
 	const onIntersection = (entries: IntersectionObserverEntry[], observer: IntersectionObserver) => {
 		const intersecting: IntersectionObserverEntry | undefined = entries.find(
 			({ isIntersecting }: IntersectionObserverEntry) => isIntersecting

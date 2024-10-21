@@ -7,7 +7,7 @@
 	export let satellite: Satellite;
 	export let config: AuthenticationConfig | undefined = undefined;
 
-	const openAddCustomDomain = async () => {
+	const openAddCustomDomain = () => {
 		emit({
 			message: 'junoModal',
 			detail: {

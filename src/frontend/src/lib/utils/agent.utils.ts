@@ -7,10 +7,10 @@ export interface GetAgentParams {
 
 export const getAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	if (DEV) {
-		return getLocalAgent(params);
+		return await getLocalAgent(params);
 	}
 
-	return getMainnetAgent(params);
+	return await getMainnetAgent(params);
 };
 
 const getMainnetAgent = async (params: GetAgentParams) => {

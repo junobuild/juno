@@ -668,7 +668,7 @@ describe('Satellite storage', () => {
 
 		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			'With memory %s',
-			async ({ memory }) => {
+			({ memory }) => {
 				const collection = 'Heap' in memory ? 'images_heap' : 'images_stable';
 
 				beforeAll(async () => {
@@ -954,7 +954,7 @@ describe('Satellite storage', () => {
 	});
 
 	describe('collection', () => {
-		beforeAll(async () => {
+		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 
@@ -997,7 +997,7 @@ describe('Satellite storage', () => {
 		const maxHeapMemorySize = 3_932_160n;
 		const maxStableMemorySize = 2_000_000n;
 
-		beforeAll(async () => {
+		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 

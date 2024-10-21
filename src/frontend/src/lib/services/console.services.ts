@@ -21,8 +21,9 @@ export const initMissionControl = async ({
 }: {
 	identity: Identity;
 	onInitMissionControlSuccess: (missionControlId: Principal) => Promise<void>;
+	// eslint-disable-next-line no-async-promise-executor, require-await
 }) =>
-	// eslint-disable-next-line no-async-promise-executor
+	// eslint-disable-next-line no-async-promise-executor, require-await
 	new Promise<void>(async (resolve, reject) => {
 		try {
 			const { missionControlId } = await getMissionControl({

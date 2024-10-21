@@ -47,6 +47,7 @@ export const satelliteStore: Readable<Satellite | undefined | null> = derived(
 			({ satellite_id }) => satellite_id.toText() === data.satellite
 		);
 
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		return satellite === undefined ? null : satellite;
 	}
 );

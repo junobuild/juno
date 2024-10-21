@@ -22,7 +22,7 @@
 		detail as JunoModalUpgradeSatelliteDetail);
 
 	const upgradeSatelliteWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
-		upgradeSatellite({
+		await upgradeSatellite({
 			satellite: {
 				satelliteId: satellite.satellite_id.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),

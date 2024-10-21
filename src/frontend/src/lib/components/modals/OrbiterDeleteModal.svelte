@@ -16,7 +16,7 @@
 
 	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
 	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
-		deleteOrbiter({
+		await deleteOrbiter({
 			...params,
 			orbiterId: $orbiterStore!.orbiter_id,
 			identity: $authStore.identity

@@ -19,13 +19,18 @@
 	});
 
 	const reloadRules = async () =>
-		reloadContextRules({ satelliteId, type: DbRulesType, store, identity: $authStore.identity });
+		await reloadContextRules({
+			satelliteId,
+			type: DbRulesType,
+			store,
+			identity: $authStore.identity
+		});
 
-	$: satelliteId, (async () => reloadRules())();
+	$: satelliteId, (async () => await reloadRules())();
 
 	setContext<RulesContext>(RULES_CONTEXT_KEY, {
 		store,
-		reload: async () => reloadRules()
+		reload: async () => await reloadRules()
 	});
 
 	const { store: tabsStore }: TabsContext = getContext<TabsContext>(TABS_CONTEXT_KEY);

@@ -15,9 +15,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
+	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
-	import type { Option } from '$lib/types/utils';
 
 	export let url: string;
 	export let ariaLabel = '';

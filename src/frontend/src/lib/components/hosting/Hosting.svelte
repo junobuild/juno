@@ -16,8 +16,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { satelliteUrl } from '$lib/utils/satellite.utils';
 	import type { Option } from '$lib/types/utils';
+	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
 	export let satellite: Satellite;
 

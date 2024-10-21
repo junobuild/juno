@@ -9,8 +9,8 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store.js';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
-	import { keyOf } from '$lib/utils/utils';
 	import type { Option } from '$lib/types/utils';
+	import { keyOf } from '$lib/utils/utils';
 
 	export let info: {
 		customDomain: [string, CustomDomainType] | undefined;

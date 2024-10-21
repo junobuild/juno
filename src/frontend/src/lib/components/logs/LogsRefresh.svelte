@@ -27,7 +27,7 @@
 	const saveToggle = () =>
 		setLocalStorageItem({ key: 'observe_logs', value: JSON.stringify(observe) });
 
-	const watch = async () => {
+	const watch = () => {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore NodeJS.timeout vs number
 		timer = setInterval(async () => {

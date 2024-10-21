@@ -33,7 +33,7 @@
 
 	$: worker,
 		missionControlId,
-		(async () => {
+		(() => {
 			if (isNullish(missionControlId)) {
 				worker?.stop();
 				return;

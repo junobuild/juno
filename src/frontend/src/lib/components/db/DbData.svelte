@@ -3,7 +3,7 @@
 	import { compare } from 'semver';
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import DocForm from '../docs/DocHeader.svelte';
+	import DocForm from '$lib/components/docs/DocHeader.svelte';
 	import type { Doc as DocType, Doc as DocDid } from '$declarations/satellite/satellite.did';
 	import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';

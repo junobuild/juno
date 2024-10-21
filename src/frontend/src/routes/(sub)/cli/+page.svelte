@@ -24,7 +24,7 @@
 			{$i18n.cli.sign_in}
 		</p>
 
-		<button on:click={async () => signIn({})}>{$i18n.core.sign_in}</button>
+		<button on:click={async () => await signIn({})}>{$i18n.core.sign_in}</button>
 	{/if}
 {:else}
 	<p>{$i18n.errors.cli_missing_params}</p>

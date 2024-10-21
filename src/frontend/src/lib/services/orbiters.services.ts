@@ -168,11 +168,11 @@ export const getAnalyticsTrackEvents = async ({
 	orbiterVersion: string;
 }): Promise<AnalyticsTrackEvents> => {
 	if (compare(orbiterVersion, '0.0.5') >= 0) {
-		return getTrackEventsAnalytics(params);
+		return await getTrackEventsAnalytics(params);
 	}
 
 	// TODO: support for deprecated version of the Orbiter where the analytics are calculated in the frontend. To be removed.
-	return getDeprecatedAnalyticsTrackEvents(params);
+	return await getDeprecatedAnalyticsTrackEvents(params);
 };
 
 export const getAnalyticsPerformanceMetrics = async ({
@@ -183,7 +183,7 @@ export const getAnalyticsPerformanceMetrics = async ({
 	orbiterVersion: string;
 }): Promise<AnalyticsWebVitalsPerformanceMetrics | undefined> => {
 	if (compare(orbiterVersion, '0.0.8') >= 0) {
-		return getPerformanceMetricsAnalyticsWebVitals(params);
+		return await getPerformanceMetricsAnalyticsWebVitals(params);
 	}
 
 	return undefined;

@@ -43,7 +43,7 @@ export const warnSignOut = (text: string): Promise<void> =>
 		}
 	});
 
-export const idleSignOut = async () => warnSignOut(get(i18n).authentication.session_expired);
+export const idleSignOut = async () => await warnSignOut(get(i18n).authentication.session_expired);
 
 const logout = async ({ msg = undefined }: { msg?: ToastMsg }) => {
 	// To mask not operational UI (a side effect of sometimes slow JS loading after window.reload because of service worker and no cache).

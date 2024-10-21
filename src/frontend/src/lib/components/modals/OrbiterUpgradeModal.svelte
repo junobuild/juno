@@ -18,7 +18,7 @@
 	$: ({ newerReleases, currentVersion } = detail as JunoModalUpgradeDetail);
 
 	const upgradeOrbiterWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
-		upgradeOrbiter({
+		await upgradeOrbiter({
 			orbiter: {
 				orbiterId: $orbiterStore!.orbiter_id.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),

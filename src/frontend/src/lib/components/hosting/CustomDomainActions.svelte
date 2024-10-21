@@ -15,9 +15,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
+	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type { Option } from '$lib/types/utils';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
@@ -26,7 +26,7 @@
 
 	let visible = false;
 
-	const openDelete = async () => {
+	const openDelete = () => {
 		if (isNullish(customDomain)) {
 			toasts.error({
 				text: $i18n.errors.hosting_no_custom_domain
@@ -107,9 +107,7 @@
 		busy.stop();
 	};
 
-	const openAddCustomDomain = async (
-		params: Pick<JunoModalCustomDomainDetail, 'editDomainName'>
-	) => {
+	const openAddCustomDomain = (params: Pick<JunoModalCustomDomainDetail, 'editDomainName'>) => {
 		emit({
 			message: 'junoModal',
 			detail: {
@@ -125,7 +123,7 @@
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<ButtonTableAction
-			on:click={async () => await openAddCustomDomain({ editDomainName: customDomain?.[0] })}
+			on:click={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 			ariaLabel={$i18n.hosting.edit}
 			icon="edit"
 		/>

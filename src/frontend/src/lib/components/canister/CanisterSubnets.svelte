@@ -31,7 +31,7 @@
 		];
 	};
 
-	$: filteredSubnets, (async () => extendSubnets())();
+	$: filteredSubnets, (async () => await extendSubnets())();
 </script>
 
 <div class="subnet">

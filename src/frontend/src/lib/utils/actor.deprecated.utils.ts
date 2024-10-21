@@ -16,7 +16,7 @@ import { get } from 'svelte/store';
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getMissionControlActor004 = (
+export const getMissionControlActor004 = async (
 	canisterId: Principal
 ): Promise<MissionControlActor004> => {
 	const identity: OptionIdentity = get(authStore).identity;
@@ -25,7 +25,7 @@ export const getMissionControlActor004 = (
 		throw new Error('No internet identity.');
 	}
 
-	return createActor({
+	return await createActor({
 		canisterId,
 		idlFactory: idlFactorMissionControl004,
 		identity
@@ -80,7 +80,7 @@ export const getOrbiterActor007 = async ({
 		throw new Error('No internet identity.');
 	}
 
-	return createActor({
+	return await createActor({
 		canisterId: orbiterId,
 		idlFactory: idlFactorOrbiter007,
 		identity

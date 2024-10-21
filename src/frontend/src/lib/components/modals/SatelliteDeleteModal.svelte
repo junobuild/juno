@@ -20,7 +20,7 @@
 
 	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
 	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
-		deleteSatellite({
+		await deleteSatellite({
 			...params,
 			satelliteId: satellite.satellite_id,
 			identity: $authStore.identity

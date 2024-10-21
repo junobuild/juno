@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, TokenAmountV2 } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -18,7 +18,7 @@
 
 	const dispatch = createEventDispatcher();
 
-	const onSubmit = async () => {
+	const onSubmit = () => {
 		if (isNullish(balance) || balance === 0n) {
 			toasts.error({
 				text: $i18n.errors.empty_balance

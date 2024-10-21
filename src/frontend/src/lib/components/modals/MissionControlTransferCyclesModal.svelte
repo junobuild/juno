@@ -15,7 +15,7 @@
 
 	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
 	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
-		depositCycles({
+		await depositCycles({
 			...params,
 			missionControlId: $missionControlStore!,
 			identity: $authStore.identity

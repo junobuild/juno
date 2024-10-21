@@ -17,12 +17,12 @@ export interface GetFeeBalance {
 export const getCreateSatelliteFeeBalance = async (params: {
 	identity: OptionIdentity;
 	missionControlId: Option<Principal>;
-}): Promise<GetFeeBalance> => getCreateFeeBalance({ ...params, getFee: getSatelliteFee });
+}): Promise<GetFeeBalance> => await getCreateFeeBalance({ ...params, getFee: getSatelliteFee });
 
 export const getCreateOrbiterFeeBalance = async (params: {
 	identity: OptionIdentity;
 	missionControlId: Option<Principal>;
-}): Promise<GetFeeBalance> => getCreateFeeBalance({ ...params, getFee: getOrbiterFee });
+}): Promise<GetFeeBalance> => await getCreateFeeBalance({ ...params, getFee: getOrbiterFee });
 
 const getCreateFeeBalance = async ({
 	identity,

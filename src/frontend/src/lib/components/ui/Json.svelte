@@ -64,6 +64,7 @@
 	$: title = valueType === 'hash' ? (json as number[]).join() : undefined;
 
 	let collapsed = true;
+	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 	$: collapsed = _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
 
 	const toggle = () => (collapsed = !collapsed);

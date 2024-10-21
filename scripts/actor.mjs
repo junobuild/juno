@@ -1,9 +1,11 @@
 import pkgAgent, { AnonymousIdentity } from '@dfinity/agent';
 import pkgPrincipal from '@dfinity/principal';
+/* eslint-disable */
 import { idlFactory } from '../src/declarations/console/console.factory.did.mjs';
 import { idlFactory as icIdlFactory } from '../src/declarations/ic/ic.factory.did.mjs';
 import { idlFactory as observatoryIdlFactory } from '../src/declarations/observatory/observatory.factory.did.mjs';
 import { idlFactory as orbiterIdlFactory } from '../src/declarations/orbiter/orbiter.factory.did.mjs';
+/* eslint-enable */
 import { getIdentity } from './console.config.utils.mjs';
 import { CONSOLE_ID, OBSERVATORY_ID } from './constants.mjs';
 import { targetMainnet } from './utils.mjs';
@@ -107,6 +109,7 @@ export const orbiterActorLocal = async (canisterId) => {
 const MANAGEMENT_CANISTER_ID = Principal.fromText('aaaaa-aa');
 
 // Source nns-dapp - dart -> JS bridge
+// eslint-disable-next-line local-rules/prefer-object-params
 const transform = (_methodName, args, _callConfig) => {
 	const first = args[0];
 	let effectiveCanisterId = MANAGEMENT_CANISTER_ID;

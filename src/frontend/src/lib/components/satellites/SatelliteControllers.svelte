@@ -1,9 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import {
-		type Satellite,
-		type Controller
-	} from '$declarations/mission_control/mission_control.did';
+	import type { Satellite, Controller } from '$declarations/mission_control/mission_control.did';
 	import {
 		deleteSatellitesController,
 		setSatellitesController

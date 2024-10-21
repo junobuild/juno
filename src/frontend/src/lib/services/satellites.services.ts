@@ -3,6 +3,7 @@ import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { Option } from '$lib/types/utils';
 import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
@@ -17,7 +18,7 @@ export const createSatellite = async ({
 	missionControl,
 	config: { name }
 }: {
-	missionControl: Principal | undefined | null;
+	missionControl: Option<Principal>;
 	config: CreateSatelliteConfig;
 }): Promise<Satellite | undefined> => {
 	assertNonNullish(missionControl);
@@ -35,7 +36,7 @@ export const createSatelliteWithConfig = async ({
 	missionControl,
 	config: { name, subnetId }
 }: {
-	missionControl: Principal | undefined | null;
+	missionControl: Option<Principal>;
 	config: CreateSatelliteConfig;
 }): Promise<Satellite | undefined> => {
 	assertNonNullish(missionControl);
@@ -56,7 +57,7 @@ export const loadSatellites = async ({
 	missionControl,
 	reload = false
 }: {
-	missionControl: Principal | undefined | null;
+	missionControl: Option<Principal>;
 	reload?: boolean;
 }) => {
 	if (isNullish(missionControl)) {

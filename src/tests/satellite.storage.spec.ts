@@ -694,7 +694,7 @@ describe('Satellite storage', () => {
 				const SVG =
 					'<svg height="100" width="100"><circle r="45" cx="50" cy="50" fill="red" /></svg>';
 
-				const uploadCustomAsset = async (name: string = 'hello.svg') => {
+				const uploadCustomAsset = async (name = 'hello.svg') => {
 					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
 					const file = await init_asset_upload({

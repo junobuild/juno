@@ -7,15 +7,15 @@
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
+	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
+	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
+	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
 	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
 	import SatelliteCreateModal from '$lib/components/modals/SatelliteCreateModal.svelte';
+	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
 	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
 	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
-	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
-	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
-	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
-	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import type { JunoModal } from '$lib/types/modal';
 

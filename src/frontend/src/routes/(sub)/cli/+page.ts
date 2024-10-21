@@ -1,10 +1,11 @@
 import { browser } from '$app/environment';
+import type { Option } from '$lib/types/utils';
 import type { LoadEvent } from '@sveltejs/kit';
 import type { PageLoad } from './$types';
 
 export const load: PageLoad = (
 	$event: LoadEvent
-): { redirect_uri: string | null | undefined; principal: string | null | undefined } => {
+): { redirect_uri: Option<string>; principal: Option<string> } => {
 	if (!browser) {
 		return {
 			redirect_uri: undefined,

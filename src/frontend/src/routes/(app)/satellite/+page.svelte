@@ -9,6 +9,7 @@
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
 	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { satelliteStore } from '$lib/stores/satellite.store';
 	import {
 		type Tab,
@@ -16,7 +17,6 @@
 		type TabsContext,
 		type TabsStore
 	} from '$lib/types/tabs.context';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [

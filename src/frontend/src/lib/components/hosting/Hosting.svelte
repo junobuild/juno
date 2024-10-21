@@ -17,6 +17,7 @@
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
+	import type { Option } from '$lib/types/utils';
 
 	export let satellite: Satellite;
 

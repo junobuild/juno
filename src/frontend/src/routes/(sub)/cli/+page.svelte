@@ -4,6 +4,7 @@
 	import { signIn } from '$lib/services/auth.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { Option } from '$lib/types/utils';
 
 	export let data: {
 		redirect_uri: Option<string>;

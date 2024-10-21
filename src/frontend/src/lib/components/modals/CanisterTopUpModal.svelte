@@ -9,18 +9,18 @@
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { E8S_PER_ICP, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+	import { authStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { wizardBusy } from '$lib/stores/busy.store';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
-	import { authStore } from '$lib/stores/auth.store';
 
 	export let canisterId: Principal;
 	export let balance: bigint;

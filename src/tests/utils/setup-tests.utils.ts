@@ -50,8 +50,8 @@ export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayB
 		[{ controllers: Array.isArray(controllers) ? controllers : [controllers.getPrincipal()] }]
 	);
 
-const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> => {
-	return await new Promise((resolve, reject) => {
+const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
+	await new Promise((resolve, reject) => {
 		get(url, async (res) => {
 			if (nonNullish(res.statusCode) && [301, 302].includes(res.statusCode)) {
 				await downloadFromURL(res.headers.location!).then(resolve, reject);
@@ -67,7 +67,6 @@ const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
 			res.on('error', reject);
 		});
 	});
-};
 
 export const downloadSatellite = async (version: string): Promise<string> =>
 	downloadCdn(`satellite-v${version}.wasm.gz`);

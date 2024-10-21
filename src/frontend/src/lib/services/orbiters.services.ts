@@ -33,6 +33,7 @@ import type {
 	PageViewsParams
 } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
+import type { Option } from '$lib/types/utils';
 import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
@@ -48,7 +49,7 @@ export const createOrbiter = async ({
 	missionControl,
 	config: { name }
 }: {
-	missionControl: Principal | undefined | null;
+	missionControl: Option<Principal>;
 	config: CreateOrbiterConfig;
 }): Promise<Orbiter | undefined> => {
 	assertNonNullish(missionControl);
@@ -66,7 +67,7 @@ export const createOrbiterWithConfig = async ({
 	missionControl,
 	config: { name, subnetId }
 }: {
-	missionControl: Principal | undefined | null;
+	missionControl: Option<Principal>;
 	config: CreateOrbiterConfig;
 }): Promise<Orbiter | undefined> => {
 	assertNonNullish(missionControl);
@@ -87,7 +88,7 @@ export const loadOrbiters = async ({
 	missionControl,
 	reload = false
 }: {
-	missionControl: Principal | undefined | null;
+	missionControl: Option<Principal>;
 	reload?: boolean;
 }) => {
 	if (isNullish(missionControl)) {

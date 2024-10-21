@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { authStore } from '$lib/stores/auth.store';
 	import { compare } from 'semver';
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -11,6 +10,7 @@
 	import Assets from '$lib/components/assets/Assets.svelte';
 	import Data from '$lib/components/data/Data.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';

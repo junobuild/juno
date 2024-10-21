@@ -10,6 +10,7 @@
 	import { subnetsStore } from '$lib/stores/subnets.store';
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { Subnet } from '$lib/types/subnet';
+	import type { Option } from '$lib/types/utils';
 
 	export let canisterId: Principal;
 

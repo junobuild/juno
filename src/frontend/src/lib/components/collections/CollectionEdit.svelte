@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import Input from '$lib/components/ui/Input.svelte';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { setRule } from '$lib/api/satellites.api';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		MemoryHeap,

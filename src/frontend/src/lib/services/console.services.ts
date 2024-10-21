@@ -7,6 +7,7 @@ import { getNewestReleasesMetadata } from '$lib/rest/cdn.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { toasts } from '$lib/stores/toasts.store';
 import { versionStore, type ReleaseVersionSatellite } from '$lib/stores/version.store';
+import type { Option } from '$lib/types/utils';
 import { container } from '$lib/utils/juno.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
@@ -76,7 +77,7 @@ export const loadVersion = async ({
 	skipReload
 }: {
 	satelliteId: Principal | undefined;
-	missionControlId: Principal | undefined | null;
+	missionControlId: Option<Principal>;
 	skipReload: boolean;
 }) => {
 	if (isNullish(missionControlId)) {
@@ -171,7 +172,7 @@ export const loadOrbiterVersion = async ({
 	orbiter,
 	reload
 }: {
-	orbiter: Orbiter | null | undefined;
+	orbiter: Option<Orbiter>;
 	reload: boolean;
 }) => {
 	if (isNullish(orbiter)) {

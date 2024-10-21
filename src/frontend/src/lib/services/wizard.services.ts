@@ -4,21 +4,24 @@ import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { JunoModalCreateSegmentDetail } from '$lib/types/modal';
-import type { Identity } from '@dfinity/agent';
+import type { Option } from '$lib/types/utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
-export type GetFeeBalance = { result?: JunoModalCreateSegmentDetail; error?: unknown };
+export interface GetFeeBalance {
+	result?: JunoModalCreateSegmentDetail;
+	error?: unknown;
+}
 
 export const getCreateSatelliteFeeBalance = async (params: {
-	identity: Identity | undefined | null;
-	missionControlId: Principal | undefined | null;
+	identity: OptionIdentity;
+	missionControlId: Option<Principal>;
 }): Promise<GetFeeBalance> => getCreateFeeBalance({ ...params, getFee: getSatelliteFee });
 
 export const getCreateOrbiterFeeBalance = async (params: {
-	identity: Identity | undefined | null;
-	missionControlId: Principal | undefined | null;
+	identity: OptionIdentity;
+	missionControlId: Option<Principal>;
 }): Promise<GetFeeBalance> => getCreateFeeBalance({ ...params, getFee: getOrbiterFee });
 
 const getCreateFeeBalance = async ({
@@ -26,8 +29,8 @@ const getCreateFeeBalance = async ({
 	missionControlId,
 	getFee
 }: {
-	identity: Identity | undefined | null;
-	missionControlId: Principal | undefined | null;
+	identity: OptionIdentity;
+	missionControlId: Option<Principal>;
 	getFee: (params: { user: Principal; identity: OptionIdentity }) => Promise<bigint>;
 }): Promise<GetFeeBalance> => {
 	const labels = get(i18n);

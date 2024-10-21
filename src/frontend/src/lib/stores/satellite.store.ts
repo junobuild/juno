@@ -1,9 +1,10 @@
 import { page } from '$app/stores';
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { Option } from '$lib/types/utils';
 import { isNullish } from '@dfinity/utils';
 import { derived, writable, type Readable } from 'svelte/store';
 
-type SatellitesStoreData = Satellite[] | undefined | null;
+type SatellitesStoreData = Option<Satellite[]>;
 
 interface SatellitesStore extends Readable<SatellitesStoreData> {
 	set: (satellites: Satellite[]) => void;

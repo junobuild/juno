@@ -4,13 +4,13 @@
 	import { getContext } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { deleteAsset } from '$lib/api/satellites.api';
+	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import DataHeader from '$lib/components/data/DataHeader.svelte';
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
-	import { authStore } from '$lib/stores/auth.store';
-	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';

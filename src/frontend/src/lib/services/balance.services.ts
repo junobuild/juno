@@ -4,12 +4,13 @@ import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { MissionControlBalance } from '$lib/types/balance';
+import type { Option } from '$lib/types/utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const getMissionControlBalance = async (
-	missionControlId: Principal | undefined | null
+	missionControlId: Option<Principal>
 ): Promise<{ result: MissionControlBalance | undefined; error?: unknown }> => {
 	if (isNullish(missionControlId)) {
 		return { result: undefined };

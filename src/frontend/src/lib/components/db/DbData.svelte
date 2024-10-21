@@ -1,19 +1,19 @@
 <script lang="ts">
-	import { initPaginationContext } from '$lib/stores/pagination.store';
-	import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
-	import { authStore } from '$lib/stores/auth.store';
 	import { isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import DocForm from '../docs/DocHeader.svelte';
 	import type { Doc as DocType, Doc as DocDid } from '$declarations/satellite/satellite.did';
+	import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
 	import { listDocs008 } from '$lib/api/satellites.deprecated.api';
 	import Data from '$lib/components/data/Data.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import Doc from '$lib/components/docs/Doc.svelte';
 	import Docs from '$lib/components/docs/Docs.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 	import { listParamsStore } from '$lib/stores/data.store';
+	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
 	import type { ListParams } from '$lib/types/list';

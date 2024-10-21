@@ -1,3 +1,4 @@
+import type { Option } from '$lib/types/utils';
 import type { Writable } from 'svelte/store';
 
 export interface DataStore<T> {
@@ -5,7 +6,7 @@ export interface DataStore<T> {
 	data: T | undefined;
 }
 
-export type DataStoreData<T> = DataStore<T> | undefined | null;
+export type DataStoreData<T> = Option<DataStore<T>>;
 
 export interface DataContext<T> {
 	store: Writable<DataStoreData<T>>;

@@ -1,7 +1,9 @@
 import { DEV } from '$lib/constants/constants';
 import { HttpAgent, type Identity } from '@dfinity/agent';
 
-export type GetAgentParams = { identity: Identity };
+export interface GetAgentParams {
+	identity: Identity;
+}
 
 export const getAgent = async (params: GetAgentParams): Promise<HttpAgent> => {
 	if (DEV) {

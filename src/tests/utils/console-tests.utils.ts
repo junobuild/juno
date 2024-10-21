@@ -129,11 +129,11 @@ const uploadSegment = async ({
 		}
 	}
 
-	type UploadChunk = {
+	interface UploadChunk {
 		batchId: bigint;
 		chunk: Blob;
 		orderId: bigint;
-	};
+	}
 
 	const uploadChunk = async ({ batchId, chunk, orderId }: UploadChunk) =>
 		upload_asset_chunk({

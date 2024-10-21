@@ -17,6 +17,7 @@
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { Option } from '$lib/types/utils';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;

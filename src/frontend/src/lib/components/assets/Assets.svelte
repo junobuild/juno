@@ -5,21 +5,20 @@
 	import { fade } from 'svelte/transition';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import { deleteAssets } from '$lib/api/satellites.api';
-	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
-	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
-	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
-	import { type PaginationContext, PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
-	import type { RulesContext } from '$lib/types/rules.context';
-	import { RULES_CONTEXT_KEY } from '$lib/types/rules.context';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsStore } from '$lib/stores/data.store';
+	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
 	import CollectionEmpty from '$lib/components/collections/CollectionEmpty.svelte';
 	import DataCollectionDelete from '$lib/components/data/DataCollectionDelete.svelte';
+	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
+	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
+	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import { authStore } from '$lib/stores/auth.store';
-	import AssetUpload from '$lib/components/assets/AssetUpload.svelte';
+	import { listParamsStore } from '$lib/stores/data.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { type DataContext, DATA_CONTEXT_KEY } from '$lib/types/data.context';
+	import { type PaginationContext, PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
+	import { type RulesContext, RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 

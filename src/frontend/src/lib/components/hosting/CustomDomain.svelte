@@ -17,6 +17,7 @@
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
+	import type { Option } from '$lib/types/utils';
 
 	export let url: string;
 	export let ariaLabel = '';

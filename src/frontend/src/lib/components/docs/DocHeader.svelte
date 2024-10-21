@@ -16,6 +16,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 	const { store: docsStore, resetData }: DataContext<Doc> =
@@ -90,12 +91,14 @@
 			<DocUpload on:junoUploaded={reload} {doc} docKey={key}>
 				<svelte:fragment slot="action">{$i18n.document.replace_document}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.document.replace_document}</svelte:fragment>
-				{@html i18nFormat($i18n.document.replace_description, [
-					{
-						placeholder: '{0}',
-						value: collection ?? ''
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.document.replace_description, [
+						{
+							placeholder: '{0}',
+							value: collection ?? ''
+						}
+					])}
+				/>
 			</DocUpload>
 
 			<button class="menu" type="button" on:click={download}

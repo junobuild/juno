@@ -9,6 +9,7 @@
 	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -37,12 +38,14 @@
 		segment="mission_control"
 	>
 		<h2 slot="intro">
-			{@html i18nFormat($i18n.canisters.upgrade_title, [
-				{
-					placeholder: '{0}',
-					value: 'mission control center'
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.upgrade_title, [
+					{
+						placeholder: '{0}',
+						value: 'mission control center'
+					}
+				])}
+			/>
 		</h2>
 	</CanisterUpgradeModal>
 {/if}

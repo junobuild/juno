@@ -6,6 +6,7 @@
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let detail: JunoModalDetail;
 	export let priceLabel: string;
@@ -32,16 +33,18 @@
 
 {#if notEnoughCredits}
 	<p>
-		{@html i18nFormat(priceLabel, [
-			{
-				placeholder: '{0}',
-				value: formatE8sICP(fee)
-			},
-			{
-				placeholder: '{1}',
-				value: formatE8sICP(balance)
-			}
-		])}
+		<Html
+			text={i18nFormat(priceLabel, [
+				{
+					placeholder: '{0}',
+					value: formatE8sICP(fee)
+				},
+				{
+					placeholder: '{1}',
+					value: formatE8sICP(balance)
+				}
+			])}
+		/>
 	</p>
 {/if}
 

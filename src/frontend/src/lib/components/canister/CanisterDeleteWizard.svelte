@@ -16,6 +16,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let segment: 'satellite' | 'analytics';
 	export let currentCycles: bigint;
@@ -117,38 +118,44 @@
 {:else}
 	<form on:submit|preventDefault={onSubmit}>
 		<h2>
-			{@html i18nFormat($i18n.canisters.delete_title, [
-				{
-					placeholder: '{0}',
-					value: segment.replace('_', ' ')
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.delete_title, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					}
+				])}
+			/>
 		</h2>
 
 		<p>
-			{@html i18nFormat($i18n.canisters.delete_explanation, [
-				{
-					placeholder: '{0}',
-					value: segment.replace('_', ' ')
-				},
-				{
-					placeholder: '{1}',
-					value: segment.replace('_', ' ')
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.delete_explanation, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					},
+					{
+						placeholder: '{1}',
+						value: segment.replace('_', ' ')
+					}
+				])}
+			/>
 		</p>
 
 		<p>
-			{@html i18nFormat($i18n.canisters.delete_customization, [
-				{
-					placeholder: '{0}',
-					value: segment.replace('_', ' ')
-				},
-				{
-					placeholder: '{1}',
-					value: formatTCycles(currentCycles)
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.delete_customization, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					},
+					{
+						placeholder: '{1}',
+						value: formatTCycles(currentCycles)
+					}
+				])}
+			/>
 		</p>
 
 		<Value ref="cycles">
@@ -165,23 +172,27 @@
 
 		<p>
 			<small
-				>{@html i18nFormat($i18n.canisters.cycles_to_transfer, [
-					{
-						placeholder: '{0}',
-						value: formatTCycles(cyclesToDeposit)
-					}
-				])}</small
+				><Html
+					text={i18nFormat($i18n.canisters.cycles_to_transfer, [
+						{
+							placeholder: '{0}',
+							value: formatTCycles(cyclesToDeposit)
+						}
+					])}
+				/></small
 			>
 		</p>
 
 		<p class="warning">
 			<IconWarning />
-			{@html i18nFormat($i18n.canisters.delete_info, [
-				{
-					placeholder: '{0}',
-					value: segment.replace('_', ' ')
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.delete_info, [
+					{
+						placeholder: '{0}',
+						value: segment.replace('_', ' ')
+					}
+				])}
+			/>
 		</p>
 
 		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>

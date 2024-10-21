@@ -18,6 +18,7 @@
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let principal: string;
 	export let redirect_uri: string;
@@ -249,12 +250,14 @@
 
 		<div class="content">
 			<p>
-				{@html i18nFormat($i18n.cli.controller, [
-					{
-						placeholder: '{0}',
-						value: principal
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.cli.controller, [
+						{
+							placeholder: '{0}',
+							value: principal
+						}
+					])}
+				/>
 			</p>
 
 			<p class="profile-hint">

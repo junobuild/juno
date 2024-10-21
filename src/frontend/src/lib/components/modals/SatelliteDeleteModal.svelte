@@ -10,6 +10,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -33,12 +34,14 @@
 <Modal on:junoClose>
 	{#if $satelliteCustomDomains.length > 0}
 		<h2>
-			{@html i18nFormat($i18n.canisters.delete_title, [
-				{
-					placeholder: '{0}',
-					value: 'satellite'
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.delete_title, [
+					{
+						placeholder: '{0}',
+						value: 'satellite'
+					}
+				])}
+			/>
 		</h2>
 
 		<p>

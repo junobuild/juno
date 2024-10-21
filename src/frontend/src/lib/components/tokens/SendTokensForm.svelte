@@ -11,6 +11,7 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let balance: bigint | undefined;
 	export let destination = '';
@@ -63,12 +64,14 @@
 <h2>{$i18n.wallet.send}</h2>
 
 <p>
-	{@html i18nFormat($i18n.wallet.send_information, [
-		{
-			placeholder: '{0}',
-			value: formatE8sICP(balance ?? 0n)
-		}
-	])}
+	<Html
+		text={i18nFormat($i18n.wallet.send_information, [
+			{
+				placeholder: '{0}',
+				value: formatE8sICP(balance ?? 0n)
+			}
+		])}
+	/>
 </p>
 
 <form class="content" on:submit|preventDefault={onSubmit}>

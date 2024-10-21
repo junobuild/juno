@@ -19,6 +19,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -73,12 +74,14 @@
 			<DocUpload on:junoUploaded={reload}>
 				<svelte:fragment slot="action">{$i18n.document.create_document}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.document.create_document}</svelte:fragment>
-				{@html i18nFormat($i18n.document.upload_description, [
-					{
-						placeholder: '{0}',
-						value: collection ?? ''
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.document.upload_description, [
+						{
+							placeholder: '{0}',
+							value: collection ?? ''
+						}
+					])}
+				/>
 			</DocUpload>
 
 			<button class="menu" type="button" on:click={load}
@@ -88,12 +91,14 @@
 			<DataCollectionDelete {deleteData}>
 				<svelte:fragment slot="button">{$i18n.collections.clear_collection}</svelte:fragment>
 				<svelte:fragment slot="title">{$i18n.collections.clear_collection}</svelte:fragment>
-				{@html i18nFormat($i18n.asset.delete_all, [
-					{
-						placeholder: '{0}',
-						value: collection ?? ''
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.asset.delete_all, [
+						{
+							placeholder: '{0}',
+							value: collection ?? ''
+						}
+					])}
+				/>
 			</DataCollectionDelete>
 		</svelte:fragment>
 	</DataCollectionHeader>

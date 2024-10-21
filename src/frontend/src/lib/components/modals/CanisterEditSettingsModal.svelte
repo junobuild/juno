@@ -19,6 +19,7 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -106,12 +107,14 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<p>
-				{@html i18nFormat($i18n.canisters.settings_updated_text, [
-					{
-						placeholder: '{0}',
-						value: segment.label
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.canisters.settings_updated_text, [
+						{
+							placeholder: '{0}',
+							value: segment.label
+						}
+					])}
+				/>
 			</p>
 			<button on:click={close}>{$i18n.core.close}</button>
 		</div>

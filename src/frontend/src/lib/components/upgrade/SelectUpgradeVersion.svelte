@@ -9,6 +9,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { last } from '$lib/utils/utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let currentVersion: string;
 	export let newerReleases: string[];
@@ -83,39 +84,43 @@
 <form on:submit|preventDefault={onSelect}>
 	{#if newerReleases.length > 1}
 		<p>
-			{@html i18nFormat($i18n.canisters.upgrade_note, [
-				{
-					placeholder: '{0}',
-					value: `${newerReleases.length}`
-				},
-				{
-					placeholder: '{1}',
-					value: segment.replace('_', ' ')
-				},
-				{
-					placeholder: '{2}',
-					value: segment.replace('_', ' ')
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.upgrade_note, [
+					{
+						placeholder: '{0}',
+						value: `${newerReleases.length}`
+					},
+					{
+						placeholder: '{1}',
+						value: segment.replace('_', ' ')
+					},
+					{
+						placeholder: '{2}',
+						value: segment.replace('_', ' ')
+					}
+				])}
+			/>
 		</p>
 	{/if}
 
 	<p class="warning">
 		<IconWarning />
-		{@html $i18n.canisters.upgrade_breaking_change}
+		<Html text={$i18n.canisters.upgrade_breaking_change} />
 	</p>
 
 	<p>
-		{@html i18nFormat($i18n.canisters.upgrade_description, [
-			{
-				placeholder: '{0}',
-				value: segment.replace('_', ' ')
-			},
-			{
-				placeholder: '{1}',
-				value: selectedVersion ?? ''
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.canisters.upgrade_description, [
+				{
+					placeholder: '{0}',
+					value: segment.replace('_', ' ')
+				},
+				{
+					placeholder: '{1}',
+					value: selectedVersion ?? ''
+				}
+			])}
+		/>
 	</p>
 
 	<div class="toolbar">

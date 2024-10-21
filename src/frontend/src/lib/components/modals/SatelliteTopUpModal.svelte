@@ -7,6 +7,7 @@
 	import type { JunoModalTopUpSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -23,12 +24,14 @@
 <CanisterTopUpModal canisterId={satellite.satellite_id} {balance} {accountIdentifier} on:junoClose>
 	<svelte:fragment slot="intro">
 		<h2>
-			{@html i18nFormat($i18n.canisters.top_up_title, [
-				{
-					placeholder: '{0}',
-					value: satelliteName(satellite)
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.top_up_title, [
+					{
+						placeholder: '{0}',
+						value: satelliteName(satellite)
+					}
+				])}
+			/>
 		</h2>
 	</svelte:fragment>
 

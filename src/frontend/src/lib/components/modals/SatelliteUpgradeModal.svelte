@@ -10,6 +10,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let detail: JunoModalDetail;
 
@@ -44,11 +45,13 @@
 	segment="satellite"
 >
 	<h2 slot="intro">
-		{@html i18nFormat($i18n.canisters.upgrade_title, [
-			{
-				placeholder: '{0}',
-				value: satelliteName(satellite)
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.canisters.upgrade_title, [
+				{
+					placeholder: '{0}',
+					value: satelliteName(satellite)
+				}
+			])}
+		/>
 	</h2>
 </CanisterUpgradeModal>

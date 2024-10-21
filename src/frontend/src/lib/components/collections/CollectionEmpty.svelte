@@ -4,6 +4,7 @@
 	import { listParamsFilteredStore } from '$lib/stores/data.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let rule: Rule | undefined;
 	export let collection: string | undefined;
@@ -14,21 +15,25 @@
 
 <p class="empty">
 	{#if privateReadRule}
-		{@html i18nFormat($i18n.collections.empty_private, [
-			{
-				placeholder: '{0}',
-				value: collection ?? ''
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.collections.empty_private, [
+				{
+					placeholder: '{0}',
+					value: collection ?? ''
+				}
+			])}
+		/>
 	{:else if $listParamsFilteredStore}
 		<slot name="filter" />
 	{:else}
-		{@html i18nFormat($i18n.collections.empty, [
-			{
-				placeholder: '{0}',
-				value: collection ?? ''
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.collections.empty, [
+				{
+					placeholder: '{0}',
+					value: collection ?? ''
+				}
+			])}
+		/>
 	{/if}
 </p>
 

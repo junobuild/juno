@@ -21,6 +21,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let canisterId: Principal;
 	export let balance: bigint;
@@ -116,16 +117,18 @@
 		</p>
 
 		<p>
-			{@html i18nFormat($i18n.canisters.top_up_info, [
-				{
-					placeholder: '{0}',
-					value: formatE8sICP(balance)
-				},
-				{
-					placeholder: '{1}',
-					value: formatE8sICP(networkFees)
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.top_up_info, [
+					{
+						placeholder: '{0}',
+						value: formatE8sICP(balance)
+					},
+					{
+						placeholder: '{1}',
+						value: formatE8sICP(networkFees)
+					}
+				])}
+			/>
 		</p>
 
 		{#if balance <= networkFees}

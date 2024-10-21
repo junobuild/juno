@@ -18,6 +18,7 @@
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
@@ -133,12 +134,14 @@
 <Popover bind:visible center={true}>
 	<div class="content">
 		<h3>
-			{@html i18nFormat($i18n.hosting.delete_custom_domain, [
-				{
-					placeholder: '{0}',
-					value: customDomain?.[0] ?? ''
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.hosting.delete_custom_domain, [
+					{
+						placeholder: '{0}',
+						value: customDomain?.[0] ?? ''
+					}
+				])}
+			/>
 		</h3>
 
 		<p>{$i18n.hosting.before_continuing}</p>

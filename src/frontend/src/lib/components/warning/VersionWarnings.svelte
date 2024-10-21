@@ -11,6 +11,7 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let satellite: Satellite | undefined = undefined;
 
@@ -143,7 +144,7 @@
 	<div>
 		<p>
 			<IconNewReleases />
-			{@html $i18n.admin.mission_control_new_version}
+			<Html text={$i18n.admin.mission_control_new_version} />
 		</p>
 
 		<button class="primary" on:click={upgradeMissionControl}>{$i18n.canisters.upgrade}</button>
@@ -154,7 +155,7 @@
 	<div>
 		<p>
 			<IconNewReleases />
-			{@html $i18n.admin.orbiter_new_version}
+			<Html text={$i18n.admin.orbiter_new_version} />
 		</p>
 
 		<button class="primary" on:click={upgradeOrbiter}>{$i18n.canisters.upgrade}</button>
@@ -165,7 +166,7 @@
 	<div>
 		<p>
 			<IconNewReleases />
-			{@html $i18n.admin.satellite_new_version}
+			<Html text={$i18n.admin.satellite_new_version} />
 		</p>
 		<button class="primary" on:click={upgradeSatellite}>{$i18n.canisters.upgrade}</button>
 	</div>

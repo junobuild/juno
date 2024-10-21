@@ -10,6 +10,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let currentVersion: string;
 	export let newerReleases: string[];
@@ -43,16 +44,18 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<p>
-				{@html i18nFormat($i18n.canisters.upgrade_done, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					},
-					{
-						placeholder: '{1}',
-						value: `v${wasm?.version ?? ''}`
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.canisters.upgrade_done, [
+						{
+							placeholder: '{0}',
+							value: segment.replace('_', ' ')
+						},
+						{
+							placeholder: '{1}',
+							value: `v${wasm?.version ?? ''}`
+						}
+					])}
+				/>
 			</p>
 			<button on:click={close}>{$i18n.core.close}</button>
 		</div>

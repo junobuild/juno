@@ -15,6 +15,7 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 
 	export let canisterId: Principal;
 	export let segment: 'satellite' | 'analytics' | 'mission_control';
@@ -111,16 +112,18 @@
 			</p>
 
 			<p>
-				{@html i18nFormat($i18n.canisters.your_balance, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					},
-					{
-						placeholder: '{1}',
-						value: formatTCycles(currentCycles)
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.canisters.your_balance, [
+						{
+							placeholder: '{0}',
+							value: segment.replace('_', ' ')
+						},
+						{
+							placeholder: '{1}',
+							value: formatTCycles(currentCycles)
+						}
+					])}
+				/>
 			</p>
 
 			<Value>
@@ -143,16 +146,18 @@
 
 			<p>
 				<small
-					>{@html i18nFormat($i18n.canisters.cycles_will_remain, [
-						{
-							placeholder: '{0}',
-							value: formatTCycles(remainingCycles)
-						},
-						{
-							placeholder: '{1}',
-							value: segment.replace('_', ' ')
-						}
-					])}</small
+					><Html
+						text={i18nFormat($i18n.canisters.cycles_will_remain, [
+							{
+								placeholder: '{0}',
+								value: formatTCycles(remainingCycles)
+							},
+							{
+								placeholder: '{1}',
+								value: segment.replace('_', ' ')
+							}
+						])}
+					/></small
 				>
 			</p>
 

@@ -2,6 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
 	import { createEventDispatcher } from 'svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import ConfirmUpgradeVersion from '$lib/components/upgrade/ConfirmUpgradeVersion.svelte';
@@ -10,7 +11,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let currentVersion: string;
 	export let newerReleases: string[];

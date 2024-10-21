@@ -9,6 +9,7 @@
 	import DataKeyDelete from '$lib/components/data/DataKeyDelete.svelte';
 	import DocUpload from '$lib/components/docs/DocUpload.svelte';
 	import IconDownload from '$lib/components/icons/IconDownload.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -16,7 +17,6 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 	const { store: docsStore, resetData }: DataContext<Doc> =

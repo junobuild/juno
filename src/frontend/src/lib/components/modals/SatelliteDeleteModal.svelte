@@ -4,13 +4,13 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { deleteSatellite } from '$lib/api/mission-control.api';
 	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let detail: JunoModalDetail;
 

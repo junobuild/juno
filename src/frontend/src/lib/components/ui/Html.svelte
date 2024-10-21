@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { sanitize } from '$lib/utils/html.utils';
-	import { onMount } from 'svelte';
 	import { nonNullish } from '@dfinity/utils';
+	import { onMount } from 'svelte';
+	import { sanitize } from '$lib/utils/html.utils';
 
 	export let text: string | undefined = undefined;
 

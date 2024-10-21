@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
@@ -11,7 +12,6 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let balance: bigint | undefined;
 	export let destination = '';

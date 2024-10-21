@@ -3,13 +3,13 @@
 	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { downloadWasm } from '$lib/services/upgrade.services';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { last } from '$lib/utils/utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let currentVersion: string;
 	export let newerReleases: string[];

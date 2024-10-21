@@ -1,8 +1,8 @@
 <script lang="ts">
+	import Html from '$lib/components/ui/Html.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
-	import Html from '$lib/components/ui/Html.svelte';
 </script>
 
 {#if $satelliteStore === undefined}

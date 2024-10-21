@@ -1,10 +1,10 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { Rule } from '$declarations/satellite/satellite.did';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { listParamsFilteredStore } from '$lib/stores/data.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let rule: Rule | undefined;
 	export let collection: string | undefined;

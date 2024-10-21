@@ -1,7 +1,7 @@
 <script lang="ts">
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat, i18nText } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let key: string;
 	export let value: string;

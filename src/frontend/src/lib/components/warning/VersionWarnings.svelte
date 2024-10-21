@@ -4,6 +4,7 @@
 	import { compare } from 'semver';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { loadVersion } from '$lib/services/console.services';
 	import { newerReleases } from '$lib/services/upgrade.services';
 	import { busy } from '$lib/stores/busy.store';
@@ -11,7 +12,6 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let satellite: Satellite | undefined = undefined;
 

@@ -9,9 +9,9 @@
 	import IconRust from '$lib/components/icons/IconRust.svelte';
 	import IconSvelte from '$lib/components/icons/IconSvelte.svelte';
 	import IconVue from '$lib/components/icons/IconVue.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 </script>
 
 <hr />

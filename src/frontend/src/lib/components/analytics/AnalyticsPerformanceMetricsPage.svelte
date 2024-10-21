@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import type { AnalyticsWebVitalsPageMetrics } from '$declarations/orbiter/orbiter.did';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatNumber } from '$lib/utils/number.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let metrics: AnalyticsWebVitalsPageMetrics;
 

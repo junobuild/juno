@@ -11,6 +11,7 @@
 	import DataCollectionHeader from '$lib/components/data/DataCollectionHeader.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -19,7 +20,6 @@
 	import { type RulesContext, RULES_CONTEXT_KEY } from '$lib/types/rules.context';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 

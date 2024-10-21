@@ -2,10 +2,10 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import Copy from '$lib/components/ui/Copy.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let domainNameInput: string;
 	export let dns: CustomDomainDns | undefined;

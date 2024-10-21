@@ -8,6 +8,7 @@
 	import { setAuthConfig } from '$lib/api/satellites.api';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -18,7 +19,6 @@
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;

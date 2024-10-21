@@ -2,9 +2,9 @@
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Html from '$lib/components/ui/Html.svelte';
 
 	export let config: AuthenticationConfig | undefined;
 	export let domainNameInput: string;

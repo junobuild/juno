@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import { type Rule, type RulesType } from '$declarations/satellite/satellite.did';
+	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import CollectionEdit from '$lib/components/collections/CollectionEdit.svelte';
 	import Collections from '$lib/components/collections/Collections.svelte';
 	import CollectionsNav from '$lib/components/collections/CollectionsNav.svelte';

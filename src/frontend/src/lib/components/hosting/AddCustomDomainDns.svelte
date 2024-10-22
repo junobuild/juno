@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { nonNullish } from '@dfinity/utils';
-	import Copy from '$lib/components/ui/Copy.svelte';
-	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import { createEventDispatcher } from 'svelte';
+	import Copy from '$lib/components/ui/Copy.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { CustomDomainDns } from '$lib/types/custom-domain';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let domainNameInput: string;
 	export let dns: CustomDomainDns | undefined;
@@ -16,12 +17,14 @@
 <h2>{$i18n.hosting.configure}</h2>
 
 <p>
-	{@html i18nFormat($i18n.hosting.add_records, [
-		{
-			placeholder: '{0}',
-			value: domainNameInput ?? ''
-		}
-	])}
+	<Html
+		text={i18nFormat($i18n.hosting.add_records, [
+			{
+				placeholder: '{0}',
+				value: domainNameInput ?? ''
+			}
+		])}
+	/>
 </p>
 
 <section>
@@ -44,7 +47,7 @@
 	{/each}
 </section>
 
-<p class="notes">{@html $i18n.hosting.dns_notes}</p>
+<p class="notes"><Html text={$i18n.hosting.dns_notes} /></p>
 
 <div class="toolbar">
 	{#if !edit}

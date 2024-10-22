@@ -102,7 +102,7 @@ describe('Satellite upgrade', () => {
 		}
 	};
 
-	describe('v0.0.15 -> v0.0.16', async () => {
+	describe('v0.0.15 -> v0.0.16', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -170,7 +170,7 @@ describe('Satellite upgrade', () => {
 		});
 	});
 
-	describe('v0.0.11 -> v0.0.17', async () => {
+	describe('v0.0.11 -> v0.0.17', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -225,7 +225,7 @@ describe('Satellite upgrade', () => {
 		);
 	});
 
-	describe('v0.0.16 -> v0.0.16', async () => {
+	describe('v0.0.16 -> v0.0.16', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -256,7 +256,7 @@ describe('Satellite upgrade', () => {
 		});
 	});
 
-	describe('v0.0.16 -> v0.0.17', async () => {
+	describe('v0.0.16 -> v0.0.17', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -422,7 +422,7 @@ describe('Satellite upgrade', () => {
 			});
 		});
 
-		describe('Storage', async () => {
+		describe('Storage', () => {
 			let newActor: Actor<SatelliteActor>;
 
 			describe('Custom domain', () => {

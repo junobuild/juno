@@ -1,9 +1,9 @@
 <script lang="ts">
+	import AnalyticsBrowsers from '$lib/components/analytics/AnalyticsBrowsers.svelte';
+	import AnalyticsDevices from '$lib/components/analytics/AnalyticsDevices.svelte';
 	import AnalyticsPages from '$lib/components/analytics/AnalyticsPages.svelte';
 	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
-	import AnalyticsDevices from '$lib/components/analytics/AnalyticsDevices.svelte';
 	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
-	import AnalyticsBrowsers from '$lib/components/analytics/AnalyticsBrowsers.svelte';
 
 	export let pageViews: AnalyticsPageViews;
 </script>

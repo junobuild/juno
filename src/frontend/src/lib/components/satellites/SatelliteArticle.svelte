@@ -1,14 +1,14 @@
 <script lang="ts">
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import type { Principal } from '@dfinity/principal';
-	import { overviewLink } from '$lib/utils/nav.utils';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutSatellites } from '$lib/stores/layout.store';
 	import { SatellitesLayout } from '$lib/types/layout';
+	import { overviewLink } from '$lib/utils/nav.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	export let satellite: Satellite;
 

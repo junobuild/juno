@@ -1,14 +1,14 @@
 <script lang="ts">
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import AppLangSelect from '$lib/components/core/AppLangSelect.svelte';
-	import type { Languages } from '$lib/types/languages';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import { secondsToDuration } from '$lib/utils/date.utils';
 	import { fade } from 'svelte/transition';
+	import AppLangSelect from '$lib/components/core/AppLangSelect.svelte';
+	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { authRemainingTimeStore, authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { Languages } from '$lib/types/languages';
+	import { secondsToDuration } from '$lib/utils/date.utils';
 
 	let lang: Languages;
 

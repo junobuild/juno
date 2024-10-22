@@ -37,12 +37,12 @@ export const getDeprecatedAnalyticsTrackEvents = async (
 ): Promise<AnalyticsTrackEvents> => {
 	const trackEvents = await getTrackEvents(params);
 
-	const trackEventsSum = trackEvents.reduce(
+	const trackEventsSum = trackEvents.reduce<Record<string, number>>(
 		(acc, [_, { name }]) => ({
 			...acc,
 			[name]: (acc[name] ?? 0) + 1
 		}),
-		{} as Record<string, number>
+		{}
 	);
 
 	return {
@@ -53,7 +53,7 @@ export const getDeprecatedAnalyticsTrackEvents = async (
 const getDeprecatedAnalyticsMetricsPageViews = (
 	pageViews: [AnalyticKey, PageView][]
 ): AnalyticsMetrics => {
-	const totalPageViews = pageViews.reduce(
+	const totalPageViews = pageViews.reduce<Record<DateStartOfTheDay, number>>(
 		(acc, [{ collected_at }, _]) => {
 			const date = fromBigIntNanoSeconds(collected_at);
 
@@ -64,25 +64,25 @@ const getDeprecatedAnalyticsMetricsPageViews = (
 				[key]: (acc[key] ?? 0) + 1
 			};
 		},
-		{} as Record<DateStartOfTheDay, number>
+		{}
 	);
 
 	const uniqueSessions = [...new Set(pageViews.map(([_, { session_id }]) => session_id))].length;
 
-	const sessionsViews = pageViews.reduce(
+	const sessionsViews = pageViews.reduce<Record<string, number>>(
 		(acc, [_, { session_id }]) => ({
 			...acc,
 			[session_id]: (acc[session_id] ?? 0) + 1
 		}),
-		{} as Record<string, number>
+		{}
 	);
 
-	const sessionsUniqueViews = pageViews.reduce(
+	const sessionsUniqueViews = pageViews.reduce<Record<string, Set<string>>>(
 		(acc, [_, { href, session_id }]) => ({
 			...acc,
 			[session_id]: (acc[session_id] ?? new Set()).add(href)
 		}),
-		{} as Record<string, Set<string>>
+		{}
 	);
 
 	const uniquePageViews = Object.entries(sessionsUniqueViews).reduce(
@@ -115,43 +115,37 @@ const getDeprecatedAnalyticsTop10PageViews = (
 		.filter(
 			([_, { referrer }]) => nonNullish(fromNullable(referrer)) && fromNullable(referrer) !== ''
 		)
-		.reduce(
-			(acc, [_, { referrer }]) => {
-				const ref = fromNullable(referrer) as string;
+		.reduce<Record<string, number>>((acc, [_, { referrer }]) => {
+			const ref = fromNullable(referrer) as string;
 
-				let host: string;
-				try {
-					const url = new URL(ref);
-					host = url.host;
-				} catch (err: unknown) {
-					host = ref;
-				}
-
-				return {
-					...acc,
-					[host]: (acc[host] ?? 0) + 1
-				};
-			},
-			{} as Record<string, number>
-		);
-
-	const pages = pageViews.reduce(
-		(acc, [_, { href }]) => {
-			let pages: string;
+			let host: string;
 			try {
-				const { pathname } = new URL(href);
-				pages = pathname;
+				const url = new URL(ref);
+				host = url.host;
 			} catch (err: unknown) {
-				pages = href;
+				host = ref;
 			}
 
 			return {
 				...acc,
-				[pages]: (acc[pages] ?? 0) + 1
+				[host]: (acc[host] ?? 0) + 1
 			};
-		},
-		{} as Record<string, number>
-	);
+		}, {});
+
+	const pages = pageViews.reduce<Record<string, number>>((acc, [_, { href }]) => {
+		let pages: string;
+		try {
+			const { pathname } = new URL(href);
+			pages = pathname;
+		} catch (err: unknown) {
+			pages = href;
+		}
+
+		return {
+			...acc,
+			[pages]: (acc[pages] ?? 0) + 1
+		};
+	}, {});
 
 	const referrersEntries = Object.entries(referrers)
 		.slice(0, 10)

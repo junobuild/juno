@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import { emit } from '$lib/utils/events.utils';
-	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 
 	export let add: (
 		params: {

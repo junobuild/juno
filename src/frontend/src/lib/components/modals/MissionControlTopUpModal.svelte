@@ -1,11 +1,12 @@
 <script lang="ts">
-	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import type { JunoModalDetail, JunoModalTopUpMissionControlDetail } from '$lib/types/modal';
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let detail: JunoModalDetail;
 
@@ -21,12 +22,14 @@
 	<CanisterTopUpModal canisterId={$missionControlStore} {balance} {accountIdentifier} on:junoClose>
 		<svelte:fragment slot="intro">
 			<h2>
-				{@html i18nFormat($i18n.canisters.top_up_title, [
-					{
-						placeholder: '{0}',
-						value: 'mission control center'
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.canisters.top_up_title, [
+						{
+							placeholder: '{0}',
+							value: 'mission control center'
+						}
+					])}
+				/>
 			</h2>
 		</svelte:fragment>
 

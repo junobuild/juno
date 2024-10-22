@@ -220,7 +220,7 @@ describe('Orbiter upgrade', () => {
 		}
 	};
 
-	describe('v0.0.6 -> v0.0.7', async () => {
+	describe('v0.0.6 -> v0.0.7', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 

@@ -1,24 +1,24 @@
 <script lang="ts">
-	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import Modal from '$lib/components/ui/Modal.svelte';
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+	import { setAuthConfig } from '$lib/api/satellites.api';
+	import AddCustomDomainAuth from '$lib/components/hosting/AddCustomDomainAuth.svelte';
+	import AddCustomDomainDns from '$lib/components/hosting/AddCustomDomainDns.svelte';
+	import AddCustomDomainForm from '$lib/components/hosting/AddCustomDomainForm.svelte';
+	import IconVerified from '$lib/components/icons/IconVerified.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { setCustomDomain } from '$lib/services/hosting.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
+	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import IconVerified from '$lib/components/icons/IconVerified.svelte';
-	import { createEventDispatcher, onMount } from 'svelte';
 	import { emit } from '$lib/utils/events.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { setCustomDomain } from '$lib/services/hosting.services';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import AddCustomDomainForm from '$lib/components/hosting/AddCustomDomainForm.svelte';
-	import AddCustomDomainAuth from '$lib/components/hosting/AddCustomDomainAuth.svelte';
-	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
-	import AddCustomDomainDns from '$lib/components/hosting/AddCustomDomainDns.svelte';
-	import { setAuthConfig } from '$lib/api/satellites.api';
-	import { authStore } from '$lib/stores/auth.store';
 
 	export let detail: JunoModalDetail;
 

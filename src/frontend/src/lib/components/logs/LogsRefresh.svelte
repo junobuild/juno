@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import type { Log as LogType } from '$lib/types/log';
 	import { getContext, onDestroy } from 'svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import IconMore from '$lib/components/icons/IconMore.svelte';
-	import Popover from '$lib/components/ui/Popover.svelte';
 	import IconTimer from '$lib/components/icons/IconTimer.svelte';
 	import IconTimerOff from '$lib/components/icons/IconTimerOff.svelte';
-	import { getLocalStorageObserveLogs, setLocalStorageItem } from '$lib/utils/local-storage.utils';
+	import Popover from '$lib/components/ui/Popover.svelte';
 	import { SYNC_LOGS_TIMER_INTERVAL } from '$lib/constants/constants';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { Log as LogType } from '$lib/types/log';
+	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
+	import { getLocalStorageObserveLogs, setLocalStorageItem } from '$lib/utils/local-storage.utils';
 
 	const { list, resetPage }: PaginationContext<LogType> =
 		getContext<PaginationContext<LogType>>(PAGINATION_CONTEXT_KEY);
@@ -27,7 +27,7 @@
 	const saveToggle = () =>
 		setLocalStorageItem({ key: 'observe_logs', value: JSON.stringify(observe) });
 
-	const watch = async () => {
+	const watch = () => {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore NodeJS.timeout vs number
 		timer = setInterval(async () => {

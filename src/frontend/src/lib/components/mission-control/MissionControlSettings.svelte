@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import CanisterSettings from '$lib/components/canister/CanisterSettings.svelte';
+	import MissionControlControllers from '$lib/components/mission-control/MissionControlControllers.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	export let missionControlId: Principal;

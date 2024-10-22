@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutMenuOpen } from '$lib/stores/layout.store';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import IconMenu from '$lib/components/icons/IconMenu.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { layoutMenuOpen } from '$lib/stores/layout.store';
 </script>
 
 <button

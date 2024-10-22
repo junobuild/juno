@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import SatellitesPicker from '$lib/components/satellites/SatellitesPicker.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 	import { addMonths, format } from 'date-fns';
+	import { createEventDispatcher } from 'svelte';
 	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
+	import SatellitesPicker from '$lib/components/satellites/SatellitesPicker.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 
 	let from = format(addMonths(new Date(), -1), 'yyyy-MM-dd');
 	let to = '';

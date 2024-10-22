@@ -1,3 +1,4 @@
+// eslint-disable-next-line local-rules/prefer-object-params
 export const formatNumber = (
 	value: number,
 	options?: { minFraction?: number; maxFraction?: number } & Pick<
@@ -5,7 +6,7 @@ export const formatNumber = (
 		'notation' | 'unit' | 'style' | 'unitDisplay'
 	>
 ): string => {
-	const { minFraction = 2, maxFraction = 2, ...rest } = options || {};
+	const { minFraction = 2, maxFraction = 2, ...rest } = options ?? {};
 
 	return new Intl.NumberFormat('en-US', {
 		minimumFractionDigits: minFraction,
@@ -22,5 +23,6 @@ export const formatBytes = (value: number): string =>
 		unitDisplay: 'narrow'
 	}).replace('BB', 'GB');
 
+// eslint-disable-next-line local-rules/prefer-object-params
 export const bigintStringify = (_key: string, value: unknown): unknown =>
 	typeof value === 'bigint' ? `BIGINT::${value}` : value;

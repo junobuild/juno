@@ -19,7 +19,7 @@ export const getConsoleActor = async (identity: OptionIdentity): Promise<Console
 		throw new Error('No internet identity.');
 	}
 
-	return createActor({
+	return await createActor({
 		canisterId: CONSOLE_CANISTER_ID,
 		idlFactory: idlFactorConsole,
 		identity
@@ -31,7 +31,7 @@ export const getObservatoryActor = async (identity: OptionIdentity): Promise<Obs
 		throw new Error('No internet identity.');
 	}
 
-	return createActor({
+	return await createActor({
 		canisterId: OBSERVATORY_CANISTER_ID,
 		idlFactory: idlFactorObservatory,
 		identity
@@ -49,7 +49,7 @@ export const getSatelliteActor = async ({
 		throw new Error('No internet identity.');
 	}
 
-	return createActor({
+	return await createActor({
 		canisterId: satelliteId,
 		idlFactory: idlFactorSatellite,
 		identity
@@ -67,7 +67,7 @@ export const getOrbiterActor = async ({
 		throw new Error('No internet identity.');
 	}
 
-	return createActor({
+	return await createActor({
 		canisterId: orbiterId,
 		idlFactory: idlFactorOrbiter,
 		identity
@@ -85,7 +85,7 @@ export const getMissionControlActor = async ({
 		throw new Error('No internet identity.');
 	}
 
-	return createActor({
+	return await createActor({
 		canisterId: missionControlId,
 		idlFactory: idlFactorMissionControl,
 		identity

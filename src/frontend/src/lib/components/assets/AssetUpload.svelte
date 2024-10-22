@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { busy } from '$lib/stores/busy.store';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
 	import { uploadFile } from '@junobuild/core-peer';
-	import { container } from '$lib/utils/juno.utils';
-	import { authStore } from '$lib/stores/auth.store';
+	import { createEventDispatcher, getContext } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { container } from '$lib/utils/juno.utils';
 
 	export let asset: AssetNoContent | undefined = undefined;
 

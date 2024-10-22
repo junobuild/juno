@@ -1,23 +1,23 @@
 <script lang="ts">
-	import type { JunoModal } from '$lib/types/modal';
-	import SatelliteCreateModal from '$lib/components/modals/SatelliteCreateModal.svelte';
-	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
-	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
-	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
 	import { nonNullish } from '@dfinity/utils';
+	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
-	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
+	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
+	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
+	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
-	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
-	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
-	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
 	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
-	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
+	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
 	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
-	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
-	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
+	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
+	import SatelliteCreateModal from '$lib/components/modals/SatelliteCreateModal.svelte';
+	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
+	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
+	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
+	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
+	import type { JunoModal } from '$lib/types/modal';
 
 	let modal: JunoModal | undefined = undefined;
 

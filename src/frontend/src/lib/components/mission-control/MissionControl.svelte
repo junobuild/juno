@@ -1,16 +1,16 @@
 <script lang="ts">
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { nonNullish } from '@dfinity/utils';
-	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { versionStore } from '$lib/stores/version.store';
 	import { fade } from 'svelte/transition';
-	import MissionControlStatuses from '$lib/components/mission-control/MissionControlStatuses.svelte';
+	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
+	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
+	import MissionControlStatuses from '$lib/components/mission-control/MissionControlStatuses.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { versionStore } from '$lib/stores/version.store';
 </script>
 
 {#if $authSignedInStore}

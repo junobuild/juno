@@ -1,15 +1,16 @@
 <script lang="ts">
-	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
+	import type { Principal } from '@dfinity/principal';
+	import { createEventDispatcher } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { deleteSatellite } from '$lib/api/mission-control.api';
-	import type { Principal } from '@dfinity/principal';
 	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';
-	import { authStore } from '$lib/stores/auth.store';
+	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { createEventDispatcher } from 'svelte';
 	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let detail: JunoModalDetail;
 
@@ -20,7 +21,7 @@
 
 	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
 	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
-		deleteSatellite({
+		await deleteSatellite({
 			...params,
 			satelliteId: satellite.satellite_id,
 			identity: $authStore.identity
@@ -33,12 +34,14 @@
 <Modal on:junoClose>
 	{#if $satelliteCustomDomains.length > 0}
 		<h2>
-			{@html i18nFormat($i18n.canisters.delete_title, [
-				{
-					placeholder: '{0}',
-					value: 'satellite'
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.delete_title, [
+					{
+						placeholder: '{0}',
+						value: 'satellite'
+					}
+				])}
+			/>
 		</h2>
 
 		<p>

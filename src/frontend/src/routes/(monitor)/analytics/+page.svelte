@@ -1,23 +1,27 @@
 <script lang="ts">
-	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import { writable } from 'svelte/store';
-	import type { Tab, TabsContext, TabsStore } from '$lib/types/tabs.context';
-	import { setContext } from 'svelte';
-	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import Analytics from '$lib/components/analytics/Analytics.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
-	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
-	import { loadOrbiterVersion } from '$lib/services/console.services';
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { initTabId } from '$lib/utils/tabs.utils';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import Analytics from '$lib/components/analytics/Analytics.svelte';
 	import AnalyticsSettings from '$lib/components/analytics/AnalyticsSettings.svelte';
+	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
+	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { loadOrbiterVersion } from '$lib/services/console.services';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import {
+		type Tab,
+		type TabsContext,
+		type TabsStore,
+		TABS_CONTEXT_KEY
+	} from '$lib/types/tabs.context';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabDashboard = {
 		id: Symbol('1'),

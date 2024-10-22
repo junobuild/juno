@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { isBusy } from '$lib/stores/busy.store';
-	import Popover from '$lib/components/ui/Popover.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
+	import { isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let visible = false;
 

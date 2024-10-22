@@ -1,7 +1,6 @@
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { BuildType } from '@junobuild/admin';
-import type { Readable } from 'svelte/store';
-import { writable } from 'svelte/store';
+import { writable, type Readable } from 'svelte/store';
 
 export interface ReleaseVersion {
 	current: string | undefined;

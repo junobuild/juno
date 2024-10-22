@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let visible = false;
 

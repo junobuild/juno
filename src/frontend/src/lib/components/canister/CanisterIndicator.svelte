@@ -1,8 +1,8 @@
 <script lang="ts">
-	import type { CanisterData, CanisterStatus } from '$lib/types/canister';
 	import { isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { CanisterData, CanisterStatus } from '$lib/types/canister';
 
 	export let data: CanisterData | undefined = undefined;
 

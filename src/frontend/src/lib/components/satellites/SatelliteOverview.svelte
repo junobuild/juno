@@ -1,16 +1,16 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
+	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import SatelliteActions from '$lib/components/satellites/SatelliteActions.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
+	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
+	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
+	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
-	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
-	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
-	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
-	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 
 	export let satellite: Satellite;
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import type { CanisterSyncStatus } from '$lib/types/canister';
 	import Value from '$lib/components/ui/Value.svelte';
+	import type { CanisterSyncStatus } from '$lib/types/canister';
 
 	export let sync: CanisterSyncStatus | undefined;
 	export let rows = 1;

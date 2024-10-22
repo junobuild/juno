@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import { isNullish, notEmptyString } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
-	import type { CustomDomainDns } from '$lib/types/custom-domain';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { createEventDispatcher } from 'svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { CustomDomainDns } from '$lib/types/custom-domain';
+	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
 
 	export let satellite: Satellite;
 	export let domainNameInput: string;

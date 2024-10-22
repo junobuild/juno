@@ -1,7 +1,7 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
-	import type { Principal } from '@dfinity/principal';
 
 	export let canisterId: Principal;
 

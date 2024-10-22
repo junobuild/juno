@@ -1,26 +1,27 @@
 <script lang="ts">
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { topUp } from '$lib/api/mission-control.api';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { icpXdrConversionRate } from '$lib/api/cmc.api';
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
-	import { E8S_PER_ICP, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
-	import Input from '$lib/components/ui/Input.svelte';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { emit } from '$lib/utils/events.utils';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import { icpXdrConversionRate } from '$lib/api/cmc.api';
+	import { topUp } from '$lib/api/mission-control.api';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
+	import Html from '$lib/components/ui/Html.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { E8S_PER_ICP, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 	import { authStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
+	import { emit } from '$lib/utils/events.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	export let canisterId: Principal;
 	export let balance: bigint;
@@ -116,16 +117,18 @@
 		</p>
 
 		<p>
-			{@html i18nFormat($i18n.canisters.top_up_info, [
-				{
-					placeholder: '{0}',
-					value: formatE8sICP(balance)
-				},
-				{
-					placeholder: '{1}',
-					value: formatE8sICP(networkFees)
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.canisters.top_up_info, [
+					{
+						placeholder: '{0}',
+						value: formatE8sICP(balance)
+					},
+					{
+						placeholder: '{1}',
+						value: formatE8sICP(networkFees)
+					}
+				])}
+			/>
 		</p>
 
 		{#if balance <= networkFees}

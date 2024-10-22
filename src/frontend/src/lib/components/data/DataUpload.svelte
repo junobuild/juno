@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import IconUpload from '$lib/components/icons/IconUpload.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { isBusy } from '$lib/stores/busy.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { isNullish } from '@dfinity/utils';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let disabled = false;
 

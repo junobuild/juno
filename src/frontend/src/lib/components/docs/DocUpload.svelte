@@ -1,20 +1,20 @@
 <script lang="ts">
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
-	import DataUpload from '$lib/components/data/DataUpload.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
-	import { nanoid } from 'nanoid';
 	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { setDoc } from '@junobuild/core-peer';
+	import { nanoid } from 'nanoid';
+	import { createEventDispatcher, getContext } from 'svelte';
+	import type { Doc } from '$declarations/satellite/satellite.did';
+	import DataUpload from '$lib/components/data/DataUpload.svelte';
+	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
-	import { setDoc } from '@junobuild/core-peer';
-	import { container } from '$lib/utils/juno.utils';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { fileToDocData } from '$lib/utils/doc.utils';
-	import type { Doc } from '$declarations/satellite/satellite.did';
+	import { container } from '$lib/utils/juno.utils';
 
 	export let docKey: string | undefined = undefined;
 	export let doc: Doc | undefined = undefined;

@@ -1,16 +1,17 @@
 <script lang="ts">
-	import { versionStore } from '$lib/stores/version.store';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
-	import { loadVersion } from '$lib/services/console.services';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { compare } from 'semver';
-	import { emit } from '$lib/utils/events.utils';
-	import { busy } from '$lib/stores/busy.store';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { newerReleases } from '$lib/services/upgrade.services';
 	import type { BuildType } from '@junobuild/admin';
+	import { compare } from 'semver';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { loadVersion } from '$lib/services/console.services';
+	import { newerReleases } from '$lib/services/upgrade.services';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import { emit } from '$lib/utils/events.utils';
 
 	export let satellite: Satellite | undefined = undefined;
 
@@ -143,7 +144,7 @@
 	<div>
 		<p>
 			<IconNewReleases />
-			{@html $i18n.admin.mission_control_new_version}
+			<Html text={$i18n.admin.mission_control_new_version} />
 		</p>
 
 		<button class="primary" on:click={upgradeMissionControl}>{$i18n.canisters.upgrade}</button>
@@ -154,7 +155,7 @@
 	<div>
 		<p>
 			<IconNewReleases />
-			{@html $i18n.admin.orbiter_new_version}
+			<Html text={$i18n.admin.orbiter_new_version} />
 		</p>
 
 		<button class="primary" on:click={upgradeOrbiter}>{$i18n.canisters.upgrade}</button>
@@ -165,7 +166,7 @@
 	<div>
 		<p>
 			<IconNewReleases />
-			{@html $i18n.admin.satellite_new_version}
+			<Html text={$i18n.admin.satellite_new_version} />
 		</p>
 		<button class="primary" on:click={upgradeSatellite}>{$i18n.canisters.upgrade}</button>
 	</div>

@@ -1,24 +1,25 @@
 <script lang="ts">
+	import { Principal } from '@dfinity/principal';
+	import { createEventDispatcher } from 'svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { ONE_TRILLION } from '$lib/constants/constants';
+	import { updateSettings as updateSettingsServices } from '$lib/services/settings.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type {
 		CanisterLogVisibility,
 		CanisterSegmentWithLabel,
 		CanisterSettings
 	} from '$lib/types/canister';
 	import type { JunoModalDetail, JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
-	import { createEventDispatcher } from 'svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { updateSettings as updateSettingsServices } from '$lib/services/settings.services';
-	import { Principal } from '@dfinity/principal';
-	import { authStore } from '$lib/stores/auth.store';
-	import { emit } from '$lib/utils/events.utils';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import { ONE_TRILLION } from '$lib/constants/constants';
+	import { emit } from '$lib/utils/events.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let detail: JunoModalDetail;
 
@@ -106,12 +107,14 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<p>
-				{@html i18nFormat($i18n.canisters.settings_updated_text, [
-					{
-						placeholder: '{0}',
-						value: segment.label
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.canisters.settings_updated_text, [
+						{
+							placeholder: '{0}',
+							value: segment.label
+						}
+					])}
+				/>
 			</p>
 			<button on:click={close}>{$i18n.core.close}</button>
 		</div>

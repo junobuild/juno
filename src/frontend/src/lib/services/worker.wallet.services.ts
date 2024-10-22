@@ -14,7 +14,7 @@ export const initWalletWorker = async (): Promise<WalletWorker> => {
 
 	let walletCallback: WalletCallback | undefined;
 
-	worker.onmessage = async ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
+	worker.onmessage = ({ data }: MessageEvent<PostMessage<PostMessageDataResponse>>) => {
 		const { msg } = data;
 
 		switch (msg) {

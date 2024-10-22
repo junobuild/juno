@@ -668,7 +668,7 @@ describe('Satellite storage', () => {
 
 		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			'With memory %s',
-			async ({ memory }) => {
+			({ memory }) => {
 				const collection = 'Heap' in memory ? 'images_heap' : 'images_stable';
 
 				beforeAll(async () => {
@@ -694,7 +694,7 @@ describe('Satellite storage', () => {
 				const SVG =
 					'<svg height="100" width="100"><circle r="45" cx="50" cy="50" fill="red" /></svg>';
 
-				const uploadCustomAsset = async (name: string = 'hello.svg') => {
+				const uploadCustomAsset = async (name = 'hello.svg') => {
 					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
 					const file = await init_asset_upload({
@@ -954,7 +954,7 @@ describe('Satellite storage', () => {
 	});
 
 	describe('collection', () => {
-		beforeAll(async () => {
+		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 
@@ -997,7 +997,7 @@ describe('Satellite storage', () => {
 		const maxHeapMemorySize = 3_932_160n;
 		const maxStableMemorySize = 2_000_000n;
 
-		beforeAll(async () => {
+		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 

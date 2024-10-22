@@ -1,18 +1,18 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { Principal } from '@dfinity/principal';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { satellitesStore } from '$lib/stores/satellite.store';
-	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
 	import OrbiterConfigSave from '$lib/components/orbiter/OrbiterConfigSave.svelte';
-	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
-	import { authStore } from '$lib/stores/auth.store';
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { listOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { satellitesStore } from '$lib/stores/satellite.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+	import type { SatelliteIdText } from '$lib/types/satellite';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	export let orbiterId: Principal;
 

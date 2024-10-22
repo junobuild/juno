@@ -76,7 +76,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			return key;
 		};
 
-		describe('user (part 1)', async () => {
+		describe('user (part 1)', () => {
 			const user = Ed25519KeyIdentity.generate();
 
 			beforeAll(() => {
@@ -180,7 +180,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		});
 
 		describe('controller', () => {
-			beforeAll(async () => {
+			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
 
@@ -225,7 +225,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 		});
 
-		describe('user (part 2)', async () => {
+		describe('user (part 2)', () => {
 			const user = Ed25519KeyIdentity.generate();
 
 			beforeAll(async () => {
@@ -420,7 +420,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				version: toNullable()
 			};
 
-			beforeAll(async () => {
+			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
 
@@ -531,7 +531,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		});
 
 		describe('collection', () => {
-			beforeAll(async () => {
+			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
 
@@ -581,7 +581,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				max_capacity: toNullable()
 			};
 
-			beforeAll(async () => {
+			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
 
@@ -614,11 +614,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					});
 				});
 
-				it('should not allow to set a document', async () => {
+				it('should not allow to set a document', () => {
 					expect(createDoc()).rejects.toThrow(errorMsg);
 				});
 
-				it('should not allow to set many documents', async () => {
+				it('should not allow to set many documents', () => {
 					const { set_many_docs } = actor;
 
 					expect(

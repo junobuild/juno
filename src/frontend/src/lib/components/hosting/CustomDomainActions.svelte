@@ -1,31 +1,33 @@
 <script lang="ts">
-	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { busy, isBusy } from '$lib/stores/busy.store';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
 		CustomDomain as CustomDomainType
 	} from '$declarations/satellite/satellite.did';
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
-	import { emit } from '$lib/utils/events.utils';
-	import { authStore } from '$lib/stores/auth.store';
-	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import { setAuthConfig } from '$lib/api/satellites.api';
+	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
+	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
+	import type { Option } from '$lib/types/utils';
+	import { emit } from '$lib/utils/events.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	export let satellite: Satellite;
 	export let customDomain: [string, CustomDomainType] | undefined;
-	export let displayState: string | null | undefined;
+	export let displayState: Option<string>;
 	export let config: AuthenticationConfig | undefined;
 
 	let visible = false;
 
-	const openDelete = async () => {
+	const openDelete = () => {
 		if (isNullish(customDomain)) {
 			toasts.error({
 				text: $i18n.errors.hosting_no_custom_domain
@@ -106,9 +108,7 @@
 		busy.stop();
 	};
 
-	const openAddCustomDomain = async (
-		params: Pick<JunoModalCustomDomainDetail, 'editDomainName'>
-	) => {
+	const openAddCustomDomain = (params: Pick<JunoModalCustomDomainDetail, 'editDomainName'>) => {
 		emit({
 			message: 'junoModal',
 			detail: {
@@ -124,7 +124,7 @@
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<ButtonTableAction
-			on:click={async () => await openAddCustomDomain({ editDomainName: customDomain?.[0] })}
+			on:click={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 			ariaLabel={$i18n.hosting.edit}
 			icon="edit"
 		/>
@@ -134,12 +134,14 @@
 <Popover bind:visible center={true}>
 	<div class="content">
 		<h3>
-			{@html i18nFormat($i18n.hosting.delete_custom_domain, [
-				{
-					placeholder: '{0}',
-					value: customDomain?.[0] ?? ''
-				}
-			])}
+			<Html
+				text={i18nFormat($i18n.hosting.delete_custom_domain, [
+					{
+						placeholder: '{0}',
+						value: customDomain?.[0] ?? ''
+					}
+				])}
+			/>
 		</h3>
 
 		<p>{$i18n.hosting.before_continuing}</p>

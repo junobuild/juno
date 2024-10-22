@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Input from '$lib/components/ui/Input.svelte';
 	import { debounce } from '@dfinity/utils';
 	import SatellitesLayout from '$lib/components/satellites/SatellitesLayout.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	export let filter = '';
 

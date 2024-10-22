@@ -20,15 +20,14 @@ const buildCsp = (htmlFile) => {
 	writeFileSync(htmlFile, indexHTMLWithCSP);
 };
 
-const removeDefaultCspTag = (indexHtml) => {
-	return indexHtml.replace('<meta http-equiv="content-security-policy" content="">', '');
-};
+const removeDefaultCspTag = (indexHtml) =>
+	indexHtml.replace('<meta http-equiv="content-security-policy" content="">', '');
 
 /**
  * We need a script loader to implement a proper Content Security Policy. See `updateCSP` doc for more information.
  */
-const injectScriptLoader = (indexHtml) => {
-	return indexHtml.replace(
+const injectScriptLoader = (indexHtml) =>
+	indexHtml.replace(
 		'<!-- SCRIPT_LOADER -->',
 		`<script sveltekit-loader>
       const loader = document.createElement("script");
@@ -37,7 +36,6 @@ const injectScriptLoader = (indexHtml) => {
       document.head.appendChild(loader);
     </script>`
 	);
-};
 
 /**
  * Calculating the sh256 value for the preloaded link and whitelisting these seem not to be supported by the Content-Security-Policy.

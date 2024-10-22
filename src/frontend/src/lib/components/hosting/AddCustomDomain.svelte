@@ -1,13 +1,13 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { emit } from '$lib/utils/events.utils';
 
 	export let satellite: Satellite;
 	export let config: AuthenticationConfig | undefined = undefined;
 
-	const openAddCustomDomain = async () => {
+	const openAddCustomDomain = () => {
 		emit({
 			message: 'junoModal',
 			detail: {

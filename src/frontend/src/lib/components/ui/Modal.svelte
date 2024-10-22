@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { fade, scale } from 'svelte/transition';
-	import { quintOut } from 'svelte/easing';
-	import { i18n } from '$lib/stores/i18n.store';
-	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { createEventDispatcher } from 'svelte';
+	import { quintOut } from 'svelte/easing';
+	import { fade, scale } from 'svelte/transition';
+	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	let visible = true;

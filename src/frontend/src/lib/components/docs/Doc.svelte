@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
-	import type { Doc } from '$declarations/satellite/satellite.did';
-	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { fromArray } from '@junobuild/utils';
+	import { getContext } from 'svelte';
+	import type { Doc } from '$declarations/satellite/satellite.did';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { formatToDate } from '$lib/utils/date.utils';
+	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import JsonCode from '$lib/components/ui/JsonCode.svelte';
-	import { fromArray } from '@junobuild/utils';
+	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
+	import { formatToDate } from '$lib/utils/date.utils';
 
 	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
-	import { run, stopPropagation } from 'svelte/legacy';
+	import { stopPropagation } from 'svelte/legacy';
 	import { fade, scale } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -27,9 +27,9 @@
 		children
 	}: Props = $props();
 
-	let bottom: number | undefined = $state();
-	let left: number | undefined = $state();
-	let right: number | undefined = $state();
+	let bottom: number = $state(0);
+	let left: number = $state(0);
+	let right: number = $state(0);
 	let innerWidth = $state(0);
 
 	const initPosition = () =>
@@ -37,8 +37,8 @@
 			? anchor.getBoundingClientRect()
 			: { bottom: 0, left: 0, right: 0 });
 
-	run(() => {
-		anchor, initPosition();
+	$effect(() => {
+		initPosition();
 	});
 
 	const close = () => (visible = false);
@@ -56,7 +56,7 @@
 		tabindex="-1"
 		style={`--popover-top: ${bottom}px; ${
 			direction === 'rtl'
-				? `--popover-right: ${innerWidth - right}px;`
+				? `--popover-right: ${innerWidth - (right ?? 0)}px;`
 				: `--popover-left: ${left}px;`
 		}`}
 	>

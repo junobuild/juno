@@ -55,6 +55,7 @@
 	};
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		collection, $listParamsStore, (async () => await load())();
 	});
 

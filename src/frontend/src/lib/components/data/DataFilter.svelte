@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
@@ -19,19 +18,16 @@
 		visible = false;
 	};
 
-	run(() => {
-		visible,
-			(() => {
-				if (visible) {
-					return;
-				}
+	$effect(() => {
+		if (visible) {
+			return;
+		}
 
-				// Avoid glitch
-				setTimeout(() => {
-					matcher = $listParamsStore.filter.matcher ?? '';
-					owner = $listParamsStore.filter.owner ?? '';
-				}, 250);
-			})();
+		// Avoid glitch
+		setTimeout(() => {
+			matcher = $listParamsStore.filter.matcher ?? '';
+			owner = $listParamsStore.filter.owner ?? '';
+		}, 250);
 	});
 </script>
 

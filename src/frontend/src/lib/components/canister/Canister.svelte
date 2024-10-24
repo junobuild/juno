@@ -69,7 +69,9 @@
 	let memorySize: bigint = $state();
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		worker,
+			// @ts-expect-error TODO: to be migrated to Svelte v5
 			canisterId,
 			(() =>
 				worker?.startCyclesTimer({

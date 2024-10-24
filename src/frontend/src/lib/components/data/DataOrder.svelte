@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
@@ -20,19 +19,16 @@
 		visible = false;
 	};
 
-	run(() => {
-		visible,
-			(() => {
-				if (visible) {
-					return;
-				}
+	$effect(() => {
+		if (visible) {
+			return;
+		}
 
-				// Avoid glitch
-				setTimeout(() => {
-					desc = $listParamsStore.order.desc;
-					field = $listParamsStore.order.field;
-				}, 250);
-			})();
+		// Avoid glitch
+		setTimeout(() => {
+			desc = $listParamsStore.order.desc;
+			field = $listParamsStore.order.field;
+		}, 250);
 	});
 </script>
 

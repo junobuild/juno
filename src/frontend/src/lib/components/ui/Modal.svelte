@@ -19,9 +19,13 @@
 
 	const dispatch = createEventDispatcher();
 
-	const close = ($event: MouseEvent | TouchEvent) => {
+	const onClose = ($event: MouseEvent | TouchEvent) => {
 		$event.stopPropagation();
 
+		close();
+	};
+
+	const close = () => {
 		if ($isBusy) {
 			return;
 		}
@@ -41,7 +45,7 @@
 	>
 		<div
 			class="backdrop"
-			onclick={close}
+			onclick={onClose}
 			onkeypress={($event) => handleKeyPress({ $event, callback: close })}
 			role="button"
 			tabindex="-1"
@@ -49,7 +53,7 @@
 		<div transition:scale={{ delay: 25, duration: 150, easing: quintOut }} class="wrapper flex">
 			<div class="toolbar">
 				<h3 id="modalTitle">{@render title?.()}</h3>
-				<button onclick={close} aria-label={$i18n.core.close} disabled={$isBusy}
+				<button onclick={onClose} aria-label={$i18n.core.close} disabled={$isBusy}
 					><IconClose /></button
 				>
 			</div>

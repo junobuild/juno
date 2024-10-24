@@ -32,10 +32,12 @@
 	);
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		$satelliteStore, debounceSetTitle();
 	});
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		$missionControlStore,
 			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
 	});

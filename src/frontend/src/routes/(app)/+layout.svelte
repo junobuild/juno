@@ -15,6 +15,7 @@
 	let { children }: Props = $props();
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		$missionControlStore,
 			(async () => await loadSatellites({ missionControl: $missionControlStore }))();
 	});

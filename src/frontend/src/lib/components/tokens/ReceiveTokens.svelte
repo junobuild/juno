@@ -20,6 +20,7 @@
 	let steps: 'options' | 'wallet_id' | 'account_identifier' = $state('options');
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		visible, (steps = 'options');
 	});
 </script>

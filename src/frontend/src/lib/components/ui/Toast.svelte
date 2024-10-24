@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { onDestroy, onMount } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import { fade, fly } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -16,13 +15,9 @@
 
 	const close = () => toasts.hide();
 
-	let text: string = $state();
-	let level: ToastLevel = $state();
-	let detail: string | undefined = $state();
-
-	run(() => {
-		({ text, level, detail } = msg);
-	});
+	let text: string = $derived(msg.text);
+	let level: ToastLevel = $derived(msg.level);
+	let detail: string | undefined = $derived(msg.detail);
 
 	let timer: number | undefined;
 
@@ -40,29 +35,26 @@
 
 	onDestroy(() => clearTimeout(timer));
 
-	let reorgDetail: string | undefined = $state();
-	run(() => {
-		detail,
-			(() => {
-				if (isNullish(detail)) {
-					reorgDetail = undefined;
-					return;
-				}
+	let reorgDetail: string | undefined = $state(undefined);
+	$effect(() => {
+		if (isNullish(detail)) {
+			reorgDetail = undefined;
+			return;
+		}
 
-				// Present the message we throw in the backend first
-				const trapKeywords = 'trapped explicitly:' as const;
+		// Present the message we throw in the backend first
+		const trapKeywords = 'trapped explicitly:' as const;
 
-				if (!detail.includes(trapKeywords)) {
-					reorgDetail = detail;
-					return;
-				}
+		if (!detail.includes(trapKeywords)) {
+			reorgDetail = detail;
+			return;
+		}
 
-				const splits = detail.split(trapKeywords);
-				const last = splits.splice(-1);
-				reorgDetail = `${last[0]?.trim() ?? ''}${
-					splits.length > 0 ? ` | Stacktrace: ${splits.join('').trim()}` : ''
-				}`;
-			})();
+		const splits = detail.split(trapKeywords);
+		const last = splits.splice(-1);
+		reorgDetail = `${last[0]?.trim() ?? ''}${
+			splits.length > 0 ? ` | Stacktrace: ${splits.join('').trim()}` : ''
+		}`;
 	});
 </script>
 

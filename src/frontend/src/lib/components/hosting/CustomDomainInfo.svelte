@@ -47,6 +47,7 @@
 	let bnId: string | undefined = $derived(fromNullable(customDomain?.[1].bn_id ?? []));
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		visible, onVisible();
 	});
 </script>

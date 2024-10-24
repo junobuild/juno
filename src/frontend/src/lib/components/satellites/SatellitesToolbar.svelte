@@ -16,6 +16,7 @@
 
 	let filterInput = $state('');
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		filterInput, debounceUpdateFilter();
 	});
 </script>

@@ -28,6 +28,7 @@
 		});
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		$missionControlStore, satellite, (async () => await load(true))();
 	});
 

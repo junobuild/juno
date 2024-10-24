@@ -14,6 +14,7 @@
 	import { satellitesStore } from '$lib/stores/satellite.store';
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		$missionControlStore,
 			(async () => await loadSatellites({ missionControl: $missionControlStore }))();
 	});

@@ -94,6 +94,7 @@
 	onDestroy(() => worker?.stopCustomDomainRegistrationTimer());
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		worker, customDomain, loadRegistrationState();
 	});
 

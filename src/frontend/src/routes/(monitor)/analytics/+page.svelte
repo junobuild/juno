@@ -64,11 +64,13 @@
 	// Load data
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		$missionControlStore,
 			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
 	});
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		$orbiterStore,
 			(async () => await loadOrbiterVersion({ orbiter: $orbiterStore, reload: false }))();
 	});

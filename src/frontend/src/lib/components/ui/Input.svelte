@@ -83,21 +83,18 @@
 		currency = ['icp', 'currency'].includes(inputType);
 	});
 
-	run(() => {
-		value,
-			(() => {
-				if (!internalValueChange && currency) {
-					if (typeof value === 'number') {
-						currencyValue = exponentToPlainNumberString(`${value}`);
-					} else {
-						currencyValue = fixUndefinedValue(value);
-					}
+	$effect(() => {
+		if (!internalValueChange && currency) {
+			if (typeof value === 'number') {
+				currencyValue = exponentToPlainNumberString(`${value}`);
+			} else {
+				currencyValue = fixUndefinedValue(value);
+			}
 
-					lastValidCurrencyValue = currencyValue;
-				}
+			lastValidCurrencyValue = currencyValue;
+		}
 
-				internalValueChange = false;
-			})();
+		internalValueChange = false;
 	});
 
 	const restoreFromValidValue = (noValue = false) => {

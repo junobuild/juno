@@ -14,13 +14,9 @@
 	let { deleteData, title, children }: Props = $props();
 </script>
 
-<DataDelete {deleteData}>
+<DataDelete {deleteData} {title}>
 	{#snippet button()}
 		{$i18n.core.delete}
-	{/snippet}
-
-	{#snippet title()}
-		{@render title?.()}
 	{/snippet}
 
 	<Value>

@@ -16,10 +16,7 @@
 	let paragraphs: number[] = $derived(Array.from({ length: rows }, (_, i) => i));
 </script>
 
-<Value>
-	{#snippet label()}
-		{@render label?.()}
-	{/snippet}
+<Value {label}>
 	{#if ['synced', 'syncing'].includes(sync ?? '')}
 		{@render children()}
 	{:else if sync === 'loading'}

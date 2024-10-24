@@ -94,11 +94,12 @@
 			on:junoClose
 		/>
 	{:else if steps === 'confirm'}
-		<ConfirmUpgradeVersion {segment} on:junoClose on:junoContinue={() => (steps = 'init')}>
-			{#snippet intro()}
-				{@render intro?.()}
-			{/snippet}
-		</ConfirmUpgradeVersion>
+		<ConfirmUpgradeVersion
+			{segment}
+			on:junoClose
+			on:junoContinue={() => (steps = 'init')}
+			{intro}
+		/>
 	{:else}
 		<SelectUpgradeVersion
 			{newerReleases}

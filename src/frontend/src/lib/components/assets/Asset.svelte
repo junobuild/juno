@@ -92,7 +92,9 @@
 				{#snippet title()}
 					{$i18n.asset.replace_file}
 				{/snippet}
-				{$i18n.asset.replace_description}
+				{#snippet description()}
+					{$i18n.asset.replace_description}
+				{/snippet}
 			</AssetUpload>
 
 			<DataKeyDelete {deleteData}>

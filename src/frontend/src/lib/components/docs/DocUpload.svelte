@@ -117,17 +117,7 @@
 	});
 </script>
 
-<DataUpload on:junoUpload={upload} disabled={!notEmptyString(key)}>
-	{#snippet action()}
-		{@render action?.()}
-	{/snippet}
-	{#snippet title()}
-		{@render title?.()}
-	{/snippet}
-	{#snippet description()}
-		{@render children()}
-	{/snippet}
-
+<DataUpload on:junoUpload={upload} disabled={!notEmptyString(key)} {action} {title} {description}>
 	{#if mode === 'create'}
 		<div>
 			<Value ref="doc-key">

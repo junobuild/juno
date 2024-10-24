@@ -16,6 +16,7 @@
 	export let value: string;
 
 	let dark: boolean;
+	// eslint-disable-next-line svelte/valid-compile
 	$: dark = $theme === Theme.DARK;
 
 	// Valid CSS colors
@@ -130,7 +131,7 @@
 			style={`width: ${size.width > 0 ? `${size.width}px` : '100%'}; height: ${
 				size.width > 0 ? `${size.width}px` : '100%'
 			}`}
-		/>
+		></canvas>
 	{/if}
 
 	{#if showLogo}

@@ -15,11 +15,4 @@
 
 <Canister {canisterId} segment="mission_control" display={false} />
 
-<CanisterWarnings {canisterId}>
-	{#snippet cycles()}
-		{@render cycles?.()}
-	{/snippet}
-	{#snippet heap()}
-		{@render heap?.()}
-	{/snippet}
-</CanisterWarnings>
+<CanisterWarnings {canisterId} {cycles} {heap} />

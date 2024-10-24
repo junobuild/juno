@@ -1,10 +1,10 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { createBubbler, stopPropagation } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { Snippet } from 'svelte';
+
+	const bubble = createBubbler();
 
 	interface Props {
 		ariaLabel: string;

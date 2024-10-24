@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
@@ -14,6 +12,8 @@
 	}
 
 	let { accountIdentifier }: Props = $props();
+
+	const bubble = createBubbler();
 </script>
 
 {#if nonNullish($missionControlStore) && nonNullish(accountIdentifier)}

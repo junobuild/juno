@@ -89,14 +89,16 @@
 				{#snippet title()}
 					{$i18n.asset.upload_file}
 				{/snippet}
-				<Html
-					text={i18nFormat($i18n.asset.upload_description, [
-						{
-							placeholder: '{0}',
-							value: collection ?? ''
-						}
-					])}
-				/>
+				{#snippet description()}
+					<Html
+						text={i18nFormat($i18n.asset.upload_description, [
+							{
+								placeholder: '{0}',
+								value: collection ?? ''
+							}
+						])}
+					/>
+				{/snippet}
 			</AssetUpload>
 
 			<button class="menu" type="button" onclick={load}

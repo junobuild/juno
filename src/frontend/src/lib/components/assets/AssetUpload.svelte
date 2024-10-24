@@ -16,10 +16,10 @@
 		asset?: AssetNoContent | undefined;
 		action?: Snippet;
 		title?: Snippet;
-		children: Snippet;
+		description?: Snippet;
 	}
 
-	let { asset = undefined, action, title, children }: Props = $props();
+	let { asset = undefined, action, title, description, children }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -85,16 +85,7 @@
 	};
 </script>
 
-<DataUpload on:junoUpload={upload}>
-	{#snippet action()}
-		{@render action?.()}
-	{/snippet}
-	{#snippet title()}
-		{@render title?.()}
-	{/snippet}
-	{#snippet description()}
-		{@render children()}
-	{/snippet}
+<DataUpload on:junoUpload={upload} {action} {title} {description}>
 	{#snippet confirm()}
 		{$i18n.asset.upload}
 	{/snippet}

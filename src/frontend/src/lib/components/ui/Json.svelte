@@ -8,6 +8,7 @@
 
 	interface Props {
 		json?: unknown | undefined;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
 		defaultExpandedLevel?: any;
 		_key?: string;
 		_level?: number;
@@ -48,16 +49,16 @@
 		return typeof value;
 	};
 
-	let valueType: ValueType = $state();
+	let valueType: ValueType | undefined = $state();
 	let value: unknown = $state();
-	let keyLabel: string = $state();
-	let children: [string, unknown][] = $state();
-	let hasChildren: boolean = $state();
-	let isExpandable: boolean = $state();
-	let isArray: boolean = $state();
-	let openBracket: string = $state();
-	let closeBracket: string = $state();
-	let root: boolean = $state();
+	let keyLabel: string | undefined = $state();
+	let children: [string, unknown][] = $state([]);
+	let hasChildren: boolean | undefined = $state();
+	let isExpandable: boolean | undefined = $state();
+	let isArray: boolean | undefined = $state();
+	let openBracket: string | undefined = $state();
+	let closeBracket: string | undefined = $state();
+	let root: boolean | undefined = $state();
 	let testId: 'json' | undefined = $state();
 	run(() => {
 		valueType = getValueType(json);
@@ -78,8 +79,8 @@
 	);
 
 	let collapsed = $state(true);
-	// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 	run(() => {
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		collapsed = _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
 	});
 

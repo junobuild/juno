@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { run, createBubbler, stopPropagation } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import { quintOut } from 'svelte/easing';
 	import { fade, scale } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
@@ -28,6 +26,8 @@
 		backdrop = 'light',
 		children
 	}: Props = $props();
+
+	const bubble = createBubbler();
 
 	let bottom: number | undefined = $state();
 	let left: number | undefined = $state();

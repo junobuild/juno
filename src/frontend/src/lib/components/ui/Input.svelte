@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { run, createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 
@@ -41,6 +39,8 @@
 		ignore1Password = true,
 		autocomplete = $bindable(undefined)
 	}: Props = $props();
+
+	const bubble = createBubbler();
 
 	let inputElement: HTMLInputElement | undefined = $state();
 

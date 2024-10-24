@@ -14,6 +14,7 @@
 
 	let { children, title }: Props = $props();
 
+	// eslint-disable-next-line svelte/valid-compile
 	let visible = true;
 
 	const dispatch = createEventDispatcher();
@@ -43,7 +44,7 @@
 			on:keypress={($event) => handleKeyPress({ $event, callback: close })}
 			role="button"
 			tabindex="-1"
-		/>
+		></div>
 		<div transition:scale={{ delay: 25, duration: 150, easing: quintOut }} class="wrapper flex">
 			<div class="toolbar">
 				<h3 id="modalTitle">{@render title?.()}</h3>

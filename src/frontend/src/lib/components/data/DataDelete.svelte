@@ -66,10 +66,4 @@
 	><IconDelete size="20px" /> {@render button?.()}</button
 >
 
-<Confirmation bind:visible on:junoYes={deleteSelectedData} on:junoNo={close}>
-	{#snippet title()}
-		{@render title?.()}
-	{/snippet}
-
-	{@render children()}
-</Confirmation>
+<Confirmation bind:visible on:junoYes={deleteSelectedData} on:junoNo={close} {title} {children} />

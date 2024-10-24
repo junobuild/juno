@@ -1,11 +1,9 @@
 <script lang="ts">
-	import { run, createBubbler } from 'svelte/legacy';
-
-	const bubble = createBubbler();
 	import { nonNullish } from '@dfinity/utils';
+	import type { Snippet } from 'svelte';
+	import { run, createBubbler } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import type { CanisterIcStatus } from '$lib/types/canister';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		canister?: CanisterIcStatus | undefined;
@@ -13,6 +11,8 @@
 	}
 
 	let { canister = undefined, children }: Props = $props();
+
+	const bubble = createBubbler();
 
 	let enabled = $state(false);
 	run(() => {

@@ -26,11 +26,7 @@
 	}: Props = $props();
 </script>
 
-<SplitPane>
-	{#snippet menu()}
-		{@render menu?.()}
-	{/snippet}
-
+<SplitPane {menu}>
 	<div class="content">
 		{@render navbar?.()}
 

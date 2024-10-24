@@ -88,7 +88,7 @@
 		</p>
 
 		<CreditsGuard
-			onclose
+			{onclose}
 			bind:insufficientFunds
 			{detail}
 			priceLabel={$i18n.analytics.create_orbiter_price}

@@ -76,7 +76,7 @@
 							<ButtonTableAction
 								icon="delete"
 								ariaLabel={$i18n.controllers.delete}
-								on:click={() => {
+								onaction={() => {
 									selectedController = [controllerId, controller];
 									visibleDelete = true;
 								}}
@@ -85,7 +85,7 @@
 							<ButtonTableAction
 								icon="info"
 								ariaLabel={$i18n.controllers.info}
-								on:click={() => (visibleInfo = true)}
+								onaction={() => (visibleInfo = true)}
 							/>
 						{/if}
 					</td>

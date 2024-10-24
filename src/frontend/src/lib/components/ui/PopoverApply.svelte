@@ -1,10 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import { createBubbler, stopPropagation } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-
-	const bubble = createBubbler();
 
 	interface Props {
 		ariaLabel: string;
@@ -12,11 +9,25 @@
 		direction?: 'ltr' | 'rtl';
 		icon?: Snippet;
 		children: Snippet;
+		onapply: () => Promise<void>;
 	}
 
-	let { ariaLabel, visible = $bindable(), direction = 'rtl', icon, children }: Props = $props();
+	let {
+		ariaLabel,
+		visible = $bindable(),
+		direction = 'rtl',
+		icon,
+		children,
+		onapply
+	}: Props = $props();
 
 	let button: HTMLButtonElement | undefined = $state();
+
+	const apply = async ($event: MouseEvent | TouchEvent) => {
+		$event.stopPropagation();
+
+		await onapply();
+	};
 </script>
 
 <button
@@ -31,7 +42,7 @@
 	<div class="container">
 		{@render children()}
 
-		<button class="apply" type="button" onclick={stopPropagation(bubble('click'))}>
+		<button class="apply" type="button" onclick={apply}>
 			{$i18n.core.apply}
 		</button>
 	</div>

@@ -10,7 +10,8 @@
 
 	let visible: boolean = $state(false);
 
-	const apply = () => {
+	// eslint-disable-next-line require-await
+	const apply = async () => {
 		listParamsStore.setOrder({
 			desc,
 			field
@@ -32,7 +33,7 @@
 	});
 </script>
 
-<PopoverApply ariaLabel={$i18n.sort.title} on:click={apply} bind:visible>
+<PopoverApply ariaLabel={$i18n.sort.title} onapply={apply} bind:visible>
 	{#snippet icon()}
 		<IconSort size="20px" />
 	{/snippet}

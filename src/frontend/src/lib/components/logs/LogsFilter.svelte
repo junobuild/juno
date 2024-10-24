@@ -24,7 +24,7 @@
 	};
 </script>
 
-<PopoverApply ariaLabel={$i18n.sort.title} on:click={apply} bind:visible direction="ltr">
+<PopoverApply ariaLabel={$i18n.sort.title} onapply={apply} bind:visible direction="ltr">
 	{#snippet icon()}
 		<IconFilter size="20px" />
 	{/snippet}

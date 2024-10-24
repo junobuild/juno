@@ -128,11 +128,11 @@
 </script>
 
 <div class="tools">
-	<ButtonTableAction on:click={openDelete} ariaLabel={$i18n.hosting.delete} icon="delete" />
+	<ButtonTableAction onaction={openDelete} ariaLabel={$i18n.hosting.delete} icon="delete" />
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<ButtonTableAction
-			on:click={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
+			onaction={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 			ariaLabel={$i18n.hosting.edit}
 			icon="edit"
 		/>

@@ -28,7 +28,8 @@
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
-	const onCanisterAction = (type: 'delete_orbiter' | 'transfer_cycles_orbiter') => {
+	// eslint-disable-next-line require-await
+	const onCanisterAction = async (type: 'delete_orbiter' | 'transfer_cycles_orbiter') => {
 		close();
 
 		emit({
@@ -51,7 +52,10 @@
 <Actions bind:visible>
 	<TopUp type="topup_orbiter" on:junoTopUp={close} />
 
-	<CanisterTransferCycles {canister} on:click={() => onCanisterAction('transfer_cycles_orbiter')} />
+	<CanisterTransferCycles
+		{canister}
+		onclick={async () => await onCanisterAction('transfer_cycles_orbiter')}
+	/>
 
 	<hr />
 
@@ -59,5 +63,5 @@
 
 	<SegmentDetach segment="orbiter" segmentId={orbiter.orbiter_id} ondetach={close} />
 
-	<CanisterDelete {canister} onclick={() => onCanisterAction('delete_orbiter')} />
+	<CanisterDelete {canister} onclick={async () => await onCanisterAction('delete_orbiter')} />
 </Actions>

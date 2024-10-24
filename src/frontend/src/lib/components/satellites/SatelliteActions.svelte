@@ -84,7 +84,7 @@
 <Actions bind:visible>
 	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
 
-	<CanisterTransferCycles {canister} on:click={onTransferCycles} />
+	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
 	<hr />
 

@@ -106,7 +106,7 @@
 		</p>
 
 		<CreditsGuard
-			onclose
+			{onclose}
 			bind:insufficientFunds
 			{detail}
 			priceLabel={$i18n.satellites.create_satellite_price}

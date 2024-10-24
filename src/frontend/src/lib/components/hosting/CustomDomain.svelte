@@ -118,7 +118,7 @@
 <td>
 	{#if type === 'custom' && nonNullish(satellite)}
 		<div class="actions">
-			<ButtonTableAction icon="info" ariaLabel={$i18n.hosting.info} on:click={displayInfo} />
+			<ButtonTableAction icon="info" ariaLabel={$i18n.hosting.info} onaction={displayInfo} />
 
 			<CustomDomainActions {satellite} {customDomain} {config} {displayState} />
 		</div>

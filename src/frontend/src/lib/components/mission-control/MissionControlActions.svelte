@@ -50,7 +50,7 @@
 <Actions bind:visible>
 	<TopUp type="topup_mission_control" on:junoTopUp={close} />
 
-	<CanisterTransferCycles {canister} on:click={onTransferCycles} />
+	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
 	<hr />
 

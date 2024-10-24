@@ -29,17 +29,26 @@
 	};
 
 	const close = () => (visible = false);
+
+	const onLogin = async () => {
+		await doSignIn({});
+	};
+
+	// eslint-disable-next-line require-await
+	const onclick = async () => {
+		visible = true;
+	};
 </script>
 
 {#if $authSignedInStore}
-	<ButtonIcon onclick={() => (visible = true)} bind:button>
+	<ButtonIcon {onclick} bind:button>
 		{#snippet icon()}
 			<IconUser />
 		{/snippet}
 		{$i18n.core.user_menu}
 	</ButtonIcon>
 {:else if signIn}
-	<ButtonIcon onclick={async () => await doSignIn({})}>
+	<ButtonIcon onclick={onLogin}>
 		{#snippet icon()}
 			<IconSignIn />
 		{/snippet}

@@ -53,8 +53,8 @@
 	});
 
 	let cycles: number | undefined = $derived(
-		nonNullish(trillionRatio) && validIcp
-			? icpToCycles({ icp: icp as number, trillionRatio })
+		nonNullish(trillionRatio) && validIcp && nonNullish(icp)
+			? icpToCycles({ icp, trillionRatio })
 			: undefined
 	);
 

@@ -7,7 +7,7 @@
 	interface Props {
 		sync: CanisterSyncStatus | undefined;
 		rows?: number;
-		label?: Snippet;
+		label: Snippet;
 		children: Snippet;
 	}
 

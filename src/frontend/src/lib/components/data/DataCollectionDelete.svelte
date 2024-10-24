@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import type { Snippet } from 'svelte';
 	import DataDelete from '$lib/components/data/DataDelete.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;

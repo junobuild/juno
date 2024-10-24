@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import Navbar from '$lib/components/core/Navbar.svelte';
 	import Navmenu from '$lib/components/core/Navmenu.svelte';
@@ -6,7 +7,6 @@
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		children: Snippet;

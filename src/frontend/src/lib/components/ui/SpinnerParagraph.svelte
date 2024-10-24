@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import type { Snippet } from 'svelte';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
 
 	interface Props {
 		children: Snippet;

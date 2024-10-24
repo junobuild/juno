@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import { layoutMenuOpen } from '$lib/stores/layout.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		children: Snippet;

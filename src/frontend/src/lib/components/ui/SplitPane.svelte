@@ -1,7 +1,7 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { layoutMenuOpen } from '$lib/stores/layout.store';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		menu?: Snippet;

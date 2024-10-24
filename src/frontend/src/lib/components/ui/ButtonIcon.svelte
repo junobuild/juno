@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createBubbler } from 'svelte/legacy';
 	import type { Snippet } from 'svelte';
+	import { createBubbler } from 'svelte/legacy';
 
 	const bubble = createBubbler();
 

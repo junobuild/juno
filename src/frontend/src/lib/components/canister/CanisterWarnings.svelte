@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import type { Snippet } from 'svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		canisterId: Principal;

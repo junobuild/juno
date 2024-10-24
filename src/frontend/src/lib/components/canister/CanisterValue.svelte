@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import type { CanisterSyncStatus } from '$lib/types/canister';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		sync: CanisterSyncStatus | undefined;

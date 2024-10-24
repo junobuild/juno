@@ -2,7 +2,6 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
 	import { createEventDispatcher, type Snippet } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
@@ -31,14 +30,11 @@
 		intro
 	}: Props = $props();
 
-	let buildExtended = $state(false);
-	run(() => {
-		buildExtended = nonNullish(build) && build === 'extended';
-	});
+	let buildExtended = $derived(nonNullish(build) && build === 'extended');
 
 	let steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' =
-		$state();
-	run(() => {
+		$state('init');
+	$effect(() => {
 		steps = buildExtended ? 'confirm' : 'init';
 	});
 

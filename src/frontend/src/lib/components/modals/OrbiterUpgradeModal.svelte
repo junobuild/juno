@@ -2,7 +2,6 @@
 	import { AnonymousIdentity } from '@dfinity/agent';
 	import { nonNullish } from '@dfinity/utils';
 	import { upgradeOrbiter } from '@junobuild/admin';
-	import { run } from 'svelte/legacy';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';
@@ -18,12 +17,7 @@
 
 	let { detail }: Props = $props();
 
-	let newerReleases: string[] = $state();
-	let currentVersion: string = $state();
-
-	run(() => {
-		({ newerReleases, currentVersion } = detail as JunoModalUpgradeDetail);
-	});
+	let { newerReleases, currentVersion } = $derived(detail as JunoModalUpgradeDetail);
 
 	const upgradeOrbiterWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
 		await upgradeOrbiter({

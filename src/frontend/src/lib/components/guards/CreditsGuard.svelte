@@ -21,9 +21,16 @@
 		priceLabel: string;
 		insufficientFunds?: boolean;
 		children: Snippet;
+		onclose: () => void;
 	}
 
-	let { detail, priceLabel, insufficientFunds = $bindable(true), children }: Props = $props();
+	let {
+		detail,
+		priceLabel,
+		insufficientFunds = $bindable(true),
+		children,
+		onclose
+	}: Props = $props();
 
 	let notEnoughCredits = $state(false);
 
@@ -64,7 +71,7 @@
 {/if}
 
 {#if insufficientFunds}
-	<MissionControlICPInfo {accountIdentifier} on:click={() => dispatch('junoClose')} />
+	<MissionControlICPInfo {accountIdentifier} {onclose} />
 {:else}
 	{@render children()}
 {/if}

@@ -43,7 +43,7 @@
 </script>
 
 <svelte:window
-	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<CanisterIcStatus>) =>
+	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterIcStatus }>) =>
 		onSyncCanister(canister)}
 />
 

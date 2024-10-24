@@ -12,11 +12,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		CanisterLogVisibility,
-		CanisterSegmentWithLabel,
-		CanisterSettings
-	} from '$lib/types/canister';
+	import type { CanisterLogVisibility } from '$lib/types/canister';
 	import type { JunoModalDetail, JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
@@ -28,12 +24,7 @@
 
 	let { detail }: Props = $props();
 
-	let segment: CanisterSegmentWithLabel = $state();
-	let settings: CanisterSettings = $state();
-
-	run(() => {
-		({ segment, settings } = detail as JunoModalEditCanisterSettingsDetail);
-	});
+	let { segment, settings } = $derived(detail as JunoModalEditCanisterSettingsDetail);
 
 	let freezingThreshold: number = $state();
 	const initFreezingThreshold = (threshold: bigint) => (freezingThreshold = Number(threshold));

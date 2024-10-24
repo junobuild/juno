@@ -143,7 +143,7 @@
 		</p>
 
 		{#if balance <= networkFees}
-			<MissionControlICPInfo {accountIdentifier} on:click={close} />
+			<MissionControlICPInfo {accountIdentifier} onclose={close} />
 		{:else}
 			<form onsubmit={preventDefault(onSubmit)}>
 				<div>

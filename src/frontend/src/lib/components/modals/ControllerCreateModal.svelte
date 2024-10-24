@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Ed25519KeyIdentity } from '@dfinity/identity';
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
@@ -14,8 +13,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
-	import type { SetControllerParams, SetControllerScope } from '$lib/types/controllers';
+	import type { SetControllerScope } from '$lib/types/controllers';
 	import type { JunoModalCreateControllerDetail, JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
@@ -24,17 +22,7 @@
 
 	let { detail }: Props = $props();
 
-	let add: (
-		params: {
-			missionControlId: Principal;
-		} & SetControllerParams
-	) => Promise<void> = $state();
-	let load: () => Promise<void> = $state();
-	let segment: CanisterSegmentWithLabel = $state();
-
-	run(() => {
-		({ add, load, segment } = detail as JunoModalCreateControllerDetail);
-	});
+	let { add, load, segment } = $derived(detail as JunoModalCreateControllerDetail);
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 

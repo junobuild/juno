@@ -32,14 +32,9 @@
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	let tCycles: string = $state();
+	let tCycles: string = $state('');
 
-	let cycles: bigint = $state();
-	run(() => {
-		(() => {
-			cycles = BigInt(parseFloat(tCycles ?? 0) * ONE_TRILLION);
-		})();
-	});
+	let cycles: bigint = $derived(BigInt(parseFloat(tCycles ?? 0) * ONE_TRILLION));
 
 	let destinationId: string | undefined = $state();
 

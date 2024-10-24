@@ -26,9 +26,10 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let insufficientFunds = $state(true);
 
@@ -105,7 +106,7 @@
 		</p>
 
 		<CreditsGuard
-			on:junoClose
+			onclose
 			bind:insufficientFunds
 			{detail}
 			priceLabel={$i18n.satellites.create_satellite_price}

@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import SendTokensForm from '$lib/components/tokens/SendTokensForm.svelte';
 	import SendTokensReview from '$lib/components/tokens/SendTokensReview.svelte';
@@ -14,15 +13,17 @@
 
 	interface Props {
 		detail: JunoModalDetail;
-		destination: string;
 	}
 
-	let { detail, destination = $bindable('') }: Props = $props();
+	let { detail }: Props = $props();
 
 	let balance: bigint | undefined = $state();
-	run(() => {
-		({ balance } = detail as JunoModalSendTokensDetail);
+
+	$effect(() => {
+		balance = (detail as JunoModalSendTokensDetail).balance;
 	});
+
+	let destination = $state('');
 
 	let steps: 'form' | 'review' | 'in_progress' | 'ready' | 'error' = $state('form');
 

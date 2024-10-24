@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
-	import { createBubbler } from 'svelte/legacy';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -9,11 +8,10 @@
 
 	interface Props {
 		accountIdentifier: AccountIdentifier | undefined;
+		onclose: () => void;
 	}
 
-	let { accountIdentifier }: Props = $props();
-
-	const bubble = createBubbler();
+	let { accountIdentifier, onclose }: Props = $props();
 </script>
 
 {#if nonNullish($missionControlStore) && nonNullish(accountIdentifier)}
@@ -30,4 +28,4 @@
 	>.
 </p>
 
-<button onclick={bubble('click')}>{$i18n.core.close}</button>
+<button onclick={onclose}>{$i18n.core.close}</button>

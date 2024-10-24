@@ -27,11 +27,11 @@
 <svelte:window onjunoModal={({ detail }) => (modal = detail)} />
 
 {#if modal?.type === 'create_satellite' && nonNullish(modal.detail)}
-	<SatelliteCreateModal on:junoClose={close} detail={modal.detail} />
+	<SatelliteCreateModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'create_orbiter' && nonNullish(modal.detail)}
-	<OrbiterCreateModal on:junoClose={close} detail={modal.detail} />
+	<OrbiterCreateModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'topup_satellite' && nonNullish(modal.detail)}

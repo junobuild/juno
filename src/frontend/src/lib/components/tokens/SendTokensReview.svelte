@@ -22,7 +22,12 @@
 		amount: string | undefined;
 	}
 
-	let { missionControlId, balance, destination = '', amount }: Props = $props();
+	let {
+		missionControlId,
+		balance,
+		destination = $bindable(''),
+		amount = $bindable()
+	}: Props = $props();
 
 	let accountIdentifier: AccountIdentifier | undefined = $derived(
 		getAccountIdentifier(missionControlId)

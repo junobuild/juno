@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
 	import { createEventDispatcher } from 'svelte';
-	import { run, preventDefault } from 'svelte/legacy';
+	import { preventDefault } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -26,55 +26,42 @@
 
 	let { segment, settings } = $derived(detail as JunoModalEditCanisterSettingsDetail);
 
-	let freezingThreshold: number = $state();
-	const initFreezingThreshold = (threshold: bigint) => (freezingThreshold = Number(threshold));
-	run(() => {
-		initFreezingThreshold(settings.freezingThreshold);
-	});
+	let freezingThreshold: number = $state(
+		Number((detail as JunoModalEditCanisterSettingsDetail).settings.freezingThreshold)
+	);
 
-	let reservedTCyclesLimit: number = $state();
-	const initReservedTCyclesLimit = (cycles: bigint) =>
-		(reservedTCyclesLimit = Number(formatTCycles(cycles)));
-	run(() => {
-		initReservedTCyclesLimit(settings.reservedCyclesLimit);
-	});
+	let reservedTCyclesLimit: number = $state(
+		Number(
+			formatTCycles((detail as JunoModalEditCanisterSettingsDetail).settings.reservedCyclesLimit)
+		)
+	);
 
-	let logVisibility: CanisterLogVisibility = $state();
-	const initLogVisibility = (visibility: CanisterLogVisibility) => (logVisibility = visibility);
-	run(() => {
-		initLogVisibility(settings.logVisibility);
-	});
+	let logVisibility: CanisterLogVisibility = $state(
+		(detail as JunoModalEditCanisterSettingsDetail).settings.logVisibility
+	);
+
+	let wasmMemoryLimit: number = $state(
+		Number((detail as JunoModalEditCanisterSettingsDetail).settings.wasmMemoryLimit)
+	);
+
+	let memoryAllocation: number = $state(
+		Number((detail as JunoModalEditCanisterSettingsDetail).settings.memoryAllocation)
+	);
+
+	let computeAllocation: number = $state(
+		Number((detail as JunoModalEditCanisterSettingsDetail).settings.computeAllocation)
+	);
 
 	let reservedCyclesLimit: bigint = $derived(BigInt(reservedTCyclesLimit * ONE_TRILLION));
 
-	let wasmMemoryLimit: number = $state();
-	const initWasmMemoryLimit = (memoryLimit: bigint) => (wasmMemoryLimit = Number(memoryLimit));
-	run(() => {
-		initWasmMemoryLimit(settings.wasmMemoryLimit);
-	});
-
-	let memoryAllocation: number = $state();
-	const initMemoryAllocation = (memory: bigint) => (memoryAllocation = Number(memory));
-	run(() => {
-		initMemoryAllocation(settings.memoryAllocation);
-	});
-
-	let computeAllocation: number = $state();
-	const initComputeAllocation = (memory: bigint) => (computeAllocation = Number(memory));
-	run(() => {
-		initComputeAllocation(settings.computeAllocation);
-	});
-
-	let disabled = $state(true);
-	run(() => {
-		disabled =
-			(BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0) &&
+	let disabled = $derived(
+		(BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0) &&
 			reservedCyclesLimit === settings.reservedCyclesLimit &&
 			logVisibility === settings.logVisibility &&
 			BigInt(wasmMemoryLimit ?? 0n) === settings.wasmMemoryLimit &&
 			BigInt(memoryAllocation ?? 0n) === settings.memoryAllocation &&
-			BigInt(computeAllocation ?? 0n) === settings.computeAllocation;
-	});
+			BigInt(computeAllocation ?? 0n) === settings.computeAllocation
+	);
 
 	let steps: 'edit' | 'in_progress' | 'ready' = $state('edit');
 

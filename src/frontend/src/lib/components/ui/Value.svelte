@@ -1,8 +1,10 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
 	interface Props {
 		ref?: undefined | string;
-		label?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		label?: Snippet;
+		children?: Snippet;
 	}
 
 	let { ref = undefined, label, children }: Props = $props();

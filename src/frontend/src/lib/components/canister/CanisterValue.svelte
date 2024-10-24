@@ -2,12 +2,13 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import type { CanisterSyncStatus } from '$lib/types/canister';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		sync: CanisterSyncStatus | undefined;
 		rows?: number;
-		label?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		label?: Snippet;
+		children?: Snippet;
 	}
 
 	let { sync, rows = 1, label, children }: Props = $props();

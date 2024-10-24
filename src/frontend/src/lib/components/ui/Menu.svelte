@@ -2,9 +2,10 @@
 	import Logo from '$lib/components/core/Logo.svelte';
 	import { layoutMenuOpen } from '$lib/stores/layout.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();

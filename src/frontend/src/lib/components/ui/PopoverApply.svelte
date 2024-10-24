@@ -4,13 +4,14 @@
 	const bubble = createBubbler();
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		ariaLabel: string;
 		visible: boolean | undefined;
 		direction?: 'ltr' | 'rtl';
-		icon?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		icon?: Snippet;
+		children?: Snippet;
 	}
 
 	let { ariaLabel, visible = $bindable(), direction = 'rtl', icon, children }: Props = $props();

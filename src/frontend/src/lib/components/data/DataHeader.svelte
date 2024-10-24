@@ -1,13 +1,13 @@
 <script lang="ts" generics="T">
 	import { nonNullish } from '@dfinity/utils';
-	import { getContext } from 'svelte';
+	import { getContext, type Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 
 	interface Props {
-		children?: import('svelte').Snippet;
-		actions?: import('svelte').Snippet;
+		children?: Snippet;
+		actions?: Snippet;
 	}
 
 	let { children, actions }: Props = $props();

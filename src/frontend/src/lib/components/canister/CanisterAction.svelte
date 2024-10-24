@@ -5,10 +5,11 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { CanisterIcStatus } from '$lib/types/canister';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		canister?: CanisterIcStatus | undefined;
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { canister = undefined, children }: Props = $props();

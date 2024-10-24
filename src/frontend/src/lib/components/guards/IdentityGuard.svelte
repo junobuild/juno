@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();

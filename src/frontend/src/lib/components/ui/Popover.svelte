@@ -7,6 +7,7 @@
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		anchor?: HTMLElement | undefined;
@@ -15,7 +16,7 @@
 		center?: boolean;
 		closeButton?: boolean;
 		backdrop?: 'light' | 'dark';
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let {

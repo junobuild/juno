@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, type Snippet } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		segment: 'satellite' | 'mission_control' | 'orbiter';
-		intro?: import('svelte').Snippet;
+		intro?: Snippet;
 	}
 
 	let { segment, intro }: Props = $props();

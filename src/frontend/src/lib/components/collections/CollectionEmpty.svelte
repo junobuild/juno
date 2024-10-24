@@ -6,11 +6,12 @@
 	import { listParamsFilteredStore } from '$lib/stores/data.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		rule: Rule | undefined;
 		collection: string | undefined;
-		filter?: import('svelte').Snippet;
+		filter?: Snippet;
 	}
 
 	let { rule, collection, filter }: Props = $props();

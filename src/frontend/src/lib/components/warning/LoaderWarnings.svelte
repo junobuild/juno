@@ -2,11 +2,12 @@
 	import type { Principal } from '@dfinity/principal';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterWarnings from '$lib/components/canister/CanisterWarnings.svelte';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		canisterId: Principal;
-		cycles?: import('svelte').Snippet;
-		heap?: import('svelte').Snippet;
+		cycles?: Snippet;
+		heap?: Snippet;
 	}
 
 	let { canisterId, cycles, heap }: Props = $props();

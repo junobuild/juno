@@ -1,11 +1,12 @@
 <script lang="ts">
 	import IconArrowOutward from '$lib/components/icons/IconArrowOutward.svelte';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		href: string;
 		ariaLabel?: string;
 		underline?: boolean;
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { href, ariaLabel = '', underline = false, children }: Props = $props();

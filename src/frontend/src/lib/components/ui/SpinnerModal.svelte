@@ -1,10 +1,10 @@
 <script lang="ts">
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { confirmToCloseBrowser } from '$lib/utils/before-unload.utils';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();

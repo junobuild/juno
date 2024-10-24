@@ -2,10 +2,11 @@
 	import IconMore from '$lib/components/icons/IconMore.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		visible?: boolean | undefined;
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { visible = $bindable(false), children }: Props = $props();

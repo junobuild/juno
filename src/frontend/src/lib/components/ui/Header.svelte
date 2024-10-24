@@ -1,7 +1,9 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+
 	interface Props {
 		opaque?: boolean;
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { opaque = false, children }: Props = $props();

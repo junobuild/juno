@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish, debounce } from '@dfinity/utils';
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
@@ -13,7 +13,7 @@
 	import { applyColor } from '$lib/utils/theme.utils';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { stopPropagation } from 'svelte/legacy';
 
 	import Popover from '$lib/components/ui/Popover.svelte';
@@ -8,8 +8,8 @@
 
 	interface Props {
 		visible?: boolean;
-		title?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		title?: Snippet;
+		children?: Snippet;
 	}
 
 	let { visible = $bindable(false), title, children }: Props = $props();

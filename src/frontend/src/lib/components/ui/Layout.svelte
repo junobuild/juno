@@ -3,15 +3,16 @@
 	import { fade } from 'svelte/transition';
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
 	import { layoutTitle } from '$lib/stores/layout.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		centered?: boolean;
 		title?: boolean;
 		topMargin?: 'default' | 'wide';
-		menu?: import('svelte').Snippet;
-		navbar?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
-		footer?: import('svelte').Snippet;
+		menu?: Snippet;
+		navbar?: Snippet;
+		children?: Snippet;
+		footer?: Snippet;
 	}
 
 	let {

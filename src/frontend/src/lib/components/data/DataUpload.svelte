@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { run, stopPropagation } from 'svelte/legacy';
 	import IconUpload from '$lib/components/icons/IconUpload.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
@@ -10,11 +10,11 @@
 
 	interface Props {
 		disabled?: boolean;
-		action?: import('svelte').Snippet;
-		title?: import('svelte').Snippet;
-		description?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
-		confirm?: import('svelte').Snippet;
+		action?: Snippet;
+		title?: Snippet;
+		description?: Snippet;
+		children?: Snippet;
+		confirm?: Snippet;
 	}
 
 	let { disabled = false, action, title, description, children, confirm }: Props = $props();

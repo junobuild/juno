@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { uploadFile } from '@junobuild/core-peer';
-	import { createEventDispatcher, getContext } from 'svelte';
+	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import { authStore } from '$lib/stores/auth.store';
@@ -14,9 +14,9 @@
 
 	interface Props {
 		asset?: AssetNoContent | undefined;
-		action?: import('svelte').Snippet;
-		title?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		action?: Snippet;
+		title?: Snippet;
+		children?: Snippet;
 	}
 
 	let { asset = undefined, action, title, children }: Props = $props();

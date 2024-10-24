@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -20,7 +20,7 @@
 		detail: JunoModalDetail;
 		priceLabel: string;
 		insufficientFunds?: boolean;
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { detail, priceLabel, insufficientFunds = $bindable(true), children }: Props = $props();

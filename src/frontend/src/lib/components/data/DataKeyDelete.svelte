@@ -3,11 +3,12 @@
 	import DataDelete from '$lib/components/data/DataDelete.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
-		title?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		title?: Snippet;
+		children?: Snippet;
 	}
 
 	let { deleteData, title, children }: Props = $props();

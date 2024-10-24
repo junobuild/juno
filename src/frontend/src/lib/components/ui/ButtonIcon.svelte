@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { createBubbler } from 'svelte/legacy';
+	import type { Snippet } from 'svelte';
 
 	const bubble = createBubbler();
 
@@ -7,8 +8,8 @@
 		button?: HTMLButtonElement | undefined;
 		disabled?: boolean;
 		hidden?: boolean;
-		icon?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		icon?: Snippet;
+		children?: Snippet;
 	}
 
 	let {

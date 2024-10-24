@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { createEventDispatcher, getContext, onMount } from 'svelte';
+	import { createEventDispatcher, getContext, onMount, type Snippet } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import Collections from '$lib/components/collections/Collections.svelte';
 	import CollectionsEmpty from '$lib/components/collections/CollectionsEmpty.svelte';
@@ -8,8 +8,8 @@
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 
 	interface Props {
-		children?: import('svelte').Snippet;
-		count?: import('svelte').Snippet;
+		children?: Snippet;
+		count?: Snippet;
 	}
 
 	let { children, count }: Props = $props();

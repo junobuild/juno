@@ -1,11 +1,12 @@
 <script lang="ts">
 	import IconArrowOutward from '$lib/components/icons/IconArrowOutward.svelte';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		href: string;
-		icon?: import('svelte').Snippet;
-		title?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		icon?: Snippet;
+		title?: Snippet;
+		children?: Snippet;
 	}
 
 	let { href, icon, title, children }: Props = $props();

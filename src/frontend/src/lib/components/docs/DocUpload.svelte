@@ -3,7 +3,7 @@
 	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { setDoc } from '@junobuild/core-peer';
 	import { nanoid } from 'nanoid';
-	import { createEventDispatcher, getContext } from 'svelte';
+	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
@@ -20,9 +20,9 @@
 	interface Props {
 		docKey?: string | undefined;
 		doc?: Doc | undefined;
-		action?: import('svelte').Snippet;
-		title?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		action?: Snippet;
+		title?: Snippet;
+		children?: Snippet;
 	}
 
 	let { docKey = undefined, doc = undefined, action, title, children }: Props = $props();

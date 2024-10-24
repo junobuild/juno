@@ -2,12 +2,13 @@
 	import type { Principal } from '@dfinity/principal';
 	import DataDelete from '$lib/components/data/DataDelete.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
-		button?: import('svelte').Snippet;
-		title?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		button?: Snippet;
+		title?: Snippet;
+		children?: Snippet;
 	}
 
 	let { deleteData, button, title, children }: Props = $props();

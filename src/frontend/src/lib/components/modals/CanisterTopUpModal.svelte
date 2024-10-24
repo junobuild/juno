@@ -2,7 +2,7 @@
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher, onMount, type Snippet } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
 	import { topUp } from '$lib/api/mission-control.api';
@@ -28,8 +28,8 @@
 		canisterId: Principal;
 		balance: bigint;
 		accountIdentifier: AccountIdentifier | undefined;
-		outro?: import('svelte').Snippet;
-		intro?: import('svelte').Snippet;
+		outro?: Snippet;
+		intro?: Snippet;
 	}
 
 	let { canisterId, balance, accountIdentifier, outro, intro }: Props = $props();

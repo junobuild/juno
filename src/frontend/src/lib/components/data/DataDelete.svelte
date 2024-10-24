@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
-	import { getContext } from 'svelte';
+	import { getContext, type Snippet } from 'svelte';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 	import { busy } from '$lib/stores/busy.store';
@@ -15,9 +15,9 @@
 
 	interface Props {
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
-		button?: import('svelte').Snippet;
-		title?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		button?: Snippet;
+		title?: Snippet;
+		children?: Snippet;
 	}
 
 	let { deleteData, button, title, children }: Props = $props();

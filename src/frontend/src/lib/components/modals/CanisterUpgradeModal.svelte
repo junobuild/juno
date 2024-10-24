@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -19,7 +19,7 @@
 		build?: BuildType | undefined;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
-		intro?: import('svelte').Snippet;
+		intro?: Snippet;
 	}
 
 	let {

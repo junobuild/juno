@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
 	import { layoutMenuOpen } from '$lib/stores/layout.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		menu?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		menu?: Snippet;
+		children?: Snippet;
 	}
 
 	let { menu, children }: Props = $props();

@@ -3,9 +3,10 @@
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteStore } from '$lib/stores/satellite.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();

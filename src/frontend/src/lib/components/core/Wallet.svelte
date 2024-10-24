@@ -2,7 +2,7 @@
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, jsonReviver } from '@dfinity/utils';
-	import { onDestroy, onMount } from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
@@ -12,7 +12,7 @@
 		missionControlId: Principal;
 		balance?: bigint | undefined;
 		transactions?: TransactionWithId[];
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let {

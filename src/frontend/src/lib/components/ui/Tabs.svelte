@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { getContext } from 'svelte';
+	import { getContext, type Snippet } from 'svelte';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -9,8 +9,8 @@
 
 	interface Props {
 		help: string;
-		info?: import('svelte').Snippet;
-		children?: import('svelte').Snippet;
+		info?: Snippet;
+		children?: Snippet;
 	}
 
 	let { help, info, children }: Props = $props();

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { onMount } from 'svelte';
+	import { onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { browser } from '$app/environment';
 	import Overlays from '$lib/components/core/Overlays.svelte';
@@ -14,7 +14,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();

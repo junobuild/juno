@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { busy } from '$lib/stores/busy.store';
@@ -12,8 +12,8 @@
 	interface Props {
 		setFn: (params: { missionControlId: Principal; canisterId: Principal }) => Promise<void>;
 		visible: boolean | undefined;
-		title?: import('svelte').Snippet;
-		input?: import('svelte').Snippet;
+		title?: Snippet;
+		input?: Snippet;
 	}
 
 	let { setFn, visible = $bindable(), title, input }: Props = $props();

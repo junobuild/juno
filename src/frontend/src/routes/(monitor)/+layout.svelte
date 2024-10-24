@@ -3,9 +3,10 @@
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();

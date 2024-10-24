@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher, onMount, type Snippet } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -17,7 +17,7 @@
 		newerReleases: string[];
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		back?: boolean;
-		intro?: import('svelte').Snippet;
+		intro?: Snippet;
 	}
 
 	let { currentVersion, newerReleases, segment, back = false, intro }: Props = $props();

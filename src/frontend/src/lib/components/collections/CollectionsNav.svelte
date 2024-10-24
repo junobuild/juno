@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher, getContext } from 'svelte';
+	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconHome from '$lib/components/icons/IconHome.svelte';
@@ -8,7 +8,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();

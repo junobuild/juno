@@ -6,9 +6,10 @@
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: import('svelte').Snippet;
+		children?: Snippet;
 	}
 
 	let { children }: Props = $props();

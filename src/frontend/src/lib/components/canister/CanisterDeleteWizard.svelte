@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
 	import { goto } from '$app/navigation';
@@ -49,7 +49,7 @@
 		currentCycles - (cycles ?? 0n) > 0 ? currentCycles - (cycles ?? 0n) : 0n
 	);
 
-	let validConfirm = $derived(cycles > 0 && cycles <= currentCycles);
+	let validConfirm = $derived(nonNullish(cycles) && cycles > 0 && cycles <= currentCycles);
 
 	const onSubmit = async () => {
 		if (!$authSignedInStore) {

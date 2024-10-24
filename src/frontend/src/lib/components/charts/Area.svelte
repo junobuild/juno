@@ -5,6 +5,8 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 
+	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
+	// @ts-ignore
 	const { data, xGet, yGet, xScale, yScale, extents } = getContext('LayerCake');
 
 	interface Props {

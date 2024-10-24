@@ -1,10 +1,8 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
-	import { run } from 'svelte/legacy';
 	import IconIC from '$lib/components/icons/IconIC.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import type { Provider, User, UserData } from '$lib/types/user';
+	import type { User } from '$lib/types/user';
 	import { formatToDate } from '$lib/utils/date.utils';
 
 	interface Props {
@@ -13,19 +11,9 @@
 
 	let { user }: Props = $props();
 
-	let owner: Principal = $state();
-	let created_at: bigint = $state();
-	let updated_at: bigint = $state();
-	let data: UserData = $state();
+	let { owner, created_at, updated_at, data } = $derived(user);
 
-	run(() => {
-		({ owner, created_at, updated_at, data } = user);
-	});
-
-	let provider: Provider | undefined = $state();
-	run(() => {
-		({ provider } = data);
-	});
+	let provider = $derived(data);
 </script>
 
 <tr>

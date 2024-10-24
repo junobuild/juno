@@ -4,6 +4,12 @@
 	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
+	interface Props {
+		children?: import('svelte').Snippet;
+		actions?: import('svelte').Snippet;
+	}
+
+	let { children, actions }: Props = $props();
 
 	// eslint-disable-next-line no-undef
 	const { store }: DataContext<T> = getContext<DataContext<T>>(DATA_CONTEXT_KEY);
@@ -11,10 +17,10 @@
 
 {#if nonNullish($store?.data)}
 	<div class="actions" transition:fade>
-		<span><slot /></span>
+		<span>{@render children?.()}</span>
 
 		<DataActions>
-			<slot name="actions" />
+			{@render actions?.()}
 		</DataActions>
 	</div>
 {/if}

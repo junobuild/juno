@@ -12,15 +12,20 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { container } from '$lib/utils/juno.utils';
 
-	export let asset: AssetNoContent | undefined = undefined;
+	interface Props {
+		asset?: AssetNoContent | undefined;
+		action?: import('svelte').Snippet;
+		title?: import('svelte').Snippet;
+		children?: import('svelte').Snippet;
+	}
+
+	let { asset = undefined, action, title, children }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
+	let collection: string | undefined = $derived($store.rule?.[0]);
 
-	let satelliteId: Principal;
-	$: satelliteId = $store.satelliteId;
+	let satelliteId: Principal = $derived($store.satelliteId);
 
 	const dispatch = createEventDispatcher();
 
@@ -81,8 +86,16 @@
 </script>
 
 <DataUpload on:junoUpload={upload}>
-	<slot name="action" slot="action" />
-	<slot name="title" slot="title" />
-	<slot slot="description" />
-	<svelte:fragment slot="confirm">{$i18n.asset.upload}</svelte:fragment>
+	{#snippet action()}
+		{@render action?.()}
+	{/snippet}
+	{#snippet title()}
+		{@render title?.()}
+	{/snippet}
+	{#snippet description()}
+		{@render children?.()}
+	{/snippet}
+	{#snippet confirm()}
+		{$i18n.asset.upload}
+	{/snippet}
 </DataUpload>

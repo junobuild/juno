@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -28,22 +30,24 @@
 		labelKey: 'analytics.dashboard'
 	};
 
-	let tabs: Tab[] = [tabDashboard];
-	$: tabs = [
-		tabDashboard,
-		...(nonNullish($orbiterStore)
-			? [
-					{
-						id: Symbol('2'),
-						labelKey: 'analytics.overview'
-					},
-					{
-						id: Symbol('3'),
-						labelKey: 'core.settings'
-					}
-				]
-			: [])
-	];
+	let tabs: Tab[] = $state([tabDashboard]);
+	run(() => {
+		tabs = [
+			tabDashboard,
+			...(nonNullish($orbiterStore)
+				? [
+						{
+							id: Symbol('2'),
+							labelKey: 'analytics.overview'
+						},
+						{
+							id: Symbol('3'),
+							labelKey: 'core.settings'
+						}
+					]
+				: [])
+		];
+	});
 
 	const store = writable<TabsStore>({
 		tabId: initTabId(tabs),
@@ -54,22 +58,28 @@
 		store
 	});
 
-	$: store.set({
-		tabId: initTabId(tabs),
-		tabs
+	run(() => {
+		store.set({
+			tabId: initTabId(tabs),
+			tabs
+		});
 	});
 
 	// Load data
 
-	$: $missionControlStore,
-		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	run(() => {
+		$missionControlStore,
+			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	});
 
-	$: $orbiterStore,
-		(async () => await loadOrbiterVersion({ orbiter: $orbiterStore, reload: false }))();
+	run(() => {
+		$orbiterStore,
+			(async () => await loadOrbiterVersion({ orbiter: $orbiterStore, reload: false }))();
+	});
 </script>
 
 <svelte:window
-	on:junoReloadVersions={async () =>
+	onjunoReloadVersions={async () =>
 		await loadOrbiterVersion({ orbiter: $orbiterStore, reload: true })}
 />
 
@@ -79,11 +89,11 @@
 			? 'https://juno.build/docs/build/analytics'
 			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
-		<svelte:fragment slot="info">
+		{#snippet info()}
 			{#if $authSignedInStore}
 				<Warnings />
 			{/if}
-		</svelte:fragment>
+		{/snippet}
 
 		<MissionControlGuard>
 			{#if $store.tabId === $store.tabs[0].id}

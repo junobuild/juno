@@ -12,7 +12,11 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
 
-	export let missionControlId: Principal;
+	interface Props {
+		missionControlId: Principal;
+	}
+
+	let { missionControlId }: Props = $props();
 
 	const list = (): Promise<[Principal, Controller][]> =>
 		listMissionControlControllers({ missionControlId, identity: $authStore.identity });

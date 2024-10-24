@@ -1,9 +1,15 @@
 <script lang="ts">
-	export let ref: undefined | string = undefined;
+	interface Props {
+		ref?: undefined | string;
+		label?: import('svelte').Snippet;
+		children?: import('svelte').Snippet;
+	}
+
+	let { ref = undefined, label, children }: Props = $props();
 </script>
 
-<label for={ref}><slot name="label" />:</label>
-<div><slot /></div>
+<label for={ref}>{@render label?.()}:</label>
+<div>{@render children?.()}</div>
 
 <style lang="scss">
 	label {

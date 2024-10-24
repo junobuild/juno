@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { TransactionWithId, Transaction } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
@@ -13,28 +15,29 @@
 		transactionTo
 	} from '$lib/utils/wallet.utils';
 
-	export let missionControlId: Principal;
-	export let transactionWithId: TransactionWithId;
+	interface Props {
+		missionControlId: Principal;
+		transactionWithId: TransactionWithId;
+	}
 
-	let id: bigint;
-	let transaction: Transaction;
+	let { missionControlId, transactionWithId }: Props = $props();
 
-	$: ({ id, transaction } = transactionWithId);
+	let id: bigint = $state();
+	let transaction: Transaction = $state();
 
-	let from: string;
-	$: from = transactionFrom(transaction);
+	run(() => {
+		({ id, transaction } = transactionWithId);
+	});
 
-	let to: string;
-	$: to = transactionTo(transaction);
+	let from: string = $derived(transactionFrom(transaction));
 
-	let timestamp: bigint | undefined;
-	$: timestamp = transactionTimestamp(transaction);
+	let to: string = $derived(transactionTo(transaction));
 
-	let memo: string;
-	$: memo = transactionMemo({ transaction, missionControlId });
+	let timestamp: bigint | undefined = $derived(transactionTimestamp(transaction));
 
-	let amount: string | undefined;
-	$: amount = transactionAmount(transaction);
+	let memo: string = $derived(transactionMemo({ transaction, missionControlId }));
+
+	let amount: string | undefined = $derived(transactionAmount(transaction));
 </script>
 
 <tr in:fade>

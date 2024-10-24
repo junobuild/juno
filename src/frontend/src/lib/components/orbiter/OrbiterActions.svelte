@@ -9,9 +9,13 @@
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 
-	export let orbiter: Orbiter;
+	interface Props {
+		orbiter: Orbiter;
+	}
 
-	let canister: CanisterIcStatus | undefined = undefined;
+	let { orbiter }: Props = $props();
+
+	let canister: CanisterIcStatus | undefined = $state(undefined);
 
 	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
 		if (syncCanister.id !== orbiter.orbiter_id.toText()) {
@@ -21,7 +25,7 @@
 		canister = syncCanister;
 	};
 
-	let visible: boolean | undefined;
+	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
 	const onCanisterAction = (type: 'delete_orbiter' | 'transfer_cycles_orbiter') => {
@@ -39,7 +43,7 @@
 	};
 </script>
 
-<svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
+<svelte:window onjunoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
 
 <Actions bind:visible>
 	<TopUp type="topup_orbiter" on:junoTopUp={close} />

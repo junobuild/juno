@@ -1,6 +1,10 @@
 <!-- source: https://fonts.google.com/icons?selected=Material%20Symbols%20Rounded%3Aupload%3AFILL%400%3Bwght%40400%3BGRAD%400%3Bopsz%4024 -->
 <script lang="ts">
-	export let size = '24px';
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '24px' }: Props = $props();
 </script>
 
 <svg

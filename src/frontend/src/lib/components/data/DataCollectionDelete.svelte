@@ -3,14 +3,25 @@
 	import DataDelete from '$lib/components/data/DataDelete.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+	interface Props {
+		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+		button?: import('svelte').Snippet;
+		title?: import('svelte').Snippet;
+		children?: import('svelte').Snippet;
+	}
+
+	let { deleteData, button, title, children }: Props = $props();
 </script>
 
 <DataDelete {deleteData}>
-	<slot name="button" slot="button" />
-	<slot name="title" slot="title" />
+	{#snippet button()}
+		{@render button?.()}
+	{/snippet}
+	{#snippet title()}
+		{@render title?.()}
+	{/snippet}
 
-	<p><slot /></p>
+	<p>{@render children?.()}</p>
 
 	<p>{$i18n.core.are_you_sure}</p>
 </DataDelete>

@@ -8,7 +8,11 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SetControllerParams } from '$lib/types/controllers';
 
-	export let orbiterId: Principal;
+	interface Props {
+		orbiterId: Principal;
+	}
+
+	let { orbiterId }: Props = $props();
 
 	const list = (): Promise<[Principal, Controller][]> =>
 		listOrbiterControllers({ orbiterId, identity: $authStore.identity });

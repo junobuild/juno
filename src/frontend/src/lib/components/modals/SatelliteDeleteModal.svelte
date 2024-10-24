@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Principal } from '@dfinity/principal';
 	import { createEventDispatcher } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -12,20 +14,30 @@
 	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let satellite: Satellite;
-	let currentCycles: bigint;
+	let { detail }: Props = $props();
 
-	$: ({ satellite, cycles: currentCycles } = detail as JunoModalDeleteSatelliteDetail);
+	let satellite: Satellite = $state();
+	let currentCycles: bigint = $state();
 
-	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
-	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
-		await deleteSatellite({
-			...params,
-			satelliteId: satellite.satellite_id,
-			identity: $authStore.identity
-		});
+	run(() => {
+		({ satellite, cycles: currentCycles } = detail as JunoModalDeleteSatelliteDetail);
+	});
+
+	let deleteFn: (params: {
+		missionControlId: Principal;
+		cyclesToDeposit: bigint;
+	}) => Promise<void> = $derived(
+		async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
+			await deleteSatellite({
+				...params,
+				satelliteId: satellite.satellite_id,
+				identity: $authStore.identity
+			})
+	);
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
@@ -48,7 +60,7 @@
 			{$i18n.canisters.delete_custom_domain}
 		</p>
 
-		<button on:click={close}>{$i18n.core.close}</button>
+		<button onclick={close}>{$i18n.core.close}</button>
 	{:else}
 		<CanisterDeleteWizard {deleteFn} {currentCycles} on:junoClose segment="satellite" />
 	{/if}

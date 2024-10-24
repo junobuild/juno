@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Principal } from '@dfinity/principal';
 	import { fade } from 'svelte/transition';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
@@ -7,14 +9,20 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let missionControlId: Principal;
-	export let visible = false;
+	interface Props {
+		missionControlId: Principal;
+		visible?: boolean;
+	}
+
+	let { missionControlId, visible = $bindable(false) }: Props = $props();
 
 	const accountIdentifier = getAccountIdentifier(missionControlId);
 
-	let steps: 'options' | 'wallet_id' | 'account_identifier' = 'options';
+	let steps: 'options' | 'wallet_id' | 'account_identifier' = $state('options');
 
-	$: visible, (steps = 'options');
+	run(() => {
+		visible, (steps = 'options');
+	});
 </script>
 
 <Popover bind:visible center={true} backdrop="dark">
@@ -39,11 +47,11 @@
 			</div>
 		{:else}
 			<div class="options">
-				<button on:click={() => (steps = 'wallet_id')}
+				<button onclick={() => (steps = 'wallet_id')}
 					><IconQRCode /> {$i18n.wallet.wallet_id}</button
 				>
 
-				<button on:click={() => (steps = 'account_identifier')}
+				<button onclick={() => (steps = 'account_identifier')}
 					><IconQRCode /> {$i18n.wallet.account_identifier}</button
 				>
 

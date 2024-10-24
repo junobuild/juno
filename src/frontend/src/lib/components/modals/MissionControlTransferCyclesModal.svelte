@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import { depositCycles } from '$lib/api/mission-control.api';
@@ -7,19 +9,27 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let currentCycles: bigint;
+	let { detail }: Props = $props();
 
-	$: ({ cycles: currentCycles } = detail as JunoModalCycles);
+	let currentCycles: bigint = $state();
 
-	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
-	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
-		await depositCycles({
-			...params,
-			missionControlId: $missionControlStore!,
-			identity: $authStore.identity
-		});
+	run(() => {
+		({ cycles: currentCycles } = detail as JunoModalCycles);
+	});
+
+	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void> =
+		$derived(
+			async (params: { cycles: bigint; destinationId: Principal }) =>
+				await depositCycles({
+					...params,
+					missionControlId: $missionControlStore!,
+					identity: $authStore.identity
+				})
+		);
 </script>
 
 {#if nonNullish($missionControlStore)}

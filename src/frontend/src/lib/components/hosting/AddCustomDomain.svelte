@@ -4,8 +4,12 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { emit } from '$lib/utils/events.utils';
 
-	export let satellite: Satellite;
-	export let config: AuthenticationConfig | undefined = undefined;
+	interface Props {
+		satellite: Satellite;
+		config?: AuthenticationConfig | undefined;
+	}
+
+	let { satellite, config = undefined }: Props = $props();
 
 	const openAddCustomDomain = () => {
 		emit({
@@ -18,7 +22,7 @@
 	};
 </script>
 
-<button on:click={openAddCustomDomain}>{$i18n.hosting.add_custom_domain}</button>
+<button onclick={openAddCustomDomain}>{$i18n.hosting.add_custom_domain}</button>
 
 <style lang="scss">
 	button {

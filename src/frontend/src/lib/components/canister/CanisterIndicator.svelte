@@ -4,23 +4,25 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterStatus } from '$lib/types/canister';
 
-	export let data: CanisterData | undefined = undefined;
+	interface Props {
+		data?: CanisterData | undefined;
+	}
 
-	let warning: boolean;
-	$: warning = data?.warning?.cycles === true ?? false;
+	let { data = undefined }: Props = $props();
 
-	let status: CanisterStatus | undefined;
-	$: status = data?.canister?.status;
+	let warning: boolean = $derived(data?.warning?.cycles === true ?? false);
+
+	let status: CanisterStatus | undefined = $derived(data?.canister?.status);
 </script>
 
 {#if isNullish(status)}
-	<div in:fade />
+	<div in:fade></div>
 {:else if warning || status === 'stopping'}
-	<div class="warning" in:fade aria-label={$i18n.canisters.warning_indicator} />
+	<div class="warning" in:fade aria-label={$i18n.canisters.warning_indicator}></div>
 {:else if status === 'stopped'}
-	<div class="stopped" in:fade />
+	<div class="stopped" in:fade></div>
 {:else}
-	<div class="running" in:fade />
+	<div class="running" in:fade></div>
 {/if}
 
 <style lang="scss">

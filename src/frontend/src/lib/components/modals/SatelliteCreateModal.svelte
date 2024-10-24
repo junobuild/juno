@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
@@ -23,11 +25,15 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let insufficientFunds = true;
+	let { detail }: Props = $props();
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let insufficientFunds = $state(true);
+
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 	let satellite: Satellite | undefined = undefined;
 
 	const onSubmit = async () => {
@@ -76,8 +82,8 @@
 		close();
 	};
 
-	let satelliteName: string | undefined = undefined;
-	let subnetId: PrincipalText | undefined;
+	let satelliteName: string | undefined = $state(undefined);
+	let subnetId: PrincipalText | undefined = $state();
 </script>
 
 <Modal on:junoClose>
@@ -86,7 +92,7 @@
 
 		<div class="msg">
 			<p>{$i18n.satellites.ready}</p>
-			<button on:click={navigate}>{$i18n.core.continue}</button>
+			<button onclick={navigate}>{$i18n.core.continue}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
@@ -105,9 +111,11 @@
 			{detail}
 			priceLabel={$i18n.satellites.create_satellite_price}
 		>
-			<form on:submit|preventDefault={onSubmit}>
+			<form onsubmit={preventDefault(onSubmit)}>
 				<Value>
-					<svelte:fragment slot="label">{$i18n.satellites.satellite_name}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.satellites.satellite_name}
+					{/snippet}
 					<input
 						bind:value={satelliteName}
 						type="text"

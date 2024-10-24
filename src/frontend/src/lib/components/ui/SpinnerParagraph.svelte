@@ -1,8 +1,13 @@
 <script lang="ts">
 	import Spinner from '$lib/components/ui/Spinner.svelte';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 </script>
 
-<p class="label loading"><slot /> <Spinner inline /></p>
+<p class="label loading">{@render children?.()} <Spinner inline /></p>
 
 <style lang="scss">
 	.loading {

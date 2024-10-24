@@ -6,15 +6,15 @@
 	import { theme } from '$lib/stores/theme.store';
 	import { Theme } from '$lib/types/theme';
 
-	let dark: boolean;
-	$: dark = $theme === Theme.DARK;
+	let dark: boolean = $derived($theme === Theme.DARK);
 
-	let icon: ComponentType;
-	$: icon = dark ? IconLightOn : IconLightOff;
+	let icon: ComponentType = $derived(dark ? IconLightOn : IconLightOff);
+
+	const SvelteComponent = $derived(icon);
 </script>
 
-<button class="text" on:click={() => theme.select(dark ? Theme.LIGHT : Theme.DARK)}>
-	<svelte:component this={icon} />
+<button class="text" onclick={() => theme.select(dark ? Theme.LIGHT : Theme.DARK)}>
+	<SvelteComponent />
 	<span>
 		{#if dark}
 			{$i18n.core.light_on}

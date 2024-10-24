@@ -13,10 +13,14 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let canister: CanisterIcStatus;
-	export let segment: 'satellite' | 'orbiter';
+	interface Props {
+		canister: CanisterIcStatus;
+		segment: 'satellite' | 'orbiter';
+	}
 
-	let visible = false;
+	let { canister, segment }: Props = $props();
+
+	let visible = $state(false);
 
 	const dispatch = createEventDispatcher();
 
@@ -64,11 +68,12 @@
 	const close = () => (visible = false);
 </script>
 
-<button on:click={() => (visible = true)} class="menu"><IconStop /> {$i18n.core.stop}</button>
+<button onclick={() => (visible = true)} class="menu"><IconStop /> {$i18n.core.stop}</button>
 
 <Confirmation bind:visible on:junoYes={stop} on:junoNo={close}>
-	<svelte:fragment slot="title"><Text key="canisters.stop_title" value={segment} /></svelte:fragment
-	>
+	{#snippet title()}
+		<Text key="canisters.stop_title" value={segment} />
+	{/snippet}
 
 	<p><Text key="canisters.stop_forewords" value={segment} /></p>
 

@@ -1,12 +1,20 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { AnalyticsTop10PageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
 
-	export let pageViews: AnalyticsPageViews;
+	interface Props {
+		pageViews: AnalyticsPageViews;
+	}
 
-	let top10: AnalyticsTop10PageViews;
-	$: ({ top10 } = pageViews);
+	let { pageViews }: Props = $props();
+
+	let top10: AnalyticsTop10PageViews = $state();
+	run(() => {
+		({ top10 } = pageViews);
+	});
 </script>
 
 {#if top10.pages.length > 0}

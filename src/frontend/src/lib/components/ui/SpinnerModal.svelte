@@ -2,6 +2,11 @@
 	import { onDestroy, onMount } from 'svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { confirmToCloseBrowser } from '$lib/utils/before-unload.utils';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	onMount(() => confirmToCloseBrowser(true));
 	onDestroy(() => confirmToCloseBrowser(false));
@@ -9,7 +14,7 @@
 
 <div class="msg">
 	<Spinner inline />
-	<slot />
+	{@render children?.()}
 </div>
 
 <style lang="scss">

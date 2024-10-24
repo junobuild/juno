@@ -3,7 +3,7 @@
 	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
 	import type { Languages } from '$lib/types/languages';
 
-	let lang: Languages;
+	let lang: Languages = $state();
 </script>
 
 <div class="actions">

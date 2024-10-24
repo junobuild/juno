@@ -22,37 +22,34 @@
 	const { store: docsStore, resetData }: DataContext<Doc> =
 		getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
+	let collection: string | undefined = $derived($store.rule?.[0]);
 
-	let key: string | undefined;
-	$: key = $docsStore?.key;
+	let key: string | undefined = $derived($docsStore?.key);
 
 	/**
 	 * Delete data
 	 */
 
-	let doc: Doc | undefined;
-	$: doc = $docsStore?.data;
+	let doc: Doc | undefined = $derived($docsStore?.data);
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
-	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
-		if (isNullish(key) || key === '') {
-			toasts.error({
-				text: $i18n.errors.key_invalid
+	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
+		$derived(async (params: { collection: string; satelliteId: Principal }) => {
+			if (isNullish(key) || key === '') {
+				toasts.error({
+					text: $i18n.errors.key_invalid
+				});
+				return;
+			}
+
+			await deleteDoc({
+				...params,
+				key,
+				doc,
+				identity: $authStore.identity
 			});
-			return;
-		}
 
-		await deleteDoc({
-			...params,
-			key,
-			doc,
-			identity: $authStore.identity
+			resetData();
 		});
-
-		resetData();
-	};
 
 	const download = async () => {
 		if (isNullish(doc)) {
@@ -87,10 +84,14 @@
 	<DataHeader>
 		{key ?? ''}
 
-		<svelte:fragment slot="actions">
+		{#snippet actions()}
 			<DocUpload on:junoUploaded={reload} {doc} docKey={key}>
-				<svelte:fragment slot="action">{$i18n.document.replace_document}</svelte:fragment>
-				<svelte:fragment slot="title">{$i18n.document.replace_document}</svelte:fragment>
+				{#snippet action()}
+					{$i18n.document.replace_document}
+				{/snippet}
+				{#snippet title()}
+					{$i18n.document.replace_document}
+				{/snippet}
 				<Html
 					text={i18nFormat($i18n.document.replace_description, [
 						{
@@ -101,15 +102,17 @@
 				/>
 			</DocUpload>
 
-			<button class="menu" type="button" on:click={download}
+			<button class="menu" type="button" onclick={download}
 				><IconDownload size="20px" /> {$i18n.document.download_document}</button
 			>
 
 			<DataKeyDelete {deleteData}>
-				<svelte:fragment slot="title">{$i18n.document.delete}</svelte:fragment>
+				{#snippet title()}
+					{$i18n.document.delete}
+				{/snippet}
 				{key}
 			</DataKeyDelete>
-		</svelte:fragment>
+		{/snippet}
 	</DataHeader>
 </div>
 

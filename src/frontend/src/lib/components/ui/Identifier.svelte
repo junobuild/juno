@@ -2,12 +2,17 @@
 	import Copy from '$lib/components/ui/Copy.svelte';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 
-	export let identifier: string;
-	export let shorten = true;
-	export let small = true;
+	interface Props {
+		identifier: string;
+		shorten?: boolean;
+		small?: boolean;
+	}
 
-	let shortIdentifier: string;
-	$: shortIdentifier = shorten ? shortenWithMiddleEllipsis(identifier) : identifier;
+	let { identifier, shorten = true, small = true }: Props = $props();
+
+	let shortIdentifier: string = $derived(
+		shorten ? shortenWithMiddleEllipsis(identifier) : identifier
+	);
 </script>
 
 <p class:small>

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import { deleteOrbiter } from '$lib/api/mission-control.api';
@@ -8,19 +10,29 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let currentCycles: bigint;
+	let { detail }: Props = $props();
 
-	$: ({ cycles: currentCycles } = detail as JunoModalCycles);
+	let currentCycles: bigint = $state();
 
-	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
-	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
-		await deleteOrbiter({
-			...params,
-			orbiterId: $orbiterStore!.orbiter_id,
-			identity: $authStore.identity
-		});
+	run(() => {
+		({ cycles: currentCycles } = detail as JunoModalCycles);
+	});
+
+	let deleteFn: (params: {
+		missionControlId: Principal;
+		cyclesToDeposit: bigint;
+	}) => Promise<void> = $derived(
+		async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
+			await deleteOrbiter({
+				...params,
+				orbiterId: $orbiterStore!.orbiter_id,
+				identity: $authStore.identity
+			})
+	);
 </script>
 
 {#if nonNullish($orbiterStore)}

@@ -3,17 +3,24 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import type { CanisterSyncStatus } from '$lib/types/canister';
 
-	export let sync: CanisterSyncStatus | undefined;
-	export let rows = 1;
+	interface Props {
+		sync: CanisterSyncStatus | undefined;
+		rows?: number;
+		label?: import('svelte').Snippet;
+		children?: import('svelte').Snippet;
+	}
 
-	let paragraphs: number[];
-	$: paragraphs = Array.from({ length: rows }, (_, i) => i);
+	let { sync, rows = 1, label, children }: Props = $props();
+
+	let paragraphs: number[] = $derived(Array.from({ length: rows }, (_, i) => i));
 </script>
 
 <Value>
-	<slot slot="label" name="label" />
+	{#snippet label()}
+		{@render label?.()}
+	{/snippet}
 	{#if ['synced', 'syncing'].includes(sync ?? '')}
-		<slot />
+		{@render children?.()}
 	{:else if sync === 'loading'}
 		{#each paragraphs as _}
 			<p><SkeletonText /></p>

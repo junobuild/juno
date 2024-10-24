@@ -5,8 +5,7 @@
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	let quotes: string[];
-	$: quotes = [
+	let quotes: string[] = $derived([
 		$i18n.sign_in.quote_1,
 		$i18n.sign_in.quote_2,
 		$i18n.sign_in.quote_3,
@@ -17,10 +16,9 @@
 		$i18n.sign_in.quote_8,
 		$i18n.sign_in.quote_9,
 		$i18n.sign_in.quote_10
-	];
+	]);
 
-	let title: string;
-	$: title = quotes[Math.floor(Math.random() * quotes.length)];
+	let title: string = $derived(quotes[Math.floor(Math.random() * quotes.length)]);
 </script>
 
 <div class="container">
@@ -31,7 +29,7 @@
 	</div>
 
 	<div class="sign-in">
-		<button on:click={async () => await signIn({})} disabled={$isBusy}
+		<button onclick={async () => await signIn({})} disabled={$isBusy}
 			><IconICMonochrome size="20px" />
 			<span>{$i18n.sign_in.internet_identity}</span></button
 		>

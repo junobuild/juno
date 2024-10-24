@@ -4,7 +4,11 @@
 	import CanisterSettings from '$lib/components/canister/CanisterSettings.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let orbiterId: Principal;
+	interface Props {
+		orbiterId: Principal;
+	}
+
+	let { orbiterId }: Props = $props();
 </script>
 
 <div>

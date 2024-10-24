@@ -8,7 +8,7 @@
 <button
 	class="primary"
 	class:active={$layoutSatellites === SatellitesLayout.CARDS}
-	on:click={() => layoutSatellites.select(SatellitesLayout.CARDS)}
+	onclick={() => layoutSatellites.select(SatellitesLayout.CARDS)}
 >
 	<IconCards />
 </button>
@@ -16,7 +16,7 @@
 <button
 	class="primary"
 	class:active={$layoutSatellites === SatellitesLayout.LIST}
-	on:click={() => layoutSatellites.select(SatellitesLayout.LIST)}
+	onclick={() => layoutSatellites.select(SatellitesLayout.LIST)}
 >
 	<IconList />
 </button>

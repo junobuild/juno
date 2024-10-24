@@ -6,6 +6,12 @@
 	import DataNav from '$lib/components/data/DataNav.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
+	interface Props {
+		children?: import('svelte').Snippet;
+		count?: import('svelte').Snippet;
+	}
+
+	let { children, count }: Props = $props();
 
 	// Rules
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
@@ -40,13 +46,13 @@
 
 	<Collections on:junoCollectionEdit={({ detail }) => selectionCollection(detail)} />
 
-	<slot />
+	{@render children?.()}
 
 	<CollectionsEmpty on:click={() => selectTab()} />
 </section>
 
 <div class="count">
-	<slot name="count" />
+	{@render count?.()}
 </div>
 
 <style lang="scss">

@@ -11,11 +11,15 @@
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
+
+	let { satellite }: Props = $props();
 
 	let detail = { satellite };
 
-	let canister: CanisterIcStatus | undefined = undefined;
+	let canister: CanisterIcStatus | undefined = $state(undefined);
 
 	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
 		if (syncCanister.id !== satellite.satellite_id.toText()) {
@@ -25,7 +29,7 @@
 		canister = syncCanister;
 	};
 
-	let visible: boolean | undefined;
+	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
 	const onTransferCycles = () => {
@@ -72,7 +76,7 @@
 	};
 </script>
 
-<svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
+<svelte:window onjunoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
 
 <Actions bind:visible>
 	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />

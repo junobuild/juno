@@ -9,8 +9,12 @@
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
 
-	export let type: 'topup_satellite' | 'topup_mission_control' | 'topup_orbiter';
-	export let detail: JunoModalDetail | undefined = undefined;
+	interface Props {
+		type: 'topup_satellite' | 'topup_mission_control' | 'topup_orbiter';
+		detail?: JunoModalDetail | undefined;
+	}
+
+	let { type, detail = undefined }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 
@@ -42,4 +46,4 @@
 	};
 </script>
 
-<button on:click={topUp} class="menu"><IconPublish /> {$i18n.canisters.top_up}</button>
+<button onclick={topUp} class="menu"><IconPublish /> {$i18n.canisters.top_up}</button>

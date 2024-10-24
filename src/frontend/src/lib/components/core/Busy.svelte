@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { stopPropagation } from 'svelte/legacy';
+
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
@@ -22,9 +24,9 @@
 		tabindex="-1"
 		aria-label={$i18n.core.close}
 		transition:fade
-		on:click={close}
+		onclick={close}
 		class:close={$busy.close}
-		on:keypress={($event) => handleKeyPress({ $event, callback: close })}
+		onkeypress={($event) => handleKeyPress({ $event, callback: close })}
 	>
 		<div class="content">
 			{#if $busy.spinner}
@@ -34,7 +36,7 @@
 			{/if}
 
 			{#if $busy.close}
-				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} class="text close"
+				<button onclick={stopPropagation(close)} aria-label={$i18n.core.close} class="text close"
 					><IconClose size="12px" /> {$i18n.core.cancel}</button
 				>
 			{/if}

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { browser } from '$app/environment';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
@@ -11,6 +12,11 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	const init = async () => await Promise.all([i18n.init(), syncAuthStore()]);
 
@@ -52,21 +58,25 @@
 		}
 	};
 
-	$: (async () => await initUser($authStore))();
+	run(() => {
+		(async () => await initUser($authStore))();
+	});
 
-	let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
+	let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined = $state();
 
 	onMount(async () => (worker = await initAuthWorker()));
 
-	$: worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
+	run(() => {
+		worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
+	});
 </script>
 
-<svelte:window on:storage={syncAuthStore} />
+<svelte:window onstorage={syncAuthStore} />
 
 {#await init()}
 	<Spinner />
 {:then _}
-	<slot />
+	{@render children?.()}
 
 	<Overlays />
 {/await}

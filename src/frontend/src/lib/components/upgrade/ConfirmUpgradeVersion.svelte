@@ -4,12 +4,17 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let segment: 'satellite' | 'mission_control' | 'orbiter';
+	interface Props {
+		segment: 'satellite' | 'mission_control' | 'orbiter';
+		intro?: import('svelte').Snippet;
+	}
+
+	let { segment, intro }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 </script>
 
-<slot name="intro" />
+{@render intro?.()}
 
 <p>
 	<Html
@@ -23,6 +28,6 @@
 </p>
 
 <div class="toolbar">
-	<button type="button" on:click={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
-	<button type="button" on:click={() => dispatch('junoContinue')}>{$i18n.core.continue}</button>
+	<button type="button" onclick={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
+	<button type="button" onclick={() => dispatch('junoContinue')}>{$i18n.core.continue}</button>
 </div>

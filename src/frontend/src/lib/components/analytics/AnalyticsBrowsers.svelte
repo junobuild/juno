@@ -1,28 +1,40 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { nonNullish } from '@dfinity/utils';
 	import type { AnalyticsBrowsersPageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews, AnalyticsPageViewsClients } from '$lib/types/ortbiter';
 
-	export let pageViews: AnalyticsPageViews;
+	interface Props {
+		pageViews: AnalyticsPageViews;
+	}
 
-	let clients: AnalyticsPageViewsClients;
-	$: ({ clients } = pageViews);
+	let { pageViews }: Props = $props();
 
-	let browsers: AnalyticsBrowsersPageViews | undefined;
-	$: ({ browsers } = clients);
+	let clients: AnalyticsPageViewsClients = $state();
+	run(() => {
+		({ clients } = pageViews);
+	});
 
-	let safari: number;
-	let opera: number;
-	let others: number;
-	let firefox: number;
-	let chrome: number;
-	$: ({ safari, opera, others, firefox, chrome } = browsers ?? {
-		safari: 0,
-		opera: 0,
-		others: 0,
-		firefox: 0,
-		chrome: 0
+	let browsers: AnalyticsBrowsersPageViews | undefined = $state();
+	run(() => {
+		({ browsers } = clients);
+	});
+
+	let safari: number = $state();
+	let opera: number = $state();
+	let others: number = $state();
+	let firefox: number = $state();
+	let chrome: number = $state();
+	run(() => {
+		({ safari, opera, others, firefox, chrome } = browsers ?? {
+			safari: 0,
+			opera: 0,
+			others: 0,
+			firefox: 0,
+			chrome: 0
+		});
 	});
 </script>
 

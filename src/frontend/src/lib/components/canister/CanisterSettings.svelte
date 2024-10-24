@@ -17,33 +17,30 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
 
-	export let canisterId: Principal;
-	export let segment: Segment;
-	export let segmentLabel: string;
+	interface Props {
+		canisterId: Principal;
+		segment: Segment;
+		segmentLabel: string;
+	}
 
-	let data: CanisterData | undefined;
-	let sync: CanisterSyncStatus | undefined;
+	let { canisterId, segment, segmentLabel }: Props = $props();
 
-	let settings: CanisterSettings | undefined;
-	$: settings = data?.canister?.settings;
+	let data: CanisterData | undefined = $state();
+	let sync: CanisterSyncStatus | undefined = $state();
 
-	let freezingThreshold: bigint | undefined;
-	$: freezingThreshold = settings?.freezingThreshold;
+	let settings: CanisterSettings | undefined = $derived(data?.canister?.settings);
 
-	let reservedCyclesLimit: bigint | undefined;
-	$: reservedCyclesLimit = settings?.reservedCyclesLimit;
+	let freezingThreshold: bigint | undefined = $derived(settings?.freezingThreshold);
 
-	let logVisibility: CanisterLogVisibility | undefined;
-	$: logVisibility = settings?.logVisibility;
+	let reservedCyclesLimit: bigint | undefined = $derived(settings?.reservedCyclesLimit);
 
-	let wasmMemoryLimit: bigint | undefined;
-	$: wasmMemoryLimit = settings?.wasmMemoryLimit;
+	let logVisibility: CanisterLogVisibility | undefined = $derived(settings?.logVisibility);
 
-	let memoryAllocation: bigint | undefined;
-	$: memoryAllocation = settings?.memoryAllocation;
+	let wasmMemoryLimit: bigint | undefined = $derived(settings?.wasmMemoryLimit);
 
-	let computeAllocation: bigint | undefined;
-	$: computeAllocation = settings?.computeAllocation;
+	let memoryAllocation: bigint | undefined = $derived(settings?.memoryAllocation);
+
+	let computeAllocation: bigint | undefined = $derived(settings?.computeAllocation);
 
 	const openModal = () => {
 		if (isNullish(settings)) {
@@ -74,24 +71,32 @@
 	<div class="columns-3 fit-column-1">
 		<div>
 			<CanisterValue {sync}>
-				<svelte:fragment slot="label">{$i18n.canisters.freezing_threshold}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.canisters.freezing_threshold}
+				{/snippet}
 				<p>{secondsToDuration(freezingThreshold ?? 0n)}</p>
 			</CanisterValue>
 
 			<CanisterValue {sync}>
-				<svelte:fragment slot="label">{$i18n.canisters.reserved_cycles_limit}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.canisters.reserved_cycles_limit}
+				{/snippet}
 				<p>{formatTCycles(reservedCyclesLimit ?? 0n)}T <small>cycles</small></p>
 			</CanisterValue>
 
 			<CanisterValue {sync}>
-				<svelte:fragment slot="label">{$i18n.canisters.log_visibility}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.canisters.log_visibility}
+				{/snippet}
 				<p class="log-visibility">{logVisibility ?? ''}</p>
 			</CanisterValue>
 		</div>
 
 		<div>
 			<CanisterValue {sync}>
-				<svelte:fragment slot="label">{$i18n.canisters.heap_memory_limit}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.canisters.heap_memory_limit}
+				{/snippet}
 				<p>
 					{nonNullish(wasmMemoryLimit) && wasmMemoryLimit > 0n
 						? formatBytes(Number(wasmMemoryLimit))
@@ -100,7 +105,9 @@
 			</CanisterValue>
 
 			<CanisterValue {sync}>
-				<svelte:fragment slot="label">{$i18n.canisters.memory_allocation}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.canisters.memory_allocation}
+				{/snippet}
 				<p>
 					{nonNullish(memoryAllocation) && memoryAllocation > 0n
 						? formatBytes(Number(memoryAllocation))
@@ -109,7 +116,9 @@
 			</CanisterValue>
 
 			<CanisterValue {sync}>
-				<svelte:fragment slot="label">{$i18n.canisters.compute_allocation}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.canisters.compute_allocation}
+				{/snippet}
 				<p>
 					{nonNullish(computeAllocation) && computeAllocation > 0n
 						? `${computeAllocation}%`
@@ -122,7 +131,7 @@
 
 <Canister {canisterId} {segment} bind:data bind:sync display={false} />
 
-<button on:click={openModal}>{$i18n.canisters.edit_settings}</button>
+<button onclick={openModal}>{$i18n.canisters.edit_settings}</button>
 
 <style lang="scss">
 	button {

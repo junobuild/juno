@@ -8,29 +8,41 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 
-	export let satellite: Satellite | undefined = undefined;
+	interface Props {
+		satellite?: Satellite | undefined;
+	}
+
+	let { satellite = undefined }: Props = $props();
 </script>
 
 <VersionWarnings {satellite} />
 
 {#if nonNullish($missionControlStore)}
 	<LoaderWarnings canisterId={$missionControlStore}>
-		<svelte:fragment slot="cycles"
-			>{$i18n.canisters.warning_mission_control_low_cycles}</svelte:fragment
-		>
+		{#snippet cycles()}
+			{$i18n.canisters.warning_mission_control_low_cycles}
+		{/snippet}
 	</LoaderWarnings>
 {/if}
 
 {#if nonNullish(satellite)}
 	<CanisterWarnings canisterId={satellite.satellite_id}>
-		<svelte:fragment slot="cycles">{$i18n.canisters.warning_satellite_low_cycles}</svelte:fragment>
-		<svelte:fragment slot="heap">{$i18n.canisters.warning_satellite_heap_memory}</svelte:fragment>
+		{#snippet cycles()}
+			{$i18n.canisters.warning_satellite_low_cycles}
+		{/snippet}
+		{#snippet heap()}
+			{$i18n.canisters.warning_satellite_heap_memory}
+		{/snippet}
 	</CanisterWarnings>
 {/if}
 
 {#if nonNullish($orbiterStore)}
 	<LoaderWarnings canisterId={$orbiterStore.orbiter_id}>
-		<svelte:fragment slot="cycles">{$i18n.canisters.warning_orbiter_low_cycles}</svelte:fragment>
-		<svelte:fragment slot="heap">{$i18n.canisters.warning_orbiter_heap_memory}</svelte:fragment>
+		{#snippet cycles()}
+			{$i18n.canisters.warning_orbiter_low_cycles}
+		{/snippet}
+		{#snippet heap()}
+			{$i18n.canisters.warning_orbiter_heap_memory}
+		{/snippet}
 	</LoaderWarnings>
 {/if}

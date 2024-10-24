@@ -1,4 +1,7 @@
 <script lang="ts">
+	import { createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import { getContext } from 'svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
@@ -7,7 +10,10 @@
 </script>
 
 {#if $store.rules?.length === 0}
-	<p>{$i18n.collections.none} <button class="text" on:click>{$i18n.collections.title}</button>.</p>
+	<p>
+		{$i18n.collections.none}
+		<button class="text" onclick={bubble('click')}>{$i18n.collections.title}</button>.
+	</p>
 {/if}
 
 <style lang="scss">

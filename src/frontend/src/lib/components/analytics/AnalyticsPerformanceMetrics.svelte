@@ -6,12 +6,15 @@
 	import AnalyticsPerformanceMetricsFilter from '$lib/components/analytics/AnalyticsPerformanceMetricsFilter.svelte';
 	import AnalyticsPerformanceMetricsPage from '$lib/components/analytics/AnalyticsPerformanceMetricsPage.svelte';
 
-	export let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics;
+	interface Props {
+		performanceMetrics: AnalyticsWebVitalsPerformanceMetrics;
+	}
 
-	let page: AnalyticsWebVitalsPageMetrics | undefined = undefined;
+	let { performanceMetrics }: Props = $props();
 
-	let metrics: AnalyticsWebVitalsPageMetrics;
-	$: metrics = page ?? performanceMetrics.overall;
+	let page: AnalyticsWebVitalsPageMetrics | undefined = $state(undefined);
+
+	let metrics: AnalyticsWebVitalsPageMetrics = $derived(page ?? performanceMetrics.overall);
 </script>
 
 <AnalyticsPerformanceMetricsFilter bind:page {performanceMetrics} />

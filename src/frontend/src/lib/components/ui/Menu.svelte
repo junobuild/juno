@@ -2,6 +2,11 @@
 	import Logo from '$lib/components/core/Logo.svelte';
 	import { layoutMenuOpen } from '$lib/stores/layout.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	const close = () => layoutMenuOpen.set(false);
 </script>
@@ -11,8 +16,8 @@
 		class="inner"
 		data-tid="menu-inner"
 		class:open={$layoutMenuOpen}
-		on:keypress={($event) => handleKeyPress({ $event, callback: close })}
-		on:click={close}
+		onkeypress={($event) => handleKeyPress({ $event, callback: close })}
+		onclick={close}
 		role="button"
 		tabindex="-1"
 	>
@@ -20,7 +25,7 @@
 			<Logo color="white" />
 		</div>
 
-		<slot />
+		{@render children?.()}
 	</div>
 </div>
 

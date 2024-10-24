@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Principal } from '@dfinity/principal';
 	import { getContext, setContext } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -10,7 +12,11 @@
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
 	import { reloadContextRules } from '$lib/utils/rules.utils';
 
-	export let satelliteId: Principal;
+	interface Props {
+		satelliteId: Principal;
+	}
+
+	let { satelliteId }: Props = $props();
 
 	const store = writable<RulesStore>({
 		satelliteId,
@@ -26,7 +32,9 @@
 			identity: $authStore.identity
 		});
 
-	$: satelliteId, (async () => await reloadRules())();
+	run(() => {
+		satelliteId, (async () => await reloadRules())();
+	});
 
 	setContext<RulesContext>(RULES_CONTEXT_KEY, {
 		store,

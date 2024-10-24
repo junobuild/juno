@@ -5,14 +5,23 @@
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { layoutTitle } from '$lib/stores/layout.store';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	onMount(() => layoutTitle.set(undefined));
 </script>
 
 <Layout centered title={false}>
-	<Navbar slot="navbar" signIn={false} headerOpaqueOnScroll={false} />
+	{#snippet navbar()}
+		<Navbar signIn={false} headerOpaqueOnScroll={false} />
+	{/snippet}
 
-	<slot />
+	{@render children?.()}
 
-	<Footer slot="footer" themeToggle end={$authSignedInStore ? 'none' : 'lang'} />
+	{#snippet footer()}
+		<Footer themeToggle end={$authSignedInStore ? 'none' : 'lang'} />
+	{/snippet}
 </Layout>

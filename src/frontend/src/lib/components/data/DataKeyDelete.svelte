@@ -4,17 +4,29 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+	interface Props {
+		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+		title?: import('svelte').Snippet;
+		children?: import('svelte').Snippet;
+	}
+
+	let { deleteData, title, children }: Props = $props();
 </script>
 
 <DataDelete {deleteData}>
-	<svelte:fragment slot="button">{$i18n.core.delete}</svelte:fragment>
+	{#snippet button()}
+		{$i18n.core.delete}
+	{/snippet}
 
-	<slot name="title" slot="title" />
+	{#snippet title()}
+		{@render title?.()}
+	{/snippet}
 
 	<Value>
-		<svelte:fragment slot="label">{$i18n.collections.key}</svelte:fragment>
-		<p><slot /></p>
+		{#snippet label()}
+			{$i18n.collections.key}
+		{/snippet}
+		<p>{@render children?.()}</p>
 	</Value>
 </DataDelete>
 

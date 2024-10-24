@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Principal } from '@dfinity/principal';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { depositCycles } from '$lib/api/satellites.api';
@@ -6,20 +8,28 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalCyclesSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let satellite: Satellite;
-	let currentCycles: bigint;
+	let { detail }: Props = $props();
 
-	$: ({ satellite, cycles: currentCycles } = detail as JunoModalCyclesSatelliteDetail);
+	let satellite: Satellite = $state();
+	let currentCycles: bigint = $state();
 
-	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
-	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
-		await depositCycles({
-			...params,
-			satelliteId: satellite.satellite_id,
-			identity: $authStore.identity
-		});
+	run(() => {
+		({ satellite, cycles: currentCycles } = detail as JunoModalCyclesSatelliteDetail);
+	});
+
+	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void> =
+		$derived(
+			async (params: { cycles: bigint; destinationId: Principal }) =>
+				await depositCycles({
+					...params,
+					satelliteId: satellite.satellite_id,
+					identity: $authStore.identity
+				})
+		);
 </script>
 
 <CanisterTransferCyclesModal

@@ -1,20 +1,32 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { AnalyticsDevicesPageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews, AnalyticsPageViewsClients } from '$lib/types/ortbiter';
 
-	export let pageViews: AnalyticsPageViews;
+	interface Props {
+		pageViews: AnalyticsPageViews;
+	}
 
-	let clients: AnalyticsPageViewsClients;
-	$: ({ clients } = pageViews);
+	let { pageViews }: Props = $props();
 
-	let devices: AnalyticsDevicesPageViews;
-	$: ({ devices } = clients);
+	let clients: AnalyticsPageViewsClients = $state();
+	run(() => {
+		({ clients } = pageViews);
+	});
 
-	let desktop: number;
-	let others: number;
-	let mobile: number;
-	$: ({ desktop, mobile, others } = devices);
+	let devices: AnalyticsDevicesPageViews = $state();
+	run(() => {
+		({ devices } = clients);
+	});
+
+	let desktop: number = $state();
+	let others: number = $state();
+	let mobile: number = $state();
+	run(() => {
+		({ desktop, mobile, others } = devices);
+	});
 </script>
 
 <div class="table-container">

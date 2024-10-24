@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -20,17 +22,23 @@
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
 	import { emit } from '$lib/utils/events.utils';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let satellite: Satellite;
-	let config: AuthenticationConfig | undefined;
-	$: ({ satellite, config } = detail as JunoModalCustomDomainDetail);
+	let { detail }: Props = $props();
 
-	let steps: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = 'init';
-	let domainNameInput = '';
-	let dns: CustomDomainDns | undefined = undefined;
+	let satellite: Satellite = $state();
+	let config: AuthenticationConfig | undefined = $state();
+	run(() => {
+		({ satellite, config } = detail as JunoModalCustomDomainDetail);
+	});
 
-	let edit = false;
+	let steps: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = $state('init');
+	let domainNameInput = $state('');
+	let dns: CustomDomainDns | undefined = $state(undefined);
+
+	let edit = $state(false);
 
 	onMount(() => {
 		domainNameInput = (detail as JunoModalCustomDomainDetail).editDomainName ?? '';
@@ -101,7 +109,7 @@
 		<div class="msg">
 			<IconVerified />
 			<p>{$i18n.hosting.success}</p>
-			<button on:click={close}>{$i18n.core.close}</button>
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'dns'}
 		<AddCustomDomainDns

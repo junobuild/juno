@@ -1,10 +1,16 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let trackEvents: AnalyticsTrackEvents;
+	interface Props {
+		trackEvents: AnalyticsTrackEvents;
+	}
 
-	let total: Array<[string, number]>;
+	let { trackEvents }: Props = $props();
+
+	let total: Array<[string, number]> = $state();
 
 	const setTotal = () => {
 		const { total: t } = trackEvents;
@@ -13,7 +19,9 @@
 		total = t;
 	};
 
-	$: trackEvents, setTotal();
+	run(() => {
+		trackEvents, setTotal();
+	});
 </script>
 
 <div class="table-container">

@@ -1,12 +1,34 @@
 <script lang="ts">
-	export let button: HTMLButtonElement | undefined = undefined;
-	export let disabled = false;
-	export let hidden = false;
+	import { createBubbler } from 'svelte/legacy';
+
+	const bubble = createBubbler();
+	interface Props {
+		button?: HTMLButtonElement | undefined;
+		disabled?: boolean;
+		hidden?: boolean;
+		icon?: import('svelte').Snippet;
+		children?: import('svelte').Snippet;
+	}
+
+	let {
+		button = $bindable(undefined),
+		disabled = false,
+		hidden = false,
+		icon,
+		children
+	}: Props = $props();
 </script>
 
-<button type="button" on:click bind:this={button} class="icon" {disabled} class:hidden>
-	<slot name="icon" />
-	<span class="visually-hidden"><slot /></span>
+<button
+	type="button"
+	onclick={bubble('click')}
+	bind:this={button}
+	class="icon"
+	{disabled}
+	class:hidden
+>
+	{@render icon?.()}
+	<span class="visually-hidden">{@render children?.()}</span>
 </button>
 
 <style lang="scss">

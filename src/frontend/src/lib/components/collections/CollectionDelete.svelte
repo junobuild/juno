@@ -12,13 +12,17 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let collection: string;
-	export let rule: Rule | undefined;
-	export let type: RulesType;
+	interface Props {
+		collection: string;
+		rule: Rule | undefined;
+		type: RulesType;
+	}
+
+	let { collection, rule, type }: Props = $props();
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let visible = false;
+	let visible = $state(false);
 
 	const close = () => (visible = false);
 
@@ -73,13 +77,17 @@
 	};
 </script>
 
-<button type="button" on:click={() => (visible = true)}>{$i18n.core.delete}</button>
+<button type="button" onclick={() => (visible = true)}>{$i18n.core.delete}</button>
 
 <Confirmation bind:visible on:junoYes={deleteCollection} on:junoNo={close}>
-	<svelte:fragment slot="title">{$i18n.collections.delete_question}</svelte:fragment>
+	{#snippet title()}
+		{$i18n.collections.delete_question}
+	{/snippet}
 
 	<Value>
-		<svelte:fragment slot="label">{$i18n.collections.key}</svelte:fragment>
+		{#snippet label()}
+			{$i18n.collections.key}
+		{/snippet}
 		<p>{collection}</p>
 	</Value>
 </Confirmation>

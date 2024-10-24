@@ -14,10 +14,14 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let segment: 'satellite' | 'orbiter';
-	export let segmentId: Principal;
+	interface Props {
+		segment: 'satellite' | 'orbiter';
+		segmentId: Principal;
+	}
 
-	let visible = false;
+	let { segment, segmentId }: Props = $props();
+
+	let visible = $state(false);
 
 	const dispatch = createEventDispatcher();
 
@@ -75,12 +79,12 @@
 	const close = () => (visible = false);
 </script>
 
-<button on:click={() => (visible = true)} class="menu"><IconLinkOff /> {$i18n.core.detach}</button>
+<button onclick={() => (visible = true)} class="menu"><IconLinkOff /> {$i18n.core.detach}</button>
 
 <Confirmation bind:visible on:junoYes={detach} on:junoNo={close}>
-	<svelte:fragment slot="title"
-		><Text key="canisters.detach_title" value={segment} /></svelte:fragment
-	>
+	{#snippet title()}
+		<Text key="canisters.detach_title" value={segment} />
+	{/snippet}
 
 	<p><Text key="canisters.detach_explanation" value={segment} /></p>
 

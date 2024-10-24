@@ -49,11 +49,11 @@
 			? 'https://juno.build/docs/architecture'
 			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
-		<svelte:fragment slot="info">
+		{#snippet info()}
 			{#if $authSignedInStore}
 				<Warnings />
 			{/if}
-		</svelte:fragment>
+		{/snippet}
 
 		{#if nonNullish($missionControlStore)}
 			{#if $store.tabId === $store.tabs[0].id}

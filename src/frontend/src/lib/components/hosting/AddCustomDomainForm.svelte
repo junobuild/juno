@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { isNullish, notEmptyString } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
@@ -7,9 +9,13 @@
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
 
-	export let satellite: Satellite;
-	export let domainNameInput: string;
-	export let dns: CustomDomainDns | undefined = undefined;
+	interface Props {
+		satellite: Satellite;
+		domainNameInput: string;
+		dns?: CustomDomainDns | undefined;
+	}
+
+	let { satellite, domainNameInput = $bindable(), dns = $bindable(undefined) }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 
@@ -40,7 +46,7 @@
 	{$i18n.hosting.description}
 </p>
 
-<form on:submit|preventDefault={onSubmitDomainName}>
+<form onsubmit={preventDefault(onSubmitDomainName)}>
 	<input
 		bind:value={domainNameInput}
 		type="text"

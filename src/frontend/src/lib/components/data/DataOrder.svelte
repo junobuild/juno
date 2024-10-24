@@ -1,14 +1,16 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ListOrderField } from '$lib/types/list';
 
-	let desc = $listParamsStore.order.desc;
-	let field: ListOrderField = $listParamsStore.order.field;
+	let desc = $state($listParamsStore.order.desc);
+	let field: ListOrderField = $state($listParamsStore.order.field);
 
-	let visible: boolean | undefined;
+	let visible: boolean = $state(false);
 
 	const apply = () => {
 		listParamsStore.setOrder({
@@ -19,22 +21,26 @@
 		visible = false;
 	};
 
-	$: visible,
-		(() => {
-			if (visible) {
-				return;
-			}
+	run(() => {
+		visible,
+			(() => {
+				if (visible) {
+					return;
+				}
 
-			// Avoid glitch
-			setTimeout(() => {
-				desc = $listParamsStore.order.desc;
-				field = $listParamsStore.order.field;
-			}, 250);
-		})();
+				// Avoid glitch
+				setTimeout(() => {
+					desc = $listParamsStore.order.desc;
+					field = $listParamsStore.order.field;
+				}, 250);
+			})();
+	});
 </script>
 
 <PopoverApply ariaLabel={$i18n.sort.title} on:click={apply} bind:visible>
-	<IconSort size="20px" slot="icon" />
+	{#snippet icon()}
+		<IconSort size="20px" />
+	{/snippet}
 
 	<p class="category">{$i18n.sort.sort_by_field}</p>
 

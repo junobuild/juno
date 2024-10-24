@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, preventDefault } from 'svelte/legacy';
+
 	import { Ed25519KeyIdentity } from '@dfinity/identity';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
@@ -17,26 +19,32 @@
 	import type { SetControllerParams, SetControllerScope } from '$lib/types/controllers';
 	import type { JunoModalCreateControllerDetail, JunoModalDetail } from '$lib/types/modal';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
+
+	let { detail }: Props = $props();
 
 	let add: (
 		params: {
 			missionControlId: Principal;
 		} & SetControllerParams
-	) => Promise<void>;
-	let load: () => Promise<void>;
-	let segment: CanisterSegmentWithLabel;
+	) => Promise<void> = $state();
+	let load: () => Promise<void> = $state();
+	let segment: CanisterSegmentWithLabel = $state();
 
-	$: ({ add, load, segment } = detail as JunoModalCreateControllerDetail);
+	run(() => {
+		({ add, load, segment } = detail as JunoModalCreateControllerDetail);
+	});
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	let controllerId = '';
-	let scope: SetControllerScope = 'write';
-	let identity: string | undefined;
+	let controllerId = $state('');
+	let scope: SetControllerScope = $state('write');
+	let identity: string | undefined = $state();
 
 	const initController = (): string | undefined => {
 		if (action === 'add') {
@@ -101,9 +109,11 @@
 		wizardBusy.stop();
 	};
 
-	let action = 'generate';
+	let action = $state('generate');
 
-	$: action, (() => (controllerId = ''))();
+	run(() => {
+		action, (() => (controllerId = ''))();
+	});
 </script>
 
 <Modal on:junoClose>
@@ -122,14 +132,18 @@
 			<div class="summary">
 				<div>
 					<Value>
-						<svelte:fragment slot="label">{segment.label}</svelte:fragment>
+						{#snippet label()}
+							{segment.label}
+						{/snippet}
 						<Identifier identifier={segment.canisterId} shorten={false} small={false} />
 					</Value>
 				</div>
 
 				<div>
 					<Value>
-						<svelte:fragment slot="label">{$i18n.controllers.new_controller_id}</svelte:fragment>
+						{#snippet label()}
+							{$i18n.controllers.new_controller_id}
+						{/snippet}
 						<Identifier identifier={controllerId} shorten={false} small={false} />
 					</Value>
 				</div>
@@ -137,15 +151,15 @@
 				{#if action === 'generate' && nonNullish(identity)}
 					<div>
 						<Value>
-							<svelte:fragment slot="label"
-								>{$i18n.controllers.new_controller_secret} <IconWarning /></svelte:fragment
-							>
+							{#snippet label()}
+								{$i18n.controllers.new_controller_secret} <IconWarning />
+							{/snippet}
 							<Identifier identifier={identity} />
 						</Value>
 					</div>
 				{/if}
 
-				<button class="close" on:click={close}>{$i18n.core.close}</button>
+				<button class="close" onclick={close}>{$i18n.core.close}</button>
 			</div>
 		</div>
 	{:else if steps === 'in_progress'}
@@ -163,7 +177,7 @@
 
 		<p>{$i18n.controllers.add_intro}</p>
 
-		<form class="content" on:submit|preventDefault={addController}>
+		<form class="content" onsubmit={preventDefault(addController)}>
 			<div>
 				<label>
 					<input type="radio" bind:group={action} name="action" value="generate" />
@@ -188,7 +202,9 @@
 
 			<div class="scope">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.controllers.scope}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.controllers.scope}
+					{/snippet}
 					<select name="scope" bind:value={scope}>
 						<option value="write">{$i18n.controllers.write}</option>
 						<option value="admin">{$i18n.controllers.admin}</option>

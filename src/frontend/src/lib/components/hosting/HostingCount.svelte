@@ -9,9 +9,13 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
 
-	let assets = 0n;
+	let { satellite }: Props = $props();
+
+	let assets = $state(0n);
 
 	onMount(async () => {
 		try {

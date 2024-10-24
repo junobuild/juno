@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import Cockpit from '$lib/components/launchpad/Cockpit.svelte';
@@ -12,18 +14,22 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { satellitesStore } from '$lib/stores/satellite.store';
 
-	$: $missionControlStore,
-		(async () => await loadSatellites({ missionControl: $missionControlStore }))();
+	run(() => {
+		$missionControlStore,
+			(async () => await loadSatellites({ missionControl: $missionControlStore }))();
+	});
 
-	let loading = true;
-	$: (() => {
-		if (nonNullish($satellitesStore)) {
-			setTimeout(() => (loading = false), 500);
-			return;
-		}
+	let loading = $state(true);
+	run(() => {
+		(() => {
+			if (nonNullish($satellitesStore)) {
+				setTimeout(() => (loading = false), 500);
+				return;
+			}
 
-		loading = true;
-	})();
+			loading = true;
+		})();
+	});
 </script>
 
 {#if loading || ($satellitesStore?.length ?? 0n) === 0}
@@ -34,12 +40,12 @@
 			<p>{$i18n.satellites.loading_launchpad}</p>
 		</div>
 	{:else}
-		<section use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
+		<section use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
 			<SatelliteNew />
 		</section>
 	{/if}
 {:else if ($satellitesStore?.length ?? 0) >= 1}
-	<div in:fade use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
+	<div in:fade use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
 		<section>
 			<Cockpit />
 		</section>

@@ -1,19 +1,30 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconHome from '$lib/components/icons/IconHome.svelte';
 	import NavSeparator from '$lib/components/ui/NavSeparator.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collectionSelected = false;
-	$: collectionSelected = nonNullish($store.rule);
+	let collectionSelected = $state(false);
+	run(() => {
+		collectionSelected = nonNullish($store.rule);
+	});
 
-	let selected: [string, Rule] | undefined = undefined;
+	let selected: [string, Rule] | undefined = $state(undefined);
 	const initSelected = (rule: [string, Rule] | undefined) => (selected = rule);
-	$: initSelected($store.rule);
+	run(() => {
+		initSelected($store.rule);
+	});
 
 	const dispatch = createEventDispatcher();
 
@@ -22,25 +33,25 @@
 </script>
 
 <nav class="th">
-	<button class="text home" aria-label="List all collections" on:click={close}
+	<button class="text home" aria-label="List all collections" onclick={close}
 		><IconHome size="20px" /></button
 	>
 
 	<NavSeparator visible={collectionSelected} />
 
 	{#if collectionSelected}
-		<button class="text collection" on:click={() => edit($store.rule)}
+		<button class="text collection" onclick={() => edit($store.rule)}
 			>{$store.rule?.[0] ?? ''}</button
 		>
 	{/if}
 
 	{#if collectionSelected}
-		<slot />
+		{@render children?.()}
 	{/if}
 </nav>
 
 <div class="picker">
-	<select bind:value={selected} on:change={() => (isNullish(selected) ? close() : edit(selected))}>
+	<select bind:value={selected} onchange={() => (isNullish(selected) ? close() : edit(selected))}>
 		<option value={undefined}>Select a collection</option>
 		{#if nonNullish($store.rules)}
 			{#each $store.rules as rule}

@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, preventDefault } from 'svelte/legacy';
+
 	import { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
@@ -11,11 +13,17 @@
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
-	export let orbiterId: Principal;
-	export let config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
+	interface Props {
+		orbiterId: Principal;
+		config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
+	}
 
-	let validConfirm = false;
-	$: validConfirm = Object.keys(config).length > 0;
+	let { orbiterId, config }: Props = $props();
+
+	let validConfirm = $state(false);
+	run(() => {
+		validConfirm = Object.keys(config).length > 0;
+	});
 
 	const dispatch = createEventDispatcher();
 
@@ -57,7 +65,7 @@
 	};
 </script>
 
-<form class="container" on:submit|preventDefault={handleSubmit}>
+<form class="container" onsubmit={preventDefault(handleSubmit)}>
 	<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
 		{$i18n.analytics.configure}
 	</button>

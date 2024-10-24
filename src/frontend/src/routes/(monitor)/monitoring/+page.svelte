@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
@@ -35,9 +37,11 @@
 		store
 	});
 
-	$: store.set({
-		tabId: initTabId(tabs),
-		tabs
+	run(() => {
+		store.set({
+			tabId: initTabId(tabs),
+			tabs
+		});
 	});
 </script>
 

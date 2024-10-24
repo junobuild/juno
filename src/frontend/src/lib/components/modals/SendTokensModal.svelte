@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { fade } from 'svelte/transition';
@@ -11,21 +13,27 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import type { JunoModalDetail, JunoModalSendTokensDetail } from '$lib/types/modal';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let balance: bigint | undefined;
-	$: ({ balance } = detail as JunoModalSendTokensDetail);
+	let { detail }: Props = $props();
 
-	let steps: 'form' | 'review' | 'in_progress' | 'ready' | 'error';
+	let balance: bigint | undefined = $state();
+	run(() => {
+		({ balance } = detail as JunoModalSendTokensDetail);
+	});
 
-	let destination = '';
-	let amount: string | undefined;
+	let steps: 'form' | 'review' | 'in_progress' | 'ready' | 'error' = $state();
+
+	let destination = $state('');
+	let amount: string | undefined = $state();
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 </script>
 
-<svelte:window on:junoSyncBalance={({ detail: syncBalance }) => (balance = syncBalance)} />
+<svelte:window onjunoSyncBalance={({ detail: syncBalance }) => (balance = syncBalance)} />
 
 {#if nonNullish($missionControlStore)}
 	<Modal on:junoClose>
@@ -34,7 +42,7 @@
 
 			<div class="msg" in:fade>
 				<p>{$i18n.wallet.icp_on_its_way}</p>
-				<button on:click={close}>{$i18n.core.close}</button>
+				<button onclick={close}>{$i18n.core.close}</button>
 			</div>
 		{:else if steps === 'in_progress'}
 			<SpinnerModal>

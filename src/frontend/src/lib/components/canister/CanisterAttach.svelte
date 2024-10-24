@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, preventDefault } from 'svelte/legacy';
+
 	import { Principal } from '@dfinity/principal';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
@@ -8,16 +10,19 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 
-	export let setFn: (params: {
-		missionControlId: Principal;
-		canisterId: Principal;
-	}) => Promise<void>;
-	export let visible: boolean | undefined;
+	interface Props {
+		setFn: (params: { missionControlId: Principal; canisterId: Principal }) => Promise<void>;
+		visible: boolean | undefined;
+		title?: import('svelte').Snippet;
+		input?: import('svelte').Snippet;
+	}
 
-	let validConfirm = false;
+	let { setFn, visible = $bindable(), title, input }: Props = $props();
+
+	let validConfirm = $state(false);
 	let saving = false;
 
-	let canisterId = '';
+	let canisterId = $state('');
 
 	const assertForm = debounce(() => {
 		try {
@@ -28,7 +33,9 @@
 		}
 	});
 
-	$: canisterId, (() => assertForm())();
+	run(() => {
+		canisterId, (() => assertForm())();
+	});
 
 	const handleSubmit = async () => {
 		if (!validConfirm) {
@@ -71,10 +78,10 @@
 </script>
 
 <Popover bind:visible center backdrop="dark">
-	<form class="container" on:submit|preventDefault={handleSubmit}>
-		<h3><slot name="title" /></h3>
+	<form class="container" onsubmit={preventDefault(handleSubmit)}>
+		<h3>{@render title?.()}</h3>
 
-		<label for="canisterId"><slot name="input" />:</label>
+		<label for="canisterId">{@render input?.()}:</label>
 
 		<input
 			id="canisterId"

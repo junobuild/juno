@@ -5,17 +5,21 @@
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import { emit } from '$lib/utils/events.utils';
 
-	export let add: (
-		params: {
-			missionControlId: Principal;
-		} & SetControllerParams
-	) => Promise<void>;
-	export let load: () => Promise<void>;
-	export let segment: CanisterSegmentWithLabel;
+	interface Props {
+		add: (
+			params: {
+				missionControlId: Principal;
+			} & SetControllerParams
+		) => Promise<void>;
+		load: () => Promise<void>;
+		segment: CanisterSegmentWithLabel;
+	}
+
+	let { add, load, segment }: Props = $props();
 </script>
 
 <button
-	on:click={() =>
+	onclick={() =>
 		emit({
 			message: 'junoModal',
 			detail: {

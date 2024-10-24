@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
@@ -14,9 +16,13 @@
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	export let orbiterId: Principal;
+	interface Props {
+		orbiterId: Principal;
+	}
 
-	let configuration: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = {};
+	let { orbiterId }: Props = $props();
+
+	let configuration: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = $state({});
 
 	const list = (orbiterVersion: string): Promise<[Principal, OrbiterSatelliteConfig][]> =>
 		listOrbiterSatelliteConfigs({ orbiterId, identity: $authStore.identity, orbiterVersion });
@@ -57,7 +63,9 @@
 		}, {});
 	};
 
-	$: $versionStore, (async () => await load())();
+	run(() => {
+		$versionStore, (async () => await load())();
+	});
 
 	// [Principal, SatelliteConfig]
 	const onUpdate = ({ detail }: CustomEvent<[Principal, OrbiterSatelliteConfig][]>) => {

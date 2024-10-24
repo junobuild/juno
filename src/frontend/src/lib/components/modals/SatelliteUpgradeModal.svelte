@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { AnonymousIdentity } from '@dfinity/agent';
 	import { type BuildType, upgradeSatellite } from '@junobuild/admin';
 	import { compare } from 'semver';
@@ -12,15 +14,21 @@
 	import { container } from '$lib/utils/juno.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let satellite: Satellite;
-	let currentVersion: string;
-	let newerReleases: string[];
-	let build: BuildType | undefined;
+	let { detail }: Props = $props();
 
-	$: ({ satellite, currentVersion, newerReleases, build } =
-		detail as JunoModalUpgradeSatelliteDetail);
+	let satellite: Satellite = $state();
+	let currentVersion: string = $state();
+	let newerReleases: string[] = $state();
+	let build: BuildType | undefined = $state();
+
+	run(() => {
+		({ satellite, currentVersion, newerReleases, build } =
+			detail as JunoModalUpgradeSatelliteDetail);
+	});
 
 	const upgradeSatelliteWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
 		await upgradeSatellite({
@@ -44,14 +52,16 @@
 	upgrade={upgradeSatelliteWasm}
 	segment="satellite"
 >
-	<h2 slot="intro">
-		<Html
-			text={i18nFormat($i18n.canisters.upgrade_title, [
-				{
-					placeholder: '{0}',
-					value: satelliteName(satellite)
-				}
-			])}
-		/>
-	</h2>
+	{#snippet intro()}
+		<h2>
+			<Html
+				text={i18nFormat($i18n.canisters.upgrade_title, [
+					{
+						placeholder: '{0}',
+						value: satelliteName(satellite)
+					}
+				])}
+			/>
+		</h2>
+	{/snippet}
 </CanisterUpgradeModal>

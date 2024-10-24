@@ -11,11 +11,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satelliteIdStore } from '$lib/stores/satellite.store';
 
-	let routeId: string | null;
-	$: routeId = $page.route.id;
+	let routeId: string | null = $derived($page.route.id);
 
-	let satelliteId: string;
-	$: satelliteId = $satelliteIdStore ?? '';
+	let satelliteId: string = $derived($satelliteIdStore ?? '');
 
 	const isSelected = ({ routeId, path }: { routeId: string | null; path: string }): boolean =>
 		routeId?.includes(path) ?? false;

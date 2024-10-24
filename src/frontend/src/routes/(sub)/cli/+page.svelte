@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { nonNullish } from '@dfinity/utils';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
 	import { signIn } from '$lib/services/auth.services';
@@ -6,14 +8,20 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Option } from '$lib/types/utils';
 
-	export let data: {
-		redirect_uri: Option<string>;
-		principal: Option<string>;
-	};
+	interface Props {
+		data: {
+			redirect_uri: Option<string>;
+			principal: Option<string>;
+		};
+	}
 
-	let redirect_uri: Option<string>;
-	let principal: Option<string>;
-	$: ({ redirect_uri, principal } = data);
+	let { data }: Props = $props();
+
+	let redirect_uri: Option<string> = $state();
+	let principal: Option<string> = $state();
+	run(() => {
+		({ redirect_uri, principal } = data);
+	});
 </script>
 
 {#if nonNullish(redirect_uri) && nonNullish(principal)}
@@ -24,7 +32,7 @@
 			{$i18n.cli.sign_in}
 		</p>
 
-		<button on:click={async () => await signIn({})}>{$i18n.core.sign_in}</button>
+		<button onclick={async () => await signIn({})}>{$i18n.core.sign_in}</button>
 	{/if}
 {:else}
 	<p>{$i18n.errors.cli_missing_params}</p>

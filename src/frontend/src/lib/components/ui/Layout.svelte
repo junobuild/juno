@@ -4,24 +4,43 @@
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
 	import { layoutTitle } from '$lib/stores/layout.store';
 
-	export let centered = false;
-	export let title = true;
-	export let topMargin: 'default' | 'wide' = 'default';
+	interface Props {
+		centered?: boolean;
+		title?: boolean;
+		topMargin?: 'default' | 'wide';
+		menu?: import('svelte').Snippet;
+		navbar?: import('svelte').Snippet;
+		children?: import('svelte').Snippet;
+		footer?: import('svelte').Snippet;
+	}
+
+	let {
+		centered = false,
+		title = true,
+		topMargin = 'default',
+		menu,
+		navbar,
+		children,
+		footer
+	}: Props = $props();
 </script>
 
 <SplitPane>
-	<slot name="menu" slot="menu" />
+	{#snippet menu()}
+		{@render menu?.()}
+	{/snippet}
 
 	<div class="content">
-		<slot name="navbar" />
+		{@render navbar?.()}
 
 		<div class="page">
 			<main class:centered>
 				{#if title}
 					{#if nonNullish($layoutTitle)}
+						{@const SvelteComponent = $layoutTitle.icon}
 						<h1 in:fade class:space={topMargin === 'wide'}>
 							<span>
-								<span class="icon"><svelte:component this={$layoutTitle.icon} size="32px" /></span>
+								<span class="icon"><SvelteComponent size="32px" /></span>
 								<span>{$layoutTitle.title}</span>
 							</span>
 						</h1>
@@ -30,10 +49,10 @@
 					{/if}
 				{/if}
 
-				<slot />
+				{@render children?.()}
 			</main>
 
-			<slot name="footer" />
+			{@render footer?.()}
 		</div>
 	</div>
 </SplitPane>

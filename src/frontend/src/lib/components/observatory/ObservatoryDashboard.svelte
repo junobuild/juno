@@ -13,10 +13,10 @@
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
 	import { formatToDate } from '$lib/utils/date.utils';
 
-	let loading = true;
+	let loading = $state(true);
 
-	let timestamp: bigint | undefined;
-	let statuses: Statuses | undefined;
+	let timestamp: bigint | undefined = $state();
+	let statuses: Statuses | undefined = $state();
 
 	const loadStatuses = async () => {
 		try {
@@ -54,7 +54,7 @@
 				{$i18n.observatory.go_to_settings}
 				<button
 					class="text"
-					on:click={() => store.update((state) => ({ ...state, tabId: state.tabs[1].id }))}
+					onclick={() => store.update((state) => ({ ...state, tabId: state.tabs[1].id }))}
 					>{$i18n.core.settings}</button
 				>.
 			</p>
@@ -67,7 +67,9 @@
 
 			<div class="content">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.observatory.last_data_collection}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.observatory.last_data_collection}
+					{/snippet}
 					<p>{formatToDate(timestamp)}</p>
 				</Value>
 			</div>

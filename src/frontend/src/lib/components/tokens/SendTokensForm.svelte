@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { preventDefault } from 'svelte/legacy';
+
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -13,9 +15,13 @@
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
 
-	export let balance: bigint | undefined;
-	export let destination = '';
-	export let amount: string | undefined;
+	interface Props {
+		balance: bigint | undefined;
+		destination?: string;
+		amount: string | undefined;
+	}
+
+	let { balance, destination = $bindable(''), amount = $bindable() }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 
@@ -74,10 +80,12 @@
 	/>
 </p>
 
-<form class="content" on:submit|preventDefault={onSubmit}>
+<form class="content" onsubmit={preventDefault(onSubmit)}>
 	<div>
 		<Value>
-			<svelte:fragment slot="label">{$i18n.wallet.destination}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.wallet.destination}
+			{/snippet}
 			<Input
 				inputType="text"
 				name="destination"
@@ -89,7 +97,9 @@
 
 	<div>
 		<Value>
-			<svelte:fragment slot="label">{$i18n.wallet.icp_amount}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.wallet.icp_amount}
+			{/snippet}
 			<Input
 				name="amount"
 				inputType="currency"

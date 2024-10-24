@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
@@ -12,11 +14,13 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import type { CanisterData } from '$lib/types/canister';
 
-	$: $missionControlStore,
-		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	run(() => {
+		$missionControlStore,
+			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	});
 
-	let missionControlData: CanisterData | undefined = undefined;
-	let orbiterData: CanisterData | undefined = undefined;
+	let missionControlData: CanisterData | undefined = $state(undefined);
+	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
 
 {#if nonNullish($missionControlStore)}

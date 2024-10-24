@@ -7,9 +7,13 @@
 	import type { Log } from '$lib/types/log';
 	import { formatToDate } from '$lib/utils/date.utils';
 
-	export let log: Log;
+	interface Props {
+		log: Log;
+	}
 
-	let expand = false;
+	let { log }: Props = $props();
+
+	let expand = $state(false);
 </script>
 
 <tr>
@@ -20,7 +24,7 @@
 			class="text"
 			class:rotate={expand}
 			aria-label={$i18n.functions.expand}
-			on:click={() => (expand = !expand)}><IconChevron /></button
+			onclick={() => (expand = !expand)}><IconChevron /></button
 		>
 		<div class:expand>
 			{log.message}

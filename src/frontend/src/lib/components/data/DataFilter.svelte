@@ -1,13 +1,15 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { listParamsStore } from '$lib/stores/data.store';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	let matcher = $listParamsStore.filter.matcher ?? '';
-	let owner = $listParamsStore.filter.owner ?? '';
+	let matcher = $state($listParamsStore.filter.matcher ?? '');
+	let owner = $state($listParamsStore.filter.owner ?? '');
 
-	let visible: boolean | undefined;
+	let visible: boolean = $state(false);
 
 	const apply = () => {
 		listParamsStore.setFilter({
@@ -18,22 +20,26 @@
 		visible = false;
 	};
 
-	$: visible,
-		(() => {
-			if (visible) {
-				return;
-			}
+	run(() => {
+		visible,
+			(() => {
+				if (visible) {
+					return;
+				}
 
-			// Avoid glitch
-			setTimeout(() => {
-				matcher = $listParamsStore.filter.matcher ?? '';
-				owner = $listParamsStore.filter.owner ?? '';
-			}, 250);
-		})();
+				// Avoid glitch
+				setTimeout(() => {
+					matcher = $listParamsStore.filter.matcher ?? '';
+					owner = $listParamsStore.filter.owner ?? '';
+				}, 250);
+			})();
+	});
 </script>
 
 <PopoverApply ariaLabel={$i18n.filter.title} on:click={apply} bind:visible>
-	<IconFilter size="20px" slot="icon" />
+	{#snippet icon()}
+		<IconFilter size="20px" />
+	{/snippet}
 
 	<label for="filter-keys">{$i18n.filter.filter_keys}</label>
 

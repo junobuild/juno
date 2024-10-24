@@ -1,6 +1,10 @@
 <!-- source: https://dfinity.frontify.com/d/XzkdhhDptijE/dfinity-brand-guide#/internet-computer/logo -->
 <script lang="ts">
-	export let size = '24px';
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '24px' }: Props = $props();
 </script>
 
 <svg

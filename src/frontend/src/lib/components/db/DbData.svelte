@@ -73,8 +73,7 @@
 	const { store: paginationStore, setItems }: PaginationContext<DocType> =
 		getContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY);
 
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
+	let collection: string | undefined = $derived($store.rule?.[0]);
 </script>
 
 <Data on:junoCloseData={resetData}>
@@ -82,5 +81,7 @@
 	<Doc />
 	<DocForm />
 
-	<DataCount slot="count" />
+	{#snippet count()}
+		<DataCount />
+	{/snippet}
 </Data>

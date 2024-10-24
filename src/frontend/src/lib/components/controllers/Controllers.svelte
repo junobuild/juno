@@ -16,22 +16,22 @@
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
 
-	export let list: () => Promise<[Principal, Controller][]>;
-	export let remove: (params: {
-		missionControlId: Principal;
-		controller: Principal;
-	}) => Promise<void>;
-	export let add: (
-		params: {
-			missionControlId: Principal;
-		} & SetControllerParams
-	) => Promise<void>;
-	export let segment: CanisterSegmentWithLabel;
+	interface Props {
+		list: () => Promise<[Principal, Controller][]>;
+		remove: (params: { missionControlId: Principal; controller: Principal }) => Promise<void>;
+		add: (
+			params: {
+				missionControlId: Principal;
+			} & SetControllerParams
+		) => Promise<void>;
+		segment: CanisterSegmentWithLabel;
+		// The canister and user are controllers of the mission control but not added in its state per default
+		extraControllers?: [Principal, Controller | undefined][];
+	}
 
-	// The canister and user are controllers of the mission control but not added in its state per default
-	export let extraControllers: [Principal, Controller | undefined][] = [];
+	let { list, remove, add, segment, extraControllers = [] }: Props = $props();
 
-	let controllers: [Principal, Controller | undefined][] = [];
+	let controllers: [Principal, Controller | undefined][] = $state([]);
 
 	const load = async () => {
 		try {
@@ -46,9 +46,9 @@
 
 	onMount(async () => await load());
 
-	let visibleDelete = false;
-	let visibleInfo = false;
-	let selectedController: [Principal, Controller | undefined] | undefined;
+	let visibleDelete = $state(false);
+	let visibleInfo = $state(false);
+	let selectedController: [Principal, Controller | undefined] | undefined = $state();
 
 	const canEdit = (controllerId: Principal): boolean =>
 		nonNullish($authStore.identity) &&
@@ -62,7 +62,7 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="tools" />
+				<th class="tools"></th>
 				<th class="controller"> {$i18n.controllers.title} </th>
 				<th class="profile"> {$i18n.controllers.profile} </th>
 				<th class="scope"> {$i18n.controllers.scope} </th>

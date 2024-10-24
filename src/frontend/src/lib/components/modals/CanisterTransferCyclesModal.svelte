@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run, preventDefault } from 'svelte/legacy';
+
 	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
@@ -17,31 +19,38 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let canisterId: Principal;
-	export let segment: 'satellite' | 'analytics' | 'mission_control';
-	export let currentCycles: bigint;
-	export let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
+	interface Props {
+		canisterId: Principal;
+		segment: 'satellite' | 'analytics' | 'mission_control';
+		currentCycles: bigint;
+		transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
+	}
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let { canisterId, segment, currentCycles, transferFn }: Props = $props();
+
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	let tCycles: string;
+	let tCycles: string = $state();
 
-	let cycles: bigint;
-	$: (() => {
-		cycles = BigInt(parseFloat(tCycles ?? 0) * ONE_TRILLION);
-	})();
+	let cycles: bigint = $state();
+	run(() => {
+		(() => {
+			cycles = BigInt(parseFloat(tCycles ?? 0) * ONE_TRILLION);
+		})();
+	});
 
-	let destinationId: string | undefined;
+	let destinationId: string | undefined = $state();
 
-	let validConfirm = false;
-	$: validConfirm =
-		cycles > 0 && cycles <= currentCycles && nonNullish(destinationId) && destinationId !== '';
+	let validConfirm = $state(false);
+	run(() => {
+		validConfirm =
+			cycles > 0 && cycles <= currentCycles && nonNullish(destinationId) && destinationId !== '';
+	});
 
-	let remainingCycles: bigint;
-	$: remainingCycles = currentCycles - cycles > 0 ? currentCycles - cycles : 0n;
+	let remainingCycles: bigint = $derived(currentCycles - cycles > 0 ? currentCycles - cycles : 0n);
 
 	const onSubmit = async () => {
 		if (!$authSignedInStore) {
@@ -95,14 +104,14 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<p>{$i18n.canisters.transfer_cycles_done}</p>
-			<button on:click={close}>{$i18n.core.close}</button>
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.canisters.transfer_cycles_in_progress}</p>
 		</SpinnerModal>
 	{:else}
-		<form on:submit|preventDefault={onSubmit}>
+		<form onsubmit={preventDefault(onSubmit)}>
 			<h2>
 				{$i18n.canisters.transfer_cycles}
 			</h2>
@@ -127,13 +136,17 @@
 			</p>
 
 			<Value>
-				<svelte:fragment slot="label">{$i18n.canisters.destination}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.canisters.destination}
+				{/snippet}
 
 				<CanistersPicker excludeSegmentId={canisterId} bind:segmentIdText={destinationId} />
 			</Value>
 
 			<Value ref="cycles">
-				<svelte:fragment slot="label">T Cycles</svelte:fragment>
+				{#snippet label()}
+					T Cycles
+				{/snippet}
 
 				<Input
 					name="cycles"

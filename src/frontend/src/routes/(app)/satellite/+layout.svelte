@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { nonNullish, debounce } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
@@ -10,6 +12,11 @@
 	import { Color } from '$lib/types/theme';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 	import { applyColor } from '$lib/utils/theme.utils';
+	interface Props {
+		children?: import('svelte').Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	onMount(() => applyColor(Color.LAVENDER_BLUE));
 
@@ -24,10 +31,14 @@
 		100
 	);
 
-	$: $satelliteStore, debounceSetTitle();
+	run(() => {
+		$satelliteStore, debounceSetTitle();
+	});
 
-	$: $missionControlStore,
-		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	run(() => {
+		$missionControlStore,
+			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	});
 </script>
 
-<slot />
+{@render children?.()}

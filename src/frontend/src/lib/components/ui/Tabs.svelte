@@ -7,22 +7,28 @@
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import { keyOf } from '$lib/utils/utils';
 
-	export let help: string;
+	interface Props {
+		help: string;
+		info?: import('svelte').Snippet;
+		children?: import('svelte').Snippet;
+	}
+
+	let { help, info, children }: Props = $props();
 
 	const { store }: TabsContext = getContext<TabsContext>(TABS_CONTEXT_KEY);
 
 	const selectTab = (tabId: symbol) => store.update((data) => ({ ...data, tabId }));
 </script>
 
-<slot name="info" />
+{@render info?.()}
 
-<div class="tabs" use:onIntersection on:junoIntersecting={onLayoutTitleIntersection}>
+<div class="tabs" use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
 	{#each $store.tabs as { labelKey, id }}
 		{@const [group, key] = labelKey.split('.')}
 		{@const obj = keyOf({ obj: $i18n, key: group })}
 		{@const text = keyOf({ obj, key })}
 
-		<button class="text" on:click={() => selectTab(id)} class:selected={$store.tabId === id}
+		<button class="text" onclick={() => selectTab(id)} class:selected={$store.tabId === id}
 			>{text}
 		</button>
 	{/each}
@@ -30,7 +36,7 @@
 	<ExternalLink href={help}>{$i18n.core.help}</ExternalLink>
 </div>
 
-<slot />
+{@render children?.()}
 
 <style lang="scss">
 	@mixin button {

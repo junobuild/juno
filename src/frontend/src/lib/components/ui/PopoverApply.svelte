@@ -1,27 +1,36 @@
 <script lang="ts">
+	import { createBubbler, stopPropagation } from 'svelte/legacy';
+
+	const bubble = createBubbler();
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let ariaLabel: string;
-	export let visible: boolean | undefined;
-	export let direction: 'ltr' | 'rtl' = 'rtl';
+	interface Props {
+		ariaLabel: string;
+		visible: boolean | undefined;
+		direction?: 'ltr' | 'rtl';
+		icon?: import('svelte').Snippet;
+		children?: import('svelte').Snippet;
+	}
 
-	let button: HTMLButtonElement | undefined;
+	let { ariaLabel, visible = $bindable(), direction = 'rtl', icon, children }: Props = $props();
+
+	let button: HTMLButtonElement | undefined = $state();
 </script>
 
 <button
 	class="icon"
 	aria-label={ariaLabel}
 	type="button"
-	on:click={() => (visible = true)}
-	bind:this={button}><slot name="icon" /></button
+	onclick={() => (visible = true)}
+	bind:this={button}>{@render icon?.()}</button
 >
 
 <Popover bind:visible anchor={button} {direction}>
 	<div class="container">
-		<slot />
+		{@render children?.()}
 
-		<button class="apply" type="button" on:click|stopPropagation>
+		<button class="apply" type="button" onclick={stopPropagation(bubble('click'))}>
 			{$i18n.core.apply}
 		</button>
 	</div>

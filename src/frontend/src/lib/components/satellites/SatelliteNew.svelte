@@ -9,7 +9,11 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { emit } from '$lib/utils/events.utils';
 
-	export let row = false;
+	interface Props {
+		row?: boolean;
+	}
+
+	let { row = false }: Props = $props();
 
 	const createSatellite = async () => {
 		busy.start();

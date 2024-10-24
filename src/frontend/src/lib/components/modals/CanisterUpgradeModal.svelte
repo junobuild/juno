@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
+
 	import { nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
 	import { createEventDispatcher } from 'svelte';
@@ -12,22 +14,39 @@
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let currentVersion: string;
-	export let newerReleases: string[];
-	export let build: BuildType | undefined = undefined;
-	export let segment: 'satellite' | 'mission_control' | 'orbiter';
-	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
+	interface Props {
+		currentVersion: string;
+		newerReleases: string[];
+		build?: BuildType | undefined;
+		segment: 'satellite' | 'mission_control' | 'orbiter';
+		upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
+		intro?: import('svelte').Snippet;
+	}
 
-	let buildExtended = false;
-	$: buildExtended = nonNullish(build) && build === 'extended';
+	let {
+		currentVersion,
+		newerReleases,
+		build = undefined,
+		segment,
+		upgrade,
+		intro
+	}: Props = $props();
 
-	let steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error';
-	$: steps = buildExtended ? 'confirm' : 'init';
+	let buildExtended = $state(false);
+	run(() => {
+		buildExtended = nonNullish(build) && build === 'extended';
+	});
+
+	let steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' =
+		$state();
+	run(() => {
+		steps = buildExtended ? 'confirm' : 'init';
+	});
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	let wasm: Wasm | undefined;
+	let wasm: Wasm | undefined = $state();
 
 	const onSelect = ({
 		detail: { steps: s, wasm: w }
@@ -57,7 +76,7 @@
 					])}
 				/>
 			</p>
-			<button on:click={close}>{$i18n.core.close}</button>
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'download'}
 		<SpinnerModal>
@@ -77,7 +96,9 @@
 		/>
 	{:else if steps === 'confirm'}
 		<ConfirmUpgradeVersion {segment} on:junoClose on:junoContinue={() => (steps = 'init')}>
-			<slot name="intro" slot="intro" />
+			{#snippet intro()}
+				{@render intro?.()}
+			{/snippet}
 		</ConfirmUpgradeVersion>
 	{:else}
 		<SelectUpgradeVersion
@@ -89,7 +110,9 @@
 			on:junoClose
 			on:junoBack={() => (steps = 'confirm')}
 		>
-			<slot name="intro" slot="intro" />
+			{#snippet intro()}
+				{@render intro?.()}
+			{/snippet}
 		</SelectUpgradeVersion>
 	{/if}
 </Modal>

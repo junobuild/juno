@@ -3,10 +3,14 @@
 	import { onMount } from 'svelte';
 	import { sanitize } from '$lib/utils/html.utils';
 
-	export let text: string | undefined = undefined;
+	interface Props {
+		text?: string | undefined;
+	}
+
+	let { text = undefined }: Props = $props();
 
 	// force to rerender after SSR
-	let mounted = false;
+	let mounted = $state(false);
 	onMount(() => (mounted = true));
 </script>
 

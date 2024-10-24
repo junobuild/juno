@@ -25,7 +25,14 @@
 		description?: Snippet;
 	}
 
-	let { docKey = undefined, doc = undefined, action, title, description: descriptionSnippet, children }: Props = $props();
+	let {
+		docKey = undefined,
+		doc = undefined,
+		action,
+		title,
+		description: descriptionSnippet,
+		children
+	}: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -117,7 +124,13 @@
 	});
 </script>
 
-<DataUpload on:junoUpload={upload} disabled={!notEmptyString(key)} {action} {title} description={descriptionSnippet}>
+<DataUpload
+	on:junoUpload={upload}
+	disabled={!notEmptyString(key)}
+	{action}
+	{title}
+	description={descriptionSnippet}
+>
 	{#if mode === 'create'}
 		<div>
 			<Value ref="doc-key">

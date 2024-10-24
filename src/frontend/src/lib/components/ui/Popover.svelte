@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { quintOut } from 'svelte/easing';
 	import type { Snippet } from 'svelte';
-	import { run, createBubbler, stopPropagation } from 'svelte/legacy';
+	import { quintOut } from 'svelte/easing';
+	import { run, stopPropagation } from 'svelte/legacy';
 	import { fade, scale } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -26,8 +26,6 @@
 		backdrop = 'light',
 		children
 	}: Props = $props();
-
-	const bubble = createBubbler();
 
 	let bottom: number | undefined = $state();
 	let left: number | undefined = $state();
@@ -61,7 +59,6 @@
 				? `--popover-right: ${innerWidth - right}px;`
 				: `--popover-left: ${left}px;`
 		}`}
-		onintroend={bubble('introend')}
 	>
 		<div
 			class="backdrop"

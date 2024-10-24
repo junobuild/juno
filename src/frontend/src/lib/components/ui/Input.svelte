@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { run, createBubbler } from 'svelte/legacy';
-	import { isNullish } from '@dfinity/utils';
 
 	const dispatch = createEventDispatcher();
 

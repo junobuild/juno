@@ -139,11 +139,13 @@
 					</CollectionEmpty>
 				{/if}
 
-				{#each $paginationStore.items as [key, doc]}
-					<button class="text action" onclick={() => docsStore.set({ key, data: doc })}
-						><span>{key}</span></button
-					>
-				{/each}
+				{#if $paginationStore.items.length > 0}
+					{#each $paginationStore.items as [key, doc]}
+						<button class="text action" onclick={() => docsStore.set({ key, data: doc })}
+							><span>{key}</span></button
+						>
+					{/each}
+				{/if}
 
 				{#if !empty}
 					<DataPaginator />

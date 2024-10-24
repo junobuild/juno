@@ -68,7 +68,7 @@
 	onMount(async () => (worker = await initAuthWorker()));
 
 	run(() => {
-		worker?.syncAuthIdle($authStore);
+		worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
 	});
 </script>
 

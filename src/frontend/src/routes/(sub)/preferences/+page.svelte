@@ -10,7 +10,7 @@
 	import type { Languages } from '$lib/types/languages';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 
-	let lang: Languages = $state();
+	let lang: Languages = $state('en');
 
 	let remainingTimeMilliseconds: number | undefined = $derived($authRemainingTimeStore);
 </script>

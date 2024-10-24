@@ -14,7 +14,8 @@
 	import { satellitesStore } from '$lib/stores/satellite.store';
 
 	run(() => {
-		(async () => await loadSatellites({ missionControl: $missionControlStore }))();
+		$missionControlStore,
+			(async () => await loadSatellites({ missionControl: $missionControlStore }))();
 	});
 
 	let loading = $state(true);

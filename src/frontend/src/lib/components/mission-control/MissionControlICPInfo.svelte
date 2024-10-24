@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { createBubbler } from 'svelte/legacy';
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
+	import { createBubbler } from 'svelte/legacy';
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

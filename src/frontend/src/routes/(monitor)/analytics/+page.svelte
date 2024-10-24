@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { setContext } from 'svelte';
+	import { setContext, untrack } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
 	import Analytics from '$lib/components/analytics/Analytics.svelte';
@@ -29,28 +29,25 @@
 		labelKey: 'analytics.dashboard'
 	};
 
-	let tabs: Tab[] = $state([tabDashboard]);
-	run(() => {
-		tabs = [
-			tabDashboard,
-			...(nonNullish($orbiterStore)
-				? [
-						{
-							id: Symbol('2'),
-							labelKey: 'analytics.overview'
-						},
-						{
-							id: Symbol('3'),
-							labelKey: 'core.settings'
-						}
-					]
-				: [])
-		];
-	});
+	let tabs: Tab[] = $derived([
+		tabDashboard,
+		...(nonNullish($orbiterStore)
+			? [
+					{
+						id: Symbol('2'),
+						labelKey: 'analytics.overview'
+					},
+					{
+						id: Symbol('3'),
+						labelKey: 'core.settings'
+					}
+				]
+			: [])
+	]);
 
 	const store = writable<TabsStore>({
-		tabId: initTabId(tabs),
-		tabs
+		tabId: untrack(() => initTabId(tabs)),
+		tabs: untrack(() => tabs)
 	});
 
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {

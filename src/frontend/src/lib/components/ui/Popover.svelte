@@ -1,11 +1,11 @@
 <script lang="ts">
-	import { run, createBubbler, stopPropagation } from 'svelte/legacy';
 	import { quintOut } from 'svelte/easing';
+	import type { Snippet } from 'svelte';
+	import { run, createBubbler, stopPropagation } from 'svelte/legacy';
 	import { fade, scale } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		anchor?: HTMLElement | undefined;

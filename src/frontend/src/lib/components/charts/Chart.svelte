@@ -15,8 +15,8 @@
 
 	let ticks: string[] = $derived(Object.values(chartsData).map(({ x: a }) => a));
 
-	const formatTick = (d: string): string => {
-		const date = new Date(parseInt(d));
+	const formatTick = (d: string | number): string | number => {
+		const date = new Date(parseInt(`${d}`));
 		const day = date.getDate();
 
 		return day % 3 === 0 ? formatToDay(date) : '';

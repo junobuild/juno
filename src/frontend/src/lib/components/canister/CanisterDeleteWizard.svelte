@@ -45,12 +45,11 @@
 		})();
 	});
 
-	let cyclesToDeposit: bigint = $derived(currentCycles - cycles > 0 ? currentCycles - cycles : 0n);
+	let cyclesToDeposit: bigint = $derived(
+		currentCycles - (cycles ?? 0n) > 0 ? currentCycles - (cycles ?? 0n) : 0n
+	);
 
-	let validConfirm = $state(false);
-	run(() => {
-		validConfirm = cycles > 0 && cycles <= currentCycles;
-	});
+	let validConfirm = $derived(cycles > 0 && cycles <= currentCycles);
 
 	const onSubmit = async () => {
 		if (!$authSignedInStore) {

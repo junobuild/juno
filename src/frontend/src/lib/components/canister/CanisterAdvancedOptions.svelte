@@ -12,9 +12,7 @@
 </script>
 
 <Collapsible>
-	{#snippet header()}
-		{$i18n.canisters.advanced_options}
-	{/snippet}
+	<svelte:fragment slot="header">{$i18n.canisters.advanced_options}</svelte:fragment>
 
 	<CanisterSubnets bind:subnetId />
 </Collapsible>

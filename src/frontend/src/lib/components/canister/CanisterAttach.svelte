@@ -34,6 +34,7 @@
 	});
 
 	run(() => {
+		// Svelte v5
 		canisterId, (() => assertForm())();
 	});
 

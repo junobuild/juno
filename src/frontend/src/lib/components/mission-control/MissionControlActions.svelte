@@ -27,7 +27,8 @@
 		canister = syncCanister;
 	};
 
-	const onTransferCycles = () => {
+	// eslint-disable-next-line require-await
+	const onTransferCycles = async () => {
 		close();
 
 		emit({

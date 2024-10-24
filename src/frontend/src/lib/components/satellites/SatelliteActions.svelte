@@ -32,7 +32,8 @@
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
-	const onTransferCycles = () => {
+	// eslint-disable-next-line require-await
+	const onTransferCycles = async () => {
 		close();
 
 		emit({

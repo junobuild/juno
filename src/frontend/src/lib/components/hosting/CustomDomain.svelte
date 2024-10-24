@@ -103,7 +103,7 @@
 			? undefined
 			: registrationState === null
 				? null
-				: keyOf({ obj: $i18n.hosting, key: registrationState.toLowerCase() })
+				: keyOf({ obj: $i18n.hosting, key: (registrationState as string).toLowerCase() })
 	);
 
 	const dispatch = createEventDispatcher();

@@ -15,10 +15,9 @@
 
 	let { subnetId = $bindable() }: Props = $props();
 
-	let filteredSubnets: Subnet[] = $state();
-	run(() => {
-		filteredSubnets = subnets.filter(({ subnetId }) => subnetId !== JUNO_SUBNET_ID);
-	});
+	let filteredSubnets: Subnet[] = $derived(
+		subnets.filter(({ subnetId }) => subnetId !== JUNO_SUBNET_ID)
+	);
 
 	let extendedSubnets: Subnet[] = $state([]);
 
@@ -39,6 +38,7 @@
 	};
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		filteredSubnets, (async () => await extendSubnets())();
 	});
 </script>

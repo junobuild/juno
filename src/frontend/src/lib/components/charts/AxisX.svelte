@@ -26,7 +26,7 @@
 		tickMarks = false,
 		baseline = false,
 		snapTicks = false,
-		formatTick = (d: string) => d,
+		formatTick = (d: string | number): string | number => d,
 		ticks = undefined,
 		xTick = 0,
 		yTick = 16

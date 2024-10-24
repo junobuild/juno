@@ -25,7 +25,7 @@
 	let {
 		gridlines = true,
 		tickMarks = false,
-		formatTick = (d: number) => d,
+		formatTick = (d: number | string): string | number => d,
 		ticks = 4,
 		xTick = 0,
 		yTick = 0,

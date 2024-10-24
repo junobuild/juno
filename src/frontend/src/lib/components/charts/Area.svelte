@@ -4,9 +4,7 @@
  -->
 <script lang="ts">
 	import { getContext } from 'svelte';
-	import { run } from 'svelte/legacy';
-	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
-	// @ts-ignore
+
 	const { data, xGet, yGet, xScale, yScale, extents } = getContext('LayerCake');
 
 	interface Props {
@@ -17,14 +15,13 @@
 
 	let path = $derived(`M${$data.map((d: number) => `${$xGet(d)},${$yGet(d)}`).join('L')}`);
 
-	let area: string = $state();
+	let yRange = $derived(yScale.range());
 
-	run(() => {
-		const yRange = $yScale.range();
-		area = `${path}L${$xScale($extents.x ? $extents.x[1] : 0)},${yRange[0]}L${$xScale(
+	let area = $derived(
+		`${path}L${$xScale($extents.x ? $extents.x[1] : 0)},${yRange[0]}L${$xScale(
 			$extents.x ? $extents.x[0] : 0
-		)},${yRange[0]}Z`;
-	});
+		)},${yRange[0]}Z`
+	);
 </script>
 
 <path class="path-area" d={area} {fill} />

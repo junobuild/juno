@@ -83,6 +83,7 @@
 	const debouncePageViews = debounce(loadAnalytics);
 
 	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
 		$orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
 	});
 

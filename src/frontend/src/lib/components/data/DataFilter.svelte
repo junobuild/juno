@@ -9,7 +9,8 @@
 
 	let visible: boolean = $state(false);
 
-	const apply = () => {
+	// eslint-disable-next-line require-await
+	const apply = async () => {
 		listParamsStore.setFilter({
 			matcher,
 			owner

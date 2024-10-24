@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createBubbler } from 'svelte/legacy';
 	import { getContext } from 'svelte';
+	import { createBubbler } from 'svelte/legacy';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 

@@ -33,7 +33,7 @@
 	};
 </script>
 
-<LaunchpadButton on:click={createSatellite} primary {row}>
+<LaunchpadButton onclick={createSatellite} primary {row}>
 	<div class="new" class:row>
 		<IconNew size={row ? '20px' : '48px'} />
 

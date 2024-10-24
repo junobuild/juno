@@ -19,7 +19,7 @@
 		description?: Snippet;
 	}
 
-	let { asset = undefined, action, title, description, children }: Props = $props();
+	let { asset = undefined, action, title, description }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 

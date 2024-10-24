@@ -30,8 +30,7 @@
 		doc = undefined,
 		action,
 		title,
-		description: descriptionSnippet,
-		children
+		description: descriptionSnippet
 	}: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);

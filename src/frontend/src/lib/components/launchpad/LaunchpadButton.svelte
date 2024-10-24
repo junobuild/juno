@@ -8,12 +8,13 @@
 		disabled?: boolean;
 		primary?: boolean;
 		row?: boolean;
+		onclick: () => Promise<void>;
 	}
 
-	let { children, summary, disabled, primary = false, row = false }: Props = $props();
+	let { children, summary, disabled, primary = false, row = false, onclick }: Props = $props();
 </script>
 
-<button class="article" on:click {disabled} class:primary class:row>
+<button class="article" {onclick} {disabled} class:primary class:row>
 	{#if nonNullish(summary)}
 		<div class="summary">
 			{@render summary()}

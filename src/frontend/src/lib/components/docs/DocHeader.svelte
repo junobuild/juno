@@ -92,14 +92,16 @@
 				{#snippet title()}
 					{$i18n.document.replace_document}
 				{/snippet}
-				<Html
-					text={i18nFormat($i18n.document.replace_description, [
-						{
-							placeholder: '{0}',
-							value: collection ?? ''
-						}
-					])}
-				/>
+				{#snippet description()}
+					<Html
+						text={i18nFormat($i18n.document.replace_description, [
+							{
+								placeholder: '{0}',
+								value: collection ?? ''
+							}
+						])}
+					/>
+				{/snippet}
 			</DocUpload>
 
 			<button class="menu" type="button" onclick={download}

@@ -1,12 +1,18 @@
-<!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fade, scale } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+
+	interface Props {
+		title?: Snippet;
+		children: Snippet;
+	}
+
+	let { children, title }: Props = $props();
 
 	let visible = true;
 
@@ -20,9 +26,6 @@
 		visible = false;
 		dispatch('junoClose');
 	};
-
-	const stickyFooter: boolean = $$slots.stickyFooter !== undefined;
-	const footer: boolean = ($$slots.footer ?? false) || stickyFooter;
 </script>
 
 {#if visible}
@@ -41,28 +44,17 @@
 			role="button"
 			tabindex="-1"
 		/>
-		<div
-			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
-			class="wrapper"
-			class:flex={!stickyFooter}
-		>
+		<div transition:scale={{ delay: 25, duration: 150, easing: quintOut }} class="wrapper flex">
 			<div class="toolbar">
-				<h3 id="modalTitle"><slot name="title" /></h3>
+				<h3 id="modalTitle">{@render title?.()}</h3>
 				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} disabled={$isBusy}
 					><IconClose /></button
 				>
 			</div>
 
 			<div class="content" id="modalContent">
-				<slot />
+				{@render children()}
 			</div>
-
-			{#if footer}
-				<footer class:sticky={stickyFooter}>
-					<slot name="footer" />
-					<slot name="stickyFooter" />
-				</footer>
-			{/if}
 		</div>
 	</div>
 {/if}
@@ -148,13 +140,5 @@
 		padding: 0.75rem 2.25rem;
 
 		background: rgba(var(--color-primary-rgb), 0.8);
-	}
-
-	.sticky {
-		position: absolute;
-		top: auto;
-		bottom: 0;
-		left: 0;
-		right: 0;
 	}
 </style>

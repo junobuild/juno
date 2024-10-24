@@ -3,6 +3,9 @@
 	import { isNullish } from '@dfinity/utils';
 	import { afterUpdate, beforeUpdate, createEventDispatcher, onDestroy } from 'svelte';
 
+	// TODO: migrate to Svelte v5
+	// e.g. afterUpdate cannot be used in runes mode
+
 	/**
 	 * Source: @dfinity/gix-components
 	 */

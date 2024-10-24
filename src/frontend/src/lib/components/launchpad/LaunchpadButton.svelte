@@ -1,23 +1,27 @@
-<!-- @migration-task Error while migrating Svelte code: This migration would change the name of a slot making the component unusable -->
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Snippet } from 'svelte';
 
-	export let disabled: boolean | undefined = undefined;
-	export let primary = false;
-	export let row = false;
+	interface Props {
+		summary?: Snippet;
+		children: Snippet;
+		disabled?: boolean;
+		primary?: boolean;
+		row?: boolean;
+	}
 
-	let summary = nonNullish($$slots.summary);
+	let { children, summary, disabled, primary = false, row = false }: Props = $props();
 </script>
 
 <button class="article" on:click {disabled} class:primary class:row>
-	{#if summary}
+	{#if nonNullish(summary)}
 		<div class="summary">
-			<slot name="summary" />
+			{@render summary()}
 		</div>
 	{/if}
 
-	<div class="content" class:only={!summary}>
-		<slot />
+	<div class="content" class:only={isNullish(summary)}>
+		{@render children()}
 	</div>
 </button>
 

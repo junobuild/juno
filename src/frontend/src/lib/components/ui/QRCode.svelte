@@ -9,6 +9,9 @@
 	import type { QrCreateClass } from '$lib/types/qr-creator';
 	import { Theme } from '$lib/types/theme';
 
+	// TODO: migrate to Svelte v5
+	// e.g. afterUpdate cannot be used in runes mode
+
 	export let ariaLabel: string | undefined = undefined;
 	export let value: string;
 
@@ -28,7 +31,8 @@
 	export let ecLevel: 'L' | 'M' | 'Q' | 'H' = 'H';
 
 	let label: string;
-	$: label = nonNullish(ariaLabel) && ariaLabel.length > 0 ? ariaLabel : value;
+	$: label =
+		ariaLabel !== undefined && nonNullish(ariaLabel) && ariaLabel.length > 0 ? ariaLabel : value;
 
 	let container: HTMLDivElement | undefined;
 	let size: { width: number } | undefined = undefined;

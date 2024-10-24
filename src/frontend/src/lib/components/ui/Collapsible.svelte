@@ -6,6 +6,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
+	// TODO: migrate to Svelte v5
+	// e.g. afterUpdate cannot be used in runes mode
+
 	export let id: string | undefined = undefined;
 	export let initiallyExpanded = false;
 	export let maxContentHeight: number | undefined = undefined;

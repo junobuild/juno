@@ -13,7 +13,7 @@
 
 	let { owner, created_at, updated_at, data } = $derived(user);
 
-	let provider = $derived(data);
+	let { provider } = $derived(data);
 </script>
 
 <tr>

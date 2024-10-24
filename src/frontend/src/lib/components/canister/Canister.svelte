@@ -11,41 +11,12 @@
 	import type {
 		CanisterIcStatus,
 		CanisterData,
-		CanisterStatus,
 		CanisterSyncStatus,
 		Segment
 	} from '$lib/types/canister';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { emit } from '$lib/utils/events.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
-
-	let canister: CanisterIcStatus | undefined = $state(undefined);
-
-	const syncCanister = ({ canister: c }: PostMessageDataResponse) => {
-		canister = c as CanisterIcStatus;
-		emit({ message: 'junoSyncCanister', detail: { canister } });
-	};
-
-	let worker: CyclesWorker | undefined = $state();
-
-	onMount(async () => (worker = await initCyclesWorker()));
-
-	onDestroy(() => worker?.stopCyclesTimer());
-
-	const restartCycles = ({
-		detail: { canisterId: syncCanisterId }
-	}: CustomEvent<{ canisterId: Principal }>) => {
-		if (syncCanisterId.toText() !== canisterId.toText()) {
-			return;
-		}
-
-		worker?.restartCyclesTimer([
-			{
-				canisterId: canisterId.toText(),
-				segment
-			}
-		]);
-	};
 
 	interface Props {
 		canisterId: Principal;
@@ -65,8 +36,16 @@
 		sync = $bindable(undefined)
 	}: Props = $props();
 
-	let status: CanisterStatus | undefined = $state();
-	let memorySize: bigint = $state();
+	let canister: CanisterIcStatus | undefined = $state(undefined);
+
+	const syncCanister = ({ canister: c }: PostMessageDataResponse) => {
+		canister = c as CanisterIcStatus;
+		emit({ message: 'junoSyncCanister', detail: { canister } });
+	};
+
+	let worker: CyclesWorker | undefined = $state(undefined);
+
+	onMount(async () => (worker = await initCyclesWorker()));
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
@@ -83,18 +62,39 @@
 					callback: syncCanister
 				}))();
 	});
-	run(() => {
-		({ data, sync } = canister ?? { data: undefined, sync: undefined });
+
+	onDestroy(() => worker?.stopCyclesTimer());
+
+	const restartCycles = ({
+		detail: { canisterId: syncCanisterId }
+	}: CustomEvent<{ canisterId: Principal }>) => {
+		if (syncCanisterId.toText() !== canisterId.toText()) {
+			return;
+		}
+
+		worker?.restartCyclesTimer([
+			{
+				canisterId: canisterId.toText(),
+				segment
+			}
+		]);
+	};
+
+	$effect(() => {
+		const c = canister ?? { data: undefined, sync: undefined };
+		data = c?.data;
+		sync = c?.sync;
 	});
-	run(() => {
-		({ status, memorySize } = data?.canister ?? {
+
+	let { status, memorySize } = $derived(
+		data?.canister ?? {
 			status: undefined,
 			memorySize: BigInt(0),
 			cycles: BigInt(0),
 			icp: 0,
 			warning: false
-		});
-	});
+		}
+	);
 </script>
 
 <svelte:window onjunoRestartCycles={restartCycles} />

@@ -30,44 +30,41 @@
 
 	let { type }: Props = $props();
 
-	let typeStorage = $state(false);
+	let typeStorage = $derived('Storage' in type);
 
-	let typeDatastore = $state(false);
+	let typeDatastore = $derived('Db' in type);
 
-	let collection: string = $state();
-	const initCollection = (initialCollection: string) => (collection = initialCollection);
+	let collection: string = $state($store.rule?.[0] ?? '');
 
-	let rule: Rule | undefined = $state();
-	const initRule = (initialRule: Rule | undefined) => (rule = initialRule);
+	let rule: Rule | undefined = $state($store.rule?.[1] ?? undefined);
 
-	let read: PermissionText = $state();
-	const initRead = (text: PermissionText) => (read = text);
+	let mode: 'new' | 'edit' = $derived(nonNullish(rule) ? 'edit' : 'new');
 
-	let write: PermissionText = $state();
-	const initWrite = (text: PermissionText) => (write = text);
+	let read: PermissionText = $state(permissionToText(rule?.read ?? PermissionManaged));
 
-	let memory: MemoryText = $state();
-	const initMemory = (text: MemoryText) => (memory = text);
+	let write: PermissionText = $state(permissionToText(rule?.write ?? PermissionManaged));
 
-	let currentImmutable: boolean = $state();
-	let immutable: boolean = $state();
+	// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
+	let memory: MemoryText = $state(
+		memoryToText(fromNullable(rule?.memory ?? []) ?? (mode === 'new' ? MemoryStable : MemoryHeap))
+	);
+
+	let currentImmutable: boolean | undefined = $state();
+	let immutable: boolean | undefined = $state();
 	const initMutable = (initialRule: Rule | undefined) => {
 		currentImmutable = !(fromNullable(initialRule?.mutable_permissions ?? []) ?? true);
 		immutable = currentImmutable;
 	};
+	$effect(() => initMutable($store.rule?.[1] ?? undefined));
 
 	let maxSize: number | undefined = $state();
 	const initMaxSize = (size: [] | [bigint]) => {
 		const tmp = fromNullable(size);
 		maxSize = nonNullish(tmp) ? Number(tmp) : undefined;
 	};
+	$effect(() => initMaxSize(rule?.max_size ?? []));
 
-	let maxCapacity: number | undefined = $state();
-	const initMaxCapacity = (capacity: [] | [number]) => {
-		maxCapacity = fromNullable(capacity);
-	};
-
-	let mode: 'new' | 'edit' = $state();
+	let maxCapacity: number | undefined = $state(fromNullable(rule?.max_capacity ?? []));
 
 	const dispatch = createEventDispatcher();
 
@@ -119,46 +116,7 @@
 		busy.stop();
 	};
 
-	let disabled = $state(false);
-	run(() => {
-		typeStorage = 'Storage' in type;
-	});
-	run(() => {
-		typeDatastore = 'Db' in type;
-	});
-	run(() => {
-		initCollection($store.rule?.[0] ?? '');
-	});
-	run(() => {
-		initRule($store.rule?.[1] ?? undefined);
-	});
-	run(() => {
-		initRead(permissionToText(rule?.read ?? PermissionManaged));
-	});
-	run(() => {
-		initWrite(permissionToText(rule?.write ?? PermissionManaged));
-	});
-	run(() => {
-		mode = rule !== undefined ? 'edit' : 'new';
-	});
-	run(() => {
-		initMemory(
-			// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
-			memoryToText(fromNullable(rule?.memory ?? []) ?? (mode === 'new' ? MemoryStable : MemoryHeap))
-		);
-	});
-	run(() => {
-		initMutable($store.rule?.[1] ?? undefined);
-	});
-	run(() => {
-		initMaxSize(rule?.max_size ?? []);
-	});
-	run(() => {
-		initMaxCapacity(rule?.max_capacity ?? []);
-	});
-	run(() => {
-		disabled = isNullish(collection) || collection === '';
-	});
+	let disabled = $derived(isNullish(collection) || collection === '');
 </script>
 
 <article>
@@ -279,7 +237,9 @@
 				<CollectionDelete {collection} {rule} {type} on:junoCollectionSuccess />
 			{/if}
 
-			<button type="submit" class="primary" {disabled}>{$i18n.core.submit}</button>
+			{#if !currentImmutable}
+				<button type="submit" class="primary" {disabled}>{$i18n.core.submit}</button>
+			{/if}
 		</div>
 	</form>
 </article>

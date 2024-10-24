@@ -5,7 +5,7 @@
 
 	interface Props {
 		menu?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { menu, children }: Props = $props();
@@ -31,7 +31,7 @@
 
 <div class="split-pane">
 	{@render menu?.()}
-	{@render children?.()}
+	{@render children()}
 </div>
 
 <style lang="scss">

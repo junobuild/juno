@@ -9,7 +9,7 @@
 
 	interface Props {
 		canister?: CanisterIcStatus | undefined;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { canister = undefined, children }: Props = $props();
@@ -26,6 +26,6 @@
 
 {#if enabled}
 	<div in:fade>
-		<button class="menu" onclick={bubble('click')}>{@render children?.()}</button>
+		<button class="menu" onclick={bubble('click')}>{@render children()}</button>
 	</div>
 {/if}

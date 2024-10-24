@@ -16,7 +16,7 @@
 		center?: boolean;
 		closeButton?: boolean;
 		backdrop?: 'light' | 'dark';
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let {
@@ -82,7 +82,7 @@
 				>
 			{/if}
 
-			{@render children?.()}
+			{@render children()}
 		</div>
 	</div>
 {/if}

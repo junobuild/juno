@@ -6,7 +6,7 @@
 		href: string;
 		icon?: Snippet;
 		title?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { href, icon, title, children }: Props = $props();
@@ -19,7 +19,7 @@
 		<h5>{@render title?.()}</h5>
 	</div>
 
-	<p>{@render children?.()}</p>
+	<p>{@render children()}</p>
 
 	<div class="icon">
 		<IconArrowOutward />

@@ -10,7 +10,7 @@
 	interface Props {
 		help: string;
 		info?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { help, info, children }: Props = $props();
@@ -36,7 +36,7 @@
 	<ExternalLink href={help}>{$i18n.core.help}</ExternalLink>
 </div>
 
-{@render children?.()}
+{@render children()}
 
 <style lang="scss">
 	@mixin button {

@@ -9,7 +9,7 @@
 	interface Props {
 		visible?: boolean;
 		title?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { visible = $bindable(false), title, children }: Props = $props();
@@ -23,7 +23,7 @@
 	<div class="content">
 		<h3>{@render title?.()}</h3>
 
-		{@render children?.()}
+		{@render children()}
 
 		<button type="button" onclick={stopPropagation(no)} disabled={$isBusy}>
 			{$i18n.core.no}

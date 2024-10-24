@@ -9,7 +9,7 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -29,7 +29,7 @@
 		<Navbar start="menu" launchpad />
 	{/snippet}
 
-	{@render children?.()}
+	{@render children()}
 
 	{#snippet footer()}
 		<Footer end="social" />

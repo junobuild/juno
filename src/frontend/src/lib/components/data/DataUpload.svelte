@@ -13,7 +13,7 @@
 		action?: Snippet;
 		title?: Snippet;
 		description?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 		confirm?: Snippet;
 	}
 
@@ -53,7 +53,7 @@
 			<input id="file" type="file" onchange={onChangeFile} disabled={$isBusy} />
 		</Value>
 
-		{@render children?.()}
+		{@render children()}
 
 		<div>
 			<button type="button" onclick={stopPropagation(close)} disabled={$isBusy}>

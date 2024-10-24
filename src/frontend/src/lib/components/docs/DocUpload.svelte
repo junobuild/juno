@@ -22,7 +22,7 @@
 		doc?: Doc | undefined;
 		action?: Snippet;
 		title?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { docKey = undefined, doc = undefined, action, title, children }: Props = $props();
@@ -125,7 +125,7 @@
 		{@render title?.()}
 	{/snippet}
 	{#snippet description()}
-		{@render children?.()}
+		{@render children()}
 	{/snippet}
 
 	{#if mode === 'create'}

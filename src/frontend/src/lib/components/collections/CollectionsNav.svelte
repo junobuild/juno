@@ -8,7 +8,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -46,7 +46,7 @@
 	{/if}
 
 	{#if collectionSelected}
-		{@render children?.()}
+		{@render children()}
 	{/if}
 </nav>
 

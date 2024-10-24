@@ -4,14 +4,14 @@
 	interface Props {
 		href: string;
 		ariaLabel: string;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { href, ariaLabel, children }: Props = $props();
 </script>
 
 <a class="menu" {href} aria-label={ariaLabel}>
-	{@render children?.()}
+	{@render children()}
 </a>
 
 <style lang="scss">

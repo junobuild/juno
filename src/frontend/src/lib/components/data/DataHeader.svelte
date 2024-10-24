@@ -6,7 +6,7 @@
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 		actions?: Snippet;
 	}
 
@@ -18,7 +18,7 @@
 
 {#if nonNullish($store?.data)}
 	<div class="actions" transition:fade>
-		<span>{@render children?.()}</span>
+		<span>{@render children()}</span>
 
 		<DataActions>
 			{@render actions?.()}

@@ -6,7 +6,7 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -17,7 +17,7 @@
 		<Navbar start="back" />
 	{/snippet}
 
-	{@render children?.()}
+	{@render children()}
 
 	{#snippet footer()}
 		<Footer themeToggle end={$authSignedInStore ? 'social' : 'lang'} />

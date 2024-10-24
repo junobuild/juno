@@ -4,7 +4,7 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -15,5 +15,5 @@
 {:else if $missionControlStore === null}
 	<p>Mission control not found.</p>
 {:else}
-	{@render children?.()}
+	{@render children()}
 {/if}

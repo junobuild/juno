@@ -8,7 +8,7 @@
 	interface Props {
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
 		title?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { deleteData, title, children }: Props = $props();
@@ -27,7 +27,7 @@
 		{#snippet label()}
 			{$i18n.collections.key}
 		{/snippet}
-		<p>{@render children?.()}</p>
+		<p>{@render children()}</p>
 	</Value>
 </DataDelete>
 

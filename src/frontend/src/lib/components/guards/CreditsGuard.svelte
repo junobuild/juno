@@ -20,7 +20,7 @@
 		detail: JunoModalDetail;
 		priceLabel: string;
 		insufficientFunds?: boolean;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { detail, priceLabel, insufficientFunds = $bindable(true), children }: Props = $props();
@@ -66,5 +66,5 @@
 {#if insufficientFunds}
 	<MissionControlICPInfo {accountIdentifier} on:click={() => dispatch('junoClose')} />
 {:else}
-	{@render children?.()}
+	{@render children()}
 {/if}

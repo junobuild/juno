@@ -6,7 +6,7 @@
 		href: string;
 		ariaLabel?: string;
 		underline?: boolean;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { href, ariaLabel = '', underline = false, children }: Props = $props();
@@ -20,7 +20,7 @@
 	title={ariaLabel}
 	class:underline
 >
-	{@render children?.()}
+	{@render children()}
 
 	<IconArrowOutward />
 </a>

@@ -8,7 +8,7 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -26,4 +26,4 @@
 	});
 </script>
 
-{@render children?.()}
+{@render children()}

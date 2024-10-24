@@ -8,7 +8,7 @@
 		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
 		button?: Snippet;
 		title?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { deleteData, button, title, children }: Props = $props();
@@ -22,7 +22,7 @@
 		{@render title?.()}
 	{/snippet}
 
-	<p>{@render children?.()}</p>
+	<p>{@render children()}</p>
 
 	<p>{$i18n.core.are_you_sure}</p>
 </DataDelete>

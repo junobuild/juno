@@ -11,7 +11,7 @@
 		topMargin?: 'default' | 'wide';
 		menu?: Snippet;
 		navbar?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 		footer?: Snippet;
 	}
 
@@ -50,7 +50,7 @@
 					{/if}
 				{/if}
 
-				{@render children?.()}
+				{@render children()}
 			</main>
 
 			{@render footer?.()}

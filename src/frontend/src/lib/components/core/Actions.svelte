@@ -6,7 +6,7 @@
 
 	interface Props {
 		visible?: boolean | undefined;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { visible = $bindable(false), children }: Props = $props();
@@ -23,7 +23,7 @@
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
-		{@render children?.()}
+		{@render children()}
 	</div>
 </Popover>
 

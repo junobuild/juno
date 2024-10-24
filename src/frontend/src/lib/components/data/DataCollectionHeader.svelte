@@ -9,7 +9,7 @@
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 		actions?: Snippet;
 	}
 
@@ -24,7 +24,7 @@
 </script>
 
 <div class="actions">
-	<span>{@render children?.()}</span>
+	<span>{@render children()}</span>
 
 	{#if collectionSelected}
 		<div transition:fade>

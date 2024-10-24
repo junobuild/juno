@@ -3,14 +3,14 @@
 
 	interface Props {
 		opaque?: boolean;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { opaque = false, children }: Props = $props();
 </script>
 
 <header class:opaque>
-	{@render children?.()}
+	{@render children()}
 </header>
 
 <style lang="scss">

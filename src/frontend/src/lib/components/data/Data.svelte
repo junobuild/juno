@@ -8,7 +8,7 @@
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 		count?: Snippet;
 	}
 
@@ -47,7 +47,7 @@
 
 	<Collections on:junoCollectionEdit={({ detail }) => selectionCollection(detail)} />
 
-	{@render children?.()}
+	{@render children()}
 
 	<CollectionsEmpty on:click={() => selectTab()} />
 </section>

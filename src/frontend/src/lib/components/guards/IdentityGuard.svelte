@@ -4,7 +4,7 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -13,5 +13,5 @@
 {#if $authStore.identity === null}
 	<p>{$i18n.core.not_logged_in}</p>
 {:else}
-	{@render children?.()}
+	{@render children()}
 {/if}

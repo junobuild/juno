@@ -16,7 +16,7 @@
 		asset?: AssetNoContent | undefined;
 		action?: Snippet;
 		title?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { asset = undefined, action, title, children }: Props = $props();
@@ -93,7 +93,7 @@
 		{@render title?.()}
 	{/snippet}
 	{#snippet description()}
-		{@render children?.()}
+		{@render children()}
 	{/snippet}
 	{#snippet confirm()}
 		{$i18n.asset.upload}

@@ -9,7 +9,7 @@
 		disabled?: boolean;
 		hidden?: boolean;
 		icon?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let {
@@ -30,7 +30,7 @@
 	class:hidden
 >
 	{@render icon?.()}
-	<span class="visually-hidden">{@render children?.()}</span>
+	<span class="visually-hidden">{@render children()}</span>
 </button>
 
 <style lang="scss">

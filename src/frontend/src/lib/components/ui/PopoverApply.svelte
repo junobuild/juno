@@ -11,7 +11,7 @@
 		visible: boolean | undefined;
 		direction?: 'ltr' | 'rtl';
 		icon?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { ariaLabel, visible = $bindable(), direction = 'rtl', icon, children }: Props = $props();
@@ -29,7 +29,7 @@
 
 <Popover bind:visible anchor={button} {direction}>
 	<div class="container">
-		{@render children?.()}
+		{@render children()}
 
 		<button class="apply" type="button" onclick={stopPropagation(bubble('click'))}>
 			{$i18n.core.apply}

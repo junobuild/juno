@@ -8,7 +8,7 @@
 		sync: CanisterSyncStatus | undefined;
 		rows?: number;
 		label?: Snippet;
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { sync, rows = 1, label, children }: Props = $props();
@@ -21,7 +21,7 @@
 		{@render label?.()}
 	{/snippet}
 	{#if ['synced', 'syncing'].includes(sync ?? '')}
-		{@render children?.()}
+		{@render children()}
 	{:else if sync === 'loading'}
 		{#each paragraphs as _}
 			<p><SkeletonText /></p>

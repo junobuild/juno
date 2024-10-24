@@ -9,7 +9,7 @@
 	import { layoutTitle } from '$lib/stores/layout.store';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -27,7 +27,7 @@
 		<Navbar start="logo" />
 	{/snippet}
 
-	{@render children?.()}
+	{@render children()}
 
 	{#snippet footer()}
 		<Footer themeToggle end={$authSignedInStore ? 'social' : 'lang'} />

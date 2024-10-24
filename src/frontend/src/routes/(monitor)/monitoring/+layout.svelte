@@ -5,7 +5,7 @@
 	import { layoutTitle } from '$lib/stores/layout.store';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -18,4 +18,4 @@
 	);
 </script>
 
-{@render children?.()}
+{@render children()}

@@ -4,7 +4,7 @@
 	import { confirmToCloseBrowser } from '$lib/utils/before-unload.utils';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -15,7 +15,7 @@
 
 <div class="msg">
 	<Spinner inline />
-	{@render children?.()}
+	{@render children()}
 </div>
 
 <style lang="scss">

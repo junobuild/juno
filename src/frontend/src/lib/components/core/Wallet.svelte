@@ -12,7 +12,7 @@
 		missionControlId: Principal;
 		balance?: bigint | undefined;
 		transactions?: TransactionWithId[];
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let {
@@ -62,4 +62,4 @@
 	onDestroy(() => worker?.stop());
 </script>
 
-{@render children?.()}
+{@render children()}

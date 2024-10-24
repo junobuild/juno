@@ -14,7 +14,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -77,7 +77,7 @@
 {#await init()}
 	<Spinner />
 {:then _}
-	{@render children?.()}
+	{@render children()}
 
 	<Overlays />
 {/await}

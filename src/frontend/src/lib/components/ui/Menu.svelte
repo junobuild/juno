@@ -5,7 +5,7 @@
 	import type { Snippet } from 'svelte';
 
 	interface Props {
-		children?: Snippet;
+		children: Snippet;
 	}
 
 	let { children }: Props = $props();
@@ -27,7 +27,7 @@
 			<Logo color="white" />
 		</div>
 
-		{@render children?.()}
+		{@render children()}
 	</div>
 </div>
 

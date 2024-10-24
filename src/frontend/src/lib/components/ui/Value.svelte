@@ -3,14 +3,14 @@
 
 	interface Props {
 		ref?: undefined | string;
-		label?: Snippet;
+		label: Snippet;
 		children: Snippet;
 	}
 
 	let { ref = undefined, label, children }: Props = $props();
 </script>
 
-<label for={ref}>{@render label?.()}:</label>
+<label for={ref}>{@render label()}:</label>
 <div>{@render children()}</div>
 
 <style lang="scss">

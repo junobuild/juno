@@ -4,7 +4,11 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { PrincipalText } from '$lib/types/itentity';
 
-	export let subnetId: PrincipalText | undefined;
+	interface Props {
+		subnetId: PrincipalText | undefined;
+	}
+
+	let { subnetId = $bindable() }: Props = $props();
 </script>
 
 <Collapsible>

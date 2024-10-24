@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { getContext, onDestroy } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import IconMore from '$lib/components/icons/IconMore.svelte';
 	import IconTimer from '$lib/components/icons/IconTimer.svelte';
@@ -21,7 +22,7 @@
 		await list();
 	};
 
-	let observe = getLocalStorageObserveLogs();
+	let observe = $state(getLocalStorageObserveLogs());
 	let timer: number | undefined;
 
 	const saveToggle = () =>
@@ -51,30 +52,37 @@
 		saveToggle();
 	};
 
-	$: observe, toggle();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		observe, toggle();
+	});
 
 	onDestroy(unwatch);
 
-	export let visible: boolean | undefined = undefined;
+	interface Props {
+		visible?: boolean | undefined;
+	}
 
-	let button: HTMLButtonElement | undefined;
+	let { visible = $bindable(false) }: Props = $props();
+
+	let button: HTMLButtonElement | undefined = $state();
 </script>
 
 <button
 	class="icon"
 	aria-label={$i18n.core.more}
 	type="button"
-	on:click={() => (visible = true)}
+	onclick={() => (visible = true)}
 	bind:this={button}><IconMore size="20px" /></button
 >
 
 <Popover bind:visible anchor={button} direction="ltr">
 	<div class="container">
-		<button class="menu" type="button" on:click={reload}
+		<button class="menu" type="button" onclick={reload}
 			><IconAutoRenew /> {$i18n.core.refresh}</button
 		>
 
-		<button class="menu" type="button" on:click={onToggle}
+		<button class="menu" type="button" onclick={onToggle}
 			>{#if observe}<IconTimer /> {$i18n.functions.auto_refresh_enabled}{:else}<IconTimerOff
 					size="20px"
 				/>

@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { run, stopPropagation } from 'svelte/legacy';
+
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
@@ -20,12 +22,16 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let satellite: Satellite;
-	export let customDomain: [string, CustomDomainType] | undefined;
-	export let displayState: Option<string>;
-	export let config: AuthenticationConfig | undefined;
+	interface Props {
+		satellite: Satellite;
+		customDomain: [string, CustomDomainType] | undefined;
+		displayState: Option<string>;
+		config: AuthenticationConfig | undefined;
+	}
 
-	let visible = false;
+	let { satellite, customDomain, displayState, config }: Props = $props();
+
+	let visible = $state(false);
 
 	const openDelete = () => {
 		if (isNullish(customDomain)) {
@@ -38,14 +44,16 @@
 		visible = true;
 	};
 
-	let deleteMainDomain = false;
-	$: deleteMainDomain =
-		nonNullish(customDomain?.[0]) &&
-		customDomain?.[0] ===
-			fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []);
+	let deleteMainDomain = $state(false);
+	run(() => {
+		deleteMainDomain =
+			nonNullish(customDomain?.[0]) &&
+			customDomain?.[0] ===
+				fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []);
+	});
 
-	let advancedOptions = false;
-	let skipDeleteDomain = false;
+	let advancedOptions = $state(false);
+	let skipDeleteDomain = $state(false);
 
 	const updateConfig = async () => {
 		if (isNullish(config)) {
@@ -120,11 +128,11 @@
 </script>
 
 <div class="tools">
-	<ButtonTableAction on:click={openDelete} ariaLabel={$i18n.hosting.delete} icon="delete" />
+	<ButtonTableAction onaction={openDelete} ariaLabel={$i18n.hosting.delete} icon="delete" />
 
 	{#if displayState !== undefined && displayState?.toLowerCase() !== 'available'}
 		<ButtonTableAction
-			on:click={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
+			onaction={() => openAddCustomDomain({ editDomainName: customDomain?.[0] })}
 			ariaLabel={$i18n.hosting.edit}
 			icon="edit"
 		/>
@@ -153,11 +161,11 @@
 		<p>{$i18n.hosting.delete_are_you_sure}</p>
 
 		<div class="toolbar">
-			<button type="button" on:click|stopPropagation={() => (visible = false)} disabled={$isBusy}>
+			<button type="button" onclick={stopPropagation(() => (visible = false))} disabled={$isBusy}>
 				{$i18n.core.no}
 			</button>
 
-			<button type="button" on:click|stopPropagation={deleteCustomDomain} disabled={$isBusy}>
+			<button type="button" onclick={stopPropagation(deleteCustomDomain)} disabled={$isBusy}>
 				{$i18n.core.yes}
 			</button>
 		</div>
@@ -165,7 +173,7 @@
 		{#if advancedOptions}
 			<hr />
 			<div class="checkbox">
-				<input type="checkbox" on:change={() => (skipDeleteDomain = !skipDeleteDomain)} />
+				<input type="checkbox" onchange={() => (skipDeleteDomain = !skipDeleteDomain)} />
 				<span>{$i18n.hosting.skip_delete_domain}</span>
 			</div>
 		{/if}

@@ -22,13 +22,13 @@
 {#if nonNullish($store.pages) && $store.pages > 0}
 	<nav class="pagination">
 		<button
-			on:click={prev}
+			onclick={prev}
 			class:visible={$store.selectedPage > 0}
 			aria-label="Previous page of data"
 			class="square"><IconNavigateNext navigate="previous" /></button
 		>
 		<button
-			on:click={next}
+			onclick={next}
 			class:visible={$store.pages > $store.selectedPage + 1}
 			aria-label="Next page of data"
 			class="square"><IconNavigateNext /></button

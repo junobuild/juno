@@ -5,7 +5,11 @@
 	import AnalyticsReferrers from '$lib/components/analytics/AnalyticsReferrers.svelte';
 	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
 
-	export let pageViews: AnalyticsPageViews;
+	interface Props {
+		pageViews: AnalyticsPageViews;
+	}
+
+	let { pageViews }: Props = $props();
 </script>
 
 {#if pageViews.metrics.total_page_views > 0}

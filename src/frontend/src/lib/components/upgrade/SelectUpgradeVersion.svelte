@@ -1,7 +1,8 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
-	import { createEventDispatcher, onMount } from 'svelte';
+	import { createEventDispatcher, onMount, type Snippet } from 'svelte';
+	import { preventDefault } from 'svelte/legacy';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { downloadWasm } from '$lib/services/upgrade.services';
@@ -11,12 +12,17 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { last } from '$lib/utils/utils';
 
-	export let currentVersion: string;
-	export let newerReleases: string[];
-	export let segment: 'satellite' | 'mission_control' | 'orbiter';
-	export let back = false;
+	interface Props {
+		currentVersion: string;
+		newerReleases: string[];
+		segment: 'satellite' | 'mission_control' | 'orbiter';
+		back?: boolean;
+		intro?: Snippet;
+	}
 
-	let selectedVersion: string | undefined = undefined;
+	let { currentVersion, newerReleases, segment, back = false, intro }: Props = $props();
+
+	let selectedVersion: string | undefined = $state(undefined);
 
 	onMount(() => (selectedVersion = last(newerReleases)));
 
@@ -79,9 +85,9 @@
 	};
 </script>
 
-<slot name="intro" />
+{@render intro?.()}
 
-<form on:submit|preventDefault={onSelect}>
+<form onsubmit={preventDefault(onSelect)}>
 	{#if newerReleases.length > 1}
 		<p>
 			<Html
@@ -125,9 +131,9 @@
 
 	<div class="toolbar">
 		{#if back}
-			<button type="button" on:click={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+			<button type="button" onclick={() => dispatch('junoBack')}>{$i18n.core.back}</button>
 		{:else}
-			<button type="button" on:click={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
+			<button type="button" onclick={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
 		{/if}
 		<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
 	</div>

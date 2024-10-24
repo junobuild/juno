@@ -46,11 +46,11 @@
 			? 'https://juno.build/docs/add-juno-to-an-app/install-the-sdk-and-initialize-juno'
 			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
-		<svelte:fragment slot="info">
+		{#snippet info()}
 			{#if nonNullish($satelliteStore)}
 				<Warnings satellite={$satelliteStore} />
 			{/if}
-		</svelte:fragment>
+		{/snippet}
 
 		<SatelliteGuard>
 			<MissionControlGuard>

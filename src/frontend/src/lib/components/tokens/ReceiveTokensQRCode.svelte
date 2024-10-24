@@ -5,8 +5,12 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let value: string;
-	export let ariaLabel: string;
+	interface Props {
+		value: string;
+		ariaLabel: string;
+	}
+
+	let { value, ariaLabel }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 </script>
@@ -16,12 +20,14 @@
 
 	<div class="info">
 		<Value>
-			<svelte:fragment slot="label">{ariaLabel}</svelte:fragment>
+			{#snippet label()}
+				{ariaLabel}
+			{/snippet}
 			<Identifier shorten={true} small={false} identifier={value} />
 		</Value>
 	</div>
 
-	<button on:click={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+	<button onclick={() => dispatch('junoBack')}>{$i18n.core.back}</button>
 </div>
 
 <style lang="scss">

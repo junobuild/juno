@@ -3,7 +3,11 @@
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let err: string;
+	interface Props {
+		err: string;
+	}
+
+	let { err }: Props = $props();
 
 	onMount(() => console.error(err));
 </script>

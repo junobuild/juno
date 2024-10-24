@@ -7,13 +7,16 @@
 	import type { ChartsData } from '$lib/types/chart';
 	import { formatToDay } from '$lib/utils/date.utils';
 
-	export let chartsData: ChartsData[];
+	interface Props {
+		chartsData: ChartsData[];
+	}
 
-	let ticks: string[];
-	$: ticks = Object.values(chartsData).map(({ x: a }) => a);
+	let { chartsData }: Props = $props();
 
-	const formatTick = (d: string): string => {
-		const date = new Date(parseInt(d));
+	let ticks: string[] = $derived(Object.values(chartsData).map(({ x: a }) => a));
+
+	const formatTick = (d: string | number): string | number => {
+		const date = new Date(parseInt(`${d}`));
 		const day = date.getDate();
 
 		return day % 3 === 0 ? formatToDay(date) : '';

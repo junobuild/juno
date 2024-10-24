@@ -8,19 +8,25 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let currentCycles: bigint;
+	let { detail }: Props = $props();
 
-	$: ({ cycles: currentCycles } = detail as JunoModalCycles);
+	let { cycles: currentCycles } = $derived(detail as JunoModalCycles);
 
-	let deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
-	$: deleteFn = async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
-		await deleteOrbiter({
-			...params,
-			orbiterId: $orbiterStore!.orbiter_id,
-			identity: $authStore.identity
-		});
+	let deleteFn: (params: {
+		missionControlId: Principal;
+		cyclesToDeposit: bigint;
+	}) => Promise<void> = $derived(
+		async (params: { missionControlId: Principal; cyclesToDeposit: bigint }) =>
+			await deleteOrbiter({
+				...params,
+				orbiterId: $orbiterStore!.orbiter_id,
+				identity: $authStore.identity
+			})
+	);
 </script>
 
 {#if nonNullish($orbiterStore)}

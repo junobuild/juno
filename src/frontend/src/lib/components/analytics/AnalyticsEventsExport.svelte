@@ -10,8 +10,12 @@
 	import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
 	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 
-	export let period: PageViewsPeriod = {};
-	export let orbiter: Orbiter;
+	interface Props {
+		period?: PageViewsPeriod;
+		orbiter: Orbiter;
+	}
+
+	let { period = {}, orbiter }: Props = $props();
 
 	const exportEvents = async () => {
 		busy.start();
@@ -46,4 +50,4 @@
 	};
 </script>
 
-<button type="button" on:click={exportEvents}>{$i18n.core.export}</button>
+<button type="button" onclick={exportEvents}>{$i18n.core.export}</button>

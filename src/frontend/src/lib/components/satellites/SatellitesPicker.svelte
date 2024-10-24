@@ -13,12 +13,12 @@
 			nonNullish(satelliteIdText) ? Principal.fromText(satelliteIdText) : undefined
 		);
 
-	let satelliteIdText: SatelliteIdText | undefined;
+	let satelliteIdText: SatelliteIdText | undefined = $state();
 
 	onMount(() => (satelliteIdText = $satelliteIdStore));
 </script>
 
-<select id="satellite" name="satellite" bind:value={satelliteIdText} on:change={navigate}>
+<select id="satellite" name="satellite" bind:value={satelliteIdText} onchange={navigate}>
 	<option value={undefined}>{$i18n.analytics.all_satellites}</option>
 
 	{#each $satellitesStore ?? [] as satellite}

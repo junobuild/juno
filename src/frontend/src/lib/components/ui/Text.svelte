@@ -3,9 +3,13 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat, i18nText } from '$lib/utils/i18n.utils';
 
-	export let key: string;
-	export let value: string;
-	export let placeholder = '{0}';
+	interface Props {
+		key: string;
+		value: string;
+		placeholder?: string;
+	}
+
+	let { key, value, placeholder = '{0}' }: Props = $props();
 </script>
 
 <Html

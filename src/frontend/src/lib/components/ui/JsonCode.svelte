@@ -1,7 +1,11 @@
 <script lang="ts">
 	import Json from '$lib/components/ui/Json.svelte';
 
-	export let json: unknown | undefined = undefined;
+	interface Props {
+		json?: unknown | undefined;
+	}
+
+	let { json = undefined }: Props = $props();
 </script>
 
 <code>

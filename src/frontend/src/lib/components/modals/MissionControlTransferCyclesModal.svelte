@@ -7,19 +7,23 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let currentCycles: bigint;
+	let { detail }: Props = $props();
 
-	$: ({ cycles: currentCycles } = detail as JunoModalCycles);
+	let { cycles: currentCycles } = $derived(detail as JunoModalCycles);
 
-	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
-	$: transferFn = async (params: { cycles: bigint; destinationId: Principal }) =>
-		await depositCycles({
-			...params,
-			missionControlId: $missionControlStore!,
-			identity: $authStore.identity
-		});
+	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void> =
+		$derived(
+			async (params: { cycles: bigint; destinationId: Principal }) =>
+				await depositCycles({
+					...params,
+					missionControlId: $missionControlStore!,
+					identity: $authStore.identity
+				})
+		);
 </script>
 
 {#if nonNullish($missionControlStore)}

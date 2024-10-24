@@ -2,6 +2,7 @@
 	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { preventDefault } from 'svelte/legacy';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
@@ -20,11 +21,16 @@
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+		onclose: () => void;
+	}
 
-	let insufficientFunds = true;
+	let { detail, onclose }: Props = $props();
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let insufficientFunds = $state(true);
+
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const onSubmit = async () => {
 		wizardBusy.start();
@@ -59,7 +65,7 @@
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	let subnetId: PrincipalText | undefined;
+	let subnetId: PrincipalText | undefined = $state();
 </script>
 
 <Modal on:junoClose>
@@ -68,7 +74,7 @@
 
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
-			<button on:click={close}>{$i18n.core.close}</button>
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
@@ -82,12 +88,12 @@
 		</p>
 
 		<CreditsGuard
-			on:junoClose
+			{onclose}
 			bind:insufficientFunds
 			{detail}
 			priceLabel={$i18n.analytics.create_orbiter_price}
 		>
-			<form on:submit|preventDefault={onSubmit}>
+			<form onsubmit={preventDefault(onSubmit)}>
 				<CanisterAdvancedOptions bind:subnetId />
 
 				<button

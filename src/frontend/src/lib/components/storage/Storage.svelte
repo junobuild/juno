@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { getContext, setContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
 	import StorageData from '$lib/components/storage/StorageData.svelte';
 	import StorageRules from '$lib/components/storage/StorageRules.svelte';
@@ -10,7 +11,11 @@
 	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
 	import { reloadContextRules } from '$lib/utils/rules.utils';
 
-	export let satelliteId: Principal;
+	interface Props {
+		satelliteId: Principal;
+	}
+
+	let { satelliteId }: Props = $props();
 
 	const store = writable<RulesStore>({
 		satelliteId,
@@ -26,7 +31,10 @@
 			identity: $authStore.identity
 		});
 
-	$: satelliteId, (async () => await reloadRules())();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		satelliteId, (async () => await reloadRules())();
+	});
 
 	setContext<RulesContext>(RULES_CONTEXT_KEY, {
 		store,

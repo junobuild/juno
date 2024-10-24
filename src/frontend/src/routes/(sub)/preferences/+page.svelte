@@ -10,10 +10,9 @@
 	import type { Languages } from '$lib/types/languages';
 	import { secondsToDuration } from '$lib/utils/date.utils';
 
-	let lang: Languages;
+	let lang: Languages = $state('en');
 
-	let remainingTimeMilliseconds: number | undefined;
-	$: remainingTimeMilliseconds = $authRemainingTimeStore;
+	let remainingTimeMilliseconds: number | undefined = $derived($authRemainingTimeStore);
 </script>
 
 <IdentityGuard>
@@ -22,13 +21,17 @@
 
 		<div class="content">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.preferences.dev_id}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.preferences.dev_id}
+				{/snippet}
 				<Identifier identifier={$authStore.identity?.getPrincipal().toText() ?? ''} />
 			</Value>
 
 			<div class="session">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.preferences.session_expires_in}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.preferences.session_expires_in}
+					{/snippet}
 					<p>
 						{#if nonNullish(remainingTimeMilliseconds)}
 							<output class="mr-1.5" in:fade>

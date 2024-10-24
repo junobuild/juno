@@ -82,8 +82,7 @@
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
+	let collection: string | undefined = $derived($store.rule?.[0]);
 </script>
 
 <Data on:junoCloseData={resetData}>
@@ -91,5 +90,7 @@
 
 	<Asset />
 
-	<DataCount slot="count" />
+	{#snippet count()}
+		<DataCount />
+	{/snippet}
 </Data>

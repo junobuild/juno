@@ -12,7 +12,11 @@
 	import type { Subnet } from '$lib/types/subnet';
 	import type { Option } from '$lib/types/utils';
 
-	export let canisterId: Principal;
+	interface Props {
+		canisterId: Principal;
+	}
+
+	let { canisterId }: Props = $props();
 
 	onMount(async () => {
 		await loadSubnetId({
@@ -20,16 +24,16 @@
 		});
 	});
 
-	let subnet: Option<Subnet>;
-	$: subnet = $subnetsStore[canisterId.toText()];
+	let subnet: Option<Subnet> = $derived($subnetsStore[canisterId.toText()]);
 
-	let subnetId: PrincipalText | undefined;
-	$: subnetId = subnet?.subnetId;
+	let subnetId: PrincipalText | undefined = $derived(subnet?.subnetId);
 </script>
 
 <div>
 	<Value>
-		<svelte:fragment slot="label">{$i18n.canisters.subnet_id}</svelte:fragment>
+		{#snippet label()}
+			{$i18n.canisters.subnet_id}
+		{/snippet}
 		{#if nonNullish(subnetId)}
 			<Identifier identifier={subnetId} small={false} />
 		{:else}

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
+	import { preventDefault } from 'svelte/legacy';
 	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { setRule } from '$lib/api/satellites.api';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
@@ -23,60 +24,47 @@
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	export let type: RulesType;
+	interface Props {
+		type: RulesType;
+	}
 
-	let typeStorage = false;
-	$: typeStorage = 'Storage' in type;
+	let { type }: Props = $props();
 
-	let typeDatastore = false;
-	$: typeDatastore = 'Db' in type;
+	let typeStorage = $derived('Storage' in type);
 
-	let collection: string;
-	const initCollection = (initialCollection: string) => (collection = initialCollection);
-	$: initCollection($store.rule?.[0] ?? '');
+	let typeDatastore = $derived('Db' in type);
 
-	let rule: Rule | undefined;
-	const initRule = (initialRule: Rule | undefined) => (rule = initialRule);
-	$: initRule($store.rule?.[1] ?? undefined);
+	let collection: string = $state($store.rule?.[0] ?? '');
 
-	let read: PermissionText;
-	const initRead = (text: PermissionText) => (read = text);
-	$: initRead(permissionToText(rule?.read ?? PermissionManaged));
+	let rule: Rule | undefined = $state($store.rule?.[1] ?? undefined);
 
-	let write: PermissionText;
-	const initWrite = (text: PermissionText) => (write = text);
-	$: initWrite(permissionToText(rule?.write ?? PermissionManaged));
+	let mode: 'new' | 'edit' = $derived(nonNullish(rule) ? 'edit' : 'new');
 
-	let memory: MemoryText;
-	const initMemory = (text: MemoryText) => (memory = text);
-	$: initMemory(
-		// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
-		memoryToText(fromNullable(rule?.memory ?? []) ?? (mode === 'new' ? MemoryStable : MemoryHeap))
+	let read: PermissionText = $state(permissionToText(rule?.read ?? PermissionManaged));
+
+	let write: PermissionText = $state(permissionToText(rule?.write ?? PermissionManaged));
+
+	// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
+	let memory: MemoryText = $state(
+		memoryToText(fromNullable(rule?.memory ?? []) ?? (isNullish(rule) ? MemoryStable : MemoryHeap))
 	);
 
-	let currentImmutable: boolean;
-	let immutable: boolean;
+	let currentImmutable: boolean | undefined = $state();
+	let immutable: boolean | undefined = $state();
 	const initMutable = (initialRule: Rule | undefined) => {
 		currentImmutable = !(fromNullable(initialRule?.mutable_permissions ?? []) ?? true);
 		immutable = currentImmutable;
 	};
-	$: initMutable($store.rule?.[1] ?? undefined);
+	$effect(() => initMutable($store.rule?.[1] ?? undefined));
 
-	let maxSize: number | undefined;
+	let maxSize: number | undefined = $state();
 	const initMaxSize = (size: [] | [bigint]) => {
 		const tmp = fromNullable(size);
 		maxSize = nonNullish(tmp) ? Number(tmp) : undefined;
 	};
-	$: initMaxSize(rule?.max_size ?? []);
+	$effect(() => initMaxSize(rule?.max_size ?? []));
 
-	let maxCapacity: number | undefined;
-	const initMaxCapacity = (capacity: [] | [number]) => {
-		maxCapacity = fromNullable(capacity);
-	};
-	$: initMaxCapacity(rule?.max_capacity ?? []);
-
-	let mode: 'new' | 'edit';
-	$: mode = rule !== undefined ? 'edit' : 'new';
+	let maxCapacity: number | undefined = $state(fromNullable(rule?.max_capacity ?? []));
 
 	const dispatch = createEventDispatcher();
 
@@ -128,15 +116,16 @@
 		busy.stop();
 	};
 
-	let disabled = false;
-	$: disabled = isNullish(collection) || collection === '';
+	let disabled = $derived(isNullish(collection) || collection === '');
 </script>
 
 <article>
-	<form on:submit|preventDefault={onSubmit}>
+	<form onsubmit={preventDefault(onSubmit)}>
 		<div>
 			<Value ref="collection">
-				<svelte:fragment slot="label">{$i18n.collections.key}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.collections.key}
+				{/snippet}
 				<input
 					id="collection"
 					type="text"
@@ -150,7 +139,9 @@
 
 		<div>
 			<Value ref="read">
-				<svelte:fragment slot="label">{$i18n.collections.read_permission}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.collections.read_permission}
+				{/snippet}
 				<select id="read" name="read" bind:value={read} disabled={currentImmutable}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
@@ -162,7 +153,9 @@
 
 		<div>
 			<Value ref="write">
-				<svelte:fragment slot="label">{$i18n.collections.write_permission}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.collections.write_permission}
+				{/snippet}
 				<select id="write" name="write" bind:value={write} disabled={currentImmutable}>
 					<option value="Public">{$i18n.collections.public}</option>
 					<option value="Private">{$i18n.collections.private}</option>
@@ -174,7 +167,9 @@
 
 		<div>
 			<Value ref="memory">
-				<svelte:fragment slot="label">{$i18n.collections.memory}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.collections.memory}
+				{/snippet}
 				<select id="memory" name="write" bind:value={memory} disabled={mode === 'edit'}>
 					<option value="Stable">{$i18n.collections.stable}</option>
 					<option value="Heap">{$i18n.collections.heap}</option>
@@ -185,7 +180,9 @@
 		{#if typeDatastore}
 			<div>
 				<Value>
-					<svelte:fragment slot="label">{$i18n.collections.max_capacity}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.collections.max_capacity}
+					{/snippet}
 					<Input
 						inputType="number"
 						placeholder={$i18n.collections.max_capacity_placeholder}
@@ -202,7 +199,9 @@
 		{#if typeStorage}
 			<div>
 				<Value>
-					<svelte:fragment slot="label">{$i18n.collections.max_size}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.collections.max_size}
+					{/snippet}
 					<Input
 						inputType="number"
 						placeholder={$i18n.collections.max_size_placeholder}
@@ -222,7 +221,7 @@
 						type="checkbox"
 						checked={immutable}
 						disabled={currentImmutable}
-						on:change={() => (immutable = !immutable)}
+						onchange={() => (immutable = !immutable)}
 					/>
 					<span>{$i18n.collections.immutable}</span>
 				</label>
@@ -230,7 +229,7 @@
 		{/if}
 
 		<div class="toolbar">
-			<button type="button" on:click={() => dispatch('junoCollectionCancel')}
+			<button type="button" onclick={() => dispatch('junoCollectionCancel')}
 				>{$i18n.core.cancel}</button
 			>
 
@@ -238,7 +237,9 @@
 				<CollectionDelete {collection} {rule} {type} on:junoCollectionSuccess />
 			{/if}
 
-			<button type="submit" class="primary" {disabled}>{$i18n.core.submit}</button>
+			{#if !currentImmutable}
+				<button type="submit" class="primary" {disabled}>{$i18n.core.submit}</button>
+			{/if}
 		</div>
 	</form>
 </article>

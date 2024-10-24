@@ -1,11 +1,18 @@
 <script lang="ts">
-	import { createEventDispatcher, getContext, onMount } from 'svelte';
+	import { createEventDispatcher, getContext, onMount, type Snippet } from 'svelte';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import Collections from '$lib/components/collections/Collections.svelte';
 	import CollectionsEmpty from '$lib/components/collections/CollectionsEmpty.svelte';
 	import DataNav from '$lib/components/data/DataNav.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
+
+	interface Props {
+		children: Snippet;
+		count?: Snippet;
+	}
+
+	let { children, count }: Props = $props();
 
 	// Rules
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
@@ -40,13 +47,13 @@
 
 	<Collections on:junoCollectionEdit={({ detail }) => selectionCollection(detail)} />
 
-	<slot />
+	{@render children()}
 
 	<CollectionsEmpty on:click={() => selectTab()} />
 </section>
 
 <div class="count">
-	<slot name="count" />
+	{@render count?.()}
 </div>
 
 <style lang="scss">

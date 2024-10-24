@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import { nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -8,19 +9,25 @@
 	import type { JunoModalDetail, JunoModalTopUpMissionControlDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let balance = 0n;
-	let accountIdentifier: AccountIdentifier | undefined;
+	let { detail }: Props = $props();
 
-	$: balance = (detail as JunoModalTopUpMissionControlDetail).missionControlBalance?.balance ?? 0n;
-	$: accountIdentifier = (detail as JunoModalTopUpMissionControlDetail).missionControlBalance
-		?.accountIdentifier;
+	let balance = $state(0n);
+	let accountIdentifier: AccountIdentifier | undefined = $derived(
+		(detail as JunoModalTopUpMissionControlDetail).missionControlBalance?.accountIdentifier
+	);
+
+	run(() => {
+		balance = (detail as JunoModalTopUpMissionControlDetail).missionControlBalance?.balance ?? 0n;
+	});
 </script>
 
 {#if nonNullish($missionControlStore)}
 	<CanisterTopUpModal canisterId={$missionControlStore} {balance} {accountIdentifier} on:junoClose>
-		<svelte:fragment slot="intro">
+		{#snippet intro()}
 			<h2>
 				<Html
 					text={i18nFormat($i18n.canisters.top_up_title, [
@@ -31,10 +38,10 @@
 					])}
 				/>
 			</h2>
-		</svelte:fragment>
+		{/snippet}
 
-		<svelte:fragment slot="outro">
+		{#snippet outro()}
 			<p>{$i18n.canisters.top_up_mission_control_done}</p>
-		</svelte:fragment>
+		{/snippet}
 	</CanisterTopUpModal>
 {/if}

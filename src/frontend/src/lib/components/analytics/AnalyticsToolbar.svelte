@@ -1,14 +1,26 @@
+<script>
+	/**
+	 * @typedef {Object} Props
+	 * @property {import('svelte').Snippet} [start]
+	 * @property {import('svelte').Snippet} [center]
+	 * @property {import('svelte').Snippet} [end]
+	 */
+
+	/** @type {Props} */
+	let { start, center, end } = $props();
+</script>
+
 <div class="filters">
 	<div class="start">
-		<slot name="start" />
+		{@render start?.()}
 	</div>
 
 	<div>
-		<slot name="center" />
+		{@render center?.()}
 	</div>
 
 	<div>
-		<slot name="end" />
+		{@render end?.()}
 	</div>
 </div>
 

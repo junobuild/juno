@@ -3,7 +3,8 @@
 	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { setDoc } from '@junobuild/core-peer';
 	import { nanoid } from 'nanoid';
-	import { createEventDispatcher, getContext } from 'svelte';
+	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
@@ -16,24 +17,39 @@
 	import { fileToDocData } from '$lib/utils/doc.utils';
 	import { container } from '$lib/utils/juno.utils';
 
-	export let docKey: string | undefined = undefined;
-	export let doc: Doc | undefined = undefined;
+	interface Props {
+		docKey?: string | undefined;
+		doc?: Doc | undefined;
+		action?: Snippet;
+		title?: Snippet;
+		description?: Snippet;
+	}
+
+	let {
+		docKey = undefined,
+		doc = undefined,
+		action,
+		title,
+		description: descriptionSnippet
+	}: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
+	let collection: string | undefined = $derived($store.rule?.[0]);
 
-	let satelliteId: Principal;
-	$: satelliteId = $store.satelliteId;
+	let satelliteId: Principal = $derived($store.satelliteId);
 
-	let key: string | undefined;
+	let key: string | undefined = $state();
 	const initKey = (k: string | undefined) => (key = k);
-	$: initKey(docKey);
+	run(() => {
+		initKey(docKey);
+	});
 
-	let description: string | undefined;
+	let description: string | undefined = $state();
 	const initDescription = (d: string | undefined) => (description = d);
-	$: initDescription(fromNullable(doc?.description ?? []));
+	run(() => {
+		initDescription(fromNullable(doc?.description ?? []));
+	});
 
 	const generateKey = () => (key = nanoid());
 
@@ -101,19 +117,25 @@
 		busy.stop();
 	};
 
-	let mode: 'create' | 'replace' = 'create';
-	$: mode = nonNullish(doc) && nonNullish(docKey) ? 'replace' : 'create';
+	let mode: 'create' | 'replace' = $state('create');
+	run(() => {
+		mode = nonNullish(doc) && nonNullish(docKey) ? 'replace' : 'create';
+	});
 </script>
 
-<DataUpload on:junoUpload={upload} disabled={!notEmptyString(key)}>
-	<slot name="action" slot="action" />
-	<slot name="title" slot="title" />
-	<slot slot="description" />
-
+<DataUpload
+	on:junoUpload={upload}
+	disabled={!notEmptyString(key)}
+	{action}
+	{title}
+	description={descriptionSnippet}
+>
 	{#if mode === 'create'}
 		<div>
 			<Value ref="doc-key">
-				<svelte:fragment slot="label">{$i18n.document.key}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.document.key}
+				{/snippet}
 				<div class="form-doc-key">
 					<input
 						id="doc-key"
@@ -124,7 +146,7 @@
 					<button
 						class="text"
 						type="button"
-						on:click={generateKey}
+						onclick={generateKey}
 						aria-label={$i18n.document.key_generate}
 					>
 						<IconAutoRenew size="20px" />
@@ -135,7 +157,9 @@
 
 		<div>
 			<Value ref="doc-description">
-				<svelte:fragment slot="label">{$i18n.document.description}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.document.description}
+				{/snippet}
 				<input
 					id="doc-description"
 					type="text"
@@ -146,9 +170,9 @@
 		</div>
 	{/if}
 
-	<svelte:fragment slot="confirm"
-		>{mode === 'replace' ? $i18n.document.replace : $i18n.document.create}</svelte:fragment
-	>
+	{#snippet confirm()}
+		{mode === 'replace' ? $i18n.document.replace : $i18n.document.create}
+	{/snippet}
 </DataUpload>
 
 <style lang="scss">

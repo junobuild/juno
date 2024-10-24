@@ -11,46 +11,53 @@
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatBytes, formatNumber } from '$lib/utils/number.utils';
 
-	export let canisterId: Principal;
-	export let segment: Segment;
-	export let heapWarningLabel: string | undefined = undefined;
+	interface Props {
+		canisterId: Principal;
+		segment: Segment;
+		heapWarningLabel?: string | undefined;
+	}
 
-	let data: CanisterData | undefined;
-	let sync: CanisterSyncStatus | undefined;
+	let { canisterId, segment, heapWarningLabel = undefined }: Props = $props();
 
-	let idleCyclesBurnedPerDay: bigint | undefined;
-	$: idleCyclesBurnedPerDay = data?.canister?.idleCyclesBurnedPerDay;
+	let data: CanisterData | undefined = $state();
+	let sync: CanisterSyncStatus | undefined = $state();
 
-	let numInstructionsTotal: bigint | undefined;
-	$: numInstructionsTotal = data?.canister?.queryStats?.numInstructionsTotal;
+	let idleCyclesBurnedPerDay: bigint | undefined = $derived(data?.canister?.idleCyclesBurnedPerDay);
 
-	let numCallsTotal: bigint | undefined;
-	$: numCallsTotal = data?.canister?.queryStats?.numCallsTotal;
+	let numInstructionsTotal: bigint | undefined = $derived(
+		data?.canister?.queryStats?.numInstructionsTotal
+	);
 
-	let responsePayloadBytesTotal: bigint | undefined;
-	$: responsePayloadBytesTotal = data?.canister?.queryStats?.responsePayloadBytesTotal;
+	let numCallsTotal: bigint | undefined = $derived(data?.canister?.queryStats?.numCallsTotal);
 
-	let requestPayloadBytesTotal: bigint | undefined;
-	$: requestPayloadBytesTotal = data?.canister?.queryStats?.requestPayloadBytesTotal;
+	let responsePayloadBytesTotal: bigint | undefined = $derived(
+		data?.canister?.queryStats?.responsePayloadBytesTotal
+	);
 
-	let memory: MemorySize | undefined;
-	$: memory = data?.memory;
+	let requestPayloadBytesTotal: bigint | undefined = $derived(
+		data?.canister?.queryStats?.requestPayloadBytesTotal
+	);
 
-	let warning: boolean;
-	$: warning = data?.warning?.heap === true ?? false;
+	let memory: MemorySize | undefined = $derived(data?.memory);
+
+	let warning: boolean = $derived(data?.warning?.heap === true ?? false);
 </script>
 
 <div>
 	<div class="status">
 		<Value>
-			<svelte:fragment slot="label">{$i18n.core.status}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.core.status}
+			{/snippet}
 			<Canister {canisterId} {segment} bind:data bind:sync />
 		</Value>
 	</div>
 
 	{#if ['satellite', 'orbiter'].includes(segment)}
 		<CanisterValue {sync} rows={2}>
-			<svelte:fragment slot="label">{$i18n.canisters.memory}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.canisters.memory}
+			{/snippet}
 			<p>
 				{nonNullish(memory) ? formatBytes(Number(memory.heap)) : '???'}
 				<small
@@ -70,7 +77,9 @@
 <div>
 	<div class="queries">
 		<CanisterValue {sync} rows={4}>
-			<svelte:fragment slot="label">{$i18n.canisters.queries}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.canisters.queries}
+			{/snippet}
 
 			<p>
 				{nonNullish(numCallsTotal)
@@ -108,7 +117,9 @@
 
 	<div class="consumption">
 		<CanisterValue {sync}>
-			<svelte:fragment slot="label">{$i18n.canisters.daily_consumption}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.canisters.daily_consumption}
+			{/snippet}
 			<p>
 				{formatTCycles(idleCyclesBurnedPerDay ?? 0n)}T <small>cycles</small>
 			</p>

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import { slide, fade } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
@@ -16,12 +17,15 @@
 	import type { CanisterData } from '$lib/types/canister';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 
-	let missionControlData: CanisterData | undefined = undefined;
-	let orbiterData: CanisterData | undefined = undefined;
-	let balance: bigint | undefined = undefined;
+	let missionControlData: CanisterData | undefined = $state(undefined);
+	let orbiterData: CanisterData | undefined = $state(undefined);
+	let balance: bigint | undefined = $state(undefined);
 
-	$: $missionControlStore,
-		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$missionControlStore,
+			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	});
 </script>
 
 {#if nonNullish($missionControlStore)}

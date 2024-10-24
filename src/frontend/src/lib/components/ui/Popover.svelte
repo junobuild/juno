@@ -1,33 +1,50 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
+	import { stopPropagation } from 'svelte/legacy';
 	import { fade, scale } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
-	export let anchor: HTMLElement | undefined = undefined;
-	export let visible = false;
-	export let direction: 'ltr' | 'rtl' = 'ltr';
-	export let center = false;
-	export let closeButton = false;
-	export let backdrop: 'light' | 'dark' = 'light';
+	interface Props {
+		anchor?: HTMLElement | undefined;
+		visible?: boolean;
+		direction?: 'ltr' | 'rtl';
+		center?: boolean;
+		closeButton?: boolean;
+		backdrop?: 'light' | 'dark';
+		children: Snippet;
+	}
 
-	let bottom: number;
-	let left: number;
-	let right: number;
-	let innerWidth = 0;
+	let {
+		anchor = undefined,
+		visible = $bindable(false),
+		direction = 'ltr',
+		center = false,
+		closeButton = false,
+		backdrop = 'light',
+		children
+	}: Props = $props();
+
+	let bottom: number = $state(0);
+	let left: number = $state(0);
+	let right: number = $state(0);
+	let innerWidth = $state(0);
 
 	const initPosition = () =>
 		({ bottom, left, right } = anchor
 			? anchor.getBoundingClientRect()
 			: { bottom: 0, left: 0, right: 0 });
 
-	$: anchor, initPosition();
+	$effect(() => {
+		initPosition();
+	});
 
 	const close = () => (visible = false);
 </script>
 
-<svelte:window on:resize={initPosition} bind:innerWidth />
+<svelte:window onresize={initPosition} bind:innerWidth />
 
 {#if visible}
 	<div
@@ -39,18 +56,17 @@
 		tabindex="-1"
 		style={`--popover-top: ${bottom}px; ${
 			direction === 'rtl'
-				? `--popover-right: ${innerWidth - right}px;`
+				? `--popover-right: ${innerWidth - (right ?? 0)}px;`
 				: `--popover-left: ${left}px;`
 		}`}
-		on:introend
 	>
 		<div
 			class="backdrop"
-			on:click|stopPropagation={close}
-			on:keypress={($event) => handleKeyPress({ $event, callback: close })}
+			onclick={stopPropagation(close)}
+			onkeypress={($event) => handleKeyPress({ $event, callback: close })}
 			role="button"
 			tabindex="-1"
-		/>
+		></div>
 		<div
 			transition:scale={{ delay: 25, duration: 150, easing: quintOut }}
 			class="wrapper"
@@ -58,12 +74,12 @@
 			class:rtl={direction === 'rtl'}
 		>
 			{#if closeButton}
-				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} class="close icon"
+				<button onclick={stopPropagation(close)} aria-label={$i18n.core.close} class="close icon"
 					><IconClose /></button
 				>
 			{/if}
 
-			<slot />
+			{@render children()}
 		</div>
 	</div>
 {/if}

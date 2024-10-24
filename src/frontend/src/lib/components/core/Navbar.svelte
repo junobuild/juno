@@ -8,10 +8,19 @@
 	import Header from '$lib/components/ui/Header.svelte';
 	import { layoutTitleIntersecting } from '$lib/stores/layout.store';
 
-	export let start: 'logo' | 'back' | 'menu' = 'logo';
-	export let signIn = true;
-	export let launchpad = false;
-	export let headerOpaqueOnScroll = true;
+	interface Props {
+		start?: 'logo' | 'back' | 'menu';
+		signIn?: boolean;
+		launchpad?: boolean;
+		headerOpaqueOnScroll?: boolean;
+	}
+
+	let {
+		start = 'logo',
+		signIn = true,
+		launchpad = false,
+		headerOpaqueOnScroll = true
+	}: Props = $props();
 </script>
 
 <Header opaque={!$layoutTitleIntersecting && headerOpaqueOnScroll}>

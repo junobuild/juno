@@ -2,7 +2,11 @@
 	import IconJuno from '$lib/components/icons/IconJuno.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let color: 'lavender' | 'white' = 'lavender';
+	interface Props {
+		color?: 'lavender' | 'white';
+	}
+
+	let { color = 'lavender' }: Props = $props();
 </script>
 
 <a href="/" aria-label={$i18n.core.home}><IconJuno {color} /></a>

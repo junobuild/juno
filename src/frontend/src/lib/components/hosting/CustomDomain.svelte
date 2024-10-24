@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
@@ -19,25 +20,36 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { keyOf } from '$lib/utils/utils';
 
-	export let url: string;
-	export let ariaLabel = '';
-	export let type: 'default' | 'custom' = 'default';
-	export let customDomain: [string, CustomDomainType] | undefined = undefined;
-	export let satellite: Satellite | undefined = undefined;
-	export let config: AuthenticationConfig | undefined = undefined;
+	interface Props {
+		url: string;
+		ariaLabel?: string;
+		type?: 'default' | 'custom';
+		customDomain?: [string, CustomDomainType] | undefined;
+		satellite?: Satellite | undefined;
+		config?: AuthenticationConfig | undefined;
+	}
 
-	let host = '';
-	$: ({ host } = new URL(url));
+	let {
+		url,
+		ariaLabel = '',
+		type = 'default',
+		customDomain = undefined,
+		satellite = undefined,
+		config = undefined
+	}: Props = $props();
 
-	let authDomain: string | undefined;
-	$: authDomain = fromNullable(
-		fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []
+	let host = $state('');
+	run(() => {
+		({ host } = new URL(url));
+	});
+
+	let authDomain: string | undefined = $derived(
+		fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
 	);
 
-	let mainDomain: boolean;
-	$: mainDomain = host === authDomain && nonNullish(authDomain);
+	let mainDomain: boolean = $derived(host === authDomain && nonNullish(authDomain));
 
-	let registrationState: Option<CustomDomainRegistrationState> = undefined;
+	let registrationState: Option<CustomDomainRegistrationState> = $state(undefined);
 
 	let worker:
 		| {
@@ -47,7 +59,7 @@
 				}) => void;
 				stopCustomDomainRegistrationTimer: () => void;
 		  }
-		| undefined;
+		| undefined = $state();
 
 	const syncState = ({ registrationState: state }: PostMessageDataResponse) => {
 		registrationState = state;
@@ -81,15 +93,18 @@
 	onMount(async () => (worker = await initHostingWorker()));
 	onDestroy(() => worker?.stopCustomDomainRegistrationTimer());
 
-	$: worker, customDomain, loadRegistrationState();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		worker, customDomain, loadRegistrationState();
+	});
 
-	let displayState: Option<string>;
-	$: displayState =
+	let displayState: Option<string> = $derived(
 		registrationState === undefined
 			? undefined
 			: registrationState === null
 				? null
-				: keyOf({ obj: $i18n.hosting, key: registrationState.toLowerCase() });
+				: keyOf({ obj: $i18n.hosting, key: (registrationState as string).toLowerCase() })
+	);
 
 	const dispatch = createEventDispatcher();
 	const displayInfo = () =>
@@ -103,7 +118,7 @@
 <td>
 	{#if type === 'custom' && nonNullish(satellite)}
 		<div class="actions">
-			<ButtonTableAction icon="info" ariaLabel={$i18n.hosting.info} on:click={displayInfo} />
+			<ButtonTableAction icon="info" ariaLabel={$i18n.hosting.info} onaction={displayInfo} />
 
 			<CustomDomainActions {satellite} {customDomain} {config} {displayState} />
 		</div>

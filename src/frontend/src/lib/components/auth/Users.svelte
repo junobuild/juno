@@ -2,6 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, onMount, setContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import User from '$lib/components/auth/User.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
@@ -12,7 +13,11 @@
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import type { User as UserType } from '$lib/types/user';
 
-	export let satelliteId: Principal;
+	interface Props {
+		satelliteId: Principal;
+	}
+
+	let { satelliteId }: Props = $props();
 
 	const list = async () => {
 		if (isNullish(satelliteId)) {
@@ -44,8 +49,10 @@
 
 	onMount(async () => await list());
 
-	let empty = false;
-	$: empty = $paginationStore.items?.length === 0;
+	let empty = $state(false);
+	run(() => {
+		empty = $paginationStore.items?.length === 0;
+	});
 </script>
 
 <div class="table-container">

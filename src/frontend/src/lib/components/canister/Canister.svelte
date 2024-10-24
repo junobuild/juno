@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { onDestroy, onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
@@ -10,7 +11,6 @@
 	import type {
 		CanisterIcStatus,
 		CanisterData,
-		CanisterStatus,
 		CanisterSyncStatus,
 		Segment
 	} from '$lib/types/canister';
@@ -18,33 +18,50 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
 
-	export let canisterId: Principal;
-	export let segment: Segment;
-	export let display = true;
-	export let row = false;
+	interface Props {
+		canisterId: Principal;
+		segment: Segment;
+		display?: boolean;
+		row?: boolean;
+		data?: CanisterData | undefined;
+		sync?: CanisterSyncStatus | undefined;
+	}
 
-	let canister: CanisterIcStatus | undefined = undefined;
+	let {
+		canisterId,
+		segment,
+		display = true,
+		row = false,
+		data = $bindable(undefined),
+		sync = $bindable(undefined)
+	}: Props = $props();
+
+	let canister: CanisterIcStatus | undefined = $state(undefined);
 
 	const syncCanister = ({ canister: c }: PostMessageDataResponse) => {
 		canister = c as CanisterIcStatus;
 		emit({ message: 'junoSyncCanister', detail: { canister } });
 	};
 
-	let worker: CyclesWorker | undefined;
+	let worker: CyclesWorker | undefined = $state(undefined);
 
 	onMount(async () => (worker = await initCyclesWorker()));
-	$: worker,
-		canisterId,
-		(() =>
-			worker?.startCyclesTimer({
-				segments: [
-					{
-						canisterId: canisterId.toText(),
-						segment
-					}
-				],
-				callback: syncCanister
-			}))();
+
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		worker,
+			canisterId,
+			(() =>
+				worker?.startCyclesTimer({
+					segments: [
+						{
+							canisterId: canisterId.toText(),
+							segment
+						}
+					],
+					callback: syncCanister
+				}))();
+	});
 
 	onDestroy(() => worker?.stopCyclesTimer());
 
@@ -63,24 +80,24 @@
 		]);
 	};
 
-	export let data: CanisterData | undefined = undefined;
-	export let sync: CanisterSyncStatus | undefined = undefined;
-
-	$: ({ data, sync } = canister ?? { data: undefined, sync: undefined });
-
-	let status: CanisterStatus | undefined;
-	let memorySize: bigint;
-
-	$: ({ status, memorySize } = data?.canister ?? {
-		status: undefined,
-		memorySize: BigInt(0),
-		cycles: BigInt(0),
-		icp: 0,
-		warning: false
+	$effect(() => {
+		const c = canister ?? { data: undefined, sync: undefined };
+		data = c?.data;
+		sync = c?.sync;
 	});
+
+	let { status, memorySize } = $derived(
+		data?.canister ?? {
+			status: undefined,
+			memorySize: BigInt(0),
+			cycles: BigInt(0),
+			icp: 0,
+			warning: false
+		}
+	);
 </script>
 
-<svelte:window on:junoRestartCycles={restartCycles} />
+<svelte:window onjunoRestartCycles={restartCycles} />
 
 {#if display}
 	<div class:row>

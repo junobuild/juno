@@ -6,7 +6,12 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 
-	export let accountIdentifier: AccountIdentifier | undefined;
+	interface Props {
+		accountIdentifier: AccountIdentifier | undefined;
+		onclose: () => void;
+	}
+
+	let { accountIdentifier, onclose }: Props = $props();
 </script>
 
 {#if nonNullish($missionControlStore) && nonNullish(accountIdentifier)}
@@ -23,4 +28,4 @@
 	>.
 </p>
 
-<button on:click>{$i18n.core.close}</button>
+<button onclick={onclose}>{$i18n.core.close}</button>

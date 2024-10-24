@@ -9,7 +9,11 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 
-	export let orbiter: Orbiter;
+	interface Props {
+		orbiter: Orbiter;
+	}
+
+	let { orbiter }: Props = $props();
 </script>
 
 <div class="card-container with-title">
@@ -18,7 +22,9 @@
 	<div class="columns-3 fit-column-1">
 		<div class="id">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.analytics.id}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.analytics.id}
+				{/snippet}
 				<Identifier identifier={orbiter.orbiter_id.toText()} shorten={false} small={false} />
 			</Value>
 
@@ -27,7 +33,9 @@
 
 		<div>
 			<Value>
-				<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.core.version}
+				{/snippet}
 				<p>v{$versionStore?.orbiter?.current ?? '...'}</p>
 			</Value>
 		</div>

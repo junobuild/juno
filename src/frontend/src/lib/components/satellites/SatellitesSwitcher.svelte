@@ -7,12 +7,12 @@
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	let button: HTMLButtonElement | undefined;
-	let visible: boolean | undefined;
+	let button: HTMLButtonElement | undefined = $state();
+	let visible: boolean = $state(false);
 </script>
 
 {#if nonNullish($satelliteStore)}
-	<button class="text" on:click={() => (visible = true)} bind:this={button}
+	<button class="text" onclick={() => (visible = true)} bind:this={button}
 		><span>{satelliteName($satelliteStore)}</span> <IconArrowDropDown /></button
 	>
 {/if}

@@ -11,15 +11,19 @@
 	import { satellitesStore } from '$lib/stores/satellite.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	export let excludeSegmentId: Principal;
-	export let segmentIdText: string | undefined = undefined;
+	interface Props {
+		excludeSegmentId: Principal;
+		segmentIdText?: string | undefined;
+	}
 
-	let excludeSegmentIdText: string;
-	$: excludeSegmentIdText = excludeSegmentId.toText();
+	let { excludeSegmentId, segmentIdText = $bindable(undefined) }: Props = $props();
 
-	let satellites: Satellite[];
-	$: satellites = ($satellitesStore ?? []).filter(
-		({ satellite_id }) => satellite_id.toText() !== excludeSegmentIdText
+	let excludeSegmentIdText: string = $derived(excludeSegmentId.toText());
+
+	let satellites: Satellite[] = $derived(
+		($satellitesStore ?? []).filter(
+			({ satellite_id }) => satellite_id.toText() !== excludeSegmentIdText
+		)
 	);
 
 	onMount(

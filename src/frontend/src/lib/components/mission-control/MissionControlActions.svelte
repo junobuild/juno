@@ -8,11 +8,15 @@
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 
-	export let missionControlId: Principal;
+	interface Props {
+		missionControlId: Principal;
+	}
 
-	let canister: CanisterIcStatus | undefined = undefined;
+	let { missionControlId }: Props = $props();
 
-	let visible: boolean | undefined;
+	let canister: CanisterIcStatus | undefined = $state(undefined);
+
+	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
 	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
@@ -23,7 +27,8 @@
 		canister = syncCanister;
 	};
 
-	const onTransferCycles = () => {
+	// eslint-disable-next-line require-await
+	const onTransferCycles = async () => {
 		close();
 
 		emit({
@@ -38,12 +43,15 @@
 	};
 </script>
 
-<svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
+<svelte:window
+	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterIcStatus }>) =>
+		onSyncCanister(canister)}
+/>
 
 <Actions bind:visible>
 	<TopUp type="topup_mission_control" on:junoTopUp={close} />
 
-	<CanisterTransferCycles {canister} on:click={onTransferCycles} />
+	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
 	<hr />
 

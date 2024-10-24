@@ -4,14 +4,20 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Languages } from '$lib/types/languages';
 
-	export let selected: Languages;
+	interface Props {
+		selected: Languages;
+	}
+
+	let { selected = $bindable() }: Props = $props();
 
 	onMount(() => (selected = $i18n.lang));
 </script>
 
 <Value>
-	<svelte:fragment slot="label">{$i18n.core.language}</svelte:fragment>
-	<select bind:value={selected} on:change={async () => await i18n.switchLang(selected)}>
+	{#snippet label()}
+		{$i18n.core.language}
+	{/snippet}
+	<select bind:value={selected} onchange={async () => await i18n.switchLang(selected)}>
 		<option value="en"> English </option>
 		<option value="zh-cn"> 简体中文 </option>
 	</select>

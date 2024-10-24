@@ -2,6 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import type { Doc as DocType } from '$declarations/satellite/satellite.did';
 	import { deleteDocs } from '$lib/api/satellites.api';
@@ -23,8 +24,10 @@
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
+	let collection: string | undefined = $state();
+	run(() => {
+		collection = $store.rule?.[0];
+	});
 
 	const {
 		store: paginationStore,
@@ -32,14 +35,18 @@
 		list
 	}: PaginationContext<DocType> = getContext<PaginationContext<DocType>>(PAGINATION_CONTEXT_KEY);
 
-	let empty = false;
-	$: empty = $paginationStore.items?.length === 0 && nonNullish(collection);
+	let empty = $state(false);
+	run(() => {
+		empty = $paginationStore.items?.length === 0 && nonNullish(collection);
+	});
 
 	const { store: docsStore, resetData }: DataContext<DocType> =
 		getContext<DataContext<DocType>>(DATA_CONTEXT_KEY);
 
-	let emptyCollection = false;
-	$: emptyCollection = $store.rules?.length === 0;
+	let emptyCollection = $state(false);
+	run(() => {
+		emptyCollection = $store.rules?.length === 0;
+	});
 
 	const load = async () => {
 		resetPage();
@@ -47,18 +54,21 @@
 		await list();
 	};
 
-	$: collection, $listParamsStore, (async () => await load())();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		collection, $listParamsStore, (async () => await load())();
+	});
 
 	/**
 	 * Delete data
 	 */
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
-	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
-		await deleteDocs({ ...params, identity: $authStore.identity });
+	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
+		$derived(async (params: { collection: string; satelliteId: Principal }) => {
+			await deleteDocs({ ...params, identity: $authStore.identity });
 
-		resetData();
-	};
+			resetData();
+		});
 
 	const reload = async () => {
 		emit({ message: 'junoCloseActions' });
@@ -70,27 +80,37 @@
 	<DataCollectionHeader>
 		{$i18n.datastore.documents}
 
-		<svelte:fragment slot="actions">
+		{#snippet actions()}
 			<DocUpload on:junoUploaded={reload}>
-				<svelte:fragment slot="action">{$i18n.document.create_document}</svelte:fragment>
-				<svelte:fragment slot="title">{$i18n.document.create_document}</svelte:fragment>
-				<Html
-					text={i18nFormat($i18n.document.upload_description, [
-						{
-							placeholder: '{0}',
-							value: collection ?? ''
-						}
-					])}
-				/>
+				{#snippet action()}
+					{$i18n.document.create_document}
+				{/snippet}
+				{#snippet title()}
+					{$i18n.document.create_document}
+				{/snippet}
+				{#snippet description()}
+					<Html
+						text={i18nFormat($i18n.document.upload_description, [
+							{
+								placeholder: '{0}',
+								value: collection ?? ''
+							}
+						])}
+					/>
+				{/snippet}
 			</DocUpload>
 
-			<button class="menu" type="button" on:click={load}
+			<button class="menu" type="button" onclick={load}
 				><IconRefresh size="20px" /> {$i18n.core.reload}</button
 			>
 
 			<DataCollectionDelete {deleteData}>
-				<svelte:fragment slot="button">{$i18n.collections.clear_collection}</svelte:fragment>
-				<svelte:fragment slot="title">{$i18n.collections.clear_collection}</svelte:fragment>
+				{#snippet button()}
+					{$i18n.collections.clear_collection}
+				{/snippet}
+				{#snippet title()}
+					{$i18n.collections.clear_collection}
+				{/snippet}
 				<Html
 					text={i18nFormat($i18n.asset.delete_all, [
 						{
@@ -100,7 +120,7 @@
 					])}
 				/>
 			</DataCollectionDelete>
-		</svelte:fragment>
+		{/snippet}
 	</DataCollectionHeader>
 </div>
 
@@ -114,15 +134,19 @@
 			<div out:fade>
 				{#if empty}
 					<CollectionEmpty {collection} rule={$store.rule?.[1]}>
-						<svelte:fragment slot="filter">{$i18n.document.no_match}</svelte:fragment>
+						{#snippet filter()}
+							{$i18n.document.no_match}
+						{/snippet}
 					</CollectionEmpty>
 				{/if}
 
-				{#each $paginationStore.items as [key, doc]}
-					<button class="text action" on:click={() => docsStore.set({ key, data: doc })}
-						><span>{key}</span></button
-					>
-				{/each}
+				{#if $paginationStore.items.length > 0}
+					{#each $paginationStore.items as [key, doc]}
+						<button class="text action" onclick={() => docsStore.set({ key, data: doc })}
+							><span>{key}</span></button
+						>
+					{/each}
+				{/if}
 
 				{#if !empty}
 					<DataPaginator />

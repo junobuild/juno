@@ -11,12 +11,13 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let newerReleases: string[];
-	let currentVersion: string;
+	let { detail }: Props = $props();
 
-	$: ({ newerReleases, currentVersion } = detail as JunoModalUpgradeDetail);
+	let { newerReleases, currentVersion } = $derived(detail as JunoModalUpgradeDetail);
 
 	const upgradeOrbiterWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
 		await upgradeOrbiter({
@@ -37,15 +38,17 @@
 		upgrade={upgradeOrbiterWasm}
 		segment="orbiter"
 	>
-		<h2 slot="intro">
-			<Html
-				text={i18nFormat($i18n.canisters.upgrade_title, [
-					{
-						placeholder: '{0}',
-						value: 'orbiter'
-					}
-				])}
-			/>
-		</h2>
+		{#snippet intro()}
+			<h2>
+				<Html
+					text={i18nFormat($i18n.canisters.upgrade_title, [
+						{
+							placeholder: '{0}',
+							value: 'orbiter'
+						}
+					])}
+				/>
+			</h2>
+		{/snippet}
 	</CanisterUpgradeModal>
 {/if}

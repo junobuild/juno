@@ -1,11 +1,18 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import type { Snippet } from 'svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 
-	export let canisterId: Principal;
+	interface Props {
+		canisterId: Principal;
+		cycles?: Snippet;
+		heap?: Snippet;
+	}
 
-	let cyclesWarning = false;
+	let { canisterId, cycles, heap }: Props = $props();
+
+	let cyclesWarning = $state(false);
 	let heapWarning = false;
 
 	const syncCanister = ({ id, data }: CanisterIcStatus) => {
@@ -20,14 +27,14 @@
 	};
 </script>
 
-<svelte:window on:junoSyncCanister={({ detail: { canister } }) => syncCanister(canister)} />
+<svelte:window onjunoSyncCanister={({ detail: { canister } }) => syncCanister(canister)} />
 
 {#if cyclesWarning}
-	<p><IconWarning /> <slot name="cycles" /></p>
+	<p><IconWarning /> {@render cycles?.()}</p>
 {/if}
 
 {#if heapWarning}
-	<p><IconWarning /> <slot name="heap" /></p>
+	<p><IconWarning /> {@render heap?.()}</p>
 {/if}
 
 <style lang="scss">

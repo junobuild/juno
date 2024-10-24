@@ -5,15 +5,19 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Status, Statuses } from '$lib/types/observatory';
 
-	export let statuses: Statuses;
+	interface Props {
+		statuses: Statuses;
+	}
 
-	let orbiters: Status[];
-	$: orbiters =
-		nonNullish(statuses) && 'Ok' in statuses ? (fromNullable(statuses.Ok.orbiters) ?? []) : [];
+	let { statuses }: Props = $props();
 
-	let satellites: Status[];
-	$: satellites =
-		nonNullish(statuses) && 'Ok' in statuses ? (fromNullable(statuses.Ok.satellites) ?? []) : [];
+	let orbiters: Status[] = $derived(
+		nonNullish(statuses) && 'Ok' in statuses ? (fromNullable(statuses.Ok.orbiters) ?? []) : []
+	);
+
+	let satellites: Status[] = $derived(
+		nonNullish(statuses) && 'Ok' in statuses ? (fromNullable(statuses.Ok.satellites) ?? []) : []
+	);
 </script>
 
 {#if 'Err' in statuses}

@@ -20,7 +20,9 @@
 		<div class="columns-3 fit-column-1">
 			<div class="id">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.mission_control.id}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.mission_control.id}
+					{/snippet}
 					<Identifier
 						identifier={$missionControlStore?.toText() ?? ''}
 						shorten={false}
@@ -35,7 +37,9 @@
 
 			<div>
 				<Value>
-					<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.core.version}
+					{/snippet}
 					<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
 				</Value>
 			</div>

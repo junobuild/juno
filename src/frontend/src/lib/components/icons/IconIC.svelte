@@ -1,5 +1,9 @@
 <script lang="ts">
-	export let title: string | undefined = undefined;
+	interface Props {
+		title?: string | undefined;
+	}
+
+	let { title = undefined }: Props = $props();
 </script>
 
 <svg

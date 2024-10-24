@@ -8,7 +8,7 @@
 <button
 	data-tid="menu-toggle"
 	class="menu"
-	on:click={() => layoutMenuOpen.set(!$layoutMenuOpen)}
+	onclick={() => layoutMenuOpen.set(!$layoutMenuOpen)}
 	aria-label={$layoutMenuOpen ? $i18n.core.close : $i18n.core.menu}
 >
 	{#if $layoutMenuOpen}

@@ -6,16 +6,18 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let config: AuthenticationConfig | undefined;
-	export let domainNameInput: string;
+	interface Props {
+		config: AuthenticationConfig | undefined;
+		domainNameInput: string;
+	}
 
-	let authDomain: string | undefined;
-	$: authDomain = fromNullable(
-		fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []
+	let { config, domainNameInput }: Props = $props();
+
+	let authDomain: string | undefined = $derived(
+		fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
 	);
 
-	let edit: boolean;
-	$: edit = nonNullish(authDomain);
+	let edit: boolean = $derived(nonNullish(authDomain));
 
 	const dispatch = createEventDispatcher();
 
@@ -84,7 +86,7 @@
 </p>
 
 <div class="toolbar">
-	<button on:click={no}
+	<button onclick={no}
 		>{#if edit}
 			<span
 				><Html
@@ -98,7 +100,7 @@
 			>
 		{:else}{$i18n.core.no}{/if}</button
 	>
-	<button on:click={yes}>{$i18n.core.yes}</button>
+	<button onclick={yes}>{$i18n.core.yes}</button>
 </div>
 
 <style lang="scss">

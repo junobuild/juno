@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
 	import { createEventDispatcher } from 'svelte';
+	import { preventDefault } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -11,61 +12,58 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		CanisterLogVisibility,
-		CanisterSegmentWithLabel,
-		CanisterSettings
-	} from '$lib/types/canister';
+	import type { CanisterLogVisibility } from '$lib/types/canister';
 	import type { JunoModalDetail, JunoModalEditCanisterSettingsDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let segment: CanisterSegmentWithLabel;
-	let settings: CanisterSettings;
+	let { detail }: Props = $props();
 
-	$: ({ segment, settings } = detail as JunoModalEditCanisterSettingsDetail);
+	let { segment, settings } = $derived(detail as JunoModalEditCanisterSettingsDetail);
 
-	let freezingThreshold: number;
-	const initFreezingThreshold = (threshold: bigint) => (freezingThreshold = Number(threshold));
-	$: initFreezingThreshold(settings.freezingThreshold);
+	let freezingThreshold: number = $state(
+		Number((detail as JunoModalEditCanisterSettingsDetail).settings.freezingThreshold)
+	);
 
-	let reservedTCyclesLimit: number;
-	const initReservedTCyclesLimit = (cycles: bigint) =>
-		(reservedTCyclesLimit = Number(formatTCycles(cycles)));
-	$: initReservedTCyclesLimit(settings.reservedCyclesLimit);
+	let reservedTCyclesLimit: number = $state(
+		Number(
+			formatTCycles((detail as JunoModalEditCanisterSettingsDetail).settings.reservedCyclesLimit)
+		)
+	);
 
-	let logVisibility: CanisterLogVisibility;
-	const initLogVisibility = (visibility: CanisterLogVisibility) => (logVisibility = visibility);
-	$: initLogVisibility(settings.logVisibility);
+	let logVisibility: CanisterLogVisibility = $state(
+		(detail as JunoModalEditCanisterSettingsDetail).settings.logVisibility
+	);
 
-	let reservedCyclesLimit: bigint;
-	$: reservedCyclesLimit = BigInt(reservedTCyclesLimit * ONE_TRILLION);
+	let wasmMemoryLimit: number = $state(
+		Number((detail as JunoModalEditCanisterSettingsDetail).settings.wasmMemoryLimit)
+	);
 
-	let wasmMemoryLimit: number;
-	const initWasmMemoryLimit = (memoryLimit: bigint) => (wasmMemoryLimit = Number(memoryLimit));
-	$: initWasmMemoryLimit(settings.wasmMemoryLimit);
+	let memoryAllocation: number = $state(
+		Number((detail as JunoModalEditCanisterSettingsDetail).settings.memoryAllocation)
+	);
 
-	let memoryAllocation: number;
-	const initMemoryAllocation = (memory: bigint) => (memoryAllocation = Number(memory));
-	$: initMemoryAllocation(settings.memoryAllocation);
+	let computeAllocation: number = $state(
+		Number((detail as JunoModalEditCanisterSettingsDetail).settings.computeAllocation)
+	);
 
-	let computeAllocation: number;
-	const initComputeAllocation = (memory: bigint) => (computeAllocation = Number(memory));
-	$: initComputeAllocation(settings.computeAllocation);
+	let reservedCyclesLimit: bigint = $derived(BigInt(reservedTCyclesLimit * ONE_TRILLION));
 
-	let disabled = true;
-	$: disabled =
+	let disabled = $derived(
 		(BigInt(freezingThreshold ?? 0n) === settings.freezingThreshold || freezingThreshold === 0) &&
-		reservedCyclesLimit === settings.reservedCyclesLimit &&
-		logVisibility === settings.logVisibility &&
-		BigInt(wasmMemoryLimit ?? 0n) === settings.wasmMemoryLimit &&
-		BigInt(memoryAllocation ?? 0n) === settings.memoryAllocation &&
-		BigInt(computeAllocation ?? 0n) === settings.computeAllocation;
+			reservedCyclesLimit === settings.reservedCyclesLimit &&
+			logVisibility === settings.logVisibility &&
+			BigInt(wasmMemoryLimit ?? 0n) === settings.wasmMemoryLimit &&
+			BigInt(memoryAllocation ?? 0n) === settings.memoryAllocation &&
+			BigInt(computeAllocation ?? 0n) === settings.computeAllocation
+	);
 
-	let steps: 'edit' | 'in_progress' | 'ready' = 'edit';
+	let steps: 'edit' | 'in_progress' | 'ready' = $state('edit');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
@@ -116,7 +114,7 @@
 					])}
 				/>
 			</p>
-			<button on:click={close}>{$i18n.core.close}</button>
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
@@ -131,13 +129,13 @@
 			])}
 		</p>
 
-		<form class="content" on:submit|preventDefault={updateSettings}>
+		<form class="content" onsubmit={preventDefault(updateSettings)}>
 			<div class="container">
 				<div>
 					<Value>
-						<svelte:fragment slot="label"
-							>{$i18n.canisters.freezing_threshold} ({$i18n.canisters.in_seconds})</svelte:fragment
-						>
+						{#snippet label()}
+							{$i18n.canisters.freezing_threshold} ({$i18n.canisters.in_seconds})
+						{/snippet}
 						<Input
 							inputType="number"
 							name="freezingThreshold"
@@ -149,10 +147,9 @@
 
 				<div>
 					<Value>
-						<svelte:fragment slot="label"
-							>{$i18n.canisters.reserved_cycles_limit} ({$i18n.canisters
-								.in_t_cycles})</svelte:fragment
-						>
+						{#snippet label()}
+							{$i18n.canisters.reserved_cycles_limit} ({$i18n.canisters.in_t_cycles})
+						{/snippet}
 						<Input
 							inputType="number"
 							name="reservedCyclesLimit"
@@ -164,7 +161,9 @@
 
 				<div>
 					<Value>
-						<svelte:fragment slot="label">{$i18n.canisters.log_visibility}</svelte:fragment>
+						{#snippet label()}
+							{$i18n.canisters.log_visibility}
+						{/snippet}
 						<select id="logVisibility" name="logVisibility" bind:value={logVisibility}>
 							<option value="controllers">{$i18n.canisters.controllers}</option>
 							<option value="public">{$i18n.canisters.public}</option>
@@ -174,9 +173,9 @@
 
 				<div class="row-1 column-2">
 					<Value>
-						<svelte:fragment slot="label"
-							>{$i18n.canisters.heap_memory_limit} ({$i18n.canisters.in_bytes})</svelte:fragment
-						>
+						{#snippet label()}
+							{$i18n.canisters.heap_memory_limit} ({$i18n.canisters.in_bytes})
+						{/snippet}
 						<Input
 							inputType="number"
 							name="wasmMemoryLimit"
@@ -188,9 +187,9 @@
 
 				<div class="row-2 column-2">
 					<Value>
-						<svelte:fragment slot="label"
-							>{$i18n.canisters.memory_allocation} ({$i18n.canisters.in_bytes})</svelte:fragment
-						>
+						{#snippet label()}
+							{$i18n.canisters.memory_allocation} ({$i18n.canisters.in_bytes})
+						{/snippet}
 						<Input
 							inputType="number"
 							name="memoryAllocation"
@@ -202,9 +201,9 @@
 
 				<div class="column-2">
 					<Value>
-						<svelte:fragment slot="label"
-							>{$i18n.canisters.compute_allocation} ({$i18n.canisters.in_percent})</svelte:fragment
-						>
+						{#snippet label()}
+							{$i18n.canisters.compute_allocation} ({$i18n.canisters.in_percent})
+						{/snippet}
 						<Input
 							inputType="number"
 							name="computeAllocation"

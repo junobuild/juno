@@ -27,54 +27,51 @@
 	const { resetPage, list }: PaginationContext<AssetNoContent> =
 		getContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY);
 
-	let key: string | undefined;
-	$: key = $store?.key;
+	let key: string | undefined = $derived($store?.key);
 
-	let asset: AssetNoContent | undefined;
-	$: asset = $store?.data;
+	let asset: AssetNoContent | undefined = $derived($store?.data);
 
-	let owner: Principal | undefined;
-	$: owner = asset?.key.owner;
+	let owner: Principal | undefined = $derived(asset?.key.owner);
 
-	let token: string | undefined;
-	$: token = nonNullish(asset) ? fromNullable(asset.key.token) : undefined;
+	let token: string | undefined = $derived(
+		nonNullish(asset) ? fromNullable(asset.key.token) : undefined
+	);
 
-	let headers: [string, string][];
-	$: headers = asset?.headers ?? [];
+	let headers: [string, string][] = $derived(asset?.headers ?? []);
 
-	let full_path: string | undefined;
-	$: full_path = asset?.key.full_path;
+	let full_path: string | undefined = $derived(asset?.key.full_path);
 
-	let downloadUrl: string | undefined;
-	$: downloadUrl = nonNullish(full_path)
-		? `${satelliteUrl($rulesStore.satelliteId.toText())}${full_path}${
-				token !== undefined ? `?token=${token}` : ''
-			}`
-		: undefined;
+	let downloadUrl: string | undefined = $derived(
+		nonNullish(full_path)
+			? `${satelliteUrl($rulesStore.satelliteId.toText())}${full_path}${
+					token !== undefined ? `?token=${token}` : ''
+				}`
+			: undefined
+	);
 
-	let description: string | undefined;
-	$: description = nonNullish(asset) ? fromNullable(asset.key.description) : undefined;
+	let description: string | undefined = $derived(
+		nonNullish(asset) ? fromNullable(asset.key.description) : undefined
+	);
 
-	let version: bigint | undefined;
-	$: version = fromNullable(asset?.version ?? []);
+	let version: bigint | undefined = $derived(fromNullable(asset?.version ?? []));
 
-	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
-	$: deleteData = async (params: { collection: string; satelliteId: Principal }) => {
-		if (isNullish(full_path) || full_path === '') {
-			toasts.error({
-				text: $i18n.errors.full_path_invalid
+	let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void> =
+		$derived(async (params: { collection: string; satelliteId: Principal }) => {
+			if (isNullish(full_path) || full_path === '') {
+				toasts.error({
+					text: $i18n.errors.full_path_invalid
+				});
+				return;
+			}
+
+			await deleteAsset({
+				...params,
+				full_path,
+				identity: $authStore.identity
 			});
-			return;
-		}
 
-		await deleteAsset({
-			...params,
-			full_path,
-			identity: $authStore.identity
+			resetData();
 		});
-
-		resetData();
-	};
 
 	const reload = async () => {
 		resetPage();
@@ -87,18 +84,26 @@
 	<DataHeader>
 		{key ?? ''}
 
-		<svelte:fragment slot="actions">
+		{#snippet actions()}
 			<AssetUpload on:junoUploaded={reload} {asset}>
-				<svelte:fragment slot="action">{$i18n.asset.replace_file}</svelte:fragment>
-				<svelte:fragment slot="title">{$i18n.asset.replace_file}</svelte:fragment>
-				{$i18n.asset.replace_description}
+				{#snippet action()}
+					{$i18n.asset.replace_file}
+				{/snippet}
+				{#snippet title()}
+					{$i18n.asset.replace_file}
+				{/snippet}
+				{#snippet description()}
+					{$i18n.asset.replace_description}
+				{/snippet}
 			</AssetUpload>
 
 			<DataKeyDelete {deleteData}>
-				<svelte:fragment slot="title">{$i18n.asset.delete}</svelte:fragment>
+				{#snippet title()}
+					{$i18n.asset.delete}
+				{/snippet}
 				{key}
 			</DataKeyDelete>
-		</svelte:fragment>
+		{/snippet}
 	</DataHeader>
 </div>
 
@@ -106,21 +111,27 @@
 	<article class="doc">
 		<div class="owner">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.asset.owner}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.asset.owner}
+				{/snippet}
 				<Identifier identifier={owner?.toText() ?? ''} />
 			</Value>
 		</div>
 
 		{#if nonNullish(description)}
 			<Value>
-				<svelte:fragment slot="label">{$i18n.asset.description}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.asset.description}
+				{/snippet}
 				<p class="description">{description}</p>
 			</Value>
 		{/if}
 
 		{#if nonNullish(full_path) && nonNullish(downloadUrl)}
 			<Value>
-				<svelte:fragment slot="label">{$i18n.asset.full_path}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.asset.full_path}
+				{/snippet}
 				<p class="description"><ExternalLink href={downloadUrl}>{full_path}</ExternalLink></p>
 			</Value>
 		{/if}
@@ -128,7 +139,9 @@
 		{#if nonNullish(token)}
 			<div class="data">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.asset.token}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.asset.token}
+					{/snippet}
 					{token}
 				</Value>
 			</div>
@@ -136,7 +149,9 @@
 
 		<div class="headers-block">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.asset.headers}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.asset.headers}
+				{/snippet}
 				<div class="headers">
 					{#each headers as header}
 						<span>{header[0]}: {header[1]}</span>
@@ -147,14 +162,18 @@
 
 		<div class="date">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.asset.created}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.asset.created}
+				{/snippet}
 				{formatToDate(asset.created_at)}
 			</Value>
 		</div>
 
 		<div class="date">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.asset.updated}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.asset.updated}
+				{/snippet}
 				{formatToDate(asset.updated_at)}
 			</Value>
 		</div>
@@ -162,7 +181,9 @@
 		{#if nonNullish(version)}
 			<div class="version">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.asset.version}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.asset.version}
+					{/snippet}
 					{version}
 				</Value>
 			</div>

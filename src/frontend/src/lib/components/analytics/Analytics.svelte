@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
 	import { addMonths } from 'date-fns';
+	import { run } from 'svelte/legacy';
 	import type {
 		AnalyticsTrackEvents,
 		AnalyticsWebVitalsPerformanceMetrics
@@ -32,15 +33,15 @@
 		PageViewsPeriod
 	} from '$lib/types/ortbiter';
 
-	let loading = true;
+	let loading = $state(true);
 
-	let pageViews: AnalyticsPageViewsType | undefined = undefined;
-	let trackEvents: AnalyticsTrackEvents | undefined = undefined;
-	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = undefined;
+	let pageViews: AnalyticsPageViewsType | undefined = $state(undefined);
+	let trackEvents: AnalyticsTrackEvents | undefined = $state(undefined);
+	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = $state(undefined);
 
-	let period: PageViewsPeriod = {
+	let period: PageViewsPeriod = $state({
 		from: addMonths(new Date(), -1)
-	};
+	});
 
 	const loadAnalytics = async () => {
 		if (isNullish($orbiterStore)) {
@@ -81,7 +82,10 @@
 
 	const debouncePageViews = debounce(loadAnalytics);
 
-	$: $orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
+	});
 
 	const selectPeriod = ({ detail }: CustomEvent<PageViewsPeriod>) => (period = detail);
 </script>

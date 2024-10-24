@@ -1,6 +1,10 @@
 <!-- source: https://fonts.google.com/icons?selected=Material+Icons+Outlined:file_download:&icon.size=24&icon.color=%23e8eaed&icon.query=download -->
 <script lang="ts">
-	export let size = '24px';
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '24px' }: Props = $props();
 </script>
 
 <svg

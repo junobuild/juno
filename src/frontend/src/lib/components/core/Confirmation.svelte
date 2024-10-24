@@ -1,10 +1,18 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, type Snippet } from 'svelte';
+	import { stopPropagation } from 'svelte/legacy';
+
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let visible = false;
+	interface Props {
+		visible?: boolean;
+		title?: Snippet;
+		children: Snippet;
+	}
+
+	let { visible = $bindable(false), title, children }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 	const yes = () => dispatch('junoYes');
@@ -13,15 +21,15 @@
 
 <Popover bind:visible center={true} backdrop="dark">
 	<div class="content">
-		<h3><slot name="title" /></h3>
+		<h3>{@render title?.()}</h3>
 
-		<slot />
+		{@render children()}
 
-		<button type="button" on:click|stopPropagation={no} disabled={$isBusy}>
+		<button type="button" onclick={stopPropagation(no)} disabled={$isBusy}>
 			{$i18n.core.no}
 		</button>
 
-		<button type="button" on:click|stopPropagation={yes} disabled={$isBusy}>
+		<button type="button" onclick={stopPropagation(yes)} disabled={$isBusy}>
 			{$i18n.core.yes}
 		</button>
 	</div>

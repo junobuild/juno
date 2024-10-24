@@ -15,14 +15,14 @@
 	Juno defaults to
 	<button
 		class="text action"
-		on:click={async () => await doSignIn('internetcomputer.org')}
+		onclick={async () => await doSignIn('internetcomputer.org')}
 		disabled={$isBusy}>internetcomputer.org</button
 	> for authentication.
 </p>
 
 <p>
 	Alternatively, use the legacy method at
-	<button class="text action" on:click={async () => await doSignIn('ic0.app')} disabled={$isBusy}
+	<button class="text action" onclick={async () => await doSignIn('ic0.app')} disabled={$isBusy}
 		>ic0.app</button
 	>.
 </p>

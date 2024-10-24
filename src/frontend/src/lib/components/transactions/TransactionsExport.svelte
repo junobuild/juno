@@ -7,10 +7,14 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 
-	export let missionControlId: Principal;
-	export let transactions: TransactionWithId[];
+	interface Props {
+		missionControlId: Principal;
+		transactions: TransactionWithId[];
+	}
 
-	let visible = false;
+	let { missionControlId, transactions }: Props = $props();
+
+	let visible = $state(false);
 
 	const close = () => (visible = false);
 
@@ -33,11 +37,13 @@
 </script>
 
 {#if transactions.length > 0}
-	<button type="button" on:click={() => (visible = true)}>{$i18n.core.export}</button>
+	<button type="button" onclick={() => (visible = true)}>{$i18n.core.export}</button>
 {/if}
 
 <Confirmation bind:visible on:junoYes={exportTransactions} on:junoNo={close}>
-	<svelte:fragment slot="title">{$i18n.wallet.export_title}</svelte:fragment>
+	{#snippet title()}
+		{$i18n.wallet.export_title}
+	{/snippet}
 
 	<p>{$i18n.wallet.export_info}</p>
 </Confirmation>

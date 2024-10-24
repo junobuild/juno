@@ -1,11 +1,16 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
-	export let start = false;
+	interface Props {
+		start?: boolean;
+	}
+
+	let { start = false }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
@@ -13,8 +18,10 @@
 
 	const edit = (rule: [string, Rule]) => dispatch('junoCollectionEdit', rule);
 
-	let empty = false;
-	$: empty = $store.rules?.length === 0;
+	let empty = $state(false);
+	run(() => {
+		empty = $store.rules?.length === 0;
+	});
 </script>
 
 <p class="title collections">Collections</p>
@@ -22,14 +29,14 @@
 {#if start || !empty}
 	<div class="collections">
 		{#if start}
-			<button class="text action start" on:click={() => dispatch('junoCollectionStart')}
+			<button class="text action start" onclick={() => dispatch('junoCollectionStart')}
 				><IconNew size="16px" /> <span>Start collection</span></button
 			>
 		{/if}
 
 		{#if nonNullish($store.rules)}
 			{#each $store.rules as col}
-				<button class="text action" class:offset={start} on:click={() => edit(col)}
+				<button class="text action" class:offset={start} onclick={() => edit(col)}
 					><span>{col[0]}</span></button
 				>
 			{/each}

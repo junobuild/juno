@@ -1,43 +1,56 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
-	export let satelliteId: SatelliteIdText;
+	interface Props {
+		satelliteId: SatelliteIdText;
+	}
 
-	let currentBuild: string | undefined;
-	$: currentBuild = $versionStore?.satellites[satelliteId]?.currentBuild;
+	let { satelliteId }: Props = $props();
 
-	let extended = true;
-	$: extended =
-		nonNullish(currentBuild) && currentBuild !== $versionStore?.satellites[satelliteId]?.current;
+	let currentBuild: string | undefined = $derived(
+		$versionStore?.satellites[satelliteId]?.currentBuild
+	);
 
-	let build: BuildType | undefined;
-	$: build = $versionStore?.satellites[satelliteId]?.build;
+	let extended = $state(true);
+	run(() => {
+		extended =
+			nonNullish(currentBuild) && currentBuild !== $versionStore?.satellites[satelliteId]?.current;
+	});
+
+	let build: BuildType | undefined = $derived($versionStore?.satellites[satelliteId]?.build);
 </script>
 
 {#if !extended}
 	<div>
 		<Value>
-			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.core.version}
+			{/snippet}
 			<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
 		</Value>
 	</div>
 {:else}
 	<div>
 		<Value>
-			<svelte:fragment slot="label">{$i18n.satellites.stock_version}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.satellites.stock_version}
+			{/snippet}
 			<p>v{$versionStore?.satellites[satelliteId]?.current ?? '...'}</p>
 		</Value>
 	</div>
 
 	<div>
 		<Value>
-			<svelte:fragment slot="label">{$i18n.satellites.extended_version}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.satellites.extended_version}
+			{/snippet}
 			<p>v{$versionStore?.satellites[satelliteId]?.currentBuild ?? '...'}</p>
 		</Value>
 	</div>
@@ -45,7 +58,9 @@
 
 <div>
 	<Value>
-		<svelte:fragment slot="label">{$i18n.satellites.build}</svelte:fragment>
+		{#snippet label()}
+			{$i18n.satellites.build}
+		{/snippet}
 		<p class="build">
 			{#if nonNullish(build)}
 				<span in:fade>{build}</span>

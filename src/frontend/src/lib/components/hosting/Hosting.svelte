@@ -19,12 +19,15 @@
 	import type { Option } from '$lib/types/utils';
 	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
 
-	let satelliteId: SatelliteIdText;
-	$: satelliteId = satellite.satellite_id.toText();
+	let { satellite }: Props = $props();
 
-	let config: AuthenticationConfig | undefined;
+	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
+
+	let config: AuthenticationConfig | undefined = $state();
 
 	const list = async () => {
 		const [_, { config: c }] = await Promise.all([
@@ -49,18 +52,18 @@
 		mainDomain: boolean;
 	}
 
-	let selectedInfo: SelectedCustomDomain | undefined;
+	let selectedInfo: SelectedCustomDomain | undefined = $state();
 
 	const onDisplayInfo = ({ detail }: CustomEvent<SelectedCustomDomain>) => (selectedInfo = detail);
 </script>
 
-<svelte:window on:junoSyncCustomDomains={list} />
+<svelte:window onjunoSyncCustomDomains={list} />
 
 <div class="table-container">
 	<table>
 		<thead>
 			<tr>
-				<th class="tools" />
+				<th class="tools"></th>
 				<th class="domain"> {$i18n.hosting.domain} </th>
 				<th class="auth"> {$i18n.core.sign_in}</th>
 				<th> {$i18n.hosting.status}</th>

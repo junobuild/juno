@@ -3,8 +3,12 @@
 	import { slide } from 'svelte/transition';
 	import QRCode from '$lib/components/ui/QRCode.svelte';
 
-	export let ariaLabel: string | undefined = undefined;
-	export let value: string;
+	interface Props {
+		ariaLabel?: string | undefined;
+		value: string;
+	}
+
+	let { ariaLabel = undefined, value }: Props = $props();
 </script>
 
 <div

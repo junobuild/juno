@@ -1,6 +1,10 @@
 <!-- CC BY-NC-SA - Didier Renaud - https://www.customfuture.com/ -->
 <script lang="ts">
-	export let color: 'lavender' | 'white' = 'lavender';
+	interface Props {
+		color?: 'lavender' | 'white';
+	}
+
+	let { color = 'lavender' }: Props = $props();
 </script>
 
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 220.39" class:white={color === 'white'}

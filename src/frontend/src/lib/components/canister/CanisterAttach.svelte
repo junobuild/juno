@@ -1,23 +1,28 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
+	import { type Snippet } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 
-	export let setFn: (params: {
-		missionControlId: Principal;
-		canisterId: Principal;
-	}) => Promise<void>;
-	export let visible: boolean | undefined;
+	interface Props {
+		setFn: (params: { missionControlId: Principal; canisterId: Principal }) => Promise<void>;
+		visible: boolean | undefined;
+		title?: Snippet;
+		input?: Snippet;
+		attach: () => void;
+	}
 
-	let validConfirm = false;
+	let { setFn, visible = $bindable(), title, input, attach }: Props = $props();
+
+	let validConfirm = $state(false);
 	let saving = false;
 
-	let canisterId = '';
+	let canisterId = $state('');
 
 	const assertForm = debounce(() => {
 		try {
@@ -28,7 +33,10 @@
 		}
 	});
 
-	$: canisterId, (() => assertForm())();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		canisterId, (() => assertForm())();
+	});
 
 	const handleSubmit = async () => {
 		if (!validConfirm) {
@@ -56,7 +64,7 @@
 
 			visible = false;
 
-			dispatch('junoAttach');
+			attach();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.canister_attach_error,
@@ -66,15 +74,13 @@
 
 		busy.stop();
 	};
-
-	const dispatch = createEventDispatcher();
 </script>
 
 <Popover bind:visible center backdrop="dark">
-	<form class="container" on:submit|preventDefault={handleSubmit}>
-		<h3><slot name="title" /></h3>
+	<form class="container" onsubmit={preventDefault(handleSubmit)}>
+		<h3>{@render title?.()}</h3>
 
-		<label for="canisterId"><slot name="input" />:</label>
+		<label for="canisterId">{@render input?.()}:</label>
 
 		<input
 			id="canisterId"

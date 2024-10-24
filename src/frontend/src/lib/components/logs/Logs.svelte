@@ -2,6 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, onMount, setContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import Log from '$lib/components/logs/Log.svelte';
@@ -16,10 +17,14 @@
 	import type { Log as LogType, LogLevel as LogLevelType } from '$lib/types/log';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 
-	export let satelliteId: Principal;
+	interface Props {
+		satelliteId: Principal;
+	}
 
-	let desc = true;
-	let levels: LogLevelType[] = ['Info', 'Debug', 'Warning', 'Error'];
+	let { satelliteId }: Props = $props();
+
+	let desc = $state(true);
+	let levels: LogLevelType[] = $state(['Info', 'Debug', 'Warning', 'Error']);
 
 	const list = async () => {
 		const { results, error } = await listLogs({
@@ -48,10 +53,12 @@
 
 	onMount(async () => await list());
 
-	let empty = false;
-	$: empty = $store.items?.length === 0;
+	let empty = $state(false);
+	run(() => {
+		empty = $store.items?.length === 0;
+	});
 
-	let innerWidth = 0;
+	let innerWidth = $state(0);
 </script>
 
 <svelte:window bind:innerWidth />

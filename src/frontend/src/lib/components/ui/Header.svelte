@@ -1,9 +1,16 @@
 <script lang="ts">
-	export let opaque = false;
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		opaque?: boolean;
+		children: Snippet;
+	}
+
+	let { opaque = false, children }: Props = $props();
 </script>
 
 <header class:opaque>
-	<slot />
+	{@render children()}
 </header>
 
 <style lang="scss">

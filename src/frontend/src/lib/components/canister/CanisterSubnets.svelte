@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';
@@ -8,12 +9,17 @@
 	import type { Subnet } from '$lib/types/subnet';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
 
-	export let subnetId: PrincipalText | undefined;
+	interface Props {
+		subnetId: PrincipalText | undefined;
+	}
 
-	let filteredSubnets: Subnet[];
-	$: filteredSubnets = subnets.filter(({ subnetId }) => subnetId !== JUNO_SUBNET_ID);
+	let { subnetId = $bindable() }: Props = $props();
 
-	let extendedSubnets: Subnet[] = [];
+	let filteredSubnets: Subnet[] = $derived(
+		subnets.filter(({ subnetId }) => subnetId !== JUNO_SUBNET_ID)
+	);
+
+	let extendedSubnets: Subnet[] = $state([]);
 
 	const extendSubnets = async () => {
 		if (!DEV) {
@@ -31,12 +37,17 @@
 		];
 	};
 
-	$: filteredSubnets, (async () => await extendSubnets())();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		filteredSubnets, (async () => await extendSubnets())();
+	});
 </script>
 
 <div class="subnet">
 	<Value>
-		<svelte:fragment slot="label">{$i18n.canisters.subnet}</svelte:fragment>
+		{#snippet label()}
+			{$i18n.canisters.subnet}
+		{/snippet}
 		<select name="subnet" bind:value={subnetId}>
 			<option value={undefined}>{$i18n.canisters.default_subnet}</option>
 

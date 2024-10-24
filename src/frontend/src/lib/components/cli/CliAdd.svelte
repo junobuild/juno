@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { run, preventDefault } from 'svelte/legacy';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -20,11 +21,15 @@
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	export let principal: string;
-	export let redirect_uri: string;
+	interface Props {
+		principal: string;
+		redirect_uri: string;
+	}
 
-	let satellites: [Principal, Satellite][] = [];
-	let orbiters: [Principal, Orbiter][] = [];
+	let { principal, redirect_uri }: Props = $props();
+
+	let satellites: [Principal, Satellite][] = $state([]);
+	let orbiters: [Principal, Orbiter][] = $state([]);
 
 	const loadSegments = async () => {
 		if (!$authSignedInStore) {
@@ -55,13 +60,16 @@
 		}
 	};
 
-	$: $authSignedInStore, $missionControlStore, (async () => await loadSegments())();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$authSignedInStore, $missionControlStore, (async () => await loadSegments())();
+	});
 
-	let selectedSatellites: [Principal, Satellite][] = [];
-	let selectedOrbiters: [Principal, Orbiter][] = [];
-	let missionControl = false;
+	let selectedSatellites: [Principal, Satellite][] = $state([]);
+	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
+	let missionControl = $state(false);
 
-	let allSelected = false;
+	let allSelected = $state(false);
 
 	const toggleAll = () => {
 		allSelected = !allSelected;
@@ -71,7 +79,7 @@
 		selectedOrbiters = allSelected ? [...orbiters] : [];
 	};
 
-	let profile = '';
+	let profile = $state('');
 
 	const onSubmit = async () => {
 		if (isNullish(redirect_uri) || isNullish(principal)) {
@@ -182,15 +190,17 @@
 		busy.stop();
 	};
 
-	let disabled = true;
-	$: disabled = selectedSatellites.length === 0 && !missionControl && selectedOrbiters.length === 0;
+	let disabled = $state(true);
+	run(() => {
+		disabled = selectedSatellites.length === 0 && !missionControl && selectedOrbiters.length === 0;
+	});
 </script>
 
 <p class="add">
 	{$i18n.cli.add}
 </p>
 
-<form on:submit|preventDefault={onSubmit}>
+<form onsubmit={preventDefault(onSubmit)}>
 	<div class="table-container">
 		<table>
 			<thead>
@@ -240,7 +250,7 @@
 
 	<div class="objects">
 		<div class="checkbox all">
-			<input type="checkbox" on:change={toggleAll} checked={allSelected} />
+			<input type="checkbox" onchange={toggleAll} checked={allSelected} />
 			<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
 		</div>
 	</div>

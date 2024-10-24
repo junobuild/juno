@@ -2,6 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish, fromNullable, toNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import type { CronTab } from '$declarations/observatory/observatory.did';
 	import { getCronTab, setCronTab } from '$lib/api/observatory.api';
@@ -15,7 +16,11 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
 
-	export let missionControlId: Principal;
+	interface Props {
+		missionControlId: Principal;
+	}
+
+	let { missionControlId }: Props = $props();
 
 	// Source: https://stackoverflow.com/a/46181/5404186
 	const validEmail = (email: string): boolean =>
@@ -63,12 +68,12 @@
 		busy.stop();
 	};
 
-	let loading = true;
+	let loading = $state(true);
 	let cronTab: CronTab | undefined;
 
-	let enabled = false;
-	let threshold: number | undefined;
-	let email: string | undefined = undefined;
+	let enabled = $state(false);
+	let threshold: number | undefined = $state();
+	let email: string | undefined = $state(undefined);
 
 	const loadCrontab = async () => {
 		try {
@@ -91,24 +96,30 @@
 
 	onMount(async () => await loadCrontab());
 
-	let invalidEmail = false;
-	$: invalidEmail = nonNullish(email) && email !== '' && !validEmail(email);
+	let invalidEmail = $state(false);
+	run(() => {
+		invalidEmail = nonNullish(email) && email !== '' && !validEmail(email);
+	});
 
-	let invalidThreshold = false;
-	$: invalidThreshold = nonNullish(threshold) && threshold < Number(CYCLES_WARNING) / ONE_TRILLION;
+	let invalidThreshold = $state(false);
+	run(() => {
+		invalidThreshold = nonNullish(threshold) && threshold < Number(CYCLES_WARNING) / ONE_TRILLION;
+	});
 </script>
 
 {#if loading}
 	<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
 {:else}
-	<form on:submit|preventDefault={onSubmit} in:fade>
+	<form onsubmit={preventDefault(onSubmit)} in:fade>
 		<div class="card-container with-title">
 			<span class="title">{$i18n.core.settings}</span>
 
 			<div class="content">
 				<div>
 					<Value>
-						<svelte:fragment slot="label">{$i18n.observatory.monitoring}</svelte:fragment>
+						{#snippet label()}
+							{$i18n.observatory.monitoring}
+						{/snippet}
 
 						<div class="radio">
 							<label>
@@ -126,7 +137,9 @@
 
 				<div class="email">
 					<Value>
-						<svelte:fragment slot="label">{$i18n.observatory.email_notifications}</svelte:fragment>
+						{#snippet label()}
+							{$i18n.observatory.email_notifications}
+						{/snippet}
 						<input
 							bind:value={email}
 							type="email"
@@ -138,7 +151,9 @@
 
 				<div>
 					<Value>
-						<svelte:fragment slot="label">{$i18n.observatory.cycles_threshold}</svelte:fragment>
+						{#snippet label()}
+							{$i18n.observatory.cycles_threshold}
+						{/snippet}
 						<div class="input">
 							<Input
 								inputType="number"

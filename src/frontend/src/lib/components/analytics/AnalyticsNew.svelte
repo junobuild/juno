@@ -25,7 +25,7 @@
 	};
 </script>
 
-<button on:click={createOrbiter}>{$i18n.analytics.get_started}</button>
+<button onclick={createOrbiter}>{$i18n.analytics.get_started}</button>
 
 <style lang="scss">
 	button {

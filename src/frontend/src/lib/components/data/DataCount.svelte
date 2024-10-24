@@ -8,8 +8,7 @@
 	// @ts-ignore
 	const { store } = getContext(PAGINATION_CONTEXT_KEY);
 
-	let start: number;
-	$: start = 1 * $store.selectedPage * Number(PAGINATION) + 1;
+	let start: number = $derived(1 * $store.selectedPage * Number(PAGINATION) + 1);
 </script>
 
 {#if nonNullish($store.itemsLength) && nonNullish($store.matchesLength)}

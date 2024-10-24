@@ -8,11 +8,15 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
-	export let type: RulesType;
+	interface Props {
+		type: RulesType;
+	}
+
+	let { type }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let editCollection = false;
+	let editCollection = $state(false);
 
 	const editCollectionRule = (rule: [string, Rule]) => {
 		store.update((data) => ({ ...data, rule }));
@@ -52,7 +56,7 @@
 				on:junoCollectionSuccess={closeEdit}
 			/>
 		{:else}
-			<button class="text action start" on:click={startCollectionRule}
+			<button class="text action start" onclick={startCollectionRule}
 				><IconNew size="16px" /> <span>Start collection</span></button
 			>
 		{/if}

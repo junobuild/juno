@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
-	import { getContext } from 'svelte';
+	import { getContext, type Snippet } from 'svelte';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 	import { busy } from '$lib/stores/busy.store';
@@ -13,17 +13,22 @@
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	export let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+	interface Props {
+		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+		button?: Snippet;
+		title?: Snippet;
+		children: Snippet;
+	}
 
-	let visible: boolean | undefined;
+	let { deleteData, button, title, children }: Props = $props();
+
+	let visible: boolean = $state(false);
 
 	const close = () => (visible = false);
 
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
+	let collection: string | undefined = $derived($store.rule?.[0]);
 
-	let satelliteId: Principal;
-	$: satelliteId = $store.satelliteId;
+	let satelliteId: Principal = $derived($store.satelliteId);
 
 	const deleteSelectedData = async () => {
 		if (isNullish(collection) || collection === '') {
@@ -57,12 +62,8 @@
 	};
 </script>
 
-<button class="menu" type="button" on:click={() => (visible = true)}
-	><IconDelete size="20px" /> <slot name="button" /></button
+<button class="menu" type="button" onclick={() => (visible = true)}
+	><IconDelete size="20px" /> {@render button?.()}</button
 >
 
-<Confirmation bind:visible on:junoYes={deleteSelectedData} on:junoNo={close}>
-	<slot name="title" slot="title" />
-
-	<slot />
-</Confirmation>
+<Confirmation bind:visible on:junoYes={deleteSelectedData} on:junoNo={close} {title} {children} />

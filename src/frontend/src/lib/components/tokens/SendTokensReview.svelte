@@ -3,6 +3,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { preventDefault } from 'svelte/legacy';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -14,16 +15,25 @@
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { amountToICPToken } from '$lib/utils/token.utils';
 
-	export let missionControlId: Principal;
-	export let balance: bigint | undefined;
-	export let destination = '';
-	export let amount: string | undefined;
+	interface Props {
+		missionControlId: Principal;
+		balance: bigint | undefined;
+		destination?: string;
+		amount: string | undefined;
+	}
 
-	let accountIdentifier: AccountIdentifier | undefined;
-	$: accountIdentifier = getAccountIdentifier(missionControlId);
+	let {
+		missionControlId,
+		balance,
+		destination = $bindable(''),
+		amount = $bindable()
+	}: Props = $props();
 
-	let token: TokenAmountV2 | undefined;
-	$: token = amountToICPToken(amount);
+	let accountIdentifier: AccountIdentifier | undefined = $derived(
+		getAccountIdentifier(missionControlId)
+	);
+
+	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(amount));
 
 	const dispatch = createEventDispatcher();
 
@@ -53,28 +63,34 @@
 
 <p>{$i18n.wallet.review_and_confirm}</p>
 
-<form on:submit|preventDefault={onSubmit}>
+<form onsubmit={preventDefault(onSubmit)}>
 	<div class="columns">
 		<div class="card-container with-title from">
 			<span class="title">{$i18n.wallet.tx_from}</span>
 
 			<div class="content">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.wallet.wallet_id}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.wallet.wallet_id}
+					{/snippet}
 					<p class="identifier">
 						<Identifier shorten={false} identifier={missionControlId.toText()} />
 					</p>
 				</Value>
 
 				<Value>
-					<svelte:fragment slot="label">{$i18n.wallet.account_identifier}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.wallet.account_identifier}
+					{/snippet}
 					<p class="identifier">
 						<Identifier identifier={accountIdentifier?.toHex() ?? ''} />
 					</p>
 				</Value>
 
 				<Value>
-					<svelte:fragment slot="label">{$i18n.wallet.balance}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.wallet.balance}
+					{/snippet}
 					<p>
 						{#if nonNullish(balance)}<span>{formatE8sICP(balance)} <small>ICP</small></span>{/if}
 					</p>
@@ -87,7 +103,9 @@
 
 			<div class="content">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.wallet.destination}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.wallet.destination}
+					{/snippet}
 					<p class="identifier">
 						<Identifier identifier={destination} />
 					</p>
@@ -100,7 +118,9 @@
 
 			<div class="content">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.wallet.tx_amount}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.wallet.tx_amount}
+					{/snippet}
 					<p>
 						{#if nonNullish(token)}<span>{formatE8sICP(token.toE8s())} <small>ICP</small></span
 							>{/if}
@@ -108,7 +128,9 @@
 				</Value>
 
 				<Value>
-					<svelte:fragment slot="label">{$i18n.wallet.fee}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.wallet.fee}
+					{/snippet}
 					<p>
 						<span>{formatE8sICP(IC_TRANSACTION_FEE_ICP)} <small>ICP</small></span>
 					</p>
@@ -118,7 +140,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button type="button" on:click={() => dispatch('junoNext', 'form')}>{$i18n.core.back}</button>
+		<button type="button" onclick={() => dispatch('junoNext', 'form')}>{$i18n.core.back}</button>
 		<button type="submit">{$i18n.core.confirm}</button>
 	</div>
 </form>

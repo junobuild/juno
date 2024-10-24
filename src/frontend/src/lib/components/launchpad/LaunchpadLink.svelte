@@ -1,23 +1,28 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Snippet } from 'svelte';
 
-	export let href: string;
-	export let ariaLabel: string;
-	export let size: 'small' | 'default' = 'default';
-	export let row = false;
+	interface Props {
+		summary?: Snippet;
+		children: Snippet;
+		href: string;
+		ariaLabel: string;
+		size?: 'small' | 'default';
+		row?: boolean;
+	}
 
-	let summary = nonNullish($$slots.summary);
+	let { children, summary, href, ariaLabel, size = 'default', row = false }: Props = $props();
 </script>
 
 <a class="article" {href} aria-label={ariaLabel} class:small={size === 'small'} class:row>
-	{#if summary}
+	{#if nonNullish(summary)}
 		<div class="summary">
-			<slot name="summary" />
+			{@render summary()}
 		</div>
 	{/if}
 
-	<div class="content" class:only={!summary}>
-		<slot />
+	<div class="content" class:only={isNullish(summary)}>
+		{@render children()}
 	</div>
 </a>
 

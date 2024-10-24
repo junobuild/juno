@@ -7,9 +7,13 @@
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let domainNameInput: string;
-	export let dns: CustomDomainDns | undefined;
-	export let edit = false;
+	interface Props {
+		domainNameInput: string;
+		dns: CustomDomainDns | undefined;
+		edit?: boolean;
+	}
+
+	let { domainNameInput, dns, edit = false }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 </script>
@@ -51,11 +55,11 @@
 
 <div class="toolbar">
 	{#if !edit}
-		<button on:click={() => dispatch('junoBack')}>{$i18n.core.back}</button>
-		<button on:click={() => dispatch('junoSubmit')}>{$i18n.core.ready}</button>
+		<button onclick={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+		<button onclick={() => dispatch('junoSubmit')}>{$i18n.core.ready}</button>
 	{:else}
-		<button on:click={() => dispatch('junoClose')}>{$i18n.core.close}</button>
-		<button on:click={() => dispatch('junoSubmit')}>{$i18n.core.submit}</button>
+		<button onclick={() => dispatch('junoClose')}>{$i18n.core.close}</button>
+		<button onclick={() => dispatch('junoSubmit')}>{$i18n.core.submit}</button>
 	{/if}
 </div>
 

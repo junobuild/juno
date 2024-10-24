@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import { createEventDispatcher } from 'svelte';
 	import { canisterStart } from '$lib/api/ic.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStart from '$lib/components/icons/IconStart.svelte';
@@ -13,15 +12,18 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let canister: CanisterIcStatus;
-	export let segment: 'satellite' | 'orbiter';
+	interface Props {
+		canister: CanisterIcStatus;
+		segment: 'satellite' | 'orbiter';
+		onstart: () => void;
+	}
 
-	let visible = false;
+	let { canister, segment, onstart }: Props = $props();
 
-	const dispatch = createEventDispatcher();
+	let visible = $state(false);
 
 	const start = async () => {
-		dispatch('junoStart');
+		onstart();
 
 		if (!$authSignedInStore) {
 			toasts.error({
@@ -65,12 +67,12 @@
 	const close = () => (visible = false);
 </script>
 
-<button on:click={() => (visible = true)} class="menu"><IconStart /> {$i18n.core.start}</button>
+<button onclick={() => (visible = true)} class="menu"><IconStart /> {$i18n.core.start}</button>
 
 <Confirmation bind:visible on:junoYes={start} on:junoNo={close}>
-	<svelte:fragment slot="title">
-		<Text key="canisters.start_tile" value={segment} /></svelte:fragment
-	>
+	{#snippet title()}
+		<Text key="canisters.start_tile" value={segment} />
+	{/snippet}
 
 	<p><Text key="canisters.start_info" value={segment} /></p>
 </Confirmation>

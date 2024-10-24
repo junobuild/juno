@@ -4,31 +4,29 @@
 	import { fade } from 'svelte/transition';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import type { ChartsData } from '$lib/types/chart';
-	import type {
-		AnalyticsMetrics,
-		AnalyticsPageViews,
-		DateStartOfTheDay
-	} from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
 	import { last } from '$lib/utils/utils';
 
-	export let data: AnalyticsPageViews;
+	interface Props {
+		data: AnalyticsPageViews;
+	}
 
-	let metrics: AnalyticsMetrics;
-	$: ({ metrics } = data);
+	let { data }: Props = $props();
 
-	let daily_total_page_views: Record<DateStartOfTheDay, number>;
-	$: ({ daily_total_page_views } = metrics);
+	let { metrics } = $derived(data);
 
-	let dailyTotalArray: [string, number][];
-	$: dailyTotalArray = Object.entries(daily_total_page_views);
+	let { daily_total_page_views } = $derived(metrics);
 
-	let chartsPageViews: ChartsData[];
-	$: chartsPageViews = dailyTotalArray
-		.map(([key, value]) => ({
-			x: key,
-			y: value
-		}))
-		.sort(({ x: aKey }, { x: bKey }) => parseInt(aKey) - parseInt(bKey));
+	let dailyTotalArray: [string, number][] = $derived(Object.entries(daily_total_page_views));
+
+	let chartsPageViews: ChartsData[] = $derived(
+		dailyTotalArray
+			.map(([key, value]) => ({
+				x: key,
+				y: value
+			}))
+			.sort(({ x: aKey }, { x: bKey }) => parseInt(aKey) - parseInt(bKey))
+	);
 
 	const populateChartsData = (chartsPageViews: ChartsData[]): ChartsData[] => {
 		if (chartsPageViews.length < 1) {
@@ -74,8 +72,7 @@
 		}));
 	};
 
-	let chartsData: ChartsData[];
-	$: chartsData = populateChartsData(chartsPageViews);
+	let chartsData: ChartsData[] = $derived(populateChartsData(chartsPageViews));
 </script>
 
 {#if dailyTotalArray.length > 0}

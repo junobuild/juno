@@ -5,9 +5,13 @@
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let missionControlId: Principal;
-	export let transactions: TransactionWithId[];
-	export let disableInfiniteScroll = false;
+	interface Props {
+		missionControlId: Principal;
+		transactions: TransactionWithId[];
+		disableInfiniteScroll?: boolean;
+	}
+
+	let { missionControlId, transactions, disableInfiniteScroll = false }: Props = $props();
 </script>
 
 {#if transactions.length > 0}

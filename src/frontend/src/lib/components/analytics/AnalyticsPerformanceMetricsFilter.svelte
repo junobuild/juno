@@ -7,23 +7,30 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics;
-	export let page: AnalyticsWebVitalsPageMetrics | undefined;
+	interface Props {
+		performanceMetrics: AnalyticsWebVitalsPerformanceMetrics;
+		page: AnalyticsWebVitalsPageMetrics | undefined;
+	}
 
-	let pages: [string, AnalyticsWebVitalsPageMetrics][];
-	$: ({ pages } = performanceMetrics);
+	let { performanceMetrics, page = $bindable() }: Props = $props();
+
+	let { pages } = $derived(performanceMetrics);
 </script>
 
 <AnalyticsToolbar>
-	<Value slot="start">
-		<svelte:fragment slot="label">{$i18n.analytics.web_vitals}</svelte:fragment>
+	{#snippet start()}
+		<Value>
+			{#snippet label()}
+				{$i18n.analytics.web_vitals}
+			{/snippet}
 
-		<select id="page" name="page" bind:value={page}>
-			<option value={undefined}>{$i18n.analytics.overall}</option>
+			<select id="page" name="page" bind:value={page}>
+				<option value={undefined}>{$i18n.analytics.overall}</option>
 
-			{#each pages as pageMetric}
-				<option value={pageMetric[1]}>{pageMetric[0]}</option>
-			{/each}
-		</select>
-	</Value>
+				{#each pages as pageMetric}
+					<option value={pageMetric[1]}>{pageMetric[0]}</option>
+				{/each}
+			</select>
+		</Value>
+	{/snippet}
 </AnalyticsToolbar>

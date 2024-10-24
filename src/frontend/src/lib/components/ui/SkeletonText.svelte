@@ -1,6 +1,10 @@
 <script lang="ts">
-	export let animated = true;
-	export let tagName: 'span' | 'p' | 'h1' | 'h2' | 'h3' = 'span';
+	interface Props {
+		animated?: boolean;
+		tagName?: 'span' | 'p' | 'h1' | 'h2' | 'h3';
+	}
+
+	let { animated = true, tagName = 'span' }: Props = $props();
 </script>
 
 <div data-tid="skeleton-text" aria-busy="true" class="skeleton-text" class:animated>

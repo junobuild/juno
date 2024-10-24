@@ -1,9 +1,13 @@
+<!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { afterUpdate, createEventDispatcher } from 'svelte';
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+
+	// TODO: migrate to Svelte v5
+	// e.g. afterUpdate cannot be used in runes mode
 
 	export let id: string | undefined = undefined;
 	export let initiallyExpanded = false;

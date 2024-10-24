@@ -4,7 +4,11 @@
 	import SatelliteControllers from '$lib/components/satellites/SatelliteControllers.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
+
+	let { satellite }: Props = $props();
 </script>
 
 <CanisterSettings

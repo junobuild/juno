@@ -12,10 +12,13 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
 
-	let satelliteId: SatelliteIdText;
-	$: satelliteId = satellite.satellite_id.toText();
+	let { satellite }: Props = $props();
+
+	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
 </script>
 
 <div class="card-container with-title">
@@ -26,7 +29,9 @@
 			<SatelliteName {satellite} />
 
 			<Value>
-				<svelte:fragment slot="label">{$i18n.satellites.id}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.satellites.id}
+				{/snippet}
 				<Identifier identifier={satelliteId} shorten={false} small={false} />
 			</Value>
 

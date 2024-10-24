@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { setContext } from 'svelte';
+	import { setContext, untrack } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
 	import Analytics from '$lib/components/analytics/Analytics.svelte';
 	import AnalyticsSettings from '$lib/components/analytics/AnalyticsSettings.svelte';
@@ -28,8 +29,7 @@
 		labelKey: 'analytics.dashboard'
 	};
 
-	let tabs: Tab[] = [tabDashboard];
-	$: tabs = [
+	let tabs: Tab[] = $derived([
 		tabDashboard,
 		...(nonNullish($orbiterStore)
 			? [
@@ -43,33 +43,41 @@
 					}
 				]
 			: [])
-	];
+	]);
 
 	const store = writable<TabsStore>({
-		tabId: initTabId(tabs),
-		tabs
+		tabId: untrack(() => initTabId(tabs)),
+		tabs: untrack(() => tabs)
 	});
 
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
 
-	$: store.set({
-		tabId: initTabId(tabs),
-		tabs
+	run(() => {
+		store.set({
+			tabId: initTabId(tabs),
+			tabs
+		});
 	});
 
 	// Load data
 
-	$: $missionControlStore,
-		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$missionControlStore,
+			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	});
 
-	$: $orbiterStore,
-		(async () => await loadOrbiterVersion({ orbiter: $orbiterStore, reload: false }))();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$orbiterStore,
+			(async () => await loadOrbiterVersion({ orbiter: $orbiterStore, reload: false }))();
+	});
 </script>
 
 <svelte:window
-	on:junoReloadVersions={async () =>
+	onjunoReloadVersions={async () =>
 		await loadOrbiterVersion({ orbiter: $orbiterStore, reload: true })}
 />
 
@@ -79,11 +87,11 @@
 			? 'https://juno.build/docs/build/analytics'
 			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
-		<svelte:fragment slot="info">
+		{#snippet info()}
 			{#if $authSignedInStore}
 				<Warnings />
 			{/if}
-		</svelte:fragment>
+		{/snippet}
 
 		<MissionControlGuard>
 			{#if $store.tabId === $store.tabs[0].id}

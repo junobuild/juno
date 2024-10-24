@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
 	import OrbiterConfigSave from '$lib/components/orbiter/OrbiterConfigSave.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
@@ -14,9 +15,13 @@
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	export let orbiterId: Principal;
+	interface Props {
+		orbiterId: Principal;
+	}
 
-	let configuration: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = {};
+	let { orbiterId }: Props = $props();
+
+	let configuration: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = $state({});
 
 	const list = (orbiterVersion: string): Promise<[Principal, OrbiterSatelliteConfig][]> =>
 		listOrbiterSatelliteConfigs({ orbiterId, identity: $authStore.identity, orbiterVersion });
@@ -57,7 +62,10 @@
 		}, {});
 	};
 
-	$: $versionStore, (async () => await load())();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$versionStore, (async () => await load())();
+	});
 
 	// [Principal, SatelliteConfig]
 	const onUpdate = ({ detail }: CustomEvent<[Principal, OrbiterSatelliteConfig][]>) => {

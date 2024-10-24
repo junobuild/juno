@@ -5,15 +5,13 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatNumber } from '$lib/utils/number.utils';
 
-	export let metrics: AnalyticsWebVitalsPageMetrics;
+	interface Props {
+		metrics: AnalyticsWebVitalsPageMetrics;
+	}
 
-	let cls: [] | [number];
-	let fcp: [] | [number];
-	let inp: [] | [number];
-	let lcp: [] | [number];
-	let ttfb: [] | [number];
+	let { metrics }: Props = $props();
 
-	$: ({ cls, fcp, inp, lcp, ttfb } = metrics);
+	let { cls, fcp, inp, lcp, ttfb } = $derived(metrics);
 
 	type Rating = 'good' | 'needs_improvement' | 'poor';
 
@@ -42,28 +40,29 @@
 
 	// https://github.com/GoogleChrome/web-vitals/blob/9b932519b16f72328c6d8e9814b811f1bc1a0bb5/src/onCLS.ts#L28
 	// https://web.dev/articles/cls#what_is_a_good_cls_score
-	let clsRating: Rating | undefined;
-	$: clsRating = getRating({ metric: cls, thresholds: [0.1, 0.25] });
+	let clsRating: Rating | undefined = $derived(getRating({ metric: cls, thresholds: [0.1, 0.25] }));
 
 	// https://github.com/GoogleChrome/web-vitals/blob/9b932519b16f72328c6d8e9814b811f1bc1a0bb5/src/onFCP.ts#L28
 	// https://web.dev/articles/fcp#what_is_a_good_fcp_score
-	let fcpRating: Rating | undefined;
-	$: fcpRating = getRating({ metric: fcp, thresholds: [1800, 3000] });
+	let fcpRating: Rating | undefined = $derived(
+		getRating({ metric: fcp, thresholds: [1800, 3000] })
+	);
 
 	// https://github.com/GoogleChrome/web-vitals/blob/9b932519b16f72328c6d8e9814b811f1bc1a0bb5/src/onINP.ts#L35C55-L35C63
 	// https://web.dev/articles/inp#what_is_a_good_inp_score
-	let inpRating: Rating | undefined;
-	$: inpRating = getRating({ metric: inp, thresholds: [200, 500] });
+	let inpRating: Rating | undefined = $derived(getRating({ metric: inp, thresholds: [200, 500] }));
 
 	// https://github.com/GoogleChrome/web-vitals/blob/9b932519b16f72328c6d8e9814b811f1bc1a0bb5/src/onLCP.ts#L31
 	// https://web.dev/articles/lcp#what_is_a_good_lcp_score
-	let lcpRating: Rating | undefined;
-	$: lcpRating = getRating({ metric: lcp, thresholds: [2500, 4000] });
+	let lcpRating: Rating | undefined = $derived(
+		getRating({ metric: lcp, thresholds: [2500, 4000] })
+	);
 
 	// https://web.dev/articles/ttfb#what_is_a_good_ttfb_score
 	// https://github.com/GoogleChrome/web-vitals/blob/9b932519b16f72328c6d8e9814b811f1bc1a0bb5/src/onTTFB.ts#L26C56-L26C65
-	let ttfbRating: Rating | undefined;
-	$: ttfbRating = getRating({ metric: ttfb, thresholds: [800, 1800] });
+	let ttfbRating: Rating | undefined = $derived(
+		getRating({ metric: ttfb, thresholds: [800, 1800] })
+	);
 </script>
 
 <div class="table-container">

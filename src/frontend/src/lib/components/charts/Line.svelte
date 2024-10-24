@@ -10,7 +10,7 @@
 	const { data, xGet, yGet } = getContext('LayerCake');
 
 	interface Props {
-		stroke?: String;
+		stroke?: string;
 	}
 
 	let { stroke = 'var(--color-primary)' }: Props = $props();

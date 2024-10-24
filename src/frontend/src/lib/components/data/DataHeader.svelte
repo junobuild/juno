@@ -4,6 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 		actions?: import('svelte').Snippet;

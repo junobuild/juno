@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';

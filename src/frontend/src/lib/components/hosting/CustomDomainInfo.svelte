@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run, stopPropagation } from 'svelte/legacy';
-
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { run, stopPropagation } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import type { CustomDomain as CustomDomainType } from '$declarations/satellite/satellite.did';
 	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';

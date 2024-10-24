@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
 	import { onDestroy, onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import IconSync from '$lib/components/icons/IconSync.svelte';

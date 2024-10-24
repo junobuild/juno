@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import type { AnalyticsWebVitalsPageMetrics } from '$declarations/orbiter/orbiter.did';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

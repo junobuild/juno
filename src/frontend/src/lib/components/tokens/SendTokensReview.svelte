@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { AccountIdentifier } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { preventDefault } from 'svelte/legacy';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

@@ -2,6 +2,7 @@
 	import { createBubbler } from 'svelte/legacy';
 
 	const bubble = createBubbler();
+
 	interface Props {
 		button?: HTMLButtonElement | undefined;
 		disabled?: boolean;

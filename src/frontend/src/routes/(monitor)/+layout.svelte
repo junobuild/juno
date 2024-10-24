@@ -3,6 +3,7 @@
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 	}

@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
 	import { addMonths } from 'date-fns';
+	import { run } from 'svelte/legacy';
 	import type {
 		AnalyticsTrackEvents,
 		AnalyticsWebVitalsPerformanceMetrics

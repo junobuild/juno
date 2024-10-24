@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { onDestroy, onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

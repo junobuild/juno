@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { debounce } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import SatellitesLayout from '$lib/components/satellites/SatellitesLayout.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

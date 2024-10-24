@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
+	import { run } from 'svelte/legacy';
 	import IconIC from '$lib/components/icons/IconIC.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

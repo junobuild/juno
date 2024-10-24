@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
 	import { onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import { getCredits } from '$lib/api/console.api';
 	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';

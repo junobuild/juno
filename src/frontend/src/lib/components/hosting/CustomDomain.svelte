@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, onDestroy, onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,

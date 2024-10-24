@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import { Principal } from '@dfinity/principal';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

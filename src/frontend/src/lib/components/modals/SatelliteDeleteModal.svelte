@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
 	import { createEventDispatcher } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { deleteSatellite } from '$lib/api/mission-control.api';
 	import CanisterDeleteWizard from '$lib/components/canister/CanisterDeleteWizard.svelte';

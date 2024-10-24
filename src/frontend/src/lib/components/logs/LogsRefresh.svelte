@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { getContext, onDestroy } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import IconMore from '$lib/components/icons/IconMore.svelte';
 	import IconTimer from '$lib/components/icons/IconTimer.svelte';

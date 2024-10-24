@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import { goto } from '$app/navigation';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';

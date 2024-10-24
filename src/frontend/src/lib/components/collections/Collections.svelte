@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';

@@ -1,13 +1,13 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { nonNullish } from '@dfinity/utils';
 	import { getContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import DataFilter from '$lib/components/data/DataFilter.svelte';
 	import DataOrder from '$lib/components/data/DataOrder.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 		actions?: import('svelte').Snippet;

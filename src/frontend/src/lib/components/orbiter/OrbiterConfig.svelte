@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
 	import OrbiterConfigSave from '$lib/components/orbiter/OrbiterConfigSave.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';

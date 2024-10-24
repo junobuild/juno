@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
-
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { DEV, JUNO_SUBNET_ID } from '$lib/constants/constants';

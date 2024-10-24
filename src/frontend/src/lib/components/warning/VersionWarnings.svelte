@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { BuildType } from '@junobuild/admin';
 	import { compare } from 'semver';
+	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import Html from '$lib/components/ui/Html.svelte';

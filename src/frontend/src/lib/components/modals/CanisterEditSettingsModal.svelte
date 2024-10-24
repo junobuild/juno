@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import { Principal } from '@dfinity/principal';
 	import { createEventDispatcher } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';

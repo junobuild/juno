@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { createEventDispatcher, onMount } from 'svelte';
+	import { preventDefault } from 'svelte/legacy';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { downloadWasm } from '$lib/services/upgrade.services';

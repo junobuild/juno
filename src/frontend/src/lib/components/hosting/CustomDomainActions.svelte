@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { run, stopPropagation } from 'svelte/legacy';
 
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,

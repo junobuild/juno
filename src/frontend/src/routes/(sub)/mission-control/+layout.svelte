@@ -7,6 +7,7 @@
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutTitle } from '$lib/stores/layout.store';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 	}

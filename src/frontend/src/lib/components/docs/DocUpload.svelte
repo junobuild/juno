@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { setDoc } from '@junobuild/core-peer';
 	import { nanoid } from 'nanoid';
 	import { createEventDispatcher, getContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';

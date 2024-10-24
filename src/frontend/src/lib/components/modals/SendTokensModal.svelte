@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import SendTokensForm from '$lib/components/tokens/SendTokensForm.svelte';
 	import SendTokensReview from '$lib/components/tokens/SendTokensReview.svelte';

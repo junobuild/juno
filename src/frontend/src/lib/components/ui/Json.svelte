@@ -1,6 +1,6 @@
 <script lang="ts">
-	import Json from './Json.svelte';
 	import { run, stopPropagation } from 'svelte/legacy';
+	import Json from './Json.svelte';
 
 	import { i18n } from '$lib/stores/i18n.store';
 	import { isHash, stringifyJson, isPrincipal } from '$lib/utils/json.utils';

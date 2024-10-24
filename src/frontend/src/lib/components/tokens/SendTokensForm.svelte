@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { preventDefault } from 'svelte/legacy';
-
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { preventDefault } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

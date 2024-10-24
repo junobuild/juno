@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
 	import { signIn } from '$lib/services/auth.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';

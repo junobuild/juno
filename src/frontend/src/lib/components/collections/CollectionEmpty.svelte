@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { listParamsFilteredStore } from '$lib/stores/data.store';

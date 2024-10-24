@@ -6,6 +6,7 @@
 	import DataNav from '$lib/components/data/DataNav.svelte';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 		count?: import('svelte').Snippet;

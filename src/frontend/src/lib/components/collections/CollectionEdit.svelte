@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { setRule } from '$lib/api/satellites.api';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';

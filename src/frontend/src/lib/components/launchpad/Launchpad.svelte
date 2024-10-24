@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Cockpit from '$lib/components/launchpad/Cockpit.svelte';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';

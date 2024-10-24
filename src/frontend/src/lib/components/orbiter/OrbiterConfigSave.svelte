@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy, isBusy } from '$lib/stores/busy.store';

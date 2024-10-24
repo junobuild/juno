@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';

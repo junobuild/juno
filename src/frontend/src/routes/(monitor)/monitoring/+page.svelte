@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import ObservatoryDashboard from '$lib/components/observatory/ObservatoryDashboard.svelte';

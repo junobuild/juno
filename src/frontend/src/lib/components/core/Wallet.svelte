@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, jsonReviver } from '@dfinity/utils';
 	import { onDestroy, onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { type WalletWorker, initWalletWorker } from '$lib/services/worker.wallet.services';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 	import { emit } from '$lib/utils/events.utils';

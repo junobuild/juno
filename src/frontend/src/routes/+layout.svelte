@@ -12,6 +12,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 	}

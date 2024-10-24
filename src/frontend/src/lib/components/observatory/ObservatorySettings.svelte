@@ -1,9 +1,8 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish, fromNullable, toNullable } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import type { CronTab } from '$declarations/observatory/observatory.did';
 	import { getCronTab, setCronTab } from '$lib/api/observatory.api';

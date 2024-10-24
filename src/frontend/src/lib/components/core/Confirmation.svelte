@@ -1,7 +1,7 @@
 <script lang="ts">
+	import { createEventDispatcher } from 'svelte';
 	import { stopPropagation } from 'svelte/legacy';
 
-	import { createEventDispatcher } from 'svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

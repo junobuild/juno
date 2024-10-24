@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { isNullish } from '@dfinity/utils';
 	import { onDestroy, onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { fade, fly } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

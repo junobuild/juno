@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { fromArray } from '@junobuild/utils';
 	import { getContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import type { Doc } from '$declarations/satellite/satellite.did';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import JsonCode from '$lib/components/ui/JsonCode.svelte';

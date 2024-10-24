@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import type { Principal } from '@dfinity/principal';
 	import { getContext, setContext } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
 	import DbData from '$lib/components/db/DbData.svelte';
 	import DbRules from '$lib/components/db/DbRules.svelte';

@@ -5,6 +5,7 @@
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { layoutTitle } from '$lib/stores/layout.store';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 	}

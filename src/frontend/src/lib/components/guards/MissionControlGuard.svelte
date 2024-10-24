@@ -1,6 +1,7 @@
 <script lang="ts">
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 	}

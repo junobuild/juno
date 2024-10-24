@@ -3,6 +3,7 @@
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutTitle } from '$lib/stores/layout.store';
+
 	interface Props {
 		children?: import('svelte').Snippet;
 	}

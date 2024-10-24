@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { run } from 'svelte/legacy';
-
 	import type { AnalyticsDevicesPageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews, AnalyticsPageViewsClients } from '$lib/types/ortbiter';

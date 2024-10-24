@@ -3,16 +3,14 @@
   Generates an SVG area shape using the `area` function from [d3-shape](https://github.com/d3/d3-shape).
  -->
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { getContext } from 'svelte';
-
+	import { run } from 'svelte/legacy';
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
 	const { data, xGet, yGet, xScale, yScale, extents } = getContext('LayerCake');
 
 	interface Props {
-		fill?: String;
+		fill?: string;
 	}
 
 	let { fill = 'rgba(var(--color-primary-rgb), 0.1)' }: Props = $props();

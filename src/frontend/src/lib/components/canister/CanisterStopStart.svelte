@@ -1,7 +1,6 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import CanisterStart from '$lib/components/canister/CanisterStart.svelte';
 	import CanisterStop from '$lib/components/canister/CanisterStop.svelte';

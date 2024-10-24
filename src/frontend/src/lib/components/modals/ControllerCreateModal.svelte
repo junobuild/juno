@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import { Ed25519KeyIdentity } from '@dfinity/identity';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';

@@ -1,10 +1,9 @@
 <script lang="ts">
-	import { run, preventDefault } from 'svelte/legacy';
-
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, onMount } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
 	import { topUp } from '$lib/api/mission-control.api';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';

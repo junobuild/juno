@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-
 	import { isNullish } from '@dfinity/utils';
 	import { eachDayOfInterval, startOfDay } from 'date-fns';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import type { ChartsData } from '$lib/types/chart';

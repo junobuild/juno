@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run, stopPropagation } from 'svelte/legacy';
-
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
+	import { run, stopPropagation } from 'svelte/legacy';
 	import IconUpload from '$lib/components/icons/IconUpload.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

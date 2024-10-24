@@ -1,15 +1,10 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { eachDayOfInterval, startOfDay } from 'date-fns';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import type { ChartsData } from '$lib/types/chart';
-	import type {
-		AnalyticsMetrics,
-		AnalyticsPageViews,
-		DateStartOfTheDay
-	} from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
 	import { last } from '$lib/utils/utils';
 
 	interface Props {
@@ -18,15 +13,9 @@
 
 	let { data }: Props = $props();
 
-	let metrics: AnalyticsMetrics = $state();
-	run(() => {
-		({ metrics } = data);
-	});
+	let { metrics } = $derived(data);
 
-	let daily_total_page_views: Record<DateStartOfTheDay, number> = $state();
-	run(() => {
-		({ daily_total_page_views } = metrics);
-	});
+	let { daily_total_page_views } = $derived(metrics);
 
 	let dailyTotalArray: [string, number][] = $derived(Object.entries(daily_total_page_views));
 

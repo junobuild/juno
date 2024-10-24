@@ -15,11 +15,7 @@
 
 	let { detail }: Props = $props();
 
-	let currentCycles: bigint = $state();
-
-	run(() => {
-		({ cycles: currentCycles } = detail as JunoModalCycles);
-	});
+	let { cycles: currentCycles } = $derived(detail as JunoModalCycles);
 
 	let deleteFn: (params: {
 		missionControlId: Principal;

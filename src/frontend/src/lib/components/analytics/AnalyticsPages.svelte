@@ -10,10 +10,7 @@
 
 	let { pageViews }: Props = $props();
 
-	let top10: AnalyticsTop10PageViews = $state();
-	run(() => {
-		({ top10 } = pageViews);
-	});
+	let { top10 } = $derived(pageViews);
 </script>
 
 {#if top10.pages.length > 0}

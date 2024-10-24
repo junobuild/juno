@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
 	import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 
@@ -9,17 +8,13 @@
 
 	let { trackEvents }: Props = $props();
 
-	let total: Array<[string, number]> = $state();
+	let total: Array<[string, number]> = $state([]);
 
-	const setTotal = () => {
+	$effect(() => {
 		const { total: t } = trackEvents;
 		t.sort(([keyA, _], [keyB, __]) => keyA.localeCompare(keyB));
 
 		total = t;
-	};
-
-	run(() => {
-		trackEvents, setTotal();
 	});
 </script>
 

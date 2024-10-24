@@ -11,10 +11,7 @@
 
 	let { pageViews }: Props = $props();
 
-	let metrics: AnalyticsMetrics = $state();
-	run(() => {
-		({ metrics } = pageViews);
-	});
+	let { metrics } = $derived(pageViews);
 </script>
 
 <div class="card-container with-title">

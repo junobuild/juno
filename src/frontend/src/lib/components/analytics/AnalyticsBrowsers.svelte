@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { run } from 'svelte/legacy';
-	import type { AnalyticsBrowsersPageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { AnalyticsPageViews, AnalyticsPageViewsClients } from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;
@@ -11,30 +9,19 @@
 
 	let { pageViews }: Props = $props();
 
-	let clients: AnalyticsPageViewsClients = $state();
-	run(() => {
-		({ clients } = pageViews);
-	});
+	let { clients } = $derived(pageViews);
 
-	let browsers: AnalyticsBrowsersPageViews | undefined = $state();
-	run(() => {
-		({ browsers } = clients);
-	});
+	let { browsers } = $derived(clients);
 
-	let safari: number = $state();
-	let opera: number = $state();
-	let others: number = $state();
-	let firefox: number = $state();
-	let chrome: number = $state();
-	run(() => {
-		({ safari, opera, others, firefox, chrome } = browsers ?? {
+	let { safari, opera, others, firefox, chrome } = $derived(
+		browsers ?? {
 			safari: 0,
 			opera: 0,
 			others: 0,
 			firefox: 0,
 			chrome: 0
-		});
-	});
+		}
+	);
 </script>
 
 {#if nonNullish(browsers)}

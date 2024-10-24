@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
-	import { run } from 'svelte/legacy';
 	import { depositCycles } from '$lib/api/mission-control.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
 	import { authStore } from '$lib/stores/auth.store';
@@ -14,11 +13,7 @@
 
 	let { detail }: Props = $props();
 
-	let currentCycles: bigint = $state();
-
-	run(() => {
-		({ cycles: currentCycles } = detail as JunoModalCycles);
-	});
+	let { cycles: currentCycles } = $derived(detail as JunoModalCycles);
 
 	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void> =
 		$derived(

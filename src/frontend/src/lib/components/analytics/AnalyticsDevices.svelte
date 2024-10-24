@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
-	import type { AnalyticsDevicesPageViews } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews, AnalyticsPageViewsClients } from '$lib/types/ortbiter';
 
@@ -10,22 +8,11 @@
 
 	let { pageViews }: Props = $props();
 
-	let clients: AnalyticsPageViewsClients = $state();
-	run(() => {
-		({ clients } = pageViews);
-	});
+	let { clients } = $derived(pageViews);
 
-	let devices: AnalyticsDevicesPageViews = $state();
-	run(() => {
-		({ devices } = clients);
-	});
+	let { devices } = $derived(clients);
 
-	let desktop: number = $state();
-	let others: number = $state();
-	let mobile: number = $state();
-	run(() => {
-		({ desktop, mobile, others } = devices);
-	});
+	let { desktop, mobile, others } = $derived(devices);
 </script>
 
 <div class="table-container">

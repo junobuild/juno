@@ -12,15 +12,7 @@
 
 	let { metrics }: Props = $props();
 
-	let cls: [] | [number] = $state();
-	let fcp: [] | [number] = $state();
-	let inp: [] | [number] = $state();
-	let lcp: [] | [number] = $state();
-	let ttfb: [] | [number] = $state();
-
-	run(() => {
-		({ cls, fcp, inp, lcp, ttfb } = metrics);
-	});
+	let { cls, fcp, inp, lcp, ttfb } = $derived(metrics);
 
 	type Rating = 'good' | 'needs_improvement' | 'poor';
 

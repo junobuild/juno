@@ -15,10 +15,7 @@
 
 	let { performanceMetrics, page = $bindable() }: Props = $props();
 
-	let pages: [string, AnalyticsWebVitalsPageMetrics][] = $state();
-	run(() => {
-		({ pages } = performanceMetrics);
-	});
+	let { pages } = $derived(performanceMetrics);
 </script>
 
 <AnalyticsToolbar>

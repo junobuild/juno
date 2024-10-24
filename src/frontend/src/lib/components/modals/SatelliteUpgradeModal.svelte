@@ -1,9 +1,7 @@
 <script lang="ts">
 	import { AnonymousIdentity } from '@dfinity/agent';
-	import { type BuildType, upgradeSatellite } from '@junobuild/admin';
+	import { upgradeSatellite } from '@junobuild/admin';
 	import { compare } from 'semver';
-	import { run } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';

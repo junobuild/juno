@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { AnalyticsPageViews, AnalyticsPageViewsClients } from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
 
 	interface Props {
 		pageViews: AnalyticsPageViews;

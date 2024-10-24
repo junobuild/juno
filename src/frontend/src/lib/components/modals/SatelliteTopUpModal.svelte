@@ -1,7 +1,5 @@
 <script lang="ts">
 	import type { AccountIdentifier } from '@dfinity/ledger-icp';
-	import { run } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';

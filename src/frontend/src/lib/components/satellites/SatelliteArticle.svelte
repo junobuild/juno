@@ -1,5 +1,4 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';

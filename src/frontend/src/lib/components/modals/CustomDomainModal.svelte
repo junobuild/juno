@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { createEventDispatcher, onMount } from 'svelte';
-	import { run } from 'svelte/legacy';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { setAuthConfig } from '$lib/api/satellites.api';
 	import AddCustomDomainAuth from '$lib/components/hosting/AddCustomDomainAuth.svelte';

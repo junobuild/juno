@@ -1,8 +1,7 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { AnalyticsMetrics, AnalyticsPageViews } from '$lib/types/ortbiter';
+	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
 	import { formatNumber } from '$lib/utils/number.utils';
 
 	interface Props {

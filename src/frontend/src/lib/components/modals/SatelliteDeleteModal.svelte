@@ -19,12 +19,7 @@
 
 	let { detail }: Props = $props();
 
-	let satellite: Satellite = $state();
-	let currentCycles: bigint = $state();
-
-	run(() => {
-		({ satellite, cycles: currentCycles } = detail as JunoModalDeleteSatelliteDetail);
-	});
+	let { satellite, cycles: currentCycles } = $derived(detail as JunoModalDeleteSatelliteDetail);
 
 	let deleteFn: (params: {
 		missionControlId: Principal;

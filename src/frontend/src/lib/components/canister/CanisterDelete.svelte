@@ -6,12 +6,13 @@
 
 	interface Props {
 		canister?: CanisterIcStatus | undefined;
+		onclick: () => Promise<void>;
 	}
 
-	let { canister = undefined }: Props = $props();
+	let { canister = undefined, onclick }: Props = $props();
 </script>
 
-<CanisterAction {canister} on:click>
+<CanisterAction {canister} {onclick}>
 	<IconDelete />
 	{$i18n.core.delete}
 </CanisterAction>

@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import { createEventDispatcher } from 'svelte';
 	import { canisterStart } from '$lib/api/ic.api';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStart from '$lib/components/icons/IconStart.svelte';
@@ -16,16 +15,15 @@
 	interface Props {
 		canister: CanisterIcStatus;
 		segment: 'satellite' | 'orbiter';
+		onstart: () => void;
 	}
 
-	let { canister, segment }: Props = $props();
+	let { canister, segment, onstart }: Props = $props();
 
 	let visible = $state(false);
 
-	const dispatch = createEventDispatcher();
-
 	const start = async () => {
-		dispatch('junoStart');
+		onstart();
 
 		if (!$authSignedInStore) {
 			toasts.error({

@@ -1,18 +1,17 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
-	import { run, createBubbler } from 'svelte/legacy';
+	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 
 	interface Props {
 		canister?: CanisterIcStatus | undefined;
 		children: Snippet;
+		onclick: () => Promise<void>;
 	}
 
-	let { canister = undefined, children }: Props = $props();
-
-	const bubble = createBubbler();
+	let { canister = undefined, children, onclick }: Props = $props();
 
 	let enabled = $state(false);
 	run(() => {
@@ -26,6 +25,6 @@
 
 {#if enabled}
 	<div in:fade>
-		<button class="menu" onclick={bubble('click')}>{@render children()}</button>
+		<button class="menu" {onclick}>{@render children()}</button>
 	</div>
 {/if}

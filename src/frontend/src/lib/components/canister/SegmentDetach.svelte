@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
 	import { goto } from '$app/navigation';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconLinkOff from '$lib/components/icons/IconLinkOff.svelte';
@@ -17,16 +16,15 @@
 	interface Props {
 		segment: 'satellite' | 'orbiter';
 		segmentId: Principal;
+		ondetach: () => void;
 	}
 
-	let { segment, segmentId }: Props = $props();
+	let { segment, segmentId, ondetach }: Props = $props();
 
 	let visible = $state(false);
 
-	const dispatch = createEventDispatcher();
-
 	const detach = async () => {
-		dispatch('junoDetach');
+		ondetach();
 
 		if (!$authSignedInStore) {
 			toasts.error({

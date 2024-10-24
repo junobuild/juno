@@ -16,18 +16,13 @@
 
 	let { detail }: Props = $props();
 
-	let satellite: Satellite = $state();
-	let balance = $state(0n);
+	let { satellite } = $derived(detail as JunoModalTopUpSatelliteDetail);
+	let balance = $derived(
+		(detail as JunoModalTopUpSatelliteDetail).missionControlBalance?.balance ?? 0n
+	);
 	let accountIdentifier: AccountIdentifier | undefined = $derived(
 		(detail as JunoModalTopUpSatelliteDetail).missionControlBalance?.accountIdentifier
 	);
-
-	run(() => {
-		({ satellite } = detail as JunoModalTopUpSatelliteDetail);
-	});
-	run(() => {
-		balance = (detail as JunoModalTopUpSatelliteDetail).missionControlBalance?.balance ?? 0n;
-	});
 </script>
 
 <CanisterTopUpModal canisterId={satellite.satellite_id} {balance} {accountIdentifier} on:junoClose>

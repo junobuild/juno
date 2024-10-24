@@ -19,15 +19,9 @@
 
 	let { detail }: Props = $props();
 
-	let satellite: Satellite = $state();
-	let currentVersion: string = $state();
-	let newerReleases: string[] = $state();
-	let build: BuildType | undefined = $state();
-
-	run(() => {
-		({ satellite, currentVersion, newerReleases, build } =
-			detail as JunoModalUpgradeSatelliteDetail);
-	});
+	let { satellite, currentVersion, newerReleases, build } = $derived(
+		detail as JunoModalUpgradeSatelliteDetail
+	);
 
 	const upgradeSatelliteWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
 		await upgradeSatellite({

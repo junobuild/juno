@@ -32,14 +32,14 @@
 </script>
 
 {#if $authSignedInStore}
-	<ButtonIcon on:click={() => (visible = true)} bind:button>
+	<ButtonIcon onclick={() => (visible = true)} bind:button>
 		{#snippet icon()}
 			<IconUser />
 		{/snippet}
 		{$i18n.core.user_menu}
 	</ButtonIcon>
 {:else if signIn}
-	<ButtonIcon on:click={async () => await doSignIn({})}>
+	<ButtonIcon onclick={async () => await doSignIn({})}>
 		{#snippet icon()}
 			<IconSignIn />
 		{/snippet}

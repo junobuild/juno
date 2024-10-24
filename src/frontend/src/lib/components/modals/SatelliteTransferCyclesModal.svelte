@@ -13,12 +13,7 @@
 
 	let { detail }: Props = $props();
 
-	let satellite: Satellite = $state();
-	let currentCycles: bigint = $state();
-
-	run(() => {
-		({ satellite, cycles: currentCycles } = detail as JunoModalCyclesSatelliteDetail);
-	});
+	let { satellite, cycles: currentCycles } = $derived(detail as JunoModalCyclesSatelliteDetail);
 
 	let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void> =
 		$derived(

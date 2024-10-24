@@ -27,11 +27,7 @@
 
 	let { detail }: Props = $props();
 
-	let satellite: Satellite = $state();
-	let config: AuthenticationConfig | undefined = $state();
-	run(() => {
-		({ satellite, config } = detail as JunoModalCustomDomainDetail);
-	});
+	let { satellite, config } = $derived(detail as JunoModalCustomDomainDetail);
 
 	let steps: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = $state('init');
 	let domainNameInput = $state('');

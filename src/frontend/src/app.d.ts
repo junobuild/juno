@@ -12,7 +12,7 @@ declare const VITE_APP_VERSION: string;
 
 /* eslint-disable */
 
-declare module 'svelte/elements' {
+declare namespace svelteHTML {
 	interface HTMLAttributes<T> {
 		onjunoIntersecting?: (event: CustomEvent<any>) => void;
 		onjunoModal?: (event: CustomEvent<any>) => void;

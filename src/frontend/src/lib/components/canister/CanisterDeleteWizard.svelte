@@ -34,7 +34,7 @@
 
 	let tCycles = $state(DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION);
 
-	let cycles: bigint = $state();
+	let cycles: bigint | undefined = $state(undefined);
 	run(() => {
 		(() => {
 			if (isNaN(tCycles)) {

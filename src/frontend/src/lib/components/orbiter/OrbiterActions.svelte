@@ -55,9 +55,9 @@
 
 	<hr />
 
-	<CanisterStopStart {canister} segment="orbiter" on:junoStop={close} on:junoStart={close} />
+	<CanisterStopStart {canister} segment="orbiter" onstop={close} onstart={close} />
 
-	<SegmentDetach segment="orbiter" segmentId={orbiter.orbiter_id} on:junoDetach={close} />
+	<SegmentDetach segment="orbiter" segmentId={orbiter.orbiter_id} ondetach={close} />
 
-	<CanisterDelete {canister} on:click={() => onCanisterAction('delete_orbiter')} />
+	<CanisterDelete {canister} onclick={() => onCanisterAction('delete_orbiter')} />
 </Actions>

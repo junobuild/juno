@@ -88,9 +88,9 @@
 
 	<hr />
 
-	<CanisterStopStart {canister} segment="satellite" on:junoStop={close} on:junoStart={close} />
+	<CanisterStopStart {canister} segment="satellite" onstop={close} onstart={close} />
 
-	<SegmentDetach segment="satellite" segmentId={satellite.satellite_id} on:junoStop={close} />
+	<SegmentDetach segment="satellite" segmentId={satellite.satellite_id} ondetach={close} />
 
-	<CanisterDelete {canister} on:click={onDeleteSatellite} />
+	<CanisterDelete {canister} onclick={onDeleteSatellite} />
 </Actions>

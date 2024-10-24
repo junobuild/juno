@@ -9,9 +9,11 @@
 	interface Props {
 		canister?: CanisterIcStatus | undefined;
 		segment: 'satellite' | 'orbiter';
+		onstart: () => void;
+		onstop: () => void;
 	}
 
-	let { canister = undefined, segment }: Props = $props();
+	let { canister = undefined, segment, onstart, onstop }: Props = $props();
 
 	let status: CanisterStatus | undefined = $state(undefined);
 	let sync: CanisterSyncStatus | undefined = $state(undefined);
@@ -25,9 +27,9 @@
 </script>
 
 {#if nonNullish(canister) && status === 'stopped' && sync === 'synced'}
-	<div in:fade><CanisterStart {canister} {segment} /></div>
+	<div in:fade><CanisterStart {canister} {segment} {onstart} /></div>
 {:else if nonNullish(canister) && status === 'running' && sync === 'synced'}
-	<div in:fade><CanisterStop {canister} {segment} /></div>
+	<div in:fade><CanisterStop {canister} {segment} {onstop} /></div>
 {/if}
 
 <style lang="scss">

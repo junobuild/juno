@@ -133,14 +133,16 @@
 	>
 		{#if nonNullish($paginationStore.items)}
 			<div out:fade>
-				{#each $paginationStore.items as item}
-					{@const asset = item[1]}
-					{@const key = asset.key.full_path}
+				{#if $paginationStore.items.length > 0}
+					{#each $paginationStore.items as item}
+						{@const asset = item[1]}
+						{@const key = asset.key.full_path}
 
-					<button class="text action" onclick={() => assetsStore.set({ key, data: asset })}
-						><span>{key}</span></button
-					>
-				{/each}
+						<button class="text action" onclick={() => assetsStore.set({ key, data: asset })}
+							><span>{key}</span></button
+						>
+					{/each}
+				{/if}
 
 				{#if !empty}
 					<DataPaginator />

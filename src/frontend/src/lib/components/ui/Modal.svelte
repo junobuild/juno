@@ -14,8 +14,7 @@
 
 	let { children, title }: Props = $props();
 
-	// eslint-disable-next-line svelte/valid-compile
-	let visible = true;
+	let visible = $state(true);
 
 	const dispatch = createEventDispatcher();
 

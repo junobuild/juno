@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
 	import { debounce, isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher, type Snippet } from 'svelte';
+	import { type Snippet } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { busy } from '$lib/stores/busy.store';
@@ -14,9 +14,10 @@
 		visible: boolean | undefined;
 		title?: Snippet;
 		input?: Snippet;
+		attach: () => void;
 	}
 
-	let { setFn, visible = $bindable(), title, input }: Props = $props();
+	let { setFn, visible = $bindable(), title, input, attach }: Props = $props();
 
 	let validConfirm = $state(false);
 	let saving = false;
@@ -62,7 +63,7 @@
 
 			visible = false;
 
-			dispatch('junoAttach');
+			attach();
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.canister_attach_error,
@@ -72,8 +73,6 @@
 
 		busy.stop();
 	};
-
-	const dispatch = createEventDispatcher();
 </script>
 
 <Popover bind:visible center backdrop="dark">

@@ -1,8 +1,7 @@
 <script lang="ts">
-	import type { TransactionWithId, Transaction } from '@dfinity/ledger-icp';
+	import type { TransactionWithId } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { formatToDate } from '$lib/utils/date.utils';
@@ -21,12 +20,7 @@
 
 	let { missionControlId, transactionWithId }: Props = $props();
 
-	let id: bigint = $state();
-	let transaction: Transaction = $state();
-
-	run(() => {
-		({ id, transaction } = transactionWithId);
-	});
+	let { id, transaction } = $derived(transactionWithId);
 
 	let from: string = $derived(transactionFrom(transaction));
 

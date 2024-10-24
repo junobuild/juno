@@ -76,7 +76,10 @@
 	};
 </script>
 
-<svelte:window onjunoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
+<svelte:window
+	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<CanisterIcStatus>) =>
+		onSyncCanister(canister)}
+/>
 
 <Actions bind:visible>
 	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />

@@ -14,7 +14,7 @@
 	});
 </script>
 
-<ButtonIcon onclick={async () => await back({ pop: nonNullish(fromRoute) })}>
+<ButtonIcon on:click={async () => await back({ pop: nonNullish(fromRoute) })}>
 	{#snippet icon()}
 		<IconBack size="28px" />
 	{/snippet}

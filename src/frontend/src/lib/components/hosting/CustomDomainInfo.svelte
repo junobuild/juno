@@ -23,13 +23,9 @@
 
 	let { info }: Props = $props();
 
-	let customDomain: [string, CustomDomainType] | undefined = $state();
-	let registrationState: Option<CustomDomainRegistrationState> = $state();
-	let mainDomain: boolean = $state();
+	let { customDomain, mainDomain } = $derived(info);
 
-	run(() => {
-		({ customDomain, registrationState, mainDomain } = info);
-	});
+	let registrationState: Option<CustomDomainRegistrationState> = $state(info.registrationState);
 
 	let visible = $state(true);
 
@@ -53,8 +49,9 @@
 </script>
 
 <svelte:window
-	onjunoRegistrationState={({ detail: { registrationState: state } }) =>
-		(registrationState = state)}
+	onjunoRegistrationState={({
+		detail: { registrationState: state }
+	}: CustomEvent<Option<CustomDomainRegistrationState>>) => (registrationState = state)}
 />
 
 <Popover bind:visible center={true} backdrop="dark">

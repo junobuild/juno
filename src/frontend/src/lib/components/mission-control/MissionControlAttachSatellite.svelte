@@ -44,7 +44,7 @@
 <button onclick={() => (visible = true)} class="menu"><IconLink /> {$i18n.satellites.attach}</button
 >
 
-<CanisterAttach on:junoAttach={onSuccess} bind:visible setFn={setSatellite}>
+<CanisterAttach attach={onSuccess} bind:visible setFn={setSatellite}>
 	{#snippet title()}
 		{$i18n.satellites.attach}
 	{/snippet}

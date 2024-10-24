@@ -17,10 +17,7 @@
 
 	let { satellite }: Props = $props();
 
-	let satellite_id: Principal = $state();
-	run(() => {
-		({ satellite_id } = satellite);
-	});
+	let { satellite_id } = $derived(satellite);
 
 	let name: string = $derived(satelliteName(satellite));
 

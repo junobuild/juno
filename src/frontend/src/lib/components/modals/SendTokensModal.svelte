@@ -14,18 +14,18 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		destination: string;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, destination = $bindable('') }: Props = $props();
 
 	let balance: bigint | undefined = $state();
 	run(() => {
 		({ balance } = detail as JunoModalSendTokensDetail);
 	});
 
-	let steps: 'form' | 'review' | 'in_progress' | 'ready' | 'error' = $state();
+	let steps: 'form' | 'review' | 'in_progress' | 'ready' | 'error' = $state('form');
 
-	let destination = $state('');
 	let amount: string | undefined = $state();
 
 	const dispatch = createEventDispatcher();

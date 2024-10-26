@@ -47,7 +47,8 @@
 		"review": "Review",
 		"confirm": "Confirm",
 		"collapse": "Collapse",
-		"expand": "Expand"
+		"expand": "Expand",
+		"request": "Request"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -224,7 +225,10 @@
 		"sending_in_progress": "Sending...",
 		"fee": "Fee",
 		"review_and_confirm": "Review the details below and confirm to proceed with your transaction.",
-		"icp_on_its_way": "Your ICP is on its way!"
+		"icp_on_its_way": "Your ICP is on its way!",
+		"or_connect_wallet": "Or connect wallet",
+		"connecting_wallet": "Connecting wallet...",
+		"wallet_approve": "Approve the transaction in your wallet..."
 	},
 	"authentication": {
 		"title": "Authentication",
@@ -441,7 +445,11 @@
 		"invalid_amount": "The amount should be greater than zero and less than your balance minus the fee.",
 		"empty_balance": "Your wallet does not have any available funds.",
 		"sending_error": "Unexpected error(s) while sending the tokens.",
-		"subnet_loading_errors": "Error while loading the subnet ID of the module."
+		"subnet_loading_errors": "Error while loading the subnet ID of the module.",
+		"wallet_no_account": "The wallet did not provide any account.",
+		"wallet_load_balance": "The balance of the account cannot be loaded.",
+		"wallet_receive_error": "Unexpected error while receiving tokens.",
+		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?"
 	},
 	"document": {
 		"owner": "Owner",

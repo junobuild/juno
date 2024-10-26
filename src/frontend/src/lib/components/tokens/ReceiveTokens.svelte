@@ -7,6 +7,8 @@
 	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconOisy from '$lib/components/icons/IconOisy.svelte';
+	import ReceiveTokensSigner from '$lib/components/tokens/ReceiveTokensSigner.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -17,11 +19,11 @@
 
 	const accountIdentifier = getAccountIdentifier(missionControlId);
 
-	let steps: 'options' | 'wallet_id' | 'account_identifier' = $state('options');
+	let steps: 'options' | 'wallet_id' | 'account_identifier' | 'signer' = $state('options');
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		visible, (steps = 'options');
+	$effect(() => {
+		visible;
+		steps = 'options';
 	});
 </script>
 
@@ -45,6 +47,10 @@
 					ariaLabel={$i18n.wallet.account_identifier}
 				/>
 			</div>
+		{:else if steps === 'signer'}
+			<div in:fade>
+				<ReceiveTokensSigner />
+			</div>
 		{:else}
 			<div class="options">
 				<button onclick={() => (steps = 'wallet_id')}
@@ -55,7 +61,9 @@
 					><IconQRCode /> {$i18n.wallet.account_identifier}</button
 				>
 
-				<!-- <p>Or connect wallet</p> -->
+				<p>{$i18n.wallet.or_connect_wallet}</p>
+
+				<button onclick={() => (steps = 'signer')}><IconOisy /> OISY</button>
 			</div>
 		{/if}
 	</div>
@@ -83,6 +91,7 @@
 		font-size: var(--font-size-small);
 		text-align: center;
 
-		padding: var(--padding-2x) 0;
+		padding: var(--padding-2x) 0 0;
+		margin: 0 0 var(--padding-1_5x);
 	}
 </style>

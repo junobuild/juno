@@ -51,6 +51,7 @@ interface I18nCore {
 	confirm: string;
 	collapse: string;
 	expand: string;
+	request: string;
 }
 
 interface I18nCanisters {
@@ -234,6 +235,8 @@ interface I18nWallet {
 	review_and_confirm: string;
 	icp_on_its_way: string;
 	or_connect_wallet: string;
+	connecting_wallet: string;
+	wallet_approve: string;
 }
 
 interface I18nAuthentication {
@@ -459,7 +462,9 @@ interface I18nErrors {
 	empty_balance: string;
 	sending_error: string;
 	subnet_loading_errors: string;
-	wallet_signer_no_account: string;
+	wallet_no_account: string;
+	wallet_load_balance: string;
+	wallet_receive_error: string;
 }
 
 interface I18nDocument {

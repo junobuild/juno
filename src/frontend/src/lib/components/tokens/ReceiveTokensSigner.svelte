@@ -4,11 +4,26 @@
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import ReceiveTokensSignerForm from '$lib/components/tokens/ReceiveTokensSignerForm.svelte';
+	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+	import { OISY_WALLET_URL } from '$lib/constants/wallet.constants';
+	import { Principal } from '@dfinity/principal';
+	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import type { Icrc1TransferRequest } from '@dfinity/ledger-icp';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
 
-	let steps: 'init' = $state('init');
+	interface Props {
+		missionControlId: Principal;
+		back: () => void;
+		visible?: boolean;
+	}
+
+	let { back, missionControlId, visible }: Props = $props();
+
+	let steps: 'connecting' | 'receiving' | 'form' | 'success' = $state('connecting');
 	let account: IcrcAccount | undefined;
-
-	const WALLET_URL = DEV ? 'http://localhost:5174/sign' : 'https://oisy.com/sign';
 
 	let wallet: IcpWallet | undefined;
 
@@ -17,7 +32,14 @@
 
 		try {
 			wallet = await IcpWallet.connect({
-				url: WALLET_URL
+				url: OISY_WALLET_URL,
+				onDisconnect: () => {
+					if (nonNullish(account)) {
+						return;
+					}
+
+					back();
+				}
 			});
 
 			const { allPermissionsGranted } = await wallet.requestPermissionsNotGranted();
@@ -29,11 +51,15 @@
 			const accounts = await wallet.accounts();
 
 			account = accounts?.[0];
+
+			steps = 'form';
 		} catch (err: unknown) {
-			console.log(err);
 			toasts.error({
-				text: $i18n.errors.wallet_signer_no_account
+				text: $i18n.errors.wallet_no_account,
+				detail: err
 			});
+
+			back();
 
 			return;
 		} finally {
@@ -44,12 +70,91 @@
 	$effect(() => {
 		init();
 	});
+
+	const onsubmit = async ({ balance, amount }: { balance: bigint | undefined; amount: string }) => {
+		const { valid, tokenAmount } = assertAndConvertAmountToICPToken({ amount, balance });
+
+		if (!valid || isNullish(tokenAmount)) {
+			return;
+		}
+
+		wizardBusy.start();
+
+		steps = 'receiving';
+
+		let wallet: IcpWallet | undefined;
+
+		try {
+			wallet = await IcpWallet.connect({
+				url: OISY_WALLET_URL
+			});
+
+			const request: Icrc1TransferRequest = {
+				to: {
+					owner: missionControlId,
+					subaccount: toNullable()
+				},
+				amount: tokenAmount.toE8s()
+			};
+
+			await wallet.icrc1Transfer({
+				owner: account.owner,
+				request
+			});
+
+			steps = 'success';
+		} catch (err: unknown) {
+			toasts.error({
+				text: $i18n.errors.wallet_receive_error,
+				detail: err
+			});
+
+			steps = 'form';
+		} finally {
+			await wallet?.disconnect();
+		}
+
+		wizardBusy.stop();
+	};
 </script>
 
-<div class="container"></div>
+{#if steps === 'success'}
+	<Confetti />
+
+	<div class="msg">
+		<p>{$i18n.wallet.icp_on_its_way}</p>
+		<button onclick={() => (visible = false)}>{$i18n.core.close}</button>
+	</div>
+{:else if steps === 'form' && nonNullish(account)}
+	<ReceiveTokensSignerForm {account} {back} receive={onsubmit} />
+{:else}
+	<div class="spinner">
+		<Spinner inline />
+		<p class="connecting">
+			{#if steps === 'connecting'}
+				{$i18n.wallet.connecting_wallet}
+			{:else}
+				{$i18n.wallet.wallet_approve}
+			{/if}
+		</p>
+	</div>
+{/if}
 
 <style lang="scss">
-	.container {
-		min-height: 100px;
+	.spinner {
+		display: flex;
+		flex-direction: column;
+		align-items: center;
+		justify-content: center;
+
+		gap: var(--padding-2x);
+
+		min-height: 200px;
+	}
+
+	.connecting {
+		font-size: var(--font-size-small);
+		text-align: center;
+		max-width: 200px;
 	}
 </style>

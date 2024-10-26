@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';
@@ -49,7 +48,7 @@
 			</div>
 		{:else if steps === 'signer'}
 			<div in:fade>
-				<ReceiveTokensSigner />
+				<ReceiveTokensSigner {missionControlId} back={() => (steps = 'options')} />
 			</div>
 		{:else}
 			<div class="options">

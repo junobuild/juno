@@ -448,7 +448,8 @@
 		"subnet_loading_errors": "Error while loading the subnet ID of the module.",
 		"wallet_no_account": "The wallet did not provide any account.",
 		"wallet_load_balance": "The balance of the account cannot be loaded.",
-		"wallet_receive_error": "Unexpected error while receiving tokens."
+		"wallet_receive_error": "Unexpected error while receiving tokens.",
+		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?"
 	},
 	"document": {
 		"owner": "Owner",

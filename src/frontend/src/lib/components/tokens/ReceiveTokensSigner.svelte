@@ -74,6 +74,13 @@
 			return;
 		}
 
+		if (isNullish(account)) {
+			toasts.error({
+				text: $i18n.errors.wallet_missing_account
+			});
+			return;
+		}
+
 		wizardBusy.start();
 
 		steps = 'receiving';

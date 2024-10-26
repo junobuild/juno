@@ -228,7 +228,7 @@
 		"icp_on_its_way": "Your ICP is on its way!",
 		"or_connect_wallet": "Or connect wallet",
 		"connecting_wallet": "Connecting wallet...",
-		"wallet_approve": "Approve the transaction in your wallet..."
+		"wallet_approve": "Approve the transaction in your OISY wallet..."
 	},
 	"authentication": {
 		"title": "Authentication",

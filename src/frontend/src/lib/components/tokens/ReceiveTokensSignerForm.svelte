@@ -53,7 +53,7 @@
 	<div>
 		<Value>
 			{#snippet label()}
-				{$i18n.wallet.wallet_id}
+				OISY {$i18n.wallet.wallet_id}
 			{/snippet}
 			<Identifier identifier={account.owner} small={false} />
 		</Value>

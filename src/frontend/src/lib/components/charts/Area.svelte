@@ -17,7 +17,7 @@
 
 	let path = $derived(`M${$data.map((d: number) => `${$xGet(d)},${$yGet(d)}`).join('L')}`);
 
-	let area: string;
+	let area: string | undefined = $state(undefined);
 
 	$effect(() => {
 		const yRange = $yScale.range();

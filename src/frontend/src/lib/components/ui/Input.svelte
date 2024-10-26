@@ -1,61 +1,36 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
-	import { run, createBubbler } from 'svelte/legacy';
+
+	export let name: string;
+	export let inputType: 'icp' | 'number' | 'text' | 'currency' = 'number';
+	export let required = true;
+	export let spellcheck: boolean | undefined = undefined;
+	export let step: number | 'any' | undefined = undefined;
+	export let disabled = false;
+	export let minLength: number | undefined = undefined;
+	export let max: number | undefined = undefined;
+	export let value: string | number | undefined = undefined;
+	export let placeholder: string;
+	export let testId: string | undefined = undefined;
+	export let decimals = 8;
+	export let ignore1Password = true;
+
+	// TODO: migrate to Svelte v5
 
 	const dispatch = createEventDispatcher();
 
-	interface Props {
-		name: string;
-		inputType?: 'icp' | 'number' | 'text' | 'currency';
-		required?: boolean;
-		spellcheck?: boolean | undefined;
-		step?: number | 'any' | undefined;
-		disabled?: boolean;
-		minLength?: number | undefined;
-		max?: number | undefined;
-		value?: string | number | undefined;
-		placeholder: string;
-		testId?: string | undefined;
-		decimals?: number;
-		ignore1Password?: boolean;
-		// https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
-		autocomplete?: 'off' | 'on' | undefined;
-	}
+	// https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
+	export let autocomplete: 'off' | 'on' | undefined = undefined;
 
-	let {
-		name,
-		inputType = 'number',
-		required = true,
-		spellcheck = undefined,
-		step = $bindable(undefined),
-		disabled = false,
-		minLength = undefined,
-		max = undefined,
-		value = $bindable(undefined),
-		placeholder,
-		testId = undefined,
-		decimals = 8,
-		ignore1Password = true,
-		autocomplete = $bindable(undefined)
-	}: Props = $props();
+	let inputElement: HTMLInputElement | undefined;
 
-	const bubble = createBubbler();
-
-	let inputElement: HTMLInputElement | undefined = $state();
-
-	run(() => {
-		step = inputType === 'number' ? (step ?? 'any') : undefined;
-	});
-	run(() => {
-		autocomplete = inputType !== 'number' ? (autocomplete ?? 'off') : undefined;
-	});
+	$: step = inputType === 'number' ? (step ?? 'any') : undefined;
+	$: autocomplete = inputType !== 'number' ? (autocomplete ?? 'off') : undefined;
 
 	// This component was developed for ICP and 8 decimals in mind. The "currency" input type was added afterwards therefore, for backwards compatibility reason, if the input type is set to icp, the number of decimals remains 8.
-	let wrapDecimals = $state(8);
-	run(() => {
-		wrapDecimals = inputType === 'icp' ? 8 : decimals;
-	});
+	let wrapDecimals = 8;
+	$: wrapDecimals = inputType === 'icp' ? 8 : decimals;
 
 	let selectionStart: number | null = 0;
 	let selectionEnd: number | null = 0;
@@ -74,28 +49,27 @@
 	const fixUndefinedValue = (value: string | number | undefined): string =>
 		isNullish(value) ? '' : `${value}`;
 
-	let currencyValue: string = $state(exponentToPlainNumberString(fixUndefinedValue(value)));
-	let lastValidCurrencyValue: string | number | undefined = $state(value);
-	let internalValueChange = $state(true);
+	let currencyValue: string = exponentToPlainNumberString(fixUndefinedValue(value));
+	let lastValidCurrencyValue: string | number | undefined = value;
+	let internalValueChange = true;
 
-	let currency = $state(false);
-	run(() => {
-		currency = ['icp', 'currency'].includes(inputType);
-	});
+	let currency = false;
+	$: currency = ['icp', 'currency'].includes(inputType);
 
-	$effect(() => {
-		if (!internalValueChange && currency) {
-			if (typeof value === 'number') {
-				currencyValue = exponentToPlainNumberString(`${value}`);
-			} else {
-				currencyValue = fixUndefinedValue(value);
+	$: value,
+		(() => {
+			if (!internalValueChange && currency) {
+				if (typeof value === 'number') {
+					currencyValue = exponentToPlainNumberString(`${value}`);
+				} else {
+					currencyValue = fixUndefinedValue(value);
+				}
+
+				lastValidCurrencyValue = currencyValue;
 			}
 
-			lastValidCurrencyValue = currencyValue;
-		}
-
-		internalValueChange = false;
-	});
+			internalValueChange = false;
+		})();
 
 	const restoreFromValidValue = (noValue = false) => {
 		if (isNullish(inputElement) || !currency) {
@@ -170,12 +144,8 @@
 		({ selectionStart, selectionEnd } = inputElement);
 	};
 
-	run(() => {
-		step = inputType === 'number' ? (step ?? 'any') : undefined;
-	});
-	run(() => {
-		autocomplete = inputType !== 'number' && !currency ? (autocomplete ?? 'off') : undefined;
-	});
+	$: step = inputType === 'number' ? (step ?? 'any') : undefined;
+	$: autocomplete = inputType !== 'number' && !currency ? (autocomplete ?? 'off') : undefined;
 </script>
 
 <input
@@ -193,9 +163,9 @@
 	{placeholder}
 	{max}
 	{autocomplete}
-	onblur={bubble('blur')}
-	onfocus={bubble('focus')}
-	oninput={handleInput}
-	onkeydown={handleKeyDown}
+	on:blur
+	on:focus
+	on:input={handleInput}
+	on:keydown={handleKeyDown}
 	data-1p-ignore={ignore1Password}
 />

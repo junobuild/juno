@@ -33,7 +33,7 @@
 		{#if steps === 'wallet_id'}
 			<div in:fade>
 				<ReceiveTokensQRCode
-					on:junoBack={() => (steps = 'options')}
+					back={() => (steps = 'options')}
 					value={missionControlId.toText()}
 					ariaLabel={$i18n.wallet.wallet_id}
 				/>
@@ -41,7 +41,7 @@
 		{:else if steps === 'account_identifier'}
 			<div in:fade>
 				<ReceiveTokensQRCode
-					on:junoBack={() => (steps = 'options')}
+					back={() => (steps = 'options')}
 					value={accountIdentifier.toHex()}
 					ariaLabel={$i18n.wallet.account_identifier}
 				/>

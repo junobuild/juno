@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -8,11 +7,10 @@
 	interface Props {
 		value: string;
 		ariaLabel: string;
+		back: () => void;
 	}
 
-	let { value, ariaLabel }: Props = $props();
-
-	const dispatch = createEventDispatcher();
+	let { value, ariaLabel, back }: Props = $props();
 </script>
 
 <div class="container">
@@ -27,7 +25,7 @@
 		</Value>
 	</div>
 
-	<button onclick={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+	<button onclick={back}>{$i18n.core.back}</button>
 </div>
 
 <style lang="scss">

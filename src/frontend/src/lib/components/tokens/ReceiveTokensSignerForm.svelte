@@ -89,7 +89,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button role="button" onclick={back}>{$i18n.core.back}</button>
+		<button onclick={back}>{$i18n.core.back}</button>
 
 		<button type="submit">
 			{$i18n.core.request}

@@ -17,13 +17,14 @@
 
 	let path = $derived(`M${$data.map((d: number) => `${$xGet(d)},${$yGet(d)}`).join('L')}`);
 
-	let yRange = $derived(yScale.range());
+	let area: string;
 
-	let area = $derived(
-		`${path}L${$xScale($extents.x ? $extents.x[1] : 0)},${yRange[0]}L${$xScale(
+	$effect(() => {
+		const yRange = $yScale.range();
+		area = `${path}L${$xScale($extents.x ? $extents.x[1] : 0)},${yRange[0]}L${$xScale(
 			$extents.x ? $extents.x[0] : 0
-		)},${yRange[0]}Z`
-	);
+		)},${yRange[0]}Z`;
+	});
 </script>
 
 <path class="path-area" d={area} {fill} />

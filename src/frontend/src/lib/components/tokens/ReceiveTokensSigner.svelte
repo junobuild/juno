@@ -7,12 +7,11 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import ReceiveTokensSignerForm from '$lib/components/tokens/ReceiveTokensSignerForm.svelte';
 	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
-	import { OISY_WALLET_URL } from '$lib/constants/wallet.constants';
+	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
 	import { Principal } from '@dfinity/principal';
 	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import type { Icrc1TransferRequest } from '@dfinity/ledger-icp';
-	import Confetti from '$lib/components/ui/Confetti.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -20,7 +19,7 @@
 		visible?: boolean;
 	}
 
-	let { back, missionControlId, visible }: Props = $props();
+	let { back, missionControlId, visible = $bindable() }: Props = $props();
 
 	let steps: 'connecting' | 'receiving' | 'form' | 'success' = $state('connecting');
 	let account: IcrcAccount | undefined;
@@ -32,7 +31,7 @@
 
 		try {
 			wallet = await IcpWallet.connect({
-				url: OISY_WALLET_URL,
+				...OISY_WALLET_OPTIONS,
 				onDisconnect: () => {
 					if (nonNullish(account)) {
 						return;
@@ -85,9 +84,7 @@
 		let wallet: IcpWallet | undefined;
 
 		try {
-			wallet = await IcpWallet.connect({
-				url: OISY_WALLET_URL
-			});
+			wallet = await IcpWallet.connect(OISY_WALLET_OPTIONS);
 
 			const request: Icrc1TransferRequest = {
 				to: {
@@ -119,8 +116,6 @@
 </script>
 
 {#if steps === 'success'}
-	<Confetti />
-
 	<div class="msg">
 		<p>{$i18n.wallet.icp_on_its_way}</p>
 		<button onclick={() => (visible = false)}>{$i18n.core.close}</button>
@@ -156,5 +151,9 @@
 		font-size: var(--font-size-small);
 		text-align: center;
 		max-width: 200px;
+	}
+
+	.msg {
+		min-height: 100px;
 	}
 </style>

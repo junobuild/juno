@@ -48,7 +48,7 @@
 			</div>
 		{:else if steps === 'signer'}
 			<div in:fade>
-				<ReceiveTokensSigner {missionControlId} back={() => (steps = 'options')} />
+				<ReceiveTokensSigner {missionControlId} bind:visible back={() => (steps = 'options')} />
 			</div>
 		{:else}
 			<div class="options">

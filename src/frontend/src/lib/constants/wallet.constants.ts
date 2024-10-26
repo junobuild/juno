@@ -1,4 +1,5 @@
-import {DEV} from "$lib/constants/constants";
+import { DEV } from '$lib/constants/constants';
+import type { RelyingPartyOptions } from '@dfinity/oisy-wallet-signer';
 
 export const MEMO_CANISTER_CREATE = BigInt(0x41455243); // == 'CREA'
 
@@ -10,4 +11,11 @@ export const MEMO_SATELLITE_CREATE_REFUND = BigInt(0x44464552544153); // == 'SAT
 // eslint-disable-next-line @typescript-eslint/no-loss-of-precision
 export const MEMO_ORBITER_CREATE_REFUND = BigInt(0x4446455242524f); // == 'ORBREFD'
 
-export const OISY_WALLET_URL = DEV ? 'http://localhost:5174/sign' : 'https://oisy.com/sign';
+export const OISY_WALLET_OPTIONS: RelyingPartyOptions = DEV
+	? {
+			url: 'http://localhost:5174/sign',
+			host: 'http://localhost:5987/'
+		}
+	: {
+			url: 'https://oisy.com/sign'
+		};

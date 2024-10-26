@@ -2,12 +2,12 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fade } from 'svelte/transition';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
+	import IconOisy from '$lib/components/icons/IconOisy.svelte';
 	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';
 	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
+	import ReceiveTokensSigner from '$lib/components/tokens/ReceiveTokensSigner.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import IconOisy from '$lib/components/icons/IconOisy.svelte';
-	import ReceiveTokensSigner from '$lib/components/tokens/ReceiveTokensSigner.svelte';
 
 	interface Props {
 		missionControlId: Principal;

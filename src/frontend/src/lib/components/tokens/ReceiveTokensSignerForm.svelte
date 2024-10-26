@@ -1,24 +1,24 @@
 <script lang="ts">
 	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
 	import { Principal } from '@dfinity/principal';
-	import { authStore } from '$lib/stores/auth.store';
-	import { getBalance } from '$lib/api/icp-index.api';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { getBalance } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 
-	type Props = {
+	interface Props {
 		account: IcrcAccount;
 		back: () => void;
 		receive: (params: { balance: bigint | undefined; amount: string }) => Promise<void>;
-	};
+	}
 
-	let { account, back, success, receive }: Props = $props();
+	let { account, back, receive }: Props = $props();
 
 	let owner: Principal = $derived(Principal.fromText(account.owner));
 

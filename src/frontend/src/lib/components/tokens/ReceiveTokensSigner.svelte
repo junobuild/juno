@@ -1,17 +1,16 @@
 <script lang="ts">
-	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
-	import { DEV } from '$lib/constants/constants';
-	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import ReceiveTokensSignerForm from '$lib/components/tokens/ReceiveTokensSignerForm.svelte';
-	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
-	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
-	import { Principal } from '@dfinity/principal';
-	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
-	import { wizardBusy } from '$lib/stores/busy.store';
 	import type { Icrc1TransferRequest } from '@dfinity/ledger-icp';
+	import type { IcrcAccount } from '@dfinity/oisy-wallet-signer';
+	import { IcpWallet } from '@dfinity/oisy-wallet-signer/icp-wallet';
+	import { Principal } from '@dfinity/principal';
+	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
+	import ReceiveTokensSignerForm from '$lib/components/tokens/ReceiveTokensSignerForm.svelte';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 
 	interface Props {
 		missionControlId: Principal;
@@ -22,9 +21,7 @@
 	let { back, missionControlId, visible = $bindable() }: Props = $props();
 
 	let steps: 'connecting' | 'receiving' | 'form' | 'success' = $state('connecting');
-	let account: IcrcAccount | undefined;
-
-	let wallet: IcpWallet | undefined;
+	let account: IcrcAccount | undefined = $state(undefined);
 
 	const init = async () => {
 		let wallet: IcpWallet | undefined;

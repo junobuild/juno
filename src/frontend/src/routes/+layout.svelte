@@ -12,6 +12,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import '$lib/styles/global.scss';
 
 	interface Props {
 		children: Snippet;
@@ -82,7 +83,3 @@
 
 	<Overlays />
 {/await}
-
-<style lang="scss" global>
-	@import '../lib/styles/global.scss';
-</style>

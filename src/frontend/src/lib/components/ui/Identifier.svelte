@@ -35,7 +35,7 @@
 	p {
 		display: inline-flex;
 		align-items: center;
-		gap: var(--padding-2x);
+		gap: var(--padding);
 		max-width: 100%;
 	}
 

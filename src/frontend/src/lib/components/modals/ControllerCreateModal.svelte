@@ -186,6 +186,7 @@
 				type="text"
 				required={action === 'add'}
 				disabled={action === 'generate'}
+				autocomplete="off"
 			/>
 
 			<div class="scope">

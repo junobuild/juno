@@ -145,6 +145,7 @@
 							type="email"
 							name="email"
 							placeholder={$i18n.observatory.email_notifications_placeholder}
+							autocomplete="off"
 						/>
 					</Value>
 				</div>

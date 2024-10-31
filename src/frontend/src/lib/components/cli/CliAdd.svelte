@@ -289,6 +289,7 @@
 						placeholder={$i18n.cli.profile_placeholder}
 						name="profile"
 						bind:value={profile}
+						autocomplete="off"
 					/>
 				</div>
 			</div>

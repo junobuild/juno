@@ -89,6 +89,7 @@
 			placeholder="_____-_____-_____-_____-cai"
 			maxlength={64}
 			disabled={saving}
+			autocomplete="off"
 		/>
 
 		<button type="submit" class="submit" disabled={saving || !validConfirm}>

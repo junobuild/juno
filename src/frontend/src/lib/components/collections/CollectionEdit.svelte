@@ -133,6 +133,7 @@
 					name="collection"
 					bind:value={collection}
 					disabled={mode === 'edit'}
+					autocomplete="off"
 				/>
 			</Value>
 		</div>

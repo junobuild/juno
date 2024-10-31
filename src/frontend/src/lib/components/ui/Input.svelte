@@ -21,7 +21,7 @@
 	const dispatch = createEventDispatcher();
 
 	// https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
-	export let autocomplete: 'off' | 'on' | undefined = undefined;
+	export let autocomplete: 'off' | 'on' | undefined = 'off';
 
 	let inputElement: HTMLInputElement | undefined;
 

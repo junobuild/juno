@@ -45,6 +45,7 @@
 		name="filter-keys"
 		type="text"
 		placeholder={$i18n.filter.placeholder_keys}
+		autocomplete="off"
 	/>
 
 	<label for="filter-owner" class="owner">{$i18n.filter.filter_owner}</label>
@@ -55,6 +56,7 @@
 		name="filter-owner"
 		type="text"
 		placeholder={$i18n.filter.placeholder_owners}
+		autocomplete="off"
 	/>
 </PopoverApply>
 

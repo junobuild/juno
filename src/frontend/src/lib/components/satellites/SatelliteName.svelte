@@ -96,6 +96,7 @@
 			placeholder={$i18n.satellites.edit_name}
 			maxlength={64}
 			disabled={saving}
+			autocomplete="off"
 		/>
 
 		<button type="submit" class="submit" disabled={saving || !validConfirm}>

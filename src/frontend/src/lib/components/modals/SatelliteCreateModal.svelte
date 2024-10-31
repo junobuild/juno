@@ -122,6 +122,7 @@
 						name="satellite_name"
 						placeholder={$i18n.satellites.enter_name}
 						required
+						autocomplete="off"
 					/>
 				</Value>
 

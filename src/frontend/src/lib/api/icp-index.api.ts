@@ -29,7 +29,8 @@ export const getBalance = async ({
 	});
 
 	return accountBalance({
-		accountIdentifier: getAccountIdentifier(owner).toHex()
+		accountIdentifier: getAccountIdentifier(owner).toHex(),
+		certified: false
 	});
 };
 
@@ -57,6 +58,7 @@ export const getTransactions = async ({
 	return getTransactions({
 		start,
 		maxResults,
-		accountIdentifier: getAccountIdentifier(owner).toHex()
+		accountIdentifier: getAccountIdentifier(owner).toHex(),
+		certified: false
 	});
 };

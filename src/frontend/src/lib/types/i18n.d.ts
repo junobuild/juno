@@ -379,6 +379,7 @@ interface I18nCli {
 	select_all: string;
 	unselect_all: string;
 	profile: string;
+	profile_info: string;
 	segments: string;
 	profile_placeholder: string;
 	authorize: string;

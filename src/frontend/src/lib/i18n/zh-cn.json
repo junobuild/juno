@@ -364,7 +364,8 @@
 		"terminal": "终端",
 		"select_all": "选择全部",
 		"unselect_all": "取消全部选择",
-		"profile": "如果需要，提供一个简介名字有助于在未来更容易识别.",
+		"profile": "Profile",
+		"profile_info": "如果需要，提供一个简介名字有助于在未来更容易识别.",
 		"segments": "模块:",
 		"profile_placeholder": "可选的简介名字",
 		"authorize": "授权"

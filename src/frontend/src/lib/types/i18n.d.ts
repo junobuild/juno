@@ -237,6 +237,7 @@ interface I18nWallet {
 	or_connect_wallet: string;
 	connecting_wallet: string;
 	wallet_approve: string;
+	wallet_missing_account: string;
 }
 
 interface I18nAuthentication {

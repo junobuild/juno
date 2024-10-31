@@ -4,6 +4,7 @@
 	import { run, preventDefault } from 'svelte/legacy';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
+	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 	import {
@@ -196,11 +197,28 @@
 	});
 </script>
 
-<p class="add">
-	{$i18n.cli.add}
-</p>
-
 <form onsubmit={preventDefault(onSubmit)}>
+	<div class="card-container with-title terminal">
+		<span class="title">{$i18n.cli.terminal}</span>
+
+		<div class="content">
+			<p>
+				<Html
+					text={i18nFormat($i18n.cli.controller, [
+						{
+							placeholder: '{0}',
+							value: principal
+						}
+					])}
+				/>
+			</p>
+		</div>
+	</div>
+
+	<p class="add">
+		{$i18n.cli.add}
+	</p>
+
 	<div class="table-container">
 		<table>
 			<thead>
@@ -255,35 +273,26 @@
 		</div>
 	</div>
 
-	<div class="card-container with-title">
-		<span class="title">{$i18n.cli.terminal}</span>
+	<div class="options">
+		<Collapsible>
+			<svelte:fragment slot="header">{$i18n.canisters.advanced_options}</svelte:fragment>
 
-		<div class="content">
-			<p>
-				<Html
-					text={i18nFormat($i18n.cli.controller, [
-						{
-							placeholder: '{0}',
-							value: principal
-						}
-					])}
-				/>
-			</p>
+			<div class="card-container with-title">
+				<span class="title">{$i18n.cli.profile}</span>
 
-			<p class="profile-hint">
-				<label for="profile">
-					{$i18n.cli.profile}
-				</label>
-			</p>
+				<div class="content">
+					<p class="profile-info">{$i18n.cli.profile_info}</p>
 
-			<input
-				id="profile"
-				type="text"
-				placeholder={$i18n.cli.profile_placeholder}
-				name="profile"
-				bind:value={profile}
-			/>
-		</div>
+					<input
+						id="profile"
+						type="text"
+						placeholder={$i18n.cli.profile_placeholder}
+						name="profile"
+						bind:value={profile}
+					/>
+				</div>
+			</div>
+		</Collapsible>
 	</div>
 
 	<button {disabled}>{$i18n.cli.authorize}</button>
@@ -327,7 +336,7 @@
 	}
 
 	.objects {
-		margin: 0 0 var(--padding-2x);
+		margin: 0 0 var(--padding-4x);
 		padding: var(--padding) var(--padding-2x);
 	}
 
@@ -340,10 +349,6 @@
 		margin: 0;
 	}
 
-	.card-container {
-		margin: var(--padding-4x) 0 var(--padding-6x);
-	}
-
 	.actions {
 		display: flex;
 		padding: var(--padding-2x) var(--padding-2x);
@@ -353,7 +358,15 @@
 		margin: 0;
 	}
 
-	.profile-hint {
+	.terminal {
+		margin: 0 0 var(--padding-6x);
+	}
+
+	.options {
+		margin: var(--padding-4x) 0 var(--padding-6x);
+	}
+
+	.profile-info {
 		margin: 0;
 	}
 </style>

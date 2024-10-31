@@ -25,9 +25,6 @@
 
 	let inputElement: HTMLInputElement | undefined;
 
-	$: step = inputType === 'number' ? (step ?? 'any') : undefined;
-	$: autocomplete = inputType !== 'number' ? (autocomplete ?? 'off') : undefined;
-
 	// This component was developed for ICP and 8 decimals in mind. The "currency" input type was added afterwards therefore, for backwards compatibility reason, if the input type is set to icp, the number of decimals remains 8.
 	let wrapDecimals = 8;
 	$: wrapDecimals = inputType === 'icp' ? 8 : decimals;
@@ -145,7 +142,7 @@
 	};
 
 	$: step = inputType === 'number' ? (step ?? 'any') : undefined;
-	$: autocomplete = inputType !== 'number' && !currency ? (autocomplete ?? 'off') : undefined;
+	$: autocomplete = inputType !== 'number' ? (autocomplete ?? 'off') : undefined;
 </script>
 
 <input

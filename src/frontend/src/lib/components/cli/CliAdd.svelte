@@ -4,6 +4,7 @@
 	import { run, preventDefault } from 'svelte/legacy';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
+	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 	import {
@@ -20,8 +21,6 @@
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import Collapsible from '$lib/components/ui/Collapsible.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
 
 	interface Props {
 		principal: string;

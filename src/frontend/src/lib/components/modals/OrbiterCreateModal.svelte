@@ -92,7 +92,7 @@
 			{detail}
 			priceLabel={$i18n.analytics.create_orbiter_price}
 		>
-			<form onsubmit={preventDefault(onSubmit)}>
+			<form onsubmit={onSubmit}>
 				<CanisterAdvancedOptions bind:subnetId />
 
 				<button

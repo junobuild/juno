@@ -5,6 +5,7 @@
 	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish, toNullable } from '@dfinity/utils';
 	import ReceiveTokensSignerForm from '$lib/components/tokens/ReceiveTokensSignerForm.svelte';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { OISY_WALLET_OPTIONS } from '$lib/constants/wallet.constants';
 	import { wizardBusy } from '$lib/stores/busy.store';
@@ -120,6 +121,8 @@
 </script>
 
 {#if steps === 'success'}
+	<Confetti display="popover" />
+
 	<div class="msg">
 		<p>{$i18n.wallet.icp_on_its_way}</p>
 		<button onclick={() => (visible = false)}>{$i18n.core.close}</button>

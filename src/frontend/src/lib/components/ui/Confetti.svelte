@@ -1,8 +1,14 @@
 <script lang="ts">
 	import { Confetti } from 'svelte-confetti';
+
+	interface Props {
+		display?: 'modal' | 'popover';
+	}
+
+	let { display = 'modal' }: Props = $props();
 </script>
 
-<div>
+<div class={display}>
 	<Confetti
 		rounded
 		x={[-5, 5]}
@@ -25,5 +31,12 @@
 		display: flex;
 		justify-content: center;
 		overflow: hidden;
+
+		&.popover {
+			position: absolute;
+			height: 100%;
+			min-height: calc(100% + 50px);
+			width: 100%;
+		}
 	}
 </style>

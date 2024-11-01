@@ -30,7 +30,7 @@
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
-	const onSubmit = async ($event: MouseEvent | TouchEvent) => {
+	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
 		wizardBusy.start();

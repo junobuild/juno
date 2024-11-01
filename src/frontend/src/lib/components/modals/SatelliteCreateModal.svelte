@@ -34,7 +34,7 @@
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 	let satellite: Satellite | undefined = undefined;
 
-	const onSubmit = async ($event: MouseEvent | TouchEvent) => {
+	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
 		if (isNullish(satelliteName)) {

@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
@@ -32,7 +30,9 @@
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
-	const onSubmit = async () => {
+	const onSubmit = async ($event: MouseEvent | TouchEvent) => {
+		$event.preventDefault();
+
 		wizardBusy.start();
 		steps = 'in_progress';
 
@@ -62,13 +62,12 @@
 		wizardBusy.stop();
 	};
 
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
+	const close = () => onclose();
 
 	let subnetId: PrincipalText | undefined = $state();
 </script>
 
-<Modal on:junoClose>
+<Modal on:junoClose={close}>
 	{#if steps === 'ready'}
 		<Confetti />
 

@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
@@ -36,7 +34,9 @@
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 	let satellite: Satellite | undefined = undefined;
 
-	const onSubmit = async () => {
+	const onSubmit = async ($event: MouseEvent | TouchEvent) => {
+		$event.preventDefault();
+
 		if (isNullish(satelliteName)) {
 			toasts.error({
 				text: $i18n.errors.satellite_name_missing
@@ -74,19 +74,16 @@
 		wizardBusy.stop();
 	};
 
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
-
 	const navigate = async () => {
 		await navigateToSatellite(satellite?.satellite_id);
-		close();
+		onclose();
 	};
 
 	let satelliteName: string | undefined = $state(undefined);
 	let subnetId: PrincipalText | undefined = $state();
 </script>
 
-<Modal on:junoClose>
+<Modal on:junoClose={onclose}>
 	{#if steps === 'ready'}
 		<Confetti />
 
@@ -111,7 +108,7 @@
 			{detail}
 			priceLabel={$i18n.satellites.create_satellite_price}
 		>
-			<form onsubmit={preventDefault(onSubmit)}>
+			<form onsubmit={onSubmit}>
 				<Value>
 					{#snippet label()}
 						{$i18n.satellites.satellite_name}

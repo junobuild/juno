@@ -1,8 +1,9 @@
 /* Font sizing source: https://type-scale.com/ */
 
 html {
-	font-size: 100%;
-} /*16px*/
+	--html-font-size: 14px;
+	font-size: var(--html-font-size, 14px);
+}
 
 body {
 	font-family: 'JetBrains Mono', monospace;

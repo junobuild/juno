@@ -59,9 +59,9 @@ jobs:
           outputs: ./out
           target: ${{ matrix.target }}
 
-      - run: sha256sum out/${{ matrix.name }} > ${{ matrix.name }}.sha256
-
       - run: mv out/${{ matrix.name }} ${{ matrix.name }}
+
+      - run: sha256sum ./${{ matrix.name }} > ${{ matrix.name }}.sha256
 
       - name: 'Upload ${{ matrix.name }}'
         uses: actions/upload-artifact@v4

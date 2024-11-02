@@ -221,34 +221,34 @@ jobs:
           name: orbiter.did
           path: .
 
-      - name: Download console.sha256
+      - name: Download console.wasm.gz.sha256
         uses: actions/download-artifact@v4
         with:
-          name: console.sha256
+          name: console.wasm.gz.sha256
           path: .
 
-      - name: Download observatory.sha256
+      - name: Download observatory.wasm.gz.sha256
         uses: actions/download-artifact@v4
         with:
-          name: observatory.sha256
+          name: observatory.wasm.gz.sha256
           path: .
 
-      - name: Download mission_control.sha256
+      - name: Download mission_control.wasm.gz.sha256
         uses: actions/download-artifact@v4
         with:
-          name: mission_control.sha256
+          name: mission_control.wasm.gz.sha256
           path: .
 
-      - name: Download satellite.sha256
+      - name: Download satellite.wasm.gz.sha256
         uses: actions/download-artifact@v4
         with:
-          name: satellite.sha256
+          name: satellite.wasm.gz.sha256
           path: .
 
-      - name: Download orbiter.sha256
+      - name: Download orbiter.wasm.gz.sha256
         uses: actions/download-artifact@v4
         with:
-          name: orbiter.sha256
+          name: orbiter.wasm.gz.sha256
           path: .
 
       - name: Download metadata.json

@@ -59,7 +59,7 @@
 		--bigger-title: 1;
 		font-size: calc(var(--font-size-h1) * var(--bigger-title));
 
-		max-width: 470px;
+		max-width: 420px;
 
 		@include media.min-width(large) {
 			--bigger-title: 1.4;

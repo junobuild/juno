@@ -17,6 +17,13 @@ const config: UserConfig = {
 			$declarations: resolve('./src/declarations')
 		}
 	},
+	css: {
+		preprocessorOptions: {
+			scss: {
+				api: 'modern-compiler'
+			}
+		}
+	},
 	build: {
 		target: 'es2020',
 		rollupOptions: {

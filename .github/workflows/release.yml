@@ -155,10 +155,106 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download All Artifacts
+      - name: Download console.wasm.gz
         uses: actions/download-artifact@v4
         with:
-          name: '*'
+          name: console.wasm.gz
+          path: .
+
+      - name: Download observatory.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: observatory.wasm.gz
+          path: .
+
+      - name: Download mission_control.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: mission_control.wasm.gz
+          path: .
+
+      - name: Download satellite.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: satellite.wasm.gz
+          path: .
+
+      - name: Download orbiter.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: orbiter.wasm.gz
+          path: .
+
+      - name: Download console.did
+        uses: actions/download-artifact@v4
+        with:
+          name: console.did
+          path: .
+
+      - name: Download observatory.did
+        uses: actions/download-artifact@v4
+        with:
+          name: observatory.did
+          path: .
+
+      - name: Download mission_control.did
+        uses: actions/download-artifact@v4
+        with:
+          name: mission_control.did
+          path: .
+
+      - name: Download satellite.did
+        uses: actions/download-artifact@v4
+        with:
+          name: satellite.did
+          path: .
+
+      - name: Download satellite_extension.did
+        uses: actions/download-artifact@v4
+        with:
+          name: satellite_extension.did
+          path: .
+
+      - name: Download orbiter.did
+        uses: actions/download-artifact@v4
+        with:
+          name: orbiter.did
+          path: .
+
+      - name: Download console.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: console.sha256
+          path: .
+
+      - name: Download observatory.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: observatory.sha256
+          path: .
+
+      - name: Download mission_control.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: mission_control.sha256
+          path: .
+
+      - name: Download satellite.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: satellite.sha256
+          path: .
+
+      - name: Download orbiter.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: orbiter.sha256
+          path: .
+
+      - name: Download metadata.json
+        uses: actions/download-artifact@v4
+        with:
+          name: metadata.json
           path: .
 
       - name: Combine Checksums

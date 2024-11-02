@@ -59,7 +59,7 @@ jobs:
           outputs: ./out
           target: ${{ matrix.target }}
 
-      - run: sha256sum out/${{ matrix.name }}
+      - run: sha256sum out/${{ matrix.name }} > ${{ matrix.name }}.sha256
 
       - run: mv out/${{ matrix.name }} ${{ matrix.name }}
 
@@ -155,77 +155,14 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Download console.wasm.gz
+      - name: Download All Artifacts
         uses: actions/download-artifact@v4
         with:
-          name: console.wasm.gz
+          name: '*'
           path: .
 
-      - name: Download observatory.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: observatory.wasm.gz
-          path: .
-
-      - name: Download mission_control.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: mission_control.wasm.gz
-          path: .
-
-      - name: Download satellite.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: satellite.wasm.gz
-          path: .
-
-      - name: Download orbiter.wasm.gz
-        uses: actions/download-artifact@v4
-        with:
-          name: orbiter.wasm.gz
-          path: .
-
-      - name: Download console.did
-        uses: actions/download-artifact@v4
-        with:
-          name: console.did
-          path: .
-
-      - name: Download observatory.did
-        uses: actions/download-artifact@v4
-        with:
-          name: observatory.did
-          path: .
-
-      - name: Download mission_control.did
-        uses: actions/download-artifact@v4
-        with:
-          name: mission_control.did
-          path: .
-
-      - name: Download satellite.did
-        uses: actions/download-artifact@v4
-        with:
-          name: satellite.did
-          path: .
-
-      - name: Download satellite_extension.did
-        uses: actions/download-artifact@v4
-        with:
-          name: satellite_extension.did
-          path: .
-
-      - name: Download orbiter.did
-        uses: actions/download-artifact@v4
-        with:
-          name: orbiter.did
-          path: .
-
-      - name: Download metadata.json
-        uses: actions/download-artifact@v4
-        with:
-          name: metadata.json
-          path: .
+      - name: Combine Checksums
+        run: cat *.sha256 > checksums.txt
 
       - name: Prepare canisters
         run: bash .github/scripts/prepare
@@ -248,3 +185,4 @@ jobs:
             ./satellite*.did
             ./orbiter*.did
             ./metadata.json
+            ./checksums.txt

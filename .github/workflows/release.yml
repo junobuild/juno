@@ -72,6 +72,12 @@ jobs:
           # downloaded file
           path: ./${{ matrix.name }}
 
+      - name: 'Upload ${{ matrix.name }}.sha256'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}.sha256
+          path: ./${{ matrix.name }}.sha256
+
   metadata:
     runs-on: ubuntu-latest
     steps:

@@ -37,7 +37,7 @@
 		<div class="spinner" out:fade>
 			<Spinner inline />
 
-			<p>{$i18n.satellites.loading_launchpad}</p>
+			<p class="loading">{$i18n.satellites.loading_launchpad}</p>
 		</div>
 	{:else}
 		<section use:onIntersection onjunoIntersecting={onLayoutTitleIntersection}>
@@ -97,5 +97,9 @@
 		gap: var(--padding-2x);
 
 		font-size: var(--font-size-very-small);
+	}
+
+	.loading {
+		text-align: center;
 	}
 </style>

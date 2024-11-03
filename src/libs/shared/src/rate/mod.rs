@@ -1,3 +1,3 @@
 pub mod constants;
-pub mod rate;
+pub mod quota;
 pub mod types;

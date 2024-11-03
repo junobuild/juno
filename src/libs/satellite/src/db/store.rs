@@ -12,6 +12,7 @@ use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
 use crate::memory::STATE;
+use crate::types::store::StoreContext;
 use candid::Principal;
 use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::msg::msg_db_collection_not_empty;
@@ -79,32 +80,27 @@ pub fn get_doc_store(
 ) -> Result<Option<Doc>, String> {
     let controllers: Controllers = get_controllers();
 
-    secure_get_doc(caller, &controllers, collection, key)
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection: &collection,
+    };
+
+    secure_get_doc(&context, key)
 }
 
-fn secure_get_doc(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: CollectionKey,
-    key: Key,
-) -> Result<Option<Doc>, String> {
-    let rule = get_state_rule(&collection)?;
-    get_doc_impl(caller, controllers, collection, key, &rule)
+fn secure_get_doc(context: &StoreContext, key: Key) -> Result<Option<Doc>, String> {
+    let rule = get_state_rule(context.collection)?;
+    get_doc_impl(context, key, &rule)
 }
 
-fn get_doc_impl(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: CollectionKey,
-    key: Key,
-    rule: &Rule,
-) -> Result<Option<Doc>, String> {
-    let value = get_state_doc(&collection, &key, rule)?;
+fn get_doc_impl(context: &StoreContext, key: Key, rule: &Rule) -> Result<Option<Doc>, String> {
+    let value = get_state_doc(context.collection, &key, rule)?;
 
     match value {
         None => Ok(None),
         Some(value) => {
-            if !assert_permission(&rule.read, value.owner, caller, controllers) {
+            if !assert_permission(&rule.read, value.owner, context.caller, context.controllers) {
                 return Ok(None);
             }
 
@@ -142,14 +138,13 @@ pub fn set_doc_store(
     let controllers: Controllers = get_controllers();
     let config = get_config();
 
-    let data = secure_set_doc(
+    let context = StoreContext {
         caller,
-        &controllers,
-        &config,
-        collection.clone(),
-        key.clone(),
-        value,
-    )?;
+        controllers: &controllers,
+        collection: &collection,
+    };
+
+    let data = secure_set_doc(&context, &config, key.clone(), value)?;
 
     Ok(DocContext {
         key,
@@ -159,42 +154,29 @@ pub fn set_doc_store(
 }
 
 fn secure_set_doc(
-    caller: Principal,
-    controllers: &Controllers,
+    context: &StoreContext,
     config: &Option<DbConfig>,
-    collection: CollectionKey,
     key: Key,
     value: SetDoc,
 ) -> Result<DocUpsert, String> {
-    let rule = get_state_rule(&collection)?;
-    set_doc_impl(caller, controllers, config, collection, key, value, &rule)
+    let rule = get_state_rule(context.collection)?;
+    set_doc_impl(context, config, key, value, &rule)
 }
 
 fn set_doc_impl(
-    caller: Principal,
-    controllers: &Controllers,
+    context: &StoreContext,
     config: &Option<DbConfig>,
-    collection: CollectionKey,
     key: Key,
     value: SetDoc,
     rule: &Rule,
 ) -> Result<DocUpsert, String> {
-    let current_doc = get_state_doc(&collection, &key, rule)?;
+    let current_doc = get_state_doc(context.collection, &key, rule)?;
 
-    assert_set_doc(
-        caller,
-        controllers,
-        config,
-        &collection,
-        &key,
-        &value,
-        rule,
-        &current_doc,
-    )?;
+    assert_set_doc(context, config, &key, &value, rule, &current_doc)?;
 
-    let doc: Doc = Doc::prepare(caller, &current_doc, value);
+    let doc: Doc = Doc::prepare(context.caller, &current_doc, value);
 
-    let (_evicted_doc, after) = insert_state_doc(&collection, &key, &doc, rule)?;
+    let (_evicted_doc, after) = insert_state_doc(context.collection, &key, &doc, rule)?;
 
     Ok(DocUpsert {
         before: current_doc,
@@ -325,7 +307,13 @@ pub fn delete_doc_store(
 ) -> Result<DocContext<Option<Doc>>, String> {
     let controllers: Controllers = get_controllers();
 
-    let doc = secure_delete_doc(caller, &controllers, collection.clone(), key.clone(), value)?;
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection: &collection,
+    };
+
+    let doc = secure_delete_doc(&context, key.clone(), value)?;
 
     Ok(DocContext {
         key,
@@ -335,37 +323,25 @@ pub fn delete_doc_store(
 }
 
 fn secure_delete_doc(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: CollectionKey,
+    context: &StoreContext,
     key: Key,
     value: DelDoc,
 ) -> Result<Option<Doc>, String> {
-    let rule = get_state_rule(&collection)?;
-    delete_doc_impl(caller, controllers, collection, key, value, &rule)
+    let rule = get_state_rule(context.collection)?;
+    delete_doc_impl(context, key, value, &rule)
 }
 
 fn delete_doc_impl(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: CollectionKey,
+    context: &StoreContext,
     key: Key,
     value: DelDoc,
     rule: &Rule,
 ) -> Result<Option<Doc>, String> {
-    let current_doc = get_state_doc(&collection, &key, rule)?;
+    let current_doc = get_state_doc(context.collection, &key, rule)?;
 
-    assert_delete_doc(
-        caller,
-        controllers,
-        &collection,
-        &key,
-        &value,
-        rule,
-        &current_doc,
-    )?;
+    assert_delete_doc(context, &key, &value, rule, &current_doc)?;
 
-    delete_state_doc(&collection, &key, rule)
+    delete_state_doc(context.collection, &key, rule)
 }
 
 /// Delete multiple documents from a collection's store.

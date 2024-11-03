@@ -3,22 +3,24 @@ use crate::db::types::config::DbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
 use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::rules::assert_stores::assert_user_collection_caller_key;
+use crate::types::store::StoreContext;
 use crate::{DelDoc, Doc, SetDoc};
 use candid::Principal;
 use junobuild_collections::assert_stores::{
     assert_create_permission, assert_permission, public_permission,
 };
-use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Permission, Rule};
 use junobuild_shared::assert::{assert_description_length, assert_max_memory_size, assert_version};
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::state::{Controllers, Version};
 
 pub fn assert_set_doc(
-    caller: Principal,
-    controllers: &Controllers,
+    &StoreContext {
+        caller,
+        controllers,
+        collection,
+    }: &StoreContext,
     config: &Option<DbConfig>,
-    collection: &CollectionKey,
     key: &Key,
     value: &SetDoc,
     rule: &Rule,
@@ -50,9 +52,11 @@ pub fn assert_set_doc(
 }
 
 pub fn assert_delete_doc(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
+    &StoreContext {
+        caller,
+        controllers,
+        collection,
+    }: &StoreContext,
     key: &Key,
     value: &DelDoc,
     rule: &Rule,

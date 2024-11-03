@@ -21,6 +21,7 @@ use crate::storage::state::{
     insert_domain as insert_state_domain,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
+use crate::types::store::StoreContext;
 use junobuild_shared::types::core::{Blob, DomainName};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::list::{ListParams, ListResults};
@@ -99,7 +100,13 @@ pub fn delete_asset_store(
     let controllers: Controllers = get_controllers();
     let config = get_config_store();
 
-    secure_delete_asset_impl(caller, &controllers, collection, full_path, &config)
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection,
+    };
+
+    secure_delete_asset_impl(&context, full_path, &config)
 }
 
 pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
@@ -150,7 +157,13 @@ pub fn list_assets_store(
 ) -> Result<ListResults<AssetNoContent>, String> {
     let controllers: Controllers = get_controllers();
 
-    secure_list_assets_impl(caller, &controllers, collection, filters)
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection,
+    };
+
+    secure_list_assets_impl(&context, filters)
 }
 
 /// Count assets in a collection.
@@ -206,33 +219,40 @@ pub fn get_asset_store(
 ) -> Result<Option<Asset>, String> {
     let controllers: Controllers = get_controllers();
 
-    secure_get_asset_impl(caller, &controllers, collection, full_path)
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection,
+    };
+
+    secure_get_asset_impl(&context, full_path)
 }
 
 fn secure_get_asset_impl(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
+    context: &StoreContext,
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
-    let rule = get_state_rule(collection)?;
+    let rule = get_state_rule(context.collection)?;
 
-    get_asset_impl(caller, controllers, full_path, collection, &rule)
+    get_asset_impl(context, full_path, &rule)
 }
 
 fn get_asset_impl(
-    caller: Principal,
-    controllers: &Controllers,
+    context: &StoreContext,
     full_path: FullPath,
-    collection: &CollectionKey,
     rule: &Rule,
 ) -> Result<Option<Asset>, String> {
-    let asset = get_state_asset(collection, &full_path, rule);
+    let asset = get_state_asset(context.collection, &full_path, rule);
 
     match asset {
         None => Ok(None),
         Some(asset) => {
-            if !assert_permission(&rule.read, asset.key.owner, caller, controllers) {
+            if !assert_permission(
+                &rule.read,
+                asset.key.owner,
+                context.caller,
+                context.controllers,
+            ) {
                 return Ok(None);
             }
 
@@ -293,49 +313,35 @@ fn assert_assets_collection_empty_impl(
 }
 
 fn secure_list_assets_impl(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
+    context: &StoreContext,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    let rule = get_state_rule(collection)?;
+    let rule = get_state_rule(context.collection)?;
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            let assets = collect_assets_heap(collection, &state_ref.heap.storage.assets);
-            Ok(list_assets_impl(
-                &assets,
-                caller,
-                controllers,
-                collection,
-                &rule,
-                filters,
-            ))
+            let assets = collect_assets_heap(context.collection, &state_ref.heap.storage.assets);
+            Ok(list_assets_impl(&assets, context, &rule, filters))
         }),
         Memory::Stable => STATE.with(|state| {
-            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
+            let stable = get_assets_stable(context.collection, &state.borrow().stable.assets);
             let assets: Vec<(&FullPath, &Asset)> = stable
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
-            Ok(list_assets_impl(
-                &assets,
-                caller,
-                controllers,
-                collection,
-                &rule,
-                filters,
-            ))
+            Ok(list_assets_impl(&assets, context, &rule, filters))
         }),
     }
 }
 
 fn list_assets_impl(
     assets: &[(&FullPath, &Asset)],
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
+    &StoreContext {
+        caller,
+        controllers,
+        collection,
+    }: &StoreContext,
     rule: &Rule,
     filters: &ListParams,
 ) -> ListResults<AssetNoContent> {
@@ -364,43 +370,44 @@ fn list_assets_impl(
 }
 
 fn secure_delete_asset_impl(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
+    context: &StoreContext,
     full_path: FullPath,
     config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
-    let rule = get_state_rule(collection)?;
+    let rule = get_state_rule(context.collection)?;
 
-    delete_asset_impl(caller, controllers, full_path, collection, &rule, config)
+    delete_asset_impl(context, full_path, &rule, config)
 }
 
 fn delete_asset_impl(
-    caller: Principal,
-    controllers: &Controllers,
+    context: &StoreContext,
     full_path: FullPath,
-    collection: &CollectionKey,
     rule: &Rule,
     config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
-    let asset = get_state_asset(collection, &full_path, rule);
+    let asset = get_state_asset(context.collection, &full_path, rule);
 
     match asset {
         None => Err(ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
-            if !assert_permission(&rule.write, asset.key.owner, caller, controllers) {
+            if !assert_permission(
+                &rule.write,
+                asset.key.owner,
+                context.caller,
+                context.controllers,
+            ) {
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
-            invoke_assert_delete_asset(&caller, &asset)?;
+            invoke_assert_delete_asset(&context.caller, &asset)?;
 
-            let deleted = delete_state_asset(collection, &full_path, rule);
+            let deleted = delete_state_asset(context.collection, &full_path, rule);
             delete_runtime_certified_asset(&asset);
 
             // We just removed the rewrite for /404.html in the certification tree therefore if /index.html exists, we want to reintroduce it as rewrite
             if *full_path == *ROOT_404_HTML {
                 if let Some(index_asset) =
-                    get_state_asset(collection, &ROOT_INDEX_HTML.to_string(), rule)
+                    get_state_asset(context.collection, &ROOT_INDEX_HTML.to_string(), rule)
                 {
                     update_runtime_certified_asset(&index_asset, config);
                 }

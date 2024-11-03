@@ -64,6 +64,17 @@ pub mod interface {
     }
 }
 
+pub mod store {
+    use junobuild_collections::types::core::CollectionKey;
+    use junobuild_shared::types::state::{Controllers, UserId};
+
+    pub struct StoreContext<'a> {
+        pub caller: UserId,
+        pub controllers: &'a Controllers,
+        pub collection: &'a CollectionKey,
+    }
+}
+
 pub mod hooks {
     use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
     use crate::Doc;

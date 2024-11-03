@@ -11,6 +11,7 @@ use junobuild_shared::controllers::{
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
+use semver::Version;
 use std::cmp::min;
 use std::collections::HashSet;
 
@@ -222,5 +223,8 @@ pub fn get_latest_satellite_version() -> Option<ReleaseVersion> {
 }
 
 fn get_latest_version(versions: &HashSet<ReleaseVersion>) -> Option<ReleaseVersion> {
-    versions.iter().max().cloned()
+    versions
+        .iter()
+        .max_by_key(|v| Version::parse(v).ok())
+        .cloned()
 }

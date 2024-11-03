@@ -57,12 +57,9 @@
 	});
 
 	// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
-	const initMemory = (rule: Rule | undefined): MemoryText => {
-		return memoryToText(
-			fromNullable(rule?.memory ?? []) ?? (isNullish(rule) ? MemoryStable : MemoryHeap)
-		);
-	};
-	let memory: MemoryText = $state(initMemory(rule));
+	const initMemory = (rule: Rule | undefined): MemoryText =>
+		memoryToText(fromNullable(rule?.memory ?? []) ?? (isNullish(rule) ? MemoryStable : MemoryHeap));
+	let memory: MemoryText = $state(memoryToText(MemoryStable));
 	$effect(() => {
 		memory = initMemory(rule);
 	});

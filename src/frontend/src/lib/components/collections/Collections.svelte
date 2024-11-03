@@ -62,7 +62,7 @@
 		}
 
 		.action {
-			display: flex;
+			display: inline-block;
 		}
 	}
 

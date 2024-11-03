@@ -1,5 +1,5 @@
 use crate::controllers::store::get_controllers;
-use crate::db::msg::ERROR_CANNOT_WRITE;
+use crate::db::assert::{assert_delete_doc, assert_set_doc};
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
     delete_doc as delete_state_doc, get_config, get_doc as get_state_doc, get_docs_heap,
@@ -9,23 +9,18 @@ use crate::db::state::{
 };
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
-use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
+use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::db::utils::filter_values;
-use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
 use crate::memory::STATE;
-use crate::rules::assert_stores::assert_user_collection_caller_key;
 use candid::Principal;
-use junobuild_collections::assert_stores::{
-    assert_create_permission, assert_permission, public_permission,
-};
+use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::msg::msg_db_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
-use junobuild_collections::types::rules::{Memory, Permission, Rule};
-use junobuild_shared::assert::{assert_description_length, assert_max_memory_size, assert_version};
+use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::list::list_values;
 use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
-use junobuild_shared::types::state::{Controllers, UserId, Version};
+use junobuild_shared::types::state::{Controllers, UserId};
 
 /// Collection
 
@@ -186,26 +181,15 @@ fn set_doc_impl(
 ) -> Result<DocUpsert, String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
-    assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
-
-    assert_memory_size(config)?;
-
-    assert_write_version(&current_doc, value.version)?;
-
-    assert_description_length(&value.description)?;
-
-    assert_user_collection_caller_key(caller, &collection, &key)?;
-
-    invoke_assert_set_doc(
-        &caller,
-        &DocContext {
-            key: key.clone(),
-            collection: collection.clone(),
-            data: DocAssertSet {
-                current: current_doc.clone(),
-                proposed: value.clone(),
-            },
-        },
+    assert_set_doc(
+        caller,
+        controllers,
+        config,
+        &collection,
+        &key,
+        &value,
+        rule,
+        &current_doc,
     )?;
 
     let doc: Doc = Doc::prepare(caller, &current_doc, value);
@@ -371,73 +355,17 @@ fn delete_doc_impl(
 ) -> Result<Option<Doc>, String> {
     let current_doc = get_state_doc(&collection, &key, rule)?;
 
-    assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
-
-    assert_write_version(&current_doc, value.version)?;
-
-    invoke_assert_delete_doc(
-        &caller,
-        &DocContext {
-            key: key.clone(),
-            collection: collection.clone(),
-            data: DocAssertDelete {
-                current: current_doc.clone(),
-                proposed: value.clone(),
-            },
-        },
+    assert_delete_doc(
+        caller,
+        controllers,
+        &collection,
+        &key,
+        &value,
+        rule,
+        &current_doc,
     )?;
 
     delete_state_doc(&collection, &key, rule)
-}
-
-fn assert_memory_size(config: &Option<DbConfig>) -> Result<(), String> {
-    match config {
-        None => Ok(()),
-        Some(config) => assert_max_memory_size(&config.max_memory_size),
-    }
-}
-
-fn assert_write_permission(
-    caller: Principal,
-    controllers: &Controllers,
-    current_doc: &Option<Doc>,
-    rule: &Permission,
-) -> Result<(), String> {
-    // For existing collection and document, check user editing is the caller
-    if !public_permission(rule) {
-        match current_doc {
-            None => {
-                if !assert_create_permission(rule, caller, controllers) {
-                    return Err(ERROR_CANNOT_WRITE.to_string());
-                }
-            }
-            Some(current_doc) => {
-                if !assert_permission(rule, current_doc.owner, caller, controllers) {
-                    return Err(ERROR_CANNOT_WRITE.to_string());
-                }
-            }
-        }
-    }
-
-    Ok(())
-}
-
-fn assert_write_version(
-    current_doc: &Option<Doc>,
-    user_version: Option<Version>,
-) -> Result<(), String> {
-    // Validate timestamp
-    match current_doc.clone() {
-        None => (),
-        Some(current_doc) => match assert_version(user_version, current_doc.version) {
-            Ok(_) => (),
-            Err(e) => {
-                return Err(e);
-            }
-        },
-    }
-
-    Ok(())
 }
 
 /// Delete multiple documents from a collection's store.

@@ -24,11 +24,11 @@ pub fn assert_set_doc(
     rule: &Rule,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
-    assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
+    assert_write_permission(caller, controllers, current_doc, &rule.write)?;
 
     assert_memory_size(config)?;
 
-    assert_write_version(&current_doc, value.version)?;
+    assert_write_version(current_doc, value.version)?;
 
     assert_description_length(&value.description)?;
 
@@ -58,9 +58,9 @@ pub fn assert_delete_doc(
     rule: &Rule,
     current_doc: &Option<Doc>,
 ) -> Result<(), String> {
-    assert_write_permission(caller, controllers, &current_doc, &rule.write)?;
+    assert_write_permission(caller, controllers, current_doc, &rule.write)?;
 
-    assert_write_version(&current_doc, value.version)?;
+    assert_write_version(current_doc, value.version)?;
 
     invoke_assert_delete_doc(
         &caller,

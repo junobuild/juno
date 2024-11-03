@@ -34,20 +34,38 @@
 
 	let typeDatastore = $derived('Db' in type);
 
-	let collection: string = $state($store.rule?.[0] ?? '');
+	let collection: string = $state('');
+	$effect(() => {
+		collection = $store.rule?.[0] ?? '';
+	});
 
-	let rule: Rule | undefined = $state($store.rule?.[1] ?? undefined);
+	let rule: Rule | undefined = $state(undefined);
+	$effect(() => {
+		rule = $store.rule?.[1] ?? undefined;
+	});
 
 	let mode: 'new' | 'edit' = $derived(nonNullish(rule) ? 'edit' : 'new');
 
-	let read: PermissionText = $state(permissionToText(rule?.read ?? PermissionManaged));
+	let read: PermissionText = $state(permissionToText(PermissionManaged));
+	$effect(() => {
+		read = permissionToText(rule?.read ?? PermissionManaged);
+	});
 
-	let write: PermissionText = $state(permissionToText(rule?.write ?? PermissionManaged));
+	let write: PermissionText = $state(permissionToText(PermissionManaged));
+	$effect(() => {
+		write = permissionToText(rule?.write ?? PermissionManaged);
+	});
 
 	// Before the introduction of the stable memory, the memory used was "Heap". That's why we fallback for display purpose on Stable only if new to support old satellites
-	let memory: MemoryText = $state(
-		memoryToText(fromNullable(rule?.memory ?? []) ?? (isNullish(rule) ? MemoryStable : MemoryHeap))
-	);
+	const initMemory = (rule: Rule | undefined): MemoryText => {
+		return memoryToText(
+			fromNullable(rule?.memory ?? []) ?? (isNullish(rule) ? MemoryStable : MemoryHeap)
+		);
+	};
+	let memory: MemoryText = $state(initMemory(rule));
+	$effect(() => {
+		memory = initMemory(rule);
+	});
 
 	let currentImmutable: boolean | undefined = $state();
 	let immutable: boolean | undefined = $state();
@@ -64,7 +82,10 @@
 	};
 	$effect(() => initMaxSize(rule?.max_size ?? []));
 
-	let maxCapacity: number | undefined = $state(fromNullable(rule?.max_capacity ?? []));
+	let maxCapacity: number | undefined = $state(undefined);
+	$effect(() => {
+		maxCapacity = fromNullable(rule?.max_capacity ?? []);
+	});
 
 	const dispatch = createEventDispatcher();
 

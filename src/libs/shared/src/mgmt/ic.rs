@@ -4,7 +4,7 @@ use crate::types::interface::DepositCyclesArgs;
 use crate::types::state::{
     SegmentCanisterSettings, SegmentCanisterStatus, SegmentStatus, SegmentStatusResult,
 };
-use candid::{Principal};
+use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::api::management_canister::main::{
     canister_status as ic_canister_status, create_canister, delete_canister,

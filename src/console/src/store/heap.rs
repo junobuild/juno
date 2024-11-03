@@ -14,7 +14,6 @@ use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
 use semver::Version;
-use std::cmp::min;
 use std::collections::HashSet;
 
 /// Mission control centers

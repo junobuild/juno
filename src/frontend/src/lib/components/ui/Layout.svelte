@@ -107,12 +107,12 @@
 		@include text.truncate;
 		max-width: 100%;
 
-		padding: 0 var(--padding-2x) 0 0;
-		margin: var(--padding-3x) 0;
+		padding: var(--padding-3x) 0 var(--padding-2x);
+		margin: 0;
 
 		&.space {
 			@include media.min-width(medium) {
-				margin: var(--padding-6x) 0 var(--padding-3x);
+				padding: var(--padding-6x) 0 var(--padding-2x);
 			}
 		}
 	}

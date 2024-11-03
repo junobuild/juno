@@ -5,6 +5,7 @@ pub mod state {
     use candid::{CandidType, Principal};
     use ic_ledger_types::{BlockIndex, Tokens};
     use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::rate::types::Rate;
     use junobuild_shared::types::core::Hash;
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Controllers, Timestamp, Version};
@@ -85,24 +86,6 @@ pub mod state {
         pub mission_controls: Rate,
         pub satellites: Rate,
         pub orbiters: Rate,
-    }
-
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct Rate {
-        pub tokens: RateTokens,
-        pub config: RateConfig,
-    }
-
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct RateTokens {
-        pub tokens: u64,
-        pub updated_at: Timestamp,
-    }
-
-    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
-    pub struct RateConfig {
-        pub time_per_token_ns: u64,
-        pub max_tokens: u64,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

@@ -34,6 +34,7 @@ impl Rule {
             created_at,
             updated_at,
             version: Some(version),
+            rate_config: user_rule.rate_config.clone(),
         }
     }
 }

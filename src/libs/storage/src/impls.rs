@@ -47,7 +47,8 @@ impl StorageHeapState {
                             max_capacity: rule.max_capacity,
                             created_at: now,
                             updated_at: now,
-                            version: None,
+                            version: rule.version,
+                            rate_config: rule.rate_config,
                         },
                     )
                 })

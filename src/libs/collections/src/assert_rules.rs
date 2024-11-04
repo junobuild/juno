@@ -87,7 +87,7 @@ pub fn assert_write_permission(
         },
     }
 
-    if collection.starts_with(SYS_COLLECTION_PREFIX) {
+    if current_rule.is_none() && collection.starts_with(SYS_COLLECTION_PREFIX) {
         return Err(format!(
             "Collection starts with {}, a reserved prefix",
             SYS_COLLECTION_PREFIX

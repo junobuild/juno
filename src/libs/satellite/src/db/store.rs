@@ -3,8 +3,8 @@ use crate::db::assert::{assert_delete_doc, assert_set_doc};
 use crate::db::state::{
     count_docs_heap, count_docs_stable, delete_collection as delete_state_collection,
     delete_doc as delete_state_doc, get_config, get_doc as get_state_doc, get_docs_heap,
-    get_docs_stable, get_rule as get_state_rule, init_collection as init_state_collection,
-    insert_config, insert_doc as insert_state_doc,
+    get_docs_stable, get_rule as get_state_rule, increment_and_assert_rate,
+    init_collection as init_state_collection, insert_config, insert_doc as insert_state_doc,
     is_collection_empty as is_state_collection_empty,
 };
 use crate::db::types::config::DbConfig;
@@ -173,6 +173,8 @@ fn set_doc_impl(
     let current_doc = get_state_doc(context.collection, &key, rule)?;
 
     assert_set_doc(context, config, &key, &value, rule, &current_doc)?;
+
+    increment_and_assert_rate(context.collection)?;
 
     let doc: Doc = Doc::prepare(context.caller, &current_doc, value);
 

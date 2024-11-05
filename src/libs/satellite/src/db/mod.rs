@@ -1,7 +1,7 @@
 mod assert;
 pub mod impls;
 mod msg;
-mod rates;
+mod quota;
 mod state;
 pub mod store;
 pub mod types;

@@ -1,3 +1,4 @@
+use crate::db::quota::increment_and_assert_doc_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{Collection, DbHeap, DbHeapState, DbStable, Doc, StableKey};
 use crate::memory::STATE;
@@ -364,4 +365,14 @@ pub fn insert_config(config: &DbConfig) {
 
 fn insert_config_impl(config: &DbConfig, state: &mut DbHeapState) {
     state.config = Some(config.clone());
+}
+
+///
+/// Rates
+///
+
+pub fn increment_and_assert_rate(collection: &CollectionKey) -> Result<(), String> {
+    STATE.with(|state| {
+        increment_and_assert_doc_rate(collection, &mut state.borrow_mut().heap.db.rates)
+    })
 }

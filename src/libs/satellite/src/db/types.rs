@@ -5,6 +5,7 @@ pub mod state {
     use ic_stable_structures::StableBTreeMap;
     use junobuild_collections::types::core::CollectionKey;
     use junobuild_collections::types::rules::Rules;
+    use junobuild_shared::rate::types::Rate;
     use junobuild_shared::types::core::{Blob, Key};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Timestamp, UserId, Version};
@@ -22,11 +23,14 @@ pub mod state {
         pub key: Key,
     }
 
+    pub type Rates = HashMap<CollectionKey, Rate>;
+
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct DbHeapState {
         pub db: DbHeap,
         pub rules: Rules,
         pub config: Option<DbConfig>,
+        pub rates: Option<Rates>,
     }
 
     /// Represents a document in a collection's store.

@@ -4,15 +4,13 @@ use crate::types::core::CommitProposalError;
 use crate::types::ledger::Payment;
 use crate::types::state::{
     Fee, Fees, HeapState, MissionControl, Proposal, ProposalKey, ProposalStatus, ProposalType,
-    Rates, State,
+    State,
 };
 use candid::Principal;
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
-use junobuild_shared::rate::types::{Rate, RateTokens};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::Hash;
 use junobuild_shared::types::state::Version;
@@ -24,32 +22,6 @@ impl Default for State {
         Self {
             stable: init_stable_state(),
             heap: HeapState::default(),
-        }
-    }
-}
-
-impl Default for Rates {
-    fn default() -> Self {
-        let now = time();
-
-        let tokens: RateTokens = RateTokens {
-            tokens: 1,
-            updated_at: now,
-        };
-
-        Rates {
-            satellites: Rate {
-                config: DEFAULT_RATE_CONFIG,
-                tokens: tokens.clone(),
-            },
-            mission_controls: Rate {
-                config: DEFAULT_RATE_CONFIG,
-                tokens: tokens.clone(),
-            },
-            orbiters: Rate {
-                config: DEFAULT_RATE_CONFIG,
-                tokens,
-            },
         }
     }
 }

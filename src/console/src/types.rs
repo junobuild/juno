@@ -81,7 +81,7 @@ pub mod state {
         pub user_id: Option<UserId>,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Rates {
         pub mission_controls: Rate,
         pub satellites: Rate,

@@ -1,4 +1,5 @@
-use crate::db::types::state::{DbHeapState, Doc, StableKey};
+use crate::db::rates::init_rates;
+use crate::db::types::state::{DbHeapState, Doc, Rates, StableKey};
 use crate::SetDoc;
 use candid::Principal;
 use ic_cdk::api::time;
@@ -40,6 +41,7 @@ impl Default for DbHeapState {
                 )
             })),
             config: None,
+            rates: Some(init_rates()),
         }
     }
 }

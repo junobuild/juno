@@ -16,9 +16,11 @@ pub const DEFAULT_DB_LOG_RULE: SetRule = SetRule {
     version: None,
 };
 
+pub const USER_COLLECTION_KEY: &str = "#user";
+
 pub const DEFAULT_DB_COLLECTIONS: [(&str, SetRule); 2] = [
     (
-        "#user",
+        USER_COLLECTION_KEY,
         SetRule {
             read: Managed,
             write: Managed,

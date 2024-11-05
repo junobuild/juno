@@ -8,13 +8,13 @@ pub struct Rate {
     pub config: RateConfig,
 }
 
-#[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+#[derive(CandidType, Serialize, Deserialize, Clone)]
 pub struct RateTokens {
     pub tokens: u64,
     pub updated_at: Timestamp,
 }
 
-#[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+#[derive(CandidType, Serialize, Deserialize, Clone)]
 pub struct RateConfig {
     pub time_per_token_ns: u64,
     pub max_tokens: u64,

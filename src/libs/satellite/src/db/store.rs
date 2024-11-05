@@ -343,6 +343,8 @@ fn delete_doc_impl(
 
     assert_delete_doc(context, &key, &value, rule, &current_doc)?;
 
+    increment_and_assert_rate(context.collection)?;
+
     delete_state_doc(context.collection, &key, rule)
 }
 

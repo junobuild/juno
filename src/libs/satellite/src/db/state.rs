@@ -1,4 +1,4 @@
-use crate::db::quota::{increment_and_assert_doc_rate, update_doc_rate_config};
+use crate::db::rates::{increment_and_assert_doc_rate, update_doc_rate_config};
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{Collection, DbHeap, DbHeapState, DbStable, Doc, StableKey};
 use crate::memory::STATE;

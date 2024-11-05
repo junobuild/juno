@@ -1,5 +1,5 @@
 use crate::db::quota::init_rates;
-use crate::db::types::state::{DbHeapState, Doc, Rates, StableKey};
+use crate::db::types::state::{DbHeapState, Doc, StableKey};
 use crate::SetDoc;
 use candid::Principal;
 use ic_cdk::api::time;

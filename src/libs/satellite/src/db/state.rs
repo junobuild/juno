@@ -1,4 +1,4 @@
-use crate::db::quota::increment_and_assert_doc_rate;
+use crate::db::quota::{increment_and_assert_doc_rate, update_doc_rate_config};
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{Collection, DbHeap, DbHeapState, DbStable, Doc, StableKey};
 use crate::memory::STATE;
@@ -9,6 +9,7 @@ use junobuild_collections::utils::range_collection_end;
 use junobuild_shared::types::core::Key;
 use std::collections::BTreeMap;
 use std::ops::RangeBounds;
+use junobuild_shared::rate::types::{RateConfig};
 
 /// Collections
 
@@ -375,4 +376,8 @@ pub fn increment_and_assert_rate(collection: &CollectionKey) -> Result<(), Strin
     STATE.with(|state| {
         increment_and_assert_doc_rate(collection, &mut state.borrow_mut().heap.db.rates)
     })
+}
+
+pub fn update_rate_config(collection: &CollectionKey, config: &RateConfig) {
+    STATE.with(|state| update_doc_rate_config(collection, config, &mut state.borrow_mut().heap.db))
 }

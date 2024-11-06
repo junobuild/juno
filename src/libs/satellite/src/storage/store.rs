@@ -32,6 +32,7 @@ use junobuild_storage::heap_utils::{
 use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, UPLOAD_NOT_ALLOWED};
 use junobuild_storage::runtime::{
     delete_certified_asset as delete_runtime_certified_asset,
+    increment_and_assert_rate as increment_and_assert_rate_runtime,
     update_certified_asset as update_runtime_certified_asset,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
@@ -399,6 +400,8 @@ fn delete_asset_impl(
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
+            increment_and_assert_rate_runtime(&context.collection, &rule.rate_config)?;
+
             invoke_assert_delete_asset(&context.caller, &asset)?;
 
             let deleted = delete_state_asset(context.collection, &full_path, rule);
@@ -520,7 +523,7 @@ fn secure_create_batch_impl(
         return Err(UPLOAD_NOT_ALLOWED.to_string());
     }
 
-    create_batch(caller, controllers, config, init, None)
+    create_batch(caller, controllers, config, init, None, &StorageState)
 }
 
 ///

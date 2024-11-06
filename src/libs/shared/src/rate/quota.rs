@@ -2,7 +2,10 @@ use crate::rate::types::{RateConfig, RateTokens};
 use ic_cdk::api::time;
 use std::cmp::min;
 
-pub fn increment_and_assert_rate(config: &RateConfig, tokens: &mut RateTokens) -> Result<(), String> {
+pub fn increment_and_assert_rate(
+    config: &RateConfig,
+    tokens: &mut RateTokens,
+) -> Result<(), String> {
     let new_tokens = (time() - tokens.updated_at) / config.time_per_token_ns;
     if new_tokens > 0 {
         // The number of tokens is capped otherwise tokens might accumulate

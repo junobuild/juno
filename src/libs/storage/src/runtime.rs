@@ -3,10 +3,13 @@ use crate::certification::types::certified::CertifiedAssetHashes;
 use crate::memory::STATE;
 use crate::types::config::StorageConfig;
 use crate::types::runtime_state::{
-    BatchId, Batches, ChunkId, Chunks, RuntimeState, StorageRuntimeState,
+    BatchId, Batches, ChunkId, Chunks, RateCollectionTokens, RuntimeState, StorageRuntimeState,
 };
 use crate::types::store::{Asset, Batch, BatchExpiry, Chunk};
 use ic_cdk::api::time;
+use junobuild_collections::types::core::CollectionKey;
+use junobuild_shared::rate::quota::increment_and_assert_rate as increment_and_assert_rate_shared;
+use junobuild_shared::rate::types::{RateConfig, RateTokens};
 use std::collections::HashMap;
 
 /// Certified assets
@@ -161,4 +164,40 @@ fn clear_expired_chunks_impl(state: &mut StorageRuntimeState) {
 
 fn insert_chunk_impl(chunk_id: &ChunkId, chunk: Chunk, chunks: &mut Chunks) {
     chunks.insert(*chunk_id, chunk);
+}
+
+///
+/// Rates
+///
+
+pub fn increment_and_assert_rate(
+    collection: &CollectionKey,
+    config: &Option<RateConfig>,
+) -> Result<(), String> {
+    STATE.with(|state| {
+        increment_and_assert_rate_impl(collection, config, &mut state.borrow_mut().runtime.storage)
+    })
+}
+
+fn increment_and_assert_rate_impl(
+    collection: &CollectionKey,
+    config: &Option<RateConfig>,
+    state: &mut StorageRuntimeState,
+) -> Result<(), String> {
+    let config = match config {
+        Some(config) => config,
+        None => return Ok(()),
+    };
+
+    let rate_tokens = state
+        .rate_tokens
+        .get_or_insert_with(RateCollectionTokens::default);
+
+    if let Some(tokens) = rate_tokens.get_mut(collection) {
+        increment_and_assert_rate_shared(config, tokens)?;
+    } else {
+        rate_tokens.insert(collection.clone(), RateTokens::default());
+    }
+
+    Ok(())
 }

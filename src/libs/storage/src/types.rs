@@ -29,6 +29,8 @@ pub mod state {
 pub mod runtime_state {
     use crate::certification::types::certified::CertifiedAssetHashes;
     use crate::types::store::{Batch, Chunk};
+    use junobuild_collections::types::core::CollectionKey;
+    use junobuild_shared::rate::types::RateTokens;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 
@@ -50,11 +52,14 @@ pub mod runtime_state {
         pub storage: StorageRuntimeState,
     }
 
+    pub type RateCollectionTokens = HashMap<CollectionKey, RateTokens>;
+
     #[derive(Default, Clone)]
     pub struct StorageRuntimeState {
         pub batches: Batches,
         pub chunks: Chunks,
         pub asset_hashes: CertifiedAssetHashes,
+        pub rate_tokens: Option<RateCollectionTokens>,
     }
 }
 

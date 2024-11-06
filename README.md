@@ -12,11 +12,22 @@
 
 </div>
 
+[Juno] is a blockchainless (or zero-knowledge) development platform for creating innovative applications.
+
+- 🔑 Authentication [[Docs](https://juno.build/docs/build/authentication)]
+- 📦 Datastore [[Docs](https://juno.build/docs/build/datastore)]
+- 📂 File Storage [[Docs](https://juno.build/docs/build/storage)]
+- 🌐 Hosting [[Docs](https://juno.build/docs/build/hosting)]
+- ⚙️ Functions [[Docs](https://juno.build/docs/build/functions)]
+- 📊 Analytics [[Docs](https://juno.build/docs/build/analytics)]
+
+![A screenshot of the Juno Console](https://github.com/junobuild/juno/raw/main/src/frontend/static/images/console_screenshot.png)
+
 ## 🚀 Introduction
 
-[Juno] is a blockchain-as-a-service (“blockchainless”) platform that empowers developers to build decentralized apps efficiently. Similar to Web2 cloud service platforms but with significant improvements, it offers a comprehensive toolkit to scaffold secure and efficient projects running on the blockchain.
+Juno is a blockchain-as-a-service (“blockchainless”) platform that empowers developers to build decentralized apps efficiently. Similar to Web2 cloud service platforms but with significant improvements, it offers a comprehensive toolkit to scaffold secure and efficient projects running on the blockchain.
 
-With Juno, developers can integrate features such as authentication, data and file storage, hosting, serverless functions, or on-chain analytics provided by smart contracts. This allows them to develop projects using familiar patterns while maintaining complete control over their work.
+With Juno, developers can integrate features such as authentication, data and file storage, hosting, serverless functions, or on-chain analytics provided by smart contracts. This allows them to scaffold projects using familiar patterns while maintaining complete control over their work.
 
 In short, Juno is the Google Firebase alternative for Web3 ⚡️🤯.
 
@@ -24,7 +35,8 @@ In short, Juno is the Google Firebase alternative for Web3 ⚡️🤯.
 
 Here are some useful links:
 
-- Looking to get started? Check out the [documentation](https://juno.build).
+- Looking to get started? Check out the [Guides & Examples](https://juno.build/docs/category/guides-and-examples) for step-by-step tutorials and sample code.
+- Explore the full [documentation](https://juno.build) for in-depth details on using and configuring Juno.
 - See the [HACKING](HACKING.md) document for instructions on running and developing Juno locally.
 - Have a look at the [LICENSE](LICENSE.md) for information about licensing and limitation.
 

@@ -2,17 +2,14 @@ use crate::constants::{ORBITER_CREATION_FEE_ICP, SATELLITE_CREATION_FEE_ICP};
 use crate::memory::init_stable_state;
 use crate::types::core::CommitProposalError;
 use crate::types::ledger::Payment;
-use crate::types::state::{
-    Fee, Fees, HeapState, MissionControl, Proposal, ProposalKey, ProposalStatus, ProposalType,
-    Rates, State,
-};
+use crate::types::state::{Fee, Fees, HeapState, MissionControl, Proposal, ProposalKey, ProposalStatus, ProposalType, Rate, Rates, State};
 use candid::Principal;
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::constants::INITIAL_VERSION;
 use junobuild_shared::rate::constants::DEFAULT_RATE_CONFIG;
-use junobuild_shared::rate::types::{Rate, RateTokens};
+use junobuild_shared::rate::types::{RateTokens};
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::core::Hash;
 use junobuild_shared::types::state::Version;

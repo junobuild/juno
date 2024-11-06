@@ -21,7 +21,11 @@
 - ⚙️ Functions [[Docs](https://juno.build/docs/build/functions)]
 - 📊 Analytics [[Docs](https://juno.build/docs/build/analytics)]
 
-![A screenshot of the Juno Console](https://github.com/junobuild/juno/raw/main/src/frontend/static/images/console_screenshot.png)
+<br />
+
+![A screenshot of the Juno Console](./src/frontend/static/images/console_screenshot.png)
+
+<br />
 
 ## 🚀 Introduction
 

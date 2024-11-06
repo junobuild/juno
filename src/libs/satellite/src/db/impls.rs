@@ -41,7 +41,6 @@ impl Default for DbHeapState {
                 )
             })),
             config: None,
-            rate_tokens: None,
         }
     }
 }

@@ -8,6 +8,7 @@ use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_collections::utils::range_collection_end;
 use junobuild_shared::rate::types::{Rate, RateConfig, RateTokens};
 use junobuild_shared::types::core::Key;
+use junobuild_shared::rate::quota::increment_and_assert_rate as increment_and_assert_rate_shared;
 use std::collections::BTreeMap;
 use std::ops::RangeBounds;
 
@@ -388,7 +389,7 @@ fn increment_and_assert_rate_impl(
 ) -> Result<(), String> {
     if let Some(rates) = rates {
         if let Some(rate) = rates.get_mut(collection) {
-            junobuild_shared::rate::quota::increment_and_assert_rate(rate)?;
+            increment_and_assert_rate_shared(rate)?;
         }
     }
 

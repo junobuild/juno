@@ -1,15 +1,15 @@
-use crate::db::rates::{increment_and_assert_doc_rate, update_doc_rate_config};
+use crate::db::rates::init_rates;
 use crate::db::types::config::DbConfig;
-use crate::db::types::state::{Collection, DbHeap, DbHeapState, DbStable, Doc, StableKey};
+use crate::db::types::state::{Collection, DbHeap, DbHeapState, DbStable, Doc, Rates, StableKey};
 use crate::memory::STATE;
 use junobuild_collections::msg::msg_db_collection_not_found;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_collections::utils::range_collection_end;
+use junobuild_shared::rate::types::{Rate, RateConfig, RateTokens};
 use junobuild_shared::types::core::Key;
 use std::collections::BTreeMap;
 use std::ops::RangeBounds;
-use junobuild_shared::rate::types::{RateConfig};
 
 /// Collections
 
@@ -374,10 +374,39 @@ fn insert_config_impl(config: &DbConfig, state: &mut DbHeapState) {
 
 pub fn increment_and_assert_rate(collection: &CollectionKey) -> Result<(), String> {
     STATE.with(|state| {
-        increment_and_assert_doc_rate(collection, &mut state.borrow_mut().heap.db.rates)
+        increment_and_assert_rate_impl(collection, &mut state.borrow_mut().heap.db.rates)
     })
 }
 
 pub fn update_rate_config(collection: &CollectionKey, config: &RateConfig) {
-    STATE.with(|state| update_doc_rate_config(collection, config, &mut state.borrow_mut().heap.db))
+    STATE.with(|state| update_rate_config_impl(collection, config, &mut state.borrow_mut().heap.db))
+}
+
+fn increment_and_assert_rate_impl(
+    collection: &CollectionKey,
+    rates: &mut Option<Rates>,
+) -> Result<(), String> {
+    if let Some(rates) = rates {
+        if let Some(rate) = rates.get_mut(collection) {
+            junobuild_shared::rate::quota::increment_and_assert_rate(rate)?;
+        }
+    }
+
+    Ok(())
+}
+
+fn update_rate_config_impl(
+    collection: &CollectionKey,
+    config: &RateConfig,
+    state: &mut DbHeapState,
+) {
+    let new_rate = Rate {
+        config: config.clone(),
+        tokens: RateTokens::default(),
+    };
+
+    state
+        .rates
+        .get_or_insert_with(init_rates)
+        .insert(collection.to_string(), new_rate);
 }

@@ -8,6 +8,14 @@ use junobuild_collections::types::rules::{Memory, Rule};
 
 /// Rules
 
+pub fn get_rule_db(collection: &CollectionKey) -> Option<Rule> {
+    STATE.with(|state| state.borrow().heap.db.rules.get(collection).cloned())
+}
+
+pub fn get_rule_storage(collection: &CollectionKey) -> Option<Rule> {
+    STATE.with(|state| state.borrow().heap.storage.rules.get(collection).cloned())
+}
+
 pub fn get_rules_db() -> Vec<(CollectionKey, Rule)> {
     STATE.with(|state| filter_rules(&state.borrow().heap.db.rules))
 }

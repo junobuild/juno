@@ -223,6 +223,7 @@ service : () -> {
   get_many_docs : (vec record { text; text }) -> (
       vec record { text; opt Doc },
     ) query;
+  get_rule : (RulesType, text) -> (opt Rule) query;
   get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (

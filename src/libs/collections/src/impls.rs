@@ -18,7 +18,7 @@ impl Rule {
     ) -> Result<Self, String> {
         if collection.starts_with(SYS_COLLECTION_PREFIX) {
             return Self::prepare_sys_rule(current_rule, user_rule)
-                .map_err(|_| format!("Collection {} is reserved", collection));
+                .map_err(|_| format!("Collection {} is reserved.", collection));
         }
 
         Ok(Self::prepare_user_rule(current_rule, user_rule))
@@ -27,17 +27,19 @@ impl Rule {
     fn initialize_common_fields(current_rule: &Option<&Rule>) -> (Timestamp, Version, Timestamp) {
         let now = time();
 
-        let created_at = match current_rule {
+        let created_at: Timestamp = match current_rule {
             None => now,
-            Some(rule) => rule.created_at,
+            Some(current_rule) => current_rule.created_at,
         };
 
-        let version = match current_rule {
+        let version: Version = match current_rule {
             None => INITIAL_VERSION,
-            Some(rule) => rule.version.unwrap_or_default() + 1,
+            Some(current_rule) => current_rule.version.unwrap_or_default() + 1,
         };
 
-        (created_at, version, now)
+        let updated_at: Timestamp = now;
+
+        (created_at, version, updated_at)
     }
 
     fn prepare_user_rule(current_rule: &Option<&Rule>, user_rule: &SetRule) -> Self {

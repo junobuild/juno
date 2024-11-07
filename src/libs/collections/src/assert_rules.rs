@@ -71,8 +71,7 @@ pub fn assert_mutable_permissions(
     Ok(())
 }
 
-pub fn assert_write_permission(
-    collection: &CollectionKey,
+pub fn assert_write_version(
     current_rule: Option<&Rule>,
     version: &Option<Version>,
 ) -> Result<(), String> {
@@ -87,9 +86,30 @@ pub fn assert_write_permission(
         },
     }
 
+    Ok(())
+}
+
+pub fn assert_set_permission(
+    collection: &CollectionKey,
+    current_rule: Option<&Rule>,
+) -> Result<(), String> {
+    // System collections cannot be created with a setter call but can be edited under certain circumstances.
     if current_rule.is_none() && collection.starts_with(SYS_COLLECTION_PREFIX) {
         return Err(format!(
             "Collection starts with {}, a reserved prefix",
+            SYS_COLLECTION_PREFIX
+        ));
+    }
+
+    Ok(())
+}
+
+pub fn assert_delete_permission(
+    collection: &CollectionKey,
+) -> Result<(), String> {
+    if collection.starts_with(SYS_COLLECTION_PREFIX) {
+        return Err(format!(
+            "Collection starting with {} cannot be deleted",
             SYS_COLLECTION_PREFIX
         ));
     }

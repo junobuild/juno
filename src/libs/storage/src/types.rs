@@ -29,7 +29,7 @@ pub mod state {
 pub mod runtime_state {
     use crate::certification::types::certified::CertifiedAssetHashes;
     use crate::types::store::{Batch, Chunk};
-    use junobuild_shared::rate::types::{RateTokenStore};
+    use junobuild_shared::rate::types::RateTokenStore;
     use serde::{Deserialize, Serialize};
     use std::collections::HashMap;
 

@@ -5,7 +5,7 @@ pub mod state {
     use ic_stable_structures::StableBTreeMap;
     use junobuild_collections::types::core::CollectionKey;
     use junobuild_collections::types::rules::Rules;
-    use junobuild_shared::rate::types::{RateTokenStore};
+    use junobuild_shared::rate::types::RateTokenStore;
     use junobuild_shared::types::core::{Blob, Key};
     use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{Timestamp, UserId, Version};

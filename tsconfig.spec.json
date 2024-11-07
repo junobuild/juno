@@ -1,0 +1,8 @@
+{
+	"extends": "./tsconfig.json",
+	"compilerOptions": {
+		"types": ["vitest/globals", "@types/wicg-file-system-access"]
+	},
+	"exclude": [],
+	"include": ["**/*.ts", "../../vitest.setup.ts"]
+}

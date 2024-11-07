@@ -39,7 +39,7 @@
 		"i18n": "node scripts/i18n.mjs && prettier --write ./src/frontend/src/lib/types/i18n.d.ts",
 		"observatory:statuses": "node scripts/observatory.statuses.mjs",
 		"clippy": "cargo clippy --target=wasm32-unknown-unknown -- -A deprecated",
-		"test": "vitest",
+		"test": "tsc --project tsconfig.spec.json --noEmit && vitest",
 		"build:console": "scripts/cargo.sh console",
 		"build:observatory": "scripts/cargo.sh observatory",
 		"build:satellite": "scripts/cargo.sh satellite",

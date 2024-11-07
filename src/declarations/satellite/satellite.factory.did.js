@@ -129,6 +129,10 @@ export const idlFactory = ({ IDL }) => {
 		Public: IDL.Null,
 		Managed: IDL.Null
 	});
+	const RateConfig = IDL.Record({
+		max_tokens: IDL.Nat64,
+		time_per_token_ns: IDL.Nat64
+	});
 	const Rule = IDL.Record({
 		max_capacity: IDL.Opt(IDL.Nat32),
 		memory: IDL.Opt(Memory),
@@ -138,6 +142,7 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		version: IDL.Opt(IDL.Nat64),
 		mutable_permissions: IDL.Opt(IDL.Bool),
+		rate_config: IDL.Opt(RateConfig),
 		write: Permission
 	});
 	const HttpRequest = IDL.Record({
@@ -223,6 +228,7 @@ export const idlFactory = ({ IDL }) => {
 		read: Permission,
 		version: IDL.Opt(IDL.Nat64),
 		mutable_permissions: IDL.Opt(IDL.Bool),
+		rate_config: IDL.Opt(RateConfig),
 		write: Permission
 	});
 	const UploadChunk = IDL.Record({

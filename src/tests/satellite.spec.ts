@@ -254,20 +254,22 @@ describe('Satellite', () => {
 
 					assertNonNullish(rule);
 
-					let updateMemoryTo = 'Stable' in (fromNullable(rule.memory) ?? {}) ? "heap" : "stable";
+					let updateMemoryTo = 'Stable' in (fromNullable(rule.memory) ?? {}) ? 'heap' : 'stable';
 
 					try {
 						await set_rule(collectionType, collection, {
 							...rule,
 							memory:
-								updateMemoryTo === "heap"
+								updateMemoryTo === 'heap'
 									? toNullable({ Heap: null })
 									: toNullable({ Stable: null })
 						});
 
 						expect(true).toBe(false);
 					} catch (error: unknown) {
-						expect((error as Error).message).toContain(`The type of memory cannot be modified to ${updateMemoryTo}.`);
+						expect((error as Error).message).toContain(
+							`The type of memory cannot be modified to ${updateMemoryTo}.`
+						);
 					}
 				});
 
@@ -288,7 +290,9 @@ describe('Satellite', () => {
 
 						expect(true).toBe(false);
 					} catch (error: unknown) {
-						expect((error as Error).message).toContain('The immutable permissions cannot be made mutable.');
+						expect((error as Error).message).toContain(
+							'The immutable permissions cannot be made mutable.'
+						);
 					}
 				});
 

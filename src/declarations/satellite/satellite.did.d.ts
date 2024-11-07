@@ -150,6 +150,10 @@ export type Permission =
 	| { Private: null }
 	| { Public: null }
 	| { Managed: null };
+export interface RateConfig {
+	max_tokens: bigint;
+	time_per_token_ns: bigint;
+}
 export interface Rule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
@@ -159,6 +163,7 @@ export interface Rule {
 	created_at: bigint;
 	version: [] | [bigint];
 	mutable_permissions: [] | [boolean];
+	rate_config: [] | [RateConfig];
 	write: Permission;
 }
 export type RulesType = { Db: null } | { Storage: null };
@@ -183,6 +188,7 @@ export interface SetRule {
 	read: Permission;
 	version: [] | [bigint];
 	mutable_permissions: [] | [boolean];
+	rate_config: [] | [RateConfig];
 	write: Permission;
 }
 export interface StorageConfig {

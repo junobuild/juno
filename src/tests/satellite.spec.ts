@@ -50,6 +50,22 @@ describe('Satellite', () => {
 		rate_config: []
 	};
 
+	const setRuleWithValues: SetRule = {
+		memory: toNullable(),
+		max_size: toNullable(123n),
+		max_capacity: toNullable(456),
+		read: { Private: null },
+		mutable_permissions: toNullable(false),
+		write: { Private: null },
+		version: toNullable(),
+		rate_config: [
+			{
+				max_tokens: 999n,
+				time_per_token_ns: 888n
+			}
+		]
+	};
+
 	let testRuleVersion: [] | [bigint];
 
 	describe('admin', () => {
@@ -57,7 +73,7 @@ describe('Satellite', () => {
 			actor.setIdentity(controller);
 		});
 
-		it('should create a collection', async () => {
+		it('should create a db collection', async () => {
 			const { set_rule, list_rules } = actor;
 
 			await set_rule({ Db: null }, 'test', setRule);
@@ -68,6 +84,27 @@ describe('Satellite', () => {
 				});
 
 			expect(collection).toEqual('test');
+			expect(memory).toEqual(toNullable({ Stable: null }));
+			expect(read).toEqual({ Managed: null });
+			expect(write).toEqual({ Managed: null });
+			expect(created_at).toBeGreaterThan(0n);
+			expect(updated_at).toBeGreaterThan(0n);
+			expect(version).toEqual(toNullable(1n));
+
+			testRuleVersion = version;
+		});
+
+		it('should create a storage collection', async () => {
+			const { set_rule, list_rules } = actor;
+
+			await set_rule({ Storage: null }, 'test_storage', setRule);
+
+			const [[collection, { memory, version, created_at, updated_at, read, write }], _] =
+				await list_rules({
+					Storage: null
+				});
+
+			expect(collection).toEqual('test_storage');
 			expect(memory).toEqual(toNullable({ Stable: null }));
 			expect(read).toEqual({ Managed: null });
 			expect(write).toEqual({ Managed: null });
@@ -165,6 +202,50 @@ describe('Satellite', () => {
 		});
 
 		describe.each([
+			{ collectionType: { Db: null }, collection: 'test_db_values' },
+			{
+				collectionType: { Storage: null },
+				collection: 'test_storage_values'
+			}
+		])('Edit collection %s', ({ collectionType, collection }) => {
+			it('should create a db collection with values', async () => {
+				const { set_rule, get_rule } = actor;
+
+				await set_rule(collectionType, collection, setRuleWithValues);
+
+				const result = await get_rule(collectionType, collection);
+
+				const rule = fromNullable(result);
+
+				assertNonNullish(rule);
+
+				const {
+					max_capacity,
+					max_size,
+					mutable_permissions,
+					rate_config,
+					version,
+					created_at,
+					updated_at,
+					read,
+					write
+				} = rule;
+
+				expect(read).toEqual({ Private: null });
+				expect(write).toEqual({ Private: null });
+				expect(created_at).toBeGreaterThan(0n);
+				expect(updated_at).toBeGreaterThan(0n);
+				expect(version).toEqual(toNullable(1n));
+				expect(max_capacity).toEqual(setRuleWithValues.max_capacity);
+				expect(max_size).toEqual(setRuleWithValues.max_size);
+				expect(mutable_permissions).toEqual(setRuleWithValues.mutable_permissions);
+				expect(rate_config).toEqual(setRuleWithValues.rate_config);
+
+				testRuleVersion = version;
+			});
+		});
+
+		describe.each([
 			{ collectionType: { Db: null }, collection: '#user' },
 			{
 				collectionType: { Storage: null },
@@ -201,6 +282,35 @@ describe('Satellite', () => {
 				assertNonNullish(updatedRule);
 
 				expect(fromNullable(updatedRule?.version ?? [0n])).toEqual(1n);
+			});
+
+			it('should edit rate config system collection', async () => {
+				const { get_rule, set_rule } = actor;
+
+				const result = await get_rule(collectionType, collection);
+
+				const rule = fromNullable(result);
+
+				assertNonNullish(rule);
+
+				await set_rule(collectionType, collection, {
+					...rule,
+					rate_config: [
+						{
+							max_tokens: 100n,
+							time_per_token_ns: 10000n
+						}
+					]
+				});
+
+				const updatedResult = await get_rule(collectionType, collection);
+
+				const updatedRule = fromNullable(updatedResult);
+
+				assertNonNullish(updatedRule);
+
+				expect(fromNullable(updatedRule?.rate_config ?? [])?.max_tokens).toEqual(100n);
+				expect(fromNullable(updatedRule?.rate_config ?? [])?.time_per_token_ns).toEqual(10000n);
 			});
 
 			describe('errors', () => {
@@ -334,6 +444,27 @@ describe('Satellite', () => {
 						expect(true).toBe(false);
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain(errorMessage);
+					}
+				});
+
+				it('should throw if rate config is deleted on system collection', async () => {
+					const { get_rule, set_rule } = actor;
+
+					const result = await get_rule(collectionType, collection);
+
+					const rule = fromNullable(result);
+
+					assertNonNullish(rule);
+
+					try {
+						await set_rule(collectionType, collection, {
+							...rule,
+							rate_config: []
+						});
+
+						expect(true).toBe(false);
+					} catch (error: unknown) {
+						expect((error as Error).message).toContain('Rate config cannot be disabled.');
 					}
 				});
 			});

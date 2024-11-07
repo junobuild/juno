@@ -269,9 +269,7 @@ describe('Satellite', () => {
 
 						expect(true).toBe(false);
 					} catch (error: unknown) {
-						expect((error as Error).message).toContain(
-							errorMessage
-						);
+						expect((error as Error).message).toContain(errorMessage);
 					}
 				});
 
@@ -292,9 +290,7 @@ describe('Satellite', () => {
 
 						expect(true).toBe(false);
 					} catch (error: unknown) {
-						expect((error as Error).message).toContain(
-							errorMessage
-						);
+						expect((error as Error).message).toContain(errorMessage);
 					}
 				});
 
@@ -387,6 +383,15 @@ describe('Satellite', () => {
 
 					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrow(
 						'Collection starts with #, a reserved prefix'
+					);
+				});
+
+				// This would mean the assertions has changed and the implementation of prepare sys collection is hit with an undefined existing rule
+				it('should not throw errors on creating reserved collection', async () => {
+					const { set_rule } = actor;
+
+					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.not.toThrow(
+						'Collection #test is reserved.'
 					);
 				});
 

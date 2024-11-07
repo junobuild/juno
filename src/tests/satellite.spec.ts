@@ -203,6 +203,8 @@ describe('Satellite', () => {
 			});
 
 			describe('errors', () => {
+				const errorMessage = `Collection ${collection} is reserved and cannot be modified.`;
+
 				it('should throw if read is changed on system collection', async () => {
 					const { get_rule, set_rule } = actor;
 
@@ -220,7 +222,7 @@ describe('Satellite', () => {
 
 						expect(true).toBe(false);
 					} catch (error: unknown) {
-						expect((error as Error).message).toContain('The read permission is immutable.');
+						expect((error as Error).message).toContain(errorMessage);
 					}
 				});
 
@@ -241,7 +243,7 @@ describe('Satellite', () => {
 
 						expect(true).toBe(false);
 					} catch (error: unknown) {
-						expect((error as Error).message).toContain('The write permission is immutable.');
+						expect((error as Error).message).toContain(errorMessage);
 					}
 				});
 
@@ -268,7 +270,7 @@ describe('Satellite', () => {
 						expect(true).toBe(false);
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain(
-							`The type of memory cannot be modified to ${updateMemoryTo}.`
+							errorMessage
 						);
 					}
 				});
@@ -291,7 +293,7 @@ describe('Satellite', () => {
 						expect(true).toBe(false);
 					} catch (error: unknown) {
 						expect((error as Error).message).toContain(
-							'The immutable permissions cannot be made mutable.'
+							errorMessage
 						);
 					}
 				});
@@ -313,7 +315,7 @@ describe('Satellite', () => {
 
 						expect(true).toBe(false);
 					} catch (error: unknown) {
-						expect((error as Error).message).toContain(`Collection ${collection} is reserved.`);
+						expect((error as Error).message).toContain(errorMessage);
 					}
 				});
 
@@ -334,7 +336,7 @@ describe('Satellite', () => {
 
 						expect(true).toBe(false);
 					} catch (error: unknown) {
-						expect((error as Error).message).toContain(`Collection ${collection} is reserved.`);
+						expect((error as Error).message).toContain(errorMessage);
 					}
 				});
 			});

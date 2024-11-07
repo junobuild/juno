@@ -1,4 +1,8 @@
-use crate::assert_rules::{assert_delete_permission, assert_memory, assert_mutable_permissions, assert_storage_reserved_collection, assert_set_permission, assert_write_version};
+use crate::assert_rules::{
+    assert_memory, assert_mutable_permissions, assert_storage_reserved_collection,
+    assert_system_collection_delete_permission, assert_system_collection_set_permission,
+    assert_write_version,
+};
 use crate::constants::SYS_COLLECTION_PREFIX;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{DelRule, SetRule};
@@ -24,7 +28,7 @@ pub fn set_rule(
 
     assert_write_version(current_rule, &user_rule.version)?;
 
-    assert_set_permission(&collection, current_rule)?;
+    assert_system_collection_set_permission(&collection, current_rule, &user_rule)?;
 
     if storage_checks {
         assert_storage_reserved_collection(&collection, rules)?;
@@ -49,7 +53,7 @@ pub fn del_rule(
 
     assert_write_version(current_rule, &user_rule.version)?;
 
-    assert_delete_permission(&collection)?;
+    assert_system_collection_delete_permission(&collection)?;
 
     rules.remove(&collection);
 

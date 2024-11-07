@@ -46,7 +46,8 @@ describe('Satellite', () => {
 		read: { Managed: null },
 		mutable_permissions: toNullable(),
 		write: { Managed: null },
-		version: toNullable()
+		version: toNullable(),
+		rate_config: []
 	};
 
 	let testRuleVersion: [] | [bigint];
@@ -254,7 +255,7 @@ describe('Satellite', () => {
 
 					assertNonNullish(rule);
 
-					let updateMemoryTo = 'Stable' in (fromNullable(rule.memory) ?? {}) ? 'heap' : 'stable';
+					const updateMemoryTo = 'Stable' in (fromNullable(rule.memory) ?? {}) ? 'heap' : 'stable';
 
 					try {
 						await set_rule(collectionType, collection, {

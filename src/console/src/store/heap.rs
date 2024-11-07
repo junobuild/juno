@@ -8,8 +8,8 @@ use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
-use junobuild_shared::rate::quota::increment_and_assert_rate;
 use junobuild_shared::rate::types::RateConfig;
+use junobuild_shared::rate::utils::increment_and_assert_rate;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};

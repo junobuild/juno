@@ -89,22 +89,41 @@ pub fn assert_write_version(
     Ok(())
 }
 
-pub fn assert_set_permission(
+pub fn assert_system_collection_set_permission(
     collection: &CollectionKey,
     current_rule: Option<&Rule>,
+    user_rule: &SetRule,
 ) -> Result<(), String> {
+    // Allow non-system collections to proceed without restrictions
+    if !collection.starts_with(SYS_COLLECTION_PREFIX) {
+        return Ok(());
+    }
+
     // System collections cannot be created with a setter call but can be edited under certain circumstances.
-    if current_rule.is_none() && collection.starts_with(SYS_COLLECTION_PREFIX) {
-        return Err(format!(
+    let current_rule = current_rule.ok_or_else(|| {
+        format!(
             "Collection starts with {}, a reserved prefix",
             SYS_COLLECTION_PREFIX
+        )
+    })?;
+
+    if current_rule.read != user_rule.read
+        || current_rule.write != user_rule.write
+        || current_rule.memory != user_rule.memory
+        || current_rule.mutable_permissions != user_rule.mutable_permissions
+        || current_rule.max_size != user_rule.max_size
+        || current_rule.max_capacity != user_rule.max_capacity
+    {
+        return Err(format!(
+            "Collection {} is reserved and cannot be modified.",
+            collection
         ));
     }
 
     Ok(())
 }
 
-pub fn assert_delete_permission(
+pub fn assert_system_collection_delete_permission(
     collection: &CollectionKey,
 ) -> Result<(), String> {
     if collection.starts_with(SYS_COLLECTION_PREFIX) {

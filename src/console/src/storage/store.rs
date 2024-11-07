@@ -115,7 +115,14 @@ pub fn init_asset_upload(
     let controllers = get_controllers();
     let config = get_config();
 
-    create_batch(caller, &controllers, &config, init, Some(proposal_id), &StorageState)
+    create_batch(
+        caller,
+        &controllers,
+        &config,
+        init,
+        Some(proposal_id),
+        &StorageState,
+    )
 }
 
 fn assert_releases_keys(InitAssetKey { full_path, .. }: &InitAssetKey) -> Result<(), String> {

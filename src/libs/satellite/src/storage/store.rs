@@ -400,7 +400,7 @@ fn delete_asset_impl(
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
-            increment_and_assert_rate_runtime(&context.collection, &rule.rate_config)?;
+            increment_and_assert_rate_runtime(context.collection, &rule.rate_config)?;
 
             invoke_assert_delete_asset(&context.caller, &asset)?;
 

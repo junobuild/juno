@@ -119,36 +119,38 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
 /// Rates
 
 pub fn increment_satellites_rate() -> Result<(), String> {
-    STATE.with(|state| increment_rate(&mut state.borrow_mut().heap.rates.satellites))
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.satellites))
 }
 
 pub fn increment_mission_controls_rate() -> Result<(), String> {
-    STATE.with(|state| increment_rate(&mut state.borrow_mut().heap.rates.mission_controls))
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.mission_controls))
 }
 
 pub fn increment_orbiters_rate() -> Result<(), String> {
-    STATE.with(|state| increment_rate(&mut state.borrow_mut().heap.rates.orbiters))
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.orbiters))
 }
 
-fn increment_rate(rate: &mut Rate) -> Result<(), String> {
+fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
     increment_and_assert_rate(&rate.config, &mut rate.tokens)
 }
 
 pub fn update_satellites_rate_config(config: &RateConfig) {
-    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().heap.rates.satellites))
+    STATE.with(|state| {
+        update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.satellites)
+    })
 }
 
 pub fn update_mission_controls_rate_config(config: &RateConfig) {
     STATE.with(|state| {
-        update_rate_config(config, &mut state.borrow_mut().heap.rates.mission_controls)
+        update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.mission_controls)
     })
 }
 
 pub fn update_orbiters_rate_config(config: &RateConfig) {
-    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().heap.rates.orbiters))
+    STATE.with(|state| update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.orbiters))
 }
 
-fn update_rate_config(config: &RateConfig, rate: &mut Rate) {
+fn update_rate_config_impl(config: &RateConfig, rate: &mut Rate) {
     rate.config = config.clone();
 }
 

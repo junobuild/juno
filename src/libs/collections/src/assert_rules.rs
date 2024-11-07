@@ -89,7 +89,7 @@ pub fn assert_write_version(
     Ok(())
 }
 
-pub fn assert_write_permission(
+pub fn assert_set_permission(
     collection: &CollectionKey,
     current_rule: Option<&Rule>,
 ) -> Result<(), String> {

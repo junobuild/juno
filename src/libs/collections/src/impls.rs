@@ -17,8 +17,7 @@ impl Rule {
         user_rule: &SetRule,
     ) -> Result<Self, String> {
         if collection.starts_with(SYS_COLLECTION_PREFIX) {
-            return Self::prepare_sys_rule(current_rule, user_rule)
-                .map_err(|_| format!("Collection {} is reserved.", collection));
+            return Self::prepare_sys_rule(collection, current_rule, user_rule);
         }
 
         Ok(Self::prepare_user_rule(current_rule, user_rule))
@@ -59,20 +58,14 @@ impl Rule {
         }
     }
 
-    fn prepare_sys_rule(current_rule: &Option<&Rule>, user_rule: &SetRule) -> Result<Rule, ()> {
+    fn prepare_sys_rule(
+        collection: &CollectionKey,
+        current_rule: &Option<&Rule>,
+        _user_rule: &SetRule,
+    ) -> Result<Rule, String> {
         match current_rule {
-            None => Err(()),
+            None => Err(format!("Collection {} is reserved.", collection)),
             Some(current_rule) => {
-                if current_rule.read != user_rule.read
-                    || current_rule.write != user_rule.write
-                    || current_rule.memory != user_rule.memory
-                    || current_rule.mutable_permissions != user_rule.mutable_permissions
-                    || current_rule.max_size != user_rule.max_size
-                    || current_rule.max_capacity != user_rule.max_capacity
-                {
-                    return Err(());
-                }
-
                 let (created_at, version, updated_at) =
                     Self::initialize_common_fields(&Some(current_rule));
 

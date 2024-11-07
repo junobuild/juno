@@ -18,7 +18,7 @@ impl Rule {
     ) -> Result<Self, String> {
         if collection.starts_with(SYS_COLLECTION_PREFIX) {
             return Self::prepare_sys_rule(current_rule, user_rule)
-                .map_err(|_| format!("Collection {} is reserved", collection));
+                .map_err(|_| format!("Collection {} is reserved.", collection));
         }
 
         Ok(Self::prepare_user_rule(current_rule, user_rule))

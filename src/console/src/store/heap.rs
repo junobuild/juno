@@ -1,15 +1,15 @@
 use crate::memory::STATE;
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
-    Payments, ReleaseVersion, ReleasesMetadata,
+    Payments, Rate, ReleaseVersion, ReleasesMetadata,
 };
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
-use junobuild_shared::rate::quota::increment_and_assert_rate;
-use junobuild_shared::rate::types::{Rate, RateConfig};
+use junobuild_shared::rate::types::RateConfig;
+use junobuild_shared::rate::utils::increment_and_assert_rate;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
@@ -119,34 +119,38 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
 /// Rates
 
 pub fn increment_satellites_rate() -> Result<(), String> {
-    STATE.with(|state| increment_and_assert_rate(&mut state.borrow_mut().heap.rates.satellites))
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.satellites))
 }
 
 pub fn increment_mission_controls_rate() -> Result<(), String> {
-    STATE.with(|state| {
-        increment_and_assert_rate(&mut state.borrow_mut().heap.rates.mission_controls)
-    })
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.mission_controls))
 }
 
 pub fn increment_orbiters_rate() -> Result<(), String> {
-    STATE.with(|state| increment_and_assert_rate(&mut state.borrow_mut().heap.rates.orbiters))
+    STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.orbiters))
+}
+
+fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
+    increment_and_assert_rate(&rate.config, &mut rate.tokens)
 }
 
 pub fn update_satellites_rate_config(config: &RateConfig) {
-    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().heap.rates.satellites))
+    STATE.with(|state| {
+        update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.satellites)
+    })
 }
 
 pub fn update_mission_controls_rate_config(config: &RateConfig) {
     STATE.with(|state| {
-        update_rate_config(config, &mut state.borrow_mut().heap.rates.mission_controls)
+        update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.mission_controls)
     })
 }
 
 pub fn update_orbiters_rate_config(config: &RateConfig) {
-    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().heap.rates.orbiters))
+    STATE.with(|state| update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.orbiters))
 }
 
-fn update_rate_config(config: &RateConfig, rate: &mut Rate) {
+fn update_rate_config_impl(config: &RateConfig, rate: &mut Rate) {
     rate.config = config.clone();
 }
 

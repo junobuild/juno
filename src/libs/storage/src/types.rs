@@ -59,7 +59,7 @@ pub mod runtime_state {
         pub batches: Batches,
         pub chunks: Chunks,
         pub asset_hashes: CertifiedAssetHashes,
-        pub rate_tokens: Option<RateCollectionTokens>,
+        pub rate_tokens: RateCollectionTokens,
     }
 }
 

@@ -175,23 +175,19 @@ pub fn increment_and_assert_rate(
     config: &Option<RateConfig>,
 ) -> Result<(), String> {
     STATE.with(|state| {
-        increment_and_assert_rate_impl(collection, config, &mut state.borrow_mut().runtime.storage)
+        increment_and_assert_rate_impl(collection, config, &mut state.borrow_mut().runtime.storage.rate_tokens)
     })
 }
 
 fn increment_and_assert_rate_impl(
     collection: &CollectionKey,
     config: &Option<RateConfig>,
-    state: &mut StorageRuntimeState,
+    rate_tokens: &mut RateCollectionTokens,
 ) -> Result<(), String> {
     let config = match config {
         Some(config) => config,
         None => return Ok(()),
     };
-
-    let rate_tokens = state
-        .rate_tokens
-        .get_or_insert_with(RateCollectionTokens::default);
 
     if let Some(tokens) = rate_tokens.get_mut(collection) {
         increment_and_assert_rate_shared(config, tokens)?;

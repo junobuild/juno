@@ -94,22 +94,6 @@ describe('Satellite', () => {
 			expect(updated_at).toBeGreaterThan(0n);
 		});
 
-		it('should not list db system collections', async () => {
-			const { list_rules } = actor;
-
-			const results = await list_rules({ Db: null });
-
-			expect(results.find(([collection]) => collection === '#user')).toBeUndefined();
-		});
-
-		it('should not list storage system collections', async () => {
-			const { list_rules } = actor;
-
-			const results = await list_rules({ Storage: null });
-
-			expect(results.find(([collection]) => collection === '#dapp')).toBeUndefined();
-		});
-
 		it('should get collection', async () => {
 			const { get_rule } = actor;
 
@@ -125,44 +109,6 @@ describe('Satellite', () => {
 			expect(read).toEqual({ Managed: null });
 			expect(write).toEqual({ Managed: null });
 			expect(mutable_permissions).toEqual([true]);
-			expect(created_at).toBeGreaterThan(0n);
-			expect(updated_at).toBeGreaterThan(0n);
-		});
-
-		it('should get db system collection', async () => {
-			const { get_rule } = actor;
-
-			const result = await get_rule({ Db: null }, '#user');
-
-			const rule = fromNullable(result);
-
-			assertNonNullish(rule);
-
-			const { updated_at, created_at, memory, mutable_permissions, read, write } = rule;
-
-			expect(memory).toEqual(toNullable({ Stable: null }));
-			expect(read).toEqual({ Managed: null });
-			expect(write).toEqual({ Managed: null });
-			expect(mutable_permissions).toEqual([false]);
-			expect(created_at).toBeGreaterThan(0n);
-			expect(updated_at).toBeGreaterThan(0n);
-		});
-
-		it('should get storage system collection', async () => {
-			const { get_rule } = actor;
-
-			const result = await get_rule({ Storage: null }, '#dapp');
-
-			const rule = fromNullable(result);
-
-			assertNonNullish(rule);
-
-			const { updated_at, created_at, memory, mutable_permissions, read, write } = rule;
-
-			expect(memory).toEqual(toNullable({ Heap: null }));
-			expect(read).toEqual({ Controllers: null });
-			expect(write).toEqual({ Controllers: null });
-			expect(mutable_permissions).toEqual([false]);
 			expect(created_at).toBeGreaterThan(0n);
 			expect(updated_at).toBeGreaterThan(0n);
 		});
@@ -217,15 +163,93 @@ describe('Satellite', () => {
 			expect(updatedControllers[0][0].toText()).toEqual(controller.getPrincipal().toText());
 		});
 
-		describe('errors', () => {
-			it('should throw errors on creating reserved collection', async () => {
-				const { set_rule } = actor;
+		describe('system collection', () => {
+			it('should not list db system collections', async () => {
+				const { list_rules } = actor;
 
-				await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrow(
-					'Collection starts with #, a reserved prefix'
-				);
+				const results = await list_rules({ Db: null });
+
+				expect(results.find(([collection]) => collection === '#user')).toBeUndefined();
 			});
 
+			it('should not list storage system collections', async () => {
+				const { list_rules } = actor;
+
+				const results = await list_rules({ Storage: null });
+
+				expect(results.find(([collection]) => collection === '#dapp')).toBeUndefined();
+			});
+
+			it('should get db system collection', async () => {
+				const { get_rule } = actor;
+
+				const result = await get_rule({ Db: null }, '#user');
+
+				const rule = fromNullable(result);
+
+				assertNonNullish(rule);
+
+				const { updated_at, created_at, memory, mutable_permissions, read, write } = rule;
+
+				expect(memory).toEqual(toNullable({ Stable: null }));
+				expect(read).toEqual({ Managed: null });
+				expect(write).toEqual({ Managed: null });
+				expect(mutable_permissions).toEqual([false]);
+				expect(created_at).toBeGreaterThan(0n);
+				expect(updated_at).toBeGreaterThan(0n);
+			});
+
+			it('should get storage system collection', async () => {
+				const { get_rule } = actor;
+
+				const result = await get_rule({ Storage: null }, '#dapp');
+
+				const rule = fromNullable(result);
+
+				assertNonNullish(rule);
+
+				const { updated_at, created_at, memory, mutable_permissions, read, write } = rule;
+
+				expect(memory).toEqual(toNullable({ Heap: null }));
+				expect(read).toEqual({ Controllers: null });
+				expect(write).toEqual({ Controllers: null });
+				expect(mutable_permissions).toEqual([false]);
+				expect(created_at).toBeGreaterThan(0n);
+				expect(updated_at).toBeGreaterThan(0n);
+			});
+
+			describe('errors', () => {
+				it('should throw errors on creating reserved collection', async () => {
+					const { set_rule } = actor;
+
+					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrow(
+						'Collection starts with #, a reserved prefix'
+					);
+				});
+
+				it('should throw errors on deleting reserved collection', async () => {
+					const { get_rule, del_rule } = actor;
+
+					const systemCollection = '#user';
+
+					const result = await get_rule({ Db: null }, systemCollection);
+
+					const rule = fromNullable(result);
+
+					assertNonNullish(rule);
+
+					const { version } = rule;
+
+					await expect(
+						del_rule({ Db: null }, systemCollection, {
+							version
+						})
+					).rejects.toThrow('Collection starting with # cannot be deleted');
+				});
+			});
+		});
+
+		describe('errors', () => {
 			it('should not update rule if no version', async () => {
 				const { set_rule } = actor;
 
@@ -255,26 +279,6 @@ describe('Satellite', () => {
 				} catch (error: unknown) {
 					expect((error as Error).message).toContain(INVALID_VERSION_ERROR_MSG);
 				}
-			});
-
-			it('should throw errors on creating reserved collection', async () => {
-				const { list_rules, get_rule, del_rule } = actor;
-
-				const systemCollection = '#user';
-
-				const result = await get_rule({ Db: null }, systemCollection);
-
-				const rule = fromNullable(result);
-
-				assertNonNullish(rule);
-
-				const { version } = rule;
-
-				await expect(
-					del_rule({ Db: null }, systemCollection, {
-						version
-					})
-				).rejects.toThrow('Collection starting with # cannot be deleted');
 			});
 		});
 	});

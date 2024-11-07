@@ -34,7 +34,7 @@ pub fn set_rule(
     assert_memory(current_rule, &user_rule.memory)?;
     assert_mutable_permissions(current_rule, &user_rule)?;
 
-    let rule: Rule = Rule::prepare(&current_rule, &user_rule);
+    let rule: Rule = Rule::prepare(&collection, &current_rule, &user_rule)?;
 
     rules.insert(collection, rule);
 

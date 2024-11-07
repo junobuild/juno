@@ -1,3 +1,5 @@
+use crate::constants::SYS_COLLECTION_PREFIX;
+use crate::types::core::CollectionKey;
 use crate::types::interface::SetRule;
 use crate::types::rules::{Memory, Rule};
 use ic_cdk::api::time;
@@ -9,7 +11,20 @@ impl Rule {
         self.memory.clone().unwrap_or_default()
     }
 
-    pub fn prepare(current_rule: &Option<&Rule>, user_rule: &SetRule) -> Self {
+    pub fn prepare(
+        collection: &CollectionKey,
+        current_rule: &Option<&Rule>,
+        user_rule: &SetRule,
+    ) -> Result<Self, String> {
+        if collection.starts_with(SYS_COLLECTION_PREFIX) {
+            return Self::prepare_sys_rule(current_rule, user_rule)
+                .map_err(|_| format!("Collection {} is reserved.", collection));
+        }
+
+        Ok(Self::prepare_user_rule(current_rule, user_rule))
+    }
+
+    fn initialize_common_fields(current_rule: &Option<&Rule>) -> (Timestamp, Version, Timestamp) {
         let now = time();
 
         let created_at: Timestamp = match current_rule {
@@ -24,6 +39,12 @@ impl Rule {
 
         let updated_at: Timestamp = now;
 
+        (created_at, version, updated_at)
+    }
+
+    fn prepare_user_rule(current_rule: &Option<&Rule>, user_rule: &SetRule) -> Self {
+        let (created_at, version, updated_at) = Self::initialize_common_fields(current_rule);
+
         Rule {
             read: user_rule.read.clone(),
             write: user_rule.write.clone(),
@@ -34,6 +55,40 @@ impl Rule {
             created_at,
             updated_at,
             version: Some(version),
+        }
+    }
+
+    fn prepare_sys_rule(current_rule: &Option<&Rule>, user_rule: &SetRule) -> Result<Rule, ()> {
+        match current_rule {
+            None => Err(()),
+            Some(current_rule) => {
+                if current_rule.read != user_rule.read
+                    || current_rule.write != user_rule.write
+                    || current_rule.memory != user_rule.memory
+                    || current_rule.mutable_permissions != user_rule.mutable_permissions
+                    || current_rule.max_size != user_rule.max_size
+                    || current_rule.max_capacity != user_rule.max_capacity
+                {
+                    return Err(());
+                }
+
+                let (created_at, version, updated_at) =
+                    Self::initialize_common_fields(&Some(current_rule));
+
+                let rule = Rule {
+                    read: current_rule.read.clone(),
+                    write: current_rule.write.clone(),
+                    memory: current_rule.memory.clone(),
+                    mutable_permissions: current_rule.mutable_permissions,
+                    max_size: current_rule.max_size,
+                    max_capacity: current_rule.max_capacity,
+                    created_at,
+                    updated_at,
+                    version: Some(version),
+                };
+
+                Ok(rule)
+            }
         }
     }
 }

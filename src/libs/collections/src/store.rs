@@ -1,7 +1,4 @@
-use crate::assert_rules::{
-    assert_memory, assert_mutable_permissions, assert_storage_reserved_collection,
-    assert_write_permission,
-};
+use crate::assert_rules::{assert_delete_permission, assert_memory, assert_mutable_permissions, assert_storage_reserved_collection, assert_set_permission, assert_write_version};
 use crate::constants::SYS_COLLECTION_PREFIX;
 use crate::types::core::CollectionKey;
 use crate::types::interface::{DelRule, SetRule};
@@ -25,7 +22,9 @@ pub fn set_rule(
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    assert_write_permission(&collection, current_rule, &user_rule.version)?;
+    assert_write_version(current_rule, &user_rule.version)?;
+
+    assert_set_permission(&collection, current_rule)?;
 
     if storage_checks {
         assert_storage_reserved_collection(&collection, rules)?;
@@ -34,7 +33,7 @@ pub fn set_rule(
     assert_memory(current_rule, &user_rule.memory)?;
     assert_mutable_permissions(current_rule, &user_rule)?;
 
-    let rule: Rule = Rule::prepare(&current_rule, &user_rule);
+    let rule: Rule = Rule::prepare(&collection, &current_rule, &user_rule)?;
 
     rules.insert(collection, rule);
 
@@ -48,7 +47,9 @@ pub fn del_rule(
 ) -> Result<(), String> {
     let current_rule = rules.get(&collection);
 
-    assert_write_permission(&collection, current_rule, &user_rule.version)?;
+    assert_write_version(current_rule, &user_rule.version)?;
+
+    assert_delete_permission(&collection)?;
 
     rules.remove(&collection);
 

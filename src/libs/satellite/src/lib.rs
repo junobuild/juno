@@ -158,6 +158,12 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
+pub fn get_rule(rules_type: RulesType, collection: CollectionKey) -> Option<Rule> {
+    satellite::get_rule(&rules_type, &collection)
+}
+
+#[doc(hidden)]
+#[query(guard = "caller_is_admin_controller")]
 pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
     satellite::list_rules(rules_type)
 }

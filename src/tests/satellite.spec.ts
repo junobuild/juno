@@ -1,8 +1,9 @@
 import type { _SERVICE as SatelliteActor, SetRule } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { toNullable } from '@dfinity/utils';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
+import { assertNonNullish } from '@junobuild/utils';
 import { parse } from '@ltd/j-toml';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
@@ -93,6 +94,25 @@ describe('Satellite', () => {
 			expect(updated_at).toBeGreaterThan(0n);
 		});
 
+		it('should get collection', async () => {
+			const { get_rule } = actor;
+
+			const result = await get_rule({ Db: null }, 'test');
+
+			const rule = fromNullable(result);
+
+			assertNonNullish(rule);
+
+			const { updated_at, created_at, memory, mutable_permissions, read, write } = rule;
+
+			expect(memory).toEqual(toNullable({ Stable: null }));
+			expect(read).toEqual({ Managed: null });
+			expect(write).toEqual({ Managed: null });
+			expect(mutable_permissions).toEqual([true]);
+			expect(created_at).toBeGreaterThan(0n);
+			expect(updated_at).toBeGreaterThan(0n);
+		});
+
 		it('should add and remove collections', async () => {
 			const { list_rules, set_rule, del_rule } = actor;
 
@@ -143,15 +163,250 @@ describe('Satellite', () => {
 			expect(updatedControllers[0][0].toText()).toEqual(controller.getPrincipal().toText());
 		});
 
-		describe('errors', () => {
-			it('should throw errors on creating reserved collection', async () => {
-				const { set_rule } = actor;
+		describe.each([
+			{ collectionType: { Db: null }, collection: '#user' },
+			{
+				collectionType: { Storage: null },
+				collection: '#dapp'
+			}
+		])('System collection %s', ({ collectionType, collection }) => {
+			it('should not list system collections', async () => {
+				const { list_rules } = actor;
 
-				await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrow(
-					'Collection starts with #, a reserved prefix'
-				);
+				const results = await list_rules(collectionType);
+
+				expect(results.find(([c]) => c === collection)).toBeUndefined();
 			});
 
+			it('should edit system collection', async () => {
+				const { get_rule, set_rule } = actor;
+
+				const result = await get_rule(collectionType, collection);
+
+				const rule = fromNullable(result);
+
+				assertNonNullish(rule);
+
+				const oldVersion = fromNullable(rule.version);
+
+				expect(oldVersion).toBeUndefined();
+
+				await set_rule(collectionType, collection, rule);
+
+				const updatedResult = await get_rule(collectionType, collection);
+
+				const updatedRule = fromNullable(updatedResult);
+
+				assertNonNullish(updatedRule);
+
+				expect(fromNullable(updatedRule?.version ?? [0n])).toEqual(1n);
+			});
+
+			describe('errors', () => {
+				it('should throw if read is changed on system collection', async () => {
+					const { get_rule, set_rule } = actor;
+
+					const result = await get_rule(collectionType, collection);
+
+					const rule = fromNullable(result);
+
+					assertNonNullish(rule);
+
+					try {
+						await set_rule(collectionType, collection, {
+							...rule,
+							read: { Public: null }
+						});
+
+						expect(true).toBe(false);
+					} catch (error: unknown) {
+						expect((error as Error).message).toContain('The read permission is immutable.');
+					}
+				});
+
+				it('should throw if write is changed on system collection', async () => {
+					const { get_rule, set_rule } = actor;
+
+					const result = await get_rule(collectionType, collection);
+
+					const rule = fromNullable(result);
+
+					assertNonNullish(rule);
+
+					try {
+						await set_rule(collectionType, collection, {
+							...rule,
+							write: { Public: null }
+						});
+
+						expect(true).toBe(false);
+					} catch (error: unknown) {
+						expect((error as Error).message).toContain('The write permission is immutable.');
+					}
+				});
+
+				it('should throw if memory is changed on system collection', async () => {
+					const { get_rule, set_rule } = actor;
+
+					const result = await get_rule(collectionType, collection);
+
+					const rule = fromNullable(result);
+
+					assertNonNullish(rule);
+
+					let updateMemoryTo = 'Stable' in (fromNullable(rule.memory) ?? {}) ? "heap" : "stable";
+
+					try {
+						await set_rule(collectionType, collection, {
+							...rule,
+							memory:
+								updateMemoryTo === "heap"
+									? toNullable({ Heap: null })
+									: toNullable({ Stable: null })
+						});
+
+						expect(true).toBe(false);
+					} catch (error: unknown) {
+						expect((error as Error).message).toContain(`The type of memory cannot be modified to ${updateMemoryTo}.`);
+					}
+				});
+
+				it('should throw if mutable permissions is changed on system collection', async () => {
+					const { get_rule, set_rule } = actor;
+
+					const result = await get_rule(collectionType, collection);
+
+					const rule = fromNullable(result);
+
+					assertNonNullish(rule);
+
+					try {
+						await set_rule(collectionType, collection, {
+							...rule,
+							mutable_permissions: [true]
+						});
+
+						expect(true).toBe(false);
+					} catch (error: unknown) {
+						expect((error as Error).message).toContain('The immutable permissions cannot be made mutable.');
+					}
+				});
+
+				it('should throw if max size is changed on system collection', async () => {
+					const { get_rule, set_rule } = actor;
+
+					const result = await get_rule(collectionType, collection);
+
+					const rule = fromNullable(result);
+
+					assertNonNullish(rule);
+
+					try {
+						await set_rule(collectionType, collection, {
+							...rule,
+							max_size: [666n]
+						});
+
+						expect(true).toBe(false);
+					} catch (error: unknown) {
+						expect((error as Error).message).toContain(`Collection ${collection} is reserved.`);
+					}
+				});
+
+				it('should throw if max capacity is changed on system collection', async () => {
+					const { get_rule, set_rule } = actor;
+
+					const result = await get_rule(collectionType, collection);
+
+					const rule = fromNullable(result);
+
+					assertNonNullish(rule);
+
+					try {
+						await set_rule(collectionType, collection, {
+							...rule,
+							max_capacity: [666]
+						});
+
+						expect(true).toBe(false);
+					} catch (error: unknown) {
+						expect((error as Error).message).toContain(`Collection ${collection} is reserved.`);
+					}
+				});
+			});
+		});
+
+		describe('More system collection', () => {
+			it('should get db system collection', async () => {
+				const { get_rule } = actor;
+
+				const result = await get_rule({ Db: null }, '#user');
+
+				const rule = fromNullable(result);
+
+				assertNonNullish(rule);
+
+				const { updated_at, created_at, memory, mutable_permissions, read, write } = rule;
+
+				expect(memory).toEqual(toNullable({ Stable: null }));
+				expect(read).toEqual({ Managed: null });
+				expect(write).toEqual({ Managed: null });
+				expect(mutable_permissions).toEqual([false]);
+				expect(created_at).toBeGreaterThan(0n);
+				expect(updated_at).toBeGreaterThan(0n);
+			});
+
+			it('should get storage system collection', async () => {
+				const { get_rule } = actor;
+
+				const result = await get_rule({ Storage: null }, '#dapp');
+
+				const rule = fromNullable(result);
+
+				assertNonNullish(rule);
+
+				const { updated_at, created_at, memory, mutable_permissions, read, write } = rule;
+
+				expect(memory).toEqual(toNullable({ Heap: null }));
+				expect(read).toEqual({ Controllers: null });
+				expect(write).toEqual({ Controllers: null });
+				expect(mutable_permissions).toEqual([false]);
+				expect(created_at).toBeGreaterThan(0n);
+				expect(updated_at).toBeGreaterThan(0n);
+			});
+
+			describe('errors', () => {
+				it('should throw errors on creating reserved collection', async () => {
+					const { set_rule } = actor;
+
+					await expect(set_rule({ Db: null }, '#test', setRule)).rejects.toThrow(
+						'Collection starts with #, a reserved prefix'
+					);
+				});
+
+				it('should throw errors on deleting reserved collection', async () => {
+					const { get_rule, del_rule } = actor;
+
+					const systemCollection = '#user';
+
+					const result = await get_rule({ Db: null }, systemCollection);
+
+					const rule = fromNullable(result);
+
+					assertNonNullish(rule);
+
+					const { version } = rule;
+
+					await expect(
+						del_rule({ Db: null }, systemCollection, {
+							version
+						})
+					).rejects.toThrow('Collection starting with # cannot be deleted');
+				});
+			});
+		});
+
+		describe('errors', () => {
 			it('should not update rule if no version', async () => {
 				const { set_rule } = actor;
 
@@ -204,6 +459,12 @@ describe('Satellite', () => {
 			const { list_rules } = actor;
 
 			await expect(list_rules({ Db: null })).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
+		});
+
+		it('should throw errors on getting a collection', async () => {
+			const { get_rule } = actor;
+
+			await expect(get_rule({ Db: null }, 'test')).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on deleting collections', async () => {

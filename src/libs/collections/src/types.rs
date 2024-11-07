@@ -33,7 +33,7 @@ pub mod rules {
         pub version: Option<Version>,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Default, Clone, Debug)]
+    #[derive(CandidType, Serialize, Deserialize, Default, Clone, Debug, PartialEq)]
     pub enum Memory {
         // Backwards compatibility. Version of the Satellite <= v0.0.11 had no memory information and we originally introduced the option with Heap as default.
         // If we set Stable as default, the state won't resolve the information correctly given that we use memory.clone().unwrap_or_default() to select which type of memory to read in the Datastore.

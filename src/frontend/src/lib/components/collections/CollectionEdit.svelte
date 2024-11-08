@@ -2,7 +2,7 @@
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
-	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
+	import type { RateConfig, Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { setRule } from '$lib/api/satellites.api';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -79,6 +79,13 @@
 	};
 	$effect(() => initMaxSize(rule?.max_size ?? []));
 
+	let maxTokens: number | undefined = $state();
+	const initRateTokens = (rate_config: [] | [RateConfig]) => {
+		const tmp = fromNullable(rate_config)?.max_tokens;
+		maxTokens = nonNullish(tmp) ? Number(tmp) : undefined;
+	};
+	$effect(() => initRateTokens(rule?.rate_config ?? []));
+
 	let maxCapacity: number | undefined = $state(undefined);
 	$effect(() => {
 		maxCapacity = fromNullable(rule?.max_capacity ?? []);
@@ -100,6 +107,7 @@
 				rule,
 				maxSize,
 				maxCapacity,
+				maxTokens,
 				mutablePermissions: !immutable,
 				identity: $authStore.identity
 			});
@@ -232,6 +240,22 @@
 				</Value>
 			</div>
 		{/if}
+
+		<div>
+			<Value>
+				{#snippet label()}
+					{$i18n.collections.rate_limit}
+				{/snippet}
+				<Input
+					inputType="number"
+					placeholder={$i18n.collections.rate_limit_placeholder}
+					name="maxTokens"
+					required={false}
+					bind:value={maxTokens}
+					on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
+				/>
+			</Value>
+		</div>
 
 		{#if !currentImmutable}
 			<div class="checkbox">

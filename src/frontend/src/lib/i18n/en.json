@@ -538,6 +538,8 @@
 		"max_size_placeholder": "Max file size in bytes",
 		"max_capacity": "Max capacity",
 		"max_capacity_placeholder": "Max number of documents within the collection",
+		"rate_limit": "Max updates",
+		"rate_limit_placeholder": "Limit of updates per minute",
 		"public": "Public",
 		"private": "Private",
 		"managed": "Managed",

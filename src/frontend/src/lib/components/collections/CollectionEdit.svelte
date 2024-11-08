@@ -2,7 +2,7 @@
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, getContext } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
-	import type {RateConfig, Rule, RulesType} from '$declarations/satellite/satellite.did';
+	import type { RateConfig, Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { setRule } from '$lib/api/satellites.api';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -247,12 +247,12 @@
 					{$i18n.collections.rate_limit}
 				{/snippet}
 				<Input
-						inputType="number"
-						placeholder={$i18n.collections.rate_limit_placeholder}
-						name="maxTokens"
-						required={false}
-						bind:value={maxTokens}
-						on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
+					inputType="number"
+					placeholder={$i18n.collections.rate_limit_placeholder}
+					name="maxTokens"
+					required={false}
+					bind:value={maxTokens}
+					on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
 				/>
 			</Value>
 		</div>

@@ -325,6 +325,8 @@ describe('Satellite rate', () => {
 					max_tokens: 10n
 				});
 
+				await pic.advanceTime(60600);
+
 				const [last, ...rest] = batches.reverse();
 
 				await testChunks(rest);

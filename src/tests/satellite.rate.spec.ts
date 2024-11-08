@@ -35,7 +35,7 @@ describe('Satellite rate', () => {
 		await pic?.tearDown();
 	});
 
-	const initDoc = async (collection: string): Promise<Doc> => {
+	const initDoc = async (collection: string): Promise<{ doc: Doc; user: Identity }> => {
 		const { set_doc } = actor;
 
 		const user = Ed25519KeyIdentity.generate();
@@ -47,7 +47,7 @@ describe('Satellite rate', () => {
 			version: toNullable()
 		});
 
-		return doc;
+		return { doc, user };
 	};
 
 	const testDocs = async ({
@@ -56,7 +56,7 @@ describe('Satellite rate', () => {
 	}: {
 		length: number;
 		collection: string;
-	}): Promise<number> => {
+	}): Promise<{ doc: Doc; user: Identity }[]> => {
 		const keys = Array.from({ length });
 
 		const docs = [];
@@ -66,7 +66,7 @@ describe('Satellite rate', () => {
 			docs.push(doc);
 		}
 
-		return docs.length;
+		return docs;
 	};
 
 	describe('user', () => {
@@ -189,33 +189,96 @@ describe('Satellite rate', () => {
 		const collectionType = { Db: null };
 		const collection = 'test_db_values';
 
-		beforeAll(async () => {
-			await config({
-				collection,
-				collectionType,
-				max_tokens: 10n
+		describe('set', () => {
+			beforeAll(async () => {
+				await config({
+					collection,
+					collectionType,
+					max_tokens: 10n
+				});
+			});
+
+			it('should not throw error if there is a delay', async () => {
+				await testDocs({ length: 9, collection });
+
+				// Observed this advance time in comparison to last updated_at of 600 milliseconds
+				await pic.advanceTime(200);
+
+				await testDocs({ length: 1, collection });
+			});
+
+			it('should throw error if user rate is reached', async () => {
+				await pic.advanceTime(60600);
+
+				try {
+					await testDocs({ length: 11, collection });
+
+					expect(true).toBe(false);
+				} catch (error: unknown) {
+					expect((error as Error).message).toContain('Rate limit reached, try again later.');
+				}
 			});
 		});
 
-		it('should not throw error if there is a delay', async () => {
-			await testDocs({ length: 9, collection });
+		describe('delete', () => {
+			beforeEach(async () => {
+				await config({
+					collection,
+					collectionType,
+					max_tokens: undefined
+				});
+			});
 
-			// Observed this advance time in comparison to last updated_at of 600 milliseconds
-			await pic.advanceTime(200);
+			const deleteDocs = async (docs: { doc: Doc; user: Identity }[]) => {
+				const { del_doc } = actor;
 
-			await testDocs({ length: 1, collection });
-		});
+				for (const doc of docs) {
+					actor.setIdentity(doc.user);
 
-		it('should throw error if user rate is reached', async () => {
-			await pic.advanceTime(60600);
+					await del_doc(collection, doc.user.getPrincipal().toText(), doc.doc);
+				}
+			};
 
-			try {
-				await testDocs({ length: 11, collection });
+			it('should not throw error if there is a delay', async () => {
+				const docs = await testDocs({ length: 10, collection });
 
-				expect(true).toBe(false);
-			} catch (error: unknown) {
-				expect((error as Error).message).toContain('Rate limit reached, try again later.');
-			}
+				await config({
+					collection,
+					collectionType,
+					max_tokens: 10n
+				});
+
+				await pic.advanceTime(60600);
+
+				const [last, ...rest] = docs.reverse();
+
+				await deleteDocs(rest);
+
+				// Observed this advance time in comparison to last updated_at of 600 milliseconds
+				await pic.advanceTime(200);
+
+				await deleteDocs([last]);
+			});
+
+			it('should throw error if user rate is reached', async () => {
+				await pic.advanceTime(60600);
+
+				const docs = await testDocs({ length: 12, collection });
+
+				await config({
+					collection,
+					collectionType,
+					max_tokens: 10n
+				});
+
+				try {
+					await deleteDocs(docs);
+
+					expect(true).toBe(false);
+				} catch (error: unknown) {
+					expect((error as Error).message).toContain('Rate limit reached, try again later.');
+				}
+			});
 		});
 	});
 

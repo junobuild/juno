@@ -108,7 +108,7 @@ describe('Satellite rate', () => {
 
 			await pic.advanceTime(600000);
 
-			const length = 202;
+			const length = 201;
 
 			const count = await testUsers(length);
 

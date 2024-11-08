@@ -282,7 +282,7 @@ describe('Satellite rate', () => {
 		});
 	});
 
-	describe.only('storage', () => {
+	describe('storage', () => {
 		const collectionType = { Storage: null };
 		const collection = 'test_storage_values';
 

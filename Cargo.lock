@@ -257,8 +257,8 @@ dependencies = [
  "candid",
  "ciborium",
  "hex",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "ic-cdk-timers",
  "ic-ledger-types",
  "ic-stable-structures",
@@ -599,7 +599,20 @@ source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "dd8ecacd682fa05a985253592963306cb9799622d7b1cce4b1edb89c6ec85be1"
 dependencies = [
  "candid",
- "ic-cdk-macros",
+ "ic-cdk-macros 0.16.0",
+ "ic0",
+ "serde",
+ "serde_bytes",
+]
+
+[[package]]
+name = "ic-cdk"
+version = "0.17.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "b2abdf9341da9f9f6b451a40609cb69645a05a8e9eb7784c16209f16f2c0f76f"
+dependencies = [
+ "candid",
+ "ic-cdk-macros 0.17.0",
  "ic0",
  "serde",
  "serde_bytes",
@@ -620,13 +633,27 @@ dependencies = [
 ]
 
 [[package]]
-name = "ic-cdk-timers"
-version = "0.10.0"
+name = "ic-cdk-macros"
+version = "0.17.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "0c7c528bbb3d4d934b43a364855995d318649217c7510f40f92ad52eba3ff7be"
+checksum = "b8df41980e95dead28735ab0f748c75477b0c5eab37a09a5641c78ec406a1db0"
+dependencies = [
+ "candid",
+ "proc-macro2",
+ "quote",
+ "serde",
+ "serde_tokenstream",
+ "syn 2.0.48",
+]
+
+[[package]]
+name = "ic-cdk-timers"
+version = "0.11.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "fb8fd812a9e26f6aa00594546f8fbf4d4853f39c3ba794c8ff11ecf86fd3c9e4"
 dependencies = [
  "futures",
- "ic-cdk",
+ "ic-cdk 0.17.0",
  "ic0",
  "serde",
  "serde_bytes",
@@ -688,7 +715,7 @@ dependencies = [
  "candid",
  "crc32fast",
  "hex",
- "ic-cdk",
+ "ic-cdk 0.16.0",
  "serde",
  "serde_bytes",
  "sha2",
@@ -830,8 +857,8 @@ name = "junobuild-collections"
 version = "0.0.8"
 dependencies = [
  "candid",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "ic-cdk-timers",
  "junobuild-shared",
  "serde",
@@ -842,7 +869,7 @@ name = "junobuild-macros"
 version = "0.0.2"
 dependencies = [
  "candid",
- "ic-cdk",
+ "ic-cdk 0.17.0",
  "proc-macro2",
  "quote",
  "serde",
@@ -858,8 +885,8 @@ dependencies = [
  "candid",
  "ciborium",
  "getrandom",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "ic-cdk-timers",
  "ic-stable-structures",
  "junobuild-collections",
@@ -881,8 +908,8 @@ dependencies = [
  "candid",
  "ciborium",
  "futures",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "ic-ledger-types",
  "ic-stable-structures",
  "icrc-ledger-types",
@@ -899,8 +926,8 @@ dependencies = [
  "candid",
  "globset",
  "hex",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "ic-cdk-timers",
  "ic-certification",
  "ic-representation-independent-hash",
@@ -1010,8 +1037,8 @@ version = "0.0.13"
 dependencies = [
  "candid",
  "futures",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "ic-ledger-types",
  "icrc-ledger-types",
  "junobuild-shared",
@@ -1069,8 +1096,8 @@ name = "observatory"
 version = "0.0.7"
 dependencies = [
  "candid",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "ic-cdk-timers",
  "junobuild-shared",
  "lazy_static",
@@ -1089,8 +1116,8 @@ version = "0.0.8"
 dependencies = [
  "candid",
  "ciborium",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "ic-stable-structures",
  "isbot",
  "junobuild-shared",
@@ -1282,8 +1309,8 @@ name = "satellite"
 version = "0.0.20"
 dependencies = [
  "candid",
- "ic-cdk",
- "ic-cdk-macros",
+ "ic-cdk 0.17.0",
+ "ic-cdk-macros 0.17.0",
  "junobuild-satellite",
  "serde",
 ]

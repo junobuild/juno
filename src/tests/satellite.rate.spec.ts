@@ -30,44 +30,78 @@ describe('Satellite rate', () => {
 		await pic?.tearDown();
 	});
 
+	const initDoc = async (collection: string): Promise<Doc> => {
+		const { set_doc } = actor;
+
+		const user = Ed25519KeyIdentity.generate();
+		actor.setIdentity(user);
+
+		const doc = await set_doc(collection, user.getPrincipal().toText(), {
+			data: await toArray({}),
+			description: toNullable(),
+			version: toNullable()
+		});
+
+		return doc;
+	};
+
+	const testDocs = async ({
+		length,
+		collection
+	}: {
+		length: number;
+		collection: string;
+	}): Promise<number> => {
+		const keys = Array.from({ length });
+
+		const docs = [];
+
+		for (const _ of keys) {
+			const doc = await initDoc(collection);
+			docs.push(doc);
+		}
+
+		return docs.length;
+	};
+
 	describe('user', () => {
-		const initUser = async (): Promise<Doc> => {
-			const { set_doc } = actor;
+		const config = async ({
+			collection,
+			collectionType,
+			max_tokens
+		}: {
+			max_tokens: bigint;
+			collection: string;
+			collectionType: { Db: null } | { Storage: null };
+		}) => {
+			actor.setIdentity(controller);
 
-			const user = Ed25519KeyIdentity.generate();
-			actor.setIdentity(user);
+			const { get_rule, set_rule } = actor;
 
-			const doc = await set_doc('#user', user.getPrincipal().toText(), {
-				data: await toArray({
-					provider: 'internet_identity'
-				}),
-				description: toNullable(),
-				version: toNullable()
+			const result = await get_rule(collectionType, collection);
+
+			const rule = fromNullable(result);
+
+			assertNonNullish(rule);
+
+			await set_rule(collectionType, collection, {
+				...rule,
+				rate_config: [
+					{
+						max_tokens,
+						time_per_token_ns: 600_000_000n
+					}
+				]
 			});
-
-			return doc;
-		};
-
-		const testUsers = async (length: number): Promise<number> => {
-			const keys = Array.from({ length });
-
-			const docs = [];
-
-			for (const _ of keys) {
-				const doc = await initUser();
-				docs.push(doc);
-			}
-
-			return docs.length;
 		};
 
 		it('should not throw error if there is a delay', async () => {
-			await testUsers(101);
+			await testDocs({ length: 101, collection: '#user' });
 
 			// Observed this advance time in comparison to last updated_at of 600 milliseconds
 			await pic.advanceTime(200);
 
-			await testUsers(1);
+			await testDocs({ length: 1, collection: '#user' });
 		});
 
 		it('should throw error if user rate is reached', async () => {
@@ -75,7 +109,7 @@ describe('Satellite rate', () => {
 
 			try {
 				// DEFAULT 100 per minutes. So 1 for very first token + 100
-				await testUsers(102);
+				await testDocs({ length: 102, collection: '#user' });
 
 				expect(true).toBe(false);
 			} catch (error: unknown) {
@@ -86,37 +120,85 @@ describe('Satellite rate', () => {
 		it('should set config and accept more users', async () => {
 			await pic.advanceTime(60600);
 
-			actor.setIdentity(controller);
-
-			const { get_rule, set_rule } = actor;
-
-			const result = await get_rule({ Db: null }, '#user');
-
-			const rule = fromNullable(result);
-
-			assertNonNullish(rule);
-
-			await set_rule({ Db: null }, '#user', {
-				...rule,
-				rate_config: [
-					{
-						max_tokens: 201n,
-						time_per_token_ns: 600_000_000n
-					}
-				]
+			await config({
+				collection: '#user',
+				collectionType: { Db: null },
+				max_tokens: 201n
 			});
 
 			await pic.advanceTime(600000);
 
 			const length = 201;
 
-			const count = await testUsers(length);
+			const count = await testDocs({ length, collection: '#user' });
 
 			expect(count).toBe(length);
 
 			try {
 				// One too many
-				await testUsers(1);
+				await testDocs({ length: 1, collection: '#user' });
+
+				expect(true).toBe(false);
+			} catch (error: unknown) {
+				expect((error as Error).message).toContain('Rate limit reached, try again later.');
+			}
+		});
+	});
+
+	const config = async ({
+		collection,
+		collectionType,
+		max_tokens
+	}: {
+		max_tokens: bigint;
+		collection: string;
+		collectionType: { Db: null } | { Storage: null };
+	}) => {
+		actor.setIdentity(controller);
+
+		const { set_rule } = actor;
+
+		await set_rule(collectionType, collection, {
+			memory: toNullable(),
+			max_size: toNullable(),
+			max_capacity: toNullable(),
+			read: { Managed: null },
+			mutable_permissions: toNullable(true),
+			write: { Managed: null },
+			version: toNullable(),
+			rate_config: [
+				{
+					max_tokens,
+					time_per_token_ns: 600_000_000n
+				}
+			]
+		});
+	};
+
+	describe('datastore', () => {
+		const collectionType = { Db: null };
+		const collection = 'test_db_values';
+
+		it('should not throw error if there is a delay', async () => {
+			await config({
+				collection,
+				collectionType,
+				max_tokens: 10n
+			});
+
+			await testDocs({ length: 9, collection });
+
+			// Observed this advance time in comparison to last updated_at of 600 milliseconds
+			await pic.advanceTime(200);
+
+			await testDocs({ length: 1, collection });
+		});
+
+		it('should throw error if user rate is reached', async () => {
+			await pic.advanceTime(60600);
+
+			try {
+				await testDocs({ length: 11, collection });
 
 				expect(true).toBe(false);
 			} catch (error: unknown) {

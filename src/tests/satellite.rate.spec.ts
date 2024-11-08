@@ -287,7 +287,7 @@ describe('Satellite rate', () => {
 			});
 		});
 
-		describe.only('chunk', () => {
+		describe('chunk', () => {
 			beforeEach(async () => {
 				await config({
 					collection,

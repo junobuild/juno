@@ -1,4 +1,8 @@
-import type { Doc, _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
+import type {
+	Doc,
+	InitUploadResult,
+	_SERVICE as SatelliteActor
+} from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { fromNullable, toNullable } from '@dfinity/utils';
@@ -162,9 +166,9 @@ describe('Satellite rate', () => {
 			memory: toNullable(),
 			max_size: toNullable(),
 			max_capacity: toNullable(),
-			read: { Managed: null },
+			read: { Public: null },
 			mutable_permissions: toNullable(true),
-			write: { Managed: null },
+			write: { Public: null },
 			version: toNullable(),
 			rate_config: [
 				{
@@ -179,13 +183,15 @@ describe('Satellite rate', () => {
 		const collectionType = { Db: null };
 		const collection = 'test_db_values';
 
-		it('should not throw error if there is a delay', async () => {
+		beforeAll(async () => {
 			await config({
 				collection,
 				collectionType,
 				max_tokens: 10n
 			});
+		});
 
+		it('should not throw error if there is a delay', async () => {
 			await testDocs({ length: 9, collection });
 
 			// Observed this advance time in comparison to last updated_at of 600 milliseconds
@@ -199,6 +205,71 @@ describe('Satellite rate', () => {
 
 			try {
 				await testDocs({ length: 11, collection });
+
+				expect(true).toBe(false);
+			} catch (error: unknown) {
+				expect((error as Error).message).toContain('Rate limit reached, try again later.');
+			}
+		});
+	});
+
+	describe.only('storage', () => {
+		const collectionType = { Storage: null };
+		const collection = 'test_storage_values';
+
+		const initBatch = async (i: number): Promise<InitUploadResult> => {
+			const { init_asset_upload } = actor;
+
+			const user = Ed25519KeyIdentity.generate();
+			actor.setIdentity(user);
+
+			const file = await init_asset_upload({
+				collection,
+				description: toNullable(),
+				encoding_type: [],
+				full_path: `/${collection}/hello${i}.html`,
+				name: `hello${i}.html`,
+				token: toNullable()
+			});
+
+			return file;
+		};
+
+		const testBatches = async (length: number): Promise<number> => {
+			const keys = Array.from({ length }).map((_, i) => i);
+
+			const assets = [];
+
+			for (const key of keys) {
+				const asset = await initBatch(key);
+				assets.push(asset);
+			}
+
+			return assets.length;
+		};
+
+		beforeAll(async () => {
+			await config({
+				collection,
+				collectionType,
+				max_tokens: 10n
+			});
+		});
+
+		it('should not throw error if there is a delay', async () => {
+			await testBatches(9);
+
+			// Observed this advance time in comparison to last updated_at of 600 milliseconds
+			await pic.advanceTime(200);
+
+			await testBatches(1);
+		});
+
+		it('should throw error if user rate is reached', async () => {
+			await pic.advanceTime(60600);
+
+			try {
+				await testBatches(11);
 
 				expect(true).toBe(false);
 			} catch (error: unknown) {

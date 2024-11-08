@@ -135,9 +135,9 @@ describe('Satellite rate', () => {
 
 			const length = 201;
 
-			const count = await testDocs({ length, collection: '#user' });
+			const docs = await testDocs({ length, collection: '#user' });
 
-			expect(count).toBe(length);
+			expect(docs.length).toBe(length);
 
 			try {
 				// One too many

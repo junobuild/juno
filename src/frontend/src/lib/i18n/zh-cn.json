@@ -555,7 +555,8 @@
 		"heap": "堆栈",
 		"stable": "稳定",
 		"immutable": "将权限改为只读",
-		"clear_collection": "清除文件集"
+		"clear_collection": "清除文件集",
+		"options": "Options"
 	},
 	"sort": {
 		"title": "排序结果",

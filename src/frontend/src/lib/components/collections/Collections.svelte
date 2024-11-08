@@ -60,10 +60,6 @@
 			height: 100%;
 			overflow-y: auto;
 		}
-
-		.action {
-			display: inline-block;
-		}
 	}
 
 	.title {
@@ -74,8 +70,16 @@
 		@include collections.action;
 
 		&.offset {
-			margin: var(--padding-2x) 0 var(--padding-2x) var(--padding-7x);
+			margin: var(--padding) 0 var(--padding) var(--padding-7x);
 			box-sizing: border-box;
+		}
+
+		&:first-of-type {
+			margin-top: var(--padding-2x);
+		}
+
+		&:last-of-type {
+			margin-bottom: var(--padding-2x);
 		}
 	}
 

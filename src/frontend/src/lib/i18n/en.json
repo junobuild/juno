@@ -555,7 +555,8 @@
 		"heap": "Heap",
 		"stable": "Stable",
 		"immutable": "Make permissions immutable",
-		"clear_collection": "Clear collection"
+		"clear_collection": "Clear collection",
+		"options": "Options"
 	},
 	"sort": {
 		"title": "Sort results",

@@ -1,10 +1,11 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher, getContext } from 'svelte';
+	import { type SvelteComponent, createEventDispatcher, getContext } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
 	import type { RateConfig, Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { setRule } from '$lib/api/satellites.api';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
+	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
@@ -143,6 +144,40 @@
 	};
 
 	let disabled = $derived(isNullish(collection) || collection === '');
+
+	let collapsibleRef: (SvelteComponent & { open: () => void; close: () => void }) | undefined =
+		$state(undefined);
+
+	const toggle = (toggleOptions: boolean) => {
+		if (!toggleOptions) {
+			collapsibleRef?.close();
+
+			return;
+		}
+
+		collapsibleRef?.open();
+	};
+
+	// TODO: that's ugly but really did not find any other solution to deal with the reactivity of the toggle which ends re-selecting the rule.
+	let toggleCollection: string | undefined = $state(undefined);
+
+	$effect(() => {
+		const r = $store.rule?.[1] ?? undefined;
+
+		if (toggleCollection === $store.rule?.[0]) {
+			return;
+		}
+
+		toggleCollection = $store.rule?.[0];
+
+		const toggleOptions =
+			nonNullish(fromNullable(r?.max_capacity ?? [])) ||
+			nonNullish(fromNullable(r?.max_size ?? [])) ||
+			nonNullish(fromNullable(r?.rate_config ?? [])) ||
+			fromNullable(r?.mutable_permissions ?? []) === false;
+
+		toggle(toggleOptions);
+	});
 </script>
 
 <article>
@@ -204,72 +239,76 @@
 			</Value>
 		</div>
 
-		{#if typeDatastore}
+		<Collapsible bind:this={collapsibleRef}>
+			<svelte:fragment slot="header">{$i18n.collections.options}</svelte:fragment>
+
+			{#if typeDatastore}
+				<div>
+					<Value>
+						{#snippet label()}
+							{$i18n.collections.max_capacity}
+						{/snippet}
+						<Input
+							inputType="number"
+							placeholder={$i18n.collections.max_capacity_placeholder}
+							name="maxLength"
+							required={false}
+							bind:value={maxCapacity}
+							on:blur={() =>
+								(maxCapacity = nonNullish(maxCapacity) ? Math.trunc(maxCapacity) : undefined)}
+						/>
+					</Value>
+				</div>
+			{/if}
+
+			{#if typeStorage}
+				<div>
+					<Value>
+						{#snippet label()}
+							{$i18n.collections.max_size}
+						{/snippet}
+						<Input
+							inputType="number"
+							placeholder={$i18n.collections.max_size_placeholder}
+							name="maxSize"
+							required={false}
+							bind:value={maxSize}
+							on:blur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
+						/>
+					</Value>
+				</div>
+			{/if}
+
 			<div>
 				<Value>
 					{#snippet label()}
-						{$i18n.collections.max_capacity}
+						{$i18n.collections.rate_limit}
 					{/snippet}
 					<Input
 						inputType="number"
-						placeholder={$i18n.collections.max_capacity_placeholder}
-						name="maxLength"
+						placeholder={$i18n.collections.rate_limit_placeholder}
+						name="maxTokens"
 						required={false}
-						bind:value={maxCapacity}
-						on:blur={() =>
-							(maxCapacity = nonNullish(maxCapacity) ? Math.trunc(maxCapacity) : undefined)}
+						bind:value={maxTokens}
+						on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
 					/>
 				</Value>
 			</div>
-		{/if}
 
-		{#if typeStorage}
-			<div>
-				<Value>
-					{#snippet label()}
-						{$i18n.collections.max_size}
-					{/snippet}
-					<Input
-						inputType="number"
-						placeholder={$i18n.collections.max_size_placeholder}
-						name="maxSize"
-						required={false}
-						bind:value={maxSize}
-						on:blur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
-					/>
-				</Value>
-			</div>
-		{/if}
-
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.collections.rate_limit}
-				{/snippet}
-				<Input
-					inputType="number"
-					placeholder={$i18n.collections.rate_limit_placeholder}
-					name="maxTokens"
-					required={false}
-					bind:value={maxTokens}
-					on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
-				/>
-			</Value>
-		</div>
-
-		{#if !currentImmutable}
-			<div class="checkbox">
-				<label>
-					<input
-						type="checkbox"
-						checked={immutable}
-						disabled={currentImmutable}
-						onchange={() => (immutable = !immutable)}
-					/>
-					<span>{$i18n.collections.immutable}</span>
-				</label>
-			</div>
-		{/if}
+			{#if !currentImmutable}
+				<div class="checkbox">
+					<label>
+						<input
+							type="checkbox"
+							checked={immutable}
+							disabled={currentImmutable}
+							onchange={() => (immutable = !immutable)}
+						/>
+						<span>{$i18n.collections.immutable}</span>
+					</label>
+				</div>
+			{/if}
+		</Collapsible>
 
 		<div class="toolbar">
 			<button type="button" onclick={() => dispatch('junoCollectionCancel')}

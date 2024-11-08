@@ -577,6 +577,7 @@ interface I18nCollections {
 	stable: string;
 	immutable: string;
 	clear_collection: string;
+	options: string;
 }
 
 interface I18nSort {

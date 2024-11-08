@@ -14,7 +14,7 @@ members = [
 resolver = "2"
 
 [workspace.package]
-authors = ["David Dal Busco <https://daviddalbusco.com>"]
+authors = ["David Dal Busco Test <https://daviddalbusco.com>"]
 edition = "2021"
 repository = "https://github.com/junobuild/juno"
 homepage = "https://juno.build"

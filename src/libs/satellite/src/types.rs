@@ -1,6 +1,6 @@
 pub mod state {
     use crate::auth::types::state::AuthenticationHeapState;
-    use crate::db::types::state::{DbHeapState, DbStable};
+    use crate::db::types::state::{DbHeapState, DbRuntimeState, DbStable};
     use crate::memory::init_stable_state;
     use crate::storage::types::state::{AssetsStable, ContentChunksStable};
     use candid::CandidType;
@@ -40,6 +40,7 @@ pub mod state {
     #[derive(Default, Clone)]
     pub struct RuntimeState {
         pub rng: Option<StdRng>, // rng = Random Number Generator
+        pub db: DbRuntimeState,
     }
 }
 

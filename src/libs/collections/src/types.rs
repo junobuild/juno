@@ -11,6 +11,7 @@ pub mod core {
 pub mod rules {
     use crate::types::core::CollectionKey;
     use candid::CandidType;
+    use junobuild_shared::rate::types::RateConfig;
     use junobuild_shared::serializers::deserialize_default_as_true;
     use junobuild_shared::types::state::Timestamp;
     use junobuild_shared::types::state::Version;
@@ -19,7 +20,7 @@ pub mod rules {
 
     pub type Rules = HashMap<CollectionKey, Rule>;
 
-    #[derive(CandidType, Serialize, Deserialize, Clone, Debug)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Rule {
         pub read: Permission,
         pub write: Permission,
@@ -31,9 +32,10 @@ pub mod rules {
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
+        pub rate_config: Option<RateConfig>,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Default, Clone, Debug, PartialEq)]
+    #[derive(CandidType, Serialize, Deserialize, Default, Clone, PartialEq)]
     pub enum Memory {
         // Backwards compatibility. Version of the Satellite <= v0.0.11 had no memory information and we originally introduced the option with Heap as default.
         // If we set Stable as default, the state won't resolve the information correctly given that we use memory.clone().unwrap_or_default() to select which type of memory to read in the Datastore.
@@ -43,7 +45,7 @@ pub mod rules {
         Stable,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone, Debug, PartialEq)]
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq)]
     pub enum Permission {
         // No rules applied
         Public,
@@ -59,6 +61,7 @@ pub mod rules {
 pub mod interface {
     use crate::types::rules::{Memory, Permission};
     use candid::CandidType;
+    use junobuild_shared::rate::types::RateConfig;
     use junobuild_shared::types::state::Version;
     use serde::Deserialize;
 
@@ -71,6 +74,7 @@ pub mod interface {
         pub max_size: Option<u128>,
         pub max_capacity: Option<u32>,
         pub version: Option<Version>,
+        pub rate_config: Option<RateConfig>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]

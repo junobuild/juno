@@ -120,6 +120,10 @@ pub fn assert_system_collection_set_permission(
         ));
     }
 
+    if current_rule.rate_config.is_some() && user_rule.rate_config.is_none() {
+        return Err("Rate config cannot be disabled.".to_string());
+    }
+
     Ok(())
 }
 

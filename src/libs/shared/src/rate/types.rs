@@ -1,6 +1,9 @@
 use crate::types::state::Timestamp;
 use candid::{CandidType, Deserialize};
 use serde::Serialize;
+use std::collections::HashMap;
+
+pub type RateTokenStore = HashMap<String, RateTokens>;
 
 #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
 pub struct RateTokens {

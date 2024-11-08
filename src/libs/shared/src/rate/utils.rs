@@ -1,6 +1,25 @@
-use crate::rate::types::{RateConfig, RateTokens};
+use crate::rate::types::{RateConfig, RateTokenStore, RateTokens};
 use ic_cdk::api::time;
 use std::cmp::min;
+
+pub fn increment_and_assert_rate_store(
+    key: &String,
+    config: &Option<RateConfig>,
+    rate_tokens: &mut RateTokenStore,
+) -> Result<(), String> {
+    let config = match config {
+        Some(config) => config,
+        None => return Ok(()),
+    };
+
+    if let Some(tokens) = rate_tokens.get_mut(key) {
+        increment_and_assert_rate(config, tokens)?;
+    } else {
+        rate_tokens.insert(key.clone(), RateTokens::default());
+    }
+
+    Ok(())
+}
 
 pub fn increment_and_assert_rate(
     config: &RateConfig,

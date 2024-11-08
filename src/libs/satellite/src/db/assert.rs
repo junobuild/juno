@@ -1,4 +1,5 @@
 use crate::db::msg::ERROR_CANNOT_WRITE;
+use crate::db::runtime::increment_and_assert_rate;
 use crate::db::types::config::DbConfig;
 use crate::db::types::state::{DocAssertDelete, DocAssertSet, DocContext};
 use crate::hooks::{invoke_assert_delete_doc, invoke_assert_set_doc};
@@ -48,6 +49,8 @@ pub fn assert_set_doc(
         },
     )?;
 
+    increment_and_assert_rate(collection, &rule.rate_config)?;
+
     Ok(())
 }
 
@@ -77,6 +80,8 @@ pub fn assert_delete_doc(
             },
         },
     )?;
+
+    increment_and_assert_rate(collection, &rule.rate_config)?;
 
     Ok(())
 }

@@ -96,7 +96,9 @@ export const setRule = async ({
 		memory: isNullish(rule)
 			? [memoryFromText(memory)]
 			: [fromNullable(rule.memory) ?? MemoryStable],
-		mutable_permissions: toNullable(mutablePermissions)
+		mutable_permissions: toNullable(mutablePermissions),
+		// TODO: rate_config
+		rate_config: []
 	};
 
 	const { set_rule } = await getSatelliteActor({ satelliteId, identity });

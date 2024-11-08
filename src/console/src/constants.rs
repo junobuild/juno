@@ -25,6 +25,7 @@ pub const DEFAULT_RELEASES_COLLECTIONS: [(&str, SetRule); 1] = [(
         max_size: None,
         max_capacity: None,
         version: None,
+        rate_config: None,
     },
 )];
 

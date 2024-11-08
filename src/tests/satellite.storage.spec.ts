@@ -303,7 +303,8 @@ describe('Satellite storage', () => {
 						read: { Managed: null },
 						mutable_permissions: toNullable(),
 						write: { Managed: null },
-						version: toNullable()
+						version: toNullable(),
+						rate_config: toNullable()
 					};
 
 					await set_rule({ Storage: null }, collection, setRule);
@@ -683,7 +684,8 @@ describe('Satellite storage', () => {
 						read: { Managed: null },
 						mutable_permissions: toNullable(),
 						write: { Managed: null },
-						version: toNullable()
+						version: toNullable(),
+						rate_config: toNullable()
 					};
 
 					await set_rule({ Storage: null }, collection, setRule);

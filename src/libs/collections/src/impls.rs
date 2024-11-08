@@ -54,13 +54,14 @@ impl Rule {
             created_at,
             updated_at,
             version: Some(version),
+            rate_config: user_rule.rate_config.clone(),
         }
     }
 
     fn prepare_sys_rule(
         collection: &CollectionKey,
         current_rule: &Option<&Rule>,
-        _user_rule: &SetRule,
+        user_rule: &SetRule,
     ) -> Result<Rule, String> {
         match current_rule {
             None => Err(format!("Collection {} is reserved.", collection)),
@@ -78,6 +79,7 @@ impl Rule {
                     created_at,
                     updated_at,
                     version: Some(version),
+                    rate_config: user_rule.rate_config.clone(),
                 };
 
                 Ok(rule)

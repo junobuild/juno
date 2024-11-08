@@ -4,10 +4,11 @@ import type {
 	_SERVICE as SatelliteActor
 } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
-import { fromNullable, toNullable } from '@dfinity/utils';
+import { fromNullable, nonNullish, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
-import { assertNonNullish, toArray } from '@junobuild/utils';
+import { assertNonNullish, isNullish, toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
@@ -154,28 +155,33 @@ describe('Satellite rate', () => {
 		collectionType,
 		max_tokens
 	}: {
-		max_tokens: bigint;
+		max_tokens: bigint | undefined;
 		collection: string;
 		collectionType: { Db: null } | { Storage: null };
 	}) => {
 		actor.setIdentity(controller);
 
-		const { set_rule } = actor;
+		const { set_rule, get_rule } = actor;
+
+		const result = await get_rule(collectionType, collection);
+		const rule = fromNullable(result);
 
 		await set_rule(collectionType, collection, {
-			memory: toNullable(),
+			memory: nonNullish(rule) ? rule.memory : toNullable(),
 			max_size: toNullable(),
 			max_capacity: toNullable(),
 			read: { Public: null },
 			mutable_permissions: toNullable(true),
 			write: { Public: null },
-			version: toNullable(),
-			rate_config: [
-				{
-					max_tokens,
-					time_per_token_ns: 600_000_000n
-				}
-			]
+			version: nonNullish(rule) ? rule.version : toNullable(),
+			rate_config: isNullish(max_tokens)
+				? []
+				: [
+						{
+							max_tokens,
+							time_per_token_ns: 600_000_000n
+						}
+					]
 		});
 	};
 
@@ -217,13 +223,13 @@ describe('Satellite rate', () => {
 		const collectionType = { Storage: null };
 		const collection = 'test_storage_values';
 
-		const initBatch = async (i: number): Promise<InitUploadResult> => {
+		const initBatch = async (i: number): Promise<{ batch: InitUploadResult; user: Identity }> => {
 			const { init_asset_upload } = actor;
 
 			const user = Ed25519KeyIdentity.generate();
 			actor.setIdentity(user);
 
-			const file = await init_asset_upload({
+			const batch = await init_asset_upload({
 				collection,
 				description: toNullable(),
 				encoding_type: [],
@@ -232,49 +238,122 @@ describe('Satellite rate', () => {
 				token: toNullable()
 			});
 
-			return file;
+			return { batch, user };
 		};
 
-		const testBatches = async (length: number): Promise<number> => {
+		const testBatches = async (
+			length: number
+		): Promise<{ batch: InitUploadResult; user: Identity }[]> => {
 			const keys = Array.from({ length }).map((_, i) => i);
 
-			const assets = [];
+			const batches = [];
 
 			for (const key of keys) {
-				const asset = await initBatch(key);
-				assets.push(asset);
+				const batch = await initBatch(key);
+				batches.push(batch);
 			}
 
-			return assets.length;
+			return batches;
 		};
 
-		beforeAll(async () => {
-			await config({
-				collection,
-				collectionType,
-				max_tokens: 10n
+		describe('batch', () => {
+			beforeAll(async () => {
+				await config({
+					collection,
+					collectionType,
+					max_tokens: 10n
+				});
+			});
+
+			it('should not throw error if there is a delay', async () => {
+				await testBatches(9);
+
+				// Observed this advance time in comparison to last updated_at of 600 milliseconds
+				await pic.advanceTime(200);
+
+				await testBatches(1);
+			});
+
+			it('should throw error if user rate is reached', async () => {
+				await pic.advanceTime(60600);
+
+				try {
+					await testBatches(11);
+
+					expect(true).toBe(false);
+				} catch (error: unknown) {
+					expect((error as Error).message).toContain('Rate limit reached, try again later.');
+				}
 			});
 		});
 
-		it('should not throw error if there is a delay', async () => {
-			await testBatches(9);
+		describe.only('chunk', () => {
+			beforeEach(async () => {
+				await config({
+					collection,
+					collectionType,
+					max_tokens: undefined
+				});
+			});
 
-			// Observed this advance time in comparison to last updated_at of 600 milliseconds
-			await pic.advanceTime(200);
+			const testChunks = async (batches: { batch: InitUploadResult; user: Identity }[]) => {
+				const { upload_asset_chunk, commit_asset_upload } = actor;
 
-			await testBatches(1);
-		});
+				for (const batch of batches) {
+					actor.setIdentity(batch.user);
 
-		it('should throw error if user rate is reached', async () => {
-			await pic.advanceTime(60600);
+					const chunk = await upload_asset_chunk({
+						batch_id: batch.batch.batch_id,
+						content: [],
+						order_id: [0n]
+					});
 
-			try {
-				await testBatches(11);
+					await commit_asset_upload({
+						batch_id: batch.batch.batch_id,
+						chunk_ids: [chunk.chunk_id],
+						headers: []
+					});
+				}
+			};
 
-				expect(true).toBe(false);
-			} catch (error: unknown) {
-				expect((error as Error).message).toContain('Rate limit reached, try again later.');
-			}
+			it('should not throw error if there is a delay', async () => {
+				const batches = await testBatches(10);
+
+				await config({
+					collection,
+					collectionType,
+					max_tokens: 10n
+				});
+
+				const [last, ...rest] = batches.reverse();
+
+				await testChunks(rest);
+
+				// Observed this advance time in comparison to last updated_at of 600 milliseconds
+				await pic.advanceTime(200);
+
+				await testChunks([last]);
+			});
+
+			it('should throw error if user rate is reached', async () => {
+				await pic.advanceTime(60600);
+
+				const batches = await testBatches(11);
+
+				await config({
+					collection,
+					collectionType,
+					max_tokens: 10n
+				});
+
+				try {
+					await testChunks(batches);
+
+					expect(true).toBe(false);
+				} catch (error: unknown) {
+					expect((error as Error).message).toContain('Rate limit reached, try again later.');
+				}
+			});
 		});
 	});
 });

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { type Component, createEventDispatcher, getContext } from 'svelte';
+	import { type SvelteComponent, createEventDispatcher, getContext } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
 	import type { RateConfig, Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import { setRule } from '$lib/api/satellites.api';
@@ -145,7 +145,7 @@
 
 	let disabled = $derived(isNullish(collection) || collection === '');
 
-	let collapsibleRef: (Component & { open: () => void; close: () => void }) | undefined =
+	let collapsibleRef: (SvelteComponent & { open: () => void; close: () => void }) | undefined =
 		$state(undefined);
 
 	const toggle = (toggleOptions: boolean) => {

@@ -9,6 +9,7 @@ import type {
 	RulesType,
 	SetRule
 } from '$declarations/satellite/satellite.did';
+import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { MemoryStable, type MemoryText, type PermissionText } from '$lib/constants/rules.constants';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -72,6 +73,7 @@ export const setRule = async ({
 	rule,
 	maxSize,
 	maxCapacity,
+	maxTokens,
 	mutablePermissions,
 	identity
 }: {
@@ -84,6 +86,7 @@ export const setRule = async ({
 	rule: Rule | undefined;
 	maxSize: number | undefined;
 	maxCapacity: number | undefined;
+	maxTokens: number | undefined;
 	mutablePermissions: boolean;
 	identity: OptionIdentity;
 }) => {
@@ -97,8 +100,14 @@ export const setRule = async ({
 			? [memoryFromText(memory)]
 			: [fromNullable(rule.memory) ?? MemoryStable],
 		mutable_permissions: toNullable(mutablePermissions),
-		// TODO: rate_config
-		rate_config: []
+		rate_config: toNullable(
+			nonNullish(maxTokens) && maxTokens > 0
+				? {
+						time_per_token_ns: DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS,
+						max_tokens: BigInt(maxTokens)
+					}
+				: undefined
+		)
 	};
 
 	const { set_rule } = await getSatelliteActor({ satelliteId, identity });

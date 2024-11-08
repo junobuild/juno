@@ -559,6 +559,8 @@ interface I18nCollections {
 	max_size_placeholder: string;
 	max_capacity: string;
 	max_capacity_placeholder: string;
+	rate_limit: string;
+	rate_limit_placeholder: string;
 	public: string;
 	private: string;
 	managed: string;

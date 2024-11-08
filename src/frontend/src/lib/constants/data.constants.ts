@@ -7,3 +7,5 @@ export const DEFAULT_LIST_ORDER: ListOrder = {
 };
 
 export const DEFAULT_LIST_PARAMS: ListParamsStoreData = { order: DEFAULT_LIST_ORDER, filter: {} };
+
+export const DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS = 600_000_000n;

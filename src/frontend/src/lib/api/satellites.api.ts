@@ -9,16 +9,13 @@ import type {
 	RulesType,
 	SetRule
 } from '$declarations/satellite/satellite.did';
-import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
-import { MemoryStable, type MemoryText, type PermissionText } from '$lib/constants/rules.constants';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
 import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
-import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
 import { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { isNullish, toNullable } from '@dfinity/utils';
 
 export const listDocs = async ({
 	satelliteId,
@@ -66,52 +63,18 @@ export const listRules = async ({
 export const setRule = async ({
 	satelliteId,
 	collection,
-	read,
-	write,
 	type,
-	memory,
 	rule,
-	maxSize,
-	maxCapacity,
-	maxTokens,
-	mutablePermissions,
 	identity
 }: {
 	satelliteId: Principal;
 	collection: string;
-	read: PermissionText;
-	write: PermissionText;
 	type: RulesType;
-	memory: MemoryText;
-	rule: Rule | undefined;
-	maxSize: number | undefined;
-	maxCapacity: number | undefined;
-	maxTokens: number | undefined;
-	mutablePermissions: boolean;
 	identity: OptionIdentity;
+	rule: SetRule;
 }) => {
-	const updateRule: SetRule = {
-		read: permissionFromText(read),
-		write: permissionFromText(write),
-		version: isNullish(rule) ? [] : rule.version,
-		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
-		max_capacity: toNullable(nonNullish(maxCapacity) && maxCapacity > 0 ? maxCapacity : undefined),
-		memory: isNullish(rule)
-			? [memoryFromText(memory)]
-			: [fromNullable(rule.memory) ?? MemoryStable],
-		mutable_permissions: toNullable(mutablePermissions),
-		rate_config: toNullable(
-			nonNullish(maxTokens) && maxTokens > 0
-				? {
-						time_per_token_ns: DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS,
-						max_tokens: BigInt(maxTokens)
-					}
-				: undefined
-		)
-	};
-
 	const { set_rule } = await getSatelliteActor({ satelliteId, identity });
-	await set_rule(type, collection, updateRule);
+	await set_rule(type, collection, rule);
 };
 
 export const deleteRule = async ({

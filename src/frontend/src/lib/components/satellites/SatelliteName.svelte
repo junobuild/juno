@@ -5,7 +5,7 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { setSatelliteName } from '$lib/services/mission-control.services';
-	import { busy } from '$lib/stores/busy.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -22,7 +22,6 @@
 	let visible: boolean = $state(false);
 
 	let validConfirm = $derived(nonNullish(satName) && satName !== '');
-	let saving = $state(false);
 
 	const handleSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -97,11 +96,11 @@
 			type="text"
 			placeholder={$i18n.satellites.edit_name}
 			maxlength={64}
-			disabled={saving}
+			disabled={$isBusy}
 			autocomplete="off"
 		/>
 
-		<button type="submit" class="submit" disabled={saving || !validConfirm}>
+		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
 			{$i18n.core.submit}
 		</button>
 	</form>

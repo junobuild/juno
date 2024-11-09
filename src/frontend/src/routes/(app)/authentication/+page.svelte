@@ -2,6 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
+	import AuthSettings from '$lib/components/auth/AuthSettings.svelte';
 	import Users from '$lib/components/auth/Users.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
@@ -14,7 +15,6 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import AuthSettings from '$lib/components/auth/AuthSettings.svelte';
 
 	const tabs: Tab[] = [
 		{

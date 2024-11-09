@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import type { Principal } from '@dfinity/principal';
+	import { fromNullable, isNullish } from '@dfinity/utils';
 	import type { RateConfig, Rule } from '$declarations/satellite/satellite.did';
 	import { getRule } from '$lib/api/satellites.api';
-	import type { Principal } from '@dfinity/principal';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { authStore } from '$lib/stores/auth.store';
-	import { fromNullable, isNullish } from '@dfinity/utils';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 
 	interface Props {
@@ -15,7 +15,7 @@
 
 	let { satelliteId }: Props = $props();
 
-	let rule: Rule | undefined = $state(undefined);
+	let rule: Rule | undefined = $state<Rule | undefined>(undefined);
 
 	const loadRule = async () => {
 		try {
@@ -35,7 +35,7 @@
 		}
 	};
 
-	let rateConfig: RateConfig | undefined = $derived(fromNullable(rule?.rate_config));
+	let rateConfig: RateConfig | undefined = $derived(fromNullable(rule?.rate_config ?? []));
 
 	let maxTokens: bigint | undefined = $derived(rateConfig?.max_tokens);
 

@@ -1,7 +1,7 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import AuthConfig from '$lib/components/auth/AuthConfig.svelte';
 	import SignInMethod from '$lib/components/auth/SignInMethod.svelte';
-	import type { Principal } from '@dfinity/principal';
 
 	interface Props {
 		satelliteId: Principal;

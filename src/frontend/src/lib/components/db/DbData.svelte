@@ -13,13 +13,13 @@
 	import Docs from '$lib/components/docs/Docs.svelte';
 	import { authStore } from '$lib/stores/auth.store';
 	import { listParamsStore } from '$lib/stores/data.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
 	import type { ListParams } from '$lib/types/list';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { i18n } from '$lib/stores/i18n.store';
 
 	const docsStore = writable<DataStoreData<DocDid>>(undefined);
 
@@ -58,7 +58,7 @@
 			setItems({ items, matches_length, items_length });
 		} catch (err: unknown) {
 			toasts.error({
-				text: $i18n.erors.load_documents,
+				text: $i18n.errors.load_documents,
 				detail: err
 			});
 		}

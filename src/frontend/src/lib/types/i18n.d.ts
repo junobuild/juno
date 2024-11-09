@@ -405,6 +405,9 @@ interface I18nErrors {
 	segment_detach: string;
 	ledger_balance_credits: string;
 	load_credits: string;
+	load_documents: string;
+	load_users: string;
+	load_settings: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;

@@ -19,6 +19,7 @@
 	import type { ListParams } from '$lib/types/list';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	const docsStore = writable<DataStoreData<DocDid>>(undefined);
 
@@ -57,7 +58,7 @@
 			setItems({ items, matches_length, items_length });
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Error while listing the documents.`,
+				text: $i18n.erors.load_documents,
 				detail: err
 			});
 		}

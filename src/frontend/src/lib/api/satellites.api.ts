@@ -63,6 +63,21 @@ export const listRules = async ({
 	return actor.list_rules(type);
 };
 
+export const getRule = async ({
+	satelliteId,
+	type,
+	identity,
+	collection
+}: {
+	satelliteId: Principal;
+	type: RulesType;
+	identity: OptionIdentity;
+	collection: string;
+}): Promise<[] | [Rule]> => {
+	const { get_rule } = await getSatelliteActor({ satelliteId, identity });
+	return get_rule(type, collection);
+};
+
 export const setRule = async ({
 	satelliteId,
 	collection,

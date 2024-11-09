@@ -22,7 +22,8 @@ use crate::hooks::{
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::random::defer_init_random_seed;
 use crate::rules::store::{
-    del_rule_db, del_rule_storage, get_rules_db, get_rules_storage, set_rule_db, set_rule_storage,
+    del_rule_db, del_rule_storage, get_rule_db, get_rule_storage, get_rules_db, get_rules_storage,
+    set_rule_db, set_rule_storage,
 };
 use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
@@ -227,6 +228,13 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 }
 
 /// Rules
+
+pub fn get_rule(rules_type: &RulesType, collection: &CollectionKey) -> Option<Rule> {
+    match rules_type {
+        RulesType::Db => get_rule_db(collection),
+        RulesType::Storage => get_rule_storage(collection),
+    }
+}
 
 pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
     match rules_type {

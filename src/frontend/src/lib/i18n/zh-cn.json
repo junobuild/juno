@@ -538,6 +538,8 @@
 		"max_size_placeholder": "以字节为单位最大值",
 		"max_capacity": "最大容许范围",
 		"max_capacity_placeholder": "在当前文档集中文档数量最大值",
+		"rate_limit": "Max updates",
+		"rate_limit_placeholder": "Limit of updates per minute",
 		"public": "公开",
 		"private": "私有",
 		"managed": "可管理的",
@@ -553,7 +555,8 @@
 		"heap": "堆栈",
 		"stable": "稳定",
 		"immutable": "将权限改为只读",
-		"clear_collection": "清除文件集"
+		"clear_collection": "清除文件集",
+		"options": "Options"
 	},
 	"sort": {
 		"title": "排序结果",

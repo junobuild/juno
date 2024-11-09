@@ -6,8 +6,8 @@ use crate::msg::{ERROR_CANNOT_COMMIT_BATCH, UPLOAD_NOT_ALLOWED};
 use crate::runtime::{
     clear_batch as clear_runtime_batch, clear_expired_batches as clear_expired_runtime_batches,
     clear_expired_chunks as clear_expired_runtime_chunks, get_batch as get_runtime_batch,
-    get_chunk as get_runtime_chunk, insert_batch as insert_runtime_batch,
-    insert_chunk as insert_runtime_chunk,
+    get_chunk as get_runtime_chunk, increment_and_assert_rate,
+    insert_batch as insert_runtime_batch, insert_chunk as insert_runtime_chunk,
 };
 use crate::strategies::{StorageAssertionsStrategy, StorageStateStrategy, StorageUploadStrategy};
 use crate::types::config::StorageConfig;
@@ -47,12 +47,17 @@ pub fn create_batch(
     config: &StorageConfig,
     init: InitAssetKey,
     reference_id: Option<ReferenceId>,
+    storage_state: &impl StorageStateStrategy,
 ) -> Result<BatchId, String> {
     assert_memory_size(config)?;
 
     assert_key(caller, &init.full_path, &init.collection, controllers)?;
 
     assert_description_length(&init.description)?;
+
+    let rule = storage_state.get_rule(&init.collection)?;
+
+    increment_and_assert_rate(&init.collection, &rule.rate_config)?;
 
     // Assert supported encoding type
     get_encoding_type(&init.encoding_type)?;
@@ -254,6 +259,8 @@ fn secure_commit_chunks(
     )?;
 
     let rule = storage_state.get_rule(&batch.key.collection)?;
+
+    increment_and_assert_rate(&batch.key.collection, &rule.rate_config)?;
 
     let current = storage_upload.get_asset(
         &batch.reference_id,

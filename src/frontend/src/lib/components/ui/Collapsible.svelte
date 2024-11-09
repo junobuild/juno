@@ -1,7 +1,7 @@
 <!-- @migration-task Error while migrating Svelte code: Can't migrate code with afterUpdate. Please migrate by hand. -->
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { afterUpdate, createEventDispatcher } from 'svelte';
+	import { afterUpdate } from 'svelte';
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
@@ -17,19 +17,31 @@
 
 	// Minimum height when some part of the text-content is visible (empirical value)
 	const CONTENT_MIN_HEIGHT = 40;
-	const dispatch = createEventDispatcher();
 
 	export let expanded = initiallyExpanded;
 	let container: HTMLDivElement | undefined;
 	let userUpdated = false;
 	let maxHeight: number | undefined;
 
-	const dispatchUpdate = () => dispatch('nnsToggle', { expanded });
+	export const close = () => {
+		if (!expanded) {
+			return;
+		}
+
+		toggleContent();
+	};
+
+	export const open = () => {
+		if (expanded) {
+			return;
+		}
+
+		toggleContent();
+	};
 
 	export const toggleContent = () => {
 		userUpdated = true;
 		expanded = !expanded;
-		dispatchUpdate();
 	};
 
 	const calculateMaxContentHeight = (): number => {

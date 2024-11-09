@@ -1,17 +1,19 @@
 use crate::memory::STATE;
 use crate::types::state::{
     Fee, Fees, HeapState, InvitationCode, InvitationCodeRedeem, InvitationCodes, MissionControls,
-    Payments, Rate, RateConfig, ReleaseVersion, ReleasesMetadata,
+    Payments, Rate, ReleaseVersion, ReleasesMetadata,
 };
 use ic_cdk::api::time;
 use ic_ledger_types::Tokens;
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
+use junobuild_shared::rate::types::RateConfig;
+use junobuild_shared::rate::utils::increment_and_assert_rate;
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::types::state::{ControllerId, Controllers};
-use std::cmp::min;
+use semver::Version;
 use std::collections::HashSet;
 
 /// Mission control centers
@@ -129,37 +131,26 @@ pub fn increment_orbiters_rate() -> Result<(), String> {
 }
 
 fn increment_rate_impl(rate: &mut Rate) -> Result<(), String> {
-    let new_tokens = (time() - rate.tokens.updated_at) / rate.config.time_per_token_ns;
-    if new_tokens > 0 {
-        // The number of tokens is capped otherwise tokens might accumulate
-        rate.tokens.tokens = min(rate.config.max_tokens, rate.tokens.tokens + new_tokens);
-        rate.tokens.updated_at += rate.config.time_per_token_ns * new_tokens;
-    }
-
-    // deduct a token for the current call
-    if rate.tokens.tokens > 0 {
-        rate.tokens.tokens -= 1;
-        Ok(())
-    } else {
-        Err("Rate limit reached, try again later.".to_string())
-    }
+    increment_and_assert_rate(&rate.config, &mut rate.tokens)
 }
 
 pub fn update_satellites_rate_config(config: &RateConfig) {
-    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().heap.rates.satellites))
+    STATE.with(|state| {
+        update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.satellites)
+    })
 }
 
 pub fn update_mission_controls_rate_config(config: &RateConfig) {
     STATE.with(|state| {
-        update_rate_config(config, &mut state.borrow_mut().heap.rates.mission_controls)
+        update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.mission_controls)
     })
 }
 
 pub fn update_orbiters_rate_config(config: &RateConfig) {
-    STATE.with(|state| update_rate_config(config, &mut state.borrow_mut().heap.rates.orbiters))
+    STATE.with(|state| update_rate_config_impl(config, &mut state.borrow_mut().heap.rates.orbiters))
 }
 
-fn update_rate_config(config: &RateConfig, rate: &mut Rate) {
+fn update_rate_config_impl(config: &RateConfig, rate: &mut Rate) {
     rate.config = config.clone();
 }
 
@@ -222,5 +213,8 @@ pub fn get_latest_satellite_version() -> Option<ReleaseVersion> {
 }
 
 fn get_latest_version(versions: &HashSet<ReleaseVersion>) -> Option<ReleaseVersion> {
-    versions.iter().max().cloned()
+    versions
+        .iter()
+        .max_by_key(|v| Version::parse(v).ok())
+        .cloned()
 }

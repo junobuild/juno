@@ -1,4 +1,3 @@
-use crate::types::state::RateConfig;
 use ic_ledger_types::Tokens;
 use junobuild_collections::types::interface::SetRule;
 use junobuild_collections::types::rules::Memory;
@@ -14,13 +13,6 @@ pub const ORBITER_CREATION_FEE_ICP: Tokens = Tokens::from_e8s(50_000_000);
 // A credit which can be used to start one satellite or one orbiter.
 pub const E8S_PER_ICP: Tokens = Tokens::from_e8s(100_000_000);
 
-// Rates
-// 60000000000 = 1min
-pub const DEFAULT_RATE_CONFIG: RateConfig = RateConfig {
-    max_tokens: 10,
-    time_per_token_ns: 60000000000,
-};
-
 pub const RELEASES_COLLECTION_KEY: &str = "#releases";
 
 pub const DEFAULT_RELEASES_COLLECTIONS: [(&str, SetRule); 1] = [(
@@ -33,6 +25,7 @@ pub const DEFAULT_RELEASES_COLLECTIONS: [(&str, SetRule); 1] = [(
         max_size: None,
         max_capacity: None,
         version: None,
+        rate_config: None,
     },
 )];
 

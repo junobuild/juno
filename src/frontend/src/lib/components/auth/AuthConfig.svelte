@@ -10,7 +10,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { busy, isBusy } from '$lib/stores/busy.store';
-	import Input from "$lib/components/ui/Input.svelte";
+	import Input from '$lib/components/ui/Input.svelte';
 
 	interface Props {
 		satelliteId: Principal;
@@ -74,7 +74,6 @@
 		busy.start();
 
 		try {
-
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.auth_rate_config_update,
@@ -115,13 +114,13 @@
 		<label for="maxTokens">{$i18n.collections.rate_limit}:</label>
 
 		<Input
-				inputType="number"
-				placeholder={$i18n.collections.rate_limit_placeholder}
-				name="maxTokens"
-				required={true}
-				disabled={$isBusy}
-				bind:value={maxTokens}
-				on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
+			inputType="number"
+			placeholder={$i18n.collections.rate_limit_placeholder}
+			name="maxTokens"
+			required={true}
+			disabled={$isBusy}
+			bind:value={maxTokens}
+			on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
 		/>
 
 		<button type="submit" class="submit" disabled={$isBusy}>

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import type { RateConfig, Rule } from '$declarations/satellite/satellite.did';
+	import type { Rule } from '$declarations/satellite/satellite.did';
 	import { getRule } from '$lib/api/satellites.api';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -9,7 +9,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { busy } from '$lib/stores/busy.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
 	import Input from "$lib/components/ui/Input.svelte";
 
 	interface Props {
@@ -48,7 +48,6 @@
 	});
 
 	let visible = $state(false);
-	let saving = $state(false);
 
 	const openModal = () => {
 		if (isNullish(rule)) {
@@ -67,12 +66,18 @@
 			return;
 		}
 
+		if (isNullish(maxTokens)) {
+			toasts.error({ text: $i18n.errors.auth_rate_config_max_tokens });
+			return;
+		}
+
 		busy.start();
 
 		try {
+
 		} catch (err: unknown) {
 			toasts.error({
-				text: $i18n.errors.satellite_name_update,
+				text: $i18n.errors.auth_rate_config_update,
 				detail: err
 			});
 		}
@@ -113,12 +118,13 @@
 				inputType="number"
 				placeholder={$i18n.collections.rate_limit_placeholder}
 				name="maxTokens"
-				required={false}
+				required={true}
+				disabled={$isBusy}
 				bind:value={maxTokens}
 				on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
 		/>
 
-		<button type="submit" class="submit" disabled={saving}>
+		<button type="submit" class="submit" disabled={$isBusy}>
 			{$i18n.core.submit}
 		</button>
 	</form>

@@ -472,6 +472,8 @@ interface I18nErrors {
 	wallet_receive_error: string;
 	wallet_missing_account: string;
 	auth_settings_no_loaded: string;
+	auth_rate_config_max_tokens: string;
+	auth_rate_config_update: string;
 }
 
 interface I18nDocument {

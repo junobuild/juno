@@ -47,7 +47,8 @@
 		loadRule();
 	});
 
-	let visible: boolean = $state(false);
+	let visible = $state(false);
+	let saving = $state(false);
 
 	const openModal = () => {
 		if (isNullish(rule)) {

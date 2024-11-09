@@ -454,7 +454,8 @@
 		"wallet_no_account": "签名方未提供账号.",
 		"wallet_load_balance": "账户余额不能被加载.",
 		"wallet_receive_error": "接受代币是出现异常错误.",
-		"wallet_missing_account": "没有有效账户处理账务.你确定链接钱包了?"
+		"wallet_missing_account": "没有有效账户处理账务.你确定链接钱包了?",
+		"auth_settings_no_loaded": "The authentication's settings are not yet loaded."
 	},
 	"document": {
 		"owner": "拥有者",

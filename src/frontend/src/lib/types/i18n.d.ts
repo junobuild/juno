@@ -471,6 +471,7 @@ interface I18nErrors {
 	wallet_load_balance: string;
 	wallet_receive_error: string;
 	wallet_missing_account: string;
+	auth_settings_no_loaded: string;
 }
 
 interface I18nDocument {

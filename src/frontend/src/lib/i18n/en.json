@@ -454,7 +454,8 @@
 		"wallet_no_account": "The wallet did not provide any account.",
 		"wallet_load_balance": "The balance of the account cannot be loaded.",
 		"wallet_receive_error": "Unexpected error while receiving tokens.",
-		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?"
+		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?",
+		"auth_settings_no_loaded": "The authentication's settings are not yet loaded."
 	},
 	"document": {
 		"owner": "Owner",

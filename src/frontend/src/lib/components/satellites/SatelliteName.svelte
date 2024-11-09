@@ -1,7 +1,5 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { run, stopPropagation, preventDefault } from 'svelte/legacy';
-
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
@@ -23,14 +21,12 @@
 
 	let visible: boolean = $state(false);
 
-	let validConfirm = $state(false);
-	let saving = false;
+	let validConfirm = $derived(nonNullish(satName) && satName !== '');
+	let saving = $state(false);
 
-	run(() => {
-		validConfirm = nonNullish(satName) && satName !== '';
-	});
+	const handleSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
 
-	const handleSubmit = async () => {
 		if (!validConfirm) {
 			// Submit is disabled if not valid
 			toasts.error({
@@ -65,6 +61,12 @@
 
 		busy.stop();
 	};
+
+	const open = ($event: MouseEvent | TouchEvent) => {
+		$event.stopPropagation();
+
+		visible = true;
+	};
 </script>
 
 <Value>
@@ -75,7 +77,7 @@
 		<span>{satelliteName(satellite)}</span>
 
 		<button
-			onclick={stopPropagation(() => (visible = true))}
+			onclick={open}
 			aria-label={$i18n.satellites.edit_name}
 			title={$i18n.satellites.edit_name}
 			class="square"
@@ -86,7 +88,7 @@
 </Value>
 
 <Popover bind:visible center backdrop="dark">
-	<form class="container" onsubmit={preventDefault(handleSubmit)}>
+	<form class="container" onsubmit={handleSubmit}>
 		<label for="canisterName">{$i18n.satellites.satellite_name}:</label>
 
 		<input

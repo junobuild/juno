@@ -37,10 +37,6 @@
 			});
 
 			rule = fromNullable(result);
-
-			const rateConfig = fromNullable(rule?.rate_config ?? []);
-			maxTokens = nonNullish(rateConfig?.max_tokens) ? Number(rateConfig.max_tokens) : undefined;
-			maxTokensEdit = maxTokens;
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.load_settings,
@@ -51,6 +47,12 @@
 
 	$effect(() => {
 		loadRule();
+	});
+
+	$effect(() => {
+		const rateConfig = fromNullable(rule?.rate_config ?? []);
+		maxTokens = nonNullish(rateConfig?.max_tokens) ? Number(rateConfig.max_tokens) : undefined;
+		maxTokensEdit = maxTokens;
 	});
 
 	let visible = $state(false);
@@ -80,7 +82,7 @@
 		busy.start();
 
 		try {
-			await setRule({
+			rule = await setRule({
 				rule: {
 					...rule,
 					rate_config: [
@@ -95,8 +97,6 @@
 				collection: COLLECTION_USER,
 				satelliteId
 			});
-
-			maxTokens = maxTokensEdit;
 
 			visible = false;
 		} catch (err: unknown) {
@@ -145,7 +145,8 @@
 			required={true}
 			disabled={$isBusy}
 			bind:value={maxTokensEdit}
-			on:blur={() => (maxTokensEdit = nonNullish(maxTokensEdit) ? Math.trunc(maxTokensEdit) : undefined)}
+			on:blur={() =>
+				(maxTokensEdit = nonNullish(maxTokensEdit) ? Math.trunc(maxTokensEdit) : undefined)}
 		/>
 
 		<button type="submit" class="submit" disabled={$isBusy}>

@@ -87,9 +87,9 @@ export const setRule = async ({
 	type: RulesType;
 	identity: OptionIdentity;
 	rule: SetRule;
-}) => {
+}): Promise<Rule> => {
 	const { set_rule } = await getSatelliteActor({ satelliteId, identity });
-	await set_rule(type, collection, rule);
+	return await set_rule(type, collection, rule);
 };
 
 export const deleteRule = async ({

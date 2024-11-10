@@ -3,7 +3,6 @@
 	import { type SvelteComponent, createEventDispatcher, getContext } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
 	import type { RateConfig, Rule, RulesType } from '$declarations/satellite/satellite.did';
-	import { setRule } from '$lib/api/satellites.api';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -15,6 +14,7 @@
 		type MemoryText,
 		type PermissionText
 	} from '$lib/constants/rules.constants';
+	import { setRule } from '$lib/services/collection.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

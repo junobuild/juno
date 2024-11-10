@@ -6,10 +6,11 @@
 		href: string;
 		ariaLabel?: string;
 		underline?: boolean;
+		arrow?: boolean;
 		children: Snippet;
 	}
 
-	let { href, ariaLabel = '', underline = false, children }: Props = $props();
+	let { href, ariaLabel = '', underline = false, arrow = true, children }: Props = $props();
 </script>
 
 <a
@@ -22,7 +23,9 @@
 >
 	{@render children()}
 
-	<IconArrowOutward />
+	{#if arrow}
+		<IconArrowOutward />
+	{/if}
 </a>
 
 <style lang="scss">

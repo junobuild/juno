@@ -34,7 +34,7 @@
 			setItems({ items: users, matches_length, items_length });
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Error while listing the documents.`,
+				text: $i18n.errors.load_users,
 				detail: err
 			});
 		}

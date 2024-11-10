@@ -2,7 +2,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
-	import SignInMethod from '$lib/components/auth/SignInMethod.svelte';
+	import AuthSettings from '$lib/components/auth/AuthSettings.svelte';
 	import Users from '$lib/components/auth/Users.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
@@ -23,7 +23,7 @@
 		},
 		{
 			id: Symbol('2'),
-			labelKey: 'authentication.methods'
+			labelKey: 'core.settings'
 		}
 	];
 
@@ -44,7 +44,7 @@
 				{#if $store.tabId === $store.tabs[0].id}
 					<Users satelliteId={$satelliteStore.satellite_id} />
 				{:else if $store.tabId === $store.tabs[1].id}
-					<SignInMethod />
+					<AuthSettings satelliteId={$satelliteStore.satellite_id} />
 				{/if}
 			{/if}
 		</SatelliteGuard>

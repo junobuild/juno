@@ -2,15 +2,16 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import type { Rule } from '$declarations/satellite/satellite.did';
-	import { getRule } from '$lib/api/satellites.api';
+	import { getRule, setRule } from '$lib/api/satellites.api';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 	import { authStore } from '$lib/stores/auth.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import { busy, isBusy } from '$lib/stores/busy.store';
-	import Input from '$lib/components/ui/Input.svelte';
 
 	interface Props {
 		satelliteId: Principal;
@@ -21,20 +22,25 @@
 	let rule: Rule | undefined = $state<Rule | undefined>(undefined);
 
 	let maxTokens: number | undefined = $state(undefined);
+	let maxTokensEdit: number | undefined = $state(undefined);
+
+	const COLLECTION_USER = '#user';
+	const RULE_TYPE = { Db: null };
 
 	const loadRule = async () => {
 		try {
 			const result = await getRule({
 				satelliteId,
-				collection: '#user',
+				collection: COLLECTION_USER,
 				identity: $authStore.identity,
-				type: { Db: null }
+				type: RULE_TYPE
 			});
 
 			rule = fromNullable(result);
 
 			const rateConfig = fromNullable(rule?.rate_config ?? []);
 			maxTokens = nonNullish(rateConfig?.max_tokens) ? Number(rateConfig.max_tokens) : undefined;
+			maxTokensEdit = maxTokens;
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.load_settings,
@@ -66,7 +72,7 @@
 			return;
 		}
 
-		if (isNullish(maxTokens)) {
+		if (isNullish(maxTokensEdit)) {
 			toasts.error({ text: $i18n.errors.auth_rate_config_max_tokens });
 			return;
 		}
@@ -74,6 +80,25 @@
 		busy.start();
 
 		try {
+			await setRule({
+				rule: {
+					...rule,
+					rate_config: [
+						{
+							time_per_token_ns: DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS,
+							max_tokens: BigInt(maxTokensEdit)
+						}
+					]
+				},
+				type: RULE_TYPE,
+				identity: $authStore.identity,
+				collection: COLLECTION_USER,
+				satelliteId
+			});
+
+			maxTokens = maxTokensEdit;
+
+			visible = false;
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.auth_rate_config_update,
@@ -119,8 +144,8 @@
 			name="maxTokens"
 			required={true}
 			disabled={$isBusy}
-			bind:value={maxTokens}
-			on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
+			bind:value={maxTokensEdit}
+			on:blur={() => (maxTokensEdit = nonNullish(maxTokensEdit) ? Math.trunc(maxTokensEdit) : undefined)}
 		/>
 
 		<button type="submit" class="submit" disabled={$isBusy}>
@@ -130,6 +155,10 @@
 </Popover>
 
 <style lang="scss">
+	@use '../../styles/mixins/dialog';
+
+	@include dialog.edit;
+
 	button {
 		margin: 0 0 var(--padding-8x);
 	}

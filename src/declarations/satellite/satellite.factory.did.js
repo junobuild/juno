@@ -302,7 +302,7 @@ export const idlFactory = ({ IDL }) => {
 			[IDL.Vec(IDL.Tuple(IDL.Text, Doc))],
 			[]
 		),
-		set_rule: IDL.Func([RulesType, IDL.Text, SetRule], [], []),
+		set_rule: IDL.Func([RulesType, IDL.Text, SetRule], [Rule], []),
 		set_storage_config: IDL.Func([StorageConfig], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query'])

@@ -23,7 +23,7 @@ pub fn set_rule(
     user_rule: SetRule,
     storage_checks: bool,
     rules: &mut Rules,
-) -> Result<(), String> {
+) -> Result<Rule, String> {
     let current_rule = rules.get(&collection);
 
     assert_write_version(current_rule, &user_rule.version)?;
@@ -39,9 +39,9 @@ pub fn set_rule(
 
     let rule: Rule = Rule::prepare(&collection, &current_rule, &user_rule)?;
 
-    rules.insert(collection, rule);
+    rules.insert(collection, rule.clone());
 
-    Ok(())
+    Ok(rule)
 }
 
 pub fn del_rule(

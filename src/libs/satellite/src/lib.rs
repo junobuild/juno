@@ -170,7 +170,7 @@ pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
+pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) -> Rule {
     satellite::set_rule(rules_type, collection, rule)
 }
 

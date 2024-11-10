@@ -405,6 +405,9 @@ interface I18nErrors {
 	segment_detach: string;
 	ledger_balance_credits: string;
 	load_credits: string;
+	load_documents: string;
+	load_users: string;
+	load_settings: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;
@@ -468,6 +471,9 @@ interface I18nErrors {
 	wallet_load_balance: string;
 	wallet_receive_error: string;
 	wallet_missing_account: string;
+	auth_settings_no_loaded: string;
+	auth_rate_config_max_tokens: string;
+	auth_rate_config_update: string;
 }
 
 interface I18nDocument {
@@ -561,6 +567,7 @@ interface I18nCollections {
 	max_capacity_placeholder: string;
 	rate_limit: string;
 	rate_limit_placeholder: string;
+	no_rate_limit: string;
 	public: string;
 	private: string;
 	managed: string;

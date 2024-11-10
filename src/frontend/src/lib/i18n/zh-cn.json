@@ -389,6 +389,9 @@
 		"segment_detach": "解绑segment时出现异常错误.",
 		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
 		"load_credits": "无法加载你当前credit状态.",
+		"load_documents": "Unexpected error(s) while loading the documents.",
+		"load_users": "Unexpected error(s) while loading the users.",
+		"load_settings": "Unexpected error(s) while loading the settings.",
 		"hosting_missing_domain_name": "必须提供一个域名.",
 		"hosting_invalid_url": "请提供一个有效的 URL.",
 		"hosting_missing_dns_configuration": "必须提供域名配置信息.",
@@ -451,7 +454,10 @@
 		"wallet_no_account": "签名方未提供账号.",
 		"wallet_load_balance": "账户余额不能被加载.",
 		"wallet_receive_error": "接受代币是出现异常错误.",
-		"wallet_missing_account": "没有有效账户处理账务.你确定链接钱包了?"
+		"wallet_missing_account": "没有有效账户处理账务.你确定链接钱包了?",
+		"auth_settings_no_loaded": "The authentication's settings are not yet loaded.",
+		"auth_rate_config_max_tokens": "A maximal number of updates per minute is required.",
+		"auth_rate_config_update": "Unexpected error(s) while trying to update your authentication settings."
 	},
 	"document": {
 		"owner": "拥有者",
@@ -540,6 +546,7 @@
 		"max_capacity_placeholder": "在当前文档集中文档数量最大值",
 		"rate_limit": "Max updates",
 		"rate_limit_placeholder": "Limit of updates per minute",
+		"no_rate_limit": "No restriction",
 		"public": "公开",
 		"private": "私有",
 		"managed": "可管理的",

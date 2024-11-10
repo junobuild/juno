@@ -281,7 +281,7 @@ export interface _SERVICE {
 	set_db_config: ActorMethod<[DbConfig], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
-	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
+	set_rule: ActorMethod<[RulesType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;

@@ -389,6 +389,9 @@
 		"segment_detach": "Unexpected error(s) while trying to detach the segment.",
 		"ledger_balance_credits": "Unexpected error(s) while getting your mission control balance and credits.",
 		"load_credits": "Cannot load your current credits status.",
+		"load_documents": "Unexpected error(s) while loading the documents.",
+		"load_users": "Unexpected error(s) while loading the users.",
+		"load_settings": "Unexpected error(s) while loading the settings.",
 		"hosting_missing_domain_name": "A domain name must be provided.",
 		"hosting_invalid_url": "Please provide a valid URL.",
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",
@@ -451,7 +454,10 @@
 		"wallet_no_account": "The wallet did not provide any account.",
 		"wallet_load_balance": "The balance of the account cannot be loaded.",
 		"wallet_receive_error": "Unexpected error while receiving tokens.",
-		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?"
+		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?",
+		"auth_settings_no_loaded": "The authentication's settings are not yet loaded.",
+		"auth_rate_config_max_tokens": "A maximal number of updates per minute is required.",
+		"auth_rate_config_update": "Unexpected error(s) while trying to update your authentication settings."
 	},
 	"document": {
 		"owner": "Owner",
@@ -540,6 +546,7 @@
 		"max_capacity_placeholder": "Max number of documents within the collection",
 		"rate_limit": "Max updates",
 		"rate_limit_placeholder": "Limit of updates per minute",
+		"no_rate_limit": "No restriction",
 		"public": "Public",
 		"private": "Private",
 		"managed": "Managed",

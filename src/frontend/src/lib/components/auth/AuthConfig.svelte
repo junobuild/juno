@@ -1,6 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { compare } from 'semver';
+	import { fade } from 'svelte/transition';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import { getRule, setRule } from '$lib/api/satellites.api';
 	import Input from '$lib/components/ui/Input.svelte';
@@ -12,6 +14,7 @@
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { versionStore } from '$lib/stores/version.store';
 
 	interface Props {
 		satelliteId: Principal;
@@ -45,7 +48,17 @@
 		}
 	};
 
+	let satVersion: string | undefined = $derived(
+		$versionStore?.satellites[satelliteId.toText()]?.current
+	);
+
+	let supportSettings: boolean = $derived(compare(satVersion ?? '0.0.0', '0.0.21') >= 0);
+
 	$effect(() => {
+		if (!supportSettings) {
+			return;
+		}
+
 		loadRule();
 	});
 
@@ -110,29 +123,31 @@
 	};
 </script>
 
-<div class="card-container with-title">
-	<span class="title">{$i18n.core.settings}</span>
+{#if supportSettings}
+	<div class="card-container with-title" in:fade>
+		<span class="title">{$i18n.core.settings}</span>
 
-	<div class="columns-3 fit-column-1">
-		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.collections.rate_limit_placeholder}
-				{/snippet}
+		<div class="columns-3 fit-column-1">
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.collections.rate_limit_placeholder}
+					{/snippet}
 
-				{#if isNullish(rule)}
-					<p><SkeletonText /></p>
-				{:else if isNullish(maxTokens)}
-					<p>&ZeroWidthSpace;</p>
-				{:else}
-					<p>{maxTokens}</p>
-				{/if}
-			</Value>
+					{#if isNullish(rule)}
+						<p><SkeletonText /></p>
+					{:else if isNullish(maxTokens)}
+						<p>{$i18n.collections.no_rate_limit}</p>
+					{:else}
+						<p>{maxTokens}</p>
+					{/if}
+				</Value>
+			</div>
 		</div>
 	</div>
-</div>
 
-<button onclick={openModal}>{$i18n.canisters.edit_settings}</button>
+	<button in:fade onclick={openModal}>{$i18n.canisters.edit_settings}</button>
+{/if}
 
 <Popover bind:visible center backdrop="dark">
 	<form class="container" onsubmit={handleSubmit}>

@@ -546,6 +546,7 @@
 		"max_capacity_placeholder": "Max number of documents within the collection",
 		"rate_limit": "Max updates",
 		"rate_limit_placeholder": "Limit of updates per minute",
+		"no_rate_limit": "No restriction",
 		"public": "Public",
 		"private": "Private",
 		"managed": "Managed",

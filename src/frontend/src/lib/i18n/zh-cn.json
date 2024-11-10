@@ -546,6 +546,7 @@
 		"max_capacity_placeholder": "在当前文档集中文档数量最大值",
 		"rate_limit": "Max updates",
 		"rate_limit_placeholder": "Limit of updates per minute",
+		"no_rate_limit": "No restriction",
 		"public": "公开",
 		"private": "私有",
 		"managed": "可管理的",

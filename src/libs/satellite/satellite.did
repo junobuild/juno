@@ -249,7 +249,7 @@ service : () -> {
   set_many_docs : (vec record { text; text; SetDoc }) -> (
       vec record { text; Doc },
     );
-  set_rule : (RulesType, text, SetRule) -> ();
+  set_rule : (RulesType, text, SetRule) -> (Rule);
   set_storage_config : (StorageConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;

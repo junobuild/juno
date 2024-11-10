@@ -111,8 +111,6 @@ describe('Satellite', () => {
 			expect(created_at).toBeGreaterThan(0n);
 			expect(updated_at).toBeGreaterThan(0n);
 			expect(version).toEqual(toNullable(1n));
-
-			testRuleVersion = version;
 		});
 
 		it('should list collections', async () => {
@@ -240,8 +238,30 @@ describe('Satellite', () => {
 				expect(max_size).toEqual(setRuleWithValues.max_size);
 				expect(mutable_permissions).toEqual(setRuleWithValues.mutable_permissions);
 				expect(rate_config).toEqual(setRuleWithValues.rate_config);
+			});
 
-				testRuleVersion = version;
+			it('should create and update a collection', async () => {
+				const { set_rule } = actor;
+
+				const rule = await set_rule(collectionType, `${collection}_update`, setRule);
+
+				const { version } = rule;
+
+				expect(version).toEqual(toNullable(1n));
+
+				const rule_updated = await set_rule(collectionType, `${collection}_update`, rule);
+
+				expect(rule_updated?.version).toEqual(toNullable(2n));
+			});
+
+			it('should throw if update a collection is missing version', async () => {
+				const { set_rule } = actor;
+
+				await set_rule(collectionType, `${collection}_update_throw`, setRule);
+
+				await expect(
+					set_rule(collectionType, `${collection}_update_throw`, setRule)
+				).rejects.toThrow(NO_VERSION_ERROR_MSG);
 			});
 		});
 

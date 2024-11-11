@@ -14,6 +14,9 @@
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import OrbiterConfigEdit from "$lib/components/orbiter/OrbiterConfigEdit.svelte";
 
 	interface Props {
 		orbiterId: Principal;
@@ -71,50 +74,46 @@
 	const onUpdate = ({ detail }: CustomEvent<[Principal, OrbiterSatelliteConfig][]>) => {
 		loadConfig(detail);
 	};
+
+	let enabledSatellites = $derived(
+		Object.entries(configuration)
+			.map(([_, { name }]) => name)
+			.join(', ')
+	);
+
+	let visible = $state(false);
 </script>
 
-<div class="table-container">
-	<table>
-		<thead>
-			<tr>
-				<th class="tools"> {$i18n.analytics.enabled} </th>
-				<th class="origin"> {$i18n.satellites.satellite} </th>
-				<th class="origin"> {$i18n.satellites.id} </th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each Object.entries(configuration) as conf}
-				{@const satelliteId = conf[0]}
-				{@const entry = conf[1]}
+<div class="card-container with-title">
+	<span class="title">{$i18n.core.config}</span>
 
-				<tr>
-					<td class="actions">
-						<input type="checkbox" bind:checked={conf[1].enabled} />
-					</td>
+	<div class="columns-3 fit-column-1">
+		<div>
+			<Value>
+				{#snippet label()}
+					{$i18n.analytics.enabled_satellites}
+				{/snippet}
 
-					<td>
-						{entry.name}
-					</td>
-
-					<td>
-						<Identifier identifier={satelliteId} shorten={false} small={false} />
-					</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
+				<p class="satellites">{enabledSatellites}</p>
+			</Value>
+		</div>
+	</div>
 </div>
 
 {#if ($satellitesStore ?? []).length > 0}
-	<OrbiterConfigSave {orbiterId} config={configuration} on:junoConfigUpdate={onUpdate} />
+	<button onclick={() => visible = true}>
+		{$i18n.core.edit_config}
+	</button>
 {/if}
 
-<style lang="scss">
-	.tools {
-		width: 88px;
-	}
+{#if visible}
+	<OrbiterConfigEdit {orbiterId} {configuration} onclose={() => visible = false} />
+	{/if}
 
-	input[type='checkbox'] {
-		margin: 0;
+<style lang="scss">
+	@use '../../styles/mixins/text';
+
+	.satellites {
+		@include text.clamp(3);
 	}
 </style>

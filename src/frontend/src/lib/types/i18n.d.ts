@@ -310,6 +310,7 @@ interface I18nAnalytics {
 	good: string;
 	needs_improvement: string;
 	poor: string;
+	enabled_satellites: string;
 }
 
 interface I18nHosting {

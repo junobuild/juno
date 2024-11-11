@@ -297,7 +297,8 @@
 		"inp": "Interaction to Next Paint <small>(INP)</small>",
 		"good": "好",
 		"needs_improvement": "待改进",
-		"poor": "差"
+		"poor": "差",
+		"enabled_satellites": "Enabled satellites"
 	},
 	"hosting": {
 		"title": "网站托管",

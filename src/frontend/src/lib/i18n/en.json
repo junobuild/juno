@@ -297,7 +297,8 @@
 		"inp": "Interaction to Next Paint <small>(INP)</small>",
 		"good": "Good",
 		"needs_improvement": "Needs improvement",
-		"poor": "Poor"
+		"poor": "Poor",
+		"enabled_satellites": "Enabled satellites"
 	},
 	"hosting": {
 		"title": "Hosting",

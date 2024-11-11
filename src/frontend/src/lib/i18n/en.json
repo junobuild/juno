@@ -48,7 +48,10 @@
 		"confirm": "Confirm",
 		"collapse": "Collapse",
 		"expand": "Expand",
-		"request": "Request"
+		"request": "Request",
+		"configure": "Configure",
+		"config": "Configuration",
+		"edit_config": "Edit configuration"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -275,7 +278,6 @@
 		"pages": "Top 10 pages",
 		"enabled": "Enabled",
 		"orbiter": "Orbiter",
-		"configure": "Configure",
 		"devices": "Devices",
 		"mobile": "Mobile",
 		"desktop": "Desktop",

@@ -52,6 +52,9 @@ interface I18nCore {
 	collapse: string;
 	expand: string;
 	request: string;
+	configure: string;
+	config: string;
+	edit_config: string;
 }
 
 interface I18nCanisters {
@@ -287,7 +290,6 @@ interface I18nAnalytics {
 	pages: string;
 	enabled: string;
 	orbiter: string;
-	configure: string;
 	devices: string;
 	mobile: string;
 	desktop: string;

@@ -125,7 +125,7 @@
 
 {#if supportSettings}
 	<div class="card-container with-title" in:fade>
-		<span class="title">{$i18n.core.settings}</span>
+		<span class="title">{$i18n.core.config}</span>
 
 		<div class="columns-3 fit-column-1">
 			<div>
@@ -146,7 +146,7 @@
 		</div>
 	</div>
 
-	<button in:fade onclick={openModal}>{$i18n.canisters.edit_settings}</button>
+	<button in:fade onclick={openModal}>{$i18n.core.edit_config}</button>
 {/if}
 
 <Popover bind:visible center backdrop="dark">
@@ -165,7 +165,7 @@
 		/>
 
 		<button type="submit" class="submit" disabled={$isBusy}>
-			{$i18n.core.submit}
+			{$i18n.core.configure}
 		</button>
 	</form>
 </Popover>
@@ -177,9 +177,5 @@
 
 	button {
 		margin: 0 0 var(--padding-8x);
-	}
-
-	p {
-		height: 24px;
 	}
 </style>

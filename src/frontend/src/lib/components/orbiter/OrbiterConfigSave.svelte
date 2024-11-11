@@ -66,7 +66,7 @@
 
 <form class="container" onsubmit={preventDefault(handleSubmit)}>
 	<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
-		{$i18n.analytics.configure}
+		{$i18n.core.configure}
 	</button>
 </form>
 

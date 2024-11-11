@@ -48,7 +48,10 @@
 		"confirm": "确认",
 		"collapse": "折叠",
 		"expand": "展开",
-		"request": "请求"
+		"request": "请求",
+		"configure": "配置",
+		"config": "Configuration",
+		"edit_config": "Edit configuration"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -275,7 +278,6 @@
 		"pages": "前10页",
 		"enabled": "已启用",
 		"orbiter": "Orbiter",
-		"configure": "配置",
 		"devices": "设备",
 		"mobile": "移动端",
 		"desktop": "桌面",

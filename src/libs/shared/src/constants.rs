@@ -6,7 +6,9 @@ pub const IC_TRANSACTION_FEE_ICP: Tokens = Tokens::from_e8s(10_000);
 
 // Creating a canister require cycles. Those vary according to the subnet size (number of nodes).
 // Check [Gas and cycles cost](https://internetcomputer.org/docs/current/developer-docs/gas-cost) for more details.
-// Cost for creating a canister have been increased by 400% in November 2024: https://forum.dfinity.org/t/evaluating-compute-pricing-in-response-to-increased-demand-on-the-internet-computer-protocol/36565
+// Cost for creating a canister have been increased by 400% in November 2024:
+// - https://forum.dfinity.org/t/evaluating-compute-pricing-in-response-to-increased-demand-on-the-internet-computer-protocol/36565
+// - https://nns.ic0.app/proposal/?u=qoctq-giaaa-aaaaa-aaaea-cai&proposal=134032
 pub const CREATE_CANISTER_CYCLES: u128 = 500_000_000_000u128;
 
 // Additional cycles allocated for creating different types of canisters to ensure operation beyond the minimum requirement.

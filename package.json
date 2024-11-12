@@ -105,5 +105,8 @@
 		"nanoid": "^5.0.7",
 		"semver": "^7.6.3",
 		"svelte-confetti": "^2.1.2"
+	},
+	"engines": {
+		"node": "^22"
 	}
 }

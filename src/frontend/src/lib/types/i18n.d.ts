@@ -52,6 +52,10 @@ interface I18nCore {
 	collapse: string;
 	expand: string;
 	request: string;
+	configure: string;
+	config: string;
+	edit_config: string;
+	advanced_options: string;
 }
 
 interface I18nCanisters {
@@ -144,7 +148,6 @@ interface I18nCanisters {
 	no_update_required: string;
 	controllers: string;
 	public: string;
-	advanced_options: string;
 	subnet: string;
 	default_subnet: string;
 	subnet_id: string;
@@ -286,8 +289,8 @@ interface I18nAnalytics {
 	referrers: string;
 	pages: string;
 	enabled: string;
+	disabled: string;
 	orbiter: string;
-	configure: string;
 	devices: string;
 	mobile: string;
 	desktop: string;
@@ -308,6 +311,12 @@ interface I18nAnalytics {
 	good: string;
 	needs_improvement: string;
 	poor: string;
+	enabled_satellites: string;
+	page_views: string;
+	configuration_description: string;
+	tracked_metrics: string;
+	updating_configuration: string;
+	configuration_applied: string;
 }
 
 interface I18nHosting {

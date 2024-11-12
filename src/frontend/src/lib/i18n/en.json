@@ -48,7 +48,11 @@
 		"confirm": "Confirm",
 		"collapse": "Collapse",
 		"expand": "Expand",
-		"request": "Request"
+		"request": "Request",
+		"configure": "Configure",
+		"config": "Configuration",
+		"edit_config": "Edit configuration",
+		"advanced_options": "Advanced Options"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -140,7 +144,6 @@
 		"no_update_required": "No settings have been modified, so the settings do not need to be updated.",
 		"controllers": "Controllers",
 		"public": "Public",
-		"advanced_options": "Advanced Options",
 		"subnet": "Subnet",
 		"default_subnet": "Default (same as Juno)",
 		"subnet_id": "Subnet ID"
@@ -274,8 +277,8 @@
 		"referrers": "Top 10 referrers",
 		"pages": "Top 10 pages",
 		"enabled": "Enabled",
+		"disabled": "Disabled",
 		"orbiter": "Orbiter",
-		"configure": "Configure",
 		"devices": "Devices",
 		"mobile": "Mobile",
 		"desktop": "Desktop",
@@ -295,7 +298,13 @@
 		"inp": "Interaction to Next Paint <small>(INP)</small>",
 		"good": "Good",
 		"needs_improvement": "Needs improvement",
-		"poor": "Poor"
+		"poor": "Poor",
+		"enabled_satellites": "Enabled satellites",
+		"page_views": "Page views",
+		"configuration_description": "Select the Satellites you would like to track analytics for.",
+		"tracked_metrics": "Tracked metrics",
+		"updating_configuration": "Updating configuration...",
+		"configuration_applied": "Configuration applied."
 	},
 	"hosting": {
 		"title": "Hosting",

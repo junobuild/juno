@@ -3,6 +3,7 @@ import type {
 	AnalyticsTrackEvents,
 	AnalyticsWebVitalsPerformanceMetrics,
 	OrbiterSatelliteConfig,
+	OrbiterSatelliteFeatures,
 	OrbiterSatelliteConfig as SatelliteConfig
 } from '$declarations/orbiter/orbiter.did';
 import {
@@ -223,12 +224,14 @@ export const setOrbiterSatelliteConfigs = async ({
 	orbiterId,
 	config,
 	identity,
-	orbiterVersion
+	orbiterVersion,
+	features
 }: {
 	orbiterId: Principal;
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 	identity: OptionIdentity;
 	orbiterVersion: string;
+	features: OrbiterSatelliteFeatures | undefined;
 }): Promise<[Principal, OrbiterSatelliteConfig][]> => {
 	if (compare(orbiterVersion, '0.0.8') >= 0) {
 		return await setOrbiterSatelliteConfigsApi({
@@ -236,7 +239,7 @@ export const setOrbiterSatelliteConfigs = async ({
 			config: Object.entries(config).map(([satelliteId, value]) => [
 				Principal.fromText(satelliteId),
 				{
-					features: value.enabled ? [enabledFeatures] : [],
+					features: value.enabled ? [features ?? enabledFeatures] : [],
 					version: nonNullish(value.config) ? value.config.version : []
 				}
 			]),

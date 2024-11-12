@@ -6,6 +6,7 @@
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
+	import OrbiterConfigModal from '$lib/components/modals/OrbiterConfigModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
 	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
 	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
@@ -92,4 +93,8 @@
 
 {#if modal?.type === 'send_tokens' && nonNullish(modal.detail)}
 	<SendTokensModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'edit_orbiter_config' && nonNullish(modal.detail)}
+	<OrbiterConfigModal onclose={close} detail={modal.detail} />
 {/if}

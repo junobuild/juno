@@ -41,9 +41,7 @@
 	let collapsibleRef: (SvelteComponent & { open: () => void; close: () => void }) | undefined =
 		$state(undefined);
 
-	$effect(() => {
-		const features = (detail as JunoModalEditOrbiterConfigDetail).features;
-
+	const openOptions = (features: OrbiterSatelliteFeatures | undefined) => {
 		if (
 			features?.page_views === false ||
 			features?.track_events === false ||
@@ -51,6 +49,19 @@
 		) {
 			collapsibleRef?.open();
 		}
+	};
+
+	let mounted = false;
+
+	$effect(() => {
+		if (mounted) {
+			return;
+		}
+
+		const features = (detail as JunoModalEditOrbiterConfigDetail).features;
+		openOptions(features);
+
+		mounted = true;
 	});
 
 	let featuresSupported = $derived(
@@ -251,5 +262,9 @@
 		span {
 			white-space: pre-wrap;
 		}
+	}
+
+	.options {
+		margin: var(--padding-6x) 0 0;
 	}
 </style>

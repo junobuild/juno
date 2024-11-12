@@ -13,7 +13,7 @@ RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timezone &
     apt -yqq install --no-install-recommends curl ca-certificates \
         build-essential pkg-config libssl-dev llvm-dev liblmdb-dev clang cmake jq
 
-ENV NODE_VERSION=20.11.1
+ENV NODE_VERSION=22.11.0
 
 # Install node
 RUN curl --fail -sSf https://raw.githubusercontent.com/creationix/nvm/v0.39.7/install.sh | bash

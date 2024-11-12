@@ -6,6 +6,7 @@
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
+	import OrbiterConfigModal from '$lib/components/modals/OrbiterConfigModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
 	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
 	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
@@ -18,7 +19,6 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import type { JunoModal } from '$lib/types/modal';
-	import OrbiterConfigModal from "$lib/components/modals/OrbiterConfigModal.svelte";
 
 	let modal: JunoModal | undefined = $state(undefined);
 

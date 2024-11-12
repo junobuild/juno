@@ -2,10 +2,12 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
+	import { fade } from 'svelte/transition';
 	import type {
 		OrbiterSatelliteConfig,
 		OrbiterSatelliteFeatures
 	} from '$declarations/orbiter/orbiter.did';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { listOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -14,11 +16,9 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { fade } from 'svelte/transition';
-	import { first } from '$lib/utils/utils';
 	import { emit } from '$lib/utils/events.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { first } from '$lib/utils/utils';
 
 	interface Props {
 		orbiterId: Principal;

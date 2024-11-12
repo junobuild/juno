@@ -1,23 +1,23 @@
 <script lang="ts">
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import type { Principal } from '@dfinity/principal';
-	import type { SatelliteIdText } from '$lib/types/satellite';
-	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { compare } from 'semver';
+	import type { SvelteComponent } from 'svelte';
 	import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
-	import type { SvelteComponent } from 'svelte';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
-	import { versionStore } from '$lib/stores/version.store';
 	import { authStore } from '$lib/stores/auth.store';
+	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
+	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { emit } from '$lib/utils/events.utils';
-	import { compare } from 'semver';
 
 	interface Props {
 		detail: JunoModalDetail;

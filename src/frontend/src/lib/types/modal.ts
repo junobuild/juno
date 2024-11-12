@@ -1,14 +1,14 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
+import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
-import type {SatelliteIdText} from "$lib/types/satellite";
-import type {OrbiterSatelliteConfigEntry} from "$lib/types/ortbiter";
-import type {OrbiterSatelliteFeatures} from "$declarations/orbiter/orbiter.did";
 
 export interface JunoModalBalance {
 	missionControlBalance?: MissionControlBalance;
@@ -79,7 +79,7 @@ export interface JunoModalSendTokensDetail {
 
 export interface JunoModalEditOrbiterConfigDetail {
 	orbiterId: Principal;
-	features: OrbiterSatelliteFeatures | undefined
+	features: OrbiterSatelliteFeatures | undefined;
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 }
 

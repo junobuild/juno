@@ -352,7 +352,4 @@ pub fn assert_delete_asset(attr: TokenStream, item: TokenStream) -> TokenStream 
 /// }
 /// ```
 ///
-#[proc_macro_attribute]
-pub fn on_post_upgrade(attr: TokenStream, item: TokenStream) -> TokenStream {
-    hook_macro(Hook::OnPostUpgrade, attr, item)
-}
+

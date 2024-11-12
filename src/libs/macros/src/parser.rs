@@ -22,6 +22,7 @@ pub enum Hook {
     OnUploadAsset,
     OnDeleteAsset,
     OnDeleteManyAssets,
+    OnPostUpgrade,
     AssertSetDoc,
     AssertDeleteDoc,
     AssertUploadAsset,
@@ -39,6 +40,7 @@ fn map_hook_name(hook: Hook) -> String {
         Hook::OnUploadAsset => "juno_on_upload_asset".to_string(),
         Hook::OnDeleteAsset => "juno_on_delete_asset".to_string(),
         Hook::OnDeleteManyAssets => "juno_on_delete_many_assets".to_string(),
+        Hook::OnPostUpgrade => "juno_on_post_upgrade".to_string(),
         Hook::AssertSetDoc => "juno_assert_set_doc".to_string(),
         Hook::AssertDeleteDoc => "juno_assert_delete_doc".to_string(),
         Hook::AssertUploadAsset => "juno_assert_upload_asset".to_string(),
@@ -59,6 +61,7 @@ fn map_hook_collections(hook: Hook) -> String {
         Hook::AssertDeleteDoc => "juno_assert_delete_doc_collections".to_string(),
         Hook::AssertUploadAsset => "juno_assert_upload_asset_collections".to_string(),
         Hook::AssertDeleteAsset => "juno_assert_delete_asset_collections".to_string(),
+        _ => "".to_string(),
     }
 }
 
@@ -75,6 +78,7 @@ fn map_hook_type(hook: &Hook) -> String {
         Hook::AssertDeleteDoc => "AssertDeleteDocContext".to_string(),
         Hook::AssertUploadAsset => "AssertUploadAssetContext".to_string(),
         Hook::AssertDeleteAsset => "AssertDeleteAssetContext".to_string(),
+        _ => "".to_string(),
     }
 }
 
@@ -83,21 +87,35 @@ pub fn hook_macro(hook: Hook, attr: TokenStream, item: TokenStream) -> TokenStre
 }
 
 fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<TokenStream, String> {
-    let converted_attr: proc_macro2::TokenStream = attr.into();
-    let attrs = from_tokenstream::<HookAttributes>(&converted_attr)
-        .map_err(|_| "Expected valid attributes to register the hooks")?;
-
     let ast = parse::<ItemFn>(item).map_err(|_| "Expected a function to register the hooks")?;
 
     let signature = &ast.sig;
 
     let hook_fn = Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
+
+    match hook {
+        Hook::OnPostUpgrade => parse_post_upgrade_hook(&ast, &signature, &hook_fn),
+        _ => parse_doc_hook(&ast, &signature, &hook_fn, hook, attr),
+    }
+}
+
+fn parse_doc_hook(
+    ast: &ItemFn,
+    signature: &Signature,
+    hook_fn: &Ident,
+    hook: &Hook,
+    attr: TokenStream,
+) -> Result<TokenStream, String> {
     let hook_collections_fn = Ident::new(
         &map_hook_collections(hook.clone()),
         proc_macro2::Span::call_site(),
     );
     let hook_param = Ident::new(CONTEXT_PARAM, proc_macro2::Span::call_site());
     let hook_param_type = Ident::new(&map_hook_type(hook), proc_macro2::Span::call_site());
+
+    let converted_attr: proc_macro2::TokenStream = attr.into();
+    let attrs = from_tokenstream::<HookAttributes>(&converted_attr)
+        .map_err(|_| "Expected valid attributes to register the hooks")?;
 
     let collections_tokens = if let Some(collections) = attrs.collections {
         let tokens = collections.iter().map(|col| quote! { #col.to_string() });
@@ -192,6 +210,35 @@ fn parse_assert_hook(
         #[no_mangle]
         pub extern "Rust" fn #hook_fn(#hook_param: #hook_param_type) -> Result<(), String> {
             #function_call
+        }
+    }
+}
+
+fn parse_post_upgrade_hook(
+    ast: &ItemFn,
+    signature: &Signature,
+    hook_fn: &Ident
+) -> Result<TokenStream, String> {
+    let hook_body = parse_post_upgrade_hook_body(signature, hook_fn);
+
+    let result = quote! {
+        #ast
+
+        #hook_body
+    };
+
+    Ok(result.into())
+}
+
+fn parse_post_upgrade_hook_body(signature: &Signature, hook_fn: &Ident) -> proc_macro2::TokenStream {
+    let func_name = &signature.ident;
+
+    let function_call = quote! { #func_name() };
+
+    quote! {
+        #[no_mangle]
+        pub extern "Rust" fn #hook_fn() {
+            #function_call;
         }
     }
 }

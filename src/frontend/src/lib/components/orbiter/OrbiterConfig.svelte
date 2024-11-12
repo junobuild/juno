@@ -51,8 +51,6 @@
 				([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText()
 			);
 
-			console.log(config)
-
 			const entry = config?.[1];
 			const enabled = nonNullish(fromNullable(entry?.features ?? []));
 

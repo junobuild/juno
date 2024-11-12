@@ -277,6 +277,7 @@
 		"referrers": "Top 10 referrers",
 		"pages": "Top 10 pages",
 		"enabled": "Enabled",
+		"disabled": "Disabled",
 		"orbiter": "Orbiter",
 		"devices": "Devices",
 		"mobile": "Mobile",
@@ -298,7 +299,8 @@
 		"good": "Good",
 		"needs_improvement": "Needs improvement",
 		"poor": "Poor",
-		"enabled_satellites": "Enabled satellites"
+		"enabled_satellites": "Enabled satellites",
+		"page_views": "Page views"
 	},
 	"hosting": {
 		"title": "Hosting",

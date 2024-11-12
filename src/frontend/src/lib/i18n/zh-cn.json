@@ -277,6 +277,7 @@
 		"referrers": "前十个引用",
 		"pages": "前10页",
 		"enabled": "已启用",
+		"disabled": "Disabled",
 		"orbiter": "Orbiter",
 		"devices": "设备",
 		"mobile": "移动端",
@@ -298,7 +299,8 @@
 		"good": "好",
 		"needs_improvement": "待改进",
 		"poor": "差",
-		"enabled_satellites": "Enabled satellites"
+		"enabled_satellites": "Enabled satellites",
+		"page_views": "Page views"
 	},
 	"hosting": {
 		"title": "网站托管",

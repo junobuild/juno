@@ -289,6 +289,7 @@ interface I18nAnalytics {
 	referrers: string;
 	pages: string;
 	enabled: string;
+	disabled: string;
 	orbiter: string;
 	devices: string;
 	mobile: string;
@@ -311,6 +312,7 @@ interface I18nAnalytics {
 	needs_improvement: string;
 	poor: string;
 	enabled_satellites: string;
+	page_views: string;
 }
 
 interface I18nHosting {

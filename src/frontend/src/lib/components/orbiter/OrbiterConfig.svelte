@@ -51,6 +51,8 @@
 				([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText()
 			);
 
+			console.log(config)
+
 			const entry = config?.[1];
 			const enabled = nonNullish(fromNullable(entry?.features ?? []));
 
@@ -96,6 +98,38 @@
 
 				<p class="satellites">{enabledSatellites}</p>
 			</Value>
+		</div>
+
+		<div>
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.analytics.page_views}
+					{/snippet}
+
+					<p class="satellites">{$i18n.analytics.enabled}</p>
+				</Value>
+			</div>
+
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.analytics.tracked_events}
+					{/snippet}
+
+					<p class="satellites">{$i18n.analytics.enabled}</p>
+				</Value>
+			</div>
+
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.analytics.web_vitals}
+					{/snippet}
+
+					<p class="satellites">{$i18n.analytics.disabled}</p>
+				</Value>
+			</div>
 		</div>
 	</div>
 </div>

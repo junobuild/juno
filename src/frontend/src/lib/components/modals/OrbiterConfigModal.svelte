@@ -16,7 +16,8 @@
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
 	import { versionStore } from '$lib/stores/version.store';
 	import { authStore } from '$lib/stores/auth.store';
-	import {emit} from "$lib/utils/events.utils";
+	import { emit } from '$lib/utils/events.utils';
+	import { compare } from 'semver';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -51,6 +52,10 @@
 			collapsibleRef?.open();
 		}
 	});
+
+	let featuresSupported = $derived(
+		compare($versionStore.orbiter?.current ?? '0.0.0', '0.0.8') >= 0
+	);
 
 	const onPageViewsToggle = () => {
 		features = {
@@ -106,6 +111,7 @@
 			const results = await setOrbiterSatelliteConfigs({
 				orbiterId,
 				config,
+				features,
 				identity: $authStore.identity,
 				orbiterVersion: $versionStore.orbiter.current
 			});
@@ -174,44 +180,46 @@
 				</table>
 			</div>
 
-			<div class="options">
-				<Collapsible bind:this={collapsibleRef}>
-					<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
+			{#if featuresSupported}
+				<div class="options">
+					<Collapsible bind:this={collapsibleRef}>
+						<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
 
-					<div class="card-container with-title">
-						<span class="title">{$i18n.analytics.tracked_metrics}</span>
+						<div class="card-container with-title">
+							<span class="title">{$i18n.analytics.tracked_metrics}</span>
 
-						<div class="content">
-							<div class="checkbox">
-								<input
-									type="checkbox"
-									checked={isNullish(features) || features?.page_views === true}
-									onchange={onPageViewsToggle}
-								/>
-								<span>{$i18n.analytics.page_views}</span>
-							</div>
+							<div class="content">
+								<div class="checkbox">
+									<input
+										type="checkbox"
+										checked={isNullish(features) || features?.page_views === true}
+										onchange={onPageViewsToggle}
+									/>
+									<span>{$i18n.analytics.page_views}</span>
+								</div>
 
-							<div class="checkbox">
-								<input
-									type="checkbox"
-									checked={isNullish(features) || features?.track_events === true}
-									onchange={onTrackEventsToggle}
-								/>
-								<span>{$i18n.analytics.tracked_events}</span>
-							</div>
+								<div class="checkbox">
+									<input
+										type="checkbox"
+										checked={isNullish(features) || features?.track_events === true}
+										onchange={onTrackEventsToggle}
+									/>
+									<span>{$i18n.analytics.tracked_events}</span>
+								</div>
 
-							<div class="checkbox">
-								<input
-									type="checkbox"
-									checked={isNullish(features) || features?.performance_metrics === true}
-									onchange={onPerformanceToggle}
-								/>
-								<span>{$i18n.analytics.web_vitals}</span>
+								<div class="checkbox">
+									<input
+										type="checkbox"
+										checked={isNullish(features) || features?.performance_metrics === true}
+										onchange={onPerformanceToggle}
+									/>
+									<span>{$i18n.analytics.web_vitals}</span>
+								</div>
 							</div>
 						</div>
-					</div>
-				</Collapsible>
-			</div>
+					</Collapsible>
+				</div>
+			{/if}
 
 			<button type="submit" disabled={!validConfirm || $isBusy}>
 				{$i18n.core.submit}

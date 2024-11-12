@@ -18,6 +18,7 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import type { JunoModal } from '$lib/types/modal';
+	import OrbiterConfigModal from "$lib/components/modals/OrbiterConfigModal.svelte";
 
 	let modal: JunoModal | undefined = $state(undefined);
 
@@ -92,4 +93,8 @@
 
 {#if modal?.type === 'send_tokens' && nonNullish(modal.detail)}
 	<SendTokensModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'edit_orbiter_config' && nonNullish(modal.detail)}
+	<OrbiterConfigModal onclose={close} detail={modal.detail} />
 {/if}

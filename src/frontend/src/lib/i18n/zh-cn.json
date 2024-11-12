@@ -51,7 +51,8 @@
 		"request": "请求",
 		"configure": "配置",
 		"config": "Configuration",
-		"edit_config": "Edit configuration"
+		"edit_config": "Edit configuration",
+		"advanced_options": "高级选项"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -143,7 +144,6 @@
 		"no_update_required": "没有设置修改, 所以没有需要更新的.",
 		"controllers": "控制者",
 		"public": "公开",
-		"advanced_options": "高级选项",
 		"subnet": "子网",
 		"default_subnet": "默认 (同 Juno)",
 		"subnet_id": "子网 ID"
@@ -300,7 +300,11 @@
 		"needs_improvement": "待改进",
 		"poor": "差",
 		"enabled_satellites": "Enabled satellites",
-		"page_views": "Page views"
+		"page_views": "Page views",
+		"configuration_description": "Select the Satellites you would like to track analytics for.",
+		"tracked_metrics": "Tracked metrics",
+		"updating_configuration": "Updating configuration...",
+		"configuration_applied": "Configuration applied."
 	},
 	"hosting": {
 		"title": "网站托管",

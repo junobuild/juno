@@ -2,9 +2,10 @@
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
-	import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
-	import OrbiterConfigSave from '$lib/components/orbiter/OrbiterConfigSave.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import type {
+		OrbiterSatelliteConfig,
+		OrbiterSatelliteFeatures
+	} from '$declarations/orbiter/orbiter.did';
 	import { listOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -14,9 +15,10 @@
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import OrbiterConfigEdit from "$lib/components/orbiter/OrbiterConfigEdit.svelte";
+	import { fade } from 'svelte/transition';
+	import { first } from '$lib/utils/utils';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		orbiterId: Principal;
@@ -24,7 +26,7 @@
 
 	let { orbiterId }: Props = $props();
 
-	let configuration: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = $state({});
+	let config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = $state({});
 
 	const list = (orbiterVersion: string): Promise<[Principal, OrbiterSatelliteConfig][]> =>
 		listOrbiterSatelliteConfigs({ orbiterId, identity: $authStore.identity, orbiterVersion });
@@ -36,6 +38,7 @@
 
 		try {
 			const configs = await list($versionStore.orbiter.current);
+
 			loadConfig(configs);
 		} catch (err: unknown) {
 			toasts.error({
@@ -46,7 +49,7 @@
 	};
 
 	const loadConfig = (configs: [Principal, OrbiterSatelliteConfig][]) => {
-		configuration = ($satellitesStore ?? []).reduce((acc, satellite) => {
+		config = ($satellitesStore ?? []).reduce((acc, satellite) => {
 			const config: [Principal, OrbiterSatelliteConfig] | undefined = (configs ?? []).find(
 				([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText()
 			);
@@ -76,13 +79,35 @@
 	};
 
 	let enabledSatellites = $derived(
-		Object.entries(configuration)
+		Object.entries(config)
+			.filter(([_, { enabled }]) => enabled)
 			.map(([_, { name }]) => name)
 			.join(', ')
 	);
 
-	let visible = $state(false);
+	let features: OrbiterSatelliteFeatures | undefined = $derived(
+		fromNullable(
+			first(Object.entries(config).filter(([_, { enabled }]) => enabled) ?? [])?.[1]?.config
+				?.features ?? []
+		)
+	);
+
+	const openModal = () => {
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'edit_orbiter_config',
+				detail: {
+					config,
+					features,
+					orbiterId
+				}
+			}
+		});
+	};
 </script>
+
+<svelte:window onjunoReloadOrbiterConfig={onUpdate} />
 
 <div class="card-container with-title">
 	<span class="title">{$i18n.core.config}</span>
@@ -105,7 +130,9 @@
 						{$i18n.analytics.page_views}
 					{/snippet}
 
-					<p class="satellites">{$i18n.analytics.enabled}</p>
+					<p class="satellites">
+						{features?.page_views === true ? $i18n.analytics.enabled : $i18n.analytics.disabled}
+					</p>
 				</Value>
 			</div>
 
@@ -115,7 +142,9 @@
 						{$i18n.analytics.tracked_events}
 					{/snippet}
 
-					<p class="satellites">{$i18n.analytics.enabled}</p>
+					<p class="satellites">
+						{features?.track_events === true ? $i18n.analytics.enabled : $i18n.analytics.disabled}
+					</p>
 				</Value>
 			</div>
 
@@ -125,7 +154,11 @@
 						{$i18n.analytics.web_vitals}
 					{/snippet}
 
-					<p class="satellites">{$i18n.analytics.disabled}</p>
+					<p class="satellites">
+						{features?.performance_metrics === true
+							? $i18n.analytics.enabled
+							: $i18n.analytics.disabled}
+					</p>
 				</Value>
 			</div>
 		</div>
@@ -133,14 +166,10 @@
 </div>
 
 {#if ($satellitesStore ?? []).length > 0}
-	<button onclick={() => visible = true}>
+	<button onclick={openModal} in:fade>
 		{$i18n.core.edit_config}
 	</button>
 {/if}
-
-{#if visible}
-	<OrbiterConfigEdit {orbiterId} {configuration} onclose={() => visible = false} />
-	{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/text';

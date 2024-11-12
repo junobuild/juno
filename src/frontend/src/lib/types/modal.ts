@@ -6,6 +6,9 @@ import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
+import type {SatelliteIdText} from "$lib/types/satellite";
+import type {OrbiterSatelliteConfigEntry} from "$lib/types/ortbiter";
+import type {OrbiterSatelliteFeatures} from "$declarations/orbiter/orbiter.did";
 
 export interface JunoModalBalance {
 	missionControlBalance?: MissionControlBalance;
@@ -74,6 +77,12 @@ export interface JunoModalSendTokensDetail {
 	balance: bigint | undefined;
 }
 
+export interface JunoModalEditOrbiterConfigDetail {
+	orbiterId: Principal;
+	features: OrbiterSatelliteFeatures | undefined
+	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
+}
+
 export type JunoModalDetail =
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
@@ -82,7 +91,8 @@ export type JunoModalDetail =
 	| JunoModalCreateControllerDetail
 	| JunoModalCyclesSatelliteDetail
 	| JunoModalDeleteSatelliteDetail
-	| JunoModalSendTokensDetail;
+	| JunoModalSendTokensDetail
+	| JunoModalEditOrbiterConfigDetail;
 
 export interface JunoModal {
 	type:
@@ -99,6 +109,7 @@ export interface JunoModal {
 		| 'add_custom_domain'
 		| 'create_controller'
 		| 'edit_canister_settings'
+		| 'edit_orbiter_config'
 		| 'upgrade_satellite'
 		| 'upgrade_mission_control'
 		| 'upgrade_orbiter'

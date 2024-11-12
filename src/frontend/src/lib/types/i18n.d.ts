@@ -55,6 +55,7 @@ interface I18nCore {
 	configure: string;
 	config: string;
 	edit_config: string;
+	advanced_options: string;
 }
 
 interface I18nCanisters {
@@ -147,7 +148,6 @@ interface I18nCanisters {
 	no_update_required: string;
 	controllers: string;
 	public: string;
-	advanced_options: string;
 	subnet: string;
 	default_subnet: string;
 	subnet_id: string;
@@ -313,6 +313,10 @@ interface I18nAnalytics {
 	poor: string;
 	enabled_satellites: string;
 	page_views: string;
+	configuration_description: string;
+	tracked_metrics: string;
+	updating_configuration: string;
+	configuration_applied: string;
 }
 
 interface I18nHosting {

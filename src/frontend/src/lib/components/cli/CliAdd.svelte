@@ -275,7 +275,7 @@
 
 	<div class="options">
 		<Collapsible>
-			<svelte:fragment slot="header">{$i18n.canisters.advanced_options}</svelte:fragment>
+			<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
 
 			<div class="card-container with-title">
 				<span class="title">{$i18n.cli.profile}</span>

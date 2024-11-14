@@ -213,6 +213,7 @@ service : () -> {
   del_custom_domain : (text) -> ();
   del_doc : (text, text, DelDoc) -> ();
   del_docs : (text) -> ();
+  del_filtered_assets : (text, ListParams) -> ();
   del_filtered_docs : (text, ListParams) -> ();
   del_many_assets : (vec record { text; text }) -> ();
   del_many_docs : (vec record { text; text; DelDoc }) -> ();

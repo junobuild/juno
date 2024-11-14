@@ -254,6 +254,7 @@ export const idlFactory = ({ IDL }) => {
 		del_custom_domain: IDL.Func([IDL.Text], [], []),
 		del_doc: IDL.Func([IDL.Text, IDL.Text, DelDoc], [], []),
 		del_docs: IDL.Func([IDL.Text], [], []),
+		del_filtered_assets: IDL.Func([IDL.Text, ListParams], [], []),
 		del_filtered_docs: IDL.Func([IDL.Text, ListParams], [], []),
 		del_many_assets: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		del_many_docs: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text, DelDoc))], [], []),

@@ -353,7 +353,7 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
 }
 
 #[doc(hidden)]
-#[query]
+#[update]
 pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
     satellite::del_filtered_assets(collection, filter)
 }

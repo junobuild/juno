@@ -138,8 +138,8 @@
 			<IconCheckCircle />
 		{/if}</td
 	>
-	<td class="state"
-		><span
+	<td
+		><span class="state"
 			>{#if nonNullish(displayState)}
 				{displayState}
 				{#if ['PendingOrder', 'PendingChallengeResponse', 'PendingAcmeApproval'].includes(registrationState ?? '')}
@@ -176,26 +176,16 @@
 	}
 
 	.state {
-		display: flex;
-		flex-direction: column;
+		@include text.truncate;
+
+		padding: 0 var(--padding-1_5x);
 
 		@include media.min-width(medium) {
-			flex-direction: row;
-			justify-content: space-between;
+			padding: 0;
 		}
 
-		span {
-			@include text.truncate;
-
-			padding: 0 var(--padding-1_5x);
-
-			@include media.min-width(medium) {
-				padding: 0;
-			}
-
-			:global(svg) {
-				vertical-align: middle;
-			}
+		:global(svg) {
+			vertical-align: middle;
 		}
 	}
 

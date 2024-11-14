@@ -320,7 +320,6 @@ pub fn invoke_assert_delete_asset(caller: &UserId, asset: &Asset) -> Result<(), 
     Ok(())
 }
 
-
 #[allow(unused_variables)]
 pub fn invoke_on_post_upgrade() {
     #[cfg(feature = "on_post_upgrade")]

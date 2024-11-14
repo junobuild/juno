@@ -48,37 +48,37 @@ fn map_hook_name(hook: Hook) -> String {
     }
 }
 
-fn map_hook_collections(hook: Hook) -> String {
+fn map_hook_collections(hook: Hook) -> Option<String> {
     match hook {
-        Hook::OnSetDoc => "juno_on_set_doc_collections".to_string(),
-        Hook::OnSetManyDocs => "juno_on_set_many_docs_collections".to_string(),
-        Hook::OnDeleteDoc => "juno_on_delete_doc_collections".to_string(),
-        Hook::OnDeleteManyDocs => "juno_on_delete_many_docs_collections".to_string(),
-        Hook::OnUploadAsset => "juno_on_upload_asset_collections".to_string(),
-        Hook::OnDeleteAsset => "juno_on_delete_asset_collections".to_string(),
-        Hook::OnDeleteManyAssets => "juno_on_delete_many_assets_collections".to_string(),
-        Hook::AssertSetDoc => "juno_assert_set_doc_collections".to_string(),
-        Hook::AssertDeleteDoc => "juno_assert_delete_doc_collections".to_string(),
-        Hook::AssertUploadAsset => "juno_assert_upload_asset_collections".to_string(),
-        Hook::AssertDeleteAsset => "juno_assert_delete_asset_collections".to_string(),
-        _ => "".to_string(),
+        Hook::OnSetDoc => Some("juno_on_set_doc_collections".to_string()),
+        Hook::OnSetManyDocs => Some("juno_on_set_many_docs_collections".to_string()),
+        Hook::OnDeleteDoc => Some("juno_on_delete_doc_collections".to_string()),
+        Hook::OnDeleteManyDocs => Some("juno_on_delete_many_docs_collections".to_string()),
+        Hook::OnUploadAsset => Some("juno_on_upload_asset_collections".to_string()),
+        Hook::OnDeleteAsset => Some("juno_on_delete_asset_collections".to_string()),
+        Hook::OnDeleteManyAssets => Some("juno_on_delete_many_assets_collections".to_string()),
+        Hook::AssertSetDoc => Some("juno_assert_set_doc_collections".to_string()),
+        Hook::AssertDeleteDoc => Some("juno_assert_delete_doc_collections".to_string()),
+        Hook::AssertUploadAsset => Some("juno_assert_upload_asset_collections".to_string()),
+        Hook::AssertDeleteAsset => Some("juno_assert_delete_asset_collections".to_string()),
+        _ => None,
     }
 }
 
-fn map_hook_type(hook: &Hook) -> String {
+fn map_hook_type(hook: &Hook) -> Option<String> {
     match hook {
-        Hook::OnSetDoc => "OnSetDocContext".to_string(),
-        Hook::OnSetManyDocs => "OnSetManyDocsContext".to_string(),
-        Hook::OnDeleteDoc => "OnDeleteDocContext".to_string(),
-        Hook::OnDeleteManyDocs => "OnDeleteManyDocsContext".to_string(),
-        Hook::OnUploadAsset => "OnUploadAssetContext".to_string(),
-        Hook::OnDeleteAsset => "OnDeleteAssetContext".to_string(),
-        Hook::OnDeleteManyAssets => "OnDeleteManyAssetsContext".to_string(),
-        Hook::AssertSetDoc => "AssertSetDocContext".to_string(),
-        Hook::AssertDeleteDoc => "AssertDeleteDocContext".to_string(),
-        Hook::AssertUploadAsset => "AssertUploadAssetContext".to_string(),
-        Hook::AssertDeleteAsset => "AssertDeleteAssetContext".to_string(),
-        _ => "".to_string(),
+        Hook::OnSetDoc => Some("OnSetDocContext".to_string()),
+        Hook::OnSetManyDocs => Some("OnSetManyDocsContext".to_string()),
+        Hook::OnDeleteDoc => Some("OnDeleteDocContext".to_string()),
+        Hook::OnDeleteManyDocs => Some("OnDeleteManyDocsContext".to_string()),
+        Hook::OnUploadAsset => Some("OnUploadAssetContext".to_string()),
+        Hook::OnDeleteAsset => Some("OnDeleteAssetContext".to_string()),
+        Hook::OnDeleteManyAssets => Some("OnDeleteManyAssetsContext".to_string()),
+        Hook::AssertSetDoc => Some("AssertSetDocContext".to_string()),
+        Hook::AssertDeleteDoc => Some("AssertDeleteDocContext".to_string()),
+        Hook::AssertUploadAsset => Some("AssertUploadAssetContext".to_string()),
+        Hook::AssertDeleteAsset => Some("AssertDeleteAssetContext".to_string()),
+        _ => None,
     }
 }
 
@@ -106,12 +106,17 @@ fn parse_doc_hook(
     hook: &Hook,
     attr: TokenStream,
 ) -> Result<TokenStream, String> {
-    let hook_collections_fn = Ident::new(
-        &map_hook_collections(hook.clone()),
-        proc_macro2::Span::call_site(),
-    );
+    let hook_collections_fn = match &map_hook_collections(hook.clone()) {
+        Some(hook_collections) => Ident::new(hook_collections, proc_macro2::Span::call_site()),
+        None => return Err("Hook collection function cannot be None.".to_string()),
+    };
+
     let hook_param = Ident::new(CONTEXT_PARAM, proc_macro2::Span::call_site());
-    let hook_param_type = Ident::new(&map_hook_type(hook), proc_macro2::Span::call_site());
+
+    let hook_param_type = match &map_hook_type(hook) {
+        Some(hook_type) => Ident::new(hook_type, proc_macro2::Span::call_site()),
+        None => return Err("Hook type cannot be None.".to_string()),
+    };
 
     let converted_attr: proc_macro2::TokenStream = attr.into();
     let attrs = from_tokenstream::<HookAttributes>(&converted_attr)
@@ -217,7 +222,7 @@ fn parse_assert_hook(
 fn parse_post_upgrade_hook(
     ast: &ItemFn,
     signature: &Signature,
-    hook_fn: &Ident
+    hook_fn: &Ident,
 ) -> Result<TokenStream, String> {
     let hook_body = parse_post_upgrade_hook_body(signature, hook_fn);
 
@@ -230,7 +235,10 @@ fn parse_post_upgrade_hook(
     Ok(result.into())
 }
 
-fn parse_post_upgrade_hook_body(signature: &Signature, hook_fn: &Ident) -> proc_macro2::TokenStream {
+fn parse_post_upgrade_hook_body(
+    signature: &Signature,
+    hook_fn: &Ident,
+) -> proc_macro2::TokenStream {
     let func_name = &signature.ident;
 
     let function_call = quote! { #func_name() };

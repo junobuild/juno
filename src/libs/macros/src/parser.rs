@@ -94,8 +94,8 @@ fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<Token
     let hook_fn = Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
 
     match hook {
-        Hook::OnPostUpgrade => parse_post_upgrade_hook(&ast, &signature, &hook_fn),
-        _ => parse_doc_hook(&ast, &signature, &hook_fn, hook, attr),
+        Hook::OnPostUpgrade => parse_post_upgrade_hook(&ast, signature, &hook_fn),
+        _ => parse_doc_hook(&ast, signature, &hook_fn, hook, attr),
     }
 }
 
@@ -129,9 +129,9 @@ fn parse_doc_hook(
         | Hook::AssertDeleteDoc
         | Hook::AssertUploadAsset
         | Hook::AssertDeleteAsset => {
-            parse_assert_hook(signature, &hook_fn, &hook_param, &hook_param_type)
+            parse_assert_hook(signature, hook_fn, &hook_param, &hook_param_type)
         }
-        _ => parse_on_hook(signature, &hook_fn, &hook_param, &hook_param_type),
+        _ => parse_on_hook(signature, hook_fn, &hook_param, &hook_param_type),
     };
 
     let result = quote! {

@@ -257,6 +257,43 @@ pub fn on_delete_many_assets(attr: TokenStream, item: TokenStream) -> TokenStrea
     hook_macro(Hook::OnDeleteManyAssets, attr, item)
 }
 
+/// The `on_delete_filtered_assets` function is a procedural macro attribute for hooking into the `OnDeleteFilteredAssets` event.
+/// It allows you to define custom logic to be executed when assets are deleted based on specific filter criteria.
+///
+/// Example:
+///
+/// ```rust
+/// #[on_delete_filtered_assets]
+/// async fn on_delete_filtered_assets(context: OnDeleteFilteredAssetsContext) -> Result<(), String> {
+///     // Your hook logic here
+/// }
+/// ```
+///
+/// You can scope the events to a particular list of collections, making the hook more selective.
+///
+/// Example:
+/// ```rust
+/// #[on_delete_filtered_assets(collections = ["assets_collection"])]
+/// async fn on_delete_filtered_assets(context: OnDeleteFilteredAssetsContext) -> Result<(), String> {
+///     // Your hook logic here
+/// }
+/// ```
+///
+/// The attributes accept a list of comma-separated collections. If the attribute array is left empty, the hook will never be called.
+///
+/// # Parameters
+/// - `collections`: An optional list of collections to limit the scope of the hook.
+/// - `context`: An instance of `OnDeleteFilteredAssetsContext` containing information about the deletion event.
+///
+/// # Returns
+/// - `Ok(())`: Indicates successful execution of the hook logic.
+/// - `Err(String)`: An error message if the hook logic encounters issues.
+///
+#[proc_macro_attribute]
+pub fn on_delete_filtered_assets(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnDeleteFilteredAssets, attr, item)
+}
+
 /// The `assert_set_doc` function is a procedural macro attribute for asserting conditions before setting a document.
 /// It enables you to define custom validation logic to be executed prior to a document creation or update.
 ///

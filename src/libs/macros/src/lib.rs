@@ -339,3 +339,20 @@ pub fn assert_upload_asset(attr: TokenStream, item: TokenStream) -> TokenStream 
 pub fn assert_delete_asset(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::AssertDeleteAsset, attr, item)
 }
+
+/// The `on_post_upgrade` function is a procedural macro attribute for hooking into the `OnPostUpgrade` event.
+/// It allows you to define custom logic to be executed after a satellite upgrade.
+///
+/// Example:
+///
+/// ```rust
+/// #[on_post_upgrade]
+/// fn on_post_upgrade() {
+///     // Your post-upgrade logic here
+/// }
+/// ```
+///
+#[proc_macro_attribute]
+pub fn on_post_upgrade(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnPostUpgrade, attr, item)
+}

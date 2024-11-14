@@ -46,6 +46,8 @@ extern "Rust" {
 
     fn juno_assert_upload_asset_collections() -> Option<Vec<String>>;
     fn juno_assert_delete_asset_collections() -> Option<Vec<String>>;
+
+    fn juno_on_post_upgrade();
 }
 
 #[allow(unused_variables)]
@@ -316,6 +318,19 @@ pub fn invoke_assert_delete_asset(caller: &UserId, asset: &Asset) -> Result<(), 
     }
 
     Ok(())
+}
+
+
+#[allow(unused_variables)]
+pub fn invoke_on_post_upgrade() {
+    #[cfg(feature = "on_post_upgrade")]
+    {
+        unsafe {
+            set_timer(Duration::from_nanos(0), || {
+                juno_on_post_upgrade();
+            });
+        }
+    }
 }
 
 fn should_invoke_doc_hook<T>(

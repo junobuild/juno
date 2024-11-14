@@ -417,6 +417,72 @@ pub fn count_collection_docs_store(collection: &CollectionKey) -> Result<usize, 
     }
 }
 
+/// Delete multiple documents from a collection's store based on filter criteria.
+///
+/// This function deletes documents from a collection's store that match the specified filter criteria.
+/// It returns a `Result` with `Ok(Vec<DocContext<Option<Doc>>>)` on success, containing information
+/// about each deleted document, or an error message as `Err(String)` if the deletion encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the deletion.
+/// - `collection`: A `CollectionKey` representing the collection from which to delete the documents.
+/// - `filter`: A reference to `ListParams`, defining the criteria to filter documents for deletion.
+///
+/// # Returns
+/// - `Ok(Vec<DocContext<Option<Doc>>>)`:
+///   - Each element in the vector represents the context of a deleted document, with:
+///     - `key`: The `Key` of the deleted document.
+///     - `collection`: The `CollectionKey` from which the document was deleted.
+///     - `data`: An `Option<Doc>` representing the deleted document data, if available.
+/// - `Err(String)`: An error message if the deletion operation fails.
+///
+/// This function enables batch deletion of documents in a Juno collection's store that match the given
+/// filter criteria, providing context information for each deleted document or error messages.
+pub fn delete_filtered_docs_store(
+    caller: Principal,
+    collection: CollectionKey,
+    filter: &ListParams,
+) -> Result<Vec<DocContext<Option<Doc>>>, String> {
+    let controllers: Controllers = get_controllers();
+
+    let docs = secure_get_docs(caller, &controllers, collection.clone(), filter)?;
+
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection: &collection,
+    };
+
+    delete_filtered_docs_store_impl(&context, &docs)
+}
+
+fn delete_filtered_docs_store_impl(
+    context: &StoreContext,
+    docs: &ListResults<Doc>,
+) -> Result<Vec<DocContext<Option<Doc>>>, String> {
+    let rule = get_state_rule(context.collection)?;
+
+    let mut results: Vec<DocContext<Option<Doc>>> = Vec::new();
+
+    for (key, doc) in &docs.items {
+        let value = DelDoc {
+            version: doc.version,
+        };
+
+        let deleted_doc = delete_doc_impl(context, key.clone(), value, &rule)?;
+
+        let doc_context = DocContext {
+            key: key.clone(),
+            collection: context.collection.clone(),
+            data: deleted_doc,
+        };
+
+        results.push(doc_context);
+    }
+
+    Ok(results)
+}
+
 /// Config
 
 pub fn set_config_store(config: &DbConfig) {

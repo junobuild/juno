@@ -9,16 +9,16 @@ use crate::controllers::store::{
 };
 use crate::db::store::{
     count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
-    get_config_store as get_db_config_store, get_doc_store, list_docs_store,
-    set_config_store as set_db_config_store, set_doc_store,
+    delete_filtered_docs_store, get_config_store as get_db_config_store, get_doc_store,
+    list_docs_store, set_config_store as set_db_config_store, set_doc_store,
 };
 use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::hooks::{
-    invoke_on_delete_asset, invoke_on_delete_doc, invoke_on_delete_many_assets,
-    invoke_on_delete_many_docs, invoke_on_post_upgrade, invoke_on_set_doc, invoke_on_set_many_docs,
-    invoke_upload_asset,
+    invoke_on_delete_asset, invoke_on_delete_doc, invoke_on_delete_filtered_docs,
+    invoke_on_delete_many_assets, invoke_on_delete_many_docs, invoke_on_post_upgrade,
+    invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset,
 };
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::random::defer_init_random_seed;
@@ -210,6 +210,15 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     }
 
     invoke_on_delete_many_docs(&caller, &results);
+}
+
+pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
+    let caller = caller();
+
+    let results =
+        delete_filtered_docs_store(caller, collection, &filter).unwrap_or_else(|e| trap(&e));
+
+    invoke_on_delete_filtered_docs(&caller, &results);
 }
 
 pub fn del_docs(collection: CollectionKey) {

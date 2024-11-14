@@ -130,6 +130,43 @@ pub fn on_delete_many_docs(attr: TokenStream, item: TokenStream) -> TokenStream 
     hook_macro(Hook::OnDeleteManyDocs, attr, item)
 }
 
+/// The `on_delete_filtered_docs` function is a procedural macro attribute for hooking into the `OnDeleteFilteredDocs` event.
+/// It allows you to define custom logic to be executed when documents are deleted based on specific filter criteria.
+///
+/// Example:
+///
+/// ```rust
+/// #[on_delete_filtered_docs]
+/// async fn on_delete_filtered_docs(context: OnDeleteFilteredDocsContext) -> Result<(), String> {
+///     // Your hook logic here
+/// }
+/// ```
+///
+/// You can scope the events to a particular list of collections, making the hook more selective.
+///
+/// Example:
+/// ```rust
+/// #[on_delete_filtered_docs(collections = ["demo"])]
+/// async fn on_delete_filtered_docs(context: OnDeleteFilteredDocsContext) -> Result<(), String> {
+///     // Your hook logic here
+/// }
+/// ```
+///
+/// The attributes accept a list of comma-separated collections. If the attribute array is left empty, the hook will never be called.
+///
+/// # Parameters
+/// - `collections`: An optional list of collections to limit the scope of the hook.
+/// - `context`: An instance of `OnDeleteFilteredDocsContext` containing information about the deletion event.
+///
+/// # Returns
+/// - `Ok(())`: Indicates successful execution of the hook logic.
+/// - `Err(String)`: An error message if the hook logic encounters issues.
+///
+#[proc_macro_attribute]
+pub fn on_delete_filtered_docs(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnDeleteFilteredDocs, attr, item)
+}
+
 /// The `on_upload_asset` function is a procedural macro attribute for hooking into the `OnUploadAsset` event.
 /// It allows you to define custom logic to be executed when an asset is uploaded.
 ///

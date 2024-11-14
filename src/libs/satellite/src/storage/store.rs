@@ -470,6 +470,64 @@ pub fn count_collection_assets_store(collection: &CollectionKey) -> Result<usize
     }
 }
 
+/// Delete multiple assets from a collection's store based on filter criteria.
+///
+/// This function deletes assets from a collection's store that match the specified filter criteria.
+/// It returns a `Result<Vec<Option<Asset>>, String>`, where `Ok(Vec<Option<Asset>>)` contains a vector of
+/// `Option<Asset>` values for each deleted asset (or `None` if no asset was found for that entry), or an
+/// error message as `Err(String)` if the deletion encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the deletion.
+/// - `collection`: A `CollectionKey` representing the collection from which to delete the assets.
+/// - `filters`: A reference to `ListParams` containing the filter criteria for selecting assets to delete.
+///
+/// # Returns
+/// - `Ok(Vec<Option<Asset>>)`:
+///   - Each element in the vector represents the result of a delete operation for an asset:
+///     - `Some(Asset)`: The successfully deleted asset.
+///     - `None`: Indicates no asset found matching the specified filter criteria for this entry.
+/// - `Err(String)`: An error message if the deletion operation fails.
+///
+/// This function allows batch deletion of assets in a Juno collection's store that match the specified
+/// filter criteria, providing context for each deleted asset or error messages if any issues occur.
+pub fn delete_filtered_assets_store(
+    caller: Principal,
+    collection: CollectionKey,
+    filters: &ListParams,
+) -> Result<Vec<Option<Asset>>, String> {
+    let controllers: Controllers = get_controllers();
+
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection: &collection,
+    };
+
+    let assets = secure_list_assets_impl(&context, filters)?;
+
+    delete_filtered_assets_store_impl(&context, &assets)
+}
+
+fn delete_filtered_assets_store_impl(
+    context: &StoreContext,
+    assets: &ListResults<AssetNoContent>,
+) -> Result<Vec<Option<Asset>>, String> {
+    let rule = get_state_rule(context.collection)?;
+    let config = get_config_store();
+
+    let mut results: Vec<Option<Asset>> = Vec::new();
+
+    for (_, asset) in &assets.items {
+        let deleted_asset =
+            delete_asset_impl(context, asset.key.full_path.clone(), &rule, &config)?;
+
+        results.push(deleted_asset);
+    }
+
+    Ok(results)
+}
+
 ///
 /// Upload batch and chunks
 ///

@@ -51,7 +51,7 @@ pub use crate::logs::types::logs::{Log, LogLevel};
 pub use crate::storage::handlers::set_asset_handler;
 pub use crate::storage::store::{
     count_assets_store, count_collection_assets_store, delete_asset_store, delete_assets_store,
-    get_asset_store, get_content_chunks_store, list_assets_store,
+    delete_filtered_assets_store, get_asset_store, get_content_chunks_store, list_assets_store,
 };
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
@@ -350,6 +350,12 @@ pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
 #[update]
 pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
     satellite::del_many_assets(assets);
+}
+
+#[doc(hidden)]
+#[query]
+pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
+    satellite::del_filtered_assets(collection, filter)
 }
 
 #[doc(hidden)]

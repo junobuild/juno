@@ -23,6 +23,7 @@ pub enum Hook {
     OnUploadAsset,
     OnDeleteAsset,
     OnDeleteManyAssets,
+    OnDeleteFilteredAssets,
     OnPostUpgrade,
     AssertSetDoc,
     AssertDeleteDoc,
@@ -42,6 +43,7 @@ fn map_hook_name(hook: Hook) -> String {
         Hook::OnUploadAsset => "juno_on_upload_asset".to_string(),
         Hook::OnDeleteAsset => "juno_on_delete_asset".to_string(),
         Hook::OnDeleteManyAssets => "juno_on_delete_many_assets".to_string(),
+        Hook::OnDeleteFilteredAssets => "juno_on_delete_filtered_assets".to_string(),
         Hook::OnPostUpgrade => "juno_on_post_upgrade".to_string(),
         Hook::AssertSetDoc => "juno_assert_set_doc".to_string(),
         Hook::AssertDeleteDoc => "juno_assert_delete_doc".to_string(),
@@ -60,6 +62,9 @@ fn map_hook_collections(hook: Hook) -> Option<String> {
         Hook::OnUploadAsset => Some("juno_on_upload_asset_collections".to_string()),
         Hook::OnDeleteAsset => Some("juno_on_delete_asset_collections".to_string()),
         Hook::OnDeleteManyAssets => Some("juno_on_delete_many_assets_collections".to_string()),
+        Hook::OnDeleteFilteredAssets => {
+            Some("juno_on_delete_filtered_assets_collections".to_string())
+        }
         Hook::AssertSetDoc => Some("juno_assert_set_doc_collections".to_string()),
         Hook::AssertDeleteDoc => Some("juno_assert_delete_doc_collections".to_string()),
         Hook::AssertUploadAsset => Some("juno_assert_upload_asset_collections".to_string()),
@@ -78,6 +83,7 @@ fn map_hook_type(hook: &Hook) -> Option<String> {
         Hook::OnUploadAsset => Some("OnUploadAssetContext".to_string()),
         Hook::OnDeleteAsset => Some("OnDeleteAssetContext".to_string()),
         Hook::OnDeleteManyAssets => Some("OnDeleteManyAssetsContext".to_string()),
+        Hook::OnDeleteFilteredAssets => Some("OnDeleteFilteredAssetsContext".to_string()),
         Hook::AssertSetDoc => Some("AssertSetDocContext".to_string()),
         Hook::AssertDeleteDoc => Some("AssertDeleteDocContext".to_string()),
         Hook::AssertUploadAsset => Some("AssertUploadAssetContext".to_string()),

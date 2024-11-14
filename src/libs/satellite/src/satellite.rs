@@ -16,9 +16,9 @@ use crate::db::types::config::DbConfig;
 use crate::db::types::interface::{DelDoc, SetDoc};
 use crate::db::types::state::{Doc, DocContext, DocUpsert};
 use crate::hooks::{
-    invoke_on_delete_asset, invoke_on_delete_doc, invoke_on_delete_filtered_docs,
-    invoke_on_delete_many_assets, invoke_on_delete_many_docs, invoke_on_post_upgrade,
-    invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset,
+    invoke_on_delete_asset, invoke_on_delete_doc, invoke_on_delete_filtered_assets,
+    invoke_on_delete_filtered_docs, invoke_on_delete_many_assets, invoke_on_delete_many_docs,
+    invoke_on_post_upgrade, invoke_on_set_doc, invoke_on_set_many_docs, invoke_upload_asset,
 };
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::random::defer_init_random_seed;
@@ -30,8 +30,9 @@ use crate::storage::certified_assets::upgrade::defer_init_certified_assets;
 use crate::storage::store::{
     commit_batch_store, count_assets_store, count_collection_assets_store, create_batch_store,
     create_chunk_store, delete_asset_store, delete_assets_store, delete_domain_store,
-    get_asset_store, get_config_store as get_storage_config_store, get_custom_domains_store,
-    list_assets_store, set_config_store as set_storage_config_store, set_domain_store,
+    delete_filtered_assets_store, get_asset_store, get_config_store as get_storage_config_store,
+    get_custom_domains_store, list_assets_store, set_config_store as set_storage_config_store,
+    set_domain_store,
 };
 use crate::storage::strategy_impls::StorageState;
 use crate::types::interface::{Config, RulesType};
@@ -471,6 +472,15 @@ pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
     }
 
     invoke_on_delete_many_assets(&caller, &results);
+}
+
+pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
+    let caller = caller();
+
+    let results =
+        delete_filtered_assets_store(caller, collection, &filter).unwrap_or_else(|e| trap(&e));
+
+    invoke_on_delete_filtered_assets(&caller, &results);
 }
 
 pub fn del_assets(collection: CollectionKey) {

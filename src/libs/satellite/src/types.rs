@@ -131,6 +131,9 @@ pub mod hooks {
     /// A type alias for the context used in the `on_delete_many_assets` satellite hook.
     pub type OnDeleteManyAssetsContext = HookContext<Vec<Option<Asset>>>;
 
+    /// A type alias for the context used in the `on_delete_filtered_assets` satellite hook.
+    pub type OnDeleteFilteredAssetsContext = HookContext<Vec<Option<Asset>>>;
+
     /// A type alias for the context used in the `assert_set_doc` satellite hook.
     pub type AssertSetDocContext = HookContext<DocContext<DocAssertSet>>;
 

@@ -4,8 +4,8 @@ use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, Do
 use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
     AssertUploadAssetContext, OnDeleteAssetContext, OnDeleteDocContext,
-    OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext, OnDeleteManyDocsContext,
-    OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
+    OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
+    OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
 use crate::HookContext;
 #[allow(unused)]
@@ -33,10 +33,12 @@ extern "Rust" {
     fn juno_on_upload_asset(context: OnUploadAssetContext);
     fn juno_on_delete_asset(context: OnDeleteAssetContext);
     fn juno_on_delete_many_assets(context: OnDeleteManyAssetsContext);
+    fn juno_on_delete_filtered_assets(context: OnDeleteFilteredAssetsContext);
 
     fn juno_on_upload_asset_collections() -> Option<Vec<String>>;
     fn juno_on_delete_asset_collections() -> Option<Vec<String>>;
     fn juno_on_delete_many_assets_collections() -> Option<Vec<String>>;
+    fn juno_on_delete_filtered_assets_collections() -> Option<Vec<String>>;
 
     fn juno_assert_set_doc(context: AssertSetDocContext) -> Result<(), String>;
     fn juno_assert_delete_doc(context: AssertDeleteDocContext) -> Result<(), String>;
@@ -237,6 +239,29 @@ pub fn invoke_on_delete_many_assets(caller: &UserId, assets: &[Option<Asset>]) {
 
                 set_timer(Duration::from_nanos(0), || {
                     juno_on_delete_many_assets(context);
+                });
+            }
+        }
+    }
+}
+
+#[allow(dead_code, unused_variables)]
+pub fn invoke_on_delete_filtered_assets(caller: &UserId, assets: &[Option<Asset>]) {
+    #[cfg(feature = "on_delete_filtered_assets")]
+    {
+        unsafe {
+            let collections = juno_on_delete_filtered_assets_collections();
+
+            let filtered_assets = filter_assets(&collections, assets);
+
+            if !filtered_assets.is_empty() {
+                let context: OnDeleteFilteredAssetsContext = OnDeleteFilteredAssetsContext {
+                    caller: *caller,
+                    data: filtered_assets.clone(),
+                };
+
+                set_timer(Duration::ZERO, || {
+                    juno_on_delete_filtered_assets(context);
                 });
             }
         }

@@ -250,6 +250,7 @@ export interface _SERVICE {
 	del_custom_domain: ActorMethod<[string], undefined>;
 	del_doc: ActorMethod<[string, string, DelDoc], undefined>;
 	del_docs: ActorMethod<[string], undefined>;
+	del_filtered_docs: ActorMethod<[string, ListParams], undefined>;
 	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
 	del_rule: ActorMethod<[RulesType, string, DelRule], undefined>;

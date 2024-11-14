@@ -3,8 +3,9 @@
 use crate::db::types::state::{Doc, DocAssertDelete, DocAssertSet, DocContext, DocUpsert};
 use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
-    AssertUploadAssetContext, OnDeleteAssetContext, OnDeleteDocContext, OnDeleteManyAssetsContext,
-    OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
+    AssertUploadAssetContext, OnDeleteAssetContext, OnDeleteDocContext,
+    OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext, OnDeleteManyDocsContext,
+    OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
 use crate::HookContext;
 #[allow(unused)]
@@ -21,11 +22,13 @@ extern "Rust" {
     fn juno_on_set_many_docs(context: OnSetManyDocsContext);
     fn juno_on_delete_doc(context: OnDeleteDocContext);
     fn juno_on_delete_many_docs(context: OnDeleteManyDocsContext);
+    fn juno_on_delete_filtered_docs(context: OnDeleteFilteredDocsContext);
 
     fn juno_on_set_doc_collections() -> Option<Vec<String>>;
     fn juno_on_set_many_docs_collections() -> Option<Vec<String>>;
     fn juno_on_delete_doc_collections() -> Option<Vec<String>>;
     fn juno_on_delete_many_docs_collections() -> Option<Vec<String>>;
+    fn juno_on_delete_filtered_docs_collections() -> Option<Vec<String>>;
 
     fn juno_on_upload_asset(context: OnUploadAssetContext);
     fn juno_on_delete_asset(context: OnDeleteAssetContext);
@@ -132,6 +135,29 @@ pub fn invoke_on_delete_many_docs(caller: &UserId, docs: &[DocContext<Option<Doc
 
                 set_timer(Duration::from_nanos(0), || {
                     juno_on_delete_many_docs(context);
+                });
+            }
+        }
+    }
+}
+
+#[allow(dead_code, unused_variables)]
+pub fn invoke_on_delete_filtered_docs(caller: &UserId, docs: &[DocContext<Option<Doc>>]) {
+    #[cfg(feature = "on_delete_filtered_docs")]
+    {
+        unsafe {
+            let collections = juno_on_delete_filtered_docs_collections();
+
+            let filtered_docs = filter_docs(&collections, docs);
+
+            if !filtered_docs.is_empty() {
+                let context: OnDeleteFilteredDocsContext = OnDeleteFilteredDocsContext {
+                    caller: *caller,
+                    data: filtered_docs.clone(),
+                };
+
+                set_timer(Duration::from_nanos(0), || {
+                    juno_on_delete_filtered_docs(context);
                 });
             }
         }

@@ -38,7 +38,7 @@ use junobuild_storage::types::interface::{
 
 pub use crate::db::store::{
     count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
-    get_doc_store, list_docs_store, set_doc_store,
+    delete_filtered_docs_store, get_doc_store, list_docs_store, set_doc_store,
 };
 use crate::db::types::config::DbConfig;
 pub use crate::db::types::interface::{DelDoc, SetDoc};
@@ -140,6 +140,12 @@ pub fn set_many_docs(docs: Vec<(CollectionKey, Key, SetDoc)>) -> Vec<(Key, Doc)>
 #[update]
 pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
     satellite::del_many_docs(docs)
+}
+
+#[doc(hidden)]
+#[update]
+pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
+    satellite::del_filtered_docs(collection, filter)
 }
 
 #[doc(hidden)]

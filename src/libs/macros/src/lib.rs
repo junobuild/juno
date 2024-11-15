@@ -430,3 +430,20 @@ pub fn assert_delete_asset(attr: TokenStream, item: TokenStream) -> TokenStream 
 pub fn on_post_upgrade(attr: TokenStream, item: TokenStream) -> TokenStream {
     hook_macro(Hook::OnPostUpgrade, attr, item)
 }
+
+/// The `on_init` function is a procedural macro attribute for hooking into the `OnInit` event.
+/// It allows you to define custom logic to be executed after a satellite is initialized.
+///
+/// Example:
+///
+/// ```rust
+/// #[on_init]
+/// fn on_init() {
+///     // Your post-init logic here
+/// }
+/// ```
+///
+#[proc_macro_attribute]
+pub fn on_init(attr: TokenStream, item: TokenStream) -> TokenStream {
+    hook_macro(Hook::OnInit, attr, item)
+}

@@ -24,6 +24,7 @@ pub enum Hook {
     OnDeleteAsset,
     OnDeleteManyAssets,
     OnDeleteFilteredAssets,
+    OnInit,
     OnPostUpgrade,
     AssertSetDoc,
     AssertDeleteDoc,
@@ -44,6 +45,7 @@ fn map_hook_name(hook: Hook) -> String {
         Hook::OnDeleteAsset => "juno_on_delete_asset".to_string(),
         Hook::OnDeleteManyAssets => "juno_on_delete_many_assets".to_string(),
         Hook::OnDeleteFilteredAssets => "juno_on_delete_filtered_assets".to_string(),
+        Hook::OnInit => "juno_on_init".to_string(),
         Hook::OnPostUpgrade => "juno_on_post_upgrade".to_string(),
         Hook::AssertSetDoc => "juno_assert_set_doc".to_string(),
         Hook::AssertDeleteDoc => "juno_assert_delete_doc".to_string(),
@@ -104,7 +106,7 @@ fn parse_hook(hook: &Hook, attr: TokenStream, item: TokenStream) -> Result<Token
     let hook_fn = Ident::new(&map_hook_name(hook.clone()), proc_macro2::Span::call_site());
 
     match hook {
-        Hook::OnPostUpgrade => parse_post_upgrade_hook(&ast, signature, &hook_fn),
+        Hook::OnPostUpgrade | Hook::OnInit => parse_lifecycle_hook(&ast, signature, &hook_fn),
         _ => parse_doc_hook(&ast, signature, &hook_fn, hook, attr),
     }
 }
@@ -229,12 +231,12 @@ fn parse_assert_hook(
     }
 }
 
-fn parse_post_upgrade_hook(
+fn parse_lifecycle_hook(
     ast: &ItemFn,
     signature: &Signature,
     hook_fn: &Ident,
 ) -> Result<TokenStream, String> {
-    let hook_body = parse_post_upgrade_hook_body(signature, hook_fn);
+    let hook_body = parse_lifecycle_hook_body(signature, hook_fn);
 
     let result = quote! {
         #ast
@@ -245,10 +247,7 @@ fn parse_post_upgrade_hook(
     Ok(result.into())
 }
 
-fn parse_post_upgrade_hook_body(
-    signature: &Signature,
-    hook_fn: &Ident,
-) -> proc_macro2::TokenStream {
+fn parse_lifecycle_hook_body(signature: &Signature, hook_fn: &Ident) -> proc_macro2::TokenStream {
     let func_name = &signature.ident;
 
     let function_call = quote! { #func_name() };

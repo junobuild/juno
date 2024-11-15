@@ -52,6 +52,7 @@ extern "Rust" {
     fn juno_assert_upload_asset_collections() -> Option<Vec<String>>;
     fn juno_assert_delete_asset_collections() -> Option<Vec<String>>;
 
+    fn juno_on_init();
     fn juno_on_post_upgrade();
 }
 
@@ -369,6 +370,18 @@ pub fn invoke_assert_delete_asset(caller: &UserId, asset: &Asset) -> Result<(), 
     }
 
     Ok(())
+}
+
+#[allow(unused_variables)]
+pub fn invoke_on_init() {
+    #[cfg(feature = "on_init")]
+    {
+        unsafe {
+            set_timer(Duration::ZERO, || {
+                juno_on_init();
+            });
+        }
+    }
 }
 
 #[allow(unused_variables)]

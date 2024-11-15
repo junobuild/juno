@@ -10,6 +10,12 @@ if [ ! -f "$TARGET_FILE" ]; then
   echo "Satellite template does not exist. Downloading..."
   curl -o "$TARGET_FILE" -L "$URL"
 
+  if grep -q "Not Found" "$TARGET_FILE"; then
+    echo "Error: Downloaded template contains 'Not Found'."
+    rm -f "$TARGET_FILE"
+    exit 1
+  fi
+
   if [ $? -eq 0 ]; then
     echo "Download completed successfully: $TARGET_FILE"
   else

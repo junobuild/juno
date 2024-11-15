@@ -174,27 +174,7 @@ fn parse_on_hook(
     let func_name = &signature.ident;
     let is_async = signature.asyncness.is_some();
 
-    let return_length = match &signature.output {
-        ReturnType::Default => 0,
-        ReturnType::Type(_, ty) => match ty.as_ref() {
-            Type::Tuple(tuple) => tuple.elems.len(),
-            _ => 1,
-        },
-    };
-
-    let hook_return = if return_length == 1 {
-        quote! {
-            match result {
-                Ok(_) => {}
-                Err(e) => {
-                    let error = format!("{}", e);
-                    ic_cdk::trap(&error);
-                }
-            }
-        }
-    } else {
-        quote! {}
-    };
+    let hook_return = parse_hook_return(signature);
 
     let function_call = if is_async {
         quote! { #func_name(#hook_param).await }
@@ -210,6 +190,30 @@ fn parse_on_hook(
                 #hook_return
             });
         }
+    }
+}
+
+fn parse_hook_return(signature: &Signature) -> proc_macro2::TokenStream {
+    let return_length = match &signature.output {
+        ReturnType::Default => 0,
+        ReturnType::Type(_, ty) => match ty.as_ref() {
+            Type::Tuple(tuple) => tuple.elems.len(),
+            _ => 1,
+        },
+    };
+
+    if return_length == 1 {
+        quote! {
+            match result {
+                Ok(_) => {}
+                Err(e) => {
+                    let error = format!("{}", e);
+                    ic_cdk::trap(&error);
+                }
+            }
+        }
+    } else {
+        quote! {}
     }
 }
 
@@ -248,6 +252,8 @@ fn parse_lifecycle_hook(
 }
 
 fn parse_lifecycle_hook_body(signature: &Signature, hook_fn: &Ident) -> proc_macro2::TokenStream {
+    let hook_return = parse_hook_return(signature);
+
     let func_name = &signature.ident;
 
     let function_call = quote! { #func_name() };
@@ -255,7 +261,8 @@ fn parse_lifecycle_hook_body(signature: &Signature, hook_fn: &Ident) -> proc_mac
     quote! {
         #[no_mangle]
         pub extern "Rust" fn #hook_fn() {
-            #function_call;
+            let result = #function_call;
+            #hook_return
         }
     }
 }

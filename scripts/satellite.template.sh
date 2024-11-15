@@ -1,6 +1,6 @@
 #!/bin/bash
 
-URL="https://github.com/junobuild/satellite-template/releases/download/v0.0.2/index.html"
+URL="https://github.com/junobuild/satellite-template/releases/download/v0.0.3/index.html"
 TARGET_DIR="src/satellite/resources"
 TARGET_FILE="${TARGET_DIR}/index.html"
 

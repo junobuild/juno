@@ -58,7 +58,7 @@
 
 	let warnDerivationOrigin = $derived(
 		(nonNullish(currentDerivationOrigin) && derivationOrigin !== currentDerivationOrigin) ||
-			(isNullish(currentDerivationOrigin) && nonNullish(derivationOrigin))
+			(isNullish(currentDerivationOrigin) && nonNullish(derivationOrigin) && nonNullish(config))
 	);
 
 	let maxTokens: number | undefined = $state(

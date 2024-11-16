@@ -1,19 +1,16 @@
 <script lang="ts">
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { compare } from 'semver';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
-	import { getRule } from '$lib/api/satellites.api';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { getAuthConfig, listCustomDomains } from '$lib/services/hosting.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
+	import { getRuleUser } from '$lib/services/collection.services';
 
 	interface Props {
 		satellite: Satellite;
@@ -24,32 +21,15 @@
 	let satelliteId = $derived(satellite.satellite_id);
 
 	let rule: Rule | undefined = $state<Rule | undefined>(undefined);
+	let supportSettings = $state(false);
 
 	let maxTokens: number | undefined = $state(undefined);
 
 	const loadRule = async () => {
-		try {
-			const result = await getRule({
-				satelliteId,
-				collection: '#user',
-				identity: $authStore.identity,
-				type: { Db: null }
-			});
-
-			rule = fromNullable(result);
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.load_settings,
-				detail: err
-			});
-		}
+		const result = await getRuleUser({ satelliteId, identity: $authStore.identity });
+		rule = result?.rule;
+		supportSettings = result?.result === 'success';
 	};
-
-	let satVersion: string | undefined = $derived(
-		$versionStore?.satellites[satelliteId.toText()]?.current
-	);
-
-	let supportSettings: boolean = $derived(compare(satVersion ?? '0.0.0', '0.0.21') >= 0);
 
 	let supportConfig = $state(false);
 	let config: AuthenticationConfig | undefined = $state();
@@ -64,11 +44,11 @@
 		});
 
 		config = result.config;
-		supportConfig = result.success;
+		supportConfig = result.result === 'success';
 	};
 
 	const load = async () => {
-		await Promise.all([loadConfig(), ...(supportSettings ? [loadRule()] : [])]);
+		await Promise.all([loadConfig(), loadRule()]);
 	};
 
 	$effect(() => {

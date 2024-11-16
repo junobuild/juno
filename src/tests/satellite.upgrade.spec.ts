@@ -557,4 +557,39 @@ describe('Satellite upgrade', () => {
 			});
 		});
 	});
+
+	describe('v0.0.20 -> v0.0.21', () => {
+		beforeEach(async () => {
+			pic = await PocketIc.create(inject('PIC_URL'));
+
+			const destination = await downloadSatellite('0.0.20');
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_16>({
+				idlFactory: idlFactorSatellite_0_0_16,
+				wasm: destination,
+				arg: controllersInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+		});
+
+		it('should not populate an index HTML file', async () => {
+			await upgrade();
+
+			const { http_request } = actor;
+
+			const { status_code } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/'
+			});
+
+			expect(status_code).toBe(404);
+		});
+	});
 });

@@ -18,6 +18,7 @@ import {
 	CONTROLLER_ERROR_MSG,
 	SATELLITE_ADMIN_ERROR_MSG
 } from './constants/satellite-tests.constants';
+import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite storage', () => {
@@ -39,6 +40,8 @@ describe('Satellite storage', () => {
 
 		actor = a;
 		canisterId = c;
+
+		await deleteDefaultIndexHTML({ actor, controller });
 	});
 
 	afterAll(async () => {

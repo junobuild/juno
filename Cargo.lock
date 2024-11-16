@@ -1284,7 +1284,9 @@ dependencies = [
  "candid",
  "ic-cdk",
  "ic-cdk-macros",
+ "junobuild-macros",
  "junobuild-satellite",
+ "junobuild-storage",
  "serde",
 ]
 

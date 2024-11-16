@@ -11,6 +11,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { toArray } from '@junobuild/utils';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite authentication', () => {
@@ -34,6 +35,8 @@ describe('Satellite authentication', () => {
 		actor = c;
 		canisterId = cId;
 		canisterIdUrl = `https://${canisterId.toText()}.icp0.io`;
+
+		await deleteDefaultIndexHTML({ actor, controller });
 	});
 
 	afterAll(async () => {

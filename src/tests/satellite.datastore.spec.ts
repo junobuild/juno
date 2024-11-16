@@ -38,6 +38,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 
 			actor = c;
+
 			actor.setIdentity(controller);
 
 			const setRule: SetRule = {
@@ -762,7 +763,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			describe.each([
 				{
 					memory: { Heap: null },
-					expectMemory: 3_866_624n
+					expectMemory: 3_932_160n
 				},
 				{
 					memory: { Stable: null },

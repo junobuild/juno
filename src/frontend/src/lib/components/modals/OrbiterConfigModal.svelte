@@ -146,12 +146,12 @@
 <Modal on:junoClose={onclose}>
 	{#if steps === 'ready'}
 		<div class="msg">
-			<p>{$i18n.analytics.configuration_applied}</p>
+			<p>{$i18n.core.configuration_applied}</p>
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
-			<p>{$i18n.analytics.updating_configuration}</p>
+			<p>{$i18n.core.updating_configuration}</p>
 		</SpinnerModal>
 	{:else}
 		<h2>{$i18n.core.config}</h2>

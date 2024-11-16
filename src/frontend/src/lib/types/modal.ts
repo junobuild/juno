@@ -1,6 +1,6 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
-import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
@@ -83,6 +83,11 @@ export interface JunoModalEditOrbiterConfigDetail {
 	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
 }
 
+export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail {
+	rule: Rule | undefined;
+	config: AuthenticationConfig | undefined;
+}
+
 export type JunoModalDetail =
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
@@ -110,6 +115,7 @@ export interface JunoModal {
 		| 'create_controller'
 		| 'edit_canister_settings'
 		| 'edit_orbiter_config'
+		| 'edit_auth_config'
 		| 'upgrade_satellite'
 		| 'upgrade_mission_control'
 		| 'upgrade_orbiter'

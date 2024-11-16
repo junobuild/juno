@@ -52,7 +52,9 @@
 		"configure": "Configure",
 		"config": "Configuration",
 		"edit_config": "Edit configuration",
-		"advanced_options": "Advanced Options"
+		"advanced_options": "Advanced Options",
+		"updating_configuration": "Updating configuration...",
+		"configuration_applied": "Configuration applied."
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -239,7 +241,11 @@
 		"users": "Users",
 		"methods": "Sign-in methods",
 		"not_signed_in": "You are not signed in. Please sign in to continue.",
-		"session_expired": "You have been logged out because your session has expired."
+		"session_expired": "You have been logged out because your session has expired.",
+		"main_domain": "Main domain (\"derivation origin\")",
+		"not_configured": "Not configured",
+		"edit_configuration": "Update the configuration of your authentication using the form below.",
+		"main_domain_warn": "You are about to change your main domain. Please ensure this is the desired action, as all existing users will no longer be recognized by your app."
 	},
 	"datastore": {
 		"title": "Datastore",
@@ -302,9 +308,7 @@
 		"enabled_satellites": "Enabled satellites",
 		"page_views": "Page views",
 		"configuration_description": "Select the Satellites you would like to track analytics for.",
-		"tracked_metrics": "Tracked metrics",
-		"updating_configuration": "Updating configuration...",
-		"configuration_applied": "Configuration applied."
+		"tracked_metrics": "Tracked metrics"
 	},
 	"hosting": {
 		"title": "Hosting",
@@ -466,7 +470,8 @@
 		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?",
 		"auth_settings_no_loaded": "The authentication's settings are not yet loaded.",
 		"auth_rate_config_max_tokens": "A maximal number of updates per minute is required.",
-		"auth_rate_config_update": "Unexpected error(s) while trying to update your authentication settings."
+		"auth_rate_config_update": "Unexpected error(s) while trying to update your authentication settings.",
+		"auth_domain_config": "Unexpected error(s) while trying to update your authentication configuration"
 	},
 	"document": {
 		"owner": "Owner",

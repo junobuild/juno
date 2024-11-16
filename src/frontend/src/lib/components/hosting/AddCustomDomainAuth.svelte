@@ -1,9 +1,10 @@
 <script lang="ts">
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { buildSetAuthenticationConfig } from '$lib/utils/auth.config.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
@@ -22,25 +23,7 @@
 	const dispatch = createEventDispatcher();
 
 	const yes = () => {
-		const payload: AuthenticationConfig = isNullish(config)
-			? {
-					internet_identity: [
-						{
-							derivation_origin: [domainNameInput]
-						}
-					]
-				}
-			: {
-					...config,
-					...(nonNullish(fromNullable(config.internet_identity)) && {
-						internet_identity: [
-							{
-								...fromNullable(config.internet_identity),
-								derivation_origin: [domainNameInput]
-							}
-						]
-					})
-				};
+		const payload = buildSetAuthenticationConfig({ config, domainName: domainNameInput });
 
 		dispatch('junoNext', payload);
 	};

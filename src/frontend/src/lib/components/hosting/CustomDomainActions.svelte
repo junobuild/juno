@@ -19,6 +19,7 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { JunoModalCustomDomainDetail } from '$lib/types/modal';
 	import type { Option } from '$lib/types/utils';
+	import { buildDeleteAuthenticationConfig } from '$lib/utils/auth.config.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -60,19 +61,7 @@
 			return;
 		}
 
-		const updateConfig: AuthenticationConfig = deleteMainDomain
-			? {
-					...config,
-					...(nonNullish(fromNullable(config.internet_identity)) && {
-						internet_identity: [
-							{
-								...fromNullable(config.internet_identity),
-								derivation_origin: []
-							}
-						]
-					})
-				}
-			: config;
+		const updateConfig = deleteMainDomain ? buildDeleteAuthenticationConfig(config) : config;
 
 		await setAuthConfig({
 			satelliteId: satellite.satellite_id,

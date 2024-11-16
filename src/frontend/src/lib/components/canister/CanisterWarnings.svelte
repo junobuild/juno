@@ -20,7 +20,7 @@
 			return;
 		}
 
-		cyclesWarning = data?.warning?.cycles === true ?? false;
+		cyclesWarning = data?.warning?.cycles === true;
 
 		// Disabled for now, a bit too much in your face given that wasm memory cannot be shrink. We can always activate this warning if necessary, therefore I don't remove the code.
 		// heapWarning = data?.warning?.heap === true ?? false;

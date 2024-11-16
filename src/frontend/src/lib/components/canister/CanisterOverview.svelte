@@ -40,7 +40,7 @@
 
 	let memory: MemorySize | undefined = $derived(data?.memory);
 
-	let warning: boolean = $derived(data?.warning?.heap === true ?? false);
+	let warning: boolean = $derived(data?.warning?.heap === true);
 </script>
 
 <div>

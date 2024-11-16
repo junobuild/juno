@@ -10,7 +10,7 @@
 
 	let { data = undefined }: Props = $props();
 
-	let warning: boolean = $derived(data?.warning?.cycles === true ?? false);
+	let warning: boolean = $derived(data?.warning?.cycles === true);
 
 	let status: CanisterStatus | undefined = $derived(data?.canister?.status);
 </script>

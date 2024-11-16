@@ -543,7 +543,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 
 			it('should delete documents with pagination', async () => {
-				const { del_filtered_docs, count_docs, set_doc, list_docs } = actor;
+				const { del_filtered_docs, count_docs, list_docs } = actor;
 
 				actor.setIdentity(user2);
 

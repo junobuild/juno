@@ -6,6 +6,7 @@ import { PocketIc, type Actor } from '@hadronous/pic';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
+import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite Index HTML', () => {
@@ -51,5 +52,21 @@ describe('Satellite Index HTML', () => {
 		);
 
 		expect(responseBody).toEqual(sourceIndexHTML);
+	});
+
+	it('should be able to delete default index.html', async () => {
+		await deleteDefaultIndexHTML({ actor, controller });
+
+		const { http_request } = actor;
+
+		const { status_code } = await http_request({
+			body: [],
+			certificate_version: toNullable(),
+			headers: [],
+			method: 'GET',
+			url: '/'
+		});
+
+		expect(status_code).toBe(404);
 	});
 });

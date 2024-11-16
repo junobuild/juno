@@ -42,7 +42,7 @@
 		"test": "tsc --project tsconfig.spec.json --noEmit && vitest",
 		"build:console": "scripts/cargo.sh console",
 		"build:observatory": "scripts/cargo.sh observatory",
-		"build:satellite": "scripts/satellite.template.sh && scripts/cargo.sh satellite",
+		"build:satellite": "scripts/cargo.sh satellite",
 		"build:mission-control": "scripts/cargo.sh mission_control",
 		"build:orbiter": "scripts/cargo.sh orbiter",
 		"emulator": "docker compose up"

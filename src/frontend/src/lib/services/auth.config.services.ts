@@ -5,6 +5,7 @@ import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.const
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { Option } from '$lib/types/utils';
 import {
 	buildDeleteAuthenticationConfig,
 	buildSetAuthenticationConfig
@@ -72,7 +73,8 @@ const updateConfig = async ({
 	err?: unknown;
 }> => {
 	const editConfig = nonNullish(derivationOrigin)
-		? buildSetAuthenticationConfig({ config, domainName: derivationOrigin.origin })
+		? // We use the host in the backend satellite which parse the url with https to generate the /.well-known/ii-alternative-origins
+			buildSetAuthenticationConfig({ config, domainName: derivationOrigin.host })
 		: nonNullish(config)
 			? buildDeleteAuthenticationConfig(config)
 			: undefined;

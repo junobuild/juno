@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { fromNullable, nonNullish, isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
@@ -57,7 +57,8 @@
 	);
 
 	let warnDerivationOrigin = $derived(
-		currentDerivationOrigin !== undefined && derivationOrigin !== currentDerivationOrigin
+		(nonNullish(currentDerivationOrigin) && derivationOrigin !== currentDerivationOrigin) ||
+			(isNullish(currentDerivationOrigin) && nonNullish(derivationOrigin))
 	);
 
 	let maxTokens: number | undefined = $state(
@@ -81,7 +82,7 @@
 
 		const selectedDerivationOrigin = nonNullish(derivationOrigin)
 			? [...(nonNullish(satelliteUrl) ? [satelliteUrl] : []), ...customDomains].find(
-					({ origin }) => origin === derivationOrigin
+					({ host }) => host === derivationOrigin
 				)
 			: undefined;
 
@@ -101,7 +102,7 @@
 			return;
 		}
 
-		emit({ message: 'onjunoReloadAuthConfig' });
+		emit({ message: 'junoReloadAuthConfig' });
 
 		steps = 'ready';
 	};
@@ -135,11 +136,11 @@
 								<option value={undefined}>{$i18n.authentication.not_configured}</option>
 
 								{#if nonNullish(satelliteUrl)}
-									<option value={satelliteUrl.origin}>{satelliteUrl.host}</option>
+									<option value={satelliteUrl.host}>{satelliteUrl.host}</option>
 								{/if}
 
 								{#each customDomains as customDomain}
-									<option value={customDomain.origin}>{customDomain.host}</option>
+									<option value={customDomain.host}>{customDomain.host}</option>
 								{/each}
 							</select>
 						</Value>

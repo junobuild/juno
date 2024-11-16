@@ -10,7 +10,7 @@ import {
 	buildDeleteAuthenticationConfig,
 	buildSetAuthenticationConfig
 } from '$lib/utils/auth.config.utils';
-import { isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
@@ -72,6 +72,13 @@ const updateConfig = async ({
 	result: 'skip' | 'success' | 'error';
 	err?: unknown;
 }> => {
+	if (
+		derivationOrigin?.host ===
+		fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
+	) {
+		return { result: 'skip' };
+	}
+
 	const editConfig = nonNullish(derivationOrigin)
 		? // We use the host in the backend satellite which parse the url with https to generate the /.well-known/ii-alternative-origins
 			buildSetAuthenticationConfig({ config, domainName: derivationOrigin.host })

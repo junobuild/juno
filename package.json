@@ -64,7 +64,7 @@
 		"@sveltejs/kit": "^2.7.3",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
 		"@types/dompurify": "^3.0.5",
-		"@types/node": "^20.14.9",
+		"@types/node": "^22.9.0",
 		"@types/wicg-file-system-access": "^2023.10.5",
 		"autoprefixer": "^10.4.20",
 		"conf": "^13.0.1",

@@ -116,7 +116,10 @@ export const getAuthConfig = async ({
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<{ success: boolean; config?: AuthenticationConfig | undefined }> => {
+}): Promise<{
+	result: 'success' | 'error' | 'skip';
+	config?: AuthenticationConfig | undefined;
+}> => {
 	try {
 		// TODO: load versions globally and use store value instead of fetching version again
 		const version = await satelliteVersion({ satelliteId, identity });
@@ -126,7 +129,7 @@ export const getAuthConfig = async ({
 		const authConfigSupported = compare(version, '0.0.17') >= 0;
 
 		if (!authConfigSupported) {
-			return { success: true };
+			return { result: 'skip' };
 		}
 
 		const config = await getAuthConfigApi({
@@ -134,7 +137,7 @@ export const getAuthConfig = async ({
 			identity
 		});
 
-		return { success: true, config: fromNullable(config) };
+		return { result: 'success', config: fromNullable(config) };
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
@@ -143,6 +146,6 @@ export const getAuthConfig = async ({
 			detail: err
 		});
 
-		return { success: false };
+		return { result: 'error' };
 	}
 };

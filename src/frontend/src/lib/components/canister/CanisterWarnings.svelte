@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import Warning from '$lib/components/ui/Warning.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 
 	interface Props {
@@ -30,17 +30,13 @@
 <svelte:window onjunoSyncCanister={({ detail: { canister } }) => syncCanister(canister)} />
 
 {#if cyclesWarning}
-	<p><IconWarning /> {@render cycles?.()}</p>
+	<Warning>
+		{@render cycles?.()}
+	</Warning>
 {/if}
 
 {#if heapWarning}
-	<p><IconWarning /> {@render heap?.()}</p>
+	<Warning>
+		{@render heap?.()}
+	</Warning>
 {/if}
-
-<style lang="scss">
-	@use '../../styles/mixins/info';
-
-	p {
-		@include info.warning;
-	}
-</style>

@@ -1,11 +1,15 @@
 import type { Rule, RulesType, SetRule } from '$declarations/satellite/satellite.did';
-import { setRule as setRuleApi } from '$lib/api/satellites.api';
+import { getRule, satelliteVersion, setRule as setRuleApi } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { MemoryStable, type MemoryText, type PermissionText } from '$lib/constants/rules.constants';
+import { i18n } from '$lib/stores/i18n.store';
+import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { compare } from 'semver';
+import { get } from 'svelte/store';
 
 export const setRule = async ({
 	read,
@@ -55,4 +59,43 @@ export const setRule = async ({
 		rule: updateRule,
 		...rest
 	});
+};
+
+export const getRuleUser = async ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<{ result: 'success' | 'error' | 'skip'; rule?: Rule | undefined }> => {
+	// TODO: load versions globally and use store value instead of fetching version again
+	const version = await satelliteVersion({ satelliteId, identity });
+
+	// TODO: keep a list of those version checks and remove them incrementally
+	// Also would be cleaner than to have 0.0.17 hardcoded there and there...
+	const rateConfigSupported = compare(version, '0.0.21') >= 0;
+
+	if (!rateConfigSupported) {
+		return { result: 'skip' };
+	}
+
+	try {
+		const result = await getRule({
+			satelliteId,
+			collection: '#user',
+			identity,
+			type: { Db: null }
+		});
+
+		return { result: 'success', rule: fromNullable(result) };
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: labels.errors.load_settings,
+			detail: err
+		});
+
+		return { result: 'error' };
+	}
 };

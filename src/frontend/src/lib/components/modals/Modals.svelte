@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import AuthConfigModal from '$lib/components/modals/AuthConfigModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
@@ -97,4 +98,8 @@
 
 {#if modal?.type === 'edit_orbiter_config' && nonNullish(modal.detail)}
 	<OrbiterConfigModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'edit_auth_config' && nonNullish(modal.detail)}
+	<AuthConfigModal onclose={close} detail={modal.detail} />
 {/if}

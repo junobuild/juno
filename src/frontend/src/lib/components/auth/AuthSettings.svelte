@@ -1,15 +1,15 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import AuthConfig from '$lib/components/auth/AuthConfig.svelte';
 	import SignInMethod from '$lib/components/auth/SignInMethod.svelte';
 
 	interface Props {
-		satelliteId: Principal;
+		satellite: Satellite;
 	}
 
-	let { satelliteId }: Props = $props();
+	let { satellite }: Props = $props();
 </script>
 
 <SignInMethod />
 
-<AuthConfig {satelliteId} />
+<AuthConfig {satellite} />

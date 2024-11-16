@@ -344,10 +344,7 @@
 		"files_deployed": "files deployed",
 		"set_auth_domain_title": "Set domain for authentication",
 		"set_auth_domain_question": "Would you like to use <strong>{0}</strong> as the main domain for all user sign-ins?<br/><br/>This setting, also known as \"derivation origin\", ensures that users are recognized on your app, regardless of whether they use the default URL or any other custom domain you might configure later.<br><br>For example, a user signing on at {1} will receive the same identifier (principal) as when signing on at {2}.",
-		"update_auth_domain_title": "Update domain for authentication",
-		"update_auth_domain_question": "Your current domain for authentication is set to <strong>{1}</strong>. Would you like to change it to <strong>{0}</strong>?<br><br>If you answer \"Yes\", please be certain, as all existing users will no longer be recognized by your app.",
-		"domain_name": "Domain name",
-		"no_keep_domain": "No, keep {0}"
+		"domain_name": "Domain name"
 	},
 	"functions": {
 		"title": "Functions",

@@ -344,10 +344,7 @@
 		"files_deployed": "文件已经部署",
 		"set_auth_domain_title": "设置用于认证的域名",
 		"set_auth_domain_question": "你想用 <strong>{0}</strong> 作为所有用户登录的主域名吗？?<br/><br/>这个设置就是熟知的 \"derivation origin\", 用来确保无论用户通过任何域名登录，都会被识别为相同的身份(principal).",
-		"update_auth_domain_title": "更新用于认证的域名",
-		"update_auth_domain_question": "你当前设置的用于认证的域名是 <strong>{1}</strong>. 你想更改为 <strong>{0}</strong>?<br><br>如果你回答 \"是\", 请注意，现有的用户身份信息将无法被识别.",
-		"domain_name": "域名",
-		"no_keep_domain": "不, 保留 {0}"
+		"domain_name": "域名"
 	},
 	"functions": {
 		"title": "功能",

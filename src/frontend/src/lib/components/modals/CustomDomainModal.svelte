@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { createEventDispatcher, onMount } from 'svelte';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import { setAuthConfig } from '$lib/api/satellites.api';
@@ -45,8 +45,8 @@
 		edit = true;
 	});
 
-	let editConfig: AuthenticationConfig | undefined;
-	const onAuth = ({ detail }: CustomEvent<AuthenticationConfig | undefined>) => {
+	let editConfig: AuthenticationConfig | null;
+	const onAuth = (detail: AuthenticationConfig | null) => {
 		editConfig = detail;
 
 		steps = 'dns';
@@ -95,6 +95,16 @@
 		emit({ message: 'junoSyncCustomDomains' });
 		dispatch('junoClose');
 	};
+
+	const onFormNext = () => {
+		let authDomain: string | undefined = fromNullable(
+			fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []
+		);
+
+		let existingDerivationOrigin = nonNullish(authDomain);
+
+		steps = existingDerivationOrigin ? 'dns' : 'auth';
+	};
 </script>
 
 <Modal on:junoClose={close}>
@@ -118,14 +128,9 @@
 			<p>{$i18n.hosting.config_in_progress}</p>
 		</SpinnerModal>
 	{:else if steps === 'auth'}
-		<AddCustomDomainAuth {domainNameInput} {config} on:junoNext={onAuth} />
+		<AddCustomDomainAuth {domainNameInput} {config} next={onAuth} />
 	{:else}
-		<AddCustomDomainForm
-			bind:domainNameInput
-			bind:dns
-			{satellite}
-			on:junoNext={() => (steps = 'auth')}
-		/>
+		<AddCustomDomainForm bind:domainNameInput bind:dns {satellite} on:junoNext={onFormNext} />
 	{/if}
 </Modal>
 

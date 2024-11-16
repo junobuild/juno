@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { fromNullable, nonNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
 	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -10,79 +8,45 @@
 	interface Props {
 		config: AuthenticationConfig | undefined;
 		domainNameInput: string;
+		next: (config: AuthenticationConfig | null) => void;
 	}
 
-	let { config, domainNameInput }: Props = $props();
-
-	let authDomain: string | undefined = $derived(
-		fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
-	);
-
-	let edit: boolean = $derived(nonNullish(authDomain));
-
-	const dispatch = createEventDispatcher();
+	let { config, domainNameInput, next }: Props = $props();
 
 	const yes = () => {
 		const payload = buildSetAuthenticationConfig({ config, domainName: domainNameInput });
 
-		dispatch('junoNext', payload);
+		next(payload);
 	};
 
-	const no = () => dispatch('junoNext', config);
+	const no = () => next(null);
 </script>
 
-<h2>{edit ? $i18n.hosting.update_auth_domain_title : $i18n.hosting.set_auth_domain_title}</h2>
+<h2>{$i18n.hosting.set_auth_domain_title}</h2>
 
 <p>
-	{#if edit}
-		<Html
-			text={i18nFormat($i18n.hosting.update_auth_domain_question, [
-				{
-					placeholder: '{0}',
-					value: domainNameInput
-				},
-				{
-					placeholder: '{1}',
-					value: authDomain ?? ''
-				}
-			])}
-		/>
-	{:else}
-		<Html
-			text={i18nFormat($i18n.hosting.set_auth_domain_question, [
-				{
-					placeholder: '{0}',
-					value: domainNameInput
-				},
-				{
-					placeholder: '{1}',
-					value: domainNameInput.startsWith('www')
-						? domainNameInput.replace('www.', '')
-						: `www.${domainNameInput}`
-				},
-				{
-					placeholder: '{2}',
-					value: domainNameInput
-				}
-			])}
-		/>{/if}
+	<Html
+		text={i18nFormat($i18n.hosting.set_auth_domain_question, [
+			{
+				placeholder: '{0}',
+				value: domainNameInput
+			},
+			{
+				placeholder: '{1}',
+				value: domainNameInput.startsWith('www')
+					? domainNameInput.replace('www.', '')
+					: `www.${domainNameInput}`
+			},
+			{
+				placeholder: '{2}',
+				value: domainNameInput
+			}
+		])}
+	/>
 </p>
 
 <div class="toolbar">
-	<button onclick={no}
-		>{#if edit}
-			<span
-				><Html
-					text={i18nFormat($i18n.hosting.no_keep_domain, [
-						{
-							placeholder: '{0}',
-							value: authDomain ?? ''
-						}
-					])}
-				/></span
-			>
-		{:else}{$i18n.core.no}{/if}</button
-	>
+	<button onclick={no}>{$i18n.core.no}</button>
 	<button onclick={yes}>{$i18n.core.yes}</button>
 </div>
 

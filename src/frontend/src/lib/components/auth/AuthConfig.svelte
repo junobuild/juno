@@ -112,7 +112,7 @@
 				<div in:fade>
 					<Value>
 						{#snippet label()}
-							{$i18n.collections.rate_limit_placeholder}
+							{$i18n.collections.rate_limit}
 						{/snippet}
 
 						{#if isNullish(rule)}

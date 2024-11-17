@@ -66,9 +66,11 @@
 	in:fly={{ y: 100, duration: 200 }}
 	out:fade={{ delay: 100 }}
 >
-	<p title={text}>
-		{text}{reorgDetail ? ` | ${reorgDetail}` : ''}
-	</p>
+	<div class="toast-scroll">
+		<p title={text}>
+			{text}{reorgDetail ? ` | ${reorgDetail}` : ''}
+		</p>
+	</div>
 
 	<button class="text" onclick={close} aria-label={$i18n.core.close}><IconClose /></button>
 </div>
@@ -114,10 +116,7 @@
 		}
 	}
 
-	p {
-		margin: 0;
-		padding: 0 var(--padding);
-
+	.toast-scroll {
 		overflow-y: auto;
 		max-height: calc(16px * 3 * 1.3);
 
@@ -125,10 +124,16 @@
 		line-height: normal;
 
 		direction: rtl;
-		text-align: left;
 
 		&::-webkit-scrollbar-thumb {
 			background: var(--color-primary-contrast);
+		}
+
+		p {
+			direction: ltr;
+
+			margin: 0;
+			padding: 0 var(--padding);
 		}
 	}
 </style>

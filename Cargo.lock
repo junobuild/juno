@@ -252,7 +252,7 @@ dependencies = [
 
 [[package]]
 name = "console"
-version = "0.0.13"
+version = "0.0.14"
 dependencies = [
  "candid",
  "ciborium",
@@ -1279,7 +1279,7 @@ checksum = "f98d2aa92eebf49b69786be48e4477826b256916e84a57ff2a4f21923b48eb4c"
 
 [[package]]
 name = "satellite"
-version = "0.0.20"
+version = "0.0.21"
 dependencies = [
  "candid",
  "ic-cdk",

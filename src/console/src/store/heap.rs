@@ -215,6 +215,7 @@ pub fn get_latest_satellite_version() -> Option<ReleaseVersion> {
 fn get_latest_version(versions: &HashSet<ReleaseVersion>) -> Option<ReleaseVersion> {
     versions
         .iter()
-        .max_by_key(|v| Version::parse(v).ok())
-        .cloned()
+        .filter_map(|v| Version::parse(v).ok().map(|parsed| (parsed, v)))
+        .max_by(|(parsed_a, _), (parsed_b, _)| parsed_a.cmp(parsed_b))
+        .map(|(_, version)| version.clone())
 }

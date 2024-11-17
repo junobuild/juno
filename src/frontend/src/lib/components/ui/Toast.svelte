@@ -100,7 +100,7 @@
 		@include shadow.shadow;
 
 		@media (min-width: 768px) {
-			max-width: var(--section-max-width);
+			max-width: 576px;
 		}
 
 		&.error {
@@ -115,13 +115,20 @@
 	}
 
 	p {
-		@include text.clamp(4);
-
 		margin: 0;
-		font-size: 1rem;
+		padding: 0 var(--padding);
 
-		@media (min-width: 768px) {
-			@include text.clamp(3);
+		overflow-y: auto;
+		max-height: calc(16px * 3 * 1.3);
+
+		// Workaround to get rid of the redundant scrollbar (even when there is enough space).
+		line-height: normal;
+
+		direction: rtl;
+		text-align: left;
+
+		&::-webkit-scrollbar-thumb {
+			background: var(--color-primary-contrast);
 		}
 	}
 </style>

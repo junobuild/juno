@@ -264,7 +264,7 @@ dependencies = [
  "ic-stable-structures",
  "junobuild-collections 0.0.9",
  "junobuild-shared 0.0.22",
- "junobuild-storage",
+ "junobuild-storage 0.0.12",
  "regex",
  "semver",
  "serde",
@@ -934,7 +934,7 @@ dependencies = [
  "ic-stable-structures",
  "junobuild-collections 0.0.8",
  "junobuild-shared 0.0.21",
- "junobuild-storage",
+ "junobuild-storage 0.0.11",
  "junobuild-utils 0.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
  "rand",
  "regex",
@@ -983,6 +983,34 @@ dependencies = [
 [[package]]
 name = "junobuild-storage"
 version = "0.0.11"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "e252b678a683f86a350fcf5bbf8b7c8960ec9740240453f7831de06cd1d35810"
+dependencies = [
+ "base64 0.13.1",
+ "candid",
+ "globset",
+ "hex",
+ "ic-cdk 0.16.0",
+ "ic-cdk-macros 0.16.0",
+ "ic-cdk-timers 0.10.0",
+ "ic-certification",
+ "ic-representation-independent-hash",
+ "ic-response-verification",
+ "ic-stable-structures",
+ "junobuild-collections 0.0.8",
+ "junobuild-shared 0.0.21",
+ "regex",
+ "serde",
+ "serde_bytes",
+ "serde_cbor",
+ "sha2",
+ "url",
+ "urlencoding",
+]
+
+[[package]]
+name = "junobuild-storage"
+version = "0.0.12"
 dependencies = [
  "base64 0.13.1",
  "candid",
@@ -995,8 +1023,8 @@ dependencies = [
  "ic-representation-independent-hash",
  "ic-response-verification",
  "ic-stable-structures",
- "junobuild-collections 0.0.8",
- "junobuild-shared 0.0.21",
+ "junobuild-collections 0.0.9",
+ "junobuild-shared 0.0.22",
  "regex",
  "serde",
  "serde_bytes",
@@ -1375,7 +1403,7 @@ dependencies = [
  "ic-cdk-macros 0.17.0",
  "junobuild-macros",
  "junobuild-satellite",
- "junobuild-storage",
+ "junobuild-storage 0.0.12",
  "serde",
 ]
 

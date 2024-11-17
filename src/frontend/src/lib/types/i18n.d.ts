@@ -357,10 +357,7 @@ interface I18nHosting {
 	files_deployed: string;
 	set_auth_domain_title: string;
 	set_auth_domain_question: string;
-	update_auth_domain_title: string;
-	update_auth_domain_question: string;
 	domain_name: string;
-	no_keep_domain: string;
 }
 
 interface I18nFunctions {

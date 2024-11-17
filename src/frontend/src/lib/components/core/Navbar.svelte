@@ -30,9 +30,7 @@
 		{:else if start === 'back'}
 			<ButtonBack />
 		{:else}
-			<div class="logo">
-				<Logo />
-			</div>
+			<Logo />
 		{/if}
 
 		{#if launchpad}
@@ -60,10 +58,6 @@
 		align-items: center;
 
 		gap: var(--padding);
-	}
-
-	.logo {
-		margin: 0 var(--padding-4x) 0 0;
 	}
 
 	.end {

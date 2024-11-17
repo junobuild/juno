@@ -37,7 +37,7 @@
 		padding: var(--padding-2x) var(--padding-2x);
 
 		@include media.min-width(xlarge) {
-			padding: var(--padding-4x) var(--padding-6x);
+			padding: calc(var(--padding-4x) - 1px) var(--padding-7x) var(--padding-4x);
 		}
 
 		&.opaque {

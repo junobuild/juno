@@ -1,9 +1,16 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import IconArrowOutward from '$lib/components/icons/IconArrowOutward.svelte';
 
-	export let href: string;
-	export let ariaLabel = '';
-	export let underline = false;
+	interface Props {
+		href: string;
+		ariaLabel?: string;
+		underline?: boolean;
+		arrow?: boolean;
+		children: Snippet;
+	}
+
+	let { href, ariaLabel = '', underline = false, arrow = true, children }: Props = $props();
 </script>
 
 <a
@@ -14,9 +21,11 @@
 	title={ariaLabel}
 	class:underline
 >
-	<slot />
+	{@render children()}
 
-	<IconArrowOutward />
+	{#if arrow}
+		<IconArrowOutward />
+	{/if}
 </a>
 
 <style lang="scss">

@@ -38,7 +38,7 @@ use junobuild_storage::types::interface::{
 
 pub use crate::db::store::{
     count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
-    get_doc_store, list_docs_store, set_doc_store,
+    delete_filtered_docs_store, get_doc_store, list_docs_store, set_doc_store,
 };
 use crate::db::types::config::DbConfig;
 pub use crate::db::types::interface::{DelDoc, SetDoc};
@@ -51,7 +51,7 @@ pub use crate::logs::types::logs::{Log, LogLevel};
 pub use crate::storage::handlers::set_asset_handler;
 pub use crate::storage::store::{
     count_assets_store, count_collection_assets_store, delete_asset_store, delete_assets_store,
-    get_asset_store, get_content_chunks_store, list_assets_store,
+    delete_filtered_assets_store, get_asset_store, get_content_chunks_store, list_assets_store,
 };
 pub use crate::types::hooks::{
     AssertDeleteAssetContext, AssertDeleteDocContext, AssertSetDocContext,
@@ -143,6 +143,12 @@ pub fn del_many_docs(docs: Vec<(CollectionKey, Key, DelDoc)>) {
 }
 
 #[doc(hidden)]
+#[update]
+pub fn del_filtered_docs(collection: CollectionKey, filter: ListParams) {
+    satellite::del_filtered_docs(collection, filter)
+}
+
+#[doc(hidden)]
 #[update(guard = "caller_is_controller")]
 pub fn del_docs(collection: CollectionKey) {
     satellite::del_docs(collection)
@@ -158,13 +164,19 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
+pub fn get_rule(rules_type: RulesType, collection: CollectionKey) -> Option<Rule> {
+    satellite::get_rule(&rules_type, &collection)
+}
+
+#[doc(hidden)]
+#[query(guard = "caller_is_admin_controller")]
 pub fn list_rules(rules_type: RulesType) -> Vec<(CollectionKey, Rule)> {
     satellite::list_rules(rules_type)
 }
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
-pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) {
+pub fn set_rule(rules_type: RulesType, collection: CollectionKey, rule: SetRule) -> Rule {
     satellite::set_rule(rules_type, collection, rule)
 }
 
@@ -338,6 +350,12 @@ pub fn del_asset(collection: CollectionKey, full_path: FullPath) {
 #[update]
 pub fn del_many_assets(assets: Vec<(CollectionKey, String)>) {
     satellite::del_many_assets(assets);
+}
+
+#[doc(hidden)]
+#[update]
+pub fn del_filtered_assets(collection: CollectionKey, filter: ListParams) {
+    satellite::del_filtered_assets(collection, filter)
 }
 
 #[doc(hidden)]

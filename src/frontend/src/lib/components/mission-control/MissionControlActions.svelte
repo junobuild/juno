@@ -1,18 +1,22 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
+	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import Actions from '$lib/components/core/Actions.svelte';
-	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
-	import { emit } from '$lib/utils/events.utils';
-	import type { CanisterIcStatus } from '$lib/types/canister';
-	import type { Principal } from '@dfinity/principal';
-	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
 	import MissionControlAttachOrbiter from '$lib/components/mission-control/MissionControlAttachOrbiter.svelte';
+	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
+	import type { CanisterIcStatus } from '$lib/types/canister';
+	import { emit } from '$lib/utils/events.utils';
 
-	export let missionControlId: Principal;
+	interface Props {
+		missionControlId: Principal;
+	}
 
-	let canister: CanisterIcStatus | undefined = undefined;
+	let { missionControlId }: Props = $props();
 
-	let visible: boolean | undefined;
+	let canister: CanisterIcStatus | undefined = $state(undefined);
+
+	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
 	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
@@ -23,7 +27,8 @@
 		canister = syncCanister;
 	};
 
-	const onTransferCycles = () => {
+	// eslint-disable-next-line require-await
+	const onTransferCycles = async () => {
 		close();
 
 		emit({
@@ -38,12 +43,15 @@
 	};
 </script>
 
-<svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
+<svelte:window
+	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterIcStatus }>) =>
+		onSyncCanister(canister)}
+/>
 
 <Actions bind:visible>
 	<TopUp type="topup_mission_control" on:junoTopUp={close} />
 
-	<CanisterTransferCycles {canister} on:click={onTransferCycles} />
+	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
 	<hr />
 

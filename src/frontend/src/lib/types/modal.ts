@@ -1,9 +1,12 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
+import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
+import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
 
@@ -74,6 +77,17 @@ export interface JunoModalSendTokensDetail {
 	balance: bigint | undefined;
 }
 
+export interface JunoModalEditOrbiterConfigDetail {
+	orbiterId: Principal;
+	features: OrbiterSatelliteFeatures | undefined;
+	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
+}
+
+export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail {
+	rule: Rule | undefined;
+	config: AuthenticationConfig | undefined;
+}
+
 export type JunoModalDetail =
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
@@ -82,7 +96,8 @@ export type JunoModalDetail =
 	| JunoModalCreateControllerDetail
 	| JunoModalCyclesSatelliteDetail
 	| JunoModalDeleteSatelliteDetail
-	| JunoModalSendTokensDetail;
+	| JunoModalSendTokensDetail
+	| JunoModalEditOrbiterConfigDetail;
 
 export interface JunoModal {
 	type:
@@ -99,6 +114,8 @@ export interface JunoModal {
 		| 'add_custom_domain'
 		| 'create_controller'
 		| 'edit_canister_settings'
+		| 'edit_orbiter_config'
+		| 'edit_auth_config'
 		| 'upgrade_satellite'
 		| 'upgrade_mission_control'
 		| 'upgrade_orbiter'

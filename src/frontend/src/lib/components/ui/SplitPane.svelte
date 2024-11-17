@@ -1,7 +1,16 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import { layoutMenuOpen } from '$lib/stores/layout.store';
 
-	let innerWidth = 0;
+	interface Props {
+		menu?: Snippet;
+		children: Snippet;
+	}
+
+	let { menu, children }: Props = $props();
+
+	let innerWidth = $state(0);
 
 	// Close menu if it was opened and the viewport width becomes larger than xlarge screen (where the menu becomes sticky)
 	const onWindowSizeChange = (innerWidth: number) => {
@@ -13,14 +22,16 @@
 		layoutMenuOpen.set(innerWidth > 1300 ? false : $layoutMenuOpen);
 	};
 
-	$: onWindowSizeChange(innerWidth);
+	run(() => {
+		onWindowSizeChange(innerWidth);
+	});
 </script>
 
 <svelte:window bind:innerWidth />
 
 <div class="split-pane">
-	<slot name="menu" />
-	<slot />
+	{@render menu?.()}
+	{@render children()}
 </div>
 
 <style lang="scss">

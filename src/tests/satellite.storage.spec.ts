@@ -18,6 +18,7 @@ import {
 	CONTROLLER_ERROR_MSG,
 	SATELLITE_ADMIN_ERROR_MSG
 } from './constants/satellite-tests.constants';
+import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite storage', () => {
@@ -39,6 +40,8 @@ describe('Satellite storage', () => {
 
 		actor = a;
 		canisterId = c;
+
+		await deleteDefaultIndexHTML({ actor, controller });
 	});
 
 	afterAll(async () => {
@@ -303,7 +306,8 @@ describe('Satellite storage', () => {
 						read: { Managed: null },
 						mutable_permissions: toNullable(),
 						write: { Managed: null },
-						version: toNullable()
+						version: toNullable(),
+						rate_config: toNullable()
 					};
 
 					await set_rule({ Storage: null }, collection, setRule);
@@ -650,14 +654,25 @@ describe('Satellite storage', () => {
 	});
 
 	const user = Ed25519KeyIdentity.generate();
+	const user2 = Ed25519KeyIdentity.generate();
 
 	describe('user', () => {
 		beforeAll(async () => {
-			actor.setIdentity(user);
-
 			const { set_doc } = actor;
 
+			actor.setIdentity(user);
+
 			await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider: 'internet_identity'
+				}),
+				description: toNullable(),
+				version: toNullable()
+			});
+
+			actor.setIdentity(user2);
+
+			await set_doc('#user', user2.getPrincipal().toText(), {
 				data: await toArray({
 					provider: 'internet_identity'
 				}),
@@ -668,7 +683,7 @@ describe('Satellite storage', () => {
 
 		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			'With memory %s',
-			async ({ memory }) => {
+			({ memory }) => {
 				const collection = 'Heap' in memory ? 'images_heap' : 'images_stable';
 
 				beforeAll(async () => {
@@ -683,7 +698,8 @@ describe('Satellite storage', () => {
 						read: { Managed: null },
 						mutable_permissions: toNullable(),
 						write: { Managed: null },
-						version: toNullable()
+						version: toNullable(),
+						rate_config: toNullable()
 					};
 
 					await set_rule({ Storage: null }, collection, setRule);
@@ -694,7 +710,7 @@ describe('Satellite storage', () => {
 				const SVG =
 					'<svg height="100" width="100"><circle r="45" cx="50" cy="50" fill="red" /></svg>';
 
-				const uploadCustomAsset = async (name: string = 'hello.svg') => {
+				const uploadCustomAsset = async (name = 'hello.svg') => {
 					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
 					const file = await init_asset_upload({
@@ -949,12 +965,170 @@ describe('Satellite storage', () => {
 						expect(countBetween).toBe(5n);
 					});
 				});
+
+				describe('delete filtered', () => {
+					it('should delete assets based on filter criteria', async () => {
+						const { del_filtered_assets, list_assets } = actor;
+
+						await uploadCustomAsset('asset1.svg');
+						await uploadCustomAsset('asset2.svg');
+						await uploadCustomAsset('asset3.svg');
+
+						const filterParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/asset2\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						const listParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/asset\\d+\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						await del_filtered_assets(collection, filterParams);
+
+						const remainingAssets = await list_assets(collection, listParams);
+
+						expect(remainingAssets.items.map((item) => item[1].key.full_path)).toEqual([
+							`/${collection}/asset3.svg`,
+							`/${collection}/asset1.svg`
+						]);
+					});
+
+					it('should prevent user1 from deleting assets of user2', async () => {
+						const { del_filtered_assets, list_assets } = actor;
+
+						actor.setIdentity(user2);
+
+						await uploadCustomAsset('user2_asset.svg');
+
+						actor.setIdentity(user);
+
+						const filterParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/asset1\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						await del_filtered_assets(collection, filterParams);
+
+						const listParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/asset\\d+\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						const remainingAssets = await list_assets(collection, listParams);
+						expect(remainingAssets.items.map((item) => item[1].key.full_path)).toEqual([
+							`/${collection}/asset3.svg`
+						]);
+
+						const listParamsUser2: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/user2_asset\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						actor.setIdentity(user2);
+
+						const user2Assets = await list_assets(collection, listParamsUser2);
+						expect(user2Assets.items.map((item) => item[1].key.full_path)).toEqual([
+							`/${collection}/user2_asset.svg`
+						]);
+
+						actor.setIdentity(user);
+					});
+
+					it('should delete assets as controller if filtered delete is used', async () => {
+						const { del_filtered_assets, list_assets } = actor;
+
+						actor.setIdentity(controller);
+
+						const filterParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/user2_asset\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						await del_filtered_assets(collection, filterParams);
+
+						const listParams: ListParams = {
+							matcher: toNullable(),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						actor.setIdentity(user2);
+
+						const user2Assets = await list_assets(collection, listParams);
+
+						expect(user2Assets.items_length).toEqual(0n);
+
+						actor.setIdentity(user);
+
+						const remainingAssets = await list_assets(collection, listParams);
+						expect(remainingAssets.items_length).toBeGreaterThan(0n);
+					});
+				});
 			}
 		);
 	});
 
 	describe('collection', () => {
-		beforeAll(async () => {
+		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 
@@ -997,7 +1171,7 @@ describe('Satellite storage', () => {
 		const maxHeapMemorySize = 3_932_160n;
 		const maxStableMemorySize = 2_000_000n;
 
-		beforeAll(async () => {
+		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 

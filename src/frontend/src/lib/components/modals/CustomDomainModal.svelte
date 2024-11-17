@@ -1,36 +1,37 @@
 <script lang="ts">
-	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { createEventDispatcher, onMount } from 'svelte';
+	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+	import { setAuthConfig } from '$lib/api/satellites.api';
+	import AddCustomDomainAuth from '$lib/components/hosting/AddCustomDomainAuth.svelte';
+	import AddCustomDomainDns from '$lib/components/hosting/AddCustomDomainDns.svelte';
+	import AddCustomDomainForm from '$lib/components/hosting/AddCustomDomainForm.svelte';
+	import IconVerified from '$lib/components/icons/IconVerified.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { setCustomDomain } from '$lib/services/hosting.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CustomDomainDns } from '$lib/types/custom-domain';
+	import type { JunoModalCustomDomainDetail, JunoModalDetail } from '$lib/types/modal';
 	import { toCustomDomainDns } from '$lib/utils/custom-domain.utils';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import IconVerified from '$lib/components/icons/IconVerified.svelte';
-	import { createEventDispatcher, onMount } from 'svelte';
 	import { emit } from '$lib/utils/events.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { setCustomDomain } from '$lib/services/hosting.services';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import AddCustomDomainForm from '$lib/components/hosting/AddCustomDomainForm.svelte';
-	import AddCustomDomainAuth from '$lib/components/hosting/AddCustomDomainAuth.svelte';
-	import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
-	import AddCustomDomainDns from '$lib/components/hosting/AddCustomDomainDns.svelte';
-	import { setAuthConfig } from '$lib/api/satellites.api';
-	import { authStore } from '$lib/stores/auth.store';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let satellite: Satellite;
-	let config: AuthenticationConfig | undefined;
-	$: ({ satellite, config } = detail as JunoModalCustomDomainDetail);
+	let { detail }: Props = $props();
 
-	let steps: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = 'init';
-	let domainNameInput = '';
-	let dns: CustomDomainDns | undefined = undefined;
+	let { satellite, config } = $derived(detail as JunoModalCustomDomainDetail);
 
-	let edit = false;
+	let steps: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = $state('init');
+	let domainNameInput = $state('');
+	let dns: CustomDomainDns | undefined = $state(undefined);
+
+	let edit = $state(false);
 
 	onMount(() => {
 		domainNameInput = (detail as JunoModalCustomDomainDetail).editDomainName ?? '';
@@ -44,8 +45,8 @@
 		edit = true;
 	});
 
-	let editConfig: AuthenticationConfig | undefined;
-	const onAuth = ({ detail }: CustomEvent<AuthenticationConfig | undefined>) => {
+	let editConfig: AuthenticationConfig | null;
+	const onAuth = (detail: AuthenticationConfig | null) => {
 		editConfig = detail;
 
 		steps = 'dns';
@@ -94,6 +95,16 @@
 		emit({ message: 'junoSyncCustomDomains' });
 		dispatch('junoClose');
 	};
+
+	const onFormNext = () => {
+		let authDomain: string | undefined = fromNullable(
+			fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? []
+		);
+
+		let existingDerivationOrigin = nonNullish(authDomain);
+
+		steps = existingDerivationOrigin ? 'dns' : 'auth';
+	};
 </script>
 
 <Modal on:junoClose={close}>
@@ -101,7 +112,7 @@
 		<div class="msg">
 			<IconVerified />
 			<p>{$i18n.hosting.success}</p>
-			<button on:click={close}>{$i18n.core.close}</button>
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'dns'}
 		<AddCustomDomainDns
@@ -117,14 +128,9 @@
 			<p>{$i18n.hosting.config_in_progress}</p>
 		</SpinnerModal>
 	{:else if steps === 'auth'}
-		<AddCustomDomainAuth {domainNameInput} {config} on:junoNext={onAuth} />
+		<AddCustomDomainAuth {domainNameInput} {config} next={onAuth} />
 	{:else}
-		<AddCustomDomainForm
-			bind:domainNameInput
-			bind:dns
-			{satellite}
-			on:junoNext={() => (steps = 'auth')}
-		/>
+		<AddCustomDomainForm bind:domainNameInput bind:dns {satellite} on:junoNext={onFormNext} />
 	{/if}
 </Modal>
 

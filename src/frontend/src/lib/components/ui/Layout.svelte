@@ -1,27 +1,43 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
+	import type { Snippet } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
 	import { layoutTitle } from '$lib/stores/layout.store';
-	import { nonNullish } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
 
-	export let centered = false;
-	export let title = true;
-	export let topMargin: 'default' | 'wide' = 'default';
+	interface Props {
+		centered?: boolean;
+		title?: boolean;
+		topMargin?: 'default' | 'wide';
+		menu?: Snippet;
+		navbar?: Snippet;
+		children: Snippet;
+		footer?: Snippet;
+	}
+
+	let {
+		centered = false,
+		title = true,
+		topMargin = 'default',
+		menu,
+		navbar,
+		children,
+		footer
+	}: Props = $props();
 </script>
 
-<SplitPane>
-	<slot name="menu" slot="menu" />
-
+<SplitPane {menu}>
 	<div class="content">
-		<slot name="navbar" />
+		{@render navbar?.()}
 
 		<div class="page">
 			<main class:centered>
 				{#if title}
 					{#if nonNullish($layoutTitle)}
+						{@const SvelteComponent = $layoutTitle.icon}
 						<h1 in:fade class:space={topMargin === 'wide'}>
 							<span>
-								<span class="icon"><svelte:component this={$layoutTitle.icon} size="32px" /></span>
+								<span class="icon"><SvelteComponent size="32px" /></span>
 								<span>{$layoutTitle.title}</span>
 							</span>
 						</h1>
@@ -30,10 +46,10 @@
 					{/if}
 				{/if}
 
-				<slot />
+				{@render children()}
 			</main>
 
-			<slot name="footer" />
+			{@render footer?.()}
 		</div>
 	</div>
 </SplitPane>
@@ -91,12 +107,12 @@
 		@include text.truncate;
 		max-width: 100%;
 
-		padding: 0 var(--padding-2x) 0 0;
-		margin: var(--padding-3x) 0;
+		padding: var(--padding-3x) 0 var(--padding-2x);
+		margin: 0;
 
 		&.space {
 			@include media.min-width(medium) {
-				margin: var(--padding-6x) 0 var(--padding-3x);
+				padding: var(--padding-6x) 0 var(--padding-2x);
 			}
 		}
 	}

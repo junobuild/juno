@@ -1,13 +1,17 @@
 <script lang="ts">
 	import type { TransactionWithId } from '@dfinity/ledger-icp';
+	import type { Principal } from '@dfinity/principal';
 	import Transaction from '$lib/components/transactions/Transaction.svelte';
 	import InfiniteScroll from '$lib/components/ui/InfiniteScroll.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { Principal } from '@dfinity/principal';
 
-	export let missionControlId: Principal;
-	export let transactions: TransactionWithId[];
-	export let disableInfiniteScroll = false;
+	interface Props {
+		missionControlId: Principal;
+		transactions: TransactionWithId[];
+		disableInfiniteScroll?: boolean;
+	}
+
+	let { missionControlId, transactions, disableInfiniteScroll = false }: Props = $props();
 </script>
 
 {#if transactions.length > 0}

@@ -1,12 +1,14 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { AnalyticsPageViews } from '$lib/types/ortbiter';
-	import type { AnalyticsTop10PageViews } from '$declarations/orbiter/orbiter.did';
 
-	export let pageViews: AnalyticsPageViews;
+	interface Props {
+		pageViews: AnalyticsPageViews;
+	}
 
-	let top10: AnalyticsTop10PageViews;
-	$: ({ top10 } = pageViews);
+	let { pageViews }: Props = $props();
+
+	let { top10 } = $derived(pageViews);
 </script>
 
 {#if top10.pages.length > 0}

@@ -51,6 +51,13 @@ interface I18nCore {
 	confirm: string;
 	collapse: string;
 	expand: string;
+	request: string;
+	configure: string;
+	config: string;
+	edit_config: string;
+	advanced_options: string;
+	updating_configuration: string;
+	configuration_applied: string;
 }
 
 interface I18nCanisters {
@@ -143,7 +150,6 @@ interface I18nCanisters {
 	no_update_required: string;
 	controllers: string;
 	public: string;
-	advanced_options: string;
 	subnet: string;
 	default_subnet: string;
 	subnet_id: string;
@@ -233,6 +239,10 @@ interface I18nWallet {
 	fee: string;
 	review_and_confirm: string;
 	icp_on_its_way: string;
+	or_connect_wallet: string;
+	connecting_wallet: string;
+	wallet_approve: string;
+	wallet_missing_account: string;
 }
 
 interface I18nAuthentication {
@@ -241,6 +251,10 @@ interface I18nAuthentication {
 	methods: string;
 	not_signed_in: string;
 	session_expired: string;
+	main_domain: string;
+	not_configured: string;
+	edit_configuration: string;
+	main_domain_warn: string;
 }
 
 interface I18nDatastore {
@@ -281,8 +295,8 @@ interface I18nAnalytics {
 	referrers: string;
 	pages: string;
 	enabled: string;
+	disabled: string;
 	orbiter: string;
-	configure: string;
 	devices: string;
 	mobile: string;
 	desktop: string;
@@ -303,6 +317,10 @@ interface I18nAnalytics {
 	good: string;
 	needs_improvement: string;
 	poor: string;
+	enabled_satellites: string;
+	page_views: string;
+	configuration_description: string;
+	tracked_metrics: string;
 }
 
 interface I18nHosting {
@@ -339,10 +357,7 @@ interface I18nHosting {
 	files_deployed: string;
 	set_auth_domain_title: string;
 	set_auth_domain_question: string;
-	update_auth_domain_title: string;
-	update_auth_domain_question: string;
 	domain_name: string;
-	no_keep_domain: string;
 }
 
 interface I18nFunctions {
@@ -375,6 +390,7 @@ interface I18nCli {
 	select_all: string;
 	unselect_all: string;
 	profile: string;
+	profile_info: string;
 	segments: string;
 	profile_placeholder: string;
 	authorize: string;
@@ -399,6 +415,9 @@ interface I18nErrors {
 	segment_detach: string;
 	ledger_balance_credits: string;
 	load_credits: string;
+	load_documents: string;
+	load_users: string;
+	load_settings: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;
@@ -458,6 +477,14 @@ interface I18nErrors {
 	empty_balance: string;
 	sending_error: string;
 	subnet_loading_errors: string;
+	wallet_no_account: string;
+	wallet_load_balance: string;
+	wallet_receive_error: string;
+	wallet_missing_account: string;
+	auth_settings_no_loaded: string;
+	auth_rate_config_max_tokens: string;
+	auth_rate_config_update: string;
+	auth_domain_config: string;
 }
 
 interface I18nDocument {
@@ -549,6 +576,9 @@ interface I18nCollections {
 	max_size_placeholder: string;
 	max_capacity: string;
 	max_capacity_placeholder: string;
+	rate_limit: string;
+	rate_limit_placeholder: string;
+	no_rate_limit: string;
 	public: string;
 	private: string;
 	managed: string;
@@ -565,6 +595,7 @@ interface I18nCollections {
 	stable: string;
 	immutable: string;
 	clear_collection: string;
+	options: string;
 }
 
 interface I18nSort {

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
 	import { isNullish } from '@dfinity/utils';
+	import { createEventDispatcher } from 'svelte';
 
 	export let name: string;
 	export let inputType: 'icp' | 'number' | 'text' | 'currency' = 'number';
@@ -16,15 +16,14 @@
 	export let decimals = 8;
 	export let ignore1Password = true;
 
+	// TODO: migrate to Svelte v5
+
 	const dispatch = createEventDispatcher();
 
 	// https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
-	export let autocomplete: 'off' | 'on' | undefined = undefined;
+	export let autocomplete: 'off' | 'on' | undefined = 'off';
 
 	let inputElement: HTMLInputElement | undefined;
-
-	$: step = inputType === 'number' ? step ?? 'any' : undefined;
-	$: autocomplete = inputType !== 'number' ? autocomplete ?? 'off' : undefined;
 
 	// This component was developed for ICP and 8 decimals in mind. The "currency" input type was added afterwards therefore, for backwards compatibility reason, if the input type is set to icp, the number of decimals remains 8.
 	let wrapDecimals = 8;
@@ -142,8 +141,8 @@
 		({ selectionStart, selectionEnd } = inputElement);
 	};
 
-	$: step = inputType === 'number' ? step ?? 'any' : undefined;
-	$: autocomplete = inputType !== 'number' && !currency ? autocomplete ?? 'off' : undefined;
+	$: step = inputType === 'number' ? (step ?? 'any') : undefined;
+	$: autocomplete = inputType !== 'number' ? (autocomplete ?? 'off') : undefined;
 </script>
 
 <input

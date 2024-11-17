@@ -1,28 +1,31 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { setSatelliteName } from '$lib/services/mission-control.services';
+	import { busy, isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
 
-	let satName = satelliteName(satellite);
+	let { satellite }: Props = $props();
 
-	let visible: boolean | undefined;
+	let satName = $state(satelliteName(satellite));
 
-	let validConfirm = false;
-	let saving = false;
+	let visible: boolean = $state(false);
 
-	$: validConfirm = nonNullish(satName) && satName !== '';
+	let validConfirm = $derived(nonNullish(satName) && satName !== '');
 
-	const handleSubmit = async () => {
+	const handleSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if (!validConfirm) {
 			// Submit is disabled if not valid
 			toasts.error({
@@ -57,15 +60,23 @@
 
 		busy.stop();
 	};
+
+	const open = ($event: MouseEvent | TouchEvent) => {
+		$event.stopPropagation();
+
+		visible = true;
+	};
 </script>
 
 <Value>
-	<svelte:fragment slot="label">{$i18n.satellites.name}</svelte:fragment>
+	{#snippet label()}
+		{$i18n.satellites.name}
+	{/snippet}
 	<p class="name">
 		<span>{satelliteName(satellite)}</span>
 
 		<button
-			on:click|stopPropagation={() => (visible = true)}
+			onclick={open}
 			aria-label={$i18n.satellites.edit_name}
 			title={$i18n.satellites.edit_name}
 			class="square"
@@ -76,7 +87,7 @@
 </Value>
 
 <Popover bind:visible center backdrop="dark">
-	<form class="container" on:submit|preventDefault={handleSubmit}>
+	<form class="container" onsubmit={handleSubmit}>
 		<label for="canisterName">{$i18n.satellites.satellite_name}:</label>
 
 		<input
@@ -85,10 +96,11 @@
 			type="text"
 			placeholder={$i18n.satellites.edit_name}
 			maxlength={64}
-			disabled={saving}
+			disabled={$isBusy}
+			autocomplete="off"
 		/>
 
-		<button type="submit" class="submit" disabled={saving || !validConfirm}>
+		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
 			{$i18n.core.submit}
 		</button>
 	</form>

@@ -1,15 +1,15 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import SatellitesPicker from '$lib/components/satellites/SatellitesPicker.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 	import { addMonths, format } from 'date-fns';
+	import { createEventDispatcher } from 'svelte';
 	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
+	import SatellitesPicker from '$lib/components/satellites/SatellitesPicker.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 
-	let from = format(addMonths(new Date(), -1), 'yyyy-MM-dd');
-	let to = '';
+	let from = $state(format(addMonths(new Date(), -1), 'yyyy-MM-dd'));
+	let to = $state('');
 
 	const dispatch = createEventDispatcher();
 
@@ -21,20 +21,32 @@
 </script>
 
 <AnalyticsToolbar>
-	<Value slot="start">
-		<svelte:fragment slot="label">{$i18n.analytics.satellites}</svelte:fragment>
-		<SatellitesPicker />
-	</Value>
+	{#snippet start()}
+		<Value>
+			{#snippet label()}
+				{$i18n.analytics.satellites}
+			{/snippet}
+			<SatellitesPicker />
+		</Value>
+	{/snippet}
 
-	<Value ref="from" slot="center">
-		<svelte:fragment slot="label">{$i18n.core.from}</svelte:fragment>
+	{#snippet center()}
+		<Value ref="from">
+			{#snippet label()}
+				{$i18n.core.from}
+			{/snippet}
 
-		<input bind:value={from} id="from" name="from" type="date" on:change={onChange} />
-	</Value>
+			<input bind:value={from} id="from" name="from" type="date" onchange={onChange} />
+		</Value>
+	{/snippet}
 
-	<Value ref="to" slot="end">
-		<svelte:fragment slot="label">{$i18n.core.to}</svelte:fragment>
+	{#snippet end()}
+		<Value ref="to">
+			{#snippet label()}
+				{$i18n.core.to}
+			{/snippet}
 
-		<input bind:value={to} id="to" name="to" type="date" on:change={onChange} />
-	</Value>
+			<input bind:value={to} id="to" name="to" type="date" onchange={onChange} />
+		</Value>
+	{/snippet}
 </AnalyticsToolbar>

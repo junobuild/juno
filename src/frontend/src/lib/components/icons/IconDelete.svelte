@@ -1,6 +1,10 @@
 <!-- source: https://fonts.google.com/icons?selected=Material%20Icons%20Outlined%3Adelete_forever%3A -->
 <script lang="ts">
-	export let size = '24px';
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '24px' }: Props = $props();
 </script>
 
 <svg

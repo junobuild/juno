@@ -38,6 +38,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 
 			actor = c;
+
 			actor.setIdentity(controller);
 
 			const setRule: SetRule = {
@@ -47,7 +48,8 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				read: { Managed: null },
 				mutable_permissions: toNullable(),
 				write: { Managed: null },
-				version: toNullable()
+				version: toNullable(),
+				rate_config: toNullable()
 			};
 
 			const { set_rule } = actor;
@@ -76,7 +78,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			return key;
 		};
 
-		describe('user (part 1)', async () => {
+		describe('user (part 1)', () => {
 			const user = Ed25519KeyIdentity.generate();
 
 			beforeAll(() => {
@@ -180,7 +182,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		});
 
 		describe('controller', () => {
-			beforeAll(async () => {
+			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
 
@@ -225,7 +227,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 		});
 
-		describe('user (part 2)', async () => {
+		describe('user (part 2)', () => {
 			const user = Ed25519KeyIdentity.generate();
 
 			beforeAll(async () => {
@@ -410,6 +412,177 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			});
 		});
 
+		describe('user (part 3 - delete filtered docs)', () => {
+			const user1 = Ed25519KeyIdentity.generate();
+			const user2 = Ed25519KeyIdentity.generate();
+
+			beforeAll(async () => {
+				actor.setIdentity(controller);
+
+				// Clean up collection before starting putting data and asserting
+				const { del_docs } = actor;
+				await del_docs(TEST_COLLECTION);
+
+				actor.setIdentity(user1);
+			});
+
+			it('should delete documents matching filter criteria', async () => {
+				const { list_docs, del_filtered_docs, count_docs } = actor;
+
+				for (const _ of Array.from({ length: 10 })) {
+					await createDoc();
+					await pic.advanceTime(100);
+				}
+
+				// Define filter criteria for deletion
+				const filterParams: ListParams = {
+					matcher: toNullable({
+						key: toNullable(),
+						description: toNullable(),
+						created_at: toNullable({
+							GreaterThan: 0n
+						}),
+						updated_at: toNullable()
+					}),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				};
+
+				const initialCount = await count_docs(TEST_COLLECTION, filterParams);
+				expect(initialCount).toBe(10n);
+
+				await del_filtered_docs(TEST_COLLECTION, filterParams);
+
+				const finalCount = await count_docs(TEST_COLLECTION, filterParams);
+				expect(finalCount).toBe(0n);
+
+				const { items_length } = await list_docs(TEST_COLLECTION, filterParams);
+				expect(items_length).toBe(0n);
+			});
+
+			it('should delete only documents matching the exact filter criteria', async () => {
+				const { del_filtered_docs, count_docs, set_doc } = actor;
+
+				for (let i = 0; i < 5; i++) {
+					const key = nanoid();
+					await set_doc(TEST_COLLECTION, key, {
+						data,
+						description: toNullable(),
+						version: toNullable()
+					});
+					await pic.advanceTime(50);
+				}
+
+				const filterParamsSpecific: ListParams = {
+					matcher: toNullable({
+						key: toNullable(),
+						description: toNullable(),
+						created_at: toNullable({
+							GreaterThan: 100n
+						}),
+						updated_at: toNullable()
+					}),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				};
+
+				const initialSpecificCount = await count_docs(TEST_COLLECTION, filterParamsSpecific);
+				expect(initialSpecificCount).toBe(5n);
+
+				await del_filtered_docs(TEST_COLLECTION, filterParamsSpecific);
+
+				const finalSpecificCount = await count_docs(TEST_COLLECTION, filterParamsSpecific);
+				expect(finalSpecificCount).toBe(0n);
+			});
+
+			it('should delete only own documents', async () => {
+				actor.setIdentity(user1);
+
+				for (const _ of Array.from({ length: 5 })) {
+					await createDoc();
+					await pic.advanceTime(50);
+				}
+
+				actor.setIdentity(user2);
+
+				for (const _ of Array.from({ length: 6 })) {
+					await createDoc();
+					await pic.advanceTime(50);
+				}
+
+				const { list_docs, del_filtered_docs, count_collection_docs, count_docs } = actor;
+
+				const filterParams: ListParams = {
+					matcher: toNullable(),
+					order: toNullable(),
+					owner: toNullable(),
+					paginate: toNullable()
+				};
+
+				actor.setIdentity(controller);
+
+				const initialCount = await count_collection_docs(TEST_COLLECTION);
+				expect(initialCount).toBe(11n);
+
+				actor.setIdentity(user1);
+
+				await del_filtered_docs(TEST_COLLECTION, filterParams);
+
+				const finalCount = await count_docs(TEST_COLLECTION, filterParams);
+				expect(finalCount).toBe(0n);
+
+				const { items_length } = await list_docs(TEST_COLLECTION, filterParams);
+				expect(items_length).toBe(0n);
+
+				actor.setIdentity(controller);
+
+				const updatedCount = await count_collection_docs(TEST_COLLECTION);
+				expect(updatedCount).toBe(6n);
+			});
+
+			it('should delete documents with pagination', async () => {
+				const { del_filtered_docs, count_docs, list_docs } = actor;
+
+				actor.setIdentity(user2);
+
+				const filterList: ListParams = {
+					matcher: toNullable(),
+					order: toNullable({
+						desc: true,
+						field: { Keys: null }
+					}),
+					owner: toNullable(),
+					paginate: toNullable()
+				};
+
+				const docs = await list_docs(TEST_COLLECTION, filterList);
+
+				expect(docs.items_length).toBe(6n);
+
+				const firstKey = docs.items[0][0];
+
+				const filterDelete: ListParams = {
+					matcher: toNullable(),
+					order: toNullable({
+						desc: true,
+						field: { Keys: null }
+					}),
+					owner: toNullable(),
+					paginate: toNullable({
+						start_after: [firstKey],
+						limit: [4n]
+					})
+				};
+
+				await del_filtered_docs(TEST_COLLECTION, filterDelete);
+
+				const finalSpecificCount = await count_docs(TEST_COLLECTION, filterList);
+				expect(finalSpecificCount).toBe(2n);
+			});
+		});
+
 		describe('rules', () => {
 			const setRule: Omit<SetRule, 'max_capacity'> = {
 				memory: toNullable(memory),
@@ -417,10 +590,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				read: { Managed: null },
 				mutable_permissions: toNullable(),
 				write: { Managed: null },
-				version: toNullable()
+				version: toNullable(),
+				rate_config: toNullable()
 			};
 
-			beforeAll(async () => {
+			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
 
@@ -531,7 +705,7 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 		});
 
 		describe('collection', () => {
-			beforeAll(async () => {
+			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
 
@@ -578,17 +752,18 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 				mutable_permissions: toNullable(),
 				write: { Managed: null },
 				version: toNullable(),
-				max_capacity: toNullable()
+				max_capacity: toNullable(),
+				rate_config: toNullable()
 			};
 
-			beforeAll(async () => {
+			beforeAll(() => {
 				actor.setIdentity(controller);
 			});
 
 			describe.each([
 				{
 					memory: { Heap: null },
-					expectMemory: 3_866_624n
+					expectMemory: 3_932_160n
 				},
 				{
 					memory: { Stable: null },
@@ -614,11 +789,11 @@ describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 					});
 				});
 
-				it('should not allow to set a document', async () => {
+				it('should not allow to set a document', () => {
 					expect(createDoc()).rejects.toThrow(errorMsg);
 				});
 
-				it('should not allow to set many documents', async () => {
+				it('should not allow to set many documents', () => {
 					const { set_many_docs } = actor;
 
 					expect(

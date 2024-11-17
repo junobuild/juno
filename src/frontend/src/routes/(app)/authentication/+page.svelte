@@ -1,15 +1,19 @@
 <script lang="ts">
-	import { satelliteStore } from '$lib/stores/satellite.store';
-	import Users from '$lib/components/auth/Users.svelte';
-	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import SignInMethod from '$lib/components/auth/SignInMethod.svelte';
-	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import { writable } from 'svelte/store';
-	import type { Tab, TabsContext, TabsStore } from '$lib/types/tabs.context';
-	import { setContext } from 'svelte';
-	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import { nonNullish } from '@dfinity/utils';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import AuthSettings from '$lib/components/auth/AuthSettings.svelte';
+	import Users from '$lib/components/auth/Users.svelte';
+	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import { satelliteStore } from '$lib/stores/satellite.store';
+	import {
+		type Tab,
+		type TabsContext,
+		type TabsStore,
+		TABS_CONTEXT_KEY
+	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
@@ -19,7 +23,7 @@
 		},
 		{
 			id: Symbol('2'),
-			labelKey: 'authentication.methods'
+			labelKey: 'core.settings'
 		}
 	];
 
@@ -40,7 +44,7 @@
 				{#if $store.tabId === $store.tabs[0].id}
 					<Users satelliteId={$satelliteStore.satellite_id} />
 				{:else if $store.tabId === $store.tabs[1].id}
-					<SignInMethod />
+					<AuthSettings satellite={$satelliteStore} />
 				{/if}
 			{/if}
 		</SatelliteGuard>

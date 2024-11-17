@@ -1,37 +1,39 @@
 <script lang="ts">
-	import type { JunoModal } from '$lib/types/modal';
-	import SatelliteCreateModal from '$lib/components/modals/SatelliteCreateModal.svelte';
-	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
-	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
-	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
-	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
-	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
-	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
-	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
-	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
-	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
-	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
-	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
-	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
-	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
+	import AuthConfigModal from '$lib/components/modals/AuthConfigModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
+	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
+	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
+	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
+	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
+	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
+	import OrbiterConfigModal from '$lib/components/modals/OrbiterConfigModal.svelte';
+	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
+	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
+	import OrbiterTopUpModal from '$lib/components/modals/OrbiterTopUpModal.svelte';
+	import OrbiterTransferCyclesModal from '$lib/components/modals/OrbiterTransferCyclesModal.svelte';
+	import OrbiterUpgradeModal from '$lib/components/modals/OrbiterUpgradeModal.svelte';
+	import SatelliteCreateModal from '$lib/components/modals/SatelliteCreateModal.svelte';
+	import SatelliteDeleteModal from '$lib/components/modals/SatelliteDeleteModal.svelte';
+	import SatelliteTopUpModal from '$lib/components/modals/SatelliteTopUpModal.svelte';
+	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
+	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
+	import type { JunoModal } from '$lib/types/modal';
 
-	let modal: JunoModal | undefined = undefined;
+	let modal: JunoModal | undefined = $state(undefined);
 
 	const close = () => (modal = undefined);
 </script>
 
-<svelte:window on:junoModal={({ detail }) => (modal = detail)} />
+<svelte:window onjunoModal={({ detail }) => (modal = detail)} />
 
 {#if modal?.type === 'create_satellite' && nonNullish(modal.detail)}
-	<SatelliteCreateModal on:junoClose={close} detail={modal.detail} />
+	<SatelliteCreateModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'create_orbiter' && nonNullish(modal.detail)}
-	<OrbiterCreateModal on:junoClose={close} detail={modal.detail} />
+	<OrbiterCreateModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'topup_satellite' && nonNullish(modal.detail)}
@@ -92,4 +94,12 @@
 
 {#if modal?.type === 'send_tokens' && nonNullish(modal.detail)}
 	<SendTokensModal on:junoClose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'edit_orbiter_config' && nonNullish(modal.detail)}
+	<OrbiterConfigModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'edit_auth_config' && nonNullish(modal.detail)}
+	<AuthConfigModal onclose={close} detail={modal.detail} />
 {/if}

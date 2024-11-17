@@ -7,6 +7,9 @@ use crate::types::runtime_state::{
 };
 use crate::types::store::{Asset, Batch, BatchExpiry, Chunk};
 use ic_cdk::api::time;
+use junobuild_collections::types::core::CollectionKey;
+use junobuild_shared::rate::types::RateConfig;
+use junobuild_shared::rate::utils::increment_and_assert_rate_store;
 use std::collections::HashMap;
 
 /// Certified assets
@@ -161,4 +164,21 @@ fn clear_expired_chunks_impl(state: &mut StorageRuntimeState) {
 
 fn insert_chunk_impl(chunk_id: &ChunkId, chunk: Chunk, chunks: &mut Chunks) {
     chunks.insert(*chunk_id, chunk);
+}
+
+///
+/// Rates
+///
+
+pub fn increment_and_assert_rate(
+    collection: &CollectionKey,
+    config: &Option<RateConfig>,
+) -> Result<(), String> {
+    STATE.with(|state| {
+        increment_and_assert_rate_store(
+            collection,
+            config,
+            &mut state.borrow_mut().runtime.storage.rate_tokens,
+        )
+    })
 }

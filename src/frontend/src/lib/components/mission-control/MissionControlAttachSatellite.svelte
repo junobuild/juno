@@ -1,14 +1,14 @@
 <script lang="ts">
+	import { Principal } from '@dfinity/principal';
+	import { createEventDispatcher } from 'svelte';
 	import CanisterAttach from '$lib/components/canister/CanisterAttach.svelte';
 	import IconLink from '$lib/components/icons/IconLink.svelte';
-	import { Principal } from '@dfinity/principal';
 	import { attachSatellite } from '$lib/services/mission-control.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { createEventDispatcher } from 'svelte';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
-	let visible = false;
+	let visible = $state(false);
 
 	const setSatellite = async ({
 		missionControlId,
@@ -41,11 +41,14 @@
 	};
 </script>
 
-<button on:click={() => (visible = true)} class="menu"
-	><IconLink /> {$i18n.satellites.attach}</button
+<button onclick={() => (visible = true)} class="menu"><IconLink /> {$i18n.satellites.attach}</button
 >
 
-<CanisterAttach on:junoAttach={onSuccess} bind:visible setFn={setSatellite}>
-	<svelte:fragment slot="title">{$i18n.satellites.attach}</svelte:fragment>
-	<svelte:fragment slot="input">{$i18n.satellites.id}</svelte:fragment>
+<CanisterAttach attach={onSuccess} bind:visible setFn={setSatellite}>
+	{#snippet title()}
+		{$i18n.satellites.attach}
+	{/snippet}
+	{#snippet input()}
+		{$i18n.satellites.id}
+	{/snippet}
 </CanisterAttach>

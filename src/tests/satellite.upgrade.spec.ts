@@ -5,11 +5,11 @@ import type {
 } from '$declarations/deprecated/satellite-0-0-16.did';
 import { idlFactory as idlFactorSatellite_0_0_16 } from '$declarations/deprecated/satellite-0-0-16.factory.did';
 import type {
-	_SERVICE as SatelliteActor,
-	SetDoc,
-	SetRule
-} from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
+	_SERVICE as SatelliteActor_0_0_17,
+	SetRule as SetRule0_0_17
+} from '$declarations/deprecated/satellite-0-0-17.did';
+import { idlFactory as idlFactorSatellite_0_0_17 } from '$declarations/deprecated/satellite-0-0-17.factory.did';
+import type { SetDoc } from '$declarations/satellite/satellite.did';
 import type { Identity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
@@ -102,7 +102,7 @@ describe('Satellite upgrade', () => {
 		}
 	};
 
-	describe('v0.0.15 -> v0.0.16', async () => {
+	describe('v0.0.15 -> v0.0.16', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -170,7 +170,7 @@ describe('Satellite upgrade', () => {
 		});
 	});
 
-	describe('v0.0.11 -> v0.0.17', async () => {
+	describe('v0.0.11 -> v0.0.17', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -217,6 +217,10 @@ describe('Satellite upgrade', () => {
 
 				await testUsers(users);
 
+				await upgradeVersion('0.0.17');
+
+				await testUsers(users);
+
 				await upgrade();
 
 				await testUsers(users);
@@ -225,7 +229,7 @@ describe('Satellite upgrade', () => {
 		);
 	});
 
-	describe('v0.0.16 -> v0.0.16', async () => {
+	describe('v0.0.16 -> v0.0.16', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -256,7 +260,7 @@ describe('Satellite upgrade', () => {
 		});
 	});
 
-	describe('v0.0.16 -> v0.0.17', async () => {
+	describe('v0.0.16 -> v0.0.17', () => {
 		beforeEach(async () => {
 			pic = await PocketIc.create(inject('PIC_URL'));
 
@@ -285,16 +289,16 @@ describe('Satellite upgrade', () => {
 		};
 
 		describe('Rules', () => {
-			let newActor: Actor<SatelliteActor>;
+			let newActor: Actor<SatelliteActor_0_0_17>;
 
 			beforeEach(async () => {
 				const { set_rule: set_rule_deprecated } = actor as SatelliteActor_0_0_16;
 
 				await set_rule_deprecated({ Db: null }, 'test', setRule);
 
-				await upgrade();
+				await upgradeVersion('0.0.17');
 
-				newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+				newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
 				newActor.setIdentity(controller);
 			});
 
@@ -310,7 +314,7 @@ describe('Satellite upgrade', () => {
 			it('should be able to update rule after upgrade', async () => {
 				const { set_rule } = newActor;
 
-				const setUpdateRule: SetRule = {
+				const setUpdateRule: SetRule0_0_17 = {
 					...setRule,
 					version: toNullable()
 				};
@@ -335,7 +339,7 @@ describe('Satellite upgrade', () => {
 
 				expect(rule.version).toEqual(toNullable(1n));
 
-				const setNewRule: SetRule = {
+				const setNewRule: SetRule0_0_17 = {
 					...setRule,
 					version: rule.version
 				};
@@ -357,7 +361,7 @@ describe('Satellite upgrade', () => {
 			const key = nanoid();
 			const collection = 'test';
 
-			let newActor: Actor<SatelliteActor>;
+			let newActor: Actor<SatelliteActor_0_0_17>;
 
 			beforeEach(async () => {
 				const { set_rule: set_rule_deprecated } = actor as SatelliteActor_0_0_16;
@@ -368,9 +372,9 @@ describe('Satellite upgrade', () => {
 
 				await set_doc_deprecated(collection, key, setDoc);
 
-				await upgrade();
+				await upgradeVersion('0.0.17');
 
-				newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+				newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
 				newActor.setIdentity(controller);
 			});
 
@@ -422,8 +426,8 @@ describe('Satellite upgrade', () => {
 			});
 		});
 
-		describe('Storage', async () => {
-			let newActor: Actor<SatelliteActor>;
+		describe('Storage', () => {
+			let newActor: Actor<SatelliteActor_0_0_17>;
 
 			describe('Custom domain', () => {
 				it('should add version set to none to custom domain', async () => {
@@ -432,9 +436,9 @@ describe('Satellite upgrade', () => {
 					await set_custom_domain('hello.com', ['123456']);
 					await set_custom_domain('test2.com', []);
 
-					await upgrade();
+					await upgradeVersion('0.0.17');
 
-					newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+					newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
 					newActor.setIdentity(controller);
 
 					const { list_custom_domains } = newActor;
@@ -452,9 +456,9 @@ describe('Satellite upgrade', () => {
 
 					await set_custom_domain_deprecated('hello.com', ['123456']);
 
-					await upgrade();
+					await upgradeVersion('0.0.17');
 
-					newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+					newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
 					newActor.setIdentity(controller);
 
 					const { list_custom_domains, set_custom_domain } = newActor;
@@ -480,7 +484,7 @@ describe('Satellite upgrade', () => {
 					full_path,
 					actor
 				}: {
-					actor: Actor<SatelliteActor | SatelliteActor_0_0_16>;
+					actor: Actor<SatelliteActor_0_0_17 | SatelliteActor_0_0_16>;
 					full_path: string;
 				}) => {
 					const { init_asset_upload, upload_asset_chunk, commit_asset_upload } = actor;
@@ -512,9 +516,9 @@ describe('Satellite upgrade', () => {
 					await upload({ actor, full_path: `/${collection}/ugprade2.html` });
 					await upload({ actor, full_path: `/${collection}/ugprade3.html` });
 
-					await upgrade();
+					await upgradeVersion('0.0.17');
 
-					newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+					newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
 					newActor.setIdentity(controller);
 
 					const { list_assets } = newActor;
@@ -536,9 +540,9 @@ describe('Satellite upgrade', () => {
 
 					await upload({ actor, full_path });
 
-					await upgrade();
+					await upgradeVersion('0.0.17');
 
-					newActor = pic.createActor<SatelliteActor>(idlFactorSatellite, canisterId);
+					newActor = pic.createActor<SatelliteActor_0_0_17>(idlFactorSatellite_0_0_17, canisterId);
 					newActor.setIdentity(controller);
 
 					await upload({ actor: newActor, full_path });
@@ -551,6 +555,41 @@ describe('Satellite upgrade', () => {
 					expect(fromNullable(asset!.version)).toEqual(1n);
 				});
 			});
+		});
+	});
+
+	describe('v0.0.20 -> v0.0.21', () => {
+		beforeEach(async () => {
+			pic = await PocketIc.create(inject('PIC_URL'));
+
+			const destination = await downloadSatellite('0.0.20');
+
+			const { actor: c, canisterId: cId } = await pic.setupCanister<SatelliteActor_0_0_16>({
+				idlFactory: idlFactorSatellite_0_0_16,
+				wasm: destination,
+				arg: controllersInitArgs(controller),
+				sender: controller.getPrincipal()
+			});
+
+			actor = c;
+			canisterId = cId;
+			actor.setIdentity(controller);
+		});
+
+		it('should not populate an index HTML file', async () => {
+			await upgrade();
+
+			const { http_request } = actor;
+
+			const { status_code } = await http_request({
+				body: [],
+				certificate_version: toNullable(),
+				headers: [],
+				method: 'GET',
+				url: '/'
+			});
+
+			expect(status_code).toBe(404);
 		});
 	});
 });

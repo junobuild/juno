@@ -1,52 +1,67 @@
 <script lang="ts">
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
+	import type { Snippet } from 'svelte';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { E8S_PER_ICP } from '$lib/constants/constants';
+	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
-	import { createEventDispatcher } from 'svelte';
-	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
-	import type { AccountIdentifier } from '@dfinity/ledger-icp';
-	import { E8S_PER_ICP } from '$lib/constants/constants';
 
-	export let detail: JunoModalDetail;
-	export let priceLabel: string;
+	interface Props {
+		detail: JunoModalDetail;
+		priceLabel: string;
+		insufficientFunds?: boolean;
+		children: Snippet;
+		onclose: () => void;
+	}
 
-	let fee = 0n;
-	let balance = 0n;
-	let credits = 0n;
-	let accountIdentifier: AccountIdentifier | undefined;
+	let {
+		detail,
+		priceLabel,
+		insufficientFunds = $bindable(true),
+		children,
+		onclose
+	}: Props = $props();
 
-	$: fee = (detail as JunoModalCreateSegmentDetail).fee;
-	$: balance = (detail as JunoModalCreateSegmentDetail).missionControlBalance?.balance ?? 0n;
-	$: credits = (detail as JunoModalCreateSegmentDetail).missionControlBalance?.credits ?? 0n;
-	$: accountIdentifier = (detail as JunoModalCreateSegmentDetail).missionControlBalance
-		?.accountIdentifier;
+	let accountIdentifier: AccountIdentifier | undefined = $derived(
+		(detail as JunoModalCreateSegmentDetail).missionControlBalance?.accountIdentifier
+	);
 
-	export let insufficientFunds = true;
-	$: insufficientFunds = balance < fee && notEnoughCredits;
+	let { fee } = $derived(detail as JunoModalCreateSegmentDetail);
+	let balance = $derived(
+		(detail as JunoModalCreateSegmentDetail).missionControlBalance?.balance ?? 0n
+	);
+	let credits = $derived(
+		(detail as JunoModalCreateSegmentDetail).missionControlBalance?.credits ?? 0n
+	);
 
-	let notEnoughCredits = false;
-	$: notEnoughCredits = credits * fee < fee * E8S_PER_ICP;
+	let notEnoughCredits = $derived(credits * fee < fee * E8S_PER_ICP);
 
-	const dispatch = createEventDispatcher();
+	$effect(() => {
+		insufficientFunds = balance < fee && notEnoughCredits;
+	});
 </script>
 
 {#if notEnoughCredits}
 	<p>
-		{@html i18nFormat(priceLabel, [
-			{
-				placeholder: '{0}',
-				value: formatE8sICP(fee)
-			},
-			{
-				placeholder: '{1}',
-				value: formatE8sICP(balance)
-			}
-		])}
+		<Html
+			text={i18nFormat(priceLabel, [
+				{
+					placeholder: '{0}',
+					value: formatE8sICP(fee)
+				},
+				{
+					placeholder: '{1}',
+					value: formatE8sICP(balance)
+				}
+			])}
+		/>
 	</p>
 {/if}
 
 {#if insufficientFunds}
-	<MissionControlICPInfo {accountIdentifier} on:click={() => dispatch('junoClose')} />
+	<MissionControlICPInfo {accountIdentifier} {onclose} />
 {:else}
-	<slot />
+	{@render children()}
 {/if}

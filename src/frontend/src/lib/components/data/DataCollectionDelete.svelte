@@ -1,16 +1,21 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import type { Snippet } from 'svelte';
 	import DataDelete from '$lib/components/data/DataDelete.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+	interface Props {
+		deleteData: (params: { collection: string; satelliteId: Principal }) => Promise<void>;
+		button?: Snippet;
+		title?: Snippet;
+		children: Snippet;
+	}
+
+	let { deleteData, button, title, children }: Props = $props();
 </script>
 
-<DataDelete {deleteData}>
-	<slot name="button" slot="button" />
-	<slot name="title" slot="title" />
-
-	<p><slot /></p>
+<DataDelete {deleteData} {button} {title}>
+	<p>{@render children()}</p>
 
 	<p>{$i18n.core.are_you_sure}</p>
 </DataDelete>

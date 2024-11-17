@@ -1,11 +1,18 @@
 <script lang="ts">
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
-	import type { CanisterIcStatus } from '$lib/types/canister';
 	import type { Principal } from '@dfinity/principal';
+	import type { Snippet } from 'svelte';
+	import Warning from '$lib/components/ui/Warning.svelte';
+	import type { CanisterIcStatus } from '$lib/types/canister';
 
-	export let canisterId: Principal;
+	interface Props {
+		canisterId: Principal;
+		cycles?: Snippet;
+		heap?: Snippet;
+	}
 
-	let cyclesWarning = false;
+	let { canisterId, cycles, heap }: Props = $props();
+
+	let cyclesWarning = $state(false);
 	let heapWarning = false;
 
 	const syncCanister = ({ id, data }: CanisterIcStatus) => {
@@ -13,27 +20,23 @@
 			return;
 		}
 
-		cyclesWarning = data?.warning?.cycles === true ?? false;
+		cyclesWarning = data?.warning?.cycles === true;
 
 		// Disabled for now, a bit too much in your face given that wasm memory cannot be shrink. We can always activate this warning if necessary, therefore I don't remove the code.
 		// heapWarning = data?.warning?.heap === true ?? false;
 	};
 </script>
 
-<svelte:window on:junoSyncCanister={({ detail: { canister } }) => syncCanister(canister)} />
+<svelte:window onjunoSyncCanister={({ detail: { canister } }) => syncCanister(canister)} />
 
 {#if cyclesWarning}
-	<p><IconWarning /> <slot name="cycles" /></p>
+	<Warning>
+		{@render cycles?.()}
+	</Warning>
 {/if}
 
 {#if heapWarning}
-	<p><IconWarning /> <slot name="heap" /></p>
+	<Warning>
+		{@render heap?.()}
+	</Warning>
 {/if}
-
-<style lang="scss">
-	@use '../../styles/mixins/info';
-
-	p {
-		@include info.warning;
-	}
-</style>

@@ -1,31 +1,28 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { createEventDispatcher } from 'svelte';
+	import { preventDefault } from 'svelte/legacy';
+	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 	import { invalidIcrcAddress } from '$lib/utils/icrc-account.utils';
-	import { invalidIcpAddress } from '$lib/utils/icp-account.utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish, TokenAmountV2 } from '@dfinity/utils';
-	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
-	import { createEventDispatcher } from 'svelte';
-	import { amountToICPToken } from '$lib/utils/token.utils';
+	import { assertAndConvertAmountToICPToken } from '$lib/utils/token.utils';
 
-	export let balance: bigint | undefined;
-	export let destination = '';
-	export let amount: string | undefined;
+	interface Props {
+		balance: bigint | undefined;
+		destination?: string;
+		amount: string | undefined;
+	}
+
+	let { balance, destination = $bindable(''), amount = $bindable() }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 
-	const onSubmit = async () => {
-		if (isNullish(balance) || balance === 0n) {
-			toasts.error({
-				text: $i18n.errors.empty_balance
-			});
-			return;
-		}
-
+	const onSubmit = () => {
 		if (invalidIcrcAddress(destination) && invalidIcpAddress(destination)) {
 			toasts.error({
 				text: $i18n.errors.invalid_destination
@@ -33,26 +30,12 @@
 			return;
 		}
 
-		if (isNullish(amount)) {
-			toasts.error({
-				text: $i18n.errors.empty_amount
-			});
-			return;
-		}
+		const { valid } = assertAndConvertAmountToICPToken({
+			balance,
+			amount
+		});
 
-		const tokenAmount = amountToICPToken(amount);
-
-		if (isNullish(tokenAmount)) {
-			toasts.error({
-				text: $i18n.errors.invalid_amount
-			});
-			return;
-		}
-
-		if (balance + IC_TRANSACTION_FEE_ICP < (tokenAmount as TokenAmountV2).toE8s()) {
-			toasts.error({
-				text: $i18n.errors.invalid_amount
-			});
+		if (!valid) {
 			return;
 		}
 
@@ -63,18 +46,22 @@
 <h2>{$i18n.wallet.send}</h2>
 
 <p>
-	{@html i18nFormat($i18n.wallet.send_information, [
-		{
-			placeholder: '{0}',
-			value: formatE8sICP(balance ?? 0n)
-		}
-	])}
+	<Html
+		text={i18nFormat($i18n.wallet.send_information, [
+			{
+				placeholder: '{0}',
+				value: formatE8sICP(balance ?? 0n)
+			}
+		])}
+	/>
 </p>
 
-<form class="content" on:submit|preventDefault={onSubmit}>
+<form class="content" onsubmit={preventDefault(onSubmit)}>
 	<div>
 		<Value>
-			<svelte:fragment slot="label">{$i18n.wallet.destination}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.wallet.destination}
+			{/snippet}
 			<Input
 				inputType="text"
 				name="destination"
@@ -86,7 +73,9 @@
 
 	<div>
 		<Value>
-			<svelte:fragment slot="label">{$i18n.wallet.icp_amount}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.wallet.icp_amount}
+			{/snippet}
 			<Input
 				name="amount"
 				inputType="currency"

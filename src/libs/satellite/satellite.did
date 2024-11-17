@@ -117,6 +117,7 @@ type ListResults_1 = record {
 type Memory = variant { Heap; Stable };
 type MemorySize = record { stable : nat64; heap : nat64 };
 type Permission = variant { Controllers; Private; Public; Managed };
+type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
 type Rule = record {
   max_capacity : opt nat32;
   memory : opt Memory;
@@ -126,6 +127,7 @@ type Rule = record {
   created_at : nat64;
   version : opt nat64;
   mutable_permissions : opt bool;
+  rate_config : opt RateConfig;
   write : Permission;
 };
 type RulesType = variant { Db; Storage };
@@ -150,6 +152,7 @@ type SetRule = record {
   read : Permission;
   version : opt nat64;
   mutable_permissions : opt bool;
+  rate_config : opt RateConfig;
   write : Permission;
 };
 type StorageConfig = record {
@@ -208,6 +211,8 @@ service : () -> {
   del_custom_domain : (text) -> ();
   del_doc : (text, text, DelDoc) -> ();
   del_docs : (text) -> ();
+  del_filtered_assets : (text, ListParams) -> ();
+  del_filtered_docs : (text, ListParams) -> ();
   del_many_assets : (vec record { text; text }) -> ();
   del_many_docs : (vec record { text; text; DelDoc }) -> ();
   del_rule : (RulesType, text, DelRule) -> ();
@@ -223,6 +228,7 @@ service : () -> {
   get_many_docs : (vec record { text; text }) -> (
       vec record { text; opt Doc },
     ) query;
+  get_rule : (RulesType, text) -> (opt Rule) query;
   get_storage_config : () -> (StorageConfig) query;
   http_request : (HttpRequest) -> (HttpResponse) query;
   http_request_streaming_callback : (StreamingCallbackToken) -> (
@@ -245,7 +251,7 @@ service : () -> {
   set_many_docs : (vec record { text; text; SetDoc }) -> (
       vec record { text; Doc },
     );
-  set_rule : (RulesType, text, SetRule) -> ();
+  set_rule : (RulesType, text, SetRule) -> (Rule);
   set_storage_config : (StorageConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;

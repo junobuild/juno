@@ -1,14 +1,19 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { nonNullish } from '@dfinity/utils';
-	import Copy from '$lib/components/ui/Copy.svelte';
-	import type { CustomDomainDns } from '$lib/types/custom-domain';
 	import { createEventDispatcher } from 'svelte';
+	import Copy from '$lib/components/ui/Copy.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { CustomDomainDns } from '$lib/types/custom-domain';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let domainNameInput: string;
-	export let dns: CustomDomainDns | undefined;
-	export let edit = false;
+	interface Props {
+		domainNameInput: string;
+		dns: CustomDomainDns | undefined;
+		edit?: boolean;
+	}
+
+	let { domainNameInput, dns, edit = false }: Props = $props();
 
 	const dispatch = createEventDispatcher();
 </script>
@@ -16,12 +21,14 @@
 <h2>{$i18n.hosting.configure}</h2>
 
 <p>
-	{@html i18nFormat($i18n.hosting.add_records, [
-		{
-			placeholder: '{0}',
-			value: domainNameInput ?? ''
-		}
-	])}
+	<Html
+		text={i18nFormat($i18n.hosting.add_records, [
+			{
+				placeholder: '{0}',
+				value: domainNameInput ?? ''
+			}
+		])}
+	/>
 </p>
 
 <section>
@@ -44,15 +51,15 @@
 	{/each}
 </section>
 
-<p class="notes">{@html $i18n.hosting.dns_notes}</p>
+<p class="notes"><Html text={$i18n.hosting.dns_notes} /></p>
 
 <div class="toolbar">
 	{#if !edit}
-		<button on:click={() => dispatch('junoBack')}>{$i18n.core.back}</button>
-		<button on:click={() => dispatch('junoSubmit')}>{$i18n.core.ready}</button>
+		<button onclick={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+		<button onclick={() => dispatch('junoSubmit')}>{$i18n.core.ready}</button>
 	{:else}
-		<button on:click={() => dispatch('junoClose')}>{$i18n.core.close}</button>
-		<button on:click={() => dispatch('junoSubmit')}>{$i18n.core.submit}</button>
+		<button onclick={() => dispatch('junoClose')}>{$i18n.core.close}</button>
+		<button onclick={() => dispatch('junoSubmit')}>{$i18n.core.submit}</button>
 	{/if}
 </div>
 

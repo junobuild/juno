@@ -1,22 +1,27 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import type { CanisterJunoStatus, Segment } from '$lib/types/canister';
-	import type { PostMessageDataResponse } from '$lib/types/post-message';
-	import { onDestroy, onMount } from 'svelte';
-	import { initStatusesWorker, type StatusesWorker } from '$lib/services/worker.statuses.services';
 	import { isNullish } from '@dfinity/utils';
+	import { onDestroy, onMount } from 'svelte';
+	import { run } from 'svelte/legacy';
+	import { fade } from 'svelte/transition';
+	import Chart from '$lib/components/charts/Chart.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { initStatusesWorker, type StatusesWorker } from '$lib/services/worker.statuses.services';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import type { CanisterJunoStatus, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Chart from '$lib/components/charts/Chart.svelte';
-	import { fade } from 'svelte/transition';
+	import type { PostMessageDataResponse } from '$lib/types/post-message';
 
-	export let canisterId: Principal;
-	export let segment: Segment;
+	interface Props {
+		canisterId: Principal;
+		segment: Segment;
+	}
 
-	let chartsData: ChartsData[] = [];
+	let { canisterId, segment }: Props = $props();
+
+	let chartsData: ChartsData[] = $state([]);
 
 	const syncCanister = ({ canister }: PostMessageDataResponse) => {
 		const { data } = canister as CanisterJunoStatus;
@@ -30,29 +35,32 @@
 		chartsData = d;
 	};
 
-	let worker: StatusesWorker | undefined;
+	let worker: StatusesWorker | undefined = $state();
 
 	onMount(async () => (worker = await initStatusesWorker()));
-	$: worker,
-		canisterId,
-		$missionControlStore,
-		(() => {
-			// We wait until mission control is loaded
-			if (isNullish($missionControlStore)) {
-				return;
-			}
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		worker,
+			canisterId,
+			$missionControlStore,
+			(() => {
+				// We wait until mission control is loaded
+				if (isNullish($missionControlStore)) {
+					return;
+				}
 
-			worker?.startStatusesTimer({
-				segments: [
-					{
-						canisterId: canisterId.toText(),
-						segment
-					}
-				],
-				missionControlId: $missionControlStore,
-				callback: syncCanister
-			});
-		})();
+				worker?.startStatusesTimer({
+					segments: [
+						{
+							canisterId: canisterId.toText(),
+							segment
+						}
+					],
+					missionControlId: $missionControlStore,
+					callback: syncCanister
+				});
+			})();
+	});
 
 	onDestroy(() => worker?.stopStatusesTimer());
 
@@ -82,14 +90,14 @@
 	};
 </script>
 
-<svelte:window on:junoRestartCycles={restartCycles} />
+<svelte:window onjunoRestartCycles={restartCycles} />
 
 {#if chartsData.length > 0}
 	<div in:fade>
 		<Value>
-			<svelte:fragment slot="label"
-				>{$i18n.observatory.title} <small>(T Cycles)</small></svelte:fragment
-			>
+			{#snippet label()}
+				{$i18n.observatory.title} <small>(T Cycles)</small>
+			{/snippet}
 
 			<div class="chart-container">
 				<Chart {chartsData} />

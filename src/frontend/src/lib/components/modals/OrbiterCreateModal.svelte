@@ -1,32 +1,38 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail } from '$lib/types/modal';
-	import { wizardBusy } from '$lib/stores/busy.store';
+	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import {
 		createOrbiter,
 		createOrbiterWithConfig,
 		loadOrbiters
 	} from '$lib/services/orbiters.services';
-	import Confetti from '$lib/components/ui/Confetti.svelte';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type { PrincipalText } from '$lib/types/itentity';
-	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
-	import { Principal } from '@dfinity/principal';
+	import type { JunoModalDetail } from '$lib/types/modal';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+		onclose: () => void;
+	}
 
-	let insufficientFunds = true;
+	let { detail, onclose }: Props = $props();
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let insufficientFunds = $state(true);
 
-	const onSubmit = async () => {
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		wizardBusy.start();
 		steps = 'in_progress';
 
@@ -56,19 +62,18 @@
 		wizardBusy.stop();
 	};
 
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
+	const close = () => onclose();
 
-	let subnetId: PrincipalText | undefined;
+	let subnetId: PrincipalText | undefined = $state();
 </script>
 
-<Modal on:junoClose>
+<Modal on:junoClose={close}>
 	{#if steps === 'ready'}
 		<Confetti />
 
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
-			<button on:click={close}>{$i18n.core.close}</button>
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
@@ -82,12 +87,12 @@
 		</p>
 
 		<CreditsGuard
-			on:junoClose
+			{onclose}
 			bind:insufficientFunds
 			{detail}
 			priceLabel={$i18n.analytics.create_orbiter_price}
 		>
-			<form on:submit|preventDefault={onSubmit}>
+			<form onsubmit={onSubmit}>
 				<CanisterAdvancedOptions bind:subnetId />
 
 				<button

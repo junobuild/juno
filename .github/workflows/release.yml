@@ -2,7 +2,7 @@ name: Release
 
 on:
   release:
-    types: [released]
+    types: [published]
   workflow_dispatch:
 
 permissions:
@@ -59,9 +59,9 @@ jobs:
           outputs: ./out
           target: ${{ matrix.target }}
 
-      - run: sha256sum out/${{ matrix.name }}
-
       - run: mv out/${{ matrix.name }} ${{ matrix.name }}
+
+      - run: sha256sum ./${{ matrix.name }} > ${{ matrix.name }}.sha256
 
       - name: 'Upload ${{ matrix.name }}'
         uses: actions/upload-artifact@v4
@@ -71,6 +71,12 @@ jobs:
           # path is the name used as the file to upload and the name of the
           # downloaded file
           path: ./${{ matrix.name }}
+
+      - name: 'Upload ${{ matrix.name }}.sha256'
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.name }}.sha256
+          path: ./${{ matrix.name }}.sha256
 
   metadata:
     runs-on: ubuntu-latest
@@ -221,11 +227,44 @@ jobs:
           name: orbiter.did
           path: .
 
+      - name: Download console.wasm.gz.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: console.wasm.gz.sha256
+          path: .
+
+      - name: Download observatory.wasm.gz.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: observatory.wasm.gz.sha256
+          path: .
+
+      - name: Download mission_control.wasm.gz.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: mission_control.wasm.gz.sha256
+          path: .
+
+      - name: Download satellite.wasm.gz.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: satellite.wasm.gz.sha256
+          path: .
+
+      - name: Download orbiter.wasm.gz.sha256
+        uses: actions/download-artifact@v4
+        with:
+          name: orbiter.wasm.gz.sha256
+          path: .
+
       - name: Download metadata.json
         uses: actions/download-artifact@v4
         with:
           name: metadata.json
           path: .
+
+      - name: Combine Checksums
+        run: cat *.sha256 > checksums.txt
 
       - name: Prepare canisters
         run: bash .github/scripts/prepare
@@ -248,3 +287,4 @@ jobs:
             ./satellite*.did
             ./orbiter*.did
             ./metadata.json
+            ./checksums.txt

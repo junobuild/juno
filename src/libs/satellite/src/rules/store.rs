@@ -8,6 +8,14 @@ use junobuild_collections::types::rules::{Memory, Rule};
 
 /// Rules
 
+pub fn get_rule_db(collection: &CollectionKey) -> Option<Rule> {
+    STATE.with(|state| state.borrow().heap.db.rules.get(collection).cloned())
+}
+
+pub fn get_rule_storage(collection: &CollectionKey) -> Option<Rule> {
+    STATE.with(|state| state.borrow().heap.storage.rules.get(collection).cloned())
+}
+
 pub fn get_rules_db() -> Vec<(CollectionKey, Rule)> {
     STATE.with(|state| filter_rules(&state.borrow().heap.db.rules))
 }
@@ -16,8 +24,8 @@ pub fn get_rules_storage() -> Vec<(CollectionKey, Rule)> {
     STATE.with(|state| filter_rules(&state.borrow().heap.storage.rules))
 }
 
-pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), String> {
-    STATE.with(|state| {
+pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<Rule, String> {
+    let rule = STATE.with(|state| {
         set_rule(
             collection.clone(),
             rule.clone(),
@@ -27,12 +35,12 @@ pub fn set_rule_db(collection: CollectionKey, rule: SetRule) -> Result<(), Strin
     })?;
 
     // If the collection does not exist yet we initialize it
-    init_collection_store(&collection, &rule.memory.unwrap_or(Memory::Stable));
+    init_collection_store(&collection, &rule.memory.clone().unwrap_or(Memory::Stable));
 
-    Ok(())
+    Ok(rule)
 }
 
-pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<(), String> {
+pub fn set_rule_storage(collection: CollectionKey, rule: SetRule) -> Result<Rule, String> {
     STATE.with(|state| {
         set_rule(
             collection,

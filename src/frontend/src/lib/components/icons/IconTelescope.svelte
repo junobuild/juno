@@ -1,7 +1,11 @@
 <!-- source: Font Awesome v5.15.4 - David Pro License -->
 <!-- tweaked for plan background -->
 <script lang="ts">
-	export let size = '24px';
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '24px' }: Props = $props();
 </script>
 
 <svg height={size} width={size} viewBox="0 0 640 512" xmlns="http://www.w3.org/2000/svg"

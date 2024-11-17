@@ -1,9 +1,9 @@
 <script lang="ts">
-	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
 	import AppLangSelect from '$lib/components/core/AppLangSelect.svelte';
+	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
 	import type { Languages } from '$lib/types/languages';
 
-	let lang: Languages;
+	let lang: Languages = $state('en');
 </script>
 
 <div class="actions">

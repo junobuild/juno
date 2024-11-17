@@ -1,31 +1,35 @@
 <script lang="ts">
-	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import { writable } from 'svelte/store';
-	import type { Tab, TabsContext, TabsStore } from '$lib/types/tabs.context';
-	import { setContext } from 'svelte';
-	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import Analytics from '$lib/components/analytics/Analytics.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
-	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
-	import { loadOrbiterVersion } from '$lib/services/console.services';
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { initTabId } from '$lib/utils/tabs.utils';
+	import { setContext, untrack } from 'svelte';
+	import { run } from 'svelte/legacy';
+	import { writable } from 'svelte/store';
+	import Analytics from '$lib/components/analytics/Analytics.svelte';
 	import AnalyticsSettings from '$lib/components/analytics/AnalyticsSettings.svelte';
+	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
+	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { loadOrbiterVersion } from '$lib/services/console.services';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import {
+		type Tab,
+		type TabsContext,
+		type TabsStore,
+		TABS_CONTEXT_KEY
+	} from '$lib/types/tabs.context';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabDashboard = {
 		id: Symbol('1'),
 		labelKey: 'analytics.dashboard'
 	};
 
-	let tabs: Tab[] = [tabDashboard];
-	$: tabs = [
+	let tabs: Tab[] = $derived([
 		tabDashboard,
 		...(nonNullish($orbiterStore)
 			? [
@@ -39,33 +43,41 @@
 					}
 				]
 			: [])
-	];
+	]);
 
 	const store = writable<TabsStore>({
-		tabId: initTabId(tabs),
-		tabs
+		tabId: untrack(() => initTabId(tabs)),
+		tabs: untrack(() => tabs)
 	});
 
 	setContext<TabsContext>(TABS_CONTEXT_KEY, {
 		store
 	});
 
-	$: store.set({
-		tabId: initTabId(tabs),
-		tabs
+	run(() => {
+		store.set({
+			tabId: initTabId(tabs),
+			tabs
+		});
 	});
 
 	// Load data
 
-	$: $missionControlStore,
-		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$missionControlStore,
+			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	});
 
-	$: $orbiterStore,
-		(async () => await loadOrbiterVersion({ orbiter: $orbiterStore, reload: false }))();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$orbiterStore,
+			(async () => await loadOrbiterVersion({ orbiter: $orbiterStore, reload: false }))();
+	});
 </script>
 
 <svelte:window
-	on:junoReloadVersions={async () =>
+	onjunoReloadVersions={async () =>
 		await loadOrbiterVersion({ orbiter: $orbiterStore, reload: true })}
 />
 
@@ -75,11 +87,11 @@
 			? 'https://juno.build/docs/build/analytics'
 			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
-		<svelte:fragment slot="info">
+		{#snippet info()}
 			{#if $authSignedInStore}
 				<Warnings />
 			{/if}
-		</svelte:fragment>
+		{/snippet}
 
 		<MissionControlGuard>
 			{#if $store.tabId === $store.tabs[0].id}

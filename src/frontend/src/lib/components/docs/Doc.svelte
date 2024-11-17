@@ -1,35 +1,39 @@
 <script lang="ts">
-	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
-	import type { Doc } from '$declarations/satellite/satellite.did';
-	import { getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { fromArray } from '@junobuild/utils';
+	import { getContext } from 'svelte';
+	import { run } from 'svelte/legacy';
+	import type { Doc } from '$declarations/satellite/satellite.did';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { formatToDate } from '$lib/utils/date.utils';
+	import JsonCode from '$lib/components/ui/JsonCode.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import JsonCode from '$lib/components/ui/JsonCode.svelte';
-	import { fromArray } from '@junobuild/utils';
+	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
+	import { formatToDate } from '$lib/utils/date.utils';
 
 	const { store }: DataContext<Doc> = getContext<DataContext<Doc>>(DATA_CONTEXT_KEY);
 
-	let key: string | undefined;
-	$: key = $store?.key;
-	let doc: Doc | undefined;
-	$: doc = $store?.data;
+	let key: string | undefined = $derived($store?.key);
 
-	let owner: Principal | undefined;
-	$: owner = doc?.owner;
+	let doc: Doc | undefined = $state();
+	run(() => {
+		doc = $store?.data;
+	});
 
-	let description: string | undefined;
-	$: description = nonNullish(doc) ? fromNullable(doc.description) : undefined;
+	let owner: Principal | undefined = $derived(doc?.owner);
 
-	let version: bigint | undefined;
-	$: version = fromNullable(doc?.version ?? []);
+	let description: string | undefined = $derived(
+		nonNullish(doc) ? fromNullable(doc.description) : undefined
+	);
 
-	let obj: unknown | undefined = undefined;
-	$: (async () =>
-		(obj = nonNullish(doc) && nonNullish(doc?.data) ? await fromArray(doc.data) : undefined))();
+	let version: bigint | undefined = $derived(fromNullable(doc?.version ?? []));
+
+	let obj: unknown | undefined = $state(undefined);
+	run(() => {
+		(async () =>
+			(obj = nonNullish(doc) && nonNullish(doc?.data) ? await fromArray(doc.data) : undefined))();
+	});
 </script>
 
 {#if nonNullish(doc)}
@@ -38,7 +42,9 @@
 	<article class="doc">
 		<div class="owner">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.document.owner}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.document.owner}
+				{/snippet}
 				{#if nonNullish(owner)}
 					<Identifier identifier={owner.toText()} />
 				{/if}
@@ -47,21 +53,27 @@
 
 		{#if nonNullish(description)}
 			<Value>
-				<svelte:fragment slot="label">{$i18n.document.description}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.document.description}
+				{/snippet}
 				<p class="description">{description}</p>
 			</Value>
 		{/if}
 
 		<div class="date">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.document.created}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.document.created}
+				{/snippet}
 				{formatToDate(doc.created_at)}
 			</Value>
 		</div>
 
 		<div class="date">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.document.updated}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.document.updated}
+				{/snippet}
 				{formatToDate(doc.updated_at)}
 			</Value>
 		</div>
@@ -69,7 +81,9 @@
 		{#if nonNullish(version)}
 			<div class="version">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.document.version}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.document.version}
+					{/snippet}
 					{version}
 				</Value>
 			</div>
@@ -77,7 +91,9 @@
 
 		<div class="data">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.document.data}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.document.data}
+				{/snippet}
 				<div class="json"><JsonCode json={obj} /></div>
 			</Value>
 		</div>

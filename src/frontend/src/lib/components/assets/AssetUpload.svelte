@@ -1,26 +1,31 @@
 <script lang="ts">
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { createEventDispatcher, getContext } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { busy } from '$lib/stores/busy.store';
 	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
 	import { uploadFile } from '@junobuild/core-peer';
-	import { container } from '$lib/utils/juno.utils';
-	import { authStore } from '$lib/stores/auth.store';
+	import { createEventDispatcher, getContext, type Snippet } from 'svelte';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
 	import DataUpload from '$lib/components/data/DataUpload.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { container } from '$lib/utils/juno.utils';
 
-	export let asset: AssetNoContent | undefined = undefined;
+	interface Props {
+		asset?: AssetNoContent | undefined;
+		action?: Snippet;
+		title?: Snippet;
+		description?: Snippet;
+	}
+
+	let { asset = undefined, action, title, description }: Props = $props();
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
+	let collection: string | undefined = $derived($store.rule?.[0]);
 
-	let satelliteId: Principal;
-	$: satelliteId = $store.satelliteId;
+	let satelliteId: Principal = $derived($store.satelliteId);
 
 	const dispatch = createEventDispatcher();
 
@@ -80,9 +85,8 @@
 	};
 </script>
 
-<DataUpload on:junoUpload={upload}>
-	<slot name="action" slot="action" />
-	<slot name="title" slot="title" />
-	<slot slot="description" />
-	<svelte:fragment slot="confirm">{$i18n.asset.upload}</svelte:fragment>
+<DataUpload on:junoUpload={upload} {action} {title} {description}>
+	{#snippet confirm()}
+		{$i18n.asset.upload}
+	{/snippet}
 </DataUpload>

@@ -1,18 +1,19 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
+	import { setContext } from 'svelte';
+	import { run } from 'svelte/legacy';
+	import { writable } from 'svelte/store';
+	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import ObservatoryDashboard from '$lib/components/observatory/ObservatoryDashboard.svelte';
+	import ObservatorySettings from '$lib/components/observatory/ObservatorySettings.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
 		type TabsContext,
 		type TabsStore
 	} from '$lib/types/tabs.context';
-	import { writable } from 'svelte/store';
-	import { setContext } from 'svelte';
-	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import { nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import ObservatorySettings from '$lib/components/observatory/ObservatorySettings.svelte';
-	import ObservatoryDashboard from '$lib/components/observatory/ObservatoryDashboard.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
@@ -35,9 +36,11 @@
 		store
 	});
 
-	$: store.set({
-		tabId: initTabId(tabs),
-		tabs
+	run(() => {
+		store.set({
+			tabId: initTabId(tabs),
+			tabs
+		});
 	});
 </script>
 

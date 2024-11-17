@@ -1,6 +1,10 @@
 <!-- CC BY-NC-SA - Didier Renaud - https://www.customfuture.com/ -->
 <script lang="ts">
-	export let size = '24px';
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '24px' }: Props = $props();
 </script>
 
 <svg

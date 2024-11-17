@@ -1,10 +1,17 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { layoutTitle } from '$lib/stores/layout.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { loadSatellites } from '$lib/services/satellites.services';
+	import { onMount, type Snippet } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import { loadSatellites } from '$lib/services/satellites.services';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { layoutTitle } from '$lib/stores/layout.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+
+	interface Props {
+		children: Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	onMount(() =>
 		layoutTitle.set({
@@ -13,8 +20,11 @@
 		})
 	);
 
-	$: $missionControlStore,
-		(async () => await loadSatellites({ missionControl: $missionControlStore }))();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$missionControlStore,
+			(async () => await loadSatellites({ missionControl: $missionControlStore }))();
+	});
 </script>
 
-<slot />
+{@render children()}

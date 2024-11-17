@@ -1,14 +1,18 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
-	import IconSort from '$lib/components/icons/IconSort.svelte';
-	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import type { Log as LogType } from '$lib/types/log';
 	import { getContext } from 'svelte';
+	import IconSort from '$lib/components/icons/IconSort.svelte';
+	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { Log as LogType } from '$lib/types/log';
+	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 
-	export let desc: boolean;
+	interface Props {
+		desc: boolean;
+	}
 
-	let visible: boolean | undefined;
+	let { desc = $bindable() }: Props = $props();
+
+	let visible: boolean = $state(false);
 
 	const { list }: PaginationContext<LogType> =
 		getContext<PaginationContext<LogType>>(PAGINATION_CONTEXT_KEY);
@@ -20,8 +24,10 @@
 	};
 </script>
 
-<PopoverApply ariaLabel={$i18n.sort.title} on:click={apply} bind:visible direction="ltr">
-	<IconSort size="20px" slot="icon" />
+<PopoverApply ariaLabel={$i18n.sort.title} onapply={apply} bind:visible direction="ltr">
+	{#snippet icon()}
+		<IconSort size="20px" />
+	{/snippet}
 
 	<p class="category sort">{$i18n.functions.sort}</p>
 

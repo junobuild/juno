@@ -1,46 +1,50 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { createEventDispatcher } from 'svelte';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { Principal } from '@dfinity/principal';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { createEventDispatcher } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
+	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { ONE_TRILLION } from '$lib/constants/constants';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
-	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let canisterId: Principal;
-	export let segment: 'satellite' | 'analytics' | 'mission_control';
-	export let currentCycles: bigint;
-	export let transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
+	interface Props {
+		canisterId: Principal;
+		segment: 'satellite' | 'analytics' | 'mission_control';
+		currentCycles: bigint;
+		transferFn: (params: { cycles: bigint; destinationId: Principal }) => Promise<void>;
+	}
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let { canisterId, segment, currentCycles, transferFn }: Props = $props();
+
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	let tCycles: string;
+	let tCycles: string = $state('');
 
-	let cycles: bigint;
-	$: (() => {
-		cycles = BigInt(parseFloat(tCycles ?? 0) * ONE_TRILLION);
-	})();
+	let cycles: bigint = $derived(BigInt(parseFloat(tCycles ?? 0) * ONE_TRILLION));
 
-	let destinationId: string | undefined;
+	let destinationId: string | undefined = $state();
 
-	let validConfirm = false;
-	$: validConfirm =
-		cycles > 0 && cycles <= currentCycles && nonNullish(destinationId) && destinationId !== '';
+	let validConfirm = $state(false);
+	run(() => {
+		validConfirm =
+			cycles > 0 && cycles <= currentCycles && nonNullish(destinationId) && destinationId !== '';
+	});
 
-	let remainingCycles: bigint;
-	$: remainingCycles = currentCycles - cycles > 0 ? currentCycles - cycles : 0n;
+	let remainingCycles: bigint = $derived(currentCycles - cycles > 0 ? currentCycles - cycles : 0n);
 
 	const onSubmit = async () => {
 		if (!$authSignedInStore) {
@@ -94,14 +98,14 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<p>{$i18n.canisters.transfer_cycles_done}</p>
-			<button on:click={close}>{$i18n.core.close}</button>
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.canisters.transfer_cycles_in_progress}</p>
 		</SpinnerModal>
 	{:else}
-		<form on:submit|preventDefault={onSubmit}>
+		<form onsubmit={preventDefault(onSubmit)}>
 			<h2>
 				{$i18n.canisters.transfer_cycles}
 			</h2>
@@ -111,26 +115,32 @@
 			</p>
 
 			<p>
-				{@html i18nFormat($i18n.canisters.your_balance, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					},
-					{
-						placeholder: '{1}',
-						value: formatTCycles(currentCycles)
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.canisters.your_balance, [
+						{
+							placeholder: '{0}',
+							value: segment.replace('_', ' ')
+						},
+						{
+							placeholder: '{1}',
+							value: formatTCycles(currentCycles)
+						}
+					])}
+				/>
 			</p>
 
 			<Value>
-				<svelte:fragment slot="label">{$i18n.canisters.destination}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.canisters.destination}
+				{/snippet}
 
 				<CanistersPicker excludeSegmentId={canisterId} bind:segmentIdText={destinationId} />
 			</Value>
 
 			<Value ref="cycles">
-				<svelte:fragment slot="label">T Cycles</svelte:fragment>
+				{#snippet label()}
+					T Cycles
+				{/snippet}
 
 				<Input
 					name="cycles"
@@ -143,16 +153,18 @@
 
 			<p>
 				<small
-					>{@html i18nFormat($i18n.canisters.cycles_will_remain, [
-						{
-							placeholder: '{0}',
-							value: formatTCycles(remainingCycles)
-						},
-						{
-							placeholder: '{1}',
-							value: segment.replace('_', ' ')
-						}
-					])}</small
+					><Html
+						text={i18nFormat($i18n.canisters.cycles_will_remain, [
+							{
+								placeholder: '{0}',
+								value: formatTCycles(remainingCycles)
+							},
+							{
+								placeholder: '{1}',
+								value: segment.replace('_', ' ')
+							}
+						])}
+					/></small
 				>
 			</p>
 

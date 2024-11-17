@@ -1,27 +1,31 @@
 <script lang="ts">
-	import NavbarLink from '$lib/components/core/NavbarLink.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
-	import Canister from '$lib/components/canister/Canister.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
-	import type { CanisterData } from '$lib/types/canister';
+	import { run } from 'svelte/legacy';
 	import { slide, fade } from 'svelte/transition';
+	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
-	import IconWallet from '$lib/components/icons/IconWallet.svelte';
+	import NavbarLink from '$lib/components/core/NavbarLink.svelte';
 	import Wallet from '$lib/components/core/Wallet.svelte';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import type { CanisterData } from '$lib/types/canister';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 
-	let missionControlData: CanisterData | undefined = undefined;
-	let orbiterData: CanisterData | undefined = undefined;
-	let balance: bigint | undefined = undefined;
+	let missionControlData: CanisterData | undefined = $state(undefined);
+	let orbiterData: CanisterData | undefined = $state(undefined);
+	let balance: bigint | undefined = $state(undefined);
 
-	$: $missionControlStore,
-		(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$missionControlStore,
+			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+	});
 </script>
 
 {#if nonNullish($missionControlStore)}

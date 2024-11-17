@@ -1,24 +1,28 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Confirmation from '$lib/components/core/Confirmation.svelte';
-	import { busy } from '$lib/stores/busy.store';
 	import { isNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { deleteRule } from '$lib/api/satellites.api';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { createEventDispatcher, getContext } from 'svelte';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 	import type { Rule, RulesType } from '$declarations/satellite/satellite.did';
+	import { deleteRule } from '$lib/api/satellites.api';
+	import Confirmation from '$lib/components/core/Confirmation.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { authStore } from '$lib/stores/auth.store';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let collection: string;
-	export let rule: Rule | undefined;
-	export let type: RulesType;
+	interface Props {
+		collection: string;
+		rule: Rule | undefined;
+		type: RulesType;
+	}
+
+	let { collection, rule, type }: Props = $props();
 
 	const { store, reload }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let visible = false;
+	let visible = $state(false);
 
 	const close = () => (visible = false);
 
@@ -73,13 +77,17 @@
 	};
 </script>
 
-<button type="button" on:click={() => (visible = true)}>{$i18n.core.delete}</button>
+<button type="button" onclick={() => (visible = true)}>{$i18n.core.delete}</button>
 
 <Confirmation bind:visible on:junoYes={deleteCollection} on:junoNo={close}>
-	<svelte:fragment slot="title">{$i18n.collections.delete_question}</svelte:fragment>
+	{#snippet title()}
+		{$i18n.collections.delete_question}
+	{/snippet}
 
 	<Value>
-		<svelte:fragment slot="label">{$i18n.collections.key}</svelte:fragment>
+		{#snippet label()}
+			{$i18n.collections.key}
+		{/snippet}
 		<p>{collection}</p>
 	</Value>
 </Confirmation>

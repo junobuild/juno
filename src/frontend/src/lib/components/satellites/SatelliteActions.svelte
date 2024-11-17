@@ -1,21 +1,25 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import TopUp from '$lib/components/canister/TopUp.svelte';
-	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
-	import type { CanisterIcStatus } from '$lib/types/canister';
-	import Actions from '$lib/components/core/Actions.svelte';
-	import { emit } from '$lib/utils/events.utils';
-	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
-	import { busy } from '$lib/stores/busy.store';
-	import { listCustomDomains } from '$lib/services/hosting.services';
+	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
+	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
+	import TopUp from '$lib/components/canister/TopUp.svelte';
+	import Actions from '$lib/components/core/Actions.svelte';
+	import { listCustomDomains } from '$lib/services/hosting.services';
+	import { busy } from '$lib/stores/busy.store';
+	import type { CanisterIcStatus } from '$lib/types/canister';
+	import { emit } from '$lib/utils/events.utils';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
+
+	let { satellite }: Props = $props();
 
 	let detail = { satellite };
 
-	let canister: CanisterIcStatus | undefined = undefined;
+	let canister: CanisterIcStatus | undefined = $state(undefined);
 
 	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
 		if (syncCanister.id !== satellite.satellite_id.toText()) {
@@ -25,10 +29,11 @@
 		canister = syncCanister;
 	};
 
-	let visible: boolean | undefined;
+	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
-	const onTransferCycles = () => {
+	// eslint-disable-next-line require-await
+	const onTransferCycles = async () => {
 		close();
 
 		emit({
@@ -72,18 +77,21 @@
 	};
 </script>
 
-<svelte:window on:junoSyncCanister={({ detail: { canister } }) => onSyncCanister(canister)} />
+<svelte:window
+	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterIcStatus }>) =>
+		onSyncCanister(canister)}
+/>
 
 <Actions bind:visible>
 	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
 
-	<CanisterTransferCycles {canister} on:click={onTransferCycles} />
+	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
 	<hr />
 
-	<CanisterStopStart {canister} segment="satellite" on:junoStop={close} on:junoStart={close} />
+	<CanisterStopStart {canister} segment="satellite" onstop={close} onstart={close} />
 
-	<SegmentDetach segment="satellite" segmentId={satellite.satellite_id} on:junoStop={close} />
+	<SegmentDetach segment="satellite" segmentId={satellite.satellite_id} ondetach={close} />
 
-	<CanisterDelete {canister} on:click={onDeleteSatellite} />
+	<CanisterDelete {canister} onclick={onDeleteSatellite} />
 </Actions>

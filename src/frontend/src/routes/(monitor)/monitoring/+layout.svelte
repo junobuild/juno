@@ -1,8 +1,14 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
-	import { layoutTitle } from '$lib/stores/layout.store';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { onMount, type Snippet } from 'svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { layoutTitle } from '$lib/stores/layout.store';
+
+	interface Props {
+		children: Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	onMount(() =>
 		layoutTitle.set({
@@ -12,4 +18,4 @@
 	);
 </script>
 
-<slot />
+{@render children()}

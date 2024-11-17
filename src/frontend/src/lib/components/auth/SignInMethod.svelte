@@ -1,7 +1,7 @@
 <script lang="ts">
 	import IconIC from '$lib/components/icons/IconIC.svelte';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
+	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 </script>
 
@@ -17,7 +17,7 @@
 		<tbody>
 			<tr>
 				<td
-					><ExternalLink href="https://internetcomputer.org/internet-identity"
+					><ExternalLink href="https://internetcomputer.org/internet-identity" arrow={false}
 						><span class="icon"><IconIC /></span> Internet Identity</ExternalLink
 					></td
 				>
@@ -25,7 +25,7 @@
 			</tr>
 
 			<tr>
-				<td><ExternalLink href="https://nfid.one/"><IconNFID /></ExternalLink></td>
+				<td><ExternalLink href="https://nfid.one/" arrow={false}><IconNFID /></ExternalLink></td>
 				<td class="status">{$i18n.users.enabled}</td>
 			</tr>
 		</tbody>
@@ -44,11 +44,19 @@
 		}
 	}
 
+	tr:first-of-type td {
+		padding-top: var(--padding-1_5x);
+	}
+
 	tr:last-of-type td {
 		padding-bottom: var(--padding-1_5x);
 	}
 
 	.icon {
 		margin: 0 var(--padding-0_5x) 0 0;
+	}
+
+	.table-container {
+		margin: 0 0 var(--padding-8x);
 	}
 </style>

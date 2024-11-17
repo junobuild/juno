@@ -1,17 +1,26 @@
 <script lang="ts">
-	import Header from '$lib/components/ui/Header.svelte';
-	import { layoutTitleIntersecting } from '$lib/stores/layout.store';
-	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
-	import User from '$lib/components/core/User.svelte';
-	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
-	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
+	import User from '$lib/components/core/User.svelte';
+	import SatellitesSwitcher from '$lib/components/satellites/SatellitesSwitcher.svelte';
+	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
+	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
+	import Header from '$lib/components/ui/Header.svelte';
+	import { layoutTitleIntersecting } from '$lib/stores/layout.store';
 
-	export let start: 'logo' | 'back' | 'menu' = 'logo';
-	export let signIn = true;
-	export let launchpad = false;
-	export let headerOpaqueOnScroll = true;
+	interface Props {
+		start?: 'logo' | 'back' | 'menu';
+		signIn?: boolean;
+		launchpad?: boolean;
+		headerOpaqueOnScroll?: boolean;
+	}
+
+	let {
+		start = 'logo',
+		signIn = true,
+		launchpad = false,
+		headerOpaqueOnScroll = true
+	}: Props = $props();
 </script>
 
 <Header opaque={!$layoutTitleIntersecting && headerOpaqueOnScroll}>

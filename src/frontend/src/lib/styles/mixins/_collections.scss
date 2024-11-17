@@ -45,8 +45,16 @@
 	width: calc(100% - var(--padding-8x));
 	justify-content: flex-start;
 
-	margin: var(--padding-2x) var(--padding-3x);
+	margin: var(--padding) var(--padding-3x);
 	padding: var(--padding-0_25x) 0 0;
+
+	&:first-of-type {
+		margin-top: var(--padding-2x);
+	}
+
+	&:last-of-type {
+		margin-bottom: var(--padding-2x);
+	}
 
 	&:hover,
 	&:focus {
@@ -67,6 +75,6 @@
 }
 
 @mixin start {
-	gap: var(--padding-2x);
+	gap: var(--padding-1_5x);
 	margin-left: var(--padding-2x);
 }

@@ -1,9 +1,16 @@
 <script lang="ts" generics="T">
+	import { nonNullish } from '@dfinity/utils';
+	import { getContext, type Snippet } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import DataActions from '$lib/components/data/DataActions.svelte';
 	import { DATA_CONTEXT_KEY, type DataContext } from '$lib/types/data.context';
-	import { getContext } from 'svelte';
-	import { nonNullish } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
+
+	interface Props {
+		children: Snippet;
+		actions?: Snippet;
+	}
+
+	let { children, actions }: Props = $props();
 
 	// eslint-disable-next-line no-undef
 	const { store }: DataContext<T> = getContext<DataContext<T>>(DATA_CONTEXT_KEY);
@@ -11,10 +18,10 @@
 
 {#if nonNullish($store?.data)}
 	<div class="actions" transition:fade>
-		<span><slot /></span>
+		<span>{@render children()}</span>
 
 		<DataActions>
-			<slot name="actions" />
+			{@render actions?.()}
 		</DataActions>
 	</div>
 {/if}

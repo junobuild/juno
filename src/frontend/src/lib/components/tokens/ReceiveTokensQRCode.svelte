@@ -1,14 +1,16 @@
 <script lang="ts">
+	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import QRCodeContainer from '$lib/components/ui/QRCodeContainer.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { createEventDispatcher } from 'svelte';
 
-	export let value: string;
-	export let ariaLabel: string;
+	interface Props {
+		value: string;
+		ariaLabel: string;
+		back: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
+	let { value, ariaLabel, back }: Props = $props();
 </script>
 
 <div class="container">
@@ -16,12 +18,14 @@
 
 	<div class="info">
 		<Value>
-			<svelte:fragment slot="label">{ariaLabel}</svelte:fragment>
+			{#snippet label()}
+				{ariaLabel}
+			{/snippet}
 			<Identifier shorten={true} small={false} identifier={value} />
 		</Value>
 	</div>
 
-	<button on:click={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+	<button onclick={back}>{$i18n.core.back}</button>
 </div>
 
 <style lang="scss">

@@ -1,47 +1,47 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { isNullish, nonNullish, debounce } from '@dfinity/utils';
+	import { addMonths } from 'date-fns';
+	import { run } from 'svelte/legacy';
 	import type {
 		AnalyticsTrackEvents,
 		AnalyticsWebVitalsPerformanceMetrics
 	} from '$declarations/orbiter/orbiter.did';
 	import AnalyticsChart from '$lib/components/analytics/AnalyticsChart.svelte';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import { satelliteStore } from '$lib/stores/satellite.store';
-	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
-	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
-	import type {
-		AnalyticsPageViews as AnalyticsPageViewsType,
-		PageViewsParams,
-		PageViewsPeriod
-	} from '$lib/types/ortbiter';
-	import { debounce } from '@dfinity/utils';
 	import AnalyticsEvents from '$lib/components/analytics/AnalyticsEvents.svelte';
 	import AnalyticsEventsExport from '$lib/components/analytics/AnalyticsEventsExport.svelte';
-	import AnalyticsPageViews from '$lib/components/analytics/AnalyticsPageViews.svelte';
+	import AnalyticsFilter from '$lib/components/analytics/AnalyticsFilter.svelte';
 	import AnalyticsMetrics from '$lib/components/analytics/AnalyticsMetrics.svelte';
+	import AnalyticsNew from '$lib/components/analytics/AnalyticsNew.svelte';
+	import AnalyticsPageViews from '$lib/components/analytics/AnalyticsPageViews.svelte';
+	import AnalyticsPerformanceMetrics from '$lib/components/analytics/AnalyticsPerformanceMetrics.svelte';
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
-	import { authStore } from '$lib/stores/auth.store';
-	import { versionStore } from '$lib/stores/version.store';
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import {
 		getAnalyticsPageViews,
 		getAnalyticsPerformanceMetrics,
 		getAnalyticsTrackEvents
 	} from '$lib/services/orbiters.services';
-	import { addMonths } from 'date-fns';
-	import AnalyticsPerformanceMetrics from '$lib/components/analytics/AnalyticsPerformanceMetrics.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import { satelliteStore } from '$lib/stores/satellite.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import type {
+		AnalyticsPageViews as AnalyticsPageViewsType,
+		PageViewsParams,
+		PageViewsPeriod
+	} from '$lib/types/ortbiter';
 
-	let loading = true;
+	let loading = $state(true);
 
-	let pageViews: AnalyticsPageViewsType | undefined = undefined;
-	let trackEvents: AnalyticsTrackEvents | undefined = undefined;
-	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = undefined;
+	let pageViews: AnalyticsPageViewsType | undefined = $state(undefined);
+	let trackEvents: AnalyticsTrackEvents | undefined = $state(undefined);
+	let performanceMetrics: AnalyticsWebVitalsPerformanceMetrics | undefined = $state(undefined);
 
-	let period: PageViewsPeriod = {
+	let period: PageViewsPeriod = $state({
 		from: addMonths(new Date(), -1)
-	};
+	});
 
 	const loadAnalytics = async () => {
 		if (isNullish($orbiterStore)) {
@@ -82,7 +82,10 @@
 
 	const debouncePageViews = debounce(loadAnalytics);
 
-	$: $orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
+	});
 
 	const selectPeriod = ({ detail }: CustomEvent<PageViewsPeriod>) => (period = detail);
 </script>

@@ -1,5 +1,9 @@
 <script lang="ts">
-	export let visible = false;
+	interface Props {
+		visible?: boolean;
+	}
+
+	let { visible = false }: Props = $props();
 </script>
 
 {#if visible}

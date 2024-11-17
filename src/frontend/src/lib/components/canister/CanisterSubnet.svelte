@@ -1,17 +1,22 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { onMount } from 'svelte';
-	import { loadSubnetId } from '$lib/services/ic.services';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { nonNullish } from '@dfinity/utils';
+	import { onMount } from 'svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import type { PrincipalText } from '$lib/types/itentity';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { loadSubnetId } from '$lib/services/ic.services';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { subnetsStore } from '$lib/stores/subnets.store';
+	import type { PrincipalText } from '$lib/types/itentity';
 	import type { Subnet } from '$lib/types/subnet';
+	import type { Option } from '$lib/types/utils';
 
-	export let canisterId: Principal;
+	interface Props {
+		canisterId: Principal;
+	}
+
+	let { canisterId }: Props = $props();
 
 	onMount(async () => {
 		await loadSubnetId({
@@ -19,16 +24,16 @@
 		});
 	});
 
-	let subnet: Subnet | null | undefined;
-	$: subnet = $subnetsStore[canisterId.toText()];
+	let subnet: Option<Subnet> = $derived($subnetsStore[canisterId.toText()]);
 
-	let subnetId: PrincipalText | undefined;
-	$: subnetId = subnet?.subnetId;
+	let subnetId: PrincipalText | undefined = $derived(subnet?.subnetId);
 </script>
 
 <div>
 	<Value>
-		<svelte:fragment slot="label">{$i18n.canisters.subnet_id}</svelte:fragment>
+		{#snippet label()}
+			{$i18n.canisters.subnet_id}
+		{/snippet}
 		{#if nonNullish(subnetId)}
 			<Identifier identifier={subnetId} small={false} />
 		{:else}

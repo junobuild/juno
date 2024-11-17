@@ -153,7 +153,7 @@ const syncJunoStatusesCanisters = async ({
 					})
 					.sort(({ x: aKey }, { x: bKey }) => parseInt(aKey) - parseInt(bKey));
 
-				const totalStatusesPerDay = chartsStatuses.reduce(
+				const totalStatusesPerDay = chartsStatuses.reduce<Record<string, number[]>>(
 					(acc, { x, y }) => {
 						const date = new Date(parseInt(x));
 						const key = startOfDay(date).getTime();
@@ -163,7 +163,7 @@ const syncJunoStatusesCanisters = async ({
 							[key]: [...(acc[key] ?? []), y]
 						};
 					},
-					{} as Record<string, number[]>
+					{}
 				);
 
 				const chartsData = Object.entries(totalStatusesPerDay).map(([key, values]) => ({

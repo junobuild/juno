@@ -3,7 +3,11 @@
 	import type { Log } from '$lib/types/log';
 	import { i18nText } from '$lib/utils/i18n.utils';
 
-	export let log: Log;
+	interface Props {
+		log: Log;
+	}
+
+	let { log }: Props = $props();
 </script>
 
 <span

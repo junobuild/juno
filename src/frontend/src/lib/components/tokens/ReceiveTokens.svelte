@@ -1,20 +1,29 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
+	import { fade } from 'svelte/transition';
+	import { getAccountIdentifier } from '$lib/api/icp-index.api';
+	import IconOisy from '$lib/components/icons/IconOisy.svelte';
+	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';
+	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
+	import ReceiveTokensSigner from '$lib/components/tokens/ReceiveTokensSigner.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import IconQRCode from '$lib/components/icons/IconQRCode.svelte';
-	import type { Principal } from '@dfinity/principal';
-	import { getAccountIdentifier } from '$lib/api/icp-index.api';
-	import { fade } from 'svelte/transition';
-	import ReceiveTokensQRCode from '$lib/components/tokens/ReceiveTokensQRCode.svelte';
 
-	export let missionControlId: Principal;
-	export let visible = false;
+	interface Props {
+		missionControlId: Principal;
+		visible?: boolean;
+	}
+
+	let { missionControlId, visible = $bindable(false) }: Props = $props();
 
 	const accountIdentifier = getAccountIdentifier(missionControlId);
 
-	let steps: 'options' | 'wallet_id' | 'account_identifier' = 'options';
+	let steps: 'options' | 'wallet_id' | 'account_identifier' | 'signer' = $state('options');
 
-	$: visible, (steps = 'options');
+	$effect(() => {
+		visible;
+		steps = 'options';
+	});
 </script>
 
 <Popover bind:visible center={true} backdrop="dark">
@@ -24,7 +33,7 @@
 		{#if steps === 'wallet_id'}
 			<div in:fade>
 				<ReceiveTokensQRCode
-					on:junoBack={() => (steps = 'options')}
+					back={() => (steps = 'options')}
 					value={missionControlId.toText()}
 					ariaLabel={$i18n.wallet.wallet_id}
 				/>
@@ -32,22 +41,28 @@
 		{:else if steps === 'account_identifier'}
 			<div in:fade>
 				<ReceiveTokensQRCode
-					on:junoBack={() => (steps = 'options')}
+					back={() => (steps = 'options')}
 					value={accountIdentifier.toHex()}
 					ariaLabel={$i18n.wallet.account_identifier}
 				/>
 			</div>
+		{:else if steps === 'signer'}
+			<div in:fade>
+				<ReceiveTokensSigner {missionControlId} bind:visible back={() => (steps = 'options')} />
+			</div>
 		{:else}
 			<div class="options">
-				<button on:click={() => (steps = 'wallet_id')}
+				<button onclick={() => (steps = 'wallet_id')}
 					><IconQRCode /> {$i18n.wallet.wallet_id}</button
 				>
 
-				<button on:click={() => (steps = 'account_identifier')}
+				<button onclick={() => (steps = 'account_identifier')}
 					><IconQRCode /> {$i18n.wallet.account_identifier}</button
 				>
 
-				<!-- <p>Or connect wallet</p> -->
+				<p>{$i18n.wallet.or_connect_wallet}</p>
+
+				<button onclick={() => (steps = 'signer')}><IconOisy /> OISY</button>
 			</div>
 		{/if}
 	</div>
@@ -75,6 +90,7 @@
 		font-size: var(--font-size-small);
 		text-align: center;
 
-		padding: var(--padding-2x) 0;
+		padding: var(--padding-2x) 0 0;
+		margin: 0 0 var(--padding-1_5x);
 	}
 </style>

@@ -1,13 +1,27 @@
 <script lang="ts">
-	import { isHash, stringifyJson, isPrincipal } from '$lib/utils/json.utils';
+	import { run, stopPropagation } from 'svelte/legacy';
+	import Json from './Json.svelte';
+
 	import { i18n } from '$lib/stores/i18n.store';
+	import { isHash, stringifyJson, isPrincipal } from '$lib/utils/json.utils';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
-	export let json: unknown | undefined = undefined;
-	export let defaultExpandedLevel = Infinity;
-	export let _key = '';
-	export let _level = 1;
-	export let _collapsed: boolean | undefined = undefined;
+	interface Props {
+		json?: unknown | undefined;
+		// eslint-disable-next-line @typescript-eslint/no-explicit-any
+		defaultExpandedLevel?: any;
+		_key?: string;
+		_level?: number;
+		_collapsed?: boolean | undefined;
+	}
+
+	let {
+		json = undefined,
+		defaultExpandedLevel = Infinity,
+		_key = '',
+		_level = 1,
+		_collapsed = undefined
+	}: Props = $props();
 
 	type ValueType =
 		| 'bigint'
@@ -23,24 +37,30 @@
 		| 'undefined';
 
 	const getValueType = (value: unknown): ValueType => {
-		if (value === null) return 'null';
-		if (isPrincipal(value)) return 'principal';
-		if (Array.isArray(json) && isHash(json)) return 'hash';
+		if (value === null) {
+			return 'null';
+		}
+		if (isPrincipal(value)) {
+			return 'principal';
+		}
+		if (Array.isArray(json) && isHash(json)) {
+			return 'hash';
+		}
 		return typeof value;
 	};
 
-	let valueType: ValueType;
-	let value: unknown;
-	let keyLabel: string;
-	let children: [string, unknown][];
-	let hasChildren: boolean;
-	let isExpandable: boolean;
-	let isArray: boolean;
-	let openBracket: string;
-	let closeBracket: string;
-	let root: boolean;
-	let testId: 'json' | undefined;
-	$: {
+	let valueType: ValueType | undefined = $state();
+	let value: unknown = $state();
+	let keyLabel: string | undefined = $state();
+	let children: [string, unknown][] = $state([]);
+	let hasChildren: boolean | undefined = $state();
+	let isExpandable: boolean | undefined = $state();
+	let isArray: boolean | undefined = $state();
+	let openBracket: string | undefined = $state();
+	let closeBracket: string | undefined = $state();
+	let root: boolean | undefined = $state();
+	let testId: 'json' | undefined = $state();
+	run(() => {
 		valueType = getValueType(json);
 		isExpandable = valueType === 'object';
 		value = isExpandable ? json : stringifyJson(json);
@@ -52,13 +72,17 @@
 		closeBracket = isArray ? ']' : '}';
 		root = _level === 1;
 		testId = root ? 'json' : undefined;
-	}
+	});
 
-	let title: string | undefined;
-	$: title = valueType === 'hash' ? (json as number[]).join() : undefined;
+	let title: string | undefined = $derived(
+		valueType === 'hash' ? (json as number[]).join() : undefined
+	);
 
-	let collapsed = true;
-	$: collapsed = _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
+	let collapsed = $state(true);
+	run(() => {
+		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+		collapsed = _collapsed === undefined ? defaultExpandedLevel < _level : _collapsed;
+	});
 
 	const toggle = () => (collapsed = !collapsed);
 </script>
@@ -75,8 +99,8 @@
 			role="button"
 			aria-label={$i18n.core.toggle}
 			tabindex="0"
-			on:keypress={($event) => handleKeyPress({ $event, callback: toggle })}
-			on:click|stopPropagation={toggle}
+			onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
+			onclick={stopPropagation(toggle)}
 			>{keyLabel}
 			<span class="bracket">{openBracket} ... {closeBracket}</span>
 		</span>
@@ -92,15 +116,15 @@
 			role="button"
 			aria-label={$i18n.core.toggle}
 			tabindex="0"
-			on:keypress={($event) => handleKeyPress({ $event, callback: toggle })}
-			on:click|stopPropagation={toggle}
+			onkeypress={($event) => handleKeyPress({ $event, callback: toggle })}
+			onclick={stopPropagation(toggle)}
 			>{keyLabel}<span class="bracket open">{openBracket}</span></span
 		>
 		<!-- children -->
 		<ul>
 			{#each children as [key, value]}
 				<li>
-					<svelte:self json={value} _key={key} {defaultExpandedLevel} _level={_level + 1} />
+					<Json json={value} _key={key} {defaultExpandedLevel} _level={_level + 1} />
 				</li>
 			{/each}
 		</ul>

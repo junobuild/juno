@@ -1,22 +1,28 @@
 <script lang="ts">
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { Snippet } from 'svelte';
 
-	export let disabled: boolean | undefined = undefined;
-	export let primary = false;
-	export let row = false;
+	interface Props {
+		summary?: Snippet;
+		children: Snippet;
+		disabled?: boolean;
+		primary?: boolean;
+		row?: boolean;
+		onclick: () => Promise<void>;
+	}
 
-	let summary = nonNullish($$slots.summary);
+	let { children, summary, disabled, primary = false, row = false, onclick }: Props = $props();
 </script>
 
-<button class="article" on:click {disabled} class:primary class:row>
-	{#if summary}
+<button class="article" {onclick} {disabled} class:primary class:row>
+	{#if nonNullish(summary)}
 		<div class="summary">
-			<slot name="summary" />
+			{@render summary()}
 		</div>
 	{/if}
 
-	<div class="content" class:only={!summary}>
-		<slot />
+	<div class="content" class:only={isNullish(summary)}>
+		{@render children()}
 	</div>
 </button>
 

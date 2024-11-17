@@ -1,28 +1,28 @@
 <script lang="ts">
-	import type { JunoModalDetail, JunoModalUpgradeSatelliteDetail } from '$lib/types/modal';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { type BuildType, upgradeSatellite } from '@junobuild/admin';
-	import { compare } from 'semver';
-	import { authStore } from '$lib/stores/auth.store';
 	import { AnonymousIdentity } from '@dfinity/agent';
+	import { upgradeSatellite } from '@junobuild/admin';
+	import { compare } from 'semver';
+	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalDetail, JunoModalUpgradeSatelliteDetail } from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { container } from '$lib/utils/juno.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+	}
 
-	let satellite: Satellite;
-	let currentVersion: string;
-	let newerReleases: string[];
-	let build: BuildType | undefined;
+	let { detail }: Props = $props();
 
-	$: ({ satellite, currentVersion, newerReleases, build } =
-		detail as JunoModalUpgradeSatelliteDetail);
+	let { satellite, currentVersion, newerReleases, build } = $derived(
+		detail as JunoModalUpgradeSatelliteDetail
+	);
 
 	const upgradeSatelliteWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
-		upgradeSatellite({
+		await upgradeSatellite({
 			satellite: {
 				satelliteId: satellite.satellite_id.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
@@ -43,12 +43,16 @@
 	upgrade={upgradeSatelliteWasm}
 	segment="satellite"
 >
-	<h2 slot="intro">
-		{@html i18nFormat($i18n.canisters.upgrade_title, [
-			{
-				placeholder: '{0}',
-				value: satelliteName(satellite)
-			}
-		])}
-	</h2>
+	{#snippet intro()}
+		<h2>
+			<Html
+				text={i18nFormat($i18n.canisters.upgrade_title, [
+					{
+						placeholder: '{0}',
+						value: satelliteName(satellite)
+					}
+				])}
+			/>
+		</h2>
+	{/snippet}
 </CanisterUpgradeModal>

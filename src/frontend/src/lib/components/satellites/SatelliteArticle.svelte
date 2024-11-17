@@ -1,35 +1,38 @@
 <script lang="ts">
+	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
-	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
-	import type { Principal } from '@dfinity/principal';
-	import { overviewLink } from '$lib/utils/nav.utils';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import { satelliteName } from '$lib/utils/satellite.utils';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutSatellites } from '$lib/stores/layout.store';
 	import { SatellitesLayout } from '$lib/types/layout';
+	import { overviewLink } from '$lib/utils/nav.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
 
-	let satellite_id: Principal;
-	$: ({ satellite_id } = satellite);
+	let { satellite }: Props = $props();
 
-	let name: string;
-	$: name = satelliteName(satellite);
+	let { satellite_id } = $derived(satellite);
 
-	let href: string;
-	$: href = overviewLink(satellite.satellite_id);
+	let name: string = $derived(satelliteName(satellite));
 
-	let row = false;
-	$: row = $layoutSatellites === SatellitesLayout.LIST;
+	let href: string = $derived(overviewLink(satellite.satellite_id));
+
+	let row = $state(false);
+	run(() => {
+		row = $layoutSatellites === SatellitesLayout.LIST;
+	});
 </script>
 
 <LaunchpadLink {href} ariaLabel={`${$i18n.satellites.open}: ${name}`} {row}>
-	<svelte:fragment slot="summary">
+	{#snippet summary()}
 		<p>{name}</p>
 		<IconSatellite size={row ? '28px' : '48px'} />
-	</svelte:fragment>
+	{/snippet}
 
 	<Canister canisterId={satellite_id} segment="satellite" {row} />
 </LaunchpadLink>

@@ -3,11 +3,22 @@
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import IconInfo from '$lib/components/icons/IconInfo.svelte';
 
-	export let ariaLabel: string;
-	export let icon: 'delete' | 'edit' | 'info';
+	interface Props {
+		ariaLabel: string;
+		icon: 'delete' | 'edit' | 'info';
+		onaction: () => void;
+	}
+
+	let { ariaLabel, icon, onaction }: Props = $props();
+
+	const onclick = ($event: MouseEvent | TouchEvent) => {
+		$event.stopPropagation();
+
+		onaction();
+	};
 </script>
 
-<button class="square" aria-label={ariaLabel} type="button" on:click|stopPropagation
+<button class="square" aria-label={ariaLabel} type="button" {onclick}
 	>{#if icon === 'delete'}
 		<IconDelete size="20px" />
 	{:else if icon === 'info'}

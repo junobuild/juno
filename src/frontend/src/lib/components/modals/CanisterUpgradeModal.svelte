@@ -1,32 +1,47 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { nonNullish } from '@dfinity/utils';
+	import type { BuildType } from '@junobuild/admin';
+	import { createEventDispatcher, type Snippet } from 'svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import SelectUpgradeVersion from '$lib/components/upgrade/SelectUpgradeVersion.svelte';
-	import type { Wasm } from '$lib/types/upgrade';
-	import ReviewUpgradeVersion from '$lib/components/upgrade/ReviewUpgradeVersion.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type { BuildType } from '@junobuild/admin';
 	import ConfirmUpgradeVersion from '$lib/components/upgrade/ConfirmUpgradeVersion.svelte';
-	import { nonNullish } from '@dfinity/utils';
+	import ReviewUpgradeVersion from '$lib/components/upgrade/ReviewUpgradeVersion.svelte';
+	import SelectUpgradeVersion from '$lib/components/upgrade/SelectUpgradeVersion.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { Wasm } from '$lib/types/upgrade';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let currentVersion: string;
-	export let newerReleases: string[];
-	export let build: BuildType | undefined = undefined;
-	export let segment: 'satellite' | 'mission_control' | 'orbiter';
-	export let upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
+	interface Props {
+		currentVersion: string;
+		newerReleases: string[];
+		build?: BuildType | undefined;
+		segment: 'satellite' | 'mission_control' | 'orbiter';
+		upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
+		intro?: Snippet;
+	}
 
-	let buildExtended = false;
-	$: buildExtended = nonNullish(build) && build === 'extended';
+	let {
+		currentVersion,
+		newerReleases,
+		build = undefined,
+		segment,
+		upgrade,
+		intro
+	}: Props = $props();
 
-	let steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error';
-	$: steps = buildExtended ? 'confirm' : 'init';
+	let buildExtended = $derived(nonNullish(build) && build === 'extended');
+
+	let steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' =
+		$state('init');
+	$effect(() => {
+		steps = buildExtended ? 'confirm' : 'init';
+	});
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
-	let wasm: Wasm | undefined;
+	let wasm: Wasm | undefined = $state();
 
 	const onSelect = ({
 		detail: { steps: s, wasm: w }
@@ -43,18 +58,20 @@
 	{#if steps === 'ready'}
 		<div class="msg">
 			<p>
-				{@html i18nFormat($i18n.canisters.upgrade_done, [
-					{
-						placeholder: '{0}',
-						value: segment.replace('_', ' ')
-					},
-					{
-						placeholder: '{1}',
-						value: `v${wasm?.version ?? ''}`
-					}
-				])}
+				<Html
+					text={i18nFormat($i18n.canisters.upgrade_done, [
+						{
+							placeholder: '{0}',
+							value: segment.replace('_', ' ')
+						},
+						{
+							placeholder: '{1}',
+							value: `v${wasm?.version ?? ''}`
+						}
+					])}
+				/>
 			</p>
-			<button on:click={close}>{$i18n.core.close}</button>
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'download'}
 		<SpinnerModal>
@@ -73,9 +90,12 @@
 			on:junoClose
 		/>
 	{:else if steps === 'confirm'}
-		<ConfirmUpgradeVersion {segment} on:junoClose on:junoContinue={() => (steps = 'init')}>
-			<slot name="intro" slot="intro" />
-		</ConfirmUpgradeVersion>
+		<ConfirmUpgradeVersion
+			{segment}
+			on:junoClose
+			on:junoContinue={() => (steps = 'init')}
+			{intro}
+		/>
 	{:else}
 		<SelectUpgradeVersion
 			{newerReleases}
@@ -86,7 +106,9 @@
 			on:junoClose
 			on:junoBack={() => (steps = 'confirm')}
 		>
-			<slot name="intro" slot="intro" />
+			{#snippet intro()}
+				{@render intro?.()}
+			{/snippet}
 		</SelectUpgradeVersion>
 	{/if}
 </Modal>

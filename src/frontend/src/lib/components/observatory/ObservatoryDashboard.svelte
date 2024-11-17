@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
-	import { getContext, onMount } from 'svelte';
 	import { fromNullable, isNullish } from '@dfinity/utils';
-	import { getStatuses } from '$lib/api/observatory.api';
-	import { toasts } from '$lib/stores/toasts.store';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { getContext, onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import { formatToDate } from '$lib/utils/date.utils';
-	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
-	import type { Statuses } from '$lib/types/observatory';
+	import { getStatuses } from '$lib/api/observatory.api';
 	import ObservatoryData from '$lib/components/observatory/ObservatoryData.svelte';
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { Statuses } from '$lib/types/observatory';
+	import { TABS_CONTEXT_KEY, type TabsContext } from '$lib/types/tabs.context';
+	import { formatToDate } from '$lib/utils/date.utils';
 
-	let loading = true;
+	let loading = $state(true);
 
-	let timestamp: bigint | undefined;
-	let statuses: Statuses | undefined;
+	let timestamp: bigint | undefined = $state();
+	let statuses: Statuses | undefined = $state();
 
 	const loadStatuses = async () => {
 		try {
@@ -54,7 +54,7 @@
 				{$i18n.observatory.go_to_settings}
 				<button
 					class="text"
-					on:click={() => store.update((state) => ({ ...state, tabId: state.tabs[1].id }))}
+					onclick={() => store.update((state) => ({ ...state, tabId: state.tabs[1].id }))}
 					>{$i18n.core.settings}</button
 				>.
 			</p>
@@ -67,7 +67,9 @@
 
 			<div class="content">
 				<Value>
-					<svelte:fragment slot="label">{$i18n.observatory.last_data_collection}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.observatory.last_data_collection}
+					{/snippet}
 					<p>{formatToDate(timestamp)}</p>
 				</Value>
 			</div>

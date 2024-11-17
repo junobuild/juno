@@ -853,7 +853,7 @@ dependencies = [
 
 [[package]]
 name = "junobuild-satellite"
-version = "0.0.20-patch.4"
+version = "0.0.21"
 dependencies = [
  "candid",
  "ciborium",

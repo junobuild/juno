@@ -53,31 +53,46 @@
 			return;
 		}
 
-		try {
-			const params: PageViewsParams = {
-				satelliteId: $satelliteStore?.satellite_id,
-				orbiterId: $orbiterStore.orbiter_id,
-				identity: $authStore.identity,
-				...period
-			};
+		const params: PageViewsParams = {
+			satelliteId: $satelliteStore?.satellite_id,
+			orbiterId: $orbiterStore.orbiter_id,
+			identity: $authStore.identity,
+			...period
+		};
 
-			const [views, events, metrics] = await Promise.all([
-				getAnalyticsPageViews({ params, orbiterVersion: $versionStore.orbiter.current }),
-				getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current }),
-				getAnalyticsPerformanceMetrics({ params, orbiterVersion: $versionStore.orbiter.current })
-			]);
+		const [resultViews, resultEvents, resultMetrics] = await Promise.allSettled([
+			getAnalyticsPageViews({ params, orbiterVersion: $versionStore.orbiter.current }),
+			getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current }),
+			getAnalyticsPerformanceMetrics({ params, orbiterVersion: $versionStore.orbiter.current })
+		]);
 
-			pageViews = views;
-			trackEvents = events;
-			performanceMetrics = metrics;
+		if (resultViews.status === 'rejected') {
+			console.error(resultViews.reason);
+		}
 
-			loading = false;
-		} catch (err: unknown) {
+		if (resultEvents.status === 'rejected') {
+			console.error(resultEvents.reason);
+		}
+
+		if (resultMetrics.status === 'rejected') {
+			console.error(resultMetrics.reason);
+		}
+
+		if (
+			resultViews.status === 'rejected' ||
+			resultEvents.status === 'rejected' ||
+			resultMetrics.status === 'rejected'
+		) {
 			toasts.error({
-				text: $i18n.errors.analytics_load_error,
-				detail: err
+				text: $i18n.errors.analytics_load_error
 			});
 		}
+
+		pageViews = resultViews.status === 'fulfilled' ? resultViews.value : undefined;
+		trackEvents = resultEvents.status === 'fulfilled' ? resultEvents.value : undefined;
+		performanceMetrics = resultMetrics.status === 'fulfilled' ? resultMetrics.value : undefined;
+
+		loading = false;
 	};
 
 	const debouncePageViews = debounce(loadAnalytics);

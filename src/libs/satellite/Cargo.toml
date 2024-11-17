@@ -45,7 +45,7 @@ regex.workspace = true
 url = "2.4.0"
 getrandom = { version = "0.2", features = ["custom"] }
 rand = { version = "0.8.5", features = ["getrandom"]}
-junobuild-shared = "0.0.21"
+junobuild-shared = "0.0.22"
 junobuild-utils = "0.0.4"
-junobuild-collections = "0.0.8"
-junobuild-storage = "0.0.11"
+junobuild-collections = "0.0.9"
+junobuild-storage = "0.0.12"

@@ -259,10 +259,10 @@ dependencies = [
  "hex",
  "ic-cdk 0.17.0",
  "ic-cdk-macros 0.17.0",
- "ic-cdk-timers",
+ "ic-cdk-timers 0.11.0",
  "ic-ledger-types 0.14.0",
  "ic-stable-structures",
- "junobuild-collections",
+ "junobuild-collections 0.0.9",
  "junobuild-shared 0.0.22",
  "junobuild-storage",
  "regex",
@@ -648,6 +648,20 @@ dependencies = [
 
 [[package]]
 name = "ic-cdk-timers"
+version = "0.10.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "0c7c528bbb3d4d934b43a364855995d318649217c7510f40f92ad52eba3ff7be"
+dependencies = [
+ "futures",
+ "ic-cdk 0.16.0",
+ "ic0",
+ "serde",
+ "serde_bytes",
+ "slotmap",
+]
+
+[[package]]
+name = "ic-cdk-timers"
 version = "0.11.0"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "fb8fd812a9e26f6aa00594546f8fbf4d4853f39c3ba794c8ff11ecf86fd3c9e4"
@@ -870,12 +884,26 @@ checksum = "b1a46d1a171d865aa5f83f92695765caa047a9b4cbae2cbf37dbd613a793fd4c"
 [[package]]
 name = "junobuild-collections"
 version = "0.0.8"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "87d639dbc7e306ea7f9d3b1d72dea528a6f3da15a3503c0f31cae57e0342b047"
+dependencies = [
+ "candid",
+ "ic-cdk 0.16.0",
+ "ic-cdk-macros 0.16.0",
+ "ic-cdk-timers 0.10.0",
+ "junobuild-shared 0.0.21",
+ "serde",
+]
+
+[[package]]
+name = "junobuild-collections"
+version = "0.0.9"
 dependencies = [
  "candid",
  "ic-cdk 0.17.0",
  "ic-cdk-macros 0.17.0",
- "ic-cdk-timers",
- "junobuild-shared 0.0.21",
+ "ic-cdk-timers 0.11.0",
+ "junobuild-shared 0.0.22",
  "serde",
 ]
 
@@ -902,9 +930,9 @@ dependencies = [
  "getrandom",
  "ic-cdk 0.17.0",
  "ic-cdk-macros 0.17.0",
- "ic-cdk-timers",
+ "ic-cdk-timers 0.11.0",
  "ic-stable-structures",
- "junobuild-collections",
+ "junobuild-collections 0.0.8",
  "junobuild-shared 0.0.21",
  "junobuild-storage",
  "junobuild-utils 0.0.4 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -962,12 +990,12 @@ dependencies = [
  "hex",
  "ic-cdk 0.17.0",
  "ic-cdk-macros 0.17.0",
- "ic-cdk-timers",
+ "ic-cdk-timers 0.11.0",
  "ic-certification",
  "ic-representation-independent-hash",
  "ic-response-verification",
  "ic-stable-structures",
- "junobuild-collections",
+ "junobuild-collections 0.0.8",
  "junobuild-shared 0.0.21",
  "regex",
  "serde",
@@ -1132,7 +1160,7 @@ dependencies = [
  "candid",
  "ic-cdk 0.17.0",
  "ic-cdk-macros 0.17.0",
- "ic-cdk-timers",
+ "ic-cdk-timers 0.11.0",
  "junobuild-shared 0.0.22",
  "lazy_static",
  "serde",

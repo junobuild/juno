@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-collections"
-version = "0.0.8"
+version = "0.0.9"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -19,4 +19,4 @@ ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
 ic-cdk-timers.workspace = true
 serde.workspace = true
-junobuild-shared = "0.0.21"
+junobuild-shared = "0.0.22"

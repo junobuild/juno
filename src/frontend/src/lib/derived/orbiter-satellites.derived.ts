@@ -44,11 +44,3 @@ export const orbiterFeatures: Readable<OrbiterSatelliteFeatures | undefined> = d
 			)?.[1]?.config?.features ?? []
 		)
 );
-
-export const orbiterSatellitesConfigs: Readable<OrbiterSatelliteConfigEntry[]> = derived(
-	[orbiterSatellitesConfig],
-	([orbiterSatellitesConfig]) =>
-		Object.entries(orbiterSatellitesConfig)
-			.filter(([_, { enabled }]) => enabled)
-			.map(([_, satellite]) => satellite)
-);

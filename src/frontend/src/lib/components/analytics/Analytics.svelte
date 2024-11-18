@@ -19,7 +19,8 @@
 	import {
 		getAnalyticsPageViews,
 		getAnalyticsPerformanceMetrics,
-		getAnalyticsTrackEvents
+		getAnalyticsTrackEvents,
+		loadOrbiterConfigs
 	} from '$lib/services/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -50,6 +51,16 @@
 		}
 
 		if (isNullish($versionStore.orbiter) || isNullish($versionStore.orbiter?.current)) {
+			return;
+		}
+
+		const { result } = await loadOrbiterConfigs({
+			orbiterId: $orbiterStore.orbiter_id,
+			orbiterVersion: $versionStore.orbiter.current,
+			reload: false
+		});
+
+		if (result === 'error') {
 			return;
 		}
 

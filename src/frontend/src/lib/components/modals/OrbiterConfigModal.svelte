@@ -18,6 +18,7 @@
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 	import { emit } from '$lib/utils/events.utils';
+	import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -127,7 +128,10 @@
 				orbiterVersion: $versionStore.orbiter.current
 			});
 
-			emit({ message: 'junoReloadOrbiterConfig', detail: results });
+			orbitersConfigsStore.setConfigs({
+				orbiterId: orbiterId.toText(),
+				configs: results
+			});
 
 			steps = 'ready';
 		} catch (err: unknown) {

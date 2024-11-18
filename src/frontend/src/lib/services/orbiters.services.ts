@@ -19,12 +19,14 @@ import {
 	listOrbiterSatelliteConfigs007,
 	setOrbiterSatelliteConfigs007 as setOrbiterSatelliteConfigsDeprecatedApi
 } from '$lib/api/orbiter.deprecated.api';
+import { orbiterConfigs } from '$lib/derived/orbiter.derived';
 import {
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
 } from '$lib/services/orbiters.deprecated.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
+import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -120,6 +122,48 @@ export const loadOrbiters = async ({
 	}
 };
 
+export const loadOrbiterConfigs = async ({
+	orbiterId,
+	orbiterVersion,
+	reload = false
+}: {
+	orbiterId: Principal;
+	orbiterVersion: string;
+	reload?: boolean;
+}): Promise<{ result: 'skip' | 'success' | 'error' }> => {
+	// We load only once
+	const existingConfigs = get(orbiterConfigs);
+	if (nonNullish(existingConfigs) && !reload) {
+		return { result: 'skip' };
+	}
+
+	try {
+		const identity = get(authStore).identity;
+
+		const configs = await listOrbiterSatelliteConfigs({
+			identity,
+			orbiterVersion,
+			orbiterId
+		});
+
+		orbitersConfigsStore.setConfigs({
+			configs,
+			orbiterId: orbiterId.toText()
+		});
+
+		return { result: 'success' };
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: labels.errors.orbiter_configuration_listing,
+			detail: err
+		});
+
+		return { result: 'error' };
+	}
+};
+
 export const getAnalyticsPageViews = async ({
 	orbiterVersion,
 	params
@@ -196,7 +240,7 @@ const enabledFeatures = {
 	page_views: true
 };
 
-export const listOrbiterSatelliteConfigs = async ({
+const listOrbiterSatelliteConfigs = async ({
 	orbiterVersion,
 	...rest
 }: {

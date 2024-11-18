@@ -5,6 +5,7 @@
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
+		orbiterSatellitesConfigs,
 		orbiterFeatures,
 		orbiterSatellitesConfig
 	} from '$lib/derived/orbiter-satellites.derived';
@@ -37,12 +38,7 @@
 		$versionStore, (async () => await load())();
 	});
 
-	let enabledSatellites = $derived(
-		Object.entries($orbiterSatellitesConfig)
-			.filter(([_, { enabled }]) => enabled)
-			.map(([_, { name }]) => name)
-			.join(', ')
-	);
+	let enabledSatellites = $derived($orbiterSatellitesConfigs.map(({ name }) => name).join(', '));
 
 	const openModal = () => {
 		emit({

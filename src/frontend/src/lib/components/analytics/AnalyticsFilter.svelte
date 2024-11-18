@@ -2,8 +2,8 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { addMonths, format } from 'date-fns';
 	import { createEventDispatcher } from 'svelte';
+	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
 	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
-	import SatellitesPicker from '$lib/components/satellites/SatellitesPicker.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { PageViewsPeriod } from '$lib/types/ortbiter';
@@ -26,7 +26,7 @@
 			{#snippet label()}
 				{$i18n.analytics.satellites}
 			{/snippet}
-			<SatellitesPicker />
+			<AnalyticsSatellitesPicker />
 		</Value>
 	{/snippet}
 

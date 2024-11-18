@@ -10,7 +10,7 @@ import {
 	buildDeleteAuthenticationConfig,
 	buildSetAuthenticationConfig
 } from '$lib/utils/auth.config.utils';
-import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 interface UpdateAuthConfigParams {
@@ -126,23 +126,18 @@ const updateRule = async ({
 		return { result: 'skip' };
 	}
 
-	const labels = get(i18n);
-
-	if (isNullish(maxTokens)) {
-		toasts.error({ text: labels.errors.auth_rate_config_max_tokens });
-		return { result: 'error' };
-	}
-
 	try {
 		await setRule({
 			rule: {
 				...rule,
-				rate_config: [
-					{
-						time_per_token_ns: DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS,
-						max_tokens: BigInt(maxTokens)
-					}
-				]
+				rate_config: toNullable(
+					nonNullish(maxTokens) && maxTokens > 0
+						? {
+								time_per_token_ns: DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS,
+								max_tokens: BigInt(maxTokens)
+							}
+						: undefined
+				)
 			},
 			type: { Db: null },
 			identity,
@@ -150,6 +145,8 @@ const updateRule = async ({
 			satelliteId
 		});
 	} catch (err: unknown) {
+		const labels = get(i18n);
+
 		toasts.error({
 			text: labels.errors.auth_rate_config_update,
 			detail: err

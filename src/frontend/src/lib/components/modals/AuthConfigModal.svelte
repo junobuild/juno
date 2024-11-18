@@ -158,7 +158,7 @@
 								inputType="number"
 								placeholder={$i18n.collections.rate_limit_placeholder}
 								name="maxTokens"
-								required={true}
+								required={false}
 								bind:value={maxTokens}
 								on:blur={() =>
 									(maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}

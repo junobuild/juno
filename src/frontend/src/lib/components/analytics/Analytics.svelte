@@ -16,10 +16,12 @@
 	import AnalyticsPerformanceMetrics from '$lib/components/analytics/AnalyticsPerformanceMetrics.svelte';
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import {
 		getAnalyticsPageViews,
 		getAnalyticsPerformanceMetrics,
-		getAnalyticsTrackEvents
+		getAnalyticsTrackEvents,
+		loadOrbiterConfigs
 	} from '$lib/services/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -53,6 +55,16 @@
 			return;
 		}
 
+		const { result } = await loadOrbiterConfigs({
+			orbiterId: $orbiterStore.orbiter_id,
+			orbiterVersion: $versionStore.orbiter.current,
+			reload: false
+		});
+
+		if (result === 'error') {
+			return;
+		}
+
 		try {
 			const params: PageViewsParams = {
 				satelliteId: $satelliteStore?.satellite_id,
@@ -61,15 +73,29 @@
 				...period
 			};
 
-			const [views, events, metrics] = await Promise.all([
+			// We need the page views to display some statistics currently
+			const promises = [
 				getAnalyticsPageViews({ params, orbiterVersion: $versionStore.orbiter.current }),
-				getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current }),
-				getAnalyticsPerformanceMetrics({ params, orbiterVersion: $versionStore.orbiter.current })
-			]);
+				...[
+					$orbiterFeatures?.track_events === true
+						? getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current })
+						: Promise.resolve()
+				],
+				...[
+					$orbiterFeatures?.performance_metrics === true
+						? getAnalyticsPerformanceMetrics({
+								params,
+								orbiterVersion: $versionStore.orbiter.current
+							})
+						: Promise.resolve()
+				]
+			];
 
-			pageViews = views;
-			trackEvents = events;
-			performanceMetrics = metrics;
+			const [views, events, metrics] = await Promise.all(promises);
+
+			pageViews = views as AnalyticsPageViewsType | undefined;
+			trackEvents = events as AnalyticsTrackEvents | undefined;
+			performanceMetrics = metrics as AnalyticsWebVitalsPerformanceMetrics | undefined;
 
 			loading = false;
 		} catch (err: unknown) {

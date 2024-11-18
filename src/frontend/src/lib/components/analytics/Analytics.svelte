@@ -16,6 +16,7 @@
 	import AnalyticsPerformanceMetrics from '$lib/components/analytics/AnalyticsPerformanceMetrics.svelte';
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
 	import {
 		getAnalyticsPageViews,
 		getAnalyticsPerformanceMetrics,
@@ -33,10 +34,6 @@
 		PageViewsParams,
 		PageViewsPeriod
 	} from '$lib/types/ortbiter';
-	import {
-		orbiterFeatures,
-		orbiterSatellitesConfig
-	} from '$lib/derived/orbiter-satellites.derived';
 
 	let loading = $state(true);
 

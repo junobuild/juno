@@ -12,13 +12,12 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type { JunoModalDetail, JunoModalEditOrbiterConfigDetail } from '$lib/types/modal';
 	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { emit } from '$lib/utils/events.utils';
-	import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
 
 	interface Props {
 		detail: JunoModalDetail;

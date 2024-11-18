@@ -1,21 +1,18 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
-	import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { loadOrbiterConfigs } from '$lib/services/orbiters.services';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { satellitesStore } from '$lib/stores/satellite.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { versionStore } from '$lib/stores/version.store';
-	import { emit } from '$lib/utils/events.utils';
-	import { first } from '$lib/utils/utils';
 	import {
 		orbiterFeatures,
 		orbiterSatellitesConfig
 	} from '$lib/derived/orbiter-satellites.derived';
+	import { loadOrbiterConfigs } from '$lib/services/orbiters.services';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { satellitesStore } from '$lib/stores/satellite.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		orbiterId: Principal;

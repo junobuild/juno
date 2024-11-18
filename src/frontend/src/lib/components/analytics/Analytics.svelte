@@ -33,6 +33,10 @@
 		PageViewsParams,
 		PageViewsPeriod
 	} from '$lib/types/ortbiter';
+	import {
+		orbiterFeatures,
+		orbiterSatellitesConfig
+	} from '$lib/derived/orbiter-satellites.derived';
 
 	let loading = $state(true);
 
@@ -72,15 +76,29 @@
 				...period
 			};
 
-			const [views, events, metrics] = await Promise.all([
+			// We need the page views to display some statistics currently
+			const promises = [
 				getAnalyticsPageViews({ params, orbiterVersion: $versionStore.orbiter.current }),
-				getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current }),
-				getAnalyticsPerformanceMetrics({ params, orbiterVersion: $versionStore.orbiter.current })
-			]);
+				...[
+					$orbiterFeatures?.track_events === true
+						? getAnalyticsTrackEvents({ params, orbiterVersion: $versionStore.orbiter.current })
+						: Promise.resolve()
+				],
+				...[
+					$orbiterFeatures?.performance_metrics === true
+						? getAnalyticsPerformanceMetrics({
+								params,
+								orbiterVersion: $versionStore.orbiter.current
+							})
+						: Promise.resolve()
+				]
+			];
 
-			pageViews = views;
-			trackEvents = events;
-			performanceMetrics = metrics;
+			const [views, events, metrics] = await Promise.all(promises);
+
+			pageViews = views as AnalyticsPageViewsType | undefined;
+			trackEvents = events as AnalyticsTrackEvents | undefined;
+			performanceMetrics = metrics as AnalyticsWebVitalsPerformanceMetrics | undefined;
 
 			loading = false;
 		} catch (err: unknown) {

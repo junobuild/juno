@@ -12,7 +12,10 @@
 	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { first } from '$lib/utils/utils';
-	import { orbiterSatellitesConfig } from '$lib/derived/orbiter-satellites.derived';
+	import {
+		orbiterFeatures,
+		orbiterSatellitesConfig
+	} from '$lib/derived/orbiter-satellites.derived';
 
 	interface Props {
 		orbiterId: Principal;
@@ -44,14 +47,6 @@
 			.join(', ')
 	);
 
-	let features: OrbiterSatelliteFeatures | undefined = $derived(
-		fromNullable(
-			first(
-				Object.entries($orbiterSatellitesConfig).filter(([_, { enabled }]) => enabled) ?? []
-			)?.[1]?.config?.features ?? []
-		)
-	);
-
 	const openModal = () => {
 		emit({
 			message: 'junoModal',
@@ -59,7 +54,7 @@
 				type: 'edit_orbiter_config',
 				detail: {
 					config: $orbiterSatellitesConfig,
-					features,
+					features: $orbiterFeatures,
 					orbiterId
 				}
 			}
@@ -89,7 +84,9 @@
 					{/snippet}
 
 					<p class="satellites">
-						{features?.page_views === true ? $i18n.analytics.enabled : $i18n.analytics.disabled}
+						{$orbiterFeatures?.page_views === true
+							? $i18n.analytics.enabled
+							: $i18n.analytics.disabled}
 					</p>
 				</Value>
 			</div>
@@ -101,7 +98,9 @@
 					{/snippet}
 
 					<p class="satellites">
-						{features?.track_events === true ? $i18n.analytics.enabled : $i18n.analytics.disabled}
+						{$orbiterFeatures?.track_events === true
+							? $i18n.analytics.enabled
+							: $i18n.analytics.disabled}
 					</p>
 				</Value>
 			</div>
@@ -113,7 +112,7 @@
 					{/snippet}
 
 					<p class="satellites">
-						{features?.performance_metrics === true
+						{$orbiterFeatures?.performance_metrics === true
 							? $i18n.analytics.enabled
 							: $i18n.analytics.disabled}
 					</p>

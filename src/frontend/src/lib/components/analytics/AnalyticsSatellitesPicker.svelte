@@ -36,7 +36,7 @@
 	);
 </script>
 
-<select id="satellite" name="satellite" bind:value={satelliteIdText} onchange={navigate}>
+<select id="satellite" name="satellite" class="big" bind:value={satelliteIdText} onchange={navigate}>
 	<option value={undefined}>{$i18n.analytics.all_satellites}</option>
 
 	{#each satellites as { satelliteId, satName }}

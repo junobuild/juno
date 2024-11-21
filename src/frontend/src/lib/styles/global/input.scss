@@ -49,8 +49,14 @@ input[type='radio'] {
 	margin: var(--padding-1_5x) 0;
 }
 
-input[type='date'] {
-	height: 40px;
+input:not([type='checkbox']):not([type='radio']),
+select {
+	height: 34px;
+
+	&[type='date'],
+	&.big {
+		height: 40px;
+	}
 }
 
 input[disabled] {

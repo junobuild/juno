@@ -72,9 +72,13 @@ const updateConfig = async ({
 	result: 'skip' | 'success' | 'error';
 	err?: unknown;
 }> => {
+	// TODO: Allowing the same host to be set again is currently useful
+	// because it triggers the regeneration of the /.well-known/ii-alternative-origins file.
+	// This is helpful when users add more domains, as they can be included in the updated file.
 	if (
+		isNullish(derivationOrigin?.host) &&
 		derivationOrigin?.host ===
-		fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
+			fromNullable(fromNullable(config?.internet_identity ?? [])?.derivation_origin ?? [])
 	) {
 		return { result: 'skip' };
 	}

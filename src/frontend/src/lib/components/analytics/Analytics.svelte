@@ -113,17 +113,21 @@
 		$orbiterStore, $satelliteStore, $versionStore, period, debouncePageViews();
 	});
 
-	const selectPeriod = ({ detail }: CustomEvent<PageViewsPeriod>) => (period = detail);
+	const selectPeriod = (detail: PageViewsPeriod) => (period = detail);
 </script>
 
 {#if loading}
-	<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
+	<div class="loading">
+		<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
+	</div>
 {:else}
+	{#if nonNullish($orbiterStore)}
+		<AnalyticsFilter {selectPeriod} />
+	{/if}
+
 	{#if isNullish($orbiterStore) || isNullish(pageViews)}
 		<NoAnalytics />
 	{:else}
-		<AnalyticsFilter on:junoPeriod={selectPeriod} />
-
 		<AnalyticsChart data={pageViews} />
 
 		<AnalyticsMetrics {pageViews} />
@@ -149,3 +153,9 @@
 		<AnalyticsNew />
 	{/if}
 {/if}
+
+<style lang="scss">
+	.loading {
+		margin: calc(var(--padding-3x) + var(--padding-0_5x)) 0 0;
+	}
+</style>

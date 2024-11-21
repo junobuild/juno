@@ -1,23 +1,26 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { addMonths, format } from 'date-fns';
-	import { createEventDispatcher } from 'svelte';
 	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
 	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 
+	interface Props {
+		selectPeriod: (period: PageViewsPeriod) => void;
+	}
+
+	let { selectPeriod }: Props = $props();
+
 	let from = $state(format(addMonths(new Date(), -1), 'yyyy-MM-dd'));
 	let to = $state('');
 
-	const dispatch = createEventDispatcher();
-
 	const onChange = () =>
-		dispatch('junoPeriod', {
+		selectPeriod({
 			from: nonNullish(from) && from !== '' ? new Date(from) : undefined,
 			to: nonNullish(to) && to !== '' ? new Date(to) : undefined
-		} as PageViewsPeriod);
+		});
 </script>
 
 <AnalyticsToolbar>

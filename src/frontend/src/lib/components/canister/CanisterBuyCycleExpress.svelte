@@ -1,13 +1,12 @@
 <script lang="ts">
-	import IconShoppingCart from '$lib/components/icons/IconShoppingCart.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { Principal } from '@dfinity/principal';
-	import { popupCenter } from '$lib/utils/window.utils';
-	import { AUTH_POPUP_HEIGHT, AUTH_POPUP_WIDTH } from '$lib/constants/constants';
-	import { onDestroy } from 'svelte';
-	import { emit } from '$lib/utils/events.utils';
-	import { busy } from '$lib/stores/busy.store';
 	import { nonNullish } from '@dfinity/utils';
+	import { onDestroy } from 'svelte';
+	import IconShoppingCart from '$lib/components/icons/IconShoppingCart.svelte';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { emit } from '$lib/utils/events.utils';
+	import { popupCenter } from '$lib/utils/window.utils';
 
 	interface Props {
 		canisterId: Principal;
@@ -19,6 +18,7 @@
 
 	const clear = () => clearInterval(interval);
 
+	// eslint-disable-next-line require-await
 	const buyCycles = async () => {
 		busy.show();
 

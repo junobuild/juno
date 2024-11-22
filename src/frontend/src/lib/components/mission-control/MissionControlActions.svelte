@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import Actions from '$lib/components/core/Actions.svelte';
@@ -7,7 +8,6 @@
 	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
-	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 
 	interface Props {
 		missionControlId: Principal;

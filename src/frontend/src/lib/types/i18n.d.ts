@@ -125,6 +125,7 @@ interface I18nCanisters {
 	detach_success: string;
 	delete_success: string;
 	transfer_cycles: string;
+	buy_cycles: string;
 	transfer_cycles_description: string;
 	select_destination: string;
 	destination: string;

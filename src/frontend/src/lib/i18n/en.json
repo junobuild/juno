@@ -121,6 +121,7 @@
 		"detach_success": "{0} detached.",
 		"delete_success": "{0} deleted.",
 		"transfer_cycles": "Transfer cycles",
+		"buy_cycles": "Buy cycles",
 		"transfer_cycles_description": "You can manage your cycles by moving them between your satellite, mission control, and analytics, ensuring your resources are where you need them most",
 		"select_destination": "Select the destination",
 		"destination": "Destination for the transfer",

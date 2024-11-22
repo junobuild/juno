@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import Actions from '$lib/components/core/Actions.svelte';
@@ -52,6 +53,8 @@
 	<TopUp type="topup_mission_control" on:junoTopUp={close} />
 
 	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
+
+	<CanisterBuyCycleExpress canisterId={missionControlId} />
 
 	<hr />
 

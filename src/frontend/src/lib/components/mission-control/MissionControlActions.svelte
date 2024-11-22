@@ -7,6 +7,7 @@
 	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
+	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -52,6 +53,8 @@
 	<TopUp type="topup_mission_control" on:junoTopUp={close} />
 
 	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
+
+	<CanisterBuyCycleExpress canisterId={missionControlId} />
 
 	<hr />
 

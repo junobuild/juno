@@ -23,7 +23,7 @@
 		busy.show();
 
 		const popup = window.open(
-			`https://cycle.express/to=${canisterId.toText()}`,
+			`https://cycle.express/?to=${canisterId.toText()}`,
 			'cycle.express',
 			popupCenter({ width: 576, height: 650 })
 		);

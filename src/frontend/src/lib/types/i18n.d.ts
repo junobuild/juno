@@ -274,6 +274,7 @@ interface I18nAnalytics {
 	dashboard: string;
 	loading: string;
 	empty: string;
+	error_msg: string;
 	get_started: string;
 	start: string;
 	description: string;

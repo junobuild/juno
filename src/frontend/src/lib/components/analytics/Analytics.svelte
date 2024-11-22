@@ -35,7 +35,7 @@
 		PageViewsPeriod
 	} from '$lib/types/ortbiter';
 
-	let loading = $state(true);
+	let loading: 'in_progress' | 'success' | 'error' = $state('in_progress');
 
 	let pageViews: AnalyticsPageViewsType | undefined = $state(undefined);
 	let trackEvents: AnalyticsTrackEvents | undefined = $state(undefined);
@@ -47,7 +47,7 @@
 
 	const loadAnalytics = async () => {
 		if (isNullish($orbiterStore)) {
-			loading = false;
+			loading = 'success';
 			return;
 		}
 
@@ -62,6 +62,7 @@
 		});
 
 		if (result === 'error') {
+			loading = 'error';
 			return;
 		}
 
@@ -97,12 +98,14 @@
 			trackEvents = events as AnalyticsTrackEvents | undefined;
 			performanceMetrics = metrics as AnalyticsWebVitalsPerformanceMetrics | undefined;
 
-			loading = false;
+			loading = 'success';
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.analytics_load_error,
 				detail: err
 			});
+
+			loading = 'error';
 		}
 	};
 
@@ -116,7 +119,7 @@
 	const selectPeriod = (detail: PageViewsPeriod) => (period = detail);
 </script>
 
-{#if loading}
+{#if loading === 'in_progress'}
 	<div class="loading">
 		<SpinnerParagraph>{$i18n.analytics.loading}</SpinnerParagraph>
 	</div>
@@ -125,9 +128,11 @@
 		<AnalyticsFilter {selectPeriod} />
 	{/if}
 
-	{#if isNullish($orbiterStore) || isNullish(pageViews)}
+	{#if isNullish($orbiterStore) && loading === 'success'}
 		<NoAnalytics />
-	{:else}
+	{:else if nonNullish($orbiterStore) && loading === 'error'}
+		<p>{$i18n.analytics.error_msg}</p>
+	{:else if nonNullish($orbiterStore) && nonNullish(pageViews)}
 		<AnalyticsChart data={pageViews} />
 
 		<AnalyticsMetrics {pageViews} />

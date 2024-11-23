@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AnonymousIdentity } from '@dfinity/agent';
 	import { nonNullish } from '@dfinity/utils';
-	import { upgradeMissionControl } from '@junobuild/admin';
+	import { type UpgradeCodeParams, upgradeMissionControl } from '@junobuild/admin';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';
@@ -13,26 +13,27 @@
 
 	interface Props {
 		detail: JunoModalDetail;
+		onclose: () => void;
 	}
 
-	let { detail }: Props = $props();
+	let { detail, onclose }: Props = $props();
 
 	let { newerReleases, currentVersion } = $derived(detail as JunoModalUpgradeDetail);
 
-	const upgradeMissionControlWasm = async ({ wasm_module }: { wasm_module: Uint8Array }) =>
+	const upgradeMissionControlWasm = async ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) =>
 		await upgradeMissionControl({
 			missionControl: {
 				missionControlId: $missionControlStore!.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()
 			},
-			wasm_module
+			wasmModule
 		});
 </script>
 
 {#if nonNullish($missionControlStore)}
 	<CanisterUpgradeModal
-		on:junoClose
+		{onclose}
 		{newerReleases}
 		{currentVersion}
 		upgrade={upgradeMissionControlWasm}

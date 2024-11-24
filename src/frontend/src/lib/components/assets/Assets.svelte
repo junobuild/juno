@@ -45,10 +45,7 @@
 	const { store: assetsStore, resetData }: DataContext<AssetNoContent> =
 		getContext<DataContext<AssetNoContent>>(DATA_CONTEXT_KEY);
 
-	let emptyCollection = $state(false);
-	run(() => {
-		emptyCollection = $store.rules?.length === 0;
-	});
+	let emptyCollection = $derived($store.rules?.length === 0);
 
 	const load = async () => {
 		resetPage();
@@ -133,7 +130,7 @@
 		class:data-nullish={isNullish($paginationStore.items)}
 	>
 		{#if nonNullish($paginationStore.items)}
-			<div out:fade>
+			<div in:fade>
 				{#if $paginationStore.items.length > 0}
 					{#each $paginationStore.items as item}
 						{@const asset = item[1]}

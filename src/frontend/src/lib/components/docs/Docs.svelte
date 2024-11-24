@@ -43,10 +43,7 @@
 	const { store: docsStore, resetData }: DataContext<DocType> =
 		getContext<DataContext<DocType>>(DATA_CONTEXT_KEY);
 
-	let emptyCollection = $state(false);
-	run(() => {
-		emptyCollection = $store.rules?.length === 0;
-	});
+	let emptyCollection = $derived($store.rules?.length === 0);
 
 	const load = async () => {
 		resetPage();
@@ -131,7 +128,7 @@
 		class:data-nullish={isNullish($paginationStore.items)}
 	>
 		{#if nonNullish($paginationStore.items)}
-			<div out:fade>
+			<div in:fade>
 				{#if empty}
 					<CollectionEmpty {collection} rule={$store.rule?.[1]}>
 						{#snippet filter()}

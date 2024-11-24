@@ -27,6 +27,7 @@
 
 {#if nonNullish($orbiterStore)}
 	<CanisterTopUpModal
+		segment="orbiter"
 		canisterId={$orbiterStore.orbiter_id}
 		{balance}
 		{accountIdentifier}

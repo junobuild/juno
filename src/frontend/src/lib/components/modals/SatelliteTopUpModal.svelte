@@ -23,7 +23,13 @@
 	);
 </script>
 
-<CanisterTopUpModal canisterId={satellite.satellite_id} {balance} {accountIdentifier} on:junoClose>
+<CanisterTopUpModal
+	segment="satellite"
+	canisterId={satellite.satellite_id}
+	{balance}
+	{accountIdentifier}
+	on:junoClose
+>
 	{#snippet intro()}
 		<h2>
 			<Html

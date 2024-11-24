@@ -6,7 +6,7 @@
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
-	import Actions from '$lib/components/core/Actions.svelte';
+	import SegmentActions from '$lib/components/core/SegmentActions.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 
@@ -50,21 +50,23 @@
 		onSyncCanister(canister)}
 />
 
-<Actions bind:visible>
-	<TopUp type="topup_orbiter" on:junoTopUp={close} />
+<SegmentActions bind:visible segment="orbiter">
+	{#snippet cycleActions()}
+		<TopUp type="topup_orbiter" on:junoTopUp={close} />
 
-	<CanisterTransferCycles
-		{canister}
-		onclick={async () => await onCanisterAction('transfer_cycles_orbiter')}
-	/>
+		<CanisterTransferCycles
+			{canister}
+			onclick={async () => await onCanisterAction('transfer_cycles_orbiter')}
+		/>
 
-	<CanisterBuyCycleExpress canisterId={orbiter.orbiter_id} />
+		<CanisterBuyCycleExpress canisterId={orbiter.orbiter_id} />
+	{/snippet}
 
-	<hr />
+	{#snippet canisterActions()}
+		<CanisterStopStart {canister} segment="orbiter" onstop={close} onstart={close} />
 
-	<CanisterStopStart {canister} segment="orbiter" onstop={close} onstart={close} />
+		<SegmentDetach segment="orbiter" segmentId={orbiter.orbiter_id} ondetach={close} />
 
-	<SegmentDetach segment="orbiter" segmentId={orbiter.orbiter_id} ondetach={close} />
-
-	<CanisterDelete {canister} onclick={async () => await onCanisterAction('delete_orbiter')} />
-</Actions>
+		<CanisterDelete {canister} onclick={async () => await onCanisterAction('delete_orbiter')} />
+	{/snippet}
+</SegmentActions>

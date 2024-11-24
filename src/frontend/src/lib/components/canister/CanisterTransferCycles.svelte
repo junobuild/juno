@@ -14,5 +14,5 @@
 
 <CanisterAction {canister} {onclick}>
 	<IconMoveUp />
-	{$i18n.canisters.transfer_cycles}
+	{$i18n.canisters.transfer_cycles_action}
 </CanisterAction>

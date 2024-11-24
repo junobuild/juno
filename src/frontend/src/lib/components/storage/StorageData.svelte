@@ -57,7 +57,7 @@
 				collection,
 				satelliteId: $store.satelliteId,
 				params: {
-					startAfter: $paginationStore.startAfter,
+					startAfter: $startAfter,
 					// prettier-ignore parenthesis required for Webstorm Svelte plugin
 					...$listParamsStore
 				} as ListParams,
@@ -77,7 +77,7 @@
 		list
 	});
 
-	const { store: paginationStore, setItems }: PaginationContext<AssetNoContent> =
+	const { setItems, startAfter }: PaginationContext<AssetNoContent> =
 		getContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY);
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);

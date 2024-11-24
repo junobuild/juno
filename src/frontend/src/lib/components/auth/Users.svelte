@@ -28,7 +28,7 @@
 		try {
 			const { users, matches_length, items_length } = await listUsers({
 				satelliteId,
-				startAfter: $paginationStore.startAfter
+				startAfter: $startAfter
 			});
 
 			setItems({ items: users, matches_length, items_length });
@@ -44,8 +44,11 @@
 		...initPaginationContext(),
 		list
 	});
-	const { store: paginationStore, setItems }: PaginationContext<UserType> =
-		getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
+	const {
+		store: paginationStore,
+		setItems,
+		startAfter
+	}: PaginationContext<UserType> = getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
 
 	onMount(async () => await list());
 

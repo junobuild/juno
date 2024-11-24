@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
@@ -56,6 +57,8 @@
 		{canister}
 		onclick={async () => await onCanisterAction('transfer_cycles_orbiter')}
 	/>
+
+	<CanisterBuyCycleExpress canisterId={orbiter.orbiter_id} />
 
 	<hr />
 

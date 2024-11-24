@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
@@ -86,6 +87,8 @@
 	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
 
 	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
+
+	<CanisterBuyCycleExpress canisterId={satellite.satellite_id} />
 
 	<hr />
 

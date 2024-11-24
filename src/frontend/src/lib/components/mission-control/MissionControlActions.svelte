@@ -3,7 +3,7 @@
 	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
-	import Actions from '$lib/components/core/Actions.svelte';
+	import SegmentActions from '$lib/components/core/SegmentActions.svelte';
 	import MissionControlAttachOrbiter from '$lib/components/mission-control/MissionControlAttachOrbiter.svelte';
 	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
@@ -49,16 +49,18 @@
 		onSyncCanister(canister)}
 />
 
-<Actions bind:visible>
-	<TopUp type="topup_mission_control" on:junoTopUp={close} />
+<SegmentActions bind:visible segment="mission_control">
+	{#snippet cycleActions()}
+		<TopUp type="topup_mission_control" on:junoTopUp={close} />
 
-	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
+		<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
-	<CanisterBuyCycleExpress canisterId={missionControlId} />
+		<CanisterBuyCycleExpress canisterId={missionControlId} />
+	{/snippet}
 
-	<hr />
+	{#snippet canisterActions()}
+		<MissionControlAttachSatellite on:junoAttach={close} />
 
-	<MissionControlAttachSatellite on:junoAttach={close} />
-
-	<MissionControlAttachOrbiter on:junoAttach={close} />
-</Actions>
+		<MissionControlAttachOrbiter on:junoAttach={close} />
+	{/snippet}
+</SegmentActions>

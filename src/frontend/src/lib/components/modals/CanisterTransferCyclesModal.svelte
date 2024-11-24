@@ -114,9 +114,6 @@
 
 			<p>
 				{$i18n.canisters.transfer_cycles_description}
-			</p>
-
-			<p>
 				<Html
 					text={i18nFormat($i18n.canisters.your_balance, [
 						{

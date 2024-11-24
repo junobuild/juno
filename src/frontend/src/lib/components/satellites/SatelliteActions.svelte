@@ -6,7 +6,7 @@
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
-	import Actions from '$lib/components/core/Actions.svelte';
+	import SegmentActions from '$lib/components/core/SegmentActions.svelte';
 	import { listCustomDomains } from '$lib/services/hosting.services';
 	import { busy } from '$lib/stores/busy.store';
 	import type { CanisterIcStatus } from '$lib/types/canister';
@@ -83,18 +83,20 @@
 		onSyncCanister(canister)}
 />
 
-<Actions bind:visible>
-	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
+<SegmentActions bind:visible segment="satellite">
+	{#snippet cycleActions()}
+		<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
 
-	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
+		<CanisterTransferCycles {canister} onclick={onTransferCycles} />
 
-	<CanisterBuyCycleExpress canisterId={satellite.satellite_id} />
+		<CanisterBuyCycleExpress canisterId={satellite.satellite_id} />
+	{/snippet}
 
-	<hr />
+	{#snippet canisterActions()}
+		<CanisterStopStart {canister} segment="satellite" onstop={close} onstart={close} />
 
-	<CanisterStopStart {canister} segment="satellite" onstop={close} onstart={close} />
+		<SegmentDetach segment="satellite" segmentId={satellite.satellite_id} ondetach={close} />
 
-	<SegmentDetach segment="satellite" segmentId={satellite.satellite_id} ondetach={close} />
-
-	<CanisterDelete {canister} onclick={onDeleteSatellite} />
-</Actions>
+		<CanisterDelete {canister} onclick={onDeleteSatellite} />
+	{/snippet}
+</SegmentActions>

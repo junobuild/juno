@@ -23,6 +23,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import type { Segment } from '$lib/types/canister';
 
 	interface Props {
 		canisterId: Principal;
@@ -30,9 +31,10 @@
 		accountIdentifier: AccountIdentifier | undefined;
 		outro?: Snippet;
 		intro?: Snippet;
+		segment: Segment;
 	}
 
-	let { canisterId, balance, accountIdentifier, outro, intro }: Props = $props();
+	let { canisterId, balance, accountIdentifier, outro, intro, segment }: Props = $props();
 
 	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
@@ -122,12 +124,12 @@
 		{@render intro?.()}
 
 		<p>
-			<ExternalLink underline href="https://juno.build/docs/terminology#cycles">Cycles</ExternalLink
-			>
-			{$i18n.canisters.cycles}
-		</p>
-
-		<p>
+			{i18nFormat($i18n.canisters.cycles_description, [
+				{
+					placeholder: '{0}',
+					value: segment
+				}
+			])}
 			<Html
 				text={i18nFormat($i18n.canisters.top_up_info, [
 					{

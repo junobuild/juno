@@ -63,7 +63,7 @@ interface I18nCore {
 interface I18nCanisters {
 	insight: string;
 	top_up: string;
-	cycles: string;
+	cycles_description: string;
 	top_up_in_progress: string;
 	delete_in_progress: string;
 	upgrade_in_progress: string;
@@ -124,7 +124,9 @@ interface I18nCanisters {
 	attach_success: string;
 	detach_success: string;
 	delete_success: string;
+	cycles: string;
 	transfer_cycles: string;
+	transfer_cycles_action: string;
 	buy_cycles: string;
 	transfer_cycles_description: string;
 	select_destination: string;

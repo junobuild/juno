@@ -26,7 +26,13 @@
 </script>
 
 {#if nonNullish($missionControlStore)}
-	<CanisterTopUpModal canisterId={$missionControlStore} {balance} {accountIdentifier} on:junoClose>
+	<CanisterTopUpModal
+		segment="mission_control"
+		canisterId={$missionControlStore}
+		{balance}
+		{accountIdentifier}
+		on:junoClose
+	>
 		{#snippet intro()}
 			<h2>
 				<Html

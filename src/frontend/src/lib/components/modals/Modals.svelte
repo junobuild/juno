@@ -61,15 +61,15 @@
 {/if}
 
 {#if modal?.type === 'upgrade_satellite' && nonNullish(modal.detail)}
-	<SatelliteUpgradeModal on:junoClose={close} detail={modal.detail} />
+	<SatelliteUpgradeModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'upgrade_mission_control' && nonNullish(modal.detail)}
-	<MissionControlUpgradeModal on:junoClose={close} detail={modal.detail} />
+	<MissionControlUpgradeModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'upgrade_orbiter' && nonNullish(modal.detail)}
-	<OrbiterUpgradeModal on:junoClose={close} detail={modal.detail} />
+	<OrbiterUpgradeModal onclose={close} detail={modal.detail} />
 {/if}
 
 {#if modal?.type === 'delete_satellite' && nonNullish(modal.detail)}

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { BuildType } from '@junobuild/admin';
-	import { createEventDispatcher, type Snippet } from 'svelte';
+	import type { BuildType, UpgradeCodeParams } from '@junobuild/admin';
+	import type { Snippet } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
@@ -17,8 +17,9 @@
 		newerReleases: string[];
 		build?: BuildType | undefined;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
-		upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
+		upgrade: ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) => Promise<void>;
 		intro?: Snippet;
+		onclose: () => void;
 	}
 
 	let {
@@ -27,7 +28,8 @@
 		build = undefined,
 		segment,
 		upgrade,
-		intro
+		intro,
+		onclose
 	}: Props = $props();
 
 	let buildExtended = $derived(nonNullish(build) && build === 'extended');
@@ -38,8 +40,7 @@
 		steps = buildExtended ? 'confirm' : 'init';
 	});
 
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
+	const close = () => onclose();
 
 	let wasm: Wasm | undefined = $state();
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
+	import type { UpgradeCodeParams } from '@junobuild/admin';
 	import { createEventDispatcher } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -11,7 +12,7 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		upgrade: ({ wasm_module }: { wasm_module: Uint8Array }) => Promise<void>;
+		upgrade: ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) => Promise<void>;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		wasm: Wasm | undefined;
 	}
@@ -36,9 +37,9 @@
 		dispatch('junoNext', 'in_progress');
 
 		try {
-			const wasm_module = new Uint8Array(await wasm.wasm.arrayBuffer());
+			const wasmModule = new Uint8Array(await wasm.wasm.arrayBuffer());
 
-			await upgrade({ wasm_module });
+			await upgrade({ wasmModule });
 
 			emit({ message: 'junoReloadVersions' });
 

@@ -47,10 +47,10 @@ export const initStatusesWorker = async (): Promise<StatusesWorker> => {
 				msg: 'stopStatusesTimer'
 			});
 		},
-		restartStatusesTimer: (data) => {
+		restartStatusesTimer: ({ segments, missionControlId }) => {
 			statusesWorker.postMessage({
 				msg: 'restartStatusesTimer',
-				data
+				data: { segments, missionControlId: missionControlId.toText() }
 			});
 		}
 	};

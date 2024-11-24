@@ -20,12 +20,13 @@
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
+		segmentName?: string;
 		segment: 'satellite' | 'analytics';
 		currentCycles: bigint;
 		deleteFn: (params: { missionControlId: Principal; cyclesToDeposit: bigint }) => Promise<void>;
 	}
 
-	let { segment, currentCycles, deleteFn }: Props = $props();
+	let { segment, segmentName, currentCycles, deleteFn }: Props = $props();
 
 	let steps: 'init' | 'in_progress' | 'error' = $state('init');
 
@@ -126,7 +127,7 @@
 				text={i18nFormat($i18n.canisters.delete_title, [
 					{
 						placeholder: '{0}',
-						value: segment.replace('_', ' ')
+						value: segmentName ?? segment.replace('_', ' ')
 					}
 				])}
 			/>

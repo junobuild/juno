@@ -10,6 +10,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDeleteSatelliteDetail, JunoModalDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -54,6 +55,12 @@
 
 		<button onclick={close}>{$i18n.core.close}</button>
 	{:else}
-		<CanisterDeleteWizard {deleteFn} {currentCycles} on:junoClose segment="satellite" />
+		<CanisterDeleteWizard
+			{deleteFn}
+			{currentCycles}
+			on:junoClose
+			segment="satellite"
+			segmentName={satelliteName(satellite)}
+		/>
 	{/if}
 </Modal>

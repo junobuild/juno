@@ -7,7 +7,6 @@
 	import { icpXdrConversionRate } from '$lib/api/cmc.api';
 	import { topUp } from '$lib/api/mission-control.api';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -19,11 +18,11 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { Segment } from '$lib/types/canister';
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
-	import type { Segment } from '$lib/types/canister';
 
 	interface Props {
 		canisterId: Principal;

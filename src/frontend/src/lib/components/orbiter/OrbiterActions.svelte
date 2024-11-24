@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
+	import CanisterBuyCycleExpress from '$lib/components/canister/CanisterBuyCycleExpress.svelte';
 	import CanisterDelete from '$lib/components/canister/CanisterDelete.svelte';
 	import CanisterStopStart from '$lib/components/canister/CanisterStopStart.svelte';
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
@@ -8,7 +9,6 @@
 	import Actions from '$lib/components/core/Actions.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
-	import CanisterBuyCycleExpress from "$lib/components/canister/CanisterBuyCycleExpress.svelte";
 
 	interface Props {
 		orbiter: Orbiter;

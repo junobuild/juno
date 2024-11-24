@@ -8,6 +8,7 @@
 	import Actions from '$lib/components/core/Actions.svelte';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
+	import CanisterBuyCycleExpress from "$lib/components/canister/CanisterBuyCycleExpress.svelte";
 
 	interface Props {
 		orbiter: Orbiter;
@@ -56,6 +57,8 @@
 		{canister}
 		onclick={async () => await onCanisterAction('transfer_cycles_orbiter')}
 	/>
+
+	<CanisterBuyCycleExpress canisterId={orbiter.orbiter_id} />
 
 	<hr />
 

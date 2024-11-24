@@ -10,6 +10,7 @@
 	import { busy } from '$lib/stores/busy.store';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
+	import CanisterBuyCycleExpress from "$lib/components/canister/CanisterBuyCycleExpress.svelte";
 
 	interface Props {
 		satellite: Satellite;
@@ -86,6 +87,8 @@
 	<TopUp type="topup_satellite" {detail} on:junoTopUp={close} />
 
 	<CanisterTransferCycles {canister} onclick={onTransferCycles} />
+
+	<CanisterBuyCycleExpress canisterId={satellite.satellite_id} />
 
 	<hr />
 

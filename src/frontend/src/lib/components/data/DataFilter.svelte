@@ -34,7 +34,7 @@
 
 <PopoverApply ariaLabel={$i18n.filter.title} onapply={apply} bind:visible>
 	{#snippet icon()}
-		<IconFilter size="20px" />
+		<IconFilter size="18px" />
 	{/snippet}
 
 	<label for="filter-keys">{$i18n.filter.filter_keys}</label>

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
 	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
@@ -34,7 +34,9 @@
 
 	let tCycles: string = $state('');
 
-	let cycles: bigint = $derived(BigInt(parseFloat(tCycles ?? 0) * ONE_TRILLION));
+	let cycles: bigint = $derived(
+		BigInt(parseFloat(notEmptyString(tCycles) ? tCycles : '0') * ONE_TRILLION)
+	);
 
 	let destinationId: string | undefined = $state();
 

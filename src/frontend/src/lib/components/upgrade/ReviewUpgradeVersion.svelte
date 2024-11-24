@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
+	import type { UpgradeCodeParams } from '@junobuild/admin';
 	import { createEventDispatcher } from 'svelte';
 	import { preventDefault } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -9,7 +10,6 @@
 	import type { Wasm } from '$lib/types/upgrade';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type { UpgradeCodeParams } from '@junobuild/admin';
 
 	interface Props {
 		upgrade: ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) => Promise<void>;

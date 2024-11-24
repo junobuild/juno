@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { AnonymousIdentity } from '@dfinity/agent';
 	import { nonNullish } from '@dfinity/utils';
-	import {type UpgradeCodeParams, upgradeOrbiter} from '@junobuild/admin';
+	import { type UpgradeCodeParams, upgradeOrbiter } from '@junobuild/admin';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { authStore } from '$lib/stores/auth.store';
@@ -33,7 +33,7 @@
 
 {#if nonNullish($orbiterStore)}
 	<CanisterUpgradeModal
-			{onclose}
+		{onclose}
 		{newerReleases}
 		{currentVersion}
 		upgrade={upgradeOrbiterWasm}

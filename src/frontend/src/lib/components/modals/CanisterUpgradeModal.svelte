@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type {BuildType, UpgradeCodeParams} from '@junobuild/admin';
+	import type { BuildType, UpgradeCodeParams } from '@junobuild/admin';
 	import type { Snippet } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -17,7 +17,7 @@
 		newerReleases: string[];
 		build?: BuildType | undefined;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
-		upgrade: ({ wasmModule }: Pick<UpgradeCodeParams, "wasmModule">) => Promise<void>;
+		upgrade: ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) => Promise<void>;
 		intro?: Snippet;
 		onclose: () => void;
 	}

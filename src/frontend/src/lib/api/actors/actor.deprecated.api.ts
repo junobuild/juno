@@ -6,13 +6,17 @@ import type { _SERVICE as SatelliteActor008 } from '$declarations/deprecated/sat
 import { idlFactory as idlFactorSatellite008 } from '$declarations/deprecated/satellite-0-0-8.factory.did';
 import type { _SERVICE as SatelliteActor009 } from '$declarations/deprecated/satellite-0-0-9.did';
 import { idlFactory as idlFactorSatellite009 } from '$declarations/deprecated/satellite-0-0-9.factory.did';
-import { createActor } from '$lib/api/actors/actor.api';
+import { ActorApi } from '$lib/api/actors/actor.api';
 import { authStore } from '$lib/stores/auth.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
-import { isNullish } from '@dfinity/utils';
 // eslint-disable-next-line local-rules/no-svelte-store-in-api
 import { get } from 'svelte/store';
+
+const missionControl004Actor = new ActorApi<MissionControlActor004>();
+const satellite008Actor = new ActorApi<SatelliteActor008>();
+const satellite009Actor = new ActorApi<SatelliteActor009>();
+const orbiter007Actor = new ActorApi<OrbiterActor007>();
 
 /**
  * @deprecated TODO: to be remove - backwards compatibility
@@ -22,11 +26,7 @@ export const getMissionControlActor004 = async (
 ): Promise<MissionControlActor004> => {
 	const identity: OptionIdentity = get(authStore).identity;
 
-	if (!identity) {
-		throw new Error('No internet identity.');
-	}
-
-	return await createActor({
+	return await missionControl004Actor.getActor({
 		canisterId,
 		idlFactory: idlFactorMissionControl004,
 		identity
@@ -39,11 +39,7 @@ export const getMissionControlActor004 = async (
 export const getSatelliteActor008 = (canisterId: Principal): Promise<SatelliteActor008> => {
 	const identity: OptionIdentity = get(authStore).identity;
 
-	if (!identity) {
-		throw new Error('No internet identity.');
-	}
-
-	return createActor({
+	return satellite008Actor.getActor({
 		canisterId,
 		idlFactory: idlFactorSatellite008,
 		identity
@@ -56,11 +52,7 @@ export const getSatelliteActor008 = (canisterId: Principal): Promise<SatelliteAc
 export const getSatelliteActor009 = (canisterId: Principal): Promise<SatelliteActor009> => {
 	const identity: OptionIdentity = get(authStore).identity;
 
-	if (!identity) {
-		throw new Error('No internet identity.');
-	}
-
-	return createActor({
+	return satellite009Actor.getActor({
 		canisterId,
 		idlFactory: idlFactorSatellite009,
 		identity
@@ -76,14 +68,9 @@ export const getOrbiterActor007 = async ({
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<OrbiterActor007> => {
-	if (isNullish(identity)) {
-		throw new Error('No internet identity.');
-	}
-
-	return await createActor({
+}): Promise<OrbiterActor007> =>
+	await orbiter007Actor.getActor({
 		canisterId: orbiterId,
 		idlFactory: idlFactorOrbiter007,
 		identity
 	});
-};

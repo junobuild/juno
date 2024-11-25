@@ -8,35 +8,30 @@ import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { createActor } from '$lib/api/actors/actor.api';
+import { ActorApi } from '$lib/api/actors/actor.api';
 import { CONSOLE_CANISTER_ID, OBSERVATORY_CANISTER_ID } from '$lib/constants/constants';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
-import { isNullish } from '@dfinity/utils';
 
-export const getConsoleActor = async (identity: OptionIdentity): Promise<ConsoleActor> => {
-	if (isNullish(identity)) {
-		throw new Error('No internet identity.');
-	}
+const consoleActor = new ActorApi<ConsoleActor>();
+const observatoryActor = new ActorApi<ObservatoryActor>();
+const satelliteActor = new ActorApi<SatelliteActor>();
+const orbiterActor = new ActorApi<OrbiterActor>();
+const missionControlActor = new ActorApi<MissionControlActor>();
 
-	return await createActor({
+export const getConsoleActor = async (identity: OptionIdentity): Promise<ConsoleActor> =>
+	await consoleActor.getActor({
 		canisterId: CONSOLE_CANISTER_ID,
 		idlFactory: idlFactorConsole,
 		identity
 	});
-};
 
-export const getObservatoryActor = async (identity: OptionIdentity): Promise<ObservatoryActor> => {
-	if (isNullish(identity)) {
-		throw new Error('No internet identity.');
-	}
-
-	return await createActor({
+export const getObservatoryActor = async (identity: OptionIdentity): Promise<ObservatoryActor> =>
+	await observatoryActor.getActor({
 		canisterId: OBSERVATORY_CANISTER_ID,
 		idlFactory: idlFactorObservatory,
 		identity
 	});
-};
 
 export const getSatelliteActor = async ({
 	satelliteId,
@@ -44,17 +39,12 @@ export const getSatelliteActor = async ({
 }: {
 	satelliteId: Principal;
 	identity: OptionIdentity;
-}): Promise<SatelliteActor> => {
-	if (isNullish(identity)) {
-		throw new Error('No internet identity.');
-	}
-
-	return await createActor({
+}): Promise<SatelliteActor> =>
+	await satelliteActor.getActor({
 		canisterId: satelliteId,
 		idlFactory: idlFactorSatellite,
 		identity
 	});
-};
 
 export const getOrbiterActor = async ({
 	orbiterId,
@@ -62,17 +52,12 @@ export const getOrbiterActor = async ({
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
-}): Promise<OrbiterActor> => {
-	if (isNullish(identity)) {
-		throw new Error('No internet identity.');
-	}
-
-	return await createActor({
+}): Promise<OrbiterActor> =>
+	await orbiterActor.getActor({
 		canisterId: orbiterId,
 		idlFactory: idlFactorOrbiter,
 		identity
 	});
-};
 
 export const getMissionControlActor = async ({
 	identity,
@@ -80,14 +65,9 @@ export const getMissionControlActor = async ({
 }: {
 	missionControlId: Principal;
 	identity: OptionIdentity;
-}): Promise<MissionControlActor> => {
-	if (isNullish(identity)) {
-		throw new Error('No internet identity.');
-	}
-
-	return await createActor({
+}): Promise<MissionControlActor> =>
+	await missionControlActor.getActor({
 		canisterId: missionControlId,
 		idlFactory: idlFactorMissionControl,
 		identity
 	});
-};

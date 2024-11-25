@@ -1,6 +1,6 @@
 import type { _SERVICE as ICActor } from '$declarations/ic/ic.did';
 import { idlFactory as idlFactorIC } from '$declarations/ic/ic.factory.did';
-import { createActor } from '$lib/api/actors/actor.api';
+import { ActorApi } from '$lib/api/actors/actor.api';
 import type { GetAgentParams } from '$lib/api/agent/agent.api';
 import type { CallConfig } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
@@ -26,8 +26,10 @@ const transform = (
 
 /* eslint-enable */
 
-export const getICActor = (params: GetAgentParams): Promise<ICActor> =>
-	createActor<ICActor>({
+const icActor = new ActorApi<ICActor>();
+
+export const getICActor = async (params: GetAgentParams): Promise<ICActor> =>
+	await icActor.getActor({
 		canisterId: MANAGEMENT_CANISTER_ID,
 		config: {
 			callTransform: transform,

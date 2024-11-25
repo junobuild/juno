@@ -1,7 +1,7 @@
 import type { _SERVICE as ICActor } from '$declarations/ic/ic.did';
 import { idlFactory as idlFactorIC } from '$declarations/ic/ic.factory.did';
-import { createActor } from '$lib/utils/actor.utils';
-import type { GetAgentParams } from '$lib/utils/agent.utils';
+import { createActor } from '$lib/api/actors/actor.api';
+import type { GetAgentParams } from '$lib/api/agent/agent.api';
 import type { CallConfig } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 

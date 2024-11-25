@@ -6,11 +6,12 @@ import type { _SERVICE as SatelliteActor008 } from '$declarations/deprecated/sat
 import { idlFactory as idlFactorSatellite008 } from '$declarations/deprecated/satellite-0-0-8.factory.did';
 import type { _SERVICE as SatelliteActor009 } from '$declarations/deprecated/satellite-0-0-9.did';
 import { idlFactory as idlFactorSatellite009 } from '$declarations/deprecated/satellite-0-0-9.factory.did';
+import { createActor } from '$lib/api/actors/actor.api';
 import { authStore } from '$lib/stores/auth.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { createActor } from '$lib/utils/actor.utils';
 import type { Principal } from '@dfinity/principal';
 import { isNullish } from '@dfinity/utils';
+// eslint-disable-next-line local-rules/no-svelte-store-in-api
 import { get } from 'svelte/store';
 
 /**

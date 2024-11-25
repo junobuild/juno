@@ -3,9 +3,9 @@ import type {
 	canister_settings,
 	log_visibility
 } from '$declarations/ic/ic.did';
+import { getICActor } from '$lib/api/actors/actor.ic.api';
+import { getAgent } from '$lib/api/agent/agent.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
-import { getICActor } from '$lib/utils/actor.ic.utils';
-import { getAgent } from '$lib/utils/agent.utils';
 import {
 	CanisterStatus as AgentCanisterStatus,
 	AnonymousIdentity,

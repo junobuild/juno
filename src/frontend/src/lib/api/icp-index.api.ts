@@ -1,5 +1,5 @@
+import { getAgent } from '$lib/api/agent/agent.api';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { getAgent } from '$lib/utils/agent.utils';
 import {
 	AccountIdentifier,
 	IndexCanister,

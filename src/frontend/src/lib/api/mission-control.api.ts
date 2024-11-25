@@ -8,10 +8,10 @@ import type {
 	TransferArg,
 	TransferArgs
 } from '$declarations/mission_control/mission_control.did';
+import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
-import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 import { toSetController } from '$lib/utils/controllers.utils';
 import { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';

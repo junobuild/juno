@@ -3,6 +3,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { run, preventDefault } from 'svelte/legacy';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
+	import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
@@ -16,7 +17,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';

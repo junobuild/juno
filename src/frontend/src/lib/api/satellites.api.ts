@@ -9,10 +9,10 @@ import type {
 	RulesType,
 	SetRule
 } from '$declarations/satellite/satellite.did';
+import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
-import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
 import { Principal } from '@dfinity/principal';
 import { isNullish, toNullable } from '@dfinity/utils';

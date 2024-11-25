@@ -2,8 +2,8 @@ import type {
 	OrbiterSatelliteConfig as SatelliteConfig,
 	SetSatelliteConfig
 } from '$declarations/deprecated/orbiter-0-0-7.did';
+import { getOrbiterActor007 } from '$lib/api/actors/actor.deprecated.api';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { getOrbiterActor007 } from '$lib/utils/actor.deprecated.utils';
 import { Principal } from '@dfinity/principal';
 
 export const listOrbiterSatelliteConfigs007 = async ({

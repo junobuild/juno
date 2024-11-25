@@ -1,5 +1,5 @@
 import type { MemorySize } from '$declarations/orbiter/orbiter.did';
-import { getOrbiterActor } from '$lib/utils/actor.juno.utils';
+import { getOrbiterActor } from '$lib/api/actors/actor.juno.api';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 

@@ -7,9 +7,9 @@ import type {
 	Rule,
 	RulesType
 } from '$declarations/satellite/satellite.did';
+import { getSatelliteActor008, getSatelliteActor009 } from '$lib/api/actors/actor.deprecated.api';
 import { PAGINATION } from '$lib/constants/constants';
 import type { ListParams } from '$lib/types/list';
-import { getSatelliteActor008, getSatelliteActor009 } from '$lib/utils/actor.deprecated.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
 import { Principal } from '@dfinity/principal';
 import { isNullish, toNullable } from '@dfinity/utils';

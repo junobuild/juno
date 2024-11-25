@@ -1,6 +1,6 @@
 import type { MissionControl } from '$declarations/console/console.did';
+import { getConsoleActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { getConsoleActor } from '$lib/utils/actor.juno.utils';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish } from '@dfinity/utils';
 

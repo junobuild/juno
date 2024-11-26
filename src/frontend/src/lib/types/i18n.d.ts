@@ -66,6 +66,7 @@ interface I18nCanisters {
 	cycles_description: string;
 	top_up_in_progress: string;
 	delete_in_progress: string;
+	upgrade_preparing: string;
 	upgrade_validating: string;
 	upgrade_stopping: string;
 	upgrade_in_progress: string;

@@ -33,7 +33,9 @@
 				}
 			])}
 		</p>
-	{:else}
+	{:else if progress === UpgradeCodeProgress.UpgradingCode}
 		<p>{$i18n.canisters.upgrade_in_progress}</p>
+	{:else}
+		<p>{$i18n.canisters.upgrade_preparing}</p>
 	{/if}
 </SpinnerModal>

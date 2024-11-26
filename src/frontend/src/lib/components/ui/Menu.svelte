@@ -51,8 +51,8 @@
 
 	@include media.dark-theme {
 		div[role='menu'] {
-			background: var(--color-card);
-			color: var(--color-card-contrast);
+			background: var(--color-menu);
+			color: var(--color-menu-contrast);
 		}
 	}
 

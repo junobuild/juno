@@ -54,7 +54,9 @@
 		"edit_config": "Edit configuration",
 		"advanced_options": "Advanced Options",
 		"updating_configuration": "Updating configuration...",
-		"configuration_applied": "Configuration applied."
+		"configuration_applied": "Configuration applied.",
+		"completed": "Completed",
+		"in_progress": "In progress"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -62,6 +64,7 @@
 		"cycles_description": "Cycles are the unit of payment for operating your smart contracts. You can top-up (recharge) your {0} by converting ICP to cycles.",
 		"top_up_in_progress": "Top-up in progress...",
 		"delete_in_progress": "Deletion in progress...",
+		"upgrade_progress_title": "Hold tight!",
 		"upgrade_preparing": "Preparing upgrade...",
 		"upgrade_validating": "Validating if an upgrade is needed...",
 		"upgrade_stopping": "Stopping {0} before upgrade...",

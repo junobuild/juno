@@ -58,6 +58,8 @@ interface I18nCore {
 	advanced_options: string;
 	updating_configuration: string;
 	configuration_applied: string;
+	completed: string;
+	in_progress: string;
 }
 
 interface I18nCanisters {
@@ -66,6 +68,7 @@ interface I18nCanisters {
 	cycles_description: string;
 	top_up_in_progress: string;
 	delete_in_progress: string;
+	upgrade_progress_title: string;
 	upgrade_preparing: string;
 	upgrade_validating: string;
 	upgrade_stopping: string;

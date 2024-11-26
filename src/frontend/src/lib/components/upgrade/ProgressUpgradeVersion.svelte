@@ -1,10 +1,9 @@
 <script lang="ts">
 	import { UpgradeCodeProgress } from '@junobuild/admin';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type { ProgressStep } from '$lib/types/progress-step';
 	import ProgressSteps from '$lib/components/ui/ProgressSteps.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { ProgressStep } from '$lib/types/progress-step';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		segment: 'satellite' | 'mission_control' | 'orbiter';

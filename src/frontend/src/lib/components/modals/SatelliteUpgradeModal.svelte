@@ -24,14 +24,16 @@
 		detail as JunoModalUpgradeSatelliteDetail
 	);
 
-	const upgradeSatelliteWasm = async ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) =>
+	const upgradeSatelliteWasm = async (
+		params: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress'>
+	) =>
 		await upgradeSatellite({
 			satellite: {
 				satelliteId: satellite.satellite_id.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()
 			},
-			wasmModule,
+			...params,
 			...(nonNullish($missionControlStore) && { missionControlId: $missionControlStore }),
 			// TODO: option to be removed
 			deprecated: compare(currentVersion, '0.0.7') < 0,

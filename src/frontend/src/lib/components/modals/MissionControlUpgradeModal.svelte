@@ -20,14 +20,16 @@
 
 	let { newerReleases, currentVersion } = $derived(detail as JunoModalUpgradeDetail);
 
-	const upgradeMissionControlWasm = async ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) =>
+	const upgradeMissionControlWasm = async (
+		params: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress'>
+	) =>
 		await upgradeMissionControl({
 			missionControl: {
 				missionControlId: $missionControlStore!.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()
 			},
-			wasmModule
+			...params
 		});
 </script>
 

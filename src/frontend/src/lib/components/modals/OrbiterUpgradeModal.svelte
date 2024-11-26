@@ -20,14 +20,14 @@
 
 	let { newerReleases, currentVersion } = $derived(detail as JunoModalUpgradeDetail);
 
-	const upgradeOrbiterWasm = async ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) =>
+	const upgradeOrbiterWasm = async (params: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress'>) =>
 		await upgradeOrbiter({
 			orbiter: {
 				orbiterId: $orbiterStore!.orbiter_id.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()
 			},
-			wasmModule
+			...params
 		});
 </script>
 

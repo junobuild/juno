@@ -1,11 +1,12 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import type { BuildType, UpgradeCodeParams } from '@junobuild/admin';
+	import { type BuildType, type UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
 	import type { Snippet } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import ConfirmUpgradeVersion from '$lib/components/upgrade/ConfirmUpgradeVersion.svelte';
+	import ProgressUpgradeVersion from '$lib/components/upgrade/ProgressUpgradeVersion.svelte';
 	import ReviewUpgradeVersion from '$lib/components/upgrade/ReviewUpgradeVersion.svelte';
 	import SelectUpgradeVersion from '$lib/components/upgrade/SelectUpgradeVersion.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -39,6 +40,10 @@
 	$effect(() => {
 		steps = buildExtended ? 'confirm' : 'init';
 	});
+
+	let progress: UpgradeCodeProgress | undefined = $state(undefined);
+	const onProgress = (upgradeProgress: UpgradeCodeProgress | undefined) =>
+		(progress = upgradeProgress);
 
 	const close = () => onclose();
 
@@ -79,16 +84,15 @@
 			<p>{$i18n.canisters.download_in_progress}</p>
 		</SpinnerModal>
 	{:else if steps === 'in_progress'}
-		<SpinnerModal>
-			<p>{$i18n.canisters.upgrade_in_progress}</p>
-		</SpinnerModal>
+		<ProgressUpgradeVersion {segment} {progress} />
 	{:else if steps === 'review'}
 		<ReviewUpgradeVersion
 			{wasm}
 			{segment}
 			{upgrade}
-			on:junoNext={({ detail }) => (steps = detail)}
-			on:junoClose
+			nextSteps={(next) => (steps = next)}
+			{onProgress}
+			{onclose}
 		/>
 	{:else if steps === 'confirm'}
 		<ConfirmUpgradeVersion

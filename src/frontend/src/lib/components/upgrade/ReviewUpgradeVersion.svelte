@@ -1,8 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import type { UpgradeCodeParams } from '@junobuild/admin';
-	import { createEventDispatcher } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
+	import { type UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -12,40 +10,49 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
-		upgrade: ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) => Promise<void>;
+		upgrade: ({
+			wasmModule
+		}: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress'>) => Promise<void>;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		wasm: Wasm | undefined;
+		nextSteps: (
+			steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error'
+		) => void;
+		onclose: () => void;
+		onProgress: (progress: UpgradeCodeProgress | undefined) => void;
 	}
 
-	let { upgrade, segment, wasm }: Props = $props();
+	let { upgrade, segment, wasm, nextSteps, onProgress, onclose }: Props = $props();
 
-	const dispatch = createEventDispatcher();
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
 
-	const onSubmit = async () => {
+		onProgress(undefined);
+
 		if (isNullish(wasm)) {
 			toasts.error({
 				text: $i18n.errors.upgrade_no_wasm
 			});
 
-			dispatch('junoNext', 'error');
+			nextSteps('error');
 
 			return;
 		}
 
 		wizardBusy.start();
 
-		dispatch('junoNext', 'in_progress');
+		nextSteps('in_progress');
 
 		try {
 			const wasmModule = new Uint8Array(await wasm.wasm.arrayBuffer());
 
-			await upgrade({ wasmModule });
+			await upgrade({ wasmModule, onProgress });
 
 			emit({ message: 'junoReloadVersions' });
 
 			// Small delay to ensure junoReloadVersions is emitted
 			setTimeout(() => {
-				dispatch('junoNext', 'ready');
+				nextSteps('ready');
 
 				wizardBusy.stop();
 			}, 500);
@@ -55,7 +62,7 @@
 				detail: err
 			});
 
-			dispatch('junoNext', 'error');
+			nextSteps('error');
 
 			wizardBusy.stop();
 		}
@@ -68,10 +75,10 @@
 	<p>{$i18n.errors.upgrade_no_wasm}</p>
 
 	<div class="toolbar">
-		<button onclick={() => dispatch('junoNext', 'init')}>{$i18n.core.back}</button>
+		<button onclick={() => nextSteps('init')}>{$i18n.core.back}</button>
 	</div>
 {:else}
-	<form onsubmit={preventDefault(onSubmit)}>
+	<form onsubmit={onSubmit}>
 		<p class="confirm">
 			<Html
 				text={i18nFormat($i18n.canisters.confirm_upgrade, [
@@ -88,7 +95,7 @@
 		</p>
 
 		<div class="toolbar">
-			<button type="button" onclick={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
+			<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>
 			<button type="submit">{$i18n.core.submit}</button>
 		</div>
 	</form>

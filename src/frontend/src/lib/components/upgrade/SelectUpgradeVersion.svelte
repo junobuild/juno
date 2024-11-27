@@ -1,17 +1,16 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
-	import { createEventDispatcher, onMount, type Snippet } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
+	import { onMount, type Snippet } from 'svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { downloadWasm } from '$lib/services/upgrade.services';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { last } from '$lib/utils/utils';
-	import type { Wasm } from '$lib/types/upgrade';
 
 	interface Props {
 		currentVersion: string;
@@ -39,7 +38,9 @@
 
 	onMount(() => (selectedVersion = last(newerReleases)));
 
-	const onSelect = async () => {
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if (isNullish(selectedVersion)) {
 			toasts.error({
 				text: $i18n.errors.upgrade_download_error
@@ -98,7 +99,7 @@
 
 {@render intro?.()}
 
-<form onsubmit={preventDefault(onSelect)}>
+<form onsubmit={onSubmit}>
 	{#if newerReleases.length > 1}
 		<p>
 			<Html

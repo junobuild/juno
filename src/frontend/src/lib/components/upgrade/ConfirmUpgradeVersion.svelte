@@ -7,11 +7,11 @@
 	interface Props {
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		intro?: Snippet;
+		onclose: () => void;
+		oncontinue: () => void;
 	}
 
-	let { segment, intro }: Props = $props();
-
-	const dispatch = createEventDispatcher();
+	let { segment, intro, onclose, oncontinue }: Props = $props();
 </script>
 
 {@render intro?.()}
@@ -28,6 +28,6 @@
 </p>
 
 <div class="toolbar">
-	<button type="button" onclick={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
-	<button type="button" onclick={() => dispatch('junoContinue')}>{$i18n.core.continue}</button>
+	<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>
+	<button type="button" onclick={oncontinue}>{$i18n.core.continue}</button>
 </div>

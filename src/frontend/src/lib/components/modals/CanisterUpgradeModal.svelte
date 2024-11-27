@@ -47,20 +47,21 @@
 
 	const close = () => onclose();
 
-	let wasm: Wasm | undefined = $state();
+	let wasm: Wasm | undefined = $state(undefined);
 
-	const onSelect = ({
-		detail: { steps: s, wasm: w }
-	}: CustomEvent<{
+	const onnext = ({
+		steps: s,
+		wasm: w
+	}: {
 		steps: 'review' | 'error' | 'download';
-		wasm: Wasm;
-	}>) => {
+		wasm?: Wasm;
+	}) => {
 		wasm = w;
 		steps = s;
 	};
 </script>
 
-<Modal on:junoClose>
+<Modal on:junoClose={onclose}>
 	{#if steps === 'ready'}
 		<div class="msg">
 			<p>
@@ -95,21 +96,16 @@
 			{onclose}
 		/>
 	{:else if steps === 'confirm'}
-		<ConfirmUpgradeVersion
-			{segment}
-			on:junoClose
-			on:junoContinue={() => (steps = 'init')}
-			{intro}
-		/>
+		<ConfirmUpgradeVersion {segment} {onclose} oncontinue={() => (steps = 'init')} {intro} />
 	{:else}
 		<SelectUpgradeVersion
 			{newerReleases}
 			{segment}
 			{currentVersion}
 			back={buildExtended}
-			on:junoNext={onSelect}
-			on:junoClose
-			on:junoBack={() => (steps = 'confirm')}
+			{onnext}
+			{onclose}
+			onback={() => (steps = 'confirm')}
 		>
 			{#snippet intro()}
 				{@render intro?.()}

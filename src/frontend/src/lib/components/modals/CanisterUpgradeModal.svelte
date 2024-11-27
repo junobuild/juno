@@ -1,6 +1,10 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { type BuildType, type UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
+	import {
+		type BuildType,
+		type UpgradeCodeParams,
+		type UpgradeCodeProgress
+	} from '@junobuild/admin';
 	import type { Snippet } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { type UpgradeCodeParams, UpgradeCodeProgress } from '@junobuild/admin';
+	import { type UpgradeCodeParams, type UpgradeCodeProgress } from '@junobuild/admin';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

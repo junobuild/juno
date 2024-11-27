@@ -3,6 +3,7 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
+	import IconClose from '$lib/components/icons/IconClose.svelte';
 
 	interface Props {
 		steps: [ProgressStep, ...ProgressStep[]];
@@ -17,6 +18,8 @@
 		<div class="step-indicator">
 			{#if state === 'completed'}
 				<IconCheckCircle />
+			{:else if state === 'error'}
+				<span class="checkmark round"><IconClose /></span>
 			{:else if state === 'in_progress'}
 				<div class="spinner">
 					<span class="checkmark">{i + 1}</span>
@@ -33,10 +36,10 @@
 
 		{#if state === 'completed'}
 			<span class="state">{$i18n.core.completed}</span>
+		{:else if state === 'error'}
+			<span class="state">{$i18n.core.error}</span>
 		{:else if state === 'in_progress'}
-			<div class="state">
-				<span>{$i18n.core.in_progress}</span>
-			</div>
+			<span class="state">{$i18n.core.in_progress}</span>
 		{/if}
 	</div>
 {/each}
@@ -54,9 +57,6 @@
 
 		padding: 0 0 var(--padding);
 
-		--icon-check-circle-background: var(--color-primary);
-		--icon-check-circle-color: var(--color-primary-contrast);
-
 		color: var(--text-color);
 		transition: color var(--animation-time-normal) ease-out;
 	}
@@ -73,17 +73,27 @@
 		}
 	}
 
-	.in_progress {
-		--icon-check-circle-background: var(--color-secondary);
-		--icon-check-circle-color: var(--color-secondary-contrast);
+	.error {
+		.line {
+			--line-color: var(--color-error);
+		}
+	}
 
+	.in_progress {
 		.state {
 			color: var(--color-secondary);
 			background: rgba(var(--color-secondary-rgb), 0.3);
 		}
+	}
+
+	.error {
+		.state {
+			color: var(--color-error-contrast);
+			background: var(--color-error);
+		}
 
 		.checkmark {
-			--checkmark-color: var(--color-secondary);
+			--checkmark-color: var(--color-error);
 		}
 	}
 
@@ -122,6 +132,7 @@
 
 	.checkmark {
 		--checkmark-color: var(--text-color);
+		color: var(--checkmark-color);
 		font-size: var(--font-size-very-small);
 	}
 

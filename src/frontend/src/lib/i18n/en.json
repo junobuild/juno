@@ -56,7 +56,8 @@
 		"updating_configuration": "Updating configuration...",
 		"configuration_applied": "Configuration applied.",
 		"completed": "Completed",
-		"in_progress": "In progress"
+		"in_progress": "In progress",
+		"error": "Error"
 	},
 	"canisters": {
 		"insight": "Insight",

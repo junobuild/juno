@@ -60,6 +60,7 @@ interface I18nCore {
 	configuration_applied: string;
 	completed: string;
 	in_progress: string;
+	error: string;
 }
 
 interface I18nCanisters {

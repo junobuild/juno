@@ -1,14 +1,14 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
-	import { createEventDispatcher, onMount, type Snippet } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
+	import { onMount, type Snippet } from 'svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { downloadWasm } from '$lib/services/upgrade.services';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { last } from '$lib/utils/utils';
 
@@ -18,23 +18,35 @@
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		back?: boolean;
 		intro?: Snippet;
+		onclose: () => void;
+		onback: () => void;
+		onnext: (params: { steps: 'review' | 'error' | 'download'; wasm?: Wasm }) => void;
 	}
 
-	let { currentVersion, newerReleases, segment, back = false, intro }: Props = $props();
+	let {
+		currentVersion,
+		newerReleases,
+		segment,
+		back = false,
+		intro,
+		onnext,
+		onclose,
+		onback
+	}: Props = $props();
 
 	let selectedVersion: string | undefined = $state(undefined);
 
 	onMount(() => (selectedVersion = last(newerReleases)));
 
-	const dispatch = createEventDispatcher();
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
 
-	const onSelect = async () => {
 		if (isNullish(selectedVersion)) {
 			toasts.error({
 				text: $i18n.errors.upgrade_download_error
 			});
 
-			dispatch('junoNext', { steps: 'error' });
+			onnext({ steps: 'error' });
 
 			return;
 		}
@@ -59,26 +71,26 @@
 				])
 			});
 
-			dispatch('junoNext', { steps: 'error' });
+			onnext({ steps: 'error' });
 
 			return;
 		}
 
 		wizardBusy.start();
 
-		dispatch('junoNext', { steps: 'download' });
+		onnext({ steps: 'download' });
 
 		try {
 			const wasm = await downloadWasm({ segment, version: selectedVersion });
 
-			dispatch('junoNext', { steps: 'review', wasm });
+			onnext({ steps: 'review', wasm });
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.upgrade_download_error,
 				detail: err
 			});
 
-			dispatch('junoNext', { steps: 'error' });
+			onnext({ steps: 'error' });
 		}
 
 		wizardBusy.stop();
@@ -87,7 +99,7 @@
 
 {@render intro?.()}
 
-<form onsubmit={preventDefault(onSelect)}>
+<form onsubmit={onSubmit}>
 	{#if newerReleases.length > 1}
 		<p>
 			<Html
@@ -131,9 +143,9 @@
 
 	<div class="toolbar">
 		{#if back}
-			<button type="button" onclick={() => dispatch('junoBack')}>{$i18n.core.back}</button>
+			<button type="button" onclick={onback}>{$i18n.core.back}</button>
 		{:else}
-			<button type="button" onclick={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
+			<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>
 		{/if}
 		<button type="submit" disabled={isNullish(selectedVersion)}>{$i18n.core.continue}</button>
 	</div>

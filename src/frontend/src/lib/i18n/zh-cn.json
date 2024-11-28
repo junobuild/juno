@@ -61,7 +61,8 @@
 		"error": "Error",
 		"hold_tight": "Hold tight!",
 		"create": "创建",
-		"replace": "替换"
+		"replace": "替换",
+		"restore": "Restore"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -167,13 +168,18 @@
 		"size": "Size",
 		"timestamp": "时间戳",
 		"create_a_backup": "Create a backup",
-		"backup_info": "Creates a copy of your {0}'s current state for safe restoration after updates or changes.",
-		"backup_warning": "Only one backup is supported at a time; creating a new backup will replace the existing one.",
+		"restore_the_backup": "Restore the backup",
+		"create_backup_info": "Creates a copy of your {0}'s current state for safe restoration after updates or changes.",
+		"restore_backup_info": "Restores your {0} to its previous state from {1}, using the backup {2}.",
+		"create_backup_warning": "Only one backup is supported at a time; creating a new backup will replace the existing one.",
+		"restore_backup_warning": "Restoring a backup will permanently overwrite the current state. This action is irreversible. Proceed with caution.",
 		"no_backup": "There is currently no backup for this {0}.",
-		"backup_created": "The backup for your {0} has been created successfully.",
+		"backup_created": "The backup for your {0} was created.",
+		"backup_restored": "The backup for your {0} was restored.",
 		"creating_backup": "Creating a backup...",
-		"backup_preparing": "Preparing backup...",
-		"backup_stopping": "Stopping {0} before taking a snapshot..."
+		"restoring_backup": "Restoring a backup...",
+		"backup_preparing": "Preparing execution...",
+		"backup_stopping": "Stopping {0}..."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -489,7 +495,9 @@
 		"subnet_loading_errors": "加载模块的子网ID出错.",
 		"snapshot_loading_errors": "Error while loading the snapshots of the module.",
 		"snapshot_not_loaded": "The snapshots are not yet loaded.",
+		"snapshot_not_selected": "You need to select a snapshot to restore.",
 		"snapshot_create_error": "Unexpected error(s) while creating the snapshot.",
+		"snapshot_restore_error": "Unexpected error(s) while restoring the snapshot.",
 		"wallet_no_account": "签名方未提供账号.",
 		"wallet_load_balance": "账户余额不能被加载.",
 		"wallet_receive_error": "接受代币是出现异常错误.",

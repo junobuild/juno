@@ -1,3 +1,4 @@
+import type { snapshot } from '$declarations/ic/ic.did';
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
@@ -75,6 +76,10 @@ export interface JunoModalEditCanisterSettingsDetail extends JunoModalSegmentDet
 	settings: CanisterSettings;
 }
 
+export interface JunoModalRestoreSnapshotDetail extends JunoModalSegmentDetail {
+	snapshot: snapshot;
+}
+
 export interface JunoModalSendTokensDetail {
 	balance: bigint | undefined;
 }
@@ -114,6 +119,7 @@ export interface JunoModal {
 		| 'topup_mission_control'
 		| 'topup_orbiter'
 		| 'add_custom_domain'
+		| 'restore_snapshot'
 		| 'create_snapshot'
 		| 'create_controller'
 		| 'edit_canister_settings'

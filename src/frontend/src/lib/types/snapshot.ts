@@ -3,14 +3,14 @@ import type { UpgradeCodeProgressState } from '@junobuild/admin';
 
 export type Snapshots = snapshot[];
 
-export enum CreateSnapshotProgressStep {
+export enum SnapshotProgressStep {
 	StoppingCanister = 1,
-	CreatingSnapshot = 2,
+	CreateOrRestoreSnapshot = 2,
 	RestartingCanister = 3
 }
 
-export interface CreateSnapshotProgress {
-	step: CreateSnapshotProgressStep;
+export interface SnapshotProgress {
+	step: SnapshotProgressStep;
 	// TODO: rename maybe type UpgradeCodeProgressState to something generic
 	state: UpgradeCodeProgressState;
 }

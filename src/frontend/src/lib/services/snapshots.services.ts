@@ -1,38 +1,52 @@
-import type { snapshot_id } from '$declarations/ic/ic.did';
+import type { snapshot, snapshot_id } from '$declarations/ic/ic.did';
 import {
 	canisterSnapshots,
 	canisterStart,
 	canisterStop,
-	createSnapshot as createSnapshotApi
+	createSnapshot as createSnapshotApi,
+	restoreSnapshot as restoreSnapshotApi
 } from '$lib/api/ic.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { type CreateSnapshotProgress, CreateSnapshotProgressStep } from '$lib/types/snapshot';
+import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/snapshot';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
-type CreateSnapshotOnProgress = (progress: CreateSnapshotProgress | undefined) => void;
+type SnapshotOnProgress = (progress: SnapshotProgress | undefined) => void;
 
-interface CreateSnapshotParams {
+interface SnapshotParams {
 	canisterId: Principal;
-	snapshotId?: snapshot_id;
 	identity: OptionIdentity;
-	onProgress: CreateSnapshotOnProgress;
+	onProgress: SnapshotOnProgress;
+}
+
+interface CreateSnapshotParams extends SnapshotParams {
+	snapshotId?: snapshot_id;
+}
+
+interface RestoreSnapshotParams extends SnapshotParams {
+	snapshot: snapshot;
 }
 
 export const createSnapshot = async ({
 	identity,
+	canisterId,
+	snapshotId,
 	...rest
 }: CreateSnapshotParams): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		await excecuteStepsToCreateSnapshot({
+		const create = async () => await takeSnapshot({ canisterId, snapshotId, identity });
+
+		await executeSnapshot({
+			canisterId,
 			identity,
+			action: create,
 			...rest
 		});
 	} catch (err: unknown) {
@@ -49,26 +63,57 @@ export const createSnapshot = async ({
 	return { success: 'ok' };
 };
 
-export const excecuteStepsToCreateSnapshot = async ({
+export const restoreSnapshot = async ({
 	canisterId,
 	identity,
-	snapshotId,
+	snapshot,
+	...rest
+}: RestoreSnapshotParams): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
+	try {
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
+
+		const restore = async () => await applySnapshot({ canisterId, snapshot, identity });
+
+		await executeSnapshot({
+			canisterId,
+			identity,
+			action: restore,
+			...rest
+		});
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: labels.errors.snapshot_restore_error,
+			detail: err
+		});
+
+		return { success: 'error', err };
+	}
+
+	return { success: 'ok' };
+};
+
+export const executeSnapshot = async ({
+	canisterId,
+	identity,
+	action,
 	onProgress
-}: Omit<CreateSnapshotParams, 'identity'> & {
+}: Pick<SnapshotParams, 'canisterId' | 'onProgress'> & {
 	identity: Identity;
+	action: () => Promise<void>;
 }) => {
 	// 1. We stop the canister to prepare for the snapshot creation.
 	const stop = async () => await canisterStop({ canisterId, identity });
-	await execute({ fn: stop, onProgress, step: CreateSnapshotProgressStep.StoppingCanister });
+	await execute({ fn: stop, onProgress, step: SnapshotProgressStep.StoppingCanister });
 
 	try {
-		// 2. We create the backup / we take the snapshot
-		const create = async () => await takeSnapshot({ canisterId, snapshotId, identity });
-		await execute({ fn: create, onProgress, step: CreateSnapshotProgressStep.CreatingSnapshot });
+		// 2. We create or restore the backup
+		await execute({ fn: action, onProgress, step: SnapshotProgressStep.CreateOrRestoreSnapshot });
 	} finally {
 		// 3. We restart the canister to finalize the process. No matter what.
 		const restart = async () => await canisterStart({ canisterId, identity });
-		await execute({ fn: restart, onProgress, step: CreateSnapshotProgressStep.RestartingCanister });
+		await execute({ fn: restart, onProgress, step: SnapshotProgressStep.RestartingCanister });
 	}
 };
 
@@ -78,12 +123,32 @@ const takeSnapshot = async ({
 }: Pick<CreateSnapshotParams, 'canisterId' | 'snapshotId'> & {
 	identity: Identity;
 }) => {
-	const newSnapshotId = await createSnapshotApi({ canisterId, ...rest });
+	const newSnapshot = await createSnapshotApi({ canisterId, ...rest });
 
+	updateStore({ canisterId, snapshot: newSnapshot });
+};
+
+const applySnapshot = async ({
+	canisterId,
+	snapshot,
+	...rest
+}: Pick<RestoreSnapshotParams, 'canisterId' | 'snapshot'> & {
+	identity: Identity;
+}) => {
+	await restoreSnapshotApi({ canisterId, snapshotId: snapshot.id, ...rest });
+
+	// We add in store the snapshot we restored because load_canister_snapshot returns void
+	updateStore({ canisterId, snapshot });
+};
+
+const updateStore = ({
+	canisterId,
+	snapshot
+}: Pick<SnapshotParams, 'canisterId'> & { snapshot: snapshot }) => {
 	// Currently the IC only supports once snapshot per canister.
 	snapshotStore.set({
 		canisterId: canisterId.toText(),
-		data: [newSnapshotId]
+		data: [snapshot]
 	});
 };
 
@@ -93,8 +158,8 @@ const execute = async ({
 	onProgress
 }: {
 	fn: () => Promise<void>;
-	step: CreateSnapshotProgressStep;
-	onProgress: CreateSnapshotOnProgress;
+	step: SnapshotProgressStep;
+	onProgress: SnapshotOnProgress;
 }) => {
 	onProgress({
 		step,

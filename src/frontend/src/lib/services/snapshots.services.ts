@@ -63,7 +63,7 @@ export const excecuteStepsToCreateSnapshot = async ({
 
 	try {
 		// 2. We create the backup / we take the snapshot
-		const create = async () => takeSnapshot({ canisterId, snapshotId, identity });
+		const create = async () => await takeSnapshot({ canisterId, snapshotId, identity });
 		await execute({ fn: create, onProgress, step: CreateSnapshotProgressStep.CreatingSnapshot });
 	} finally {
 		// 3. We restart the canister to finalize the process. No matter what.

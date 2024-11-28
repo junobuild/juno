@@ -11,6 +11,6 @@ export enum CreateSnapshotProgressStep {
 
 export interface CreateSnapshotProgress {
 	step: CreateSnapshotProgressStep;
-    // TODO: rename maybe type UpgradeCodeProgressState to something generic
+	// TODO: rename maybe type UpgradeCodeProgressState to something generic
 	state: UpgradeCodeProgressState;
 }

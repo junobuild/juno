@@ -1,17 +1,11 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import {
-		type UpgradeCodeProgress,
-		type UpgradeCodeProgressState,
-		UpgradeCodeProgressStep
-	} from '@junobuild/admin';
 	import { untrack } from 'svelte';
-	import ProgressSteps from '$lib/components/ui/ProgressSteps.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { ProgressStep, ProgressStepState } from '$lib/types/progress-step';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { ProgressStep } from '$lib/types/progress-step';
 	import { type CreateSnapshotProgress, CreateSnapshotProgressStep } from '$lib/types/snapshot';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {

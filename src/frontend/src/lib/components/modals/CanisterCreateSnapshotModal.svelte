@@ -1,24 +1,21 @@
 <script lang="ts">
-	import type { JunoModalDetail, JunoModalSegmentDetail } from '$lib/types/modal';
-	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { Principal } from '@dfinity/principal';
+	import { isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import ProgressCreateSnapshot from '$lib/components/canister/ProgressCreateSnapshot.svelte';
+	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import { snapshotStore } from '$lib/stores/snapshot.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
 	import { createSnapshot } from '$lib/services/snapshots.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import ProgressUpgradeVersion from "$lib/components/upgrade/ProgressUpgradeVersion.svelte";
-	import ProgressCreateSnapshot from "$lib/components/canister/ProgressCreateSnapshot.svelte";
-	import type {UpgradeCodeProgress} from "@junobuild/admin";
-	import type {CreateSnapshotProgress} from "$lib/types/snapshot";
-	import Confetti from "$lib/components/ui/Confetti.svelte";
+	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { snapshotStore } from '$lib/stores/snapshot.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { JunoModalDetail, JunoModalSegmentDetail } from '$lib/types/modal';
+	import type { CreateSnapshotProgress } from '$lib/types/snapshot';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -33,7 +30,7 @@
 
 	let progress: CreateSnapshotProgress | undefined = $state(undefined);
 	const onProgress = (createProgress: CreateSnapshotProgress | undefined) =>
-			(progress = createProgress);
+		(progress = createProgress);
 
 	const handleSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();

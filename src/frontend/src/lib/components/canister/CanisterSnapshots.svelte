@@ -1,8 +1,12 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
+	import { encodeSnapshotId } from '@dfinity/ic-management';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import { loadSnapshots } from '$lib/services/snapshots.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { snapshotStore } from '$lib/stores/snapshot.store';
@@ -10,13 +14,10 @@
 	import type { Segment } from '$lib/types/canister';
 	import type { Snapshots } from '$lib/types/snapshot';
 	import type { Option } from '$lib/types/utils';
+	import { formatToDate } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { loadSnapshots } from '$lib/services/snapshots.services';
-	import { decodeSnapshotId, encodeSnapshotId } from '@dfinity/ic-management';
 	import { formatBytes } from '$lib/utils/number.utils';
-	import { formatToDate } from '$lib/utils/date.utils';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 
 	interface Props {
 		canisterId: Principal;
@@ -62,7 +63,7 @@
 		<thead>
 			<tr>
 				<th class="backup"> {$i18n.canisters.backup} </th>
-				<th> {$i18n.canisters.size} </th>
+				<th class="size"> {$i18n.canisters.size} </th>
 				<th> {$i18n.canisters.timestamp} </th>
 			</tr>
 		</thead>
@@ -71,7 +72,7 @@
 			{#if nonNullish(snapshots)}
 				{#each snapshots as snapshot}
 					<tr>
-						<td>0x{encodeSnapshotId(snapshot.id)}</td>
+						<td><Identifier small={false} identifier={encodeSnapshotId(snapshot.id)} /></td>
 						<td>{formatBytes(Number(snapshot.total_size))}</td>
 						<td>{formatToDate(snapshot.taken_at_timestamp)}</td>
 					</tr>
@@ -109,7 +110,13 @@
 
 	.backup {
 		@include media.min-width(medium) {
-			width: 60%;
+			width: 25%;
+		}
+	}
+
+	.size {
+		@include media.min-width(medium) {
+			width: 25%;
 		}
 	}
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import ProgressSteps from '$lib/components/ui/ProgressSteps.svelte';
 	import type { Snippet } from 'svelte';
+	import ProgressSteps from '$lib/components/ui/ProgressSteps.svelte';
 	import type { ProgressStep } from '$lib/types/progress-step';
 
 	interface Props {

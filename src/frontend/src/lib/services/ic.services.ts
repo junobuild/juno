@@ -17,7 +17,8 @@ export const loadSubnetId = async ({
 
 	try {
 		const store = get(subnetStore);
-		if (nonNullish(store[canisterIdText]) && !reload) {
+
+		if (nonNullish(store?.[canisterIdText]) && !reload) {
 			return { success: true };
 		}
 
@@ -27,7 +28,7 @@ export const loadSubnetId = async ({
 
 		subnetStore.set({
 			canisterId: canisterIdText,
-			subnet: nonNullish(subnetId) ? { subnetId } : undefined
+			data: nonNullish(subnetId) ? { subnetId } : undefined
 		});
 
 		return { success: true };
@@ -39,10 +40,7 @@ export const loadSubnetId = async ({
 			detail: err
 		});
 
-		subnetStore.set({
-			canisterId: canisterIdText,
-			subnet: null
-		});
+		subnetStore.reset(canisterIdText);
 
 		return { success: false };
 	}

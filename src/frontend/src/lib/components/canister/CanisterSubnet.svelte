@@ -24,7 +24,7 @@
 		});
 	});
 
-	let subnet: Option<Subnet> = $derived($subnetStore[canisterId.toText()]);
+	let subnet: Option<Subnet> = $derived($subnetStore?.[canisterId.toText()]);
 
 	let subnetId: PrincipalText | undefined = $derived(subnet?.subnetId);
 </script>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
@@ -39,7 +40,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'edit_canister_settings',
+				type: 'create_snapshot',
 				detail: {
 					segment: {
 						canisterId: canisterId.toText(),
@@ -67,7 +68,7 @@
 				{#each snapshots as snapshot}{/each}
 
 				{#if snapshots.length === 0}
-					<tr
+					<tr in:fade
 						><td colspan="3"
 							>{i18nFormat($i18n.canisters.no_backup, [
 								{
@@ -78,6 +79,8 @@
 						></tr
 					>
 				{/if}
+			{:else}
+				<tr><td colspan="3">&ZeroWidthSpace;</td></tr>
 			{/if}
 		</tbody>
 	</table>

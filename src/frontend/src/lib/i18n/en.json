@@ -167,7 +167,9 @@
 		"create_a_backup": "Create a backup",
 		"backup_info": "Creates a copy of your {0}'s current state for safe restoration after updates or changes.",
 		"backup_warning": "Only one backup is supported at a time; creating a new backup will replace the existing one.",
-		"no_backup": "There is currently no backup for this {0}."
+		"no_backup": "There is currently no backup for this {0}.",
+		"backup_created": "The backup for your {0} has been created successfully.",
+		"creating_backup": "Creating a backup..."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

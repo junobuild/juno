@@ -20,6 +20,7 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import type { JunoModal } from '$lib/types/modal';
+	import CanisterCreateSnapshotModal from '$lib/components/modals/CanisterCreateSnapshotModal.svelte';
 
 	let modal: JunoModal | undefined = $state(undefined);
 
@@ -102,4 +103,8 @@
 
 {#if modal?.type === 'edit_auth_config' && nonNullish(modal.detail)}
 	<AuthConfigModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'create_snapshot' && nonNullish(modal.detail)}
+	<CanisterCreateSnapshotModal onclose={close} detail={modal.detail} />
 {/if}

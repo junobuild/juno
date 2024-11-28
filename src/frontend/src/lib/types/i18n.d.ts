@@ -172,6 +172,8 @@ interface I18nCanisters {
 	backup_info: string;
 	backup_warning: string;
 	no_backup: string;
+	backup_created: string;
+	creating_backup: string;
 }
 
 interface I18nSign_in {

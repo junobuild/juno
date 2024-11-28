@@ -13,6 +13,9 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { loadSnapshots } from '$lib/services/snapshots.services';
+	import { decodeSnapshotId, encodeSnapshotId } from '@dfinity/ic-management';
+	import { formatBytes } from '$lib/utils/number.utils';
+	import { formatToDate } from '$lib/utils/date.utils';
 
 	interface Props {
 		canisterId: Principal;
@@ -57,7 +60,7 @@
 	<table>
 		<thead>
 			<tr>
-				<th> {$i18n.canisters.backup} </th>
+				<th class="backup"> {$i18n.canisters.backup} </th>
 				<th> {$i18n.canisters.size} </th>
 				<th> {$i18n.canisters.timestamp} </th>
 			</tr>
@@ -65,7 +68,13 @@
 
 		<tbody>
 			{#if nonNullish(snapshots)}
-				{#each snapshots as snapshot}{/each}
+				{#each snapshots as snapshot}
+					<tr>
+						<td>0x{encodeSnapshotId(snapshot.id)}</td>
+						<td>{formatBytes(Number(snapshot.total_size))}</td>
+						<td>{formatToDate(snapshot.taken_at_timestamp)}</td>
+					</tr>
+				{/each}
 
 				{#if snapshots.length === 0}
 					<tr in:fade
@@ -80,7 +89,7 @@
 					>
 				{/if}
 			{:else}
-				<tr><td colspan="3">&ZeroWidthSpace;</td></tr>
+				<tr><td colspan="3">&ZeroWidthSpace</td></tr>
 			{/if}
 		</tbody>
 	</table>
@@ -89,6 +98,14 @@
 <button onclick={openModal}>{$i18n.canisters.create_a_backup}</button>
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+
+	.backup {
+		@include media.min-width(medium) {
+			width: 60%;
+		}
+	}
+
 	.table-container {
 		margin: var(--padding-8x) 0 var(--padding-2x);
 	}

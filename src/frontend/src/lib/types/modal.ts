@@ -58,18 +58,20 @@ export type JunoModalDeleteSatelliteDetail = JunoModalCycles &
 	JunoModalCustomDomainsDetail &
 	JunoModalSatelliteDetail;
 
-export interface JunoModalCreateControllerDetail {
+export interface JunoModalSegmentDetail {
+	segment: CanisterSegmentWithLabel;
+}
+
+export interface JunoModalCreateControllerDetail extends JunoModalSegmentDetail {
 	add: (
 		params: {
 			missionControlId: Principal;
 		} & SetControllerParams
 	) => Promise<void>;
 	load: () => Promise<void>;
-	segment: CanisterSegmentWithLabel;
 }
 
-export interface JunoModalEditCanisterSettingsDetail {
-	segment: CanisterSegmentWithLabel;
+export interface JunoModalEditCanisterSettingsDetail extends JunoModalSegmentDetail {
 	settings: CanisterSettings;
 }
 
@@ -112,6 +114,7 @@ export interface JunoModal {
 		| 'topup_mission_control'
 		| 'topup_orbiter'
 		| 'add_custom_domain'
+		| 'create_snapshot'
 		| 'create_controller'
 		| 'edit_canister_settings'
 		| 'edit_orbiter_config'

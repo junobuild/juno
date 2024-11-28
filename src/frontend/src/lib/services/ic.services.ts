@@ -36,7 +36,7 @@ export const loadSubnetId = async ({
 		const labels = get(i18n);
 
 		toasts.error({
-			text: labels.errors.hosting_loading_errors,
+			text: labels.errors.subnet_loading_errors,
 			detail: err
 		});
 

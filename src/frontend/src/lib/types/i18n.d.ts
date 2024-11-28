@@ -62,6 +62,9 @@ interface I18nCore {
 	completed: string;
 	in_progress: string;
 	error: string;
+	hold_tight: string;
+	create: string;
+	replace: string;
 }
 
 interface I18nCanisters {
@@ -70,7 +73,6 @@ interface I18nCanisters {
 	cycles_description: string;
 	top_up_in_progress: string;
 	delete_in_progress: string;
-	upgrade_progress_title: string;
 	upgrade_preparing: string;
 	upgrade_validating: string;
 	upgrade_stopping: string;
@@ -165,6 +167,17 @@ interface I18nCanisters {
 	subnet: string;
 	default_subnet: string;
 	subnet_id: string;
+	backup: string;
+	size: string;
+	timestamp: string;
+	create_a_backup: string;
+	backup_info: string;
+	backup_warning: string;
+	no_backup: string;
+	backup_created: string;
+	creating_backup: string;
+	backup_preparing: string;
+	backup_stopping: string;
 }
 
 interface I18nSign_in {
@@ -423,7 +436,7 @@ interface I18nErrors {
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
-	canister_settings_no_loaded: string;
+	canister_settings_not_loaded: string;
 	canister_update_error: string;
 	segment_detach: string;
 	ledger_balance_credits: string;
@@ -490,11 +503,14 @@ interface I18nErrors {
 	empty_balance: string;
 	sending_error: string;
 	subnet_loading_errors: string;
+	snapshot_loading_errors: string;
+	snapshot_not_loaded: string;
+	snapshot_create_error: string;
 	wallet_no_account: string;
 	wallet_load_balance: string;
 	wallet_receive_error: string;
 	wallet_missing_account: string;
-	auth_settings_no_loaded: string;
+	auth_settings_not_loaded: string;
 	auth_rate_config_max_tokens: string;
 	auth_rate_config_update: string;
 	auth_domain_config: string;
@@ -522,8 +538,6 @@ interface I18nDocument {
 	key_generate: string;
 	key_placeholder: string;
 	description_placeholder: string;
-	create: string;
-	replace: string;
 }
 
 interface I18nAsset {

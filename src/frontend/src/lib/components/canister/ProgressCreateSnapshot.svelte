@@ -1,25 +1,24 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { type UpgradeCodeProgress, UpgradeCodeProgressStep } from '@junobuild/admin';
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
+	import { type CreateSnapshotProgress, CreateSnapshotProgressStep } from '$lib/types/snapshot';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {
 		segment: 'satellite' | 'mission_control' | 'orbiter';
-		progress: UpgradeCodeProgress | undefined;
+		progress: CreateSnapshotProgress | undefined;
 	}
 
 	let { progress, segment }: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
-		asserting: ProgressStep;
 		stopping: ProgressStep;
-		upgrading: ProgressStep;
+		creating: ProgressStep;
 		restarting: ProgressStep;
 	}
 
@@ -27,27 +26,22 @@
 		preparing: {
 			state: 'in_progress',
 			step: 'preparing',
-			text: $i18n.canisters.upgrade_preparing
-		},
-		asserting: {
-			state: 'next',
-			step: 'asserting',
-			text: $i18n.canisters.upgrade_validating
+			text: $i18n.canisters.backup_preparing
 		},
 		stopping: {
 			state: 'next',
 			step: 'stopping',
-			text: i18nFormat($i18n.canisters.upgrade_stopping, [
+			text: i18nFormat($i18n.canisters.backup_stopping, [
 				{
 					placeholder: '{0}',
 					value: segment.replace('_', ' ')
 				}
 			])
 		},
-		upgrading: {
+		creating: {
 			state: 'next',
-			step: 'upgrading',
-			text: $i18n.canisters.upgrade_in_progress
+			step: 'creating',
+			text: $i18n.canisters.creating_backup
 		},
 		restarting: {
 			state: 'next',
@@ -67,38 +61,31 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, asserting, stopping, upgrading, restarting } = steps;
+			const { preparing, stopping, creating, restarting } = steps;
 
 			steps = {
 				preparing: {
 					...preparing,
 					state: isNullish(progress) ? 'in_progress' : 'completed'
 				},
-				asserting: {
-					...asserting,
-					state:
-						progress?.step === UpgradeCodeProgressStep.AssertingExistingCode
-							? mapProgressState(progress?.state)
-							: asserting.state
-				},
 				stopping: {
 					...stopping,
 					state:
-						progress?.step === UpgradeCodeProgressStep.StoppingCanister
+						progress?.step === CreateSnapshotProgressStep.StoppingCanister
 							? mapProgressState(progress?.state)
 							: stopping.state
 				},
-				upgrading: {
-					...upgrading,
+				creating: {
+					...creating,
 					state:
-						progress?.step === UpgradeCodeProgressStep.UpgradingCode
+						progress?.step === CreateSnapshotProgressStep.CreatingSnapshot
 							? mapProgressState(progress?.state)
-							: upgrading.state
+							: creating.state
 				},
 				restarting: {
 					...restarting,
 					state:
-						progress?.step === UpgradeCodeProgressStep.RestartingCanister
+						progress?.step === CreateSnapshotProgressStep.RestartingCanister
 							? mapProgressState(progress?.state)
 							: restarting.state
 				}

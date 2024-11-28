@@ -173,7 +173,7 @@
 	{/if}
 
 	{#snippet confirm()}
-		{mode === 'replace' ? $i18n.document.replace : $i18n.document.create}
+		{mode === 'replace' ? $i18n.core.replace : $i18n.core.create}
 	{/snippet}
 </DataUpload>
 

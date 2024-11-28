@@ -58,7 +58,10 @@
 		"configuration_applied": "Configuration applied.",
 		"completed": "Completed",
 		"in_progress": "In progress",
-		"error": "Error"
+		"error": "Error",
+		"hold_tight": "Hold tight!",
+		"create": "创建",
+		"replace": "替换"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -66,7 +69,6 @@
 		"cycles_description": "Cycles 用于支付只能合约运行消耗. You can top-up (recharge) your {0} by converting ICP to cycles.",
 		"top_up_in_progress": "充值中...",
 		"delete_in_progress": "正在删除...",
-		"upgrade_progress_title": "Hold tight!",
 		"upgrade_preparing": "Preparing upgrade...",
 		"upgrade_validating": "Validating if an upgrade is needed...",
 		"upgrade_stopping": "Stopping {0} before upgrade...",
@@ -160,7 +162,18 @@
 		"public": "公开",
 		"subnet": "子网",
 		"default_subnet": "默认 (同 Juno)",
-		"subnet_id": "子网 ID"
+		"subnet_id": "子网 ID",
+		"backup": "Backup",
+		"size": "Size",
+		"timestamp": "时间戳",
+		"create_a_backup": "Create a backup",
+		"backup_info": "Creates a copy of your {0}'s current state for safe restoration after updates or changes.",
+		"backup_warning": "Only one backup is supported at a time; creating a new backup will replace the existing one.",
+		"no_backup": "There is currently no backup for this {0}.",
+		"backup_created": "The backup for your {0} has been created successfully.",
+		"creating_backup": "Creating a backup...",
+		"backup_preparing": "Preparing backup...",
+		"backup_stopping": "Stopping {0} before taking a snapshot..."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -407,7 +420,7 @@
 		"canister_stop": "停止智能合约中遇到异常错误.",
 		"canister_start": "启动智能合约过程中遇到异常错误.",
 		"canister_delete": "删除智能合约时出现异常错误.",
-		"canister_settings_no_loaded": "智能合约设置没有加载.",
+		"canister_settings_not_loaded": "智能合约设置没有加载.",
 		"canister_update_error": "更新设置出现异常错误.",
 		"segment_detach": "解绑segment时出现异常错误.",
 		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
@@ -474,11 +487,14 @@
 		"empty_balance": "你的钱包还没有有效的金额.",
 		"sending_error": "发送代币是出现异常.",
 		"subnet_loading_errors": "加载模块的子网ID出错.",
+		"snapshot_loading_errors": "Error while loading the snapshots of the module.",
+		"snapshot_not_loaded": "The snapshots are not yet loaded.",
+		"snapshot_create_error": "Unexpected error(s) while creating the snapshot.",
 		"wallet_no_account": "签名方未提供账号.",
 		"wallet_load_balance": "账户余额不能被加载.",
 		"wallet_receive_error": "接受代币是出现异常错误.",
 		"wallet_missing_account": "没有有效账户处理账务.你确定链接钱包了?",
-		"auth_settings_no_loaded": "The authentication's settings are not yet loaded.",
+		"auth_settings_not_loaded": "The authentication's settings are not yet loaded.",
 		"auth_rate_config_max_tokens": "A maximal number of updates per minute is required.",
 		"auth_rate_config_update": "Unexpected error(s) while trying to update your authentication settings.",
 		"auth_domain_config": "Unexpected error(s) while trying to update your authentication configuration"
@@ -504,9 +520,7 @@
 		"key": "关键字",
 		"key_generate": "自动生成关键字",
 		"key_placeholder": "输入或者生成一个关键字",
-		"description_placeholder": "输入一个可选的描述",
-		"create": "创建",
-		"replace": "替换"
+		"description_placeholder": "输入一个可选的描述"
 	},
 	"asset": {
 		"owner": "拥有者",

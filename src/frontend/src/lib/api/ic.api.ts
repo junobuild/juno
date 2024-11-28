@@ -1,18 +1,21 @@
 import type {
 	canister_log_record,
 	canister_settings,
-	log_visibility
+	log_visibility,
+	snapshot,
+	snapshot_id
 } from '$declarations/ic/ic.did';
 import { getICActor } from '$lib/api/actors/actor.ic.api';
 import { getAgent } from '$lib/api/agent/agent.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
+import type { Snapshots } from '$lib/types/snapshot';
 import {
 	CanisterStatus as AgentCanisterStatus,
 	AnonymousIdentity,
 	type Identity
 } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { nonNullish } from '@dfinity/utils';
+import { nonNullish, toNullable } from '@dfinity/utils';
 
 const toStatus = (
 	status: { stopped: null } | { stopping: null } | { running: null }
@@ -119,6 +122,37 @@ export const canisterLogs = async ({
 	});
 
 	return canister_log_records;
+};
+
+export const canisterSnapshots = async ({
+	canisterId,
+	identity
+}: {
+	canisterId: Principal;
+	identity: Identity;
+}): Promise<Snapshots> => {
+	const { list_canister_snapshots } = await getICActor({ identity });
+
+	return await list_canister_snapshots({
+		canister_id: canisterId
+	});
+};
+
+export const createSnapshot = async ({
+	canisterId,
+	snapshotId,
+	identity
+}: {
+	canisterId: Principal;
+	snapshotId?: snapshot_id;
+	identity: Identity;
+}): Promise<snapshot> => {
+	const { take_canister_snapshot } = await getICActor({ identity });
+
+	return await take_canister_snapshot({
+		canister_id: canisterId,
+		replace_snapshot: toNullable(snapshotId)
+	});
 };
 
 export const canisterUpdateSettings = async ({

@@ -11,7 +11,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { snapshotStore } from '$lib/stores/snapshot.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { Segment } from '$lib/types/canister';
+	import type { CanisterSegmentWithLabel, Segment } from '$lib/types/canister';
 	import type { Snapshots } from '$lib/types/snapshot';
 	import type { Option } from '$lib/types/utils';
 	import { formatToDate } from '$lib/utils/date.utils';
@@ -36,7 +36,13 @@
 
 	let snapshots: Option<Snapshots> = $derived($snapshotStore?.[canisterId.toText()]);
 
-	const openModal = () => {
+	let segmentWithLabel: CanisterSegmentWithLabel = $derived({
+		canisterId: canisterId.toText(),
+		segment,
+		label: segmentLabel
+	});
+
+	const openCreateModal = () => {
 		if (isNullish(snapshots)) {
 			toasts.error({ text: $i18n.errors.snapshot_not_loaded });
 			return;
@@ -47,15 +53,34 @@
 			detail: {
 				type: 'create_snapshot',
 				detail: {
-					segment: {
-						canisterId: canisterId.toText(),
-						segment,
-						label: segmentLabel
-					}
+					segment: segmentWithLabel
 				}
 			}
 		});
 	};
+
+	const openRestoreModal = () => {
+		// Currently the IC supports only one snapshot per canister.
+		const exitingSnapshot = snapshots?.[0];
+
+		if (isNullish(exitingSnapshot)) {
+			toasts.error({ text: $i18n.errors.snapshot_not_selected });
+			return;
+		}
+
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'restore_snapshot',
+				detail: {
+					segment: segmentWithLabel,
+					snapshot: exitingSnapshot
+				}
+			}
+		});
+	};
+
+	let hasExistingSnapshot = $derived((snapshots?.length ?? 0) > 0);
 </script>
 
 <div class="table-container">
@@ -72,7 +97,7 @@
 			{#if nonNullish(snapshots)}
 				{#each snapshots as snapshot}
 					<tr>
-						<td><Identifier small={false} identifier={encodeSnapshotId(snapshot.id)} /></td>
+						<td><Identifier small={false} identifier={`0x${encodeSnapshotId(snapshot.id)}`} /></td>
 						<td>{formatBytes(Number(snapshot.total_size))}</td>
 						<td>{formatToDate(snapshot.taken_at_timestamp)}</td>
 					</tr>
@@ -103,7 +128,13 @@
 	</table>
 </div>
 
-<button onclick={openModal}>{$i18n.core.create}</button>
+<div class="toolbar">
+	<button onclick={openCreateModal}>{$i18n.core.create}</button>
+
+	{#if hasExistingSnapshot}
+		<button in:fade onclick={openRestoreModal}>{$i18n.core.restore}</button>
+	{/if}
+</div>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

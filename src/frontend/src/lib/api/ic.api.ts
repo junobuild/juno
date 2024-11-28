@@ -155,6 +155,24 @@ export const createSnapshot = async ({
 	});
 };
 
+export const restoreSnapshot = async ({
+	canisterId,
+	snapshotId,
+	identity
+}: {
+	canisterId: Principal;
+	snapshotId: snapshot_id;
+	identity: Identity;
+}): Promise<void> => {
+	const { load_canister_snapshot } = await getICActor({ identity });
+
+	return await load_canister_snapshot({
+		canister_id: canisterId,
+		sender_canister_version: toNullable(),
+		snapshot_id: snapshotId
+	});
+};
+
 export const canisterUpdateSettings = async ({
 	canisterId,
 	identity,

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import AuthConfigModal from '$lib/components/modals/AuthConfigModal.svelte';
+	import CanisterRestoreSnapshotModal from '$lib/components/modals/CanisterRestoreSnapshotModal.svelte';
 	import CanisterCreateSnapshotModal from '$lib/components/modals/CanisterCreateSnapshotModal.svelte';
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
@@ -107,4 +108,8 @@
 
 {#if modal?.type === 'create_snapshot' && nonNullish(modal.detail)}
 	<CanisterCreateSnapshotModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'restore_snapshot' && nonNullish(modal.detail)}
+	<CanisterRestoreSnapshotModal onclose={close} detail={modal.detail} />
 {/if}

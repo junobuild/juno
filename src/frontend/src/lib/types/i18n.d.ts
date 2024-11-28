@@ -65,6 +65,7 @@ interface I18nCore {
 	hold_tight: string;
 	create: string;
 	replace: string;
+	restore: string;
 }
 
 interface I18nCanisters {
@@ -171,11 +172,16 @@ interface I18nCanisters {
 	size: string;
 	timestamp: string;
 	create_a_backup: string;
-	backup_info: string;
-	backup_warning: string;
+	restore_the_backup: string;
+	create_backup_info: string;
+	restore_backup_info: string;
+	create_backup_warning: string;
+	restore_backup_warning: string;
 	no_backup: string;
 	backup_created: string;
+	backup_restored: string;
 	creating_backup: string;
+	restoring_backup: string;
 	backup_preparing: string;
 	backup_stopping: string;
 }
@@ -505,7 +511,9 @@ interface I18nErrors {
 	subnet_loading_errors: string;
 	snapshot_loading_errors: string;
 	snapshot_not_loaded: string;
+	snapshot_not_selected: string;
 	snapshot_create_error: string;
+	snapshot_restore_error: string;
 	wallet_no_account: string;
 	wallet_load_balance: string;
 	wallet_receive_error: string;

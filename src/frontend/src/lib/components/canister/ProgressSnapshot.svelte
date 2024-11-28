@@ -4,21 +4,22 @@
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
-	import { type CreateSnapshotProgress, CreateSnapshotProgressStep } from '$lib/types/snapshot';
+	import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/snapshot';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {
 		segment: 'satellite' | 'mission_control' | 'orbiter';
-		progress: CreateSnapshotProgress | undefined;
+		progress: SnapshotProgress | undefined;
+		snapshotAction: 'create' | 'restore';
 	}
 
-	let { progress, segment }: Props = $props();
+	let { progress, segment, snapshotAction }: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
 		stopping: ProgressStep;
-		creating: ProgressStep;
+		createOrRestore: ProgressStep;
 		restarting: ProgressStep;
 	}
 
@@ -38,10 +39,13 @@
 				}
 			])
 		},
-		creating: {
+		createOrRestore: {
 			state: 'next',
-			step: 'creating',
-			text: $i18n.canisters.creating_backup
+			step: 'create_or_restore',
+			text:
+				snapshotAction === 'restore'
+					? $i18n.canisters.restoring_backup
+					: $i18n.canisters.creating_backup
 		},
 		restarting: {
 			state: 'next',
@@ -61,7 +65,7 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, stopping, creating, restarting } = steps;
+			const { preparing, stopping, createOrRestore, restarting } = steps;
 
 			steps = {
 				preparing: {
@@ -71,21 +75,21 @@
 				stopping: {
 					...stopping,
 					state:
-						progress?.step === CreateSnapshotProgressStep.StoppingCanister
+						progress?.step === SnapshotProgressStep.StoppingCanister
 							? mapProgressState(progress?.state)
 							: stopping.state
 				},
-				creating: {
-					...creating,
+				createOrRestore: {
+					...createOrRestore,
 					state:
-						progress?.step === CreateSnapshotProgressStep.CreatingSnapshot
+						progress?.step === SnapshotProgressStep.CreateOrRestoreSnapshot
 							? mapProgressState(progress?.state)
-							: creating.state
+							: createOrRestore.state
 				},
 				restarting: {
 					...restarting,
 					state:
-						progress?.step === CreateSnapshotProgressStep.RestartingCanister
+						progress?.step === SnapshotProgressStep.RestartingCanister
 							? mapProgressState(progress?.state)
 							: restarting.state
 				}

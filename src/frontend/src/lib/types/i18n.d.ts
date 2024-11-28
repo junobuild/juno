@@ -63,6 +63,8 @@ interface I18nCore {
 	in_progress: string;
 	error: string;
 	hold_tight: string;
+	create: string;
+	replace: string;
 }
 
 interface I18nCanisters {
@@ -536,8 +538,6 @@ interface I18nDocument {
 	key_generate: string;
 	key_placeholder: string;
 	description_placeholder: string;
-	create: string;
-	replace: string;
 }
 
 interface I18nAsset {

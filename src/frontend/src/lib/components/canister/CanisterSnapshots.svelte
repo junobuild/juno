@@ -102,7 +102,7 @@
 	</table>
 </div>
 
-<button onclick={openModal}>{$i18n.canisters.create_a_backup}</button>
+<button onclick={openModal}>{$i18n.core.create}</button>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

@@ -59,7 +59,9 @@
 		"completed": "Completed",
 		"in_progress": "In progress",
 		"error": "Error",
-		"hold_tight": "Hold tight!"
+		"hold_tight": "Hold tight!",
+		"create": "Create",
+		"replace": "Replace"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -518,9 +520,7 @@
 		"key": "Key",
 		"key_generate": "Auto generate key",
 		"key_placeholder": "Enter or generate a key",
-		"description_placeholder": "Enter an optional description",
-		"create": "Create",
-		"replace": "Replace"
+		"description_placeholder": "Enter an optional description"
 	},
 	"asset": {
 		"owner": "Owner",

@@ -160,7 +160,14 @@
 		"public": "Public",
 		"subnet": "Subnet",
 		"default_subnet": "Default (same as Juno)",
-		"subnet_id": "Subnet ID"
+		"subnet_id": "Subnet ID",
+		"backup": "Backup",
+		"size": "Size",
+		"timestamp": "Timestamp",
+		"create_a_backup": "Create a backup",
+		"backup_info": "Creates a copy of your {0}'s current state for safe restoration after updates or changes.",
+		"backup_warning": "Only one backup is supported at a time; creating a new backup will replace the existing one.",
+		"no_backup": "There is currently no backup for this {0}."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -474,6 +481,8 @@
 		"empty_balance": "Your wallet does not have any available funds.",
 		"sending_error": "Unexpected error(s) while sending the tokens.",
 		"subnet_loading_errors": "Error while loading the subnet ID of the module.",
+		"snapshot_loading_errors": "Error while loading the snapshots of the module.",
+		"snapshot_no_loaded": "The snapshots are not yet loaded.",
 		"wallet_no_account": "The wallet did not provide any account.",
 		"wallet_load_balance": "The balance of the account cannot be loaded.",
 		"wallet_receive_error": "Unexpected error while receiving tokens.",

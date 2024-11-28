@@ -6,6 +6,7 @@ import type {
 import { getICActor } from '$lib/api/actors/actor.ic.api';
 import { getAgent } from '$lib/api/agent/agent.api';
 import type { CanisterInfo, CanisterLogVisibility, CanisterStatus } from '$lib/types/canister';
+import type { Snapshots } from '$lib/types/snapshot';
 import {
 	CanisterStatus as AgentCanisterStatus,
 	AnonymousIdentity,
@@ -119,6 +120,20 @@ export const canisterLogs = async ({
 	});
 
 	return canister_log_records;
+};
+
+export const canisterSnapshots = async ({
+	canisterId,
+	identity
+}: {
+	canisterId: Principal;
+	identity: Identity;
+}): Promise<Snapshots> => {
+	const { list_canister_snapshots } = await getICActor({ identity });
+
+	return await list_canister_snapshots({
+		canister_id: canisterId
+	});
 };
 
 export const canisterUpdateSettings = async ({

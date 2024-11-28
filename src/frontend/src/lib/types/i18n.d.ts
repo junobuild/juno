@@ -165,6 +165,13 @@ interface I18nCanisters {
 	subnet: string;
 	default_subnet: string;
 	subnet_id: string;
+	backup: string;
+	size: string;
+	timestamp: string;
+	create_a_backup: string;
+	backup_info: string;
+	backup_warning: string;
+	no_backup: string;
 }
 
 interface I18nSign_in {
@@ -490,6 +497,8 @@ interface I18nErrors {
 	empty_balance: string;
 	sending_error: string;
 	subnet_loading_errors: string;
+	snapshot_loading_errors: string;
+	snapshot_no_loaded: string;
 	wallet_no_account: string;
 	wallet_load_balance: string;
 	wallet_receive_error: string;

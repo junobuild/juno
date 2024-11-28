@@ -160,7 +160,14 @@
 		"public": "公开",
 		"subnet": "子网",
 		"default_subnet": "默认 (同 Juno)",
-		"subnet_id": "子网 ID"
+		"subnet_id": "子网 ID",
+		"backup": "Backup",
+		"size": "Size",
+		"timestamp": "时间戳",
+		"create_a_backup": "Create a backup",
+		"backup_info": "Creates a copy of your {0}'s current state for safe restoration after updates or changes.",
+		"backup_warning": "Only one backup is supported at a time; creating a new backup will replace the existing one.",
+		"no_backup": "There is currently no backup for this {0}."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -474,6 +481,8 @@
 		"empty_balance": "你的钱包还没有有效的金额.",
 		"sending_error": "发送代币是出现异常.",
 		"subnet_loading_errors": "加载模块的子网ID出错.",
+		"snapshot_loading_errors": "Error while loading the snapshots of the module.",
+		"snapshot_no_loaded": "The snapshots are not yet loaded.",
 		"wallet_no_account": "签名方未提供账号.",
 		"wallet_load_balance": "账户余额不能被加载.",
 		"wallet_receive_error": "接受代币是出现异常错误.",

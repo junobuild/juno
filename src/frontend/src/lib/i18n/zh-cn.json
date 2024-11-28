@@ -58,7 +58,8 @@
 		"configuration_applied": "Configuration applied.",
 		"completed": "Completed",
 		"in_progress": "In progress",
-		"error": "Error"
+		"error": "Error",
+		"hold_tight": "Hold tight!"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -66,7 +67,6 @@
 		"cycles_description": "Cycles 用于支付只能合约运行消耗. You can top-up (recharge) your {0} by converting ICP to cycles.",
 		"top_up_in_progress": "充值中...",
 		"delete_in_progress": "正在删除...",
-		"upgrade_progress_title": "Hold tight!",
 		"upgrade_preparing": "Preparing upgrade...",
 		"upgrade_validating": "Validating if an upgrade is needed...",
 		"upgrade_stopping": "Stopping {0} before upgrade...",
@@ -169,7 +169,9 @@
 		"backup_warning": "Only one backup is supported at a time; creating a new backup will replace the existing one.",
 		"no_backup": "There is currently no backup for this {0}.",
 		"backup_created": "The backup for your {0} has been created successfully.",
-		"creating_backup": "Creating a backup..."
+		"creating_backup": "Creating a backup...",
+		"backup_preparing": "Preparing backup...",
+		"backup_stopping": "Stopping {0} before taking a snapshot..."
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",

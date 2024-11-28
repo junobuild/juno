@@ -14,6 +14,10 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import { createSnapshot } from '$lib/services/snapshots.services';
 	import { authStore } from '$lib/stores/auth.store';
+	import ProgressUpgradeVersion from "$lib/components/upgrade/ProgressUpgradeVersion.svelte";
+	import ProgressCreateSnapshot from "$lib/components/canister/ProgressCreateSnapshot.svelte";
+	import type {UpgradeCodeProgress} from "@junobuild/admin";
+	import type {CreateSnapshotProgress} from "$lib/types/snapshot";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -26,6 +30,10 @@
 
 	let steps: 'edit' | 'in_progress' | 'ready' = $state('edit');
 
+	let progress: CreateSnapshotProgress | undefined = $state(undefined);
+	const onProgress = (createProgress: CreateSnapshotProgress | undefined) =>
+			(progress = createProgress);
+
 	const handleSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
@@ -33,6 +41,8 @@
 			toasts.error({ text: $i18n.errors.snapshot_not_loaded });
 			return;
 		}
+
+		onProgress(undefined);
 
 		wizardBusy.start();
 		steps = 'in_progress';
@@ -45,7 +55,8 @@
 		const { success } = await createSnapshot({
 			canisterId,
 			snapshotId: $snapshotStore?.[segment.canisterId]?.[0]?.id,
-			identity: $authStore.identity
+			identity: $authStore.identity,
+			onProgress
 		});
 
 		if (success !== 'ok') {
@@ -75,9 +86,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
-		<SpinnerModal>
-			<p>{$i18n.canisters.creating_backup}</p>
-		</SpinnerModal>
+		<ProgressCreateSnapshot segment={segment.segment} {progress} />
 	{:else}
 		<h2>{$i18n.canisters.backup}</h2>
 

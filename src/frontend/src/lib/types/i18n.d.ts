@@ -62,6 +62,7 @@ interface I18nCore {
 	completed: string;
 	in_progress: string;
 	error: string;
+	hold_tight: string;
 }
 
 interface I18nCanisters {
@@ -70,7 +71,6 @@ interface I18nCanisters {
 	cycles_description: string;
 	top_up_in_progress: string;
 	delete_in_progress: string;
-	upgrade_progress_title: string;
 	upgrade_preparing: string;
 	upgrade_validating: string;
 	upgrade_stopping: string;
@@ -174,6 +174,8 @@ interface I18nCanisters {
 	no_backup: string;
 	backup_created: string;
 	creating_backup: string;
+	backup_preparing: string;
+	backup_stopping: string;
 }
 
 interface I18nSign_in {

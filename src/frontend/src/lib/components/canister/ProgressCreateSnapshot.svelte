@@ -34,7 +34,7 @@
 			text: i18nFormat($i18n.canisters.backup_stopping, [
 				{
 					placeholder: '{0}',
-					value: segment
+					value: segment.replace('_', ' ')
 				}
 			])
 		},
@@ -49,7 +49,7 @@
 			text: i18nFormat($i18n.canisters.upgrade_restarting, [
 				{
 					placeholder: '{0}',
-					value: segment
+					value: segment.replace('_', ' ')
 				}
 			])
 		}

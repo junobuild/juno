@@ -46,8 +46,6 @@
 
 		const canisterId = Principal.from(segment.canisterId);
 
-		wizardBusy.stop();
-
 		// TODO: the day the IC supports multiple snapshots per canister, we should extend the UI with a picker to provide users
 		const { success } = await createSnapshot({
 			canisterId,
@@ -55,6 +53,8 @@
 			identity: $authStore.identity,
 			onProgress
 		});
+
+		wizardBusy.stop();
 
 		if (success !== 'ok') {
 			steps = 'edit';

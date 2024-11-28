@@ -38,14 +38,14 @@
 
 		const canisterId = Principal.from(segment.canisterId);
 
-		wizardBusy.stop();
-
 		const { success } = await restoreSnapshot({
 			canisterId,
 			snapshot,
 			identity: $authStore.identity,
 			onProgress
 		});
+
+		wizardBusy.stop();
 
 		if (success !== 'ok') {
 			steps = 'edit';

@@ -16,6 +16,7 @@
 		"help": "帮助",
 		"controllers": "控制管理",
 		"settings": "设置",
+		"setup": "Setup",
 		"continue": "继续",
 		"not_logged_in": "开发者没有登录",
 		"ready": "准备好",

@@ -19,6 +19,7 @@ interface I18nCore {
 	help: string;
 	controllers: string;
 	settings: string;
+	setup: string;
 	continue: string;
 	not_logged_in: string;
 	ready: string;

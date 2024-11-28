@@ -18,6 +18,7 @@
 	import ProgressCreateSnapshot from "$lib/components/canister/ProgressCreateSnapshot.svelte";
 	import type {UpgradeCodeProgress} from "@junobuild/admin";
 	import type {CreateSnapshotProgress} from "$lib/types/snapshot";
+	import Confetti from "$lib/components/ui/Confetti.svelte";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -72,6 +73,8 @@
 
 <Modal on:junoClose={onclose}>
 	{#if steps === 'ready'}
+		<Confetti />
+
 		<div class="msg">
 			<p>
 				<Html

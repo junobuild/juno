@@ -3,7 +3,6 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
-	import { loadSnapshots } from '$lib/services/ic.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { snapshotStore } from '$lib/stores/snapshot.store';
@@ -13,6 +12,7 @@
 	import type { Option } from '$lib/types/utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { loadSnapshots } from '$lib/services/snapshots.services';
 
 	interface Props {
 		canisterId: Principal;

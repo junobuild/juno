@@ -1,34 +1,40 @@
-import { getSubnetId } from '$lib/api/ic.api';
+import { canisterSnapshots } from '$lib/api/ic.api';
 import { i18n } from '$lib/stores/i18n.store';
-import { subnetStore } from '$lib/stores/subnet.store';
+import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
-import { nonNullish } from '@dfinity/utils';
+import { assertNonNullish, nonNullish } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
-export const loadSubnetId = async ({
+export const loadSnapshots = async ({
 	canisterId,
+	identity,
 	reload = false
 }: {
 	canisterId: Principal;
+	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
 	const canisterIdText = canisterId.toText();
 
 	try {
-		const store = get(subnetStore);
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
+
+		const store = get(snapshotStore);
 
 		if (nonNullish(store?.[canisterIdText]) && !reload) {
 			return { success: true };
 		}
 
-		const subnetId = await getSubnetId({
-			canisterId: canisterId.toText()
+		const snapshots = await canisterSnapshots({
+			canisterId,
+			identity
 		});
 
-		subnetStore.set({
+		snapshotStore.set({
 			canisterId: canisterIdText,
-			data: nonNullish(subnetId) ? { subnetId } : undefined
+			data: snapshots
 		});
 
 		return { success: true };
@@ -36,11 +42,11 @@ export const loadSubnetId = async ({
 		const labels = get(i18n);
 
 		toasts.error({
-			text: labels.errors.subnet_loading_errors,
+			text: labels.errors.snapshot_loading_errors,
 			detail: err
 		});
 
-		subnetStore.reset(canisterIdText);
+		snapshotStore.reset(canisterIdText);
 
 		return { success: false };
 	}

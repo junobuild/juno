@@ -18,7 +18,7 @@
 		width: 100%;
 		height: inherit;
 
-		margin: 0 0 var(--padding-1_5x);
+		margin: var(--skeleton-text-padding, 0 0 var(--padding-1_5x));
 
 		--skeleton-text-background: rgba(var(--color-background-contrast-rgb), 0.065);
 		--skeleton-text-background-animated: rgba(var(--color-background-contrast-rgb), 0.135);

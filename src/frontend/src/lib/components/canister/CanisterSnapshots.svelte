@@ -16,6 +16,7 @@
 	import { decodeSnapshotId, encodeSnapshotId } from '@dfinity/ic-management';
 	import { formatBytes } from '$lib/utils/number.utils';
 	import { formatToDate } from '$lib/utils/date.utils';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 
 	interface Props {
 		canisterId: Principal;
@@ -89,7 +90,13 @@
 					>
 				{/if}
 			{:else}
-				<tr><td colspan="3">&ZeroWidthSpace</td></tr>
+				<tr
+					><td colspan="3">
+						<div class="skeleton">
+							&ZeroWidthSpace;<SkeletonText />
+						</div>
+					</td></tr
+				>
 			{/if}
 		</tbody>
 	</table>
@@ -108,5 +115,11 @@
 
 	.table-container {
 		margin: var(--padding-8x) 0 var(--padding-2x);
+	}
+
+	.skeleton {
+		display: flex;
+		max-width: 200px;
+		--skeleton-text-padding: var(--padding-0_25x) 0;
 	}
 </style>

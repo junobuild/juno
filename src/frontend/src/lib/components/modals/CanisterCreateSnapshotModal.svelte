@@ -102,11 +102,9 @@
 		{/if}
 
 		<form class="content" onsubmit={handleSubmit}>
-			<div class="container">
-				<button type="submit" disabled={$isBusy}>
-					{$i18n.canisters.create_a_backup}
-				</button>
-			</div>
+			<button type="submit" disabled={$isBusy}>
+				{$i18n.canisters.create_a_backup}
+			</button>
 		</form>
 	{/if}
 </Modal>
@@ -117,9 +115,5 @@
 
 	.msg {
 		@include overlay.message;
-	}
-
-	.container {
-		margin: var(--padding-4x) 0;
 	}
 </style>

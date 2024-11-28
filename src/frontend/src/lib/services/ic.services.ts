@@ -1,6 +1,6 @@
 import { getSubnetId } from '$lib/api/ic.api';
 import { i18n } from '$lib/stores/i18n.store';
-import { subnetsStore } from '$lib/stores/subnets.store';
+import { subnetStore } from '$lib/stores/subnet.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
@@ -16,7 +16,7 @@ export const loadSubnetId = async ({
 	const canisterIdText = canisterId.toText();
 
 	try {
-		const store = get(subnetsStore);
+		const store = get(subnetStore);
 		if (nonNullish(store[canisterIdText]) && !reload) {
 			return { success: true };
 		}
@@ -25,7 +25,7 @@ export const loadSubnetId = async ({
 			canisterId: canisterId.toText()
 		});
 
-		subnetsStore.setSubnets({
+		subnetStore.set({
 			canisterId: canisterIdText,
 			subnet: nonNullish(subnetId) ? { subnetId } : undefined
 		});
@@ -39,7 +39,7 @@ export const loadSubnetId = async ({
 			detail: err
 		});
 
-		subnetsStore.setSubnets({
+		subnetStore.set({
 			canisterId: canisterIdText,
 			subnet: null
 		});

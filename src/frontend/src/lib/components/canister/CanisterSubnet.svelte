@@ -7,7 +7,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { loadSubnetId } from '$lib/services/ic.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { subnetsStore } from '$lib/stores/subnets.store';
+	import { subnetStore } from '$lib/stores/subnet.store';
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { Subnet } from '$lib/types/subnet';
 	import type { Option } from '$lib/types/utils';
@@ -24,7 +24,7 @@
 		});
 	});
 
-	let subnet: Option<Subnet> = $derived($subnetsStore[canisterId.toText()]);
+	let subnet: Option<Subnet> = $derived($subnetStore[canisterId.toText()]);
 
 	let subnetId: PrincipalText | undefined = $derived(subnet?.subnetId);
 </script>

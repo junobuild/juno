@@ -12,12 +12,17 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const satoshi = IDL.Nat64;
 	const bitcoin_get_balance_result = satoshi;
-	const bitcoin_get_balance_query_args = IDL.Record({
-		network: bitcoin_network,
-		address: bitcoin_address,
-		min_confirmations: IDL.Opt(IDL.Nat32)
+	const bitcoin_block_height = IDL.Nat32;
+	const bitcoin_get_block_headers_args = IDL.Record({
+		start_height: bitcoin_block_height,
+		end_height: IDL.Opt(bitcoin_block_height),
+		network: bitcoin_network
 	});
-	const bitcoin_get_balance_query_result = satoshi;
+	const bitcoin_block_header = IDL.Vec(IDL.Nat8);
+	const bitcoin_get_block_headers_result = IDL.Record({
+		tip_height: bitcoin_block_height,
+		block_headers: IDL.Vec(bitcoin_block_header)
+	});
 	const bitcoin_get_current_fee_percentiles_args = IDL.Record({
 		network: bitcoin_network
 	});
@@ -33,7 +38,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		address: bitcoin_address
 	});
-	const block_hash = IDL.Vec(IDL.Nat8);
+	const bitcoin_block_hash = IDL.Vec(IDL.Nat8);
 	const outpoint = IDL.Record({
 		txid: IDL.Vec(IDL.Nat8),
 		vout: IDL.Nat32
@@ -45,24 +50,8 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const bitcoin_get_utxos_result = IDL.Record({
 		next_page: IDL.Opt(IDL.Vec(IDL.Nat8)),
-		tip_height: IDL.Nat32,
-		tip_block_hash: block_hash,
-		utxos: IDL.Vec(utxo)
-	});
-	const bitcoin_get_utxos_query_args = IDL.Record({
-		network: bitcoin_network,
-		filter: IDL.Opt(
-			IDL.Variant({
-				page: IDL.Vec(IDL.Nat8),
-				min_confirmations: IDL.Nat32
-			})
-		),
-		address: bitcoin_address
-	});
-	const bitcoin_get_utxos_query_result = IDL.Record({
-		next_page: IDL.Opt(IDL.Vec(IDL.Nat8)),
-		tip_height: IDL.Nat32,
-		tip_block_hash: block_hash,
+		tip_height: bitcoin_block_height,
+		tip_block_hash: bitcoin_block_hash,
 		utxos: IDL.Vec(utxo)
 	});
 	const bitcoin_send_transaction_args = IDL.Record({
@@ -81,6 +70,7 @@ export const idlFactory = ({ IDL }) => {
 			canister_id: IDL.Principal
 		})
 	});
+	const snapshot_id = IDL.Vec(IDL.Nat8);
 	const change_details = IDL.Variant({
 		creation: IDL.Record({ controllers: IDL.Vec(IDL.Principal) }),
 		code_deployment: IDL.Record({
@@ -90,6 +80,11 @@ export const idlFactory = ({ IDL }) => {
 				install: IDL.Null
 			}),
 			module_hash: IDL.Vec(IDL.Nat8)
+		}),
+		load_snapshot: IDL.Record({
+			canister_version: IDL.Nat64,
+			taken_at_timestamp: IDL.Nat64,
+			snapshot_id: snapshot_id
 		}),
 		controllers_change: IDL.Record({
 			controllers: IDL.Vec(IDL.Principal)
@@ -111,7 +106,8 @@ export const idlFactory = ({ IDL }) => {
 	const canister_status_args = IDL.Record({ canister_id: canister_id });
 	const log_visibility = IDL.Variant({
 		controllers: IDL.Null,
-		public: IDL.Null
+		public: IDL.Null,
+		allowed_viewers: IDL.Vec(IDL.Principal)
 	});
 	const definite_canister_settings = IDL.Record({
 		freezing_threshold: IDL.Nat,
@@ -157,6 +153,10 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const create_canister_result = IDL.Record({ canister_id: canister_id });
 	const delete_canister_args = IDL.Record({ canister_id: canister_id });
+	const delete_canister_snapshot_args = IDL.Record({
+		canister_id: canister_id,
+		snapshot_id: snapshot_id
+	});
 	const deposit_cycles_args = IDL.Record({ canister_id: canister_id });
 	const ecdsa_curve = IDL.Variant({ secp256k1: IDL.Null });
 	const ecdsa_public_key_args = IDL.Record({
@@ -237,6 +237,20 @@ export const idlFactory = ({ IDL }) => {
 		canister_id: canister_id,
 		sender_canister_version: IDL.Opt(IDL.Nat64)
 	});
+	const list_canister_snapshots_args = IDL.Record({
+		canister_id: canister_id
+	});
+	const snapshot = IDL.Record({
+		id: snapshot_id,
+		total_size: IDL.Nat64,
+		taken_at_timestamp: IDL.Nat64
+	});
+	const list_canister_snapshots_result = IDL.Vec(snapshot);
+	const load_canister_snapshot_args = IDL.Record({
+		canister_id: canister_id,
+		sender_canister_version: IDL.Opt(IDL.Nat64),
+		snapshot_id: snapshot_id
+	});
 	const node_metrics_history_args = IDL.Record({
 		start_at_timestamp_nanos: IDL.Nat64,
 		subnet_id: IDL.Principal
@@ -305,6 +319,13 @@ export const idlFactory = ({ IDL }) => {
 	const stop_canister_args = IDL.Record({ canister_id: canister_id });
 	const stored_chunks_args = IDL.Record({ canister_id: canister_id });
 	const stored_chunks_result = IDL.Vec(chunk_hash);
+	const subnet_info_args = IDL.Record({ subnet_id: IDL.Principal });
+	const subnet_info_result = IDL.Record({ replica_version: IDL.Text });
+	const take_canister_snapshot_args = IDL.Record({
+		replace_snapshot: IDL.Opt(snapshot_id),
+		canister_id: canister_id
+	});
+	const take_canister_snapshot_result = snapshot;
 	const uninstall_code_args = IDL.Record({
 		canister_id: canister_id,
 		sender_canister_version: IDL.Opt(IDL.Nat64)
@@ -321,10 +342,10 @@ export const idlFactory = ({ IDL }) => {
 	const upload_chunk_result = chunk_hash;
 	return IDL.Service({
 		bitcoin_get_balance: IDL.Func([bitcoin_get_balance_args], [bitcoin_get_balance_result], []),
-		bitcoin_get_balance_query: IDL.Func(
-			[bitcoin_get_balance_query_args],
-			[bitcoin_get_balance_query_result],
-			['query']
+		bitcoin_get_block_headers: IDL.Func(
+			[bitcoin_get_block_headers_args],
+			[bitcoin_get_block_headers_result],
+			[]
 		),
 		bitcoin_get_current_fee_percentiles: IDL.Func(
 			[bitcoin_get_current_fee_percentiles_args],
@@ -332,17 +353,13 @@ export const idlFactory = ({ IDL }) => {
 			[]
 		),
 		bitcoin_get_utxos: IDL.Func([bitcoin_get_utxos_args], [bitcoin_get_utxos_result], []),
-		bitcoin_get_utxos_query: IDL.Func(
-			[bitcoin_get_utxos_query_args],
-			[bitcoin_get_utxos_query_result],
-			['query']
-		),
 		bitcoin_send_transaction: IDL.Func([bitcoin_send_transaction_args], [], []),
 		canister_info: IDL.Func([canister_info_args], [canister_info_result], []),
 		canister_status: IDL.Func([canister_status_args], [canister_status_result], []),
 		clear_chunk_store: IDL.Func([clear_chunk_store_args], [], []),
 		create_canister: IDL.Func([create_canister_args], [create_canister_result], []),
 		delete_canister: IDL.Func([delete_canister_args], [], []),
+		delete_canister_snapshot: IDL.Func([delete_canister_snapshot_args], [], []),
 		deposit_cycles: IDL.Func([deposit_cycles_args], [], []),
 		ecdsa_public_key: IDL.Func([ecdsa_public_key_args], [ecdsa_public_key_result], []),
 		fetch_canister_logs: IDL.Func(
@@ -353,6 +370,12 @@ export const idlFactory = ({ IDL }) => {
 		http_request: IDL.Func([http_request_args], [http_request_result], []),
 		install_chunked_code: IDL.Func([install_chunked_code_args], [], []),
 		install_code: IDL.Func([install_code_args], [], []),
+		list_canister_snapshots: IDL.Func(
+			[list_canister_snapshots_args],
+			[list_canister_snapshots_result],
+			[]
+		),
+		load_canister_snapshot: IDL.Func([load_canister_snapshot_args], [], []),
 		node_metrics_history: IDL.Func([node_metrics_history_args], [node_metrics_history_result], []),
 		provisional_create_canister_with_cycles: IDL.Func(
 			[provisional_create_canister_with_cycles_args],
@@ -367,6 +390,12 @@ export const idlFactory = ({ IDL }) => {
 		start_canister: IDL.Func([start_canister_args], [], []),
 		stop_canister: IDL.Func([stop_canister_args], [], []),
 		stored_chunks: IDL.Func([stored_chunks_args], [stored_chunks_result], []),
+		subnet_info: IDL.Func([subnet_info_args], [subnet_info_result], []),
+		take_canister_snapshot: IDL.Func(
+			[take_canister_snapshot_args],
+			[take_canister_snapshot_result],
+			[]
+		),
 		uninstall_code: IDL.Func([uninstall_code_args], [], []),
 		update_settings: IDL.Func([update_settings_args], [], []),
 		upload_chunk: IDL.Func([upload_chunk_args], [upload_chunk_result], [])

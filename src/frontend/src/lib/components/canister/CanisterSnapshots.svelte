@@ -33,7 +33,7 @@
 
 	const openModal = () => {
 		if (isNullish(snapshots)) {
-			toasts.error({ text: $i18n.errors.snapshot_no_loaded });
+			toasts.error({ text: $i18n.errors.snapshot_not_loaded });
 			return;
 		}
 

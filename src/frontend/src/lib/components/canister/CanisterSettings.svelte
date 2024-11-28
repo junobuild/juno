@@ -44,7 +44,7 @@
 
 	const openModal = () => {
 		if (isNullish(settings)) {
-			toasts.error({ text: $i18n.errors.canister_settings_no_loaded });
+			toasts.error({ text: $i18n.errors.canister_settings_not_loaded });
 			return;
 		}
 

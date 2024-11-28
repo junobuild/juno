@@ -10,7 +10,10 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { snapshotStore } from '$lib/stores/snapshot.store';
-	import { nonNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { createSnapshot } from '$lib/services/snapshots.services';
+	import { authStore } from '$lib/stores/auth.store';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -26,6 +29,11 @@
 	const handleSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
+		if (isNullish($snapshotStore?.[segment.canisterId])) {
+			toasts.error({ text: $i18n.errors.snapshot_not_loaded });
+			return;
+		}
+
 		wizardBusy.start();
 		steps = 'in_progress';
 
@@ -33,8 +41,12 @@
 
 		wizardBusy.stop();
 
-		// TODO
-		const success = 'ok';
+		// TODO: the day the IC supports multiple snapshots per canister, we should extend the UI with a picker to provide users
+		const { success } = await createSnapshot({
+			canisterId,
+			snapshotId: $snapshotStore?.[segment.canisterId]?.[0]?.id,
+			identity: $authStore.identity
+		});
 
 		if (success !== 'ok') {
 			steps = 'edit';

@@ -432,7 +432,7 @@ interface I18nErrors {
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
-	canister_settings_no_loaded: string;
+	canister_settings_not_loaded: string;
 	canister_update_error: string;
 	segment_detach: string;
 	ledger_balance_credits: string;
@@ -500,12 +500,13 @@ interface I18nErrors {
 	sending_error: string;
 	subnet_loading_errors: string;
 	snapshot_loading_errors: string;
-	snapshot_no_loaded: string;
+	snapshot_not_loaded: string;
+	snapshot_create_error: string;
 	wallet_no_account: string;
 	wallet_load_balance: string;
 	wallet_receive_error: string;
 	wallet_missing_account: string;
-	auth_settings_no_loaded: string;
+	auth_settings_not_loaded: string;
 	auth_rate_config_max_tokens: string;
 	auth_rate_config_update: string;
 	auth_domain_config: string;

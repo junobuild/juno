@@ -11,6 +11,7 @@
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { last } from '$lib/utils/utils';
+	import CanisterUpgradeOptions from '$lib/components/canister/CanisterUpgradeOptions.svelte';
 
 	interface Props {
 		currentVersion: string;
@@ -18,6 +19,7 @@
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		back?: boolean;
 		intro?: Snippet;
+		takeSnapshot: boolean;
 		onclose: () => void;
 		onback: () => void;
 		onnext: (params: { steps: 'review' | 'error' | 'download'; wasm?: Wasm }) => void;
@@ -28,6 +30,7 @@
 		newerReleases,
 		segment,
 		back = false,
+		takeSnapshot = $bindable(true),
 		intro,
 		onnext,
 		onclose,
@@ -140,6 +143,8 @@
 			])}
 		/>
 	</p>
+
+	<CanisterUpgradeOptions bind:takeSnapshot />
 
 	<div class="toolbar">
 		{#if back}

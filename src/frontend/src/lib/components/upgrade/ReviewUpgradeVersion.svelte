@@ -12,7 +12,7 @@
 	interface Props {
 		upgrade: ({
 			wasmModule
-		}: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress'>) => Promise<void>;
+		}: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress' | 'takeSnapshot'>) => Promise<void>;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		wasm: Wasm | undefined;
 		nextSteps: (
@@ -20,9 +20,10 @@
 		) => void;
 		onclose: () => void;
 		onProgress: (progress: UpgradeCodeProgress | undefined) => void;
+		takeSnapshot: boolean;
 	}
 
-	let { upgrade, segment, wasm, nextSteps, onProgress, onclose }: Props = $props();
+	let { upgrade, segment, wasm, takeSnapshot, nextSteps, onProgress, onclose }: Props = $props();
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -46,7 +47,7 @@
 		try {
 			const wasmModule = new Uint8Array(await wasm.wasm.arrayBuffer());
 
-			await upgrade({ wasmModule, onProgress });
+			await upgrade({ wasmModule, takeSnapshot, onProgress });
 
 			emit({ message: 'junoReloadVersions' });
 
@@ -79,9 +80,9 @@
 	</div>
 {:else}
 	<form onsubmit={onSubmit}>
-		<p class="confirm">
+		<p>
 			<Html
-				text={i18nFormat($i18n.canisters.confirm_upgrade, [
+				text={i18nFormat($i18n.canisters.upgrade_sha, [
 					{
 						placeholder: '{0}',
 						value: segment.replace('_', ' ')
@@ -94,15 +95,15 @@
 			/>
 		</p>
 
+		<p>
+			{takeSnapshot
+				? $i18n.canisters.confirm_upgrade_with_backup
+				: $i18n.canisters.confirm_upgrade_without_backup}
+		</p>
+
 		<div class="toolbar">
 			<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>
-			<button type="submit">{$i18n.core.submit}</button>
+			<button type="submit">{$i18n.canisters.upgrade}</button>
 		</div>
 	</form>
 {/if}
-
-<style lang="scss">
-	.confirm {
-		line-break: anywhere;
-	}
-</style>

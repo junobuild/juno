@@ -22,7 +22,9 @@
 		newerReleases: string[];
 		build?: BuildType | undefined;
 		segment: 'satellite' | 'mission_control' | 'orbiter';
-		upgrade: ({ wasmModule }: Pick<UpgradeCodeParams, 'wasmModule'>) => Promise<void>;
+		upgrade: ({
+			wasmModule
+		}: Pick<UpgradeCodeParams, 'wasmModule' | 'takeSnapshot'>) => Promise<void>;
 		intro?: Snippet;
 		onclose: () => void;
 	}
@@ -38,6 +40,8 @@
 	}: Props = $props();
 
 	let buildExtended = $derived(nonNullish(build) && build === 'extended');
+
+	let takeSnapshot = $state(true);
 
 	let steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' =
 		$state('init');
@@ -89,7 +93,7 @@
 			<p>{$i18n.canisters.download_in_progress}</p>
 		</SpinnerModal>
 	{:else if steps === 'in_progress'}
-		<ProgressUpgradeVersion {segment} {progress} />
+		<ProgressUpgradeVersion {segment} {progress} {takeSnapshot} />
 	{:else if steps === 'review'}
 		<ReviewUpgradeVersion
 			{wasm}
@@ -98,6 +102,7 @@
 			nextSteps={(next) => (steps = next)}
 			{onProgress}
 			{onclose}
+			{takeSnapshot}
 		/>
 	{:else if steps === 'confirm'}
 		<ConfirmUpgradeVersion {segment} {onclose} oncontinue={() => (steps = 'init')} {intro} />
@@ -107,6 +112,7 @@
 			{segment}
 			{currentVersion}
 			back={buildExtended}
+			bind:takeSnapshot
 			{onnext}
 			{onclose}
 			onback={() => (steps = 'confirm')}

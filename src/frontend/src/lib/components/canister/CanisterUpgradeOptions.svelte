@@ -29,16 +29,6 @@
 		margin: 0;
 	}
 
-	.checkbox {
-		&:not(:first-of-type) {
-			padding: var(--padding-4x) 0 0;
-		}
-
-		span {
-			white-space: pre-wrap;
-		}
-	}
-
 	.options {
 		margin: var(--padding) var(--padding-0_5x) 0;
 	}

@@ -2,6 +2,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { onMount, type Snippet } from 'svelte';
+	import CanisterUpgradeOptions from '$lib/components/canister/CanisterUpgradeOptions.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { downloadWasm } from '$lib/services/upgrade.services';
@@ -11,7 +12,6 @@
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { last } from '$lib/utils/utils';
-	import CanisterUpgradeOptions from '$lib/components/canister/CanisterUpgradeOptions.svelte';
 
 	interface Props {
 		currentVersion: string;

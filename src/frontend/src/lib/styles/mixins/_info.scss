@@ -4,7 +4,7 @@
 	background: var(--color-warning);
 	color: var(--color-warning-contrast);
 	padding: var(--padding-2x);
-	margin: 0 0 var(--padding-4x);
+	margin: var(--warning-margin, 0 0 var(--padding-4x));
 	@include shadow.shadow;
 }
 

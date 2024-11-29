@@ -76,6 +76,10 @@
 	{:else}
 		<h2>{$i18n.canisters.backup}</h2>
 
+		<div class="warning">
+			<Warning>{$i18n.canisters.restore_backup_warning}</Warning>
+		</div>
+
 		<p>
 			{i18nFormat($i18n.canisters.restore_backup_info, [
 				{ placeholder: '{0}', value: segment.label },
@@ -83,8 +87,6 @@
 				{ placeholder: '{2}', value: `0x${encodeSnapshotId(snapshot.id)}` }
 			])}
 		</p>
-
-		<Warning>{$i18n.canisters.restore_backup_warning}</Warning>
 
 		<form class="content" onsubmit={handleSubmit}>
 			<button type="submit" disabled={$isBusy}>
@@ -100,5 +102,9 @@
 
 	.msg {
 		@include overlay.message;
+	}
+
+	.warning {
+		--warning-margin: var(--padding-2x) 0;
 	}
 </style>

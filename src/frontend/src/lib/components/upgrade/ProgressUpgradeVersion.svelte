@@ -11,17 +11,25 @@
 	interface Props {
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		progress: UpgradeCodeProgress | undefined;
+		snapshot?: boolean;
 	}
 
-	let { progress, segment }: Props = $props();
+	let { progress, segment, snapshot = true }: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
 		asserting: ProgressStep;
 		stopping: ProgressStep;
+		snapshotting?: ProgressStep;
 		upgrading: ProgressStep;
 		restarting: ProgressStep;
 	}
+
+	const snapshottingStep: ProgressStep = {
+		state: 'next',
+		step: 'snapshotting',
+		text: $i18n.canisters.upgrade_snapshot
+	};
 
 	let steps: Steps = $state({
 		preparing: {
@@ -44,6 +52,7 @@
 				}
 			])
 		},
+		...(snapshot && { snapshottingStep }),
 		upgrading: {
 			state: 'next',
 			step: 'upgrading',
@@ -67,7 +76,7 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, asserting, stopping, upgrading, restarting } = steps;
+			const { preparing, asserting, stopping, snapshotting, upgrading, restarting } = steps;
 
 			steps = {
 				preparing: {
@@ -88,6 +97,15 @@
 							? mapProgressState(progress?.state)
 							: stopping.state
 				},
+				...(snapshot && {
+					snapshotting: {
+						...(snapshotting ?? snapshottingStep),
+						state:
+							progress?.step === UpgradeCodeProgressStep.TakingSnapshot
+								? mapProgressState(progress?.state)
+								: (snapshotting?.state ?? snapshottingStep.state)
+					}
+				}),
 				upgrading: {
 					...upgrading,
 					state:

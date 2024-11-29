@@ -4,6 +4,7 @@ import {
 	canisterStart,
 	canisterStop,
 	createSnapshot as createSnapshotApi,
+	deleteSnapshot as deleteSnapshotApi,
 	restoreSnapshot as restoreSnapshotApi
 } from '$lib/api/ic.api';
 import { i18n } from '$lib/stores/i18n.store';
@@ -29,6 +30,10 @@ interface CreateSnapshotParams extends SnapshotParams {
 }
 
 interface RestoreSnapshotParams extends SnapshotParams {
+	snapshot: snapshot;
+}
+
+interface DeleteSnapshotParams extends Omit<SnapshotParams, 'onProgress'> {
 	snapshot: snapshot;
 }
 
@@ -85,6 +90,35 @@ export const restoreSnapshot = async ({
 
 		toasts.error({
 			text: labels.errors.snapshot_restore_error,
+			detail: err
+		});
+
+		return { success: 'error', err };
+	}
+
+	return { success: 'ok' };
+};
+
+export const deleteSnapshot = async ({
+	canisterId,
+	identity,
+	snapshot
+}: DeleteSnapshotParams): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
+	try {
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
+
+		await deleteSnapshotApi({
+			canisterId,
+			snapshotId: snapshot.id,
+			identity
+		});
+
+		snapshotStore.reset(canisterId.toText());
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: labels.errors.snapshot_delete_error,
 			detail: err
 		});
 

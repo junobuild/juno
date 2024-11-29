@@ -77,8 +77,6 @@ interface I18nCanisters {
 	upgrade_preparing: string;
 	upgrade_validating: string;
 	upgrade_stopping: string;
-	upgrade_snapshot: string;
-	edit_snapshot: string;
 	upgrade_in_progress: string;
 	upgrade_restarting: string;
 	download_in_progress: string;
@@ -189,6 +187,10 @@ interface I18nCanisters {
 	restoring_backup: string;
 	backup_preparing: string;
 	backup_stopping: string;
+	upgrade_snapshot: string;
+	edit_snapshot: string;
+	delete_snapshot: string;
+	delete_snapshot_confirm: string;
 }
 
 interface I18nSign_in {
@@ -519,6 +521,7 @@ interface I18nErrors {
 	snapshot_not_selected: string;
 	snapshot_create_error: string;
 	snapshot_restore_error: string;
+	snapshot_delete_error: string;
 	wallet_no_account: string;
 	wallet_load_balance: string;
 	wallet_receive_error: string;

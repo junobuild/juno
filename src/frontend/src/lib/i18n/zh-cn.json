@@ -74,6 +74,7 @@
 		"upgrade_validating": "Validating if an upgrade is needed...",
 		"upgrade_stopping": "Stopping {0} before upgrade...",
 		"upgrade_snapshot": "Creating a backup...",
+		"edit_snapshot": "Edit backup",
 		"upgrade_in_progress": "Upgrading...",
 		"upgrade_restarting": "Restarting {0}...",
 		"download_in_progress": "下载中...",

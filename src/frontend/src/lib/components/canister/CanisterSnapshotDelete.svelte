@@ -1,16 +1,16 @@
 <script lang="ts">
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { busy, isBusy } from '$lib/stores/busy.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { encodeSnapshotId } from '@dfinity/ic-management';
+	import type { Principal } from '@dfinity/principal';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { snapshot } from '$declarations/ic/ic.did';
+	import Popover from '$lib/components/ui/Popover.svelte';
+	import { deleteSnapshot } from '$lib/services/snapshots.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { busy, isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
-	import { deleteSnapshot } from '$lib/services/snapshots.services';
-	import type { Principal } from '@dfinity/principal';
-	import { authStore } from '$lib/stores/auth.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		visible?: boolean;

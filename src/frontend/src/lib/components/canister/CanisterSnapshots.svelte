@@ -1,10 +1,12 @@
 <script lang="ts">
 	import { encodeSnapshotId } from '@dfinity/ic-management';
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import type { snapshot } from '$declarations/ic/ic.did';
 	import CanisterSnapshotActions from '$lib/components/canister/CanisterSnapshotActions.svelte';
+	import CanisterSnapshotDelete from '$lib/components/canister/CanisterSnapshotDelete.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { loadSnapshots } from '$lib/services/snapshots.services';
@@ -19,8 +21,6 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
-	import CanisterSnapshotDelete from '$lib/components/canister/CanisterSnapshotDelete.svelte';
-	import type { snapshot } from '$declarations/ic/ic.did';
 
 	interface Props {
 		canisterId: Principal;

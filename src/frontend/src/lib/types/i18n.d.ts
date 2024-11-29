@@ -77,6 +77,8 @@ interface I18nCanisters {
 	upgrade_preparing: string;
 	upgrade_validating: string;
 	upgrade_stopping: string;
+	upgrade_snapshot: string;
+	edit_snapshot: string;
 	upgrade_in_progress: string;
 	upgrade_restarting: string;
 	download_in_progress: string;
@@ -111,7 +113,10 @@ interface I18nCanisters {
 	edit_settings_segment: string;
 	not_set: string;
 	review_upgrade: string;
-	confirm_upgrade: string;
+	upgrade_sha: string;
+	confirm_upgrade_with_backup: string;
+	confirm_upgrade_without_backup: string;
+	snapshot_before_upgrade: string;
 	upgrade_done: string;
 	upgrade: string;
 	delete_title: string;

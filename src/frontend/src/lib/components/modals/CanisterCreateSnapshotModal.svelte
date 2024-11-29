@@ -89,17 +89,17 @@
 	{:else}
 		<h2>{$i18n.canisters.backup}</h2>
 
+		{#if warnExistingBackup}
+			<div in:fade class="warning">
+				<Warning>{$i18n.canisters.create_backup_warning}</Warning>
+			</div>
+		{/if}
+
 		<p>
 			{i18nFormat($i18n.canisters.create_backup_info, [
 				{ placeholder: '{0}', value: segment.label }
 			])}
 		</p>
-
-		{#if warnExistingBackup}
-			<div in:fade>
-				<Warning>{$i18n.canisters.create_backup_warning}</Warning>
-			</div>
-		{/if}
 
 		<form class="content" onsubmit={handleSubmit}>
 			<button type="submit" disabled={$isBusy}>
@@ -115,5 +115,9 @@
 
 	.msg {
 		@include overlay.message;
+	}
+
+	.warning {
+		--warning-margin: var(--padding-2x) 0;
 	}
 </style>

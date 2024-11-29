@@ -4,6 +4,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import CanisterSnapshotAction from '$lib/components/canister/CanisterSnapshotAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { loadSnapshots } from '$lib/services/snapshots.services';
@@ -87,6 +88,7 @@
 	<table>
 		<thead>
 			<tr>
+				<th class="tools"></th>
 				<th class="backup"> {$i18n.canisters.backup} </th>
 				<th class="size"> {$i18n.canisters.size} </th>
 				<th> {$i18n.canisters.timestamp} </th>
@@ -97,6 +99,12 @@
 			{#if nonNullish(snapshots)}
 				{#each snapshots as snapshot}
 					<tr>
+						<td
+							><CanisterSnapshotAction
+								onrestore={openRestoreModal}
+								onreplace={openCreateModal}
+							/></td
+						>
 						<td><Identifier small={false} identifier={`0x${encodeSnapshotId(snapshot.id)}`} /></td>
 						<td>{formatBytes(Number(snapshot.total_size))}</td>
 						<td>{formatToDate(snapshot.taken_at_timestamp)}</td>
@@ -105,7 +113,7 @@
 
 				{#if snapshots.length === 0}
 					<tr in:fade
-						><td colspan="3"
+						><td colspan="4"
 							>{i18nFormat($i18n.canisters.no_backup, [
 								{
 									placeholder: '{0}',
@@ -117,7 +125,7 @@
 				{/if}
 			{:else}
 				<tr
-					><td colspan="3">
+					><td colspan="4">
 						<div class="skeleton">
 							&ZeroWidthSpace;<SkeletonText />
 						</div>
@@ -128,16 +136,16 @@
 	</table>
 </div>
 
-<div class="toolbar">
-	<button onclick={openCreateModal}>{$i18n.core.create}</button>
-
-	{#if hasExistingSnapshot}
-		<button in:fade onclick={openRestoreModal}>{$i18n.core.restore}</button>
-	{/if}
-</div>
+{#if !hasExistingSnapshot}
+	<button in:fade onclick={openCreateModal}>{$i18n.core.create}</button>
+{/if}
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+
+	.tools {
+		width: 88px;
+	}
 
 	.backup {
 		@include media.min-width(medium) {

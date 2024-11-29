@@ -4,6 +4,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import CanisterSnapshotAction from '$lib/components/canister/CanisterSnapshotAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { loadSnapshots } from '$lib/services/snapshots.services';
@@ -18,8 +19,6 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
-	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
-	import CanisterSnapshotAction from '$lib/components/canister/CanisterSnapshotAction.svelte';
 
 	interface Props {
 		canisterId: Principal;

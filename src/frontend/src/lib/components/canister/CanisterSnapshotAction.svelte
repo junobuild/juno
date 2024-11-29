@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Popover from '$lib/components/ui/Popover.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import IconHistory from '$lib/components/icons/IconHistory.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		onrestore: () => void;

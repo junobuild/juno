@@ -46,7 +46,8 @@
 
 		width: fit-content;
 		height: auto;
-		max-height: 100vh;
+
+		max-height: calc(var(--full-vh, 100vh) - var(--popover-top) - var(--padding-2x));
 
 		overflow-x: hidden;
 		overflow-y: auto;
@@ -56,6 +57,10 @@
 		align-items: flex-start;
 
 		@include shadow.strong-card;
+
+		@supports (height: 100dvh) {
+			--full-vh: 100dvh;
+		}
 
 		&.center {
 			top: 50%;
@@ -67,6 +72,11 @@
 	.close {
 		align-self: flex-end;
 		margin: 0.45rem;
+	}
+
+	.popover-content {
+		width: 100%;
+		overflow-y: auto;
 	}
 }
 

@@ -4,7 +4,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import CanisterSnapshotAction from '$lib/components/canister/CanisterSnapshotAction.svelte';
+	import CanisterSnapshotActions from '$lib/components/canister/CanisterSnapshotActions.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { loadSnapshots } from '$lib/services/snapshots.services';
@@ -100,7 +100,7 @@
 				{#each snapshots as snapshot}
 					<tr>
 						<td
-							><CanisterSnapshotAction
+							><CanisterSnapshotActions
 								onrestore={openRestoreModal}
 								onreplace={openCreateModal}
 							/></td

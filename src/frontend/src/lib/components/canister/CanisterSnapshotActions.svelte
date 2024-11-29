@@ -4,13 +4,15 @@
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import IconDelete from "$lib/components/icons/IconDelete.svelte";
 
 	interface Props {
 		onrestore: () => void;
 		onreplace: () => void;
+		ondelete: () => void;
 	}
 
-	let { onrestore, onreplace }: Props = $props();
+	let { onrestore, onreplace, ondelete }: Props = $props();
 
 	let visible = $state(false);
 
@@ -23,6 +25,11 @@
 
 	const replace = () => {
 		onreplace();
+		visible = false;
+	};
+
+	const deleteSnapshot = () => {
+		ondelete();
 		visible = false;
 	};
 </script>
@@ -38,6 +45,7 @@
 	<div class="container">
 		<button onclick={restore} class="menu"><IconHistory /> {$i18n.core.restore}</button>
 		<button onclick={replace} class="menu"><IconRefresh /> {$i18n.core.replace}</button>
+		<button onclick={deleteSnapshot} class="menu"><IconDelete /> {$i18n.core.delete}</button>
 	</div>
 </Popover>
 

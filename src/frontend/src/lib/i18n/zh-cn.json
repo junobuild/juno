@@ -73,8 +73,6 @@
 		"upgrade_preparing": "Preparing upgrade...",
 		"upgrade_validating": "Validating if an upgrade is needed...",
 		"upgrade_stopping": "Stopping {0} before upgrade...",
-		"upgrade_snapshot": "Creating a backup...",
-		"edit_snapshot": "Edit backup",
 		"upgrade_in_progress": "Upgrading...",
 		"upgrade_restarting": "Restarting {0}...",
 		"download_in_progress": "下载中...",
@@ -184,7 +182,11 @@
 		"creating_backup": "Creating a backup...",
 		"restoring_backup": "Restoring a backup...",
 		"backup_preparing": "Preparing execution...",
-		"backup_stopping": "Stopping {0}..."
+		"backup_stopping": "Stopping {0}...",
+		"upgrade_snapshot": "Creating a backup...",
+		"edit_snapshot": "Edit backup",
+		"delete_snapshot": "Delete backup",
+		"delete_snapshot_confirm": "Are you sure you want to delete the backup {0} of your {1}?"
 	},
 	"sign_in": {
 		"quote_1": "Stars can't shine without darkness.",
@@ -503,6 +505,7 @@
 		"snapshot_not_selected": "You need to select a snapshot to restore.",
 		"snapshot_create_error": "Unexpected error(s) while creating the snapshot.",
 		"snapshot_restore_error": "Unexpected error(s) while restoring the snapshot.",
+		"snapshot_delete_error": "Unexpected error(s) while deleting the snapshot.",
 		"wallet_no_account": "签名方未提供账号.",
 		"wallet_load_balance": "账户余额不能被加载.",
 		"wallet_receive_error": "接受代币是出现异常错误.",

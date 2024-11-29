@@ -19,6 +19,8 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
+	import CanisterSnapshotDelete from "$lib/components/canister/CanisterSnapshotDelete.svelte";
+	import type { snapshot } from '$declarations/ic/ic.did';
 
 	interface Props {
 		canisterId: Principal;
@@ -60,11 +62,11 @@
 		});
 	};
 
-	const openRestoreModal = () => {
-		// Currently the IC supports only one snapshot per canister.
-		const exitingSnapshot = snapshots?.[0];
+	// Currently the IC supports only one snapshot per canister.
+	let existingSnapshot: snapshot | undefined = $derived(snapshots?.[0]);
 
-		if (isNullish(exitingSnapshot)) {
+	const openRestoreModal = () => {
+		if (isNullish(existingSnapshot)) {
 			toasts.error({ text: $i18n.errors.snapshot_not_selected });
 			return;
 		}
@@ -75,13 +77,16 @@
 				type: 'restore_snapshot',
 				detail: {
 					segment: segmentWithLabel,
-					snapshot: exitingSnapshot
+					snapshot: existingSnapshot
 				}
 			}
 		});
 	};
 
-	let hasExistingSnapshot = $derived((snapshots?.length ?? 0) > 0);
+	let deleteSnapshotVisible = $state(false);
+	const openDeletePopover = () => deleteSnapshotVisible = true;
+
+	let hasExistingSnapshots = $derived((snapshots?.length ?? 0) > 0);
 </script>
 
 <div class="table-container">
@@ -96,11 +101,12 @@
 		</thead>
 
 		<tbody>
-			{#if nonNullish(snapshots)}
-				{#each snapshots as snapshot}
+			{#if snapshots !== undefined}
+				{#each (snapshots ?? []) as snapshot}
 					<tr>
 						<td
 							><CanisterSnapshotActions
+								ondelete={openDeletePopover}
 								onrestore={openRestoreModal}
 								onreplace={openCreateModal}
 							/></td
@@ -111,7 +117,7 @@
 					</tr>
 				{/each}
 
-				{#if snapshots.length === 0}
+				{#if snapshots === null || snapshots?.length === 0}
 					<tr in:fade
 						><td colspan="4"
 							>{i18nFormat($i18n.canisters.no_backup, [
@@ -136,9 +142,11 @@
 	</table>
 </div>
 
-{#if !hasExistingSnapshot}
+{#if !hasExistingSnapshots && $snapshotStore !== undefined}
 	<button in:fade onclick={openCreateModal}>{$i18n.core.create}</button>
 {/if}
+
+<CanisterSnapshotDelete {canisterId} {existingSnapshot} {segmentLabel} bind:visible={deleteSnapshotVisible} />
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

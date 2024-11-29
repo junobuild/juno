@@ -173,6 +173,23 @@ export const restoreSnapshot = async ({
 	});
 };
 
+export const deleteSnapshot = async ({
+	canisterId,
+	snapshotId,
+	identity
+}: {
+	canisterId: Principal;
+	snapshotId: snapshot_id;
+	identity: Identity;
+}): Promise<void> => {
+	const { delete_canister_snapshot } = await getICActor({ identity });
+
+	await delete_canister_snapshot({
+		canister_id: canisterId,
+		snapshot_id: snapshotId
+	});
+};
+
 export const canisterUpdateSettings = async ({
 	canisterId,
 	identity,

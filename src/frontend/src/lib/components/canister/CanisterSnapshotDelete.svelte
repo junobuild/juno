@@ -31,7 +31,7 @@
 
 		busy.start();
 
-		const {success} = await deleteSnapshot({
+		const { success } = await deleteSnapshot({
 			canisterId,
 			snapshot: existingSnapshot,
 			identity: $authStore.identity

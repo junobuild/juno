@@ -4,7 +4,7 @@
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import IconDelete from "$lib/components/icons/IconDelete.svelte";
+	import IconDelete from '$lib/components/icons/IconDelete.svelte';
 
 	interface Props {
 		onrestore: () => void;

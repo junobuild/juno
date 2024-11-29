@@ -19,7 +19,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { formatBytes } from '$lib/utils/number.utils';
-	import CanisterSnapshotDelete from "$lib/components/canister/CanisterSnapshotDelete.svelte";
+	import CanisterSnapshotDelete from '$lib/components/canister/CanisterSnapshotDelete.svelte';
 	import type { snapshot } from '$declarations/ic/ic.did';
 
 	interface Props {
@@ -84,7 +84,7 @@
 	};
 
 	let deleteSnapshotVisible = $state(false);
-	const openDeletePopover = () => deleteSnapshotVisible = true;
+	const openDeletePopover = () => (deleteSnapshotVisible = true);
 
 	let hasExistingSnapshots = $derived((snapshots?.length ?? 0) > 0);
 </script>
@@ -102,7 +102,7 @@
 
 		<tbody>
 			{#if snapshots !== undefined}
-				{#each (snapshots ?? []) as snapshot}
+				{#each snapshots ?? [] as snapshot}
 					<tr>
 						<td
 							><CanisterSnapshotActions
@@ -146,7 +146,12 @@
 	<button in:fade onclick={openCreateModal}>{$i18n.core.create}</button>
 {/if}
 
-<CanisterSnapshotDelete {canisterId} {existingSnapshot} {segmentLabel} bind:visible={deleteSnapshotVisible} />
+<CanisterSnapshotDelete
+	{canisterId}
+	{existingSnapshot}
+	{segmentLabel}
+	bind:visible={deleteSnapshotVisible}
+/>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

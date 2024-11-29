@@ -1,8 +1,9 @@
 import type { ProgressStepState } from '$lib/types/progress-step';
+import type { SnapshotProgressState } from '$lib/types/snapshot';
 import type { UpgradeCodeProgressState } from '@junobuild/admin';
 
 export const mapProgressState = (
-	state: UpgradeCodeProgressState | undefined
+	state: UpgradeCodeProgressState | SnapshotProgressState | undefined
 ): ProgressStepState => {
 	switch (state) {
 		case 'error':

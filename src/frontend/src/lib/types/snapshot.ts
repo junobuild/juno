@@ -9,8 +9,9 @@ export enum SnapshotProgressStep {
 	RestartingCanister = 3
 }
 
+export type SnapshotProgressState = UpgradeCodeProgressState;
+
 export interface SnapshotProgress {
 	step: SnapshotProgressStep;
-	// TODO: rename maybe type UpgradeCodeProgressState to something generic
-	state: UpgradeCodeProgressState;
+	state: SnapshotProgressState;
 }

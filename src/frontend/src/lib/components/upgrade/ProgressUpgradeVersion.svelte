@@ -11,10 +11,10 @@
 	interface Props {
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		progress: UpgradeCodeProgress | undefined;
-		snapshot?: boolean;
+		takeSnapshot?: boolean;
 	}
 
-	let { progress, segment, snapshot = true }: Props = $props();
+	let { progress, segment, takeSnapshot = true }: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
@@ -52,7 +52,7 @@
 				}
 			])
 		},
-		...(snapshot && { snapshottingStep }),
+		...(takeSnapshot && { snapshottingStep }),
 		upgrading: {
 			state: 'next',
 			step: 'upgrading',
@@ -97,7 +97,7 @@
 							? mapProgressState(progress?.state)
 							: stopping.state
 				},
-				...(snapshot && {
+				...(takeSnapshot && {
 					snapshotting: {
 						...(snapshotting ?? snapshottingStep),
 						state:

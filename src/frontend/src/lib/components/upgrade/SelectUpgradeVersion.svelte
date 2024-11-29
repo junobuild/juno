@@ -2,6 +2,7 @@
 	import { isNullish } from '@dfinity/utils';
 	import { checkUpgradeVersion } from '@junobuild/admin';
 	import { onMount, type Snippet } from 'svelte';
+	import CanisterUpgradeOptions from '$lib/components/canister/CanisterUpgradeOptions.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { downloadWasm } from '$lib/services/upgrade.services';
@@ -18,6 +19,7 @@
 		segment: 'satellite' | 'mission_control' | 'orbiter';
 		back?: boolean;
 		intro?: Snippet;
+		takeSnapshot: boolean;
 		onclose: () => void;
 		onback: () => void;
 		onnext: (params: { steps: 'review' | 'error' | 'download'; wasm?: Wasm }) => void;
@@ -28,6 +30,7 @@
 		newerReleases,
 		segment,
 		back = false,
+		takeSnapshot = $bindable(true),
 		intro,
 		onnext,
 		onclose,
@@ -140,6 +143,8 @@
 			])}
 		/>
 	</p>
+
+	<CanisterUpgradeOptions bind:takeSnapshot />
 
 	<div class="toolbar">
 		{#if back}

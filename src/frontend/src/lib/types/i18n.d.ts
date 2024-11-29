@@ -77,6 +77,7 @@ interface I18nCanisters {
 	upgrade_preparing: string;
 	upgrade_validating: string;
 	upgrade_stopping: string;
+	upgrade_snapshot: string;
 	upgrade_in_progress: string;
 	upgrade_restarting: string;
 	download_in_progress: string;

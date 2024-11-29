@@ -79,7 +79,9 @@
 				>
 			{/if}
 
-			{@render children()}
+			<div class="popover-content">
+				{@render children()}
+			</div>
 		</div>
 	</div>
 {/if}

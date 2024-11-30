@@ -1,14 +1,19 @@
 <script lang="ts">
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { versionStore } from '$lib/stores/version.store';
-	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
-	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
+	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
+	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
+	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { versionStore } from '$lib/stores/version.store';
 
-	export let orbiter: Orbiter;
+	interface Props {
+		orbiter: Orbiter;
+	}
+
+	let { orbiter }: Props = $props();
 </script>
 
 <div class="card-container with-title">
@@ -17,15 +22,23 @@
 	<div class="columns-3 fit-column-1">
 		<div class="id">
 			<Value>
-				<svelte:fragment slot="label">{$i18n.analytics.id}</svelte:fragment>
+				{#snippet label()}
+					{$i18n.analytics.id}
+				{/snippet}
 				<Identifier identifier={orbiter.orbiter_id.toText()} shorten={false} small={false} />
 			</Value>
+
+			<CanisterSubnet canisterId={orbiter.orbiter_id} />
 		</div>
 
-		<Value>
-			<svelte:fragment slot="label">{$i18n.core.version}</svelte:fragment>
-			<p>v{$versionStore?.orbiter?.current ?? '...'}</p>
-		</Value>
+		<div>
+			<Value>
+				{#snippet label()}
+					{$i18n.core.version}
+				{/snippet}
+				<p>v{$versionStore?.orbiter?.current ?? '...'}</p>
+			</Value>
+		</div>
 	</div>
 
 	<OrbiterActions {orbiter} />

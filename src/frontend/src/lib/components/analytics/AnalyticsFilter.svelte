@@ -1,72 +1,55 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import SatellitesPicker from '$lib/components/satellites/SatellitesPicker.svelte';
-	import { createEventDispatcher } from 'svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 	import { addMonths, format } from 'date-fns';
+	import AnalyticsSatellitesPicker from '$lib/components/analytics/AnalyticsSatellitesPicker.svelte';
+	import AnalyticsToolbar from '$lib/components/analytics/AnalyticsToolbar.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { PageViewsPeriod } from '$lib/types/ortbiter';
 
-	let from = format(addMonths(new Date(), -1), 'yyyy-MM-dd');
-	let to = '';
+	interface Props {
+		selectPeriod: (period: PageViewsPeriod) => void;
+	}
 
-	const dispatch = createEventDispatcher();
+	let { selectPeriod }: Props = $props();
+
+	let from = $state(format(addMonths(new Date(), -1), 'yyyy-MM-dd'));
+	let to = $state('');
 
 	const onChange = () =>
-		dispatch('junoPeriod', {
+		selectPeriod({
 			from: nonNullish(from) && from !== '' ? new Date(from) : undefined,
 			to: nonNullish(to) && to !== '' ? new Date(to) : undefined
-		} as PageViewsPeriod);
+		});
 </script>
 
-<div class="filters">
-	<div class="satellites">
+<AnalyticsToolbar>
+	{#snippet start()}
 		<Value>
-			<svelte:fragment slot="label">{$i18n.analytics.satellites}</svelte:fragment>
-			<SatellitesPicker />
+			{#snippet label()}
+				{$i18n.analytics.satellites}
+			{/snippet}
+			<AnalyticsSatellitesPicker />
 		</Value>
-	</div>
+	{/snippet}
 
-	<div>
+	{#snippet center()}
 		<Value ref="from">
-			<svelte:fragment slot="label">{$i18n.core.from}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.core.from}
+			{/snippet}
 
-			<input bind:value={from} id="from" name="from" type="date" on:change={onChange} />
+			<input bind:value={from} id="from" name="from" type="date" onchange={onChange} />
 		</Value>
-	</div>
+	{/snippet}
 
-	<div>
+	{#snippet end()}
 		<Value ref="to">
-			<svelte:fragment slot="label">{$i18n.core.to}</svelte:fragment>
+			{#snippet label()}
+				{$i18n.core.to}
+			{/snippet}
 
-			<input bind:value={to} id="to" name="to" type="date" on:change={onChange} />
+			<input bind:value={to} id="to" name="to" type="date" onchange={onChange} />
 		</Value>
-	</div>
-</div>
-
-<style lang="scss">
-	@use '../../styles/mixins/grid';
-	@use '../../styles/mixins/media';
-
-	.filters {
-		display: grid;
-		grid-template-columns: repeat(2, calc((100% - var(--padding-1_5x)) / 2));
-
-		column-gap: var(--padding-1_5x);
-		padding: var(--padding-2x) 0;
-
-		@include media.min-width(large) {
-			grid-template-columns: repeat(3, calc((100% - (2 * var(--padding-4x))) / 3));
-
-			gap: var(--padding-4x);
-		}
-	}
-
-	.satellites {
-		grid-column: 1 / 3;
-
-		@include media.min-width(large) {
-			grid-column: 1 / 2;
-		}
-	}
-</style>
+	{/snippet}
+</AnalyticsToolbar>

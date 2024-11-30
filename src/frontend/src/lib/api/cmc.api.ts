@@ -1,7 +1,8 @@
+import { getAgent } from '$lib/api/agent/agent.api';
 import { CMC_CANISTER_ID } from '$lib/constants/constants';
-import { getAgent } from '$lib/utils/agent.utils';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { CMCCanister } from '@dfinity/cmc';
+import { Principal } from '@dfinity/principal';
 
 const NUMBER_XDR_PER_ONE_ICP = 10_000;
 
@@ -10,7 +11,7 @@ export const icpXdrConversionRate = async (): Promise<bigint> => {
 
 	const { getIcpToCyclesConversionRate } = CMCCanister.create({
 		agent,
-		canisterId: CMC_CANISTER_ID
+		canisterId: Principal.fromText(CMC_CANISTER_ID)
 	});
 
 	const xdr_permyriad_per_icp = await getIcpToCyclesConversionRate();
@@ -19,4 +20,15 @@ export const icpXdrConversionRate = async (): Promise<bigint> => {
 
 	// trillionRatio
 	return (xdr_permyriad_per_icp * CYCLES_PER_XDR) / BigInt(NUMBER_XDR_PER_ONE_ICP);
+};
+
+export const getDefaultSubnets = async (): Promise<Principal[]> => {
+	const agent = await getAgent({ identity: new AnonymousIdentity() });
+
+	const { getDefaultSubnets: getDefaultSubnetsApi } = CMCCanister.create({
+		agent,
+		canisterId: Principal.fromText(CMC_CANISTER_ID)
+	});
+
+	return await getDefaultSubnetsApi({ certified: false });
 };

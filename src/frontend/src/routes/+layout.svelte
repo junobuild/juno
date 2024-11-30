@@ -1,16 +1,24 @@
 <script lang="ts">
-	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
-	import { browser } from '$app/environment';
-	import { initMissionControl } from '$lib/services/console.services';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { onMount } from 'svelte';
-	import { initAuthWorker } from '$lib/services/worker.auth.services';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import Overlays from '$lib/components/core/Overlays.svelte';
-	import { toasts } from '$lib/stores/toasts.store';
 	import { isNullish } from '@dfinity/utils';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { onMount, type Snippet } from 'svelte';
+	import { run } from 'svelte/legacy';
+	import { browser } from '$app/environment';
+	import Overlays from '$lib/components/core/Overlays.svelte';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
+	import { initMissionControl } from '$lib/services/console.services';
+	import { initAuthWorker } from '$lib/services/worker.auth.services';
+	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import '$lib/styles/global.scss';
+
+	interface Props {
+		children: Snippet;
+	}
+
+	let { children }: Props = $props();
 
 	const init = async () => await Promise.all([i18n.init(), syncAuthStore()]);
 
@@ -37,6 +45,7 @@
 			// Poll to init mission control center
 			await initMissionControl({
 				identity,
+				// eslint-disable-next-line require-await
 				onInitMissionControlSuccess: async (missionControlId) =>
 					missionControlStore.set(missionControlId)
 			});
@@ -51,25 +60,26 @@
 		}
 	};
 
-	$: (async () => initUser($authStore))();
+	run(() => {
+		(async () => await initUser($authStore))();
+	});
 
-	let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined;
+	let worker: { syncAuthIdle: (auth: AuthStoreData) => void } | undefined = $state();
 
 	onMount(async () => (worker = await initAuthWorker()));
 
-	$: worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
+	});
 </script>
 
-<svelte:window on:storage={syncAuthStore} />
+<svelte:window onstorage={syncAuthStore} />
 
 {#await init()}
 	<Spinner />
 {:then _}
-	<slot />
+	{@render children()}
 
 	<Overlays />
 {/await}
-
-<style lang="scss" global>
-	@import '../lib/styles/global.scss';
-</style>

@@ -1,8 +1,12 @@
 <script lang="ts">
-	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
 	import type { Principal } from '@dfinity/principal';
+	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
 
-	export let missionControlId: Principal;
+	interface Props {
+		missionControlId: Principal;
+	}
+
+	let { missionControlId }: Props = $props();
 </script>
 
 <CanisterJunoStatuses segment="mission_control" canisterId={missionControlId} />

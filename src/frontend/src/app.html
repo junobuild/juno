@@ -59,6 +59,21 @@
 				// We ignore the error until we can extra proxy/signin to auth.papy.rs
 			}
 		</script>
+
+		<style>
+			:root {
+				--color-background: #ffffff;
+				--color-background-contrast: #000000;
+
+				background: var(--color-background);
+				color: var(--color-background-contrast);
+			}
+
+			:root[theme='dark'] {
+				--color-background: #1b1b1d;
+				--color-background-contrast: #ebedf0;
+			}
+		</style>
 	</head>
 	<body>
 		<div>%sveltekit.body%</div>

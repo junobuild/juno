@@ -1,16 +1,19 @@
-use crate::assert::{
+use crate::assert::constraints::{
     assert_analytic_key_length, assert_bot, assert_page_view_length, assert_satellite_id,
     assert_session_id, assert_track_event_length,
 };
 use crate::filters::{filter_analytics, filter_satellites_analytics};
 use crate::memory::STATE;
-use crate::types::interface::{GetAnalytics, SetPageView, SetTrackEvent};
+use crate::types::interface::{GetAnalytics, SetPageView, SetPerformanceMetric, SetTrackEvent};
 use crate::types::memory::{StoredPageView, StoredTrackEvent};
-use crate::types::state::{AnalyticKey, AnalyticSatelliteKey, PageView, StableState, TrackEvent};
+use crate::types::state::{
+    AnalyticKey, AnalyticSatelliteKey, PageView, PerformanceMetric, SatelliteConfig, StableState,
+    TrackEvent,
+};
 use ic_cdk::api::time;
 use junobuild_shared::assert::{assert_timestamp, assert_version};
 use junobuild_shared::constants::INITIAL_VERSION;
-use junobuild_shared::types::state::{Timestamp, Version};
+use junobuild_shared::types::state::{SatelliteId, Timestamp, Version};
 
 pub fn insert_page_view(key: AnalyticKey, page_view: SetPageView) -> Result<PageView, String> {
     STATE.with(|state| insert_page_view_impl(key, page_view, &mut state.borrow_mut().stable))
@@ -179,10 +182,6 @@ fn insert_track_event_impl(
         }
     }
 
-    // There is no timestamp assertion in the case of the Orbiter analytics.
-    // It's possible that the user refreshes the browser quickly, and as a result, the JS worker may send the same page again.
-    // To improve performance, we want to avoid forcing the worker to fetch entities again in such cases.
-
     let now = time();
 
     let created_at: Timestamp = match current_track_event.clone() {
@@ -225,6 +224,105 @@ fn insert_track_event_impl(
     );
 
     Ok(new_track_event.clone())
+}
+
+pub fn insert_performance_metric(
+    key: AnalyticKey,
+    performance_metric: SetPerformanceMetric,
+) -> Result<PerformanceMetric, String> {
+    STATE.with(|state| {
+        insert_performance_metric_impl(key, performance_metric, &mut state.borrow_mut().stable)
+    })
+}
+
+fn insert_performance_metric_impl(
+    key: AnalyticKey,
+    performance_metric: SetPerformanceMetric,
+    state: &mut StableState,
+) -> Result<PerformanceMetric, String> {
+    assert_bot(&performance_metric.user_agent)?;
+    assert_analytic_key_length(&key)?;
+
+    let current_performance_metric = state.performance_metrics.get(&key);
+
+    // Validate overwrite
+    match &current_performance_metric {
+        None => (),
+        Some(current_performance_metric) => {
+            match assert_version(
+                performance_metric.version,
+                current_performance_metric.version,
+            ) {
+                Ok(_) => (),
+                Err(e) => {
+                    return Err(e);
+                }
+            }
+        }
+    }
+
+    // Validate session id
+    match &current_performance_metric {
+        None => (),
+        Some(current_performance_metric) => {
+            assert_session_id(
+                &performance_metric.session_id,
+                &current_performance_metric.session_id,
+            )?;
+        }
+    }
+
+    // Validate satellite id
+    match &current_performance_metric.clone() {
+        None => (),
+        Some(current_performance_metric) => {
+            assert_satellite_id(
+                performance_metric.satellite_id,
+                current_performance_metric.satellite_id,
+            )?;
+        }
+    }
+
+    let now = time();
+
+    let created_at: Timestamp = match &current_performance_metric {
+        None => now,
+        Some(current_performance_metric) => current_performance_metric.created_at,
+    };
+
+    let version: Version = match &current_performance_metric {
+        None => INITIAL_VERSION,
+        Some(current_performance_metric) => {
+            current_performance_metric.version.unwrap_or_default() + 1
+        }
+    };
+
+    let session_id: String = match &current_performance_metric {
+        None => performance_metric.session_id.clone(),
+        Some(current_performance_metric) => current_performance_metric.session_id.clone(),
+    };
+
+    let new_performance_metric: PerformanceMetric = PerformanceMetric {
+        href: performance_metric.href,
+        metric_name: performance_metric.metric_name,
+        data: performance_metric.data,
+        satellite_id: performance_metric.satellite_id,
+        session_id,
+        created_at,
+        updated_at: now,
+        version: Some(version),
+    };
+
+    state
+        .performance_metrics
+        .insert(key.clone(), new_performance_metric.clone());
+
+    state.satellites_performance_metrics.insert(
+        AnalyticSatelliteKey::from_key(&key, &new_performance_metric.satellite_id),
+        key.clone(),
+    );
+
+    Ok(new_performance_metric.clone())
 }
 
 pub fn get_page_views(filter: &GetAnalytics) -> Vec<(AnalyticKey, PageView)> {
@@ -282,4 +380,42 @@ fn get_track_events_impl(
                 .collect()
         }
     }
+}
+
+pub fn get_performance_metrics(filter: &GetAnalytics) -> Vec<(AnalyticKey, PerformanceMetric)> {
+    STATE.with(|state| get_performance_metrics_impl(filter, &state.borrow_mut().stable))
+}
+
+fn get_performance_metrics_impl(
+    filter: &GetAnalytics,
+    state: &StableState,
+) -> Vec<(AnalyticKey, PerformanceMetric)> {
+    match filter.satellite_id {
+        None => state
+            .performance_metrics
+            .range(filter_analytics(filter))
+            .collect(),
+        Some(satellite_id) => {
+            let satellites_keys: Vec<(AnalyticSatelliteKey, AnalyticKey)> = state
+                .satellites_performance_metrics
+                .range(filter_satellites_analytics(filter, satellite_id))
+                .collect();
+            satellites_keys
+                .iter()
+                .filter_map(|(_, key)| {
+                    let performance_metric = state.performance_metrics.get(key);
+                    performance_metric.map(|performance_metric| (key.clone(), performance_metric))
+                })
+                .collect()
+        }
+    }
+}
+
+pub fn get_satellite_config(satellite_id: &SatelliteId) -> Option<SatelliteConfig> {
+    STATE.with(|state| {
+        let binding = state.borrow();
+        let config = binding.heap.config.get(satellite_id);
+
+        config.cloned()
+    })
 }

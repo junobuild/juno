@@ -1,15 +1,16 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import type { Log as LogType } from '$lib/types/log';
 	import { getContext, onDestroy } from 'svelte';
+	import { run } from 'svelte/legacy';
 	import IconAutoRenew from '$lib/components/icons/IconAutoRenew.svelte';
 	import IconMore from '$lib/components/icons/IconMore.svelte';
-	import Popover from '$lib/components/ui/Popover.svelte';
 	import IconTimer from '$lib/components/icons/IconTimer.svelte';
 	import IconTimerOff from '$lib/components/icons/IconTimerOff.svelte';
-	import { getLocalStorageObserveLogs, setLocalStorageItem } from '$lib/utils/local-storage.utils';
+	import Popover from '$lib/components/ui/Popover.svelte';
 	import { SYNC_LOGS_TIMER_INTERVAL } from '$lib/constants/constants';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { Log as LogType } from '$lib/types/log';
+	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
+	import { getLocalStorageObserveLogs, setLocalStorageItem } from '$lib/utils/local-storage.utils';
 
 	const { list, resetPage }: PaginationContext<LogType> =
 		getContext<PaginationContext<LogType>>(PAGINATION_CONTEXT_KEY);
@@ -21,13 +22,13 @@
 		await list();
 	};
 
-	let observe = getLocalStorageObserveLogs();
+	let observe = $state(getLocalStorageObserveLogs());
 	let timer: number | undefined;
 
 	const saveToggle = () =>
 		setLocalStorageItem({ key: 'observe_logs', value: JSON.stringify(observe) });
 
-	const watch = async () => {
+	const watch = () => {
 		// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 		// @ts-ignore NodeJS.timeout vs number
 		timer = setInterval(async () => {
@@ -51,30 +52,37 @@
 		saveToggle();
 	};
 
-	$: observe, toggle();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		observe, toggle();
+	});
 
 	onDestroy(unwatch);
 
-	export let visible: boolean | undefined = undefined;
+	interface Props {
+		visible?: boolean | undefined;
+	}
 
-	let button: HTMLButtonElement | undefined;
+	let { visible = $bindable(false) }: Props = $props();
+
+	let button: HTMLButtonElement | undefined = $state();
 </script>
 
 <button
 	class="icon"
 	aria-label={$i18n.core.more}
 	type="button"
-	on:click={() => (visible = true)}
+	onclick={() => (visible = true)}
 	bind:this={button}><IconMore size="20px" /></button
 >
 
 <Popover bind:visible anchor={button} direction="ltr">
 	<div class="container">
-		<button class="menu" type="button" on:click={reload}
+		<button class="menu" type="button" onclick={reload}
 			><IconAutoRenew /> {$i18n.core.refresh}</button
 		>
 
-		<button class="menu" type="button" on:click={onToggle}
+		<button class="menu" type="button" onclick={onToggle}
 			>{#if observe}<IconTimer /> {$i18n.functions.auto_refresh_enabled}{:else}<IconTimerOff
 					size="20px"
 				/>

@@ -1,10 +1,17 @@
 <script lang="ts">
-	export let href: string;
-	export let ariaLabel: string;
+	import type { Snippet } from 'svelte';
+
+	interface Props {
+		href: string;
+		ariaLabel: string;
+		children: Snippet;
+	}
+
+	let { href, ariaLabel, children }: Props = $props();
 </script>
 
 <a class="menu" {href} aria-label={ariaLabel}>
-	<slot />
+	{@render children()}
 </a>
 
 <style lang="scss">

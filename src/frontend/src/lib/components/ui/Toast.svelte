@@ -1,21 +1,23 @@
 <script lang="ts">
-	import { toasts } from '$lib/stores/toasts.store';
-	import { fade, fly } from 'svelte/transition';
-	import type { ToastLevel, ToastMsg } from '$lib/types/toast';
-	import { i18n } from '$lib/stores/i18n.store';
-	import IconClose from '$lib/components/icons/IconClose.svelte';
-	import { onDestroy, onMount } from 'svelte';
 	import { isNullish } from '@dfinity/utils';
+	import { onDestroy, onMount } from 'svelte';
+	import { fade, fly } from 'svelte/transition';
+	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { ToastLevel, ToastMsg } from '$lib/types/toast';
 
-	export let msg: ToastMsg;
+	interface Props {
+		msg: ToastMsg;
+	}
+
+	let { msg }: Props = $props();
 
 	const close = () => toasts.hide();
 
-	let text: string;
-	let level: ToastLevel;
-	let detail: string | undefined;
-
-	$: ({ text, level, detail } = msg);
+	let text: string = $derived(msg.text);
+	let level: ToastLevel = $derived(msg.level);
+	let detail: string | undefined = $derived(msg.detail);
 
 	let timer: number | undefined;
 
@@ -33,28 +35,27 @@
 
 	onDestroy(() => clearTimeout(timer));
 
-	let reorgDetail: string | undefined;
-	$: detail,
-		(() => {
-			if (isNullish(detail)) {
-				reorgDetail = undefined;
-				return;
-			}
+	let reorgDetail: string | undefined = $state(undefined);
+	$effect(() => {
+		if (isNullish(detail)) {
+			reorgDetail = undefined;
+			return;
+		}
 
-			// Present the message we throw in the backend first
-			const trapKeywords = 'trapped explicitly:' as const;
+		// Present the message we throw in the backend first
+		const trapKeywords = 'trapped explicitly:' as const;
 
-			if (!detail.includes(trapKeywords)) {
-				reorgDetail = detail;
-				return;
-			}
+		if (!detail.includes(trapKeywords)) {
+			reorgDetail = detail;
+			return;
+		}
 
-			const splits = detail.split(trapKeywords);
-			const last = splits.splice(-1);
-			reorgDetail = `${last[0]?.trim() ?? ''}${
-				splits.length > 0 ? ` | Stacktrace: ${splits.join('').trim()}` : ''
-			}`;
-		})();
+		const splits = detail.split(trapKeywords);
+		const last = splits.splice(-1);
+		reorgDetail = `${last[0]?.trim() ?? ''}${
+			splits.length > 0 ? ` | Stacktrace: ${splits.join('').trim()}` : ''
+		}`;
+	});
 </script>
 
 <div
@@ -65,11 +66,13 @@
 	in:fly={{ y: 100, duration: 200 }}
 	out:fade={{ delay: 100 }}
 >
-	<p title={text}>
-		{text}{reorgDetail ? ` | ${reorgDetail}` : ''}
-	</p>
+	<div class="toast-scroll">
+		<p title={text}>
+			{text}{reorgDetail ? ` | ${reorgDetail}` : ''}
+		</p>
+	</div>
 
-	<button class="text" on:click={close} aria-label={$i18n.core.close}><IconClose /></button>
+	<button class="text" onclick={close} aria-label={$i18n.core.close}><IconClose /></button>
 </div>
 
 <style lang="scss">
@@ -99,7 +102,7 @@
 		@include shadow.shadow;
 
 		@media (min-width: 768px) {
-			max-width: var(--section-max-width);
+			max-width: 576px;
 		}
 
 		&.error {
@@ -113,14 +116,24 @@
 		}
 	}
 
-	p {
-		@include text.clamp(4);
+	.toast-scroll {
+		overflow-y: auto;
+		max-height: calc(16px * 3 * 1.3);
 
-		margin: 0;
-		font-size: 1rem;
+		// Workaround to get rid of the redundant scrollbar (even when there is enough space).
+		line-height: normal;
 
-		@media (min-width: 768px) {
-			@include text.clamp(3);
+		direction: rtl;
+
+		&::-webkit-scrollbar-thumb {
+			background: var(--color-primary-contrast);
+		}
+
+		p {
+			direction: ltr;
+
+			margin: 0;
+			padding: 0 var(--padding);
 		}
 	}
 </style>

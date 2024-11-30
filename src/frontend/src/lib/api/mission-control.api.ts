@@ -2,12 +2,16 @@ import type {
 	Controller,
 	Orbiter,
 	Result,
-	Satellite
+	Result_1,
+	Result_2,
+	Satellite,
+	TransferArg,
+	TransferArgs
 } from '$declarations/mission_control/mission_control.did';
+import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
-import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
 import { toSetController } from '$lib/utils/controllers.utils';
 import { Principal } from '@dfinity/principal';
 import { toNullable } from '@dfinity/utils';
@@ -340,6 +344,21 @@ export const unsetOrbiter = async ({
 	return unset_orbiter(orbiterId);
 };
 
+export const setSatellite = async ({
+	missionControlId,
+	satelliteId,
+	satelliteName,
+	identity
+}: {
+	missionControlId: Principal;
+	satelliteId: Principal;
+	satelliteName?: string;
+	identity: OptionIdentity;
+}): Promise<Satellite> => {
+	const { set_satellite } = await getMissionControlActor({ missionControlId, identity });
+	return set_satellite(satelliteId, toNullable(satelliteName));
+};
+
 export const unsetSatellite = async ({
 	missionControlId,
 	satelliteId,
@@ -361,7 +380,7 @@ export const listSatelliteStatuses = async ({
 	missionControlId: Principal;
 	identity: OptionIdentity;
 	satelliteId: Principal;
-}): Promise<[] | [[bigint, Result][]]> => {
+}): Promise<[] | [[bigint, Result_2][]]> => {
 	const { list_satellite_statuses } = await getMissionControlActor({ missionControlId, identity });
 	return list_satellite_statuses(satelliteId);
 };
@@ -374,7 +393,7 @@ export const listOrbiterStatuses = async ({
 	missionControlId: Principal;
 	identity: OptionIdentity;
 	orbiterId: Principal;
-}): Promise<[] | [[bigint, Result][]]> => {
+}): Promise<[] | [[bigint, Result_2][]]> => {
 	const { list_orbiter_statuses } = await getMissionControlActor({ missionControlId, identity });
 	return list_orbiter_statuses(orbiterId);
 };
@@ -385,10 +404,38 @@ export const listMissionControlStatuses = async ({
 }: {
 	missionControlId: Principal;
 	identity: OptionIdentity;
-}): Promise<[] | [[bigint, Result][]]> => {
+}): Promise<[] | [[bigint, Result_2][]]> => {
 	const { list_mission_control_statuses } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
 	return [await list_mission_control_statuses()];
+};
+
+export const icpTransfer = async ({
+	missionControlId,
+	args,
+	identity
+}: {
+	missionControlId: Principal;
+	args: TransferArgs;
+	identity: OptionIdentity;
+}): Promise<Result> => {
+	const { icp_transfer } = await getMissionControlActor({ missionControlId, identity });
+	return icp_transfer(args);
+};
+
+export const icrcTransfer = async ({
+	ledgerId,
+	missionControlId,
+	args,
+	identity
+}: {
+	ledgerId: Principal;
+	missionControlId: Principal;
+	args: TransferArg;
+	identity: OptionIdentity;
+}): Promise<Result_1> => {
+	const { icrc_transfer } = await getMissionControlActor({ missionControlId, identity });
+	return icrc_transfer(ledgerId, args);
 };

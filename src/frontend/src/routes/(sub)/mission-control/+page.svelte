@@ -1,22 +1,22 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControl from '$lib/components/mission-control/MissionControl.svelte';
+	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
+	import MissionControlWallet from '$lib/components/mission-control/MissionControlWallet.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
 		type TabsContext,
 		type TabsStore
 	} from '$lib/types/tabs.context';
-	import { writable } from 'svelte/store';
-	import { setContext } from 'svelte';
-	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import { nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import MissionControlWallet from '$lib/components/mission-control/MissionControlWallet.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -29,7 +29,7 @@
 		},
 		{
 			id: Symbol('3'),
-			labelKey: 'core.settings'
+			labelKey: 'core.setup'
 		}
 	];
 
@@ -49,11 +49,11 @@
 			? 'https://juno.build/docs/architecture'
 			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
-		<svelte:fragment slot="info">
+		{#snippet info()}
 			{#if $authSignedInStore}
 				<Warnings />
 			{/if}
-		</svelte:fragment>
+		{/snippet}
 
 		{#if nonNullish($missionControlStore)}
 			{#if $store.tabId === $store.tabs[0].id}

@@ -71,8 +71,7 @@ pub fn assert_mutable_permissions(
     Ok(())
 }
 
-pub fn assert_write_permission(
-    collection: &CollectionKey,
+pub fn assert_write_version(
     current_rule: Option<&Rule>,
     version: &Option<Version>,
 ) -> Result<(), String> {
@@ -87,9 +86,53 @@ pub fn assert_write_permission(
         },
     }
 
-    if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) {
-        return Err(format!(
+    Ok(())
+}
+
+pub fn assert_system_collection_set_permission(
+    collection: &CollectionKey,
+    current_rule: Option<&Rule>,
+    user_rule: &SetRule,
+) -> Result<(), String> {
+    // Allow non-system collections to proceed without restrictions
+    if !collection.starts_with(SYS_COLLECTION_PREFIX) {
+        return Ok(());
+    }
+
+    // System collections cannot be created with a setter call but can be edited under certain circumstances.
+    let current_rule = current_rule.ok_or_else(|| {
+        format!(
             "Collection starts with {}, a reserved prefix",
+            SYS_COLLECTION_PREFIX
+        )
+    })?;
+
+    if current_rule.read != user_rule.read
+        || current_rule.write != user_rule.write
+        || current_rule.memory != user_rule.memory
+        || current_rule.mutable_permissions != user_rule.mutable_permissions
+        || current_rule.max_size != user_rule.max_size
+        || current_rule.max_capacity != user_rule.max_capacity
+    {
+        return Err(format!(
+            "Collection {} is reserved and cannot be modified.",
+            collection
+        ));
+    }
+
+    if current_rule.rate_config.is_some() && user_rule.rate_config.is_none() {
+        return Err("Rate config cannot be disabled.".to_string());
+    }
+
+    Ok(())
+}
+
+pub fn assert_system_collection_delete_permission(
+    collection: &CollectionKey,
+) -> Result<(), String> {
+    if collection.starts_with(SYS_COLLECTION_PREFIX) {
+        return Err(format!(
+            "Collection starting with {} cannot be deleted",
             SYS_COLLECTION_PREFIX
         ));
     }
@@ -105,7 +148,7 @@ pub fn assert_storage_reserved_collection(
     rules: &Rules,
 ) -> Result<(), String> {
     // We do not have to check system collection.
-    if collection.starts_with(|c| c == SYS_COLLECTION_PREFIX) {
+    if collection.starts_with(SYS_COLLECTION_PREFIX) {
         return Ok(());
     }
 

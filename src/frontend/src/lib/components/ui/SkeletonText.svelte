@@ -1,6 +1,10 @@
 <script lang="ts">
-	export let animated = true;
-	export let tagName: 'span' | 'p' | 'h1' | 'h2' | 'h3' = 'span';
+	interface Props {
+		animated?: boolean;
+		tagName?: 'span' | 'p' | 'h1' | 'h2' | 'h3';
+	}
+
+	let { animated = true, tagName = 'span' }: Props = $props();
 </script>
 
 <div data-tid="skeleton-text" aria-busy="true" class="skeleton-text" class:animated>
@@ -14,7 +18,7 @@
 		width: 100%;
 		height: inherit;
 
-		margin: 0 0 var(--padding-1_5x);
+		margin: var(--skeleton-text-padding, 0 0 var(--padding-1_5x));
 
 		--skeleton-text-background: rgba(var(--color-background-contrast-rgb), 0.065);
 		--skeleton-text-background-animated: rgba(var(--color-background-contrast-rgb), 0.135);

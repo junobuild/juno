@@ -1,17 +1,25 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import IconArrowOutward from '$lib/components/icons/IconArrowOutward.svelte';
 
-	export let href: string;
+	interface Props {
+		href: string;
+		icon?: Snippet;
+		title?: Snippet;
+		children: Snippet;
+	}
+
+	let { href, icon, title, children }: Props = $props();
 </script>
 
 <a rel="external noopener noreferrer" target="_blank" class="article" {href}>
 	<div class="summary">
-		<slot name="icon" />
+		{@render icon?.()}
 
-		<h5><slot name="title" /></h5>
+		<h5>{@render title?.()}</h5>
 	</div>
 
-	<p><slot /></p>
+	<p>{@render children()}</p>
 
 	<div class="icon">
 		<IconArrowOutward />

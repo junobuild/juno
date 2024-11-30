@@ -1,3 +1,4 @@
+import { getAccountIdentifier } from '$lib/api/icp-index.api';
 import {
 	MEMO_CANISTER_CREATE,
 	MEMO_CANISTER_TOP_UP,
@@ -6,9 +7,9 @@ import {
 } from '$lib/constants/wallet.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { formatE8sICP } from '$lib/utils/icp.utils';
+import type { Transaction } from '@dfinity/ledger-icp';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
-import type { Transaction } from '@junobuild/ledger';
 import { get } from 'svelte/store';
 
 export const transactionTimestamp = (transaction: Transaction): bigint | undefined =>
@@ -41,12 +42,15 @@ export const transactionMemo = ({
 			return labels.wallet.memo_refund_orbiter;
 		case MEMO_CANISTER_TOP_UP:
 			return labels.wallet.memo_refund_top_up;
-		default:
-			if (from === missionControlId.toText()) {
+		default: {
+			const accountIdentifier = getAccountIdentifier(missionControlId);
+
+			if (from === missionControlId.toText() || from === accountIdentifier.toHex()) {
 				return labels.wallet.memo_sent;
 			}
 
 			return labels.wallet.memo_received;
+		}
 	}
 };
 

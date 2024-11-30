@@ -1,9 +1,12 @@
+// Generated from dfinity/portal commit 7b300dc97a1636f8134410e9a40f3556acf9b496 for file 'docs/references/_attachments/ic.did'
 type canister_id = principal;
 type wasm_module = blob;
+type snapshot_id = blob;
 
 type log_visibility = variant {
     controllers;
     public;
+    allowed_viewers : vec principal;
 };
 
 type canister_settings = record {
@@ -44,6 +47,11 @@ type change_details = variant {
     code_deployment : record {
         mode : variant { install; reinstall; upgrade };
         module_hash : blob;
+    };
+    load_snapshot : record {
+      canister_version : nat64;
+      snapshot_id : snapshot_id;
+      taken_at_timestamp : nat64;
     };
     controllers_change : record {
         controllers : vec principal;
@@ -90,7 +98,13 @@ type bitcoin_network = variant {
 
 type bitcoin_address = text;
 
-type block_hash = blob;
+type bitcoin_block_hash = blob;
+
+type bitcoin_block_header = blob;
+
+type millisatoshi_per_byte = nat64;
+
+type bitcoin_block_height = nat32;
 
 type outpoint = record {
     txid : blob;
@@ -112,30 +126,10 @@ type bitcoin_get_utxos_args = record {
     };
 };
 
-type bitcoin_get_utxos_query_args = record {
-    address : bitcoin_address;
-    network : bitcoin_network;
-    filter : opt variant {
-        min_confirmations : nat32;
-        page : blob;
-    };
-};
-
-type bitcoin_get_current_fee_percentiles_args = record {
-    network : bitcoin_network;
-};
-
 type bitcoin_get_utxos_result = record {
     utxos : vec utxo;
-    tip_block_hash : block_hash;
-    tip_height : nat32;
-    next_page : opt blob;
-};
-
-type bitcoin_get_utxos_query_result = record {
-    utxos : vec utxo;
-    tip_block_hash : block_hash;
-    tip_height : nat32;
+    tip_block_hash : bitcoin_block_hash;
+    tip_height : bitcoin_block_height;
     next_page : opt blob;
 };
 
@@ -145,18 +139,29 @@ type bitcoin_get_balance_args = record {
     min_confirmations : opt nat32;
 };
 
-type bitcoin_get_balance_query_args = record {
-    address : bitcoin_address;
+type bitcoin_get_balance_result = satoshi;
+
+type bitcoin_get_current_fee_percentiles_args = record {
     network : bitcoin_network;
-    min_confirmations : opt nat32;
 };
+
+type bitcoin_get_current_fee_percentiles_result = vec millisatoshi_per_byte;
 
 type bitcoin_send_transaction_args = record {
     transaction : blob;
     network : bitcoin_network;
 };
 
-type millisatoshi_per_byte = nat64;
+type bitcoin_get_block_headers_args = record {
+    start_height : bitcoin_block_height;
+    end_height : opt bitcoin_block_height;
+    network: bitcoin_network;
+};
+
+type bitcoin_get_block_headers_result = record {
+    tip_height : bitcoin_block_height;
+    block_headers : vec bitcoin_block_header;
+};
 
 type node_metrics = record {
     node_id : principal;
@@ -339,6 +344,14 @@ type node_metrics_history_result = vec record {
     node_metrics : vec node_metrics;
 };
 
+type subnet_info_args = record {
+    subnet_id : principal;
+};
+
+type subnet_info_result = record {
+    replica_version : text;
+};
+
 type provisional_create_canister_with_cycles_args = record {
     amount : opt nat;
     settings : opt canister_settings;
@@ -361,11 +374,35 @@ type stored_chunks_result = vec chunk_hash;
 
 type upload_chunk_result = chunk_hash;
 
-type bitcoin_get_balance_result = satoshi;
+type snapshot = record {
+  id : snapshot_id;
+  taken_at_timestamp : nat64;
+  total_size : nat64;
+};
 
-type bitcoin_get_balance_query_result = satoshi;
+type take_canister_snapshot_args = record {
+  canister_id : canister_id;
+  replace_snapshot : opt snapshot_id;
+};
 
-type bitcoin_get_current_fee_percentiles_result = vec millisatoshi_per_byte;
+type take_canister_snapshot_result = snapshot;
+
+type load_canister_snapshot_args = record {
+  canister_id : canister_id;
+  snapshot_id : snapshot_id;
+  sender_canister_version : opt nat64;
+};
+
+type list_canister_snapshots_args = record {
+  canister_id : canister_id;
+};
+
+type list_canister_snapshots_result = vec snapshot;
+
+type delete_canister_snapshot_args = record {
+  canister_id : canister_id;
+  snapshot_id : snapshot_id;
+};
 
 type fetch_canister_logs_args = record {
     canister_id : canister_id;
@@ -409,18 +446,26 @@ service ic : {
 
     // bitcoin interface
     bitcoin_get_balance : (bitcoin_get_balance_args) -> (bitcoin_get_balance_result);
-    bitcoin_get_balance_query : (bitcoin_get_balance_query_args) -> (bitcoin_get_balance_query_result) query;
     bitcoin_get_utxos : (bitcoin_get_utxos_args) -> (bitcoin_get_utxos_result);
-    bitcoin_get_utxos_query : (bitcoin_get_utxos_query_args) -> (bitcoin_get_utxos_query_result) query;
     bitcoin_send_transaction : (bitcoin_send_transaction_args) -> ();
     bitcoin_get_current_fee_percentiles : (bitcoin_get_current_fee_percentiles_args) -> (bitcoin_get_current_fee_percentiles_result);
+    bitcoin_get_block_headers : (bitcoin_get_block_headers_args) -> (bitcoin_get_block_headers_result);
 
     // metrics interface
     node_metrics_history : (node_metrics_history_args) -> (node_metrics_history_result);
 
+    // subnet info
+    subnet_info : (subnet_info_args) -> (subnet_info_result);
+
     // provisional interfaces for the pre-ledger world
     provisional_create_canister_with_cycles : (provisional_create_canister_with_cycles_args) -> (provisional_create_canister_with_cycles_result);
     provisional_top_up_canister : (provisional_top_up_canister_args) -> ();
+
+    // Canister snapshots
+    take_canister_snapshot : (take_canister_snapshot_args) -> (take_canister_snapshot_result);
+    load_canister_snapshot : (load_canister_snapshot_args) -> ();
+    list_canister_snapshots : (list_canister_snapshots_args) -> (list_canister_snapshots_result);
+    delete_canister_snapshot : (delete_canister_snapshot_args) -> ();
 
     // canister logging
     fetch_canister_logs : (fetch_canister_logs_args) -> (fetch_canister_logs_result) query;

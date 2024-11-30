@@ -1,6 +1,6 @@
 [package]
 name = "junobuild-satellite"
-version = "0.0.18-patch.2"
+version = "0.0.21-patch.1"
 authors.workspace = true
 edition.workspace = true
 repository.workspace = true
@@ -14,14 +14,18 @@ license-file = "LICENSE.md"
 targets = ["wasm32-unknown-unknown"]
 
 [features]
-default = ["on_set_doc", "on_set_many_docs", "on_delete_doc", "on_delete_many_docs", "on_upload_asset", "on_delete_asset", "on_delete_many_assets", "assert_set_doc", "assert_delete_doc", "assert_upload_asset", "assert_delete_asset"]
+default = ["on_set_doc", "on_set_many_docs", "on_delete_doc", "on_delete_many_docs", "on_delete_filtered_docs", "on_upload_asset", "on_delete_asset", "on_delete_many_assets", "assert_set_doc", "assert_delete_doc", "assert_upload_asset", "assert_delete_asset"]
 on_set_doc = []
 on_set_many_docs = []
 on_delete_doc = []
 on_delete_many_docs = []
+on_delete_filtered_docs = []
 on_upload_asset = []
 on_delete_asset = []
 on_delete_many_assets = []
+on_delete_filtered_assets = []
+on_init = []
+on_post_upgrade = []
 assert_set_doc = []
 assert_delete_doc = []
 assert_upload_asset = []
@@ -41,7 +45,7 @@ regex.workspace = true
 url = "2.4.0"
 getrandom = { version = "0.2", features = ["custom"] }
 rand = { version = "0.8.5", features = ["getrandom"]}
-junobuild-shared = "0.0.16"
-junobuild-utils = "0.0.2"
-junobuild-collections = "0.0.1"
-junobuild-storage = "0.0.3"
+junobuild-shared = "0.0.22"
+junobuild-utils = "0.0.4"
+junobuild-collections = "0.0.9"
+junobuild-storage = "0.0.12"

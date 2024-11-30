@@ -1,37 +1,37 @@
 <script lang="ts">
-	import { onMount } from 'svelte';
 	import type { Principal } from '@dfinity/principal';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
-	import type { Controller } from '$declarations/mission_control/mission_control.did';
-	import { metadataProfile } from '$lib/utils/metadata.utils';
-	import ControllerDelete from '$lib/components/controllers/ControllerDelete.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import { nonNullish } from '@dfinity/utils';
-	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
+	import { onMount } from 'svelte';
+	import type { Controller } from '$declarations/mission_control/mission_control.did';
 	import ControllerAdd from '$lib/components/controllers/ControllerAdd.svelte';
+	import ControllerDelete from '$lib/components/controllers/ControllerDelete.svelte';
+	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
+	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import type { SetControllerParams } from '$lib/types/controllers';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
+	import type { SetControllerParams } from '$lib/types/controllers';
+	import { metadataProfile } from '$lib/utils/metadata.utils';
 
-	export let list: () => Promise<[Principal, Controller][]>;
-	export let remove: (params: {
-		missionControlId: Principal;
-		controller: Principal;
-	}) => Promise<void>;
-	export let add: (
-		params: {
-			missionControlId: Principal;
-		} & SetControllerParams
-	) => Promise<void>;
-	export let segment: CanisterSegmentWithLabel;
+	interface Props {
+		list: () => Promise<[Principal, Controller][]>;
+		remove: (params: { missionControlId: Principal; controller: Principal }) => Promise<void>;
+		add: (
+			params: {
+				missionControlId: Principal;
+			} & SetControllerParams
+		) => Promise<void>;
+		segment: CanisterSegmentWithLabel;
+		// The canister and user are controllers of the mission control but not added in its state per default
+		extraControllers?: [Principal, Controller | undefined][];
+	}
 
-	// The canister and user are controllers of the mission control but not added in its state per default
-	export let extraControllers: [Principal, Controller | undefined][] = [];
+	let { list, remove, add, segment, extraControllers = [] }: Props = $props();
 
-	let controllers: [Principal, Controller | undefined][] = [];
+	let controllers: [Principal, Controller | undefined][] = $state([]);
 
 	const load = async () => {
 		try {
@@ -46,9 +46,9 @@
 
 	onMount(async () => await load());
 
-	let visibleDelete = false;
-	let visibleInfo = false;
-	let selectedController: [Principal, Controller | undefined] | undefined;
+	let visibleDelete = $state(false);
+	let visibleInfo = $state(false);
+	let selectedController: [Principal, Controller | undefined] | undefined = $state();
 
 	const canEdit = (controllerId: Principal): boolean =>
 		nonNullish($authStore.identity) &&
@@ -62,7 +62,7 @@
 	<table>
 		<thead>
 			<tr>
-				<th class="tools" />
+				<th class="tools"></th>
 				<th class="controller"> {$i18n.controllers.title} </th>
 				<th class="profile"> {$i18n.controllers.profile} </th>
 				<th class="scope"> {$i18n.controllers.scope} </th>
@@ -76,7 +76,7 @@
 							<ButtonTableAction
 								icon="delete"
 								ariaLabel={$i18n.controllers.delete}
-								on:click={() => {
+								onaction={() => {
 									selectedController = [controllerId, controller];
 									visibleDelete = true;
 								}}
@@ -85,7 +85,7 @@
 							<ButtonTableAction
 								icon="info"
 								ariaLabel={$i18n.controllers.info}
-								on:click={() => (visibleInfo = true)}
+								onaction={() => (visibleInfo = true)}
 							/>
 						{/if}
 					</td>

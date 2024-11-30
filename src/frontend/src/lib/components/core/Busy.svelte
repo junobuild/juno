@@ -1,11 +1,13 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { busy } from '$lib/stores/busy.store';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { handleKeyPress } from '$lib/utils/keyboard.utils';
+	import { stopPropagation } from 'svelte/legacy';
+
+	import { fade } from 'svelte/transition';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	const close = () => {
 		if (isNullish($busy) || !$busy.close) {
@@ -22,9 +24,9 @@
 		tabindex="-1"
 		aria-label={$i18n.core.close}
 		transition:fade
-		on:click={close}
+		onclick={close}
 		class:close={$busy.close}
-		on:keypress={($event) => handleKeyPress({ $event, callback: close })}
+		onkeypress={($event) => handleKeyPress({ $event, callback: close })}
 	>
 		<div class="content">
 			{#if $busy.spinner}
@@ -34,7 +36,7 @@
 			{/if}
 
 			{#if $busy.close}
-				<button on:click|stopPropagation={close} aria-label={$i18n.core.close} class="text close"
+				<button onclick={stopPropagation(close)} aria-label={$i18n.core.close} class="text close"
 					><IconClose size="12px" /> {$i18n.core.cancel}</button
 				>
 			{/if}

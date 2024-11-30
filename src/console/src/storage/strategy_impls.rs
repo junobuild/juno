@@ -125,16 +125,17 @@ impl StorageUploadStrategy for StorageUpload {
 
     fn get_asset(
         &self,
-        reference_id: &ReferenceId,
+        reference_id: &Option<ReferenceId>,
         collection: &CollectionKey,
         full_path: &FullPath,
         _rule: &Rule,
-    ) -> Option<Asset> {
-        let asset = get_asset_stable(reference_id, collection, full_path);
-
-        match asset {
-            Some(asset) => Some(asset),
-            None => get_asset(full_path),
+    ) -> Result<Option<Asset>, String> {
+        match reference_id {
+            Some(reference_id) => {
+                let asset = get_asset_stable(reference_id, collection, full_path);
+                Ok(asset)
+            }
+            None => Err("Cannot get asset with unknown reference / proposal ID.".to_string()),
         }
     }
 }

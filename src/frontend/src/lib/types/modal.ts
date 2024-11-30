@@ -1,9 +1,13 @@
+import type { snapshot } from '$declarations/ic/ic.did';
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import type { AuthenticationConfig } from '$declarations/satellite/satellite.did';
+import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
+import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
+import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
+import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
 
@@ -55,19 +59,40 @@ export type JunoModalDeleteSatelliteDetail = JunoModalCycles &
 	JunoModalCustomDomainsDetail &
 	JunoModalSatelliteDetail;
 
-export interface JunoModalCreateControllerDetail {
+export interface JunoModalSegmentDetail {
+	segment: CanisterSegmentWithLabel;
+}
+
+export interface JunoModalCreateControllerDetail extends JunoModalSegmentDetail {
 	add: (
 		params: {
 			missionControlId: Principal;
 		} & SetControllerParams
 	) => Promise<void>;
 	load: () => Promise<void>;
-	segment: CanisterSegmentWithLabel;
 }
 
-export interface JunoModalEditCanisterSettingsDetail {
-	segment: CanisterSegmentWithLabel;
+export interface JunoModalEditCanisterSettingsDetail extends JunoModalSegmentDetail {
 	settings: CanisterSettings;
+}
+
+export interface JunoModalRestoreSnapshotDetail extends JunoModalSegmentDetail {
+	snapshot: snapshot;
+}
+
+export interface JunoModalSendTokensDetail {
+	balance: bigint | undefined;
+}
+
+export interface JunoModalEditOrbiterConfigDetail {
+	orbiterId: Principal;
+	features: OrbiterSatelliteFeatures | undefined;
+	config: Record<SatelliteIdText, OrbiterSatelliteConfigEntry>;
+}
+
+export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail {
+	rule: Rule | undefined;
+	config: AuthenticationConfig | undefined;
 }
 
 export type JunoModalDetail =
@@ -77,7 +102,9 @@ export type JunoModalDetail =
 	| JunoModalCustomDomainDetail
 	| JunoModalCreateControllerDetail
 	| JunoModalCyclesSatelliteDetail
-	| JunoModalDeleteSatelliteDetail;
+	| JunoModalDeleteSatelliteDetail
+	| JunoModalSendTokensDetail
+	| JunoModalEditOrbiterConfigDetail;
 
 export interface JunoModal {
 	type:
@@ -92,10 +119,15 @@ export interface JunoModal {
 		| 'topup_mission_control'
 		| 'topup_orbiter'
 		| 'add_custom_domain'
+		| 'restore_snapshot'
+		| 'create_snapshot'
 		| 'create_controller'
 		| 'edit_canister_settings'
+		| 'edit_orbiter_config'
+		| 'edit_auth_config'
 		| 'upgrade_satellite'
 		| 'upgrade_mission_control'
-		| 'upgrade_orbiter';
+		| 'upgrade_orbiter'
+		| 'send_tokens';
 	detail?: JunoModalDetail;
 }

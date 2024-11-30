@@ -42,24 +42,25 @@ candid-extractor "${RELEASE_DIR}/${WASM_MODULE}" > "${DID_DIR}/${WASM_MODULE}.di
 ic-wasm \
     "${RELEASE_DIR}/${WASM_MODULE}" \
     -o "${WASM_DIR}/${WASM_MODULE}" \
-    shrink
+    shrink \
+    --keep-name-section
 
 # adds the content of did to the `icp:public candid:service` custom section of the public metadata in the wasm
-ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata candid:service -f "${DID_DIR}/${WASM_MODULE}.did" -v public
+ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata candid:service -f "${DID_DIR}/${WASM_MODULE}.did" -v public --keep-name-section
 
 if [ "${WASM_MODULE}" == "satellite" ]
 then
   # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.
-  ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata juno:build -d "stock" -v public
+  ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata juno:build -d "stock" -v public --keep-name-section
 fi
 
 if [ "${MODULE}" == "satellite" ] || [ "${MODULE}" == "console" ];
 then
   # indicate support for certificate version 1 and 2 in the canister metadata
-  ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata supported_certificate_versions -d "1,2" -v public
+  ic-wasm "${WASM_DIR}/${WASM_MODULE}" -o "${WASM_DIR}/${WASM_MODULE}" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section
 fi
 
-gzip -c "${WASM_DIR}/${WASM_MODULE}" > "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz"
+gzip -c --no-name --force "${WASM_DIR}/${WASM_MODULE}" > "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz"
 
 mv "${DEPLOY_DIR}/${WASM_MODULE}.tmp.gz" "${DEPLOY_DIR}/${WASM_MODULE}.gz"
 

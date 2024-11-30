@@ -81,14 +81,22 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OrbiterSatelliteConfig {
-        pub enabled: bool,
+        pub features: Option<OrbiterSatelliteFeatures>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub version: Option<Version>,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct OrbiterSatelliteFeatures {
+        pub page_views: bool,
+        pub track_events: bool,
+        pub performance_metrics: bool,
+    }
 }
 
 pub mod interface {
+    use crate::mgmt::types::cmc::SubnetId;
     use crate::types::core::Bytes;
     use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{
@@ -102,6 +110,7 @@ pub mod interface {
     pub struct CreateCanisterArgs {
         pub user: UserId,
         pub block_index: Option<BlockIndex>,
+        pub subnet_id: Option<SubnetId>,
     }
 
     #[derive(CandidType, Deserialize)]
@@ -161,63 +170,6 @@ pub mod interface {
     pub struct MemorySize {
         pub heap: Bytes,
         pub stable: Bytes,
-    }
-}
-
-pub mod ledger {
-    use candid::CandidType;
-    use serde::Deserialize;
-
-    use ic_ledger_types::{Block, BlockIndex, Memo, Operation, Timestamp};
-
-    pub type BlockIndexed = (BlockIndex, Block);
-    pub type Blocks = Vec<BlockIndexed>;
-    pub type Transactions = Vec<Transaction>;
-
-    #[derive(CandidType, Deserialize, Clone)]
-    pub struct Transaction {
-        pub block_index: BlockIndex,
-        pub memo: Memo,
-        pub operation: Option<Operation>,
-        pub timestamp: Timestamp,
-    }
-}
-
-pub mod ic {
-    use crate::types::core::Blob;
-
-    pub struct WasmArg {
-        pub wasm: Blob,
-        pub install_arg: Vec<u8>,
-    }
-}
-
-pub mod cmc {
-    use candid::{CandidType, Principal};
-    use ic_ledger_types::BlockIndex;
-    use serde::Deserialize;
-
-    pub type Cycles = u128;
-
-    #[derive(CandidType, Deserialize)]
-    pub enum NotifyError {
-        Refunded {
-            reason: String,
-            block_index: Option<BlockIndex>,
-        },
-        InvalidTransaction(String),
-        TransactionTooOld(BlockIndex),
-        Processing,
-        Other {
-            error_code: u64,
-            error_message: String,
-        },
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct TopUpCanisterArgs {
-        pub block_index: BlockIndex,
-        pub canister_id: Principal,
     }
 }
 

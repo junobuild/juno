@@ -1,16 +1,24 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import Input from '$lib/components/ui/Input.svelte';
 	import { debounce } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
 	import SatellitesLayout from '$lib/components/satellites/SatellitesLayout.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 
-	export let filter = '';
+	interface Props {
+		filter?: string;
+	}
+
+	let { filter = $bindable('') }: Props = $props();
 
 	const updateFilter = () => (filter = filterInput);
 	const debounceUpdateFilter = debounce(updateFilter);
 
-	let filterInput = '';
-	$: filterInput, debounceUpdateFilter();
+	let filterInput = $state('');
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		filterInput, debounceUpdateFilter();
+	});
 </script>
 
 <div role="toolbar">

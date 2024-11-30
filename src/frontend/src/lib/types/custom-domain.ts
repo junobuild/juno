@@ -25,7 +25,9 @@ export type CustomDomainRegistrationState =
 	| 'Available'
 	| 'Failed';
 
-export type CustomDomainRegistrationStateFailed = { Failed: string };
+export interface CustomDomainRegistrationStateFailed {
+	Failed: string;
+}
 
 export interface CustomDomainRegistration {
 	name: string;

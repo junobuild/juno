@@ -1,100 +1,134 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { Principal } from '@dfinity/principal';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { onMount } from 'svelte';
-	import { listOrbiterSatelliteConfigs } from '$lib/api/orbiter.api';
+	import { isNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
+	import { fade } from 'svelte/transition';
+	import Value from '$lib/components/ui/Value.svelte';
+	import {
+		orbiterFeatures,
+		orbiterSatellitesConfig
+	} from '$lib/derived/orbiter-satellites.derived';
+	import { loadOrbiterConfigs } from '$lib/services/orbiters.services';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { satellitesStore } from '$lib/stores/satellite.store';
-	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import type { OrbiterSatelliteConfig } from '$declarations/orbiter/orbiter.did';
-	import OrbiterConfigSave from '$lib/components/orbiter/OrbiterConfigSave.svelte';
-	import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
-	import { authStore } from '$lib/stores/auth.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import { emit } from '$lib/utils/events.utils';
 
-	export let orbiterId: Principal;
+	interface Props {
+		orbiterId: Principal;
+	}
 
-	let configuration: Record<SatelliteIdText, OrbiterSatelliteConfigEntry> = {};
-
-	const list = (): Promise<[Principal, OrbiterSatelliteConfig][]> =>
-		listOrbiterSatelliteConfigs({ orbiterId, identity: $authStore.identity });
+	let { orbiterId }: Props = $props();
 
 	const load = async () => {
-		try {
-			const configs = await list();
-			loadConfig(configs);
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.orbiter_configuration_listing,
-				detail: err
-			});
+		if (isNullish($versionStore.orbiter?.current)) {
+			return;
 		}
+
+		await loadOrbiterConfigs({
+			orbiterId,
+			orbiterVersion: $versionStore.orbiter.current,
+			reload: true
+		});
 	};
 
-	const loadConfig = (configs: [Principal, OrbiterSatelliteConfig][]) => {
-		configuration = ($satellitesStore ?? []).reduce((acc, satellite) => {
-			const config: [Principal, OrbiterSatelliteConfig] | undefined = (configs ?? []).find(
-				([satelliteId, _]) => satelliteId.toText() === satellite.satellite_id.toText()
-			);
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$versionStore, (async () => await load())();
+	});
 
-			return {
-				...acc,
-				[satellite.satellite_id.toText()]: {
-					name: satelliteName(satellite),
-					enabled: config?.[1].enabled ?? false,
-					config: config?.[1]
+	let enabledSatellites = $derived(
+		Object.entries($orbiterSatellitesConfig)
+			.filter(([_, { enabled }]) => enabled)
+			.map(([_, { name }]) => name)
+			.join(', ')
+	);
+
+	const openModal = () => {
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'edit_orbiter_config',
+				detail: {
+					config: $orbiterSatellitesConfig,
+					features: $orbiterFeatures,
+					orbiterId
 				}
-			};
-		}, {});
-	};
-
-	onMount(async () => await load());
-
-	// [Principal, SatelliteConfig]
-	const onUpdate = ({ detail }: CustomEvent<[Principal, OrbiterSatelliteConfig][]>) => {
-		loadConfig(detail);
+			}
+		});
 	};
 </script>
 
-<div class="table-container">
-	<table>
-		<thead>
-			<tr>
-				<th class="tools"> {$i18n.analytics.enabled} </th>
-				<th class="origin"> {$i18n.satellites.satellite} </th>
-				<th class="origin"> {$i18n.satellites.id} </th>
-			</tr>
-		</thead>
-		<tbody>
-			{#each Object.entries(configuration) as conf}
-				{@const satelliteId = conf[0]}
-				{@const entry = conf[1]}
+<div class="card-container with-title">
+	<span class="title">{$i18n.core.config}</span>
 
-				<tr>
-					<td class="actions">
-						<input type="checkbox" bind:checked={conf[1].enabled} />
-					</td>
+	<div class="columns-3 fit-column-1">
+		<div>
+			<Value>
+				{#snippet label()}
+					{$i18n.analytics.enabled_satellites}
+				{/snippet}
 
-					<td>
-						{entry.name}
-					</td>
+				<p class="satellites">{enabledSatellites}</p>
+			</Value>
+		</div>
 
-					<td>
-						<Identifier identifier={satelliteId} shorten={false} small={false} />
-					</td>
-				</tr>
-			{/each}
-		</tbody>
-	</table>
+		<div>
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.analytics.page_views}
+					{/snippet}
+
+					<p class="satellites">
+						{$orbiterFeatures?.page_views === true
+							? $i18n.analytics.enabled
+							: $i18n.analytics.disabled}
+					</p>
+				</Value>
+			</div>
+
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.analytics.tracked_events}
+					{/snippet}
+
+					<p class="satellites">
+						{$orbiterFeatures?.track_events === true
+							? $i18n.analytics.enabled
+							: $i18n.analytics.disabled}
+					</p>
+				</Value>
+			</div>
+
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.analytics.web_vitals}
+					{/snippet}
+
+					<p class="satellites">
+						{$orbiterFeatures?.performance_metrics === true
+							? $i18n.analytics.enabled
+							: $i18n.analytics.disabled}
+					</p>
+				</Value>
+			</div>
+		</div>
+	</div>
 </div>
 
 {#if ($satellitesStore ?? []).length > 0}
-	<OrbiterConfigSave {orbiterId} config={configuration} on:junoConfigUpdate={onUpdate} />
+	<button onclick={openModal} in:fade>
+		{$i18n.core.edit_config}
+	</button>
 {/if}
 
 <style lang="scss">
-	.tools {
-		width: 88px;
+	@use '../../styles/mixins/text';
+
+	.satellites {
+		@include text.clamp(3);
 	}
 </style>

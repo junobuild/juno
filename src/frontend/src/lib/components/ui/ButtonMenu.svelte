@@ -1,14 +1,14 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutMenuOpen } from '$lib/stores/layout.store';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
 	import IconMenu from '$lib/components/icons/IconMenu.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { layoutMenuOpen } from '$lib/stores/layout.store';
 </script>
 
 <button
 	data-tid="menu-toggle"
 	class="menu"
-	on:click={() => layoutMenuOpen.set(!$layoutMenuOpen)}
+	onclick={() => layoutMenuOpen.set(!$layoutMenuOpen)}
 	aria-label={$layoutMenuOpen ? $i18n.core.close : $i18n.core.menu}
 >
 	{#if $layoutMenuOpen}

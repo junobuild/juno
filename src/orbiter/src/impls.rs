@@ -8,12 +8,13 @@ use crate::serializers::bounded::{
 use crate::serializers::constants::{ANALYTIC_KEY_MAX_SIZE, ANALYTIC_SATELLITE_KEY_MAX_SIZE};
 use crate::types::memory::{StoredPageView, StoredTrackEvent};
 use crate::types::state::{
-    AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, SatelliteConfigs, State, TrackEvent,
+    AnalyticKey, AnalyticSatelliteKey, HeapState, PageView, PerformanceMetric, SatelliteConfigs,
+    State, TrackEvent,
 };
 use ciborium::from_reader;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
-use junobuild_shared::serializers::serialize_to_bytes;
+use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Controllers, SatelliteId};
 use std::borrow::Cow;
 
@@ -87,6 +88,18 @@ impl StoredTrackEvent {
     pub fn is_bounded(&self) -> bool {
         matches!(self, StoredTrackEvent::Bounded(_))
     }
+}
+
+impl Storable for PerformanceMetric {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
 }
 
 impl Storable for AnalyticKey {

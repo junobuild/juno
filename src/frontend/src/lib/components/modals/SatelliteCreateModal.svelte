@@ -1,29 +1,42 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { Principal } from '@dfinity/principal';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { navigateToSatellite } from '$lib/utils/nav.utils';
-	import { createSatellite, loadSatellites } from '$lib/services/satellites.services';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { isNullish } from '@dfinity/utils';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail } from '$lib/types/modal';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { wizardBusy } from '$lib/stores/busy.store';
+	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import {
+		createSatellite,
+		createSatelliteWithConfig,
+		loadSatellites
+	} from '$lib/services/satellites.services';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { PrincipalText } from '$lib/types/itentity';
+	import type { JunoModalDetail } from '$lib/types/modal';
+	import { navigateToSatellite } from '$lib/utils/nav.utils';
 
-	export let detail: JunoModalDetail;
+	interface Props {
+		detail: JunoModalDetail;
+		onclose: () => void;
+	}
 
-	let insufficientFunds = true;
+	let { detail, onclose }: Props = $props();
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let insufficientFunds = $state(true);
+
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 	let satellite: Satellite | undefined = undefined;
 
-	const onSubmit = async () => {
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if (isNullish(satelliteName)) {
 			toasts.error({
 				text: $i18n.errors.satellite_name_missing
@@ -35,9 +48,14 @@
 		steps = 'in_progress';
 
 		try {
-			satellite = await createSatellite({
+			const fn = nonNullish(subnetId) ? createSatelliteWithConfig : createSatellite;
+
+			satellite = await fn({
 				missionControl: $missionControlStore,
-				satelliteName
+				config: {
+					name: satelliteName,
+					...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
+				}
 			});
 
 			// Reload list of satellites before navigation
@@ -56,24 +74,22 @@
 		wizardBusy.stop();
 	};
 
-	const dispatch = createEventDispatcher();
-	const close = () => dispatch('junoClose');
-
 	const navigate = async () => {
 		await navigateToSatellite(satellite?.satellite_id);
-		close();
+		onclose();
 	};
 
-	let satelliteName: string | undefined = undefined;
+	let satelliteName: string | undefined = $state(undefined);
+	let subnetId: PrincipalText | undefined = $state();
 </script>
 
-<Modal on:junoClose>
+<Modal on:junoClose={onclose}>
 	{#if steps === 'ready'}
 		<Confetti />
 
 		<div class="msg">
 			<p>{$i18n.satellites.ready}</p>
-			<button on:click={navigate}>{$i18n.core.continue}</button>
+			<button onclick={navigate}>{$i18n.core.continue}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
@@ -87,22 +103,27 @@
 		</p>
 
 		<CreditsGuard
-			on:junoClose
+			{onclose}
 			bind:insufficientFunds
 			{detail}
 			priceLabel={$i18n.satellites.create_satellite_price}
 		>
-			<form on:submit|preventDefault={onSubmit}>
+			<form onsubmit={onSubmit}>
 				<Value>
-					<svelte:fragment slot="label">{$i18n.satellites.satellite_name}</svelte:fragment>
+					{#snippet label()}
+						{$i18n.satellites.satellite_name}
+					{/snippet}
 					<input
 						bind:value={satelliteName}
 						type="text"
 						name="satellite_name"
 						placeholder={$i18n.satellites.enter_name}
 						required
+						autocomplete="off"
 					/>
 				</Value>
+
+				<CanisterAdvancedOptions bind:subnetId />
 
 				<button
 					type="submit"
@@ -132,6 +153,8 @@
 	form {
 		display: flex;
 		flex-direction: column;
+
+		padding: var(--padding-2x) 0 0;
 	}
 
 	button {

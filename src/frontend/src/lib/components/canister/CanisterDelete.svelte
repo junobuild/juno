@@ -1,13 +1,18 @@
 <script lang="ts">
 	import CanisterAction from '$lib/components/canister/CanisterAction.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import IconDelete from '$lib/components/icons/IconDelete.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterIcStatus } from '$lib/types/canister';
 
-	export let canister: CanisterIcStatus | undefined = undefined;
+	interface Props {
+		canister?: CanisterIcStatus | undefined;
+		onclick: () => Promise<void>;
+	}
+
+	let { canister = undefined, onclick }: Props = $props();
 </script>
 
-<CanisterAction {canister} on:click>
+<CanisterAction {canister} {onclick}>
 	<IconDelete />
 	{$i18n.core.delete}
 </CanisterAction>

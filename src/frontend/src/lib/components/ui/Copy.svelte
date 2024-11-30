@@ -1,14 +1,20 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import IconCopy from '$lib/components/icons/IconCopy.svelte';
+	import { stopPropagation } from 'svelte/legacy';
 
-	export let value: string;
+	import IconCopy from '$lib/components/icons/IconCopy.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+
+	interface Props {
+		value: string;
+	}
+
+	let { value }: Props = $props();
 
 	const copyToClipboard = async () => await navigator.clipboard.writeText(value);
 </script>
 
 <button
-	on:click|stopPropagation={copyToClipboard}
+	onclick={stopPropagation(copyToClipboard)}
 	aria-label={`${$i18n.core.copy}: ${value}`}
 	title={`${$i18n.core.copy}: ${value}`}
 	class="square"

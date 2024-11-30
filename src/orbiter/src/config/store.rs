@@ -61,7 +61,7 @@ fn set_satellite_config_impl(
     let updated_at: u64 = now;
 
     let new_config = SatelliteConfig {
-        enabled: config.enabled,
+        features: config.features.clone(),
         created_at,
         updated_at,
         version: Some(version),

@@ -5,7 +5,7 @@ import type {
 	AnalyticsTop10PageViews,
 	OrbiterSatelliteConfig as SatelliteConfig
 } from '$declarations/orbiter/orbiter.did';
-import type { OptionIdentity } from '$lib/types/itentity';
+import type { OptionIdentity, PrincipalText } from '$lib/types/itentity';
 import { Principal } from '@dfinity/principal';
 
 export interface PageViewsPeriod {
@@ -41,3 +41,5 @@ export interface OrbiterSatelliteConfigEntry {
 	enabled: boolean;
 	config?: SatelliteConfig;
 }
+
+export type OrbiterIdText = PrincipalText;

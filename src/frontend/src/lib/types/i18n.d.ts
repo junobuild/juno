@@ -19,6 +19,7 @@ interface I18nCore {
 	help: string;
 	controllers: string;
 	settings: string;
+	setup: string;
 	continue: string;
 	not_logged_in: string;
 	ready: string;
@@ -47,15 +48,37 @@ interface I18nCore {
 	reload: string;
 	open_website: string;
 	file: string;
+	review: string;
+	confirm: string;
+	collapse: string;
+	expand: string;
+	request: string;
+	configure: string;
+	config: string;
+	edit_config: string;
+	advanced_options: string;
+	updating_configuration: string;
+	configuration_applied: string;
+	completed: string;
+	in_progress: string;
+	error: string;
+	hold_tight: string;
+	create: string;
+	replace: string;
+	restore: string;
 }
 
 interface I18nCanisters {
 	insight: string;
 	top_up: string;
-	cycles: string;
+	cycles_description: string;
 	top_up_in_progress: string;
 	delete_in_progress: string;
+	upgrade_preparing: string;
+	upgrade_validating: string;
+	upgrade_stopping: string;
 	upgrade_in_progress: string;
+	upgrade_restarting: string;
 	download_in_progress: string;
 	transfer_cycles_in_progress: string;
 	amount: string;
@@ -88,7 +111,10 @@ interface I18nCanisters {
 	edit_settings_segment: string;
 	not_set: string;
 	review_upgrade: string;
-	confirm_upgrade: string;
+	upgrade_sha: string;
+	confirm_upgrade_with_backup: string;
+	confirm_upgrade_without_backup: string;
+	snapshot_before_upgrade: string;
 	upgrade_done: string;
 	upgrade: string;
 	delete_title: string;
@@ -110,9 +136,13 @@ interface I18nCanisters {
 	detach_title: string;
 	detach_explanation: string;
 	detach_info: string;
+	attach_success: string;
 	detach_success: string;
 	delete_success: string;
+	cycles: string;
 	transfer_cycles: string;
+	transfer_cycles_action: string;
+	buy_cycles: string;
 	transfer_cycles_description: string;
 	select_destination: string;
 	destination: string;
@@ -138,6 +168,29 @@ interface I18nCanisters {
 	no_update_required: string;
 	controllers: string;
 	public: string;
+	subnet: string;
+	default_subnet: string;
+	subnet_id: string;
+	backup: string;
+	size: string;
+	timestamp: string;
+	create_a_backup: string;
+	restore_the_backup: string;
+	create_backup_info: string;
+	restore_backup_info: string;
+	create_backup_warning: string;
+	restore_backup_warning: string;
+	no_backup: string;
+	backup_created: string;
+	backup_restored: string;
+	creating_backup: string;
+	restoring_backup: string;
+	backup_preparing: string;
+	backup_stopping: string;
+	upgrade_snapshot: string;
+	edit_snapshot: string;
+	delete_snapshot: string;
+	delete_snapshot_confirm: string;
 }
 
 interface I18nSign_in {
@@ -151,7 +204,7 @@ interface I18nSign_in {
 	quote_8: string;
 	quote_9: string;
 	quote_10: string;
-	mission_control: string;
+	future: string;
 	internet_identity: string;
 }
 
@@ -180,6 +233,7 @@ interface I18nSatellites {
 	build: string;
 	see_all_satellites: string;
 	go_launchpad: string;
+	attach: string;
 }
 
 interface I18nMission_control {
@@ -210,6 +264,23 @@ interface I18nWallet {
 	memo_sent: string;
 	export_title: string;
 	export_info: string;
+	send: string;
+	receive: string;
+	send_information: string;
+	destination: string;
+	destination_placeholder: string;
+	icp_amount: string;
+	amount_placeholder: string;
+	wallet_id: string;
+	sending: string;
+	sending_in_progress: string;
+	fee: string;
+	review_and_confirm: string;
+	icp_on_its_way: string;
+	or_connect_wallet: string;
+	connecting_wallet: string;
+	wallet_approve: string;
+	wallet_missing_account: string;
 }
 
 interface I18nAuthentication {
@@ -218,6 +289,10 @@ interface I18nAuthentication {
 	methods: string;
 	not_signed_in: string;
 	session_expired: string;
+	main_domain: string;
+	not_configured: string;
+	edit_configuration: string;
+	main_domain_warn: string;
 }
 
 interface I18nDatastore {
@@ -236,6 +311,7 @@ interface I18nAnalytics {
 	dashboard: string;
 	loading: string;
 	empty: string;
+	error_msg: string;
 	get_started: string;
 	start: string;
 	description: string;
@@ -258,8 +334,8 @@ interface I18nAnalytics {
 	referrers: string;
 	pages: string;
 	enabled: string;
+	disabled: string;
 	orbiter: string;
-	configure: string;
 	devices: string;
 	mobile: string;
 	desktop: string;
@@ -267,6 +343,23 @@ interface I18nAnalytics {
 	browsers: string;
 	attach: string;
 	attach_id: string;
+	score: string;
+	rating: string;
+	web_vitals: string;
+	overall: string;
+	metric: string;
+	ttfb: string;
+	fcp: string;
+	lcp: string;
+	cls: string;
+	inp: string;
+	good: string;
+	needs_improvement: string;
+	poor: string;
+	enabled_satellites: string;
+	page_views: string;
+	configuration_description: string;
+	tracked_metrics: string;
 }
 
 interface I18nHosting {
@@ -303,10 +396,7 @@ interface I18nHosting {
 	files_deployed: string;
 	set_auth_domain_title: string;
 	set_auth_domain_question: string;
-	update_auth_domain_title: string;
-	update_auth_domain_question: string;
 	domain_name: string;
-	no_keep_domain: string;
 }
 
 interface I18nFunctions {
@@ -333,9 +423,13 @@ interface I18nCli {
 	sign_in: string;
 	controller: string;
 	add: string;
+	selected: string;
+	module: string;
+	terminal: string;
 	select_all: string;
 	unselect_all: string;
 	profile: string;
+	profile_info: string;
 	segments: string;
 	profile_placeholder: string;
 	authorize: string;
@@ -355,11 +449,14 @@ interface I18nErrors {
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
-	canister_settings_no_loaded: string;
+	canister_settings_not_loaded: string;
 	canister_update_error: string;
 	segment_detach: string;
 	ledger_balance_credits: string;
 	load_credits: string;
+	load_documents: string;
+	load_users: string;
+	load_settings: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;
@@ -383,6 +480,7 @@ interface I18nErrors {
 	collection_updated: string;
 	collection_deleted: string;
 	rule_invalid: string;
+	missing_version: string;
 	upgrade_load_versions: string;
 	upgrade_download_error: string;
 	upgrade_error: string;
@@ -397,7 +495,8 @@ interface I18nErrors {
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
-	orbiter_id_missing: string;
+	canister_id_missing: string;
+	canister_attach_error: string;
 	orbiter_attach: string;
 	orbiter_unexpected_error: string;
 	transactions_next: string;
@@ -411,6 +510,26 @@ interface I18nErrors {
 	upload_error: string;
 	no_collection_for_upload: string;
 	invalid_email: string;
+	invalid_destination: string;
+	empty_amount: string;
+	invalid_amount: string;
+	empty_balance: string;
+	sending_error: string;
+	subnet_loading_errors: string;
+	snapshot_loading_errors: string;
+	snapshot_not_loaded: string;
+	snapshot_not_selected: string;
+	snapshot_create_error: string;
+	snapshot_restore_error: string;
+	snapshot_delete_error: string;
+	wallet_no_account: string;
+	wallet_load_balance: string;
+	wallet_receive_error: string;
+	wallet_missing_account: string;
+	auth_settings_not_loaded: string;
+	auth_rate_config_max_tokens: string;
+	auth_rate_config_update: string;
+	auth_domain_config: string;
 }
 
 interface I18nDocument {
@@ -435,8 +554,6 @@ interface I18nDocument {
 	key_generate: string;
 	key_placeholder: string;
 	description_placeholder: string;
-	create: string;
-	replace: string;
 }
 
 interface I18nAsset {
@@ -502,6 +619,9 @@ interface I18nCollections {
 	max_size_placeholder: string;
 	max_capacity: string;
 	max_capacity_placeholder: string;
+	rate_limit: string;
+	rate_limit_placeholder: string;
+	no_rate_limit: string;
 	public: string;
 	private: string;
 	managed: string;
@@ -518,6 +638,7 @@ interface I18nCollections {
 	stable: string;
 	immutable: string;
 	clear_collection: string;
+	options: string;
 }
 
 interface I18nSort {

@@ -1,18 +1,23 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { getContext, onMount, setContext } from 'svelte';
+	import { run } from 'svelte/legacy';
+	import User from '$lib/components/auth/User.svelte';
+	import DataCount from '$lib/components/data/DataCount.svelte';
+	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
+	import { listUsers } from '$lib/services/users.services';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
-	import { initPaginationContext } from '$lib/stores/pagination.store';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import DataPaginator from '$lib/components/data/DataPaginator.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { listUsers } from '$lib/services/users.services';
-	import User from '$lib/components/auth/User.svelte';
 	import type { User as UserType } from '$lib/types/user';
-	import DataCount from '$lib/components/data/DataCount.svelte';
 
-	export let satelliteId: Principal;
+	interface Props {
+		satelliteId: Principal;
+	}
+
+	let { satelliteId }: Props = $props();
 
 	const list = async () => {
 		if (isNullish(satelliteId)) {
@@ -23,13 +28,13 @@
 		try {
 			const { users, matches_length, items_length } = await listUsers({
 				satelliteId,
-				startAfter: $paginationStore.startAfter
+				startAfter: $startAfter
 			});
 
 			setItems({ items: users, matches_length, items_length });
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Error while listing the documents.`,
+				text: $i18n.errors.load_users,
 				detail: err
 			});
 		}
@@ -39,13 +44,18 @@
 		...initPaginationContext(),
 		list
 	});
-	const { store: paginationStore, setItems }: PaginationContext<UserType> =
-		getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
+	const {
+		store: paginationStore,
+		setItems,
+		startAfter
+	}: PaginationContext<UserType> = getContext<PaginationContext<UserType>>(PAGINATION_CONTEXT_KEY);
 
 	onMount(async () => await list());
 
-	let empty = false;
-	$: empty = $paginationStore.items?.length === 0;
+	let empty = $state(false);
+	run(() => {
+		empty = $paginationStore.items?.length === 0;
+	});
 </script>
 
 <div class="table-container">

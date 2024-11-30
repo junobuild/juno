@@ -1,16 +1,17 @@
 <script lang="ts">
+	import IconSort from '$lib/components/icons/IconSort.svelte';
+	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
+	import { listParamsStore } from '$lib/stores/data.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ListOrderField } from '$lib/types/list';
-	import { listParamsStore } from '$lib/stores/data.store';
-	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
-	import IconSort from '$lib/components/icons/IconSort.svelte';
 
-	let desc = $listParamsStore.order.desc;
-	let field: ListOrderField = $listParamsStore.order.field;
+	let desc = $state($listParamsStore.order.desc);
+	let field: ListOrderField = $state($listParamsStore.order.field);
 
-	let visible: boolean | undefined;
+	let visible: boolean = $state(false);
 
-	const apply = () => {
+	// eslint-disable-next-line require-await
+	const apply = async () => {
 		listParamsStore.setOrder({
 			desc,
 			field
@@ -19,22 +20,23 @@
 		visible = false;
 	};
 
-	$: visible,
-		(() => {
-			if (visible) {
-				return;
-			}
+	$effect(() => {
+		if (visible) {
+			return;
+		}
 
-			// Avoid glitch
-			setTimeout(() => {
-				desc = $listParamsStore.order.desc;
-				field = $listParamsStore.order.field;
-			}, 250);
-		})();
+		// Avoid glitch
+		setTimeout(() => {
+			desc = $listParamsStore.order.desc;
+			field = $listParamsStore.order.field;
+		}, 250);
+	});
 </script>
 
-<PopoverApply ariaLabel={$i18n.sort.title} on:click={apply} bind:visible>
-	<IconSort size="20px" slot="icon" />
+<PopoverApply ariaLabel={$i18n.sort.title} onapply={apply} bind:visible>
+	{#snippet icon()}
+		<IconSort size="18px" />
+	{/snippet}
 
 	<p class="category">{$i18n.sort.sort_by_field}</p>
 

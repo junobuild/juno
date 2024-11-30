@@ -1,18 +1,21 @@
 <script lang="ts">
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { listControllers } from '$lib/api/satellites.api';
 	import type { Principal } from '@dfinity/principal';
+	import type { Satellite, Controller } from '$declarations/mission_control/mission_control.did';
 	import {
 		deleteSatellitesController,
 		setSatellitesController
 	} from '$lib/api/mission-control.api';
+	import { listControllers } from '$lib/api/satellites.api';
 	import Controllers from '$lib/components/controllers/Controllers.svelte';
-	import type { Controller } from '$declarations/mission_control/mission_control.did';
-	import type { SetControllerParams } from '$lib/types/controllers';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { SetControllerParams } from '$lib/types/controllers';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
+
+	let { satellite }: Props = $props();
 
 	const list = (): Promise<[Principal, Controller][]> =>
 		listControllers({ satelliteId: satellite.satellite_id, identity: $authStore.identity });

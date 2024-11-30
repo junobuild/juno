@@ -1,3 +1,5 @@
+export const nowInBigIntNanoSeconds = (): bigint => BigInt(Date.now()) * BigInt(1e6);
+
 export const formatToDate = (nanoseconds: bigint): string => {
 	const options: Intl.DateTimeFormatOptions = {
 		month: 'short',
@@ -109,10 +111,12 @@ const daysInYears = (years: bigint): bigint => {
 };
 
 type LabelKey = 'year' | 'month' | 'day' | 'hour' | 'minute' | 'second';
-type LabelInfo = {
+interface LabelInfo {
 	labelKey: LabelKey;
 	amount: number;
-};
+}
+
+// eslint-disable-next-line local-rules/prefer-object-params
 const createLabel = (labelKey: LabelKey, amount: bigint): LabelInfo => ({
 	labelKey,
 	amount: Number(amount)

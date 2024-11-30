@@ -43,7 +43,7 @@ use crate::store::stable::{
 use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets, SegmentType};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
-    ProposalType, RateConfig, Rates, ReleasesMetadata, State,
+    ProposalType, Rates, ReleasesMetadata, State,
 };
 use candid::Principal;
 use ciborium::into_writer;
@@ -54,6 +54,7 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use ic_ledger_types::Tokens;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::init_controllers;
+use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::types::core::DomainName;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
@@ -71,13 +72,13 @@ use junobuild_storage::http_request::{
     http_request_streaming_callback as http_request_streaming_callback_storage,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_chunk};
+use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use memory::{get_memory_upgrades, init_stable_state};
 use serde_cbor::from_reader;
 use std::collections::HashMap;
-use junobuild_storage::types::config::StorageConfig;
 use types::state::Payments;
 
 #[init]

@@ -1,29 +1,33 @@
 <script lang="ts">
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { satelliteUrl } from '$lib/utils/satellite.utils';
-	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
-	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
+	import { nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import type {
 		AuthenticationConfig,
 		CustomDomain as CustomDomainType
 	} from '$declarations/satellite/satellite.did';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { listCustomDomains, getAuthConfig } from '$lib/services/hosting.services';
-	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
-	import type { SatelliteIdText } from '$lib/types/satellite';
-	import { authStore } from '$lib/stores/auth.store';
-	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import AddCustomDomain from '$lib/components/hosting/AddCustomDomain.svelte';
+	import CustomDomain from '$lib/components/hosting/CustomDomain.svelte';
 	import CustomDomainInfo from '$lib/components/hosting/CustomDomainInfo.svelte';
-	import { nonNullish } from '@dfinity/utils';
+	import HostingCount from '$lib/components/hosting/HostingCount.svelte';
+	import { satelliteCustomDomains } from '$lib/derived/custom-domains.derived';
+	import { listCustomDomains, getAuthConfig } from '$lib/services/hosting.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
+	import type { SatelliteIdText } from '$lib/types/satellite';
+	import type { Option } from '$lib/types/utils';
+	import { satelliteUrl } from '$lib/utils/satellite.utils';
 
-	export let satellite: Satellite;
+	interface Props {
+		satellite: Satellite;
+	}
 
-	let satelliteId: SatelliteIdText;
-	$: satelliteId = satellite.satellite_id.toText();
+	let { satellite }: Props = $props();
 
-	let config: AuthenticationConfig | undefined;
+	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
+
+	let config: AuthenticationConfig | undefined = $state();
 
 	const list = async () => {
 		const [_, { config: c }] = await Promise.all([
@@ -42,24 +46,24 @@
 
 	onMount(list);
 
-	type SelectedCustomDomain = {
+	interface SelectedCustomDomain {
 		customDomain: [string, CustomDomainType] | undefined;
-		registrationState: CustomDomainRegistrationState | null | undefined;
+		registrationState: Option<CustomDomainRegistrationState>;
 		mainDomain: boolean;
-	};
+	}
 
-	let selectedInfo: SelectedCustomDomain | undefined;
+	let selectedInfo: SelectedCustomDomain | undefined = $state();
 
 	const onDisplayInfo = ({ detail }: CustomEvent<SelectedCustomDomain>) => (selectedInfo = detail);
 </script>
 
-<svelte:window on:junoSyncCustomDomains={list} />
+<svelte:window onjunoSyncCustomDomains={list} />
 
 <div class="table-container">
 	<table>
 		<thead>
 			<tr>
-				<th class="tools" />
+				<th class="tools"></th>
 				<th class="domain"> {$i18n.hosting.domain} </th>
 				<th class="auth"> {$i18n.core.sign_in}</th>
 				<th> {$i18n.hosting.status}</th>

@@ -1,15 +1,19 @@
 <script lang="ts">
-	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
-	import { satelliteStore } from '$lib/stores/satellite.store';
-	import { writable } from 'svelte/store';
-	import type { Tab, TabsContext, TabsStore } from '$lib/types/tabs.context';
-	import { setContext } from 'svelte';
-	import { TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
-	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import { nonNullish } from '@dfinity/utils';
-	import { initTabId } from '$lib/utils/tabs.utils';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Logs from '$lib/components/logs/Logs.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import { satelliteStore } from '$lib/stores/satellite.store';
+	import {
+		type Tab,
+		type TabsContext,
+		type TabsStore,
+		TABS_CONTEXT_KEY
+	} from '$lib/types/tabs.context';
+	import { initTabId } from '$lib/utils/tabs.utils';
 
 	const tabs: Tab[] = [
 		{

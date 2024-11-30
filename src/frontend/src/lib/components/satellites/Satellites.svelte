@@ -1,20 +1,21 @@
 <script lang="ts">
-	import SatelliteArticle from '$lib/components/satellites/SatelliteArticle.svelte';
-	import { satellitesStore } from '$lib/stores/satellite.store';
-	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import SatelliteArticle from '$lib/components/satellites/SatelliteArticle.svelte';
+	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import SatellitesToolbar from '$lib/components/satellites/SatellitesToolbar.svelte';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 	import { layoutSatellites } from '$lib/stores/layout.store';
+	import { satellitesStore } from '$lib/stores/satellite.store';
 	import { SatellitesLayout } from '$lib/types/layout';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
-	let filter = '';
+	let filter = $state('');
 
-	let satellites: Satellite[];
-	$: satellites = ($satellitesStore ?? []).filter(
-		(satellite) =>
-			satelliteName(satellite).toLowerCase().includes(filter.toLowerCase()) ||
-			satellite.satellite_id.toText().includes(filter.toLowerCase())
+	let satellites: Satellite[] = $derived(
+		($satellitesStore ?? []).filter(
+			(satellite) =>
+				satelliteName(satellite).toLowerCase().includes(filter.toLowerCase()) ||
+				satellite.satellite_id.toText().includes(filter.toLowerCase())
+		)
 	);
 </script>
 

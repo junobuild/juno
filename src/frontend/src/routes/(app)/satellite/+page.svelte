@@ -1,23 +1,23 @@
 <script lang="ts">
-	import { satelliteStore } from '$lib/stores/satellite.store';
+	import { nonNullish } from '@dfinity/utils';
+	import { setContext } from 'svelte';
+	import { writable } from 'svelte/store';
+	import Guides from '$lib/components/examples/Guides.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
+	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
+	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
+	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { satelliteStore } from '$lib/stores/satellite.store';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
 		type TabsContext,
 		type TabsStore
 	} from '$lib/types/tabs.context';
-	import { writable } from 'svelte/store';
-	import { setContext } from 'svelte';
-	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
-	import { nonNullish } from '@dfinity/utils';
-	import Guides from '$lib/components/examples/Guides.svelte';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -26,7 +26,7 @@
 		},
 		{
 			id: Symbol('2'),
-			labelKey: 'core.settings'
+			labelKey: 'core.setup'
 		}
 	];
 
@@ -46,11 +46,11 @@
 			? 'https://juno.build/docs/add-juno-to-an-app/install-the-sdk-and-initialize-juno'
 			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
-		<svelte:fragment slot="info">
+		{#snippet info()}
 			{#if nonNullish($satelliteStore)}
 				<Warnings satellite={$satelliteStore} />
 			{/if}
-		</svelte:fragment>
+		{/snippet}
 
 		<SatelliteGuard>
 			<MissionControlGuard>

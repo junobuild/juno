@@ -1,33 +1,63 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
-import { getMissionControlActor } from '$lib/utils/actor.juno.utils';
+import type { Option } from '$lib/types/utils';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
+import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
+
+interface CreateSatelliteConfig {
+	name: string;
+	subnetId?: Principal;
+}
 
 export const createSatellite = async ({
 	missionControl,
-	satelliteName
+	config: { name }
 }: {
-	missionControl: Principal | undefined | null;
-	satelliteName: string;
+	missionControl: Option<Principal>;
+	config: CreateSatelliteConfig;
 }): Promise<Satellite | undefined> => {
 	assertNonNullish(missionControl);
 
 	const identity = get(authStore).identity;
 
-	const actor = await getMissionControlActor({ missionControlId: missionControl, identity });
-	return actor.create_satellite(satelliteName);
+	const { create_satellite } = await getMissionControlActor({
+		missionControlId: missionControl,
+		identity
+	});
+	return create_satellite(name);
+};
+
+export const createSatelliteWithConfig = async ({
+	missionControl,
+	config: { name, subnetId }
+}: {
+	missionControl: Option<Principal>;
+	config: CreateSatelliteConfig;
+}): Promise<Satellite | undefined> => {
+	assertNonNullish(missionControl);
+
+	const identity = get(authStore).identity;
+
+	const { create_satellite_with_config } = await getMissionControlActor({
+		missionControlId: missionControl,
+		identity
+	});
+	return create_satellite_with_config({
+		name: toNullable(name),
+		subnet_id: toNullable(subnetId)
+	});
 };
 
 export const loadSatellites = async ({
 	missionControl,
 	reload = false
 }: {
-	missionControl: Principal | undefined | null;
+	missionControl: Option<Principal>;
 	reload?: boolean;
 }) => {
 	if (isNullish(missionControl)) {
@@ -56,6 +86,6 @@ export const loadSatellites = async ({
 			detail: err
 		});
 
-		satellitesStore.set(null);
+		satellitesStore.reset();
 	}
 };

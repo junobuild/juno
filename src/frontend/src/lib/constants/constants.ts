@@ -35,6 +35,7 @@ export const INTERNET_IDENTITY_CANISTER_ID = 'rdmx6-jaaaa-aaaaa-aaadq-cai';
 export const CMC_CANISTER_ID = 'rkp4c-7iaaa-aaaaa-aaaca-cai';
 export const CONSOLE_CANISTER_ID = 'cokmz-oiaaa-aaaal-aby6q-cai';
 export const OBSERVATORY_CANISTER_ID = 'klbfr-lqaaa-aaaak-qbwsa-cai';
+export const ICP_LEDGER_CANISTER_ID = 'ryjl3-tyaaa-aaaaa-aaaba-cai';
 
 /**
  * Revoked principals that must not be used.
@@ -44,3 +45,5 @@ export const OBSERVATORY_CANISTER_ID = 'klbfr-lqaaa-aaaak-qbwsa-cai';
 export const REVOKED_CONTROLLERS: string[] = [
 	'535yc-uxytb-gfk7h-tny7p-vjkoe-i4krp-3qmcl-uqfgr-cpgej-yqtjq-rqe'
 ];
+
+export const JUNO_SUBNET_ID = '6pbhf-qzpdk-kuqbr-pklfa-5ehhf-jfjps-zsj6q-57nrl-kzhpd-mu7hc-vae';

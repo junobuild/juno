@@ -1,18 +1,24 @@
 <script lang="ts">
-	import { versionStore } from '$lib/stores/version.store';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
-	import { loadVersion } from '$lib/services/console.services';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { compare } from 'semver';
-	import { emit } from '$lib/utils/events.utils';
-	import { busy } from '$lib/stores/busy.store';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { newerReleases } from '$lib/services/upgrade.services';
 	import type { BuildType } from '@junobuild/admin';
+	import { compare } from 'semver';
+	import { run } from 'svelte/legacy';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { loadVersion } from '$lib/services/console.services';
+	import { newerReleases } from '$lib/services/upgrade.services';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { versionStore } from '$lib/stores/version.store';
+	import { emit } from '$lib/utils/events.utils';
 
-	export let satellite: Satellite | undefined = undefined;
+	interface Props {
+		satellite?: Satellite | undefined;
+	}
+
+	let { satellite = undefined }: Props = $props();
 
 	const load = async (skipReload: boolean) =>
 		await loadVersion({
@@ -21,57 +27,65 @@
 			skipReload
 		});
 
-	$: $missionControlStore, satellite, (async () => await load(true))();
+	run(() => {
+		// @ts-expect-error TODO: to be migrated to Svelte v5
+		$missionControlStore, satellite, (async () => await load(true))();
+	});
 
-	let satVersion: string | undefined;
-	let satRelease: string | undefined;
-	let satBuild: BuildType | undefined;
-
-	let ctrlVersion: string | undefined;
-	let ctrlRelease: string | undefined;
-
-	let orbVersion: string | undefined;
-	let orbRelease: string | undefined;
-
-	$: satVersion =
+	let satVersion: string | undefined = $derived(
 		nonNullish(satellite) && nonNullish(satellite?.satellite_id)
 			? $versionStore?.satellites[satellite?.satellite_id.toText()]?.current
-			: undefined;
-	$: satRelease =
+			: undefined
+	);
+	let satRelease: string | undefined = $derived(
 		nonNullish(satellite) && nonNullish(satellite?.satellite_id)
 			? $versionStore?.satellites[satellite?.satellite_id.toText()]?.release
-			: undefined;
-	$: satBuild =
+			: undefined
+	);
+	let satBuild: BuildType | undefined = $derived(
 		nonNullish(satellite) && nonNullish(satellite?.satellite_id)
 			? $versionStore?.satellites[satellite?.satellite_id.toText()]?.build
-			: undefined;
+			: undefined
+	);
 
-	$: ctrlVersion = $versionStore?.missionControl?.current;
-	$: ctrlRelease = $versionStore?.missionControl?.release;
+	let ctrlVersion: string | undefined = $derived($versionStore?.missionControl?.current);
+	let ctrlRelease: string | undefined = $derived($versionStore?.missionControl?.release);
 
-	$: orbVersion = $versionStore?.orbiter?.current;
-	$: orbRelease = $versionStore?.orbiter?.release;
+	let orbVersion: string | undefined = $derived($versionStore?.orbiter?.current);
+	let orbRelease: string | undefined = $derived($versionStore?.orbiter?.release);
 
-	let satReady = false;
-	$: satReady = nonNullish($versionStore) && nonNullish(satVersion) && nonNullish(satRelease);
+	let satReady = $state(false);
+	run(() => {
+		satReady = nonNullish($versionStore) && nonNullish(satVersion) && nonNullish(satRelease);
+	});
 
-	let ctrlReady = false;
-	$: ctrlReady = nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease);
+	let ctrlReady = $state(false);
+	run(() => {
+		ctrlReady = nonNullish($versionStore) && nonNullish(ctrlVersion) && nonNullish(ctrlRelease);
+	});
 
-	let orbReady = false;
-	$: orbReady = nonNullish($versionStore) && nonNullish(orbVersion) && nonNullish(orbRelease);
+	let orbReady = $state(false);
+	run(() => {
+		orbReady = nonNullish($versionStore) && nonNullish(orbVersion) && nonNullish(orbRelease);
+	});
 
-	let satWarning = false;
-	$: satWarning =
-		nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0;
+	let satWarning = $state(false);
+	run(() => {
+		satWarning =
+			nonNullish(satVersion) && nonNullish(satRelease) && compare(satVersion, satRelease) < 0;
+	});
 
-	let ctrlWarning = false;
-	$: ctrlWarning =
-		nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
+	let ctrlWarning = $state(false);
+	run(() => {
+		ctrlWarning =
+			nonNullish(ctrlVersion) && nonNullish(ctrlRelease) && compare(ctrlVersion, ctrlRelease) < 0;
+	});
 
-	let orbWarning = false;
-	$: orbWarning =
-		nonNullish(orbVersion) && nonNullish(orbRelease) && compare(orbVersion, orbRelease) < 0;
+	let orbWarning = $state(false);
+	run(() => {
+		orbWarning =
+			nonNullish(orbVersion) && nonNullish(orbRelease) && compare(orbVersion, orbRelease) < 0;
+	});
 
 	const openModal = async ({
 		currentVersion,
@@ -137,16 +151,16 @@
 		});
 </script>
 
-<svelte:window on:junoReloadVersions={async () => await load(false)} />
+<svelte:window onjunoReloadVersions={async () => await load(false)} />
 
 {#if ctrlReady && ctrlWarning}
 	<div>
 		<p>
 			<IconNewReleases />
-			{@html $i18n.admin.mission_control_new_version}
+			<Html text={$i18n.admin.mission_control_new_version} />
 		</p>
 
-		<button class="primary" on:click={upgradeMissionControl}>{$i18n.canisters.upgrade}</button>
+		<button class="primary" onclick={upgradeMissionControl}>{$i18n.canisters.upgrade}</button>
 	</div>
 {/if}
 
@@ -154,10 +168,10 @@
 	<div>
 		<p>
 			<IconNewReleases />
-			{@html $i18n.admin.orbiter_new_version}
+			<Html text={$i18n.admin.orbiter_new_version} />
 		</p>
 
-		<button class="primary" on:click={upgradeOrbiter}>{$i18n.canisters.upgrade}</button>
+		<button class="primary" onclick={upgradeOrbiter}>{$i18n.canisters.upgrade}</button>
 	</div>
 {/if}
 
@@ -165,9 +179,9 @@
 	<div>
 		<p>
 			<IconNewReleases />
-			{@html $i18n.admin.satellite_new_version}
+			<Html text={$i18n.admin.satellite_new_version} />
 		</p>
-		<button class="primary" on:click={upgradeSatellite}>{$i18n.canisters.upgrade}</button>
+		<button class="primary" onclick={upgradeSatellite}>{$i18n.canisters.upgrade}</button>
 	</div>
 {/if}
 

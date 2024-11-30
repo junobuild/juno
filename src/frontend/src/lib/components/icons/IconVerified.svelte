@@ -1,6 +1,10 @@
 <!-- source: https://fonts.google.com/icons?selected=Material%20Symbols%20Sharp%3Averified%3AFILL%400%3Bwght%40400%3BGRAD%400%3Bopsz%4048 -->
 <script lang="ts">
-	export let size = '48px';
+	interface Props {
+		size?: string;
+	}
+
+	let { size = '48px' }: Props = $props();
 </script>
 
 <svg

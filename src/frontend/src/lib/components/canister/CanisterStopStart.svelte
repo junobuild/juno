@@ -1,24 +1,35 @@
 <script lang="ts">
-	import type { CanisterIcStatus, CanisterStatus, CanisterSyncStatus } from '$lib/types/canister';
+	import { nonNullish } from '@dfinity/utils';
+	import { run } from 'svelte/legacy';
+	import { fade } from 'svelte/transition';
 	import CanisterStart from '$lib/components/canister/CanisterStart.svelte';
 	import CanisterStop from '$lib/components/canister/CanisterStop.svelte';
-	import { fade } from 'svelte/transition';
-	import { nonNullish } from '@dfinity/utils';
+	import type { CanisterIcStatus, CanisterStatus, CanisterSyncStatus } from '$lib/types/canister';
 
-	export let canister: CanisterIcStatus | undefined = undefined;
-	export let segment: 'satellite' | 'orbiter';
+	interface Props {
+		canister?: CanisterIcStatus | undefined;
+		segment: 'satellite' | 'orbiter';
+		onstart: () => void;
+		onstop: () => void;
+	}
 
-	let status: CanisterStatus | undefined = undefined;
-	let sync: CanisterSyncStatus | undefined = undefined;
+	let { canister = undefined, segment, onstart, onstop }: Props = $props();
 
-	$: status = canister?.data?.canister.status;
-	$: sync = canister?.sync;
+	let status: CanisterStatus | undefined = $state(undefined);
+	let sync: CanisterSyncStatus | undefined = $state(undefined);
+
+	run(() => {
+		status = canister?.data?.canister.status;
+	});
+	run(() => {
+		sync = canister?.sync;
+	});
 </script>
 
 {#if nonNullish(canister) && status === 'stopped' && sync === 'synced'}
-	<div in:fade><CanisterStart {canister} {segment} /></div>
+	<div in:fade><CanisterStart {canister} {segment} {onstart} /></div>
 {:else if nonNullish(canister) && status === 'running' && sync === 'synced'}
-	<div in:fade><CanisterStop {canister} {segment} /></div>
+	<div in:fade><CanisterStop {canister} {segment} {onstop} /></div>
 {/if}
 
 <style lang="scss">

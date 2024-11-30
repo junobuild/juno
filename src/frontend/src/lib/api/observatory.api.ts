@@ -1,6 +1,6 @@
 import type { ArchiveStatuses, CronJobs, CronTab } from '$declarations/observatory/observatory.did';
+import { getObservatoryActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
-import { getObservatoryActor } from '$lib/utils/actor.juno.utils';
 import type { Principal } from '@dfinity/principal';
 
 export const getCronTab = async (identity: OptionIdentity): Promise<[] | [CronTab]> => {

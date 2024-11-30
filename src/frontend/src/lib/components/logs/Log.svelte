@@ -1,15 +1,19 @@
 <script lang="ts">
-	import { formatToDate } from '$lib/utils/date.utils';
-	import { i18n } from '$lib/stores/i18n.store';
+	import { nonNullish } from '@dfinity/utils';
 	import IconChevron from '$lib/components/icons/IconChevron.svelte';
 	import LogLevel from '$lib/components/logs/LogLevel.svelte';
-	import type { Log } from '$lib/types/log';
-	import { nonNullish } from '@dfinity/utils';
 	import JsonCode from '$lib/components/ui/JsonCode.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { Log } from '$lib/types/log';
+	import { formatToDate } from '$lib/utils/date.utils';
 
-	export let log: Log;
+	interface Props {
+		log: Log;
+	}
 
-	let expand = false;
+	let { log }: Props = $props();
+
+	let expand = $state(false);
 </script>
 
 <tr>
@@ -20,7 +24,7 @@
 			class="text"
 			class:rotate={expand}
 			aria-label={$i18n.functions.expand}
-			on:click={() => (expand = !expand)}><IconChevron /></button
+			onclick={() => (expand = !expand)}><IconChevron /></button
 		>
 		<div class:expand>
 			{log.message}

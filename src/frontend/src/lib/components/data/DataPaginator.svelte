@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
+	import { getContext } from 'svelte';
 	import IconNavigateNext from '$lib/components/icons/IconNavigateNext.svelte';
 	import { PAGINATION_CONTEXT_KEY } from '$lib/types/pagination.context';
-	import { getContext } from 'svelte';
 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
@@ -22,13 +22,13 @@
 {#if nonNullish($store.pages) && $store.pages > 0}
 	<nav class="pagination">
 		<button
-			on:click={prev}
+			onclick={prev}
 			class:visible={$store.selectedPage > 0}
 			aria-label="Previous page of data"
 			class="square"><IconNavigateNext navigate="previous" /></button
 		>
 		<button
-			on:click={next}
+			onclick={next}
 			class:visible={$store.pages > $store.selectedPage + 1}
 			aria-label="Next page of data"
 			class="square"><IconNavigateNext /></button

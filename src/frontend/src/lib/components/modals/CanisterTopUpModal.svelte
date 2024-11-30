@@ -1,55 +1,68 @@
 <script lang="ts">
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { topUp } from '$lib/api/mission-control.api';
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { icpXdrConversionRate } from '$lib/api/cmc.api';
-	import { createEventDispatcher, onMount } from 'svelte';
-	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
-	import { E8S_PER_ICP, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
-	import Input from '$lib/components/ui/Input.svelte';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import type { AccountIdentifier } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
-	import { i18n } from '$lib/stores/i18n.store';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { emit } from '$lib/utils/events.utils';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { formatE8sICP } from '$lib/utils/icp.utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { createEventDispatcher, onMount, type Snippet } from 'svelte';
+	import { run, preventDefault } from 'svelte/legacy';
+	import { icpXdrConversionRate } from '$lib/api/cmc.api';
+	import { topUp } from '$lib/api/mission-control.api';
 	import MissionControlICPInfo from '$lib/components/mission-control/MissionControlICPInfo.svelte';
-	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
-	import type { AccountIdentifier } from '@junobuild/ledger';
+	import Html from '$lib/components/ui/Html.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Modal from '$lib/components/ui/Modal.svelte';
+	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { E8S_PER_ICP, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
 	import { authStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { Segment } from '$lib/types/canister';
+	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';
+	import { emit } from '$lib/utils/events.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 
-	export let canisterId: Principal;
-	export let balance: bigint;
-	export let accountIdentifier: AccountIdentifier | undefined;
+	interface Props {
+		canisterId: Principal;
+		balance: bigint;
+		accountIdentifier: AccountIdentifier | undefined;
+		outro?: Snippet;
+		intro?: Snippet;
+		segment: Segment;
+	}
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = 'init';
+	let { canisterId, balance, accountIdentifier, outro, intro, segment }: Props = $props();
 
-	let trillionRatio: bigint | undefined;
+	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+
+	let trillionRatio: bigint | undefined = $state();
 	onMount(async () => (trillionRatio = await icpXdrConversionRate()));
 
-	let icp: number | undefined = undefined;
+	let icp: number | undefined = $state(undefined);
 
 	const networkFees = 2n * IC_TRANSACTION_FEE_ICP;
 
-	let validIcp = false;
-	$: validIcp =
-		nonNullish(icp) &&
-		icp > 0 &&
-		icp < Number(balance) / Number(E8S_PER_ICP) &&
-		icp > Number(networkFees) / Number(E8S_PER_ICP);
+	let validIcp = $state(false);
+	run(() => {
+		validIcp =
+			nonNullish(icp) &&
+			icp > 0 &&
+			icp < Number(balance) / Number(E8S_PER_ICP) &&
+			icp > Number(networkFees) / Number(E8S_PER_ICP);
+	});
 
-	let cycles: number | undefined;
-	$: cycles =
-		nonNullish(trillionRatio) && validIcp
-			? icpToCycles({ icp: icp as number, trillionRatio })
-			: undefined;
+	let cycles: number | undefined = $derived(
+		nonNullish(trillionRatio) && validIcp && nonNullish(icp)
+			? icpToCycles({ icp, trillionRatio })
+			: undefined
+	);
 
-	let validCycles = false;
-	$: validCycles = nonNullish(cycles);
+	let validCycles = $state(false);
+	run(() => {
+		validCycles = nonNullish(cycles);
+	});
 
 	const onSubmit = async () => {
 		if (isNullish($missionControlStore)) {
@@ -99,42 +112,46 @@
 <Modal on:junoClose>
 	{#if steps === 'ready'}
 		<div class="msg">
-			<slot name="outro" />
-			<button on:click={close}>{$i18n.core.close}</button>
+			{@render outro?.()}
+			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.canisters.top_up_in_progress}</p>
 		</SpinnerModal>
 	{:else}
-		<slot name="intro" />
+		{@render intro?.()}
 
 		<p>
-			<ExternalLink underline href="https://juno.build/docs/terminology#cycles">Cycles</ExternalLink
-			>
-			{$i18n.canisters.cycles}
-		</p>
-
-		<p>
-			{@html i18nFormat($i18n.canisters.top_up_info, [
+			{i18nFormat($i18n.canisters.cycles_description, [
 				{
 					placeholder: '{0}',
-					value: formatE8sICP(balance)
-				},
-				{
-					placeholder: '{1}',
-					value: formatE8sICP(networkFees)
+					value: segment
 				}
 			])}
+			<Html
+				text={i18nFormat($i18n.canisters.top_up_info, [
+					{
+						placeholder: '{0}',
+						value: formatE8sICP(balance)
+					},
+					{
+						placeholder: '{1}',
+						value: formatE8sICP(networkFees)
+					}
+				])}
+			/>
 		</p>
 
 		{#if balance <= networkFees}
-			<MissionControlICPInfo {accountIdentifier} on:click={close} />
+			<MissionControlICPInfo {accountIdentifier} onclose={close} />
 		{:else}
-			<form on:submit|preventDefault={onSubmit}>
+			<form onsubmit={preventDefault(onSubmit)}>
 				<div>
 					<Value>
-						<svelte:fragment slot="label">ICP</svelte:fragment>
+						{#snippet label()}
+							ICP
+						{/snippet}
 						<Input
 							name="icp"
 							inputType="icp"
@@ -147,7 +164,9 @@
 
 				<div class="cycles">
 					<Value>
-						<svelte:fragment slot="label">{$i18n.canisters.additional_cycles}</svelte:fragment>
+						{#snippet label()}
+							{$i18n.canisters.additional_cycles}
+						{/snippet}
 						{nonNullish(cycles) ? `${formatTCycles(BigInt(cycles ?? 0))}` : '0'} TCycles
 					</Value>
 				</div>

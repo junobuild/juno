@@ -1,9 +1,13 @@
 <!-- adapted from pen: https://codepen.io/mimoh/pen/VmVqPB -->
 <script lang="ts">
-	export let inline = false;
+	interface Props {
+		inline?: boolean;
+	}
+
+	let { inline = false }: Props = $props();
 </script>
 
-<div class="spinner" class:inline />
+<div class="spinner" class:inline></div>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

@@ -4,6 +4,7 @@ import type {
 	AnalyticsMetricsPageViews,
 	AnalyticsTop10PageViews,
 	AnalyticsTrackEvents,
+	AnalyticsWebVitalsPerformanceMetrics,
 	Controller,
 	GetAnalytics,
 	PageView,
@@ -11,9 +12,9 @@ import type {
 	SetSatelliteConfig,
 	TrackEvent
 } from '$declarations/orbiter/orbiter.did';
+import { getOrbiterActor } from '$lib/api/actors/actor.juno.api';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
-import { getOrbiterActor } from '$lib/utils/actor.juno.utils';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
@@ -91,7 +92,7 @@ const getAnalytics = async <T>({
 	satelliteId?: Principal;
 	fn: (params: GetAnalytics) => Promise<T>;
 } & PageViewsPeriod): Promise<T> =>
-	fn({
+	await fn({
 		satellite_id: toNullable(satelliteId),
 		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
 		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
@@ -129,6 +130,25 @@ export const getTrackEventsAnalytics = async ({
 	});
 };
 
+export const getPerformanceMetricsAnalyticsWebVitals = async ({
+	satelliteId,
+	orbiterId,
+	from,
+	to,
+	identity
+}: PageViewsParams): Promise<AnalyticsWebVitalsPerformanceMetrics> => {
+	const { get_performance_metrics_analytics_web_vitals } = await getOrbiterActor({
+		orbiterId,
+		identity
+	});
+	return getAnalytics({
+		satelliteId,
+		from,
+		to,
+		fn: get_performance_metrics_analytics_web_vitals
+	});
+};
+
 export const listOrbiterControllers = async ({
 	orbiterId,
 	identity
@@ -147,8 +167,8 @@ export const listOrbiterSatelliteConfigs = async ({
 	orbiterId: Principal;
 	identity: OptionIdentity;
 }): Promise<[Principal, SatelliteConfig][]> => {
-	const actor = await getOrbiterActor({ orbiterId, identity });
-	return actor.list_satellite_configs();
+	const { list_satellite_configs } = await getOrbiterActor({ orbiterId, identity });
+	return list_satellite_configs();
 };
 
 export const setOrbiterSatelliteConfigs = async ({

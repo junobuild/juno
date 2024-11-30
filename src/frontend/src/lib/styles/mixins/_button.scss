@@ -75,10 +75,12 @@
 }
 
 @mixin square {
+	box-shadow: none;
+
 	height: var(--padding-3x);
 	width: var(--padding-3x);
 	padding: var(--padding-0_25x);
-	margin: 0 0 var(--padding);
+	margin: 0;
 }
 
 @mixin icon {

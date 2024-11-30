@@ -8,13 +8,14 @@ pub mod controllers;
 pub mod day;
 #[doc(hidden)]
 pub mod env;
-pub mod ic;
 #[doc(hidden)]
 pub mod impls;
 pub mod ledger;
 pub mod list;
+pub mod mgmt;
 #[doc(hidden)]
 pub mod msg;
+pub mod rate;
 pub mod serializers;
 #[doc(hidden)]
 pub mod types;

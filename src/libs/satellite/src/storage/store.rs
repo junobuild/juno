@@ -3,7 +3,7 @@ use crate::hooks::invoke_assert_delete_asset;
 use crate::memory::STATE;
 use candid::Principal;
 use junobuild_collections::assert_stores::{assert_permission, public_permission};
-use junobuild_collections::msg::COLLECTION_NOT_EMPTY;
+use junobuild_collections::msg::msg_storage_collection_not_empty;
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::rules::{Memory, Rule};
 use junobuild_shared::controllers::is_controller;
@@ -21,6 +21,7 @@ use crate::storage::state::{
     insert_domain as insert_state_domain,
 };
 use crate::storage::strategy_impls::{StorageAssertions, StorageState, StorageUpload};
+use crate::types::store::StoreContext;
 use junobuild_shared::types::core::{Blob, DomainName};
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::list::{ListParams, ListResults};
@@ -31,6 +32,7 @@ use junobuild_storage::heap_utils::{
 use junobuild_storage::msg::{ERROR_ASSET_NOT_FOUND, UPLOAD_NOT_ALLOWED};
 use junobuild_storage::runtime::{
     delete_certified_asset as delete_runtime_certified_asset,
+    increment_and_assert_rate as increment_and_assert_rate_runtime,
     update_certified_asset as update_runtime_certified_asset,
 };
 use junobuild_storage::store::{commit_batch as commit_batch_storage, create_batch, create_chunk};
@@ -99,7 +101,13 @@ pub fn delete_asset_store(
     let controllers: Controllers = get_controllers();
     let config = get_config_store();
 
-    secure_delete_asset_impl(caller, &controllers, collection, full_path, &config)
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection,
+    };
+
+    secure_delete_asset_impl(&context, full_path, &config)
 }
 
 pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
@@ -125,6 +133,24 @@ pub fn delete_assets_store(collection: &CollectionKey) -> Result<(), String> {
     delete_assets_impl(&full_paths, collection, &rule)
 }
 
+/// List assets in a collection.
+///
+/// This function retrieves a list of assets from a collection's store based on the specified parameters.
+/// It returns a `Result<ListResults<AssetNoContent>, String>` where `Ok(ListResults)` contains the retrieved assets,
+/// or an error message as `Err(String)` if the operation encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to list the assets.
+/// - `filters`: A reference to `ListParams` containing the filter criteria for listing the assets.
+///
+/// # Returns
+/// - `Ok(ListResults<AssetNoContent>)`: Contains the list of retrieved assets, without their content, matching the filter criteria.
+/// - `Err(String)`: An error message if the operation fails.
+///
+/// This function lists assets in a Juno collection's store, applying the specified filter criteria to retrieve the assets.
+/// The returned list includes the assets without their content (`AssetNoContent`), which is useful for operations where only
+/// metadata or references are needed.
 pub fn list_assets_store(
     caller: Principal,
     collection: &CollectionKey,
@@ -132,7 +158,41 @@ pub fn list_assets_store(
 ) -> Result<ListResults<AssetNoContent>, String> {
     let controllers: Controllers = get_controllers();
 
-    secure_list_assets_impl(caller, &controllers, collection, filters)
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection,
+    };
+
+    secure_list_assets_impl(&context, filters)
+}
+
+/// Count assets in a collection.
+///
+/// This function retrieves the count of assets from a collection's store based on the specified parameters.
+/// It returns a `Result<usize, String>` where `Ok(usize)` contains the count of assets matching the filter criteria,
+/// or an error message as `Err(String)` if the operation encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the operation. If used in serverless functions, you can use `ic_cdk::id()` to pass an administrator controller.
+/// - `collection`: A reference to the `CollectionKey` representing the collection from which to count the assets.
+/// - `filters`: A reference to `ListParams` containing the filter criteria for counting the assets.
+///
+/// # Returns
+/// - `Ok(usize)`: Contains the count of assets matching the filter criteria.
+/// - `Err(String)`: An error message if the operation fails.
+///
+/// This function counts assets in a Juno collection's store by listing them and then determining the length of the result set.
+///
+/// # Note
+/// This implementation can be improved, as it currently relies on `list_assets_store` underneath, meaning that all assets matching the filter criteria are still read from the store. This might lead to unnecessary overhead, especially for large collections. Optimizing this function to count assets directly without retrieving them could enhance performance.
+pub fn count_assets_store(
+    caller: Principal,
+    collection: &CollectionKey,
+    filters: &ListParams,
+) -> Result<usize, String> {
+    let results = list_assets_store(caller, collection, filters)?;
+    Ok(results.items_length)
 }
 
 /// Get an asset from a collection's store.
@@ -160,33 +220,40 @@ pub fn get_asset_store(
 ) -> Result<Option<Asset>, String> {
     let controllers: Controllers = get_controllers();
 
-    secure_get_asset_impl(caller, &controllers, collection, full_path)
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection,
+    };
+
+    secure_get_asset_impl(&context, full_path)
 }
 
 fn secure_get_asset_impl(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
+    context: &StoreContext,
     full_path: FullPath,
 ) -> Result<Option<Asset>, String> {
-    let rule = get_state_rule(collection)?;
+    let rule = get_state_rule(context.collection)?;
 
-    get_asset_impl(caller, controllers, full_path, collection, &rule)
+    get_asset_impl(context, full_path, &rule)
 }
 
 fn get_asset_impl(
-    caller: Principal,
-    controllers: &Controllers,
+    context: &StoreContext,
     full_path: FullPath,
-    collection: &CollectionKey,
     rule: &Rule,
 ) -> Result<Option<Asset>, String> {
-    let asset = get_state_asset(collection, &full_path, rule);
+    let asset = get_state_asset(context.collection, &full_path, rule);
 
     match asset {
         None => Ok(None),
         Some(asset) => {
-            if !assert_permission(&rule.read, asset.key.owner, caller, controllers) {
+            if !assert_permission(
+                &rule.read,
+                asset.key.owner,
+                context.caller,
+                context.controllers,
+            ) {
                 return Ok(None);
             }
 
@@ -240,56 +307,42 @@ fn assert_assets_collection_empty_impl(
     let values = filter_collection_values(collection.clone(), assets);
 
     if !values.is_empty() {
-        return Err([COLLECTION_NOT_EMPTY, collection].join(""));
+        return Err(msg_storage_collection_not_empty(collection));
     }
 
     Ok(())
 }
 
 fn secure_list_assets_impl(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
+    context: &StoreContext,
     filters: &ListParams,
 ) -> Result<ListResults<AssetNoContent>, String> {
-    let rule = get_state_rule(collection)?;
+    let rule = get_state_rule(context.collection)?;
 
     match rule.mem() {
         Memory::Heap => STATE.with(|state| {
             let state_ref = state.borrow();
-            let assets = collect_assets_heap(collection, &state_ref.heap.storage.assets);
-            Ok(list_assets_impl(
-                &assets,
-                caller,
-                controllers,
-                collection,
-                &rule,
-                filters,
-            ))
+            let assets = collect_assets_heap(context.collection, &state_ref.heap.storage.assets);
+            Ok(list_assets_impl(&assets, context, &rule, filters))
         }),
         Memory::Stable => STATE.with(|state| {
-            let stable = get_assets_stable(collection, &state.borrow().stable.assets);
+            let stable = get_assets_stable(context.collection, &state.borrow().stable.assets);
             let assets: Vec<(&FullPath, &Asset)> = stable
                 .iter()
                 .map(|(_, asset)| (&asset.key.full_path, asset))
                 .collect();
-            Ok(list_assets_impl(
-                &assets,
-                caller,
-                controllers,
-                collection,
-                &rule,
-                filters,
-            ))
+            Ok(list_assets_impl(&assets, context, &rule, filters))
         }),
     }
 }
 
 fn list_assets_impl(
     assets: &[(&FullPath, &Asset)],
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
+    &StoreContext {
+        caller,
+        controllers,
+        collection,
+    }: &StoreContext,
     rule: &Rule,
     filters: &ListParams,
 ) -> ListResults<AssetNoContent> {
@@ -318,43 +371,46 @@ fn list_assets_impl(
 }
 
 fn secure_delete_asset_impl(
-    caller: Principal,
-    controllers: &Controllers,
-    collection: &CollectionKey,
+    context: &StoreContext,
     full_path: FullPath,
     config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
-    let rule = get_state_rule(collection)?;
+    let rule = get_state_rule(context.collection)?;
 
-    delete_asset_impl(caller, controllers, full_path, collection, &rule, config)
+    delete_asset_impl(context, full_path, &rule, config)
 }
 
 fn delete_asset_impl(
-    caller: Principal,
-    controllers: &Controllers,
+    context: &StoreContext,
     full_path: FullPath,
-    collection: &CollectionKey,
     rule: &Rule,
     config: &StorageConfig,
 ) -> Result<Option<Asset>, String> {
-    let asset = get_state_asset(collection, &full_path, rule);
+    let asset = get_state_asset(context.collection, &full_path, rule);
 
     match asset {
         None => Err(ERROR_ASSET_NOT_FOUND.to_string()),
         Some(asset) => {
-            if !assert_permission(&rule.write, asset.key.owner, caller, controllers) {
+            if !assert_permission(
+                &rule.write,
+                asset.key.owner,
+                context.caller,
+                context.controllers,
+            ) {
                 return Err(ERROR_ASSET_NOT_FOUND.to_string());
             }
 
-            invoke_assert_delete_asset(&caller, &asset)?;
+            increment_and_assert_rate_runtime(context.collection, &rule.rate_config)?;
 
-            let deleted = delete_state_asset(collection, &full_path, rule);
+            invoke_assert_delete_asset(&context.caller, &asset)?;
+
+            let deleted = delete_state_asset(context.collection, &full_path, rule);
             delete_runtime_certified_asset(&asset);
 
             // We just removed the rewrite for /404.html in the certification tree therefore if /index.html exists, we want to reintroduce it as rewrite
             if *full_path == *ROOT_404_HTML {
                 if let Some(index_asset) =
-                    get_state_asset(collection, &ROOT_INDEX_HTML.to_string(), rule)
+                    get_state_asset(context.collection, &ROOT_INDEX_HTML.to_string(), rule)
                 {
                     update_runtime_certified_asset(&index_asset, config);
                 }
@@ -398,7 +454,7 @@ fn delete_assets_impl(
 /// - `Err(String)`: An error message if counting fails.
 ///
 /// This function provides a convenient way to determine the number of assets in a Juno collection's store.
-pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
+pub fn count_collection_assets_store(collection: &CollectionKey) -> Result<usize, String> {
     let rule = get_state_rule(collection)?;
 
     match rule.mem() {
@@ -412,6 +468,64 @@ pub fn count_assets_store(collection: &CollectionKey) -> Result<usize, String> {
             Ok(length)
         }),
     }
+}
+
+/// Delete multiple assets from a collection's store based on filter criteria.
+///
+/// This function deletes assets from a collection's store that match the specified filter criteria.
+/// It returns a `Result<Vec<Option<Asset>>, String>`, where `Ok(Vec<Option<Asset>>)` contains a vector of
+/// `Option<Asset>` values for each deleted asset (or `None` if no asset was found for that entry), or an
+/// error message as `Err(String)` if the deletion encounters issues.
+///
+/// # Parameters
+/// - `caller`: The `Principal` representing the caller initiating the deletion.
+/// - `collection`: A `CollectionKey` representing the collection from which to delete the assets.
+/// - `filters`: A reference to `ListParams` containing the filter criteria for selecting assets to delete.
+///
+/// # Returns
+/// - `Ok(Vec<Option<Asset>>)`:
+///   - Each element in the vector represents the result of a delete operation for an asset:
+///     - `Some(Asset)`: The successfully deleted asset.
+///     - `None`: Indicates no asset found matching the specified filter criteria for this entry.
+/// - `Err(String)`: An error message if the deletion operation fails.
+///
+/// This function allows batch deletion of assets in a Juno collection's store that match the specified
+/// filter criteria, providing context for each deleted asset or error messages if any issues occur.
+pub fn delete_filtered_assets_store(
+    caller: Principal,
+    collection: CollectionKey,
+    filters: &ListParams,
+) -> Result<Vec<Option<Asset>>, String> {
+    let controllers: Controllers = get_controllers();
+
+    let context = StoreContext {
+        caller,
+        controllers: &controllers,
+        collection: &collection,
+    };
+
+    let assets = secure_list_assets_impl(&context, filters)?;
+
+    delete_filtered_assets_store_impl(&context, &assets)
+}
+
+fn delete_filtered_assets_store_impl(
+    context: &StoreContext,
+    assets: &ListResults<AssetNoContent>,
+) -> Result<Vec<Option<Asset>>, String> {
+    let rule = get_state_rule(context.collection)?;
+    let config = get_config_store();
+
+    let mut results: Vec<Option<Asset>> = Vec::new();
+
+    for (_, asset) in &assets.items {
+        let deleted_asset =
+            delete_asset_impl(context, asset.key.full_path.clone(), &rule, &config)?;
+
+        results.push(deleted_asset);
+    }
+
+    Ok(results)
 }
 
 ///
@@ -467,7 +581,7 @@ fn secure_create_batch_impl(
         return Err(UPLOAD_NOT_ALLOWED.to_string());
     }
 
-    create_batch(caller, controllers, config, init, None)
+    create_batch(caller, controllers, config, init, None, &StorageState)
 }
 
 ///

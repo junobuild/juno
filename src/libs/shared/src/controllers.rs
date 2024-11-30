@@ -4,7 +4,7 @@ use crate::types::interface::SetController;
 use crate::types::state::{Controller, ControllerId, ControllerScope, Controllers, UserId};
 use crate::utils::{principal_anonymous, principal_equal, principal_not_anonymous};
 use candid::Principal;
-use ic_cdk::api::time;
+use ic_cdk::api::{is_controller as is_canister_controller, time};
 use ic_cdk::id;
 use std::collections::HashMap;
 
@@ -100,7 +100,8 @@ pub fn is_controller(caller: UserId, controllers: &Controllers) -> bool {
 /// # Returns
 /// `true` if the caller is an admin controller, otherwise `false`.
 pub fn is_admin_controller(caller: UserId, controllers: &Controllers) -> bool {
-    principal_not_anonymous(caller)
+    is_canister_controller(&caller)
+        && principal_not_anonymous(caller)
         && controllers
             .iter()
             .any(|(&controller_id, controller)| match controller.scope {

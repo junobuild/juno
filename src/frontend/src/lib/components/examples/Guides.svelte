@@ -1,16 +1,17 @@
 <script lang="ts">
 	import Resource from '$lib/components/examples/Resource.svelte';
-	import IconReact from '$lib/components/icons/IconReact.svelte';
-	import IconSvelte from '$lib/components/icons/IconSvelte.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import IconAngular from '$lib/components/icons/IconAngular.svelte';
-	import IconVue from '$lib/components/icons/IconVue.svelte';
+	import IconAstro from '$lib/components/icons/IconAstro.svelte';
+	import IconDocker from '$lib/components/icons/IconDocker.svelte';
 	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
 	import IconNextJS from '$lib/components/icons/IconNextJS.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import IconAstro from '$lib/components/icons/IconAstro.svelte';
+	import IconReact from '$lib/components/icons/IconReact.svelte';
 	import IconRust from '$lib/components/icons/IconRust.svelte';
-	import IconDocker from '$lib/components/icons/IconDocker.svelte';
+	import IconSvelte from '$lib/components/icons/IconSvelte.svelte';
+	import IconVue from '$lib/components/icons/IconVue.svelte';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 </script>
 
 <hr />
@@ -19,99 +20,149 @@
 
 <section>
 	<Resource href="https://juno.build/docs/guides/nextjs">
-		<IconNextJS slot="icon" />
-		<svelte:fragment slot="title">Next.js</svelte:fragment>
+		{#snippet icon()}
+			<IconNextJS />
+		{/snippet}
+		{#snippet title()}
+			Next.js
+		{/snippet}
 
-		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
-			{
-				placeholder: '{0}',
-				value: 'Next.js'
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.examples.tutorial_framework_description, [
+				{
+					placeholder: '{0}',
+					value: 'Next.js'
+				}
+			])}
+		/>
 	</Resource>
 
 	<Resource href="https://juno.build/docs/guides/react">
-		<IconReact slot="icon" />
-		<svelte:fragment slot="title">React</svelte:fragment>
+		{#snippet icon()}
+			<IconReact />
+		{/snippet}
+		{#snippet title()}
+			React
+		{/snippet}
 
-		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
-			{
-				placeholder: '{0}',
-				value: 'React'
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.examples.tutorial_framework_description, [
+				{
+					placeholder: '{0}',
+					value: 'React'
+				}
+			])}
+		/>
 	</Resource>
 
 	<Resource href="https://juno.build/docs/guides/sveltekit">
-		<IconSvelte slot="icon" />
-		<svelte:fragment slot="title">SvelteKit</svelte:fragment>
+		{#snippet icon()}
+			<IconSvelte />
+		{/snippet}
+		{#snippet title()}
+			SvelteKit
+		{/snippet}
 
-		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
-			{
-				placeholder: '{0}',
-				value: 'SvelteKit'
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.examples.tutorial_framework_description, [
+				{
+					placeholder: '{0}',
+					value: 'SvelteKit'
+				}
+			])}
+		/>
 	</Resource>
 
 	<Resource href="https://juno.build/docs/guides/vue">
-		<IconVue slot="icon" />
-		<svelte:fragment slot="title">Vue</svelte:fragment>
+		{#snippet icon()}
+			<IconVue />
+		{/snippet}
+		{#snippet title()}
+			Vue
+		{/snippet}
 
-		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
-			{
-				placeholder: '{0}',
-				value: 'Vue'
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.examples.tutorial_framework_description, [
+				{
+					placeholder: '{0}',
+					value: 'Vue'
+				}
+			])}
+		/>
 	</Resource>
 
 	<Resource href="https://juno.build/docs/guides/angular">
-		<IconAngular slot="icon" />
-		<svelte:fragment slot="title">Angular</svelte:fragment>
+		{#snippet icon()}
+			<IconAngular />
+		{/snippet}
+		{#snippet title()}
+			Angular
+		{/snippet}
 
-		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
-			{
-				placeholder: '{0}',
-				value: 'Angular'
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.examples.tutorial_framework_description, [
+				{
+					placeholder: '{0}',
+					value: 'Angular'
+				}
+			])}
+		/>
 	</Resource>
 
 	<Resource href="https://juno.build/docs/guides/astro">
-		<IconAstro slot="icon" />
-		<svelte:fragment slot="title">Astro</svelte:fragment>
+		{#snippet icon()}
+			<IconAstro />
+		{/snippet}
+		{#snippet title()}
+			Astro
+		{/snippet}
 
-		{@html i18nFormat($i18n.examples.tutorial_framework_description, [
-			{
-				placeholder: '{0}',
-				value: 'Astro'
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.examples.tutorial_framework_description, [
+				{
+					placeholder: '{0}',
+					value: 'Astro'
+				}
+			])}
+		/>
 	</Resource>
 
 	<Resource href="https://juno.build/docs/guides/astro">
-		<IconRust slot="icon" />
-		<svelte:fragment slot="title">Rust</svelte:fragment>
+		{#snippet icon()}
+			<IconRust />
+		{/snippet}
+		{#snippet title()}
+			Rust
+		{/snippet}
 
-		{@html i18nFormat($i18n.examples.tutorial_serverless_functions, [
-			{
-				placeholder: '{0}',
-				value: 'Rust'
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.examples.tutorial_serverless_functions, [
+				{
+					placeholder: '{0}',
+					value: 'Rust'
+				}
+			])}
+		/>
 	</Resource>
 
 	<Resource href="https://juno.build/docs/miscellaneous/github_actions">
-		<IconGitHub slot="icon" size="48px" />
-		<svelte:fragment slot="title">GitHub</svelte:fragment>
+		{#snippet icon()}
+			<IconGitHub size="48px" />
+		{/snippet}
+		{#snippet title()}
+			GitHub
+		{/snippet}
 
 		{$i18n.examples.tutorial_github_description}
 	</Resource>
 
 	<Resource href="https://juno.build/docs/miscellaneous/local-development">
-		<IconDocker slot="icon" />
-		<svelte:fragment slot="title">Docker</svelte:fragment>
+		{#snippet icon()}
+			<IconDocker />
+		{/snippet}
+		{#snippet title()}
+			Docker
+		{/snippet}
 
 		{$i18n.examples.tutorial_docker_description}
 	</Resource>

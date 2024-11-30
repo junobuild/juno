@@ -34,6 +34,12 @@ export const MISSION_CONTROL_WASM_PATH = existsSync(MISSION_CONTROL_WASM_PATH_CI
 	? MISSION_CONTROL_WASM_PATH_CI
 	: MISSION_CONTROL_WASM_PATH_LOCAL;
 
+const OBSERVATORY_WASM_PATH_LOCAL = join(WASM_PATH_LOCAL, 'observatory.wasm.gz');
+const OBSERVATORY_WASM_PATH_CI = join(process.cwd(), 'observatory.wasm.gz');
+export const OBSERVATORY_WASM_PATH = existsSync(OBSERVATORY_WASM_PATH_CI)
+	? OBSERVATORY_WASM_PATH_CI
+	: OBSERVATORY_WASM_PATH_LOCAL;
+
 export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayBuffer =>
 	IDL.encode(
 		[
@@ -44,8 +50,8 @@ export const controllersInitArgs = (controllers: Identity | Principal[]): ArrayB
 		[{ controllers: Array.isArray(controllers) ? controllers : [controllers.getPrincipal()] }]
 	);
 
-const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> => {
-	return await new Promise((resolve, reject) => {
+const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
+	await new Promise((resolve, reject) => {
 		get(url, async (res) => {
 			if (nonNullish(res.statusCode) && [301, 302].includes(res.statusCode)) {
 				await downloadFromURL(res.headers.location!).then(resolve, reject);
@@ -61,16 +67,15 @@ const downloadFromURL = async (url: string | RequestOptions): Promise<Buffer> =>
 			res.on('error', reject);
 		});
 	});
-};
 
 export const downloadSatellite = async (version: string): Promise<string> =>
-	downloadCdn(`satellite-v${version}.wasm.gz`);
+	await downloadCdn(`satellite-v${version}.wasm.gz`);
 
 export const downloadOrbiter = async (version: string): Promise<string> =>
-	downloadCdn(`orbiter-v${version}.wasm.gz`);
+	await downloadCdn(`orbiter-v${version}.wasm.gz`);
 
 export const downloadMissionControl = async (version: string): Promise<string> =>
-	downloadCdn(`mission_control-v${version}.wasm.gz`);
+	await downloadCdn(`mission_control-v${version}.wasm.gz`);
 
 export const downloadConsole = async ({
 	junoVersion,
@@ -78,10 +83,10 @@ export const downloadConsole = async ({
 }: {
 	junoVersion: string;
 	version: string;
-}): Promise<string> => downloadGitHub({ junoVersion, wasm: `console-v${version}.wasm.gz` });
+}): Promise<string> => await downloadGitHub({ junoVersion, wasm: `console-v${version}.wasm.gz` });
 
 const downloadCdn = async (wasm: string): Promise<string> =>
-	download({ wasm, url: `https://cdn.juno.build/releases/${wasm}` });
+	await download({ wasm, url: `https://cdn.juno.build/releases/${wasm}` });
 
 const downloadGitHub = async ({
 	wasm,
@@ -90,12 +95,12 @@ const downloadGitHub = async ({
 	wasm: string;
 	junoVersion: string;
 }): Promise<string> =>
-	download({
+	await download({
 		wasm,
 		url: `https://github.com/junobuild/juno/releases/download/v${junoVersion}/${wasm}`
 	});
 
-const download = async ({ wasm, url }: { wasm: string; url: string }): Promise<string> => {
+export const download = async ({ wasm, url }: { wasm: string; url: string }): Promise<string> => {
 	const destination = join(process.cwd(), wasm);
 
 	if (existsSync(destination)) {

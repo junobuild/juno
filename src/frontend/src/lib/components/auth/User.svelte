@@ -1,22 +1,19 @@
 <script lang="ts">
-	import type { Provider, User, UserData } from '$lib/types/user';
-	import { formatToDate } from '$lib/utils/date.utils';
-	import type { Principal } from '@dfinity/principal';
-	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import IconIC from '$lib/components/icons/IconIC.svelte';
 	import IconNFID from '$lib/components/icons/IconNFID.svelte';
+	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import type { User } from '$lib/types/user';
+	import { formatToDate } from '$lib/utils/date.utils';
 
-	export let user: User;
+	interface Props {
+		user: User;
+	}
 
-	let owner: Principal;
-	let created_at: bigint;
-	let updated_at: bigint;
-	let data: UserData;
+	let { user }: Props = $props();
 
-	$: ({ owner, created_at, updated_at, data } = user);
+	let { owner, created_at, updated_at, data } = $derived(user);
 
-	let provider: Provider | undefined;
-	$: ({ provider } = data);
+	let { provider } = $derived(data);
 </script>
 
 <tr>

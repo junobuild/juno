@@ -1,28 +1,30 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store.js';
-	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import type { Principal } from '@dfinity/principal';
+	import { isNullish } from '@dfinity/utils';
+	import { goto } from '$app/navigation';
+	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconLinkOff from '$lib/components/icons/IconLinkOff.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
-	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
-	import { createEventDispatcher } from 'svelte';
 	import { detachOrbiter, detachSatellite } from '$lib/services/mission-control.services';
-	import { isNullish } from '@dfinity/utils';
+	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store.js';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { goto } from '$app/navigation';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let segment: 'satellite' | 'orbiter';
-	export let segmentId: Principal;
+	interface Props {
+		segment: 'satellite' | 'orbiter';
+		segmentId: Principal;
+		ondetach: () => void;
+	}
 
-	let visible = false;
+	let { segment, segmentId, ondetach }: Props = $props();
 
-	const dispatch = createEventDispatcher();
+	let visible = $state(false);
 
 	const detach = async () => {
-		dispatch('junoDetach');
+		ondetach();
 
 		if (!$authSignedInStore) {
 			toasts.error({
@@ -75,12 +77,12 @@
 	const close = () => (visible = false);
 </script>
 
-<button on:click={() => (visible = true)} class="menu"><IconLinkOff /> {$i18n.core.detach}</button>
+<button onclick={() => (visible = true)} class="menu"><IconLinkOff /> {$i18n.core.detach}</button>
 
 <Confirmation bind:visible on:junoYes={detach} on:junoNo={close}>
-	<svelte:fragment slot="title"
-		><Text key="canisters.detach_title" value={segment} /></svelte:fragment
-	>
+	{#snippet title()}
+		<Text key="canisters.detach_title" value={segment} />
+	{/snippet}
 
 	<p><Text key="canisters.detach_explanation" value={segment} /></p>
 

@@ -1,23 +1,23 @@
 <script lang="ts">
+	import { isNullish } from '@dfinity/utils';
+	import { compare } from 'semver';
 	import { getContext, setContext } from 'svelte';
-	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
 	import { writable } from 'svelte/store';
 	import type { AssetNoContent } from '$declarations/satellite/satellite.did';
-	import Data from '$lib/components/data/Data.svelte';
-	import Assets from '$lib/components/assets/Assets.svelte';
-	import Asset from '$lib/components/assets/Asset.svelte';
-	import DataCount from '$lib/components/data/DataCount.svelte';
-	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
-	import { isNullish } from '@dfinity/utils';
 	import { listAssets, satelliteVersion } from '$lib/api/satellites.api';
-	import { authStore } from '$lib/stores/auth.store';
-	import { compare } from 'semver';
 	import { listAssets008, listAssets009 } from '$lib/api/satellites.deprecated.api';
+	import Asset from '$lib/components/assets/Asset.svelte';
+	import Assets from '$lib/components/assets/Assets.svelte';
+	import Data from '$lib/components/data/Data.svelte';
+	import DataCount from '$lib/components/data/DataCount.svelte';
+	import { authStore } from '$lib/stores/auth.store';
 	import { listParamsStore } from '$lib/stores/data.store';
-	import type { ListParams } from '$lib/types/list';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';
+	import type { ListParams } from '$lib/types/list';
+	import { PAGINATION_CONTEXT_KEY, type PaginationContext } from '$lib/types/pagination.context';
+	import { RULES_CONTEXT_KEY, type RulesContext } from '$lib/types/rules.context';
 
 	const assetsStore = writable<DataStoreData<AssetNoContent>>(undefined);
 
@@ -57,7 +57,7 @@
 				collection,
 				satelliteId: $store.satelliteId,
 				params: {
-					startAfter: $paginationStore.startAfter,
+					startAfter: $startAfter,
 					// prettier-ignore parenthesis required for Webstorm Svelte plugin
 					...$listParamsStore
 				} as ListParams,
@@ -77,13 +77,12 @@
 		list
 	});
 
-	const { store: paginationStore, setItems }: PaginationContext<AssetNoContent> =
+	const { setItems, startAfter }: PaginationContext<AssetNoContent> =
 		getContext<PaginationContext<AssetNoContent>>(PAGINATION_CONTEXT_KEY);
 
 	const { store }: RulesContext = getContext<RulesContext>(RULES_CONTEXT_KEY);
 
-	let collection: string | undefined;
-	$: collection = $store.rule?.[0];
+	let collection: string | undefined = $derived($store.rule?.[0]);
 </script>
 
 <Data on:junoCloseData={resetData}>
@@ -91,5 +90,7 @@
 
 	<Asset />
 
-	<DataCount slot="count" />
+	{#snippet count()}
+		<DataCount />
+	{/snippet}
 </Data>

@@ -1,11 +1,10 @@
-import type { Writable } from 'svelte/store';
+import type { Readable, Writable } from 'svelte/store';
 
 export interface PaginationStore<T> {
 	items?: Array<[string, T]>;
 	selectedPage: number;
 	pages?: number;
-	previousStartAfter?: string;
-	startAfter?: string;
+	startAfters?: string[];
 	itemsLength?: number;
 	matchesLength?: number;
 }
@@ -21,6 +20,7 @@ export interface PaginationContext<T> {
 		items_length: bigint | undefined;
 	}) => void;
 	list: () => Promise<void>;
+	startAfter: Readable<string | undefined>;
 }
 
 export const PAGINATION_CONTEXT_KEY = Symbol('pagination');

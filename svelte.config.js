@@ -37,10 +37,10 @@ const config = {
 		},
 		version: {
 			name: version
+		},
+		serviceWorker: {
+			register: false
 		}
-	},
-	serviceWorker: {
-		register: false
 	}
 };
 export default config;

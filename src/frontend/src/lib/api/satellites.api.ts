@@ -9,15 +9,13 @@ import type {
 	RulesType,
 	SetRule
 } from '$declarations/satellite/satellite.did';
-import { MemoryStable, type MemoryText, type PermissionText } from '$lib/constants/rules.constants';
+import { getSatelliteActor } from '$lib/api/actors/actor.juno.api';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { ListParams } from '$lib/types/list';
-import { getSatelliteActor } from '$lib/utils/actor.juno.utils';
-import { memoryFromText, permissionFromText } from '$lib/utils/rules.utils';
 import { toListParams } from '$lib/utils/satellite.utils';
 import { Principal } from '@dfinity/principal';
-import { fromNullable, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { isNullish, toNullable } from '@dfinity/utils';
 
 export const listDocs = async ({
 	satelliteId,
@@ -62,45 +60,36 @@ export const listRules = async ({
 	return actor.list_rules(type);
 };
 
+export const getRule = async ({
+	satelliteId,
+	type,
+	identity,
+	collection
+}: {
+	satelliteId: Principal;
+	type: RulesType;
+	identity: OptionIdentity;
+	collection: string;
+}): Promise<[] | [Rule]> => {
+	const { get_rule } = await getSatelliteActor({ satelliteId, identity });
+	return get_rule(type, collection);
+};
+
 export const setRule = async ({
 	satelliteId,
 	collection,
-	read,
-	write,
 	type,
-	memory,
 	rule,
-	maxSize,
-	maxCapacity,
-	mutablePermissions,
 	identity
 }: {
 	satelliteId: Principal;
 	collection: string;
-	read: PermissionText;
-	write: PermissionText;
 	type: RulesType;
-	memory: MemoryText;
-	rule: Rule | undefined;
-	maxSize: number | undefined;
-	maxCapacity: number | undefined;
-	mutablePermissions: boolean;
 	identity: OptionIdentity;
-}) => {
-	const updateRule: SetRule = {
-		read: permissionFromText(read),
-		write: permissionFromText(write),
-		version: isNullish(rule) ? [] : rule.version,
-		max_size: toNullable(nonNullish(maxSize) && maxSize > 0 ? BigInt(maxSize) : undefined),
-		max_capacity: toNullable(nonNullish(maxCapacity) && maxCapacity > 0 ? maxCapacity : undefined),
-		memory: isNullish(rule)
-			? [memoryFromText(memory)]
-			: [fromNullable(rule.memory) ?? MemoryStable],
-		mutable_permissions: toNullable(mutablePermissions)
-	};
-
+	rule: SetRule;
+}): Promise<Rule> => {
 	const { set_rule } = await getSatelliteActor({ satelliteId, identity });
-	await set_rule(type, collection, updateRule);
+	return await set_rule(type, collection, rule);
 };
 
 export const deleteRule = async ({
@@ -289,7 +278,7 @@ export const depositCycles = async ({
 	});
 };
 
-export const countAssets = async ({
+export const countCollectionAssets = async ({
 	satelliteId,
 	collection,
 	identity
@@ -298,6 +287,6 @@ export const countAssets = async ({
 	collection: string;
 	identity: OptionIdentity;
 }): Promise<bigint> => {
-	const { count_assets } = await getSatelliteActor({ satelliteId, identity });
-	return count_assets(collection);
+	const { count_collection_assets } = await getSatelliteActor({ satelliteId, identity });
+	return count_collection_assets(collection);
 };

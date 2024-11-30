@@ -1,3 +1,8 @@
+export const first = <T>(elements: T[]): T | undefined => {
+	const [first] = elements;
+	return first;
+};
+
 export const last = <T>(elements: T[]): T | undefined => {
 	const { length, [length - 1]: last } = elements;
 	return last;

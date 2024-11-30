@@ -1,23 +1,29 @@
 <script lang="ts">
-	import Popover from '$lib/components/ui/Popover.svelte';
+	import type { Snippet } from 'svelte';
 	import IconMore from '$lib/components/icons/IconMore.svelte';
+	import Popover from '$lib/components/ui/Popover.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let visible: boolean | undefined = undefined;
+	interface Props {
+		visible?: boolean | undefined;
+		children: Snippet;
+	}
 
-	let button: HTMLButtonElement | undefined;
+	let { visible = $bindable(false), children }: Props = $props();
+
+	let button: HTMLButtonElement | undefined = $state();
 </script>
 
 <button
 	class="square"
 	bind:this={button}
-	on:click={() => (visible = true)}
+	onclick={() => (visible = true)}
 	aria-label={$i18n.core.more}><IconMore /></button
 >
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
-		<slot />
+		{@render children()}
 	</div>
 </Popover>
 

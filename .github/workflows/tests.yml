@@ -6,9 +6,13 @@ on:
       - 'src/satellite/**'
       - 'src/orbiter/**'
       - 'src/console/**'
+      - 'src/observatory/**'
       - 'src/mission_control/**'
       - 'src/libs/**'
       - 'src/tests/**'
+      - 'rust-toolchain.toml'
+      - 'Cargo.toml'
+      - 'docker/**'
 
 jobs:
   docker-build-base:
@@ -38,6 +42,10 @@ jobs:
           - name: console
             wasm: console.wasm.gz
             target: scratch_console
+
+          - name: observatory
+            wasm: observatory.wasm.gz
+            target: scratch_observatory
 
           - name: mission_control
             wasm: mission_control.wasm.gz
@@ -78,6 +86,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
+      - name: Prepare
+        uses: ./.github/actions/prepare
+
       - name: Download satellite.wasm.gz
         uses: actions/download-artifact@v4
         with:
@@ -96,14 +107,17 @@ jobs:
           name: console.wasm.gz
           path: .
 
+      - name: Download observatory.wasm.gz
+        uses: actions/download-artifact@v4
+        with:
+          name: observatory.wasm.gz
+          path: .
+
       - name: Download mission_control.wasm.gz
         uses: actions/download-artifact@v4
         with:
           name: mission_control.wasm.gz
           path: .
-
-      - name: Install dependencies
-        run: npm ci
 
       - name: Tests
         run: npm run test

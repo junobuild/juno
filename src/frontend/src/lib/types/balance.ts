@@ -1,4 +1,4 @@
-import type { AccountIdentifier } from '@junobuild/ledger';
+import type { AccountIdentifier } from '@dfinity/ledger-icp';
 
 export interface MissionControlBalance {
 	balance: bigint;

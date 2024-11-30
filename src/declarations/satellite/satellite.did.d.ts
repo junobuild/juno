@@ -150,6 +150,10 @@ export type Permission =
 	| { Private: null }
 	| { Public: null }
 	| { Managed: null };
+export interface RateConfig {
+	max_tokens: bigint;
+	time_per_token_ns: bigint;
+}
 export interface Rule {
 	max_capacity: [] | [number];
 	memory: [] | [Memory];
@@ -159,6 +163,7 @@ export interface Rule {
 	created_at: bigint;
 	version: [] | [bigint];
 	mutable_permissions: [] | [boolean];
+	rate_config: [] | [RateConfig];
 	write: Permission;
 }
 export type RulesType = { Db: null } | { Storage: null };
@@ -183,6 +188,7 @@ export interface SetRule {
 	read: Permission;
 	version: [] | [bigint];
 	mutable_permissions: [] | [boolean];
+	rate_config: [] | [RateConfig];
 	write: Permission;
 }
 export interface StorageConfig {
@@ -234,14 +240,18 @@ export interface UploadChunkResult {
 export interface _SERVICE {
 	build_version: ActorMethod<[], string>;
 	commit_asset_upload: ActorMethod<[CommitBatch], undefined>;
-	count_assets: ActorMethod<[string], bigint>;
-	count_docs: ActorMethod<[string], bigint>;
+	count_assets: ActorMethod<[string, ListParams], bigint>;
+	count_collection_assets: ActorMethod<[string], bigint>;
+	count_collection_docs: ActorMethod<[string], bigint>;
+	count_docs: ActorMethod<[string, ListParams], bigint>;
 	del_asset: ActorMethod<[string, string], undefined>;
 	del_assets: ActorMethod<[string], undefined>;
 	del_controllers: ActorMethod<[DeleteControllersArgs], Array<[Principal, Controller]>>;
 	del_custom_domain: ActorMethod<[string], undefined>;
 	del_doc: ActorMethod<[string, string, DelDoc], undefined>;
 	del_docs: ActorMethod<[string], undefined>;
+	del_filtered_assets: ActorMethod<[string, ListParams], undefined>;
+	del_filtered_docs: ActorMethod<[string, ListParams], undefined>;
 	del_many_assets: ActorMethod<[Array<[string, string]>], undefined>;
 	del_many_docs: ActorMethod<[Array<[string, string, DelDoc]>], undefined>;
 	del_rule: ActorMethod<[RulesType, string, DelRule], undefined>;
@@ -253,6 +263,7 @@ export interface _SERVICE {
 	get_doc: ActorMethod<[string, string], [] | [Doc]>;
 	get_many_assets: ActorMethod<[Array<[string, string]>], Array<[string, [] | [AssetNoContent]]>>;
 	get_many_docs: ActorMethod<[Array<[string, string]>], Array<[string, [] | [Doc]]>>;
+	get_rule: ActorMethod<[RulesType, string], [] | [Rule]>;
 	get_storage_config: ActorMethod<[], StorageConfig>;
 	http_request: ActorMethod<[HttpRequest], HttpResponse>;
 	http_request_streaming_callback: ActorMethod<
@@ -272,7 +283,7 @@ export interface _SERVICE {
 	set_db_config: ActorMethod<[DbConfig], undefined>;
 	set_doc: ActorMethod<[string, string, SetDoc], Doc>;
 	set_many_docs: ActorMethod<[Array<[string, string, SetDoc]>], Array<[string, Doc]>>;
-	set_rule: ActorMethod<[RulesType, string, SetRule], undefined>;
+	set_rule: ActorMethod<[RulesType, string, SetRule], Rule>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;

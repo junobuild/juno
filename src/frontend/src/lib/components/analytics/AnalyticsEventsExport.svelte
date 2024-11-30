@@ -1,17 +1,21 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
-	import { busy } from '$lib/stores/busy.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 	import { jsonReplacer } from '@dfinity/utils';
-	import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
-	import { satelliteStore } from '$lib/stores/satellite.store';
-	import { authStore } from '$lib/stores/auth.store';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { getTrackEvents } from '$lib/api/orbiter.api';
+	import { authStore } from '$lib/stores/auth.store';
+	import { busy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { satelliteStore } from '$lib/stores/satellite.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import type { PageViewsParams, PageViewsPeriod } from '$lib/types/ortbiter';
+	import { filenameTimestamp, JSON_PICKER_OPTIONS, saveToFileSystem } from '$lib/utils/save.utils';
 
-	export let period: PageViewsPeriod = {};
-	export let orbiter: Orbiter;
+	interface Props {
+		period?: PageViewsPeriod;
+		orbiter: Orbiter;
+	}
+
+	let { period = {}, orbiter }: Props = $props();
 
 	const exportEvents = async () => {
 		busy.start();
@@ -46,4 +50,4 @@
 	};
 </script>
 
-<button type="button" on:click={exportEvents}>{$i18n.core.export}</button>
+<button type="button" onclick={exportEvents}>{$i18n.core.export}</button>

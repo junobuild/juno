@@ -2,10 +2,20 @@
 	import type { AnalyticsTrackEvents } from '$declarations/orbiter/orbiter.did';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	export let trackEvents: AnalyticsTrackEvents;
+	interface Props {
+		trackEvents: AnalyticsTrackEvents;
+	}
 
-	let total: Array<[string, number]>;
-	$: ({ total } = trackEvents);
+	let { trackEvents }: Props = $props();
+
+	let total: Array<[string, number]> = $state([]);
+
+	$effect(() => {
+		const { total: t } = trackEvents;
+		t.sort(([keyA, _], [keyB, __]) => keyA.localeCompare(keyB));
+
+		total = t;
+	});
 </script>
 
 <div class="table-container">

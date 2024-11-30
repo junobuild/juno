@@ -1,34 +1,48 @@
 <script lang="ts">
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { listParamsFilteredStore } from '$lib/stores/data.store';
-	import type { Rule } from '$declarations/satellite/satellite.did';
 	import { nonNullish } from '@dfinity/utils';
+	import type { Snippet } from 'svelte';
+	import { run } from 'svelte/legacy';
+	import type { Rule } from '$declarations/satellite/satellite.did';
+	import Html from '$lib/components/ui/Html.svelte';
+	import { listParamsFilteredStore } from '$lib/stores/data.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let rule: Rule | undefined;
-	export let collection: string | undefined;
+	interface Props {
+		rule: Rule | undefined;
+		collection: string | undefined;
+		filter?: Snippet;
+	}
 
-	let privateReadRule = false;
-	$: privateReadRule = nonNullish(rule) && 'Private' in rule.read;
+	let { rule, collection, filter }: Props = $props();
+
+	let privateReadRule = $state(false);
+	run(() => {
+		privateReadRule = nonNullish(rule) && 'Private' in rule.read;
+	});
 </script>
 
 <p class="empty">
 	{#if privateReadRule}
-		{@html i18nFormat($i18n.collections.empty_private, [
-			{
-				placeholder: '{0}',
-				value: collection ?? ''
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.collections.empty_private, [
+				{
+					placeholder: '{0}',
+					value: collection ?? ''
+				}
+			])}
+		/>
 	{:else if $listParamsFilteredStore}
-		<slot name="filter" />
+		{@render filter?.()}
 	{:else}
-		{@html i18nFormat($i18n.collections.empty, [
-			{
-				placeholder: '{0}',
-				value: collection ?? ''
-			}
-		])}
+		<Html
+			text={i18nFormat($i18n.collections.empty, [
+				{
+					placeholder: '{0}',
+					value: collection ?? ''
+				}
+			])}
+		/>
 	{/if}
 </p>
 

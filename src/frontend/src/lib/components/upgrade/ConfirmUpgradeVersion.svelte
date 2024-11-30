@@ -1,25 +1,33 @@
 <script lang="ts">
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { Snippet } from 'svelte';
+	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { createEventDispatcher } from 'svelte';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	export let segment: 'satellite' | 'mission_control' | 'orbiter';
+	interface Props {
+		segment: 'satellite' | 'mission_control' | 'orbiter';
+		intro?: Snippet;
+		onclose: () => void;
+		oncontinue: () => void;
+	}
 
-	const dispatch = createEventDispatcher();
+	let { segment, intro, onclose, oncontinue }: Props = $props();
 </script>
 
-<slot name="intro" />
+{@render intro?.()}
 
 <p>
-	{@html i18nFormat($i18n.canisters.upgrade_confirm, [
-		{
-			placeholder: '{0}',
-			value: segment.replace('_', ' ')
-		}
-	])}
+	<Html
+		text={i18nFormat($i18n.canisters.upgrade_confirm, [
+			{
+				placeholder: '{0}',
+				value: segment.replace('_', ' ')
+			}
+		])}
+	/>
 </p>
 
 <div class="toolbar">
-	<button type="button" on:click={() => dispatch('junoClose')}>{$i18n.core.cancel}</button>
-	<button type="button" on:click={() => dispatch('junoContinue')}>{$i18n.core.continue}</button>
+	<button type="button" onclick={onclose}>{$i18n.core.cancel}</button>
+	<button type="button" onclick={oncontinue}>{$i18n.core.continue}</button>
 </div>

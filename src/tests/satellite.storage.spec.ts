@@ -1,4 +1,5 @@
 import type {
+	ListParams,
 	_SERVICE as SatelliteActor,
 	SetRule,
 	StorageConfig
@@ -13,7 +14,11 @@ import { toArray } from '@junobuild/utils';
 import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { afterAll, beforeAll, beforeEach, describe, expect, inject } from 'vitest';
-import { ADMIN_ERROR_MSG, CONTROLLER_ERROR_MSG } from './constants/satellite-tests.constants';
+import {
+	CONTROLLER_ERROR_MSG,
+	SATELLITE_ADMIN_ERROR_MSG
+} from './constants/satellite-tests.constants';
+import { deleteDefaultIndexHTML } from './utils/satellite-tests.utils';
 import { SATELLITE_WASM_PATH, controllersInitArgs } from './utils/setup-tests.utils';
 
 describe('Satellite storage', () => {
@@ -35,6 +40,8 @@ describe('Satellite storage', () => {
 
 		actor = a;
 		canisterId = c;
+
+		await deleteDefaultIndexHTML({ actor, controller });
 	});
 
 	afterAll(async () => {
@@ -64,13 +71,13 @@ describe('Satellite storage', () => {
 					raw_access: toNullable(),
 					max_memory_size: toNullable()
 				})
-			).rejects.toThrow(ADMIN_ERROR_MSG);
+			).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 
 		it('should throw errors on getting config', async () => {
 			const { get_config } = actor;
 
-			await expect(get_config()).rejects.toThrow(ADMIN_ERROR_MSG);
+			await expect(get_config()).rejects.toThrow(SATELLITE_ADMIN_ERROR_MSG);
 		});
 	});
 
@@ -133,6 +140,45 @@ describe('Satellite storage', () => {
 			).rejects.toThrow('Cannot commit batch.');
 		});
 	});
+
+	const HTML = '<html><body>Hello</body></html>';
+
+	const blob = new Blob([HTML], {
+		type: 'text/plain; charset=utf-8'
+	});
+
+	const upload = async ({
+		full_path,
+		name,
+		collection
+	}: {
+		full_path: string;
+		name: string;
+		collection: string;
+	}) => {
+		const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
+
+		const file = await init_asset_upload({
+			collection,
+			description: toNullable(),
+			encoding_type: [],
+			full_path,
+			name,
+			token: toNullable()
+		});
+
+		const chunk = await upload_asset_chunk({
+			batch_id: file.batch_id,
+			content: arrayBufferToUint8Array(await blob.arrayBuffer()),
+			order_id: [0n]
+		});
+
+		await commit_asset_upload({
+			batch_id: file.batch_id,
+			chunk_ids: [chunk.chunk_id],
+			headers: []
+		});
+	};
 
 	describe('admin', () => {
 		beforeAll(() => {
@@ -250,37 +296,6 @@ describe('Satellite storage', () => {
 			({ memory }) => {
 				const collection = `test_${'Heap' in memory ? 'heap' : 'stable'}`;
 
-				const HTML = '<html><body>Hello</body></html>';
-
-				const blob = new Blob([HTML], {
-					type: 'text/plain; charset=utf-8'
-				});
-
-				const upload = async ({ full_path, name }: { full_path: string; name: string }) => {
-					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
-
-					const file = await init_asset_upload({
-						collection,
-						description: toNullable(),
-						encoding_type: [],
-						full_path,
-						name,
-						token: toNullable()
-					});
-
-					const chunk = await upload_asset_chunk({
-						batch_id: file.batch_id,
-						content: arrayBufferToUint8Array(await blob.arrayBuffer()),
-						order_id: [0n]
-					});
-
-					await commit_asset_upload({
-						batch_id: file.batch_id,
-						chunk_ids: [chunk.chunk_id],
-						headers: []
-					});
-				};
-
 				it('should create a collection', async () => {
 					const { set_rule, list_rules } = actor;
 
@@ -291,7 +306,8 @@ describe('Satellite storage', () => {
 						read: { Managed: null },
 						mutable_permissions: toNullable(),
 						write: { Managed: null },
-						version: toNullable()
+						version: toNullable(),
+						rate_config: toNullable()
 					};
 
 					await set_rule({ Storage: null }, collection, setRule);
@@ -336,7 +352,7 @@ describe('Satellite storage', () => {
 					const name = 'hello.html';
 					const full_path = `/${collection}/${name}`;
 
-					await upload({ full_path, name });
+					await upload({ full_path, name, collection });
 
 					const { headers, body } = await http_request({
 						body: [],
@@ -388,14 +404,14 @@ describe('Satellite storage', () => {
 					const name = 'update.html';
 					const full_path = `/${collection}/${name}`;
 
-					await upload({ full_path, name });
+					await upload({ full_path, name, collection });
 
 					const asset = fromNullable(await get_asset(collection, full_path));
 
 					expect(asset).not.toBeUndefined();
 					expect(fromNullable(asset!.version) ?? 0n).toEqual(1n);
 
-					await upload({ full_path, name });
+					await upload({ full_path, name, collection });
 
 					const updatedAsset = fromNullable(await get_asset(collection, full_path));
 
@@ -638,14 +654,25 @@ describe('Satellite storage', () => {
 	});
 
 	const user = Ed25519KeyIdentity.generate();
+	const user2 = Ed25519KeyIdentity.generate();
 
 	describe('user', () => {
 		beforeAll(async () => {
-			actor.setIdentity(user);
-
 			const { set_doc } = actor;
 
+			actor.setIdentity(user);
+
 			await set_doc('#user', user.getPrincipal().toText(), {
+				data: await toArray({
+					provider: 'internet_identity'
+				}),
+				description: toNullable(),
+				version: toNullable()
+			});
+
+			actor.setIdentity(user2);
+
+			await set_doc('#user', user2.getPrincipal().toText(), {
 				data: await toArray({
 					provider: 'internet_identity'
 				}),
@@ -656,7 +683,7 @@ describe('Satellite storage', () => {
 
 		describe.each([{ memory: { Heap: null } }, { memory: { Stable: null } }])(
 			'With memory %s',
-			async ({ memory }) => {
+			({ memory }) => {
 				const collection = 'Heap' in memory ? 'images_heap' : 'images_stable';
 
 				beforeAll(async () => {
@@ -671,7 +698,8 @@ describe('Satellite storage', () => {
 						read: { Managed: null },
 						mutable_permissions: toNullable(),
 						write: { Managed: null },
-						version: toNullable()
+						version: toNullable(),
+						rate_config: toNullable()
 					};
 
 					await set_rule({ Storage: null }, collection, setRule);
@@ -682,7 +710,7 @@ describe('Satellite storage', () => {
 				const SVG =
 					'<svg height="100" width="100"><circle r="45" cx="50" cy="50" fill="red" /></svg>';
 
-				const uploadCustomAsset = async (name: string = 'hello.svg') => {
+				const uploadCustomAsset = async (name = 'hello.svg') => {
 					const { commit_asset_upload, upload_asset_chunk, init_asset_upload } = actor;
 
 					const file = await init_asset_upload({
@@ -766,9 +794,9 @@ describe('Satellite storage', () => {
 					});
 
 					it('should list assets according created_at timestamps', async () => {
-						const { list_assets } = actor;
+						const { list_assets, count_assets } = actor;
 
-						const { items_length, items } = await list_assets(collection, {
+						const paramsCreatedAt: ListParams = {
 							matcher: toNullable(),
 							order: toNullable({
 								desc: false,
@@ -776,11 +804,15 @@ describe('Satellite storage', () => {
 							}),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length, items } = await list_assets(collection, paramsCreatedAt);
 						expect(items_length).toBe(10n);
 
-						const { items_length: items_length_from } = await list_assets(collection, {
+						const countCreatedAt = await count_assets(collection, paramsCreatedAt);
+						expect(countCreatedAt).toBe(10n);
+
+						const paramsGreaterThan: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -792,11 +824,18 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_from } = await list_assets(
+							collection,
+							paramsGreaterThan
+						);
 						expect(items_length_from).toBe(5n);
 
-						const { items_length: items_length_to } = await list_assets(collection, {
+						const countGreaterThan = await count_assets(collection, paramsGreaterThan);
+						expect(countGreaterThan).toBe(5n);
+
+						const paramsLessThan: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -808,11 +847,15 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_to } = await list_assets(collection, paramsLessThan);
 						expect(items_length_to).toBe(4n);
 
-						const { items_length: items_length_between } = await list_assets(collection, {
+						const countLessThan = await count_assets(collection, paramsLessThan);
+						expect(countLessThan).toBe(4n);
+
+						const paramsBetween: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -824,15 +867,22 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_between } = await list_assets(
+							collection,
+							paramsBetween
+						);
 						expect(items_length_between).toBe(5n);
+
+						const countBetween = await count_assets(collection, paramsBetween);
+						expect(countBetween).toBe(5n);
 					});
 
 					it('should list assets according updated_at timestamps', async () => {
-						const { list_assets } = actor;
+						const { list_assets, count_assets } = actor;
 
-						const { items_length, items } = await list_assets(collection, {
+						const paramsUpdatedAt: ListParams = {
 							matcher: toNullable(),
 							order: toNullable({
 								desc: false,
@@ -840,11 +890,15 @@ describe('Satellite storage', () => {
 							}),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length, items } = await list_assets(collection, paramsUpdatedAt);
 						expect(items_length).toBe(10n);
 
-						const { items_length: items_length_from } = await list_assets(collection, {
+						const countUpdatedAt = await count_assets(collection, paramsUpdatedAt);
+						expect(countUpdatedAt).toBe(10n);
+
+						const paramsGreaterThan: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -856,11 +910,18 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_from } = await list_assets(
+							collection,
+							paramsGreaterThan
+						);
 						expect(items_length_from).toBe(5n);
 
-						const { items_length: items_length_to } = await list_assets(collection, {
+						const countGreaterThan = await count_assets(collection, paramsGreaterThan);
+						expect(countGreaterThan).toBe(5n);
+
+						const paramsLessThan: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -872,11 +933,15 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_to } = await list_assets(collection, paramsLessThan);
 						expect(items_length_to).toBe(4n);
 
-						const { items_length: items_length_between } = await list_assets(collection, {
+						const countLessThan = await count_assets(collection, paramsLessThan);
+						expect(countLessThan).toBe(4n);
+
+						const paramsBetween: ListParams = {
 							matcher: toNullable({
 								key: toNullable(),
 								description: toNullable(),
@@ -888,20 +953,225 @@ describe('Satellite storage', () => {
 							order: toNullable(),
 							owner: toNullable(),
 							paginate: toNullable()
-						});
+						};
 
+						const { items_length: items_length_between } = await list_assets(
+							collection,
+							paramsBetween
+						);
 						expect(items_length_between).toBe(5n);
+
+						const countBetween = await count_assets(collection, paramsBetween);
+						expect(countBetween).toBe(5n);
+					});
+				});
+
+				describe('delete filtered', () => {
+					it('should delete assets based on filter criteria', async () => {
+						const { del_filtered_assets, list_assets } = actor;
+
+						await uploadCustomAsset('asset1.svg');
+						await uploadCustomAsset('asset2.svg');
+						await uploadCustomAsset('asset3.svg');
+
+						const filterParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/asset2\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						const listParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/asset\\d+\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						await del_filtered_assets(collection, filterParams);
+
+						const remainingAssets = await list_assets(collection, listParams);
+
+						expect(remainingAssets.items.map((item) => item[1].key.full_path)).toEqual([
+							`/${collection}/asset3.svg`,
+							`/${collection}/asset1.svg`
+						]);
+					});
+
+					it('should prevent user1 from deleting assets of user2', async () => {
+						const { del_filtered_assets, list_assets } = actor;
+
+						actor.setIdentity(user2);
+
+						await uploadCustomAsset('user2_asset.svg');
+
+						actor.setIdentity(user);
+
+						const filterParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/asset1\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						await del_filtered_assets(collection, filterParams);
+
+						const listParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/asset\\d+\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						const remainingAssets = await list_assets(collection, listParams);
+						expect(remainingAssets.items.map((item) => item[1].key.full_path)).toEqual([
+							`/${collection}/asset3.svg`
+						]);
+
+						const listParamsUser2: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/user2_asset\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable({
+								desc: true,
+								field: { Keys: null }
+							}),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						actor.setIdentity(user2);
+
+						const user2Assets = await list_assets(collection, listParamsUser2);
+						expect(user2Assets.items.map((item) => item[1].key.full_path)).toEqual([
+							`/${collection}/user2_asset.svg`
+						]);
+
+						actor.setIdentity(user);
+					});
+
+					it('should delete assets as controller if filtered delete is used', async () => {
+						const { del_filtered_assets, list_assets } = actor;
+
+						actor.setIdentity(controller);
+
+						const filterParams: ListParams = {
+							matcher: toNullable({
+								key: toNullable('/user2_asset\\.svg$'),
+								description: toNullable(),
+								created_at: toNullable(),
+								updated_at: toNullable()
+							}),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						await del_filtered_assets(collection, filterParams);
+
+						const listParams: ListParams = {
+							matcher: toNullable(),
+							order: toNullable(),
+							owner: toNullable(),
+							paginate: toNullable()
+						};
+
+						actor.setIdentity(user2);
+
+						const user2Assets = await list_assets(collection, listParams);
+
+						expect(user2Assets.items_length).toEqual(0n);
+
+						actor.setIdentity(user);
+
+						const remainingAssets = await list_assets(collection, listParams);
+						expect(remainingAssets.items_length).toBeGreaterThan(0n);
 					});
 				});
 			}
 		);
 	});
 
+	describe('collection', () => {
+		beforeAll(() => {
+			actor.setIdentity(controller);
+		});
+
+		it('should not delete not empty collection', async () => {
+			const { del_rule } = actor;
+
+			const collection = 'images_heap';
+
+			try {
+				await del_rule({ Storage: null }, collection, { version: [1n] });
+
+				expect(true).toBe(false);
+			} catch (error: unknown) {
+				expect((error as Error).message).toContain(
+					`The "${collection}" collection in Storage is not empty.`
+				);
+			}
+		});
+
+		it('should not upload file in existing collection', async () => {
+			const collectionUnknown = 'unknown';
+
+			try {
+				await upload({
+					full_path: `/${collectionUnknown}/hello.html`,
+					name: 'hello.html',
+					collection: collectionUnknown
+				});
+
+				expect(true).toBe(false);
+			} catch (error: unknown) {
+				expect((error as Error).message).toContain(
+					`Collection "${collectionUnknown}" not found in Storage.`
+				);
+			}
+		});
+	});
+
 	describe('More configuration', () => {
 		const maxHeapMemorySize = 3_932_160n;
 		const maxStableMemorySize = 2_000_000n;
 
-		beforeAll(async () => {
+		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
 

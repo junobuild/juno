@@ -1,6 +1,10 @@
 <!-- source: https://fonts.google.com/icons?selected=Material%20Icons%20Sharp%3Anavigate_next%3A -->
 <script lang="ts">
-	export let navigate: 'next' | 'previous' = 'next';
+	interface Props {
+		navigate?: 'next' | 'previous';
+	}
+
+	let { navigate = 'next' }: Props = $props();
 </script>
 
 <svg

@@ -92,11 +92,11 @@ if [ ${#CANISTER} -eq 0 ]; then
 fi
 
 # Checking for dependencies
-if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.3.6" ]]
+if [[ ! "$(command -v ic-wasm)" || "$(ic-wasm --version)" != "ic-wasm 0.8.5" ]]
 then
-    echo "could not find ic-wasm 0.3.6"
-    echo "ic-wasm version 0.3.6 is needed, please run the following command:"
-    echo "  cargo install ic-wasm --version 0.3.6"
+    echo "could not find ic-wasm 0.8.5"
+    echo "ic-wasm version 0.8.5 is needed, please run the following command:"
+    echo "  cargo install ic-wasm --version 0.8.5"
     exit 1
 fi
 
@@ -141,24 +141,25 @@ function build_canister() {
       ic-wasm \
           "$CARGO_TARGET_DIR/$TARGET/release/$canister.wasm" \
           -o "./$canister.wasm" \
-          shrink
+          shrink \
+          --keep-name-section
 
       # adds the content of $canister.did to the `icp:public candid:service` custom section of the public metadata in the wasm
-      ic-wasm "$canister.wasm" -o "$canister.wasm" metadata candid:service -f "$SRC_DIR/$canister.did" -v public
+      ic-wasm "$canister.wasm" -o "$canister.wasm" metadata candid:service -f "$SRC_DIR/$canister.did" -v public --keep-name-section
 
       if [ "$canister" == "satellite" ]
       then
         # add the type of build "stock" to the satellite. This way, we can identify whether it's the standard canister ("stock") or a custom build ("extended") of the developer.
-        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata juno:build -d "stock" -v public
+        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata juno:build -d "stock" -v public --keep-name-section
       fi
 
       if [ "$canister" == "satellite" ] || [ "$canister" == "console" ];
       then
         # indicate support for certificate version 1 and 2 in the canister metadata
-        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public
+        ic-wasm "$canister.wasm" -o "$canister.wasm" metadata supported_certificate_versions -d "1,2" -v public --keep-name-section
       fi
 
-      gzip "./$canister.wasm"
+      gzip --no-name --force "./$canister.wasm"
     fi
 }
 

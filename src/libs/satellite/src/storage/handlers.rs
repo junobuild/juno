@@ -3,6 +3,7 @@ use crate::storage::state::{get_asset, get_config, get_rule, insert_asset, inser
 use ic_cdk::id;
 use junobuild_collections::assert_stores::assert_permission;
 use junobuild_collections::types::rules::Rule;
+use junobuild_shared::types::core::Blob;
 use junobuild_shared::types::state::Controllers;
 use junobuild_storage::constants::ASSET_ENCODING_NO_COMPRESSION;
 use junobuild_storage::http::types::HeaderField;
@@ -37,7 +38,7 @@ use junobuild_storage::utils::{create_empty_asset, map_content_encoding};
 /// compression applied.
 pub fn set_asset_handler(
     key: &AssetKey,
-    content: &str,
+    content: &Blob,
     headers: &[HeaderField],
 ) -> Result<(), String> {
     let rule = get_rule(&key.collection)?;
@@ -61,7 +62,7 @@ pub fn set_asset_handler(
 fn set_asset_handler_impl(
     key: &AssetKey,
     existing_asset: &Option<Asset>,
-    content: &str,
+    content: &Blob,
     headers: &[HeaderField],
     rule: &Rule,
 ) -> Result<(), String> {

@@ -32,9 +32,13 @@ By using the `include_satellite!` macro, you can effortlessly integrate all the 
 - **on_set_many_docs**: Enables the `on_set_many_docs` feature.
 - **on_delete_doc**: Enables the `on_delete_doc` feature.
 - **on_delete_many_docs**: Enables the `on_delete_many_docs` feature.
+- **on_delete_filtered_docs**: Enables the `on_delete_filtered_docs` feature.
 - **on_upload_asset**: Enables the `on_upload_asset` feature.
 - **on_delete_asset**: Enables the `on_delete_asset` feature.
 - **on_delete_many_assets**: Enables the `on_delete_many_assets` feature.
+- **on_delete_filtered_assets**: Enables the `on_delete_filtered_assets` feature.
+- **on_init**: Enables the `on_init` feature.
+- **on_post_upgrade**: Enables the `on_post_upgrade` feature.
 - **assert_set_doc**: Enables the `assert_set_doc` feature.
 - **assert_delete_doc**: Enables the `assert_delete_doc` feature.
 - **assert_upload_asset**: Enables the `assert_upload_asset` feature.

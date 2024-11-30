@@ -1,7 +1,4 @@
-import { isNullish } from '@dfinity/utils';
 import DOMPurify from 'dompurify';
-
-let domPurify: typeof DOMPurify | undefined = undefined;
 
 /**
  * A workaround to preserve target="_blank" attribute from sanitizer.
@@ -33,32 +30,16 @@ const flagTargetAttributeHook = (node: Element) => {
 	if (node.tagName === 'A' && node.getAttribute('target') === '_blank') {
 		node.setAttribute('data-target', 'blank');
 	}
+
 	return node;
 };
 
 /**
  * Sanitize a text with DOMPurify.
- *
- * Note: this library needs a workaround to work in the NodeJS context - i.e. for our vitest test suite.
- * See the vitest.setup.ts for details.
  */
 export const sanitize = (text: string): string => {
 	try {
-		// DOMPurify initialization
-		if (isNullish(domPurify)) {
-			if (typeof DOMPurify.sanitize === 'function') {
-				domPurify = DOMPurify;
-			} else if (typeof global.DOMPurify.sanitize === 'function') {
-				// utilize NodeJS version
-				domPurify = global.DOMPurify;
-			}
-
-			// Preserve target="blank" workaround
-			domPurify?.addHook('beforeSanitizeElements', flagTargetAttributeHook);
-			domPurify?.addHook('afterSanitizeAttributes', restoreTargetAttributeHook);
-		}
-
-		return domPurify?.sanitize(text) ?? '';
+		return DOMPurify.sanitize(text) ?? '';
 	} catch (err) {
 		console.error(err);
 	}
@@ -68,12 +49,5 @@ export const sanitize = (text: string): string => {
 	return '';
 };
 
-let elementsCounters: Record<string, number> = {};
-export const nextElementId = (prefix: string): string => {
-	elementsCounters = {
-		...elementsCounters,
-		[prefix]: (elementsCounters[prefix] ?? 0) + 1
-	};
-
-	return `${prefix}${elementsCounters[prefix]}`;
-};
+DOMPurify.addHook('beforeSanitizeAttributes', flagTargetAttributeHook);
+DOMPurify.addHook('afterSanitizeAttributes', restoreTargetAttributeHook);

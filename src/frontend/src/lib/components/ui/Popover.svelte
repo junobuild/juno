@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { stopPropagation } from 'svelte/legacy';
@@ -32,13 +33,22 @@
 	let right: number = $state(0);
 	let innerWidth = $state(0);
 
+	let attached = $state(false);
+
 	const initPosition = () =>
-		({ bottom, left, right } = anchor
+		({ bottom, left, right } = nonNullish(anchor)
 			? anchor.getBoundingClientRect()
 			: { bottom: 0, left: 0, right: 0 });
 
 	$effect(() => {
+		if (visible === false) {
+			attached = false;
+			return;
+		}
+
 		initPosition();
+
+		attached = true;
 	});
 
 	const close = () => (visible = false);
@@ -46,7 +56,7 @@
 
 <svelte:window onresize={initPosition} bind:innerWidth />
 
-{#if visible}
+{#if visible && attached}
 	<div
 		role="menu"
 		aria-orientation="vertical"

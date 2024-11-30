@@ -1,4 +1,5 @@
 import { getSubnetId } from '$lib/api/ic.api';
+import { setSubnet } from '$lib/services/canister.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { subnetStore } from '$lib/stores/subnet.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -26,9 +27,9 @@ export const loadSubnetId = async ({
 			canisterId: canisterId.toText()
 		});
 
-		subnetStore.set({
+		await setSubnet({
 			canisterId: canisterIdText,
-			data: nonNullish(subnetId) ? { subnetId } : undefined
+			subnetId
 		});
 
 		return { success: true };

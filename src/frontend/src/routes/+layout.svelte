@@ -13,6 +13,7 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import '$lib/styles/global.scss';
+	import { syncCanisterStores } from '$lib/services/canister.services';
 
 	interface Props {
 		children: Snippet;
@@ -20,7 +21,7 @@
 
 	let { children }: Props = $props();
 
-	const init = async () => await Promise.all([i18n.init(), syncAuthStore()]);
+	const init = async () => await Promise.all([i18n.init(), syncAuthStore(), syncCanisterStores()]);
 
 	const syncAuthStore = async () => {
 		if (!browser) {

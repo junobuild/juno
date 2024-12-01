@@ -16,7 +16,5 @@ targets = ["wasm32-unknown-unknown"]
 [dependencies]
 candid.workspace = true
 ic-cdk.workspace = true
-ic-cdk-macros.workspace = true
-ic-cdk-timers.workspace = true
 serde.workspace = true
 junobuild-shared = "0.0.22"

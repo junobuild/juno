@@ -8,6 +8,7 @@ publish = false
 crate-type = ["cdylib"]
 
 [dependencies]
+candid.workspace = true
 ic-cdk.workspace = true
 junobuild-satellite = { path = "../libs/satellite", default-features = false, features = ["on_init"] }
 junobuild-storage = { path = "../libs/storage" }

@@ -7,6 +7,7 @@ export type CanisterStoreData<T> = Option<Record<CanisterIdText, T | null>>;
 
 export interface CanisterStore<T> extends Readable<CanisterStoreData<T>> {
 	set: (params: { canisterId: CanisterIdText; data: T }) => void;
+	setAll: (state: CanisterStoreData<T>) => void;
 	reset: (canisterId: CanisterIdText) => void;
 	resetAll: () => void;
 }
@@ -21,6 +22,9 @@ export const initCanisterStore = <T>(): CanisterStore<T> => {
 				...state,
 				[canisterId]: data
 			}));
+		},
+		setAll: (state) => {
+			set(state);
 		},
 		reset: (canisterId) =>
 			update((state) => ({

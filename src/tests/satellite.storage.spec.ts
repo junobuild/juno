@@ -268,7 +268,7 @@ describe('Satellite storage', () => {
 			);
 
 			const decoder = new TextDecoder();
-			expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
+			expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
 		});
 
 		describe.each(['/.well-known/ic-domains', '/.well-known/ii-alternative-origins'])(
@@ -386,7 +386,7 @@ describe('Satellite storage', () => {
 					);
 
 					const decoder = new TextDecoder();
-					expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
+					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
 				});
 
 				it('should not delete other collection assets', async () => {
@@ -475,7 +475,7 @@ describe('Satellite storage', () => {
 				expect(status_code).toEqual(200);
 
 				const decoder = new TextDecoder();
-				expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
+				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
 			});
 
 			it('should set a config for a rewrite and redirect', async () => {
@@ -595,7 +595,7 @@ describe('Satellite storage', () => {
 				expect(status_code).toEqual(200);
 
 				const decoder = new TextDecoder();
-				expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
+				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
 			});
 
 			it('should not be able to access on raw if explicitly disabled', async () => {
@@ -648,7 +648,7 @@ describe('Satellite storage', () => {
 				expect(status_code).toEqual(200);
 
 				const decoder = new TextDecoder();
-				expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
+				expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
 			});
 		});
 	});
@@ -753,7 +753,7 @@ describe('Satellite storage', () => {
 					});
 
 					const decoder = new TextDecoder();
-					expect(decoder.decode(body as ArrayBuffer)).toEqual(SVG);
+					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(SVG);
 				});
 
 				it('should not change owner if controller overwrite asset', async () => {

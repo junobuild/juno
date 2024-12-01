@@ -8,13 +8,14 @@ import {
 	MEMORY_HEAP_WARNING,
 	SYNC_CYCLES_TIMER_INTERVAL
 } from '$lib/constants/constants';
+import { cyclesIdbStore } from '$lib/stores/idb.store';
 import type { CanisterIcStatus, CanisterInfo, CanisterSegment } from '$lib/types/canister';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
 import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { isNullish, nonNullish } from '@dfinity/utils';
-import { createStore, set } from 'idb-keyval';
+import { set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -60,8 +61,6 @@ const stopCyclesTimer = () => {
 	timer = undefined;
 };
 
-const customStore = createStore('juno-db', 'juno-cycles-store');
-
 let syncing = false;
 
 const syncCanisters = async ({
@@ -83,7 +82,7 @@ const syncCanisters = async ({
 
 	await emitSavedCanisters({
 		canisterIds: segments.map(({ canisterId }) => canisterId),
-		customStore
+		customStore: cyclesIdbStore
 	});
 
 	try {
@@ -177,7 +176,7 @@ const syncCanister = async ({
 	};
 
 	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, customStore);
+	await set(canisterId, canister, cyclesIdbStore);
 
 	emitCanister(canister);
 };

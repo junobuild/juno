@@ -5,7 +5,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { loadSubnetId } from '$lib/services/ic.services';
+	import { loadSubnetId } from '$lib/services/subnets.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { subnetStore } from '$lib/stores/subnet.store';
 	import type { PrincipalText } from '$lib/types/itentity';

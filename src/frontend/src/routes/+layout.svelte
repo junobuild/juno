@@ -7,8 +7,8 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
 	import { initMissionControl } from '$lib/services/console.services';
-	import { syncSubnets } from '$lib/services/ic.services';
 	import { syncSnapshots } from '$lib/services/snapshots.services';
+	import { syncSubnets } from '$lib/services/subnets.services';
 	import { initAuthWorker } from '$lib/services/worker.auth.services';
 	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';

@@ -437,7 +437,7 @@ describe('Console / Storage', () => {
 					expect(value.substring(value.indexOf('tree=:'))).toEqual(`tree=:${expected_asset_tree}:`);
 
 					const decoder = new TextDecoder();
-					expect(decoder.decode(body as ArrayBuffer)).toEqual(HTML);
+					expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toEqual(HTML);
 				});
 
 				it('should list assets', async () => {

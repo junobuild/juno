@@ -16,6 +16,7 @@ mod types;
 mod version;
 
 use crate::auth::types::config::AuthenticationConfig;
+use crate::db::types::config::DbConfig;
 use crate::guards::{caller_is_admin_controller, caller_is_controller};
 use crate::types::interface::{Config, RulesType};
 use crate::version::SATELLITE_VERSION;
@@ -24,23 +25,34 @@ use ic_cdk_macros::{init, post_upgrade, pre_upgrade, query, update};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
 use junobuild_collections::types::rules::Rule;
+use junobuild_shared::types::core::DomainName;
+use junobuild_shared::types::core::{Blob, Key};
+use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::{
     DeleteControllersArgs, DepositCyclesArgs, MemorySize, SetControllersArgs,
 };
 use junobuild_shared::types::list::ListParams;
 use junobuild_shared::types::list::ListResults;
 use junobuild_shared::types::state::Controllers;
+use junobuild_storage::http::types::{
+    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
+};
+use junobuild_storage::types::config::StorageConfig;
 use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
+use junobuild_storage::types::state::FullPath;
 
-// Re-export types
-
+// ============================================================================================
+// START: Re-exported Types
+//
+// These types are made available for use in Serverless Functions.
+// ============================================================================================
+pub use crate::controllers::store::{get_admin_controllers, get_controllers};
 pub use crate::db::store::{
     count_collection_docs_store, count_docs_store, delete_doc_store, delete_docs_store,
     delete_filtered_docs_store, get_doc_store, list_docs_store, set_doc_store,
 };
-use crate::db::types::config::DbConfig;
 pub use crate::db::types::interface::{DelDoc, SetDoc};
 pub use crate::db::types::state::Doc;
 pub use crate::logs::loggers::{
@@ -59,14 +71,9 @@ pub use crate::types::hooks::{
     OnDeleteFilteredAssetsContext, OnDeleteFilteredDocsContext, OnDeleteManyAssetsContext,
     OnDeleteManyDocsContext, OnSetDocContext, OnSetManyDocsContext, OnUploadAssetContext,
 };
-use junobuild_shared::types::core::DomainName;
-pub use junobuild_shared::types::core::{Blob, Key};
-use junobuild_shared::types::domain::CustomDomains;
-use junobuild_storage::http::types::{
-    HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
-};
-use junobuild_storage::types::config::StorageConfig;
-use junobuild_storage::types::state::FullPath;
+// ============================================================================================
+// END: Re-exported Types
+// ============================================================================================
 
 ///
 /// Init and Upgrade

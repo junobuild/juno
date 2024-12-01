@@ -4,6 +4,7 @@ import {
 	listSatelliteStatuses
 } from '$lib/api/mission-control.api';
 import { SYNC_STATUSES_TIMER_INTERVAL } from '$lib/constants/constants';
+import { statusesIdbStore } from '$lib/stores/idb.store';
 import type { CanisterJunoStatus } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
@@ -14,7 +15,7 @@ import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish } from '@dfinity/utils';
 import { startOfDay } from 'date-fns';
-import { createStore, set } from 'idb-keyval';
+import { set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -71,8 +72,6 @@ const stopStatusesTimer = () => {
 	timer = undefined;
 };
 
-const customStore = createStore('juno-statuses', 'juno-statuses-store');
-
 let syncing = false;
 
 const syncStatuses = async ({
@@ -94,7 +93,7 @@ const syncStatuses = async ({
 
 	await emitSavedCanisters({
 		canisterIds: segments.map(({ canisterId }) => canisterId),
-		customStore
+		customStore: statusesIdbStore
 	});
 
 	try {
@@ -205,7 +204,7 @@ const syncCanister = async ({
 	};
 
 	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, customStore);
+	await set(canisterId, canister, statusesIdbStore);
 
 	emitCanister(canister);
 };

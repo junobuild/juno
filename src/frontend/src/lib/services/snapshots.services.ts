@@ -14,6 +14,7 @@ import {
 	syncIdbStore
 } from '$lib/services/idb-store.services';
 import { i18n } from '$lib/stores/i18n.store';
+import { snapshotsIdbStore } from '$lib/stores/idb.store';
 import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -21,21 +22,18 @@ import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/snapshot
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
-import { createStore } from 'idb-keyval';
 import { get } from 'svelte/store';
-
-const customSnapshotStore = createStore('juno-snapshot', 'juno-snapshot-store');
 
 export const syncSnapshots = async () => {
 	await syncIdbStore({
-		customStore: customSnapshotStore,
+		customStore: snapshotsIdbStore,
 		store: snapshotStore
 	});
 };
 
 export const resetSnapshots = async () => {
 	await resetAllIdbStore({
-		customStore: customSnapshotStore,
+		customStore: snapshotsIdbStore,
 		store: snapshotStore
 	});
 };
@@ -138,7 +136,7 @@ export const deleteSnapshot = async ({
 
 		await resetIdbStore({
 			store: snapshotStore,
-			customStore: customSnapshotStore,
+			customStore: snapshotsIdbStore,
 			canisterId: canisterId.toText()
 		});
 	} catch (err: unknown) {
@@ -209,7 +207,7 @@ const updateStore = async ({
 	// Currently the IC only supports once snapshot per canister.
 	await setIdbStore({
 		store: snapshotStore,
-		customStore: customSnapshotStore,
+		customStore: snapshotsIdbStore,
 		canisterId: canisterId.toText(),
 		data: [snapshot]
 	});
@@ -273,7 +271,7 @@ export const loadSnapshots = async ({
 
 		await setIdbStore({
 			store: snapshotStore,
-			customStore: customSnapshotStore,
+			customStore: snapshotsIdbStore,
 			canisterId: canisterIdText,
 			data: snapshots
 		});
@@ -289,7 +287,7 @@ export const loadSnapshots = async ({
 
 		await resetIdbStore({
 			store: snapshotStore,
-			customStore: customSnapshotStore,
+			customStore: snapshotsIdbStore,
 			canisterId: canisterIdText
 		});
 

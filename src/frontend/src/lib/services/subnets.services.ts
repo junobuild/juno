@@ -6,25 +6,23 @@ import {
 	syncIdbStore
 } from '$lib/services/idb-store.services';
 import { i18n } from '$lib/stores/i18n.store';
+import { subnetsIdbStore } from '$lib/stores/idb.store';
 import { subnetStore } from '$lib/stores/subnet.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
-import { createStore } from 'idb-keyval';
 import { get } from 'svelte/store';
-
-const customSubnetStore = createStore('juno-subnet', 'juno-subnet-store');
 
 export const syncSubnets = async () => {
 	await syncIdbStore({
-		customStore: customSubnetStore,
+		customStore: subnetsIdbStore,
 		store: subnetStore
 	});
 };
 
 export const resetSubnets = async () => {
 	await resetAllIdbStore({
-		customStore: customSubnetStore,
+		customStore: subnetsIdbStore,
 		store: subnetStore
 	});
 };
@@ -53,7 +51,7 @@ export const loadSubnetId = async ({
 
 		await setIdbStore({
 			store: subnetStore,
-			customStore: customSubnetStore,
+			customStore: subnetsIdbStore,
 			canisterId: canisterIdText,
 			data
 		});
@@ -69,7 +67,7 @@ export const loadSubnetId = async ({
 
 		await resetIdbStore({
 			store: subnetStore,
-			customStore: customSubnetStore,
+			customStore: subnetsIdbStore,
 			canisterId: canisterIdText
 		});
 

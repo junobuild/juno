@@ -2,15 +2,13 @@
 	import { encodeSnapshotId } from '@dfinity/ic-management';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
-	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { snapshot } from '$declarations/ic/ic.did';
 	import CanisterSnapshotActions from '$lib/components/canister/CanisterSnapshotActions.svelte';
 	import CanisterSnapshotDelete from '$lib/components/canister/CanisterSnapshotDelete.svelte';
+	import CanisterSnapshotsLoader from '$lib/components/canister/CanisterSnapshotsLoader.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import { loadSnapshots } from '$lib/services/snapshots.services';
-	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { snapshotStore } from '$lib/stores/snapshot.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -29,13 +27,6 @@
 	}
 
 	let { canisterId, segment, segmentLabel }: Props = $props();
-
-	onMount(() => {
-		loadSnapshots({
-			canisterId,
-			identity: $authStore.identity
-		});
-	});
 
 	let snapshots: Option<Snapshots> = $derived($snapshotStore?.[canisterId.toText()]);
 
@@ -89,69 +80,72 @@
 	let hasExistingSnapshots = $derived((snapshots?.length ?? 0) > 0);
 </script>
 
-<div class="table-container">
-	<table>
-		<thead>
-			<tr>
-				<th class="tools"></th>
-				<th class="backup"> {$i18n.canisters.backup} </th>
-				<th class="size"> {$i18n.canisters.size} </th>
-				<th> {$i18n.canisters.timestamp} </th>
-			</tr>
-		</thead>
+<CanisterSnapshotsLoader {canisterId}>
+	<div class="table-container">
+		<table>
+			<thead>
+				<tr>
+					<th class="tools"></th>
+					<th class="backup"> {$i18n.canisters.backup} </th>
+					<th class="size"> {$i18n.canisters.size} </th>
+					<th> {$i18n.canisters.timestamp} </th>
+				</tr>
+			</thead>
 
-		<tbody>
-			{#if snapshots !== undefined}
-				{#each snapshots ?? [] as snapshot}
-					<tr>
-						<td
-							><CanisterSnapshotActions
-								ondelete={openDeletePopover}
-								onrestore={openRestoreModal}
-								onreplace={openCreateModal}
-							/></td
+			<tbody>
+				{#if snapshots !== undefined}
+					{#each snapshots ?? [] as snapshot}
+						<tr>
+							<td
+								><CanisterSnapshotActions
+									ondelete={openDeletePopover}
+									onrestore={openRestoreModal}
+									onreplace={openCreateModal}
+								/></td
+							>
+							<td><Identifier small={false} identifier={`0x${encodeSnapshotId(snapshot.id)}`} /></td
+							>
+							<td>{formatBytes(Number(snapshot.total_size))}</td>
+							<td>{formatToDate(snapshot.taken_at_timestamp)}</td>
+						</tr>
+					{/each}
+
+					{#if snapshots === null || snapshots?.length === 0}
+						<tr in:fade
+							><td colspan="4"
+								>{i18nFormat($i18n.canisters.no_backup, [
+									{
+										placeholder: '{0}',
+										value: segmentLabel
+									}
+								])}</td
+							></tr
 						>
-						<td><Identifier small={false} identifier={`0x${encodeSnapshotId(snapshot.id)}`} /></td>
-						<td>{formatBytes(Number(snapshot.total_size))}</td>
-						<td>{formatToDate(snapshot.taken_at_timestamp)}</td>
-					</tr>
-				{/each}
-
-				{#if snapshots === null || snapshots?.length === 0}
-					<tr in:fade
-						><td colspan="4"
-							>{i18nFormat($i18n.canisters.no_backup, [
-								{
-									placeholder: '{0}',
-									value: segmentLabel
-								}
-							])}</td
-						></tr
+					{/if}
+				{:else}
+					<tr
+						><td colspan="4">
+							<div class="skeleton">
+								&ZeroWidthSpace;<SkeletonText />
+							</div>
+						</td></tr
 					>
 				{/if}
-			{:else}
-				<tr
-					><td colspan="4">
-						<div class="skeleton">
-							&ZeroWidthSpace;<SkeletonText />
-						</div>
-					</td></tr
-				>
-			{/if}
-		</tbody>
-	</table>
-</div>
+			</tbody>
+		</table>
+	</div>
 
-{#if !hasExistingSnapshots && $snapshotStore !== undefined}
-	<button in:fade onclick={openCreateModal}>{$i18n.core.create}</button>
-{/if}
+	{#if !hasExistingSnapshots && $snapshotStore !== undefined}
+		<button in:fade onclick={openCreateModal}>{$i18n.core.create}</button>
+	{/if}
 
-<CanisterSnapshotDelete
-	{canisterId}
-	{existingSnapshot}
-	{segmentLabel}
-	bind:visible={deleteSnapshotVisible}
-/>
+	<CanisterSnapshotDelete
+		{canisterId}
+		{existingSnapshot}
+		{segmentLabel}
+		bind:visible={deleteSnapshotVisible}
+	/>
+</CanisterSnapshotsLoader>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

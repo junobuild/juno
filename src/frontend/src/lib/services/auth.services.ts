@@ -3,10 +3,12 @@ import { resetSubnets } from '$lib/services/subnets.services';
 import { authStore, type AuthSignInParams } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
+import { cyclesIdbStore, statusesIdbStore } from '$lib/stores/idb.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { ToastLevel, ToastMsg } from '$lib/types/toast';
 import { replaceHistory } from '$lib/utils/route.utils';
 import { isNullish } from '@dfinity/utils';
+import { clear } from 'idb-keyval';
 import { get } from 'svelte/store';
 
 export const signIn = async (
@@ -57,7 +59,12 @@ const logout = async ({
 	busy.start();
 
 	if (clearStorages) {
-		await Promise.all([resetSubnets(), resetSnapshots()]);
+		await Promise.all([
+			clear(cyclesIdbStore),
+			clear(statusesIdbStore),
+			resetSnapshots(),
+			resetSubnets()
+		]);
 	}
 
 	await authStore.signOut();

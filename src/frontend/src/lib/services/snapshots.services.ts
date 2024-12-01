@@ -7,6 +7,7 @@ import {
 	deleteSnapshot as deleteSnapshotApi,
 	restoreSnapshot as restoreSnapshotApi
 } from '$lib/api/ic.api';
+import { resetIdbStore, setIdbStore, syncIdbStore } from '$lib/services/idb-store.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -15,7 +16,17 @@ import { type SnapshotProgress, SnapshotProgressStep } from '$lib/types/snapshot
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, nonNullish } from '@dfinity/utils';
+import { createStore } from 'idb-keyval';
 import { get } from 'svelte/store';
+
+const customSnapshotStore = createStore('juno-snapshot', 'juno-snapshot-store');
+
+export const syncSnapshots = async () => {
+	await syncIdbStore({
+		customStore: customSnapshotStore,
+		store: snapshotStore
+	});
+};
 
 type SnapshotOnProgress = (progress: SnapshotProgress | undefined) => void;
 
@@ -113,7 +124,11 @@ export const deleteSnapshot = async ({
 			identity
 		});
 
-		snapshotStore.reset(canisterId.toText());
+		await resetIdbStore({
+			store: snapshotStore,
+			customStore: customSnapshotStore,
+			canisterId: canisterId.toText()
+		});
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
@@ -159,7 +174,7 @@ const takeSnapshot = async ({
 }) => {
 	const newSnapshot = await createSnapshotApi({ canisterId, ...rest });
 
-	updateStore({ canisterId, snapshot: newSnapshot });
+	await updateStore({ canisterId, snapshot: newSnapshot });
 };
 
 const applySnapshot = async ({
@@ -172,15 +187,17 @@ const applySnapshot = async ({
 	await restoreSnapshotApi({ canisterId, snapshotId: snapshot.id, ...rest });
 
 	// We add in store the snapshot we restored because load_canister_snapshot returns void
-	updateStore({ canisterId, snapshot });
+	await updateStore({ canisterId, snapshot });
 };
 
-const updateStore = ({
+const updateStore = async ({
 	canisterId,
 	snapshot
 }: Pick<SnapshotParams, 'canisterId'> & { snapshot: snapshot }) => {
 	// Currently the IC only supports once snapshot per canister.
-	snapshotStore.set({
+	await setIdbStore({
+		store: snapshotStore,
+		customStore: customSnapshotStore,
 		canisterId: canisterId.toText(),
 		data: [snapshot]
 	});
@@ -242,7 +259,9 @@ export const loadSnapshots = async ({
 			identity
 		});
 
-		snapshotStore.set({
+		await setIdbStore({
+			store: snapshotStore,
+			customStore: customSnapshotStore,
 			canisterId: canisterIdText,
 			data: snapshots
 		});
@@ -256,7 +275,11 @@ export const loadSnapshots = async ({
 			detail: err
 		});
 
-		snapshotStore.reset(canisterIdText);
+		await resetIdbStore({
+			store: snapshotStore,
+			customStore: customSnapshotStore,
+			canisterId: canisterIdText
+		});
 
 		return { success: false };
 	}

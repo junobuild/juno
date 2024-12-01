@@ -1,11 +1,21 @@
 import { getSubnetId } from '$lib/api/ic.api';
-import { setSubnet } from '$lib/services/canister.services';
+import { resetIdbStore, setIdbStore, syncIdbStore } from '$lib/services/idb-store.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { subnetStore } from '$lib/stores/subnet.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { Principal } from '@dfinity/principal';
 import { nonNullish } from '@dfinity/utils';
+import { createStore } from 'idb-keyval';
 import { get } from 'svelte/store';
+
+const customSubnetStore = createStore('juno-subnet', 'juno-subnet-store');
+
+export const syncSubnets = async () => {
+	await syncIdbStore({
+		customStore: customSubnetStore,
+		store: subnetStore
+	});
+};
 
 export const loadSubnetId = async ({
 	canisterId,
@@ -27,9 +37,13 @@ export const loadSubnetId = async ({
 			canisterId: canisterId.toText()
 		});
 
-		await setSubnet({
+		const data = nonNullish(subnetId) ? { subnetId } : undefined;
+
+		await setIdbStore({
+			store: subnetStore,
+			customStore: customSubnetStore,
 			canisterId: canisterIdText,
-			subnetId
+			data
 		});
 
 		return { success: true };
@@ -41,7 +55,11 @@ export const loadSubnetId = async ({
 			detail: err
 		});
 
-		subnetStore.reset(canisterIdText);
+		await resetIdbStore({
+			store: subnetStore,
+			customStore: customSubnetStore,
+			canisterId: canisterIdText
+		});
 
 		return { success: false };
 	}

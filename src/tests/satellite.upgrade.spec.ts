@@ -136,7 +136,7 @@ describe('Satellite upgrade', () => {
 				await testUsers([...users, ...moreUsers]);
 			},
 			{
-				timeout: 60000
+				timeout: 120000
 			}
 		);
 

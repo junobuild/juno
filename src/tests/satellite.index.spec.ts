@@ -44,7 +44,7 @@ describe('Satellite Index HTML', () => {
 		});
 
 		const decoder = new TextDecoder();
-		const responseBody = decoder.decode(body as ArrayBuffer);
+		const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
 
 		const sourceIndexHTML = readFileSync(
 			join(process.cwd(), 'src', 'satellite', 'resources', 'index.html'),

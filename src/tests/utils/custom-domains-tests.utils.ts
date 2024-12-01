@@ -80,8 +80,8 @@ export const adminCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>
 		});
 
 		const decoder = new TextDecoder();
-		expect(decoder.decode(body as ArrayBuffer)).toContain('hello.com');
-		expect(decoder.decode(body as ArrayBuffer)).toContain('test2.com');
+		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('hello.com');
+		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test2.com');
 	});
 
 	it('could delete custom domain', async () => {
@@ -109,7 +109,7 @@ export const adminCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>
 		});
 
 		const decoder = new TextDecoder();
-		expect(decoder.decode(body as ArrayBuffer)).not.toContain('hello.com');
+		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).not.toContain('hello.com');
 	});
 
 	it('should still expose /.well-known/ic-domains if domains still exist after delete', async () => {
@@ -124,7 +124,7 @@ export const adminCustomDomainsTests = <T extends SatelliteActor | ConsoleActor>
 		});
 
 		const decoder = new TextDecoder();
-		expect(decoder.decode(body as ArrayBuffer)).toContain('test3.com');
-		expect(decoder.decode(body as ArrayBuffer)).toContain('test2.com');
+		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test3.com');
+		expect(decoder.decode(body as Uint8Array<ArrayBufferLike>)).toContain('test2.com');
 	});
 };

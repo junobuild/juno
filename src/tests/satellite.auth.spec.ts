@@ -84,7 +84,7 @@ describe('Satellite authentication', () => {
 			});
 
 			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as ArrayBuffer);
+			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
 			expect(responseBody).toEqual(JSON.stringify({ alternativeOrigins: [canisterIdUrl] }));
 			expect(JSON.parse(responseBody).alternativeOrigins).toEqual([canisterIdUrl]);
 		});
@@ -175,7 +175,7 @@ describe('Satellite authentication', () => {
 			});
 
 			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as ArrayBuffer);
+			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
 
 			const responseObj = JSON.parse(responseBody);
 
@@ -209,7 +209,7 @@ describe('Satellite authentication', () => {
 			});
 
 			const decoder = new TextDecoder();
-			const responseBody = decoder.decode(body as ArrayBuffer);
+			const responseBody = decoder.decode(body as Uint8Array<ArrayBufferLike>);
 
 			const responseObj = JSON.parse(responseBody);
 

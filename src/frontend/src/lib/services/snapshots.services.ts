@@ -7,7 +7,12 @@ import {
 	deleteSnapshot as deleteSnapshotApi,
 	restoreSnapshot as restoreSnapshotApi
 } from '$lib/api/ic.api';
-import { resetIdbStore, setIdbStore, syncIdbStore } from '$lib/services/idb-store.services';
+import {
+	resetAllIdbStore,
+	resetIdbStore,
+	setIdbStore,
+	syncIdbStore
+} from '$lib/services/idb-store.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { snapshotStore } from '$lib/stores/snapshot.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -23,6 +28,13 @@ const customSnapshotStore = createStore('juno-snapshot', 'juno-snapshot-store');
 
 export const syncSnapshots = async () => {
 	await syncIdbStore({
+		customStore: customSnapshotStore,
+		store: snapshotStore
+	});
+};
+
+export const resetSnapshots = async () => {
+	await resetAllIdbStore({
 		customStore: customSnapshotStore,
 		store: snapshotStore
 	});

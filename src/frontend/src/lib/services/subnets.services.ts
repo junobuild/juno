@@ -1,5 +1,10 @@
 import { getSubnetId } from '$lib/api/ic.api';
-import { resetIdbStore, setIdbStore, syncIdbStore } from '$lib/services/idb-store.services';
+import {
+	resetAllIdbStore,
+	resetIdbStore,
+	setIdbStore,
+	syncIdbStore
+} from '$lib/services/idb-store.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { subnetStore } from '$lib/stores/subnet.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -12,6 +17,13 @@ const customSubnetStore = createStore('juno-subnet', 'juno-subnet-store');
 
 export const syncSubnets = async () => {
 	await syncIdbStore({
+		customStore: customSubnetStore,
+		store: subnetStore
+	});
+};
+
+export const resetSubnets = async () => {
+	await resetAllIdbStore({
 		customStore: customSubnetStore,
 		store: subnetStore
 	});

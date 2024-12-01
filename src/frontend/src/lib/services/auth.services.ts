@@ -1,3 +1,5 @@
+import { resetSnapshots } from '$lib/services/snapshots.services';
+import { resetSubnets } from '$lib/services/subnets.services';
 import { authStore, type AuthSignInParams } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
@@ -35,19 +37,28 @@ export const signIn = async (
 
 export const signOut = (): Promise<void> => logout({});
 
-export const warnSignOut = (text: string): Promise<void> =>
-	logout({
+export const idleSignOut = async () =>
+	await logout({
 		msg: {
-			text,
+			text: get(i18n).authentication.session_expired,
 			level: 'warn'
-		}
+		},
+		clearStorages: false
 	});
 
-export const idleSignOut = async () => await warnSignOut(get(i18n).authentication.session_expired);
-
-const logout = async ({ msg = undefined }: { msg?: ToastMsg }) => {
+const logout = async ({
+	msg = undefined,
+	clearStorages = true
+}: {
+	msg?: ToastMsg;
+	clearStorages?: boolean;
+}) => {
 	// To mask not operational UI (a side effect of sometimes slow JS loading after window.reload because of service worker and no cache).
 	busy.start();
+
+	if (clearStorages) {
+		await Promise.all([resetSubnets(), resetSnapshots()]);
+	}
 
 	await authStore.signOut();
 

@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { Principal } from '@dfinity/principal';
-import { consoleActorLocal } from './actor.mjs';
+import { consoleActor } from './actor.mjs';
 
 const addCredits = async () => {
 	const [, , user] = process.argv;
@@ -10,7 +10,7 @@ const addCredits = async () => {
 		throw new Error('No user id provided.');
 	}
 
-	const actor = await consoleActorLocal();
+	const actor = await consoleActor();
 
 	// 100_000_000n === 1 credit
 	// e.g. a satellite costs 2 ICP, then 1 credit covers it

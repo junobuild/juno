@@ -21,6 +21,4 @@ serde.workspace = true
 serde_tokenstream = "0.2.0"
 
 [dev-dependencies]
-candid.workspace = true
-ic-cdk.workspace = true
 trybuild = "1.0.89"

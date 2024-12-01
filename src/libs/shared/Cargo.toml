@@ -16,7 +16,6 @@ targets = ["wasm32-unknown-unknown"]
 [dependencies]
 candid.workspace = true
 ic-cdk.workspace = true
-ic-cdk-macros.workspace = true
 ic-ledger-types.workspace = true
 icrc-ledger-types.workspace = true
 ic-stable-structures.workspace = true

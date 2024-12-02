@@ -38,7 +38,6 @@
 		{currentVersion}
 		upgrade={upgradeOrbiterWasm}
 		segment="orbiter"
-		,
 		canisterId={$orbiterStore.orbiter_id}
 	>
 		{#snippet intro()}

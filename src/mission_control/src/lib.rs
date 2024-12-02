@@ -66,6 +66,7 @@ use segments::store::{
 };
 use std::cell::RefCell;
 use std::collections::HashMap;
+use crate::mgmt::monitoring::init_monitoring;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
@@ -87,6 +88,8 @@ fn init() {
             },
         };
     });
+
+    init_monitoring();
 }
 
 #[pre_upgrade]
@@ -99,6 +102,8 @@ fn post_upgrade() {
     let (stable,): (StableState,) = storage::stable_restore().unwrap();
 
     STATE.with(|state| *state.borrow_mut() = State { stable });
+
+    init_monitoring();
 }
 
 /// Satellites

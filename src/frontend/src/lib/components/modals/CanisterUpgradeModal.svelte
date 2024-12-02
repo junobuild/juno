@@ -16,6 +16,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { Principal } from '@dfinity/principal';
 
 	interface Props {
 		currentVersion: string;
@@ -27,6 +28,7 @@
 		}: Pick<UpgradeCodeParams, 'wasmModule' | 'takeSnapshot'>) => Promise<void>;
 		intro?: Snippet;
 		onclose: () => void;
+		canisterId: Principal;
 	}
 
 	let {
@@ -36,7 +38,8 @@
 		segment,
 		upgrade,
 		intro,
-		onclose
+		onclose,
+		canisterId
 	}: Props = $props();
 
 	let buildExtended = $derived(nonNullish(build) && build === 'extended');
@@ -103,6 +106,7 @@
 			{onProgress}
 			{onclose}
 			{takeSnapshot}
+			{canisterId}
 		/>
 	{:else if steps === 'confirm'}
 		<ConfirmUpgradeVersion {segment} {onclose} oncontinue={() => (steps = 'init')} {intro} />

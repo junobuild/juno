@@ -8,6 +8,9 @@
 	import type { Wasm } from '$lib/types/upgrade';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { loadSnapshots } from '$lib/services/snapshots.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import type { Principal } from '@dfinity/principal';
 
 	interface Props {
 		upgrade: ({
@@ -21,9 +24,11 @@
 		onclose: () => void;
 		onProgress: (progress: UpgradeCodeProgress | undefined) => void;
 		takeSnapshot: boolean;
+		canisterId: Principal;
 	}
 
-	let { upgrade, segment, wasm, takeSnapshot, nextSteps, onProgress, onclose }: Props = $props();
+	let { upgrade, segment, wasm, takeSnapshot, canisterId, nextSteps, onProgress, onclose }: Props =
+		$props();
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -48,6 +53,14 @@
 			const wasmModule = new Uint8Array(await wasm.wasm.arrayBuffer());
 
 			await upgrade({ wasmModule, takeSnapshot, onProgress });
+
+			if (takeSnapshot) {
+				await loadSnapshots({
+					canisterId,
+					identity: $authStore.identity,
+					reload: true
+				});
+			}
 
 			emit({ message: 'junoReloadVersions' });
 

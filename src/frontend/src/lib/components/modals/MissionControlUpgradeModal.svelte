@@ -40,6 +40,7 @@
 		{currentVersion}
 		upgrade={upgradeMissionControlWasm}
 		segment="mission_control"
+		canisterId={$missionControlStore}
 	>
 		{#snippet intro()}
 			<h2>

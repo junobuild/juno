@@ -1,19 +1,25 @@
-use std::rc::Rc;
-use std::sync::Arc;
-use canfund::FundManager;
-use canfund::manager::options::{CyclesThreshold, FundManagerOptions, FundStrategy, ObtainCyclesOptions};
+use crate::segments::store::get_satellites;
+use crate::FUND_MANAGER;
 use canfund::api::cmc::IcCyclesMintingCanister;
 use canfund::api::ledger::IcLedgerCanister;
+use canfund::manager::options::{
+    CyclesThreshold, FundManagerOptions, FundStrategy, ObtainCyclesOptions,
+};
 use canfund::manager::RegisterOpts;
 use canfund::operations::obtain::MintCycles;
+use canfund::FundManager;
 use ic_cdk::id;
 use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTER_ID};
 use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
-use crate::segments::store::get_satellites;
+use std::cell::RefMut;
+use std::rc::Rc;
+use std::sync::Arc;
 
 pub fn init_monitoring() {
-    let mut fund_manager = FundManager::new();
+    FUND_MANAGER.with(|fund_manager| init_monitoring_impl(&mut fund_manager.borrow_mut()));
+}
 
+fn init_monitoring_impl(fund_manager: &mut RefMut<FundManager>) {
     let funding_config = FundManagerOptions::new()
         .with_interval_secs(30)
         .with_strategy(FundStrategy::BelowThreshold(
@@ -47,24 +53,17 @@ pub fn init_monitoring() {
             }
         }));
 
-
     fund_manager.with_options(funding_config);
 
     // Register satellites
     let satellites = get_satellites();
 
     for (satellite_id, _) in satellites {
-        fund_manager.register(
-            satellite_id,
-            RegisterOpts::new(),
-        );
+        fund_manager.register(satellite_id, RegisterOpts::new());
     }
 
     // Register mission control
-    fund_manager.register(
-        id(),
-        RegisterOpts::new(),
-    );
+    fund_manager.register(id(), RegisterOpts::new());
 
     fund_manager.start();
 }

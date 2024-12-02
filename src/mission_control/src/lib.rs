@@ -20,6 +20,7 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
+use crate::mgmt::monitoring::init_monitoring;
 use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
@@ -43,6 +44,7 @@ use crate::types::state::{
     Archive, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
 };
 use candid::Principal;
+use canfund::FundManager;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
@@ -66,10 +68,11 @@ use segments::store::{
 };
 use std::cell::RefCell;
 use std::collections::HashMap;
-use crate::mgmt::monitoring::init_monitoring;
 
 thread_local! {
     static STATE: RefCell<State> = RefCell::default();
+
+    static FUND_MANAGER: RefCell<FundManager> = RefCell::new(FundManager::new());
 }
 
 #[init]

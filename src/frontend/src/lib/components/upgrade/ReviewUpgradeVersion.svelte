@@ -1,7 +1,10 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { type UpgradeCodeParams, type UpgradeCodeProgress } from '@junobuild/admin';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { loadSnapshots } from '$lib/services/snapshots.services';
+	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -21,9 +24,11 @@
 		onclose: () => void;
 		onProgress: (progress: UpgradeCodeProgress | undefined) => void;
 		takeSnapshot: boolean;
+		canisterId: Principal;
 	}
 
-	let { upgrade, segment, wasm, takeSnapshot, nextSteps, onProgress, onclose }: Props = $props();
+	let { upgrade, segment, wasm, takeSnapshot, canisterId, nextSteps, onProgress, onclose }: Props =
+		$props();
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -48,6 +53,14 @@
 			const wasmModule = new Uint8Array(await wasm.wasm.arrayBuffer());
 
 			await upgrade({ wasmModule, takeSnapshot, onProgress });
+
+			if (takeSnapshot) {
+				await loadSnapshots({
+					canisterId,
+					identity: $authStore.identity,
+					reload: true
+				});
+			}
 
 			emit({ message: 'junoReloadVersions' });
 

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import {
 		type BuildType,
@@ -27,6 +28,7 @@
 		}: Pick<UpgradeCodeParams, 'wasmModule' | 'takeSnapshot'>) => Promise<void>;
 		intro?: Snippet;
 		onclose: () => void;
+		canisterId: Principal;
 	}
 
 	let {
@@ -36,7 +38,8 @@
 		segment,
 		upgrade,
 		intro,
-		onclose
+		onclose,
+		canisterId
 	}: Props = $props();
 
 	let buildExtended = $derived(nonNullish(build) && build === 'extended');
@@ -103,6 +106,7 @@
 			{onProgress}
 			{onclose}
 			{takeSnapshot}
+			{canisterId}
 		/>
 	{:else if steps === 'confirm'}
 		<ConfirmUpgradeVersion {segment} {onclose} oncontinue={() => (steps = 'init')} {intro} />

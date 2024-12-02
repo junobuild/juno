@@ -48,6 +48,7 @@
 	{build}
 	upgrade={upgradeSatelliteWasm}
 	segment="satellite"
+	canisterId={satellite.satellite_id}
 >
 	{#snippet intro()}
 		<h2>

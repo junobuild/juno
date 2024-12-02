@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import {
 		type BuildType,
@@ -16,7 +17,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Wasm } from '$lib/types/upgrade';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type { Principal } from '@dfinity/principal';
 
 	interface Props {
 		currentVersion: string;

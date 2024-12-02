@@ -1,16 +1,16 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { type UpgradeCodeParams, type UpgradeCodeProgress } from '@junobuild/admin';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { loadSnapshots } from '$lib/services/snapshots.services';
+	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { Wasm } from '$lib/types/upgrade';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { loadSnapshots } from '$lib/services/snapshots.services';
-	import { authStore } from '$lib/stores/auth.store';
-	import type { Principal } from '@dfinity/principal';
 
 	interface Props {
 		upgrade: ({

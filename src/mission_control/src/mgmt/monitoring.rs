@@ -14,6 +14,7 @@ use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
 use std::cell::RefMut;
 use std::rc::Rc;
 use std::sync::Arc;
+use candid::Principal;
 
 pub fn init_monitoring() {
     FUND_MANAGER.with(|fund_manager| init_monitoring_impl(&mut fund_manager.borrow_mut()));
@@ -24,7 +25,7 @@ fn init_monitoring_impl(fund_manager: &mut RefMut<FundManager>) {
         .with_interval_secs(30)
         .with_strategy(FundStrategy::BelowThreshold(
             CyclesThreshold::new()
-                .with_min_cycles(125_000_000_000)
+                .with_min_cycles(20_025_000_000_000)
                 .with_fund_cycles(250_000_000_000),
         ))
         .with_obtain_cycles_options( Some(ObtainCyclesOptions {
@@ -66,4 +67,12 @@ fn init_monitoring_impl(fund_manager: &mut RefMut<FundManager>) {
     fund_manager.register(id(), RegisterOpts::new());
 
     fund_manager.start();
+}
+
+pub fn register_monitoring(id: &Principal) {
+    FUND_MANAGER.with(|fund_manager| register_monitoring_impl(id, &mut fund_manager.borrow_mut()));
+}
+
+fn register_monitoring_impl(id: &Principal, fund_manager: &mut RefMut<FundManager>) {
+    fund_manager.register(id.clone(), RegisterOpts::new());
 }

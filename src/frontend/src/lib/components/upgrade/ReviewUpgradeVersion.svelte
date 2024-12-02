@@ -1,31 +1,15 @@
 <script lang="ts">
-	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
-	import { type UpgradeCodeParams, type UpgradeCodeProgress } from '@junobuild/admin';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { loadSnapshots } from '$lib/services/snapshots.services';
+	import { upgrade as upgradeServices, type UpgradeParams } from '$lib/services/upgrade.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import type { Wasm } from '$lib/types/upgrade';
-	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
-	interface Props {
-		upgrade: ({
-			wasmModule
-		}: Pick<UpgradeCodeParams, 'wasmModule' | 'onProgress' | 'takeSnapshot'>) => Promise<void>;
+	type Props = {
 		segment: 'satellite' | 'mission_control' | 'orbiter';
-		wasm: Wasm | undefined;
-		nextSteps: (
-			steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error'
-		) => void;
 		onclose: () => void;
-		onProgress: (progress: UpgradeCodeProgress | undefined) => void;
-		takeSnapshot: boolean;
-		canisterId: Principal;
-	}
+	} & Omit<UpgradeParams, 'identity'>;
 
 	let { upgrade, segment, wasm, takeSnapshot, canisterId, nextSteps, onProgress, onclose }: Props =
 		$props();
@@ -33,53 +17,15 @@
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
-		onProgress(undefined);
-
-		if (isNullish(wasm)) {
-			toasts.error({
-				text: $i18n.errors.upgrade_no_wasm
-			});
-
-			nextSteps('error');
-
-			return;
-		}
-
-		wizardBusy.start();
-
-		nextSteps('in_progress');
-
-		try {
-			const wasmModule = new Uint8Array(await wasm.wasm.arrayBuffer());
-
-			await upgrade({ wasmModule, takeSnapshot, onProgress });
-
-			if (takeSnapshot) {
-				await loadSnapshots({
-					canisterId,
-					identity: $authStore.identity,
-					reload: true
-				});
-			}
-
-			emit({ message: 'junoReloadVersions' });
-
-			// Small delay to ensure junoReloadVersions is emitted
-			setTimeout(() => {
-				nextSteps('ready');
-
-				wizardBusy.stop();
-			}, 500);
-		} catch (err: unknown) {
-			toasts.error({
-				text: $i18n.errors.upgrade_error,
-				detail: err
-			});
-
-			nextSteps('error');
-
-			wizardBusy.stop();
-		}
+		await upgradeServices({
+			onProgress,
+			wasm,
+			upgrade,
+			nextSteps,
+			takeSnapshot,
+			canisterId,
+			identity: $authStore.identity
+		});
 	};
 </script>
 

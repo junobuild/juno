@@ -34,7 +34,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs help={'https://juno.build/docs/architecture'}>
+	<Tabs help={'https://juno.build/docs/miscellaneous/wallet'}>
 		{#snippet info()}
 			{#if $authSignedInStore}
 				<Warnings />

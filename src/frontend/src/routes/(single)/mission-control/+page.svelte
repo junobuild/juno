@@ -41,7 +41,7 @@
 <IdentityGuard>
 	<Tabs
 		help={$store.tabId === $store.tabs[0].id
-			? 'https://juno.build/docs/architecture'
+			? 'https://juno.build/docs/terminology#mission-control'
 			: 'https://juno.build/docs/miscellaneous/settings'}
 	>
 		{#snippet info()}

@@ -6,6 +6,7 @@
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
@@ -61,6 +62,11 @@
 		<a href="/mission-control" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
 			<IconMissionControl />
 			<span>{$i18n.mission_control.title}</span>
+		</a>
+
+		<a href="/wallet" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+			<IconWallet />
+			<span>{$i18n.wallet.title}</span>
 		</a>
 
 		<a

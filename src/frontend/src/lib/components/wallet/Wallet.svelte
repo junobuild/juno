@@ -8,13 +8,13 @@
 	import { fade } from 'svelte/transition';
 	import { getCredits } from '$lib/api/console.api';
 	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
-	import Wallet from '$lib/components/core/Wallet.svelte';
 	import ReceiveTokens from '$lib/components/tokens/ReceiveTokens.svelte';
 	import Transactions from '$lib/components/transactions/Transactions.svelte';
 	import TransactionsExport from '$lib/components/transactions/TransactionsExport.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { PAGINATION } from '$lib/constants/constants';
 	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -135,7 +135,7 @@
 </script>
 
 {#if $authSignedInStore}
-	<Wallet {missionControlId} bind:balance bind:transactions>
+	<WalletLoader {missionControlId} bind:balance bind:transactions>
 		<div class="card-container with-title">
 			<span class="title">{$i18n.wallet.overview}</span>
 
@@ -198,7 +198,7 @@
 		/>
 
 		<TransactionsExport {transactions} {missionControlId} />
-	</Wallet>
+	</WalletLoader>
 {/if}
 
 <ReceiveTokens bind:visible={receiveVisible} {missionControlId} />

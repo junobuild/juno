@@ -3,9 +3,8 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
-	import MissionControl from '$lib/components/mission-control/MissionControl.svelte';
-	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
@@ -20,11 +19,7 @@
 	const tabs: Tab[] = [
 		{
 			id: Symbol('1'),
-			labelKey: 'mission_control.title'
-		},
-		{
-			id: Symbol('3'),
-			labelKey: 'core.setup'
+			labelKey: 'wallet.title'
 		}
 	];
 
@@ -39,11 +34,7 @@
 </script>
 
 <IdentityGuard>
-	<Tabs
-		help={$store.tabId === $store.tabs[0].id
-			? 'https://juno.build/docs/architecture'
-			: 'https://juno.build/docs/miscellaneous/settings'}
-	>
+	<Tabs help={'https://juno.build/docs/architecture'}>
 		{#snippet info()}
 			{#if $authSignedInStore}
 				<Warnings />
@@ -52,9 +43,7 @@
 
 		{#if nonNullish($missionControlStore)}
 			{#if $store.tabId === $store.tabs[0].id}
-				<MissionControl />
-			{:else if $store.tabId === $store.tabs[1].id}
-				<MissionControlSettings missionControlId={$missionControlStore} />
+				<Wallet missionControlId={$missionControlStore} />
 			{/if}
 		{/if}
 	</Tabs>

@@ -3,9 +3,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import type { MemorySize } from '$declarations/satellite/satellite.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import CanisterSnapshotsMemory from '$lib/components/canister/CanisterSnapshotsMemory.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
+	import SnapshotsMemory from '$lib/components/snapshot/SnapshotsMemory.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';
@@ -71,7 +71,7 @@
 				{nonNullish(memory) ? formatBytes(Number(memory.stable)) : '???'}
 				<small>{$i18n.canisters.on_stable}</small>
 			</p>
-			<CanisterSnapshotsMemory {canisterId} />
+			<SnapshotsMemory {canisterId} />
 		</CanisterValue>
 	{/if}
 </div>

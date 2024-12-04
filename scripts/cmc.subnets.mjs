@@ -13,7 +13,7 @@ if (!existsSync(DATA_FOLDER)) {
 	mkdirSync(DATA_FOLDER, { recursive: true });
 }
 
-const listSubnets = async () => {
+const listSubnetIds = async () => {
 	const agent = await icAnonymousAgent();
 
 	const { getDefaultSubnets } = CMCCanister.create({
@@ -24,14 +24,33 @@ const listSubnets = async () => {
 	return await getDefaultSubnets({ certified: true });
 };
 
-const writeSubnets = (subnets) => {
-	const subnetsList = subnets.map((principal) => ({
-		subnetId: principal.toText()
-	}));
+const listSubnets = async () => {
+	const response = await fetch('https://ic-api.internetcomputer.org/api/v3/subnets');
 
-	writeFileSync(join(DATA_FOLDER, 'subnets.json'), JSON.stringify(subnetsList, jsonReplacer, 8));
+	if (!response.ok) {
+		throw new Error('Fetching the Dashboard API failed!');
+	}
+
+	return await response.json();
 };
 
-const subnets = await listSubnets();
+const writeSubnets = (subnets) => {
+	writeFileSync(join(DATA_FOLDER, 'subnets.json'), JSON.stringify(subnets, jsonReplacer, 8));
+};
+
+const subnetIds = await listSubnetIds();
+
+const { subnets: subnetsMetadata } = await listSubnets();
+
+const subnets = subnetIds.map((sId) => {
+	const subnetId = sId.toText();
+	const metadata = subnetsMetadata.find(({ subnet_id }) => subnet_id === subnetId);
+
+	return {
+		subnetId,
+		type: metadata?.subnet_type,
+		specialization: metadata?.subnet_specialization
+	};
+});
 
 writeSubnets(subnets);

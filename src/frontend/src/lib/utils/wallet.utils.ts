@@ -13,7 +13,7 @@ import { fromNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 export const transactionTimestamp = (transaction: Transaction): bigint | undefined =>
-	fromNullable(transaction.created_at_time)?.timestamp_nanos;
+	fromNullable(transaction.timestamp)?.timestamp_nanos;
 
 export const transactionFrom = (transaction: Transaction): string =>
 	'Transfer' in transaction.operation ? transaction.operation.Transfer.from : '';

@@ -6,10 +6,10 @@
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import NavbarLink from '$lib/components/core/NavbarLink.svelte';
-	import Wallet from '$lib/components/core/Wallet.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
@@ -70,7 +70,7 @@
 {/if}
 
 {#if nonNullish($missionControlStore)}
-	<Wallet missionControlId={$missionControlStore} bind:balance>
+	<WalletLoader missionControlId={$missionControlStore} bind:balance>
 		{#if nonNullish(balance)}
 			<div in:slide={{ axis: 'x' }} class="container wallet">
 				<NavbarLink
@@ -82,7 +82,7 @@
 				</NavbarLink>
 			</div>
 		{/if}
-	</Wallet>
+	</WalletLoader>
 {/if}
 
 <style lang="scss">

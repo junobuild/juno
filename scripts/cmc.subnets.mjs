@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 import { CMCCanister } from '@dfinity/cmc';
-import { jsonReplacer } from '@dfinity/utils';
+import { jsonReplacer, nonNullish } from '@dfinity/utils';
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { icAnonymousAgent } from './actor.mjs';
@@ -48,8 +48,17 @@ const subnets = subnetIds.map((sId) => {
 
 	return {
 		subnetId,
-		type: metadata?.subnet_type,
-		specialization: metadata?.subnet_specialization
+		...(nonNullish(metadata) && {
+			type: metadata.subnet_type,
+			canisters: {
+				stopped: metadata.stopped_canisters,
+				running: metadata.running_canisters
+			},
+			nodes: {
+				up: metadata.up_nodes,
+				total: metadata.total_nodes
+			}
+		})
 	};
 });
 

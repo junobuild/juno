@@ -32,18 +32,17 @@ const listSubnetIds = async () => {
 /**
  * The list of subnets supported by the CMC to create canisters only if specified,
  * i.e., those subnets are not used when creating a canister in a random subnet.
- * @returns {Promise<Principal[]>}
+ * @returns {Promise<SubnetTypesToSubnetsResponse>}
  */
 const listSpecifiedSubnetIds = async () => {
 	const agent = await icAnonymousAgent();
 
-	// TODO: CMC.get_subnet_types_to_subnets to be implemented in ic-js
-	const { getDefaultSubnets } = CMCCanister.create({
+	const { getSubnetTypesToSubnets } = CMCCanister.create({
 		agent,
 		canisterId: CMC_ID
 	});
 
-	return await getDefaultSubnets({ certified: true });
+	return await getSubnetTypesToSubnets({ certified: true });
 };
 
 /**
@@ -68,17 +67,23 @@ const writeSubnets = (subnets) => {
 const subnetIds = await listSubnetIds();
 
 // CMC.get_subnet_types_to_subnets
-const specifiedSubnetIds = await listSpecifiedSubnetIds();
+const { data: specifiedSubnetIds } = await listSpecifiedSubnetIds();
 
 // Metadata from the dashboard API
 const { subnets: subnetsMetadata } = await listSubnets();
 
-const subnets = [...subnetIds, ...specifiedSubnetIds].map((sId) => {
+const subnets = [
+	...subnetIds.map((subnetId) => ({ subnetId })),
+	...specifiedSubnetIds.flatMap(([specialization, subnetIds]) =>
+		subnetIds.map((subnetId) => ({ subnetId, specialization }))
+	)
+].map(({ subnetId: sId, specialization }) => {
 	const subnetId = sId.toText();
 	const metadata = subnetsMetadata.find(({ subnet_id }) => subnet_id === subnetId);
 
 	return {
 		subnetId,
+		...(nonNullish(specialization) && { specialization }),
 		...(nonNullish(metadata) && {
 			// The dashboard was instructed long ago to display verified_application as application
 			type: metadata.subnet_type === 'verified_application' ? 'application' : metadata.subnet_type,

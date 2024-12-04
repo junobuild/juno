@@ -1,6 +1,7 @@
 import type {
 	canister_log_record,
 	canister_settings,
+	list_canister_snapshots_result,
 	log_visibility,
 	snapshot,
 	snapshot_id
@@ -187,6 +188,20 @@ export const deleteSnapshot = async ({
 	await delete_canister_snapshot({
 		canister_id: canisterId,
 		snapshot_id: snapshotId
+	});
+};
+
+export const listSnapshots = async ({
+	canisterId,
+	identity
+}: {
+	canisterId: Principal;
+	identity: Identity;
+}): Promise<list_canister_snapshots_result> => {
+	const { list_canister_snapshots } = await getICActor({ identity });
+
+	return await list_canister_snapshots({
+		canister_id: canisterId
 	});
 };
 

@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import CanisterSnapshotsLoader from '$lib/components/canister/CanisterSnapshotsLoader.svelte';
+	import SnapshotsLoader from '$lib/components/snapshot/SnapshotsLoader.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { snapshotStore } from '$lib/stores/snapshot.store';
 	import { formatBytes } from '$lib/utils/number.utils';
@@ -18,11 +18,11 @@
 	);
 </script>
 
-<CanisterSnapshotsLoader {canisterId}>
+<SnapshotsLoader {canisterId}>
 	{#if nonNullish(memorySize) && memorySize > 0n}
 		<p in:fade>
 			{formatBytes(Number(memorySize))}
 			<small>{$i18n.canisters.on_backup}</small>
 		</p>
 	{/if}
-</CanisterSnapshotsLoader>
+</SnapshotsLoader>

@@ -40,7 +40,7 @@
 
 		const { success } = await restoreSnapshot({
 			canisterId,
-			snapshot,
+			snapshot: $state.snapshot(snapshot),
 			identity: $authStore.identity,
 			onProgress
 		});

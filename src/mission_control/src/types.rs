@@ -23,6 +23,7 @@ pub mod state {
         pub controllers: Controllers,
         pub archive: Archive,
         pub orbiters: Orbiters,
+        pub settings: Option<Settings>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
@@ -37,6 +38,7 @@ pub mod state {
     pub struct Satellite {
         pub satellite_id: SatelliteId,
         pub metadata: Metadata,
+        pub settings: Option<Settings>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
     }
@@ -45,6 +47,7 @@ pub mod state {
     pub struct Orbiter {
         pub orbiter_id: OrbiterId,
         pub metadata: Metadata,
+        pub settings: Option<Settings>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
     }
@@ -61,6 +64,22 @@ pub mod state {
         pub mission_control: Statuses,
         pub satellites: ArchiveStatusesSegments,
         pub orbiters: ArchiveStatusesSegments,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct Settings {
+        cycles_monitoring: Option<CyclesMonitoring>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub enum CyclesMonitoring {
+        BelowThreshold(CyclesThreshold),
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CyclesThreshold {
+        min_cycles: u128,
+        fund_cycles: u128,
     }
 }
 

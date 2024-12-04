@@ -82,13 +82,7 @@ fn init() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            stable: StableState {
-                user: User::from(&user),
-                satellites: HashMap::new(),
-                controllers: HashMap::new(),
-                archive: Archive::new(),
-                orbiters: Orbiters::new(),
-            },
+            stable: StableState::from(&user),
         };
     });
 

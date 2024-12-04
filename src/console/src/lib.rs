@@ -6,6 +6,7 @@ mod impls;
 mod memory;
 mod metadata;
 mod msg;
+mod payments;
 mod proposals;
 mod storage;
 mod store;
@@ -17,6 +18,7 @@ use crate::factory::orbiter::create_orbiter as create_orbiter_console;
 use crate::factory::satellite::create_satellite as create_satellite_console;
 use crate::guards::{caller_is_admin_controller, caller_is_observatory};
 use crate::memory::{init_storage_heap_state, STATE};
+use crate::payments::payments::withdraw_balance;
 use crate::proposals::{
     commit_proposal as make_commit_proposal,
     delete_proposal_assets as delete_proposal_assets_proposal, init_proposal as make_init_proposal,
@@ -51,7 +53,7 @@ use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::caller;
 use ic_cdk::{id, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
-use ic_ledger_types::Tokens;
+use ic_ledger_types::{BlockIndex, Tokens};
 use junobuild_collections::types::core::CollectionKey;
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::rate::types::RateConfig;
@@ -170,6 +172,11 @@ async fn init_user_mission_control_center() -> MissionControl {
 #[query(guard = "caller_is_admin_controller")]
 fn list_payments() -> Payments {
     list_payments_state()
+}
+
+#[update(guard = "caller_is_admin_controller")]
+async fn withdraw_payments() -> BlockIndex {
+    withdraw_balance().await.unwrap_or_else(|e| trap(&e))
 }
 
 /// Satellites

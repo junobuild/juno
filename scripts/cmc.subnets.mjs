@@ -13,6 +13,11 @@ if (!existsSync(DATA_FOLDER)) {
 	mkdirSync(DATA_FOLDER, { recursive: true });
 }
 
+/**
+ * The list of subnets used by the CMC to create canisters randomly if no parameters are provided when creating a canister.
+ * Which means that these are subnets that can also be used if a developer wants to specify a particular subnet.
+ * @returns {Promise<Principal[]>}
+ */
 const listSubnetIds = async () => {
 	const agent = await icAnonymousAgent();
 
@@ -24,6 +29,27 @@ const listSubnetIds = async () => {
 	return await getDefaultSubnets({ certified: true });
 };
 
+/**
+ * The list of subnets supported by the CMC to create canisters only if specified,
+ * i.e., those subnets are not used when creating a canister in a random subnet.
+ * @returns {Promise<Principal[]>}
+ */
+const listSpecifiedSubnetIds = async () => {
+	const agent = await icAnonymousAgent();
+
+	// TODO: CMC.get_subnet_types_to_subnets to be implemented in ic-js
+	const { getDefaultSubnets } = CMCCanister.create({
+		agent,
+		canisterId: CMC_ID
+	});
+
+	return await getDefaultSubnets({ certified: true });
+};
+
+/**
+ * The Dashboard API provides some information about the subnets, like their type and also statistics.
+ * @returns {Promise<any>}
+ */
 const listSubnets = async () => {
 	const response = await fetch('https://ic-api.internetcomputer.org/api/v3/subnets');
 
@@ -38,18 +64,24 @@ const writeSubnets = (subnets) => {
 	writeFileSync(join(DATA_FOLDER, 'subnets.json'), JSON.stringify(subnets, jsonReplacer, 8));
 };
 
+// CMC.get_default_subnets
 const subnetIds = await listSubnetIds();
 
+// CMC.get_subnet_types_to_subnets
+const specifiedSubnetIds = await listSpecifiedSubnetIds();
+
+// Metadata from the dashboard API
 const { subnets: subnetsMetadata } = await listSubnets();
 
-const subnets = subnetIds.map((sId) => {
+const subnets = [...subnetIds, ...specifiedSubnetIds].map((sId) => {
 	const subnetId = sId.toText();
 	const metadata = subnetsMetadata.find(({ subnet_id }) => subnet_id === subnetId);
 
 	return {
 		subnetId,
 		...(nonNullish(metadata) && {
-			type: metadata.subnet_type,
+			// The dashboard was instructed long ago to display verified_application as application
+			type: metadata.subnet_type === 'verified_application' ? 'application' : metadata.subnet_type,
 			canisters: {
 				stopped: metadata.stopped_canisters,
 				running: metadata.running_canisters

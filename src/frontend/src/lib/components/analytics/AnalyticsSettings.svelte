@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import AnalyticsControllers from '$lib/components/analytics/AnalyticsControllers.svelte';
 	import CanisterSettings from '$lib/components/canister/CanisterSettings.svelte';
-	import CanisterSnapshots from '$lib/components/canister/CanisterSnapshots.svelte';
+	import Snapshots from '$lib/components/snapshot/Snapshots.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
@@ -22,11 +22,7 @@
 
 <AnalyticsControllers {orbiterId} />
 
-<CanisterSnapshots
-	canisterId={orbiterId}
-	segment="orbiter"
-	segmentLabel={$i18n.analytics.orbiter}
-/>
+<Snapshots canisterId={orbiterId} segment="orbiter" segmentLabel={$i18n.analytics.orbiter} />
 
 <style lang="scss">
 	div {

@@ -4,9 +4,9 @@
 	import { isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import type { snapshot } from '$declarations/ic/ic.did';
-	import CanisterSnapshotActions from '$lib/components/canister/CanisterSnapshotActions.svelte';
-	import CanisterSnapshotDelete from '$lib/components/canister/CanisterSnapshotDelete.svelte';
-	import CanisterSnapshotsLoader from '$lib/components/canister/CanisterSnapshotsLoader.svelte';
+	import SnapshotActions from '$lib/components/snapshot/SnapshotActions.svelte';
+	import SnapshotDelete from '$lib/components/snapshot/SnapshotDelete.svelte';
+	import SnapshotsLoader from '$lib/components/snapshot/SnapshotsLoader.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -80,7 +80,7 @@
 	let hasExistingSnapshots = $derived((snapshots?.length ?? 0) > 0);
 </script>
 
-<CanisterSnapshotsLoader {canisterId}>
+<SnapshotsLoader {canisterId}>
 	<div class="table-container">
 		<table>
 			<thead>
@@ -97,7 +97,7 @@
 					{#each snapshots ?? [] as snapshot}
 						<tr>
 							<td
-								><CanisterSnapshotActions
+								><SnapshotActions
 									ondelete={openDeletePopover}
 									onrestore={openRestoreModal}
 									onreplace={openCreateModal}
@@ -139,13 +139,13 @@
 		<button in:fade onclick={openCreateModal}>{$i18n.core.create}</button>
 	{/if}
 
-	<CanisterSnapshotDelete
+	<SnapshotDelete
 		{canisterId}
 		{existingSnapshot}
 		{segmentLabel}
 		bind:visible={deleteSnapshotVisible}
 	/>
-</CanisterSnapshotsLoader>
+</SnapshotsLoader>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';

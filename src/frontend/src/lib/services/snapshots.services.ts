@@ -5,6 +5,7 @@ import {
 	canisterStop,
 	createSnapshot as createSnapshotApi,
 	deleteSnapshot as deleteSnapshotApi,
+	listSnapshots,
 	restoreSnapshot as restoreSnapshotApi
 } from '$lib/api/ic.api';
 import {
@@ -57,6 +58,8 @@ interface RestoreSnapshotParams extends SnapshotParams {
 interface DeleteSnapshotParams extends Omit<SnapshotParams, 'onProgress'> {
 	snapshot: snapshot;
 }
+
+type ReloadSnapshotsParams = Omit<SnapshotParams, 'onProgress'>;
 
 export const createSnapshot = async ({
 	identity,
@@ -174,6 +177,38 @@ export const executeSnapshot = async ({
 		const restart = async () => await canisterStart({ canisterId, identity });
 		await execute({ fn: restart, onProgress, step: SnapshotProgressStep.RestartingCanister });
 	}
+};
+
+export const reloadSnapshots = async ({
+	canisterId,
+	identity
+}: ReloadSnapshotsParams): Promise<{ success: 'ok' | 'cancelled' | 'error'; err?: unknown }> => {
+	try {
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
+
+		const snapshots = await listSnapshots({
+			canisterId,
+			identity
+		});
+
+		await setIdbStore({
+			store: snapshotStore,
+			customStore: snapshotsIdbStore,
+			canisterId: canisterId.toText(),
+			data: snapshots
+		});
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: labels.errors.snapshot_list_error,
+			detail: err
+		});
+
+		return { success: 'error', err };
+	}
+
+	return { success: 'ok' };
 };
 
 const takeSnapshot = async ({

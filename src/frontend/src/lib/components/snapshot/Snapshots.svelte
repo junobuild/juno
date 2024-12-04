@@ -7,6 +7,7 @@
 	import SnapshotActions from '$lib/components/snapshot/SnapshotActions.svelte';
 	import SnapshotDelete from '$lib/components/snapshot/SnapshotDelete.svelte';
 	import SnapshotsLoader from '$lib/components/snapshot/SnapshotsLoader.svelte';
+	import SnapshotsRefresh from '$lib/components/snapshot/SnapshotsRefresh.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -86,7 +87,13 @@
 			<thead>
 				<tr>
 					<th class="tools"></th>
-					<th class="backup"> {$i18n.canisters.backup} </th>
+					<th class="backup">
+						<div class="actions">
+							<span>{$i18n.canisters.backup}</span>
+
+							<SnapshotsRefresh {canisterId} />
+						</div>
+					</th>
 					<th class="size"> {$i18n.canisters.size} </th>
 					<th> {$i18n.canisters.timestamp} </th>
 				</tr>
@@ -174,5 +181,11 @@
 		display: flex;
 		max-width: 200px;
 		--skeleton-text-padding: var(--padding-0_25x) 0;
+	}
+
+	.actions {
+		display: flex;
+		justify-content: space-between;
+		align-items: center;
 	}
 </style>

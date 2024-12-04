@@ -507,6 +507,7 @@
 		"snapshot_create_error": "Unexpected error(s) while creating the snapshot.",
 		"snapshot_restore_error": "Unexpected error(s) while restoring the snapshot.",
 		"snapshot_delete_error": "Unexpected error(s) while deleting the snapshot.",
+		"snapshot_list_error": "Unexpected error(s) while listing the snapshot.",
 		"wallet_no_account": "签名方未提供账号.",
 		"wallet_load_balance": "账户余额不能被加载.",
 		"wallet_receive_error": "接受代币是出现异常错误.",

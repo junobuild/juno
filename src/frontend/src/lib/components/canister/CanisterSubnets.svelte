@@ -8,6 +8,7 @@
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { Subnet } from '$lib/types/subnet';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
+	import { nonNullish } from '@dfinity/utils';
 
 	interface Props {
 		subnetId: PrincipalText | undefined;
@@ -20,6 +21,11 @@
 	);
 
 	let extendedSubnets: Subnet[] = $state([]);
+	let sortedSubnets: Subnet[] = $derived(
+		extendedSubnets.toSorted(({ specialization: a }, { specialization: b }) =>
+			(b ?? '').localeCompare(a ?? '')
+		)
+	);
 
 	const extendSubnets = async () => {
 		if (!DEV) {
@@ -32,7 +38,7 @@
 		const localSubnets = await getDefaultSubnets();
 
 		extendedSubnets = [
-			...localSubnets.map((subnet) => ({ subnetId: subnet.toText() })),
+			...localSubnets.map((subnet) => ({ subnetId: subnet.toText(), specialization: 'local' })),
 			...subnets
 		];
 	};
@@ -51,8 +57,12 @@
 		<select name="subnet" bind:value={subnetId}>
 			<option value={undefined}>{$i18n.canisters.default_subnet}</option>
 
-			{#each extendedSubnets as { subnetId }}
-				<option value={subnetId}>{shortenWithMiddleEllipsis(subnetId)}</option>
+			{#each sortedSubnets as { subnetId, specialization }}
+				<option value={subnetId}
+					>{shortenWithMiddleEllipsis(subnetId)}{nonNullish(specialization)
+						? ` (${specialization})`
+						: ''}</option
+				>
 			{/each}
 		</select>
 	</Value>

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -8,7 +9,6 @@
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { Subnet } from '$lib/types/subnet';
 	import { shortenWithMiddleEllipsis } from '$lib/utils/format.utils';
-	import { nonNullish } from '@dfinity/utils';
 
 	interface Props {
 		subnetId: PrincipalText | undefined;
@@ -22,6 +22,7 @@
 
 	let extendedSubnets: Subnet[] = $state([]);
 	let sortedSubnets: Subnet[] = $derived(
+		// eslint-disable-next-line local-rules/prefer-object-params
 		extendedSubnets.toSorted(({ specialization: a }, { specialization: b }) =>
 			(b ?? '').localeCompare(a ?? '')
 		)

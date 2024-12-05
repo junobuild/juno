@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

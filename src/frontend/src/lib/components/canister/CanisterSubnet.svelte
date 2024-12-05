@@ -49,7 +49,13 @@
 			{#snippet label()}
 				{$i18n.canisters.subnet_type}
 			{/snippet}
-			<p>{subnet?.specialization ?? ''}</p>
+			<p class="specialization">{subnet?.specialization ?? ''}</p>
 		</Value>
 	</div>
 {/if}
+
+<style lang="scss">
+	.specialization {
+		text-transform: capitalize;
+	}
+</style>

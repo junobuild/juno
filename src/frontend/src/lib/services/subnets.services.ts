@@ -1,4 +1,5 @@
 import { getSubnetId } from '$lib/api/ic.api';
+import subnets from '$lib/env/subnets.json';
 import {
 	resetAllIdbStore,
 	resetIdbStore,
@@ -47,7 +48,16 @@ export const loadSubnetId = async ({
 			canisterId: canisterId.toText()
 		});
 
-		const data = nonNullish(subnetId) ? { subnetId } : undefined;
+		const subnet = nonNullish(subnetId)
+			? subnets.find(({ subnetId: id }) => id === subnetId)
+			: undefined;
+
+		const data = nonNullish(subnetId)
+			? {
+					...(nonNullish(subnet) && subnet),
+					subnetId
+				}
+			: undefined;
 
 		await setIdbStore({
 			store: subnetStore,

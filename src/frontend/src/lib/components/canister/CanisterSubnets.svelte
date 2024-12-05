@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
 	import { getDefaultSubnets } from '$lib/api/cmc.api';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -20,6 +21,12 @@
 	);
 
 	let extendedSubnets: Subnet[] = $state([]);
+	let sortedSubnets: Subnet[] = $derived(
+		// eslint-disable-next-line local-rules/prefer-object-params
+		extendedSubnets.toSorted(({ specialization: a }, { specialization: b }) =>
+			(b ?? '').localeCompare(a ?? '')
+		)
+	);
 
 	const extendSubnets = async () => {
 		if (!DEV) {
@@ -32,7 +39,7 @@
 		const localSubnets = await getDefaultSubnets();
 
 		extendedSubnets = [
-			...localSubnets.map((subnet) => ({ subnetId: subnet.toText() })),
+			...localSubnets.map((subnet) => ({ subnetId: subnet.toText(), specialization: 'local' })),
 			...subnets
 		];
 	};
@@ -51,8 +58,12 @@
 		<select name="subnet" bind:value={subnetId}>
 			<option value={undefined}>{$i18n.canisters.default_subnet}</option>
 
-			{#each extendedSubnets as { subnetId }}
-				<option value={subnetId}>{shortenWithMiddleEllipsis(subnetId)}</option>
+			{#each sortedSubnets as { subnetId, specialization }}
+				<option value={subnetId}
+					>{shortenWithMiddleEllipsis(subnetId)}{nonNullish(specialization)
+						? ` (${specialization})`
+						: ''}</option
+				>
 			{/each}
 		</select>
 	</Value>

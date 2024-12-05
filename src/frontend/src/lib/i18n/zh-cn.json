@@ -168,6 +168,7 @@
 		"subnet": "子网",
 		"default_subnet": "默认 (同 Juno)",
 		"subnet_id": "子网 ID",
+		"subnet_type": "Subnet type",
 		"backup": "Backup",
 		"size": "Size",
 		"timestamp": "时间戳",

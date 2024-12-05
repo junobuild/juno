@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { nonNullish } from '@dfinity/utils';
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
 	import { onMount } from 'svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
@@ -41,3 +42,14 @@
 		{/if}
 	</Value>
 </div>
+
+{#if notEmptyString(subnet?.type)}
+	<div in:fade>
+		<Value>
+			{#snippet label()}
+				{$i18n.canisters.subnet_type}
+			{/snippet}
+			<p>{subnet?.specialization ?? ''}</p>
+		</Value>
+	</div>
+{/if}

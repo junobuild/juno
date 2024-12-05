@@ -168,6 +168,7 @@
 		"subnet": "Subnet",
 		"default_subnet": "Default (same as Juno)",
 		"subnet_id": "Subnet ID",
+		"subnet_type": "Subnet type",
 		"backup": "Backup",
 		"size": "Size",
 		"timestamp": "Timestamp",

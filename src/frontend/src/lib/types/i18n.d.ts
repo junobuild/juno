@@ -172,6 +172,7 @@ interface I18nCanisters {
 	subnet: string;
 	default_subnet: string;
 	subnet_id: string;
+	subnet_type: string;
 	backup: string;
 	size: string;
 	timestamp: string;

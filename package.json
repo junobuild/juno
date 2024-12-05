@@ -84,7 +84,7 @@
 		"@dfinity/agent": "^2.1.3",
 		"@dfinity/auth-client": "^2.1.3",
 		"@dfinity/candid": "^2.1.3",
-		"@dfinity/cmc": "^4.0.2",
+		"@dfinity/cmc": "^4.0.2-next-2024-12-04",
 		"@dfinity/ic-management": "^6.0.1",
 		"@dfinity/identity": "^2.1.3",
 		"@dfinity/ledger-icp": "^2.6.4",

@@ -1,5 +1,5 @@
 use crate::types::core::Segment;
-use crate::types::state::{Archive, ArchiveStatuses, MonitoringStrategy, Orbiter, Orbiters, Satellite, StableState, User};
+use crate::types::state::{Archive, ArchiveStatuses, Monitoring, MonitoringStrategy, Orbiter, Orbiters, Satellite, Settings, StableState, User};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
@@ -87,6 +87,20 @@ impl Segment<SatelliteId> for Satellite {
             ..self.clone()
         }
     }
+
+    fn set_monitoring_strategy(&self, strategy: &MonitoringStrategy) -> Self {
+        let now = time();
+
+        Satellite {
+            settings: Some(Settings {
+                monitoring: Some(Monitoring {
+                    cycles_strategy: Some(strategy.clone())
+                }  )
+            }),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
 }
 
 impl Segment<OrbiterId> for Orbiter {
@@ -95,6 +109,20 @@ impl Segment<OrbiterId> for Orbiter {
 
         Orbiter {
             metadata: metadata.clone(),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+
+    fn set_monitoring_strategy(&self, strategy: &MonitoringStrategy) -> Self {
+        let now = time();
+
+        Orbiter {
+            settings: Some(Settings {
+                monitoring: Some(Monitoring {
+                    cycles_strategy: Some(strategy.clone())
+                }  )
+            }),
             updated_at: now,
             ..self.clone()
         }

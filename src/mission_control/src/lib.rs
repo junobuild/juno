@@ -39,10 +39,8 @@ use crate::store::{
     list_orbiter_statuses as list_orbiter_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
-use crate::types::interface::CreateCanisterConfig;
-use crate::types::state::{
-    Archive, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
-};
+use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
+use crate::types::state::{Archive, MonitoringStrategy, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User};
 use candid::Principal;
 use canfund::FundManager;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -387,7 +385,7 @@ fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
 ///
 
 #[query(guard = "caller_is_user_or_admin_controller")]
-fn start_monitoring_with_config(segment_ids: Vec<SegmentId>, strategy: MonitoringStrategy) {
+fn start_monitoring_with_config(config: MonitoringConfig) {
 
 }
 

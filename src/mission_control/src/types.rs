@@ -38,6 +38,7 @@ pub mod state {
     pub struct Satellite {
         pub satellite_id: SatelliteId,
         pub metadata: Metadata,
+        pub settings: Option<Settings>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
     }
@@ -46,6 +47,7 @@ pub mod state {
     pub struct Orbiter {
         pub orbiter_id: OrbiterId,
         pub metadata: Metadata,
+        pub settings: Option<Settings>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
     }
@@ -66,12 +68,12 @@ pub mod state {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct Settings {
-        monitoring: Option<Monitoring>,
+        pub monitoring: Option<Monitoring>,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct Monitoring {
-        cycles_strategy: Option<MonitoringStrategy>,
+        pub cycles_strategy: Option<MonitoringStrategy>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
@@ -81,16 +83,18 @@ pub mod state {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct CyclesThreshold {
-        min_cycles: u128,
-        fund_cycles: u128,
+        pub min_cycles: u128,
+        pub fund_cycles: u128,
     }
 }
 
 pub mod core {
     use junobuild_shared::types::state::Metadata;
+    use crate::types::state::MonitoringStrategy;
 
     pub trait Segment<K> {
         fn set_metadata(&self, metadata: &Metadata) -> Self;
+        fn set_monitoring_strategy(&self, strategy: &MonitoringStrategy) -> Self;
     }
 }
 
@@ -98,10 +102,25 @@ pub mod interface {
     use candid::{CandidType, Deserialize};
     use junobuild_shared::mgmt::types::cmc::SubnetId;
     use serde::Serialize;
+    use junobuild_shared::types::state::SegmentId;
+    use crate::types::state::MonitoringStrategy;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CreateCanisterConfig {
         pub name: Option<String>,
         pub subnet_id: Option<SubnetId>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct SegmentsMonitoringStrategy {
+        ids: Vec<SegmentId>,
+        strategy: MonitoringStrategy,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct MonitoringConfig {
+        pub mission_control_strategy: Option<MonitoringStrategy>,
+        pub satellites_strategy: Option<SegmentsMonitoringStrategy>,
+        pub orbiters_strategy: Option<SegmentsMonitoringStrategy>,
     }
 }

@@ -58,9 +58,7 @@ use junobuild_shared::mgmt::ic::deposit_cycles as deposit_cycles_shared;
 use junobuild_shared::types::interface::{
     DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
 };
-use junobuild_shared::types::state::{
-    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
-};
+use junobuild_shared::types::state::{ControllerId, ControllerScope, Controllers, SegmentId, OrbiterId, SatelliteId, SegmentsStatuses};
 use junobuild_shared::types::state::{Metadata, UserId};
 use segments::store::{
     get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
@@ -382,6 +380,15 @@ fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
     list_orbiter_statuses_store(&orbiter_id)
+}
+
+///
+/// Monitoring
+///
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn start_monitoring_with_config(segment_ids: Vec<SegmentId>, strategy: MonitoringStrategy) {
+
 }
 
 ///

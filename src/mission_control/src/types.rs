@@ -38,7 +38,6 @@ pub mod state {
     pub struct Satellite {
         pub satellite_id: SatelliteId,
         pub metadata: Metadata,
-        pub settings: Option<Settings>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
     }
@@ -47,7 +46,6 @@ pub mod state {
     pub struct Orbiter {
         pub orbiter_id: OrbiterId,
         pub metadata: Metadata,
-        pub settings: Option<Settings>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
     }

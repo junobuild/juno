@@ -7,10 +7,12 @@ pub mod state {
     use std::collections::HashMap;
 
     pub type UserId = Principal;
-    pub type MissionControlId = Principal;
     pub type ControllerId = Principal;
-    pub type SatelliteId = Principal;
-    pub type OrbiterId = Principal;
+
+    pub type SegmentId = Principal;
+    pub type MissionControlId = SegmentId;
+    pub type SatelliteId = SegmentId;
+    pub type OrbiterId = SegmentId;
 
     pub type Metadata = HashMap<String, String>;
 

@@ -1,4 +1,10 @@
-# Hacking
+34b4eb0b581bbf04902e20bf1370e3a293d1956fcargo install candid-extractorrelease=$(curl --silent "https://api.github.com/repos/dfinity/candid/releases/latest" | grep -e '"tag_name"' | cut -c 16-25)
+curl -fsSL https://github.com/dfinity/candid/releases/download/$release/didc-macos > ~/.cargo/bin/didc
+chmod 755 ~/.cargo/bin/didchttps://api.github.com/repos/dfinity/candid/releases/latest755https://github.com/dfinity/candid/releases/download/$release/didc-macosnpm run build:console
+npm run build:observatory
+npm run build:satellite
+npm run build:mission-control
+npm run build:orbitercargo build --target wasm32-unknown-unknown -p console  --release# Hacking
 
 This document explains how to run locally [Juno](https://juno.build).
 

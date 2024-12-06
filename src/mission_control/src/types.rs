@@ -68,11 +68,16 @@ pub mod state {
 
     #[derive(Default, CandidType, Deserialize, Clone)]
     pub struct Settings {
-        cycles_monitoring: Option<CyclesMonitoring>,
+        monitoring: Option<Monitoring>,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct Monitoring {
+        cycles_strategy: Option<MonitoringStrategy>,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub enum CyclesMonitoring {
+    pub enum MonitoringStrategy {
         BelowThreshold(CyclesThreshold),
     }
 

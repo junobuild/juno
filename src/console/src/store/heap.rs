@@ -16,7 +16,9 @@ use junobuild_shared::types::state::{ControllerId, Controllers};
 use semver::Version;
 use std::collections::HashSet;
 
-/// Mission control centers
+// ---------------------------------------------------------
+// Mission control centers
+// ---------------------------------------------------------
 
 #[deprecated(note = "Use stable memory instead")]
 pub fn list_mission_controls_heap() -> MissionControls {
@@ -27,7 +29,9 @@ fn list_mission_controls_heap_impl(state: &HeapState) -> MissionControls {
     state.mission_controls.clone()
 }
 
-/// Transactions
+// ---------------------------------------------------------
+// Transactions
+// ---------------------------------------------------------
 
 #[deprecated(note = "Use stable memory instead")]
 pub fn list_payments_heap() -> Payments {
@@ -38,7 +42,9 @@ fn list_payments_heap_impl(state: &HeapState) -> Payments {
     state.payments.clone()
 }
 
-/// Invitation codes
+// ---------------------------------------------------------
+// Invitation codes
+// ---------------------------------------------------------
 
 pub fn add_invitation_code(code: &InvitationCode) {
     STATE
@@ -94,7 +100,9 @@ fn add_invitation_code_impl(code: &InvitationCode, invitation_codes: &mut Invita
     invitation_codes.insert(code.clone(), redeem);
 }
 
-/// Controllers
+// ---------------------------------------------------------
+// Controllers
+// ---------------------------------------------------------
 
 pub fn get_controllers() -> Controllers {
     STATE.with(|state| state.borrow().heap.controllers.clone())
@@ -116,7 +124,9 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
     })
 }
 
-/// Rates
+// ---------------------------------------------------------
+// Rates
+// ---------------------------------------------------------
 
 pub fn increment_satellites_rate() -> Result<(), String> {
     STATE.with(|state| increment_rate_impl(&mut state.borrow_mut().heap.rates.satellites))
@@ -154,7 +164,9 @@ fn update_rate_config_impl(config: &RateConfig, rate: &mut Rate) {
     rate.config = config.clone();
 }
 
-/// Fees
+// ---------------------------------------------------------
+// Fees
+// ---------------------------------------------------------
 
 pub fn get_satellite_fee() -> Tokens {
     STATE.with(|state| state.borrow().heap.fees.satellite.fee)
@@ -186,7 +198,9 @@ fn set_orbiter_fee(fee: &Tokens, state: &mut Fees) {
     };
 }
 
-/// Releases metadata
+// ---------------------------------------------------------
+// Releases metadata
+// ---------------------------------------------------------
 
 pub fn get_releases_metadata() -> ReleasesMetadata {
     STATE.with(|state| state.borrow().heap.releases_metadata.clone())

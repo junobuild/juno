@@ -6,7 +6,9 @@ use junobuild_shared::controllers::{
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{ControllerId, Controllers};
 
-/// Controllers
+// ---------------------------------------------------------
+// Controllers
+// ---------------------------------------------------------
 
 pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetController) {
     STATE.with(|state| {

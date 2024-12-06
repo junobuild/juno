@@ -6,7 +6,9 @@ use crate::constants::{
 use candid::Principal;
 use junobuild_shared::types::state::Metadata;
 
-/// Principal
+// ---------------------------------------------------------
+// Principal
+// ---------------------------------------------------------
 
 // Source: https://forum.dfinity.org/t/convert-principal-to-vec-29-bytes-length/22468/3
 pub fn principal_to_bytes(p: &Principal) -> [u8; SERIALIZED_PRINCIPAL_LENGTH] {
@@ -21,7 +23,9 @@ pub fn bytes_to_principal(bytes: &[u8; SERIALIZED_PRINCIPAL_LENGTH]) -> Principa
     Principal::from_slice(&bytes[1..1 + bytes[0] as usize])
 }
 
-/// String 36 max length
+// ---------------------------------------------------------
+// String 36 max length
+// ---------------------------------------------------------
 
 pub fn key_to_bytes(s: &String) -> [u8; SERIALIZED_KEY_LENGTH] {
     let mut bytes: [u8; SERIALIZED_KEY_LENGTH] = [0; SERIALIZED_KEY_LENGTH];
@@ -36,7 +40,9 @@ pub fn bytes_to_key(bytes: &[u8; SERIALIZED_KEY_LENGTH]) -> String {
         .expect("Failed to convert bytes to key")
 }
 
-/// String 128 max length
+// ---------------------------------------------------------
+// String 128 max length
+// ---------------------------------------------------------
 
 pub fn short_string_to_bytes(s: &String) -> [u8; SERIALIZED_SHORT_STRING_LENGTH] {
     let mut bytes: [u8; SERIALIZED_SHORT_STRING_LENGTH] = [0; SERIALIZED_SHORT_STRING_LENGTH];
@@ -51,7 +57,9 @@ pub fn bytes_to_short_string(bytes: &[u8; SERIALIZED_SHORT_STRING_LENGTH]) -> St
         .expect("Failed to convert bytes to short string")
 }
 
-/// String 1024 max length
+// ---------------------------------------------------------
+// String 1024 max length
+// ---------------------------------------------------------
 
 pub fn string_to_bytes(s: &String) -> [u8; SERIALIZED_STRING_LENGTH] {
     let mut bytes: [u8; SERIALIZED_STRING_LENGTH] = [0; SERIALIZED_STRING_LENGTH];
@@ -66,7 +74,9 @@ pub fn bytes_to_string(bytes: &[u8; SERIALIZED_STRING_LENGTH]) -> String {
         .expect("Failed to convert bytes to string")
 }
 
-/// Long String 4096 max length
+// ---------------------------------------------------------
+// Long String 4096 max length
+// ---------------------------------------------------------
 
 pub fn long_string_to_bytes(s: &String) -> [u8; SERIALIZED_LONG_STRING_LENGTH] {
     let mut bytes: [u8; SERIALIZED_LONG_STRING_LENGTH] = [0; SERIALIZED_LONG_STRING_LENGTH];
@@ -81,7 +91,9 @@ pub fn bytes_to_long_string(bytes: &[u8; SERIALIZED_LONG_STRING_LENGTH]) -> Stri
         .expect("Failed to convert bytes to long string")
 }
 
-/// Metadata
+// ---------------------------------------------------------
+// Metadata
+// ---------------------------------------------------------
 
 pub fn metadata_to_bytes(m: &Option<Metadata>) -> [u8; SERIALIZED_METADATA_LENGTH] {
     let mut bytes: Vec<u8> = Vec::new();

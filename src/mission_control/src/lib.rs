@@ -98,7 +98,9 @@ fn post_upgrade() {
     STATE.with(|state| *state.borrow_mut() = State { heap });
 }
 
-/// Satellites
+// ---------------------------------------------------------
+// Satellites
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_satellites() -> Satellites {
@@ -199,7 +201,9 @@ async fn unset_satellite(satellite_id: SatelliteId) {
         .unwrap_or_else(|e| trap(&e))
 }
 
-/// Orbiters
+// ---------------------------------------------------------
+// Orbiters
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_orbiters() -> Orbiters {
@@ -268,9 +272,9 @@ async fn del_orbiter(orbiter_id: OrbiterId, cycles_to_deposit: u128) {
         .unwrap_or_else(|e| trap(&e));
 }
 
-///
-/// Controllers
-///
+// ---------------------------------------------------------
+// Controllers
+// ---------------------------------------------------------
 
 #[deprecated(
     since = "0.0.3",
@@ -322,9 +326,9 @@ fn list_mission_control_controllers() -> Controllers {
     get_controllers()
 }
 
-///
-/// Mgmt
-///
+// ---------------------------------------------------------
+// Mgmt
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_user() -> UserId {
@@ -355,9 +359,9 @@ fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
-///
-/// Observatory
-///
+// ---------------------------------------------------------
+// Observatory
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_user_or_admin_controller_or_juno")]
 async fn status(config: StatusesArgs) -> SegmentsStatuses {
@@ -379,9 +383,9 @@ fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
     list_orbiter_statuses_store(&orbiter_id)
 }
 
-///
-/// Wallet
-///
+// ---------------------------------------------------------
+// Wallet
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn icp_transfer(args: TransferArgs) -> TransferResult {

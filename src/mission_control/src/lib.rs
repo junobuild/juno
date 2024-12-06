@@ -2,6 +2,7 @@ mod constants;
 mod controllers;
 mod guards;
 mod impls;
+mod memory;
 mod mgmt;
 mod segments;
 mod store;
@@ -20,6 +21,7 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
+use crate::memory::STATE;
 use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
@@ -64,12 +66,7 @@ use segments::store::{
     get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
     set_satellite_metadata as set_satellite_metadata_store,
 };
-use std::cell::RefCell;
 use std::collections::HashMap;
-
-thread_local! {
-    static STATE: RefCell<State> = RefCell::default();
-}
 
 #[init]
 fn init() {

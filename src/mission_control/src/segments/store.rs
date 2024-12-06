@@ -5,7 +5,9 @@ use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId};
 use std::collections::HashMap;
 use std::hash::Hash;
 
-/// Satellites
+// ---------------------------------------------------------
+// Satellites
+// ---------------------------------------------------------
 
 pub fn get_satellites() -> Satellites {
     STATE.with(|state| state.borrow().heap.satellites.clone())
@@ -42,7 +44,9 @@ pub fn set_satellite_metadata(
     })
 }
 
-/// Orbiters
+// ---------------------------------------------------------
+// Orbiters
+// ---------------------------------------------------------
 
 pub fn get_orbiters() -> Orbiters {
     STATE.with(|state| state.borrow().heap.orbiters.clone())
@@ -75,7 +79,9 @@ pub fn set_orbiter_metadata(
     })
 }
 
-/// Segments
+// ---------------------------------------------------------
+// Segments
+// ---------------------------------------------------------
 
 fn add_segment_impl<K: Eq + Hash + Copy, T: Clone>(
     id: &K,

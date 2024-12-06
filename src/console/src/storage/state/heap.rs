@@ -47,7 +47,9 @@ pub fn collect_delete_assets(collection: &CollectionKey) -> Vec<FullPath> {
     })
 }
 
-/// Rules
+// ---------------------------------------------------------
+// Rules
+// ---------------------------------------------------------
 
 pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     let rule = STATE.with(|state| {
@@ -63,9 +65,9 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     }
 }
 
-///
-/// Config
-///
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 pub fn get_config() -> StorageConfig {
     STATE.with(|state| state.borrow().heap.storage.config.clone())
@@ -79,7 +81,9 @@ fn insert_config_impl(config: &StorageConfig, storage: &mut StorageHeapState) {
     storage.config = config.clone();
 }
 
-/// Custom domains
+// ---------------------------------------------------------
+// Custom domains
+// ---------------------------------------------------------
 
 pub fn get_domains() -> CustomDomains {
     STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())

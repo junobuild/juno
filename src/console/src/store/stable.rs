@@ -12,7 +12,9 @@ use junobuild_shared::types::state::MissionControlId;
 use junobuild_shared::types::state::UserId;
 use junobuild_shared::utils::principal_equal;
 
-/// Mission control centers
+// ---------------------------------------------------------
+// Mission control centers
+// ---------------------------------------------------------
 
 pub fn get_mission_control(user: &UserId) -> Result<Option<MissionControl>, &'static str> {
     STATE.with(|state| get_mission_control_impl(user, &state.borrow().stable))
@@ -132,7 +134,9 @@ fn list_mission_controls_impl(mission_controls: &MissionControlsStable) -> Missi
     mission_controls.iter().collect()
 }
 
-/// Credits
+// ---------------------------------------------------------
+// Credits
+// ---------------------------------------------------------
 
 pub fn get_credits(user: &UserId) -> Result<Tokens, &'static str> {
     STATE.with(|state| get_credits_impl(user, &state.borrow().stable))
@@ -147,16 +151,18 @@ fn get_credits_impl(user: &UserId, state: &StableState) -> Result<Tokens, &'stat
     }
 }
 
-/// Originally credits were equals to the fees. 0.5 ICP for a satellite covered by 0.5 credits.
-/// However, given that fees can now be dynamically set, the credits had to be indexed.
-/// That is why now one credit covers the creation fee regardless the ICP price.
-///
-/// For example:
-/// - satellite fee is 2 ICP, 1 credit covers it
-/// - satellite fee is 9 ICP, 1 credit covers it
-/// - satellite fee is 2 ICP, 0.1 credits does no cover it
-///
-/// More like a percent. 1 credit equals 1 creation.
+// ---------------------------------------------------------
+// Originally credits were equals to the fees. 0.5 ICP for a satellite covered by 0.5 credits.
+// However, given that fees can now be dynamically set, the credits had to be indexed.
+// That is why now one credit covers the creation fee regardless the ICP price.
+//
+// For example:
+// - satellite fee is 2 ICP, 1 credit covers it
+// - satellite fee is 9 ICP, 1 credit covers it
+// - satellite fee is 2 ICP, 0.1 credits does no cover it
+//
+// More like a percent. 1 credit equals 1 creation.
+// ---------------------------------------------------------
 
 pub fn has_credits(user: &UserId, mission_control: &MissionControlId, fee: &Tokens) -> bool {
     let mission_control = get_existing_mission_control(user, mission_control);
@@ -217,7 +223,9 @@ fn update_credits_impl(
     }
 }
 
-/// Transactions
+// ---------------------------------------------------------
+// Transactions
+// ---------------------------------------------------------
 
 pub fn is_known_payment(block_index: &BlockIndex) -> bool {
     STATE.with(|state| state.borrow_mut().stable.payments.contains_key(block_index))
@@ -340,7 +348,9 @@ fn list_payments_impl(payments: &PaymentsStable) -> Payments {
     payments.iter().collect()
 }
 
-/// Proposals
+// ---------------------------------------------------------
+// Proposals
+// ---------------------------------------------------------
 
 pub fn get_proposal(proposal_id: &ProposalId) -> Option<Proposal> {
     STATE.with(|state| get_proposal_impl(proposal_id, &state.borrow().stable.proposals))

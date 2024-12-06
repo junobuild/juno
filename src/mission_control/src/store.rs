@@ -29,9 +29,9 @@ fn set_metadata_impl(metadata: &Metadata, state: &mut HeapState) {
     state.user = updated_user;
 }
 
-///
-/// Statuses
-///
+// ---------------------------------------------------------
+// Statuses
+// ---------------------------------------------------------
 
 pub fn set_mission_control_status(status: &SegmentStatusResult) {
     STATE.with(|state| set_mission_control_status_impl(status, &mut state.borrow_mut().heap))

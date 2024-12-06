@@ -10,9 +10,9 @@ use junobuild_shared::controllers::{
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::{ControllerId, SegmentsStatuses, Timestamp, UserId, Version};
 
-///
-/// CronJobs
-///
+// ---------------------------------------------------------
+// CronJobs
+// ---------------------------------------------------------
 
 pub fn get_cron_tabs() -> CronTabs {
     STATE.with(|state| state.borrow().stable.cron_tabs.clone())
@@ -76,9 +76,9 @@ fn set_cron_tab_impl(
     Ok(new_cron_tab)
 }
 
-///
-/// Controllers
-///
+// ---------------------------------------------------------
+// Controllers
+// ---------------------------------------------------------
 
 pub fn set_controllers(new_controllers: &[ControllerId], controller: &SetController) {
     STATE.with(|state| {
@@ -99,9 +99,9 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
     })
 }
 
-///
-/// Statuses
-///
+// ---------------------------------------------------------
+// Statuses
+// ---------------------------------------------------------
 
 pub fn set_statuses(user: &UserId, statuses: &Result<SegmentsStatuses, String>) {
     STATE.with(|state| set_statuses_impl(user, statuses, &mut state.borrow_mut().stable))

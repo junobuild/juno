@@ -127,7 +127,9 @@ fn post_upgrade() {
     defer_init_certified_assets();
 }
 
-/// User mission control centers
+// ---------------------------------------------------------
+// User mission control centers
+// ---------------------------------------------------------
 
 #[query]
 fn get_user_mission_control_center() -> Option<MissionControl> {
@@ -165,14 +167,18 @@ async fn init_user_mission_control_center() -> MissionControl {
         .unwrap_or_else(|e| trap(&e))
 }
 
-/// Transactions
+// ---------------------------------------------------------
+// Transactions
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_admin_controller")]
 fn list_payments() -> Payments {
     list_payments_state()
 }
 
-/// Satellites
+// ---------------------------------------------------------
+// Satellites
+// ---------------------------------------------------------
 
 #[update]
 async fn create_satellite(args: CreateCanisterArgs) -> Principal {
@@ -184,7 +190,9 @@ async fn create_satellite(args: CreateCanisterArgs) -> Principal {
         .unwrap_or_else(|e| trap(&e))
 }
 
-/// Orbiters
+// ---------------------------------------------------------
+// Orbiters
+// ---------------------------------------------------------
 
 #[update]
 async fn create_orbiter(args: CreateCanisterArgs) -> Principal {
@@ -196,7 +204,9 @@ async fn create_orbiter(args: CreateCanisterArgs) -> Principal {
         .unwrap_or_else(|e| trap(&e))
 }
 
-/// Economy
+// ---------------------------------------------------------
+// Economy
+// ---------------------------------------------------------
 
 #[query]
 fn get_credits() -> Tokens {
@@ -247,14 +257,18 @@ fn set_fee(segment: SegmentType, fee: Tokens) {
     }
 }
 
-/// Closed beta - invitation codes
+// ---------------------------------------------------------
+// Closed beta - invitation codes
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 fn add_invitation_code(code: InvitationCode) {
     add_invitation_code_store(&code);
 }
 
-/// Rates
+// ---------------------------------------------------------
+// Rates
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 fn update_rate_config(segment: SegmentType, config: RateConfig) {
@@ -265,14 +279,18 @@ fn update_rate_config(segment: SegmentType, config: RateConfig) {
     }
 }
 
-/// Mgmt
+// ---------------------------------------------------------
+// Mgmt
+// ---------------------------------------------------------
 
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
-/// Controllers
+// ---------------------------------------------------------
+// Controllers
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
@@ -289,7 +307,9 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
     delete_controllers(&controllers);
 }
 
-/// Proposal
+// ---------------------------------------------------------
+// Proposal
+// ---------------------------------------------------------
 
 #[query]
 fn get_proposal(proposal_id: ProposalId) -> Option<Proposal> {
@@ -328,7 +348,9 @@ fn delete_proposal_assets(DeleteProposalAssets { proposal_ids }: DeleteProposalA
     delete_proposal_assets_proposal(caller, &proposal_ids).unwrap_or_else(|e| trap(&e));
 }
 
-/// Storage
+// ---------------------------------------------------------
+// Storage
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 fn init_asset_upload(init: InitAssetKey, proposal_id: ProposalId) -> InitUploadResult {

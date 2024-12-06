@@ -5,7 +5,6 @@ import type {
 } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
 import type { _SERVICE as LedgerActor } from '@dfinity/ledger-icp/dist/candid/ledger';
@@ -15,6 +14,7 @@ import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { LEDGER_ID } from './constants/ledger-tests.contants';
 import { CONTROLLER_ERROR_MSG } from './constants/mission-control-tests.constants';
 import { setupLedger } from './utils/ledger-tests.utils';
+import { missionControlUserInitArgs } from './utils/mission-control-tests.utils';
 import { MISSION_CONTROL_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Mission Control - Wallet', () => {
@@ -57,20 +57,10 @@ describe('Mission Control - Wallet', () => {
 	});
 
 	const initMissionControl = async (owner: Principal) => {
-		const userInitArgs = (): ArrayBuffer =>
-			IDL.encode(
-				[
-					IDL.Record({
-						user: IDL.Principal
-					})
-				],
-				[{ user: owner }]
-			);
-
 		const { actor: c, canisterId } = await pic.setupCanister<MissionControlActor>({
 			idlFactory: idlFactorMissionControl,
 			wasm: MISSION_CONTROL_WASM_PATH,
-			arg: userInitArgs(),
+			arg: missionControlUserInitArgs(owner),
 			sender: controller.getPrincipal()
 		});
 

@@ -151,9 +151,9 @@ fn assert_releases_keys(InitAssetKey { full_path, .. }: &InitAssetKey) -> Result
     Ok(())
 }
 
-///
-/// Config
-///
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 pub fn set_config_store(config: &StorageConfig) {
     insert_config(config);
@@ -165,9 +165,9 @@ pub fn get_config_store() -> StorageConfig {
     get_config()
 }
 
-///
-/// Domain
-///
+// ---------------------------------------------------------
+// Domain
+// ---------------------------------------------------------
 
 // TODO: following functions are really similar to those of the satellite, maybe some day we can refactor those.
 

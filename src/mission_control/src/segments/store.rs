@@ -1,22 +1,24 @@
+use crate::memory::STATE;
 use crate::types::core::Segment;
 use crate::types::state::{Orbiter, Orbiters, Satellite, Satellites};
-use crate::STATE;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId};
 use std::collections::HashMap;
 use std::hash::Hash;
 
-/// Satellites
+// ---------------------------------------------------------
+// Satellites
+// ---------------------------------------------------------
 
 pub fn get_satellites() -> Satellites {
-    STATE.with(|state| state.borrow().stable.satellites.clone())
+    STATE.with(|state| state.borrow().heap.satellites.clone())
 }
 
 pub fn get_satellite(satellite_id: &SatelliteId) -> Option<Satellite> {
-    STATE.with(|state| get_segment_impl(satellite_id, &state.borrow().stable.satellites))
+    STATE.with(|state| get_segment_impl(satellite_id, &state.borrow().heap.satellites))
 }
 
 pub fn delete_satellite(satellite_id: &SatelliteId) -> Option<Satellite> {
-    STATE.with(|state| delete_segment_impl(satellite_id, &mut state.borrow_mut().stable.satellites))
+    STATE.with(|state| delete_segment_impl(satellite_id, &mut state.borrow_mut().heap.satellites))
 }
 
 pub fn add_satellite(satellite_id: &SatelliteId, name: &Option<String>) -> Satellite {
@@ -24,7 +26,7 @@ pub fn add_satellite(satellite_id: &SatelliteId, name: &Option<String>) -> Satel
         add_segment_impl(
             satellite_id,
             &Satellite::from(satellite_id, name),
-            &mut state.borrow_mut().stable.satellites,
+            &mut state.borrow_mut().heap.satellites,
         )
     })
 }
@@ -37,23 +39,25 @@ pub fn set_satellite_metadata(
         set_metadata_impl(
             satellite_id,
             metadata,
-            &mut state.borrow_mut().stable.satellites,
+            &mut state.borrow_mut().heap.satellites,
         )
     })
 }
 
-/// Orbiters
+// ---------------------------------------------------------
+// Orbiters
+// ---------------------------------------------------------
 
 pub fn get_orbiters() -> Orbiters {
-    STATE.with(|state| state.borrow().stable.orbiters.clone())
+    STATE.with(|state| state.borrow().heap.orbiters.clone())
 }
 
 pub fn get_orbiter(orbiter_id: &OrbiterId) -> Option<Orbiter> {
-    STATE.with(|state| get_segment_impl(orbiter_id, &state.borrow().stable.orbiters))
+    STATE.with(|state| get_segment_impl(orbiter_id, &state.borrow().heap.orbiters))
 }
 
 pub fn delete_orbiter(orbiter_id: &OrbiterId) -> Option<Orbiter> {
-    STATE.with(|state| delete_segment_impl(orbiter_id, &mut state.borrow_mut().stable.orbiters))
+    STATE.with(|state| delete_segment_impl(orbiter_id, &mut state.borrow_mut().heap.orbiters))
 }
 
 pub fn add_orbiter(orbiter_id: &OrbiterId, name: &Option<String>) -> Orbiter {
@@ -61,7 +65,7 @@ pub fn add_orbiter(orbiter_id: &OrbiterId, name: &Option<String>) -> Orbiter {
         add_segment_impl(
             orbiter_id,
             &Orbiter::from(orbiter_id, name),
-            &mut state.borrow_mut().stable.orbiters,
+            &mut state.borrow_mut().heap.orbiters,
         )
     })
 }
@@ -71,15 +75,13 @@ pub fn set_orbiter_metadata(
     metadata: &Metadata,
 ) -> Result<Orbiter, String> {
     STATE.with(|state| {
-        set_metadata_impl(
-            orbiter_id,
-            metadata,
-            &mut state.borrow_mut().stable.orbiters,
-        )
+        set_metadata_impl(orbiter_id, metadata, &mut state.borrow_mut().heap.orbiters)
     })
 }
 
-/// Segments
+// ---------------------------------------------------------
+// Segments
+// ---------------------------------------------------------
 
 fn add_segment_impl<K: Eq + Hash + Copy, T: Clone>(
     id: &K,

@@ -1,22 +1,16 @@
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
-import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did';
-import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
-import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
-import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
-import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/mission-control-tests.constants';
 import {
-	MISSION_CONTROL_WASM_PATH,
-	ORBITER_WASM_PATH,
-	SATELLITE_WASM_PATH,
-	controllersInitArgs
-} from './utils/setup-tests.utils';
+	missionControlUserInitArgs,
+	setupMissionControlModules
+} from './utils/mission-control-tests.utils';
+import { MISSION_CONTROL_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Mission Control', () => {
 	let pic: PocketIc;
@@ -30,15 +24,7 @@ describe('Mission Control', () => {
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const userInitArgs = (): ArrayBuffer =>
-			IDL.encode(
-				[
-					IDL.Record({
-						user: IDL.Principal
-					})
-				],
-				[{ user: controller.getPrincipal() }]
-			);
+		const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
 
 		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
 			{
@@ -53,35 +39,14 @@ describe('Mission Control', () => {
 
 		actor.setIdentity(controller);
 
-		const { canisterId } = await pic.setupCanister<OrbiterActor>({
-			idlFactory: idlFactorOrbiter,
-			wasm: ORBITER_WASM_PATH,
-			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
-			sender: controller.getPrincipal()
+		const { orbiterId: oId, satelliteId: sId } = await setupMissionControlModules({
+			pic,
+			controller,
+			missionControlId
 		});
 
-		await pic.updateCanisterSettings({
-			canisterId,
-			controllers: [controller.getPrincipal(), missionControlId],
-			sender: controller.getPrincipal()
-		});
-
-		orbiterId = canisterId;
-
-		const { canisterId: cId } = await pic.setupCanister<SatelliteActor>({
-			idlFactory: idlFactorSatellite,
-			wasm: SATELLITE_WASM_PATH,
-			arg: controllersInitArgs([controller.getPrincipal(), missionControlId]),
-			sender: controller.getPrincipal()
-		});
-
-		await pic.updateCanisterSettings({
-			canisterId: cId,
-			controllers: [controller.getPrincipal(), missionControlId],
-			sender: controller.getPrincipal()
-		});
-
-		satelliteId = cId;
+		orbiterId = oId;
+		satelliteId = sId;
 	});
 
 	afterAll(async () => {

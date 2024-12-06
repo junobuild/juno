@@ -4,13 +4,13 @@ import type { _SERVICE as OrbiterActor } from '$declarations/orbiter/orbiter.did
 import { idlFactory as idlFactorOrbiter } from '$declarations/orbiter/orbiter.factory.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { ORBITER_CONTROLLER_ERR_MSG } from './constants/orbiter-tests.constants';
 import { SATELLITE_ADMIN_ERROR_MSG } from './constants/satellite-tests.constants';
+import { missionControlUserInitArgs } from './utils/mission-control-tests.utils';
 import {
 	MISSION_CONTROL_WASM_PATH,
 	ORBITER_WASM_PATH,
@@ -30,15 +30,7 @@ describe('Mission Control', () => {
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
-		const userInitArgs = (): ArrayBuffer =>
-			IDL.encode(
-				[
-					IDL.Record({
-						user: IDL.Principal
-					})
-				],
-				[{ user: controller.getPrincipal() }]
-			);
+		const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
 
 		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
 			{

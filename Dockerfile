@@ -36,7 +36,7 @@ COPY ./rust-toolchain.toml ./rust-toolchain.toml
 RUN ./docker/bootstrap
 
 # Pre-build all cargo dependencies. Because cargo doesn't have a build option
-# to build only the dependecies, we pretend that our project is a simple, empty
+# to build only the dependencies, we pretend that our project is a simple, empty
 # `lib.rs`. When we COPY the actual files we make sure to `touch` lib.rs so
 # that cargo knows to rebuild it with the new content.
 COPY Cargo.lock .

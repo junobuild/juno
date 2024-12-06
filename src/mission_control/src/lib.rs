@@ -21,7 +21,6 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
-use crate::memory::STATE;
 use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
@@ -67,6 +66,8 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
+use crate::memory::STATE;
+use crate::mgmt::monitoring::init_monitoring;
 
 #[init]
 fn init() {
@@ -84,6 +85,8 @@ fn init() {
             },
         };
     });
+
+    init_monitoring();
 }
 
 #[pre_upgrade]
@@ -96,6 +99,8 @@ fn post_upgrade() {
     let (heap,): (HeapState,) = storage::stable_restore().unwrap();
 
     STATE.with(|state| *state.borrow_mut() = State { heap });
+
+    init_monitoring();
 }
 
 // ---------------------------------------------------------

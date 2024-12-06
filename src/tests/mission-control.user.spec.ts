@@ -2,12 +2,12 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import type { _SERVICE as SatelliteActor } from '$declarations/satellite/satellite.did';
 import { idlFactory as idlFactorSatellite } from '$declarations/satellite/satellite.factory.did';
-import { IDL } from '@dfinity/candid';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import type { Principal } from '@dfinity/principal';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/mission-control-tests.constants';
+import { missionControlUserInitArgs } from './utils/mission-control-tests.utils';
 import {
 	MISSION_CONTROL_WASM_PATH,
 	SATELLITE_WASM_PATH,
@@ -27,14 +27,7 @@ describe('Mission Control', () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
 
 		const userInitArgs = (): ArrayBuffer =>
-			IDL.encode(
-				[
-					IDL.Record({
-						user: IDL.Principal
-					})
-				],
-				[{ user: incorrectUser.getPrincipal() }]
-			);
+			missionControlUserInitArgs(incorrectUser.getPrincipal());
 
 		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
 			{

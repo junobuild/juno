@@ -13,11 +13,11 @@ pub mod state {
 
     #[derive(Default, Clone)]
     pub struct State {
-        pub stable: StableState,
+        pub heap: HeapState,
     }
 
     #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct StableState {
+    pub struct HeapState {
         pub user: User,
         pub satellites: Satellites,
         pub controllers: Controllers,

@@ -40,7 +40,7 @@ use crate::store::{
 };
 use crate::types::interface::CreateCanisterConfig;
 use crate::types::state::{
-    Archive, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User,
+    Archive, HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses, User,
 };
 use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -78,7 +78,7 @@ fn init() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            stable: StableState {
+            heap: HeapState {
                 user: User::from(&user),
                 satellites: HashMap::new(),
                 controllers: HashMap::new(),
@@ -91,14 +91,14 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| storage::stable_save((&state.borrow().stable,)).unwrap());
+    STATE.with(|state| storage::stable_save((&state.borrow().heap,)).unwrap());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (stable,): (StableState,) = storage::stable_restore().unwrap();
+    let (heap,): (HeapState,) = storage::stable_restore().unwrap();
 
-    STATE.with(|state| *state.borrow_mut() = State { stable });
+    STATE.with(|state| *state.borrow_mut() = State { heap });
 }
 
 /// Satellites

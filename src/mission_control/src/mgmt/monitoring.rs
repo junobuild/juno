@@ -1,4 +1,4 @@
-use crate::memory::FUND_MANAGER;
+use crate::memory::{STATE};
 use crate::segments::store::get_satellites;
 use candid::Principal;
 use canfund::api::cmc::IcCyclesMintingCanister;
@@ -12,15 +12,14 @@ use canfund::FundManager;
 use ic_cdk::id;
 use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTER_ID};
 use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
-use std::cell::RefMut;
 use std::rc::Rc;
 use std::sync::Arc;
 
 pub fn init_monitoring() {
-    FUND_MANAGER.with(|fund_manager| init_monitoring_impl(&mut fund_manager.borrow_mut()));
+    STATE.with(|state| init_monitoring_impl(&mut state.borrow_mut().runtime.fund_manager));
 }
 
-fn init_monitoring_impl(fund_manager: &mut RefMut<FundManager>) {
+fn init_monitoring_impl(fund_manager: &mut FundManager) {
     let funding_config = FundManagerOptions::new()
         .with_interval_secs(30)
         .with_strategy(FundStrategy::BelowThreshold(
@@ -70,9 +69,9 @@ fn init_monitoring_impl(fund_manager: &mut RefMut<FundManager>) {
 }
 
 pub fn register_monitoring(id: &Principal) {
-    FUND_MANAGER.with(|fund_manager| register_monitoring_impl(id, &mut fund_manager.borrow_mut()));
+    STATE.with(|state| register_monitoring_impl(id, &mut state.borrow_mut().runtime.fund_manager));
 }
 
-fn register_monitoring_impl(id: &Principal, fund_manager: &mut RefMut<FundManager>) {
+fn register_monitoring_impl(id: &Principal, fund_manager: &mut FundManager) {
     fund_manager.register(id.clone(), RegisterOpts::new());
 }

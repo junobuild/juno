@@ -40,7 +40,10 @@ use crate::store::{
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
 use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
-use crate::types::state::{Archive, MonitoringStrategy, Orbiter, Orbiters, Satellite, Satellites, StableState, State, Statuses, User};
+use crate::types::state::{
+    Orbiter, Orbiters, RuntimeState, Satellite, Satellites,
+    StableState, State, Statuses,
+};
 use candid::Principal;
 use canfund::FundManager;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -56,7 +59,9 @@ use junobuild_shared::mgmt::ic::deposit_cycles as deposit_cycles_shared;
 use junobuild_shared::types::interface::{
     DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
 };
-use junobuild_shared::types::state::{ControllerId, ControllerScope, Controllers, SegmentId, OrbiterId, SatelliteId, SegmentsStatuses};
+use junobuild_shared::types::state::{
+    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentId, SegmentsStatuses,
+};
 use junobuild_shared::types::state::{Metadata, UserId};
 use segments::store::{
     get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
@@ -79,6 +84,7 @@ fn init() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             stable: StableState::from(&user),
+            runtime: RuntimeState::new(),
         };
     });
 
@@ -94,7 +100,12 @@ fn pre_upgrade() {
 fn post_upgrade() {
     let (stable,): (StableState,) = storage::stable_restore().unwrap();
 
-    STATE.with(|state| *state.borrow_mut() = State { stable });
+    STATE.with(|state| {
+        *state.borrow_mut() = State {
+            stable,
+            runtime: RuntimeState::new(),
+        }
+    });
 
     init_monitoring();
 }
@@ -385,9 +396,7 @@ fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
 ///
 
 #[query(guard = "caller_is_user_or_admin_controller")]
-fn start_monitoring_with_config(config: MonitoringConfig) {
-
-}
+fn start_monitoring_with_config(config: MonitoringConfig) {}
 
 ///
 /// Wallet

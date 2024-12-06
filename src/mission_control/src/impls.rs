@@ -1,5 +1,8 @@
 use crate::types::core::Segment;
-use crate::types::state::{Archive, ArchiveStatuses, HeapState, Monitoring, MonitoringStrategy, Orbiter, Orbiters, RuntimeState, Satellite, Settings, State, User};
+use crate::types::state::{
+    Archive, ArchiveStatuses, HeapState, Monitoring, MonitoringStrategy, Orbiter, Orbiters,
+    RuntimeState, Satellite, Settings, State, User,
+};
 use canfund::FundManager;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};

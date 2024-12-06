@@ -21,6 +21,8 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
+use crate::memory::STATE;
+use crate::mgmt::monitoring::init_monitoring;
 use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
@@ -41,8 +43,7 @@ use crate::store::{
 };
 use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
 use crate::types::state::{
-    Orbiter, Orbiters, RuntimeState, Satellite, Satellites,
-    HeapState, State, Statuses,
+    HeapState, Orbiter, Orbiters, RuntimeState, Satellite, Satellites, State, Statuses,
 };
 use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -67,8 +68,6 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
-use crate::memory::STATE;
-use crate::mgmt::monitoring::init_monitoring;
 
 #[init]
 fn init() {

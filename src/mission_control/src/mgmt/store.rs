@@ -1,5 +1,7 @@
 use crate::types::core::Segment;
-use crate::types::state::{HeapState, Monitoring, MonitoringStrategy, Orbiter, Satellite, Settings};
+use crate::types::state::{
+    HeapState, Monitoring, MonitoringStrategy, Orbiter, Satellite, Settings,
+};
 use crate::STATE;
 use junobuild_shared::types::state::{OrbiterId, SatelliteId};
 use std::collections::HashMap;
@@ -45,11 +47,7 @@ pub fn set_orbiter_monitoring_strategy(
     strategy: &MonitoringStrategy,
 ) -> Result<Orbiter, String> {
     STATE.with(|state| {
-        set_monitoring_strategy_impl(
-            orbiter_id,
-            strategy,
-            &mut state.borrow_mut().heap.orbiters,
-        )
+        set_monitoring_strategy_impl(orbiter_id, strategy, &mut state.borrow_mut().heap.orbiters)
     })
 }
 

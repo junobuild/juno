@@ -1,4 +1,6 @@
+use crate::memory::FUND_MANAGER;
 use crate::segments::store::get_satellites;
+use candid::Principal;
 use canfund::api::cmc::IcCyclesMintingCanister;
 use canfund::api::ledger::IcLedgerCanister;
 use canfund::manager::options::{
@@ -13,8 +15,6 @@ use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
 use std::cell::RefMut;
 use std::rc::Rc;
 use std::sync::Arc;
-use candid::Principal;
-use crate::memory::FUND_MANAGER;
 
 pub fn init_monitoring() {
     FUND_MANAGER.with(|fund_manager| init_monitoring_impl(&mut fund_manager.borrow_mut()));

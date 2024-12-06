@@ -73,10 +73,7 @@
 	<WalletLoader missionControlId={$missionControlStore} bind:balance>
 		{#if nonNullish(balance)}
 			<div in:slide={{ axis: 'x' }} class="container wallet">
-				<NavbarLink
-					href="/mission-control?tab=wallet"
-					ariaLabel={`${$i18n.satellites.open}: ${$i18n.wallet.title}`}
-				>
+				<NavbarLink href="/wallet" ariaLabel={`${$i18n.satellites.open}: ${$i18n.wallet.title}`}>
 					<IconWallet />
 					<span in:fade>{formatE8sICP(balance)} <small>ICP</small></span>
 				</NavbarLink>

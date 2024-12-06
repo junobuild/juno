@@ -132,7 +132,9 @@ impl Storable for AnalyticSatelliteKey {
     };
 }
 
-/// Key conversion
+// ---------------------------------------------------------
+// Key conversion
+// ---------------------------------------------------------
 
 impl AnalyticSatelliteKey {
     pub fn from_key(key: &AnalyticKey, satellite_id: &SatelliteId) -> Self {

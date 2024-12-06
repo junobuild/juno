@@ -2,6 +2,7 @@ mod constants;
 mod controllers;
 mod guards;
 mod impls;
+mod memory;
 mod mgmt;
 mod segments;
 mod store;
@@ -20,7 +21,6 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
-use crate::mgmt::monitoring::init_monitoring;
 use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
@@ -42,10 +42,9 @@ use crate::store::{
 use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
 use crate::types::state::{
     Orbiter, Orbiters, RuntimeState, Satellite, Satellites,
-    StableState, State, Statuses,
+    HeapState, State, Statuses,
 };
 use candid::Principal;
-use canfund::FundManager;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
@@ -67,14 +66,9 @@ use segments::store::{
     get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
     set_satellite_metadata as set_satellite_metadata_store,
 };
-use std::cell::RefCell;
 use std::collections::HashMap;
-
-thread_local! {
-    static STATE: RefCell<State> = RefCell::default();
-
-    static FUND_MANAGER: RefCell<FundManager> = RefCell::new(FundManager::new());
-}
+use crate::memory::STATE;
+use crate::mgmt::monitoring::init_monitoring;
 
 #[init]
 fn init() {
@@ -83,7 +77,7 @@ fn init() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            stable: StableState::from(&user),
+            heap: HeapState::from(&user),
             runtime: RuntimeState::new(),
         };
     });
@@ -93,16 +87,16 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| storage::stable_save((&state.borrow().stable,)).unwrap());
+    STATE.with(|state| storage::stable_save((&state.borrow().heap,)).unwrap());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (stable,): (StableState,) = storage::stable_restore().unwrap();
+    let (heap,): (HeapState,) = storage::stable_restore().unwrap();
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            stable,
+            heap,
             runtime: RuntimeState::new(),
         }
     });
@@ -110,7 +104,9 @@ fn post_upgrade() {
     init_monitoring();
 }
 
-/// Satellites
+// ---------------------------------------------------------
+// Satellites
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_satellites() -> Satellites {
@@ -211,7 +207,9 @@ async fn unset_satellite(satellite_id: SatelliteId) {
         .unwrap_or_else(|e| trap(&e))
 }
 
-/// Orbiters
+// ---------------------------------------------------------
+// Orbiters
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_orbiters() -> Orbiters {
@@ -280,9 +278,9 @@ async fn del_orbiter(orbiter_id: OrbiterId, cycles_to_deposit: u128) {
         .unwrap_or_else(|e| trap(&e));
 }
 
-///
-/// Controllers
-///
+// ---------------------------------------------------------
+// Controllers
+// ---------------------------------------------------------
 
 #[deprecated(
     since = "0.0.3",
@@ -334,9 +332,9 @@ fn list_mission_control_controllers() -> Controllers {
     get_controllers()
 }
 
-///
-/// Mgmt
-///
+// ---------------------------------------------------------
+// Mgmt
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_user() -> UserId {
@@ -367,9 +365,9 @@ fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
 }
 
-///
-/// Observatory
-///
+// ---------------------------------------------------------
+// Observatory
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_user_or_admin_controller_or_juno")]
 async fn status(config: StatusesArgs) -> SegmentsStatuses {
@@ -391,16 +389,16 @@ fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
     list_orbiter_statuses_store(&orbiter_id)
 }
 
-///
-/// Monitoring
-///
+// ---------------------------------------------------------
+// Monitoring
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn start_monitoring_with_config(config: MonitoringConfig) {}
 
-///
-/// Wallet
-///
+// ---------------------------------------------------------
+// Wallet
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 async fn icp_transfer(args: TransferArgs) -> TransferResult {

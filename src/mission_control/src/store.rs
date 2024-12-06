@@ -1,6 +1,6 @@
 use crate::constants::RETAIN_ARCHIVE_STATUSES_NS;
-use crate::types::state::{ArchiveStatusesSegments, StableState, Statuses, User};
-use crate::STATE;
+use crate::memory::STATE;
+use crate::types::state::{ArchiveStatusesSegments, HeapState, Statuses, User};
 use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{
@@ -9,14 +9,14 @@ use junobuild_shared::types::state::{
 use std::collections::BTreeMap;
 
 pub fn get_user() -> UserId {
-    STATE.with(|state| state.borrow().stable.user.user).unwrap()
+    STATE.with(|state| state.borrow().heap.user.user).unwrap()
 }
 
 pub fn set_metadata(metadata: &Metadata) {
-    STATE.with(|state| set_metadata_impl(metadata, &mut state.borrow_mut().stable))
+    STATE.with(|state| set_metadata_impl(metadata, &mut state.borrow_mut().heap))
 }
 
-fn set_metadata_impl(metadata: &Metadata, state: &mut StableState) {
+fn set_metadata_impl(metadata: &Metadata, state: &mut HeapState) {
     let now = time();
 
     let updated_user = User {
@@ -29,15 +29,15 @@ fn set_metadata_impl(metadata: &Metadata, state: &mut StableState) {
     state.user = updated_user;
 }
 
-///
-/// Statuses
-///
+// ---------------------------------------------------------
+// Statuses
+// ---------------------------------------------------------
 
 pub fn set_mission_control_status(status: &SegmentStatusResult) {
-    STATE.with(|state| set_mission_control_status_impl(status, &mut state.borrow_mut().stable))
+    STATE.with(|state| set_mission_control_status_impl(status, &mut state.borrow_mut().heap))
 }
 
-fn set_mission_control_status_impl(status: &SegmentStatusResult, state: &mut StableState) {
+fn set_mission_control_status_impl(status: &SegmentStatusResult, state: &mut HeapState) {
     let now = time();
     let retain_timestamp = now - RETAIN_ARCHIVE_STATUSES_NS;
 
@@ -55,15 +55,7 @@ fn set_mission_control_status_impl(status: &SegmentStatusResult, state: &mut Sta
 }
 
 pub fn list_mission_control_statuses() -> Statuses {
-    STATE.with(|state| {
-        state
-            .borrow()
-            .stable
-            .archive
-            .statuses
-            .mission_control
-            .clone()
-    })
+    STATE.with(|state| state.borrow().heap.archive.statuses.mission_control.clone())
 }
 
 pub fn set_satellite_status(satellite_id: &SatelliteId, status: &SegmentStatusResult) {
@@ -71,7 +63,7 @@ pub fn set_satellite_status(satellite_id: &SatelliteId, status: &SegmentStatusRe
         set_segment_status_impl(
             satellite_id,
             status,
-            &mut state.borrow_mut().stable.archive.statuses.satellites,
+            &mut state.borrow_mut().heap.archive.statuses.satellites,
         )
     })
 }
@@ -81,7 +73,7 @@ pub fn set_orbiter_status(orbiter_id: &OrbiterId, status: &SegmentStatusResult) 
         set_segment_status_impl(
             orbiter_id,
             status,
-            &mut state.borrow_mut().stable.archive.statuses.orbiters,
+            &mut state.borrow_mut().heap.archive.statuses.orbiters,
         )
     })
 }
@@ -115,14 +107,14 @@ pub fn list_satellite_statuses(satellite_id: &SatelliteId) -> Option<Statuses> {
     STATE.with(|state| {
         list_segment_statuses_impl(
             satellite_id,
-            &state.borrow().stable.archive.statuses.satellites,
+            &state.borrow().heap.archive.statuses.satellites,
         )
     })
 }
 
 pub fn list_orbiter_statuses(orbiter_id: &OrbiterId) -> Option<Statuses> {
     STATE.with(|state| {
-        list_segment_statuses_impl(orbiter_id, &state.borrow().stable.archive.statuses.orbiters)
+        list_segment_statuses_impl(orbiter_id, &state.borrow().heap.archive.statuses.orbiters)
     })
 }
 

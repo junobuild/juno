@@ -1,5 +1,5 @@
+use crate::memory::STATE;
 use crate::store::get_user;
-use crate::STATE;
 use ic_cdk::api::is_controller as ic_canister_controller;
 use ic_cdk::caller;
 use junobuild_shared::controllers::{
@@ -42,7 +42,7 @@ fn caller_is_user() -> bool {
 
 fn caller_is_admin_controller() -> bool {
     let caller = caller();
-    let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
+    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     is_admin_controller(caller, &controllers)
 }

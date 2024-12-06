@@ -1,7 +1,5 @@
 use crate::types::core::Segment;
-use crate::types::state::{
-    Monitoring, MonitoringStrategy, Orbiter, Satellite, Settings, StableState,
-};
+use crate::types::state::{HeapState, Monitoring, MonitoringStrategy, Orbiter, Satellite, Settings};
 use crate::STATE;
 use junobuild_shared::types::state::{OrbiterId, SatelliteId};
 use std::collections::HashMap;
@@ -13,13 +11,13 @@ use std::hash::Hash;
 
 pub fn set_mission_control_monitoring_strategy(strategy: &MonitoringStrategy) {
     STATE.with(|state| {
-        set_mission_control_monitoring_strategy_impl(strategy, &mut state.borrow_mut().stable)
+        set_mission_control_monitoring_strategy_impl(strategy, &mut state.borrow_mut().heap)
     })
 }
 
 pub fn set_mission_control_monitoring_strategy_impl(
     strategy: &MonitoringStrategy,
-    state: &mut StableState,
+    state: &mut HeapState,
 ) {
     let settings = state.settings.get_or_insert_with(Settings::default);
 
@@ -37,7 +35,7 @@ pub fn set_satellite_monitoring_strategy(
         set_monitoring_strategy_impl(
             satellite_id,
             strategy,
-            &mut state.borrow_mut().stable.satellites,
+            &mut state.borrow_mut().heap.satellites,
         )
     })
 }
@@ -50,7 +48,7 @@ pub fn set_orbiter_monitoring_strategy(
         set_monitoring_strategy_impl(
             orbiter_id,
             strategy,
-            &mut state.borrow_mut().stable.orbiters,
+            &mut state.borrow_mut().heap.orbiters,
         )
     })
 }

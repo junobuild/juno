@@ -1,16 +1,13 @@
 use crate::types::core::Segment;
-use crate::types::state::{
-    Archive, ArchiveStatuses, Monitoring, MonitoringStrategy, Orbiter, Orbiters, RuntimeState,
-    Satellite, Settings, StableState, State, User,
-};
+use crate::types::state::{Archive, ArchiveStatuses, HeapState, Monitoring, MonitoringStrategy, Orbiter, Orbiters, RuntimeState, Satellite, Settings, State, User};
 use canfund::FundManager;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
 
-impl From<&UserId> for StableState {
+impl From<&UserId> for HeapState {
     fn from(user: &UserId) -> Self {
-        StableState {
+        HeapState {
             user: User::from(user),
             satellites: HashMap::new(),
             controllers: HashMap::new(),
@@ -136,7 +133,7 @@ impl Segment<OrbiterId> for Orbiter {
 impl Default for State {
     fn default() -> Self {
         Self {
-            stable: StableState::default(),
+            heap: HeapState::default(),
             runtime: RuntimeState::new(),
         }
     }

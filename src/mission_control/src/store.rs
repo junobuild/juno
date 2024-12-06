@@ -1,6 +1,6 @@
 use crate::constants::RETAIN_ARCHIVE_STATUSES_NS;
+use crate::memory::STATE;
 use crate::types::state::{ArchiveStatusesSegments, HeapState, Statuses, User};
-use crate::STATE;
 use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{

@@ -1,6 +1,6 @@
+use crate::memory::STATE;
 use crate::types::core::Segment;
 use crate::types::state::{Orbiter, Orbiters, Satellite, Satellites};
-use crate::STATE;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId};
 use std::collections::HashMap;
 use std::hash::Hash;

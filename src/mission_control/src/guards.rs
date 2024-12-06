@@ -1,5 +1,5 @@
+use crate::memory::STATE;
 use crate::store::get_user;
-use crate::STATE;
 use ic_cdk::api::is_controller as ic_canister_controller;
 use ic_cdk::caller;
 use junobuild_shared::controllers::{

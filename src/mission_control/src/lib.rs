@@ -21,7 +21,7 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
-use crate::memory::STATE;
+use crate::memory::{init_runtime_state, RUNTIME_STATE, STATE};
 use crate::mgmt::monitoring::init_monitoring;
 use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
@@ -43,7 +43,7 @@ use crate::store::{
 };
 use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
 use crate::types::state::{
-    HeapState, Orbiter, Orbiters, RuntimeState, Satellite, Satellites, State, Statuses,
+    HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses,
 };
 use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -68,6 +68,7 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
+use crate::types::runtime::RuntimeState;
 
 #[init]
 fn init() {
@@ -77,9 +78,10 @@ fn init() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             heap: HeapState::from(&user),
-            runtime: RuntimeState::new(),
         };
     });
+
+    init_runtime_state();
 }
 
 #[pre_upgrade]
@@ -94,9 +96,10 @@ fn post_upgrade() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             heap,
-            runtime: RuntimeState::new(),
         }
     });
+
+    init_runtime_state();
 
     init_monitoring();
 }

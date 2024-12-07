@@ -1,6 +1,5 @@
 pub mod state {
     use candid::{CandidType, Principal};
-    use canfund::FundManager;
     use junobuild_shared::types::state::{
         ArchiveTime, Controllers, Metadata, OrbiterId, SegmentStatusResult, Timestamp,
     };
@@ -16,9 +15,6 @@ pub mod state {
     #[derive(Serialize, Deserialize)]
     pub struct State {
         pub heap: HeapState,
-
-        #[serde(skip, default)]
-        pub runtime: RuntimeState,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -91,8 +87,11 @@ pub mod state {
         pub min_cycles: u128,
         pub fund_cycles: u128,
     }
+}
 
-    #[derive(Default)]
+pub mod runtime {
+    use canfund::FundManager;
+
     pub struct RuntimeState {
         pub fund_manager: FundManager,
     }

@@ -1,12 +1,13 @@
 use crate::types::core::Segment;
 use crate::types::state::{
     Archive, ArchiveStatuses, HeapState, Monitoring, MonitoringStrategy, Orbiter, Orbiters,
-    RuntimeState, Satellite, Settings, State, User,
+    Satellite, Settings, State, User,
 };
 use canfund::FundManager;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
+use crate::types::runtime::RuntimeState;
 
 impl From<&UserId> for HeapState {
     fn from(user: &UserId) -> Self {
@@ -137,13 +138,12 @@ impl Default for State {
     fn default() -> Self {
         Self {
             heap: HeapState::default(),
-            runtime: RuntimeState::new(),
         }
     }
 }
 
-impl RuntimeState {
-    pub fn new() -> Self {
+impl Default for RuntimeState {
+    fn default() -> Self {
         RuntimeState {
             fund_manager: FundManager::new(),
         }

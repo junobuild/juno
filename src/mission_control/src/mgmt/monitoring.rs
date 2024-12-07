@@ -1,4 +1,4 @@
-use crate::memory::{STATE};
+use crate::memory::{RUNTIME_STATE};
 use crate::segments::store::get_satellites;
 use candid::Principal;
 use canfund::api::cmc::IcCyclesMintingCanister;
@@ -16,7 +16,7 @@ use std::rc::Rc;
 use std::sync::Arc;
 
 pub fn init_monitoring() {
-    STATE.with(|state| init_monitoring_impl(&mut state.borrow_mut().runtime.fund_manager));
+    RUNTIME_STATE.with(|state| init_monitoring_impl(&mut state.borrow_mut().fund_manager));
 }
 
 fn init_monitoring_impl(fund_manager: &mut FundManager) {
@@ -56,11 +56,11 @@ fn init_monitoring_impl(fund_manager: &mut FundManager) {
     fund_manager.with_options(funding_config);
 
     // Register satellites
-    // let satellites = get_satellites();
-    //
-    // for (satellite_id, _) in satellites {
-    //     fund_manager.register(satellite_id, RegisterOpts::new());
-    // }
+    let satellites = get_satellites();
+
+    for (satellite_id, _) in satellites {
+        fund_manager.register(satellite_id, RegisterOpts::new());
+    }
 
     // Register mission control
     fund_manager.register(id(), RegisterOpts::new());
@@ -69,7 +69,7 @@ fn init_monitoring_impl(fund_manager: &mut FundManager) {
 }
 
 pub fn register_monitoring(id: &Principal) {
-    STATE.with(|state| register_monitoring_impl(id, &mut state.borrow_mut().runtime.fund_manager));
+    RUNTIME_STATE.with(|state| register_monitoring_impl(id, &mut state.borrow_mut().fund_manager));
 }
 
 fn register_monitoring_impl(id: &Principal, fund_manager: &mut FundManager) {

@@ -56,11 +56,11 @@ fn init_monitoring_impl(fund_manager: &mut FundManager) {
     fund_manager.with_options(funding_config);
 
     // Register satellites
-    let satellites = get_satellites();
-
-    for (satellite_id, _) in satellites {
-        fund_manager.register(satellite_id, RegisterOpts::new());
-    }
+    // let satellites = get_satellites();
+    //
+    // for (satellite_id, _) in satellites {
+    //     fund_manager.register(satellite_id, RegisterOpts::new());
+    // }
 
     // Register mission control
     fund_manager.register(id(), RegisterOpts::new());

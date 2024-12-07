@@ -80,8 +80,6 @@ fn init() {
             runtime: RuntimeState::new(),
         };
     });
-
-    init_monitoring();
 }
 
 #[pre_upgrade]

@@ -6,6 +6,7 @@ use crate::store::get_settings;
 use crate::types::interface::SegmentsMonitoringStrategy;
 use crate::types::runtime::RuntimeState;
 use crate::types::state::{CyclesMonitoringStrategy, Settings};
+use ic_cdk::id;
 use junobuild_shared::types::state::SegmentId;
 
 type SegmentCyclesMonitoryStrategyPair = (SegmentId, CyclesMonitoringStrategy);
@@ -42,10 +43,10 @@ pub fn restart_cycles_monitoring() -> Result<(), String> {
         restart_cycles_monitoring_with_settings(&orbiters_strategies)?;
     }
 
-    let mission_control_settings = get_settings();
+    let mission_control_strategy = map_strategy(&id(), &get_settings());
 
-    if mission_control_settings.is_some() {
-        // TODO
+    if let Some(mission_control_strategy) = mission_control_strategy {
+        restart_mission_control_monitoring(&mission_control_strategy)?;
     }
 
     Ok(())
@@ -59,6 +60,13 @@ fn restart_cycles_monitoring_with_settings(
     })
 }
 
+fn restart_mission_control_monitoring(
+    strategy: &SegmentCyclesMonitoryStrategyPair,
+) -> Result<(), String> {
+    RUNTIME_STATE
+        .with(|state| restart_mission_control_monitoring_impl(strategy, &mut state.borrow_mut()))
+}
+
 fn restart_cycles_monitoring_with_settings_impl(
     settings: &[SegmentCyclesMonitoryStrategyPair],
     state: &mut RuntimeState,
@@ -70,4 +78,13 @@ fn restart_cycles_monitoring_with_settings_impl(
     }
 
     Ok(())
+}
+
+fn restart_mission_control_monitoring_impl(
+    (mission_control_id, cycles_strategy): &SegmentCyclesMonitoryStrategyPair,
+    state: &mut RuntimeState,
+) -> Result<(), String> {
+    let fund_manager = state.fund_manager.get_or_insert_with(init_funding_manager);
+
+    register_cycles_monitoring(fund_manager, &mission_control_id, &cycles_strategy)
 }

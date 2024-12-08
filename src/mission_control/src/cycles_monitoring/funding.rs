@@ -9,6 +9,7 @@ use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTE
 use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
 use std::rc::Rc;
 use std::sync::Arc;
+use junobuild_shared::types::state::SegmentId;
 
 pub fn init_funding_manager() -> FundManager {
     let mut fund_manager = FundManager::new();
@@ -53,4 +54,15 @@ fn init_funding_config() -> FundManagerOptions {
                 ));
             }
         }))
+}
+
+pub fn register_cycles_monitoring(
+    fund_manager: &mut FundManager,
+    segment_id: &SegmentId,
+    strategy: &CyclesMonitoringStrategy,
+) -> Result<(), String> {
+    // Register does not overwrite the configuration. That's why we unregister first given that we support updating configuration.
+    fund_manager.unregister(*segment_id);
+    fund_manager.register(*segment_id, init_register_options(strategy)?);
+    Ok(())
 }

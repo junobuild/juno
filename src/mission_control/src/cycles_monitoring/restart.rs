@@ -1,5 +1,5 @@
 use crate::cycles_monitoring::funding::init_funding_manager;
-use crate::cycles_monitoring::utils::register_cycles_monitoring;
+use crate::cycles_monitoring::funding::register_cycles_monitoring;
 use crate::memory::RUNTIME_STATE;
 use crate::segments::store::{get_orbiters, get_satellites};
 use crate::store::get_settings;

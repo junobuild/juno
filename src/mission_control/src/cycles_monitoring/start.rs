@@ -1,6 +1,6 @@
 use crate::cycles_monitoring::constants::DEFAULT_MISSION_CONTROL_STRATEGY;
 use crate::cycles_monitoring::funding::{init_funding_manager, init_register_options};
-use crate::cycles_monitoring::utils::register_cycles_monitoring;
+use crate::cycles_monitoring::funding::register_cycles_monitoring;
 use crate::memory::RUNTIME_STATE;
 use crate::types::interface::{CyclesMonitoringConfig, SegmentsMonitoringStrategy};
 use crate::types::runtime::RuntimeState;

@@ -4,12 +4,12 @@ use crate::types::state::{
     Archive, ArchiveStatuses, CyclesMonitoringStrategy, HeapState, Monitoring, Orbiter, Orbiters,
     Satellite, Settings, State, User,
 };
+use canfund::manager::options::{CyclesThreshold, FundStrategy};
+use canfund::manager::RegisterOpts;
 use canfund::FundManager;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
-use canfund::manager::options::{CyclesThreshold, FundStrategy};
-use canfund::manager::RegisterOpts;
 
 impl From<&UserId> for HeapState {
     fn from(user: &UserId) -> Self {

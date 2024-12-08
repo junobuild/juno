@@ -1,7 +1,7 @@
-use canfund::FundManager;
-use junobuild_shared::types::state::SegmentId;
 use crate::monitoring::init_funding::init_register_options;
 use crate::types::state::CyclesMonitoringStrategy;
+use canfund::FundManager;
+use junobuild_shared::types::state::SegmentId;
 
 pub fn register_cycles_monitoring(
     fund_manager: &mut FundManager,

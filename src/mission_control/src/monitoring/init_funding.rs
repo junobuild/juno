@@ -1,14 +1,14 @@
+use crate::types::state::CyclesMonitoringStrategy;
 use canfund::api::cmc::IcCyclesMintingCanister;
 use canfund::api::ledger::IcLedgerCanister;
 use canfund::manager::options::{FundManagerOptions, ObtainCyclesOptions};
+use canfund::manager::RegisterOpts;
 use canfund::operations::obtain::MintCycles;
+use canfund::FundManager;
 use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTER_ID};
 use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
 use std::rc::Rc;
 use std::sync::Arc;
-use canfund::FundManager;
-use canfund::manager::RegisterOpts;
-use crate::types::state::CyclesMonitoringStrategy;
 
 pub fn init_funding_manager() -> FundManager {
     let mut fund_manager = FundManager::new();
@@ -16,7 +16,9 @@ pub fn init_funding_manager() -> FundManager {
     fund_manager
 }
 
-pub fn init_register_options(cycles_strategy: &CyclesMonitoringStrategy) -> Result<RegisterOpts, String> {
+pub fn init_register_options(
+    cycles_strategy: &CyclesMonitoringStrategy,
+) -> Result<RegisterOpts, String> {
     let fund_strategy = cycles_strategy.to_fund_strategy()?;
     let options = RegisterOpts::new().with_strategy(fund_strategy.clone());
     Ok(options)

@@ -42,8 +42,10 @@ fn start_monitoring_impl(
     let fund_strategy = segments_strategy.strategy.to_fund_strategy()?;
 
     for segment_id in &segments_strategy.ids {
+        // Register does not overwrite the configuration. That's why we unregister first given that we support updating configuration.
+        fund_manager.unregister(*segment_id);
         fund_manager.register(
-            segment_id.clone(),
+            *segment_id,
             RegisterOpts::new().with_strategy(fund_strategy.clone()),
         );
     }

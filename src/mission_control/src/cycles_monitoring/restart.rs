@@ -1,6 +1,6 @@
 use crate::memory::RUNTIME_STATE;
-use crate::monitoring::cycles_monitoring::register_cycles_monitoring;
-use crate::monitoring::init_funding::{init_funding_manager, init_register_options};
+use crate::cycles_monitoring::utils::register_cycles_monitoring;
+use crate::cycles_monitoring::funding::{init_funding_manager, init_register_options};
 use crate::segments::store::{get_orbiters, get_satellites};
 use crate::store::get_settings;
 use crate::types::interface::SegmentsMonitoringStrategy;

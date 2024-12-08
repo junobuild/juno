@@ -1,4 +1,4 @@
-use crate::monitoring::init_funding::init_register_options;
+use crate::cycles_monitoring::funding::init_register_options;
 use crate::types::state::CyclesMonitoringStrategy;
 use canfund::FundManager;
 use junobuild_shared::types::state::SegmentId;

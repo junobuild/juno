@@ -1,11 +1,11 @@
 mod constants;
-mod cycles_monitoring;
-mod init_funding;
-pub mod restart_cycles;
-mod start_cycles;
+mod utils;
+mod funding;
+pub mod restart;
+mod start;
 
-use crate::monitoring::restart_cycles::restart_cycles_monitoring;
-use crate::monitoring::start_cycles::start_cycles_monitoring;
+use crate::cycles_monitoring::restart::restart_cycles_monitoring;
+use crate::cycles_monitoring::start::start_cycles_monitoring;
 use crate::types::interface::MonitoringConfig;
 
 pub fn restart_monitoring() -> Result<(), String> {

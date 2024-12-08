@@ -1,5 +1,6 @@
 use crate::types::core::Segment;
 use crate::types::runtime::RuntimeState;
+use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
     Archive, ArchiveStatuses, CyclesMonitoringStrategy, HeapState, Monitoring, Orbiter, Orbiters,
     Satellite, Settings, State, User,
@@ -68,6 +69,16 @@ impl Satellite {
             updated_at: now,
         }
     }
+
+    pub fn clone_with_settings(&self, settings: &Settings) -> Self {
+        let now = time();
+
+        Satellite {
+            settings: Some(settings.clone()),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
 }
 
 impl Orbiter {
@@ -80,6 +91,26 @@ impl Orbiter {
             settings: None,
             created_at: now,
             updated_at: now,
+        }
+    }
+
+    pub fn clone_with_settings(&self, settings: &Settings) -> Self {
+        let now = time();
+
+        Orbiter {
+            settings: Some(settings.clone()),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+}
+
+impl Settings {
+    pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
+        Settings {
+            monitoring: Some(Monitoring {
+                cycles_strategy: Some(strategy.clone()),
+            }),
         }
     }
 }

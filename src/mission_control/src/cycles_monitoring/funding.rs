@@ -7,9 +7,9 @@ use canfund::operations::obtain::MintCycles;
 use canfund::FundManager;
 use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTER_ID};
 use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
+use junobuild_shared::types::state::SegmentId;
 use std::rc::Rc;
 use std::sync::Arc;
-use junobuild_shared::types::state::SegmentId;
 
 pub fn init_funding_manager() -> FundManager {
     let mut fund_manager = FundManager::new();

@@ -1,7 +1,9 @@
 use crate::cycles_monitoring::constants::DEFAULT_MISSION_CONTROL_STRATEGY;
 use crate::cycles_monitoring::funding::register_cycles_monitoring;
 use crate::cycles_monitoring::funding::{init_funding_manager, init_register_options};
-use crate::cycles_monitoring::store::{set_orbiter_strategy, set_satellite_strategy};
+use crate::cycles_monitoring::store::{
+    set_mission_control_strategy, set_orbiter_strategy, set_satellite_strategy,
+};
 use crate::memory::RUNTIME_STATE;
 use crate::types::interface::{CyclesMonitoringConfig, SegmentsMonitoringStrategy};
 use crate::types::runtime::RuntimeState;
@@ -77,6 +79,8 @@ fn start_mission_control_monitoring_impl(
     }
 
     let cycles_strategy = strategy.clone().unwrap_or(DEFAULT_MISSION_CONTROL_STRATEGY);
+
+    set_mission_control_strategy(&cycles_strategy);
 
     register_cycles_monitoring(fund_manager, &mission_control_id, &cycles_strategy)?;
 

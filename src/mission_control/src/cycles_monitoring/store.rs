@@ -1,6 +1,10 @@
 use crate::memory::STATE;
-use crate::types::state::{CyclesMonitoringStrategy, Orbiters, Satellites, Settings};
+use crate::types::state::{CyclesMonitoringStrategy, HeapState, Orbiters, Satellites, Settings};
 use junobuild_shared::types::state::{OrbiterId, SatelliteId};
+
+pub fn set_mission_control_strategy(strategy: &CyclesMonitoringStrategy) {
+    STATE.with(|state| set_mission_control_setting_impl(strategy, &mut state.borrow_mut().heap))
+}
 
 pub fn set_satellite_strategy(
     satellite_id: &SatelliteId,
@@ -22,6 +26,10 @@ pub fn set_orbiter_strategy(
     STATE.with(|state| {
         set_orbiter_setting_impl(orbiter_id, strategy, &mut state.borrow_mut().heap.orbiters)
     })
+}
+
+fn set_mission_control_setting_impl(strategy: &CyclesMonitoringStrategy, state: &mut HeapState) {
+    state.settings = Some(Settings::from(strategy));
 }
 
 fn set_satellite_setting_impl(

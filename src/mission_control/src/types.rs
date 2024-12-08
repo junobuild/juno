@@ -127,9 +127,14 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize, Clone)]
-    pub struct MonitoringConfig {
+    pub struct CyclesMonitoringConfig {
         pub mission_control_strategy: Option<CyclesMonitoringStrategy>,
         pub satellites_strategy: Option<SegmentsMonitoringStrategy>,
         pub orbiters_strategy: Option<SegmentsMonitoringStrategy>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct MonitoringConfig {
+        pub cycles_config: Option<CyclesMonitoringConfig>,
     }
 }

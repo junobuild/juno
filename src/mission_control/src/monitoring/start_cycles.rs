@@ -3,7 +3,8 @@ use crate::types::interface::{CyclesMonitoringConfig, SegmentsMonitoringStrategy
 use crate::types::runtime::RuntimeState;
 use ic_cdk::id;
 use crate::monitoring::constants::DEFAULT_MISSION_CONTROL_STRATEGY;
-use crate::monitoring::funding::{init_funding_manager, init_register_options};
+use crate::monitoring::cycles_monitoring::register_cycles_monitoring;
+use crate::monitoring::init_funding::{init_funding_manager, init_register_options};
 use crate::types::state::{CyclesMonitoringStrategy};
 
 pub fn start_cycles_monitoring(config: &CyclesMonitoringConfig) -> Result<(), String> {
@@ -35,12 +36,9 @@ fn start_monitoring_impl(
     let fund_manager = state.fund_manager.get_or_insert_with(init_funding_manager);
 
     for segment_id in &segments_strategy.ids {
-        // Register does not overwrite the configuration. That's why we unregister first given that we support updating configuration.
-        fund_manager.unregister(*segment_id);
-        fund_manager.register(
-            *segment_id,
-            init_register_options(&segments_strategy.strategy)?,
-        );
+        register_cycles_monitoring(
+            fund_manager, segment_id, &segments_strategy.strategy
+        )?;
     }
 
     Ok(())
@@ -65,8 +63,9 @@ fn start_mission_control_monitoring_impl(
 
     let cycles_strategy = strategy.clone().unwrap_or(DEFAULT_MISSION_CONTROL_STRATEGY);
 
-    fund_manager.unregister(mission_control_id);
-    fund_manager.register(mission_control_id, init_register_options(&cycles_strategy)?);
+    register_cycles_monitoring(
+        fund_manager, &mission_control_id, &cycles_strategy
+    )?;
 
     Ok(())
 }

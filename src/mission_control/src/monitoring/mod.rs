@@ -1,7 +1,8 @@
-mod funding;
+mod init_funding;
 mod start_cycles;
 mod constants;
 pub mod restart_cycles;
+mod cycles_monitoring;
 
 use crate::monitoring::restart_cycles::restart_cycles_monitoring;
 use crate::monitoring::start_cycles::start_cycles_monitoring;

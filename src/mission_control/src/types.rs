@@ -92,8 +92,9 @@ pub mod state {
 pub mod runtime {
     use canfund::FundManager;
 
+    #[derive(Default)]
     pub struct RuntimeState {
-        pub fund_manager: FundManager,
+        pub fund_manager: Option<FundManager>,
     }
 }
 

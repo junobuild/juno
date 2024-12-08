@@ -141,11 +141,3 @@ impl Default for State {
         }
     }
 }
-
-impl Default for RuntimeState {
-    fn default() -> Self {
-        RuntimeState {
-            fund_manager: FundManager::new(),
-        }
-    }
-}

@@ -101,7 +101,7 @@ fn post_upgrade() {
 
     init_runtime_state();
 
-    init_monitoring();
+    let _ = init_monitoring();
 }
 
 // ---------------------------------------------------------

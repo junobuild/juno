@@ -14,12 +14,13 @@ use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTE
 use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
 use std::rc::Rc;
 use std::sync::Arc;
+use crate::types::runtime::RuntimeState;
 
-pub fn init_monitoring() {
-    RUNTIME_STATE.with(|state| init_monitoring_impl(&mut state.borrow_mut().fund_manager));
+pub fn init_monitoring() -> Result<(), String> {
+    RUNTIME_STATE.with(|state| init_monitoring_impl(&mut state.borrow_mut()))
 }
 
-fn init_monitoring_impl(fund_manager: &mut FundManager) {
+fn init_monitoring_impl(state: &mut RuntimeState) -> Result<(), String> {
     let funding_config = FundManagerOptions::new()
         .with_interval_secs(30)
         .with_strategy(FundStrategy::BelowThreshold(
@@ -53,6 +54,14 @@ fn init_monitoring_impl(fund_manager: &mut FundManager) {
             }
         }));
 
+    if state.fund_manager.is_none() {
+        state.fund_manager = Some(FundManager::new());
+    }
+
+    let fund_manager = state.fund_manager.as_mut().ok_or_else(|| {
+        "FundManager not initialized. This is unexpected.".to_string()
+    })?;
+
     fund_manager.with_options(funding_config);
 
     // Register satellites
@@ -66,12 +75,15 @@ fn init_monitoring_impl(fund_manager: &mut FundManager) {
     fund_manager.register(id(), RegisterOpts::new());
 
     fund_manager.start();
+
+    Ok(())
 }
 
 pub fn register_monitoring(id: &Principal) {
-    RUNTIME_STATE.with(|state| register_monitoring_impl(id, &mut state.borrow_mut().fund_manager));
+    RUNTIME_STATE.with(|state| register_monitoring_impl(id, &mut state.borrow_mut()));
 }
 
-fn register_monitoring_impl(id: &Principal, fund_manager: &mut FundManager) {
-    fund_manager.register(id.clone(), RegisterOpts::new());
+fn register_monitoring_impl(id: &Principal, state: &mut RuntimeState) {
+    // TODO
+    // fund_manager.register(id.clone(), RegisterOpts::new());
 }

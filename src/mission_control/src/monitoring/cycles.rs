@@ -39,14 +39,12 @@ fn start_monitoring_impl(
         .as_mut()
         .ok_or_else(|| "FundManager not initialized. This is unexpected.".to_string())?;
 
+    let fund_strategy = segments_strategy.strategy.to_fund_strategy()?;
+
     for segment_id in &segments_strategy.ids {
         fund_manager.register(
             segment_id.clone(),
-            RegisterOpts::new().with_strategy(FundStrategy::BelowThreshold(
-                CyclesThreshold::new()
-                    .with_min_cycles(20_025_000_000_000)
-                    .with_fund_cycles(250_000_000_000),
-            )),
+            RegisterOpts::new().with_strategy(fund_strategy.clone()),
         );
     }
 

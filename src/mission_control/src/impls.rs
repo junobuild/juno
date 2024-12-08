@@ -1,8 +1,29 @@
 use crate::types::core::Segment;
-use crate::types::state::{Archive, ArchiveStatuses, Orbiter, Satellite, User};
+use crate::types::runtime::RuntimeState;
+use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
+use crate::types::state::{
+    Archive, ArchiveStatuses, CyclesMonitoringStrategy, HeapState, Monitoring, Orbiter, Orbiters,
+    Satellite, Settings, State, User,
+};
+use canfund::manager::options::{CyclesThreshold, FundStrategy};
+use canfund::manager::RegisterOpts;
+use canfund::FundManager;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
+
+impl From<&UserId> for HeapState {
+    fn from(user: &UserId) -> Self {
+        HeapState {
+            user: User::from(user),
+            satellites: HashMap::new(),
+            controllers: HashMap::new(),
+            archive: Archive::new(),
+            orbiters: Orbiters::new(),
+            settings: None,
+        }
+    }
+}
 
 impl From<&UserId> for User {
     fn from(user: &UserId) -> Self {
@@ -43,8 +64,19 @@ impl Satellite {
         Satellite {
             satellite_id: *satellite_id,
             metadata: init_metadata(name),
+            settings: None,
             created_at: now,
             updated_at: now,
+        }
+    }
+
+    pub fn clone_with_settings(&self, settings: &Settings) -> Self {
+        let now = time();
+
+        Satellite {
+            settings: Some(settings.clone()),
+            updated_at: now,
+            ..self.clone()
         }
     }
 }
@@ -56,8 +88,29 @@ impl Orbiter {
         Orbiter {
             orbiter_id: *orbiter_id,
             metadata: init_metadata(name),
+            settings: None,
             created_at: now,
             updated_at: now,
+        }
+    }
+
+    pub fn clone_with_settings(&self, settings: &Settings) -> Self {
+        let now = time();
+
+        Orbiter {
+            settings: Some(settings.clone()),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+}
+
+impl Settings {
+    pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
+        Settings {
+            monitoring: Some(Monitoring {
+                cycles_strategy: Some(strategy.clone()),
+            }),
         }
     }
 }
@@ -67,10 +120,23 @@ impl Segment<SatelliteId> for Satellite {
         let now = time();
 
         Satellite {
-            satellite_id: self.satellite_id,
             metadata: metadata.clone(),
-            created_at: self.created_at,
             updated_at: now,
+            ..self.clone()
+        }
+    }
+
+    fn set_monitoring_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self {
+        let now = time();
+
+        Satellite {
+            settings: Some(Settings {
+                monitoring: Some(Monitoring {
+                    cycles_strategy: Some(strategy.clone()),
+                }),
+            }),
+            updated_at: now,
+            ..self.clone()
         }
     }
 }
@@ -80,10 +146,46 @@ impl Segment<OrbiterId> for Orbiter {
         let now = time();
 
         Orbiter {
-            orbiter_id: self.orbiter_id,
             metadata: metadata.clone(),
-            created_at: self.created_at,
             updated_at: now,
+            ..self.clone()
+        }
+    }
+
+    fn set_monitoring_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self {
+        let now = time();
+
+        Orbiter {
+            settings: Some(Settings {
+                monitoring: Some(Monitoring {
+                    cycles_strategy: Some(strategy.clone()),
+                }),
+            }),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+}
+
+impl Default for State {
+    fn default() -> Self {
+        Self {
+            heap: HeapState::default(),
+        }
+    }
+}
+
+impl CyclesMonitoringStrategy {
+    pub fn to_fund_strategy(&self) -> Result<FundStrategy, String> {
+        match self {
+            CyclesMonitoringStrategy::BelowThreshold(threshold) => {
+                Ok(FundStrategy::BelowThreshold(
+                    CyclesThreshold::new()
+                        .with_min_cycles(threshold.min_cycles)
+                        .with_fund_cycles(threshold.fund_cycles),
+                ))
+            }
+            _ => Err("Unsupported cycles monitoring strategy.".to_string()),
         }
     }
 }

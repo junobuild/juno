@@ -1,9 +1,11 @@
 mod constants;
 mod controllers;
+mod cycles_monitoring;
 mod guards;
 mod impls;
 mod memory;
 mod mgmt;
+mod monitoring;
 mod segments;
 mod store;
 mod types;
@@ -21,7 +23,9 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
+use crate::memory::{init_runtime_state, STATE};
 use crate::mgmt::status::collect_statuses;
+use crate::monitoring::{restart_monitoring, start_monitoring};
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -39,10 +43,8 @@ use crate::store::{
     list_orbiter_statuses as list_orbiter_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
-use crate::types::interface::CreateCanisterConfig;
-use crate::types::state::{
-    Archive, HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses, User,
-};
+use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
+use crate::types::state::{HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses};
 use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
@@ -66,8 +68,6 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
-use crate::memory::STATE;
-use crate::mgmt::monitoring::init_monitoring;
 
 #[init]
 fn init() {
@@ -76,17 +76,11 @@ fn init() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            heap: HeapState {
-                user: User::from(&user),
-                satellites: HashMap::new(),
-                controllers: HashMap::new(),
-                archive: Archive::new(),
-                orbiters: Orbiters::new(),
-            },
+            heap: HeapState::from(&user),
         };
     });
 
-    init_monitoring();
+    init_runtime_state();
 }
 
 #[pre_upgrade]
@@ -100,7 +94,9 @@ fn post_upgrade() {
 
     STATE.with(|state| *state.borrow_mut() = State { heap });
 
-    init_monitoring();
+    init_runtime_state();
+
+    let _ = restart_monitoring();
 }
 
 // ---------------------------------------------------------
@@ -386,6 +382,15 @@ fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
     list_orbiter_statuses_store(&orbiter_id)
+}
+
+// ---------------------------------------------------------
+// Monitoring
+// ---------------------------------------------------------
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn start_monitoring_with_config(config: MonitoringConfig) {
+    start_monitoring(&config).unwrap_or_else(|e| trap(&e));
 }
 
 // ---------------------------------------------------------

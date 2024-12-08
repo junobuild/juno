@@ -1,3 +1,4 @@
+use crate::mgmt::monitoring::register_monitoring;
 use crate::segments::canister::{create_canister, delete_canister};
 use crate::segments::msg::SATELLITE_NOT_FOUND;
 use crate::segments::store::{
@@ -13,7 +14,6 @@ use junobuild_shared::env::CONSOLE;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{SatelliteId, UserId};
-use crate::mgmt::monitoring::register_monitoring;
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
     let config: CreateCanisterConfig = CreateCanisterConfig {
@@ -81,7 +81,7 @@ async fn create_and_save_satellite(
             register_monitoring(&satellite_id);
 
             Ok(satellite)
-        },
+        }
     }
 }
 

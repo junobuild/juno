@@ -26,12 +26,6 @@ fn init_funding_config() -> FundManagerOptions {
     FundManagerOptions::new()
         // TODO: Integrate in mission control config
         .with_interval_secs(30)
-        // TODO:
-        // .with_strategy(FundStrategy::BelowThreshold(
-        //     CyclesThreshold::new()
-        //         .with_min_cycles(20_025_000_000_000)
-        //         .with_fund_cycles(250_000_000_000),
-        // ))
         .with_obtain_cycles_options( Some(ObtainCyclesOptions {
             obtain_cycles: Arc::new(MintCycles {
                 ledger: Arc::new(IcLedgerCanister::new(MAINNET_LEDGER_CANISTER_ID)),

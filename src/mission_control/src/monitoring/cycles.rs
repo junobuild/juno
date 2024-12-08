@@ -2,6 +2,7 @@ use crate::memory::RUNTIME_STATE;
 use crate::types::interface::{CyclesMonitoringConfig, SegmentsMonitoringStrategy};
 use crate::types::runtime::RuntimeState;
 use ic_cdk::id;
+use crate::monitoring::constants::DEFAULT_MISSION_CONTROL_CYCLES_BELOW_THRESHOLD;
 use crate::monitoring::funding::{init_funding_manager, init_register_options};
 use crate::types::state::{CyclesMonitoringStrategy, CyclesThreshold};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
@@ -63,10 +64,7 @@ fn start_mission_control_monitoring_impl(
         return Ok(());
     }
 
-    let cycles_strategy = strategy.clone().unwrap_or(BelowThreshold(CyclesThreshold {
-        min_cycles: 20_025_000_000_000,
-        fund_cycles: 250_000_000_000
-    }));
+    let cycles_strategy = strategy.clone().unwrap_or(DEFAULT_MISSION_CONTROL_CYCLES_BELOW_THRESHOLD);
 
     fund_manager.unregister(mission_control_id);
     fund_manager.register(mission_control_id, init_register_options(&cycles_strategy)?);

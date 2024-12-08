@@ -1,10 +1,11 @@
 mod constants;
 mod controllers;
+mod cycles_monitoring;
 mod guards;
 mod impls;
 mod memory;
 mod mgmt;
-mod cycles_monitoring;
+mod monitoring;
 mod segments;
 mod store;
 mod types;
@@ -24,7 +25,7 @@ use crate::guards::{
 };
 use crate::memory::{init_runtime_state, STATE};
 use crate::mgmt::status::collect_statuses;
-use crate::cycles_monitoring::{restart, restart_monitoring, start_monitoring};
+use crate::monitoring::{restart_monitoring, start_monitoring};
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,

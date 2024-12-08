@@ -1,9 +1,8 @@
-use crate::memory::RUNTIME_STATE;
+use crate::cycles_monitoring::funding::init_funding_manager;
 use crate::cycles_monitoring::utils::register_cycles_monitoring;
-use crate::cycles_monitoring::funding::{init_funding_manager, init_register_options};
+use crate::memory::RUNTIME_STATE;
 use crate::segments::store::{get_orbiters, get_satellites};
 use crate::store::get_settings;
-use crate::types::interface::SegmentsMonitoringStrategy;
 use crate::types::runtime::RuntimeState;
 use crate::types::state::{CyclesMonitoringStrategy, Settings};
 use ic_cdk::id;

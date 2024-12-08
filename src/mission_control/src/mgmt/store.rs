@@ -1,6 +1,6 @@
 use crate::types::core::Segment;
 use crate::types::state::{
-    HeapState, Monitoring, CyclesMonitoringStrategy, Orbiter, Satellite, Settings,
+    CyclesMonitoringStrategy, HeapState, Monitoring, Orbiter, Satellite, Settings,
 };
 use crate::STATE;
 use junobuild_shared::types::state::{OrbiterId, SatelliteId};

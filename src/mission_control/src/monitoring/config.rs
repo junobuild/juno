@@ -1,11 +1,11 @@
-use std::rc::Rc;
-use std::sync::Arc;
 use canfund::api::cmc::IcCyclesMintingCanister;
 use canfund::api::ledger::IcLedgerCanister;
 use canfund::manager::options::{FundManagerOptions, ObtainCyclesOptions};
 use canfund::operations::obtain::MintCycles;
 use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTER_ID};
 use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
+use std::rc::Rc;
+use std::sync::Arc;
 
 pub fn create_funding_config() -> FundManagerOptions {
     FundManagerOptions::new()

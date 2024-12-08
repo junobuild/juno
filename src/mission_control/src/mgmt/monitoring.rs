@@ -1,5 +1,6 @@
-use crate::memory::{RUNTIME_STATE};
+use crate::memory::RUNTIME_STATE;
 use crate::segments::store::get_satellites;
+use crate::types::runtime::RuntimeState;
 use candid::Principal;
 use canfund::api::cmc::IcCyclesMintingCanister;
 use canfund::api::ledger::IcLedgerCanister;
@@ -14,7 +15,6 @@ use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTE
 use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
 use std::rc::Rc;
 use std::sync::Arc;
-use crate::types::runtime::RuntimeState;
 
 pub fn init_monitoring() -> Result<(), String> {
     RUNTIME_STATE.with(|state| init_monitoring_impl(&mut state.borrow_mut()))
@@ -58,9 +58,10 @@ fn init_monitoring_impl(state: &mut RuntimeState) -> Result<(), String> {
         state.fund_manager = Some(FundManager::new());
     }
 
-    let fund_manager = state.fund_manager.as_mut().ok_or_else(|| {
-        "FundManager not initialized. This is unexpected.".to_string()
-    })?;
+    let fund_manager = state
+        .fund_manager
+        .as_mut()
+        .ok_or_else(|| "FundManager not initialized. This is unexpected.".to_string())?;
 
     fund_manager.with_options(funding_config);
 

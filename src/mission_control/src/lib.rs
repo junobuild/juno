@@ -4,10 +4,10 @@ mod guards;
 mod impls;
 mod memory;
 mod mgmt;
+mod monitoring;
 mod segments;
 mod store;
 mod types;
-mod monitoring;
 
 use crate::controllers::mission_control::{
     delete_mission_control_controllers as delete_controllers_to_mission_control,
@@ -25,6 +25,7 @@ use crate::guards::{
 use crate::memory::{init_runtime_state, RUNTIME_STATE, STATE};
 use crate::mgmt::monitoring::init_monitoring;
 use crate::mgmt::status::collect_statuses;
+use crate::monitoring::start_monitoring;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -43,9 +44,8 @@ use crate::store::{
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
 use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
-use crate::types::state::{
-    HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses,
-};
+use crate::types::runtime::RuntimeState;
+use crate::types::state::{HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses};
 use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
@@ -69,8 +69,6 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
-use crate::monitoring::start_monitoring;
-use crate::types::runtime::RuntimeState;
 
 #[init]
 fn init() {
@@ -95,11 +93,7 @@ fn pre_upgrade() {
 fn post_upgrade() {
     let (heap,): (HeapState,) = storage::stable_restore().unwrap();
 
-    STATE.with(|state| {
-        *state.borrow_mut() = State {
-            heap,
-        }
-    });
+    STATE.with(|state| *state.borrow_mut() = State { heap });
 
     init_runtime_state();
 

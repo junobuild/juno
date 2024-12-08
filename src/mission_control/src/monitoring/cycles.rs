@@ -1,0 +1,45 @@
+use canfund::FundManager;
+use canfund::manager::options::{CyclesThreshold, FundStrategy};
+use canfund::manager::RegisterOpts;
+use crate::memory::RUNTIME_STATE;
+use crate::types::interface::{CyclesMonitoringConfig, SegmentsMonitoringStrategy};
+use crate::types::runtime::RuntimeState;
+
+pub fn start_cycles_monitoring(config: &CyclesMonitoringConfig) -> Result<(), String> {
+    if let Some(strategy) = &config.satellites_strategy {
+        start_satellites_monitoring(strategy)?;
+    }
+
+    Ok(())
+}
+
+fn start_satellites_monitoring(segments_strategy: &SegmentsMonitoringStrategy) -> Result<(), String> {
+    start_monitoring(segments_strategy)
+}
+
+fn start_monitoring(segments_strategy: &SegmentsMonitoringStrategy) -> Result<(), String> {
+    RUNTIME_STATE.with(|state| start_monitoring_impl(segments_strategy, &mut state.borrow_mut()))
+}
+
+fn start_monitoring_impl(segments_strategy: &SegmentsMonitoringStrategy, state: &mut RuntimeState) -> Result<(), String> {
+    if state.fund_manager.is_none() {
+        // TODO
+        // fund_manager.with_options(funding_config);
+
+        state.fund_manager = Some(FundManager::new());
+    }
+
+    let fund_manager = state.fund_manager.as_mut().ok_or_else(|| {
+        "FundManager not initialized. This is unexpected.".to_string()
+    })?;
+
+    for segment_id in &segments_strategy.ids {
+        fund_manager.register(segment_id.clone(), RegisterOpts::new().with_strategy(FundStrategy::BelowThreshold(
+            CyclesThreshold::new()
+                .with_min_cycles(20_025_000_000_000)
+                .with_fund_cycles(250_000_000_000),
+        )));
+    }
+
+    Ok(())
+}

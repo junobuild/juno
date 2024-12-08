@@ -7,6 +7,7 @@ mod mgmt;
 mod segments;
 mod store;
 mod types;
+mod monitoring;
 
 use crate::controllers::mission_control::{
     delete_mission_control_controllers as delete_controllers_to_mission_control,
@@ -68,6 +69,7 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
+use crate::monitoring::start_monitoring;
 use crate::types::runtime::RuntimeState;
 
 #[init]
@@ -394,7 +396,9 @@ fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
 // ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
-fn start_monitoring_with_config(config: MonitoringConfig) {}
+fn start_monitoring_with_config(config: MonitoringConfig) {
+    start_monitoring(&config).unwrap_or_else(|e| trap(&e));
+}
 
 // ---------------------------------------------------------
 // Wallet

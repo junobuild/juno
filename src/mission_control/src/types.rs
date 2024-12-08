@@ -123,8 +123,8 @@ pub mod interface {
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentsMonitoringStrategy {
-        ids: Vec<SegmentId>,
-        strategy: CyclesMonitoringStrategy,
+        pub ids: Vec<SegmentId>,
+        pub strategy: CyclesMonitoringStrategy,
     }
 
     #[derive(CandidType, Deserialize, Clone)]

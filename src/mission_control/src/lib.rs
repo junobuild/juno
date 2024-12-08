@@ -24,7 +24,7 @@ use crate::guards::{
 };
 use crate::memory::{init_runtime_state, STATE};
 use crate::mgmt::status::collect_statuses;
-use crate::monitoring::{restart, start_monitoring};
+use crate::monitoring::{restart_cycles, restart_monitoring, start_monitoring};
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -67,7 +67,6 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
-use crate::monitoring::restart::restart_monitoring;
 
 #[init]
 fn init() {

@@ -22,10 +22,9 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
-use crate::memory::{init_runtime_state, RUNTIME_STATE, STATE};
-use crate::mgmt::monitoring::init_monitoring;
+use crate::memory::{init_runtime_state, STATE};
 use crate::mgmt::status::collect_statuses;
-use crate::monitoring::start_monitoring;
+use crate::monitoring::{restart, start_monitoring};
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -44,7 +43,6 @@ use crate::store::{
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
 use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
-use crate::types::runtime::RuntimeState;
 use crate::types::state::{HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses};
 use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -61,7 +59,7 @@ use junobuild_shared::types::interface::{
     DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
 };
 use junobuild_shared::types::state::{
-    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentId, SegmentsStatuses,
+    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
 };
 use junobuild_shared::types::state::{Metadata, UserId};
 use segments::store::{
@@ -69,6 +67,7 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
+use crate::monitoring::restart::restart_monitoring;
 
 #[init]
 fn init() {
@@ -97,7 +96,7 @@ fn post_upgrade() {
 
     init_runtime_state();
 
-    let _ = init_monitoring();
+    let _ = restart_monitoring();
 }
 
 // ---------------------------------------------------------

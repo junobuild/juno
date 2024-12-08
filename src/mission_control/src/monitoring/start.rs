@@ -4,8 +4,7 @@ use crate::types::runtime::RuntimeState;
 use ic_cdk::id;
 use crate::monitoring::constants::DEFAULT_MISSION_CONTROL_CYCLES_BELOW_THRESHOLD;
 use crate::monitoring::funding::{init_funding_manager, init_register_options};
-use crate::types::state::{CyclesMonitoringStrategy, CyclesThreshold};
-use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
+use crate::types::state::{CyclesMonitoringStrategy};
 
 pub fn start_cycles_monitoring(config: &CyclesMonitoringConfig) -> Result<(), String> {
     if let Some(strategy) = &config.satellites_strategy {

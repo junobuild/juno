@@ -1,4 +1,4 @@
-mod config;
+mod funding;
 mod cycles;
 
 use crate::monitoring::cycles::start_cycles_monitoring;

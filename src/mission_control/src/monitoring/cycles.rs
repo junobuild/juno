@@ -1,9 +1,8 @@
 use crate::memory::RUNTIME_STATE;
 use crate::types::interface::{CyclesMonitoringConfig, SegmentsMonitoringStrategy};
 use crate::types::runtime::RuntimeState;
-use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use canfund::manager::RegisterOpts;
-use canfund::FundManager;
+use crate::monitoring::funding::{init_funding_manager};
 
 pub fn start_cycles_monitoring(config: &CyclesMonitoringConfig) -> Result<(), String> {
     if let Some(strategy) = &config.satellites_strategy {
@@ -27,17 +26,7 @@ fn start_monitoring_impl(
     segments_strategy: &SegmentsMonitoringStrategy,
     state: &mut RuntimeState,
 ) -> Result<(), String> {
-    if state.fund_manager.is_none() {
-        // TODO
-        // fund_manager.with_options(funding_config);
-
-        state.fund_manager = Some(FundManager::new());
-    }
-
-    let fund_manager = state
-        .fund_manager
-        .as_mut()
-        .ok_or_else(|| "FundManager not initialized. This is unexpected.".to_string())?;
+    let fund_manager = state.fund_manager.get_or_insert_with(init_funding_manager);
 
     let fund_strategy = segments_strategy.strategy.to_fund_strategy()?;
 

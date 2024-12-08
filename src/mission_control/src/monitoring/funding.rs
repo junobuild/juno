@@ -6,8 +6,15 @@ use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTE
 use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
 use std::rc::Rc;
 use std::sync::Arc;
+use canfund::FundManager;
 
-pub fn create_funding_config() -> FundManagerOptions {
+pub fn init_funding_manager() -> FundManager {
+    let mut fund_manager = FundManager::new();
+    fund_manager.with_options(init_funding_config());
+    fund_manager
+}
+
+fn init_funding_config() -> FundManagerOptions {
     FundManagerOptions::new()
         // TODO: Integrate in mission control config
         .with_interval_secs(30)

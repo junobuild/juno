@@ -74,11 +74,11 @@ pub mod state {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Monitoring {
-        pub cycles_strategy: Option<MonitoringStrategy>,
+        pub cycles_strategy: Option<CyclesMonitoringStrategy>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum MonitoringStrategy {
+    pub enum CyclesMonitoringStrategy {
         BelowThreshold(CyclesThreshold),
     }
 
@@ -98,17 +98,17 @@ pub mod runtime {
 }
 
 pub mod core {
-    use crate::types::state::MonitoringStrategy;
+    use crate::types::state::CyclesMonitoringStrategy;
     use junobuild_shared::types::state::Metadata;
 
     pub trait Segment<K> {
         fn set_metadata(&self, metadata: &Metadata) -> Self;
-        fn set_monitoring_strategy(&self, strategy: &MonitoringStrategy) -> Self;
+        fn set_monitoring_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self;
     }
 }
 
 pub mod interface {
-    use crate::types::state::MonitoringStrategy;
+    use crate::types::state::CyclesMonitoringStrategy;
     use candid::CandidType;
     use junobuild_shared::mgmt::types::cmc::SubnetId;
     use junobuild_shared::types::state::SegmentId;
@@ -123,12 +123,12 @@ pub mod interface {
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentsMonitoringStrategy {
         ids: Vec<SegmentId>,
-        strategy: MonitoringStrategy,
+        strategy: CyclesMonitoringStrategy,
     }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct MonitoringConfig {
-        pub mission_control_strategy: Option<MonitoringStrategy>,
+        pub mission_control_strategy: Option<CyclesMonitoringStrategy>,
         pub satellites_strategy: Option<SegmentsMonitoringStrategy>,
         pub orbiters_strategy: Option<SegmentsMonitoringStrategy>,
     }

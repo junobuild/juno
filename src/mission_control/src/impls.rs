@@ -1,6 +1,6 @@
 use crate::types::core::Segment;
 use crate::types::state::{
-    Archive, ArchiveStatuses, HeapState, Monitoring, MonitoringStrategy, Orbiter, Orbiters,
+    Archive, ArchiveStatuses, HeapState, Monitoring, CyclesMonitoringStrategy, Orbiter, Orbiters,
     Satellite, Settings, State, User,
 };
 use canfund::FundManager;
@@ -93,7 +93,7 @@ impl Segment<SatelliteId> for Satellite {
         }
     }
 
-    fn set_monitoring_strategy(&self, strategy: &MonitoringStrategy) -> Self {
+    fn set_monitoring_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self {
         let now = time();
 
         Satellite {
@@ -119,7 +119,7 @@ impl Segment<OrbiterId> for Orbiter {
         }
     }
 
-    fn set_monitoring_strategy(&self, strategy: &MonitoringStrategy) -> Self {
+    fn set_monitoring_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self {
         let now = time();
 
         Orbiter {

@@ -1,6 +1,6 @@
 use crate::types::core::Segment;
 use crate::types::state::{
-    HeapState, Monitoring, MonitoringStrategy, Orbiter, Satellite, Settings,
+    HeapState, Monitoring, CyclesMonitoringStrategy, Orbiter, Satellite, Settings,
 };
 use crate::STATE;
 use junobuild_shared::types::state::{OrbiterId, SatelliteId};
@@ -11,14 +11,14 @@ use std::hash::Hash;
 /// Settings
 ///
 
-pub fn set_mission_control_monitoring_strategy(strategy: &MonitoringStrategy) {
+pub fn set_mission_control_monitoring_strategy(strategy: &CyclesMonitoringStrategy) {
     STATE.with(|state| {
         set_mission_control_monitoring_strategy_impl(strategy, &mut state.borrow_mut().heap)
     })
 }
 
 pub fn set_mission_control_monitoring_strategy_impl(
-    strategy: &MonitoringStrategy,
+    strategy: &CyclesMonitoringStrategy,
     state: &mut HeapState,
 ) {
     let settings = state.settings.get_or_insert_with(Settings::default);
@@ -31,7 +31,7 @@ pub fn set_mission_control_monitoring_strategy_impl(
 
 pub fn set_satellite_monitoring_strategy(
     satellite_id: &SatelliteId,
-    strategy: &MonitoringStrategy,
+    strategy: &CyclesMonitoringStrategy,
 ) -> Result<Satellite, String> {
     STATE.with(|state| {
         set_monitoring_strategy_impl(
@@ -44,7 +44,7 @@ pub fn set_satellite_monitoring_strategy(
 
 pub fn set_orbiter_monitoring_strategy(
     orbiter_id: &OrbiterId,
-    strategy: &MonitoringStrategy,
+    strategy: &CyclesMonitoringStrategy,
 ) -> Result<Orbiter, String> {
     STATE.with(|state| {
         set_monitoring_strategy_impl(orbiter_id, strategy, &mut state.borrow_mut().heap.orbiters)
@@ -53,7 +53,7 @@ pub fn set_orbiter_monitoring_strategy(
 
 fn set_monitoring_strategy_impl<K: Eq + Hash + Copy, T: Clone + Segment<K>>(
     id: &K,
-    strategy: &MonitoringStrategy,
+    strategy: &CyclesMonitoringStrategy,
     state: &mut HashMap<K, T>,
 ) -> Result<T, String> {
     let segment = state.get(id);

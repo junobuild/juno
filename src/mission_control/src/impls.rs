@@ -9,6 +9,7 @@ use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
+use canfund::manager::RegisterOpts;
 
 impl From<&UserId> for HeapState {
     fn from(user: &UserId) -> Self {

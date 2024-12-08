@@ -7,11 +7,19 @@ use ic_ledger_types_for_canfund::DEFAULT_SUBACCOUNT;
 use std::rc::Rc;
 use std::sync::Arc;
 use canfund::FundManager;
+use canfund::manager::RegisterOpts;
+use crate::types::state::CyclesMonitoringStrategy;
 
 pub fn init_funding_manager() -> FundManager {
     let mut fund_manager = FundManager::new();
     fund_manager.with_options(init_funding_config());
     fund_manager
+}
+
+pub fn init_register_options(cycles_strategy: &CyclesMonitoringStrategy) -> Result<RegisterOpts, String> {
+    let fund_strategy = cycles_strategy.to_fund_strategy()?;
+    let options = RegisterOpts::new().with_strategy(fund_strategy.clone());
+    Ok(options)
 }
 
 fn init_funding_config() -> FundManagerOptions {

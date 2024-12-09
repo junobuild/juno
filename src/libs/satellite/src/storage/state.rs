@@ -17,7 +17,9 @@ use junobuild_storage::types::store::{Asset, AssetEncoding};
 use std::borrow::Cow;
 use std::ops::RangeBounds;
 
-/// Assets
+// ---------------------------------------------------------
+// Assets
+// ---------------------------------------------------------
 
 pub fn get_public_asset(full_path: &FullPath) -> (Option<Asset>, Memory) {
     // We cannot know on the web which memory has been used. That's why we try first to get the asset from heap for performance reason.
@@ -259,7 +261,9 @@ fn stable_encoding_chunk_key(
     }
 }
 
-/// Rules
+// ---------------------------------------------------------
+// Rules
+// ---------------------------------------------------------
 
 pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     let rule = STATE.with(|state| {
@@ -275,7 +279,9 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     }
 }
 
-/// Custom domains
+// ---------------------------------------------------------
+// Custom domains
+// ---------------------------------------------------------
 
 pub fn get_domains() -> CustomDomains {
     STATE.with(|state| state.borrow().heap.storage.custom_domains.clone())
@@ -320,9 +326,9 @@ fn delete_domain_impl(domain_name: &DomainName, custom_domains: &mut CustomDomai
     custom_domains.remove(domain_name);
 }
 
-///
-/// Config
-///
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 pub fn get_config() -> StorageConfig {
     STATE.with(|state| state.borrow().heap.storage.config.clone())

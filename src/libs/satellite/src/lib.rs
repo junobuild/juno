@@ -75,9 +75,9 @@ pub use crate::types::hooks::{
 // END: Re-exported Types
 // ============================================================================================
 
-///
-/// Init and Upgrade
-///
+// ---------------------------------------------------------
+// Init and Upgrade
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[init]
@@ -97,9 +97,9 @@ pub fn post_upgrade() {
     satellite::post_upgrade();
 }
 
-///
-/// Db
-///
+// ---------------------------------------------------------
+// Db
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[update]
@@ -167,7 +167,9 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
     satellite::count_collection_docs(collection)
 }
 
-/// Rules
+// ---------------------------------------------------------
+// Rules
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
@@ -193,9 +195,9 @@ pub fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule)
     satellite::del_rule(rules_type, collection, rule)
 }
 
-///
-/// Controllers
-///
+// ---------------------------------------------------------
+// Controllers
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
@@ -215,9 +217,9 @@ pub fn list_controllers() -> Controllers {
     satellite::list_controllers()
 }
 
-///
-/// Custom domains
-///
+// ---------------------------------------------------------
+// Custom domains
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[query(guard = "caller_is_admin_controller")]
@@ -237,9 +239,9 @@ pub fn del_custom_domain(domain_name: DomainName) {
     satellite::del_custom_domain(domain_name);
 }
 
-///
-/// Config
-///
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
@@ -247,9 +249,9 @@ pub fn get_config() -> Config {
     satellite::get_config()
 }
 
-///
-/// Authentication config
-///
+// ---------------------------------------------------------
+// Authentication config
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
@@ -263,9 +265,9 @@ pub fn get_auth_config() -> Option<AuthenticationConfig> {
     satellite::get_auth_config()
 }
 
-///
-/// Db config
-///
+// ---------------------------------------------------------
+// Db config
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
@@ -279,9 +281,9 @@ pub fn get_db_config() -> Option<DbConfig> {
     satellite::get_db_config()
 }
 
-///
-/// Storage config
-///
+// ---------------------------------------------------------
+// Storage config
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]
@@ -295,9 +297,9 @@ pub fn get_storage_config() -> StorageConfig {
     satellite::get_storage_config()
 }
 
-///
-/// Http
-///
+// ---------------------------------------------------------
+// Http
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[query]
@@ -391,7 +393,9 @@ pub fn get_many_assets(
     satellite::get_many_assets(assets)
 }
 
-/// Mgmt
+// ---------------------------------------------------------
+// Mgmt
+// ---------------------------------------------------------
 
 #[doc(hidden)]
 #[update(guard = "caller_is_admin_controller")]

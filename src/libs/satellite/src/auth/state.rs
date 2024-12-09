@@ -2,9 +2,9 @@ use crate::auth::types::config::AuthenticationConfig;
 use crate::auth::types::state::AuthenticationHeapState;
 use crate::memory::STATE;
 
-///
-/// Config
-///
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 pub fn get_config() -> Option<AuthenticationConfig> {
     STATE.with(|state| {

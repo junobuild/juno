@@ -3,8 +3,9 @@ use crate::cycles_monitoring::funding::register_cycles_monitoring;
 use crate::memory::RUNTIME_STATE;
 use crate::segments::store::{get_orbiters, get_satellites};
 use crate::store::get_settings;
+use crate::types::core::HasMonitoring;
 use crate::types::runtime::RuntimeState;
-use crate::types::state::{CyclesMonitoringStrategy, Settings};
+use crate::types::state::CyclesMonitoringStrategy;
 use ic_cdk::id;
 use junobuild_shared::types::state::SegmentId;
 
@@ -14,13 +15,16 @@ pub fn restart_cycles_monitoring() -> Result<(), String> {
     let satellites = get_satellites();
     let orbiters = get_orbiters();
 
-    fn map_strategy(
+    fn map_strategy<T>(
         segment_id: &SegmentId,
-        settings: &Option<Settings>,
-    ) -> Option<SegmentCyclesMonitoryStrategyPair> {
+        settings: &Option<T>,
+    ) -> Option<SegmentCyclesMonitoryStrategyPair>
+    where
+        T: HasMonitoring,
+    {
         settings
             .as_ref()
-            .and_then(|settings| settings.monitoring.as_ref())
+            .and_then(|settings| settings.monitoring())
             .and_then(|monitoring| monitoring.cycles_strategy.as_ref())
             .map(|strategy| (segment_id.clone(), strategy.clone()))
     }

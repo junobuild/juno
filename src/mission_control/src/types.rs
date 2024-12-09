@@ -24,7 +24,7 @@ pub mod state {
         pub controllers: Controllers,
         pub archive: Archive,
         pub orbiters: Orbiters,
-        pub settings: Option<Settings>,
+        pub settings: Option<MissionControlSettings>,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -33,6 +33,13 @@ pub mod state {
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub metadata: Metadata,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct MissionControlSettings {
+        pub monitoring: Option<Monitoring>,
+        pub created_at: Timestamp,
+        pub updated_at: Timestamp,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -99,12 +106,16 @@ pub mod runtime {
 }
 
 pub mod core {
-    use crate::types::state::CyclesMonitoringStrategy;
+    use crate::types::state::{CyclesMonitoringStrategy, Monitoring};
     use junobuild_shared::types::state::Metadata;
 
     pub trait Segment<K> {
         fn set_metadata(&self, metadata: &Metadata) -> Self;
         fn set_monitoring_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self;
+    }
+
+    pub trait HasMonitoring {
+        fn monitoring(&self) -> Option<&Monitoring>;
     }
 }
 

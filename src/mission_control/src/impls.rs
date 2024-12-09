@@ -1,9 +1,9 @@
-use crate::types::core::Segment;
+use crate::types::core::{HasMonitoring, Segment};
 use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
-    Archive, ArchiveStatuses, CyclesMonitoringStrategy, HeapState, Monitoring, Orbiter, Orbiters,
-    Satellite, Settings, State, User,
+    Archive, ArchiveStatuses, CyclesMonitoringStrategy, HeapState, MissionControlSettings,
+    Monitoring, Orbiter, Orbiters, Satellite, Settings, State, User,
 };
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use canfund::manager::RegisterOpts;
@@ -115,6 +115,12 @@ impl Settings {
     }
 }
 
+impl HasMonitoring for Settings {
+    fn monitoring(&self) -> Option<&Monitoring> {
+        self.monitoring.as_ref()
+    }
+}
+
 impl Segment<SatelliteId> for Satellite {
     fn set_metadata(&self, metadata: &Metadata) -> Self {
         let now = time();
@@ -187,5 +193,37 @@ impl CyclesMonitoringStrategy {
             }
             _ => Err("Unsupported cycles monitoring strategy.".to_string()),
         }
+    }
+}
+
+impl MissionControlSettings {
+    pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
+        let now = time();
+
+        MissionControlSettings {
+            monitoring: Some(Monitoring {
+                cycles_strategy: Some(strategy.clone()),
+            }),
+            updated_at: now,
+            created_at: now,
+        }
+    }
+
+    pub fn clone_with_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self {
+        let now = time();
+
+        MissionControlSettings {
+            monitoring: Some(Monitoring {
+                cycles_strategy: Some(strategy.clone()),
+            }),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+}
+
+impl HasMonitoring for MissionControlSettings {
+    fn monitoring(&self) -> Option<&Monitoring> {
+        self.monitoring.as_ref()
     }
 }

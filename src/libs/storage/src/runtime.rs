@@ -12,7 +12,9 @@ use junobuild_shared::rate::types::RateConfig;
 use junobuild_shared::rate::utils::increment_and_assert_rate_store;
 use std::collections::HashMap;
 
-/// Certified assets
+// ---------------------------------------------------------
+// Certified assets
+// ---------------------------------------------------------
 
 pub fn init_certified_assets(asset_hashes: &CertifiedAssetHashes) {
     STATE.with(|state| {
@@ -55,7 +57,9 @@ fn delete_certified_asset_impl(asset: &Asset, runtime: &mut RuntimeState) {
     update_certified_data(&runtime.storage.asset_hashes);
 }
 
-/// Batch
+// ---------------------------------------------------------
+// Batch
+// ---------------------------------------------------------
 
 pub fn get_batch(batch_id: &BatchId) -> Option<Batch> {
     STATE.with(|state| {
@@ -128,7 +132,9 @@ fn clear_batch_impl(batch_id: &BatchId, chunk_ids: &[ChunkId], state: &mut Stora
     state.batches.remove(batch_id);
 }
 
-/// Chunks
+// ---------------------------------------------------------
+// Chunks
+// ---------------------------------------------------------
 
 pub fn get_chunk(chunk_id: &ChunkId) -> Option<Chunk> {
     STATE.with(|state| {
@@ -166,9 +172,9 @@ fn insert_chunk_impl(chunk_id: &ChunkId, chunk: Chunk, chunks: &mut Chunks) {
     chunks.insert(*chunk_id, chunk);
 }
 
-///
-/// Rates
-///
+// ---------------------------------------------------------
+// Rates
+// ---------------------------------------------------------
 
 pub fn increment_and_assert_rate(
     collection: &CollectionKey,

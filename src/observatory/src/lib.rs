@@ -66,7 +66,9 @@ fn post_upgrade() {
     });
 }
 
-/// Controllers
+// ---------------------------------------------------------
+// Controllers
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 fn set_controllers(
@@ -83,7 +85,9 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
     delete_controllers(&controllers);
 }
 
-/// Crontabs
+// ---------------------------------------------------------
+// Crontabs
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_not_anonymous")]
 async fn set_cron_tab(cron_tab: SetCronTab) -> CronTab {
@@ -102,7 +106,9 @@ fn get_cron_tab() -> Option<CronTab> {
     get_cron_tab_store(&user)
 }
 
-/// Statuses
+// ---------------------------------------------------------
+// Statuses
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_not_anonymous")]
 fn get_statuses() -> Option<ArchiveStatuses> {
@@ -110,14 +116,18 @@ fn get_statuses() -> Option<ArchiveStatuses> {
     get_statuses_store(&user)
 }
 
-/// Reports
+// ---------------------------------------------------------
+// Reports
+// ---------------------------------------------------------
 
 #[query(guard = "caller_can_execute_cron_jobs")]
 fn list_statuses(args: ListStatusesArgs) -> Vec<ListStatuses> {
     collect_statuses_report(&args)
 }
 
-/// Mgmt
+// ---------------------------------------------------------
+// Mgmt
+// ---------------------------------------------------------
 
 #[query]
 fn version() -> String {

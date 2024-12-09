@@ -32,9 +32,9 @@ use junobuild_shared::utils::principal_not_equal;
 use std::collections::HashMap;
 use std::ptr::addr_of;
 
-///
-/// Upload batch and chunks
-///
+// ---------------------------------------------------------
+// Upload batch and chunks
+// ---------------------------------------------------------
 
 const BATCH_EXPIRY_NANOS: u64 = 300_000_000_000;
 

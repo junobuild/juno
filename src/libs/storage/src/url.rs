@@ -41,7 +41,9 @@ pub fn alternative_paths(full_path: &FullPath) -> Option<Vec<String>> {
     aliased_by(full_path)
 }
 
-/// BEGIN: From DFINITY certified asset canister
+// ---------------------------------------------------------
+// BEGIN: From DFINITY certified asset canister
+// ---------------------------------------------------------
 
 // path like /path/to/my/asset should also be valid for /path/to/my/asset.html or /path/to/my/asset/index.html
 fn aliases_of(key: &String) -> Vec<String> {
@@ -75,7 +77,9 @@ fn aliased_by(key: &String) -> Option<Vec<String>> {
     }
 }
 
-/// END
+// ---------------------------------------------------------
+// END
+// ---------------------------------------------------------
 
 fn build_url(url: &str) -> Result<Url, &'static str> {
     let separator = separator(url);
@@ -92,7 +96,6 @@ fn build_url(url: &str) -> Result<Url, &'static str> {
 }
 
 /// Currently encoded URL are not supported, only non encoded path because the certification except a tree containing only non encoded paths.
-
 fn decode_path(parsed_url: &Url) -> Result<String, &'static str> {
     let path = parsed_url.path();
 

@@ -1,4 +1,3 @@
-use crate::mgmt::monitoring::register_monitoring;
 use crate::segments::canister::{create_canister, delete_canister};
 use crate::segments::msg::SATELLITE_NOT_FOUND;
 use crate::segments::store::{
@@ -75,13 +74,7 @@ async fn create_and_save_satellite(
 
     match result {
         Err((_, message)) => Err(["Create satellite failed.", &message].join(" - ")),
-        Ok((satellite_id,)) => {
-            let satellite = add_satellite(&satellite_id, &name);
-
-            register_monitoring(&satellite_id);
-
-            Ok(satellite)
-        }
+        Ok((satellite,)) => Ok(add_satellite(&satellite, &name)),
     }
 }
 
@@ -97,8 +90,6 @@ pub async fn attach_satellite(
             assert_satellite(satellite_id).await?;
 
             let satellite = add_satellite(satellite_id, name);
-
-            register_monitoring(satellite_id);
 
             Ok(satellite)
         }

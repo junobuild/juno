@@ -5,7 +5,7 @@ use std::collections::HashMap;
 use url::Url;
 use urlencoding::decode;
 
-pub fn map_url(url: &String) -> Result<MapUrl, &'static str> {
+pub fn map_url(url: &str) -> Result<MapUrl, &'static str> {
     let parsed_url = build_url(url)?;
 
     // Clean path without query params
@@ -81,14 +81,14 @@ fn aliased_by(key: &String) -> Option<Vec<String>> {
 // END
 // ---------------------------------------------------------
 
-fn build_url(url: &String) -> Result<Url, &'static str> {
+fn build_url(url: &str) -> Result<Url, &'static str> {
     let separator = separator(url);
 
     let parsed_url = Url::parse(&["http://localhost", separator, url].join(""));
 
     match parsed_url {
         Err(_) => {
-            let error = format!("Url {} cannot be parsed.", url.clone()).into_boxed_str();
+            let error = format!("Url {} cannot be parsed.", url.to_owned()).into_boxed_str();
             Err(Box::leak(error))
         }
         Ok(url) => Ok(url),

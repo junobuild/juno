@@ -38,13 +38,15 @@ use crate::segments::satellite::{
 };
 use crate::segments::store::get_orbiters;
 use crate::store::{
-    get_user as get_user_store,
+    get_settings as get_settings_store, get_user as get_user_store,
     list_mission_control_statuses as list_mission_control_statuses_store,
     list_orbiter_statuses as list_orbiter_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
 use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
-use crate::types::state::{HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses};
+use crate::types::state::{
+    HeapState, MissionControlSettings, Orbiter, Orbiters, Satellite, Satellites, State, Statuses,
+};
 use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
@@ -334,6 +336,11 @@ fn list_mission_control_controllers() -> Controllers {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_user() -> UserId {
     get_user_store()
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn get_settings() -> Option<MissionControlSettings> {
+    get_settings_store()
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]

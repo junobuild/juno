@@ -14,8 +14,8 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<(Stri
         .map(|(source, destination)| (rewrite_source_to_path(source).clone(), destination.clone()))
 }
 
-pub fn rewrite_source_to_path(source: &String) -> String {
-    [separator(source.as_str()), source]
+pub fn rewrite_source_to_path(source: &str) -> String {
+    [separator(source), source]
         .join("")
         .replace('*', "")
 }

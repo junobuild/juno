@@ -406,18 +406,19 @@ pub fn list_assets(collection: CollectionKey, filter: ListParams) -> ListResults
     }
 }
 
-///
-/// Config
-///
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn get_config() -> Config {
     let storage = get_storage_config_store();
     Config { storage }
 }
-///
-/// Storage config
-///
+
+// ---------------------------------------------------------
+// Storage config
+// ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
 pub fn set_storage_config(config: StorageConfig) {
@@ -429,9 +430,9 @@ pub fn get_storage_config() -> StorageConfig {
     get_storage_config_store()
 }
 
-///
-/// Custom domains
-///
+// ---------------------------------------------------------
+// Custom domains
+// ---------------------------------------------------------
 
 #[query(guard = "caller_is_admin_controller")]
 pub fn list_custom_domains() -> CustomDomains {
@@ -448,9 +449,9 @@ pub fn del_custom_domain(domain_name: DomainName) {
     delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
 }
 
-///
-/// Http
-///
+// ---------------------------------------------------------
+// Http
+// ---------------------------------------------------------
 
 #[query]
 pub fn http_request(request: HttpRequest) -> HttpResponse {

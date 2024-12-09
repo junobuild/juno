@@ -4,7 +4,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 112,
-			"running": 6717
+			"running": 6742
 		},
 		"nodes": {
 			"up": 13,
@@ -16,7 +16,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 1,
-			"running": 111
+			"running": 123
 		},
 		"nodes": {
 			"up": 13,
@@ -28,7 +28,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 28,
-			"running": 32822
+			"running": 32845
 		},
 		"nodes": {
 			"up": 13,
@@ -40,7 +40,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 176,
-			"running": 50860
+			"running": 50870
 		},
 		"nodes": {
 			"up": 13,
@@ -52,7 +52,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 83,
-			"running": 35335
+			"running": 35338
 		},
 		"nodes": {
 			"up": 13,
@@ -64,7 +64,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 0,
-			"running": 19857
+			"running": 19863
 		},
 		"nodes": {
 			"up": 13,
@@ -76,7 +76,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 49,
-			"running": 33539
+			"running": 33547
 		},
 		"nodes": {
 			"up": 13,
@@ -88,7 +88,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 3,
-			"running": 26775
+			"running": 26789
 		},
 		"nodes": {
 			"up": 13,
@@ -100,7 +100,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 86,
-			"running": 39354
+			"running": 39362
 		},
 		"nodes": {
 			"up": 13,
@@ -112,7 +112,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 88,
-			"running": 54876
+			"running": 54883
 		},
 		"nodes": {
 			"up": 13,
@@ -124,7 +124,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 33,
-			"running": 31138
+			"running": 31173
 		},
 		"nodes": {
 			"up": 13,
@@ -135,8 +135,8 @@
 		"subnetId": "o3ow2-2ipam-6fcjo-3j5vt-fzbge-2g7my-5fz2m-p4o2t-dwlc4-gt2q7-5ae",
 		"type": "application",
 		"canisters": {
-			"stopped": 55,
-			"running": 56166
+			"stopped": 60,
+			"running": 56173
 		},
 		"nodes": {
 			"up": 13,
@@ -148,7 +148,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 44,
-			"running": 39369
+			"running": 39410
 		},
 		"nodes": {
 			"up": 13,
@@ -160,7 +160,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 63,
-			"running": 31676
+			"running": 31687
 		},
 		"nodes": {
 			"up": 13,
@@ -172,7 +172,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 15,
-			"running": 52409
+			"running": 52417
 		},
 		"nodes": {
 			"up": 13,
@@ -185,7 +185,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 6,
-			"running": 22789
+			"running": 22896
 		},
 		"nodes": {
 			"up": 13,
@@ -198,7 +198,7 @@
 		"type": "application",
 		"canisters": {
 			"stopped": 7,
-			"running": 716
+			"running": 695
 		},
 		"nodes": {
 			"up": 34,

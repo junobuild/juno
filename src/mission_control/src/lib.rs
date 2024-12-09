@@ -41,9 +41,7 @@ use crate::store::{
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
 use crate::types::interface::CreateCanisterConfig;
-use crate::types::state::{
-    Archive, HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses, User,
-};
+use crate::types::state::{HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses};
 use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
@@ -75,13 +73,7 @@ fn init() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            heap: HeapState {
-                user: User::from(&user),
-                satellites: HashMap::new(),
-                controllers: HashMap::new(),
-                archive: Archive::new(),
-                orbiters: Orbiters::new(),
-            },
+            heap: HeapState::from(&user),
         };
     });
 }

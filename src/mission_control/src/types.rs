@@ -4,6 +4,7 @@ pub mod state {
         ArchiveTime, Controllers, Metadata, OrbiterId, SegmentStatusResult, Timestamp,
     };
     use junobuild_shared::types::state::{SatelliteId, UserId};
+    use serde::Serialize;
     use std::collections::{BTreeMap, HashMap};
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
@@ -16,7 +17,7 @@ pub mod state {
         pub heap: HeapState,
     }
 
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct HeapState {
         pub user: User,
         pub satellites: Satellites,
@@ -25,7 +26,7 @@ pub mod state {
         pub orbiters: Orbiters,
     }
 
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct User {
         pub user: Option<UserId>,
         pub created_at: Timestamp,
@@ -33,7 +34,7 @@ pub mod state {
         pub metadata: Metadata,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Satellite {
         pub satellite_id: SatelliteId,
         pub metadata: Metadata,
@@ -41,7 +42,7 @@ pub mod state {
         pub updated_at: Timestamp,
     }
 
-    #[derive(CandidType, Deserialize, Clone)]
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct Orbiter {
         pub orbiter_id: OrbiterId,
         pub metadata: Metadata,
@@ -49,14 +50,14 @@ pub mod state {
         pub updated_at: Timestamp,
     }
 
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Archive {
         pub statuses: ArchiveStatuses,
     }
 
     pub type ArchiveStatusesSegments = HashMap<Principal, Statuses>;
 
-    #[derive(Default, CandidType, Deserialize, Clone)]
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct ArchiveStatuses {
         pub mission_control: Statuses,
         pub satellites: ArchiveStatusesSegments,

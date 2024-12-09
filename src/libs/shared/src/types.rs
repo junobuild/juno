@@ -7,6 +7,7 @@ pub mod state {
     use std::collections::HashMap;
 
     pub type UserId = Principal;
+
     pub type ControllerId = Principal;
 
     pub type SegmentId = Principal;
@@ -45,7 +46,7 @@ pub mod state {
         Admin,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentCanisterStatus {
         pub status: CanisterStatusType,
         pub settings: SegmentCanisterSettings,
@@ -56,7 +57,7 @@ pub mod state {
     }
 
     // Prevent breaking changes in DefiniteCanisterSettings which we do not use
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentCanisterSettings {
         pub controllers: Vec<Principal>,
         pub compute_allocation: Nat,
@@ -64,7 +65,7 @@ pub mod state {
         pub freezing_threshold: Nat,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentStatus {
         pub id: Principal,
         pub metadata: Option<Metadata>,

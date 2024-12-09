@@ -6,7 +6,9 @@ use junobuild_collections::types::core::CollectionKey;
 use junobuild_collections::types::interface::{DelRule, SetRule};
 use junobuild_collections::types::rules::{Memory, Rule};
 
-/// Rules
+// ---------------------------------------------------------
+// Rules
+// ---------------------------------------------------------
 
 pub fn get_rule_db(collection: &CollectionKey) -> Option<Rule> {
     STATE.with(|state| state.borrow().heap.db.rules.get(collection).cloned())

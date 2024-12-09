@@ -9,7 +9,9 @@ use junobuild_shared::types::core::Key;
 use std::collections::BTreeMap;
 use std::ops::RangeBounds;
 
-/// Collections
+// ---------------------------------------------------------
+// Collections
+// ---------------------------------------------------------
 
 pub fn init_collection(collection: &CollectionKey, memory: &Memory) {
     match memory {
@@ -89,7 +91,9 @@ fn delete_collection_heap(collection: &CollectionKey, db: &mut DbHeap) -> Result
     }
 }
 
-/// Documents
+// ---------------------------------------------------------
+// Documents
+// ---------------------------------------------------------
 
 pub fn get_doc(collection: &CollectionKey, key: &Key, rule: &Rule) -> Result<Option<Doc>, String> {
     match rule.mem() {
@@ -334,7 +338,9 @@ fn stable_key(collection: &CollectionKey, key: &Key) -> StableKey {
     }
 }
 
-/// Rules
+// ---------------------------------------------------------
+// Rules
+// ---------------------------------------------------------
 
 pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     let rule = STATE.with(|state| {
@@ -350,9 +356,9 @@ pub fn get_rule(collection: &CollectionKey) -> Result<Rule, String> {
     }
 }
 
-///
-/// Config
-///
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 pub fn get_config() -> Option<DbConfig> {
     STATE.with(|state| state.borrow().heap.db.config.clone())

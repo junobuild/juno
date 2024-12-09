@@ -113,9 +113,9 @@ pub fn post_upgrade() {
     invoke_on_post_upgrade();
 }
 
-///
-/// Db
-///
+// ---------------------------------------------------------
+// Db
+// ---------------------------------------------------------
 
 pub fn set_doc(collection: CollectionKey, key: Key, doc: SetDoc) -> Doc {
     let caller = caller();
@@ -243,7 +243,9 @@ pub fn count_collection_docs(collection: CollectionKey) -> usize {
     }
 }
 
-/// Rules
+// ---------------------------------------------------------
+// Rules
+// ---------------------------------------------------------
 
 pub fn get_rule(rules_type: &RulesType, collection: &CollectionKey) -> Option<Rule> {
     match rules_type {
@@ -273,9 +275,9 @@ pub fn del_rule(rules_type: RulesType, collection: CollectionKey, rule: DelRule)
     }
 }
 
-///
-/// Controllers
-///
+// ---------------------------------------------------------
+// Controllers
+// ---------------------------------------------------------
 
 pub fn set_controllers(
     SetControllersArgs {
@@ -315,9 +317,9 @@ pub fn list_controllers() -> Controllers {
     get_controllers()
 }
 
-///
-/// Config
-///
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 pub fn get_config() -> Config {
     let storage = get_storage_config_store();
@@ -331,9 +333,9 @@ pub fn get_config() -> Config {
     }
 }
 
-///
-/// Custom domains
-///
+// ---------------------------------------------------------
+// Custom domains
+// ---------------------------------------------------------
 
 pub fn list_custom_domains() -> CustomDomains {
     get_custom_domains_store()
@@ -347,9 +349,9 @@ pub fn del_custom_domain(domain_name: DomainName) {
     delete_domain_store(&domain_name).unwrap_or_else(|e| trap(&e));
 }
 
-///
-/// Authentication config
-///
+// ---------------------------------------------------------
+// Authentication config
+// ---------------------------------------------------------
 
 pub fn set_auth_config(config: AuthenticationConfig) {
     set_authentication_config(&config).unwrap_or_else(|e| trap(&e));
@@ -359,9 +361,9 @@ pub fn get_auth_config() -> Option<AuthenticationConfig> {
     get_authentication_config()
 }
 
-///
-/// Db config
-///
+// ---------------------------------------------------------
+// Db config
+// ---------------------------------------------------------
 
 pub fn set_db_config(config: DbConfig) {
     set_db_config_store(&config);
@@ -371,9 +373,9 @@ pub fn get_db_config() -> Option<DbConfig> {
     get_db_config_store()
 }
 
-///
-/// Storage config
-///
+// ---------------------------------------------------------
+// Storage config
+// ---------------------------------------------------------
 
 pub fn set_storage_config(config: StorageConfig) {
     set_storage_config_store(&config);
@@ -383,9 +385,9 @@ pub fn get_storage_config() -> StorageConfig {
     get_storage_config_store()
 }
 
-///
-/// Http
-///
+// ---------------------------------------------------------
+// Http
+// ---------------------------------------------------------
 
 pub fn http_request(request: HttpRequest) -> HttpResponse {
     http_request_storage(request, &StorageState)

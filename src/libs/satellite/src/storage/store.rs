@@ -48,9 +48,9 @@ use junobuild_storage::utils::{
 use junobuild_storage::well_known::update::update_custom_domains_asset;
 use junobuild_storage::well_known::utils::build_custom_domain;
 
-///
-/// Getter, list and delete
-///
+// ---------------------------------------------------------
+// Getter, list and delete
+// ---------------------------------------------------------
 
 /// Get content chunks of an asset.
 ///
@@ -528,9 +528,9 @@ fn delete_filtered_assets_store_impl(
     Ok(results)
 }
 
-///
-/// Upload batch and chunks
-///
+// ---------------------------------------------------------
+// Upload batch and chunks
+// ---------------------------------------------------------
 
 pub fn create_batch_store(caller: Principal, init: InitAssetKey) -> Result<BatchId, String> {
     let controllers: Controllers = get_controllers();
@@ -584,9 +584,9 @@ fn secure_create_batch_impl(
     create_batch(caller, controllers, config, init, None, &StorageState)
 }
 
-///
-/// Config
-///
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 pub fn set_config_store(config: &StorageConfig) {
     insert_state_config(config);
@@ -598,9 +598,9 @@ pub fn get_config_store() -> StorageConfig {
     get_state_config()
 }
 
-///
-/// Domain
-///
+// ---------------------------------------------------------
+// Domain
+// ---------------------------------------------------------
 
 pub fn set_domain_store(domain_name: &DomainName, bn_id: &Option<String>) -> Result<(), String> {
     set_domain_impl(domain_name, bn_id)

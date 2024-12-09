@@ -1,8 +1,22 @@
 use crate::types::core::Segment;
-use crate::types::state::{Archive, ArchiveStatuses, Orbiter, Satellite, User};
+use crate::types::state::{
+    Archive, ArchiveStatuses, HeapState, Orbiter, Orbiters, Satellite, User,
+};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
+
+impl From<&UserId> for HeapState {
+    fn from(user: &UserId) -> Self {
+        HeapState {
+            user: User::from(user),
+            satellites: HashMap::new(),
+            controllers: HashMap::new(),
+            archive: Archive::new(),
+            orbiters: Orbiters::new(),
+        }
+    }
+}
 
 impl From<&UserId> for User {
     fn from(user: &UserId) -> Self {

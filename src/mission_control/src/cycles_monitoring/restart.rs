@@ -26,7 +26,7 @@ pub fn restart_cycles_monitoring() -> Result<(), String> {
             .as_ref()
             .and_then(|settings| settings.monitoring())
             .and_then(|monitoring| monitoring.cycles_strategy.as_ref())
-            .map(|strategy| (segment_id.clone(), strategy.clone()))
+            .map(|strategy| (*segment_id, strategy.clone()))
     }
 
     let satellites_strategies: Vec<SegmentCyclesMonitoryStrategyPair> = satellites
@@ -89,5 +89,5 @@ fn restart_mission_control_monitoring_impl(
 ) -> Result<(), String> {
     let fund_manager = state.fund_manager.get_or_insert_with(init_funding_manager);
 
-    register_cycles_monitoring(fund_manager, &mission_control_id, &cycles_strategy)
+    register_cycles_monitoring(fund_manager, mission_control_id, cycles_strategy)
 }

@@ -1,6 +1,6 @@
 use crate::cycles_monitoring::constants::DEFAULT_MISSION_CONTROL_STRATEGY;
+use crate::cycles_monitoring::funding::init_funding_manager;
 use crate::cycles_monitoring::funding::register_cycles_monitoring;
-use crate::cycles_monitoring::funding::{init_funding_manager, init_register_options};
 use crate::cycles_monitoring::store::{
     set_mission_control_strategy, set_orbiter_strategy, set_satellite_strategy,
 };
@@ -51,7 +51,7 @@ fn start_monitoring_impl(
     let fund_manager = state.fund_manager.get_or_insert_with(init_funding_manager);
 
     for segment_id in &segments_strategy.ids {
-        save_strategy(&segment_id, &segments_strategy.strategy)?;
+        save_strategy(segment_id, &segments_strategy.strategy)?;
 
         register_cycles_monitoring(fund_manager, segment_id, &segments_strategy.strategy)?;
     }

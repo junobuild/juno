@@ -12,7 +12,7 @@ pub mod state {
 
     pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
-    #[derive(Serialize, Deserialize)]
+    #[derive(Default, Serialize, Deserialize)]
     pub struct State {
         pub heap: HeapState,
     }
@@ -106,12 +106,11 @@ pub mod runtime {
 }
 
 pub mod core {
-    use crate::types::state::{CyclesMonitoringStrategy, Monitoring};
+    use crate::types::state::Monitoring;
     use junobuild_shared::types::state::Metadata;
 
     pub trait Segment<K> {
         fn set_metadata(&self, metadata: &Metadata) -> Self;
-        fn set_monitoring_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self;
     }
 
     pub trait HasMonitoring {

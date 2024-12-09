@@ -1,13 +1,10 @@
 use crate::types::core::{HasMonitoring, Segment};
-use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
     Archive, ArchiveStatuses, CyclesMonitoringStrategy, HeapState, MissionControlSettings,
-    Monitoring, Orbiter, Orbiters, Satellite, Settings, State, User,
+    Monitoring, Orbiter, Orbiters, Satellite, Settings, User,
 };
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
-use canfund::manager::RegisterOpts;
-use canfund::FundManager;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
@@ -131,20 +128,6 @@ impl Segment<SatelliteId> for Satellite {
             ..self.clone()
         }
     }
-
-    fn set_monitoring_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self {
-        let now = time();
-
-        Satellite {
-            settings: Some(Settings {
-                monitoring: Some(Monitoring {
-                    cycles_strategy: Some(strategy.clone()),
-                }),
-            }),
-            updated_at: now,
-            ..self.clone()
-        }
-    }
 }
 
 impl Segment<OrbiterId> for Orbiter {
@@ -157,40 +140,17 @@ impl Segment<OrbiterId> for Orbiter {
             ..self.clone()
         }
     }
-
-    fn set_monitoring_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self {
-        let now = time();
-
-        Orbiter {
-            settings: Some(Settings {
-                monitoring: Some(Monitoring {
-                    cycles_strategy: Some(strategy.clone()),
-                }),
-            }),
-            updated_at: now,
-            ..self.clone()
-        }
-    }
-}
-
-impl Default for State {
-    fn default() -> Self {
-        Self {
-            heap: HeapState::default(),
-        }
-    }
 }
 
 impl CyclesMonitoringStrategy {
     pub fn to_fund_strategy(&self) -> Result<FundStrategy, String> {
+        #[allow(unreachable_patterns)]
         match self {
-            CyclesMonitoringStrategy::BelowThreshold(threshold) => {
-                Ok(FundStrategy::BelowThreshold(
-                    CyclesThreshold::new()
-                        .with_min_cycles(threshold.min_cycles)
-                        .with_fund_cycles(threshold.fund_cycles),
-                ))
-            }
+            BelowThreshold(threshold) => Ok(FundStrategy::BelowThreshold(
+                CyclesThreshold::new()
+                    .with_min_cycles(threshold.min_cycles)
+                    .with_fund_cycles(threshold.fund_cycles),
+            )),
             _ => Err("Unsupported cycles monitoring strategy.".to_string()),
         }
     }

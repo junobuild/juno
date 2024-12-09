@@ -15,9 +15,7 @@ pub fn rewrite_url(requested_path: &str, config: &StorageConfig) -> Option<(Stri
 }
 
 pub fn rewrite_source_to_path(source: &str) -> String {
-    [separator(source), source]
-        .join("")
-        .replace('*', "")
+    [separator(source), source].join("").replace('*', "")
 }
 
 pub fn is_root_path(path: &str) -> bool {

@@ -1,7 +1,7 @@
 use crate::constants::RETAIN_ARCHIVE_STATUSES_NS;
 use crate::memory::STATE;
 use crate::types::state::{
-    ArchiveStatusesSegments, HeapState, MissionControlSettings, Settings, Statuses, User,
+    ArchiveStatusesSegments, HeapState, MissionControlSettings, Statuses, User,
 };
 use candid::Principal;
 use ic_cdk::api::time;

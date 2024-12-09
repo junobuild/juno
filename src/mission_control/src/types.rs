@@ -12,7 +12,7 @@ pub mod state {
 
     pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
-    #[derive(Default, Clone)]
+    #[derive(Default, Serialize, Deserialize)]
     pub struct State {
         pub heap: HeapState,
     }

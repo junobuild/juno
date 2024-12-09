@@ -8,7 +8,9 @@ use crate::types::core::CollectionKey;
 use crate::types::interface::{DelRule, SetRule};
 use crate::types::rules::{Rule, Rules};
 
-/// Rules
+// ---------------------------------------------------------
+// Rules
+// ---------------------------------------------------------
 
 pub fn filter_rules(rules: &Rules) -> Vec<(CollectionKey, Rule)> {
     rules

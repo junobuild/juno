@@ -23,7 +23,9 @@ use junobuild_shared::types::core::Key;
 use junobuild_shared::types::list::{ListParams, ListResults};
 use junobuild_shared::types::state::{Controllers, UserId};
 
-/// Collection
+// ---------------------------------------------------------
+// Collection
+// ---------------------------------------------------------
 
 pub fn init_collection_store(collection: &CollectionKey, memory: &Memory) {
     init_state_collection(collection, memory);
@@ -53,7 +55,9 @@ fn delete_collection_impl(
     Ok(())
 }
 
-/// Get
+// ---------------------------------------------------------
+// Get
+// ---------------------------------------------------------
 
 /// Get a document from a collection's store.
 ///
@@ -109,7 +113,9 @@ fn get_doc_impl(context: &StoreContext, key: Key, rule: &Rule) -> Result<Option<
     }
 }
 
-/// Insert
+// ---------------------------------------------------------
+// Insert
+// ---------------------------------------------------------
 
 /// Set a document in a collection's store.
 ///
@@ -184,7 +190,9 @@ fn set_doc_impl(
     })
 }
 
-/// List
+// ---------------------------------------------------------
+// List
+// ---------------------------------------------------------
 
 /// List documents in a collection.
 ///
@@ -276,7 +284,9 @@ fn get_docs_impl<'a>(
     Ok(results)
 }
 
-/// Delete
+// ---------------------------------------------------------
+// Delete
+// ---------------------------------------------------------
 
 /// Delete a document from a collection's store.
 ///
@@ -483,7 +493,9 @@ fn delete_filtered_docs_store_impl(
     Ok(results)
 }
 
-/// Config
+// ---------------------------------------------------------
+// Config
+// ---------------------------------------------------------
 
 pub fn set_config_store(config: &DbConfig) {
     insert_config(config);

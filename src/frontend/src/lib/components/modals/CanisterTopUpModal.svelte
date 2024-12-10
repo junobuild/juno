@@ -13,10 +13,10 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { E8S_PER_ICP, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { Segment } from '$lib/types/canister';
 	import { formatTCycles, icpToCycles } from '$lib/utils/cycles.utils';

@@ -3,8 +3,8 @@
 	import SatelliteArticle from '$lib/components/satellites/SatelliteArticle.svelte';
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import SatellitesToolbar from '$lib/components/satellites/SatellitesToolbar.svelte';
+	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { layoutSatellites } from '$lib/stores/layout.store';
-	import { satellitesStore } from '$lib/stores/satellite.store';
 	import { SatellitesLayout } from '$lib/types/layout';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 

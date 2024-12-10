@@ -14,10 +14,11 @@ import {
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import { satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
-import { satellitesStore } from '$lib/stores/satellite.store';
+import { satellitesDataStore } from '$lib/stores/satellite.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Principal } from '@dfinity/principal';
 import { compare } from 'semver';
@@ -148,7 +149,7 @@ export const setSatelliteName = async ({
 	});
 
 	const satellites = get(satellitesStore);
-	satellitesStore.set([
+	satellitesDataStore.set([
 		...(satellites ?? []).filter(
 			({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
 		),

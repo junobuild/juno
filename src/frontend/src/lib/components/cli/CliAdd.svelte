@@ -8,6 +8,7 @@
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesForVersion
@@ -15,7 +16,6 @@
 	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { bigintStringify } from '$lib/utils/number.utils';

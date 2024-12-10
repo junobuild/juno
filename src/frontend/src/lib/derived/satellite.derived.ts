@@ -8,7 +8,7 @@ import { derived, type Readable } from 'svelte/store';
 
 export const satellitesStore = derived(
 	[satellitesDataStore],
-	([$satellitesDataStore]) => $satellitesDataStore
+	([$satellitesDataStore]) => $satellitesDataStore?.data
 );
 
 export const satelliteStore: Readable<Satellite | undefined | null> = derived(

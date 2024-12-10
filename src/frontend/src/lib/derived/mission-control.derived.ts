@@ -3,5 +3,5 @@ import { derived } from 'svelte/store';
 
 export const missionControlStore = derived(
 	[missionControlDataStore],
-	([$missionControlDataStore]) => $missionControlDataStore
+	([$missionControlDataStore]) => $missionControlDataStore?.data
 );

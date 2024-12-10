@@ -74,8 +74,11 @@ export const loadSatellites = async ({
 	try {
 		const identity = get(authStore).identity;
 
-		const actor = await getMissionControlActor({ missionControlId: missionControl, identity });
-		const satellites = await actor.list_satellites();
+		const { list_satellites } = await getMissionControlActor({
+			missionControlId: missionControl,
+			identity
+		});
+		const satellites = await list_satellites();
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		satellitesDataStore.set(satellites.map(([_, satellite]) => satellite));

@@ -1,9 +1,11 @@
 mod constants;
 mod controllers;
+mod cycles_monitoring;
 mod guards;
 mod impls;
 mod memory;
 mod mgmt;
+mod monitoring;
 mod segments;
 mod store;
 mod types;
@@ -21,7 +23,9 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
+use crate::memory::{init_runtime_state, STATE};
 use crate::mgmt::status::collect_statuses;
+use crate::monitoring::{restart_monitoring, start_monitoring, stop_monitoring};
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -34,13 +38,15 @@ use crate::segments::satellite::{
 };
 use crate::segments::store::get_orbiters;
 use crate::store::{
-    get_user as get_user_store,
+    get_settings as get_settings_store, get_user as get_user_store,
     list_mission_control_statuses as list_mission_control_statuses_store,
     list_orbiter_statuses as list_orbiter_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
-use crate::types::interface::CreateCanisterConfig;
-use crate::types::state::{HeapState, Orbiter, Orbiters, Satellite, Satellites, State, Statuses};
+use crate::types::interface::{CreateCanisterConfig, MonitoringStartConfig, MonitoringStopConfig};
+use crate::types::state::{
+    HeapState, MissionControlSettings, Orbiter, Orbiters, Satellite, Satellites, State, Statuses,
+};
 use candid::Principal;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
@@ -64,8 +70,6 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
-use crate::memory::STATE;
-use crate::mgmt::monitoring::init_monitoring;
 
 #[init]
 fn init() {
@@ -78,7 +82,7 @@ fn init() {
         };
     });
 
-    init_monitoring();
+    init_runtime_state();
 }
 
 #[pre_upgrade]
@@ -92,7 +96,9 @@ fn post_upgrade() {
 
     STATE.with(|state| *state.borrow_mut() = State { heap });
 
-    init_monitoring();
+    init_runtime_state();
+
+    let _ = restart_monitoring();
 }
 
 // ---------------------------------------------------------
@@ -332,6 +338,11 @@ fn get_user() -> UserId {
     get_user_store()
 }
 
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn get_settings() -> Option<MissionControlSettings> {
+    get_settings_store()
+}
+
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_metadata(metadata: Metadata) {
     set_metadata_store(&metadata)
@@ -378,6 +389,20 @@ fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
     list_orbiter_statuses_store(&orbiter_id)
+}
+
+// ---------------------------------------------------------
+// Monitoring
+// ---------------------------------------------------------
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn start_monitoring_with_config(config: MonitoringStartConfig) {
+    start_monitoring(&config).unwrap_or_else(|e| trap(&e));
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn stop_monitoring_with_config(config: MonitoringStopConfig) {
+    stop_monitoring(&config).unwrap_or_else(|e| trap(&e));
 }
 
 // ---------------------------------------------------------

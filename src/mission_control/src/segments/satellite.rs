@@ -13,7 +13,6 @@ use junobuild_shared::env::CONSOLE;
 use junobuild_shared::types::domain::CustomDomains;
 use junobuild_shared::types::interface::CreateCanisterArgs;
 use junobuild_shared::types::state::{SatelliteId, UserId};
-use crate::mgmt::monitoring::register_monitoring;
 
 pub async fn create_satellite(name: &str) -> Result<Satellite, String> {
     let config: CreateCanisterConfig = CreateCanisterConfig {
@@ -75,13 +74,7 @@ async fn create_and_save_satellite(
 
     match result {
         Err((_, message)) => Err(["Create satellite failed.", &message].join(" - ")),
-        Ok((satellite_id,)) => {
-            let satellite = add_satellite(&satellite_id, &name);
-
-            register_monitoring(&satellite_id);
-
-            Ok(satellite)
-        },
+        Ok((satellite,)) => Ok(add_satellite(&satellite, &name)),
     }
 }
 
@@ -97,8 +90,6 @@ pub async fn attach_satellite(
             assert_satellite(satellite_id).await?;
 
             let satellite = add_satellite(satellite_id, name);
-
-            register_monitoring(satellite_id);
 
             Ok(satellite)
         }

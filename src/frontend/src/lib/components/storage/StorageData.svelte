@@ -11,7 +11,7 @@
 	import Data from '$lib/components/data/Data.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
 	import { authStore } from '$lib/stores/auth.store';
-	import { listParamsStore } from '$lib/stores/data.store';
+	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';

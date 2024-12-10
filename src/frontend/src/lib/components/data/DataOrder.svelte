@@ -1,7 +1,7 @@
 <script lang="ts">
 	import IconSort from '$lib/components/icons/IconSort.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
-	import { listParamsStore } from '$lib/stores/data.store';
+	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ListOrderField } from '$lib/types/list';
 

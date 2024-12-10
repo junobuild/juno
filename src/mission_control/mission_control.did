@@ -16,12 +16,41 @@ type CronJobStatusesConfig = record {
   enabled : bool;
   cycles_threshold : opt nat64;
 };
+type CyclesMonitoring = record {
+  strategy : opt CyclesMonitoringStrategy;
+  enabled : bool;
+};
+type CyclesMonitoringStartConfig = record {
+  orbiters_strategy : opt SegmentsMonitoringStrategy;
+  mission_control_strategy : opt CyclesMonitoringStrategy;
+  satellites_strategy : opt SegmentsMonitoringStrategy;
+};
+type CyclesMonitoringStopConfig = record {
+  satellite_ids : opt vec principal;
+  try_mission_control : opt bool;
+  orbiter_ids : opt vec principal;
+};
+type CyclesMonitoringStrategy = variant { BelowThreshold : CyclesThreshold };
+type CyclesThreshold = record { fund_cycles : nat; min_cycles : nat };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
+type MissionControlSettings = record {
+  updated_at : nat64;
+  created_at : nat64;
+  monitoring : opt Monitoring;
+};
+type Monitoring = record { cycles : opt CyclesMonitoring };
+type MonitoringStartConfig = record {
+  cycles_config : opt CyclesMonitoringStartConfig;
+};
+type MonitoringStopConfig = record {
+  cycles_config : opt CyclesMonitoringStopConfig;
+};
 type Orbiter = record {
   updated_at : nat64;
   orbiter_id : principal;
   metadata : vec record { text; text };
   created_at : nat64;
+  settings : opt Settings;
 };
 type Result = variant { Ok : nat64; Err : TransferError };
 type Result_1 = variant { Ok : nat; Err : TransferError_1 };
@@ -31,6 +60,7 @@ type Satellite = record {
   metadata : vec record { text; text };
   created_at : nat64;
   satellite_id : principal;
+  settings : opt Settings;
 };
 type SegmentCanisterSettings = record {
   freezing_threshold : nat;
@@ -52,6 +82,10 @@ type SegmentStatus = record {
   metadata : opt vec record { text; text };
   status_at : nat64;
 };
+type SegmentsMonitoringStrategy = record {
+  ids : vec principal;
+  strategy : CyclesMonitoringStrategy;
+};
 type SegmentsStatuses = record {
   orbiters : opt vec Result_2;
   satellites : opt vec Result_2;
@@ -62,6 +96,7 @@ type SetController = record {
   scope : ControllerScope;
   expires_at : opt nat64;
 };
+type Settings = record { monitoring : opt Monitoring };
 type StatusesArgs = record {
   mission_control_cycles_threshold : opt nat64;
   orbiters : vec record { principal; CronJobStatusesConfig };
@@ -116,6 +151,7 @@ service : () -> {
   del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
+  get_settings : () -> (opt MissionControlSettings) query;
   get_user : () -> (principal) query;
   icp_transfer : (TransferArgs) -> (Result);
   icrc_transfer : (principal, TransferArg) -> (Result_1);
@@ -151,7 +187,9 @@ service : () -> {
       vec principal,
       SetController,
     ) -> ();
+  start_monitoring_with_config : (MonitoringStartConfig) -> () query;
   status : (StatusesArgs) -> (SegmentsStatuses);
+  stop_monitoring_with_config : (MonitoringStopConfig) -> () query;
   top_up : (principal, Tokens) -> ();
   unset_orbiter : (principal) -> ();
   unset_satellite : (principal) -> ();

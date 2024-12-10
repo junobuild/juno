@@ -2,6 +2,7 @@ import type { Satellite } from '$declarations/mission_control/mission_control.di
 import {
 	addMissionControlController,
 	addSatellitesController,
+	getSettings,
 	missionControlVersion,
 	setMissionControlController,
 	setOrbiter,
@@ -14,12 +15,20 @@ import {
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import { resetIdbStore } from '$lib/services/idb-store.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
+import { i18n } from '$lib/stores/i18n.store';
+import { snapshotsIdbStore } from '$lib/stores/idb.store';
+import { missionControlSettingsStore } from '$lib/stores/mission-control.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { satellitesStore } from '$lib/stores/satellite.store';
+import { snapshotStore } from '$lib/stores/snapshot.store';
+import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
+import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
+import { assertNonNullish, fromNullable } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -214,4 +223,44 @@ export const detachOrbiter = async ({
 	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
 
 	orbitersStore.set(null);
+};
+
+export const loadSettings = async ({
+	missionControlId,
+	identity,
+	reload = false
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	reload?: boolean;
+}): Promise<{ success: boolean }> => {
+	try {
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
+
+		const store = get(missionControlSettingsStore);
+
+		if (missionControlSettingsStore !== undefined && !reload) {
+			return { success: true };
+		}
+
+		const settings = await getSettings({
+			missionControlId,
+			identity
+		});
+
+		missionControlSettingsStore.set(fromNullable(settings));
+
+		return { success: true };
+	} catch (err: unknown) {
+		const labels = get(i18n);
+
+		toasts.error({
+			text: labels.errors.snapshot_loading_errors,
+			detail: err
+		});
+
+		missionControlSettingsStore.set(null);
+
+		return { success: false };
+	}
 };

@@ -128,6 +128,7 @@ export interface JunoModal {
 		| 'upgrade_satellite'
 		| 'upgrade_mission_control'
 		| 'upgrade_orbiter'
-		| 'send_tokens';
+		| 'send_tokens'
+		| 'set_bulk_monitoring_strategy';
 	detail?: JunoModalDetail;
 }

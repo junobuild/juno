@@ -1,6 +1,6 @@
 import { browser } from '$app/environment';
 import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
-import type { ListParamsStoreData } from '$lib/stores/data.store';
+import type { ListParamsStoreData } from '$lib/stores/list-params.store';
 import type { Languages } from '$lib/types/languages';
 import { SatellitesLayout } from '$lib/types/layout';
 import { Theme } from '$lib/types/theme';

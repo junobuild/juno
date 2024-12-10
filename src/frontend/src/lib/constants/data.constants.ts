@@ -1,4 +1,4 @@
-import type { ListParamsStoreData } from '$lib/stores/data.store';
+import type { ListParamsStoreData } from '$lib/stores/list-params.store';
 import type { ListOrder } from '$lib/types/list';
 
 export const DEFAULT_LIST_ORDER: ListOrder = {

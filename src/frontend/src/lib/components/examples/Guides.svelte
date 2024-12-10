@@ -127,7 +127,7 @@
 		/>
 	</Resource>
 
-	<Resource href="https://juno.build/docs/guides/astro">
+	<Resource href="https://juno.build/docs/guides/rust">
 		{#snippet icon()}
 			<IconRust />
 		{/snippet}

@@ -2,8 +2,8 @@
 	import type { Snippet } from 'svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteStore } from '$lib/stores/satellite.store';
 
 	interface Props {
 		children: Snippet;

@@ -4,7 +4,7 @@
 	import { run } from 'svelte/legacy';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { listParamsFilteredStore } from '$lib/stores/data.store';
+	import { listParamsFiltered } from '$lib/derived/list-params.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -32,7 +32,7 @@
 				}
 			])}
 		/>
-	{:else if $listParamsFilteredStore}
+	{:else if $listParamsFiltered}
 		{@render filter?.()}
 	{:else}
 		<Html

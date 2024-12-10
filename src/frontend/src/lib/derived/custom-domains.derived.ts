@@ -1,5 +1,5 @@
+import { satelliteStore } from '$lib/derived/satellite.derived';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
-import { satelliteStore } from '$lib/stores/satellite.store';
 import type { CustomDomainName, CustomDomains } from '$lib/types/custom-domain';
 import { isNullish, nonNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';

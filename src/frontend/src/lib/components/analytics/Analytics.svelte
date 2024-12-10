@@ -17,6 +17,7 @@
 	import NoAnalytics from '$lib/components/analytics/NoAnalytics.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { orbiterFeatures } from '$lib/derived/orbiter-satellites.derived';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		getAnalyticsPageViews,
 		getAnalyticsPerformanceMetrics,
@@ -26,7 +27,6 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import type {

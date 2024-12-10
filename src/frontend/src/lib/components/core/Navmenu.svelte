@@ -8,8 +8,8 @@
 	import IconStorage from '$lib/components/icons/IconStorage.svelte';
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
+	import { satelliteIdStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteIdStore } from '$lib/stores/satellite.store';
 
 	let routeId: string | null = $derived($page.route.id);
 

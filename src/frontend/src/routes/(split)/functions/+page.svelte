@@ -6,7 +6,7 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Logs from '$lib/components/logs/Logs.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import { satelliteStore } from '$lib/stores/satellite.store';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		type TabsContext,

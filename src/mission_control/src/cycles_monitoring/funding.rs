@@ -40,6 +40,8 @@ fn init_funding_config() -> FundManagerOptions {
         }))
         .with_funding_callback(Rc::new(|records| {
 
+            // TODO: to be removed
+
             ic_cdk::print("-----> Callback");
 
             // Loop over the hashmap of canister records and print the cycles balance and total of deposited cycles

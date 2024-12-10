@@ -6,7 +6,7 @@
 	import { layoutSatellites } from '$lib/stores/layout.store';
 	import { SatellitesLayout } from '$lib/types/layout';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-    import {satellitesStore} from "$lib/derived/satellite.derived";
+	import { satellitesStore } from '$lib/derived/satellite.derived';
 
 	let filter = $state('');
 

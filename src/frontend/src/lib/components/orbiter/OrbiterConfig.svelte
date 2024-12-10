@@ -12,7 +12,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
-    import {satellitesStore} from "$lib/derived/satellite.derived";
+	import { satellitesStore } from '$lib/derived/satellite.derived';
 
 	interface Props {
 		orbiterId: Principal;

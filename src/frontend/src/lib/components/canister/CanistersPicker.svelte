@@ -9,7 +9,7 @@
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import {satellitesStore} from "$lib/derived/satellite.derived";
+	import { satellitesStore } from '$lib/derived/satellite.derived';
 
 	interface Props {
 		excludeSegmentId: Principal;

@@ -6,7 +6,8 @@
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { loadSatellites } from '$lib/services/satellites.services';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
+
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		children: Snippet;

@@ -14,7 +14,6 @@
 	import { loadOrbiterVersion } from '$lib/services/console.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import {
 		type Tab,
@@ -23,6 +22,7 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	const tabDashboard = {
 		id: Symbol('1'),

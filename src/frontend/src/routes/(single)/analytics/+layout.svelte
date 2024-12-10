@@ -5,7 +5,8 @@
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutTitle } from '$lib/stores/layout.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
+
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		children: Snippet;

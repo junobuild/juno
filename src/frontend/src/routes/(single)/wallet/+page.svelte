@@ -7,7 +7,6 @@
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -15,6 +14,7 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	const tabs: Tab[] = [
 		{

@@ -4,8 +4,8 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { emit } from '$lib/utils/events.utils';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	const createOrbiter = async () => {
 		busy.start();

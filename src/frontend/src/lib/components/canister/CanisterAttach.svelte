@@ -6,8 +6,8 @@
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		setFn: (params: { missionControlId: Principal; canisterId: Principal }) => Promise<void>;

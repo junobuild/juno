@@ -5,9 +5,9 @@
 	import { getMissionControlBalance } from '$lib/services/balance.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import { emit } from '$lib/utils/events.utils';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		type: 'topup_satellite' | 'topup_mission_control' | 'topup_orbiter';

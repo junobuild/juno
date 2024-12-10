@@ -5,6 +5,7 @@
 	import { browser } from '$app/environment';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
 	import { initMissionControl } from '$lib/services/console.services';
 	import { syncSnapshots } from '$lib/services/snapshots.services';
@@ -12,9 +13,9 @@
 	import { initAuthWorker } from '$lib/services/worker.auth.services';
 	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import '$lib/styles/global.scss';
+	import { missionControlDataStore } from '$lib/stores/mission-control.store';
 
 	interface Props {
 		children: Snippet;
@@ -50,7 +51,7 @@
 				identity,
 				// eslint-disable-next-line require-await
 				onInitMissionControlSuccess: async (missionControlId) =>
-					missionControlStore.set(missionControlId)
+					missionControlDataStore.set(missionControlId)
 			});
 		} catch (err: unknown) {
 			toasts.error({

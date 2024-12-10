@@ -5,8 +5,8 @@
 	import LoaderWarnings from '$lib/components/warning/LoaderWarnings.svelte';
 	import VersionWarnings from '$lib/components/warning/VersionWarnings.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		satellite?: Satellite | undefined;

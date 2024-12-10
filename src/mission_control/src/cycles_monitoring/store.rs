@@ -34,25 +34,15 @@ pub fn set_orbiter_strategy(
     })
 }
 
-pub fn disable_satellite_monitoring(
-    satellite_id: &SatelliteId,
-) -> Result<(), String> {
+pub fn disable_satellite_monitoring(satellite_id: &SatelliteId) -> Result<(), String> {
     STATE.with(|state| {
-        disable_satellite_monitoring_impl(
-            satellite_id,
-            &mut state.borrow_mut().heap.satellites,
-        )
+        disable_satellite_monitoring_impl(satellite_id, &mut state.borrow_mut().heap.satellites)
     })
 }
 
-pub fn disable_orbiter_monitoring(
-    orbiter_id: &OrbiterId,
-) -> Result<(), String> {
+pub fn disable_orbiter_monitoring(orbiter_id: &OrbiterId) -> Result<(), String> {
     STATE.with(|state| {
-        disable_orbiter_monitoring_impl(
-            orbiter_id,
-            &mut state.borrow_mut().heap.orbiters,
-        )
+        disable_orbiter_monitoring_impl(orbiter_id, &mut state.borrow_mut().heap.orbiters)
     })
 }
 

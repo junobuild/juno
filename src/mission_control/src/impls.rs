@@ -1,6 +1,9 @@
-use crate::types::core::{SettingsMonitoring, Segment};
+use crate::types::core::{Segment, SettingsMonitoring};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
-use crate::types::state::{Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings, Monitoring, Orbiter, Orbiters, Satellite, Settings, User};
+use crate::types::state::{
+    Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState,
+    MissionControlSettings, Monitoring, Orbiter, Orbiters, Satellite, Settings, User,
+};
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
@@ -99,9 +102,7 @@ impl Satellite {
                         enabled: false,
                         ..cycles
                     }),
-                    ..monitoring
                 }),
-                ..settings
             }),
             updated_at: now,
             ..self.clone()
@@ -157,9 +158,7 @@ impl Orbiter {
                         enabled: false,
                         ..cycles
                     }),
-                    ..monitoring
                 }),
-                ..settings
             }),
             updated_at: now,
             ..self.clone()
@@ -181,7 +180,7 @@ impl Monitoring {
             cycles: Some(CyclesMonitoring {
                 enabled: true,
                 strategy: Some(strategy.clone()),
-            })
+            }),
         }
     }
 }
@@ -270,7 +269,6 @@ impl MissionControlSettings {
                     enabled: false,
                     ..cycles
                 }),
-                ..monitoring
             }),
             updated_at: now,
             ..self.clone()

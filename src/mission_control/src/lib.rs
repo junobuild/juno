@@ -25,7 +25,7 @@ use crate::guards::{
 };
 use crate::memory::{init_runtime_state, STATE};
 use crate::mgmt::status::collect_statuses;
-use crate::monitoring::{restart_monitoring, start_monitoring};
+use crate::monitoring::{restart_monitoring, start_monitoring, stop_monitoring};
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -43,7 +43,7 @@ use crate::store::{
     list_orbiter_statuses as list_orbiter_statuses_store,
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
-use crate::types::interface::{CreateCanisterConfig, MonitoringConfig};
+use crate::types::interface::{CreateCanisterConfig, MonitoringStartConfig, MonitoringStopConfig};
 use crate::types::state::{
     HeapState, MissionControlSettings, Orbiter, Orbiters, Satellite, Satellites, State, Statuses,
 };
@@ -396,8 +396,13 @@ fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
 // ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
-fn start_monitoring_with_config(config: MonitoringConfig) {
+fn start_monitoring_with_config(config: MonitoringStartConfig) {
     start_monitoring(&config).unwrap_or_else(|e| trap(&e));
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn stop_monitoring_with_config(config: MonitoringStopConfig) {
+    stop_monitoring(&config).unwrap_or_else(|e| trap(&e));
 }
 
 // ---------------------------------------------------------

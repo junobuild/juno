@@ -5,7 +5,7 @@ use crate::cycles_monitoring::store::{
     set_mission_control_strategy, set_orbiter_strategy, set_satellite_strategy,
 };
 use crate::memory::RUNTIME_STATE;
-use crate::types::interface::{CyclesMonitoringConfig, SegmentsMonitoringStrategy};
+use crate::types::interface::{CyclesMonitoringStartConfig, SegmentsMonitoringStrategy};
 use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;
 use ic_cdk::id;
@@ -13,7 +13,7 @@ use junobuild_shared::types::state::SegmentId;
 
 type SaveSegmentStrategy = fn(&SegmentId, &CyclesMonitoringStrategy) -> Result<(), String>;
 
-pub fn start_cycles_monitoring(config: &CyclesMonitoringConfig) -> Result<(), String> {
+pub fn start_cycles_monitoring(config: &CyclesMonitoringStartConfig) -> Result<(), String> {
     if let Some(strategy) = &config.satellites_strategy {
         start_monitoring(strategy, set_satellite_strategy)?;
     }

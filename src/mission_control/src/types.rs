@@ -122,7 +122,7 @@ pub mod interface {
     use crate::types::state::CyclesMonitoringStrategy;
     use candid::CandidType;
     use junobuild_shared::mgmt::types::cmc::SubnetId;
-    use junobuild_shared::types::state::SegmentId;
+    use junobuild_shared::types::state::{OrbiterId, SatelliteId, SegmentId};
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -138,14 +138,26 @@ pub mod interface {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CyclesMonitoringConfig {
+    pub struct CyclesMonitoringStartConfig {
         pub mission_control_strategy: Option<CyclesMonitoringStrategy>,
         pub satellites_strategy: Option<SegmentsMonitoringStrategy>,
         pub orbiters_strategy: Option<SegmentsMonitoringStrategy>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct MonitoringConfig {
-        pub cycles_config: Option<CyclesMonitoringConfig>,
+    pub struct CyclesMonitoringStopConfig {
+        pub try_mission_control: Option<bool>,
+        pub satellite_ids: Option<Vec<SatelliteId>>,
+        pub orbiter_ids: Option<Vec<OrbiterId>>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct MonitoringStartConfig {
+        pub cycles_config: Option<CyclesMonitoringStartConfig>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct MonitoringStopConfig {
+        pub cycles_config: Option<CyclesMonitoringStopConfig>,
     }
 }

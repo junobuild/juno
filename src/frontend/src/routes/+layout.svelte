@@ -5,7 +5,7 @@
 	import { browser } from '$app/environment';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlDataStore } from '$lib/stores/mission-control.store';
 	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
 	import { initMissionControl } from '$lib/services/console.services';
 	import { syncSnapshots } from '$lib/services/snapshots.services';
@@ -15,7 +15,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import '$lib/styles/global.scss';
-	import { missionControlDataStore } from '$lib/stores/mission-control.store';
 
 	interface Props {
 		children: Snippet;

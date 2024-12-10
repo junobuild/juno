@@ -3,4 +3,4 @@ import { initDataStore } from '$lib/stores/data.store';
 import type { Option } from '$lib/types/utils';
 
 type SatellitesStoreData = Option<Satellite[]>;
-export const satellitesStore = initDataStore<SatellitesStoreData>();
+export const satellitesDataStore = initDataStore<SatellitesStoreData>();

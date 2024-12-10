@@ -4,9 +4,9 @@
 	import { type Snippet } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 
 	interface Props {

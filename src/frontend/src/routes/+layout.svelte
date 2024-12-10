@@ -12,7 +12,7 @@
 	import { initAuthWorker } from '$lib/services/worker.auth.services';
 	import { type AuthStoreData, authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
+	import { missionControlDataStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import '$lib/styles/global.scss';
 
@@ -50,7 +50,7 @@
 				identity,
 				// eslint-disable-next-line require-await
 				onInitMissionControlSuccess: async (missionControlId) =>
-					missionControlStore.set(missionControlId)
+					missionControlDataStore.set(missionControlId)
 			});
 		} catch (err: unknown) {
 			toasts.error({

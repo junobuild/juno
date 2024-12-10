@@ -1,5 +1,6 @@
 import type {
 	Controller,
+	MissionControlSettings,
 	Orbiter,
 	Result,
 	Result_1,
@@ -438,4 +439,16 @@ export const icrcTransfer = async ({
 }): Promise<Result_1> => {
 	const { icrc_transfer } = await getMissionControlActor({ missionControlId, identity });
 	return icrc_transfer(ledgerId, args);
+};
+
+export const getSettings = async ({
+	missionControlId,
+
+	identity
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+}): Promise<[] | [MissionControlSettings]> => {
+	const { get_settings } = await getMissionControlActor({ missionControlId, identity });
+	return get_settings();
 };

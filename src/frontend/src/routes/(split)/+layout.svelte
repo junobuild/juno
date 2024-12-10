@@ -5,9 +5,9 @@
 	import Navmenu from '$lib/components/core/Navmenu.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/satellites.services';
 
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		children: Snippet;

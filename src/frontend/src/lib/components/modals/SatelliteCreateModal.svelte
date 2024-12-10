@@ -8,6 +8,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import {
 		createSatellite,
 		createSatelliteWithConfig,
@@ -20,7 +21,6 @@
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

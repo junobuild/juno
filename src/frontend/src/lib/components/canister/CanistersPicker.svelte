@@ -3,13 +3,13 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satellitesStore } from '$lib/stores/satellite.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		excludeSegmentId: Principal;

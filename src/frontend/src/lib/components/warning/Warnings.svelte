@@ -4,9 +4,9 @@
 	import CanisterWarnings from '$lib/components/canister/CanisterWarnings.svelte';
 	import LoaderWarnings from '$lib/components/warning/LoaderWarnings.svelte';
 	import VersionWarnings from '$lib/components/warning/VersionWarnings.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		satellite?: Satellite | undefined;

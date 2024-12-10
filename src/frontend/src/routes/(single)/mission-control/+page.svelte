@@ -7,6 +7,7 @@
 	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import {
 		type Tab,
@@ -15,7 +16,6 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	const tabs: Tab[] = [
 		{

@@ -11,6 +11,7 @@
 	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { loadOrbiterVersion } from '$lib/services/console.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
@@ -22,7 +23,6 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	const tabDashboard = {
 		id: Symbol('1'),

@@ -7,11 +7,11 @@
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

@@ -6,13 +6,13 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { loadVersion } from '$lib/services/console.services';
 	import { newerReleases } from '$lib/services/upgrade.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		satellite?: Satellite | undefined;

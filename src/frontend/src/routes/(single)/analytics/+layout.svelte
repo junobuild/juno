@@ -2,11 +2,11 @@
 	import { onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutTitle } from '$lib/stores/layout.store';
 
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		children: Snippet;

@@ -8,13 +8,13 @@
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSegmentWithLabel } from '$lib/types/canister';
 	import type { SetControllerParams } from '$lib/types/controllers';
 	import { metadataProfile } from '$lib/utils/metadata.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		list: () => Promise<[Principal, Controller][]>;

@@ -6,13 +6,13 @@
 	import { fade } from 'svelte/transition';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { initStatusesWorker, type StatusesWorker } from '$lib/services/worker.statuses.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterJunoStatus, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		canisterId: Principal;

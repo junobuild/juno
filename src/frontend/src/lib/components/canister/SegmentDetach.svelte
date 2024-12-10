@@ -5,13 +5,13 @@
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconLinkOff from '$lib/components/icons/IconLinkOff.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { detachOrbiter, detachSatellite } from '$lib/services/mission-control.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store.js';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		segment: 'satellite' | 'orbiter';

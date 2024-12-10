@@ -7,6 +7,7 @@
 	import ObservatoryDashboard from '$lib/components/observatory/ObservatoryDashboard.svelte';
 	import ObservatorySettings from '$lib/components/observatory/ObservatorySettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -14,7 +15,6 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	const tabs: Tab[] = [
 		{

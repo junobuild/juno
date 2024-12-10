@@ -3,9 +3,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { depositCycles } from '$lib/api/mission-control.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

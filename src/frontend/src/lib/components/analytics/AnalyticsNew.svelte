@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { getCreateOrbiterFeeBalance } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { emit } from '$lib/utils/events.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	const createOrbiter = async () => {
 		busy.start();

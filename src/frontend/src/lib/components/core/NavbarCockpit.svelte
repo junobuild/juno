@@ -10,12 +10,12 @@
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import type { CanisterData } from '$lib/types/canister';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);

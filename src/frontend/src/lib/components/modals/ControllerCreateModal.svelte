@@ -9,12 +9,12 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { SetControllerScope } from '$lib/types/controllers';
 	import type { JunoModalCreateControllerDetail, JunoModalDetail } from '$lib/types/modal';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

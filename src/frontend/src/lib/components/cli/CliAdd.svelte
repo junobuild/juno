@@ -8,6 +8,7 @@
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesForVersion
@@ -20,7 +21,6 @@
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		principal: string;

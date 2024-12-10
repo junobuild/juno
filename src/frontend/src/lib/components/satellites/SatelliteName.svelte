@@ -4,12 +4,12 @@
 	import IconEdit from '$lib/components/icons/IconEdit.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { setSatelliteName } from '$lib/services/mission-control.services';
 	import { busy, isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		satellite: Satellite;

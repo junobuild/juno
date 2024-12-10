@@ -6,6 +6,7 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import {
 		createOrbiter,
 		createOrbiterWithConfig,
@@ -17,7 +18,6 @@
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 
 	interface Props {
 		detail: JunoModalDetail;

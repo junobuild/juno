@@ -30,6 +30,28 @@ pub fn set_orbiter_strategy(
     })
 }
 
+pub fn disable_satellite_monitoring(
+    satellite_id: &SatelliteId,
+) -> Result<(), String> {
+    STATE.with(|state| {
+        disable_satellite_monitoring_impl(
+            satellite_id,
+            &mut state.borrow_mut().heap.satellites,
+        )
+    })
+}
+
+pub fn disable_orbiter_monitoring(
+    orbiter_id: &OrbiterId,
+) -> Result<(), String> {
+    STATE.with(|state| {
+        disable_orbiter_monitoring_impl(
+            orbiter_id,
+            &mut state.borrow_mut().heap.orbiters,
+        )
+    })
+}
+
 fn set_mission_control_setting_impl(strategy: &CyclesMonitoringStrategy, state: &mut HeapState) {
     state.settings = Some(
         state
@@ -59,6 +81,24 @@ fn set_satellite_setting_impl(
     Ok(())
 }
 
+fn disable_satellite_monitoring_impl(
+    satellite_id: &SatelliteId,
+    satellites: &mut Satellites,
+) -> Result<(), String> {
+    let satellite = satellites.get(satellite_id).ok_or_else(|| {
+        format!(
+            "Satellite {} not found. Monitoring cannot be disabled.",
+            satellite_id.to_text()
+        )
+    })?;
+
+    let update_satellite = satellite.disable_cycles_monitoring()?;
+
+    satellites.insert(*satellite_id, update_satellite);
+
+    Ok(())
+}
+
 fn set_orbiter_setting_impl(
     orbiter_id: &OrbiterId,
     strategy: &CyclesMonitoringStrategy,
@@ -72,6 +112,24 @@ fn set_orbiter_setting_impl(
     })?;
 
     let update_orbiter = orbiter.clone_with_settings(&Settings::from(strategy));
+
+    orbiters.insert(*orbiter_id, update_orbiter);
+
+    Ok(())
+}
+
+fn disable_orbiter_monitoring_impl(
+    orbiter_id: &OrbiterId,
+    orbiters: &mut Orbiters,
+) -> Result<(), String> {
+    let orbiter = orbiters.get(orbiter_id).ok_or_else(|| {
+        format!(
+            "Orbiter {} not found. Monitoring cannot be disabled.",
+            orbiter_id.to_text()
+        )
+    })?;
+
+    let update_orbiter = orbiter.disable_cycles_monitoring()?;
 
     orbiters.insert(*orbiter_id, update_orbiter);
 

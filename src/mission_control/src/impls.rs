@@ -73,6 +73,39 @@ impl Satellite {
             ..self.clone()
         }
     }
+
+    pub fn disable_cycles_monitoring(&self) -> Result<Self, String> {
+        let settings = self
+            .settings
+            .clone()
+            .ok_or_else(|| "Settings not found for this satellite.".to_string())?;
+
+        let monitoring = settings
+            .monitoring
+            .clone()
+            .ok_or_else(|| "Monitoring configuration not found.".to_string())?;
+
+        let cycles = monitoring
+            .cycles
+            .clone()
+            .ok_or_else(|| "Cycles monitoring configuration not found.".to_string())?;
+
+        let now = time();
+
+        Ok(Satellite {
+            settings: Some(Settings {
+                monitoring: Some(Monitoring {
+                    cycles: Some(CyclesMonitoring {
+                        enabled: false,
+                        ..cycles
+                    }),
+                }),
+                ..settings
+            }),
+            updated_at: now,
+            ..self.clone()
+        })
+    }
 }
 
 impl Orbiter {
@@ -96,6 +129,39 @@ impl Orbiter {
             updated_at: now,
             ..self.clone()
         }
+    }
+
+    pub fn disable_cycles_monitoring(&self) -> Result<Self, String> {
+        let settings = self
+            .settings
+            .clone()
+            .ok_or_else(|| "Settings not found for this orbiter.".to_string())?;
+
+        let monitoring = settings
+            .monitoring
+            .clone()
+            .ok_or_else(|| "Monitoring configuration not orbiter.".to_string())?;
+
+        let cycles = monitoring
+            .cycles
+            .clone()
+            .ok_or_else(|| "Cycles monitoring configuration not found.".to_string())?;
+
+        let now = time();
+
+        Ok(Orbiter {
+            settings: Some(Settings {
+                monitoring: Some(Monitoring {
+                    cycles: Some(CyclesMonitoring {
+                        enabled: false,
+                        ..cycles
+                    }),
+                }),
+                ..settings
+            }),
+            updated_at: now,
+            ..self.clone()
+        })
     }
 }
 

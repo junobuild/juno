@@ -7,9 +7,9 @@
 	import MissionControlStatuses from '$lib/components/mission-control/MissionControlStatuses.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { versionStore } from '$lib/stores/version.store';
 </script>
 

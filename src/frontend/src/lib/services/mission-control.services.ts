@@ -15,15 +15,13 @@ import {
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
-import { resetIdbStore } from '$lib/services/idb-store.services';
+import { satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
-import { snapshotsIdbStore } from '$lib/stores/idb.store';
 import { missionControlSettingsStore } from '$lib/stores/mission-control.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
-import { satellitesStore } from '$lib/stores/satellite.store';
-import { snapshotStore } from '$lib/stores/snapshot.store';
+import { satellitesDataStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -157,7 +155,7 @@ export const setSatelliteName = async ({
 	});
 
 	const satellites = get(satellitesStore);
-	satellitesStore.set([
+	satellitesDataStore.set([
 		...(satellites ?? []).filter(
 			({ satellite_id }) => updatedSatellite.satellite_id.toText() !== satellite_id.toText()
 		),
@@ -259,7 +257,7 @@ export const loadSettings = async ({
 			detail: err
 		});
 
-		missionControlSettingsStore.set(null);
+		missionControlSettingsStore.reset();
 
 		return { success: false };
 	}

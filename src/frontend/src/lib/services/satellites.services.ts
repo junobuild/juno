@@ -1,8 +1,9 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
+import { satellitesStore } from '$lib/derived/satellite.derived';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
-import { satellitesStore } from '$lib/stores/satellite.store';
+import { satellitesDataStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { Option } from '$lib/types/utils';
 import type { Principal } from '@dfinity/principal';
@@ -73,11 +74,14 @@ export const loadSatellites = async ({
 	try {
 		const identity = get(authStore).identity;
 
-		const actor = await getMissionControlActor({ missionControlId: missionControl, identity });
-		const satellites = await actor.list_satellites();
+		const { list_satellites } = await getMissionControlActor({
+			missionControlId: missionControl,
+			identity
+		});
+		const satellites = await list_satellites();
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		satellitesStore.set(satellites.map(([_, satellite]) => satellite));
+		satellitesDataStore.set(satellites.map(([_, satellite]) => satellite));
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
@@ -86,6 +90,6 @@ export const loadSatellites = async ({
 			detail: err
 		});
 
-		satellitesStore.reset();
+		satellitesDataStore.reset();
 	}
 };

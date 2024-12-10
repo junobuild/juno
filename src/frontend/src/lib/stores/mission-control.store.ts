@@ -2,6 +2,6 @@ import type { MissionControlSettings } from '$declarations/mission_control/missi
 import { initDataStore } from '$lib/stores/data.store';
 import type { Principal } from '@dfinity/principal';
 
-export const missionControlStore = initDataStore<Principal>();
+export const missionControlDataStore = initDataStore<Principal>();
 
-export const missionControlSettingsStore = initDataStore<MissionControlSettings>();
+export const missionControlSettingsStore = initDataStore<MissionControlSettings | undefined>();

@@ -7,8 +7,8 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import type { JunoModalDetail, JunoModalSendTokensDetail } from '$lib/types/modal';
 
 	interface Props {

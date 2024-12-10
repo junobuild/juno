@@ -1,10 +1,15 @@
 import { page } from '$app/stores';
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
-import { satellitesStore } from '$lib/stores/satellite.store';
+import { satellitesDataStore } from '$lib/stores/satellite.store';
 import { isNullish } from '@dfinity/utils';
 import { derived, type Readable } from 'svelte/store';
 
 // TODO: rename without suffix store but find another naming that satellite and satelliteId because we probably already use those for local variable.
+
+export const satellitesStore = derived(
+	[satellitesDataStore],
+	([$satellitesDataStore]) => $satellitesDataStore?.data
+);
 
 export const satelliteStore: Readable<Satellite | undefined | null> = derived(
 	[satellitesStore, page],

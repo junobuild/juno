@@ -2,8 +2,9 @@
 	import { nonNullish } from '@dfinity/utils';
 	import IconArrowDropDown from '$lib/components/icons/IconArrowDropDown.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { satellitesStore, satelliteStore } from '$lib/stores/satellite.store';
+	import { satellitesStore } from '$lib/stores/satellite.store';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 

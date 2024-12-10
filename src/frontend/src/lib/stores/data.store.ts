@@ -1,63 +1,25 @@
-import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
-import type { ListFilter, ListOrder, ListParams } from '$lib/types/list';
-import { getLocalListParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';
-import { nonNullish } from '@dfinity/utils';
-import { derived, writable, type Readable } from 'svelte/store';
+import type { Option } from '$lib/types/utils';
+import { writable, type Readable } from 'svelte/store';
 
-const saveListParams = (state: ListParamsStoreData) =>
-	setLocalStorageItem({ key: 'list_params', value: JSON.stringify(state) });
+type Data<T> = Option<T>;
 
-export type ListParamsStoreData = Pick<ListParams, 'order' | 'filter'>;
-
-export interface ListParamsStore extends Readable<ListParamsStoreData> {
-	setOrder: (order: ListOrder) => void;
-	setFilter: (filter: ListFilter) => void;
+interface DataStore<T> extends Readable<Data<T>> {
+	set: (data: T) => void;
 	reset: () => void;
 }
 
-const initListParamsStore = (): ListParamsStore => {
-	const { subscribe, update, set } = writable<ListParamsStoreData>(getLocalListParams());
+export const initDataStore = <T>(): DataStore<T> => {
+	const { subscribe, set } = writable<Data<T>>(undefined);
 
 	return {
 		subscribe,
 
-		setOrder: (order: ListOrder) => {
-			update((state) => {
-				const updated_state = {
-					...state,
-					order
-				};
-
-				saveListParams(updated_state);
-
-				return updated_state;
-			});
-		},
-
-		setFilter: (filter: ListFilter) => {
-			update((state) => {
-				const updated_state = {
-					...state,
-					filter
-				};
-
-				saveListParams(updated_state);
-
-				return updated_state;
-			});
+		set(data) {
+			set(data);
 		},
 
 		reset: () => {
-			set(DEFAULT_LIST_PARAMS);
-			saveListParams(DEFAULT_LIST_PARAMS);
+			set(null);
 		}
 	};
 };
-
-export const listParamsStore = initListParamsStore();
-
-export const listParamsFilteredStore: Readable<boolean> = derived(
-	listParamsStore,
-	({ filter: { matcher, owner } }) =>
-		(nonNullish(matcher) && matcher !== '') || (nonNullish(owner) && owner !== '')
-);

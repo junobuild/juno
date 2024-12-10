@@ -7,7 +7,7 @@
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
-	import { satelliteStore } from '$lib/stores/satellite.store';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,

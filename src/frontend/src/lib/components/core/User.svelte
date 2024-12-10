@@ -9,10 +9,10 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { satelliteStore } from '$lib/stores/satellite.store';
 	import { analyticsLink } from '$lib/utils/nav.utils';
 
 	interface Props {

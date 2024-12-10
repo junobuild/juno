@@ -12,8 +12,8 @@
 	import DocForm from '$lib/components/docs/DocHeader.svelte';
 	import Docs from '$lib/components/docs/Docs.svelte';
 	import { authStore } from '$lib/stores/auth.store';
-	import { listParamsStore } from '$lib/stores/data.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { DATA_CONTEXT_KEY, type DataContext, type DataStoreData } from '$lib/types/data.context';

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
-	import { listParamsStore } from '$lib/stores/data.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { listParamsStore } from '$lib/stores/list-params.store';
 
 	let matcher = $state($listParamsStore.filter.matcher ?? '');
 	let owner = $state($listParamsStore.filter.owner ?? '');

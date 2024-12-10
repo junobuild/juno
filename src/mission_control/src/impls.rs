@@ -78,7 +78,7 @@ impl Satellite {
         let settings = self
             .settings
             .clone()
-            .ok_or_else(|| "Settings not found for this satellite.".to_string())?;
+            .ok_or_else(|| "Settings not found.".to_string())?;
 
         let monitoring = settings
             .monitoring
@@ -99,6 +99,7 @@ impl Satellite {
                         enabled: false,
                         ..cycles
                     }),
+                    ..monitoring
                 }),
                 ..settings
             }),
@@ -135,12 +136,12 @@ impl Orbiter {
         let settings = self
             .settings
             .clone()
-            .ok_or_else(|| "Settings not found for this orbiter.".to_string())?;
+            .ok_or_else(|| "Settings not found.".to_string())?;
 
         let monitoring = settings
             .monitoring
             .clone()
-            .ok_or_else(|| "Monitoring configuration not orbiter.".to_string())?;
+            .ok_or_else(|| "Monitoring configuration not found.".to_string())?;
 
         let cycles = monitoring
             .cycles
@@ -156,6 +157,7 @@ impl Orbiter {
                         enabled: false,
                         ..cycles
                     }),
+                    ..monitoring
                 }),
                 ..settings
             }),
@@ -247,6 +249,32 @@ impl MissionControlSettings {
             updated_at: now,
             ..self.clone()
         }
+    }
+
+    pub fn disable_cycles_monitoring(&self) -> Result<Self, String> {
+        let monitoring = self
+            .monitoring
+            .clone()
+            .ok_or_else(|| "Monitoring configuration not found.".to_string())?;
+
+        let cycles = monitoring
+            .cycles
+            .clone()
+            .ok_or_else(|| "Cycles monitoring configuration not found.".to_string())?;
+
+        let now = time();
+
+        Ok(MissionControlSettings {
+            monitoring: Some(Monitoring {
+                cycles: Some(CyclesMonitoring {
+                    enabled: false,
+                    ..cycles
+                }),
+                ..monitoring
+            }),
+            updated_at: now,
+            ..self.clone()
+        })
     }
 }
 

@@ -8,6 +8,10 @@ pub fn set_mission_control_strategy(strategy: &CyclesMonitoringStrategy) {
     STATE.with(|state| set_mission_control_setting_impl(strategy, &mut state.borrow_mut().heap))
 }
 
+pub fn disable_mission_control_monitoring() -> Result<(), String> {
+    STATE.with(|state| disable_mission_control_monitoring_impl(&mut state.borrow_mut().heap))
+}
+
 pub fn set_satellite_strategy(
     satellite_id: &SatelliteId,
     strategy: &CyclesMonitoringStrategy,
@@ -60,6 +64,19 @@ fn set_mission_control_setting_impl(strategy: &CyclesMonitoringStrategy, state: 
             .map(|settings| settings.clone_with_strategy(strategy))
             .unwrap_or_else(|| MissionControlSettings::from(strategy)),
     );
+}
+
+fn disable_mission_control_monitoring_impl(state: &mut HeapState) -> Result<(), String> {
+    let settings = state
+        .settings
+        .clone()
+        .ok_or_else(|| "Settings not found for mission control.".to_string())?;
+
+    let update_settings = settings.disable_cycles_monitoring()?;
+
+    state.settings = Some(update_settings);
+
+    Ok(())
 }
 
 fn set_satellite_setting_impl(

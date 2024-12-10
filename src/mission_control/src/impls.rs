@@ -1,9 +1,6 @@
-use crate::types::core::{HasMonitoring, Segment};
+use crate::types::core::{SettingsMonitoring, Segment};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
-use crate::types::state::{
-    Archive, ArchiveStatuses, CyclesMonitoringStrategy, HeapState, MissionControlSettings,
-    Monitoring, Orbiter, Orbiters, Satellite, Settings, User,
-};
+use crate::types::state::{Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings, Monitoring, Orbiter, Orbiters, Satellite, Settings, User};
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
@@ -105,14 +102,23 @@ impl Orbiter {
 impl Settings {
     pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
         Settings {
-            monitoring: Some(Monitoring {
-                cycles_strategy: Some(strategy.clone()),
-            }),
+            monitoring: Some(Monitoring::from(strategy)),
         }
     }
 }
 
-impl HasMonitoring for Settings {
+impl Monitoring {
+    pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
+        Monitoring {
+            cycles: Some(CyclesMonitoring {
+                enabled: true,
+                strategy: Some(strategy.clone()),
+            })
+        }
+    }
+}
+
+impl SettingsMonitoring for Settings {
     fn monitoring(&self) -> Option<&Monitoring> {
         self.monitoring.as_ref()
     }
@@ -161,9 +167,7 @@ impl MissionControlSettings {
         let now = time();
 
         MissionControlSettings {
-            monitoring: Some(Monitoring {
-                cycles_strategy: Some(strategy.clone()),
-            }),
+            monitoring: Some(Monitoring::from(strategy)),
             updated_at: now,
             created_at: now,
         }
@@ -173,16 +177,14 @@ impl MissionControlSettings {
         let now = time();
 
         MissionControlSettings {
-            monitoring: Some(Monitoring {
-                cycles_strategy: Some(strategy.clone()),
-            }),
+            monitoring: Some(Monitoring::from(strategy)),
             updated_at: now,
             ..self.clone()
         }
     }
 }
 
-impl HasMonitoring for MissionControlSettings {
+impl SettingsMonitoring for MissionControlSettings {
     fn monitoring(&self) -> Option<&Monitoring> {
         self.monitoring.as_ref()
     }

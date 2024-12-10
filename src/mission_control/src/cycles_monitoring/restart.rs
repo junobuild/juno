@@ -3,7 +3,7 @@ use crate::cycles_monitoring::funding::register_cycles_monitoring;
 use crate::memory::RUNTIME_STATE;
 use crate::segments::store::{get_orbiters, get_satellites};
 use crate::store::get_settings;
-use crate::types::core::HasMonitoring;
+use crate::types::core::SettingsMonitoring;
 use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;
 use ic_cdk::id;
@@ -20,12 +20,14 @@ pub fn restart_cycles_monitoring() -> Result<(), String> {
         settings: &Option<T>,
     ) -> Option<SegmentCyclesMonitoryStrategyPair>
     where
-        T: HasMonitoring,
+        T: SettingsMonitoring,
     {
         settings
             .as_ref()
             .and_then(|settings| settings.monitoring())
-            .and_then(|monitoring| monitoring.cycles_strategy.as_ref())
+            .and_then(|monitoring| monitoring.cycles.as_ref())
+            .filter(|cycles| cycles.enabled)
+            .and_then(|cycles| cycles.strategy.as_ref())
             .map(|strategy| (*segment_id, strategy.clone()))
     }
 

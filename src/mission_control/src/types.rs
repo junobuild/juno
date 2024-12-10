@@ -81,7 +81,13 @@ pub mod state {
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Monitoring {
-        pub cycles_strategy: Option<CyclesMonitoringStrategy>,
+        pub cycles: Option<CyclesMonitoring>,
+    }
+
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct CyclesMonitoring {
+        pub enabled: bool,
+        pub strategy: Option<CyclesMonitoringStrategy>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -113,7 +119,7 @@ pub mod core {
         fn set_metadata(&self, metadata: &Metadata) -> Self;
     }
 
-    pub trait HasMonitoring {
+    pub trait SettingsMonitoring {
         fn monitoring(&self) -> Option<&Monitoring>;
     }
 }

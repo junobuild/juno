@@ -4,9 +4,9 @@
 	import { run } from 'svelte/legacy';
 	import type { Rule } from '$declarations/satellite/satellite.did';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { listParamsFilteredStore } from '$lib/stores/list-params.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { listParamsFiltered } from '$lib/derived/list-params.derived';
 
 	interface Props {
 		rule: Rule | undefined;
@@ -32,7 +32,7 @@
 				}
 			])}
 		/>
-	{:else if $listParamsFilteredStore}
+	{:else if $listParamsFiltered}
 		{@render filter?.()}
 	{:else}
 		<Html

@@ -1,8 +1,7 @@
 import { DEFAULT_LIST_PARAMS } from '$lib/constants/data.constants';
 import type { ListFilter, ListOrder, ListParams } from '$lib/types/list';
 import { getLocalListParams, setLocalStorageItem } from '$lib/utils/local-storage.utils';
-import { nonNullish } from '@dfinity/utils';
-import { derived, writable, type Readable } from 'svelte/store';
+import { type Readable, writable } from 'svelte/store';
 
 const saveListParams = (state: ListParamsStoreData) =>
 	setLocalStorageItem({ key: 'list_params', value: JSON.stringify(state) });
@@ -55,9 +54,3 @@ const initListParamsStore = (): ListParamsStore => {
 };
 
 export const listParamsStore = initListParamsStore();
-
-export const listParamsFilteredStore: Readable<boolean> = derived(
-	listParamsStore,
-	({ filter: { matcher, owner } }) =>
-		(nonNullish(matcher) && matcher !== '') || (nonNullish(owner) && owner !== '')
-);

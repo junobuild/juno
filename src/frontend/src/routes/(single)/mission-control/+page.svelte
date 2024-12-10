@@ -7,8 +7,8 @@
 	import MissionControlSettings from '$lib/components/mission-control/MissionControlSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,

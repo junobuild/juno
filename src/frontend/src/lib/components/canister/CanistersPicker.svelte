@@ -3,11 +3,11 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
 

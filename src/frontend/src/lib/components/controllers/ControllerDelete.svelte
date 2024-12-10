@@ -4,9 +4,9 @@
 	import type { Controller } from '$declarations/satellite/satellite.did';
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 
 	interface Props {

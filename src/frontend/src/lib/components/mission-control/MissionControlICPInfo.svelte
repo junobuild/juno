@@ -6,7 +6,6 @@
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
-
 	interface Props {
 		accountIdentifier: AccountIdentifier | undefined;
 		onclose: () => void;

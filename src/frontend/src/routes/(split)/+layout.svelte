@@ -8,7 +8,6 @@
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/satellites.services';
 
-
 	interface Props {
 		children: Snippet;
 	}

@@ -7,7 +7,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutTitle } from '$lib/stores/layout.store';
 
-
 	interface Props {
 		children: Snippet;
 	}

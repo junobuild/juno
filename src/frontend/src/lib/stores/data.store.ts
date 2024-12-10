@@ -1,7 +1,7 @@
 import type { Option } from '$lib/types/utils';
 import { writable, type Readable } from 'svelte/store';
 
-type Data<T> = Option<T>;
+type Data<T> = Option<{ data: T }>;
 
 interface DataStore<T> extends Readable<Data<T>> {
 	set: (data: T) => void;
@@ -15,7 +15,7 @@ export const initDataStore = <T>(): DataStore<T> => {
 		subscribe,
 
 		set(data) {
-			set(data);
+			set({ data });
 		},
 
 		reset: () => {

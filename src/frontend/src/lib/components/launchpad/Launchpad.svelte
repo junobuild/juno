@@ -11,7 +11,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
-	import { satellitesStore } from '$lib/stores/satellite.store';
+
+	import {satellitesStore} from "$lib/derived/satellite.derived";
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

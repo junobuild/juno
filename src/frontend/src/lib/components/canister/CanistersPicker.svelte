@@ -8,8 +8,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlStore } from '$lib/stores/mission-control.store';
 	import { orbiterStore } from '$lib/stores/orbiter.store';
-	import { satellitesStore } from '$lib/stores/satellite.store';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import {satellitesStore} from "$lib/derived/satellite.derived";
 
 	interface Props {
 		excludeSegmentId: Principal;

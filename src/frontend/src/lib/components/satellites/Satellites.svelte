@@ -4,9 +4,9 @@
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import SatellitesToolbar from '$lib/components/satellites/SatellitesToolbar.svelte';
 	import { layoutSatellites } from '$lib/stores/layout.store';
-	import { satellitesStore } from '$lib/stores/satellite.store';
 	import { SatellitesLayout } from '$lib/types/layout';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+    import {satellitesStore} from "$lib/derived/satellite.derived";
 
 	let filter = $state('');
 

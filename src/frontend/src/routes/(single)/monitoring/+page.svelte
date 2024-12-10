@@ -4,6 +4,7 @@
 	import { run } from 'svelte/legacy';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
 	import ObservatoryDashboard from '$lib/components/observatory/ObservatoryDashboard.svelte';
 	import ObservatorySettings from '$lib/components/observatory/ObservatorySettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -15,7 +16,6 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import MonitoringSettings from "$lib/components/monitoring/MonitoringSettings.svelte";
 
 	const tabs: Tab[] = [
 		{
@@ -50,7 +50,7 @@
 		{#if $store.tabId === $store.tabs[0].id}
 			<ObservatoryDashboard />
 		{:else if $store.tabId === $store.tabs[1].id && nonNullish($missionControlStore)}
-			<MonitoringSettings  missionControlId={$missionControlStore} />
+			<MonitoringSettings missionControlId={$missionControlStore} />
 
 			<ObservatorySettings missionControlId={$missionControlStore} />
 		{/if}

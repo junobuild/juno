@@ -242,6 +242,7 @@ interface I18nMission_control {
 	title: string;
 	overview: string;
 	id: string;
+	not_found: string;
 }
 
 interface I18nWallet {

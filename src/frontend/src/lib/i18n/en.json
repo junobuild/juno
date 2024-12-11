@@ -234,7 +234,8 @@
 	"mission_control": {
 		"title": "Mission Control",
 		"overview": "Overview",
-		"id": "Mission Control ID"
+		"id": "Mission Control ID",
+		"not_found": "Mission control not found."
 	},
 	"wallet": {
 		"title": "Wallet",

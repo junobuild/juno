@@ -424,14 +424,12 @@ interface I18nFunctions {
 interface I18nCli {
 	title: string;
 	sign_in: string;
-	controller: string;
 	add: string;
 	selected: string;
 	module: string;
 	terminal: string;
 	select_all: string;
 	unselect_all: string;
-	profile: string;
 	profile_info: string;
 	segments: string;
 	profile_placeholder: string;

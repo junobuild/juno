@@ -93,15 +93,15 @@ export const loadOrbiters = async ({
 }: {
 	missionControl: Option<Principal>;
 	reload?: boolean;
-}) => {
+}): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	if (isNullish(missionControl)) {
-		return;
+		return { result: 'error' };
 	}
 
 	// We load only once
 	const orbiters = get(orbitersStore);
 	if (nonNullish(orbiters) && !reload) {
-		return;
+		return { result: 'skip' };
 	}
 
 	try {
@@ -112,6 +112,8 @@ export const loadOrbiters = async ({
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		orbitersStore.set(orbiters.map(([_, orbiter]) => orbiter));
+
+		return { result: 'success' };
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
@@ -119,6 +121,8 @@ export const loadOrbiters = async ({
 			text: labels.errors.orbiters_loading,
 			detail: err
 		});
+
+		return { result: 'error' };
 	}
 };
 

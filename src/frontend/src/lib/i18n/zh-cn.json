@@ -62,7 +62,9 @@
 		"hold_tight": "稍等!",
 		"create": "创建",
 		"replace": "替换",
-		"restore": "恢复"
+		"restore": "恢复",
+		"select_all": "选择全部",
+		"unselect_all": "取消全部选择"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -155,7 +157,7 @@
 		"warning_orbiter_low_cycles": "你的 orbiter的 cycles 将要耗尽.",
 		"warning_satellite_heap_memory": "你的 satellite 堆内存已经达到 1 GB.",
 		"warning_orbiter_heap_memory": "你的 orbiter 堆内存已经达到 1 GB.",
-		"warning_indicator": "警告: 这个 segment 需要您的注意. 可能停止或者 cycles 余额不足.",
+		"warning_indicator": "警告: 这个 module 需要您的注意. 可能停止或者 cycles 余额不足.",
 		"updating_settings": "正在更新设置...",
 		"settings_updated_text": "你的 {0} 设置已经更新.",
 		"in_seconds": "秒后",
@@ -234,7 +236,8 @@
 	"mission_control": {
 		"title": "Mission Control",
 		"overview": "概要",
-		"id": "Mission Control ID"
+		"id": "Mission Control ID",
+		"not_found": "Mission control not found."
 	},
 	"wallet": {
 		"title": "钱包",
@@ -250,10 +253,10 @@
 		"tx_to": "到",
 		"tx_memo": "备注",
 		"tx_amount": "金额",
-		"memo_create": "Segment 以创建",
+		"memo_create": "Module 以创建",
 		"memo_refund_satellite": "Satellite 返还",
 		"memo_refund_orbiter": "Orbiter 返还",
-		"memo_refund_top_up": "充值 segment",
+		"memo_refund_top_up": "充值 module",
 		"memo_received": "已收到",
 		"memo_sent": "已发送",
 		"export_title": "导出为 CSV",
@@ -408,14 +411,10 @@
 	"cli": {
 		"title": "授权命令行",
 		"sign_in": "登录设置你的终端用于和 mission control, satellite(s) 以及 analytics 交互.",
-		"controller": "你的终端已经授权<strong>{0}</strong> 为控制者:",
-		"add": "请确认将被你的终端控制的模块:",
+		"add": "Please confirm the modules that will be controlled:",
 		"selected": "已选择",
 		"module": "模块",
 		"terminal": "终端",
-		"select_all": "选择全部",
-		"unselect_all": "取消全部选择",
-		"profile": "概况",
 		"profile_info": "如果需要，提供一个简介名字有助于在未来更容易识别.",
 		"segments": "模块:",
 		"profile_placeholder": "可选的简介名字",
@@ -437,7 +436,7 @@
 		"canister_delete": "删除智能合约时出现异常错误.",
 		"canister_settings_not_loaded": "智能合约设置没有加载.",
 		"canister_update_error": "更新设置出现异常错误.",
-		"segment_detach": "解绑segment时出现异常错误.",
+		"segment_detach": "解绑module时出现异常错误.",
 		"ledger_balance_credits": "获取你的 mission control 余额和积分时出现未知错误.",
 		"load_credits": "无法加载你当前credit状态.",
 		"load_documents": "Unexpected error(s) while loading the documents.",
@@ -473,7 +472,7 @@
 		"upgrade_no_version": "请选择一个版本进行升级.",
 		"upgrade_no_wasm": "没提供 wasm， 请重试.",
 		"upgrade_requires_iterative_version": "在你的版本 {0} v{1} 和 选择的版本  {2} 之间可能有不兼容的更改，请依次迭代升级",
-		"top_up_error": "充值segment时出错.",
+		"top_up_error": "充值module时出错.",
 		"analytics_load_error": "记载统计数据时出错.",
 		"analytics_tracked_events_export": "导出追踪事件日志时出错",
 		"satellites_loading": "加载 satellite 列表时出错.",
@@ -662,7 +661,7 @@
 		"no_data_or_disabled_go_settings": "还没有数据被搜集 (后台每一个小时运行一次) 或这监控功能没打开.",
 		"go_to_settings": "你可以打开这个功能",
 		"id": "ID",
-		"segment": "Segment",
+		"segment": "Module",
 		"cycles_collected": "T Cycles 搜集",
 		"error_collecting_data": "搜集数据出错."
 	},

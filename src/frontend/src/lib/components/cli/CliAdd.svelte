@@ -4,6 +4,7 @@
 	import { onMount } from 'svelte';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
+	import SegmentsTable from '$lib/components/core/SegmentsTable.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
@@ -31,49 +32,11 @@
 
 	let { principal, redirect_uri, missionControlId }: Props = $props();
 
-	let satellites: [Principal, Satellite][] = $state([]);
-	let orbiters: [Principal, Orbiter][] = $state([]);
+	let profile = $state('');
 
-	const loadSegments = async () => {
-		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
-			loadSatellites({ missionControl: missionControlId, reload: true }),
-			loadOrbiters({ missionControl: missionControlId, reload: true })
-		]);
-
-		if (resultSatellites !== 'success' || resultOrbiters !== 'success') {
-			satellites = [];
-			orbiters = [];
-			return;
-		}
-
-		satellites = ($satellitesStore ?? []).map(({ satellite_id, ...rest }) => [
-			satellite_id,
-			{ satellite_id, ...rest }
-		]);
-		orbiters = nonNullish($orbiterStore) ? [[$orbiterStore.orbiter_id, $orbiterStore]] : [];
-
-		toggleAll();
-	};
-
-	onMount(() => {
-		loadSegments();
-	});
-
+	let selectedMissionControl = $state(false);
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
 	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
-	let missionControl = $state(false);
-
-	let allSelected = $state(false);
-
-	const toggleAll = () => {
-		allSelected = !allSelected;
-
-		missionControl = allSelected;
-		selectedSatellites = allSelected ? [...satellites] : [];
-		selectedOrbiters = allSelected ? [...orbiters] : [];
-	};
-
-	let profile = $state('');
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
@@ -110,7 +73,7 @@
 
 		try {
 			await Promise.all([
-				...(missionControl
+				...(selectedMissionControl
 					? [
 							setMissionControlControllerForVersion({
 								missionControlId: $missionControlStore,
@@ -168,7 +131,7 @@
 							)
 						)}`
 					: undefined,
-				missionControl ? `mission_control=${$missionControlStore.toText()}` : undefined,
+				selectedMissionControl ? `mission_control=${$missionControlStore.toText()}` : undefined,
 				profile !== '' ? `profile=${profile}` : undefined
 			].filter((param) => nonNullish(param));
 
@@ -187,7 +150,7 @@
 	};
 
 	let disabled = $derived(
-		selectedSatellites.length === 0 && !missionControl && selectedOrbiters.length === 0
+		selectedSatellites.length === 0 && !selectedMissionControl && selectedOrbiters.length === 0
 	);
 </script>
 
@@ -196,61 +159,14 @@
 		{$i18n.cli.add}
 	</p>
 
-	<div class="table-container">
+	<SegmentsTable
+		{missionControlId}
+		bind:selectedMissionControl
+		bind:selectedSatellites
+		bind:selectedOrbiters
+	>
 		<div class="terminal">{$i18n.cli.terminal}:&nbsp;{principal}</div>
-
-		<table>
-			<thead>
-				<tr>
-					<th class="tools"> {$i18n.cli.selected} </th>
-					<th> {$i18n.cli.module} </th>
-				</tr>
-			</thead>
-			<tbody>
-				<tr>
-					<td class="actions"><input type="checkbox" bind:checked={missionControl} /></td>
-
-					<td>
-						<span>{$i18n.mission_control.title}</span>
-						<span class="canister-id">({$missionControlStore?.toText() ?? ''})</span>
-					</td>
-				</tr>
-
-				{#each satellites as satellite}
-					<tr>
-						<td class="actions"
-							><input type="checkbox" bind:group={selectedSatellites} value={satellite} /></td
-						>
-						<td
-							><span>{satelliteName(satellite[1])}</span>
-							<span class="canister-id">({satellite[0].toText()})</span></td
-						>
-					</tr>
-				{/each}
-
-				{#each orbiters as orbiter}
-					{@const orbName = orbiterName(orbiter[1])}
-
-					<tr>
-						<td class="actions"
-							><input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /></td
-						>
-						<td>
-							<span>{!orbName ? 'Analytics' : orbName}</span>
-							<span class="canister-id">({orbiter[0].toText()})</span>
-						</td>
-					</tr>
-				{/each}
-			</tbody>
-		</table>
-	</div>
-
-	<div class="objects">
-		<div class="checkbox all">
-			<input type="checkbox" onchange={toggleAll} checked={allSelected} />
-			<span>{allSelected ? $i18n.cli.unselect_all : $i18n.cli.select_all}</span>
-		</div>
-	</div>
+	</SegmentsTable>
 
 	<div class="options">
 		<Collapsible>
@@ -275,61 +191,13 @@
 </form>
 
 <style lang="scss">
-	@use '../../../lib/styles/mixins/text';
-	@use '../../../lib/styles/mixins/media';
-
-	.tools {
-		width: 88px;
-	}
-
-	.checkbox {
-		display: flex;
-		align-items: center;
-		gap: var(--padding-2x);
-	}
-
-	span {
-		@include text.truncate;
-	}
-
 	button {
 		margin: var(--padding-2_5x) 0 0;
 		display: block;
 	}
 
-	.canister-id {
-		font-size: var(--font-size-ultra-small);
-	}
-
-	.all {
-		display: flex;
-		align-items: center;
-
-		font-size: var(--font-size-ultra-small);
-
-		margin: var(--padding) 0 0;
-	}
-
-	.objects {
-		margin: 0 0 var(--padding-4x);
-		padding: var(--padding) var(--padding-2x);
-	}
-
 	.add {
 		padding: 0 0 var(--padding-2x);
-		margin: 0;
-	}
-
-	.table-container {
-		margin: 0;
-	}
-
-	.actions {
-		display: flex;
-		padding: var(--padding-2x) var(--padding-2x);
-	}
-
-	input[type='checkbox'] {
 		margin: 0;
 	}
 

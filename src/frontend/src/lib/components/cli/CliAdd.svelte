@@ -1,24 +1,24 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { run, preventDefault } from 'svelte/legacy';
+	import { onMount } from 'svelte';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
-	import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
-	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
-	import Html from '$lib/components/ui/Html.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesForVersion
 	} from '$lib/services/mission-control.services';
-	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { loadSatellites } from '$lib/services/satellites.services';
+	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -26,45 +26,37 @@
 	interface Props {
 		principal: string;
 		redirect_uri: string;
+		missionControlId: Principal;
 	}
 
-	let { principal, redirect_uri }: Props = $props();
+	let { principal, redirect_uri, missionControlId }: Props = $props();
 
 	let satellites: [Principal, Satellite][] = $state([]);
 	let orbiters: [Principal, Orbiter][] = $state([]);
 
 	const loadSegments = async () => {
-		if (!$authSignedInStore) {
+		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
+			loadSatellites({ missionControl: missionControlId, reload: true }),
+			loadOrbiters({ missionControl: missionControlId, reload: true })
+		]);
+
+		if (resultSatellites !== 'success' || resultOrbiters !== 'success') {
 			satellites = [];
 			orbiters = [];
 			return;
 		}
 
-		if (isNullish($missionControlStore)) {
-			satellites = [];
-			orbiters = [];
-			return;
-		}
+		satellites = ($satellitesStore ?? []).map(({ satellite_id, ...rest }) => [
+			satellite_id,
+			{ satellite_id, ...rest }
+		]);
+		orbiters = nonNullish($orbiterStore) ? [[$orbiterStore.orbiter_id, $orbiterStore]] : [];
 
-		try {
-			const actor = await getMissionControlActor({
-				missionControlId: $missionControlStore,
-				identity: $authStore.identity
-			});
-			const [sats, orbs] = await Promise.all([actor.list_satellites(), actor.list_orbiters()]);
-
-			satellites = sats;
-			orbiters = orbs;
-
-			toggleAll();
-		} catch (err: unknown) {
-			console.error(err);
-		}
+		toggleAll();
 	};
 
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$authSignedInStore, $missionControlStore, (async () => await loadSegments())();
+	onMount(() => {
+		loadSegments();
 	});
 
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
@@ -83,7 +75,9 @@
 
 	let profile = $state('');
 
-	const onSubmit = async () => {
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
 		if (isNullish(redirect_uri) || isNullish(principal)) {
 			toasts.error({
 				text: $i18n.errors.cli_missing_params
@@ -192,13 +186,12 @@
 		busy.stop();
 	};
 
-	let disabled = $state(true);
-	run(() => {
-		disabled = selectedSatellites.length === 0 && !missionControl && selectedOrbiters.length === 0;
-	});
+	let disabled = $derived(
+		selectedSatellites.length === 0 && !missionControl && selectedOrbiters.length === 0
+	);
 </script>
 
-<form onsubmit={preventDefault(onSubmit)}>
+<form onsubmit={onSubmit}>
 	<p class="add">
 		{$i18n.cli.add}
 	</p>

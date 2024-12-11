@@ -66,6 +66,8 @@ interface I18nCore {
 	create: string;
 	replace: string;
 	restore: string;
+	select_all: string;
+	unselect_all: string;
 }
 
 interface I18nCanisters {
@@ -428,8 +430,6 @@ interface I18nCli {
 	selected: string;
 	module: string;
 	terminal: string;
-	select_all: string;
-	unselect_all: string;
 	profile_info: string;
 	segments: string;
 	profile_placeholder: string;

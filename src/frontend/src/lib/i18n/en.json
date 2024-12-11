@@ -62,7 +62,9 @@
 		"hold_tight": "Hold tight!",
 		"create": "Create",
 		"replace": "Replace",
-		"restore": "Restore"
+		"restore": "Restore",
+		"select_all": "Select all",
+		"unselect_all": "Deselect all"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -413,8 +415,6 @@
 		"selected": "Selected",
 		"module": "Module",
 		"terminal": "Terminal",
-		"select_all": "Select all",
-		"unselect_all": "Deselect all",
 		"profile_info": "Providing a profile name, if desired, can help you easily identify the controller in future sessions.",
 		"segments": "Modules:",
 		"profile_placeholder": "A optional profile name",

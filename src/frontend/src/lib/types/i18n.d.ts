@@ -66,6 +66,8 @@ interface I18nCore {
 	create: string;
 	replace: string;
 	restore: string;
+	select_all: string;
+	unselect_all: string;
 }
 
 interface I18nCanisters {
@@ -242,6 +244,7 @@ interface I18nMission_control {
 	title: string;
 	overview: string;
 	id: string;
+	not_found: string;
 }
 
 interface I18nWallet {
@@ -423,14 +426,10 @@ interface I18nFunctions {
 interface I18nCli {
 	title: string;
 	sign_in: string;
-	controller: string;
 	add: string;
 	selected: string;
 	module: string;
 	terminal: string;
-	select_all: string;
-	unselect_all: string;
-	profile: string;
 	profile_info: string;
 	segments: string;
 	profile_placeholder: string;

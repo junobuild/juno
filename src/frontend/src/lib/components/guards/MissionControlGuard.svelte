@@ -3,6 +3,7 @@
 	import Spinner from '$lib/components/ui/Spinner.svelte';
 
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		children: Snippet;
@@ -14,7 +15,7 @@
 {#if $missionControlStore === undefined}
 	<Spinner />
 {:else if $missionControlStore === null}
-	<p>Mission control not found.</p>
+	<p>{$i18n.mission_control.not_found}</p>
 {:else}
 	{@render children()}
 {/if}

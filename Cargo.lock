@@ -769,6 +769,7 @@ dependencies = [
  "futures",
  "ic-cdk",
  "ic-cdk-macros",
+ "ic-cdk-timers",
  "ic-ledger-types",
  "icrc-ledger-types",
  "junobuild-shared",

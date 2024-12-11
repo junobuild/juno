@@ -25,7 +25,7 @@ use crate::guards::{
 };
 use crate::memory::{init_runtime_state, STATE};
 use crate::mgmt::status::collect_statuses;
-use crate::monitoring::{restart_monitoring, start_monitoring, stop_monitoring};
+use crate::monitoring::{defer_restart_monitoring, start_monitoring, stop_monitoring};
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -98,7 +98,7 @@ fn post_upgrade() {
 
     init_runtime_state();
 
-    let _ = restart_monitoring();
+    defer_restart_monitoring();
 }
 
 // ---------------------------------------------------------

@@ -1,8 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { onMount, type Snippet } from 'svelte';
-	import { loadSnapshots } from '$lib/services/snapshots.services';
 	import { authStore } from '$lib/stores/auth.store';
+	import { loadSettings } from '$lib/services/mission-control.services';
 
 	interface Props {
 		missionControlId: Principal;
@@ -12,8 +12,8 @@
 	let { missionControlId, children }: Props = $props();
 
 	onMount(() => {
-		loadSnapshots({
-			canisterId,
+		loadSettings({
+			missionControlId,
 			identity: $authStore.identity
 		});
 	});

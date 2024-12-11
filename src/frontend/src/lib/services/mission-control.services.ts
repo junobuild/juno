@@ -19,7 +19,7 @@ import { satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
-import { missionControlSettingsStore } from '$lib/stores/mission-control.store';
+import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
 import { orbitersStore } from '$lib/stores/orbiter.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -235,9 +235,9 @@ export const loadSettings = async ({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		const store = get(missionControlSettingsStore);
+		const store = get(missionControlSettingsDataStore);
 
-		if (missionControlSettingsStore !== undefined && !reload) {
+		if (store !== undefined && !reload) {
 			return { success: true };
 		}
 
@@ -246,7 +246,7 @@ export const loadSettings = async ({
 			identity
 		});
 
-		missionControlSettingsStore.set(fromNullable(settings));
+		missionControlSettingsDataStore.set(fromNullable(settings));
 
 		return { success: true };
 	} catch (err: unknown) {
@@ -257,7 +257,7 @@ export const loadSettings = async ({
 			detail: err
 		});
 
-		missionControlSettingsStore.reset();
+		missionControlSettingsDataStore.reset();
 
 		return { success: false };
 	}

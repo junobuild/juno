@@ -4,4 +4,4 @@ import type { Principal } from '@dfinity/principal';
 
 export const missionControlDataStore = initDataStore<Principal>();
 
-export const missionControlSettingsStore = initDataStore<MissionControlSettings | undefined>();
+export const missionControlSettingsDataStore = initDataStore<MissionControlSettings | undefined>();

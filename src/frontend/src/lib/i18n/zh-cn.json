@@ -516,7 +516,8 @@
 		"auth_settings_not_loaded": "认证设置未被加载.",
 		"auth_rate_config_max_tokens": "每分钟最多更新操作数量是必须的.",
 		"auth_rate_config_update": "更改认证配置出现异常错误.",
-		"auth_domain_config": "更新认证配置是出现异常错误"
+		"auth_domain_config": "更新认证配置是出现异常错误",
+		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded."
 	},
 	"document": {
 		"owner": "拥有者",

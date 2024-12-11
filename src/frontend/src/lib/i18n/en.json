@@ -516,7 +516,8 @@
 		"auth_settings_not_loaded": "The authentication's settings are not yet loaded.",
 		"auth_rate_config_max_tokens": "A maximal number of updates per minute is required.",
 		"auth_rate_config_update": "Unexpected error(s) while trying to update your authentication settings.",
-		"auth_domain_config": "Unexpected error(s) while trying to update your authentication configuration"
+		"auth_domain_config": "Unexpected error(s) while trying to update your authentication configuration",
+		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded."
 	},
 	"document": {
 		"owner": "Owner",

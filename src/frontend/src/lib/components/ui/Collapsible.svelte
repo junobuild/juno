@@ -147,6 +147,9 @@
 	button {
 		transform: rotate(90deg);
 
+		border-color: transparent;
+		background-color: transparent;
+
 		:global(svg) {
 			transition: transform var(--animation-time);
 		}

@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { signIn } from '$lib/services/auth.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -21,7 +23,11 @@
 
 {#if nonNullish(redirect_uri) && nonNullish(principal) && notEmptyString(redirect_uri) && notEmptyString(principal)}
 	{#if $authSignedInStore}
-		<CliAdd {principal} {redirect_uri} />
+		<MissionControlGuard>
+			{#if nonNullish($missionControlStore)}
+				<CliAdd {principal} {redirect_uri} missionControlId={$missionControlStore} />
+			{/if}
+		</MissionControlGuard>
 	{:else}
 		<p>
 			{$i18n.cli.sign_in}

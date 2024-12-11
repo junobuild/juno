@@ -60,15 +60,15 @@ export const loadSatellites = async ({
 }: {
 	missionControl: Option<Principal>;
 	reload?: boolean;
-}) => {
+}): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	if (isNullish(missionControl)) {
-		return;
+		return { result: 'error' };
 	}
 
 	// We load only once
 	const satellites = get(satellitesStore);
 	if (nonNullish(satellites) && !reload) {
-		return;
+		return { result: 'skip' };
 	}
 
 	try {
@@ -82,6 +82,8 @@ export const loadSatellites = async ({
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		satellitesDataStore.set(satellites.map(([_, satellite]) => satellite));
+
+		return { result: 'success' };
 	} catch (err: unknown) {
 		const labels = get(i18n);
 
@@ -91,5 +93,7 @@ export const loadSatellites = async ({
 		});
 
 		satellitesDataStore.reset();
+
+		return { result: 'error' };
 	}
 };

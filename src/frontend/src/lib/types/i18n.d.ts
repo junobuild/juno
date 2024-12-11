@@ -692,6 +692,14 @@ interface I18nObservatory {
 	error_collecting_data: string;
 }
 
+interface I18nMonitoring {
+	title: string;
+	create_info: string;
+	create_strategy: string;
+	strategy_created: string;
+	applying_strategy: string;
+}
+
 interface I18nPreferences {
 	title: string;
 	dev_id: string;
@@ -738,6 +746,7 @@ interface I18n {
 	filter: I18nFilter;
 	users: I18nUsers;
 	observatory: I18nObservatory;
+	monitoring: I18nMonitoring;
 	preferences: I18nPreferences;
 	examples: I18nExamples;
 	resources: I18nResources;

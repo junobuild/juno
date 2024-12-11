@@ -22,7 +22,7 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import type { JunoModal } from '$lib/types/modal';
-	import SetBulkMonitoringStrategyModal from "$lib/components/modals/SetBulkMonitoringStrategyModal.svelte";
+	import CreateMonitoringBulkStrategyModal from "$lib/components/modals/CreateMonitoringBulkStrategyModal.svelte";
 
 	let modal: JunoModal | undefined = $state(undefined);
 
@@ -115,6 +115,6 @@
 	<CanisterRestoreSnapshotModal onclose={close} detail={modal.detail} />
 {/if}
 
-{#if modal?.type === 'monitoring_set_bulk_strategy' && nonNullish(modal.detail)}
-	<SetBulkMonitoringStrategyModal onclose={close} detail={modal.detail} />
+{#if modal?.type === 'monitoring_create_bulk_strategy' && nonNullish(modal.detail)}
+	<CreateMonitoringBulkStrategyModal onclose={close} detail={modal.detail} />
 {/if}

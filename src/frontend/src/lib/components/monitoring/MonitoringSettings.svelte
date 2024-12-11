@@ -25,7 +25,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'monitoring_set_bulk_strategy',
+				type: 'monitoring_create_bulk_strategy',
 				detail: {
 					settings: $missionControlSettingsDataStore.data
 				}
@@ -66,6 +66,6 @@
 	</div>
 
 	{#if $missionControlSettingsLoaded}
-		<button in:fade onclick={openModal}>Set strategy</button>
+		<button in:fade onclick={openModal}>{$i18n.monitoring.create_strategy}</button>
 	{/if}
 </MissionControlSettingsLoader>

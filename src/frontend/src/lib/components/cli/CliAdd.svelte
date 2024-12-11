@@ -5,6 +5,7 @@
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
+	import IconCheckCircle from '$lib/components/icons/IconCheckCircle.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
@@ -198,28 +199,13 @@
 </script>
 
 <form onsubmit={preventDefault(onSubmit)}>
-	<div class="card-container with-title terminal">
-		<span class="title">{$i18n.cli.terminal}</span>
-
-		<div class="content">
-			<p>
-				<Html
-					text={i18nFormat($i18n.cli.controller, [
-						{
-							placeholder: '{0}',
-							value: principal
-						}
-					])}
-				/>
-			</p>
-		</div>
-	</div>
-
 	<p class="add">
 		{$i18n.cli.add}
 	</p>
 
 	<div class="table-container">
+		<div class="terminal">{$i18n.cli.terminal}:&nbsp;{principal}</div>
+
 		<table>
 			<thead>
 				<tr>
@@ -277,21 +263,17 @@
 		<Collapsible>
 			<svelte:fragment slot="header">{$i18n.core.advanced_options}</svelte:fragment>
 
-			<div class="card-container with-title">
-				<span class="title">{$i18n.cli.profile}</span>
+			<div>
+				<p class="profile-info">{$i18n.cli.profile_info}</p>
 
-				<div class="content">
-					<p class="profile-info">{$i18n.cli.profile_info}</p>
-
-					<input
-						id="profile"
-						type="text"
-						placeholder={$i18n.cli.profile_placeholder}
-						name="profile"
-						bind:value={profile}
-						autocomplete="off"
-					/>
-				</div>
+				<input
+					id="profile"
+					type="text"
+					placeholder={$i18n.cli.profile_placeholder}
+					name="profile"
+					bind:value={profile}
+					autocomplete="off"
+				/>
 			</div>
 		</Collapsible>
 	</div>
@@ -327,13 +309,12 @@
 	}
 
 	.all {
-		margin: var(--padding) 0 0;
+		display: flex;
 		align-items: center;
+
 		font-size: var(--font-size-ultra-small);
 
-		span {
-			padding: 0 0 var(--padding-0_5x);
-		}
+		margin: var(--padding) 0 0;
 	}
 
 	.objects {
@@ -360,7 +341,11 @@
 	}
 
 	.terminal {
-		margin: 0 0 var(--padding-6x);
+		font-size: var(--font-size-small);
+		font-weight: var(--font-weight-bold);
+		background: var(--color-card-contrast);
+		color: var(--color-card);
+		padding: var(--padding-0_5x) var(--padding-2x);
 	}
 
 	.options {

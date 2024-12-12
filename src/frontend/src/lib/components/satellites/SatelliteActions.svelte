@@ -6,7 +6,7 @@
 	import CanisterTransferCycles from '$lib/components/canister/CanisterTransferCycles.svelte';
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
-	import SegmentActions from '$lib/components/core/SegmentActions.svelte';
+	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import { listCustomDomains } from '$lib/services/hosting.services';
 	import { busy } from '$lib/stores/busy.store';
 	import type { CanisterIcStatus } from '$lib/types/canister';

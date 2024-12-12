@@ -134,7 +134,7 @@
 </div>
 
 <style lang="scss">
-	@use '../../../lib/styles/mixins/text';
+	@use '../../styles/mixins/text';
 
 	.tools {
 		width: 88px;

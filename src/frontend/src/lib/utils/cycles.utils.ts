@@ -1,4 +1,5 @@
 import { ONE_TRILLION } from '$lib/constants/constants';
+import { notEmptyString } from '@dfinity/utils';
 import { formatNumber } from './number.utils';
 
 export const formatTCycles = (cycles: bigint): string =>
@@ -6,6 +7,9 @@ export const formatTCycles = (cycles: bigint): string =>
 		minFraction: 3,
 		maxFraction: 3
 	});
+
+export const tCyclesToCycles = (tCycles: string): bigint =>
+	BigInt(parseFloat(notEmptyString(tCycles) ? tCycles : '0') * ONE_TRILLION);
 
 export const cyclesToICP = ({
 	cycles,

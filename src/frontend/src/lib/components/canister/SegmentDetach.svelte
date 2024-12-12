@@ -9,7 +9,7 @@
 	import { detachOrbiter, detachSatellite } from '$lib/services/mission-control.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store.js';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { i18nCapitalize, i18nFormat } from '$lib/utils/i18n.utils';
 

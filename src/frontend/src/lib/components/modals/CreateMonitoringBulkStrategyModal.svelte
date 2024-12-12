@@ -52,6 +52,8 @@
 		<SpinnerModal>
 			<p>{$i18n.monitoring.applying_strategy}</p>
 		</SpinnerModal>
+	{:else if steps === 'review'}
+
 	{:else if steps === 'strategy'}
 		<MonitoringCreateStrategy
 			bind:minCycles

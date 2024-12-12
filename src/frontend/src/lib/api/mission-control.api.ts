@@ -1,6 +1,7 @@
 import type {
 	Controller,
 	MissionControlSettings,
+	MonitoringStartConfig,
 	Orbiter,
 	Result,
 	Result_1,
@@ -451,4 +452,21 @@ export const getSettings = async ({
 }): Promise<[] | [MissionControlSettings]> => {
 	const { get_settings } = await getMissionControlActor({ missionControlId, identity });
 	return get_settings();
+};
+
+export const startMonitoringWithConfig = async ({
+	missionControlId,
+	identity,
+	config
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	config: MonitoringStartConfig;
+}): Promise<void> => {
+	const { start_monitoring_with_config } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+
+	return await start_monitoring_with_config(config);
 };

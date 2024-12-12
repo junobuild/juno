@@ -11,6 +11,9 @@
 		JunoModalMonitoringCreateBulkStrategyDetail
 	} from '$lib/types/modal';
 	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { applyMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
+	import { authStore } from '$lib/stores/auth.store';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -32,7 +35,31 @@
 	let minCycles: bigint = $state(0n);
 	let fundCycles: bigint = $state(0n);
 
-	const onsubmit = async ($event: SubmitEvent) => {};
+	const onsubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
+
+		wizardBusy.start();
+		steps = 'in_progress';
+
+		const { success } = await applyMonitoringCyclesStrategy({
+			identity: $authStore.identity,
+			missionControlId,
+			selectedMissionControl,
+			satellites: selectedSatellites.map(([id, _]) => id),
+			orbiters: selectedOrbiters.map(([id, _]) => id),
+			fundCycles,
+			minCycles
+		});
+
+		wizardBusy.stop();
+
+		if (success !== 'ok') {
+			steps = 'init';
+			return;
+		}
+
+		steps = 'ready';
+	};
 </script>
 
 <Modal on:junoClose={onclose}>

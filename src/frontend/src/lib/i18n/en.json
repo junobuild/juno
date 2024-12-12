@@ -668,7 +668,7 @@
 	"monitoring": {
 		"title": "Monitoring Strategy",
 		"create_info": "Select the modules for which this strategy will ensure sufficient cycles periodically.",
-		"threshold_info": "Define how many remaining cycles should trigger a top-up and how much to add.",
+		"threshold_info": "Define how many remaining cycles should trigger a top-up.",
 		"review_info": "Review your strategy settings before applying them.",
 		"create_strategy": "Create strategy",
 		"strategy_created": "Strategy successfully created and monitoring started.",

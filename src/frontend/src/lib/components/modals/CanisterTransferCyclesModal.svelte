@@ -14,7 +14,7 @@
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { formatTCycles, tCyclesToCycles } from '$lib/utils/cycles.utils';
 	import { emit } from '$lib/utils/events.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 
@@ -34,9 +34,7 @@
 
 	let tCycles: string = $state('');
 
-	let cycles: bigint = $derived(
-		BigInt(parseFloat(notEmptyString(tCycles) ? tCycles : '0') * ONE_TRILLION)
-	);
+	let cycles: bigint = $derived(tCyclesToCycles(tCycles));
 
 	let destinationId: string | undefined = $state();
 

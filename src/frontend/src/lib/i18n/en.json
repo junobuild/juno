@@ -665,9 +665,9 @@
 		"cycles_collected": "T Cycles collected",
 		"error_collecting_data": "There was an error collecting the data."
 	},
-	"monitoring":{
+	"monitoring": {
 		"title": "Monitoring Strategy",
-		"create_info": "Create a new strategy to periodically ensure that your modules maintain sufficient cycles.",
+		"create_info": "Select the modules for which this strategy will ensure sufficient cycles periodically.",
 		"create_strategy": "Create strategy",
 		"strategy_created": "Strategy successfully created and monitoring started.",
 		"applying_strategy": "Applying strategy and starting monitoring..."

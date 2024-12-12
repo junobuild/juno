@@ -1,10 +1,16 @@
 <script lang="ts">
-	import type { JunoModalDetail, JunoModalMonitoringCreateBulkStrategyDetail } from '$lib/types/modal';
-	import Modal from '$lib/components/ui/Modal.svelte';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type { Principal } from '@dfinity/principal';
+	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
+	import SegmentsTable from '$lib/components/core/SegmentsTable.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type {
+		JunoModalDetail,
+		JunoModalMonitoringCreateBulkStrategyDetail
+	} from '$lib/types/modal';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -13,9 +19,15 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { settings } = $derived(detail as JunoModalMonitoringCreateBulkStrategyDetail);
+	let { settings, missionControlId } = $derived(
+		detail as JunoModalMonitoringCreateBulkStrategyDetail
+	);
 
 	let steps: 'edit' | 'in_progress' | 'ready' = $state('edit');
+
+	let selectedMissionControl = $state(false);
+	let selectedSatellites: [Principal, Satellite][] = $state([]);
+	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
 
 	const handleSubmit = async ($event: SubmitEvent) => {};
 </script>
@@ -35,7 +47,14 @@
 	{:else}
 		<h2>{$i18n.monitoring.title}</h2>
 
-        <p>{$i18n.monitoring.create_info}</p>
+		<p>{$i18n.monitoring.create_info}</p>
+
+		<SegmentsTable
+			{missionControlId}
+			bind:selectedMissionControl
+			bind:selectedSatellites
+			bind:selectedOrbiters
+		></SegmentsTable>
 	{/if}
 </Modal>
 

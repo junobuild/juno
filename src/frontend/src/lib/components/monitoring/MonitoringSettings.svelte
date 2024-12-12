@@ -1,14 +1,14 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { fade } from 'svelte/transition';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { emit } from '$lib/utils/events.utils';
-	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
-	import { missionControlSettingsLoaded } from '$lib/derived/mission-control.derived';
 	import { isNullish } from '@dfinity/utils';
-	import { toasts } from '$lib/stores/toasts.store';
+	import { fade } from 'svelte/transition';
+	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { missionControlSettingsLoaded } from '$lib/derived/mission-control.derived';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		missionControlId: Principal;
@@ -27,7 +27,8 @@
 			detail: {
 				type: 'monitoring_create_bulk_strategy',
 				detail: {
-					settings: $missionControlSettingsDataStore.data
+					settings: $missionControlSettingsDataStore.data,
+					missionControlId
 				}
 			}
 		});

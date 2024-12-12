@@ -1,5 +1,8 @@
 import type { snapshot } from '$declarations/ic/ic.did';
-import type {MissionControlSettings, Satellite} from '$declarations/mission_control/mission_control.did';
+import type {
+	MissionControlSettings,
+	Satellite
+} from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
@@ -96,6 +99,7 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 }
 
 export interface JunoModalMonitoringCreateBulkStrategyDetail {
+	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
 }
 

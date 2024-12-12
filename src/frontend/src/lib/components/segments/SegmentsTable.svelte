@@ -10,6 +10,7 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
+	import Segment from '$lib/components/segments/Segment.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -92,8 +93,9 @@
 				<td class="actions"><input type="checkbox" bind:checked={selectedMissionControl} /></td>
 
 				<td>
-					<span>{$i18n.mission_control.title}</span>
-					<span class="canister-id">({missionControlId.toText()})</span>
+					<Segment id={missionControlId}>
+						{$i18n.mission_control.title}
+					</Segment>
 				</td>
 			</tr>
 
@@ -102,9 +104,10 @@
 					<td class="actions"
 						><input type="checkbox" bind:group={selectedSatellites} value={satellite} /></td
 					>
-					<td
-						><span>{satelliteName(satellite[1])}</span>
-						<span class="canister-id">({satellite[0].toText()})</span></td
+					<td>
+						<Segment id={satellite[0]}>
+							{satelliteName(satellite[1])}
+						</Segment></td
 					>
 				</tr>
 			{/each}
@@ -117,8 +120,9 @@
 						><input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /></td
 					>
 					<td>
-						<span>{!orbName ? $i18n.analytics.title : orbName}</span>
-						<span class="canister-id">({orbiter[0].toText()})</span>
+						<Segment id={orbiter[0]}>
+							{!orbName ? $i18n.analytics.title : orbName}
+						</Segment>
 					</td>
 				</tr>
 			{/each}
@@ -134,7 +138,7 @@
 </div>
 
 <style lang="scss">
-	@use '../../../lib/styles/mixins/text';
+	@use '../../styles/mixins/text';
 
 	.tools {
 		width: 88px;
@@ -148,10 +152,6 @@
 
 	span {
 		@include text.truncate;
-	}
-
-	.canister-id {
-		font-size: var(--font-size-ultra-small);
 	}
 
 	.all {

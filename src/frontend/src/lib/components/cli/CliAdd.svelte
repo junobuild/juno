@@ -3,7 +3,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
-	import SegmentsTable from '$lib/components/core/SegmentsTable.svelte';
+	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';

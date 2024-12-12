@@ -694,6 +694,7 @@ interface I18nObservatory {
 interface I18nMonitoring {
 	title: string;
 	create_info: string;
+	threshold_info: string;
 	create_strategy: string;
 	strategy_created: string;
 	applying_strategy: string;

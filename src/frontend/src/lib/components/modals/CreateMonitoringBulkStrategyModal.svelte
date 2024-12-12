@@ -11,6 +11,10 @@
 		JunoModalMonitoringCreateBulkStrategyDetail
 	} from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import { isBusy } from '$lib/stores/busy.store';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import MonitoringCreateStrategySelectSegments from '$lib/components/monitoring/MonitoringCreateStrategySelectSegments.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -23,11 +27,14 @@
 		detail as JunoModalMonitoringCreateBulkStrategyDetail
 	);
 
-	let steps: 'edit' | 'in_progress' | 'ready' = $state('edit');
+	let steps: 'init' | 'strategy' | 'in_progress' | 'ready' = $state('init');
 
 	let selectedMissionControl = $state(false);
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
 	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
+
+	let minTCycles: string = $state('');
+	let fundTCycles: string = $state('');
 
 	const handleSubmit = async ($event: SubmitEvent) => {};
 </script>
@@ -44,17 +51,16 @@
 		<SpinnerModal>
 			<p>{$i18n.monitoring.applying_strategy}</p>
 		</SpinnerModal>
+	{:else if steps === 'strategy'}
+
 	{:else}
-		<h2>{$i18n.monitoring.title}</h2>
-
-		<p>{$i18n.monitoring.create_info}</p>
-
-		<SegmentsTable
+		<MonitoringCreateStrategySelectSegments
 			{missionControlId}
 			bind:selectedMissionControl
 			bind:selectedSatellites
 			bind:selectedOrbiters
-		></SegmentsTable>
+			oncontinue={() => (steps = 'strategy')}
+		/>
 	{/if}
 </Modal>
 

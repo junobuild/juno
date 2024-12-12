@@ -698,6 +698,8 @@ interface I18nMonitoring {
 	create_strategy: string;
 	strategy_created: string;
 	applying_strategy: string;
+	remaining_threshold: string;
+	top_up_amount: string;
 }
 
 interface I18nPreferences {

@@ -1,14 +1,39 @@
 <script lang="ts">
+	import { untrack } from 'svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { tCyclesToCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
-
+		minCycles: bigint;
+		fundCycles: bigint;
+		oncontinue: () => void;
 	}
 
-    let minTCycles: string = $state('');
-    let fundTCycles: string = $state('');
+	let { minCycles = $bindable(0n), fundCycles = $bindable(0n), oncontinue }: Props = $props();
+
+	let minTCycles: string = $state('');
+	let fundTCycles: string = $state('');
+
+	$effect(() => {
+		const min = tCyclesToCycles(minTCycles);
+
+		untrack(() => {
+			minCycles = min;
+		});
+	});
+
+	$effect(() => {
+		const fund = tCyclesToCycles(fundTCycles);
+
+		untrack(() => {
+			fundCycles = fund;
+		});
+	});
+
+	const disabled = $derived(minCycles <= 0n || fundCycles <= 0n);
 </script>
 
 <h2>{$i18n.monitoring.title}</h2>
@@ -17,7 +42,7 @@
 
 <Value ref="mint-cycles">
 	{#snippet label()}
-		Remaining Cycles Threshold
+		{$i18n.monitoring.remaining_threshold}
 	{/snippet}
 
 	<Input
@@ -31,14 +56,18 @@
 
 <Value ref="fund-cycles">
 	{#snippet label()}
-		Top-Up Amount
+		{$i18n.monitoring.top_up_amount}
 	{/snippet}
 
 	<Input
 		name="cycles"
 		inputType="icp"
 		required
-		bind:value={minTCycles}
+		bind:value={fundTCycles}
 		placeholder={$i18n.canisters.amount_cycles}
 	/>
 </Value>
+
+<button disabled={$isBusy || disabled} onclick={oncontinue}>
+	{$i18n.core.continue}
+</button>

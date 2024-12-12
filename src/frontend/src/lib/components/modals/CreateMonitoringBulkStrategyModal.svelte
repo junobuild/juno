@@ -2,19 +2,20 @@
 	import type { Principal } from '@dfinity/principal';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import SegmentsTable from '$lib/components/core/SegmentsTable.svelte';
+	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
+	import MonitoringCreateStrategySelectSegments from '$lib/components/monitoring/MonitoringCreateStrategySelectSegments.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type {
 		JunoModalDetail,
 		JunoModalMonitoringCreateBulkStrategyDetail
 	} from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { isBusy } from '$lib/stores/busy.store';
-	import Input from '$lib/components/ui/Input.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import MonitoringCreateStrategySelectSegments from '$lib/components/monitoring/MonitoringCreateStrategySelectSegments.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -27,14 +28,14 @@
 		detail as JunoModalMonitoringCreateBulkStrategyDetail
 	);
 
-	let steps: 'init' | 'strategy' | 'in_progress' | 'ready' = $state('init');
+	let steps: 'init' | 'strategy' | 'review' | 'in_progress' | 'ready' = $state('init');
 
 	let selectedMissionControl = $state(false);
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
 	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
 
-	let minTCycles: string = $state('');
-	let fundTCycles: string = $state('');
+	let minCycles: bigint = $state(0n);
+	let fundCycles: bigint = $state(0n);
 
 	const handleSubmit = async ($event: SubmitEvent) => {};
 </script>
@@ -52,7 +53,11 @@
 			<p>{$i18n.monitoring.applying_strategy}</p>
 		</SpinnerModal>
 	{:else if steps === 'strategy'}
-
+		<MonitoringCreateStrategy
+			bind:minCycles
+			bind:fundCycles
+			oncontinue={() => (steps = 'review')}
+		/>
 	{:else}
 		<MonitoringCreateStrategySelectSegments
 			{missionControlId}

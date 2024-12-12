@@ -671,7 +671,9 @@
 		"threshold_info": "Define how many remaining cycles should trigger a top-up and how much to add.",
 		"create_strategy": "Create strategy",
 		"strategy_created": "Strategy successfully created and monitoring started.",
-		"applying_strategy": "Applying strategy and starting monitoring..."
+		"applying_strategy": "Applying strategy and starting monitoring...",
+		"remaining_threshold": "Remaining T Cycles Threshold",
+		"top_up_amount": "Top-Up Amount"
 	},
 	"preferences": {
 		"title": "Preferences",

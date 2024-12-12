@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { nonNullish } from '@dfinity/utils';
+	import {nonNullish, notEmptyString} from '@dfinity/utils';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
@@ -121,7 +121,7 @@
 					>
 					<td>
 						<Segment id={orbiter[0]}>
-							{!orbName ? $i18n.analytics.title : orbName}
+							{!notEmptyString(orbName) ? $i18n.analytics.title : orbName}
 						</Segment>
 					</td>
 				</tr>

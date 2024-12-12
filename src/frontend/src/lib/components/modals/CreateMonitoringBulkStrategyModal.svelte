@@ -1,21 +1,16 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
-	import SegmentsTable from '$lib/components/core/SegmentsTable.svelte';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategySelectSegments from '$lib/components/monitoring/MonitoringCreateStrategySelectSegments.svelte';
-	import Html from '$lib/components/ui/Html.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type {
 		JunoModalDetail,
 		JunoModalMonitoringCreateBulkStrategyDetail
 	} from '$lib/types/modal';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -53,7 +48,14 @@
 			<p>{$i18n.monitoring.applying_strategy}</p>
 		</SpinnerModal>
 	{:else if steps === 'review'}
-
+		<MonitoringCreateStrategyReview
+			{missionControlId}
+			{selectedMissionControl}
+			{selectedSatellites}
+			{selectedOrbiters}
+			{minCycles}
+			{fundCycles}
+		/>
 	{:else if steps === 'strategy'}
 		<MonitoringCreateStrategy
 			bind:minCycles

@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
-	import SegmentsTable from '$lib/components/core/SegmentsTable.svelte';
+	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 

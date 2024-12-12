@@ -701,6 +701,7 @@ interface I18nMonitoring {
 	applying_strategy: string;
 	remaining_threshold: string;
 	top_up_amount: string;
+	selected_modules: string;
 }
 
 interface I18nPreferences {

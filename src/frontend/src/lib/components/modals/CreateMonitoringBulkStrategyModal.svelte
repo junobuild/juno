@@ -32,7 +32,7 @@
 	let minCycles: bigint = $state(0n);
 	let fundCycles: bigint = $state(0n);
 
-	const handleSubmit = async ($event: SubmitEvent) => {};
+	const onsubmit = async ($event: SubmitEvent) => {};
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -55,11 +55,14 @@
 			{selectedOrbiters}
 			{minCycles}
 			{fundCycles}
+			onback={() => (steps = 'strategy')}
+			{onsubmit}
 		/>
 	{:else if steps === 'strategy'}
 		<MonitoringCreateStrategy
 			bind:minCycles
 			bind:fundCycles
+			onback={() => (steps = 'init')}
 			oncontinue={() => (steps = 'review')}
 		/>
 	{:else}

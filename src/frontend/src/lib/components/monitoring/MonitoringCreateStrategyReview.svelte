@@ -9,6 +9,7 @@
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { notEmptyString } from '@dfinity/utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { isBusy } from '$lib/stores/busy.store';
 
 	interface Props {
 		missionControlId: Principal;
@@ -17,6 +18,8 @@
 		selectedOrbiters: [Principal, Orbiter][];
 		minCycles: bigint;
 		fundCycles: bigint;
+		onback: () => void;
+		onsubmit: ($event: SubmitEvent) => Promise<void>;
 	}
 
 	let {
@@ -25,7 +28,9 @@
 		selectedSatellites,
 		selectedOrbiters,
 		minCycles,
-		fundCycles
+		fundCycles,
+		onback,
+		onsubmit
 	}: Props = $props();
 </script>
 
@@ -82,6 +87,13 @@
 		<p>{formatTCycles(fundCycles)}</p>
 	</Value>
 </Value>
+
+<div class="toolbar">
+	<button type="button" disabled={$isBusy} onclick={onback}>{$i18n.core.back}</button>
+	<button disabled={$isBusy} onclick={onsubmit}>
+		{$i18n.core.apply}
+	</button>
+</div>
 
 <style lang="scss">
 	ul {

@@ -9,10 +9,11 @@
 	interface Props {
 		minCycles: bigint;
 		fundCycles: bigint;
+		onback: () => void;
 		oncontinue: () => void;
 	}
 
-	let { minCycles = $bindable(0n), fundCycles = $bindable(0n), oncontinue }: Props = $props();
+	let { minCycles = $bindable(0n), fundCycles = $bindable(0n), oncontinue, onback }: Props = $props();
 
 	let minTCycles: string = $state('');
 	let fundTCycles: string = $state('');
@@ -68,6 +69,15 @@
 	/>
 </Value>
 
-<button disabled={$isBusy || disabled} onclick={oncontinue}>
-	{$i18n.core.continue}
-</button>
+<div class="toolbar">
+	<button disabled={$isBusy} onclick={onback}>{$i18n.core.back}</button>
+	<button disabled={$isBusy || disabled} onclick={oncontinue}>
+		{$i18n.core.continue}
+	</button>
+</div>
+
+<style lang="scss">
+	.toolbar {
+		padding: var(--padding) 0 0 0;
+	}
+</style>

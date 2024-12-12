@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
-	import { onMount, type Snippet } from 'svelte';
+	import { onMount, type Snippet, untrack } from 'svelte';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
@@ -17,6 +17,7 @@
 		selectedMissionControl: boolean;
 		selectedSatellites: [Principal, Satellite][];
 		selectedOrbiters: [Principal, Orbiter][];
+		selectedDisabled: boolean;
 	}
 
 	let {
@@ -24,7 +25,8 @@
 		children,
 		selectedMissionControl = $bindable(false),
 		selectedSatellites = $bindable([]),
-		selectedOrbiters = $bindable([])
+		selectedOrbiters = $bindable([]),
+		selectedDisabled = $bindable(false)
 	}: Props = $props();
 
 	let satellites: [Principal, Satellite][] = $state([]);
@@ -64,6 +66,15 @@
 		selectedSatellites = allSelected ? [...satellites] : [];
 		selectedOrbiters = allSelected ? [...orbiters] : [];
 	};
+
+	$effect(() => {
+		const disabled =
+			selectedSatellites.length === 0 && !selectedMissionControl && selectedOrbiters.length === 0;
+
+		untrack(() => {
+			selectedDisabled = disabled;
+		});
+	});
 </script>
 
 <div class="table-container">

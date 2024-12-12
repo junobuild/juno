@@ -1,24 +1,19 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { onMount } from 'svelte';
 	import type { Satellite, Orbiter } from '$declarations/mission_control/mission_control.did';
 	import { setOrbitersController } from '$lib/api/mission-control.api';
 	import SegmentsTable from '$lib/components/core/SegmentsTable.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesForVersion
 	} from '$lib/services/mission-control.services';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
-	import { loadSatellites } from '$lib/services/satellites.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { bigintStringify } from '$lib/utils/number.utils';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
@@ -149,9 +144,7 @@
 		busy.stop();
 	};
 
-	let disabled = $derived(
-		selectedSatellites.length === 0 && !selectedMissionControl && selectedOrbiters.length === 0
-	);
+	let disabled = $state(true);
 </script>
 
 <form onsubmit={onSubmit}>
@@ -164,6 +157,7 @@
 		bind:selectedMissionControl
 		bind:selectedSatellites
 		bind:selectedOrbiters
+		bind:selectedDisabled={disabled}
 	>
 		<div class="terminal">{$i18n.cli.terminal}:&nbsp;{principal}</div>
 	</SegmentsTable>

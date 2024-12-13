@@ -28,14 +28,13 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/grid';
 
 	.container {
 		margin: var(--padding-4x) 0;
 
 		@include media.min-width(large) {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			gap: var(--padding-4x);
+			@include grid.two-columns;
 		}
 	}
 </style>

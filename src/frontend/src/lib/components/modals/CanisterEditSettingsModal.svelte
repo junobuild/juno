@@ -225,6 +225,7 @@
 <style lang="scss">
 	@use '../../styles/mixins/overlay';
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/grid';
 
 	.msg {
 		@include overlay.message;
@@ -234,10 +235,7 @@
 		margin: var(--padding-4x) 0;
 
 		@include media.min-width(large) {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-			column-gap: var(--padding-4x);
-			row-gap: var(--padding);
+			@include grid.two-columns;
 
 			.row-1 {
 				grid-row-start: 1;

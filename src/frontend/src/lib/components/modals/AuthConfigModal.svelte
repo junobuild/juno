@@ -160,7 +160,7 @@
 								name="maxTokens"
 								required={false}
 								bind:value={maxTokens}
-								on:blur={() =>
+								onblur={() =>
 									(maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
 							/>
 						</Value>

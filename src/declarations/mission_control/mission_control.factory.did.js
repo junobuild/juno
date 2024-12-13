@@ -230,9 +230,9 @@ export const idlFactory = ({ IDL }) => {
 			[],
 			[]
 		),
-		start_monitoring_with_config: IDL.Func([MonitoringStartConfig], [], ['query']),
+		start_monitoring_with_config: IDL.Func([MonitoringStartConfig], [], []),
 		status: IDL.Func([StatusesArgs], [SegmentsStatuses], []),
-		stop_monitoring_with_config: IDL.Func([MonitoringStopConfig], [], ['query']),
+		stop_monitoring_with_config: IDL.Func([MonitoringStopConfig], [], []),
 		top_up: IDL.Func([IDL.Principal, Tokens], [], []),
 		unset_orbiter: IDL.Func([IDL.Principal], [], []),
 		unset_satellite: IDL.Func([IDL.Principal], [], []),

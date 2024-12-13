@@ -187,9 +187,9 @@ service : () -> {
       vec principal,
       SetController,
     ) -> ();
-  start_monitoring_with_config : (MonitoringStartConfig) -> () query;
+  start_monitoring_with_config : (MonitoringStartConfig) -> ();
   status : (StatusesArgs) -> (SegmentsStatuses);
-  stop_monitoring_with_config : (MonitoringStopConfig) -> () query;
+  stop_monitoring_with_config : (MonitoringStopConfig) -> ();
   top_up : (principal, Tokens) -> ();
   unset_orbiter : (principal) -> ();
   unset_satellite : (principal) -> ();

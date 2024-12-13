@@ -6,7 +6,8 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		missionControlSettings,
-		missionControlSettingsLoaded, missionControlSettingsNotLoaded
+		missionControlSettingsLoaded,
+		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
@@ -16,6 +17,7 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import { cy } from 'date-fns/locale';
 
 	interface Props {
 		missionControlId: Principal;
@@ -41,7 +43,7 @@
 		});
 	};
 
-	let [satellitesMonitored, satellitesDisabled] = $derived(
+	let [satellitesDisabled, satellitesMonitored] = $derived(
 		($satellitesStore ?? []).reduce<[Satellite[], Satellite[]]>(
 			([disabled, monitored], satellite) => {
 				const cycles = fromNullable(
@@ -49,8 +51,8 @@
 				);
 
 				return [
-					[...monitored, ...(cycles?.enabled === true ? [satellite] : [])],
-					[...disabled, ...(cycles?.enabled !== true ? [satellite] : [])]
+					[...disabled, ...(cycles?.enabled !== true ? [satellite] : [])],
+					[...monitored, ...(cycles?.enabled === true ? [satellite] : [])]
 				];
 			},
 			[[], []]
@@ -74,8 +76,8 @@
 					{:else}
 						<p>
 							{nonNullish($missionControlSettings)
-									? $i18n.monitoring.monitored
-									: $i18n.monitoring.not_monitored}
+								? $i18n.monitoring.monitored
+								: $i18n.monitoring.not_monitored}
 						</p>
 					{/if}
 				</Value>
@@ -87,24 +89,24 @@
 
 					<p>
 						{satellitesMonitored.length === 0
-								? $i18n.monitoring.not_monitored
-								: satellitesMonitored.length > 0 && satellitesDisabled.length > 0
-										? i18nFormat($i18n.monitoring.modules_monitored_and_disabled, [
-											{
-												placeholder: '{0}',
-												value: `${satellitesMonitored.length}`
-											},
-											{
-												placeholder: '{1}',
-												value: `${satellitesDisabled.length}`
-											}
-										])
-										: i18nFormat($i18n.monitoring.modules_monitored, [
-											{
-												placeholder: '{0}',
-												value: `${satellitesMonitored.length}`
-											}
-										])}
+							? $i18n.monitoring.not_monitored
+							: satellitesMonitored.length > 0 && satellitesDisabled.length > 0
+								? i18nFormat($i18n.monitoring.modules_monitored_and_disabled, [
+										{
+											placeholder: '{0}',
+											value: `${satellitesMonitored.length}`
+										},
+										{
+											placeholder: '{1}',
+											value: `${satellitesDisabled.length}`
+										}
+									])
+								: i18nFormat($i18n.monitoring.modules_monitored, [
+										{
+											placeholder: '{0}',
+											value: `${satellitesMonitored.length}`
+										}
+									])}
 					</p>
 				</Value>
 

@@ -94,10 +94,16 @@
 </form>
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/grid';
+
 	form {
 		margin: var(--padding-4x) 0;
-	}
 
+		@include media.min-width(large) {
+			@include grid.two-columns;
+		}
+	}
 	div {
 		margin-bottom: var(--padding);
 	}

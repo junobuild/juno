@@ -107,8 +107,11 @@ export const loadOrbiters = async ({
 	try {
 		const identity = get(authStore).identity;
 
-		const actor = await getMissionControlActor({ missionControlId: missionControl, identity });
-		const orbiters = await actor.list_orbiters();
+		const { list_orbiters } = await getMissionControlActor({
+			missionControlId: missionControl,
+			identity
+		});
+		const orbiters = await list_orbiters();
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
 		orbitersStore.set(orbiters.map(([_, orbiter]) => orbiter));

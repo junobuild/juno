@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, notEmptyString } from '@dfinity/utils';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -69,7 +69,9 @@
 					{$i18n.analytics.enabled_satellites}
 				{/snippet}
 
-				<p class="satellites">{enabledSatellites}</p>
+				<p class="satellites">
+					{notEmptyString(enabledSatellites) ? enabledSatellites : $i18n.core.none}
+				</p>
 			</Value>
 		</div>
 

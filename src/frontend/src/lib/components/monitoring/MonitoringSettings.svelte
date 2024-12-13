@@ -95,7 +95,7 @@
 												value: `${satellitesMonitored.length}`
 											},
 											{
-												placeholder: '{0}',
+												placeholder: '{1}',
 												value: `${satellitesDisabled.length}`
 											}
 										])

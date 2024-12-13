@@ -65,7 +65,8 @@
 		"restore": "Restore",
 		"select_all": "Select all",
 		"unselect_all": "Deselect all",
-		"max": "Max"
+		"max": "Max",
+		"none": "None"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -246,8 +247,8 @@
 		"account_identifier": "Account identifier",
 		"balance": "Balance",
 		"credits": "Credits",
-		"transfer_icp_info": "Find more information about transferring funds to your mission control in the",
-		"transfer_to_account_identifier": "To fund your mission control, you can send ICP to its account identifier",
+		"transfer_icp_info": "Find more information about transferring funds to your wallet in the",
+		"transfer_to_account_identifier": "You can buy or receive ICP using its account identifier",
 		"tx_id": "ID",
 		"tx_timestamp": "Timestamp",
 		"tx_from": "From",

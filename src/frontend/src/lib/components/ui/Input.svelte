@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { onMount, type Snippet } from 'svelte';
+	import { onMount, type Snippet, untrack } from 'svelte';
 
 	interface Props {
 		name: string;
@@ -76,17 +76,22 @@
 	let currency = $derived(['icp', 'currency'].includes(inputType));
 
 	$effect(() => {
-		if (!internalValueChange && currency) {
-			if (typeof value === 'number') {
-				currencyValue = exponentToPlainNumberString(`${value}`);
-			} else {
-				currencyValue = fixUndefinedValue(value);
+		// Subscribe to value changes only
+		value;
+
+		untrack(() => {
+			if (!internalValueChange && currency) {
+				if (typeof value === 'number') {
+					currencyValue = exponentToPlainNumberString(`${value}`);
+				} else {
+					currencyValue = fixUndefinedValue(value);
+				}
+
+				lastValidCurrencyValue = currencyValue;
 			}
 
-			lastValidCurrencyValue = currencyValue;
-		}
-
-		internalValueChange = false;
+			internalValueChange = false;
+		});
 	});
 
 	const restoreFromValidValue = (noValue = false) => {

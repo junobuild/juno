@@ -19,7 +19,7 @@
 		minCycles: bigint;
 		fundCycles: bigint;
 		onback: () => void;
-		onsubmit: ($event: SubmitEvent) => Promise<void>;
+		onsubmit: ($event: MouseEvent | TouchEvent) => Promise<void>;
 	}
 
 	let {
@@ -70,34 +70,38 @@
 			</li>
 		{/each}
 	</ul>
+</Value>
 
-	<Value>
-		{#snippet label()}
-			{$i18n.monitoring.remaining_threshold}
-		{/snippet}
+<Value>
+	{#snippet label()}
+		{$i18n.monitoring.remaining_threshold}
+	{/snippet}
 
-		<p>{formatTCycles(minCycles)}</p>
-	</Value>
+	<p>{formatTCycles(minCycles)}</p>
+</Value>
 
-	<Value>
-		{#snippet label()}
-			{$i18n.monitoring.top_up_amount}
-		{/snippet}
+<Value>
+	{#snippet label()}
+		{$i18n.monitoring.top_up_amount}
+	{/snippet}
 
-		<p>{formatTCycles(fundCycles)}</p>
-	</Value>
+	<p>{formatTCycles(fundCycles)}</p>
 </Value>
 
 <div class="toolbar">
 	<button type="button" disabled={$isBusy} onclick={onback}>{$i18n.core.back}</button>
-	<button disabled={$isBusy} onclick={onsubmit}>
+	<button type="button" disabled={$isBusy} onclick={onsubmit}>
 		{$i18n.core.apply}
 	</button>
 </div>
 
 <style lang="scss">
 	ul {
-		padding: 0 var(--padding-2_5x);
+		padding: var(--padding) var(--padding-2_5x) 0;
 		margin: 0 0 var(--padding-2_5x);
+	}
+
+	li {
+		margin: 0 0 var(--padding);
 	}
 </style>

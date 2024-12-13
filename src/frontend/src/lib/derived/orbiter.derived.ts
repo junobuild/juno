@@ -8,6 +8,7 @@ export const orbiterStore: Readable<Orbiter | undefined | null> = derived(
 	[orbitersStore],
 	([orbiterStore]) => orbiterStore?.[0]
 );
+
 export const orbiterConfigs: Readable<OrbiterConfigs | undefined> = derived(
 	[orbiterStore, orbitersConfigsStore],
 	([orbiterStore, orbitersConfigsStore]) =>

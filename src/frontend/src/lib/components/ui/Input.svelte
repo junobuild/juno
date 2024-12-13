@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
+	import { createEventDispatcher, onMount } from 'svelte';
 
 	export let name: string;
 	export let inputType: 'icp' | 'number' | 'text' | 'currency' = 'number';
@@ -15,6 +15,7 @@
 	export let testId: string | undefined = undefined;
 	export let decimals = 8;
 	export let ignore1Password = true;
+	export let autofocus = false;
 
 	// TODO: migrate to Svelte v5
 
@@ -143,6 +144,14 @@
 
 	$: step = inputType === 'number' ? (step ?? 'any') : undefined;
 	$: autocomplete = inputType !== 'number' ? (autocomplete ?? 'off') : undefined;
+
+	onMount(() => {
+		if (!autofocus) {
+			return;
+		}
+
+		inputElement?.focus();
+	});
 </script>
 
 <input
@@ -160,6 +169,7 @@
 	{placeholder}
 	{max}
 	{autocomplete}
+	{autofocus}
 	on:blur
 	on:focus
 	on:input={handleInput}

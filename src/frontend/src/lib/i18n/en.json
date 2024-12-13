@@ -277,7 +277,10 @@
 		"or_connect_wallet": "Or connect wallet",
 		"connecting_wallet": "Connecting wallet...",
 		"wallet_approve": "Approve the transaction in your OISY wallet...",
-		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?"
+		"wallet_missing_account": "No account available to request the transaction. Have you connected your wallet?",
+		"balance_not_loaded": "Please wait, your balance is not yet loaded.",
+		"balance_zero": "Your balance is zero. Get some tokens to start sending.",
+		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature."
 	},
 	"authentication": {
 		"title": "Authentication",

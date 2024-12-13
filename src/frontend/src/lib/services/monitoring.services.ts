@@ -1,4 +1,7 @@
-import type {CyclesMonitoringStrategy, CyclesThreshold} from '$declarations/mission_control/mission_control.did';
+import type {
+	CyclesMonitoringStrategy,
+	CyclesThreshold
+} from '$declarations/mission_control/mission_control.did';
 import { startMonitoringWithConfig } from '$lib/api/mission-control.api';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -32,10 +35,10 @@ export const applyMonitoringCyclesStrategy = async ({
 
 		// TODO: mission control version check
 
-        const BelowThreshold: CyclesThreshold = {
-            min_cycles,
-            fund_cycles
-        }
+		const BelowThreshold: CyclesThreshold = {
+			min_cycles,
+			fund_cycles
+		};
 
 		const strategy: CyclesMonitoringStrategy = {
 			BelowThreshold
@@ -46,15 +49,25 @@ export const applyMonitoringCyclesStrategy = async ({
 			missionControlId,
 			config: {
 				cycles_config: toNullable({
-                    mission_control_strategy: selectedMissionControl ? toNullable({BelowThreshold}) : [],
-                    satellites_strategy: satellites.length > 0 ? [{
-                        ids: satellites,
-                        strategy
-                    }] : [],
-                    orbiters_strategy: orbiters.length > 0 ? [{
-                        ids: satellites,
-                        strategy
-                    }] : [],
+					mission_control_strategy: selectedMissionControl ? toNullable({ BelowThreshold }) : [],
+					satellites_strategy:
+						satellites.length > 0
+							? [
+									{
+										ids: satellites,
+										strategy
+									}
+								]
+							: [],
+					orbiters_strategy:
+						orbiters.length > 0
+							? [
+									{
+										ids: satellites,
+										strategy
+									}
+								]
+							: []
 				})
 			}
 		});

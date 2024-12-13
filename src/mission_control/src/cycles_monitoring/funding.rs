@@ -5,7 +5,9 @@ use canfund::manager::options::{FundManagerOptions, ObtainCyclesOptions};
 use canfund::manager::RegisterOpts;
 use canfund::operations::obtain::MintCycles;
 use canfund::FundManager;
-use ic_ledger_types::{MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTER_ID, DEFAULT_SUBACCOUNT};
+use ic_ledger_types::{
+    DEFAULT_SUBACCOUNT, MAINNET_CYCLES_MINTING_CANISTER_ID, MAINNET_LEDGER_CANISTER_ID,
+};
 use junobuild_shared::types::state::SegmentId;
 use std::rc::Rc;
 use std::sync::Arc;

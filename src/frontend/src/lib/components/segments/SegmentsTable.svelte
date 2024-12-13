@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import {nonNullish, notEmptyString} from '@dfinity/utils';
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';

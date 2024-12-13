@@ -13,7 +13,12 @@
 		oncontinue: () => void;
 	}
 
-	let { minCycles = $bindable(0n), fundCycles = $bindable(0n), oncontinue, onback }: Props = $props();
+	let {
+		minCycles = $bindable(0n),
+		fundCycles = $bindable(0n),
+		oncontinue,
+		onback
+	}: Props = $props();
 
 	let minTCycles: string = $state('');
 	let fundTCycles: string = $state('');

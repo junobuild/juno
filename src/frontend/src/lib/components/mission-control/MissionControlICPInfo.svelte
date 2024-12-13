@@ -15,17 +15,23 @@
 </script>
 
 {#if nonNullish($missionControlStore) && nonNullish(accountIdentifier)}
-	<p>
+	<p class="account-identifier">
 		{$i18n.wallet.transfer_to_account_identifier}
-		<strong><Identifier identifier={accountIdentifier.toHex()} /></strong>.
+		<strong><Identifier identifier={accountIdentifier.toHex()} small={false} /></strong>.
 	</p>
 {/if}
 
 <p>
 	{$i18n.wallet.transfer_icp_info}
-	<ExternalLink underline href="https://juno.build/docs/pricing#sending-icp-to-your-mission-control"
+	<ExternalLink underline href="https://juno.build/docs/miscellaneous/wallet"
 		>documentation</ExternalLink
 	>.
 </p>
 
 <button onclick={onclose}>{$i18n.core.close}</button>
+
+<style lang="scss">
+	.account-identifier {
+		margin: 0;
+	}
+</style>

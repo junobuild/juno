@@ -64,7 +64,8 @@
 		"replace": "替换",
 		"restore": "恢复",
 		"select_all": "选择全部",
-		"unselect_all": "取消全部选择"
+		"unselect_all": "取消全部选择",
+		"max": "Max"
 	},
 	"canisters": {
 		"insight": "分析",

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import SendTokensMax from '$lib/components/tokens/SendTokensMax.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -83,7 +84,11 @@
 				bind:value={amount}
 				spellcheck={false}
 				placeholder={$i18n.wallet.amount_placeholder}
-			/>
+			>
+				{#snippet end()}
+					<SendTokensMax {balance} onmax={(value) => (amount = value)} />
+				{/snippet}
+			</Input>
 		</Value>
 	</div>
 

@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
-	import { onMount } from 'svelte';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { onMount, type Snippet } from 'svelte';
 
 	interface Props {
 		name: string;
@@ -22,6 +22,7 @@
 		oninput?: () => void;
 		onblur?: () => void;
 		onfocus?: () => void;
+		end?: Snippet;
 	}
 
 	let {
@@ -42,7 +43,8 @@
 		autocomplete = $bindable('off'),
 		oninput,
 		onblur,
-		onfocus
+		onfocus,
+		end
 	}: Props = $props();
 
 	let inputElement: HTMLInputElement | undefined = $state();
@@ -172,24 +174,44 @@
 	});
 </script>
 
-<input
-	bind:this={inputElement}
-	data-tid={testId}
-	type={currency ? 'text' : inputType}
-	{required}
-	{spellcheck}
-	{name}
-	id={name}
-	step={innerStep}
-	{disabled}
-	value={currency ? currencyValue : value}
-	minlength={minLength}
-	{placeholder}
-	{max}
-	autocomplete={innerAutocomplete}
-	onblur={() => onblur?.()}
-	onfocus={() => onfocus?.()}
-	oninput={handleInput}
-	onkeydown={handleKeyDown}
-	data-1p-ignore={ignore1Password}
-/>
+<div class="input-field">
+	<input
+		class:with-end={nonNullish(end)}
+		bind:this={inputElement}
+		data-tid={testId}
+		type={currency ? 'text' : inputType}
+		{required}
+		{spellcheck}
+		{name}
+		id={name}
+		step={innerStep}
+		{disabled}
+		value={currency ? currencyValue : value}
+		minlength={minLength}
+		{placeholder}
+		{max}
+		autocomplete={innerAutocomplete}
+		onblur={() => onblur?.()}
+		onfocus={() => onfocus?.()}
+		oninput={handleInput}
+		onkeydown={handleKeyDown}
+		data-1p-ignore={ignore1Password}
+	/>
+
+	{#if nonNullish(end)}
+		<div class="inner-end">{@render end()}</div>
+	{/if}
+</div>
+
+<style lang="scss">
+	.input-field {
+		position: relative;
+	}
+
+	.inner-end {
+		position: absolute;
+		top: 50%;
+		right: 3px;
+		transform: translate(0, calc(-50% - var(--padding-0_5x)));
+	}
+</style>

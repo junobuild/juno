@@ -18,6 +18,10 @@
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import { cy } from 'date-fns/locale';
+	import { orbiterStore } from '$lib/stores/orbiter.store';
+	import { onMount } from 'svelte';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
+	import { loadSatellites } from '$lib/services/satellites.services';
 
 	interface Props {
 		missionControlId: Principal;
@@ -58,6 +62,14 @@
 			[[], []]
 		)
 	);
+
+	let orbiterMonitored = $derived(
+		fromNullable(
+			fromNullable(fromNullable($orbiterStore?.settings ?? [])?.monitoring ?? [])?.cycles ?? []
+		)?.enabled === true
+	);
+
+	onMount(async () => await loadOrbiters({ missionControl: missionControlId }));
 </script>
 
 <MissionControlSettingsLoader {missionControlId}>
@@ -115,7 +127,9 @@
 						{$i18n.analytics.orbiter}
 					{/snippet}
 
-					<p>Not monitored.</p>
+					<p>
+						{orbiterMonitored ? $i18n.monitoring.monitored : $i18n.monitoring.not_monitored}
+					</p>
 				</Value>
 			</div>
 		</div>

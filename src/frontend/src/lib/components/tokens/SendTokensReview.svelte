@@ -2,8 +2,6 @@
 	import { AccountIdentifier } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -20,13 +18,15 @@
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;
+		onnext: (steps: 'form' | 'in_progress' | 'ready' | 'error') => void;
 	}
 
 	let {
 		missionControlId,
 		balance,
 		destination = $bindable(''),
-		amount = $bindable()
+		amount = $bindable(),
+		onnext
 	}: Props = $props();
 
 	let accountIdentifier: AccountIdentifier | undefined = $derived(
@@ -35,12 +35,12 @@
 
 	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(amount));
 
-	const dispatch = createEventDispatcher();
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
 
-	const onSubmit = async () => {
 		wizardBusy.start();
 
-		dispatch('junoNext', 'in_progress');
+		onnext('in_progress');
 
 		try {
 			await sendTokens({
@@ -50,9 +50,9 @@
 				token
 			});
 
-			dispatch('junoNext', 'ready');
+			onnext('ready');
 		} catch (err: unknown) {
-			dispatch('junoNext', 'error');
+			onnext('error');
 		}
 
 		wizardBusy.stop();
@@ -63,7 +63,7 @@
 
 <p>{$i18n.wallet.review_and_confirm}</p>
 
-<form onsubmit={preventDefault(onSubmit)}>
+<form onsubmit={onSubmit}>
 	<div class="columns">
 		<div class="card-container with-title from">
 			<span class="title">{$i18n.wallet.tx_from}</span>
@@ -140,7 +140,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button type="button" onclick={() => dispatch('junoNext', 'form')}>{$i18n.core.back}</button>
+		<button type="button" onclick={() => onnext('form')}>{$i18n.core.back}</button>
 		<button type="submit">{$i18n.core.confirm}</button>
 	</div>
 </form>

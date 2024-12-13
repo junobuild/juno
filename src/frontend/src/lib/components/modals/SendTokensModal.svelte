@@ -55,7 +55,7 @@
 					{balance}
 					bind:amount
 					bind:destination
-					on:junoNext={({ detail }) => (steps = detail)}
+					onnext={(nextSteps) => (steps = nextSteps)}
 				/>
 			</div>
 		{:else}

@@ -3,6 +3,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
+	import Segment from '$lib/components/segments/Segment.svelte';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { loadSatellites } from '$lib/services/satellites.services';
@@ -10,7 +11,6 @@
 	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { orbiterName } from '$lib/utils/orbiter.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
-	import Segment from '$lib/components/segments/Segment.svelte';
 
 	interface Props {
 		missionControlId: Principal;

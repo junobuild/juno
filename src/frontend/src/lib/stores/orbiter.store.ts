@@ -1,4 +1,4 @@
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-import { writable } from 'svelte/store';
+import { initDataStore } from '$lib/stores/data.store';
 
-export const orbitersStore = writable<Orbiter[] | undefined | null>(undefined);
+export const orbitersDataStore = initDataStore<Orbiter[]>();

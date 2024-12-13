@@ -8,7 +8,6 @@
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
-
 	interface Props {
 		satellite?: Satellite | undefined;
 	}

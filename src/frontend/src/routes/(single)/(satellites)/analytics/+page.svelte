@@ -12,10 +12,10 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { loadOrbiterVersion } from '$lib/services/console.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import {
 		type Tab,
 		type TabsContext,

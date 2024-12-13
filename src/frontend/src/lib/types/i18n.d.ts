@@ -68,6 +68,7 @@ interface I18nCore {
 	restore: string;
 	select_all: string;
 	unselect_all: string;
+	max: string;
 }
 
 interface I18nCanisters {

@@ -64,7 +64,8 @@
 		"replace": "Replace",
 		"restore": "Restore",
 		"select_all": "Select all",
-		"unselect_all": "Deselect all"
+		"unselect_all": "Deselect all",
+		"max": "Max"
 	},
 	"canisters": {
 		"insight": "Insight",

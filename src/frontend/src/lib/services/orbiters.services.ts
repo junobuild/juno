@@ -20,7 +20,7 @@ import {
 	listOrbiterSatelliteConfigs007,
 	setOrbiterSatelliteConfigs007 as setOrbiterSatelliteConfigsDeprecatedApi
 } from '$lib/api/orbiter.deprecated.api';
-import { orbiterConfigs } from '$lib/derived/orbiter.derived';
+import { orbiterConfigs, orbitersStore } from '$lib/derived/orbiter.derived';
 import {
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
@@ -28,7 +28,7 @@ import {
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { orbitersConfigsStore } from '$lib/stores/orbiter-configs.store';
-import { orbitersStore } from '$lib/stores/orbiter.store';
+import { orbitersDataStore } from '$lib/stores/orbiter.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type {
@@ -107,11 +107,14 @@ export const loadOrbiters = async ({
 	try {
 		const identity = get(authStore).identity;
 
-		const actor = await getMissionControlActor({ missionControlId: missionControl, identity });
-		const orbiters = await actor.list_orbiters();
+		const { list_orbiters } = await getMissionControlActor({
+			missionControlId: missionControl,
+			identity
+		});
+		const orbiters = await list_orbiters();
 
 		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		orbitersStore.set(orbiters.map(([_, orbiter]) => orbiter));
+		orbitersDataStore.set(orbiters.map(([_, orbiter]) => orbiter));
 
 		return { result: 'success' };
 	} catch (err: unknown) {

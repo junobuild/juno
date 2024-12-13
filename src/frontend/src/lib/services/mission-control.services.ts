@@ -17,7 +17,7 @@ import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import { satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
-import { orbitersStore } from '$lib/stores/orbiter.store';
+import { orbitersDataStore } from '$lib/stores/orbiter.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { Principal } from '@dfinity/principal';
@@ -200,7 +200,7 @@ export const attachOrbiter = async (params: {
 
 	const orbiter = await setOrbiter({ ...params, identity });
 
-	orbitersStore.set([orbiter]);
+	orbitersDataStore.set([orbiter]);
 };
 
 export const detachOrbiter = async ({
@@ -214,5 +214,5 @@ export const detachOrbiter = async ({
 
 	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
 
-	orbitersStore.set(null);
+	orbitersDataStore.reset();
 };

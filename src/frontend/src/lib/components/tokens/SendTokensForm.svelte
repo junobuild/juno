@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { createEventDispatcher } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -16,13 +14,14 @@
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;
+		onreview: () => void;
 	}
 
-	let { balance, destination = $bindable(''), amount = $bindable() }: Props = $props();
+	let { balance, destination = $bindable(''), amount = $bindable(), onreview }: Props = $props();
 
-	const dispatch = createEventDispatcher();
+	const onSubmit = ($event: SubmitEvent) => {
+		$event.preventDefault();
 
-	const onSubmit = () => {
 		if (invalidIcrcAddress(destination) && invalidIcpAddress(destination)) {
 			toasts.error({
 				text: $i18n.errors.invalid_destination
@@ -39,7 +38,7 @@
 			return;
 		}
 
-		dispatch('junoReview');
+		onreview();
 	};
 </script>
 
@@ -56,7 +55,7 @@
 	/>
 </p>
 
-<form class="content" onsubmit={preventDefault(onSubmit)}>
+<form class="content" onsubmit={onSubmit}>
 	<div>
 		<Value>
 			{#snippet label()}

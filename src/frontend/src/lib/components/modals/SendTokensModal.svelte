@@ -59,12 +59,7 @@
 				/>
 			</div>
 		{:else}
-			<SendTokensForm
-				{balance}
-				bind:amount
-				bind:destination
-				on:junoReview={() => (steps = 'review')}
-			/>
+			<SendTokensForm {balance} bind:amount bind:destination onreview={() => (steps = 'review')} />
 		{/if}
 	</Modal>
 {/if}

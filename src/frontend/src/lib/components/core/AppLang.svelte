@@ -65,29 +65,4 @@
 		text-decoration: none;
 		margin: 0;
 	}
-
-	.content {
-		display: flex;
-		flex-direction: column;
-
-		padding: var(--padding-2x);
-
-		max-height: 70vh;
-		overflow-y: auto;
-
-		@include media.min-width(large) {
-			display: grid;
-			grid-template-columns: repeat(2, 1fr);
-		}
-
-		:global(a) {
-			box-shadow: none;
-			border: none;
-			grid-column: inherit;
-		}
-
-		:global(div.icon) {
-			display: none;
-		}
-	}
 </style>

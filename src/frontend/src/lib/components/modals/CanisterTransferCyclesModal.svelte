@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
 	import CanistersPicker from '$lib/components/canister/CanistersPicker.svelte';
@@ -9,7 +9,6 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { ONE_TRILLION } from '$lib/constants/constants';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

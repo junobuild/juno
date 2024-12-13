@@ -169,7 +169,6 @@
 	{placeholder}
 	{max}
 	{autocomplete}
-	{autofocus}
 	on:blur
 	on:focus
 	on:input={handleInput}

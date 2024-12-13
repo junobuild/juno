@@ -395,12 +395,12 @@ fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
 // Monitoring
 // ---------------------------------------------------------
 
-#[query(guard = "caller_is_user_or_admin_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 fn start_monitoring_with_config(config: MonitoringStartConfig) {
     start_monitoring(&config).unwrap_or_else(|e| trap(&e));
 }
 
-#[query(guard = "caller_is_user_or_admin_controller")]
+#[update(guard = "caller_is_user_or_admin_controller")]
 fn stop_monitoring_with_config(config: MonitoringStopConfig) {
     stop_monitoring(&config).unwrap_or_else(|e| trap(&e));
 }

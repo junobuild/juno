@@ -12,11 +12,11 @@ type DisableMonitoring = fn(&SegmentId) -> Result<(), String>;
 
 pub fn stop_cycles_monitoring(config: &CyclesMonitoringStopConfig) -> Result<(), String> {
     if let Some(satellite_ids) = &config.satellite_ids {
-        stop_monitoring(satellite_ids, disable_satellite_monitoring)?;
+        stop_modules_monitoring(satellite_ids, disable_satellite_monitoring)?;
     }
 
     if let Some(orbiter_ids) = &config.orbiter_ids {
-        stop_monitoring(orbiter_ids, disable_orbiter_monitoring)?;
+        stop_modules_monitoring(orbiter_ids, disable_orbiter_monitoring)?;
     }
 
     if let Some(try_mission_control) = config.try_mission_control {
@@ -25,19 +25,33 @@ pub fn stop_cycles_monitoring(config: &CyclesMonitoringStopConfig) -> Result<(),
         }
     }
 
+    stop_monitoring();
+
     Ok(())
 }
 
-fn stop_monitoring(
+fn stop_monitoring() {
+    RUNTIME_STATE.with(|state| stop_monitoring_impl(&mut state.borrow_mut()))
+}
+
+fn stop_modules_monitoring(
     segment_ids: &Vec<SegmentId>,
     disable_monitoring: DisableMonitoring,
 ) -> Result<(), String> {
     RUNTIME_STATE.with(|state| {
-        stop_monitoring_impl(segment_ids, disable_monitoring, &mut state.borrow_mut())
+        stop_modules_monitoring_impl(segment_ids, disable_monitoring, &mut state.borrow_mut())
     })
 }
 
-fn stop_monitoring_impl(
+fn stop_monitoring_impl(state: &mut RuntimeState) {
+    if let Some(fund_manager) = &mut state.fund_manager {
+        if fund_manager.is_running() {
+            fund_manager.stop();
+        }
+    }
+}
+
+fn stop_modules_monitoring_impl(
     segment_ids: &Vec<SegmentId>,
     disable_monitoring: DisableMonitoring,
     state: &mut RuntimeState,

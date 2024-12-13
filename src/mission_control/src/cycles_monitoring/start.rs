@@ -15,24 +15,30 @@ type SaveSegmentStrategy = fn(&SegmentId, &CyclesMonitoringStrategy) -> Result<(
 
 pub fn start_cycles_monitoring(config: &CyclesMonitoringStartConfig) -> Result<(), String> {
     if let Some(strategy) = &config.satellites_strategy {
-        start_monitoring(strategy, set_satellite_strategy)?;
+        start_modules_monitoring(strategy, set_satellite_strategy)?;
     }
 
     if let Some(strategy) = &config.orbiters_strategy {
-        start_monitoring(strategy, set_orbiter_strategy)?;
+        start_modules_monitoring(strategy, set_orbiter_strategy)?;
     }
 
     start_mission_control_monitoring(&config.mission_control_strategy)?;
 
+    start_monitoring();
+
     Ok(())
 }
 
-fn start_monitoring(
+fn start_monitoring() {
+    RUNTIME_STATE.with(|state| start_monitoring_impl(&mut state.borrow_mut()))
+}
+
+fn start_modules_monitoring(
     segments_strategy: &SegmentsMonitoringStrategy,
     save_strategy: SaveSegmentStrategy,
 ) -> Result<(), String> {
     RUNTIME_STATE.with(|state| {
-        start_monitoring_impl(segments_strategy, save_strategy, &mut state.borrow_mut())
+        start_modules_monitoring_impl(segments_strategy, save_strategy, &mut state.borrow_mut())
     })
 }
 
@@ -43,7 +49,15 @@ fn start_mission_control_monitoring(
         .with(|state| start_mission_control_monitoring_impl(strategy, &mut state.borrow_mut()))
 }
 
-fn start_monitoring_impl(
+fn start_monitoring_impl(state: &mut RuntimeState) {
+    if let Some(fund_manager) = &mut state.fund_manager {
+        if !fund_manager.is_running() {
+            fund_manager.start();
+        }
+    }
+}
+
+fn start_modules_monitoring_impl(
     segments_strategy: &SegmentsMonitoringStrategy,
     save_strategy: SaveSegmentStrategy,
     state: &mut RuntimeState,

@@ -1,11 +1,11 @@
-use ic_cdk::spawn;
-use std::time::Duration;
-use ic_cdk::trap;
-use ic_cdk_timers::set_timer;
 use crate::cycles_monitoring::restart::restart_cycles_monitoring;
 use crate::cycles_monitoring::start::start_cycles_monitoring;
 use crate::cycles_monitoring::stop::stop_cycles_monitoring;
 use crate::types::interface::{MonitoringStartConfig, MonitoringStopConfig};
+use ic_cdk::spawn;
+use ic_cdk::trap;
+use ic_cdk_timers::set_timer;
+use std::time::Duration;
 
 pub fn defer_restart_monitoring() {
     set_timer(Duration::ZERO, || spawn(restart_monitoring()));

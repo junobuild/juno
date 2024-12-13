@@ -2,9 +2,8 @@
 	import { AccountIdentifier } from '@dfinity/ledger-icp';
 	import type { Principal } from '@dfinity/principal';
 	import { nonNullish, type TokenAmountV2 } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
-	import { preventDefault } from 'svelte/legacy';
 	import { getAccountIdentifier } from '$lib/api/icp-index.api';
+	import IconArrowCircleDown from '$lib/components/icons/IconArrowCircleDown.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
@@ -20,13 +19,15 @@
 		balance: bigint | undefined;
 		destination?: string;
 		amount: string | undefined;
+		onnext: (steps: 'form' | 'in_progress' | 'ready' | 'error') => void;
 	}
 
 	let {
 		missionControlId,
 		balance,
 		destination = $bindable(''),
-		amount = $bindable()
+		amount = $bindable(),
+		onnext
 	}: Props = $props();
 
 	let accountIdentifier: AccountIdentifier | undefined = $derived(
@@ -35,12 +36,12 @@
 
 	let token: TokenAmountV2 | undefined = $derived(amountToICPToken(amount));
 
-	const dispatch = createEventDispatcher();
+	const onSubmit = async ($event: SubmitEvent) => {
+		$event.preventDefault();
 
-	const onSubmit = async () => {
 		wizardBusy.start();
 
-		dispatch('junoNext', 'in_progress');
+		onnext('in_progress');
 
 		try {
 			await sendTokens({
@@ -50,9 +51,9 @@
 				token
 			});
 
-			dispatch('junoNext', 'ready');
+			onnext('ready');
 		} catch (err: unknown) {
-			dispatch('junoNext', 'error');
+			onnext('error');
 		}
 
 		wizardBusy.stop();
@@ -63,7 +64,7 @@
 
 <p>{$i18n.wallet.review_and_confirm}</p>
 
-<form onsubmit={preventDefault(onSubmit)}>
+<form onsubmit={onSubmit}>
 	<div class="columns">
 		<div class="card-container with-title from">
 			<span class="title">{$i18n.wallet.tx_from}</span>
@@ -95,6 +96,12 @@
 						{#if nonNullish(balance)}<span>{formatE8sICP(balance)} <small>ICP</small></span>{/if}
 					</p>
 				</Value>
+			</div>
+		</div>
+
+		<div class="arrow">
+			<div class="arrow-icon">
+				<IconArrowCircleDown />
 			</div>
 		</div>
 
@@ -140,7 +147,7 @@
 	</div>
 
 	<div class="toolbar">
-		<button type="button" onclick={() => dispatch('junoNext', 'form')}>{$i18n.core.back}</button>
+		<button type="button" onclick={() => onnext('form')}>{$i18n.core.back}</button>
 		<button type="submit">{$i18n.core.confirm}</button>
 	</div>
 </form>
@@ -151,7 +158,11 @@
 	.columns {
 		@include media.min-width(large) {
 			display: grid;
-			grid-template-columns: repeat(2, calc((100% - var(--padding-2x)) / 2));
+			--column-size: calc(
+				(100% - var(--padding-2x) - var(--padding-2x) - var(--column-arrow-size)) / 2
+			);
+			--column-arrow-size: var(--padding-8x);
+			grid-template-columns: var(--column-size) var(--column-arrow-size) var(--column-size);
 			grid-column-gap: var(--padding-2x);
 		}
 	}
@@ -162,11 +173,27 @@
 	}
 
 	.sending {
-		grid-column-start: 2;
-		grid-column-end: 3;
+		grid-column-start: 3;
+		grid-column-end: 4;
 	}
 
 	.identifier {
 		margin: 0 0 var(--padding);
+	}
+
+	.arrow {
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		padding: 0 0 var(--padding-3x);
+
+		@include media.min-width(large) {
+			grid-row: 1/3;
+			grid-column: 2/3;
+
+			.arrow-icon {
+				transform: rotate(-90deg);
+			}
+		}
 	}
 </style>

@@ -1,13 +1,13 @@
-<script>
-	/**
-	 * @typedef {Object} Props
-	 * @property {import('svelte').Snippet} [start]
-	 * @property {import('svelte').Snippet} [center]
-	 * @property {import('svelte').Snippet} [end]
-	 */
+<script lang="ts">
+	import type { Snippet } from 'svelte';
 
-	/** @type {Props} */
-	let { start, center, end } = $props();
+	interface Props {
+		start?: Snippet;
+		center?: Snippet;
+		end?: Snippet;
+	}
+
+	let { start, center, end }: Props = $props();
 </script>
 
 <div class="filters">

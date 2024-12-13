@@ -254,7 +254,7 @@
 							name="maxLength"
 							required={false}
 							bind:value={maxCapacity}
-							on:blur={() =>
+							onblur={() =>
 								(maxCapacity = nonNullish(maxCapacity) ? Math.trunc(maxCapacity) : undefined)}
 						/>
 					</Value>
@@ -273,7 +273,7 @@
 							name="maxSize"
 							required={false}
 							bind:value={maxSize}
-							on:blur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
+							onblur={() => (maxSize = nonNullish(maxSize) ? Math.trunc(maxSize) : undefined)}
 						/>
 					</Value>
 				</div>
@@ -290,7 +290,7 @@
 						name="maxTokens"
 						required={false}
 						bind:value={maxTokens}
-						on:blur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
+						onblur={() => (maxTokens = nonNullish(maxTokens) ? Math.trunc(maxTokens) : undefined)}
 					/>
 				</Value>
 			</div>

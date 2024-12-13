@@ -64,7 +64,8 @@
 		"replace": "替换",
 		"restore": "恢复",
 		"select_all": "选择全部",
-		"unselect_all": "取消全部选择"
+		"unselect_all": "取消全部选择",
+		"max": "Max"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -277,7 +278,10 @@
 		"or_connect_wallet": "或者链接钱包",
 		"connecting_wallet": "正在连接钱包...",
 		"wallet_approve": "用你的OISY钱包批准交易 ...",
-		"wallet_missing_account": "没有有效的账户来处理交易，你确定链接你的钱包了吗?"
+		"wallet_missing_account": "没有有效的账户来处理交易，你确定链接你的钱包了吗?",
+		"balance_not_loaded": "Please wait, your balance is not yet loaded.",
+		"balance_zero": "Your balance is zero. Get some tokens to start sending.",
+		"wallet_upgrade": "Please upgrade your wallet to enable the sending feature."
 	},
 	"authentication": {
 		"title": "认证",

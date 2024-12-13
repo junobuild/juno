@@ -1,33 +1,56 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
-	import { createEventDispatcher } from 'svelte';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { onMount, type Snippet } from 'svelte';
 
-	export let name: string;
-	export let inputType: 'icp' | 'number' | 'text' | 'currency' = 'number';
-	export let required = true;
-	export let spellcheck: boolean | undefined = undefined;
-	export let step: number | 'any' | undefined = undefined;
-	export let disabled = false;
-	export let minLength: number | undefined = undefined;
-	export let max: number | undefined = undefined;
-	export let value: string | number | undefined = undefined;
-	export let placeholder: string;
-	export let testId: string | undefined = undefined;
-	export let decimals = 8;
-	export let ignore1Password = true;
+	interface Props {
+		name: string;
+		inputType?: 'icp' | 'number' | 'text' | 'currency';
+		required?: boolean;
+		spellcheck?: boolean | undefined;
+		step?: number | 'any' | undefined;
+		disabled?: boolean;
+		minLength?: number | undefined;
+		max?: number | undefined;
+		value?: string | number | undefined;
+		placeholder: string;
+		testId?: string | undefined;
+		decimals?: number;
+		ignore1Password?: boolean;
+		autofocus?: boolean;
+		// https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
+		autocomplete?: 'off' | 'on' | undefined;
+		oninput?: () => void;
+		onblur?: () => void;
+		onfocus?: () => void;
+		end?: Snippet;
+	}
 
-	// TODO: migrate to Svelte v5
+	let {
+		name,
+		inputType = 'number',
+		required = true,
+		spellcheck = undefined,
+		step = $bindable(undefined),
+		disabled = false,
+		minLength = undefined,
+		max = undefined,
+		value = $bindable(undefined),
+		placeholder,
+		testId = undefined,
+		decimals = 8,
+		ignore1Password = true,
+		autofocus = false,
+		autocomplete = $bindable('off'),
+		oninput,
+		onblur,
+		onfocus,
+		end
+	}: Props = $props();
 
-	const dispatch = createEventDispatcher();
-
-	// https://developer.mozilla.org/en-US/docs/Web/HTML/Attributes/autocomplete
-	export let autocomplete: 'off' | 'on' | undefined = 'off';
-
-	let inputElement: HTMLInputElement | undefined;
+	let inputElement: HTMLInputElement | undefined = $state();
 
 	// This component was developed for ICP and 8 decimals in mind. The "currency" input type was added afterwards therefore, for backwards compatibility reason, if the input type is set to icp, the number of decimals remains 8.
-	let wrapDecimals = 8;
-	$: wrapDecimals = inputType === 'icp' ? 8 : decimals;
+	let wrapDecimals = $derived(inputType === 'icp' ? 8 : decimals);
 
 	let selectionStart: number | null = 0;
 	let selectionEnd: number | null = 0;
@@ -46,27 +69,25 @@
 	const fixUndefinedValue = (value: string | number | undefined): string =>
 		isNullish(value) ? '' : `${value}`;
 
-	let currencyValue: string = exponentToPlainNumberString(fixUndefinedValue(value));
-	let lastValidCurrencyValue: string | number | undefined = value;
-	let internalValueChange = true;
+	let currencyValue: string = $state(exponentToPlainNumberString(fixUndefinedValue(value)));
+	let lastValidCurrencyValue: string | number | undefined = $state(value);
+	let internalValueChange = $state(true);
 
-	let currency = false;
-	$: currency = ['icp', 'currency'].includes(inputType);
+	let currency = $derived(['icp', 'currency'].includes(inputType));
 
-	$: value,
-		(() => {
-			if (!internalValueChange && currency) {
-				if (typeof value === 'number') {
-					currencyValue = exponentToPlainNumberString(`${value}`);
-				} else {
-					currencyValue = fixUndefinedValue(value);
-				}
-
-				lastValidCurrencyValue = currencyValue;
+	$effect(() => {
+		if (!internalValueChange && currency) {
+			if (typeof value === 'number') {
+				currencyValue = exponentToPlainNumberString(`${value}`);
+			} else {
+				currencyValue = fixUndefinedValue(value);
 			}
 
-			internalValueChange = false;
-		})();
+			lastValidCurrencyValue = currencyValue;
+		}
+
+		internalValueChange = false;
+	});
 
 	const restoreFromValidValue = (noValue = false) => {
 		if (isNullish(inputElement) || !currency) {
@@ -129,7 +150,7 @@
 			value = inputType === 'number' ? +currentTarget.value : currentTarget.value;
 		}
 
-		dispatch('nnsInput');
+		oninput?.();
 	};
 
 	const handleKeyDown = () => {
@@ -141,28 +162,56 @@
 		({ selectionStart, selectionEnd } = inputElement);
 	};
 
-	$: step = inputType === 'number' ? (step ?? 'any') : undefined;
-	$: autocomplete = inputType !== 'number' ? (autocomplete ?? 'off') : undefined;
+	let innerStep = $derived(inputType === 'number' ? (step ?? 'any') : undefined);
+	let innerAutocomplete = $derived(inputType !== 'number' ? (autocomplete ?? 'off') : undefined);
+
+	onMount(() => {
+		if (!autofocus) {
+			return;
+		}
+
+		inputElement?.focus();
+	});
 </script>
 
-<input
-	bind:this={inputElement}
-	data-tid={testId}
-	type={currency ? 'text' : inputType}
-	{required}
-	{spellcheck}
-	{name}
-	id={name}
-	{step}
-	{disabled}
-	value={currency ? currencyValue : value}
-	minlength={minLength}
-	{placeholder}
-	{max}
-	{autocomplete}
-	on:blur
-	on:focus
-	on:input={handleInput}
-	on:keydown={handleKeyDown}
-	data-1p-ignore={ignore1Password}
-/>
+<div class="input-field">
+	<input
+		class:with-end={nonNullish(end)}
+		bind:this={inputElement}
+		data-tid={testId}
+		type={currency ? 'text' : inputType}
+		{required}
+		{spellcheck}
+		{name}
+		id={name}
+		step={innerStep}
+		{disabled}
+		value={currency ? currencyValue : value}
+		minlength={minLength}
+		{placeholder}
+		{max}
+		autocomplete={innerAutocomplete}
+		onblur={() => onblur?.()}
+		onfocus={() => onfocus?.()}
+		oninput={handleInput}
+		onkeydown={handleKeyDown}
+		data-1p-ignore={ignore1Password}
+	/>
+
+	{#if nonNullish(end)}
+		<div class="inner-end">{@render end()}</div>
+	{/if}
+</div>
+
+<style lang="scss">
+	.input-field {
+		position: relative;
+	}
+
+	.inner-end {
+		position: absolute;
+		top: 50%;
+		right: 3px;
+		transform: translate(0, calc(-50% - var(--padding-0_5x)));
+	}
+</style>

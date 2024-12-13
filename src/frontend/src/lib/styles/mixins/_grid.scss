@@ -8,3 +8,10 @@
 	display: grid;
 	grid-template-columns: repeat(4, 25%);
 }
+
+@mixin two-columns {
+	display: grid;
+	grid-template-columns: repeat(2, 1fr);
+	column-gap: var(--padding-4x);
+	row-gap: var(--padding);
+}

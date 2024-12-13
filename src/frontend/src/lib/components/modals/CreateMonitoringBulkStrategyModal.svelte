@@ -36,7 +36,7 @@
 	let minCycles: bigint = $state(0n);
 	let fundCycles: bigint = $state(0n);
 
-	const onsubmit = async ($event: SubmitEvent) => {
+	const onsubmit = async ($event: MouseEvent | TouchEvent) => {
 		$event.preventDefault();
 
 		wizardBusy.start();

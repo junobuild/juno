@@ -67,11 +67,12 @@
 				name="destination"
 				placeholder={$i18n.wallet.destination_placeholder}
 				bind:value={destination}
+				autofocus
 			/>
 		</Value>
 	</div>
 
-	<div>
+	<div class="amount">
 		<Value>
 			{#snippet label()}
 				{$i18n.wallet.icp_amount}
@@ -87,7 +88,7 @@
 		</Value>
 	</div>
 
-	<button type="submit">
+	<button type="submit" class="action">
 		{$i18n.core.review}
 	</button>
 </form>

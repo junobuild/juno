@@ -4,7 +4,6 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
 	import { onMount } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import { getCredits } from '$lib/api/console.api';
 	import { getAccountIdentifier, getTransactions } from '$lib/api/icp-index.api';
@@ -114,6 +113,21 @@
 	const openReceive = () => (receiveVisible = true);
 
 	const openSend = () => {
+		if (isNullish(balance)) {
+			toasts.show({ text: $i18n.wallet.balance_not_loaded, level: 'info' });
+			return;
+		}
+
+		if (balance <= 0n) {
+			toasts.show({ text: $i18n.wallet.balance_zero, level: 'info' });
+			return;
+		}
+
+		if (compare($versionStore?.missionControl?.current ?? '0.0.0', '0.0.12') <= 0) {
+			toasts.show({ text: $i18n.wallet.wallet_upgrade, level: 'warn' });
+			return;
+		}
+
 		emit({
 			message: 'junoModal',
 			detail: {
@@ -124,14 +138,6 @@
 			}
 		});
 	};
-
-	let send = $state(false);
-	run(() => {
-		send =
-			nonNullish(balance) &&
-			balance > 0n &&
-			compare($versionStore?.missionControl?.current ?? '0.0.0', '0.0.12') > 0;
-	});
 </script>
 
 {#if $authSignedInStore}
@@ -185,9 +191,7 @@
 		<div class="toolbar">
 			<button onclick={openReceive}>{$i18n.wallet.receive}</button>
 
-			{#if send}
-				<button in:fade onclick={openSend}>{$i18n.wallet.send}</button>
-			{/if}
+			<button onclick={openSend}>{$i18n.wallet.send}</button>
 		</div>
 
 		<Transactions

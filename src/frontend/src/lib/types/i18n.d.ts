@@ -68,6 +68,7 @@ interface I18nCore {
 	restore: string;
 	select_all: string;
 	unselect_all: string;
+	max: string;
 }
 
 interface I18nCanisters {
@@ -286,6 +287,9 @@ interface I18nWallet {
 	connecting_wallet: string;
 	wallet_approve: string;
 	wallet_missing_account: string;
+	balance_not_loaded: string;
+	balance_zero: string;
+	wallet_upgrade: string;
 }
 
 interface I18nAuthentication {

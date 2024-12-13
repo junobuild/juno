@@ -19,3 +19,8 @@ export const missionControlSettingsLoaded = derived(
 	[missionControlSettingsDataStore],
 	([$missionControlSettingsDataStore]) => $missionControlSettingsDataStore !== undefined
 );
+
+export const missionControlSettingsNotLoaded = derived(
+	[missionControlSettingsLoaded],
+	([$missionControlSettingsLoaded]) => !$missionControlSettingsLoaded
+);

@@ -14,6 +14,7 @@
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { applyMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
 	import { authStore } from '$lib/stores/auth.store';
+	import {emit} from "$lib/utils/events.utils";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -51,14 +52,22 @@
 			minCycles
 		});
 
-		wizardBusy.stop();
-
 		if (success !== 'ok') {
 			steps = 'init';
+
+			wizardBusy.stop();
+
 			return;
 		}
 
-		steps = 'ready';
+		emit({ message: 'junoReloadSettings' });
+
+		// Small delay to ensure junoReloadSettings is emitted
+		setTimeout(() => {
+			steps = 'ready';
+
+			wizardBusy.stop();
+		}, 500);
 	};
 </script>
 

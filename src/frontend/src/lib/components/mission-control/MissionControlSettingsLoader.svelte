@@ -11,12 +11,19 @@
 
 	let { missionControlId, children }: Props = $props();
 
-	onMount(() => {
-		loadSettings({
+	const load = async (reload?: boolean) => {
+		await loadSettings({
 			missionControlId,
-			identity: $authStore.identity
+			identity: $authStore.identity,
+			reload
 		});
+	};
+
+	onMount(() => {
+		load();
 	});
 </script>
+
+<svelte:window onjunoReloadSettings={async () => await load(true)} />
 
 {@render children()}

@@ -680,7 +680,11 @@
 		"applying_strategy": "Applying strategy and starting monitoring...",
 		"remaining_threshold": "Remaining T Cycles Threshold",
 		"top_up_amount": "Top-Up Amount",
-		"selected_modules": "Selected Modules"
+		"selected_modules": "Selected Modules",
+		"monitored": "Monitored.",
+		"not_monitored": "Not monitored.",
+		"modules_monitored": "{0} monitored.",
+		"modules_monitored_and_disabled": "{0} monitored, {1} disabled."
 	},
 	"preferences": {
 		"title": "Preferences",

@@ -707,6 +707,10 @@ interface I18nMonitoring {
 	remaining_threshold: string;
 	top_up_amount: string;
 	selected_modules: string;
+	monitored: string;
+	not_monitored: string;
+	modules_monitored: string;
+	modules_monitored_and_disabled: string;
 }
 
 interface I18nPreferences {

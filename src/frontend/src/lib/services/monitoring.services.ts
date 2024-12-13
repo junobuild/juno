@@ -63,7 +63,7 @@ export const applyMonitoringCyclesStrategy = async ({
 						orbiters.length > 0
 							? [
 									{
-										ids: satellites,
+										ids: orbiters,
 										strategy
 									}
 								]

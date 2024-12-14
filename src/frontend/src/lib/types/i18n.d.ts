@@ -701,7 +701,10 @@ interface I18nMonitoring {
 	title: string;
 	create_info: string;
 	threshold_info: string;
+	threshold_info_mission_control: string;
 	review_info: string;
+	no_mission_control_strategy: string;
+	mission_control_existing_strategy: string;
 	create_strategy: string;
 	start_monitoring: string;
 	stop_monitoring: string;
@@ -709,11 +712,17 @@ interface I18nMonitoring {
 	applying_strategy: string;
 	remaining_threshold: string;
 	top_up_amount: string;
+	modules: string;
 	selected_modules: string;
 	monitored: string;
 	not_monitored: string;
 	modules_monitored: string;
 	modules_monitored_and_disabled: string;
+	min_cycles_not_defined: string;
+	fund_cycles_not_defined: string;
+	configure_strategy: string;
+	mission_control_strategy: string;
+	review_strategy: string;
 }
 
 interface I18nPreferences {

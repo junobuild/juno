@@ -7,15 +7,17 @@
 	import { tCyclesToCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
-		minCycles: bigint;
-		fundCycles: bigint;
+		minCycles: bigint | undefined;
+		fundCycles: bigint | undefined;
+		strategy: 'modules' | 'mission-control';
 		onback: () => void;
 		oncontinue: () => void;
 	}
 
 	let {
-		minCycles = $bindable(0n),
-		fundCycles = $bindable(0n),
+		minCycles = $bindable(undefined),
+		fundCycles = $bindable(undefined),
+		strategy,
 		oncontinue,
 		onback
 	}: Props = $props();
@@ -39,12 +41,16 @@
 		});
 	});
 
-	const disabled = $derived(minCycles <= 0n || fundCycles <= 0n);
+	const disabled = $derived((minCycles ?? 0n) <= 0n || (fundCycles ?? 0n) <= 0n);
 </script>
 
-<h2>{$i18n.monitoring.title}</h2>
+<h2>{$i18n.monitoring.configure_strategy}</h2>
 
-<p>{$i18n.monitoring.threshold_info}</p>
+<p>
+	{strategy === 'mission-control'
+		? $i18n.monitoring.threshold_info_mission_control
+		: $i18n.monitoring.threshold_info}
+</p>
 
 <Value ref="mint-cycles">
 	{#snippet label()}

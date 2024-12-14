@@ -19,10 +19,7 @@ export const orbiterLoaded = derived(
 	([$orbitersDataStore]) => $orbitersDataStore !== undefined
 );
 
-export const orbiterNotLoaded = derived(
-	[orbiterLoaded],
-	([$orbiterLoaded]) => !$orbiterLoaded
-);
+export const orbiterNotLoaded = derived([orbiterLoaded], ([$orbiterLoaded]) => !$orbiterLoaded);
 
 export const orbiterConfigs: Readable<OrbiterConfigs | undefined> = derived(
 	[orbiterStore, orbitersConfigsStore],

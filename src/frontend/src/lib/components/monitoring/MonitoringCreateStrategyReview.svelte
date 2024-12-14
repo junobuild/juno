@@ -1,92 +1,120 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { Principal } from '@dfinity/principal';
-	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
-	import Value from '$lib/components/ui/Value.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import type {
+		CyclesMonitoringStrategy,
+		Orbiter,
+		Satellite
+	} from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';
-	import { satelliteName } from '$lib/utils/satellite.utils';
-	import { orbiterName } from '$lib/utils/orbiter.utils';
-	import { notEmptyString } from '@dfinity/utils';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import Input from '$lib/components/ui/Input.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { orbiterName } from '$lib/utils/orbiter.utils';
+	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
-		missionControlId: Principal;
-		selectedMissionControl: boolean;
 		selectedSatellites: [Principal, Satellite][];
 		selectedOrbiters: [Principal, Orbiter][];
-		minCycles: bigint;
-		fundCycles: bigint;
+		minCycles: bigint | undefined;
+		fundCycles: bigint | undefined;
+		missionControlMinCycles: bigint | undefined;
+		missionControlFundCycles: bigint | undefined;
+		missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined };
 		onback: () => void;
 		onsubmit: ($event: MouseEvent | TouchEvent) => Promise<void>;
 	}
 
 	let {
-		missionControlId,
-		selectedMissionControl,
 		selectedSatellites,
 		selectedOrbiters,
 		minCycles,
 		fundCycles,
+		missionControlMinCycles,
+		missionControlFundCycles,
+		missionControl,
 		onback,
 		onsubmit
 	}: Props = $props();
 </script>
 
-<h2>{$i18n.monitoring.title}</h2>
+<h2>{$i18n.monitoring.review_strategy}</h2>
 
 <p>{$i18n.monitoring.review_info}</p>
 
-<Value>
-	{#snippet label()}
-		{$i18n.monitoring.selected_modules}
-	{/snippet}
+{#if !missionControl.monitored || (nonNullish(missionControlFundCycles) && nonNullish(missionControlMinCycles))}
+	<div class="card-container with-title">
+		<span class="title">{$i18n.mission_control.title}</span>
 
-	<ul>
-		{#if selectedMissionControl}
-			<li>
-				<Segment id={missionControlId}>
-					{$i18n.mission_control.title}
-				</Segment>
-			</li>
-		{/if}
+		<div class="content">
+			<Value>
+				{#snippet label()}
+					{$i18n.monitoring.remaining_threshold}
+				{/snippet}
 
-		{#each selectedSatellites as [satelliteId, satellite]}
-			<li>
-				<Segment id={satelliteId}>
-					{satelliteName(satellite)}
-				</Segment>
-			</li>
-		{/each}
+				<p>{formatTCycles(missionControlMinCycles ?? minCycles ?? 0n)}</p>
+			</Value>
 
-		{#each selectedOrbiters as [orbiterId, orbiter]}
-			{@const orbName = orbiterName(orbiter)}
+			<Value>
+				{#snippet label()}
+					{$i18n.monitoring.top_up_amount}
+				{/snippet}
 
-			<li>
-				<Segment id={orbiterId}>
-					{!notEmptyString(orbName) ? $i18n.analytics.title : orbName}
-				</Segment>
-			</li>
-		{/each}
-	</ul>
-</Value>
+				<p class="no-margin">{formatTCycles(missionControlFundCycles ?? fundCycles ?? 0n)}</p>
+			</Value>
+		</div>
+	</div>
+{/if}
 
-<Value>
-	{#snippet label()}
-		{$i18n.monitoring.remaining_threshold}
-	{/snippet}
+<div class="card-container with-title">
+	<span class="title">{$i18n.monitoring.modules}</span>
 
-	<p>{formatTCycles(minCycles)}</p>
-</Value>
+	<div class="content">
+		<Value>
+			{#snippet label()}
+				{$i18n.monitoring.selected_modules}
+			{/snippet}
 
-<Value>
-	{#snippet label()}
-		{$i18n.monitoring.top_up_amount}
-	{/snippet}
+			<ul>
+				{#each selectedSatellites as [satelliteId, satellite]}
+					<li>
+						<Segment id={satelliteId}>
+							{satelliteName(satellite)}
+						</Segment>
+					</li>
+				{/each}
 
-	<p>{formatTCycles(fundCycles)}</p>
-</Value>
+				{#each selectedOrbiters as [orbiterId, orbiter]}
+					{@const orbName = orbiterName(orbiter)}
+
+					<li>
+						<Segment id={orbiterId}>
+							{!notEmptyString(orbName) ? $i18n.analytics.title : orbName}
+						</Segment>
+					</li>
+				{/each}
+			</ul>
+		</Value>
+
+		<Value>
+			{#snippet label()}
+				{$i18n.monitoring.remaining_threshold}
+			{/snippet}
+
+			<p>{formatTCycles(minCycles ?? 0n)}</p>
+		</Value>
+
+		<Value>
+			{#snippet label()}
+				{$i18n.monitoring.top_up_amount}
+			{/snippet}
+
+			<p>{formatTCycles(fundCycles ?? 0n)}</p>
+		</Value>
+	</div>
+</div>
 
 <div class="toolbar">
 	<button type="button" disabled={$isBusy} onclick={onback}>{$i18n.core.back}</button>
@@ -103,5 +131,9 @@
 
 	li {
 		margin: 0 0 var(--padding);
+	}
+
+	.no-margin {
+		margin: 0;
 	}
 </style>

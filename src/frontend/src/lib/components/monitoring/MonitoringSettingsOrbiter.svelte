@@ -1,9 +1,9 @@
 <script lang="ts">
-	import Value from '$lib/components/ui/Value.svelte';
-	import { fade } from 'svelte/transition';
-	import { i18n } from '$lib/stores/i18n.store';
-	import { orbiterLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { orbiterLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		orbiterMonitored: boolean;

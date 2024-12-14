@@ -1,20 +1,26 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
+	import { fromNullable } from '@dfinity/utils';
+	import type {
+		CyclesMonitoringStrategy,
+		Orbiter,
+		Satellite
+	} from '$declarations/mission_control/mission_control.did';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
+	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
+	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
 	import MonitoringCreateStrategySelectSegments from '$lib/components/monitoring/MonitoringCreateStrategySelectSegments.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { applyMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
+	import { authStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type {
 		JunoModalDetail,
 		JunoModalMonitoringCreateBulkStrategyDetail
 	} from '$lib/types/modal';
-	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { applyMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
-	import { authStore } from '$lib/stores/auth.store';
-	import {emit} from "$lib/utils/events.utils";
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -27,14 +33,33 @@
 		detail as JunoModalMonitoringCreateBulkStrategyDetail
 	);
 
-	let steps: 'init' | 'strategy' | 'review' | 'in_progress' | 'ready' = $state('init');
+	let steps:
+		| 'init'
+		| 'strategy'
+		| 'mission_control'
+		| 'mission_control_strategy'
+		| 'review'
+		| 'in_progress'
+		| 'ready' = $state('init');
 
-	let selectedMissionControl = $state(false);
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
 	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
 
-	let minCycles: bigint = $state(0n);
-	let fundCycles: bigint = $state(0n);
+	let minCycles: bigint | undefined = $state(undefined);
+	let fundCycles: bigint | undefined = $state(undefined);
+
+	let missionControlMinCycles: bigint | undefined = $state(undefined);
+	let missionControlFundCycles: bigint | undefined = $state(undefined);
+
+	let missionControlCycles = $derived(
+		fromNullable(fromNullable(settings?.monitoring ?? [])?.cycles ?? [])
+	);
+
+	let missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined } =
+		$derived({
+			monitored: missionControlCycles?.enabled === true,
+			strategy: fromNullable(missionControlCycles?.strategy ?? [])
+		});
 
 	const onsubmit = async ($event: MouseEvent | TouchEvent) => {
 		$event.preventDefault();
@@ -45,11 +70,13 @@
 		const { success } = await applyMonitoringCyclesStrategy({
 			identity: $authStore.identity,
 			missionControlId,
-			selectedMissionControl,
 			satellites: selectedSatellites.map(([id, _]) => id),
 			orbiters: selectedOrbiters.map(([id, _]) => id),
 			fundCycles,
-			minCycles
+			minCycles,
+			missionControlMonitored: missionControl.monitored,
+			missionControlMinCycles,
+			missionControlFundCycles
 		});
 
 		if (success !== 'ok') {
@@ -85,26 +112,41 @@
 		</SpinnerModal>
 	{:else if steps === 'review'}
 		<MonitoringCreateStrategyReview
-			{missionControlId}
-			{selectedMissionControl}
 			{selectedSatellites}
 			{selectedOrbiters}
 			{minCycles}
 			{fundCycles}
-			onback={() => (steps = 'strategy')}
+			{missionControlMinCycles}
+			{missionControlFundCycles}
+			{missionControl}
+			onback={() => (steps = 'mission_control')}
 			{onsubmit}
+		/>
+	{:else if steps === 'mission_control_strategy'}
+		<MonitoringCreateStrategy
+			bind:minCycles={missionControlMinCycles}
+			bind:fundCycles={missionControlFundCycles}
+			strategy="mission-control"
+			onback={() => (steps = 'mission_control')}
+			oncontinue={() => (steps = 'review')}
+		/>
+	{:else if steps === 'mission_control'}
+		<MonitoringCreateStrategyMissionControl
+			{missionControl}
+			onno={() => (steps = 'mission_control_strategy')}
+			onyes={() => (steps = 'review')}
 		/>
 	{:else if steps === 'strategy'}
 		<MonitoringCreateStrategy
 			bind:minCycles
 			bind:fundCycles
+			strategy="modules"
 			onback={() => (steps = 'init')}
-			oncontinue={() => (steps = 'review')}
+			oncontinue={() => (steps = 'mission_control')}
 		/>
 	{:else}
 		<MonitoringCreateStrategySelectSegments
 			{missionControlId}
-			bind:selectedMissionControl
 			bind:selectedSatellites
 			bind:selectedOrbiters
 			oncontinue={() => (steps = 'strategy')}

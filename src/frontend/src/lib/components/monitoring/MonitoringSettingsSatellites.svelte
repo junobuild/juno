@@ -1,12 +1,12 @@
 <script lang="ts">
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import Value from '$lib/components/ui/Value.svelte';
+	import { fromNullable } from '@dfinity/utils';
+	import { untrack } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { fromNullable } from '@dfinity/utils';
-	import { i18n } from '$lib/stores/i18n.store';
+	import Value from '$lib/components/ui/Value.svelte';
 	import { satellitesLoaded, satellitesStore } from '$lib/derived/satellite.derived';
-	import {untrack} from "svelte";
+	import { i18n } from '$lib/stores/i18n.store';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		hasSatellitesMonitored: boolean;
@@ -35,12 +35,12 @@
 		untrack(() => {
 			satellitesDisabled = satDisabled;
 			satellitesMonitored = satMonitored;
-		})
+		});
 	});
 
 	$effect(() => {
 		hasSatellitesMonitored = satellitesMonitored.length > 0;
-	})
+	});
 </script>
 
 {#if $satellitesLoaded && ($satellitesStore ?? []).length > 0}

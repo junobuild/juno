@@ -1,20 +1,20 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
+	import MonitoringSettingsMissionControl from '$lib/components/monitoring/MonitoringSettingsMissionControl.svelte';
+	import MonitoringSettingsOrbiter from '$lib/components/monitoring/MonitoringSettingsOrbiter.svelte';
+	import MonitoringSettingsSatellites from '$lib/components/monitoring/MonitoringSettingsSatellites.svelte';
 	import { missionControlSettingsLoaded } from '$lib/derived/mission-control.derived';
+	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
+	import { satellitesLoaded } from '$lib/derived/satellite.derived';
+	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
-	import { satellitesLoaded } from '$lib/derived/satellite.derived';
-	import { onMount } from 'svelte';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
-	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
-	import MonitoringSettingsMissionControl from '$lib/components/monitoring/MonitoringSettingsMissionControl.svelte';
-	import MonitoringSettingsSatellites from '$lib/components/monitoring/MonitoringSettingsSatellites.svelte';
-	import MonitoringSettingsOrbiter from '$lib/components/monitoring/MonitoringSettingsOrbiter.svelte';
 
 	interface Props {
 		missionControlId: Principal;

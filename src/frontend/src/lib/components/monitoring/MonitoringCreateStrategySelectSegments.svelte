@@ -7,7 +7,6 @@
 
 	interface Props {
 		missionControlId: Principal;
-		selectedMissionControl: boolean;
 		selectedSatellites: [Principal, Satellite][];
 		selectedOrbiters: [Principal, Orbiter][];
 		oncontinue: () => void;
@@ -15,7 +14,6 @@
 
 	let {
 		missionControlId,
-		selectedMissionControl = $bindable(false),
 		selectedSatellites = $bindable([]),
 		selectedOrbiters = $bindable([]),
 		oncontinue
@@ -30,7 +28,6 @@
 
 <SegmentsTable
 	{missionControlId}
-	bind:selectedMissionControl
 	bind:selectedSatellites
 	bind:selectedOrbiters
 	bind:selectedDisabled

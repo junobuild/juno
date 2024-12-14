@@ -1,12 +1,12 @@
 <script lang="ts">
-	import Value from '$lib/components/ui/Value.svelte';
+	import { fromNullable } from '@dfinity/utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
+	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		missionControlSettings,
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control.derived';
-	import { fromNullable } from '@dfinity/utils';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		missionControlMonitored: boolean;

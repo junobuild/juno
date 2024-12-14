@@ -43,7 +43,10 @@
 			loadOrbiters({ missionControl: missionControlId, reload: reloadSegments })
 		]);
 
-		if (resultSatellites !== 'success' || resultOrbiters !== 'success') {
+		if (
+			!['success', 'skip'].includes(resultSatellites) ||
+			!['success', 'skip'].includes(resultOrbiters)
+		) {
 			satellites = [];
 			orbiters = [];
 			return;

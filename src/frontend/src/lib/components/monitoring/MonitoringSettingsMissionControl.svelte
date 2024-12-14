@@ -3,7 +3,7 @@
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
-		missionControlSettings,
+		missionControlMonitoring,
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -16,8 +16,7 @@
 
 	$effect(() => {
 		missionControlMonitored =
-			fromNullable(fromNullable($missionControlSettings?.monitoring ?? [])?.cycles ?? [])
-				?.enabled === true;
+			fromNullable($missionControlMonitoring?.cycles ?? [])?.enabled === true;
 	});
 </script>
 

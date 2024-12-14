@@ -83,9 +83,7 @@
 					{/snippet}
 
 					<p class="satellites">
-						{$orbiterFeatures?.page_views === true
-							? $i18n.analytics.enabled
-							: $i18n.analytics.disabled}
+						{$orbiterFeatures?.page_views === true ? $i18n.core.enabled : $i18n.core.disabled}
 					</p>
 				</Value>
 			</div>
@@ -97,9 +95,7 @@
 					{/snippet}
 
 					<p class="satellites">
-						{$orbiterFeatures?.track_events === true
-							? $i18n.analytics.enabled
-							: $i18n.analytics.disabled}
+						{$orbiterFeatures?.track_events === true ? $i18n.core.enabled : $i18n.core.disabled}
 					</p>
 				</Value>
 			</div>
@@ -112,8 +108,8 @@
 
 					<p class="satellites">
 						{$orbiterFeatures?.performance_metrics === true
-							? $i18n.analytics.enabled
-							: $i18n.analytics.disabled}
+							? $i18n.core.enabled
+							: $i18n.core.disabled}
 					</p>
 				</Value>
 			</div>

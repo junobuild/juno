@@ -66,7 +66,9 @@
 		"select_all": "选择全部",
 		"unselect_all": "取消全部选择",
 		"max": "Max",
-		"none": "None"
+		"none": "None",
+		"enabled": "已启用",
+		"disabled": "已禁用"
 	},
 	"canisters": {
 		"insight": "分析",
@@ -331,8 +333,6 @@
 		"count": "数量",
 		"referrers": "前十个引用",
 		"pages": "前10页",
-		"enabled": "已启用",
-		"disabled": "Disabled",
 		"orbiter": "Orbiter",
 		"devices": "设备",
 		"mobile": "移动端",
@@ -649,15 +649,12 @@
 		"provider": "提供者",
 		"created": "创建于",
 		"updated": "更新于",
-		"empty": "目前还有注册的用户.",
-		"enabled": "已启用"
+		"empty": "目前还有注册的用户."
 	},
 	"observatory": {
 		"title": "Observatory",
 		"dashboard": "仪表盘",
 		"monitoring": "监控",
-		"enabled": "已启用",
-		"disabled": "已禁用",
 		"email_notifications": "邮件提醒",
 		"email_notifications_placeholder": "输入用于接受提醒的邮箱",
 		"cycles_threshold": "TCycles 阈值 (最小 0.5)",

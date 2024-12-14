@@ -66,7 +66,9 @@
 		"select_all": "Select all",
 		"unselect_all": "Deselect all",
 		"max": "Max",
-		"none": "None"
+		"none": "None",
+		"enabled": "Enabled",
+		"disabled": "Disabled"
 	},
 	"canisters": {
 		"insight": "Insight",
@@ -331,8 +333,6 @@
 		"count": "Count",
 		"referrers": "Top 10 referrers",
 		"pages": "Top 10 pages",
-		"enabled": "Enabled",
-		"disabled": "Disabled",
 		"orbiter": "Orbiter",
 		"devices": "Devices",
 		"mobile": "Mobile",
@@ -650,15 +650,12 @@
 		"provider": "Provider",
 		"created": "Created",
 		"updated": "Updated",
-		"empty": "No registered users at the moment.",
-		"enabled": "Enabled"
+		"empty": "No registered users at the moment."
 	},
 	"observatory": {
 		"title": "Monitoring",
 		"dashboard": "Dashboard",
 		"monitoring": "Monitoring",
-		"enabled": "Enabled",
-		"disabled": "Disabled",
 		"email_notifications": "Email notifications",
 		"email_notifications_placeholder": "Enter an email to receive notifications",
 		"cycles_threshold": "TCycles threshold (min 0.5)",
@@ -672,7 +669,8 @@
 		"error_collecting_data": "There was an error collecting the data."
 	},
 	"monitoring": {
-		"title": "Monitoring Strategy",
+		"title": "Monitoring",
+		"monitoring_strategy": "Monitoring Strategy",
 		"create_info": "Select the modules for which this strategy will ensure sufficient cycles periodically.",
 		"threshold_info": "Define how many remaining cycles should trigger a top-up and the amount to add.",
 		"threshold_info_mission_control": "Define how many remaining cycles should trigger a top-up and the amount to add for your mission control.",
@@ -688,15 +686,16 @@
 		"top_up_amount": "Top-Up Amount",
 		"modules": "Modules",
 		"selected_modules": "Selected",
-		"monitored": "Monitored.",
-		"not_monitored": "Not monitored.",
-		"modules_monitored": "{0} monitored.",
-		"modules_monitored_and_disabled": "{0} monitored, {1} disabled.",
+		"monitored": "Monitored",
+		"not_monitored": "Not monitored",
+		"modules_monitored": "{0} monitored",
+		"modules_monitored_and_disabled": "{0} monitored, {1} disabled",
 		"min_cycles_not_defined": "The remaining TCycle threshold must be provided.",
 		"fund_cycles_not_defined": "The top-up amount must be provided.",
 		"configure_strategy": "Configure Strategy",
 		"mission_control_strategy": "Mission Control Strategy",
-		"review_strategy": "Review Strategy"
+		"review_strategy": "Review Strategy",
+		"warning_advice": "Go to the Monitoring section to enable it and ensure sufficient cycles for your modules."
 	},
 	"preferences": {
 		"title": "Preferences",

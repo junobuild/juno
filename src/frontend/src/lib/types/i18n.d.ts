@@ -70,6 +70,8 @@ interface I18nCore {
 	unselect_all: string;
 	max: string;
 	none: string;
+	enabled: string;
+	disabled: string;
 }
 
 interface I18nCanisters {
@@ -343,8 +345,6 @@ interface I18nAnalytics {
 	count: string;
 	referrers: string;
 	pages: string;
-	enabled: string;
-	disabled: string;
 	orbiter: string;
 	devices: string;
 	mobile: string;
@@ -675,15 +675,12 @@ interface I18nUsers {
 	created: string;
 	updated: string;
 	empty: string;
-	enabled: string;
 }
 
 interface I18nObservatory {
 	title: string;
 	dashboard: string;
 	monitoring: string;
-	enabled: string;
-	disabled: string;
 	email_notifications: string;
 	email_notifications_placeholder: string;
 	cycles_threshold: string;
@@ -699,6 +696,7 @@ interface I18nObservatory {
 
 interface I18nMonitoring {
 	title: string;
+	monitoring_strategy: string;
 	create_info: string;
 	threshold_info: string;
 	threshold_info_mission_control: string;
@@ -723,6 +721,7 @@ interface I18nMonitoring {
 	configure_strategy: string;
 	mission_control_strategy: string;
 	review_strategy: string;
+	warning_advice: string;
 }
 
 interface I18nPreferences {

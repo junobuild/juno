@@ -22,7 +22,7 @@
 	let selectedDisabled = $state(true);
 </script>
 
-<h2>{$i18n.monitoring.title}</h2>
+<h2>{$i18n.monitoring.monitoring_strategy}</h2>
 
 <p>{$i18n.monitoring.create_info}</p>
 

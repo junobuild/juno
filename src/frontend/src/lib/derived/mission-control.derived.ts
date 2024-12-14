@@ -2,6 +2,7 @@ import {
 	missionControlDataStore,
 	missionControlSettingsDataStore
 } from '$lib/stores/mission-control.store';
+import { fromNullable } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
 // TODO: rename store to shorten but find a good naming idea that does not conflicts with local variable
@@ -23,4 +24,9 @@ export const missionControlSettingsLoaded = derived(
 export const missionControlSettingsNotLoaded = derived(
 	[missionControlSettingsLoaded],
 	([$missionControlSettingsLoaded]) => !$missionControlSettingsLoaded
+);
+
+export const missionControlMonitoring = derived(
+	[missionControlSettings],
+	([$missionControlSettings]) => fromNullable($missionControlSettings?.monitoring ?? [])
 );

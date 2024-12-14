@@ -49,6 +49,11 @@
 		});
 	};
 
+	let missionControlMonitored = $derived(
+		fromNullable(fromNullable($missionControlSettings?.monitoring ?? [])?.cycles ?? [])?.enabled ===
+			true
+	);
+
 	let [satellitesDisabled, satellitesMonitored] = $derived(
 		($satellitesStore ?? []).reduce<[Satellite[], Satellite[]]>(
 			([disabled, monitored], satellite) => {
@@ -89,7 +94,7 @@
 						<p><SkeletonText /></p>
 					{:else}
 						<p>
-							{nonNullish($missionControlSettings)
+							{missionControlMonitored
 								? $i18n.monitoring.monitored
 								: $i18n.monitoring.not_monitored}
 						</p>

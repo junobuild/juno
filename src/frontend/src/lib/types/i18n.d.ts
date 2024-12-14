@@ -703,6 +703,8 @@ interface I18nMonitoring {
 	threshold_info: string;
 	review_info: string;
 	create_strategy: string;
+	start_monitoring: string;
+	stop_monitoring: string;
 	strategy_created: string;
 	applying_strategy: string;
 	remaining_threshold: string;

@@ -8,10 +8,17 @@
 	} from '$lib/derived/mission-control.derived';
 	import { fromNullable } from '@dfinity/utils';
 
-	let missionControlMonitored = $derived(
-		fromNullable(fromNullable($missionControlSettings?.monitoring ?? [])?.cycles ?? [])?.enabled ===
-			true
-	);
+	interface Props {
+		missionControlMonitored: boolean;
+	}
+
+	let { missionControlMonitored = $bindable(false) }: Props = $props();
+
+	$effect(() => {
+		missionControlMonitored =
+			fromNullable(fromNullable($missionControlSettings?.monitoring ?? [])?.cycles ?? [])
+				?.enabled === true;
+	});
 </script>
 
 <Value>

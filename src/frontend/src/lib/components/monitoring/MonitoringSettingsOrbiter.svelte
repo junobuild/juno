@@ -5,11 +5,18 @@
 	import { orbiterLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 
-	let orbiterMonitored = $derived(
-		fromNullable(
-			fromNullable(fromNullable($orbiterStore?.settings ?? [])?.monitoring ?? [])?.cycles ?? []
-		)?.enabled === true
-	);
+	interface Props {
+		orbiterMonitored: boolean;
+	}
+
+	let { orbiterMonitored = $bindable(false) }: Props = $props();
+
+	$effect(() => {
+		orbiterMonitored =
+			fromNullable(
+				fromNullable(fromNullable($orbiterStore?.settings ?? [])?.monitoring ?? [])?.cycles ?? []
+			)?.enabled === true;
+	});
 </script>
 
 {#if $orbiterLoaded && nonNullish($orbiterStore)}

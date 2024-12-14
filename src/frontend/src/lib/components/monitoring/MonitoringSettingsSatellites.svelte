@@ -6,9 +6,19 @@
 	import { fromNullable } from '@dfinity/utils';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { satellitesLoaded, satellitesStore } from '$lib/derived/satellite.derived';
+	import {untrack} from "svelte";
 
-	let [satellitesDisabled, satellitesMonitored] = $derived(
-		($satellitesStore ?? []).reduce<[Satellite[], Satellite[]]>(
+	interface Props {
+		hasSatellitesMonitored: boolean;
+	}
+
+	let { hasSatellitesMonitored = $bindable(false) }: Props = $props();
+
+	let satellitesMonitored = $state<Satellite[]>([]);
+	let satellitesDisabled = $state<Satellite[]>([]);
+
+	$effect(() => {
+		const [satDisabled, satMonitored] = ($satellitesStore ?? []).reduce<[Satellite[], Satellite[]]>(
 			([disabled, monitored], satellite) => {
 				const cycles = fromNullable(
 					fromNullable(fromNullable(satellite.settings)?.monitoring ?? [])?.cycles ?? []
@@ -20,8 +30,17 @@
 				];
 			},
 			[[], []]
-		)
-	);
+		);
+
+		untrack(() => {
+			satellitesDisabled = satDisabled;
+			satellitesMonitored = satMonitored;
+		})
+	});
+
+	$effect(() => {
+		hasSatellitesMonitored = satellitesMonitored.length > 0;
+	})
 </script>
 
 {#if $satellitesLoaded && ($satellitesStore ?? []).length > 0}

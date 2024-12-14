@@ -41,6 +41,10 @@
 	};
 
 	onMount(async () => await loadOrbiters({ missionControl: missionControlId }));
+
+	let missionControlMonitored = $state(false);
+	let orbiterMonitored = $state(false);
+	let satellitesMonitored = $state(false);
 </script>
 
 <MissionControlSettingsLoader {missionControlId}>
@@ -49,16 +53,22 @@
 
 		<div class="columns-3 fit-column-1">
 			<div>
-				<MonitoringSettingsMissionControl />
+				<MonitoringSettingsMissionControl bind:missionControlMonitored />
 
-				<MonitoringSettingsSatellites />
+				<MonitoringSettingsSatellites bind:hasSatellitesMonitored={satellitesMonitored} />
 
-				<MonitoringSettingsOrbiter />
+				<MonitoringSettingsOrbiter bind:orbiterMonitored />
 			</div>
 		</div>
 	</div>
 
 	{#if $missionControlSettingsLoaded && $satellitesLoaded && $orbiterLoaded}
-		<button in:fade onclick={openModal}>{$i18n.monitoring.create_strategy}</button>
+		<button in:fade onclick={openModal}>
+			{#if missionControlMonitored || satellitesMonitored || orbiterMonitored}
+				{$i18n.monitoring.create_strategy}
+			{:else}
+				{$i18n.monitoring.start_monitoring}
+			{/if}
+		</button>
 	{/if}
 </MissionControlSettingsLoader>

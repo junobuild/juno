@@ -1,29 +1,20 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
-	import Value from '$lib/components/ui/Value.svelte';
-	import {
-		missionControlSettings,
-		missionControlSettingsLoaded,
-		missionControlSettingsNotLoaded
-	} from '$lib/derived/mission-control.derived';
+	import { missionControlSettingsLoaded } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
-	import {
-		satellitesLoaded,
-		satellitesNotLoaded,
-		satellitesStore
-	} from '$lib/derived/satellite.derived';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import { satellitesLoaded } from '$lib/derived/satellite.derived';
 	import { onMount } from 'svelte';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
-	import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
+	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
+	import MonitoringSettingsMissionControl from '$lib/components/monitoring/MonitoringSettingsMissionControl.svelte';
+	import MonitoringSettingsSatellites from '$lib/components/monitoring/MonitoringSettingsSatellites.svelte';
+	import MonitoringSettingsOrbiter from '$lib/components/monitoring/MonitoringSettingsOrbiter.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -49,33 +40,6 @@
 		});
 	};
 
-	let missionControlMonitored = $derived(
-		fromNullable(fromNullable($missionControlSettings?.monitoring ?? [])?.cycles ?? [])?.enabled ===
-			true
-	);
-
-	let [satellitesDisabled, satellitesMonitored] = $derived(
-		($satellitesStore ?? []).reduce<[Satellite[], Satellite[]]>(
-			([disabled, monitored], satellite) => {
-				const cycles = fromNullable(
-					fromNullable(fromNullable(satellite.settings)?.monitoring ?? [])?.cycles ?? []
-				);
-
-				return [
-					[...disabled, ...(cycles?.enabled !== true ? [satellite] : [])],
-					[...monitored, ...(cycles?.enabled === true ? [satellite] : [])]
-				];
-			},
-			[[], []]
-		)
-	);
-
-	let orbiterMonitored = $derived(
-		fromNullable(
-			fromNullable(fromNullable($orbiterStore?.settings ?? [])?.monitoring ?? [])?.cycles ?? []
-		)?.enabled === true
-	);
-
 	onMount(async () => await loadOrbiters({ missionControl: missionControlId }));
 </script>
 
@@ -85,72 +49,16 @@
 
 		<div class="columns-3 fit-column-1">
 			<div>
-				<Value>
-					{#snippet label()}
-						{$i18n.mission_control.title}
-					{/snippet}
+				<MonitoringSettingsMissionControl />
 
-					{#if $missionControlSettingsNotLoaded}
-						<p><SkeletonText /></p>
-					{:else}
-						<p>
-							{missionControlMonitored
-								? $i18n.monitoring.monitored
-								: $i18n.monitoring.not_monitored}
-						</p>
-					{/if}
-				</Value>
+				<MonitoringSettingsSatellites />
 
-				<Value>
-					{#snippet label()}
-						{$i18n.satellites.title}
-					{/snippet}
-
-					{#if $satellitesNotLoaded}
-						<p><SkeletonText /></p>
-					{:else}
-						<p>
-							{satellitesMonitored.length === 0
-								? $i18n.monitoring.not_monitored
-								: satellitesMonitored.length > 0 && satellitesDisabled.length > 0
-									? i18nFormat($i18n.monitoring.modules_monitored_and_disabled, [
-											{
-												placeholder: '{0}',
-												value: `${satellitesMonitored.length}`
-											},
-											{
-												placeholder: '{1}',
-												value: `${satellitesDisabled.length}`
-											}
-										])
-									: i18nFormat($i18n.monitoring.modules_monitored, [
-											{
-												placeholder: '{0}',
-												value: `${satellitesMonitored.length}`
-											}
-										])}
-						</p>
-					{/if}
-				</Value>
-
-				<Value>
-					{#snippet label()}
-						{$i18n.analytics.orbiter}
-					{/snippet}
-
-					{#if $orbiterNotLoaded}
-						<p><SkeletonText /></p>
-					{:else}
-						<p>
-							{orbiterMonitored ? $i18n.monitoring.monitored : $i18n.monitoring.not_monitored}
-						</p>
-					{/if}
-				</Value>
+				<MonitoringSettingsOrbiter />
 			</div>
 		</div>
 	</div>
 
-	{#if $missionControlSettingsLoaded}
+	{#if $missionControlSettingsLoaded && $satellitesLoaded && $orbiterLoaded}
 		<button in:fade onclick={openModal}>{$i18n.monitoring.create_strategy}</button>
 	{/if}
 </MissionControlSettingsLoader>

@@ -15,10 +15,12 @@
 	interface Props {
 		missionControlId: Principal;
 		children?: Snippet;
-		selectedMissionControl: boolean;
+		selectedMissionControl?: boolean;
 		selectedSatellites: [Principal, Satellite][];
 		selectedOrbiters: [Principal, Orbiter][];
 		selectedDisabled: boolean;
+		withMissionControl?: boolean;
+		reloadSegments?: boolean;
 	}
 
 	let {
@@ -27,7 +29,9 @@
 		selectedMissionControl = $bindable(false),
 		selectedSatellites = $bindable([]),
 		selectedOrbiters = $bindable([]),
-		selectedDisabled = $bindable(false)
+		selectedDisabled = $bindable(false),
+		withMissionControl = $bindable(true),
+		reloadSegments = true
 	}: Props = $props();
 
 	let satellites: [Principal, Satellite][] = $state([]);
@@ -35,8 +39,8 @@
 
 	const loadSegments = async () => {
 		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
-			loadSatellites({ missionControl: missionControlId, reload: true }),
-			loadOrbiters({ missionControl: missionControlId, reload: true })
+			loadSatellites({ missionControl: missionControlId, reload: reloadSegments }),
+			loadOrbiters({ missionControl: missionControlId, reload: reloadSegments })
 		]);
 
 		if (resultSatellites !== 'success' || resultOrbiters !== 'success') {
@@ -89,15 +93,17 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td class="actions"><input type="checkbox" bind:checked={selectedMissionControl} /></td>
+			{#if withMissionControl}
+				<tr>
+					<td class="actions"><input type="checkbox" bind:checked={selectedMissionControl} /></td>
 
-				<td>
-					<Segment id={missionControlId}>
-						{$i18n.mission_control.title}
-					</Segment>
-				</td>
-			</tr>
+					<td>
+						<Segment id={missionControlId}>
+							{$i18n.mission_control.title}
+						</Segment>
+					</td>
+				</tr>
+			{/if}
 
 			{#each satellites as satellite}
 				<tr>

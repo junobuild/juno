@@ -1,0 +1,57 @@
+<script lang="ts">
+	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { fade } from 'svelte/transition';
+	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { fromNullable } from '@dfinity/utils';
+	import { i18n } from '$lib/stores/i18n.store';
+	import { satellitesLoaded, satellitesStore } from '$lib/derived/satellite.derived';
+
+	let [satellitesDisabled, satellitesMonitored] = $derived(
+		($satellitesStore ?? []).reduce<[Satellite[], Satellite[]]>(
+			([disabled, monitored], satellite) => {
+				const cycles = fromNullable(
+					fromNullable(fromNullable(satellite.settings)?.monitoring ?? [])?.cycles ?? []
+				);
+
+				return [
+					[...disabled, ...(cycles?.enabled !== true ? [satellite] : [])],
+					[...monitored, ...(cycles?.enabled === true ? [satellite] : [])]
+				];
+			},
+			[[], []]
+		)
+	);
+</script>
+
+{#if $satellitesLoaded && ($satellitesStore ?? []).length > 0}
+	<div in:fade>
+		<Value>
+			{#snippet label()}
+				{$i18n.satellites.title}
+			{/snippet}
+
+			<p>
+				{satellitesMonitored.length === 0
+					? $i18n.monitoring.not_monitored
+					: satellitesMonitored.length > 0 && satellitesDisabled.length > 0
+						? i18nFormat($i18n.monitoring.modules_monitored_and_disabled, [
+								{
+									placeholder: '{0}',
+									value: `${satellitesMonitored.length}`
+								},
+								{
+									placeholder: '{1}',
+									value: `${satellitesDisabled.length}`
+								}
+							])
+						: i18nFormat($i18n.monitoring.modules_monitored, [
+								{
+									placeholder: '{0}',
+									value: `${satellitesMonitored.length}`
+								}
+							])}
+			</p>
+		</Value>
+	</div>
+{/if}

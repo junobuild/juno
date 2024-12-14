@@ -34,6 +34,8 @@
 	bind:selectedSatellites
 	bind:selectedOrbiters
 	bind:selectedDisabled
+	withMissionControl={false}
+	reloadSegments={false}
 ></SegmentsTable>
 
 <button disabled={$isBusy || selectedDisabled} onclick={oncontinue}>

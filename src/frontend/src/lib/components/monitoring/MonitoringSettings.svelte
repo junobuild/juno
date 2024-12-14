@@ -13,15 +13,17 @@
 	import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import {
+		satellitesLoaded,
+		satellitesNotLoaded,
+		satellitesStore
+	} from '$lib/derived/satellite.derived';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import { cy } from 'date-fns/locale';
-	import { orbiterStore } from '$lib/stores/orbiter.store';
 	import { onMount } from 'svelte';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
-	import { loadSatellites } from '$lib/services/satellites.services';
+	import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 
 	interface Props {
 		missionControlId: Principal;
@@ -99,27 +101,31 @@
 						{$i18n.satellites.title}
 					{/snippet}
 
-					<p>
-						{satellitesMonitored.length === 0
-							? $i18n.monitoring.not_monitored
-							: satellitesMonitored.length > 0 && satellitesDisabled.length > 0
-								? i18nFormat($i18n.monitoring.modules_monitored_and_disabled, [
-										{
-											placeholder: '{0}',
-											value: `${satellitesMonitored.length}`
-										},
-										{
-											placeholder: '{1}',
-											value: `${satellitesDisabled.length}`
-										}
-									])
-								: i18nFormat($i18n.monitoring.modules_monitored, [
-										{
-											placeholder: '{0}',
-											value: `${satellitesMonitored.length}`
-										}
-									])}
-					</p>
+					{#if $satellitesNotLoaded}
+						<p><SkeletonText /></p>
+					{:else}
+						<p>
+							{satellitesMonitored.length === 0
+								? $i18n.monitoring.not_monitored
+								: satellitesMonitored.length > 0 && satellitesDisabled.length > 0
+									? i18nFormat($i18n.monitoring.modules_monitored_and_disabled, [
+											{
+												placeholder: '{0}',
+												value: `${satellitesMonitored.length}`
+											},
+											{
+												placeholder: '{1}',
+												value: `${satellitesDisabled.length}`
+											}
+										])
+									: i18nFormat($i18n.monitoring.modules_monitored, [
+											{
+												placeholder: '{0}',
+												value: `${satellitesMonitored.length}`
+											}
+										])}
+						</p>
+					{/if}
 				</Value>
 
 				<Value>
@@ -127,9 +133,13 @@
 						{$i18n.analytics.orbiter}
 					{/snippet}
 
-					<p>
-						{orbiterMonitored ? $i18n.monitoring.monitored : $i18n.monitoring.not_monitored}
-					</p>
+					{#if $orbiterNotLoaded}
+						<p><SkeletonText /></p>
+					{:else}
+						<p>
+							{orbiterMonitored ? $i18n.monitoring.monitored : $i18n.monitoring.not_monitored}
+						</p>
+					{/if}
 				</Value>
 			</div>
 		</div>

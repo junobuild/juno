@@ -20,7 +20,7 @@ import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
-import { orbitersStore } from '$lib/stores/orbiter.store';
+import { orbitersDataStore } from '$lib/stores/orbiter.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
@@ -206,7 +206,7 @@ export const attachOrbiter = async (params: {
 
 	const orbiter = await setOrbiter({ ...params, identity });
 
-	orbitersStore.set([orbiter]);
+	orbitersDataStore.set([orbiter]);
 };
 
 export const detachOrbiter = async ({
@@ -220,7 +220,7 @@ export const detachOrbiter = async ({
 
 	await unsetOrbiter({ ...rest, orbiterId: canisterId, identity });
 
-	orbitersStore.set(null);
+	orbitersDataStore.reset();
 };
 
 export const loadSettings = async ({

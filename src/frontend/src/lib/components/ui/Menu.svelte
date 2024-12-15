@@ -6,7 +6,7 @@
 
 	interface Props {
 		children: Snippet;
-		themed?: boolean
+		themed?: boolean;
 	}
 
 	let { children, themed = false }: Props = $props();
@@ -25,7 +25,7 @@
 		tabindex="-1"
 	>
 		<div class="logo">
-			<Logo color={themed ? "white" : "lavender"} />
+			<Logo color={themed ? 'white' : 'lavender'} />
 		</div>
 
 		{@render children()}

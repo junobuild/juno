@@ -23,6 +23,6 @@
 	{@render children()}
 
 	{#snippet footer()}
-		<Footer themeToggle end={$authSignedInStore ? 'none' : 'lang'} />
+		<Footer themeToggle={!$authSignedInStore} end={$authSignedInStore ? 'none' : 'lang'} />
 	{/snippet}
 </Layout>

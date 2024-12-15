@@ -29,6 +29,7 @@ interface I18nCore {
 	cancel: string;
 	apply: string;
 	language: string;
+	theme: string;
 	user_menu: string;
 	version: string;
 	delete: string;

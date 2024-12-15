@@ -47,12 +47,15 @@
 
 		background: var(--color-primary);
 		color: var(--color-primary-contrast);
+
+		border-right: 1px solid var(--color-primary-contrast);
 	}
 
 	@include media.dark-theme {
 		div[role='menu'] {
 			background: var(--color-menu);
 			color: var(--color-menu-contrast);
+			border-right: 1px solid var(--color-menu);
 		}
 	}
 

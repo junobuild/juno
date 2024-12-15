@@ -1,4 +1,4 @@
-<!-- Fontawesome Pro 5 - David Dal Busco license -->
+<!-- source: ionicons + tweaked -->
 <script lang="ts">
 	interface Props {
 		size?: string;
@@ -13,7 +13,23 @@
 	height={size}
 	width={size}
 	fill="currentColor"
-	><path
-		d="M384 256c-17.7 0-32 14.3-32 32s14.3 32 32 32 32-14.3 32-32-14.3-32-32-32zm80-160h-16V80c0-26.5-21.5-48-48-48H96C43 32 0 75 0 128v256c0 53 43 96 96 96h352c35.4 0 64-28.7 64-64V144c0-26.5-21.5-48-48-48zm16 320c0 17.6-14.4 32-32 32H96c-35.3 0-64-28.7-64-64V128c0-35.3 28.7-64 64-64h304c8.8 0 16 7.2 16 16v16H112c-8.8 0-16 7.2-16 16s7.2 16 16 16h352c8.8 0 16 7.2 16 16v272z"
+	><rect
+		x="58.805"
+		y="153.133"
+		width="393.798"
+		height="269.355"
+		style="fill: var(--color-background);"
+	/><path
+		d="M393.214,72.193l10.239,65.087l-327.089,51.455l-10.239,-65.086l327.089,-51.456Z"
+		style="fill: var(--color-background);"
+	/><path
+		d="M464,192l0,192c0,26.492 -21.508,48 -48,48l-320,0c-26.492,0 -48,-21.508 -48,-48l0,-192c0,-26.492 21.508,-48 48,-48l320,0c26.492,0 48,21.508 48,48Z"
+		style="fill:none;stroke:var(--color-background-contrast);stroke-width:32px;"
+	/><path
+		d="M411.36,144l0,-30c-0.009,-27.423 -22.577,-49.984 -50,-49.984c-3.141,0 -6.275,0.296 -9.36,0.884l-263.36,44.95c-23.5,4.478 -40.656,25.227 -40.64,49.15l0,49"
+		style="fill:none;fill-rule:nonzero;stroke:var(--color-background-contrast);stroke-width:32px;"
+	/><path
+		d="M368,320c-17.555,0 -32,-14.445 -32,-32c0,-17.555 14.445,-32 32,-32c17.555,0 32,14.445 32,32c0,17.555 -14.445,32 -32,32Z"
+		style="fill-rule:nonzero;fill: var(--color-background-contrast);"
 	/></svg
 >

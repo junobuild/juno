@@ -20,7 +20,7 @@
 		display: inline-flex;
 		gap: var(--padding-0_5x);
 		font-size: var(--font-size-ultra-small);
-		padding: var(--padding-2x);
+		padding: var(--padding-2x) 0 calc(var(--padding-4x) - 2px);
 	}
 
 	a {

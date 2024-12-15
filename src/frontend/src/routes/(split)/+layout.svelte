@@ -33,6 +33,6 @@
 	{@render children()}
 
 	{#snippet footer()}
-		<Footer end="social" />
+		<Footer />
 	{/snippet}
 </Layout>

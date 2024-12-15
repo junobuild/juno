@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
 	import User from '$lib/components/core/User.svelte';
@@ -6,7 +7,7 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
-	import { layoutTitleIntersecting } from '$lib/stores/layout.store';
+	import { layoutSatellitesSwitcher, layoutTitleIntersecting } from '$lib/stores/layout.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
@@ -33,8 +34,10 @@
 			<Logo />
 		{/if}
 
-		{#if launchpad}
-			<SatellitesSwitcher />
+		{#if $layoutSatellitesSwitcher}
+			<div in:fade>
+				<SatellitesSwitcher />
+			</div>
 		{/if}
 	</div>
 

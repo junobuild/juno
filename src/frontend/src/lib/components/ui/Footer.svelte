@@ -1,16 +1,13 @@
 <script lang="ts">
 	import AppLang from '$lib/components/core/AppLang.svelte';
-	import IconDiscord from '$lib/components/icons/IconDiscord.svelte';
-	import IconGitHub from '$lib/components/icons/IconGitHub.svelte';
-	import IconTwitter from '$lib/components/icons/IconTwitter.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
 
 	interface Props {
 		themeToggle?: boolean;
-		end: 'social' | 'lang' | 'none';
+		end?: 'lang' | 'none';
 	}
 
-	let { themeToggle = false, end }: Props = $props();
+	let { themeToggle = false, end = 'none' }: Props = $props();
 </script>
 
 <footer>
@@ -19,30 +16,7 @@
 			<Theme />
 		{/if}
 
-		{#if end === 'social'}
-			<div class="social">
-				<a
-					href="https://twitter.com/JunoBuild"
-					rel="external noopener noreferrer"
-					target="_blank"
-					aria-label="GitHub"><IconTwitter /></a
-				>
-
-				<a
-					href="https://github.com/junobuild/juno"
-					rel="external noopener noreferrer"
-					target="_blank"
-					aria-label="GitHub"><IconGitHub /></a
-				>
-
-				<a
-					href="https://discord.gg/wHZ57Z2RAG"
-					rel="external noopener noreferrer"
-					target="_blank"
-					aria-label="Discord"><IconDiscord /></a
-				>
-			</div>
-		{:else if end === 'lang'}
+		{#if end === 'lang'}
 			<AppLang />
 		{/if}
 	</div>

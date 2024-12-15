@@ -2,7 +2,7 @@
 	import { onMount, type Snippet } from 'svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutTitle } from '$lib/stores/layout.store';
+	import { layoutSatellitesSwitcher, layoutTitle } from '$lib/stores/layout.store';
 
 	interface Props {
 		children: Snippet;
@@ -10,12 +10,14 @@
 
 	let { children }: Props = $props();
 
-	onMount(() =>
+	onMount(() => {
 		layoutTitle.set({
 			title: $i18n.observatory.title,
 			icon: IconTelescope
-		})
-	);
+		});
+
+		layoutSatellitesSwitcher.set(false);
+	});
 </script>
 
 {@render children()}

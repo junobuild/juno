@@ -6,7 +6,7 @@
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutTitle } from '$lib/stores/layout.store';
+	import { layoutSatellitesSwitcher, layoutTitle } from '$lib/stores/layout.store';
 
 	interface Props {
 		children: Snippet;
@@ -14,12 +14,14 @@
 
 	let { children }: Props = $props();
 
-	onMount(() =>
+	onMount(() => {
 		layoutTitle.set({
 			title: $i18n.cli.title,
 			icon: IconUser
-		})
-	);
+		});
+
+		layoutSatellitesSwitcher.set(false);
+	});
 </script>
 
 <Layout centered={true}>
@@ -30,6 +32,6 @@
 	{@render children()}
 
 	{#snippet footer()}
-		<Footer themeToggle end={$authSignedInStore ? 'social' : 'lang'} />
+		<Footer themeToggle end={$authSignedInStore ? 'none' : 'lang'} />
 	{/snippet}
 </Layout>

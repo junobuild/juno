@@ -2,7 +2,7 @@
 	import { onMount, type Snippet } from 'svelte';
 	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutTitle } from '$lib/stores/layout.store';
+	import { layoutSatellitesSwitcher, layoutTitle } from '$lib/stores/layout.store';
 	import { Color } from '$lib/types/theme';
 	import { applyColor } from '$lib/utils/theme.utils';
 
@@ -17,6 +17,7 @@
 			title: $i18n.datastore.title,
 			icon: IconDatastore
 		});
+		layoutSatellitesSwitcher.set(true);
 		applyColor(Color.AERO_BLUE);
 	});
 </script>

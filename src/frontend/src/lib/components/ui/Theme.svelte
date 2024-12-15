@@ -5,6 +5,12 @@
 	import { theme } from '$lib/stores/theme.store';
 	import { Theme } from '$lib/types/theme';
 
+	interface Props {
+		inline?: boolean;
+	}
+
+	let { inline = false }: Props = $props();
+
 	let dark: boolean = $derived($theme === Theme.DARK);
 
 	let Icon = $derived(dark ? IconLightOn : IconLightOff);
@@ -12,7 +18,7 @@
 
 <button class="text" onclick={() => theme.select(dark ? Theme.LIGHT : Theme.DARK)}>
 	<Icon />
-	<span>
+	<span class:inline>
 		{#if dark}
 			{$i18n.core.light_on}
 		{:else}
@@ -42,6 +48,11 @@
 
 	span {
 		font-size: var(--font-size-ultra-small);
+
+		&.inline {
+			font-size: inherit;
+		}
+
 		color: var(--color-primary-contrast);
 		text-decoration: none;
 

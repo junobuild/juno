@@ -9,6 +9,7 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
+	import Theme from '$lib/components/ui/Theme.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
 	import { authSignedInStore } from '$lib/stores/auth.store';
@@ -59,32 +60,6 @@
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
-		<a href="/mission-control" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
-			<IconMissionControl />
-			<span>{$i18n.mission_control.title}</span>
-		</a>
-
-		<a href="/wallet" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
-			<IconWallet />
-			<span>{$i18n.wallet.title}</span>
-		</a>
-
-		<a
-			href={analyticsLink($satelliteStore?.satellite_id)}
-			class="menu"
-			role="menuitem"
-			aria-haspopup="menu"
-			onclick={close}
-		>
-			<IconAnalytics />
-			<span>{$i18n.analytics.title}</span>
-		</a>
-
-		<a href="/monitoring" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
-			<IconTelescope />
-			<span>{$i18n.observatory.title}</span>
-		</a>
-
 		<a href="/preferences" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
 			<IconRaygun />
 			<span>{$i18n.preferences.title}</span>

@@ -1,10 +1,11 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
+	import { debounce, isNullish } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { browser } from '$app/environment';
 	import Overlays from '$lib/components/core/Overlays.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
+	import { layoutNavigationTitle } from '$lib/derived/layout-navigation.derived';
 	import { displayAndCleanLogoutMsg, signOut } from '$lib/services/auth.services';
 	import { initMissionControl } from '$lib/services/console.services';
 	import { syncSnapshots } from '$lib/services/snapshots.services';
@@ -74,6 +75,13 @@
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
 		worker, $authStore, (() => worker?.syncAuthIdle($authStore))();
+	});
+
+	const debounceSetNavTitle = debounce(() => (document.title = $layoutNavigationTitle));
+
+	$effect(() => {
+		$layoutNavigationTitle;
+		debounceSetNavTitle();
 	});
 </script>
 

@@ -46,8 +46,8 @@
 
 		position: relative;
 
-		background: var(--color-menu);
-		color: var(--color-menu-contrast);
+		background: var(--color-background-shade);
+		color: var(--color-background-contrast);
 
 		&.themed {
 			background: var(--color-primary);

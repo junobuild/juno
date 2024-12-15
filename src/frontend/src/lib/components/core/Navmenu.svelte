@@ -166,19 +166,6 @@
 		}
 	}
 
-	@include media.light-theme {
-		.selected.not-themed {
-			background: var(--color-background-shade);
-			color: var(--color-menu-contrast);
-
-			&:hover:not(:disabled),
-			&:active:not(:disabled) {
-				background: var(--color-background-shade);
-				color: var(--color-menu-contrast);
-			}
-		}
-	}
-
 	a.link {
 		display: inline-flex;
 		align-items: center;

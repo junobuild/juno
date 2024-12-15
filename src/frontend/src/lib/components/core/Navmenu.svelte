@@ -163,13 +163,13 @@
 
 	@include media.light-theme {
 		.selected.not-themed {
-			background: var(--color-menu-contrast);
-			color: var(--color-menu);
+			background: var(--color-background-shade);
+			color: var(--color-menu-contrast);
 
 			&:hover:not(:disabled),
 			&:active:not(:disabled) {
-				background: var(--color-menu-contrast);
-				color: var(--color-menu);
+				background: var(--color-background-shade);
+				color: var(--color-menu-contrast);
 			}
 		}
 	}

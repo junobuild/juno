@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { APP_VERSION } from '$lib/constants/constants.js';
 	import IconBook from '$lib/components/icons/IconBook.svelte';
+	import { APP_VERSION } from '$lib/constants/constants.js';
 </script>
 
 <div>

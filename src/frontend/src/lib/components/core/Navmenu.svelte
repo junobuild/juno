@@ -2,6 +2,7 @@
 	import { circOut, quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/stores';
+	import NavmenuFooter from '$lib/components/core/NavmenuFooter.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
 	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
@@ -15,7 +16,6 @@
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { satelliteIdStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import NavmenuFooter from '$lib/components/core/NavmenuFooter.svelte';
 
 	let routeId: string | null = $derived($page.route.id);
 
@@ -109,7 +109,7 @@
 				class="link"
 				onclick={() => (satelliteExpanded = false)}
 			>
-				<IconWallet size="20px" />
+				<IconWallet />
 				<span>{$i18n.wallet.title}</span>
 			</a>
 

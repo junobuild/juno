@@ -4,7 +4,7 @@
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { layoutSatellitesSwitcher, layoutTitle } from '$lib/stores/layout.store';
+	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
 
 	interface Props {
 		children: Snippet;
@@ -12,10 +12,7 @@
 
 	let { children }: Props = $props();
 
-	onMount(() => {
-		layoutTitle.set(undefined);
-		layoutSatellitesSwitcher.set(false);
-	});
+	onMount(layoutNavigation.reset);
 </script>
 
 <Layout centered title={false}>

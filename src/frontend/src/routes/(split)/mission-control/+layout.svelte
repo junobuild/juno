@@ -2,7 +2,7 @@
 	import { onMount, type Snippet } from 'svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutSatellitesSwitcher, layoutTitle } from '$lib/stores/layout.store';
+	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
 
 	interface Props {
 		children: Snippet;
@@ -10,14 +10,12 @@
 
 	let { children }: Props = $props();
 
-	onMount(() => {
-		layoutTitle.set({
+	onMount(() =>
+		layoutNavigation.set({
 			title: $i18n.mission_control.title,
 			icon: IconMissionControl
-		});
-
-		layoutSatellitesSwitcher.set(false);
-	});
+		})
+	);
 </script>
 
 {@render children()}

@@ -3,7 +3,8 @@
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
-	import { layoutTitle } from '$lib/stores/layout.store';
+	import { layoutTitle } from '$lib/derived/layout-title.derived';
+	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
 
 	interface Props {
 		centered?: boolean;
@@ -33,12 +34,12 @@
 		<div class="page">
 			<main class:centered>
 				{#if title}
-					{#if nonNullish($layoutTitle)}
-						{@const SvelteComponent = $layoutTitle.icon}
+					{#if nonNullish($layoutNavigation)}
+						{@const SvelteComponent = $layoutNavigation.data.icon}
 						<h1 in:fade class:space={topMargin === 'wide'}>
 							<span>
 								<span class="icon"><SvelteComponent size="32px" /></span>
-								<span>{$layoutTitle.title}</span>
+								<span>{$layoutTitle ?? ''}</span>
 							</span>
 						</h1>
 					{:else}

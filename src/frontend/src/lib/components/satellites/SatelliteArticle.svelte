@@ -4,7 +4,7 @@
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutSatellites } from '$lib/stores/layout.launchpad.store';
+	import { layoutSatellites } from '$lib/stores/layout-launchpad.store';
 	import { SatellitesLayout } from '$lib/types/layout';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';

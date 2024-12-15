@@ -3,7 +3,7 @@
 	import ExternalLink from '$lib/components/ui/ExternalLink.svelte';
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { onLayoutTitleIntersection } from '$lib/stores/layout.intersecting.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 	import { type TabsContext, TABS_CONTEXT_KEY } from '$lib/types/tabs.context';
 	import { keyOf } from '$lib/utils/utils';
 

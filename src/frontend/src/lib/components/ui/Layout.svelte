@@ -4,7 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import SplitPane from '$lib/components/ui/SplitPane.svelte';
 	import { layoutTitle } from '$lib/derived/layout-title.derived';
-	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		centered?: boolean;

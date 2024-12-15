@@ -8,8 +8,8 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
-	import { layoutTitleIntersecting } from '$lib/stores/layout.intersecting.store';
-	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
+	import { layoutTitleIntersecting } from '$lib/stores/layout-intersecting.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';

@@ -2,7 +2,7 @@
 	import { onMount, type Snippet } from 'svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		children: Snippet;

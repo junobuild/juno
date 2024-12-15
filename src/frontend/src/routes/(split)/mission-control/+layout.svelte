@@ -2,7 +2,7 @@
 	import { onMount, type Snippet } from 'svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		children: Snippet;

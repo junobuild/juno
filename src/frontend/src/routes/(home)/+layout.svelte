@@ -4,7 +4,7 @@
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
 	import { authSignedInStore } from '$lib/stores/auth.store';
-	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		children: Snippet;

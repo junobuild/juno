@@ -4,7 +4,7 @@
 	import IconAuthentication from '$lib/components/icons/IconAuthentication.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 	import { Color } from '$lib/types/theme';
 	import { applyColor } from '$lib/utils/theme.utils';
 

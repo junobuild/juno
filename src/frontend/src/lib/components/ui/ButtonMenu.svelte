@@ -3,7 +3,7 @@
 	import IconMenu from '$lib/components/icons/IconMenu.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 
-	import { layoutMenuOpen } from '$lib/stores/layout.menu.store';
+	import { layoutMenuOpen } from '$lib/stores/layout-menu.store';
 </script>
 
 <button

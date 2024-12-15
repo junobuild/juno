@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 
-	import { layoutMenuOpen } from '$lib/stores/layout.menu.store';
+	import { layoutMenuOpen } from '$lib/stores/layout-menu.store';
 
 	interface Props {
 		menu?: Snippet;

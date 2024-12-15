@@ -1,4 +1,4 @@
-import { layoutNavigation } from '$lib/stores/layout.navigation.store';
+import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 import { satelliteName } from '$lib/utils/satellite.utils';
 import { derived, type Readable } from 'svelte/store';
 

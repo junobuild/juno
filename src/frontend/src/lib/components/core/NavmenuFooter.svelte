@@ -27,5 +27,12 @@
 		display: inline-flex;
 		text-decoration: none;
 		gap: var(--padding-0_5x);
+
+		&:hover,
+		&:focus {
+			text-decoration: none;
+			color: var(--text-color);
+			font-weight: var(--font-weight-bold);
+		}
 	}
 </style>

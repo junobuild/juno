@@ -4,7 +4,7 @@
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStart from '$lib/components/icons/IconStart.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -26,7 +26,7 @@
 	const start = async () => {
 		onstart();
 
-		if (!$authSignedIn) {
+		if ($authSignedOut) {
 			toasts.error({
 				text: $i18n.errors.no_identity
 			});

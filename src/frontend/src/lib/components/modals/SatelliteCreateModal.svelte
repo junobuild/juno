@@ -8,7 +8,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import {
 		createSatellite,
@@ -127,7 +127,7 @@
 
 				<button
 					type="submit"
-					disabled={!$authSignedIn || isNullish($missionControlStore) || insufficientFunds}
+					disabled={$authSignedOut || isNullish($missionControlStore) || insufficientFunds}
 					>{$i18n.satellites.create}</button
 				>
 			</form>

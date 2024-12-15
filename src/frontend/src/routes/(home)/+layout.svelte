@@ -3,7 +3,7 @@
 	import Navbar from '$lib/components/core/Navbar.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
@@ -23,6 +23,6 @@
 	{@render children()}
 
 	{#snippet footer()}
-		<Footer themeToggle={!$authSignedIn} end={$authSignedIn ? 'none' : 'lang'} />
+		<Footer themeToggle={$authSignedOut} end={$authSignedIn ? 'none' : 'lang'} />
 	{/snippet}
 </Layout>

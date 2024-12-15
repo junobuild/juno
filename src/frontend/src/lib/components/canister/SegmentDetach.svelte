@@ -5,7 +5,7 @@
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconLinkOff from '$lib/components/icons/IconLinkOff.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { detachOrbiter, detachSatellite } from '$lib/services/mission-control.services';
 	import { busy } from '$lib/stores/busy.store';
@@ -26,7 +26,7 @@
 	const detach = async () => {
 		ondetach();
 
-		if (!$authSignedIn) {
+		if ($authSignedOut) {
 			toasts.error({
 				text: $i18n.errors.no_identity
 			});

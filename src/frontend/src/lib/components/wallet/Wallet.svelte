@@ -15,7 +15,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { PAGINATION } from '$lib/constants/constants';
-	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -61,7 +61,7 @@
 	let disableInfiniteScroll = $state(false);
 
 	const onIntersect = async () => {
-		if (!$authSignedIn) {
+		if ($authSignedOut) {
 			toasts.error({
 				text: $i18n.errors.no_identity
 			});

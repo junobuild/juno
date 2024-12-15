@@ -6,7 +6,7 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import {
 		createOrbiter,
@@ -97,7 +97,7 @@
 
 				<button
 					type="submit"
-					disabled={!$authSignedIn || isNullish($missionControlStore) || insufficientFunds}
+					disabled={$authSignedOut || isNullish($missionControlStore) || insufficientFunds}
 					>{$i18n.analytics.create}</button
 				>
 			</form>

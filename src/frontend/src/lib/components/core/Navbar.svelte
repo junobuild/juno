@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
 	import User from '$lib/components/core/User.svelte';
@@ -7,7 +8,6 @@
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
 	import { layoutSatellitesSwitcher, layoutTitleIntersecting } from '$lib/stores/layout.store';
-	import { fade } from 'svelte/transition';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';

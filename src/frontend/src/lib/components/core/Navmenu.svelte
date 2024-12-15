@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { notEmptyString } from '@dfinity/utils';
 	import { circOut, quintOut } from 'svelte/easing';
 	import { slide } from 'svelte/transition';
 	import { page } from '$app/stores';
@@ -16,7 +17,6 @@
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { satelliteIdStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { notEmptyString } from '@dfinity/utils';
 
 	let routeId: string | null = $derived($page.route.id);
 	let hasNoRouteSatellite = $derived(!notEmptyString($page.data.satellite));

@@ -3,7 +3,6 @@
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutSatellitesSwitcher, layoutTitle } from '$lib/stores/layout.store';
-	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 
 	interface Props {
 		children: Snippet;

@@ -8,8 +8,11 @@ import type { Component } from 'svelte';
 import { writable } from 'svelte/store';
 
 export const layoutMenuOpen = writable<boolean>(false);
+
 export const layoutTitleIntersecting = writable<boolean>(true);
 export const layoutTitle = writable<{ title: string; icon: Component } | undefined>();
+
+export const layoutSatellitesSwitcher = writable<boolean>(false);
 
 export const onLayoutTitleIntersection = ($event: Event) => {
 	const {

@@ -6,7 +6,8 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
-	import { layoutTitleIntersecting } from '$lib/stores/layout.store';
+	import { layoutSatellitesSwitcher, layoutTitleIntersecting } from '$lib/stores/layout.store';
+	import { fade } from 'svelte/transition';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
@@ -33,8 +34,10 @@
 			<Logo />
 		{/if}
 
-		{#if launchpad}
-			<SatellitesSwitcher />
+		{#if $layoutSatellitesSwitcher}
+			<div in:fade>
+				<SatellitesSwitcher />
+			</div>
 		{/if}
 	</div>
 

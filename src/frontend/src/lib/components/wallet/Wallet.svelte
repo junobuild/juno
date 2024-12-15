@@ -15,7 +15,8 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { PAGINATION } from '$lib/constants/constants';
-	import { authSignedInStore, authStore } from '$lib/stores/auth.store';
+	import { authSignedIn } from '$lib/derived/auth.derived';
+	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { versionStore } from '$lib/stores/version.store';
@@ -60,7 +61,7 @@
 	let disableInfiniteScroll = $state(false);
 
 	const onIntersect = async () => {
-		if (!$authSignedInStore) {
+		if (!$authSignedIn) {
 			toasts.error({
 				text: $i18n.errors.no_identity
 			});
@@ -140,7 +141,7 @@
 	};
 </script>
 
-{#if $authSignedInStore}
+{#if $authSignedIn}
 	<WalletLoader {missionControlId} bind:balance bind:transactions>
 		<div class="card-container with-title">
 			<span class="title">{$i18n.wallet.overview}</span>

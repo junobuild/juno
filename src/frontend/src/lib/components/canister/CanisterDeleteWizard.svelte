@@ -10,9 +10,9 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { ONE_TRILLION, DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION } from '$lib/constants/constants';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/satellites.services';
-	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -53,7 +53,7 @@
 	let validConfirm = $derived(nonNullish(cycles) && cycles > 0 && cycles <= currentCycles);
 
 	const onSubmit = async () => {
-		if (!$authSignedInStore) {
+		if (!$authSignedIn) {
 			toasts.error({
 				text: $i18n.errors.no_identity
 			});

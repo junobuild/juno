@@ -8,13 +8,13 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import {
 		createSatellite,
 		createSatelliteWithConfig,
 		loadSatellites
 	} from '$lib/services/satellites.services';
-	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -127,7 +127,7 @@
 
 				<button
 					type="submit"
-					disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
+					disabled={!$authSignedIn || isNullish($missionControlStore) || insufficientFunds}
 					>{$i18n.satellites.create}</button
 				>
 			</form>

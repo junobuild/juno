@@ -10,9 +10,9 @@
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import Theme from '$lib/components/ui/Theme.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
-	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { analyticsLink } from '$lib/utils/nav.utils';
 
@@ -42,7 +42,7 @@
 	};
 </script>
 
-{#if $authSignedInStore}
+{#if $authSignedIn}
 	<ButtonIcon {onclick} bind:button>
 		{#snippet icon()}
 			<IconUser />

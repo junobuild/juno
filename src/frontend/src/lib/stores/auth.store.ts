@@ -10,7 +10,7 @@ import type { Option } from '$lib/types/utils';
 import { createAuthClient } from '$lib/utils/auth.utils';
 import { popupCenter } from '$lib/utils/window.utils';
 import type { AuthClient } from '@dfinity/auth-client';
-import { derived, writable, type Readable } from 'svelte/store';
+import { type Readable, writable } from 'svelte/store';
 
 export interface AuthStoreData {
 	identity: OptionIdentity;
@@ -90,10 +90,5 @@ const initAuthStore = (): AuthStore => {
 };
 
 export const authStore = initAuthStore();
-
-export const authSignedInStore: Readable<boolean> = derived(
-	authStore,
-	({ identity }) => identity !== null && identity !== undefined
-);
 
 export const authRemainingTimeStore = writable<number | undefined>(undefined);

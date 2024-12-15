@@ -6,13 +6,13 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import {
 		createOrbiter,
 		createOrbiterWithConfig,
 		loadOrbiters
 	} from '$lib/services/orbiters.services';
-	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -97,7 +97,7 @@
 
 				<button
 					type="submit"
-					disabled={!$authSignedInStore || isNullish($missionControlStore) || insufficientFunds}
+					disabled={$authSignedOut || isNullish($missionControlStore) || insufficientFunds}
 					>{$i18n.analytics.create}</button
 				>
 			</form>

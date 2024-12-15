@@ -25,7 +25,7 @@
 		tabindex="-1"
 	>
 		<div class="logo">
-			<Logo color={themed ? 'white' : 'lavender'} />
+			<Logo color="white" />
 		</div>
 
 		{@render children()}

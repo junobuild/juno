@@ -16,80 +16,89 @@
 	import Menu from '$lib/components/ui/Menu.svelte';
 	import { satelliteIdStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { notEmptyString } from '@dfinity/utils';
 
 	let routeId: string | null = $derived($page.route.id);
+	let hasNoRouteSatellite = $derived(!notEmptyString($page.data.satellite));
 
 	let satelliteId: string = $derived($satelliteIdStore ?? '');
 
 	const isSelected = ({ routeId, path }: { routeId: string | null; path: string }): boolean =>
 		routeId?.includes(path) ?? false;
 
-	let satelliteExpanded = $state(true);
+	let satelliteExpanded = $state(notEmptyString($page.data.satellite));
 </script>
 
 <Menu>
 	<nav>
-		<a
-			class="link"
-			href={`/satellite/?s=${satelliteId}`}
-			class:selected={isSelected({ routeId, path: 'satellite' })}
-			onclick={() => (satelliteExpanded = true)}
-		>
-			<IconSatellite size="24px" />
-			<span>{$i18n.satellites.satellite}</span>
-		</a>
-
-		{#if satelliteExpanded}
-			<div
-				class="satellite-features"
-				in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
-				out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
+		{#if hasNoRouteSatellite}
+			<a class="link" href="/">
+				<IconSatellite size="24px" />
+				<span>{$i18n.satellites.launchpad}</span>
+			</a>
+		{:else}
+			<a
+				class="link"
+				href={`/satellite/?s=${satelliteId}`}
+				class:selected={isSelected({ routeId, path: 'satellite' })}
+				onclick={() => (satelliteExpanded = true)}
 			>
-				<a
-					class="link"
-					href={`/authentication/?s=${satelliteId}`}
-					class:selected={isSelected({ routeId, path: 'authentication' })}
-				>
-					<IconAuthentication size="24px" />
-					<span>{$i18n.authentication.title}</span>
-				</a>
+				<IconSatellite size="24px" />
+				<span>{$i18n.satellites.satellite}</span>
+			</a>
 
-				<a
-					class="link"
-					href={`/datastore/?s=${satelliteId}`}
-					class:selected={isSelected({ routeId, path: 'datastore' })}
+			{#if satelliteExpanded}
+				<div
+					class="satellite-features"
+					in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
+					out:slide={{ delay: 0, duration: 100, easing: circOut, axis: 'y' }}
 				>
-					<IconDatastore size="24px" />
-					<span>{$i18n.datastore.title}</span>
-				</a>
+					<a
+						class="link"
+						href={`/authentication/?s=${satelliteId}`}
+						class:selected={isSelected({ routeId, path: 'authentication' })}
+					>
+						<IconAuthentication size="24px" />
+						<span>{$i18n.authentication.title}</span>
+					</a>
 
-				<a
-					class="link"
-					href={`/storage/?s=${satelliteId}`}
-					class:selected={isSelected({ routeId, path: 'storage' })}
-				>
-					<IconStorage size="24px" />
-					<span>{$i18n.storage.title}</span>
-				</a>
+					<a
+						class="link"
+						href={`/datastore/?s=${satelliteId}`}
+						class:selected={isSelected({ routeId, path: 'datastore' })}
+					>
+						<IconDatastore size="24px" />
+						<span>{$i18n.datastore.title}</span>
+					</a>
 
-				<a
-					class="link"
-					href={`/functions/?s=${satelliteId}`}
-					class:selected={isSelected({ routeId, path: 'functions' })}
-				>
-					<IconFunctions size="24px" />
-					<span>{$i18n.functions.title}</span>
-				</a>
+					<a
+						class="link"
+						href={`/storage/?s=${satelliteId}`}
+						class:selected={isSelected({ routeId, path: 'storage' })}
+					>
+						<IconStorage size="24px" />
+						<span>{$i18n.storage.title}</span>
+					</a>
 
-				<a
-					class="link"
-					href={`/hosting/?s=${satelliteId}`}
-					class:selected={isSelected({ routeId, path: 'hosting' })}
-				>
-					<IconHosting size="24px" />
-					<span>{$i18n.hosting.title}</span>
-				</a>
-			</div>
+					<a
+						class="link"
+						href={`/functions/?s=${satelliteId}`}
+						class:selected={isSelected({ routeId, path: 'functions' })}
+					>
+						<IconFunctions size="24px" />
+						<span>{$i18n.functions.title}</span>
+					</a>
+
+					<a
+						class="link"
+						href={`/hosting/?s=${satelliteId}`}
+						class:selected={isSelected({ routeId, path: 'hosting' })}
+					>
+						<IconHosting size="24px" />
+						<span>{$i18n.hosting.title}</span>
+					</a>
+				</div>
+			{/if}
 		{/if}
 
 		<div>

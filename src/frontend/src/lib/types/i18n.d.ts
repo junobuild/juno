@@ -240,6 +240,7 @@ interface I18nSatellites {
 	build: string;
 	see_all_satellites: string;
 	go_launchpad: string;
+	launchpad: string;
 	attach: string;
 }
 

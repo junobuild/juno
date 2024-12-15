@@ -174,8 +174,7 @@
 
 		padding: var(--padding-1_5x) var(--padding-3x);
 
-		width: calc(var(--menu-width) - 12px);
-		border-radius: var(--border-radius);
+		width: var(--menu-width);
 
 		transition: background var(--animation-time) ease-out;
 
@@ -203,7 +202,6 @@
 
 	nav {
 		flex: 1;
-		padding: 0 var(--padding) var(--padding-2x);
 	}
 
 	.satellite-features {

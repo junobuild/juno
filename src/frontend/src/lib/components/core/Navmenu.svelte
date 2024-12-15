@@ -172,7 +172,7 @@
 
 		gap: var(--padding);
 
-		padding: var(--padding-1_5x) var(--padding-3x);
+		padding: var(--padding-1_5x) var(--padding-4x);
 
 		width: var(--menu-width);
 

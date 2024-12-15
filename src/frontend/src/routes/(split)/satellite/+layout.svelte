@@ -21,7 +21,7 @@
 
 	$effect(() =>
 		layoutNavigation.set({
-			title: $i18n.satellites.satellite,
+			title: $i18n.satellites.overview,
 			icon: IconSatellite,
 			...(nonNullish($satelliteStore) && {
 				satellite: { satellite: $satelliteStore, useInPageTitle: true }

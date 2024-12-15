@@ -19,19 +19,29 @@
 	import { i18n } from '$lib/stores/i18n.store';
 
 	let routeId: string | null = $derived($page.route.id);
-	let hasNoRouteSatellite = $derived(!notEmptyString($page.data.satellite));
 
 	let satelliteId: string = $derived($satelliteIdStore ?? '');
 
 	const isSelected = ({ routeId, path }: { routeId: string | null; path: string }): boolean =>
 		routeId?.includes(path) ?? false;
 
-	let satelliteSelected = $state(notEmptyString($page.data.satellite));
+	const satellitePaths = [
+		'satellite',
+		'authentication',
+		'datastore',
+		'storage',
+		'functions',
+		'hosting'
+	];
+
+	let satelliteSelected = $derived(
+		satellitePaths.find((path) => isSelected({ routeId, path })) !== undefined
+	);
 </script>
 
 <Menu themed={satelliteSelected}>
 	<nav>
-		{#if hasNoRouteSatellite}
+		{#if !notEmptyString(satelliteId)}
 			<a class="link" href="/">
 				<IconSatellite size="24px" />
 				<span>{$i18n.satellites.launchpad}</span>
@@ -41,7 +51,6 @@
 				class="link"
 				href={`/satellite/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'satellite' })}
-				onclick={() => (satelliteSelected = true)}
 			>
 				<IconSatellite size="24px" />
 				<span>{$i18n.satellites.satellite}</span>
@@ -106,7 +115,6 @@
 				href={`/mission-control/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'mission-control' })}
 				class="link not-themed"
-				onclick={() => (satelliteSelected = false)}
 			>
 				<IconMissionControl size="22px" />
 				<span>{$i18n.mission_control.title}</span>
@@ -116,7 +124,6 @@
 				href={`/wallet/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'wallet' })}
 				class="link not-themed"
-				onclick={() => (satelliteSelected = false)}
 			>
 				<IconWallet />
 				<span>{$i18n.wallet.title}</span>
@@ -126,7 +133,6 @@
 				href={`/analytics/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'analytics' })}
 				class="link not-themed"
-				onclick={() => (satelliteSelected = false)}
 			>
 				<IconAnalytics size="20px" />
 				<span>{$i18n.analytics.title}</span>
@@ -136,7 +142,6 @@
 				href={`/monitoring/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'monitoring' })}
 				class="link not-themed"
-				onclick={() => (satelliteSelected = false)}
 			>
 				<IconTelescope size="20px" />
 				<span>{$i18n.observatory.title}</span>

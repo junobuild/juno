@@ -7,7 +7,8 @@
 	import ButtonBack from '$lib/components/ui/ButtonBack.svelte';
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
-	import { layoutSatellitesSwitcher, layoutTitleIntersecting } from '$lib/stores/layout.store';
+	import { layoutTitleIntersecting } from '$lib/stores/layout.intersecting.store';
+	import { layoutSatellitesSwitcher } from '$lib/stores/layout.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';

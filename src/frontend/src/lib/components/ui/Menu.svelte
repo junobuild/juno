@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
-	import { layoutMenuOpen } from '$lib/stores/layout.store';
+	import { layoutMenuOpen } from '$lib/stores/layout.menu.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	interface Props {

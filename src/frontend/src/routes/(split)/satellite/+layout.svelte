@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { nonNullish, debounce } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
@@ -7,9 +7,8 @@
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutSatellitesSwitcher, layoutTitle } from '$lib/stores/layout.store';
+	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
 	import { Color } from '$lib/types/theme';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 	import { applyColor } from '$lib/utils/theme.utils';
 
 	interface Props {
@@ -18,26 +17,17 @@
 
 	let { children }: Props = $props();
 
-	onMount(() => {
-		layoutSatellitesSwitcher.set(true);
-		applyColor(Color.LAVENDER_BLUE);
-	});
+	onMount(() => applyColor(Color.LAVENDER_BLUE));
 
-	const debounceSetTitle = debounce(
-		() =>
-			layoutTitle.set({
-				title: nonNullish($satelliteStore)
-					? satelliteName($satelliteStore)
-					: $i18n.satellites.satellite,
-				icon: IconSatellite
-			}),
-		100
+	$effect(() =>
+		layoutNavigation.set({
+			title: $i18n.satellites.satellite,
+			icon: IconSatellite,
+			...(nonNullish($satelliteStore) && {
+				satellite: { satellite: $satelliteStore, useInPageTitle: true }
+			})
+		})
 	);
-
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$satelliteStore, debounceSetTitle();
-	});
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import Logo from '$lib/components/core/Logo.svelte';
 	import NavbarCockpit from '$lib/components/core/NavbarCockpit.svelte';
@@ -8,7 +9,7 @@
 	import ButtonMenu from '$lib/components/ui/ButtonMenu.svelte';
 	import Header from '$lib/components/ui/Header.svelte';
 	import { layoutTitleIntersecting } from '$lib/stores/layout.intersecting.store';
-	import { layoutSatellitesSwitcher } from '$lib/stores/layout.store';
+	import { layoutNavigation } from '$lib/stores/layout.navigation.store';
 
 	interface Props {
 		start?: 'logo' | 'back' | 'menu';
@@ -35,7 +36,7 @@
 			<Logo />
 		{/if}
 
-		{#if $layoutSatellitesSwitcher}
+		{#if nonNullish($layoutNavigation?.data.satellite)}
 			<div in:fade>
 				<SatellitesSwitcher />
 			</div>

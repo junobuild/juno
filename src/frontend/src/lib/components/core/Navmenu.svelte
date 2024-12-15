@@ -26,10 +26,10 @@
 	const isSelected = ({ routeId, path }: { routeId: string | null; path: string }): boolean =>
 		routeId?.includes(path) ?? false;
 
-	let satelliteExpanded = $state(notEmptyString($page.data.satellite));
+	let satelliteSelected = $state(notEmptyString($page.data.satellite));
 </script>
 
-<Menu>
+<Menu themed={satelliteSelected}>
 	<nav>
 		{#if hasNoRouteSatellite}
 			<a class="link" href="/">
@@ -41,13 +41,13 @@
 				class="link"
 				href={`/satellite/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'satellite' })}
-				onclick={() => (satelliteExpanded = true)}
+				onclick={() => (satelliteSelected = true)}
 			>
 				<IconSatellite size="24px" />
 				<span>{$i18n.satellites.satellite}</span>
 			</a>
 
-			{#if satelliteExpanded}
+			{#if satelliteSelected}
 				<div
 					class="satellite-features"
 					in:slide={{ delay: 0, duration: 150, easing: quintOut, axis: 'y' }}
@@ -105,8 +105,8 @@
 			<a
 				href={`/mission-control/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'mission-control' })}
-				class="link"
-				onclick={() => (satelliteExpanded = false)}
+				class="link not-themed"
+				onclick={() => (satelliteSelected = false)}
 			>
 				<IconMissionControl size="22px" />
 				<span>{$i18n.mission_control.title}</span>
@@ -115,8 +115,8 @@
 			<a
 				href={`/wallet/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'wallet' })}
-				class="link"
-				onclick={() => (satelliteExpanded = false)}
+				class="link not-themed"
+				onclick={() => (satelliteSelected = false)}
 			>
 				<IconWallet />
 				<span>{$i18n.wallet.title}</span>
@@ -125,8 +125,8 @@
 			<a
 				href={`/analytics/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'analytics' })}
-				class="link"
-				onclick={() => (satelliteExpanded = false)}
+				class="link not-themed"
+				onclick={() => (satelliteSelected = false)}
 			>
 				<IconAnalytics size="20px" />
 				<span>{$i18n.analytics.title}</span>
@@ -135,8 +135,8 @@
 			<a
 				href={`/monitoring/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'monitoring' })}
-				class="link"
-				onclick={() => (satelliteExpanded = false)}
+				class="link not-themed"
+				onclick={() => (satelliteSelected = false)}
 			>
 				<IconTelescope size="20px" />
 				<span>{$i18n.observatory.title}</span>
@@ -158,6 +158,19 @@
 		&:hover:not(:disabled),
 		&:active:not(:disabled) {
 			background: var(--color-background);
+		}
+	}
+
+	@include media.light-theme {
+		.selected.not-themed {
+			background: var(--color-menu-contrast);
+			color: var(--color-menu);
+
+			&:hover:not(:disabled),
+			&:active:not(:disabled) {
+				background: var(--color-menu-contrast);
+				color: var(--color-menu);
+			}
 		}
 	}
 

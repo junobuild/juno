@@ -6,14 +6,15 @@
 
 	interface Props {
 		children: Snippet;
+		themed?: boolean
 	}
 
-	let { children }: Props = $props();
+	let { children, themed = false }: Props = $props();
 
 	const close = () => layoutMenuOpen.set(false);
 </script>
 
-<div role="menu">
+<div role="menu" class:themed>
 	<div
 		class="inner"
 		data-tid="menu-inner"
@@ -24,7 +25,7 @@
 		tabindex="-1"
 	>
 		<div class="logo">
-			<Logo color="white" />
+			<Logo color={themed ? "white" : "lavender"} />
 		</div>
 
 		{@render children()}
@@ -45,10 +46,15 @@
 
 		position: relative;
 
-		background: var(--color-primary);
-		color: var(--color-primary-contrast);
+		background: var(--color-menu);
+		color: var(--color-menu-contrast);
 
-		border-right: 1px solid var(--color-primary-contrast);
+		&.themed {
+			background: var(--color-primary);
+			color: var(--color-primary-contrast);
+		}
+
+		border-right: 1px solid var(--color-menu-contrast);
 	}
 
 	@include media.dark-theme {

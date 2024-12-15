@@ -4,7 +4,7 @@
 	import Confirmation from '$lib/components/core/Confirmation.svelte';
 	import IconStop from '$lib/components/icons/IconStop.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
-	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
+	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';

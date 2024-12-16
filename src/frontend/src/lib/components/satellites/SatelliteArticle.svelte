@@ -1,11 +1,10 @@
 <script lang="ts">
-	import { run } from 'svelte/legacy';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutSatellites } from '$lib/stores/layout.store';
+	import { layoutSatellites } from '$lib/stores/layout-launchpad.store';
 	import { SatellitesLayout } from '$lib/types/layout';
 	import { overviewLink } from '$lib/utils/nav.utils';
 	import { satelliteName } from '$lib/utils/satellite.utils';
@@ -22,10 +21,7 @@
 
 	let href: string = $derived(overviewLink(satellite.satellite_id));
 
-	let row = $state(false);
-	run(() => {
-		row = $layoutSatellites === SatellitesLayout.LIST;
-	});
+	let row = $derived($layoutSatellites === SatellitesLayout.LIST);
 </script>
 
 <LaunchpadLink {href} ariaLabel={`${$i18n.satellites.open}: ${name}`} {row}>

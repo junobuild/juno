@@ -4,9 +4,9 @@
 	import IconUser from '$lib/components/icons/IconUser.svelte';
 	import Footer from '$lib/components/ui/Footer.svelte';
 	import Layout from '$lib/components/ui/Layout.svelte';
-	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutTitle } from '$lib/stores/layout.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		children: Snippet;
@@ -15,7 +15,7 @@
 	let { children }: Props = $props();
 
 	onMount(() =>
-		layoutTitle.set({
+		layoutNavigation.set({
 			title: $i18n.cli.title,
 			icon: IconUser
 		})
@@ -30,6 +30,6 @@
 	{@render children()}
 
 	{#snippet footer()}
-		<Footer themeToggle end={$authSignedInStore ? 'social' : 'lang'} />
+		<Footer themeToggle end={$authSignedIn ? 'none' : 'lang'} />
 	{/snippet}
 </Layout>

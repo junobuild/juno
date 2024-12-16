@@ -7,13 +7,13 @@
 	import MissionControlStatuses from '$lib/components/mission-control/MissionControlStatuses.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
-	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 </script>
 
-{#if $authSignedInStore}
+{#if $authSignedIn}
 	<div class="card-container with-title">
 		<span class="title">{$i18n.satellites.overview}</span>
 

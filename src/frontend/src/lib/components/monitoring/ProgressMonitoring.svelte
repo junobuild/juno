@@ -4,11 +4,11 @@
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { ProgressStep } from '$lib/types/progress-step';
-	import { mapProgressState } from '$lib/utils/progress.utils';
 	import {
 		type MonitoringStrategyProgress,
 		MonitoringStrategyProgressStep
 	} from '$lib/types/strategy';
+	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {
 		progress: MonitoringStrategyProgress | undefined;

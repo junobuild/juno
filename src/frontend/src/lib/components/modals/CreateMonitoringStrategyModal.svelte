@@ -10,6 +10,7 @@
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
 	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
 	import MonitoringCreateStrategySelectSegments from '$lib/components/monitoring/MonitoringCreateStrategySelectSegments.svelte';
+	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { applyMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -20,7 +21,6 @@
 		JunoModalMonitoringCreateBulkStrategyDetail
 	} from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
-	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;

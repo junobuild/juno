@@ -9,13 +9,13 @@
 	import Monitoring from '$lib/components/monitoring/Monitoring.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import {
 		missionControlMonitoring,
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
-	import { authSignedIn } from '$lib/derived/auth.derived';
 
 	interface Props {
 		missionControlId: Principal;

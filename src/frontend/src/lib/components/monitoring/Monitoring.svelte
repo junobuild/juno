@@ -14,8 +14,6 @@
 
 	let { monitoring, loading }: Props = $props();
 
-	$inspect(monitoring);
-
 	let cycles = $derived(fromNullable(monitoring?.cycles ?? []));
 
 	let enabled = $derived(cycles?.enabled === true);

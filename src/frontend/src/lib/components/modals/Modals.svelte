@@ -4,7 +4,7 @@
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 	import CanisterRestoreSnapshotModal from '$lib/components/modals/CanisterRestoreSnapshotModal.svelte';
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
-	import CreateMonitoringBulkStrategyModal from '$lib/components/modals/CreateMonitoringBulkStrategyModal.svelte';
+	import CreateMonitoringBulkStrategyModal from '$lib/components/modals/CreateMonitoringStrategyModal.svelte';
 	import CreateSnapshotModal from '$lib/components/modals/CreateSnapshotModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
@@ -115,6 +115,6 @@
 	<CanisterRestoreSnapshotModal onclose={close} detail={modal.detail} />
 {/if}
 
-{#if modal?.type === 'monitoring_create_bulk_strategy' && nonNullish(modal.detail)}
+{#if modal?.type === 'create_monitoring_strategy' && nonNullish(modal.detail)}
 	<CreateMonitoringBulkStrategyModal onclose={close} detail={modal.detail} />
 {/if}

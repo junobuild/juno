@@ -140,6 +140,6 @@ export interface JunoModal {
 		| 'upgrade_mission_control'
 		| 'upgrade_orbiter'
 		| 'send_tokens'
-		| 'monitoring_create_bulk_strategy';
+		| 'create_monitoring_strategy';
 	detail?: JunoModalDetail;
 }

@@ -31,7 +31,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'monitoring_create_bulk_strategy',
+				type: 'create_monitoring_strategy',
 				detail: {
 					settings: $missionControlSettingsDataStore.data,
 					missionControlId

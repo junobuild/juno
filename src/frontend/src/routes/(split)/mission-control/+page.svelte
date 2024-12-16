@@ -52,7 +52,7 @@
 
 		{#if nonNullish($missionControlStore)}
 			{#if $store.tabId === $store.tabs[0].id}
-				<MissionControl missionControlId={$missionControlStore} />
+				<MissionControl />
 			{:else if $store.tabId === $store.tabs[1].id}
 				<MissionControlSettings missionControlId={$missionControlStore} />
 			{/if}

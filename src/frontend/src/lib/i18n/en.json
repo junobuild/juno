@@ -697,7 +697,9 @@
 		"configure_strategy": "Configure Strategy",
 		"mission_control_strategy": "Mission Control Strategy",
 		"review_strategy": "Review Strategy",
-		"warning_advice": "Go to the Monitoring section to enable it and ensure sufficient cycles for your modules."
+		"warning_advice": "Go to the Monitoring section to enable it and ensure sufficient cycles for your modules.",
+		"strategy_preparing": "Preparing...",
+		"reload_settings": "Reloading settings..."
 	},
 	"preferences": {
 		"title": "Preferences",

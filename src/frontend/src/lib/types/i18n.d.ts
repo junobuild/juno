@@ -724,6 +724,8 @@ interface I18nMonitoring {
 	mission_control_strategy: string;
 	review_strategy: string;
 	warning_advice: string;
+	strategy_preparing: string;
+	reload_settings: string;
 }
 
 interface I18nPreferences {

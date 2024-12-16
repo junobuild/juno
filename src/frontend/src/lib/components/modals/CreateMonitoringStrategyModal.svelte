@@ -11,7 +11,6 @@
 	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
 	import MonitoringCreateStrategySelectSegments from '$lib/components/monitoring/MonitoringCreateStrategySelectSegments.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { applyMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
@@ -20,7 +19,8 @@
 		JunoModalDetail,
 		JunoModalMonitoringCreateBulkStrategyDetail
 	} from '$lib/types/modal';
-	import { emit } from '$lib/utils/events.utils';
+	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
+	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -61,8 +61,14 @@
 			strategy: fromNullable(missionControlCycles?.strategy ?? [])
 		});
 
+	let progress: MonitoringStrategyProgress | undefined = $state(undefined);
+	const onProgress = (createProgress: MonitoringStrategyProgress | undefined) =>
+		(progress = createProgress);
+
 	const onsubmit = async ($event: MouseEvent | TouchEvent) => {
 		$event.preventDefault();
+
+		onProgress(undefined);
 
 		wizardBusy.start();
 		steps = 'in_progress';
@@ -76,7 +82,8 @@
 			minCycles,
 			missionControlMonitored: missionControl.monitored,
 			missionControlMinCycles,
-			missionControlFundCycles
+			missionControlFundCycles,
+			onProgress
 		});
 
 		wizardBusy.stop();
@@ -86,7 +93,7 @@
 			return;
 		}
 
-		steps = 'ready';
+		setTimeout(() => (steps = 'ready'), 500);
 	};
 </script>
 
@@ -99,9 +106,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
-		<SpinnerModal>
-			<p>{$i18n.monitoring.applying_strategy}</p>
-		</SpinnerModal>
+		<ProgressMonitoring {progress} />
 	{:else if steps === 'review'}
 		<MonitoringCreateStrategyReview
 			{selectedSatellites}

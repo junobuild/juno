@@ -1,8 +1,10 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
 	import IconDatastore from '$lib/components/icons/IconDatastore.svelte';
+	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutTitle } from '$lib/stores/layout.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 	import { Color } from '$lib/types/theme';
 	import { applyColor } from '$lib/utils/theme.utils';
 
@@ -12,13 +14,17 @@
 
 	let { children }: Props = $props();
 
-	onMount(() => {
-		layoutTitle.set({
+	onMount(() => applyColor(Color.AERO_BLUE));
+
+	$effect(() =>
+		layoutNavigation.set({
 			title: $i18n.datastore.title,
-			icon: IconDatastore
-		});
-		applyColor(Color.AERO_BLUE);
-	});
+			icon: IconDatastore,
+			...(nonNullish($satelliteStore) && {
+				satellite: { satellite: $satelliteStore, useInPageTitle: false }
+			})
+		})
+	);
 </script>
 
 {@render children()}

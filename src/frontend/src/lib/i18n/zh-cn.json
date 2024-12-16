@@ -26,6 +26,7 @@
 		"cancel": "取消",
 		"apply": "应用",
 		"language": "语言",
+		"theme": "Theme",
 		"user_menu": "用户菜单",
 		"version": "版本",
 		"delete": "删除",
@@ -235,6 +236,7 @@
 		"build": "Build",
 		"see_all_satellites": "查看所有的 satellites",
 		"go_launchpad": "前往发射台",
+		"launchpad": "Launchpad",
 		"attach": "附加 satellite"
 	},
 	"mission_control": {

@@ -6,8 +6,8 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
-	import { authSignedInStore } from '$lib/stores/auth.store';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -36,7 +36,7 @@
 <IdentityGuard>
 	<Tabs help={'https://juno.build/docs/miscellaneous/wallet'}>
 		{#snippet info()}
-			{#if $authSignedInStore}
+			{#if $authSignedIn}
 				<Warnings />
 			{/if}
 		{/snippet}

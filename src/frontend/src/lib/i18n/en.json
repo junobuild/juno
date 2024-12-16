@@ -26,6 +26,7 @@
 		"cancel": "Cancel",
 		"apply": "Apply",
 		"language": "Language",
+		"theme": "Theme",
 		"user_menu": "User menu",
 		"version": "Version",
 		"delete": "Delete",
@@ -235,6 +236,7 @@
 		"build": "Build",
 		"see_all_satellites": "See all satellites",
 		"go_launchpad": "Go to launchpad",
+		"launchpad": "Launchpad",
 		"attach": "Attach satellite"
 	},
 	"mission_control": {

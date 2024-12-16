@@ -11,7 +11,7 @@
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { onLayoutTitleIntersection } from '$lib/stores/layout.store';
+	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5

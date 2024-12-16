@@ -79,22 +79,14 @@
 			missionControlFundCycles
 		});
 
+		wizardBusy.stop();
+
 		if (success !== 'ok') {
 			steps = 'init';
-
-			wizardBusy.stop();
-
 			return;
 		}
 
-		emit({ message: 'junoReloadSettings' });
-
-		// Small delay to ensure junoReloadSettings is emitted
-		setTimeout(() => {
-			steps = 'ready';
-
-			wizardBusy.stop();
-		}, 500);
+		steps = 'ready';
 	};
 </script>
 

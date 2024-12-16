@@ -3,6 +3,8 @@ import type {
 	CyclesThreshold
 } from '$declarations/mission_control/mission_control.did';
 import { startMonitoringWithConfig } from '$lib/api/mission-control.api';
+import { loadSettings } from '$lib/services/mission-control.services';
+import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -93,6 +95,19 @@ export const applyMonitoringCyclesStrategy = async ({
 				})
 			}
 		});
+
+		// We need to reload the settings
+		await Promise.all([
+			loadSatellites({
+				missionControl: missionControlId,
+				reload: true
+			}),
+			loadSettings({
+				missionControlId,
+				identity,
+				reload: true
+			})
+		]);
 	} catch (err: unknown) {
 		const labels = get(i18n);
 

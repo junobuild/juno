@@ -11,11 +11,10 @@
 
 	let { missionControlId, children }: Props = $props();
 
-	const load = async (reload?: boolean) => {
+	const load = async () => {
 		await loadSettings({
 			missionControlId,
-			identity: $authStore.identity,
-			reload
+			identity: $authStore.identity
 		});
 	};
 
@@ -23,7 +22,5 @@
 		load();
 	});
 </script>
-
-<svelte:window onjunoReloadSettings={async () => await load(true)} />
 
 {@render children()}

@@ -9,7 +9,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { authSignedInStore } from '$lib/stores/auth.store';
+	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -46,7 +46,7 @@
 	let remainingCycles: bigint = $derived(currentCycles - cycles > 0 ? currentCycles - cycles : 0n);
 
 	const onSubmit = async () => {
-		if (!$authSignedInStore) {
+		if ($authSignedOut) {
 			toasts.error({
 				text: $i18n.errors.no_identity
 			});

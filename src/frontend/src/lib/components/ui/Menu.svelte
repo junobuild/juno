@@ -1,19 +1,20 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import Logo from '$lib/components/core/Logo.svelte';
-	import { layoutMenuOpen } from '$lib/stores/layout.store';
+	import { layoutMenuOpen } from '$lib/stores/layout-menu.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	interface Props {
 		children: Snippet;
+		themed?: boolean;
 	}
 
-	let { children }: Props = $props();
+	let { children, themed = false }: Props = $props();
 
 	const close = () => layoutMenuOpen.set(false);
 </script>
 
-<div role="menu">
+<div role="menu" class:themed>
 	<div
 		class="inner"
 		data-tid="menu-inner"
@@ -45,14 +46,20 @@
 
 		position: relative;
 
-		background: var(--color-primary);
-		color: var(--color-primary-contrast);
+		background: var(--color-background-shade);
+		color: var(--color-background-contrast);
+
+		&.themed {
+			background: var(--color-primary);
+			color: var(--color-primary-contrast);
+		}
 	}
 
 	@include media.dark-theme {
 		div[role='menu'] {
 			background: var(--color-menu);
 			color: var(--color-menu-contrast);
+			border-right: 1px solid var(--color-menu);
 		}
 	}
 
@@ -89,6 +96,6 @@
 	}
 
 	.logo {
-		padding: calc(var(--padding-4x) - 2px) 0 16vh;
+		padding: calc(var(--padding-4x) - 2px) 0 14vh;
 	}
 </style>

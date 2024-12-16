@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { onMount, type Snippet } from 'svelte';
-	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { layoutTitle } from '$lib/stores/layout.store';
+	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 
 	interface Props {
 		children: Snippet;
@@ -11,9 +11,9 @@
 	let { children }: Props = $props();
 
 	onMount(() =>
-		layoutTitle.set({
-			title: $i18n.analytics.title,
-			icon: IconAnalytics
+		layoutNavigation.set({
+			title: $i18n.mission_control.title,
+			icon: IconMissionControl
 		})
 	);
 </script>

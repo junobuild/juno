@@ -4,6 +4,7 @@ import type {
 } from '$declarations/mission_control/mission_control.did';
 import { startMonitoringWithConfig } from '$lib/api/mission-control.api';
 import { loadSettings } from '$lib/services/mission-control.services';
+import { loadOrbiters } from '$lib/services/orbiters.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
@@ -149,11 +150,14 @@ const reloadSettings = async ({
 	identity
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
+	const reloadParams = {
+		missionControl: missionControlId,
+		reload: true
+	};
+
 	await Promise.all([
-		loadSatellites({
-			missionControl: missionControlId,
-			reload: true
-		}),
+		loadSatellites(reloadParams),
+		loadOrbiters(reloadParams),
 		loadSettings({
 			missionControlId,
 			identity,

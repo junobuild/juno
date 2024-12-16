@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
@@ -14,9 +13,9 @@
 		missionControlMonitoring,
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control.derived';
-	import { authSignedInStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 
 	interface Props {
 		missionControlId: Principal;
@@ -25,7 +24,7 @@
 	let { missionControlId }: Props = $props();
 </script>
 
-{#if $authSignedInStore}
+{#if $authSignedIn}
 	<div class="card-container with-title">
 		<span class="title">{$i18n.satellites.overview}</span>
 

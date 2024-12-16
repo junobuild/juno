@@ -224,11 +224,11 @@ export const detachOrbiter = async ({
 };
 
 export const loadSettings = async ({
-	missionControlId,
+	missionControl: missionControlId,
 	identity,
 	reload = false
 }: {
-	missionControlId: Principal;
+	missionControl: Principal;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {

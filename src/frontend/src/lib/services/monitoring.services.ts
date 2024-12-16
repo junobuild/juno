@@ -159,9 +159,8 @@ const reloadSettings = async ({
 		loadSatellites(reloadParams),
 		loadOrbiters(reloadParams),
 		loadSettings({
-			missionControlId,
-			identity,
-			reload: true
+			...reloadParams,
+			identity
 		})
 	]);
 };

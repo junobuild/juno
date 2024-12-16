@@ -13,7 +13,7 @@
 
 	const load = async () => {
 		await loadSettings({
-			missionControlId,
+			missionControl: missionControlId,
 			identity: $authStore.identity
 		});
 	};

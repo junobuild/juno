@@ -112,24 +112,6 @@
 
 		<div>
 			<a
-				href={`/mission-control/?s=${satelliteId}`}
-				class:selected={isSelected({ routeId, path: 'mission-control' })}
-				class="link not-themed"
-			>
-				<IconMissionControl size="22px" />
-				<span>{$i18n.mission_control.title}</span>
-			</a>
-
-			<a
-				href={`/wallet/?s=${satelliteId}`}
-				class:selected={isSelected({ routeId, path: 'wallet' })}
-				class="link not-themed"
-			>
-				<IconWallet />
-				<span>{$i18n.wallet.title}</span>
-			</a>
-
-			<a
 				href={`/analytics/?s=${satelliteId}`}
 				class:selected={isSelected({ routeId, path: 'analytics' })}
 				class="link not-themed"
@@ -145,6 +127,24 @@
 			>
 				<IconTelescope size="20px" />
 				<span>{$i18n.observatory.title}</span>
+			</a>
+
+			<a
+				href={`/mission-control/?s=${satelliteId}`}
+				class:selected={isSelected({ routeId, path: 'mission-control' })}
+				class="link not-themed"
+			>
+				<IconMissionControl size="22px" />
+				<span>{$i18n.mission_control.title}</span>
+			</a>
+
+			<a
+				href={`/wallet/?s=${satelliteId}`}
+				class:selected={isSelected({ routeId, path: 'wallet' })}
+				class="link not-themed"
+			>
+				<IconWallet />
+				<span>{$i18n.wallet.title}</span>
 			</a>
 		</div>
 	</nav>

@@ -3,7 +3,6 @@
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import MonitoringSelectedModules from '$lib/components/monitoring/MonitoringSelectedModules.svelte';
 	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';
-	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 

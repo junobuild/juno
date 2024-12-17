@@ -4,7 +4,6 @@
 	import type { MemorySize } from '$declarations/satellite/satellite.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import SnapshotsMemory from '$lib/components/snapshot/SnapshotsMemory.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

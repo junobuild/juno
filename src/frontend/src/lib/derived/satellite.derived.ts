@@ -11,16 +11,6 @@ export const satellitesStore = derived(
 	([$satellitesDataStore]) => $satellitesDataStore?.data
 );
 
-export const satellitesLoaded = derived(
-	[satellitesDataStore],
-	([$satellitesDataStore]) => $satellitesDataStore !== undefined
-);
-
-export const satellitesNotLoaded = derived(
-	[satellitesLoaded],
-	([$satellitesLoaded]) => !satellitesLoaded
-);
-
 export const satelliteStore: Readable<Satellite | undefined | null> = derived(
 	[satellitesStore, page],
 	([satellites, page]) => {
@@ -42,6 +32,16 @@ export const satelliteStore: Readable<Satellite | undefined | null> = derived(
 		// eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
 		return satellite === undefined ? null : satellite;
 	}
+);
+
+export const satellitesLoaded = derived(
+	[satellitesDataStore],
+	([$satellitesDataStore]) => $satellitesDataStore !== undefined
+);
+
+export const satellitesNotLoaded = derived(
+	[satellitesLoaded],
+	([$satellitesLoaded]) => !satellitesLoaded
 );
 
 export const satelliteIdStore: Readable<string | undefined> = derived([page], ([page]) => {

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import { nonNullish } from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -8,14 +8,9 @@
 	} from '$declarations/mission_control/mission_control.did';
 	import MonitoringSelectedModules from '$lib/components/monitoring/MonitoringSelectedModules.svelte';
 	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';
-	import Segment from '$lib/components/segments/Segment.svelte';
-	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import { orbiterName } from '$lib/utils/orbiter.utils';
-	import { satelliteName } from '$lib/utils/satellite.utils';
 
 	interface Props {
 		selectedSatellites: [Principal, Satellite][];

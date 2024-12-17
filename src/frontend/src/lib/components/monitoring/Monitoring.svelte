@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fromNullable } from '@dfinity/utils';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';

@@ -11,7 +11,6 @@
 	import MonitoringStopReview from '$lib/components/monitoring/MonitoringStopReview.svelte';
 	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';

@@ -14,7 +14,7 @@ ic-cdk-macros.workspace = true
 ic-cdk-timers.workspace = true
 ic-ledger-types.workspace = true
 icrc-ledger-types.workspace = true
-canfund = { git = "https://github.com/dfinity/canfund.git", rev = "8c10b7901a91a22dd7d478de83d1d106f7944de4" }
+canfund = "0.5.0"
 serde.workspace = true
 futures = "0.3.28"
 junobuild-shared = { path = "../libs/shared" }

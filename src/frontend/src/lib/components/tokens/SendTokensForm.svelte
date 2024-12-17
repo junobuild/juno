@@ -67,7 +67,6 @@
 				name="destination"
 				placeholder={$i18n.wallet.destination_placeholder}
 				bind:value={destination}
-				autofocus
 			/>
 		</Value>
 	</div>

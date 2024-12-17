@@ -6,6 +6,8 @@
 		Orbiter,
 		Satellite
 	} from '$declarations/mission_control/mission_control.did';
+	import MonitoringSelectedModules from '$lib/components/monitoring/MonitoringSelectedModules.svelte';
+	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';
 	import Segment from '$lib/components/segments/Segment.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -40,21 +42,47 @@
 	}: Props = $props();
 </script>
 
-<h2>{$i18n.monitoring.review_strategy}</h2>
+<MonitoringStepReview {onback} {onsubmit}>
+	<h2>{$i18n.monitoring.review_strategy}</h2>
 
-<p>{$i18n.monitoring.review_info}</p>
+	<p>{$i18n.monitoring.review_info}</p>
 
-{#if !missionControl.monitored || (nonNullish(missionControlFundCycles) && nonNullish(missionControlMinCycles))}
+	{#if !missionControl.monitored || (nonNullish(missionControlFundCycles) && nonNullish(missionControlMinCycles))}
+		<div class="card-container with-title">
+			<span class="title">{$i18n.mission_control.title}</span>
+
+			<div class="content">
+				<Value>
+					{#snippet label()}
+						{$i18n.monitoring.remaining_threshold}
+					{/snippet}
+
+					<p>{formatTCycles(missionControlMinCycles ?? minCycles ?? 0n)}</p>
+				</Value>
+
+				<Value>
+					{#snippet label()}
+						{$i18n.monitoring.top_up_amount}
+					{/snippet}
+
+					<p class="no-margin">{formatTCycles(missionControlFundCycles ?? fundCycles ?? 0n)}</p>
+				</Value>
+			</div>
+		</div>
+	{/if}
+
 	<div class="card-container with-title">
-		<span class="title">{$i18n.mission_control.title}</span>
+		<span class="title">{$i18n.monitoring.modules}</span>
 
 		<div class="content">
+			<MonitoringSelectedModules {selectedSatellites} {selectedOrbiters} />
+
 			<Value>
 				{#snippet label()}
 					{$i18n.monitoring.remaining_threshold}
 				{/snippet}
 
-				<p>{formatTCycles(missionControlMinCycles ?? minCycles ?? 0n)}</p>
+				<p>{formatTCycles(minCycles ?? 0n)}</p>
 			</Value>
 
 			<Value>
@@ -62,77 +90,13 @@
 					{$i18n.monitoring.top_up_amount}
 				{/snippet}
 
-				<p class="no-margin">{formatTCycles(missionControlFundCycles ?? fundCycles ?? 0n)}</p>
+				<p>{formatTCycles(fundCycles ?? 0n)}</p>
 			</Value>
 		</div>
 	</div>
-{/if}
-
-<div class="card-container with-title">
-	<span class="title">{$i18n.monitoring.modules}</span>
-
-	<div class="content">
-		<Value>
-			{#snippet label()}
-				{$i18n.monitoring.selected_modules}
-			{/snippet}
-
-			<ul>
-				{#each selectedSatellites as [satelliteId, satellite]}
-					<li>
-						<Segment id={satelliteId}>
-							{satelliteName(satellite)}
-						</Segment>
-					</li>
-				{/each}
-
-				{#each selectedOrbiters as [orbiterId, orbiter]}
-					{@const orbName = orbiterName(orbiter)}
-
-					<li>
-						<Segment id={orbiterId}>
-							{!notEmptyString(orbName) ? $i18n.analytics.title : orbName}
-						</Segment>
-					</li>
-				{/each}
-			</ul>
-		</Value>
-
-		<Value>
-			{#snippet label()}
-				{$i18n.monitoring.remaining_threshold}
-			{/snippet}
-
-			<p>{formatTCycles(minCycles ?? 0n)}</p>
-		</Value>
-
-		<Value>
-			{#snippet label()}
-				{$i18n.monitoring.top_up_amount}
-			{/snippet}
-
-			<p>{formatTCycles(fundCycles ?? 0n)}</p>
-		</Value>
-	</div>
-</div>
-
-<div class="toolbar">
-	<button type="button" disabled={$isBusy} onclick={onback}>{$i18n.core.back}</button>
-	<button type="button" disabled={$isBusy} onclick={onsubmit}>
-		{$i18n.core.apply}
-	</button>
-</div>
+</MonitoringStepReview>
 
 <style lang="scss">
-	ul {
-		padding: var(--padding) var(--padding-2_5x) 0;
-		margin: 0 0 var(--padding-2_5x);
-	}
-
-	li {
-		margin: 0 0 var(--padding);
-	}
-
 	.no-margin {
 		margin: 0;
 	}

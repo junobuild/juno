@@ -12,13 +12,14 @@
 
 	interface Props {
 		progress: MonitoringStrategyProgress | undefined;
+		action: 'create' | 'stop';
 	}
 
-	let { progress }: Props = $props();
+	let { progress, action }: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
-		createAndStart: ProgressStep;
+		apply: ProgressStep;
 		reload: ProgressStep;
 	}
 
@@ -28,10 +29,13 @@
 			step: 'preparing',
 			text: $i18n.monitoring.strategy_preparing
 		},
-		createAndStart: {
+		apply: {
 			state: 'next',
 			step: 'create_and_start',
-			text: $i18n.monitoring.applying_strategy
+			text:
+				action === 'stop'
+					? $i18n.monitoring.stopping_monitoring
+					: $i18n.monitoring.applying_strategy
 		},
 		reload: {
 			state: 'next',
@@ -46,19 +50,19 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, createAndStart, reload } = steps;
+			const { preparing, apply, reload } = steps;
 
 			steps = {
 				preparing: {
 					...preparing,
 					state: isNullish(progress) ? 'in_progress' : 'completed'
 				},
-				createAndStart: {
-					...createAndStart,
+				apply: {
+					...apply,
 					state:
-						progress?.step === MonitoringStrategyProgressStep.CreateAndStartMonitoring
+						progress?.step === MonitoringStrategyProgressStep.CreateOrStopMonitoring
 							? mapProgressState(progress?.state)
-							: createAndStart.state
+							: apply.state
 				},
 				reload: {
 					...reload,

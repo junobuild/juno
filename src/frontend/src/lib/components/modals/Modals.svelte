@@ -4,7 +4,7 @@
 	import CanisterEditSettingsModal from '$lib/components/modals/CanisterEditSettingsModal.svelte';
 	import CanisterRestoreSnapshotModal from '$lib/components/modals/CanisterRestoreSnapshotModal.svelte';
 	import ControllerCreateModal from '$lib/components/modals/ControllerCreateModal.svelte';
-	import CreateMonitoringBulkStrategyModal from '$lib/components/modals/CreateMonitoringStrategyModal.svelte';
+	import CreateMonitoringStrategyModal from '$lib/components/modals/CreateMonitoringStrategyModal.svelte';
 	import CreateSnapshotModal from '$lib/components/modals/CreateSnapshotModal.svelte';
 	import CustomDomainModal from '$lib/components/modals/CustomDomainModal.svelte';
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
@@ -22,6 +22,7 @@
 	import SatelliteTransferCyclesModal from '$lib/components/modals/SatelliteTransferCyclesModal.svelte';
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
+	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
 	import type { JunoModal } from '$lib/types/modal';
 
 	let modal: JunoModal | undefined = $state(undefined);
@@ -116,5 +117,9 @@
 {/if}
 
 {#if modal?.type === 'create_monitoring_strategy' && nonNullish(modal.detail)}
-	<CreateMonitoringBulkStrategyModal onclose={close} detail={modal.detail} />
+	<CreateMonitoringStrategyModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'stop_monitoring_strategy' && nonNullish(modal.detail)}
+	<StopMonitoringStrategyModal onclose={close} detail={modal.detail} />
 {/if}

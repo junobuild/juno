@@ -700,18 +700,24 @@ interface I18nMonitoring {
 	title: string;
 	monitoring_strategy: string;
 	create_info: string;
+	stop_info: string;
 	threshold_info: string;
 	threshold_info_mission_control: string;
 	review_info: string;
+	review_stop_info: string;
+	review_stop_mission_control: string;
+	review_mission_control_remain_monitored: string;
 	no_mission_control_strategy: string;
 	no_mission_control_strategy_question: string;
 	mission_control_existing_strategy: string;
 	mission_control_existing_strategy_question: string;
-	create_strategy: string;
+	update_monitoring: string;
 	start_monitoring: string;
 	stop_monitoring: string;
 	strategy_created: string;
+	monitoring_stopped: string;
 	applying_strategy: string;
+	stopping_monitoring: string;
 	remaining_threshold: string;
 	top_up_amount: string;
 	modules: string;
@@ -728,6 +734,8 @@ interface I18nMonitoring {
 	warning_advice: string;
 	strategy_preparing: string;
 	reload_settings: string;
+	stop_monitoring_question: string;
+	stop_monitoring_note: string;
 }
 
 interface I18nPreferences {

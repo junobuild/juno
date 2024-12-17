@@ -9,17 +9,14 @@
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
 	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
-	import MonitoringCreateStrategySelectSegments from '$lib/components/monitoring/MonitoringCreateStrategySelectSegments.svelte';
+	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { applyMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {
-		JunoModalDetail,
-		JunoModalMonitoringCreateBulkStrategyDetail
-	} from '$lib/types/modal';
+	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
 
 	interface Props {
@@ -29,9 +26,7 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { settings, missionControlId } = $derived(
-		detail as JunoModalMonitoringCreateBulkStrategyDetail
-	);
+	let { settings, missionControlId } = $derived(detail as JunoModalMonitoringStrategyDetail);
 
 	let steps:
 		| 'init'
@@ -62,8 +57,8 @@
 		});
 
 	let progress: MonitoringStrategyProgress | undefined = $state(undefined);
-	const onProgress = (createProgress: MonitoringStrategyProgress | undefined) =>
-		(progress = createProgress);
+	const onProgress = (applyProgress: MonitoringStrategyProgress | undefined) =>
+		(progress = applyProgress);
 
 	const onsubmit = async ($event: MouseEvent | TouchEvent) => {
 		$event.preventDefault();
@@ -106,7 +101,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
-		<ProgressMonitoring {progress} />
+		<ProgressMonitoring {progress} action="create" />
 	{:else if steps === 'review'}
 		<MonitoringCreateStrategyReview
 			{selectedSatellites}
@@ -142,12 +137,16 @@
 			oncontinue={() => (steps = 'mission_control')}
 		/>
 	{:else}
-		<MonitoringCreateStrategySelectSegments
+		<MonitoringSelectSegments
 			{missionControlId}
 			bind:selectedSatellites
 			bind:selectedOrbiters
 			oncontinue={() => (steps = 'strategy')}
-		/>
+		>
+			<h2>{$i18n.monitoring.monitoring_strategy}</h2>
+
+			<p>{$i18n.monitoring.create_info}</p>
+		</MonitoringSelectSegments>
 	{/if}
 </Modal>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import type { Snippet } from 'svelte';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
@@ -10,21 +11,21 @@
 		selectedSatellites: [Principal, Satellite][];
 		selectedOrbiters: [Principal, Orbiter][];
 		oncontinue: () => void;
+		children: Snippet;
 	}
 
 	let {
 		missionControlId,
 		selectedSatellites = $bindable([]),
 		selectedOrbiters = $bindable([]),
-		oncontinue
+		oncontinue,
+		children
 	}: Props = $props();
 
 	let selectedDisabled = $state(true);
 </script>
 
-<h2>{$i18n.monitoring.monitoring_strategy}</h2>
-
-<p>{$i18n.monitoring.create_info}</p>
+{@render children()}
 
 <SegmentsTable
 	{missionControlId}

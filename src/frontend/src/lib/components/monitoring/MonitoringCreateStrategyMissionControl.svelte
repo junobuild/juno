@@ -1,8 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import MonitoringStepMissionControl from '$lib/components/monitoring/MonitoringStepMissionControl.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -16,35 +16,27 @@
 	let { missionControl, onyes, onno }: Props = $props();
 </script>
 
-<h2>{$i18n.monitoring.mission_control_strategy}</h2>
+<MonitoringStepMissionControl {onyes} {onno}>
+	<h2>{$i18n.monitoring.mission_control_strategy}</h2>
 
-{#if missionControl.monitored && nonNullish(missionControl.strategy)}
-	<p>
-		{i18nFormat($i18n.monitoring.mission_control_existing_strategy, [
-			{
-				placeholder: '{0}',
-				value: formatTCycles(missionControl.strategy.BelowThreshold.min_cycles)
-			},
-			{
-				placeholder: '{1}',
-				value: formatTCycles(missionControl.strategy.BelowThreshold.fund_cycles)
-			}
-		])}
-	</p>
+	{#if missionControl.monitored && nonNullish(missionControl.strategy)}
+		<p>
+			{i18nFormat($i18n.monitoring.mission_control_existing_strategy, [
+				{
+					placeholder: '{0}',
+					value: formatTCycles(missionControl.strategy.BelowThreshold.min_cycles)
+				},
+				{
+					placeholder: '{1}',
+					value: formatTCycles(missionControl.strategy.BelowThreshold.fund_cycles)
+				}
+			])}
+		</p>
 
-	<p><Html text={$i18n.monitoring.mission_control_existing_strategy_question} /></p>
-{:else}
-	<p>{$i18n.monitoring.no_mission_control_strategy}</p>
+		<p><Html text={$i18n.monitoring.mission_control_existing_strategy_question} /></p>
+	{:else}
+		<p>{$i18n.monitoring.no_mission_control_strategy}</p>
 
-	<p><Html text={$i18n.monitoring.no_mission_control_strategy_question} /></p>
-{/if}
-
-<div class="toolbar">
-	<button type="button" onclick={onno} disabled={$isBusy}>
-		{$i18n.core.no}
-	</button>
-
-	<button type="button" onclick={onyes} disabled={$isBusy}>
-		{$i18n.core.yes}
-	</button>
-</div>
+		<p><Html text={$i18n.monitoring.no_mission_control_strategy_question} /></p>
+	{/if}
+</MonitoringStepMissionControl>

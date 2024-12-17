@@ -54,7 +54,7 @@ export const applyMonitoringCyclesStrategy = async ({
 		await execute({
 			fn: setMonitoringStrategy,
 			onProgress,
-			step: MonitoringStrategyProgressStep.CreateAndStartMonitoring
+			step: MonitoringStrategyProgressStep.CreateOrStopMonitoring
 		});
 
 		const reload = async () => await reloadSettings({ identity, missionControlId });

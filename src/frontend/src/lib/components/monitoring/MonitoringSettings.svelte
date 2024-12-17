@@ -22,7 +22,7 @@
 
 	let { missionControlId }: Props = $props();
 
-	const openModal = () => {
+	const openModal = (type: 'create_monitoring_strategy' | 'stop_monitoring_strategy') => {
 		if (isNullish($missionControlSettingsDataStore)) {
 			toasts.error({ text: $i18n.errors.mission_control_settings_not_loaded });
 			return;
@@ -31,7 +31,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: 'create_monitoring_strategy',
+				type,
 				detail: {
 					settings: $missionControlSettingsDataStore.data,
 					missionControlId
@@ -40,11 +40,16 @@
 		});
 	};
 
+	const openCreateModal = () => openModal('create_monitoring_strategy');
+	const openStopModal = () => openModal('stop_monitoring_strategy');
+
 	onMount(async () => await loadOrbiters({ missionControl: missionControlId }));
 
 	let missionControlMonitored = $state(false);
 	let orbiterMonitored = $state(false);
-	let satellitesMonitored = $state(false);
+	let hasSatellitesMonitored = $state(false);
+
+	let monitored = $derived(missionControlMonitored || orbiterMonitored || hasSatellitesMonitored);
 </script>
 
 <MissionControlSettingsLoader {missionControlId}>
@@ -55,7 +60,7 @@
 			<div>
 				<MonitoringSettingsMissionControl bind:missionControlMonitored />
 
-				<MonitoringSettingsSatellites bind:hasSatellitesMonitored={satellitesMonitored} />
+				<MonitoringSettingsSatellites bind:hasSatellitesMonitored />
 
 				<MonitoringSettingsOrbiter bind:orbiterMonitored />
 			</div>
@@ -63,12 +68,20 @@
 	</div>
 
 	{#if $missionControlSettingsLoaded && $satellitesLoaded && $orbiterLoaded}
-		<button in:fade onclick={openModal}>
-			{#if missionControlMonitored || satellitesMonitored || orbiterMonitored}
-				{$i18n.monitoring.create_strategy}
-			{:else}
-				{$i18n.monitoring.start_monitoring}
+		<div class="toolbar">
+			<button in:fade onclick={openCreateModal}>
+				{#if monitored}
+					{$i18n.monitoring.update_monitoring}
+				{:else}
+					{$i18n.monitoring.start_monitoring}
+				{/if}
+			</button>
+
+			{#if monitored}
+				<button in:fade onclick={openStopModal}>
+					{$i18n.monitoring.stop_monitoring}
+				</button>
 			{/if}
-		</button>
+		</div>
 	{/if}
 </MissionControlSettingsLoader>

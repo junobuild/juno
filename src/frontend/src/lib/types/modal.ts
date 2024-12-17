@@ -98,7 +98,7 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 	config: AuthenticationConfig | undefined;
 }
 
-export interface JunoModalMonitoringCreateBulkStrategyDetail {
+export interface JunoModalMonitoringStrategyDetail {
 	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
 }
@@ -115,7 +115,7 @@ export type JunoModalDetail =
 	| JunoModalDeleteSatelliteDetail
 	| JunoModalSendTokensDetail
 	| JunoModalEditOrbiterConfigDetail
-	| JunoModalMonitoringCreateBulkStrategyDetail;
+	| JunoModalMonitoringStrategyDetail;
 
 export interface JunoModal {
 	type:
@@ -140,6 +140,7 @@ export interface JunoModal {
 		| 'upgrade_mission_control'
 		| 'upgrade_orbiter'
 		| 'send_tokens'
-		| 'create_monitoring_strategy';
+		| 'create_monitoring_strategy'
+		| 'stop_monitoring_strategy';
 	detail?: JunoModalDetail;
 }

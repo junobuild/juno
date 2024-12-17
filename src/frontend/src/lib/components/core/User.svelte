@@ -1,13 +1,23 @@
 <script lang="ts">
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
+	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconRaygun from '$lib/components/icons/IconRaygun.svelte';
 	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
 	import IconSignOut from '$lib/components/icons/IconSignOut.svelte';
+	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import IconUser from '$lib/components/icons/IconUser.svelte';
+	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
+	import {
+		satellitesNotLoaded,
+		satellitesStore,
+		satelliteStore
+	} from '$lib/derived/satellite.derived';
 	import { signIn as doSignIn, signOut } from '$lib/services/auth.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { analyticsLink } from '$lib/utils/nav.utils';
 
 	interface Props {
 		signIn?: boolean;
@@ -33,6 +43,9 @@
 	const onclick = async () => {
 		visible = true;
 	};
+
+	// If there is no satellites, we consider the user has a new developer and want to show all links in the user popover that way the user can navigate anyway.
+	let newDeveloper = $derived($satellitesNotLoaded || ($satellitesStore?.length ?? 0) === 0);
 </script>
 
 {#if $authSignedIn}
@@ -53,6 +66,34 @@
 
 <Popover bind:visible anchor={button} direction="rtl">
 	<div class="container">
+		{#if newDeveloper}
+			<a href="/mission-control" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+				<IconMissionControl />
+				<span>{$i18n.mission_control.title}</span>
+			</a>
+
+			<a href="/wallet" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+				<IconWallet />
+				<span>{$i18n.wallet.title}</span>
+			</a>
+
+			<a
+				href={analyticsLink($satelliteStore?.satellite_id)}
+				class="menu"
+				role="menuitem"
+				aria-haspopup="menu"
+				onclick={close}
+			>
+				<IconAnalytics />
+				<span>{$i18n.analytics.title}</span>
+			</a>
+
+			<a href="/monitoring" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
+				<IconTelescope />
+				<span>{$i18n.observatory.title}</span>
+			</a>
+		{/if}
+
 		<a href="/preferences" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
 			<IconRaygun />
 			<span>{$i18n.preferences.title}</span>

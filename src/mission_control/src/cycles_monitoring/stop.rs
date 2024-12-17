@@ -45,7 +45,7 @@ fn stop_modules_monitoring(
 
 fn stop_monitoring_impl(state: &mut RuntimeState) {
     if let Some(fund_manager) = &mut state.fund_manager {
-        if fund_manager.is_running() {
+        if fund_manager.is_running() && fund_manager.get_canisters().is_empty() {
             fund_manager.stop();
         }
     }

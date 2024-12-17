@@ -14,6 +14,9 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { stopMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
+	import { authStore } from '$lib/stores/auth.store';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -47,6 +50,29 @@
 
 	const onsubmit = async ($event: MouseEvent | TouchEvent) => {
 		$event.preventDefault();
+
+		onProgress(undefined);
+
+		wizardBusy.start();
+		steps = 'in_progress';
+
+		const { success } = await stopMonitoringCyclesStrategy({
+			identity: $authStore.identity,
+			missionControlId,
+			satellites: selectedSatellites.map(([id, _]) => id),
+			orbiters: selectedOrbiters.map(([id, _]) => id),
+			stopMissionControl,
+			onProgress
+		});
+
+		wizardBusy.stop();
+
+		if (success !== 'ok') {
+			steps = 'init';
+			return;
+		}
+
+		setTimeout(() => (steps = 'ready'), 500);
 	};
 
 	const onContinueSegments = () => {

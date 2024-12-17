@@ -2,6 +2,7 @@ import type {
 	Controller,
 	MissionControlSettings,
 	MonitoringStartConfig,
+	MonitoringStopConfig,
 	Orbiter,
 	Result,
 	Result_1,
@@ -469,4 +470,21 @@ export const startMonitoringWithConfig = async ({
 	});
 
 	return await start_monitoring_with_config(config);
+};
+
+export const stopMonitoringWithConfig = async ({
+	missionControlId,
+	identity,
+	config
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	config: MonitoringStopConfig;
+}): Promise<void> => {
+	const { stop_monitoring_with_config } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+
+	return await stop_monitoring_with_config(config);
 };

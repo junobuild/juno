@@ -2,7 +2,7 @@ import type {
 	CyclesMonitoringStrategy,
 	CyclesThreshold
 } from '$declarations/mission_control/mission_control.did';
-import { startMonitoringWithConfig } from '$lib/api/mission-control.api';
+import { startMonitoringWithConfig, stopMonitoringWithConfig } from '$lib/api/mission-control.api';
 import { loadSettings } from '$lib/services/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiters.services';
 import { loadSatellites } from '$lib/services/satellites.services';
@@ -19,17 +19,24 @@ import { get } from 'svelte/store';
 
 type MonitoringStrategyOnProgress = (progress: MonitoringStrategyProgress | undefined) => void;
 
-interface ApplyMonitoringCyclesStrategyParams {
+interface MonitoringCyclesStrategyParams {
 	identity: OptionIdentity;
 	missionControlId: Principal;
 	satellites: Principal[];
 	orbiters: Principal[];
+	onProgress: MonitoringStrategyOnProgress;
+}
+
+interface ApplyMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyParams {
 	minCycles: bigint | undefined;
 	fundCycles: bigint | undefined;
 	missionControlMonitored: boolean;
 	missionControlMinCycles: bigint | undefined;
 	missionControlFundCycles: bigint | undefined;
-	onProgress: MonitoringStrategyOnProgress;
+}
+
+interface StopMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyParams {
+	stopMissionControl: boolean | undefined;
 }
 
 export const applyMonitoringCyclesStrategy = async ({
@@ -41,18 +48,71 @@ export const applyMonitoringCyclesStrategy = async ({
 	success: 'ok' | 'cancelled' | 'error';
 	err?: unknown;
 }> => {
+	const labels = get(i18n);
+
+	const setMonitoringStrategy = async () => {
+		await setMonitoringCyclesStrategy({
+			identity,
+			missionControlId,
+			...rest
+		});
+	};
+
+	return await executeMonitoring({
+		identity,
+		missionControlId,
+		onProgress,
+		fn: setMonitoringStrategy,
+		errorText: labels.errors.monitoring_apply_strategy_error
+	});
+};
+
+export const stopMonitoringCyclesStrategy = async ({
+	identity,
+	missionControlId,
+	onProgress,
+	...rest
+}: StopMonitoringCyclesStrategyParams): Promise<{
+	success: 'ok' | 'cancelled' | 'error';
+	err?: unknown;
+}> => {
+	const labels = get(i18n);
+
+	const stopMonitoring = async () => {
+		await stopMonitoringCycles({
+			identity,
+			missionControlId,
+			...rest
+		});
+	};
+
+	return await executeMonitoring({
+		identity,
+		missionControlId,
+		onProgress,
+		fn: stopMonitoring,
+		errorText: labels.errors.monitoring_apply_strategy_error
+	});
+};
+
+const executeMonitoring = async ({
+	identity,
+	missionControlId,
+	onProgress,
+	fn,
+	errorText
+}: Pick<MonitoringCyclesStrategyParams, 'identity' | 'missionControlId' | 'onProgress'> & {
+	fn: () => Promise<void>;
+	errorText: string;
+}): Promise<{
+	success: 'ok' | 'cancelled' | 'error';
+	err?: unknown;
+}> => {
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		const setMonitoringStrategy = async () => {
-			await setMonitoringCyclesStrategy({
-				identity,
-				missionControlId,
-				...rest
-			});
-		};
 		await execute({
-			fn: setMonitoringStrategy,
+			fn,
 			onProgress,
 			step: MonitoringStrategyProgressStep.CreateOrStopMonitoring
 		});
@@ -64,10 +124,8 @@ export const applyMonitoringCyclesStrategy = async ({
 			step: MonitoringStrategyProgressStep.ReloadSettings
 		});
 	} catch (err: unknown) {
-		const labels = get(i18n);
-
 		toasts.error({
-			text: labels.errors.monitoring_apply_strategy_error,
+			text: errorText,
 			detail: err
 		});
 
@@ -140,6 +198,27 @@ const setMonitoringCyclesStrategy = async ({
 								}
 							]
 						: []
+			})
+		}
+	});
+};
+
+const stopMonitoringCycles = async ({
+	identity,
+	missionControlId,
+	satellites,
+	orbiters,
+	stopMissionControl
+}: Omit<StopMonitoringCyclesStrategyParams, 'identity' | 'onProgress'> &
+	Required<Pick<StopMonitoringCyclesStrategyParams, 'identity'>>) => {
+	await stopMonitoringWithConfig({
+		identity,
+		missionControlId,
+		config: {
+			cycles_config: toNullable({
+				try_mission_control: toNullable(stopMissionControl),
+				satellite_ids: satellites.length > 0 ? toNullable(satellites) : [],
+				orbiter_ids: orbiters.length > 0 ? toNullable(orbiters) : []
 			})
 		}
 	});

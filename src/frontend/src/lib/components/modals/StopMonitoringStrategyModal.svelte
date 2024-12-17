@@ -127,3 +127,11 @@
 		</MonitoringSelectSegments>
 	{/if}
 </Modal>
+
+<style lang="scss">
+	@use '../../styles/mixins/overlay';
+
+	.msg {
+		@include overlay.message;
+	}
+</style>

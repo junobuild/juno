@@ -704,7 +704,9 @@ interface I18nMonitoring {
 	threshold_info_mission_control: string;
 	review_info: string;
 	no_mission_control_strategy: string;
+	no_mission_control_strategy_question: string;
 	mission_control_existing_strategy: string;
+	mission_control_existing_strategy_question: string;
 	create_strategy: string;
 	start_monitoring: string;
 	stop_monitoring: string;

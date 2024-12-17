@@ -44,16 +44,6 @@ export const satelliteStore: Readable<Satellite | undefined | null> = derived(
 	}
 );
 
-export const satellitesLoaded = derived(
-	[satellitesDataStore],
-	([$satellitesDataStore]) => $satellitesDataStore !== undefined
-);
-
-export const satellitesNotLoaded = derived(
-	[satellitesLoaded],
-	([$satellitesLoaded]) => !satellitesLoaded
-);
-
 export const satelliteIdStore: Readable<string | undefined> = derived([page], ([page]) => {
 	const { data } = page;
 

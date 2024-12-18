@@ -63,7 +63,9 @@ fn register_mission_control_monitoring_impl(
     // If no strategy exists, we must register one, as no modules are observed without also observing Mission Control.
     // Regardless if we create a new strategy or update it, we need a strategy at this point.
     if strategy.is_none() {
-        return Err("A strategy for monitoring the missing mission control must be provided.".to_string());
+        return Err(
+            "A strategy for monitoring the missing mission control must be provided.".to_string(),
+        );
     }
 
     let cycles_strategy = strategy.clone().unwrap();

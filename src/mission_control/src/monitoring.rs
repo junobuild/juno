@@ -14,11 +14,11 @@ pub fn defer_restart_monitoring() {
 }
 
 async fn restart_monitoring() {
-    start_cycles_monitoring().unwrap_or_else(|e| trap(&e));
+    start_cycles_monitoring(true).unwrap_or_else(|e| trap(&e));
 }
 
 pub fn start_monitoring() -> Result<(), String> {
-    start_cycles_monitoring()
+    start_cycles_monitoring(false)
 }
 
 pub fn stop_monitoring() -> Result<(), String> {

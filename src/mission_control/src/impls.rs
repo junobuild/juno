@@ -77,7 +77,7 @@ impl Satellite {
         }
     }
 
-    pub fn disable_cycles_monitoring(&self) -> Result<Self, String> {
+    pub fn toggle_cycles_monitoring(&self, enabled: bool) -> Result<Self, String> {
         let settings = self
             .settings
             .clone()
@@ -98,10 +98,7 @@ impl Satellite {
         Ok(Satellite {
             settings: Some(Settings {
                 monitoring: Some(Monitoring {
-                    cycles: Some(CyclesMonitoring {
-                        enabled: false,
-                        ..cycles
-                    }),
+                    cycles: Some(CyclesMonitoring { enabled, ..cycles }),
                 }),
             }),
             updated_at: now,
@@ -133,7 +130,7 @@ impl Orbiter {
         }
     }
 
-    pub fn disable_cycles_monitoring(&self) -> Result<Self, String> {
+    pub fn toggle_cycles_monitoring(&self, enabled: bool) -> Result<Self, String> {
         let settings = self
             .settings
             .clone()
@@ -154,10 +151,7 @@ impl Orbiter {
         Ok(Orbiter {
             settings: Some(Settings {
                 monitoring: Some(Monitoring {
-                    cycles: Some(CyclesMonitoring {
-                        enabled: false,
-                        ..cycles
-                    }),
+                    cycles: Some(CyclesMonitoring { enabled, ..cycles }),
                 }),
             }),
             updated_at: now,
@@ -250,7 +244,7 @@ impl MissionControlSettings {
         }
     }
 
-    pub fn disable_cycles_monitoring(&self) -> Result<Self, String> {
+    pub fn toggle_cycles_monitoring(&self, enabled: bool) -> Result<Self, String> {
         let monitoring = self
             .monitoring
             .clone()
@@ -265,10 +259,7 @@ impl MissionControlSettings {
 
         Ok(MissionControlSettings {
             monitoring: Some(Monitoring {
-                cycles: Some(CyclesMonitoring {
-                    enabled: false,
-                    ..cycles
-                }),
+                cycles: Some(CyclesMonitoring { enabled, ..cycles }),
             }),
             updated_at: now,
             ..self.clone()

@@ -8,8 +8,12 @@ pub fn set_mission_control_strategy(strategy: &CyclesMonitoringStrategy) {
     STATE.with(|state| set_mission_control_setting_impl(strategy, &mut state.borrow_mut().heap))
 }
 
+pub fn enable_mission_control_monitoring() -> Result<(), String> {
+    STATE.with(|state| toggle_mission_control_monitoring_impl(true, &mut state.borrow_mut().heap))
+}
+
 pub fn disable_mission_control_monitoring() -> Result<(), String> {
-    STATE.with(|state| disable_mission_control_monitoring_impl(&mut state.borrow_mut().heap))
+    STATE.with(|state| toggle_mission_control_monitoring_impl(false, &mut state.borrow_mut().heap))
 }
 
 pub fn set_satellite_strategy(
@@ -34,15 +38,35 @@ pub fn set_orbiter_strategy(
     })
 }
 
+pub fn enable_satellite_monitoring(satellite_id: &SatelliteId) -> Result<(), String> {
+    STATE.with(|state| {
+        toggle_satellite_monitoring_impl(
+            satellite_id,
+            true,
+            &mut state.borrow_mut().heap.satellites,
+        )
+    })
+}
+
+pub fn enable_orbiter_monitoring(orbiter_id: &OrbiterId) -> Result<(), String> {
+    STATE.with(|state| {
+        toggle_orbiter_monitoring_impl(orbiter_id, true, &mut state.borrow_mut().heap.orbiters)
+    })
+}
+
 pub fn disable_satellite_monitoring(satellite_id: &SatelliteId) -> Result<(), String> {
     STATE.with(|state| {
-        disable_satellite_monitoring_impl(satellite_id, &mut state.borrow_mut().heap.satellites)
+        toggle_satellite_monitoring_impl(
+            satellite_id,
+            false,
+            &mut state.borrow_mut().heap.satellites,
+        )
     })
 }
 
 pub fn disable_orbiter_monitoring(orbiter_id: &OrbiterId) -> Result<(), String> {
     STATE.with(|state| {
-        disable_orbiter_monitoring_impl(orbiter_id, &mut state.borrow_mut().heap.orbiters)
+        toggle_orbiter_monitoring_impl(orbiter_id, false, &mut state.borrow_mut().heap.orbiters)
     })
 }
 
@@ -56,13 +80,16 @@ fn set_mission_control_setting_impl(strategy: &CyclesMonitoringStrategy, state: 
     );
 }
 
-fn disable_mission_control_monitoring_impl(state: &mut HeapState) -> Result<(), String> {
+fn toggle_mission_control_monitoring_impl(
+    enable: bool,
+    state: &mut HeapState,
+) -> Result<(), String> {
     let settings = state
         .settings
         .clone()
         .ok_or_else(|| "Settings not found for mission control.".to_string())?;
 
-    let update_settings = settings.disable_cycles_monitoring()?;
+    let update_settings = settings.toggle_cycles_monitoring(enable)?;
 
     state.settings = Some(update_settings);
 
@@ -88,8 +115,9 @@ fn set_satellite_setting_impl(
     Ok(())
 }
 
-fn disable_satellite_monitoring_impl(
+fn toggle_satellite_monitoring_impl(
     satellite_id: &SatelliteId,
+    enabled: bool,
     satellites: &mut Satellites,
 ) -> Result<(), String> {
     let satellite = satellites.get(satellite_id).ok_or_else(|| {
@@ -99,7 +127,7 @@ fn disable_satellite_monitoring_impl(
         )
     })?;
 
-    let update_satellite = satellite.disable_cycles_monitoring()?;
+    let update_satellite = satellite.toggle_cycles_monitoring(enabled)?;
 
     satellites.insert(*satellite_id, update_satellite);
 
@@ -125,8 +153,9 @@ fn set_orbiter_setting_impl(
     Ok(())
 }
 
-fn disable_orbiter_monitoring_impl(
+fn toggle_orbiter_monitoring_impl(
     orbiter_id: &OrbiterId,
+    enabled: bool,
     orbiters: &mut Orbiters,
 ) -> Result<(), String> {
     let orbiter = orbiters.get(orbiter_id).ok_or_else(|| {
@@ -136,7 +165,7 @@ fn disable_orbiter_monitoring_impl(
         )
     })?;
 
-    let update_orbiter = orbiter.disable_cycles_monitoring()?;
+    let update_orbiter = orbiter.toggle_cycles_monitoring(enabled)?;
 
     orbiters.insert(*orbiter_id, update_orbiter);
 

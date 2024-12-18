@@ -126,6 +126,13 @@ describe('Mission Control - Monitoring', () => {
 			}
 		};
 
+		const updateStrategy: CyclesMonitoringStrategy = {
+			BelowThreshold: {
+				min_cycles: 800_000n,
+				fund_cycles: 300_000n
+			}
+		};
+
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
@@ -188,36 +195,48 @@ describe('Mission Control - Monitoring', () => {
 		});
 
 		const testMonitoring = ({
-			monitoring,
-			expectedEnabled
-		}: {
+									monitoring,
+									expectedEnabled,
+									expectedStrategy = strategy
+								}: {
 			monitoring: Monitoring | undefined;
 			expectedEnabled: boolean;
+			expectedStrategy?: CyclesMonitoringStrategy;
 		}) => {
 			const cycles = fromNullable(monitoring?.cycles ?? []);
 			const cyclesStrategy = fromNullable(cycles?.strategy ?? []);
 
 			expect(cycles?.enabled).toBe(expectedEnabled);
 			expect(cyclesStrategy?.BelowThreshold.fund_cycles).toEqual(
-				strategy.BelowThreshold.fund_cycles
+				expectedStrategy.BelowThreshold.fund_cycles
 			);
-			expect(cyclesStrategy?.BelowThreshold.min_cycles).toEqual(strategy.BelowThreshold.min_cycles);
+			expect(cyclesStrategy?.BelowThreshold.min_cycles).toEqual(
+				expectedStrategy.BelowThreshold.min_cycles
+			);
 		};
 
 		const testMissionControlMonitoring = async ({
-			expectedEnabled
-		}: {
+														expectedEnabled,
+														expectedStrategy
+													}: {
 			expectedEnabled: boolean;
+			expectedStrategy?: CyclesMonitoringStrategy;
 		}) => {
 			const { get_settings } = actor;
 
 			const settings = fromNullable(await get_settings());
 			const monitoring = fromNullable(settings?.monitoring ?? []);
 
-			testMonitoring({ monitoring, expectedEnabled });
+			testMonitoring({ monitoring, expectedEnabled, expectedStrategy });
 		};
 
-		const testSatellitesMonitoring = async ({ expectedEnabled }: { expectedEnabled: boolean }) => {
+		const testSatellitesMonitoring = async ({
+													expectedEnabled,
+													expectedStrategy
+												}: {
+			expectedEnabled: boolean;
+			expectedStrategy?: CyclesMonitoringStrategy;
+		}) => {
 			const { list_satellites } = actor;
 
 			const [[_, satellite]] = await list_satellites();
@@ -225,10 +244,16 @@ describe('Mission Control - Monitoring', () => {
 			const settings = fromNullable(satellite.settings);
 			const monitoring = fromNullable(settings?.monitoring ?? []);
 
-			testMonitoring({ monitoring, expectedEnabled });
+			testMonitoring({ monitoring, expectedEnabled, expectedStrategy });
 		};
 
-		const testOrbiterMonitoring = async ({ expectedEnabled }: { expectedEnabled: boolean }) => {
+		const testOrbiterMonitoring = async ({
+												 expectedEnabled,
+												 expectedStrategy
+											 }: {
+			expectedEnabled: boolean;
+			expectedStrategy?: CyclesMonitoringStrategy;
+		}) => {
 			const { list_orbiters } = actor;
 
 			const [[_, orbiter]] = await list_orbiters();
@@ -236,7 +261,7 @@ describe('Mission Control - Monitoring', () => {
 			const settings = fromNullable(orbiter.settings);
 			const monitoring = fromNullable(settings?.monitoring ?? []);
 
-			testMonitoring({ monitoring, expectedEnabled });
+			testMonitoring({ monitoring, expectedEnabled, expectedStrategy });
 		};
 
 		it('should config and start monitoring for mission control', async () => {
@@ -504,6 +529,69 @@ describe('Mission Control - Monitoring', () => {
 			const { cycles } = await get_monitoring_status();
 
 			expect(fromNullable(cycles)?.running === false).toBeTruthy();
+		});
+
+		it('should update config for mission control', async () => {
+			const { update_and_start_monitoring } = actor;
+
+			const config: MonitoringStartConfig = {
+				cycles_config: [
+					{
+						satellites_strategy: toNullable(),
+						orbiters_strategy: toNullable(),
+						mission_control_strategy: toNullable(updateStrategy)
+					}
+				]
+			};
+
+			await update_and_start_monitoring(config);
+
+			await testMissionControlMonitoring({
+				expectedEnabled: true,
+				expectedStrategy: updateStrategy
+			});
+		});
+
+		it('should update config for satellite', async () => {
+			const { update_and_start_monitoring } = actor;
+
+			const config: MonitoringStartConfig = {
+				cycles_config: [
+					{
+						satellites_strategy: toNullable({
+							ids: [satelliteId],
+							strategy: updateStrategy
+						}),
+						orbiters_strategy: toNullable(),
+						mission_control_strategy: toNullable()
+					}
+				]
+			};
+
+			await update_and_start_monitoring(config);
+
+			await testSatellitesMonitoring({ expectedEnabled: true, expectedStrategy: updateStrategy });
+		});
+
+		it('should update config for orbiter', async () => {
+			const { update_and_start_monitoring } = actor;
+
+			const config: MonitoringStartConfig = {
+				cycles_config: [
+					{
+						satellites_strategy: toNullable(),
+						orbiters_strategy: toNullable({
+							ids: [orbiterId],
+							strategy: updateStrategy
+						}),
+						mission_control_strategy: toNullable()
+					}
+				]
+			};
+
+			await update_and_start_monitoring(config);
+
+			await testOrbiterMonitoring({ expectedEnabled: true, expectedStrategy: updateStrategy });
 		});
 	});
 });

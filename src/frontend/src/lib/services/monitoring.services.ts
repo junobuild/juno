@@ -2,7 +2,7 @@ import type {
 	CyclesMonitoringStrategy,
 	CyclesThreshold
 } from '$declarations/mission_control/mission_control.did';
-import { startMonitoringWithConfig, stopMonitoringWithConfig } from '$lib/api/mission-control.api';
+import { updateAndStartMonitoring, updateAndStopMonitoring } from '$lib/api/mission-control.api';
 import { loadSettings } from '$lib/services/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiters.services';
 import { loadSatellites } from '$lib/services/satellites.services';
@@ -174,7 +174,7 @@ const setMonitoringCyclesStrategy = async ({
 		}
 	};
 
-	await startMonitoringWithConfig({
+	await updateAndStartMonitoring({
 		identity,
 		missionControlId,
 		config: {
@@ -211,7 +211,7 @@ const stopMonitoringCycles = async ({
 	stopMissionControl
 }: Omit<StopMonitoringCyclesStrategyParams, 'identity' | 'onProgress'> &
 	Required<Pick<StopMonitoringCyclesStrategyParams, 'identity'>>) => {
-	await stopMonitoringWithConfig({
+	await updateAndStopMonitoring({
 		identity,
 		missionControlId,
 		config: {

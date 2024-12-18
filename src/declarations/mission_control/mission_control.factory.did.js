@@ -126,18 +126,6 @@ export const idlFactory = ({ IDL }) => {
 		scope: ControllerScope,
 		expires_at: IDL.Opt(IDL.Nat64)
 	});
-	const SegmentsMonitoringStrategy = IDL.Record({
-		ids: IDL.Vec(IDL.Principal),
-		strategy: CyclesMonitoringStrategy
-	});
-	const CyclesMonitoringStartConfig = IDL.Record({
-		orbiters_strategy: IDL.Opt(SegmentsMonitoringStrategy),
-		mission_control_strategy: IDL.Opt(CyclesMonitoringStrategy),
-		satellites_strategy: IDL.Opt(SegmentsMonitoringStrategy)
-	});
-	const MonitoringStartConfig = IDL.Record({
-		cycles_config: IDL.Opt(CyclesMonitoringStartConfig)
-	});
 	const CronJobStatusesConfig = IDL.Record({
 		enabled: IDL.Bool,
 		cycles_threshold: IDL.Opt(IDL.Nat64)
@@ -152,6 +140,18 @@ export const idlFactory = ({ IDL }) => {
 		orbiters: IDL.Opt(IDL.Vec(Result_2)),
 		satellites: IDL.Opt(IDL.Vec(Result_2)),
 		mission_control: Result_2
+	});
+	const SegmentsMonitoringStrategy = IDL.Record({
+		ids: IDL.Vec(IDL.Principal),
+		strategy: CyclesMonitoringStrategy
+	});
+	const CyclesMonitoringStartConfig = IDL.Record({
+		orbiters_strategy: IDL.Opt(SegmentsMonitoringStrategy),
+		mission_control_strategy: IDL.Opt(CyclesMonitoringStrategy),
+		satellites_strategy: IDL.Opt(SegmentsMonitoringStrategy)
+	});
+	const MonitoringStartConfig = IDL.Record({
+		cycles_config: IDL.Opt(CyclesMonitoringStartConfig)
 	});
 	const CyclesMonitoringStopConfig = IDL.Record({
 		satellite_ids: IDL.Opt(IDL.Vec(IDL.Principal)),
@@ -230,12 +230,14 @@ export const idlFactory = ({ IDL }) => {
 			[],
 			[]
 		),
-		start_monitoring_with_config: IDL.Func([MonitoringStartConfig], [], []),
+		start_monitoring: IDL.Func([], [], []),
 		status: IDL.Func([StatusesArgs], [SegmentsStatuses], []),
-		stop_monitoring_with_config: IDL.Func([MonitoringStopConfig], [], []),
+		stop_monitoring: IDL.Func([], [], []),
 		top_up: IDL.Func([IDL.Principal, Tokens], [], []),
 		unset_orbiter: IDL.Func([IDL.Principal], [], []),
 		unset_satellite: IDL.Func([IDL.Principal], [], []),
+		update_and_start_monitoring: IDL.Func([MonitoringStartConfig], [], []),
+		update_and_stop_monitoring: IDL.Func([MonitoringStopConfig], [], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

@@ -455,7 +455,7 @@ export const getSettings = async ({
 	return get_settings();
 };
 
-export const startMonitoringWithConfig = async ({
+export const updateAndStartMonitoring = async ({
 	missionControlId,
 	identity,
 	config
@@ -464,15 +464,15 @@ export const startMonitoringWithConfig = async ({
 	identity: OptionIdentity;
 	config: MonitoringStartConfig;
 }): Promise<void> => {
-	const { start_monitoring_with_config } = await getMissionControlActor({
+	const { update_and_start_monitoring } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
 
-	return await start_monitoring_with_config(config);
+	return await update_and_start_monitoring(config);
 };
 
-export const stopMonitoringWithConfig = async ({
+export const updateAndStopMonitoring = async ({
 	missionControlId,
 	identity,
 	config
@@ -481,10 +481,10 @@ export const stopMonitoringWithConfig = async ({
 	identity: OptionIdentity;
 	config: MonitoringStopConfig;
 }): Promise<void> => {
-	const { stop_monitoring_with_config } = await getMissionControlActor({
+	const { update_and_stop_monitoring } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
 
-	return await stop_monitoring_with_config(config);
+	return await update_and_stop_monitoring(config);
 };

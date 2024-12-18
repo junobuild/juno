@@ -200,12 +200,14 @@ export interface _SERVICE {
 		[Array<Principal>, Array<Principal>, SetController],
 		undefined
 	>;
-	start_monitoring_with_config: ActorMethod<[MonitoringStartConfig], undefined>;
+	start_monitoring: ActorMethod<[], undefined>;
 	status: ActorMethod<[StatusesArgs], SegmentsStatuses>;
-	stop_monitoring_with_config: ActorMethod<[MonitoringStopConfig], undefined>;
+	stop_monitoring: ActorMethod<[], undefined>;
 	top_up: ActorMethod<[Principal, Tokens], undefined>;
 	unset_orbiter: ActorMethod<[Principal], undefined>;
 	unset_satellite: ActorMethod<[Principal], undefined>;
+	update_and_start_monitoring: ActorMethod<[MonitoringStartConfig], undefined>;
+	update_and_stop_monitoring: ActorMethod<[MonitoringStopConfig], undefined>;
 	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

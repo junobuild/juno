@@ -25,6 +25,10 @@ type CyclesMonitoringStartConfig = record {
   mission_control_strategy : opt CyclesMonitoringStrategy;
   satellites_strategy : opt SegmentsMonitoringStrategy;
 };
+type CyclesMonitoringStatus = record {
+  monitored_ids : vec principal;
+  running : bool;
+};
 type CyclesMonitoringStopConfig = record {
   satellite_ids : opt vec principal;
   try_mission_control : opt bool;
@@ -42,6 +46,7 @@ type Monitoring = record { cycles : opt CyclesMonitoring };
 type MonitoringStartConfig = record {
   cycles_config : opt CyclesMonitoringStartConfig;
 };
+type MonitoringStatus = record { cycles : opt CyclesMonitoringStatus };
 type MonitoringStopConfig = record {
   cycles_config : opt CyclesMonitoringStopConfig;
 };
@@ -151,6 +156,7 @@ service : () -> {
   del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
+  get_monitoring_status : () -> (MonitoringStatus) query;
   get_settings : () -> (opt MissionControlSettings) query;
   get_user : () -> (principal) query;
   icp_transfer : (TransferArgs) -> (Result);

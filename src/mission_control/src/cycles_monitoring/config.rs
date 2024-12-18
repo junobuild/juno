@@ -14,6 +14,10 @@ use crate::types::interface::{CyclesMonitoringStartConfig, CyclesMonitoringStopC
 pub fn register_and_start_cycles_monitoring(
     config: &CyclesMonitoringStartConfig,
 ) -> Result<(), String> {
+    // Start by registering mission control monitoring, as it is essential to monitor it if any other strategies are set.
+    // Mission control acts as the funding manager and is critical for managing cycles.
+    register_mission_control_monitoring(&config.mission_control_strategy)?;
+
     if let Some(strategy) = &config.satellites_strategy {
         register_modules_monitoring(strategy, set_satellite_strategy)?;
     }
@@ -21,8 +25,6 @@ pub fn register_and_start_cycles_monitoring(
     if let Some(strategy) = &config.orbiters_strategy {
         register_modules_monitoring(strategy, set_orbiter_strategy)?;
     }
-
-    register_mission_control_monitoring(&config.mission_control_strategy)?;
 
     start_scheduler();
 

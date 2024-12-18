@@ -2,8 +2,9 @@ use crate::cycles_monitoring::config::{
     register_and_start_cycles_monitoring, unregister_and_stop_cycles_monitoring,
 };
 use crate::cycles_monitoring::start::start_cycles_monitoring;
+use crate::cycles_monitoring::status::get_cycles_monitoring_status;
 use crate::cycles_monitoring::stop::stop_cycles_monitoring;
-use crate::types::interface::{MonitoringStartConfig, MonitoringStopConfig};
+use crate::types::interface::{MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig};
 use ic_cdk::spawn;
 use ic_cdk::trap;
 use ic_cdk_timers::set_timer;
@@ -14,11 +15,11 @@ pub fn defer_restart_monitoring() {
 }
 
 async fn restart_monitoring() {
-    start_cycles_monitoring().unwrap_or_else(|e| trap(&e));
+    start_cycles_monitoring(true).unwrap_or_else(|e| trap(&e));
 }
 
 pub fn start_monitoring() -> Result<(), String> {
-    start_cycles_monitoring()
+    start_cycles_monitoring(false)
 }
 
 pub fn stop_monitoring() -> Result<(), String> {
@@ -41,4 +42,10 @@ pub fn update_and_stop_monitoring_with_config(config: &MonitoringStopConfig) -> 
     }
 
     Ok(())
+}
+
+pub fn get_monitoring_status() -> MonitoringStatus {
+    MonitoringStatus {
+        cycles: get_cycles_monitoring_status(),
+    }
 }

@@ -32,6 +32,10 @@ export interface CyclesMonitoringStartConfig {
 	mission_control_strategy: [] | [CyclesMonitoringStrategy];
 	satellites_strategy: [] | [SegmentsMonitoringStrategy];
 }
+export interface CyclesMonitoringStatus {
+	monitored_ids: Array<Principal>;
+	running: boolean;
+}
 export interface CyclesMonitoringStopConfig {
 	satellite_ids: [] | [Array<Principal>];
 	try_mission_control: [] | [boolean];
@@ -56,6 +60,9 @@ export interface Monitoring {
 }
 export interface MonitoringStartConfig {
 	cycles_config: [] | [CyclesMonitoringStartConfig];
+}
+export interface MonitoringStatus {
+	cycles: [] | [CyclesMonitoringStatus];
 }
 export interface MonitoringStopConfig {
 	cycles_config: [] | [CyclesMonitoringStopConfig];
@@ -174,6 +181,7 @@ export interface _SERVICE {
 	del_satellite: ActorMethod<[Principal, bigint], undefined>;
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
+	get_monitoring_status: ActorMethod<[], MonitoringStatus>;
 	get_settings: ActorMethod<[], [] | [MissionControlSettings]>;
 	get_user: ActorMethod<[], Principal>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;

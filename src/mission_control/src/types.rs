@@ -166,4 +166,15 @@ pub mod interface {
     pub struct MonitoringStopConfig {
         pub cycles_config: Option<CyclesMonitoringStopConfig>,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CyclesMonitoringStatus {
+        pub running: bool,
+        pub monitored_ids: Vec<SegmentId>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct MonitoringStatus {
+        pub cycles: Option<CyclesMonitoringStatus>,
+    }
 }

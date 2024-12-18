@@ -1,4 +1,3 @@
-use crate::cycles_monitoring::constants::DEFAULT_MISSION_CONTROL_STRATEGY;
 use crate::cycles_monitoring::funding::init_funding_manager;
 use crate::cycles_monitoring::funding::register_cycles_monitoring;
 use crate::cycles_monitoring::store::set_mission_control_strategy;
@@ -57,12 +56,19 @@ fn register_mission_control_monitoring_impl(
 
     // If a strategy for Mission Control has already been registered and no new configuration is provided, we can skip.
     // Conversely, if a new configuration is provided, it indicates an intention to update the strategy.
-    // Additionally, if no strategy exists, we must register one, as no modules are observed without also observing Mission Control.
     if strategy_exists && strategy.is_none() {
         return Ok(());
     }
 
-    let cycles_strategy = strategy.clone().unwrap_or(DEFAULT_MISSION_CONTROL_STRATEGY);
+    // If no strategy exists, we must register one, as no modules are observed without also observing Mission Control.
+    // Regardless if we create a new strategy or update it, we need a strategy at this point.
+    if strategy.is_none() {
+        return Err(
+            "A strategy for monitoring the missing mission control must be provided.".to_string(),
+        );
+    }
+
+    let cycles_strategy = strategy.clone().unwrap();
 
     set_mission_control_strategy(&cycles_strategy);
 

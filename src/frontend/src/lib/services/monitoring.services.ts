@@ -91,7 +91,7 @@ export const stopMonitoringCyclesStrategy = async ({
 		missionControlId,
 		onProgress,
 		fn: stopMonitoring,
-		errorText: labels.errors.monitoring_apply_strategy_error
+		errorText: labels.errors.monitoring_stop_error
 	});
 };
 

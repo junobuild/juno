@@ -524,7 +524,8 @@
 		"auth_rate_config_update": "Unexpected error(s) while trying to update your authentication settings.",
 		"auth_domain_config": "Unexpected error(s) while trying to update your authentication configuration",
 		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded.",
-		"monitoring_apply_strategy_error": "Unexpected error(s) while applying the strategy."
+		"monitoring_apply_strategy_error": "Unexpected error(s) while applying the strategy.",
+		"monitoring_stop_error": "Unexpected error(s) while stopping the monitoring."
 	},
 	"document": {
 		"owner": "Owner",

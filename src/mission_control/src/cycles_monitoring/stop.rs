@@ -10,16 +10,14 @@ use junobuild_shared::types::state::SegmentId;
 pub fn stop_cycles_monitoring() -> Result<(), String> {
     assert_scheduler_running()?;
 
-    unregister_modules_strategies()?;
-
-    unregister_mission_control_monitoring()?;
+    unregister_strategies()?;
 
     stop_scheduler();
 
     Ok(())
 }
 
-fn unregister_modules_strategies() -> Result<(), String> {
+fn unregister_strategies() -> Result<(), String> {
     let satellites = get_satellites();
     let orbiters = get_orbiters();
 
@@ -53,6 +51,8 @@ fn unregister_modules_strategies() -> Result<(), String> {
     if !orbiter_ids.is_empty() {
         unregister_modules_monitoring(&orbiter_ids, disable_orbiter_monitoring)?;
     }
+
+    unregister_mission_control_monitoring()?;
 
     Ok(())
 }

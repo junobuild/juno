@@ -195,10 +195,10 @@ describe('Mission Control - Monitoring', () => {
 		});
 
 		const testMonitoring = ({
-									monitoring,
-									expectedEnabled,
-									expectedStrategy = strategy
-								}: {
+			monitoring,
+			expectedEnabled,
+			expectedStrategy = strategy
+		}: {
 			monitoring: Monitoring | undefined;
 			expectedEnabled: boolean;
 			expectedStrategy?: CyclesMonitoringStrategy;
@@ -216,9 +216,9 @@ describe('Mission Control - Monitoring', () => {
 		};
 
 		const testMissionControlMonitoring = async ({
-														expectedEnabled,
-														expectedStrategy
-													}: {
+			expectedEnabled,
+			expectedStrategy
+		}: {
 			expectedEnabled: boolean;
 			expectedStrategy?: CyclesMonitoringStrategy;
 		}) => {
@@ -231,9 +231,9 @@ describe('Mission Control - Monitoring', () => {
 		};
 
 		const testSatellitesMonitoring = async ({
-													expectedEnabled,
-													expectedStrategy
-												}: {
+			expectedEnabled,
+			expectedStrategy
+		}: {
 			expectedEnabled: boolean;
 			expectedStrategy?: CyclesMonitoringStrategy;
 		}) => {
@@ -248,9 +248,9 @@ describe('Mission Control - Monitoring', () => {
 		};
 
 		const testOrbiterMonitoring = async ({
-												 expectedEnabled,
-												 expectedStrategy
-											 }: {
+			expectedEnabled,
+			expectedStrategy
+		}: {
 			expectedEnabled: boolean;
 			expectedStrategy?: CyclesMonitoringStrategy;
 		}) => {

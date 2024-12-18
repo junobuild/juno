@@ -35,7 +35,10 @@ export const idlFactory = ({ IDL }) => {
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
 	});
-	const CyclesMonitoringStatus = IDL.Record({ running: IDL.Bool });
+	const CyclesMonitoringStatus = IDL.Record({
+		monitored_ids: IDL.Vec(IDL.Principal),
+		running: IDL.Bool
+	});
 	const MonitoringStatus = IDL.Record({
 		cycles: IDL.Opt(CyclesMonitoringStatus)
 	});

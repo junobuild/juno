@@ -133,7 +133,7 @@ describe('Mission Control - Monitoring', () => {
 		it('should have no monitoring status', async () => {
 			const { get_monitoring_status } = actor;
 
-			const {cycles} = await get_monitoring_status();
+			const { cycles } = await get_monitoring_status();
 
 			expect(fromNullable(cycles)).toBeUndefined();
 		});
@@ -260,7 +260,7 @@ describe('Mission Control - Monitoring', () => {
 		it('should have a running monitoring status', async () => {
 			const { get_monitoring_status } = actor;
 
-			const {cycles} = await get_monitoring_status();
+			const { cycles } = await get_monitoring_status();
 
 			expect(fromNullable(cycles)?.running === true).toBeTruthy();
 		});
@@ -465,7 +465,7 @@ describe('Mission Control - Monitoring', () => {
 		it('should have a stopped monitoring status', async () => {
 			const { get_monitoring_status } = actor;
 
-			const {cycles} = await get_monitoring_status();
+			const { cycles } = await get_monitoring_status();
 
 			expect(fromNullable(cycles)?.running === false).toBeTruthy();
 		});
@@ -483,7 +483,7 @@ describe('Mission Control - Monitoring', () => {
 		it('should have a running monitoring status', async () => {
 			const { get_monitoring_status } = actor;
 
-			const {cycles} = await get_monitoring_status();
+			const { cycles } = await get_monitoring_status();
 
 			expect(fromNullable(cycles)?.running === true).toBeTruthy();
 		});
@@ -501,7 +501,7 @@ describe('Mission Control - Monitoring', () => {
 		it('should have a stopped monitoring status', async () => {
 			const { get_monitoring_status } = actor;
 
-			const {cycles} = await get_monitoring_status();
+			const { cycles } = await get_monitoring_status();
 
 			expect(fromNullable(cycles)?.running === false).toBeTruthy();
 		});

@@ -131,5 +131,11 @@ describe('Mission control upgrade', () => {
 		const { cycles: newCycles } = await get_monitoring_status();
 
 		expect(fromNullable(newCycles)?.running === true).toBeTruthy();
+
+		const monitoredIds = (fromNullable(newCycles)?.monitored_ids ?? []).map(id => id.toText());
+
+		expect(monitoredIds.includes(missionControlId.toText())).toBeTruthy();
+		expect(monitoredIds.includes(satelliteId.toText())).toBeTruthy();
+		expect(monitoredIds.includes(orbiterId.toText())).toBeFalsy();
 	});
 });

@@ -170,6 +170,7 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct CyclesMonitoringStatus {
         pub running: bool,
+        pub monitored_ids: Vec<SegmentId>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

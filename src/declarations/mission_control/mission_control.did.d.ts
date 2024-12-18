@@ -33,6 +33,7 @@ export interface CyclesMonitoringStartConfig {
 	satellites_strategy: [] | [SegmentsMonitoringStrategy];
 }
 export interface CyclesMonitoringStatus {
+	monitored_ids: Array<Principal>;
 	running: boolean;
 }
 export interface CyclesMonitoringStopConfig {

@@ -25,7 +25,10 @@ type CyclesMonitoringStartConfig = record {
   mission_control_strategy : opt CyclesMonitoringStrategy;
   satellites_strategy : opt SegmentsMonitoringStrategy;
 };
-type CyclesMonitoringStatus = record { running : bool };
+type CyclesMonitoringStatus = record {
+  monitored_ids : vec principal;
+  running : bool;
+};
 type CyclesMonitoringStopConfig = record {
   satellite_ids : opt vec principal;
   try_mission_control : opt bool;

@@ -12,5 +12,10 @@ fn get_cycles_monitoring_status_impl(state: &RuntimeState) -> Option<CyclesMonit
         .as_ref()
         .map(|fund_manager| CyclesMonitoringStatus {
             running: fund_manager.is_running(),
+            monitored_ids: fund_manager
+                .get_canisters()
+                .iter()
+                .map(|(id, _)| *id)
+                .collect(),
         })
 }

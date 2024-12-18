@@ -94,6 +94,12 @@ describe('Mission Control - Monitoring', () => {
 
 			await expect(update_and_stop_monitoring(emptyConfig)).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
+
+		it('should throw errors on get monitoring status', async () => {
+			const { get_monitoring_status } = actor;
+
+			await expect(get_monitoring_status()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
 	};
 
 	describe('anonymous', () => {
@@ -122,6 +128,14 @@ describe('Mission Control - Monitoring', () => {
 
 		beforeAll(() => {
 			actor.setIdentity(controller);
+		});
+
+		it('should have no monitoring status', async () => {
+			const { get_monitoring_status } = actor;
+
+			const {cycles} = await get_monitoring_status();
+
+			expect(fromNullable(cycles)).toBeUndefined();
 		});
 
 		it('should have no mission control settings', async () => {
@@ -241,6 +255,14 @@ describe('Mission Control - Monitoring', () => {
 			await update_and_start_monitoring(config);
 
 			await testMissionControlMonitoring({ expectedEnabled: true });
+		});
+
+		it('should have a running monitoring status', async () => {
+			const { get_monitoring_status } = actor;
+
+			const {cycles} = await get_monitoring_status();
+
+			expect(fromNullable(cycles)?.running === true).toBeTruthy();
 		});
 
 		it('should config and start monitoring for satellite', async () => {
@@ -440,6 +462,14 @@ describe('Mission Control - Monitoring', () => {
 			await testOrbiterMonitoring({ expectedEnabled: false });
 		});
 
+		it('should have a stopped monitoring status', async () => {
+			const { get_monitoring_status } = actor;
+
+			const {cycles} = await get_monitoring_status();
+
+			expect(fromNullable(cycles)?.running === false).toBeTruthy();
+		});
+
 		it('should start monitoring', async () => {
 			const { start_monitoring } = actor;
 
@@ -450,6 +480,14 @@ describe('Mission Control - Monitoring', () => {
 			await testOrbiterMonitoring({ expectedEnabled: true });
 		});
 
+		it('should have a running monitoring status', async () => {
+			const { get_monitoring_status } = actor;
+
+			const {cycles} = await get_monitoring_status();
+
+			expect(fromNullable(cycles)?.running === true).toBeTruthy();
+		});
+
 		it('should stop monitoring', async () => {
 			const { stop_monitoring } = actor;
 
@@ -458,6 +496,14 @@ describe('Mission Control - Monitoring', () => {
 			await testMissionControlMonitoring({ expectedEnabled: false });
 			await testSatellitesMonitoring({ expectedEnabled: false });
 			await testOrbiterMonitoring({ expectedEnabled: false });
+		});
+
+		it('should have a stopped monitoring status', async () => {
+			const { get_monitoring_status } = actor;
+
+			const {cycles} = await get_monitoring_status();
+
+			expect(fromNullable(cycles)?.running === false).toBeTruthy();
 		});
 	});
 });

@@ -287,7 +287,7 @@ describe('Mission Control - Monitoring', () => {
 		});
 
 		it('should config and start monitoring for orbiter', async () => {
-			const { update_and_start_monitoring, list_orbiters } = actor;
+			const { update_and_start_monitoring } = actor;
 
 			const config: MonitoringStartConfig = {
 				cycles_config: [

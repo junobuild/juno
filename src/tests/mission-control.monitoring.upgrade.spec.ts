@@ -132,7 +132,7 @@ describe('Mission control upgrade', () => {
 
 		expect(fromNullable(newCycles)?.running === true).toBeTruthy();
 
-		const monitoredIds = (fromNullable(newCycles)?.monitored_ids ?? []).map(id => id.toText());
+		const monitoredIds = (fromNullable(newCycles)?.monitored_ids ?? []).map((id) => id.toText());
 
 		expect(monitoredIds.includes(missionControlId.toText())).toBeTruthy();
 		expect(monitoredIds.includes(satelliteId.toText())).toBeTruthy();

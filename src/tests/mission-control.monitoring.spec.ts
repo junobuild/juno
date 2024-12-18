@@ -190,6 +190,19 @@ describe('Mission Control - Monitoring', () => {
 			expect(cyclesStrategy?.BelowThreshold.min_cycles).toEqual(strategy.BelowThreshold.min_cycles);
 		};
 
+		const testMissionControlMonitoring = async ({
+			expectedEnabled
+		}: {
+			expectedEnabled: boolean;
+		}) => {
+			const { get_settings } = actor;
+
+			const settings = fromNullable(await get_settings());
+			const monitoring = fromNullable(settings?.monitoring ?? []);
+
+			testMonitoring({ monitoring, expectedEnabled });
+		};
+
 		const testSatellitesMonitoring = async ({ expectedEnabled }: { expectedEnabled: boolean }) => {
 			const { list_satellites } = actor;
 
@@ -213,7 +226,7 @@ describe('Mission Control - Monitoring', () => {
 		};
 
 		it('should config and start monitoring for mission control', async () => {
-			const { update_and_start_monitoring, get_settings } = actor;
+			const { update_and_start_monitoring } = actor;
 
 			const config: MonitoringStartConfig = {
 				cycles_config: [
@@ -227,10 +240,7 @@ describe('Mission Control - Monitoring', () => {
 
 			await update_and_start_monitoring(config);
 
-			const settings = fromNullable(await get_settings());
-			const monitoring = fromNullable(settings?.monitoring ?? []);
-
-			testMonitoring({ monitoring, expectedEnabled: true });
+			await testMissionControlMonitoring({ expectedEnabled: true });
 		});
 
 		it('should config and start monitoring for satellite', async () => {
@@ -410,7 +420,7 @@ describe('Mission Control - Monitoring', () => {
 		});
 
 		it('should stop monitoring for mission control', async () => {
-			const { update_and_stop_monitoring, get_settings } = actor;
+			const { update_and_stop_monitoring } = actor;
 
 			const config: MonitoringStopConfig = {
 				cycles_config: [
@@ -424,11 +434,28 @@ describe('Mission Control - Monitoring', () => {
 
 			await update_and_stop_monitoring(config);
 
-			const settings = fromNullable(await get_settings());
-			const monitoring = fromNullable(settings?.monitoring ?? []);
+			await testMissionControlMonitoring({ expectedEnabled: false });
 
-			testMonitoring({ monitoring, expectedEnabled: false });
+			await testSatellitesMonitoring({ expectedEnabled: false });
+			await testOrbiterMonitoring({ expectedEnabled: false });
+		});
 
+		it('should start monitoring', async () => {
+			const { start_monitoring } = actor;
+
+			await start_monitoring();
+
+			await testMissionControlMonitoring({ expectedEnabled: true });
+			await testSatellitesMonitoring({ expectedEnabled: true });
+			await testOrbiterMonitoring({ expectedEnabled: true });
+		});
+
+		it('should stop monitoring', async () => {
+			const { stop_monitoring } = actor;
+
+			await stop_monitoring();
+
+			await testMissionControlMonitoring({ expectedEnabled: false });
 			await testSatellitesMonitoring({ expectedEnabled: false });
 			await testOrbiterMonitoring({ expectedEnabled: false });
 		});

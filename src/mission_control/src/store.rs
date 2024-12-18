@@ -1,6 +1,8 @@
 use crate::constants::RETAIN_ARCHIVE_STATUSES_NS;
 use crate::memory::STATE;
-use crate::types::state::{ArchiveStatusesSegments, HeapState, Statuses, User};
+use crate::types::state::{
+    ArchiveStatusesSegments, HeapState, MissionControlSettings, Statuses, User,
+};
 use candid::Principal;
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{
@@ -10,6 +12,10 @@ use std::collections::BTreeMap;
 
 pub fn get_user() -> UserId {
     STATE.with(|state| state.borrow().heap.user.user).unwrap()
+}
+
+pub fn get_settings() -> Option<MissionControlSettings> {
+    STATE.with(|state| state.borrow().heap.settings.clone())
 }
 
 pub fn set_metadata(metadata: &Metadata) {

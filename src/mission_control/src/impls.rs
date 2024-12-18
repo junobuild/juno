@@ -1,7 +1,10 @@
-use crate::types::core::Segment;
+use crate::types::core::{Segment, SettingsMonitoring};
+use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
-    Archive, ArchiveStatuses, HeapState, Orbiter, Orbiters, Satellite, User,
+    Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState,
+    MissionControlSettings, Monitoring, Orbiter, Orbiters, Satellite, Settings, User,
 };
+use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
 use std::collections::{BTreeMap, HashMap};
@@ -14,6 +17,7 @@ impl From<&UserId> for HeapState {
             controllers: HashMap::new(),
             archive: Archive::new(),
             orbiters: Orbiters::new(),
+            settings: None,
         }
     }
 }
@@ -57,9 +61,49 @@ impl Satellite {
         Satellite {
             satellite_id: *satellite_id,
             metadata: init_metadata(name),
+            settings: None,
             created_at: now,
             updated_at: now,
         }
+    }
+
+    pub fn clone_with_settings(&self, settings: &Settings) -> Self {
+        let now = time();
+
+        Satellite {
+            settings: Some(settings.clone()),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+
+    pub fn toggle_cycles_monitoring(&self, enabled: bool) -> Result<Self, String> {
+        let settings = self
+            .settings
+            .clone()
+            .ok_or_else(|| "Settings not found.".to_string())?;
+
+        let monitoring = settings
+            .monitoring
+            .clone()
+            .ok_or_else(|| "Monitoring configuration not found.".to_string())?;
+
+        let cycles = monitoring
+            .cycles
+            .clone()
+            .ok_or_else(|| "Cycles monitoring configuration not found.".to_string())?;
+
+        let now = time();
+
+        Ok(Satellite {
+            settings: Some(Settings {
+                monitoring: Some(Monitoring {
+                    cycles: Some(CyclesMonitoring { enabled, ..cycles }),
+                }),
+            }),
+            updated_at: now,
+            ..self.clone()
+        })
     }
 }
 
@@ -70,9 +114,74 @@ impl Orbiter {
         Orbiter {
             orbiter_id: *orbiter_id,
             metadata: init_metadata(name),
+            settings: None,
             created_at: now,
             updated_at: now,
         }
+    }
+
+    pub fn clone_with_settings(&self, settings: &Settings) -> Self {
+        let now = time();
+
+        Orbiter {
+            settings: Some(settings.clone()),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+
+    pub fn toggle_cycles_monitoring(&self, enabled: bool) -> Result<Self, String> {
+        let settings = self
+            .settings
+            .clone()
+            .ok_or_else(|| "Settings not found.".to_string())?;
+
+        let monitoring = settings
+            .monitoring
+            .clone()
+            .ok_or_else(|| "Monitoring configuration not found.".to_string())?;
+
+        let cycles = monitoring
+            .cycles
+            .clone()
+            .ok_or_else(|| "Cycles monitoring configuration not found.".to_string())?;
+
+        let now = time();
+
+        Ok(Orbiter {
+            settings: Some(Settings {
+                monitoring: Some(Monitoring {
+                    cycles: Some(CyclesMonitoring { enabled, ..cycles }),
+                }),
+            }),
+            updated_at: now,
+            ..self.clone()
+        })
+    }
+}
+
+impl Settings {
+    pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
+        Settings {
+            monitoring: Some(Monitoring::from(strategy)),
+        }
+    }
+}
+
+impl Monitoring {
+    pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
+        Monitoring {
+            cycles: Some(CyclesMonitoring {
+                enabled: true,
+                strategy: Some(strategy.clone()),
+            }),
+        }
+    }
+}
+
+impl SettingsMonitoring for Settings {
+    fn monitoring(&self) -> Option<&Monitoring> {
+        self.monitoring.as_ref()
     }
 }
 
@@ -81,10 +190,9 @@ impl Segment<SatelliteId> for Satellite {
         let now = time();
 
         Satellite {
-            satellite_id: self.satellite_id,
             metadata: metadata.clone(),
-            created_at: self.created_at,
             updated_at: now,
+            ..self.clone()
         }
     }
 }
@@ -94,10 +202,73 @@ impl Segment<OrbiterId> for Orbiter {
         let now = time();
 
         Orbiter {
-            orbiter_id: self.orbiter_id,
             metadata: metadata.clone(),
-            created_at: self.created_at,
             updated_at: now,
+            ..self.clone()
         }
+    }
+}
+
+impl CyclesMonitoringStrategy {
+    pub fn to_fund_strategy(&self) -> Result<FundStrategy, String> {
+        #[allow(unreachable_patterns)]
+        match self {
+            BelowThreshold(threshold) => Ok(FundStrategy::BelowThreshold(
+                CyclesThreshold::new()
+                    .with_min_cycles(threshold.min_cycles)
+                    .with_fund_cycles(threshold.fund_cycles),
+            )),
+            _ => Err("Unsupported cycles monitoring strategy.".to_string()),
+        }
+    }
+}
+
+impl MissionControlSettings {
+    pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
+        let now = time();
+
+        MissionControlSettings {
+            monitoring: Some(Monitoring::from(strategy)),
+            updated_at: now,
+            created_at: now,
+        }
+    }
+
+    pub fn clone_with_strategy(&self, strategy: &CyclesMonitoringStrategy) -> Self {
+        let now = time();
+
+        MissionControlSettings {
+            monitoring: Some(Monitoring::from(strategy)),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+
+    pub fn toggle_cycles_monitoring(&self, enabled: bool) -> Result<Self, String> {
+        let monitoring = self
+            .monitoring
+            .clone()
+            .ok_or_else(|| "Monitoring configuration not found.".to_string())?;
+
+        let cycles = monitoring
+            .cycles
+            .clone()
+            .ok_or_else(|| "Cycles monitoring configuration not found.".to_string())?;
+
+        let now = time();
+
+        Ok(MissionControlSettings {
+            monitoring: Some(Monitoring {
+                cycles: Some(CyclesMonitoring { enabled, ..cycles }),
+            }),
+            updated_at: now,
+            ..self.clone()
+        })
+    }
+}
+
+impl SettingsMonitoring for MissionControlSettings {
+    fn monitoring(&self) -> Option<&Monitoring> {
+        self.monitoring.as_ref()
     }
 }

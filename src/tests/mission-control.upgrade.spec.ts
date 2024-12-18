@@ -2,6 +2,7 @@ import type { _SERVICE as MissionControlActor } from '$declarations/mission_cont
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
+import { fromNullable } from '@dfinity/utils';
 import { type Actor, PocketIc } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import {
@@ -121,6 +122,18 @@ describe('Mission control upgrade', () => {
 
 			await testModules();
 			await testUser();
+		});
+
+		it('should migrate with no settings', async () => {
+			await upgradeCurrent();
+
+			actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
+			actor.setIdentity(controller);
+
+			const { get_settings } = actor;
+			const settings = await get_settings();
+
+			expect(fromNullable(settings)).toBeUndefined();
 		});
 	});
 });

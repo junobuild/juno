@@ -1,91 +1,58 @@
-use crate::cycles_monitoring::funding::init_funding_manager;
-use crate::cycles_monitoring::store::{
-    disable_mission_control_monitoring, disable_orbiter_monitoring, disable_satellite_monitoring,
+use crate::cycles_monitoring::scheduler::{assert_scheduler_running, stop_scheduler};
+use crate::cycles_monitoring::store::{disable_orbiter_monitoring, disable_satellite_monitoring};
+use crate::cycles_monitoring::unregister::{
+    unregister_mission_control_monitoring, unregister_modules_monitoring,
 };
-use crate::memory::RUNTIME_STATE;
-use crate::types::interface::CyclesMonitoringStopConfig;
-use crate::types::runtime::RuntimeState;
-use ic_cdk::id;
+use crate::segments::store::{get_orbiters, get_satellites};
+use crate::types::core::SettingsMonitoring;
 use junobuild_shared::types::state::SegmentId;
 
-type DisableMonitoring = fn(&SegmentId) -> Result<(), String>;
+pub fn stop_cycles_monitoring() -> Result<(), String> {
+    assert_scheduler_running()?;
 
-pub fn stop_cycles_monitoring(config: &CyclesMonitoringStopConfig) -> Result<(), String> {
-    if let Some(satellite_ids) = &config.satellite_ids {
-        stop_modules_monitoring(satellite_ids, disable_satellite_monitoring)?;
-    }
+    unregister_strategies()?;
 
-    if let Some(orbiter_ids) = &config.orbiter_ids {
-        stop_modules_monitoring(orbiter_ids, disable_orbiter_monitoring)?;
-    }
-
-    if let Some(try_mission_control) = config.try_mission_control {
-        if try_mission_control {
-            stop_mission_control_monitoring()?;
-        }
-    }
-
-    stop_monitoring();
+    stop_scheduler();
 
     Ok(())
 }
 
-fn stop_monitoring() {
-    RUNTIME_STATE.with(|state| stop_monitoring_impl(&mut state.borrow_mut()))
-}
+fn unregister_strategies() -> Result<(), String> {
+    let satellites = get_satellites();
+    let orbiters = get_orbiters();
 
-fn stop_modules_monitoring(
-    segment_ids: &Vec<SegmentId>,
-    disable_monitoring: DisableMonitoring,
-) -> Result<(), String> {
-    RUNTIME_STATE.with(|state| {
-        stop_modules_monitoring_impl(segment_ids, disable_monitoring, &mut state.borrow_mut())
-    })
-}
-
-fn stop_monitoring_impl(state: &mut RuntimeState) {
-    if let Some(fund_manager) = &mut state.fund_manager {
-        if fund_manager.is_running() && fund_manager.get_canisters().is_empty() {
-            fund_manager.stop();
-        }
-    }
-}
-
-fn stop_modules_monitoring_impl(
-    segment_ids: &Vec<SegmentId>,
-    disable_monitoring: DisableMonitoring,
-    state: &mut RuntimeState,
-) -> Result<(), String> {
-    let fund_manager = state.fund_manager.get_or_insert_with(init_funding_manager);
-
-    for segment_id in segment_ids {
-        disable_monitoring(segment_id)?;
-
-        fund_manager.unregister(*segment_id);
+    fn filter_enabled_strategy<T>(segment_id: &SegmentId, settings: &Option<T>) -> Option<SegmentId>
+    where
+        T: SettingsMonitoring,
+    {
+        settings
+            .as_ref()
+            .and_then(|settings| settings.monitoring())
+            .and_then(|monitoring| monitoring.cycles.as_ref())
+            .filter(|cycles| cycles.enabled)
+            .map(|_| *segment_id)
     }
 
-    Ok(())
-}
+    let satellite_ids: Vec<SegmentId> = satellites
+        .iter()
+        .filter_map(|(satellite_id, satellite)| {
+            filter_enabled_strategy(satellite_id, &satellite.settings)
+        })
+        .collect();
+    let orbiter_ids: Vec<SegmentId> = orbiters
+        .iter()
+        .filter_map(|(orbiter_id, orbiter)| filter_enabled_strategy(orbiter_id, &orbiter.settings))
+        .collect();
 
-fn stop_mission_control_monitoring() -> Result<(), String> {
-    RUNTIME_STATE.with(|state| stop_mission_control_monitoring_impl(&mut state.borrow_mut()))
-}
-
-fn stop_mission_control_monitoring_impl(state: &mut RuntimeState) -> Result<(), String> {
-    let fund_manager = state.fund_manager.get_or_insert_with(init_funding_manager);
-
-    let strategy_exists = fund_manager.get_canisters();
-
-    if strategy_exists.len() > 1 {
-        return Err(
-            "Mission control monitoring cannot be disabled while some modules remain active."
-                .to_string(),
-        );
+    if !satellite_ids.is_empty() {
+        unregister_modules_monitoring(&satellite_ids, disable_satellite_monitoring)?;
     }
 
-    disable_mission_control_monitoring()?;
+    if !orbiter_ids.is_empty() {
+        unregister_modules_monitoring(&orbiter_ids, disable_orbiter_monitoring)?;
+    }
 
-    fund_manager.unregister(id());
+    unregister_mission_control_monitoring()?;
 
     Ok(())
 }

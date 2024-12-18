@@ -25,7 +25,11 @@ use crate::guards::{
 };
 use crate::memory::{init_runtime_state, STATE};
 use crate::mgmt::status::collect_statuses;
-use crate::monitoring::{defer_restart_monitoring, start_monitoring, stop_monitoring};
+use crate::monitoring::{
+    defer_restart_monitoring, start_monitoring as start_monitoring_with_current_config,
+    stop_monitoring as stop_any_monitoring, update_and_start_monitoring_with_config,
+    update_and_stop_monitoring_with_config,
+};
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -396,13 +400,23 @@ fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
 // ---------------------------------------------------------
 
 #[update(guard = "caller_is_user_or_admin_controller")]
-fn start_monitoring_with_config(config: MonitoringStartConfig) {
-    start_monitoring(&config).unwrap_or_else(|e| trap(&e));
+fn start_monitoring() {
+    start_monitoring_with_current_config().unwrap_or_else(|e| trap(&e));
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
-fn stop_monitoring_with_config(config: MonitoringStopConfig) {
-    stop_monitoring(&config).unwrap_or_else(|e| trap(&e));
+fn stop_monitoring() {
+    stop_any_monitoring().unwrap_or_else(|e| trap(&e));
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+fn update_and_start_monitoring(config: MonitoringStartConfig) {
+    update_and_start_monitoring_with_config(&config).unwrap_or_else(|e| trap(&e));
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+fn update_and_stop_monitoring(config: MonitoringStopConfig) {
+    update_and_stop_monitoring_with_config(&config).unwrap_or_else(|e| trap(&e));
 }
 
 // ---------------------------------------------------------

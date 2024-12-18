@@ -1,14 +1,17 @@
 <script lang="ts">
+	import { fromNullable } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
+	import Monitoring from '$lib/components/monitoring/Monitoring.svelte';
 	import SatelliteActions from '$lib/components/satellites/SatelliteActions.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
 	import SatelliteOverviewVersion from '$lib/components/satellites/SatelliteOverviewVersion.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { satellitesNotLoaded } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
 
@@ -19,6 +22,8 @@
 	let { satellite }: Props = $props();
 
 	let satelliteId: SatelliteIdText = $derived(satellite.satellite_id.toText());
+
+	let monitoring = $derived(fromNullable(fromNullable(satellite.settings ?? [])?.monitoring ?? []));
 </script>
 
 <div class="card-container with-title">
@@ -42,6 +47,10 @@
 
 		<div>
 			<SatelliteOverviewVersion {satelliteId} />
+
+			<div>
+				<Monitoring {monitoring} loading={$satellitesNotLoaded} />
+			</div>
 		</div>
 	</div>
 

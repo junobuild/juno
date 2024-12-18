@@ -4,8 +4,8 @@
 	import type { MemorySize } from '$declarations/satellite/satellite.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterValue from '$lib/components/canister/CanisterValue.svelte';
-	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import SnapshotsMemory from '$lib/components/snapshot/SnapshotsMemory.svelte';
+	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterSyncStatus, Segment } from '$lib/types/canister';
@@ -63,8 +63,7 @@
 				{nonNullish(memory) ? formatBytes(Number(memory.heap)) : '???'}
 				<small
 					>{$i18n.canisters.on_heap}
-					{#if warning}<span class="warning" title={heapWarningLabel}><IconWarning /></span
-						>{/if}</small
+					{#if warning}<InlineWarning title={heapWarningLabel} />{/if}</small
 				>
 			</p>
 			<p>
@@ -130,8 +129,6 @@
 </div>
 
 <style lang="scss">
-	@use '../../styles/mixins/media';
-
 	p {
 		max-width: 300px;
 		color: var(--value-color);
@@ -152,15 +149,5 @@
 
 	.consumption {
 		min-height: calc(48px + var(--padding-2_5x));
-	}
-
-	.warning {
-		color: #f37010;
-	}
-
-	@include media.dark-theme {
-		.warning {
-			color: var(--color-warning);
-		}
 	}
 </style>

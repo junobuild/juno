@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { nonNullish } from '@dfinity/utils';
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';
@@ -15,10 +15,12 @@
 	interface Props {
 		missionControlId: Principal;
 		children?: Snippet;
-		selectedMissionControl: boolean;
+		selectedMissionControl?: boolean;
 		selectedSatellites: [Principal, Satellite][];
 		selectedOrbiters: [Principal, Orbiter][];
 		selectedDisabled: boolean;
+		withMissionControl?: boolean;
+		reloadSegments?: boolean;
 	}
 
 	let {
@@ -27,7 +29,9 @@
 		selectedMissionControl = $bindable(false),
 		selectedSatellites = $bindable([]),
 		selectedOrbiters = $bindable([]),
-		selectedDisabled = $bindable(false)
+		selectedDisabled = $bindable(false),
+		withMissionControl = $bindable(true),
+		reloadSegments = true
 	}: Props = $props();
 
 	let satellites: [Principal, Satellite][] = $state([]);
@@ -35,11 +39,14 @@
 
 	const loadSegments = async () => {
 		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
-			loadSatellites({ missionControl: missionControlId, reload: true }),
-			loadOrbiters({ missionControl: missionControlId, reload: true })
+			loadSatellites({ missionControl: missionControlId, reload: reloadSegments }),
+			loadOrbiters({ missionControl: missionControlId, reload: reloadSegments })
 		]);
 
-		if (resultSatellites !== 'success' || resultOrbiters !== 'success') {
+		if (
+			!['success', 'skip'].includes(resultSatellites) ||
+			!['success', 'skip'].includes(resultOrbiters)
+		) {
 			satellites = [];
 			orbiters = [];
 			return;
@@ -89,15 +96,17 @@
 			</tr>
 		</thead>
 		<tbody>
-			<tr>
-				<td class="actions"><input type="checkbox" bind:checked={selectedMissionControl} /></td>
+			{#if withMissionControl}
+				<tr>
+					<td class="actions"><input type="checkbox" bind:checked={selectedMissionControl} /></td>
 
-				<td>
-					<Segment id={missionControlId}>
-						{$i18n.mission_control.title}
-					</Segment>
-				</td>
-			</tr>
+					<td>
+						<Segment id={missionControlId}>
+							{$i18n.mission_control.title}
+						</Segment>
+					</td>
+				</tr>
+			{/if}
 
 			{#each satellites as satellite}
 				<tr>
@@ -121,7 +130,7 @@
 					>
 					<td>
 						<Segment id={orbiter[0]}>
-							{!orbName ? $i18n.analytics.title : orbName}
+							{!notEmptyString(orbName) ? $i18n.analytics.title : orbName}
 						</Segment>
 					</td>
 				</tr>

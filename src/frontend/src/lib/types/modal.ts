@@ -1,5 +1,8 @@
 import type { snapshot } from '$declarations/ic/ic.did';
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type {
+	MissionControlSettings,
+	Satellite
+} from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
@@ -95,16 +98,24 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 	config: AuthenticationConfig | undefined;
 }
 
+export interface JunoModalMonitoringStrategyDetail {
+	missionControlId: Principal;
+	settings: MissionControlSettings | undefined;
+}
+
 export type JunoModalDetail =
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
 	| JunoModalCreateSegmentDetail
 	| JunoModalCustomDomainDetail
 	| JunoModalCreateControllerDetail
+	| JunoModalEditCanisterSettingsDetail
+	| JunoModalRestoreSnapshotDetail
 	| JunoModalCyclesSatelliteDetail
 	| JunoModalDeleteSatelliteDetail
 	| JunoModalSendTokensDetail
-	| JunoModalEditOrbiterConfigDetail;
+	| JunoModalEditOrbiterConfigDetail
+	| JunoModalMonitoringStrategyDetail;
 
 export interface JunoModal {
 	type:
@@ -128,6 +139,8 @@ export interface JunoModal {
 		| 'upgrade_satellite'
 		| 'upgrade_mission_control'
 		| 'upgrade_orbiter'
-		| 'send_tokens';
+		| 'send_tokens'
+		| 'create_monitoring_strategy'
+		| 'stop_monitoring_strategy';
 	detail?: JunoModalDetail;
 }

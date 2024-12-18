@@ -11,7 +11,6 @@
 	import { onIntersection } from '$lib/directives/intersection.directives';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
-
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
 
 	run(() => {

@@ -124,12 +124,12 @@
 						<div class="radio">
 							<label>
 								<input type="radio" bind:group={enabled} name="field" value={false} />
-								<span>{$i18n.observatory.disabled}</span>
+								<span>{$i18n.core.disabled}</span>
 							</label>
 
 							<label>
 								<input type="radio" bind:group={enabled} name="field" value={true} />
-								<span>{$i18n.observatory.enabled}</span>
+								<span>{$i18n.core.enabled}</span>
 							</label>
 						</div>
 					</Value>

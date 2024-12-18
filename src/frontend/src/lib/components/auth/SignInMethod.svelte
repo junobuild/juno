@@ -21,12 +21,12 @@
 						><span class="icon"><IconIC /></span> Internet Identity</ExternalLink
 					></td
 				>
-				<td class="status">{$i18n.users.enabled}</td>
+				<td class="status">{$i18n.core.enabled}</td>
 			</tr>
 
 			<tr>
 				<td><ExternalLink href="https://nfid.one/" arrow={false}><IconNFID /></ExternalLink></td>
-				<td class="status">{$i18n.users.enabled}</td>
+				<td class="status">{$i18n.core.enabled}</td>
 			</tr>
 		</tbody>
 	</table>

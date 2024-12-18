@@ -166,7 +166,7 @@
 				<table>
 					<thead>
 						<tr>
-							<th class="tools"> {$i18n.analytics.enabled} </th>
+							<th class="tools"> {$i18n.core.enabled} </th>
 							<th class="origin"> {$i18n.satellites.satellite} </th>
 							<th class="origin"> {$i18n.satellites.id} </th>
 						</tr>

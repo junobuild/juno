@@ -111,7 +111,6 @@
 
 <style lang="scss">
 	@use '../../styles/mixins/overlay';
-	@use '../../styles/mixins/media';
 
 	.msg {
 		@include overlay.message;

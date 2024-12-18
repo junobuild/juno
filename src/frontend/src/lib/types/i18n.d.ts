@@ -71,6 +71,8 @@ interface I18nCore {
 	unselect_all: string;
 	max: string;
 	none: string;
+	enabled: string;
+	disabled: string;
 }
 
 interface I18nCanisters {
@@ -345,8 +347,6 @@ interface I18nAnalytics {
 	count: string;
 	referrers: string;
 	pages: string;
-	enabled: string;
-	disabled: string;
 	orbiter: string;
 	devices: string;
 	mobile: string;
@@ -539,6 +539,9 @@ interface I18nErrors {
 	auth_rate_config_max_tokens: string;
 	auth_rate_config_update: string;
 	auth_domain_config: string;
+	mission_control_settings_not_loaded: string;
+	monitoring_apply_strategy_error: string;
+	monitoring_stop_error: string;
 }
 
 interface I18nDocument {
@@ -675,15 +678,12 @@ interface I18nUsers {
 	created: string;
 	updated: string;
 	empty: string;
-	enabled: string;
 }
 
 interface I18nObservatory {
 	title: string;
 	dashboard: string;
 	monitoring: string;
-	enabled: string;
-	disabled: string;
 	email_notifications: string;
 	email_notifications_placeholder: string;
 	cycles_threshold: string;
@@ -695,6 +695,48 @@ interface I18nObservatory {
 	segment: string;
 	cycles_collected: string;
 	error_collecting_data: string;
+}
+
+interface I18nMonitoring {
+	title: string;
+	monitoring_strategy: string;
+	create_info: string;
+	stop_info: string;
+	threshold_info: string;
+	threshold_info_mission_control: string;
+	review_info: string;
+	review_stop_info: string;
+	review_stop_mission_control: string;
+	review_mission_control_remain_monitored: string;
+	no_mission_control_strategy: string;
+	no_mission_control_strategy_question: string;
+	mission_control_existing_strategy: string;
+	mission_control_existing_strategy_question: string;
+	update_monitoring: string;
+	start_monitoring: string;
+	stop_monitoring: string;
+	strategy_created: string;
+	monitoring_stopped: string;
+	applying_strategy: string;
+	stopping_monitoring: string;
+	remaining_threshold: string;
+	top_up_amount: string;
+	modules: string;
+	selected_modules: string;
+	monitored: string;
+	not_monitored: string;
+	modules_monitored: string;
+	modules_monitored_and_disabled: string;
+	min_cycles_not_defined: string;
+	fund_cycles_not_defined: string;
+	configure_strategy: string;
+	mission_control_strategy: string;
+	review_strategy: string;
+	warning_advice: string;
+	strategy_preparing: string;
+	reload_settings: string;
+	stop_monitoring_question: string;
+	stop_monitoring_note: string;
 }
 
 interface I18nPreferences {
@@ -743,6 +785,7 @@ interface I18n {
 	filter: I18nFilter;
 	users: I18nUsers;
 	observatory: I18nObservatory;
+	monitoring: I18nMonitoring;
 	preferences: I18nPreferences;
 	examples: I18nExamples;
 	resources: I18nResources;

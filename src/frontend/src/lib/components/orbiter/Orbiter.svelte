@@ -1,11 +1,14 @@
 <script lang="ts">
+	import { fromNullable } from '@dfinity/utils';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
+	import Monitoring from '$lib/components/monitoring/Monitoring.svelte';
 	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { orbiterNotLoaded } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 
@@ -14,6 +17,8 @@
 	}
 
 	let { orbiter }: Props = $props();
+
+	let monitoring = $derived(fromNullable(fromNullable(orbiter.settings ?? [])?.monitoring ?? []));
 </script>
 
 <div class="card-container with-title">
@@ -21,23 +26,31 @@
 
 	<div class="columns-3 fit-column-1">
 		<div class="id">
-			<Value>
-				{#snippet label()}
-					{$i18n.analytics.id}
-				{/snippet}
-				<Identifier identifier={orbiter.orbiter_id.toText()} shorten={false} small={false} />
-			</Value>
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.analytics.id}
+					{/snippet}
+					<Identifier identifier={orbiter.orbiter_id.toText()} shorten={false} small={false} />
+				</Value>
+			</div>
 
 			<CanisterSubnet canisterId={orbiter.orbiter_id} />
 		</div>
 
 		<div>
-			<Value>
-				{#snippet label()}
-					{$i18n.core.version}
-				{/snippet}
-				<p>v{$versionStore?.orbiter?.current ?? '...'}</p>
-			</Value>
+			<div>
+				<Value>
+					{#snippet label()}
+						{$i18n.core.version}
+					{/snippet}
+					<p>v{$versionStore?.orbiter?.current ?? '...'}</p>
+				</Value>
+			</div>
+
+			<div>
+				<Monitoring {monitoring} loading={$orbiterNotLoaded} />
+			</div>
 		</div>
 	</div>
 

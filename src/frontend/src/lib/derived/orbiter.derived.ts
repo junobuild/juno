@@ -14,6 +14,13 @@ export const orbiterStore: Readable<Orbiter | undefined | null> = derived(
 	([$orbitersStore]) => $orbitersStore?.[0]
 );
 
+export const orbiterLoaded = derived(
+	[orbitersDataStore],
+	([$orbitersDataStore]) => $orbitersDataStore !== undefined
+);
+
+export const orbiterNotLoaded = derived([orbiterLoaded], ([$orbiterLoaded]) => !$orbiterLoaded);
+
 export const orbiterConfigs: Readable<OrbiterConfigs | undefined> = derived(
 	[orbiterStore, orbitersConfigsStore],
 	([orbiterStore, orbitersConfigsStore]) =>

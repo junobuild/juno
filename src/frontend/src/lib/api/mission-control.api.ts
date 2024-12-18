@@ -1,5 +1,8 @@
 import type {
 	Controller,
+	MissionControlSettings,
+	MonitoringStartConfig,
+	MonitoringStopConfig,
 	Orbiter,
 	Result,
 	Result_1,
@@ -438,4 +441,50 @@ export const icrcTransfer = async ({
 }): Promise<Result_1> => {
 	const { icrc_transfer } = await getMissionControlActor({ missionControlId, identity });
 	return icrc_transfer(ledgerId, args);
+};
+
+export const getSettings = async ({
+	missionControlId,
+
+	identity
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+}): Promise<[] | [MissionControlSettings]> => {
+	const { get_settings } = await getMissionControlActor({ missionControlId, identity });
+	return get_settings();
+};
+
+export const updateAndStartMonitoring = async ({
+	missionControlId,
+	identity,
+	config
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	config: MonitoringStartConfig;
+}): Promise<void> => {
+	const { update_and_start_monitoring } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+
+	return await update_and_start_monitoring(config);
+};
+
+export const updateAndStopMonitoring = async ({
+	missionControlId,
+	identity,
+	config
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	config: MonitoringStopConfig;
+}): Promise<void> => {
+	const { update_and_stop_monitoring } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+
+	return await update_and_stop_monitoring(config);
 };

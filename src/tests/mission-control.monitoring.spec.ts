@@ -246,5 +246,27 @@ describe('Mission Control - Monitoring', () => {
 
 			expect(cycles?.enabled).toBeTruthy();
 		});
+
+		it('should config and start monitoring for mission control', async () => {
+			const { update_and_start_monitoring, get_settings } = actor;
+
+			const config: MonitoringStartConfig = {
+				cycles_config: [
+					{
+						satellites_strategy: toNullable(),
+						orbiters_strategy: toNullable(),
+						mission_control_strategy: toNullable(strategy)
+					}
+				]
+			};
+
+			await update_and_start_monitoring(config);
+
+			const settings = fromNullable(await get_settings());
+			const monitoring = fromNullable(settings?.monitoring ?? []);
+			const cycles = fromNullable(monitoring?.cycles ?? []);
+
+			expect(cycles?.enabled).toBeTruthy();
+		});
 	});
 });

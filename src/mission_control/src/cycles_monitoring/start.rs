@@ -10,6 +10,7 @@ use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;
 use ic_cdk::id;
 use junobuild_shared::types::state::SegmentId;
+use crate::cycles_monitoring::scheduler::start_scheduler;
 
 type SaveSegmentStrategy = fn(&SegmentId, &CyclesMonitoringStrategy) -> Result<(), String>;
 
@@ -24,13 +25,9 @@ pub fn start_cycles_monitoring(config: &CyclesMonitoringStartConfig) -> Result<(
 
     start_mission_control_monitoring(&config.mission_control_strategy)?;
 
-    start_monitoring();
+    start_scheduler();
 
     Ok(())
-}
-
-fn start_monitoring() {
-    RUNTIME_STATE.with(|state| start_monitoring_impl(&mut state.borrow_mut()))
 }
 
 fn start_modules_monitoring(
@@ -47,14 +44,6 @@ fn start_mission_control_monitoring(
 ) -> Result<(), String> {
     RUNTIME_STATE
         .with(|state| start_mission_control_monitoring_impl(strategy, &mut state.borrow_mut()))
-}
-
-fn start_monitoring_impl(state: &mut RuntimeState) {
-    if let Some(fund_manager) = &mut state.fund_manager {
-        if !fund_manager.is_running() {
-            fund_manager.start();
-        }
-    }
 }
 
 fn start_modules_monitoring_impl(

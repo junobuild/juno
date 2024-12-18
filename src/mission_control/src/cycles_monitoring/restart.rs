@@ -8,6 +8,7 @@ use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;
 use ic_cdk::id;
 use junobuild_shared::types::state::SegmentId;
+use crate::cycles_monitoring::scheduler::start_scheduler;
 
 type SegmentCyclesMonitoryStrategyPair = (SegmentId, CyclesMonitoringStrategy);
 
@@ -53,6 +54,8 @@ pub fn restart_cycles_monitoring() -> Result<(), String> {
     if let Some(mission_control_strategy) = mission_control_strategy {
         restart_mission_control_monitoring(&mission_control_strategy)?;
     }
+
+    start_scheduler();
 
     Ok(())
 }

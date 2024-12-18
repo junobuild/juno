@@ -50,7 +50,7 @@
 	"devDependencies": {
 		"@dfinity/eslint-config-oisy-wallet": "^0.0.6",
 		"@esbuild-plugins/node-modules-polyfill": "^0.2.2",
-		"@hadronous/pic": "^0.8.1",
+		"@hadronous/pic": "^0.10.0",
 		"@junobuild/cli-tools": "^0.0.16",
 		"@junobuild/config": "^0.0.17",
 		"@junobuild/config-loader": "^0.0.7",

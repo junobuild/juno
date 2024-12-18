@@ -1,7 +1,9 @@
+pub mod config;
 mod constants;
 mod funding;
-pub mod restart;
+mod register;
+mod scheduler;
 pub mod start;
 pub mod stop;
 mod store;
-mod scheduler;
+mod unregister;

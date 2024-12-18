@@ -1,5 +1,4 @@
 pub mod config;
-mod constants;
 mod funding;
 mod register;
 mod scheduler;

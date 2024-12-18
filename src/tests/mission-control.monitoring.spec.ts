@@ -151,14 +151,14 @@ describe('Mission Control - Monitoring', () => {
 			).toBeUndefined();
 		});
 
-		it('should fail at configuring monitoring for unknown satellite', async () => {
+		it('should fail at configuring monitoring if mission control is not already monitored', async () => {
 			const { update_and_start_monitoring } = actor;
 
 			const config: MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable({
-							ids: [satelliteIdMock],
+							ids: [satelliteId],
 							strategy
 						}),
 						orbiters_strategy: toNullable(),
@@ -168,29 +168,29 @@ describe('Mission Control - Monitoring', () => {
 			};
 
 			await expect(update_and_start_monitoring(config)).rejects.toThrow(
-				`Satellite ${satelliteIdMock.toText()} not found. Strategy cannot be saved.`
+				'A strategy for monitoring the missing mission control must be provided.'
 			);
 		});
-
-		it('should fail at configuring monitoring for unknown orbiter', async () => {
-			const { update_and_start_monitoring } = actor;
+		it('should config and start monitoring for mission control', async () => {
+			const { update_and_start_monitoring, get_settings } = actor;
 
 			const config: MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable(),
-						orbiters_strategy: toNullable({
-							ids: [satelliteId],
-							strategy
-						}),
-						mission_control_strategy: toNullable()
+						orbiters_strategy: toNullable(),
+						mission_control_strategy: toNullable(strategy)
 					}
 				]
 			};
 
-			await expect(update_and_start_monitoring(config)).rejects.toThrow(
-				`Orbiter ${satelliteId.toText()} not found. Strategy cannot be saved.`
-			);
+			await update_and_start_monitoring(config);
+
+			const settings = fromNullable(await get_settings());
+			const monitoring = fromNullable(settings?.monitoring ?? []);
+			const cycles = fromNullable(monitoring?.cycles ?? []);
+
+			expect(cycles?.enabled).toBeTruthy();
 		});
 
 		it('should config and start monitoring for satellite', async () => {
@@ -247,26 +247,46 @@ describe('Mission Control - Monitoring', () => {
 			expect(cycles?.enabled).toBeTruthy();
 		});
 
-		it('should config and start monitoring for mission control', async () => {
-			const { update_and_start_monitoring, get_settings } = actor;
+		it('should fail at configuring monitoring for unknown satellite', async () => {
+			const { update_and_start_monitoring } = actor;
+
+			const config: MonitoringStartConfig = {
+				cycles_config: [
+					{
+						satellites_strategy: toNullable({
+							ids: [satelliteIdMock],
+							strategy
+						}),
+						orbiters_strategy: toNullable(),
+						mission_control_strategy: toNullable()
+					}
+				]
+			};
+
+			await expect(update_and_start_monitoring(config)).rejects.toThrow(
+				`Satellite ${satelliteIdMock.toText()} not found. Strategy cannot be saved.`
+			);
+		});
+
+		it('should fail at configuring monitoring for unknown orbiter', async () => {
+			const { update_and_start_monitoring } = actor;
 
 			const config: MonitoringStartConfig = {
 				cycles_config: [
 					{
 						satellites_strategy: toNullable(),
-						orbiters_strategy: toNullable(),
-						mission_control_strategy: toNullable(strategy)
+						orbiters_strategy: toNullable({
+							ids: [satelliteId],
+							strategy
+						}),
+						mission_control_strategy: toNullable()
 					}
 				]
 			};
 
-			await update_and_start_monitoring(config);
-
-			const settings = fromNullable(await get_settings());
-			const monitoring = fromNullable(settings?.monitoring ?? []);
-			const cycles = fromNullable(monitoring?.cycles ?? []);
-
-			expect(cycles?.enabled).toBeTruthy();
+			await expect(update_and_start_monitoring(config)).rejects.toThrow(
+				`Orbiter ${satelliteId.toText()} not found. Strategy cannot be saved.`
+			);
 		});
 	});
 });

@@ -7,6 +7,7 @@ use crate::types::interface::CyclesMonitoringStopConfig;
 use crate::types::runtime::RuntimeState;
 use ic_cdk::id;
 use junobuild_shared::types::state::SegmentId;
+use crate::cycles_monitoring::scheduler::stop_scheduler;
 
 type DisableMonitoring = fn(&SegmentId) -> Result<(), String>;
 
@@ -25,13 +26,9 @@ pub fn stop_cycles_monitoring(config: &CyclesMonitoringStopConfig) -> Result<(),
         }
     }
 
-    stop_monitoring();
+    stop_scheduler();
 
     Ok(())
-}
-
-fn stop_monitoring() {
-    RUNTIME_STATE.with(|state| stop_monitoring_impl(&mut state.borrow_mut()))
 }
 
 fn stop_modules_monitoring(
@@ -41,14 +38,6 @@ fn stop_modules_monitoring(
     RUNTIME_STATE.with(|state| {
         stop_modules_monitoring_impl(segment_ids, disable_monitoring, &mut state.borrow_mut())
     })
-}
-
-fn stop_monitoring_impl(state: &mut RuntimeState) {
-    if let Some(fund_manager) = &mut state.fund_manager {
-        if fund_manager.is_running() && fund_manager.get_canisters().is_empty() {
-            fund_manager.stop();
-        }
-    }
 }
 
 fn stop_modules_monitoring_impl(

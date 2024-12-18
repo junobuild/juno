@@ -9,7 +9,7 @@ import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { AccountIdentifier } from '@dfinity/ledger-icp';
 import type { _SERVICE as LedgerActor } from '@dfinity/ledger-icp/dist/candid/ledger';
 import { Principal } from '@dfinity/principal';
-import { PocketIc, type Actor } from '@hadronous/pic';
+import { PocketIc, SubnetStateType, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { LEDGER_ID } from './constants/ledger-tests.contants';
 import { CONTROLLER_ERROR_MSG } from './constants/mission-control-tests.constants';
@@ -49,7 +49,13 @@ describe('Mission Control - Wallet', () => {
 	const controller = Ed25519KeyIdentity.generate();
 
 	beforeAll(async () => {
-		pic = await PocketIc.create(inject('PIC_URL'), { nns: true });
+		pic = await PocketIc.create(inject('PIC_URL'), {
+			nns: {
+				enableBenchmarkingInstructionLimits: false,
+				enableDeterministicTimeSlicing: false,
+				state: { type: SubnetStateType.New }
+			}
+		});
 	});
 
 	afterAll(async () => {

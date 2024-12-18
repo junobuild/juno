@@ -405,6 +405,7 @@ fn stop_monitoring_with_config(config: MonitoringStopConfig) {
     stop_monitoring(&config).unwrap_or_else(|e| trap(&e));
 }
 
+
 // ---------------------------------------------------------
 // Wallet
 // ---------------------------------------------------------

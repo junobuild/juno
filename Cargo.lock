@@ -771,6 +771,7 @@ dependencies = [
  "ic-cdk-macros",
  "ic-cdk-timers",
  "ic-ledger-types",
+ "ic-stable-structures",
  "icrc-ledger-types",
  "junobuild-shared",
  "serde",

@@ -1,20 +1,30 @@
 pub mod state {
     use candid::{CandidType, Principal};
-    use junobuild_shared::types::state::{
-        ArchiveTime, Controllers, Metadata, OrbiterId, SegmentStatusResult, Timestamp,
-    };
+    use junobuild_shared::types::state::{ArchiveTime, Controllers, Metadata, OrbiterId, SegmentId, SegmentStatusResult, Timestamp};
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use serde::{Deserialize, Serialize};
     use std::collections::{BTreeMap, HashMap};
+    use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::memory::Memory;
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;
 
     pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
-    #[derive(Default, Serialize, Deserialize)]
+    pub type MonitoringStatusStable = StableBTreeMap<MonitoringStatusKey, MonitoringStatus, Memory>;
+
+    #[derive(Serialize, Deserialize)]
     pub struct State {
+        // Direct stable state: State that is uses stable memory directly as its store. No need for pre/post upgrade hooks.
+        #[serde(skip, default = "init_stable_state")]
+        pub stable: StableState,
+
         pub heap: HeapState,
+    }
+
+    pub struct StableState {
+        pub monitoring_status: MonitoringStatusStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -99,6 +109,29 @@ pub mod state {
     pub struct CyclesThreshold {
         pub min_cycles: u128,
         pub fund_cycles: u128,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct MonitoringStatusKey {
+        pub segment_id: SegmentId,
+        pub timestamp: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CyclesBalance {
+        pub amount: u128,
+        pub timestamp: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct MonitoringStatus {
+        pub cycles: Option<MonitoringStatusCycles>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct MonitoringStatusCycles {
+        pub cycles: CyclesBalance,
+        pub last_deposited_cycles: Option<CyclesBalance>,
     }
 }
 

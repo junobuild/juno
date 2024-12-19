@@ -23,6 +23,13 @@ export interface CronJobStatusesConfig {
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
 }
+export interface CurrentCyclesMonitoringStatus {
+	monitored_ids: Array<Principal>;
+	running: boolean;
+}
+export interface CurrentMonitoringStatus {
+	cycles: [] | [CurrentCyclesMonitoringStatus];
+}
 export interface CyclesMonitoring {
 	strategy: [] | [CyclesMonitoringStrategy];
 	enabled: boolean;
@@ -31,10 +38,6 @@ export interface CyclesMonitoringStartConfig {
 	orbiters_strategy: [] | [SegmentsMonitoringStrategy];
 	mission_control_strategy: [] | [CyclesMonitoringStrategy];
 	satellites_strategy: [] | [SegmentsMonitoringStrategy];
-}
-export interface CyclesMonitoringStatus {
-	monitored_ids: Array<Principal>;
-	running: boolean;
 }
 export interface CyclesMonitoringStopConfig {
 	satellite_ids: [] | [Array<Principal>];
@@ -60,9 +63,6 @@ export interface Monitoring {
 }
 export interface MonitoringStartConfig {
 	cycles_config: [] | [CyclesMonitoringStartConfig];
-}
-export interface MonitoringStatus {
-	cycles: [] | [CyclesMonitoringStatus];
 }
 export interface MonitoringStopConfig {
 	cycles_config: [] | [CyclesMonitoringStopConfig];
@@ -181,7 +181,7 @@ export interface _SERVICE {
 	del_satellite: ActorMethod<[Principal, bigint], undefined>;
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
-	get_monitoring_status: ActorMethod<[], MonitoringStatus>;
+	get_current_monitoring_status: ActorMethod<[], CurrentMonitoringStatus>;
 	get_settings: ActorMethod<[], [] | [MissionControlSettings]>;
 	get_user: ActorMethod<[], Principal>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;

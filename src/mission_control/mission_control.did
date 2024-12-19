@@ -16,6 +16,13 @@ type CronJobStatusesConfig = record {
   enabled : bool;
   cycles_threshold : opt nat64;
 };
+type CurrentCyclesMonitoringStatus = record {
+  monitored_ids : vec principal;
+  running : bool;
+};
+type CurrentMonitoringStatus = record {
+  cycles : opt CurrentCyclesMonitoringStatus;
+};
 type CyclesMonitoring = record {
   strategy : opt CyclesMonitoringStrategy;
   enabled : bool;
@@ -24,10 +31,6 @@ type CyclesMonitoringStartConfig = record {
   orbiters_strategy : opt SegmentsMonitoringStrategy;
   mission_control_strategy : opt CyclesMonitoringStrategy;
   satellites_strategy : opt SegmentsMonitoringStrategy;
-};
-type CyclesMonitoringStatus = record {
-  monitored_ids : vec principal;
-  running : bool;
 };
 type CyclesMonitoringStopConfig = record {
   satellite_ids : opt vec principal;
@@ -46,7 +49,6 @@ type Monitoring = record { cycles : opt CyclesMonitoring };
 type MonitoringStartConfig = record {
   cycles_config : opt CyclesMonitoringStartConfig;
 };
-type MonitoringStatus = record { cycles : opt CyclesMonitoringStatus };
 type MonitoringStopConfig = record {
   cycles_config : opt CyclesMonitoringStopConfig;
 };
@@ -156,7 +158,7 @@ service : () -> {
   del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
-  get_monitoring_status : () -> (MonitoringStatus) query;
+  get_current_monitoring_status : () -> (CurrentMonitoringStatus) query;
   get_settings : () -> (opt MissionControlSettings) query;
   get_user : () -> (principal) query;
   icp_transfer : (TransferArgs) -> (Result);

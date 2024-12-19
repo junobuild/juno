@@ -6,7 +6,7 @@ use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
 use junobuild_shared::types::memory::Memory;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
-const MONITORING_STATUS: MemoryId = MemoryId::new(1);
+const MONITORING_HISTORY: MemoryId = MemoryId::new(1);
 
 thread_local! {
     pub static STATE: RefCell<State> = RefCell::default();
@@ -25,12 +25,12 @@ pub fn get_memory_upgrades() -> Memory {
     MEMORY_MANAGER.with(|m| m.borrow().get(UPGRADES))
 }
 
-fn get_memory_monitoring_status() -> Memory {
-    MEMORY_MANAGER.with(|m| m.borrow().get(MONITORING_STATUS))
+fn get_memory_monitoring_history() -> Memory {
+    MEMORY_MANAGER.with(|m| m.borrow().get(MONITORING_HISTORY))
 }
 
 pub fn init_stable_state() -> StableState {
     StableState {
-        monitoring_status: StableBTreeMap::init(get_memory_monitoring_status()),
+        monitoring_history: StableBTreeMap::init(get_memory_monitoring_history()),
     }
 }

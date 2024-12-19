@@ -1,7 +1,7 @@
 use std::borrow::Cow;
 use crate::types::core::{Segment, SettingsMonitoring};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
-use crate::types::state::{Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings, Monitoring, MonitoringStatus, MonitoringStatusKey, Orbiter, Orbiters, Satellite, Settings, State, User};
+use crate::types::state::{Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings, Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Settings, State, User};
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
@@ -284,7 +284,7 @@ impl SettingsMonitoring for MissionControlSettings {
     }
 }
 
-impl Storable for MonitoringStatus {
+impl Storable for MonitoringHistory {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }
@@ -296,7 +296,7 @@ impl Storable for MonitoringStatus {
     const BOUND: Bound = Bound::Unbounded;
 }
 
-impl Storable for MonitoringStatusKey {
+impl Storable for MonitoringHistoryKey {
     fn to_bytes(&self) -> Cow<[u8]> {
         serialize_to_bytes(self)
     }

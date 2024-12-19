@@ -13,7 +13,7 @@ pub mod state {
 
     pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
-    pub type MonitoringStatusStable = StableBTreeMap<MonitoringStatusKey, MonitoringStatus, Memory>;
+    pub type MonitoringHistoryStable = StableBTreeMap<MonitoringHistoryKey, MonitoringHistory, Memory>;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {
@@ -25,7 +25,7 @@ pub mod state {
     }
 
     pub struct StableState {
-        pub monitoring_status: MonitoringStatusStable,
+        pub monitoring_history: MonitoringHistoryStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -113,7 +113,7 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub struct MonitoringStatusKey {
+    pub struct MonitoringHistoryKey {
         pub segment_id: SegmentId,
         pub timestamp: Timestamp,
     }
@@ -125,12 +125,12 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct MonitoringStatus {
-        pub cycles: Option<MonitoringStatusCycles>,
+    pub struct MonitoringHistory {
+        pub cycles: Option<MonitoringHistoryCycles>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct MonitoringStatusCycles {
+    pub struct MonitoringHistoryCycles {
         pub cycles: CyclesBalance,
         pub last_deposited_cycles: Option<CyclesBalance>,
     }

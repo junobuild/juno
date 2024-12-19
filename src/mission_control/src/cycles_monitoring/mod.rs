@@ -6,5 +6,5 @@ mod scheduler;
 pub mod start;
 pub mod status;
 pub mod stop;
-mod store;
+pub mod store;
 mod unregister;

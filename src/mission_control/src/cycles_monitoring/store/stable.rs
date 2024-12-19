@@ -21,6 +21,14 @@ pub fn insert_cycles_monitoring_history(segment_id: &SegmentId, cycles: &Monitor
     })
 }
 
+pub fn get_monitoring_history(
+    filter: &GetMonitoringHistory,
+) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
+    STATE.with(|state| {
+        get_monitoring_history_impl(filter, &state.borrow().stable.monitoring_history)
+    })
+}
+
 pub fn get_monitoring_history_keys(filter: &GetMonitoringHistory) -> Vec<MonitoringHistoryKey> {
     STATE.with(|state| {
         get_monitoring_history_keys_impl(filter, &state.borrow().stable.monitoring_history)
@@ -50,6 +58,15 @@ fn stable_monitoring_history_key(segment_id: &SegmentId) -> MonitoringHistoryKey
         segment_id: *segment_id,
         created_at: time(),
     }
+}
+
+fn get_monitoring_history_impl(
+    filter: &GetMonitoringHistory,
+    history: &MonitoringHistoryStable,
+) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
+    history
+        .range(filter_monitoring_history_range(filter))
+        .collect()
 }
 
 fn get_monitoring_history_keys_impl(

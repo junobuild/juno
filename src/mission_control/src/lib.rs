@@ -20,6 +20,7 @@ use crate::controllers::satellite::{
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
 };
 use crate::controllers::store::get_controllers;
+use crate::cycles_monitoring::store::stable::get_monitoring_history as get_monitoring_history_store;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
@@ -49,10 +50,12 @@ use crate::store::{
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
 use crate::types::interface::{
-    CreateCanisterConfig, MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig,
+    CreateCanisterConfig, GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus,
+    MonitoringStopConfig,
 };
 use crate::types::state::{
-    HeapState, MissionControlSettings, Orbiter, Orbiters, Satellite, Satellites, State, Statuses,
+    HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
+    Satellite, Satellites, State, Statuses,
 };
 use candid::Principal;
 use ciborium::into_writer;
@@ -448,6 +451,13 @@ fn update_and_stop_monitoring(config: MonitoringStopConfig) {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_monitoring_status() -> MonitoringStatus {
     get_any_monitoring_status()
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn get_monitoring_history(
+    filter: GetMonitoringHistory,
+) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
+    get_monitoring_history_store(&filter)
 }
 
 // ---------------------------------------------------------

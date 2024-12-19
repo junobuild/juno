@@ -7,3 +7,4 @@ pub mod status;
 pub mod stop;
 mod store;
 mod unregister;
+mod history;

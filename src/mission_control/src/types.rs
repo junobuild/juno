@@ -115,7 +115,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct MonitoringHistoryKey {
         pub segment_id: SegmentId,
-        pub timestamp: Timestamp,
+        pub created_at: Timestamp,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

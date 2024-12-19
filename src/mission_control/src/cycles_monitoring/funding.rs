@@ -1,4 +1,5 @@
-use crate::types::state::{CyclesMonitoringStrategy};
+use crate::cycles_monitoring::history::save_monitoring_history;
+use crate::types::state::CyclesMonitoringStrategy;
 use canfund::api::cmc::IcCyclesMintingCanister;
 use canfund::api::ledger::IcLedgerCanister;
 use canfund::manager::options::{FundManagerOptions, ObserverCallback, ObtainCyclesOptions};
@@ -14,7 +15,6 @@ use junobuild_shared::types::state::SegmentId;
 use std::collections::HashMap;
 use std::rc::Rc;
 use std::sync::Arc;
-use crate::cycles_monitoring::history::save_monitoring_history;
 
 pub fn init_funding_manager() -> FundManager {
     let mut fund_manager = FundManager::new();

@@ -2,7 +2,7 @@ use crate::cycles_monitoring::register::{
     register_mission_control_monitoring, register_modules_monitoring,
 };
 use crate::cycles_monitoring::scheduler::{start_scheduler, stop_scheduler};
-use crate::cycles_monitoring::store::{
+use crate::cycles_monitoring::store::heap::{
     disable_orbiter_monitoring, disable_satellite_monitoring, set_orbiter_strategy,
     set_satellite_strategy,
 };

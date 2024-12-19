@@ -1,5 +1,5 @@
 use crate::cycles_monitoring::funding::init_funding_manager;
-use crate::cycles_monitoring::store::disable_mission_control_monitoring;
+use crate::cycles_monitoring::store::heap::disable_mission_control_monitoring;
 use crate::memory::RUNTIME_STATE;
 use crate::types::runtime::RuntimeState;
 use ic_cdk::id;

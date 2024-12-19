@@ -7,7 +7,6 @@ use crate::types::state::{CyclesBalance, MonitoringHistoryCycles};
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::api::time;
-use junobuild_shared::types::state::SegmentId;
 use std::collections::HashMap;
 
 pub fn save_monitoring_history(records: HashMap<CanisterId, CanisterRecord>) {
@@ -37,7 +36,7 @@ fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) 
             last_deposited_cycles,
         };
 
-        insert_cycles_monitoring_history(&canister_id, &history_entry);
+        insert_cycles_monitoring_history(canister_id, &history_entry);
     }
 }
 

@@ -35,6 +35,26 @@ export const idlFactory = ({ IDL }) => {
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
 	});
+	const GetMonitoringHistory = IDL.Record({
+		to: IDL.Opt(IDL.Nat64),
+		from: IDL.Opt(IDL.Nat64),
+		segment_id: IDL.Principal
+	});
+	const MonitoringHistoryKey = IDL.Record({
+		segment_id: IDL.Principal,
+		created_at: IDL.Nat64
+	});
+	const CyclesBalance = IDL.Record({
+		timestamp: IDL.Nat64,
+		amount: IDL.Nat
+	});
+	const MonitoringHistoryCycles = IDL.Record({
+		cycles: CyclesBalance,
+		last_deposited_cycles: IDL.Opt(CyclesBalance)
+	});
+	const MonitoringHistory = IDL.Record({
+		cycles: IDL.Opt(MonitoringHistoryCycles)
+	});
 	const CyclesMonitoringStatus = IDL.Record({
 		monitored_ids: IDL.Vec(IDL.Principal),
 		running: IDL.Bool
@@ -181,6 +201,11 @@ export const idlFactory = ({ IDL }) => {
 		del_satellite: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
+		get_monitoring_history: IDL.Func(
+			[GetMonitoringHistory],
+			[IDL.Vec(IDL.Tuple(MonitoringHistoryKey, MonitoringHistory))],
+			['query']
+		),
 		get_monitoring_status: IDL.Func([], [MonitoringStatus], ['query']),
 		get_settings: IDL.Func([], [IDL.Opt(MissionControlSettings)], ['query']),
 		get_user: IDL.Func([], [IDL.Principal], ['query']),

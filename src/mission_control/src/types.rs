@@ -1,7 +1,10 @@
 pub mod state {
+    use crate::memory::init_stable_state;
     use candid::{CandidType, Principal};
+    use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::memory::Memory;
     use junobuild_shared::types::state::{
-        ArchiveTime, Controllers, Metadata, OrbiterId, SegmentStatusResult, Timestamp,
+        ArchiveTime, Controllers, Metadata, OrbiterId, SegmentId, SegmentStatusResult, Timestamp,
     };
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use serde::{Deserialize, Serialize};
@@ -12,9 +15,20 @@ pub mod state {
 
     pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
-    #[derive(Default, Serialize, Deserialize)]
+    pub type MonitoringHistoryStable =
+        StableBTreeMap<MonitoringHistoryKey, MonitoringHistory, Memory>;
+
+    #[derive(Serialize, Deserialize)]
     pub struct State {
+        // Direct stable state: State that is uses stable memory directly as its store. No need for pre/post upgrade hooks.
+        #[serde(skip, default = "init_stable_state")]
+        pub stable: StableState,
+
         pub heap: HeapState,
+    }
+
+    pub struct StableState {
+        pub monitoring_history: MonitoringHistoryStable,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -100,6 +114,29 @@ pub mod state {
         pub min_cycles: u128,
         pub fund_cycles: u128,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
+    pub struct MonitoringHistoryKey {
+        pub segment_id: SegmentId,
+        pub created_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CyclesBalance {
+        pub amount: u128,
+        pub timestamp: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct MonitoringHistory {
+        pub cycles: Option<MonitoringHistoryCycles>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct MonitoringHistoryCycles {
+        pub cycles: CyclesBalance,
+        pub last_deposited_cycles: Option<CyclesBalance>,
+    }
 }
 
 pub mod runtime {
@@ -128,7 +165,7 @@ pub mod interface {
     use crate::types::state::CyclesMonitoringStrategy;
     use candid::CandidType;
     use junobuild_shared::mgmt::types::cmc::SubnetId;
-    use junobuild_shared::types::state::{OrbiterId, SatelliteId, SegmentId};
+    use junobuild_shared::types::state::{OrbiterId, SatelliteId, SegmentId, Timestamp};
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -176,5 +213,12 @@ pub mod interface {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MonitoringStatus {
         pub cycles: Option<CyclesMonitoringStatus>,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct GetMonitoringHistory {
+        pub segment_id: SegmentId,
+        pub from: Option<Timestamp>,
+        pub to: Option<Timestamp>,
     }
 }

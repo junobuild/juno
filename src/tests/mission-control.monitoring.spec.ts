@@ -24,6 +24,7 @@ describe('Mission Control - Monitoring', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 
+	let missionControlId: Principal;
 	let orbiterId: Principal;
 	let satelliteId: Principal;
 
@@ -34,14 +35,14 @@ describe('Mission Control - Monitoring', () => {
 
 		const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
 
-		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
-			{
-				idlFactory: idlFactorMissionControl,
-				wasm: MISSION_CONTROL_WASM_PATH,
-				arg: userInitArgs(),
-				sender: controller.getPrincipal()
-			}
-		);
+		const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor>({
+			idlFactory: idlFactorMissionControl,
+			wasm: MISSION_CONTROL_WASM_PATH,
+			arg: userInitArgs(),
+			sender: controller.getPrincipal()
+		});
+
+		missionControlId = mId;
 
 		actor = c;
 
@@ -99,6 +100,18 @@ describe('Mission Control - Monitoring', () => {
 			const { get_monitoring_status } = actor;
 
 			await expect(get_monitoring_status()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
+
+		it('should throw errors on get monitoring history', async () => {
+			const { get_monitoring_history } = actor;
+
+			await expect(
+				get_monitoring_history({
+					segment_id: satelliteId,
+					from: toNullable(),
+					to: toNullable()
+				})
+			).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 	};
 

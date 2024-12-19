@@ -20,10 +20,11 @@ use crate::controllers::satellite::{
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
 };
 use crate::controllers::store::get_controllers;
+use crate::cycles_monitoring::store::stable::get_monitoring_history as get_monitoring_history_store;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
-use crate::memory::{init_runtime_state, STATE};
+use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::mgmt::status::collect_statuses;
 use crate::monitoring::{
     defer_restart_monitoring, get_monitoring_status as get_any_monitoring_status,
@@ -49,12 +50,15 @@ use crate::store::{
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
 use crate::types::interface::{
-    CreateCanisterConfig, MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig,
+    CreateCanisterConfig, GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus,
+    MonitoringStopConfig,
 };
 use crate::types::state::{
-    HeapState, MissionControlSettings, Orbiter, Orbiters, Satellite, Satellites, State, Statuses,
+    HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
+    Satellite, Satellites, State, Statuses,
 };
 use candid::Principal;
+use ciborium::into_writer;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
@@ -72,6 +76,7 @@ use junobuild_shared::types::state::{
     ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
 };
 use junobuild_shared::types::state::{Metadata, UserId};
+use junobuild_shared::upgrade::write_pre_upgrade;
 use segments::store::{
     get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
     set_satellite_metadata as set_satellite_metadata_store,
@@ -86,6 +91,7 @@ fn init() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             heap: HeapState::from(&user),
+            stable: init_stable_state(),
         };
     });
 
@@ -94,14 +100,34 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| storage::stable_save((&state.borrow().heap,)).unwrap());
+    let mut state_bytes = vec![];
+    STATE
+        .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
+        .expect("Failed to encode the state of the mission control in pre_upgrade hook.");
+
+    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
+    // TODO: remove once stable memory introduced on mainnet
     let (heap,): (HeapState,) = storage::stable_restore().unwrap();
 
-    STATE.with(|state| *state.borrow_mut() = State { heap });
+    STATE.with(|state| {
+        *state.borrow_mut() = State {
+            heap,
+            stable: init_stable_state(),
+        }
+    });
+
+    // TODO: uncomment once stable memory introduced on mainnet
+    // let memory: Memory = get_memory_upgrades();
+    // let state_bytes = read_post_upgrade(&memory);
+
+    // let state: State = from_reader(&*state_bytes)
+    //     .expect("Failed to decode the state of the mission control in post_upgrade hook.");
+
+    // STATE.with(|s| *s.borrow_mut() = state);
 
     init_runtime_state();
 
@@ -425,6 +451,13 @@ fn update_and_stop_monitoring(config: MonitoringStopConfig) {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_monitoring_status() -> MonitoringStatus {
     get_any_monitoring_status()
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn get_monitoring_history(
+    filter: GetMonitoringHistory,
+) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
+    get_monitoring_history_store(&filter)
 }
 
 // ---------------------------------------------------------

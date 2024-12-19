@@ -16,6 +16,7 @@ type CronJobStatusesConfig = record {
   enabled : bool;
   cycles_threshold : opt nat64;
 };
+type CyclesBalance = record { timestamp : nat64; amount : nat };
 type CyclesMonitoring = record {
   strategy : opt CyclesMonitoringStrategy;
   enabled : bool;
@@ -37,12 +38,26 @@ type CyclesMonitoringStopConfig = record {
 type CyclesMonitoringStrategy = variant { BelowThreshold : CyclesThreshold };
 type CyclesThreshold = record { fund_cycles : nat; min_cycles : nat };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
+type GetMonitoringHistory = record {
+  to : opt nat64;
+  from : opt nat64;
+  segment_id : principal;
+};
 type MissionControlSettings = record {
   updated_at : nat64;
   created_at : nat64;
   monitoring : opt Monitoring;
 };
 type Monitoring = record { cycles : opt CyclesMonitoring };
+type MonitoringHistory = record { cycles : opt MonitoringHistoryCycles };
+type MonitoringHistoryCycles = record {
+  cycles : CyclesBalance;
+  last_deposited_cycles : opt CyclesBalance;
+};
+type MonitoringHistoryKey = record {
+  segment_id : principal;
+  created_at : nat64;
+};
 type MonitoringStartConfig = record {
   cycles_config : opt CyclesMonitoringStartConfig;
 };
@@ -156,6 +171,9 @@ service : () -> {
   del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
+  get_monitoring_history : (GetMonitoringHistory) -> (
+      vec record { MonitoringHistoryKey; MonitoringHistory },
+    ) query;
   get_monitoring_status : () -> (MonitoringStatus) query;
   get_settings : () -> (opt MissionControlSettings) query;
   get_user : () -> (principal) query;

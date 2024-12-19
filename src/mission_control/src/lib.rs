@@ -26,7 +26,7 @@ use crate::guards::{
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::mgmt::status::collect_statuses;
 use crate::monitoring::{
-    defer_restart_monitoring, get_current_monitoring_status as get_current_any_monitoring_status,
+    defer_restart_monitoring, get_monitoring_status as get_any_monitoring_status,
     start_monitoring as start_monitoring_with_current_config,
     stop_monitoring as stop_any_monitoring, update_and_start_monitoring_with_config,
     update_and_stop_monitoring_with_config,
@@ -49,7 +49,7 @@ use crate::store::{
     list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
 };
 use crate::types::interface::{
-    CreateCanisterConfig, CurrentMonitoringStatus, MonitoringStartConfig, MonitoringStopConfig,
+    CreateCanisterConfig, MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig,
 };
 use crate::types::state::{
     HeapState, MissionControlSettings, Orbiter, Orbiters, Satellite, Satellites, State, Statuses,
@@ -441,8 +441,8 @@ fn update_and_stop_monitoring(config: MonitoringStopConfig) {
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]
-fn get_current_monitoring_status() -> CurrentMonitoringStatus {
-    get_current_any_monitoring_status()
+fn get_monitoring_status() -> MonitoringStatus {
+    get_any_monitoring_status()
 }
 
 // ---------------------------------------------------------

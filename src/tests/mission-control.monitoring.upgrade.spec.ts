@@ -72,11 +72,8 @@ describe('Mission control upgrade', () => {
 	});
 
 	it('should restart monitoring after upgrade', async () => {
-		const {
-			update_and_start_monitoring,
-			get_current_monitoring_status,
-			update_and_stop_monitoring
-		} = actor;
+		const { update_and_start_monitoring, get_monitoring_status, update_and_stop_monitoring } =
+			actor;
 
 		// 1. Enable monitoring for everything
 		const config: MonitoringStartConfig = {
@@ -98,7 +95,7 @@ describe('Mission control upgrade', () => {
 		await update_and_start_monitoring(config);
 
 		// 2. Verify it started
-		const { cycles } = await get_current_monitoring_status();
+		const { cycles } = await get_monitoring_status();
 
 		expect(fromNullable(cycles)?.running === true).toBeTruthy();
 
@@ -131,7 +128,7 @@ describe('Mission control upgrade', () => {
 		// 5. Assert monitoring is running
 		await tick(pic);
 
-		const { cycles: newCycles } = await get_current_monitoring_status();
+		const { cycles: newCycles } = await get_monitoring_status();
 
 		expect(fromNullable(newCycles)?.running === true).toBeTruthy();
 

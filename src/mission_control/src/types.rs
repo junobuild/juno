@@ -168,13 +168,13 @@ pub mod interface {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CurrentCyclesMonitoringStatus {
+    pub struct CyclesMonitoringStatus {
         pub running: bool,
         pub monitored_ids: Vec<SegmentId>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CurrentMonitoringStatus {
-        pub cycles: Option<CurrentCyclesMonitoringStatus>,
+    pub struct MonitoringStatus {
+        pub cycles: Option<CyclesMonitoringStatus>,
     }
 }

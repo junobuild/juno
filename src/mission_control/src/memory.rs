@@ -1,9 +1,9 @@
 use crate::types::runtime::RuntimeState;
 use crate::types::state::{StableState, State};
-use std::cell::RefCell;
-use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
 use ic_stable_structures::memory_manager::{MemoryId, MemoryManager};
+use ic_stable_structures::{DefaultMemoryImpl, StableBTreeMap};
 use junobuild_shared::types::memory::Memory;
+use std::cell::RefCell;
 
 const UPGRADES: MemoryId = MemoryId::new(0);
 const MONITORING_HISTORY: MemoryId = MemoryId::new(1);

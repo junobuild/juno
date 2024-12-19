@@ -55,6 +55,7 @@ use crate::types::state::{
     HeapState, MissionControlSettings, Orbiter, Orbiters, Satellite, Satellites, State, Statuses,
 };
 use candid::Principal;
+use ciborium::into_writer;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
 use ic_cdk::{id, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
@@ -72,13 +73,12 @@ use junobuild_shared::types::state::{
     ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
 };
 use junobuild_shared::types::state::{Metadata, UserId};
+use junobuild_shared::upgrade::write_pre_upgrade;
 use segments::store::{
     get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
-use junobuild_shared::upgrade::write_pre_upgrade;
-use ciborium::into_writer;
 
 #[init]
 fn init() {
@@ -110,7 +110,12 @@ fn post_upgrade() {
     // TODO: remove once stable memory introduced on mainnet
     let (heap,): (HeapState,) = storage::stable_restore().unwrap();
 
-    STATE.with(|state| *state.borrow_mut() = State { heap, stable: init_stable_state(), });
+    STATE.with(|state| {
+        *state.borrow_mut() = State {
+            heap,
+            stable: init_stable_state(),
+        }
+    });
 
     // TODO: uncomment once stable memory introduced on mainnet
     // let memory: Memory = get_memory_upgrades();

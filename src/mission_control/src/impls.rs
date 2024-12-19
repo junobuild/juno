@@ -1,15 +1,19 @@
-use std::borrow::Cow;
+use crate::memory::init_stable_state;
 use crate::types::core::{Segment, SettingsMonitoring};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
-use crate::types::state::{Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings, Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Settings, State, User};
+use crate::types::state::{
+    Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState,
+    MissionControlSettings, Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
+    Satellite, Settings, State, User,
+};
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
-use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
-use std::collections::{BTreeMap, HashMap};
-use ic_stable_structures::Storable;
 use ic_stable_structures::storable::Bound;
+use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use crate::memory::init_stable_state;
+use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
+use std::borrow::Cow;
+use std::collections::{BTreeMap, HashMap};
 
 impl Default for State {
     fn default() -> Self {

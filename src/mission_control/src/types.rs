@@ -1,19 +1,22 @@
 pub mod state {
     use crate::memory::init_stable_state;
     use candid::{CandidType, Principal};
-    use junobuild_shared::types::state::{ArchiveTime, Controllers, Metadata, OrbiterId, SegmentId, SegmentStatusResult, Timestamp};
+    use ic_stable_structures::StableBTreeMap;
+    use junobuild_shared::types::memory::Memory;
+    use junobuild_shared::types::state::{
+        ArchiveTime, Controllers, Metadata, OrbiterId, SegmentId, SegmentStatusResult, Timestamp,
+    };
     use junobuild_shared::types::state::{SatelliteId, UserId};
     use serde::{Deserialize, Serialize};
     use std::collections::{BTreeMap, HashMap};
-    use ic_stable_structures::StableBTreeMap;
-    use junobuild_shared::types::memory::Memory;
 
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;
 
     pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
-    pub type MonitoringHistoryStable = StableBTreeMap<MonitoringHistoryKey, MonitoringHistory, Memory>;
+    pub type MonitoringHistoryStable =
+        StableBTreeMap<MonitoringHistoryKey, MonitoringHistory, Memory>;
 
     #[derive(Serialize, Deserialize)]
     pub struct State {

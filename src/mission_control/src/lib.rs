@@ -23,7 +23,7 @@ use crate::controllers::store::get_controllers;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
-use crate::memory::{init_runtime_state, STATE};
+use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::mgmt::status::collect_statuses;
 use crate::monitoring::{
     defer_restart_monitoring, get_current_monitoring_status as get_current_any_monitoring_status,
@@ -77,6 +77,8 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
+use junobuild_shared::upgrade::write_pre_upgrade;
+use ciborium::into_writer;
 
 #[init]
 fn init() {
@@ -86,6 +88,7 @@ fn init() {
     STATE.with(|state| {
         *state.borrow_mut() = State {
             heap: HeapState::from(&user),
+            stable: init_stable_state(),
         };
     });
 
@@ -94,14 +97,29 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| storage::stable_save((&state.borrow().heap,)).unwrap());
+    let mut state_bytes = vec![];
+    STATE
+        .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
+        .expect("Failed to encode the state of the mission control in pre_upgrade hook.");
+
+    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
+    // TODO: remove once stable memory introduced on mainnet
     let (heap,): (HeapState,) = storage::stable_restore().unwrap();
 
-    STATE.with(|state| *state.borrow_mut() = State { heap });
+    STATE.with(|state| *state.borrow_mut() = State { heap, stable: init_stable_state(), });
+
+    // TODO: uncomment once stable memory introduced on mainnet
+    // let memory: Memory = get_memory_upgrades();
+    // let state_bytes = read_post_upgrade(&memory);
+
+    // let state: State = from_reader(&*state_bytes)
+    //     .expect("Failed to decode the state of the mission control in post_upgrade hook.");
+
+    // STATE.with(|s| *s.borrow_mut() = state);
 
     init_runtime_state();
 

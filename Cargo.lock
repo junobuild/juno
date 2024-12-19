@@ -766,6 +766,7 @@ version = "0.0.13"
 dependencies = [
  "candid",
  "canfund",
+ "ciborium",
  "futures",
  "ic-cdk",
  "ic-cdk-macros",

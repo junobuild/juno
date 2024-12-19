@@ -31,6 +31,6 @@ fn get_memory_monitoring_status() -> Memory {
 
 pub fn init_stable_state() -> StableState {
     StableState {
-        monitoring_status: StableBTreeMap::init(get_monitoring_status()),
+        monitoring_status: StableBTreeMap::init(get_memory_monitoring_status()),
     }
 }

@@ -1,4 +1,5 @@
 pub mod state {
+    use crate::memory::init_stable_state;
     use candid::{CandidType, Principal};
     use junobuild_shared::types::state::{ArchiveTime, Controllers, Metadata, OrbiterId, SegmentId, SegmentStatusResult, Timestamp};
     use junobuild_shared::types::state::{SatelliteId, UserId};

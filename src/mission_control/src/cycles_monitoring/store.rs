@@ -4,10 +4,6 @@ use crate::types::state::{
 };
 use junobuild_shared::types::state::{OrbiterId, SatelliteId};
 
-// ---------------------------------------------------------
-// Settings
-// ---------------------------------------------------------
-
 pub fn set_mission_control_strategy(strategy: &CyclesMonitoringStrategy) {
     STATE.with(|state| set_mission_control_setting_impl(strategy, &mut state.borrow_mut().heap))
 }
@@ -175,7 +171,3 @@ fn toggle_orbiter_monitoring_impl(
 
     Ok(())
 }
-
-// ---------------------------------------------------------
-// History
-// ---------------------------------------------------------

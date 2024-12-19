@@ -1,5 +1,7 @@
 use crate::cycles_monitoring::scheduler::{assert_scheduler_running, stop_scheduler};
-use crate::cycles_monitoring::store::{disable_orbiter_monitoring, disable_satellite_monitoring};
+use crate::cycles_monitoring::store::heap::{
+    disable_orbiter_monitoring, disable_satellite_monitoring,
+};
 use crate::cycles_monitoring::unregister::{
     unregister_mission_control_monitoring, unregister_modules_monitoring,
 };

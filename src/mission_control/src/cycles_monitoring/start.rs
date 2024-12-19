@@ -3,7 +3,7 @@ use crate::cycles_monitoring::funding::register_cycles_monitoring;
 use crate::cycles_monitoring::scheduler::{
     assert_scheduler_stopped, reset_scheduler, start_scheduler,
 };
-use crate::cycles_monitoring::store::{
+use crate::cycles_monitoring::store::heap::{
     enable_mission_control_monitoring, enable_orbiter_monitoring, enable_satellite_monitoring,
 };
 use crate::memory::RUNTIME_STATE;

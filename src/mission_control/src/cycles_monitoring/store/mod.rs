@@ -1,2 +1,2 @@
 pub mod heap;
-mod stable;
+pub mod stable;

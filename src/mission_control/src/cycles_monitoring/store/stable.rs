@@ -5,7 +5,6 @@
 use crate::memory::STATE;
 use crate::types::state::{
     MonitoringHistory, MonitoringHistoryCycles, MonitoringHistoryKey, MonitoringHistoryStable,
-    StableState,
 };
 use ic_cdk::api::time;
 use junobuild_shared::types::state::SegmentId;

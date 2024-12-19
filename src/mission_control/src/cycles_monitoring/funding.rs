@@ -1,4 +1,5 @@
-use crate::types::state::CyclesMonitoringStrategy;
+use crate::cycles_monitoring::store::stable::insert_cycles_monitoring_history;
+use crate::types::state::{CyclesBalance, CyclesMonitoringStrategy, MonitoringHistoryCycles};
 use canfund::api::cmc::IcCyclesMintingCanister;
 use canfund::api::ledger::IcLedgerCanister;
 use canfund::manager::options::{FundManagerOptions, ObserverCallback, ObtainCyclesOptions};
@@ -51,18 +52,27 @@ fn obtain_cycles_options() -> ObtainCyclesOptions {
 
 pub fn funding_callback() -> ObserverCallback {
     Rc::new(|records: HashMap<CanisterId, CanisterRecord>| {
-        ic_cdk::print("-----> Callback");
-
-        // Loop over the hashmap of canister records and print the cycles balance and total of deposited cycles
         for (canister_id, record) in records.iter() {
-            let cycles = record.get_cycles().as_ref().map_or(0, |c| c.amount);
-            let deposited_cycles = record
-                .get_deposited_cycles()
-                .as_ref()
-                .map_or(0, |c| c.amount);
-            ic_cdk::print(format!(
-                "Canister {canister_id} had {cycles} cycles and got {deposited_cycles} deposited cycles"
-            ));
+            if let Some(cycles) = record.get_cycles() {
+                let last_deposited_cycles =
+                    record
+                        .get_last_deposited_cycles()
+                        .clone()
+                        .map(|last_deposited| CyclesBalance {
+                            amount: last_deposited.amount,
+                            timestamp: last_deposited.timestamp,
+                        });
+
+                let history_entry: MonitoringHistoryCycles = MonitoringHistoryCycles {
+                    cycles: CyclesBalance {
+                        amount: cycles.amount,
+                        timestamp: cycles.timestamp,
+                    },
+                    last_deposited_cycles,
+                };
+
+                insert_cycles_monitoring_history(&canister_id, &history_entry);
+            }
         }
     })
 }

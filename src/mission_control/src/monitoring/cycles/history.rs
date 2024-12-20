@@ -1,5 +1,5 @@
 use crate::constants::RETAIN_ARCHIVE_STATUSES_NS;
-use crate::cycles_monitoring::store::stable::{
+use crate::monitoring::store::stable::{
     delete_monitoring_history, get_monitoring_history_keys, insert_cycles_monitoring_history,
 };
 use crate::types::interface::GetMonitoringHistory;

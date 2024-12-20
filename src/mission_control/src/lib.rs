@@ -1,6 +1,5 @@
 mod constants;
 mod controllers;
-mod cycles_monitoring;
 mod guards;
 mod impls;
 mod memory;
@@ -20,18 +19,12 @@ use crate::controllers::satellite::{
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
 };
 use crate::controllers::store::get_controllers;
-use crate::cycles_monitoring::store::stable::get_monitoring_history as get_monitoring_history_store;
 use crate::guards::{
     caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
 };
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::mgmt::status::collect_statuses;
-use crate::monitoring::{
-    defer_restart_monitoring, get_monitoring_status as get_any_monitoring_status,
-    start_monitoring as start_monitoring_with_current_config,
-    stop_monitoring as stop_any_monitoring, update_and_start_monitoring_with_config,
-    update_and_stop_monitoring_with_config,
-};
+use crate::monitoring::store::stable::get_monitoring_history as get_monitoring_history_store;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -77,6 +70,12 @@ use junobuild_shared::types::state::{
 };
 use junobuild_shared::types::state::{Metadata, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;
+use monitoring::monitor::{
+    defer_restart_monitoring, get_monitoring_status as get_any_monitoring_status,
+    start_monitoring as start_monitoring_with_current_config,
+    stop_monitoring as stop_any_monitoring, update_and_start_monitoring_with_config,
+    update_and_stop_monitoring_with_config,
+};
 use segments::store::{
     get_satellites, set_orbiter_metadata as set_orbiter_metadata_store,
     set_satellite_metadata as set_satellite_metadata_store,

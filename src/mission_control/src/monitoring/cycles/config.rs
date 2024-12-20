@@ -1,13 +1,13 @@
-use crate::cycles_monitoring::register::{
+use crate::monitoring::cycles::register::{
     register_mission_control_monitoring, register_modules_monitoring,
 };
-use crate::cycles_monitoring::scheduler::{start_scheduler, stop_scheduler};
-use crate::cycles_monitoring::store::heap::{
+use crate::monitoring::cycles::scheduler::{start_scheduler, stop_scheduler};
+use crate::monitoring::cycles::unregister::{
+    unregister_mission_control_monitoring, unregister_modules_monitoring,
+};
+use crate::monitoring::store::heap::{
     disable_orbiter_monitoring, disable_satellite_monitoring, set_orbiter_strategy,
     set_satellite_strategy,
-};
-use crate::cycles_monitoring::unregister::{
-    unregister_mission_control_monitoring, unregister_modules_monitoring,
 };
 use crate::types::interface::{CyclesMonitoringStartConfig, CyclesMonitoringStopConfig};
 

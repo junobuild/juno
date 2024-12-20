@@ -1,12 +1,12 @@
-use crate::cycles_monitoring::funding::init_funding_manager;
-use crate::cycles_monitoring::funding::register_cycles_monitoring;
-use crate::cycles_monitoring::scheduler::{
+use crate::memory::RUNTIME_STATE;
+use crate::monitoring::cycles::funding::init_funding_manager;
+use crate::monitoring::cycles::funding::register_cycles_monitoring;
+use crate::monitoring::cycles::scheduler::{
     assert_scheduler_stopped, reset_scheduler, start_scheduler,
 };
-use crate::cycles_monitoring::store::heap::{
+use crate::monitoring::store::heap::{
     enable_mission_control_monitoring, enable_orbiter_monitoring, enable_satellite_monitoring,
 };
-use crate::memory::RUNTIME_STATE;
 use crate::segments::store::{get_orbiters, get_satellites};
 use crate::store::get_settings;
 use crate::types::core::SettingsMonitoring;

@@ -1,9 +1,9 @@
-use crate::cycles_monitoring::config::{
+use crate::monitoring::cycles::config::{
     register_and_start_cycles_monitoring, unregister_and_stop_cycles_monitoring,
 };
-use crate::cycles_monitoring::start::start_cycles_monitoring;
-use crate::cycles_monitoring::status::get_cycles_monitoring_status;
-use crate::cycles_monitoring::stop::stop_cycles_monitoring;
+use crate::monitoring::cycles::start::start_cycles_monitoring;
+use crate::monitoring::cycles::status::get_cycles_monitoring_status;
+use crate::monitoring::cycles::stop::stop_cycles_monitoring;
 use crate::types::interface::{MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig};
 use ic_cdk::spawn;
 use ic_cdk::trap;

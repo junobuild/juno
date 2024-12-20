@@ -1,4 +1,4 @@
-use crate::cycles_monitoring::history::save_monitoring_history;
+use crate::monitoring::cycles::history::save_monitoring_history;
 use crate::types::state::CyclesMonitoringStrategy;
 use canfund::api::cmc::IcCyclesMintingCanister;
 use canfund::api::ledger::IcLedgerCanister;

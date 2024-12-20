@@ -9,7 +9,7 @@ import {
 	SYNC_CYCLES_TIMER_INTERVAL
 } from '$lib/constants/constants';
 import { cyclesIdbStore } from '$lib/stores/idb.store';
-import type { CanisterIcStatus, CanisterInfo, CanisterSegment } from '$lib/types/canister';
+import type { CanisterInfo, CanisterSegment, CanisterSyncData } from '$lib/types/canister';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { cyclesToICP } from '$lib/utils/cycles.utils';
 import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
@@ -158,7 +158,7 @@ const syncCanister = async ({
 	canisterInfo: CanisterInfo;
 	memory: MemorySize | undefined;
 }) => {
-	const canister: CanisterIcStatus = {
+	const canister: CanisterSyncData = {
 		id: canisterId,
 		sync: 'synced',
 		data: {

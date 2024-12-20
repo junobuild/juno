@@ -10,7 +10,7 @@
 	import { initStatusesWorker, type StatusesWorker } from '$lib/services/worker.statuses.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { CanisterJunoStatus, Segment } from '$lib/types/canister';
+	import type { CanisterSyncMonitoring, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 
@@ -24,7 +24,7 @@
 	let chartsData: ChartsData[] = $state([]);
 
 	const syncCanister = ({ canister }: PostMessageDataResponse) => {
-		const { data } = canister as CanisterJunoStatus;
+		const { data } = canister as CanisterSyncMonitoring;
 
 		if (isNullish(data)) {
 			return;
@@ -49,7 +49,7 @@
 					return;
 				}
 
-				worker?.startStatusesTimer({
+				worker?.startMonitoringTimer({
 					segments: [
 						{
 							canisterId: canisterId.toText(),
@@ -62,7 +62,7 @@
 			})();
 	});
 
-	onDestroy(() => worker?.stopStatusesTimer());
+	onDestroy(() => worker?.stopMonitoringTimer());
 
 	const restartCycles = ({
 		detail: { canisterId: syncCanisterId }
@@ -78,7 +78,7 @@
 			return;
 		}
 
-		worker?.restartStatusesTimer({
+		worker?.restartMonitoringTimer({
 			segments: [
 				{
 					canisterId: canisterId.toText(),

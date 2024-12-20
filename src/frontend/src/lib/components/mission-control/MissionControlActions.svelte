@@ -6,7 +6,7 @@
 	import MissionControlAttachOrbiter from '$lib/components/mission-control/MissionControlAttachOrbiter.svelte';
 	import MissionControlAttachSatellite from '$lib/components/mission-control/MissionControlAttachSatellite.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import type { CanisterIcStatus } from '$lib/types/canister';
+	import type { CanisterSyncData } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -15,12 +15,12 @@
 
 	let { missionControlId }: Props = $props();
 
-	let canister: CanisterIcStatus | undefined = $state(undefined);
+	let canister: CanisterSyncData | undefined = $state(undefined);
 
 	let visible: boolean = $state(false);
 	const close = () => (visible = false);
 
-	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
+	const onSyncCanister = (syncCanister: CanisterSyncData) => {
 		if (syncCanister.id !== missionControlId.toText()) {
 			return;
 		}
@@ -45,7 +45,7 @@
 </script>
 
 <svelte:window
-	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterIcStatus }>) =>
+	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterSyncData }>) =>
 		onSyncCanister(canister)}
 />
 

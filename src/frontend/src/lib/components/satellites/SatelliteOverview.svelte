@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { fromNullable } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import CanisterJunoStatuses from '$lib/components/canister/CanisterJunoStatuses.svelte';
+	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import Monitoring from '$lib/components/monitoring/Monitoring.svelte';
@@ -67,7 +67,7 @@
 			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
 		/>
 
-		<CanisterJunoStatuses segment="satellite" canisterId={satellite.satellite_id} />
+		<CanisterMonitoring segment="satellite" canisterId={satellite.satellite_id} />
 	</div>
 </div>
 

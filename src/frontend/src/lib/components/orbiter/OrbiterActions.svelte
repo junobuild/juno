@@ -7,7 +7,7 @@
 	import SegmentDetach from '$lib/components/canister/SegmentDetach.svelte';
 	import TopUp from '$lib/components/canister/TopUp.svelte';
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
-	import type { CanisterIcStatus } from '$lib/types/canister';
+	import type { CanisterSyncData } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -16,9 +16,9 @@
 
 	let { orbiter }: Props = $props();
 
-	let canister: CanisterIcStatus | undefined = $state(undefined);
+	let canister: CanisterSyncData | undefined = $state(undefined);
 
-	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
+	const onSyncCanister = (syncCanister: CanisterSyncData) => {
 		if (syncCanister.id !== orbiter.orbiter_id.toText()) {
 			return;
 		}
@@ -46,7 +46,7 @@
 </script>
 
 <svelte:window
-	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterIcStatus }>) =>
+	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterSyncData }>) =>
 		onSyncCanister(canister)}
 />
 

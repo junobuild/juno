@@ -3,9 +3,9 @@ import {
 	listOrbiterStatuses,
 	listSatelliteStatuses
 } from '$lib/api/mission-control.api';
-import { SYNC_STATUSES_TIMER_INTERVAL } from '$lib/constants/constants';
+import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
 import { statusesIdbStore } from '$lib/stores/idb.store';
-import type { CanisterJunoStatus } from '$lib/types/canister';
+import type { CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
@@ -21,22 +21,22 @@ onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRe
 	const { msg, data } = dataMsg;
 
 	switch (msg) {
-		case 'stopStatusesTimer':
-			stopStatusesTimer();
+		case 'stopMonitoringTimer':
+			stopMonitoringTimer();
 			return;
-		case 'startStatusesTimer':
-			await startStatusesTimer({ data });
+		case 'startMonitoringTimer':
+			await startMonitoringTimer({ data });
 			return;
-		case 'restartStatusesTimer':
-			stopStatusesTimer();
-			await startStatusesTimer({ data });
+		case 'restartMonitoringTimer':
+			stopMonitoringTimer();
+			await startMonitoringTimer({ data });
 			return;
 	}
 };
 
 let timer: NodeJS.Timeout | undefined = undefined;
 
-const startStatusesTimer = async ({
+const startMonitoringTimer = async ({
 	data: { segments, missionControlId }
 }: {
 	data: PostMessageDataRequest;
@@ -50,20 +50,20 @@ const startStatusesTimer = async ({
 
 	if (isNullish(missionControlId)) {
 		// We need a mission control ID
-		console.error('No mission control ID set to fetch the statuses of the segments.');
+		console.error('No mission control ID set to fetch the monitoring history of the segments.');
 		return;
 	}
 
 	const sync = async () =>
-		await syncStatuses({ identity, segments: segments ?? [], missionControlId });
+		await syncMonitoring({ identity, segments: segments ?? [], missionControlId });
 
 	// We sync the cycles now but also schedule the update afterwards
 	await sync();
 
-	timer = setInterval(sync, SYNC_STATUSES_TIMER_INTERVAL);
+	timer = setInterval(sync, SYNC_MONITORING_TIMER_INTERVAL);
 };
 
-const stopStatusesTimer = () => {
+const stopMonitoringTimer = () => {
 	if (!timer) {
 		return;
 	}
@@ -74,7 +74,7 @@ const stopStatusesTimer = () => {
 
 let syncing = false;
 
-const syncStatuses = async ({
+const syncMonitoring = async ({
 	identity,
 	segments,
 	missionControlId
@@ -97,13 +97,13 @@ const syncStatuses = async ({
 	});
 
 	try {
-		await syncJunoStatusesCanisters({ identity, segments, missionControlId });
+		await syncMonitoringForSegments({ identity, segments, missionControlId });
 	} finally {
 		syncing = false;
 	}
 };
 
-const syncJunoStatusesCanisters = async ({
+const syncMonitoringForSegments = async ({
 	identity,
 	segments,
 	missionControlId
@@ -195,7 +195,7 @@ const syncCanister = async ({
 	canisterId: string;
 	chartsData: ChartsData[];
 }) => {
-	const canister: CanisterJunoStatus = {
+	const canister: CanisterSyncMonitoring = {
 		id: canisterId,
 		sync: 'synced',
 		data: {

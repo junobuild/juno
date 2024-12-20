@@ -36,6 +36,7 @@ pub mod state {
         pub user: User,
         pub satellites: Satellites,
         pub controllers: Controllers,
+        #[deprecated(note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities.")]
         pub archive: Archive,
         pub orbiters: Orbiters,
         pub settings: Option<MissionControlSettings>,

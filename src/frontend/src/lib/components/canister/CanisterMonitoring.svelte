@@ -70,7 +70,7 @@
 					],
 					missionControlId: $missionControlStore,
 					withMonitoringHistory:
-						compare($missionControlVersion.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) > 0,
+						compare($missionControlVersion.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) >= 0,
 					callback: syncCanister
 				});
 			})();

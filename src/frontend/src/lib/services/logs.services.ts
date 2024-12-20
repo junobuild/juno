@@ -2,6 +2,7 @@ import type { canister_log_record } from '$declarations/ic/ic.did';
 import type { Doc } from '$declarations/satellite/satellite.did';
 import { canisterLogs as canisterLogsApi } from '$lib/api/ic.api';
 import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
+import { SATELLITE_v0_0_16 } from '$lib/constants/version.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -61,7 +62,7 @@ const functionLogs = async (params: {
 	// TODO: load versions globally and use store value instead of fetching version again
 	const version = await satelliteVersion(params);
 
-	const logSupported = compare(version, '0.0.16') >= 0;
+	const logSupported = compare(version, SATELLITE_v0_0_16) >= 0;
 
 	if (!logSupported) {
 		return [];

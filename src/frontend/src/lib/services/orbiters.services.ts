@@ -20,6 +20,7 @@ import {
 	listOrbiterSatelliteConfigs007,
 	setOrbiterSatelliteConfigs007 as setOrbiterSatelliteConfigsDeprecatedApi
 } from '$lib/api/orbiter.deprecated.api';
+import { ORBITER_v0_0_4, ORBITER_v0_0_5, ORBITER_v0_0_8 } from '$lib/constants/version.constants';
 import { orbiterConfigs, orbitersStore } from '$lib/derived/orbiter.derived';
 import {
 	getDeprecatedAnalyticsPageViews,
@@ -178,7 +179,7 @@ export const getAnalyticsPageViews = async ({
 	params: PageViewsParams;
 	orbiterVersion: string;
 }): Promise<AnalyticsPageViews> => {
-	if (compare(orbiterVersion, '0.0.4') >= 0) {
+	if (compare(orbiterVersion, ORBITER_v0_0_4) >= 0) {
 		const [metrics, top10, clients] = await Promise.all([
 			getAnalyticsMetricsPageViews(params),
 			getAnalyticsTop10PageViews(params),
@@ -219,7 +220,7 @@ export const getAnalyticsTrackEvents = async ({
 	params: PageViewsParams;
 	orbiterVersion: string;
 }): Promise<AnalyticsTrackEvents> => {
-	if (compare(orbiterVersion, '0.0.5') >= 0) {
+	if (compare(orbiterVersion, ORBITER_v0_0_5) >= 0) {
 		return await getTrackEventsAnalytics(params);
 	}
 
@@ -234,7 +235,7 @@ export const getAnalyticsPerformanceMetrics = async ({
 	params: PageViewsParams;
 	orbiterVersion: string;
 }): Promise<AnalyticsWebVitalsPerformanceMetrics | undefined> => {
-	if (compare(orbiterVersion, '0.0.8') >= 0) {
+	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
 		return await getPerformanceMetricsAnalyticsWebVitals(params);
 	}
 
@@ -255,7 +256,7 @@ const listOrbiterSatelliteConfigs = async ({
 	identity: OptionIdentity;
 	orbiterVersion: string;
 }): Promise<[Principal, SatelliteConfig][]> => {
-	if (compare(orbiterVersion, '0.0.8') >= 0) {
+	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
 		return await listOrbiterSatelliteConfigsApi(rest);
 	}
 
@@ -284,7 +285,7 @@ export const setOrbiterSatelliteConfigs = async ({
 	orbiterVersion: string;
 	features: OrbiterSatelliteFeatures | undefined;
 }): Promise<[Principal, OrbiterSatelliteConfig][]> => {
-	if (compare(orbiterVersion, '0.0.8') >= 0) {
+	if (compare(orbiterVersion, ORBITER_v0_0_8) >= 0) {
 		return await setOrbiterSatelliteConfigsApi({
 			orbiterId,
 			config: Object.entries(config).map(([satelliteId, value]) => [

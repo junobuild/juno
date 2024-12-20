@@ -1,6 +1,8 @@
 import type {
 	Controller,
 	MissionControlSettings,
+	MonitoringHistory,
+	MonitoringHistoryKey,
 	MonitoringStartConfig,
 	MonitoringStopConfig,
 	Orbiter,
@@ -15,9 +17,11 @@ import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
+import type { GetMonitoringParams } from '$lib/types/monitoring';
 import { toSetController } from '$lib/utils/controllers.utils';
+import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { Principal } from '@dfinity/principal';
-import { toNullable } from '@dfinity/utils';
+import { nonNullish, toNullable } from '@dfinity/utils';
 
 export const setSatellitesController = async ({
 	identity,
@@ -375,6 +379,9 @@ export const unsetSatellite = async ({
 	return unset_satellite(satelliteId);
 };
 
+/**
+ * @deprecated
+ */
 export const listSatelliteStatuses = async ({
 	missionControlId,
 	identity,
@@ -388,6 +395,9 @@ export const listSatelliteStatuses = async ({
 	return list_satellite_statuses(satelliteId);
 };
 
+/**
+ * @deprecated
+ */
 export const listOrbiterStatuses = async ({
 	missionControlId,
 	identity,
@@ -401,6 +411,9 @@ export const listOrbiterStatuses = async ({
 	return list_orbiter_statuses(orbiterId);
 };
 
+/**
+ * @deprecated
+ */
 export const listMissionControlStatuses = async ({
 	missionControlId,
 	identity
@@ -487,4 +500,25 @@ export const updateAndStopMonitoring = async ({
 	});
 
 	return await update_and_stop_monitoring(config);
+};
+
+export const getMonitoringHistory = async ({
+	missionControlId,
+	identity,
+	params: { from, to, segmentId }
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	params: GetMonitoringParams;
+}): Promise<[MonitoringHistoryKey, MonitoringHistory][]> => {
+	const { get_monitoring_history } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+
+	return await get_monitoring_history({
+		segment_id: segmentId,
+		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
+		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
+	});
 };

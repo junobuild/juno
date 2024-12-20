@@ -8,6 +8,7 @@
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
+	import { ORBITER_v0_0_8 } from '$lib/constants/version.constants';
 	import { setOrbiterSatelliteConfigs } from '$lib/services/orbiters.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
@@ -65,7 +66,7 @@
 	});
 
 	let featuresSupported = $derived(
-		compare($versionStore.orbiter?.current ?? '0.0.0', '0.0.8') >= 0
+		compare($versionStore.orbiter?.current ?? '0.0.0', ORBITER_v0_0_8) >= 0
 	);
 
 	const onPageViewsToggle = () => {

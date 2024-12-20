@@ -11,6 +11,7 @@
 	import Doc from '$lib/components/docs/Doc.svelte';
 	import DocForm from '$lib/components/docs/DocHeader.svelte';
 	import Docs from '$lib/components/docs/Docs.svelte';
+	import { SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
@@ -43,7 +44,7 @@
 				return;
 			}
 
-			const list = compare(version, '0.0.9') >= 0 ? listDocs : listDocs008;
+			const list = compare(version, SATELLITE_v0_0_9) >= 0 ? listDocs : listDocs008;
 
 			const { items, matches_length, items_length } = await list({
 				collection,

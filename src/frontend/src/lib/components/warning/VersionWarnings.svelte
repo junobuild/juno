@@ -7,6 +7,7 @@
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { loadVersion } from '$lib/services/console.services';
 	import { newerReleases } from '$lib/services/upgrade.services';
 	import { busy } from '$lib/stores/busy.store';
@@ -48,8 +49,8 @@
 			: undefined
 	);
 
-	let ctrlVersion: string | undefined = $derived($versionStore?.missionControl?.current);
-	let ctrlRelease: string | undefined = $derived($versionStore?.missionControl?.release);
+	let ctrlVersion: string | undefined = $derived($missionControlVersion?.current);
+	let ctrlRelease: string | undefined = $derived($missionControlVersion?.release);
 
 	let orbVersion: string | undefined = $derived($versionStore?.orbiter?.current);
 	let orbRelease: string | undefined = $derived($versionStore?.orbiter?.release);

@@ -5,6 +5,7 @@
 	import { compare } from 'semver';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
+	import { SATELLITE_v0_0_7, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -36,8 +37,8 @@
 			...params,
 			...(nonNullish($missionControlStore) && { missionControlId: $missionControlStore }),
 			// TODO: option to be removed
-			deprecated: compare(currentVersion, '0.0.7') < 0,
-			deprecatedNoScope: compare(currentVersion, '0.0.9') < 0
+			deprecated: compare(currentVersion, SATELLITE_v0_0_7) < 0,
+			deprecatedNoScope: compare(currentVersion, SATELLITE_v0_0_9) < 0
 		});
 </script>
 

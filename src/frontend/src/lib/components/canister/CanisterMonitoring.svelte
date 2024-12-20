@@ -1,13 +1,19 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import { compare } from 'semver';
 	import { onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { MISSION_CONTROL_v0_0_13 } from '$lib/constants/version.constants';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
-	import { initStatusesWorker, type StatusesWorker } from '$lib/services/worker.statuses.services';
+	import { missionControlVersion } from '$lib/derived/version.derived';
+	import {
+		initStatusesWorker,
+		type MonitoringWorker
+	} from '$lib/services/worker.monitoring.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterSyncMonitoring, Segment } from '$lib/types/canister';
@@ -35,7 +41,7 @@
 		chartsData = d;
 	};
 
-	let worker: StatusesWorker | undefined = $state();
+	let worker: MonitoringWorker | undefined = $state();
 
 	onMount(async () => (worker = await initStatusesWorker()));
 	run(() => {
@@ -43,9 +49,15 @@
 		worker,
 			canisterId,
 			$missionControlStore,
+			$missionControlVersion,
 			(() => {
 				// We wait until mission control is loaded
 				if (isNullish($missionControlStore)) {
+					return;
+				}
+
+				// We wait for the version for backwards compatibility because we only want to query the monitoring history for up-to-date mission control
+				if (isNullish($missionControlVersion)) {
 					return;
 				}
 
@@ -57,6 +69,8 @@
 						}
 					],
 					missionControlId: $missionControlStore,
+					withMonitoringHistory:
+						compare($missionControlVersion.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) >= 0,
 					callback: syncCanister
 				});
 			})();

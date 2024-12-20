@@ -7,6 +7,7 @@ export interface PostMessageDataRequest {
 	segments?: CanisterSegment[];
 	customDomain?: CustomDomain;
 	missionControlId?: string;
+	withMonitoringHistory?: boolean;
 }
 
 export interface PostMessageDataResponse {

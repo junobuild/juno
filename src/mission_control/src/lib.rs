@@ -403,21 +403,37 @@ fn version() -> String {
 // Observatory
 // ---------------------------------------------------------
 
+#[deprecated(
+    since = "0.0.14",
+    note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+)]
 #[update(guard = "caller_is_user_or_admin_controller_or_juno")]
 async fn status(config: StatusesArgs) -> SegmentsStatuses {
     collect_statuses(&id(), &config).await
 }
 
+#[deprecated(
+    since = "0.0.14",
+    note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+)]
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_mission_control_statuses() -> Statuses {
     list_mission_control_statuses_store()
 }
 
+#[deprecated(
+    since = "0.0.14",
+    note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+)]
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
     list_satellite_statuses_store(&satellite_id)
 }
 
+#[deprecated(
+    since = "0.0.14",
+    note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+)]
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
     list_orbiter_statuses_store(&orbiter_id)

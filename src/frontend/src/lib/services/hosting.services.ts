@@ -6,6 +6,7 @@ import {
 	satelliteVersion,
 	setCustomDomain as setCustomDomainApi
 } from '$lib/api/satellites.api';
+import { SATELLITE_v0_0_17 } from '$lib/constants/version.constants';
 import { deleteDomain, registerDomain } from '$lib/rest/bn.rest';
 import { authStore } from '$lib/stores/auth.store';
 import { customDomainsStore } from '$lib/stores/custom-domains.store';
@@ -126,7 +127,7 @@ export const getAuthConfig = async ({
 
 		// TODO: keep a list of those version checks and remove them incrementally
 		// Also would be cleaner than to have 0.0.17 hardcoded there and there...
-		const authConfigSupported = compare(version, '0.0.17') >= 0;
+		const authConfigSupported = compare(version, SATELLITE_v0_0_17) >= 0;
 
 		if (!authConfigSupported) {
 			return { result: 'skip' };

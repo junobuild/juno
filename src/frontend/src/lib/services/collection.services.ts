@@ -2,6 +2,7 @@ import type { Rule, RulesType, SetRule } from '$declarations/satellite/satellite
 import { getRule, satelliteVersion, setRule as setRuleApi } from '$lib/api/satellites.api';
 import { DEFAULT_RATE_CONFIG_TIME_PER_TOKEN_NS } from '$lib/constants/data.constants';
 import { MemoryStable, type MemoryText, type PermissionText } from '$lib/constants/rules.constants';
+import { SATELLITE_v0_0_21 } from '$lib/constants/version.constants';
 import { i18n } from '$lib/stores/i18n.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -73,7 +74,7 @@ export const getRuleUser = async ({
 
 	// TODO: keep a list of those version checks and remove them incrementally
 	// Also would be cleaner than to have 0.0.17 hardcoded there and there...
-	const rateConfigSupported = compare(version, '0.0.21') >= 0;
+	const rateConfigSupported = compare(version, SATELLITE_v0_0_21) >= 0;
 
 	if (!rateConfigSupported) {
 		return { result: 'skip' };

@@ -15,6 +15,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { PAGINATION } from '$lib/constants/constants';
+	import { MISSION_CONTROL_v0_0_12 } from '$lib/constants/version.constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { authStore } from '$lib/stores/auth.store';
@@ -124,7 +125,7 @@
 			return;
 		}
 
-		if (compare($missionControlVersion?.current ?? '0.0.0', '0.0.12') <= 0) {
+		if (compare($missionControlVersion?.current ?? '0.0.0', MISSION_CONTROL_v0_0_12) <= 0) {
 			toasts.show({ text: $i18n.wallet.wallet_upgrade, level: 'warn' });
 			return;
 		}

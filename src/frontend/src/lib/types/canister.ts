@@ -57,7 +57,7 @@ export interface CanisterData {
 	memory?: MemorySize;
 }
 
-export interface CanisterStatusData {
+export interface CanisterMonitoringData {
 	chartsData: ChartsData[];
 }
 
@@ -69,6 +69,6 @@ export interface Canister<T> {
 	data?: T;
 }
 
-export type CanisterIcStatus = Canister<CanisterData>;
+export type CanisterSyncData = Canister<CanisterData>;
 
-export type CanisterJunoStatus = Canister<CanisterStatusData>;
+export type CanisterSyncMonitoring = Canister<CanisterMonitoringData>;

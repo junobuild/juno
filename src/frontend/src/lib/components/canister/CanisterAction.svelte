@@ -3,10 +3,10 @@
 	import type { Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { fade } from 'svelte/transition';
-	import type { CanisterIcStatus } from '$lib/types/canister';
+	import type { CanisterSyncData } from '$lib/types/canister';
 
 	interface Props {
-		canister?: CanisterIcStatus | undefined;
+		canister?: CanisterSyncData | undefined;
 		children: Snippet;
 		onclick: () => Promise<void>;
 	}

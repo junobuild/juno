@@ -9,7 +9,7 @@
 	import { type CyclesWorker, initCyclesWorker } from '$lib/services/worker.cycles.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type {
-		CanisterIcStatus,
+		CanisterSyncData,
 		CanisterData,
 		CanisterSyncStatus,
 		Segment
@@ -36,10 +36,10 @@
 		sync = $bindable(undefined)
 	}: Props = $props();
 
-	let canister: CanisterIcStatus | undefined = $state(undefined);
+	let canister: CanisterSyncData | undefined = $state(undefined);
 
 	const syncCanister = ({ canister: c }: PostMessageDataResponse) => {
-		canister = c as CanisterIcStatus;
+		canister = c as CanisterSyncData;
 		emit({ message: 'junoSyncCanister', detail: { canister } });
 	};
 

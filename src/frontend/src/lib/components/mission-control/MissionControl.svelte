@@ -1,11 +1,11 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import { fade } from 'svelte/transition';
+	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
 	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
-	import MissionControlStatuses from '$lib/components/mission-control/MissionControlStatuses.svelte';
 	import Monitoring from '$lib/components/monitoring/Monitoring.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -72,7 +72,7 @@
 		<div class="columns-3">
 			<CanisterOverview canisterId={missionControlId} segment="mission_control" />
 
-			<MissionControlStatuses {missionControlId} />
+			<CanisterMonitoring canisterId={missionControlId} segment="mission_control" />
 		</div>
 	</div>
 {/if}

@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
 	import Warning from '$lib/components/ui/Warning.svelte';
-	import type { CanisterIcStatus } from '$lib/types/canister';
+	import type { CanisterSyncData } from '$lib/types/canister';
 
 	interface Props {
 		canisterId: Principal;
@@ -15,7 +15,7 @@
 	let cyclesWarning = $state(false);
 	let heapWarning = false;
 
-	const syncCanister = ({ id, data }: CanisterIcStatus) => {
+	const syncCanister = ({ id, data }: CanisterSyncData) => {
 		if (id !== canisterId.toText()) {
 			return;
 		}

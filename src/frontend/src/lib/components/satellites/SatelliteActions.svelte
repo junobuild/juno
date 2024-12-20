@@ -9,7 +9,7 @@
 	import SegmentActions from '$lib/components/segments/SegmentActions.svelte';
 	import { listCustomDomains } from '$lib/services/hosting.services';
 	import { busy } from '$lib/stores/busy.store';
-	import type { CanisterIcStatus } from '$lib/types/canister';
+	import type { CanisterSyncData } from '$lib/types/canister';
 	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
@@ -20,9 +20,9 @@
 
 	let detail = { satellite };
 
-	let canister: CanisterIcStatus | undefined = $state(undefined);
+	let canister: CanisterSyncData | undefined = $state(undefined);
 
-	const onSyncCanister = (syncCanister: CanisterIcStatus) => {
+	const onSyncCanister = (syncCanister: CanisterSyncData) => {
 		if (syncCanister.id !== satellite.satellite_id.toText()) {
 			return;
 		}
@@ -79,7 +79,7 @@
 </script>
 
 <svelte:window
-	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterIcStatus }>) =>
+	onjunoSyncCanister={({ detail: { canister } }: CustomEvent<{ canister: CanisterSyncData }>) =>
 		onSyncCanister(canister)}
 />
 

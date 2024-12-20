@@ -2,10 +2,10 @@
 	import CanisterAction from '$lib/components/canister/CanisterAction.svelte';
 	import IconMoveUp from '$lib/components/icons/IconMoveUp.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterIcStatus } from '$lib/types/canister';
+	import type { CanisterSyncData } from '$lib/types/canister';
 
 	interface Props {
-		canister?: CanisterIcStatus | undefined;
+		canister?: CanisterSyncData | undefined;
 		onclick: () => Promise<void>;
 	}
 

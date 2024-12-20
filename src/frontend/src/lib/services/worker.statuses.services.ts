@@ -5,20 +5,20 @@ import type { Principal } from '@dfinity/principal';
 export type StatusesCallback = (data: PostMessageDataResponse) => void;
 
 export interface StatusesWorker {
-	startStatusesTimer: (params: {
+	startMonitoringTimer: (params: {
 		segments: CanisterSegment[];
 		missionControlId: Principal;
 		callback: StatusesCallback;
 	}) => void;
-	stopStatusesTimer: () => void;
-	restartStatusesTimer: (params: {
+	stopMonitoringTimer: () => void;
+	restartMonitoringTimer: (params: {
 		segments: CanisterSegment[];
 		missionControlId: Principal;
 	}) => void;
 }
 
 export const initStatusesWorker = async (): Promise<StatusesWorker> => {
-	const StatusesWorker = await import('$lib/workers/statuses.worker?worker');
+	const StatusesWorker = await import('$lib/workers/monitoring.worker?worker');
 	const statusesWorker: Worker = new StatusesWorker.default();
 
 	let statusesCallback: StatusesCallback | undefined;
@@ -34,22 +34,22 @@ export const initStatusesWorker = async (): Promise<StatusesWorker> => {
 	};
 
 	return {
-		startStatusesTimer: ({ callback, segments, missionControlId }) => {
+		startMonitoringTimer: ({ callback, segments, missionControlId }) => {
 			statusesCallback = callback;
 
 			statusesWorker.postMessage({
-				msg: 'startStatusesTimer',
+				msg: 'startMonitoringTimer',
 				data: { segments, missionControlId: missionControlId.toText() }
 			});
 		},
-		stopStatusesTimer: () => {
+		stopMonitoringTimer: () => {
 			statusesWorker.postMessage({
-				msg: 'stopStatusesTimer'
+				msg: 'stopMonitoringTimer'
 			});
 		},
-		restartStatusesTimer: ({ segments, missionControlId }) => {
+		restartMonitoringTimer: ({ segments, missionControlId }) => {
 			statusesWorker.postMessage({
-				msg: 'restartStatusesTimer',
+				msg: 'restartMonitoringTimer',
 				data: { segments, missionControlId: missionControlId.toText() }
 			});
 		}

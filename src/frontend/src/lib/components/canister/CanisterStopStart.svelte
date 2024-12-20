@@ -4,10 +4,10 @@
 	import { fade } from 'svelte/transition';
 	import CanisterStart from '$lib/components/canister/CanisterStart.svelte';
 	import CanisterStop from '$lib/components/canister/CanisterStop.svelte';
-	import type { CanisterIcStatus, CanisterStatus, CanisterSyncStatus } from '$lib/types/canister';
+	import type { CanisterSyncData, CanisterStatus, CanisterSyncStatus } from '$lib/types/canister';
 
 	interface Props {
-		canister?: CanisterIcStatus | undefined;
+		canister?: CanisterSyncData | undefined;
 		segment: 'satellite' | 'orbiter';
 		onstart: () => void;
 		onstop: () => void;

@@ -14,7 +14,9 @@ ic-cdk-macros.workspace = true
 ic-cdk-timers.workspace = true
 ic-ledger-types.workspace = true
 icrc-ledger-types.workspace = true
+ic-stable-structures.workspace = true
 serde.workspace = true
+ciborium.workspace = true
 canfund = "0.6.0"
 futures = "0.3.28"
 junobuild-shared = { path = "../libs/shared" }

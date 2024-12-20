@@ -1,13 +1,28 @@
+use crate::memory::init_stable_state;
 use crate::types::core::{Segment, SettingsMonitoring};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
 use crate::types::state::{
     Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState,
-    MissionControlSettings, Monitoring, Orbiter, Orbiters, Satellite, Settings, User,
+    MissionControlSettings, Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
+    Satellite, Settings, State, User,
 };
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
+use ic_stable_structures::storable::Bound;
+use ic_stable_structures::Storable;
+use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, UserId};
+use std::borrow::Cow;
 use std::collections::{BTreeMap, HashMap};
+
+impl Default for State {
+    fn default() -> Self {
+        Self {
+            stable: init_stable_state(),
+            heap: HeapState::default(),
+        }
+    }
+}
 
 impl From<&UserId> for HeapState {
     fn from(user: &UserId) -> Self {
@@ -271,4 +286,28 @@ impl SettingsMonitoring for MissionControlSettings {
     fn monitoring(&self) -> Option<&Monitoring> {
         self.monitoring.as_ref()
     }
+}
+
+impl Storable for MonitoringHistory {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Storable for MonitoringHistoryKey {
+    fn to_bytes(&self) -> Cow<[u8]> {
+        serialize_to_bytes(self)
+    }
+
+    fn from_bytes(bytes: Cow<[u8]>) -> Self {
+        deserialize_from_bytes(bytes)
+    }
+
+    const BOUND: Bound = Bound::Unbounded;
 }

@@ -23,6 +23,10 @@ export interface CronJobStatusesConfig {
 	enabled: boolean;
 	cycles_threshold: [] | [bigint];
 }
+export interface CyclesBalance {
+	timestamp: bigint;
+	amount: bigint;
+}
 export interface CyclesMonitoring {
 	strategy: [] | [CyclesMonitoringStrategy];
 	enabled: boolean;
@@ -50,6 +54,11 @@ export interface DepositCyclesArgs {
 	cycles: bigint;
 	destination_id: Principal;
 }
+export interface GetMonitoringHistory {
+	to: [] | [bigint];
+	from: [] | [bigint];
+	segment_id: Principal;
+}
 export interface MissionControlSettings {
 	updated_at: bigint;
 	created_at: bigint;
@@ -57,6 +66,17 @@ export interface MissionControlSettings {
 }
 export interface Monitoring {
 	cycles: [] | [CyclesMonitoring];
+}
+export interface MonitoringHistory {
+	cycles: [] | [MonitoringHistoryCycles];
+}
+export interface MonitoringHistoryCycles {
+	cycles: CyclesBalance;
+	last_deposited_cycles: [] | [CyclesBalance];
+}
+export interface MonitoringHistoryKey {
+	segment_id: Principal;
+	created_at: bigint;
 }
 export interface MonitoringStartConfig {
 	cycles_config: [] | [CyclesMonitoringStartConfig];
@@ -181,6 +201,10 @@ export interface _SERVICE {
 	del_satellite: ActorMethod<[Principal, bigint], undefined>;
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
+	get_monitoring_history: ActorMethod<
+		[GetMonitoringHistory],
+		Array<[MonitoringHistoryKey, MonitoringHistory]>
+	>;
 	get_monitoring_status: ActorMethod<[], MonitoringStatus>;
 	get_settings: ActorMethod<[], [] | [MissionControlSettings]>;
 	get_user: ActorMethod<[], Principal>;

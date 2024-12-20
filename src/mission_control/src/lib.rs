@@ -24,7 +24,6 @@ use crate::guards::{
 };
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::mgmt::status::collect_statuses;
-use crate::monitoring::store::stable::get_monitoring_history as get_monitoring_history_store;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -71,7 +70,8 @@ use junobuild_shared::types::state::{
 use junobuild_shared::types::state::{Metadata, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;
 use monitoring::monitor::{
-    defer_restart_monitoring, get_monitoring_status as get_any_monitoring_status,
+    defer_restart_monitoring, get_monitoring_history as get_any_monitoring_history,
+    get_monitoring_status as get_any_monitoring_status,
     start_monitoring as start_monitoring_with_current_config,
     stop_monitoring as stop_any_monitoring, update_and_start_monitoring_with_config,
     update_and_stop_monitoring_with_config,
@@ -456,7 +456,7 @@ fn get_monitoring_status() -> MonitoringStatus {
 fn get_monitoring_history(
     filter: GetMonitoringHistory,
 ) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
-    get_monitoring_history_store(&filter)
+    get_any_monitoring_history(&filter)
 }
 
 // ---------------------------------------------------------

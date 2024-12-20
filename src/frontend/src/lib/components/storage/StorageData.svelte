@@ -10,6 +10,7 @@
 	import Assets from '$lib/components/assets/Assets.svelte';
 	import Data from '$lib/components/data/Data.svelte';
 	import DataCount from '$lib/components/data/DataCount.svelte';
+	import { SATELLITE_v0_0_10, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 	import { authStore } from '$lib/stores/auth.store';
 	import { listParamsStore } from '$lib/stores/list-params.store';
 	import { initPaginationContext } from '$lib/stores/pagination.store';
@@ -47,9 +48,9 @@
 			}
 
 			const list =
-				compare(version, '0.0.10') >= 0
+				compare(version, SATELLITE_v0_0_10) >= 0
 					? listAssets
-					: compare(version, '0.0.9') >= 0
+					: compare(version, SATELLITE_v0_0_9) >= 0
 						? listAssets009
 						: listAssets008;
 

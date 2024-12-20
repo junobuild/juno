@@ -2,6 +2,8 @@ import type {
 	CyclesMonitoringStrategy,
 	GetMonitoringHistory,
 	_SERVICE as MissionControlActor,
+	MonitoringHistory,
+	MonitoringHistoryKey,
 	MonitoringStartConfig
 } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
@@ -85,7 +87,7 @@ describe('Mission Control - History', () => {
 	}: {
 		segmentId: Principal;
 		expectedLength: number;
-	}) => {
+	}): Promise<[MonitoringHistoryKey, MonitoringHistory][]> => {
 		const { get_monitoring_history } = actor;
 
 		const filter: GetMonitoringHistory = {
@@ -113,6 +115,11 @@ describe('Mission Control - History', () => {
 
 			expect(fromNullable(cycles.last_deposited_cycles)).toBeUndefined();
 		});
+
+		return results.sort(
+			([{ created_at: aCreatedAt }, _], [{ created_at: bCreateAt }, __]) =>
+				Number(aCreatedAt) - Number(bCreateAt)
+		);
 	};
 
 	describe('init', () => {
@@ -159,10 +166,12 @@ describe('Mission Control - History', () => {
 			await update_and_start_monitoring(config);
 		};
 
+		beforeAll(async () => {
+			await startMonitoring();
+		});
+
 		describe('on start monitoring', () => {
 			beforeAll(async () => {
-				await startMonitoring();
-
 				await tick(pic);
 			});
 
@@ -180,26 +189,117 @@ describe('Mission Control - History', () => {
 		});
 
 		describe('collect entries over time', () => {
+			describe('first round', () => {
+				beforeAll(async () => {
+					await pic.advanceTime(30000);
+
+					await tick(pic);
+				});
+
+				it('should have not monitoring history for mission control', async () => {
+					await testHistory({ segmentId: missionControlId, expectedLength: 2 });
+				});
+
+				it('should have not monitoring history for satellite', async () => {
+					await testHistory({ segmentId: satelliteId, expectedLength: 2 });
+				});
+
+				it('should have not monitoring history for orbiter', async () => {
+					await testHistory({ segmentId: orbiterId, expectedLength: 2 });
+				});
+			});
+
+			describe('second round', () => {
+				beforeAll(async () => {
+					await pic.advanceTime(30000);
+
+					await tick(pic);
+				});
+
+				it('should have not monitoring history for mission control', async () => {
+					await testHistory({ segmentId: missionControlId, expectedLength: 3 });
+				});
+
+				it('should have not monitoring history for satellite', async () => {
+					await testHistory({ segmentId: satelliteId, expectedLength: 3 });
+				});
+
+				it('should have not monitoring history for orbiter', async () => {
+					await testHistory({ segmentId: orbiterId, expectedLength: 3 });
+				});
+			});
+		});
+
+		describe('clean entries older than 30 days', () => {
+			let missionControlHistory: [MonitoringHistoryKey, MonitoringHistory][];
+			let satelliteHistory: [MonitoringHistoryKey, MonitoringHistory][];
+			let orbiterHistory: [MonitoringHistoryKey, MonitoringHistory][];
+
+			const testCleanedHistory = ({
+				before,
+				after
+			}: {
+				before: [MonitoringHistoryKey, MonitoringHistory][];
+				after: [MonitoringHistoryKey, MonitoringHistory][];
+			}) => {
+				expect(
+					after.find(([key, _]) => key.created_at === before[0][0].created_at)
+				).toBeUndefined();
+
+				const [beforeKey1] = before[1];
+				const [afterKey0] = after[0];
+				expect(beforeKey1.created_at).toEqual(afterKey0.created_at);
+
+				const [beforeKey2] = before[2];
+				const [afterKey1] = after[1];
+				expect(beforeKey2.created_at).toEqual(afterKey1.created_at);
+
+				expect(
+					before.find(([key, _]) => key.created_at === after[after.length - 1][0].created_at)
+				).toBeUndefined();
+			};
+
 			beforeAll(async () => {
-				await startMonitoring();
+				missionControlHistory = await testHistory({
+					segmentId: missionControlId,
+					expectedLength: 3
+				});
+				satelliteHistory = await testHistory({ segmentId: satelliteId, expectedLength: 3 });
+				orbiterHistory = await testHistory({ segmentId: orbiterId, expectedLength: 3 });
 
-				await tick(pic);
+				const thirtyDays = 1000 * 60 * 60 * 24 * 30;
 
-				await pic.advanceTime(30000);
+				// We want to keep the history for the first round and second round but, clean up the start
+				await pic.advanceTime(thirtyDays - 30000);
 
 				await tick(pic);
 			});
 
 			it('should have not monitoring history for mission control', async () => {
-				await testHistory({ segmentId: missionControlId, expectedLength: 2 });
+				const updatedHistory = await testHistory({
+					segmentId: missionControlId,
+					expectedLength: 3
+				});
+
+				testCleanedHistory({ before: missionControlHistory, after: updatedHistory });
 			});
 
 			it('should have not monitoring history for satellite', async () => {
-				await testHistory({ segmentId: satelliteId, expectedLength: 2 });
+				const updatedHistory = await testHistory({
+					segmentId: satelliteId,
+					expectedLength: 3
+				});
+
+				testCleanedHistory({ before: satelliteHistory, after: updatedHistory });
 			});
 
 			it('should have not monitoring history for orbiter', async () => {
-				await testHistory({ segmentId: orbiterId, expectedLength: 2 });
+				const updatedHistory = await testHistory({
+					segmentId: orbiterId,
+					expectedLength: 3
+				});
+
+				testCleanedHistory({ before: orbiterHistory, after: updatedHistory });
 			});
 		});
 	});

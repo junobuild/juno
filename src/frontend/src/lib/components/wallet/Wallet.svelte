@@ -16,10 +16,10 @@
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { PAGINATION } from '$lib/constants/constants';
 	import { authSignedIn, authSignedOut } from '$lib/derived/auth.derived';
+	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
 	import { formatE8sCredits, formatE8sICP } from '$lib/utils/icp.utils';
 	import { last } from '$lib/utils/utils';
@@ -124,7 +124,7 @@
 			return;
 		}
 
-		if (compare($versionStore?.missionControl?.current ?? '0.0.0', '0.0.12') <= 0) {
+		if (compare($missionControlVersion?.current ?? '0.0.0', '0.0.12') <= 0) {
 			toasts.show({ text: $i18n.wallet.wallet_upgrade, level: 'warn' });
 			return;
 		}

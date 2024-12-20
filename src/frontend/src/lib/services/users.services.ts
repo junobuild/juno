@@ -1,5 +1,6 @@
 import { listDocs, satelliteVersion } from '$lib/api/satellites.api';
 import { listDocs008 } from '$lib/api/satellites.deprecated.api';
+import { SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
 import { authStore } from '$lib/stores/auth.store';
 import type { ListParams } from '$lib/types/list';
 import type { User } from '$lib/types/user';
@@ -19,7 +20,7 @@ export const listUsers = async ({
 	const identity = get(authStore).identity;
 
 	const version = await satelliteVersion({ satelliteId, identity });
-	const list = compare(version, '0.0.9') >= 0 ? listDocs : listDocs008;
+	const list = compare(version, SATELLITE_v0_0_9) >= 0 ? listDocs : listDocs008;
 
 	const { items, matches_length, items_length } = await list({
 		collection: '#user',

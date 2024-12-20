@@ -15,6 +15,11 @@ import {
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import {
+	MISSION_CONTROL_v0_0_3,
+	MISSION_CONTROL_v0_0_5,
+	MISSION_CONTROL_v0_0_7
+} from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
@@ -43,8 +48,8 @@ export const setMissionControlControllerForVersion = async ({
 	const version = await missionControlVersion({ missionControlId, identity });
 
 	const missionControlController =
-		compare(version, '0.0.3') >= 0
-			? compare(version, '0.0.5') >= 0
+		compare(version, MISSION_CONTROL_v0_0_3) >= 0
+			? compare(version, MISSION_CONTROL_v0_0_5) >= 0
 				? setMissionControlController
 				: setMissionControlController004
 			: addMissionControlController;
@@ -90,7 +95,7 @@ export const setSatellitesForVersion = async ({
 			}: { setSatelliteIds: Principal[]; addSatellitesIds: Principal[] },
 			{ satelliteId, version }
 		) => {
-			if (compare(version, '0.0.7') >= 0) {
+			if (compare(version, MISSION_CONTROL_v0_0_7) >= 0) {
 				return {
 					setSatelliteIds: [...setSatelliteIds, satelliteId],
 					addSatellitesIds

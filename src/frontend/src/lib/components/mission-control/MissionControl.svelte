@@ -16,6 +16,7 @@
 	} from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
+	import {missionControlVersion} from "$lib/derived/version.derived";
 
 	interface Props {
 		missionControlId: Principal;
@@ -48,7 +49,7 @@
 						{#snippet label()}
 							{$i18n.core.version}
 						{/snippet}
-						<p>v{$versionStore?.missionControl?.current ?? '...'}</p>
+						<p>v{$missionControlVersion?.current ?? '...'}</p>
 					</Value>
 				</div>
 

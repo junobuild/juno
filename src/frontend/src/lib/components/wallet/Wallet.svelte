@@ -23,6 +23,7 @@
 	import { emit } from '$lib/utils/events.utils';
 	import { formatE8sCredits, formatE8sICP } from '$lib/utils/icp.utils';
 	import { last } from '$lib/utils/utils';
+	import {missionControlVersion} from "$lib/derived/version.derived";
 
 	interface Props {
 		missionControlId: Principal;
@@ -124,7 +125,7 @@
 			return;
 		}
 
-		if (compare($versionStore?.missionControl?.current ?? '0.0.0', '0.0.12') <= 0) {
+		if (compare($missionControlVersion?.current ?? '0.0.0', '0.0.12') <= 0) {
 			toasts.show({ text: $i18n.wallet.wallet_upgrade, level: 'warn' });
 			return;
 		}

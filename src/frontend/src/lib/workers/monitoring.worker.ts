@@ -5,7 +5,7 @@ import {
 } from '$lib/api/mission-control.api';
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
 import { statusesIdbStore } from '$lib/stores/idb.store';
-import type { CanisterSyncMonitoring } from '$lib/types/canister';
+import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
@@ -103,6 +103,55 @@ const syncMonitoring = async ({
 	}
 };
 
+const loadDeprecatedStatuses = async ({
+	identity,
+	segment: { segment, canisterId },
+	missionControlId
+}: {
+	identity: Identity;
+} & Required<Pick<PostMessageDataRequest, 'missionControlId'>> & {
+		segment: CanisterSegment;
+	}): Promise<ChartsData[]> => {
+	const results = await (segment === 'satellite'
+		? listSatelliteStatuses({
+				satelliteId: Principal.fromText(canisterId),
+				missionControlId: Principal.fromText(missionControlId),
+				identity
+			})
+		: segment === 'orbiter'
+			? listOrbiterStatuses({
+					orbiterId: Principal.fromText(canisterId),
+					missionControlId: Principal.fromText(missionControlId),
+					identity
+				})
+			: listMissionControlStatuses({
+					missionControlId: Principal.fromText(missionControlId),
+					identity
+				}));
+
+	return (fromNullable(results) ?? [])
+		.map(([timestamp, result]) => {
+			if ('Err' in result) {
+				return {
+					x: `${fromBigIntNanoSeconds(timestamp).getTime()}`,
+					y: 0
+				};
+			}
+
+			const {
+				Ok: {
+					status: { cycles }
+				}
+			} = result;
+
+			return {
+				x: `${fromBigIntNanoSeconds(timestamp).getTime()}`,
+				y: parseFloat(formatTCycles(cycles))
+			};
+		})
+		.sort(({ x: aKey }, { x: bKey }) => parseInt(aKey) - parseInt(bKey));
+};
+
 const syncMonitoringForSegments = async ({
 	identity,
 	segments,
@@ -111,46 +160,13 @@ const syncMonitoringForSegments = async ({
 	identity: Identity;
 } & Required<Pick<PostMessageDataRequest, 'missionControlId' | 'segments'>>) => {
 	await Promise.allSettled(
-		segments.map(async ({ canisterId, segment }) => {
+		segments.map(async ({canisterId, ...rest}) => {
 			try {
-				const results = await (segment === 'satellite'
-					? listSatelliteStatuses({
-							satelliteId: Principal.fromText(canisterId),
-							missionControlId: Principal.fromText(missionControlId),
-							identity
-						})
-					: segment === 'orbiter'
-						? listOrbiterStatuses({
-								orbiterId: Principal.fromText(canisterId),
-								missionControlId: Principal.fromText(missionControlId),
-								identity
-							})
-						: listMissionControlStatuses({
-								missionControlId: Principal.fromText(missionControlId),
-								identity
-							}));
-
-				const chartsStatuses = (fromNullable(results) ?? [])
-					.map(([timestamp, result]) => {
-						if ('Err' in result) {
-							return {
-								x: `${fromBigIntNanoSeconds(timestamp).getTime()}`,
-								y: 0
-							};
-						}
-
-						const {
-							Ok: {
-								status: { cycles }
-							}
-						} = result;
-
-						return {
-							x: `${fromBigIntNanoSeconds(timestamp).getTime()}`,
-							y: parseFloat(formatTCycles(cycles))
-						};
-					})
-					.sort(({ x: aKey }, { x: bKey }) => parseInt(aKey) - parseInt(bKey));
+				const chartsStatuses = await loadDeprecatedStatuses({
+					identity,
+					missionControlId,
+					segment: {canisterId, ...rest}
+				});
 
 				const totalStatusesPerDay = chartsStatuses.reduce<Record<string, number[]>>(
 					(acc, { x, y }) => {

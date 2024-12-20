@@ -13,6 +13,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { versionStore } from '$lib/stores/version.store';
 	import { emit } from '$lib/utils/events.utils';
+	import { missionControlVersion } from '$lib/derived/version.derived';
 
 	interface Props {
 		satellite?: Satellite | undefined;
@@ -48,8 +49,8 @@
 			: undefined
 	);
 
-	let ctrlVersion: string | undefined = $derived($versionStore?.missionControl?.current);
-	let ctrlRelease: string | undefined = $derived($versionStore?.missionControl?.release);
+	let ctrlVersion: string | undefined = $derived($missionControlVersion?.current);
+	let ctrlRelease: string | undefined = $derived($missionControlVersion?.release);
 
 	let orbVersion: string | undefined = $derived($versionStore?.orbiter?.current);
 	let orbRelease: string | undefined = $derived($versionStore?.orbiter?.release);

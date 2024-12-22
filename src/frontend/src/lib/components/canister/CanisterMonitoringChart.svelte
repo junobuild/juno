@@ -2,8 +2,8 @@
 	import { fade } from 'svelte/transition';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import type { ChartsData } from '$lib/types/chart';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { ChartsData } from '$lib/types/chart';
 
 	interface Props {
 		chartsData: ChartsData[];

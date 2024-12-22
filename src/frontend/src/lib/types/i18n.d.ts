@@ -455,6 +455,7 @@ interface I18nErrors {
 	satellite_no_found: string;
 	satellite_name_update: string;
 	satellite_missing_name: string;
+	satellites_not_loaded: string;
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
@@ -504,6 +505,7 @@ interface I18nErrors {
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
+	orbiter_not_loaded: string;
 	canister_id_missing: string;
 	canister_attach_error: string;
 	orbiter_attach: string;
@@ -543,6 +545,7 @@ interface I18nErrors {
 	mission_control_settings_not_loaded: string;
 	monitoring_apply_strategy_error: string;
 	monitoring_stop_error: string;
+	monitoring_no_modules: string;
 }
 
 interface I18nDocument {

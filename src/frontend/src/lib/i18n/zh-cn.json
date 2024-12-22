@@ -439,6 +439,7 @@
 		"satellite_no_found": "Satellite没找到，返回 <a href=\"/\">开始</a>去找你的 satellites.",
 		"satellite_name_update": "试图修改你的 satellite 名字出现异常.",
 		"satellite_missing_name": "必须提供一个名字.",
+		"satellites_not_loaded": "The satellites data are not yet loaded.",
 		"canister_stop": "停止智能合约中遇到异常错误.",
 		"canister_start": "启动智能合约过程中遇到异常错误.",
 		"canister_delete": "删除智能合约时出现异常错误.",
@@ -488,6 +489,7 @@
 		"orbiter_configuration_missing": "请提供 Satellites 和配置.",
 		"orbiter_configuration_unexpected": "编辑配置时出现意外错误.",
 		"orbiter_configuration_listing": "获取配置时出错.",
+		"orbiter_not_loaded": "The orbiter data are not yet loaded.",
 		"canister_id_missing": "必须提供一个有效的 ID .",
 		"canister_attach_error": "试图捆绑模块是出现异常错误.",
 		"orbiter_attach": "试图关联 orbiter 到你的 mission control时候出现异常.",
@@ -526,7 +528,8 @@
 		"auth_domain_config": "更新认证配置是出现异常错误",
 		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded.",
 		"monitoring_apply_strategy_error": "Unexpected error(s) while applying the strategy.",
-		"monitoring_stop_error": "Unexpected error(s) while stopping the monitoring."
+		"monitoring_stop_error": "Unexpected error(s) while stopping the monitoring.",
+		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started."
 	},
 	"document": {
 		"owner": "拥有者",

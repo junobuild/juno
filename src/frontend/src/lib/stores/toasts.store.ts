@@ -20,6 +20,14 @@ const initToastsStore = () => {
 			update((messages: ToastMsg[]) => [...messages, msg]);
 		},
 
+		warn(text: string) {
+			this.show({
+				text,
+				level: 'warn',
+				duration: 2000
+			});
+		},
+
 		success(text: string) {
 			this.show({
 				text,

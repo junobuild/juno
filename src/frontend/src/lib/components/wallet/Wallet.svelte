@@ -126,7 +126,7 @@
 		}
 
 		if (compare($missionControlVersion?.current ?? '0.0.0', MISSION_CONTROL_v0_0_12) <= 0) {
-			toasts.show({ text: $i18n.wallet.wallet_upgrade, level: 'warn' });
+			toasts.warn($i18n.wallet.wallet_upgrade);
 			return;
 		}
 

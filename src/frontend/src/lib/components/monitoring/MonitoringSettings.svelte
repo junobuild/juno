@@ -1,6 +1,5 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
 	import MonitoringSettingsMissionControl from '$lib/components/monitoring/MonitoringSettingsMissionControl.svelte';
@@ -12,11 +11,9 @@
 	} from '$lib/derived/mission-control.derived';
 	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesLoaded } from '$lib/derived/satellite.derived';
+	import { openMonitoringModal } from '$lib/services/monitoring.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		missionControlId: Principal;
@@ -25,20 +22,9 @@
 	let { missionControlId }: Props = $props();
 
 	const openModal = (type: 'create_monitoring_strategy' | 'stop_monitoring_strategy') => {
-		if (isNullish($missionControlSettingsDataStore)) {
-			toasts.error({ text: $i18n.errors.mission_control_settings_not_loaded });
-			return;
-		}
-
-		emit({
-			message: 'junoModal',
-			detail: {
-				type,
-				detail: {
-					settings: $missionControlSettingsDataStore.data,
-					missionControlId
-				}
-			}
+		openMonitoringModal({
+			type,
+			missionControlId
 		});
 	};
 

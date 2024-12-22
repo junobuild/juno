@@ -8,13 +8,20 @@
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type {Principal} from "@dfinity/principal";
+
+	interface Props {
+		missionControlId: Principal;
+	}
+
+	let { missionControlId }: Props = $props();
 </script>
 
 {#if $missionControlSettingsNotLoaded}
 	<SpinnerParagraph>{$i18n.monitoring.loading}</SpinnerParagraph>
 {:else if isNullish($missionControlSettings)}
 	<div in:fade>
-		<NoMonitoring />
+		<NoMonitoring {missionControlId} />
 	</div>
 {:else}
 	<div in:fade>TODO</div>

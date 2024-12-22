@@ -61,7 +61,7 @@
 			{#if nonNullish($missionControlStore)}
 				<MissionControlSettingsLoader missionControlId={$missionControlStore}>
 					{#if $store.tabId === $store.tabs[0].id}
-						<MonitoringDashboard />
+						<MonitoringDashboard missionControlId={$missionControlStore} />
 					{:else if $store.tabId === $store.tabs[1].id && $missionControlMonitored}
 						<MonitoringSettings missionControlId={$missionControlStore} />
 

@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { compare } from 'semver';
-    import {onDestroy, onMount, type Snippet} from 'svelte';
+	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { MISSION_CONTROL_v0_0_13 } from '$lib/constants/version.constants';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
@@ -16,13 +16,13 @@
 	import type { CanisterSyncMonitoring, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
-	import CanisterMonitoringChart from "$lib/components/canister/CanisterMonitoringChart.svelte";
+	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
 
 	interface Props {
 		canisterId: Principal;
 		segment: Segment;
-        chartsData: ChartsData[]
-        children: Snippet;
+		chartsData: ChartsData[];
+		children: Snippet;
 	}
 
 	let { canisterId, segment, chartsData = $bindable([]), children }: Props = $props();
@@ -49,17 +49,17 @@
 			$missionControlStore,
 			$missionControlVersion,
 			(() => {
-                // We wait until mission control is loaded
+				// We wait until mission control is loaded
 				if (isNullish($missionControlStore)) {
 					return;
 				}
 
-                // We wait for the version for backwards compatibility because we only want to query the monitoring history for up-to-date mission control
+				// We wait for the version for backwards compatibility because we only want to query the monitoring history for up-to-date mission control
 				if (isNullish($missionControlVersion)) {
 					return;
 				}
 
-                worker?.startMonitoringTimer({
+				worker?.startMonitoringTimer({
 					segments: [
 						{
 							canisterId: canisterId.toText(),

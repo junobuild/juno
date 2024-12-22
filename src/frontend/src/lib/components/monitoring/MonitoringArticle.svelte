@@ -5,8 +5,12 @@
 	import type { Principal } from '@dfinity/principal';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import type { ChartsData } from '$lib/types/chart';
-	import type { Segment } from '$lib/types/canister';
+	import type { CanisterData, Segment } from '$lib/types/canister';
 	import Chart from '$lib/components/charts/Chart.svelte';
+	import IconClockUpdate from '$lib/components/icons/IconClockUpdate.svelte';
+	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
+	import Canister from '$lib/components/canister/Canister.svelte';
+	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 
 	interface Props {
 		children: Snippet;
@@ -20,9 +24,10 @@
 	let enabled = $derived(fromNullable(monitoring?.cycles ?? [])?.enabled === true);
 
 	let chartsData: ChartsData[] = $state([]);
-
-	$inspect(chartsData);
+	let canisterData: CanisterData | undefined = $state(undefined);
 </script>
+
+<Canister {canisterId} {segment} display={false} bind:data={canisterData} />
 
 <CanisterMonitoringLoader {segment} {canisterId} bind:chartsData>
 	<button onclick={() => console.log('todo')} class="article monitoring">
@@ -30,23 +35,46 @@
 			{@render children()}
 		</span>
 
+		<span><Canister {segment} {canisterId} row={true} /></span>
+
 		{#if enabled}
 			<span class="chart-container">
 				<Chart {chartsData} axis={false} padding={{ top: 0, right: 0, bottom: 0, left: 0 }} />
 			</span>
+
+			<span class="info"><IconClockUpdate /> 2h ago</span>
+
+			<span class="info"><IconRefresh size="16px" /> 7 days ago</span>
 		{:else}
-			<span>Monitoring disabled.</span>
+			<span class="info">Monitoring disabled.</span>
 		{/if}
 	</button>
 </CanisterMonitoringLoader>
 
 <style lang="scss">
 	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/text';
 
 	.segment {
 		display: flex;
 		align-items: center;
 		gap: var(--padding);
+
+		:global(svg) {
+			min-width: 24px;
+		}
+
+		:global(span) {
+			@include text.truncate;
+		}
+	}
+
+	.info {
+		display: flex;
+		align-items: center;
+		gap: var(--padding);
+
+		font-size: var(--font-size-small);
 	}
 
 	button.article.monitoring {
@@ -57,8 +85,8 @@
 
 		@include media.min-width(medium) {
 			display: grid;
-			grid-template-columns: 30% auto;
-			grid-gap: var(--padding);
+			grid-template-columns: 20% repeat(4, auto);
+			grid-gap: var(--padding-8x);
 		}
 	}
 

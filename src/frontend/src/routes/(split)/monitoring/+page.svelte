@@ -22,8 +22,8 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import Warnings from "$lib/components/warning/Warnings.svelte";
-	import {authSignedIn} from "$lib/derived/auth.derived";
+	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 
 	const tabDashboard = {
 		id: Symbol('1'),

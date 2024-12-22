@@ -10,12 +10,14 @@
 	interface Props {
 		chartsData: ChartsData[];
 		axis?: boolean;
-		padding?: {
-			top?: number;
-			right?: number;
-			bottom?: number;
-			left?: number;
-		} | undefined;
+		padding?:
+			| {
+					top?: number;
+					right?: number;
+					bottom?: number;
+					left?: number;
+			  }
+			| undefined;
 	}
 
 	let { chartsData, axis = true, padding }: Props = $props();
@@ -42,7 +44,7 @@
 		{#if axis}
 			<AxisX {formatTick} {ticks} />
 			<AxisY ticks={4} />
-			{/if}
+		{/if}
 		<Line />
 		<Area />
 	</Svg>

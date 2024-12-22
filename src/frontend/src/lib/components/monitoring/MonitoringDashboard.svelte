@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import NoMonitoring from '$lib/components/monitoring/NoMonitoring.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
@@ -11,9 +11,12 @@
 	} from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import MonitoringArticle from '$lib/components/monitoring/MonitoringArticle.svelte';
-	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
-	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
+	import { satellitesStore } from '$lib/derived/satellite.derived';
+	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
+	import { satelliteName } from '$lib/utils/satellite.utils';
+	import { orbitersStore, orbiterStore } from '$lib/derived/orbiter.derived';
+	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -38,6 +41,28 @@
 			<IconMissionControl />
 			<span>{$i18n.mission_control.title}</span>
 		</MonitoringArticle>
+
+		{#each $satellitesStore ?? [] as satellite}
+			<MonitoringArticle
+				monitoring={fromNullable(fromNullable(satellite.settings)?.monitoring ?? [])}
+				canisterId={satellite.satellite_id}
+				segment="satellite"
+			>
+				<IconSatellite size="24px" />
+				<span>{satelliteName(satellite)}</span>
+			</MonitoringArticle>
+		{/each}
+
+		{#each $orbitersStore ?? [] as orbiter}
+			<MonitoringArticle
+				monitoring={fromNullable(fromNullable(orbiter.settings)?.monitoring ?? [])}
+				canisterId={orbiter.orbiter_id}
+				segment="orbiter"
+			>
+				<IconAnalytics size="24px" />
+				<span>{$i18n.analytics.title}</span>
+			</MonitoringArticle>
+		{/each}
 	</section>
 {/if}
 
@@ -47,10 +72,10 @@
 	section {
 		@include grid.twelve-columns;
 
-		padding: var(--padding-2x) 0;
+		row-gap: var(--padding-2x);
 
 		&:first-of-type {
-			margin-top: var(--padding-4x);
+			margin-top: var(--padding-3x);
 		}
 	}
 

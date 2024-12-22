@@ -9,7 +9,7 @@
 	let { children }: Props = $props();
 </script>
 
-<p class="label loading">{@render children()} <Spinner inline /></p>
+<p class="label loading"><Spinner inline /> <span>{@render children()}</span></p>
 
 <style lang="scss">
 	.loading {
@@ -23,4 +23,24 @@
 		margin: var(--spinner-paragraph-margin, var(--padding-3x) 0 0);
 		color: var(--value-color);
 	}
+
+    span {
+      font-size: var(--font-size-small);
+      animation: pulse 1s linear infinite;
+    }
+
+    /* -global- */
+    @keyframes -global-pulse {
+      0% {
+        opacity: 1;
+      }
+
+      50% {
+        opacity: 0.75;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
 </style>

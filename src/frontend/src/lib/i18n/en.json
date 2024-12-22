@@ -243,7 +243,8 @@
 		"title": "Mission Control",
 		"overview": "Overview",
 		"id": "Mission Control ID",
-		"not_found": "Mission control not found."
+		"not_found": "Mission control not found.",
+		"loading": "Loading your mission control..."
 	},
 	"wallet": {
 		"title": "Wallet",
@@ -311,7 +312,7 @@
 	"analytics": {
 		"title": "Analytics",
 		"dashboard": "Dashboard",
-		"loading": "Loading data",
+		"loading": "Loading data...",
 		"empty": "Juno provides simple, performant, and open-source web analytics that do not use cookies. It aggregates anonymous data within smart contracts and respects the privacy of your dapps and website visitors.",
 		"error_msg": "An error occurred while processing the analytics for the selected filters. Please refine to try again.",
 		"get_started": "Get started",
@@ -675,6 +676,7 @@
 		"title": "Monitoring",
 		"dashboard": "Dashboard",
 		"start": "Getting started",
+		"loading": "Loading monitoring data...",
 		"introduction": "Monitoring helps ensure your modules always have enough cycles to operate by automatically tracking their levels and topping them up when needed. Enable monitoring to avoid downtime and keep your projects running smoothly.",
 		"monitoring_strategy": "Monitoring Strategy",
 		"create_info": "Select the modules for which the monitoring strategy will ensure sufficient cycles periodically.",

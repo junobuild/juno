@@ -243,7 +243,8 @@
 		"title": "Mission Control",
 		"overview": "概要",
 		"id": "Mission Control ID",
-		"not_found": "Mission control not found."
+		"not_found": "Mission control not found.",
+		"loading": "Loading your mission control..."
 	},
 	"wallet": {
 		"title": "钱包",
@@ -311,7 +312,7 @@
 	"analytics": {
 		"title": "统计",
 		"dashboard": "仪表盘",
-		"loading": "加载数据",
+		"loading": "加载数据...",
 		"empty": "Juno 提供简单，轻便，开源的网络统计功能，不需要使用 cookies. 它会通过智能合约统计匿名数据并尊重您的网站用户隐私.",
 		"error_msg": "处理分析选定的过滤器出错.请重新再试.",
 		"get_started": "这里开始",
@@ -675,6 +676,7 @@
 		"title": "Monitoring",
 		"dashboard": "仪表盘",
 		"start": "从这开始",
+		"loading": "Loading monitoring data...",
 		"introduction": "Monitoring helps ensure your modules always have enough cycles to operate by automatically tracking their levels and topping them up when needed. Enable monitoring to avoid downtime and keep your projects running smoothly.",
 		"monitoring_strategy": "Monitoring Strategy",
 		"create_info": "Select the modules for which the monitoring strategy will ensure sufficient cycles periodically.",

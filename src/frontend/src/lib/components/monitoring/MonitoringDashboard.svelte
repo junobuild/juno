@@ -11,7 +11,7 @@
 </script>
 
 {#if $missionControlSettingsNotLoaded}
-	<SpinnerParagraph>{$i18n.core.loading}</SpinnerParagraph>
+	<SpinnerParagraph>{$i18n.monitoring.loading}</SpinnerParagraph>
 {:else if isNullish($missionControlSettings)}
 	<div in:fade>
 		<NoMonitoring />

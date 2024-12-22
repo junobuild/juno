@@ -1,11 +1,8 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import { onMount, type Snippet } from 'svelte';
-	import { run } from 'svelte/legacy';
 	import IconSatellite from '$lib/components/icons/IconSatellite.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
 	import { Color } from '$lib/types/theme';
@@ -28,12 +25,6 @@
 			})
 		})
 	);
-
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$missionControlStore,
-			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
-	});
 </script>
 
 {@render children()}

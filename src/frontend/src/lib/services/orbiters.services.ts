@@ -96,6 +96,7 @@ export const loadOrbiters = async ({
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	if (isNullish(missionControl)) {
+		orbitersDataStore.reset();
 		return { result: 'error' };
 	}
 
@@ -125,6 +126,8 @@ export const loadOrbiters = async ({
 			text: labels.errors.orbiters_loading,
 			detail: err
 		});
+
+		orbitersDataStore.reset();
 
 		return { result: 'error' };
 	}

@@ -15,6 +15,7 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -35,14 +36,16 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/hosting">
-		<SatelliteGuard>
-			<MissionControlGuard>
-				{#if nonNullish($satelliteStore)}
-					{#if $store.tabId === $store.tabs[0].id}
-						<Hosting satellite={$satelliteStore} />
+		<SatellitesLoader>
+			<SatelliteGuard>
+				<MissionControlGuard>
+					{#if nonNullish($satelliteStore)}
+						{#if $store.tabId === $store.tabs[0].id}
+							<Hosting satellite={$satelliteStore} />
+						{/if}
 					{/if}
-				{/if}
-			</MissionControlGuard>
-		</SatelliteGuard>
+				</MissionControlGuard>
+			</SatelliteGuard>
+		</SatellitesLoader>
 	</Tabs>
 </IdentityGuard>

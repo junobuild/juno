@@ -20,6 +20,7 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 
 	const tabDashboard = {
 		id: Symbol('1'),
@@ -57,18 +58,20 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/miscellaneous/monitoring">
-		<MissionControlGuard>
-			{#if nonNullish($missionControlStore)}
-				<MissionControlSettingsLoader missionControlId={$missionControlStore}>
-					{#if $store.tabId === $store.tabs[0].id}
-						<MonitoringDashboard missionControlId={$missionControlStore} />
-					{:else if $store.tabId === $store.tabs[1].id && $missionControlMonitored}
-						<MonitoringSettings missionControlId={$missionControlStore} />
+		<SatellitesLoader>
+			<MissionControlGuard>
+				{#if nonNullish($missionControlStore)}
+					<MissionControlSettingsLoader missionControlId={$missionControlStore}>
+						{#if $store.tabId === $store.tabs[0].id}
+							<MonitoringDashboard missionControlId={$missionControlStore} />
+						{:else if $store.tabId === $store.tabs[1].id && $missionControlMonitored}
+							<MonitoringSettings missionControlId={$missionControlStore} />
 
-						<ObservatorySettings missionControlId={$missionControlStore} />
-					{/if}
-				</MissionControlSettingsLoader>
-			{/if}
-		</MissionControlGuard>
+							<ObservatorySettings missionControlId={$missionControlStore} />
+						{/if}
+					</MissionControlSettingsLoader>
+				{/if}
+			</MissionControlGuard>
+		</SatellitesLoader>
 	</Tabs>
 </IdentityGuard>

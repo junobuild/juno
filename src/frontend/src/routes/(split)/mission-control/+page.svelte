@@ -16,6 +16,8 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -50,12 +52,16 @@
 			{/if}
 		{/snippet}
 
-		{#if nonNullish($missionControlStore)}
-			{#if $store.tabId === $store.tabs[0].id}
-				<MissionControl missionControlId={$missionControlStore} />
-			{:else if $store.tabId === $store.tabs[1].id}
-				<MissionControlSettings missionControlId={$missionControlStore} />
-			{/if}
-		{/if}
+		<SatellitesLoader>
+			<MissionControlGuard>
+				{#if nonNullish($missionControlStore)}
+					{#if $store.tabId === $store.tabs[0].id}
+						<MissionControl missionControlId={$missionControlStore} />
+					{:else if $store.tabId === $store.tabs[1].id}
+						<MissionControlSettings missionControlId={$missionControlStore} />
+					{/if}
+				{/if}
+			</MissionControlGuard>
+		</SatellitesLoader>
 	</Tabs>
 </IdentityGuard>

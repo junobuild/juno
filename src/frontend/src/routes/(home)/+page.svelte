@@ -4,11 +4,14 @@
 	import Launchpad from '$lib/components/launchpad/Launchpad.svelte';
 
 	import { authSignedIn } from '$lib/derived/auth.derived';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 </script>
 
 {#if $authSignedIn}
 	<div in:fade>
-		<Launchpad />
+		<SatellitesLoader>
+			<Launchpad />
+		</SatellitesLoader>
 	</div>
 {:else}
 	<SignIn />

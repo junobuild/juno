@@ -15,6 +15,7 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 
 	const tabs: Tab[] = [
 		{
@@ -41,10 +42,12 @@
 			{/if}
 		{/snippet}
 
-		{#if nonNullish($missionControlStore)}
-			{#if $store.tabId === $store.tabs[0].id}
-				<Wallet missionControlId={$missionControlStore} />
+		<MissionControlGuard>
+			{#if nonNullish($missionControlStore)}
+				{#if $store.tabId === $store.tabs[0].id}
+					<Wallet missionControlId={$missionControlStore} />
+				{/if}
 			{/if}
-		{/if}
+		</MissionControlGuard>
 	</Tabs>
 </IdentityGuard>

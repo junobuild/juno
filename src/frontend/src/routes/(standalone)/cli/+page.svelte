@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';

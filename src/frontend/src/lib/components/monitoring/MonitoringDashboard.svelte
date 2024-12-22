@@ -1,4 +1,5 @@
 <script lang="ts">
+	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import NoMonitoring from '$lib/components/monitoring/NoMonitoring.svelte';
@@ -8,7 +9,6 @@
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { Principal } from '@dfinity/principal';
 
 	interface Props {
 		missionControlId: Principal;

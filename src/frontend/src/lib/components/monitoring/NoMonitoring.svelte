@@ -1,7 +1,7 @@
 <script lang="ts">
-	import { i18n } from '$lib/stores/i18n.store';
 	import type { Principal } from '@dfinity/principal';
 	import { isNullish } from '@dfinity/utils';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { emit } from '$lib/utils/events.utils';
 

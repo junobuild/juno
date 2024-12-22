@@ -1,7 +1,6 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
-	import Spinner from '$lib/components/ui/Spinner.svelte';
-
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
@@ -13,7 +12,7 @@
 </script>
 
 {#if $missionControlStore === undefined}
-	<Spinner />
+	<SpinnerParagraph>{$i18n.mission_control.loading}</SpinnerParagraph>
 {:else if $missionControlStore === null}
 	<p>{$i18n.mission_control.not_found}</p>
 {:else}

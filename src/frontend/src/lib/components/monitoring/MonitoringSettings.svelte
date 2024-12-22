@@ -3,11 +3,13 @@
 	import { isNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
 	import MonitoringSettingsMissionControl from '$lib/components/monitoring/MonitoringSettingsMissionControl.svelte';
 	import MonitoringSettingsOrbiter from '$lib/components/monitoring/MonitoringSettingsOrbiter.svelte';
 	import MonitoringSettingsSatellites from '$lib/components/monitoring/MonitoringSettingsSatellites.svelte';
-	import { missionControlSettingsLoaded } from '$lib/derived/mission-control.derived';
+	import {
+		missionControlMonitored,
+		missionControlSettingsLoaded
+	} from '$lib/derived/mission-control.derived';
 	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
 	import { satellitesLoaded } from '$lib/derived/satellite.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
@@ -45,43 +47,40 @@
 
 	onMount(async () => await loadOrbiters({ missionControl: missionControlId }));
 
-	let missionControlMonitored = $state(false);
 	let orbiterMonitored = $state(false);
 	let hasSatellitesMonitored = $state(false);
 
-	let monitored = $derived(missionControlMonitored || orbiterMonitored || hasSatellitesMonitored);
+	let monitored = $derived($missionControlMonitored || orbiterMonitored || hasSatellitesMonitored);
 </script>
 
-<MissionControlSettingsLoader {missionControlId}>
-	<div class="card-container with-title">
-		<span class="title">{$i18n.core.settings}</span>
+<div class="card-container with-title">
+	<span class="title">{$i18n.core.settings}</span>
 
-		<div class="columns-3 fit-column-1">
-			<div>
-				<MonitoringSettingsMissionControl bind:missionControlMonitored />
+	<div class="columns-3 fit-column-1">
+		<div>
+			<MonitoringSettingsMissionControl />
 
-				<MonitoringSettingsSatellites bind:hasSatellitesMonitored />
+			<MonitoringSettingsSatellites bind:hasSatellitesMonitored />
 
-				<MonitoringSettingsOrbiter bind:orbiterMonitored />
-			</div>
+			<MonitoringSettingsOrbiter bind:orbiterMonitored />
 		</div>
 	</div>
+</div>
 
-	{#if $missionControlSettingsLoaded && $satellitesLoaded && $orbiterLoaded}
-		<div class="toolbar">
-			<button in:fade onclick={openCreateModal}>
-				{#if monitored}
-					{$i18n.monitoring.update_monitoring}
-				{:else}
-					{$i18n.monitoring.start_monitoring}
-				{/if}
-			</button>
-
+{#if $missionControlSettingsLoaded && $satellitesLoaded && $orbiterLoaded}
+	<div class="toolbar">
+		<button in:fade onclick={openCreateModal}>
 			{#if monitored}
-				<button in:fade onclick={openStopModal}>
-					{$i18n.monitoring.stop_monitoring}
-				</button>
+				{$i18n.monitoring.update_monitoring}
+			{:else}
+				{$i18n.monitoring.start_monitoring}
 			{/if}
-		</div>
-	{/if}
-</MissionControlSettingsLoader>
+		</button>
+
+		{#if monitored}
+			<button in:fade onclick={openStopModal}>
+				{$i18n.monitoring.stop_monitoring}
+			</button>
+		{/if}
+	</div>
+{/if}

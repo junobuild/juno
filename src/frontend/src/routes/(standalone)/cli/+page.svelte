@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { nonNullish, notEmptyString } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
 	import CliAdd from '$lib/components/cli/CliAdd.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -25,7 +26,9 @@
 	{#if $authSignedIn}
 		<MissionControlGuard>
 			{#if nonNullish($missionControlStore)}
-				<CliAdd {principal} {redirect_uri} missionControlId={$missionControlStore} />
+				<div in:fade>
+					<CliAdd {principal} {redirect_uri} missionControlId={$missionControlStore} />
+				</div>
 			{/if}
 		</MissionControlGuard>
 	{:else}

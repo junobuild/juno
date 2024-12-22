@@ -251,6 +251,7 @@ interface I18nMission_control {
 	overview: string;
 	id: string;
 	not_found: string;
+	loading: string;
 }
 
 interface I18nWallet {
@@ -699,6 +700,10 @@ interface I18nObservatory {
 
 interface I18nMonitoring {
 	title: string;
+	dashboard: string;
+	start: string;
+	loading: string;
+	introduction: string;
 	monitoring_strategy: string;
 	create_info: string;
 	stop_info: string;

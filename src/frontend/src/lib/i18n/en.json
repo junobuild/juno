@@ -673,6 +673,9 @@
 	},
 	"monitoring": {
 		"title": "Monitoring",
+		"dashboard": "Dashboard",
+		"start": "Getting started",
+		"introduction": "Monitoring helps ensure your modules always have enough cycles to operate by automatically tracking their levels and topping them up when needed. Enable monitoring to avoid downtime and keep your projects running smoothly.",
 		"monitoring_strategy": "Monitoring Strategy",
 		"create_info": "Select the modules for which the monitoring strategy will ensure sufficient cycles periodically.",
 		"stop_info": "Select the modules for which monitoring should be stopped.",

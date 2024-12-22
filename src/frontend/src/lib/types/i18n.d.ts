@@ -699,6 +699,9 @@ interface I18nObservatory {
 
 interface I18nMonitoring {
 	title: string;
+	dashboard: string;
+	start: string;
+	introduction: string;
 	monitoring_strategy: string;
 	create_info: string;
 	stop_info: string;

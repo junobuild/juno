@@ -3,16 +3,20 @@ import type {
 	CyclesThreshold
 } from '$declarations/mission_control/mission_control.did';
 import { updateAndStartMonitoring, updateAndStopMonitoring } from '$lib/api/mission-control.api';
+import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
+import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSettings } from '$lib/services/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiters.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
+import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import {
 	type MonitoringStrategyProgress,
 	MonitoringStrategyProgressStep
 } from '$lib/types/strategy';
+import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
@@ -305,4 +309,48 @@ const execute = async ({
 
 		throw err;
 	}
+};
+
+export const openMonitoringModal = ({
+	type,
+	missionControlId
+}: {
+	type: 'create_monitoring_strategy' | 'stop_monitoring_strategy';
+	missionControlId: Principal;
+}) => {
+	const $missionControlSettingsDataStore = get(missionControlSettingsDataStore);
+	if (isNullish($missionControlSettingsDataStore)) {
+		toasts.warn(get(i18n).errors.mission_control_settings_not_loaded);
+		return;
+	}
+
+	const $satellitesNotLoaded = get(satellitesNotLoaded);
+	if ($satellitesNotLoaded) {
+		toasts.warn(get(i18n).errors.satellites_not_loaded);
+		return;
+	}
+
+	const $orbiterNotLoaded = get(orbiterNotLoaded);
+	if ($orbiterNotLoaded) {
+		toasts.warn(get(i18n).errors.orbiter_not_loaded);
+		return;
+	}
+
+	const $satellitesStore = get(satellitesStore);
+	const $orbiterStore = get(orbiterStore);
+	if (($satellitesStore ?? []).length === 0 && isNullish($orbiterStore)) {
+		toasts.warn(get(i18n).errors.monitoring_no_modules);
+		return;
+	}
+
+	emit({
+		message: 'junoModal',
+		detail: {
+			type,
+			detail: {
+				settings: undefined,
+				missionControlId
+			}
+		}
+	});
 };

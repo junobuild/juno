@@ -51,7 +51,7 @@
 		store
 	});
 
-	onMount(() => {
+	$effect(() => {
 		store.set({
 			tabId: initTabId(tabs),
 			tabs

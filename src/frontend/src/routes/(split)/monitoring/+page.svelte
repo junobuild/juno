@@ -4,6 +4,7 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
@@ -57,18 +58,20 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/miscellaneous/monitoring">
-		<MissionControlGuard>
-			{#if nonNullish($missionControlStore)}
-				<MissionControlSettingsLoader missionControlId={$missionControlStore}>
-					{#if $store.tabId === $store.tabs[0].id}
-						<MonitoringDashboard missionControlId={$missionControlStore} />
-					{:else if $store.tabId === $store.tabs[1].id && $missionControlMonitored}
-						<MonitoringSettings missionControlId={$missionControlStore} />
+		<SatellitesLoader>
+			<MissionControlGuard>
+				{#if nonNullish($missionControlStore)}
+					<MissionControlSettingsLoader missionControlId={$missionControlStore}>
+						{#if $store.tabId === $store.tabs[0].id}
+							<MonitoringDashboard missionControlId={$missionControlStore} />
+						{:else if $store.tabId === $store.tabs[1].id && $missionControlMonitored}
+							<MonitoringSettings missionControlId={$missionControlStore} />
 
-						<ObservatorySettings missionControlId={$missionControlStore} />
-					{/if}
-				</MissionControlSettingsLoader>
-			{/if}
-		</MissionControlGuard>
+							<ObservatorySettings missionControlId={$missionControlStore} />
+						{/if}
+					</MissionControlSettingsLoader>
+				{/if}
+			</MissionControlGuard>
+		</SatellitesLoader>
 	</Tabs>
 </IdentityGuard>

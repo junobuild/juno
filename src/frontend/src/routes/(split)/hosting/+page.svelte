@@ -6,6 +6,7 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
 	import Hosting from '$lib/components/hosting/Hosting.svelte';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
@@ -35,14 +36,16 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/hosting">
-		<SatelliteGuard>
-			<MissionControlGuard>
-				{#if nonNullish($satelliteStore)}
-					{#if $store.tabId === $store.tabs[0].id}
-						<Hosting satellite={$satelliteStore} />
+		<SatellitesLoader>
+			<SatelliteGuard>
+				<MissionControlGuard>
+					{#if nonNullish($satelliteStore)}
+						{#if $store.tabId === $store.tabs[0].id}
+							<Hosting satellite={$satelliteStore} />
+						{/if}
 					{/if}
-				{/if}
-			</MissionControlGuard>
-		</SatelliteGuard>
+				</MissionControlGuard>
+			</SatelliteGuard>
+		</SatellitesLoader>
 	</Tabs>
 </IdentityGuard>

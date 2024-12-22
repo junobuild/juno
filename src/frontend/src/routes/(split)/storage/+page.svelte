@@ -4,6 +4,7 @@
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Storage from '$lib/components/storage/Storage.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
@@ -38,10 +39,12 @@
 
 <IdentityGuard>
 	<Tabs help="https://juno.build/docs/build/storage">
-		<SatelliteGuard>
-			{#if nonNullish($satelliteStore)}
-				<Storage satelliteId={$satelliteStore?.satellite_id} />
-			{/if}
-		</SatelliteGuard>
+		<SatellitesLoader>
+			<SatelliteGuard>
+				{#if nonNullish($satelliteStore)}
+					<Storage satelliteId={$satelliteStore?.satellite_id} />
+				{/if}
+			</SatelliteGuard>
+		</SatellitesLoader>
 	</Tabs>
 </IdentityGuard>

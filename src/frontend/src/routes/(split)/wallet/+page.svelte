@@ -3,6 +3,7 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
@@ -41,10 +42,12 @@
 			{/if}
 		{/snippet}
 
-		{#if nonNullish($missionControlStore)}
-			{#if $store.tabId === $store.tabs[0].id}
-				<Wallet missionControlId={$missionControlStore} />
+		<MissionControlGuard>
+			{#if nonNullish($missionControlStore)}
+				{#if $store.tabId === $store.tabs[0].id}
+					<Wallet missionControlId={$missionControlStore} />
+				{/if}
 			{/if}
-		{/if}
+		</MissionControlGuard>
 	</Tabs>
 </IdentityGuard>

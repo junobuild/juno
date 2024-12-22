@@ -62,6 +62,7 @@ export const loadSatellites = async ({
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	if (isNullish(missionControl)) {
+		satellitesDataStore.reset();
 		return { result: 'error' };
 	}
 

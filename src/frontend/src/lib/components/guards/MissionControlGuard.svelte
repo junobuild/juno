@@ -2,7 +2,7 @@
 	import type { Snippet } from 'svelte';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import SpinnerParagraph from "$lib/components/ui/SpinnerParagraph.svelte";
+	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 
 	interface Props {
 		children: Snippet;

@@ -1,9 +1,9 @@
 <script lang="ts">
 	import { i18n } from '$lib/stores/i18n.store';
-	import type {Principal} from "@dfinity/principal";
-	import {isNullish} from "@dfinity/utils";
-	import {toasts} from "$lib/stores/toasts.store";
-	import {emit} from "$lib/utils/events.utils";
+	import type { Principal } from '@dfinity/principal';
+	import { isNullish } from '@dfinity/utils';
+	import { toasts } from '$lib/stores/toasts.store';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		missionControlId: Principal;
@@ -15,7 +15,7 @@
 		emit({
 			message: 'junoModal',
 			detail: {
-				type: "create_monitoring_strategy",
+				type: 'create_monitoring_strategy',
 				detail: {
 					settings: undefined,
 					missionControlId

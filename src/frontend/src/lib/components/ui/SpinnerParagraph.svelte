@@ -24,23 +24,23 @@
 		color: var(--value-color);
 	}
 
-    span {
-      font-size: var(--font-size-small);
-      animation: pulse 1s linear infinite;
-    }
+	span {
+		font-size: var(--font-size-small);
+		animation: pulse 1s linear infinite;
+	}
 
-    /* -global- */
-    @keyframes -global-pulse {
-      0% {
-        opacity: 1;
-      }
+	/* -global- */
+	@keyframes -global-pulse {
+		0% {
+			opacity: 1;
+		}
 
-      50% {
-        opacity: 0.75;
-      }
+		50% {
+			opacity: 0.75;
+		}
 
-      100% {
-        opacity: 1;
-      }
-    }
+		100% {
+			opacity: 1;
+		}
+	}
 </style>

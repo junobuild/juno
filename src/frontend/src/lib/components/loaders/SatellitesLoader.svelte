@@ -1,9 +1,9 @@
 <script lang="ts">
-	import type { Snippet } from 'svelte';
-	import { loadSatellites } from '$lib/services/satellites.services';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
-	import type { Option } from '$lib/types/utils';
 	import type { Principal } from '@dfinity/principal';
+	import type { Snippet } from 'svelte';
+	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { loadSatellites } from '$lib/services/satellites.services';
+	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		children: Snippet;

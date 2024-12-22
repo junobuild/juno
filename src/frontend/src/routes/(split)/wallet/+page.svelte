@@ -3,6 +3,7 @@
 	import { setContext } from 'svelte';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
+	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Wallet from '$lib/components/wallet/Wallet.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
@@ -15,7 +16,6 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 
 	const tabs: Tab[] = [
 		{

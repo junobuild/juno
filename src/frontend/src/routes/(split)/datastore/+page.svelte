@@ -5,6 +5,7 @@
 	import Db from '$lib/components/db/Db.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import { satelliteStore } from '$lib/derived/satellite.derived';
 	import {
@@ -14,7 +15,6 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 
 	const tabs: Tab[] = [
 		{

@@ -7,6 +7,7 @@
 	import AnalyticsSettings from '$lib/components/analytics/AnalyticsSettings.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
 	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -23,7 +24,6 @@
 		TABS_CONTEXT_KEY
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 
 	const tabDashboard = {
 		id: Symbol('1'),

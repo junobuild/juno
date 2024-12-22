@@ -1,7 +1,6 @@
 <script lang="ts">
 	import { fromNullable } from '@dfinity/utils';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
-	import InlineWarning from '$lib/components/ui/InlineWarning.svelte';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -29,7 +28,7 @@
 		{:else if enabled}
 			{$i18n.core.enabled}
 		{:else}
-			{$i18n.core.disabled} <InlineWarning title={$i18n.monitoring.warning_advice} />
+			{$i18n.core.disabled}
 		{/if}
 	</Value>
 </div>

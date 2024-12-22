@@ -25,7 +25,7 @@
 </script>
 
 <CanisterMonitoringLoader {segment} {canisterId} bind:chartsData>
-	<button onclick={() => console.log('todo')} class="article">
+	<button onclick={() => console.log('todo')} class="article monitoring">
 		<span class="segment">
 			{@render children()}
 		</span>
@@ -49,7 +49,7 @@
 		gap: var(--padding);
 	}
 
-	button.article {
+	button.article.monitoring {
 		grid-column: 1 / 13;
 		align-items: center;
 

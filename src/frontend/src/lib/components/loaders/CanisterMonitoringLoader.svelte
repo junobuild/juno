@@ -49,23 +49,17 @@
 			$missionControlStore,
 			$missionControlVersion,
 			(() => {
-                console.log('1')
-
-				// We wait until mission control is loaded
+                // We wait until mission control is loaded
 				if (isNullish($missionControlStore)) {
 					return;
 				}
 
-                console.log('2', $missionControlVersion)
-
-				// We wait for the version for backwards compatibility because we only want to query the monitoring history for up-to-date mission control
+                // We wait for the version for backwards compatibility because we only want to query the monitoring history for up-to-date mission control
 				if (isNullish($missionControlVersion)) {
 					return;
 				}
 
-                console.log('here')
-
-				worker?.startMonitoringTimer({
+                worker?.startMonitoringTimer({
 					segments: [
 						{
 							canisterId: canisterId.toText(),

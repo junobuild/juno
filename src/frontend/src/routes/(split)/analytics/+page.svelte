@@ -7,16 +7,14 @@
 	import AnalyticsSettings from '$lib/components/analytics/AnalyticsSettings.svelte';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
+	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import Orbiter from '$lib/components/orbiter/Orbiter.svelte';
 	import OrbiterConfig from '$lib/components/orbiter/OrbiterConfig.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
-	import { loadOrbiterVersion } from '$lib/services/console.services';
-	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import {
 		type Tab,
 		type TabsContext,
@@ -61,26 +59,7 @@
 			tabs
 		});
 	});
-
-	// Load data
-
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$missionControlStore,
-			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
-	});
-
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$orbiterStore,
-			(async () => await loadOrbiterVersion({ orbiter: $orbiterStore, reload: false }))();
-	});
 </script>
-
-<svelte:window
-	onjunoReloadVersions={async () =>
-		await loadOrbiterVersion({ orbiter: $orbiterStore, reload: true })}
-/>
 
 <IdentityGuard>
 	<Tabs
@@ -95,17 +74,19 @@
 		{/snippet}
 
 		<SatellitesLoader>
-			<MissionControlGuard>
-				{#if $store.tabId === $store.tabs[0].id}
-					<Analytics />
-				{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
-					<Orbiter orbiter={$orbiterStore} />
-				{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
-					<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
+			<OrbitersLoader withVersion>
+				<MissionControlGuard>
+					{#if $store.tabId === $store.tabs[0].id}
+						<Analytics />
+					{:else if $store.tabId === $store.tabs[1].id && nonNullish($orbiterStore)}
+						<Orbiter orbiter={$orbiterStore} />
+					{:else if $store.tabId === $store.tabs[2].id && nonNullish($orbiterStore)}
+						<OrbiterConfig orbiterId={$orbiterStore.orbiter_id} />
 
-					<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
-				{/if}
-			</MissionControlGuard>
+						<AnalyticsSettings orbiterId={$orbiterStore.orbiter_id} />
+					{/if}
+				</MissionControlGuard>
+			</OrbitersLoader>
 		</SatellitesLoader>
 	</Tabs>
 </IdentityGuard>

@@ -5,7 +5,7 @@ import {
 	listSatelliteStatuses
 } from '$lib/api/mission-control.api';
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
-import { statusesIdbStore } from '$lib/stores/idb.store';
+import { monitoringHistoryIdbStore, statusesIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
@@ -16,7 +16,8 @@ import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { startOfDay } from 'date-fns';
-import { set } from 'idb-keyval';
+import { get, set } from 'idb-keyval';
+import type {MonitoringHistory} from "$lib/types/monitoring";
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -99,10 +100,18 @@ const syncMonitoring = async ({
 		return;
 	}
 
-	await emitSavedCanisters({
-		canisterIds: segments.map(({ canisterId }) => canisterId),
-		customStore: statusesIdbStore
-	});
+	const canisterIds = segments.map(({ canisterId }) => canisterId);
+
+	await Promise.allSettled([
+		emitSavedCanisters({
+			canisterIds,
+			customStore: statusesIdbStore
+		}),
+		emitSavedCanisters({
+			canisterIds,
+			customStore: monitoringHistoryIdbStore
+		})
+	]);
 
 	try {
 		await syncMonitoringForSegments({ identity, segments, ...rest });
@@ -170,16 +179,25 @@ const loadMonitoringHistory = async ({
 }: {
 	identity: Identity;
 	segment: CanisterSegment;
-} & Required<Pick<PostMessageDataRequest, 'missionControlId'>>): Promise<ChartsData[]> => {
+} & Required<Pick<PostMessageDataRequest, 'missionControlId'>>): Promise<{
+	history: MonitoringHistory;
+	chartsData: ChartsData[];
+}> => {
+	const data = await get<CanisterSyncMonitoring>(canisterId, statusesIdbStore);
+
+	// We want to get only the entries we have not collected yet
+	const from = data?.data?.chartsData.sort(({ x: xA }, { x: xB }) => Number(xB) - Number(xA))[0].x;
+
 	const history = await getMonitoringHistory({
 		missionControlId: Principal.fromText(missionControlId),
 		identity,
 		params: {
-			segmentId: Principal.from(canisterId)
+			segmentId: Principal.from(canisterId),
+			...(nonNullish(from) && { from: new Date(Number(from)) })
 		}
 	});
 
-	return history
+	const chartsData = history
 		.filter(([_, result]) => nonNullish(fromNullable(result.cycles)))
 		.map(([{ created_at }, result]) => {
 			const cycles = fromNullable(result.cycles);
@@ -198,6 +216,8 @@ const loadMonitoringHistory = async ({
 			};
 		})
 		.sort(sortHistory);
+
+	return { history, chartsData };
 };
 
 const syncMonitoringForSegments = async ({
@@ -219,9 +239,11 @@ const syncMonitoringForSegments = async ({
 					segment: { canisterId, ...rest }
 				};
 
-				const [chartsStatuses, chartsHistory] = await Promise.all([
+				const [chartsStatuses, { history, chartsData: chartsHistory }] = await Promise.all([
 					loadDeprecatedStatuses(loadParams),
-					withMonitoringHistory ? loadMonitoringHistory(loadParams) : Promise.resolve([])
+					withMonitoringHistory
+						? loadMonitoringHistory(loadParams)
+						: Promise.resolve({ history: [], chartsData: [] })
 				]);
 
 				const totalStatusesPerDay = [...chartsStatuses, ...chartsHistory].reduce<
@@ -236,12 +258,139 @@ const syncMonitoringForSegments = async ({
 					};
 				}, {});
 
-				const chartsData = Object.entries(totalStatusesPerDay).map(([key, values]) => ({
+				let chartsData = Object.entries(totalStatusesPerDay).map(([key, values]) => ({
 					x: key,
 					y: values.reduce((acc, value) => acc + value, 0) / values.length
 				}));
 
-				await syncCanister({
+				chartsData = [
+					{
+						x: '1731625200000',
+						y: 2.948
+					},
+					{
+						x: '1731711600000',
+						y: 2.9461666666666653
+					},
+					{
+						x: '1731798000000',
+						y: 2.9389583333333325
+					},
+					{
+						x: '1731884400000',
+						y: 2.9023749999999997
+					},
+					{
+						x: '1731970800000',
+						y: 2.9
+					},
+					{
+						x: '1732057200000',
+						y: 2.8977500000000003
+					},
+					{
+						x: '1732143600000',
+						y: 2.895250000000001
+					},
+					{
+						x: '1732230000000',
+						y: 2.8928750000000005
+					},
+					{
+						x: '1732316400000',
+						y: 2.890375
+					},
+					{
+						x: '1732402800000',
+						y: 2.8880416666666657
+					},
+					{
+						x: '1732489200000',
+						y: 2.88575
+					},
+					{
+						x: '1732575600000',
+						y: 2.883125
+					},
+					{
+						x: '1732662000000',
+						y: 2.8804166666666684
+					},
+					{
+						x: '1732748400000',
+						y: 2.878083333333334
+					},
+					{
+						x: '1732834800000',
+						y: 2.874833333333333
+					},
+					{
+						x: '1732921200000',
+						y: 2.8690416666666674
+					},
+					{
+						x: '1733007600000',
+						y: 2.864291666666666
+					},
+					{
+						x: '1733094000000',
+						y: 2.8586666666666676
+					},
+					{
+						x: '1733180400000',
+						y: 2.852499999999999
+					},
+					{
+						x: '1733266800000',
+						y: 2.847750000000001
+					},
+					{
+						x: '1733353200000',
+						y: 2.843083333333333
+					},
+					{
+						x: '1733439600000',
+						y: 2.838291666666667
+					},
+					{
+						x: '1733526000000',
+						y: 2.8336666666666663
+					},
+					{
+						x: '1733612400000',
+						y: 2.8289166666666667
+					},
+					{
+						x: '1733698800000',
+						y: 2.824208333333333
+					},
+					{
+						x: '1733785200000',
+						y: 2.8195
+					},
+					{
+						x: '1733871600000',
+						y: 2.814791666666667
+					},
+					{
+						x: '1733958000000',
+						y: 2.8037083333333332
+					},
+					{
+						x: '1734044400000',
+						y: 2.796291666666667
+					},
+					{
+						x: '1734130800000',
+						y: 2.791541666666666
+					},
+					{
+						x: '1734217200000',
+						y: 2.7879285714285715
+					}
+				];
+
+				await syncStatuses({
 					canisterId,
 					chartsData
 				});
@@ -259,7 +408,7 @@ const syncMonitoringForSegments = async ({
 	);
 };
 
-const syncCanister = async ({
+const syncStatuses = async ({
 	canisterId,
 	chartsData
 }: {
@@ -271,6 +420,27 @@ const syncCanister = async ({
 		sync: 'synced',
 		data: {
 			chartsData
+		}
+	};
+
+	// Save information in indexed-db as well to load previous values on navigation and refresh
+	await set(canisterId, canister, statusesIdbStore);
+
+	emitCanister(canister);
+};
+
+const syncMonitoringHistory = async ({
+	canisterId,
+	history
+}: {
+	canisterId: string;
+	history: MonitoringHistory;
+}) => {
+	const canister: CanisterSyncMonitoring = {
+		id: canisterId,
+		sync: 'synced',
+		data: {
+			history
 		}
 	};
 

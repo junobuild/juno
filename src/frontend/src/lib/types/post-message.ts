@@ -1,7 +1,7 @@
 import type { CustomDomain } from '$declarations/satellite/satellite.did';
 import type { CustomDomainRegistrationState } from '$lib/types/custom-domain';
 import type { Wallet } from '$lib/types/transaction';
-import type { CanisterSegment, CanisterSyncData, CanisterSyncMonitoringCharts } from './canister';
+import type { CanisterSegment, CanisterSyncData, CanisterSyncMonitoring } from './canister';
 
 export interface PostMessageDataRequest {
 	segments?: CanisterSegment[];
@@ -11,7 +11,7 @@ export interface PostMessageDataRequest {
 }
 
 export interface PostMessageDataResponse {
-	canister?: CanisterSyncData | CanisterSyncMonitoringCharts;
+	canister?: CanisterSyncData | CanisterSyncMonitoring;
 	registrationState?: CustomDomainRegistrationState | null;
 	wallet?: Wallet;
 }

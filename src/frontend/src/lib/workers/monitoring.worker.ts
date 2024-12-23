@@ -6,7 +6,7 @@ import {
 } from '$lib/api/mission-control.api';
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
 import { statusesIdbStore } from '$lib/stores/idb.store';
-import type { CanisterSegment, CanisterSyncMonitoringCharts } from '$lib/types/canister';
+import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
@@ -266,7 +266,7 @@ const syncCanister = async ({
 	canisterId: string;
 	chartsData: ChartsData[];
 }) => {
-	const canister: CanisterSyncMonitoringCharts = {
+	const canister: CanisterSyncMonitoring = {
 		id: canisterId,
 		sync: 'synced',
 		data: {

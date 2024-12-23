@@ -16,7 +16,7 @@
 	} from '$lib/services/worker.monitoring.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { CanisterSyncMonitoring, Segment } from '$lib/types/canister';
+	import type { CanisterSyncMonitoringCharts, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 
@@ -30,7 +30,7 @@
 	let chartsData: ChartsData[] = $state([]);
 
 	const syncCanister = ({ canister }: PostMessageDataResponse) => {
-		const { data } = canister as CanisterSyncMonitoring;
+		const { data } = canister as CanisterSyncMonitoringCharts;
 
 		if (isNullish(data)) {
 			return;

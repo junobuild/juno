@@ -13,7 +13,7 @@
 	} from '$lib/services/worker.monitoring.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-	import type { CanisterSyncMonitoring, Segment } from '$lib/types/canister';
+	import type { CanisterSyncMonitoringHistory, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 
@@ -27,7 +27,7 @@
 	let { canisterId, segment, chartsData = $bindable([]), children }: Props = $props();
 
 	const syncCanister = ({ canister }: PostMessageDataResponse) => {
-		const { data } = canister as CanisterSyncMonitoring;
+		const { data } = canister as CanisterSyncMonitoringHistory;
 
 		if (isNullish(data)) {
 			return;

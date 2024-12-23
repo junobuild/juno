@@ -15,7 +15,7 @@ import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
-import type {GetMonitoringParams, MonitoringHistory} from '$lib/types/monitoring';
+import type { GetMonitoringParams, MonitoringHistory } from '$lib/types/monitoring';
 import { toSetController } from '$lib/utils/controllers.utils';
 import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { Principal } from '@dfinity/principal';

@@ -1,6 +1,7 @@
 import type { MemorySize } from '$declarations/satellite/satellite.did';
 import type { ChartsData } from '$lib/types/chart';
 import type { PrincipalText } from '$lib/types/itentity';
+import type { MonitoringHistory } from '$lib/types/monitoring';
 import type { Principal } from '@dfinity/principal';
 
 export type CanisterStatus = 'stopped' | 'stopping' | 'running';
@@ -57,7 +58,7 @@ export interface CanisterData {
 	memory?: MemorySize;
 }
 
-export interface CanisterMonitoringData {
+export interface CanisterMonitoringChartsData {
 	chartsData: ChartsData[];
 }
 
@@ -71,4 +72,6 @@ export interface Canister<T> {
 
 export type CanisterSyncData = Canister<CanisterData>;
 
-export type CanisterSyncMonitoring = Canister<CanisterMonitoringData>;
+export type CanisterSyncMonitoringCharts = Canister<CanisterMonitoringChartsData>;
+
+export type CanisterSyncMonitoringHistory = Canister<MonitoringHistory>;

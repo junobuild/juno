@@ -6,8 +6,13 @@ import {
 } from '$lib/api/mission-control.api';
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
 import { monitoringHistoryIdbStore, statusesIdbStore } from '$lib/stores/idb.store';
-import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
+import type {
+	CanisterSegment,
+	CanisterSyncMonitoringCharts,
+	CanisterSyncMonitoringHistory
+} from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
+import type { MonitoringHistory } from '$lib/types/monitoring';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
 import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
@@ -17,7 +22,6 @@ import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { startOfDay } from 'date-fns';
 import { get, set } from 'idb-keyval';
-import type {MonitoringHistory} from "$lib/types/monitoring";
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -183,7 +187,7 @@ const loadMonitoringHistory = async ({
 	history: MonitoringHistory;
 	chartsData: ChartsData[];
 }> => {
-	const data = await get<CanisterSyncMonitoring>(canisterId, statusesIdbStore);
+	const data = await get<CanisterSyncMonitoringCharts>(canisterId, statusesIdbStore);
 
 	// We want to get only the entries we have not collected yet
 	const from = data?.data?.chartsData.sort(({ x: xA }, { x: xB }) => Number(xB) - Number(xA))[0].x;
@@ -390,10 +394,16 @@ const syncMonitoringForSegments = async ({
 					}
 				];
 
-				await syncStatuses({
-					canisterId,
-					chartsData
-				});
+				await Promise.allSettled([
+					syncStatuses({
+						canisterId,
+						chartsData
+					}),
+					syncMonitoringHistory({
+						canisterId,
+						history
+					})
+				]);
 			} catch (err: unknown) {
 				console.error(err);
 
@@ -415,7 +425,7 @@ const syncStatuses = async ({
 	canisterId: string;
 	chartsData: ChartsData[];
 }) => {
-	const canister: CanisterSyncMonitoring = {
+	const canister: CanisterSyncMonitoringCharts = {
 		id: canisterId,
 		sync: 'synced',
 		data: {
@@ -436,16 +446,14 @@ const syncMonitoringHistory = async ({
 	canisterId: string;
 	history: MonitoringHistory;
 }) => {
-	const canister: CanisterSyncMonitoring = {
+	const canister: CanisterSyncMonitoringHistory = {
 		id: canisterId,
 		sync: 'synced',
-		data: {
-			history
-		}
+		data: history
 	};
 
 	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, statusesIdbStore);
+	await set(canisterId, canister, monitoringHistoryIdbStore);
 
 	emitCanister(canister);
 };

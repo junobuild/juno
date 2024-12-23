@@ -1,10 +1,9 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
-	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import IconClockUpdate from '$lib/components/icons/IconClockUpdate.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';

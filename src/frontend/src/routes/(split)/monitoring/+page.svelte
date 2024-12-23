@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
-	import { onMount, setContext, untrack } from 'svelte';
+	import { setContext, untrack } from 'svelte';
 	import { writable } from 'svelte/store';
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
@@ -11,6 +11,8 @@
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
 	import ObservatorySettings from '$lib/components/observatory/ObservatorySettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
+	import Warnings from '$lib/components/warning/Warnings.svelte';
+	import { authSignedIn } from '$lib/derived/auth.derived';
 	import {
 		missionControlMonitored,
 		missionControlStore
@@ -22,8 +24,6 @@
 		type TabsStore
 	} from '$lib/types/tabs.context';
 	import { initTabId } from '$lib/utils/tabs.utils';
-	import Warnings from '$lib/components/warning/Warnings.svelte';
-	import { authSignedIn } from '$lib/derived/auth.derived';
 
 	const tabDashboard = {
 		id: Symbol('1'),

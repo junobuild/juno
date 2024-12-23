@@ -4,7 +4,6 @@
 	import { compare } from 'semver';
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
-	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
 	import { MISSION_CONTROL_v0_0_13 } from '$lib/constants/version.constants';
 	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';

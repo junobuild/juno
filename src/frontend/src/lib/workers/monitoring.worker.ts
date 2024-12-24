@@ -5,12 +5,8 @@ import {
 	listSatelliteStatuses
 } from '$lib/api/mission-control.api';
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
-import { monitoringHistoryIdbStore, statusesIdbStore } from '$lib/stores/idb.store';
-import type {
-	CanisterSegment,
-	CanisterSyncMonitoringCharts,
-	CanisterSyncMonitoringHistory
-} from '$lib/types/canister';
+import { monitoringIdbStore } from '$lib/stores/idb.store';
+import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
 import type { MonitoringHistory } from '$lib/types/monitoring';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
@@ -104,18 +100,10 @@ const syncMonitoring = async ({
 		return;
 	}
 
-	const canisterIds = segments.map(({ canisterId }) => canisterId);
-
-	await Promise.allSettled([
-		emitSavedCanisters({
-			canisterIds,
-			customStore: statusesIdbStore
-		}),
-		emitSavedCanisters({
-			canisterIds,
-			customStore: monitoringHistoryIdbStore
-		})
-	]);
+	await emitSavedCanisters({
+		canisterIds: segments.map(({ canisterId }) => canisterId),
+		customStore: monitoringIdbStore
+	});
 
 	try {
 		await syncMonitoringForSegments({ identity, segments, ...rest });
@@ -128,6 +116,9 @@ const syncMonitoring = async ({
 const sortHistory = ({ x: aKey }: ChartsData, { x: bKey }: ChartsData): number =>
 	parseInt(aKey) - parseInt(bKey);
 
+/**
+ * @deprecated
+ */
 const loadDeprecatedStatuses = async ({
 	identity,
 	segment: { segment, canisterId },
@@ -187,10 +178,13 @@ const loadMonitoringHistory = async ({
 	history: MonitoringHistory;
 	chartsData: ChartsData[];
 }> => {
-	const data = await get<CanisterSyncMonitoringCharts>(canisterId, statusesIdbStore);
+	const data = await get<CanisterSyncMonitoring>(canisterId, monitoringIdbStore);
 
 	// We want to get only the entries we have not collected yet
-	const from = data?.data?.chartsData.sort(({ x: xA }, { x: xB }) => Number(xB) - Number(xA))[0].x;
+	const from = data?.data?.history.sort(
+		([{ created_at: createdAtA }], [{ created_at: createdAtB }]) =>
+			Number(createdAtB) - Number(createdAtA)
+	)?.[0][0]?.created_at;
 
 	const history = await getMonitoringHistory({
 		missionControlId: Principal.fromText(missionControlId),
@@ -267,6 +261,7 @@ const syncMonitoringForSegments = async ({
 					y: values.reduce((acc, value) => acc + value, 0) / values.length
 				}));
 
+				// TODO: to be removed
 				chartsData = [
 					{
 						x: '1731625200000',
@@ -394,16 +389,11 @@ const syncMonitoringForSegments = async ({
 					}
 				];
 
-				await Promise.allSettled([
-					syncStatuses({
-						canisterId,
-						chartsData
-					}),
-					syncMonitoringHistory({
-						canisterId,
-						history
-					})
-				]);
+				await syncMonitoringHistory({
+					canisterId,
+					history,
+					chartsData
+				});
 			} catch (err: unknown) {
 				console.error(err);
 
@@ -418,42 +408,26 @@ const syncMonitoringForSegments = async ({
 	);
 };
 
-const syncStatuses = async ({
+const syncMonitoringHistory = async ({
 	canisterId,
+	history,
 	chartsData
 }: {
 	canisterId: string;
+	history: MonitoringHistory;
 	chartsData: ChartsData[];
 }) => {
-	const canister: CanisterSyncMonitoringCharts = {
+	const canister: CanisterSyncMonitoring = {
 		id: canisterId,
 		sync: 'synced',
 		data: {
+			history,
 			chartsData
 		}
 	};
 
 	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, statusesIdbStore);
-
-	emitCanister(canister);
-};
-
-const syncMonitoringHistory = async ({
-	canisterId,
-	history
-}: {
-	canisterId: string;
-	history: MonitoringHistory;
-}) => {
-	const canister: CanisterSyncMonitoringHistory = {
-		id: canisterId,
-		sync: 'synced',
-		data: history
-	};
-
-	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, monitoringHistoryIdbStore);
+	await set(canisterId, canister, monitoringIdbStore);
 
 	emitCanister(canister);
 };

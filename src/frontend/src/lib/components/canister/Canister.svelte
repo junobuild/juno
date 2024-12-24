@@ -167,7 +167,7 @@
 				position: absolute;
 				top: 0;
 				right: 0;
-				transform: translate(var(--padding), 20%);
+				transform: translate(var(--padding), 20%) rotate(15deg);
 			}
 		}
 	}

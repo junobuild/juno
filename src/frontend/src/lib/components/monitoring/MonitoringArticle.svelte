@@ -58,7 +58,7 @@
 			<span class="info">
 				{#if nonNullish(lastExecutionTime)}
 					<span in:fade title={$i18n.monitoring.last_checked}
-						><IconClockUpdate /> {formatToRelativeTime(lastExecutionTime)}</span
+						><IconClockUpdate /> <span>{formatToRelativeTime(lastExecutionTime)}</span></span
 					>
 				{/if}
 				{#if nonNullish(lastDepositCyclesTime) && nonNullish(lastDepositCyclesAmount)}
@@ -114,6 +114,10 @@
 
 			span {
 				margin: 0;
+
+				&::first-letter {
+					text-transform: uppercase;
+				}
 			}
 
 			:global(svg) {

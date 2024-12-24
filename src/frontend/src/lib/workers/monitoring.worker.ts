@@ -188,7 +188,7 @@ const loadMonitoringHistory = async ({
 	// We want to get only the entries we have not collected yet
 	const from = data?.data?.history.sort(sortHistory)?.[0]?.[0]?.created_at;
 
-	const history = await getMonitoringHistory({
+	const recentHistory = await getMonitoringHistory({
 		missionControlId: Principal.fromText(missionControlId),
 		identity,
 		params: {
@@ -196,6 +196,8 @@ const loadMonitoringHistory = async ({
 			...(nonNullish(from) && { from })
 		}
 	});
+
+	const history = [...(data?.data?.history ?? []), ...recentHistory];
 
 	const cyclesHistory = history
 		.filter(([_, result]) => nonNullish(fromNullable(result.cycles)))
@@ -265,134 +267,6 @@ const syncMonitoringForSegments = async ({
 					x: key,
 					y: values.reduce((acc, value) => acc + value, 0) / values.length
 				}));
-
-				// TODO: to be removed
-				chartsData = [
-					{
-						x: '1731625200000',
-						y: 2.948
-					},
-					{
-						x: '1731711600000',
-						y: 2.9461666666666653
-					},
-					{
-						x: '1731798000000',
-						y: 2.9389583333333325
-					},
-					{
-						x: '1731884400000',
-						y: 2.9023749999999997
-					},
-					{
-						x: '1731970800000',
-						y: 2.9
-					},
-					{
-						x: '1732057200000',
-						y: 2.8977500000000003
-					},
-					{
-						x: '1732143600000',
-						y: 2.895250000000001
-					},
-					{
-						x: '1732230000000',
-						y: 2.8928750000000005
-					},
-					{
-						x: '1732316400000',
-						y: 2.890375
-					},
-					{
-						x: '1732402800000',
-						y: 2.8880416666666657
-					},
-					{
-						x: '1732489200000',
-						y: 2.88575
-					},
-					{
-						x: '1732575600000',
-						y: 2.883125
-					},
-					{
-						x: '1732662000000',
-						y: 2.8804166666666684
-					},
-					{
-						x: '1732748400000',
-						y: 2.878083333333334
-					},
-					{
-						x: '1732834800000',
-						y: 2.874833333333333
-					},
-					{
-						x: '1732921200000',
-						y: 2.8690416666666674
-					},
-					{
-						x: '1733007600000',
-						y: 2.864291666666666
-					},
-					{
-						x: '1733094000000',
-						y: 2.8586666666666676
-					},
-					{
-						x: '1733180400000',
-						y: 2.852499999999999
-					},
-					{
-						x: '1733266800000',
-						y: 2.847750000000001
-					},
-					{
-						x: '1733353200000',
-						y: 2.843083333333333
-					},
-					{
-						x: '1733439600000',
-						y: 2.838291666666667
-					},
-					{
-						x: '1733526000000',
-						y: 2.8336666666666663
-					},
-					{
-						x: '1733612400000',
-						y: 2.8289166666666667
-					},
-					{
-						x: '1733698800000',
-						y: 2.824208333333333
-					},
-					{
-						x: '1733785200000',
-						y: 2.8195
-					},
-					{
-						x: '1733871600000',
-						y: 2.814791666666667
-					},
-					{
-						x: '1733958000000',
-						y: 2.8037083333333332
-					},
-					{
-						x: '1734044400000',
-						y: 2.796291666666667
-					},
-					{
-						x: '1734130800000',
-						y: 2.791541666666666
-					},
-					{
-						x: '1734217200000',
-						y: 2.7879285714285715
-					}
-				];
 
 				await syncMonitoringHistory({
 					canisterId,

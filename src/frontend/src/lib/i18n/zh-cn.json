@@ -72,7 +72,6 @@
 		"disabled": "已禁用"
 	},
 	"canisters": {
-		"insight": "分析",
 		"top_up": "充值",
 		"cycles_description": "Cycles 用于支付只能合约运行消耗. 你可以通过将ICP 转换为cycles为你的 {0} 充值.",
 		"top_up_in_progress": "充值中...",
@@ -720,7 +719,8 @@
 		"stop_monitoring_question": "Do you want to stop monitoring your Mission Control as well?",
 		"stop_monitoring_note": "<strong>Important Note</strong>: it can only be stopped if all your modules are about to stop being monitored or if none are still monitored.",
 		"last_checked": "Last checked",
-		"last_top_up": "Last top-up"
+		"last_top_up": "Last top-up",
+		"usage": "Usage"
 	},
 	"preferences": {
 		"title": "偏好设置",

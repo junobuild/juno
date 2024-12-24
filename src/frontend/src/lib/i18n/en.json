@@ -72,7 +72,6 @@
 		"disabled": "Disabled"
 	},
 	"canisters": {
-		"insight": "Insight",
 		"top_up": "Top-up",
 		"cycles_description": "Cycles are the unit of payment for operating your smart contracts. You can top-up (recharge) your {0} by converting ICP to cycles.",
 		"top_up_in_progress": "Top-up in progress...",
@@ -720,7 +719,8 @@
 		"stop_monitoring_question": "Do you want to stop monitoring your Mission Control as well?",
 		"stop_monitoring_note": "<strong>Important Note</strong>: it can only be stopped if all your modules are about to stop being monitored or if none are still monitored.",
 		"last_checked": "Last checked",
-		"last_top_up": "Last top-up"
+		"last_top_up": "Last top-up",
+		"usage": "Usage"
 	},
 	"preferences": {
 		"title": "Preferences",

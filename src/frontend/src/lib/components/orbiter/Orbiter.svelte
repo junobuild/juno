@@ -58,7 +58,7 @@
 </div>
 
 <div class="card-container with-title">
-	<span class="title">{$i18n.canisters.insight}</span>
+	<span class="title">{$i18n.monitoring.title}</span>
 
 	<div class="columns-3">
 		<CanisterOverview

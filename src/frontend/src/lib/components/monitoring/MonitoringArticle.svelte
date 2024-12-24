@@ -51,7 +51,7 @@
 			{@render children()}
 		</span>
 
-		<span><Canister {segment} {canisterId} row={true} /></span>
+		<span class="canister"><Canister {segment} {canisterId} row={true} /></span>
 
 		{#if enabled}
 			<span class="chart-container">
@@ -67,9 +67,11 @@
 				{#if nonNullish(lastDepositCyclesTime) && nonNullish(lastDepositCyclesAmount)}
 					<span in:fade title={$i18n.monitoring.last_top_up}
 						><IconRefresh size="18px" />
-						{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(
-							lastDepositCyclesAmount
-						)} T Cycles</span
+						<span
+							>{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(
+								lastDepositCyclesAmount
+							)}T <small>Cycles</small></span
+						></span
 					>
 				{/if}
 			</span>
@@ -100,33 +102,48 @@
 	.info {
 		display: flex;
 		flex-direction: column;
-		gap: var(--padding-0_5x);
+		gap: var(--padding);
 
 		font-size: var(--font-size-small);
 
 		color: var(--value-color);
 
-		span {
+		margin: 0 0 0 -5px;
+
+		> span {
 			display: flex;
 			align-items: flex-start;
 			gap: var(--padding);
+
+			span {
+				margin: 0;
+			}
 
 			:global(svg) {
 				min-width: 22px;
 			}
 		}
+
+		@include media.min-width(large) {
+			margin: 0;
+		}
 	}
 
 	button.article.monitoring {
-		grid-column: 1 / 13;
-		align-items: center;
+		display: flex;
+		flex-direction: column;
+		align-items: flex-start;
+
+		row-gap: var(--padding-1_5x);
 
 		padding: var(--padding-2x) var(--padding-4x);
 
-		@include media.min-width(medium) {
+		@include media.min-width(large) {
 			display: grid;
-			grid-template-columns: 20% repeat(3, auto);
+			grid-column: 1 / 13;
+			grid-template-columns: 18% 350px auto auto;
 			grid-gap: var(--padding-8x);
+			align-items: center;
 		}
 	}
 
@@ -134,5 +151,19 @@
 		height: 100%;
 		width: 100px;
 		fill: var(--value-color);
+
+		display: none;
+
+		@include media.min-width(large) {
+			display: block;
+		}
+	}
+
+	.canister {
+		margin: var(--padding-4x) 0 0;
+
+		@include media.min-width(large) {
+			margin: 0;
+		}
 	}
 </style>

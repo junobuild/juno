@@ -184,6 +184,7 @@ const loadMonitoringHistory = async ({
 }> => {
 	const data = await get<CanisterSyncMonitoring>(canisterId, monitoringIdbStore);
 
+	// eslint-disable-next-line local-rules/prefer-object-params
 	const sortHistory = (
 		[{ created_at: createdAtA }]: MonitoringHistoryEntry,
 		[{ created_at: createdAtB }]: MonitoringHistoryEntry

@@ -3,20 +3,17 @@
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import type {
-		CyclesBalance,
-		Monitoring
-	} from '$declarations/mission_control/mission_control.did';
+	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import IconClockUpdate from '$lib/components/icons/IconClockUpdate.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
-	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		children: Snippet;
@@ -54,7 +51,7 @@
 		<span class="canister"><Canister {segment} {canisterId} row={true} /></span>
 
 		{#if enabled}
-			<span class="chart-container">
+			<span class="chart-container" in:fade>
 				<Chart {chartsData} axis={false} padding={{ top: 0, right: 0, bottom: 0, left: 0 }} />
 			</span>
 
@@ -148,6 +145,7 @@
 	}
 
 	.chart-container {
+		min-height: 60px;
 		height: 100%;
 		width: 100px;
 		fill: var(--value-color);

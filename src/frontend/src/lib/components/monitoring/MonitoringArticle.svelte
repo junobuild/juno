@@ -31,11 +31,12 @@
 	let canisterData: CanisterData | undefined = $state(undefined);
 
 	let chartsData: ChartsData[] = $derived(monitoringData?.chartsData ?? []);
-	let cyclesMonitoringData = $derived(fromNullable(monitoringData?.history?.[0]?.[1].cycles ?? []));
 
-	let latestCycles: CyclesBalance | undefined = $derived(cyclesMonitoringData?.cycles);
-	let latestDepositedCycles: CyclesBalance | undefined = $derived(
-		fromNullable(cyclesMonitoringData?.last_deposited_cycles ?? [])
+	let lastExecutionTime: bigint | undefined = $derived(
+		monitoringData?.metadata?.lastExecutionTime
+	);
+	let lastDepositCyclesTime: bigint | undefined = $derived(
+		monitoringData?.metadata?.lastDepositCyclesTime
 	);
 </script>
 
@@ -55,16 +56,16 @@
 			</span>
 
 			<span class="info">
-				{#if nonNullish(latestCycles)}
-					<span in:fade><IconClockUpdate /> {formatToRelativeTime(latestCycles.timestamp)}</span>
+				{#if nonNullish(lastExecutionTime)}
+					<span in:fade><IconClockUpdate /> {formatToRelativeTime(lastExecutionTime)}</span>
 				{/if}
 			</span>
 
 			<span class="info">
-				{#if nonNullish(latestDepositedCycles)}
+				{#if nonNullish(lastDepositCyclesTime)}
 					<span in:fade
 						><IconRefresh size="16px" />
-						{formatToRelativeTime(latestDepositedCycles.timestamp)}</span
+						{formatToRelativeTime(lastDepositCyclesTime)}</span
 					>
 				{/if}
 			</span>

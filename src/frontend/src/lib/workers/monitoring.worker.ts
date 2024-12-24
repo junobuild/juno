@@ -8,7 +8,11 @@ import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
 import { monitoringIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
-import type { MonitoringHistory, MonitoringHistoryEntry } from '$lib/types/monitoring';
+import type {
+	MonitoringHistory,
+	MonitoringHistoryEntry,
+	MonitoringMetadata
+} from '$lib/types/monitoring';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
 import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
@@ -225,6 +229,54 @@ const loadMonitoringHistory = async ({
 	return { history: cyclesHistory, chartsData };
 };
 
+const buildChartTotalPerDay = ({
+	chartsStatuses,
+	chartsHistory
+}: {
+	chartsStatuses: ChartsData[];
+	chartsHistory: ChartsData[];
+}): ChartsData[] => {
+	const totalStatusesPerDay = [...chartsStatuses, ...chartsHistory].reduce<
+		Record<string, number[]>
+	>((acc, { x, y }) => {
+		const date = new Date(parseInt(x));
+		const key = startOfDay(date).getTime();
+
+		return {
+			...acc,
+			[key]: [...(acc[key] ?? []), y]
+		};
+	}, {});
+
+	return Object.entries(totalStatusesPerDay).map(([key, values]) => ({
+		x: key,
+		y: values.reduce((acc, value) => acc + value, 0) / values.length
+	}));
+};
+
+const buildMonitoringMetadata = (history: MonitoringHistory): MonitoringMetadata | undefined => {
+	const cycles = fromNullable(history[0]?.[1].cycles ?? []);
+
+	const latestCycles = cycles?.cycles;
+
+	if (isNullish(latestCycles)) {
+		return undefined;
+	}
+
+	const latestDepositedCyclesEntry = history.find(([_, entry]) =>
+		nonNullish(fromNullable(fromNullable(entry.cycles ?? [])?.last_deposited_cycles ?? []))
+	);
+
+	const latestDepositedCycles = fromNullable(latestDepositedCyclesEntry?.[1].cycles ?? [])?.cycles;
+
+	return {
+		lastExecutionTime: latestCycles.timestamp,
+		...(nonNullish(latestDepositedCycles) && {
+			lastDepositCyclesTime: latestDepositedCycles.timestamp
+		})
+	};
+};
+
 const syncMonitoringForSegments = async ({
 	identity,
 	segments,
@@ -251,27 +303,18 @@ const syncMonitoringForSegments = async ({
 						: Promise.resolve({ history: [], chartsData: [] })
 				]);
 
-				const totalStatusesPerDay = [...chartsStatuses, ...chartsHistory].reduce<
-					Record<string, number[]>
-				>((acc, { x, y }) => {
-					const date = new Date(parseInt(x));
-					const key = startOfDay(date).getTime();
+				const chartsData = buildChartTotalPerDay({
+					chartsStatuses,
+					chartsHistory
+				});
 
-					return {
-						...acc,
-						[key]: [...(acc[key] ?? []), y]
-					};
-				}, {});
-
-				let chartsData = Object.entries(totalStatusesPerDay).map(([key, values]) => ({
-					x: key,
-					y: values.reduce((acc, value) => acc + value, 0) / values.length
-				}));
+				const metadata = buildMonitoringMetadata(history);
 
 				await syncMonitoringHistory({
 					canisterId,
 					history,
-					chartsData
+					chartsData,
+					metadata
 				});
 			} catch (err: unknown) {
 				console.error(err);
@@ -290,18 +333,21 @@ const syncMonitoringForSegments = async ({
 const syncMonitoringHistory = async ({
 	canisterId,
 	history,
-	chartsData
+	chartsData,
+	metadata
 }: {
 	canisterId: string;
 	history: MonitoringHistory;
 	chartsData: ChartsData[];
+	metadata: MonitoringMetadata | undefined;
 }) => {
 	const canister: CanisterSyncMonitoring = {
 		id: canisterId,
 		sync: 'synced',
 		data: {
 			history,
-			chartsData
+			chartsData,
+			...(nonNullish(metadata) && { metadata })
 		}
 	};
 

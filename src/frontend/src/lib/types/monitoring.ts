@@ -13,3 +13,8 @@ export interface GetMonitoringParams {
 	from?: bigint;
 	to?: bigint;
 }
+
+export interface MonitoringMetadata {
+	lastExecutionTime: bigint;
+	lastDepositCyclesTime?: bigint;
+}

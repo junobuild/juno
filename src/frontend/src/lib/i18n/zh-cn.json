@@ -718,7 +718,9 @@
 		"strategy_preparing": "Preparing...",
 		"reload_settings": "Reloading settings...",
 		"stop_monitoring_question": "Do you want to stop monitoring your Mission Control as well?",
-		"stop_monitoring_note": "<strong>Important Note</strong>: it can only be stopped if all your modules are about to stop being monitored or if none are still monitored."
+		"stop_monitoring_note": "<strong>Important Note</strong>: it can only be stopped if all your modules are about to stop being monitored or if none are still monitored.",
+		"last_checked": "Last checked",
+		"last_top_up": "Last top-up"
 	},
 	"preferences": {
 		"title": "偏好设置",

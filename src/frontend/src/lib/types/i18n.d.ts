@@ -745,6 +745,8 @@ interface I18nMonitoring {
 	reload_settings: string;
 	stop_monitoring_question: string;
 	stop_monitoring_note: string;
+	last_checked: string;
+	last_top_up: string;
 }
 
 interface I18nPreferences {

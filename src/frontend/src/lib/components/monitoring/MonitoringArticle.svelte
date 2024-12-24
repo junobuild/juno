@@ -16,6 +16,7 @@
 	import type { ChartsData } from '$lib/types/chart';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
 		children: Snippet;
@@ -59,11 +60,13 @@
 
 			<span class="info">
 				{#if nonNullish(lastExecutionTime)}
-					<span in:fade><IconClockUpdate /> {formatToRelativeTime(lastExecutionTime)}</span>
+					<span in:fade title={$i18n.monitoring.last_checked}
+						><IconClockUpdate /> {formatToRelativeTime(lastExecutionTime)}</span
+					>
 				{/if}
 				{#if nonNullish(lastDepositCyclesTime) && nonNullish(lastDepositCyclesAmount)}
-					<span in:fade
-						><IconRefresh size="16px" />
+					<span in:fade title={$i18n.monitoring.last_top_up}
+						><IconRefresh size="18px" />
 						{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(
 							lastDepositCyclesAmount
 						)} T Cycles</span
@@ -97,10 +100,21 @@
 	.info {
 		display: flex;
 		flex-direction: column;
-		align-items: center;
-		gap: var(--padding);
+		gap: var(--padding-0_5x);
 
 		font-size: var(--font-size-small);
+
+		color: var(--value-color);
+
+		span {
+			display: flex;
+			align-items: flex-start;
+			gap: var(--padding);
+
+			:global(svg) {
+				min-width: 22px;
+			}
+		}
 	}
 
 	button.article.monitoring {

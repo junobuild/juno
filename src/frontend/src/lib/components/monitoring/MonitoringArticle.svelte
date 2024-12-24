@@ -1,8 +1,8 @@
 <script lang="ts">
-	import { fade } from 'svelte/transition';
 	import type { Principal } from '@dfinity/principal';
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
+	import { fade } from 'svelte/transition';
 	import type {
 		CyclesBalance,
 		Monitoring
@@ -14,8 +14,8 @@
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
-	import { formatToRelativeTime } from '$lib/utils/date.utils';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import { formatToRelativeTime } from '$lib/utils/date.utils';
 
 	interface Props {
 		children: Snippet;
@@ -64,7 +64,9 @@
 				{#if nonNullish(lastDepositCyclesTime) && nonNullish(lastDepositCyclesAmount)}
 					<span in:fade
 						><IconRefresh size="16px" />
-						{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(lastDepositCyclesAmount)} T Cycles</span
+						{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(
+							lastDepositCyclesAmount
+						)} T Cycles</span
 					>
 				{/if}
 			</span>

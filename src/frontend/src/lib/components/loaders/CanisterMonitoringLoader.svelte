@@ -13,7 +13,11 @@
 	} from '$lib/services/worker.monitoring.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
-    import type {CanisterMonitoringData, CanisterSyncMonitoring, Segment} from '$lib/types/canister';
+	import type {
+		CanisterMonitoringData,
+		CanisterSyncMonitoring,
+		Segment
+	} from '$lib/types/canister';
 	import type { PostMessageDataResponse } from '$lib/types/post-message';
 
 	interface Props {

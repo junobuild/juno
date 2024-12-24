@@ -1,4 +1,4 @@
-import {formatDistanceToNow} from "date-fns";
+import { formatDistanceToNow } from 'date-fns';
 
 export const nowInBigIntNanoSeconds = (): bigint => BigInt(Date.now()) * BigInt(1e6);
 
@@ -42,7 +42,7 @@ export const formatToDay = (date: Date): string => {
 
 export const formatToRelativeTime = (nanoseconds: bigint): string => {
 	const date = new Date(Number(nanoseconds / 1_000_000n));
-	return formatDistanceToNow(date, {addSuffix: true, includeSeconds: false});
+	return formatDistanceToNow(date, { addSuffix: true, includeSeconds: false });
 };
 
 export const toBigIntNanoSeconds = (date: Date): bigint => BigInt(date.getTime()) * BigInt(1e6);

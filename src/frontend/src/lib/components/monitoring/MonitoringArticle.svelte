@@ -1,14 +1,18 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable } from '@dfinity/utils';
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
-	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
+	import type {
+		CyclesBalance,
+		Monitoring
+	} from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import Chart from '$lib/components/charts/Chart.svelte';
 	import IconClockUpdate from '$lib/components/icons/IconClockUpdate.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
-	import type {CanisterData, CanisterMonitoringData, Segment} from '$lib/types/canister';
+	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 
 	interface Props {
@@ -27,6 +31,11 @@
 
 	let chartsData: ChartsData[] = $derived(monitoringData?.chartsData ?? []);
 	let cyclesMonitoringData = $derived(fromNullable(monitoringData?.history?.[0]?.[1].cycles ?? []));
+
+	let latestCycles: CyclesBalance | undefined = $derived(cyclesMonitoringData?.cycles);
+	let latestDepositedCycles: CyclesBalance | undefined = $derived(
+		fromNullable(cyclesMonitoringData?.last_deposited_cycles ?? [])
+	);
 </script>
 
 <Canister {canisterId} {segment} display={false} bind:data={canisterData} />
@@ -44,7 +53,11 @@
 				<Chart {chartsData} axis={false} padding={{ top: 0, right: 0, bottom: 0, left: 0 }} />
 			</span>
 
-			<span class="info"><IconClockUpdate /> 2h ago</span>
+			<span class="info">
+				{#if nonNullish(latestCycles)}
+					<span in:fade><IconClockUpdate /> 2h ago</span>
+				{/if}
+			</span>
 
 			<span class="info"><IconRefresh size="16px" /> 7 days ago</span>
 		{:else}

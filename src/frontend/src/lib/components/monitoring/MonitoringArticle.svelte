@@ -52,7 +52,7 @@
 
 		{#if enabled}
 			<span class="chart-container" in:fade>
-				<Chart {chartsData} axis={false} padding={{ top: 0, right: 0, bottom: 0, left: 0 }} />
+				<Chart {chartsData} axisWithText={false} padding={{ top: 0, right: 0, bottom: 0, left: 0 }} />
 			</span>
 
 			<span class="info">

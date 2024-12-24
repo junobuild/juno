@@ -19,6 +19,7 @@
 		ticks?: string | ((ticks: string) => void) | undefined | string[];
 		xTick?: number;
 		yTick?: number;
+		axisWithText?: boolean;
 	}
 
 	let {
@@ -29,7 +30,8 @@
 		formatTick = (d: string | number): string | number => d,
 		ticks = undefined,
 		xTick = 0,
-		yTick = 16
+		yTick = 16,
+		axisWithText = true
 	}: Props = $props();
 
 	let isBandwidth = $derived(typeof $xScale.bandwidth === 'function');
@@ -72,13 +74,15 @@
 					x2={isBandwidth ? $xScale.bandwidth() / 2 : 0}
 				/>
 			{/if}
-			<text
-				x={isBandwidth ? $xScale.bandwidth() / 2 + xTick : xTick}
-				y={yTick}
-				dx=""
-				dy=""
-				text-anchor={textAnchor(i)}>{formatTick(tick)}</text
-			>
+			{#if axisWithText}
+				<text
+					x={isBandwidth ? $xScale.bandwidth() / 2 + xTick : xTick}
+					y={yTick}
+					dx=""
+					dy=""
+					text-anchor={textAnchor(i)}>{formatTick(tick)}</text
+				>
+			{/if}
 		</g>
 	{/each}
 	{#if baseline === true}

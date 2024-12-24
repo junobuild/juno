@@ -9,7 +9,7 @@
 
 	interface Props {
 		chartsData: ChartsData[];
-		axis?: boolean;
+		axisWithText?: boolean;
 		padding?:
 			| {
 					top?: number;
@@ -20,7 +20,7 @@
 			| undefined;
 	}
 
-	let { chartsData, axis = true, padding }: Props = $props();
+	let { chartsData, axisWithText = true, padding }: Props = $props();
 
 	let ticks: string[] = $derived(Object.values(chartsData).map(({ x: a }) => a));
 
@@ -41,10 +41,8 @@
 	data={chartsData}
 >
 	<Svg>
-		{#if axis}
-			<AxisX {formatTick} {ticks} />
-			<AxisY ticks={4} />
-		{/if}
+		<AxisX {formatTick} {ticks} {axisWithText} />
+		<AxisY ticks={4} {axisWithText} />
 		<Line />
 		<Area />
 	</Svg>

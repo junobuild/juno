@@ -20,6 +20,7 @@
 		dxTick?: number;
 		dyTick?: number;
 		textAnchor?: string;
+		axisWithText?: boolean;
 	}
 
 	let {
@@ -31,7 +32,8 @@
 		yTick = 0,
 		dxTick = 0,
 		dyTick = -4,
-		textAnchor = 'start'
+		textAnchor = 'start',
+		axisWithText = true
 	}: Props = $props();
 
 	let isBandwidth = $derived(typeof $yScale.bandwidth === 'function');
@@ -70,13 +72,15 @@
 					y2={isBandwidth ? $yScale.bandwidth() / 2 : 0}
 				/>
 			{/if}
-			<text
-				x={xTick}
-				y={isBandwidth ? $yScale.bandwidth() / 2 + yTick : yTick}
-				dx={isBandwidth ? -9 : dxTick}
-				dy={isBandwidth ? 4 : dyTick}
-				style="text-anchor:{isBandwidth ? 'end' : textAnchor};">{formatTick(tick)}</text
-			>
+			{#if axisWithText}
+				<text
+					x={xTick}
+					y={isBandwidth ? $yScale.bandwidth() / 2 + yTick : yTick}
+					dx={isBandwidth ? -9 : dxTick}
+					dy={isBandwidth ? 4 : dyTick}
+					style="text-anchor:{isBandwidth ? 'end' : textAnchor};">{formatTick(tick)}</text
+				>
+			{/if}
 		</g>
 	{/each}
 </g>

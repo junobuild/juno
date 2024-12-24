@@ -267,12 +267,14 @@ const buildMonitoringMetadata = (history: MonitoringHistory): MonitoringMetadata
 		nonNullish(fromNullable(fromNullable(entry.cycles ?? [])?.last_deposited_cycles ?? []))
 	);
 
-	const latestDepositedCycles = fromNullable(latestDepositedCyclesEntry?.[1].cycles ?? [])?.cycles;
+	const latestDepositedCycles = fromNullable(
+		fromNullable(latestDepositedCyclesEntry?.[1].cycles ?? [])?.last_deposited_cycles ?? []
+	);
 
 	return {
 		lastExecutionTime: latestCycles.timestamp,
 		...(nonNullish(latestDepositedCycles) && {
-			lastDepositCyclesTime: latestDepositedCycles.timestamp
+			latestDepositedCycles
 		})
 	};
 };

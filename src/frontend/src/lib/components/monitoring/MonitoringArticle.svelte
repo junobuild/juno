@@ -15,6 +15,7 @@
 	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		children: Snippet;
@@ -32,11 +33,12 @@
 
 	let chartsData: ChartsData[] = $derived(monitoringData?.chartsData ?? []);
 
-	let lastExecutionTime: bigint | undefined = $derived(
-		monitoringData?.metadata?.lastExecutionTime
-	);
+	let lastExecutionTime: bigint | undefined = $derived(monitoringData?.metadata?.lastExecutionTime);
 	let lastDepositCyclesTime: bigint | undefined = $derived(
-		monitoringData?.metadata?.lastDepositCyclesTime
+		monitoringData?.metadata?.latestDepositedCycles?.timestamp
+	);
+	let lastDepositCyclesAmount: bigint | undefined = $derived(
+		monitoringData?.metadata?.latestDepositedCycles?.amount
 	);
 </script>
 
@@ -59,13 +61,10 @@
 				{#if nonNullish(lastExecutionTime)}
 					<span in:fade><IconClockUpdate /> {formatToRelativeTime(lastExecutionTime)}</span>
 				{/if}
-			</span>
-
-			<span class="info">
-				{#if nonNullish(lastDepositCyclesTime)}
+				{#if nonNullish(lastDepositCyclesTime) && nonNullish(lastDepositCyclesAmount)}
 					<span in:fade
 						><IconRefresh size="16px" />
-						{formatToRelativeTime(lastDepositCyclesTime)}</span
+						{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(lastDepositCyclesAmount)} T Cycles</span
 					>
 				{/if}
 			</span>
@@ -95,6 +94,7 @@
 
 	.info {
 		display: flex;
+		flex-direction: column;
 		align-items: center;
 		gap: var(--padding);
 
@@ -109,7 +109,7 @@
 
 		@include media.min-width(medium) {
 			display: grid;
-			grid-template-columns: 20% repeat(4, auto);
+			grid-template-columns: 20% repeat(3, auto);
 			grid-gap: var(--padding-8x);
 		}
 	}

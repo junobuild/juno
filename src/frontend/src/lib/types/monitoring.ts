@@ -1,4 +1,5 @@
 import type {
+	CyclesBalance,
 	MonitoringHistory as MonitoringHistoryDid,
 	MonitoringHistoryKey
 } from '$declarations/mission_control/mission_control.did';
@@ -16,5 +17,5 @@ export interface GetMonitoringParams {
 
 export interface MonitoringMetadata {
 	lastExecutionTime: bigint;
-	lastDepositCyclesTime?: bigint;
+	latestDepositedCycles?: CyclesBalance;
 }

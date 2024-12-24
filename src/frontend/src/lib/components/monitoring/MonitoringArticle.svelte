@@ -14,6 +14,7 @@
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
+	import { formatToRelativeTime } from '$lib/utils/date.utils';
 
 	interface Props {
 		children: Snippet;
@@ -55,11 +56,18 @@
 
 			<span class="info">
 				{#if nonNullish(latestCycles)}
-					<span in:fade><IconClockUpdate /> 2h ago</span>
+					<span in:fade><IconClockUpdate /> {formatToRelativeTime(latestCycles.timestamp)}</span>
 				{/if}
 			</span>
 
-			<span class="info"><IconRefresh size="16px" /> 7 days ago</span>
+			<span class="info">
+				{#if nonNullish(latestDepositedCycles)}
+					<span in:fade
+						><IconRefresh size="16px" />
+						{formatToRelativeTime(latestDepositedCycles.timestamp)}</span
+					>
+				{/if}
+			</span>
 		{:else}
 			<span class="info">Monitoring disabled.</span>
 		{/if}

@@ -4,10 +4,12 @@ import type {
 } from '$declarations/mission_control/mission_control.did';
 import type { Principal } from '@dfinity/principal';
 
-export type MonitoringHistory = [MonitoringHistoryKey, MonitoringHistoryDid][];
+export type MonitoringHistoryEntry = [MonitoringHistoryKey, MonitoringHistoryDid];
+
+export type MonitoringHistory = MonitoringHistoryEntry[];
 
 export interface GetMonitoringParams {
 	segmentId: Principal;
-	from?: Date;
-	to?: Date;
+	from?: bigint;
+	to?: bigint;
 }

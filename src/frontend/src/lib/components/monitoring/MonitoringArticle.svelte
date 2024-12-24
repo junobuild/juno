@@ -8,7 +8,7 @@
 	import IconClockUpdate from '$lib/components/icons/IconClockUpdate.svelte';
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
-	import type { CanisterData, Segment } from '$lib/types/canister';
+	import type {CanisterData, CanisterMonitoringData, Segment} from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 
 	interface Props {
@@ -22,13 +22,16 @@
 
 	let enabled = $derived(fromNullable(monitoring?.cycles ?? [])?.enabled === true);
 
-	let chartsData: ChartsData[] = $state([]);
+	let monitoringData: CanisterMonitoringData | undefined = $state(undefined);
 	let canisterData: CanisterData | undefined = $state(undefined);
+
+	let chartsData: ChartsData[] = $derived(monitoringData?.chartsData ?? []);
+	let cyclesMonitoringData = $derived(fromNullable(monitoringData?.history?.[0]?.[1].cycles ?? []));
 </script>
 
 <Canister {canisterId} {segment} display={false} bind:data={canisterData} />
 
-<CanisterMonitoringLoader {segment} {canisterId} bind:chartsData>
+<CanisterMonitoringLoader {segment} {canisterId} bind:data={monitoringData}>
 	<button onclick={() => console.log('todo')} class="article monitoring">
 		<span class="segment">
 			{@render children()}

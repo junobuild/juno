@@ -8,7 +8,7 @@ import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
 import { monitoringIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
-import type { MonitoringHistory } from '$lib/types/monitoring';
+import type { MonitoringHistory, MonitoringHistoryEntry } from '$lib/types/monitoring';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
 import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
@@ -113,7 +113,7 @@ const syncMonitoring = async ({
 };
 
 // eslint-disable-next-line local-rules/prefer-object-params
-const sortHistory = ({ x: aKey }: ChartsData, { x: bKey }: ChartsData): number =>
+const sortChartsData = ({ x: aKey }: ChartsData, { x: bKey }: ChartsData): number =>
 	parseInt(aKey) - parseInt(bKey);
 
 /**
@@ -164,7 +164,7 @@ const loadDeprecatedStatuses = async ({
 				y: parseFloat(formatTCycles(cycles))
 			};
 		})
-		.sort(sortHistory);
+		.sort(sortChartsData);
 };
 
 const loadMonitoringHistory = async ({
@@ -180,23 +180,28 @@ const loadMonitoringHistory = async ({
 }> => {
 	const data = await get<CanisterSyncMonitoring>(canisterId, monitoringIdbStore);
 
+	const sortHistory = (
+		[{ created_at: createdAtA }]: MonitoringHistoryEntry,
+		[{ created_at: createdAtB }]: MonitoringHistoryEntry
+	): number => Number(createdAtB) - Number(createdAtA);
+
 	// We want to get only the entries we have not collected yet
-	const from = data?.data?.history.sort(
-		([{ created_at: createdAtA }], [{ created_at: createdAtB }]) =>
-			Number(createdAtB) - Number(createdAtA)
-	)?.[0][0]?.created_at;
+	const from = data?.data?.history.sort(sortHistory)?.[0]?.[0]?.created_at;
 
 	const history = await getMonitoringHistory({
 		missionControlId: Principal.fromText(missionControlId),
 		identity,
 		params: {
 			segmentId: Principal.from(canisterId),
-			...(nonNullish(from) && { from: new Date(Number(from)) })
+			...(nonNullish(from) && { from })
 		}
 	});
 
-	const chartsData = history
+	const cyclesHistory = history
 		.filter(([_, result]) => nonNullish(fromNullable(result.cycles)))
+		.sort(sortHistory);
+
+	const chartsData = cyclesHistory
 		.map(([{ created_at }, result]) => {
 			const cycles = fromNullable(result.cycles);
 
@@ -213,9 +218,9 @@ const loadMonitoringHistory = async ({
 				y: parseFloat(formatTCycles(cycles.cycles.amount))
 			};
 		})
-		.sort(sortHistory);
+		.sort(sortChartsData);
 
-	return { history, chartsData };
+	return { history: cyclesHistory, chartsData };
 };
 
 const syncMonitoringForSegments = async ({

@@ -19,13 +19,17 @@
 </script>
 
 <Modal on:junoClose={onclose}>
-	<div class="card-container with-title">
-		<span class="title">{$i18n.monitoring.title}</span>
+	<h2>{$i18n.monitoring.title}</h2>
 
-		<div class="columns-3">
-			<CanisterOverview {canisterId} segment={segment.segment} />
+	<div class="card-container columns-3 no-border">
+		<CanisterOverview {canisterId} segment={segment.segment} />
 
-			<CanisterMonitoring {canisterId} segment={segment.segment} />
-		</div>
+		<CanisterMonitoring {canisterId} segment={segment.segment} />
 	</div>
 </Modal>
+
+<style lang="scss">
+	.card-container {
+		padding: var(--padding-2x) var(--padding-2x) 0 0;
+	}
+</style>

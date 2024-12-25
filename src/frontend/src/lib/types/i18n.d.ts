@@ -545,6 +545,7 @@ interface I18nErrors {
 	monitoring_apply_strategy_error: string;
 	monitoring_stop_error: string;
 	monitoring_no_modules: string;
+	monitoring_canister_not_loaded: string;
 }
 
 interface I18nDocument {

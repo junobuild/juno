@@ -1,7 +1,8 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 	import type { Snippet } from 'svelte';
+	import { get } from 'svelte/store';
 	import { fade } from 'svelte/transition';
 	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
 	import Canister from '$lib/components/canister/Canister.svelte';
@@ -10,19 +11,22 @@
 	import IconRefresh from '$lib/components/icons/IconRefresh.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
 	import type { ChartsData } from '$lib/types/chart';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
+	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		children: Snippet;
 		monitoring: Monitoring | undefined;
 		canisterId: Principal;
 		segment: Segment;
+		segmentLabel: string;
 	}
 
-	let { children, monitoring, segment, canisterId }: Props = $props();
+	let { children, monitoring, segment, canisterId, segmentLabel }: Props = $props();
 
 	let enabled = $derived(fromNullable(monitoring?.cycles ?? [])?.enabled === true);
 
@@ -38,12 +42,35 @@
 	let lastDepositCyclesAmount: bigint | undefined = $derived(
 		monitoringData?.metadata?.latestDepositedCycles?.amount
 	);
+
+	const openModal = () => {
+		if (isNullish(canisterData)) {
+			toasts.warn(get(i18n).errors.monitoring_canister_not_loaded);
+			return;
+		}
+
+		emit({
+			message: 'junoModal',
+			detail: {
+				type: 'show_monitoring_details',
+				detail: {
+					segment: {
+						canisterId,
+						segment,
+						segmentLabel
+					},
+					canisterData,
+					monitoringData
+				}
+			}
+		});
+	};
 </script>
 
 <Canister {canisterId} {segment} display={false} bind:data={canisterData} />
 
 <CanisterMonitoringLoader {segment} {canisterId} bind:data={monitoringData}>
-	<button onclick={() => console.log('todo')} class="article monitoring">
+	<button onclick={openModal} class="article monitoring">
 		<span class="segment">
 			{@render children()}
 		</span>
@@ -52,7 +79,11 @@
 
 		{#if enabled}
 			<span class="chart-container" in:fade>
-				<Chart {chartsData} axisWithText={false} padding={{ top: 0, right: 0, bottom: 0, left: 0 }} />
+				<Chart
+					{chartsData}
+					axisWithText={false}
+					padding={{ top: 0, right: 0, bottom: 0, left: 0 }}
+				/>
 			</span>
 
 			<span class="info">

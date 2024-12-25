@@ -6,7 +6,12 @@ import type {
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
-import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
+import type {
+	CanisterData,
+	CanisterMonitoringData,
+	CanisterSegmentWithLabel,
+	CanisterSettings
+} from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
@@ -103,6 +108,11 @@ export interface JunoModalMonitoringStrategyDetail {
 	settings: MissionControlSettings | undefined;
 }
 
+export interface JunoModalMonitoringDetail extends JunoModalSegmentDetail {
+	canisterData: CanisterData;
+	monitoringData: CanisterMonitoringData | undefined;
+}
+
 export type JunoModalDetail =
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
@@ -115,7 +125,8 @@ export type JunoModalDetail =
 	| JunoModalDeleteSatelliteDetail
 	| JunoModalSendTokensDetail
 	| JunoModalEditOrbiterConfigDetail
-	| JunoModalMonitoringStrategyDetail;
+	| JunoModalMonitoringStrategyDetail
+	| JunoModalMonitoringDetail;
 
 export interface JunoModal {
 	type:
@@ -141,6 +152,7 @@ export interface JunoModal {
 		| 'upgrade_orbiter'
 		| 'send_tokens'
 		| 'create_monitoring_strategy'
-		| 'stop_monitoring_strategy';
+		| 'stop_monitoring_strategy'
+		| 'show_monitoring_details';
 	detail?: JunoModalDetail;
 }

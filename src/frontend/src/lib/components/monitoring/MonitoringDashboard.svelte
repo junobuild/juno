@@ -37,6 +37,7 @@
 			monitoring={$missionControlMonitoring}
 			canisterId={missionControlId}
 			segment="mission_control"
+			segmentLabel={$i18n.mission_control.title}
 		>
 			<IconMissionControl />
 			<span>{$i18n.mission_control.title}</span>
@@ -47,6 +48,7 @@
 				monitoring={fromNullable(fromNullable(satellite.settings)?.monitoring ?? [])}
 				canisterId={satellite.satellite_id}
 				segment="satellite"
+				segmentLabel={$i18n.satellites.satellite}
 			>
 				<IconSatellite size="24px" />
 				<span>{satelliteName(satellite)}</span>
@@ -58,6 +60,7 @@
 				monitoring={fromNullable(fromNullable(orbiter.settings)?.monitoring ?? [])}
 				canisterId={orbiter.orbiter_id}
 				segment="orbiter"
+				segmentLabel={$i18n.analytics.orbiter}
 			>
 				<IconAnalytics size="24px" />
 				<span>{$i18n.analytics.title}</span>

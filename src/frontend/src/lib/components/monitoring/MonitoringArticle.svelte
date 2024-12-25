@@ -13,7 +13,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import type { CanisterData, CanisterMonitoringData, Segment } from '$lib/types/canister';
-	import type { ChartsData } from '$lib/types/chart';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
 	import { emit } from '$lib/utils/events.utils';
@@ -30,18 +29,14 @@
 
 	let enabled = $derived(fromNullable(monitoring?.cycles ?? [])?.enabled === true);
 
-	let monitoringData: CanisterMonitoringData | undefined = $state(undefined);
-	let canisterData: CanisterData | undefined = $state(undefined);
+	let monitoringData = $state<CanisterMonitoringData | undefined>(undefined);
+	let canisterData = $state<CanisterData | undefined>(undefined);
 
-	let chartsData: ChartsData[] = $derived(monitoringData?.chartsData ?? []);
+	let chartsData = $derived(monitoringData?.chartsData ?? []);
 
-	let lastExecutionTime: bigint | undefined = $derived(monitoringData?.metadata?.lastExecutionTime);
-	let lastDepositCyclesTime: bigint | undefined = $derived(
-		monitoringData?.metadata?.latestDepositedCycles?.timestamp
-	);
-	let lastDepositCyclesAmount: bigint | undefined = $derived(
-		monitoringData?.metadata?.latestDepositedCycles?.amount
-	);
+	let lastExecutionTime = $derived(monitoringData?.metadata?.lastExecutionTime);
+	let lastDepositCyclesTime = $derived(monitoringData?.metadata?.latestDepositedCycles?.timestamp);
+	let lastDepositCyclesAmount = $derived(monitoringData?.metadata?.latestDepositedCycles?.amount);
 
 	const openModal = () => {
 		if (isNullish(canisterData)) {

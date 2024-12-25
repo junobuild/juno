@@ -50,7 +50,7 @@
 				type: 'show_monitoring_details',
 				detail: {
 					segment: {
-						canisterId,
+						canisterId: canisterId.toText(),
 						segment,
 						segmentLabel
 					},

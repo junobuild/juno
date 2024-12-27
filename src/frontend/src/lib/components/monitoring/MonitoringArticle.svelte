@@ -39,11 +39,6 @@
 	let lastDepositCyclesAmount = $derived(monitoringData?.metadata?.latestDepositedCycles?.amount);
 
 	const openModal = () => {
-		if (isNullish(canisterData)) {
-			toasts.warn(get(i18n).errors.monitoring_canister_not_loaded);
-			return;
-		}
-
 		emit({
 			message: 'junoModal',
 			detail: {
@@ -53,9 +48,7 @@
 						canisterId: canisterId.toText(),
 						segment,
 						segmentLabel
-					},
-					canisterData,
-					monitoringData
+					}
 				}
 			}
 		});

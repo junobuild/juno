@@ -7,9 +7,11 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail, JunoModalMonitoringDetail } from '$lib/types/modal';
+	import type { JunoModalDetail, JunoModalSegmentDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
+	import type { CanisterMonitoringData } from '$lib/types/canister';
+	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -18,9 +20,11 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { segment, canisterData, monitoringData } = $derived(detail as JunoModalMonitoringDetail);
+	let { segment } = $derived(detail as JunoModalSegmentDetail);
 
 	let canisterId = $derived(Principal.fromText(segment?.canisterId));
+
+	let monitoringData = $state<CanisterMonitoringData | undefined>(undefined);
 
 	let lastExecutionTime = $derived(monitoringData?.metadata?.lastExecutionTime);
 	let lastDepositCyclesTime = $derived(monitoringData?.metadata?.latestDepositedCycles?.timestamp);
@@ -33,41 +37,43 @@
 	<div class="card-container columns-3 no-border">
 		<CanisterOverview {canisterId} segment={segment.segment} />
 
-		<div>
-			{#if nonNullish(lastExecutionTime)}
-				<div in:fade>
-					<Value>
-						{#snippet label()}
-							{$i18n.monitoring.last_status_check}
-						{/snippet}
+		<CanisterMonitoringLoader segment={segment.segment} {canisterId} bind:data={monitoringData}>
+			<div>
+				{#if nonNullish(lastExecutionTime)}
+					<div in:fade>
+						<Value>
+							{#snippet label()}
+								{$i18n.monitoring.last_status_check}
+							{/snippet}
 
-						<p>
-							{formatToRelativeTime(lastExecutionTime)}
-						</p>
-					</Value>
-				</div>
-			{/if}
+							<p>
+								{formatToRelativeTime(lastExecutionTime)}
+							</p>
+						</Value>
+					</div>
+				{/if}
 
-			{#if nonNullish(lastDepositCyclesTime) && nonNullish(lastDepositCyclesAmount)}
-				<div in:fade>
-					<Value>
-						{#snippet label()}
-							{$i18n.monitoring.last_top_up}
-						{/snippet}
+				{#if nonNullish(lastDepositCyclesTime) && nonNullish(lastDepositCyclesAmount)}
+					<div in:fade>
+						<Value>
+							{#snippet label()}
+								{$i18n.monitoring.last_top_up}
+							{/snippet}
 
-						<p>
-							{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(
-								lastDepositCyclesAmount
-							)}T <small>Cycles</small>
-						</p>
-					</Value>
-				</div>
-			{/if}
-		</div>
+							<p>
+								{formatToRelativeTime(lastDepositCyclesTime)} with {formatTCycles(
+									lastDepositCyclesAmount
+								)}T <small>Cycles</small>
+							</p>
+						</Value>
+					</div>
+				{/if}
+			</div>
 
-		<div class="chart">
-			<CanisterMonitoring {canisterId} segment={segment.segment} />
-		</div>
+			<div class="chart">
+				<CanisterMonitoring {canisterId} segment={segment.segment} />
+			</div>
+		</CanisterMonitoringLoader>
 	</div>
 </Modal>
 

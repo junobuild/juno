@@ -108,11 +108,6 @@ export interface JunoModalMonitoringStrategyDetail {
 	settings: MissionControlSettings | undefined;
 }
 
-export interface JunoModalMonitoringDetail extends JunoModalSegmentDetail {
-	canisterData: CanisterData;
-	monitoringData: CanisterMonitoringData | undefined;
-}
-
 export type JunoModalDetail =
 	| JunoModalTopUpSatelliteDetail
 	| JunoModalTopUpMissionControlDetail
@@ -125,8 +120,7 @@ export type JunoModalDetail =
 	| JunoModalDeleteSatelliteDetail
 	| JunoModalSendTokensDetail
 	| JunoModalEditOrbiterConfigDetail
-	| JunoModalMonitoringStrategyDetail
-	| JunoModalMonitoringDetail;
+	| JunoModalMonitoringStrategyDetail;
 
 export interface JunoModal {
 	type:

@@ -528,8 +528,7 @@
 		"mission_control_settings_not_loaded": "The settings for the mission control are not yet loaded.",
 		"monitoring_apply_strategy_error": "Unexpected error(s) while applying the strategy.",
 		"monitoring_stop_error": "Unexpected error(s) while stopping the monitoring.",
-		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started.",
-		"monitoring_canister_not_loaded": "The status of the smart contract is not yet loaded."
+		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started."
 	},
 	"document": {
 		"owner": "Owner",

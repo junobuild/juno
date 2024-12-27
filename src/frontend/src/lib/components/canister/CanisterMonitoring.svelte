@@ -17,5 +17,7 @@
 </script>
 
 <CanisterMonitoringLoader {...props} bind:data={monitoringData}>
-	<CanisterMonitoringChart {chartsData} />
+	<div>
+		<CanisterMonitoringChart {chartsData} />
+	</div>
 </CanisterMonitoringLoader>

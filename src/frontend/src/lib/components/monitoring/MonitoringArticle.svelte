@@ -83,7 +83,7 @@
 
 			<span class="info">
 				{#if nonNullish(lastExecutionTime)}
-					<span in:fade title={$i18n.monitoring.last_checked}
+					<span in:fade title={$i18n.monitoring.last_status_check}
 						><IconClockUpdate /> <span>{formatToRelativeTime(lastExecutionTime)}</span></span
 					>
 				{/if}

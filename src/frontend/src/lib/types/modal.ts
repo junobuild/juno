@@ -6,12 +6,7 @@ import type {
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
 import type { MissionControlBalance } from '$lib/types/balance';
-import type {
-	CanisterData,
-	CanisterMonitoringData,
-	CanisterSegmentWithLabel,
-	CanisterSettings
-} from '$lib/types/canister';
+import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';

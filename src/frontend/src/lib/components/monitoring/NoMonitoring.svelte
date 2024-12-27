@@ -1,12 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { isNullish } from '@dfinity/utils';
-	import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
-	import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
-	import { emit } from '$lib/utils/events.utils';
 
 	interface Props {
 		missionControlId: Principal;

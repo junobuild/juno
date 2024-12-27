@@ -72,7 +72,6 @@
 		"disabled": "Disabled"
 	},
 	"canisters": {
-		"insight": "Insight",
 		"top_up": "Top-up",
 		"cycles_description": "Cycles are the unit of payment for operating your smart contracts. You can top-up (recharge) your {0} by converting ICP to cycles.",
 		"top_up_in_progress": "Top-up in progress...",
@@ -130,7 +129,7 @@
 		"stop_title": "Stop {0}",
 		"stop_info": "Do you want to stop your {0}?",
 		"stop_forewords": "Stopping the {0} will prevent any further interactions with it.",
-		"stop_explanation": "Please note that a stopped {0} continues to consume cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
+		"stop_explanation": "Please note that a stopped {0} continues to consume Cycles for the memory it occupies, including any remaining outstanding responses, until the cycle balance reaches 0. After that, it will be deleted.",
 		"stop_error": "Additionally, be aware that stopping the {0} may result in error messages being displayed in the console.",
 		"stop_success": "{0} stopped.",
 		"start_tile": "Restart {0}",
@@ -143,10 +142,10 @@
 		"detach_success": "{0} detached.",
 		"delete_success": "{0} deleted.",
 		"cycles": "Cycles",
-		"transfer_cycles": "Transfer cycles",
+		"transfer_cycles": "Transfer Cycles",
 		"transfer_cycles_action": "Transfer",
 		"buy_cycles": "Buy",
-		"transfer_cycles_description": "You can manage your cycles by moving them between your satellite, mission control, and analytics, ensuring your resources are where you need them most.",
+		"transfer_cycles_description": "You can manage your Cycles by moving them between your satellite, mission control, and analytics, ensuring your resources are where you need them most.",
 		"select_destination": "Select the destination",
 		"destination": "Destination for the transfer",
 		"your_balance": "Your current {0} balance is {1} T Cycles.",
@@ -718,7 +717,10 @@
 		"strategy_preparing": "Preparing...",
 		"reload_settings": "Reloading settings...",
 		"stop_monitoring_question": "Do you want to stop monitoring your Mission Control as well?",
-		"stop_monitoring_note": "<strong>Important Note</strong>: it can only be stopped if all your modules are about to stop being monitored or if none are still monitored."
+		"stop_monitoring_note": "<strong>Important Note</strong>: it can only be stopped if all your modules are about to stop being monitored or if none are still monitored.",
+		"last_status_check": "Last status check",
+		"last_top_up": "Last top-up",
+		"usage": "Usage"
 	},
 	"preferences": {
 		"title": "Preferences",

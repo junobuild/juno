@@ -1,8 +1,6 @@
 import type {
 	Controller,
 	MissionControlSettings,
-	MonitoringHistory,
-	MonitoringHistoryKey,
 	MonitoringStartConfig,
 	MonitoringStopConfig,
 	Orbiter,
@@ -17,11 +15,10 @@ import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
-import type { GetMonitoringParams } from '$lib/types/monitoring';
+import type { GetMonitoringParams, MonitoringHistory } from '$lib/types/monitoring';
 import { toSetController } from '$lib/utils/controllers.utils';
-import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { Principal } from '@dfinity/principal';
-import { nonNullish, toNullable } from '@dfinity/utils';
+import { toNullable } from '@dfinity/utils';
 
 export const setSatellitesController = async ({
 	identity,
@@ -510,7 +507,7 @@ export const getMonitoringHistory = async ({
 	missionControlId: Principal;
 	identity: OptionIdentity;
 	params: GetMonitoringParams;
-}): Promise<[MonitoringHistoryKey, MonitoringHistory][]> => {
+}): Promise<MonitoringHistory> => {
 	const { get_monitoring_history } = await getMissionControlActor({
 		missionControlId,
 		identity
@@ -518,7 +515,7 @@ export const getMonitoringHistory = async ({
 
 	return await get_monitoring_history({
 		segment_id: segmentId,
-		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
-		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
+		from: toNullable(from),
+		to: toNullable(to)
 	});
 };

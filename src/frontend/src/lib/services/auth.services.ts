@@ -3,7 +3,7 @@ import { resetSubnets } from '$lib/services/subnets.services';
 import { authStore, type AuthSignInParams } from '$lib/stores/auth.store';
 import { busy } from '$lib/stores/busy.store';
 import { i18n } from '$lib/stores/i18n.store';
-import { cyclesIdbStore, statusesIdbStore } from '$lib/stores/idb.store';
+import { cyclesIdbStore, monitoringIdbStore, statusesIdbStore } from '$lib/stores/idb.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { ToastLevel, ToastMsg } from '$lib/types/toast';
 import { replaceHistory } from '$lib/utils/route.utils';
@@ -62,6 +62,7 @@ const logout = async ({
 		await Promise.all([
 			clear(cyclesIdbStore),
 			clear(statusesIdbStore),
+			clear(monitoringIdbStore),
 			resetSnapshots(),
 			resetSubnets()
 		]);

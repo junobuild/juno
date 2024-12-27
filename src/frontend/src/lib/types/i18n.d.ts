@@ -76,7 +76,6 @@ interface I18nCore {
 }
 
 interface I18nCanisters {
-	insight: string;
 	top_up: string;
 	cycles_description: string;
 	top_up_in_progress: string;
@@ -745,6 +744,9 @@ interface I18nMonitoring {
 	reload_settings: string;
 	stop_monitoring_question: string;
 	stop_monitoring_note: string;
+	last_status_check: string;
+	last_top_up: string;
+	usage: string;
 }
 
 interface I18nPreferences {

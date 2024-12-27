@@ -141,6 +141,7 @@ export interface JunoModal {
 		| 'upgrade_orbiter'
 		| 'send_tokens'
 		| 'create_monitoring_strategy'
-		| 'stop_monitoring_strategy';
+		| 'stop_monitoring_strategy'
+		| 'show_monitoring_details';
 	detail?: JunoModalDetail;
 }

@@ -5,9 +5,14 @@ import {
 	listSatelliteStatuses
 } from '$lib/api/mission-control.api';
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
-import { statusesIdbStore } from '$lib/stores/idb.store';
+import { monitoringIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
 import type { ChartsData } from '$lib/types/chart';
+import type {
+	MonitoringHistory,
+	MonitoringHistoryEntry,
+	MonitoringMetadata
+} from '$lib/types/monitoring';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
 import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
@@ -16,7 +21,7 @@ import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
 import { startOfDay } from 'date-fns';
-import { set } from 'idb-keyval';
+import { get, set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
 	const { msg, data } = dataMsg;
@@ -101,7 +106,7 @@ const syncMonitoring = async ({
 
 	await emitSavedCanisters({
 		canisterIds: segments.map(({ canisterId }) => canisterId),
-		customStore: statusesIdbStore
+		customStore: monitoringIdbStore
 	});
 
 	try {
@@ -112,9 +117,12 @@ const syncMonitoring = async ({
 };
 
 // eslint-disable-next-line local-rules/prefer-object-params
-const sortHistory = ({ x: aKey }: ChartsData, { x: bKey }: ChartsData): number =>
+const sortChartsData = ({ x: aKey }: ChartsData, { x: bKey }: ChartsData): number =>
 	parseInt(aKey) - parseInt(bKey);
 
+/**
+ * @deprecated
+ */
 const loadDeprecatedStatuses = async ({
 	identity,
 	segment: { segment, canisterId },
@@ -160,7 +168,7 @@ const loadDeprecatedStatuses = async ({
 				y: parseFloat(formatTCycles(cycles))
 			};
 		})
-		.sort(sortHistory);
+		.sort(sortChartsData);
 };
 
 const loadMonitoringHistory = async ({
@@ -170,17 +178,37 @@ const loadMonitoringHistory = async ({
 }: {
 	identity: Identity;
 	segment: CanisterSegment;
-} & Required<Pick<PostMessageDataRequest, 'missionControlId'>>): Promise<ChartsData[]> => {
-	const history = await getMonitoringHistory({
+} & Required<Pick<PostMessageDataRequest, 'missionControlId'>>): Promise<{
+	history: MonitoringHistory;
+	chartsData: ChartsData[];
+}> => {
+	const data = await get<CanisterSyncMonitoring>(canisterId, monitoringIdbStore);
+
+	// eslint-disable-next-line local-rules/prefer-object-params
+	const sortHistory = (
+		[{ created_at: createdAtA }]: MonitoringHistoryEntry,
+		[{ created_at: createdAtB }]: MonitoringHistoryEntry
+	): number => Number(createdAtB) - Number(createdAtA);
+
+	// We want to get only the entries we have not collected yet
+	const from = data?.data?.history.sort(sortHistory)?.[0]?.[0]?.created_at;
+
+	const recentHistory = await getMonitoringHistory({
 		missionControlId: Principal.fromText(missionControlId),
 		identity,
 		params: {
-			segmentId: Principal.from(canisterId)
+			segmentId: Principal.from(canisterId),
+			...(nonNullish(from) && { from })
 		}
 	});
 
-	return history
+	const history = [...(data?.data?.history ?? []), ...recentHistory];
+
+	const cyclesHistory = history
 		.filter(([_, result]) => nonNullish(fromNullable(result.cycles)))
+		.sort(sortHistory);
+
+	const chartsData = cyclesHistory
 		.map(([{ created_at }, result]) => {
 			const cycles = fromNullable(result.cycles);
 
@@ -197,7 +225,59 @@ const loadMonitoringHistory = async ({
 				y: parseFloat(formatTCycles(cycles.cycles.amount))
 			};
 		})
-		.sort(sortHistory);
+		.sort(sortChartsData);
+
+	return { history: cyclesHistory, chartsData };
+};
+
+const buildChartTotalPerDay = ({
+	chartsStatuses,
+	chartsHistory
+}: {
+	chartsStatuses: ChartsData[];
+	chartsHistory: ChartsData[];
+}): ChartsData[] => {
+	const totalStatusesPerDay = [...chartsStatuses, ...chartsHistory].reduce<
+		Record<string, number[]>
+	>((acc, { x, y }) => {
+		const date = new Date(parseInt(x));
+		const key = startOfDay(date).getTime();
+
+		return {
+			...acc,
+			[key]: [...(acc[key] ?? []), y]
+		};
+	}, {});
+
+	return Object.entries(totalStatusesPerDay).map(([key, values]) => ({
+		x: key,
+		y: values.reduce((acc, value) => acc + value, 0) / values.length
+	}));
+};
+
+const buildMonitoringMetadata = (history: MonitoringHistory): MonitoringMetadata | undefined => {
+	const cycles = fromNullable(history[0]?.[1].cycles ?? []);
+
+	const latestCycles = cycles?.cycles;
+
+	if (isNullish(latestCycles)) {
+		return undefined;
+	}
+
+	const latestDepositedCyclesEntry = history.find(([_, entry]) =>
+		nonNullish(fromNullable(fromNullable(entry.cycles ?? [])?.last_deposited_cycles ?? []))
+	);
+
+	const latestDepositedCycles = fromNullable(
+		fromNullable(latestDepositedCyclesEntry?.[1].cycles ?? [])?.last_deposited_cycles ?? []
+	);
+
+	return {
+		lastExecutionTime: latestCycles.timestamp,
+		...(nonNullish(latestDepositedCycles) && {
+			latestDepositedCycles
+		})
+	};
 };
 
 const syncMonitoringForSegments = async ({
@@ -219,31 +299,25 @@ const syncMonitoringForSegments = async ({
 					segment: { canisterId, ...rest }
 				};
 
-				const [chartsStatuses, chartsHistory] = await Promise.all([
+				const [chartsStatuses, { history, chartsData: chartsHistory }] = await Promise.all([
 					loadDeprecatedStatuses(loadParams),
-					withMonitoringHistory ? loadMonitoringHistory(loadParams) : Promise.resolve([])
+					withMonitoringHistory
+						? loadMonitoringHistory(loadParams)
+						: Promise.resolve({ history: [], chartsData: [] })
 				]);
 
-				const totalStatusesPerDay = [...chartsStatuses, ...chartsHistory].reduce<
-					Record<string, number[]>
-				>((acc, { x, y }) => {
-					const date = new Date(parseInt(x));
-					const key = startOfDay(date).getTime();
+				const chartsData = buildChartTotalPerDay({
+					chartsStatuses,
+					chartsHistory
+				});
 
-					return {
-						...acc,
-						[key]: [...(acc[key] ?? []), y]
-					};
-				}, {});
+				const metadata = buildMonitoringMetadata(history);
 
-				const chartsData = Object.entries(totalStatusesPerDay).map(([key, values]) => ({
-					x: key,
-					y: values.reduce((acc, value) => acc + value, 0) / values.length
-				}));
-
-				await syncCanister({
+				await syncMonitoringHistory({
 					canisterId,
-					chartsData
+					history,
+					chartsData,
+					metadata
 				});
 			} catch (err: unknown) {
 				console.error(err);
@@ -259,23 +333,29 @@ const syncMonitoringForSegments = async ({
 	);
 };
 
-const syncCanister = async ({
+const syncMonitoringHistory = async ({
 	canisterId,
-	chartsData
+	history,
+	chartsData,
+	metadata
 }: {
 	canisterId: string;
+	history: MonitoringHistory;
 	chartsData: ChartsData[];
+	metadata: MonitoringMetadata | undefined;
 }) => {
 	const canister: CanisterSyncMonitoring = {
 		id: canisterId,
 		sync: 'synced',
 		data: {
-			chartsData
+			history,
+			chartsData,
+			...(nonNullish(metadata) && { metadata })
 		}
 	};
 
 	// Save information in indexed-db as well to load previous values on navigation and refresh
-	await set(canisterId, canister, statusesIdbStore);
+	await set(canisterId, canister, monitoringIdbStore);
 
 	emitCanister(canister);
 };

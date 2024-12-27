@@ -9,9 +9,18 @@
 
 	interface Props {
 		chartsData: ChartsData[];
+		axisWithText?: boolean;
+		padding?:
+			| {
+					top?: number;
+					right?: number;
+					bottom?: number;
+					left?: number;
+			  }
+			| undefined;
 	}
 
-	let { chartsData }: Props = $props();
+	let { chartsData, axisWithText = true, padding }: Props = $props();
 
 	let ticks: string[] = $derived(Object.values(chartsData).map(({ x: a }) => a));
 
@@ -24,7 +33,7 @@
 </script>
 
 <LayerCake
-	padding={{ top: 32, right: 16, bottom: 32, left: 16 }}
+	padding={padding ?? { top: 32, right: 16, bottom: 32, left: 16 }}
 	x={'x'}
 	y={'y'}
 	yNice={4}
@@ -32,8 +41,8 @@
 	data={chartsData}
 >
 	<Svg>
-		<AxisX {formatTick} {ticks} />
-		<AxisY ticks={4} />
+		<AxisX {formatTick} {ticks} {axisWithText} />
+		<AxisY ticks={4} {axisWithText} />
 		<Line />
 		<Area />
 	</Svg>

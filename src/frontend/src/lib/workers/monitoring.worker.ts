@@ -7,7 +7,7 @@ import {
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
 import { monitoringIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
-import type { ChartsData } from '$lib/types/chart';
+import type {ChartsData, TimeOfDayData} from '$lib/types/chart';
 import type {
 	MonitoringHistory,
 	MonitoringHistoryEntry,
@@ -15,12 +15,12 @@ import type {
 } from '$lib/types/monitoring';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
-import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
+import { fromBigIntNanoSeconds, toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-import { startOfDay } from 'date-fns';
+import {addDays, endOfDay, format, startOfDay} from 'date-fns';
 import { get, set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
@@ -171,6 +171,35 @@ const loadDeprecatedStatuses = async ({
 		.sort(sortChartsData);
 };
 
+const buildWeekDepositedCycles = (history: MonitoringHistory): TimeOfDayData[] => {
+	const startTimestamp = toBigIntNanoSeconds(addDays(startOfDay(new Date()), -6));
+	const endTimestamp = toBigIntNanoSeconds(endOfDay(new Date()));
+
+	return history
+		.filter(([_, result]) => {
+			const depositedCycles = fromNullable(
+				fromNullable(result.cycles)?.last_deposited_cycles ?? []
+			);
+
+			console.log(depositedCycles)
+
+			return (
+				nonNullish(depositedCycles) &&
+				depositedCycles.timestamp >= startTimestamp &&
+				depositedCycles.timestamp < endTimestamp
+			);
+		})
+		.map(([{ created_at }, _]) => {
+			const createdAt = fromBigIntNanoSeconds(created_at);
+			const startOf = toBigIntNanoSeconds(startOfDay(createdAt));
+
+			return {
+				x: Number(created_at - startOf),
+				y: format(createdAt, 'yyyy-MM-dd')
+			}
+		});
+};
+
 const loadMonitoringHistory = async ({
 	missionControlId,
 	identity,
@@ -226,6 +255,10 @@ const loadMonitoringHistory = async ({
 			};
 		})
 		.sort(sortChartsData);
+
+	const depositedCyclesChart = buildWeekDepositedCycles(cyclesHistory);
+
+	console.log(depositedCyclesChart)
 
 	return { history: cyclesHistory, chartsData };
 };

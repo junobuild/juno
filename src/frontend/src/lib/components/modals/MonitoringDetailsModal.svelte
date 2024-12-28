@@ -2,9 +2,10 @@
 	import { Principal } from '@dfinity/principal';
 	import { nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
-	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
+	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
+	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -29,6 +30,10 @@
 	let lastExecutionTime = $derived(monitoringData?.metadata?.lastExecutionTime);
 	let lastDepositCyclesTime = $derived(monitoringData?.metadata?.latestDepositedCycles?.timestamp);
 	let lastDepositCyclesAmount = $derived(monitoringData?.metadata?.latestDepositedCycles?.amount);
+
+	let chartsData = $derived(monitoringData?.chartsData ?? []);
+
+	let depositedCyclesChartData = $derived(monitoringData?.charts.depositedCycles ?? []);
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -71,8 +76,10 @@
 			</div>
 
 			<div class="chart">
-				<CanisterMonitoring {canisterId} segment={segment.segment} />
+				<CanisterMonitoringChart {chartsData} />
 			</div>
+
+			<MonitoringDepositCyclesChart depositedCycles={depositedCyclesChartData} />
 		</CanisterMonitoringLoader>
 	</div>
 </Modal>
@@ -92,7 +99,7 @@
 
 	.chart {
 		@include media.min-width(medium) {
-			grid-column: 1 / 4;
+			grid-column: 1 / 3;
 		}
 	}
 </style>

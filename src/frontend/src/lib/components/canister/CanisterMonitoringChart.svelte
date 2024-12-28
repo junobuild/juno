@@ -27,8 +27,6 @@
 {/if}
 
 <style lang="scss">
-	@use '../../styles/mixins/shadow';
-
 	.chart-container {
 		width: 100%;
 		height: 258px;

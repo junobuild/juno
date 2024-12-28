@@ -720,7 +720,8 @@
 		"stop_monitoring_note": "<strong>Important Note</strong>: it can only be stopped if all your modules are about to stop being monitored or if none are still monitored.",
 		"last_status_check": "Last status check",
 		"last_top_up": "Last top-up",
-		"usage": "Usage"
+		"usage": "Usage",
+		"weekly_cycles_deposit": "Weekly cycles deposit"
 	},
 	"preferences": {
 		"title": "偏好设置",

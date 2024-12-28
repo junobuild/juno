@@ -7,7 +7,7 @@ import {
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
 import { monitoringIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';
-import type { ChartsData } from '$lib/types/chart';
+import type { ChartsData, TimeOfDayChartData } from '$lib/types/chart';
 import type {
 	MonitoringHistory,
 	MonitoringHistoryEntry,
@@ -15,12 +15,12 @@ import type {
 } from '$lib/types/monitoring';
 import type { PostMessage, PostMessageDataRequest } from '$lib/types/post-message';
 import { formatTCycles } from '$lib/utils/cycles.utils';
-import { fromBigIntNanoSeconds } from '$lib/utils/date.utils';
+import { fromBigIntNanoSeconds, toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { emitCanister, emitSavedCanisters, loadIdentity } from '$lib/utils/worker.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
-import { startOfDay } from 'date-fns';
+import { addDays, endOfDay, format, startOfDay } from 'date-fns';
 import { get, set } from 'idb-keyval';
 
 onmessage = async ({ data: dataMsg }: MessageEvent<PostMessage<PostMessageDataRequest>>) => {
@@ -171,6 +171,51 @@ const loadDeprecatedStatuses = async ({
 		.sort(sortChartsData);
 };
 
+const buildCycles = (history: MonitoringHistory): ChartsData[] =>
+	history
+		.map(([{ created_at }, result]) => {
+			const cycles = fromNullable(result.cycles);
+
+			// Cannot happen given above filter
+			if (isNullish(cycles)) {
+				return {
+					x: `${fromBigIntNanoSeconds(created_at).getTime()}`,
+					y: 0
+				};
+			}
+
+			return {
+				x: `${fromBigIntNanoSeconds(created_at).getTime()}`,
+				y: parseFloat(formatTCycles(cycles.cycles.amount))
+			};
+		})
+		.sort(sortChartsData);
+
+const buildWeekDepositedCycles = (history: MonitoringHistory): TimeOfDayChartData[] => {
+	const startTimestamp = toBigIntNanoSeconds(addDays(startOfDay(new Date()), -6));
+	const endTimestamp = toBigIntNanoSeconds(endOfDay(new Date()));
+
+	return history
+		.filter(([_, result]) => {
+			const depositedCycles = fromNullable(fromNullable(result.cycles)?.deposited_cycles ?? []);
+
+			return (
+				nonNullish(depositedCycles) &&
+				depositedCycles.timestamp >= startTimestamp &&
+				depositedCycles.timestamp < endTimestamp
+			);
+		})
+		.map(([{ created_at }, _]) => {
+			const createdAt = fromBigIntNanoSeconds(created_at);
+			const startOf = toBigIntNanoSeconds(startOfDay(createdAt));
+
+			return {
+				x: Number((created_at - startOf) / (1_000_000n * 1000n)),
+				y: format(createdAt, 'yyyy-MM-dd')
+			};
+		});
+};
+
 const loadMonitoringHistory = async ({
 	missionControlId,
 	identity,
@@ -181,6 +226,7 @@ const loadMonitoringHistory = async ({
 } & Required<Pick<PostMessageDataRequest, 'missionControlId'>>): Promise<{
 	history: MonitoringHistory;
 	chartsData: ChartsData[];
+	depositedCyclesChartData: TimeOfDayChartData[];
 }> => {
 	const data = await get<CanisterSyncMonitoring>(canisterId, monitoringIdbStore);
 
@@ -208,26 +254,11 @@ const loadMonitoringHistory = async ({
 		.filter(([_, result]) => nonNullish(fromNullable(result.cycles)))
 		.sort(sortHistory);
 
-	const chartsData = cyclesHistory
-		.map(([{ created_at }, result]) => {
-			const cycles = fromNullable(result.cycles);
-
-			// Cannot happen given above filter
-			if (isNullish(cycles)) {
-				return {
-					x: `${fromBigIntNanoSeconds(created_at).getTime()}`,
-					y: 0
-				};
-			}
-
-			return {
-				x: `${fromBigIntNanoSeconds(created_at).getTime()}`,
-				y: parseFloat(formatTCycles(cycles.cycles.amount))
-			};
-		})
-		.sort(sortChartsData);
-
-	return { history: cyclesHistory, chartsData };
+	return {
+		history: cyclesHistory,
+		chartsData: buildCycles(cyclesHistory),
+		depositedCyclesChartData: buildWeekDepositedCycles(cyclesHistory)
+	};
 };
 
 const buildChartTotalPerDay = ({
@@ -299,12 +330,13 @@ const syncMonitoringForSegments = async ({
 					segment: { canisterId, ...rest }
 				};
 
-				const [chartsStatuses, { history, chartsData: chartsHistory }] = await Promise.all([
-					loadDeprecatedStatuses(loadParams),
-					withMonitoringHistory
-						? loadMonitoringHistory(loadParams)
-						: Promise.resolve({ history: [], chartsData: [] })
-				]);
+				const [chartsStatuses, { history, chartsData: chartsHistory, depositedCyclesChartData }] =
+					await Promise.all([
+						loadDeprecatedStatuses(loadParams),
+						withMonitoringHistory
+							? loadMonitoringHistory(loadParams)
+							: Promise.resolve({ history: [], chartsData: [], depositedCyclesChartData: [] })
+					]);
 
 				const chartsData = buildChartTotalPerDay({
 					chartsStatuses,
@@ -317,6 +349,7 @@ const syncMonitoringForSegments = async ({
 					canisterId,
 					history,
 					chartsData,
+					depositedCyclesChartData,
 					metadata
 				});
 			} catch (err: unknown) {
@@ -337,11 +370,13 @@ const syncMonitoringHistory = async ({
 	canisterId,
 	history,
 	chartsData,
+	depositedCyclesChartData,
 	metadata
 }: {
 	canisterId: string;
 	history: MonitoringHistory;
 	chartsData: ChartsData[];
+	depositedCyclesChartData: TimeOfDayChartData[];
 	metadata: MonitoringMetadata | undefined;
 }) => {
 	const canister: CanisterSyncMonitoring = {
@@ -350,6 +385,9 @@ const syncMonitoringHistory = async ({
 		data: {
 			history,
 			chartsData,
+			charts: {
+				depositedCycles: depositedCyclesChartData
+			},
 			...(nonNullish(metadata) && { metadata })
 		}
 	};

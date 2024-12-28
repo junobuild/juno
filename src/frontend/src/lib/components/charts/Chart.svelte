@@ -33,7 +33,7 @@
 </script>
 
 <LayerCake
-	padding={padding ?? { top: 32, right: 16, bottom: 32, left: 16 }}
+	padding={padding ?? { top: 32, right: 0, bottom: 32, left: 0 }}
 	x={'x'}
 	y={'y'}
 	yNice={4}

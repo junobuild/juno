@@ -160,6 +160,7 @@
 			display: grid;
 			grid-column: 1 / 13;
 			grid-template-columns: 18% 350px auto auto;
+			grid-template-rows: 60px;
 			grid-gap: var(--padding-8x);
 			align-items: center;
 		}

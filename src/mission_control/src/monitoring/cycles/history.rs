@@ -28,12 +28,20 @@ fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) 
                     timestamp: last_deposited.timestamp,
                 });
 
+        // The `last_deposited_cycles` does not correspond to the most recent monitoring round. Instead, it represents the last time the module was topped up overall.
+        // Our goal is to track the history of cycles deposited specifically by the monitoring process, which requires filtering the data appropriately.
+        // Since each monitoring round is optimistically expected to collect cycles with a newer timestamp than the last deposit—given that rounds are scheduled at intervals,
+        // such as one hour apart—we can use a timestamp comparison to identify the information we are looking for.
+        let deposited_cycles = last_deposited_cycles
+            .clone()
+            .filter(|last_deposited| last_deposited.timestamp >= cycles.timestamp);
+
         let history_entry: MonitoringHistoryCycles = MonitoringHistoryCycles {
             cycles: CyclesBalance {
                 amount: cycles.amount,
                 timestamp: cycles.timestamp,
             },
-            last_deposited_cycles,
+            last_deposited_cycles: deposited_cycles,
         };
 
         insert_cycles_monitoring_history(canister_id, &history_entry);

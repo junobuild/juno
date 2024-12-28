@@ -90,7 +90,7 @@
 
 			<a href="/monitoring" class="menu" role="menuitem" aria-haspopup="menu" onclick={close}>
 				<IconTelescope />
-				<span>{$i18n.observatory.title}</span>
+				<span>{$i18n.monitoring.title}</span>
 			</a>
 		{/if}
 

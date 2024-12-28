@@ -467,8 +467,6 @@
 		"collection_invalid": "空或者无效的 文档集 .",
 		"controller_invalid": "空或者无效的 Controller .",
 		"document_invalid": "没选择文档.",
-		"observatory_get_unexpected_error": "加载 observatory 数据时出错.",
-		"observatory_set_unexpected_error": "设置 observatory 数据时出错 .",
 		"collection_added": "无法增加文档集 {0} .",
 		"collection_updated": "无法修改文档集 {0} .",
 		"collection_deleted": "无法删除文档集 {0} .",
@@ -657,22 +655,6 @@
 		"created": "创建于",
 		"updated": "更新于",
 		"empty": "目前还有注册的用户."
-	},
-	"observatory": {
-		"title": "Observatory",
-		"dashboard": "仪表盘",
-		"monitoring": "监控",
-		"email_notifications": "邮件提醒",
-		"email_notifications_placeholder": "输入用于接受提醒的邮箱",
-		"cycles_threshold": "TCycles 阈值 (最小 0.5)",
-		"cycles_threshold_placeholder": "阈值设置提醒",
-		"last_data_collection": "最新数据集",
-		"no_data_or_disabled_go_settings": "还没有数据被搜集 (后台每一个小时运行一次) 或这监控功能没打开.",
-		"go_to_settings": "你可以打开这个功能",
-		"id": "ID",
-		"segment": "Module",
-		"cycles_collected": "T Cycles 搜集",
-		"error_collecting_data": "搜集数据出错."
 	},
 	"monitoring": {
 		"title": "Monitoring",

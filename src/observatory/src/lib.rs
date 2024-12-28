@@ -6,7 +6,7 @@ mod upgrade;
 
 use crate::guards::caller_is_admin_controller;
 use crate::store::{delete_controllers, set_controllers as set_controllers_store};
-use crate::types::state::{StableState, State};
+use crate::types::state::{HeapState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use ic_cdk::caller;
 use ic_cdk::storage::{stable_restore, stable_save};
@@ -25,7 +25,7 @@ fn init() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            stable: StableState {
+            heap: HeapState {
                 controllers: init_controllers(&[manager]),
             },
         };
@@ -34,16 +34,16 @@ fn init() {
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| stable_save((&state.borrow().stable,)).unwrap());
+    STATE.with(|state| stable_save((&state.borrow().heap,)).unwrap());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
     let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
 
-    let stable = StableState::from(&upgrade_stable);
+    let heap = HeapState::from(&upgrade_stable);
 
-    STATE.with(|state| *state.borrow_mut() = State { stable });
+    STATE.with(|state| *state.borrow_mut() = State { heap });
 }
 
 // ---------------------------------------------------------

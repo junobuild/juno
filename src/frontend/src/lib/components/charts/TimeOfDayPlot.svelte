@@ -1,22 +1,22 @@
 <script lang="ts">
-	import { LayerCake, Svg } from 'layercake';
 	import { scaleBand, scaleTime } from 'd3-scale';
-	import type { TimeOfDayChartData } from '$lib/types/chart';
+	import { LayerCake, Svg } from 'layercake';
 	import AxisX from '$lib/components/charts/AxisX.svelte';
 	import AxisY from '$lib/components/charts/AxisY.svelte';
 	import Scatter from '$lib/components/charts/Scatter.svelte';
+	import type { TimeOfDayChartData } from '$lib/types/chart';
 
 	interface Props {
 		chartsData: TimeOfDayChartData[];
 		allDays: string[];
 		padding?:
-				| {
-			top?: number;
-			right?: number;
-			bottom?: number;
-			left?: number;
-		}
-				| undefined;
+			| {
+					top?: number;
+					right?: number;
+					bottom?: number;
+					left?: number;
+			  }
+			| undefined;
 	}
 
 	let { chartsData, allDays, padding }: Props = $props();

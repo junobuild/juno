@@ -1,10 +1,10 @@
 <script lang="ts">
+	import { addDays, eachDayOfInterval, format } from 'date-fns';
 	import { fade } from 'svelte/transition';
-	import type { CanisterMonitoringCharts } from '$lib/types/canister';
+	import TimeOfDayPlot from '$lib/components/charts/TimeOfDayPlot.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import TimeOfDayPlot from '$lib/components/charts/TimeOfDayPlot.svelte';
-	import { addDays, eachDayOfInterval, format } from 'date-fns';
+	import type { CanisterMonitoringCharts } from '$lib/types/canister';
 
 	let { depositedCycles }: Pick<CanisterMonitoringCharts, 'depositedCycles'> = $props();
 

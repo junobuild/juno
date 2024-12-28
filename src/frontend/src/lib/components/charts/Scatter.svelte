@@ -22,7 +22,7 @@
 
 	let { r = 5, fill = '#0cf', stroke = '#000', strokeWidth = 0 }: Props = $props();
 
-	$inspect($data)
+	$inspect($data);
 </script>
 
 <g class="scatter-group">

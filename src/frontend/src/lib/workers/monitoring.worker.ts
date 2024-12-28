@@ -178,10 +178,8 @@ const buildWeekDepositedCycles = (history: MonitoringHistory): TimeOfDayData[] =
 	return history
 		.filter(([_, result]) => {
 			const depositedCycles = fromNullable(
-				fromNullable(result.cycles)?.last_deposited_cycles ?? []
+				fromNullable(result.cycles)?.deposited_cycles ?? []
 			);
-
-			console.log(depositedCycles)
 
 			return (
 				nonNullish(depositedCycles) &&

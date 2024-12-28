@@ -483,8 +483,6 @@ interface I18nErrors {
 	collection_invalid: string;
 	controller_invalid: string;
 	document_invalid: string;
-	observatory_get_unexpected_error: string;
-	observatory_set_unexpected_error: string;
 	collection_added: string;
 	collection_updated: string;
 	collection_deleted: string;
@@ -683,23 +681,6 @@ interface I18nUsers {
 	empty: string;
 }
 
-interface I18nObservatory {
-	title: string;
-	dashboard: string;
-	monitoring: string;
-	email_notifications: string;
-	email_notifications_placeholder: string;
-	cycles_threshold: string;
-	cycles_threshold_placeholder: string;
-	last_data_collection: string;
-	no_data_or_disabled_go_settings: string;
-	go_to_settings: string;
-	id: string;
-	segment: string;
-	cycles_collected: string;
-	error_collecting_data: string;
-}
-
 interface I18nMonitoring {
 	title: string;
 	dashboard: string;
@@ -795,7 +776,6 @@ interface I18n {
 	sort: I18nSort;
 	filter: I18nFilter;
 	users: I18nUsers;
-	observatory: I18nObservatory;
 	monitoring: I18nMonitoring;
 	preferences: I18nPreferences;
 	examples: I18nExamples;

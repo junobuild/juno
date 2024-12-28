@@ -467,8 +467,6 @@
 		"collection_invalid": "Collection is invalid or empty.",
 		"controller_invalid": "Controller is invalid or empty.",
 		"document_invalid": "No document selected.",
-		"observatory_get_unexpected_error": "Unexpected error(s) while loading the observatory data.",
-		"observatory_set_unexpected_error": "Unexpected error(s) while setting the observatory data.",
 		"collection_added": "Collection {0} cannot be added.",
 		"collection_updated": "Collection {0} cannot be updated.",
 		"collection_deleted": "Collection {0} cannot be deleted.",
@@ -657,22 +655,6 @@
 		"created": "Created",
 		"updated": "Updated",
 		"empty": "No registered users at the moment."
-	},
-	"observatory": {
-		"title": "Monitoring",
-		"dashboard": "Dashboard",
-		"monitoring": "Monitoring",
-		"email_notifications": "Email notifications",
-		"email_notifications_placeholder": "Enter an email to receive notifications",
-		"cycles_threshold": "TCycles threshold (min 0.5)",
-		"cycles_threshold_placeholder": "A threshold to limit the notifications",
-		"last_data_collection": "Last data collection",
-		"no_data_or_disabled_go_settings": "No data has been collected yet (the job runs every hour) or the monitoring feature appears to be disabled.",
-		"go_to_settings": "You can enable it in the",
-		"id": "ID",
-		"segment": "Module",
-		"cycles_collected": "T Cycles collected",
-		"error_collecting_data": "There was an error collecting the data."
 	},
 	"monitoring": {
 		"title": "Monitoring",

@@ -9,7 +9,6 @@
 	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
-	import ObservatorySettings from '$lib/components/observatory/ObservatorySettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -76,8 +75,6 @@
 								<MonitoringDashboard missionControlId={$missionControlStore} />
 							{:else if $store.tabId === $store.tabs[1].id && $missionControlMonitored}
 								<MonitoringSettings missionControlId={$missionControlStore} />
-
-								<ObservatorySettings missionControlId={$missionControlStore} />
 							{/if}
 						</MissionControlSettingsLoader>
 					{/if}

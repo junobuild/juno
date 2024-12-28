@@ -12,7 +12,7 @@
 
 	onMount(() =>
 		layoutNavigation.set({
-			title: $i18n.observatory.title,
+			title: $i18n.monitoring.title,
 			icon: IconTelescope
 		})
 	);

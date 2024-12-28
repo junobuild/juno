@@ -51,8 +51,8 @@ type MissionControlSettings = record {
 type Monitoring = record { cycles : opt CyclesMonitoring };
 type MonitoringHistory = record { cycles : opt MonitoringHistoryCycles };
 type MonitoringHistoryCycles = record {
+  deposited_cycles : opt CyclesBalance;
   cycles : CyclesBalance;
-  last_deposited_cycles : opt CyclesBalance;
 };
 type MonitoringHistoryKey = record {
   segment_id : principal;

@@ -71,8 +71,8 @@ export interface MonitoringHistory {
 	cycles: [] | [MonitoringHistoryCycles];
 }
 export interface MonitoringHistoryCycles {
+	deposited_cycles: [] | [CyclesBalance];
 	cycles: CyclesBalance;
-	last_deposited_cycles: [] | [CyclesBalance];
 }
 export interface MonitoringHistoryKey {
 	segment_id: Principal;

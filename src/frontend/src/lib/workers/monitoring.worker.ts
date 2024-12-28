@@ -265,11 +265,11 @@ const buildMonitoringMetadata = (history: MonitoringHistory): MonitoringMetadata
 	}
 
 	const latestDepositedCyclesEntry = history.find(([_, entry]) =>
-		nonNullish(fromNullable(fromNullable(entry.cycles ?? [])?.last_deposited_cycles ?? []))
+		nonNullish(fromNullable(fromNullable(entry.cycles ?? [])?.deposited_cycles ?? []))
 	);
 
 	const latestDepositedCycles = fromNullable(
-		fromNullable(latestDepositedCyclesEntry?.[1].cycles ?? [])?.last_deposited_cycles ?? []
+		fromNullable(latestDepositedCyclesEntry?.[1].cycles ?? [])?.deposited_cycles ?? []
 	);
 
 	return {

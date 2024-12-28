@@ -747,6 +747,7 @@ interface I18nMonitoring {
 	last_status_check: string;
 	last_top_up: string;
 	usage: string;
+	weekly_cycles_deposit: string;
 }
 
 interface I18nPreferences {

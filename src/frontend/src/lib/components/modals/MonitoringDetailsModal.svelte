@@ -11,7 +11,8 @@
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
 	import type { CanisterMonitoringData } from '$lib/types/canister';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
-	import CanisterMonitoringChart from "$lib/components/canister/CanisterMonitoringChart.svelte";
+	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
+	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -31,6 +32,8 @@
 	let lastDepositCyclesAmount = $derived(monitoringData?.metadata?.latestDepositedCycles?.amount);
 
 	let chartsData = $derived(monitoringData?.chartsData ?? []);
+
+	let depositedCyclesChartData = $derived(monitoringData?.charts.depositedCycles ?? []);
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -74,9 +77,9 @@
 
 			<div class="chart">
 				<CanisterMonitoringChart {chartsData} />
-
-
 			</div>
+
+			<MonitoringDepositCyclesChart depositedCycles={depositedCyclesChartData} />
 		</CanisterMonitoringLoader>
 	</div>
 </Modal>

@@ -5,9 +5,9 @@ export interface ChartsData {
 
 export type TimeOfDayDate = string; // 2018-07-28
 
-export type TimeOfDayMilliseconds = number;
+export type TimeOfDaySeconds = number;
 
-export interface TimeOfDayData {
-	x: TimeOfDayMilliseconds;
+export interface TimeOfDayChartData {
+	x: TimeOfDaySeconds;
 	y: TimeOfDayDate;
 }

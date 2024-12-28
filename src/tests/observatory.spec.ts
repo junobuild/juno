@@ -4,7 +4,7 @@ import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { ANONYMOUS_ERROR_MSG } from './constants/observatory-tests.constants';
+import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from './constants/observatory-tests.constants';
 import { OBSERVATORY_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Observatory', () => {
@@ -35,57 +35,29 @@ describe('Observatory', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		it('should throw errors on set crontab', async () => {
-			const { set_cron_tab } = actor;
+		it('should throw errors on set controllers', async () => {
+			const { set_controllers } = actor;
 
 			await expect(
-				set_cron_tab({
-					cron_jobs: {
+				set_controllers({
+					controller: {
+						scope: { Admin: null },
 						metadata: [],
-						statuses: {
-							mission_control_cycles_threshold: [],
-							orbiters: [],
-							satellites: [],
-							enabled: false,
-							cycles_threshold: []
-						}
+						expires_at: []
 					},
-					mission_control_id: Ed25519KeyIdentity.generate().getPrincipal(),
-					version: []
+					controllers: [controller.getPrincipal()]
 				})
-			).rejects.toThrow(ANONYMOUS_ERROR_MSG);
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 
-		it('should throw errors on get crontab', async () => {
-			const { get_cron_tab } = actor;
+		it('should throw errors on delete controllers', async () => {
+			const { del_controllers } = actor;
 
-			await expect(get_cron_tab()).rejects.toThrow(ANONYMOUS_ERROR_MSG);
-		});
-
-		it('should throw errors on get statuses', async () => {
-			const { get_statuses } = actor;
-
-			await expect(get_statuses()).rejects.toThrow(ANONYMOUS_ERROR_MSG);
-		});
-	});
-
-	describe('owner', () => {
-		const owner = Ed25519KeyIdentity.generate();
-
-		beforeAll(() => {
-			actor.setIdentity(owner);
-		});
-
-		it('should not throw errors on get crontab', async () => {
-			const { get_cron_tab } = actor;
-
-			await expect(get_cron_tab()).resolves.not.toThrow(ANONYMOUS_ERROR_MSG);
-		});
-
-		it('should not throw errors on get statuses', async () => {
-			const { get_statuses } = actor;
-
-			await expect(get_statuses()).resolves.not.toThrow(ANONYMOUS_ERROR_MSG);
+			await expect(
+				del_controllers({
+					controllers: [controller.getPrincipal()]
+				})
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
 	});
 });

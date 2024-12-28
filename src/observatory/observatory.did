@@ -1,62 +1,5 @@
-type ArchiveStatuses = record { statuses : Result_1; timestamp : nat64 };
-type CanisterStatusType = variant { stopped; stopping; running };
 type ControllerScope = variant { Write; Admin };
-type CronJobStatuses = record {
-  mission_control_cycles_threshold : opt nat64;
-  orbiters : vec record { principal; CronJobStatusesConfig };
-  satellites : vec record { principal; CronJobStatusesConfig };
-  enabled : bool;
-  cycles_threshold : opt nat64;
-};
-type CronJobStatusesConfig = record {
-  enabled : bool;
-  cycles_threshold : opt nat64;
-};
-type CronJobs = record {
-  metadata : vec record { text; text };
-  statuses : CronJobStatuses;
-};
-type CronTab = record {
-  cron_jobs : CronJobs;
-  updated_at : nat64;
-  mission_control_id : principal;
-  created_at : nat64;
-  version : opt nat64;
-};
 type DeleteControllersArgs = record { controllers : vec principal };
-type ListStatuses = record {
-  cron_jobs : CronJobs;
-  statuses : Result_1;
-  timestamp : nat64;
-};
-type ListStatusesArgs = record { time_delta : opt nat64 };
-type Result = variant { Ok : SegmentStatus; Err : text };
-type Result_1 = variant { Ok : SegmentsStatuses; Err : text };
-type SegmentCanisterSettings = record {
-  freezing_threshold : nat;
-  controllers : vec principal;
-  memory_allocation : nat;
-  compute_allocation : nat;
-};
-type SegmentCanisterStatus = record {
-  status : CanisterStatusType;
-  memory_size : nat;
-  cycles : nat;
-  settings : SegmentCanisterSettings;
-  idle_cycles_burned_per_day : nat;
-  module_hash : opt blob;
-};
-type SegmentStatus = record {
-  id : principal;
-  status : SegmentCanisterStatus;
-  metadata : opt vec record { text; text };
-  status_at : nat64;
-};
-type SegmentsStatuses = record {
-  orbiters : opt vec Result;
-  satellites : opt vec Result;
-  mission_control : Result;
-};
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -66,17 +9,8 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
-type SetCronTab = record {
-  cron_jobs : CronJobs;
-  mission_control_id : principal;
-  version : opt nat64;
-};
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
-  get_cron_tab : () -> (opt CronTab) query;
-  get_statuses : () -> (opt ArchiveStatuses) query;
-  list_statuses : (ListStatusesArgs) -> (vec ListStatuses) query;
   set_controllers : (SetControllersArgs) -> ();
-  set_cron_tab : (SetCronTab) -> (CronTab);
   version : () -> (text) query;
 }

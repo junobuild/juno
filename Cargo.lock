@@ -821,9 +821,7 @@ dependencies = [
  "candid",
  "ic-cdk",
  "ic-cdk-macros",
- "ic-cdk-timers",
  "junobuild-shared",
- "lazy_static",
  "serde",
 ]
 

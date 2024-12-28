@@ -1,1 +1,1 @@
-export const ANONYMOUS_ERROR_MSG = 'Anonymous caller is not allowed.';
+export const CALLER_NOT_CONTROLLER_OBSERVATORY_MSG = 'Caller is not a controller of the observatory.';

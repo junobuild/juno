@@ -41,7 +41,7 @@ fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) 
                 amount: cycles.amount,
                 timestamp: cycles.timestamp,
             },
-            last_deposited_cycles: deposited_cycles,
+            deposited_cycles: deposited_cycles,
         };
 
         insert_cycles_monitoring_history(canister_id, &history_entry);

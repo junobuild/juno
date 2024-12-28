@@ -138,7 +138,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MonitoringHistoryCycles {
         pub cycles: CyclesBalance,
-        pub last_deposited_cycles: Option<CyclesBalance>,
+        pub deposited_cycles: Option<CyclesBalance>,
     }
 }
 

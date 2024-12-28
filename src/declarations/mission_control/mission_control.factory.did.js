@@ -49,8 +49,8 @@ export const idlFactory = ({ IDL }) => {
 		amount: IDL.Nat
 	});
 	const MonitoringHistoryCycles = IDL.Record({
-		cycles: CyclesBalance,
-		last_deposited_cycles: IDL.Opt(CyclesBalance)
+		deposited_cycles: IDL.Opt(CyclesBalance),
+		cycles: CyclesBalance
 	});
 	const MonitoringHistory = IDL.Record({
 		cycles: IDL.Opt(MonitoringHistoryCycles)

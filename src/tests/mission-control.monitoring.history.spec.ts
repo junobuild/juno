@@ -113,7 +113,7 @@ describe('Mission Control - History', () => {
 			expect(cycles.cycles.amount).toBeGreaterThan(0n);
 			expect(cycles.cycles.timestamp).toBeGreaterThan(0n);
 
-			expect(fromNullable(cycles.last_deposited_cycles)).toBeUndefined();
+			expect(fromNullable(cycles.deposited_cycles)).toBeUndefined();
 		});
 
 		return results.sort(

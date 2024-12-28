@@ -36,7 +36,9 @@ pub mod state {
         pub user: User,
         pub satellites: Satellites,
         pub controllers: Controllers,
-        #[deprecated(note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities.")]
+        #[deprecated(
+            note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+        )]
         pub archive: Archive,
         pub orbiters: Orbiters,
         pub settings: Option<MissionControlSettings>,
@@ -136,7 +138,7 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MonitoringHistoryCycles {
         pub cycles: CyclesBalance,
-        pub last_deposited_cycles: Option<CyclesBalance>,
+        pub deposited_cycles: Option<CyclesBalance>,
     }
 }
 

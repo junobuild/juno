@@ -6,9 +6,12 @@ mod store;
 mod types;
 mod upgrade;
 
+use crate::console::assert_mission_control_center;
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::store::heap::{delete_controllers, set_controllers as set_controllers_store};
+use crate::store::stable::insert_notification;
+use crate::types::interface::NotifyArgs;
 use crate::types::state::{HeapState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use ciborium::into_writer;
@@ -17,9 +20,6 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use junobuild_shared::upgrade::write_pre_upgrade;
-use crate::console::assert_mission_control_center;
-use crate::store::stable::insert_notification;
-use crate::types::interface::NotifyArgs;
 
 #[init]
 fn init() {

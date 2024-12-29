@@ -3,7 +3,6 @@ mod controllers;
 mod guards;
 mod impls;
 mod memory;
-mod mgmt;
 mod monitoring;
 mod segments;
 mod store;
@@ -19,9 +18,7 @@ use crate::controllers::satellite::{
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
 };
 use crate::controllers::store::get_controllers;
-use crate::guards::{
-    caller_is_user_or_admin_controller,
-};
+use crate::guards::caller_is_user_or_admin_controller;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
@@ -44,12 +41,12 @@ use crate::types::interface::{
 };
 use crate::types::state::{
     HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
-    Satellite, Satellites, State, Statuses,
+    Satellite, Satellites, State,
 };
 use candid::Principal;
 use ciborium::into_writer;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
-use ic_cdk::{id, storage, trap};
+use ic_cdk::{storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::{Tokens, TransferArgs, TransferResult};
 use icrc_ledger_types::icrc1::transfer::TransferArg;
@@ -58,11 +55,9 @@ use junobuild_shared::ledger::icrc::icrc_transfer_token;
 use junobuild_shared::ledger::types::icrc::IcrcTransferResult;
 use junobuild_shared::mgmt::cmc::top_up_canister;
 use junobuild_shared::mgmt::ic::deposit_cycles as deposit_cycles_shared;
-use junobuild_shared::types::interface::{
-    DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
-};
+use junobuild_shared::types::interface::{DepositCyclesArgs, MissionControlArgs, SetController};
 use junobuild_shared::types::state::{
-    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
+    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId,
 };
 use junobuild_shared::types::state::{Metadata, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;

@@ -13,6 +13,10 @@ pub mod state {
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;
 
+    #[deprecated(
+        since = "0.0.14",
+        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+    )]
     pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
     pub type MonitoringHistoryStable =
@@ -77,13 +81,25 @@ pub mod state {
         pub updated_at: Timestamp,
     }
 
+    #[deprecated(
+        since = "0.0.14",
+        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+    )]
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Archive {
         pub statuses: ArchiveStatuses,
     }
 
+    #[deprecated(
+        since = "0.0.14",
+        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+    )]
     pub type ArchiveStatusesSegments = HashMap<Principal, Statuses>;
 
+    #[deprecated(
+        since = "0.0.14",
+        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+    )]
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct ArchiveStatuses {
         pub mission_control: Statuses,

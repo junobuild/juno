@@ -2,9 +2,7 @@ use crate::memory::STATE;
 use crate::store::get_user;
 use ic_cdk::api::is_controller as ic_canister_controller;
 use ic_cdk::caller;
-use junobuild_shared::controllers::{
-    caller_is_console, caller_is_observatory, is_admin_controller,
-};
+use junobuild_shared::controllers::is_admin_controller;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_equal;
 

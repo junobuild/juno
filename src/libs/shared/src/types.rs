@@ -47,12 +47,6 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct SegmentMetadata {
-        pub id: SegmentId,
-        pub metadata: Option<Metadata>,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SegmentCanisterStatus {
         pub status: CanisterStatusType,
         pub settings: SegmentCanisterSettings,

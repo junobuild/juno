@@ -1,20 +1,22 @@
 mod console;
 mod guards;
+mod impls;
 mod memory;
 mod store;
 mod types;
 mod upgrade;
 
 use crate::guards::caller_is_admin_controller;
-use crate::memory::STATE;
+use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::store::{delete_controllers, set_controllers as set_controllers_store};
 use crate::types::state::{HeapState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
-use ic_cdk::caller;
-use ic_cdk::storage::{stable_restore, stable_save};
+use ciborium::into_writer;
+use ic_cdk::{caller, storage};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
+use junobuild_shared::upgrade::write_pre_upgrade;
 
 #[init]
 fn init() {
@@ -25,22 +27,43 @@ fn init() {
             heap: HeapState {
                 controllers: init_controllers(&[manager]),
             },
+            stable: init_stable_state(),
         };
     });
 }
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| stable_save((&state.borrow().heap,)).unwrap());
+    let mut state_bytes = vec![];
+    STATE
+        .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
+        .expect("Failed to encode the state of the mission control in pre_upgrade hook.");
+
+    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (upgrade_stable,): (UpgradeStableState,) = stable_restore().unwrap();
+    // TODO: remove once stable memory introduced on mainnet
+    let (upgrade_stable,): (UpgradeStableState,) = storage::stable_restore().unwrap();
 
     let heap = HeapState::from(&upgrade_stable);
 
-    STATE.with(|state| *state.borrow_mut() = State { heap });
+    STATE.with(|state| {
+        *state.borrow_mut() = State {
+            heap,
+            stable: init_stable_state(),
+        }
+    });
+
+    // TODO: uncomment once stable memory introduced on mainnet
+    // let memory: Memory = get_memory_upgrades();
+    // let state_bytes = read_post_upgrade(&memory);
+
+    // let state: State = from_reader(&*state_bytes)
+    //     .expect("Failed to decode the state of the observatory in post_upgrade hook.");
+
+    // STATE.with(|s| *s.borrow_mut() = state);
 }
 
 // ---------------------------------------------------------

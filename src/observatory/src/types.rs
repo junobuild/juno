@@ -1,10 +1,9 @@
 pub mod state {
+    use crate::memory::init_stable_state;
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::state::{
-        Controllers, MissionControlId, SegmentMetadata, Timestamp,
-    };
+    use junobuild_shared::types::state::{Controllers, Metadata, SegmentId, Timestamp};
     use serde::Serialize;
 
     pub type NotificationsStable = StableBTreeMap<NotificationKey, Notification, Memory>;
@@ -29,15 +28,15 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
     pub struct NotificationKey {
-        pub mission_control_id: MissionControlId,
-        pub status: Status,
+        pub segment_id: SegmentId,
+        pub created_at: Timestamp,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    enum Status {
+    pub enum NotificationStatus {
         Pending,
         Processing,
-        Done,
+        Sent,
         Failed,
     }
 
@@ -49,8 +48,8 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct EmailNotification {
         pub to: String,
-        pub segment: SegmentMetadata,
-        pub created_at: Timestamp,
+        pub metadata: Option<Metadata>,
+        pub status: NotificationStatus,
         pub updated_at: Timestamp,
     }
 }

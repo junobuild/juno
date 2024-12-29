@@ -676,6 +676,7 @@ dependencies = [
  "ic-ledger-types",
  "ic-stable-structures",
  "icrc-ledger-types",
+ "rand",
  "regex",
  "serde",
  "time",

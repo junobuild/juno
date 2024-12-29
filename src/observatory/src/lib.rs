@@ -8,7 +8,7 @@ mod upgrade;
 
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
-use crate::store::{delete_controllers, set_controllers as set_controllers_store};
+use crate::store::heap::{delete_controllers, set_controllers as set_controllers_store};
 use crate::types::state::{HeapState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use ciborium::into_writer;

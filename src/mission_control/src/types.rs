@@ -3,6 +3,7 @@ pub mod state {
     use candid::{CandidType, Principal};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
+    use junobuild_shared::types::monitoring::CyclesBalance;
     use junobuild_shared::types::state::{
         ArchiveTime, Controllers, Metadata, OrbiterId, SegmentId, SegmentStatusResult, Timestamp,
     };
@@ -138,12 +139,6 @@ pub mod state {
     pub struct MonitoringHistoryKey {
         pub segment_id: SegmentId,
         pub created_at: Timestamp,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CyclesBalance {
-        pub amount: u128,
-        pub timestamp: Timestamp,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

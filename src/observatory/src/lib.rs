@@ -6,17 +6,19 @@ mod store;
 mod types;
 mod upgrade;
 
-use crate::guards::caller_is_admin_controller;
+use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
 use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
 use crate::store::{delete_controllers, set_controllers as set_controllers_store};
 use crate::types::state::{HeapState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use ciborium::into_writer;
-use ic_cdk::{caller, storage};
+use ic_cdk::{caller, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use junobuild_shared::upgrade::write_pre_upgrade;
+use crate::console::assert_mission_control_center;
+use crate::types::interface::NotifyArgs;
 
 #[init]
 fn init() {
@@ -83,6 +85,21 @@ fn set_controllers(
 #[update(guard = "caller_is_admin_controller")]
 fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs) {
     delete_controllers(&controllers);
+}
+
+// ---------------------------------------------------------
+// Notifications
+// ---------------------------------------------------------
+
+#[update(guard = "caller_is_not_anonymous")]
+async fn notify(notify_args: NotifyArgs) {
+    let mission_control_id = caller();
+
+    assert_mission_control_center(&notify_args.user, &mission_control_id)
+        .await
+        .unwrap_or_else(|e| trap(&e));
+
+    // TODO
 }
 
 // ---------------------------------------------------------

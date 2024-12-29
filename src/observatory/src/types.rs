@@ -53,3 +53,14 @@ pub mod state {
         pub updated_at: Timestamp,
     }
 }
+
+pub mod interface {
+    use candid::{CandidType, Deserialize};
+    use serde::Serialize;
+    use junobuild_shared::types::state::UserId;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct NotifyArgs {
+        pub user: UserId,
+    }
+}

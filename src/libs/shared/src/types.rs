@@ -46,6 +46,7 @@ pub mod state {
         Admin,
     }
 
+    #[deprecated]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SegmentCanisterStatus {
         pub status: CanisterStatusType,
@@ -57,6 +58,7 @@ pub mod state {
     }
 
     // Prevent breaking changes in DefiniteCanisterSettings which we do not use
+    #[deprecated]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SegmentCanisterSettings {
         pub controllers: Vec<Principal>,
@@ -65,6 +67,7 @@ pub mod state {
         pub freezing_threshold: Nat,
     }
 
+    #[deprecated]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SegmentStatus {
         pub id: Principal,
@@ -73,8 +76,10 @@ pub mod state {
         pub status_at: Timestamp,
     }
 
+    #[deprecated]
     pub type SegmentStatusResult = Result<SegmentStatus, String>;
 
+    #[deprecated]
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentsStatuses {
         pub mission_control: SegmentStatusResult,
@@ -101,7 +106,6 @@ pub mod state {
 pub mod interface {
     use crate::mgmt::types::cmc::SubnetId;
     use crate::types::core::Bytes;
-    use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{
         ControllerId, ControllerScope, Metadata, MissionControlId, Timestamp, UserId,
     };
@@ -156,14 +160,6 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct StatusesArgs {
-        pub cycles_threshold: Option<u64>,
-        pub mission_control_cycles_threshold: Option<u64>,
-        pub satellites: CronJobStatusesSegments,
-        pub orbiters: CronJobStatusesSegments,
-    }
-
-    #[derive(CandidType, Deserialize)]
     pub struct DepositCyclesArgs {
         pub destination_id: Principal,
         pub cycles: u128,
@@ -173,36 +169,6 @@ pub mod interface {
     pub struct MemorySize {
         pub heap: Bytes,
         pub stable: Bytes,
-    }
-}
-
-pub mod cronjob {
-    use crate::types::state::Metadata;
-    use candid::{CandidType, Principal};
-    use serde::Deserialize;
-    use std::collections::HashMap;
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct CronJobs {
-        pub metadata: Metadata,
-        pub statuses: CronJobStatuses,
-    }
-
-    pub type CronJobStatusesSegments = HashMap<Principal, CronJobStatusesConfig>;
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct CronJobStatuses {
-        pub enabled: bool,
-        pub cycles_threshold: Option<u64>,
-        pub mission_control_cycles_threshold: Option<u64>,
-        pub satellites: CronJobStatusesSegments,
-        pub orbiters: CronJobStatusesSegments,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct CronJobStatusesConfig {
-        pub enabled: bool,
-        pub cycles_threshold: Option<u64>,
     }
 }
 

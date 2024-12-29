@@ -45,7 +45,8 @@ export const getMissionControlActor0013 = async ({
 }: {
 	missionControlId: Principal;
 	identity: OptionIdentity;
-}): Promise<MissionControlActor0013> => await missionControl0013Actor.getActor({
+}): Promise<MissionControlActor0013> =>
+	await missionControl0013Actor.getActor({
 		canisterId: missionControlId,
 		idlFactory: idlFactorMissionControl0013,
 		identity

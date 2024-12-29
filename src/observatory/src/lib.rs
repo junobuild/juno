@@ -100,7 +100,7 @@ async fn notify(notify_args: NotifyArgs) {
         .await
         .unwrap_or_else(|e| trap(&e));
 
-    insert_notification(&notify_args.notification);
+    insert_notification(&notify_args.segment_id, &notify_args.notification);
 
     // TODO: send. Probably with a timer.
 }

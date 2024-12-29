@@ -1,12 +1,12 @@
 use ic_cdk::api::time;
 use junobuild_shared::types::state::SegmentId;
 use crate::memory::STATE;
-use crate::types::interface::NotificationArgs;
-use crate::types::state::{DepositedCyclesEmailNotification, Notification, NotificationKey, NotificationsStable};
+use crate::types::state::{Notification, NotificationKey, NotificationsStable};
 
-pub fn insert_notification(notification: &NotificationArgs) {
+pub fn insert_notification(segment_id: &SegmentId, notification: &Notification) {
     STATE.with(|state| {
         insert_notification_impl(
+            segment_id,
             notification,
             &mut state.borrow_mut().stable.notifications,
         )
@@ -14,19 +14,11 @@ pub fn insert_notification(notification: &NotificationArgs) {
 }
 
 fn insert_notification_impl(
-    NotificationArgs {
-        segment_id,
-        to,
-        metadata
-    }: &NotificationArgs,
+    segment_id: &SegmentId,
+    notification: &Notification,
     notifications: &mut NotificationsStable,
 ) {
-    let notification: Notification = Notification::DepositedCyclesEmail(DepositedCyclesEmailNotification {
-        to: to.clone(),
-        metadata: metadata.clone(),
-    });
-
-    notifications.insert(stable_notification_key(segment_id), notification);
+    notifications.insert(stable_notification_key(segment_id), notification.clone());
 }
 
 fn stable_notification_key(segment_id: &SegmentId) -> NotificationKey {

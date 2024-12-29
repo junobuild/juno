@@ -46,7 +46,6 @@ pub mod state {
         Admin,
     }
 
-    #[deprecated]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SegmentMetadata {
         pub id: SegmentId,

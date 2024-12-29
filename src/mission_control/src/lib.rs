@@ -3,7 +3,6 @@ mod controllers;
 mod guards;
 mod impls;
 mod memory;
-mod mgmt;
 mod monitoring;
 mod segments;
 mod store;
@@ -19,11 +18,8 @@ use crate::controllers::satellite::{
     remove_satellite_controllers as remove_satellite_controllers_impl, set_satellite_controllers,
 };
 use crate::controllers::store::get_controllers;
-use crate::guards::{
-    caller_is_user_or_admin_controller, caller_is_user_or_admin_controller_or_juno,
-};
+use crate::guards::caller_is_user_or_admin_controller;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
-use crate::mgmt::status::collect_statuses;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -37,9 +33,7 @@ use crate::segments::satellite::{
 use crate::segments::store::get_orbiters;
 use crate::store::{
     get_settings as get_settings_store, get_user as get_user_store,
-    list_mission_control_statuses as list_mission_control_statuses_store,
-    list_orbiter_statuses as list_orbiter_statuses_store,
-    list_satellite_statuses as list_satellite_statuses_store, set_metadata as set_metadata_store,
+    set_metadata as set_metadata_store,
 };
 use crate::types::interface::{
     CreateCanisterConfig, GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus,
@@ -47,12 +41,12 @@ use crate::types::interface::{
 };
 use crate::types::state::{
     HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
-    Satellite, Satellites, State, Statuses,
+    Satellite, Satellites, State,
 };
 use candid::Principal;
 use ciborium::into_writer;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
-use ic_cdk::{id, storage, trap};
+use ic_cdk::{storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
 use ic_ledger_types::{Tokens, TransferArgs, TransferResult};
 use icrc_ledger_types::icrc1::transfer::TransferArg;
@@ -61,11 +55,9 @@ use junobuild_shared::ledger::icrc::icrc_transfer_token;
 use junobuild_shared::ledger::types::icrc::IcrcTransferResult;
 use junobuild_shared::mgmt::cmc::top_up_canister;
 use junobuild_shared::mgmt::ic::deposit_cycles as deposit_cycles_shared;
-use junobuild_shared::types::interface::{
-    DepositCyclesArgs, MissionControlArgs, SetController, StatusesArgs,
-};
+use junobuild_shared::types::interface::{DepositCyclesArgs, MissionControlArgs, SetController};
 use junobuild_shared::types::state::{
-    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId, SegmentsStatuses,
+    ControllerId, ControllerScope, Controllers, OrbiterId, SatelliteId,
 };
 use junobuild_shared::types::state::{Metadata, UserId};
 use junobuild_shared::upgrade::write_pre_upgrade;
@@ -397,46 +389,6 @@ async fn deposit_cycles(args: DepositCyclesArgs) {
 #[query]
 fn version() -> String {
     env!("CARGO_PKG_VERSION").to_string()
-}
-
-// ---------------------------------------------------------
-// Observatory
-// ---------------------------------------------------------
-
-#[deprecated(
-    since = "0.0.14",
-    note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
-)]
-#[update(guard = "caller_is_user_or_admin_controller_or_juno")]
-async fn status(config: StatusesArgs) -> SegmentsStatuses {
-    collect_statuses(&id(), &config).await
-}
-
-#[deprecated(
-    since = "0.0.14",
-    note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
-)]
-#[query(guard = "caller_is_user_or_admin_controller")]
-fn list_mission_control_statuses() -> Statuses {
-    list_mission_control_statuses_store()
-}
-
-#[deprecated(
-    since = "0.0.14",
-    note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
-)]
-#[query(guard = "caller_is_user_or_admin_controller")]
-fn list_satellite_statuses(satellite_id: SatelliteId) -> Option<Statuses> {
-    list_satellite_statuses_store(&satellite_id)
-}
-
-#[deprecated(
-    since = "0.0.14",
-    note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
-)]
-#[query(guard = "caller_is_user_or_admin_controller")]
-fn list_orbiter_statuses(orbiter_id: OrbiterId) -> Option<Statuses> {
-    list_orbiter_statuses_store(&orbiter_id)
 }
 
 // ---------------------------------------------------------

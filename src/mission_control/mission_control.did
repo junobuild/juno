@@ -1,5 +1,4 @@
 type Account = record { owner : principal; subaccount : opt blob };
-type CanisterStatusType = variant { stopped; stopping; running };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -11,10 +10,6 @@ type ControllerScope = variant { Write; Admin };
 type CreateCanisterConfig = record {
   subnet_id : opt principal;
   name : opt text;
-};
-type CronJobStatusesConfig = record {
-  enabled : bool;
-  cycles_threshold : opt nat64;
 };
 type CyclesBalance = record { timestamp : nat64; amount : nat };
 type CyclesMonitoring = record {
@@ -74,7 +69,6 @@ type Orbiter = record {
 };
 type Result = variant { Ok : nat64; Err : TransferError };
 type Result_1 = variant { Ok : nat; Err : TransferError_1 };
-type Result_2 = variant { Ok : SegmentStatus; Err : text };
 type Satellite = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -82,34 +76,9 @@ type Satellite = record {
   satellite_id : principal;
   settings : opt Settings;
 };
-type SegmentCanisterSettings = record {
-  freezing_threshold : nat;
-  controllers : vec principal;
-  memory_allocation : nat;
-  compute_allocation : nat;
-};
-type SegmentCanisterStatus = record {
-  status : CanisterStatusType;
-  memory_size : nat;
-  cycles : nat;
-  settings : SegmentCanisterSettings;
-  idle_cycles_burned_per_day : nat;
-  module_hash : opt blob;
-};
-type SegmentStatus = record {
-  id : principal;
-  status : SegmentCanisterStatus;
-  metadata : opt vec record { text; text };
-  status_at : nat64;
-};
 type SegmentsMonitoringStrategy = record {
   ids : vec principal;
   strategy : CyclesMonitoringStrategy;
-};
-type SegmentsStatuses = record {
-  orbiters : opt vec Result_2;
-  satellites : opt vec Result_2;
-  mission_control : Result_2;
 };
 type SetController = record {
   metadata : vec record { text; text };
@@ -117,12 +86,6 @@ type SetController = record {
   expires_at : opt nat64;
 };
 type Settings = record { monitoring : opt Monitoring };
-type StatusesArgs = record {
-  mission_control_cycles_threshold : opt nat64;
-  orbiters : vec record { principal; CronJobStatusesConfig };
-  satellites : vec record { principal; CronJobStatusesConfig };
-  cycles_threshold : opt nat64;
-};
 type Timestamp = record { timestamp_nanos : nat64 };
 type Tokens = record { e8s : nat64 };
 type TransferArg = record {
@@ -182,14 +145,7 @@ service : () -> {
   list_mission_control_controllers : () -> (
       vec record { principal; Controller },
     ) query;
-  list_mission_control_statuses : () -> (vec record { nat64; Result_2 }) query;
-  list_orbiter_statuses : (principal) -> (
-      opt vec record { nat64; Result_2 },
-    ) query;
   list_orbiters : () -> (vec record { principal; Orbiter }) query;
-  list_satellite_statuses : (principal) -> (
-      opt vec record { nat64; Result_2 },
-    ) query;
   list_satellites : () -> (vec record { principal; Satellite }) query;
   remove_mission_control_controllers : (vec principal) -> ();
   remove_satellites_controllers : (vec principal, vec principal) -> ();
@@ -212,7 +168,6 @@ service : () -> {
       SetController,
     ) -> ();
   start_monitoring : () -> ();
-  status : (StatusesArgs) -> (SegmentsStatuses);
   stop_monitoring : () -> ();
   top_up : (principal, Tokens) -> ();
   unset_orbiter : (principal) -> ();

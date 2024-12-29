@@ -1,5 +1,5 @@
+import type { Result_2 } from '$declarations/deprecated/mission_control-0-0-13.did';
 import type { SetController as SetControllerDid } from '$declarations/deprecated/mission_control-0-0-4.did';
-import type { Result_2 } from '$declarations/mission_control/mission_control.did';
 import {
 	getMissionControlActor0013,
 	getMissionControlActor004

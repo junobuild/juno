@@ -3,9 +3,9 @@ pub mod state {
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
+    use junobuild_shared::types::monitoring::CyclesBalance;
     use junobuild_shared::types::state::{Controllers, Metadata, SegmentId, Timestamp};
     use serde::Serialize;
-    use junobuild_shared::types::monitoring::CyclesBalance;
 
     pub type NotificationsStable = StableBTreeMap<NotificationKey, Notification, Memory>;
 
@@ -47,10 +47,10 @@ pub mod state {
 }
 
 pub mod interface {
-    use candid::{CandidType, Deserialize};
-    use serde::Serialize;
-    use junobuild_shared::types::state::{SegmentId, UserId};
     use crate::types::state::Notification;
+    use candid::{CandidType, Deserialize};
+    use junobuild_shared::types::state::{SegmentId, UserId};
+    use serde::Serialize;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct NotifyArgs {

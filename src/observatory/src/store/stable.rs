@@ -1,7 +1,7 @@
-use ic_cdk::api::time;
-use junobuild_shared::types::state::SegmentId;
 use crate::memory::STATE;
 use crate::types::state::{Notification, NotificationKey, NotificationsStable};
+use ic_cdk::api::time;
+use junobuild_shared::types::state::SegmentId;
 
 pub fn insert_notification(segment_id: &SegmentId, notification: &Notification) {
     STATE.with(|state| {

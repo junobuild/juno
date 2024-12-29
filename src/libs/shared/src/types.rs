@@ -322,3 +322,15 @@ pub mod config {
         pub stable: Option<Bytes>,
     }
 }
+
+pub mod monitoring {
+    use crate::types::state::Timestamp;
+    use candid::{CandidType, Deserialize};
+    use serde::Serialize;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CyclesBalance {
+        pub amount: u128,
+        pub timestamp: Timestamp,
+    }
+}

@@ -6,7 +6,6 @@ import type {
 	Orbiter,
 	Result,
 	Result_1,
-	Result_2,
 	Satellite,
 	TransferArg,
 	TransferArgs
@@ -374,55 +373,6 @@ export const unsetSatellite = async ({
 }): Promise<void> => {
 	const { unset_satellite } = await getMissionControlActor({ missionControlId, identity });
 	return unset_satellite(satelliteId);
-};
-
-/**
- * @deprecated
- */
-export const listSatelliteStatuses = async ({
-	missionControlId,
-	identity,
-	satelliteId
-}: {
-	missionControlId: Principal;
-	identity: OptionIdentity;
-	satelliteId: Principal;
-}): Promise<[] | [[bigint, Result_2][]]> => {
-	const { list_satellite_statuses } = await getMissionControlActor({ missionControlId, identity });
-	return list_satellite_statuses(satelliteId);
-};
-
-/**
- * @deprecated
- */
-export const listOrbiterStatuses = async ({
-	missionControlId,
-	identity,
-	orbiterId
-}: {
-	missionControlId: Principal;
-	identity: OptionIdentity;
-	orbiterId: Principal;
-}): Promise<[] | [[bigint, Result_2][]]> => {
-	const { list_orbiter_statuses } = await getMissionControlActor({ missionControlId, identity });
-	return list_orbiter_statuses(orbiterId);
-};
-
-/**
- * @deprecated
- */
-export const listMissionControlStatuses = async ({
-	missionControlId,
-	identity
-}: {
-	missionControlId: Principal;
-	identity: OptionIdentity;
-}): Promise<[] | [[bigint, Result_2][]]> => {
-	const { list_mission_control_statuses } = await getMissionControlActor({
-		missionControlId,
-		identity
-	});
-	return [await list_mission_control_statuses()];
 };
 
 export const icpTransfer = async ({

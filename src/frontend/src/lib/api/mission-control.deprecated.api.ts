@@ -1,6 +1,11 @@
+import type { Result_2 } from '$declarations/deprecated/mission_control-0-0-13.did';
 import type { SetController as SetControllerDid } from '$declarations/deprecated/mission_control-0-0-4.did';
-import { getMissionControlActor004 } from '$lib/api/actors/actor.deprecated.api';
+import {
+	getMissionControlActor0013,
+	getMissionControlActor004
+} from '$lib/api/actors/actor.deprecated.api';
 import type { SetControllerParams } from '$lib/types/controllers';
+import type { OptionIdentity } from '$lib/types/itentity';
 import { Principal } from '@dfinity/principal';
 import { nonNullish, toNullable } from '@dfinity/utils';
 
@@ -31,4 +36,59 @@ export const setMissionControlController004 = async ({
 		console.error('setMissionControlController004:', missionControlId.toText());
 		throw err;
 	}
+};
+
+/**
+ * @deprecated
+ */
+export const listSatelliteStatuses = async ({
+	missionControlId,
+	identity,
+	satelliteId
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	satelliteId: Principal;
+}): Promise<[] | [[bigint, Result_2][]]> => {
+	const { list_satellite_statuses } = await getMissionControlActor0013({
+		missionControlId,
+		identity
+	});
+	return list_satellite_statuses(satelliteId);
+};
+
+/**
+ * @deprecated
+ */
+export const listOrbiterStatuses = async ({
+	missionControlId,
+	identity,
+	orbiterId
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	orbiterId: Principal;
+}): Promise<[] | [[bigint, Result_2][]]> => {
+	const { list_orbiter_statuses } = await getMissionControlActor0013({
+		missionControlId,
+		identity
+	});
+	return list_orbiter_statuses(orbiterId);
+};
+
+/**
+ * @deprecated
+ */
+export const listMissionControlStatuses = async ({
+	missionControlId,
+	identity
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+}): Promise<[] | [[bigint, Result_2][]]> => {
+	const { list_mission_control_statuses } = await getMissionControlActor0013({
+		missionControlId,
+		identity
+	});
+	return [await list_mission_control_statuses()];
 };

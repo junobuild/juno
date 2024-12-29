@@ -1,9 +1,9 @@
+import { getMonitoringHistory } from '$lib/api/mission-control.api';
 import {
-	getMonitoringHistory,
 	listMissionControlStatuses,
 	listOrbiterStatuses,
 	listSatelliteStatuses
-} from '$lib/api/mission-control.api';
+} from '$lib/api/mission-control.deprecated.api';
 import { SYNC_MONITORING_TIMER_INTERVAL } from '$lib/constants/constants';
 import { monitoringIdbStore } from '$lib/stores/idb.store';
 import type { CanisterSegment, CanisterSyncMonitoring } from '$lib/types/canister';

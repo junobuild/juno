@@ -1,8 +1,5 @@
 use crate::memory::STATE;
-use crate::types::state::{
-    ArchiveStatusesSegments, HeapState, MissionControlSettings, Statuses, User,
-};
-use candid::Principal;
+use crate::types::state::{HeapState, MissionControlSettings, User};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, UserId};
 

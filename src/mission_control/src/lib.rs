@@ -41,7 +41,7 @@ use crate::types::interface::{
 };
 use crate::types::state::{
     HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
-    Satellite, Satellites, State, Statuses,
+    Satellite, Satellites, State,
 };
 use candid::Principal;
 use ciborium::into_writer;

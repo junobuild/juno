@@ -2,9 +2,7 @@ use crate::memory::STATE;
 use crate::store::get_user;
 use ic_cdk::api::is_controller as ic_canister_controller;
 use ic_cdk::caller;
-use junobuild_shared::controllers::{
-    caller_is_console, caller_is_observatory, is_admin_controller,
-};
+use junobuild_shared::controllers::is_admin_controller;
 use junobuild_shared::types::state::Controllers;
 use junobuild_shared::utils::principal_equal;
 
@@ -13,23 +11,6 @@ pub fn caller_is_user_or_admin_controller() -> Result<(), String> {
         Ok(())
     } else {
         Err("Caller is not the owner or a controller of the mission control.".to_string())
-    }
-}
-
-pub fn caller_is_user_or_admin_controller_or_juno() -> Result<(), String> {
-    let caller = caller();
-
-    if caller_is_user()
-        || caller_is_admin_controller()
-        || caller_is_console(caller)
-        || caller_is_observatory(caller)
-    {
-        Ok(())
-    } else {
-        Err(
-            "Caller has no read permission for selected function of the mission control."
-                .to_string(),
-        )
     }
 }
 

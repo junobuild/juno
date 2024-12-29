@@ -1,8 +1,8 @@
 pub mod upgrade {
-    use candid::CandidType;
-    use junobuild_shared::types::cronjob::CronJobs;
+    use candid::{CandidType, Principal};
     use junobuild_shared::types::state::{
-        ArchiveTime, Controllers, MissionControlId, SegmentsStatuses, Timestamp, UserId, Version,
+        ArchiveTime, Controllers, Metadata, MissionControlId, SegmentsStatuses, Timestamp, UserId,
+        Version,
     };
     use serde::Deserialize;
     use std::collections::HashMap;
@@ -34,5 +34,28 @@ pub mod upgrade {
     pub struct ArchiveStatuses {
         pub timestamp: ArchiveTime,
         pub statuses: Result<SegmentsStatuses, String>,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CronJobs {
+        pub metadata: Metadata,
+        pub statuses: CronJobStatuses,
+    }
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CronJobStatuses {
+        pub enabled: bool,
+        pub cycles_threshold: Option<u64>,
+        pub mission_control_cycles_threshold: Option<u64>,
+        pub satellites: CronJobStatusesSegments,
+        pub orbiters: CronJobStatusesSegments,
+    }
+
+    pub type CronJobStatusesSegments = HashMap<Principal, CronJobStatusesConfig>;
+
+    #[derive(Default, CandidType, Deserialize, Clone)]
+    pub struct CronJobStatusesConfig {
+        pub enabled: bool,
+        pub cycles_threshold: Option<u64>,
     }
 }

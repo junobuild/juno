@@ -24,7 +24,7 @@ pub fn caller_is_not_anonymous() -> Result<(), String> {
 
 fn is_admin_controller() -> bool {
     let caller = caller();
-    let controllers: Controllers = STATE.with(|state| state.borrow().stable.controllers.clone());
+    let controllers: Controllers = STATE.with(|state| state.borrow().heap.controllers.clone());
 
     is_admin_controller_impl(caller, &controllers)
 }

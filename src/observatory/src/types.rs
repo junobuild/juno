@@ -32,35 +32,34 @@ pub mod state {
         pub created_at: Timestamp,
     }
 
-    #[derive(CandidType, Serialize, Deserialize, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
-    pub enum NotificationStatus {
-        Pending,
-        Processing,
-        Sent,
-        Failed,
-    }
-
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum Notification {
-        Email(EmailNotification),
+        DepositedCyclesEmail(DepositedCyclesEmailNotification),
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct EmailNotification {
+    pub struct DepositedCyclesEmailNotification {
         pub to: String,
         pub metadata: Option<Metadata>,
-        pub status: NotificationStatus,
-        pub updated_at: Timestamp,
+        // TODO
     }
 }
 
 pub mod interface {
     use candid::{CandidType, Deserialize};
     use serde::Serialize;
-    use junobuild_shared::types::state::UserId;
+    use junobuild_shared::types::state::{Metadata, SegmentId, UserId};
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct NotifyArgs {
         pub user: UserId,
+        pub notification: NotificationArgs,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct NotificationArgs {
+        pub to: String,
+        pub segment_id: SegmentId,
+        pub metadata: Option<Metadata>,
     }
 }

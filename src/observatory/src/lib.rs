@@ -18,6 +18,7 @@ use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use junobuild_shared::upgrade::write_pre_upgrade;
 use crate::console::assert_mission_control_center;
+use crate::store::stable::insert_notification;
 use crate::types::interface::NotifyArgs;
 
 #[init]
@@ -99,7 +100,9 @@ async fn notify(notify_args: NotifyArgs) {
         .await
         .unwrap_or_else(|e| trap(&e));
 
-    // TODO
+    insert_notification(&notify_args.notification);
+
+    // TODO: send. Probably with a timer.
 }
 
 // ---------------------------------------------------------

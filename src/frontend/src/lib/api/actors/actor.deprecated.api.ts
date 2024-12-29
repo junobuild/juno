@@ -1,3 +1,5 @@
+import type { _SERVICE as MissionControlActor0013 } from '$declarations/deprecated/mission_control-0-0-13.did';
+import { idlFactory as idlFactorMissionControl0013 } from '$declarations/deprecated/mission_control-0-0-13.factory.did';
 import type { _SERVICE as MissionControlActor004 } from '$declarations/deprecated/mission_control-0-0-4.did';
 import { idlFactory as idlFactorMissionControl004 } from '$declarations/deprecated/mission_control-0-0-4.factory.did';
 import type { _SERVICE as OrbiterActor007 } from '$declarations/deprecated/orbiter-0-0-7.did';
@@ -14,6 +16,7 @@ import type { Principal } from '@dfinity/principal';
 import { get } from 'svelte/store';
 
 const missionControl004Actor = new ActorApi<MissionControlActor004>();
+const missionControl0013Actor = new ActorApi<MissionControlActor0013>();
 const satellite008Actor = new ActorApi<SatelliteActor008>();
 const satellite009Actor = new ActorApi<SatelliteActor009>();
 const orbiter007Actor = new ActorApi<OrbiterActor007>();
@@ -32,6 +35,21 @@ export const getMissionControlActor004 = async (
 		identity
 	});
 };
+
+/**
+ * @deprecated TODO: to be remove - backwards compatibility
+ */
+export const getMissionControlActor0013 = async ({
+	identity,
+	missionControlId
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+}): Promise<MissionControlActor0013> => await missionControl0013Actor.getActor({
+		canisterId: missionControlId,
+		idlFactory: idlFactorMissionControl0013,
+		identity
+	});
 
 /**
  * @deprecated TODO: to be remove - backwards compatibility

@@ -16,23 +16,6 @@ pub fn caller_is_user_or_admin_controller() -> Result<(), String> {
     }
 }
 
-pub fn caller_is_user_or_admin_controller_or_juno() -> Result<(), String> {
-    let caller = caller();
-
-    if caller_is_user()
-        || caller_is_admin_controller()
-        || caller_is_console(caller)
-        || caller_is_observatory(caller)
-    {
-        Ok(())
-    } else {
-        Err(
-            "Caller has no read permission for selected function of the mission control."
-                .to_string(),
-        )
-    }
-}
-
 fn caller_is_user() -> bool {
     let caller = caller();
     let user = get_user();

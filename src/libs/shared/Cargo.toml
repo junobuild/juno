@@ -24,3 +24,5 @@ futures = "0.3.28"
 ciborium.workspace = true
 time = "0.3.31"
 regex.workspace = true
+getrandom = { version = "0.2", features = ["custom"] }
+rand = { version = "0.8.5", features = ["getrandom"]}

@@ -821,10 +821,13 @@ version = "0.0.7"
 dependencies = [
  "candid",
  "ciborium",
+ "getrandom",
  "ic-cdk",
  "ic-cdk-macros",
+ "ic-cdk-timers",
  "ic-stable-structures",
  "junobuild-shared",
+ "rand",
  "serde",
 ]
 

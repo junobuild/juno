@@ -2,13 +2,15 @@ mod console;
 mod guards;
 mod impls;
 mod memory;
+mod random;
 mod store;
 mod types;
 mod upgrade;
 
 use crate::console::assert_mission_control_center;
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
-use crate::memory::{get_memory_upgrades, init_stable_state, STATE};
+use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
+use crate::random::defer_init_random_seed;
 use crate::store::heap::{delete_controllers, set_controllers as set_controllers_store};
 use crate::store::stable::insert_notification;
 use crate::types::interface::NotifyArgs;
@@ -33,6 +35,10 @@ fn init() {
             stable: init_stable_state(),
         };
     });
+
+    init_runtime_state();
+
+    defer_init_random_seed();
 }
 
 #[pre_upgrade]
@@ -67,6 +73,10 @@ fn post_upgrade() {
     //     .expect("Failed to decode the state of the observatory in post_upgrade hook.");
 
     // STATE.with(|s| *s.borrow_mut() = state);
+
+    init_runtime_state();
+
+    defer_init_random_seed();
 }
 
 // ---------------------------------------------------------
@@ -100,7 +110,8 @@ async fn notify(notify_args: NotifyArgs) {
         .await
         .unwrap_or_else(|e| trap(&e));
 
-    insert_notification(&notify_args.segment_id, &notify_args.notification);
+    insert_notification(&notify_args.segment_id, &notify_args.notification)
+        .unwrap_or_else(|e| trap(&e));
 
     // TODO: send. Probably with a timer.
 }

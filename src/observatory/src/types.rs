@@ -31,6 +31,7 @@ pub mod state {
     pub struct NotificationKey {
         pub segment_id: SegmentId,
         pub created_at: Timestamp,
+        pub nonce: i32,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -43,6 +44,15 @@ pub mod state {
         pub to: String,
         pub metadata: Option<Metadata>,
         pub deposited_cycles: CyclesBalance,
+    }
+}
+
+pub mod runtime {
+    use rand::prelude::StdRng;
+
+    #[derive(Default)]
+    pub struct RuntimeState {
+        pub rng: Option<StdRng>, // rng = Random Number Generator
     }
 }
 

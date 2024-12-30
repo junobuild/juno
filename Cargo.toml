@@ -34,6 +34,8 @@ ciborium = "0.2.1"
 sha2 = "0.10.7"
 hex = "0.4.3"
 regex = "1.9.3"
+getrandom = { version = "0.2", features = ["custom"] }
+rand = { version = "0.8.5", features = ["getrandom"]}
 
 [patch.crates-io]
 junobuild-shared = { path = "./src/libs/shared" }

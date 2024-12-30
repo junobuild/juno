@@ -7,6 +7,7 @@ mod monitoring;
 mod segments;
 mod store;
 mod types;
+mod random;
 
 use crate::controllers::mission_control::{
     delete_mission_control_controllers as delete_controllers_to_mission_control,
@@ -73,6 +74,7 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
+use crate::random::defer_init_random_seed;
 
 #[init]
 fn init() {
@@ -87,6 +89,8 @@ fn init() {
     });
 
     init_runtime_state();
+
+    defer_init_random_seed();
 }
 
 #[pre_upgrade]
@@ -121,6 +125,8 @@ fn post_upgrade() {
     // STATE.with(|s| *s.borrow_mut() = state);
 
     init_runtime_state();
+
+    defer_init_random_seed();
 
     defer_restart_monitoring();
 }

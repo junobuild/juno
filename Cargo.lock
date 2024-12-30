@@ -767,6 +767,7 @@ dependencies = [
  "candid",
  "canfund",
  "ciborium",
+ "getrandom",
  "ic-cdk",
  "ic-cdk-macros",
  "ic-cdk-timers",
@@ -774,6 +775,7 @@ dependencies = [
  "ic-stable-structures",
  "icrc-ledger-types",
  "junobuild-shared",
+ "rand",
  "serde",
 ]
 

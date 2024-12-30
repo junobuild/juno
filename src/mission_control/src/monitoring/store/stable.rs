@@ -10,8 +10,10 @@ use crate::types::state::{
 use ic_cdk::api::time;
 use junobuild_shared::types::state::SegmentId;
 use std::ops::RangeBounds;
+use ic_cdk::print;
+use crate::random::random;
 
-pub fn insert_cycles_monitoring_history(segment_id: &SegmentId, cycles: &MonitoringHistoryCycles) {
+pub fn insert_cycles_monitoring_history(segment_id: &SegmentId, cycles: &MonitoringHistoryCycles) -> Result<(), String> {
     STATE.with(|state| {
         insert_cycles_monitoring_history_impl(
             segment_id,
@@ -45,19 +47,30 @@ fn insert_cycles_monitoring_history_impl(
     segment_id: &SegmentId,
     cycles: &MonitoringHistoryCycles,
     history: &mut MonitoringHistoryStable,
-) {
+) -> Result<(), String> {
     let entry: MonitoringHistory = MonitoringHistory {
         cycles: Some(cycles.clone()),
     };
 
-    history.insert(stable_monitoring_history_key(segment_id), entry);
+    let key = stable_monitoring_history_key(segment_id)?;
+
+    history.insert(key, entry);
+
+    Ok(())
 }
 
-fn stable_monitoring_history_key(segment_id: &SegmentId) -> MonitoringHistoryKey {
-    MonitoringHistoryKey {
+fn stable_monitoring_history_key(segment_id: &SegmentId) -> Result<MonitoringHistoryKey, String> {
+    let nonce = random()?;
+
+    print(format!("----____________ {} {}", segment_id, nonce));
+
+    let key = MonitoringHistoryKey {
         segment_id: *segment_id,
         created_at: time(),
-    }
+        nonce,
+    };
+
+    Ok(key)
 }
 
 fn get_monitoring_history_impl(
@@ -88,11 +101,13 @@ fn filter_monitoring_history_range(
     let start_key = MonitoringHistoryKey {
         segment_id: *segment_id,
         created_at: from.unwrap_or(u64::MIN),
+        nonce: i32::MIN
     };
 
     let end_key = MonitoringHistoryKey {
         segment_id: *segment_id,
         created_at: to.unwrap_or(u64::MAX),
+        nonce: i32::MAX
     };
 
     start_key..end_key

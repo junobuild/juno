@@ -17,5 +17,7 @@ icrc-ledger-types.workspace = true
 ic-stable-structures.workspace = true
 serde.workspace = true
 ciborium.workspace = true
+getrandom.workspace = true
+rand.workspace = true
 canfund = "0.6.0"
 junobuild-shared = { path = "../libs/shared" }

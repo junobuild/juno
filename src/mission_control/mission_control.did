@@ -52,6 +52,7 @@ type MonitoringHistoryCycles = record {
 type MonitoringHistoryKey = record {
   segment_id : principal;
   created_at : nat64;
+  nonce : int32;
 };
 type MonitoringStartConfig = record {
   cycles_config : opt CyclesMonitoringStartConfig;

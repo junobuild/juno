@@ -72,6 +72,7 @@ export interface MonitoringHistoryCycles {
 export interface MonitoringHistoryKey {
 	segment_id: Principal;
 	created_at: bigint;
+	nonce: number;
 }
 export interface MonitoringStartConfig {
 	cycles_config: [] | [CyclesMonitoringStartConfig];

@@ -139,6 +139,7 @@ pub mod state {
     pub struct MonitoringHistoryKey {
         pub segment_id: SegmentId,
         pub created_at: Timestamp,
+        pub nonce: i32,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -155,9 +156,11 @@ pub mod state {
 
 pub mod runtime {
     use canfund::FundManager;
+    use rand::prelude::StdRng;
 
     #[derive(Default)]
     pub struct RuntimeState {
+        pub rng: Option<StdRng>, // rng = Random Number Generator
         pub fund_manager: Option<FundManager>,
     }
 }

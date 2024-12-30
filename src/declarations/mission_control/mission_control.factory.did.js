@@ -42,7 +42,8 @@ export const idlFactory = ({ IDL }) => {
 	});
 	const MonitoringHistoryKey = IDL.Record({
 		segment_id: IDL.Principal,
-		created_at: IDL.Nat64
+		created_at: IDL.Nat64,
+		nonce: IDL.Int32
 	});
 	const CyclesBalance = IDL.Record({
 		timestamp: IDL.Nat64,

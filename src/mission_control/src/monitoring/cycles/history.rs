@@ -3,11 +3,12 @@ use crate::monitoring::store::stable::{
     delete_monitoring_history, get_monitoring_history_keys, insert_cycles_monitoring_history,
 };
 use crate::types::interface::GetMonitoringHistory;
-use crate::types::state::{CyclesBalance, MonitoringHistoryCycles};
+use crate::types::state::{MonitoringHistoryCycles};
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::api::time;
 use std::collections::HashMap;
+use junobuild_shared::types::monitoring::CyclesBalance;
 
 pub fn save_monitoring_history(records: HashMap<CanisterId, CanisterRecord>) {
     for (canister_id, record) in records.iter() {

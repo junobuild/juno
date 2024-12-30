@@ -10,7 +10,6 @@ use crate::types::state::{
 use ic_cdk::api::time;
 use junobuild_shared::types::state::SegmentId;
 use std::ops::RangeBounds;
-use ic_cdk::print;
 use crate::random::random;
 
 pub fn insert_cycles_monitoring_history(segment_id: &SegmentId, cycles: &MonitoringHistoryCycles) -> Result<(), String> {
@@ -56,15 +55,11 @@ fn insert_cycles_monitoring_history_impl(
 
     history.insert(key, entry);
 
-    print(format!("--___// {} size: {}", segment_id, history.len()));
-
     Ok(())
 }
 
 fn stable_monitoring_history_key(segment_id: &SegmentId) -> Result<MonitoringHistoryKey, String> {
     let nonce = random()?;
-
-    print(format!("----____________ {} {}", segment_id, nonce));
 
     let key = MonitoringHistoryKey {
         segment_id: *segment_id,

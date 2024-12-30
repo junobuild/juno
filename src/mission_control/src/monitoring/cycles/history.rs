@@ -8,7 +8,6 @@ use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::api::time;
 use std::collections::HashMap;
-use ic_cdk::print;
 use junobuild_shared::types::monitoring::CyclesBalance;
 
 pub fn save_monitoring_history(records: HashMap<CanisterId, CanisterRecord>) {
@@ -61,8 +60,6 @@ fn cleanup_monitoring_history(canister_id: &CanisterId) {
     };
 
     let keys = get_monitoring_history_keys(&filter);
-
-    print(format!("-----------------> {}", keys.len()));
 
     for key in keys {
         delete_monitoring_history(&key);

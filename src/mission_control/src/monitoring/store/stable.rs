@@ -56,6 +56,8 @@ fn insert_cycles_monitoring_history_impl(
 
     history.insert(key, entry);
 
+    print(format!("--___// {} size: {}", segment_id, history.len()));
+
     Ok(())
 }
 

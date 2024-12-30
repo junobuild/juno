@@ -46,12 +46,7 @@ fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) 
             deposited_cycles,
         };
 
-        let result = insert_cycles_monitoring_history(canister_id, &history_entry);
-
-        match result {
-            Ok(()) => print("Okkkkkkkk"),
-            Err(_) => print("Errrrrrrrrrrrrroooooorrr"),
-        }
+        let _ = insert_cycles_monitoring_history(canister_id, &history_entry);
     }
 }
 

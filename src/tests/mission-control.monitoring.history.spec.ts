@@ -213,6 +213,8 @@ describe('Mission Control - History', () => {
 
 			describe('second round', () => {
 				beforeAll(async () => {
+					await tick(pic);
+
 					await pic.advanceTime(30000);
 
 					await tick(pic);
@@ -272,7 +274,7 @@ describe('Mission Control - History', () => {
 				const thirtyDays = 1000 * 60 * 60 * 24 * 30;
 
 				// We want to keep the history for the first round and second round but, clean up the start
-				await pic.advanceTime(thirtyDays - 30000);
+				await pic.advanceTime(thirtyDays - (2 * 30000));
 
 				await tick(pic);
 			});

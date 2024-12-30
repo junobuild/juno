@@ -672,6 +672,7 @@ dependencies = [
  "candid",
  "ciborium",
  "futures",
+ "getrandom",
  "ic-cdk",
  "ic-ledger-types",
  "ic-stable-structures",

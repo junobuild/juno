@@ -7,6 +7,7 @@ use crate::types::state::MonitoringHistoryCycles;
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::api::time;
+use ic_cdk::print;
 use junobuild_shared::types::monitoring::CyclesBalance;
 use std::collections::HashMap;
 
@@ -45,7 +46,13 @@ fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) 
             deposited_cycles,
         };
 
-        insert_cycles_monitoring_history(canister_id, &history_entry);
+        insert_cycles_monitoring_history(canister_id, &history_entry).unwrap_or_else(|e| {
+            // Error would mean the random generator is not initialized.
+            print(format!(
+                "Failed to insert cycles monitoring history: {:?}",
+                e
+            ))
+        });
     }
 }
 

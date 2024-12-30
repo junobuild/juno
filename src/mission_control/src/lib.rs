@@ -4,6 +4,7 @@ mod guards;
 mod impls;
 mod memory;
 mod monitoring;
+mod random;
 mod segments;
 mod store;
 mod types;
@@ -20,6 +21,7 @@ use crate::controllers::satellite::{
 use crate::controllers::store::get_controllers;
 use crate::guards::caller_is_user_or_admin_controller;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
+use crate::random::defer_init_random_seed;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -87,6 +89,8 @@ fn init() {
     });
 
     init_runtime_state();
+
+    defer_init_random_seed();
 }
 
 #[pre_upgrade]
@@ -121,6 +125,8 @@ fn post_upgrade() {
     // STATE.with(|s| *s.borrow_mut() = state);
 
     init_runtime_state();
+
+    defer_init_random_seed();
 
     defer_restart_monitoring();
 }

@@ -3,6 +3,7 @@
 // ---------------------------------------------------------
 
 use crate::memory::STATE;
+use crate::random::random;
 use crate::types::interface::GetMonitoringHistory;
 use crate::types::state::{
     MonitoringHistory, MonitoringHistoryCycles, MonitoringHistoryKey, MonitoringHistoryStable,
@@ -10,9 +11,11 @@ use crate::types::state::{
 use ic_cdk::api::time;
 use junobuild_shared::types::state::SegmentId;
 use std::ops::RangeBounds;
-use crate::random::random;
 
-pub fn insert_cycles_monitoring_history(segment_id: &SegmentId, cycles: &MonitoringHistoryCycles) -> Result<(), String> {
+pub fn insert_cycles_monitoring_history(
+    segment_id: &SegmentId,
+    cycles: &MonitoringHistoryCycles,
+) -> Result<(), String> {
     STATE.with(|state| {
         insert_cycles_monitoring_history_impl(
             segment_id,
@@ -98,13 +101,13 @@ fn filter_monitoring_history_range(
     let start_key = MonitoringHistoryKey {
         segment_id: *segment_id,
         created_at: from.unwrap_or(u64::MIN),
-        nonce: i32::MIN
+        nonce: i32::MIN,
     };
 
     let end_key = MonitoringHistoryKey {
         segment_id: *segment_id,
         created_at: to.unwrap_or(u64::MAX),
-        nonce: i32::MAX
+        nonce: i32::MAX,
     };
 
     start_key..end_key

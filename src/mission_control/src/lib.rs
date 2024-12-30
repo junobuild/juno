@@ -4,10 +4,10 @@ mod guards;
 mod impls;
 mod memory;
 mod monitoring;
+mod random;
 mod segments;
 mod store;
 mod types;
-mod random;
 
 use crate::controllers::mission_control::{
     delete_mission_control_controllers as delete_controllers_to_mission_control,
@@ -21,6 +21,7 @@ use crate::controllers::satellite::{
 use crate::controllers::store::get_controllers;
 use crate::guards::caller_is_user_or_admin_controller;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
+use crate::random::defer_init_random_seed;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
     create_orbiter_with_config as create_orbiter_with_config_console, delete_orbiter,
@@ -74,7 +75,6 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
-use crate::random::defer_init_random_seed;
 
 #[init]
 fn init() {

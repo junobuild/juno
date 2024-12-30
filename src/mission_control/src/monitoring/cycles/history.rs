@@ -3,12 +3,13 @@ use crate::monitoring::store::stable::{
     delete_monitoring_history, get_monitoring_history_keys, insert_cycles_monitoring_history,
 };
 use crate::types::interface::GetMonitoringHistory;
-use crate::types::state::{MonitoringHistoryCycles};
+use crate::types::state::MonitoringHistoryCycles;
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::api::time;
-use std::collections::HashMap;
+use ic_cdk::print;
 use junobuild_shared::types::monitoring::CyclesBalance;
+use std::collections::HashMap;
 
 pub fn save_monitoring_history(records: HashMap<CanisterId, CanisterRecord>) {
     for (canister_id, record) in records.iter() {
@@ -45,7 +46,13 @@ fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) 
             deposited_cycles,
         };
 
-        let _ = insert_cycles_monitoring_history(canister_id, &history_entry);
+        insert_cycles_monitoring_history(canister_id, &history_entry).unwrap_or_else(|e| {
+            // Error would mean the random generator is not initialized.
+            print(format!(
+                "Failed to insert cycles monitoring history: {:?}",
+                e
+            ))
+        });
     }
 }
 

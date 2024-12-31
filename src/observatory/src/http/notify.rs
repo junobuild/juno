@@ -12,7 +12,7 @@ pub async fn send_notification(key: NotificationKey) {
         let result = send_email(&key, email).await;
 
         let updated_notification = match result {
-            Ok(_) => Notification::scheduled(&notification),
+            Ok(_) => Notification::sent(&notification),
             Err(_) => Notification::failed(&notification),
         };
 

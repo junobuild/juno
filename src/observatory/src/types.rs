@@ -43,7 +43,6 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum NotificationStatus {
         Pending,
-        Scheduled,
         Sent,
         Failed,
     }

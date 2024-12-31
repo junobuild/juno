@@ -55,18 +55,6 @@ impl Notification {
         }
     }
 
-    pub fn scheduled(current_notification: &Notification) -> Self {
-        match current_notification {
-            Notification::DepositedCyclesEmail(email_notification) => {
-                Notification::DepositedCyclesEmail(DepositedCyclesEmailNotification {
-                    status: NotificationStatus::Scheduled,
-                    updated_at: time(),
-                    ..email_notification.clone()
-                })
-            }
-        }
-    }
-
     pub fn failed(current_notification: &Notification) -> Self {
         match current_notification {
             Notification::DepositedCyclesEmail(email_notification) => {

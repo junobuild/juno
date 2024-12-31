@@ -24,7 +24,7 @@ const testNotify = async (mainnet) => {
 		}
 	});
 
-	console.log('Env configured ✅');
+	console.log('Notification sent! ✅');
 };
 
 const mainnet = targetMainnet();

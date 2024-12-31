@@ -7,7 +7,7 @@ use junobuild_shared::types::state::SegmentId;
 pub fn insert_notification(
     segment_id: &SegmentId,
     notification: &Notification,
-) -> Result<(), String> {
+) -> Result<NotificationKey, String> {
     STATE.with(|state| {
         insert_notification_impl(
             segment_id,
@@ -17,16 +17,52 @@ pub fn insert_notification(
     })
 }
 
+pub fn get_notification(
+    key: &NotificationKey,
+) -> Option<Notification> {
+    STATE.with(|state| {
+        get_notification_impl(
+            key,
+            &state.borrow().stable.notifications,
+        )
+    })
+}
+
+pub fn set_notification(
+    key: &NotificationKey,
+    notification: &Notification,
+) {
+    STATE.with(|state| {
+        insert_notification_with_key(
+            key,
+            notification,
+            &mut state.borrow_mut().stable.notifications,
+        )
+    })
+}
+
+fn get_notification_impl(key: &NotificationKey, notifications: &NotificationsStable,) -> Option<Notification> {
+    notifications.get(key)
+}
+
 fn insert_notification_impl(
     segment_id: &SegmentId,
     notification: &Notification,
     notifications: &mut NotificationsStable,
-) -> Result<(), String> {
+) -> Result<NotificationKey, String> {
     let key = stable_notification_key(segment_id)?;
 
-    notifications.insert(key, notification.clone());
+    insert_notification_with_key(&key, notification, notifications);
 
-    Ok(())
+    Ok(key)
+}
+
+fn insert_notification_with_key(
+    key: &NotificationKey,
+    notification: &Notification,
+    notifications: &mut NotificationsStable,
+) {
+    notifications.insert(key.clone(), notification.clone());
 }
 
 fn stable_notification_key(segment_id: &SegmentId) -> Result<NotificationKey, String> {

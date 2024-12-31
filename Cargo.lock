@@ -831,6 +831,7 @@ dependencies = [
  "junobuild-shared",
  "rand",
  "serde",
+ "serde_json",
 ]
 
 [[package]]

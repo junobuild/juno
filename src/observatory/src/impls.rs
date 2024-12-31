@@ -1,9 +1,11 @@
 use crate::memory::init_stable_state;
-use crate::types::state::{HeapState, Notification, NotificationKey, State};
+use crate::types::state::{DepositedCyclesEmailNotification, HeapState, Notification, NotificationKey, NotificationStatus, State};
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use std::borrow::Cow;
+use ic_cdk::api::time;
+use crate::types::interface::{SendNotification};
 
 impl Default for State {
     fn default() -> Self {
@@ -36,4 +38,56 @@ impl Storable for NotificationKey {
     }
 
     const BOUND: Bound = Bound::Unbounded;
+}
+
+impl Notification {
+    pub fn from_send(send_notification: &SendNotification) -> Self {
+        match send_notification {
+            SendNotification::DepositedCyclesEmail(send_email) => {
+                Notification::DepositedCyclesEmail(DepositedCyclesEmailNotification {
+                    to: send_email.to.clone(),
+                    metadata: send_email.metadata.clone(),
+                    deposited_cycles: send_email.deposited_cycles.clone(),
+                    status: NotificationStatus::Pending,
+                    updated_at: time(),
+                })
+            }
+        }
+    }
+
+    pub fn scheduled(current_notification: &Notification) -> Self {
+        match current_notification {
+            Notification::DepositedCyclesEmail(email_notification) => {
+                Notification::DepositedCyclesEmail(DepositedCyclesEmailNotification {
+                    status: NotificationStatus::Scheduled,
+                    updated_at: time(),
+                    ..email_notification.clone()
+                })
+            }
+        }
+    }
+
+    pub fn failed(current_notification: &Notification) -> Self {
+        match current_notification {
+            Notification::DepositedCyclesEmail(email_notification) => {
+                Notification::DepositedCyclesEmail(DepositedCyclesEmailNotification {
+                    status: NotificationStatus::Failed,
+                    updated_at: time(),
+                    ..email_notification.clone()
+                })
+            }
+        }
+    }
+
+    pub fn sent(current_notification: &Notification) -> Self {
+        match current_notification {
+            Notification::DepositedCyclesEmail(email_notification) => {
+                Notification::DepositedCyclesEmail(DepositedCyclesEmailNotification {
+                    status: NotificationStatus::Sent,
+                    updated_at: time(),
+                    ..email_notification.clone()
+                })
+            }
+        }
+    }
 }

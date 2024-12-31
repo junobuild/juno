@@ -1,5 +1,26 @@
 type ControllerScope = variant { Write; Admin };
+type CyclesBalance = record { timestamp : nat64; amount : nat };
 type DeleteControllersArgs = record { controllers : vec principal };
+type Env = record { email_api_key : opt text };
+type HttpHeader = record { value : text; name : text };
+type HttpResponse = record {
+  status : nat;
+  body : blob;
+  headers : vec HttpHeader;
+};
+type NotifyArgs = record {
+  user : principal;
+  segment_id : principal;
+  notification : SendNotification;
+};
+type SendDepositedCyclesEmailNotification = record {
+  to : text;
+  deposited_cycles : CyclesBalance;
+  metadata : opt vec record { text; text };
+};
+type SendNotification = variant {
+  DepositedCyclesEmail : SendDepositedCyclesEmailNotification;
+};
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -9,8 +30,12 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
+type TransformArgs = record { context : blob; response : HttpResponse };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
+  notify : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();
+  set_env : (Env) -> ();
+  transform : (TransformArgs) -> (HttpResponse) query;
   version : () -> (text) query;
 }

@@ -36,7 +36,7 @@ fn get_email_request(
     api_key: &ApiKey,
 ) -> Result<CanisterHttpRequestArgument, String> {
     let email_notifications_url =
-        "https://europe-west6-datepicker-xyz.cloudfunctions.net/datepicker/notifications/email";
+        "https://europe-west6-juno-observatory.cloudfunctions.net/observatory/notifications/email";
 
     let idempotency_key = format!("{}___{}___{}", key.segment_id.to_text(), key.created_at.to_string(), key.nonce.to_string());
 

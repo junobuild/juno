@@ -81,4 +81,14 @@ impl Notification {
             }
         }
     }
+
+    pub fn title(&self) -> String {
+        match self {
+            Notification::DepositedCyclesEmail(email_notification) => {
+                let t_cycles = email_notification.deposited_cycles.amount as f64 / 1_000_000_000_000.0;
+                let formatted_cycles = format!("{:.8}", t_cycles).trim_end_matches('0').trim_end_matches('.');
+                format!("🚀 {} T Cycles Deposited on Your {{module}}", formatted_cycles)
+            }
+        }
+    }
 }

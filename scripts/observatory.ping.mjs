@@ -19,7 +19,7 @@ const testNotify = async (mainnet) => {
 				to: 'david@fluster.io',
 				deposited_cycles: {
 					timestamp: 1704032400000000000n,
-					amount: 10_000n
+					amount: 100_456_000_000n
 				}
 			}
 		}

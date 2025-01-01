@@ -74,7 +74,7 @@ fn post_upgrade() {
     });
 
     // TODO: uncomment once stable memory introduced on mainnet
-    // let memory: Memory = get_memory_upgrades();
+    // let memory = get_memory_upgrades();
     // let state_bytes = read_post_upgrade(&memory);
 
     // let state: State = from_reader(&*state_bytes)

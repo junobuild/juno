@@ -2,9 +2,7 @@ use crate::http::request::post_email;
 use crate::http::types::EmailRequestBody;
 use crate::store::heap::get_email_api_key;
 use crate::store::stable::{get_notification, set_notification};
-use crate::types::state::{
-    DepositedCyclesEmailNotification, Notification, NotificationKey, NotificationKind,
-};
+use crate::types::state::{Notification, NotificationKey, NotificationKind};
 use ic_cdk::trap;
 
 pub async fn send_notification(key: NotificationKey) {
@@ -26,7 +24,7 @@ pub async fn send_notification(key: NotificationKey) {
 
 pub async fn send_email(
     key: &NotificationKey,
-    to: &String,
+    to: &str,
     notification: &Notification,
 ) -> Result<(), String> {
     let idempotency_key = key.idempotency_key();
@@ -34,7 +32,7 @@ pub async fn send_email(
 
     let email = EmailRequestBody {
         from: "Juno <notify@juno.watch>".to_string(),
-        to: [to.clone()].to_vec(),
+        to: [to.to_owned()].to_vec(),
         subject: notification.title(),
         html: notification.content(),
     };

@@ -1,4 +1,5 @@
 use crate::http::request::post_email;
+use crate::http::types::EmailRequestBody;
 use crate::store::heap::get_email_api_key;
 use crate::store::stable::{get_notification, set_notification};
 use crate::types::state::{
@@ -10,7 +11,9 @@ pub async fn send_notification(key: NotificationKey) {
     let notification = get_notification(&key).unwrap_or_else(|| trap("Notification not found."));
 
     let result = match &notification.kind {
-        NotificationKind::DepositedCyclesEmail(email) => send_email(&key, email).await,
+        NotificationKind::DepositedCyclesEmail(email) => {
+            send_email(&key, &email.to, &notification).await
+        }
     };
 
     let updated_notification = match result {
@@ -23,9 +26,17 @@ pub async fn send_notification(key: NotificationKey) {
 
 pub async fn send_email(
     key: &NotificationKey,
-    email: &DepositedCyclesEmailNotification,
+    to: &String,
+    notification: &Notification,
 ) -> Result<(), String> {
-    let email_api_key = get_email_api_key()?;
+    let idempotency_key = key.idempotency_key();
+    let api_key = get_email_api_key()?;
 
-    post_email(key, email, &email_api_key).await
+    let email = EmailRequestBody {
+        to: to.clone(),
+        title: notification.title(),
+        content: notification.content(),
+    };
+
+    post_email(&idempotency_key, &api_key, &email).await
 }

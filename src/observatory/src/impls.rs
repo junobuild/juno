@@ -45,6 +45,17 @@ impl Storable for NotificationKey {
     const BOUND: Bound = Bound::Unbounded;
 }
 
+impl NotificationKey {
+    pub fn idempotency_key(&self) -> String {
+        format!(
+            "{}___{}___{}",
+            self.segment_id.to_text(),
+            self.created_at,
+            self.nonce
+        )
+    }
+}
+
 impl Notification {
     pub fn from_args(args: &NotifyArgs) -> Self {
         Notification {
@@ -124,7 +135,7 @@ impl Notification {
         }
     }
 
-    pub fn content(&self) -> std::io::Result<String> {
+    pub fn content(&self) -> String {
         match &self.kind {
             NotificationKind::DepositedCyclesEmail(email_notification) => {
                 let formatted_cycles =
@@ -153,7 +164,7 @@ impl Notification {
                     None => content.replace(" (<!-- -->{{name}}<!-- -->)", ""),
                 };
 
-                Ok(content)
+                content
             }
         }
     }

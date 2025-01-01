@@ -1,3 +1,4 @@
+use crate::http::types::EmailRequestBody;
 use crate::types::state::{ApiKey, DepositedCyclesEmailNotification, NotificationKey};
 use ic_cdk::api::management_canister::http_request::http_request as http_request_outcall;
 use ic_cdk::api::management_canister::http_request::{
@@ -7,11 +8,11 @@ use ic_cdk::print;
 use serde_json::json;
 
 pub async fn post_email(
-    key: &NotificationKey,
-    email: &DepositedCyclesEmailNotification,
+    idempotency_key: &String,
     api_key: &ApiKey,
+    email: &EmailRequestBody,
 ) -> Result<(), String> {
-    let request = get_email_request(key, email, api_key)?;
+    let request = get_email_request(idempotency_key, api_key, email)?;
 
     print(format!(
         "🔫 ---------> Starting the request. {}",
@@ -31,19 +32,12 @@ pub async fn post_email(
 }
 
 fn get_email_request(
-    key: &NotificationKey,
-    email: &DepositedCyclesEmailNotification,
+    idempotency_key: &String,
     api_key: &ApiKey,
+    email: &EmailRequestBody,
 ) -> Result<CanisterHttpRequestArgument, String> {
     let email_notifications_url =
         "https://europe-west6-juno-observatory.cloudfunctions.net/observatory/notifications/email";
-
-    let idempotency_key = format!(
-        "{}___{}___{}",
-        key.segment_id.to_text(),
-        key.created_at,
-        key.nonce
-    );
 
     let request_headers = vec![
         HttpHeader {
@@ -60,9 +54,7 @@ fn get_email_request(
         },
     ];
 
-    let body = json!({
-      "to": email.to,
-    });
+    let body = json!(email);
 
     let body_json = serde_json::to_string(&body).map_err(|e| e.to_string())?;
 

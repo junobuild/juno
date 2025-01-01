@@ -87,10 +87,17 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum SegmentType {
+    pub enum SegmentKind {
         Satellite,
         MissionControl,
         Orbiter,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct Segment {
+        pub id: SegmentId,
+        pub kind: SegmentKind,
+        pub metadata: Option<Metadata>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

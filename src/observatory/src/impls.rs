@@ -1,8 +1,7 @@
 use crate::memory::init_stable_state;
-use crate::types::interface::SendNotification;
+use crate::types::interface::NotifyArgs;
 use crate::types::state::{
-    DepositedCyclesEmailNotification, HeapState, Notification, NotificationKey, NotificationStatus,
-    State,
+    HeapState, Notification, NotificationKey, NotificationKind, NotificationStatus, State,
 };
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
@@ -44,50 +43,50 @@ impl Storable for NotificationKey {
 }
 
 impl Notification {
-    pub fn from_send(send_notification: &SendNotification) -> Self {
-        match send_notification {
-            SendNotification::DepositedCyclesEmail(send_email) => {
-                Notification::DepositedCyclesEmail(DepositedCyclesEmailNotification {
-                    to: send_email.to.clone(),
-                    metadata: send_email.metadata.clone(),
-                    deposited_cycles: send_email.deposited_cycles.clone(),
-                    status: NotificationStatus::Pending,
-                    updated_at: time(),
-                })
-            }
+    pub fn from_args(args: &NotifyArgs) -> Self {
+        Notification {
+            segment: args.segment.clone(),
+            kind: args.kind.clone(),
+            status: NotificationStatus::Pending,
+            updated_at: time(),
         }
     }
 
     pub fn failed(current_notification: &Notification) -> Self {
-        match current_notification {
-            Notification::DepositedCyclesEmail(email_notification) => {
-                Notification::DepositedCyclesEmail(DepositedCyclesEmailNotification {
-                    status: NotificationStatus::Failed,
-                    updated_at: time(),
-                    ..email_notification.clone()
-                })
-            }
+        Notification {
+            status: NotificationStatus::Failed,
+            updated_at: time(),
+            ..current_notification.clone()
         }
     }
 
     pub fn sent(current_notification: &Notification) -> Self {
-        match current_notification {
-            Notification::DepositedCyclesEmail(email_notification) => {
-                Notification::DepositedCyclesEmail(DepositedCyclesEmailNotification {
-                    status: NotificationStatus::Sent,
-                    updated_at: time(),
-                    ..email_notification.clone()
-                })
-            }
+        Notification {
+            status: NotificationStatus::Sent,
+            updated_at: time(),
+            ..current_notification.clone()
         }
     }
 
     pub fn title(&self) -> String {
-        match self {
-            Notification::DepositedCyclesEmail(email_notification) => {
-                let t_cycles = email_notification.deposited_cycles.amount as f64 / 1_000_000_000_000.0;
-                let formatted_cycles = format!("{:.8}", t_cycles).trim_end_matches('0').trim_end_matches('.');
-                format!("🚀 {} T Cycles Deposited on Your {{module}}", formatted_cycles)
+        match &self.kind {
+            NotificationKind::DepositedCyclesEmail(email_notification) => {
+                let t_cycles =
+                    email_notification.deposited_cycles.amount as f64 / 1_000_000_000_000.0;
+
+                // Format with 8 decimals
+                let formatted = format!("{:.8}", t_cycles);
+
+                // Trim leading zeros
+                let formatted_cycles = formatted
+                    .trim_end_matches('0')
+                    .trim_end_matches('.')
+                    .to_string();
+
+                format!(
+                    "🚀 {} T Cycles Deposited on Your {}",
+                    formatted_cycles, self.segment.kind
+                )
             }
         }
     }

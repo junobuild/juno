@@ -8,8 +8,8 @@ use std::time::Duration;
 
 pub fn store_and_defer_notification(notify_args: &NotifyArgs) {
     let key = insert_notification(
-        &notify_args.segment_id,
-        &Notification::from_send(&notify_args.notification),
+        &notify_args.segment.id,
+        &Notification::from_args(notify_args),
     )
     .unwrap_or_else(|e| trap(&e));
 

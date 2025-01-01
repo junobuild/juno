@@ -7,29 +7,27 @@ mod random;
 mod store;
 mod types;
 mod upgrade;
+mod notify;
 
 use crate::console::assert_mission_control_center;
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
-use crate::http::send::send_notification;
 use crate::http::response::transform_response;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::random::defer_init_random_seed;
 use crate::store::heap::{
     delete_controllers, set_controllers as set_controllers_store, set_env as set_env_store,
 };
-use crate::store::stable::insert_notification;
 use crate::types::interface::NotifyArgs;
-use crate::types::state::{Env, HeapState, Notification, State};
+use crate::types::state::{Env, HeapState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use ciborium::into_writer;
 use ic_cdk::api::management_canister::http_request::{HttpResponse, TransformArgs};
-use ic_cdk::{caller, spawn, storage, trap};
+use ic_cdk::{caller, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
-use ic_cdk_timers::set_timer;
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use junobuild_shared::upgrade::write_pre_upgrade;
-use std::time::Duration;
+use crate::notify::store_and_defer_notification;
 
 #[init]
 fn init() {
@@ -119,24 +117,12 @@ async fn notify(notify_args: NotifyArgs) {
         .await
         .unwrap_or_else(|e| trap(&e));
 
-    let key = insert_notification(
-        &notify_args.segment_id,
-        &Notification::from_send(&notify_args.notification),
-    )
-    .unwrap_or_else(|e| trap(&e));
-
-    set_timer(Duration::ZERO, || spawn(send_notification(key)));
+    store_and_defer_notification(&notify_args);
 }
 
 #[update(guard = "caller_is_admin_controller")]
 fn ping(notify_args: NotifyArgs) {
-    let key = insert_notification(
-        &notify_args.segment_id,
-        &Notification::from_send(&notify_args.notification),
-    )
-    .unwrap_or_else(|e| trap(&e));
-
-    set_timer(Duration::ZERO, || spawn(send_notification(key)));
+    store_and_defer_notification(&notify_args);
 }
 
 // ---------------------------------------------------------

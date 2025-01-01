@@ -161,13 +161,6 @@ pub mod interface {
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
 
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum SegmentType {
-        Satellite,
-        MissionControl,
-        Orbiter,
-    }
-
     #[derive(CandidType, Deserialize)]
     pub struct Config {
         pub storage: StorageConfig,

@@ -9,17 +9,18 @@ const testNotify = async (mainnet) => {
 
 	await ping({
 		user: Principal.fromText('bnz7o-iuaaa-aaaaa-qaaaa-cai'),
-		segment_id: Principal.fromText(
-			'plrof-3btl5-tyr2o-pf5zm-qvidg-f3awf-fg4w6-xuipq-m34q3-27d6d-yqe'
-		),
-		notification: {
+		segment: {
+			id: Principal.fromText('plrof-3btl5-tyr2o-pf5zm-qvidg-f3awf-fg4w6-xuipq-m34q3-27d6d-yqe'),
+			kind: { Satellite: null },
+			metadata: []
+		},
+		kind: {
 			DepositedCyclesEmail: {
 				to: 'david@fluster.io',
 				deposited_cycles: {
 					timestamp: 1704032400000000000n,
 					amount: 10_000n
-				},
-				metadata: []
+				}
 			}
 		}
 	});

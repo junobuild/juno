@@ -219,7 +219,7 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const SegmentType = IDL.Variant({
+	const SegmentKind = IDL.Variant({
 		Orbiter: IDL.Null,
 		MissionControl: IDL.Null,
 		Satellite: IDL.Null
@@ -271,10 +271,10 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_custom_domain: IDL.Func([IDL.Text, IDL.Opt(IDL.Text)], [], []),
-		set_fee: IDL.Func([SegmentType, Tokens], [], []),
+		set_fee: IDL.Func([SegmentKind, Tokens], [], []),
 		set_storage_config: IDL.Func([StorageConfig], [], []),
 		submit_proposal: IDL.Func([IDL.Nat], [IDL.Nat, Proposal], []),
-		update_rate_config: IDL.Func([SegmentType, RateConfig], [], []),
+		update_rate_config: IDL.Func([SegmentKind, RateConfig], [], []),
 		upload_asset_chunk: IDL.Func([UploadChunk], [UploadChunkResult], []),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});

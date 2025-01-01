@@ -34,6 +34,7 @@ type TransformArgs = record { context : blob; response : HttpResponse };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
   notify : (NotifyArgs) -> ();
+  ping : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();
   set_env : (Env) -> ();
   transform : (TransformArgs) -> (HttpResponse) query;

@@ -77,9 +77,9 @@ pub mod runtime {
 
 pub mod interface {
     use candid::{CandidType, Deserialize};
+    use junobuild_shared::types::monitoring::CyclesBalance;
     use junobuild_shared::types::state::{Metadata, SegmentId, UserId};
     use serde::Serialize;
-    use junobuild_shared::types::monitoring::CyclesBalance;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum SendNotification {

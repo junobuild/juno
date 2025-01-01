@@ -1,8 +1,8 @@
 use crate::http::request::post_email;
-use ic_cdk::{trap};
-use crate::store::heap::{get_email_api_key};
+use crate::store::heap::get_email_api_key;
 use crate::store::stable::{get_notification, set_notification};
 use crate::types::state::{DepositedCyclesEmailNotification, Notification, NotificationKey};
+use ic_cdk::trap;
 
 pub async fn send_notification(key: NotificationKey) {
     let notification = get_notification(&key).unwrap_or_else(|| trap("Notification not found."));
@@ -20,7 +20,10 @@ pub async fn send_notification(key: NotificationKey) {
     }
 }
 
-pub async fn send_email(key: &NotificationKey, email: &DepositedCyclesEmailNotification) -> Result<(), String> {
+pub async fn send_email(
+    key: &NotificationKey,
+    email: &DepositedCyclesEmailNotification,
+) -> Result<(), String> {
     let email_api_key = get_email_api_key()?;
 
     post_email(key, email, &email_api_key).await

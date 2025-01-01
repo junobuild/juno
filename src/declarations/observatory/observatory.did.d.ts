@@ -51,6 +51,7 @@ export interface TransformArgs {
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
 	notify: ActorMethod<[NotifyArgs], undefined>;
+	ping: ActorMethod<[NotifyArgs], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_env: ActorMethod<[Env], undefined>;
 	transform: ActorMethod<[TransformArgs], HttpResponse>;

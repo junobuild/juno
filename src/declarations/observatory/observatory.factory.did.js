@@ -47,6 +47,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		notify: IDL.Func([NotifyArgs], [], []),
+		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
 		set_env: IDL.Func([Env], [], []),
 		transform: IDL.Func([TransformArgs], [HttpResponse], ['query']),

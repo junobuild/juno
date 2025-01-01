@@ -17,21 +17,11 @@ pub fn insert_notification(
     })
 }
 
-pub fn get_notification(
-    key: &NotificationKey,
-) -> Option<Notification> {
-    STATE.with(|state| {
-        get_notification_impl(
-            key,
-            &state.borrow().stable.notifications,
-        )
-    })
+pub fn get_notification(key: &NotificationKey) -> Option<Notification> {
+    STATE.with(|state| get_notification_impl(key, &state.borrow().stable.notifications))
 }
 
-pub fn set_notification(
-    key: &NotificationKey,
-    notification: &Notification,
-) {
+pub fn set_notification(key: &NotificationKey, notification: &Notification) {
     STATE.with(|state| {
         insert_notification_with_key(
             key,
@@ -41,7 +31,10 @@ pub fn set_notification(
     })
 }
 
-fn get_notification_impl(key: &NotificationKey, notifications: &NotificationsStable,) -> Option<Notification> {
+fn get_notification_impl(
+    key: &NotificationKey,
+    notifications: &NotificationsStable,
+) -> Option<Notification> {
     notifications.get(key)
 }
 

@@ -1,11 +1,14 @@
 use crate::memory::init_stable_state;
-use crate::types::state::{DepositedCyclesEmailNotification, HeapState, Notification, NotificationKey, NotificationStatus, State};
+use crate::types::interface::SendNotification;
+use crate::types::state::{
+    DepositedCyclesEmailNotification, HeapState, Notification, NotificationKey, NotificationStatus,
+    State,
+};
+use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
 use std::borrow::Cow;
-use ic_cdk::api::time;
-use crate::types::interface::{SendNotification};
 
 impl Default for State {
     fn default() -> Self {

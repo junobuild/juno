@@ -5,9 +5,9 @@ import { observatoryActorIC, observatoryActorLocal } from './actor.mjs';
 import { targetMainnet } from './utils.mjs';
 
 const testNotify = async (mainnet) => {
-	const { notify } = await (mainnet ? observatoryActorIC() : observatoryActorLocal());
+	const { ping } = await (mainnet ? observatoryActorIC() : observatoryActorLocal());
 
-	await notify({
+	await ping({
 		user: Principal.fromText('bnz7o-iuaaa-aaaaa-qaaaa-cai'),
 		segment_id: Principal.fromText(
 			'plrof-3btl5-tyr2o-pf5zm-qvidg-f3awf-fg4w6-xuipq-m34q3-27d6d-yqe'

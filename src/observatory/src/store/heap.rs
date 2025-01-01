@@ -1,10 +1,10 @@
 use crate::memory::STATE;
+use crate::types::state::{ApiKey, Env, HeapState};
 use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use junobuild_shared::types::interface::SetController;
 use junobuild_shared::types::state::ControllerId;
-use crate::types::state::{ApiKey, Env, HeapState};
 // ---------------------------------------------------------
 // Controllers
 // ---------------------------------------------------------
@@ -30,12 +30,7 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
 // ---------------------------------------------------------
 
 pub fn set_env(env: &Env) {
-    STATE.with(|state| {
-        set_env_impl(
-            env,
-            &mut state.borrow_mut().heap,
-        )
-    })
+    STATE.with(|state| set_env_impl(env, &mut state.borrow_mut().heap))
 }
 
 fn set_env_impl(env: &Env, state: &mut HeapState) {
@@ -43,9 +38,7 @@ fn set_env_impl(env: &Env, state: &mut HeapState) {
 }
 
 pub fn get_email_api_key() -> Result<ApiKey, String> {
-    let env = STATE.with(|state| {
-        state.borrow().heap.env.clone()
-    });
+    let env = STATE.with(|state| state.borrow().heap.env.clone());
 
     if let Some(env) = env {
         if let Some(email_api_key) = env.email_api_key {

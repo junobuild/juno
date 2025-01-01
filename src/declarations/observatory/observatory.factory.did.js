@@ -7,18 +7,27 @@ export const idlFactory = ({ IDL }) => {
 		timestamp: IDL.Nat64,
 		amount: IDL.Nat
 	});
-	const SendDepositedCyclesEmailNotification = IDL.Record({
+	const DepositedCyclesEmailNotification = IDL.Record({
 		to: IDL.Text,
-		deposited_cycles: CyclesBalance,
-		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)))
+		deposited_cycles: CyclesBalance
 	});
-	const SendNotification = IDL.Variant({
-		DepositedCyclesEmail: SendDepositedCyclesEmailNotification
+	const NotificationKind = IDL.Variant({
+		DepositedCyclesEmail: DepositedCyclesEmailNotification
+	});
+	const SegmentKind = IDL.Variant({
+		Orbiter: IDL.Null,
+		MissionControl: IDL.Null,
+		Satellite: IDL.Null
+	});
+	const Segment = IDL.Record({
+		id: IDL.Principal,
+		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
+		kind: SegmentKind
 	});
 	const NotifyArgs = IDL.Record({
+		kind: NotificationKind,
 		user: IDL.Principal,
-		segment_id: IDL.Principal,
-		notification: SendNotification
+		segment: Segment
 	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,

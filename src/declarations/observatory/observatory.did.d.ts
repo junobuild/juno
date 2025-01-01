@@ -10,6 +10,10 @@ export interface CyclesBalance {
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
+export interface DepositedCyclesEmailNotification {
+	to: string;
+	deposited_cycles: CyclesBalance;
+}
 export interface Env {
 	email_api_key: [] | [string];
 }
@@ -22,19 +26,20 @@ export interface HttpResponse {
 	body: Uint8Array | number[];
 	headers: Array<HttpHeader>;
 }
-export interface NotifyArgs {
-	user: Principal;
-	segment_id: Principal;
-	notification: SendNotification;
-}
-export interface SendDepositedCyclesEmailNotification {
-	to: string;
-	deposited_cycles: CyclesBalance;
-	metadata: [] | [Array<[string, string]>];
-}
-export type SendNotification = {
-	DepositedCyclesEmail: SendDepositedCyclesEmailNotification;
+export type NotificationKind = {
+	DepositedCyclesEmail: DepositedCyclesEmailNotification;
 };
+export interface NotifyArgs {
+	kind: NotificationKind;
+	user: Principal;
+	segment: Segment;
+}
+export interface Segment {
+	id: Principal;
+	metadata: [] | [Array<[string, string]>];
+	kind: SegmentKind;
+}
+export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;

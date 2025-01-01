@@ -21,7 +21,7 @@ const orbiter007Actor = new ActorApi<OrbiterActor007>();
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getMissionControlActor004 = async ({
+export const getMissionControlActor004 = ({
 	identity,
 	missionControlId
 }: {
@@ -37,14 +37,14 @@ export const getMissionControlActor004 = async ({
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getMissionControlActor0013 = async ({
+export const getMissionControlActor0013 = ({
 	identity,
 	missionControlId
 }: {
 	missionControlId: Principal;
 	identity: OptionIdentity;
 }): Promise<MissionControlActor0013> =>
-	await missionControl0013Actor.getActor({
+	missionControl0013Actor.getActor({
 		canisterId: missionControlId,
 		idlFactory: idlFactorMissionControl0013,
 		identity
@@ -85,14 +85,14 @@ export const getSatelliteActor009 = ({
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getOrbiterActor007 = async ({
+export const getOrbiterActor007 = ({
 	orbiterId,
 	identity
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
 }): Promise<OrbiterActor007> =>
-	await orbiter007Actor.getActor({
+	orbiter007Actor.getActor({
 		canisterId: orbiterId,
 		idlFactory: idlFactorOrbiter007,
 		identity

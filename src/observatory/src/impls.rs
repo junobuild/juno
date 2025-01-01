@@ -1,5 +1,5 @@
 use crate::memory::init_stable_state;
-use crate::templates::DEPOSITED_CYCLES_HTML;
+use crate::templates::{DEPOSITED_CYCLES_HTML, DEPOSITED_CYCLES_TXT};
 use crate::types::interface::NotifyArgs;
 use crate::types::state::{
     HeapState, Notification, NotificationKey, NotificationKind, NotificationStatus, State,
@@ -135,13 +135,11 @@ impl Notification {
         }
     }
 
-    pub fn content(&self) -> String {
+    fn content(&self, template: &str) -> String {
         match &self.kind {
             NotificationKind::DepositedCyclesEmail(email_notification) => {
                 let formatted_cycles =
                     Self::format_cycles(email_notification.deposited_cycles.amount);
-
-                let template = String::from_utf8_lossy(DEPOSITED_CYCLES_HTML);
 
                 let formatted_timestamp =
                     Self::format_timestamp(email_notification.deposited_cycles.timestamp)
@@ -167,5 +165,15 @@ impl Notification {
                 content
             }
         }
+    }
+
+    pub fn html(&self) -> String {
+        let template = String::from_utf8_lossy(DEPOSITED_CYCLES_HTML);
+        self.content(&template)
+    }
+
+    pub fn text(&self) -> String {
+        let template = String::from_utf8_lossy(DEPOSITED_CYCLES_TXT);
+        self.content(&template)
     }
 }

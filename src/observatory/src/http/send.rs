@@ -34,7 +34,8 @@ pub async fn send_email(
         from: "Juno <notify@juno.build>".to_string(),
         to: [to.to_owned()].to_vec(),
         subject: notification.title(),
-        html: notification.content(),
+        html: notification.html(),
+        text: notification.text(),
     };
 
     post_email(&idempotency_key, &api_key, &email).await

@@ -6,4 +6,5 @@ pub struct EmailRequestBody {
     pub to: Vec<String>,
     pub subject: String,
     pub html: String,
+    pub text: String,
 }

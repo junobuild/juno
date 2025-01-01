@@ -31,7 +31,7 @@ pub async fn send_email(
     let api_key = get_email_api_key()?;
 
     let email = EmailRequestBody {
-        from: "Juno <notify@juno.watch>".to_string(),
+        from: "Juno <notify@juno.build>".to_string(),
         to: [to.to_owned()].to_vec(),
         subject: notification.title(),
         html: notification.content(),

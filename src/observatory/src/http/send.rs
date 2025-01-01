@@ -33,9 +33,10 @@ pub async fn send_email(
     let api_key = get_email_api_key()?;
 
     let email = EmailRequestBody {
-        to: to.clone(),
-        title: notification.title(),
-        content: notification.content(),
+        from: "Juno <notify@juno.watch>".to_string(),
+        to: [to.clone()].to_vec(),
+        subject: notification.title(),
+        html: notification.content(),
     };
 
     post_email(&idempotency_key, &api_key, &email).await

@@ -2,7 +2,8 @@ use serde::Serialize;
 
 #[derive(Serialize)]
 pub struct EmailRequestBody {
-    pub to: String,
-    pub title: String,
-    pub content: String,
+    pub from: String,
+    pub to: Vec<String>,
+    pub subject: String,
+    pub html: String,
 }

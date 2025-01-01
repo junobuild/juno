@@ -40,7 +40,7 @@ use crate::store::stable::{
     get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
-use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets, SegmentType};
+use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
     ProposalType, Rates, ReleasesMetadata, State,
@@ -62,7 +62,7 @@ use junobuild_shared::types::interface::{
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
 use junobuild_shared::types::list::{ListParams, ListResults};
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::types::state::{Controllers, SegmentType, UserId};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,

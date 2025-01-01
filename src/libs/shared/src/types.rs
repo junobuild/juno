@@ -88,6 +88,13 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum SegmentType {
+        Satellite,
+        MissionControl,
+        Orbiter,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct OrbiterSatelliteConfig {
         pub features: Option<OrbiterSatelliteFeatures>,
         pub created_at: Timestamp,

@@ -46,7 +46,7 @@ use crate::types::state::{
     ProposalType, Rates, ReleasesMetadata, State,
 };
 use candid::Principal;
-use ciborium::into_writer;
+use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::caller;
 use ic_cdk::{id, trap};
@@ -77,7 +77,6 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use memory::{get_memory_upgrades, init_stable_state};
-use serde_cbor::from_reader;
 use std::collections::HashMap;
 use types::state::Payments;
 

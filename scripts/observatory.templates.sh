@@ -1,8 +1,8 @@
 #!/bin/bash
 
-URL="https://github.com/junobuild/observatory-templates/releases/download/v0.0.1/deposited-cycles.html"
+URL="https://github.com/junobuild/observatory-templates/releases/download/v0.0.2/deposited-cycles.html"
 TARGET_DIR="src/observatory/resources"
-TARGET_FILE="${TARGET_DIR}/index.html"
+TARGET_FILE="${TARGET_DIR}/deposited-cycles.html"
 
 mkdir -p "$TARGET_DIR"
 

@@ -18,4 +18,5 @@ serde_json.workspace = true
 ciborium.workspace = true
 getrandom.workspace = true
 rand.workspace = true
+time = { version = "0.3.37", features = ["formatting"] }
 junobuild-shared = { path = "../libs/shared" }

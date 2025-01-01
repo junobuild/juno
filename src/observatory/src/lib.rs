@@ -6,6 +6,7 @@ mod memory;
 mod notify;
 mod random;
 mod store;
+mod templates;
 mod types;
 mod upgrade;
 

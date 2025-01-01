@@ -1,4 +1,5 @@
 use crate::memory::init_stable_state;
+use crate::templates::DEPOSITED_CYCLES_HTML;
 use crate::types::interface::NotifyArgs;
 use crate::types::state::{
     HeapState, Notification, NotificationKey, NotificationKind, NotificationStatus, State,
@@ -7,7 +8,9 @@ use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
+use junobuild_shared::types::state::SegmentKind;
 use std::borrow::Cow;
+use time::OffsetDateTime;
 
 impl Default for State {
     fn default() -> Self {
@@ -68,25 +71,89 @@ impl Notification {
         }
     }
 
+    fn format_cycles(amount: u128) -> String {
+        let t_cycles = amount as f64 / 1_000_000_000_000.0;
+
+        // Format with 8 decimals
+        let formatted = format!("{:.8}", t_cycles);
+
+        // Trim leading zeros
+        let formatted_cycles = formatted
+            .trim_end_matches('0')
+            .trim_end_matches('.')
+            .to_string();
+
+        formatted_cycles
+    }
+
+    fn format_timestamp(ts_nanos: u64) -> Result<String, String> {
+        let dt_offset = OffsetDateTime::from_unix_timestamp_nanos(ts_nanos as i128)
+            .unwrap_or(OffsetDateTime::UNIX_EPOCH);
+
+        let format =
+            time::format_description::parse("[year]-[month]-[day]T[hour]:[minute]:[second]+00:00")
+                .map_err(|err| format!("Failed to parse format description: {}", err))?;
+
+        dt_offset
+            .format(&format)
+            .map_err(|err| format!("Failed to format timestamp: {}", err))
+    }
+
+    fn segment_url(&self) -> String {
+        match self.segment.kind {
+            SegmentKind::Orbiter => "https://console.juno.build/analytics".to_string(),
+            SegmentKind::MissionControl => "https://console.juno.build/mission-control".to_string(),
+            SegmentKind::Satellite => format!(
+                "https://console.juno.build/satellite/?s={}",
+                self.segment.id
+            ),
+        }
+    }
+
     pub fn title(&self) -> String {
         match &self.kind {
             NotificationKind::DepositedCyclesEmail(email_notification) => {
-                let t_cycles =
-                    email_notification.deposited_cycles.amount as f64 / 1_000_000_000_000.0;
-
-                // Format with 8 decimals
-                let formatted = format!("{:.8}", t_cycles);
-
-                // Trim leading zeros
-                let formatted_cycles = formatted
-                    .trim_end_matches('0')
-                    .trim_end_matches('.')
-                    .to_string();
+                let formatted_cycles =
+                    Self::format_cycles(email_notification.deposited_cycles.amount);
 
                 format!(
                     "🚀 {} T Cycles Deposited on Your {}",
                     formatted_cycles, self.segment.kind
                 )
+            }
+        }
+    }
+
+    pub fn content(&self) -> std::io::Result<String> {
+        match &self.kind {
+            NotificationKind::DepositedCyclesEmail(email_notification) => {
+                let formatted_cycles =
+                    Self::format_cycles(email_notification.deposited_cycles.amount);
+
+                let template = String::from_utf8_lossy(DEPOSITED_CYCLES_HTML);
+
+                let formatted_timestamp =
+                    Self::format_timestamp(email_notification.deposited_cycles.timestamp)
+                        .unwrap_or_else(|_| "Invalid timestamp".to_string());
+
+                let mut content = template
+                    .replace("{{cycles}}", &formatted_cycles)
+                    .replace("{{module}}", &self.segment.kind.to_string())
+                    .replace("{{timestamp}}", &formatted_timestamp)
+                    .replace("{{url}}", &self.segment_url());
+
+                let name = self
+                    .segment
+                    .metadata
+                    .as_ref()
+                    .and_then(|metadata| metadata.get("name"));
+
+                content = match name {
+                    Some(name) => content.replace("{{name}}", name),
+                    None => content.replace(" (<!-- -->{{name}}<!-- -->)", ""),
+                };
+
+                Ok(content)
             }
         }
     }

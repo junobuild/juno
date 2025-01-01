@@ -3,16 +3,17 @@ mod guards;
 mod http;
 mod impls;
 mod memory;
+mod notify;
 mod random;
 mod store;
 mod types;
 mod upgrade;
-mod notify;
 
 use crate::console::assert_mission_control_center;
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
 use crate::http::response::transform_response;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
+use crate::notify::store_and_defer_notification;
 use crate::random::defer_init_random_seed;
 use crate::store::heap::{
     delete_controllers, set_controllers as set_controllers_store, set_env as set_env_store,
@@ -27,7 +28,6 @@ use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, updat
 use junobuild_shared::controllers::init_controllers;
 use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
 use junobuild_shared::upgrade::write_pre_upgrade;
-use crate::notify::store_and_defer_notification;
 
 #[init]
 fn init() {

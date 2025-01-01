@@ -20,7 +20,7 @@ pub async fn post_email(
 
     match http_request_outcall(request, 5_000_000_000).await {
         Ok((_response,)) => {
-            print("✅ ---------> Request processed.".to_string());
+            print("✅ ---------> Request processed.");
             Ok(())
         }
         Err((r, m)) => {
@@ -41,8 +41,8 @@ fn get_email_request(
     let idempotency_key = format!(
         "{}___{}___{}",
         key.segment_id.to_text(),
-        key.created_at.to_string(),
-        key.nonce.to_string()
+        key.created_at,
+        key.nonce
     );
 
     let request_headers = vec![

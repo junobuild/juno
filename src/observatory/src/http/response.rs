@@ -35,7 +35,6 @@ pub fn transform_response(raw: TransformArgsCdk) -> HttpResponseCdk {
         status: raw.response.status.clone(),
         body: raw.response.body.clone(),
         headers,
-        ..Default::default()
     };
 
     if i32::try_from(res.status.clone().0).unwrap() == 200 {

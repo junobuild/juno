@@ -15,3 +15,4 @@ yarn.lock
 target
 
 src/satellite/resources
+src/observatory/resources

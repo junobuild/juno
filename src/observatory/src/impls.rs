@@ -159,7 +159,9 @@ impl Notification {
 
                 content = match name {
                     Some(name) => content.replace("{{name}}", name),
-                    None => content.replace(" (<!-- -->{{name}}<!-- -->)", ""),
+                    None => content
+                        .replace(" (<!-- -->{{name}}<!-- -->)", "")
+                        .replace(" ({{name}})", ""),
                 };
 
                 content

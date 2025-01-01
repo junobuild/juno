@@ -10,7 +10,7 @@ mod upgrade;
 
 use crate::console::assert_mission_control_center;
 use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
-use crate::http::notify::send_notification;
+use crate::http::send::send_notification;
 use crate::http::response::transform_response;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
 use crate::random::defer_init_random_seed;

@@ -1,3 +1,3 @@
-pub mod notify;
+pub mod send;
 mod request;
 pub mod response;

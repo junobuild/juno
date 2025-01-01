@@ -22,12 +22,14 @@ const toSetController = ({
 export const setMissionControlController004 = async ({
 	missionControlId,
 	controllerId,
+	identity,
 	...rest
 }: {
 	missionControlId: Principal;
+	identity: OptionIdentity;
 } & SetControllerParams) => {
 	try {
-		const actor = await getMissionControlActor004(missionControlId);
+		const actor = await getMissionControlActor004({ missionControlId, identity });
 		await actor.set_mission_control_controllers(
 			[Principal.fromText(controllerId)],
 			toSetController(rest)

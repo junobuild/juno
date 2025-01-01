@@ -9,11 +9,8 @@ import { idlFactory as idlFactorSatellite008 } from '$declarations/deprecated/sa
 import type { _SERVICE as SatelliteActor009 } from '$declarations/deprecated/satellite-0-0-9.did';
 import { idlFactory as idlFactorSatellite009 } from '$declarations/deprecated/satellite-0-0-9.factory.did';
 import { ActorApi } from '$lib/api/actors/actor.api';
-import { authStore } from '$lib/stores/auth.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Principal } from '@dfinity/principal';
-// eslint-disable-next-line local-rules/no-svelte-store-in-api
-import { get } from 'svelte/store';
 
 const missionControl004Actor = new ActorApi<MissionControlActor004>();
 const missionControl0013Actor = new ActorApi<MissionControlActor0013>();
@@ -24,29 +21,30 @@ const orbiter007Actor = new ActorApi<OrbiterActor007>();
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getMissionControlActor004 = async (
-	canisterId: Principal
-): Promise<MissionControlActor004> => {
-	const identity: OptionIdentity = get(authStore).identity;
-
-	return await missionControl004Actor.getActor({
-		canisterId,
+export const getMissionControlActor004 = ({
+	identity,
+	missionControlId
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+}): Promise<MissionControlActor004> =>
+	missionControl004Actor.getActor({
+		canisterId: missionControlId,
 		idlFactory: idlFactorMissionControl004,
 		identity
 	});
-};
 
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getMissionControlActor0013 = async ({
+export const getMissionControlActor0013 = ({
 	identity,
 	missionControlId
 }: {
 	missionControlId: Principal;
 	identity: OptionIdentity;
 }): Promise<MissionControlActor0013> =>
-	await missionControl0013Actor.getActor({
+	missionControl0013Actor.getActor({
 		canisterId: missionControlId,
 		idlFactory: idlFactorMissionControl0013,
 		identity
@@ -55,40 +53,46 @@ export const getMissionControlActor0013 = async ({
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getSatelliteActor008 = (canisterId: Principal): Promise<SatelliteActor008> => {
-	const identity: OptionIdentity = get(authStore).identity;
-
-	return satellite008Actor.getActor({
-		canisterId,
+export const getSatelliteActor008 = ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<SatelliteActor008> =>
+	satellite008Actor.getActor({
+		canisterId: satelliteId,
 		idlFactory: idlFactorSatellite008,
 		identity
 	});
-};
 
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getSatelliteActor009 = (canisterId: Principal): Promise<SatelliteActor009> => {
-	const identity: OptionIdentity = get(authStore).identity;
-
-	return satellite009Actor.getActor({
-		canisterId,
+export const getSatelliteActor009 = ({
+	satelliteId,
+	identity
+}: {
+	satelliteId: Principal;
+	identity: OptionIdentity;
+}): Promise<SatelliteActor009> =>
+	satellite009Actor.getActor({
+		canisterId: satelliteId,
 		idlFactory: idlFactorSatellite009,
 		identity
 	});
-};
 
 /**
  * @deprecated TODO: to be remove - backwards compatibility
  */
-export const getOrbiterActor007 = async ({
+export const getOrbiterActor007 = ({
 	orbiterId,
 	identity
 }: {
 	orbiterId: Principal;
 	identity: OptionIdentity;
 }): Promise<OrbiterActor007> =>
-	await orbiter007Actor.getActor({
+	orbiter007Actor.getActor({
 		canisterId: orbiterId,
 		idlFactory: idlFactorOrbiter007,
 		identity

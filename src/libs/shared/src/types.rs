@@ -88,7 +88,7 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum SegmentType {
+    pub enum SegmentKind {
         Satellite,
         MissionControl,
         Orbiter,

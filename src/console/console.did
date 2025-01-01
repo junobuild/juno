@@ -131,7 +131,7 @@ type ProposalType = variant {
   SegmentsDeployment : SegmentsDeploymentOptions;
 };
 type RateConfig = record { max_tokens : nat64; time_per_token_ns : nat64 };
-type SegmentType = variant { Orbiter; MissionControl; Satellite };
+type SegmentKind = variant { Orbiter; MissionControl; Satellite };
 type SegmentsDeploymentOptions = record {
   orbiter : opt text;
   mission_control_version : opt text;
@@ -222,10 +222,10 @@ service : () -> {
     ) query;
   set_controllers : (SetControllersArgs) -> ();
   set_custom_domain : (text, opt text) -> ();
-  set_fee : (SegmentType, Tokens) -> ();
+  set_fee : (SegmentKind, Tokens) -> ();
   set_storage_config : (StorageConfig) -> ();
   submit_proposal : (nat) -> (nat, Proposal);
-  update_rate_config : (SegmentType, RateConfig) -> ();
+  update_rate_config : (SegmentKind, RateConfig) -> ();
   upload_asset_chunk : (UploadChunk) -> (UploadChunkResult);
   version : () -> (text) query;
 }

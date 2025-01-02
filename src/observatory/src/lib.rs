@@ -122,7 +122,7 @@ async fn notify(notify_args: NotifyArgs) {
     store_and_defer_notification(&notify_args);
 }
 
-#[update(guard = "caller_is_admin_controller")]
+#[query(guard = "caller_is_admin_controller")]
 fn get_notify_status(filter: GetNotifications) -> NotifyStatus {
     let notifications = get_notifications(&filter);
 

@@ -2,6 +2,8 @@ import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/obs
 import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { Principal } from '@dfinity/principal';
+import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from './constants/observatory-tests.constants';
@@ -56,6 +58,60 @@ describe('Observatory', () => {
 			await expect(
 				del_controllers({
 					controllers: [controller.getPrincipal()]
+				})
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+
+		it('should throw errors on list controllers', async () => {
+			const { list_controllers } = actor;
+
+			await expect(list_controllers()).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+
+		it('should throw errors on get notify status', async () => {
+			const { get_notify_status } = actor;
+
+			await expect(
+				get_notify_status({
+					segment_id: toNullable(),
+					from: toNullable(),
+					to: toNullable()
+				})
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+
+		it('should throw errors on ping', async () => {
+			const { ping } = actor;
+
+			await expect(
+				ping({
+					user: Principal.fromText('bnz7o-iuaaa-aaaaa-qaaaa-cai'),
+					segment: {
+						id: Principal.fromText(
+							'plrof-3btl5-tyr2o-pf5zm-qvidg-f3awf-fg4w6-xuipq-m34q3-27d6d-yqe'
+						),
+						kind: { Satellite: null },
+						metadata: []
+					},
+					kind: {
+						DepositedCyclesEmail: {
+							to: 'test@test.com',
+							deposited_cycles: {
+								timestamp: 1704032400000000000n,
+								amount: 100_456_000_000n
+							}
+						}
+					}
+				})
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+
+		it('should throw errors on set env', async () => {
+			const { set_env } = actor;
+
+			await expect(
+				set_env({
+					email_api_key: ['secret']
 				})
 			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});

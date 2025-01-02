@@ -1,4 +1,5 @@
 pub mod state {
+    use crate::types::monitoring::CyclesBalance;
     use candid::Principal;
     use candid::{CandidType, Nat};
     use ic_cdk::api::management_canister::main::CanisterStatusType;
@@ -114,17 +115,29 @@ pub mod state {
         pub track_events: bool,
         pub performance_metrics: bool,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum NotificationKind {
+        DepositedCyclesEmail(DepositedCyclesEmailNotification),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DepositedCyclesEmailNotification {
+        pub to: String,
+        pub deposited_cycles: CyclesBalance,
+    }
 }
 
 pub mod interface {
     use crate::mgmt::types::cmc::SubnetId;
     use crate::types::core::Bytes;
     use crate::types::state::{
-        ControllerId, ControllerScope, Metadata, MissionControlId, Timestamp, UserId,
+        ControllerId, ControllerScope, Metadata, MissionControlId, NotificationKind, Segment,
+        Timestamp, UserId,
     };
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateCanisterArgs {
@@ -182,6 +195,13 @@ pub mod interface {
     pub struct MemorySize {
         pub heap: Bytes,
         pub stable: Bytes,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct NotifyArgs {
+        pub user: UserId,
+        pub segment: Segment,
+        pub kind: NotificationKind,
     }
 }
 

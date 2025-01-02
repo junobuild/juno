@@ -1,30 +1,16 @@
 #!/usr/bin/env node
 
-import pkgPrincipal from '@dfinity/principal';
-import { observatoryActorIC } from './actor.mjs';
+import { getIdentity } from './console.config.utils.mjs';
+import { targetMainnet } from './utils.mjs';
 
-const { Principal } = pkgPrincipal;
+const mainnet = targetMainnet();
 
-const principal = Principal.fromText(
-	'ozbq5-kobnz-6zez3-ok5uu-pz6js-kitcd-he6z2-yz7v6-ozpnq-pk3ha-dae'
-);
+const controller = (await getIdentity(mainnet)).getPrincipal().toText();
 
-const setCronController = async () => {
-	const actor = await observatoryActorIC();
+console.log('Controller:', controller);
 
-	const controller = {
-		metadata: [],
-		expires_at: []
-	};
-
-	const controllers = [principal];
-
-	await actor.set_cron_controllers({
-		controller,
-		controllers
-	});
-
-	console.log('Cron controller set.');
-};
-
-await setCronController();
+if (!mainnet) {
+	await fetch(`http://localhost:5999/observatory/controller/?id=${controller}`);
+} else {
+	console.log('Nothing done.');
+}

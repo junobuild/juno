@@ -11,5 +11,12 @@ crate-type = ["cdylib"]
 candid.workspace = true
 ic-cdk.workspace = true
 ic-cdk-macros.workspace = true
+ic-cdk-timers.workspace = true
+ic-stable-structures.workspace = true
 serde.workspace = true
+serde_json.workspace = true
+ciborium.workspace = true
+getrandom.workspace = true
+rand.workspace = true
+time = { version = "0.3.37", features = ["formatting"] }
 junobuild-shared = { path = "../libs/shared" }

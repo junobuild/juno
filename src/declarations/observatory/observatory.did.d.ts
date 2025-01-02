@@ -3,9 +3,53 @@ import type { IDL } from '@dfinity/candid';
 import type { Principal } from '@dfinity/principal';
 
 export type ControllerScope = { Write: null } | { Admin: null };
+export interface CyclesBalance {
+	timestamp: bigint;
+	amount: bigint;
+}
 export interface DeleteControllersArgs {
 	controllers: Array<Principal>;
 }
+export interface DepositedCyclesEmailNotification {
+	to: string;
+	deposited_cycles: CyclesBalance;
+}
+export interface Env {
+	email_api_key: [] | [string];
+}
+export interface GetNotifications {
+	to: [] | [bigint];
+	from: [] | [bigint];
+	segment_id: [] | [Principal];
+}
+export interface HttpHeader {
+	value: string;
+	name: string;
+}
+export interface HttpResponse {
+	status: bigint;
+	body: Uint8Array | number[];
+	headers: Array<HttpHeader>;
+}
+export type NotificationKind = {
+	DepositedCyclesEmail: DepositedCyclesEmailNotification;
+};
+export interface NotifyArgs {
+	kind: NotificationKind;
+	user: Principal;
+	segment: Segment;
+}
+export interface NotifyStatus {
+	pending: bigint;
+	sent: bigint;
+	failed: bigint;
+}
+export interface Segment {
+	id: Principal;
+	metadata: [] | [Array<[string, string]>];
+	kind: SegmentKind;
+}
+export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SetController {
 	metadata: Array<[string, string]>;
 	scope: ControllerScope;
@@ -15,9 +59,18 @@ export interface SetControllersArgs {
 	controller: SetController;
 	controllers: Array<Principal>;
 }
+export interface TransformArgs {
+	context: Uint8Array | number[];
+	response: HttpResponse;
+}
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
+	get_notify_status: ActorMethod<[GetNotifications], NotifyStatus>;
+	notify: ActorMethod<[NotifyArgs], undefined>;
+	ping: ActorMethod<[NotifyArgs], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
+	set_env: ActorMethod<[Env], undefined>;
+	transform: ActorMethod<[TransformArgs], HttpResponse>;
 	version: ActorMethod<[], string>;
 }
 export declare const idlFactory: IDL.InterfaceFactory;

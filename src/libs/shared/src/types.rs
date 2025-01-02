@@ -46,7 +46,6 @@ pub mod state {
         Admin,
     }
 
-    #[deprecated]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SegmentCanisterStatus {
         pub status: CanisterStatusType,
@@ -92,6 +91,13 @@ pub mod state {
         Satellite,
         MissionControl,
         Orbiter,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct Segment {
+        pub id: SegmentId,
+        pub kind: SegmentKind,
+        pub metadata: Option<Metadata>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

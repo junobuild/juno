@@ -1,5 +1,5 @@
 import {
-	missionControlDataStore,
+	missionControlIdDataStore,
 	missionControlSettingsDataStore
 } from '$lib/stores/mission-control.store';
 import { fromNullable } from '@dfinity/utils';
@@ -7,7 +7,7 @@ import { derived } from 'svelte/store';
 
 // TODO: find a better name but, I don't want to use missionControlId because it would clashes with the properties called missionControlId
 export const missionControlIdDerived = derived(
-	[missionControlDataStore],
+	[missionControlIdDataStore],
 	([$missionControlDataStore]) => $missionControlDataStore?.data
 );
 

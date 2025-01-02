@@ -6,6 +6,11 @@ type DepositedCyclesEmailNotification = record {
   deposited_cycles : CyclesBalance;
 };
 type Env = record { email_api_key : opt text };
+type GetNotifications = record {
+  to : opt nat64;
+  from : opt nat64;
+  segment_id : opt principal;
+};
 type HttpHeader = record { value : text; name : text };
 type HttpResponse = record {
   status : nat;
@@ -20,6 +25,7 @@ type NotifyArgs = record {
   user : principal;
   segment : Segment;
 };
+type NotifyStatus = record { pending : nat64; sent : nat64; failed : nat64 };
 type Segment = record {
   id : principal;
   metadata : opt vec record { text; text };
@@ -38,6 +44,7 @@ type SetControllersArgs = record {
 type TransformArgs = record { context : blob; response : HttpResponse };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
+  get_notify_status : (GetNotifications) -> (NotifyStatus) query;
   notify : (NotifyArgs) -> ();
   ping : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();

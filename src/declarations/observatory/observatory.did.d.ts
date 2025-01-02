@@ -17,6 +17,11 @@ export interface DepositedCyclesEmailNotification {
 export interface Env {
 	email_api_key: [] | [string];
 }
+export interface GetNotifications {
+	to: [] | [bigint];
+	from: [] | [bigint];
+	segment_id: [] | [Principal];
+}
 export interface HttpHeader {
 	value: string;
 	name: string;
@@ -33,6 +38,11 @@ export interface NotifyArgs {
 	kind: NotificationKind;
 	user: Principal;
 	segment: Segment;
+}
+export interface NotifyStatus {
+	pending: bigint;
+	sent: bigint;
+	failed: bigint;
 }
 export interface Segment {
 	id: Principal;
@@ -55,6 +65,7 @@ export interface TransformArgs {
 }
 export interface _SERVICE {
 	del_controllers: ActorMethod<[DeleteControllersArgs], undefined>;
+	get_notify_status: ActorMethod<[GetNotifications], NotifyStatus>;
 	notify: ActorMethod<[NotifyArgs], undefined>;
 	ping: ActorMethod<[NotifyArgs], undefined>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;

@@ -3,6 +3,16 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
+	const GetNotifications = IDL.Record({
+		to: IDL.Opt(IDL.Nat64),
+		from: IDL.Opt(IDL.Nat64),
+		segment_id: IDL.Opt(IDL.Principal)
+	});
+	const NotifyStatus = IDL.Record({
+		pending: IDL.Nat64,
+		sent: IDL.Nat64,
+		failed: IDL.Nat64
+	});
 	const CyclesBalance = IDL.Record({
 		timestamp: IDL.Nat64,
 		amount: IDL.Nat
@@ -55,6 +65,7 @@ export const idlFactory = ({ IDL }) => {
 	});
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
+		get_notify_status: IDL.Func([GetNotifications], [NotifyStatus], ['query']),
 		notify: IDL.Func([NotifyArgs], [], []),
 		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),

@@ -5,7 +5,7 @@
 	import { onDestroy, onMount, type Snippet } from 'svelte';
 	import { run } from 'svelte/legacy';
 	import { MISSION_CONTROL_v0_0_13 } from '$lib/constants/version.constants';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import {
 		initStatusesWorker,
@@ -46,11 +46,11 @@
 		// @ts-expect-error TODO: to be migrated to Svelte v5
 		worker,
 			canisterId,
-			$missionControlStore,
+			$missionControlIdDerived,
 			$missionControlVersion,
 			(() => {
 				// We wait until mission control is loaded
-				if (isNullish($missionControlStore)) {
+				if (isNullish($missionControlIdDerived)) {
 					return;
 				}
 
@@ -66,7 +66,7 @@
 							segment
 						}
 					],
-					missionControlId: $missionControlStore,
+					missionControlId: $missionControlIdDerived,
 					withMonitoringHistory:
 						compare($missionControlVersion.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) >= 0,
 					callback: syncCanister
@@ -83,7 +83,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -97,7 +97,7 @@
 					segment
 				}
 			],
-			missionControlId: $missionControlStore
+			missionControlId: $missionControlIdDerived
 		});
 	};
 </script>

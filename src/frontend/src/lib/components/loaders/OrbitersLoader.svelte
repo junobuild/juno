@@ -2,7 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
 	import type { Orbiter } from '$declarations/mission_control/mission_control.did';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { loadOrbiterVersion } from '$lib/services/console.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
@@ -34,7 +34,7 @@
 	};
 
 	$effect(() => {
-		load($missionControlStore);
+		load($missionControlIdDerived);
 	});
 
 	$effect(() => {

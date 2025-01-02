@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { getCreateOrbiterFeeBalance } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -12,7 +12,7 @@
 
 		const { result, error } = await getCreateOrbiterFeeBalance({
 			identity: $authStore.identity,
-			missionControlId: $missionControlStore
+			missionControlId: $missionControlIdDerived
 		});
 
 		busy.stop();

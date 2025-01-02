@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Snippet } from 'svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
@@ -11,9 +11,9 @@
 	let { children }: Props = $props();
 </script>
 
-{#if $missionControlStore === undefined}
+{#if $missionControlIdDerived === undefined}
 	<SpinnerParagraph>{$i18n.mission_control.loading}</SpinnerParagraph>
-{:else if $missionControlStore === null}
+{:else if $missionControlIdDerived === null}
 	<p>{$i18n.mission_control.not_found}</p>
 {:else}
 	{@render children()}

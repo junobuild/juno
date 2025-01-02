@@ -4,7 +4,7 @@
 	import { type UpgradeCodeParams, upgradeMissionControl } from '@junobuild/admin';
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalUpgradeDetail } from '$lib/types/modal';
@@ -25,7 +25,7 @@
 	) =>
 		await upgradeMissionControl({
 			missionControl: {
-				missionControlId: $missionControlStore!.toText(),
+				missionControlId: $missionControlIdDerived!.toText(),
 				identity: $authStore.identity ?? new AnonymousIdentity(),
 				...container()
 			},
@@ -33,14 +33,14 @@
 		});
 </script>
 
-{#if nonNullish($missionControlStore)}
+{#if nonNullish($missionControlIdDerived)}
 	<CanisterUpgradeModal
 		{onclose}
 		{newerReleases}
 		{currentVersion}
 		upgrade={upgradeMissionControlWasm}
 		segment="mission_control"
-		canisterId={$missionControlStore}
+		canisterId={$missionControlIdDerived}
 	>
 		{#snippet intro()}
 			<h2>

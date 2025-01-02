@@ -8,7 +8,7 @@
 	import ControllerInfo from '$lib/components/controllers/ControllerInfo.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -52,8 +52,8 @@
 
 	const canEdit = (controllerId: Principal): boolean =>
 		nonNullish($authStore.identity) &&
-		nonNullish($missionControlStore) &&
-		![$missionControlStore.toText(), $authStore.identity.getPrincipal().toText()].includes(
+		nonNullish($missionControlIdDerived) &&
+		![$missionControlIdDerived.toText(), $authStore.identity.getPrincipal().toText()].includes(
 			controllerId.toText()
 		);
 </script>

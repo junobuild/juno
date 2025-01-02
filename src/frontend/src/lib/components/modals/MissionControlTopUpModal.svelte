@@ -4,7 +4,7 @@
 	import { run } from 'svelte/legacy';
 	import CanisterTopUpModal from '$lib/components/modals/CanisterTopUpModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalTopUpMissionControlDetail } from '$lib/types/modal';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
@@ -25,10 +25,10 @@
 	});
 </script>
 
-{#if nonNullish($missionControlStore)}
+{#if nonNullish($missionControlIdDerived)}
 	<CanisterTopUpModal
 		segment="mission_control"
-		canisterId={$missionControlStore}
+		canisterId={$missionControlIdDerived}
 		{balance}
 		{accountIdentifier}
 		on:junoClose

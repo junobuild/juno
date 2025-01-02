@@ -5,8 +5,8 @@ import {
 import { fromNullable } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
-// TODO: rename store to shorten but find a good naming idea that does not conflicts with local variable
-export const missionControlStore = derived(
+// TODO: find a better name but, I don't want to use missionControlId because it would clashes with the properties called missionControlId
+export const missionControlIdDerived = derived(
 	[missionControlDataStore],
 	([$missionControlDataStore]) => $missionControlDataStore?.data
 );

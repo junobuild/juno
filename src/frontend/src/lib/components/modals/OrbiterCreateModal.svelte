@@ -7,7 +7,7 @@
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		createOrbiter,
 		createOrbiterWithConfig,
@@ -40,14 +40,14 @@
 			const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
 
 			await fn({
-				missionControl: $missionControlStore,
+				missionControl: $missionControlIdDerived,
 				config: {
 					...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
 				}
 			});
 
 			// Reload list of orbiters before navigation
-			await loadOrbiters({ missionControl: $missionControlStore, reload: true });
+			await loadOrbiters({ missionControl: $missionControlIdDerived, reload: true });
 
 			steps = 'ready';
 		} catch (err) {
@@ -97,7 +97,7 @@
 
 				<button
 					type="submit"
-					disabled={$authSignedOut || isNullish($missionControlStore) || insufficientFunds}
+					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
 					>{$i18n.analytics.create}</button
 				>
 			</form>

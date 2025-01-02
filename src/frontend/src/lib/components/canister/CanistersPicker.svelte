@@ -3,7 +3,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
@@ -29,8 +29,8 @@
 	onMount(
 		async () =>
 			await Promise.all([
-				loadOrbiters({ missionControl: $missionControlStore }),
-				loadSatellites({ missionControl: $missionControlStore })
+				loadOrbiters({ missionControl: $missionControlIdDerived }),
+				loadSatellites({ missionControl: $missionControlIdDerived })
 			])
 	);
 </script>
@@ -40,8 +40,8 @@
 		<option value={undefined}>{$i18n.canisters.select_destination}</option>
 	{/if}
 
-	{#if nonNullish($missionControlStore) && $missionControlStore.toText() !== excludeSegmentIdText}
-		<option value={$missionControlStore.toText()}>{$i18n.mission_control.title}</option>
+	{#if nonNullish($missionControlIdDerived) && $missionControlIdDerived.toText() !== excludeSegmentIdText}
+		<option value={$missionControlIdDerived.toText()}>{$i18n.mission_control.title}</option>
 	{/if}
 
 	{#if nonNullish($orbiterStore) && $orbiterStore.orbiter_id.toText() !== excludeSegmentIdText}

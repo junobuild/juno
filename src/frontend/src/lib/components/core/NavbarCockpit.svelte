@@ -10,7 +10,7 @@
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -23,21 +23,21 @@
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$missionControlStore,
-			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+		$missionControlIdDerived,
+			(async () => await loadOrbiters({ missionControl: $missionControlIdDerived }))();
 	});
 </script>
 
-{#if nonNullish($missionControlStore)}
+{#if nonNullish($missionControlIdDerived)}
 	<Canister
-		canisterId={$missionControlStore}
+		canisterId={$missionControlIdDerived}
 		segment="mission_control"
 		display={false}
 		bind:data={missionControlData}
 	/>
 {/if}
 
-{#if nonNullish($missionControlStore) && nonNullish(missionControlData)}
+{#if nonNullish($missionControlIdDerived) && nonNullish(missionControlData)}
 	<div in:slide={{ axis: 'x' }} class="container">
 		<NavbarLink
 			href="/mission-control"
@@ -69,8 +69,8 @@
 	</div>
 {/if}
 
-{#if nonNullish($missionControlStore)}
-	<WalletLoader missionControlId={$missionControlStore} bind:balance>
+{#if nonNullish($missionControlIdDerived)}
+	<WalletLoader missionControlId={$missionControlIdDerived} bind:balance>
 		{#if nonNullish(balance)}
 			<div in:slide={{ axis: 'x' }} class="container wallet">
 				<NavbarLink href="/wallet" ariaLabel={`${$i18n.satellites.open}: ${$i18n.wallet.title}`}>

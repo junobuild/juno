@@ -10,7 +10,7 @@
 	import Tabs from '$lib/components/ui/Tabs.svelte';
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
 		TABS_CONTEXT_KEY,
@@ -54,11 +54,11 @@
 
 		<SatellitesLoader>
 			<MissionControlGuard>
-				{#if nonNullish($missionControlStore)}
+				{#if nonNullish($missionControlIdDerived)}
 					{#if $store.tabId === $store.tabs[0].id}
-						<MissionControl missionControlId={$missionControlStore} />
+						<MissionControl missionControlId={$missionControlIdDerived} />
 					{:else if $store.tabId === $store.tabs[1].id}
-						<MissionControlSettings missionControlId={$missionControlStore} />
+						<MissionControlSettings missionControlId={$missionControlIdDerived} />
 					{/if}
 				{/if}
 			</MissionControlGuard>

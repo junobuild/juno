@@ -1,3 +1,10 @@
+type Controller = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  created_at : nat64;
+  scope : ControllerScope;
+  expires_at : opt nat64;
+};
 type ControllerScope = variant { Write; Admin };
 type CyclesBalance = record { timestamp : nat64; amount : nat };
 type DeleteControllersArgs = record { controllers : vec principal };
@@ -45,6 +52,7 @@ type TransformArgs = record { context : blob; response : HttpResponse };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
   get_notify_status : (GetNotifications) -> (NotifyStatus) query;
+  list_controllers : () -> (vec record { principal; Controller }) query;
   notify : (NotifyArgs) -> ();
   ping : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();

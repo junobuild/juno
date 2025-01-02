@@ -49,13 +49,11 @@
 			// Poll to init mission control center
 			await initMissionControl({
 				identity,
-				// eslint-disable-next-line require-await
-				onInitMissionControlSuccess: async (missionControlId) =>
-					missionControlDataStore.set(missionControlId)
+				onInitMissionControlSuccess: (missionControl) => missionControlDataStore.set(missionControl)
 			});
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Error initializing the user.`,
+				text: $i18n.errors.initializing_mission_control,
 				detail: err
 			});
 

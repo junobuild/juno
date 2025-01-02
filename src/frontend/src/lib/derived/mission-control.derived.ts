@@ -5,10 +5,14 @@ import {
 import { fromNullable } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
-// TODO: find a better name but, I don't want to use missionControlId because it would clashes with the properties called missionControlId
-export const missionControlIdDerived = derived(
+export const missionControl = derived(
 	[missionControlDataStore],
 	([$missionControlDataStore]) => $missionControlDataStore?.data
+);
+
+// TODO: find a better name but, I don't want to use missionControlId because it would clashes with the properties called missionControlId
+export const missionControlIdDerived = derived([missionControl], ([$missionControl]) =>
+	fromNullable($missionControl?.mission_control_id ?? [])
 );
 
 export const missionControlSettings = derived(

@@ -1,3 +1,4 @@
+import type { MissionControl } from '$declarations/console/console.did';
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import { initMissionControl as initMissionControlApi } from '$lib/api/console.api';
 import { missionControlVersion } from '$lib/api/mission-control.api';
@@ -20,17 +21,17 @@ export const initMissionControl = async ({
 	onInitMissionControlSuccess
 }: {
 	identity: Identity;
-	onInitMissionControlSuccess: (missionControlId: Principal) => Promise<void>;
+	onInitMissionControlSuccess: (missionControl: MissionControl) => void;
 	// eslint-disable-next-line no-async-promise-executor, require-await
 }) =>
 	// eslint-disable-next-line no-async-promise-executor, require-await
 	new Promise<void>(async (resolve, reject) => {
 		try {
-			const { missionControlId } = await getMissionControl({
+			const { missionControl } = await getMissionControl({
 				identity
 			});
 
-			if (isNullish(missionControlId)) {
+			if (isNullish(missionControl)) {
 				setTimeout(async () => {
 					try {
 						await initMissionControl({ identity, onInitMissionControlSuccess });
@@ -42,7 +43,7 @@ export const initMissionControl = async ({
 				return;
 			}
 
-			await onInitMissionControlSuccess(missionControlId);
+			onInitMissionControlSuccess(missionControl);
 
 			resolve();
 		} catch (err: unknown) {
@@ -55,20 +56,14 @@ const getMissionControl = async ({
 }: {
 	identity: Identity | undefined;
 }): Promise<{
-	missionControlId: Principal | undefined;
+	missionControl: MissionControl | undefined;
 }> => {
-	if (isNullish(identity)) {
-		throw new Error('Invalid identity.');
-	}
-
 	const mission_control = await initMissionControlApi(identity);
 
-	const missionControlId: Principal | undefined = fromNullable<Principal>(
-		mission_control.mission_control_id
-	);
+	const missionControlId = fromNullable<Principal>(mission_control.mission_control_id);
 
 	return {
-		missionControlId
+		missionControl: nonNullish(missionControlId) ? mission_control : missionControlId
 	};
 };
 

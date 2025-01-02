@@ -19,7 +19,8 @@ use crate::random::defer_init_random_seed;
 use crate::store::heap::{
     delete_controllers, set_controllers as set_controllers_store, set_env as set_env_store,
 };
-use crate::types::interface::NotifyArgs;
+use crate::store::stable::get_notifications;
+use crate::types::interface::{GetNotifications, NotifyArgs, NotifyStatus};
 use crate::types::state::{Env, HeapState, State};
 use crate::upgrade::types::upgrade::UpgradeStableState;
 use ciborium::into_writer;
@@ -119,6 +120,13 @@ async fn notify(notify_args: NotifyArgs) {
         .unwrap_or_else(|e| trap(&e));
 
     store_and_defer_notification(&notify_args);
+}
+
+#[update(guard = "caller_is_admin_controller")]
+fn get_notify_status(filter: GetNotifications) -> NotifyStatus {
+    let notifications = get_notifications(&filter);
+
+    NotifyStatus::from_notifications(&notifications)
 }
 
 #[update(guard = "caller_is_admin_controller")]

@@ -1,5 +1,7 @@
 use crate::memory::STATE;
 use crate::random::random;
+use crate::store::filter::filter_notifications_range;
+use crate::types::interface::GetNotifications;
 use crate::types::state::{Notification, NotificationKey, NotificationsStable};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::SegmentId;
@@ -29,6 +31,10 @@ pub fn set_notification(key: &NotificationKey, notification: &Notification) {
             &mut state.borrow_mut().stable.notifications,
         )
     })
+}
+
+pub fn get_notifications(filter: &GetNotifications) -> Vec<(NotificationKey, Notification)> {
+    STATE.with(|state| get_notifications_impl(filter, &state.borrow().stable.notifications))
 }
 
 fn get_notification_impl(
@@ -68,4 +74,11 @@ fn stable_notification_key(segment_id: &SegmentId) -> Result<NotificationKey, St
     };
 
     Ok(key)
+}
+
+fn get_notifications_impl(
+    filter: &GetNotifications,
+    history: &NotificationsStable,
+) -> Vec<(NotificationKey, Notification)> {
+    history.range(filter_notifications_range(filter)).collect()
 }

@@ -83,7 +83,7 @@ pub mod runtime {
 pub mod interface {
     use crate::types::state::NotificationKind;
     use candid::{CandidType, Deserialize};
-    use junobuild_shared::types::state::{Segment, UserId};
+    use junobuild_shared::types::state::{Segment, SegmentId, Timestamp, UserId};
     use serde::Serialize;
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -91,5 +91,19 @@ pub mod interface {
         pub user: UserId,
         pub segment: Segment,
         pub kind: NotificationKind,
+    }
+
+    #[derive(CandidType, Deserialize, Clone)]
+    pub struct GetNotifications {
+        pub segment_id: Option<SegmentId>,
+        pub from: Option<Timestamp>,
+        pub to: Option<Timestamp>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct NotifyStatus {
+        pub pending: u64,
+        pub sent: u64,
+        pub failed: u64,
     }
 }

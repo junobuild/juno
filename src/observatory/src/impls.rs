@@ -1,6 +1,6 @@
 use crate::memory::init_stable_state;
 use crate::templates::{DEPOSITED_CYCLES_HTML, DEPOSITED_CYCLES_TXT};
-use crate::types::interface::NotifyArgs;
+use crate::types::interface::{NotifyArgs, NotifyStatus};
 use crate::types::state::{
     HeapState, Notification, NotificationKey, NotificationKind, NotificationStatus, State,
 };
@@ -177,5 +177,27 @@ impl Notification {
     pub fn text(&self) -> String {
         let template = String::from_utf8_lossy(DEPOSITED_CYCLES_TXT);
         self.content(&template)
+    }
+}
+
+impl NotifyStatus {
+    pub fn from_notifications(notifications: &Vec<(NotificationKey, Notification)>) -> Self {
+        let mut pending = 0;
+        let mut sent = 0;
+        let mut failed = 0;
+
+        for (_, notification) in notifications {
+            match notification.status {
+                NotificationStatus::Pending => pending += 1,
+                NotificationStatus::Sent => sent += 1,
+                NotificationStatus::Failed => failed += 1,
+            }
+        }
+
+        NotifyStatus {
+            pending,
+            sent,
+            failed,
+        }
     }
 }

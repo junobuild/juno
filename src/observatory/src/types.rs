@@ -3,8 +3,9 @@ pub mod state {
     use candid::{CandidType, Deserialize};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
-    use junobuild_shared::types::monitoring::CyclesBalance;
-    use junobuild_shared::types::state::{Controllers, Segment, SegmentId, Timestamp};
+    use junobuild_shared::types::state::{
+        Controllers, NotificationKind, Segment, SegmentId, Timestamp,
+    };
     use serde::Serialize;
 
     pub type NotificationsStable = StableBTreeMap<NotificationKey, Notification, Memory>;
@@ -44,21 +45,10 @@ pub mod state {
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum NotificationKind {
-        DepositedCyclesEmail(DepositedCyclesEmailNotification),
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub enum NotificationStatus {
         Pending,
         Sent,
         Failed,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct DepositedCyclesEmailNotification {
-        pub to: String,
-        pub deposited_cycles: CyclesBalance,
     }
 
     // We acknowledge that this approach is insecure, as a compromised node could access the value.
@@ -81,17 +71,9 @@ pub mod runtime {
 }
 
 pub mod interface {
-    use crate::types::state::NotificationKind;
     use candid::{CandidType, Deserialize};
-    use junobuild_shared::types::state::{Segment, SegmentId, Timestamp, UserId};
+    use junobuild_shared::types::state::{SegmentId, Timestamp};
     use serde::Serialize;
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct NotifyArgs {
-        pub user: UserId,
-        pub segment: Segment,
-        pub kind: NotificationKind,
-    }
 
     #[derive(CandidType, Deserialize, Clone)]
     pub struct GetNotifications {

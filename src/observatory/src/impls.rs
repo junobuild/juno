@@ -1,14 +1,13 @@
 use crate::memory::init_stable_state;
 use crate::templates::{DEPOSITED_CYCLES_HTML, DEPOSITED_CYCLES_TXT};
-use crate::types::interface::{NotifyArgs, NotifyStatus};
-use crate::types::state::{
-    HeapState, Notification, NotificationKey, NotificationKind, NotificationStatus, State,
-};
+use crate::types::interface::NotifyStatus;
+use crate::types::state::{HeapState, Notification, NotificationKey, NotificationStatus, State};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
 use ic_stable_structures::Storable;
 use junobuild_shared::serializers::{deserialize_from_bytes, serialize_to_bytes};
-use junobuild_shared::types::state::SegmentKind;
+use junobuild_shared::types::interface::NotifyArgs;
+use junobuild_shared::types::state::{NotificationKind, SegmentKind};
 use std::borrow::Cow;
 use time::OffsetDateTime;
 

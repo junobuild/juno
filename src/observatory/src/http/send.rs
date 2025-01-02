@@ -2,8 +2,9 @@ use crate::http::request::post_email;
 use crate::http::types::EmailRequestBody;
 use crate::store::heap::get_email_api_key;
 use crate::store::stable::{get_notification, set_notification};
-use crate::types::state::{Notification, NotificationKey, NotificationKind};
+use crate::types::state::{Notification, NotificationKey};
 use ic_cdk::trap;
+use junobuild_shared::types::state::NotificationKind;
 
 pub async fn send_notification(key: NotificationKey) {
     let notification = get_notification(&key).unwrap_or_else(|| trap("Notification not found."));

@@ -55,7 +55,7 @@
 			});
 		} catch (err: unknown) {
 			toasts.error({
-				text: `Error initializing the user.`,
+				text: $i18n.errors.initializing_mission_control,
 				detail: err
 			});
 

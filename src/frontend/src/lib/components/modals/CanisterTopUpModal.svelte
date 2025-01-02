@@ -13,7 +13,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { E8S_PER_ICP, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -65,7 +65,7 @@
 	});
 
 	const onSubmit = async () => {
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -85,7 +85,7 @@
 		try {
 			await topUp({
 				canisterId,
-				missionControlId: $missionControlStore,
+				missionControlId: $missionControlIdDerived,
 				e8s: BigInt(icp * Number(E8S_PER_ICP)),
 				identity: $authStore.identity
 			});
@@ -173,7 +173,7 @@
 
 				<button
 					type="submit"
-					disabled={isNullish($missionControlStore) || !validIcp || !validCycles}
+					disabled={isNullish($missionControlIdDerived) || !validIcp || !validCycles}
 					>{$i18n.canisters.top_up}</button
 				>
 			</form>

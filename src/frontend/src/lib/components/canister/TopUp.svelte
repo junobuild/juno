@@ -2,7 +2,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher } from 'svelte';
 	import IconPublish from '$lib/components/icons/IconPublish.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { getMissionControlBalance } from '$lib/services/balance.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -23,7 +23,7 @@
 
 		busy.start();
 
-		const { result, error } = await getMissionControlBalance($missionControlStore);
+		const { result, error } = await getMissionControlBalance($missionControlIdDerived);
 
 		busy.stop();
 

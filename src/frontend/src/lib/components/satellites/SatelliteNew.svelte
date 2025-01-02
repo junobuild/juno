@@ -2,7 +2,7 @@
 	import { isNullish, nonNullish } from '@dfinity/utils';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import LaunchpadButton from '$lib/components/launchpad/LaunchpadButton.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { getCreateSatelliteFeeBalance } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { busy } from '$lib/stores/busy.store';
@@ -20,7 +20,7 @@
 
 		const { result, error } = await getCreateSatelliteFeeBalance({
 			identity: $authStore.identity,
-			missionControlId: $missionControlStore
+			missionControlId: $missionControlIdDerived
 		});
 
 		busy.stop();

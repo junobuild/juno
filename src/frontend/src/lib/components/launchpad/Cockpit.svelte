@@ -7,7 +7,7 @@
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -15,17 +15,17 @@
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$missionControlStore,
-			(async () => await loadOrbiters({ missionControl: $missionControlStore }))();
+		$missionControlIdDerived,
+			(async () => await loadOrbiters({ missionControl: $missionControlIdDerived }))();
 	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
 
-{#if nonNullish($missionControlStore)}
+{#if nonNullish($missionControlIdDerived)}
 	<Canister
-		canisterId={$missionControlStore}
+		canisterId={$missionControlIdDerived}
 		segment="mission_control"
 		display={false}
 		bind:data={missionControlData}

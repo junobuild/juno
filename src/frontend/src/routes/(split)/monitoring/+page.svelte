@@ -14,7 +14,7 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import {
 		missionControlMonitored,
-		missionControlStore
+		missionControlIdDerived
 	} from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
@@ -69,12 +69,12 @@
 		<SatellitesLoader>
 			<OrbitersLoader>
 				<MissionControlGuard>
-					{#if nonNullish($missionControlStore)}
-						<MissionControlSettingsLoader missionControlId={$missionControlStore}>
+					{#if nonNullish($missionControlIdDerived)}
+						<MissionControlSettingsLoader missionControlId={$missionControlIdDerived}>
 							{#if $store.tabId === $store.tabs[0].id}
-								<MonitoringDashboard missionControlId={$missionControlStore} />
+								<MonitoringDashboard missionControlId={$missionControlIdDerived} />
 							{:else if $store.tabId === $store.tabs[1].id && $missionControlMonitored}
-								<MonitoringSettings missionControlId={$missionControlStore} />
+								<MonitoringSettings missionControlId={$missionControlIdDerived} />
 							{/if}
 						</MissionControlSettingsLoader>
 					{/if}

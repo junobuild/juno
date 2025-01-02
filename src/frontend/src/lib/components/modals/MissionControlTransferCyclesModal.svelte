@@ -3,7 +3,7 @@
 	import { nonNullish } from '@dfinity/utils';
 	import { depositCycles } from '$lib/api/mission-control.api';
 	import CanisterTransferCyclesModal from '$lib/components/modals/CanisterTransferCyclesModal.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import type { JunoModalCycles, JunoModalDetail } from '$lib/types/modal';
 
@@ -20,17 +20,17 @@
 			async (params: { cycles: bigint; destinationId: Principal }) =>
 				await depositCycles({
 					...params,
-					missionControlId: $missionControlStore!,
+					missionControlId: $missionControlIdDerived!,
 					identity: $authStore.identity
 				})
 		);
 </script>
 
-{#if nonNullish($missionControlStore)}
+{#if nonNullish($missionControlIdDerived)}
 	<CanisterTransferCyclesModal
 		{transferFn}
 		{currentCycles}
-		canisterId={$missionControlStore}
+		canisterId={$missionControlIdDerived}
 		on:junoClose
 		segment="mission_control"
 	/>

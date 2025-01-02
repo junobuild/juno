@@ -9,7 +9,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -47,7 +47,7 @@
 	};
 
 	const addController = async () => {
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -75,7 +75,7 @@
 
 		try {
 			await add({
-				missionControlId: $missionControlStore,
+				missionControlId: $missionControlIdDerived,
 				controllerId: controller,
 				profile: undefined,
 				scope

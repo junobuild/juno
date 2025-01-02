@@ -11,7 +11,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { ONE_TRILLION, DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION } from '$lib/constants/constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -60,7 +60,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -80,12 +80,12 @@
 
 		try {
 			await deleteFn({
-				missionControlId: $missionControlStore,
+				missionControlId: $missionControlIdDerived,
 				cyclesToDeposit
 			});
 
 			await loadSatellites({
-				missionControl: $missionControlStore,
+				missionControl: $missionControlIdDerived,
 				reload: true
 			});
 

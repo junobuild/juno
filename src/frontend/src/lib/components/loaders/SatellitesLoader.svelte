@@ -1,7 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
 	import type { Snippet } from 'svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import type { Option } from '$lib/types/utils';
 
@@ -16,7 +16,7 @@
 	};
 
 	$effect(() => {
-		load($missionControlStore);
+		load($missionControlIdDerived);
 	});
 </script>
 

@@ -9,7 +9,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		createSatellite,
 		createSatelliteWithConfig,
@@ -51,7 +51,7 @@
 			const fn = nonNullish(subnetId) ? createSatelliteWithConfig : createSatellite;
 
 			satellite = await fn({
-				missionControl: $missionControlStore,
+				missionControl: $missionControlIdDerived,
 				config: {
 					name: satelliteName,
 					...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
@@ -59,7 +59,7 @@
 			});
 
 			// Reload list of satellites before navigation
-			await loadSatellites({ missionControl: $missionControlStore, reload: true });
+			await loadSatellites({ missionControl: $missionControlIdDerived, reload: true });
 
 			steps = 'ready';
 		} catch (err) {
@@ -127,7 +127,7 @@
 
 				<button
 					type="submit"
-					disabled={$authSignedOut || isNullish($missionControlStore) || insufficientFunds}
+					disabled={$authSignedOut || isNullish($missionControlIdDerived) || insufficientFunds}
 					>{$i18n.satellites.create}</button
 				>
 			</form>

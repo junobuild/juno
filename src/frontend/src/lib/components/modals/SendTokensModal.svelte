@@ -7,7 +7,7 @@
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalSendTokensDetail } from '$lib/types/modal';
 
@@ -35,7 +35,7 @@
 
 <svelte:window onjunoSyncBalance={({ detail: syncBalance }) => (balance = syncBalance)} />
 
-{#if nonNullish($missionControlStore)}
+{#if nonNullish($missionControlIdDerived)}
 	<Modal on:junoClose>
 		{#if steps === 'ready'}
 			<Confetti />
@@ -51,7 +51,7 @@
 		{:else if steps === 'review'}
 			<div in:fade>
 				<SendTokensReview
-					missionControlId={$missionControlStore}
+					missionControlId={$missionControlIdDerived}
 					{balance}
 					bind:amount
 					bind:destination

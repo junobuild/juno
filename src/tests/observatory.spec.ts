@@ -32,11 +32,7 @@ describe('Observatory', () => {
 		await pic?.tearDown();
 	});
 
-	describe('anonymous', () => {
-		beforeAll(() => {
-			actor.setIdentity(new AnonymousIdentity());
-		});
-
+	const testGuards = () => {
 		it('should throw errors on set controllers', async () => {
 			const { set_controllers } = actor;
 
@@ -115,5 +111,23 @@ describe('Observatory', () => {
 				})
 			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
 		});
+	};
+
+	describe('anonymous', () => {
+		beforeAll(() => {
+			actor.setIdentity(new AnonymousIdentity());
+		});
+
+		testGuards();
+	});
+
+	describe('user', () => {
+		const user = Ed25519KeyIdentity.generate();
+
+		beforeAll(() => {
+			actor.setIdentity(user);
+		});
+
+		testGuards();
 	});
 });

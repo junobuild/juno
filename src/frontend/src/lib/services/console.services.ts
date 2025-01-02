@@ -1,4 +1,3 @@
-import type { MissionControl } from '$declarations/console/console.did';
 import type { Orbiter } from '$declarations/mission_control/mission_control.did';
 import { initMissionControl as initMissionControlApi } from '$lib/api/console.api';
 import { missionControlVersion } from '$lib/api/mission-control.api';
@@ -21,17 +20,17 @@ export const initMissionControl = async ({
 	onInitMissionControlSuccess
 }: {
 	identity: Identity;
-	onInitMissionControlSuccess: (missionControl: MissionControl) => void;
+	onInitMissionControlSuccess: (missionControlId: Principal) => Promise<void>;
 	// eslint-disable-next-line no-async-promise-executor, require-await
 }) =>
 	// eslint-disable-next-line no-async-promise-executor, require-await
 	new Promise<void>(async (resolve, reject) => {
 		try {
-			const { missionControl } = await getMissionControl({
+			const { missionControlId } = await getMissionControl({
 				identity
 			});
 
-			if (isNullish(missionControl)) {
+			if (isNullish(missionControlId)) {
 				setTimeout(async () => {
 					try {
 						await initMissionControl({ identity, onInitMissionControlSuccess });
@@ -43,7 +42,7 @@ export const initMissionControl = async ({
 				return;
 			}
 
-			onInitMissionControlSuccess(missionControl);
+			await onInitMissionControlSuccess(missionControlId);
 
 			resolve();
 		} catch (err: unknown) {
@@ -56,16 +55,20 @@ const getMissionControl = async ({
 }: {
 	identity: Identity | undefined;
 }): Promise<{
-	missionControl: MissionControl | undefined;
+	missionControlId: Principal | undefined;
 }> => {
+	if (isNullish(identity)) {
+		throw new Error('Invalid identity.');
+	}
+
 	const mission_control = await initMissionControlApi(identity);
 
-	const missionControlId = fromNullable(mission_control.mission_control_id);
+	const missionControlId: Principal | undefined = fromNullable<Principal>(
+		mission_control.mission_control_id
+	);
 
 	return {
-		// The backend creates an empty mission control entity and set the ID once the module has been successfully created.
-		// That's why, until the ID is set within the entity, we consider the mission control has undefined.
-		missionControl: nonNullish(missionControlId) ? mission_control : undefined
+		missionControlId
 	};
 };
 

@@ -1,4 +1,4 @@
-use crate::store::get_user;
+use crate::store::get_user_id;
 use crate::types::interface::CreateCanisterConfig;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
@@ -22,7 +22,7 @@ where
     Fut: Future<Output = Result<T, String>>,
 {
     let console = Principal::from_text(CONSOLE).unwrap();
-    let user: UserId = get_user();
+    let user: UserId = get_user_id();
 
     let args = GetCreateCanisterFeeArgs { user };
 

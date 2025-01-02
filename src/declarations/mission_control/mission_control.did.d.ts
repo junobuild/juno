@@ -152,6 +152,12 @@ export type TransferError_1 =
 	| { CreatedInFuture: { ledger_time: bigint } }
 	| { TooOld: null }
 	| { InsufficientFunds: { balance: bigint } };
+export interface User {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	user: [] | [Principal];
+	created_at: bigint;
+}
 export interface _SERVICE {
 	add_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	add_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
@@ -171,7 +177,8 @@ export interface _SERVICE {
 	>;
 	get_monitoring_status: ActorMethod<[], MonitoringStatus>;
 	get_settings: ActorMethod<[], [] | [MissionControlSettings]>;
-	get_user: ActorMethod<[], Principal>;
+	get_user: ActorMethod<[], User>;
+	get_user_id: ActorMethod<[], Principal>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;

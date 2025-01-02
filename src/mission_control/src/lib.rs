@@ -34,17 +34,14 @@ use crate::segments::satellite::{
 };
 use crate::segments::store::get_orbiters;
 use crate::store::{
-    get_settings as get_settings_store, get_user as get_user_store,
-    set_metadata as set_metadata_store,
+    get_settings as get_settings_store, get_user_id as get_user_id_store,
+    set_metadata as set_metadata_store, get_user as get_users_store,
 };
 use crate::types::interface::{
     CreateCanisterConfig, GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus,
     MonitoringStopConfig,
 };
-use crate::types::state::{
-    HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
-    Satellite, Satellites, State,
-};
+use crate::types::state::{HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Satellites, State, User};
 use candid::Principal;
 use ciborium::into_writer;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -364,8 +361,13 @@ fn list_mission_control_controllers() -> Controllers {
 // ---------------------------------------------------------
 
 #[query(guard = "caller_is_user_or_admin_controller")]
-fn get_user() -> UserId {
-    get_user_store()
+fn get_user_id() -> UserId {
+    get_user_id_store()
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn get_user() -> User {
+    get_users_store()
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]

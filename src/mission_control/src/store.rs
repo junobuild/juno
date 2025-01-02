@@ -3,8 +3,12 @@ use crate::types::state::{HeapState, MissionControlSettings, User};
 use ic_cdk::api::time;
 use junobuild_shared::types::state::{Metadata, UserId};
 
-pub fn get_user() -> UserId {
+pub fn get_user_id() -> UserId {
     STATE.with(|state| state.borrow().heap.user.user).unwrap()
+}
+
+pub fn get_user() -> User {
+    STATE.with(|state| state.borrow().heap.user.clone())
 }
 
 pub fn get_settings() -> Option<MissionControlSettings> {

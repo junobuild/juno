@@ -1,7 +1,7 @@
 use crate::monitoring::cycles::utils::get_deposited_cycles;
 use crate::monitoring::observatory::notify_observatory;
 use crate::segments::store::{get_orbiter, get_satellite};
-use crate::store::{get_metadata, get_user};
+use crate::store::{get_metadata, get_user_id};
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::{id, print, spawn};
@@ -41,7 +41,7 @@ fn prepare_args(canister_id: &CanisterId, deposited_cycles: &CyclesBalance) -> O
 
     let segment = get_segment(canister_id)?;
 
-    let user = get_user();
+    let user = get_user_id();
 
     Some(NotifyArgs {
         user,

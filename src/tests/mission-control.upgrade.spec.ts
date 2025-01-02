@@ -1,9 +1,11 @@
+import type { _SERVICE as MissionControlActor_0_0_13 } from '$declarations/deprecated/mission_control-0-0-13.did';
+import { idlFactory as idlFactorMissionControl_0_0_13 } from '$declarations/deprecated/mission_control-0-0-13.factory.did';
 import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
 import { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
-import { type Actor, PocketIc } from '@hadronous/pic';
+import { PocketIc } from '@hadronous/pic';
 import { afterEach, beforeEach, describe, expect, inject } from 'vitest';
 import {
 	missionControlUserInitArgs,
@@ -14,7 +16,6 @@ import { downloadMissionControl, MISSION_CONTROL_WASM_PATH } from './utils/setup
 
 describe('Mission control upgrade', () => {
 	let pic: PocketIc;
-	let actor: Actor<MissionControlActor>;
 
 	let missionControlId: Principal;
 	let orbiterId: Principal;
@@ -32,17 +33,14 @@ describe('Mission control upgrade', () => {
 
 			const destination = await downloadMissionControl('0.0.13');
 
-			const { actor: c, canisterId: mId } = await pic.setupCanister<MissionControlActor>({
-				idlFactory: idlFactorMissionControl,
+			const { canisterId: mId } = await pic.setupCanister<MissionControlActor_0_0_13>({
+				idlFactory: idlFactorMissionControl_0_0_13,
 				wasm: destination,
 				arg: missionControlUserInitArgs(controller.getPrincipal()),
 				sender: controller.getPrincipal()
 			});
 
 			missionControlId = mId;
-
-			actor = c;
-			actor.setIdentity(controller);
 
 			const { orbiterId: oId, satelliteId: sId } = await setupMissionControlModules({
 				pic,
@@ -67,14 +65,14 @@ describe('Mission control upgrade', () => {
 		const orbiterName = 'Hello 1';
 		const satelliteName = 'Hello 2';
 
-		const setModules = async () => {
+		const setModules = async (actor: MissionControlActor_0_0_13) => {
 			const { set_orbiter, set_satellite } = actor;
 
 			await set_orbiter(orbiterId, [orbiterName]);
 			await set_satellite(satelliteId, [satelliteName]);
 		};
 
-		const testModules = async () => {
+		const testModules = async (actor: MissionControlActor | MissionControlActor_0_0_13) => {
 			const { list_orbiters, list_satellites } = actor;
 
 			const satellites = await list_satellites();
@@ -102,32 +100,48 @@ describe('Mission control upgrade', () => {
 			expect(orbName).toEqual(orbiterName);
 		};
 
-		const testUser = async () => {
+		const testUserPreUpgrade = async (actor: MissionControlActor_0_0_13) => {
 			const { get_user } = actor;
 			const user = await get_user();
 
 			expect(user.toText()).toEqual(controller.getPrincipal().toText());
 		};
 
-		it('should still contains data after upgrade even if the internal state variable is renamed from state to heap', async () => {
-			await setModules();
+		const testUserPostUpgrade = async (actor: MissionControlActor) => {
+			const { get_user_id } = actor;
+			const user = await get_user_id();
 
-			await testModules();
-			await testUser();
+			expect(user.toText()).toEqual(controller.getPrincipal().toText());
+		};
+
+		it('should still contains data after upgrade even if the internal state variable is renamed from state to heap', async () => {
+			const actorPreUpgrade = pic.createActor<MissionControlActor_0_0_13>(
+				idlFactorMissionControl_0_0_13,
+				missionControlId
+			);
+			actorPreUpgrade.setIdentity(controller);
+
+			await setModules(actorPreUpgrade);
+
+			await testModules(actorPreUpgrade);
+			await testUserPreUpgrade(actorPreUpgrade);
 
 			await upgradeCurrent();
 
-			actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
-			actor.setIdentity(controller);
+			const actorPostUpgrade = pic.createActor<MissionControlActor>(
+				idlFactorMissionControl,
+				missionControlId
+			);
+			actorPostUpgrade.setIdentity(controller);
 
-			await testModules();
-			await testUser();
+			await testModules(actorPostUpgrade);
+			await testUserPostUpgrade(actorPostUpgrade);
 		});
 
 		it('should migrate with no settings', async () => {
 			await upgradeCurrent();
 
-			actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
+			const actor = pic.createActor<MissionControlActor>(idlFactorMissionControl, missionControlId);
 			actor.setIdentity(controller);
 
 			const { get_settings } = actor;

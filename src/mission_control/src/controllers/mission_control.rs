@@ -1,5 +1,5 @@
 use crate::controllers::store::{delete_controllers, get_admin_controllers, set_controllers};
-use crate::store::get_user;
+use crate::store::get_user_id;
 use ic_cdk::id;
 use junobuild_shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
 use junobuild_shared::controllers::{
@@ -49,7 +49,7 @@ async fn update_controllers_settings(controllers: &Controllers) -> Result<(), St
     let mission_control_id = id();
 
     // So do the owner / user
-    let user = get_user();
+    let user = get_user_id();
 
     let controller_ids = into_controller_ids(controllers);
 

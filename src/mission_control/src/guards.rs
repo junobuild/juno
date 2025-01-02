@@ -1,5 +1,5 @@
 use crate::memory::STATE;
-use crate::store::get_user;
+use crate::store::get_user_id;
 use ic_cdk::api::is_controller as ic_canister_controller;
 use ic_cdk::caller;
 use junobuild_shared::controllers::is_admin_controller;
@@ -16,7 +16,7 @@ pub fn caller_is_user_or_admin_controller() -> Result<(), String> {
 
 fn caller_is_user() -> bool {
     let caller = caller();
-    let user = get_user();
+    let user = get_user_id();
 
     principal_equal(caller, user) && ic_canister_controller(&caller)
 }

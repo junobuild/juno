@@ -4,7 +4,7 @@ use junobuild_shared::controllers::{
     delete_controllers as delete_controllers_impl, set_controllers as set_controllers_impl,
 };
 use junobuild_shared::types::interface::SetController;
-use junobuild_shared::types::state::ControllerId;
+use junobuild_shared::types::state::{ControllerId, Controllers};
 // ---------------------------------------------------------
 // Controllers
 // ---------------------------------------------------------
@@ -23,6 +23,10 @@ pub fn delete_controllers(remove_controllers: &[ControllerId]) {
     STATE.with(|state| {
         delete_controllers_impl(remove_controllers, &mut state.borrow_mut().heap.controllers)
     })
+}
+
+pub fn get_controllers() -> Controllers {
+    STATE.with(|state| state.borrow().heap.controllers.clone())
 }
 
 // ---------------------------------------------------------

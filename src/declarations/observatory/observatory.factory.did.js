@@ -13,6 +13,17 @@ export const idlFactory = ({ IDL }) => {
 		sent: IDL.Nat64,
 		failed: IDL.Nat64
 	});
+	const ControllerScope = IDL.Variant({
+		Write: IDL.Null,
+		Admin: IDL.Null
+	});
+	const Controller = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		scope: ControllerScope,
+		expires_at: IDL.Opt(IDL.Nat64)
+	});
 	const CyclesBalance = IDL.Record({
 		timestamp: IDL.Nat64,
 		amount: IDL.Nat
@@ -39,10 +50,6 @@ export const idlFactory = ({ IDL }) => {
 		user: IDL.Principal,
 		segment: Segment
 	});
-	const ControllerScope = IDL.Variant({
-		Write: IDL.Null,
-		Admin: IDL.Null
-	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
 		scope: ControllerScope,
@@ -66,6 +73,7 @@ export const idlFactory = ({ IDL }) => {
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
 		get_notify_status: IDL.Func([GetNotifications], [NotifyStatus], ['query']),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
 		notify: IDL.Func([NotifyArgs], [], []),
 		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),

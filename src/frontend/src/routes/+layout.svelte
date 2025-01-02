@@ -49,8 +49,7 @@
 			// Poll to init mission control center
 			await initMissionControl({
 				identity,
-				// eslint-disable-next-line require-await
-				onInitMissionControlSuccess: async (missionControlId) =>
+				onInitMissionControlSuccess: (missionControlId) =>
 					missionControlDataStore.set(missionControlId)
 			});
 		} catch (err: unknown) {

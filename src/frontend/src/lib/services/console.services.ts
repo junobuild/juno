@@ -20,7 +20,7 @@ export const initMissionControl = async ({
 	onInitMissionControlSuccess
 }: {
 	identity: Identity;
-	onInitMissionControlSuccess: (missionControlId: Principal) => Promise<void>;
+	onInitMissionControlSuccess: (missionControlId: Principal) => void;
 	// eslint-disable-next-line no-async-promise-executor, require-await
 }) =>
 	// eslint-disable-next-line no-async-promise-executor, require-await
@@ -42,7 +42,7 @@ export const initMissionControl = async ({
 				return;
 			}
 
-			await onInitMissionControlSuccess(missionControlId);
+			onInitMissionControlSuccess(missionControlId);
 
 			resolve();
 		} catch (err: unknown) {

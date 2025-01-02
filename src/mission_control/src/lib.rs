@@ -35,7 +35,7 @@ use crate::segments::satellite::{
 use crate::segments::store::get_orbiters;
 use crate::store::{
     get_settings as get_settings_store, get_user as get_user_store,
-    set_metadata as set_metadata_store,
+    set_metadata as set_metadata_store, get_metadata as get_metadata_store,
 };
 use crate::types::interface::{
     CreateCanisterConfig, GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus,
@@ -366,6 +366,11 @@ fn list_mission_control_controllers() -> Controllers {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_user() -> UserId {
     get_user_store()
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn get_user_metadata() -> Metadata {
+    get_metadata_store()
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]

@@ -169,6 +169,7 @@ export const idlFactory = ({ IDL }) => {
 		get_monitoring_status: IDL.Func([], [MonitoringStatus], ['query']),
 		get_settings: IDL.Func([], [IDL.Opt(MissionControlSettings)], ['query']),
 		get_user: IDL.Func([], [IDL.Principal], ['query']),
+		get_user_metadata: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], ['query']),
 		icp_transfer: IDL.Func([TransferArgs], [Result], []),
 		icrc_transfer: IDL.Func([IDL.Principal, TransferArg], [Result_1], []),
 		list_mission_control_controllers: IDL.Func(

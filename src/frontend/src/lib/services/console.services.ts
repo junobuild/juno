@@ -60,10 +60,12 @@ const getMissionControl = async ({
 }> => {
 	const mission_control = await initMissionControlApi(identity);
 
-	const missionControlId = fromNullable<Principal>(mission_control.mission_control_id);
+	const missionControlId = fromNullable(mission_control.mission_control_id);
 
 	return {
-		missionControl: nonNullish(missionControlId) ? mission_control : missionControlId
+		// The backend creates an empty mission control entity and set the ID once the module has been successfully created.
+		// That's why, until the ID is set within the entity, we consider the mission control has undefined.
+		missionControl: nonNullish(missionControlId) ? mission_control : undefined
 	};
 };
 

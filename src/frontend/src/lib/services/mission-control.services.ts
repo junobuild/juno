@@ -290,7 +290,8 @@ export const loadUserMetadata = async ({
 		return { success: true };
 	}
 
-	const load = async (identity: Identity): Promise<Metadata> => await getUserMetadata({
+	const load = async (identity: Identity): Promise<Metadata> =>
+		await getUserMetadata({
 			missionControlId,
 			identity
 		});

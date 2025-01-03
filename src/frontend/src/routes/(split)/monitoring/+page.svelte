@@ -14,7 +14,8 @@
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import {
 		missionControlMonitored,
-		missionControlIdDerived
+		missionControlIdDerived,
+		hasMissionControlSettings
 	} from '$lib/derived/mission-control.derived';
 	import {
 		type Tab,
@@ -31,7 +32,7 @@
 
 	let tabs: Tab[] = $derived([
 		tabDashboard,
-		...($missionControlMonitored
+		...($hasMissionControlSettings
 			? [
 					{
 						id: Symbol('2'),
@@ -73,7 +74,7 @@
 						<MissionControlDataLoader missionControlId={$missionControlIdDerived}>
 							{#if $store.tabId === $store.tabs[0].id}
 								<MonitoringDashboard missionControlId={$missionControlIdDerived} />
-							{:else if $store.tabId === $store.tabs[1].id && $missionControlMonitored}
+							{:else if $store.tabId === $store.tabs[1].id && $hasMissionControlSettings}
 								<MonitoringSettings missionControlId={$missionControlIdDerived} />
 							{/if}
 						</MissionControlDataLoader>

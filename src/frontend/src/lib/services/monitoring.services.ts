@@ -9,7 +9,7 @@ import { loadSettings, loadUserMetadata } from '$lib/services/mission-control.se
 import { loadOrbiters } from '$lib/services/orbiters.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
-import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
+import {missionControlMetadataDataStore, missionControlSettingsDataStore} from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import {
@@ -328,6 +328,12 @@ export const openMonitoringModal = ({
 		return;
 	}
 
+	const $missionControlMetadataDataStore = get(missionControlMetadataDataStore);
+	if (isNullish($missionControlMetadataDataStore)) {
+		toasts.warn(get(i18n).errors.mission_control_metadata_not_loaded);
+		return;
+	}
+
 	const $satellitesNotLoaded = get(satellitesNotLoaded);
 	if ($satellitesNotLoaded) {
 		toasts.warn(get(i18n).errors.satellites_not_loaded);
@@ -352,7 +358,8 @@ export const openMonitoringModal = ({
 		detail: {
 			type,
 			detail: {
-				settings: undefined,
+				settings: $missionControlSettingsDataStore.data,
+				metadata: $missionControlMetadataDataStore.data,
 				missionControlId
 			}
 		}

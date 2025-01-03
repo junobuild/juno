@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable } from '@dfinity/utils';
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -18,6 +18,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
+	import { metadataEmail } from '$lib/utils/metadata.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -26,7 +27,9 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { settings, missionControlId } = $derived(detail as JunoModalMonitoringStrategyDetail);
+	let { settings, metadata, missionControlId } = $derived(
+		detail as JunoModalMonitoringStrategyDetail
+	);
 
 	let steps:
 		| 'init'
@@ -35,6 +38,7 @@
 		| 'mission_control_strategy'
 		| 'review'
 		| 'in_progress'
+		| 'metadata'
 		| 'ready' = $state('init');
 
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
@@ -49,6 +53,9 @@
 	let missionControlCycles = $derived(
 		fromNullable(fromNullable(settings?.monitoring ?? [])?.cycles ?? [])
 	);
+
+	let missionControlEmail = $derived(metadataEmail(metadata));
+	let hasMissionControlEmail = $derived(nonNullish(missionControlEmail));
 
 	let missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined } =
 		$derived({
@@ -90,6 +97,8 @@
 
 		setTimeout(() => (steps = 'ready'), 500);
 	};
+
+	const gotoReviewOrMetadata = () => (steps = hasMissionControlEmail ? 'review' : 'metadata');
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -120,13 +129,13 @@
 			bind:fundCycles={missionControlFundCycles}
 			strategy="mission-control"
 			onback={() => (steps = 'mission_control')}
-			oncontinue={() => (steps = 'review')}
+			oncontinue={gotoReviewOrMetadata}
 		/>
 	{:else if steps === 'mission_control'}
 		<MonitoringCreateStrategyMissionControl
 			{missionControl}
 			onno={() => (steps = 'mission_control_strategy')}
-			onyes={() => (steps = 'review')}
+			onyes={gotoReviewOrMetadata}
 		/>
 	{:else if steps === 'strategy'}
 		<MonitoringCreateStrategy

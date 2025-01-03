@@ -6,13 +6,15 @@ import {
 import type { Metadata } from '$lib/types/metadata';
 
 export const metadataName = (metadata: Metadata): string =>
-	metadataKey({ metadata, key: METADATA_KEY_NAME });
+	metadataKey({ metadata, key: METADATA_KEY_NAME }) ?? '';
 
 export const metadataProfile = (metadata: Metadata): string =>
-	metadataKey({ metadata, key: METADATA_KEY_PROFILE });
+	metadataKey({ metadata, key: METADATA_KEY_PROFILE }) ?? '';
 
-export const metadataEmail = (metadata: Metadata): string =>
-	metadataKey({ metadata, key: METADATA_KEY_EMAIL });
+export const metadataEmail = (metadata: Metadata): string | undefined => {
+	console.log(metadata);
+	return metadataKey({ metadata, key: METADATA_KEY_EMAIL });
+}
 
-const metadataKey = ({ metadata, key }: { metadata: Metadata; key: string }): string =>
-	new Map(metadata).get(key) ?? '';
+const metadataKey = ({ metadata, key }: { metadata: Metadata; key: string }): string | undefined =>
+	new Map(metadata).get(key);

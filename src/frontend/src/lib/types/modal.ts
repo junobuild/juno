@@ -13,6 +13,7 @@ import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
+import type {Metadata} from "$lib/types/metadata";
 
 export interface JunoModalBalance {
 	missionControlBalance?: MissionControlBalance;
@@ -101,6 +102,7 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 export interface JunoModalMonitoringStrategyDetail {
 	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
+	metadata: Metadata;
 }
 
 export type JunoModalDetail =

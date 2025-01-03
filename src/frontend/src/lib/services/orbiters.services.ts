@@ -60,6 +60,7 @@ export const createOrbiter = async ({
 }): Promise<Orbiter | undefined> => {
 	assertNonNullish(missionControl);
 
+
 	const identity = get(authStore).identity;
 
 	const { create_orbiter } = await getMissionControlActor({

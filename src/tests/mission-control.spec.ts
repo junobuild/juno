@@ -19,7 +19,7 @@ describe('Mission Control', () => {
 
 		const userInitArgs = (): ArrayBuffer => missionControlUserInitArgs(controller.getPrincipal());
 
-		const { actor: c, canisterId: missionControlId } = await pic.setupCanister<MissionControlActor>(
+		const { actor: c } = await pic.setupCanister<MissionControlActor>(
 			{
 				idlFactory: idlFactorMissionControl,
 				wasm: MISSION_CONTROL_WASM_PATH,

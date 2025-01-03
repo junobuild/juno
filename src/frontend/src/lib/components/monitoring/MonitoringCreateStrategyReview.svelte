@@ -17,6 +17,7 @@
 		selectedOrbiters: [Principal, Orbiter][];
 		minCycles: bigint | undefined;
 		fundCycles: bigint | undefined;
+		useAsDefaultStrategy: boolean,
 		missionControlMinCycles: bigint | undefined;
 		missionControlFundCycles: bigint | undefined;
 		missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined };
@@ -29,6 +30,7 @@
 		selectedOrbiters,
 		minCycles,
 		fundCycles,
+		useAsDefaultStrategy,
 		missionControlMinCycles,
 		missionControlFundCycles,
 		missionControl,
@@ -87,6 +89,17 @@
 
 				<p>{formatTCycles(fundCycles ?? 0n)}</p>
 			</Value>
+
+			{#if useAsDefaultStrategy}
+
+				<Value>
+					{#snippet label()}
+						{$i18n.monitoring.default_strategy}
+					{/snippet}
+
+					<p>{$i18n.monitoring.configuration_for_modules}</p>
+				</Value>
+			{/if}
 		</div>
 	</div>
 </MonitoringStepReview>

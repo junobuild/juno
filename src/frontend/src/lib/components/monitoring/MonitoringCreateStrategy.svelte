@@ -1,15 +1,17 @@
 <script lang="ts">
-	import { untrack } from 'svelte';
+	import {type Snippet, untrack} from 'svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { tCyclesToCycles } from '$lib/utils/cycles.utils';
+	import Checkbox from "$lib/components/ui/Checkbox.svelte";
 
 	interface Props {
 		minCycles: bigint | undefined;
 		fundCycles: bigint | undefined;
 		strategy: 'modules' | 'mission-control';
+		children?: Snippet;
 		onback: () => void;
 		oncontinue: () => void;
 	}
@@ -18,6 +20,7 @@
 		minCycles = $bindable(undefined),
 		fundCycles = $bindable(undefined),
 		strategy,
+			children,
 		oncontinue,
 		onback
 	}: Props = $props();
@@ -79,6 +82,8 @@
 		placeholder={$i18n.canisters.amount_cycles}
 	/>
 </Value>
+
+{@render children?.()}
 
 <div class="toolbar">
 	<button disabled={$isBusy} onclick={onback}>{$i18n.core.back}</button>

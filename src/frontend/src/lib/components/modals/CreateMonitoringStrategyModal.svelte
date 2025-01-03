@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable } from '@dfinity/utils';
+	import {fromNullable, isNullish} from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -18,6 +18,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
+	import MonitoringCreateStrategyWithDefault from '$lib/components/monitoring/MonitoringCreateStrategyWithDefault.svelte';
+	import {onMount} from "svelte";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -37,6 +39,8 @@
 		| 'in_progress'
 		| 'ready' = $state('init');
 
+	// Monitoring strategy
+
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
 	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
 
@@ -55,6 +59,23 @@
 			monitored: missionControlCycles?.enabled === true,
 			strategy: fromNullable(missionControlCycles?.strategy ?? [])
 		});
+
+	// Monitoring configuration
+
+	let defaultStrategy = $derived(
+		fromNullable(
+			fromNullable(fromNullable(settings?.monitoring_config ?? [])?.cycles ?? [])
+				?.default_strategy ?? []
+		)
+	);
+
+	let useAsDefaultStrategy = $state(true);
+
+	onMount(() => {
+		useAsDefaultStrategy = isNullish(defaultStrategy);
+	});
+
+	// Submit
 
 	let progress: MonitoringStrategyProgress | undefined = $state(undefined);
 	const onProgress = (applyProgress: MonitoringStrategyProgress | undefined) =>
@@ -108,6 +129,7 @@
 			{selectedOrbiters}
 			{minCycles}
 			{fundCycles}
+			{useAsDefaultStrategy}
 			{missionControlMinCycles}
 			{missionControlFundCycles}
 			{missionControl}
@@ -129,9 +151,10 @@
 			onyes={() => (steps = 'review')}
 		/>
 	{:else if steps === 'strategy'}
-		<MonitoringCreateStrategy
+		<MonitoringCreateStrategyWithDefault
 			bind:minCycles
 			bind:fundCycles
+			bind:useAsDefaultStrategy
 			strategy="modules"
 			onback={() => (steps = 'init')}
 			oncontinue={() => (steps = 'mission_control')}

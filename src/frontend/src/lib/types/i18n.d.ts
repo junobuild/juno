@@ -711,6 +711,7 @@ interface I18nMonitoring {
 	stopping_monitoring: string;
 	remaining_threshold: string;
 	top_up_amount: string;
+	set_as_default_configuration: string;
 	modules: string;
 	selected_modules: string;
 	monitored: string;
@@ -731,6 +732,8 @@ interface I18nMonitoring {
 	last_top_up: string;
 	usage: string;
 	weekly_cycles_deposit: string;
+	default_strategy: string;
+	configuration_for_modules: string;
 }
 
 interface I18nPreferences {

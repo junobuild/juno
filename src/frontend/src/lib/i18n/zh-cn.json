@@ -686,6 +686,7 @@
 		"stopping_monitoring": "Stopping monitoring...",
 		"remaining_threshold": "Remaining T Cycles Threshold",
 		"top_up_amount": "Top-Up Amount",
+		"set_as_default_configuration": "Set as default configuration",
 		"modules": "Modules",
 		"selected_modules": "Selected",
 		"monitored": "Monitored",
@@ -705,7 +706,9 @@
 		"last_status_check": "Last status check",
 		"last_top_up": "Last top-up",
 		"usage": "Usage",
-		"weekly_cycles_deposit": "Weekly cycles deposit"
+		"weekly_cycles_deposit": "Weekly cycles deposit",
+		"default_strategy": "Default Strategy",
+		"configuration_for_modules": "This configuration will be used as the default for monitoring newly created modules."
 	},
 	"preferences": {
 		"title": "偏好设置",

@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable } from '@dfinity/utils';
+	import { fromNullable, isNullish } from '@dfinity/utils';
+	import { onMount } from 'svelte';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -9,6 +10,7 @@
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
 	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
+	import MonitoringCreateStrategyWithDefault from '$lib/components/monitoring/MonitoringCreateStrategyWithDefault.svelte';
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -37,6 +39,8 @@
 		| 'in_progress'
 		| 'ready' = $state('init');
 
+	// Monitoring strategy
+
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
 	let selectedOrbiters: [Principal, Orbiter][] = $state([]);
 
@@ -55,6 +59,23 @@
 			monitored: missionControlCycles?.enabled === true,
 			strategy: fromNullable(missionControlCycles?.strategy ?? [])
 		});
+
+	// Monitoring configuration
+
+	let defaultStrategy = $derived(
+		fromNullable(
+			fromNullable(fromNullable(settings?.monitoring_config ?? [])?.cycles ?? [])
+				?.default_strategy ?? []
+		)
+	);
+
+	let useAsDefaultStrategy = $state(true);
+
+	onMount(() => {
+		useAsDefaultStrategy = isNullish(defaultStrategy);
+	});
+
+	// Submit
 
 	let progress: MonitoringStrategyProgress | undefined = $state(undefined);
 	const onProgress = (applyProgress: MonitoringStrategyProgress | undefined) =>
@@ -78,6 +99,7 @@
 			missionControlMonitored: missionControl.monitored,
 			missionControlMinCycles,
 			missionControlFundCycles,
+			useAsDefaultStrategy,
 			onProgress
 		});
 
@@ -101,13 +123,14 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
-		<ProgressMonitoring {progress} action="create" />
+		<ProgressMonitoring {progress} action="create" withOptions={useAsDefaultStrategy} />
 	{:else if steps === 'review'}
 		<MonitoringCreateStrategyReview
 			{selectedSatellites}
 			{selectedOrbiters}
 			{minCycles}
 			{fundCycles}
+			{useAsDefaultStrategy}
 			{missionControlMinCycles}
 			{missionControlFundCycles}
 			{missionControl}
@@ -129,9 +152,10 @@
 			onyes={() => (steps = 'review')}
 		/>
 	{:else if steps === 'strategy'}
-		<MonitoringCreateStrategy
+		<MonitoringCreateStrategyWithDefault
 			bind:minCycles
 			bind:fundCycles
+			bind:useAsDefaultStrategy
 			strategy="modules"
 			onback={() => (steps = 'init')}
 			oncontinue={() => (steps = 'mission_control')}

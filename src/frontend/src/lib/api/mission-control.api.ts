@@ -1,6 +1,7 @@
 import type {
 	Controller,
 	MissionControlSettings,
+	MonitoringConfig,
 	MonitoringStartConfig,
 	MonitoringStopConfig,
 	Orbiter,
@@ -480,4 +481,21 @@ export const getMonitoringHistory = async ({
 		from: toNullable(from),
 		to: toNullable(to)
 	});
+};
+
+export const setMonitoringConfig = async ({
+	missionControlId,
+	identity,
+	config
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	config: MonitoringConfig | undefined;
+}): Promise<void> => {
+	const { set_monitoring_config } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+
+	return await set_monitoring_config(toNullable(config));
 };

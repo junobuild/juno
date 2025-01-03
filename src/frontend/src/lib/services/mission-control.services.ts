@@ -286,7 +286,7 @@ export const loadUserMetadata = async ({
 	const versionStore = get(missionControlVersionStore);
 
 	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
-		missionControlSettingsDataStore.reset();
+		missionControlMetadataDataStore.reset();
 		return { success: true };
 	}
 

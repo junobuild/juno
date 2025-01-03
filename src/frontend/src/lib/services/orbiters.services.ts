@@ -96,8 +96,7 @@ export const loadOrbiters = async ({
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
 	if (isNullish(missionControl)) {
-		orbitersDataStore.reset();
-		return { result: 'error' };
+		return { result: 'skip' };
 	}
 
 	// We load only once

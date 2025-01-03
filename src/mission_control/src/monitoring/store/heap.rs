@@ -1,11 +1,13 @@
 use crate::memory::STATE;
-use crate::types::state::{
-    CyclesMonitoringStrategy, HeapState, MissionControlSettings, Orbiters, Satellites, Settings,
-};
+use crate::types::state::{CyclesMonitoringStrategy, HeapState, MissionControlSettings, MonitoringConfig, Orbiters, Satellites, Settings};
 use junobuild_shared::types::state::{OrbiterId, SatelliteId};
 
 pub fn set_mission_control_strategy(strategy: &CyclesMonitoringStrategy) {
-    STATE.with(|state| set_mission_control_setting_impl(strategy, &mut state.borrow_mut().heap))
+    STATE.with(|state| set_mission_control_strategy_impl(strategy, &mut state.borrow_mut().heap))
+}
+
+pub fn set_mission_control_config(config: &Option<MonitoringConfig>) {
+    STATE.with(|state| set_mission_control_config_impl(config, &mut state.borrow_mut().heap))
 }
 
 pub fn enable_mission_control_monitoring() -> Result<(), String> {
@@ -70,13 +72,23 @@ pub fn disable_orbiter_monitoring(orbiter_id: &OrbiterId) -> Result<(), String> 
     })
 }
 
-fn set_mission_control_setting_impl(strategy: &CyclesMonitoringStrategy, state: &mut HeapState) {
+fn set_mission_control_strategy_impl(strategy: &CyclesMonitoringStrategy, state: &mut HeapState) {
     state.settings = Some(
         state
             .settings
             .as_ref()
             .map(|settings| settings.clone_with_strategy(strategy))
-            .unwrap_or_else(|| MissionControlSettings::from(strategy)),
+            .unwrap_or_else(|| MissionControlSettings::from_strategy(strategy)),
+    );
+}
+
+fn set_mission_control_config_impl(config: &Option<MonitoringConfig>, state: &mut HeapState) {
+    state.settings = Some(
+        state
+            .settings
+            .as_ref()
+            .map(|settings| settings.clone_with_config(config))
+            .unwrap_or_else(|| MissionControlSettings::from_config(config)),
     );
 }
 

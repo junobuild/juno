@@ -1,11 +1,7 @@
 use crate::memory::init_stable_state;
 use crate::types::core::{Segment, SettingsMonitoring};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
-use crate::types::state::{
-    Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState,
-    MissionControlSettings, Monitoring, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
-    Satellite, Settings, State, User,
-};
+use crate::types::state::{Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings, Monitoring, MonitoringConfig, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Settings, State, User};
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;
@@ -239,11 +235,23 @@ impl CyclesMonitoringStrategy {
 }
 
 impl MissionControlSettings {
-    pub fn from(strategy: &CyclesMonitoringStrategy) -> Self {
+    pub fn from_strategy(strategy: &CyclesMonitoringStrategy) -> Self {
         let now = time();
 
         MissionControlSettings {
             monitoring: Some(Monitoring::from(strategy)),
+            monitoring_config: None,
+            updated_at: now,
+            created_at: now,
+        }
+    }
+
+    pub fn from_config(config: &Option<MonitoringConfig>) -> Self {
+        let now = time();
+
+        MissionControlSettings {
+            monitoring: None,
+            monitoring_config: config.clone(),
             updated_at: now,
             created_at: now,
         }
@@ -254,6 +262,16 @@ impl MissionControlSettings {
 
         MissionControlSettings {
             monitoring: Some(Monitoring::from(strategy)),
+            updated_at: now,
+            ..self.clone()
+        }
+    }
+
+    pub fn clone_with_config(&self, config: &Option<MonitoringConfig>) -> Self {
+        let now = time();
+
+        MissionControlSettings {
+            monitoring_config: config.clone(),
             updated_at: now,
             ..self.clone()
         }

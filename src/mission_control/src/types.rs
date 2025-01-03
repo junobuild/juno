@@ -59,9 +59,22 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MissionControlSettings {
+        // The monitoring rules to observe the mission control itself
         pub monitoring: Option<Monitoring>,
+        pub monitoring_config: Option<MonitoringConfig>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct MonitoringConfig {
+        pub cycles: Option<CyclesMonitoringConfig>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CyclesMonitoringConfig {
+        pub notification: Option<DepositedCyclesEmailNotification>,
+        pub default_strategy: Option<CyclesMonitoringStrategy>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -116,6 +129,12 @@ pub mod state {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Monitoring {
         pub cycles: Option<CyclesMonitoring>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DepositedCyclesEmailNotification {
+        pub to: Option<String>,
+        pub enabled: bool,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]

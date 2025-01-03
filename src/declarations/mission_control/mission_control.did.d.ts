@@ -26,6 +26,10 @@ export interface CyclesMonitoring {
 	strategy: [] | [CyclesMonitoringStrategy];
 	enabled: boolean;
 }
+export interface CyclesMonitoringConfig {
+	notification: [] | [DepositedCyclesEmailNotification];
+	default_strategy: [] | [CyclesMonitoringStrategy];
+}
 export interface CyclesMonitoringStartConfig {
 	orbiters_strategy: [] | [SegmentsMonitoringStrategy];
 	mission_control_strategy: [] | [CyclesMonitoringStrategy];
@@ -49,6 +53,10 @@ export interface DepositCyclesArgs {
 	cycles: bigint;
 	destination_id: Principal;
 }
+export interface DepositedCyclesEmailNotification {
+	to: [] | [string];
+	enabled: boolean;
+}
 export interface GetMonitoringHistory {
 	to: [] | [bigint];
 	from: [] | [bigint];
@@ -56,11 +64,15 @@ export interface GetMonitoringHistory {
 }
 export interface MissionControlSettings {
 	updated_at: bigint;
+	monitoring_config: [] | [MonitoringConfig];
 	created_at: bigint;
 	monitoring: [] | [Monitoring];
 }
 export interface Monitoring {
 	cycles: [] | [CyclesMonitoring];
+}
+export interface MonitoringConfig {
+	cycles: [] | [CyclesMonitoringConfig];
 }
 export interface MonitoringHistory {
 	cycles: [] | [MonitoringHistoryCycles];
@@ -182,6 +194,7 @@ export interface _SERVICE {
 	remove_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	set_metadata: ActorMethod<[Array<[string, string]>], undefined>;
 	set_mission_control_controllers: ActorMethod<[Array<Principal>, SetController], undefined>;
+	set_monitoring_config: ActorMethod<[[] | [MonitoringConfig]], undefined>;
 	set_orbiter: ActorMethod<[Principal, [] | [string]], Orbiter>;
 	set_orbiter_metadata: ActorMethod<[Principal, Array<[string, string]>], Orbiter>;
 	set_orbiters_controllers: ActorMethod<

@@ -16,6 +16,10 @@ type CyclesMonitoring = record {
   strategy : opt CyclesMonitoringStrategy;
   enabled : bool;
 };
+type CyclesMonitoringConfig = record {
+  notification : opt DepositedCyclesEmailNotification;
+  default_strategy : opt CyclesMonitoringStrategy;
+};
 type CyclesMonitoringStartConfig = record {
   orbiters_strategy : opt SegmentsMonitoringStrategy;
   mission_control_strategy : opt CyclesMonitoringStrategy;
@@ -33,6 +37,10 @@ type CyclesMonitoringStopConfig = record {
 type CyclesMonitoringStrategy = variant { BelowThreshold : CyclesThreshold };
 type CyclesThreshold = record { fund_cycles : nat; min_cycles : nat };
 type DepositCyclesArgs = record { cycles : nat; destination_id : principal };
+type DepositedCyclesEmailNotification = record {
+  to : opt text;
+  enabled : bool;
+};
 type GetMonitoringHistory = record {
   to : opt nat64;
   from : opt nat64;
@@ -40,10 +48,12 @@ type GetMonitoringHistory = record {
 };
 type MissionControlSettings = record {
   updated_at : nat64;
+  monitoring_config : opt MonitoringConfig;
   created_at : nat64;
   monitoring : opt Monitoring;
 };
 type Monitoring = record { cycles : opt CyclesMonitoring };
+type MonitoringConfig = record { cycles : opt CyclesMonitoringConfig };
 type MonitoringHistory = record { cycles : opt MonitoringHistoryCycles };
 type MonitoringHistoryCycles = record {
   deposited_cycles : opt CyclesBalance;
@@ -153,6 +163,7 @@ service : () -> {
   remove_satellites_controllers : (vec principal, vec principal) -> ();
   set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();
+  set_monitoring_config : (opt MonitoringConfig) -> ();
   set_orbiter : (principal, opt text) -> (Orbiter);
   set_orbiter_metadata : (principal, vec record { text; text }) -> (Orbiter);
   set_orbiters_controllers : (

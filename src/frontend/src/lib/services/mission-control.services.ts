@@ -1,4 +1,7 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type {
+	MissionControlSettings,
+	Satellite
+} from '$declarations/mission_control/mission_control.did';
 import {
 	addMissionControlController,
 	addSatellitesController,
@@ -21,17 +24,17 @@ import {
 	MISSION_CONTROL_v0_0_7
 } from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/satellite.derived';
+import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
-import { i18n } from '$lib/stores/i18n.store';
 import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
 import { orbitersDataStore } from '$lib/stores/orbiter.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
-import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable } from '@dfinity/utils';
+import { fromNullable } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -237,33 +240,22 @@ export const loadSettings = async ({
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	try {
-		assertNonNullish(identity, get(i18n).core.not_logged_in);
-
-		const store = get(missionControlSettingsDataStore);
-
-		if (store !== undefined && !reload) {
-			return { success: true };
-		}
-
+	const load = async (identity: Identity): Promise<MissionControlSettings | undefined> => {
 		const settings = await getSettings({
 			missionControlId,
 			identity
 		});
 
-		missionControlSettingsDataStore.set(fromNullable(settings));
+		return fromNullable(settings);
+	};
 
-		return { success: true };
-	} catch (err: unknown) {
-		const labels = get(i18n);
+	const { result } = await loadDataStore<MissionControlSettings | undefined>({
+		identity,
+		reload,
+		load,
+		errorLabel: 'snapshot_loading_errors',
+		store: missionControlSettingsDataStore
+	});
 
-		toasts.error({
-			text: labels.errors.snapshot_loading_errors,
-			detail: err
-		});
-
-		missionControlSettingsDataStore.reset();
-
-		return { success: false };
-	}
+	return { success: result !== 'error' };
 };

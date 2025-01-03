@@ -709,7 +709,9 @@
 		"usage": "Usage",
 		"weekly_cycles_deposit": "Weekly cycles deposit",
 		"default_strategy": "Default Strategy",
-		"configuration_for_modules": "This configuration will be used as the default for monitoring newly created modules."
+		"configuration_for_modules": "This configuration will be used as the default for monitoring newly created modules.",
+		"auto_refill": "Auto-refill",
+		"auto_refill_disabled": "Auto-refill disabled"
 	},
 	"preferences": {
 		"title": "Preferences",

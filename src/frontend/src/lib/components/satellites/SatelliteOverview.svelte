@@ -4,7 +4,6 @@
 	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import Monitoring from '$lib/components/monitoring/Monitoring.svelte';
 	import SatelliteActions from '$lib/components/satellites/SatelliteActions.svelte';
 	import SatelliteName from '$lib/components/satellites/SatelliteName.svelte';
 	import SatelliteOverviewCustomDomain from '$lib/components/satellites/SatelliteOverviewCustomDomain.svelte';
@@ -14,6 +13,7 @@
 	import { satellitesNotLoaded } from '$lib/derived/satellite.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { SatelliteIdText } from '$lib/types/satellite';
+	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 
 	interface Props {
 		satellite: Satellite;
@@ -47,10 +47,6 @@
 
 		<div>
 			<SatelliteOverviewVersion {satelliteId} />
-
-			<div>
-				<Monitoring {monitoring} loading={$satellitesNotLoaded} />
-			</div>
 		</div>
 	</div>
 
@@ -67,7 +63,9 @@
 			heapWarningLabel={$i18n.canisters.warning_satellite_heap_memory}
 		/>
 
-		<CanisterMonitoring segment="satellite" canisterId={satellite.satellite_id} />
+		<CanisterMonitoring segment="satellite" canisterId={satellite.satellite_id}>
+			<MonitoringDisabled {monitoring} loading={$satellitesNotLoaded} />
+		</CanisterMonitoring>
 	</div>
 </div>
 

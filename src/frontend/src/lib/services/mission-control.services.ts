@@ -26,6 +26,7 @@ import {
 	MISSION_CONTROL_v0_0_7
 } from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/satellite.derived';
+import { missionControlVersion as missionControlVersionStore } from '$lib/derived/version.derived';
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
@@ -35,7 +36,6 @@ import {
 } from '$lib/stores/mission-control.store';
 import { orbitersDataStore } from '$lib/stores/orbiter.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
-import type { ReleaseVersion } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
@@ -241,15 +241,15 @@ export const detachOrbiter = async ({
 export const loadSettings = async ({
 	missionControl: missionControlId,
 	identity,
-	reload = false,
-	missionControlVersion: { current: version }
+	reload = false
 }: {
 	missionControl: Principal;
 	identity: OptionIdentity;
 	reload?: boolean;
-	missionControlVersion: ReleaseVersion;
 }): Promise<{ success: boolean }> => {
-	if (compare(version ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
+	const versionStore = get(missionControlVersionStore);
+
+	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
 		missionControlSettingsDataStore.reset();
 		return { success: true };
 	}
@@ -277,16 +277,16 @@ export const loadSettings = async ({
 export const loadUserMetadata = async ({
 	missionControl: missionControlId,
 	identity,
-	reload = false,
-	missionControlVersion: { current: version }
+	reload = false
 }: {
 	missionControl: Principal;
 	identity: OptionIdentity;
 	reload?: boolean;
-	missionControlVersion: ReleaseVersion;
 }): Promise<{ success: boolean }> => {
-	if (compare(version ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
-		missionControlMetadataDataStore.reset();
+	const versionStore = get(missionControlVersionStore);
+
+	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
+		missionControlSettingsDataStore.reset();
 		return { success: true };
 	}
 

@@ -4,6 +4,7 @@
 	import { onMount, type Snippet, untrack } from 'svelte';
 	import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
 	import Segment from '$lib/components/segments/Segment.svelte';
+	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
@@ -98,7 +99,11 @@
 		<tbody>
 			{#if withMissionControl}
 				<tr>
-					<td class="actions"><input type="checkbox" bind:checked={selectedMissionControl} /></td>
+					<td class="actions">
+						<Checkbox>
+							<input type="checkbox" bind:checked={selectedMissionControl} />
+						</Checkbox>
+					</td>
 
 					<td>
 						<Segment id={missionControlId}>
@@ -111,7 +116,9 @@
 			{#each satellites as satellite}
 				<tr>
 					<td class="actions"
-						><input type="checkbox" bind:group={selectedSatellites} value={satellite} /></td
+						><Checkbox
+							><input type="checkbox" bind:group={selectedSatellites} value={satellite} /></Checkbox
+						></td
 					>
 					<td>
 						<Segment id={satellite[0]}>
@@ -126,7 +133,9 @@
 
 				<tr>
 					<td class="actions"
-						><input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /></td
+						><Checkbox
+							><input type="checkbox" bind:group={selectedOrbiters} value={orbiter} /></Checkbox
+						></td
 					>
 					<td>
 						<Segment id={orbiter[0]}>
@@ -140,9 +149,11 @@
 </div>
 
 <div class="objects">
-	<div class="checkbox all">
-		<input type="checkbox" onchange={toggleAll} checked={allSelected} />
-		<span>{allSelected ? $i18n.core.unselect_all : $i18n.core.select_all}</span>
+	<div class="all">
+		<Checkbox>
+			<input type="checkbox" onchange={toggleAll} checked={allSelected} />
+			<span>{allSelected ? $i18n.core.unselect_all : $i18n.core.select_all}</span>
+		</Checkbox>
 	</div>
 </div>
 
@@ -151,12 +162,6 @@
 
 	.tools {
 		width: 88px;
-	}
-
-	.checkbox {
-		display: flex;
-		align-items: center;
-		gap: var(--padding-2x);
 	}
 
 	span {
@@ -183,10 +188,6 @@
 
 	.actions {
 		display: flex;
-		padding: var(--padding-2x) var(--padding-2x);
-	}
-
-	input[type='checkbox'] {
-		margin: 0;
+		padding: var(--padding-2_5x) var(--padding-2x);
 	}
 </style>

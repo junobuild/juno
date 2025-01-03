@@ -4,6 +4,8 @@
 	import { compare } from 'semver';
 	import type { SvelteComponent } from 'svelte';
 	import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
+	import Checkbox from '$lib/components/ui/Checkbox.svelte';
+	import CheckboxGroup from '$lib/components/ui/CheckboxGroup.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -179,7 +181,9 @@
 
 							<tr>
 								<td class="actions">
-									<input type="checkbox" bind:checked={conf[1].enabled} />
+									<Checkbox>
+										<input type="checkbox" bind:checked={conf[1].enabled} />
+									</Checkbox>
 								</td>
 
 								<td>
@@ -204,32 +208,34 @@
 							<span class="title">{$i18n.analytics.tracked_metrics}</span>
 
 							<div class="content">
-								<div class="checkbox">
-									<input
-										type="checkbox"
-										checked={isNullish(features) || features?.page_views === true}
-										onchange={onPageViewsToggle}
-									/>
-									<span>{$i18n.analytics.page_views}</span>
-								</div>
+								<CheckboxGroup>
+									<Checkbox>
+										<input
+											type="checkbox"
+											checked={isNullish(features) || features?.page_views === true}
+											onchange={onPageViewsToggle}
+										/>
+										<span>{$i18n.analytics.page_views}</span>
+									</Checkbox>
 
-								<div class="checkbox">
-									<input
-										type="checkbox"
-										checked={isNullish(features) || features?.track_events === true}
-										onchange={onTrackEventsToggle}
-									/>
-									<span>{$i18n.analytics.tracked_events}</span>
-								</div>
+									<Checkbox>
+										<input
+											type="checkbox"
+											checked={isNullish(features) || features?.track_events === true}
+											onchange={onTrackEventsToggle}
+										/>
+										<span>{$i18n.analytics.tracked_events}</span>
+									</Checkbox>
 
-								<div class="checkbox">
-									<input
-										type="checkbox"
-										checked={isNullish(features) || features?.performance_metrics === true}
-										onchange={onPerformanceToggle}
-									/>
-									<span>{$i18n.analytics.web_vitals}</span>
-								</div>
+									<Checkbox>
+										<input
+											type="checkbox"
+											checked={isNullish(features) || features?.performance_metrics === true}
+											onchange={onPerformanceToggle}
+										/>
+										<span>{$i18n.analytics.web_vitals}</span>
+									</Checkbox>
+								</CheckboxGroup>
 							</div>
 						</div>
 					</Collapsible>
@@ -252,20 +258,6 @@
 
 	.tools {
 		width: 88px;
-	}
-
-	input[type='checkbox'] {
-		margin: 0;
-	}
-
-	.checkbox {
-		&:not(:first-of-type) {
-			padding: var(--padding-2x) 0 0;
-		}
-
-		span {
-			white-space: pre-wrap;
-		}
 	}
 
 	.options {

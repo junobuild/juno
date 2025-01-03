@@ -172,6 +172,7 @@ export interface _SERVICE {
 	get_monitoring_status: ActorMethod<[], MonitoringStatus>;
 	get_settings: ActorMethod<[], [] | [MissionControlSettings]>;
 	get_user: ActorMethod<[], Principal>;
+	get_user_metadata: ActorMethod<[], Array<[string, string]>>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;

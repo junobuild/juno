@@ -21,7 +21,8 @@ import {
 	setOrbiterSatelliteConfigs007 as setOrbiterSatelliteConfigsDeprecatedApi
 } from '$lib/api/orbiter.deprecated.api';
 import { ORBITER_v0_0_4, ORBITER_v0_0_5, ORBITER_v0_0_8 } from '$lib/constants/version.constants';
-import { orbiterConfigs, orbitersStore } from '$lib/derived/orbiter.derived';
+import { orbiterConfigs } from '$lib/derived/orbiter.derived';
+import { loadDataStore } from '$lib/services/loader.services';
 import {
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
@@ -39,6 +40,7 @@ import type {
 } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
+import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { compare } from 'semver';
@@ -99,37 +101,26 @@ export const loadOrbiters = async ({
 		return { result: 'skip' };
 	}
 
-	// We load only once
-	const orbiters = get(orbitersStore);
-	if (nonNullish(orbiters) && !reload) {
-		return { result: 'skip' };
-	}
-
-	try {
-		const identity = get(authStore).identity;
-
+	const load = async (identity: Identity): Promise<Orbiter[]> => {
 		const { list_orbiters } = await getMissionControlActor({
 			missionControlId: missionControl,
 			identity
 		});
+
 		const orbiters = await list_orbiters();
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		orbitersDataStore.set(orbiters.map(([_, orbiter]) => orbiter));
+		return orbiters.map(([_, orbiter]) => orbiter);
+	};
 
-		return { result: 'success' };
-	} catch (err: unknown) {
-		const labels = get(i18n);
+	const identity = get(authStore).identity;
 
-		toasts.error({
-			text: labels.errors.orbiters_loading,
-			detail: err
-		});
-
-		orbitersDataStore.reset();
-
-		return { result: 'error' };
-	}
+	return await loadDataStore<Orbiter[]>({
+		identity,
+		store: orbitersDataStore,
+		errorLabel: 'orbiters_loading',
+		load,
+		reload
+	});
 };
 
 export const loadOrbiterConfigs = async ({

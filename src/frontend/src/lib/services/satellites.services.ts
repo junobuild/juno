@@ -1,13 +1,12 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
-import { satellitesStore } from '$lib/derived/satellite.derived';
+import { loadDataStore } from '$lib/services/loader.services';
 import { authStore } from '$lib/stores/auth.store';
-import { i18n } from '$lib/stores/i18n.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
-import { toasts } from '$lib/stores/toasts.store';
 import type { Option } from '$lib/types/utils';
+import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 interface CreateSatelliteConfig {
@@ -65,35 +64,24 @@ export const loadSatellites = async ({
 		return { result: 'skip' };
 	}
 
-	// We load only once
-	const satellites = get(satellitesStore);
-	if (nonNullish(satellites) && !reload) {
-		return { result: 'skip' };
-	}
-
-	try {
-		const identity = get(authStore).identity;
-
+	const load = async (identity: Identity): Promise<Satellite[]> => {
 		const { list_satellites } = await getMissionControlActor({
 			missionControlId: missionControl,
 			identity
 		});
+
 		const satellites = await list_satellites();
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		satellitesDataStore.set(satellites.map(([_, satellite]) => satellite));
+		return satellites.map(([_, satellite]) => satellite);
+	};
 
-		return { result: 'success' };
-	} catch (err: unknown) {
-		const labels = get(i18n);
+	const identity = get(authStore).identity;
 
-		toasts.error({
-			text: labels.errors.satellites_loading,
-			detail: err
-		});
-
-		satellitesDataStore.reset();
-
-		return { result: 'error' };
-	}
+	return await loadDataStore<Satellite[]>({
+		identity,
+		store: satellitesDataStore,
+		errorLabel: 'satellites_loading',
+		load,
+		reload
+	});
 };

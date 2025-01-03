@@ -1,9 +1,9 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
+	import type { Snippet } from 'svelte';
 	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import type { CanisterMonitoringData, Segment } from '$lib/types/canister';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		canisterId: Principal;

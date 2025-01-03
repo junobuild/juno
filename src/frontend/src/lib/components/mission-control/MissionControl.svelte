@@ -6,6 +6,7 @@
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
+	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -15,7 +16,6 @@
 	} from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { i18n } from '$lib/stores/i18n.store';
-	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 
 	interface Props {
 		missionControlId: Principal;

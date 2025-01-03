@@ -90,7 +90,7 @@
 				{/if}
 			</span>
 		{:else}
-			<span class="info">Monitoring disabled.</span>
+			<span class="info">{$i18n.monitoring.auto_refill_disabled}</span>
 		{/if}
 	</button>
 </CanisterMonitoringLoader>

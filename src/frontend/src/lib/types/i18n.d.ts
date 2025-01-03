@@ -735,6 +735,8 @@ interface I18nMonitoring {
 	weekly_cycles_deposit: string;
 	default_strategy: string;
 	configuration_for_modules: string;
+	auto_refill: string;
+	auto_refill_disabled: string;
 }
 
 interface I18nPreferences {

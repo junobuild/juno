@@ -4,7 +4,7 @@
 	import CanisterMonitoring from '$lib/components/canister/CanisterMonitoring.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
-	import Monitoring from '$lib/components/monitoring/Monitoring.svelte';
+	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import OrbiterActions from '$lib/components/orbiter/OrbiterActions.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -47,10 +47,6 @@
 					<p>v{$versionStore?.orbiter?.current ?? '...'}</p>
 				</Value>
 			</div>
-
-			<div>
-				<Monitoring {monitoring} loading={$orbiterNotLoaded} />
-			</div>
 		</div>
 	</div>
 
@@ -67,7 +63,9 @@
 			heapWarningLabel={$i18n.canisters.warning_orbiter_heap_memory}
 		/>
 
-		<CanisterMonitoring segment="orbiter" canisterId={orbiter.orbiter_id} />
+		<CanisterMonitoring segment="orbiter" canisterId={orbiter.orbiter_id}>
+			<MonitoringDisabled {monitoring} loading={$orbiterNotLoaded} />
+		</CanisterMonitoring>
 	</div>
 </div>
 

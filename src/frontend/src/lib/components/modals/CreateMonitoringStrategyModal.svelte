@@ -1,6 +1,7 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import {fromNullable, isNullish} from '@dfinity/utils';
+	import { fromNullable, isNullish } from '@dfinity/utils';
+	import { onMount } from 'svelte';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -9,6 +10,7 @@
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
 	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
+	import MonitoringCreateStrategyWithDefault from '$lib/components/monitoring/MonitoringCreateStrategyWithDefault.svelte';
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -18,8 +20,6 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
-	import MonitoringCreateStrategyWithDefault from '$lib/components/monitoring/MonitoringCreateStrategyWithDefault.svelte';
-	import {onMount} from "svelte";
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -99,6 +99,7 @@
 			missionControlMonitored: missionControl.monitored,
 			missionControlMinCycles,
 			missionControlFundCycles,
+			useAsDefaultStrategy,
 			onProgress
 		});
 
@@ -122,7 +123,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
-		<ProgressMonitoring {progress} action="create" />
+		<ProgressMonitoring {progress} action="create" withOptions={useAsDefaultStrategy} />
 	{:else if steps === 'review'}
 		<MonitoringCreateStrategyReview
 			{selectedSatellites}

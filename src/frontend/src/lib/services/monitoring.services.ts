@@ -1,8 +1,13 @@
 import type {
 	CyclesMonitoringStrategy,
-	CyclesThreshold
+	CyclesThreshold,
+	MonitoringConfig
 } from '$declarations/mission_control/mission_control.did';
-import { updateAndStartMonitoring, updateAndStopMonitoring } from '$lib/api/mission-control.api';
+import {
+	setMonitoringConfig as setMonitoringConfigApi,
+	updateAndStartMonitoring,
+	updateAndStopMonitoring
+} from '$lib/api/mission-control.api';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSettings, loadUserMetadata } from '$lib/services/mission-control.services';
@@ -37,6 +42,7 @@ interface ApplyMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyPa
 	missionControlMonitored: boolean;
 	missionControlMinCycles: bigint | undefined;
 	missionControlFundCycles: bigint | undefined;
+	useAsDefaultStrategy: boolean;
 }
 
 interface StopMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyParams {
@@ -47,6 +53,7 @@ export const applyMonitoringCyclesStrategy = async ({
 	identity,
 	missionControlId,
 	onProgress,
+	useAsDefaultStrategy,
 	...rest
 }: ApplyMonitoringCyclesStrategyParams): Promise<{
 	success: 'ok' | 'cancelled' | 'error';
@@ -62,11 +69,35 @@ export const applyMonitoringCyclesStrategy = async ({
 		});
 	};
 
+	const setMonitoringConfig = async () => {
+		await setMonitoringCyclesConfig({
+			identity,
+			missionControlId,
+			...rest
+		});
+	};
+
+	const executeCreateMonitoring = async () => {
+		if (useAsDefaultStrategy) {
+			await execute({
+				fn: setMonitoringConfig,
+				onProgress,
+				step: MonitoringStrategyProgressStep.Options
+			});
+		}
+
+		await execute({
+			fn: setMonitoringStrategy,
+			onProgress,
+			step: MonitoringStrategyProgressStep.CreateOrStopMonitoring
+		});
+	};
+
 	return await executeMonitoring({
 		identity,
 		missionControlId,
 		onProgress,
-		fn: setMonitoringStrategy,
+		fn: executeCreateMonitoring,
 		errorText: labels.errors.monitoring_apply_strategy_error
 	});
 };
@@ -90,11 +121,19 @@ export const stopMonitoringCyclesStrategy = async ({
 		});
 	};
 
+	const executeStopMonitoring = async () => {
+		await execute({
+			fn: stopMonitoring,
+			onProgress,
+			step: MonitoringStrategyProgressStep.CreateOrStopMonitoring
+		});
+	};
+
 	return await executeMonitoring({
 		identity,
 		missionControlId,
 		onProgress,
-		fn: stopMonitoring,
+		fn: executeStopMonitoring,
 		errorText: labels.errors.monitoring_stop_error
 	});
 };
@@ -115,17 +154,13 @@ const executeMonitoring = async ({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		await execute({
-			fn,
-			onProgress,
-			step: MonitoringStrategyProgressStep.CreateOrStopMonitoring
-		});
+		await fn();
 
 		const reload = async () => await reloadData({ identity, missionControlId });
 		await execute({
 			fn: reload,
 			onProgress,
-			step: MonitoringStrategyProgressStep.ReloadSettings
+			step: MonitoringStrategyProgressStep.Reload
 		});
 	} catch (err: unknown) {
 		toasts.error({
@@ -147,7 +182,7 @@ const setMonitoringCyclesStrategy = async ({
 	minCycles,
 	fundCycles,
 	...missionControlRest
-}: Omit<ApplyMonitoringCyclesStrategyParams, 'identity' | 'onProgress'> &
+}: Omit<ApplyMonitoringCyclesStrategyParams, 'identity' | 'onProgress' | 'useAsDefaultStrategy'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
 	if (isNullish(minCycles)) {
 		toasts.error({
@@ -204,6 +239,48 @@ const setMonitoringCyclesStrategy = async ({
 						: []
 			})
 		}
+	});
+};
+
+const setMonitoringCyclesConfig = async ({
+	identity,
+	missionControlId,
+	minCycles,
+	fundCycles
+}: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId' | 'minCycles' | 'fundCycles'> &
+	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
+	if (isNullish(minCycles)) {
+		toasts.error({
+			text: get(i18n).monitoring.min_cycles_not_defined
+		});
+
+		return { success: 'error' };
+	}
+
+	if (isNullish(fundCycles)) {
+		toasts.error({
+			text: get(i18n).monitoring.fund_cycles_not_defined
+		});
+
+		return { success: 'error' };
+	}
+
+	const config: MonitoringConfig = {
+		cycles: toNullable({
+			notification: toNullable(),
+			default_strategy: toNullable({
+				BelowThreshold: {
+					min_cycles: minCycles,
+					fund_cycles: fundCycles
+				}
+			})
+		})
+	};
+
+	await setMonitoringConfigApi({
+		identity,
+		missionControlId,
+		config
 	});
 };
 

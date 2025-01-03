@@ -726,6 +726,7 @@ interface I18nMonitoring {
 	warning_advice: string;
 	strategy_preparing: string;
 	reload_settings: string;
+	saving_options: string;
 	stop_monitoring_question: string;
 	stop_monitoring_note: string;
 	last_status_check: string;

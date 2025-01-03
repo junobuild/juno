@@ -46,7 +46,8 @@
 						canisterId: canisterId.toText(),
 						segment,
 						segmentLabel
-					}
+					},
+					monitoring
 				}
 			}
 		});

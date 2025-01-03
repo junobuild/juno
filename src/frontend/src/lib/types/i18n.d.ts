@@ -737,6 +737,7 @@ interface I18nMonitoring {
 	configuration_for_modules: string;
 	auto_refill: string;
 	auto_refill_disabled: string;
+	auto_refill_strategy: string;
 }
 
 interface I18nPreferences {

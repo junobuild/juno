@@ -711,7 +711,8 @@
 		"default_strategy": "Default Strategy",
 		"configuration_for_modules": "This configuration will be used as the default for monitoring newly created modules.",
 		"auto_refill": "Auto-refill",
-		"auto_refill_disabled": "Auto-refill disabled"
+		"auto_refill_disabled": "Auto-refill disabled",
+		"auto_refill_strategy": "Top-up {0}T Cycles if the remaining threshold falls below {1}"
 	},
 	"preferences": {
 		"title": "Preferences",

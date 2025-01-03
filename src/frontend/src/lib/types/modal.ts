@@ -1,6 +1,7 @@
 import type { snapshot } from '$declarations/ic/ic.did';
 import type {
 	MissionControlSettings,
+	Monitoring,
 	Satellite
 } from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
@@ -101,6 +102,10 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 export interface JunoModalMonitoringStrategyDetail {
 	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
+}
+
+export interface JunoModalShowMonitoringDetail extends JunoModalSegmentDetail {
+	monitoring: Monitoring | undefined;
 }
 
 export type JunoModalDetail =

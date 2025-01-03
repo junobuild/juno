@@ -1,6 +1,5 @@
 <script lang="ts">
 	import { type Snippet, untrack } from 'svelte';
-	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { isBusy } from '$lib/stores/busy.store';

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { fromNullable, isNullish } from '@dfinity/utils';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -37,10 +36,6 @@
 </MonitoringCreateStrategy>
 
 <style lang="scss">
-	.toolbar {
-		padding: var(--padding) 0 0 0;
-	}
-
 	.default-strategy {
 		margin: var(--padding) 0 var(--padding-2x);
 	}

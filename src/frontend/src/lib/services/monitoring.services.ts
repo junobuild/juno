@@ -5,7 +5,7 @@ import type {
 import { updateAndStartMonitoring, updateAndStopMonitoring } from '$lib/api/mission-control.api';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
-import { loadSettings } from '$lib/services/mission-control.services';
+import { loadSettings, loadUserMetadata } from '$lib/services/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiters.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
@@ -121,7 +121,7 @@ const executeMonitoring = async ({
 			step: MonitoringStrategyProgressStep.CreateOrStopMonitoring
 		});
 
-		const reload = async () => await reloadSettings({ identity, missionControlId });
+		const reload = async () => await reloadData({ identity, missionControlId });
 		await execute({
 			fn: reload,
 			onProgress,
@@ -228,7 +228,7 @@ const stopMonitoringCycles = async ({
 	});
 };
 
-const reloadSettings = async ({
+const reloadData = async ({
 	missionControlId,
 	identity
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId'> &
@@ -242,6 +242,10 @@ const reloadSettings = async ({
 		loadSatellites(reloadParams),
 		loadOrbiters(reloadParams),
 		loadSettings({
+			...reloadParams,
+			identity
+		}),
+		loadUserMetadata({
 			...reloadParams,
 			identity
 		})

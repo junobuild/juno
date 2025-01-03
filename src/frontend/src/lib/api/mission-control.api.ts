@@ -403,6 +403,18 @@ export const icrcTransfer = async ({
 	return icrc_transfer(ledgerId, args);
 };
 
+export const getUserMetadata = async ({
+	missionControlId,
+
+	identity
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+}): Promise<[] | Metadata> => {
+	const { get_user_metadata } = await getMissionControlActor({ missionControlId, identity });
+	return get_user_metadata();
+};
+
 export const getSettings = async ({
 	missionControlId,
 

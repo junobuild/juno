@@ -5,7 +5,7 @@
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
-	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
+	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import Monitoring from '$lib/components/monitoring/Monitoring.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -53,12 +53,12 @@
 				</div>
 
 				<div>
-					<MissionControlSettingsLoader {missionControlId}>
+					<MissionControlDataLoader {missionControlId}>
 						<Monitoring
 							monitoring={$missionControlMonitoring}
 							loading={$missionControlSettingsNotLoaded}
 						/>
-					</MissionControlSettingsLoader>
+					</MissionControlDataLoader>
 				</div>
 			</div>
 		</div>

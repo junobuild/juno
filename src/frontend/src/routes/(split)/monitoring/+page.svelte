@@ -6,7 +6,7 @@
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
 	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
-	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
+	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import MonitoringDashboard from '$lib/components/monitoring/MonitoringDashboard.svelte';
 	import MonitoringSettings from '$lib/components/monitoring/MonitoringSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -70,13 +70,13 @@
 			<OrbitersLoader>
 				<MissionControlGuard>
 					{#if nonNullish($missionControlIdDerived)}
-						<MissionControlSettingsLoader missionControlId={$missionControlIdDerived}>
+						<MissionControlDataLoader missionControlId={$missionControlIdDerived}>
 							{#if $store.tabId === $store.tabs[0].id}
 								<MonitoringDashboard missionControlId={$missionControlIdDerived} />
 							{:else if $store.tabId === $store.tabs[1].id && $missionControlMonitored}
 								<MonitoringSettings missionControlId={$missionControlIdDerived} />
 							{/if}
-						</MissionControlSettingsLoader>
+						</MissionControlDataLoader>
 					{/if}
 				</MissionControlGuard>
 			</OrbitersLoader>

@@ -6,6 +6,7 @@ import {
 	addMissionControlController,
 	addSatellitesController,
 	getSettings,
+	getUserMetadata,
 	missionControlVersion,
 	setMissionControlController,
 	setOrbiter,
@@ -19,6 +20,7 @@ import { setMissionControlController004 } from '$lib/api/mission-control.depreca
 import { satelliteVersion } from '$lib/api/satellites.api';
 import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import {
+	MISSION_CONTROL_v0_0_13,
 	MISSION_CONTROL_v0_0_3,
 	MISSION_CONTROL_v0_0_5,
 	MISSION_CONTROL_v0_0_7
@@ -27,11 +29,16 @@ import { satellitesStore } from '$lib/derived/satellite.derived';
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
-import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
+import {
+	missionControlMetadataDataStore,
+	missionControlSettingsDataStore
+} from '$lib/stores/mission-control.store';
 import { orbitersDataStore } from '$lib/stores/orbiter.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
+import type { ReleaseVersion } from '$lib/stores/version.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { Metadata } from '$lib/types/metadata';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
 import { fromNullable } from '@dfinity/utils';
@@ -234,12 +241,19 @@ export const detachOrbiter = async ({
 export const loadSettings = async ({
 	missionControl: missionControlId,
 	identity,
-	reload = false
+	reload = false,
+	missionControlVersion: { current: version }
 }: {
 	missionControl: Principal;
 	identity: OptionIdentity;
 	reload?: boolean;
+	missionControlVersion: ReleaseVersion;
 }): Promise<{ success: boolean }> => {
+	if (compare(version ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
+		missionControlSettingsDataStore.reset();
+		return { success: true };
+	}
+
 	const load = async (identity: Identity): Promise<MissionControlSettings | undefined> => {
 		const settings = await getSettings({
 			missionControlId,
@@ -253,8 +267,40 @@ export const loadSettings = async ({
 		identity,
 		reload,
 		load,
-		errorLabel: 'snapshot_loading_errors',
+		errorLabel: 'load_settings',
 		store: missionControlSettingsDataStore
+	});
+
+	return { success: result !== 'error' };
+};
+
+export const loadUserMetadata = async ({
+	missionControl: missionControlId,
+	identity,
+	reload = false,
+	missionControlVersion: { current: version }
+}: {
+	missionControl: Principal;
+	identity: OptionIdentity;
+	reload?: boolean;
+	missionControlVersion: ReleaseVersion;
+}): Promise<{ success: boolean }> => {
+	if (compare(version ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
+		missionControlMetadataDataStore.reset();
+		return { success: true };
+	}
+
+	const load = async (identity: Identity): Promise<Metadata> => await getUserMetadata({
+			missionControlId,
+			identity
+		});
+
+	const { result } = await loadDataStore<Metadata>({
+		identity,
+		reload,
+		load,
+		errorLabel: 'load_metadata',
+		store: missionControlMetadataDataStore
 	});
 
 	return { success: result !== 'error' };

@@ -10,6 +10,7 @@ import type { MissionControlBalance } from '$lib/types/balance';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
+import type { Metadata } from '$lib/types/metadata';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Principal } from '@dfinity/principal';
@@ -102,6 +103,7 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 export interface JunoModalMonitoringStrategyDetail {
 	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
+	userMetadata: Metadata;
 }
 
 export interface JunoModalShowMonitoringDetail extends JunoModalSegmentDetail {

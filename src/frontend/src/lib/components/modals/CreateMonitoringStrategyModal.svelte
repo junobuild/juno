@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import type {
 		CyclesMonitoringStrategy,
@@ -9,17 +9,23 @@
 	} from '$declarations/mission_control/mission_control.did';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
+	import MonitoringCreateStrategyNotifications from '$lib/components/monitoring/MonitoringCreateStrategyNotifications.svelte';
 	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
 	import MonitoringCreateStrategyWithDefault from '$lib/components/monitoring/MonitoringCreateStrategyWithDefault.svelte';
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { applyMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
+	import {
+		applyMonitoringCyclesStrategy,
+		type ApplyMonitoringCyclesStrategyOptions
+	} from '$lib/services/monitoring.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
+	import type { Option } from '$lib/types/utils';
+	import { metadataEmail } from '$lib/utils/metadata.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -28,7 +34,9 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { settings, missionControlId } = $derived(detail as JunoModalMonitoringStrategyDetail);
+	let { settings, userMetadata, missionControlId } = $derived(
+		detail as JunoModalMonitoringStrategyDetail
+	);
 
 	let steps:
 		| 'init'
@@ -37,6 +45,7 @@
 		| 'mission_control_strategy'
 		| 'review'
 		| 'in_progress'
+		| 'notifications'
 		| 'ready' = $state('init');
 
 	// Monitoring strategy
@@ -60,7 +69,13 @@
 			strategy: fromNullable(missionControlCycles?.strategy ?? [])
 		});
 
-	// Monitoring configuration
+	// Monitoring email
+
+	let missionControlEmail = $derived(metadataEmail(userMetadata));
+	let hasMissionControlEmail = $derived(nonNullish(missionControlEmail));
+	let userEmail: Option<string> = $state(undefined);
+
+	// Monitoring default strategy
 
 	let defaultStrategy = $derived(
 		fromNullable(
@@ -70,6 +85,17 @@
 	);
 
 	let useAsDefaultStrategy = $state(true);
+
+	// Monitoring configuration
+	let withOptions: ApplyMonitoringCyclesStrategyOptions | undefined = $derived(
+		useAsDefaultStrategy || (nonNullish(userEmail) && notEmptyString(userEmail))
+			? {
+					useAsDefaultStrategy,
+					userEmail,
+					userMetadata
+				}
+			: undefined
+	);
 
 	onMount(() => {
 		useAsDefaultStrategy = isNullish(defaultStrategy);
@@ -99,7 +125,7 @@
 			missionControlMonitored: missionControl.monitored,
 			missionControlMinCycles,
 			missionControlFundCycles,
-			useAsDefaultStrategy,
+			options: withOptions,
 			onProgress
 		});
 
@@ -112,6 +138,9 @@
 
 		setTimeout(() => (steps = 'ready'), 500);
 	};
+
+	const gotoReviewOrNotifications = () =>
+		(steps = hasMissionControlEmail ? 'review' : 'notifications');
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -123,7 +152,15 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
-		<ProgressMonitoring {progress} action="create" withOptions={useAsDefaultStrategy} />
+		<ProgressMonitoring {progress} action="create" withOptions={nonNullish(withOptions)} />
+	{:else if steps === 'notifications'}
+		<MonitoringCreateStrategyNotifications
+			onback={() => (steps = 'mission_control')}
+			oncontinue={(email) => {
+				userEmail = email;
+				steps = 'review';
+			}}
+		/>
 	{:else if steps === 'review'}
 		<MonitoringCreateStrategyReview
 			{selectedSatellites}
@@ -134,6 +171,7 @@
 			{missionControlMinCycles}
 			{missionControlFundCycles}
 			{missionControl}
+			{userEmail}
 			onback={() => (steps = 'mission_control')}
 			{onsubmit}
 		/>
@@ -143,13 +181,13 @@
 			bind:fundCycles={missionControlFundCycles}
 			strategy="mission-control"
 			onback={() => (steps = 'mission_control')}
-			oncontinue={() => (steps = 'review')}
+			oncontinue={gotoReviewOrNotifications}
 		/>
 	{:else if steps === 'mission_control'}
 		<MonitoringCreateStrategyMissionControl
 			{missionControl}
 			onno={() => (steps = 'mission_control_strategy')}
-			onyes={() => (steps = 'review')}
+			onyes={gotoReviewOrNotifications}
 		/>
 	{:else if steps === 'strategy'}
 		<MonitoringCreateStrategyWithDefault

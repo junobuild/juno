@@ -499,3 +499,16 @@ export const setMonitoringConfig = async ({
 
 	return await set_monitoring_config(toNullable(config));
 };
+
+export const setUserMetadata = async ({
+	missionControlId,
+	metadata,
+	identity
+}: {
+	missionControlId: Principal;
+	metadata: Metadata;
+	identity: OptionIdentity;
+}): Promise<void> => {
+	const { set_metadata } = await getMissionControlActor({ missionControlId, identity });
+	await set_metadata(metadata);
+};

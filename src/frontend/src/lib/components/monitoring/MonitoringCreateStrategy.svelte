@@ -46,7 +46,7 @@
 	const disabled = $derived((minCycles ?? 0n) <= 0n || (fundCycles ?? 0n) <= 0n);
 </script>
 
-<MonitoringStepBackContinue {onback} {oncontinue}>
+<MonitoringStepBackContinue {onback} {oncontinue} {disabled}>
 	<h2>{$i18n.monitoring.configure_strategy}</h2>
 
 	<p>

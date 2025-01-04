@@ -7,9 +7,10 @@
 		children: Snippet;
 		onback: () => void;
 		oncontinue: () => void;
+		disabled?: boolean;
 	}
 
-	let { children, onback, oncontinue }: Props = $props();
+	let { children, onback, oncontinue, disabled = false }: Props = $props();
 </script>
 
 {@render children()}
@@ -19,7 +20,7 @@
 		{$i18n.core.back}
 	</button>
 
-	<button type="button" onclick={oncontinue} disabled={$isBusy}>
+	<button type="button" onclick={oncontinue} disabled={$isBusy || disabled}>
 		{$i18n.core.continue}
 	</button>
 </div>

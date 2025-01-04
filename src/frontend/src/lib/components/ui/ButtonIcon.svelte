@@ -7,7 +7,7 @@
 		hidden?: boolean;
 		icon?: Snippet;
 		children: Snippet;
-		onclick: () => Promise<void>;
+		onclick: (() => Promise<void>) | (() => void);
 	}
 
 	let {

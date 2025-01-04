@@ -37,6 +37,6 @@
 
 <style lang="scss">
 	.default-strategy {
-		margin: var(--padding) 0 var(--padding-2x);
+		margin: var(--padding) 0 var(--padding-3x);
 	}
 </style>

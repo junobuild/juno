@@ -1,18 +1,21 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fade, scale } from 'svelte/transition';
+	import IconBack from '$lib/components/icons/IconBack.svelte';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
 
 	interface Props {
-		title?: Snippet;
+		onback?: () => void;
 		children: Snippet;
 	}
 
-	let { children, title }: Props = $props();
+	let { children, onback }: Props = $props();
 
 	let visible = $state(true);
 
@@ -51,7 +54,17 @@
 		></div>
 		<div transition:scale={{ delay: 25, duration: 150, easing: quintOut }} class="wrapper flex">
 			<div class="toolbar">
-				<h3 id="modalTitle">{@render title?.()}</h3>
+				{#if nonNullish(onback)}
+					<div class="start">
+						<ButtonIcon onclick={onback}>
+							{#snippet icon()}
+								<IconBack size="20px" />
+							{/snippet}
+							{$i18n.core.back}
+						</ButtonIcon>
+					</div>
+				{/if}
+
 				<button onclick={onClose} aria-label={$i18n.core.close} disabled={$isBusy}
 					><IconClose /></button
 				>
@@ -113,25 +126,23 @@
 
 	.toolbar {
 		display: grid;
-		grid-template-columns: 65px 1fr 65px;
+		grid-template-columns: auto 1fr 65px;
 		align-items: center;
 
-		h3 {
-			grid-column-start: 2;
-			text-align: center;
-			margin-bottom: 0;
+		.start {
+			margin: 0 var(--padding-2x);
 		}
 
 		button {
 			grid-column-start: 3;
-			margin: 0.45rem;
+			margin: var(--padding);
 		}
 	}
 
 	.content {
 		position: relative;
 
-		padding: var(--modal-content-padding, 0 var(--padding-2x));
+		padding: var(--padding) var(--padding-3x);
 
 		overflow: auto;
 		height: calc(100% - 60px);

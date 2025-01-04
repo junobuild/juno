@@ -5,6 +5,10 @@ use crate::types::state::{
 };
 use junobuild_shared::types::state::{OrbiterId, SatelliteId};
 
+pub fn get_monitoring_config() -> Option<MonitoringConfig> {
+    STATE.with(|state| state.borrow().heap.settings.as_ref().and_then(|settings| settings.monitoring_config.clone()))
+}
+
 pub fn set_monitoring_config(config: &Option<MonitoringConfig>) {
     STATE.with(|state| set_monitoring_config_impl(config, &mut state.borrow_mut().heap))
 }

@@ -63,6 +63,7 @@ describe('Mission Control - Notifications', () => {
 	it(
 		'should notify observatory',
 		async () => {
+			// Init a mission control
 			const [user] = await initMissionControls({ actor, pic, length: 1 });
 
 			actor.setIdentity(user);
@@ -74,6 +75,7 @@ describe('Mission Control - Notifications', () => {
 
 			assertNonNullish(missionControlId);
 
+			// Assert no notification have been submitted to the Observatory yet
 			const observatoryActor = pic.createActor<ObservatoryActor>(
 				idlFactorObservatory,
 				observatoryId
@@ -95,6 +97,7 @@ describe('Mission Control - Notifications', () => {
 				sent: 0n
 			});
 
+			// Spin some modules to monitor
 			const missionControlActor = pic.createActor<MissionControlActor>(
 				idlFactorMissionControl,
 				missionControlId
@@ -110,9 +113,23 @@ describe('Mission Control - Notifications', () => {
 				missionControlId
 			});
 
-			const { update_and_start_monitoring, set_metadata, set_satellite } = missionControlActor;
+			// Set an email, enable notification, attach the module that was created and start monitoring
+			const { update_and_start_monitoring, set_metadata, set_monitoring_config, set_satellite } =
+				missionControlActor;
 
 			await set_metadata([['email', 'test@test.com']]);
+
+			await set_monitoring_config(
+				toNullable({
+					cycles: toNullable({
+						default_strategy: toNullable(),
+						notification: toNullable({
+							enabled: true,
+							to: toNullable() // We are only using the global email currently but, have foreseen an option
+						})
+					})
+				})
+			);
 
 			await set_satellite(satelliteId, []);
 

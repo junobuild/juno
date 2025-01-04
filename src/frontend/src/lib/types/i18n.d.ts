@@ -73,6 +73,7 @@ interface I18nCore {
 	none: string;
 	enabled: string;
 	disabled: string;
+	email_address: string;
 }
 
 interface I18nCanisters {
@@ -739,6 +740,8 @@ interface I18nMonitoring {
 	auto_refill: string;
 	auto_refill_disabled: string;
 	auto_refill_strategy: string;
+	email_notifications: string;
+	receive_email: string;
 }
 
 interface I18nPreferences {

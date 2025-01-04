@@ -5,9 +5,11 @@ import type {
 } from '$declarations/mission_control/mission_control.did';
 import {
 	setMonitoringConfig as setMonitoringConfigApi,
+	setUserMetadata,
 	updateAndStartMonitoring,
 	updateAndStopMonitoring
 } from '$lib/api/mission-control.api';
+import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSettings, loadUserMetadata } from '$lib/services/mission-control.services';
@@ -20,13 +22,22 @@ import {
 } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { Metadata } from '$lib/types/metadata';
 import {
 	type MonitoringStrategyProgress,
 	MonitoringStrategyProgressStep
 } from '$lib/types/strategy';
+import type { Option } from '$lib/types/utils';
+import { isNotValidEmail } from '$lib/utils/email.utils';
 import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
+import {
+	assertNonNullish,
+	isNullish,
+	nonNullish,
+	notEmptyString,
+	toNullable
+} from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 type MonitoringStrategyOnProgress = (progress: MonitoringStrategyProgress | undefined) => void;
@@ -46,6 +57,8 @@ interface ApplyMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyPa
 	missionControlMinCycles: bigint | undefined;
 	missionControlFundCycles: bigint | undefined;
 	useAsDefaultStrategy: boolean;
+	userMetadata: Metadata;
+	userEmail: Option<string>;
 }
 
 interface StopMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyParams {
@@ -57,6 +70,7 @@ export const applyMonitoringCyclesStrategy = async ({
 	missionControlId,
 	onProgress,
 	useAsDefaultStrategy,
+	userEmail,
 	...rest
 }: ApplyMonitoringCyclesStrategyParams): Promise<{
 	success: 'ok' | 'cancelled' | 'error';
@@ -72,18 +86,33 @@ export const applyMonitoringCyclesStrategy = async ({
 		});
 	};
 
-	const setMonitoringConfig = async () => {
-		await setMonitoringCyclesConfig({
-			identity,
-			missionControlId,
-			...rest
-		});
+	const withEmail = nonNullish(userEmail) && notEmptyString(userEmail);
+	const withOptions = useAsDefaultStrategy || withEmail;
+
+	const setMonitoringOptions = async () => {
+		if (withEmail) {
+			// For now, we use the mission control metadata email. We might allow dev in the future to specify various specific email.
+			await setEmail({
+				identity,
+				missionControlId,
+				userEmail,
+				...rest
+			});
+		}
+
+		if (useAsDefaultStrategy) {
+			await setMonitoringCyclesConfig({
+				identity,
+				missionControlId,
+				...rest
+			});
+		}
 	};
 
 	const executeCreateMonitoring = async () => {
-		if (useAsDefaultStrategy) {
+		if (withOptions) {
 			await execute({
-				fn: setMonitoringConfig,
+				fn: setMonitoringOptions,
 				onProgress,
 				step: MonitoringStrategyProgressStep.Options
 			});
@@ -185,22 +214,17 @@ const setMonitoringCyclesStrategy = async ({
 	minCycles,
 	fundCycles,
 	...missionControlRest
-}: Omit<ApplyMonitoringCyclesStrategyParams, 'identity' | 'onProgress' | 'useAsDefaultStrategy'> &
+}: Omit<
+	ApplyMonitoringCyclesStrategyParams,
+	'identity' | 'onProgress' | 'useAsDefaultStrategy' | 'userEmail' | 'userMetadata'
+> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
 	if (isNullish(minCycles)) {
-		toasts.error({
-			text: get(i18n).monitoring.min_cycles_not_defined
-		});
-
-		return { success: 'error' };
+		throw new Error(get(i18n).monitoring.min_cycles_not_defined);
 	}
 
 	if (isNullish(fundCycles)) {
-		toasts.error({
-			text: get(i18n).monitoring.fund_cycles_not_defined
-		});
-
-		return { success: 'error' };
+		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
 	}
 
 	const missionControlStrategy = buildMissionControlStrategy({
@@ -245,6 +269,32 @@ const setMonitoringCyclesStrategy = async ({
 	});
 };
 
+const setEmail = async ({
+	identity,
+	missionControlId,
+	userEmail,
+	userMetadata
+}: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId' | 'userMetadata'> &
+	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity' | 'userEmail'>>) => {
+	// Do nothing if no email is provided
+	if (isNullish(userEmail) || !notEmptyString(userEmail)) {
+		return;
+	}
+
+	if (isNotValidEmail(userEmail)) {
+		throw new Error(get(i18n).errors.invalid_email);
+	}
+
+	const updateData = new Map(userMetadata);
+	updateData.set(METADATA_KEY_EMAIL, userEmail);
+
+	await setUserMetadata({
+		identity,
+		missionControlId,
+		metadata: Array.from(updateData)
+	});
+};
+
 const setMonitoringCyclesConfig = async ({
 	identity,
 	missionControlId,
@@ -253,19 +303,11 @@ const setMonitoringCyclesConfig = async ({
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId' | 'minCycles' | 'fundCycles'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
 	if (isNullish(minCycles)) {
-		toasts.error({
-			text: get(i18n).monitoring.min_cycles_not_defined
-		});
-
-		return { success: 'error' };
+		throw new Error(get(i18n).monitoring.min_cycles_not_defined);
 	}
 
 	if (isNullish(fundCycles)) {
-		toasts.error({
-			text: get(i18n).monitoring.fund_cycles_not_defined
-		});
-
-		return { success: 'error' };
+		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
 	}
 
 	const config: MonitoringConfig = {
@@ -439,7 +481,7 @@ export const openMonitoringModal = ({
 			type,
 			detail: {
 				settings: $missionControlSettingsDataStore.data,
-				metadata: $missionControlMetadataDataStore.data,
+				userMetadata: $missionControlMetadataDataStore.data,
 				missionControlId
 			}
 		}

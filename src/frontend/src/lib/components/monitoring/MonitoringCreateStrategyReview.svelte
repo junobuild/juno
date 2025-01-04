@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { nonNullish } from '@dfinity/utils';
+	import { nonNullish, notEmptyString } from '@dfinity/utils';
 	import type {
 		CyclesMonitoringStrategy,
 		Orbiter,
@@ -11,6 +11,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
+	import type { Option } from '$lib/types/utils';
 
 	interface Props {
 		selectedSatellites: [Principal, Satellite][];
@@ -21,6 +22,7 @@
 		missionControlMinCycles: bigint | undefined;
 		missionControlFundCycles: bigint | undefined;
 		missionControl: { monitored: boolean; strategy: CyclesMonitoringStrategy | undefined };
+		userEmail: Option<string>;
 		onback: () => void;
 		onsubmit: ($event: MouseEvent | TouchEvent) => Promise<void>;
 	}
@@ -34,9 +36,12 @@
 		missionControlMinCycles,
 		missionControlFundCycles,
 		missionControl,
+		userEmail,
 		onback,
 		onsubmit
 	}: Props = $props();
+
+	let hasEmail = $derived(nonNullish(userEmail) && notEmptyString(userEmail));
 </script>
 
 <MonitoringStepReview {onback} {onsubmit}>
@@ -101,6 +106,22 @@
 			{/if}
 		</div>
 	</div>
+
+	{#if hasEmail}
+		<div class="card-container with-title">
+			<span class="title">{$i18n.monitoring.email_notifications}</span>
+
+			<div class="content">
+				<Value>
+					{#snippet label()}
+						{$i18n.core.email_address}
+					{/snippet}
+
+					<p>{userEmail ?? ''}</p>
+				</Value>
+			</div>
+		</div>
+	{/if}
 </MonitoringStepReview>
 
 <style lang="scss">

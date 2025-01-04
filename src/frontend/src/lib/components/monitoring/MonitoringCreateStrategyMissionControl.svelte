@@ -1,7 +1,7 @@
 <script lang="ts">
 	import { nonNullish } from '@dfinity/utils';
 	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
-	import MonitoringStepMissionControl from '$lib/components/monitoring/MonitoringStepMissionControl.svelte';
+	import MonitoringStepYesNo from '$lib/components/monitoring/MonitoringStepYesNo.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
@@ -16,7 +16,7 @@
 	let { missionControl, onyes, onno }: Props = $props();
 </script>
 
-<MonitoringStepMissionControl {onyes} {onno}>
+<MonitoringStepYesNo {onyes} {onno}>
 	<h2>{$i18n.monitoring.mission_control_strategy}</h2>
 
 	{#if missionControl.monitored && nonNullish(missionControl.strategy)}
@@ -39,4 +39,4 @@
 
 		<p><Html text={$i18n.monitoring.no_mission_control_strategy_question} /></p>
 	{/if}
-</MonitoringStepMissionControl>
+</MonitoringStepYesNo>

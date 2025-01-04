@@ -103,7 +103,7 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 export interface JunoModalMonitoringStrategyDetail {
 	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
-	metadata: Metadata;
+	userMetadata: Metadata;
 }
 
 export interface JunoModalShowMonitoringDetail extends JunoModalSegmentDetail {

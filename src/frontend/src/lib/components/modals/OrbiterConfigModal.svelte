@@ -39,7 +39,7 @@
 		(detail as JunoModalEditOrbiterConfigDetail).features
 	);
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	let collapsibleRef: (SvelteComponent & { open: () => void; close: () => void }) | undefined =
 		$state(undefined);
@@ -119,7 +119,7 @@
 		}
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		try {
 			const results = await setOrbiterSatelliteConfigs({
@@ -135,14 +135,14 @@
 				configs: results
 			});
 
-			steps = 'ready';
+			step = 'ready';
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.orbiter_configuration_unexpected,
 				detail: err
 			});
 
-			steps = 'init';
+			step = 'init';
 		}
 
 		wizardBusy.stop();
@@ -150,12 +150,12 @@
 </script>
 
 <Modal on:junoClose={onclose}>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<p>{$i18n.core.configuration_applied}</p>
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.core.updating_configuration}</p>
 		</SpinnerModal>

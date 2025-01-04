@@ -31,7 +31,7 @@
 
 	let insufficientFunds = $state(true);
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 	let satellite: Satellite | undefined = undefined;
 
 	const onSubmit = async ($event: SubmitEvent) => {
@@ -45,7 +45,7 @@
 		}
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		try {
 			const fn = nonNullish(subnetId) ? createSatelliteWithConfig : createSatellite;
@@ -61,14 +61,14 @@
 			// Reload list of satellites before navigation
 			await loadSatellites({ missionControl: $missionControlIdDerived, reload: true });
 
-			steps = 'ready';
+			step = 'ready';
 		} catch (err) {
 			toasts.error({
 				text: $i18n.errors.satellite_unexpected_error,
 				detail: err
 			});
 
-			steps = 'error';
+			step = 'error';
 		}
 
 		wizardBusy.stop();
@@ -84,14 +84,14 @@
 </script>
 
 <Modal on:junoClose={onclose}>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<Confetti />
 
 		<div class="msg">
 			<p>{$i18n.satellites.ready}</p>
 			<button onclick={navigate}>{$i18n.core.continue}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.satellites.initializing}</p>
 		</SpinnerModal>

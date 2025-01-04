@@ -25,7 +25,7 @@
 
 	let destination = $state('');
 
-	let steps: 'form' | 'review' | 'in_progress' | 'ready' | 'error' = $state('form');
+	let step: 'form' | 'review' | 'in_progress' | 'ready' | 'error' = $state('form');
 
 	let amount: string | undefined = $state();
 
@@ -37,29 +37,29 @@
 
 {#if nonNullish($missionControlIdDerived)}
 	<Modal on:junoClose>
-		{#if steps === 'ready'}
+		{#if step === 'ready'}
 			<Confetti />
 
 			<div class="msg" in:fade>
 				<p>{$i18n.wallet.icp_on_its_way}</p>
 				<button onclick={close}>{$i18n.core.close}</button>
 			</div>
-		{:else if steps === 'in_progress'}
+		{:else if step === 'in_progress'}
 			<SpinnerModal>
 				<p>{$i18n.wallet.sending_in_progress}</p>
 			</SpinnerModal>
-		{:else if steps === 'review'}
+		{:else if step === 'review'}
 			<div in:fade>
 				<SendTokensReview
 					missionControlId={$missionControlIdDerived}
 					{balance}
 					bind:amount
 					bind:destination
-					onnext={(nextSteps) => (steps = nextSteps)}
+					onnext={(nextSteps) => (step = nextSteps)}
 				/>
 			</div>
 		{:else}
-			<SendTokensForm {balance} bind:amount bind:destination onreview={() => (steps = 'review')} />
+			<SendTokensForm {balance} bind:amount bind:destination onreview={() => (step = 'review')} />
 		{/if}
 	</Modal>
 {/if}

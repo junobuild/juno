@@ -52,36 +52,36 @@ interface CreateOrbiterConfig {
 }
 
 export const createOrbiter = async ({
-	missionControl,
+	missionControlId,
 	config: { name }
 }: {
-	missionControl: Option<Principal>;
+	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
 }): Promise<Orbiter | undefined> => {
-	assertNonNullish(missionControl);
+	assertNonNullish(missionControlId);
 
 	const identity = get(authStore).identity;
 
 	const { create_orbiter } = await getMissionControlActor({
-		missionControlId: missionControl,
+		missionControlId,
 		identity
 	});
 	return create_orbiter(toNullable(name));
 };
 
 export const createOrbiterWithConfig = async ({
-	missionControl,
+	missionControlId,
 	config: { name, subnetId }
 }: {
-	missionControl: Option<Principal>;
+	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
 }): Promise<Orbiter | undefined> => {
-	assertNonNullish(missionControl);
+	assertNonNullish(missionControlId);
 
 	const identity = get(authStore).identity;
 
 	const { create_orbiter_with_config } = await getMissionControlActor({
-		missionControlId: missionControl,
+		missionControlId,
 		identity
 	});
 	return create_orbiter_with_config({
@@ -91,19 +91,19 @@ export const createOrbiterWithConfig = async ({
 };
 
 export const loadOrbiters = async ({
-	missionControl,
+	missionControlId,
 	reload = false
 }: {
-	missionControl: Option<Principal>;
+	missionControlId: Option<Principal>;
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
-	if (isNullish(missionControl)) {
+	if (isNullish(missionControlId)) {
 		return { result: 'skip' };
 	}
 
 	const load = async (identity: Identity): Promise<Orbiter[]> => {
 		const { list_orbiters } = await getMissionControlActor({
-			missionControlId: missionControl,
+			missionControlId,
 			identity
 		});
 

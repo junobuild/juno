@@ -31,7 +31,7 @@
 	const openCreateModal = () => openModal('create_monitoring_strategy');
 	const openStopModal = () => openModal('stop_monitoring_strategy');
 
-	onMount(async () => await loadOrbiters({ missionControl: missionControlId }));
+	onMount(async () => await loadOrbiters({ missionControlId }));
 
 	let orbiterMonitored = $state(false);
 	let hasSatellitesMonitored = $state(false);

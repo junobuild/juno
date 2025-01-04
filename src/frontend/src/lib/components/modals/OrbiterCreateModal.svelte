@@ -40,14 +40,14 @@
 			const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
 
 			await fn({
-				missionControl: $missionControlIdDerived,
+				missionControlId: $missionControlIdDerived,
 				config: {
 					...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
 				}
 			});
 
 			// Reload list of orbiters before navigation
-			await loadOrbiters({ missionControl: $missionControlIdDerived, reload: true });
+			await loadOrbiters({ missionControlId: $missionControlIdDerived, reload: true });
 
 			step = 'ready';
 		} catch (err) {

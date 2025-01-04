@@ -11,8 +11,8 @@
 
 	let { children }: Props = $props();
 
-	const load = async (missionControl: Option<Principal>) => {
-		await loadSatellites({ missionControl });
+	const load = async (missionControlId: Option<Principal>) => {
+		await loadSatellites({ missionControlId });
 	};
 
 	$effect(() => {

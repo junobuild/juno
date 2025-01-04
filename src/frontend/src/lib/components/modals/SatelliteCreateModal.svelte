@@ -51,7 +51,7 @@
 			const fn = nonNullish(subnetId) ? createSatelliteWithConfig : createSatellite;
 
 			satellite = await fn({
-				missionControl: $missionControlIdDerived,
+				missionControlId: $missionControlIdDerived,
 				config: {
 					name: satelliteName,
 					...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
@@ -59,7 +59,7 @@
 			});
 
 			// Reload list of satellites before navigation
-			await loadSatellites({ missionControl: $missionControlIdDerived, reload: true });
+			await loadSatellites({ missionControlId: $missionControlIdDerived, reload: true });
 
 			step = 'ready';
 		} catch (err) {

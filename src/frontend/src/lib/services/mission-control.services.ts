@@ -191,7 +191,7 @@ export const attachSatellite = async ({
 
 	// We reload all satellites because if the developer accesses the mission control page directly, the satellites may not be loaded. Adding just one satellite could give the user the impression that there is an issue.
 	await loadSatellites({
-		missionControl: missionControlId,
+		missionControlId,
 		reload: true
 	});
 };
@@ -208,7 +208,7 @@ export const detachSatellite = async ({
 	await unsetSatellite({ missionControlId, satelliteId: canisterId, identity });
 
 	await loadSatellites({
-		missionControl: missionControlId,
+		missionControlId,
 		reload: true
 	});
 };
@@ -239,11 +239,11 @@ export const detachOrbiter = async ({
 };
 
 export const loadSettings = async ({
-	missionControl: missionControlId,
+	missionControlId,
 	identity,
 	reload = false
 }: {
-	missionControl: Principal;
+	missionControlId: Principal;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
@@ -275,11 +275,11 @@ export const loadSettings = async ({
 };
 
 export const loadUserMetadata = async ({
-	missionControl: missionControlId,
+	missionControlId,
 	identity,
 	reload = false
 }: {
-	missionControl: Principal;
+	missionControlId: Principal;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {

@@ -97,31 +97,30 @@
 	let hasMissionControlEmail = $derived(nonNullish(missionControlEmail));
 	let userEmail: Option<string> = $state(undefined);
 
-	// Monitoring default strategy
+	// Monitoring config
+
+	let monitoringConfig = $derived(fromNullable(settings?.monitoring_config ?? []));
 
 	let defaultStrategy = $derived(
-		fromNullable(
-			fromNullable(fromNullable(settings?.monitoring_config ?? [])?.cycles ?? [])
-				?.default_strategy ?? []
-		)
+		fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? [])
 	);
 
 	let useAsDefaultStrategy = $state(true);
 
-	// Monitoring configuration
+	onMount(() => {
+		useAsDefaultStrategy = isNullish(defaultStrategy);
+	});
+
 	let withOptions: ApplyMonitoringCyclesStrategyOptions | undefined = $derived(
 		useAsDefaultStrategy || (nonNullish(userEmail) && notEmptyString(userEmail))
 			? {
+					monitoringConfig,
 					useAsDefaultStrategy,
 					userEmail,
 					userMetadata
 				}
 			: undefined
 	);
-
-	onMount(() => {
-		useAsDefaultStrategy = isNullish(defaultStrategy);
-	});
 
 	// Submit
 

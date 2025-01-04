@@ -1,6 +1,7 @@
 import type {
 	CyclesMonitoringStrategy,
 	CyclesThreshold,
+	DepositedCyclesEmailNotification,
 	MonitoringConfig
 } from '$declarations/mission_control/mission_control.did';
 import {
@@ -33,6 +34,7 @@ import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
 import {
 	assertNonNullish,
+	fromNullable,
 	isNullish,
 	nonNullish,
 	notEmptyString,
@@ -51,6 +53,7 @@ interface MonitoringCyclesStrategyParams {
 }
 
 export interface ApplyMonitoringCyclesStrategyOptions {
+	monitoringConfig: MonitoringConfig | undefined;
 	useAsDefaultStrategy: boolean;
 	userMetadata: Metadata;
 	userEmail: Option<string>;
@@ -90,7 +93,8 @@ export const applyMonitoringCyclesStrategy = async ({
 	};
 
 	const setMonitoringOptions = async () => {
-		const { userEmail, userMetadata, useAsDefaultStrategy } = options ?? {
+		const { userEmail, userMetadata, useAsDefaultStrategy, monitoringConfig } = options ?? {
+			monitoringConfig: undefined,
 			userEmail: null,
 			userMetadata: [],
 			useAsDefaultStrategy: false
@@ -108,10 +112,13 @@ export const applyMonitoringCyclesStrategy = async ({
 			});
 		}
 
-		if (useAsDefaultStrategy) {
+		if (useAsDefaultStrategy || withEmail) {
 			await setMonitoringCyclesConfig({
 				identity,
 				missionControlId,
+				monitoringConfig,
+				userEmail,
+				useAsDefaultStrategy,
 				...rest
 			});
 		}
@@ -281,7 +288,9 @@ const setEmail = async ({
 	userMetadata
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>> &
-	Required<Omit<ApplyMonitoringCyclesStrategyOptions, 'useAsDefaultStrategy'>>) => {
+	Required<
+		Omit<ApplyMonitoringCyclesStrategyOptions, 'useAsDefaultStrategy' | 'monitoringConfig'>
+	>) => {
 	// Do nothing if no email is provided
 	if (isNullish(userEmail) || !notEmptyString(userEmail)) {
 		return;
@@ -305,9 +314,18 @@ const setMonitoringCyclesConfig = async ({
 	identity,
 	missionControlId,
 	minCycles,
-	fundCycles
+	fundCycles,
+	monitoringConfig,
+	userEmail,
+	useAsDefaultStrategy
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId' | 'minCycles' | 'fundCycles'> &
-	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
+	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>> &
+	Required<
+		Pick<
+			ApplyMonitoringCyclesStrategyOptions,
+			'monitoringConfig' | 'userEmail' | 'useAsDefaultStrategy'
+		>
+	>) => {
 	if (isNullish(minCycles)) {
 		throw new Error(get(i18n).monitoring.min_cycles_not_defined);
 	}
@@ -316,22 +334,37 @@ const setMonitoringCyclesConfig = async ({
 		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
 	}
 
-	const config: MonitoringConfig = {
-		cycles: toNullable({
-			notification: toNullable(),
-			default_strategy: toNullable({
+	const currentCyclesConfig = fromNullable(monitoringConfig?.cycles ?? []);
+
+	// If a new email is provided, we activate the notification else we keep the current config
+	const notification: [] | [DepositedCyclesEmailNotification] = nonNullish(userEmail)
+		? toNullable({
+				enabled: true,
+				to: toNullable()
+			})
+		: (currentCyclesConfig?.notification ?? []);
+
+	// If the strategy should be use as default, we update or insert the default strategy else we keep the current configuration regardless if set or not
+	const default_strategy: [] | [CyclesMonitoringStrategy] = useAsDefaultStrategy
+		? toNullable({
 				BelowThreshold: {
 					min_cycles: minCycles,
 					fund_cycles: fundCycles
 				}
 			})
+		: (currentCyclesConfig?.default_strategy ?? []);
+
+	const updateConfig: MonitoringConfig = {
+		cycles: toNullable({
+			notification,
+			default_strategy
 		})
 	};
 
 	await setMonitoringConfigApi({
 		identity,
 		missionControlId,
-		config
+		config: updateConfig
 	});
 };
 

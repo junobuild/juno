@@ -29,8 +29,8 @@
 	onMount(
 		async () =>
 			await Promise.all([
-				loadOrbiters({ missionControl: $missionControlIdDerived }),
-				loadSatellites({ missionControl: $missionControlIdDerived })
+				loadOrbiters({ missionControlId: $missionControlIdDerived }),
+				loadSatellites({ missionControlId: $missionControlIdDerived })
 			])
 	);
 </script>

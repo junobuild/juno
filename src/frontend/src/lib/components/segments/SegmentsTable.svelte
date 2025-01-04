@@ -40,8 +40,8 @@
 
 	const loadSegments = async () => {
 		const [{ result: resultSatellites }, { result: resultOrbiters }] = await Promise.all([
-			loadSatellites({ missionControl: missionControlId, reload: reloadSegments }),
-			loadOrbiters({ missionControl: missionControlId, reload: reloadSegments })
+			loadSatellites({ missionControlId, reload: reloadSegments }),
+			loadOrbiters({ missionControlId, reload: reloadSegments })
 		]);
 
 		if (

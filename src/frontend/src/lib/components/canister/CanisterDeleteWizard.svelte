@@ -85,7 +85,7 @@
 			});
 
 			await loadSatellites({
-				missionControl: $missionControlIdDerived,
+				missionControlId: $missionControlIdDerived,
 				reload: true
 			});
 

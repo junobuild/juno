@@ -15,36 +15,36 @@ interface CreateSatelliteConfig {
 }
 
 export const createSatellite = async ({
-	missionControl,
+	missionControlId,
 	config: { name }
 }: {
-	missionControl: Option<Principal>;
+	missionControlId: Option<Principal>;
 	config: CreateSatelliteConfig;
 }): Promise<Satellite | undefined> => {
-	assertNonNullish(missionControl);
+	assertNonNullish(missionControlId);
 
 	const identity = get(authStore).identity;
 
 	const { create_satellite } = await getMissionControlActor({
-		missionControlId: missionControl,
+		missionControlId,
 		identity
 	});
 	return create_satellite(name);
 };
 
 export const createSatelliteWithConfig = async ({
-	missionControl,
+	missionControlId,
 	config: { name, subnetId }
 }: {
-	missionControl: Option<Principal>;
+	missionControlId: Option<Principal>;
 	config: CreateSatelliteConfig;
 }): Promise<Satellite | undefined> => {
-	assertNonNullish(missionControl);
+	assertNonNullish(missionControlId);
 
 	const identity = get(authStore).identity;
 
 	const { create_satellite_with_config } = await getMissionControlActor({
-		missionControlId: missionControl,
+		missionControlId,
 		identity
 	});
 	return create_satellite_with_config({
@@ -54,19 +54,19 @@ export const createSatelliteWithConfig = async ({
 };
 
 export const loadSatellites = async ({
-	missionControl,
+	missionControlId,
 	reload = false
 }: {
-	missionControl: Option<Principal>;
+	missionControlId: Option<Principal>;
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
-	if (isNullish(missionControl)) {
+	if (isNullish(missionControlId)) {
 		return { result: 'skip' };
 	}
 
 	const load = async (identity: Identity): Promise<Satellite[]> => {
 		const { list_satellites } = await getMissionControlActor({
-			missionControlId: missionControl,
+			missionControlId,
 			identity
 		});
 

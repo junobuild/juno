@@ -20,11 +20,11 @@
 
 		await Promise.all([
 			loadSettings({
-				missionControl: missionControlId,
+				missionControlId,
 				identity: $authStore.identity
 			}),
 			loadUserMetadata({
-				missionControl: missionControlId,
+				missionControlId,
 				identity: $authStore.identity
 			})
 		]);

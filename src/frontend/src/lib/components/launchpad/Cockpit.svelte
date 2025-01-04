@@ -16,7 +16,7 @@
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
 		$missionControlIdDerived,
-			(async () => await loadOrbiters({ missionControl: $missionControlIdDerived }))();
+			(async () => await loadOrbiters({ missionControlId: $missionControlIdDerived }))();
 	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);

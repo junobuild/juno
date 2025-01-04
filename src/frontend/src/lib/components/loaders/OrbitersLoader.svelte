@@ -15,8 +15,8 @@
 
 	let { children, withVersion = false }: Props = $props();
 
-	const load = async (missionControl: Option<Principal>) => {
-		await loadOrbiters({ missionControl });
+	const load = async (missionControlId: Option<Principal>) => {
+		await loadOrbiters({ missionControlId });
 	};
 
 	const loadVersion = async ({

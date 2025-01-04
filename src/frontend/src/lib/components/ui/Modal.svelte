@@ -56,7 +56,7 @@
 			<div class="toolbar">
 				{#if nonNullish(onback)}
 					<div class="start">
-						<ButtonIcon onclick={onback}>
+						<ButtonIcon onclick={onback} disabled={$isBusy}>
 							{#snippet icon()}
 								<IconBack size="20px" />
 							{/snippet}

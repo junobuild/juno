@@ -10,8 +10,8 @@
 	import MonitoringStepReview from '$lib/components/monitoring/MonitoringStepReview.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import type { Option } from '$lib/types/utils';
+	import { formatTCycles } from '$lib/utils/cycles.utils';
 
 	interface Props {
 		selectedSatellites: [Principal, Satellite][];

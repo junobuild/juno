@@ -9,6 +9,7 @@
 	} from '$declarations/mission_control/mission_control.did';
 	import MonitoringCreateStrategy from '$lib/components/monitoring/MonitoringCreateStrategy.svelte';
 	import MonitoringCreateStrategyMissionControl from '$lib/components/monitoring/MonitoringCreateStrategyMissionControl.svelte';
+	import MonitoringCreateStrategyNotifications from '$lib/components/monitoring/MonitoringCreateStrategyNotifications.svelte';
 	import MonitoringCreateStrategyReview from '$lib/components/monitoring/MonitoringCreateStrategyReview.svelte';
 	import MonitoringCreateStrategyWithDefault from '$lib/components/monitoring/MonitoringCreateStrategyWithDefault.svelte';
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
@@ -20,9 +21,8 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
-	import { metadataEmail } from '$lib/utils/metadata.utils';
-	import MonitoringCreateStrategyNotifications from '$lib/components/monitoring/MonitoringCreateStrategyNotifications.svelte';
 	import type { Option } from '$lib/types/utils';
+	import { metadataEmail } from '$lib/utils/metadata.utils';
 
 	interface Props {
 		detail: JunoModalDetail;

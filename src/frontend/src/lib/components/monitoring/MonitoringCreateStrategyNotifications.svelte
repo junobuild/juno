@@ -1,11 +1,11 @@
 <script lang="ts">
+	import { notEmptyString } from '@dfinity/utils';
 	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import { isBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
 	import { isNotValidEmail } from '$lib/utils/email.utils';
-	import { notEmptyString } from '@dfinity/utils';
 
 	interface Props {
 		onback: () => void;

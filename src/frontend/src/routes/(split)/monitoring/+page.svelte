@@ -13,7 +13,6 @@
 	import Warnings from '$lib/components/warning/Warnings.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
 	import {
-		missionControlMonitored,
 		missionControlIdDerived,
 		hasMissionControlSettings
 	} from '$lib/derived/mission-control.derived';

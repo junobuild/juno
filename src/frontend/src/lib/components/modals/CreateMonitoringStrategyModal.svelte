@@ -38,7 +38,7 @@
 		detail as JunoModalMonitoringStrategyDetail
 	);
 
-	let steps:
+	let step:
 		| 'init'
 		| 'strategy'
 		| 'mission_control'
@@ -113,7 +113,7 @@
 		onProgress(undefined);
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		const { success } = await applyMonitoringCyclesStrategy({
 			identity: $authStore.identity,
@@ -132,36 +132,36 @@
 		wizardBusy.stop();
 
 		if (success !== 'ok') {
-			steps = 'init';
+			step = 'init';
 			return;
 		}
 
-		setTimeout(() => (steps = 'ready'), 500);
+		setTimeout(() => (step = 'ready'), 500);
 	};
 
 	const gotoReviewOrNotifications = () =>
-		(steps = hasMissionControlEmail ? 'review' : 'notifications');
+		(step = hasMissionControlEmail ? 'review' : 'notifications');
 </script>
 
 <Modal on:junoClose={onclose}>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<p>
 				{$i18n.monitoring.strategy_created}
 			</p>
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<ProgressMonitoring {progress} action="create" withOptions={nonNullish(withOptions)} />
-	{:else if steps === 'notifications'}
+	{:else if step === 'notifications'}
 		<MonitoringCreateStrategyNotifications
-			onback={() => (steps = 'mission_control')}
+			onback={() => (step = 'mission_control')}
 			oncontinue={(email) => {
 				userEmail = email;
-				steps = 'review';
+				step = 'review';
 			}}
 		/>
-	{:else if steps === 'review'}
+	{:else if step === 'review'}
 		<MonitoringCreateStrategyReview
 			{selectedSatellites}
 			{selectedOrbiters}
@@ -172,38 +172,38 @@
 			{missionControlFundCycles}
 			{missionControl}
 			{userEmail}
-			onback={() => (steps = 'mission_control')}
+			onback={() => (step = 'mission_control')}
 			{onsubmit}
 		/>
-	{:else if steps === 'mission_control_strategy'}
+	{:else if step === 'mission_control_strategy'}
 		<MonitoringCreateStrategy
 			bind:minCycles={missionControlMinCycles}
 			bind:fundCycles={missionControlFundCycles}
 			strategy="mission-control"
-			onback={() => (steps = 'mission_control')}
+			onback={() => (step = 'mission_control')}
 			oncontinue={gotoReviewOrNotifications}
 		/>
-	{:else if steps === 'mission_control'}
+	{:else if step === 'mission_control'}
 		<MonitoringCreateStrategyMissionControl
 			{missionControl}
-			onno={() => (steps = 'mission_control_strategy')}
+			onno={() => (step = 'mission_control_strategy')}
 			onyes={gotoReviewOrNotifications}
 		/>
-	{:else if steps === 'strategy'}
+	{:else if step === 'strategy'}
 		<MonitoringCreateStrategyWithDefault
 			bind:minCycles
 			bind:fundCycles
 			bind:useAsDefaultStrategy
 			strategy="modules"
-			onback={() => (steps = 'init')}
-			oncontinue={() => (steps = 'mission_control')}
+			onback={() => (step = 'init')}
+			oncontinue={() => (step = 'mission_control')}
 		/>
 	{:else}
 		<MonitoringSelectSegments
 			{missionControlId}
 			bind:selectedSatellites
 			bind:selectedOrbiters
-			oncontinue={() => (steps = 'strategy')}
+			oncontinue={() => (step = 'strategy')}
 		>
 			<h2>{$i18n.monitoring.monitoring_strategy}</h2>
 

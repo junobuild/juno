@@ -24,7 +24,7 @@
 
 	let { add, load, segment } = $derived(detail as JunoModalCreateControllerDetail);
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
@@ -71,7 +71,7 @@
 		}
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		try {
 			await add({
@@ -83,14 +83,14 @@
 
 			await load();
 
-			steps = 'ready';
+			step = 'ready';
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.controllers_delete,
 				detail: err
 			});
 
-			steps = 'error';
+			step = 'error';
 		}
 
 		wizardBusy.stop();
@@ -105,7 +105,7 @@
 </script>
 
 <Modal on:junoClose>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<h2>{$i18n.controllers.controller_added}</h2>
 
@@ -150,7 +150,7 @@
 				<button class="close" onclick={close}>{$i18n.core.close}</button>
 			</div>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>
 				{#if action === 'add'}

@@ -42,7 +42,7 @@
 
 	let stopMissionControl: boolean | undefined = $state(undefined);
 
-	let steps: 'init' | 'mission_control' | 'in_progress' | 'review' | 'ready' = $state('init');
+	let step: 'init' | 'mission_control' | 'in_progress' | 'review' | 'ready' = $state('init');
 
 	let progress: MonitoringStrategyProgress | undefined = $state(undefined);
 	const onProgress = (stopProgress: MonitoringStrategyProgress | undefined) =>
@@ -54,7 +54,7 @@
 		onProgress(undefined);
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		const { success } = await stopMonitoringCyclesStrategy({
 			identity: $authStore.identity,
@@ -68,50 +68,50 @@
 		wizardBusy.stop();
 
 		if (success !== 'ok') {
-			steps = 'init';
+			step = 'init';
 			return;
 		}
 
-		setTimeout(() => (steps = 'ready'), 500);
+		setTimeout(() => (step = 'ready'), 500);
 	};
 
 	const onContinueSegments = () => {
 		if (!missionControl.monitored) {
-			steps = 'review';
+			step = 'review';
 			return;
 		}
 
-		steps = 'mission_control';
+		step = 'mission_control';
 	};
 </script>
 
 <Modal on:junoClose={onclose}>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<p>
 				{$i18n.monitoring.monitoring_stopped}
 			</p>
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<ProgressMonitoring {progress} action="stop" />
-	{:else if steps === 'mission_control'}
+	{:else if step === 'mission_control'}
 		<MonitoringStopMissionControl
 			onno={() => {
 				stopMissionControl = false;
-				steps = 'review';
+				step = 'review';
 			}}
 			onyes={() => {
 				stopMissionControl = true;
-				steps = 'review';
+				step = 'review';
 			}}
 		/>
-	{:else if steps === 'review'}
+	{:else if step === 'review'}
 		<MonitoringStopReview
 			{selectedSatellites}
 			{selectedOrbiters}
 			{stopMissionControl}
-			onback={() => (steps = 'mission_control')}
+			onback={() => (step = 'mission_control')}
 			{onsubmit}
 		/>
 	{:else}

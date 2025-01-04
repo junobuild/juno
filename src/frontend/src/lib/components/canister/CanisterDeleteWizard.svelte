@@ -28,7 +28,7 @@
 
 	let { segment, segmentName, currentCycles, deleteFn }: Props = $props();
 
-	let steps: 'init' | 'in_progress' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'error' = $state('init');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
@@ -74,7 +74,7 @@
 			return;
 		}
 
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		wizardBusy.start();
 
@@ -104,7 +104,7 @@
 				)
 			);
 		} catch (err: unknown) {
-			steps = 'error';
+			step = 'error';
 
 			toasts.error({
 				text: $i18n.errors.canister_delete,
@@ -116,7 +116,7 @@
 	};
 </script>
 
-{#if steps === 'in_progress'}
+{#if step === 'in_progress'}
 	<SpinnerModal>
 		<p>{$i18n.canisters.delete_in_progress}</p>
 	</SpinnerModal>

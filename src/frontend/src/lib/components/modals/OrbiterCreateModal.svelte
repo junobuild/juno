@@ -28,13 +28,13 @@
 
 	let insufficientFunds = $state(true);
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		try {
 			const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
@@ -49,14 +49,14 @@
 			// Reload list of orbiters before navigation
 			await loadOrbiters({ missionControl: $missionControlIdDerived, reload: true });
 
-			steps = 'ready';
+			step = 'ready';
 		} catch (err) {
 			toasts.error({
 				text: $i18n.errors.orbiter_unexpected_error,
 				detail: err
 			});
 
-			steps = 'error';
+			step = 'error';
 		}
 
 		wizardBusy.stop();
@@ -68,14 +68,14 @@
 </script>
 
 <Modal on:junoClose={close}>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<Confetti />
 
 		<div class="msg">
 			<p>{$i18n.analytics.ready}</p>
 			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.analytics.initializing}</p>
 		</SpinnerModal>

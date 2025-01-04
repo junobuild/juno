@@ -1,15 +1,14 @@
 <script lang="ts">
+	import { nonNullish } from '@dfinity/utils';
 	import { createEventDispatcher, type Snippet } from 'svelte';
 	import { quintOut } from 'svelte/easing';
 	import { fade, scale } from 'svelte/transition';
+	import IconBack from '$lib/components/icons/IconBack.svelte';
 	import IconClose from '$lib/components/icons/IconClose.svelte';
+	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { handleKeyPress } from '$lib/utils/keyboard.utils';
-	import { nonNullish } from '@dfinity/utils';
-	import ButtonIcon from '$lib/components/ui/ButtonIcon.svelte';
-	import IconSignIn from '$lib/components/icons/IconSignIn.svelte';
-	import IconBack from '$lib/components/icons/IconBack.svelte';
 
 	interface Props {
 		onback?: () => void;

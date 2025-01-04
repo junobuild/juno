@@ -330,13 +330,23 @@ const syncMonitoringForSegments = async ({
 					segment: { canisterId, ...rest }
 				};
 
-				const [chartsStatuses, { history, chartsData: chartsHistory, depositedCyclesChartData }] =
-					await Promise.all([
-						loadDeprecatedStatuses(loadParams),
-						withMonitoringHistory
-							? loadMonitoringHistory(loadParams)
-							: Promise.resolve({ history: [], chartsData: [], depositedCyclesChartData: [] })
-					]);
+				const [resultStatuses, resultHistory] = await Promise.allSettled([
+					loadDeprecatedStatuses(loadParams),
+					withMonitoringHistory
+						? loadMonitoringHistory(loadParams)
+						: Promise.resolve({ history: [], chartsData: [], depositedCyclesChartData: [] })
+				]);
+
+				if (resultHistory.status === 'rejected') {
+					throw new Error(resultHistory.reason);
+				}
+
+				const {
+					history,
+					chartsData: chartsHistory,
+					depositedCyclesChartData
+				} = resultHistory.value;
+				const chartsStatuses = resultStatuses.status === 'fulfilled' ? resultStatuses.value : [];
 
 				const chartsData = buildChartTotalPerDay({
 					chartsStatuses,

@@ -63,8 +63,20 @@ export const idlFactory = ({ IDL }) => {
 	const MonitoringStatus = IDL.Record({
 		cycles: IDL.Opt(CyclesMonitoringStatus)
 	});
+	const DepositedCyclesEmailNotification = IDL.Record({
+		to: IDL.Opt(IDL.Text),
+		enabled: IDL.Bool
+	});
+	const CyclesMonitoringConfig = IDL.Record({
+		notification: IDL.Opt(DepositedCyclesEmailNotification),
+		default_strategy: IDL.Opt(CyclesMonitoringStrategy)
+	});
+	const MonitoringConfig = IDL.Record({
+		cycles: IDL.Opt(CyclesMonitoringConfig)
+	});
 	const MissionControlSettings = IDL.Record({
 		updated_at: IDL.Nat64,
+		monitoring_config: IDL.Opt(MonitoringConfig),
 		created_at: IDL.Nat64,
 		monitoring: IDL.Opt(Monitoring)
 	});
@@ -187,6 +199,7 @@ export const idlFactory = ({ IDL }) => {
 		),
 		set_metadata: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		set_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal), SetController], [], []),
+		set_monitoring_config: IDL.Func([IDL.Opt(MonitoringConfig)], [], []),
 		set_orbiter: IDL.Func([IDL.Principal, IDL.Opt(IDL.Text)], [Orbiter], []),
 		set_orbiter_metadata: IDL.Func(
 			[IDL.Principal, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],

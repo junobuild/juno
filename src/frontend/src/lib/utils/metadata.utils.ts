@@ -14,7 +14,7 @@ export const metadataProfile = (metadata: Metadata): string =>
 export const metadataEmail = (metadata: Metadata): string | undefined => {
 	console.log(metadata);
 	return metadataKey({ metadata, key: METADATA_KEY_EMAIL });
-}
+};
 
 const metadataKey = ({ metadata, key }: { metadata: Metadata; key: string }): string | undefined =>
 	new Map(metadata).get(key);

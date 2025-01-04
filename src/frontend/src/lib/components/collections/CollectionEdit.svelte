@@ -4,6 +4,7 @@
 	import { preventDefault } from 'svelte/legacy';
 	import type { RateConfig, Rule, RulesType } from '$declarations/satellite/satellite.did';
 	import CollectionDelete from '$lib/components/collections/CollectionDelete.svelte';
+	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import Input from '$lib/components/ui/Input.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
@@ -296,8 +297,8 @@
 			</div>
 
 			{#if !currentImmutable}
-				<div class="checkbox">
-					<label>
+				<Checkbox>
+					<label class="immutable">
 						<input
 							type="checkbox"
 							checked={immutable}
@@ -306,7 +307,7 @@
 						/>
 						<span>{$i18n.collections.immutable}</span>
 					</label>
-				</div>
+				</Checkbox>
 			{/if}
 		</Collapsible>
 
@@ -346,7 +347,7 @@
 		gap: var(--padding-2x);
 	}
 
-	.checkbox {
-		margin: var(--padding-0_5x) 0 0;
+	.immutable {
+		margin: var(--padding) 0 0;
 	}
 </style>

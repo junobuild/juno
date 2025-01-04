@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -13,12 +13,14 @@
 	interface Props {
 		progress: MonitoringStrategyProgress | undefined;
 		action: 'create' | 'stop';
+		withOptions?: boolean;
 	}
 
-	let { progress, action }: Props = $props();
+	let { progress, action, withOptions = false }: Props = $props();
 
 	interface Steps {
 		preparing: ProgressStep;
+		options?: ProgressStep;
 		apply: ProgressStep;
 		reload: ProgressStep;
 	}
@@ -29,6 +31,13 @@
 			step: 'preparing',
 			text: $i18n.monitoring.strategy_preparing
 		},
+		...(withOptions === true && {
+			options: {
+				state: 'next',
+				step: 'options',
+				text: $i18n.monitoring.saving_options
+			}
+		}),
 		apply: {
 			state: 'next',
 			step: 'create_and_start',
@@ -50,13 +59,22 @@
 		progress;
 
 		untrack(() => {
-			const { preparing, apply, reload } = steps;
+			const { preparing, apply, reload, options } = steps;
 
 			steps = {
 				preparing: {
 					...preparing,
 					state: isNullish(progress) ? 'in_progress' : 'completed'
 				},
+				...(nonNullish(options) && {
+					options: {
+						...options,
+						state:
+							progress?.step === MonitoringStrategyProgressStep.Options
+								? mapProgressState(progress?.state)
+								: options.state
+					}
+				}),
 				apply: {
 					...apply,
 					state:
@@ -67,7 +85,7 @@
 				reload: {
 					...reload,
 					state:
-						progress?.step === MonitoringStrategyProgressStep.ReloadSettings
+						progress?.step === MonitoringStrategyProgressStep.Reload
 							? mapProgressState(progress?.state)
 							: reload.state
 				}

@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish } from '@dfinity/utils';
+	import { fromNullable } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
@@ -9,8 +9,8 @@
 	import NoMonitoring from '$lib/components/monitoring/NoMonitoring.svelte';
 	import SpinnerParagraph from '$lib/components/ui/SpinnerParagraph.svelte';
 	import {
+		hasMissionControlSettings,
 		missionControlMonitoring,
-		missionControlSettings,
 		missionControlSettingsNotLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { orbitersStore } from '$lib/derived/orbiter.derived';
@@ -27,7 +27,7 @@
 
 {#if $missionControlSettingsNotLoaded}
 	<SpinnerParagraph>{$i18n.monitoring.loading}</SpinnerParagraph>
-{:else if isNullish($missionControlSettings)}
+{:else if !$hasMissionControlSettings}
 	<div in:fade>
 		<NoMonitoring {missionControlId} />
 	</div>

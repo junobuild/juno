@@ -41,10 +41,7 @@ use crate::types::interface::{
     CreateCanisterConfig, GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus,
     MonitoringStopConfig,
 };
-use crate::types::state::{
-    HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters,
-    Satellite, Satellites, State,
-};
+use crate::types::state::{HeapState, MissionControlSettings, MonitoringConfig, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Satellites, State};
 use candid::Principal;
 use ciborium::into_writer;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -75,6 +72,7 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
+use crate::monitoring::monitor::update_monitoring_config;
 
 #[init]
 fn init() {
@@ -436,6 +434,11 @@ fn get_monitoring_history(
     filter: GetMonitoringHistory,
 ) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
     get_any_monitoring_history(&filter)
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+fn set_monitoring_config(config: Option<MonitoringConfig>) {
+    update_monitoring_config(&config);
 }
 
 // ---------------------------------------------------------

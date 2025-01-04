@@ -1,6 +1,7 @@
 import type { snapshot } from '$declarations/ic/ic.did';
 import type {
 	MissionControlSettings,
+	Monitoring,
 	Satellite
 } from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
@@ -9,11 +10,11 @@ import type { MissionControlBalance } from '$lib/types/balance';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
+import type { Metadata } from '$lib/types/metadata';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
-import type {Metadata} from "$lib/types/metadata";
 
 export interface JunoModalBalance {
 	missionControlBalance?: MissionControlBalance;
@@ -103,6 +104,10 @@ export interface JunoModalMonitoringStrategyDetail {
 	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
 	metadata: Metadata;
+}
+
+export interface JunoModalShowMonitoringDetail extends JunoModalSegmentDetail {
+	monitoring: Monitoring | undefined;
 }
 
 export type JunoModalDetail =

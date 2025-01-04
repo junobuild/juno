@@ -712,6 +712,7 @@ interface I18nMonitoring {
 	stopping_monitoring: string;
 	remaining_threshold: string;
 	top_up_amount: string;
+	set_as_default_configuration: string;
 	modules: string;
 	selected_modules: string;
 	monitored: string;
@@ -726,12 +727,18 @@ interface I18nMonitoring {
 	warning_advice: string;
 	strategy_preparing: string;
 	reload_settings: string;
+	saving_options: string;
 	stop_monitoring_question: string;
 	stop_monitoring_note: string;
 	last_status_check: string;
 	last_top_up: string;
 	usage: string;
 	weekly_cycles_deposit: string;
+	default_strategy: string;
+	configuration_for_modules: string;
+	auto_refill: string;
+	auto_refill_disabled: string;
+	auto_refill_strategy: string;
 }
 
 interface I18nPreferences {

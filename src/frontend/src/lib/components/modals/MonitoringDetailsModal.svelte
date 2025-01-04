@@ -1,18 +1,24 @@
 <script lang="ts">
 	import { Principal } from '@dfinity/principal';
-	import { nonNullish } from '@dfinity/utils';
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
 	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
+	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterMonitoringData } from '$lib/types/canister';
-	import type { JunoModalDetail, JunoModalSegmentDetail } from '$lib/types/modal';
+	import type {
+		JunoModalDetail,
+		JunoModalSegmentDetail,
+		JunoModalShowMonitoringDetail
+	} from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
+	import { i18nFormat } from '$lib/utils/i18n.utils';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -21,7 +27,7 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { segment } = $derived(detail as JunoModalSegmentDetail);
+	let { segment, monitoring } = $derived(detail as JunoModalShowMonitoringDetail);
 
 	let canisterId = $derived(Principal.fromText(segment?.canisterId));
 
@@ -34,6 +40,10 @@
 	let chartsData = $derived(monitoringData?.chartsData ?? []);
 
 	let depositedCyclesChartData = $derived(monitoringData?.charts.depositedCycles ?? []);
+
+	let monitoringStrategy = $derived(
+		fromNullable(fromNullable(monitoring?.cycles ?? [])?.strategy ?? [])
+	);
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -44,6 +54,31 @@
 
 		<CanisterMonitoringLoader segment={segment.segment} {canisterId} bind:data={monitoringData}>
 			<div>
+				<div>
+					{#if nonNullish(monitoringStrategy)}
+						<Value>
+							{#snippet label()}
+								{$i18n.monitoring.auto_refill}
+							{/snippet}
+
+							<p>
+								{i18nFormat($i18n.monitoring.auto_refill_strategy, [
+									{
+										placeholder: '{0}',
+										value: formatTCycles(monitoringStrategy.BelowThreshold.min_cycles)
+									},
+									{
+										placeholder: '{1}',
+										value: formatTCycles(monitoringStrategy.BelowThreshold.fund_cycles)
+									}
+								])}
+							</p>
+						</Value>
+					{:else}
+						<MonitoringDisabled {monitoring} loading={false} />
+					{/if}
+				</div>
+
 				{#if nonNullish(lastExecutionTime)}
 					<div in:fade>
 						<Value>

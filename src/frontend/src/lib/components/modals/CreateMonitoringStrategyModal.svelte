@@ -1,6 +1,6 @@
 <script lang="ts">
 	import type { Principal } from '@dfinity/principal';
-	import { fromNullable, isNullish, nonNullish } from '@dfinity/utils';
+	import { fromNullable, isNullish, nonNullish, notEmptyString } from '@dfinity/utils';
 	import { onMount } from 'svelte';
 	import type {
 		CyclesMonitoringStrategy,
@@ -15,7 +15,10 @@
 	import MonitoringSelectSegments from '$lib/components/monitoring/MonitoringSelectSegments.svelte';
 	import ProgressMonitoring from '$lib/components/monitoring/ProgressMonitoring.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import { applyMonitoringCyclesStrategy } from '$lib/services/monitoring.services';
+	import {
+		applyMonitoringCyclesStrategy,
+		type ApplyMonitoringCyclesStrategyOptions
+	} from '$lib/services/monitoring.services';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -83,6 +86,17 @@
 
 	let useAsDefaultStrategy = $state(true);
 
+	// Monitoring configuration
+	let withOptions: ApplyMonitoringCyclesStrategyOptions | undefined = $derived(
+		useAsDefaultStrategy || (nonNullish(userEmail) && notEmptyString(userEmail))
+			? {
+					useAsDefaultStrategy,
+					userEmail,
+					userMetadata
+				}
+			: undefined
+	);
+
 	onMount(() => {
 		useAsDefaultStrategy = isNullish(defaultStrategy);
 	});
@@ -111,9 +125,7 @@
 			missionControlMonitored: missionControl.monitored,
 			missionControlMinCycles,
 			missionControlFundCycles,
-			useAsDefaultStrategy,
-			userMetadata,
-			userEmail,
+			options: withOptions,
 			onProgress
 		});
 
@@ -140,7 +152,7 @@
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
 	{:else if steps === 'in_progress'}
-		<ProgressMonitoring {progress} action="create" withOptions={useAsDefaultStrategy} />
+		<ProgressMonitoring {progress} action="create" withOptions={nonNullish(withOptions)} />
 	{:else if steps === 'notifications'}
 		<MonitoringCreateStrategyNotifications
 			onback={() => (steps = 'mission_control')}

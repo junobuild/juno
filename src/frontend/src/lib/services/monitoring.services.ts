@@ -50,15 +50,19 @@ interface MonitoringCyclesStrategyParams {
 	onProgress: MonitoringStrategyOnProgress;
 }
 
+export interface ApplyMonitoringCyclesStrategyOptions {
+	useAsDefaultStrategy: boolean;
+	userMetadata: Metadata;
+	userEmail: Option<string>;
+}
+
 interface ApplyMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyParams {
 	minCycles: bigint | undefined;
 	fundCycles: bigint | undefined;
 	missionControlMonitored: boolean;
 	missionControlMinCycles: bigint | undefined;
 	missionControlFundCycles: bigint | undefined;
-	useAsDefaultStrategy: boolean;
-	userMetadata: Metadata;
-	userEmail: Option<string>;
+	options: ApplyMonitoringCyclesStrategyOptions | undefined;
 }
 
 interface StopMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyParams {
@@ -69,8 +73,7 @@ export const applyMonitoringCyclesStrategy = async ({
 	identity,
 	missionControlId,
 	onProgress,
-	useAsDefaultStrategy,
-	userEmail,
+	options,
 	...rest
 }: ApplyMonitoringCyclesStrategyParams): Promise<{
 	success: 'ok' | 'cancelled' | 'error';
@@ -86,17 +89,22 @@ export const applyMonitoringCyclesStrategy = async ({
 		});
 	};
 
-	const withEmail = nonNullish(userEmail) && notEmptyString(userEmail);
-	const withOptions = useAsDefaultStrategy || withEmail;
-
 	const setMonitoringOptions = async () => {
+		const { userEmail, userMetadata, useAsDefaultStrategy } = options ?? {
+			userEmail: null,
+			userMetadata: [],
+			useAsDefaultStrategy: false
+		};
+
+		const withEmail = nonNullish(userEmail) && notEmptyString(userEmail);
+
 		if (withEmail) {
 			// For now, we use the mission control metadata email. We might allow dev in the future to specify various specific email.
 			await setEmail({
 				identity,
 				missionControlId,
 				userEmail,
-				...rest
+				userMetadata
 			});
 		}
 
@@ -110,7 +118,7 @@ export const applyMonitoringCyclesStrategy = async ({
 	};
 
 	const executeCreateMonitoring = async () => {
-		if (withOptions) {
+		if (nonNullish(options)) {
 			await execute({
 				fn: setMonitoringOptions,
 				onProgress,
@@ -214,10 +222,7 @@ const setMonitoringCyclesStrategy = async ({
 	minCycles,
 	fundCycles,
 	...missionControlRest
-}: Omit<
-	ApplyMonitoringCyclesStrategyParams,
-	'identity' | 'onProgress' | 'useAsDefaultStrategy' | 'userEmail' | 'userMetadata'
-> &
+}: Omit<ApplyMonitoringCyclesStrategyParams, 'identity' | 'onProgress' | 'options'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
 	if (isNullish(minCycles)) {
 		throw new Error(get(i18n).monitoring.min_cycles_not_defined);
@@ -274,8 +279,9 @@ const setEmail = async ({
 	missionControlId,
 	userEmail,
 	userMetadata
-}: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId' | 'userMetadata'> &
-	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity' | 'userEmail'>>) => {
+}: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId'> &
+	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>> &
+	Required<Omit<ApplyMonitoringCyclesStrategyOptions, 'useAsDefaultStrategy'>>) => {
 	// Do nothing if no email is provided
 	if (isNullish(userEmail) || !notEmptyString(userEmail)) {
 		return;

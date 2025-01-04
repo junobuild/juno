@@ -85,9 +85,3 @@
 
 	{@render children?.()}
 </MonitoringStepBackContinue>
-
-<style lang="scss">
-	.toolbar {
-		padding: var(--padding) 0 0 0;
-	}
-</style>

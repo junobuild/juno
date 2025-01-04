@@ -14,6 +14,7 @@ use junobuild_shared::types::state::{
 use junobuild_shared::utils::principal_equal;
 use std::collections::HashMap;
 use std::time::Duration;
+use crate::monitoring::store::heap::get_monitoring_config;
 
 pub fn defer_notify(records: HashMap<CanisterId, CanisterRecord>) {
     set_timer(Duration::ZERO, || spawn(notify(records)));
@@ -37,7 +38,13 @@ async fn notify(records: HashMap<CanisterId, CanisterRecord>) {
 }
 
 fn prepare_args(canister_id: &CanisterId, deposited_cycles: &CyclesBalance) -> Option<NotifyArgs> {
-    let email = get_metadata().get("email")?.clone();
+    let config = get_monitoring_config()?.cycles?.notification?;
+
+    if !config.enabled {
+        return None;
+    }
+
+    let email = config.to.or_else(|| get_metadata().get("email").cloned())?;
 
     let segment = get_segment(canister_id)?;
 

@@ -11,11 +11,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterMonitoringData } from '$lib/types/canister';
-	import type {
-		JunoModalDetail,
-		JunoModalSegmentDetail,
-		JunoModalShowMonitoringDetail
-	} from '$lib/types/modal';
+	import type { JunoModalDetail, JunoModalShowMonitoringDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';

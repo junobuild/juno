@@ -1,7 +1,11 @@
 use crate::memory::init_stable_state;
 use crate::types::core::{Segment, SettingsMonitoring};
 use crate::types::state::CyclesMonitoringStrategy::BelowThreshold;
-use crate::types::state::{Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState, MissionControlSettings, Monitoring, MonitoringConfig, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Settings, State, User};
+use crate::types::state::{
+    Archive, ArchiveStatuses, CyclesMonitoring, CyclesMonitoringStrategy, HeapState,
+    MissionControlSettings, Monitoring, MonitoringConfig, MonitoringHistory, MonitoringHistoryKey,
+    Orbiter, Orbiters, Satellite, Settings, State, User,
+};
 use canfund::manager::options::{CyclesThreshold, FundStrategy};
 use ic_cdk::api::time;
 use ic_stable_structures::storable::Bound;

@@ -4,6 +4,7 @@ use crate::monitoring::cycles::config::{
 use crate::monitoring::cycles::start::start_cycles_monitoring;
 use crate::monitoring::cycles::status::get_cycles_monitoring_status;
 use crate::monitoring::cycles::stop::stop_cycles_monitoring;
+use crate::monitoring::store::heap::set_monitoring_config;
 use crate::monitoring::store::stable::get_monitoring_history as get_monitoring_history_store;
 use crate::types::interface::{
     GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig,
@@ -13,7 +14,6 @@ use ic_cdk::spawn;
 use ic_cdk::trap;
 use ic_cdk_timers::set_timer;
 use std::time::Duration;
-use crate::monitoring::store::heap::set_mission_control_config;
 
 pub fn defer_restart_monitoring() {
     set_timer(Duration::ZERO, || spawn(restart_monitoring()));
@@ -62,5 +62,5 @@ pub fn get_monitoring_history(
 }
 
 pub fn update_monitoring_config(config: &Option<MonitoringConfig>) {
-    set_mission_control_config(config);
+    set_monitoring_config(config);
 }

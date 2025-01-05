@@ -4,6 +4,7 @@ import type {
 	Satellite
 } from '$declarations/mission_control/mission_control.did';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
+import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlMonitoringConfig } from '$lib/derived/mission-control.derived';
 import { getMissionControlBalance } from '$lib/services/balance.services';
 import { loadVersion } from '$lib/services/console.services';
@@ -29,9 +30,8 @@ import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/
 import { emit } from '$lib/utils/events.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import {assertNonNullish, isNullish, nonNullish, toNullable} from '@dfinity/utils';
+import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
-import {updateAndStartMonitoring} from "$lib/api/mission-control.api";
 
 interface GetFeeBalance {
 	result?: Omit<JunoModalCreateSegmentDetail, 'monitoringConfig'>;
@@ -232,7 +232,13 @@ export const createSatelliteWizard = async ({
 			return undefined;
 		}
 
-		return async ({identity, segment}: {identity: Identity, segment: Satellite}): Promise<void> => {
+		return async ({
+			identity,
+			segment
+		}: {
+			identity: Identity;
+			segment: Satellite;
+		}): Promise<void> => {
 			assertNonNullish(missionControlId);
 
 			await updateAndStartMonitoring({
@@ -249,8 +255,8 @@ export const createSatelliteWizard = async ({
 					})
 				}
 			});
-		}
-	}
+		};
+	};
 
 	const monitoringFn = buildMonitoringFn();
 
@@ -295,7 +301,13 @@ export const createOrbiterWizard = async ({
 			return undefined;
 		}
 
-		return async ({identity, segment}: {identity: Identity, segment: Orbiter}): Promise<void> => {
+		return async ({
+			identity,
+			segment
+		}: {
+			identity: Identity;
+			segment: Orbiter;
+		}): Promise<void> => {
 			assertNonNullish(missionControlId);
 
 			await updateAndStartMonitoring({
@@ -312,8 +324,8 @@ export const createOrbiterWizard = async ({
 					})
 				}
 			});
-		}
-	}
+		};
+	};
 
 	const monitoringFn = buildMonitoringFn();
 
@@ -328,7 +340,7 @@ export const createOrbiterWizard = async ({
 	});
 };
 
-type MonitoringFn<T> = (params: { identity: Identity, segment: T }) => Promise<void>;
+type MonitoringFn<T> = (params: { identity: Identity; segment: T }) => Promise<void>;
 
 const createWizard = async <T>({
 	missionControlId,

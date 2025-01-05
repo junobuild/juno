@@ -5,7 +5,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
-	import type {CyclesMonitoringStrategy} from "$declarations/mission_control/mission_control.did";
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 
 	interface Props {
 		subnetId: PrincipalText | undefined;

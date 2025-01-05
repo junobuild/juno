@@ -1,6 +1,9 @@
 <script lang="ts">
-	import {isNullish, nonNullish} from '@dfinity/utils';
-	import type {CyclesMonitoringStrategy, Satellite} from '$declarations/mission_control/mission_control.did';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type {
+		CyclesMonitoringStrategy,
+		Satellite
+	} from '$declarations/mission_control/mission_control.did';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
@@ -84,7 +87,11 @@
 			<button onclick={navigate}>{$i18n.core.continue}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressCreate segment="satellite" {progress} withMonitoring={nonNullish(monitoringStrategy)} />
+		<ProgressCreate
+			segment="satellite"
+			{progress}
+			withMonitoring={nonNullish(monitoringStrategy)}
+		/>
 	{:else}
 		<h2>{$i18n.satellites.start}</h2>
 

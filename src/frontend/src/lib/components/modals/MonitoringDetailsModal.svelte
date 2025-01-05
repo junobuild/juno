@@ -5,6 +5,7 @@
 	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
+	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
 	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
@@ -14,7 +15,6 @@
 	import type { JunoModalDetail, JunoModalShowMonitoringDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { formatToRelativeTime } from '$lib/utils/date.utils';
-	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;

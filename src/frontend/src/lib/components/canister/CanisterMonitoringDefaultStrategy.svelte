@@ -2,11 +2,11 @@
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { onMount, untrack } from 'svelte';
 	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
-	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;

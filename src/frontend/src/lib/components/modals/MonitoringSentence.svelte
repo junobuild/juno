@@ -1,8 +1,8 @@
 <script lang="ts">
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import { i18n } from '$lib/stores/i18n.store';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 
 	interface Props {
 		monitoringStrategy: CyclesMonitoringStrategy;

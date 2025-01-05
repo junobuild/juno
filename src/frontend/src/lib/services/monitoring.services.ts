@@ -15,6 +15,7 @@ import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSettings, loadUserMetadata } from '$lib/services/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiters.services';
+import { execute } from '$lib/services/progress.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
 import {
@@ -443,37 +444,6 @@ const buildMissionControlStrategy = ({
 	return {
 		BelowThreshold
 	};
-};
-
-const execute = async ({
-	fn,
-	step,
-	onProgress
-}: {
-	fn: () => Promise<void>;
-	step: MonitoringStrategyProgressStep;
-	onProgress: MonitoringStrategyOnProgress;
-}) => {
-	onProgress({
-		step,
-		state: 'in_progress'
-	});
-
-	try {
-		await fn();
-
-		onProgress({
-			step,
-			state: 'success'
-		});
-	} catch (err: unknown) {
-		onProgress({
-			step,
-			state: 'error'
-		});
-
-		throw err;
-	}
 };
 
 export const openMonitoringModal = ({

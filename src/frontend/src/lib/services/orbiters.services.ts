@@ -52,38 +52,40 @@ interface CreateOrbiterConfig {
 }
 
 export const createOrbiter = async ({
+	identity,
 	missionControlId,
 	config: { name }
 }: {
+	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
-}): Promise<Orbiter | undefined> => {
+}): Promise<Orbiter> => {
 	assertNonNullish(missionControlId);
-
-	const identity = get(authStore).identity;
 
 	const { create_orbiter } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
+
 	return create_orbiter(toNullable(name));
 };
 
 export const createOrbiterWithConfig = async ({
+	identity,
 	missionControlId,
 	config: { name, subnetId }
 }: {
+	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
-}): Promise<Orbiter | undefined> => {
+}): Promise<Orbiter> => {
 	assertNonNullish(missionControlId);
-
-	const identity = get(authStore).identity;
 
 	const { create_orbiter_with_config } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
+
 	return create_orbiter_with_config({
 		name: toNullable(name),
 		subnet_id: toNullable(subnetId)

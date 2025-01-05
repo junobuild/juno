@@ -15,38 +15,40 @@ interface CreateSatelliteConfig {
 }
 
 export const createSatellite = async ({
+	identity,
 	missionControlId,
 	config: { name }
 }: {
+	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateSatelliteConfig;
-}): Promise<Satellite | undefined> => {
+}): Promise<Satellite> => {
 	assertNonNullish(missionControlId);
-
-	const identity = get(authStore).identity;
 
 	const { create_satellite } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
+
 	return create_satellite(name);
 };
 
 export const createSatelliteWithConfig = async ({
+	identity,
 	missionControlId,
 	config: { name, subnetId }
 }: {
+	identity: Option<Identity>;
 	missionControlId: Option<Principal>;
 	config: CreateSatelliteConfig;
-}): Promise<Satellite | undefined> => {
+}): Promise<Satellite> => {
 	assertNonNullish(missionControlId);
-
-	const identity = get(authStore).identity;
 
 	const { create_satellite_with_config } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
+
 	return create_satellite_with_config({
 		name: toNullable(name),
 		subnet_id: toNullable(subnetId)

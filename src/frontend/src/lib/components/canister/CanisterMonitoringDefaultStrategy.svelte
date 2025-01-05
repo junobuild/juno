@@ -8,6 +8,7 @@
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -50,18 +51,7 @@
 						checked={useDefaultStrategy}
 						onchange={() => (useDefaultStrategy = !useDefaultStrategy)}
 					/>
-					<span
-						>{i18nFormat($i18n.monitoring.auto_refill_strategy, [
-							{
-								placeholder: '{0}',
-								value: formatTCycles(monitoringStrategy.BelowThreshold.min_cycles)
-							},
-							{
-								placeholder: '{1}',
-								value: formatTCycles(monitoringStrategy.BelowThreshold.fund_cycles)
-							}
-						])}</span
-					>
+					<span><MonitoringSentence monitoringStrategy={useMonitoringStrategy} /></span>
 				</Checkbox>
 			</div>
 		</Value>

@@ -2,10 +2,10 @@
 	import { isNullish } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
+	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
-	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
@@ -15,6 +15,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
+	import type { WizardCreateProgress } from '$lib/types/wizard';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 
 	interface Props {
@@ -29,8 +30,16 @@
 	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 	let satellite: Satellite | undefined = undefined;
 
+	// Submit
+
+	let progress: WizardCreateProgress | undefined = $state(undefined);
+	const onProgress = (applyProgress: WizardCreateProgress | undefined) =>
+		(progress = applyProgress);
+
 	const onSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
+
+		onProgress(undefined);
 
 		wizardBusy.start();
 		step = 'in_progress';
@@ -39,7 +48,8 @@
 			identity: $authStore.identity,
 			missionControlId: $missionControlIdDerived,
 			subnetId,
-			satelliteName
+			satelliteName,
+			onProgress
 		});
 
 		wizardBusy.stop();
@@ -50,7 +60,8 @@
 		}
 
 		satellite = result.segment;
-		step = 'ready';
+
+		setTimeout(() => (step = 'ready'), 500);
 	};
 
 	const navigate = async () => {
@@ -71,9 +82,7 @@
 			<button onclick={navigate}>{$i18n.core.continue}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<SpinnerModal>
-			<p>{$i18n.satellites.initializing}</p>
-		</SpinnerModal>
+		<ProgressCreate segment="satellite" {progress} />
 	{:else}
 		<h2>{$i18n.satellites.start}</h2>
 

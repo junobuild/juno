@@ -7,27 +7,29 @@ export interface Progress<Step> {
 	state: ProgressState;
 }
 
-export const execute = async <Step>({
+export const execute = async <Step, Result>({
 	fn,
 	step,
 	onProgress
 }: {
-	fn: () => Promise<void>;
+	fn: () => Promise<Result>;
 	step: Step;
 	onProgress: (progress: Progress<Step> | undefined) => void;
-}) => {
+}): Promise<Result> => {
 	onProgress({
 		step,
 		state: 'in_progress'
 	});
 
 	try {
-		await fn();
+		const result = await fn();
 
 		onProgress({
 			step,
 			state: 'success'
 		});
+
+		return result;
 	} catch (err: unknown) {
 		onProgress({
 			step,

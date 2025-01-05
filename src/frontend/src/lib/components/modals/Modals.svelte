@@ -24,9 +24,9 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
-	import type { JunoModal } from '$lib/types/modal';
+	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
 
-	let modal: JunoModal | undefined = $state(undefined);
+	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
 	const close = () => (modal = undefined);
 </script>

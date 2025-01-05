@@ -81,6 +81,7 @@
 
 	let satelliteName: string | undefined = $state(undefined);
 	let subnetId: PrincipalText | undefined = $state();
+	let useDefaultStrategy: boolean | undefined = $state();
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -123,7 +124,7 @@
 					/>
 				</Value>
 
-				<CanisterAdvancedOptions bind:subnetId />
+				<CanisterAdvancedOptions bind:subnetId bind:useDefaultStrategy {detail} />
 
 				<button
 					type="submit"

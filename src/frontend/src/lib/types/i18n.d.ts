@@ -542,6 +542,7 @@ interface I18nErrors {
 	auth_rate_config_max_tokens: string;
 	auth_rate_config_update: string;
 	auth_domain_config: string;
+	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
 	mission_control_metadata_not_loaded: string;
 	monitoring_apply_strategy_error: string;

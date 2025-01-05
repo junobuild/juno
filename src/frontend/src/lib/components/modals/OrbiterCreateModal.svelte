@@ -65,6 +65,7 @@
 	const close = () => onclose();
 
 	let subnetId: PrincipalText | undefined = $state();
+	let useDefaultStrategy: boolean | undefined = $state();
 </script>
 
 <Modal on:junoClose={close}>
@@ -93,7 +94,7 @@
 			priceLabel={$i18n.analytics.create_orbiter_price}
 		>
 			<form onsubmit={onSubmit}>
-				<CanisterAdvancedOptions bind:subnetId />
+				<CanisterAdvancedOptions bind:subnetId bind:useDefaultStrategy {detail} />
 
 				<button
 					type="submit"

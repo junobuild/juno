@@ -1,6 +1,4 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { get } from 'svelte/store';
 	import IconNew from '$lib/components/icons/IconNew.svelte';
 	import LaunchpadButton from '$lib/components/launchpad/LaunchpadButton.svelte';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';

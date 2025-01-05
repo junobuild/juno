@@ -43,13 +43,13 @@ type GetFeeBalanceFn = (params: {
 	identity: Option<Identity>;
 }) => Promise<GetFeeBalance>;
 
-export const initSatelliteWizard = async ({
+export const initSatelliteWizard = ({
 	missionControlId,
 	identity
 }: {
 	missionControlId: Option<Principal>;
 	identity: Option<Identity>;
-}) =>
+}): Promise<void> =>
 	initCreateWizard({
 		missionControlId,
 		identity,
@@ -57,13 +57,13 @@ export const initSatelliteWizard = async ({
 		modalType: 'create_satellite'
 	});
 
-export const initOrbiterWizard = async ({
+export const initOrbiterWizard = ({
 	missionControlId,
 	identity
 }: {
 	missionControlId: Option<Principal>;
 	identity: Option<Identity>;
-}) =>
+}): Promise<void> =>
 	initCreateWizard({
 		missionControlId,
 		identity,

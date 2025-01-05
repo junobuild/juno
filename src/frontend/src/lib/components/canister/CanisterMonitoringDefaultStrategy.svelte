@@ -7,21 +7,21 @@
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
+	import type {CyclesMonitoringStrategy} from "$declarations/mission_control/mission_control.did";
 
 	interface Props {
 		detail: JunoModalDetail;
-		useDefaultStrategy: boolean | undefined;
+		monitoringStrategy: CyclesMonitoringStrategy | undefined;
 	}
 
-	let { useDefaultStrategy = $bindable(), detail }: Props = $props();
+	let { monitoringStrategy = $bindable(), detail }: Props = $props();
 
 	let { monitoringConfig } = detail as JunoModalCreateSegmentDetail;
 
-	let monitoringStrategy = $derived(
-		fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? [])
-	);
+	let useDefaultStrategy = $state(false);
 
 	onMount(() => {
+		monitoringStrategy = fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? []);
 		useDefaultStrategy = nonNullish(monitoringStrategy);
 	});
 </script>

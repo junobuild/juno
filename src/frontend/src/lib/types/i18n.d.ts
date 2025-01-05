@@ -711,7 +711,7 @@ interface I18nMonitoring {
 	stop_monitoring: string;
 	strategy_created: string;
 	monitoring_stopped: string;
-	applying_strategy: string;
+	starting_monitoring: string;
 	stopping_monitoring: string;
 	remaining_threshold: string;
 	top_up_amount: string;

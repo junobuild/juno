@@ -1,4 +1,8 @@
-import type { Orbiter, Satellite } from '$declarations/mission_control/mission_control.did';
+import type {
+	CyclesMonitoringStrategy,
+	Orbiter,
+	Satellite
+} from '$declarations/mission_control/mission_control.did';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { missionControlMonitoringConfig } from '$lib/derived/mission-control.derived';
 import { getMissionControlBalance } from '$lib/services/balance.services';
@@ -25,8 +29,9 @@ import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/
 import { emit } from '$lib/utils/events.utils';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
-import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
+import {assertNonNullish, isNullish, nonNullish, toNullable} from '@dfinity/utils';
 import { get } from 'svelte/store';
+import {updateAndStartMonitoring} from "$lib/api/mission-control.api";
 
 interface GetFeeBalance {
 	result?: Omit<JunoModalCreateSegmentDetail, 'monitoringConfig'>;
@@ -182,15 +187,17 @@ interface CreateWizardParams {
 	missionControlId: Option<Principal>;
 	identity: OptionIdentity;
 	subnetId: PrincipalText | undefined;
+	monitoringStrategy: CyclesMonitoringStrategy | undefined;
 	onProgress: (progress: WizardCreateProgress | undefined) => void;
 }
 
 export const createSatelliteWizard = async ({
 	missionControlId,
-	identity,
 	onProgress,
 	subnetId,
-	satelliteName
+	satelliteName,
+	monitoringStrategy,
+	...rest
 }: CreateWizardParams & {
 	satelliteName: string | undefined;
 }): Promise<
@@ -220,21 +227,50 @@ export const createSatelliteWizard = async ({
 		});
 	};
 
+	const buildMonitoringFn = (): MonitoringFn<Satellite> | undefined => {
+		if (isNullish(monitoringStrategy)) {
+			return undefined;
+		}
+
+		return async ({identity, segment}: {identity: Identity, segment: Satellite}): Promise<void> => {
+			assertNonNullish(missionControlId);
+
+			await updateAndStartMonitoring({
+				identity,
+				missionControlId,
+				config: {
+					cycles_config: toNullable({
+						mission_control_strategy: toNullable(),
+						satellites_strategy: toNullable({
+							strategy: monitoringStrategy,
+							ids: [segment.satellite_id]
+						}),
+						orbiters_strategy: toNullable()
+					})
+				}
+			});
+		}
+	}
+
+	const monitoringFn = buildMonitoringFn();
+
 	return await createWizard({
-		identity,
+		...rest,
 		missionControlId,
 		onProgress,
 		createFn,
 		reloadFn: loadSatellites,
+		monitoringFn,
 		errorLabel: 'satellite_unexpected_error'
 	});
 };
 
 export const createOrbiterWizard = async ({
 	missionControlId,
-	identity,
 	onProgress,
-	subnetId
+	subnetId,
+	monitoringStrategy,
+	...rest
 }: CreateWizardParams): Promise<
 	| {
 			success: 'ok';
@@ -254,15 +290,45 @@ export const createOrbiterWizard = async ({
 		});
 	};
 
+	const buildMonitoringFn = (): MonitoringFn<Orbiter> | undefined => {
+		if (isNullish(monitoringStrategy)) {
+			return undefined;
+		}
+
+		return async ({identity, segment}: {identity: Identity, segment: Orbiter}): Promise<void> => {
+			assertNonNullish(missionControlId);
+
+			await updateAndStartMonitoring({
+				identity,
+				missionControlId,
+				config: {
+					cycles_config: toNullable({
+						mission_control_strategy: toNullable(),
+						satellites_strategy: toNullable(),
+						orbiters_strategy: toNullable({
+							strategy: monitoringStrategy,
+							ids: [segment.orbiter_id]
+						})
+					})
+				}
+			});
+		}
+	}
+
+	const monitoringFn = buildMonitoringFn();
+
 	return await createWizard({
-		identity,
+		...rest,
 		missionControlId,
 		onProgress,
 		createFn,
 		reloadFn: loadOrbiters,
+		monitoringFn,
 		errorLabel: 'orbiter_unexpected_error'
 	});
 };
+
+type MonitoringFn<T> = (params: { identity: Identity, segment: T }) => Promise<void>;
 
 const createWizard = async <T>({
 	missionControlId,
@@ -270,14 +336,16 @@ const createWizard = async <T>({
 	errorLabel,
 	createFn,
 	reloadFn,
+	monitoringFn,
 	onProgress
-}: Omit<CreateWizardParams, 'subnetId'> & {
+}: Omit<CreateWizardParams, 'subnetId' | 'monitoringStrategy'> & {
 	errorLabel: keyof I18nErrors;
 	createFn: (params: { identity: Identity }) => Promise<T>;
 	reloadFn: (params: {
 		missionControlId: Option<Principal>;
 		reload: boolean;
 	}) => Promise<{ result: 'skip' | 'success' | 'error' }>;
+	monitoringFn: MonitoringFn<T> | undefined;
 }): Promise<
 	| {
 			success: 'ok';
@@ -302,6 +370,18 @@ const createWizard = async <T>({
 		const reload = async () => {
 			await reloadFn({ missionControlId, reload: true });
 		};
+
+		if (nonNullish(monitoringFn)) {
+			const executeMonitoringFn = async () => {
+				await monitoringFn({ identity, segment });
+			};
+
+			await execute({
+				fn: executeMonitoringFn,
+				onProgress,
+				step: WizardCreateProgressStep.Monitoring
+			});
+		}
 
 		// Reload list of segments before navigation
 		await execute({

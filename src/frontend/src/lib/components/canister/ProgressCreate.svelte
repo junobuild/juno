@@ -34,10 +34,10 @@
 			text: segment === 'orbiter' ? $i18n.analytics.initializing : $i18n.satellites.initializing
 		},
 		...(withMonitoring === true && {
-			options: {
+			monitoring: {
 				state: 'next',
 				step: 'monitoring',
-				text: $i18n.monitoring.applying_strategy
+				text: $i18n.monitoring.starting_monitoring
 			}
 		}),
 		reload: {
@@ -68,7 +68,7 @@
 							: create.state
 				},
 				...(nonNullish(monitoring) && {
-					options: {
+					monitoring: {
 						...monitoring,
 						state:
 							progress?.step === WizardCreateProgressStep.Monitoring

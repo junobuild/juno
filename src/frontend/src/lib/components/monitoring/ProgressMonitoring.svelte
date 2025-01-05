@@ -44,7 +44,7 @@
 			text:
 				action === 'stop'
 					? $i18n.monitoring.stopping_monitoring
-					: $i18n.monitoring.applying_strategy
+					: $i18n.monitoring.starting_monitoring
 		},
 		reload: {
 			state: 'next',

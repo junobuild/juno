@@ -686,7 +686,7 @@
 		"stop_monitoring": "Stop monitoring",
 		"strategy_created": "Strategy successfully created and monitoring started.",
 		"monitoring_stopped": "Selected monitoring stopped.",
-		"applying_strategy": "Applying strategy and starting monitoring...",
+		"starting_monitoring": "Starting monitoring...",
 		"stopping_monitoring": "Stopping monitoring...",
 		"remaining_threshold": "Remaining T Cycles Threshold",
 		"top_up_amount": "Top-Up Amount",

@@ -1,6 +1,5 @@
 <script lang="ts">
-	import { Principal } from '@dfinity/principal';
-	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { isNullish } from '@dfinity/utils';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
@@ -8,14 +7,10 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import {
-		createOrbiter,
-		createOrbiterWithConfig,
-		loadOrbiters
-	} from '$lib/services/orbiters.services';
+	import { createOrbiterWizard } from '$lib/services/wizard.services';
+	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { toasts } from '$lib/stores/toasts.store';
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
 
@@ -36,30 +31,20 @@
 		wizardBusy.start();
 		step = 'in_progress';
 
-		try {
-			const fn = nonNullish(subnetId) ? createOrbiterWithConfig : createOrbiter;
-
-			await fn({
-				missionControlId: $missionControlIdDerived,
-				config: {
-					...(nonNullish(subnetId) && { subnetId: Principal.fromText(subnetId) })
-				}
-			});
-
-			// Reload list of orbiters before navigation
-			await loadOrbiters({ missionControlId: $missionControlIdDerived, reload: true });
-
-			step = 'ready';
-		} catch (err) {
-			toasts.error({
-				text: $i18n.errors.orbiter_unexpected_error,
-				detail: err
-			});
-
-			step = 'error';
-		}
+		const { success } = await createOrbiterWizard({
+			identity: $authStore.identity,
+			missionControlId: $missionControlIdDerived,
+			subnetId
+		});
 
 		wizardBusy.stop();
+
+		if (success !== 'ok') {
+			step = 'error';
+			return;
+		}
+
+		step = 'ready';
 	};
 
 	const close = () => onclose();

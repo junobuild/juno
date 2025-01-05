@@ -36,6 +36,11 @@ export const missionControlMonitoring = derived(
 	([$missionControlSettings]) => fromNullable($missionControlSettings?.monitoring ?? [])
 );
 
+export const missionControlMonitoringConfig = derived(
+	[missionControlSettings],
+	([$missionControlSettings]) => fromNullable($missionControlSettings?.monitoring_config ?? [])
+);
+
 export const missionControlMonitored = derived(
 	[missionControlMonitoring],
 	([$missionControlMonitoring]) =>

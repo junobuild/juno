@@ -1,27 +1,14 @@
 <script lang="ts">
-	import { isNullish, nonNullish } from '@dfinity/utils';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { getCreateOrbiterFeeBalance } from '$lib/services/wizard.services';
+	import { initOrbiterWizard } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
-	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import { emit } from '$lib/utils/events.utils';
 
 	const createOrbiter = async () => {
-		busy.start();
-
-		const { result, error } = await getCreateOrbiterFeeBalance({
+		await initOrbiterWizard({
 			identity: $authStore.identity,
 			missionControlId: $missionControlIdDerived
 		});
-
-		busy.stop();
-
-		if (nonNullish(error) || isNullish(result)) {
-			return;
-		}
-
-		emit({ message: 'junoModal', detail: { type: 'create_orbiter', detail: result } });
 	};
 </script>
 

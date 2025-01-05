@@ -1,6 +1,9 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
-	import type { Satellite } from '$declarations/mission_control/mission_control.did';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type {
+		CyclesMonitoringStrategy,
+		Satellite
+	} from '$declarations/mission_control/mission_control.did';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
@@ -48,6 +51,7 @@
 			identity: $authStore.identity,
 			missionControlId: $missionControlIdDerived,
 			subnetId,
+			monitoringStrategy,
 			satelliteName,
 			onProgress
 		});
@@ -71,6 +75,7 @@
 
 	let satelliteName: string | undefined = $state(undefined);
 	let subnetId: PrincipalText | undefined = $state();
+	let monitoringStrategy: CyclesMonitoringStrategy | undefined = $state();
 </script>
 
 <Modal on:junoClose={onclose}>
@@ -82,7 +87,11 @@
 			<button onclick={navigate}>{$i18n.core.continue}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressCreate segment="satellite" {progress} />
+		<ProgressCreate
+			segment="satellite"
+			{progress}
+			withMonitoring={nonNullish(monitoringStrategy)}
+		/>
 	{:else}
 		<h2>{$i18n.satellites.start}</h2>
 
@@ -111,7 +120,7 @@
 					/>
 				</Value>
 
-				<CanisterAdvancedOptions bind:subnetId />
+				<CanisterAdvancedOptions bind:subnetId bind:monitoringStrategy {detail} />
 
 				<button
 					type="submit"

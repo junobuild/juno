@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { isNullish } from '@dfinity/utils';
+	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
@@ -44,6 +45,7 @@
 			identity: $authStore.identity,
 			missionControlId: $missionControlIdDerived,
 			subnetId,
+			monitoringStrategy,
 			onProgress
 		});
 
@@ -60,6 +62,7 @@
 	const close = () => onclose();
 
 	let subnetId: PrincipalText | undefined = $state();
+	let monitoringStrategy: CyclesMonitoringStrategy | undefined = $state();
 </script>
 
 <Modal on:junoClose={close}>
@@ -71,7 +74,7 @@
 			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
 	{:else if step === 'in_progress'}
-		<ProgressCreate segment="orbiter" {progress} />
+		<ProgressCreate segment="orbiter" {progress} withMonitoring={nonNullish(monitoringStrategy)} />
 	{:else}
 		<h2>{$i18n.analytics.start}</h2>
 
@@ -86,7 +89,7 @@
 			priceLabel={$i18n.analytics.create_orbiter_price}
 		>
 			<form onsubmit={onSubmit}>
-				<CanisterAdvancedOptions bind:subnetId />
+				<CanisterAdvancedOptions bind:subnetId bind:monitoringStrategy {detail} />
 
 				<button
 					type="submit"

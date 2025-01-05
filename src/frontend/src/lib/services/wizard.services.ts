@@ -62,8 +62,8 @@ export const initOrbiterWizard = async ({
 	initCreateWizard({
 		missionControlId,
 		identity,
-		feeFn: getCreateSatelliteFeeBalance,
-		modalType: 'create_satellite'
+		feeFn: getCreateOrbiterFeeBalance,
+		modalType: 'create_orbiter'
 	});
 
 const initCreateWizard = async ({

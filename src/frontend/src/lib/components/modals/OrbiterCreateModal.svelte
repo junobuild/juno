@@ -1,19 +1,19 @@
 <script lang="ts">
 	import { isNullish } from '@dfinity/utils';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
+	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
-	import { wizardBusy } from '$lib/stores/busy.store';
-	import { i18n } from '$lib/stores/i18n.store';
-	import type { PrincipalText } from '$lib/types/itentity';
-	import type { JunoModalDetail } from '$lib/types/modal';
-	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
-	import type { CanisterCreateProgress } from '$lib/types/canister-create';
 	import { createOrbiterWizard } from '$lib/services/wizard.services';
 	import { authStore } from '$lib/stores/auth.store';
+	import { wizardBusy } from '$lib/stores/busy.store';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { CanisterCreateProgress } from '$lib/types/canister-create';
+	import type { PrincipalText } from '$lib/types/itentity';
+	import type { JunoModalDetail } from '$lib/types/modal';
 
 	interface Props {
 		detail: JunoModalDetail;

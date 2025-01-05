@@ -3,12 +3,12 @@
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { ProgressStep } from '$lib/types/progress-step';
-	import { mapProgressState } from '$lib/utils/progress.utils';
 	import {
 		type CanisterCreateProgress,
 		CanisterCreateProgressStep
 	} from '$lib/types/canister-create';
+	import type { ProgressStep } from '$lib/types/progress-step';
+	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {
 		progress: CanisterCreateProgress | undefined;

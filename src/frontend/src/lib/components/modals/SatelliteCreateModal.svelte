@@ -2,21 +2,21 @@
 	import { isNullish } from '@dfinity/utils';
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
+	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
 	import Confetti from '$lib/components/ui/Confetti.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
 	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
+	import { createSatelliteWizard } from '$lib/services/wizard.services';
+	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
+	import type { CanisterCreateProgress } from '$lib/types/canister-create';
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
-	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
-	import type { CanisterCreateProgress } from '$lib/types/canister-create';
-	import { createSatelliteWizard } from '$lib/services/wizard.services';
-	import { authStore } from '$lib/stores/auth.store';
 
 	interface Props {
 		detail: JunoModalDetail;

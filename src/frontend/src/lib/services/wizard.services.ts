@@ -6,6 +6,7 @@ import {
 	createOrbiterWithConfig,
 	loadOrbiters
 } from '$lib/services/orbiters.services';
+import { execute } from '$lib/services/progress.services';
 import {
 	createSatellite,
 	createSatelliteWithConfig,
@@ -16,6 +17,7 @@ import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity, PrincipalText } from '$lib/types/itentity';
 import type { JunoModalCreateSegmentDetail } from '$lib/types/modal';
 import type { Option } from '$lib/types/utils';
+import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/wizard';
 import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish } from '@dfinity/utils';
@@ -87,11 +89,13 @@ interface CreateWizardParams {
 	missionControlId: Option<Principal>;
 	identity: OptionIdentity;
 	subnetId: PrincipalText | undefined;
+	onProgress: (progress: WizardCreateProgress | undefined) => void;
 }
 
 export const createSatelliteWizard = async ({
 	missionControlId,
 	identity,
+	onProgress,
 	subnetId,
 	satelliteName
 }: CreateWizardParams & {
@@ -126,6 +130,7 @@ export const createSatelliteWizard = async ({
 	return await createWizard({
 		identity,
 		missionControlId,
+		onProgress,
 		createFn,
 		reloadFn: loadSatellites,
 		errorLabel: 'satellite_unexpected_error'
@@ -135,6 +140,7 @@ export const createSatelliteWizard = async ({
 export const createOrbiterWizard = async ({
 	missionControlId,
 	identity,
+	onProgress,
 	subnetId
 }: CreateWizardParams): Promise<
 	| {
@@ -158,6 +164,7 @@ export const createOrbiterWizard = async ({
 	return await createWizard({
 		identity,
 		missionControlId,
+		onProgress,
 		createFn,
 		reloadFn: loadOrbiters,
 		errorLabel: 'orbiter_unexpected_error'
@@ -169,7 +176,8 @@ const createWizard = async <T>({
 	identity,
 	errorLabel,
 	createFn,
-	reloadFn
+	reloadFn,
+	onProgress
 }: Omit<CreateWizardParams, 'subnetId'> & {
 	errorLabel: keyof I18nErrors;
 	createFn: (params: { identity: Identity }) => Promise<T>;
@@ -187,12 +195,26 @@ const createWizard = async <T>({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		const segment = await createFn({
-			identity
+		const fn = async (): Promise<T> => await createFn({
+				identity
+			});
+
+		const segment = await execute({
+			fn,
+			onProgress,
+			step: WizardCreateProgressStep.Create
 		});
 
+		const reload = async () => {
+			await reloadFn({ missionControlId, reload: true });
+		};
+
 		// Reload list of segments before navigation
-		await reloadFn({ missionControlId, reload: true });
+		await execute({
+			fn: reload,
+			onProgress,
+			step: WizardCreateProgressStep.Reload
+		});
 
 		return { success: 'ok', segment };
 	} catch (err: unknown) {

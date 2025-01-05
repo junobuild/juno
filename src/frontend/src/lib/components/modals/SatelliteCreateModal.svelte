@@ -13,9 +13,9 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { CanisterCreateProgress } from '$lib/types/canister-create';
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
+	import type { WizardCreateProgress } from '$lib/types/wizard';
 	import { navigateToSatellite } from '$lib/utils/nav.utils';
 
 	interface Props {
@@ -32,8 +32,8 @@
 
 	// Submit
 
-	let progress: CanisterCreateProgress | undefined = $state(undefined);
-	const onProgress = (applyProgress: CanisterCreateProgress | undefined) =>
+	let progress: WizardCreateProgress | undefined = $state(undefined);
+	const onProgress = (applyProgress: WizardCreateProgress | undefined) =>
 		(progress = applyProgress);
 
 	const onSubmit = async ($event: SubmitEvent) => {
@@ -48,7 +48,8 @@
 			identity: $authStore.identity,
 			missionControlId: $missionControlIdDerived,
 			subnetId,
-			satelliteName
+			satelliteName,
+			onProgress
 		});
 
 		wizardBusy.stop();
@@ -59,7 +60,8 @@
 		}
 
 		satellite = result.segment;
-		step = 'ready';
+
+		setTimeout(() => (step = 'ready'), 500);
 	};
 
 	const navigate = async () => {

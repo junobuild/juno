@@ -3,15 +3,12 @@
 	import { untrack } from 'svelte';
 	import WizardProgressSteps from '$lib/components/ui/WizardProgressSteps.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
-	import {
-		type CanisterCreateProgress,
-		CanisterCreateProgressStep
-	} from '$lib/types/canister-create';
 	import type { ProgressStep } from '$lib/types/progress-step';
+	import { type WizardCreateProgress, WizardCreateProgressStep } from '$lib/types/wizard';
 	import { mapProgressState } from '$lib/utils/progress.utils';
 
 	interface Props {
-		progress: CanisterCreateProgress | undefined;
+		progress: WizardCreateProgress | undefined;
 		segment: 'satellite' | 'orbiter';
 		withMonitoring?: boolean;
 	}
@@ -66,7 +63,7 @@
 				create: {
 					...create,
 					state:
-						progress?.step === CanisterCreateProgressStep.Create
+						progress?.step === WizardCreateProgressStep.Create
 							? mapProgressState(progress?.state)
 							: create.state
 				},
@@ -74,7 +71,7 @@
 					options: {
 						...monitoring,
 						state:
-							progress?.step === CanisterCreateProgressStep.Monitoring
+							progress?.step === WizardCreateProgressStep.Monitoring
 								? mapProgressState(progress?.state)
 								: monitoring.state
 					}
@@ -82,7 +79,7 @@
 				reload: {
 					...reload,
 					state:
-						progress?.step === CanisterCreateProgressStep.Reload
+						progress?.step === WizardCreateProgressStep.Reload
 							? mapProgressState(progress?.state)
 							: reload.state
 				}

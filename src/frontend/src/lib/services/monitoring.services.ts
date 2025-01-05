@@ -395,7 +395,7 @@ const reloadData = async ({
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
 	const reloadParams = {
-		missionControl: missionControlId,
+		missionControlId,
 		reload: true
 	};
 

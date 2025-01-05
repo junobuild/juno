@@ -44,6 +44,7 @@
 		wizardBusy.start();
 		step = 'in_progress';
 
+
 		const result = await createSatelliteWizard({
 			identity: $authStore.identity,
 			missionControlId: $missionControlIdDerived,

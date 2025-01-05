@@ -148,13 +148,4 @@
 		height: calc(100% - 60px);
 		max-height: calc(100% - 60px);
 	}
-
-	footer {
-		display: flex;
-		justify-content: center;
-
-		padding: 0.75rem 2.25rem;
-
-		background: rgba(var(--color-primary-rgb), 0.8);
-	}
 </style>

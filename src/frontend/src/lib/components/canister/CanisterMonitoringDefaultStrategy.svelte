@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { fromNullable, nonNullish } from '@dfinity/utils';
-	import { onMount } from 'svelte';
+	import { onMount, untrack } from 'svelte';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type {CyclesMonitoringStrategy} from "$declarations/mission_control/mission_control.did";
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -19,14 +19,24 @@
 	let { monitoringConfig } = detail as JunoModalCreateSegmentDetail;
 
 	let useDefaultStrategy = $state(false);
+	let useMonitoringStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);
 
 	onMount(() => {
-		monitoringStrategy = fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? []);
+		useMonitoringStrategy = fromNullable(
+			fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? []
+		);
+		monitoringStrategy = useMonitoringStrategy;
 		useDefaultStrategy = nonNullish(monitoringStrategy);
+	});
+
+	$effect(() => {
+		useDefaultStrategy;
+
+		untrack(() => (monitoringStrategy = useDefaultStrategy ? useMonitoringStrategy : undefined));
 	});
 </script>
 
-{#if nonNullish(useDefaultStrategy) && nonNullish(monitoringStrategy)}
+{#if nonNullish(useDefaultStrategy) && nonNullish(useMonitoringStrategy)}
 	<div class="default-strategy">
 		<Value>
 			{#snippet label()}

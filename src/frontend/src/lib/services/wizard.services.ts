@@ -195,7 +195,8 @@ const createWizard = async <T>({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		const fn = async (): Promise<T> => await createFn({
+		const fn = async (): Promise<T> =>
+			await createFn({
 				identity
 			});
 

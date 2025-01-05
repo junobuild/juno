@@ -6,8 +6,6 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
-	import { formatTCycles } from '$lib/utils/cycles.utils';
-	import { i18nFormat } from '$lib/utils/i18n.utils';
 	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 
 	interface Props {

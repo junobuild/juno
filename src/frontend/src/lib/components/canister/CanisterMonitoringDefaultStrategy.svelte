@@ -1,13 +1,13 @@
 <script lang="ts">
 	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { onMount, untrack } from 'svelte';
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
 	import { formatTCycles } from '$lib/utils/cycles.utils';
 	import { i18nFormat } from '$lib/utils/i18n.utils';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 
 	interface Props {
 		detail: JunoModalDetail;

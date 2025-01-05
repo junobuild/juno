@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 	import CanisterAdvancedOptions from '$lib/components/canister/CanisterAdvancedOptions.svelte';
 	import ProgressCreate from '$lib/components/canister/ProgressCreate.svelte';
 	import CreditsGuard from '$lib/components/guards/CreditsGuard.svelte';
@@ -14,7 +15,6 @@
 	import type { PrincipalText } from '$lib/types/itentity';
 	import type { JunoModalDetail } from '$lib/types/modal';
 	import type { WizardCreateProgress } from '$lib/types/wizard';
-	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
 
 	interface Props {
 		detail: JunoModalDetail;

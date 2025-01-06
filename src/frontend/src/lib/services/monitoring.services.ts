@@ -13,7 +13,7 @@ import {
 import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
-import { loadSettings, loadUserMetadata } from '$lib/services/mission-control.services';
+import { loadMetadata, loadSettings } from '$lib/services/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiters.services';
 import { execute } from '$lib/services/progress.services';
 import { loadSatellites } from '$lib/services/satellites.services';
@@ -407,7 +407,7 @@ const reloadData = async ({
 			...reloadParams,
 			identity
 		}),
-		loadUserMetadata({
+		loadMetadata({
 			...reloadParams,
 			identity
 		})

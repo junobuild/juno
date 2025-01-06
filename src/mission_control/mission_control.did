@@ -145,13 +145,13 @@ service : () -> {
   del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
+  get_metadata : () -> (vec record { text; text }) query;
   get_monitoring_history : (GetMonitoringHistory) -> (
       vec record { MonitoringHistoryKey; MonitoringHistory },
     ) query;
   get_monitoring_status : () -> (MonitoringStatus) query;
   get_settings : () -> (opt MissionControlSettings) query;
   get_user : () -> (principal) query;
-  get_user_metadata : () -> (vec record { text; text }) query;
   icp_transfer : (TransferArgs) -> (Result);
   icrc_transfer : (principal, TransferArg) -> (Result_1);
   list_mission_control_controllers : () -> (

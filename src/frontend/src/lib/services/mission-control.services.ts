@@ -5,8 +5,8 @@ import type {
 import {
 	addMissionControlController,
 	addSatellitesController,
+	getMetadata,
 	getSettings,
-	getUserMetadata,
 	missionControlVersion,
 	setMissionControlController,
 	setOrbiter,
@@ -274,7 +274,7 @@ export const loadSettings = async ({
 	return { success: result !== 'error' };
 };
 
-export const loadUserMetadata = async ({
+export const loadMetadata = async ({
 	missionControlId,
 	identity,
 	reload = false
@@ -291,7 +291,7 @@ export const loadUserMetadata = async ({
 	}
 
 	const load = async (identity: Identity): Promise<Metadata> =>
-		await getUserMetadata({
+		await getMetadata({
 			missionControlId,
 			identity
 		});

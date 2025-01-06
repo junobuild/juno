@@ -370,18 +370,18 @@ fn get_user() -> UserId {
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]
-fn get_user_metadata() -> Metadata {
+fn get_metadata() -> Metadata {
     get_metadata_store()
-}
-
-#[query(guard = "caller_is_user_or_admin_controller")]
-fn get_settings() -> Option<MissionControlSettings> {
-    get_settings_store()
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]
 fn set_metadata(metadata: Metadata) {
     set_metadata_store(&metadata)
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn get_settings() -> Option<MissionControlSettings> {
+    get_settings_store()
 }
 
 #[update(guard = "caller_is_user_or_admin_controller")]

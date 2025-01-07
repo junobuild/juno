@@ -1,6 +1,5 @@
 use crate::memory::STATE;
-use crate::types::state::{HeapState, MissionControlSettings, User};
-use ic_cdk::api::time;
+use crate::types::state::{Config, HeapState, MissionControlSettings};
 use junobuild_shared::types::state::{Metadata, UserId};
 
 pub fn get_user() -> UserId {
@@ -19,15 +18,20 @@ pub fn set_metadata(metadata: &Metadata) {
     STATE.with(|state| set_metadata_impl(metadata, &mut state.borrow_mut().heap))
 }
 
+pub fn get_config() -> Option<Config> {
+    STATE.with(|state| state.borrow().heap.user.config.clone())
+}
+
+pub fn set_config(config: &Option<Config>) {
+    STATE.with(|state| set_config_impl(config, &mut state.borrow_mut().heap))
+}
+
 fn set_metadata_impl(metadata: &Metadata, state: &mut HeapState) {
-    let now = time();
+    let updated_user = state.user.clone_with_metadata(metadata);
+    state.user = updated_user;
+}
 
-    let updated_user = User {
-        user: state.user.user,
-        metadata: metadata.clone(),
-        created_at: state.user.created_at,
-        updated_at: now,
-    };
-
+fn set_config_impl(config: &Option<Config>, state: &mut HeapState) {
+    let updated_user = state.user.clone_with_config(config);
     state.user = updated_user;
 }

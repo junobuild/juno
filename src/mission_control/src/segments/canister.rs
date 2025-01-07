@@ -1,5 +1,5 @@
-use crate::store::get_user;
 use crate::types::interface::CreateCanisterConfig;
+use crate::user::store::get_user;
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
 use ic_cdk::{call, id};

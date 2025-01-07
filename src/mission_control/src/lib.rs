@@ -6,8 +6,8 @@ mod memory;
 mod monitoring;
 mod random;
 mod segments;
-mod store;
 mod types;
+mod user;
 
 use crate::controllers::mission_control::{
     delete_mission_control_controllers as delete_controllers_to_mission_control,
@@ -21,7 +21,6 @@ use crate::controllers::satellite::{
 use crate::controllers::store::get_controllers;
 use crate::guards::caller_is_user_or_admin_controller;
 use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
-use crate::monitoring::monitor::update_monitoring_config;
 use crate::random::defer_init_random_seed;
 use crate::segments::orbiter::{
     attach_orbiter, create_orbiter as create_orbiter_console,
@@ -34,17 +33,13 @@ use crate::segments::satellite::{
     detach_satellite,
 };
 use crate::segments::store::get_orbiters;
-use crate::store::{
-    get_metadata as get_metadata_store, get_settings as get_settings_store,
-    get_user as get_user_store, set_metadata as set_metadata_store,
-};
 use crate::types::interface::{
     CreateCanisterConfig, GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus,
     MonitoringStopConfig,
 };
 use crate::types::state::{
-    HeapState, MissionControlSettings, MonitoringConfig, MonitoringHistory, MonitoringHistoryKey,
-    Orbiter, Orbiters, Satellite, Satellites, State,
+    Config, HeapState, MissionControlSettings, MonitoringConfig, MonitoringHistory,
+    MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Satellites, State,
 };
 use candid::Principal;
 use ciborium::into_writer;
@@ -76,6 +71,11 @@ use segments::store::{
     set_satellite_metadata as set_satellite_metadata_store,
 };
 use std::collections::HashMap;
+use user::store::{
+    get_config as get_config_store, get_metadata as get_metadata_store,
+    get_settings as get_settings_store, get_user as get_user_store, set_config as set_config_store,
+    set_metadata as set_metadata_store,
+};
 
 #[init]
 fn init() {
@@ -380,6 +380,16 @@ fn set_metadata(metadata: Metadata) {
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]
+fn get_config() -> Option<Config> {
+    get_config_store()
+}
+
+#[update(guard = "caller_is_user_or_admin_controller")]
+fn set_config(config: Option<Config>) {
+    set_config_store(&config)
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
 fn get_settings() -> Option<MissionControlSettings> {
     get_settings_store()
 }
@@ -437,11 +447,6 @@ fn get_monitoring_history(
     filter: GetMonitoringHistory,
 ) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
     get_any_monitoring_history(&filter)
-}
-
-#[update(guard = "caller_is_user_or_admin_controller")]
-fn set_monitoring_config(config: Option<MonitoringConfig>) {
-    update_monitoring_config(&config);
 }
 
 // ---------------------------------------------------------

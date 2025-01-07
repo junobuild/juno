@@ -1,32 +1,23 @@
 <script lang="ts">
-	import { fromNullable, nonNullish } from '@dfinity/utils';
-	import type { Monitoring } from '$declarations/mission_control/mission_control.did';
-	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
-	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
+	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
+	import {
+		missionControlMonitored,
+		missionControlSettingsLoaded
+	} from '$lib/derived/mission-control.derived';
 
-	interface Props {
-		monitoring: Monitoring | undefined;
-	}
-
-	let { monitoring }: Props = $props();
-
-	let monitoringStrategy = $derived(
-		fromNullable(fromNullable(monitoring?.cycles ?? [])?.strategy ?? [])
-	);
+	let enabled = $derived($missionControlMonitored);
 </script>
 
-<div>
-	{#if nonNullish(monitoringStrategy)}
+{#if $missionControlSettingsLoaded}
+	<div in:fade>
 		<Value>
 			{#snippet label()}
 				{$i18n.monitoring.auto_refill}
 			{/snippet}
 
-			<p><MonitoringSentence {monitoringStrategy} /></p>
+			<p>{enabled ? $i18n.core.enabled : $i18n.core.disabled}</p>
 		</Value>
-	{:else}
-		<MonitoringDisabled {monitoring} loading={false} />
-	{/if}
-</div>
+	</div>
+{/if}

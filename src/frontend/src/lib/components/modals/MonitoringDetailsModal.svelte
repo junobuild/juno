@@ -6,7 +6,7 @@
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
 	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
-	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
+	import MonitoringStrategyStatus from '$lib/components/monitoring/MonitoringStrategyStatus.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -45,7 +45,7 @@
 
 		<CanisterMonitoringLoader segment={segment.segment} {canisterId} bind:data={monitoringData}>
 			<div>
-				<MonitoringStatus {monitoring} />
+				<MonitoringStrategyStatus {monitoring} />
 
 				{#if nonNullish(lastExecutionTime)}
 					<div in:fade>

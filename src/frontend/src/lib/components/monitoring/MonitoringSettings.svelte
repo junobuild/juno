@@ -44,7 +44,7 @@
 
 	<div class="columns-3 fit-column-1">
 		<div>
-			<MonitoringStatus monitoring={$missionControlMonitoring} />
+			<MonitoringStatus />
 		</div>
 
 		<div>

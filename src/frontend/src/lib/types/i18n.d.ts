@@ -546,7 +546,7 @@ interface I18nErrors {
 	auth_domain_config: string;
 	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
-	mission_control_metadata_not_loaded: string;
+	mission_control_user_data_not_loaded: string;
 	monitoring_apply_strategy_error: string;
 	monitoring_stop_error: string;
 	monitoring_no_modules: string;

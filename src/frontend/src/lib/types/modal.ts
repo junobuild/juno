@@ -103,7 +103,7 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 	config: AuthenticationConfig | undefined;
 }
 
-export interface JunoModalMonitoringStrategyDetail {
+export interface JunoModalCreateMonitoringStrategyDetail {
 	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
 	user: User;
@@ -125,7 +125,7 @@ export type JunoModalDetail =
 	| JunoModalDeleteSatelliteDetail
 	| JunoModalSendTokensDetail
 	| JunoModalEditOrbiterConfigDetail
-	| JunoModalMonitoringStrategyDetail;
+	| JunoModalCreateMonitoringStrategyDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:

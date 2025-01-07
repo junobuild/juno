@@ -15,7 +15,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
+	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
 
 	interface Props {
@@ -25,7 +25,7 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { settings, missionControlId } = $derived(detail as JunoModalMonitoringStrategyDetail);
+	let { settings, missionControlId } = $derived(detail as JunoModalCreateMonitoringStrategyDetail);
 
 	let selectedSatellites: [Principal, Satellite][] = $state([]);
 	let selectedOrbiters: [Principal, Orbiter][] = $state([]);

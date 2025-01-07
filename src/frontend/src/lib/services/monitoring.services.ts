@@ -43,6 +43,8 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import { get } from 'svelte/store';
+import type {JunoModal, JunoModalCreateMonitoringStrategyDetail} from "$lib/types/modal";
+import {missionControlUserData} from "$lib/derived/mission-control.derived";
 
 type MonitoringStrategyOnProgress = (progress: MonitoringStrategyProgress | undefined) => void;
 
@@ -464,9 +466,9 @@ export const openMonitoringModal = ({
 		return;
 	}
 
-	const $missionControlMetadataDataStore = get(missionControlUserDataStore);
-	if (isNullish($missionControlMetadataDataStore)) {
-		toasts.warn(get(i18n).errors.mission_control_metadata_not_loaded);
+	const $missionControlUserData = get(missionControlUserData);
+	if (isNullish($missionControlUserData)) {
+		toasts.warn(get(i18n).errors.mission_control_user_data_not_loaded);
 		return;
 	}
 
@@ -489,13 +491,13 @@ export const openMonitoringModal = ({
 		return;
 	}
 
-	emit({
+	emit<JunoModal<JunoModalCreateMonitoringStrategyDetail>>({
 		message: 'junoModal',
 		detail: {
 			type,
 			detail: {
 				settings: $missionControlSettingsDataStore.data,
-				metadata: $missionControlMetadataDataStore.data,
+				user: $fmissionControlUserData,
 				missionControlId
 			}
 		}

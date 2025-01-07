@@ -1,6 +1,7 @@
 import type {
 	Config,
-	_SERVICE as MissionControlActor, CyclesMonitoringStrategy
+	CyclesMonitoringStrategy,
+	_SERVICE as MissionControlActor
 } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';

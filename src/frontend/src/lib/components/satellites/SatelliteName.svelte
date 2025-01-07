@@ -101,7 +101,7 @@
 		/>
 
 		<button type="submit" class="submit" disabled={$isBusy || !validConfirm}>
-			{$i18n.core.submit}
+			{$i18n.core.apply}
 		</button>
 	</form>
 </Popover>

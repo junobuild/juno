@@ -245,7 +245,8 @@
 		"overview": "Overview",
 		"id": "Mission Control ID",
 		"not_found": "Mission control not found.",
-		"loading": "Loading your mission control..."
+		"loading": "Loading your mission control...",
+		"edit_email": "Edit your email address"
 	},
 	"wallet": {
 		"title": "Wallet",

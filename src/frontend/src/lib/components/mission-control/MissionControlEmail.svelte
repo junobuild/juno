@@ -63,8 +63,8 @@
 
 			<button
 				onclick={open}
-				aria-label={$i18n.satellites.edit_name}
-				title={$i18n.satellites.edit_name}
+				aria-label={$i18n.mission_control.edit_email}
+				title={$i18n.mission_control.edit_email}
 				class="square"
 			>
 				<IconEdit />

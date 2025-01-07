@@ -54,7 +54,7 @@
 
 <Value>
 	{#snippet label()}
-		{$i18n.monitoring.notifications}
+		{$i18n.core.email_address}
 	{/snippet}
 
 	{#if $missionControlMetadataLoaded}

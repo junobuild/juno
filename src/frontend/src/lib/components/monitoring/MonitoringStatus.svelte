@@ -1,11 +1,11 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import {
 		missionControlMonitored,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control.derived';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	let enabled = $derived($missionControlMonitored);
 </script>

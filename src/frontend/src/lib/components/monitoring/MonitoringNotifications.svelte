@@ -1,12 +1,12 @@
 <script lang="ts">
 	import { fade } from 'svelte/transition';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import {
 		missionControlEmail,
 		missionControlMetadataLoaded
 	} from '$lib/derived/mission-control.derived';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
 </script>
 
 <Value>

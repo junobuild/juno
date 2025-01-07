@@ -1,13 +1,13 @@
 <script lang="ts">
+	import { fromNullable, nonNullish } from '@dfinity/utils';
 	import { fade } from 'svelte/transition';
+	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
-	import { i18n } from '$lib/stores/i18n.store';
 	import {
 		missionControlMonitoring,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control.derived';
-	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
-	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { i18n } from '$lib/stores/i18n.store';
 
 	let monitoringStrategy = $derived(
 		fromNullable(fromNullable($missionControlMonitoring?.cycles ?? [])?.strategy ?? [])

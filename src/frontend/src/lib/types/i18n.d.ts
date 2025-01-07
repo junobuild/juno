@@ -549,6 +549,8 @@ interface I18nErrors {
 	monitoring_apply_strategy_error: string;
 	monitoring_stop_error: string;
 	monitoring_no_modules: string;
+	monitoring_email_missing: string;
+	monitoring_email_update: string;
 }
 
 interface I18nDocument {
@@ -745,6 +747,7 @@ interface I18nMonitoring {
 	email_notifications: string;
 	receive_email: string;
 	notifications: string;
+	edit_email: string;
 }
 
 interface I18nPreferences {

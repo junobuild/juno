@@ -54,6 +54,11 @@ export const missionControlMetadataLoaded = derived(
 	([$missionControlMetadataDataStore]) => $missionControlMetadataDataStore !== undefined
 );
 
+export const missionControlMetadata = derived(
+	[missionControlMetadataDataStore],
+	([$missionControlMetadataDataStore]) => $missionControlMetadataDataStore?.data
+);
+
 export const missionControlEmail = derived(
 	[missionControlMetadataDataStore],
 	([$missionControlMetadataDataStore]) =>

@@ -70,7 +70,7 @@
 		"none": "None",
 		"enabled": "已启用",
 		"disabled": "已禁用",
-		"email_address": "Email Address"
+		"email_address": "Email address"
 	},
 	"canisters": {
 		"top_up": "充值",
@@ -532,7 +532,9 @@
 		"mission_control_metadata_not_loaded": "The metadata for the mission control are not yet loaded.",
 		"monitoring_apply_strategy_error": "Unexpected error(s) while applying the strategy.",
 		"monitoring_stop_error": "Unexpected error(s) while stopping the monitoring.",
-		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started."
+		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started.",
+		"monitoring_email_missing": "An email address must be provided.",
+		"monitoring_email_update": "Unexpected error(s) while trying to update your email address."
 	},
 	"document": {
 		"owner": "拥有者",

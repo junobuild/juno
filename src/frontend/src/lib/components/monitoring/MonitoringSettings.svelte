@@ -5,7 +5,6 @@
 	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 	import {
 		missionControlMonitored,
-		missionControlMonitoring,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
@@ -14,6 +13,7 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import MonitoringNotifications from '$lib/components/monitoring/MonitoringNotifications.svelte';
+	import MonitoringDefaultStrategy from '$lib/components/monitoring/MonitoringDefaultStrategy.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -45,6 +45,8 @@
 	<div class="columns-3 fit-column-1">
 		<div>
 			<MonitoringStatus />
+
+			<MonitoringDefaultStrategy />
 		</div>
 
 		<div>

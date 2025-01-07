@@ -59,7 +59,7 @@
 
 	{#if $missionControlMetadataLoaded}
 		<p in:fade class="email">
-			<span>{$missionControlEmail}</span>
+			<span>{$missionControlEmail ?? $i18n.core.none}</span>
 
 			<button
 				onclick={open}

@@ -4,6 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import MissionControlEmail from '$lib/components/mission-control/MissionControlEmail.svelte';
 	import MonitoringDefaultStrategy from '$lib/components/monitoring/MonitoringDefaultStrategy.svelte';
+	import MonitoringNotifications from '$lib/components/monitoring/MonitoringNotifications.svelte';
 	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 	import {
 		missionControlMonitored,
@@ -14,7 +15,6 @@
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import MonitoringNotifications from "$lib/components/monitoring/MonitoringNotifications.svelte";
 
 	interface Props {
 		missionControlId: Principal;

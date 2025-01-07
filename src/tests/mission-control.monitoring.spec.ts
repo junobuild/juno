@@ -1,10 +1,10 @@
 import type {
+	Config,
 	CyclesMonitoringStrategy,
 	_SERVICE as MissionControlActor,
 	Monitoring,
-	MonitoringConfig,
 	MonitoringStartConfig,
-	MonitoringStopConfig, Config
+	MonitoringStopConfig
 } from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
@@ -622,11 +622,9 @@ describe('Mission Control - Monitoring', () => {
 			await testOrbiterMonitoring({ expectedEnabled: true, expectedStrategy: updateStrategy });
 		});
 
-		it('should set monitoring config', async () => {
-			const { set_config, get_config } = actor;
-
-			const config: Config = {
-				monitoring: [{
+		const config: Config = {
+			monitoring: [
+				{
 					cycles: [
 						{
 							default_strategy: [strategy],
@@ -638,8 +636,12 @@ describe('Mission Control - Monitoring', () => {
 							]
 						}
 					]
-				}]
-			};
+				}
+			]
+		};
+
+		it('should set monitoring config', async () => {
+			const { set_config, get_config } = actor;
 
 			await set_config(toNullable(config));
 
@@ -656,6 +658,24 @@ describe('Mission Control - Monitoring', () => {
 			const saved_config = await get_config();
 
 			expect(fromNullable(saved_config)).toBeUndefined();
+		});
+
+		it('should set monitoring config without overwriting metadata', async () => {
+			const { set_config, get_config, set_metadata, get_metadata } = actor;
+
+			const metadata: [string, string][] = [['email', 'test@test.com']];
+
+			await set_metadata(metadata);
+
+			await set_config(toNullable(config));
+
+			const saved_config = await get_config();
+
+			expect(fromNullable(saved_config)).toEqual(config);
+
+			const saved_metadata = await get_metadata();
+
+			expect(saved_metadata).toEqual(metadata);
 		});
 	});
 });

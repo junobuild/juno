@@ -1,7 +1,11 @@
-import type { _SERVICE as MissionControlActor } from '$declarations/mission_control/mission_control.did';
+import type {
+	Config,
+	_SERVICE as MissionControlActor, CyclesMonitoringStrategy
+} from '$declarations/mission_control/mission_control.did';
 import { idlFactory as idlFactorMissionControl } from '$declarations/mission_control/mission_control.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { fromNullable, toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
 import { CONTROLLER_ERROR_MSG } from './constants/mission-control-tests.constants';
@@ -13,6 +17,8 @@ describe('Mission Control', () => {
 	let actor: Actor<MissionControlActor>;
 
 	const controller = Ed25519KeyIdentity.generate();
+
+	const metadata: [string, string][] = [['email', 'test@test.com']];
 
 	beforeAll(async () => {
 		pic = await PocketIc.create(inject('PIC_URL'));
@@ -48,6 +54,12 @@ describe('Mission Control', () => {
 			await expect(get_metadata()).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
+		it('should throw errors on get metadata', async () => {
+			const { set_metadata } = actor;
+
+			await expect(set_metadata(metadata)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
+
 		it('should throw errors on get settings', async () => {
 			const { get_settings } = actor;
 
@@ -71,5 +83,62 @@ describe('Mission Control', () => {
 		});
 
 		testGuards();
+	});
+
+	describe('controller', () => {
+		beforeAll(() => {
+			actor.setIdentity(controller);
+		});
+
+		it('should set metadata', async () => {
+			const { set_metadata, get_metadata } = actor;
+
+			await set_metadata(metadata);
+
+			const saved_metadata = await get_metadata();
+
+			expect(saved_metadata).toEqual(metadata);
+		});
+
+		it('should set metadata config without overwriting config', async () => {
+			const { set_config, get_config, set_metadata, get_metadata } = actor;
+
+			const strategy: CyclesMonitoringStrategy = {
+				BelowThreshold: {
+					min_cycles: 500_000n,
+					fund_cycles: 100_000n
+				}
+			};
+
+			const config: Config = {
+				monitoring: [
+					{
+						cycles: [
+							{
+								default_strategy: [strategy],
+								notification: [
+									{
+										enabled: true,
+										to: toNullable()
+									}
+								]
+							}
+						]
+					}
+				]
+			};
+
+			await set_config(toNullable(config));
+
+			await set_metadata(metadata);
+
+			const saved_metadata = await get_metadata();
+
+			expect(saved_metadata).toEqual(metadata);
+
+			const saved_config = await get_config();
+
+			expect(fromNullable(saved_config)).toEqual(config);
+		});
 	});
 });

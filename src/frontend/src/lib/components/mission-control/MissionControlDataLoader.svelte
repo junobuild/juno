@@ -8,7 +8,7 @@
 
 	interface Props {
 		missionControlId: Principal;
-		children: Snippet;
+		children?: Snippet;
 	}
 
 	let { missionControlId, children }: Props = $props();
@@ -41,4 +41,4 @@
 	});
 </script>
 
-{@render children()}
+{@render children?.()}

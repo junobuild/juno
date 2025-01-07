@@ -27,6 +27,6 @@
 	}
 
 	.icon-telescope-3 {
-		fill: var(--color-background-contrast);
+		fill: currentColor;
 	}
 </style>

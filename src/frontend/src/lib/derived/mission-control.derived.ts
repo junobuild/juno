@@ -58,6 +58,11 @@ export const missionControlMonitored = derived(
 		fromNullable($missionControlMonitoring?.cycles ?? [])?.enabled === true
 );
 
+export const missionControlNotMonitored = derived(
+	[missionControlMonitored],
+	([$missionControlMonitored]) => !$missionControlMonitored
+);
+
 export const missionControlUserDataLoaded = derived(
 	[missionControlUserDataStore],
 	([$missionControlUserDataStore]) => $missionControlUserDataStore !== undefined

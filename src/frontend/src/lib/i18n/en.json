@@ -724,7 +724,7 @@
 		"email_notifications": "Email Notifications",
 		"receive_email": "Do you want to receive email notifications when a module is refilled? Enter your email below to enable notifications or leave it blank if you prefer no notifications.",
 		"notifications": "Notifications",
-		"edit_email": ""
+		"edit_email": "Edit the email address"
 	},
 	"preferences": {
 		"title": "Preferences",

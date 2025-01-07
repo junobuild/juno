@@ -541,7 +541,7 @@ export const setMonitoringNotification = async ({
 			config
 		});
 
-		await loadSettings({
+		await loadUserData({
 			identity,
 			missionControlId,
 			reload: true

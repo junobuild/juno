@@ -8,7 +8,7 @@ import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
 import { missionControlConfigMonitoring } from '$lib/derived/mission-control.derived';
 import { getMissionControlBalance } from '$lib/services/balance.services';
 import { loadVersion } from '$lib/services/console.services';
-import { loadSettings } from '$lib/services/mission-control.services';
+import { loadUserData } from '$lib/services/mission-control.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig,
@@ -105,7 +105,7 @@ const initCreateWizard = async ({
 		skipReload: true
 	});
 
-	const { success } = await loadSettings({
+	const { success } = await loadUserData({
 		identity,
 		missionControlId
 	});

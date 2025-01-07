@@ -723,7 +723,8 @@
 		"auto_refill_strategy": "Top-up {0} T Cycles if the remaining threshold falls below {1}",
 		"email_notifications": "Email Notifications",
 		"receive_email": "Do you want to receive email notifications when a module is refilled? Enter your email below to enable notifications or leave it blank if you prefer no notifications.",
-		"notifications": "Notifications"
+		"notifications": "Notifications",
+		"edit_email": "Edit the email address"
 	},
 	"preferences": {
 		"title": "偏好设置",

@@ -497,7 +497,7 @@ export const openMonitoringModal = ({
 			type,
 			detail: {
 				settings: $missionControlSettingsDataStore.data,
-				user: $fmissionControlUserData,
+				user: $missionControlUserData,
 				missionControlId
 			}
 		}

@@ -13,14 +13,16 @@
 	let { children, onback, oncontinue, disabled = false }: Props = $props();
 </script>
 
-{@render children()}
+<form onsubmit={oncontinue}>
+	{@render children()}
 
-<div class="toolbar">
-	<button type="button" onclick={onback} disabled={$isBusy}>
-		{$i18n.core.back}
-	</button>
+	<div class="toolbar">
+		<button type="button" onclick={onback} disabled={$isBusy}>
+			{$i18n.core.back}
+		</button>
 
-	<button type="button" onclick={oncontinue} disabled={$isBusy || disabled}>
-		{$i18n.core.continue}
-	</button>
-</div>
+		<button disabled={$isBusy || disabled}>
+			{$i18n.core.continue}
+		</button>
+	</div>
+</form>

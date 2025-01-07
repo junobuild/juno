@@ -49,17 +49,19 @@
 
 	<p>{$i18n.monitoring.review_info}</p>
 
-	{#if !missionControl.monitored || (nonNullish(missionControlFundCycles) && nonNullish(missionControlMinCycles))}
+	<div class="container">
 		<div class="card-container with-title">
-			<span class="title">{$i18n.mission_control.title}</span>
+			<span class="title">{$i18n.monitoring.modules}</span>
 
 			<div class="content">
+				<MonitoringSelectedModules {selectedSatellites} {selectedOrbiters} />
+
 				<Value>
 					{#snippet label()}
 						{$i18n.monitoring.remaining_threshold}
 					{/snippet}
 
-					<p>{formatTCycles(missionControlMinCycles ?? minCycles ?? 0n)}</p>
+					<p>{formatTCycles(minCycles ?? 0n)}</p>
 				</Value>
 
 				<Value>
@@ -67,64 +69,77 @@
 						{$i18n.monitoring.top_up_amount}
 					{/snippet}
 
-					<p class="no-margin">{formatTCycles(missionControlFundCycles ?? fundCycles ?? 0n)}</p>
+					<p>{formatTCycles(fundCycles ?? 0n)}</p>
 				</Value>
+
+				{#if useAsDefaultStrategy}
+					<Value>
+						{#snippet label()}
+							{$i18n.monitoring.default_strategy}
+						{/snippet}
+
+						<p>{$i18n.monitoring.configuration_for_modules}</p>
+					</Value>
+				{/if}
 			</div>
 		</div>
-	{/if}
 
-	<div class="card-container with-title">
-		<span class="title">{$i18n.monitoring.modules}</span>
+		<div>
+			{#if !missionControl.monitored || (nonNullish(missionControlFundCycles) && nonNullish(missionControlMinCycles))}
+				<div class="card-container with-title">
+					<span class="title">{$i18n.mission_control.title}</span>
 
-		<div class="content">
-			<MonitoringSelectedModules {selectedSatellites} {selectedOrbiters} />
+					<div class="content">
+						<Value>
+							{#snippet label()}
+								{$i18n.monitoring.remaining_threshold}
+							{/snippet}
 
-			<Value>
-				{#snippet label()}
-					{$i18n.monitoring.remaining_threshold}
-				{/snippet}
+							<p>{formatTCycles(missionControlMinCycles ?? minCycles ?? 0n)}</p>
+						</Value>
 
-				<p>{formatTCycles(minCycles ?? 0n)}</p>
-			</Value>
+						<Value>
+							{#snippet label()}
+								{$i18n.monitoring.top_up_amount}
+							{/snippet}
 
-			<Value>
-				{#snippet label()}
-					{$i18n.monitoring.top_up_amount}
-				{/snippet}
+							<p class="no-margin">{formatTCycles(missionControlFundCycles ?? fundCycles ?? 0n)}</p>
+						</Value>
+					</div>
+				</div>
+			{/if}
 
-				<p>{formatTCycles(fundCycles ?? 0n)}</p>
-			</Value>
+			{#if hasEmail}
+				<div class="card-container with-title">
+					<span class="title">{$i18n.monitoring.email_notifications}</span>
 
-			{#if useAsDefaultStrategy}
-				<Value>
-					{#snippet label()}
-						{$i18n.monitoring.default_strategy}
-					{/snippet}
+					<div class="content">
+						<Value>
+							{#snippet label()}
+								{$i18n.core.email_address}
+							{/snippet}
 
-					<p>{$i18n.monitoring.configuration_for_modules}</p>
-				</Value>
+							<p>{userEmail ?? ''}</p>
+						</Value>
+					</div>
+				</div>
 			{/if}
 		</div>
 	</div>
-
-	{#if hasEmail}
-		<div class="card-container with-title">
-			<span class="title">{$i18n.monitoring.email_notifications}</span>
-
-			<div class="content">
-				<Value>
-					{#snippet label()}
-						{$i18n.core.email_address}
-					{/snippet}
-
-					<p>{userEmail ?? ''}</p>
-				</Value>
-			</div>
-		</div>
-	{/if}
 </MonitoringStepReview>
 
 <style lang="scss">
+	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/grid';
+
+	.container {
+		margin: var(--padding-4x) 0;
+
+		@include media.min-width(large) {
+			@include grid.two-columns;
+		}
+	}
+
 	.no-margin {
 		margin: 0;
 	}

@@ -5,8 +5,8 @@
 	import CanisterMonitoringChart from '$lib/components/canister/CanisterMonitoringChart.svelte';
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterMonitoringLoader from '$lib/components/loaders/CanisterMonitoringLoader.svelte';
-	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 	import MonitoringDepositCyclesChart from '$lib/components/monitoring/MonitoringDepositCyclesChart.svelte';
+	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 	import Modal from '$lib/components/ui/Modal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { i18n } from '$lib/stores/i18n.store';

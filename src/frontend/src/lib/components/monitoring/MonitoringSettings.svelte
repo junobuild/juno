@@ -2,6 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
+	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 	import {
 		missionControlMonitored,
 		missionControlMonitoring,
@@ -12,7 +13,6 @@
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
-	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 
 	interface Props {
 		missionControlId: Principal;

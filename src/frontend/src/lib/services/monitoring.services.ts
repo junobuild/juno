@@ -56,7 +56,7 @@ interface MonitoringCyclesStrategyParams {
 export interface ApplyMonitoringCyclesStrategyOptions {
 	monitoringConfig: MonitoringConfig | undefined;
 	useAsDefaultStrategy: boolean;
-	userMetadata: Metadata;
+	metadata: Metadata;
 	userEmail: Option<string>;
 }
 
@@ -94,10 +94,10 @@ export const applyMonitoringCyclesStrategy = async ({
 	};
 
 	const setMonitoringOptions = async () => {
-		const { userEmail, userMetadata, useAsDefaultStrategy, monitoringConfig } = options ?? {
+		const { userEmail, metadata, useAsDefaultStrategy, monitoringConfig } = options ?? {
 			monitoringConfig: undefined,
 			userEmail: null,
-			userMetadata: [],
+			metadata: [],
 			useAsDefaultStrategy: false
 		};
 
@@ -109,7 +109,7 @@ export const applyMonitoringCyclesStrategy = async ({
 				identity,
 				missionControlId,
 				userEmail,
-				userMetadata
+				metadata
 			});
 		}
 
@@ -286,7 +286,7 @@ const setEmail = async ({
 	identity,
 	missionControlId,
 	userEmail,
-	userMetadata
+	metadata
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>> &
 	Required<
@@ -301,7 +301,7 @@ const setEmail = async ({
 		throw new Error(get(i18n).errors.invalid_email);
 	}
 
-	const updateData = new Map(userMetadata);
+	const updateData = new Map(metadata);
 	updateData.set(METADATA_KEY_EMAIL, userEmail);
 
 	await setUserMetadata({
@@ -490,7 +490,7 @@ export const openMonitoringModal = ({
 			type,
 			detail: {
 				settings: $missionControlSettingsDataStore.data,
-				userMetadata: $missionControlMetadataDataStore.data,
+				metadata: $missionControlMetadataDataStore.data,
 				missionControlId
 			}
 		}

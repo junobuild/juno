@@ -37,10 +37,7 @@ use crate::types::interface::{
     CreateCanisterConfig, GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus,
     MonitoringStopConfig,
 };
-use crate::types::state::{
-    Config, HeapState, MissionControlSettings, MonitoringConfig, MonitoringHistory,
-    MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Satellites, State,
-};
+use crate::types::state::{Config, HeapState, MissionControlSettings, MonitoringHistory, MonitoringHistoryKey, Orbiter, Orbiters, Satellite, Satellites, State, User};
 use candid::Principal;
 use ciborium::into_writer;
 use ic_cdk::api::call::{arg_data, ArgDecoderConfig};
@@ -74,7 +71,7 @@ use std::collections::HashMap;
 use user::store::{
     get_config as get_config_store, get_metadata as get_metadata_store,
     get_settings as get_settings_store, get_user as get_user_store, set_config as set_config_store,
-    set_metadata as set_metadata_store,
+    set_metadata as set_metadata_store, get_user_data as get_user_data_store,
 };
 
 #[init]
@@ -367,6 +364,11 @@ fn list_mission_control_controllers() -> Controllers {
 #[query(guard = "caller_is_user_or_admin_controller")]
 fn get_user() -> UserId {
     get_user_store()
+}
+
+#[query(guard = "caller_is_user_or_admin_controller")]
+fn get_user_data() -> User {
+    get_user_data_store()
 }
 
 #[query(guard = "caller_is_user_or_admin_controller")]

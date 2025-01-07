@@ -1,9 +1,13 @@
 use crate::memory::STATE;
-use crate::types::state::{Config, HeapState, MissionControlSettings};
+use crate::types::state::{Config, HeapState, MissionControlSettings, User};
 use junobuild_shared::types::state::{Metadata, UserId};
 
 pub fn get_user() -> UserId {
     STATE.with(|state| state.borrow().heap.user.user).unwrap()
+}
+
+pub fn get_user_data() -> User {
+    STATE.with(|state| state.borrow().heap.user.clone())
 }
 
 pub fn get_settings() -> Option<MissionControlSettings> {

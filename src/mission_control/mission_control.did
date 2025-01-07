@@ -1,4 +1,5 @@
 type Account = record { owner : principal; subaccount : opt blob };
+type Config = record { monitoring : opt MonitoringConfig };
 type Controller = record {
   updated_at : nat64;
   metadata : vec record { text; text };
@@ -48,7 +49,6 @@ type GetMonitoringHistory = record {
 };
 type MissionControlSettings = record {
   updated_at : nat64;
-  monitoring_config : opt MonitoringConfig;
   created_at : nat64;
   monitoring : opt Monitoring;
 };
@@ -145,6 +145,7 @@ service : () -> {
   del_satellite : (principal, nat) -> ();
   del_satellites_controllers : (vec principal, vec principal) -> ();
   deposit_cycles : (DepositCyclesArgs) -> ();
+  get_config : () -> (opt Config) query;
   get_metadata : () -> (vec record { text; text }) query;
   get_monitoring_history : (GetMonitoringHistory) -> (
       vec record { MonitoringHistoryKey; MonitoringHistory },
@@ -161,9 +162,9 @@ service : () -> {
   list_satellites : () -> (vec record { principal; Satellite }) query;
   remove_mission_control_controllers : (vec principal) -> ();
   remove_satellites_controllers : (vec principal, vec principal) -> ();
+  set_config : (opt Config) -> ();
   set_metadata : (vec record { text; text }) -> ();
   set_mission_control_controllers : (vec principal, SetController) -> ();
-  set_monitoring_config : (opt MonitoringConfig) -> ();
   set_orbiter : (principal, opt text) -> (Orbiter);
   set_orbiter_metadata : (principal, vec record { text; text }) -> (Orbiter);
   set_orbiters_controllers : (

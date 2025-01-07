@@ -35,6 +35,18 @@ export const idlFactory = ({ IDL }) => {
 		cycles: IDL.Nat,
 		destination_id: IDL.Principal
 	});
+	const DepositedCyclesEmailNotification = IDL.Record({
+		to: IDL.Opt(IDL.Text),
+		enabled: IDL.Bool
+	});
+	const CyclesMonitoringConfig = IDL.Record({
+		notification: IDL.Opt(DepositedCyclesEmailNotification),
+		default_strategy: IDL.Opt(CyclesMonitoringStrategy)
+	});
+	const MonitoringConfig = IDL.Record({
+		cycles: IDL.Opt(CyclesMonitoringConfig)
+	});
+	const Config = IDL.Record({ monitoring: IDL.Opt(MonitoringConfig) });
 	const GetMonitoringHistory = IDL.Record({
 		to: IDL.Opt(IDL.Nat64),
 		from: IDL.Opt(IDL.Nat64),
@@ -63,20 +75,8 @@ export const idlFactory = ({ IDL }) => {
 	const MonitoringStatus = IDL.Record({
 		cycles: IDL.Opt(CyclesMonitoringStatus)
 	});
-	const DepositedCyclesEmailNotification = IDL.Record({
-		to: IDL.Opt(IDL.Text),
-		enabled: IDL.Bool
-	});
-	const CyclesMonitoringConfig = IDL.Record({
-		notification: IDL.Opt(DepositedCyclesEmailNotification),
-		default_strategy: IDL.Opt(CyclesMonitoringStrategy)
-	});
-	const MonitoringConfig = IDL.Record({
-		cycles: IDL.Opt(CyclesMonitoringConfig)
-	});
 	const MissionControlSettings = IDL.Record({
 		updated_at: IDL.Nat64,
-		monitoring_config: IDL.Opt(MonitoringConfig),
 		created_at: IDL.Nat64,
 		monitoring: IDL.Opt(Monitoring)
 	});
@@ -173,6 +173,7 @@ export const idlFactory = ({ IDL }) => {
 		del_satellite: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
+		get_config: IDL.Func([], [IDL.Opt(Config)], ['query']),
 		get_metadata: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], ['query']),
 		get_monitoring_history: IDL.Func(
 			[GetMonitoringHistory],
@@ -197,9 +198,9 @@ export const idlFactory = ({ IDL }) => {
 			[],
 			[]
 		),
+		set_config: IDL.Func([IDL.Opt(Config)], [], []),
 		set_metadata: IDL.Func([IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], [], []),
 		set_mission_control_controllers: IDL.Func([IDL.Vec(IDL.Principal), SetController], [], []),
-		set_monitoring_config: IDL.Func([IDL.Opt(MonitoringConfig)], [], []),
 		set_orbiter: IDL.Func([IDL.Principal, IDL.Opt(IDL.Text)], [Orbiter], []),
 		set_orbiter_metadata: IDL.Func(
 			[IDL.Principal, IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))],

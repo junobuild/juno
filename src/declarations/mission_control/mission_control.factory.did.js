@@ -173,6 +173,7 @@ export const idlFactory = ({ IDL }) => {
 		del_satellite: IDL.Func([IDL.Principal, IDL.Nat], [], []),
 		del_satellites_controllers: IDL.Func([IDL.Vec(IDL.Principal), IDL.Vec(IDL.Principal)], [], []),
 		deposit_cycles: IDL.Func([DepositCyclesArgs], [], []),
+		get_metadata: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], ['query']),
 		get_monitoring_history: IDL.Func(
 			[GetMonitoringHistory],
 			[IDL.Vec(IDL.Tuple(MonitoringHistoryKey, MonitoringHistory))],
@@ -181,7 +182,6 @@ export const idlFactory = ({ IDL }) => {
 		get_monitoring_status: IDL.Func([], [MonitoringStatus], ['query']),
 		get_settings: IDL.Func([], [IDL.Opt(MissionControlSettings)], ['query']),
 		get_user: IDL.Func([], [IDL.Principal], ['query']),
-		get_user_metadata: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))], ['query']),
 		icp_transfer: IDL.Func([TransferArgs], [Result], []),
 		icrc_transfer: IDL.Func([IDL.Principal, TransferArg], [Result_1], []),
 		list_mission_control_controllers: IDL.Func(

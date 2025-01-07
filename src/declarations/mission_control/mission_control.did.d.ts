@@ -177,6 +177,7 @@ export interface _SERVICE {
 	del_satellite: ActorMethod<[Principal, bigint], undefined>;
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
+	get_metadata: ActorMethod<[], Array<[string, string]>>;
 	get_monitoring_history: ActorMethod<
 		[GetMonitoringHistory],
 		Array<[MonitoringHistoryKey, MonitoringHistory]>
@@ -184,7 +185,6 @@ export interface _SERVICE {
 	get_monitoring_status: ActorMethod<[], MonitoringStatus>;
 	get_settings: ActorMethod<[], [] | [MissionControlSettings]>;
 	get_user: ActorMethod<[], Principal>;
-	get_user_metadata: ActorMethod<[], Array<[string, string]>>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;

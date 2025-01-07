@@ -1,8 +1,8 @@
 import type {
+	Config,
 	CyclesMonitoringStrategy,
 	_SERVICE as MissionControlActor,
 	Monitoring,
-	MonitoringConfig,
 	MonitoringStartConfig,
 	MonitoringStopConfig
 } from '$declarations/mission_control/mission_control.did';
@@ -117,10 +117,16 @@ describe('Mission Control - Monitoring', () => {
 			).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
-		it('should throw errors on set monitoring config', async () => {
-			const { set_monitoring_config } = actor;
+		it('should throw errors on get config', async () => {
+			const { get_config } = actor;
 
-			await expect(set_monitoring_config([])).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(get_config()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
+
+		it('should throw errors on set config', async () => {
+			const { set_config } = actor;
+
+			await expect(set_config([])).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 	};
 
@@ -616,38 +622,60 @@ describe('Mission Control - Monitoring', () => {
 			await testOrbiterMonitoring({ expectedEnabled: true, expectedStrategy: updateStrategy });
 		});
 
+		const config: Config = {
+			monitoring: [
+				{
+					cycles: [
+						{
+							default_strategy: [strategy],
+							notification: [
+								{
+									enabled: true,
+									to: toNullable()
+								}
+							]
+						}
+					]
+				}
+			]
+		};
+
 		it('should set monitoring config', async () => {
-			const { set_monitoring_config, get_settings } = actor;
+			const { set_config, get_config } = actor;
 
-			const config: MonitoringConfig = {
-				cycles: [
-					{
-						default_strategy: [strategy],
-						notification: [
-							{
-								enabled: true,
-								to: toNullable()
-							}
-						]
-					}
-				]
-			};
+			await set_config(toNullable(config));
 
-			await set_monitoring_config(toNullable(config));
+			const saved_config = await get_config();
 
-			const settings = await get_settings();
-
-			expect(fromNullable(fromNullable(settings)?.monitoring_config ?? [])).toEqual(config);
+			expect(fromNullable(saved_config)).toEqual(config);
 		});
 
 		it('should set monitoring config to none', async () => {
-			const { set_monitoring_config, get_settings } = actor;
+			const { set_config, get_config } = actor;
 
-			await set_monitoring_config(toNullable());
+			await set_config(toNullable());
 
-			const settings = await get_settings();
+			const saved_config = await get_config();
 
-			expect(fromNullable(fromNullable(settings)?.monitoring_config ?? [])).toBeUndefined();
+			expect(fromNullable(saved_config)).toBeUndefined();
+		});
+
+		it('should set monitoring config without overwriting metadata', async () => {
+			const { set_config, get_config, set_metadata, get_metadata } = actor;
+
+			const metadata: [string, string][] = [['email', 'test@test.com']];
+
+			await set_metadata(metadata);
+
+			await set_config(toNullable(config));
+
+			const saved_config = await get_config();
+
+			expect(fromNullable(saved_config)).toEqual(config);
+
+			const saved_metadata = await get_metadata();
+
+			expect(saved_metadata).toEqual(metadata);
 		});
 	});
 });

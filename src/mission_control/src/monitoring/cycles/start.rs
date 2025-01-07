@@ -8,10 +8,10 @@ use crate::monitoring::store::heap::{
     enable_mission_control_monitoring, enable_orbiter_monitoring, enable_satellite_monitoring,
 };
 use crate::segments::store::{get_orbiters, get_satellites};
-use crate::store::get_settings;
 use crate::types::core::SettingsMonitoring;
 use crate::types::runtime::RuntimeState;
 use crate::types::state::CyclesMonitoringStrategy;
+use crate::user::store::get_settings;
 use ic_cdk::id;
 use junobuild_shared::types::state::SegmentId;
 

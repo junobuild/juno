@@ -5,14 +5,14 @@
 
 	interface Props {
 		children: Snippet;
-		toggle: boolean;
+		enabled: boolean;
 		onclick: () => void;
 		nomargin?: boolean;
 	}
 
-	let { children, onclick, toggle, nomargin = false }: Props = $props();
+	let { children, onclick, enabled, nomargin = false }: Props = $props();
 
-	let Icon = $derived(toggle ? IconLightOff : IconLightOn);
+	let Icon = $derived(enabled ? IconLightOn : IconLightOff);
 </script>
 
 <button class="text" class:nomargin {onclick}>

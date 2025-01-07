@@ -55,13 +55,19 @@ pub mod state {
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
         pub metadata: Metadata,
+        pub config: Option<Config>,
     }
 
+    #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
+    pub struct Config {
+        pub monitoring: Option<MonitoringConfig>,
+    }
+
+    // The configuration of Mission Control, similar to the settings found in a Satellite or Orbiter.
+    // This approach allows us to include a specific timestamp.
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MissionControlSettings {
-        // The monitoring rules to observe the mission control itself
         pub monitoring: Option<Monitoring>,
-        pub monitoring_config: Option<MonitoringConfig>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
     }

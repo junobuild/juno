@@ -6,6 +6,9 @@ export interface Account {
 	owner: Principal;
 	subaccount: [] | [Uint8Array | number[]];
 }
+export interface Config {
+	monitoring: [] | [MonitoringConfig];
+}
 export interface Controller {
 	updated_at: bigint;
 	metadata: Array<[string, string]>;
@@ -64,7 +67,6 @@ export interface GetMonitoringHistory {
 }
 export interface MissionControlSettings {
 	updated_at: bigint;
-	monitoring_config: [] | [MonitoringConfig];
 	created_at: bigint;
 	monitoring: [] | [Monitoring];
 }
@@ -164,6 +166,13 @@ export type TransferError_1 =
 	| { CreatedInFuture: { ledger_time: bigint } }
 	| { TooOld: null }
 	| { InsufficientFunds: { balance: bigint } };
+export interface User {
+	updated_at: bigint;
+	metadata: Array<[string, string]>;
+	user: [] | [Principal];
+	created_at: bigint;
+	config: [] | [Config];
+}
 export interface _SERVICE {
 	add_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	add_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
@@ -177,6 +186,7 @@ export interface _SERVICE {
 	del_satellite: ActorMethod<[Principal, bigint], undefined>;
 	del_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
 	deposit_cycles: ActorMethod<[DepositCyclesArgs], undefined>;
+	get_config: ActorMethod<[], [] | [Config]>;
 	get_metadata: ActorMethod<[], Array<[string, string]>>;
 	get_monitoring_history: ActorMethod<
 		[GetMonitoringHistory],
@@ -185,6 +195,7 @@ export interface _SERVICE {
 	get_monitoring_status: ActorMethod<[], MonitoringStatus>;
 	get_settings: ActorMethod<[], [] | [MissionControlSettings]>;
 	get_user: ActorMethod<[], Principal>;
+	get_user_data: ActorMethod<[], User>;
 	icp_transfer: ActorMethod<[TransferArgs], Result>;
 	icrc_transfer: ActorMethod<[Principal, TransferArg], Result_1>;
 	list_mission_control_controllers: ActorMethod<[], Array<[Principal, Controller]>>;
@@ -192,9 +203,9 @@ export interface _SERVICE {
 	list_satellites: ActorMethod<[], Array<[Principal, Satellite]>>;
 	remove_mission_control_controllers: ActorMethod<[Array<Principal>], undefined>;
 	remove_satellites_controllers: ActorMethod<[Array<Principal>, Array<Principal>], undefined>;
+	set_config: ActorMethod<[[] | [Config]], undefined>;
 	set_metadata: ActorMethod<[Array<[string, string]>], undefined>;
 	set_mission_control_controllers: ActorMethod<[Array<Principal>, SetController], undefined>;
-	set_monitoring_config: ActorMethod<[[] | [MonitoringConfig]], undefined>;
 	set_orbiter: ActorMethod<[Principal, [] | [string]], Orbiter>;
 	set_orbiter_metadata: ActorMethod<[Principal, Array<[string, string]>], Orbiter>;
 	set_orbiters_controllers: ActorMethod<

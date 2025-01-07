@@ -5,10 +5,10 @@ import type {
 } from '$declarations/mission_control/mission_control.did';
 import { getOrbiterFee, getSatelliteFee } from '$lib/api/console.api';
 import { updateAndStartMonitoring } from '$lib/api/mission-control.api';
-import { missionControlMonitoringConfig } from '$lib/derived/mission-control.derived';
+import { missionControlConfigMonitoring } from '$lib/derived/mission-control.derived';
 import { getMissionControlBalance } from '$lib/services/balance.services';
 import { loadVersion } from '$lib/services/console.services';
-import { loadSettings } from '$lib/services/mission-control.services';
+import { loadUserData } from '$lib/services/mission-control.services';
 import {
 	createOrbiter,
 	createOrbiterWithConfig,
@@ -105,7 +105,7 @@ const initCreateWizard = async ({
 		skipReload: true
 	});
 
-	const { success } = await loadSettings({
+	const { success } = await loadUserData({
 		identity,
 		missionControlId
 	});
@@ -116,7 +116,7 @@ const initCreateWizard = async ({
 		return;
 	}
 
-	const monitoringConfig = get(missionControlMonitoringConfig);
+	const monitoringConfig = get(missionControlConfigMonitoring);
 
 	emit<JunoModal<JunoModalCreateSegmentDetail>>({
 		message: 'junoModal',

@@ -1,7 +1,7 @@
 import {
 	missionControlIdDataStore,
-	missionControlMetadataDataStore,
-	missionControlSettingsDataStore
+	missionControlSettingsDataStore,
+	missionControlUserDataStore
 } from '$lib/stores/mission-control.store';
 import { metadataEmail } from '$lib/utils/metadata.utils';
 import { fromNullable, nonNullish } from '@dfinity/utils';
@@ -38,9 +38,18 @@ export const missionControlMonitoring = derived(
 	([$missionControlSettings]) => fromNullable($missionControlSettings?.monitoring ?? [])
 );
 
-export const missionControlMonitoringConfig = derived(
-	[missionControlSettings],
-	([$missionControlSettings]) => fromNullable($missionControlSettings?.monitoring_config ?? [])
+export const missionControlUserData = derived(
+	[missionControlUserDataStore],
+	([$missionControlUserDataStore]) => $missionControlUserDataStore?.data
+);
+
+export const missionControlConfig = derived([missionControlUserData], ([$missionControlUserData]) =>
+	fromNullable($missionControlUserData?.config ?? [])
+);
+
+export const missionControlConfigMonitoring = derived(
+	[missionControlConfig],
+	([$missionControlConfig]) => fromNullable($missionControlConfig?.monitoring ?? [])
 );
 
 export const missionControlMonitored = derived(
@@ -49,18 +58,16 @@ export const missionControlMonitored = derived(
 		fromNullable($missionControlMonitoring?.cycles ?? [])?.enabled === true
 );
 
-export const missionControlMetadataLoaded = derived(
-	[missionControlMetadataDataStore],
-	([$missionControlMetadataDataStore]) => $missionControlMetadataDataStore !== undefined
+export const missionControlUserDataLoaded = derived(
+	[missionControlUserDataStore],
+	([$missionControlUserDataStore]) => $missionControlUserDataStore !== undefined
 );
 
 export const missionControlMetadata = derived(
-	[missionControlMetadataDataStore],
-	([$missionControlMetadataDataStore]) => $missionControlMetadataDataStore?.data
+	[missionControlUserData],
+	([$missionControlUserData]) => $missionControlUserData?.metadata
 );
 
-export const missionControlEmail = derived(
-	[missionControlMetadataDataStore],
-	([$missionControlMetadataDataStore]) =>
-		metadataEmail($missionControlMetadataDataStore?.data ?? [])
+export const missionControlEmail = derived([missionControlUserData], ([$missionControlUserData]) =>
+	metadataEmail($missionControlUserData?.metadata ?? [])
 );

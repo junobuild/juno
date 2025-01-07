@@ -6,7 +6,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
 		missionControlIdDerived,
-		missionControlMonitoringConfig,
+		missionControlConfigMonitoring,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { setMonitoringNotification } from '$lib/services/monitoring.services';
@@ -17,7 +17,7 @@
 	let enabled = $state(false);
 
 	let monitoringEnabled = $derived(
-		fromNullable(fromNullable($missionControlMonitoringConfig?.cycles ?? [])?.notification ?? [])
+		fromNullable(fromNullable($missionControlConfigMonitoring?.cycles ?? [])?.notification ?? [])
 			?.enabled === true
 	);
 
@@ -36,7 +36,7 @@
 		await setMonitoringNotification({
 			identity: $authStore.identity,
 			missionControlId: $missionControlIdDerived,
-			monitoringConfig: $missionControlMonitoringConfig,
+			monitoringConfig: $missionControlConfigMonitoring,
 			enabled
 		});
 
@@ -59,7 +59,7 @@
 				{$i18n.monitoring.notifications}
 			{/snippet}
 
-			<Toggle toggle={!enabled} onclick={onToggle}
+			<Toggle {enabled} onclick={onToggle}
 				><span>{enabled ? $i18n.core.enabled : $i18n.core.disabled}</span></Toggle
 			>
 		</Value>

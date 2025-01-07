@@ -14,7 +14,7 @@
 </script>
 
 <Toggle
-	toggle={dark}
+	enabled={!dark}
 	onclick={() => theme.select(dark ? Theme.LIGHT : Theme.DARK)}
 	nomargin={!inline}
 >

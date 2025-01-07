@@ -1,5 +1,5 @@
 use crate::controllers::store::{delete_controllers, get_admin_controllers, set_controllers};
-use crate::store::get_user;
+use crate::user::store::get_user;
 use ic_cdk::id;
 use junobuild_shared::constants::MAX_NUMBER_OF_MISSION_CONTROL_CONTROLLERS;
 use junobuild_shared::controllers::{

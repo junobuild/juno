@@ -114,18 +114,20 @@ describe('Mission Control - Notifications', () => {
 			});
 
 			// Set an email, enable notification, attach the module that was created and start monitoring
-			const { update_and_start_monitoring, set_metadata, set_monitoring_config, set_satellite } =
+			const { update_and_start_monitoring, set_metadata, set_config, set_satellite } =
 				missionControlActor;
 
 			await set_metadata([['email', 'test@test.com']]);
 
-			await set_monitoring_config(
+			await set_config(
 				toNullable({
-					cycles: toNullable({
-						default_strategy: toNullable(),
-						notification: toNullable({
-							enabled: true,
-							to: toNullable() // We are only using the global email currently but, have foreseen an option
+					monitoring: toNullable({
+						cycles: toNullable({
+							default_strategy: toNullable(),
+							notification: toNullable({
+								enabled: true,
+								to: toNullable() // We are only using the global email currently but, have foreseen an option
+							})
 						})
 					})
 				})

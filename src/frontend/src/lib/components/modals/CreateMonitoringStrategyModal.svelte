@@ -22,7 +22,7 @@
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
-	import type { JunoModalDetail, JunoModalMonitoringStrategyDetail } from '$lib/types/modal';
+	import type { JunoModalDetail, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
 	import type { Option } from '$lib/types/utils';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
@@ -34,8 +34,8 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { settings, metadata, missionControlId } = $derived(
-		detail as JunoModalMonitoringStrategyDetail
+	let { settings, user, missionControlId } = $derived(
+		detail as JunoModalCreateMonitoringStrategyDetail
 	);
 
 	// Wizard navigation
@@ -93,13 +93,14 @@
 
 	// Monitoring email
 
+	let metadata = $derived(user.metadata);
 	let missionControlEmail = $derived(metadataEmail(metadata));
 	let hasMissionControlEmail = $derived(nonNullish(missionControlEmail));
 	let userEmail: Option<string> = $state(undefined);
 
 	// Monitoring config
 
-	let monitoringConfig = $derived(fromNullable(settings?.monitoring_config ?? []));
+	let monitoringConfig = $derived(fromNullable(fromNullable(user?.config ?? [])?.monitoring ?? []));
 
 	let defaultStrategy = $derived(
 		fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? [])

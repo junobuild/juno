@@ -3,7 +3,8 @@ import type {
 	MissionControlSettings,
 	Monitoring,
 	MonitoringConfig,
-	Satellite
+	Satellite,
+	User
 } from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
 import type { AuthenticationConfig, Rule } from '$declarations/satellite/satellite.did';
@@ -11,7 +12,6 @@ import type { MissionControlBalance } from '$lib/types/balance';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
-import type { Metadata } from '$lib/types/metadata';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
@@ -103,10 +103,10 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 	config: AuthenticationConfig | undefined;
 }
 
-export interface JunoModalMonitoringStrategyDetail {
+export interface JunoModalCreateMonitoringStrategyDetail {
 	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
-	metadata: Metadata;
+	user: User;
 }
 
 export interface JunoModalShowMonitoringDetail extends JunoModalSegmentDetail {
@@ -125,7 +125,7 @@ export type JunoModalDetail =
 	| JunoModalDeleteSatelliteDetail
 	| JunoModalSendTokensDetail
 	| JunoModalEditOrbiterConfigDetail
-	| JunoModalMonitoringStrategyDetail;
+	| JunoModalCreateMonitoringStrategyDetail;
 
 export interface JunoModal<T extends JunoModalDetail> {
 	type:

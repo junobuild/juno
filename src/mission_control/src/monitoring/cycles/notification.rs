@@ -1,7 +1,7 @@
 use crate::monitoring::cycles::utils::get_deposited_cycles;
 use crate::monitoring::observatory::notify_observatory;
 use crate::segments::store::{get_orbiter, get_satellite};
-use crate::store::{get_metadata, get_user};
+use crate::user::store::{get_config, get_metadata, get_user};
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::{id, print, spawn};
@@ -14,7 +14,6 @@ use junobuild_shared::types::state::{
 use junobuild_shared::utils::principal_equal;
 use std::collections::HashMap;
 use std::time::Duration;
-use crate::monitoring::store::heap::get_monitoring_config;
 
 pub fn defer_notify(records: HashMap<CanisterId, CanisterRecord>) {
     set_timer(Duration::ZERO, || spawn(notify(records)));
@@ -38,7 +37,7 @@ async fn notify(records: HashMap<CanisterId, CanisterRecord>) {
 }
 
 fn prepare_args(canister_id: &CanisterId, deposited_cycles: &CyclesBalance) -> Option<NotifyArgs> {
-    let config = get_monitoring_config()?.cycles?.notification?;
+    let config = get_config()?.monitoring?.cycles?.notification?;
 
     if !config.enabled {
         return None;

@@ -49,7 +49,7 @@
 		reload: {
 			state: 'next',
 			step: 'reload',
-			text: $i18n.monitoring.reload_settings
+			text: $i18n.monitoring.reload_data
 		}
 	});
 

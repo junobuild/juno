@@ -49,6 +49,12 @@ describe('Mission Control', () => {
 			await expect(get_user()).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
+		it('should throw errors on get user data', async () => {
+			const { get_user_data } = actor;
+
+			await expect(get_user_data()).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
+
 		it('should throw errors on get metadata', async () => {
 			const { get_metadata } = actor;
 
@@ -87,6 +93,31 @@ describe('Mission Control', () => {
 	});
 
 	describe('controller', () => {
+		const strategy: CyclesMonitoringStrategy = {
+			BelowThreshold: {
+				min_cycles: 500_000n,
+				fund_cycles: 100_000n
+			}
+		};
+
+		const config: Config = {
+			monitoring: [
+				{
+					cycles: [
+						{
+							default_strategy: [strategy],
+							notification: [
+								{
+									enabled: true,
+									to: toNullable()
+								}
+							]
+						}
+					]
+				}
+			]
+		};
+
 		beforeAll(() => {
 			actor.setIdentity(controller);
 		});
@@ -104,31 +135,6 @@ describe('Mission Control', () => {
 		it('should set metadata config without overwriting config', async () => {
 			const { set_config, get_config, set_metadata, get_metadata } = actor;
 
-			const strategy: CyclesMonitoringStrategy = {
-				BelowThreshold: {
-					min_cycles: 500_000n,
-					fund_cycles: 100_000n
-				}
-			};
-
-			const config: Config = {
-				monitoring: [
-					{
-						cycles: [
-							{
-								default_strategy: [strategy],
-								notification: [
-									{
-										enabled: true,
-										to: toNullable()
-									}
-								]
-							}
-						]
-					}
-				]
-			};
-
 			await set_config(toNullable(config));
 
 			await set_metadata(metadata);
@@ -140,6 +146,23 @@ describe('Mission Control', () => {
 			const saved_config = await get_config();
 
 			expect(fromNullable(saved_config)).toEqual(config);
+		});
+
+		it('should return all the user data', async () => {
+			const { set_config, set_metadata, get_user_data } = actor;
+
+			await set_config(toNullable(config));
+
+			await set_metadata(metadata);
+
+			const user = await get_user_data();
+
+			expect(fromNullable(user.user)).not.toBeUndefined();
+			expect(fromNullable(user.user)?.toText()).toEqual(controller.getPrincipal().toText());
+			expect(user.metadata).toEqual(metadata);
+			expect(fromNullable(user.config)).toEqual(config);
+			expect(user.created_at).toBeGreaterThan(0n);
+			expect(user.updated_at).toBeGreaterThan(0n);
 		});
 	});
 });

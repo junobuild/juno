@@ -744,6 +744,7 @@ interface I18nMonitoring {
 	auto_refill_strategy: string;
 	email_notifications: string;
 	receive_email: string;
+	notifications: string;
 }
 
 interface I18nPreferences {

@@ -63,8 +63,8 @@ pub mod state {
         pub monitoring: Option<MonitoringConfig>,
     }
 
-    // The settings of the mission control itself, similar to those contained in Satellite or Orbiter.
-    // This way we can have a specific timestamp.
+    // The configuration of Mission Control, similar to the settings found in a Satellite or Orbiter.
+    // This approach allows us to include a specific timestamp.
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MissionControlSettings {
         pub monitoring: Option<Monitoring>,

@@ -2,8 +2,8 @@
 	import type { Principal } from '@dfinity/principal';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import MonitoringDefaultStrategy from '$lib/components/monitoring/MonitoringDefaultStrategy.svelte';
 	import MissionControlEmail from '$lib/components/mission-control/MissionControlEmail.svelte';
+	import MonitoringDefaultStrategy from '$lib/components/monitoring/MonitoringDefaultStrategy.svelte';
 	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 	import {
 		missionControlMonitored,

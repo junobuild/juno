@@ -59,7 +59,7 @@
 				{$i18n.monitoring.notifications}
 			{/snippet}
 
-			<Toggle toggle={!enabled} onclick={onToggle}
+			<Toggle {enabled} onclick={onToggle}
 				><span>{enabled ? $i18n.core.enabled : $i18n.core.disabled}</span></Toggle
 			>
 		</Value>

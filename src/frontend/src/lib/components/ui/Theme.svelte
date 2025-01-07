@@ -2,7 +2,7 @@
 	import { i18n } from '$lib/stores/i18n.store';
 	import { theme } from '$lib/stores/theme.store';
 	import { Theme } from '$lib/types/theme';
-	import Toggle from "$lib/components/ui/Toggle.svelte";
+	import Toggle from '$lib/components/ui/Toggle.svelte';
 
 	interface Props {
 		inline?: boolean;
@@ -13,7 +13,11 @@
 	let dark = $derived($theme === Theme.DARK);
 </script>
 
-<Toggle toggle={dark} onclick={() => theme.select(dark ? Theme.LIGHT : Theme.DARK)} nomargin={!inline}>
+<Toggle
+	toggle={dark}
+	onclick={() => theme.select(dark ? Theme.LIGHT : Theme.DARK)}
+	nomargin={!inline}
+>
 	<span class:inline>
 		{#if dark}
 			{$i18n.core.light_off}

@@ -2,11 +2,9 @@
 	import type { Principal } from '@dfinity/principal';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import MonitoringSettingsMissionControl from '$lib/components/monitoring/MonitoringSettingsMissionControl.svelte';
-	import MonitoringSettingsOrbiter from '$lib/components/monitoring/MonitoringSettingsOrbiter.svelte';
-	import MonitoringSettingsSatellites from '$lib/components/monitoring/MonitoringSettingsSatellites.svelte';
 	import {
 		missionControlMonitored,
+		missionControlMonitoring,
 		missionControlSettingsLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { orbiterLoaded } from '$lib/derived/orbiter.derived';
@@ -14,6 +12,7 @@
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -44,11 +43,7 @@
 
 	<div class="columns-3 fit-column-1">
 		<div>
-			<MonitoringSettingsMissionControl />
-
-			<MonitoringSettingsSatellites bind:hasSatellitesMonitored />
-
-			<MonitoringSettingsOrbiter bind:orbiterMonitored />
+			<MonitoringStatus monitoring={$missionControlMonitoring} />
 		</div>
 	</div>
 </div>

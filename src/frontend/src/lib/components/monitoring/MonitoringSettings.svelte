@@ -13,6 +13,7 @@
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import MonitoringNotifications from '$lib/components/monitoring/MonitoringNotifications.svelte';
 
 	interface Props {
 		missionControlId: Principal;
@@ -44,6 +45,10 @@
 	<div class="columns-3 fit-column-1">
 		<div>
 			<MonitoringStatus monitoring={$missionControlMonitoring} />
+		</div>
+
+		<div>
+			<MonitoringNotifications />
 		</div>
 	</div>
 </div>

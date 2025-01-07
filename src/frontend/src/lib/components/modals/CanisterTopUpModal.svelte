@@ -13,7 +13,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { E8S_PER_ICP, IC_TRANSACTION_FEE_ICP } from '$lib/constants/constants';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -35,7 +35,7 @@
 
 	let { canisterId, balance, accountIdentifier, outro, intro, segment }: Props = $props();
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	let trillionRatio: bigint | undefined = $state();
 	onMount(async () => (trillionRatio = await icpXdrConversionRate()));
@@ -65,7 +65,7 @@
 	});
 
 	const onSubmit = async () => {
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -80,26 +80,26 @@
 		}
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		try {
 			await topUp({
 				canisterId,
-				missionControlId: $missionControlStore,
+				missionControlId: $missionControlIdDerived,
 				e8s: BigInt(icp * Number(E8S_PER_ICP)),
 				identity: $authStore.identity
 			});
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 
-			steps = 'ready';
+			step = 'ready';
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.top_up_error,
 				detail: err
 			});
 
-			steps = 'error';
+			step = 'error';
 		}
 
 		wizardBusy.stop();
@@ -110,12 +110,12 @@
 </script>
 
 <Modal on:junoClose>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			{@render outro?.()}
 			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.canisters.top_up_in_progress}</p>
 		</SpinnerModal>
@@ -173,7 +173,7 @@
 
 				<button
 					type="submit"
-					disabled={isNullish($missionControlStore) || !validIcp || !validCycles}
+					disabled={isNullish($missionControlIdDerived) || !validIcp || !validCycles}
 					>{$i18n.canisters.top_up}</button
 				>
 			</form>

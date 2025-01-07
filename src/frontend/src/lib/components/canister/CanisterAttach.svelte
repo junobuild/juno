@@ -4,7 +4,7 @@
 	import { type Snippet } from 'svelte';
 	import { run, preventDefault } from 'svelte/legacy';
 	import Popover from '$lib/components/ui/Popover.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -47,7 +47,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -58,7 +58,7 @@
 
 		try {
 			await setFn({
-				missionControlId: $missionControlStore,
+				missionControlId: $missionControlIdDerived,
 				canisterId: Principal.fromText(canisterId)
 			});
 

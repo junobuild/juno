@@ -2,6 +2,7 @@
 	import type { Principal } from '@dfinity/principal';
 	import { onDestroy, onMount } from 'svelte';
 	import { run } from 'svelte/legacy';
+	import { slide } from 'svelte/transition';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
 	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import IconSync from '$lib/components/icons/IconSync.svelte';
@@ -104,7 +105,10 @@
 		{#if ['synced', 'syncing'].includes(sync ?? '')}
 			<p class="status"><CanisterIndicator {data} /><span>{status ?? '???'}</span></p>
 			<p class="cycles">
-				<CanisterTCycles {data} />{#if sync === 'syncing'}<IconSync />{/if}
+				<CanisterTCycles {data} />{#if sync === 'syncing'}<span
+						class="spinner"
+						transition:slide={{ axis: 'x' }}><IconSync size="16px" /></span
+					>{/if}
 			</p>
 			<p>
 				{formatBytes(Number(memorySize))} <small>{$i18n.canisters.in_total}</small>
@@ -163,8 +167,12 @@
 				position: absolute;
 				top: 0;
 				right: 0;
-				transform: translate(var(--padding), 20%);
+				transform: translate(var(--padding), 20%) rotate(15deg);
 			}
 		}
+	}
+
+	.spinner {
+		height: 16px;
 	}
 </style>

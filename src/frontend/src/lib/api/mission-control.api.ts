@@ -1,14 +1,12 @@
 import type {
 	Controller,
 	MissionControlSettings,
-	MonitoringHistory,
-	MonitoringHistoryKey,
+	MonitoringConfig,
 	MonitoringStartConfig,
 	MonitoringStopConfig,
 	Orbiter,
 	Result,
 	Result_1,
-	Result_2,
 	Satellite,
 	TransferArg,
 	TransferArgs
@@ -17,11 +15,10 @@ import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
-import type { GetMonitoringParams } from '$lib/types/monitoring';
+import type { GetMonitoringParams, MonitoringHistory } from '$lib/types/monitoring';
 import { toSetController } from '$lib/utils/controllers.utils';
-import { toBigIntNanoSeconds } from '$lib/utils/date.utils';
 import { Principal } from '@dfinity/principal';
-import { nonNullish, toNullable } from '@dfinity/utils';
+import { toNullable } from '@dfinity/utils';
 
 export const setSatellitesController = async ({
 	identity,
@@ -379,55 +376,6 @@ export const unsetSatellite = async ({
 	return unset_satellite(satelliteId);
 };
 
-/**
- * @deprecated
- */
-export const listSatelliteStatuses = async ({
-	missionControlId,
-	identity,
-	satelliteId
-}: {
-	missionControlId: Principal;
-	identity: OptionIdentity;
-	satelliteId: Principal;
-}): Promise<[] | [[bigint, Result_2][]]> => {
-	const { list_satellite_statuses } = await getMissionControlActor({ missionControlId, identity });
-	return list_satellite_statuses(satelliteId);
-};
-
-/**
- * @deprecated
- */
-export const listOrbiterStatuses = async ({
-	missionControlId,
-	identity,
-	orbiterId
-}: {
-	missionControlId: Principal;
-	identity: OptionIdentity;
-	orbiterId: Principal;
-}): Promise<[] | [[bigint, Result_2][]]> => {
-	const { list_orbiter_statuses } = await getMissionControlActor({ missionControlId, identity });
-	return list_orbiter_statuses(orbiterId);
-};
-
-/**
- * @deprecated
- */
-export const listMissionControlStatuses = async ({
-	missionControlId,
-	identity
-}: {
-	missionControlId: Principal;
-	identity: OptionIdentity;
-}): Promise<[] | [[bigint, Result_2][]]> => {
-	const { list_mission_control_statuses } = await getMissionControlActor({
-		missionControlId,
-		identity
-	});
-	return [await list_mission_control_statuses()];
-};
-
 export const icpTransfer = async ({
 	missionControlId,
 	args,
@@ -454,6 +402,18 @@ export const icrcTransfer = async ({
 }): Promise<Result_1> => {
 	const { icrc_transfer } = await getMissionControlActor({ missionControlId, identity });
 	return icrc_transfer(ledgerId, args);
+};
+
+export const getMetadata = async ({
+	missionControlId,
+
+	identity
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+}): Promise<[] | Metadata> => {
+	const { get_metadata } = await getMissionControlActor({ missionControlId, identity });
+	return get_metadata();
 };
 
 export const getSettings = async ({
@@ -510,7 +470,7 @@ export const getMonitoringHistory = async ({
 	missionControlId: Principal;
 	identity: OptionIdentity;
 	params: GetMonitoringParams;
-}): Promise<[MonitoringHistoryKey, MonitoringHistory][]> => {
+}): Promise<MonitoringHistory> => {
 	const { get_monitoring_history } = await getMissionControlActor({
 		missionControlId,
 		identity
@@ -518,7 +478,37 @@ export const getMonitoringHistory = async ({
 
 	return await get_monitoring_history({
 		segment_id: segmentId,
-		from: nonNullish(from) ? [toBigIntNanoSeconds(from)] : [],
-		to: nonNullish(to) ? [toBigIntNanoSeconds(to)] : []
+		from: toNullable(from),
+		to: toNullable(to)
 	});
+};
+
+export const setMonitoringConfig = async ({
+	missionControlId,
+	identity,
+	config
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	config: MonitoringConfig | undefined;
+}): Promise<void> => {
+	const { set_monitoring_config } = await getMissionControlActor({
+		missionControlId,
+		identity
+	});
+
+	return await set_monitoring_config(toNullable(config));
+};
+
+export const setMetadata = async ({
+	missionControlId,
+	metadata,
+	identity
+}: {
+	missionControlId: Principal;
+	metadata: Metadata;
+	identity: OptionIdentity;
+}): Promise<void> => {
+	const { set_metadata } = await getMissionControlActor({ missionControlId, identity });
+	await set_metadata(metadata);
 };

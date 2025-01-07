@@ -46,10 +46,10 @@
 
 	let takeSnapshot = $state(true);
 
-	let steps: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' =
+	let step: 'init' | 'confirm' | 'download' | 'review' | 'in_progress' | 'ready' | 'error' =
 		$state('init');
 	$effect(() => {
-		steps = buildExtended ? 'confirm' : 'init';
+		step = buildExtended ? 'confirm' : 'init';
 	});
 
 	let progress: UpgradeCodeProgress | undefined = $state(undefined);
@@ -68,12 +68,12 @@
 		wasm?: Wasm;
 	}) => {
 		wasm = w;
-		steps = s;
+		step = s;
 	};
 </script>
 
 <Modal on:junoClose={onclose}>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<p>
 				<Html
@@ -91,25 +91,25 @@
 			</p>
 			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'download'}
+	{:else if step === 'download'}
 		<SpinnerModal>
 			<p>{$i18n.canisters.download_in_progress}</p>
 		</SpinnerModal>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<ProgressUpgradeVersion {segment} {progress} {takeSnapshot} />
-	{:else if steps === 'review'}
+	{:else if step === 'review'}
 		<ReviewUpgradeVersion
 			{wasm}
 			{segment}
 			{upgrade}
-			nextSteps={(next) => (steps = next)}
+			nextSteps={(next) => (step = next)}
 			{onProgress}
 			{onclose}
 			{takeSnapshot}
 			{canisterId}
 		/>
-	{:else if steps === 'confirm'}
-		<ConfirmUpgradeVersion {segment} {onclose} oncontinue={() => (steps = 'init')} {intro} />
+	{:else if step === 'confirm'}
+		<ConfirmUpgradeVersion {segment} {onclose} oncontinue={() => (step = 'init')} {intro} />
 	{:else}
 		<SelectUpgradeVersion
 			{newerReleases}
@@ -119,7 +119,7 @@
 			bind:takeSnapshot
 			{onnext}
 			{onclose}
-			onback={() => (steps = 'confirm')}
+			onback={() => (step = 'confirm')}
 		>
 			{#snippet intro()}
 				{@render intro?.()}

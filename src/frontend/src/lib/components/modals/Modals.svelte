@@ -10,6 +10,7 @@
 	import MissionControlTopUpModal from '$lib/components/modals/MissionControlTopUpModal.svelte';
 	import MissionControlTransferCyclesModal from '$lib/components/modals/MissionControlTransferCyclesModal.svelte';
 	import MissionControlUpgradeModal from '$lib/components/modals/MissionControlUpgradeModal.svelte';
+	import MonitoringDetailsModal from '$lib/components/modals/MonitoringDetailsModal.svelte';
 	import OrbiterConfigModal from '$lib/components/modals/OrbiterConfigModal.svelte';
 	import OrbiterCreateModal from '$lib/components/modals/OrbiterCreateModal.svelte';
 	import OrbiterDeleteModal from '$lib/components/modals/OrbiterDeleteModal.svelte';
@@ -23,9 +24,9 @@
 	import SatelliteUpgradeModal from '$lib/components/modals/SatelliteUpgradeModal.svelte';
 	import SendTokensModal from '$lib/components/modals/SendTokensModal.svelte';
 	import StopMonitoringStrategyModal from '$lib/components/modals/StopMonitoringStrategyModal.svelte';
-	import type { JunoModal } from '$lib/types/modal';
+	import type { JunoModal, JunoModalDetail } from '$lib/types/modal';
 
-	let modal: JunoModal | undefined = $state(undefined);
+	let modal: JunoModal<JunoModalDetail> | undefined = $state(undefined);
 
 	const close = () => (modal = undefined);
 </script>
@@ -122,4 +123,8 @@
 
 {#if modal?.type === 'stop_monitoring_strategy' && nonNullish(modal.detail)}
 	<StopMonitoringStrategyModal onclose={close} detail={modal.detail} />
+{/if}
+
+{#if modal?.type === 'show_monitoring_details' && nonNullish(modal.detail)}
+	<MonitoringDetailsModal onclose={close} detail={modal.detail} />
 {/if}

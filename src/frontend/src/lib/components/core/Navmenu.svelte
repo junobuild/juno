@@ -126,7 +126,7 @@
 				class="link not-themed"
 			>
 				<IconTelescope size="20px" />
-				<span>{$i18n.observatory.title}</span>
+				<span>{$i18n.monitoring.title}</span>
 			</a>
 
 			<a

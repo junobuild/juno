@@ -1,0 +1,67 @@
+<script lang="ts">
+	import { fromNullable, nonNullish } from '@dfinity/utils';
+	import { onMount, untrack } from 'svelte';
+	import type { CyclesMonitoringStrategy } from '$declarations/mission_control/mission_control.did';
+	import MonitoringSentence from '$lib/components/modals/MonitoringSentence.svelte';
+	import Checkbox from '$lib/components/ui/Checkbox.svelte';
+	import Value from '$lib/components/ui/Value.svelte';
+	import { i18n } from '$lib/stores/i18n.store';
+	import type { JunoModalCreateSegmentDetail, JunoModalDetail } from '$lib/types/modal';
+
+	interface Props {
+		detail: JunoModalDetail;
+		monitoringStrategy: CyclesMonitoringStrategy | undefined;
+	}
+
+	let { monitoringStrategy = $bindable(), detail }: Props = $props();
+
+	let { monitoringConfig } = detail as JunoModalCreateSegmentDetail;
+
+	let useDefaultStrategy = $state(false);
+	let useMonitoringStrategy: CyclesMonitoringStrategy | undefined = $state(undefined);
+
+	onMount(() => {
+		useMonitoringStrategy = fromNullable(
+			fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? []
+		);
+		monitoringStrategy = useMonitoringStrategy;
+		useDefaultStrategy = nonNullish(monitoringStrategy);
+	});
+
+	$effect(() => {
+		useDefaultStrategy;
+
+		untrack(() => (monitoringStrategy = useDefaultStrategy ? useMonitoringStrategy : undefined));
+	});
+</script>
+
+{#if nonNullish(useDefaultStrategy) && nonNullish(useMonitoringStrategy)}
+	<div class="default-strategy">
+		<Value>
+			{#snippet label()}
+				{$i18n.monitoring.auto_refill}
+			{/snippet}
+
+			<div class="group">
+				<Checkbox>
+					<input
+						type="checkbox"
+						checked={useDefaultStrategy}
+						onchange={() => (useDefaultStrategy = !useDefaultStrategy)}
+					/>
+					<span><MonitoringSentence monitoringStrategy={useMonitoringStrategy} /></span>
+				</Checkbox>
+			</div>
+		</Value>
+	</div>
+{/if}
+
+<style lang="scss">
+	.default-strategy {
+		margin: var(--padding-0_5x) 0 0;
+	}
+
+	.group {
+		padding: var(--padding) 0 0;
+	}
+</style>

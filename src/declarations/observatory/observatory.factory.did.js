@@ -3,73 +3,52 @@ export const idlFactory = ({ IDL }) => {
 	const DeleteControllersArgs = IDL.Record({
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const CronJobStatusesConfig = IDL.Record({
-		enabled: IDL.Bool,
-		cycles_threshold: IDL.Opt(IDL.Nat64)
+	const GetNotifications = IDL.Record({
+		to: IDL.Opt(IDL.Nat64),
+		from: IDL.Opt(IDL.Nat64),
+		segment_id: IDL.Opt(IDL.Principal)
 	});
-	const CronJobStatuses = IDL.Record({
-		mission_control_cycles_threshold: IDL.Opt(IDL.Nat64),
-		orbiters: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesConfig)),
-		satellites: IDL.Vec(IDL.Tuple(IDL.Principal, CronJobStatusesConfig)),
-		enabled: IDL.Bool,
-		cycles_threshold: IDL.Opt(IDL.Nat64)
-	});
-	const CronJobs = IDL.Record({
-		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
-		statuses: CronJobStatuses
-	});
-	const CronTab = IDL.Record({
-		cron_jobs: CronJobs,
-		updated_at: IDL.Nat64,
-		mission_control_id: IDL.Principal,
-		created_at: IDL.Nat64,
-		version: IDL.Opt(IDL.Nat64)
-	});
-	const CanisterStatusType = IDL.Variant({
-		stopped: IDL.Null,
-		stopping: IDL.Null,
-		running: IDL.Null
-	});
-	const SegmentCanisterSettings = IDL.Record({
-		freezing_threshold: IDL.Nat,
-		controllers: IDL.Vec(IDL.Principal),
-		memory_allocation: IDL.Nat,
-		compute_allocation: IDL.Nat
-	});
-	const SegmentCanisterStatus = IDL.Record({
-		status: CanisterStatusType,
-		memory_size: IDL.Nat,
-		cycles: IDL.Nat,
-		settings: SegmentCanisterSettings,
-		idle_cycles_burned_per_day: IDL.Nat,
-		module_hash: IDL.Opt(IDL.Vec(IDL.Nat8))
-	});
-	const SegmentStatus = IDL.Record({
-		id: IDL.Principal,
-		status: SegmentCanisterStatus,
-		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
-		status_at: IDL.Nat64
-	});
-	const Result = IDL.Variant({ Ok: SegmentStatus, Err: IDL.Text });
-	const SegmentsStatuses = IDL.Record({
-		orbiters: IDL.Opt(IDL.Vec(Result)),
-		satellites: IDL.Opt(IDL.Vec(Result)),
-		mission_control: Result
-	});
-	const Result_1 = IDL.Variant({ Ok: SegmentsStatuses, Err: IDL.Text });
-	const ArchiveStatuses = IDL.Record({
-		statuses: Result_1,
-		timestamp: IDL.Nat64
-	});
-	const ListStatusesArgs = IDL.Record({ time_delta: IDL.Opt(IDL.Nat64) });
-	const ListStatuses = IDL.Record({
-		cron_jobs: CronJobs,
-		statuses: Result_1,
-		timestamp: IDL.Nat64
+	const NotifyStatus = IDL.Record({
+		pending: IDL.Nat64,
+		sent: IDL.Nat64,
+		failed: IDL.Nat64
 	});
 	const ControllerScope = IDL.Variant({
 		Write: IDL.Null,
 		Admin: IDL.Null
+	});
+	const Controller = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		created_at: IDL.Nat64,
+		scope: ControllerScope,
+		expires_at: IDL.Opt(IDL.Nat64)
+	});
+	const CyclesBalance = IDL.Record({
+		timestamp: IDL.Nat64,
+		amount: IDL.Nat
+	});
+	const DepositedCyclesEmailNotification = IDL.Record({
+		to: IDL.Text,
+		deposited_cycles: CyclesBalance
+	});
+	const NotificationKind = IDL.Variant({
+		DepositedCyclesEmail: DepositedCyclesEmailNotification
+	});
+	const SegmentKind = IDL.Variant({
+		Orbiter: IDL.Null,
+		MissionControl: IDL.Null,
+		Satellite: IDL.Null
+	});
+	const Segment = IDL.Record({
+		id: IDL.Principal,
+		metadata: IDL.Opt(IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text))),
+		kind: SegmentKind
+	});
+	const NotifyArgs = IDL.Record({
+		kind: NotificationKind,
+		user: IDL.Principal,
+		segment: Segment
 	});
 	const SetController = IDL.Record({
 		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
@@ -80,18 +59,26 @@ export const idlFactory = ({ IDL }) => {
 		controller: SetController,
 		controllers: IDL.Vec(IDL.Principal)
 	});
-	const SetCronTab = IDL.Record({
-		cron_jobs: CronJobs,
-		mission_control_id: IDL.Principal,
-		version: IDL.Opt(IDL.Nat64)
+	const Env = IDL.Record({ email_api_key: IDL.Opt(IDL.Text) });
+	const HttpHeader = IDL.Record({ value: IDL.Text, name: IDL.Text });
+	const HttpResponse = IDL.Record({
+		status: IDL.Nat,
+		body: IDL.Vec(IDL.Nat8),
+		headers: IDL.Vec(HttpHeader)
+	});
+	const TransformArgs = IDL.Record({
+		context: IDL.Vec(IDL.Nat8),
+		response: HttpResponse
 	});
 	return IDL.Service({
 		del_controllers: IDL.Func([DeleteControllersArgs], [], []),
-		get_cron_tab: IDL.Func([], [IDL.Opt(CronTab)], ['query']),
-		get_statuses: IDL.Func([], [IDL.Opt(ArchiveStatuses)], ['query']),
-		list_statuses: IDL.Func([ListStatusesArgs], [IDL.Vec(ListStatuses)], ['query']),
+		get_notify_status: IDL.Func([GetNotifications], [NotifyStatus], ['query']),
+		list_controllers: IDL.Func([], [IDL.Vec(IDL.Tuple(IDL.Principal, Controller))], ['query']),
+		notify: IDL.Func([NotifyArgs], [], []),
+		ping: IDL.Func([NotifyArgs], [], []),
 		set_controllers: IDL.Func([SetControllersArgs], [], []),
-		set_cron_tab: IDL.Func([SetCronTab], [CronTab], []),
+		set_env: IDL.Func([Env], [], []),
+		transform: IDL.Func([TransformArgs], [HttpResponse], ['query']),
 		version: IDL.Func([], [IDL.Text], ['query'])
 	});
 };

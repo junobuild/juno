@@ -6,7 +6,7 @@
 	import type { Satellite } from '$declarations/mission_control/mission_control.did';
 	import IconNewReleases from '$lib/components/icons/IconNewReleases.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { missionControlVersion } from '$lib/derived/version.derived';
 	import { loadVersion } from '$lib/services/console.services';
 	import { newerReleases } from '$lib/services/upgrade.services';
@@ -24,13 +24,13 @@
 	const load = async (skipReload: boolean) =>
 		await loadVersion({
 			satelliteId: satellite?.satellite_id,
-			missionControlId: $missionControlStore,
+			missionControlId: $missionControlIdDerived,
 			skipReload
 		});
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$missionControlStore, satellite, (async () => await load(true))();
+		$missionControlIdDerived, satellite, (async () => await load(true))();
 	});
 
 	let satVersion: string | undefined = $derived(

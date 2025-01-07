@@ -26,7 +26,7 @@
 
 	let { segment } = $derived(detail as JunoModalSegmentDetail);
 
-	let steps: 'edit' | 'in_progress' | 'ready' = $state('edit');
+	let step: 'edit' | 'in_progress' | 'ready' = $state('edit');
 
 	let progress: SnapshotProgress | undefined = $state(undefined);
 	const onProgress = (createProgress: SnapshotProgress | undefined) => (progress = createProgress);
@@ -42,7 +42,7 @@
 		onProgress(undefined);
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		const canisterId = Principal.from(segment.canisterId);
 
@@ -57,18 +57,18 @@
 		wizardBusy.stop();
 
 		if (success !== 'ok') {
-			steps = 'edit';
+			step = 'edit';
 			return;
 		}
 
-		steps = 'ready';
+		step = 'ready';
 	};
 
 	let warnExistingBackup = $derived(($snapshotStore?.[segment.canisterId]?.length ?? 0) > 0);
 </script>
 
 <Modal on:junoClose={onclose}>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<Confetti />
 
 		<div class="msg">
@@ -84,7 +84,7 @@
 			</p>
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<ProgressSnapshot segment={segment.segment} {progress} snapshotAction="create" />
 	{:else}
 		<h2>{$i18n.canisters.backup}</h2>

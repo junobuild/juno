@@ -14,6 +14,7 @@ import {
 	setIdbStore,
 	syncIdbStore
 } from '$lib/services/idb-store.services';
+import { execute } from '$lib/services/progress.services';
 import { i18n } from '$lib/stores/i18n.store';
 import { snapshotsIdbStore } from '$lib/stores/idb.store';
 import { snapshotStore } from '$lib/stores/snapshot.store';
@@ -246,37 +247,6 @@ const updateStore = async ({
 		canisterId: canisterId.toText(),
 		data: [snapshot]
 	});
-};
-
-const execute = async ({
-	fn,
-	step,
-	onProgress
-}: {
-	fn: () => Promise<void>;
-	step: SnapshotProgressStep;
-	onProgress: SnapshotOnProgress;
-}) => {
-	onProgress({
-		step,
-		state: 'in_progress'
-	});
-
-	try {
-		await fn();
-
-		onProgress({
-			step,
-			state: 'success'
-		});
-	} catch (err: unknown) {
-		onProgress({
-			step,
-			state: 'error'
-		});
-
-		throw err;
-	}
 };
 
 export const loadSnapshots = async ({

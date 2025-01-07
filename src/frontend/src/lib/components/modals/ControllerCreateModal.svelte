@@ -9,7 +9,7 @@
 	import SpinnerModal from '$lib/components/ui/SpinnerModal.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -24,7 +24,7 @@
 
 	let { add, load, segment } = $derived(detail as JunoModalCreateControllerDetail);
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
@@ -47,7 +47,7 @@
 	};
 
 	const addController = async () => {
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -71,11 +71,11 @@
 		}
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		try {
 			await add({
-				missionControlId: $missionControlStore,
+				missionControlId: $missionControlIdDerived,
 				controllerId: controller,
 				profile: undefined,
 				scope
@@ -83,14 +83,14 @@
 
 			await load();
 
-			steps = 'ready';
+			step = 'ready';
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.controllers_delete,
 				detail: err
 			});
 
-			steps = 'error';
+			step = 'error';
 		}
 
 		wizardBusy.stop();
@@ -105,7 +105,7 @@
 </script>
 
 <Modal on:junoClose>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<h2>{$i18n.controllers.controller_added}</h2>
 
@@ -150,7 +150,7 @@
 				<button class="close" onclick={close}>{$i18n.core.close}</button>
 			</div>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>
 				{#if action === 'add'}

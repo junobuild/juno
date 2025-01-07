@@ -21,7 +21,8 @@ import {
 	setOrbiterSatelliteConfigs007 as setOrbiterSatelliteConfigsDeprecatedApi
 } from '$lib/api/orbiter.deprecated.api';
 import { ORBITER_v0_0_4, ORBITER_v0_0_5, ORBITER_v0_0_8 } from '$lib/constants/version.constants';
-import { orbiterConfigs, orbitersStore } from '$lib/derived/orbiter.derived';
+import { orbiterConfigs } from '$lib/derived/orbiter.derived';
+import { loadDataStore } from '$lib/services/loader.services';
 import {
 	getDeprecatedAnalyticsPageViews,
 	getDeprecatedAnalyticsTrackEvents
@@ -39,6 +40,7 @@ import type {
 } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
 import type { Option } from '$lib/types/utils';
+import type { Identity } from '@dfinity/agent';
 import { Principal } from '@dfinity/principal';
 import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
 import { compare } from 'semver';
@@ -50,38 +52,40 @@ interface CreateOrbiterConfig {
 }
 
 export const createOrbiter = async ({
-	missionControl,
+	identity,
+	missionControlId,
 	config: { name }
 }: {
-	missionControl: Option<Principal>;
+	identity: Option<Identity>;
+	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
-}): Promise<Orbiter | undefined> => {
-	assertNonNullish(missionControl);
-
-	const identity = get(authStore).identity;
+}): Promise<Orbiter> => {
+	assertNonNullish(missionControlId);
 
 	const { create_orbiter } = await getMissionControlActor({
-		missionControlId: missionControl,
+		missionControlId,
 		identity
 	});
+
 	return create_orbiter(toNullable(name));
 };
 
 export const createOrbiterWithConfig = async ({
-	missionControl,
+	identity,
+	missionControlId,
 	config: { name, subnetId }
 }: {
-	missionControl: Option<Principal>;
+	identity: Option<Identity>;
+	missionControlId: Option<Principal>;
 	config: CreateOrbiterConfig;
-}): Promise<Orbiter | undefined> => {
-	assertNonNullish(missionControl);
-
-	const identity = get(authStore).identity;
+}): Promise<Orbiter> => {
+	assertNonNullish(missionControlId);
 
 	const { create_orbiter_with_config } = await getMissionControlActor({
-		missionControlId: missionControl,
+		missionControlId,
 		identity
 	});
+
 	return create_orbiter_with_config({
 		name: toNullable(name),
 		subnet_id: toNullable(subnetId)
@@ -89,45 +93,36 @@ export const createOrbiterWithConfig = async ({
 };
 
 export const loadOrbiters = async ({
-	missionControl,
+	missionControlId,
 	reload = false
 }: {
-	missionControl: Option<Principal>;
+	missionControlId: Option<Principal>;
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
-	if (isNullish(missionControl)) {
-		return { result: 'error' };
-	}
-
-	// We load only once
-	const orbiters = get(orbitersStore);
-	if (nonNullish(orbiters) && !reload) {
+	if (isNullish(missionControlId)) {
 		return { result: 'skip' };
 	}
 
-	try {
-		const identity = get(authStore).identity;
-
+	const load = async (identity: Identity): Promise<Orbiter[]> => {
 		const { list_orbiters } = await getMissionControlActor({
-			missionControlId: missionControl,
+			missionControlId,
 			identity
 		});
+
 		const orbiters = await list_orbiters();
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		orbitersDataStore.set(orbiters.map(([_, orbiter]) => orbiter));
+		return orbiters.map(([_, orbiter]) => orbiter);
+	};
 
-		return { result: 'success' };
-	} catch (err: unknown) {
-		const labels = get(i18n);
+	const identity = get(authStore).identity;
 
-		toasts.error({
-			text: labels.errors.orbiters_loading,
-			detail: err
-		});
-
-		return { result: 'error' };
-	}
+	return await loadDataStore<Orbiter[]>({
+		identity,
+		store: orbitersDataStore,
+		errorLabel: 'orbiters_loading',
+		load,
+		reload
+	});
 };
 
 export const loadOrbiterConfigs = async ({

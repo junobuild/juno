@@ -15,6 +15,7 @@ pub mod list;
 pub mod mgmt;
 #[doc(hidden)]
 pub mod msg;
+pub mod random;
 pub mod rate;
 pub mod serializers;
 #[doc(hidden)]

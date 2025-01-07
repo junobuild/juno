@@ -27,7 +27,7 @@
 
 	let { satellite, config } = $derived(detail as JunoModalCustomDomainDetail);
 
-	let steps: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = $state('init');
+	let step: 'init' | 'auth' | 'dns' | 'in_progress' | 'ready' = $state('init');
 	let domainNameInput = $state('');
 	let dns: CustomDomainDns | undefined = $state(undefined);
 
@@ -41,7 +41,7 @@
 		}
 
 		dns = toCustomDomainDns({ domainName: domainNameInput, canisterId: satellite.satellite_id });
-		steps = 'auth';
+		step = 'auth';
 		edit = true;
 	});
 
@@ -49,7 +49,7 @@
 	const onAuth = (detail: AuthenticationConfig | null) => {
 		editConfig = detail;
 
-		steps = 'dns';
+		step = 'dns';
 	};
 
 	const setupCustomDomain = async () => {
@@ -61,7 +61,7 @@
 		}
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		try {
 			await setCustomDomain({
@@ -77,14 +77,14 @@
 				});
 			}
 
-			steps = 'ready';
+			step = 'ready';
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.hosting_configuration_issues,
 				detail: err
 			});
 
-			steps = edit ? 'dns' : 'init';
+			step = edit ? 'dns' : 'init';
 		}
 
 		wizardBusy.stop();
@@ -103,31 +103,31 @@
 
 		let existingDerivationOrigin = nonNullish(authDomain);
 
-		steps = existingDerivationOrigin ? 'dns' : 'auth';
+		step = existingDerivationOrigin ? 'dns' : 'auth';
 	};
 </script>
 
 <Modal on:junoClose={close}>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<IconVerified />
 			<p>{$i18n.hosting.success}</p>
 			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'dns'}
+	{:else if step === 'dns'}
 		<AddCustomDomainDns
 			{domainNameInput}
 			{dns}
 			{edit}
 			on:junoSubmit={async () => await setupCustomDomain()}
-			on:junoBack={() => (steps = 'init')}
+			on:junoBack={() => (step = 'init')}
 			on:junoClose
 		/>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.hosting.config_in_progress}</p>
 		</SpinnerModal>
-	{:else if steps === 'auth'}
+	{:else if step === 'auth'}
 		<AddCustomDomainAuth {domainNameInput} {config} next={onAuth} />
 	{:else}
 		<AddCustomDomainForm bind:domainNameInput bind:dns {satellite} on:junoNext={onFormNext} />

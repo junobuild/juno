@@ -1,37 +1,37 @@
 mod console;
-mod constants;
-mod cron_jobs;
 mod guards;
-mod reports;
+mod http;
+mod impls;
+mod memory;
+mod notify;
+mod random;
 mod store;
+mod templates;
 mod types;
+mod upgrade;
 
 use crate::console::assert_mission_control_center;
-use crate::constants::CRON_INTERVAL_NS;
-use crate::cron_jobs::cron_jobs;
-use crate::guards::{
-    caller_can_execute_cron_jobs, caller_is_admin_controller, caller_is_not_anonymous,
+use crate::guards::{caller_is_admin_controller, caller_is_not_anonymous};
+use crate::http::response::transform_response;
+use crate::memory::{get_memory_upgrades, init_runtime_state, init_stable_state, STATE};
+use crate::notify::store_and_defer_notification;
+use crate::random::defer_init_random_seed;
+use crate::store::heap::{
+    delete_controllers, get_controllers, set_controllers as set_controllers_store,
+    set_env as set_env_store,
 };
-use crate::reports::collect_statuses as collect_statuses_report;
-use crate::store::{
-    delete_controllers, get_cron_tab as get_cron_tab_store, get_statuses as get_statuses_store,
-    set_controllers as set_controllers_store, set_cron_tab as set_cron_tab_store,
-};
-use crate::types::interface::{ListStatuses, ListStatusesArgs, SetCronTab};
-use crate::types::state::{Archive, ArchiveStatuses, CronTab, StableState, State};
-use ic_cdk::storage::{stable_restore, stable_save};
-use ic_cdk::{caller, trap};
+use crate::store::stable::get_notifications;
+use crate::types::interface::{GetNotifications, NotifyStatus};
+use crate::types::state::{Env, HeapState, State};
+use crate::upgrade::types::upgrade::UpgradeStableState;
+use ciborium::into_writer;
+use ic_cdk::api::management_canister::http_request::{HttpResponse, TransformArgs};
+use ic_cdk::{caller, storage, trap};
 use ic_cdk_macros::{export_candid, init, post_upgrade, pre_upgrade, query, update};
-use ic_cdk_timers::set_timer_interval;
 use junobuild_shared::controllers::init_controllers;
-use junobuild_shared::types::interface::{DeleteControllersArgs, SetControllersArgs};
-use std::cell::RefCell;
-use std::collections::HashMap;
-use std::time::Duration;
-
-thread_local! {
-    static STATE: RefCell<State> = RefCell::default();
-}
+use junobuild_shared::types::interface::{DeleteControllersArgs, NotifyArgs, SetControllersArgs};
+use junobuild_shared::types::state::Controllers;
+use junobuild_shared::upgrade::write_pre_upgrade;
 
 #[init]
 fn init() {
@@ -39,31 +39,55 @@ fn init() {
 
     STATE.with(|state| {
         *state.borrow_mut() = State {
-            stable: StableState {
+            heap: HeapState {
                 controllers: init_controllers(&[manager]),
-                cron_tabs: HashMap::new(),
-                archive: Archive {
-                    statuses: HashMap::new(),
-                },
+                env: None,
             },
+            stable: init_stable_state(),
         };
     });
+
+    init_runtime_state();
+
+    defer_init_random_seed();
 }
 
 #[pre_upgrade]
 fn pre_upgrade() {
-    STATE.with(|state| stable_save((&state.borrow().stable,)).unwrap());
+    let mut state_bytes = vec![];
+    STATE
+        .with(|s| into_writer(&*s.borrow(), &mut state_bytes))
+        .expect("Failed to encode the state of the mission control in pre_upgrade hook.");
+
+    write_pre_upgrade(&state_bytes, &mut get_memory_upgrades());
 }
 
 #[post_upgrade]
 fn post_upgrade() {
-    let (stable,): (StableState,) = stable_restore().unwrap();
+    // TODO: remove once stable memory introduced on mainnet
+    let (upgrade_stable,): (UpgradeStableState,) = storage::stable_restore().unwrap();
 
-    STATE.with(|state| *state.borrow_mut() = State { stable });
+    let heap = HeapState::from(&upgrade_stable);
 
-    set_timer_interval(Duration::from_nanos(CRON_INTERVAL_NS), || {
-        cron_jobs();
+    STATE.with(|state| {
+        *state.borrow_mut() = State {
+            heap,
+            stable: init_stable_state(),
+        }
     });
+
+    // TODO: uncomment once stable memory introduced on mainnet
+    // let memory = get_memory_upgrades();
+    // let state_bytes = read_post_upgrade(&memory);
+
+    // let state: State = from_reader(&*state_bytes)
+    //     .expect("Failed to decode the state of the observatory in post_upgrade hook.");
+
+    // STATE.with(|s| *s.borrow_mut() = state);
+
+    init_runtime_state();
+
+    defer_init_random_seed();
 }
 
 // ---------------------------------------------------------
@@ -85,49 +109,55 @@ fn del_controllers(DeleteControllersArgs { controllers }: DeleteControllersArgs)
     delete_controllers(&controllers);
 }
 
+#[query(guard = "caller_is_admin_controller")]
+fn list_controllers() -> Controllers {
+    get_controllers()
+}
+
 // ---------------------------------------------------------
-// Crontabs
+// Notifications
 // ---------------------------------------------------------
 
 #[update(guard = "caller_is_not_anonymous")]
-async fn set_cron_tab(cron_tab: SetCronTab) -> CronTab {
-    let user = caller();
+async fn notify(notify_args: NotifyArgs) {
+    let mission_control_id = caller();
 
-    assert_mission_control_center(&user, &cron_tab.mission_control_id)
+    assert_mission_control_center(&notify_args.user, &mission_control_id)
         .await
         .unwrap_or_else(|e| trap(&e));
 
-    set_cron_tab_store(&user, &cron_tab).unwrap_or_else(|e| trap(&e))
+    store_and_defer_notification(&notify_args);
 }
 
-#[query(guard = "caller_is_not_anonymous")]
-fn get_cron_tab() -> Option<CronTab> {
-    let user = caller();
-    get_cron_tab_store(&user)
+#[query(guard = "caller_is_admin_controller")]
+fn get_notify_status(filter: GetNotifications) -> NotifyStatus {
+    let notifications = get_notifications(&filter);
+
+    NotifyStatus::from_notifications(&notifications)
 }
 
-// ---------------------------------------------------------
-// Statuses
-// ---------------------------------------------------------
-
-#[query(guard = "caller_is_not_anonymous")]
-fn get_statuses() -> Option<ArchiveStatuses> {
-    let user = caller();
-    get_statuses_store(&user)
+#[update(guard = "caller_is_admin_controller")]
+fn ping(notify_args: NotifyArgs) {
+    store_and_defer_notification(&notify_args);
 }
 
 // ---------------------------------------------------------
-// Reports
+// HTTP Outcalls
 // ---------------------------------------------------------
 
-#[query(guard = "caller_can_execute_cron_jobs")]
-fn list_statuses(args: ListStatusesArgs) -> Vec<ListStatuses> {
-    collect_statuses_report(&args)
+#[query]
+fn transform(raw: TransformArgs) -> HttpResponse {
+    transform_response(raw)
 }
 
 // ---------------------------------------------------------
 // Mgmt
 // ---------------------------------------------------------
+
+#[update(guard = "caller_is_admin_controller")]
+fn set_env(env: Env) {
+    set_env_store(&env);
+}
 
 #[query]
 fn version() -> String {

@@ -14,5 +14,5 @@
 </script>
 
 {#if nonNullish(cycles)}
-	<span in:fade>{formatTCycles(cycles)}T <small>cycles</small></span>
+	<span in:fade>{formatTCycles(cycles)}T <small>Cycles</small></span>
 {/if}

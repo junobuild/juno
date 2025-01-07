@@ -72,13 +72,13 @@
 			: undefined
 	);
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const handleSubmit = async ($event: SubmitEvent) => {
 		$event.preventDefault();
 
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		const selectedDerivationOrigin = nonNullish(derivationOrigin)
 			? [...(nonNullish(satelliteUrl) ? [satelliteUrl] : []), ...customDomains].find(
@@ -98,23 +98,23 @@
 		wizardBusy.stop();
 
 		if (success !== 'ok') {
-			steps = 'init';
+			step = 'init';
 			return;
 		}
 
 		emit({ message: 'junoReloadAuthConfig' });
 
-		steps = 'ready';
+		step = 'ready';
 	};
 </script>
 
 <Modal on:junoClose={onclose}>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<p>{$i18n.core.configuration_applied}</p>
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.core.updating_configuration}</p>
 		</SpinnerModal>

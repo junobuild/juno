@@ -7,7 +7,7 @@
 
 	// eslint-disable-next-line @typescript-eslint/ban-ts-comment
 	// @ts-ignore
-	const { padding, xRange, yScale } = getContext('LayerCake');
+	const { padding, xRange, yScale, width } = getContext('LayerCake');
 
 	interface Props {
 		gridlines?: boolean;
@@ -20,6 +20,7 @@
 		dxTick?: number;
 		dyTick?: number;
 		textAnchor?: string;
+		axisWithText?: boolean;
 	}
 
 	let {
@@ -31,7 +32,8 @@
 		yTick = 0,
 		dxTick = 0,
 		dyTick = -4,
-		textAnchor = 'start'
+		textAnchor = 'start',
+		axisWithText = true
 	}: Props = $props();
 
 	let isBandwidth = $derived(typeof $yScale.bandwidth === 'function');
@@ -56,7 +58,7 @@
 			{#if gridlines !== false}
 				<line
 					class="gridline"
-					x2="100%"
+					x2={$width}
 					y1={isBandwidth ? $yScale.bandwidth() / 2 : 0}
 					y2={isBandwidth ? $yScale.bandwidth() / 2 : 0}
 				/>
@@ -70,32 +72,33 @@
 					y2={isBandwidth ? $yScale.bandwidth() / 2 : 0}
 				/>
 			{/if}
-			<text
-				x={xTick}
-				y={isBandwidth ? $yScale.bandwidth() / 2 + yTick : yTick}
-				dx={isBandwidth ? -9 : dxTick}
-				dy={isBandwidth ? 4 : dyTick}
-				style="text-anchor:{isBandwidth ? 'end' : textAnchor};">{formatTick(tick)}</text
-			>
+			{#if axisWithText}
+				<text
+					x={xTick}
+					y={isBandwidth ? $yScale.bandwidth() / 2 + yTick : yTick}
+					dx={isBandwidth ? -9 : dxTick}
+					dy={isBandwidth ? 4 : dyTick}
+					style="text-anchor:{isBandwidth ? 'end' : textAnchor};">{formatTick(tick)}</text
+				>
+			{/if}
 		</g>
 	{/each}
 </g>
 
 <style>
 	.tick {
-		font-size: 0.725em;
-		font-weight: 200;
+		font-size: var(--font-size-ultra-small);
 	}
 
 	.tick line {
-		stroke: #aaa;
+		stroke: var(--label-color);
 	}
 	.tick .gridline {
 		stroke-dasharray: 2;
 	}
 
 	.tick text {
-		fill: #666;
+		fill: var(--text-color);
 	}
 
 	.tick.tick-0 line {

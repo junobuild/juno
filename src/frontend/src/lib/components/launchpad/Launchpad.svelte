@@ -6,18 +6,10 @@
 	import SatelliteNew from '$lib/components/satellites/SatelliteNew.svelte';
 	import Satellites from '$lib/components/satellites/Satellites.svelte';
 	import Spinner from '$lib/components/ui/Spinner.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
 	import { satellitesStore } from '$lib/derived/satellite.derived';
 	import { onIntersection } from '$lib/directives/intersection.directives';
-	import { loadSatellites } from '$lib/services/satellites.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { onLayoutTitleIntersection } from '$lib/stores/layout-intersecting.store';
-
-	run(() => {
-		// @ts-expect-error TODO: to be migrated to Svelte v5
-		$missionControlStore,
-			(async () => await loadSatellites({ missionControl: $missionControlStore }))();
-	});
 
 	let loading = $state(true);
 	run(() => {

@@ -6,7 +6,7 @@
 	import CanisterUpgradeModal from '$lib/components/modals/CanisterUpgradeModal.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import { SATELLITE_v0_0_7, SATELLITE_v0_0_9 } from '$lib/constants/version.constants';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { authStore } from '$lib/stores/auth.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { JunoModalDetail, JunoModalUpgradeSatelliteDetail } from '$lib/types/modal';
@@ -35,7 +35,7 @@
 				...container()
 			},
 			...params,
-			...(nonNullish($missionControlStore) && { missionControlId: $missionControlStore }),
+			...(nonNullish($missionControlIdDerived) && { missionControlId: $missionControlIdDerived }),
 			// TODO: option to be removed
 			deprecated: compare(currentVersion, SATELLITE_v0_0_7) < 0,
 			deprecatedNoScope: compare(currentVersion, SATELLITE_v0_0_9) < 0

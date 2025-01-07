@@ -1,13 +1,12 @@
 import type { Satellite } from '$declarations/mission_control/mission_control.did';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
-import { satellitesStore } from '$lib/derived/satellite.derived';
+import { loadDataStore } from '$lib/services/loader.services';
 import { authStore } from '$lib/stores/auth.store';
-import { i18n } from '$lib/stores/i18n.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
-import { toasts } from '$lib/stores/toasts.store';
 import type { Option } from '$lib/types/utils';
+import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, isNullish, nonNullish, toNullable } from '@dfinity/utils';
+import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 interface CreateSatelliteConfig {
@@ -16,38 +15,40 @@ interface CreateSatelliteConfig {
 }
 
 export const createSatellite = async ({
-	missionControl,
+	identity,
+	missionControlId,
 	config: { name }
 }: {
-	missionControl: Option<Principal>;
+	identity: Option<Identity>;
+	missionControlId: Option<Principal>;
 	config: CreateSatelliteConfig;
-}): Promise<Satellite | undefined> => {
-	assertNonNullish(missionControl);
-
-	const identity = get(authStore).identity;
+}): Promise<Satellite> => {
+	assertNonNullish(missionControlId);
 
 	const { create_satellite } = await getMissionControlActor({
-		missionControlId: missionControl,
+		missionControlId,
 		identity
 	});
+
 	return create_satellite(name);
 };
 
 export const createSatelliteWithConfig = async ({
-	missionControl,
+	identity,
+	missionControlId,
 	config: { name, subnetId }
 }: {
-	missionControl: Option<Principal>;
+	identity: Option<Identity>;
+	missionControlId: Option<Principal>;
 	config: CreateSatelliteConfig;
-}): Promise<Satellite | undefined> => {
-	assertNonNullish(missionControl);
-
-	const identity = get(authStore).identity;
+}): Promise<Satellite> => {
+	assertNonNullish(missionControlId);
 
 	const { create_satellite_with_config } = await getMissionControlActor({
-		missionControlId: missionControl,
+		missionControlId,
 		identity
 	});
+
 	return create_satellite_with_config({
 		name: toNullable(name),
 		subnet_id: toNullable(subnetId)
@@ -55,45 +56,34 @@ export const createSatelliteWithConfig = async ({
 };
 
 export const loadSatellites = async ({
-	missionControl,
+	missionControlId,
 	reload = false
 }: {
-	missionControl: Option<Principal>;
+	missionControlId: Option<Principal>;
 	reload?: boolean;
 }): Promise<{ result: 'skip' | 'success' | 'error' }> => {
-	if (isNullish(missionControl)) {
-		return { result: 'error' };
-	}
-
-	// We load only once
-	const satellites = get(satellitesStore);
-	if (nonNullish(satellites) && !reload) {
+	if (isNullish(missionControlId)) {
 		return { result: 'skip' };
 	}
 
-	try {
-		const identity = get(authStore).identity;
-
+	const load = async (identity: Identity): Promise<Satellite[]> => {
 		const { list_satellites } = await getMissionControlActor({
-			missionControlId: missionControl,
+			missionControlId,
 			identity
 		});
+
 		const satellites = await list_satellites();
 
-		// eslint-disable-next-line @typescript-eslint/no-unused-vars
-		satellitesDataStore.set(satellites.map(([_, satellite]) => satellite));
+		return satellites.map(([_, satellite]) => satellite);
+	};
 
-		return { result: 'success' };
-	} catch (err: unknown) {
-		const labels = get(i18n);
+	const identity = get(authStore).identity;
 
-		toasts.error({
-			text: labels.errors.satellites_loading,
-			detail: err
-		});
-
-		satellitesDataStore.reset();
-
-		return { result: 'error' };
-	}
+	return await loadDataStore<Satellite[]>({
+		identity,
+		store: satellitesDataStore,
+		errorLabel: 'satellites_loading',
+		load,
+		reload
+	});
 };

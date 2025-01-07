@@ -1,6 +1,8 @@
 <script lang="ts">
 	import { getContext } from 'svelte';
 	import IconFilter from '$lib/components/icons/IconFilter.svelte';
+	import Checkbox from '$lib/components/ui/Checkbox.svelte';
+	import CheckboxGroup from '$lib/components/ui/CheckboxGroup.svelte';
 	import PopoverApply from '$lib/components/ui/PopoverApply.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { Log as LogType, LogLevel } from '$lib/types/log';
@@ -31,43 +33,35 @@
 
 	<p class="category sort">{$i18n.functions.levels}</p>
 
-	<div class="checkbox">
-		<input type="checkbox" bind:group={levels} value={'Info'} id="info" /><label for="info"
-			><span>{$i18n.functions.info}</span></label
-		>
-	</div>
+	<CheckboxGroup>
+		<Checkbox>
+			<input type="checkbox" bind:group={levels} value={'Info'} id="info" /><label for="info"
+				><span>{$i18n.functions.info}</span></label
+			>
+		</Checkbox>
 
-	<div class="checkbox">
-		<input type="checkbox" bind:group={levels} value={'Debug'} id="debug" /><label for="debug"
-			><span>{$i18n.functions.debug}</span></label
-		>
-	</div>
+		<Checkbox>
+			<input type="checkbox" bind:group={levels} value={'Debug'} id="debug" /><label for="debug"
+				><span>{$i18n.functions.debug}</span></label
+			>
+		</Checkbox>
 
-	<div class="checkbox">
-		<input type="checkbox" bind:group={levels} value={'Warning'} id="warning" /><label for="warning"
-			><span>{$i18n.functions.warning}</span></label
-		>
-	</div>
+		<Checkbox>
+			<input type="checkbox" bind:group={levels} value={'Warning'} id="warning" /><label
+				for="warning"><span>{$i18n.functions.warning}</span></label
+			>
+		</Checkbox>
 
-	<div class="checkbox">
-		<input type="checkbox" bind:group={levels} value={'Error'} id="error" /><label for="error"
-			><span>{$i18n.functions.error}</span></label
-		>
-	</div>
+		<Checkbox>
+			<input type="checkbox" bind:group={levels} value={'Error'} id="error" /><label for="error"
+				><span>{$i18n.functions.error}</span></label
+			>
+		</Checkbox>
+	</CheckboxGroup>
 </PopoverApply>
 
 <style lang="scss">
 	@use '../../styles/mixins/dialog';
 
 	@include dialog.apply;
-
-	.checkbox {
-		display: flex;
-		align-items: center;
-		gap: var(--padding-2x);
-
-		label {
-			padding-bottom: 2px;
-		}
-	}
 </style>

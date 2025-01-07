@@ -1,9 +1,14 @@
-import type { Satellite } from '$declarations/mission_control/mission_control.did';
+import type {
+	MissionControlSettings,
+	Satellite
+} from '$declarations/mission_control/mission_control.did';
 import {
 	addMissionControlController,
 	addSatellitesController,
+	getMetadata,
 	getSettings,
 	missionControlVersion,
+	setMetadata,
 	setMissionControlController,
 	setOrbiter,
 	setSatellite,
@@ -14,24 +19,34 @@ import {
 } from '$lib/api/mission-control.api';
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
-import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import { METADATA_KEY_EMAIL, METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import {
+	MISSION_CONTROL_v0_0_13,
 	MISSION_CONTROL_v0_0_3,
 	MISSION_CONTROL_v0_0_5,
 	MISSION_CONTROL_v0_0_7
 } from '$lib/constants/version.constants';
 import { satellitesStore } from '$lib/derived/satellite.derived';
+import { missionControlVersion as missionControlVersionStore } from '$lib/derived/version.derived';
+import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
-import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
+import {
+	missionControlMetadataDataStore,
+	missionControlSettingsDataStore
+} from '$lib/stores/mission-control.store';
 import { orbitersDataStore } from '$lib/stores/orbiter.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { Metadata } from '$lib/types/metadata';
+import type { Option } from '$lib/types/utils';
+import { isNotValidEmail } from '$lib/utils/email.utils';
+import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, fromNullable } from '@dfinity/utils';
+import { fromNullable, isNullish, notEmptyString } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -181,7 +196,7 @@ export const attachSatellite = async ({
 
 	// We reload all satellites because if the developer accesses the mission control page directly, the satellites may not be loaded. Adding just one satellite could give the user the impression that there is an issue.
 	await loadSatellites({
-		missionControl: missionControlId,
+		missionControlId,
 		reload: true
 	});
 };
@@ -198,7 +213,7 @@ export const detachSatellite = async ({
 	await unsetSatellite({ missionControlId, satelliteId: canisterId, identity });
 
 	await loadSatellites({
-		missionControl: missionControlId,
+		missionControlId,
 		reload: true
 	});
 };
@@ -229,40 +244,119 @@ export const detachOrbiter = async ({
 };
 
 export const loadSettings = async ({
-	missionControl: missionControlId,
+	missionControlId,
 	identity,
 	reload = false
 }: {
-	missionControl: Principal;
+	missionControlId: Principal;
 	identity: OptionIdentity;
 	reload?: boolean;
 }): Promise<{ success: boolean }> => {
-	try {
-		assertNonNullish(identity, get(i18n).core.not_logged_in);
+	const versionStore = get(missionControlVersionStore);
 
-		const store = get(missionControlSettingsDataStore);
+	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
+		missionControlSettingsDataStore.reset();
+		return { success: true };
+	}
 
-		if (store !== undefined && !reload) {
-			return { success: true };
-		}
-
+	const load = async (identity: Identity): Promise<MissionControlSettings | undefined> => {
 		const settings = await getSettings({
 			missionControlId,
 			identity
 		});
 
-		missionControlSettingsDataStore.set(fromNullable(settings));
+		return fromNullable(settings);
+	};
+
+	const { result } = await loadDataStore<MissionControlSettings | undefined>({
+		identity,
+		reload,
+		load,
+		errorLabel: 'load_settings',
+		store: missionControlSettingsDataStore
+	});
+
+	return { success: result !== 'error' };
+};
+
+export const loadMetadata = async ({
+	missionControlId,
+	identity,
+	reload = false
+}: {
+	missionControlId: Principal;
+	identity: OptionIdentity;
+	reload?: boolean;
+}): Promise<{ success: boolean }> => {
+	const versionStore = get(missionControlVersionStore);
+
+	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
+		missionControlMetadataDataStore.reset();
+		return { success: true };
+	}
+
+	const load = async (identity: Identity): Promise<Metadata> =>
+		await getMetadata({
+			missionControlId,
+			identity
+		});
+
+	const { result } = await loadDataStore<Metadata>({
+		identity,
+		reload,
+		load,
+		errorLabel: 'load_metadata',
+		store: missionControlMetadataDataStore
+	});
+
+	return { success: result !== 'error' };
+};
+
+export const setMetadataEmail = async ({
+	missionControlId,
+	identity,
+	email,
+	metadata
+}: {
+	missionControlId: Option<Principal>;
+	identity: OptionIdentity;
+	email: string;
+	metadata: Metadata;
+}): Promise<{ success: boolean }> => {
+	if (!notEmptyString(email) || isNotValidEmail(email)) {
+		toasts.error({
+			text: get(i18n).errors.invalid_email
+		});
+		return { success: false };
+	}
+
+	if (isNullish(missionControlId)) {
+		toasts.error({
+			text: get(i18n).errors.no_mission_control
+		});
+		return { success: false };
+	}
+
+	try {
+		const updateData = new Map(metadata);
+		updateData.set(METADATA_KEY_EMAIL, email);
+
+		const data = Array.from(updateData);
+
+		await setMetadata({
+			identity,
+			missionControlId,
+			metadata: data
+		});
+
+		missionControlMetadataDataStore.set(data);
 
 		return { success: true };
 	} catch (err: unknown) {
-		const labels = get(i18n);
-
 		toasts.error({
-			text: labels.errors.snapshot_loading_errors,
+			text: get(i18n).errors.monitoring_email_update,
 			detail: err
 		});
-
-		missionControlSettingsDataStore.reset();
 
 		return { success: false };
 	}

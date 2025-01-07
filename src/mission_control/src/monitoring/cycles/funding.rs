@@ -1,4 +1,5 @@
 use crate::monitoring::cycles::history::save_monitoring_history;
+use crate::monitoring::cycles::notification::defer_notify;
 use crate::types::state::CyclesMonitoringStrategy;
 use canfund::api::cmc::IcCyclesMintingCanister;
 use canfund::api::ledger::IcLedgerCanister;
@@ -52,7 +53,9 @@ fn obtain_cycles_options() -> ObtainCyclesOptions {
 
 fn funding_callback() -> ObserverCallback {
     Rc::new(|records: HashMap<CanisterId, CanisterRecord>| {
-        save_monitoring_history(records);
+        save_monitoring_history(&records);
+
+        defer_notify(records);
     })
 }
 

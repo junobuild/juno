@@ -21,7 +21,7 @@
 
 	let { back, missionControlId, visible = $bindable() }: Props = $props();
 
-	let steps: 'connecting' | 'receiving' | 'form' | 'success' = $state('connecting');
+	let step: 'connecting' | 'receiving' | 'form' | 'success' = $state('connecting');
 	let account: IcrcAccount | undefined = $state(undefined);
 
 	const init = async () => {
@@ -49,7 +49,7 @@
 
 			account = accounts?.[0];
 
-			steps = 'form';
+			step = 'form';
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.wallet_no_account,
@@ -84,7 +84,7 @@
 
 		wizardBusy.start();
 
-		steps = 'receiving';
+		step = 'receiving';
 
 		let wallet: IcpWallet | undefined;
 
@@ -104,14 +104,14 @@
 				request
 			});
 
-			steps = 'success';
+			step = 'success';
 		} catch (err: unknown) {
 			toasts.error({
 				text: $i18n.errors.wallet_receive_error,
 				detail: err
 			});
 
-			steps = 'form';
+			step = 'form';
 		} finally {
 			await wallet?.disconnect();
 		}
@@ -120,20 +120,20 @@
 	};
 </script>
 
-{#if steps === 'success'}
+{#if step === 'success'}
 	<Confetti display="popover" />
 
 	<div class="msg">
 		<p>{$i18n.wallet.icp_on_its_way}</p>
 		<button onclick={() => (visible = false)}>{$i18n.core.close}</button>
 	</div>
-{:else if steps === 'form' && nonNullish(account)}
+{:else if step === 'form' && nonNullish(account)}
 	<ReceiveTokensSignerForm {account} {back} receive={onsubmit} />
 {:else}
 	<div class="spinner">
 		<Spinner inline />
 		<p class="connecting">
-			{#if steps === 'connecting'}
+			{#if step === 'connecting'}
 				{$i18n.wallet.connecting_wallet}
 			{:else}
 				{$i18n.wallet.wallet_approve}

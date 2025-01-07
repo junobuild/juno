@@ -1,62 +1,44 @@
-type ArchiveStatuses = record { statuses : Result_1; timestamp : nat64 };
-type CanisterStatusType = variant { stopped; stopping; running };
-type ControllerScope = variant { Write; Admin };
-type CronJobStatuses = record {
-  mission_control_cycles_threshold : opt nat64;
-  orbiters : vec record { principal; CronJobStatusesConfig };
-  satellites : vec record { principal; CronJobStatusesConfig };
-  enabled : bool;
-  cycles_threshold : opt nat64;
-};
-type CronJobStatusesConfig = record {
-  enabled : bool;
-  cycles_threshold : opt nat64;
-};
-type CronJobs = record {
-  metadata : vec record { text; text };
-  statuses : CronJobStatuses;
-};
-type CronTab = record {
-  cron_jobs : CronJobs;
+type Controller = record {
   updated_at : nat64;
-  mission_control_id : principal;
+  metadata : vec record { text; text };
   created_at : nat64;
-  version : opt nat64;
+  scope : ControllerScope;
+  expires_at : opt nat64;
 };
+type ControllerScope = variant { Write; Admin };
+type CyclesBalance = record { timestamp : nat64; amount : nat };
 type DeleteControllersArgs = record { controllers : vec principal };
-type ListStatuses = record {
-  cron_jobs : CronJobs;
-  statuses : Result_1;
-  timestamp : nat64;
+type DepositedCyclesEmailNotification = record {
+  to : text;
+  deposited_cycles : CyclesBalance;
 };
-type ListStatusesArgs = record { time_delta : opt nat64 };
-type Result = variant { Ok : SegmentStatus; Err : text };
-type Result_1 = variant { Ok : SegmentsStatuses; Err : text };
-type SegmentCanisterSettings = record {
-  freezing_threshold : nat;
-  controllers : vec principal;
-  memory_allocation : nat;
-  compute_allocation : nat;
+type Env = record { email_api_key : opt text };
+type GetNotifications = record {
+  to : opt nat64;
+  from : opt nat64;
+  segment_id : opt principal;
 };
-type SegmentCanisterStatus = record {
-  status : CanisterStatusType;
-  memory_size : nat;
-  cycles : nat;
-  settings : SegmentCanisterSettings;
-  idle_cycles_burned_per_day : nat;
-  module_hash : opt blob;
+type HttpHeader = record { value : text; name : text };
+type HttpResponse = record {
+  status : nat;
+  body : blob;
+  headers : vec HttpHeader;
 };
-type SegmentStatus = record {
+type NotificationKind = variant {
+  DepositedCyclesEmail : DepositedCyclesEmailNotification;
+};
+type NotifyArgs = record {
+  kind : NotificationKind;
+  user : principal;
+  segment : Segment;
+};
+type NotifyStatus = record { pending : nat64; sent : nat64; failed : nat64 };
+type Segment = record {
   id : principal;
-  status : SegmentCanisterStatus;
   metadata : opt vec record { text; text };
-  status_at : nat64;
+  kind : SegmentKind;
 };
-type SegmentsStatuses = record {
-  orbiters : opt vec Result;
-  satellites : opt vec Result;
-  mission_control : Result;
-};
+type SegmentKind = variant { Orbiter; MissionControl; Satellite };
 type SetController = record {
   metadata : vec record { text; text };
   scope : ControllerScope;
@@ -66,17 +48,15 @@ type SetControllersArgs = record {
   controller : SetController;
   controllers : vec principal;
 };
-type SetCronTab = record {
-  cron_jobs : CronJobs;
-  mission_control_id : principal;
-  version : opt nat64;
-};
+type TransformArgs = record { context : blob; response : HttpResponse };
 service : () -> {
   del_controllers : (DeleteControllersArgs) -> ();
-  get_cron_tab : () -> (opt CronTab) query;
-  get_statuses : () -> (opt ArchiveStatuses) query;
-  list_statuses : (ListStatusesArgs) -> (vec ListStatuses) query;
+  get_notify_status : (GetNotifications) -> (NotifyStatus) query;
+  list_controllers : () -> (vec record { principal; Controller }) query;
+  notify : (NotifyArgs) -> ();
+  ping : (NotifyArgs) -> ();
   set_controllers : (SetControllersArgs) -> ();
-  set_cron_tab : (SetCronTab) -> (CronTab);
+  set_env : (Env) -> ();
+  transform : (TransformArgs) -> (HttpResponse) query;
   version : () -> (text) query;
 }

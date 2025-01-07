@@ -1,20 +1,46 @@
 import type {
 	CyclesMonitoringStrategy,
-	CyclesThreshold
+	CyclesThreshold,
+	DepositedCyclesEmailNotification,
+	MonitoringConfig
 } from '$declarations/mission_control/mission_control.did';
-import { updateAndStartMonitoring, updateAndStopMonitoring } from '$lib/api/mission-control.api';
-import { loadSettings } from '$lib/services/mission-control.services';
+import {
+	setMetadata,
+	setMonitoringConfig as setMonitoringConfigApi,
+	updateAndStartMonitoring,
+	updateAndStopMonitoring
+} from '$lib/api/mission-control.api';
+import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
+import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
+import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
+import { loadMetadata, loadSettings } from '$lib/services/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiters.services';
+import { execute } from '$lib/services/progress.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
+import {
+	missionControlMetadataDataStore,
+	missionControlSettingsDataStore
+} from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
+import type { Metadata } from '$lib/types/metadata';
 import {
 	type MonitoringStrategyProgress,
 	MonitoringStrategyProgressStep
 } from '$lib/types/strategy';
+import type { Option } from '$lib/types/utils';
+import { isNotValidEmail } from '$lib/utils/email.utils';
+import { emit } from '$lib/utils/events.utils';
 import type { Principal } from '@dfinity/principal';
-import { assertNonNullish, isNullish, toNullable } from '@dfinity/utils';
+import {
+	assertNonNullish,
+	fromNullable,
+	isNullish,
+	nonNullish,
+	notEmptyString,
+	toNullable
+} from '@dfinity/utils';
 import { get } from 'svelte/store';
 
 type MonitoringStrategyOnProgress = (progress: MonitoringStrategyProgress | undefined) => void;
@@ -27,12 +53,20 @@ interface MonitoringCyclesStrategyParams {
 	onProgress: MonitoringStrategyOnProgress;
 }
 
+export interface ApplyMonitoringCyclesStrategyOptions {
+	monitoringConfig: MonitoringConfig | undefined;
+	useAsDefaultStrategy: boolean;
+	metadata: Metadata;
+	userEmail: Option<string>;
+}
+
 interface ApplyMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyParams {
 	minCycles: bigint | undefined;
 	fundCycles: bigint | undefined;
 	missionControlMonitored: boolean;
 	missionControlMinCycles: bigint | undefined;
 	missionControlFundCycles: bigint | undefined;
+	options: ApplyMonitoringCyclesStrategyOptions | undefined;
 }
 
 interface StopMonitoringCyclesStrategyParams extends MonitoringCyclesStrategyParams {
@@ -43,6 +77,7 @@ export const applyMonitoringCyclesStrategy = async ({
 	identity,
 	missionControlId,
 	onProgress,
+	options,
 	...rest
 }: ApplyMonitoringCyclesStrategyParams): Promise<{
 	success: 'ok' | 'cancelled' | 'error';
@@ -58,11 +93,59 @@ export const applyMonitoringCyclesStrategy = async ({
 		});
 	};
 
+	const setMonitoringOptions = async () => {
+		const { userEmail, metadata, useAsDefaultStrategy, monitoringConfig } = options ?? {
+			monitoringConfig: undefined,
+			userEmail: null,
+			metadata: [],
+			useAsDefaultStrategy: false
+		};
+
+		const withEmail = nonNullish(userEmail) && notEmptyString(userEmail);
+
+		if (withEmail) {
+			// For now, we use the mission control metadata email. We might allow dev in the future to specify various specific email.
+			await setEmail({
+				identity,
+				missionControlId,
+				userEmail,
+				metadata
+			});
+		}
+
+		if (useAsDefaultStrategy || withEmail) {
+			await setMonitoringCyclesConfig({
+				identity,
+				missionControlId,
+				monitoringConfig,
+				userEmail,
+				useAsDefaultStrategy,
+				...rest
+			});
+		}
+	};
+
+	const executeCreateMonitoring = async () => {
+		if (nonNullish(options)) {
+			await execute({
+				fn: setMonitoringOptions,
+				onProgress,
+				step: MonitoringStrategyProgressStep.Options
+			});
+		}
+
+		await execute({
+			fn: setMonitoringStrategy,
+			onProgress,
+			step: MonitoringStrategyProgressStep.CreateOrStopMonitoring
+		});
+	};
+
 	return await executeMonitoring({
 		identity,
 		missionControlId,
 		onProgress,
-		fn: setMonitoringStrategy,
+		fn: executeCreateMonitoring,
 		errorText: labels.errors.monitoring_apply_strategy_error
 	});
 };
@@ -86,11 +169,19 @@ export const stopMonitoringCyclesStrategy = async ({
 		});
 	};
 
+	const executeStopMonitoring = async () => {
+		await execute({
+			fn: stopMonitoring,
+			onProgress,
+			step: MonitoringStrategyProgressStep.CreateOrStopMonitoring
+		});
+	};
+
 	return await executeMonitoring({
 		identity,
 		missionControlId,
 		onProgress,
-		fn: stopMonitoring,
+		fn: executeStopMonitoring,
 		errorText: labels.errors.monitoring_stop_error
 	});
 };
@@ -111,17 +202,13 @@ const executeMonitoring = async ({
 	try {
 		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		await execute({
-			fn,
-			onProgress,
-			step: MonitoringStrategyProgressStep.CreateOrStopMonitoring
-		});
+		await fn();
 
-		const reload = async () => await reloadSettings({ identity, missionControlId });
+		const reload = async () => await reloadData({ identity, missionControlId });
 		await execute({
 			fn: reload,
 			onProgress,
-			step: MonitoringStrategyProgressStep.ReloadSettings
+			step: MonitoringStrategyProgressStep.Reload
 		});
 	} catch (err: unknown) {
 		toasts.error({
@@ -143,22 +230,14 @@ const setMonitoringCyclesStrategy = async ({
 	minCycles,
 	fundCycles,
 	...missionControlRest
-}: Omit<ApplyMonitoringCyclesStrategyParams, 'identity' | 'onProgress'> &
+}: Omit<ApplyMonitoringCyclesStrategyParams, 'identity' | 'onProgress' | 'options'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
 	if (isNullish(minCycles)) {
-		toasts.error({
-			text: get(i18n).monitoring.min_cycles_not_defined
-		});
-
-		return { success: 'error' };
+		throw new Error(get(i18n).monitoring.min_cycles_not_defined);
 	}
 
 	if (isNullish(fundCycles)) {
-		toasts.error({
-			text: get(i18n).monitoring.fund_cycles_not_defined
-		});
-
-		return { success: 'error' };
+		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
 	}
 
 	const missionControlStrategy = buildMissionControlStrategy({
@@ -203,6 +282,93 @@ const setMonitoringCyclesStrategy = async ({
 	});
 };
 
+const setEmail = async ({
+	identity,
+	missionControlId,
+	userEmail,
+	metadata
+}: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId'> &
+	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>> &
+	Required<
+		Omit<ApplyMonitoringCyclesStrategyOptions, 'useAsDefaultStrategy' | 'monitoringConfig'>
+	>) => {
+	// Do nothing if no email is provided
+	if (isNullish(userEmail) || !notEmptyString(userEmail)) {
+		return;
+	}
+
+	if (isNotValidEmail(userEmail)) {
+		throw new Error(get(i18n).errors.invalid_email);
+	}
+
+	const updateData = new Map(metadata);
+	updateData.set(METADATA_KEY_EMAIL, userEmail);
+
+	await setMetadata({
+		identity,
+		missionControlId,
+		metadata: Array.from(updateData)
+	});
+};
+
+const setMonitoringCyclesConfig = async ({
+	identity,
+	missionControlId,
+	minCycles,
+	fundCycles,
+	monitoringConfig,
+	userEmail,
+	useAsDefaultStrategy
+}: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId' | 'minCycles' | 'fundCycles'> &
+	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>> &
+	Required<
+		Pick<
+			ApplyMonitoringCyclesStrategyOptions,
+			'monitoringConfig' | 'userEmail' | 'useAsDefaultStrategy'
+		>
+	>) => {
+	if (isNullish(minCycles)) {
+		throw new Error(get(i18n).monitoring.min_cycles_not_defined);
+	}
+
+	if (isNullish(fundCycles)) {
+		throw new Error(get(i18n).monitoring.fund_cycles_not_defined);
+	}
+
+	const currentCyclesConfig = fromNullable(monitoringConfig?.cycles ?? []);
+
+	// If a new email is provided, we activate the notification else we keep the current config
+	const notification: [] | [DepositedCyclesEmailNotification] = nonNullish(userEmail)
+		? toNullable({
+				enabled: true,
+				to: toNullable()
+			})
+		: (currentCyclesConfig?.notification ?? []);
+
+	// If the strategy should be use as default, we update or insert the default strategy else we keep the current configuration regardless if set or not
+	const default_strategy: [] | [CyclesMonitoringStrategy] = useAsDefaultStrategy
+		? toNullable({
+				BelowThreshold: {
+					min_cycles: minCycles,
+					fund_cycles: fundCycles
+				}
+			})
+		: (currentCyclesConfig?.default_strategy ?? []);
+
+	const updateConfig: MonitoringConfig = {
+		cycles: toNullable({
+			notification,
+			default_strategy
+		})
+	};
+
+	await setMonitoringConfigApi({
+		identity,
+		missionControlId,
+		config: updateConfig
+	});
+};
+
 const stopMonitoringCycles = async ({
 	identity,
 	missionControlId,
@@ -224,13 +390,13 @@ const stopMonitoringCycles = async ({
 	});
 };
 
-const reloadSettings = async ({
+const reloadData = async ({
 	missionControlId,
 	identity
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>>) => {
 	const reloadParams = {
-		missionControl: missionControlId,
+		missionControlId,
 		reload: true
 	};
 
@@ -238,6 +404,10 @@ const reloadSettings = async ({
 		loadSatellites(reloadParams),
 		loadOrbiters(reloadParams),
 		loadSettings({
+			...reloadParams,
+			identity
+		}),
+		loadMetadata({
 			...reloadParams,
 			identity
 		})
@@ -276,33 +446,104 @@ const buildMissionControlStrategy = ({
 	};
 };
 
-const execute = async ({
-	fn,
-	step,
-	onProgress
+export const openMonitoringModal = ({
+	type,
+	missionControlId
 }: {
-	fn: () => Promise<void>;
-	step: MonitoringStrategyProgressStep;
-	onProgress: MonitoringStrategyOnProgress;
+	type: 'create_monitoring_strategy' | 'stop_monitoring_strategy';
+	missionControlId: Principal;
 }) => {
-	onProgress({
-		step,
-		state: 'in_progress'
+	const $missionControlSettingsDataStore = get(missionControlSettingsDataStore);
+	if (isNullish($missionControlSettingsDataStore)) {
+		toasts.warn(get(i18n).errors.mission_control_settings_not_loaded);
+		return;
+	}
+
+	const $missionControlMetadataDataStore = get(missionControlMetadataDataStore);
+	if (isNullish($missionControlMetadataDataStore)) {
+		toasts.warn(get(i18n).errors.mission_control_metadata_not_loaded);
+		return;
+	}
+
+	const $satellitesNotLoaded = get(satellitesNotLoaded);
+	if ($satellitesNotLoaded) {
+		toasts.warn(get(i18n).errors.satellites_not_loaded);
+		return;
+	}
+
+	const $orbiterNotLoaded = get(orbiterNotLoaded);
+	if ($orbiterNotLoaded) {
+		toasts.warn(get(i18n).errors.orbiter_not_loaded);
+		return;
+	}
+
+	const $satellitesStore = get(satellitesStore);
+	const $orbiterStore = get(orbiterStore);
+	if (($satellitesStore ?? []).length === 0 && isNullish($orbiterStore)) {
+		toasts.warn(get(i18n).errors.monitoring_no_modules);
+		return;
+	}
+
+	emit({
+		message: 'junoModal',
+		detail: {
+			type,
+			detail: {
+				settings: $missionControlSettingsDataStore.data,
+				metadata: $missionControlMetadataDataStore.data,
+				missionControlId
+			}
+		}
 	});
+};
 
+export const setMonitoringNotification = async ({
+	identity,
+	missionControlId,
+	monitoringConfig,
+	enabled
+}: {
+	identity: OptionIdentity;
+	missionControlId: Option<Principal>;
+	monitoringConfig: MonitoringConfig | undefined;
+	enabled: boolean;
+}): Promise<{ success: boolean }> => {
 	try {
-		await fn();
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
 
-		onProgress({
-			step,
-			state: 'success'
+		assertNonNullish(missionControlId, get(i18n).errors.no_mission_control);
+
+		const cycles = fromNullable(monitoringConfig?.cycles ?? []);
+		const notification = fromNullable(cycles?.notification ?? []);
+
+		const updateConfig: MonitoringConfig = {
+			...(nonNullish(monitoringConfig) && monitoringConfig),
+			cycles: toNullable({
+				notification: toNullable({
+					to: notification?.to ?? toNullable(),
+					enabled
+				}),
+				default_strategy: cycles?.default_strategy ?? toNullable()
+			})
+		};
+
+		await setMonitoringConfigApi({
+			identity,
+			missionControlId,
+			config: updateConfig
 		});
+
+		await loadSettings({
+			identity,
+			missionControlId,
+			reload: true
+		});
+
+		return { success: true };
 	} catch (err: unknown) {
-		onProgress({
-			step,
-			state: 'error'
+		toasts.error({
+			text: get(i18n).errors.monitoring_notifications_update
 		});
-
-		throw err;
+		return { success: false };
 	}
 };

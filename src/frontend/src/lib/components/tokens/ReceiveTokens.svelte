@@ -18,11 +18,11 @@
 
 	const accountIdentifier = getAccountIdentifier(missionControlId);
 
-	let steps: 'options' | 'wallet_id' | 'account_identifier' | 'signer' = $state('options');
+	let step: 'options' | 'wallet_id' | 'account_identifier' | 'signer' = $state('options');
 
 	$effect(() => {
 		visible;
-		steps = 'options';
+		step = 'options';
 	});
 </script>
 
@@ -30,39 +30,38 @@
 	<div class="container">
 		<h3>{$i18n.wallet.receive}</h3>
 
-		{#if steps === 'wallet_id'}
+		{#if step === 'wallet_id'}
 			<div in:fade>
 				<ReceiveTokensQRCode
-					back={() => (steps = 'options')}
+					back={() => (step = 'options')}
 					value={missionControlId.toText()}
 					ariaLabel={$i18n.wallet.wallet_id}
 				/>
 			</div>
-		{:else if steps === 'account_identifier'}
+		{:else if step === 'account_identifier'}
 			<div in:fade>
 				<ReceiveTokensQRCode
-					back={() => (steps = 'options')}
+					back={() => (step = 'options')}
 					value={accountIdentifier.toHex()}
 					ariaLabel={$i18n.wallet.account_identifier}
 				/>
 			</div>
-		{:else if steps === 'signer'}
+		{:else if step === 'signer'}
 			<div in:fade>
-				<ReceiveTokensSigner {missionControlId} bind:visible back={() => (steps = 'options')} />
+				<ReceiveTokensSigner {missionControlId} bind:visible back={() => (step = 'options')} />
 			</div>
 		{:else}
 			<div class="options">
-				<button onclick={() => (steps = 'wallet_id')}
-					><IconQRCode /> {$i18n.wallet.wallet_id}</button
+				<button onclick={() => (step = 'wallet_id')}><IconQRCode /> {$i18n.wallet.wallet_id}</button
 				>
 
-				<button onclick={() => (steps = 'account_identifier')}
+				<button onclick={() => (step = 'account_identifier')}
 					><IconQRCode /> {$i18n.wallet.account_identifier}</button
 				>
 
 				<p>{$i18n.wallet.or_connect_wallet}</p>
 
-				<button onclick={() => (steps = 'signer')}><IconOisy /> OISY</button>
+				<button onclick={() => (step = 'signer')}><IconOisy /> OISY</button>
 			</div>
 		{/if}
 	</div>

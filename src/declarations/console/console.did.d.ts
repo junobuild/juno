@@ -160,7 +160,7 @@ export interface RateConfig {
 	max_tokens: bigint;
 	time_per_token_ns: bigint;
 }
-export type SegmentType = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
+export type SegmentKind = { Orbiter: null } | { MissionControl: null } | { Satellite: null };
 export interface SegmentsDeploymentOptions {
 	orbiter: [] | [string];
 	mission_control_version: [] | [string];
@@ -256,10 +256,10 @@ export interface _SERVICE {
 	list_user_mission_control_centers: ActorMethod<[], Array<[Principal, MissionControl]>>;
 	set_controllers: ActorMethod<[SetControllersArgs], undefined>;
 	set_custom_domain: ActorMethod<[string, [] | [string]], undefined>;
-	set_fee: ActorMethod<[SegmentType, Tokens], undefined>;
+	set_fee: ActorMethod<[SegmentKind, Tokens], undefined>;
 	set_storage_config: ActorMethod<[StorageConfig], undefined>;
 	submit_proposal: ActorMethod<[bigint], [bigint, Proposal]>;
-	update_rate_config: ActorMethod<[SegmentType, RateConfig], undefined>;
+	update_rate_config: ActorMethod<[SegmentKind, RateConfig], undefined>;
 	upload_asset_chunk: ActorMethod<[UploadChunk], UploadChunkResult>;
 	version: ActorMethod<[], string>;
 }

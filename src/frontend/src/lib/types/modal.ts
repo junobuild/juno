@@ -1,6 +1,8 @@
 import type { snapshot } from '$declarations/ic/ic.did';
 import type {
 	MissionControlSettings,
+	Monitoring,
+	MonitoringConfig,
 	Satellite
 } from '$declarations/mission_control/mission_control.did';
 import type { OrbiterSatelliteFeatures } from '$declarations/orbiter/orbiter.did';
@@ -9,8 +11,10 @@ import type { MissionControlBalance } from '$lib/types/balance';
 import type { CanisterSegmentWithLabel, CanisterSettings } from '$lib/types/canister';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { CustomDomains } from '$lib/types/custom-domain';
+import type { Metadata } from '$lib/types/metadata';
 import type { OrbiterSatelliteConfigEntry } from '$lib/types/ortbiter';
 import type { SatelliteIdText } from '$lib/types/satellite';
+import type { Option } from '$lib/types/utils';
 import type { Principal } from '@dfinity/principal';
 import type { BuildType } from '@junobuild/admin';
 
@@ -40,6 +44,7 @@ export type JunoModalUpgradeSatelliteDetail = JunoModalUpgradeDetail &
 
 export interface JunoModalCreateSegmentDetail extends JunoModalBalance {
 	fee: bigint;
+	monitoringConfig: Option<MonitoringConfig>;
 }
 
 export interface JunoModalCustomDomainDetail {
@@ -101,6 +106,11 @@ export interface JunoModalEditAuthConfigDetail extends JunoModalSatelliteDetail 
 export interface JunoModalMonitoringStrategyDetail {
 	missionControlId: Principal;
 	settings: MissionControlSettings | undefined;
+	metadata: Metadata;
+}
+
+export interface JunoModalShowMonitoringDetail extends JunoModalSegmentDetail {
+	monitoring: Monitoring | undefined;
 }
 
 export type JunoModalDetail =
@@ -117,7 +127,7 @@ export type JunoModalDetail =
 	| JunoModalEditOrbiterConfigDetail
 	| JunoModalMonitoringStrategyDetail;
 
-export interface JunoModal {
+export interface JunoModal<T extends JunoModalDetail> {
 	type:
 		| 'create_satellite'
 		| 'create_orbiter'
@@ -141,6 +151,7 @@ export interface JunoModal {
 		| 'upgrade_orbiter'
 		| 'send_tokens'
 		| 'create_monitoring_strategy'
-		| 'stop_monitoring_strategy';
-	detail?: JunoModalDetail;
+		| 'stop_monitoring_strategy'
+		| 'show_monitoring_details';
+	detail?: T;
 }

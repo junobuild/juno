@@ -10,6 +10,7 @@
 	import { setAuthConfig } from '$lib/api/satellites.api';
 	import IconWarning from '$lib/components/icons/IconWarning.svelte';
 	import ButtonTableAction from '$lib/components/ui/ButtonTableAction.svelte';
+	import Checkbox from '$lib/components/ui/Checkbox.svelte';
 	import Html from '$lib/components/ui/Html.svelte';
 	import Popover from '$lib/components/ui/Popover.svelte';
 	import { deleteCustomDomain as deleteCustomDomainService } from '$lib/services/hosting.services';
@@ -161,10 +162,10 @@
 
 		{#if advancedOptions}
 			<hr />
-			<div class="checkbox">
+			<Checkbox>
 				<input type="checkbox" onchange={() => (skipDeleteDomain = !skipDeleteDomain)} />
-				<span>{$i18n.hosting.skip_delete_domain}</span>
-			</div>
+				<span class="skip-delete">{$i18n.hosting.skip_delete_domain}</span>
+			</Checkbox>
 		{/if}
 	</div>
 </Popover>
@@ -197,12 +198,8 @@
 		padding: 0 0 var(--padding-2x);
 	}
 
-	.checkbox {
-		padding: var(--padding-2x) 0 0;
-
-		span {
-			white-space: pre-wrap;
-		}
+	.skip-delete {
+		white-space: pre-wrap;
 	}
 
 	.warning {

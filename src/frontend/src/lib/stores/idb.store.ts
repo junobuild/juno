@@ -2,6 +2,10 @@ import { createStore } from 'idb-keyval';
 
 // Loaded and set in web workers
 export const cyclesIdbStore = createStore('juno-db', 'juno-cycles-store');
+export const monitoringIdbStore = createStore('juno-monitoring', 'juno-monitoring-store');
+/**
+ * @deprecated use monitoringHistoryIdbStore instead
+ */
 export const statusesIdbStore = createStore('juno-statuses', 'juno-statuses-store');
 
 // Loaded and set on the UI side

@@ -2,6 +2,7 @@ import type {
 	CyclesMonitoringStrategy,
 	_SERVICE as MissionControlActor,
 	Monitoring,
+	MonitoringConfig,
 	MonitoringStartConfig,
 	MonitoringStopConfig
 } from '$declarations/mission_control/mission_control.did';
@@ -67,11 +68,7 @@ describe('Mission Control - Monitoring', () => {
 		await pic?.tearDown();
 	});
 
-	const testIdentity = () => {
-		const emptyConfig: MonitoringStopConfig = {
-			cycles_config: []
-		};
-
+	const testGuards = () => {
 		it('should throw errors on start monitoring', async () => {
 			const { start_monitoring } = actor;
 
@@ -84,16 +81,22 @@ describe('Mission Control - Monitoring', () => {
 			await expect(stop_monitoring()).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
-		it('should throw errors on config monitoring', async () => {
-			const { update_and_stop_monitoring } = actor;
+		it('should throw errors on update and start monitoring', async () => {
+			const { update_and_start_monitoring } = actor;
 
-			await expect(update_and_stop_monitoring(emptyConfig)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(update_and_start_monitoring({ cycles_config: [] })).rejects.toThrow(
+				CONTROLLER_ERROR_MSG
+			);
 		});
 
-		it('should throw errors on unset satellite', async () => {
+		it('should throw errors on update and stop monitoring', async () => {
 			const { update_and_stop_monitoring } = actor;
 
-			await expect(update_and_stop_monitoring(emptyConfig)).rejects.toThrow(CONTROLLER_ERROR_MSG);
+			await expect(
+				update_and_stop_monitoring({
+					cycles_config: []
+				})
+			).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
 
 		it('should throw errors on get monitoring status', async () => {
@@ -113,6 +116,12 @@ describe('Mission Control - Monitoring', () => {
 				})
 			).rejects.toThrow(CONTROLLER_ERROR_MSG);
 		});
+
+		it('should throw errors on set monitoring config', async () => {
+			const { set_monitoring_config } = actor;
+
+			await expect(set_monitoring_config([])).rejects.toThrow(CONTROLLER_ERROR_MSG);
+		});
 	};
 
 	describe('anonymous', () => {
@@ -120,7 +129,7 @@ describe('Mission Control - Monitoring', () => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		testIdentity();
+		testGuards();
 	});
 
 	describe('unknown identity', () => {
@@ -128,7 +137,7 @@ describe('Mission Control - Monitoring', () => {
 			actor.setIdentity(Ed25519KeyIdentity.generate());
 		});
 
-		testIdentity();
+		testGuards();
 	});
 
 	describe('admin', () => {
@@ -605,6 +614,40 @@ describe('Mission Control - Monitoring', () => {
 			await update_and_start_monitoring(config);
 
 			await testOrbiterMonitoring({ expectedEnabled: true, expectedStrategy: updateStrategy });
+		});
+
+		it('should set monitoring config', async () => {
+			const { set_monitoring_config, get_settings } = actor;
+
+			const config: MonitoringConfig = {
+				cycles: [
+					{
+						default_strategy: [strategy],
+						notification: [
+							{
+								enabled: true,
+								to: toNullable()
+							}
+						]
+					}
+				]
+			};
+
+			await set_monitoring_config(toNullable(config));
+
+			const settings = await get_settings();
+
+			expect(fromNullable(fromNullable(settings)?.monitoring_config ?? [])).toEqual(config);
+		});
+
+		it('should set monitoring config to none', async () => {
+			const { set_monitoring_config, get_settings } = actor;
+
+			await set_monitoring_config(toNullable());
+
+			const settings = await get_settings();
+
+			expect(fromNullable(fromNullable(settings)?.monitoring_config ?? [])).toBeUndefined();
 		});
 	});
 });

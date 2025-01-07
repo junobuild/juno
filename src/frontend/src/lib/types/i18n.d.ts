@@ -73,10 +73,10 @@ interface I18nCore {
 	none: string;
 	enabled: string;
 	disabled: string;
+	email_address: string;
 }
 
 interface I18nCanisters {
-	insight: string;
 	top_up: string;
 	cycles_description: string;
 	top_up_in_progress: string;
@@ -200,6 +200,7 @@ interface I18nCanisters {
 	edit_snapshot: string;
 	delete_snapshot: string;
 	delete_snapshot_confirm: string;
+	loading_ui_data: string;
 }
 
 interface I18nSign_in {
@@ -251,6 +252,8 @@ interface I18nMission_control {
 	overview: string;
 	id: string;
 	not_found: string;
+	loading: string;
+	edit_email: string;
 }
 
 interface I18nWallet {
@@ -445,6 +448,7 @@ interface I18nCli {
 
 interface I18nErrors {
 	no_identity: string;
+	initializing_mission_control: string;
 	no_mission_control: string;
 	cli_missing_params: string;
 	cli_missing_selection: string;
@@ -454,6 +458,7 @@ interface I18nErrors {
 	satellite_no_found: string;
 	satellite_name_update: string;
 	satellite_missing_name: string;
+	satellites_not_loaded: string;
 	canister_stop: string;
 	canister_start: string;
 	canister_delete: string;
@@ -465,6 +470,7 @@ interface I18nErrors {
 	load_documents: string;
 	load_users: string;
 	load_settings: string;
+	load_metadata: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;
@@ -482,8 +488,6 @@ interface I18nErrors {
 	collection_invalid: string;
 	controller_invalid: string;
 	document_invalid: string;
-	observatory_get_unexpected_error: string;
-	observatory_set_unexpected_error: string;
 	collection_added: string;
 	collection_updated: string;
 	collection_deleted: string;
@@ -503,6 +507,7 @@ interface I18nErrors {
 	orbiter_configuration_missing: string;
 	orbiter_configuration_unexpected: string;
 	orbiter_configuration_listing: string;
+	orbiter_not_loaded: string;
 	canister_id_missing: string;
 	canister_attach_error: string;
 	orbiter_attach: string;
@@ -539,9 +544,15 @@ interface I18nErrors {
 	auth_rate_config_max_tokens: string;
 	auth_rate_config_update: string;
 	auth_domain_config: string;
+	mission_control_not_loaded: string;
 	mission_control_settings_not_loaded: string;
+	mission_control_metadata_not_loaded: string;
 	monitoring_apply_strategy_error: string;
 	monitoring_stop_error: string;
+	monitoring_no_modules: string;
+	monitoring_email_missing: string;
+	monitoring_email_update: string;
+	monitoring_notifications_update: string;
 }
 
 interface I18nDocument {
@@ -680,25 +691,12 @@ interface I18nUsers {
 	empty: string;
 }
 
-interface I18nObservatory {
-	title: string;
-	dashboard: string;
-	monitoring: string;
-	email_notifications: string;
-	email_notifications_placeholder: string;
-	cycles_threshold: string;
-	cycles_threshold_placeholder: string;
-	last_data_collection: string;
-	no_data_or_disabled_go_settings: string;
-	go_to_settings: string;
-	id: string;
-	segment: string;
-	cycles_collected: string;
-	error_collecting_data: string;
-}
-
 interface I18nMonitoring {
 	title: string;
+	dashboard: string;
+	start: string;
+	loading: string;
+	introduction: string;
 	monitoring_strategy: string;
 	create_info: string;
 	stop_info: string;
@@ -717,10 +715,11 @@ interface I18nMonitoring {
 	stop_monitoring: string;
 	strategy_created: string;
 	monitoring_stopped: string;
-	applying_strategy: string;
+	starting_monitoring: string;
 	stopping_monitoring: string;
 	remaining_threshold: string;
 	top_up_amount: string;
+	set_as_default_configuration: string;
 	modules: string;
 	selected_modules: string;
 	monitored: string;
@@ -735,8 +734,22 @@ interface I18nMonitoring {
 	warning_advice: string;
 	strategy_preparing: string;
 	reload_settings: string;
+	saving_options: string;
 	stop_monitoring_question: string;
 	stop_monitoring_note: string;
+	last_status_check: string;
+	last_top_up: string;
+	usage: string;
+	weekly_cycles_deposit: string;
+	default_strategy: string;
+	configuration_for_modules: string;
+	auto_refill: string;
+	auto_refill_disabled: string;
+	auto_refill_strategy: string;
+	email_notifications: string;
+	receive_email: string;
+	notifications: string;
+	edit_email: string;
 }
 
 interface I18nPreferences {
@@ -784,7 +797,6 @@ interface I18n {
 	sort: I18nSort;
 	filter: I18nFilter;
 	users: I18nUsers;
-	observatory: I18nObservatory;
 	monitoring: I18nMonitoring;
 	preferences: I18nPreferences;
 	examples: I18nExamples;

@@ -61,6 +61,8 @@ describe('Mission Control - History', () => {
 
 		await set_orbiter(orbiterId, []);
 		await set_satellite(satelliteId, []);
+
+		await tick(pic);
 	});
 
 	afterAll(async () => {
@@ -113,7 +115,7 @@ describe('Mission Control - History', () => {
 			expect(cycles.cycles.amount).toBeGreaterThan(0n);
 			expect(cycles.cycles.timestamp).toBeGreaterThan(0n);
 
-			expect(fromNullable(cycles.last_deposited_cycles)).toBeUndefined();
+			expect(fromNullable(cycles.deposited_cycles)).toBeUndefined();
 		});
 
 		return results.sort(
@@ -123,15 +125,15 @@ describe('Mission Control - History', () => {
 	};
 
 	describe('init', () => {
-		it('should have not monitoring history for mission control', async () => {
+		it('should not have monitoring history for mission control', async () => {
 			await testEmptyHistory(missionControlId);
 		});
 
-		it('should have not monitoring history for satellite', async () => {
+		it('should not have monitoring history for satellite', async () => {
 			await testEmptyHistory(satelliteId);
 		});
 
-		it('should have not monitoring history for orbiter', async () => {
+		it('should not have monitoring history for orbiter', async () => {
 			await testEmptyHistory(orbiterId);
 		});
 	});
@@ -175,15 +177,15 @@ describe('Mission Control - History', () => {
 				await tick(pic);
 			});
 
-			it('should have not monitoring history for mission control', async () => {
+			it('should have monitoring history for mission control', async () => {
 				await testHistory({ segmentId: missionControlId, expectedLength: 1 });
 			});
 
-			it('should have not monitoring history for satellite', async () => {
+			it('should have monitoring history for satellite', async () => {
 				await testHistory({ segmentId: satelliteId, expectedLength: 1 });
 			});
 
-			it('should have not monitoring history for orbiter', async () => {
+			it('should have monitoring history for orbiter', async () => {
 				await testHistory({ segmentId: orbiterId, expectedLength: 1 });
 			});
 		});
@@ -196,35 +198,37 @@ describe('Mission Control - History', () => {
 					await tick(pic);
 				});
 
-				it('should have not monitoring history for mission control', async () => {
+				it('should have monitoring history for mission control', async () => {
 					await testHistory({ segmentId: missionControlId, expectedLength: 2 });
 				});
 
-				it('should have not monitoring history for satellite', async () => {
+				it('should have monitoring history for satellite', async () => {
 					await testHistory({ segmentId: satelliteId, expectedLength: 2 });
 				});
 
-				it('should have not monitoring history for orbiter', async () => {
+				it('should have monitoring history for orbiter', async () => {
 					await testHistory({ segmentId: orbiterId, expectedLength: 2 });
 				});
 			});
 
 			describe('second round', () => {
 				beforeAll(async () => {
+					await tick(pic);
+
 					await pic.advanceTime(30000);
 
 					await tick(pic);
 				});
 
-				it('should have not monitoring history for mission control', async () => {
+				it('should have monitoring history for mission control', async () => {
 					await testHistory({ segmentId: missionControlId, expectedLength: 3 });
 				});
 
-				it('should have not monitoring history for satellite', async () => {
+				it('should have monitoring history for satellite', async () => {
 					await testHistory({ segmentId: satelliteId, expectedLength: 3 });
 				});
 
-				it('should have not monitoring history for orbiter', async () => {
+				it('should have monitoring history for orbiter', async () => {
 					await testHistory({ segmentId: orbiterId, expectedLength: 3 });
 				});
 			});
@@ -270,12 +274,12 @@ describe('Mission Control - History', () => {
 				const thirtyDays = 1000 * 60 * 60 * 24 * 30;
 
 				// We want to keep the history for the first round and second round but, clean up the start
-				await pic.advanceTime(thirtyDays - 30000);
+				await pic.advanceTime(thirtyDays - 2 * 30000);
 
 				await tick(pic);
 			});
 
-			it('should have not monitoring history for mission control', async () => {
+			it('should have monitoring history for mission control', async () => {
 				const updatedHistory = await testHistory({
 					segmentId: missionControlId,
 					expectedLength: 3
@@ -284,7 +288,7 @@ describe('Mission Control - History', () => {
 				testCleanedHistory({ before: missionControlHistory, after: updatedHistory });
 			});
 
-			it('should have not monitoring history for satellite', async () => {
+			it('should have monitoring history for satellite', async () => {
 				const updatedHistory = await testHistory({
 					segmentId: satelliteId,
 					expectedLength: 3
@@ -293,7 +297,7 @@ describe('Mission Control - History', () => {
 				testCleanedHistory({ before: satelliteHistory, after: updatedHistory });
 			});
 
-			it('should have not monitoring history for orbiter', async () => {
+			it('should have monitoring history for orbiter', async () => {
 				const updatedHistory = await testHistory({
 					segmentId: orbiterId,
 					expectedLength: 3

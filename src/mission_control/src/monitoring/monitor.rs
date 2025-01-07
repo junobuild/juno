@@ -4,11 +4,12 @@ use crate::monitoring::cycles::config::{
 use crate::monitoring::cycles::start::start_cycles_monitoring;
 use crate::monitoring::cycles::status::get_cycles_monitoring_status;
 use crate::monitoring::cycles::stop::stop_cycles_monitoring;
+use crate::monitoring::store::heap::set_monitoring_config;
 use crate::monitoring::store::stable::get_monitoring_history as get_monitoring_history_store;
 use crate::types::interface::{
     GetMonitoringHistory, MonitoringStartConfig, MonitoringStatus, MonitoringStopConfig,
 };
-use crate::types::state::{MonitoringHistory, MonitoringHistoryKey};
+use crate::types::state::{MonitoringConfig, MonitoringHistory, MonitoringHistoryKey};
 use ic_cdk::spawn;
 use ic_cdk::trap;
 use ic_cdk_timers::set_timer;
@@ -58,4 +59,8 @@ pub fn get_monitoring_history(
     filter: &GetMonitoringHistory,
 ) -> Vec<(MonitoringHistoryKey, MonitoringHistory)> {
     get_monitoring_history_store(filter)
+}
+
+pub fn update_monitoring_config(config: &Option<MonitoringConfig>) {
+    set_monitoring_config(config);
 }

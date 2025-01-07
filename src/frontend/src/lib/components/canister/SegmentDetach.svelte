@@ -6,7 +6,7 @@
 	import IconLinkOff from '$lib/components/icons/IconLinkOff.svelte';
 	import Text from '$lib/components/ui/Text.svelte';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { detachOrbiter, detachSatellite } from '$lib/services/mission-control.services';
 	import { busy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -33,7 +33,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -47,7 +47,7 @@
 
 			await fn({
 				canisterId: segmentId,
-				missionControlId: $missionControlStore
+				missionControlId: $missionControlIdDerived
 			});
 
 			await goto('/', { replaceState: true });

@@ -40,13 +40,13 @@ use crate::store::stable::{
     get_existing_mission_control, get_mission_control, get_proposal as get_proposal_state,
     has_credits, list_mission_controls, list_payments as list_payments_state,
 };
-use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets, SegmentType};
+use crate::types::interface::{CommitProposal, Config, DeleteProposalAssets};
 use crate::types::state::{
     Fees, HeapState, InvitationCode, MissionControl, MissionControls, Proposal, ProposalId,
     ProposalType, Rates, ReleasesMetadata, State,
 };
 use candid::Principal;
-use ciborium::into_writer;
+use ciborium::{from_reader, into_writer};
 use ic_cdk::api::call::ManualReply;
 use ic_cdk::api::caller;
 use ic_cdk::{id, trap};
@@ -62,7 +62,7 @@ use junobuild_shared::types::interface::{
     GetCreateCanisterFeeArgs, SetControllersArgs,
 };
 use junobuild_shared::types::list::{ListParams, ListResults};
-use junobuild_shared::types::state::{Controllers, UserId};
+use junobuild_shared::types::state::{Controllers, SegmentKind, UserId};
 use junobuild_shared::upgrade::{read_post_upgrade, write_pre_upgrade};
 use junobuild_storage::http::types::{
     HttpRequest, HttpResponse, StreamingCallbackHttpResponse, StreamingCallbackToken,
@@ -77,7 +77,6 @@ use junobuild_storage::types::interface::{
     AssetNoContent, CommitBatch, InitAssetKey, InitUploadResult, UploadChunk, UploadChunkResult,
 };
 use memory::{get_memory_upgrades, init_stable_state};
-use serde_cbor::from_reader;
 use std::collections::HashMap;
 use types::state::Payments;
 
@@ -249,11 +248,11 @@ fn get_create_orbiter_fee(
 }
 
 #[update(guard = "caller_is_admin_controller")]
-fn set_fee(segment: SegmentType, fee: Tokens) {
+fn set_fee(segment: SegmentKind, fee: Tokens) {
     match segment {
-        SegmentType::Satellite => set_create_satellite_fee(&fee),
-        SegmentType::MissionControl => trap("Fee for mission control not supported."),
-        SegmentType::Orbiter => set_create_orbiter_fee(&fee),
+        SegmentKind::Satellite => set_create_satellite_fee(&fee),
+        SegmentKind::MissionControl => trap("Fee for mission control not supported."),
+        SegmentKind::Orbiter => set_create_orbiter_fee(&fee),
     }
 }
 
@@ -271,11 +270,11 @@ fn add_invitation_code(code: InvitationCode) {
 // ---------------------------------------------------------
 
 #[update(guard = "caller_is_admin_controller")]
-fn update_rate_config(segment: SegmentType, config: RateConfig) {
+fn update_rate_config(segment: SegmentKind, config: RateConfig) {
     match segment {
-        SegmentType::Satellite => update_satellites_rate_config(&config),
-        SegmentType::MissionControl => update_mission_controls_rate_config(&config),
-        SegmentType::Orbiter => update_orbiters_rate_config(&config),
+        SegmentKind::Satellite => update_satellites_rate_config(&config),
+        SegmentKind::MissionControl => update_mission_controls_rate_config(&config),
+        SegmentKind::Orbiter => update_orbiters_rate_config(&config),
     }
 }
 

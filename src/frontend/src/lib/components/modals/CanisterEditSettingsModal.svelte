@@ -63,14 +63,14 @@
 			BigInt(computeAllocation ?? 0n) === settings.computeAllocation
 	);
 
-	let steps: 'edit' | 'in_progress' | 'ready' = $state('edit');
+	let step: 'edit' | 'in_progress' | 'ready' = $state('edit');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
 
 	const updateSettings = async () => {
 		wizardBusy.start();
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		const canisterId = Principal.from(segment.canisterId);
 
@@ -91,18 +91,18 @@
 		wizardBusy.stop();
 
 		if (success !== 'ok') {
-			steps = 'edit';
+			step = 'edit';
 			return;
 		}
 
 		emit({ message: 'junoRestartCycles', detail: { canisterId } });
 
-		steps = 'ready';
+		step = 'ready';
 	};
 </script>
 
 <Modal on:junoClose>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<p>
 				<Html
@@ -116,7 +116,7 @@
 			</p>
 			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.canisters.updating_settings}</p>
 		</SpinnerModal>

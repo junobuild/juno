@@ -18,7 +18,7 @@ import {
 	controllersInitArgs
 } from './utils/setup-tests.utils';
 
-describe('Mission Control', () => {
+describe('Mission Control - Controllers', () => {
 	let pic: PocketIc;
 	let actor: Actor<MissionControlActor>;
 

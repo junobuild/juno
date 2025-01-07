@@ -11,7 +11,7 @@
 	import Value from '$lib/components/ui/Value.svelte';
 	import { ONE_TRILLION, DEFAULT_TCYCLES_TO_RETAIN_ON_DELETION } from '$lib/constants/constants';
 	import { authSignedOut } from '$lib/derived/auth.derived';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { loadSatellites } from '$lib/services/satellites.services';
 	import { isBusy, wizardBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
@@ -28,7 +28,7 @@
 
 	let { segment, segmentName, currentCycles, deleteFn }: Props = $props();
 
-	let steps: 'init' | 'in_progress' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'error' = $state('init');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
@@ -60,7 +60,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -74,18 +74,18 @@
 			return;
 		}
 
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		wizardBusy.start();
 
 		try {
 			await deleteFn({
-				missionControlId: $missionControlStore,
+				missionControlId: $missionControlIdDerived,
 				cyclesToDeposit
 			});
 
 			await loadSatellites({
-				missionControl: $missionControlStore,
+				missionControlId: $missionControlIdDerived,
 				reload: true
 			});
 
@@ -104,7 +104,7 @@
 				)
 			);
 		} catch (err: unknown) {
-			steps = 'error';
+			step = 'error';
 
 			toasts.error({
 				text: $i18n.errors.canister_delete,
@@ -116,7 +116,7 @@
 	};
 </script>
 
-{#if steps === 'in_progress'}
+{#if step === 'in_progress'}
 	<SpinnerModal>
 		<p>{$i18n.canisters.delete_in_progress}</p>
 	</SpinnerModal>

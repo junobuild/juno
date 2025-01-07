@@ -5,8 +5,8 @@
 	import CanisterOverview from '$lib/components/canister/CanisterOverview.svelte';
 	import CanisterSubnet from '$lib/components/canister/CanisterSubnet.svelte';
 	import MissionControlActions from '$lib/components/mission-control/MissionControlActions.svelte';
-	import MissionControlSettingsLoader from '$lib/components/mission-control/MissionControlSettingsLoader.svelte';
-	import Monitoring from '$lib/components/monitoring/Monitoring.svelte';
+	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
+	import MonitoringDisabled from '$lib/components/monitoring/MonitoringDisabled.svelte';
 	import Identifier from '$lib/components/ui/Identifier.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import { authSignedIn } from '$lib/derived/auth.derived';
@@ -51,15 +51,6 @@
 						<p>v{$missionControlVersion?.current ?? '...'}</p>
 					</Value>
 				</div>
-
-				<div>
-					<MissionControlSettingsLoader {missionControlId}>
-						<Monitoring
-							monitoring={$missionControlMonitoring}
-							loading={$missionControlSettingsNotLoaded}
-						/>
-					</MissionControlSettingsLoader>
-				</div>
 			</div>
 		</div>
 
@@ -67,12 +58,19 @@
 	</div>
 
 	<div class="card-container with-title" in:fade>
-		<span class="title">{$i18n.canisters.insight}</span>
+		<span class="title">{$i18n.monitoring.title}</span>
 
 		<div class="columns-3">
 			<CanisterOverview canisterId={missionControlId} segment="mission_control" />
 
-			<CanisterMonitoring canisterId={missionControlId} segment="mission_control" />
+			<CanisterMonitoring canisterId={missionControlId} segment="mission_control">
+				<MissionControlDataLoader {missionControlId}>
+					<MonitoringDisabled
+						monitoring={$missionControlMonitoring}
+						loading={$missionControlSettingsNotLoaded}
+					/>
+				</MissionControlDataLoader>
+			</CanisterMonitoring>
 		</div>
 	</div>
 {/if}

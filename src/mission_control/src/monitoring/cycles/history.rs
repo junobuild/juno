@@ -1,15 +1,18 @@
 use crate::constants::RETAIN_ARCHIVE_STATUSES_NS;
+use crate::monitoring::cycles::utils::get_deposited_cycles;
 use crate::monitoring::store::stable::{
     delete_monitoring_history, get_monitoring_history_keys, insert_cycles_monitoring_history,
 };
 use crate::types::interface::GetMonitoringHistory;
-use crate::types::state::{CyclesBalance, MonitoringHistoryCycles};
+use crate::types::state::MonitoringHistoryCycles;
 use canfund::manager::record::CanisterRecord;
 use ic_cdk::api::management_canister::main::CanisterId;
 use ic_cdk::api::time;
+use ic_cdk::print;
+use junobuild_shared::types::monitoring::CyclesBalance;
 use std::collections::HashMap;
 
-pub fn save_monitoring_history(records: HashMap<CanisterId, CanisterRecord>) {
+pub fn save_monitoring_history(records: &HashMap<CanisterId, CanisterRecord>) {
     for (canister_id, record) in records.iter() {
         cleanup_monitoring_history(canister_id);
 
@@ -19,24 +22,23 @@ pub fn save_monitoring_history(records: HashMap<CanisterId, CanisterRecord>) {
 
 fn insert_monitoring_history(canister_id: &CanisterId, record: &CanisterRecord) {
     if let Some(cycles) = record.get_cycles() {
-        let last_deposited_cycles =
-            record
-                .get_last_deposited_cycles()
-                .clone()
-                .map(|last_deposited| CyclesBalance {
-                    amount: last_deposited.amount,
-                    timestamp: last_deposited.timestamp,
-                });
+        let deposited_cycles = get_deposited_cycles(record);
 
         let history_entry: MonitoringHistoryCycles = MonitoringHistoryCycles {
             cycles: CyclesBalance {
                 amount: cycles.amount,
                 timestamp: cycles.timestamp,
             },
-            last_deposited_cycles,
+            deposited_cycles,
         };
 
-        insert_cycles_monitoring_history(canister_id, &history_entry);
+        insert_cycles_monitoring_history(canister_id, &history_entry).unwrap_or_else(|e| {
+            // Error would mean the random generator is not initialized.
+            print(format!(
+                "Failed to insert cycles monitoring history: {:?}",
+                e
+            ))
+        });
     }
 }
 

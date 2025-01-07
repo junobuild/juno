@@ -3,7 +3,7 @@ import { writable, type Readable } from 'svelte/store';
 
 type Data<T> = Option<{ data: T }>;
 
-interface DataStore<T> extends Readable<Data<T>> {
+export interface DataStore<T> extends Readable<Data<T>> {
 	set: (data: T) => void;
 	reset: () => void;
 }

@@ -80,7 +80,7 @@ export const reloadContextRules = async ({
 	} catch (err: unknown) {
 		// TODO: remove backward compatibility stuffs
 		try {
-			const rules = await listRulesDeprecated({ satelliteId, type });
+			const rules = await listRulesDeprecated({ satelliteId, identity, type });
 			store.set({ satelliteId, rules, rule: undefined });
 			return;
 		} catch (_: unknown) {

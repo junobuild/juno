@@ -158,21 +158,8 @@ pub mod interface {
     use crate::types::state::ProposalId;
     use candid::CandidType;
     use junobuild_shared::types::core::Hash;
-    use junobuild_shared::types::cronjob::CronJobs;
     use junobuild_storage::types::config::StorageConfig;
     use serde::{Deserialize, Serialize};
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub enum SegmentType {
-        Satellite,
-        MissionControl,
-        Orbiter,
-    }
-
-    #[derive(CandidType, Deserialize)]
-    pub struct CronJobsArgs {
-        pub cron_jobs: CronJobs,
-    }
 
     #[derive(CandidType, Deserialize)]
     pub struct Config {

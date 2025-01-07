@@ -1,18 +1,15 @@
 use crate::mgmt::settings::{create_canister_cycles, create_canister_settings};
 use crate::mgmt::types::ic::WasmArg;
 use crate::types::interface::DepositCyclesArgs;
-use crate::types::state::{
-    SegmentCanisterSettings, SegmentCanisterStatus, SegmentStatus, SegmentStatusResult,
-};
 use candid::Principal;
 use ic_cdk::api::call::CallResult;
+use ic_cdk::api::canister_balance128;
 use ic_cdk::api::management_canister::main::{
-    canister_status as ic_canister_status, create_canister, delete_canister,
-    deposit_cycles as ic_deposit_cycles, install_code as ic_install_code, stop_canister,
-    update_settings, CanisterId, CanisterIdRecord, CanisterInstallMode, CanisterSettings,
-    CreateCanisterArgument, InstallCodeArgument, UpdateSettingsArgument,
+    create_canister, delete_canister, deposit_cycles as ic_deposit_cycles,
+    install_code as ic_install_code, stop_canister, update_settings, CanisterId, CanisterIdRecord,
+    CanisterInstallMode, CanisterSettings, CreateCanisterArgument, InstallCodeArgument,
+    UpdateSettingsArgument,
 };
-use ic_cdk::api::{canister_balance128, time};
 
 /// Asynchronously creates a new canister and installs provided Wasm code with additional cycles.
 ///
@@ -104,44 +101,6 @@ pub async fn update_canister_controllers(
     };
 
     update_settings(arg).await
-}
-
-/// Fetches the status of a segment (canister), including its configuration and resource usage.
-///
-/// # Arguments
-/// - `canister_id`: The `CanisterId` of the segment canister.
-///
-/// # Returns
-/// - `SegmentStatusResult`: Contains detailed status and settings of the canister on success.
-/// - `Err(String)`: On failure, returns an error message.
-pub async fn segment_status(canister_id: CanisterId) -> SegmentStatusResult {
-    let status = ic_canister_status(CanisterIdRecord { canister_id }).await;
-
-    match status {
-        Ok((canister_status,)) => {
-            let settings: SegmentCanisterSettings = SegmentCanisterSettings {
-                controllers: canister_status.settings.controllers,
-                compute_allocation: canister_status.settings.compute_allocation,
-                memory_allocation: canister_status.settings.memory_allocation,
-                freezing_threshold: canister_status.settings.freezing_threshold,
-            };
-
-            Ok(SegmentStatus {
-                id: canister_id,
-                metadata: None,
-                status: SegmentCanisterStatus {
-                    status: canister_status.status,
-                    settings,
-                    module_hash: canister_status.module_hash,
-                    memory_size: canister_status.memory_size,
-                    cycles: canister_status.cycles,
-                    idle_cycles_burned_per_day: canister_status.idle_cycles_burned_per_day,
-                },
-                status_at: time(),
-            })
-        }
-        Err((_, message)) => Err(["Failed to get canister status: ".to_string(), message].join("")),
-    }
 }
 
 /// Deposits cycles into a specified canister from the calling canister's balance.

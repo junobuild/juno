@@ -1,8 +1,9 @@
 import type { UpgradeCodeProgressState } from '@junobuild/admin';
 
 export enum MonitoringStrategyProgressStep {
+	Options = 0,
 	CreateOrStopMonitoring = 1,
-	ReloadSettings = 2
+	Reload = 2
 }
 
 export type MonitoringStrategyProgressState = UpgradeCodeProgressState;

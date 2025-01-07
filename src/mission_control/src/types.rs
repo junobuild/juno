@@ -3,6 +3,7 @@ pub mod state {
     use candid::{CandidType, Principal};
     use ic_stable_structures::StableBTreeMap;
     use junobuild_shared::types::memory::Memory;
+    use junobuild_shared::types::monitoring::CyclesBalance;
     use junobuild_shared::types::state::{
         ArchiveTime, Controllers, Metadata, OrbiterId, SegmentId, SegmentStatusResult, Timestamp,
     };
@@ -13,6 +14,10 @@ pub mod state {
     pub type Satellites = HashMap<SatelliteId, Satellite>;
     pub type Orbiters = HashMap<OrbiterId, Orbiter>;
 
+    #[deprecated(
+        since = "0.0.14",
+        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+    )]
     pub type Statuses = BTreeMap<ArchiveTime, SegmentStatusResult>;
 
     pub type MonitoringHistoryStable =
@@ -36,7 +41,9 @@ pub mod state {
         pub user: User,
         pub satellites: Satellites,
         pub controllers: Controllers,
-        #[deprecated(note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities.")]
+        #[deprecated(
+            note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+        )]
         pub archive: Archive,
         pub orbiters: Orbiters,
         pub settings: Option<MissionControlSettings>,
@@ -52,9 +59,22 @@ pub mod state {
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MissionControlSettings {
+        // The monitoring rules to observe the mission control itself
         pub monitoring: Option<Monitoring>,
+        pub monitoring_config: Option<MonitoringConfig>,
         pub created_at: Timestamp,
         pub updated_at: Timestamp,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct MonitoringConfig {
+        pub cycles: Option<CyclesMonitoringConfig>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CyclesMonitoringConfig {
+        pub notification: Option<DepositedCyclesEmailNotification>,
+        pub default_strategy: Option<CyclesMonitoringStrategy>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -75,13 +95,25 @@ pub mod state {
         pub updated_at: Timestamp,
     }
 
+    #[deprecated(
+        since = "0.0.14",
+        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+    )]
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Archive {
         pub statuses: ArchiveStatuses,
     }
 
+    #[deprecated(
+        since = "0.0.14",
+        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+    )]
     pub type ArchiveStatusesSegments = HashMap<Principal, Statuses>;
 
+    #[deprecated(
+        since = "0.0.14",
+        note = "Deprecated with the introduction of monitoring features that include auto top-up capabilities."
+    )]
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct ArchiveStatuses {
         pub mission_control: Statuses,
@@ -97,6 +129,12 @@ pub mod state {
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
     pub struct Monitoring {
         pub cycles: Option<CyclesMonitoring>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DepositedCyclesEmailNotification {
+        pub to: Option<String>,
+        pub enabled: bool,
     }
 
     #[derive(Default, CandidType, Serialize, Deserialize, Clone)]
@@ -120,12 +158,7 @@ pub mod state {
     pub struct MonitoringHistoryKey {
         pub segment_id: SegmentId,
         pub created_at: Timestamp,
-    }
-
-    #[derive(CandidType, Serialize, Deserialize, Clone)]
-    pub struct CyclesBalance {
-        pub amount: u128,
-        pub timestamp: Timestamp,
+        pub nonce: i32,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -136,15 +169,17 @@ pub mod state {
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct MonitoringHistoryCycles {
         pub cycles: CyclesBalance,
-        pub last_deposited_cycles: Option<CyclesBalance>,
+        pub deposited_cycles: Option<CyclesBalance>,
     }
 }
 
 pub mod runtime {
     use canfund::FundManager;
+    use rand::prelude::StdRng;
 
     #[derive(Default)]
     pub struct RuntimeState {
+        pub rng: Option<StdRng>, // rng = Random Number Generator
         pub fund_manager: Option<FundManager>,
     }
 }
@@ -166,7 +201,7 @@ pub mod interface {
     use crate::types::state::CyclesMonitoringStrategy;
     use candid::CandidType;
     use junobuild_shared::mgmt::types::cmc::SubnetId;
-    use junobuild_shared::types::state::{OrbiterId, SatelliteId, SegmentId, Timestamp};
+    use junobuild_shared::types::state::{Metadata, OrbiterId, SatelliteId, SegmentId, Timestamp};
     use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]

@@ -1,4 +1,5 @@
 pub mod state {
+    use crate::types::monitoring::CyclesBalance;
     use candid::Principal;
     use candid::{CandidType, Nat};
     use ic_cdk::api::management_canister::main::CanisterStatusType;
@@ -57,6 +58,7 @@ pub mod state {
     }
 
     // Prevent breaking changes in DefiniteCanisterSettings which we do not use
+    #[deprecated]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SegmentCanisterSettings {
         pub controllers: Vec<Principal>,
@@ -65,6 +67,7 @@ pub mod state {
         pub freezing_threshold: Nat,
     }
 
+    #[deprecated]
     #[derive(CandidType, Serialize, Deserialize, Clone)]
     pub struct SegmentStatus {
         pub id: Principal,
@@ -73,13 +76,29 @@ pub mod state {
         pub status_at: Timestamp,
     }
 
+    #[deprecated]
     pub type SegmentStatusResult = Result<SegmentStatus, String>;
 
+    #[deprecated]
     #[derive(CandidType, Deserialize, Clone)]
     pub struct SegmentsStatuses {
         pub mission_control: SegmentStatusResult,
         pub satellites: Option<Vec<SegmentStatusResult>>,
         pub orbiters: Option<Vec<SegmentStatusResult>>,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum SegmentKind {
+        Satellite,
+        MissionControl,
+        Orbiter,
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct Segment {
+        pub id: SegmentId,
+        pub kind: SegmentKind,
+        pub metadata: Option<Metadata>,
     }
 
     #[derive(CandidType, Serialize, Deserialize, Clone)]
@@ -96,18 +115,29 @@ pub mod state {
         pub track_events: bool,
         pub performance_metrics: bool,
     }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub enum NotificationKind {
+        DepositedCyclesEmail(DepositedCyclesEmailNotification),
+    }
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct DepositedCyclesEmailNotification {
+        pub to: String,
+        pub deposited_cycles: CyclesBalance,
+    }
 }
 
 pub mod interface {
     use crate::mgmt::types::cmc::SubnetId;
     use crate::types::core::Bytes;
-    use crate::types::cronjob::CronJobStatusesSegments;
     use crate::types::state::{
-        ControllerId, ControllerScope, Metadata, MissionControlId, Timestamp, UserId,
+        ControllerId, ControllerScope, Metadata, MissionControlId, NotificationKind, Segment,
+        Timestamp, UserId,
     };
     use candid::{CandidType, Principal};
     use ic_ledger_types::BlockIndex;
-    use serde::Deserialize;
+    use serde::{Deserialize, Serialize};
 
     #[derive(CandidType, Deserialize)]
     pub struct CreateCanisterArgs {
@@ -156,14 +186,6 @@ pub mod interface {
     }
 
     #[derive(CandidType, Deserialize)]
-    pub struct StatusesArgs {
-        pub cycles_threshold: Option<u64>,
-        pub mission_control_cycles_threshold: Option<u64>,
-        pub satellites: CronJobStatusesSegments,
-        pub orbiters: CronJobStatusesSegments,
-    }
-
-    #[derive(CandidType, Deserialize)]
     pub struct DepositCyclesArgs {
         pub destination_id: Principal,
         pub cycles: u128,
@@ -174,35 +196,12 @@ pub mod interface {
         pub heap: Bytes,
         pub stable: Bytes,
     }
-}
 
-pub mod cronjob {
-    use crate::types::state::Metadata;
-    use candid::{CandidType, Principal};
-    use serde::Deserialize;
-    use std::collections::HashMap;
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct CronJobs {
-        pub metadata: Metadata,
-        pub statuses: CronJobStatuses,
-    }
-
-    pub type CronJobStatusesSegments = HashMap<Principal, CronJobStatusesConfig>;
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct CronJobStatuses {
-        pub enabled: bool,
-        pub cycles_threshold: Option<u64>,
-        pub mission_control_cycles_threshold: Option<u64>,
-        pub satellites: CronJobStatusesSegments,
-        pub orbiters: CronJobStatusesSegments,
-    }
-
-    #[derive(Default, CandidType, Deserialize, Clone)]
-    pub struct CronJobStatusesConfig {
-        pub enabled: bool,
-        pub cycles_threshold: Option<u64>,
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct NotifyArgs {
+        pub user: UserId,
+        pub segment: Segment,
+        pub kind: NotificationKind,
     }
 }
 
@@ -354,5 +353,17 @@ pub mod config {
     pub struct ConfigMaxMemorySize {
         pub heap: Option<Bytes>,
         pub stable: Option<Bytes>,
+    }
+}
+
+pub mod monitoring {
+    use crate::types::state::Timestamp;
+    use candid::{CandidType, Deserialize};
+    use serde::Serialize;
+
+    #[derive(CandidType, Serialize, Deserialize, Clone)]
+    pub struct CyclesBalance {
+        pub amount: u128,
+        pub timestamp: Timestamp,
     }
 }

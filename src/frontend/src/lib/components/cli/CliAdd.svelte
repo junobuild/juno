@@ -6,7 +6,7 @@
 	import SegmentsTable from '$lib/components/segments/SegmentsTable.svelte';
 	import Collapsible from '$lib/components/ui/Collapsible.svelte';
 	import { REVOKED_CONTROLLERS } from '$lib/constants/constants';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import {
 		setMissionControlControllerForVersion,
 		setSatellitesForVersion
@@ -43,7 +43,7 @@
 			return;
 		}
 
-		if (isNullish($missionControlStore)) {
+		if (isNullish($missionControlIdDerived)) {
 			toasts.error({
 				text: $i18n.errors.no_mission_control
 			});
@@ -71,7 +71,7 @@
 				...(selectedMissionControl
 					? [
 							setMissionControlControllerForVersion({
-								missionControlId: $missionControlStore,
+								missionControlId: $missionControlIdDerived,
 								controllerId: principal,
 								profile,
 								scope: 'admin'
@@ -81,7 +81,7 @@
 				...(selectedSatellites.length > 0
 					? [
 							setSatellitesForVersion({
-								missionControlId: $missionControlStore,
+								missionControlId: $missionControlIdDerived,
 								controllerId: principal,
 								satelliteIds: selectedSatellites.map((s) => s[0]),
 								profile,
@@ -92,7 +92,7 @@
 				...(selectedOrbiters.length > 0
 					? [
 							setOrbitersController({
-								missionControlId: $missionControlStore,
+								missionControlId: $missionControlIdDerived,
 								controllerId: principal,
 								orbiterIds: selectedOrbiters.map((s) => s[0]),
 								profile,
@@ -126,7 +126,7 @@
 							)
 						)}`
 					: undefined,
-				selectedMissionControl ? `mission_control=${$missionControlStore.toText()}` : undefined,
+				selectedMissionControl ? `mission_control=${$missionControlIdDerived.toText()}` : undefined,
 				profile !== '' ? `profile=${profile}` : undefined
 			].filter((param) => nonNullish(param));
 

@@ -6,6 +6,8 @@
 	import IdentityGuard from '$lib/components/guards/IdentityGuard.svelte';
 	import MissionControlGuard from '$lib/components/guards/MissionControlGuard.svelte';
 	import SatelliteGuard from '$lib/components/guards/SatelliteGuard.svelte';
+	import OrbitersLoader from '$lib/components/loaders/OrbitersLoader.svelte';
+	import SatellitesLoader from '$lib/components/loaders/SatellitesLoader.svelte';
 	import SatelliteOverview from '$lib/components/satellites/SatelliteOverview.svelte';
 	import SatelliteSettings from '$lib/components/satellites/SatelliteSettings.svelte';
 	import Tabs from '$lib/components/ui/Tabs.svelte';
@@ -52,18 +54,22 @@
 			{/if}
 		{/snippet}
 
-		<SatelliteGuard>
-			<MissionControlGuard>
-				{#if nonNullish($satelliteStore)}
-					{#if $store.tabId === $store.tabs[0].id}
-						<SatelliteOverview satellite={$satelliteStore} />
+		<SatellitesLoader>
+			<OrbitersLoader>
+				<SatelliteGuard>
+					<MissionControlGuard>
+						{#if nonNullish($satelliteStore)}
+							{#if $store.tabId === $store.tabs[0].id}
+								<SatelliteOverview satellite={$satelliteStore} />
 
-						<Guides />
-					{:else if $store.tabId === $store.tabs[1].id}
-						<SatelliteSettings satellite={$satelliteStore} />
-					{/if}
-				{/if}
-			</MissionControlGuard>
-		</SatelliteGuard>
+								<Guides />
+							{:else if $store.tabId === $store.tabs[1].id}
+								<SatelliteSettings satellite={$satelliteStore} />
+							{/if}
+						{/if}
+					</MissionControlGuard>
+				</SatelliteGuard>
+			</OrbitersLoader>
+		</SatellitesLoader>
 	</Tabs>
 </IdentityGuard>

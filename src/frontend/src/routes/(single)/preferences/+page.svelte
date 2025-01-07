@@ -53,7 +53,9 @@
 						{$i18n.core.theme}
 					{/snippet}
 
-					<Theme inline />
+					<div>
+						<Theme inline />
+					</div>
 				</Value>
 			</div>
 		</div>
@@ -71,5 +73,9 @@
 
 	.theme {
 		margin: var(--padding) 0 0;
+
+		div {
+			padding: var(--padding) 0 0;
+		}
 	}
 </style>

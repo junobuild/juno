@@ -26,7 +26,7 @@
 
 	let { canisterId, segment, currentCycles, transferFn }: Props = $props();
 
-	let steps: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
+	let step: 'init' | 'in_progress' | 'ready' | 'error' = $state('init');
 
 	const dispatch = createEventDispatcher();
 	const close = () => dispatch('junoClose');
@@ -67,7 +67,7 @@
 			return;
 		}
 
-		steps = 'in_progress';
+		step = 'in_progress';
 
 		wizardBusy.start();
 
@@ -79,9 +79,9 @@
 
 			emit({ message: 'junoRestartCycles', detail: { canisterId } });
 
-			steps = 'ready';
+			step = 'ready';
 		} catch (err: unknown) {
-			steps = 'error';
+			step = 'error';
 
 			toasts.error({
 				text: $i18n.errors.transfer_cycles,
@@ -94,12 +94,12 @@
 </script>
 
 <Modal on:junoClose>
-	{#if steps === 'ready'}
+	{#if step === 'ready'}
 		<div class="msg">
 			<p>{$i18n.canisters.transfer_cycles_done}</p>
 			<button onclick={close}>{$i18n.core.close}</button>
 		</div>
-	{:else if steps === 'in_progress'}
+	{:else if step === 'in_progress'}
 		<SpinnerModal>
 			<p>{$i18n.canisters.transfer_cycles_in_progress}</p>
 		</SpinnerModal>

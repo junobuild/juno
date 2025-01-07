@@ -2,9 +2,11 @@ import type { _SERVICE as ObservatoryActor } from '$declarations/observatory/obs
 import { idlFactory as idlFactorObservatory } from '$declarations/observatory/observatory.factory.did';
 import { AnonymousIdentity } from '@dfinity/agent';
 import { Ed25519KeyIdentity } from '@dfinity/identity';
+import { Principal } from '@dfinity/principal';
+import { toNullable } from '@dfinity/utils';
 import { PocketIc, type Actor } from '@hadronous/pic';
 import { afterAll, beforeAll, describe, expect, inject } from 'vitest';
-import { ANONYMOUS_ERROR_MSG } from './constants/observatory-tests.constants';
+import { CALLER_NOT_CONTROLLER_OBSERVATORY_MSG } from './constants/observatory-tests.constants';
 import { OBSERVATORY_WASM_PATH } from './utils/setup-tests.utils';
 
 describe('Observatory', () => {
@@ -30,62 +32,102 @@ describe('Observatory', () => {
 		await pic?.tearDown();
 	});
 
+	const testGuards = () => {
+		it('should throw errors on set controllers', async () => {
+			const { set_controllers } = actor;
+
+			await expect(
+				set_controllers({
+					controller: {
+						scope: { Admin: null },
+						metadata: [],
+						expires_at: []
+					},
+					controllers: [controller.getPrincipal()]
+				})
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+
+		it('should throw errors on delete controllers', async () => {
+			const { del_controllers } = actor;
+
+			await expect(
+				del_controllers({
+					controllers: [controller.getPrincipal()]
+				})
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+
+		it('should throw errors on list controllers', async () => {
+			const { list_controllers } = actor;
+
+			await expect(list_controllers()).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+
+		it('should throw errors on get notify status', async () => {
+			const { get_notify_status } = actor;
+
+			await expect(
+				get_notify_status({
+					segment_id: toNullable(),
+					from: toNullable(),
+					to: toNullable()
+				})
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+
+		it('should throw errors on ping', async () => {
+			const { ping } = actor;
+
+			await expect(
+				ping({
+					user: Principal.fromText('bnz7o-iuaaa-aaaaa-qaaaa-cai'),
+					segment: {
+						id: Principal.fromText(
+							'plrof-3btl5-tyr2o-pf5zm-qvidg-f3awf-fg4w6-xuipq-m34q3-27d6d-yqe'
+						),
+						kind: { Satellite: null },
+						metadata: []
+					},
+					kind: {
+						DepositedCyclesEmail: {
+							to: 'test@test.com',
+							deposited_cycles: {
+								timestamp: 1704032400000000000n,
+								amount: 100_456_000_000n
+							}
+						}
+					}
+				})
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+
+		it('should throw errors on set env', async () => {
+			const { set_env } = actor;
+
+			await expect(
+				set_env({
+					email_api_key: ['secret']
+				})
+			).rejects.toThrow(CALLER_NOT_CONTROLLER_OBSERVATORY_MSG);
+		});
+	};
+
 	describe('anonymous', () => {
 		beforeAll(() => {
 			actor.setIdentity(new AnonymousIdentity());
 		});
 
-		it('should throw errors on set crontab', async () => {
-			const { set_cron_tab } = actor;
-
-			await expect(
-				set_cron_tab({
-					cron_jobs: {
-						metadata: [],
-						statuses: {
-							mission_control_cycles_threshold: [],
-							orbiters: [],
-							satellites: [],
-							enabled: false,
-							cycles_threshold: []
-						}
-					},
-					mission_control_id: Ed25519KeyIdentity.generate().getPrincipal(),
-					version: []
-				})
-			).rejects.toThrow(ANONYMOUS_ERROR_MSG);
-		});
-
-		it('should throw errors on get crontab', async () => {
-			const { get_cron_tab } = actor;
-
-			await expect(get_cron_tab()).rejects.toThrow(ANONYMOUS_ERROR_MSG);
-		});
-
-		it('should throw errors on get statuses', async () => {
-			const { get_statuses } = actor;
-
-			await expect(get_statuses()).rejects.toThrow(ANONYMOUS_ERROR_MSG);
-		});
+		testGuards();
 	});
 
-	describe('owner', () => {
-		const owner = Ed25519KeyIdentity.generate();
+	describe('user', () => {
+		const user = Ed25519KeyIdentity.generate();
 
 		beforeAll(() => {
-			actor.setIdentity(owner);
+			actor.setIdentity(user);
 		});
 
-		it('should not throw errors on get crontab', async () => {
-			const { get_cron_tab } = actor;
-
-			await expect(get_cron_tab()).resolves.not.toThrow(ANONYMOUS_ERROR_MSG);
-		});
-
-		it('should not throw errors on get statuses', async () => {
-			const { get_statuses } = actor;
-
-			await expect(get_statuses()).resolves.not.toThrow(ANONYMOUS_ERROR_MSG);
-		});
+		testGuards();
 	});
 });

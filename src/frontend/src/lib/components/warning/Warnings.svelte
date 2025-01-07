@@ -4,7 +4,7 @@
 	import CanisterWarnings from '$lib/components/canister/CanisterWarnings.svelte';
 	import LoaderWarnings from '$lib/components/warning/LoaderWarnings.svelte';
 	import VersionWarnings from '$lib/components/warning/VersionWarnings.svelte';
-	import { missionControlStore } from '$lib/derived/mission-control.derived';
+	import { missionControlIdDerived } from '$lib/derived/mission-control.derived';
 	import { orbiterStore } from '$lib/derived/orbiter.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 
@@ -17,8 +17,8 @@
 
 <VersionWarnings {satellite} />
 
-{#if nonNullish($missionControlStore)}
-	<LoaderWarnings canisterId={$missionControlStore}>
+{#if nonNullish($missionControlIdDerived)}
+	<LoaderWarnings canisterId={$missionControlIdDerived}>
 		{#snippet cycles()}
 			{$i18n.canisters.warning_mission_control_low_cycles}
 		{/snippet}

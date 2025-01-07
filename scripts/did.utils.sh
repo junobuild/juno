@@ -3,13 +3,11 @@ function generate_did() {
   local canister_root=$2
   local did_filename=$3
 
-  cargo build --manifest-path="$canister_root/Cargo.toml" \
-      --target wasm32-unknown-unknown \
-      --release --locked --package "$canister"
+  ./scripts/cargo.sh "$canister"
 
   if [ -z "$did_filename" ]; then
-    candid-extractor "target/wasm32-unknown-unknown/release/$canister.wasm" > "$canister_root/$canister.did"
+    candid-extractor "target/wasm/$canister.wasm" > "$canister_root/$canister.did"
   else
-    candid-extractor "target/wasm32-unknown-unknown/release/$canister.wasm" > "$canister_root/$did_filename.did"
+    candid-extractor "target/wasm/$canister.wasm" > "$canister_root/$did_filename.did"
   fi
 }

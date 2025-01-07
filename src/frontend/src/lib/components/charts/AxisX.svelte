@@ -16,9 +16,10 @@
 		snapTicks?: boolean;
 		formatTick?: (d: string | number) => string | number;
 		/** @type {Number|Array|Function} [ticks] - If this is a number, it passes that along to the [d3Scale.ticks](https://github.com/d3/d3-scale) function. If this is an array, hardcodes the ticks to those values. If it's a function, passes along the default tick values and expects an array of tick values in return. If nothing, it uses the default ticks supplied by the D3 function. */
-		ticks?: string | ((ticks: string) => void) | undefined | string[];
+		ticks?: string | ((ticks: string) => void) | undefined | string[] | number[];
 		xTick?: number;
 		yTick?: number;
+		axisWithText?: boolean;
 	}
 
 	let {
@@ -29,7 +30,8 @@
 		formatTick = (d: string | number): string | number => d,
 		ticks = undefined,
 		xTick = 0,
-		yTick = 16
+		yTick = 16,
+		axisWithText = true
 	}: Props = $props();
 
 	let isBandwidth = $derived(typeof $xScale.bandwidth === 'function');
@@ -72,13 +74,15 @@
 					x2={isBandwidth ? $xScale.bandwidth() / 2 : 0}
 				/>
 			{/if}
-			<text
-				x={isBandwidth ? $xScale.bandwidth() / 2 + xTick : xTick}
-				y={yTick}
-				dx=""
-				dy=""
-				text-anchor={textAnchor(i)}>{formatTick(tick)}</text
-			>
+			{#if axisWithText}
+				<text
+					x={isBandwidth ? $xScale.bandwidth() / 2 + xTick : xTick}
+					y={yTick}
+					dx=""
+					dy=""
+					text-anchor={textAnchor(i)}>{formatTick(tick)}</text
+				>
+			{/if}
 		</g>
 	{/each}
 	{#if baseline === true}
@@ -88,14 +92,17 @@
 
 <style>
 	.tick {
-		font-size: 0.725em;
-		font-weight: 200;
+		font-size: var(--font-size-ultra-small);
 	}
 
 	line,
 	.tick line {
-		stroke: #aaa;
+		stroke: var(--label-color);
 		stroke-dasharray: 2;
+	}
+
+	.tick text {
+		fill: var(--text-color);
 	}
 
 	.tick .tick-mark,

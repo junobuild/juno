@@ -14,6 +14,7 @@
 	import { openMonitoringModal } from '$lib/services/monitoring.services';
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
+	import MonitoringNotifications from "$lib/components/monitoring/MonitoringNotifications.svelte";
 
 	interface Props {
 		missionControlId: Principal;
@@ -50,6 +51,8 @@
 		</div>
 
 		<div>
+			<MonitoringNotifications />
+
 			<MissionControlEmail />
 		</div>
 	</div>

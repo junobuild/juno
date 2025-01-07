@@ -80,6 +80,13 @@ export const idlFactory = ({ IDL }) => {
 		created_at: IDL.Nat64,
 		monitoring: IDL.Opt(Monitoring)
 	});
+	const User = IDL.Record({
+		updated_at: IDL.Nat64,
+		metadata: IDL.Vec(IDL.Tuple(IDL.Text, IDL.Text)),
+		user: IDL.Opt(IDL.Principal),
+		created_at: IDL.Nat64,
+		config: IDL.Opt(Config)
+	});
 	const Tokens = IDL.Record({ e8s: IDL.Nat64 });
 	const Timestamp = IDL.Record({ timestamp_nanos: IDL.Nat64 });
 	const TransferArgs = IDL.Record({
@@ -183,6 +190,7 @@ export const idlFactory = ({ IDL }) => {
 		get_monitoring_status: IDL.Func([], [MonitoringStatus], ['query']),
 		get_settings: IDL.Func([], [IDL.Opt(MissionControlSettings)], ['query']),
 		get_user: IDL.Func([], [IDL.Principal], ['query']),
+		get_user_data: IDL.Func([], [User], ['query']),
 		icp_transfer: IDL.Func([TransferArgs], [Result], []),
 		icrc_transfer: IDL.Func([IDL.Principal, TransferArg], [Result_1], []),
 		list_mission_control_controllers: IDL.Func(

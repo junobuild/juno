@@ -132,6 +132,13 @@ type TransferError_1 = variant {
   TooOld;
   InsufficientFunds : record { balance : nat };
 };
+type User = record {
+  updated_at : nat64;
+  metadata : vec record { text; text };
+  user : opt principal;
+  created_at : nat64;
+  config : opt Config;
+};
 service : () -> {
   add_mission_control_controllers : (vec principal) -> ();
   add_satellites_controllers : (vec principal, vec principal) -> ();
@@ -153,6 +160,7 @@ service : () -> {
   get_monitoring_status : () -> (MonitoringStatus) query;
   get_settings : () -> (opt MissionControlSettings) query;
   get_user : () -> (principal) query;
+  get_user_data : () -> (User) query;
   icp_transfer : (TransferArgs) -> (Result);
   icrc_transfer : (principal, TransferArg) -> (Result_1);
   list_mission_control_controllers : () -> (

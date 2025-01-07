@@ -6,7 +6,7 @@ import type {
 } from '$declarations/mission_control/mission_control.did';
 import {
 	setMonitoringConfig as setMonitoringConfigApi,
-	setUserMetadata,
+	setMetadata,
 	updateAndStartMonitoring,
 	updateAndStopMonitoring
 } from '$lib/api/mission-control.api';
@@ -304,7 +304,7 @@ const setEmail = async ({
 	const updateData = new Map(metadata);
 	updateData.set(METADATA_KEY_EMAIL, userEmail);
 
-	await setUserMetadata({
+	await setMetadata({
 		identity,
 		missionControlId,
 		metadata: Array.from(updateData)

@@ -500,7 +500,7 @@ export const setMonitoringConfig = async ({
 	return await set_monitoring_config(toNullable(config));
 };
 
-export const setUserMetadata = async ({
+export const setMetadata = async ({
 	missionControlId,
 	metadata,
 	identity

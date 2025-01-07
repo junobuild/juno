@@ -733,7 +733,7 @@ interface I18nMonitoring {
 	review_strategy: string;
 	warning_advice: string;
 	strategy_preparing: string;
-	reload_settings: string;
+	reload_data: string;
 	saving_options: string;
 	stop_monitoring_question: string;
 	stop_monitoring_note: string;

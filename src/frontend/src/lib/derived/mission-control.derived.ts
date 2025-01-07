@@ -1,7 +1,9 @@
 import {
 	missionControlIdDataStore,
+	missionControlMetadataDataStore,
 	missionControlSettingsDataStore
 } from '$lib/stores/mission-control.store';
+import { metadataEmail } from '$lib/utils/metadata.utils';
 import { fromNullable, nonNullish } from '@dfinity/utils';
 import { derived } from 'svelte/store';
 
@@ -45,4 +47,15 @@ export const missionControlMonitored = derived(
 	[missionControlMonitoring],
 	([$missionControlMonitoring]) =>
 		fromNullable($missionControlMonitoring?.cycles ?? [])?.enabled === true
+);
+
+export const missionControlMetadataLoaded = derived(
+	[missionControlMetadataDataStore],
+	([$missionControlMetadataDataStore]) => $missionControlMetadataDataStore !== undefined
+);
+
+export const missionControlEmail = derived(
+	[missionControlMetadataDataStore],
+	([$missionControlMetadataDataStore]) =>
+		metadataEmail($missionControlMetadataDataStore?.data ?? [])
 );

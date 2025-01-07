@@ -1,23 +1,22 @@
 <script lang="ts">
+	import { fade } from 'svelte/transition';
 	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
 	import {
-		missionControlMonitored,
-		missionControlSettingsNotLoaded
+		missionControlEmail,
+		missionControlMetadataLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { i18n } from '$lib/stores/i18n.store';
 </script>
 
 <Value>
 	{#snippet label()}
-		{$i18n.mission_control.title}
+		{$i18n.monitoring.notifications}
 	{/snippet}
 
-	{#if $missionControlSettingsNotLoaded}
-		<p><SkeletonText /></p>
+	{#if $missionControlMetadataLoaded}
+		<p in:fade>{$missionControlEmail}</p>
 	{:else}
-		<p>
-			{$missionControlMonitored ? $i18n.monitoring.monitored : $i18n.monitoring.not_monitored}
-		</p>
+		<p><SkeletonText /></p>
 	{/if}
 </Value>

@@ -2,9 +2,9 @@
 	import type { Principal } from '@dfinity/principal';
 	import { onMount } from 'svelte';
 	import { fade } from 'svelte/transition';
-	import MonitoringSettingsMissionControl from '$lib/components/monitoring/MonitoringSettingsMissionControl.svelte';
-	import MonitoringSettingsOrbiter from '$lib/components/monitoring/MonitoringSettingsOrbiter.svelte';
-	import MonitoringSettingsSatellites from '$lib/components/monitoring/MonitoringSettingsSatellites.svelte';
+	import MonitoringDefaultStrategy from '$lib/components/monitoring/MonitoringDefaultStrategy.svelte';
+	import MonitoringNotifications from '$lib/components/monitoring/MonitoringNotifications.svelte';
+	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 	import {
 		missionControlMonitored,
 		missionControlSettingsLoaded
@@ -44,11 +44,13 @@
 
 	<div class="columns-3 fit-column-1">
 		<div>
-			<MonitoringSettingsMissionControl />
+			<MonitoringStatus />
 
-			<MonitoringSettingsSatellites bind:hasSatellitesMonitored />
+			<MonitoringDefaultStrategy />
+		</div>
 
-			<MonitoringSettingsOrbiter bind:orbiterMonitored />
+		<div>
+			<MonitoringNotifications />
 		</div>
 	</div>
 </div>

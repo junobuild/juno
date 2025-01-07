@@ -12,6 +12,7 @@ import {
 	updateAndStopMonitoring
 } from '$lib/api/mission-control.api';
 import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
+import { missionControlUserData } from '$lib/derived/mission-control.derived';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
 import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
@@ -19,13 +20,11 @@ import { loadOrbiters } from '$lib/services/orbiters.services';
 import { execute } from '$lib/services/progress.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
-import {
-	missionControlSettingsDataStore,
-	missionControlUserDataStore
-} from '$lib/stores/mission-control.store';
+import { missionControlSettingsDataStore } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
+import type { JunoModal, JunoModalCreateMonitoringStrategyDetail } from '$lib/types/modal';
 import {
 	type MonitoringStrategyProgress,
 	MonitoringStrategyProgressStep
@@ -43,8 +42,6 @@ import {
 	toNullable
 } from '@dfinity/utils';
 import { get } from 'svelte/store';
-import type {JunoModal, JunoModalCreateMonitoringStrategyDetail} from "$lib/types/modal";
-import {missionControlUserData} from "$lib/derived/mission-control.derived";
 
 type MonitoringStrategyOnProgress = (progress: MonitoringStrategyProgress | undefined) => void;
 

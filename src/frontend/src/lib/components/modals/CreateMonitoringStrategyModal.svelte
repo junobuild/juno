@@ -34,7 +34,9 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { settings, user, missionControlId } = $derived(detail as JunoModalCreateMonitoringStrategyDetail);
+	let { settings, user, missionControlId } = $derived(
+		detail as JunoModalCreateMonitoringStrategyDetail
+	);
 
 	// Wizard navigation
 

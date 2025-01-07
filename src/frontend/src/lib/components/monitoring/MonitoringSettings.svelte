@@ -4,6 +4,7 @@
 	import { fade } from 'svelte/transition';
 	import MissionControlEmail from '$lib/components/mission-control/MissionControlEmail.svelte';
 	import MonitoringDefaultStrategy from '$lib/components/monitoring/MonitoringDefaultStrategy.svelte';
+	import MonitoringNotifications from '$lib/components/monitoring/MonitoringNotifications.svelte';
 	import MonitoringStatus from '$lib/components/monitoring/MonitoringStatus.svelte';
 	import {
 		missionControlMonitored,
@@ -50,6 +51,8 @@
 		</div>
 
 		<div>
+			<MonitoringNotifications />
+
 			<MissionControlEmail />
 		</div>
 	</div>

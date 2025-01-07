@@ -7,16 +7,15 @@
 		children: Snippet;
 		toggle: boolean;
 		onclick: () => void;
-		invert?: boolean;
 		nomargin?: boolean;
 	}
 
-	let { children, onclick, toggle, invert = false, nomargin = false }: Props = $props();
+	let { children, onclick, toggle, nomargin = false }: Props = $props();
 
 	let Icon = $derived(toggle ? IconLightOff : IconLightOn);
 </script>
 
-<button class="text" class:invert class:nomargin {onclick}>
+<button class="text" class:nomargin {onclick}>
 	<Icon size="20px" />
 	<span>{@render children()}</span>
 </button>
@@ -36,13 +35,6 @@
 
 		margin: 0 0 var(--padding-2_5x);
 		border: none;
-
-		&.invert {
-			flex-direction: row-reverse;
-			justify-content: flex-end;
-
-			gap: var(--padding-2x);
-		}
 
 		&.nomargin {
 			margin: 0;

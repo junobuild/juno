@@ -496,3 +496,54 @@ export const openMonitoringModal = ({
 		}
 	});
 };
+
+export const setMonitoringNotification = async ({
+	identity,
+	missionControlId,
+	monitoringConfig,
+	enabled
+}: {
+	identity: OptionIdentity;
+	missionControlId: Option<Principal>;
+	monitoringConfig: MonitoringConfig | undefined;
+	enabled: boolean;
+}): Promise<{ success: boolean }> => {
+	try {
+		assertNonNullish(identity, get(i18n).core.not_logged_in);
+
+		assertNonNullish(missionControlId, get(i18n).errors.no_mission_control);
+
+		const cycles = fromNullable(monitoringConfig?.cycles ?? []);
+		const notification = fromNullable(cycles?.notification ?? []);
+
+		const updateConfig: MonitoringConfig = {
+			...(nonNullish(monitoringConfig) && monitoringConfig),
+			cycles: toNullable({
+				notification: toNullable({
+					to: notification?.to ?? toNullable(),
+					enabled
+				}),
+				default_strategy: cycles?.default_strategy ?? toNullable()
+			})
+		};
+
+		await setMonitoringConfigApi({
+			identity,
+			missionControlId,
+			config: updateConfig
+		});
+
+		await loadSettings({
+			identity,
+			missionControlId,
+			reload: true
+		});
+
+		return { success: true };
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.monitoring_notifications_update
+		});
+		return { success: false };
+	}
+};

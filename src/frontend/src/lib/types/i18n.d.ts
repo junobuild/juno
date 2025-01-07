@@ -552,6 +552,7 @@ interface I18nErrors {
 	monitoring_no_modules: string;
 	monitoring_email_missing: string;
 	monitoring_email_update: string;
+	monitoring_notifications_update: string;
 }
 
 interface I18nDocument {

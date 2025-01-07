@@ -8,6 +8,7 @@ import {
 	getMetadata,
 	getSettings,
 	missionControlVersion,
+	setMetadata,
 	setMissionControlController,
 	setOrbiter,
 	setSatellite,
@@ -18,7 +19,7 @@ import {
 } from '$lib/api/mission-control.api';
 import { setMissionControlController004 } from '$lib/api/mission-control.deprecated.api';
 import { satelliteVersion } from '$lib/api/satellites.api';
-import { METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
+import { METADATA_KEY_EMAIL, METADATA_KEY_NAME } from '$lib/constants/metadata.constants';
 import {
 	MISSION_CONTROL_v0_0_13,
 	MISSION_CONTROL_v0_0_3,
@@ -30,18 +31,22 @@ import { missionControlVersion as missionControlVersionStore } from '$lib/derive
 import { loadDataStore } from '$lib/services/loader.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
+import { i18n } from '$lib/stores/i18n.store';
 import {
 	missionControlMetadataDataStore,
 	missionControlSettingsDataStore
 } from '$lib/stores/mission-control.store';
 import { orbitersDataStore } from '$lib/stores/orbiter.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
+import { toasts } from '$lib/stores/toasts.store';
 import type { SetControllerParams } from '$lib/types/controllers';
 import type { OptionIdentity } from '$lib/types/itentity';
 import type { Metadata } from '$lib/types/metadata';
+import type { Option } from '$lib/types/utils';
+import { isNotValidEmail } from '$lib/utils/email.utils';
 import type { Identity } from '@dfinity/agent';
 import type { Principal } from '@dfinity/principal';
-import { fromNullable } from '@dfinity/utils';
+import { fromNullable, isNullish, notEmptyString } from '@dfinity/utils';
 import { compare } from 'semver';
 import { get } from 'svelte/store';
 
@@ -305,4 +310,54 @@ export const loadMetadata = async ({
 	});
 
 	return { success: result !== 'error' };
+};
+
+export const setMetadataEmail = async ({
+	missionControlId,
+	identity,
+	email,
+	metadata
+}: {
+	missionControlId: Option<Principal>;
+	identity: OptionIdentity;
+	email: string;
+	metadata: Metadata;
+}): Promise<{ success: boolean }> => {
+	if (!notEmptyString(email) || isNotValidEmail(email)) {
+		toasts.error({
+			text: get(i18n).errors.invalid_email
+		});
+		return { success: false };
+	}
+
+	if (isNullish(missionControlId)) {
+		toasts.error({
+			text: get(i18n).errors.no_mission_control
+		});
+		return { success: false };
+	}
+
+	try {
+		const updateData = new Map(metadata);
+		updateData.set(METADATA_KEY_EMAIL, email);
+
+		const data = Array.from(updateData);
+
+		await setMetadata({
+			identity,
+			missionControlId,
+			metadata: data
+		});
+
+		missionControlMetadataDataStore.set(data);
+
+		return { success: true };
+	} catch (err: unknown) {
+		toasts.error({
+			text: get(i18n).errors.monitoring_email_update,
+			detail: err
+		});
+
+		return { success: false };
+	}
 };

@@ -9,8 +9,16 @@
 	}
 
 	&.fit-column-1 {
-		@include media.min-width(large) {
+		@include media.min-width(medium) {
 			grid-template-columns: minmax(380px, 100px) auto 1fr;
+		}
+	}
+
+	&.fit-column-2 {
+		@include media.min-width(medium) {
+			div:nth-of-type(2) {
+				grid-column: 2/4;
+			}
 		}
 	}
 }

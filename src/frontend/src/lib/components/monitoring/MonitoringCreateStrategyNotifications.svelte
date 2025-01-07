@@ -2,6 +2,7 @@
 	import { notEmptyString } from '@dfinity/utils';
 	import MonitoringStepBackContinue from '$lib/components/monitoring/MonitoringStepBackContinue.svelte';
 	import Value from '$lib/components/ui/Value.svelte';
+	import { EMAIL_PLACEHOLDER } from '$lib/constants/constants';
 	import { isBusy } from '$lib/stores/busy.store';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { toasts } from '$lib/stores/toasts.store';
@@ -39,7 +40,7 @@
 				{$i18n.core.email_address}
 			{/snippet}
 
-			<input type="email" bind:value={email} placeholder="name@example.com" disabled={$isBusy} />
+			<input type="email" bind:value={email} placeholder={EMAIL_PLACEHOLDER} disabled={$isBusy} />
 		</Value>
 	</div>
 </MonitoringStepBackContinue>

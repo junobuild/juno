@@ -70,7 +70,7 @@
 		"none": "None",
 		"enabled": "Enabled",
 		"disabled": "Disabled",
-		"email_address": "Email Address"
+		"email_address": "Email address"
 	},
 	"canisters": {
 		"top_up": "Top-up",
@@ -532,7 +532,9 @@
 		"mission_control_metadata_not_loaded": "The metadata for the mission control are not yet loaded.",
 		"monitoring_apply_strategy_error": "Unexpected error(s) while applying the strategy.",
 		"monitoring_stop_error": "Unexpected error(s) while stopping the monitoring.",
-		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started."
+		"monitoring_no_modules": "Monitoring requires at least one satellite or orbiter to be set up. Add a module to get started.",
+		"monitoring_email_missing": "An email address must be provided.",
+		"monitoring_email_update": "Unexpected error(s) while trying to update your email address."
 	},
 	"document": {
 		"owner": "Owner",
@@ -719,7 +721,8 @@
 		"auto_refill_strategy": "Top-up {0}T Cycles if the remaining threshold falls below {1}",
 		"email_notifications": "Email Notifications",
 		"receive_email": "Do you want to receive email notifications when a module is refilled? Enter your email below to enable notifications or leave it blank if you prefer no notifications.",
-		"notifications": "Notifications"
+		"notifications": "Notifications",
+		"edit_email": ""
 	},
 	"preferences": {
 		"title": "Preferences",

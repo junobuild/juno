@@ -42,7 +42,7 @@
 <div class="card-container with-title">
 	<span class="title">{$i18n.core.settings}</span>
 
-	<div class="columns-3 fit-column-1">
+	<div class="columns-3 fit-column-1 fit-column-2">
 		<div>
 			<MonitoringStatus />
 

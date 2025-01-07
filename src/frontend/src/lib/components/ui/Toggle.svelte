@@ -1,7 +1,7 @@
 <script lang="ts">
+	import type { Snippet } from 'svelte';
 	import IconLightOff from '$lib/components/icons/IconLightOff.svelte';
 	import IconLightOn from '$lib/components/icons/IconLightOn.svelte';
-	import type { Snippet } from 'svelte';
 
 	interface Props {
 		children: Snippet;

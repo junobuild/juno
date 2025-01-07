@@ -10,7 +10,7 @@
 		missionControlEmail,
 		missionControlIdDerived,
 		missionControlMetadata,
-		missionControlMetadataLoaded
+		missionControlUserDataLoaded
 	} from '$lib/derived/mission-control.derived';
 	import { setMetadataEmail } from '$lib/services/mission-control.services';
 	import { authStore } from '$lib/stores/auth.store';
@@ -57,7 +57,7 @@
 		{$i18n.core.email_address}
 	{/snippet}
 
-	{#if $missionControlMetadataLoaded}
+	{#if $missionControlUserDataLoaded}
 		<p in:fade class="email">
 			<span>{$missionControlEmail ?? $i18n.core.none}</span>
 

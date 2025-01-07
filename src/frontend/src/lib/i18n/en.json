@@ -454,7 +454,7 @@
 		"load_documents": "Unexpected error(s) while loading the documents.",
 		"load_users": "Unexpected error(s) while loading the users.",
 		"load_settings": "Unexpected error(s) while loading the settings.",
-		"load_metadata": "Unexpected error(s) while loading the metadata.",
+		"load_user_data": "Unexpected error(s) while loading your data (configuration, metadata, etc.).",
 		"hosting_missing_domain_name": "A domain name must be provided.",
 		"hosting_invalid_url": "Please provide a valid URL.",
 		"hosting_missing_dns_configuration": "A domain name configuration must be provided.",

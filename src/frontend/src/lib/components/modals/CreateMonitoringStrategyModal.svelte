@@ -34,9 +34,7 @@
 
 	let { detail, onclose }: Props = $props();
 
-	let { settings, metadata, missionControlId } = $derived(
-		detail as JunoModalMonitoringStrategyDetail
-	);
+	let { settings, user, missionControlId } = $derived(detail as JunoModalMonitoringStrategyDetail);
 
 	// Wizard navigation
 
@@ -93,13 +91,14 @@
 
 	// Monitoring email
 
+	let metadata = $derived(user.metadata);
 	let missionControlEmail = $derived(metadataEmail(metadata));
 	let hasMissionControlEmail = $derived(nonNullish(missionControlEmail));
 	let userEmail: Option<string> = $state(undefined);
 
 	// Monitoring config
 
-	let monitoringConfig = $derived(fromNullable(settings?.monitoring_config ?? []));
+	let monitoringConfig = $derived(fromNullable(fromNullable(user?.config ?? [])?.monitoring ?? []));
 
 	let defaultStrategy = $derived(
 		fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? [])

@@ -470,7 +470,7 @@ interface I18nErrors {
 	load_documents: string;
 	load_users: string;
 	load_settings: string;
-	load_metadata: string;
+	load_user_data: string;
 	hosting_missing_domain_name: string;
 	hosting_invalid_url: string;
 	hosting_missing_dns_configuration: string;

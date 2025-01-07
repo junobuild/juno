@@ -1,7 +1,7 @@
 import type {
+	Config,
 	Controller,
 	MissionControlSettings,
-	MonitoringConfig,
 	MonitoringStartConfig,
 	MonitoringStopConfig,
 	Orbiter,
@@ -9,7 +9,8 @@ import type {
 	Result_1,
 	Satellite,
 	TransferArg,
-	TransferArgs
+	TransferArgs,
+	User
 } from '$declarations/mission_control/mission_control.did';
 import { getMissionControlActor } from '$lib/api/actors/actor.juno.api';
 import type { SetControllerParams } from '$lib/types/controllers';
@@ -404,16 +405,15 @@ export const icrcTransfer = async ({
 	return icrc_transfer(ledgerId, args);
 };
 
-export const getMetadata = async ({
+export const getUserData = async ({
 	missionControlId,
-
 	identity
 }: {
 	missionControlId: Principal;
 	identity: OptionIdentity;
-}): Promise<[] | Metadata> => {
-	const { get_metadata } = await getMissionControlActor({ missionControlId, identity });
-	return get_metadata();
+}): Promise<User> => {
+	const { get_user_data } = await getMissionControlActor({ missionControlId, identity });
+	return get_user_data();
 };
 
 export const getSettings = async ({
@@ -483,21 +483,21 @@ export const getMonitoringHistory = async ({
 	});
 };
 
-export const setMonitoringConfig = async ({
+export const setConfig = async ({
 	missionControlId,
 	identity,
 	config
 }: {
 	missionControlId: Principal;
 	identity: OptionIdentity;
-	config: MonitoringConfig | undefined;
+	config: Config | undefined;
 }): Promise<void> => {
-	const { set_monitoring_config } = await getMissionControlActor({
+	const { set_config } = await getMissionControlActor({
 		missionControlId,
 		identity
 	});
 
-	return await set_monitoring_config(toNullable(config));
+	return await set_config(toNullable(config));
 };
 
 export const setMetadata = async ({

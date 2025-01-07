@@ -1,26 +1,27 @@
 import type {
+	Config,
 	CyclesMonitoringStrategy,
 	CyclesThreshold,
 	DepositedCyclesEmailNotification,
 	MonitoringConfig
 } from '$declarations/mission_control/mission_control.did';
 import {
+	setConfig,
 	setMetadata,
-	setMonitoringConfig as setMonitoringConfigApi,
 	updateAndStartMonitoring,
 	updateAndStopMonitoring
 } from '$lib/api/mission-control.api';
 import { METADATA_KEY_EMAIL } from '$lib/constants/metadata.constants';
 import { orbiterNotLoaded, orbiterStore } from '$lib/derived/orbiter.derived';
 import { satellitesNotLoaded, satellitesStore } from '$lib/derived/satellite.derived';
-import { loadMetadata, loadSettings } from '$lib/services/mission-control.services';
+import { loadSettings, loadUserData } from '$lib/services/mission-control.services';
 import { loadOrbiters } from '$lib/services/orbiters.services';
 import { execute } from '$lib/services/progress.services';
 import { loadSatellites } from '$lib/services/satellites.services';
 import { i18n } from '$lib/stores/i18n.store';
 import {
-	missionControlMetadataDataStore,
-	missionControlSettingsDataStore
+	missionControlSettingsDataStore,
+	missionControlUserDataStore
 } from '$lib/stores/mission-control.store';
 import { toasts } from '$lib/stores/toasts.store';
 import type { OptionIdentity } from '$lib/types/itentity';
@@ -355,17 +356,21 @@ const setMonitoringCyclesConfig = async ({
 			})
 		: (currentCyclesConfig?.default_strategy ?? []);
 
-	const updateConfig: MonitoringConfig = {
+	const updateMonitoringConfig: MonitoringConfig = {
 		cycles: toNullable({
 			notification,
 			default_strategy
 		})
 	};
 
-	await setMonitoringConfigApi({
+	const config: Config = {
+		monitoring: toNullable(updateMonitoringConfig)
+	};
+
+	await setConfig({
 		identity,
 		missionControlId,
-		config: updateConfig
+		config
 	});
 };
 
@@ -407,7 +412,7 @@ const reloadData = async ({
 			...reloadParams,
 			identity
 		}),
-		loadMetadata({
+		loadUserData({
 			...reloadParams,
 			identity
 		})
@@ -459,7 +464,7 @@ export const openMonitoringModal = ({
 		return;
 	}
 
-	const $missionControlMetadataDataStore = get(missionControlMetadataDataStore);
+	const $missionControlMetadataDataStore = get(missionControlUserDataStore);
 	if (isNullish($missionControlMetadataDataStore)) {
 		toasts.warn(get(i18n).errors.mission_control_metadata_not_loaded);
 		return;
@@ -516,7 +521,7 @@ export const setMonitoringNotification = async ({
 		const cycles = fromNullable(monitoringConfig?.cycles ?? []);
 		const notification = fromNullable(cycles?.notification ?? []);
 
-		const updateConfig: MonitoringConfig = {
+		const updateMonitoringConfig: MonitoringConfig = {
 			...(nonNullish(monitoringConfig) && monitoringConfig),
 			cycles: toNullable({
 				notification: toNullable({
@@ -527,10 +532,14 @@ export const setMonitoringNotification = async ({
 			})
 		};
 
-		await setMonitoringConfigApi({
+		const config: Config = {
+			monitoring: toNullable(updateMonitoringConfig)
+		};
+
+		await setConfig({
 			identity,
 			missionControlId,
-			config: updateConfig
+			config
 		});
 
 		await loadSettings({

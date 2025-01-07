@@ -1,12 +1,13 @@
 import type {
 	MissionControlSettings,
-	Satellite
+	Satellite,
+	User
 } from '$declarations/mission_control/mission_control.did';
 import {
 	addMissionControlController,
 	addSatellitesController,
-	getMetadata,
 	getSettings,
+	getUserData,
 	missionControlVersion,
 	setMetadata,
 	setMissionControlController,
@@ -33,8 +34,8 @@ import { loadSatellites } from '$lib/services/satellites.services';
 import { authStore } from '$lib/stores/auth.store';
 import { i18n } from '$lib/stores/i18n.store';
 import {
-	missionControlMetadataDataStore,
-	missionControlSettingsDataStore
+	missionControlSettingsDataStore,
+	missionControlUserDataStore
 } from '$lib/stores/mission-control.store';
 import { orbitersDataStore } from '$lib/stores/orbiter.store';
 import { satellitesDataStore } from '$lib/stores/satellite.store';
@@ -279,7 +280,7 @@ export const loadSettings = async ({
 	return { success: result !== 'error' };
 };
 
-export const loadMetadata = async ({
+export const loadUserData = async ({
 	missionControlId,
 	identity,
 	reload = false
@@ -291,22 +292,22 @@ export const loadMetadata = async ({
 	const versionStore = get(missionControlVersionStore);
 
 	if (compare(versionStore?.current ?? '0.0.0', MISSION_CONTROL_v0_0_13) < 0) {
-		missionControlMetadataDataStore.reset();
+		missionControlUserDataStore.reset();
 		return { success: true };
 	}
 
-	const load = async (identity: Identity): Promise<Metadata> =>
-		await getMetadata({
+	const load = async (identity: Identity): Promise<User> =>
+		await getUserData({
 			missionControlId,
 			identity
 		});
 
-	const { result } = await loadDataStore<Metadata>({
+	const { result } = await loadDataStore<User>({
 		identity,
 		reload,
 		load,
-		errorLabel: 'load_metadata',
-		store: missionControlMetadataDataStore
+		errorLabel: 'load_user_data',
+		store: missionControlUserDataStore
 	});
 
 	return { success: result !== 'error' };
@@ -349,7 +350,11 @@ export const setMetadataEmail = async ({
 			metadata: data
 		});
 
-		missionControlMetadataDataStore.set(data);
+		await loadUserData({
+			identity,
+			missionControlId,
+			reload: true
+		});
 
 		return { success: true };
 	} catch (err: unknown) {

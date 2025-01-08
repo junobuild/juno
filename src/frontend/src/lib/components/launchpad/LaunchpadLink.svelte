@@ -103,7 +103,7 @@
 		}
 	}
 
-	a.article {
+	a.small {
 		height: 100%;
 		justify-content: center;
 	}

@@ -64,9 +64,12 @@
 
 	.row {
 		grid-column: 1 / 13;
-		min-height: auto;
+		min-height: 58px;
 
 		.content {
+			display: flex;
+			align-items: center;
+
 			padding: var(--padding-2x) var(--padding-4x);
 			min-height: auto;
 		}

@@ -121,7 +121,7 @@
 			bind:selectedOrbiters
 			oncontinue={onContinueSegments}
 		>
-			<h2>{$i18n.monitoring.stop_monitoring}</h2>
+			<h2>{$i18n.monitoring.stop_auto_refill}</h2>
 
 			<p>{$i18n.monitoring.stop_info}</p>
 		</MonitoringSelectSegments>

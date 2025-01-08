@@ -75,6 +75,8 @@ interface I18nCore {
 	disabled: string;
 	email_address: string;
 	open: string;
+	get_started: string;
+	getting_started: string;
 }
 
 interface I18nCanisters {
@@ -329,8 +331,6 @@ interface I18nAnalytics {
 	loading: string;
 	empty: string;
 	error_msg: string;
-	get_started: string;
-	start: string;
 	description: string;
 	initializing: string;
 	create_orbiter_price: string;
@@ -694,10 +694,8 @@ interface I18nUsers {
 interface I18nMonitoring {
 	title: string;
 	dashboard: string;
-	start: string;
 	loading: string;
 	introduction: string;
-	monitoring_strategy: string;
 	create_info: string;
 	stop_info: string;
 	threshold_info: string;
@@ -710,16 +708,15 @@ interface I18nMonitoring {
 	no_mission_control_strategy_question: string;
 	mission_control_existing_strategy: string;
 	mission_control_existing_strategy_question: string;
-	update_monitoring: string;
-	start_monitoring: string;
-	stop_monitoring: string;
-	strategy_created: string;
+	update_auto_refill: string;
+	stop_auto_refill: string;
+	auto_refill_activated: string;
 	monitoring_stopped: string;
 	starting_monitoring: string;
 	stopping_monitoring: string;
 	remaining_threshold: string;
 	top_up_amount: string;
-	set_as_default_configuration: string;
+	set_as_default_strategy: string;
 	modules: string;
 	selected_modules: string;
 	monitored: string;
@@ -742,7 +739,7 @@ interface I18nMonitoring {
 	usage: string;
 	weekly_cycles_deposit: string;
 	default_strategy: string;
-	configuration_for_modules: string;
+	strategy_for_modules: string;
 	auto_refill: string;
 	auto_refill_disabled: string;
 	auto_refill_strategy: string;

@@ -18,7 +18,7 @@
 </script>
 
 <div class="card-container with-title">
-	<span class="title">{$i18n.monitoring.start}</span>
+	<span class="title">{$i18n.core.getting_started}</span>
 
 	<div class="content">
 		<p>
@@ -28,5 +28,5 @@
 </div>
 
 <button onclick={openModal}>
-	{$i18n.monitoring.start_monitoring}
+	{$i18n.core.get_started}
 </button>

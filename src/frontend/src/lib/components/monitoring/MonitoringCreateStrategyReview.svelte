@@ -78,7 +78,7 @@
 							{$i18n.monitoring.default_strategy}
 						{/snippet}
 
-						<p>{$i18n.monitoring.configuration_for_modules}</p>
+						<p>{$i18n.monitoring.strategy_for_modules}</p>
 					</Value>
 				{/if}
 			</div>

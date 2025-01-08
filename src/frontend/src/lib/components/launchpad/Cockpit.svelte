@@ -1,9 +1,10 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
-	import { fade } from 'svelte/transition';
 	import { run } from 'svelte/legacy';
+	import { fade } from 'svelte/transition';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
+	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
 	import IconAnalytics from '$lib/components/icons/IconAnalytics.svelte';
 	import IconMissionControl from '$lib/components/icons/IconMissionControl.svelte';
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
@@ -11,6 +12,8 @@
 	import LaunchpadLink from '$lib/components/launchpad/LaunchpadLink.svelte';
 	import MissionControlDataLoader from '$lib/components/mission-control/MissionControlDataLoader.svelte';
 	import MissionControlVersion from '$lib/components/mission-control/MissionControlVersion.svelte';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import {
 		missionControlIdDerived,
 		missionControlNotMonitored,
@@ -21,9 +24,6 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
-	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
-	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
-	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
 	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	run(() => {

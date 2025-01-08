@@ -3,6 +3,8 @@
 	import IconWallet from '$lib/components/icons/IconWallet.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+	import { Color } from '$lib/types/theme';
+	import { applyColor } from '$lib/utils/theme.utils';
 
 	interface Props {
 		children: Snippet;
@@ -10,12 +12,14 @@
 
 	let { children }: Props = $props();
 
-	onMount(() =>
+	onMount(() => {
+		applyColor(Color.TIFFANY_BLUE);
+
 		layoutNavigation.set({
 			title: $i18n.wallet.title,
 			icon: IconWallet
-		})
-	);
+		});
+	});
 </script>
 
 {@render children()}

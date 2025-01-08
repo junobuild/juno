@@ -4,7 +4,11 @@ export enum Color {
 	LAVENDER_BLUE = 'lavender-blue',
 	PINK_LACE = 'pink-lace',
 	BABY_PINK = 'baby-pink',
-	SHANDY = 'shandy'
+	SHANDY = 'shandy',
+	FOLLY = 'folly',
+	ROSE = 'rose',
+	KEPPEL = 'keppel',
+	TIFFANY_BLUE = 'tiffany-blue'
 }
 
 export enum Theme {

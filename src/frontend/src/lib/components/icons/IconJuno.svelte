@@ -33,7 +33,7 @@
 	}
 
 	.icon-juno-logo {
-		fill: var(--logo-color, #7888ff);
+		fill: var(--logo-color, var(--color-primary));
 	}
 
 	@include media.dark-theme {

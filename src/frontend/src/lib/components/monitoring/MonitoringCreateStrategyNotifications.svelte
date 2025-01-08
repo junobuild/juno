@@ -30,9 +30,11 @@
 </script>
 
 <MonitoringStepBackContinue {onback} oncontinue={validateAndContinue}>
-	<h2>{$i18n.monitoring.email_notifications}</h2>
+	{#snippet header()}
+		<h2>{$i18n.monitoring.email_notifications}</h2>
 
-	<p>{$i18n.monitoring.receive_email}</p>
+		<p>{$i18n.monitoring.receive_email}</p>
+	{/snippet}
 
 	<div class="input-field">
 		<Value ref="mint-cycles">

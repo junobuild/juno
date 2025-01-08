@@ -4,17 +4,22 @@
 	import { i18n } from '$lib/stores/i18n.store';
 
 	interface Props {
+		header: Snippet;
 		children: Snippet;
 		onback: () => void;
 		oncontinue: () => void;
 		disabled?: boolean;
 	}
 
-	let { children, onback, oncontinue, disabled = false }: Props = $props();
+	let { children, header, onback, oncontinue, disabled = false }: Props = $props();
 </script>
 
 <form onsubmit={oncontinue}>
-	{@render children()}
+	{@render header()}
+
+	<div class="container">
+		{@render children()}
+	</div>
 
 	<div class="toolbar">
 		<button type="button" onclick={onback} disabled={$isBusy}>
@@ -26,3 +31,14 @@
 		</button>
 	</div>
 </form>
+
+<style lang="scss">
+	@use '../../styles/mixins/media';
+	@use '../../styles/mixins/grid';
+
+	.container {
+		@include media.min-width(large) {
+			@include grid.two-columns;
+		}
+	}
+</style>

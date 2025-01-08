@@ -47,41 +47,47 @@
 </script>
 
 <MonitoringStepBackContinue {onback} {oncontinue} {disabled}>
-	<h2>{$i18n.monitoring.configure_strategy}</h2>
+	{#snippet header()}
+		<h2>{$i18n.monitoring.configure_strategy}</h2>
 
-	<p>
-		{strategy === 'mission-control'
-			? $i18n.monitoring.threshold_info_mission_control
-			: $i18n.monitoring.threshold_info}
-	</p>
+		<p>
+			{strategy === 'mission-control'
+				? $i18n.monitoring.threshold_info_mission_control
+				: $i18n.monitoring.threshold_info}
+		</p>
+	{/snippet}
 
-	<Value ref="mint-cycles">
-		{#snippet label()}
-			{$i18n.monitoring.remaining_threshold}
-		{/snippet}
+	<div>
+		<Value ref="mint-cycles">
+			{#snippet label()}
+				{$i18n.monitoring.remaining_threshold}
+			{/snippet}
 
-		<Input
-			name="cycles"
-			inputType="icp"
-			required
-			bind:value={minTCycles}
-			placeholder={$i18n.canisters.amount_cycles}
-		/>
-	</Value>
+			<Input
+				name="cycles"
+				inputType="icp"
+				required
+				bind:value={minTCycles}
+				placeholder={$i18n.canisters.amount_cycles}
+			/>
+		</Value>
+	</div>
 
-	<Value ref="fund-cycles">
-		{#snippet label()}
-			{$i18n.monitoring.top_up_amount}
-		{/snippet}
+	<div>
+		<Value ref="fund-cycles">
+			{#snippet label()}
+				{$i18n.monitoring.top_up_amount}
+			{/snippet}
 
-		<Input
-			name="cycles"
-			inputType="icp"
-			required
-			bind:value={fundTCycles}
-			placeholder={$i18n.canisters.amount_cycles}
-		/>
-	</Value>
+			<Input
+				name="cycles"
+				inputType="icp"
+				required
+				bind:value={fundTCycles}
+				placeholder={$i18n.canisters.amount_cycles}
+			/>
+		</Value>
+	</div>
 
 	{@render children?.()}
 </MonitoringStepBackContinue>

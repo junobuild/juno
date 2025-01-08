@@ -188,6 +188,6 @@
 
 	.actions {
 		display: flex;
-		padding: var(--padding-2_5x) var(--padding-2x);
+		padding: var(--padding-1_5x) var(--padding-2x);
 	}
 </style>

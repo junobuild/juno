@@ -99,6 +99,7 @@
 <style lang="scss">
 	@use '../../styles/mixins/media';
 	@use '../../styles/mixins/text';
+	@use '../../styles/mixins/shadow';
 
 	.segment {
 		display: flex;
@@ -172,6 +173,10 @@
 		height: 100%;
 		width: 100px;
 		fill: var(--value-color);
+
+		@include shadow.strong-card;
+
+		overflow: hidden;
 
 		display: none;
 

@@ -27,11 +27,16 @@
 {/if}
 
 <style lang="scss">
+	@use '../../styles/mixins/shadow';
+
 	.chart-container {
 		width: 100%;
 		height: 258px;
 		fill: var(--value-color);
 
-		margin: 0 0 var(--padding-4x);
+		margin: var(--padding-0_5x) 0 var(--padding-4x);
+		padding: var(--padding-0_5x) var(--padding-2x);
+
+		@include shadow.strong-card;
 	}
 </style>

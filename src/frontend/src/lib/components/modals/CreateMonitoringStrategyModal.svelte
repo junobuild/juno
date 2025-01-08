@@ -106,17 +106,17 @@
 		fromNullable(fromNullable(monitoringConfig?.cycles ?? [])?.default_strategy ?? [])
 	);
 
-	let useAsDefaultStrategy = $state(true);
+	let saveAsDefaultStrategy = $state(true);
 
 	onMount(() => {
-		useAsDefaultStrategy = isNullish(defaultStrategy);
+		saveAsDefaultStrategy = isNullish(defaultStrategy);
 	});
 
 	let withOptions: ApplyMonitoringCyclesStrategyOptions | undefined = $derived(
-		useAsDefaultStrategy || (nonNullish(userEmail) && notEmptyString(userEmail))
+		saveAsDefaultStrategy || (nonNullish(userEmail) && notEmptyString(userEmail))
 			? {
 					monitoringConfig,
-					useAsDefaultStrategy,
+					saveAsDefaultStrategy,
 					userEmail,
 					metadata
 				}
@@ -186,7 +186,7 @@
 			{selectedOrbiters}
 			{minCycles}
 			{fundCycles}
-			{useAsDefaultStrategy}
+			{saveAsDefaultStrategy}
 			{missionControlMinCycles}
 			{missionControlFundCycles}
 			{missionControl}
@@ -212,7 +212,7 @@
 		<MonitoringCreateStrategyWithDefault
 			bind:minCycles
 			bind:fundCycles
-			bind:useAsDefaultStrategy
+			bind:saveAsDefaultStrategy
 			strategy="modules"
 			onback={back}
 			oncontinue={() => next('mission_control')}

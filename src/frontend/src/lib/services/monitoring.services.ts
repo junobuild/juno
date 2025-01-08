@@ -55,7 +55,7 @@ interface MonitoringCyclesStrategyParams {
 
 export interface ApplyMonitoringCyclesStrategyOptions {
 	monitoringConfig: MonitoringConfig | undefined;
-	useAsDefaultStrategy: boolean;
+	saveAsDefaultStrategy: boolean;
 	metadata: Metadata;
 	userEmail: Option<string>;
 }
@@ -94,11 +94,11 @@ export const applyMonitoringCyclesStrategy = async ({
 	};
 
 	const setMonitoringOptions = async () => {
-		const { userEmail, metadata, useAsDefaultStrategy, monitoringConfig } = options ?? {
+		const { userEmail, metadata, saveAsDefaultStrategy, monitoringConfig } = options ?? {
 			monitoringConfig: undefined,
 			userEmail: null,
 			metadata: [],
-			useAsDefaultStrategy: false
+			saveAsDefaultStrategy: false
 		};
 
 		const withEmail = nonNullish(userEmail) && notEmptyString(userEmail);
@@ -113,13 +113,13 @@ export const applyMonitoringCyclesStrategy = async ({
 			});
 		}
 
-		if (useAsDefaultStrategy || withEmail) {
+		if (saveAsDefaultStrategy || withEmail) {
 			await setMonitoringCyclesConfig({
 				identity,
 				missionControlId,
 				monitoringConfig,
 				userEmail,
-				useAsDefaultStrategy,
+				saveAsDefaultStrategy,
 				...rest
 			});
 		}
@@ -290,7 +290,7 @@ const setEmail = async ({
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>> &
 	Required<
-		Omit<ApplyMonitoringCyclesStrategyOptions, 'useAsDefaultStrategy' | 'monitoringConfig'>
+		Omit<ApplyMonitoringCyclesStrategyOptions, 'saveAsDefaultStrategy' | 'monitoringConfig'>
 	>) => {
 	// Do nothing if no email is provided
 	if (isNullish(userEmail) || !notEmptyString(userEmail)) {
@@ -318,13 +318,13 @@ const setMonitoringCyclesConfig = async ({
 	fundCycles,
 	monitoringConfig,
 	userEmail,
-	useAsDefaultStrategy
+	saveAsDefaultStrategy
 }: Pick<ApplyMonitoringCyclesStrategyParams, 'missionControlId' | 'minCycles' | 'fundCycles'> &
 	Required<Pick<ApplyMonitoringCyclesStrategyParams, 'identity'>> &
 	Required<
 		Pick<
 			ApplyMonitoringCyclesStrategyOptions,
-			'monitoringConfig' | 'userEmail' | 'useAsDefaultStrategy'
+			'monitoringConfig' | 'userEmail' | 'saveAsDefaultStrategy'
 		>
 	>) => {
 	if (isNullish(minCycles)) {
@@ -346,7 +346,7 @@ const setMonitoringCyclesConfig = async ({
 		: (currentCyclesConfig?.notification ?? []);
 
 	// If the strategy should be use as default, we update or insert the default strategy else we keep the current configuration regardless if set or not
-	const default_strategy: [] | [CyclesMonitoringStrategy] = useAsDefaultStrategy
+	const default_strategy: [] | [CyclesMonitoringStrategy] = saveAsDefaultStrategy
 		? toNullable({
 				BelowThreshold: {
 					min_cycles: minCycles,

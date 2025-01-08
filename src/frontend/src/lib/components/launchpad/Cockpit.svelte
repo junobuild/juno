@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { isNullish, nonNullish } from '@dfinity/utils';
+	import { fade } from 'svelte/transition';
 	import { run } from 'svelte/legacy';
 	import Canister from '$lib/components/canister/Canister.svelte';
 	import CanisterIndicator from '$lib/components/canister/CanisterIndicator.svelte';
@@ -20,6 +21,10 @@
 	import { loadOrbiters } from '$lib/services/orbiters.services';
 	import { i18n } from '$lib/stores/i18n.store';
 	import type { CanisterData } from '$lib/types/canister';
+	import CanisterTCycles from '$lib/components/canister/CanisterTCycles.svelte';
+	import SkeletonText from '$lib/components/ui/SkeletonText.svelte';
+	import WalletLoader from '$lib/components/wallet/WalletLoader.svelte';
+	import { formatE8sICP } from '$lib/utils/icp.utils';
 
 	run(() => {
 		// @ts-expect-error TODO: to be migrated to Svelte v5
@@ -28,6 +33,7 @@
 	});
 
 	let missionControlData: CanisterData | undefined = $state(undefined);
+	let walletBalance: bigint | undefined = $state(undefined);
 	let orbiterData: CanisterData | undefined = $state(undefined);
 </script>
 
@@ -58,10 +64,19 @@
 	>
 		<p>
 			<IconAnalytics size="24px" />
-			<span
-				>{$i18n.analytics.title}
-				{#if nonNullish($orbiterStore)}<CanisterIndicator data={orbiterData} />{/if}</span
-			>
+			<span class="link">
+				<span class="link-title"
+					>{$i18n.analytics.title}
+					{#if nonNullish($orbiterStore)}<CanisterIndicator data={orbiterData} />{/if}</span
+				>
+				<span class="link-details">
+					{#if isNullish(orbiterData)}
+						<SkeletonText />
+					{:else}
+						<span in:fade><CanisterTCycles data={orbiterData} /></span>
+					{/if}
+				</span>
+			</span>
 		</p>
 	</LaunchpadLink>
 </div>
@@ -81,7 +96,9 @@
 	>
 		<p>
 			<IconTelescope />
-			<span>{$i18n.monitoring.title}</span>
+			<span class="link">
+				<span class="link-title">{$i18n.monitoring.title}</span>
+			</span>
 		</p>
 	</LaunchpadLink>
 </div>
@@ -94,10 +111,25 @@
 	>
 		<p>
 			<IconMissionControl />
-			<span>{$i18n.mission_control.title} <CanisterIndicator data={missionControlData} /></span>
+			<span class="link">
+				<span class="link-title"
+					>{$i18n.mission_control.title} <CanisterIndicator data={missionControlData} /></span
+				>
+				<span class="link-details">
+					{#if isNullish(missionControlData)}
+						<SkeletonText />
+					{:else}
+						<span in:fade><CanisterTCycles data={missionControlData} /></span>
+					{/if}
+				</span>
+			</span>
 		</p>
 	</LaunchpadLink>
 </div>
+
+{#if nonNullish($missionControlIdDerived)}
+	<WalletLoader missionControlId={$missionControlIdDerived} bind:balance={walletBalance} />
+{/if}
 
 <div class="wallet">
 	<LaunchpadLink
@@ -107,7 +139,16 @@
 	>
 		<p>
 			<IconWallet />
-			<span>{$i18n.wallet.title}</span>
+			<span class="link">
+				<span class="link-title">{$i18n.wallet.title}</span>
+				<span class="link-details">
+					{#if isNullish(walletBalance)}
+						<SkeletonText />
+					{:else}
+						<span in:fade>{formatE8sICP(walletBalance)} <small>ICP</small></span>
+					{/if}
+				</span>
+			</span>
 		</p>
 	</LaunchpadLink>
 </div>
@@ -127,15 +168,26 @@
 		margin: 0 0 var(--padding);
 	}
 
-	span {
-		display: none;
-
+	.link-title {
+		display: inline-flex;
 		align-items: center;
 		gap: var(--padding);
+	}
+
+	.link {
+		display: none;
 
 		@include media.min-width(large) {
-			display: inline-flex;
+			display: flex;
+			flex-direction: column;
 		}
+	}
+
+	.link-details {
+		font-size: var(--font-size-small);
+		font-weight: normal;
+
+		--skeleton-text-padding: 0 0 var(--padding);
 	}
 
 	.mission-control {

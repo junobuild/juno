@@ -62,15 +62,15 @@
 	<div class="toolbar">
 		<button in:fade onclick={openCreateModal}>
 			{#if monitored}
-				{$i18n.monitoring.update_monitoring}
+				{$i18n.monitoring.update_auto_refill}
 			{:else}
-				{$i18n.monitoring.start_monitoring}
+				{$i18n.core.get_started}
 			{/if}
 		</button>
 
 		{#if monitored}
 			<button in:fade onclick={openStopModal}>
-				{$i18n.monitoring.stop_monitoring}
+				{$i18n.monitoring.stop_auto_refill}
 			</button>
 		{/if}
 	</div>

@@ -76,7 +76,7 @@
 	{:else if step === 'in_progress'}
 		<ProgressCreate segment="orbiter" {progress} withMonitoring={nonNullish(monitoringStrategy)} />
 	{:else}
-		<h2>{$i18n.analytics.start}</h2>
+		<h2>{$i18n.core.getting_started}</h2>
 
 		<p>
 			{$i18n.analytics.description}

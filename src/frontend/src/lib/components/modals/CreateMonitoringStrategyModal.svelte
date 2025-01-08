@@ -166,7 +166,7 @@
 	{#if step === 'ready'}
 		<div class="msg">
 			<p>
-				{$i18n.monitoring.strategy_created}
+				{$i18n.monitoring.auto_refill_activated}
 			</p>
 			<button onclick={onclose}>{$i18n.core.close}</button>
 		</div>
@@ -224,7 +224,7 @@
 			bind:selectedOrbiters
 			oncontinue={() => next('strategy')}
 		>
-			<h2>{$i18n.monitoring.monitoring_strategy}</h2>
+			<h2>{$i18n.core.getting_started}</h2>
 
 			<p>{$i18n.monitoring.create_info}</p>
 		</MonitoringSelectSegments>

@@ -30,7 +30,7 @@
 				checked={useAsDefaultStrategy}
 				onchange={() => (useAsDefaultStrategy = !useAsDefaultStrategy)}
 			/>
-			<span>{$i18n.monitoring.set_as_default_configuration}</span>
+			<span>{$i18n.monitoring.set_as_default_strategy}</span>
 		</label>
 	</Checkbox>
 </MonitoringCreateStrategy>

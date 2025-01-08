@@ -747,6 +747,12 @@ interface I18nMonitoring {
 	receive_email: string;
 	notifications: string;
 	edit_email: string;
+	select_auto_refill_strategy: string;
+	choose_method: string;
+	suggested: string;
+	suggested_description: string;
+	custom: string;
+	custom_description: string;
 }
 
 interface I18nPreferences {

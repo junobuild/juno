@@ -26,6 +26,7 @@
 	import type { MonitoringStrategyProgress } from '$lib/types/strategy';
 	import type { Option } from '$lib/types/utils';
 	import { metadataEmail } from '$lib/utils/metadata.utils';
+	import MonitoringCreateSelectStrategy from '$lib/components/monitoring/MonitoringCreateSelectStrategy.svelte';
 
 	interface Props {
 		detail: JunoModalDetail;
@@ -42,6 +43,7 @@
 
 	type Steps =
 		| 'init'
+		| 'select_strategy'
 		| 'strategy'
 		| 'mission_control'
 		| 'mission_control_strategy'
@@ -217,12 +219,14 @@
 			onback={back}
 			oncontinue={() => next('mission_control')}
 		/>
+	{:else if step === 'select_strategy'}
+		<MonitoringCreateSelectStrategy onback={back} oncontinue={() => next('strategy')} />
 	{:else}
 		<MonitoringSelectSegments
 			{missionControlId}
 			bind:selectedSatellites
 			bind:selectedOrbiters
-			oncontinue={() => next('strategy')}
+			oncontinue={() => next('select_strategy')}
 		>
 			<h2>{$i18n.core.getting_started}</h2>
 

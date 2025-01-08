@@ -39,7 +39,7 @@
 	);
 </script>
 
-<Menu themed={satelliteSelected}>
+<Menu>
 	<nav>
 		{#if !notEmptyString(satelliteId)}
 			<a class="link" href="/">

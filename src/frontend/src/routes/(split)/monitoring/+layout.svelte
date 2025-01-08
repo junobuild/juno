@@ -3,6 +3,8 @@
 	import IconTelescope from '$lib/components/icons/IconTelescope.svelte';
 	import { i18n } from '$lib/stores/i18n.store';
 	import { layoutNavigation } from '$lib/stores/layout-navigation.store';
+    import {applyColor} from "$lib/utils/theme.utils";
+    import {Color} from "$lib/types/theme";
 
 	interface Props {
 		children: Snippet;
@@ -10,12 +12,14 @@
 
 	let { children }: Props = $props();
 
-	onMount(() =>
-		layoutNavigation.set({
-			title: $i18n.monitoring.title,
-			icon: IconTelescope
-		})
-	);
+    onMount(() => {
+        applyColor(Color.FOLLY);
+
+        layoutNavigation.set({
+            title: $i18n.monitoring.title,
+            icon: IconTelescope
+        });
+    });
 </script>
 
 {@render children()}

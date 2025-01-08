@@ -58,7 +58,7 @@
 	{/snippet}
 
 	<div>
-		<Value ref="mint-cycles">
+		<Value ref="min-t-cycles">
 			{#snippet label()}
 				{$i18n.monitoring.remaining_threshold}
 			{/snippet}
